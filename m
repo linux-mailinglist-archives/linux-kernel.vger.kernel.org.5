@@ -2,190 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616BA7E9C38
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:34:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 076F17E9C3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:35:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230205AbjKMMeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:34:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S230156AbjKMMfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMMeK (ORCPT
+        with ESMTP id S229470AbjKMMf3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:34:10 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2089.outbound.protection.outlook.com [40.107.223.89])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 566441711
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:34:07 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NIIUOD71hpIl5t0twZd2To5FL9/S1Wua4455zYdmIbZXX+s04Y4uJRQbAA2RaTPMlIOHfPNMOqXwpGfY1HhJk+wAqu5KSheYp+gato/8Obg9dl4saXHnZYh2paFIYUz0DURQtcxOPU1FwvrL+cNgmnerdgJWNikAVgcNC2hiz8w44JMHUKwYA2NFC0xYgWyrPBgXgasn89ziWdGfdWqPPPv/jnr2ygUYuhEoS+VHsQtj4bkB0FEy7ZSMLS71RyeBAV47IC4MQQ6L5VPuW6IAo4XjekEneCcOCUQbAVTUSyv8YJ1jzxKGpxNO63vjfQxZ97OPFqRnr9PyESQvuVEBTw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2CffOFhm9RNlDoL102Kh1Mp+1iWlfp4u0HViuRPpfo8=;
- b=inq6bfP+br2Jr3z6v4t1jGWbvP3Cpp8vi4ZQP/NYCD6S5JbJNS6I7IKTlBWqyAQnJ3sM3lr+O3SSsic4qtJ3s55vrY+565DWR1rGNnNmnAVl3CRZAcg+58ABEq6oKA1aiaY1XYhgpNAkI4aq4mCJbaAC4Rou392bODQliqDcCtGXZskyiysgZcoKv4VDyqsOMA/Ur1eBAoCOM3/VgcauRgyvS0Tcrv8FJypvRhnLmcnlc5yclLSZVxkxZ4Cqa5b+deBGAWVEBctHMsHXUPLnTWyG+Dh+5VRE9F8DnhLmO5TgWFwUAMi1N0YraotYcTU1+wjYsT5B6+UDFxW04bqMuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2CffOFhm9RNlDoL102Kh1Mp+1iWlfp4u0HViuRPpfo8=;
- b=Up+fcCtdFUhLi+D5UjILBZISSoN4Iw4ooIROYeNT4t/0uDxoGjlsX/KDA12daAd0JeVfzJ+ajApypMivIMJSZCcGaAPlpDi7AQGWZ+NPbUuKpy/BJtwRLgGhDZMsjs4P3ldMPaw9QSWAdkfzK9Gku2N0I70sgWiRW0Y6bA5Kdj0=
-Received: from BYAPR01CA0030.prod.exchangelabs.com (2603:10b6:a02:80::43) by
- SJ0PR12MB6926.namprd12.prod.outlook.com (2603:10b6:a03:485::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.29; Mon, 13 Nov 2023 12:34:02 +0000
-Received: from CO1PEPF000042AC.namprd03.prod.outlook.com
- (2603:10b6:a02:80:cafe::5c) by BYAPR01CA0030.outlook.office365.com
- (2603:10b6:a02:80::43) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29 via Frontend
- Transport; Mon, 13 Nov 2023 12:34:02 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000042AC.mail.protection.outlook.com (10.167.243.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7002.13 via Frontend Transport; Mon, 13 Nov 2023 12:34:02 +0000
-Received: from SATLEXMB06.amd.com (10.181.40.147) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 13 Nov
- 2023 06:34:01 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB06.amd.com
- (10.181.40.147) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Mon, 13 Nov
- 2023 06:34:00 -0600
-Received: from amd-B450M-DS3H.amd.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Mon, 13 Nov 2023 06:33:56 -0600
-From:   Syed Saba Kareem <Syed.SabaKareem@amd.com>
-To:     <broonie@kernel.org>, <alsa-devel@alsa-project.org>
-CC:     <Vijendar.Mukunda@amd.com>, <Basavaraj.Hiregoudar@amd.com>,
-        <Sunil-kumar.Dommati@amd.com>, <mario.limonciello@amd.com>,
-        <richgong@amd.com>, <posteuca@mutex.one>,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Jaroslav Kysela" <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 2/2] ASoC: amd: acp: add pm ops support for renoir platform
-Date:   Mon, 13 Nov 2023 18:03:43 +0530
-Message-ID: <20231113123345.2196504-2-Syed.SabaKareem@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231113123345.2196504-1-Syed.SabaKareem@amd.com>
-References: <20231113123345.2196504-1-Syed.SabaKareem@amd.com>
+        Mon, 13 Nov 2023 07:35:29 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB46CD55;
+        Mon, 13 Nov 2023 04:35:25 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so7224029a12.0;
+        Mon, 13 Nov 2023 04:35:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699878924; x=1700483724; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=sqJNnVUISV8ConHJRlGZ/JEIE4MyLgnfqLghRwViRxM=;
+        b=TULh3rytxFF35uu6vX44slI8G9eeZ0T8GApNXcpZXxP37SOM4rWejE9abnLEmQGzNT
+         mtXzvEKApYyAZu7NfMQNgz1uPMr4z+Jrrbui8L6hI6xE8ro+5DFg/18Mj20BXiU2UAXH
+         3rKRDsEjrswqFWhlqEbY4wAlfXsQ8KP30sP4knJdkGggfy1wKPi/PvSSMNO4rp1BR3Wo
+         Fdx9SuiCxqiXVmPanJhBTmDtriyr3i0ttagpzEM4nfi4pauRf/ZKcdhjIrT37aqmwLWO
+         l3R2dEP7Y3FkDbgB9JZYb3HZnMlLNqFdw9tZJW9G5CUOOUk1/UafGVG2r+MJ9rKb65jU
+         2WgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699878924; x=1700483724;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=sqJNnVUISV8ConHJRlGZ/JEIE4MyLgnfqLghRwViRxM=;
+        b=FBXIvIvVLcBI3emjBFmMK6PGXqV6AN3Ag9Xrow99XNtS5GE0FEKPoENLxLYujJs5Qw
+         zNsbryaVQ2GRgG6UYDi/UFx8pnu9mDlEXLSEmnzjyAfkzuRsIDf28Yy7pRsGxlmzMhzf
+         FbqtjR6R5r4mrqJMoK/O2mKNq/aJJrwQbu0COV7sVeIlQ7y+vAtn77hnXfLW9+ca+V6i
+         08vvycuF0KPDtti6SSOJfZkyngSRdiGFusyYHfNohJNa+6LBeHKa6WQCLr0EfcaYZs8X
+         /Q3oW01faAZjdcQO9cCWI/Vgwib1ca3sBsmE79rnEjc6791dz15OjeVTOVDIjbDDDfQb
+         EBCg==
+X-Gm-Message-State: AOJu0Yx3JBjQ6Dj1FM3eJjRB6hstZ/Rr7S3yBVtQUMWj6hvxI0ploY6l
+        cWsT1MnUgmA4AcGLvgorQMzjjATOfwiRA4H7E7Y=
+X-Google-Smtp-Source: AGHT+IGDNu9XaR6qzbagXlfw/e4IMYemMCmpWBxJJ4MgXyWOk4jaKiMzD+SDoi1Hio1tCexm0N7XL20Ga2toGWiaOkI=
+X-Received: by 2002:aa7:d699:0:b0:53e:21f6:d784 with SMTP id
+ d25-20020aa7d699000000b0053e21f6d784mr5646548edr.8.1699878924092; Mon, 13 Nov
+ 2023 04:35:24 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000042AC:EE_|SJ0PR12MB6926:EE_
-X-MS-Office365-Filtering-Correlation-Id: d401569e-14d5-4480-6336-08dbe444d153
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qq1jT+iHxFT/B3QRDMRD9/Ug/2B+aQBW8wkRs0vEGyahWW1qERkLktRfRs3/ELfLlwchGGR5AErNRolKEURI/0IiQf66sWK5+5cXL4hn9r6tTvlVVf3xWfGxakSaGnIGjP6qqsbwjNw1lD6o+rsLrvD65RljZftPRXV2QVakZTQRmkfyPW8UFeeIsFOV3GMVcISjM5EbWRv15mOyCGfbL7HC4vkOL/SKCIt+Q6P0Q1TEOPkCYEWXw3Ll6cvp3BXpeiQ2kyplzgziMyWYPC5DoaJjAoGPGjpOd3Wf1yOVzWbk9SXwDpGHM6arJKaobYDOUijEh0oejJaybLXmxnOAq6uZlkZ8DIHkDheP6y9DRsfJfY6Dgs1n2uL+q/5ylrMiUuwq/Ni/Nj0OzOv7FfeZVVnSrLSmzdmD3KmxtEkLWyP5jazwtCWrtKb4uPDMF3PgMORoCRbCYCg2xYjpRGtIiyfT6GojZZfJMgfejmjDe703rxhmnW/TiTgdWU+z0i8xsRJjZXyCT41dVpcdCqhQIyTQWEUVz/E7qO4XntqUQsjFA9LKTCFmwEDI4ODIzWlAn2SA3aupXeWpUbso+7gGXMv0m0dP+2OYGZInE0bbRArJf8AprN8YkbO/HCPr6SrKaxyEDVX1ifQKT2bjVRrJpzY09sYVSMDVcjGeaXSRKVz2Hn6ZR/yIbvCZYFqoxjcawJYKTI9IbTlpLPZLnWEoSTvL9KCR9LK70GIki9cLVqGSp702CiC69wHyqQZmJF1vRu7AP9HNGgDCxcbdZ2eO8A==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(39860400002)(376002)(346002)(230922051799003)(451199024)(1800799009)(186009)(82310400011)(64100799003)(46966006)(40470700004)(36840700001)(40460700003)(336012)(1076003)(26005)(6666004)(7696005)(2616005)(36860700001)(83380400001)(47076005)(5660300002)(7416002)(8676002)(8936002)(41300700001)(4326008)(2906002)(478600001)(316002)(110136005)(54906003)(70206006)(70586007)(86362001)(36756003)(82740400003)(356005)(81166007)(426003)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 12:34:02.2150
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: d401569e-14d5-4480-6336-08dbe444d153
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000042AC.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6926
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231113085305.1823455-1-javierm@redhat.com> <9f3d3c8d-fbf1-485b-9c2a-4d442733954d@suse.de>
+In-Reply-To: <9f3d3c8d-fbf1-485b-9c2a-4d442733954d@suse.de>
+From:   Andrew Worsley <amworsley@gmail.com>
+Date:   Mon, 13 Nov 2023 23:35:12 +1100
+Message-ID: <CA+Y=x3khfKx_oQYABMSCAPOEuDWyZ+MyTHK=JufH8fC-m6z7Xw@mail.gmail.com>
+Subject: Re: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer
+ node is found
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        Hector Martin <marcan@marcan.st>,
+        Sergio Lopez <slp@redhat.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add pm ops for renoir platform.
+On Mon, 13 Nov 2023 at 20:18, Thomas Zimmermann <tzimmermann@suse.de> wrote:
+>
+>
+>
+> Am 13.11.23 um 09:51 schrieb Javier Martinez Canillas:
+> > Some DT platforms use EFI to boot and in this case the EFI Boot Services
+> > may register a EFI_GRAPHICS_OUTPUT_PROTOCOL handle, that will later be
+> > queried by the Linux EFI stub to fill the global struct screen_info data.
+> >
+> > The data is used by the Generic System Framebuffers (sysfb) framework to
+> > add a platform device with platform data about the system framebuffer.
+> >
+> > But if there is a "simple-framebuffer" node in the DT, the OF core will
+> > also do the same and add another device for the system framebuffer.
+> >
+> > This could lead for example, to two platform devices ("simple-framebuffer"
+> > and "efi-framebuffer") to be added and matched with their corresponding
+> > drivers. So both efifb and simpledrm will be probed, leading to following:
+> >
+> > [    0.055752] efifb: framebuffer at 0xbd58dc000, using 16000k, total 16000k
+> > [    0.055755] efifb: mode is 2560x1600x32, linelength=10240, pages=1
+> > [    0.055758] efifb: scrolling: redraw
+> > [    0.055759] efifb: Truecolor: size=2:10:10:10, shift=30:20:10:0
+> > ...
+> > [    3.295896] simple-framebuffer bd58dc000.framebuffer: [drm] *ERROR*
+> > could not acquire memory range [??? 0xffff79f30a29ee40-0x2a5000001a7
+> > flags 0x0]: -16
+> > [    3.298018] simple-framebuffer: probe of bd58dc000.framebuffer
+> > failed with error -16
+> >
+> > To prevent the issue, make the OF core to disable sysfb if there is a node
+> > with a "simple-framebuffer" compatible. That way only this device will be
+> > registered and sysfb would not attempt to register another one using the
+> > screen_info data even if this has been filled.
+> >
+> > This seems the correct thing to do in this case because:
+> >
+> > a) On a DT platform, the DTB is the single source of truth since is what
+> >     describes the hardware topology. Even if EFI Boot Services are used to
+> >     boot the machine.
+> >
+> > b) The of_platform_default_populate_init() function is called in the
+> >     arch_initcall_sync() initcall level while the sysfb_init() function
+> >     is called later in the subsys_initcall() initcall level.
+> >
+> > Reported-by: Andrew Worsley <amworsley@gmail.com>
+> > Closes: https://lore.kernel.org/all/20231111042926.52990-2-amworsley@gmail.com
+> > Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+>
+> Reviewed-by: Thomas Zimmermann <tzimmermann@suse.de>
+>
+> > ---
+> >
+> >   drivers/of/platform.c | 18 ++++++++++++++++--
+> >   1 file changed, 16 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+> > index f235ab55b91e..0a692fdfef59 100644
+> > --- a/drivers/of/platform.c
+> > +++ b/drivers/of/platform.c
+> > @@ -20,6 +20,7 @@
+> >   #include <linux/of_irq.h>
+> >   #include <linux/of_platform.h>
+> >   #include <linux/platform_device.h>
+> > +#include <linux/sysfb.h>
+> >
+> >   #include "of_private.h"
+> >
+> > @@ -621,8 +622,21 @@ static int __init of_platform_default_populate_init(void)
+> >               }
+> >
+> >               node = of_get_compatible_child(of_chosen, "simple-framebuffer");
+> > -             of_platform_device_create(node, NULL, NULL);
+> > -             of_node_put(node);
+> > +             if (node) {
+> > +                     /*
+> > +                      * Since a "simple-framebuffer" device is already added
+> > +                      * here, disable the Generic System Framebuffers (sysfb)
+> > +                      * to prevent it from registering another device for the
+> > +                      * system framebuffer later (e.g: using the screen_info
+> > +                      * data that may had been filled as well).
+> > +                      *
+> > +                      * This can happen for example on DT systems that do EFI
+> > +                      * booting and may provide a GOP handle to the EFI stub.
+> > +                      */
+> > +                     sysfb_disable();
+> > +                     of_platform_device_create(node, NULL, NULL);
+> > +                     of_node_put(node);
+> > +             }
+> >
+> >               /* Populate everything else. */
+> >               of_platform_default_populate(NULL, NULL, NULL);
+>
+> --
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Frankenstrasse 146, 90461 Nuernberg, Germany
+> GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
+> HRB 36809 (AG Nuernberg)
 
-Signed-off-by: Syed Saba Kareem <Syed.SabaKareem@amd.com>
----
- sound/soc/amd/acp/acp-renoir.c | 38 +++++++++++++++++++++++++++++++++-
- 1 file changed, 37 insertions(+), 1 deletion(-)
+I applied the patch and just the simpledrm driver is probed (the efifb is not):
 
-diff --git a/sound/soc/amd/acp/acp-renoir.c b/sound/soc/amd/acp/acp-renoir.c
-index a591482a0726..8539fbacdf4c 100644
---- a/sound/soc/amd/acp/acp-renoir.c
-+++ b/sound/soc/amd/acp/acp-renoir.c
-@@ -20,6 +20,7 @@
- #include <sound/soc.h>
- #include <sound/soc-dai.h>
- #include <linux/dma-mapping.h>
-+#include <linux/pm_runtime.h>
- 
- #include "amd.h"
- #include "acp-mach.h"
-@@ -195,7 +196,11 @@ static int renoir_audio_probe(struct platform_device *pdev)
- 	dev_set_drvdata(dev, adata);
- 	acp_enable_interrupts(adata);
- 	acp_platform_register(dev);
--
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_set_active(&pdev->dev);
-+	pm_runtime_enable(&pdev->dev);
- 	return 0;
- }
- 
-@@ -208,11 +213,42 @@ static void renoir_audio_remove(struct platform_device *pdev)
- 	acp_platform_unregister(dev);
- }
- 
-+static int __maybe_unused rn_pcm_resume(struct device *dev)
-+{
-+	struct acp_dev_data *adata = dev_get_drvdata(dev);
-+	struct acp_stream *stream;
-+	struct snd_pcm_substream *substream;
-+	snd_pcm_uframes_t buf_in_frames;
-+	u64 buf_size;
-+
-+	spin_lock(&adata->acp_lock);
-+	list_for_each_entry(stream, &adata->stream_list, list) {
-+		substream = stream->substream;
-+		if (substream && substream->runtime) {
-+			buf_in_frames = (substream->runtime->buffer_size);
-+			buf_size = frames_to_bytes(substream->runtime, buf_in_frames);
-+			config_pte_for_stream(adata, stream);
-+			config_acp_dma(adata, stream, buf_size);
-+			if (stream->dai_id)
-+				restore_acp_i2s_params(substream, adata, stream);
-+			else
-+				restore_acp_pdm_params(substream, adata);
-+		}
-+	}
-+	spin_unlock(&adata->acp_lock);
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops rn_dma_pm_ops = {
-+	SET_SYSTEM_SLEEP_PM_OPS(NULL, rn_pcm_resume)
-+};
-+
- static struct platform_driver renoir_driver = {
- 	.probe = renoir_audio_probe,
- 	.remove_new = renoir_audio_remove,
- 	.driver = {
- 		.name = "acp_asoc_renoir",
-+		.pm = &rn_dma_pm_ops,
- 	},
- };
- 
--- 
-2.25.1
+grep -i -E 'drm|efifb' --color -C3 dmesg-6.5.0-asahi-00780-gf5aadc85a34d.txt
+[    2.621433] systemd-journald[276]: varlink-21: Changing state
+idle-server \xe2\x86\x92 pending-disconnect
+[    2.621437] systemd-journald[276]: varlink-21: Changing state
+pending-disconnect \xe2\x86\x92 processing-disconnect
+[    2.621439] systemd-journald[276]: varlink-21: Changing state
+processing-disconnect \xe2\x86\x92 disconnected
+[    2.878828] [drm] Initialized simpledrm 1.0.0 20200625 for
+bd58dc000.framebuffer on minor 0
+[    2.909764] Console: switching to colour frame buffer device 160x50
+[    2.915628] tas2770 1-0031: Property ti,imon-slot-no is missing
+setting default slot
+[    2.915631] tas2770 1-0031: Property ti,vmon-slot-no is missing
+setting default slot
+--
+[    2.921407] cs42l42 2-0048: supply VCP not found, using dummy regulator
+[    2.921412] cs42l42 2-0048: supply VD_FILT not found, using dummy regulator
+[    2.921416] cs42l42 2-0048: supply VL not found, using dummy regulator
+[    2.934530] simple-framebuffer bd58dc000.framebuffer: [drm] fb0:
+simpledrmdrmfb frame buffer device
+[    2.938437] cs42l42 2-0048: CS42L42 Device ID (42A83). Expected 42A42
+[    2.944183] cs42l83 2-0048: supply VA not found, using dummy regulator
+[    2.944769] cs42l83 2-0048: supply VP not found, using dummy regulator
 
+I am wondering if the drm_aperture_remove_framebuffers() shouldn't be
+called in the probe function anyway
+as it ends up overriding the efifb one as wanted and handles the case
+the simpledrm (CONFIG_DRM_SIMPLEDRM)
+is not present.
+Perhaps there is an accepted principle that such kernels *should* fail
+to set up a FB?
+
+Andrew
