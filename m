@@ -2,130 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D6F7E965B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:54:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 646867E9665
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:58:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232536AbjKMEyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53150 "EHLO
+        id S230177AbjKME6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:58:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKMEye (ORCPT
+        with ESMTP id S229441AbjKME6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:54:34 -0500
-Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E75173E
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:54:30 -0800 (PST)
-Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7b9dc928868so903745241.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:54:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699851269; x=1700456069; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ulZUsxBjy/DYiq3mQzgGs9wuxEBLqLXZ1LrWDxA7qvo=;
-        b=EpHpwcNa5850JC9ptPMc0rHEkmfFb//UmLZu6w4Zq62rCeX7YhQRh6151JLwbnNaqW
-         FUBdTkFdrs8j+xIk1QpbfS95rXXzKa9Y8Su+L+EVSoep1a6MzC8GhTz1OJKX16uNIkoU
-         oGxtrVmrXKfPnD/eXZmdQgK053n9cA07QVfIwiFQrqK0rr2N9sO1xKWjL09OxX74whju
-         /y3ixDqG9xME0+Jh4drr1niRwhUJMsr3IZa4+IgCm36lSaMnsA5ZdU7wepg4/84iSmtq
-         KWpRNM4BpAg6x+GqqgTmaxwvbUYTxUGr/Fqv9+HSFryVJX3oTVR8tvI8JNRLEmbo4JBh
-         HUyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699851269; x=1700456069;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ulZUsxBjy/DYiq3mQzgGs9wuxEBLqLXZ1LrWDxA7qvo=;
-        b=iOe9PETX/ztnK4aRQDD++e0+GVlY6WrhbTnSXRe4QQ3K3KUgob+Xh3aYYboib+qaqZ
-         6NKDj8yn9wgasOjiu03eziUF6rIGpYpABjbWxKp1ZV6vth91JzRzxZmuhGPh8YcbvmFH
-         mdnE96p3PMZfEyC4kYHiNfqDnx5d0LlR/12z6Sq/AfNXNDllSHkWb6xU2uh9phnI1duO
-         v3xvrqew750GtDTf7NBzjiU5s7bEHEZ7jJMntQ5XNYfs9Vl+DaX5pPli9rLURh7Mo1vN
-         pdTyBG5xG4b2nzZHiKF9z3EwdcoAdw4aUtn6YX21IfMlLWUKYzq4Q1UInSVKBKqhcymr
-         CSkg==
-X-Gm-Message-State: AOJu0YxABLPsLb006j9NH1UIGwtD52Cb59OLzHOAvFtLqdtOassoTjNK
-        DplLnbAThieb7Ff+i6CQmRdRkeuly0XR4f8tJXK6SA==
-X-Google-Smtp-Source: AGHT+IGBugYmcwQCmYo3XhrW53vx7SnsNtkGBEWopCzRD+dofX6GN+L1OxYsj2HtZsztRRSBDJnHEIwyfhi7gc94JeA=
-X-Received: by 2002:a67:ab0d:0:b0:45f:4e67:4420 with SMTP id
- u13-20020a67ab0d000000b0045f4e674420mr2062262vse.2.1699851269262; Sun, 12 Nov
- 2023 20:54:29 -0800 (PST)
+        Sun, 12 Nov 2023 23:58:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AFA0107;
+        Sun, 12 Nov 2023 20:58:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699851485; x=1731387485;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=3rr1CcVA1QVG5RdS7YA8zExN022F8nkhxbs95twph2A=;
+  b=dWE7Wk7713GSNdaPB65MHFdOqILpHqeOyiXY0DQmMylDHafMvkS6Olmy
+   epPnq/k5WIpmWgC0iG1FZr/gOicf17lW5hXrPbjtR0hAtMuEMRO4MaFwM
+   vzfOcBagkyrYxV9klu1j1amcmlnlEwaoZkPl+VYNLYsk6a25X3k/xfHi2
+   W47/UUeHWoY8xxfEd/VZhwfEzugSxVdR0iZAklpBo7T8ekp0lfn9Hf0qz
+   +cUFERDkRols7GTIESmqLM842MLGhdrtjqmZhIyJXQo+D/ykbiXHNqu0S
+   25OcklSOC2VB+N78+TLxs1Zdrl7ZqHRJlzAIme+noc7fAjgwBPgoUT2gH
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="3417180"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="3417180"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 20:58:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="764237374"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="764237374"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 12 Nov 2023 20:58:00 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r2P1J-000BpA-1D;
+        Mon, 13 Nov 2023 04:57:57 +0000
+Date:   Mon, 13 Nov 2023 12:57:03 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>
+Cc:     oe-kbuild-all@lists.linux.dev, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 4/4] riscv: dts: sophgo: add reset phandle to all uart
+ nodes
+Message-ID: <202311131220.lnq9Gdut-lkp@intel.com>
+References: <20231113005503.2423-5-jszhang@kernel.org>
 MIME-Version: 1.0
-References: <20231106024413.2801438-1-almasrymina@google.com>
- <20231106024413.2801438-7-almasrymina@google.com> <20231110151622.2f45f618@kernel.org>
-In-Reply-To: <20231110151622.2f45f618@kernel.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sun, 12 Nov 2023 20:54:18 -0800
-Message-ID: <CAHS8izMGNLM18TF1RCDBfdOXXpqseePA4_27qmQt-FsrFzGfdQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 06/12] memory-provider: dmabuf devmem memory provider
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        David Ahern <dsahern@kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Jeroen de Borst <jeroendb@google.com>,
-        Praveen Kaligineedi <pkaligineedi@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113005503.2423-5-jszhang@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 3:16=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
-ote:
->
-> On Sun,  5 Nov 2023 18:44:05 -0800 Mina Almasry wrote:
-> > +static int mp_dmabuf_devmem_init(struct page_pool *pool)
-> > +{
-> > +     struct netdev_dmabuf_binding *binding =3D pool->mp_priv;
-> > +
-> > +     if (!binding)
-> > +             return -EINVAL;
-> > +
-> > +     if (pool->p.flags & PP_FLAG_DMA_MAP ||
-> > +         pool->p.flags & PP_FLAG_DMA_SYNC_DEV)
-> > +             return -EOPNOTSUPP;
->
-> This looks backwards, we should _force_ the driver to use the dma
-> mapping built into the page pool APIs, to isolate the driver from
-> how the DMA addr actually gets obtained. Right?
->
-> Maybe seeing driver patches would illuminate.
+Hi Jisheng,
 
-The full tree with driver patches is here:
+kernel test robot noticed the following build errors:
 
-https://github.com/torvalds/linux/compare/master...mina:linux:tcpdevmem-v3
+[auto build test ERROR on next-20231110]
+[also build test ERROR on linus/master v6.7-rc1]
+[cannot apply to robh/for-next krzk/for-next krzk-dt/for-next pza/reset/next pza/imx-drm/next v6.6 v6.6-rc7 v6.6-rc6]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-This is probably the most relevant patch, it implements POC page-pool
-support into GVE + devmem support:
+url:    https://github.com/intel-lab-lkp/linux/commits/Jisheng-Zhang/dt-bindings-reset-Add-binding-for-Sophgo-CV1800B-reset-controller/20231113-091129
+base:   next-20231110
+patch link:    https://lore.kernel.org/r/20231113005503.2423-5-jszhang%40kernel.org
+patch subject: [PATCH 4/4] riscv: dts: sophgo: add reset phandle to all uart nodes
+config: riscv-randconfig-001-20231113 (https://download.01.org/0day-ci/archive/20231113/202311131220.lnq9Gdut-lkp@intel.com/config)
+compiler: riscv64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231113/202311131220.lnq9Gdut-lkp@intel.com/reproduce)
 
-https://github.com/torvalds/linux/commit/3c27aa21eb3374f2f1677ece6258f046da=
-234443
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311131220.lnq9Gdut-lkp@intel.com/
 
-But, to answer your question, yes, this is a mistake. devmem doesn't
-need to be mapped, which is why I disabled the flag. Actually what
-should happen is like you said, we should enforce that PP_FLAG_DMA_MAP
-is on, and have it be a no-op, so the driver doesn't try to map the
-devmem on its own.
+All errors (new ones prefixed by >>):
 
---=20
-Thanks,
-Mina
+   In file included from arch/riscv/boot/dts/sophgo/cv1800b.dtsi:7,
+                    from arch/riscv/boot/dts/sophgo/cv1800b-milkv-duo.dts:8:
+>> scripts/dtc/include-prefixes/dt-bindings/reset/sophgo,cv1800b-reset.h:7: error: unterminated #ifndef
+       7 | #ifndef _DT_BINDINGS_CV1800B_RESET_H
+         | 
+
+
+vim +7 scripts/dtc/include-prefixes/dt-bindings/reset/sophgo,cv1800b-reset.h
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
