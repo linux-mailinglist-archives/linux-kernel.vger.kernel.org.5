@@ -2,162 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3B17E9D3B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 650E17E9D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231282AbjKMNcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55682 "EHLO
+        id S231296AbjKMNdJ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 08:33:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231219AbjKMNcx (ORCPT
+        with ESMTP id S231219AbjKMNdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:32:53 -0500
-Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4044CD4E
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:32:50 -0800 (PST)
-Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7b3d33663so51441167b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:32:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699882369; x=1700487169; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=51Od5EM9M9kxK8o/tsuK7C1l6kkfgPjMKUkgQFFnMJY=;
-        b=rsoCBDo//KyKu1BMMZtHOEo6+MvfduoiXZCjmIzZDRS39h0RuTw68sRYSa5bTN5N9K
-         pV56mc1PbaukXOCYkcVRoVBCueaYa6na5gKHTIJvP6eVzbRMtgK6aCYpCqkceuQP6kLJ
-         ZRFnLBUqwbFvdECcArd5xJGVkEGy9CClqxiP+8UqqIp7f/ePBOS1+QrEG0UiBuRjhql9
-         DAniUvnXyH2uMWNdJYeGTALiE6HNmpXt7CFm7kXI73zUL9g2jKwqJPEGWYqQEAX8jpgP
-         fJenzlbcmmxdsg1pkgblrOG4NzgAnVdHhb5/FUxhvOsF9hlknafw5uySbFIYqc1+fnsd
-         ilfA==
+        Mon, 13 Nov 2023 08:33:08 -0500
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com [209.85.214.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30D0D18B
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:33:04 -0800 (PST)
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc3ad55c75so46317195ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:33:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699882369; x=1700487169;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=51Od5EM9M9kxK8o/tsuK7C1l6kkfgPjMKUkgQFFnMJY=;
-        b=ZJy3xGoEf2n5pg/Z5l+OhH5wYhocmZbaVS3ux2MH7zYlJfQJjm7/GLKQPfLo/PTEMI
-         6o+l3eZR1un3RIJ4+goe8Dn6yrODUS0EECt4MbBrHB2Hj5OjV0FnZozNKgb2Qd+q8IFl
-         Kl0i7NOiqFS++jjMA2nXp45E5VgF/kDaMuM9tw5w8P+H7HPwHsPw0eZBNsRBaNhiTUlV
-         qaQSPv9A21JwwrLXfW+EYLjDGDHCi0VEWhewHJSNo6XbT93LfPYmFRjNCj9088SHxIBu
-         scIxkiq/MUEiMinBcy8INjkeOd2Ur8fEObbMYujVRDhwAzTZc4DyKpJ8etQsttOgz+L0
-         HGXA==
-X-Gm-Message-State: AOJu0YxHwgsT3loPRSihXsnAJ1eHQTEEdkxLoFtGsUxt4fp6XQCPyCjK
-        TEMcqFOLtdZlrQ6ofatH91zkm7pMoAzNg/IJmQ1jeQ==
-X-Google-Smtp-Source: AGHT+IEcrZQBeFOb4euJmRzuZwg9WYuU+oxlHvKGRjeWu8+ZL96qLOxwzMOxWh30qliOeOQQpep9pM3wzfFrkZxC12g=
-X-Received: by 2002:a81:4a46:0:b0:5a8:286d:339e with SMTP id
- x67-20020a814a46000000b005a8286d339emr6148836ywa.4.1699882369436; Mon, 13 Nov
- 2023 05:32:49 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699882383; x=1700487183;
+        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
+         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gB/kuL7vFT98LZmFF91gvWSL+IxDP4W37pGpBzzEqVk=;
+        b=AoxjK2+B41BWtozLmRJq6F/hDzlejSc9GfVNjQDAvloSCVjLhBd7Lm0zOsfBczQL+E
+         6pfbxDt+KzHa0TD2SNybs0agU3k1Wxc27UuvBviaue8YNXkMwcfIKe0vKU7RPDp0ft1Q
+         v9ODiwGC13Iuu0+UvxPu9nkllRbezHeDpA/LvHWKmRGTNT6cM4/TkpwHHw6crPBlNDvi
+         X0PdW9Dx9wbLYfEDHHq8PEjtW2j8SFKPgTJZrpqZdFp2V9VCRBTV6FGS3RgfaVhp3r83
+         36jsPS/zfJKE6kRRGWpAygOtCCJmlnY7mwz6TlgmD5dfSw+OtiN1zSvbQduVqTy4Pd90
+         tgbQ==
+X-Gm-Message-State: AOJu0YwNJnuncXN3S0cpAmmPcjfPnIac+1hHhzm17fve5ZycT2UjEVeS
+        zjpjKLEx7vvQ48z0i80utqsF1hF6EHNFFOxN88FdKUmdtnaC
+X-Google-Smtp-Source: AGHT+IHoH4RkKf5R6bXhUl2xzABwW/H+21wb4up6JATs/YraPvWwco/JudetL/R8CkjbxaXfq/gdHA2MM5i9E9gIl0Wxw/1mTMcz
 MIME-Version: 1.0
-References: <cover.1698353854.git.oleksii_moisieiev@epam.com>
- <e9285b4377242e4d888391be987cbb99caf8c573.1698353854.git.oleksii_moisieiev@epam.com>
- <CACRpkdYW-xmejyOo9H9XSkcabvYgBqPvpjppvNe_RF6RLxyxKA@mail.gmail.com>
- <ZU2AP7leDcIZIN+b@octopus> <ZU5LFC23JaEidEGZ@pluto> <2535571d-6fea-4064-8325-0f47d031c85f@arm.com>
-In-Reply-To: <2535571d-6fea-4064-8325-0f47d031c85f@arm.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 13 Nov 2023 14:32:35 +0100
-Message-ID: <CACRpkdaRY+rU+md-r5gVyFH5ATt3Pqp9=M4=+WArYkfVLAFdpw@mail.gmail.com>
-Subject: Re: [RFC v5 5/5] dt-bindings: firmware: arm,scmi: Add support for
- pinctrl protocol
-To:     Souvik Chakravarty <souvik.chakravarty@arm.com>
-Cc:     Cristian Marussi <cristian.marussi@arm.com>,
-        Takahiro Akashi <takahiro.akashi@linaro.org>,
-        Oleksii Moisieiev <Oleksii_Moisieiev@epam.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>
+X-Received: by 2002:a17:903:25cf:b0:1cc:323c:fe4a with SMTP id
+ jc15-20020a17090325cf00b001cc323cfe4amr2024518plb.12.1699882383722; Mon, 13
+ Nov 2023 05:33:03 -0800 (PST)
+Date:   Mon, 13 Nov 2023 05:33:03 -0800
+In-Reply-To: <d9657547-fbd2-43cc-ba78-e1cf308eb954@siddh.me>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a4540f060a08b52a@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in nfc_alloc_send_skb
+From:   syzbot <syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com>
+To:     code@siddh.me, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Souvik,
+Hello,
 
-thanks for looking into this!
+syzbot tried to test the proposed patch but the build/boot failed:
 
-On Mon, Nov 13, 2023 at 1:56=E2=80=AFPM Souvik Chakravarty
-<souvik.chakravarty@arm.com> wrote:
+failed to create VM pool: failed to write image file: googleapi: Error 500: We encountered an internal error. Please try again., internalError
 
-> The initial assumption always was that GPIOs can be considered as a
-> specific function. Note that the spec does not define the types of
-> function and leaves it to the DT binding (or driver) to figure out the
-> function descriptions/names.
+syzkaller build log:
+go env (err=<nil>)
+GO111MODULE="auto"
+GOARCH="amd64"
+GOBIN=""
+GOCACHE="/syzkaller/.cache/go-build"
+GOENV="/syzkaller/.config/go/env"
+GOEXE=""
+GOEXPERIMENT=""
+GOFLAGS=""
+GOHOSTARCH="amd64"
+GOHOSTOS="linux"
+GOINSECURE=""
+GOMODCACHE="/syzkaller/jobs-2/linux/gopath/pkg/mod"
+GONOPROXY=""
+GONOSUMDB=""
+GOOS="linux"
+GOPATH="/syzkaller/jobs-2/linux/gopath"
+GOPRIVATE=""
+GOPROXY="https://proxy.golang.org,direct"
+GOROOT="/usr/local/go"
+GOSUMDB="sum.golang.org"
+GOTMPDIR=""
+GOTOOLDIR="/usr/local/go/pkg/tool/linux_amd64"
+GOVCS=""
+GOVERSION="go1.20.1"
+GCCGO="gccgo"
+GOAMD64="v1"
+AR="ar"
+CC="gcc"
+CXX="g++"
+CGO_ENABLED="1"
+GOMOD="/syzkaller/jobs-2/linux/gopath/src/github.com/google/syzkaller/go.mod"
+GOWORK=""
+CGO_CFLAGS="-O2 -g"
+CGO_CPPFLAGS=""
+CGO_CXXFLAGS="-O2 -g"
+CGO_FFLAGS="-O2 -g"
+CGO_LDFLAGS="-O2 -g"
+PKG_CONFIG="pkg-config"
+GOGCCFLAGS="-fPIC -m64 -pthread -Wl,--no-gc-sections -fmessage-length=0 -fdebug-prefix-map=/tmp/go-build1681865836=/tmp/go-build -gno-record-gcc-switches"
 
-Does this mean that each system using pinctrl-SCMI will need
-to specify the available pins, groups and functions in a device tree
-binding? For e.g. DT validation using schema?
+git status (err=<nil>)
+HEAD detached at 500bfdc41
+nothing to commit, working tree clean
 
-This creates the problem of where to put it since
-Documentation/devicetree/bindings/firmware/arm,scmi.yaml
-is all we have, and for schemas to be applicable the implicit
-assumption is that this is done per-compatible.
 
-If we want to use device tree validation of the strings put into
-the pinctrl node we need to allow for a per-soc compatible
-under the pinctrl node like:
+tput: No value for $TERM and no -T specified
+tput: No value for $TERM and no -T specified
+Makefile:32: run command via tools/syz-env for best compatibility, see:
+Makefile:33: https://github.com/google/syzkaller/blob/master/docs/contributing.md#using-syz-env
+go list -f '{{.Stale}}' ./sys/syz-sysgen | grep -q false || go install ./sys/syz-sysgen
+make .descriptions
+tput: No value for $TERM and no -T specified
+tput: No value for $TERM and no -T specified
+bin/syz-sysgen
+touch .descriptions
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=500bfdc41735bc8d617cbfd4f1ab6b5980c8f1e5 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20231103-130513'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-fuzzer github.com/google/syzkaller/syz-fuzzer
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=500bfdc41735bc8d617cbfd4f1ab6b5980c8f1e5 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20231103-130513'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-execprog github.com/google/syzkaller/tools/syz-execprog
+GOOS=linux GOARCH=amd64 go build "-ldflags=-s -w -X github.com/google/syzkaller/prog.GitRevision=500bfdc41735bc8d617cbfd4f1ab6b5980c8f1e5 -X 'github.com/google/syzkaller/prog.gitRevisionDate=20231103-130513'" "-tags=syz_target syz_os_linux syz_arch_amd64 " -o ./bin/linux_amd64/syz-stress github.com/google/syzkaller/tools/syz-stress
+mkdir -p ./bin/linux_amd64
+gcc -o ./bin/linux_amd64/syz-executor executor/executor.cc \
+	-m64 -O2 -pthread -Wall -Werror -Wparentheses -Wunused-const-variable -Wframe-larger-than=16384 -Wno-stringop-overflow -Wno-array-bounds -Wno-format-overflow -Wno-unused-but-set-variable -Wno-unused-command-line-argument -static-pie -fpermissive -w -DGOOS_linux=1 -DGOARCH_amd64=1 \
+	-DHOSTGOOS_linux=1 -DGIT_REVISION=\"500bfdc41735bc8d617cbfd4f1ab6b5980c8f1e5\"
 
-protocol@19 {
-    compatible =3D "vendor,soc-scmi-pinctrl";
-(...)
 
-Then a DT schema can be made to match that and check it.
 
-I'm uncertain about that because the SCMI binding has nothing
-like this at the moment, all the protocol nodes are pretty
-self-describing and don't seem to need any further configuration
-to be used, but pin control may be the first instance where we
-have to add some per-soc configuration into the protocol nodes :/
+Tested on:
 
-It's easy to do:
+commit:         b85ea95d Linux 6.7-rc1
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b5bf1661f609e7f0
+dashboard link: https://syzkaller.appspot.com/bug?extid=bbe84a4010eeea00982d
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=10070d70e80000
 
-+  protocol@19:
-+    type: object
-+    allOf:
-+      - $ref: "#/$defs/protocol-node"
-+      - $ref: "../pinctrl/pinctrl.yaml"
-+    unevaluatedProperties: false
-+
-+    properties:
-
-        compatible:
-            items:
-              - enum:
-                   - vendor1,soc1-scmi-pinctrl
-                   - vendor2,soc2-scmi-pinctrl
-                   - vendor3,soc3-scmi-pinctrl
-
-This should be enough for just establishing the different
-pin control configurations we can have in the device tree.
-
-We are then able to put a more detailed schema for the
-specific SoC pin control, such as a list of valid groups and
-functions etc under the ordinary pinctrl bindings such as
-Documentation/devicetree/bindings/pinctrl/vendor1,soc1-scmi-pinctrl.yaml
-etc.
-
-We should preferably put some pattern like this in place from
-day 1 so developers know what is expected here. A mock
-SoC is fine for the time being (we can delete it later when there
-are some serious ones).
-
-I'm uncertain because it feels like a first thing, but I can't really
-think how it would work otherwise, part of me don't want to
-pollute the SCMI binding with any per-soc compatibles, but
-yet since these group and function strings will be per-soc I don't
-see any other way, if they are supposed to be validated
-with schema.
-
-Yours,
-Linus Walleij
