@@ -2,211 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD95E7EA027
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0587EA022
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:37:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230337AbjKMPiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:38:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39852 "EHLO
+        id S229686AbjKMPhm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:37:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbjKMPiD (ORCPT
+        with ESMTP id S229470AbjKMPhl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:38:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D75601706;
-        Mon, 13 Nov 2023 07:37:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699889879; x=1731425879;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=w8TTSWY7bGFFxI17jKTubI0A2ir8yt0Laypod+M+uRk=;
-  b=DfzJdJWH0ltoGeTA5F+oF+HY7nDXX/Z92q+PyzDB+xo9mNZoLfYgwMRz
-   1/o+IZEAkqDBncfQoTn1Dzz9UaDcnbqS7b9tR0OdVsjCjAPqvGHqZfVuO
-   zyyslGZYLOgG5YxGQui8HAhSVFYT5lDsejGDEjnC2TcNc49mmlj3URo//
-   vFtjwNOGBt84nvOlsbRpgdJ2fFBfYK/FQ0AXFmpCJYqYKYt7+2MuFKr7O
-   1Zv/2pMWEOM+ULXeStrfR39blAOfoagiRskZ6Uxc6u4zYLl1oFr/d8KHR
-   LAyKCuXv3wn+QNzC0ObPx+PRREdbK57GcJcYnJiYYbMJQkpV2SP6LD0xi
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="375481341"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="375481341"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:37:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1011571200"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="1011571200"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga006.fm.intel.com with ESMTP; 13 Nov 2023 07:37:55 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2Z0a-000CE6-2m;
-        Mon, 13 Nov 2023 15:37:52 +0000
-Date:   Mon, 13 Nov 2023 23:37:12 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     SEO HOYOUNG <hy50.seo@samsung.com>, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, beanhuo@micron.com, bvanassche@acm.org,
-        kwangwon.min@samsung.com, kwmad.kim@samsung.com,
-        sh425.lee@samsung.com, sc.suh@samsung.com,
-        quic_nguyenb@quicinc.com, cpgs@samsung.com, grant.jung@samsung.com,
-        junwoo80.lee@samsung.com
-Cc:     oe-kbuild-all@lists.linux.dev, SEO HOYOUNG <hy50.seo@samsung.com>
-Subject: Re: [PATCH v1] scsi: ufs: core: fix racing issue during
- ufshcd_mcq_abort
-Message-ID: <202311132304.bqVcJ27s-lkp@intel.com>
-References: <20231113112935.16343-1-hy50.seo@samsung.com>
+        Mon, 13 Nov 2023 10:37:41 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26465C2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:37:38 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41cb615c6fbso28907791cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:37:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1699889857; x=1700494657; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4tzWoq297WulTYALKaxRqew5uETGDYoNQPFDim6ud7Y=;
+        b=Ig2nOlXZXFKHwBvvwN3otijDPsOnRmD8BF/+kQjbRA8VpQKQLedQyJCehGGiIHOLRL
+         3bOg6ighC0Y65qbsCAIKkyicW2A7OeBHrMdLMrdgfjZ3suQE+rxyilhKu3aC6tH9e8Zc
+         EWPlSlWXw4sdW4SlOSvxI/CfmicLqPwoKSckC3TvuCwPS+fd36mE2cz0UPy7TJL8/S4u
+         VvGd83DTNcro71AvgDl24E1F8Cbfy25SWzypH7usZc8eyOl7T/1visEibGI9AJid97Wh
+         TM/Xu59I3YxyaM+EFFb5GnEpboaYJsT2K6TbTTt3SXENJDlA//Sm6ydMgsTv2Y/ce/AL
+         dP5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699889857; x=1700494657;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4tzWoq297WulTYALKaxRqew5uETGDYoNQPFDim6ud7Y=;
+        b=E+zqTdz4QmXQHNNCRsd7oBHnQEzYj6aeGvZkymyCX9Uhv+NrIc1vEVuQ3ahgaUm7m6
+         ZpfIRXjX6G04mFKeP5S/7FnPWCt+/Emljb5eUAMggg9VW7iQq+1bGewBuGPHYX9OrtPl
+         QJlwzCurkx+He8ZJx5ZLIGQHwj43Xerl7JRe8UK7QRNmuQLjzATKiFPfE1yPkJx6WwjG
+         9DKBS/o5nzngvamaF2g/m3T6fF67/1ajkjg9dnhQBf9lkjGoJUOqWIeGljYk8MTcOYQT
+         ZZpO3IdFbGjGYc6wvYb7i+T3y6FR2n2BjwjVjmmd+QCyjMZiWK4n/jfjkB/TZof79N4I
+         fHww==
+X-Gm-Message-State: AOJu0YxKNL4Jsjt4iJu9owzXApYCUSrJ5am1dvHmw0rr44d7J/xyvhSk
+        pGUrKvzNbg7uabW+ilLgbl5HEw==
+X-Google-Smtp-Source: AGHT+IG8E/omZHPUI+v3RUdT6i8N7Zm0/RMqKn+N3J3X13lnSqMYv1fnuditgTZu1q3iP19bWHlFNg==
+X-Received: by 2002:a05:622a:245:b0:41e:a932:31f8 with SMTP id c5-20020a05622a024500b0041ea93231f8mr9811668qtx.6.1699889857255;
+        Mon, 13 Nov 2023 07:37:37 -0800 (PST)
+Received: from [172.25.81.170] ([12.186.190.1])
+        by smtp.gmail.com with ESMTPSA id t19-20020ac85313000000b004180fb5c6adsm1996974qtn.25.2023.11.13.07.37.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 07:37:36 -0800 (PST)
+Message-ID: <7cccf188-c47f-4865-95ce-dcfedc1429dc@sifive.com>
+Date:   Mon, 13 Nov 2023 10:37:35 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113112935.16343-1-hy50.seo@samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/4] riscv: dts: sophgo: add reset dt node for cv1800b
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>, Yixun Lan <dlan@gentoo.org>
+Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <20231113005503.2423-1-jszhang@kernel.org>
+ <20231113005503.2423-4-jszhang@kernel.org> <20231113143224.GA130254@ofsar>
+ <ZVI9bzAhPnHhVg8A@xhacker>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <ZVI9bzAhPnHhVg8A@xhacker>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi SEO,
+Hi Jisheng,
 
-kernel test robot noticed the following build errors:
+On 2023-11-13 9:14 AM, Jisheng Zhang wrote:
+> On Mon, Nov 13, 2023 at 02:32:24PM +0000, Yixun Lan wrote:
+>> On 08:55 Mon 13 Nov     , Jisheng Zhang wrote:
+>>> Add the reset device tree node to cv1800b SoC.
+>>>
+>>> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+>>> ---
+>>>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 6 ++++++
+>>>  1 file changed, 6 insertions(+)
+>>>
+>>> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>> index df40e87ee063..4032419486be 100644
+>>> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+>>> @@ -54,6 +54,12 @@ soc {
+>>>  		dma-noncoherent;
+>>>  		ranges;
+>>>  
+>>> +		rst: reset-controller@3003000 {
+>>> +			compatible = "sophgo,cv1800b-reset";
+>>> +			reg = <0x03003000 0x1000>;
+>>                                           ~~~~~~~
+>> 			        it should be 0x28
+> 
+> The reg space is 4KB, but only 0x28 are used. I think 0x1000 or 0x28 are fine
+> since the ioremap granule is 4kB.
+>>
+>> while please also note the 0x24 == SOFT_CPUAC_RSTN, does not compatible
+>> with the reset-simple driver, but as it's not implemented nor used in this driver,
+> 
+> But the functionality of this "autoclear" reg isn't used at all since we also
+> have "sticky" reset to acchieve the same feature, I.E reset cpusys. And in the
+> usage case of reseting cpusys, I believe "sticky" reset is preferred.
+> 
+> And except the cpusys reset which has both autoclear and sticky, other
+> resets are sticky only. I'm not sure whether it's worth to write a new
+> driver for almost useless feature.
 
-[auto build test ERROR on jejb-scsi/for-next]
-[also build test ERROR on mkp-scsi/for-next linus/master v6.7-rc1 next-20231113]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+As long as the device has its own binding/compatible string, it is always
+possible to replace RESET_SIMPLE with a custom driver later if needed. (Or use a
+more complicated driver in some other context, e.g. firmware).
 
-url:    https://github.com/intel-lab-lkp/linux/commits/SEO-HOYOUNG/scsi-ufs-core-fix-racing-issue-during-ufshcd_mcq_abort/20231113-194433
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git for-next
-patch link:    https://lore.kernel.org/r/20231113112935.16343-1-hy50.seo%40samsung.com
-patch subject: [PATCH v1] scsi: ufs: core: fix racing issue during ufshcd_mcq_abort
-config: arc-randconfig-001-20231113 (https://download.01.org/0day-ci/archive/20231113/202311132304.bqVcJ27s-lkp@intel.com/config)
-compiler: arceb-elf-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231113/202311132304.bqVcJ27s-lkp@intel.com/reproduce)
+Regards,
+Samuel
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311132304.bqVcJ27s-lkp@intel.com/
+>> so we should be fine with this?
+>>
+>>> +			#reset-cells = <1>;
+>>> +		};
+>>> +
+>>>  		uart0: serial@4140000 {
+>>>  			compatible = "snps,dw-apb-uart";
+>>>  			reg = <0x04140000 0x100>;
+>>> -- 
+>>> 2.42.0
+>>>
+>>
+>> -- 
+>> Yixun Lan (dlan)
+>> Gentoo Linux Developer
+>> GPG Key ID AABEFD55
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-All errors (new ones prefixed by >>):
-
-   drivers/ufs/core/ufshcd.c: In function 'ufshcd_try_to_abort_task':
->> drivers/ufs/core/ufshcd.c:7571:34: error: 'cmd' undeclared (first use in this function)
-    7571 |         if (!ufshcd_cmd_inflight(cmd) ||
-         |                                  ^~~
-   drivers/ufs/core/ufshcd.c:7571:34: note: each undeclared identifier is reported only once for each function it appears in
-
-
-vim +/cmd +7571 drivers/ufs/core/ufshcd.c
-
-  7484	
-  7485	/**
-  7486	 * ufshcd_try_to_abort_task - abort a specific task
-  7487	 * @hba: Pointer to adapter instance
-  7488	 * @tag: Task tag/index to be aborted
-  7489	 *
-  7490	 * Abort the pending command in device by sending UFS_ABORT_TASK task management
-  7491	 * command, and in host controller by clearing the door-bell register. There can
-  7492	 * be race between controller sending the command to the device while abort is
-  7493	 * issued. To avoid that, first issue UFS_QUERY_TASK to check if the command is
-  7494	 * really issued and then try to abort it.
-  7495	 *
-  7496	 * Return: zero on success, non-zero on failure.
-  7497	 */
-  7498	int ufshcd_try_to_abort_task(struct ufs_hba *hba, int tag)
-  7499	{
-  7500		struct ufshcd_lrb *lrbp = &hba->lrb[tag];
-  7501		int err = 0;
-  7502		int poll_cnt;
-  7503		u8 resp = 0xF;
-  7504		u32 reg;
-  7505	
-  7506		for (poll_cnt = 100; poll_cnt; poll_cnt--) {
-  7507			err = ufshcd_issue_tm_cmd(hba, lrbp->lun, lrbp->task_tag,
-  7508					UFS_QUERY_TASK, &resp);
-  7509			if (!err && resp == UPIU_TASK_MANAGEMENT_FUNC_SUCCEEDED) {
-  7510				/* cmd pending in the device */
-  7511				dev_err(hba->dev, "%s: cmd pending in the device. tag = %d\n",
-  7512					__func__, tag);
-  7513				break;
-  7514			} else if (!err && resp == UPIU_TASK_MANAGEMENT_FUNC_COMPL) {
-  7515				/*
-  7516				 * cmd not pending in the device, check if it is
-  7517				 * in transition.
-  7518				 */
-  7519				dev_err(hba->dev, "%s: cmd at tag %d not pending in the device.\n",
-  7520					__func__, tag);
-  7521				if (is_mcq_enabled(hba)) {
-  7522					/* MCQ mode */
-  7523					if (ufshcd_cmd_inflight(lrbp->cmd)) {
-  7524						/* sleep for max. 200us same delay as in SDB mode */
-  7525						usleep_range(100, 200);
-  7526						continue;
-  7527					}
-  7528					/* command completed already */
-  7529					dev_err(hba->dev, "%s: cmd at tag=%d is cleared.\n",
-  7530						__func__, tag);
-  7531					goto out;
-  7532				}
-  7533	
-  7534				/* Single Doorbell Mode */
-  7535				reg = ufshcd_readl(hba, REG_UTP_TRANSFER_REQ_DOOR_BELL);
-  7536				if (reg & (1 << tag)) {
-  7537					/* sleep for max. 200us to stabilize */
-  7538					usleep_range(100, 200);
-  7539					continue;
-  7540				}
-  7541				/* command completed already */
-  7542				dev_err(hba->dev, "%s: cmd at tag %d successfully cleared from DB.\n",
-  7543					__func__, tag);
-  7544				goto out;
-  7545			} else {
-  7546				dev_err(hba->dev,
-  7547					"%s: no response from device. tag = %d, err %d\n",
-  7548					__func__, tag, err);
-  7549				if (!err)
-  7550					err = resp; /* service response error */
-  7551				goto out;
-  7552			}
-  7553		}
-  7554	
-  7555		if (!poll_cnt) {
-  7556			err = -EBUSY;
-  7557			goto out;
-  7558		}
-  7559	
-  7560		err = ufshcd_issue_tm_cmd(hba, lrbp->lun, lrbp->task_tag,
-  7561				UFS_ABORT_TASK, &resp);
-  7562		if (err || resp != UPIU_TASK_MANAGEMENT_FUNC_COMPL) {
-  7563			if (!err) {
-  7564				err = resp; /* service response error */
-  7565				dev_err(hba->dev, "%s: issued. tag = %d, err %d\n",
-  7566					__func__, tag, err);
-  7567			}
-  7568			goto out;
-  7569		}
-  7570	
-> 7571		if (!ufshcd_cmd_inflight(cmd) ||
-  7572		    test_bit(SCMD_STATE_COMPLETE, &cmd->state))
-  7573			goto out;
-  7574	
-  7575		err = ufshcd_clear_cmd(hba, tag);
-  7576		if (err)
-  7577			dev_err(hba->dev, "%s: Failed clearing cmd at tag %d, err %d\n",
-  7578				__func__, tag, err);
-  7579	
-  7580	out:
-  7581		return err;
-  7582	}
-  7583	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
