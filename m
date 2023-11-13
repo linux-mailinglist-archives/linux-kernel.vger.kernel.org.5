@@ -2,149 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EE2F47E95DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 831707E95D7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:05:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbjKMEFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:05:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51650 "EHLO
+        id S233060AbjKMEEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:04:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbjKMEF1 (ORCPT
+        with ESMTP id S230126AbjKMEEw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:05:27 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40F02173E
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:04:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699848284;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tws2IAPG/pAuM74CEbXNr6MwlBLqAXS5OKA1cYLHSOM=;
-        b=gKTgeOFNfraf444v85mYjNzi6usPb90nRId2v1OdGnZhfCmRiadIWTYlI894C7gqd0J1zS
-        teEpXc0U8t5amj8Z/k5ED1COKpf/UFw+7+I9j35gz4SdxpR8hDfVTg8cvMkni7Api6Vypx
-        UVSY5Mi6cdpeilcd54jQzw95nT6floc=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-O4fBtmpnM56Y5bRgJXcdeg-1; Sun, 12 Nov 2023 23:04:43 -0500
-X-MC-Unique: O4fBtmpnM56Y5bRgJXcdeg-1
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-1cc2786a8ebso54604185ad.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:04:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699848282; x=1700453082;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tws2IAPG/pAuM74CEbXNr6MwlBLqAXS5OKA1cYLHSOM=;
-        b=tdEPBI7ekWG4Yg9cgtrJiPk+tsPeoJHc/VO02mQrW+1Yc7le8M3MS+hluLQgru2ruE
-         r8ZBaWQgs3xAXgP1I41qCabV7VlotEfDPnfX4v7bbm1jJ7SFbh8ZBhMrTtkiGDYZHfJq
-         S/RQAe8VZ2HNAZDvlgrRk5fPp4RPMeoQKsISEvYXcDkWTN3k4nZHXiiGVdFzdHpwYXOr
-         U1bl2f5iZ/QefmlYvzAO7hmZwcHTwt7nSyFJ0adLNlPtnAMJIuEtITzoB43CTIiblwEB
-         9Of0v9f2FRTFQ25OlMPotVVrGViOsFyyvEp6zjwL+rLamliSnipnK7BrAvTq8n50hMaa
-         a/9w==
-X-Gm-Message-State: AOJu0YwsY4NFyQA6X0KTYG6vG6iLb2aEEbpYbMF72dAn5SrzSgOi1Thr
-        iMo5kCEhAjkcqlsw+MGcWkZEWIPKhZLx8O4FUzo3cc6LtOLXJwp2bQreSXMx5Emu5Qd1VH1Jy7z
-        2nC37gdHsrLaEapeGPsIkNzSBHQ4h2eK/
-X-Received: by 2002:a17:902:c40d:b0:1b0:f8:9b2d with SMTP id k13-20020a170902c40d00b001b000f89b2dmr6899001plk.29.1699848281707;
-        Sun, 12 Nov 2023 20:04:41 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHYR2VwJDEptBEIbrqjgd8Zx/CSzLVMmBQUVzyl+4ab4Yq5iFKzjqaERsoMDmohw8xGXwqYvw==
-X-Received: by 2002:a17:902:c40d:b0:1b0:f8:9b2d with SMTP id k13-20020a170902c40d00b001b000f89b2dmr6898988plk.29.1699848281368;
-        Sun, 12 Nov 2023 20:04:41 -0800 (PST)
-Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id i6-20020a170902eb4600b001c61073b076sm3230467pli.144.2023.11.12.20.04.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 20:04:41 -0800 (PST)
-Message-ID: <955f2b95-76e4-4e68-830b-e6dd9f122dc1@redhat.com>
-Date:   Mon, 13 Nov 2023 14:04:32 +1000
+        Sun, 12 Nov 2023 23:04:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D06361BE6;
+        Sun, 12 Nov 2023 20:04:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699848289; x=1731384289;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=WOwoSlqLfWWESwTKcsZG0UieWIfgaFt66vVqv43uELo=;
+  b=I+L+fr5RVhC5fGM42/qTIVDM1RZ5Xh4f2ouehtCnCtcjM11uFFzn4n8V
+   48KvC3JLuZEyFQtXZxYe5W9Wy2wNJSJW57R3Fv0l//mtsT+hfS5FGsAzc
+   RrmnWTIPA4NG9tEBi0qD7KT78thgnpbtVNNwKdtuV9KXaGlDPrekpIYl4
+   yv1WJ+jN5RuFviOp5hNx2M95noY0nOqzSK9eQKFGcUparCJm5umiwEvWv
+   exkXIOaHK1JUtryU8luaHSsirdoIWT5mDyOpPyskdzTDSHIC8Tpm1ufMX
+   uUPshAB9CG1FgReFyDNBZz6m2RHREfIEUqDj02TILwyyZzUzsaj1vi2pZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="394273098"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="394273098"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 20:04:45 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="740655679"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="740655679"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.93.6.77]) ([10.93.6.77])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 20:04:43 -0800
+Message-ID: <22c602c9-4943-4a16-a12e-ffc5db29daa1@intel.com>
+Date:   Mon, 13 Nov 2023 12:04:39 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 11/22] drivers: base: remove unnecessary call to
- register_cpu_under_node()
+Subject: Re: [PATCH v2 2/2] KVM: selftests: Add logic to detect if ioctl()
+ failed because VM was killed
 Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLa-00CTxY-Uv@rmk-PC.armlinux.org.uk>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JLa-00CTxY-Uv@rmk-PC.armlinux.org.uk>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Michal Luczaj <mhal@rbox.co>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Colton Lewis <coltonlewis@google.com>
+References: <20231108010953.560824-1-seanjc@google.com>
+ <20231108010953.560824-3-seanjc@google.com>
+ <0ee32216-e285-406f-b20d-dd193b791d2b@intel.com>
+ <ZUuyVfdKZG44T1ba@google.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <ZUuyVfdKZG44T1ba@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,HK_RANDOM_ENVFROM,
+        HK_RANDOM_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 20:30, Russell King (Oracle) wrote:
-> Since "drivers: base: Move cpu_dev_init() after node_dev_init()", we
-> can remove some redundant code.
+On 11/9/2023 12:07 AM, Sean Christopherson wrote:
+> On Wed, Nov 08, 2023, Xiaoyao Li wrote:
+>> On 11/8/2023 9:09 AM, Sean Christopherson wrote:
+>>> Add yet another macro to the VM/vCPU ioctl() framework to detect when an
+>>> ioctl() failed because KVM killed/bugged the VM, i.e. when there was
+>>> nothing wrong with the ioctl() itself.  If KVM kills a VM, e.g. by way of
+>>> a failed KVM_BUG_ON(), all subsequent VM and vCPU ioctl()s will fail with
+>>> -EIO, which can be quite misleading and ultimately waste user/developer
+>>> time.
+>>>
+>>> Use KVM_CHECK_EXTENSION on KVM_CAP_USER_MEMORY to detect if the VM is
+>>> dead and/or bug, as KVM doesn't provide a dedicated ioctl().  Using a
+>>> heuristic is obviously less than ideal, but practically speaking the logic
+>>> is bulletproof barring a KVM change, and any such change would arguably
+>>> break userspace, e.g. if KVM returns something other than -EIO.
+>>
+>> We hit similar issue when testing TDX VMs. Most failure of SEMCALL is
+>> handled with a KVM_BUG_ON(), which leads to vm dead. Then the following
+>> IOCTL from userspace (QEMU) and gets -EIO.
+>>
+>> Can we return a new KVM_EXIT_VM_DEAD on KVM_REQ_VM_DEAD?
 > 
-> node_dev_init() will walk through the nodes calling register_one_node()
-> on each. This will trickle down to __register_one_node() which walks
-> all present CPUs, calling register_cpu_under_node() on each.
-> 
-> register_cpu_under_node() will call get_cpu_device(cpu) for each, which
-> will return NULL until the CPU is registered using register_cpu(). This
-> now happens _after_ node_dev_init().
-> 
-> Therefore, calling register_cpu_under_node() from __register_one_node()
-> becomes a no-op, and can be removed.
-> 
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
->   drivers/base/node.c | 7 -------
->   1 file changed, 7 deletions(-)
-> 
+> Why?  Even if KVM_EXIT_VM_DEAD somehow provided enough information to be useful
+> from an automation perspective, the VM is obviously dead.  I don't see how the
+> VMM can do anything but log the error and tear down the VM.  KVM_BUG_ON() comes
+> with a WARN, which will be far more helpful for a human debugger, e.g. because
+> all vCPUs would exit with KVM_EXIT_VM_DEAD, it wouldn't even identify which vCPU
+> initially triggered the issue.
 
-__register_one_node() can be called in memory hot add path either. In that path,
-a new NUMA node can be presented and becomes online. Does this become a problem
-after the logic of associating CPU with newly added NUMA node?
+It's not about providing more helpful debugging info, but to provide a 
+dedicated notification for VMM that "the VM is dead, all the following 
+command may not response". With it, VMM can get rid of the tricky 
+detection like this patch.
 
-Thanks,
-Gavin
+> Using an exit reason is a also bit tricky because it requires a vCPU, whereas a
+> dead VM blocks anything and everything.
 
-> diff --git a/drivers/base/node.c b/drivers/base/node.c
-> index 493d533f8375..4d5ac7cf8757 100644
-> --- a/drivers/base/node.c
-> +++ b/drivers/base/node.c
-> @@ -867,7 +867,6 @@ void register_memory_blocks_under_node(int nid, unsigned long start_pfn,
->   int __register_one_node(int nid)
->   {
->   	int error;
-> -	int cpu;
->   
->   	node_devices[nid] = kzalloc(sizeof(struct node), GFP_KERNEL);
->   	if (!node_devices[nid])
-> @@ -875,12 +874,6 @@ int __register_one_node(int nid)
->   
->   	error = register_node(node_devices[nid], nid);
->   
-> -	/* link cpu under this node */
-> -	for_each_present_cpu(cpu) {
-> -		if (cpu_to_node(cpu) == nid)
-> -			register_cpu_under_node(cpu, nid);
-> -	}
-> -
->   	INIT_LIST_HEAD(&node_devices[nid]->access_list);
->   	node_init_caches(nid);
->   
+No argue of it. It cannot work for all the case, but at least it can 
+make some case happier.
+
+>> and replace -EIO with 0? yes, it's a ABI change.
+> 
+> Definitely a "no" on this one.  As has been established by the guest_memfd series,
+> it's ok to return -1/errno with a valid exit_reason.
+> 
+>> But I'm wondering if any userspace relies on -EIO behavior for VM DEAD case.
+> 
+> I doubt userspace relies on -EIO, but userpsace definitely relies on -1/errno being
+> returned when a fatal error.
+
+what about KVM_EXIT_SHUTDOWN? Or KVM_EXIT_INTERNAL_ERROR?
+
 
