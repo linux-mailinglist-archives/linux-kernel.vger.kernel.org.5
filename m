@@ -2,152 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BAAD7E9B6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 12:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24E537E9B71
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 12:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230010AbjKMLwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 06:52:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44542 "EHLO
+        id S230148AbjKMLwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 06:52:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229956AbjKMLwT (ORCPT
+        with ESMTP id S229706AbjKMLwt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 06:52:19 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 643E6D6F
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 03:52:14 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4STSPd6p6Pz1P8G5;
-        Mon, 13 Nov 2023 19:48:53 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 13 Nov 2023 19:52:10 +0800
-Message-ID: <479b3e2b-456d-46c1-9677-38f6c95a0be8@huawei.com>
-Date:   Mon, 13 Nov 2023 19:52:09 +0800
+        Mon, 13 Nov 2023 06:52:49 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1AEFD6C;
+        Mon, 13 Nov 2023 03:52:46 -0800 (PST)
+Date:   Mon, 13 Nov 2023 11:52:43 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1699876364;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4msdHeUrgp8KzqkFUcrYp4Qn6D29uyYMmeGXoVJhZ8E=;
+        b=QsQNgugc6AbepcIt/bYWV77VtqROUFuwsFhE064sCM6Ctjrh48zFsvPI5fZ4HtaLgjTfn5
+        dCvOwTH91LU1AdNyY7jMCC4LKeHbKacx8ioYN1cYy4Umg2abBBDzdLDX6lpzQnSiylSQWx
+        gTbe/6HtuYIKCCLyPEfUjlLK/erv8Es5SC39cHzC7CaKeJLcH+8s6x39xNEHVid+8tnQUl
+        85KkdMoWey/LGh9NC1ir4nQT5QWFDEOi4ehiXST2T35uOUIu6EPIzkHhxXghPTB8x348KI
+        Ocq5ozfLZmqQknDB0A39fx+pzlbgKRmvXoIgreoB2WKOObzZga/wg1ztlsuzlA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1699876364;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4msdHeUrgp8KzqkFUcrYp4Qn6D29uyYMmeGXoVJhZ8E=;
+        b=5Mx3JLOod7/OuHUsnlZ45Mjwcg+q1SRkV8dL8KMXKZkSpYE5WUTk8xJfGKj2HMlDu3z9wr
+        tS+N8ZGWfKXEUmDw==
+From:   "tip-bot2 for Hou Wenlong" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/paravirt] x86/paravirt: Make the struct paravirt_patch_site packed
+Cc:     Nadav Amit <namit@vmware.com>,
+        Hou Wenlong <houwenlong.hwl@antgroup.com>,
+        "Borislav Petkov (AMD)" <bp@alien8.de>,
+        Juergen Gross <jgross@suse.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: =?utf-8?q?=3C6dcb20159ded36586c5f7f2ae159e4e030256627=2E16863?=
+ =?utf-8?q?01237=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
+References: =?utf-8?q?=3C6dcb20159ded36586c5f7f2ae159e4e030256627=2E168630?=
+ =?utf-8?q?1237=2Egit=2Ehouwenlong=2Ehwl=40antgroup=2Ecom=3E?=
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com>
- <ZVGxkMeY50JSesaj@casper.infradead.org>
- <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Message-ID: <169987636342.3135.13474563880935419815.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/paravirt branch of tip:
 
+Commit-ID:     fe22bc430c9d24394e541e16e0941a075f02fcb7
+Gitweb:        https://git.kernel.org/tip/fe22bc430c9d24394e541e16e0941a075f02fcb7
+Author:        Hou Wenlong <houwenlong.hwl@antgroup.com>
+AuthorDate:    Fri, 09 Jun 2023 17:45:32 +08:00
+Committer:     Borislav Petkov (AMD) <bp@alien8.de>
+CommitterDate: Mon, 13 Nov 2023 12:43:50 +01:00
 
-On 2023/11/13 18:19, Ryan Roberts wrote:
-> On 13/11/2023 05:18, Matthew Wilcox wrote:
->> On Sun, Nov 12, 2023 at 10:57:47PM -0500, John Hubbard wrote:
->>> I've done some initial performance testing of this patchset on an arm64
->>> SBSA server. When these patches are combined with the arm64 arch contpte
->>> patches in Ryan's git tree (he has conveniently combined everything
->>> here: [1]), we are seeing a remarkable, consistent speedup of 10.5x on
->>> some memory-intensive workloads. Many test runs, conducted independently
->>> by different engineers and on different machines, have convinced me and
->>> my colleagues that this is an accurate result.
->>>
->>> In order to achieve that result, we used the git tree in [1] with
->>> following settings:
->>>
->>>      echo always >/sys/kernel/mm/transparent_hugepage/enabled
->>>      echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
->>>
->>> This was on a aarch64 machine configure to use a 64KB base page size.
->>> That configuration means that the PMD size is 512MB, which is of course
->>> too large for practical use as a pure PMD-THP. However, with with these
->>> small-size (less than PMD-sized) THPs, we get the improvements in TLB
->>> coverage, while still getting pages that are small enough to be
->>> effectively usable.
->>
->> That is quite remarkable!
-> 
-> Yes, agreed - thanks for sharing these results! A very nice Monday morning boost!
-> 
->>
->> My hope is to abolish the 64kB page size configuration.  ie instead of
->> using the mixture of page sizes that you currently are -- 64k and
->> 1M (right?  Order-0, and order-4)
-> 
-> Not quite; the contpte-size for a 64K page size is 2M/order-5. (and yes, it is
-> 64K/order-4 for a 4K page size, and 2M/order-7 for a 16K page size. I agree that
-> intuitively you would expect the order to remain constant, but it doesn't).
-> 
-> The "recommend" setting above will actually enable order-3 as well even though
-> there is no HW benefit to this. So the full set of available memory sizes here is:
-> 
-> 64K/order-0, 512K/order-3, 2M/order-5, 512M/order-13
-> 
->> , that 4k, 64k and 2MB (order-0,
->> order-4 and order-9) will provide better performance.
->>
->> Have you run any experiements with a 4kB page size?
-> 
-> Agree that would be interesting with 64K small-sized THP enabled. And I'd love
-> to get to a world were we universally deal in variable sized chunks of memory,
-> aligned on 4K boundaries.
-> 
-> In my experience though, there are still some performance benefits to 64K base
-> page vs 4K+contpte; the page tables are more cache efficient for the former case
-> - 64K of memory is described by 8 bytes in the former vs 8x16=128 bytes in the
-> latter. In practice the HW will still only read 8 bytes in the latter but that's
-> taking up a full cache line vs the former where a single cache line stores 8x
-> 64K entries.
+x86/paravirt: Make the struct paravirt_patch_site packed
 
-We test some benchmark, eg, unixbench, lmbench, sysbench, with v5 on
-arm64 board(for better evaluation of anon large folio, using ext4,
-which don't support large folio for now), will test again and send
-the results once v7 out.
+Similar to struct alt_instr, make the struct paravirt_patch_site packed
+and get rid of all the .align directives and save 2 bytes for one
+PARA_SITE entry on X86_64.
 
-1) base page 4k  + without anon large folio
-2) base page 64k + without anon large folio
-3) base page 4k  + with anon large folio + cont-pte(order = 4,0)
+  [ bp: Massage commit message. ]
 
-Most of the test results from v5 show the 3) have a good improvement
-vs 1), but still low than 2) , also for some latency-sensitive
-benchmark, 2) and 3) maybe have poor performance vs 1).
+Suggested-by: Nadav Amit <namit@vmware.com>
+Signed-off-by: Hou Wenlong <houwenlong.hwl@antgroup.com>
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Link: https://lore.kernel.org/r/6dcb20159ded36586c5f7f2ae159e4e030256627.1686301237.git.houwenlong.hwl@antgroup.com
+---
+ arch/x86/include/asm/paravirt.h       | 2 --
+ arch/x86/include/asm/paravirt_types.h | 4 +---
+ 2 files changed, 1 insertion(+), 5 deletions(-)
 
-Note, for pcp_allowed_order, order <= PAGE_ALLOC_COSTLY_ORDER=3, for
-3), we maybe enlarge it for better scalability when page allocation
-on arm64, not test on v5, will try to enlarge it on v7.
-
-> 
-> Thanks,
-> Ryan
-> 
-> 
-> 
+diff --git a/arch/x86/include/asm/paravirt.h b/arch/x86/include/asm/paravirt.h
+index d9384e9..693c61d 100644
+--- a/arch/x86/include/asm/paravirt.h
++++ b/arch/x86/include/asm/paravirt.h
+@@ -748,11 +748,9 @@ void native_pv_lock_init(void) __init;
+ 	ops;					\
+ 772:;						\
+ 	.pushsection .parainstructions,"a";	\
+-	 .align	4;				\
+ 	 .long 771b-.;				\
+ 	 .byte ptype;				\
+ 	 .byte 772b-771b;			\
+-	 .align 4;				\
+ 	.popsection
+ 
+ 
+diff --git a/arch/x86/include/asm/paravirt_types.h b/arch/x86/include/asm/paravirt_types.h
+index e1bfb71..f4fb2e3 100644
+--- a/arch/x86/include/asm/paravirt_types.h
++++ b/arch/x86/include/asm/paravirt_types.h
+@@ -8,7 +8,7 @@ struct paravirt_patch_site {
+ 	s32 instr_offset;	/* original instructions */
+ 	u8 type;		/* type of this instruction */
+ 	u8 len;			/* length of original instruction */
+-};
++} __packed;
+ #endif
+ 
+ #ifdef CONFIG_PARAVIRT
+@@ -263,11 +263,9 @@ extern struct paravirt_patch_template pv_ops;
+ #define _paravirt_alt(insn_string, type)		\
+ 	"771:\n\t" insn_string "\n" "772:\n"		\
+ 	".pushsection .parainstructions,\"a\"\n"	\
+-	"  .align 4\n"					\
+ 	"  .long 771b-.\n"				\
+ 	"  .byte " type "\n"				\
+ 	"  .byte 772b-771b\n"				\
+-	"  .align 4\n"					\
+ 	".popsection\n"
+ 
+ /* Generate patchable code, with the default asm parameters. */
