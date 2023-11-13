@@ -2,108 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C95497EA154
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:36:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C098D7EA15A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjKMQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:36:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40362 "EHLO
+        id S230248AbjKMQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:38:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMQgk (ORCPT
+        with ESMTP id S229454AbjKMQi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:36:40 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 971E8F7;
-        Mon, 13 Nov 2023 08:36:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699893397; x=1731429397;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=PY0SZUM9D2Iqpbq6NuXnG6uxnJLFUzWqQrwtn9mx/MI=;
-  b=Sw0l5lD3nLuIrP6GKPsFlPeaPPXbyf7bAdv9qz5QWJfZFN8rE7qdgfJt
-   3ulx7uNtnpqB1upfInyxvDG8/xw0GGJwPMDEgzbn4yyzLNQzuENFJKstG
-   SROF0WqFBdQI5JjetF1i0/kUAnPh9Sy64gNYbTKw8r0AVq57QXRk++QS8
-   3itxP9JCpUkWnXqsHJG5JU1QtRnyppN5mXujBLEWx/fJAwD/2gbAseIMY
-   tDNX3+GQsyrH41GEfZaU718DFLMIjMB2WGbEsV17dN8AaPJFtkZpx4gf6
-   IaD84KlE4pTbB1LlNGyMqdHEK0XI8gxzDTzC5LKRsXj6aGcVY6XyN2mJU
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="456955860"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="456955860"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 08:35:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="937784242"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="937784242"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by orsmga005.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 08:35:47 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r2Zua-0000000Dbcc-0UWo;
-        Mon, 13 Nov 2023 18:35:44 +0200
-Date:   Mon, 13 Nov 2023 18:35:43 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     "larry.lai" <larry.lai@yunjingtech.com>, lee@kernel.org,
-        pavel@ucw.cz, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-leds@vger.kernel.org,
-        GaryWang@aaeon.com.tw, musa.lin@yunjingtech.com,
-        jack.chang@yunjingtech.com, noah.hung@yunjingtech.com
-Subject: Re: [PATCH V7 2/3] pinctrl: Add support pin control for UP board
- CPLD/FPGA
-Message-ID: <ZVJQX5sfbwersjLo@smile.fi.intel.com>
-References: <20231031015119.29756-1-larry.lai@yunjingtech.com>
- <20231031015119.29756-3-larry.lai@yunjingtech.com>
- <CACRpkdbPWxQMz_1gG1He5QN65BActhyea_KBv2cyQ_VQxc6Feg@mail.gmail.com>
+        Mon, 13 Nov 2023 11:38:27 -0500
+Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85585D73
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:38:22 -0800 (PST)
+Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so602807fac.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:38:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1699893501; x=1700498301; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2zeHTCEwkJWMtUTahIH4QC2kkGN1U6NwIG//5rchOt8=;
+        b=kbGQ8jXqhaDzhUYskWopFc7duqIwZKmx7qY+CxunqVvb8ysz6aJvtB2xk+5BDhYeOG
+         kaYLKF0ULdjiDEwZwsPq3PVstVIaHvET3f39E4NgLEEc4R6p9VSW5ph2b+PhiS9TqDLw
+         fYpuU4tXCoKRaTs+bYCDtJnxgBhXzMyqnxHfaNbUx/83vcOSVeLQlV/Lt5bej1EmTFDH
+         eLj6zG1Kj6HFP16EHmxMb6gj4nDWhiK+3sCU5BFKtCB+pCF7Mjw3Od1FpL0uo3fIz1sL
+         cyscRa4C6AAO9wNQcKsiOgJQ0ptf1TzH65C2iZ8qDIB/lOM37l+5qAtxtbaEPQi/uJHS
+         MYoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699893501; x=1700498301;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2zeHTCEwkJWMtUTahIH4QC2kkGN1U6NwIG//5rchOt8=;
+        b=Jg8JD9KqvoE+lOUW38HWVgdRMOIQlnVTqty6CLJm40GLw3E1hyVlZlYTdHHQ3J76y1
+         9f696Y3m81DbPI5GtAv4TA3E+egl84qFFI/M4Mfnj4stgUXMXWhNuAnMniSHQZVLsyvC
+         yFpU/bdbYiOTcLVgMcKzH++DJ9lHDzQ1V+7mD7uhQKqqrhHmdzHdgVUwuRrqrpLXD0HT
+         tlpeunUkNMX/V1J+yqj8N0G06rnqH9AflJlPHCNLUW85RYD+PhwSrj7+6p12nVjSxYLt
+         gtSEtlgHFiHQ697mj0P1CixzTteoUAXg86tP1nQAYFQordsMad+m9Ympu6ZzmuBfjQgV
+         i7DQ==
+X-Gm-Message-State: AOJu0Ywax6TUJRpFcvT9C9phwplwfEDEfqfGO/HAoxH3qBJbAGeRU+i9
+        bTH28pr0PUXjtFiOG4E53sO0nA==
+X-Google-Smtp-Source: AGHT+IE36sQjOPU+pSjqqYtv8a+WCA+IwmYMnfjSfw7wGxRsEjnOuaJR0ZLShmybuhzhLjMsSYwiGg==
+X-Received: by 2002:a05:6870:7e0e:b0:1e9:e8fd:bb77 with SMTP id wx14-20020a0568707e0e00b001e9e8fdbb77mr8799627oab.0.1699893501349;
+        Mon, 13 Nov 2023 08:38:21 -0800 (PST)
+Received: from [172.20.4.17] ([12.191.197.195])
+        by smtp.gmail.com with ESMTPSA id t19-20020ac865d3000000b0041ce9ebaad2sm2054046qto.43.2023.11.13.08.38.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 08:38:20 -0800 (PST)
+Message-ID: <93c6f293-7aa5-4e12-b238-f369d53ab28e@kernel.dk>
+Date:   Mon, 13 Nov 2023 09:38:19 -0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdbPWxQMz_1gG1He5QN65BActhyea_KBv2cyQ_VQxc6Feg@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] io_uring: Statistics of the true utilization of sq
+ threads.
+Content-Language: en-US
+To:     Xiaobing Li <xiaobing.li@samsung.com>
+Cc:     asml.silence@gmail.com, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, kun.dou@samsung.com,
+        peiwei.li@samsung.com, joshi.k@samsung.com,
+        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
+        ruyi.zhang@samsung.com
+References: <60464608-a9b7-4cf8-bd6d-c982210c6f83@kernel.dk>
+ <CGME20231113031827epcas5p2e6e858292a3cd4b9e03b4615d972b22d@epcas5p2.samsung.com>
+ <20231113031040.1391334-1-xiaobing.li@samsung.com>
+From:   Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <20231113031040.1391334-1-xiaobing.li@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 03:15:58PM +0100, Linus Walleij wrote:
-> Hi Larry, Andy,
-> 
-> On Tue, Oct 31, 2023 at 2:51 AM larry.lai <larry.lai@yunjingtech.com> wrote:
-> 
-> > The UP Squared board <http://www.upboard.com> implements certain
-> > features (pin control) through an on-board FPGA.
-> >
-> > Reported-by: kernel test robot <lkp@intel.com>
+On 11/12/23 8:10 PM, Xiaobing Li wrote:
+> After careful consideration and testing, I don't think getting the
+> uring_lock is possible here, for the following reasons:
+> Due to lock competition, ctx->uring_lock and sq->lock are usually not
+> available here. The best proof is that the values of SqThread and
+> SqThreadCpu always output -1. In this case, it is impossible to obtain
+> the required work_time and total_time values.
+> In fact, it should be feasible to obtain work_time and total_time by
+> judging that ctx->sq_data is not NULL, because if the sq thread exits,
+> the action of reading data will also stop, and the possibility of a null
+> pointer reference is very low.
 
-It may not be reported as it's brand new code.
-
-> > Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
-> > Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
-
-(...)
-
-> > +#include "core.h"
-> > +#include "intel/pinctrl-intel.h"
-
-> As mentioned this is using the intel core pin control driver infrastructure
-> so I want Andy's ACK on this before I merge it.
-
-I'm pretty much sure it's an abuse of that.
-
-I guess I told this already in the previous rounds of review... I'll try to
-find time to look at this, but it looks like it still needs some job before
-being taken.
+We have that problem right now, in the current tree. And agree it's not
+the best. sq_data should be fine under the (ctx) lock, it's just the
+thread that may go away. Maybe we just cache the cpu/pid of it when we
+create it, seems better than needing to query it. And for the other
+stats, should be fine in ctx->sq_data.
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Jens Axboe
 
