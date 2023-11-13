@@ -2,55 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7420B7E9E47
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E6AC7E9E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:05:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230242AbjKMOMp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 09:12:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51498 "EHLO
+        id S230443AbjKMOFZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 09:05:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229847AbjKMOMn (ORCPT
+        with ESMTP id S229847AbjKMOFY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 09:12:43 -0500
+        Mon, 13 Nov 2023 09:05:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D51FD59
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:12:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 624ABC433C8;
-        Mon, 13 Nov 2023 14:12:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2F1BD5F
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:05:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D701CC433C9;
+        Mon, 13 Nov 2023 14:05:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699884759;
-        bh=7n9z+cHpOQ8W91XBkYQLoFLrh4UpmQ6en6y1XeCK3Kc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OkaNk6Od6P7WGy82NQKqBftjUJ8iuNS2PhRkdz8VnwAV3mKYJ5Mk+KaKs7KA3WSyW
-         a7kDMBYayhA5IFV0P/w+CFhS/ZoaTMZcqfpbkA6jOHPAxqqvQ1REU9Iqf96v/zarno
-         0nl/6qmmr22QeG8oC8jEgdkb240HiEJgXXCsWx8uiOzgIYyeHJHwjHVybLfgRwiFtb
-         dhnOVdy8L+/5/fgnyO0XujxfX5xwKVFog+TAFRGKv/8vOtQR2+12oySA0AxmDcLvcJ
-         9BxNQtFf2solRjysjp/cdohH23nFQvltLOmKkMADTfXAB0m5nMmO3rXjQ8co7iRdLH
-         v9ElzPjCIZahw==
-Date:   Mon, 13 Nov 2023 22:00:17 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 1/4] dt-bindings: reset: Add binding for Sophgo CV1800B
- reset controller
-Message-ID: <ZVIr8VH+29lpSpxb@xhacker>
-References: <20231113005503.2423-1-jszhang@kernel.org>
- <20231113005503.2423-2-jszhang@kernel.org>
- <20231113-washable-elbow-629bf42b9be1@squawk>
+        s=k20201202; t=1699884320;
+        bh=YQBSCiuVG1G3ja5F8I/phUL/rwuMuLhVTQF0gNoNEp8=;
+        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
+        b=ZDwjV/RrWNJ96dUNTh5ogzEl26dd/RehrQ05sq1zF0hwrmc9J5uAMOv7hjyO6fAZA
+         veO4b+u8bS3IzIs0ESl0VzX7iLcb69cY2MXRIXlL605zMvumOgby8LvRi2GfRywaZi
+         AaDNWSKvwVtFMLwg0FLEqy59SYXovPTz/lH3hZRtN5p/PgM4Q88SWKwcqziynUZAyH
+         i5rElHjVGoWGihhguQnd9CRpDJ2BhVwYq8ypdogRD8W583wI5Q6zgVXFqd9x2gbcLI
+         PmXHOOuMoJQmfbjSmU1n2k5go6LGhIUcSgeHED17D79UzPMrOdWAFrAlDx5ouKzp2W
+         Ryr+lPOGcZkSQ==
+From:   Mark Brown <broonie@kernel.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Keguang Zhang <keguang.zhang@gmail.com>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+In-Reply-To: <20231106-sti-uniperf-v1-1-b2d8749cfa2e@gmail.com>
+References: <20231106-sti-uniperf-v1-1-b2d8749cfa2e@gmail.com>
+Subject: Re: [PATCH] ASoC: sti-uniperf: Use default pcm_config instead
+Message-Id: <169988431826.3280890.10728149969647169185.b4-ty@kernel.org>
+Date:   Mon, 13 Nov 2023 14:05:18 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231113-washable-elbow-629bf42b9be1@squawk>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.13-dev-0438c
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -61,35 +53,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 01:36:54PM +0000, Conor Dooley wrote:
-> On Mon, Nov 13, 2023 at 08:55:00AM +0800, Jisheng Zhang wrote:
-> > Add devicetree binding for Sophgo CV1800B SoC reset controller.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+On Mon, 06 Nov 2023 20:51:03 +0800, Keguang Zhang wrote:
+> The sti-uniperf pcm_config is the same as the default pcm_config.
 > 
-> With the unterminated ifndef that was pointed out by the robots fixed,
-> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> Since commit 43556516fffe ("ASoC: soc-generic-dmaengine-pcm:
+> Use default config when none is given"), passing a NULL pointer
+> could let this driver use the default config.
 > 
-> > +/*				0-1	*/
-> > +/*				10	*/
-> > +/*				13	*/
-> > +/*				15	*/
-> > +/*				17	*/
-> > +/*				36-39	*/
-> > +/*				53-57	*/
-> > +/*				59-60	*/
-> > +/*				63-73	*/
-> > +/*				90	*/
-> > +/*				94	*/
-> > +/*				102-292	*/
 > 
-> There are quite a lot of gaps here, do you know why that is?
+> [...]
 
-The tail bits are for cpusys, so I guess the SoC designer want to
-seperate them with guard? I'm not sure.
+Applied to
 
-> 
-> Thanks,
-> Conor.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
 
+Thanks!
+
+[1/1] ASoC: sti-uniperf: Use default pcm_config instead
+      commit: bb341f75a05238ccd35b1ec1eb1849a3955eebb3
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
 
