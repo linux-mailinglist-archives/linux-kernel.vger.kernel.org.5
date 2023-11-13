@@ -2,111 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B4BBC7E9BE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:11:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1570D7E9BEA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:12:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbjKMML5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:11:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40952 "EHLO
+        id S229670AbjKMMMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:12:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKMMLz (ORCPT
+        with ESMTP id S229497AbjKMMMA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:11:55 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9667D76
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:11:51 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9dbb3e0ff65so622083566b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:11:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699877510; x=1700482310; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7EqdrZ36ZPDXnu6LaxvYm50LDUtFPDle2SqxeXECmaQ=;
-        b=wU9Xxd6o3MrAtIFfo42yi6L6N2lwWSisjy9+KGFy/sL06O6j+Zee7D+N/eqorktgmh
-         vjpVAD/gztdMj7Lgq3b7IUwZ5CICrIaoBtHYuqlNvu0G4Kf62DMY0NyP6Uq4bmUk1XgA
-         tDe8fz8H2xYfwGmxeA3RL1KAs6p/tPsRwEC00mtjRtrxGozML7XgAjwsyeSWo1pz79kC
-         8Nldssy/Pcs0j8PGEhD1kZMvW/JNgLQqIJQYSDFFQPr/du9MEIegKIOooVw0AVf1MJlH
-         fSljt4gQ1NQBoQgFw8VxJOBkzPWKpw1kUF0jFhiOCOEol4gNay4ccKgBdf7aLE0suErj
-         y/Rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699877510; x=1700482310;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7EqdrZ36ZPDXnu6LaxvYm50LDUtFPDle2SqxeXECmaQ=;
-        b=xKpUd6aEOXrUFnJC/4lVANxC2ULt7aWYYpblaqtoO7cs1fwng1cODlHWggHrsLVPK9
-         BLmDK6lo/sT+Wrnv+ePVS5DXNeuSOzBTIUGYqLWyx0GscRuQKkK+8ARBpyiGoYhipgT8
-         tjvmWsJLAGGm2nXD9ax7feMduK85F0Q6l5waiDanrWhuB+i1YoBbdVMhujP+0wHhZXT1
-         YEF+hMYEtl3lwBK4z3fTtLUgqXuChuatTz9dxDyyZt9uUi5xS3ZzVYJI0pon9fLX6g8D
-         vSDH6H8mYevE28u5DPFS9SpeqjqZwBPjorzyKkR6wRmuAmCMwYZhr5452sGCs774RTti
-         Z1/w==
-X-Gm-Message-State: AOJu0YyCxX92cM5yqBhKtOAxXVm3i/feSd+knMbYugaMGdv4xsbOb25e
-        6DKSqpw1q7EZvwFrlFyW8SkNSQ==
-X-Google-Smtp-Source: AGHT+IG1PhFHUdC2NObfBurn2eB2A3eq0QSf6I1IKvPY9cDMg28zv8cA+qVlTw8nUwRcP7bLlx1VIQ==
-X-Received: by 2002:a17:906:7708:b0:9e0:9d26:420a with SMTP id q8-20020a170906770800b009e09d26420amr5081477ejm.65.1699877510327;
-        Mon, 13 Nov 2023 04:11:50 -0800 (PST)
-Received: from [192.168.201.100] (178235177064.dynamic-4-waw-k-1-1-0.vectranet.pl. [178.235.177.64])
-        by smtp.gmail.com with ESMTPSA id d21-20020a1709064c5500b00991faf3810esm4033861ejw.146.2023.11.13.04.11.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 04:11:50 -0800 (PST)
-Message-ID: <329b7b96-dc08-4f5b-92e8-2fe39ecb5cda@linaro.org>
-Date:   Mon, 13 Nov 2023 13:11:47 +0100
+        Mon, 13 Nov 2023 07:12:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39108D75;
+        Mon, 13 Nov 2023 04:11:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17D2EC433CC;
+        Mon, 13 Nov 2023 12:11:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699877516;
+        bh=5gp7DoHA+vUU9ry2Kt97UnYD5nWLqN4A470cWdz48KY=;
+        h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+        b=rmU0WSm3SSGv3pcP9pj9/IqbRpBhOl2X4aZhIynQcaEi1mDO1nBN7XW5Q7MKDV5dW
+         lqEtrFkfE4WQ++F343EKPT54Os3Z17480xxg4f+B8laJb8REOnv6okROXyEDhW+S7c
+         KjKq8Aq6LEIpUKp1YnVeW9gFC+ZbhDKfoxVjgTZDlT7RRgglrofZ+jUneAqiSp9rpP
+         M3ol+hg6v2pequOZw+rdw1SmQhRWS7lKvU7E1CnxNYeuWxdU4fxmTI5d2gTB0f4GQZ
+         vth6bS5uNoVfJ0anhWgeM0y5OHSsYn5+71vsDPMNbeq2THlmueBO0joTFq1Br82wDM
+         Zaczlf0wN25LQ==
+From:   Kalle Valo <kvalo@kernel.org>
+To:     Arend van Spriel <arend.vanspriel@broadcom.com>
+Cc:     Zheng Hacker <hackerzheng666@gmail.com>,
+        Zheng Wang <zyytlz.wz@163.com>, aspriel@gmail.com,
+        franky.lin@broadcom.com, hante.meuleman@broadcom.com,
+        johannes.berg@intel.com, marcan@marcan.st,
+        linus.walleij@linaro.org, jisoo.jang@yonsei.ac.kr,
+        linuxlovemin@yonsei.ac.kr, wataru.gohda@cypress.com,
+        linux-wireless@vger.kernel.org,
+        brcm80211-dev-list.pdl@broadcom.com,
+        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
+        security@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in
+ brcmf_cfg80211_detach
+References: <20231106141704.866455-1-zyytlz.wz@163.com>
+        <87o7g7ueom.fsf@kernel.org>
+        <CAJedcCytuGmvubqbSZgsU3Db=rg=xM+kSuLZn8BSvA18Yn+9Jw@mail.gmail.com>
+        <18ba5520da0.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+        <CAJedcCxoL+L1QPaZty27k6kqR2JRjxPVY=BV5xn7BSPojbxe=A@mail.gmail.com>
+        <fa0e7536-9b05-42fb-9fff-acd2ffad9af9@broadcom.com>
+Date:   Mon, 13 Nov 2023 14:11:51 +0200
+In-Reply-To: <fa0e7536-9b05-42fb-9fff-acd2ffad9af9@broadcom.com> (Arend van
+        Spriel's message of "Mon, 13 Nov 2023 10:18:06 +0100")
+Message-ID: <874jhpvomw.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: sc8180x: align APSS with bindings
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231111204725.35707-1-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20231111204725.35707-1-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,15 +65,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11.11.2023 21:47, Krzysztof Kozlowski wrote:
-> SC8180x APSS Devicetree bindings expect qcom,sc8180x-apss-shared to use
-> qcom,sdm845-apss-shared fallback:
-> 
->   sc8180x-lenovo-flex-5g.dtb: mailbox@17c00000: compatible: 'oneOf' conditional failed, one must be fixed:
->     ['qcom,sc8180x-apss-shared'] is too short
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Arend van Spriel <arend.vanspriel@broadcom.com> writes:
 
-Konrad
+> On November 8, 2023 4:03:26 AM Zheng Hacker <hackerzheng666@gmail.com>
+> wrote:
+>
+>> Arend Van Spriel <arend.vanspriel@broadcom.com> =E4=BA=8E2023=E5=B9=B411=
+=E6=9C=886=E6=97=A5=E5=91=A8=E4=B8=80 23:48=E5=86=99=E9=81=93=EF=BC=9A
+>>>
+>>> On November 6, 2023 3:44:53 PM Zheng Hacker <hackerzheng666@gmail.com> =
+wrote:
+>>>
+>>>> Thanks! I didn't test it for I don't have a device. Very appreciated
+>>>> if anyone could help with that.
+>>>
+>>> I would volunteer, but it made me dig deep and not sure if there is a
+>>> problem to solve here.
+>>>
+>>> brcmf_cfg80211_detach() calls wl_deinit_priv() -> brcmf_abort_scanning(=
+) ->
+>>> brcmf_notify_escan_complete() which does delete the timer.
+>>>
+>>> What am I missing here?
+>>
+>> Thanks four your detailed review. I did see the code and not sure if
+>> brcmf_notify_escan_complete
+>> would be triggered for sure. So in the first version I want to delete
+>> the pending timer ahead of time.
+>
+> Why requesting a CVE when you are not sure? Seems a bit hasty to put
+> it mildly.
+
+TBH I don't take CVE entries seriously anymore. I don't know what has
+happened there.
+
+--=20
+https://patchwork.kernel.org/project/linux-wireless/list/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatc=
+hes
