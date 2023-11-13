@@ -2,190 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 024B37E9960
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:48:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3D67E9969
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbjKMJsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:48:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56236 "EHLO
+        id S233410AbjKMJuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233401AbjKMJs3 (ORCPT
+        with ESMTP id S230158AbjKMJuF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:48:29 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E6010EB;
-        Mon, 13 Nov 2023 01:48:25 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50970c2115eso5805094e87.1;
-        Mon, 13 Nov 2023 01:48:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699868903; x=1700473703; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=FL5A1EB7Y50WGBsGjFprxrhkGSiEyyL4ntXF0JwGxHM=;
-        b=Ms+pPFwF+6J+cDn44xo2gkzE23859VqN76rGPl75C6XuoWqvCqGJeoDWAcYjcVk+a8
-         tt8KtFeHhNO6NKjrmfxsNQqR2V3NtqvTLCrhRREiYqtJ3Kk65PO+wAd8KyxzU1Uegk6l
-         OIL77YxeKasFYLAPyHbkqtAqprn8TEQj0/iU0KKov/LIL9pi9vsTc2qbCVXFT9kVbQSS
-         bWWt2WFE82y8uTW+aGTi43o2aQS9PKl+n7UlRPRiBDKhmXZlP10YQo6vMp7ciq3dYIIQ
-         BodT2HqBRXFUJOVSgnor9R6icfNqv+Vu9wFDSVZNu5MXgUi3s9rPPZwxbcp3caMB6Uwa
-         ffQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699868903; x=1700473703;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FL5A1EB7Y50WGBsGjFprxrhkGSiEyyL4ntXF0JwGxHM=;
-        b=SdRjiFMWDSFXCrQPq7+HhzaEMZY8byCK2OZtWRO3GOjmLKyMTSLeUL+Y8UB0q5y5lk
-         73c2OEpG72tKJEk6KcJUNzTFFERzEXvb41N+rhxJsT7s8Ek6wRC/gKxaKpNAyx8VT0d/
-         TLNwsCX/OyaNy3mEXFuGRMuz/HOQFwt+qlBh8lKyTv280bzVH1vd1CAZIpJgEQLkg2X3
-         dX6S3hAd3PbQNYKzQl2ylBRgaBdPjC/EFT0s/u8ki+DPLvU1JdGu/qBN6B3OXixdUVNr
-         ixtW23W4hnPzh4HYOkcQHDY3j8fA2jBCjsiTiTL/uU4wlmi89ORM4ocUNC2s9BKeiF2P
-         OYdw==
-X-Gm-Message-State: AOJu0Yx8F477Ry6j0qPc4HjFZD4YgSxbP3jpvwrM7qXP0fX+Opr9oQnv
-        clpwmQjsnitRgyc2DsP+dezPclf5C3E=
-X-Google-Smtp-Source: AGHT+IFcdSuyXNSP+fAJWKpvkur2IEHkeZjZijFgF5WAjaPrdGN9BZawGDYnwPKU6xDowk2QkyaKkw==
-X-Received: by 2002:a05:6512:1313:b0:507:a5e7:724 with SMTP id x19-20020a056512131300b00507a5e70724mr2319543lfu.38.1699868903314;
-        Mon, 13 Nov 2023 01:48:23 -0800 (PST)
-Received: from mobilestation ([178.176.56.174])
-        by smtp.gmail.com with ESMTPSA id b11-20020a0565120b8b00b0050826c3780dsm917345lfv.134.2023.11.13.01.48.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 01:48:22 -0800 (PST)
-Date:   Mon, 13 Nov 2023 12:48:20 +0300
-From:   Serge Semin <fancer.lancer@gmail.com>
-To:     Jan Bottorff <janb@os.amperecomputing.com>
-Cc:     Wolfram Sang <wsa@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] i2c: designware: Fix corrupted memory seen in the ISR
-Message-ID: <yuperxjytpcwz25fofjut2edzjc4i6jgymcraxp4q6mfe27taf@b33ym5iuubji>
-References: <20231109031927.1990570-1-janb@os.amperecomputing.com>
+        Mon, 13 Nov 2023 04:50:05 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDD4110D2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:50:02 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 599A966071C9;
+        Mon, 13 Nov 2023 09:50:00 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699869001;
+        bh=wCfkXVzFh9+4/eq4jvC4jcqKh2QCYCyEjmq0UU8BsDw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=PZPUaFlPSKPp3o6zruu/QciXsc7IUJUUWsGdEFqHyBk79f3gt7ldiZCkGCTcQByFL
+         URjfigZn911fDQha95PLuUss6T6/Nq6Xa9150A0aij5ByTPs4+LWV81CMmWU0pKdDN
+         ub2bKS2aO6rbcVIlOedm1FilPSCI6wWT5q5AUiGSD9k6OOhl+C3HuLMsZKiKt/No7C
+         2D3u/BqrowOvvKcxvDzyDx4nAIVz/YaEAHhlXosdQ2IYxlCsNpl+I0CBYFmnZ+nTiT
+         Zf/gVe1drWYIyqbxIQXJBAaS/LrJL6Qiu4njP416DMYHN6h9C5laL8f+xy9uHeZDKs
+         XC5cvNPCqPXpg==
+Date:   Mon, 13 Nov 2023 10:49:56 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 21/26] drm/shmem-helper: Optimize unlocked
+ get_pages_sgt()
+Message-ID: <20231113104956.2255269a@collabora.com>
+In-Reply-To: <20231029230205.93277-22-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-22-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231109031927.1990570-1-janb@os.amperecomputing.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 03:19:27AM +0000, Jan Bottorff wrote:
-> When running on a many core ARM64 server, errors were
-> happening in the ISR that looked like corrupted memory. These
-> corruptions would fix themselves if small delays were inserted
-> in the ISR. Errors reported by the driver included "i2c_designware
-> APMC0D0F:00: i2c_dw_xfer_msg: invalid target address" and
-> "i2c_designware APMC0D0F:00:controller timed out" during
-> in-band IPMI SSIF stress tests.
+On Mon, 30 Oct 2023 02:02:00 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
+
+> SGT isn't refcounted. Once SGT pointer has been obtained, it remains the
+> same for both locked and unlocked get_pages_sgt(). Return cached SGT
+> directly without taking a potentially expensive lock.
 > 
-> The problem was determined to be memory writes in the driver were not
-> becoming visible to all cores when execution rapidly shifted between
-> cores, like when a register write immediately triggers an ISR.
-> Processors with weak memory ordering, like ARM64, make no
-> guarantees about the order normal memory writes become globally
-> visible, unless barrier instructions are used to control ordering.
-> 
-> To solve this, regmap accessor functions configured by this driver
-> were changed to use non-relaxed forms of the low-level register
-> access functions, which include a barrier on platforms that require
-> it. This assures memory writes before a controller register access are
-> visible to all cores. The community concluded defaulting to correct
-> operation outweighed defaulting to the small performance gains from
-> using relaxed access functions. Being a low speed device added weight to
-> this choice of default register access behavior.
-> 
-> Signed-off-by: Jan Bottorff <janb@os.amperecomputing.com>
-
-The patch has already been merged in, but in anyway:
-Tested-by: Serge Semin <fancer.lancer@gmail.com>
-Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-
-For the record. Next time don't forget to add all the reviewers to the
-Cc-list on the patch(set) respin, otherwise the new version might get
-to be missed amongst the other messages in their inbox. That in its
-turn won't let them test it out and finish the review on time.
-
--Serge(y)
-
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
 > ---
-> ChangeLog
-> v3->v4: add missing changelog
-> v2->v3: regmap accessors use non-relaxed form instead of wmb barrier
-> v1->v2: Commit message improvements
-> v1: insert wmb barrier before enabling interrupts
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 3 +++
+>  1 file changed, 3 insertions(+)
 > 
->  drivers/i2c/busses/i2c-designware-common.c | 16 ++++++++--------
->  1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-designware-common.c b/drivers/i2c/busses/i2c-designware-common.c
-> index affcfb243f0f..35f762872b8a 100644
-> --- a/drivers/i2c/busses/i2c-designware-common.c
-> +++ b/drivers/i2c/busses/i2c-designware-common.c
-> @@ -63,7 +63,7 @@ static int dw_reg_read(void *context, unsigned int reg, unsigned int *val)
->  {
->  	struct dw_i2c_dev *dev = context;
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 560ce565f376..6dd087f19ea3 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -955,6 +955,9 @@ struct sg_table *drm_gem_shmem_get_pages_sgt(struct drm_gem_shmem_object *shmem)
+>  	drm_WARN_ON(obj->dev, drm_gem_shmem_is_evictable(shmem));
+>  	drm_WARN_ON(obj->dev, drm_gem_shmem_is_purgeable(shmem));
 >  
-> -	*val = readl_relaxed(dev->base + reg);
-> +	*val = readl(dev->base + reg);
->  
->  	return 0;
->  }
-> @@ -72,7 +72,7 @@ static int dw_reg_write(void *context, unsigned int reg, unsigned int val)
->  {
->  	struct dw_i2c_dev *dev = context;
->  
-> -	writel_relaxed(val, dev->base + reg);
-> +	writel(val, dev->base + reg);
->  
->  	return 0;
->  }
-> @@ -81,7 +81,7 @@ static int dw_reg_read_swab(void *context, unsigned int reg, unsigned int *val)
->  {
->  	struct dw_i2c_dev *dev = context;
->  
-> -	*val = swab32(readl_relaxed(dev->base + reg));
-> +	*val = swab32(readl(dev->base + reg));
->  
->  	return 0;
->  }
-> @@ -90,7 +90,7 @@ static int dw_reg_write_swab(void *context, unsigned int reg, unsigned int val)
->  {
->  	struct dw_i2c_dev *dev = context;
->  
-> -	writel_relaxed(swab32(val), dev->base + reg);
-> +	writel(swab32(val), dev->base + reg);
->  
->  	return 0;
->  }
-> @@ -99,8 +99,8 @@ static int dw_reg_read_word(void *context, unsigned int reg, unsigned int *val)
->  {
->  	struct dw_i2c_dev *dev = context;
->  
-> -	*val = readw_relaxed(dev->base + reg) |
-> -		(readw_relaxed(dev->base + reg + 2) << 16);
-> +	*val = readw(dev->base + reg) |
-> +		(readw(dev->base + reg + 2) << 16);
->  
->  	return 0;
->  }
-> @@ -109,8 +109,8 @@ static int dw_reg_write_word(void *context, unsigned int reg, unsigned int val)
->  {
->  	struct dw_i2c_dev *dev = context;
->  
-> -	writew_relaxed(val, dev->base + reg);
-> -	writew_relaxed(val >> 16, dev->base + reg + 2);
-> +	writew(val, dev->base + reg);
-> +	writew(val >> 16, dev->base + reg + 2);
->  
->  	return 0;
->  }
-> -- 
-> 2.34.1
-> 
+> +	if (shmem->sgt)
+> +		return shmem->sgt;
+> +
+
+By doing that, you introduce a race between drm_gem_shmem_put_pages()
+and drm_gem_shmem_get_pages_sgt(). I know it's only happening if the
+user doesn't follow the rule listed in drm_gem_shmem_get_pages_sgt() doc
+(caller must owns a pages ref before calling
+drm_gem_shmem_get_pages_sgt()), but now you return a possibly invalid
+pointer instead of returning an error when this happens.
+If that's what we want, we should at least update the documentation to
+make it clear.
+
+>  	ret = dma_resv_lock_interruptible(shmem->base.resv, NULL);
+>  	if (ret)
+>  		return ERR_PTR(ret);
+
