@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 065BB7EA10B
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:14:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 783FB7EA10D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231646AbjKMQOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
+        id S231743AbjKMQO5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:14:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjKMQOw (ORCPT
+        with ESMTP id S230034AbjKMQOz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:14:52 -0500
+        Mon, 13 Nov 2023 11:14:55 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEBB10E0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:14:49 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0210C433C8;
-        Mon, 13 Nov 2023 16:14:45 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0C71702
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:14:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9BDF1C433CB;
+        Mon, 13 Nov 2023 16:14:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699892089;
-        bh=Wo5otqcyJKAOgLF2JvrplvCMcLhcQRTUClyysnN30PY=;
+        s=k20201202; t=1699892092;
+        bh=WraYibxcFpwh29fu+H1LVMSLBqa+WIpRvlITsxKnioo=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=QBCN6bHyLufLzGNHunYTSxGt1yCYOhXVradn4REqoB/m4LPAo5evtxuAVuVLP3IOl
-         AlZfMPifjMuvPIqUpy5Z3hhsTL40P8CeNTwtsc48UpMWIMuWIn/djlHO780yWF/Qt2
-         f6cqFsw3EQaPLxytHq60PA8rgsH0MCEu6UWzG3ruQbZhUARlIYVQ4FGDIOj1YQabtW
-         +l0CxSTsG7knD9SUrZSgEylwrxixpKxyiN+dI2Tqt278dv5GkuK3H2qcN7bKTnnBez
-         DwSEt6x1dKrR5S9dXqPuk4a6iissCzdbRf0EhV3fB4hUyQckx1lNNSkmfkONVMN4ev
-         mVVSH53jO33IQ==
+        b=aLJ4RQ1VqJTdzm9uRXmkVtqFcn8XCIOAUogY+EXoEj2Nh6AdF30lLc7FkV5x8R7Zt
+         ZMCBqrixP6NxMn9PX2V7HmZq0xl6h1hqPADayrmD1LpYQxNHVycSgw6SbT1DnDwO4+
+         pxyfgZIScbbemY6hPIpNSST+rbncKv66dFmZmcslUFrJJaB6LWIxtf1uhPZGXn8GDs
+         0D/ivwj0bmKmSwSlSDw+FB/B8JuUzGmCq0eMmhd6IpQWv+6y0rmzPhwtH4KwIsqshV
+         V7WdMBb5cXVvGGCodq9LpAN1gXaguGeX1SvPyDJz2L69dPDx9wQkAMI6fdHBsiDEZX
+         oqFWNs3k/EELg==
 From:   Mark Brown <broonie@kernel.org>
-To:     Seven Lee <wtli@nuvoton.com>
-Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
-        KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
-        scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
-In-Reply-To: <20231107035230.1241683-1-wtli@nuvoton.com>
-References: <20231107035230.1241683-1-wtli@nuvoton.com>
-Subject: Re: [PATCH v4 0/2] Add DMIC slew rate controls
-Message-Id: <169989208519.3289099.6577549034579346529.b4-ty@kernel.org>
-Date:   Mon, 13 Nov 2023 16:14:45 +0000
+To:     alsa-devel@alsa-project.org,
+        Daniel Baluta <daniel.baluta@oss.nxp.com>
+Cc:     pierre-louis.bossart@linux.intel.com, lgirdwood@gmail.com,
+        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
+        ranjani.sridharan@linux.intel.com, daniel.baluta@gmail.com,
+        kai.vehmanen@linux.intel.com, linux-imx@nxp.com,
+        iuliana.prodan@nxp.com, linux-kernel@vger.kernel.org
+In-Reply-To: <20231109135900.88310-1-daniel.baluta@oss.nxp.com>
+References: <20231109135900.88310-1-daniel.baluta@oss.nxp.com>
+Subject: Re: [PATCH 0/2] ASoC: SOF: Add support for MICFIL PDM interface
+Message-Id: <169989208903.3289099.3550583225886938735.b4-ty@kernel.org>
+Date:   Mon, 13 Nov 2023 16:14:49 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -53,17 +54,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 11:52:28 +0800, Seven Lee wrote:
-> Determine DMIC slew rate via property setup.
+On Thu, 09 Nov 2023 15:58:58 +0200, Daniel Baluta wrote:
+> This is used for configuring MICFIL PDM with i.MX8MPlus. Tested
+> with 8MIC-RPI-MX8 microphone array.
 > 
-> Change:
-> V3 -> V4:
->  - add "maximum: 7" description.
-> 
-> V2 -> V3:
->  - Update description of DMIC slew rate and remove
->    "selection" key words from property name
->  - Corrected variable name of DMIC slew rate from c file
+> Daniel Baluta (2):
+>   ASoC: SOF: imx8m: Add DAI driver entry for MICFIL PDM
+>   ASoC: SOF: Add support for configuring PDM interface from topology
 > 
 > [...]
 
@@ -73,10 +70,10 @@ Applied to
 
 Thanks!
 
-[1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate.
-      commit: 1fb1a7c4a6328aff97eeca513fe7239099c13016
-[2/2] ASoC: nau8821: Add slew rate controls.
-      commit: 91d1a18b6381abd7a0137449fe345924072e4a32
+[1/2] ASoC: SOF: imx8m: Add DAI driver entry for MICFIL PDM
+      commit: fc85d9d0b3ba8f8934963c760af98fc38029d9da
+[2/2] ASoC: SOF: Add support for configuring PDM interface from topology
+      commit: 89ef42088b3ba884a007ad10bd89ce8a81b9dedd
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
