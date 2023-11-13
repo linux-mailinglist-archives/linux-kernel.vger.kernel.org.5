@@ -2,187 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C9347EA3A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20D717EA3A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:18:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232017AbjKMTRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 14:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35054 "EHLO
+        id S232131AbjKMTSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 14:18:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232112AbjKMTRj (ORCPT
+        with ESMTP id S232214AbjKMTSZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 14:17:39 -0500
-Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B33527D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:15:24 -0800 (PST)
-Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7bb3e55c120so1917986241.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699902924; x=1700507724; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EdlPS/pyygBulJYw0Ss7dnRkR9HsnG2KcJpv/WTkXTk=;
-        b=gKJ5S+vlBx9h6SBsFKIwaIiOlTlmJzG0mAQMqtHmi6Y7bRfxvuCGg7lxdrLrNwqI9/
-         TI/t5Vnnk+I0M0pYrCHji+GgW+8bi46YgbdDMCAOXjxvk+jTjRFRaraUQzJEeZYUpT79
-         H9RrDDxz79iQb654lzRBNR0tB6PdESJB/Mgu/8X2d0XXGVQcFF9iLJQLbm11spF/Zktx
-         8QFVUf82oFpRFkDUF2n+OyXGbAvfCwJiVwgGxBEZ0kVeeDKTxjgBc4ujjvSSj6tamndC
-         1TUioPwFn/clRkr7fx7bvvLsrdpDkuez8ta+4VpR+N+rqrhjG+1pUgNbMa5dFeZ8Dva/
-         wv4A==
+        Mon, 13 Nov 2023 14:18:25 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB8A49C2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:16:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699903015;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=QI+OFjhz2/q8YuzQGF/7kt5ZmFWZ0Ih26v8XHGpxDAg=;
+        b=fLRQ8wPKd2W7FbGiozSgw3RjYwBhpsqHT7o00u5ltP0iLZVrhRqyDZU8U9fQ+qotiqIZlV
+        SiYlHGm7o2SGX9IFnEaPXeUjPMVI0eOzLsQpMHkDdiuwn6q+v5ZLe/kRPn4EQQDD8tReNO
+        wt1rD6zIcHatuHtRCffXRYYias+JZIk=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-335-Xc6N2cjSN9mU2fTCG_dqQQ-1; Mon, 13 Nov 2023 14:16:53 -0500
+X-MC-Unique: Xc6N2cjSN9mU2fTCG_dqQQ-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-408524e2368so31927625e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:16:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699902924; x=1700507724;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EdlPS/pyygBulJYw0Ss7dnRkR9HsnG2KcJpv/WTkXTk=;
-        b=rXkgnqtN4OHHQuEWAp8GfT8Dw2OtlI1ysW86nnLi4uiJBexi3TqVH0xhqYcwYPPDXn
-         ZRKOFN7c4H5e5jfc71gBgY0lD1dvBrxw0avq606F5XQ9IhHYxYEe8GC0saDoILxI7oX5
-         wX4lS5r1L/+nFtMVFxAaIthRTAfZB7grlCO3dZiiFGGRWk8i1n8eAgOElsfzprFkEV4c
-         k9hUKEicdd+lPAHnKq6DWZUblniWR/82dPCw+bE4+F63FTg+vvyWIE6g7pa8Li8Wtf9n
-         Lo9Vs+tjagRGvZ65Tjw7DNXlZWFuN/KZ6L7M7uccJP1ycmTqFtgh7LNMogUlml5ZnTps
-         yeVA==
-X-Gm-Message-State: AOJu0YyFzPTVMv58fnUZh+KHXs/etbkH11qhjfWjsqgIHFt/8xt6fpRd
-        jAVAMuPal7sYQ5qUsnVtDT06qEmkdAt+RVDGCL8=
-X-Google-Smtp-Source: AGHT+IF7gh1x8kbVW7JTi/JQ+4UbauUOckNaRiSSZ2YAlsE06DXlN3lNBqNHRVapO0IwajHHemCmdvMBtaPBxx7A+Yk=
-X-Received: by 2002:a05:6102:2d06:b0:45d:aa3e:a78 with SMTP id
- ih6-20020a0561022d0600b0045daa3e0a78mr9970637vsb.10.1699902923569; Mon, 13
- Nov 2023 11:15:23 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699903012; x=1700507812;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QI+OFjhz2/q8YuzQGF/7kt5ZmFWZ0Ih26v8XHGpxDAg=;
+        b=F7yfU2ZvjmAfyO6o67MActqusymnmNNmhfWXkUJ5+qjxnVNpQDlKTonRC7pe42ssm4
+         N6whV/WsD8Na3AN4SzYtPfGnBcQTc0K+Hhgc19/If31MSTWqJmFPiaH8z6G9vMRHg67q
+         Mls9/4vYLn7VcwHjW81ytw16tp4a21BLcyYPH7rRYlJDTuzqvrXkfneZD4ry4nZk93RU
+         8hPxhAbH8oJD6bJK5KhgHo71RdvJQlHo8biJuvXYiEb7latA5vLSk2H9Mb1OOZLpPFQR
+         XZjNBWssKNgELf83sqGHw6XH/+FdUDCdMl75kBs41QoXItvuYhP4sBgRPkPOaQ+uY+iM
+         ZW2w==
+X-Gm-Message-State: AOJu0YwYAiLPLJ2UkWIbGQePvqwTscLIVZp+xLiBdlQo91UUMiK3ZgNH
+        y4b5ZtK/9CTacFgX3g3x4jXOkKLtjnBGKT0nXtapNg5sMNl7h8ARt6vcPDNxxFnELVAPd19VAeS
+        6kkiyrecMc9WCR+ypKFg/gsX6
+X-Received: by 2002:a5d:5847:0:b0:32f:7d5a:87ab with SMTP id i7-20020a5d5847000000b0032f7d5a87abmr6576520wrf.53.1699903012062;
+        Mon, 13 Nov 2023 11:16:52 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHePviOiZUmhfcxNssCAgAnAuSKXuz27fg99dUJ3dKUcuVnbQ/fIU7ew3IR4gby02/E8lMFlQ==
+X-Received: by 2002:a5d:5847:0:b0:32f:7d5a:87ab with SMTP id i7-20020a5d5847000000b0032f7d5a87abmr6576498wrf.53.1699903011617;
+        Mon, 13 Nov 2023 11:16:51 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73a:400:892e:7ff0:87:a52c? (p200300cbc73a0400892e7ff00087a52c.dip0.t-ipconnect.de. [2003:cb:c73a:400:892e:7ff0:87:a52c])
+        by smtp.gmail.com with ESMTPSA id w12-20020a5d544c000000b0031aef72a021sm6020406wrv.86.2023.11.13.11.16.50
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 11:16:51 -0800 (PST)
+Message-ID: <9f83d97e-b7a1-4142-8316-088b3854c30d@redhat.com>
+Date:   Mon, 13 Nov 2023 20:16:49 +0100
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-11-lb@semihalf.com>
- <CAJfuBxxVGaqG4wVu-kM3ynA8ARTD6DFPBuz0a1GqunMqdvRBgQ@mail.gmail.com>
- <CAK8ByeL9UJzNr=kAdyHZcdt6-B8c57OxUW+ccm4GmLrW26CxDg@mail.gmail.com>
- <CAJfuBxxTuiEun9YFtWY_99nvCwnJQ_LByJioOTxsCkMS6URQnw@mail.gmail.com> <CAK8Bye+jVZwAta7mfd=zY2qk84MR3dRrX-6iZYhijTcO-o_uFg@mail.gmail.com>
-In-Reply-To: <CAK8Bye+jVZwAta7mfd=zY2qk84MR3dRrX-6iZYhijTcO-o_uFg@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Mon, 13 Nov 2023 12:14:57 -0700
-Message-ID: <CAJfuBxwmxbmGmjOYU7VcnTovv-FS-cKZQ5rP8LK6DXP1HrdA9Q@mail.gmail.com>
-Subject: Re: [PATCH v1 10/12] dyndbg: add processing of T(race) flag argument
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 0/2] Introduce a way to expose the interpreted file
+ with binfmt_misc
+Content-Language: en-US
+To:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
+Cc:     Kees Cook <keescook@chromium.org>, sonicadvance1@gmail.com,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
+        oleg@redhat.com, yzaikin@google.com, mcgrof@kernel.org,
+        akpm@linux-foundation.org, brauner@kernel.org,
+        viro@zeniv.linux.org.uk, willy@infradead.org, dave@stgolabs.net,
+        joshua@froggi.es
+References: <20230907204256.3700336-1-gpiccoli@igalia.com>
+ <e673d8d6-bfa8-be30-d1c1-fe09b5f811e3@redhat.com>
+ <202310091034.4F58841@keescook>
+ <8dc5069f-5642-cc5b-60e0-0ed3789c780b@igalia.com>
+ <871qctwlpx.fsf@email.froward.int.ebiederm.org>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <871qctwlpx.fsf@email.froward.int.ebiederm.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
+X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
+        lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 9:29=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
->
-> pt., 10 lis 2023 o 20:51 <jim.cromie@gmail.com> napisa=C5=82(a):
-> >
-> > On Fri, Nov 10, 2023 at 7:52=E2=80=AFAM =C5=81ukasz Bartosik <lb@semiha=
-lf.com> wrote:
-> > >
-> > > sob., 4 lis 2023 o 04:06 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > >
-> > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@sem=
-ihalf.com> wrote:
-> > > > >
-> > > > > Add processing of argument provided to T(race) flag.
-> > > > > The argument value determines destination of debug logs:
-> > > > >
-> > > > > 0 - debug logs will be written to prdbg and devdbg trace events
-> > > > > [1..255] - debug logs will be written to trace instance
-> > > > >
-> > > > > A user can provide trace destination by folowing T flag with
-> > > > > ":" and trace destination value in range [0..255], for example:
-> > > > >
-> > > > > echo "module thunderbolt =3DpT:7" > /sys/kernel/debug/dynamic_deb=
-ug/control
-> > > > > echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_d=
-ebug/control
-> > > > >
-> > > > > When T flag with argument is followed by other flags then the nex=
-t flag has
-> > > > > to be preceded with ",".
-> > > > >
-> > > >
-> > > > the trailing , seems punctuation heavy.
-> > > > Could we just stipulate that any :string  (leading : trailing anyth=
-ing)
-> > > > be the last flag in the spec ?
-> > > > bare T flags are not constrained otherwise.
-> > > > seems fine as API-spec-by-error-codes.
-> > > >
-> > >
-> > > I followed Jason's suggestion to use "," when T flag is not the last
-> > > flag and destination is explicitly provided for the T flag, like in
-> > > the example above
-> > > "echo "module thunderbolt =3DlT:7,p" > /sys/kernel/debug/dynamic_debu=
-g/control".
-> > >
-> > > With "," we can have the following cases:
-> > > - when T is the last flag then it doesn't need to be followed by ","
-> > > even if destination is explicitly provided, for example "lpT:7",
-> > > - when T is not the last flag and destination is explicitly provided
-> > > then "," has to be used before next flag, for example "lT:7,p",
-> > > - when T is not the last flag and destination is not explicitly
-> > > provided then "," is not required, for example "lTp",
-> > >
-> > > Jim, Jason, would you please come to terms if we want to use "," or
-> > > just assume that T has to be the last flag in the spec ?
-> > >
-> >
-> > Im fine either way -   eliminating punctuation has a cost too,
-> > it adds some order dependency which isnt there now.
-> > If that complicates the code, no-good.
-> >
->
-> Ok, I will keep the option to use "," to separate T with explicitly
-> provided destination from a next flag.
->
-> >
-> > > >
-> > > >
-> > > >
-> > > > > When no value is provided trace destination defaults to 0, for ex=
-ample:
-> >
-> > That seems wrong now - it should default to whatever it was previously =
-set to,
-> >
->
-> It was in my original proposal before you suggested to create
-> open/close commands.
->
->
-> > this allows setting a non-default dest while disabling the site:
-> >    echo class DRM_UT_CORE -T:core-log  > /proc/dynamic_debug/control
-> >
-> > then just enabling it later, to use the preset dest
-> >    echo class DRM_UT_CORE +T  > /proc/dynamic_debug/control
-> > or more likely:
-> >    echo 0x01 > /sys/module/drm/parameters/debug_trace
-> >
-> > this way, debug_trace is just like debug, but still can write to the
-> > separate trace-instances
-> >
->
-> Ack, I also clarified my suggestion related to this topic in patch 11.
->
+On 13.11.23 19:29, Eric W. Biederman wrote:
+> "Guilherme G. Piccoli" <gpiccoli@igalia.com> writes:
+> 
+>> On 09/10/2023 14:37, Kees Cook wrote:
+>>> On Fri, Oct 06, 2023 at 02:07:16PM +0200, David Hildenbrand wrote:
+>>>> On 07.09.23 22:24, Guilherme G. Piccoli wrote:
+>>>>> Currently the kernel provides a symlink to the executable binary, in the
+>>>>> form of procfs file exe_file (/proc/self/exe_file for example). But what
+>>>>> happens in interpreted scenarios (like binfmt_misc) is that such link
+>>>>> always points to the *interpreter*. For cases of Linux binary emulators,
+>>>>> like FEX [0] for example, it's then necessary to somehow mask that and
+>>>>> emulate the true binary path.
+>>>>
+>>>> I'm absolutely no expert on that, but I'm wondering if, instead of modifying
+>>>> exe_file and adding an interpreter file, you'd want to leave exe_file alone
+>>>> and instead provide an easier way to obtain the interpreted file.
+>>>>
+>>>> Can you maybe describe why modifying exe_file is desired (about which
+>>>> consumers are we worrying? ) and what exactly FEX does to handle that (how
+>>>> does it mask that?).
+>>>>
+>>>> So a bit more background on the challenges without this change would be
+>>>> appreciated.
+>>>
+>>> Yeah, it sounds like you're dealing with a process that examines
+>>> /proc/self/exe_file for itself only to find the binfmt_misc interpreter
+>>> when it was run via binfmt_misc?
+>>>
+>>> What actually breaks? Or rather, why does the process to examine
+>>> exe_file? I'm just trying to see if there are other solutions here that
+>>> would avoid creating an ambiguous interface...
+>>>
+>>
+>> Thanks Kees and David! Did Ryan's thorough comment addressed your
+>> questions? Do you have any take on the TODOs?
+>>
+>> I can maybe rebase against 6.7-rc1 and resubmit , if that makes sense!
+>> But would be better having the TODOs addressed, I guess.
+> 
+> Currently there is a mechanism in the kernel for changing
+> /proc/self/exe.  Would that be reasonable to use in this case?
+> 
+> It came from the checkpoint/restart work, but given that it is already
+> implemented it seems like the path of least resistance to get your
+> binfmt_misc that wants to look like binfmt_elf to use that mechanism.
 
-to reiterate and add context:
+I had that in mind as well, but 
+prctl_set_mm_exe_file()->replace_mm_exe_file() fails if the executable 
+is still mmaped (due to denywrite handling); that should be the case for 
+the emulator I strongly assume.
 
-echo 0x01 > /sys/module/drm/parameters/debug
-is the legacy way of enabling DRM_UT_CORE logging.
-in CONFIG_DRM_USE_DYNAMIC_DEBUG=3Dy builds,
-this uses classmaps, but controls only the +p flag.
+-- 
+Cheers,
 
-echo 0x01 > /sys/module/drm/parameters/debug_trace
-doesnt exist yet, but is simple to add with the classmap impl.
+David / dhildenb
 
-this legacy interface cannot handle private trace-instances.
-only >control  can do that.
-ISTM thats fine.
