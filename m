@@ -2,167 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 13D3B7EA2DE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:32:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D0D37EA2EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbjKMScl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:32:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34500 "EHLO
+        id S231560AbjKMSd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:33:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMScj (ORCPT
+        with ESMTP id S230041AbjKMSdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:32:39 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46374D68;
-        Mon, 13 Nov 2023 10:32:36 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id ffacd0b85a97d-32fe1a29010so2776773f8f.0;
-        Mon, 13 Nov 2023 10:32:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699900354; x=1700505154; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=L0wxdL/i8QqbWOI4oHziGSktf3E2yrNaekZPZMrm2H0=;
-        b=T5azsGxIkYNeB33CRNPEy4dr4ssZ7pATM+wGeRxmjWWSpJ+0EIy3TaUICkd5EssCXT
-         tiptBNN+h8/l1fbeyA5sCWbi0OplTEcVpXVC2HE/8bT9U4/TpdcEK3uDIRLrL8SeEdmy
-         qj9H1lAd0t6K+RSudWWTkETpz3N1rShqyWM6x2KrLcWaRHAe6Ev83QVp9svNablTvXmK
-         7PlqfHKYD402S8QgKhyj+oV/nl8vKCI30XB7B+ysfi4Ne4xqucosal0Ea0bWgFQgf4wI
-         c3/fTuglevp7LsRzcOvMp62E6qhmN2Z0mIMexkloK9VUzMmM0VPjsMQZbXPGzCvCSkvF
-         NIjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699900354; x=1700505154;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L0wxdL/i8QqbWOI4oHziGSktf3E2yrNaekZPZMrm2H0=;
-        b=RjNCwkdzpDC/20n+6RMJoigCLYfqF/sT9llPaBjNhL6d0+vE47zUoqHj2HJn5b6QDo
-         i4xiMwcgE+kgqL7zM+qq9llTEnmYV6O4+1eK3bRmTP4t1Nxk7mEPnw2M6VGQCHsjSEsd
-         gCSKAZaBgB7BUVuyfGp1g7N3rvQKru+rwHEl6gJYR5CFNK2ucThIRlyipNz3oByNjdZ/
-         5VMMcygpLPq2RrndZFNwWwaHoIZBfJUDHwiL4Qsffoovz3AR8H05UWT/y4N7RFHQ+49k
-         no52Os5LR85ifAQpLl8Dr4OyHVllbCD1SpkbApO0aCJUjygsbMhrAmyfq88+1MLKGyOM
-         VziA==
-X-Gm-Message-State: AOJu0YwXKLXQD/SLeO+FazxrfDhRFbRsv7ojM+ZFHMLG9U7k1VoGTF06
-        5+pvDshx5FMZ6QdMAFCBv+o=
-X-Google-Smtp-Source: AGHT+IEvX7xzuRggU3xZGMBbDMlEfJbaFPogaFwEGoMGfRqe8yk1ROAXGyKMspm4ePkQhUnieenyyg==
-X-Received: by 2002:a05:6000:1846:b0:32d:b2e0:ed79 with SMTP id c6-20020a056000184600b0032db2e0ed79mr5054539wri.67.1699900354494;
-        Mon, 13 Nov 2023 10:32:34 -0800 (PST)
-Received: from ?IPV6:2a01:c22:6e16:fe00:c172:813e:6561:e5e7? (dynamic-2a01-0c22-6e16-fe00-c172-813e-6561-e5e7.c22.pool.telefonica.de. [2a01:c22:6e16:fe00:c172:813e:6561:e5e7])
-        by smtp.googlemail.com with ESMTPSA id w10-20020a5d680a000000b0032d893d8dc8sm5997872wru.2.2023.11.13.10.32.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 10:32:33 -0800 (PST)
-Message-ID: <0aa0c4c6-8afb-4605-bb21-5704b922bd34@gmail.com>
-Date:   Mon, 13 Nov 2023 19:32:33 +0100
+        Mon, 13 Nov 2023 13:33:53 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F860D7A;
+        Mon, 13 Nov 2023 10:33:50 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 05EC521907;
+        Mon, 13 Nov 2023 18:33:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699900429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=soOdXumH4FhZ5xbNPSig1EhiYi8oZDjhhokKVPOIjuY=;
+        b=WJ9gwhFXUC2xF6wicIZeEwVQJBbmCCr2QdQLjy4NQAwStC0t3Y7j0TL5/m0Cx8UbmdbkUL
+        WRTqZJ7rNTWHeE3sUZ4b0rS7Jw1iY3gFDLqcRL7U4KWEkC4hUwVxDWxalU/rtR8itTCnnE
+        V3gzw6duiXCYL7DMj/lxag3qFdZuxwo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699900429;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=soOdXumH4FhZ5xbNPSig1EhiYi8oZDjhhokKVPOIjuY=;
+        b=gRidJBkx2PJCgMU/gz/xh4MrNm5AhTY0nwVZmJ/s04la8ep5btOSizyCuklQm8/ndixQDg
+        R4e3kwS0yNuvbABg==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C266713398;
+        Mon, 13 Nov 2023 18:33:48 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id 6ua+LQxsUmX2KAAAMHmgww
+        (envelope-from <jdelvare@suse.de>); Mon, 13 Nov 2023 18:33:48 +0000
+Date:   Mon, 13 Nov 2023 19:33:47 +0100
+From:   Jean Delvare <jdelvare@suse.de>
+To:     Simon Horman <horms@kernel.org>
+Cc:     Keguang Zhang <keguang.zhang@gmail.com>,
+        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: |PATCH] stmmac: dwmac-loongson: Add architecture dependency
+Message-ID: <20231113193347.67dd7f75@endymion.delvare>
+In-Reply-To: <20231113180107.GA52493@kernel.org>
+References: <20231113154522.0bca3521@endymion.delvare>
+        <20231113180107.GA52493@kernel.org>
+Organization: SUSE Linux
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 03/20] drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:
- remove I2C_CLASS_DDC support
-Content-Language: en-US
-To:     Harry Wentland <harry.wentland@amd.com>,
-        Wolfram Sang <wsa@kernel.org>
-Cc:     linux-i2c@vger.kernel.org, Leo Li <sunpeng.li@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231113112344.719-1-hkallweit1@gmail.com>
- <20231113112344.719-4-hkallweit1@gmail.com>
- <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Autocrypt: addr=hkallweit1@gmail.com; keydata=
- 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
-In-Reply-To: <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.11.2023 18:50, Harry Wentland wrote:
-> Please just use "drm/amd/display:" as tag in the commit subject.
-> 
-Thanks, noted. Tags have been automatically created by Coccinelle's splitpatch.
+Hi Simon,
 
-> With that fixed, this is
-> Acked-by: Harry Wentland <harry.wentland@amd.com>
+On Mon, 13 Nov 2023 18:01:07 +0000, Simon Horman wrote:
+> On Mon, Nov 13, 2023 at 03:45:22PM +0100, Jean Delvare wrote:
+> > Only present the DWMAC_LOONGSON option on architectures where it can
+> > actually be used.
+> > 
+> > This follows the same logic as the DWMAC_INTEL option.
+> > 
+> > Signed-off-by: Jean Delvare <jdelvare@suse.de>
+> > Cc: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > I'm not familiar with the hardware, so please let me know if the
+> > dependency needs to be adjusted somehow.
+> > 
+> >  drivers/net/ethernet/stmicro/stmmac/Kconfig |    2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > --- linux-6.6.orig/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> > +++ linux-6.6/drivers/net/ethernet/stmicro/stmmac/Kconfig
+> > @@ -269,7 +269,7 @@ config DWMAC_INTEL
+> >  config DWMAC_LOONGSON
+> >  	tristate "Loongson PCI DWMAC support"
+> >  	default MACH_LOONGSON64
+> > -	depends on STMMAC_ETH && PCI
+> > +	depends on MACH_LOONGSON64 && STMMAC_ETH && PCI  
 > 
-> Harry
+> Could we consider also allowing the build to occur if COMPILE_TEST is set?
+> This would maintain the current level of build test coverage.
 > 
-> On 2023-11-13 06:23, Heiner Kallweit wrote:
->> After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
->> olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
->> Class-based device auto-detection is a legacy mechanism and shouldn't
->> be used in new code. So we can remove this class completely now.
->>
->> Preferably this series should be applied via the i2c tree.
->>
->> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->>
->> ---
->>  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
->>  1 file changed, 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> index 6f99f6754..ae1edc6ab 100644
->> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
->> @@ -7529,7 +7529,6 @@ create_i2c(struct ddc_service *ddc_service,
->>  	if (!i2c)
->>  		return NULL;
->>  	i2c->base.owner = THIS_MODULE;
->> -	i2c->base.class = I2C_CLASS_DDC;
->>  	i2c->base.dev.parent = &adev->pdev->dev;
->>  	i2c->base.algo = &amdgpu_dm_i2c_algo;
->>  	snprintf(i2c->base.name, sizeof(i2c->base.name), "AMDGPU DM i2c hw bus %d", link_index);
->>
+> Something line this (completely untested!):
 > 
+> 	depends on (MACH_LOONGSON64 || COMPILE_TEST) && STMMAC_ETH && PCI
 
+Sure, that would be totally fine with me.
+
+-- 
+Jean Delvare
+SUSE L3 Support
