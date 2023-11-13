@@ -2,149 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A33F7E9460
+	by mail.lfdr.de (Postfix) with ESMTP id C6FE57E9461
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 03:11:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232698AbjKMCEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 21:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54112 "EHLO
+        id S232859AbjKMCFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 21:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229665AbjKMCEi (ORCPT
+        with ESMTP id S230053AbjKMCFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 21:04:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 048281727
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 18:04:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699841076; x=1731377076;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=uhCzrhUih1kdqliJvzI4rlufC8mvCxq1FIYTIy906zE=;
-  b=A2DkHJZfsy4dV/sESUCWDcjcIrIb3siMwiQcEGyysDeg4wFanxf/w4D7
-   u4CVavxCRs5RaxIXWkn3NUSxpSMohZGTPtwjc+jmnZCBtrDiel2S0aVSK
-   4CaygccPti8sn+mIw9I4szgwKRrGUF7v5gJOyYrEbqtHLOeE9wReQfnC7
-   muU2xuCF46u4fhyiFGIwXlDalDn2xjuhH1f6+zbq1L7Y9taI4zFx8WHco
-   OEfMIRZHYX/jsZiDrBFBH55BcdvJ7qU7SnHyZC+/IT9osmSXqnd+eMsTa
-   g8CJcckPIGGCvXFpK9FZk7wU32eeEukS40HSyI6o9d85F53k56qnP7xWw
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="11915610"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="11915610"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 18:04:35 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="834603249"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="834603249"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 18:04:31 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     "Yin, Fengwei" <fengwei.yin@intel.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "zhangpeng (AS)" <zhangpeng362@huawei.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <akpm@linux-foundation.org>,
-        <lstoakes@gmail.com>, <hughd@google.com>, <david@redhat.com>,
-        <vbabka@suse.cz>, <peterz@infradead.org>, <mgorman@suse.de>,
-        <mingo@redhat.com>, <riel@redhat.com>, <hannes@cmpxchg.org>,
-        Nanyong Sun <sunnanyong@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [Question]: major faults are still triggered after mlockall
- when numa balancing
-In-Reply-To: <2c95d0d0-a708-436f-a9d9-4b3d90eafb16@intel.com> (Fengwei Yin's
-        message of "Fri, 10 Nov 2023 17:04:26 +0800")
-References: <9e62fd9a-bee0-52bf-50a7-498fa17434ee@huawei.com>
-        <ZU0WkMR1s7QNG9RZ@casper.infradead.org>
-        <874jhugom8.fsf@yhuang6-desk2.ccr.corp.intel.com>
-        <2c95d0d0-a708-436f-a9d9-4b3d90eafb16@intel.com>
-Date:   Mon, 13 Nov 2023 10:02:30 +0800
-Message-ID: <87r0kufm15.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Sun, 12 Nov 2023 21:05:04 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 786D91BF7
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 18:05:00 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-77bb668d941so249366385a.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 18:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1699841099; x=1700445899; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=IJWo13UKNLMDttCk33gveAPxz0D02eQXsHeSZKSi3hY=;
+        b=GSBTIaru0U6NpX0gQT7vbEtN3x2rc2zBLrb2IWxtV+RqXfFnj8wZJNxqWpuM+Ofl0k
+         X8tPChuXreu1jnTX/oGq/9fs23DCJdp7I64He5vdahcmmHwDpxjyM0+t4B0mz4+g+dGx
+         hHcLLeNyz/DZbRzNmH5iZz+Sgym9HGsTC5ClxeZBNRLoNaS42d0JqKKJadk7L9QWUZFt
+         iSoUqYwYRbCKUsCpEFPSlZZRo1D2vL31E1NcteolucpC7sicsMWNUKLzjmFi2tw44fnP
+         KsKhaOLaa9fb2T7BPcwZ3Rn+0aLGhUHD8C/zLDh+B+EpEjsMKwnaPjvcws7D51EH/9mR
+         PT3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699841099; x=1700445899;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=IJWo13UKNLMDttCk33gveAPxz0D02eQXsHeSZKSi3hY=;
+        b=d1IXbA6UB2ebcaz0C52cHQHTdSs8GvcMuwgSAGHFlvMbqf0/DghO5fwcwd186RIVTK
+         zSvFC5zbysngtYqEsJPafMFLuLYJNXYVgub6VwVWgm59sga4LmI9Aj9J+aE3BTtM98Xf
+         bLANugsTsH5wrGa0W2qt/X7Zs8RCu5HoRR/R1/zyy4Spi8ZONict1/jlXHnl+hVlCFYa
+         KgoYIT/DPdvrfVs12RiRz8ZjMMZ04rOUmPNZYOSjF2OCCVUmb2rk1R3lOnXR6LEWj0xz
+         o0vSTZUtqj/hUENjsj06UW6hNb+3cFi3g33cTZkeqQVDFsPzfrabM0r9dBvj+QSp1kla
+         Yz5Q==
+X-Gm-Message-State: AOJu0YwDm1opdvyDz6+p3SddovBDvNvX8JlGbPw9ewE3iKTVk0DPc6J8
+        6Rv7Fqx371TC5pvpqwnfcDsYwQ==
+X-Google-Smtp-Source: AGHT+IEPHxntb1pvsllyCXGWFQ2YICunJIfNoVA7c0uv4cM3EuMU8D3byNxr+RwsNPBD0UMdKzLS/g==
+X-Received: by 2002:a05:620a:3192:b0:77a:1cc0:6e41 with SMTP id bi18-20020a05620a319200b0077a1cc06e41mr7361386qkb.33.1699841099543;
+        Sun, 12 Nov 2023 18:04:59 -0800 (PST)
+Received: from [192.168.142.156] ([50.235.11.61])
+        by smtp.gmail.com with ESMTPSA id bl6-20020a05620a1a8600b00774376e6475sm1530427qkb.6.2023.11.12.18.04.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 18:04:59 -0800 (PST)
+Message-ID: <95c20c6c-66cd-4f87-920b-5da766317e19@sifive.com>
+Date:   Sun, 12 Nov 2023 21:04:55 -0500
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] riscv: dts: sophgo: add reset phandle to all uart
+ nodes
+Content-Language: en-US
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>
+References: <20231113005503.2423-1-jszhang@kernel.org>
+ <20231113005503.2423-5-jszhang@kernel.org>
+From:   Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <20231113005503.2423-5-jszhang@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Yin, Fengwei" <fengwei.yin@intel.com> writes:
+Hi Jisheng,
 
-> On 11/10/2023 1:32 PM, Huang, Ying wrote:
->> Matthew Wilcox <willy@infradead.org> writes:
->> 
->>> On Thu, Nov 09, 2023 at 09:47:24PM +0800, zhangpeng (AS) wrote:
->>>> There is a stage in numa fault which will set pte as 0 in do_numa_page() :
->>>> ptep_modify_prot_start() will clear the vmf->pte, until
->>>> ptep_modify_prot_commit() assign a value to the vmf->pte.
->>>
->>> [...]
->>>
->>>> Our problem scenario is as follows:
->>>>
->>>> task 1                      task 2
->>>> ------                      ------
->>>> /* scan global variables */
->>>> do_numa_page()
->>>>   spin_lock(vmf->ptl)
->>>>   ptep_modify_prot_start()
->>>>   /* set vmf->pte as null */
->>>>                             /* Access global variables */
->>>>                             handle_pte_fault()
->>>>                               /* no pte lock */
->>>>                               do_pte_missing()
->>>>                                 do_fault()
->>>>                                   do_read_fault()
->>>>   ptep_modify_prot_commit()
->>>>   /* ptep update done */
->>>>   pte_unmap_unlock(vmf->pte, vmf->ptl)
->>>>                                     do_fault_around()
->>>>                                     __do_fault()
->>>>                                       filemap_fault()
->>>>                                         /* page cache is not available
->>>>                                         and a major fault is triggered */
->>>>                                         do_sync_mmap_readahead()
->>>>                                         /* page_not_uptodate and goto
->>>>                                         out_retry. */
->>>>
->>>> Is there any way to avoid such a major fault?
->>>
->>> Yes, this looks like a bug.
->>>
->>> It seems to me that the easiest way to fix this is not to zero the pte
->>> but to make it protnone?  That would send task 2 into do_numa_page()
->>> where it would take the ptl, then check pte_same(), see that it's
->>> changed and goto out, which will end up retrying the fault.
->> 
->> There are other places in the kernel where the PTE is cleared, for
->> example, move_ptes() in mremap.c.  IIUC, we need to audit all them.
->> 
->> Another possible solution is to check PTE again with PTL held before
->> reading in file data.  This will increase the overhead of major fault
->> path.  Is it acceptable?
-> What if we check the PTE without page table lock acquired?
+On 2023-11-12 6:55 PM, Jisheng Zhang wrote:
+> Although, the resets are deasserted by default. Add them for
+> completeness.
+> 
+> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+> ---
+>  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> index 4032419486be..e04df04a91c0 100644
+> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+> @@ -4,6 +4,7 @@
+>   */
+>  
+>  #include <dt-bindings/interrupt-controller/irq.h>
+> +#include <dt-bindings/reset/sophgo,cv1800b-reset.h>
+>  
+>  / {
+>  	compatible = "sophgo,cv1800b";
+> @@ -65,6 +66,7 @@ uart0: serial@4140000 {
+>  			reg = <0x04140000 0x100>;
+>  			interrupts = <44 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc>;
+> +			resets = <&rst RST_UART0>;
 
-The PTE is zeroed temporarily only with PTL held.  So, if we acquire the
-PTL in filemap_fault() and check the PTE, the PTE which is zeroed in
-do_numa_page() will be non-zero now.  So we can avoid the major fault.
+Since it's not obvious: this breaks devicetree forward compatibility. An
+existing kernel will fail the devm_reset_control_get_optional_exclusive() in
+8250_dw.c because it has no driver for the reset controller.
 
-But, if we don't acquire the PTL, the PTE may still be zero.
+This may not be a concern yet, since the devicetree is still "in development".
+But it is something to keep in mind for the future. To avoid this sort of
+problem, it's best to fully model the clocks/resets/other dependencies as early
+as possible, and not rely on the firmware setting anything up.
 
---
-Best Regards,
-Huang, Ying
+Regards,
+Samuel
 
-> Regards
-> Yin, Fengwei
->
->> 
->>> I'm not particularly expert at page table manipulation, so I'll let
->>> somebody who is propose an actual patch.  Or you could try to do it?
->> 
->> --
->> Best Regards,
->> Huang, Ying
+>  			reg-shift = <2>;
+>  			reg-io-width = <4>;
+>  			status = "disabled";
+> @@ -75,6 +77,7 @@ uart1: serial@4150000 {
+>  			reg = <0x04150000 0x100>;
+>  			interrupts = <45 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc>;
+> +			resets = <&rst RST_UART1>;
+>  			reg-shift = <2>;
+>  			reg-io-width = <4>;
+>  			status = "disabled";
+> @@ -85,6 +88,7 @@ uart2: serial@4160000 {
+>  			reg = <0x04160000 0x100>;
+>  			interrupts = <46 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc>;
+> +			resets = <&rst RST_UART2>;
+>  			reg-shift = <2>;
+>  			reg-io-width = <4>;
+>  			status = "disabled";
+> @@ -95,6 +99,7 @@ uart3: serial@4170000 {
+>  			reg = <0x04170000 0x100>;
+>  			interrupts = <47 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc>;
+> +			resets = <&rst RST_UART3>;
+>  			reg-shift = <2>;
+>  			reg-io-width = <4>;
+>  			status = "disabled";
+> @@ -105,6 +110,7 @@ uart4: serial@41c0000 {
+>  			reg = <0x041c0000 0x100>;
+>  			interrupts = <48 IRQ_TYPE_LEVEL_HIGH>;
+>  			clocks = <&osc>;
+> +			resets = <&rst RST_UART4>;
+>  			reg-shift = <2>;
+>  			reg-io-width = <4>;
+>  			status = "disabled";
+
