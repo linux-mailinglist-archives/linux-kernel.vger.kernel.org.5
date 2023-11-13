@@ -2,170 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5CE17E9BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A2C7E9BF3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:13:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230012AbjKMMMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        id S229753AbjKMMNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229727AbjKMMMR (ORCPT
+        with ESMTP id S229497AbjKMMNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:12:17 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 56B3210FC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:12:11 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0974AFEC;
-        Mon, 13 Nov 2023 04:12:57 -0800 (PST)
-Received: from [10.57.73.13] (unknown [10.57.73.13])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C855D3F6C4;
-        Mon, 13 Nov 2023 04:12:08 -0800 (PST)
-Message-ID: <f034dd2c-4ce1-47e5-a3a6-c3c1fcab5c4b@arm.com>
-Date:   Mon, 13 Nov 2023 12:12:07 +0000
+        Mon, 13 Nov 2023 07:13:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71B73D7D;
+        Mon, 13 Nov 2023 04:13:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699877589; x=1731413589;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KjFlVb/hpwo9JJSDz+au+1FquPh+IO2BdrfebCwPYaY=;
+  b=DrfotMyFTDilamIjK8WRbjHsorfcOAiFq4L7atvKLO8rUB1fx7dOl40X
+   OP61VTxy+T24nMSEWGCE6232riXpYPA8TVJhhMarLTptnI5pX1RRYz2TA
+   ReMstcSwI5OaUppGcHpfbgfOjx97b2ReIqU4LpWtCjxD3FDO9hhHIBqrA
+   VDT3cHjLUCntEr06pAB6xoUHvxfOu7VPTjaAs/DlNaupqQ6lapXI+/Pyg
+   UekVnG3Lp385cDJBjOTSJe654n1Vy3zWfqSFiyonAtiAQdMn6FnXczbMg
+   aI2Wy2jXaRpqJfYK2HtMg4ESRsJRYWX1AAZupWKkfdmQZCTjML4HT3c7m
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="369761029"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="369761029"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 04:12:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="908031091"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="908031091"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 04:12:51 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r2Vo8-0000000DYPW-2BjG;
+        Mon, 13 Nov 2023 14:12:48 +0200
+Date:   Mon, 13 Nov 2023 14:12:48 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Mika Westerberg <mika.westerberg@linux.intel.com>
+Cc:     Raag Jadav <raag.jadav@intel.com>, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v1 2/3] pinctrl: intel: Add a generic Intel pin control
+ platform driver
+Message-ID: <ZVISwHwoLpy3nGDT@smile.fi.intel.com>
+References: <20231030141034.3241674-1-andriy.shevchenko@linux.intel.com>
+ <20231030141034.3241674-3-andriy.shevchenko@linux.intel.com>
+ <20231103055738.GO17433@black.fi.intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/9] variable-order, large folios for anonymous memory
-Content-Language: en-GB
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        John Hubbard <jhubbard@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Yu Zhao <yuzhao@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Yang Shi <shy828301@gmail.com>,
-        "Huang, Ying" <ying.huang@intel.com>, Zi Yan <ziy@nvidia.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        David Rientjes <rientjes@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Hugh Dickins <hughd@google.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20230929114421.3761121-1-ryan.roberts@arm.com>
- <c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com>
- <ZVGxkMeY50JSesaj@casper.infradead.org>
- <f1fa098b-210e-41a9-80fc-aec212976610@arm.com>
- <479b3e2b-456d-46c1-9677-38f6c95a0be8@huawei.com>
-From:   Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <479b3e2b-456d-46c1-9677-38f6c95a0be8@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231103055738.GO17433@black.fi.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2023 11:52, Kefeng Wang wrote:
-> 
-> 
-> On 2023/11/13 18:19, Ryan Roberts wrote:
->> On 13/11/2023 05:18, Matthew Wilcox wrote:
->>> On Sun, Nov 12, 2023 at 10:57:47PM -0500, John Hubbard wrote:
->>>> I've done some initial performance testing of this patchset on an arm64
->>>> SBSA server. When these patches are combined with the arm64 arch contpte
->>>> patches in Ryan's git tree (he has conveniently combined everything
->>>> here: [1]), we are seeing a remarkable, consistent speedup of 10.5x on
->>>> some memory-intensive workloads. Many test runs, conducted independently
->>>> by different engineers and on different machines, have convinced me and
->>>> my colleagues that this is an accurate result.
->>>>
->>>> In order to achieve that result, we used the git tree in [1] with
->>>> following settings:
->>>>
->>>>      echo always >/sys/kernel/mm/transparent_hugepage/enabled
->>>>      echo recommend >/sys/kernel/mm/transparent_hugepage/anon_orders
->>>>
->>>> This was on a aarch64 machine configure to use a 64KB base page size.
->>>> That configuration means that the PMD size is 512MB, which is of course
->>>> too large for practical use as a pure PMD-THP. However, with with these
->>>> small-size (less than PMD-sized) THPs, we get the improvements in TLB
->>>> coverage, while still getting pages that are small enough to be
->>>> effectively usable.
->>>
->>> That is quite remarkable!
->>
->> Yes, agreed - thanks for sharing these results! A very nice Monday morning boost!
->>
->>>
->>> My hope is to abolish the 64kB page size configuration.  ie instead of
->>> using the mixture of page sizes that you currently are -- 64k and
->>> 1M (right?  Order-0, and order-4)
->>
->> Not quite; the contpte-size for a 64K page size is 2M/order-5. (and yes, it is
->> 64K/order-4 for a 4K page size, and 2M/order-7 for a 16K page size. I agree that
->> intuitively you would expect the order to remain constant, but it doesn't).
->>
->> The "recommend" setting above will actually enable order-3 as well even though
->> there is no HW benefit to this. So the full set of available memory sizes here
->> is:
->>
->> 64K/order-0, 512K/order-3, 2M/order-5, 512M/order-13
->>
->>> , that 4k, 64k and 2MB (order-0,
->>> order-4 and order-9) will provide better performance.
->>>
->>> Have you run any experiements with a 4kB page size?
->>
->> Agree that would be interesting with 64K small-sized THP enabled. And I'd love
->> to get to a world were we universally deal in variable sized chunks of memory,
->> aligned on 4K boundaries.
->>
->> In my experience though, there are still some performance benefits to 64K base
->> page vs 4K+contpte; the page tables are more cache efficient for the former case
->> - 64K of memory is described by 8 bytes in the former vs 8x16=128 bytes in the
->> latter. In practice the HW will still only read 8 bytes in the latter but that's
->> taking up a full cache line vs the former where a single cache line stores 8x
->> 64K entries.
-> 
-> We test some benchmark, eg, unixbench, lmbench, sysbench, with v5 on
-> arm64 board(for better evaluation of anon large folio, using ext4,
-> which don't support large folio for now), will test again and send
-> the results once v7 out.
+On Fri, Nov 03, 2023 at 07:57:38AM +0200, Mika Westerberg wrote:
+> On Mon, Oct 30, 2023 at 04:10:33PM +0200, Andy Shevchenko wrote:
 
-Thanks for the testing and for posting the insights!
+...
 
+> > +config PINCTRL_INTEL_PLATFORM
+> > +	tristate "Intel pinctrl and GPIO platform driver"
+> > +	depends on ACPI
+> > +	select PINCTRL_INTEL
+> > +	help
+> > +	  This pinctrl driver provides an interface that allows configuring
+> > +	  of Intel PCH pins and using them as GPIOs.
 > 
-> 1) base page 4k  + without anon large folio
-> 2) base page 64k + without anon large folio
-> 3) base page 4k  + with anon large folio + cont-pte(order = 4,0)
+> Add here some description that explains why this needs to be enabled,
+> for example for Lunar Lake. Now it is all too generic for distro folks
+> to understand if this is needed or not.
+
+OK!
+
+...
+
+> > + * Copyright (C) 2021-2023, Intel Corporation
 > 
-> Most of the test results from v5 show the 3) have a good improvement
-> vs 1), but still low than 2) 
+> That's 2023
 
-Do you have any understanding what the shortfall is for these particular
-workloads? Certainly the cache spatial locality benefit of the 64K page tables
-could be a factor. But certainly for the workloads I've been looking at, a
-bigger factor is often the fact that executable file-backed memory (elf
-segments) are not in 64K folios and therefore not contpte-mapped. If the iTLB is
-under pressure this can help a lot. I have a change (hack) to force all
-executable mappings to be read-ahead into 64K folios and this gives an
-improvement. But obviously that only works when the file system supports large
-folios (so not ext4 right now). It would certainly be interesting to see just
-how close to native 64K we can get when employing these extra ideas.
+As-is it is still valid and reflects the history.
 
->, also for some latency-sensitive
-> benchmark, 2) and 3) maybe have poor performance vs 1).
+...
+
+> > +	ngpps = device_get_child_node_count(dev);
+> > +	if (ngpps == 0)
 > 
-> Note, for pcp_allowed_order, order <= PAGE_ALLOC_COSTLY_ORDER=3, for
-> 3), we maybe enlarge it for better scalability when page allocation
-> on arm64, not test on v5, will try to enlarge it on v7.
+> if (!nggps)
 
-Yes interesting! I'm hoping to post v7 this week - just waiting for mm-unstable
-to be rebased on v6.7-rc1. I'd be interested to see your results.
+0 is a plain number here (as count) and explicit comparison makes sense.
+But I'm okay with another form.
 
+
+> > +		return -ENODEV;
+
+...
+
+> > +	ncommunities = 1,
 > 
->>
->> Thanks,
->> Ryan
->>
->>
->>
+> Why this is 1? Can't we have more communities?
+
+As for now (version 1.0 of the specification) it's assumed that it's one
+community per device node in the ACPI, so I would leave this as is (we have
+also drivers with single community per device node, hence this is kinda
+pattern. Should I add a comment?
+
+...
+
+> > +	struct device *dev = &pdev->dev;
+> > +	struct intel_pinctrl_soc_data *data;
+> 
+> 
+> Change the ordering of the above:
+> 
+> 	struct intel_pinctrl_soc_data *data;
+> 	struct device *dev = &pdev->dev;
+
+Sure.
+
+...
+
+> > +static const struct acpi_device_id intel_platform_pinctrl_acpi_match[] = {
+> > +	{ }
+> 
+> And add the _CID here in this patch as I commented in the last patch.
+
+OK! I'll squash the next patch into this one.
+
+> > +};
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
