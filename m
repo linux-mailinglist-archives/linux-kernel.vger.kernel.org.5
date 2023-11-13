@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D94817EA3F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3947F7EA3EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:41:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbjKMTmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 14:42:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52914 "EHLO
+        id S232034AbjKMTlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 14:41:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231969AbjKMTkm (ORCPT
+        with ESMTP id S230436AbjKMTkt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 14:40:42 -0500
+        Mon, 13 Nov 2023 14:40:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E0A71988;
-        Mon, 13 Nov 2023 11:40:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89A35C433C7;
-        Mon, 13 Nov 2023 19:40:37 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB6910EC;
+        Mon, 13 Nov 2023 11:40:46 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 095DCC433C7;
+        Mon, 13 Nov 2023 19:40:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699904439;
-        bh=gzrsBuaaq7Ias+HTVjBwYIEOSVwB/9IrgcrQUdiriGg=;
+        s=k20201202; t=1699904446;
+        bh=4ft+W7e+56ayf3hnhHhrmG47YLLOJwojtC3zh2s7l/0=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=WpBa+rX06OyELpVg6hWTYXfcQyMZi9S66lVJvk0TRBPg2CKFE+4Emb61IfX4W2h1K
-         Zreo0uyfm1CrZKXal7GlHztFwz7eAXQih4xji15328MKeKcKMM5lgp3qvPm3WYLlOs
-         BI9ZKnBprFk6RrPDqboCiUSpHIq5QQENBMJUe1nEFH2kIeObPQmCnn50F1rRBEIpep
-         C6GlmAv2tALYrOpucaSFKFhwC1gPnHHc2KnTUSzEcNX2d+daLiL9cBsaY4//PNUfXi
-         LONDxbF1/7LbGde+MHazELjFZSk4fL0oIeg4SL0V/x4mrD235bJcPP+f5LfWIg43e4
-         M7/QkbeSmn9NQ==
+        b=ASHuhqkAoHjUyQSSVONaoi7JiYqdYq4sy2xjW86aOhJIKL8FhIx+1jf0uiyklTcYJ
+         +7BJeWXqxrUrsysHdrkZ6f2n12ZCBy1Ulrs3TxJPg1y/iOnaBlpcU8juc48COnAsp1
+         dKN3Zw+rlS/pHfQdgaKEEUtYDWFqbc5xCtQOr+R/oAtWrwyOtzhvdspUH8YZSHFf2H
+         38E82OXs2TbfUMpeTlnDlvL/G+2SHxmOElRs9aRVH/xErcuHApDL9K4h5aaTuB9B1y
+         budzlF45sgFyoyaveE2Z19mEbGKy/UmhPT23sOPtEkn572ZyyXYsbomdVj6qS+Yrny
+         q6yA9EAFmXnhQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     Tony Lindgren <tony@atomide.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        linux-omap@vger.kernel.org, Colin Ian King <colin.i.king@gmail.com>
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231111195330.338324-1-colin.i.king@gmail.com>
-References: <20231111195330.338324-1-colin.i.king@gmail.com>
-Subject: Re: [PATCH][next] regulator: palmas: remove redundant
- initialization of pointer pdata
-Message-Id: <169990443689.3294075.9581324276633996428.b4-ty@kernel.org>
-Date:   Mon, 13 Nov 2023 19:40:36 +0000
+To:     amit.kumar-mahapatra@xilinx.com, michal.simek@amd.com,
+        Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        git@amd.com, Amit Kumar Mahapatra <amit.kumar-mahapatra@amd.com>
+In-Reply-To: <1699282435-884917-1-git-send-email-radhey.shyam.pandey@amd.com>
+References: <1699282435-884917-1-git-send-email-radhey.shyam.pandey@amd.com>
+Subject: Re: [PATCH] spi: spi-zynqmp-gqspi: fix driver kconfig dependencies
+Message-Id: <169990444437.3294163.12116886943969269718.b4-ty@kernel.org>
+Date:   Mon, 13 Nov 2023 19:40:44 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -52,24 +51,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Nov 2023 19:53:30 +0000, Colin Ian King wrote:
-> Pointer pdata is being initialized with a value that is never read. It is
-> being re-assigned later on with the return from a devm_kzalloc call.
-> Remove the redundant initialization, cleans up clang scan build warning:
+On Mon, 06 Nov 2023 20:23:55 +0530, Radhey Shyam Pandey wrote:
+> ZynqMP GQSPI driver no longer uses spi-master framework. It had been
+> converted to use spi-mem framework. So remove driver dependency from
+> spi-master and replace it with spi-mem.
 > 
-> drivers/regulator/palmas-regulator.c:1597:36: warning: Value stored
-> to 'pdata' during its initialization is never read [deadcode.DeadStores]
 > 
-> [...]
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] regulator: palmas: remove redundant initialization of pointer pdata
-      commit: 1fc2e768ff28f096e9fb6438f0d01c3851c7cd68
+[1/1] spi: spi-zynqmp-gqspi: fix driver kconfig dependencies
+      commit: 424a8166764e462258fdccaaefbdeb07517c8b21
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
