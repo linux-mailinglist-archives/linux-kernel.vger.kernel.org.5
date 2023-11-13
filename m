@@ -2,70 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5597E9A85
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B83A7E9A86
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:45:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229717AbjKMKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
+        id S229851AbjKMKpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 05:45:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47634 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMKpp (ORCPT
+        with ESMTP id S229462AbjKMKpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:45:45 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593A10CC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:45:41 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41eb4210383so25773291cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:45:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699872340; x=1700477140; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=TN1rmKLKakodRU8vVvF98V6hyYkno3rpTcUXm2+n8BM=;
-        b=luSXS7e6Z8SUJmwlHYRIRxCQbStKhN3ioFIUJSv14xIaPphTs/zXVGGF5jsyvfco6Q
-         +WooBQkci//A+vI9bJOkp/m7fiQbfhJtGlOunlqzGRgFxMz/8KNQ1Sl4Z+C9E8UB/1VD
-         9Vbn1PxTdEMfhDUBRk2l3XmfZ52UsU7PhSbTNbcb1MYxCJ7727c6Q54BlRtJAJl1qd/A
-         cDVYvYNnqQyB3I4Twu94lBoL4ELhzP9aw6WwMoS9Sy5uRANyIXoK0oLG7oANr7zQeaSa
-         Wlx+jF1Gwg0naODhVpscqu/MXebn6zWKScxvLTv6Zsshhw14rTQF6UiBm52GVG9dvsiE
-         mVdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699872340; x=1700477140;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TN1rmKLKakodRU8vVvF98V6hyYkno3rpTcUXm2+n8BM=;
-        b=IcWPN/9Z4G7rFq64hqFmGDumwCfqw9ng0gSwxBsrkvZ43zo2is8ehMjS8QpYZPLwJ2
-         zvI0s6DNj61/a3iZu1B8vXPsdr0TtChutWIec8fY/XxB9PAYO3qpnBakQjLQe1cEuHhn
-         9yfIgxWJ2hsUAnPbQNTni49ms+eJ6o1h9JjBpq3qiVxhXBYm+WZ8Z9UNlJvPGWXlHHM9
-         vUFYJa8m1/JtU9F8vFetpPRFA3tlFzMhdZc1aGJwb8JkLStg9wN9hKxWe+2o+ErJO/gg
-         F+BaKHqtF6OYUKEHAhuNqvZiXR46N5GiAx4EJO2eUlJzT1V2Ta8PgBbUdjm8WEecEFur
-         Ay8w==
-X-Gm-Message-State: AOJu0YxM6cTU9JAuR7bomEYKaqgkwN1Pzk00uLVqgybe7iRi/yw7MfsY
-        lIa1TB15DiJbTzTJ4FyE07QpEfvVOPXkzd6XpRGQVA==
-X-Google-Smtp-Source: AGHT+IFmsD5BGHUGWSSpKkxuR05Uc/IqKa7Px+iY4SmEBuXuhs7yOIEciha9qKaJ+LfTi0ia9c0Mrvtjb4f0B7klUqM=
-X-Received: by 2002:a0c:c583:0:b0:66d:36fb:474d with SMTP id
- a3-20020a0cc583000000b0066d36fb474dmr5788189qvj.1.1699872340544; Mon, 13 Nov
- 2023 02:45:40 -0800 (PST)
+        Mon, 13 Nov 2023 05:45:50 -0500
+Received: from out30-124.freemail.mail.aliyun.com (out30-124.freemail.mail.aliyun.com [115.124.30.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF1E210CE
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:45:46 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VwJPEby_1699872343;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VwJPEby_1699872343)
+          by smtp.aliyun-inc.com;
+          Mon, 13 Nov 2023 18:45:44 +0800
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+To:     akpm@linux-foundation.org
+Cc:     david@redhat.com, ying.huang@intel.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, baolin.wang@linux.alibaba.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] mm: support large folio numa balancing
+Date:   Mon, 13 Nov 2023 18:45:31 +0800
+Message-Id: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
-References: <20231103160335.2464561-1-glider@google.com> <20231103160335.2464561-4-glider@google.com>
- <ZUVulBKVYK7cq2rJ@yury-ThinkPad> <CAG_fn=Vz9ihxLpkT9rxJB=3UfBdsn6HqYCn7aME6xz1SW1YSMg@mail.gmail.com>
-In-Reply-To: <CAG_fn=Vz9ihxLpkT9rxJB=3UfBdsn6HqYCn7aME6xz1SW1YSMg@mail.gmail.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Mon, 13 Nov 2023 11:45:00 +0100
-Message-ID: <CAG_fn=UOQobY3_KryiJe-JgehMYRFDLWMomNFL0aHA0KDL_daA@mail.gmail.com>
-Subject: Re: [PATCH v8 3/3] arm64: mte: add compression support to mteswap.c
-To:     Yury Norov <yury.norov@gmail.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
-        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
-        aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
-        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
-        syednwaris@gmail.com, william.gray@linaro.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
         ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,18 +40,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > >
-> > >  void mte_free_tag_storage(char *storage)
-> >
-> > If you use a term 'free' here, the counter name should probably
-> > reflect that.
->
-> I still want to keep the terms "allocation/deallocation" in the
-> user-facing code (in the /sys/ file) though.
-> So renaming the counter here will cause a mismatch between its name
-> and the stats output.
+Currently, the file pages already support large folio, and supporting for
+anonymous pages is also under discussion[1]. Moreover, the numa balancing
+code are converted to use a folio by previous thread[2], and the migrate_pages
+function also already supports the large folio migration.
 
-To move forward, I am going to send out v9 that addresses your
-comments except for this one and for moving the conditionals inside
-mte_compress() and mte_decompress().
-Happy to discuss those three points further.
+So now I did not see any reason to continue restricting NUMA balancing for
+large folio.
+
+[1] https://lkml.org/lkml/2023/9/29/342
+[2] https://lore.kernel.org/all/20230921074417.24004-4-wangkefeng.wang@huawei.com/T/#md9d10fe34587229a72801f0d731f7457ab3f4a6e
+Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+---
+ mm/memory.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index c32954e16b28..8ca21eff294c 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -4804,7 +4804,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	int last_cpupid;
+ 	int target_nid;
+ 	pte_t pte, old_pte;
+-	int flags = 0;
++	int flags = 0, nr_pages = 0;
+ 
+ 	/*
+ 	 * The "pte" at this point cannot be used safely without
+@@ -4834,10 +4834,6 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	if (!folio || folio_is_zone_device(folio))
+ 		goto out_map;
+ 
+-	/* TODO: handle PTE-mapped THP */
+-	if (folio_test_large(folio))
+-		goto out_map;
+-
+ 	/*
+ 	 * Avoid grouping on RO pages in general. RO pages shouldn't hurt as
+ 	 * much anyway since they can be in shared cache state. This misses
+@@ -4857,6 +4853,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 		flags |= TNF_SHARED;
+ 
+ 	nid = folio_nid(folio);
++	nr_pages = folio_nr_pages(folio);
+ 	/*
+ 	 * For memory tiering mode, cpupid of slow memory page is used
+ 	 * to record page access time.  So use default value.
+@@ -4893,7 +4890,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 
+ out:
+ 	if (nid != NUMA_NO_NODE)
+-		task_numa_fault(last_cpupid, nid, 1, flags);
++		task_numa_fault(last_cpupid, nid, nr_pages, flags);
+ 	return 0;
+ out_map:
+ 	/*
+-- 
+2.39.3
+
