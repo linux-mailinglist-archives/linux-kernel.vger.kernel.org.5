@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7B97E93E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 02:07:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CEE97E93E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 02:07:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232758AbjKMBHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 20:07:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55258 "EHLO
+        id S232801AbjKMBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 20:07:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55322 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232708AbjKMBHm (ORCPT
+        with ESMTP id S232755AbjKMBHo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 20:07:42 -0500
+        Sun, 12 Nov 2023 20:07:44 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453B71BE5
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 17:07:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 95996C433CC;
-        Mon, 13 Nov 2023 01:07:36 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0031E1FFB
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 17:07:41 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41267C433CB;
+        Mon, 13 Nov 2023 01:07:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699837658;
-        bh=ytHfU7p/l8yTC1DRGaIhHXhYJOUHNecTRODoCvWVCbg=;
+        s=k20201202; t=1699837661;
+        bh=FU5cMxpykFA89J/z1Xx5vbxIOEU9bDayGjmJTED/4UY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=T2ujH9Nf9K0O6y6t0TvBjTkOQrqUTOcw+oSVWtmflT4R6Yf1nfHbRgvuSMKt9woxV
-         ZtEzkWP9sXbzNiljmyleWSsO4+Jis9umphWZCLTLgRbKy/ufJFB9wpPwN60jSLhtlE
-         WK9BRPEIX8Pc8h63mY9JP/ncinldTpLpx/IR+IQsWl274EjyJAdQ7h5lrCL8BLGIHc
-         0C92Kl18OKu0nH5jmIhBZAkQAw+E4iy5TAjIVNO19IYbPwXyJJTCxvpamXOWvom5XI
-         R5b+VNh1rOyraFprRjtekyQ/ZjWB7iGMPEqOMaWswyNgf0D/7RfiWyJ4PpDliaKmdJ
-         Xws60KmLzdCKA==
+        b=uQezJXBfixXFEnDr2uPowPMWRFtaZ5r1q34O5kMOfhXgqt6xRQJok/YdVKhr753Sc
+         U3brf0s5laXn8qH+WlE5rwINpOTqG7YY5Gf+KvG7ZuE5RAyC4QMGnW7qPhkbtsI73i
+         LOgFM2tUGynRSL8KRffQbgT3N+4ali7B0V4blEFMYQcYw6R2gfBJbjiQcU+4vHywGL
+         rSuLw91jQFndlfabvrHICBhGjhAOdvNpgyWQC1JDvxgIBBNYQI/6GODycyIxNxpJWx
+         hRWvuIIn2U2/HUSuhFuaw5nsb+TkehY43Oq1390yw7oCoKg0AiXMDqcPh15OhD3Sg/
+         6E0laeQm1YkTw==
 From:   Jisheng Zhang <jszhang@kernel.org>
 To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
@@ -39,9 +39,9 @@ To:     Philipp Zabel <p.zabel@pengutronix.de>,
         Chen Wang <unicorn_wang@outlook.com>
 Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-riscv@lists.infradead.org
-Subject: [PATCH 2/4] reset: Add reset controller support for Sophgo CV1800B SoC
-Date:   Mon, 13 Nov 2023 08:55:01 +0800
-Message-Id: <20231113005503.2423-3-jszhang@kernel.org>
+Subject: [PATCH 3/4] riscv: dts: sophgo: add reset dt node for cv1800b
+Date:   Mon, 13 Nov 2023 08:55:02 +0800
+Message-Id: <20231113005503.2423-4-jszhang@kernel.org>
 X-Mailer: git-send-email 2.40.0
 In-Reply-To: <20231113005503.2423-1-jszhang@kernel.org>
 References: <20231113005503.2423-1-jszhang@kernel.org>
@@ -57,49 +57,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add reset controller support for Sophgo CV1800B SoC reusing the
-reset-simple driver.
+Add the reset device tree node to cv1800b SoC.
 
 Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
 ---
- drivers/reset/Kconfig        | 3 ++-
- drivers/reset/reset-simple.c | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index ccd59ddd7610..2034f69d5953 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -213,7 +213,7 @@ config RESET_SCMI
+diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+index df40e87ee063..4032419486be 100644
+--- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
++++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
+@@ -54,6 +54,12 @@ soc {
+ 		dma-noncoherent;
+ 		ranges;
  
- config RESET_SIMPLE
- 	bool "Simple Reset Controller Driver" if COMPILE_TEST || EXPERT
--	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || ARCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
-+	default ARCH_ASPEED || ARCH_BCMBCA || ARCH_BITMAIN || ARCH_REALTEK || ARCH_SOPHGO || ARCH_STM32 || (ARCH_INTEL_SOCFPGA && ARM64) || ARCH_SUNXI || ARC
- 	depends on HAS_IOMEM
- 	help
- 	  This enables a simple reset controller driver for reset lines that
-@@ -228,6 +228,7 @@ config RESET_SIMPLE
- 	   - RCC reset controller in STM32 MCUs
- 	   - Allwinner SoCs
- 	   - SiFive FU740 SoCs
-+	   - Sophgo SoCs
- 
- config RESET_SOCFPGA
- 	bool "SoCFPGA Reset Driver" if COMPILE_TEST && (!ARM || !ARCH_INTEL_SOCFPGA)
-diff --git a/drivers/reset/reset-simple.c b/drivers/reset/reset-simple.c
-index 7ea5adbf2097..573753ae3e08 100644
---- a/drivers/reset/reset-simple.c
-+++ b/drivers/reset/reset-simple.c
-@@ -151,6 +151,8 @@ static const struct of_device_id reset_simple_dt_ids[] = {
- 	{ .compatible = "snps,dw-high-reset" },
- 	{ .compatible = "snps,dw-low-reset",
- 		.data = &reset_simple_active_low },
-+	{ .compatible = "sophgo,cv1800b-reset",
-+		.data = &reset_simple_active_low },
- 	{ /* sentinel */ },
- };
- 
++		rst: reset-controller@3003000 {
++			compatible = "sophgo,cv1800b-reset";
++			reg = <0x03003000 0x1000>;
++			#reset-cells = <1>;
++		};
++
+ 		uart0: serial@4140000 {
+ 			compatible = "snps,dw-apb-uart";
+ 			reg = <0x04140000 0x100>;
 -- 
 2.42.0
 
