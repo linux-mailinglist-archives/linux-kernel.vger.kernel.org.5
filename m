@@ -2,178 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 308B87E95B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:46:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E39B17E95B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:48:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233041AbjKMDqn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:46:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S233037AbjKMDsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:48:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjKMDql (ORCPT
+        with ESMTP id S230457AbjKMDsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:46:41 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D19C111;
-        Sun, 12 Nov 2023 19:46:38 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 383FB66071EF;
-        Mon, 13 Nov 2023 03:46:35 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1699847196;
-        bh=IYaMjc+qTvS7LQ5LbfeS/pcvc+pAiE5iS07jfl+bqtU=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=P1THUFvdl7/Ghu3ZCKMSYlY0BKgMc5jnQG09WFUrEnHyat1Chjki2Nxy+kJ/lHGbg
-         Z3BfdVGX59JeHi89FD8K21PFJMbKAtlnS9y7PQfAr82wZAHVzFI1DDiaGCnGW+16Ky
-         STN28oMW55Wb0lXmvUYSawOvUxo0uFCzHZAJuEYOPHo18TSWZTZ+t7BL9WB8D+TK7Z
-         23xbXofCSRGr7aRzMVc7axNMxiA1xnsB6wOway4UzA+OwoNTosPGWsrlelXpD4OIGA
-         urFBrIdE6EonOvKSmoSajswDJL8uLxEe8cuz8fMwjrsxuqt6OlmbFw11/VyB34cq/o
-         6uyb22O/c/vwQ==
-Message-ID: <69941f8e-de1f-0319-6729-58625b362b8e@collabora.com>
-Date:   Mon, 13 Nov 2023 06:46:30 +0300
+        Sun, 12 Nov 2023 22:48:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7CA111;
+        Sun, 12 Nov 2023 19:48:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699847294; x=1731383294;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=Z38840MYc+2S4zMCSmuXj9ueb3E89myNCIJQGAd22sw=;
+  b=QlEWqRblf/tJWjY6jxsWw7ABbEVDyS8iarySjV0A0sJM7HfCvt4jAa1/
+   3qR2YYHQLjene7r04j67zisn+CeU5s3p3AuRdR6GT15s7+6RT4BJ066Z1
+   2Am2z787xmAdfvGjaGtJyuVyWtM/leO3njKdnjULNWHP65CwaR/FwULQs
+   iTfbkcycGkntSIwdhTMEZVu2wVtxnzPvENvQ3DXNKbDUzMKekVDazK/2z
+   1dpTipsSWUyRpyX/MiBIyIJ/wg4q3b/bvmPwVS4lclhnzNyCQbvkiFxzB
+   JoP21EixoVwz+trtWSAp6tvywaNJ1UKeE89k5ml1MZuxgGZNHVrh6IYsf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="369702210"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="369702210"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 19:48:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="907928727"
+X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
+   d="scan'208";a="907928727"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Nov 2023 19:48:13 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 12 Nov 2023 19:48:13 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Sun, 12 Nov 2023 19:48:13 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Sun, 12 Nov 2023 19:48:13 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Sun, 12 Nov 2023 19:48:12 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LvlLCKFGnxSB2MWr/QOwL+ycySW1w/0GwOTi8sXSSi5T7EKJ1AAGdouddIkYs+r5H/RIxOyteHbm9J5fJPSHsZorS9Bj3RD3/wvgDk9depbkxfo38osDkLpw5pyqG0XX+c7Vf3RZk80aCZC+Ofu7vQAmcM0wJ+vzLh/bI/g6IB84N2tnsjsj/aS54i+xTXX5DNJrq8fJF3OktTsOup1YY/RqiTFwIvRvnP/Ln+xg4ffHjHhDKe3kYIjux/mKpbTl+TIAeA6DfWlpdczJ03HLI+WlbO6PCodINY1L57qmCNFtPaN/k97c4HLhQc8OA6YW8Ix7u08PUmbxUgJZFVaPwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dlqpo1VIiWRPOsD/Rc3lyNo2loUAnUwrRMIY9tOf9rc=;
+ b=SaOPsjSPk/PWPPaGeI8QBKYQXJZjCz+dka+/+zni4eBBIX2b0Jlnc8bKvWKcjwkPLDibZByWBUUjdmdNBEIW0tsmRctKbEKN5xgcW4p9Zq40EQFAxCvo0SlGBEe7y0gJiwhoc///ZG2QGfg+/Reg8LNRGNdsOWtR4vtbvXcZiHaCPbvBLi3+QGgESuYjCF5NoA34HBeamg8wozu8abbnb/vzKTjDKbd/lgabPbBjHZE7J1y/cLG30nd7L0TW/r3TiVUoGJ9eqxL4Lwu/4mg4NRfMiI6Ys0Jl0aV9zylFnNf7mtynUu42/QmiO0aamJfZOYV19sBnJh+ZQpy74ftwuA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+ by SJ2PR11MB7713.namprd11.prod.outlook.com (2603:10b6:a03:4f6::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.28; Mon, 13 Nov
+ 2023 03:48:09 +0000
+Received: from CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::66ec:5c08:f169:6038]) by CH3PR11MB8660.namprd11.prod.outlook.com
+ ([fe80::66ec:5c08:f169:6038%3]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 03:48:08 +0000
+Date:   Mon, 13 Nov 2023 11:47:55 +0800
+From:   Chao Gao <chao.gao@intel.com>
+To:     Xin Li <xin3.li@intel.com>
+CC:     <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
+        <linux-kselftest@vger.kernel.org>, <seanjc@google.com>,
+        <pbonzini@redhat.com>, <corbet@lwn.net>, <kys@microsoft.com>,
+        <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
+        <decui@microsoft.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        <hpa@zytor.com>, <vkuznets@redhat.com>, <peterz@infradead.org>,
+        <ravi.v.shankar@intel.com>
+Subject: Re: [PATCH v1 09/23] KVM: VMX: Switch FRED RSP0 between host and
+ guest
+Message-ID: <ZVGcaxYtabZxGt0s@chao-email>
+References: <20231108183003.5981-1-xin3.li@intel.com>
+ <20231108183003.5981-10-xin3.li@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231108183003.5981-10-xin3.li@intel.com>
+X-ClientProxiedBy: SGBP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::13)
+ To CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 2/5] i2c: core: run atomic i2c xfer when !preemptible
-Content-Language: en-US
-To:     Chris Morgan <macroalpha82@gmail.com>,
-        Benjamin Bara <bbara93@gmail.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, Lee Jones <lee@kernel.org>,
-        rafael.j.wysocki@intel.com,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        peterz@infradead.org, jonathanh@nvidia.com,
-        richard.leitner@linux.dev, treding@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        heiko@sntech.de, max.schwarz@online.de
-References: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
- <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
- <655177f4.050a0220.d85c9.3ba0@mx.google.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <655177f4.050a0220.d85c9.3ba0@mx.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|SJ2PR11MB7713:EE_
+X-MS-Office365-Filtering-Correlation-Id: 869c30db-2a69-4992-b8c9-08dbe3fb58ef
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: sKjhn7V1Cid0RR963q0jIkkQAOaUf8M2cg8Wb831cHF+uRsiJflNALVV5a50FwudBTjFQKYEl3MWSD9v1ql1OsWyQEc5Adfv6zf+d5KglsUhNHTXUe3rVLhAgrhzKXCWMl5TKjE/Ue6RjYvGkwt+mXQ4PdLiuiM+/0AuAU4oJJVfgbBX/uebKYPFTa1tElhlFcj8Qi+nNtma1Xoj6Ihd32buAgKTRabPoHy2vFS0RH+hXRlFtJLQQ15ymhna6hqzvPxCDRLorgjeW42pLjtBjxUoOk7uQUWLSlwIY+Pm3lD97gaoSK6Vyyx3KoK6Q11d3fNEiR3QvIk3BDgardOZIyI1rXZyWWU5DmCd8tdtj5J5UWDIGeCcpMK5g7O4h8ZNELLXjwR/ZAVN9uCSVLb2Cb9Cv5KlsNry1quUKCm0v7JVC2D4ph6dRrdPppLQ/D9GA5hObdMs8Bekr2zvsQ749Xosl6SI1ng9i7HfTNsA9Gb1aF8d9kG1eoxR8wSDWkgAdJxyxmVXqkeqCPMZtfmmkyaGhNqvrxAIGjtn/g5U6DXXkjgNRcw8OP2voeKZLxs5
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(376002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2906002)(5660300002)(7416002)(41300700001)(38100700002)(6666004)(82960400001)(86362001)(478600001)(26005)(9686003)(33716001)(6506007)(6512007)(6486002)(83380400001)(6862004)(4326008)(8676002)(8936002)(44832011)(6636002)(316002)(66946007)(66556008)(66476007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/houEZ3JJLZrJnhjLJr/BvOYzDk8IAP7yG0gGrmjOLFT7I8PRSRXZi0xzIb/?=
+ =?us-ascii?Q?Qvs1uKPSDuv+urOuJ4OG82Y8F53yL4A8PbGhHUDcSyFup39E3qS3i95YHWjF?=
+ =?us-ascii?Q?iDKDQruHcjUzmoO9L+2ghAdQtFRNznBIbfdiaB5/YmBF4bvZ7jaeQWEGWNEP?=
+ =?us-ascii?Q?NAkkoJzQF+gaHhG713ZzHCbFzsgTuI5bcQnMzBD0F8Z0QGODVY8pmRlNk/pg?=
+ =?us-ascii?Q?z000pOcBuZ1LCDvfq/HTOvHGoBR7pUUT3kq97pegd+VDs+dGIQHfRRW3vnot?=
+ =?us-ascii?Q?TRbcCZlGKez0b/yPA/gDrJmfZYRfi5cm1VIL9fWUtSUnE6m724t52LlYPESS?=
+ =?us-ascii?Q?Z7jyLjv9fNOeC3FrEa0sIwJUXlJF4j1O4Ab/CQb3jap1321cTjuTgw7/7Ap8?=
+ =?us-ascii?Q?78hHIBtU9lskyZuEjB6ZQrD57I5ixOvZS1Y1VJ6hhxKmmwM1mbjzRF7V1Z1X?=
+ =?us-ascii?Q?0q5XWM1yAOS/yDA5n2wn1hrRf1OBdHvuU9dXw6iJ0blsMhsQJilp3Du7vgBr?=
+ =?us-ascii?Q?8OzcwFq5StP9P5lBc9b2Eh1PVA3ulGkPFTf6aY2sAryVe1I5LN264grrIgZ5?=
+ =?us-ascii?Q?U811okmSOYSP/fqzdS3kwNvCKrrLgrQAhqX3GIazJpNjYlWoxgNBZQOciFOD?=
+ =?us-ascii?Q?+X4TmZ0M0q2Or5Ve3AOWepYfEikSiGYtxl6FVteLX8RLkoY8IKzcxmL5eYjO?=
+ =?us-ascii?Q?535kV13VUuayWF8Srn9yFcr2qKWB/K31luYkUxpfFQZQPZamsqPeP0LIz08o?=
+ =?us-ascii?Q?o+eBk/3W2UiUnyWxSMg0mzsjgxNgxFDGRT2EL50AgPKmvEsR4KOgUdJz8TIl?=
+ =?us-ascii?Q?UlPyQh16LD1cuiz2mP4znobaldV5rDOwFoVsCDgCqd3pcJ6V+MFrX13x+wy6?=
+ =?us-ascii?Q?bGUgdOyoco7hSlsiW6xu6Rk0AACvlg5VFmGxPZThHHEaWkIS9JMOUVvgmjG1?=
+ =?us-ascii?Q?XAfOof5/Qr0mtDk0Q2THSz7qtnK5iFHGNX8h1V3GChx02Vxf8PLM+l5ffyed?=
+ =?us-ascii?Q?tcn7kb4BczG2AUqJ050zamT3YZQlLMBCiHlU2tls+huzzIQfLGgGYddcPcJ3?=
+ =?us-ascii?Q?DUoFrp6BxY4OTb8m1s/o0WQtCMdJFktgprxNI1VJ5VaWDsp8cc2jQhcGIY0p?=
+ =?us-ascii?Q?+pcbv18qeYsW/qpDyFP3TfyYmO0NQIFE8Gp45cdMa9surg/1uMpeUe67B4of?=
+ =?us-ascii?Q?HaVSBzRAaGbSboFJfLMa7A3FBzg0zqk9yrMxWHfH7XIGMfkJ9M1x0kj2kiQ4?=
+ =?us-ascii?Q?9W3EQezolK5jIB1uFdwNMoK9psUw9EEsJrK+/Ttz2jOs1PjgH8ff8mS8Bmom?=
+ =?us-ascii?Q?trJ2B5WXrgSm/lW1CP9CLSVcChspRB9prxUnK9C4BWM3uTVGT/D5ujDdwEu4?=
+ =?us-ascii?Q?oyfNkRWHPqTip+9qIUsoOC+eWD4Q4iGWL2bkSud0L4U6wmZDJELDC1gOvXF9?=
+ =?us-ascii?Q?zJFkvDCQYbeRcSejL8MlyJ82fapVYk8RidPmzC4VK6u6JSVGsUrSJoEZAJgu?=
+ =?us-ascii?Q?e2pHaxxM3kRR5kHllnMjFOUhJ+U2ev8+RHdRgLl9BWpPAX0VaQ5m55Yh+qoO?=
+ =?us-ascii?Q?1Ut0lCesCkrp8qWhfu3MNqf75vrEwsPLhzkT0Ctc?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 869c30db-2a69-4992-b8c9-08dbe3fb58ef
+X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 03:48:08.0472
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 57U8U5EbuQR0PPh8HtdGdI2TMBIdUwBWCxTGgtEag3kKdINNIKZzqDHlEWK53q2zsTZJLz3Y+gFVF5Dq7602mQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7713
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 04:12, Chris Morgan wrote:
-> On Sat, Jul 15, 2023 at 09:53:24AM +0200, Benjamin Bara wrote:
->> From: Benjamin Bara <benjamin.bara@skidata.com>
->>
->> Since bae1d3a05a8b, i2c transfers are non-atomic if preemption is
->> disabled. However, non-atomic i2c transfers require preemption (e.g. in
->> wait_for_completion() while waiting for the DMA).
->>
->> panic() calls preempt_disable_notrace() before calling
->> emergency_restart(). Therefore, if an i2c device is used for the
->> restart, the xfer should be atomic. This avoids warnings like:
->>
->> [   12.667612] WARNING: CPU: 1 PID: 1 at kernel/rcu/tree_plugin.h:318 rcu_note_context_switch+0x33c/0x6b0
->> [   12.676926] Voluntary context switch within RCU read-side critical section!
->> ...
->> [   12.742376]  schedule_timeout from wait_for_completion_timeout+0x90/0x114
->> [   12.749179]  wait_for_completion_timeout from tegra_i2c_wait_completion+0x40/0x70
->> ...
->> [   12.994527]  atomic_notifier_call_chain from machine_restart+0x34/0x58
->> [   13.001050]  machine_restart from panic+0x2a8/0x32c
->>
->> Use !preemptible() instead, which is basically the same check as
->> pre-v5.2.
->>
->> Fixes: bae1d3a05a8b ("i2c: core: remove use of in_atomic()")
->> Cc: stable@vger.kernel.org # v5.2+
->> Suggested-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> Acked-by: Wolfram Sang <wsa@kernel.org>
->> Reviewed-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
->> Tested-by: Nishanth Menon <nm@ti.com>
->> Signed-off-by: Benjamin Bara <benjamin.bara@skidata.com>
+On Wed, Nov 08, 2023 at 10:29:49AM -0800, Xin Li wrote:
+>Switch MSR_IA32_FRED_RSP0 between host and guest in
+>vmx_prepare_switch_to_{host,guest}().
+>
+>MSR_IA32_FRED_RSP0 is used during ring 3 event delivery only, thus
+>KVM, running on ring 0, can run safely with guest FRED RSP0, i.e.,
+>no need to switch between host/guest FRED RSP0 during VM entry and
+>exit.
+>
+>KVM should switch to host FRED RSP0 before returning to user level,
+>and switch to guest FRED RSP0 before entering guest mode.
+>
+>Tested-by: Shan Kang <shan.kang@intel.com>
+>Signed-off-by: Xin Li <xin3.li@intel.com>
+>---
+> arch/x86/kvm/vmx/vmx.c | 17 +++++++++++++++++
+> arch/x86/kvm/vmx/vmx.h |  2 ++
+> 2 files changed, 19 insertions(+)
+>
+>diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+>index 41772ecdd368..d00ab9d4c93e 100644
+>--- a/arch/x86/kvm/vmx/vmx.c
+>+++ b/arch/x86/kvm/vmx/vmx.c
+>@@ -1344,6 +1344,17 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
+> 	}
 > 
-> For kernel 6.7 I'm having an issue when I shutdown or reboot my
-> Rockchip RK3326 or Rockchip RK3566 based devices, and I've bisected
-> the issue down to this specific commit.
+> 	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_guest_kernel_gs_base);
+>+
+>+	if (cpu_feature_enabled(X86_FEATURE_FRED) &&
+>+	    guest_cpuid_has(vcpu, X86_FEATURE_FRED)) {
+>+		/*
+>+		 * MSR_IA32_FRED_RSP0 is top of task stack, which never changes.
+>+		 * Thus it should be initialized only once.
+>+		 */
+>+		if (unlikely(vmx->msr_host_fred_rsp0 == 0))
+>+			vmx->msr_host_fred_rsp0 = read_msr(MSR_IA32_FRED_RSP0);
+>+		wrmsrl(MSR_IA32_FRED_RSP0, vmx->msr_guest_fred_rsp0);
+>+	}
+> #else
+> 	savesegment(fs, fs_sel);
+> 	savesegment(gs, gs_sel);
+>@@ -1388,6 +1399,12 @@ static void vmx_prepare_switch_to_host(struct vcpu_vmx *vmx)
+> 	invalidate_tss_limit();
+> #ifdef CONFIG_X86_64
+> 	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_host_kernel_gs_base);
+>+
+>+	if (cpu_feature_enabled(X86_FEATURE_FRED) &&
+>+	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_FRED)) {
+
+IIUC, vmx_prepare_switch_to_host() is called from IRQ-disabled context. using
+guest_cpuid_has() in this context is not desired, see lockdep_assert_irqs_enabled()
+in cpuid_entry2_find().
+
+>+		vmx->msr_guest_fred_rsp0 = read_msr(MSR_IA32_FRED_RSP0);
+>+		wrmsrl(MSR_IA32_FRED_RSP0, vmx->msr_host_fred_rsp0);
+>+	}
+> #endif
+> 	load_fixmap_gdt(raw_smp_processor_id());
+> 	vmx->guest_state_loaded = false;
+>diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+>index f8c02bd37069..328a3447f064 100644
+>--- a/arch/x86/kvm/vmx/vmx.h
+>+++ b/arch/x86/kvm/vmx/vmx.h
+>@@ -276,6 +276,8 @@ struct vcpu_vmx {
+> #ifdef CONFIG_X86_64
+> 	u64		      msr_host_kernel_gs_base;
+> 	u64		      msr_guest_kernel_gs_base;
+>+	u64		      msr_host_fred_rsp0;
+>+	u64		      msr_guest_fred_rsp0;
+
+resetting guest fred rsp0 to 0 during vcpu reset is missing.
+
+> #endif
 > 
-> When I shutdown or restart the device, I receive messages in the kernel
-> log like the following:
-> 
-> [   37.121148] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x3
-> [   37.122178] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x3
-> [   37.123212] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x3
-> [   37.124226] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x3
-> [   37.125242] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x3
-> [   37.126133] rk3x-i2c fdd40000.i2c: irq in STATE_IDLE, ipd = 0x1
-> 
-> The device will also occasionally freeze instead of rebooting or
-> shutting down. The i2c errors are consistent, but the freezing
-> behavior is not.
-
-I couldn't reproduce your issue with v6.7-rc1 and RK3399 that also uses rk3x-i2c. Though, the rk3x-i2c driver looks suspicious. Please try this patch:
-
-diff --git a/drivers/i2c/busses/i2c-rk3x.c b/drivers/i2c/busses/i2c-rk3x.c
-index a044ca0c35a1..aad00e9909cc 100644
---- a/drivers/i2c/busses/i2c-rk3x.c
-+++ b/drivers/i2c/busses/i2c-rk3x.c
-@@ -219,6 +219,8 @@ struct rk3x_i2c {
- 	enum rk3x_i2c_state state;
- 	unsigned int processed;
- 	int error;
-+
-+	int irq;
- };
- 
- static inline void i2c_writel(struct rk3x_i2c *i2c, u32 value,
-@@ -1090,8 +1092,10 @@ static int rk3x_i2c_xfer_common(struct i2c_adapter *adap,
- 		rk3x_i2c_start(i2c);
- 
- 		if (!polling) {
-+			enable_irq(i2c->irq);
- 			timeout = wait_event_timeout(i2c->wait, !i2c->busy,
- 						     msecs_to_jiffies(WAIT_TIMEOUT));
-+			disable_irq(i2c->irq);
- 		} else {
- 			timeout = rk3x_i2c_wait_xfer_poll(i2c);
- 		}
-@@ -1236,7 +1240,6 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 	int ret = 0;
- 	int bus_nr;
- 	u32 value;
--	int irq;
- 	unsigned long clk_rate;
- 
- 	i2c = devm_kzalloc(&pdev->dev, sizeof(struct rk3x_i2c), GFP_KERNEL);
-@@ -1299,11 +1302,14 @@ static int rk3x_i2c_probe(struct platform_device *pdev)
- 	}
- 
- 	/* IRQ setup */
--	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
--		return irq;
-+	i2c->irq = platform_get_irq(pdev, 0);
-+	if (i2c->irq < 0)
-+		return i2c->irq;
-+
-+	/* interrupt will be enabled during of transfer time */
-+	irq_set_status_flags(i2c->irq, IRQ_NOAUTOEN);
- 
--	ret = devm_request_irq(&pdev->dev, irq, rk3x_i2c_irq,
-+	ret = devm_request_irq(&pdev->dev, i2c->irq, rk3x_i2c_irq,
- 			       0, dev_name(&pdev->dev), i2c);
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "cannot request IRQ\n");
-
-
--- 
-Best regards,
-Dmitry
-
+> 	u64		      spec_ctrl;
+>-- 
+>2.42.0
+>
+>
