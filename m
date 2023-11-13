@@ -2,237 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E39B17E95B3
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:48:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF27E95BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233037AbjKMDsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37972 "EHLO
+        id S233073AbjKMDuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:50:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjKMDsR (ORCPT
+        with ESMTP id S230457AbjKMDuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:48:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C7CA111;
-        Sun, 12 Nov 2023 19:48:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699847294; x=1731383294;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=Z38840MYc+2S4zMCSmuXj9ueb3E89myNCIJQGAd22sw=;
-  b=QlEWqRblf/tJWjY6jxsWw7ABbEVDyS8iarySjV0A0sJM7HfCvt4jAa1/
-   3qR2YYHQLjene7r04j67zisn+CeU5s3p3AuRdR6GT15s7+6RT4BJ066Z1
-   2Am2z787xmAdfvGjaGtJyuVyWtM/leO3njKdnjULNWHP65CwaR/FwULQs
-   iTfbkcycGkntSIwdhTMEZVu2wVtxnzPvENvQ3DXNKbDUzMKekVDazK/2z
-   1dpTipsSWUyRpyX/MiBIyIJ/wg4q3b/bvmPwVS4lclhnzNyCQbvkiFxzB
-   JoP21EixoVwz+trtWSAp6tvywaNJ1UKeE89k5ml1MZuxgGZNHVrh6IYsf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="369702210"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="369702210"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2023 19:48:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="907928727"
-X-IronPort-AV: E=Sophos;i="6.03,298,1694761200"; 
-   d="scan'208";a="907928727"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 12 Nov 2023 19:48:13 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sun, 12 Nov 2023 19:48:13 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Sun, 12 Nov 2023 19:48:13 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Sun, 12 Nov 2023 19:48:13 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.169)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Sun, 12 Nov 2023 19:48:12 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=LvlLCKFGnxSB2MWr/QOwL+ycySW1w/0GwOTi8sXSSi5T7EKJ1AAGdouddIkYs+r5H/RIxOyteHbm9J5fJPSHsZorS9Bj3RD3/wvgDk9depbkxfo38osDkLpw5pyqG0XX+c7Vf3RZk80aCZC+Ofu7vQAmcM0wJ+vzLh/bI/g6IB84N2tnsjsj/aS54i+xTXX5DNJrq8fJF3OktTsOup1YY/RqiTFwIvRvnP/Ln+xg4ffHjHhDKe3kYIjux/mKpbTl+TIAeA6DfWlpdczJ03HLI+WlbO6PCodINY1L57qmCNFtPaN/k97c4HLhQc8OA6YW8Ix7u08PUmbxUgJZFVaPwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Dlqpo1VIiWRPOsD/Rc3lyNo2loUAnUwrRMIY9tOf9rc=;
- b=SaOPsjSPk/PWPPaGeI8QBKYQXJZjCz+dka+/+zni4eBBIX2b0Jlnc8bKvWKcjwkPLDibZByWBUUjdmdNBEIW0tsmRctKbEKN5xgcW4p9Zq40EQFAxCvo0SlGBEe7y0gJiwhoc///ZG2QGfg+/Reg8LNRGNdsOWtR4vtbvXcZiHaCPbvBLi3+QGgESuYjCF5NoA34HBeamg8wozu8abbnb/vzKTjDKbd/lgabPbBjHZE7J1y/cLG30nd7L0TW/r3TiVUoGJ9eqxL4Lwu/4mg4NRfMiI6Ys0Jl0aV9zylFnNf7mtynUu42/QmiO0aamJfZOYV19sBnJh+ZQpy74ftwuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by SJ2PR11MB7713.namprd11.prod.outlook.com (2603:10b6:a03:4f6::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.28; Mon, 13 Nov
- 2023 03:48:09 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038%3]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 03:48:08 +0000
-Date:   Mon, 13 Nov 2023 11:47:55 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     Xin Li <xin3.li@intel.com>
-CC:     <kvm@vger.kernel.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-hyperv@vger.kernel.org>,
-        <linux-kselftest@vger.kernel.org>, <seanjc@google.com>,
-        <pbonzini@redhat.com>, <corbet@lwn.net>, <kys@microsoft.com>,
-        <haiyangz@microsoft.com>, <wei.liu@kernel.org>,
-        <decui@microsoft.com>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bp@alien8.de>, <dave.hansen@linux.intel.com>, <x86@kernel.org>,
-        <hpa@zytor.com>, <vkuznets@redhat.com>, <peterz@infradead.org>,
-        <ravi.v.shankar@intel.com>
-Subject: Re: [PATCH v1 09/23] KVM: VMX: Switch FRED RSP0 between host and
- guest
-Message-ID: <ZVGcaxYtabZxGt0s@chao-email>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-10-xin3.li@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231108183003.5981-10-xin3.li@intel.com>
-X-ClientProxiedBy: SGBP274CA0001.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b0::13)
- To CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
+        Sun, 12 Nov 2023 22:50:20 -0500
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B3D7111
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:50:14 -0800 (PST)
+Received: from epcas1p1.samsung.com (unknown [182.195.41.45])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20231113035010epoutp0408115bc6577ab099a1e1556256f27eef~XEja7fDDB3084930849epoutp04T
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 03:50:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20231113035010epoutp0408115bc6577ab099a1e1556256f27eef~XEja7fDDB3084930849epoutp04T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1699847410;
+        bh=K/SRvaHr2etDt+D7s7OyZDI+2nNmv+JzThALR5+aLzA=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=UA61zY8Vs+KjLA//ahMa1YGiIuArquNrTIizLv4O/HYVlDTEIqQGYxKbuD+NDCmNk
+         MVZhvs2hIsLRzN2Gc23lJZ1odEKRCyJ0MY8Jp+U5rq2DI7/mMqrQ1i0/EASw86Ko2t
+         2LJqHmSgnElPcMfs+49TFmYQL4RkPTf+a66ZFs+Q=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20231113035010epcas1p12f30a5492d79468a57bdddd4862bea85~XEjalhdC20099300993epcas1p1u;
+        Mon, 13 Nov 2023 03:50:10 +0000 (GMT)
+Received: from epsmgec1p1.samsung.com (unknown [182.195.38.250]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4STFnF5xZqz4x9Q1; Mon, 13 Nov
+        2023 03:50:09 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        22.AA.09731.1FC91556; Mon, 13 Nov 2023 12:50:09 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20231113035009epcas1p31f0e0ce293e8be86de521a8f99b82d3b~XEjZ6RJ941020310203epcas1p3L;
+        Mon, 13 Nov 2023 03:50:09 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231113035009epsmtrp28db343bf25a1835e0be12e55bdcfc81f~XEjZ5oVeW0273602736epsmtrp2P;
+        Mon, 13 Nov 2023 03:50:09 +0000 (GMT)
+X-AuditID: b6c32a36-a7dff70000002603-e5-65519cf190e9
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        35.DF.07368.1FC91556; Mon, 13 Nov 2023 12:50:09 +0900 (KST)
+Received: from jongeonpark03 (unknown [10.253.101.166]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20231113035009epsmtip25c31b90c5345f1c0dd516e752adb7878~XEjZv3qh02252222522epsmtip2t;
+        Mon, 13 Nov 2023 03:50:09 +0000 (GMT)
+From:   "Jong eon Park" <jongeon.park@samsung.com>
+To:     "'Jakub Kicinski'" <kuba@kernel.org>
+Cc:     "'Paolo Abeni'" <pabeni@redhat.com>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Eric Dumazet'" <edumazet@google.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "'Dong ha Kang'" <dongha7.kang@samsung.com>
+In-Reply-To: <20231110110002.7279f895@kernel.org>
+Subject: RE: [PATCH] netlink: introduce netlink poll to resolve fast return
+ issue
+Date:   Mon, 13 Nov 2023 12:50:09 +0900
+Message-ID: <000001da15e4$7f5a6bd0$7e0f4370$@samsung.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|SJ2PR11MB7713:EE_
-X-MS-Office365-Filtering-Correlation-Id: 869c30db-2a69-4992-b8c9-08dbe3fb58ef
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: sKjhn7V1Cid0RR963q0jIkkQAOaUf8M2cg8Wb831cHF+uRsiJflNALVV5a50FwudBTjFQKYEl3MWSD9v1ql1OsWyQEc5Adfv6zf+d5KglsUhNHTXUe3rVLhAgrhzKXCWMl5TKjE/Ue6RjYvGkwt+mXQ4PdLiuiM+/0AuAU4oJJVfgbBX/uebKYPFTa1tElhlFcj8Qi+nNtma1Xoj6Ihd32buAgKTRabPoHy2vFS0RH+hXRlFtJLQQ15ymhna6hqzvPxCDRLorgjeW42pLjtBjxUoOk7uQUWLSlwIY+Pm3lD97gaoSK6Vyyx3KoK6Q11d3fNEiR3QvIk3BDgardOZIyI1rXZyWWU5DmCd8tdtj5J5UWDIGeCcpMK5g7O4h8ZNELLXjwR/ZAVN9uCSVLb2Cb9Cv5KlsNry1quUKCm0v7JVC2D4ph6dRrdPppLQ/D9GA5hObdMs8Bekr2zvsQ749Xosl6SI1ng9i7HfTNsA9Gb1aF8d9kG1eoxR8wSDWkgAdJxyxmVXqkeqCPMZtfmmkyaGhNqvrxAIGjtn/g5U6DXXkjgNRcw8OP2voeKZLxs5
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(39860400002)(136003)(376002)(366004)(346002)(396003)(230922051799003)(186009)(1800799009)(64100799003)(451199024)(2906002)(5660300002)(7416002)(41300700001)(38100700002)(6666004)(82960400001)(86362001)(478600001)(26005)(9686003)(33716001)(6506007)(6512007)(6486002)(83380400001)(6862004)(4326008)(8676002)(8936002)(44832011)(6636002)(316002)(66946007)(66556008)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/houEZ3JJLZrJnhjLJr/BvOYzDk8IAP7yG0gGrmjOLFT7I8PRSRXZi0xzIb/?=
- =?us-ascii?Q?Qvs1uKPSDuv+urOuJ4OG82Y8F53yL4A8PbGhHUDcSyFup39E3qS3i95YHWjF?=
- =?us-ascii?Q?iDKDQruHcjUzmoO9L+2ghAdQtFRNznBIbfdiaB5/YmBF4bvZ7jaeQWEGWNEP?=
- =?us-ascii?Q?NAkkoJzQF+gaHhG713ZzHCbFzsgTuI5bcQnMzBD0F8Z0QGODVY8pmRlNk/pg?=
- =?us-ascii?Q?z000pOcBuZ1LCDvfq/HTOvHGoBR7pUUT3kq97pegd+VDs+dGIQHfRRW3vnot?=
- =?us-ascii?Q?TRbcCZlGKez0b/yPA/gDrJmfZYRfi5cm1VIL9fWUtSUnE6m724t52LlYPESS?=
- =?us-ascii?Q?Z7jyLjv9fNOeC3FrEa0sIwJUXlJF4j1O4Ab/CQb3jap1321cTjuTgw7/7Ap8?=
- =?us-ascii?Q?78hHIBtU9lskyZuEjB6ZQrD57I5ixOvZS1Y1VJ6hhxKmmwM1mbjzRF7V1Z1X?=
- =?us-ascii?Q?0q5XWM1yAOS/yDA5n2wn1hrRf1OBdHvuU9dXw6iJ0blsMhsQJilp3Du7vgBr?=
- =?us-ascii?Q?8OzcwFq5StP9P5lBc9b2Eh1PVA3ulGkPFTf6aY2sAryVe1I5LN264grrIgZ5?=
- =?us-ascii?Q?U811okmSOYSP/fqzdS3kwNvCKrrLgrQAhqX3GIazJpNjYlWoxgNBZQOciFOD?=
- =?us-ascii?Q?+X4TmZ0M0q2Or5Ve3AOWepYfEikSiGYtxl6FVteLX8RLkoY8IKzcxmL5eYjO?=
- =?us-ascii?Q?535kV13VUuayWF8Srn9yFcr2qKWB/K31luYkUxpfFQZQPZamsqPeP0LIz08o?=
- =?us-ascii?Q?o+eBk/3W2UiUnyWxSMg0mzsjgxNgxFDGRT2EL50AgPKmvEsR4KOgUdJz8TIl?=
- =?us-ascii?Q?UlPyQh16LD1cuiz2mP4znobaldV5rDOwFoVsCDgCqd3pcJ6V+MFrX13x+wy6?=
- =?us-ascii?Q?bGUgdOyoco7hSlsiW6xu6Rk0AACvlg5VFmGxPZThHHEaWkIS9JMOUVvgmjG1?=
- =?us-ascii?Q?XAfOof5/Qr0mtDk0Q2THSz7qtnK5iFHGNX8h1V3GChx02Vxf8PLM+l5ffyed?=
- =?us-ascii?Q?tcn7kb4BczG2AUqJ050zamT3YZQlLMBCiHlU2tls+huzzIQfLGgGYddcPcJ3?=
- =?us-ascii?Q?DUoFrp6BxY4OTb8m1s/o0WQtCMdJFktgprxNI1VJ5VaWDsp8cc2jQhcGIY0p?=
- =?us-ascii?Q?+pcbv18qeYsW/qpDyFP3TfyYmO0NQIFE8Gp45cdMa9surg/1uMpeUe67B4of?=
- =?us-ascii?Q?HaVSBzRAaGbSboFJfLMa7A3FBzg0zqk9yrMxWHfH7XIGMfkJ9M1x0kj2kiQ4?=
- =?us-ascii?Q?9W3EQezolK5jIB1uFdwNMoK9psUw9EEsJrK+/Ttz2jOs1PjgH8ff8mS8Bmom?=
- =?us-ascii?Q?trJ2B5WXrgSm/lW1CP9CLSVcChspRB9prxUnK9C4BWM3uTVGT/D5ujDdwEu4?=
- =?us-ascii?Q?oyfNkRWHPqTip+9qIUsoOC+eWD4Q4iGWL2bkSud0L4U6wmZDJELDC1gOvXF9?=
- =?us-ascii?Q?zJFkvDCQYbeRcSejL8MlyJ82fapVYk8RidPmzC4VK6u6JSVGsUrSJoEZAJgu?=
- =?us-ascii?Q?e2pHaxxM3kRR5kHllnMjFOUhJ+U2ev8+RHdRgLl9BWpPAX0VaQ5m55Yh+qoO?=
- =?us-ascii?Q?1Ut0lCesCkrp8qWhfu3MNqf75vrEwsPLhzkT0Ctc?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 869c30db-2a69-4992-b8c9-08dbe3fb58ef
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 03:48:08.0472
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 57U8U5EbuQR0PPh8HtdGdI2TMBIdUwBWCxTGgtEag3kKdINNIKZzqDHlEWK53q2zsTZJLz3Y+gFVF5Dq7602mQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR11MB7713
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJoS8HO+cSy/HZb7h5ntB8MEORIdAHf29cGAkyoXsQBixSniALjIF5OAiFwHxEBTj42xq762NKQ
+Content-Language: ko
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJJsWRmVeSWpSXmKPExsWy7bCmge7HOYGpBlce61nMOd/CYjH95lRm
+        i6fHHrFbXNjWx2pxedccNotjC8Qsvp1+w+jA7rFl5U0mjwWbSj02repk83i/7yqbR9+WVYwe
+        nzfJBbBFZdtkpCampBYppOYl56dk5qXbKnkHxzvHm5oZGOoaWlqYKynkJeam2iq5+AToumXm
+        AF2ipFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1IySkwK9ArTswtLs1L18tLLbEyNDAw
+        MgUqTMjOWNz0hangBVNFU3MPYwPjTKYuRk4OCQETiT1H+ti6GLk4hAR2MEo83reFHcL5xCgx
+        ceksZgjnG6PE/h9tbDAtK6evgGrZyyhxY85nqJY3jBJ/TvSyg1SxCRhIHPvxkxHEFhHQkNg3
+        ax4jSBGzwHNGic0Nk5lBEpwChhI3zzwAaxAWCJbY/mMhC4jNIqAq0X7mIdg6XgFLiZnPnkDZ
+        ghInZz4Bq2EWkJfY/nYOM8RJChI/ny5j7WLkAFoWJbFvpQtEiYjE7M42sBckBKZySNybexXq
+        BReJA6euQ0NAWOLV8S3sELaUxOd3e6FqsiVeHDsGNlNCoEDi6hElCNNe4v0lCxCTWUBTYv0u
+        fYhiRYmdv+cyQmzlk3j3tQeqkVeio00IokRN4uHJt6wQtozE6hV32SYwKs1C8tYsJG/NQnL/
+        LIRlCxhZVjGKpRYU56anFhsWGMHjOjk/dxMjOI1qme1gnPT2g94hRiYOxkOMEhzMSiK8eZoB
+        qUK8KYmVValF+fFFpTmpxYcYTYEBPZFZSjQ5H5jI80riDU0sDUzMjEwsjC2NzZTEeec87k0R
+        EkhPLEnNTk0tSC2C6WPi4JRqYGoxWTHpgYQ3yztez6uu83vF/doWCrQ+UNzgV2e+1LbQem7P
+        2urX/KHmh83rg5+cEc9+cCelqtza/+GPXQJXefInPK3sCS3d/avG3yNc9WP9oXuqP/R2eUTN
+        Ej0kecxL7/i7efFh08NmBRjKlLlXu/5/utqJ7WjtIoZ3h/3PCAZ/Vb0qIbH3zwzPOV2Kp2vu
+        3VnIelZ5w9ykQikZVd48/rbj09qUX+k6r6l02xS4OfOcwylpDsdEx+xGG7vlK793+HGoR266
+        WDfzJ0vpEyPlFauut/jnCxyu3PF027zAjmVrF8SlCgqY564RWXjgla585cWi3+HHnrY+XPFS
+        /FmKnXul3q6fQiys/jG//rv1KrEUZyQaajEXFScCAEgcRh4sBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpmkeLIzCtJLcpLzFFi42LZdlhJXvfjnMBUg313pS3mnG9hsZh+cyqz
+        xdNjj9gtLmzrY7W4vGsOm8WxBWIW306/YXRg99iy8iaTx4JNpR6bVnWyebzfd5XNo2/LKkaP
+        z5vkAtiiuGxSUnMyy1KL9O0SuDIWN31hKnjBVNHU3MPYwDiTqYuRk0NCwERi5fQVbF2MXBxC
+        ArsZJe7MncIMkZCRuL5gH0sXIweQLSxx+HAxRM0rRom9ez6wgdSwCRhIHPvxkxHEFhHQkNg3
+        ax6YzSzwmlHi0CcFiIY7TBIXTvSDDeUUMJS4eeYBO4gtLBAo8X7jV7BBLAKqEu1nHoLZvAKW
+        EjOfPYGyBSVOznwCdgSzgJ5E20ao+fIS29/OgbpTQeLn02WsICUiAlES+1a6QJSISMzubGOe
+        wCg8C8mgWQiDZiEZNAtJxwJGllWMkqkFxbnpucmGBYZ5qeV6xYm5xaV56XrJ+bmbGMHxpKWx
+        g/He/H96hxiZOBgPMUpwMCuJ8OZpBqQK8aYkVlalFuXHF5XmpBYfYpTmYFES5zWcMTtFSCA9
+        sSQ1OzW1ILUIJsvEwSnVwCQVe3gab5keS1J7xeTa3bltPAe2NtspO9Qf5+R8/OON30mL2t8H
+        9iVVTfCxEFkZW/zHs+j9isC0d5r5/+b3p72t3urlebK6PvgQ9ycb5u+us2f9255Zvoh9QZvX
+        sbQ9sfytX6UsOdJcvGq4wr0d355ce0K2lnt1T2KsZzWPTu27y9n/zBMKM+0/PGn9IPu9cKnC
+        HYUbK1aZzDw4/TIbg9KOY54Ml12cDjDUFPG+1F/2ufPcAWWX6fFRpRk/jS+7dgQtztoj+O4j
+        66EFk9d8udgQNYOhQaW85dm5DsMpAoZe/b/XliWKXjQQkLvxYcUFZebLhRz8tRr3uA8m3LVW
+        nMOtrOv50+d3rVG77DZ/JZbijERDLeai4kQARTTVQRYDAAA=
+X-CMS-MailID: 20231113035009epcas1p31f0e0ce293e8be86de521a8f99b82d3b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77
+References: <CGME20231103072245epcas1p4471a31e9f579e38501c8c856d3ca2a77@epcas1p4.samsung.com>
+        <20231103072209.1005409-1-jongeon.park@samsung.com>
+        <20231106154812.14c470c2@kernel.org>
+        <25c501da111e$d527b010$7f771030$@samsung.com>
+        <20231107085347.75bc3802@kernel.org>
+        <000001da13e5$d9b99e30$8d2cda90$@samsung.com>
+        <20231110110002.7279f895@kernel.org>
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 08, 2023 at 10:29:49AM -0800, Xin Li wrote:
->Switch MSR_IA32_FRED_RSP0 between host and guest in
->vmx_prepare_switch_to_{host,guest}().
->
->MSR_IA32_FRED_RSP0 is used during ring 3 event delivery only, thus
->KVM, running on ring 0, can run safely with guest FRED RSP0, i.e.,
->no need to switch between host/guest FRED RSP0 during VM entry and
->exit.
->
->KVM should switch to host FRED RSP0 before returning to user level,
->and switch to guest FRED RSP0 before entering guest mode.
->
->Tested-by: Shan Kang <shan.kang@intel.com>
->Signed-off-by: Xin Li <xin3.li@intel.com>
->---
-> arch/x86/kvm/vmx/vmx.c | 17 +++++++++++++++++
-> arch/x86/kvm/vmx/vmx.h |  2 ++
-> 2 files changed, 19 insertions(+)
->
->diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
->index 41772ecdd368..d00ab9d4c93e 100644
->--- a/arch/x86/kvm/vmx/vmx.c
->+++ b/arch/x86/kvm/vmx/vmx.c
->@@ -1344,6 +1344,17 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
-> 	}
+On Saturday, November 11, 2023 4:00 AM, Jakub Kicinski wrote:
 > 
-> 	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_guest_kernel_gs_base);
->+
->+	if (cpu_feature_enabled(X86_FEATURE_FRED) &&
->+	    guest_cpuid_has(vcpu, X86_FEATURE_FRED)) {
->+		/*
->+		 * MSR_IA32_FRED_RSP0 is top of task stack, which never changes.
->+		 * Thus it should be initialized only once.
->+		 */
->+		if (unlikely(vmx->msr_host_fred_rsp0 == 0))
->+			vmx->msr_host_fred_rsp0 = read_msr(MSR_IA32_FRED_RSP0);
->+		wrmsrl(MSR_IA32_FRED_RSP0, vmx->msr_guest_fred_rsp0);
->+	}
-> #else
-> 	savesegment(fs, fs_sel);
-> 	savesegment(gs, gs_sel);
->@@ -1388,6 +1399,12 @@ static void vmx_prepare_switch_to_host(struct vcpu_vmx *vmx)
-> 	invalidate_tss_limit();
-> #ifdef CONFIG_X86_64
-> 	wrmsrl(MSR_KERNEL_GS_BASE, vmx->msr_host_kernel_gs_base);
->+
->+	if (cpu_feature_enabled(X86_FEATURE_FRED) &&
->+	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_FRED)) {
-
-IIUC, vmx_prepare_switch_to_host() is called from IRQ-disabled context. using
-guest_cpuid_has() in this context is not desired, see lockdep_assert_irqs_enabled()
-in cpuid_entry2_find().
-
->+		vmx->msr_guest_fred_rsp0 = read_msr(MSR_IA32_FRED_RSP0);
->+		wrmsrl(MSR_IA32_FRED_RSP0, vmx->msr_host_fred_rsp0);
->+	}
-> #endif
-> 	load_fixmap_gdt(raw_smp_processor_id());
-> 	vmx->guest_state_loaded = false;
->diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
->index f8c02bd37069..328a3447f064 100644
->--- a/arch/x86/kvm/vmx/vmx.h
->+++ b/arch/x86/kvm/vmx/vmx.h
->@@ -276,6 +276,8 @@ struct vcpu_vmx {
-> #ifdef CONFIG_X86_64
-> 	u64		      msr_host_kernel_gs_base;
-> 	u64		      msr_guest_kernel_gs_base;
->+	u64		      msr_host_fred_rsp0;
->+	u64		      msr_guest_fred_rsp0;
-
-resetting guest fred rsp0 to 0 during vcpu reset is missing.
-
-> #endif
+> I see, please add a comment saying that NETLINK_S_CONGESTED prevents
+> new skbs from being queued before the new test in netlink_poll().
 > 
-> 	u64		      spec_ctrl;
->-- 
->2.42.0
->
->
+> Please repost next week (i.e. after the merge window) with subject
+> tagged [PATCH net-next v2].
+
+Got it. Thanks Jakub.
+
+BRs,
+JE Park.
+
+
