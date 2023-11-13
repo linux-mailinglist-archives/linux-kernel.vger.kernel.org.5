@@ -2,54 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A1F17E996F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:51:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E85507E9973
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233439AbjKMJvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:51:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39258 "EHLO
+        id S233437AbjKMJxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233409AbjKMJvJ (ORCPT
+        with ESMTP id S231940AbjKMJxT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:51:09 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D6510D0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:51:05 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4STPhq1SclzPpGX;
-        Mon, 13 Nov 2023 17:46:51 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 13 Nov 2023 17:51:02 +0800
-Message-ID: <330c9fd5-fa24-4b07-a3e7-2923e4ab4c89@huawei.com>
-Date:   Mon, 13 Nov 2023 17:51:01 +0800
+        Mon, 13 Nov 2023 04:53:19 -0500
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D9E10D
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:53:16 -0800 (PST)
+Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4STPr80ndrz9srw;
+        Mon, 13 Nov 2023 10:53:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1699869192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSEEONC8xHuiK/FSJm36NKCtjchv8QqjOuZVvBDV3Wo=;
+        b=EUoMgOnCwBKR4xWSxgLK4CJhGEWQVHqQcQtHihA+3MSvjNnXXhPF9E8NaHO9oD+pz/HD/o
+        ZvbsTkfo49iMRW+PbmU/3tV6Dxvs5mhhZGRkY8d4PaV0G4iZJz7tsZLJZlOG5bB0//3diH
+        CgypVFqBvDgQHyry5PavyGxfq+PJZEakDDvwXIbAOwzjm+HpWfVBedUWEPeH3i02EUzJm/
+        oqaX4exNqKCt+Jj7hr3oGPqB3xuwDttX8e7XBi2HnsQJOwvTdc10sNbodmY/POaiGZ9gwG
+        CK6Lre9LSpuGdElQb3YZGUtyN+Qxk6szZJuraLaeOcSLwvIE//X3Q2lYc/YW1w==
+Message-ID: <7339350d-a796-86c4-ab9f-752c161923e3@mailbox.org>
+Date:   Mon, 13 Nov 2023 10:53:08 +0100
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] mm: ksm: use more folio api in
- ksm_might_need_to_copy()
-Content-Language: en-US
-To:     David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <20231107135216.415926-1-wangkefeng.wang@huawei.com>
- <20231107135216.415926-2-wangkefeng.wang@huawei.com>
- <ZUpIlkO0E7+i2hCg@casper.infradead.org>
- <81e0289c-225c-4468-959c-937d3678cb2d@huawei.com>
- <ZUuUVDbiWETJ2OU1@casper.infradead.org>
- <67eedbab-bf15-4bc3-88ce-36fc074393bd@huawei.com>
- <d5fed34e-359d-4a06-85bd-27694bcf6e4d@redhat.com>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-In-Reply-To: <d5fed34e-359d-4a06-85bd-27694bcf6e4d@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
+Content-Language: de-CH-frami, en-CA
+To:     Simon Ser <contact@emersion.fr>
+Cc:     pierre-eric.pelloux-prayer@amd.com,
+        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
+        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
+        alexander.deucher@amd.com, joshua@froggi.es,
+        wayland-devel@lists.freedesktop.org, hwentlan@amd.com,
+        christian.koenig@amd.com
+References: <20230815185710.159779-1-andrealmeid@igalia.com>
+ <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
+ <20231016175222.7a89e6ab@eldfell> <ZS1ST6XAUHilBg3d@intel.com>
+ <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr>
+ <ZS55mXTSxpXKYbsd@intel.com>
+ <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr>
+ <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
+ <438f2960-c49e-6485-5916-20d6e69ef7d4@mailbox.org>
+ <lpel36VSNcFmcpY-E0tWcyO88CxmVfIdAMNYkkyxRy8ELbvM5xEZS68zxsK3JncHlkjQnxdE8vbKsJT_RZSGRCkPSiTvbXZWqOER6ZtpL2A=@emersion.fr>
+From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
+In-Reply-To: <lpel36VSNcFmcpY-E0tWcyO88CxmVfIdAMNYkkyxRy8ELbvM5xEZS68zxsK3JncHlkjQnxdE8vbKsJT_RZSGRCkPSiTvbXZWqOER6ZtpL2A=@emersion.fr>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemm100001.china.huawei.com (7.185.36.93)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+X-MBO-RS-ID: ffb3b1a56ad4ece27b5
+X-MBO-RS-META: wfipq1n5mfspi8nqc5r7f573gwwg4fg1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -58,63 +74,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2023/11/13 16:32, David Hildenbrand wrote:
-> On 09.11.23 08:09, Kefeng Wang wrote:
+On 11/13/23 10:47, Simon Ser wrote:
+> On Monday, November 13th, 2023 at 10:41, Michel Dänzer <michel.daenzer@mailbox.org> wrote:
+> 
+>> On 11/13/23 10:18, Simon Ser wrote:
 >>
->>
->> On 2023/11/8 21:59, Matthew Wilcox wrote:
->>> On Wed, Nov 08, 2023 at 09:40:09AM +0800, Kefeng Wang wrote:
->>>>
->>>>
->>>> On 2023/11/7 22:24, Matthew Wilcox wrote:
->>>>> On Tue, Nov 07, 2023 at 09:52:11PM +0800, Kefeng Wang wrote:
->>>>>>     struct page *ksm_might_need_to_copy(struct page *page,
->>>>>> -            struct vm_area_struct *vma, unsigned long address)
->>>>>> +            struct vm_area_struct *vma, unsigned long addr)
->>>>>>     {
->>>>>>         struct folio *folio = page_folio(page);
->>>>>>         struct anon_vma *anon_vma = folio_anon_vma(folio);
->>>>>> -    struct page *new_page;
->>>>>> +    struct folio *new_folio;
->>>>>> -    if (PageKsm(page)) {
->>>>>> -        if (page_stable_node(page) &&
->>>>>> +    if (folio_test_ksm(folio)) {
->>>>>> +        if (folio_stable_node(folio) &&
->>>>>>                 !(ksm_run & KSM_RUN_UNMERGE))
->>>>>>                 return page;    /* no need to copy it */
->>>>>>         } else if (!anon_vma) {
->>>>>>             return page;        /* no need to copy it */
->>>>>> -    } else if (page->index == linear_page_index(vma, address) &&
->>>>>> +    } else if (page->index == linear_page_index(vma, addr) &&
+>>> On Monday, October 23rd, 2023 at 10:25, Simon Ser contact@emersion.fr wrote:
+>>>
+>>>>>>>>>>>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
+>>>>>>>>>>>>> +effectively change only the FB_ID property on any planes. No-operation changes
+>>>>>>>>>>>>> +are ignored as always. [...]
+>>>>>>>>>>>>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
+>>>>>>>>>>>
+>>>>>>>>>>> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
+>>>>>>>>>>> and it worked as expected, so this shouldn't be a concern.
+>>>>>>>>>>> Right, so it must have some effect. It cannot be simply ignored like in
+>>>>>>>>>>> the proposed doc wording. Do we special-case re-setting the same FB_ID
+>>>>>>>>>>> as "not a no-op" or "not ignored" or some other way?
+>>>>>>>>>>> There's an effect in the refresh rate, the image won't change but it
+>>>>>>>>>>> will report that a flip had happened asynchronously so the reported
+>>>>>>>>>>> framerate will be increased. Maybe an additional wording could be like:
+>>>>>>>>>
+>>>>>>>>> Flipping to the same FB_ID will result in a immediate flip as if it was
+>>>>>>>>> changing to a different one, with no effect on the image but effecting
+>>>>>>>>> the reported frame rate.
+>>>>>>>>
+>>>>>>>> Re-setting FB_ID to its current value is a special case regardless of
+>>>>>>>> PAGE_FLIP_ASYNC, is it not?
+>>>>>>>
+>>>>>>> No. The rule has so far been that all side effects are observed
+>>>>>>> even if you flip to the same fb. And that is one of my annoyances
+>>>>>>> with this proposal. The rules will now be different for async flips
+>>>>>>> vs. everything else.
+>>>>>>
+>>>>>> Well with the patches the async page-flip case is exactly the same as
+>>>>>> the non-async page-flip case. In both cases, if a FB_ID is included in
+>>>>>> an atomic commit then the side effects are triggered even if the property
+>>>>>> value didn't change. The rules are the same for everything.
 >>>>>
->>>>> Hmm.  page->index is going away.  What should we do here instead?
+>>>>> I see it only checking if FB_ID changes or not. If it doesn't
+>>>>> change then the implication is that the side effects will in
+>>>>> fact be skipped as not all planes may even support async flips.
 >>>>
->>>> Do you mean to replace page->index to folio->index, or kill index from
->>>> struct page?
+>>>> Hm right. So the problem is that setting any prop = same value as
+>>>> previous one will result in a new page-flip for asynchronous page-flips,
+>>>> but will not result in any side-effect for asynchronous page-flips.
+>>>>
+>>>> Does it actually matter though? For async page-flips, I don't think this
+>>>> would result in any actual difference in behavior?
 >>>
->>> I'm asking you what we should do.
+>>> To sum this up, here is a matrix of behavior as seen by user-space:
 >>>
->>> Tail pages already don't have a valid ->index (or ->mapping).
->>> So presumably we can't see a tail page here today.  But will we in 
->>> future?
+>>> - Sync atomic page-flip
+>>> - Set FB_ID to different value: programs hw for page-flip, sends uevent
+>>> - Set FB_ID to same value: same (important for VRR)
+>>> - Set another plane prop to same value: same
 >>
->> I think we could replace page->index to page_to_pgoff(page).
+>> A page flip is programmed even if FB_ID isn't touched?
 > 
-> What the second part of that code does is check whether a page might 
-> have been a KSM page before swapout.
+> I believe so. Set CRTC_X on a plane to the same value as before, and the
+> CRTC gets implicitly included in the atomic commit?
 > 
-> Once a KSM page is swapped out, we lose the KSM marker. To recover, we 
-> have to check whether the new page logically "fits" into the VMA.
+>>> - Set another plane prop to different value: maybe rejected if modeset required
+>>> - Async atomic page-flip
+>>> - Set FB_ID to different value: updates hw with new FB address, sends
+>>> immediate uevent
+>>> - Set FB_ID to same value: same (no-op for the hw)
+>>
+>> No-op implies it doesn't trigger scanning out a frame with VRR, if
+>> scanout is currently in vertical blank. Is that the case? If so, async
+>> flips can't reliably trigger scanning out a frame with VRR.
 > 
-> Large folios are never KSM folios, and we only swap in small folios (and 
-> in the future, once we would swap in large folios, they couldn't have 
-> been KSM folios before).
-> 
-> So you could return early in the function if we have a large folio and 
-> make all operations based on the (small) folio.
+> By no-op I mean that the hw is programmed for an immediate async flip
+> with the same buffer addr as the previous one. So this doesn't actually
+> change anything.
 
-Sure, I will add folio_test_large check ahead and convert page->index to 
-folio->index, and adjust the logical if ksm and swapin support large 
-folio, thanks.
+If a flip is programmed to the HW, it's not a no-op any more than in the sync case, in particular not with VRR.
+
+
+-- 
+Earthling Michel Dänzer            |                  https://redhat.com
+Libre software enthusiast          |         Mesa and Xwayland developer
+
