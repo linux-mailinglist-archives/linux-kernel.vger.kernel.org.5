@@ -2,132 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6982F7EA635
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 23:57:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC487EA69A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231872AbjKMW5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 17:57:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35740 "EHLO
+        id S231906AbjKMXEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 18:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjKMW5q (ORCPT
+        with ESMTP id S229580AbjKMXE2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 17:57:46 -0500
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77B2C1B5;
-        Mon, 13 Nov 2023 14:57:43 -0800 (PST)
-Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
-        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADBZ16A012916;
-        Mon, 13 Nov 2023 14:57:34 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
-         h=from:to:cc:subject:date:message-id:in-reply-to:references
-        :content-transfer-encoding:content-type:mime-version; s=
-        PPS06212021; bh=4hGwZs/gkFgvgh64pmtZQPr1ae5vVRucOKAiY2toD9A=; b=
-        J3L+PLKoF1KiB17wbXsGPjWVIhjxUXl9CWXkBdYr+RCAjQn7MXnoyJNcwKv46a/U
-        k9ajtygNtM2UhtyOTXCkeBwHY8Znt0PHzybHG2L1U48TfJGDGsKTPSzoALoxFa4l
-        cVJqdgo2ItSNyB40LD4RR7LE1ROdM/VZ64TMkHwytQGIAKAriTjZEStTe6OI9nNP
-        SNRvGTh3i7Oo5qUpSa/WKrovGawzRdNq5L2Apuww+ZLtDoO37JjmddvS1BUuY52h
-        ywLIYKjuxKwloRKMZFIOfwyurgexVmK0XGuCA3znT7yXCeW3JhfrKGsWy/FEoeQk
-        4g08wHpA0nzsA1MAJ47JVQ==
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ua5s4sw6g-3
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 14:57:34 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KihoWP35qTwez3trQv9nGuiPrJvDJEPLXIQZorpZUzl+jooi/zlBx/PgX+yh2zLbxKvNEmoSRDQDNdHO8ZTXbJE8ngJy24Qrp3R2bQrsbQLR+3QVz6yYD4u3DgRkqMZKtYfE39gkrxsCwmX5t+YTesSfCl3IU4w+1SHxDQgL2QiYmDFIuSUprnUj/75roj5Ce8pZ751FISIPTxL4c0FLj7hd7uhK5HosaRij2+Q1IlDEcLQFX9eK6zfvY5FI1OUENSLqJg9pKgtzFfTTX8Hi/6nqerne6qcAidBxzWQLHn7W9brysm1UjhiyLJ6XTsbWQgM2ikLJNecB2gKPTQgD2Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4hGwZs/gkFgvgh64pmtZQPr1ae5vVRucOKAiY2toD9A=;
- b=U8C/Vsx0vET+manC3mQuq65a6ybqAn0f33ggc4B2PUJNZGZPODmp3sjbmJ6TkOA1B7aEJcu/HBOfhdCkLnz8sen0zYGPpnXIowge66YnRtroLpUHafKsFxclC8uE1t8+qEnlywlUYg5SOPb+gKnDDEmbB/VltsA+La97F3qgUSgnbXA4BmHucHmtqeOAxL50udCfk5RU+KUjHoQK6ntLtRCL2RXgNklgC3euP1eWUybmvuen3hEwTl/GAqvQMKiHB3JQ414PWzYpNwmneMg9wtrFnqeXd94RF4l+hlBiPFqjCfAQZomOjZl5FjTd0T7n+3nMsWfmMIC8vPrvmEKuqg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
-Received: from MW5PR11MB5764.namprd11.prod.outlook.com (2603:10b6:303:197::8)
- by CY8PR11MB7136.namprd11.prod.outlook.com (2603:10b6:930:60::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
- 2023 22:57:33 +0000
-Received: from MW5PR11MB5764.namprd11.prod.outlook.com
- ([fe80::7d7c:4379:e96:3537]) by MW5PR11MB5764.namprd11.prod.outlook.com
- ([fe80::7d7c:4379:e96:3537%7]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
- 22:57:33 +0000
-From:   Xiaolei Wang <xiaolei.wang@windriver.com>
-To:     Frank.Li@nxp.com, vkoul@kernel.org
-Cc:     imx@lists.linux.dev, dmaengine@vger.kernel.org,
+        Mon, 13 Nov 2023 18:04:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B850D55
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 15:04:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A34C433C9;
+        Mon, 13 Nov 2023 23:04:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699916664;
+        bh=bxaBSP1U/utusvLGYRzx2FzDNa8xlVt597WQS3AhgYs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=c56JiRjMiRmMiI3D1N8Lumkcgi1wLZc4rCM90D+ipPDWRI0dFbXDCVzUr0ZZGi1Iv
+         U1EMPwaF5Rzdg90HV/V4IQhZWuguKDxtEy36usOelEYFwV6Jd+jKzSFJHEPDrEu8Di
+         C0nGHATp276MGHah8y+/wH13cLZ33mBae3z6OYB/db3kjGrMluJk7pXakOrWecCmrc
+         z1z6KUfto9vaRlxL4+cchxaZUyC7EDbocIKc58LzwHL+UY/TxV911UHAvP0n4rnYNB
+         naB61vLLojdAe6xo+ZIq85/HHHgvyDzB272ApQqETClyaBTv92yKDM0RiMT0jmt82k
+         54b5WRdPoiY8w==
+Received: by mercury (Postfix, from userid 1000)
+        id 25E1D1060A25; Tue, 14 Nov 2023 00:04:22 +0100 (CET)
+From:   Sebastian Reichel <sre@kernel.org>
+To:     Sebastian Reichel <sre@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+Cc:     Alain Volmat <alain.volmat@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] dmaengine: fsl-edma: Add judgment on enabling round robin arbitration
-Date:   Tue, 14 Nov 2023 06:57:13 +0800
-Message-Id: <20231113225713.1892643-3-xiaolei.wang@windriver.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231113225713.1892643-1-xiaolei.wang@windriver.com>
-References: <20231113225713.1892643-1-xiaolei.wang@windriver.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: TYAPR01CA0137.jpnprd01.prod.outlook.com
- (2603:1096:404:2d::29) To MW5PR11MB5764.namprd11.prod.outlook.com
- (2603:10b6:303:197::8)
+Subject: [PATCH v4 0/6] GC0308 Camera Sensor
+Date:   Mon, 13 Nov 2023 23:57:19 +0100
+Message-ID: <20231113230421.226808-1-sre@kernel.org>
+X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MW5PR11MB5764:EE_|CY8PR11MB7136:EE_
-X-MS-Office365-Filtering-Correlation-Id: a65f2aea-4bd4-455a-79a0-08dbe49bebcd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Bf3JEcfO2xzk7rnNiCLBegozCsvfeV5Vi39TDPsqslzK8G0MEOQ+DnO17zouNSyGaFsvnVgJTraPKmfqqYm9LiUkLpnRxOjFY/qnK+3CoeiCnUV8kar2oMrIPMrbE8XRXgwLvasx5HGbYZy144NW2p1xJPtJZdM7aw1vMhCBXqsIt39Bm0dDuZswppEBHULhzL/2bG4LqBK1w/QCxJzCiyAf7SavGv1fhmhYf2T5d8o6BHB8zcf2J3h6yApUPVDJy0V2gtIhdoG1hYtY6uhEigW4SIj30IzwuX1j4ebJNF2dMUw0OdREbNt2R+12lbSslHYyG+VByyuIW2EG3LtZd/VDHaEqYOmLwzvsnE+wIuMYijM31Lh9Ykwy19J7iXFA0wluE7NTBIEePUvpn423E8VIhKK3QszvrfC69G+KpdGn0rRzd8847iJVB5Qz4T/4vUHYdNtZiIs6vUXSvuMVN2GTrE/RthxfQ/C2lpO/WkcEakzA9wRCtxzqGsfBsnnuL5JTN9xDKDbH4UWrDGDIW3GrLAReKG1PX3uVlWiAGO4YEScpE0yHdQSJEamOZteEsIaaGhTZn8gX7ziCh4HtmCrm+X2n4eY+qLiaZH1owrge95ekotryQFAIu73BC3BI
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39850400004)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(38100700002)(2616005)(1076003)(8936002)(8676002)(4326008)(44832011)(52116002)(6512007)(6506007)(83380400001)(26005)(6486002)(6666004)(478600001)(66946007)(66476007)(66556008)(316002)(38350700005)(36756003)(41300700001)(2906002)(86362001)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?AQfvsNzAsfPH7KKcWExd0xJI6/CYxzZGwSLRip3rhNCiYZ8ewHmLGcmrd4uV?=
- =?us-ascii?Q?RyW6vNuvBrGF6cn8mehCwXZsjwaW4Ojg3m4PMcUpCllarFa9FbLuRV4fofSg?=
- =?us-ascii?Q?xoEHiN8c5ry4G2RNIfMgYKmINww5M6rFJrtNYK5sxENOXsbi2CxtiTfVhiEF?=
- =?us-ascii?Q?49FXNj9jRh1kmWFetJn6FsHvAVKm1mdat8iw9uIpmd+oidfZGy9K9OCqBJ6P?=
- =?us-ascii?Q?vYQzs2Q4U+uZJ2ZMq6SnYqEbp02E+ZAr4vsBxxIismbICDgL68IzOUp8nMJ8?=
- =?us-ascii?Q?PYe20Ni05WxpvwbKyfPY7E9uEErvNFhWhBrqsoc5ZOrXQ3IJhfwouXD6wybj?=
- =?us-ascii?Q?Cftufj6XAnaTJS73EyTHTe93XzCG/FNcZgxBTW+zH6a4Q7jTw48looDHqRJE?=
- =?us-ascii?Q?VMPBEIc5sBaRG3/UKY8g5007w6foq9kt84Au1KXqvuHyaxRStzKqUhNI7ZXS?=
- =?us-ascii?Q?EDr15mG70MBo3w9YRHt8njLj+EPFtu7q2GzdIKTnGYIhfXEysxjOHhMzZitF?=
- =?us-ascii?Q?rMCd+yOBtyLQj1OxlWBz7vPi7NFEFM89JNZfhnQL9Tncy2DHj0u2ncPdheK9?=
- =?us-ascii?Q?1XIHJNizescceKjNfu9NOW63B6aBtRpmUfG4t8+rYsRCQrZHfjMkrrWrXrx7?=
- =?us-ascii?Q?mndqJoFWR3VDbelVnBu9kN3XxHPyHAI940y1bM+wWyGWlvMk2bxBdqIYXVzQ?=
- =?us-ascii?Q?JdH9dtnYs2W7dj6wr0dj6YECY0mchs7o2k1NY6UK6ccQZ564Z0eWnd3iXmDp?=
- =?us-ascii?Q?rU/XGGvSgwfdzkVTqT87puFcBuK/KUhb4l8FHDC7BkVp10ouLV6gEIhGHuOT?=
- =?us-ascii?Q?bJTHBciKd0M32apLkw4q96mve1gkzfceKxUL5sFM4QjeIb43u4DppF1YzTZC?=
- =?us-ascii?Q?1Wjmkzurg/1y3h99hBMachPSanCBCjQmZQzCQKbXaVjxcvdIj4Xd4gHwaQUL?=
- =?us-ascii?Q?bU1atHuWomaU2vOHi4WTFCFcwZYeRtdOe0RouL/C91mF8Xq1of1aQEotofru?=
- =?us-ascii?Q?7/hShFCmkbb1A3Uo9jdqUNDqyhjZrl1rub59nbA6E7Egni7mM0KTAt6Tw7yU?=
- =?us-ascii?Q?PtvW/qPfmd4FKj9Ei4BqwZb1QFeGAYwU9bNoDJjS41yxPECB/6Lw4Sy/Wb+G?=
- =?us-ascii?Q?t2VIgXXVcz0caAp9wDG3rwvseTN0zwl21PpGIcw2SXzm5pBh+ex/FTj23eCo?=
- =?us-ascii?Q?qa+XMsq6Txh1Aam85RKGfoOu+/PPJAPTkRYgMUItziwUaT1OZM9TGSVliHpJ?=
- =?us-ascii?Q?CEiba5BJ0sxrttfRwDiLM1NIafDJyhehYNM7TY430xD0owZFA3mNDKMMKBoB?=
- =?us-ascii?Q?s6plROSDYv53kbiev0c4GS2B0q40DHsb6k+2JQVyM4ce6b4bqBXFFFagRhCb?=
- =?us-ascii?Q?Q+iWKErjVnQLazqQTn+wAjpD39NN2rqa1ly58TuL6ZkHj+EONxtzN0RZljJT?=
- =?us-ascii?Q?Tab+w1pDDSF71MkAk0LZGllA9TMqxbNqVKzmbkW0woAefzs/TMIYMLlHXZDh?=
- =?us-ascii?Q?7w5CVp/9BRndO8OMdX+UQk+bivZXSoI/LI2pqPAIrzhxG0vfkanEJVC2n7z2?=
- =?us-ascii?Q?ZUZhHmfDV6/rTPqElFixIKKE8TG35FFnVHJ2Su16lF5wB36hGjxUDWfSUbxG?=
- =?us-ascii?Q?2g=3D=3D?=
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a65f2aea-4bd4-455a-79a0-08dbe49bebcd
-X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5764.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 22:57:33.1884
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: LuoO7h0dl7AfVHqy8ZHJ3DyaDHcetu8mqxlUgZnqftZm0xfWYfHKiUdRQSHOvCGJpwd8oA4VIqr/qOdg9MWRsWz5hAibHZFqCY9SUkHmIhQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7136
-X-Proofpoint-GUID: MTQPTcT57abejzkFke0GyINJX-Gvzp7A
-X-Proofpoint-ORIG-GUID: MTQPTcT57abejzkFke0GyINJX-Gvzp7A
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-13_12,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=699 clxscore=1015
- priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
- suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2311060001 definitions=main-2311130179
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,50 +56,105 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add judgment on enabling round robin arbitration to avoid
-exceptions if this function is not supported.
+Hi,
 
-Call trace:
- fsl_edma_resume_early+0x1d4/0x208
- dpm_run_callback+0xd4/0x304
- device_resume_early+0xb0/0x208
- dpm_resume_early+0x224/0x528
- suspend_devices_and_enter+0x3e4/0xd00
- pm_suspend+0x3c4/0x910
- state_store+0x90/0x124
- kobj_attr_store+0x48/0x64
- sysfs_kf_write+0x84/0xb4
- kernfs_fop_write_iter+0x19c/0x264
- vfs_write+0x664/0x858
- ksys_write+0xc8/0x180
- __arm64_sys_write+0x44/0x58
- invoke_syscall+0x5c/0x178
- el0_svc_common.constprop.0+0x11c/0x14c
- do_el0_svc+0x30/0x40
- el0_svc+0x58/0xa8
- el0t_64_sync_handler+0xc0/0xc4
- el0t_64_sync+0x190/0x194
+I did the following tests on an i.MX6ULL based system [0]:
 
-Fixes: 72f5801a4e2b ("dmaengine: fsl-edma: integrate v3 support")
-Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
----
- drivers/dma/fsl-edma-main.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ * v4l2-compliance -u /dev/v4l-subdev1
+   - v4l2-compliance 1.24.1, 32 bits, 32-bit time_t
+     (from Debian testing)
+   - Total for device /dev/v4l-subdev1: 44, Succeeded: 44
+ * Using gstreamer + v4l2-ctl
+   - Tried 640x480, 320x240, 160x120 YUYV8_2X8 formats
+   - Tested effect of all exposed user controls
+ * checkpatch does not report any driver issues
+ * dt_binding_check does not report anything
+ * rebinding driver works
 
-diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
-index 52577fffc62b..aea7a703dda7 100644
---- a/drivers/dma/fsl-edma-main.c
-+++ b/drivers/dma/fsl-edma-main.c
-@@ -665,7 +665,8 @@ static int fsl_edma_resume_early(struct device *dev)
- 			fsl_edma_chan_mux(fsl_chan, fsl_chan->slave_id, true);
- 	}
- 
--	edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
-+	if (!(fsl_edma->drvdata->flags & FSL_EDMA_DRV_SPLIT_REG))
-+		edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
- 
- 	return 0;
- }
+[0] https://embedded-recipes.org/2023/schedule/running-foss-thermal-camera/
+
+Changes since PATCHv3:
+ * https://lore.kernel.org/all/20231027011417.2174658-1-sre@kernel.org/
+ * Rebased to v6.7-rc1
+ * Replace gc0308_is_valid_format() with gc0308_get_format_idx(),
+   which can be reused in gc0308_set_format().
+ * Remove the runtime PM get call in remove function
+ * Move the runtime PM get call before the subdev register call in probe
+ * Drop message about unsupported format code
+ * Add Reviewed-by: Jacopo Mondi <jacopo.mondi@ideasonboard.com>
+ * Merged binding patch with the one from Alain Volmat and add
+   Acked-by: Rob Herring <robh@kernel.org> and assign authorship
+   to him, since his patch arrived first on the ML
+ * Added two patches to fix an issue with v4l2_async_unregister_subdev()
+   list handling
+
+Changes since PATCHv2:
+ * https://lore.kernel.org/all/20231024010355.1877523-1-sre@kernel.org/
+ * Simplify Kconfig dependencies
+ * Do not store code/resolution; which is available from subdev state
+ * Store register values for mode settings to avoid second lookup in
+   s_stream
+ * Reduce power_on sleep times
+ * remove debug dev_err() print, that I accidently added in v2
+ * add missing format check in gc0308_enum_frame_size()
+ * do not PM resume in gc0308_s_ctrl()
+ * enable and use runtime PM autosuspend
+ * add .init_cfg() PAD op
+ * use CCI helper instead of raw regmap
+ * cluster both flip controls
+   (that's not just a performance optimization, but fixes an issue,
+   that register update is slow, so fast sequential setting of VFLIP/HFLIP
+   override each other without this)
+ * simplify gc0308_set_power_line_freq
+ * free control handler on probe error
+ * use first format by default
+ * expose V4L2_CID_HBLANK, V4L2_CID_VBLANK, V4L2_CID_PIXEL_RATE
+ * remove incorrect support for framerate and instead add a comment
+
+Changes since PATCHv1:
+ * https://lore.kernel.org/all/20231023002547.1754190-1-sre@kernel.org/
+ * Update binding: i2c0 -> i2c
+ * Update binding: make GC0309 use GC0308 as fallback compatible
+ * Add regulator handling in power_on/power_off
+ * Fix alignment of regmap_multi_reg_write arguments
+ * Fix useless extra return
+ * Do not check for pad in gc0308_enum_frame_size()
+ * Drop get_mbus_config implementation
+ * Use V4L2_CID_AUTO_EXPOSURE_BIAS instead of V4L2_CID_EXPOSURE
+ * Drop gc0308_get_format in favour of v4l2_subdev_get_fmt
+ * Replace open-coded v4l2_find_nearest_size() logic
+ * check clock rate instead of setting it
+ * use fwnode_graph_get_endpoint_by_id()
+ * power off device when probe errors out after power on
+ * replace mutex with sub-device state
+ * add Galaxycore to generic camera sensors section in MAINTAINERS
+ * add GC0308 entry in MAINTAINERS
+
+Greetings,
+
+-- Sebastian
+
+Alain Volmat (1):
+  dt-bindings: vendor-prefixes: add GalaxyCore
+
+Sebastian Reichel (5):
+  media: dt-bindings: gc0308: add binding
+  media: MAINTAINERS: Add GalaxyCore in camera sensor section
+  media: v4l: async: Fix duplicated list deletion
+  media: v4l: async: Drop useless list move operation
+  media: i2c: gc0308: new driver
+
+ .../bindings/media/i2c/galaxycore,gc0308.yaml |  108 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |    2 +
+ MAINTAINERS                                   |    8 +
+ drivers/media/i2c/Kconfig                     |   10 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/gc0308.c                    | 1436 +++++++++++++++++
+ drivers/media/v4l2-core/v4l2-async.c          |    4 -
+ 7 files changed, 1565 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/galaxycore,gc0308.yaml
+ create mode 100644 drivers/media/i2c/gc0308.c
+
 -- 
-2.25.1
+2.42.0
 
