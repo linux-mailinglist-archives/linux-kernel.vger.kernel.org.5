@@ -2,195 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20D717EA3A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:18:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 404CA7EA3A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:18:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232131AbjKMTSm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 14:18:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35140 "EHLO
+        id S231860AbjKMTSZ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 14:18:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50162 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232214AbjKMTSZ (ORCPT
+        with ESMTP id S232147AbjKMTSN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 14:18:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECB8A49C2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:16:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699903015;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=QI+OFjhz2/q8YuzQGF/7kt5ZmFWZ0Ih26v8XHGpxDAg=;
-        b=fLRQ8wPKd2W7FbGiozSgw3RjYwBhpsqHT7o00u5ltP0iLZVrhRqyDZU8U9fQ+qotiqIZlV
-        SiYlHGm7o2SGX9IFnEaPXeUjPMVI0eOzLsQpMHkDdiuwn6q+v5ZLe/kRPn4EQQDD8tReNO
-        wt1rD6zIcHatuHtRCffXRYYias+JZIk=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-335-Xc6N2cjSN9mU2fTCG_dqQQ-1; Mon, 13 Nov 2023 14:16:53 -0500
-X-MC-Unique: Xc6N2cjSN9mU2fTCG_dqQQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-408524e2368so31927625e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:16:53 -0800 (PST)
+        Mon, 13 Nov 2023 14:18:13 -0500
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C28419BA;
+        Mon, 13 Nov 2023 11:17:11 -0800 (PST)
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-53fbf2c42bfso3731344a12.3;
+        Mon, 13 Nov 2023 11:17:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699903012; x=1700507812;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QI+OFjhz2/q8YuzQGF/7kt5ZmFWZ0Ih26v8XHGpxDAg=;
-        b=F7yfU2ZvjmAfyO6o67MActqusymnmNNmhfWXkUJ5+qjxnVNpQDlKTonRC7pe42ssm4
-         N6whV/WsD8Na3AN4SzYtPfGnBcQTc0K+Hhgc19/If31MSTWqJmFPiaH8z6G9vMRHg67q
-         Mls9/4vYLn7VcwHjW81ytw16tp4a21BLcyYPH7rRYlJDTuzqvrXkfneZD4ry4nZk93RU
-         8hPxhAbH8oJD6bJK5KhgHo71RdvJQlHo8biJuvXYiEb7latA5vLSk2H9Mb1OOZLpPFQR
-         XZjNBWssKNgELf83sqGHw6XH/+FdUDCdMl75kBs41QoXItvuYhP4sBgRPkPOaQ+uY+iM
-         ZW2w==
-X-Gm-Message-State: AOJu0YwYAiLPLJ2UkWIbGQePvqwTscLIVZp+xLiBdlQo91UUMiK3ZgNH
-        y4b5ZtK/9CTacFgX3g3x4jXOkKLtjnBGKT0nXtapNg5sMNl7h8ARt6vcPDNxxFnELVAPd19VAeS
-        6kkiyrecMc9WCR+ypKFg/gsX6
-X-Received: by 2002:a5d:5847:0:b0:32f:7d5a:87ab with SMTP id i7-20020a5d5847000000b0032f7d5a87abmr6576520wrf.53.1699903012062;
-        Mon, 13 Nov 2023 11:16:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHePviOiZUmhfcxNssCAgAnAuSKXuz27fg99dUJ3dKUcuVnbQ/fIU7ew3IR4gby02/E8lMFlQ==
-X-Received: by 2002:a5d:5847:0:b0:32f:7d5a:87ab with SMTP id i7-20020a5d5847000000b0032f7d5a87abmr6576498wrf.53.1699903011617;
-        Mon, 13 Nov 2023 11:16:51 -0800 (PST)
-Received: from ?IPV6:2003:cb:c73a:400:892e:7ff0:87:a52c? (p200300cbc73a0400892e7ff00087a52c.dip0.t-ipconnect.de. [2003:cb:c73a:400:892e:7ff0:87:a52c])
-        by smtp.gmail.com with ESMTPSA id w12-20020a5d544c000000b0031aef72a021sm6020406wrv.86.2023.11.13.11.16.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 11:16:51 -0800 (PST)
-Message-ID: <9f83d97e-b7a1-4142-8316-088b3854c30d@redhat.com>
-Date:   Mon, 13 Nov 2023 20:16:49 +0100
+        d=1e100.net; s=20230601; t=1699903031; x=1700507831;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=SXzAwGJ5tDGIurIQYKfvq5W6aU1IangDfDujnxdN0Dw=;
+        b=hHfdqDsNG2mk+C8Tdbqxt+qafK6FHLcPxc2McESw8KklTEcj5yw5FWenTpYpfYlS6I
+         AiWAUSBsjmlc4PelndvJ73L9SH+0X+U+H7+O02bvcNqEI6kO2BuQYQr7q/+pp+OCJVQI
+         UF0ltkxT89PgkfxuxsGLPl08c87MUO5V+xS2+u/isAtmDLJNXL9DiDJ4Luxu3S6ijOCq
+         7/5EuBgSk11akXVqwpqyYbKneJzwxZnE8FwC81Qc8ofK/IGr6XL64wmz4D7QEOxIZ1Rh
+         j+KAahLx6lb7iwevOlp8ZIIt2qNKfsfsRpX3rnMo3IxCVaXsHZScKz/RtnG1KWm+u94Y
+         ywUQ==
+X-Gm-Message-State: AOJu0YwIeFDBKfd9zQGmLBhtZlUMNM7LA4dJ6aoCSXbWx/TfeVM7w5HI
+        /Amo2AZDSNHAvtB9ggVe/FbHpnWCqORWj3zWAzo=
+X-Google-Smtp-Source: AGHT+IErDETuasXxpR+zj+IofcwoKV2s5HhnTzRkftG7HUhXz5J9lvYVR2AGVuZAU9EpU37ulFYCCxQPBByCaWzsHJU=
+X-Received: by 2002:a17:90b:38c1:b0:280:5e66:a1e2 with SMTP id
+ nn1-20020a17090b38c100b002805e66a1e2mr8361844pjb.22.1699903030698; Mon, 13
+ Nov 2023 11:17:10 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce a way to expose the interpreted file
- with binfmt_misc
-Content-Language: en-US
-To:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>
-Cc:     Kees Cook <keescook@chromium.org>, sonicadvance1@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        oleg@redhat.com, yzaikin@google.com, mcgrof@kernel.org,
-        akpm@linux-foundation.org, brauner@kernel.org,
-        viro@zeniv.linux.org.uk, willy@infradead.org, dave@stgolabs.net,
-        joshua@froggi.es
-References: <20230907204256.3700336-1-gpiccoli@igalia.com>
- <e673d8d6-bfa8-be30-d1c1-fe09b5f811e3@redhat.com>
- <202310091034.4F58841@keescook>
- <8dc5069f-5642-cc5b-60e0-0ed3789c780b@igalia.com>
- <871qctwlpx.fsf@email.froward.int.ebiederm.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <871qctwlpx.fsf@email.froward.int.ebiederm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <cover.1699487758.git.jpoimboe@kernel.org> <d5def69b0c88bcbe2a85d0e1fd6cfca62b472ed4.1699487758.git.jpoimboe@kernel.org>
+ <CAM9d7chZcqR8WCEYtjpP4KzUOeNdJ=kSvae0UrjsO8OgsepjDw@mail.gmail.com>
+ <20231111184908.ym4l6cwzwnkl7e6m@treble> <CAM9d7chgoiwc3ZfQ8SzO7gV0oQOKMK3bJAdxa63Pzgcqo4i7tQ@mail.gmail.com>
+ <20231113172106.GA12501@noisy.programming.kicks-ass.net> <CAM9d7chg8c4yftXgAyZZyLuYJQaWYDTa9YY5x-S+Mb-8SM8K-A@mail.gmail.com>
+ <20231113184958.GA7901@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231113184958.GA7901@noisy.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Mon, 13 Nov 2023 11:16:58 -0800
+Message-ID: <CAM9d7cgMvjy458N4_wjgvQN+cPCc4TtjG7VjChxPqVdVZJX3=g@mail.gmail.com>
+Subject: Re: [PATCH RFC 04/10] perf: Introduce deferred user callchains
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13.11.23 19:29, Eric W. Biederman wrote:
-> "Guilherme G. Piccoli" <gpiccoli@igalia.com> writes:
-> 
->> On 09/10/2023 14:37, Kees Cook wrote:
->>> On Fri, Oct 06, 2023 at 02:07:16PM +0200, David Hildenbrand wrote:
->>>> On 07.09.23 22:24, Guilherme G. Piccoli wrote:
->>>>> Currently the kernel provides a symlink to the executable binary, in the
->>>>> form of procfs file exe_file (/proc/self/exe_file for example). But what
->>>>> happens in interpreted scenarios (like binfmt_misc) is that such link
->>>>> always points to the *interpreter*. For cases of Linux binary emulators,
->>>>> like FEX [0] for example, it's then necessary to somehow mask that and
->>>>> emulate the true binary path.
->>>>
->>>> I'm absolutely no expert on that, but I'm wondering if, instead of modifying
->>>> exe_file and adding an interpreter file, you'd want to leave exe_file alone
->>>> and instead provide an easier way to obtain the interpreted file.
->>>>
->>>> Can you maybe describe why modifying exe_file is desired (about which
->>>> consumers are we worrying? ) and what exactly FEX does to handle that (how
->>>> does it mask that?).
->>>>
->>>> So a bit more background on the challenges without this change would be
->>>> appreciated.
->>>
->>> Yeah, it sounds like you're dealing with a process that examines
->>> /proc/self/exe_file for itself only to find the binfmt_misc interpreter
->>> when it was run via binfmt_misc?
->>>
->>> What actually breaks? Or rather, why does the process to examine
->>> exe_file? I'm just trying to see if there are other solutions here that
->>> would avoid creating an ambiguous interface...
->>>
->>
->> Thanks Kees and David! Did Ryan's thorough comment addressed your
->> questions? Do you have any take on the TODOs?
->>
->> I can maybe rebase against 6.7-rc1 and resubmit , if that makes sense!
->> But would be better having the TODOs addressed, I guess.
-> 
-> Currently there is a mechanism in the kernel for changing
-> /proc/self/exe.  Would that be reasonable to use in this case?
-> 
-> It came from the checkpoint/restart work, but given that it is already
-> implemented it seems like the path of least resistance to get your
-> binfmt_misc that wants to look like binfmt_elf to use that mechanism.
+On Mon, Nov 13, 2023 at 10:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Nov 13, 2023 at 09:48:32AM -0800, Namhyung Kim wrote:
+>
+> > Yeah, I thought something like this first, but then I thought
+> > "can we just use PID for this?"
+>
+> TID, and assuming things are otherwise time ordered, yes.
 
-I had that in mind as well, but 
-prctl_set_mm_exe_file()->replace_mm_exe_file() fails if the executable 
-is still mmaped (due to denywrite handling); that should be the case for 
-the emulator I strongly assume.
+Right, I meant that, not TGID.
 
--- 
-Cheers,
+At least, the perf tools handle events in time ordered.
 
-David / dhildenb
-
+Thanks,
+Namhyung
