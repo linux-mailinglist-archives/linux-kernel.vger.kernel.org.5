@@ -2,115 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D0D37EA2EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D027EA2E8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:33:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231560AbjKMSd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:33:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46194 "EHLO
+        id S231277AbjKMSdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:33:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46178 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230041AbjKMSdx (ORCPT
+        with ESMTP id S229940AbjKMSdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Nov 2023 13:33:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F860D7A;
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 221B2D68;
         Mon, 13 Nov 2023 10:33:50 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 05EC521907;
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82F72C433D9;
         Mon, 13 Nov 2023 18:33:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1699900429; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=soOdXumH4FhZ5xbNPSig1EhiYi8oZDjhhokKVPOIjuY=;
-        b=WJ9gwhFXUC2xF6wicIZeEwVQJBbmCCr2QdQLjy4NQAwStC0t3Y7j0TL5/m0Cx8UbmdbkUL
-        WRTqZJ7rNTWHeE3sUZ4b0rS7Jw1iY3gFDLqcRL7U4KWEkC4hUwVxDWxalU/rtR8itTCnnE
-        V3gzw6duiXCYL7DMj/lxag3qFdZuxwo=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1699900429;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=soOdXumH4FhZ5xbNPSig1EhiYi8oZDjhhokKVPOIjuY=;
-        b=gRidJBkx2PJCgMU/gz/xh4MrNm5AhTY0nwVZmJ/s04la8ep5btOSizyCuklQm8/ndixQDg
-        R4e3kwS0yNuvbABg==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C266713398;
-        Mon, 13 Nov 2023 18:33:48 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6ua+LQxsUmX2KAAAMHmgww
-        (envelope-from <jdelvare@suse.de>); Mon, 13 Nov 2023 18:33:48 +0000
-Date:   Mon, 13 Nov 2023 19:33:47 +0100
-From:   Jean Delvare <jdelvare@suse.de>
-To:     Simon Horman <horms@kernel.org>
-Cc:     Keguang Zhang <keguang.zhang@gmail.com>,
-        linux-mips@vger.kernel.org, netdev@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: |PATCH] stmmac: dwmac-loongson: Add architecture dependency
-Message-ID: <20231113193347.67dd7f75@endymion.delvare>
-In-Reply-To: <20231113180107.GA52493@kernel.org>
-References: <20231113154522.0bca3521@endymion.delvare>
-        <20231113180107.GA52493@kernel.org>
-Organization: SUSE Linux
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.34; x86_64-suse-linux-gnu)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699900429;
+        bh=8NjS89hbWhwt4yhDIQItvSnRL6mEheaGL6+ZT7V8APc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nDJb8ouT1juPLx8+Zl6jcFByZ9IMVbdRaeUf3O2XAqDIp2d13t+RLv3CIfaVcdsYj
+         KdSMPrKQMXhHPYtmeArlF5Di22WLoeNPMnBYdaK0fl+Up5Q/V6xOFr34MDh+V75tgu
+         4BtSme2Br4b+pLk193hBhHmcRfdJDpyp0jDoc528=
+Date:   Mon, 13 Nov 2023 13:33:48 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Tomas Mudrunka <tomas.mudrunka@gmail.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH] /proc/sysrq-trigger: accept multiple keys at once
+Message-ID: <2023111333-duly-mobility-edc7@gregkh>
+References: <20231113182227.698989-1-tomas.mudrunka@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113182227.698989-1-tomas.mudrunka@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
-
-On Mon, 13 Nov 2023 18:01:07 +0000, Simon Horman wrote:
-> On Mon, Nov 13, 2023 at 03:45:22PM +0100, Jean Delvare wrote:
-> > Only present the DWMAC_LOONGSON option on architectures where it can
-> > actually be used.
-> > 
-> > This follows the same logic as the DWMAC_INTEL option.
-> > 
-> > Signed-off-by: Jean Delvare <jdelvare@suse.de>
-> > Cc: Keguang Zhang <keguang.zhang@gmail.com>
-> > ---
-> > I'm not familiar with the hardware, so please let me know if the
-> > dependency needs to be adjusted somehow.
-> > 
-> >  drivers/net/ethernet/stmicro/stmmac/Kconfig |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- linux-6.6.orig/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > +++ linux-6.6/drivers/net/ethernet/stmicro/stmmac/Kconfig
-> > @@ -269,7 +269,7 @@ config DWMAC_INTEL
-> >  config DWMAC_LOONGSON
-> >  	tristate "Loongson PCI DWMAC support"
-> >  	default MACH_LOONGSON64
-> > -	depends on STMMAC_ETH && PCI
-> > +	depends on MACH_LOONGSON64 && STMMAC_ETH && PCI  
+On Mon, Nov 13, 2023 at 07:22:19PM +0100, Tomas Mudrunka wrote:
+> Just for convenience.
+> This way we can do:
+> `echo reisub > /proc/sysrq-trigger`
+> Instead of:
+> `for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
 > 
-> Could we consider also allowing the build to occur if COMPILE_TEST is set?
-> This would maintain the current level of build test coverage.
+> Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
+> ---
+>  drivers/tty/sysrq.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
 > 
-> Something line this (completely untested!):
-> 
-> 	depends on (MACH_LOONGSON64 || COMPILE_TEST) && STMMAC_ETH && PCI
+> diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+> index 6b4a28bcf..bc5a679f6 100644
+> --- a/drivers/tty/sysrq.c
+> +++ b/drivers/tty/sysrq.c
+> @@ -1154,10 +1154,12 @@ EXPORT_SYMBOL(unregister_sysrq_key);
+>  static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+>  				   size_t count, loff_t *ppos)
+>  {
+> -	if (count) {
+> +	size_t i;
+> +
+> +	for (i = 0; i < count; i++) {
+>  		char c;
+>  
+> -		if (get_user(c, buf))
+> +		if (get_user(c, buf+i))
 
-Sure, that would be totally fine with me.
+What did you just break where people would send a string and only relied
+on the first character being checked?  This might not be ok to do.
 
--- 
-Jean Delvare
-SUSE L3 Support
+Also, no documentation update?
+
+thanks,
+
+greg k-h
