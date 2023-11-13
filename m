@@ -2,159 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D088F7E9951
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:46:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 838447E9953
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:47:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233392AbjKMJqq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 04:46:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        id S233397AbjKMJrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:47:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbjKMJqo (ORCPT
+        with ESMTP id S232633AbjKMJrP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:46:44 -0500
-Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBB410D0;
-        Mon, 13 Nov 2023 01:46:41 -0800 (PST)
-Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-da41acaea52so4271543276.3;
-        Mon, 13 Nov 2023 01:46:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699868800; x=1700473600;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hwzQbtIpe+t3wqED8YWdB5pI957h93jq9NhhCumia7w=;
-        b=OygbZ605ujsm19xrEu5PBDjeQR7F4c435VNLCMPVfi0wvJhI7co0M6fYAkoiqmcI1Z
-         Yh7F8lyxnMIlcJIDITy/zS0akpMy9J/8BfdbmdbbeFRg8x0v7HA+yXAmeF1qK/JyAMTR
-         ksSG7RsWRgVqTX65ogAZTXDDbrONKDwfen7wQlbdf4CvGxF/++pZoXsBCJQvcYIV71ZY
-         IiT84o4zK0Ux5eoe0yJWG+nsZsVPj8vq2xYK2MTFVFrBaWZ0xko9Z4/V4nFp3skmvdvn
-         o1NplzQC4u4lfYlLGci2Cb0bg9BrQLjuMEalp64YcQ2VqhuzhlYYWZsk4MJxnjXLp6y/
-         DdAg==
-X-Gm-Message-State: AOJu0Yzc/tuqtIMxf8HSb9ivC9ZTWyMYNXR8nbXkBhp3gZuheTHFpS8D
-        SPgYId/NHyImOYHasTrB65IScv6Ik14aeA==
-X-Google-Smtp-Source: AGHT+IFXVwV4e0H99wNWhSTg+Q/YTf7vpBF+BUGx/TeF2yPhuDMHqqtuXUZNp6yYoE868yHK+F8azg==
-X-Received: by 2002:a25:ad92:0:b0:d86:357:e314 with SMTP id z18-20020a25ad92000000b00d860357e314mr5432430ybi.47.1699868800501;
-        Mon, 13 Nov 2023 01:46:40 -0800 (PST)
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
-        by smtp.gmail.com with ESMTPSA id u11-20020a05690201cb00b00d974c72068fsm1446651ybh.4.2023.11.13.01.46.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 01:46:39 -0800 (PST)
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so4297454276.0;
-        Mon, 13 Nov 2023 01:46:39 -0800 (PST)
-X-Received: by 2002:a25:42d2:0:b0:da0:c8d1:5c5 with SMTP id
- p201-20020a2542d2000000b00da0c8d105c5mr5227362yba.41.1699868799056; Mon, 13
- Nov 2023 01:46:39 -0800 (PST)
+        Mon, 13 Nov 2023 04:47:15 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1217410D;
+        Mon, 13 Nov 2023 01:47:10 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AD9l0Ba084893;
+        Mon, 13 Nov 2023 03:47:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1699868820;
+        bh=of4k2PeamlWg6Nb98pCxHnJpq+bjdjc8wLWKzv6j9ts=;
+        h=From:To:CC:Subject:Date;
+        b=AgD5oCd/7T975Apo2vzNPL75LVP7NAIfae5p9VTaDi79znL2JIoJG5I7dQYJFlHUq
+         Z+wwFUZfrzPqij4j2R1MdotkJCNjJHWvy1jxc09kFjpA/5OSfngkpaxMYNNBtUIBbb
+         6eY3gdinzhVE3r7Oa5rCrysb0XQdhh/QM0gI890I=
+Received: from DLEE108.ent.ti.com (dlee108.ent.ti.com [157.170.170.38])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AD9l0ev056917
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 13 Nov 2023 03:47:00 -0600
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 13
+ Nov 2023 03:47:00 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 13 Nov 2023 03:47:00 -0600
+Received: from fllv0122.itg.ti.com (fllv0122.itg.ti.com [10.247.120.72])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AD9l0bu004910;
+        Mon, 13 Nov 2023 03:47:00 -0600
+Received: from localhost (danish-tpc.dhcp.ti.com [10.24.69.31])
+        by fllv0122.itg.ti.com (8.14.7/8.14.7) with ESMTP id 3AD9kx6t009722;
+        Mon, 13 Nov 2023 03:47:00 -0600
+From:   MD Danish Anwar <danishanwar@ti.com>
+To:     <netdev@vger.kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <srk@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>, <r-gunasekaran@ti.com>,
+        Roger Quadros <rogerq@kernel.org>,
+        MD Danish Anwar <danishanwar@ti.com>
+Subject: [PATCH] MAINTAINERS: add entry for TI ICSSG Ethernet driver
+Date:   Mon, 13 Nov 2023 15:16:56 +0530
+Message-ID: <20231113094656.3939317-1-danishanwar@ti.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231108125843.3806765-18-arnd@kernel.org> <202311090843.b8ISrsV1-lkp@intel.com>
- <87h6lu8ed8.fsf@mail.lhotse>
-In-Reply-To: <87h6lu8ed8.fsf@mail.lhotse>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 13 Nov 2023 10:46:26 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVxpKwkvU5fcZXLdjRAuaBqj3JxE4JtBcEW55EzidxhCQ@mail.gmail.com>
-Message-ID: <CAMuHMdVxpKwkvU5fcZXLdjRAuaBqj3JxE4JtBcEW55EzidxhCQ@mail.gmail.com>
-Subject: Re: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Matt Turner <mattst88@gmail.com>,
-        Vineet Gupta <vgupta@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Guo Ren <guoren@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Geoff Levand <geoff@infradead.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
-        Andy Lutomirski <luto@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+Add record for TI Industrial Communication Subsystem - Gigabit (ICSSG)
+Ethernet driver.
 
-On Fri, Nov 10, 2023 at 4:42 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
-> kernel test robot <lkp@intel.com> writes:
-> > kernel test robot noticed the following build errors:
-> >
-> > [auto build test ERROR on linus/master]
-> > [also build test ERROR on next-20231108]
-> > [cannot apply to v6.6]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> >
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
-> > base:   linus/master
-> > patch link:    https://lore.kernel.org/r/20231108125843.3806765-18-arnd%40kernel.org
-> > patch subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
-> > config: powerpc64-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/config)
-> > compiler: powerpc64-linux-gcc (GCC) 13.2.0
-> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/reproduce)
-> >
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202311090843.b8ISrsV1-lkp@intel.com/
-> >
-> > All errors (new ones prefixed by >>):
-> >
-> >    arch/powerpc/platforms/ps3/gelic_udbg.c:59:1: warning: alignment 1 of 'struct debug_block' is less than 32 [-Wpacked-not-aligned]
-> >       59 | } __packed;
-> >          | ^
-> >>> arch/powerpc/platforms/ps3/gelic_udbg.c:240:6: error: redefinition of 'udbg_shutdown_ps3gelic'
-> >      240 | void udbg_shutdown_ps3gelic(void)
-> >          |      ^~~~~~~~~~~~~~~~~~~~~~
-> >    In file included from arch/powerpc/platforms/ps3/gelic_udbg.c:17:
-> >    arch/powerpc/include/asm/ps3.h:520:20: note: previous definition of 'udbg_shutdown_ps3gelic' with type 'void(void)'
-> >      520 | static inline void udbg_shutdown_ps3gelic(void) {}
-> >          |                    ^~~~~~~~~~~~~~~~~~~~~~
->
-> As pointed out by Arnd this is due to there being two symbols that
-> control the gelic_udbg.c code.
->
-> I don't see the need for PS3GELIC_UDBG, without PPC_EARLY_DEBUG_PS3GELIC
-> it just causes gelic_udbg.c to be built, but never called.
+Also add Roger and myself as maintainer.
 
-My first thought was: PPC_EARLY_DEBUG_PS3GELIC is meant as an early
-debugging console, while PS3GELIC_UDBG can be used with xmon later,
-but that does not seem to be the case.
+Signed-off-by: MD Danish Anwar <danishanwar@ti.com>
+---
+ MAINTAINERS | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-> The diff below fixes the error AFAICS.
-
-So your changes on top LGTM.
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e3acb36989f0..0443f4d9f736 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21795,6 +21795,15 @@ F:	Documentation/devicetree/bindings/media/i2c/ti,ds90*
+ F:	drivers/media/i2c/ds90*
+ F:	include/media/i2c/ds90*
+ 
++TI ICSSG ETHERNET DRIVER (ICSSG)
++R:	MD Danish Anwar <danishanwar@ti.com>
++R:	Roger Quadros <rogerq@kernel.org>
++L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
++L:	netdev@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/net/ti,icss*.yaml
++F:	drivers/net/ethernet/ti/icssg/*
++
+ TI J721E CSI2RX DRIVER
+ M:	Jai Luthra <j-luthra@ti.com>
+ L:	linux-media@vger.kernel.org
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.34.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
