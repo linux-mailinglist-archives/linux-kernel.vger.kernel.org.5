@@ -2,42 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E81217E9C19
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E0C7E9C1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:26:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229811AbjKMMZs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:25:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54914 "EHLO
+        id S229810AbjKMM0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:26:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229686AbjKMMZq (ORCPT
+        with ESMTP id S229650AbjKMM0j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:25:46 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B122B1715
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:25:43 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DBF14FEC;
-        Mon, 13 Nov 2023 04:26:28 -0800 (PST)
-Received: from usa.arm.com (e103737-lin.cambridge.arm.com [10.1.197.49])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8DD973F6C4;
-        Mon, 13 Nov 2023 04:25:42 -0800 (PST)
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Jens Wiklander <jens.wiklander@linaro.org>,
-        Coboy Chen <coboy.chen@mediatek.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>
-Subject: Re: [PATCH 0/4] firmware: arm_ffa: Few fixes for FF-A notification support
-Date:   Mon, 13 Nov 2023 12:25:40 +0000
-Message-ID: <169987803529.35505.8372374865461648200.b4-ty@arm.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231024-ffa-notification-fixes-v1-0-d552c0ec260d@arm.com>
-References: <20231024-ffa-notification-fixes-v1-0-d552c0ec260d@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Mon, 13 Nov 2023 07:26:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C64BD5D;
+        Mon, 13 Nov 2023 04:26:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB5F7C433C7;
+        Mon, 13 Nov 2023 12:26:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699878395;
+        bh=FPIp+cqgIY0PhpYyM/+c1zOLJtRcC1R0KvXB0ib9TbM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hUeaWkms3Y9wLVCS+wsQEym5p9vIWKWEEfs61vzfTTz/4ckuyv7Z2NYNlaIKSWTb1
+         ara4RM1NgeVu6zM6KFga2nVJPpZOZq47M56XPtp26sZj17W8KB5N2P6ZsTAvF7BLhd
+         CZq/APnrPcNCshIdv/bekTECw+P+3Jn6e/LJP4v0PhquPQVBA219VAKxoPnZQDCcKr
+         zkLmncAPM2b1WAXUu/9x6Rs/s6JN36k7OlKf3CZXRgnGKkcUISgLFOiic/MZzWRaNX
+         DPEyfuXeAHTfRXUc1A0VhXUx0OYbCIsfLXAyS/28IeWCm8Bb0J41hTWKUwWWU+wokb
+         MyEwfPgyUYmWg==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.95)
+        (envelope-from <maz@kernel.org>)
+        id 1r2W1R-00Cfx5-G5;
+        Mon, 13 Nov 2023 12:26:33 +0000
+Date:   Mon, 13 Nov 2023 12:26:33 +0000
+Message-ID: <867cml2612.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Hongyan Xia <hongyan.xia2@arm.com>
+Cc:     David Dai <davidai@google.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/2] Improve VM CPUfreq and task placement behavior
+In-Reply-To: <438c96fd-bcb0-4699-b81b-40f800cedca0@arm.com>
+References: <20231111014933.1934562-1-davidai@google.com>
+        <438c96fd-bcb0-4699-b81b-40f800cedca0@arm.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: hongyan.xia2@arm.com, davidai@google.com, rafael@kernel.org, viresh.kumar@linaro.org, robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, sudeep.holla@arm.com, saravanak@google.com, qperret@google.com, mhiramat@google.com, will@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org, oliver.upton@linux.dev, dietmar.eggemann@arm.com, quic_pkondeti@quicinc.com, pankaj.gupta@amd.com, mgorman@suse.de, kernel-team@android.com, linux-pm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,29 +80,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 24 Oct 2023 11:56:16 +0100, Sudeep Holla wrote:
-> These are set of small fixes around FF-A notification support that are
-> currently queued in -next. It is mostly to take care of absence of
-> the notification support in the firmware as well as allowing them to be
-> optional and continue initialisation even when the notification fails.
+On Mon, 13 Nov 2023 12:20:29 +0000,
+Hongyan Xia <hongyan.xia2@arm.com> wrote:
 > 
-> Regards,
-> Sudeep
->
-> [...]
+> Also, my knowledge with KVM is limited. May I know where the vCPU fork
+> happens? Can't you just set the p->sched_reset_on_fork flag on fork to
+> not carry forward the uclamp values?
 
-Applied to sudeep.holla/linux (for-next/ffa/fixes), thanks!
+There is no "vCPU fork". The vcpu is a VMM (qemu, crosvm, kvmtool)
+thread, nothing else.
 
-[1/4] firmware: arm_ffa: Allow FF-A initialisation even when notification fails
-      (Dropped redundant return before applying as suggested by Jens)
-      https://git.kernel.org/sudeep.holla/c/95520fc07743
-[2/4] firmware: arm_ffa: Setup the partitions after the notification initialisation
-      https://git.kernel.org/sudeep.holla/c/6f47023f7a52
-[3/4] firmware: arm_ffa: Add checks for the notification enabled state
-      https://git.kernel.org/sudeep.holla/c/f4bfcaee34bc
-[4/4] firmware: arm_ffa: Fix FFA notifications cleanup path
-      https://git.kernel.org/sudeep.holla/c/6d67cbe67a86
---
-Regards,
-Sudeep
+	M.
 
+-- 
+Without deviation from the norm, progress is not possible.
