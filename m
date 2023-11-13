@@ -2,228 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C30AF7E9A7A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C5597E9A85
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 11:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229727AbjKMKmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 05:42:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38368 "EHLO
+        id S229717AbjKMKps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 05:45:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjKMKmh (ORCPT
+        with ESMTP id S229470AbjKMKpp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 05:42:37 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A64C10CB;
-        Mon, 13 Nov 2023 02:42:33 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E34D510A;
-        Mon, 13 Nov 2023 11:42:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699872127;
-        bh=6ihvpfxog/JlU6xFHC7s7/xfpVvhabzUKotPpV7QC2s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iLwdtlyjr9XaJgEq3GIS+tAqup/UOKkw9CD7xt6h7DwcFk2Jy6GcqzMIv8i5b2nty
-         YDM0eBQ9g6LgQ3Uiy6swYxkGgEHz9eKBgmI5tn7c0CpqziSP7wwwZNlU1vRvfyJlZM
-         e9cfogzJJnOl+xLA4frg+PnYkyippD2ByhKc6H38=
-Date:   Mon, 13 Nov 2023 12:42:38 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Message-ID: <20231113104238.GA13981@pendragon.ideasonboard.com>
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
- <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
+        Mon, 13 Nov 2023 05:45:45 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9593A10CC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:45:41 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41eb4210383so25773291cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 02:45:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699872340; x=1700477140; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=TN1rmKLKakodRU8vVvF98V6hyYkno3rpTcUXm2+n8BM=;
+        b=luSXS7e6Z8SUJmwlHYRIRxCQbStKhN3ioFIUJSv14xIaPphTs/zXVGGF5jsyvfco6Q
+         +WooBQkci//A+vI9bJOkp/m7fiQbfhJtGlOunlqzGRgFxMz/8KNQ1Sl4Z+C9E8UB/1VD
+         9Vbn1PxTdEMfhDUBRk2l3XmfZ52UsU7PhSbTNbcb1MYxCJ7727c6Q54BlRtJAJl1qd/A
+         cDVYvYNnqQyB3I4Twu94lBoL4ELhzP9aw6WwMoS9Sy5uRANyIXoK0oLG7oANr7zQeaSa
+         Wlx+jF1Gwg0naODhVpscqu/MXebn6zWKScxvLTv6Zsshhw14rTQF6UiBm52GVG9dvsiE
+         mVdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699872340; x=1700477140;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TN1rmKLKakodRU8vVvF98V6hyYkno3rpTcUXm2+n8BM=;
+        b=IcWPN/9Z4G7rFq64hqFmGDumwCfqw9ng0gSwxBsrkvZ43zo2is8ehMjS8QpYZPLwJ2
+         zvI0s6DNj61/a3iZu1B8vXPsdr0TtChutWIec8fY/XxB9PAYO3qpnBakQjLQe1cEuHhn
+         9yfIgxWJ2hsUAnPbQNTni49ms+eJ6o1h9JjBpq3qiVxhXBYm+WZ8Z9UNlJvPGWXlHHM9
+         vUFYJa8m1/JtU9F8vFetpPRFA3tlFzMhdZc1aGJwb8JkLStg9wN9hKxWe+2o+ErJO/gg
+         F+BaKHqtF6OYUKEHAhuNqvZiXR46N5GiAx4EJO2eUlJzT1V2Ta8PgBbUdjm8WEecEFur
+         Ay8w==
+X-Gm-Message-State: AOJu0YxM6cTU9JAuR7bomEYKaqgkwN1Pzk00uLVqgybe7iRi/yw7MfsY
+        lIa1TB15DiJbTzTJ4FyE07QpEfvVOPXkzd6XpRGQVA==
+X-Google-Smtp-Source: AGHT+IFmsD5BGHUGWSSpKkxuR05Uc/IqKa7Px+iY4SmEBuXuhs7yOIEciha9qKaJ+LfTi0ia9c0Mrvtjb4f0B7klUqM=
+X-Received: by 2002:a0c:c583:0:b0:66d:36fb:474d with SMTP id
+ a3-20020a0cc583000000b0066d36fb474dmr5788189qvj.1.1699872340544; Mon, 13 Nov
+ 2023 02:45:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231103160335.2464561-1-glider@google.com> <20231103160335.2464561-4-glider@google.com>
+ <ZUVulBKVYK7cq2rJ@yury-ThinkPad> <CAG_fn=Vz9ihxLpkT9rxJB=3UfBdsn6HqYCn7aME6xz1SW1YSMg@mail.gmail.com>
+In-Reply-To: <CAG_fn=Vz9ihxLpkT9rxJB=3UfBdsn6HqYCn7aME6xz1SW1YSMg@mail.gmail.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Mon, 13 Nov 2023 11:45:00 +0100
+Message-ID: <CAG_fn=UOQobY3_KryiJe-JgehMYRFDLWMomNFL0aHA0KDL_daA@mail.gmail.com>
+Subject: Re: [PATCH v8 3/3] arm64: mte: add compression support to mteswap.c
+To:     Yury Norov <yury.norov@gmail.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, pcc@google.com,
+        andreyknvl@gmail.com, andriy.shevchenko@linux.intel.com,
+        aleksander.lobakin@intel.com, linux@rasmusvillemoes.dk,
+        alexandru.elisei@arm.com, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, eugenis@google.com,
+        syednwaris@gmail.com, william.gray@linaro.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
-> Hi Shengjiu,
-> 
-> On 10/11/2023 06:48, Shengjiu Wang wrote:
-> > Fixed point controls are used by the user to configure
-> > a fixed point value in 64bits, which Q31.32 format.
-> > 
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> 
-> This patch adds a new control type. This is something that also needs to be
-> tested by v4l2-compliance, and for that we need to add support for this to
-> one of the media test-drivers. The best place for that is the vivid driver,
-> since that has already a bunch of test controls for other control types.
-> 
-> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
-> 
-> Can you add a patch adding a fixed point test control to vivid?
+> > >
+> > >  void mte_free_tag_storage(char *storage)
+> >
+> > If you use a term 'free' here, the counter name should probably
+> > reflect that.
+>
+> I still want to keep the terms "allocation/deallocation" in the
+> user-facing code (in the /sys/ file) though.
+> So renaming the counter here will cause a mismatch between its name
+> and the stats output.
 
-I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
-relate more to units than control types. We have lots of fixed-point
-values in controls already, using the 32-bit and 64-bit integer control
-types. They use various locations for the decimal point, depending on
-the control. If we want to make this more explicit to users, we should
-work on adding unit support to the V4L2 controls.
-
-> > ---
-> >  .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 13 +++++++------
-> >  .../userspace-api/media/v4l/vidioc-queryctrl.rst    |  9 ++++++++-
-> >  .../userspace-api/media/videodev2.h.rst.exceptions  |  1 +
-> >  drivers/media/v4l2-core/v4l2-ctrls-api.c            |  5 ++++-
-> >  drivers/media/v4l2-core/v4l2-ctrls-core.c           |  2 ++
-> >  include/uapi/linux/videodev2.h                      |  1 +
-> >  6 files changed, 23 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > index e8475f9fd2cf..e7e5d78dc11e 100644
-> > --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> > @@ -162,13 +162,13 @@ still cause this situation.
-> >      * - __s32
-> >        - ``value``
-> >        - New value or current value. Valid if this control is not of type
-> > -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
-> > -	not set.
-> > +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
-> > +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
-> >      * - __s64
-> >        - ``value64``
-> >        - New value or current value. Valid if this control is of type
-> > -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
-> > -	not set.
-> > +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
-> > +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
-> >      * - char *
-> >        - ``string``
-> >        - A pointer to a string. Valid if this control is of type
-> > @@ -193,8 +193,9 @@ still cause this situation.
-> >      * - __s64 *
-> >        - ``p_s64``
-> >        - A pointer to a matrix control of signed 64-bit values. Valid if
-> > -        this control is of type ``V4L2_CTRL_TYPE_INTEGER64`` and
-> > -        ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is set.
-> > +        this control is of type ``V4L2_CTRL_TYPE_INTEGER64``,
-> > +        ``V4L2_CTRL_TYPE_FIXED_POINT`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD``
-> > +        is set.
-> >      * - struct :c:type:`v4l2_area` *
-> >        - ``p_area``
-> >        - A pointer to a struct :c:type:`v4l2_area`. Valid if this control is
-> > diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> > index 4d38acafe8e1..f3995ec57044 100644
-> > --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> > +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> > @@ -235,7 +235,8 @@ See also the examples in :ref:`control`.
-> >        - ``default_value``
-> >        - The default value of a ``V4L2_CTRL_TYPE_INTEGER``, ``_INTEGER64``,
-> >  	``_BOOLEAN``, ``_BITMASK``, ``_MENU``, ``_INTEGER_MENU``, ``_U8``
-> > -	or ``_U16`` control. Not valid for other types of controls.
-> > +	``_FIXED_POINT`` or ``_U16`` control. Not valid for other types of
-> > +	controls.
-> >  
-> >  	.. note::
-> >  
-> > @@ -549,6 +550,12 @@ See also the examples in :ref:`control`.
-> >        - n/a
-> >        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
-> >          parameters for stateless video decoders.
-> > +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
-> > +      - any
-> > +      - any
-> > +      - any
-> > +      - A 64-bit integer valued control, containing parameter which is
-> > +        Q31.32 format.
-> >  
-> >  .. raw:: latex
-> >  
-> > diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> > index e61152bb80d1..2faa5a2015eb 100644
-> > --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> > +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> > @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
-> >  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
-> >  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
-> >  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
-> > +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
-> >  
-> >  # V4L2 capability defines
-> >  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
-> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> > index 002ea6588edf..e6a0fb8d6791 100644
-> > --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> > @@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
-> >  		return copy_to_user(c->string, ptr.p_char, len + 1) ?
-> >  		       -EFAULT : 0;
-> >  	case V4L2_CTRL_TYPE_INTEGER64:
-> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
-> >  		c->value64 = *ptr.p_s64;
-> >  		break;
-> >  	default:
-> > @@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
-> >  
-> >  	switch (ctrl->type) {
-> >  	case V4L2_CTRL_TYPE_INTEGER64:
-> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
-> >  		*ctrl->p_new.p_s64 = c->value64;
-> >  		break;
-> >  	case V4L2_CTRL_TYPE_STRING:
-> > @@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
-> >  		 */
-> >  		if (ctrl->is_ptr)
-> >  			continue;
-> > -		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
-> > +		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
-> > +		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
-> >  			p_new.p_s64 = &cs->controls[i].value64;
-> >  		else
-> >  			p_new.p_s32 = &cs->controls[i].value;
-> > diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> > index a662fb60f73f..9d50df0d9874 100644
-> > --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> > +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> > @@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
-> >  	case V4L2_CTRL_TYPE_INTEGER:
-> >  		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
-> >  	case V4L2_CTRL_TYPE_INTEGER64:
-> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
-> >  		/*
-> >  		 * We can't use the ROUND_TO_RANGE define here due to
-> >  		 * the u64 divide that needs special care.
-> > @@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
-> >  	/* Prefill elem_size for all types handled by std_type_ops */
-> >  	switch ((u32)type) {
-> >  	case V4L2_CTRL_TYPE_INTEGER64:
-> > +	case V4L2_CTRL_TYPE_FIXED_POINT:
-> >  		elem_size = sizeof(s64);
-> >  		break;
-> >  	case V4L2_CTRL_TYPE_STRING:
-> > diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> > index cf8c44595a1d..9482ac66a675 100644
-> > --- a/include/uapi/linux/videodev2.h
-> > +++ b/include/uapi/linux/videodev2.h
-> > @@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
-> >  	V4L2_CTRL_TYPE_STRING        = 7,
-> >  	V4L2_CTRL_TYPE_BITMASK       = 8,
-> >  	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
-> > +	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
-> >  
-> >  	/* Compound types are >= 0x0100 */
-> >  	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
-
--- 
-Regards,
-
-Laurent Pinchart
+To move forward, I am going to send out v9 that addresses your
+comments except for this one and for moving the conditionals inside
+mte_compress() and mte_decompress().
+Happy to discuss those three points further.
