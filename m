@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58C37E984D
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:56:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D490C7E9852
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:56:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233295AbjKMI4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:56:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36662 "EHLO
+        id S233296AbjKMI4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:56:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233238AbjKMI42 (ORCPT
+        with ESMTP id S233270AbjKMI43 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:56:28 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E631F10DA
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:56:23 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9e1fb7faa9dso632728666b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:56:23 -0800 (PST)
+        Mon, 13 Nov 2023 03:56:29 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 431FA10F9
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:56:25 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9dd6dc9c00cso637214266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:56:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1699865782; x=1700470582; darn=vger.kernel.org;
+        d=fairphone.com; s=fair; t=1699865783; x=1700470583; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8Yy2i2F+9pJywYxY6AKw4sbn/DiDdL44GgjGmpRdRoA=;
-        b=3asjtuz7sgt8quCwhI1cdHSBLmVtwRjEFYRU9UTkuX8DFtQYc5UuI85sxenC1MLo+S
-         LI/bwueDq3LNbZD7UNwel4436vXjg/oDoiIy/fClR3dU34uY1NAZ+ad+/TY8AfKaQokm
-         b11EN04wMukjV8kBpF6U77vmAG9jcMef8eBrgcVAOh13xtS405t3a1AZSbzny8YyiRKq
-         gQSdWmxyE9QsSHummEALpZcQWon7pQKPHhH/IlGYKSreghHBjekbsMoyGDu3f7rA+yNS
-         dpOcIwsp0ROzqnfqu1ye6gvG5UTUkPRoiF5JMQ8Qt+hDnlE+YQZ2enVFh+IcpKQCsUnT
-         +Qjg==
+        bh=u7LwuWo/xQR19drDlZX7ccinmtAJFTBRZl3P7VkhCjE=;
+        b=HMvEqzIm3huRRk/LvVMyldJayReJUcIvxGNx6551nf/ecvuReoVKyPJYDRc90kO5D0
+         4ti8Svgmr4NyuuVql0OtmxNYh53osg0cNqB2uul+sNjsv34Sr5Z2XD+5y+/S724wU5Zu
+         RzPFWBIXQ90vubdusccSXjhLxWlkNCANazc4OuTRcQCiLB7qXPCHb3bao3gWWBAYkFdC
+         eltMxQm3y4ZZR5h9nBL9sAQnoiERgaqI9h9Vpg2Ahio80+z1ekgGNQ1Kq5htWmebkfj1
+         ICnGXKUe5DvTm4iO0bE36ELYdJ7bh1RA1CY52h2vSIEmyQWDO7c9W0GZZhdt1OEUXp/k
+         XkoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699865782; x=1700470582;
+        d=1e100.net; s=20230601; t=1699865783; x=1700470583;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8Yy2i2F+9pJywYxY6AKw4sbn/DiDdL44GgjGmpRdRoA=;
-        b=etKfpWTuDB7PBuB/lCaCF05BaCeKTCWP9q9Ojtz5nOaaFnjL1whNxzV0yMt5cJ2ZIl
-         ycFAKDpsP2Ayo3lx/kiSkK8JbSb+CT5joIgeoFCA8bIYX8jIW6ygrjRZtI7RlkuHFvwB
-         JzOrVEShr+4UfK6mUG1rT4F7wKA1AbF4SRncLzcshRR8RlqWWzoUjRgQ21/blIQNqfxs
-         pUVLKYpfJDqnMNucp61YxXzWadAzUV1oUxy/WJP+noHLx2yemh0rJTa0g22fSGnzOrs/
-         fuW3MHjkJ/gRTIt7+eXVYg/rJmyKh/y0JbkQ2PIMiQK1W+dFgfFDV8Rez2dnb3J1Kpa4
-         hXNA==
-X-Gm-Message-State: AOJu0YyH3966LrAVBfCkrEZ1oSCUjMciLl3aJkkY0tZP1ikW5tS8lBJZ
-        zIlZdBS2/nHfyrIqlwZQViLQ6g==
-X-Google-Smtp-Source: AGHT+IFM/lpqUyVAhbMPMKL5aNIUU8Y2d2td7/wT/Q4RZpTSCZABxHEPsS/89HX+GaB730z6a+XDOg==
-X-Received: by 2002:a17:906:4708:b0:9e5:2e15:35c6 with SMTP id y8-20020a170906470800b009e52e1535c6mr4195362ejq.44.1699865782434;
-        Mon, 13 Nov 2023 00:56:22 -0800 (PST)
+        bh=u7LwuWo/xQR19drDlZX7ccinmtAJFTBRZl3P7VkhCjE=;
+        b=myX8KlPetl2eaIQ+rgerHbU/Bhw7EwBvfO7ENXokVCxUUcg05oXJ6aY6E0CMOXTb6x
+         GwrFYtp8SNDzoj7myyJGuWymCf9ct8Jrthcz2/z+KGuTMDREOY/eIznTmcpltXCvf1dV
+         3nCa3ZmboJEF0b2tNe+CCLDNpmHYuAw3ubRkWhk3GAOQtXFoXoYDXdQCNo2xsfRlSOv/
+         ZbMZESo1CrycMP3GRsGD/ZlV04tYxSsNW+QfiklP7cVPguoJ9UWmCo3uAJUoR9OR/CY6
+         kGI3TJjoIeoa3CSnkKo8WElelBCTLLQ+VrNLyYaNT59UV4GTAGxEWRxl+hU39RDIWexx
+         axRg==
+X-Gm-Message-State: AOJu0YwRtB/fbBtBqBIHpJf7gwYea7alLZq/RlAaCpeqe1GXxhIjjl33
+        LKW1cceBaeToQBqJJYw81WuBTQ==
+X-Google-Smtp-Source: AGHT+IG2SPX6L+vKzqIsrr5ZRHSaYCS1SjrAy3heGkk0fWSk/LQ6Ns4+4rDVY1OcAqIObc2tESSX3w==
+X-Received: by 2002:a17:906:44e:b0:9e6:c845:dba6 with SMTP id e14-20020a170906044e00b009e6c845dba6mr3579811eja.66.1699865783665;
+        Mon, 13 Nov 2023 00:56:23 -0800 (PST)
 Received: from otso.luca.vpn.lucaweiss.eu (k10064.upc-k.chello.nl. [62.108.10.64])
-        by smtp.gmail.com with ESMTPSA id kk22-20020a170907767600b009c758b6cdefsm3673538ejc.128.2023.11.13.00.56.21
+        by smtp.gmail.com with ESMTPSA id kk22-20020a170907767600b009c758b6cdefsm3673538ejc.128.2023.11.13.00.56.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 00:56:21 -0800 (PST)
+        Mon, 13 Nov 2023 00:56:23 -0800 (PST)
 From:   Luca Weiss <luca.weiss@fairphone.com>
-Date:   Mon, 13 Nov 2023 09:56:12 +0100
-Subject: [PATCH v2 01/11] dt-bindings: remoteproc: qcom: sc7180-pas: Fix
- SC7280 MPSS PD-names
+Date:   Mon, 13 Nov 2023 09:56:13 +0100
+Subject: [PATCH v2 02/11] arm64: dts: qcom: sc7280: Remove unused second
+ MPSS reg
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231113-sc7280-remoteprocs-v2-1-e5c5fd5268a7@fairphone.com>
+Message-Id: <20231113-sc7280-remoteprocs-v2-2-e5c5fd5268a7@fairphone.com>
 References: <20231113-sc7280-remoteprocs-v2-0-e5c5fd5268a7@fairphone.com>
 In-Reply-To: <20231113-sc7280-remoteprocs-v2-0-e5c5fd5268a7@fairphone.com>
 To:     Andy Gross <agross@kernel.org>,
@@ -78,7 +78,7 @@ Cc:     ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
         Luca Weiss <luca.weiss@fairphone.com>
 X-Mailer: b4 0.12.4
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -87,35 +87,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The power domains for MPSS on SC7280 are actually named CX and MSS, and
-not CX and MX. Adjust the name which also aligns the bindings with the
-dts and fixes validation.
+The bindings for sc7280-mpss-pas neither expects a second reg nor a
+reg-names property, which is only required by the sc7280-mss-pil
+bindings.
 
-Fixes: 8bb92d6fd0b3 ("dt-bindings: remoteproc: qcom,sc7180-pas: split into separate file")
-Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Move it to sc7280-herobrine-lte-sku.dtsi, the only place where that
+other compatible is used.
+
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 ---
- Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi | 2 ++
+ arch/arm64/boot/dts/qcom/sc7280.dtsi                   | 3 +--
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-index f10f329677d8..6f0bd6fa5d26 100644
---- a/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,sc7180-pas.yaml
-@@ -114,11 +114,11 @@ allOf:
-         power-domains:
-           items:
-             - description: CX power domain
--            - description: MX power domain
-+            - description: MSS power domain
-         power-domain-names:
-           items:
-             - const: cx
--            - const: mx
-+            - const: mss
+diff --git a/arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi b/arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi
+index 95505549adcc..203274c10532 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280-herobrine-lte-sku.dtsi
+@@ -33,6 +33,8 @@ &ipa {
  
- unevaluatedProperties: false
+ &remoteproc_mpss {
+ 	compatible = "qcom,sc7280-mss-pil";
++	reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
++	reg-names = "qdsp6", "rmb";
  
+ 	clocks = <&gcc GCC_MSS_CFG_AHB_CLK>,
+ 		 <&gcc GCC_MSS_OFFLINE_AXI_CLK>,
+diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+index 5db468d1a06e..0d9cc44066ce 100644
+--- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+@@ -2848,8 +2848,7 @@ adreno_smmu: iommu@3da0000 {
+ 
+ 		remoteproc_mpss: remoteproc@4080000 {
+ 			compatible = "qcom,sc7280-mpss-pas";
+-			reg = <0 0x04080000 0 0x10000>, <0 0x04180000 0 0x48>;
+-			reg-names = "qdsp6", "rmb";
++			reg = <0 0x04080000 0 0x10000>;
+ 
+ 			interrupts-extended = <&intc GIC_SPI 264 IRQ_TYPE_LEVEL_HIGH>,
+ 					      <&modem_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
 
 -- 
 2.42.1
