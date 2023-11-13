@@ -2,147 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AED347EA0F1
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FCF07EA0F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjKMQIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35494 "EHLO
+        id S231490AbjKMQI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:08:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjKMQIk (ORCPT
+        with ESMTP id S231458AbjKMQI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:08:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F2541702
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:07:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699891669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pAkyWuAlP3WRAhkP+++lmx+mwvKY3DtmoscUolCQlDI=;
-        b=S8wS8HR28knBtVFcSPiGXyREKrrMviYRASH4lIe+6B4CnaG4WGtk1JWuXFy+59BxIhYyBQ
-        U+8E9U5S9Cn0hjNGwNHYMjQ7mTcsw+x/DQ/TJ2eiKHnk775CTPhTlbEAlCgp18gNyJEggg
-        C/5ITgjV89reE3utK23i0WoqgreZ4Tw=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-o-gFjrg4NRaGMyoZdvn2jA-1; Mon, 13 Nov 2023 11:07:47 -0500
-X-MC-Unique: o-gFjrg4NRaGMyoZdvn2jA-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9a681c3470fso320214666b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:07:47 -0800 (PST)
+        Mon, 13 Nov 2023 11:08:56 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525D0171A;
+        Mon, 13 Nov 2023 08:08:53 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5bd5809f63aso2689371a12.3;
+        Mon, 13 Nov 2023 08:08:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699891732; x=1700496532; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HPuU6NHbUp/SgydRBNeLDEaf5ofrHVDlSX75GYurXdQ=;
+        b=k4nTc58IHG7SWOnVaPKW/nFT16HjOtd+Mr9ro2+FhEEoJmJTmqEBwMD2soB+TOQG36
+         qoHolMoMnT/3+PJIniFWA3F1/ZtNS68d6zNjYVrudV2k3kUIaaB1A+TdhOK/AS1/B/mk
+         w8SbJJseWTCtlYGfYxyF5dJUB3qDl4ORbxvImgRIqcQrPW1aHJBKJyyDOkqqIsLlsNNm
+         kczGJXxC1I9CV+0po4z4MBs/Ji4sfuc0bWW7hPGNQ73S2HwFVnjG9nsYTHsEIr/vy+1s
+         AGxnMcmiAW239HkKO0dNOI+6y/Cktfj3qhXFKeoqU9jzGv/d+Qw6mJDE7sEmFUYBiPmJ
+         jGsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699891666; x=1700496466;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pAkyWuAlP3WRAhkP+++lmx+mwvKY3DtmoscUolCQlDI=;
-        b=rhquWYQjASxv1BcLwHiZ4HlccA7mlBxqCokC/hh+OGgK7JQZq5aPiyeestMbOKKbdN
-         HPVp0P7Rdb9TE6ifPUnSbrYyNMJK1ElRL33SPrUQ4GEQUCh1kCCy2OPE9RsADqjxm97z
-         h+kUenRFWX55AARvkfJxoctDfzceS4jecEm8tZOvzm0+5N8n9Klw6Dj5cOBCYK2mwC2x
-         C9JmIpiZRwTDlX+nr2I4gfi6BkSbtsk6zSvtPwte4hQL1SiLliW7YpiEnKPignqOrMZy
-         5grAykuVH6+5hIoaAkaWnLyQjPeR97kkmcT4MDtiGZtJomab+jVp7X7ImD1SFkdgQjq5
-         8e8g==
-X-Gm-Message-State: AOJu0YyFCzLGvt2O3eKy+kVsAIQfcD6XLDxVxTtIHeOpJZEQGFVxetwC
-        Q6Paje/LbicNgaq6cPAZJ4HB/eruihpGjFgQ6A8KMAklhPET8dqD/JmXXoyV2O+WHNaMmGTRztM
-        KDL7SdkIIHovsD0/F+uj6smvp
-X-Received: by 2002:a17:906:b1b:b0:9ae:5370:81d5 with SMTP id u27-20020a1709060b1b00b009ae537081d5mr4359527ejg.41.1699891666715;
-        Mon, 13 Nov 2023 08:07:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEGTihF/62EKU+Wtiz2v06QtymYDdd3hPfvECCV8zFTiBRYk2GSvIbvrQVO+5wZ5S1Ntj5ooA==
-X-Received: by 2002:a17:906:b1b:b0:9ae:5370:81d5 with SMTP id u27-20020a1709060b1b00b009ae537081d5mr4359512ejg.41.1699891666435;
-        Mon, 13 Nov 2023 08:07:46 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id um27-20020a170906cf9b00b009de467a25d5sm4272281ejb.13.2023.11.13.08.07.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 08:07:45 -0800 (PST)
-Message-ID: <ae5131e3-b282-437d-9a80-ae8b697eea3c@redhat.com>
-Date:   Mon, 13 Nov 2023 17:07:44 +0100
+        d=1e100.net; s=20230601; t=1699891732; x=1700496532;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HPuU6NHbUp/SgydRBNeLDEaf5ofrHVDlSX75GYurXdQ=;
+        b=hcqk22cxAGCMdH/Mk00BEJUIm+jdnqHnKtBfVJiZoroHGr6Z7gtiCPTiUtnPMuknYw
+         Ykcors0KuOrz/mb9tH0YfIE1DWChq9Wg1N9aPixqDLnwn3kxqBpWnAB10wGcIcjjfFEP
+         8crV1809NKCuoJXa1SRQTJyv1kA60+kceFTKoomn4JiA3pPdE0vTAtTI+5tNRdtMU8Xo
+         +GrITLLsWIeERk8/MDn5AWK5Zp168YP8hPmng0y8RMQQPBSlQHTJDMNYqj8v7RtCyo7a
+         CKPWCwJKSjp+Fa0bPvQvNC79hfl2uiR9yb0Bruhf5/J10eEx7dCJDyZ+Ud+z+SbEHoCw
+         XJww==
+X-Gm-Message-State: AOJu0Yw5CT1F0bXI4SgZJpfwGLjLjXGEal0q/Z813bCp1IJwMweb+U1w
+        BmuSczEAOpglOX/FkwhWFEA=
+X-Google-Smtp-Source: AGHT+IGBR1PQkuTCOAB2gjuro2F+BqtLV3jLOeCnkGMb78QpXMwT2zy1xxCdY45tREDYMdOC6/UwBQ==
+X-Received: by 2002:a17:90b:11c1:b0:280:14ac:a6dc with SMTP id gv1-20020a17090b11c100b0028014aca6dcmr4522639pjb.25.1699891731757;
+        Mon, 13 Nov 2023 08:08:51 -0800 (PST)
+Received: from localhost.localdomain ([149.167.148.33])
+        by smtp.gmail.com with ESMTPSA id p17-20020a17090adf9100b00281032f9f9csm5778832pjv.35.2023.11.13.08.08.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 08:08:51 -0800 (PST)
+From:   Ronald Monthero <debug.penguin32@gmail.com>
+Cc:     richard@nod.at, vigneshr@ti.com, heiko@sntech.de,
+        martin.blumenstingl@googlemail.com, paul@crapouillou.net,
+        robh@kernel.org, u.kleine-koenig@pengutronix.de,
+        debug.penguin32@gmail.com, AVKrasnov@sberdevices.ru,
+        r.czerwinski@pengutronix.de, andriy.shevchenko@linux.intel.com,
+        jaimeliao.tw@gmail.com, linux-mtd@lists.infradead.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        =?UTF-8?q?Philippe=20Mathieu-Daud=C3=A9?= <philmd@linaro.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>
+Subject: [PATCH v2] mtd: rawnand: Increment IFC_TIMEOUT_MSECS for nand controller response
+Date:   Tue, 14 Nov 2023 02:07:49 +1000
+Message-Id: <20231113160751.620810-1-debug.penguin32@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231113131634.614467-1-debug.penguin32@gmail.com>
+References: <20231113131634.614467-1-debug.penguin32@gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] dt-bindings: connector: usb: provide bindings for
- altmodes
-Content-Language: en-US, nl
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        Mark Gross <markgross@kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
-        linux-usb@vger.kernel.org
-References: <20231113145328.42575-1-dmitry.baryshkov@linaro.org>
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231113145328.42575-1-dmitry.baryshkov@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Under heavy load it is likely that the controller is done
+with its own task but the thread unlocking the wait is not
+scheduled in time. Increasing IFC_TIMEOUT_MSECS allows the
+controller to respond within allowable timeslice of 1 sec
 
-On 11/13/23 15:33, Dmitry Baryshkov wrote:
-> In some cases we need a way to specify USB-C AltModes that can be
-> supportd on the particular USB-C connector. For example, x86 INT33FE
-> driver does this by populating fwnode properties internally. For the
-> Qualcomm Robotics RB5 platform (and several similar devices which use
-> Qualcomm PMIC TCPM) we have to put this information to the DT.
-> 
-> Provide the DT bindings for this kind of information and while we are at
-> it, change svid property to be 16-bit unsigned integer instead of a
-> simple u32.
+fsl,ifc-nand 7e800000.nand: Controller is not responding
+main/smp_fsm.c:1884 <inrcu: rcu_preempt detected stalls on CPUs/tasks:
+rcu:    Tasks blocked on level-0 rcu_node (CPUs 0-1): P116/2:b..l
+        (detected by 1, t=2102 jiffies, g=7729, q=754)
+task:irq/31-arm-irq1 state:D stack: 0 pid: 116 ppid: 2 flags:0x00000000
+[<8064b97f>] (__schedule) from [<8064bb01>] (schedule+0x8d/0xc2)
+[<8064bb01>] (schedule) from [<8064dacd>]
+[<8064dacd>] (rt_mutex_slowlock_block.constprop.0) from [<8064db57>]
+[<8064db57>] (__rt_mutex_slowlock.constprop.0) from [<8064dbf7>]
+[<8064dbf7>] (rt_mutex_slowlock.constprop.0) from [<804b2047>]
+[<804b2047>] (nand_get_device) from [<804b5335>] (nand_write_oob+0x1b/0x4a)
+[<804b5335>] (nand_write_oob) from [<804a3585>] (mtd_write+0x41/0x5c)
+[<804a3585>] (mtd_write) from [<804c1d47>] (ubi_io_write+0x17f/0x22c)
+[<804c1d47>] (ubi_io_write) from [<804c047b>] (ubi_eba_write_leb+0x5b/0x1d0)
 
-Thank you for your patches. I'm fine with this, one remark though:
+Cc: stable@vger.kernel.org
+Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
+---
+ drivers/mtd/nand/raw/fsl_ifc_nand.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Since at least the existing arch/arm64/boot/dts/qcom/qrb5165-rb5.dts
-is already using this I'm not sure of changing the svid property to
-an u16 is really a good idea from devicetree compatibility pov ?
-
-Also the whole 16 bit property notation in the dts files seems
-less readable to me. So to me this seems more of something
-which one would use when having a significantly sized array
-of u16-s since then it will result in space-saving in the dtb.
-
-In this case I personally think it is fine to leave this
-as an u32.
-
-With all that said, I'm fine either way.
-
-Here is my ack for routing the drivers/platform/x86/intel/chtwc_int33fe.c
-bits through whatever tree is best to get this upstream:
-
-Acked-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-
-
-> Dmitry Baryshkov (3):
->   dt-bindings: connector: usb: add altmodes description
->   usb: typec: change altmode SVID to u16 entry
->   arm64: dts: qcom: qrb5165-rb5: use u16 for DP altmode svid
-> 
->  .../bindings/connector/usb-connector.yaml     | 35 +++++++++++++++++++
->  arch/arm64/boot/dts/qcom/qrb5165-rb5.dts      |  2 +-
->  drivers/platform/x86/intel/chtwc_int33fe.c    |  2 +-
->  drivers/usb/typec/class.c                     |  5 +--
->  4 files changed, 40 insertions(+), 4 deletions(-)
-> 
+diff --git a/drivers/mtd/nand/raw/fsl_ifc_nand.c b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+index 20bb1e0cb5eb..42f8ea46b6a8 100644
+--- a/drivers/mtd/nand/raw/fsl_ifc_nand.c
++++ b/drivers/mtd/nand/raw/fsl_ifc_nand.c
+@@ -21,7 +21,7 @@
+ 
+ #define ERR_BYTE		0xFF /* Value returned for read
+ 					bytes when read failed	*/
+-#define IFC_TIMEOUT_MSECS	500  /* Maximum number of mSecs to wait
++#define IFC_TIMEOUT_MSECS	1000  /* Maximum number of mSecs to wait
+ 					for IFC NAND Machine	*/
+ 
+ struct fsl_ifc_ctrl;
+-- 
+2.34.1
 
