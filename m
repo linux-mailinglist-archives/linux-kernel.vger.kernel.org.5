@@ -2,263 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7238B7EA629
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 23:54:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 275E97EA631
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 23:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjKMWyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 17:54:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40556 "EHLO
+        id S230388AbjKMW5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 17:57:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMWyK (ORCPT
+        with ESMTP id S229511AbjKMW5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 17:54:10 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0350BD50;
-        Mon, 13 Nov 2023 14:54:06 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id 2adb3069b0e04-50a71aac023so4847635e87.3;
-        Mon, 13 Nov 2023 14:54:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699916044; x=1700520844; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WPzazopAtUp+EgOFQKTlhOdPvNnxkyd2UByDdcWqmgk=;
-        b=db3kv2uFTFkzyATcKk9t7wWTDaCUnGluMbtrbFxRtQeU0/XgC4XRBlpcrKWIhB+UKU
-         fcNNdPUFwLSfbscvBHIqycmy6UruxCA6dy7GentlaibcLTpIHlw5DsT4SPVA4Xvxc6H6
-         i+AQ58h9RFDLVNhfhD0LDerhTyuzEzcpX/E2Vp2d8IKg+bpsHyA6S8VDj1iYsowGXnG9
-         I0fts0BwNrYneeyk2A/mzgANhveNH7GzeDSMv7QOfxqsriAdvBmgseV83Yy0VU52xhmt
-         epB2OfF3qy2bX5e1Oux4HQOwb8xzigu0m6TWqrsVNtyxWmXnPQHk2Cu1xZ15IMJ9mCv3
-         VMbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699916044; x=1700520844;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=WPzazopAtUp+EgOFQKTlhOdPvNnxkyd2UByDdcWqmgk=;
-        b=sn5EZqlZ3iqFGr9XLiSR7FNVKVFC91tTP/KyYQNuPzrcPo0NPZdcIB3Ccn4im9mXqq
-         h3wkivTqwZcVptbc9l1BuFSy7Wqa+CumZxl1NTTdud+yXMGxb108IpOfXxwceknxTWVY
-         G0KhndlrE02lljGyh8/47yY2cXIkLLIqti11zsvCDQa5ioVqAeuS/PNAYlgzyKFA1+cC
-         KOpkLWE3H80npV3id4nZZY1TzxsMPUSJ+W1xYEeWD5zEcxsupQjllUc4d00dMa2CHvW8
-         7eKQBimZaJtr85w34Urmkyj+qxsjVOHeauGgjwG0KMWe+Tx9pW551wHbOXwxFPN4D+Wq
-         DCEQ==
-X-Gm-Message-State: AOJu0YxrH3Fd2ow/TXTHlrYrmfJtRjbN+MmTL+HfvJ67lmpB/+iLI0c0
-        dfd18Ip8qg2ERDzsEoX2z+L60Q8RCCKyNX2xsyxqprFVyIQZH621
-X-Google-Smtp-Source: AGHT+IE2bTUx0LhkZZJH+vP5uJOdSWaGyU3nUDdSamSvabzCzRXojWIN5VyaTGMJJLe06hGlnsX8P69m2vKy+T4pCYk=
-X-Received: by 2002:a05:6512:32b3:b0:509:cc4:f23a with SMTP id
- q19-20020a05651232b300b005090cc4f23amr4786433lfe.64.1699916043876; Mon, 13
- Nov 2023 14:54:03 -0800 (PST)
+        Mon, 13 Nov 2023 17:57:44 -0500
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF17D48;
+        Mon, 13 Nov 2023 14:57:41 -0800 (PST)
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+        by mx0a-0064b401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3ADBZ168012916;
+        Mon, 13 Nov 2023 14:57:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=windriver.com;
+         h=from:to:cc:subject:date:message-id:content-transfer-encoding
+        :content-type:mime-version; s=PPS06212021; bh=wjS2LOtfvZg3o5rztu
+        OWpJqWAjJcEDKzav4OGC6tH7E=; b=gfGerNs5oseKDmQA8+9xri17Sja4FMg9YD
+        Papq55ijU8AbJ7/Z/1rozITSmgJcvPDQ1GEgqPb5/Dh3ZXrp7xeYAFA1A6tEjVF5
+        qDr5pCQF8orJEevJQpyrCVHqKr7KrGbtG0KPA07lVPaogjXv8JQwtclQAirLDmDi
+        ZEDQk6LVclY3F9QM9e9st/dUM2Kh3D0B3TfPNqivTPd0L3igzdoWvxTpuSeCenGu
+        ZzWNJUItKeL2EvEVmO5O+24EkRjRj6z+eKv4SXEUNwfEmBMe5htLZck7nqtY3coP
+        7eZwHLraWn2gQrX3BkhS2HETVOgfrUCkulyHkmBQ/uNVaDaWZKqA==
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
+        by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3ua5s4sw6g-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Nov 2023 14:57:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TCtSwnB2d7Hwe7BbvTROsW0L1hRBSbgay4keepbybPvlqHaGI579edCoFd+3MquIQqaINMIGrqqSHsNbVhXcmPGwAhQs3GCeKcmoqZX2XkZgV4OROYDZBZJ1XJPxfqCFuWfv3C7T9Z2NXDuN68qPwR3a1t7D/jN5dJo22qQZ9UvYWkl+nRjkLLuwa00RZnqDeU9Czu6TIrfaU6X3OXpAbl4KM9ZOXTxgv8ZJ9LpAH3Adobdf09WSrR1z60w3RLYmtiCVw5jT3x69sh11Ul7UJ+WB7bEFIEpaEWDJ6bfcO6b0w13wC7Y9qu4n+jlBEPPoVR0YzPJnpdIMN3gEN5wmvA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wjS2LOtfvZg3o5rztuOWpJqWAjJcEDKzav4OGC6tH7E=;
+ b=ftGiLAauAsJlsz0sbiY8JBtlOH4ulz0C1cMjbNb2unDzk1QMwHhslUlZsrzgm/jKptTZB2x/6j0+J8BcNz2vZimL4ZRg68ZnaCBVdYbjAgWhq7IYbnvvXNNNfTVqDGFxdncNTdsApZQO6H0rOMxTCgU2PkGfOpepiggUeaeCCV81DwjDFXiJBqkWhdx/AcAddC0hCKYnzy+yVk1VqyVyc5cqNujYgtb8Mt/Lwkq1exWlFrAxVAJOJvlvEiBBSG7KmLaE4xxdWDjDUPmtJMH8sI0EW4yxl/zYwPZzAJfRU4o5wt4BcfR/YJJSvTMkj6mTrQ7sS3xVG9E8gdXbDTQFmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+Received: from MW5PR11MB5764.namprd11.prod.outlook.com (2603:10b6:303:197::8)
+ by CY8PR11MB7136.namprd11.prod.outlook.com (2603:10b6:930:60::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
+ 2023 22:57:30 +0000
+Received: from MW5PR11MB5764.namprd11.prod.outlook.com
+ ([fe80::7d7c:4379:e96:3537]) by MW5PR11MB5764.namprd11.prod.outlook.com
+ ([fe80::7d7c:4379:e96:3537%7]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 22:57:29 +0000
+From:   Xiaolei Wang <xiaolei.wang@windriver.com>
+To:     Frank.Li@nxp.com, vkoul@kernel.org
+Cc:     imx@lists.linux.dev, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/2] Fix two exceptions after the introduction of edma v3 
+Date:   Tue, 14 Nov 2023 06:57:11 +0800
+Message-Id: <20231113225713.1892643-1-xiaolei.wang@windriver.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: TYAPR01CA0137.jpnprd01.prod.outlook.com
+ (2603:1096:404:2d::29) To MW5PR11MB5764.namprd11.prod.outlook.com
+ (2603:10b6:303:197::8)
 MIME-Version: 1.0
-References: <20230917000045.56377-1-puranjay12@gmail.com> <20230917000045.56377-2-puranjay12@gmail.com>
- <ZUPVbrMSNNwPw_B-@FVFF77S0Q05N.cambridge.arm.com> <CANk7y0g8SOrSAY2jqZ22v6Duu9yhHY-d39g5gJ2vA2j2Y-v53Q@mail.gmail.com>
- <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
-In-Reply-To: <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
-From:   Puranjay Mohan <puranjay12@gmail.com>
-Date:   Mon, 13 Nov 2023 23:53:52 +0100
-Message-ID: <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MW5PR11MB5764:EE_|CY8PR11MB7136:EE_
+X-MS-Office365-Filtering-Correlation-Id: eb9ec161-a047-4846-3f59-08dbe49be9b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SE3NUUO/hRKa9rTw4EeIzB5bUP5/lFBEbmnwikyMBCpm3bdwcWqMV/KQYaZYBO5ZRYHVwhAMF5HWU5PEFpi8otYCGfSqzhrdkbvIKx5GiaDPlmgBJThutSnsvzbY8u2D9/bnq4IQTgj+vGkfh3y5Sd1zTDv2pkUBQcHG8+PAL2z3hPz6qiILm8jGFbg5nnghdMlhNXTrOOl5TNWv9G+3cJ0ZPfR0lrY0TKo9ZT81+cUNCOHljSsrBZP14tgr59MnRtJ7J2DgHgev2bTsDHrsvns6ul1cuoyFdYZRK68RWd1/sRjSmfp49gb3snbc3bP1Xpo5MB9c6I4F5xgORbX+ZH3/ooENolGJkpkDsm7wYfWLTqYprzQFb2bFadDOFBG8Fe7LG20yyeGtqcQ/61Z7qDSgbuXmmHGXRiPcMClYc3ws2ypx+b1phA01i81thSaDXBqa2xeTO4Emu6bpoB0dG5oMPE9LSOCa3OkiTV9yBhtrf5ZdMV3shjIdyB+9XYJ7gjBERbofQzUwhJUsg4Byc8SF7uXgHRYA/wmVhfDZvdZ9FrYY7PGMYqeg/KQ39DLCX466uSwEvqY+uJsj4AY2AVLF+2Cv53+iwbURVPBdoKaz+PHvhfcagUELkYiXegVy
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5764.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(396003)(366004)(346002)(39850400004)(136003)(230922051799003)(186009)(451199024)(64100799003)(1800799009)(38100700002)(2616005)(1076003)(8936002)(8676002)(4326008)(44832011)(52116002)(6512007)(6506007)(83380400001)(26005)(4743002)(6486002)(6666004)(478600001)(66946007)(66476007)(66556008)(316002)(38350700005)(36756003)(41300700001)(2906002)(86362001)(5660300002)(4744005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?JoWiyCsLSwklfG501ADKiKKvUBThwcdu72X3lmJc2d/CyDOjQaYMJVM3VLzz?=
+ =?us-ascii?Q?y64uknJ3aqh+XPn35hIeZxqQurM2aSzpl37PtP6r0v/LgJwc+CBZLNqPkj4U?=
+ =?us-ascii?Q?V2TX8tm2jhuYi71ByZnJ0PkHl61QhRXLapQjOIqUADq2CdWcgH259b1TpvbW?=
+ =?us-ascii?Q?Mpi8UnY7rl+XDs6Ue908D1fHgbs1qIk8efDQcZwqMAewAwHKJWil3+IqK1NB?=
+ =?us-ascii?Q?2elFv4PDUeD1/LgF6KvEdc/OvoO5/yqD3i/VYdNiO84j06SdHQSt3P9kJs0y?=
+ =?us-ascii?Q?kdOQaZuBDIRYgFR04mwRDn4N7wX1VOcsYvyRysVgNipwYlxruQwHC0iMNd8V?=
+ =?us-ascii?Q?pJyfNe/qi3MmdF1ye8uepzVXkeNKPYqJSHaSf6gdN7M9icVm5h5vBSTUBPcw?=
+ =?us-ascii?Q?NAC5bIPqLAxcVBY6C3eGvhH0fCBAx54Wz7P3HiNCk0NgnwFq6OgJNebI8W7B?=
+ =?us-ascii?Q?9s7TSk6obWtjGTdzPhFZtYSMc1uFGq1fcLj02u2LBC1bgUs/ADQWyVRWMU4K?=
+ =?us-ascii?Q?plrlBQchol1pDck14P7uFY6PyDCg+JLNzbu/ZxPGf1oIVFVdoPrKhXG40OoX?=
+ =?us-ascii?Q?bX0lLYlYnzT0vvIcPyRpJgORRSOBQRo2pvRE9eYefxtAO9r+OsW0sky0WCMc?=
+ =?us-ascii?Q?pNBnsnta3TamyzXcrG4FJGjutbxB7qG/3EFEvq5Q2VGViN/GFQGPuEhbW//s?=
+ =?us-ascii?Q?+6Y1fLJJcfj7ZHlFApap4b4fgetmOMXrCm14Q1+MiV5EZPlF341J/e6dxS3k?=
+ =?us-ascii?Q?VS+PZ30QqUf9DzKUCV7U+CrVUgvHjOzz8NL3iFNnlbEcw597ecd2d1lhCpBG?=
+ =?us-ascii?Q?xtqoSBiAwYAMdG+OMVR6M0imlk0HjJ44qlYVImov9pfoEV+tpjA62LQbX5Bv?=
+ =?us-ascii?Q?Xshondc7M0lwu82PQbnphUPWVHIZ3P8E+mgYawertf5DFm0GybxMtE48K95a?=
+ =?us-ascii?Q?9s2CU2TD9La0XaSLr5NANcbIsJ00axoVlshJfW3CjjVLYHHKh0D+d0xvOPde?=
+ =?us-ascii?Q?quTH8Cmy4WbCVrmMzQp71f4FSguMKyuThY6j0HdOujb+pxrnwZbwyqhz4+rd?=
+ =?us-ascii?Q?EgSDqAJ2svCim8uIA5z1TIl5EqDOg+TtSfAfznbT1WkKx1a1DgKPn5LLMdzj?=
+ =?us-ascii?Q?JsjjiTT7HJPRWbpgn+zuwx9VyKazuI7BcGYrs7kLpINkrZ+zzOMCbHDBvslP?=
+ =?us-ascii?Q?9PJig/eKQFd5Wx1KE3pXG0MfaKwiPvEv4NX87xr1CzCrtsbw9wRrZv7gcRwO?=
+ =?us-ascii?Q?q1ipzxarhb4Ely+mgMB/38Q/GGvnRrZlDoVhLePVAY3uuwFXlRnf5VcLAqJ5?=
+ =?us-ascii?Q?aohy1V1zweiy7Esh9SL2VPTllUfXPOVrRdQxYl2AayHd5KooWi/fam68KFt3?=
+ =?us-ascii?Q?z3Xv9xThoZuDic6+gA2ZJ3UD0hF5p6kIL5iF7R3H8dL1nZMb3h1Ub1pGoD0W?=
+ =?us-ascii?Q?ss7HR7ObAXBt4tAc9l8hicP/1i4v/xrwmNb/LI2zh7TIEUy2He5cWP1AWwUy?=
+ =?us-ascii?Q?KMlhYw5RwmM/MSMl+4xiZnhylrM4Dt3bDs6Hav2PUyIB0n0+JpLUjF2P9gsQ?=
+ =?us-ascii?Q?hsSXBawsTgUtm2w1Mm/WEo1QbPrEn+LPXzZjOH2DSO3pbXrEhJXNh/7bgEkT?=
+ =?us-ascii?Q?jg=3D=3D?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb9ec161-a047-4846-3f59-08dbe49be9b0
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5764.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 22:57:29.7250
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: F1p3m7RTQiDtYHsb0278J+8nnZrMC4OukUCUdeYTN1PciIDbk53nBu3u5MnEBvdiqhFWuvd6XdISpXtfdhYuZT9cfgz2hvEd+44ooGs7ieM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7136
+X-Proofpoint-GUID: QJJZc1Rk_hW7yfdesJ-AygfsU_jOhgfq
+X-Proofpoint-ORIG-GUID: QJJZc1Rk_hW7yfdesJ-AygfsU_jOhgfq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-13_12,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=664 clxscore=1015
+ priorityscore=1501 lowpriorityscore=0 mlxscore=0 spamscore=0
+ suspectscore=0 bulkscore=0 impostorscore=0 adultscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311130179
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+In the v2 version, I updated the commit that introduced these two issues.
 
-On Wed, Nov 8, 2023 at 11:32=E2=80=AFAM Mark Rutland <mark.rutland@arm.com>=
- wrote:
->
-> On Mon, Nov 06, 2023 at 10:04:09AM +0100, Puranjay Mohan wrote:
-> > Hi Mark,
-> >
-> > On Thu, Nov 2, 2023 at 5:59=E2=80=AFPM Mark Rutland <mark.rutland@arm.c=
-om> wrote:
-> > >
-> > > On Sun, Sep 17, 2023 at 12:00:45AM +0000, Puranjay Mohan wrote:
-> > > > Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be use=
-d
-> > > > by bpf_throw() to unwind till the program marked as exception bound=
-ary and
-> > > > run the callback with the stack of the main program.
-> > > >
-> > > > The prologue generation code has been modified to make the callback
-> > > > program use the stack of the program marked as exception boundary w=
-here
-> > > > callee-saved registers are already pushed.
-> > > >
-> > > > As the bpf_throw function never returns, if it clobbers any callee-=
-saved
-> > > > registers, they would remain clobbered. So, the prologue of the
-> > > > exception-boundary program is modified to push R23 and R24 as well,
-> > > > which the callback will then recover in its epilogue.
-> > > >
-> > > > The Procedure Call Standard for the Arm 64-bit Architecture[1] stat=
-es
-> > > > that registers r19 to r28 should be saved by the callee. BPF progra=
-ms on
-> > > > ARM64 already save all callee-saved registers except r23 and r24. T=
-his
-> > > > patch adds an instruction in prologue of the  program to save these
-> > > > two registers and another instruction in the epilogue to recover th=
-em.
-> > > >
-> > > > These extra instructions are only added if bpf_throw() used. Otherw=
-ise
-> > > > the emitted prologue/epilogue remains unchanged.
-> > > >
-> > > > [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs6=
-4.rst
-> > > >
-> > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > > > ---
-> > >
-> > > [...]
-> > >
-> > > > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, =
-u64 sp, u64 bp), void *cookie)
-> > > > +{
-> > > > +     struct stack_info stacks[] =3D {
-> > > > +             stackinfo_get_task(current),
-> > > > +     };
-> > >
-> > > Can bpf_throw() only be used by BPF programs that run in task context=
-, or is it
-> > > possible e.g. for those to run within an IRQ handler (or otherwise on=
- the IRQ
-> > > stack)?
-> >
-> > I will get back on this with more information.
-> >
-> > >
-> > > > +
-> > > > +     struct unwind_state state =3D {
-> > > > +             .stacks =3D stacks,
-> > > > +             .nr_stacks =3D ARRAY_SIZE(stacks),
-> > > > +     };
-> > > > +     unwind_init_common(&state, current);
-> > > > +     state.fp =3D (unsigned long)__builtin_frame_address(1);
-> > > > +     state.pc =3D (unsigned long)__builtin_return_address(0);
-> > > > +
-> > > > +     if (unwind_next_frame_record(&state))
-> > > > +             return;
-> > > > +     while (1) {
-> > > > +             /* We only use the fp in the exception callback. Pass=
- 0 for sp as it's unavailable*/
-> > > > +             if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.=
-fp))
-> > > > +                     break;
-> > > > +             if (unwind_next_frame_record(&state))
-> > > > +                     break;
-> > > > +     }
-> > > > +}
-> > >
-> > > IIUC you're not using arch_stack_walk() because you need the FP in ad=
-dition to
-> > > the PC.
-> >
-> > Yes,
-> >
-> > > Is there any other reason you need to open-code this?
-> >
-> > No,
-> >
-> > >
-> > > If not, I'd rather rework the common unwinder so that it's possible t=
-o get at
-> > > the FP. I had patches for that a while back:
-> > >
-> > >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/=
-?h=3Darm64/stacktrace/metadata
-> > >
-> > > ... and I'm happy to rebase that and pull out the minimum necessary t=
-o make
-> > > that possible.
-> >
-> > It would be great if you can rebase and push the code, I can rebase thi=
-s on
-> > your work and not open code this implementation.
->
-> I've rebased the core of that atop v6.6, and pushed that out to my
-> arm64/stacktrace/kunwind branch:
->
->   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=
-=3Darm64/stacktrace/kunwind
->
-> Once v6.7-rc1 is out, I'll rebase that and post it out (possibly with som=
-e of
-> the other patches atop).
->
-> With that I think you can implement arch_bpf_stack_walk() in stacktrace.c=
- using
-> kunwind_stack_walk() in a similar way to how arch_stack_walk() is impleme=
-nted
-> in that branch.
->
-> If BPF only needs a single consume_fn, that can probably be even simpler =
-as you
-> won't need a struct to hold the consume_fn and cookie value.
+Xiaolei Wang (2):
+  dmaengine: fsl-edma: Do not suspend and resume the masked dma channel
+    when the system is sleeping
+  dmaengine: fsl-edma: Add judgment on enabling round robin arbitration
 
-Thanks for the help.
-I am planning to do something like the following:
-let me know if this can be done in a better way:
+ drivers/dma/fsl-edma-main.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-+struct bpf_unwind_consume_entry_data {
-+       bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
-+       void *cookie;
-+};
-+
-+static bool
-+arch_bpf_unwind_consume_entry (const struct kunwind_state *state, void *co=
-okie)
-+{
-+       struct bpf_unwind_consume_entry_data *data =3D cookie;
-+       return data->consume_entry(data->cookie, state->common.pc, 0,
-state->common.fp);
-+}
-+
-+noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void
-*cookie, u64 ip, u64 sp,
-+                                         u64 fp), void *cookie)
-+{
-+       struct bpf_unwind_consume_entry_data data =3D {
-+               .consume_entry =3D consume_entry,
-+               .cookie =3D cookie,
-+       };
+-- 
+2.25.1
 
-I need to get the task and regs here so it can work from all contexts.
-How can I do it?
-
-+
-+       kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, task, regs=
-);
-+}
-
-
->
-> Mark.
-
-
-
-Thanks,
-Puranjay
