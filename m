@@ -2,127 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A1017EA506
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6167EA508
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 21:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230204AbjKMUq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 15:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56172 "EHLO
+        id S231177AbjKMUst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 15:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKMUq5 (ORCPT
+        with ESMTP id S229580AbjKMUss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 15:46:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAE35189
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:46:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699908415; x=1731444415;
-  h=date:from:to:cc:subject:message-id;
-  bh=3oX/pn4tkQybXnXVmkU9cHlRVkQSVwWZlsDjLiGBq8o=;
-  b=aktveQ/aQBI78gdJtYw1eZZuoPJglBkcYv8GRs8QnYamRb2m5VgA59Vo
-   iel8EOy6d9GNwBELkOdBehXahzkZ55ufJqM7FWPZa4QdL/+i+JY5J7HCb
-   KB+Ivcy9prmT6XPGD8aDvtl5LkvU873Bc3JorrTMmwNEvjmbBmx1CQ5YD
-   smD5MDp6kXO3vh/zRhgauj2FWum+vl9UQp8f7iNmKcQ7TuIe98IAPZo42
-   5fWHt4Bx9KIApo4b8HPRnkmv/B3lMQkfgR82LOkBepvXglQlX4DXte+cx
-   Rs3FfKk9zhKAPhELFRFXm/l/9LoKMjpzN6R+IcBStk3eN9L93Widiri9f
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="12060403"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="12060403"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 12:46:55 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="12566391"
-Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmviesa001.fm.intel.com with ESMTP; 13 Nov 2023 12:46:54 -0800
-Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r2dpb-000CT6-17;
-        Mon, 13 Nov 2023 20:46:51 +0000
-Date:   Tue, 14 Nov 2023 04:45:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- f7a25cf1d4707da39b80df96a3be8a8abd07c35b
-Message-ID: <202311140455.ExS54WeG-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+        Mon, 13 Nov 2023 15:48:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0FC919E
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 12:48:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699908503;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WP+Y4q+4xEgs51EbL6GPWxpQ0/7X1AlpT4HcryotvYE=;
+        b=EWK0hlLNxZYCI/AnEVjN3nkTUY0iutSeLqSe4+pgSf423LUN0UYiby4l7ddbOXgPwlQ6jo
+        iSHIG1EjB52v9ZXyjzaAlqvxv4/QDWYrjukPE7mAKT6s9Yr4hWUPk+GvBCQN5EJdJiG5JT
+        DqCSIJ11nhPRxezCGosNEzba2HkzgPU=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-578-gKnhWEH6N-272dshLWNAaw-1; Mon,
+ 13 Nov 2023 15:48:19 -0500
+X-MC-Unique: gKnhWEH6N-272dshLWNAaw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 21D6B1C0F2DD;
+        Mon, 13 Nov 2023 20:48:19 +0000 (UTC)
+Received: from fs-i40c-03.fs.lab.eng.bos.redhat.com (fs-i40c-03.fast.rdu2.eng.redhat.com [10.6.23.54])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 09AEC1C060B9;
+        Mon, 13 Nov 2023 20:48:19 +0000 (UTC)
+From:   Alexander Aring <aahringo@redhat.com>
+To:     peterz@infradead.org
+Cc:     will@kernel.org, gfs2@lists.linux.dev, aahringo@redhat.com,
+        boqun.feng@gmail.com, mark.rutland@arm.com,
+        linux-kernel@vger.kernel.org
+Subject: [PATCHv2 1/2] refcount: introduce __refcount_dec_and_lock macro
+Date:   Mon, 13 Nov 2023 15:48:08 -0500
+Message-Id: <20231113204809.4052009-1-aahringo@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cleanups
-branch HEAD: f7a25cf1d4707da39b80df96a3be8a8abd07c35b  x86/setup: Make relocated_ramdisk a local variable of relocate_initrd()
+This patch adds the __refcount_dec_and_lock macro to generate code for a
+lock specific refcount_dec_and_lock implementation. Existing
+refcount_dec_and_lock implementation are updated to use the new
+__refcount_dec_and_lock macro. In future other lock implementation can
+added to use the refcount_dec_and_lock trick to only hold the lock when
+the refcount is going to be zero. Per subsystem own lock implementation
+can use the macro as well to provide such implementation for their own
+locking type.
 
-elapsed time: 724m
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Co-developed: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Alexander Aring <aahringo@redhat.com>
+---
+changes since v2:
+ - drop kdoc move to header, it need to be at the implementation
+ - add Acked-by from Peter Zijlstra
+ - fix Peter Zijlstra in Co-developed
 
-configs tested: 51
-configs skipped: 142
+ include/linux/refcount.h | 26 ++++++++++++++++++++++++++
+ lib/refcount.c           | 36 ++++++------------------------------
+ 2 files changed, 32 insertions(+), 30 deletions(-)
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-i386                             allmodconfig   gcc  
-i386                              allnoconfig   gcc  
-i386                             allyesconfig   gcc  
-i386         buildonly-randconfig-001-20231113   gcc  
-i386         buildonly-randconfig-002-20231113   gcc  
-i386         buildonly-randconfig-003-20231113   gcc  
-i386         buildonly-randconfig-004-20231113   gcc  
-i386         buildonly-randconfig-005-20231113   gcc  
-i386         buildonly-randconfig-006-20231113   gcc  
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231113   gcc  
-i386                  randconfig-002-20231113   gcc  
-i386                  randconfig-003-20231113   gcc  
-i386                  randconfig-004-20231113   gcc  
-i386                  randconfig-005-20231113   gcc  
-i386                  randconfig-006-20231113   gcc  
-i386                  randconfig-011-20231113   gcc  
-i386                  randconfig-012-20231113   gcc  
-i386                  randconfig-013-20231113   gcc  
-i386                  randconfig-014-20231113   gcc  
-i386                  randconfig-015-20231113   gcc  
-i386                  randconfig-016-20231113   gcc  
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   gcc  
-x86_64       buildonly-randconfig-001-20231113   gcc  
-x86_64       buildonly-randconfig-002-20231113   gcc  
-x86_64       buildonly-randconfig-003-20231113   gcc  
-x86_64       buildonly-randconfig-004-20231113   gcc  
-x86_64       buildonly-randconfig-005-20231113   gcc  
-x86_64       buildonly-randconfig-006-20231113   gcc  
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231113   gcc  
-x86_64                randconfig-002-20231113   gcc  
-x86_64                randconfig-003-20231113   gcc  
-x86_64                randconfig-004-20231113   gcc  
-x86_64                randconfig-005-20231113   gcc  
-x86_64                randconfig-006-20231113   gcc  
-x86_64                randconfig-011-20231113   gcc  
-x86_64                randconfig-012-20231113   gcc  
-x86_64                randconfig-013-20231113   gcc  
-x86_64                randconfig-014-20231113   gcc  
-x86_64                randconfig-015-20231113   gcc  
-x86_64                randconfig-016-20231113   gcc  
-x86_64                randconfig-071-20231113   gcc  
-x86_64                randconfig-072-20231113   gcc  
-x86_64                randconfig-073-20231113   gcc  
-x86_64                randconfig-074-20231113   gcc  
-x86_64                randconfig-075-20231113   gcc  
-x86_64                randconfig-076-20231113   gcc  
-x86_64                          rhel-8.3-rust   clang
-x86_64                               rhel-8.3   gcc  
-
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+index a62fcca97486..0db03df681fe 100644
+--- a/include/linux/refcount.h
++++ b/include/linux/refcount.h
+@@ -361,6 +361,32 @@ static inline void refcount_dec(refcount_t *r)
+ 
+ extern __must_check bool refcount_dec_if_one(refcount_t *r);
+ extern __must_check bool refcount_dec_not_one(refcount_t *r);
++
++/**
++ * __refcount_dec_and_lock - macro to create code to holding a lock if being
++ *                           able to decremnt refcount to 0
++ * @_ref: the refcount
++ * @_lock: lock function call code
++ * @_unlock: unlock function call code
++ *
++ * The result will be directly returned as a right operand operation. Uusally
++ * the caller use it directly after a return statement.
++ */
++#define __refcount_dec_and_lock(_ref, _lock, _unlock)	\
++({							\
++	bool _ret = false;				\
++							\
++	if (!refcount_dec_not_one(_ref)) {		\
++		_lock;					\
++		if (!refcount_dec_and_test(_ref))	\
++			_unlock;			\
++		else					\
++			_ret = true;			\
++	}						\
++							\
++	_ret;						\
++})
++
+ extern __must_check bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock) __cond_acquires(lock);
+ extern __must_check bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock) __cond_acquires(lock);
+ extern __must_check bool refcount_dec_and_lock_irqsave(refcount_t *r,
+diff --git a/lib/refcount.c b/lib/refcount.c
+index a207a8f22b3c..2afe279cfb5a 100644
+--- a/lib/refcount.c
++++ b/lib/refcount.c
+@@ -112,16 +112,8 @@ EXPORT_SYMBOL(refcount_dec_not_one);
+  */
+ bool refcount_dec_and_mutex_lock(refcount_t *r, struct mutex *lock)
+ {
+-	if (refcount_dec_not_one(r))
+-		return false;
+-
+-	mutex_lock(lock);
+-	if (!refcount_dec_and_test(r)) {
+-		mutex_unlock(lock);
+-		return false;
+-	}
+-
+-	return true;
++	return __refcount_dec_and_lock(r, mutex_lock(lock),
++				       mutex_unlock(lock));
+ }
+ EXPORT_SYMBOL(refcount_dec_and_mutex_lock);
+ 
+@@ -143,16 +135,8 @@ EXPORT_SYMBOL(refcount_dec_and_mutex_lock);
+  */
+ bool refcount_dec_and_lock(refcount_t *r, spinlock_t *lock)
+ {
+-	if (refcount_dec_not_one(r))
+-		return false;
+-
+-	spin_lock(lock);
+-	if (!refcount_dec_and_test(r)) {
+-		spin_unlock(lock);
+-		return false;
+-	}
+-
+-	return true;
++	return __refcount_dec_and_lock(r, spin_lock(lock),
++				       spin_unlock(lock));
+ }
+ EXPORT_SYMBOL(refcount_dec_and_lock);
+ 
+@@ -172,15 +156,7 @@ EXPORT_SYMBOL(refcount_dec_and_lock);
+ bool refcount_dec_and_lock_irqsave(refcount_t *r, spinlock_t *lock,
+ 				   unsigned long *flags)
+ {
+-	if (refcount_dec_not_one(r))
+-		return false;
+-
+-	spin_lock_irqsave(lock, *flags);
+-	if (!refcount_dec_and_test(r)) {
+-		spin_unlock_irqrestore(lock, *flags);
+-		return false;
+-	}
+-
+-	return true;
++	return __refcount_dec_and_lock(r, spin_lock_irqsave(lock, *flags),
++				       spin_unlock_irqrestore(lock, *flags));
+ }
+ EXPORT_SYMBOL(refcount_dec_and_lock_irqsave);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.3
+
