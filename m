@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45E2C7E9FD6
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:22:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 517BA7E9FD7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231618AbjKMPWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46922 "EHLO
+        id S231681AbjKMPWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:22:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231395AbjKMPWf (ORCPT
+        with ESMTP id S231422AbjKMPWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Nov 2023 10:22:35 -0500
 Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3725ED67
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CF0310E2
         for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:22:32 -0800 (PST)
-Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.55])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4STY7k1Wz4zWh55;
-        Mon, 13 Nov 2023 23:22:10 +0800 (CST)
+Received: from dggpemm100001.china.huawei.com (unknown [172.30.72.53])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4STY3H256czPpGn;
+        Mon, 13 Nov 2023 23:18:19 +0800 (CST)
 Received: from localhost.localdomain (10.175.112.125) by
  dggpemm100001.china.huawei.com (7.185.36.93) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ CC:     <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
         David Hildenbrand <david@redhat.com>,
         Sidhartha Kumar <sidhartha.kumar@oracle.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: [PATCH v2 4/6] mm: memory: use a folio in do_cow_page()
-Date:   Mon, 13 Nov 2023 23:22:20 +0800
-Message-ID: <20231113152222.3495908-5-wangkefeng.wang@huawei.com>
+Subject: [PATCH v2 5/6] mm: memory: use folio_prealloc() in wp_page_copy()
+Date:   Mon, 13 Nov 2023 23:22:21 +0800
+Message-ID: <20231113152222.3495908-6-wangkefeng.wang@huawei.com>
 X-Mailer: git-send-email 2.27.0
 In-Reply-To: <20231113152222.3495908-1-wangkefeng.wang@huawei.com>
 References: <20231113152222.3495908-1-wangkefeng.wang@huawei.com>
@@ -52,64 +52,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use folio_prealloc() helper and convert to use a folio in
-do_cow_page(), which save five compound_head() calls.
+Use folio_prealloc() helper to simplify code a bit.
 
 Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
 ---
- mm/memory.c | 16 ++++++----------
- 1 file changed, 6 insertions(+), 10 deletions(-)
+ mm/memory.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
 diff --git a/mm/memory.c b/mm/memory.c
-index d85df1c59f52..f350ab2a324f 100644
+index f350ab2a324f..03226566bf8e 100644
 --- a/mm/memory.c
 +++ b/mm/memory.c
-@@ -4653,6 +4653,7 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
- static vm_fault_t do_cow_fault(struct vm_fault *vmf)
- {
- 	struct vm_area_struct *vma = vmf->vma;
-+	struct folio *folio;
+@@ -3114,6 +3114,7 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 	int page_copied = 0;
+ 	struct mmu_notifier_range range;
  	vm_fault_t ret;
++	bool pfn_is_zero;
  
- 	ret = vmf_can_call_fault(vmf);
-@@ -4661,16 +4662,11 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
- 	if (ret)
- 		return ret;
+ 	delayacct_wpcopy_start();
  
--	vmf->cow_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, vmf->address);
--	if (!vmf->cow_page)
-+	folio = folio_prealloc(vma->vm_mm, vma, vmf->address, false);
-+	if (!folio)
- 		return VM_FAULT_OOM;
+@@ -3123,16 +3124,13 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 	if (unlikely(ret))
+ 		goto out;
  
--	if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
--				GFP_KERNEL)) {
--		put_page(vmf->cow_page);
--		return VM_FAULT_OOM;
--	}
--	folio_throttle_swaprate(page_folio(vmf->cow_page), GFP_KERNEL);
-+	vmf->cow_page = &folio->page;
+-	if (is_zero_pfn(pte_pfn(vmf->orig_pte))) {
+-		new_folio = vma_alloc_zeroed_movable_folio(vma, vmf->address);
+-		if (!new_folio)
+-			goto oom;
+-	} else {
++	pfn_is_zero = is_zero_pfn(pte_pfn(vmf->orig_pte));
++	new_folio = folio_prealloc(mm, vma, vmf->address, pfn_is_zero);
++	if (!new_folio)
++		goto oom;
++
++	if (!pfn_is_zero) {
+ 		int err;
+-		new_folio = vma_alloc_folio(GFP_HIGHUSER_MOVABLE, 0, vma,
+-				vmf->address, false);
+-		if (!new_folio)
+-			goto oom;
  
- 	ret = __do_fault(vmf);
- 	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
-@@ -4679,7 +4675,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
- 		return ret;
+ 		err = __wp_page_copy_user(&new_folio->page, vmf->page, vmf);
+ 		if (err) {
+@@ -3153,10 +3151,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
+ 		kmsan_copy_page_meta(&new_folio->page, vmf->page);
+ 	}
  
- 	copy_user_highpage(vmf->cow_page, vmf->page, vmf->address, vma);
--	__SetPageUptodate(vmf->cow_page);
-+	__folio_mark_uptodate(folio);
+-	if (mem_cgroup_charge(new_folio, mm, GFP_KERNEL))
+-		goto oom_free_new;
+-	folio_throttle_swaprate(new_folio, GFP_KERNEL);
+-
+ 	__folio_mark_uptodate(new_folio);
  
- 	ret |= finish_fault(vmf);
- 	unlock_page(vmf->page);
-@@ -4688,7 +4684,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
- 		goto uncharge_out;
- 	return ret;
- uncharge_out:
--	put_page(vmf->cow_page);
-+	folio_put(folio);
- 	return ret;
- }
+ 	mmu_notifier_range_init(&range, MMU_NOTIFY_CLEAR, 0, mm,
+@@ -3255,8 +3249,6 @@ static vm_fault_t wp_page_copy(struct vm_fault *vmf)
  
+ 	delayacct_wpcopy_end();
+ 	return 0;
+-oom_free_new:
+-	folio_put(new_folio);
+ oom:
+ 	ret = VM_FAULT_OOM;
+ out:
 -- 
 2.27.0
 
