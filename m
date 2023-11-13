@@ -2,72 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3947EA3FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:51:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFD77EA40B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:53:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231177AbjKMTve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 14:51:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54502 "EHLO
+        id S232090AbjKMTxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 14:53:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjKMTva (ORCPT
+        with ESMTP id S231862AbjKMTxI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 14:51:30 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5375B132
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:51:26 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5a7af20c488so57817407b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:51:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699905085; x=1700509885; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=N2lstRegQrjo3/tFDGD0ypKnw40CbFMYKLzrPxFGG+0=;
-        b=SYpdKERJnhhmwhWOYxrloaeFCPs6POq4zstk+rwk8TFIpOhfzvfO2KCAUSFumPu1Oa
-         ETCzuGGEfUpSGKp7m8aBX6TtH6HQp9BPIhhWbY4KuzHlxmcLHkk2QezRskp+gerzarm3
-         A4HBKp8gak9zly/Gx7Y2jl7Epx5eeGsAam+4EW5Mx798UtgTKcjOIOPLuEeWslwPAjTb
-         5J5gqzTmT2IY+UrTK83qPU9NnmOcmc2URElo2l6niVM6R63nWUyHeClsSbubxgbO85LI
-         psPbjh0XcVq3sO/6o30Ia1P1OeX94nQ7WaPEMfmrwJE+pn27aMApRiyxuFFyfqvTEL7m
-         5S6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699905085; x=1700509885;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N2lstRegQrjo3/tFDGD0ypKnw40CbFMYKLzrPxFGG+0=;
-        b=dbYmBl8YtwkgVxamL8RVPFzgSa25q+MXkXK/gx/Eqp31B9fJ7EnV8GJdReAuOizUrt
-         8IMQzJ4qVJHtk6jb3xdMQmCo2MiF9rFN5i/hwBYL4h6yQ/Ngbv0Qvp6zpCIgxJu6sguL
-         kSE18xbGRwPZRMuzLAp3DAzNUJYGVy1ZPcAwk0viustuaG8eutdFA23Gef41u5OmQU1u
-         YocGn6JUo7xGRs3C4EQDdDZy3wAnVeK9HiL21QgUz3lqaM0aMbKSunqdHWW8XJkrhYgH
-         O4i8FnhnTTeTsMGb4tFGohsRCxUjep/2i7+ul6aJ3RGdvyIVeAafz51GHIKBAZOzzjJ2
-         x8mQ==
-X-Gm-Message-State: AOJu0YzvdWfjpafvS1+HNMEa5NAA60ogErwO3euv5Fq/z0/nrbU1Uadk
-        AqTz3lc6gHSp3319w4Fm6YY=
-X-Google-Smtp-Source: AGHT+IHu9QXLrm505wbLh4b5vFFepaQ9/4r1ubLWoF6jdnj9a/8AROq8qcHKy5Z8Og7zA3rTAs+wYw==
-X-Received: by 2002:a0d:d74d:0:b0:5a7:d86c:988 with SMTP id z74-20020a0dd74d000000b005a7d86c0988mr7930048ywd.28.1699905085379;
-        Mon, 13 Nov 2023 11:51:25 -0800 (PST)
-Received: from fedora ([2600:1700:2f7d:1800::46])
-        by smtp.gmail.com with ESMTPSA id h73-20020a816c4c000000b00582fae92aa7sm1957340ywc.93.2023.11.13.11.51.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 11:51:24 -0800 (PST)
-Date:   Mon, 13 Nov 2023 11:51:22 -0800
-From:   Vishal Moola <vishal.moola@gmail.com>
-To:     Kefeng Wang <wangkefeng.wang@huawei.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Matthew Wilcox <willy@infradead.org>,
-        David Hildenbrand <david@redhat.com>,
-        Sidhartha Kumar <sidhartha.kumar@oracle.com>
-Subject: Re: [PATCH v2 4/6] mm: memory: use a folio in do_cow_page()
-Message-ID: <ZVJ+Og+SX2l1SQxI@fedora>
-References: <20231113152222.3495908-1-wangkefeng.wang@huawei.com>
- <20231113152222.3495908-5-wangkefeng.wang@huawei.com>
+        Mon, 13 Nov 2023 14:53:08 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996C1198A
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:53:00 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B413DC433C9;
+        Mon, 13 Nov 2023 19:52:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699905180;
+        bh=ffLcDRGqnUdm0yatIQP+KftLtw8Kq854UisLinpCfkE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Rks3S6dZ+7Jjp4tXAycU1iqgHBCErzgrQVDxCo/cZU5shwg2hEgTJXJUeXaeLFyni
+         +CVDX2NiHzYtD20ed6jtswkVpDqmglEmqUdpM5oohrdvWku/nzYSgG20l/Piy70n7B
+         NB5rmdA5VNxDBJpiqP6X2PhaLbSfswQuIvMf0p9QLDoQEOz5324ZwgDJfdXZmrezwU
+         44iZP1NTiGvAdWPMM6476hnynjk40o/M7OEoNLOeQvDnJz5qw4U/wSUvMt1TzwSRw+
+         aDEeoHZcsUvSyMsL6zCHaFdOgkHF1C+YltwZzPUwQ9oJUI9FWKr0HvVULJfsqs3hud
+         gsm6TGvm1ArIw==
+Date:   Mon, 13 Nov 2023 19:52:56 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Peter Yin <peteryin.openbmc@gmail.com>
+Cc:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joel Stanley <joel@jms.id.au>,
+        Chanh Nguyen <chanh@os.amperecomputing.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
+Message-ID: <20231113-zesty-utilize-10ffeb80cb80@squawk>
+References: <20231113155008.2147090-1-peteryin.openbmc@gmail.com>
+ <20231113155008.2147090-2-peteryin.openbmc@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="w0GpC5z66S9rvkCL"
 Content-Disposition: inline
-In-Reply-To: <20231113152222.3495908-5-wangkefeng.wang@huawei.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+In-Reply-To: <20231113155008.2147090-2-peteryin.openbmc@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,68 +59,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 11:22:20PM +0800, Kefeng Wang wrote:
-> Use folio_prealloc() helper and convert to use a folio in
-> do_cow_page(), which save five compound_head() calls.
 
-s/do_cow_page()/do_cow_fault()/
+--w0GpC5z66S9rvkCL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Aside from that,
-Reviewed-by: Vishal Moola (Oracle) <vishal.moola@gmail.com>
-> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
+On Mon, Nov 13, 2023 at 11:50:07PM +0800, Peter Yin wrote:
+> Add a device tree bindings for mp5990 device.
+>=20
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Thanks,
+Conor,
+
 > ---
->  mm/memory.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/memory.c b/mm/memory.c
-> index d85df1c59f52..f350ab2a324f 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -4653,6 +4653,7 @@ static vm_fault_t do_read_fault(struct vm_fault *vmf)
->  static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->  {
->  	struct vm_area_struct *vma = vmf->vma;
-> +	struct folio *folio;
->  	vm_fault_t ret;
->  
->  	ret = vmf_can_call_fault(vmf);
-> @@ -4661,16 +4662,11 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->  	if (ret)
->  		return ret;
->  
-> -	vmf->cow_page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma, vmf->address);
-> -	if (!vmf->cow_page)
-> +	folio = folio_prealloc(vma->vm_mm, vma, vmf->address, false);
-> +	if (!folio)
->  		return VM_FAULT_OOM;
->  
-> -	if (mem_cgroup_charge(page_folio(vmf->cow_page), vma->vm_mm,
-> -				GFP_KERNEL)) {
-> -		put_page(vmf->cow_page);
-> -		return VM_FAULT_OOM;
-> -	}
-> -	folio_throttle_swaprate(page_folio(vmf->cow_page), GFP_KERNEL);
-> +	vmf->cow_page = &folio->page;
->  
->  	ret = __do_fault(vmf);
->  	if (unlikely(ret & (VM_FAULT_ERROR | VM_FAULT_NOPAGE | VM_FAULT_RETRY)))
-> @@ -4679,7 +4675,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->  		return ret;
->  
->  	copy_user_highpage(vmf->cow_page, vmf->page, vmf->address, vma);
-> -	__SetPageUptodate(vmf->cow_page);
-> +	__folio_mark_uptodate(folio);
->  
->  	ret |= finish_fault(vmf);
->  	unlock_page(vmf->page);
-> @@ -4688,7 +4684,7 @@ static vm_fault_t do_cow_fault(struct vm_fault *vmf)
->  		goto uncharge_out;
->  	return ret;
->  uncharge_out:
-> -	put_page(vmf->cow_page);
-> +	folio_put(folio);
->  	return ret;
->  }
->  
-> -- 
-> 2.27.0
+>  Documentation/devicetree/bindings/trivial-devices.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+>=20
+> diff --git a/Documentation/devicetree/bindings/trivial-devices.yaml b/Doc=
+umentation/devicetree/bindings/trivial-devices.yaml
+> index 7680c8a9b4ad..eb83ab4c02ee 100644
+> --- a/Documentation/devicetree/bindings/trivial-devices.yaml
+> +++ b/Documentation/devicetree/bindings/trivial-devices.yaml
+> @@ -123,6 +123,8 @@ properties:
+>            - mps,mp2888
+>              # Monolithic Power Systems Inc. multi-phase controller mp2975
+>            - mps,mp2975
+> +            # Monolithic Power Systems Inc. multi-phase hot-swap control=
+ler mp5990
+> +          - mps,mp5990
+>              # Honeywell Humidicon HIH-6130 humidity/temperature sensor
+>            - honeywell,hi6130
+>              # IBM Common Form Factor Power Supply Versions (all versions)
+> --=20
+> 2.25.1
+>=20
+
+--w0GpC5z66S9rvkCL
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVJ+lgAKCRB4tDGHoIJi
+0v2OAP9c9NGnaiv1W+5gqKFFbzEC35fZg8gCBlYC3BjyLfEsyQD/YNq8VwQytXuA
+Dp6g72fS9OCud1M5ffI7sbMNw+//lwE=
+=dQgz
+-----END PGP SIGNATURE-----
+
+--w0GpC5z66S9rvkCL--
