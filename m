@@ -2,143 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9C1B7E9835
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:55:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FEEB7E9830
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233252AbjKMIzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:55:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48754 "EHLO
+        id S233257AbjKMIzP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:55:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbjKMIza (ORCPT
+        with ESMTP id S233231AbjKMIzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:55:30 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEBC410FE;
-        Mon, 13 Nov 2023 00:55:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699865727; x=1731401727;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references;
-  bh=qyp+DhyGWDZjjRWexUcOxHl4CjPLxvuvw8u9oumPVVQ=;
-  b=jJHpNT3rOHvGiuONWm1bwDpr6vbxE/Qj+OYbTMbfjYZkNJ6QpHdUy903
-   gcgiAW+KZHsiErEgcqbHGJukwVTAomYddIJq1ZDkVbLHb03PVTAv/26XV
-   tmOL8rNDXFZug17bPO12nFcrgliFhSIpgEmtcUPom3TH7m6JwgcF7/qQb
-   bGrzHcoJIElEFOr1qusMXxbWIYwbzGlPHh326tNLxCFcDF3ujr2rPR2Cg
-   i+dl+IxdE5hrYSSwvQFJ1nVBmz4W8m9B8+I4SYJYDiOhdD4wZGQDvm+hK
-   RFXQ2kDKvCSWF5fzSQ3+cjzLRrwtg1u+9o6SUbwQP06I5DXSxwmBrN8+n
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="9044648"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="9044648"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:27 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="937688289"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="937688289"
-Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:24 -0800
-From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Borislav Petkov <bp@alien8.de>,
-        Aristeu Rozanski <aris@redhat.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] EDAC/igen6: Add Intel Meteor Lake-P SoCs support
-Date:   Mon, 13 Nov 2023 16:53:18 +0800
-Message-Id: <20231113085318.26783-6-qiuxu.zhuo@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231113085318.26783-1-qiuxu.zhuo@intel.com>
-References: <20231113085318.26783-1-qiuxu.zhuo@intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 13 Nov 2023 03:55:09 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC0E210D0;
+        Mon, 13 Nov 2023 00:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=dutrm5ccD7TaxoUTd5HetFxAB3OI7e+5hdO7Sj9SVNo=; b=wROikK0F+E/0+gQCY5aizziwZM
+        QBnqTdIASK/w4O/XE3EW5v2abecSdYkvK+1zJnluPUtnBngldSvjaMgTnd7kRGV514mvgKT2hU0vC
+        zyXBTRnb7A9gFNaBRlwjzsA4yg5tTIt5CaM1p3Y5thi2fixgzbu9gYQs2dMIhNq7ghLsDwXDjPCGW
+        c4IO6A3VhEeYayv5zlUHiiN4fSixzrzW2ZU+OFXqHfAYwdcx8Ci4e1LYOZbFbUtVyqtN+xQnmTz7h
+        4Bnr6O5PUCwR9sOreXh5yplAfAZI8hKiF8rtnUT8tx3OIE8Nkxzi4qJBpBkKgX1hESNRrFrl/uuYN
+        3iMt4jmQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r2Shn-00DHEt-7m; Mon, 13 Nov 2023 08:54:04 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8FD82300427; Mon, 13 Nov 2023 09:54:03 +0100 (CET)
+Date:   Mon, 13 Nov 2023 09:54:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?iso-8859-1?Q?Micka=EBl_Sala=FCn?= <mic@digikod.net>
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Alexander Graf <graf@amazon.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        Forrest Yuan Yu <yuanyu@google.com>,
+        James Gowans <jgowans@amazon.com>,
+        James Morris <jamorris@linux.microsoft.com>,
+        John Andersen <john.s.andersen@intel.com>,
+        "Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
+        Marian Rotariu <marian.c.rotariu@gmail.com>,
+        Mihai =?utf-8?B?RG9uyJt1?= <mdontu@bitdefender.com>,
+        =?utf-8?B?TmljdciZb3IgQ8OuyJt1?= <nicu.citu@icloud.com>,
+        Thara Gopinath <tgopinath@microsoft.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Wei Liu <wei.liu@kernel.org>, Will Deacon <will@kernel.org>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Zahra Tarkhani <ztarkhani@microsoft.com>,
+        =?utf-8?Q?=C8=98tefan_=C8=98icleru?= <ssicleru@bitdefender.com>,
+        dev@lists.cloudhypervisor.org, kvm@vger.kernel.org,
+        linux-hardening@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, qemu-devel@nongnu.org,
+        virtualization@lists.linux-foundation.org, x86@kernel.org,
+        xen-devel@lists.xenproject.org
+Subject: Re: [RFC PATCH v2 18/19] heki: x86: Protect guest kernel memory
+ using the KVM hypervisor
+Message-ID: <20231113085403.GC16138@noisy.programming.kicks-ass.net>
+References: <20231113022326.24388-1-mic@digikod.net>
+ <20231113022326.24388-19-mic@digikod.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231113022326.24388-19-mic@digikod.net>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Intel Meteor Lake-P SoC compute die IDs for EDAC support.
-These Meteor Lake-P SoCs share similar IBECC registers with
-Alder Lake-P SoCs.
+On Sun, Nov 12, 2023 at 09:23:25PM -0500, Mickaël Salaün wrote:
+> From: Madhavan T. Venkataraman <madvenka@linux.microsoft.com>
+> 
+> Implement a hypervisor function, kvm_protect_memory() that calls the
+> KVM_HC_PROTECT_MEMORY hypercall to request the KVM hypervisor to
+> set specified permissions on a list of guest pages.
+> 
+> Using the protect_memory() function, set proper EPT permissions for all
+> guest pages.
+> 
+> Use the MEM_ATTR_IMMUTABLE property to protect the kernel static
+> sections and the boot-time read-only sections. This enables to make sure
+> a compromised guest will not be able to change its main physical memory
+> page permissions. However, this also disable any feature that may change
+> the kernel's text section (e.g., ftrace, Kprobes), but they can still be
+> used on kernel modules.
+> 
+> Module loading/unloading, and eBPF JIT is allowed without restrictions
+> for now, but we'll need a way to authenticate these code changes to
+> really improve the guests' security. We plan to use module signatures,
+> but there is no solution yet to authenticate eBPF programs.
+> 
+> Being able to use ftrace and Kprobes in a secure way is a challenge not
+> solved yet. We're looking for ideas to make this work.
+> 
+> Likewise, the JUMP_LABEL feature cannot work because the kernel's text
+> section is read-only.
 
-Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
----
- drivers/edac/igen6_edac.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index d336ba53e67c..2b0ecdeba5cd 100644
---- a/drivers/edac/igen6_edac.c
-+++ b/drivers/edac/igen6_edac.c
-@@ -58,6 +58,7 @@
- /* Capability register E */
- #define CAPID_E_OFFSET			0xf0
- #define CAPID_E_IBECC			BIT(12)
-+#define CAPID_E_IBECC_BIT18		BIT(18)
- 
- /* Error Status */
- #define ERRSTS_OFFSET			0xc8
-@@ -251,6 +252,11 @@ static struct work_struct ecclog_work;
- #define DID_MTL_PS_SKU3	0x7d23
- #define DID_MTL_PS_SKU4	0x7d24
- 
-+/* Compute die IDs for Meteor Lake-P with IBECC */
-+#define DID_MTL_P_SKU1	0x7d01
-+#define DID_MTL_P_SKU2	0x7d02
-+#define DID_MTL_P_SKU3	0x7d14
-+
- static int get_mchbar(struct pci_dev *pdev, u64 *mchbar)
- {
- 	union  {
-@@ -331,6 +337,16 @@ static bool tgl_ibecc_available(struct pci_dev *pdev)
- 	return !(CAPID_E_IBECC & v);
- }
- 
-+static bool mtl_p_ibecc_available(struct pci_dev *pdev)
-+{
-+	u32 v;
-+
-+	if (pci_read_config_dword(pdev, CAPID_E_OFFSET, &v))
-+		return false;
-+
-+	return !(CAPID_E_IBECC_BIT18 & v);
-+}
-+
- static bool mtl_ps_ibecc_available(struct pci_dev *pdev)
- {
- #define MCHBAR_MEMSS_IBECCDIS	0x13c00
-@@ -524,6 +540,17 @@ static struct res_config mtl_ps_cfg = {
- 	.err_addr_to_imc_addr	= adl_err_addr_to_imc_addr,
- };
- 
-+static struct res_config mtl_p_cfg = {
-+	.machine_check		= true,
-+	.num_imc		= 2,
-+	.imc_base		= 0xd800,
-+	.ibecc_base		= 0xd400,
-+	.ibecc_error_log_offset	= 0x170,
-+	.ibecc_available	= mtl_p_ibecc_available,
-+	.err_addr_to_sys_addr	= adl_err_addr_to_sys_addr,
-+	.err_addr_to_imc_addr	= adl_err_addr_to_imc_addr,
-+};
-+
- static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_EHL_SKU5), (kernel_ulong_t)&ehl_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_EHL_SKU6), (kernel_ulong_t)&ehl_cfg },
-@@ -565,6 +592,9 @@ static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU2), (kernel_ulong_t)&mtl_ps_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU3), (kernel_ulong_t)&mtl_ps_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU4), (kernel_ulong_t)&mtl_ps_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_MTL_P_SKU1), (kernel_ulong_t)&mtl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_MTL_P_SKU2), (kernel_ulong_t)&mtl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_MTL_P_SKU3), (kernel_ulong_t)&mtl_p_cfg },
- 	{ },
- };
- MODULE_DEVICE_TABLE(pci, igen6_pci_tbl);
--- 
-2.17.1
-
+What is the actual problem? As is the kernel text map is already RO and
+never changed.
