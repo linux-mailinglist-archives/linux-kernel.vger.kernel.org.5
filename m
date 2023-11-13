@@ -2,114 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 828837E93A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9029B7E93B1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:46:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232588AbjKMAnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 19:43:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52558 "EHLO
+        id S232596AbjKMAqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 19:46:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjKMAnP (ORCPT
+        with ESMTP id S231316AbjKMAqH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 19:43:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E019D1980
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:43:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E3FCBC433C7;
-        Mon, 13 Nov 2023 00:43:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699836192;
-        bh=qo73hMpbT5UB0fyH1NpcXGG0dpmwEMtmdXWgdp/vY8A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=I4o+wfYUYjOpLGSebbsZMJ0/0DLrfENueQdXl0m0SbRp8hElJyTaF7bkd/mzmy3JX
-         d1BdMxZvYnO7u3xUKbJjVWKZxWhmosAmtau7cn4H45FVS5nvhiDlhpj1RhJQ/xJtjW
-         HEOOcIcZT9O22E8Vfp42G3uBF/wvHKx8hmd4/OXLPyLrAY16AXQhncK8BSrohVHQ7i
-         bIgwxruX7vJLSi41Z7ekqS3nDmuokZ8Y2RS3/ODv3Rqj6S3jTlYt8Vj8EALz7vuUiH
-         Bg2fl7HWwtDMFvJoFMjWILWyjjShVRlAIHwbPkZFCLNFbvwV6iPCG2NU/Sdrcg0pm/
-         lzbwpoLJUpkOA==
-Date:   Mon, 13 Nov 2023 01:42:58 +0100
-From:   Lorenzo Pieralisi <lpieralisi@kernel.org>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, ankita@nvidia.com,
-        maz@kernel.org, oliver.upton@linux.dev, aniketa@nvidia.com,
-        cjia@nvidia.com, kwankhede@nvidia.com, targupta@nvidia.com,
-        vsethi@nvidia.com, acurrid@nvidia.com, apopple@nvidia.com,
-        jhubbard@nvidia.com, danw@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZVFxElNLcK46Vk9x@lpieralisi>
-References: <ZRLiDf204zCpO6Mv@arm.com>
- <ZR6IZwcFNw55asW0@lpieralisi>
- <20231012123541.GB11824@willie-the-truck>
- <ZSf6Ue09IO6QMBs1@arm.com>
- <20231012144807.GA12374@willie-the-truck>
- <ZSgsKSCv-zWgtWkm@arm.com>
- <20231013092934.GA13524@willie-the-truck>
- <ZSlBOiebenPKXBY4@arm.com>
- <ZUz78gFPgMupew+m@lpieralisi>
- <20231110142649.GO4488@nvidia.com>
+        Sun, 12 Nov 2023 19:46:07 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E4C1BD4
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:45:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699836319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AIBcuinF5ss2DgGVnkjihkWjegSjrF5pOFgfBoAd6NQ=;
+        b=WIy5zAvInhpPvNYpp5Nk+NgvUBFL6o3h3mA/MeAzwJLp2ZusOLVDuIpjpm3A+K8LNFh8Qb
+        3GTLMn1QQ2kpWvLcQ6YeMZKIwME4xlEomluMu0LJN+E4xfFtJA5v3nXCPq+wonLx5NY/HR
+        FkMTntMTVw0oJuP4VblDhLWx7UUMPHQ=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-345-IVLyLLF4Nme5J0sMRG4VsQ-1; Sun, 12 Nov 2023 19:45:15 -0500
+X-MC-Unique: IVLyLLF4Nme5J0sMRG4VsQ-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-1eb83f1d150so3668876fac.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:45:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699836315; x=1700441115;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AIBcuinF5ss2DgGVnkjihkWjegSjrF5pOFgfBoAd6NQ=;
+        b=kBztAr878IaUamiQ8vEa3w/D3wiXSeqd2ThLC3df4wWezaJ/Gdz5EUpENS+F91qDmM
+         NIo2IQm4VCEagZz1TL+rW6hr90BxsNu1QxncbziqIwDaNvBCjsxnqolaucOAD10/lMaR
+         EQYwBZ6ADjuHewUJstzyZHH49lWuslc5BTX605zVsQBvHrEBtKTnAuOj/pN7Gr6/rsft
+         9YjF1bLa1XgyPsXdroeqkaoL0Q17gXX6V3jtYkD40jarPSxXMlbhN3+6/sMsDoBz0s6E
+         2Is74GlKHdW26XtcSaZIDb4CB6nfHJ+7U2VFzuyIkcgl+elstbM/fSDXfSCy+dDz7iHA
+         RBQw==
+X-Gm-Message-State: AOJu0Yw40wpcVgn+RkVhDtRfWg3edqBOyJQRI1M+ivMrCxh1237kWgxX
+        GdavBYgcGUgBg9e3k3nwid8g/6QFwoMwC9zAkwrwvZj4Vxq5uKbwaj0pZkDZzGEBbh0ycOrNxLl
+        Ark2N2y06z/JlGeqauByUnq3q
+X-Received: by 2002:a05:6870:f14d:b0:1d5:b2ba:bc93 with SMTP id l13-20020a056870f14d00b001d5b2babc93mr7060132oac.13.1699836315190;
+        Sun, 12 Nov 2023 16:45:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH9rLDeDKmdt9jI4rfj9b9OvZLsFOMuiJgoFwWcjW46CaFvA839DNqkdgqlkT2G64l2xzZLdg==
+X-Received: by 2002:a05:6870:f14d:b0:1d5:b2ba:bc93 with SMTP id l13-20020a056870f14d00b001d5b2babc93mr7060111oac.13.1699836314952;
+        Sun, 12 Nov 2023 16:45:14 -0800 (PST)
+Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
+        by smtp.gmail.com with ESMTPSA id hq18-20020a056a00681200b006933822e7a6sm2957854pfb.66.2023.11.12.16.45.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 16:45:14 -0800 (PST)
+Message-ID: <df5fb117-96e0-4231-85c6-70c960fbb6c4@redhat.com>
+Date:   Mon, 13 Nov 2023 10:45:05 +1000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231110142649.GO4488@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 08/22] drivers: base: Implement weak
+ arch_unregister_cpu()
+Content-Language: en-US
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLL-00CTxD-Gc@rmk-PC.armlinux.org.uk>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <E1r0JLL-00CTxD-Gc@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 10:26:49AM -0400, Jason Gunthorpe wrote:
-> On Thu, Nov 09, 2023 at 04:34:10PM +0100, Lorenzo Pieralisi wrote:
-> 
-> > Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
-> > trigger any issue on guest device reclaim use cases either (ie device
-> > MMIO unmap followed by a device reset) at least for PCIe devices, in that
-> > in PCIe a device reset is architected and carried out through PCI config
-> > space transactions that are naturally ordered wrt MMIO transactions
-> > according to the PCI ordering rules.
-> 
-> This is not how I see that thread concluding..
-> 
-> The device reclaim problem belongs solely to VFIO, not KVM. VFIO must
-> ensure global ordering of access before the VMA is unmaped and access
-> after, that includes ordering whatever mechanism the VFIO driver uses
-> for reset.
-> 
-> If there are quirky SOCs, or non-PCI devices that need something
-> stronger than the TLBI/etc sequence it should be fixed in VFIO (or
-> maybe even the arch code), not by blocking NORMAL_NC in the KVM. Such
-> a quirky SOC would broadly have security issues beyond KVM.
 
-https://lore.kernel.org/linux-arm-kernel/20231013092934.GA13524@willie-the-truck
-
-I think that Will's point _was_ related to the change we are making for
-KVM S2 mappings and related device transactions on device reclaim - ie
-reset, that's what I tried to convey (I probably simplified too much)
-that for PCI at least that should not trigger any regression/issue, in
-that BAR MMIO and reset transactions are decoupled streams and must
-follow the PCI ordering rules.
-
-Yes, it is VFIO responsibility but changing the S2 KVM mappings
-may have (for non-PCI devices) side effects compared to what
-we have today, I am not saying this should be a blocker I just
-summarized the thread above, the paragraph can be expanded.
-
-Lorenzo
-
+On 11/7/23 20:29, Russell King (Oracle) wrote:
+> From: James Morse <james.morse@arm.com>
 > 
-> > It is worth noting that currently, to map devices MMIO space to user
-> > space in a device pass-through use case the VFIO framework applies memory
-> > attributes derived from pgprot_noncached() settings applied to VMAs, which
+> Add arch_unregister_cpu() to allow the ACPI machinery to call
+> unregister_cpu(). This is enough for arm64, riscv and loongarch, but
+> needs to be overridden by x86 and ia64 who need to do more work.
 > 
-> Sometimes. VFIO uses a mix of pgprot_noncached and pgprot_device. AFAIK
-> we should change to to always use pgprot_device..
+> CC: Jean-Philippe Brucker <jean-philippe@linaro.org>
+> Signed-off-by: James Morse <james.morse@arm.com>
+> ---
+> Changes since v1:
+>   * Added CONFIG_HOTPLUG_CPU ifdeffery around unregister_cpu
+> Changes since RFC v2:
+>   * Move earlier in the series
+> ---
+>   drivers/base/cpu.c | 9 ++++++++-
+>   1 file changed, 8 insertions(+), 1 deletion(-)
 > 
-> Thanks,
-> Jason
+
+Reviewed-by: Gavin Shan <gshan@redhat.com>
+
