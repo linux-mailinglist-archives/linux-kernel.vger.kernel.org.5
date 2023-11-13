@@ -2,171 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D05D97E9B27
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 12:25:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EC417E9B2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 12:27:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbjKMLZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 06:25:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S230104AbjKML1U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 06:27:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230382AbjKMLZB (ORCPT
+        with ESMTP id S231812AbjKML1G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 06:25:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B39361985
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 03:24:20 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41CB8C433CB;
-        Mon, 13 Nov 2023 11:24:16 +0000 (UTC)
-Message-ID: <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
-Date:   Mon, 13 Nov 2023 12:24:14 +0100
+        Mon, 13 Nov 2023 06:27:06 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 149404781;
+        Mon, 13 Nov 2023 03:26:05 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6983DDA7;
+        Mon, 13 Nov 2023 03:26:38 -0800 (PST)
+Received: from e127643.arm.com (unknown [10.57.71.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 5B59F3F6C4;
+        Mon, 13 Nov 2023 03:25:50 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     linux-arm-kernel@lists.infradead.org,
+        linux-perf-users@vger.kernel.org, suzuki.poulose@arm.com,
+        will@kernel.org, mark.rutland@arm.com
+Cc:     James Clark <james.clark@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v5 0/3] arm64: perf: Add support for event counting threshold
+Date:   Mon, 13 Nov 2023 11:25:03 +0000
+Message-Id: <20231113112507.917107-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Content-Language: en-US, nl
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
- <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
- <20231113104238.GA13981@pendragon.ideasonboard.com>
- <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
- <20231113110754.GB24338@pendragon.ideasonboard.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <20231113110754.GB24338@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2023 12:07, Laurent Pinchart wrote:
-> On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
->> On 13/11/2023 11:42, Laurent Pinchart wrote:
->>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
->>>> Hi Shengjiu,
->>>>
->>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
->>>>> Fixed point controls are used by the user to configure
->>>>> a fixed point value in 64bits, which Q31.32 format.
->>>>>
->>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
->>>>
->>>> This patch adds a new control type. This is something that also needs to be
->>>> tested by v4l2-compliance, and for that we need to add support for this to
->>>> one of the media test-drivers. The best place for that is the vivid driver,
->>>> since that has already a bunch of test controls for other control types.
->>>>
->>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
->>>>
->>>> Can you add a patch adding a fixed point test control to vivid?
->>>
->>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
->>> relate more to units than control types. We have lots of fixed-point
->>> values in controls already, using the 32-bit and 64-bit integer control
->>> types. They use various locations for the decimal point, depending on
->>> the control. If we want to make this more explicit to users, we should
->>> work on adding unit support to the V4L2 controls.
->>
->> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
-> 
-> It's not a unit, but I think it's related to units. My point is that,
-> without units support, I don't see why we need a formal definition of
-> fixed-point types, and why this series couldn't just use
-> VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEGER64
-> values as they see fit.
+Changes since v4:
 
-They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTEGER64
-(I assume you meant that rather than VIVID_CID_INTEGER64) shows that it
-is always interpreted as a 64 bit integer and nothing else. As it should.
+  * Rebase onto v6.7-rc1, it no longer depends on kvmarm/next
+  * Remove change that moved ARMV8_PMU_EVTYPE_MASK to the asm files.
+    This actually depended on those files being included in a certain
+    order with arm_pmuv3.h to avoid circular includes. Now the
+    definition is done programmatically in arm_pmuv3.c instead.
 
-And while we do not have support for units (other than the documentation),
-we do have type support in the form of V4L2_CTRL_TYPE_*.
+Changes since v3:
 
-> 
->> A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
->> only shows a single driver specific control (dw100.rst).
->>
->> I'm not aware of other controls in mainline that use fixed point.
-> 
-> The analog gain control for sensors for instance.
+  * Drop #include changes to KVM source files because since
+    commit bc512d6a9b92 ("KVM: arm64: Make PMEVTYPER<n>_EL0.NSH RES0 if
+    EL2 isn't advertised"), KVM doesn't use ARMV8_PMU_EVTYPE_MASK
+    anymore
 
-Not really. The documentation is super vague:
+Changes since v2:
 
-V4L2_CID_ANALOGUE_GAIN (integer)
+  * Split threshold_control attribute into two, threshold_compare and
+    threshold_count so that it's easier to use
+  * Add some notes to the first commit message and the cover letter
+    about the behavior in KVM
+  * Update the docs commit with regards to the split attribute
+ 
+Changes since v1:
 
-	Analogue gain is gain affecting all colour components in the pixel matrix. The
-	gain operation is performed in the analogue domain before A/D conversion.
+  * Fix build on aarch32 by disabling FEAT_PMUv3_TH and splitting event
+    type mask between the platforms
+  * Change armv8pmu_write_evtype() to take unsigned long instead of u64
+    so it isn't unnecessarily wide on aarch32
+  * Add UL suffix to aarch64 event type mask definition
 
-And the integer is just a range. Internally it might map to some fixed
-point value, but userspace won't see that, it's hidden in the driver AFAICT.
+----
 
-In the case of this particular series the control type is really a fixed point
-value with a documented unit (Hz). It really is not something you want to
-use type INTEGER64 for.
+FEAT_PMUv3_TH (Armv8.8) is a new feature that allows conditional
+counting of PMU events depending on how much the event increments on
+a single cycle. Two new config fields for perf_event_open have been
+added, and a PMU cap file for reading the max_threshold. See the second
+commit message and the docs in the last commit for more details.
 
-> 
->> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
->> min/max/step you can easily map that to just about any QN.M format where
->> N <= 31 and M <= 32.
->>
->> In the case of dw100 it is a bit different in that it is quite specialized
->> and it had to fit in 16 bits.
+The feature is not currently supported on KVM guests, and PMMIR is set
+to read as zero, so it's not advertised as available. But it can be
+added at a later time. Writes to PMEVTYPER.TC and TH from guests are
+already RES0.
 
-Regards,
+The change has been validated on the Arm FVP model:
 
-	Hans
+  # Zero values, works as expected (as before).
+  $ perf stat -e dtlb_walk/threshold=0,threshold_compare=0/ -- true
+
+    5962      dtlb_walk/threshold=0,threshold_compare=0/
+
+  # Threshold >= 255 causes count to be 0 because dtlb_walk doesn't
+  # increase by more than 1 per cycle.
+  $ perf stat -e dtlb_walk/threshold=255,threshold_compare=2/ -- true
+
+    0      dtlb_walk/threshold=255,threshold_compare=2/
+  
+  # Keeping comparison as >= but lowering the threshold to 1 makes the
+  # count return.
+  $ perf stat -e dtlb_walk/threshold=1,threshold_compare=2/ -- true
+
+    6329      dtlb_walk/threshold=1,threshold_compare=2/
+
+James Clark (3):
+  arm64: perf: Include threshold control fields in PMEVTYPER mask
+  arm64: perf: Add support for event counting threshold
+  Documentation: arm64: Document the PMU event counting threshold
+    feature
+
+ Documentation/arch/arm64/perf.rst | 56 ++++++++++++++++++++
+ drivers/perf/arm_pmuv3.c          | 88 ++++++++++++++++++++++++++++++-
+ include/linux/perf/arm_pmuv3.h    |  4 +-
+ 3 files changed, 145 insertions(+), 3 deletions(-)
+
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+-- 
+2.34.1
+
