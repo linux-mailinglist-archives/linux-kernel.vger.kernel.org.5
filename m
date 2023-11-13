@@ -2,211 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 132017E9D04
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D94697E9D0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:21:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbjKMNUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
+        id S230516AbjKMNVS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:21:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230484AbjKMNUX (ORCPT
+        with ESMTP id S230498AbjKMNVN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:20:23 -0500
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E56CED6F;
-        Mon, 13 Nov 2023 05:20:19 -0800 (PST)
-Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6ce31c4a653so2672521a34.3;
-        Mon, 13 Nov 2023 05:20:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699881619; x=1700486419; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=r2oQtEPIutglTe0zePH4EdTxwpuD5Zb7G2ePiU4NwmQ=;
-        b=dX8IAVIipejWr13GMB0Tf4XdlVCWCfTvV/dzXTTKduEkMBgGyCQaR216iLiyj2KGXX
-         WrDCi4Zluc89Plnt5U9wA96kCDzoN6JWtblFG89f5n3zyrVV3LE0WAOASRQUjBOb1nhH
-         aLEAchxgMn4jv/1OvhHPHsTN+xzoZo5YSGVKVcOllOVhwkzuujo750UthOkM2Lm6cP81
-         3DIyfr7T2nj0O/uOlKEwr7RIBE8kJS8CD7Rw4ENLzAuFDk8Z/Wvy6KXYf/FCDW3PWN97
-         Za8nSyZHoi5vN/GhbLvRxYAhySt+xq8dXg7IEWC28o2KTW0JGainnRj5TgOJsAlwlH+j
-         UaDw==
+        Mon, 13 Nov 2023 08:21:13 -0500
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A9F7D7E
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:21:09 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b79f5923b2so5441240a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:21:09 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699881619; x=1700486419;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=r2oQtEPIutglTe0zePH4EdTxwpuD5Zb7G2ePiU4NwmQ=;
-        b=rlX/8XNfxCFWzAYWHZOZ5Ikr8tIP0vE9xOO0WoGDWREICt7ZeCpwyEYhw/ha/O4/h9
-         SeRntU6A6sZwxiy4+gwDNgiMDVIYaaGD3d9mpMSoGggf2uKuJCRqacZ67i5pIrYSLdHj
-         zcBEHL4MbgfQ+pSIpFHgh7rjyD8gUHULzXkOCNk+W73zjF1Vq8ndbLQ+GJcZPNUv69u0
-         H3/bj27W1UWJGYBgNsmVIHVtXSyWSkYcr1MOFeUZUn9qXyC0vzHd2JwAJLlYGw0Ku4Wm
-         DMm7YHySEm3EojtZmt0Ybnh3a4hvqVZ6bU3pJG5imAbtBTnDQcUGqtGibRQ1DaHVaXpn
-         GGvw==
-X-Gm-Message-State: AOJu0Yy0nKdAA4QbV/pquDIcfZIfwBj3eRWptKR/4FOSs4Gii3RQAoJ4
-        0UDs9QuxWMLHqt1HDxC1Jss=
-X-Google-Smtp-Source: AGHT+IGdyfd3Iw8wc2oNjooMchUT5EXKOY6OdN9KO1iBklie7kMMadIh4BY1epZEyrW1KogBEF8e+w==
-X-Received: by 2002:a9d:7752:0:b0:6d6:4cf3:d908 with SMTP id t18-20020a9d7752000000b006d64cf3d908mr7631954otl.33.1699881619198;
-        Mon, 13 Nov 2023 05:20:19 -0800 (PST)
-Received: from localhost.localdomain ([122.8.183.87])
-        by smtp.gmail.com with ESMTPSA id v7-20020a9d69c7000000b006d646763942sm799989oto.23.2023.11.13.05.20.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 05:20:18 -0800 (PST)
-From:   Chen Wang <unicornxw@gmail.com>
-To:     aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com
-Cc:     Chen Wang <unicorn_wang@outlook.com>
-Subject: [PATCH 5/5] riscv: dts: add clock generator for Sophgo SG2042 SoC
-Date:   Mon, 13 Nov 2023 21:20:11 +0800
-Message-Id: <25fcbab4c04bcbbdc4577dc58822540829f91dc9.1699879741.git.unicorn_wang@outlook.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1699879741.git.unicorn_wang@outlook.com>
-References: <cover.1699879741.git.unicorn_wang@outlook.com>
+        d=1e100.net; s=20230601; t=1699881668; x=1700486468;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=I6F1WJvQUEU4zclPuJELxcIdtogjdaAQqBFzk3UxhQA=;
+        b=YmOVcpp7DT1QhBywsFboYm/VRAD8HI9YNrjCglKqDK3WUWrYn4CNoIE/B4oDadNOFv
+         xLo0QNtK+2W6tfS0aCo9rql1aTxQpBLdJ8KuokZyFwm/0b4jzyaBNGHmKKPKCBnyZhVo
+         go2Y4Ikl+F6QxhcLt40bBs6dzYK9aTBep/Hj8rnNVNcVlOV9IwO763f+FH6PPrjUdkwW
+         nGY5fPfqFqIl/yKVIG5NSpgxF7PDcNXbEHyTVr6KAuji5Rv69WYt6Azv1te4QthQ6AqQ
+         ZdLOOfClwQu4Lvap0TcIA4o0f+unAYLrxe/lzIiLc3mp8+jCkUyqrSsLYfmsPeOFHJsk
+         iY+A==
+X-Gm-Message-State: AOJu0YyZwXwc4WDNjGK7xD3A1OT/bZ/QIAsWYhY2KbyPEf454y17cxKu
+        HJgcXvLNUJ9z7lg/ITsUzhX7s8xrcIrVISMDIBXCw8i9ColMdX8=
+X-Google-Smtp-Source: AGHT+IE4tCwkNMF0gF2lW9qmsGkWq7DbHOu36oT+ASc6Vjg7jdFtzEB8aJLA/iVuQqIrYxkbDefCkKvNZi8mGh3D0s2qEL7Y3Bhc
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:e304:0:b0:5bd:d918:12ed with SMTP id
+ f4-20020a63e304000000b005bdd91812edmr1695879pgh.9.1699881667998; Mon, 13 Nov
+ 2023 05:21:07 -0800 (PST)
+Date:   Mon, 13 Nov 2023 05:21:07 -0800
+In-Reply-To: <CA+LQOUezthX-RMbEiNUX7KnVZsHEYQOLpSYE6JyNddUvpMA-OQ@mail.gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fb3b68060a088a68@google.com>
+Subject: Re: [syzbot] [bpf?] [net?] BUG: unable to handle kernel NULL pointer
+ dereference in sk_psock_verdict_data_ready
+From:   syzbot <syzbot+fd7b34375c1c8ce29c93@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, mukattreyee@gmail.com,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen Wang <unicorn_wang@outlook.com>
+Hello,
 
-Add clock generator node to device tree for SG2042, and enable clock for
-uart0.
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+BUG: unable to handle kernel NULL pointer dereference in sk_psock_verdict_data_ready
 
-Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
----
- arch/riscv/boot/dts/sophgo/sg2042-clock.dtsi | 76 ++++++++++++++++++++
- arch/riscv/boot/dts/sophgo/sg2042.dtsi       | 10 +++
- 2 files changed, 86 insertions(+)
- create mode 100644 arch/riscv/boot/dts/sophgo/sg2042-clock.dtsi
+BUG: kernel NULL pointer dereference, address: 0000000000000000
+#PF: supervisor instruction fetch in kernel mode
+#PF: error_code(0x0010) - not-present page
+PGD 1c0b3067 P4D 1c0b3067 PUD 698e0067 PMD 0 
+Oops: 0010 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8102 Comm: syz-executor.5 Not tainted 6.7.0-rc1-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000ae77868 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88801e9e6000 RCX: ffffffff88538a6f
+RDX: 1ffff11003ba825c RSI: ffffffff88538a79 RDI: ffff88801e9e6000
+RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
+R10: ffff88801dd41000 R11: 0000000000000000 R12: ffff88801dd41000
+R13: 0000000000000000 R14: ffff88801e9e6000 R15: ffff88801e9e6000
+FS:  00007f15c3c206c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000019717000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ sk_psock_verdict_data_ready net/core/skmsg.c:1228 [inline]
+ sk_psock_verdict_data_ready+0x207/0x3d0 net/core/skmsg.c:1208
+ unix_dgram_sendmsg+0x11b3/0x1ca0 net/unix/af_unix.c:2116
+ sock_sendmsg_nosec net/socket.c:730 [inline]
+ __sock_sendmsg+0xd5/0x180 net/socket.c:745
+ ____sys_sendmsg+0x2ac/0x940 net/socket.c:2584
+ ___sys_sendmsg+0x135/0x1d0 net/socket.c:2638
+ __sys_sendmmsg+0x1a1/0x450 net/socket.c:2724
+ __do_sys_sendmmsg net/socket.c:2753 [inline]
+ __se_sys_sendmmsg net/socket.c:2750 [inline]
+ __x64_sys_sendmmsg+0x9c/0x100 net/socket.c:2750
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f15c2e7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f15c3c200c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00007f15c2f9bf80 RCX: 00007f15c2e7cae9
+RDX: 0000000000000002 RSI: 0000000020001680 RDI: 0000000000000003
+RBP: 00007f15c2ec847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f15c2f9bf80 R15: 00007ffe1c491ce8
+ </TASK>
+Modules linked in:
+CR2: 0000000000000000
+---[ end trace 0000000000000000 ]---
+RIP: 0010:0x0
+Code: Unable to access opcode bytes at 0xffffffffffffffd6.
+RSP: 0018:ffffc9000ae77868 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffff88801e9e6000 RCX: ffffffff88538a6f
+RDX: 1ffff11003ba825c RSI: ffffffff88538a79 RDI: ffff88801e9e6000
+RBP: 0000000000000004 R08: 0000000000000007 R09: 0000000000000000
+R10: ffff88801dd41000 R11: 0000000000000000 R12: ffff88801dd41000
+R13: 0000000000000000 R14: ffff88801e9e6000 R15: ffff88801e9e6000
+FS:  00007f15c3c206c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffffffffffffffd6 CR3: 0000000019717000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042-clock.dtsi b/arch/riscv/boot/dts/sophgo/sg2042-clock.dtsi
-new file mode 100644
-index 000000000000..66d2723fab35
---- /dev/null
-+++ b/arch/riscv/boot/dts/sophgo/sg2042-clock.dtsi
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
-+ */
-+
-+/ {
-+	cgi: oscillator {
-+		compatible = "fixed-clock";
-+		clock-frequency = <25000000>;
-+		clock-output-names = "cgi";
-+		#clock-cells = <0>;
-+	};
-+
-+	clkgen: clock-controller {
-+		compatible = "sophgo,sg2042-clkgen";
-+		#clock-cells = <1>;
-+		system-ctrl = <&sys_ctrl>;
-+		clocks = <&cgi>;
-+		assigned-clocks = \
-+			<&clkgen DIV_CLK_FPLL_RP_CPU_NORMAL_1>,
-+			<&clkgen DIV_CLK_FPLL_50M_A53>,
-+			<&clkgen DIV_CLK_FPLL_TOP_RP_CMN_DIV2>,
-+			<&clkgen DIV_CLK_FPLL_UART_500M>,
-+			<&clkgen DIV_CLK_FPLL_AHB_LPC>,
-+			<&clkgen DIV_CLK_FPLL_EFUSE>,
-+			<&clkgen DIV_CLK_FPLL_TX_ETH0>,
-+			<&clkgen DIV_CLK_FPLL_PTP_REF_I_ETH0>,
-+			<&clkgen DIV_CLK_FPLL_REF_ETH0>,
-+			<&clkgen DIV_CLK_FPLL_EMMC>,
-+			<&clkgen DIV_CLK_FPLL_SD>,
-+			<&clkgen DIV_CLK_FPLL_TOP_AXI0>,
-+			<&clkgen DIV_CLK_FPLL_TOP_AXI_HSPERI>,
-+			<&clkgen DIV_CLK_FPLL_AXI_DDR_1>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER1>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER2>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER3>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER4>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER5>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER6>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER7>,
-+			<&clkgen DIV_CLK_FPLL_DIV_TIMER8>,
-+			<&clkgen DIV_CLK_FPLL_100K_EMMC>,
-+			<&clkgen DIV_CLK_FPLL_100K_SD>,
-+			<&clkgen DIV_CLK_FPLL_GPIO_DB>,
-+			<&clkgen DIV_CLK_MPLL_RP_CPU_NORMAL_0>,
-+			<&clkgen DIV_CLK_MPLL_AXI_DDR_0>;
-+		assigned-clock-rates = \
-+			<2000000000>,
-+			<50000000>,
-+			<1000000000>,
-+			<500000000>,
-+			<200000000>,
-+			<25000000>,
-+			<125000000>,
-+			<50000000>,
-+			<25000000>,
-+			<100000000>,
-+			<100000000>,
-+			<100000000>,
-+			<250000000>,
-+			<1000000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<50000000>,
-+			<100000>,
-+			<100000>,
-+			<100000>,
-+			<2000000000>,
-+			<1000000000>;
-+	};
-+};
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..de79c0cdb4c1 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -5,8 +5,10 @@
- 
- /dts-v1/;
- #include <dt-bindings/interrupt-controller/irq.h>
-+#include <dt-bindings/clock/sophgo-sg2042-clk.h>
- 
- #include "sg2042-cpus.dtsi"
-+#include "sg2042-clock.dtsi"
- 
- / {
- 	compatible = "sophgo,sg2042";
-@@ -311,12 +313,20 @@ intc: interrupt-controller@7090000000 {
- 			riscv,ndev = <224>;
- 		};
- 
-+		sys_ctrl: syscon@7030010000 {
-+			compatible = "sophgo,sg2042-syscon", "syscon";
-+			reg = <0x70 0x30010000 0x0 0x8000>;
-+		};
-+
- 		uart0: serial@7040000000 {
- 			compatible = "snps,dw-apb-uart";
- 			reg = <0x00000070 0x40000000 0x00000000 0x00001000>;
- 			interrupt-parent = <&intc>;
- 			interrupts = <112 IRQ_TYPE_LEVEL_HIGH>;
- 			clock-frequency = <500000000>;
-+			clocks = <&clkgen GATE_CLK_UART_500M>,
-+				 <&clkgen GATE_CLK_APB_UART>;
-+			clock-names = "baudclk", "apb_pclk";
- 			reg-shift = <2>;
- 			reg-io-width = <4>;
- 			status = "disabled";
--- 
-2.25.1
 
+Tested on:
+
+commit:         b85ea95d Linux 6.7-rc1
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1573bc8f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5e0ea92caaa75735
+dashboard link: https://syzkaller.appspot.com/bug?extid=fd7b34375c1c8ce29c93
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Note: no patches were applied.
