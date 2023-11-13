@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E9737E9F80
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:06:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 786487E9F82
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:06:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231422AbjKMPGM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 10:06:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58136 "EHLO
+        id S231490AbjKMPGP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:06:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjKMPGK (ORCPT
+        with ESMTP id S231330AbjKMPGL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 10:06:10 -0500
-Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC871706
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:06:03 -0800 (PST)
+        Mon, 13 Nov 2023 10:06:11 -0500
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88B44171A
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:06:05 -0800 (PST)
 Received: from submission (posteo.de [185.67.36.169]) 
-        by mout02.posteo.de (Postfix) with ESMTPS id 9D6D3240104
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:06:02 +0100 (CET)
+        by mout01.posteo.de (Postfix) with ESMTPS id 268A424002A
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:06:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1699887962; bh=n57oq4q/Tf+qKEYs2pRrWhcCc1bFBqLQk97twmrop14=;
+        t=1699887964; bh=53J0LHnKymzPZx4pjgLl4V71P0Nz78J62FrhdMGSnko=;
         h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
          Content-Transfer-Encoding:From;
-        b=RBGjfmf2kOohBWRrPMFefGieyMt892rF3yD4x8F7Cm+vUXPTkDHVG//3ZY13YroMX
-         NdXfussTZLpIzMXtoHsaX7vb9XLbJttkYF/QdTOcyhYiPxzH49naDRvuhpUhhqen36
-         XcU6eLCIXTMK/ZtZE0QvAysl8Z+9Mes0oSMjdIKQ9ULlcrL7dqL80BFl4zN68rnZOI
-         j7lsSJKlGNfnNuOFhITa+In2A7W6YYUjOxdMmndHevZOydhqaMmBV/Uxd9n8d+Uvmz
-         gxyooTAfW+kpitnoMhAwnvyIIjVrxuJSLfUGIsYs3ltTqyoh/KarxkYpT5LZNcHI08
-         33t9ysagjio1w==
+        b=IXs8fTfTBW5eSp3nfn6NdEeNt7XMOptO7GZRnK4zB9YsfjBDqZ30xwYdUnhJzaiMF
+         gRiNPOR7nSVuMnxinFj5w6mlQaYbFOknIB0w5h6rerNYzDz4tyA2gJkS1aE6vDt/X+
+         hBAtLU2UVWsypJrr54ZOeUL5+JBXmtbES2tsRMHCpCNQZinwu4KEZ5B5plZmLFUoHs
+         iBv6owEbPgGB0zmyiH8QuuxOge/T9DYScAcTgUDkhFpkxUAAaQce4HKxckik0iO3Wg
+         Wv7fASPvV0N19IuR+XyxHe68wf/HpI7UorQ+Q39mVe5uPM4VDlNUDQ+vZJMV3WKHb/
+         BASuNspM1Bh4g==
 Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4STXn474y0z9rxV;
-        Mon, 13 Nov 2023 16:06:00 +0100 (CET)
+        by submission (posteo.de) with ESMTPSA id 4STXn62mxqz9rxX;
+        Mon, 13 Nov 2023 16:06:02 +0100 (CET)
 From:   Charalampos Mitrodimas <charmitro@posteo.net>
 Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
         gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
         linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
         outreachy@lists.linux.dev,
         Charalampos Mitrodimas <charmitro@posteo.net>
-Subject: [PATCH 1/8] staging: sm750fb: Rename sii164GetDeviceID to sii164_get_device_id
-Date:   Mon, 13 Nov 2023 15:05:06 +0000
-Message-Id: <20231113150512.1210869-2-charmitro@posteo.net>
+Subject: [PATCH 2/8] staging: sm750fb: Rename sii164ResetChip to sii164_reset_chip
+Date:   Mon, 13 Nov 2023 15:05:07 +0000
+Message-Id: <20231113150512.1210869-3-charmitro@posteo.net>
 In-Reply-To: <20231113150512.1210869-1-charmitro@posteo.net>
 References: <20231113150512.1210869-1-charmitro@posteo.net>
 MIME-Version: 1.0
@@ -59,65 +59,53 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 Signed-off-by: Charalampos Mitrodimas <charmitro@posteo.net>
 ---
  drivers/staging/sm750fb/ddk750_dvi.c    | 2 +-
- drivers/staging/sm750fb/ddk750_sii164.c | 6 +++---
+ drivers/staging/sm750fb/ddk750_sii164.c | 4 ++--
  drivers/staging/sm750fb/ddk750_sii164.h | 2 +-
- 3 files changed, 5 insertions(+), 5 deletions(-)
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/staging/sm750fb/ddk750_dvi.c b/drivers/staging/sm750fb/ddk750_dvi.c
-index 8b81e8642f9e..3fb14eff2de1 100644
+index 3fb14eff2de1..6dee95e60a6e 100644
 --- a/drivers/staging/sm750fb/ddk750_dvi.c
 +++ b/drivers/staging/sm750fb/ddk750_dvi.c
-@@ -16,7 +16,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
- 	{
- 		.init = sii164_init_chip,
+@@ -18,7 +18,7 @@ static struct dvi_ctrl_device dcft_supported_dvi_controller[] = {
  		.get_vendor_id = sii164_get_vendor_id,
--		.get_device_id = sii164GetDeviceID,
-+		.get_device_id = sii164_get_device_id,
+ 		.get_device_id = sii164_get_device_id,
  #ifdef SII164_FULL_FUNCTIONS
- 		.reset_chip = sii164ResetChip,
+-		.reset_chip = sii164ResetChip,
++		.reset_chip = sii164_reset_chip,
  		.get_chip_string = sii164GetChipString,
+ 		.set_power = sii164SetPower,
+ 		.enable_hot_plug_detection = sii164EnableHotPlugDetection,
 diff --git a/drivers/staging/sm750fb/ddk750_sii164.c b/drivers/staging/sm750fb/ddk750_sii164.c
-index 2532b60245ac..223c181dc649 100644
+index 223c181dc649..284c32f7e9b4 100644
 --- a/drivers/staging/sm750fb/ddk750_sii164.c
 +++ b/drivers/staging/sm750fb/ddk750_sii164.c
-@@ -48,13 +48,13 @@ unsigned short sii164_get_vendor_id(void)
- }
+@@ -250,10 +250,10 @@ long sii164_init_chip(unsigned char edge_select,
+ #ifdef SII164_FULL_FUNCTIONS
  
  /*
-- *  sii164GetDeviceID
-+ *  sii164_get_device_id
-  *      This function gets the device ID of the DVI controller chip.
-  *
-  *  Output:
-  *      Device ID
+- *  sii164ResetChip
++ *  sii164_reset_chip
+  *      This function resets the DVI Controller Chip.
   */
--unsigned short sii164GetDeviceID(void)
-+unsigned short sii164_get_device_id(void)
+-void sii164ResetChip(void)
++void sii164_reset_chip(void)
  {
- 	unsigned short deviceID;
- 
-@@ -141,7 +141,7 @@ long sii164_init_chip(unsigned char edge_select,
- 
- 	/* Check if SII164 Chip exists */
- 	if ((sii164_get_vendor_id() == SII164_VENDOR_ID) &&
--	    (sii164GetDeviceID() == SII164_DEVICE_ID)) {
-+	    (sii164_get_device_id() == SII164_DEVICE_ID)) {
- 		/*
- 		 *  Initialize SII164 controller chip.
- 		 */
+ 	/* Power down */
+ 	sii164SetPower(0);
 diff --git a/drivers/staging/sm750fb/ddk750_sii164.h b/drivers/staging/sm750fb/ddk750_sii164.h
-index 71a7c1cb42c4..a76091f6622b 100644
+index a76091f6622b..7a71f94a1e9b 100644
 --- a/drivers/staging/sm750fb/ddk750_sii164.h
 +++ b/drivers/staging/sm750fb/ddk750_sii164.h
-@@ -28,7 +28,7 @@ long sii164_init_chip(unsigned char edgeSelect,
- 		      unsigned char pllFilterValue);
- 
- unsigned short sii164_get_vendor_id(void);
--unsigned short sii164GetDeviceID(void);
-+unsigned short sii164_get_device_id(void);
+@@ -31,7 +31,7 @@ unsigned short sii164_get_vendor_id(void);
+ unsigned short sii164_get_device_id(void);
  
  #ifdef SII164_FULL_FUNCTIONS
- void sii164ResetChip(void);
+-void sii164ResetChip(void);
++void sii164_reset_chip(void);
+ char *sii164GetChipString(void);
+ void sii164SetPower(unsigned char powerUp);
+ void sii164EnableHotPlugDetection(unsigned char enableHotPlug);
 -- 
 2.39.2
 
