@@ -2,163 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F7EC7E97F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50C8B7E981F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233234AbjKMIks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:40:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35040 "EHLO
+        id S233213AbjKMIyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:54:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233195AbjKMIkq (ORCPT
+        with ESMTP id S232633AbjKMIyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:40:46 -0500
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2052.outbound.protection.outlook.com [40.107.7.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 218EAC7;
-        Mon, 13 Nov 2023 00:40:43 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OSVXpAOXQTgiujg/Ql0QQXy2xYJSpjnvzvx+lSrShybEn9X2SGz9dliGpoKy13L9PQ1qPOGV3JVN5J/EyEcpKJ0Thx6Qq5e54XMtUL8ILnvdzOG5vzwKvUoKSFM1XPB8JM0IJ2Bn6pZGm/XFnPE0J/VT6okB7bMXT/CIZfnjuHJ+h9HBrU7zrwJKhEP9EA1wVMmGDo/rMvBUwlVGjHyIkSUG7sPZuqqq/668vbpsyVelMJKRe6Dvp53WqlrE3XCIoD/ljlF9Je7T4+5Zb/ITH6VodPU0xzClrZ88WawX6lL5CRm3p9nTY8SRjjP+wYyaH4sn14VYoQ9ZsU7VkUi6hA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8B+desNZlpSBKOeBSxSIhk9XDVHa6d0b99hlBb8/hcs=;
- b=ji/13fq7tngn8SqI0GGbOvSzBkluMH9iqn5BIMQcTMdCwMEaheeYHsx+GIFZc1YdoxTw27VaYSXU/FnW2kCD9+eUAwk57ZljAZupCkAllYL0uMnZkI2diLDuigwh7nt6bRLZ0EQQwxLCGDsY5bvOTAVVSa+dKWnGG6eSAwLu85Njm1HmwcmyMiLk09sDwuOyCQEmGT3SGBhrLEp1TxhBPHJYn5BaSyH2jBdu21GrWa450D/Y9F8A1xRFMWKZRXLGSwlA18ta2Jmzs3E93bwKStIOqEzHqcI4CWPHxJD3+LSUaIFAH9DrCuU2WtVivvihmQVI1YWr/m2AK2bn/Rk13g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8B+desNZlpSBKOeBSxSIhk9XDVHa6d0b99hlBb8/hcs=;
- b=YqNVZFeMKxFthYO8AlIRSYAF6vXqBFqNaiSdicnQlsWDNxrUKO+jWLKIIBTO1O+sA8q5sX5XVDAI8SunVSJgMOoCycFJghXm+fPTfhizUtpjGn+PWDvyMdtQpu9rwTX7Wkr5+hFAqum6PgOl5x45t3/6p6lqfBl1iPKNVD4zHu1eQ1LEqqmmL0ezlHVGUQ4R9YpwFB9PKHXDo4WLIXIHmfzWqSiIkpte4IuT1CH1RiPT8vLiMM0U2SpQxcHmb6mgeXfaCOi7DB+r4JCPTlYzKmFG1EdiHIeyRQkVqPgCK0hk5Y1X909HxVR7OlonjtNiDsWjo8o4BZl579l1Z9Icig==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by AM7PR04MB6950.eurprd04.prod.outlook.com (2603:10a6:20b:105::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.15; Mon, 13 Nov
- 2023 08:40:40 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17%3]) with mapi id 15.20.7002.014; Mon, 13 Nov 2023
- 08:40:40 +0000
-Message-ID: <b3f02f00-3422-4c4b-b142-2981441bed96@suse.com>
-Date:   Mon, 13 Nov 2023 10:40:35 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 00/23] TDX host kernel support
-Content-Language: en-US
-To:     Kai Huang <kai.huang@intel.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     x86@kernel.org, dave.hansen@intel.com,
-        kirill.shutemov@linux.intel.com, peterz@infradead.org,
-        tony.luck@intel.com, tglx@linutronix.de, bp@alien8.de,
-        mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, bagasdotme@gmail.com,
-        sagis@google.com, imammedo@redhat.com
-References: <cover.1699527082.git.kai.huang@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <cover.1699527082.git.kai.huang@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: VI1PR04CA0046.eurprd04.prod.outlook.com
- (2603:10a6:802:2::17) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Mon, 13 Nov 2023 03:54:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1AF810D3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:53:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699865613;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cNzwUiFENrfxS16AlOPS5/AIJUox4EDd0wo9fGfe2EM=;
+        b=FCJw6202v2DV99SrtFhjFK2SJ+BIzanIvg44p2cy7+WlS8QoFi/bDxQfemAs94HOcNULMQ
+        MJhWHYMssv1IfbLhY9uR3oI3+7ydORtwxM3/77374BdlyPoWzpQvp6jBYfgynGxWR8Zye9
+        nkvoHzl0R1pxroVQCMs2p9I6szANskQ=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-323-1w2gdU7iMeK0NGF7ZKPZww-1; Mon, 13 Nov 2023 03:53:31 -0500
+X-MC-Unique: 1w2gdU7iMeK0NGF7ZKPZww-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-408597a1ae3so27187355e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 00:53:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699865609; x=1700470409;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=cNzwUiFENrfxS16AlOPS5/AIJUox4EDd0wo9fGfe2EM=;
+        b=QxEUzHwqxJqezDHX5lI8Vz5YZlyKJ4YGn0c602zSaiahTifL+xheNsZaezQKanoecC
+         TvcXYQGq9fbkHTNnuxOKBO1PBdnuNyYT8wxtGu6okJ71GAEK9A5UGgpqX8ebddXGhk8A
+         FEYtjPTXxjSf78NW7je3GZ85VhnNQoa6Bvp121rfBiuzFLkNlzMBfT3pAuIFfQQcGssL
+         z9ywrknmYlp035QQDta+cVfk6DdOfmWiqqr9fdjavwL5L/uYvUYTPUma0//05HOvlFE8
+         9QJNzahIDAtyAjj3y/hz8vyM0ovJHANG5SwktRzJun5NbTfbmGCClJWFF9LyOE3pDWJC
+         c9Jg==
+X-Gm-Message-State: AOJu0YwVD1Q5lzNJrZ+pkZ3R+BN45HXucJnp68WUJVQM/aMavDaF+fug
+        Q5iPwZ6HiuxX7fwPX4FjD0FpprYs67aCEvYexPVl3sPbzw7BNw682gaCVSiDmRbCU0pIWqkKoSG
+        41/LFbrf5CjdqQwkOOkooRUgY0Gm42Yyk3aVme3NoICKiEkcmmVwyN40Z44clRMlt8jWGRn7o+T
+        Z7X6trJD8=
+X-Received: by 2002:a05:600c:198a:b0:409:7aa9:e0b with SMTP id t10-20020a05600c198a00b004097aa90e0bmr4828735wmq.32.1699865609530;
+        Mon, 13 Nov 2023 00:53:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGtyLOgcwZL+AdrLG958gidU7i+Mgqcg5fd8WDulVArdFeC6hjxYHKLm20rhC7ry8KWaggNrg==
+X-Received: by 2002:a05:600c:198a:b0:409:7aa9:e0b with SMTP id t10-20020a05600c198a00b004097aa90e0bmr4828715wmq.32.1699865609141;
+        Mon, 13 Nov 2023 00:53:29 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id j10-20020a05600c300a00b0040773c69fc0sm12890382wmh.11.2023.11.13.00.53.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 00:53:28 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Rob Herring <robh@kernel.org>, dri-devel@lists.freedesktop.org,
+        Andrew Worsley <amworsley@gmail.com>,
+        Hector Martin <marcan@marcan.st>,
+        Sergio Lopez <slp@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [RFC PATCH] of/platform: Disable sysfb if a simple-framebuffer node is found
+Date:   Mon, 13 Nov 2023 09:51:41 +0100
+Message-ID: <20231113085305.1823455-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|AM7PR04MB6950:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4935da12-9ae5-4c44-8267-08dbe424375a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5S/C4mDYzvn8Z6h7H8frVADHv5LZNFzocqp85K7jACwWZ2KXry7KTF/UnHHdQnPvTUHVip2I1yWzP0+QNmx3edyFCuEw8gMX0ylHLBG5tIYYaRmwcM6TA5nizIFAXrAjl8zRj1zZWp1HreubjMkjElE4tvN3eI0LK1QyewYKCRStrVCXxrhsoNZ9CZnTV1cvopg3ylg/thEzruKWvFovITLOe/uSfrBZKRkMvf7hOo2ouzo+BmNBInqXOkM14KhHK07QEb+uL04b+jQQ7CnCxKGz5v93nLbEnTdAycDDlofOyq6VPEayeZf/8O6d7n73w9qcc484deFL/7ot10pcOKAcFGhlbUuLCJfwsNVab64HyzZiJYDCtr1hYn9sM/ZL6eohMuISJNBsYu7kzoeaZ16qOHuyZ+axgDYaXaBeru3w4PZTGeolMD/lO/5uougbbrORrB3XcIV/9AJK7LNEos4WvLz+yRjO0rj58hikjgq9Ct6nvtU4CFsEf8BwFeIFM6sLoruVhCoUFVAZ+2blgJKTDTN6MWoY/XbsOZsPf0cKTLerPR74hPdG5UQueTlIFB95tn5B2xwNxBa5le/KS2KOGaCwSZVU1F3pMDVHek4nt/DLIK2lQV2uzWKLxOh75HLUlqaFYqGdszM9aXwDLg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39850400004)(396003)(346002)(376002)(366004)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(66476007)(66556008)(66946007)(316002)(478600001)(6486002)(6666004)(7416002)(86362001)(5660300002)(31696002)(41300700001)(36756003)(4744005)(2906002)(4326008)(8676002)(8936002)(31686004)(2616005)(38100700002)(6512007)(6506007)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?SWRTcSsyckVXSi8xZFlydEcvQ3lIL1MyQVZLWFV2Q1JuN2hkNjI0RTBjUWFZ?=
- =?utf-8?B?cXdISnIxVnMvUjVjUVRmQlllR0xLOHBXTXZHNUJQOE1KQncxemFiMkkyTkZU?=
- =?utf-8?B?WXFobDA4amo3eTF3MThXN2dhL2IwdHZidFBSL3RMMWhTSXJiZk54OFJXWnlX?=
- =?utf-8?B?SWVQVkRSVDIvN3hpWjFKd1M4aUdDdDZNYmlBSGlVT1ZUbW5hUkRzdmpUWVg1?=
- =?utf-8?B?YWJjZlRqSWpseHNoNlhxbXRraXpoUytjYU5YVE5EMUVTK2FuMG1FSWl3amt5?=
- =?utf-8?B?ZTFxa3p6RFJPVmErZmE0ajFOV1VTTERUR1JjSDJKQjd5bCtDM2d1Q2NmZVpE?=
- =?utf-8?B?ZFFhZ0NPeWZtYmVQb3ZDNWZIUnloVm91b2pmazFqcTA0U0VoSnZxb2R1cDZz?=
- =?utf-8?B?WlB2Q3dURnJhUXRpM2F3aDJJS0VLbjQrRndPRlB1UmVUYXJUMFh3aWcyWmJ0?=
- =?utf-8?B?ZVcxTmZlL2NDaGp1dllmdzlCWFM0ay8rTXlhU1R1SmRkYnRtZ2pORmRlcjVK?=
- =?utf-8?B?ZThqWENldkxLSVAveFFJRnYwejczR3R1eEdCbSsrVVNRZExKMi9jSWZUcSsy?=
- =?utf-8?B?WWJpL3RjQng2UE9SUXhBbkJueHUwWmw0Tk1VRmc3LzRDR2xucXM2aVpKZUdI?=
- =?utf-8?B?M3plRnBBdUUxcVMrbEhQajVpa1h1RDNZUHJYRkZlN1pxcXZrcmE2SzVpNk51?=
- =?utf-8?B?dzk2ajhkbVg4c09FL1phOEVXSnNPWmY0eVJBdEtnbnpQUFRJMzBjYUN4SnU3?=
- =?utf-8?B?WUVZWWk3M1ZONXFkaysxckxidVpkNm0xYmhYNHRUM1pNd0pOVFVEVnlpeHVQ?=
- =?utf-8?B?VGVqNWhmN2JkL1pBQUpPUGhuRDh2dW5wUi92TGRuamErVVBaWHNKOU9uN3dl?=
- =?utf-8?B?ekY2MTl4M3g3VVpvZ3JPT0Y4VHlTSXdKV0ZEb09PNUFjd1doOFVSSXhzWmxE?=
- =?utf-8?B?OUNFYVNzeWtobEhhQmlxYy9ZT0FwOUEyVnRRUzFsTVZvSzVxMkpXUWg3REQ5?=
- =?utf-8?B?YkRET2RUUnRZSVhlSjBKZlViL1ZoaTFCMmtycnlML0d3b01TOXlpOHlZRlFM?=
- =?utf-8?B?RFVxNUNaLy9HalVzV2RFZUxVU1FzTDQ4UWkvWk1hZFhJS3BLQXMyWVZXNHdQ?=
- =?utf-8?B?OU9qTi92VjdNMUk0Zk5OSVZMbG9hYWhQRDhRdlNyQ1cwMy9FeFNlS2V6cmFs?=
- =?utf-8?B?K1pGbVdrNWZMMkNLVFZxQnF2M3pQSVR6YnJuN3hpZXVlY1lXRHMyZXA4QXVB?=
- =?utf-8?B?eFhWU1RBYm4yeXN2ZlVTWGhya1BuTWZIaWlwN2I3cklMUHA2WURLUEdVYTZQ?=
- =?utf-8?B?NmhrelVXbFA3SjNFVDMzNm5pRVJEaUtLaVpGMHkrVHczQVJvWE0vTTBrQklN?=
- =?utf-8?B?a04veWNNalNsOUhxU0oxWDJXdnVCQXJFQ283ek12b3FKUFZ6NEpyMFo4c1BC?=
- =?utf-8?B?RXljem9zQnZQMFVXYTYvNVdadFJzKy9HWFVtZjh3SEpFdG52amJwN24ramps?=
- =?utf-8?B?c3dpMnoxVXZ0L2Zyd0k5Rm1nUWlZak8rZE5HZTdIK0s0RjNjSHlXSGVVRGVL?=
- =?utf-8?B?YVZPak5KVk5Sb1FTMGNOclJuWEVBblR4RDJobzZ2aHdueXlkeGZWL3FPU0lv?=
- =?utf-8?B?ZVNmZ1ZSdTBXR1dpaFp5TnA4RURPVXJzSndvWHVYbkFTNi94cTVyZytiWTRM?=
- =?utf-8?B?cno0YzlCL3BnNXNhZUFZeFFVN3ZEbnRFQXVsUThxc01hZW5IbldaYmZEbFBC?=
- =?utf-8?B?NEJBM2xGQSt2U2xrcXQ3TEJ2c0FPamVxcGk5TG5aMVlaQW9KQ3htRmRsVGxj?=
- =?utf-8?B?b0VaZ01jemQ1K0h1V2V3a1NubnNQWk8yVnhGTDlFNnRJN0twSVUxOHlvaWlI?=
- =?utf-8?B?U1NEQkV5ajFGWWR1cm9JdVJUT2pJa2lmcjFJa2lwdVluZ1hmL3RsU3pIQ1RB?=
- =?utf-8?B?eVZGb2szdjJOV3IwYUxHYm9KcW13TllHUG1uY1RwZHdWQ3RwRGs0YVZRdWdw?=
- =?utf-8?B?aUJmMjg2VzRoTG9FTU96cjc1a3pKNlFmc1VOOHZXNGRObWJxcHdVbFg4enJE?=
- =?utf-8?B?cnFmWk9lTlVjTmZ5TUNFc09DV01iRkpBNWlIN0tJeXEzcEtEalpsdWNJc0pI?=
- =?utf-8?B?RnlhSmxkUjlrelRtUkQxcEUycHUxWkpSWFpNU1g4WmNFMnFzbnZmenV4b1Vk?=
- =?utf-8?Q?gQ5fPEynxwBVhhLLLSbjC163uqxdSpyrnDAyoL2LCuW4?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4935da12-9ae5-4c44-8267-08dbe424375a
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 08:40:40.3786
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xMOHDqQ6cjJ83HUdBd3NuOZsGbGvz2dTmCFNSvWpQGF/K1pVOCN/0ycFtg61cd5FzGU3gnP2Yy7B0KdR0YHdBw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR04MB6950
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Some DT platforms use EFI to boot and in this case the EFI Boot Services
+may register a EFI_GRAPHICS_OUTPUT_PROTOCOL handle, that will later be
+queried by the Linux EFI stub to fill the global struct screen_info data.
 
+The data is used by the Generic System Framebuffers (sysfb) framework to
+add a platform device with platform data about the system framebuffer.
 
-On 9.11.23 г. 13:55 ч., Kai Huang wrote:
-> Hi all,
-> 
-> (Again I didn't include the full cover letter here to save people's time.
->   The full coverletter can be found in the v13 [1]).
-> 
-> This version mainly addressed one issue that we (Intel people) discussed
-> internally: to only initialize TDX module 1.5 and later versions.  The
-> reason is TDX 1.0 has some incompatibility issues to the TDX 1.5 and
-> later version (for detailed information please see [2]).  There's no
-> value to support TDX 1.0 when the TDX 1.5 are already out.
-> 
-> Hi Kirill, Dave (and all),
-> 
-> Could you help to review the new patch mentioned in the detailed
-> changes below (and other minor changes due to rebase to it)?
-> 
-> Appreciate a lot!
-> 
+But if there is a "simple-framebuffer" node in the DT, the OF core will
+also do the same and add another device for the system framebuffer.
 
-It looks good as a foundation to build on apart from Dave's comment 
-about the read out of metadata fields are there any outstanding issues 
-impending the merge of this series - Dave?
+This could lead for example, to two platform devices ("simple-framebuffer"
+and "efi-framebuffer") to be added and matched with their corresponding
+drivers. So both efifb and simpledrm will be probed, leading to following:
 
+[    0.055752] efifb: framebuffer at 0xbd58dc000, using 16000k, total 16000k
+[    0.055755] efifb: mode is 2560x1600x32, linelength=10240, pages=1
+[    0.055758] efifb: scrolling: redraw
+[    0.055759] efifb: Truecolor: size=2:10:10:10, shift=30:20:10:0
+...
+[    3.295896] simple-framebuffer bd58dc000.framebuffer: [drm] *ERROR*
+could not acquire memory range [??? 0xffff79f30a29ee40-0x2a5000001a7
+flags 0x0]: -16
+[    3.298018] simple-framebuffer: probe of bd58dc000.framebuffer
+failed with error -16
 
-FWIW:
+To prevent the issue, make the OF core to disable sysfb if there is a node
+with a "simple-framebuffer" compatible. That way only this device will be
+registered and sysfb would not attempt to register another one using the
+screen_info data even if this has been filled.
 
-Reviewed-by: Nikolay Borisov <nborisov@suse.com>
+This seems the correct thing to do in this case because:
+
+a) On a DT platform, the DTB is the single source of truth since is what
+   describes the hardware topology. Even if EFI Boot Services are used to
+   boot the machine.
+
+b) The of_platform_default_populate_init() function is called in the
+   arch_initcall_sync() initcall level while the sysfb_init() function
+   is called later in the subsys_initcall() initcall level.
+
+Reported-by: Andrew Worsley <amworsley@gmail.com>
+Closes: https://lore.kernel.org/all/20231111042926.52990-2-amworsley@gmail.com
+Signed-off-by: Javier Martinez Canillas <javierm@redhat.com>
+---
+
+ drivers/of/platform.c | 18 ++++++++++++++++--
+ 1 file changed, 16 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/of/platform.c b/drivers/of/platform.c
+index f235ab55b91e..0a692fdfef59 100644
+--- a/drivers/of/platform.c
++++ b/drivers/of/platform.c
+@@ -20,6 +20,7 @@
+ #include <linux/of_irq.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/sysfb.h>
+ 
+ #include "of_private.h"
+ 
+@@ -621,8 +622,21 @@ static int __init of_platform_default_populate_init(void)
+ 		}
+ 
+ 		node = of_get_compatible_child(of_chosen, "simple-framebuffer");
+-		of_platform_device_create(node, NULL, NULL);
+-		of_node_put(node);
++		if (node) {
++			/*
++			 * Since a "simple-framebuffer" device is already added
++			 * here, disable the Generic System Framebuffers (sysfb)
++			 * to prevent it from registering another device for the
++			 * system framebuffer later (e.g: using the screen_info
++			 * data that may had been filled as well).
++			 *
++			 * This can happen for example on DT systems that do EFI
++			 * booting and may provide a GOP handle to the EFI stub.
++			 */
++			sysfb_disable();
++			of_platform_device_create(node, NULL, NULL);
++			of_node_put(node);
++		}
+ 
+ 		/* Populate everything else. */
+ 		of_platform_default_populate(NULL, NULL, NULL);
+-- 
+2.41.0
+
