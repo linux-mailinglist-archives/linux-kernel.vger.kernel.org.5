@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D741A7E9826
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:55:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58D557E9833
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 09:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233245AbjKMIzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 03:55:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55414 "EHLO
+        id S233287AbjKMIza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 03:55:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233193AbjKMIzH (ORCPT
+        with ESMTP id S233272AbjKMIzX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 03:55:07 -0500
+        Mon, 13 Nov 2023 03:55:23 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42A1A10FA;
-        Mon, 13 Nov 2023 00:55:03 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61AF81703;
+        Mon, 13 Nov 2023 00:55:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699865703; x=1731401703;
+  t=1699865715; x=1731401715;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references;
-  bh=jpAt0LcVlSjjUEbl/HM69I5nu47cevCw5mxd/6mq4EM=;
-  b=eji8jRcHWmfm78o4b55Jvs1Dw1ikavC4qPlDTeoaBcCClLbnfxDJElkI
-   iE03f3fx+86G+TmcIhtEtnAvU3VVFwgvxq3BSbJjHX16wyP9aEUshrp9f
-   HMACt2azn0lPqP6rftHlCjtUEuihH9QVS5mvm6BAnHJF5fSQs0vyjtwtg
-   uzvs4s8Uv06FjaIu2tK61gCS0Usv9WICVzf2xBIFVpiNyWiCgWU+h9SSl
-   JvJvCIfmYeT+gID+KiMFB5cwIsaZTrVmqFpc2GEVCJDDXQg2K2wSu0K/q
-   rfOh2wK8cCShvWGiOj/aXHuiOZ0J+zddZLLUBzy8hetdDf6d+X8lOPvxs
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="9044623"
+  bh=KPZCNptc1GbxF5k9MX2KawY04ffstfPzRi4pRIz12Ow=;
+  b=heyIFOOylhrrESJ1VDMkHTM2jxer9GO9RwE+szLxiIle81Kem9uwMR/l
+   wIINnbv/JGv8R/vBPJihFNMuV7YDALau2pYO+8A9+BAINbLPm1Kiv3j08
+   2JgU7CZc+n+hyXgDg3Kgp2AI4TgNDRVXxCJYEM4mJjEOR7Cj4hJM/R6dy
+   gW/btOxTZD4tctigD2ni071V6jtl10R9BRHqYoVaR6QpyllxDPb+YOCqq
+   zyddkKZ/cb2nQPppcXoc8bZdAjzCiEaSzbXjtXhTEjp4DIFjVP+7TVKvA
+   psdA8YtMXpvveob3RAKJQ7c6nWLw0DP8eVS3r1pj8aWqm8g/zVP7Am/4D
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="9044632"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="9044623"
+   d="scan'208";a="9044632"
 Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:03 -0800
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:14 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="937688195"
+X-IronPort-AV: E=McAfee;i="6600,9927,10892"; a="937688226"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="937688195"
+   d="scan'208";a="937688226"
 Received: from qiuxu-clx.sh.intel.com ([10.239.53.109])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:00 -0800
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 00:55:11 -0800
 From:   Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 To:     Tony Luck <tony.luck@intel.com>
 Cc:     Qiuxu Zhuo <qiuxu.zhuo@intel.com>, Borislav Petkov <bp@alien8.de>,
         Aristeu Rozanski <aris@redhat.com>,
         Mauro Carvalho Chehab <mchehab@kernel.org>,
         linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/5] EDAC/igen6: Add Intel Raptor Lake-P SoCs support
-Date:   Mon, 13 Nov 2023 16:53:16 +0800
-Message-Id: <20231113085318.26783-4-qiuxu.zhuo@intel.com>
+Subject: [PATCH 4/5] EDAC/igen6: Add Intel Meteor Lake-PS SoCs support
+Date:   Mon, 13 Nov 2023 16:53:17 +0800
+Message-Id: <20231113085318.26783-5-qiuxu.zhuo@intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231113085318.26783-1-qiuxu.zhuo@intel.com>
 References: <20231113085318.26783-1-qiuxu.zhuo@intel.com>
@@ -61,75 +61,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Intel Raptor Lake-P SoC compute die IDs for EDAC support.
-These Raptor Lake-P SoCs share similar IBECC registers with Alder Lake-P
-SoCs but extend the most significant bit of the error address logged
-in IBECC from bit 38 to bit 45.
+Add Intel Meteor Lake-PS SoC compute die IDs for EDAC support.
+These SoCs share similar IBECC registers with Alder Lake-P SoCs.
+The only difference is that IBECC presence is detected through an
+MMIO-mapped register instead of the capability register in the
+PCI configuration space.
 
 Signed-off-by: Qiuxu Zhuo <qiuxu.zhuo@intel.com>
 ---
- drivers/edac/igen6_edac.c | 39 +++++++++++++++++++++++++++++++++++++--
- 1 file changed, 37 insertions(+), 2 deletions(-)
+ drivers/edac/igen6_edac.c | 44 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
 
 diff --git a/drivers/edac/igen6_edac.c b/drivers/edac/igen6_edac.c
-index 6e9b0cd076b4..f7914ce3d3d7 100644
+index f7914ce3d3d7..d336ba53e67c 100644
 --- a/drivers/edac/igen6_edac.c
 +++ b/drivers/edac/igen6_edac.c
-@@ -80,6 +80,7 @@
- #define ECC_ERROR_LOG_UE		BIT_ULL(63)
- #define ECC_ERROR_LOG_ADDR_SHIFT	5
- #define ECC_ERROR_LOG_ADDR(v)		GET_BITFIELD(v, 5, 38)
-+#define ECC_ERROR_LOG_ADDR45(v)		GET_BITFIELD(v, 5, 45)
- #define ECC_ERROR_LOG_SYND(v)		GET_BITFIELD(v, 46, 61)
+@@ -245,6 +245,12 @@ static struct work_struct ecclog_work;
+ #define DID_RPL_P_SKU4	0xa716
+ #define DID_RPL_P_SKU5	0xa718
  
- /* Host MMIO base address */
-@@ -133,6 +134,8 @@ static struct res_config {
- 	u32 ibecc_base;
- 	u32 ibecc_error_log_offset;
- 	bool (*ibecc_available)(struct pci_dev *pdev);
-+	/* Extract error address logged in IBECC */
-+	u64 (*err_addr)(u64 ecclog);
- 	/* Convert error address logged in IBECC to system physical address */
- 	u64 (*err_addr_to_sys_addr)(u64 eaddr, int mc);
- 	/* Convert error address logged in IBECC to integrated memory controller address */
-@@ -235,6 +238,13 @@ static struct work_struct ecclog_work;
- #define DID_ADL_N_SKU10	0x4679
- #define DID_ADL_N_SKU11	0x467c
- 
-+/* Compute die IDs for Raptor Lake-P with IBECC */
-+#define DID_RPL_P_SKU1	0xa706
-+#define DID_RPL_P_SKU2	0xa707
-+#define DID_RPL_P_SKU3	0xa708
-+#define DID_RPL_P_SKU4	0xa716
-+#define DID_RPL_P_SKU5	0xa718
++/* Compute die IDs for Meteor Lake-PS with IBECC */
++#define DID_MTL_PS_SKU1	0x7d21
++#define DID_MTL_PS_SKU2	0x7d22
++#define DID_MTL_PS_SKU3	0x7d23
++#define DID_MTL_PS_SKU4	0x7d24
 +
  static int get_mchbar(struct pci_dev *pdev, u64 *mchbar)
  {
  	union  {
-@@ -401,6 +411,11 @@ static u64 adl_err_addr_to_imc_addr(u64 eaddr, int mc)
- 	return imc_addr;
+@@ -325,6 +331,29 @@ static bool tgl_ibecc_available(struct pci_dev *pdev)
+ 	return !(CAPID_E_IBECC & v);
  }
  
-+static u64 rpl_p_err_addr(u64 ecclog)
++static bool mtl_ps_ibecc_available(struct pci_dev *pdev)
 +{
-+	return ECC_ERROR_LOG_ADDR45(ecclog);
++#define MCHBAR_MEMSS_IBECCDIS	0x13c00
++	void __iomem *window;
++	u64 mchbar;
++	u32 val;
++
++	if (get_mchbar(pdev, &mchbar))
++		return false;
++
++	window = ioremap(mchbar, MCHBAR_SIZE * 2);
++	if (!window) {
++		igen6_printk(KERN_ERR, "Failed to ioremap 0x%llx\n", mchbar);
++		return false;
++	}
++
++	val = readl(window + MCHBAR_MEMSS_IBECCDIS);
++	iounmap(window);
++
++	/* Bit6: 1 - IBECC is disabled, 0 - IBECC isn't disabled */
++	return !GET_BITFIELD(val, 6, 6);
 +}
 +
- static struct res_config ehl_cfg = {
- 	.num_imc		= 1,
- 	.imc_base		= 0x5000,
-@@ -457,6 +472,18 @@ static struct res_config adl_n_cfg = {
+ static u64 mem_addr_to_sys_addr(u64 maddr)
+ {
+ 	if (maddr < igen6_tolud)
+@@ -484,6 +513,17 @@ static struct res_config rpl_p_cfg = {
  	.err_addr_to_imc_addr	= adl_err_addr_to_imc_addr,
  };
  
-+static struct res_config rpl_p_cfg = {
++static struct res_config mtl_ps_cfg = {
 +	.machine_check		= true,
 +	.num_imc		= 2,
 +	.imc_base		= 0xd800,
 +	.ibecc_base		= 0xd400,
-+	.ibecc_error_log_offset	= 0x68,
-+	.ibecc_available	= tgl_ibecc_available,
-+	.err_addr		= rpl_p_err_addr,
++	.ibecc_error_log_offset	= 0x170,
++	.ibecc_available	= mtl_ps_ibecc_available,
 +	.err_addr_to_sys_addr	= adl_err_addr_to_sys_addr,
 +	.err_addr_to_imc_addr	= adl_err_addr_to_imc_addr,
 +};
@@ -137,32 +137,17 @@ index 6e9b0cd076b4..f7914ce3d3d7 100644
  static const struct pci_device_id igen6_pci_tbl[] = {
  	{ PCI_VDEVICE(INTEL, DID_EHL_SKU5), (kernel_ulong_t)&ehl_cfg },
  	{ PCI_VDEVICE(INTEL, DID_EHL_SKU6), (kernel_ulong_t)&ehl_cfg },
-@@ -489,6 +516,11 @@ static const struct pci_device_id igen6_pci_tbl[] = {
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU9), (kernel_ulong_t)&adl_n_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU10), (kernel_ulong_t)&adl_n_cfg },
- 	{ PCI_VDEVICE(INTEL, DID_ADL_N_SKU11), (kernel_ulong_t)&adl_n_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU1), (kernel_ulong_t)&rpl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU2), (kernel_ulong_t)&rpl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU3), (kernel_ulong_t)&rpl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU4), (kernel_ulong_t)&rpl_p_cfg },
-+	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU5), (kernel_ulong_t)&rpl_p_cfg },
+@@ -521,6 +561,10 @@ static const struct pci_device_id igen6_pci_tbl[] = {
+ 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU3), (kernel_ulong_t)&rpl_p_cfg },
+ 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU4), (kernel_ulong_t)&rpl_p_cfg },
+ 	{ PCI_VDEVICE(INTEL, DID_RPL_P_SKU5), (kernel_ulong_t)&rpl_p_cfg },
++	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU1), (kernel_ulong_t)&mtl_ps_cfg },
++	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU2), (kernel_ulong_t)&mtl_ps_cfg },
++	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU3), (kernel_ulong_t)&mtl_ps_cfg },
++	{ PCI_VDEVICE(INTEL, DID_MTL_PS_SKU4), (kernel_ulong_t)&mtl_ps_cfg },
  	{ },
  };
  MODULE_DEVICE_TABLE(pci, igen6_pci_tbl);
-@@ -744,8 +776,11 @@ static void ecclog_work_cb(struct work_struct *work)
- 
- 	llist_for_each_entry_safe(node, tmp, head, llnode) {
- 		memset(&res, 0, sizeof(res));
--		eaddr = ECC_ERROR_LOG_ADDR(node->ecclog) <<
--			ECC_ERROR_LOG_ADDR_SHIFT;
-+		if (res_cfg->err_addr)
-+			eaddr = res_cfg->err_addr(node->ecclog);
-+		else
-+			eaddr = ECC_ERROR_LOG_ADDR(node->ecclog) <<
-+				ECC_ERROR_LOG_ADDR_SHIFT;
- 		res.mc	     = node->mc;
- 		res.sys_addr = res_cfg->err_addr_to_sys_addr(eaddr, res.mc);
- 		res.imc_addr = res_cfg->err_addr_to_imc_addr(eaddr, res.mc);
 -- 
 2.17.1
 
