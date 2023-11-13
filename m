@@ -2,68 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E85507E9973
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:53:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7C307E9978
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:54:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbjKMJxX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:53:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
+        id S233442AbjKMJyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 04:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231940AbjKMJxT (ORCPT
+        with ESMTP id S231940AbjKMJyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:53:19 -0500
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [IPv6:2001:67c:2050:0:465::101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D9E10D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:53:16 -0800 (PST)
-Received: from smtp202.mailbox.org (smtp202.mailbox.org [10.196.197.202])
+        Mon, 13 Nov 2023 04:54:47 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E97510D2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:54:43 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4STPr80ndrz9srw;
-        Mon, 13 Nov 2023 10:53:12 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-        t=1699869192;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hSEEONC8xHuiK/FSJm36NKCtjchv8QqjOuZVvBDV3Wo=;
-        b=EUoMgOnCwBKR4xWSxgLK4CJhGEWQVHqQcQtHihA+3MSvjNnXXhPF9E8NaHO9oD+pz/HD/o
-        ZvbsTkfo49iMRW+PbmU/3tV6Dxvs5mhhZGRkY8d4PaV0G4iZJz7tsZLJZlOG5bB0//3diH
-        CgypVFqBvDgQHyry5PavyGxfq+PJZEakDDvwXIbAOwzjm+HpWfVBedUWEPeH3i02EUzJm/
-        oqaX4exNqKCt+Jj7hr3oGPqB3xuwDttX8e7XBi2HnsQJOwvTdc10sNbodmY/POaiGZ9gwG
-        CK6Lre9LSpuGdElQb3YZGUtyN+Qxk6szZJuraLaeOcSLwvIE//X3Q2lYc/YW1w==
-Message-ID: <7339350d-a796-86c4-ab9f-752c161923e3@mailbox.org>
-Date:   Mon, 13 Nov 2023 10:53:08 +0100
-MIME-Version: 1.0
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-Content-Language: de-CH-frami, en-CA
-To:     Simon Ser <contact@emersion.fr>
-Cc:     pierre-eric.pelloux-prayer@amd.com,
-        =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@igalia.com>,
-        =?UTF-8?B?J01hcmVrIE9sxaHDoWsn?= <maraeo@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 0E5DB66071C9;
+        Mon, 13 Nov 2023 09:54:41 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1699869282;
+        bh=9bDqGXVfCHUlHc3hp7s0FADRMoSPM6UPpCOfpTvFpJk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=e2nUsO5N4mioF5D9r3oXlR2JsjGkqpom9d2RaVinEXcVe1eS4jchoB4tvp/1/zhJm
+         SxgoR/Ml0EK9e+jaGd7BU6CQq4MFvbdg5Uw2emYy3fqOMQJHk2GztiQ15rboQCvX4X
+         bBAVkLFm0XEe611DKwX4Jc/CGmJuoTNybITKl2drTSkZf5fgiHaBbDLVyZulRES/m0
+         QNRNUMGmpcPvp1WqhYl52AHwP2228zWuLvjaDSs0ND1GftAua1AEw2lxk+5cZolPOx
+         Miq8/zNSNNAXxlb1ckIBi3PMW2syUksnIxwu6BDbuXMDrrpHxjhm21Brza5nlwbLvL
+         RGXPxrky1YIGQ==
+Date:   Mon, 13 Nov 2023 10:54:38 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Dmitry Osipenko <dmitry.osipenko@collabora.com>
+Cc:     David Airlie <airlied@gmail.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Qiang Yu <yuq825@gmail.com>,
+        Steven Price <steven.price@arm.com>,
+        Emma Anholt <emma@anholt.net>, Melissa Wen <mwen@igalia.com>,
         dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        amd-gfx@lists.freedesktop.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, joshua@froggi.es,
-        wayland-devel@lists.freedesktop.org, hwentlan@amd.com,
-        christian.koenig@amd.com
-References: <20230815185710.159779-1-andrealmeid@igalia.com>
- <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com>
- <20231016175222.7a89e6ab@eldfell> <ZS1ST6XAUHilBg3d@intel.com>
- <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr>
- <ZS55mXTSxpXKYbsd@intel.com>
- <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr>
- <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr>
- <438f2960-c49e-6485-5916-20d6e69ef7d4@mailbox.org>
- <lpel36VSNcFmcpY-E0tWcyO88CxmVfIdAMNYkkyxRy8ELbvM5xEZS68zxsK3JncHlkjQnxdE8vbKsJT_RZSGRCkPSiTvbXZWqOER6ZtpL2A=@emersion.fr>
-From:   =?UTF-8?Q?Michel_D=c3=a4nzer?= <michel.daenzer@mailbox.org>
-In-Reply-To: <lpel36VSNcFmcpY-E0tWcyO88CxmVfIdAMNYkkyxRy8ELbvM5xEZS68zxsK3JncHlkjQnxdE8vbKsJT_RZSGRCkPSiTvbXZWqOER6ZtpL2A=@emersion.fr>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-MBO-RS-ID: ffb3b1a56ad4ece27b5
-X-MBO-RS-META: wfipq1n5mfspi8nqc5r7f573gwwg4fg1
+        kernel@collabora.com, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH v18 22/26] drm/shmem-helper: Don't free refcounted GEM
+Message-ID: <20231113105438.60896fdf@collabora.com>
+In-Reply-To: <20231029230205.93277-23-dmitry.osipenko@collabora.com>
+References: <20231029230205.93277-1-dmitry.osipenko@collabora.com>
+        <20231029230205.93277-23-dmitry.osipenko@collabora.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -74,85 +68,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 10:47, Simon Ser wrote:
-> On Monday, November 13th, 2023 at 10:41, Michel Dänzer <michel.daenzer@mailbox.org> wrote:
-> 
->> On 11/13/23 10:18, Simon Ser wrote:
->>
->>> On Monday, October 23rd, 2023 at 10:25, Simon Ser contact@emersion.fr wrote:
->>>
->>>>>>>>>>>>> +An atomic commit with the flag DRM_MODE_PAGE_FLIP_ASYNC is allowed to
->>>>>>>>>>>>> +effectively change only the FB_ID property on any planes. No-operation changes
->>>>>>>>>>>>> +are ignored as always. [...]
->>>>>>>>>>>>> During the hackfest in Brno, it was mentioned that a commit which re-sets the same FB_ID could actually have an effect with VRR: It could trigger scanout of the next frame before vertical blank has reached its maximum duration. Some kind of mechanism is required for this in order to allow user space to perform low frame rate compensation.
->>>>>>>>>>>
->>>>>>>>>>> Xaver tested this hypothesis in a flipping the same fb in a VRR monitor
->>>>>>>>>>> and it worked as expected, so this shouldn't be a concern.
->>>>>>>>>>> Right, so it must have some effect. It cannot be simply ignored like in
->>>>>>>>>>> the proposed doc wording. Do we special-case re-setting the same FB_ID
->>>>>>>>>>> as "not a no-op" or "not ignored" or some other way?
->>>>>>>>>>> There's an effect in the refresh rate, the image won't change but it
->>>>>>>>>>> will report that a flip had happened asynchronously so the reported
->>>>>>>>>>> framerate will be increased. Maybe an additional wording could be like:
->>>>>>>>>
->>>>>>>>> Flipping to the same FB_ID will result in a immediate flip as if it was
->>>>>>>>> changing to a different one, with no effect on the image but effecting
->>>>>>>>> the reported frame rate.
->>>>>>>>
->>>>>>>> Re-setting FB_ID to its current value is a special case regardless of
->>>>>>>> PAGE_FLIP_ASYNC, is it not?
->>>>>>>
->>>>>>> No. The rule has so far been that all side effects are observed
->>>>>>> even if you flip to the same fb. And that is one of my annoyances
->>>>>>> with this proposal. The rules will now be different for async flips
->>>>>>> vs. everything else.
->>>>>>
->>>>>> Well with the patches the async page-flip case is exactly the same as
->>>>>> the non-async page-flip case. In both cases, if a FB_ID is included in
->>>>>> an atomic commit then the side effects are triggered even if the property
->>>>>> value didn't change. The rules are the same for everything.
->>>>>
->>>>> I see it only checking if FB_ID changes or not. If it doesn't
->>>>> change then the implication is that the side effects will in
->>>>> fact be skipped as not all planes may even support async flips.
->>>>
->>>> Hm right. So the problem is that setting any prop = same value as
->>>> previous one will result in a new page-flip for asynchronous page-flips,
->>>> but will not result in any side-effect for asynchronous page-flips.
->>>>
->>>> Does it actually matter though? For async page-flips, I don't think this
->>>> would result in any actual difference in behavior?
->>>
->>> To sum this up, here is a matrix of behavior as seen by user-space:
->>>
->>> - Sync atomic page-flip
->>> - Set FB_ID to different value: programs hw for page-flip, sends uevent
->>> - Set FB_ID to same value: same (important for VRR)
->>> - Set another plane prop to same value: same
->>
->> A page flip is programmed even if FB_ID isn't touched?
-> 
-> I believe so. Set CRTC_X on a plane to the same value as before, and the
-> CRTC gets implicitly included in the atomic commit?
-> 
->>> - Set another plane prop to different value: maybe rejected if modeset required
->>> - Async atomic page-flip
->>> - Set FB_ID to different value: updates hw with new FB address, sends
->>> immediate uevent
->>> - Set FB_ID to same value: same (no-op for the hw)
->>
->> No-op implies it doesn't trigger scanning out a frame with VRR, if
->> scanout is currently in vertical blank. Is that the case? If so, async
->> flips can't reliably trigger scanning out a frame with VRR.
-> 
-> By no-op I mean that the hw is programmed for an immediate async flip
-> with the same buffer addr as the previous one. So this doesn't actually
-> change anything.
+On Mon, 30 Oct 2023 02:02:01 +0300
+Dmitry Osipenko <dmitry.osipenko@collabora.com> wrote:
 
-If a flip is programmed to the HW, it's not a no-op any more than in the sync case, in particular not with VRR.
+> Don't free refcounted shmem object to prevent use-after-free bug that
+> is worse than a memory leak.
+> 
+> Signed-off-by: Dmitry Osipenko <dmitry.osipenko@collabora.com>
+> ---
+>  drivers/gpu/drm/drm_gem_shmem_helper.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_gem_shmem_helper.c b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> index 6dd087f19ea3..4253c367dc07 100644
+> --- a/drivers/gpu/drm/drm_gem_shmem_helper.c
+> +++ b/drivers/gpu/drm/drm_gem_shmem_helper.c
+> @@ -203,9 +203,10 @@ void drm_gem_shmem_free(struct drm_gem_shmem_object *shmem)
+>  	if (obj->import_attach)
+>  		drm_prime_gem_destroy(obj, shmem->sgt);
+>  
+> -	drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count));
+> -	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count));
+> -	drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count));
+> +	if (drm_WARN_ON(obj->dev, refcount_read(&shmem->vmap_use_count)) ||
+> +	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_use_count)) ||
+> +	    drm_WARN_ON(obj->dev, refcount_read(&shmem->pages_pin_count)))
+> +		return;
 
+I guess you're worried about ->sgt being referenced by the driver after
+the GEM is destroyed. If we assume drivers don't cache the sgt and
+always call get_pages_sgt() when they need it that shouldn't be an
+issue. What we really don't want to release is the pages themselves,
+but the GPU MMU might still have active mappings pointing to these
+pages.
 
--- 
-Earthling Michel Dänzer            |                  https://redhat.com
-Libre software enthusiast          |         Mesa and Xwayland developer
+In any case, I'm not against leaking the GEM object when any of these
+counters are not zero, but can we at least have a comment in the
+code explaining why we're doing that, so people don't have to go look
+at the git history to figure it out.
+
+>  
+>  	drm_gem_object_release(obj);
+>  	kfree(shmem);
 
