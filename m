@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C098D7EA15A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:38:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352BF7EA15F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:40:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbjKMQi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:38:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58290 "EHLO
+        id S231162AbjKMQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:40:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMQi1 (ORCPT
+        with ESMTP id S230192AbjKMQks (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:38:27 -0500
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85585D73
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:38:22 -0800 (PST)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1e9e4636ce6so602807fac.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:38:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1699893501; x=1700498301; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2zeHTCEwkJWMtUTahIH4QC2kkGN1U6NwIG//5rchOt8=;
-        b=kbGQ8jXqhaDzhUYskWopFc7duqIwZKmx7qY+CxunqVvb8ysz6aJvtB2xk+5BDhYeOG
-         kaYLKF0ULdjiDEwZwsPq3PVstVIaHvET3f39E4NgLEEc4R6p9VSW5ph2b+PhiS9TqDLw
-         fYpuU4tXCoKRaTs+bYCDtJnxgBhXzMyqnxHfaNbUx/83vcOSVeLQlV/Lt5bej1EmTFDH
-         eLj6zG1Kj6HFP16EHmxMb6gj4nDWhiK+3sCU5BFKtCB+pCF7Mjw3Od1FpL0uo3fIz1sL
-         cyscRa4C6AAO9wNQcKsiOgJQ0ptf1TzH65C2iZ8qDIB/lOM37l+5qAtxtbaEPQi/uJHS
-         MYoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699893501; x=1700498301;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2zeHTCEwkJWMtUTahIH4QC2kkGN1U6NwIG//5rchOt8=;
-        b=Jg8JD9KqvoE+lOUW38HWVgdRMOIQlnVTqty6CLJm40GLw3E1hyVlZlYTdHHQ3J76y1
-         9f696Y3m81DbPI5GtAv4TA3E+egl84qFFI/M4Mfnj4stgUXMXWhNuAnMniSHQZVLsyvC
-         yFpU/bdbYiOTcLVgMcKzH++DJ9lHDzQ1V+7mD7uhQKqqrhHmdzHdgVUwuRrqrpLXD0HT
-         tlpeunUkNMX/V1J+yqj8N0G06rnqH9AflJlPHCNLUW85RYD+PhwSrj7+6p12nVjSxYLt
-         gtSEtlgHFiHQ697mj0P1CixzTteoUAXg86tP1nQAYFQordsMad+m9Ympu6ZzmuBfjQgV
-         i7DQ==
-X-Gm-Message-State: AOJu0Ywax6TUJRpFcvT9C9phwplwfEDEfqfGO/HAoxH3qBJbAGeRU+i9
-        bTH28pr0PUXjtFiOG4E53sO0nA==
-X-Google-Smtp-Source: AGHT+IE36sQjOPU+pSjqqYtv8a+WCA+IwmYMnfjSfw7wGxRsEjnOuaJR0ZLShmybuhzhLjMsSYwiGg==
-X-Received: by 2002:a05:6870:7e0e:b0:1e9:e8fd:bb77 with SMTP id wx14-20020a0568707e0e00b001e9e8fdbb77mr8799627oab.0.1699893501349;
-        Mon, 13 Nov 2023 08:38:21 -0800 (PST)
-Received: from [172.20.4.17] ([12.191.197.195])
-        by smtp.gmail.com with ESMTPSA id t19-20020ac865d3000000b0041ce9ebaad2sm2054046qto.43.2023.11.13.08.38.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 08:38:20 -0800 (PST)
-Message-ID: <93c6f293-7aa5-4e12-b238-f369d53ab28e@kernel.dk>
-Date:   Mon, 13 Nov 2023 09:38:19 -0700
+        Mon, 13 Nov 2023 11:40:48 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27316D73;
+        Mon, 13 Nov 2023 08:40:45 -0800 (PST)
+Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
+        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ADFOIcM019092;
+        Mon, 13 Nov 2023 10:40:36 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=b
+        77U65NzPhkgOKHWlwkTamYPj/TOXrDCPIuZPvkXAr8=; b=jLartDMUDTXTK7sS6
+        fm93omS1OhekimiXA5nCpAISjucg604mgvCK7ZUyEgE+px2ai6Isel7PrisQD8pt
+        kMil41eUS964EUu3Tpc9H+qjiv4yBawG+A6/8qkHnB/MQ87FX6N2ua9kHmu/dj6D
+        aqS18dGmHS4KRoJIFuR5/h6DUMUcczU26kkoobzUTxTZ1wiurGUxGqNg2XG0eMQ9
+        5DqHlTNyOzO7qgv4P7hblv0wKTIho5RUlpBcQR8TExESMPJLeZ2m27WgLadx3Vbu
+        M9lABrTWY8nrma+MFsslZe/gn5681QUrMiZ6sk8WJ5u3mmJagtvhXHRLsDz+zz8y
+        gswyg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2j53c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 13 Nov 2023 10:40:36 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
+ 2023 16:40:29 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Mon, 13 Nov 2023 16:40:29 +0000
+Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4F98811A8;
+        Mon, 13 Nov 2023 16:40:29 +0000 (UTC)
+From:   Richard Fitzgerald <rf@opensource.cirrus.com>
+To:     <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Simon Trimmer" <simont@opensource.cirrus.com>,
+        Richard Fitzgerald <rf@opensource.cirrus.com>
+Subject: [PATCH RESEND] ALSA: hda: cs35l56: Enable low-power hibernation mode on i2c
+Date:   Mon, 13 Nov 2023 16:40:29 +0000
+Message-ID: <20231113164029.1156669-1-rf@opensource.cirrus.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] io_uring: Statistics of the true utilization of sq
- threads.
-Content-Language: en-US
-To:     Xiaobing Li <xiaobing.li@samsung.com>
-Cc:     asml.silence@gmail.com, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, kun.dou@samsung.com,
-        peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com
-References: <60464608-a9b7-4cf8-bd6d-c982210c6f83@kernel.dk>
- <CGME20231113031827epcas5p2e6e858292a3cd4b9e03b4615d972b22d@epcas5p2.samsung.com>
- <20231113031040.1391334-1-xiaobing.li@samsung.com>
-From:   Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <20231113031040.1391334-1-xiaobing.li@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: xPkX2Qqns_D4KVv73hnt8y1Hn9SBru9-
+X-Proofpoint-GUID: xPkX2Qqns_D4KVv73hnt8y1Hn9SBru9-
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/12/23 8:10 PM, Xiaobing Li wrote:
-> After careful consideration and testing, I don't think getting the
-> uring_lock is possible here, for the following reasons:
-> Due to lock competition, ctx->uring_lock and sq->lock are usually not
-> available here. The best proof is that the values of SqThread and
-> SqThreadCpu always output -1. In this case, it is impossible to obtain
-> the required work_time and total_time values.
-> In fact, it should be feasible to obtain work_time and total_time by
-> judging that ctx->sq_data is not NULL, because if the sq thread exits,
-> the action of reading data will also stop, and the possibility of a null
-> pointer reference is very low.
+From: Simon Trimmer <simont@opensource.cirrus.com>
 
-We have that problem right now, in the current tree. And agree it's not
-the best. sq_data should be fine under the (ctx) lock, it's just the
-thread that may go away. Maybe we just cache the cpu/pid of it when we
-create it, seems better than needing to query it. And for the other
-stats, should be fine in ctx->sq_data.
+This can now be re-enabled as the sequence to reliably wake the device
+has been implemented in the shared ASoC code.
 
+This has a functional dependency on commit 3df761bdbc8b
+("ASoC: cs35l56: Wake transactions need to be issued twice")
+
+To protect against this, enabling hibernation is conditional on
+CS35L56_WAKE_HOLD_TIME_US being defined, which indicates that the new
+hibernation sequences are available.
+
+Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
+---
+ sound/pci/hda/cs35l56_hda_i2c.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/sound/pci/hda/cs35l56_hda_i2c.c b/sound/pci/hda/cs35l56_hda_i2c.c
+index 757a4d193e0f..a9ef6d86de83 100644
+--- a/sound/pci/hda/cs35l56_hda_i2c.c
++++ b/sound/pci/hda/cs35l56_hda_i2c.c
+@@ -21,6 +21,10 @@ static int cs35l56_hda_i2c_probe(struct i2c_client *clt)
+ 		return -ENOMEM;
+ 
+ 	cs35l56->base.dev = &clt->dev;
++
++#ifdef CS35L56_WAKE_HOLD_TIME_US
++	cs35l56->base.can_hibernate = true;
++#endif
+ 	cs35l56->base.regmap = devm_regmap_init_i2c(clt, &cs35l56_regmap_i2c);
+ 	if (IS_ERR(cs35l56->base.regmap)) {
+ 		ret = PTR_ERR(cs35l56->base.regmap);
 -- 
-Jens Axboe
+2.30.2
 
