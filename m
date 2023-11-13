@@ -2,94 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7742B7EA18F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:57:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2122C7EA17F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbjKMQ5e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:57:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36532 "EHLO
+        id S229875AbjKMQtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:49:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMQ5d (ORCPT
+        with ESMTP id S229511AbjKMQtw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:57:33 -0500
-X-Greylist: delayed 600 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Nov 2023 08:57:31 PST
-Received: from relay.smtp-ext.broadcom.com (relay.smtp-ext.broadcom.com [192.19.144.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B600D53;
-        Mon, 13 Nov 2023 08:57:31 -0800 (PST)
-Received: from mail-lvn-it-01.lvn.broadcom.net (mail-lvn-it-01.lvn.broadcom.net [10.36.132.253])
-        by relay.smtp-ext.broadcom.com (Postfix) with ESMTP id C1557C0000E8;
-        Mon, 13 Nov 2023 08:47:30 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 relay.smtp-ext.broadcom.com C1557C0000E8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=broadcom.com;
-        s=dkimrelay; t=1699894050;
-        bh=6/JLDQZPDBH2aFK3yzNfKgCy/0JwglECNuOR5JcF6tQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tKfbEOR6o4g2ykzQO/Bj2MIgOKxlaBb7cMcJKlocj+up4z2qfRjaDtVbFfETCrBgF
-         R8R59/u2oIR8iJzSPQ0GFA2HtpTN/voYh3+1MC+YW6xpZaF/mnyafk6njFNQwom6CD
-         NpDSDbzsPoiUfMO6mCAXT2lFSFBTeraHMTpFLK/k=
-Received: from fainelli-desktop.igp.broadcom.net (fainelli-desktop.dhcp.broadcom.net [10.67.48.245])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail-lvn-it-01.lvn.broadcom.net (Postfix) with ESMTPSA id 666BE18041CAC4;
-        Mon, 13 Nov 2023 08:47:29 -0800 (PST)
-From:   Florian Fainelli <florian.fainelli@broadcom.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        Broadcom internal kernel review list 
-        <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org (open list:PWM SUBSYSTEM),
-        linux-rpi-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE),
-        linux-arm-kernel@lists.infradead.org (moderated list:BROADCOM
-        BCM2711/BCM2835 ARM ARCHITECTURE)
-Subject: [PATCH] pwm: bcm2835: Fix NPD in suspend/resume
-Date:   Mon, 13 Nov 2023 08:46:32 -0800
-Message-Id: <20231113164632.2439400-1-florian.fainelli@broadcom.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 13 Nov 2023 11:49:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E6BAD53
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:49:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B910C433C8;
+        Mon, 13 Nov 2023 16:49:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699894189;
+        bh=eN+xX6DmUW4iySUtNTiONSvtkTg9S6O6PBUBb147Eow=;
+        h=From:Date:Subject:To:Cc:From;
+        b=avIvyR61/qpH8sMkK5TySTf9QqQRTNhm6CCgNiCyQYw7syiLyphx8flR2lZ9Yv85m
+         lV0YT/otAlBX7lZc864yYFV2MDmeZqYf73cuKyeDEVGhOpiFmORUIBeHfstFQWgdA6
+         zT5IzrPFPHHqqRF6CDyVXO+Sw7+xGkquzagbuSga+fqbt1JaM61z10O95aSSZZgi6O
+         FLUSD6hJyDlqFtAgz2a1PnMeGvxklCTX3DxFZ8nQyk7mWeFonchrWbLQS3c7QiMYYD
+         Gu29JQpM9qQjcrHz/yIC6e/ckxWujGejSZ3++4XclFkAHYCcF/ik79VoypWUM6oxPI
+         FlgYsAuQL749g==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Mon, 13 Nov 2023 16:49:39 +0000
+Subject: [PATCH v3] KVM: selftests: Initialise dynamically allocated
+ configuration names
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Message-Id: <20231113-kvm-get-reg-list-str-init-v3-1-eaf67d660007@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAKJTUmUC/33NzQ6CMAzA8VchO1uzDwT05HsYD8A6WMBhumXRE
+ N7dQWKiF47/pv11Zh7JomeXbGaE0Xo7uRTqkLG2r12HYHVqJrlUggsJQ3xAhwEIOxitD+ADgXU
+ 2QFm0FeocxVkXLN0/CY19bfbtnrpP2xO9t1dRrNOvqnbUKEAAV7lRJTemqpvrgORwPE7UsZWN8
+ pcq9yiZKETFG6GNwhP/o5Zl+QBsbdwUDgEAAA==
+To:     Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+        Haibo Xu <haibo1.xu@intel.com>,
+        Andrew Jones <ajones@ventanamicro.com>,
+        Anup Patel <anup@brainfault.org>
+Cc:     kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1754; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=eN+xX6DmUW4iySUtNTiONSvtkTg9S6O6PBUBb147Eow=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlUlOqoiyBDrdYWAjOBCW2b9i4B4vofjjc4HPqvJKu
+ pAzk0t2JATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVJTqgAKCRAk1otyXVSH0OOZB/
+ 4nq6XYAh18ZoaB/hR7LIT1WSxn7QP6lJZvnPindbQDfDezh7DP8KYko76+qS1yOnYVD7AyD3n0m+dT
+ o++expDxd1wdBHAl6nt//u5job1n+Qj5MwdjGNnZAYVawCDaClBZxS4/uXwjVPko9cQBewoVJ9EtnR
+ Xj+IQ4rie8MlWrGzn5naoisp8SmVoBgA6kBPZ3rHSt5u0Mfj7vLa0R8ZZ6Tr55KTmBHgHwMwJ0fdiS
+ NNeOCE8hmr0QcBNWLgBTsjHla7lhykQ24dnpmt3psXPS32LgHpHyt4YPPWnksHlXU43KhjXO92br+K
+ mbfcGlrnrIjtbBjknJEfGwpH9G1Kl7
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume") was
-sent out on October 11th,, there was still a call to
-platform_set_drvdata() which would ensure that the driver private data
-structure could be used in bcm2835_pwm_{suspend,resume}.
+When we dynamically generate a name for a configuration in get-reg-list
+we use strcat() to append to a buffer allocated using malloc() but we
+never initialise that buffer. Since malloc() offers no guarantees
+regarding the contents of the memory it returns this can lead to us
+corrupting, and likely overflowing, the buffer:
 
-A cleanup now merged as commit commit 2ce7b7f6704c ("pwm: bcm2835:
-Simplify using devm functions") removed that call which would now cause
-a NPD in bcm2835_pwm_{suspend,resume} as a consequence.
+  vregs: PASS
+  vregs+pmu: PASS
+  sve: PASS
+  sve+pmu: PASS
+  vregs+pauth_address+pauth_generic: PASS
+  X�vr+gspauth_addre+spauth_generi+pmu: PASS
 
-Fixes: 119a508c4dc9 ("pwm: bcm2835: Add support for suspend/resume")
-Signed-off-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Initialise the buffer to an empty string to avoid this.
+
+Fixes: 2f9ace5d4557 ("KVM: arm64: selftests: get-reg-list: Introduce vcpu configs")
+Reviewed-by: Andrew Jones <ajones@ventanamicro.com>
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/pwm/pwm-bcm2835.c | 2 ++
- 1 file changed, 2 insertions(+)
+Changes in v3:
+- Rebase this bugfix onto v6.7-rc1
+- Link to v2: https://lore.kernel.org/r/20231017-kvm-get-reg-list-str-init-v2-1-ee30b1df3e50@kernel.org
 
-diff --git a/drivers/pwm/pwm-bcm2835.c b/drivers/pwm/pwm-bcm2835.c
-index 9777babd5b95..ab30667f4f95 100644
---- a/drivers/pwm/pwm-bcm2835.c
-+++ b/drivers/pwm/pwm-bcm2835.c
-@@ -155,6 +155,8 @@ static int bcm2835_pwm_probe(struct platform_device *pdev)
- 	pc->chip.ops = &bcm2835_pwm_ops;
- 	pc->chip.npwm = 2;
+Changes in v2:
+- Update Fixes: tag.
+- Link to v1: https://lore.kernel.org/r/20231013-kvm-get-reg-list-str-init-v1-1-034f370ff8ab@kernel.org
+---
+ tools/testing/selftests/kvm/get-reg-list.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/tools/testing/selftests/kvm/get-reg-list.c b/tools/testing/selftests/kvm/get-reg-list.c
+index be7bf5224434..dd62a6976c0d 100644
+--- a/tools/testing/selftests/kvm/get-reg-list.c
++++ b/tools/testing/selftests/kvm/get-reg-list.c
+@@ -67,6 +67,7 @@ static const char *config_name(struct vcpu_reg_list *c)
  
-+	platform_set_drvdata(pdev, pc);
-+
- 	ret = devm_pwmchip_add(&pdev->dev, &pc->chip);
- 	if (ret < 0)
- 		return dev_err_probe(&pdev->dev, ret,
+ 	c->name = malloc(len);
+ 
++	c->name[0] = '\0';
+ 	len = 0;
+ 	for_each_sublist(c, s) {
+ 		if (!strcmp(s->name, "base"))
+
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231012-kvm-get-reg-list-str-init-76c8ed4e19d6
+
+Best regards,
 -- 
-2.34.1
+Mark Brown <broonie@kernel.org>
 
