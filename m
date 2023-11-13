@@ -2,255 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BAAE7EA23A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:41:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D53C7EA23D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231462AbjKMRlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 12:41:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46878 "EHLO
+        id S230514AbjKMRm7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 12:42:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMRlt (ORCPT
+        with ESMTP id S229454AbjKMRm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 12:41:49 -0500
+        Mon, 13 Nov 2023 12:42:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8604910EC
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:41:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E0F11C433C8;
-        Mon, 13 Nov 2023 17:41:41 +0000 (UTC)
-Date:   Mon, 13 Nov 2023 17:41:39 +0000
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lorenzo Pieralisi <lpieralisi@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
-        ankita@nvidia.com, maz@kernel.org, oliver.upton@linux.dev,
-        aniketa@nvidia.com, cjia@nvidia.com, kwankhede@nvidia.com,
-        targupta@nvidia.com, vsethi@nvidia.com, acurrid@nvidia.com,
-        apopple@nvidia.com, jhubbard@nvidia.com, danw@nvidia.com,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 2/2] KVM: arm64: allow the VM to select DEVICE_* and
- NORMAL_NC for IO memory
-Message-ID: <ZVJf06MoJs9Ld75C@arm.com>
-References: <ZRKW6uDR/+eXYMzl@lpieralisi>
- <ZRLiDf204zCpO6Mv@arm.com>
- <ZR6IZwcFNw55asW0@lpieralisi>
- <20231012123541.GB11824@willie-the-truck>
- <ZSf6Ue09IO6QMBs1@arm.com>
- <20231012144807.GA12374@willie-the-truck>
- <ZSgsKSCv-zWgtWkm@arm.com>
- <20231013092934.GA13524@willie-the-truck>
- <ZSlBOiebenPKXBY4@arm.com>
- <ZUz78gFPgMupew+m@lpieralisi>
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D71810D0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:42:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B062C433C7;
+        Mon, 13 Nov 2023 17:42:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699897374;
+        bh=GvHsZwWFyBbOmgdMIiuY7KVvsqvi0xw6MBF+719M2QA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e6AuzKKHJ2Ee+MAoLNFYOfSTVlRJqRRy7P83lZ0W0mgnT1md6z4sfMqCO5TpkGyNk
+         2LjYo9bDA5C2BnBHycu/inlUZYnz9n/23175Fgkb9zgKsBzNqwRb3PF6Qr/FwLbh/9
+         anh7keseTiEBe3pxaPa9y+42Baz9zO+LEHTyw8Xq5F9Ma0+Roo6vKax2fLYi0AgQCc
+         8bxZfG8wG6Fi3q8UAVFPHhx9SBo8mYI8NyJjYzz/UH8MwgEHq2YQfprI1qHwKE7Omi
+         z+RkQS8IKT7zvYwKSbJBEcBmTmtWvMbXhaJoK6J+OCEusboGIoAYitMtRcDzLmZ7vb
+         QSa5F9LHG7f6Q==
+Date:   Mon, 13 Nov 2023 18:42:52 +0100
+From:   Christian Brauner <brauner@kernel.org>
+To:     Charles Mirabile <cmirabil@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        viro@zeniv.linux.org.uk, Seth Forshee <sforshee@kernel.org>
+Subject: Re: [PATCH v1 0/1] fs: Consider capabilities relative to namespace
+ for linkat permission check
+Message-ID: <20231113-undenkbar-gediegen-efde5f1c34bc@brauner>
+References: <20231110170615.2168372-1-cmirabil@redhat.com>
+ <20231112-bekriegen-branche-fbc86a9aaa5e@brauner>
+ <CABe3_aHqQPjePNPsCu2GEt_uX4dZ0WVrFBQH5p+LCFE9JQxq7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZUz78gFPgMupew+m@lpieralisi>
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABe3_aHqQPjePNPsCu2GEt_uX4dZ0WVrFBQH5p+LCFE9JQxq7w@mail.gmail.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On Sun, Nov 12, 2023 at 11:15:00PM -0500, Charles Mirabile wrote:
+> On Sun, Nov 12, 2023 at 3:14 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Fri, Nov 10, 2023 at 12:06:14PM -0500, Charles Mirabile wrote:
+> > > This is a one line change that makes `linkat` aware of namespaces when
+> > > checking for capabilities.
+> > >
+> > > As far as I can tell, the call to `capable` in this code dates back to
+> > > before the `ns_capable` function existed, so I don't think the author
+> > > specifically intended to prefer regular `capable` over `ns_capable`,
+> > > and no one has noticed or cared to change it yet... until now!
+> > >
+> > > It is already hard enough to use `linkat` to link temporarily files
+> > > into the filesystem without the `/proc` workaround, and when moving
+> > > a program that was working fine on bare metal into a container,
+> > > I got hung up on this additional snag due to the lack of namespace
+> > > awareness in `linkat`.
+> >
+> > I agree that it would be nice to relax this a bit to make this play
+> > nicer with containers.
+> >
+> > The current checks want to restrict scenarios where an application is
+> > able to create a hardlink for an arbitrary file descriptor it has
+> > received via e.g., SCM_RIGHTS or that it has inherited.
+> Makes sense.
+> >
+> > So we want to somehow get a good enough approximation to the question
+> > whether the caller would have been able to open the source file.
+> >
+> > When we check for CAP_DAC_READ_SEARCH in the caller's namespace we
+> > presuppose that the file is accessible in the current namespace and that
+> > CAP_DAC_READ_SEARCH would have been enough to open it. Both aren't
+> > necessarily true. Neither need the file be accessible, e.g., due to a
+> > chroot or pivot_root nor need CAP_DAC_READ_SEARCH be enough. For
+> > example, the file could be accessible in the caller's namespace but due
+> > to uid/gid mapping the {g,u}id of the file doesn't have a mapping in the
+> > caller's namespace. So that doesn't really cut it imho.
+> Good point.
+> >
+> > However, if we check for CAP_DAC_READ_SEARCH in the namespace the file
+> > was opened in that could work. We know that the file must've been
+> > accessible in the namespace the file was opened in and we
+> > know that the {g,u}id of the file must have been mapped in the namespace
+> > the file was opened in. So if we check that the caller does have
+> > CAP_DAC_READ_SEARCH in the opener's namespace we can approximate that
+> > the caller could've opened the file.
+> Would that be the namespace pointed to by `->f_cred->user_ns`  on the
+> struct file corresponding to the fd?
 
-Thanks for putting this together. It looks fine to me, just some general
-comments below.
+Yes.
 
-On Thu, Nov 09, 2023 at 04:34:10PM +0100, Lorenzo Pieralisi wrote:
-> Updated commit log (it might be [is] too verbose) below, it should probably
-> be moved into a documentation file but to do that I should decouple
-> it from this changeset (ie a document explaining memory attributes
-> and error containment for ARM64 - indipendent from KVM S2 defaults).
 > 
-> I'd also add a Link: to the lore archive entry for reference (did not
-> add it in the log below).
-> 
-> Please let me know what's the best option here.
+> If so is there a better way to surface that struct file for checking than this?
+> error=-ENOENT;
+> if(flags & AT_EMPTY_PATH && !old->name[0]) {
+>     struct file *file = fget(oldfd);
+>     bool capable = ns_capable(file->f_cred->user_ns, CAP_DAC_READ_SEARCH);
+>     fput(file);
+>     if(!capable)
+>         goto out_putnames;
 
-It would be good to have this under Documentation/arch/arm64/, though as
-a document at the end of the series describing what the new behaviour
-is, the kernel/KVM expectations (after the patches have been applied).
-We could even submit it separately once we agreed on how the series
-looks like.
+Two observations:
 
-> -- >8 --
-> Currently, KVM for ARM64 maps at stage 2 memory that is
-> considered device (ie it is not RAM) with DEVICE_nGnRE
-> memory attributes; this setting overrides (as per the ARM
-> architecture [1]) any device MMIO mapping present at stage
-> 1, resulting in a set-up whereby a guest operating system
-> can't determine device MMIO mapping memory attributes on its
-> own but it is always overriden by the KVM stage 2 default.
+(1) The current do_linkat() has a bug when the caller passes
+    AT_EMPTY_PATH with an absolute path. In that case getname_uflags()
+    will handle this fine and ignore AT_EMPTY_PATH but do_linkat() will
+    perform the capable() check even though the path isn't empty. 
+(2) io_uring uses do_linkat() but doesn't actually support AT_EMPTY_PATH
+    because it calls getname(), not getname_flags(). Maybe that's
+    intentional. In any case, it would need a separate patch for
+    io_uring to enable that functionality.
 
-To be fully correct, stage 1 and stage 2 attributes combine in a way
-that results in the more restrictive properties, so not a simple
-override. But to keep things simple, especially if this part only goes
-in the commit log, leave it as is.
+I think for your case you need something like the below where you bubble
+up whether the path is empty from getname_flags() and pass that to
+do_linkat() which can then perform the privilege check only for the case
+where the source path is actually empty. That will also fix (1).
 
-> This set-up does not allow guest operating systems to select
-> device memory attributes on a page by page basis independently
+(not even compile tested)
 
-Not sure it's even worth specifying "page by page". It just doesn't
-allow the guest to relax the device map memory attributes at all.
-
-> from KVM stage-2 mappings (refer to [1], "Combining stage 1 and stage
-> 2 memory type attributes"), which turns out to be an issue in that
-> guest operating systems (eg Linux) may request to map
-> devices MMIO regions with memory attributes that guarantee
-> better performance (eg gathering attribute - that for some
-> devices can generate larger PCIe memory writes TLPs)
-> and specific operations (eg unaligned transactions) such as
-> the NormalNC memory type.
-
-Another case is correct guest behaviour where it would not expect
-unaligned accesses from Normal NC mappings.
-
-> The default device stage 2 mapping was chosen in KVM
-> for ARM64 since it was considered safer (ie it would
-> not allow guests to trigger uncontained failures
-> ultimately crashing the machine) but this turned out
-> to be imprecise.
-
-s/imprecise/asynchronous (SError)/
-
-Another reason was probably that it matches the default VFIO mapping
-(though the latter is slightly stricter as in Device_nGnRnE).
-
-> Failures containability is a property of the platform
-> and is independent from the memory type used for MMIO
-> device memory mappings.
-> 
-> Actually, DEVICE_nGnRE memory type is even more problematic
-> than eg Normal-NC memory type in terms of faults containability
-> in that eg aborts triggered on DEVICE_nGnRE loads cannot be made,
-> architecturally, synchronous (ie that would imply that the processor
-> should issue at most 1 load transaction at a time - ie it can't pipeline
-> them - otherwise the synchronous abort semantics would break the
-> no-speculation attribute attached to DEVICE_XXX memory).
-> 
-> This means that regardless of the combined stage1+stage2 mappings a
-> platform is safe if and only if device transactions cannot trigger
-> uncontained failures and that in turn relies on platform
-> capabilities and the device type being assigned (ie PCIe AER/DPC
-> error containment and RAS architecture[3]); therefore the default
-> KVM device stage 2 memory attributes play no role in making device
-> assignment safer for a given platform (if the platform design
-> adheres to design guidelines outlined in [3]) and therefore can
-> be relaxed.
-> 
-> For all these reasons, relax the KVM stage 2 device
-> memory attributes from DEVICE_nGnRE to Normal-NC.
-
-I think this covers the safety aspect w.r.t. uncontained errors.
-
-> A different Normal memory type default at stage-2
-> (eg Normal Write-through) could have been chosen
-> instead of Normal-NC but Normal-NC was chosen
-> because:
-> 
-> - Its attributes are well-understood compared to
->   other Normal memory types for MMIO mappings
-
-Ideally we'd have gone for Device_GRE from a performance perspective but
-it doesn't support unaligned accesses. Basically at this stage we don't
-want cacheable accesses to MMIO until we gain a better understanding on
-what the impact would be.
-
-> - On systems implementing S2FWB (FEAT_S2FWB), that's the only sensible
->   default for normal memory types. For systems implementing
->   FEAT_S2FWB (see [1] D8.5.5 S2=stage-2 - S2 MemAttr[3:0]), the options
->   to choose the memory types are as follows:
-> 
->   if S2 MemAttr[2] == 0, the mapping defaults to DEVICE_XXX
->   (XXX determined by S2 MemAttr[1:0]). This is what we have
->   today (MemAttr[2:0] == 0b001) and therefore it is not described
->   any further.
-> 
->   if S2 MemAttr[2] == 1, there are the following options:
->  
->   S2 MemAttr[2:0] | Resulting mapping
->   -----------------------------------------------------------------------------
->   0b101           | Prevent the guest from selecting cachable memory type, it
-> 		  | allows it to choose Device-* or Normal-NC
->   0b110           | It forces write-back memory type; it breaks MMIO.
->   0b111           | Allow the VM to select any memory type including cachable.
-> 		  | It is unclear whether this is safe from a platform
-> 		  | perspective, especially wrt uncontained failures and
-> 		  | cacheability (eg device reclaim/reset and cache
-> 		  | maintenance).
->   ------------------------------------------------------------------------------
-> 
->   - For !FEAT_S2FWB systems, it is logical to choose a default S2 mapping
->     identical to FEAT_S2FWB (that basically would force Normal-NC, see
->     option S2 MemAttr[2:0] == 0b101 above), to guarantee a coherent approach
->     between the two
-
-Is this text only to say that we can't use write-through memory because
-with FEAT_S2FWB it is forced cacheable? I'd probably keep in simple and
-just state that we went for Normal NC to avoid cache
-allocation/snooping.
-
-It just crossed my mind, I think we also assume here that on platforms
-with transparent caches, Normal NC of MMIO won't be upgraded to
-cacheable (that's irrespective of KVM). This may need to be stated in
-some Arm BSA document (I'm not aware of any arch rules that prevent this
-from happening). AFAIK, platforms with transparent caches only do this
-for the memory ranges where the DRAM is expected.
-
-> Relaxing S2 KVM device MMIO mappings to Normal-NC is not expected to
-> trigger any issue on guest device reclaim use cases either (ie device
-> MMIO unmap followed by a device reset) at least for PCIe devices, in that
-> in PCIe a device reset is architected and carried out through PCI config
-> space transactions that are naturally ordered wrt MMIO transactions
-> according to the PCI ordering rules.
-
-We could state this in a doc that for device pass-through, there's an
-expectation that the device can be reclaimed along the lines of the PCIe
-reset behaviour. If one admin decides to allow device pass-through for
-some unsafe devices/platforms, it's their problem really. I don't think
-a Device_nGnRE mapping would help in those cases anyway.
-
-This could be expanded to Normal Cacheable at some point but KVM would
-have to do cache maintenance after unmapping the device from the guest
-(so let's leave this for a separate series).
-
-> Having Normal-NC S2 default puts guests in control (thanks to
-> stage1+stage2 combined memory attributes rules [1]) of device MMIO
-> regions memory mappings, according to the rules described in [1]
-> and summarized here ([(S1) - stage1], [(S2) - stage 2]):
-> 
-> S1	     |  S2	     | Result
-> NORMAL-WB    |  NORMAL-NC    | NORMAL-NC
-> NORMAL-WT    |  NORMAL-NC    | NORMAL-NC
-> NORMAL-NC    |  NORMAL-NC    | NORMAL-NC
-> DEVICE<attr> |  NORMAL-NC    | DEVICE<attr>
-> 
-> It is worth noting that currently, to map devices MMIO space to user
-> space in a device pass-through use case the VFIO framework applies memory
-> attributes derived from pgprot_noncached() settings applied to VMAs, which
-> result in device-nGnRnE memory attributes for the stage-1 VMM mappings.
-> 
-> This means that a userspace mapping for device MMIO space carried
-> out with the current VFIO framework and a guest OS mapping for the same
-> MMIO space may result in a mismatched alias as described in [2].
-> 
-> Defaulting KVM device stage-2 mappings to Normal-NC attributes does not change
-> anything in this respect, in that the mismatched aliases would only affect
-> (refer to [2] for a detailed explanation) ordering between the userspace and
-> GuestOS mappings resulting stream of transactions (ie it does not cause loss of
-> property for either stream of transactions on its own), which is harmless
-> given that the userspace and GuestOS access to the device is carried
-> out through independent transactions streams.
-
-I think this was a recent clarification from the architects (in private
-emails). My understanding for some time has been that the mere presence
-of a Normal alias would affect the semantics of the user (VMM) accesses
-to the Device mapping. Apparently, this only matters if there is some
-expected ordering between the user (VMM) access and the VM one with
-different aliases. I can't tell where the mismatched aliases rules state
-this but I haven't read them in a while.
-
+diff --git a/fs/internal.h b/fs/internal.h
+index 58e43341aebf..6d69d1a9d89e 100644
+--- a/fs/internal.h
++++ b/fs/internal.h
+@@ -61,7 +61,7 @@ int do_renameat2(int olddfd, struct filename *oldname, int newdfd,
+ int do_mkdirat(int dfd, struct filename *name, umode_t mode);
+ int do_symlinkat(struct filename *from, int newdfd, struct filename *to);
+ int do_linkat(int olddfd, struct filename *old, int newdfd,
+-			struct filename *new, int flags);
++			struct filename *new, int flags, bool is_empty);
+ 
+ /*
+  * namespace.c
+diff --git a/fs/namei.c b/fs/namei.c
+index 71c13b2990b4..acbadd0a0f74 100644
+--- a/fs/namei.c
++++ b/fs/namei.c
+@@ -4610,11 +4610,11 @@ EXPORT_SYMBOL(vfs_link);
+  * and other special files.  --ADM
+  */
+ int do_linkat(int olddfd, struct filename *old, int newdfd,
+-	      struct filename *new, int flags)
++	      struct filename *new, int flags, bool is_empty)
+ {
+ 	struct mnt_idmap *idmap;
+ 	struct dentry *new_dentry;
+-	struct path old_path, new_path;
++	struct path old_path, new_path, old_root;
+ 	struct inode *delegated_inode = NULL;
+ 	int how = 0;
+ 	int error;
+@@ -4623,22 +4623,38 @@ int do_linkat(int olddfd, struct filename *old, int newdfd,
+ 		error = -EINVAL;
+ 		goto out_putnames;
+ 	}
+-	/*
+-	 * To use null names we require CAP_DAC_READ_SEARCH
+-	 * This ensures that not everyone will be able to create
+-	 * handlink using the passed filedescriptor.
+-	 */
+-	if (flags & AT_EMPTY_PATH && !capable(CAP_DAC_READ_SEARCH)) {
+-		error = -ENOENT;
+-		goto out_putnames;
+-	}
+ 
+ 	if (flags & AT_SYMLINK_FOLLOW)
+ 		how |= LOOKUP_FOLLOW;
+ retry:
+-	error = filename_lookup(olddfd, old, how, &old_path, NULL);
+-	if (error)
+-		goto out_putnames;
++	if (is_empty) {
++		struct fd f;
++
++		f = fdget_raw(olddfd);
++		if (!f.file) {
++			error = -EBADF;
++			goto out_putnames;
++		}
++
++		/*
++		 * To use null names we require CAP_DAC_READ_SEARCH in the
++		 * opener's namespace to verify that the caller does have
++		 * privileges in the openers namespace. This restricts creating
++		 * hardlinks for arbitrary inherited or received file
++		 * descriptors.
++		 */
++		if (!ns_capable(f.file->f_cred->user_ns, CAP_DAC_READ_SEARCH)) {
++			fdput(f);
++			error = -ENOENT;
++			goto out_putnames;
++		}
++		old_root = f.file->f_path;
++		path_get(&old_root);
++		error = filename_lookup(olddfd, old, how, &old_path, &old_root);
++		path_put(&old_root);
++	} else {
++		error = filename_lookup(olddfd, old, how, &old_path, NULL);
++	}
+ 
+ 	new_dentry = filename_create(newdfd, new, &new_path,
+ 					(how & LOOKUP_REVAL));
+@@ -4684,13 +4700,17 @@ int do_linkat(int olddfd, struct filename *old, int newdfd,
+ SYSCALL_DEFINE5(linkat, int, olddfd, const char __user *, oldname,
+ 		int, newdfd, const char __user *, newname, int, flags)
+ {
+-	return do_linkat(olddfd, getname_uflags(oldname, flags),
+-		newdfd, getname(newname), flags);
++	int lflags = (flags & AT_EMPTY_PATH) ? LOOKUP_EMPTY : 0;
++	int is_empty = 0;
++	struct filename *ofilename = getname_flags(oldname, lflags, &is_empty);
++	return do_linkat(olddfd, ofilename, newdfd, getname(newname),
++			flags, is_empty);
+ }
+ 
+ SYSCALL_DEFINE2(link, const char __user *, oldname, const char __user *, newname)
+ {
+-	return do_linkat(AT_FDCWD, getname(oldname), AT_FDCWD, getname(newname), 0);
++	return do_linkat(AT_FDCWD, getname(oldname), AT_FDCWD,
++		getname(newname), 0, false);
+ }
+ 
+ /**
+diff --git a/io_uring/fs.c b/io_uring/fs.c
+index 08e3b175469c..a9e1e498001a 100644
+--- a/io_uring/fs.c
++++ b/io_uring/fs.c
+@@ -277,7 +277,7 @@ int io_linkat(struct io_kiocb *req, unsigned int issue_flags)
+ 	WARN_ON_ONCE(issue_flags & IO_URING_F_NONBLOCK);
+ 
+ 	ret = do_linkat(lnk->old_dfd, lnk->oldpath, lnk->new_dfd,
+-				lnk->newpath, lnk->flags);
++				lnk->newpath, lnk->flags, false);
+ 
+ 	req->flags &= ~REQ_F_NEED_CLEANUP;
+ 	io_req_set_res(req, ret, 0);
 -- 
-Catalin
+2.34.1
+
