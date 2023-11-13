@@ -2,104 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 352BF7EA15F
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:40:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D62427EA166
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:42:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231162AbjKMQku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:40:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53672 "EHLO
+        id S230139AbjKMQmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230192AbjKMQks (ORCPT
+        with ESMTP id S229454AbjKMQmM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:40:48 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0a-001ae601.pphosted.com [67.231.149.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27316D73;
-        Mon, 13 Nov 2023 08:40:45 -0800 (PST)
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3ADFOIcM019092;
-        Mon, 13 Nov 2023 10:40:36 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=PODMain02222019; bh=b
-        77U65NzPhkgOKHWlwkTamYPj/TOXrDCPIuZPvkXAr8=; b=jLartDMUDTXTK7sS6
-        fm93omS1OhekimiXA5nCpAISjucg604mgvCK7ZUyEgE+px2ai6Isel7PrisQD8pt
-        kMil41eUS964EUu3Tpc9H+qjiv4yBawG+A6/8qkHnB/MQ87FX6N2ua9kHmu/dj6D
-        aqS18dGmHS4KRoJIFuR5/h6DUMUcczU26kkoobzUTxTZ1wiurGUxGqNg2XG0eMQ9
-        5DqHlTNyOzO7qgv4P7hblv0wKTIho5RUlpBcQR8TExESMPJLeZ2m27WgLadx3Vbu
-        M9lABrTWY8nrma+MFsslZe/gn5681QUrMiZ6sk8WJ5u3mmJagtvhXHRLsDz+zz8y
-        gswyg==
-Received: from ediex01.ad.cirrus.com ([84.19.233.68])
-        by mx0a-001ae601.pphosted.com (PPS) with ESMTPS id 3ua7w2j53c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 13 Nov 2023 10:40:36 -0600 (CST)
-Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
- 2023 16:40:29 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
- Transport; Mon, 13 Nov 2023 16:40:29 +0000
-Received: from edi-sw-dsktp-006.ad.cirrus.com (edi-sw-dsktp-006.ad.cirrus.com [198.90.251.82])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4F98811A8;
-        Mon, 13 Nov 2023 16:40:29 +0000 (UTC)
-From:   Richard Fitzgerald <rf@opensource.cirrus.com>
-To:     <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
-        "Simon Trimmer" <simont@opensource.cirrus.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>
-Subject: [PATCH RESEND] ALSA: hda: cs35l56: Enable low-power hibernation mode on i2c
-Date:   Mon, 13 Nov 2023 16:40:29 +0000
-Message-ID: <20231113164029.1156669-1-rf@opensource.cirrus.com>
-X-Mailer: git-send-email 2.30.2
+        Mon, 13 Nov 2023 11:42:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3072310EC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:42:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A37C433C8;
+        Mon, 13 Nov 2023 16:42:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699893728;
+        bh=HqMXtrWSxjrCtdFd9atXD7V+Fi8AvvX+vHT85WZiBBc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QnPyGvSyT9ntR663bNXD5X30SvDQfzSECRWF8EldQveajlk47xSHlHgelt6tkCo/T
+         NWc8vlrrQtuxJSguZq6xliAmHd0V3tBpTj/TFzIBSWzL/76OIsxyRVoIQ7blZCUA1U
+         FMdalRP0D8ZXD5Ex+1FzvtTO2/B/dJUHE3Q6+ZTtgUBoTJe0WknV9wpnUQNsSyH9cB
+         w9Op67OljpQ44MYDz7Fx4Y2n36kKPveyptLlvQRANU5IWnFJj5WcZGClmBQq4iVrcx
+         Jrs6s8E0CVe5G4aWzcEhlUYWWc1IF5W/jue7JY9D2bj9klfHaA+uvYE6GNze/pojqN
+         kGU00h3RaHang==
+Date:   Mon, 13 Nov 2023 16:42:04 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        r-gunasekaran@ti.com, srk@ti.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/3] net: ethernet: am65-cpsw: Add standard
+ Ethernet MAC stats to ethtool
+Message-ID: <20231113164204.GB4482@kernel.org>
+References: <20231113110708.137379-1-rogerq@kernel.org>
+ <20231113110708.137379-2-rogerq@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: xPkX2Qqns_D4KVv73hnt8y1Hn9SBru9-
-X-Proofpoint-GUID: xPkX2Qqns_D4KVv73hnt8y1Hn9SBru9-
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113110708.137379-2-rogerq@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Simon Trimmer <simont@opensource.cirrus.com>
+On Mon, Nov 13, 2023 at 01:07:06PM +0200, Roger Quadros wrote:
+> Gets 'ethtool -S eth0 --groups eth-mac' command to work.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
+> ---
+>  drivers/net/ethernet/ti/am65-cpsw-ethtool.c | 26 +++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
+> index c51e2af91f69..ac7276f0f77a 100644
+> --- a/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
+> +++ b/drivers/net/ethernet/ti/am65-cpsw-ethtool.c
+> @@ -662,6 +662,31 @@ static void am65_cpsw_get_ethtool_stats(struct net_device *ndev,
+>  					hw_stats[i].offset);
+>  }
+>  
+> +static void am65_cpsw_get_eth_mac_stats(struct net_device *ndev,
+> +					struct ethtool_eth_mac_stats *s)
+> +{
+> +	struct am65_cpsw_port *port = am65_ndev_to_port(ndev);
+> +	struct am65_cpsw_stats_regs *stats;
 
-This can now be re-enabled as the sequence to reliably wake the device
-has been implemented in the shared ASoC code.
+Hi Roger,
 
-This has a functional dependency on commit 3df761bdbc8b
-("ASoC: cs35l56: Wake transactions need to be issued twice")
+I think that stats needs an __iomem annotation
+to address the issues flagged by Sparse.
 
-To protect against this, enabling hibernation is conditional on
-CS35L56_WAKE_HOLD_TIME_US being defined, which indicates that the new
-hibernation sequences are available.
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:671:15: warning: incorrect type in assignment (different address spaces)
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:671:15:    expected struct am65_cpsw_stats_regs *stats
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:671:15:    got void [noderef] __iomem *stat_base
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:673:34: warning: incorrect type in argument 1 (different address spaces)
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:673:34:    expected void const volatile [noderef] __iomem *addr
+drivers/net/ethernet/ti/am65-cpsw-ethtool.c:673:34:    got unsigned int *
+...
 
-Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
-Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
----
- sound/pci/hda/cs35l56_hda_i2c.c | 4 ++++
- 1 file changed, 4 insertions(+)
+> +
+> +	stats = port->stat_base;
+> +
+> +	s->FramesTransmittedOK = readl_relaxed(&stats->tx_good_frames);
+> +	s->SingleCollisionFrames = readl_relaxed(&stats->tx_single_coll_frames);
+> +	s->MultipleCollisionFrames = readl_relaxed(&stats->tx_mult_coll_frames);
+> +	s->FramesReceivedOK = readl_relaxed(&stats->rx_good_frames);
+> +	s->FrameCheckSequenceErrors = readl_relaxed(&stats->rx_crc_errors);
+> +	s->AlignmentErrors = readl_relaxed(&stats->rx_align_code_errors);
+> +	s->OctetsTransmittedOK = readl_relaxed(&stats->tx_octets);
+> +	s->FramesWithDeferredXmissions = readl_relaxed(&stats->tx_deferred_frames);
+> +	s->LateCollisions = readl_relaxed(&stats->tx_late_collisions);
+> +	s->CarrierSenseErrors = readl_relaxed(&stats->tx_carrier_sense_errors);
+> +	s->OctetsReceivedOK = readl_relaxed(&stats->rx_octets);
+> +	s->MulticastFramesXmittedOK = readl_relaxed(&stats->tx_multicast_frames);
+> +	s->BroadcastFramesXmittedOK = readl_relaxed(&stats->tx_broadcast_frames);
+> +	s->MulticastFramesReceivedOK = readl_relaxed(&stats->rx_multicast_frames);
+> +	s->BroadcastFramesReceivedOK = readl_relaxed(&stats->rx_broadcast_frames);
+> +};
+> +
+>  static int am65_cpsw_get_ethtool_ts_info(struct net_device *ndev,
+>  					 struct ethtool_ts_info *info)
+>  {
 
-diff --git a/sound/pci/hda/cs35l56_hda_i2c.c b/sound/pci/hda/cs35l56_hda_i2c.c
-index 757a4d193e0f..a9ef6d86de83 100644
---- a/sound/pci/hda/cs35l56_hda_i2c.c
-+++ b/sound/pci/hda/cs35l56_hda_i2c.c
-@@ -21,6 +21,10 @@ static int cs35l56_hda_i2c_probe(struct i2c_client *clt)
- 		return -ENOMEM;
- 
- 	cs35l56->base.dev = &clt->dev;
-+
-+#ifdef CS35L56_WAKE_HOLD_TIME_US
-+	cs35l56->base.can_hibernate = true;
-+#endif
- 	cs35l56->base.regmap = devm_regmap_init_i2c(clt, &cs35l56_regmap_i2c);
- 	if (IS_ERR(cs35l56->base.regmap)) {
- 		ret = PTR_ERR(cs35l56->base.regmap);
--- 
-2.30.2
-
+...
