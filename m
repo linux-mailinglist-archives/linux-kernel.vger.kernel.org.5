@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 262437EA61B
+	by mail.lfdr.de (Postfix) with ESMTP id 4C1847EA61C
 	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 23:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjKMWi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 17:38:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55350 "EHLO
+        id S230223AbjKMWih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 17:38:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMWi0 (ORCPT
+        with ESMTP id S229511AbjKMWig (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 17:38:26 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08E4410D0;
-        Mon, 13 Nov 2023 14:38:20 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 46A21E0003;
-        Mon, 13 Nov 2023 22:38:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699915099;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3sTxLeLc82mmht8wipjypAj1ei1WrsDVW9xRtHUoNb8=;
-        b=izQsON3R8/VUAZyRk+epXwsiLweP3Bpw71vvAYojUMF3F7jTw+Ky2q1kibsrT8uREh2CEk
-        gVavslBD7SoTts5jS/kypeEcwb+nuPXhK/Ydj2MuRUpHM09jY5AFkPTUfWj/rk+7g8e89U
-        Wo1M656A9vWP1z6snHrS8ttrdFx/4P6nZ/vMClnsA0cTaOdUFFXslhdJddrTRR4RND/OeZ
-        LwfiID/v+I8Mg6LBj+LzyiO/uONGY30AoGALF36JFGikMP1NDJ8nj+94dNZvxs2P1hZQX4
-        KuNrBF5MbbeORLBekO7SXGLuyFTacxgsIwER/7OkqGdwv7sa5Y9o4G2Da3nuIw==
-Date:   Mon, 13 Nov 2023 23:38:19 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-Cc:     Alessandro Zummo <a.zummo@towertech.it>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        alvin.zhuge@gmail.com, renzhamin@gmail.com, kelvie@kelvie.ca,
-        Raul Rangel <rrangel@google.com>
-Subject: Re: [PATCH] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
-Message-ID: <20231113223819fb469198@mail.local>
-References: <20231106162310.85711-1-mario.limonciello@amd.com>
- <CAHQZ30DP8ED4g3bib-tZ53rm2q2_ouEEL3TxD-SgK4YrCe3bew@mail.gmail.com>
- <d55a80f7-ca4d-406f-b2c8-b2bba45e3104@amd.com>
+        Mon, 13 Nov 2023 17:38:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B371738
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 14:38:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9939C433C7;
+        Mon, 13 Nov 2023 22:38:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699915112;
+        bh=OP3I7fpOVYpk/z9dNWNGPuMZiLtZS4ZdqSK6+IzmD2U=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=SVm0VlNumMuPkfY6BPByX96F51MOtPGk1twkJwdP1Ns2MVOGSc0AINj7/5JlJNvij
+         ZYzLEyCOLONmbcd+eOm1+NRR5C6tRNoXKPsMvtxc7D4tsbx7WrdcVQM1x/AzjUIXxg
+         P3wThId7CL2F4JfFiGcKJe/+mVgXTP29Fk8qFfy8wLtbcGrfEJ6SWLT6uF9iETJp0x
+         qo/zXXGBFia5UQGx/W9xw+yB+elvOMSHFJHUiAf+OnU7B86v6QUWHHcYICccoSRgpQ
+         d8u/48dHQTqbllD0ElOzkBHuqnaUHUPX0yHCqRAyttan0AOqdN2fD6an699vW6AY1Y
+         ADO3uaIcNAL+w==
+Date:   Mon, 13 Nov 2023 17:38:30 -0500
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     <mchan@broadcom.com>
+Cc:     <alexey.pakhunov@spacex.com>, <vincent.wong2@spacex.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <siva.kallam@broadcom.com>, <prashant@broadcom.com>
+Subject: Re: [PATCH v4 1/2] tg3: Move the [rt]x_dropped counters to tg3_napi
+Message-ID: <20231113173830.4c01d551@kernel.org>
+In-Reply-To: <20231113182350.37472-1-alexey.pakhunov@spacex.com>
+References: <20231113182350.37472-1-alexey.pakhunov@spacex.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d55a80f7-ca4d-406f-b2c8-b2bba45e3104@amd.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 13/11/2023 15:36:28-0600, Mario Limonciello wrote:
-> Now that the merge window is over, can this be picked up?
-> 
+On Mon, 13 Nov 2023 10:23:49 -0800 alexey.pakhunov@spacex.com wrote:
+> This change moves [rt]x_dropped counters to tg3_napi so that they can be
+> updated by a single writer, race-free.
 
-I'd be happy to invoice AMD so they get a quick response time.
-
-> All of those people who reported it have also reported on the matching
-> trackers that it helped their issue.
-> 
-> Thanks!
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Michael, do you have a preference on the using u64_stats_inc() ?
+Since we're only doing inc here the conversion should be pretty
+trivial. The semantics of local64 are a bit murky but looks like
+other drivers think that it's okay to use inc without
+u64_stats_update_begin() / end().
