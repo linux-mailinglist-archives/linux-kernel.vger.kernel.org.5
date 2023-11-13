@@ -2,151 +2,342 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83D467EA2BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 780A47EA1B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:13:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231351AbjKMSVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:21:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46560 "EHLO
+        id S231583AbjKMRNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 12:13:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKMSVE (ORCPT
+        with ESMTP id S230013AbjKMRNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:21:04 -0500
-Received: from smtp.inaport4.co.id (smtp.inaport4.co.id [103.219.76.6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41BD1702;
-        Mon, 13 Nov 2023 10:21:00 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id C4BD48191025;
-        Tue, 14 Nov 2023 01:12:55 +0800 (WITA)
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-1.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id FHpQyOOGNitC; Tue, 14 Nov 2023 01:12:55 +0800 (WITA)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id 1303C8191030;
-        Tue, 14 Nov 2023 01:12:53 +0800 (WITA)
-DKIM-Filter: OpenDKIM Filter v2.10.3 smtp.inaport4.co.id 1303C8191030
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inaport4.co.id;
-        s=67133E3A-D729-11EC-9A3E-209BEC03DFB2; t=1699895573;
-        bh=Jx3dcL/IIt9T0ZSV86Zqvxv64a59Mzb0LP9gkXXwYFY=;
-        h=Date:From:Message-ID:MIME-Version;
-        b=jFUNGTg+5T0Oq8RdaMqK2eEpmpDfdzALo9eQL6RP8K50Fp/bq4TAhfpTbfIBKzmi8
-         QqiD+RzVXVNezNELCZaSk9wDZSeF7t8fwzBtou6ATLuB8ypRjGGOzHzyOmQMHiSZf/
-         KtrRqZ82Z3CxLs1yVoU/FW9+at8aVhWR6AvgxqW4/RNImZ2kmUl5hOmzyxUWM9PrKu
-         HtiJCp2c3tqP17iGcw6XYqQ2AiSNuzkA6uHwXVjZfpTW6+BiCAL66VBJiKWOJE+xsA
-         YsHb/zSM9e2KvDG+gLrsOvuwxSkBZDVJWWRAk3vW2HqCLNHkX1qb2gpN0kqBUIEnV/
-         2xwogieTyuhbw==
-X-Amavis-Modified: Mail body modified (using disclaimer) -
-        mta-1.inaport4.co.id
-X-Virus-Scanned: amavisd-new at 
-Received: from smtp.inaport4.co.id ([127.0.0.1])
-        by localhost (mta-1.inaport4.co.id [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id WHCrlwGVkJL7; Tue, 14 Nov 2023 01:12:52 +0800 (WITA)
-Received: from mailstore.inaport4.co.id (mailstore.inaport4.co.id [172.10.1.75])
-        by smtp.inaport4.co.id (Postfix) with ESMTP id 65F54817991F;
-        Tue, 14 Nov 2023 01:12:47 +0800 (WITA)
-Date:   Tue, 14 Nov 2023 01:12:47 +0800 (WITA)
-From:   =?utf-8?B?0KHQuNGB0YLQtdC80L3Ri9C5INCw0LTQvNC40L3QuNGB0YLRgNCw0YLQvtGA?= 
-        <syafri@inaport4.co.id>
-Reply-To: sistemassadmins@mail2engineer.com
-Message-ID: <1627113012.368429.1699895567385.JavaMail.zimbra@inaport4.co.id>
-Subject: 
+        Mon, 13 Nov 2023 12:13:52 -0500
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A962199
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:13:48 -0800 (PST)
+Received: by mail-oo1-xc35.google.com with SMTP id 006d021491bc7-5845213c583so2508727eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:13:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699895628; x=1700500428; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qYChTnpPFyQsAZFL2ca0QpZFOLSiThhIqgcO8z+32Lg=;
+        b=RMZOTkE201HC/dtrHi3RTWo/imboidlimRvlXCxG7jkkIeYXNR76P2ifbw8ImdSl30
+         EwANNG7yRg0fCRNyE5nz2+YcqG3SxItwPw/cdZQDvJGudXZg08P3RMXh7QaGmCQMl1Dj
+         a0Qzrsar3BfXjOPGl3fjHPPIBC2QlymRqBaMjrZ2DAdrThopNB4EIbrhBopTKKWwNv4p
+         veQUO3dPKkpKV5k9+dXvpYrY72ZHEMmKNsuGy+fRkJJ/hHOrnkM5kGgTrmt9ZSq4Vh4f
+         2PGDTdS7975NjukoGwlu0AipfOaICDHEwnFj7vWRE59Lm4PVopONdkfm/EvQNLWmKRfj
+         fPeQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699895628; x=1700500428;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qYChTnpPFyQsAZFL2ca0QpZFOLSiThhIqgcO8z+32Lg=;
+        b=G2BIvW6rSlHJ59up7lEFM++tOpqMC1btpEYeTUtJT118Memk5A0y4lltWb97v+04Fn
+         LKhm9vCkiJWX+B9UMMRZGEYkZyA4DqFOmgX4A+SgV+L+Bf+sEBf5ddESaIf5RyRTFFbj
+         BphSrR2YzrrBhRNOvukO4aQRRFxlUgJm9TUicxI7EKL+9k1dumWtqcHWi0sDKiIkJfnD
+         SK/lVHON2GFMpWlzd7Nb6A637YvSq+kvietY6nLTupa8BH9WgHKFmR7SduG4OaVpwuUp
+         9ZPLSAjsfbkPzwnlHcbztUfFx/JsxuNczTdcB6yb37Ky+ElbTXAH4ECJoNLCt+48THb/
+         WGhQ==
+X-Gm-Message-State: AOJu0YwlrB7QdjlaheG+nU7+QZoIy+KwP84wetQtLr/vA4S1QBm52DMd
+        j29Mss52w/vkY7bV/8igclFziEEY0/WdKSW32vy5XOAkUzZ1nABk
+X-Google-Smtp-Source: AGHT+IGkldr0SEn/D9ImU8jzRlN0yagSNzdqwO/U36Itv8CCrRD60NlNW7iTrYzCPyFg98WXhCvv84qp8yeUxsCflbQ=
+X-Received: by 2002:a05:6359:278e:b0:16b:c3ef:6045 with SMTP id
+ ly14-20020a056359278e00b0016bc3ef6045mr7160414rwb.0.1699895627919; Mon, 13
+ Nov 2023 09:13:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-X-Mailer: Zimbra 8.8.8_GA_3025 (zclient/8.8.8_GA_3025)
-Thread-Index: cJOPsQ4WSKf7fHVLCynZBooRBgO6aA==
-Thread-Topic: 
+References: <20231108102755.93079-1-jens.wiklander@linaro.org>
+ <20231108102755.93079-2-jens.wiklander@linaro.org> <CAFA6WYPqkRdGc6R6Q=w0YJ=SN9FvQ48qDEc6d05gOyyV6x066g@mail.gmail.com>
+In-Reply-To: <CAFA6WYPqkRdGc6R6Q=w0YJ=SN9FvQ48qDEc6d05gOyyV6x066g@mail.gmail.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Mon, 13 Nov 2023 18:13:36 +0100
+Message-ID: <CAHUa44F_WUuL+B5oFC=9rHrYZJ0P_LuPWK9SxjvQuY9nRd-tCA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] optee: add page list to kernel private shared memory
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Shyam Saini <shyamsaini@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: Yes, score=5.3 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FORGED_REPLYTO,
-        MISSING_HEADERS,RCVD_IN_DNSWL_BLOCKED,REPLYTO_WITHOUT_TO_CC,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [103.219.76.6 listed in list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4745]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  1.0 MISSING_HEADERS Missing To: header
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  1.6 REPLYTO_WITHOUT_TO_CC No description available.
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.1 FREEMAIL_FORGED_REPLYTO Freemail in Reply-To, but not From
-X-Spam-Level: *****
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=D0=92=D0=9D=D0=98=D0=9C=D0=90=D0=9D=D0=98=D0=95;
+Hi Sumit,
 
-=D0=92=D0=B0=D1=88 =D0=BF=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D1=8B=D0=B9 =D1=8F=
-=D1=89=D0=B8=D0=BA =D0=BF=D1=80=D0=B5=D0=B2=D1=8B=D1=81=D0=B8=D0=BB =D0=BE=
-=D0=B3=D1=80=D0=B0=D0=BD=D0=B8=D1=87=D0=B5=D0=BD=D0=B8=D0=B5 =D1=85=D1=80=
-=D0=B0=D0=BD=D0=B8=D0=BB=D0=B8=D1=89=D0=B0, =D0=BA=D0=BE=D1=82=D0=BE=D1=80=
-=D0=BE=D0=B5 =D1=81=D0=BE=D1=81=D1=82=D0=B0=D0=B2=D0=BB=D1=8F=D0=B5=D1=82=
- 5 =D0=93=D0=91, =D0=BA=D0=B0=D0=BA =D0=BE=D0=BF=D1=80=D0=B5=D0=B4=D0=B5=D0=
-=BB=D0=B5=D0=BD=D0=BE =D0=B0=D0=B4=D0=BC=D0=B8=D0=BD=D0=B8=D1=81=D1=82=D1=
-=80=D0=B0=D1=82=D0=BE=D1=80=D0=BE=D0=BC, =D0=BA=D0=BE=D1=82=D0=BE=D1=80=D1=
-=8B=D0=B9 =D0=B2 =D0=BD=D0=B0=D1=81=D1=82=D0=BE=D1=8F=D1=89=D0=B5=D0=B5 =D0=
-=B2=D1=80=D0=B5=D0=BC=D1=8F =D1=80=D0=B0=D0=B1=D0=BE=D1=82=D0=B0=D0=B5=D1=
-=82 =D0=BD=D0=B0 10,9 =D0=93=D0=91, =D0=B2=D1=8B =D0=BD=D0=B5 =D1=81=D0=BC=
-=D0=BE=D0=B6=D0=B5=D1=82=D0=B5 =D0=BE=D1=82=D0=BF=D1=80=D0=B0=D0=B2=D0=BB=
-=D1=8F=D1=82=D1=8C =D0=B8=D0=BB=D0=B8 =D0=BF=D0=BE=D0=BB=D1=83=D1=87=D0=B0=
-=D1=82=D1=8C =D0=BD=D0=BE=D0=B2=D1=83=D1=8E =D0=BF=D0=BE=D1=87=D1=82=D1=83=
- =D0=B4=D0=BE =D1=82=D0=B5=D1=85 =D0=BF=D0=BE=D1=80, =D0=BF=D0=BE=D0=BA=D0=
-=B0 =D0=BD=D0=B5 =D0=BF=D1=80=D0=BE=D0=B2=D0=B5=D1=80=D0=B8=D1=82=D0=B5 =D0=
-=BF=D0=BE=D1=87=D1=82=D1=83 =D0=BF=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D0=BE=D0=
-=B3=D0=BE =D1=8F=D1=89=D0=B8=D0=BA=D0=B0 =D0=BF=D0=BE=D0=B2=D1=82=D0=BE=D1=
-=80=D0=BD=D0=BE. =D0=A7=D1=82=D0=BE=D0=B1=D1=8B =D0=BF=D0=BE=D0=B2=D1=82=D0=
-=BE=D1=80=D0=BD=D0=BE =D0=BF=D1=80=D0=BE=D0=B2=D0=B5=D1=80=D0=B8=D1=82=D1=
-=8C =D1=81=D0=B2=D0=BE=D0=B9 =D0=BF=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D1=8B=D0=
-=B9 =D1=8F=D1=89=D0=B8=D0=BA, =D0=BE=D1=82=D0=BF=D1=80=D0=B0=D0=B2=D1=8C=D1=
-=82=D0=B5 =D1=81=D0=BB=D0=B5=D0=B4=D1=83=D1=8E=D1=89=D1=83=D1=8E =D0=B8=D0=
-=BD=D1=84=D0=BE=D1=80=D0=BC=D0=B0=D1=86=D0=B8=D1=8E =D0=BD=D0=B8=D0=B6=D0=
-=B5:
+On Fri, Nov 10, 2023 at 3:36=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org> =
+wrote:
+>
+> Hi Jens,
+>
+> On Wed, 8 Nov 2023 at 15:57, Jens Wiklander <jens.wiklander@linaro.org> w=
+rote:
+> >
+> > Until now has kernel private shared memory allocated as dynamic shared
+> > memory (not from the static shared memory pool) been returned without a
+> > list of physical pages on allocations via RPC. To support allocations
+> > larger than one page add a list of physical pages for all allocations
+> > larger than one page.
+> >
+> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
+> > ---
+> >  drivers/tee/optee/core.c    | 40 +++++++++++++++++++++++++--------
+> >  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
+> >  2 files changed, 52 insertions(+), 33 deletions(-)
+> >
+> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> > index 2a258bd3b6b5..a425eca0173d 100644
+> > --- a/drivers/tee/optee/core.c
+> > +++ b/drivers/tee/optee/core.c
+> > @@ -27,6 +27,7 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *p=
+ool, struct tee_shm *shm,
+> >                                                    unsigned long start)=
+)
+> >  {
+> >         unsigned int order =3D get_order(size);
+> > +       unsigned int nr_pages =3D 1 << order;
+> >         struct page *page;
+> >         int rc =3D 0;
+> >
+> > @@ -39,12 +40,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool =
+*pool, struct tee_shm *shm,
+> >                 return -ENOMEM;
+> >
+> >         shm->kaddr =3D page_address(page);
+> > -       shm->paddr =3D page_to_phys(page);
+> >         shm->size =3D PAGE_SIZE << order;
+> >
+> > -       if (shm_register) {
+> > -               unsigned int nr_pages =3D 1 << order, i;
+> > +       /*
+> > +        * If memory is registered immediately use a temporary page lis=
+t
+> > +        * and free it directly after the registration is completed.
+> > +        *
+> > +        * Else, if we have allocated more than one page store a page
+> > +        * list in the struct tee_shm.
+> > +        *
+> > +        * Else, store the physical address of the single page that was
+> > +        * allocated.
+> > +        *
+> > +        * optee_pool_op_free_helper() is responsible for freeing the
+> > +        * resourses allocated in this function.
+> > +        */
+>
+> It looks a bit complex to me. Do we really need it to be conditional?
+> I was thinking if we can simplify this API as follows:
+>
+> int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm =
+*shm,
+>                                size_t size, size_t align,
+>                                int (*shm_register)(struct tee_shm *shm))
+> {
+>         unsigned int order =3D get_order(size);
+>         unsigned int nr_pages =3D 1 << order, i;
+>         struct page **pages;
+>         struct page *page;
+>         int rc =3D 0;
+>
+>         /*
+>          * Ignore alignment since this is already going to be page aligne=
+d
+>          * and there's no need for any larger alignment.
+>          */
+>         page =3D alloc_pages(GFP_KERNEL | __GFP_ZERO, order);
+>         if (!page)
+>                 return -ENOMEM;
+>
+>         shm->kaddr =3D page_address(page);
+>         shm->paddr =3D page_to_phys(page);
+>         shm->size =3D PAGE_SIZE << order;
+>
+>         pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+>         if (!pages) {
+>                 rc =3D -ENOMEM;
+>                 goto err;
+>         }
+>
+>         for (i =3D 0; i < nr_pages; i++)
+>                 pages[i] =3D page + i;
+>
+>         shm->pages =3D pages;
+>         shm->num_pages =3D nr_pages;
+>
+>         if (shm_register) {
+>                 rc =3D shm_register(shm);
+>                 if (rc)
+>                         goto err;
+>         }
+>
+>         return 0;
+>
+> err:
+>         kfree(pages);
+>         free_pages((unsigned long)shm->kaddr, order);
+>         return rc;
+> }
 
-=D0=B8=D0=BC=D1=8F:
-=D0=98=D0=BC=D1=8F =D0=BF=D0=BE=D0=BB=D1=8C=D0=B7=D0=BE=D0=B2=D0=B0=D1=82=
-=D0=B5=D0=BB=D1=8F:
-=D0=BF=D0=B0=D1=80=D0=BE=D0=BB=D1=8C:
-=D0=9F=D0=BE=D0=B4=D1=82=D0=B2=D0=B5=D1=80=D0=B4=D0=B8=D1=82=D0=B5 =D0=BF=
-=D0=B0=D1=80=D0=BE=D0=BB=D1=8C:
-=D0=AD=D0=BB=D0=B5=D0=BA=D1=82=D1=80=D0=BE=D0=BD=D0=BD=D0=B0=D1=8F =D0=BF=
-=D0=BE=D1=87=D1=82=D0=B0:
-=D0=A2=D0=B5=D0=BB=D0=B5=D1=84=D0=BE=D0=BD:
+Good idea, I'll try it in the v3.
 
-=D0=95=D1=81=D0=BB=D0=B8 =D0=B2=D1=8B =D0=BD=D0=B5 =D0=BC=D0=BE=D0=B6=D0=B5=
-=D1=82=D0=B5 =D0=BF=D0=BE=D0=B2=D1=82=D0=BE=D1=80=D0=BD=D0=BE =D0=BF=D1=80=
-=D0=BE=D0=B2=D0=B5=D1=80=D0=B8=D1=82=D1=8C =D1=81=D0=B2=D0=BE=D0=B9 =D0=BF=
-=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D1=8B=D0=B9 =D1=8F=D1=89=D0=B8=D0=BA, =D0=B2=
-=D0=B0=D1=88 =D0=BF=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D1=8B=D0=B9 =D1=8F=D1=89=
-=D0=B8=D0=BA =D0=B1=D1=83=D0=B4=D0=B5=D1=82 =D0=BE=D1=82=D0=BA=D0=BB=D1=8E=
-=D1=87=D0=B5=D0=BD!
+Thanks,
+Jens
 
-=D0=9F=D1=80=D0=B8=D0=BD=D0=BE=D1=81=D0=B8=D0=BC =D0=B8=D0=B7=D0=B2=D0=B8=
-=D0=BD=D0=B5=D0=BD=D0=B8=D1=8F =D0=B7=D0=B0 =D0=BD=D0=B5=D1=83=D0=B4=D0=BE=
-=D0=B1=D1=81=D1=82=D0=B2=D0=B0.
-=D0=9F=D1=80=D0=BE=D0=B2=D0=B5=D1=80=D0=BE=D1=87=D0=BD=D1=8B=D0=B9 =D0=BA=
-=D0=BE=D0=B4: en: WEB. =D0=90=D0=94=D0=9C=D0=98=D0=9D=D0=98=D0=A1=D0=A2=D0=
-=A0=D0=90=D0=A2=D0=9E=D0=A0=D0=90. RU006,524765 @2023
-=D0=9F=D0=BE=D1=87=D1=82=D0=BE=D0=B2=D0=B0=D1=8F =D1=82=D0=B5=D1=85=D0=BD=
-=D0=B8=D1=87=D0=B5=D1=81=D0=BA=D0=B0=D1=8F =D0=BF=D0=BE=D0=B4=D0=B4=D0=B5=
-=D1=80=D0=B6=D0=BA=D0=B0 @2023
-
-=D0=A1=D0=BF=D0=B0=D1=81=D0=B8=D0=B1=D0=BE
-=D0=A1=D0=B8=D1=81=D1=82=D0=B5=D0=BC=D0=BD=D1=8B=D0=B9 =D0=B0=D0=B4=D0=BC=
-=D0=B8=D0=BD=D0=B8=D1=81=D1=82=D1=80=D0=B0=D1=82=D0=BE=D1=80.
-
-
+>
+> -Sumit
+>
+> > +       if (shm_register || nr_pages > 1) {
+> >                 struct page **pages;
+> > +               unsigned int i;
+> >
+> >                 pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL)=
+;
+> >                 if (!pages) {
+> > @@ -55,17 +68,24 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool =
+*pool, struct tee_shm *shm,
+> >                 for (i =3D 0; i < nr_pages; i++)
+> >                         pages[i] =3D page + i;
+> >
+> > -               rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
+> > -                                 (unsigned long)shm->kaddr);
+> > -               kfree(pages);
+> > -               if (rc)
+> > -                       goto err;
+> > +               if (shm_register) {
+> > +                       rc =3D shm_register(shm->ctx, shm, pages, nr_pa=
+ges,
+> > +                                         (unsigned long)shm->kaddr);
+> > +                       kfree(pages);
+> > +                       if (rc)
+> > +                               goto err;
+> > +               } else {
+> > +                       shm->pages =3D pages;
+> > +                       shm->num_pages =3D nr_pages;
+> > +               }
+> > +       } else {
+> > +               shm->paddr =3D page_to_phys(page);
+> >         }
+> >
+> >         return 0;
+> > -
+> >  err:
+> >         free_pages((unsigned long)shm->kaddr, order);
+> > +       shm->kaddr =3D NULL;
+> >         return rc;
+> >  }
+> >
+> > @@ -77,6 +97,8 @@ void optee_pool_op_free_helper(struct tee_shm_pool *p=
+ool, struct tee_shm *shm,
+> >                 shm_unregister(shm->ctx, shm);
+> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+> >         shm->kaddr =3D NULL;
+> > +       kfree(shm->pages);
+> > +       shm->pages =3D NULL;
+> >  }
+> >
+> >  static void optee_bus_scan(struct work_struct *work)
+> > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+> > index d5b28fd35d66..b69410c7cc0a 100644
+> > --- a/drivers/tee/optee/smc_abi.c
+> > +++ b/drivers/tee/optee/smc_abi.c
+> > @@ -678,10 +678,11 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
+tee_context *ctx,
+> >                                           struct optee_msg_arg *arg,
+> >                                           struct optee_call_ctx *call_c=
+tx)
+> >  {
+> > -       phys_addr_t pa;
+> >         struct tee_shm *shm;
+> >         size_t sz;
+> >         size_t n;
+> > +       struct page **pages;
+> > +       size_t page_count;
+> >
+> >         arg->ret_origin =3D TEEC_ORIGIN_COMMS;
+> >
+> > @@ -716,32 +717,23 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
+tee_context *ctx,
+> >                 return;
+> >         }
+> >
+> > -       if (tee_shm_get_pa(shm, 0, &pa)) {
+> > -               arg->ret =3D TEEC_ERROR_BAD_PARAMETERS;
+> > -               goto bad;
+> > -       }
+> > -
+> > -       sz =3D tee_shm_get_size(shm);
+> > -
+> > -       if (tee_shm_is_dynamic(shm)) {
+> > -               struct page **pages;
+> > +       /*
+> > +        * If there are pages it's dynamically allocated shared memory =
+(not
+> > +        * from the reserved shared memory pool) and needs to be
+> > +        * registered.
+> > +        */
+> > +       pages =3D tee_shm_get_pages(shm, &page_count);
+> > +       if (pages) {
+> >                 u64 *pages_list;
+> > -               size_t page_num;
+> > -
+> > -               pages =3D tee_shm_get_pages(shm, &page_num);
+> > -               if (!pages || !page_num) {
+> > -                       arg->ret =3D TEEC_ERROR_OUT_OF_MEMORY;
+> > -                       goto bad;
+> > -               }
+> >
+> > -               pages_list =3D optee_allocate_pages_list(page_num);
+> > +               pages_list =3D optee_allocate_pages_list(page_count);
+> >                 if (!pages_list) {
+> >                         arg->ret =3D TEEC_ERROR_OUT_OF_MEMORY;
+> >                         goto bad;
+> >                 }
+> >
+> >                 call_ctx->pages_list =3D pages_list;
+> > -               call_ctx->num_entries =3D page_num;
+> > +               call_ctx->num_entries =3D page_count;
+> >
+> >                 arg->params[0].attr =3D OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT=
+ |
+> >                                       OPTEE_MSG_ATTR_NONCONTIG;
+> > @@ -752,17 +744,22 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
+tee_context *ctx,
+> >                 arg->params[0].u.tmem.buf_ptr =3D virt_to_phys(pages_li=
+st) |
+> >                         (tee_shm_get_page_offset(shm) &
+> >                          (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+> > -               arg->params[0].u.tmem.size =3D tee_shm_get_size(shm);
+> > -               arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
+> >
+> > -               optee_fill_pages_list(pages_list, pages, page_num,
+> > +               optee_fill_pages_list(pages_list, pages, page_count,
+> >                                       tee_shm_get_page_offset(shm));
+> >         } else {
+> > +               phys_addr_t pa;
+> > +
+> > +               if (tee_shm_get_pa(shm, 0, &pa)) {
+> > +                       arg->ret =3D TEEC_ERROR_BAD_PARAMETERS;
+> > +                       goto bad;
+> > +               }
+> > +
+> >                 arg->params[0].attr =3D OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT=
+;
+> >                 arg->params[0].u.tmem.buf_ptr =3D pa;
+> > -               arg->params[0].u.tmem.size =3D sz;
+> > -               arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
+> >         }
+> > +       arg->params[0].u.tmem.size =3D tee_shm_get_size(shm);
+> > +       arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
+> >
+> >         arg->ret =3D TEEC_SUCCESS;
+> >         return;
+> > --
+> > 2.34.1
+> >
