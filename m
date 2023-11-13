@@ -2,71 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 69C407E9DCA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3FEE7E9DCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230322AbjKMNub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44946 "EHLO
+        id S230422AbjKMNuz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:50:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbjKMNua (ORCPT
+        with ESMTP id S229549AbjKMNux (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:50:30 -0500
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 424CFD4D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:50:27 -0800 (PST)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5afbdbf3a19so51018357b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:50:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699883426; x=1700488226; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3XpqZBrmzhIxQHZe4Z2kGptUvFXh+Fzs3fll/Ehi74k=;
-        b=Lt2/ewbByVxhjHp3mnVuNBOWvDiJe05gtia1NiTTKMawB95jOgUDxHQK5+AC10TxAK
-         Mf4lL+xTqjrPl8sUuCNNXL8IbeBnaODOZFbotEr6tw4O/p7LKOj4HwfXHyhIDYe+x3V9
-         ggCWonZKmpZDCR4nQRP2bMcx3tSWHmmWO9Vx37Hnxqvm3lMSiC2sou7SfQj+7ncHVl4U
-         G0w8VCy0N9/51ouVp61QcjQkTU6eSXJtOhDZewecPw9d1SsAXekhIWgKrbkJOO1ISwPS
-         fF/FWeSPxVDH2gMCSMYPZ7vgn/KDH34sH95NcuRpHI48rPkFC6Ui0gr8G0vC/8I8vlrn
-         xffQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699883426; x=1700488226;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3XpqZBrmzhIxQHZe4Z2kGptUvFXh+Fzs3fll/Ehi74k=;
-        b=vRrW/x54IdbgJ52j30IFLEWEfHRrfB9Fkvs5TYAzCsVwvr3ZjP/Bdt3dPNkaRTjXbd
-         T/qtVCGvjl563eKx2B//t1Jcg1bP0Mv/3ilk5EK0ZpPewyUoVoFQw0bZYoUA3AD6Ga99
-         u2KVDzaQexSIIzl3AAvXbUaa9it6/JDL4Chl4xFJyjlCIMfmMBPeUH3+NQ6eGdrIkxex
-         xyWFXOvm5wunz2lbd79FkXC4JhoHsEkvDxK0wQw7D8ETdSsfFeVG9GuqtiF7jiHtFB4c
-         fK0mr+z+MmyJY76+vhsdtMFh+mXMHNCJy+eoraxvgpNvCTgie4IL4jioGaE1UtuAUwEx
-         da+A==
-X-Gm-Message-State: AOJu0YxbE7uDMPSTshtWFyd4R2kJgaJJIAulcmXQ/xObDjjoXh0kbR0U
-        vHPXeCk2k0apgeb3nJmBLnye8mSku3vd0m51tt5/yw==
-X-Google-Smtp-Source: AGHT+IFarUwhs2XDViHk17NHkYuv+lnEMn0mJh0GEylRpU9AvpwYrjP2mMg8FfOr2np0Ga+Kpf67nCtk7qKvkLe4PmY=
-X-Received: by 2002:a0d:ebc9:0:b0:5a8:dbb1:f73b with SMTP id
- u192-20020a0debc9000000b005a8dbb1f73bmr7536343ywe.14.1699883426199; Mon, 13
- Nov 2023 05:50:26 -0800 (PST)
+        Mon, 13 Nov 2023 08:50:53 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F03AD53
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:50:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBB04C433C7;
+        Mon, 13 Nov 2023 13:50:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699883450;
+        bh=WwbCN114QiP0MlzJD2sfEH3eE1j43I2qgLo7i+dL0oM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pBcX2G4QpFuzkUw+JPFg6UnLmIlTopw4x8DNRWIOX1NLF6olH5z/k6PoX/+bJKR/F
+         tV1xtPVI2+fXG7Pv1NzDzVt9fb/vbF8GfCXvgG6FRXK9OHjk8XBtFt7QuXpwqjuFaj
+         J0qQ3sHlhc2jGPbGiUcLgsdxP+tLl04HRs173VPI3KCtUZrpIQbEk0FsxMRtQ/7uPd
+         FZMHD3UdOUyauWqFoDtkHQyMAzwFXwEK8H2NrV47w3mJ9tl2tj12TFYZOg9NhMxLcl
+         r6V7LC5Za/wHKjMKhp0N43PV090Va8UG5JcytghrWM8fF0sd42fY3jyNIJC5nXmLTr
+         Jiq5SRm6kjp0A==
+Date:   Mon, 13 Nov 2023 13:50:47 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] dt-bindings: gpu: samsung: re-order entries to match
+ coding convention
+Message-ID: <20231113-tweet-batboy-c2867f2ceeee@squawk>
+References: <20231112184403.3449-1-krzysztof.kozlowski@linaro.org>
+ <20231112184403.3449-2-krzysztof.kozlowski@linaro.org>
 MIME-Version: 1.0
-References: <20230908055146.18347-1-Linhua.xu@unisoc.com> <20230908055146.18347-3-Linhua.xu@unisoc.com>
-In-Reply-To: <20230908055146.18347-3-Linhua.xu@unisoc.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Mon, 13 Nov 2023 14:50:15 +0100
-Message-ID: <CACRpkdYkAcHvvTNj1=n_ds0u=gdaa7Ln=t8dw8jJjO+hSb6HGA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/6] pinctrl: sprd: Fix the incorrect mask and shift definition
-To:     Linhua Xu <Linhua.xu@unisoc.com>
-Cc:     Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        lh xu <xulh0829@gmail.com>,
-        Zhirong Qiu <zhirong.qiu@unisoc.com>,
-        Xiongpeng Wu <xiongpeng.wu@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="YTvCgQf37/RkS4VO"
+Content-Disposition: inline
+In-Reply-To: <20231112184403.3449-2-krzysztof.kozlowski@linaro.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,21 +61,196 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Sep 8, 2023 at 7:52=E2=80=AFAM Linhua Xu <Linhua.xu@unisoc.com> wro=
-te:
 
-> From: Linhua Xu <Linhua.Xu@unisoc.com>
->
-> Pull-up and pull-down are mutually exclusive. When setting one of them,
-> the bit of the other needs to be clear. Now, there are cases where pull-u=
-p
-> and pull-down are set at the same time in the code, thus fix them.
->
-> Signed-off-by: Linhua Xu <Linhua.Xu@unisoc.com>
+--YTvCgQf37/RkS4VO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'm uncertain what to do with this patch because it fixes something
-while there are unaddressed review comments, I think we need
-some more discussion here?
+On Sun, Nov 12, 2023 at 07:44:00PM +0100, Krzysztof Kozlowski wrote:
+> The Devicetree bindings coding convention, as used in most of the files
+> and expressed in Documentation/devicetree/bindings/example-schema.yaml,
+> expects "allOf:" block with if-statements after "required:" block.
+>=20
+> Re-order few schemas to match the convention to avoid repeating review
+> comments for new patches using existing code as template.  No functional
+> changes.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Yours,
-Linus Walleij
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+thanks,
+Conor,
+
+> ---
+>  .../devicetree/bindings/gpu/samsung-g2d.yaml  | 53 +++++++++--------
+>  .../bindings/gpu/samsung-scaler.yaml          | 59 +++++++++----------
+>  2 files changed, 56 insertions(+), 56 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/gpu/samsung-g2d.yaml b/Doc=
+umentation/devicetree/bindings/gpu/samsung-g2d.yaml
+> index e7daae862578..b6951acc7643 100644
+> --- a/Documentation/devicetree/bindings/gpu/samsung-g2d.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/samsung-g2d.yaml
+> @@ -27,32 +27,6 @@ properties:
+>    iommus: {}
+>    power-domains: {}
+> =20
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        const: samsung,exynos5250-g2d
+> -
+> -then:
+> -  properties:
+> -    clocks:
+> -      items:
+> -        - description: fimg2d clock
+> -    clock-names:
+> -      items:
+> -        - const: fimg2d
+> -
+> -else:
+> -  properties:
+> -    clocks:
+> -      items:
+> -        - description: sclk_fimg2d clock
+> -        - description: fimg2d clock
+> -    clock-names:
+> -      items:
+> -        - const: sclk_fimg2d
+> -        - const: fimg2d
+> -
+>  required:
+>    - compatible
+>    - reg
+> @@ -60,6 +34,33 @@ required:
+>    - clocks
+>    - clock-names
+> =20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: samsung,exynos5250-g2d
+> +
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: fimg2d clock
+> +        clock-names:
+> +          items:
+> +            - const: fimg2d
+> +
+> +    else:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: sclk_fimg2d clock
+> +            - description: fimg2d clock
+> +        clock-names:
+> +          items:
+> +            - const: sclk_fimg2d
+> +            - const: fimg2d
+> +
+>  additionalProperties: false
+> =20
+>  examples:
+> diff --git a/Documentation/devicetree/bindings/gpu/samsung-scaler.yaml b/=
+Documentation/devicetree/bindings/gpu/samsung-scaler.yaml
+> index 5317ac64426a..97d86a002a90 100644
+> --- a/Documentation/devicetree/bindings/gpu/samsung-scaler.yaml
+> +++ b/Documentation/devicetree/bindings/gpu/samsung-scaler.yaml
+> @@ -26,36 +26,6 @@ properties:
+>    iommus: {}
+>    power-domains: {}
+> =20
+> -if:
+> -  properties:
+> -    compatible:
+> -      contains:
+> -        const: samsung,exynos5420-scaler
+> -
+> -then:
+> -  properties:
+> -    clocks:
+> -      items:
+> -        - description: mscl clock
+> -
+> -    clock-names:
+> -      items:
+> -        - const: mscl
+> -
+> -else:
+> -  properties:
+> -    clocks:
+> -      items:
+> -        - description: pclk clock
+> -        - description: aclk clock
+> -        - description: aclk_xiu clock
+> -
+> -    clock-names:
+> -      items:
+> -        - const: pclk
+> -        - const: aclk
+> -        - const: aclk_xiu
+> -
+>  required:
+>    - compatible
+>    - reg
+> @@ -63,6 +33,35 @@ required:
+>    - clocks
+>    - clock-names
+> =20
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: samsung,exynos5420-scaler
+> +
+> +    then:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: mscl clock
+> +        clock-names:
+> +          items:
+> +            - const: mscl
+> +
+> +    else:
+> +      properties:
+> +        clocks:
+> +          items:
+> +            - description: pclk clock
+> +            - description: aclk clock
+> +            - description: aclk_xiu clock
+> +        clock-names:
+> +          items:
+> +            - const: pclk
+> +            - const: aclk
+> +            - const: aclk_xiu
+> +
+>  additionalProperties: false
+> =20
+>  examples:
+> --=20
+> 2.34.1
+>=20
+
+--YTvCgQf37/RkS4VO
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVIpswAKCRB4tDGHoIJi
+0hmMAP93B7Y0eOqTKSYR5l7ofAt+w3rJUe42+UR2t2Y79C3dBgD+OJWQvdiQaVVX
+vWFPGy2vuZOGzCeK7ttAqRIvXZ+3WgM=
+=VtkS
+-----END PGP SIGNATURE-----
+
+--YTvCgQf37/RkS4VO--
