@@ -2,116 +2,321 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A1F5D7E9C07
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:20:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D82AF7E9C0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229612AbjKMMUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:20:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39536 "EHLO
+        id S229731AbjKMMWT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:22:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjKMMUg (ORCPT
+        with ESMTP id S229497AbjKMMWS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:20:36 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id ABA481715;
-        Mon, 13 Nov 2023 04:20:33 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C50AEFEC;
-        Mon, 13 Nov 2023 04:21:18 -0800 (PST)
-Received: from [10.57.3.103] (unknown [10.57.3.103])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F1233F6C4;
-        Mon, 13 Nov 2023 04:20:28 -0800 (PST)
-Message-ID: <438c96fd-bcb0-4699-b81b-40f800cedca0@arm.com>
-Date:   Mon, 13 Nov 2023 12:20:29 +0000
+        Mon, 13 Nov 2023 07:22:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B9712B
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:21:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699878093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=zIHSrYUcQnxoKXdjZZpZq5jMd/3daIfiQKpFrLHTsdU=;
+        b=FlvxRCSbov8rXM91fNKkRF9o8nuy8R4txs2FySiunWdxcYZ3q+jfMMQae+fNBUzDalBmrb
+        5AidbILvCT8/TXDMHibhNOjp4bTAT/SnwMZAHlQBISdYx/g+csWmDXzcBh75WAJ1kfM8Au
+        EOkfdce0hmnaU1LovkCB4SH3IX8aaxs=
+Received: from mail-ua1-f69.google.com (mail-ua1-f69.google.com
+ [209.85.222.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-438-oHEcuoKYNl-tF99gA0aDWA-1; Mon, 13 Nov 2023 07:21:31 -0500
+X-MC-Unique: oHEcuoKYNl-tF99gA0aDWA-1
+Received: by mail-ua1-f69.google.com with SMTP id a1e0cc1a2514c-7bd9a477073so1559884241.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:21:31 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699878091; x=1700482891;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zIHSrYUcQnxoKXdjZZpZq5jMd/3daIfiQKpFrLHTsdU=;
+        b=cR/VqXmVXfVavchJhDvi0SSVRuSJAjIcp1K5/+MasRLursDNEHZzQsiplAjTiKZXPs
+         oFSF36bMAVw4Cah59mCrQjM+iyykQbPDGfsY47LavmUX5trcZkp64w3WwNQkSdFGpQ3z
+         r01BQ5ShzwSBrgXz2KZCe9lHBqJ4CUlGsC18VzAbD63hCZ/kdGEKr7SifhSGDu8o+Ajy
+         +bYpHCO7LutymwMTsZz6V0s8csy56bhn/z6cMc3IZrhQcoDZgN1nTs4UlB3Zuik/CFKZ
+         JlaA5gKzYf0eoB8kGmz+K0s2O9EkTldjkyi0MC+oM8MFK9lsoeM9jmrbcBVL4vUG0ewE
+         XgDw==
+X-Gm-Message-State: AOJu0YyGkpkwz0iaRkEJn0H1VBsmkrnm8aBwwRON3PY/W1Jz7XGyEl4I
+        QHJqk6qLUrbRnBi3e3dtF0YYcWY/a+Zgc5zF5SzWREKMTcIHsKF3Yju20STedF/VPaXEtQtbcnQ
+        M1wyiVyP5sVgqAeZeUcBN5vPp
+X-Received: by 2002:a67:f2c8:0:b0:457:670f:e2eb with SMTP id a8-20020a67f2c8000000b00457670fe2ebmr6417745vsn.20.1699878090975;
+        Mon, 13 Nov 2023 04:21:30 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFKSa6ruCnuzN9s2Ejc4l9S4h3ZVAauCQx41zE3qMS0kOL2lujOmHkFT5dC7rrBHQxe5Bi5+A==
+X-Received: by 2002:a67:f2c8:0:b0:457:670f:e2eb with SMTP id a8-20020a67f2c8000000b00457670fe2ebmr6417723vsn.20.1699878090682;
+        Mon, 13 Nov 2023 04:21:30 -0800 (PST)
+Received: from [192.168.157.67] ([12.191.197.195])
+        by smtp.googlemail.com with ESMTPSA id j22-20020ac874d6000000b00419801b1094sm1904299qtr.13.2023.11.13.04.21.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 04:21:29 -0800 (PST)
+Message-ID: <d3071794-7c02-4ca1-850d-1d5242de4f98@redhat.com>
+Date:   Mon, 13 Nov 2023 13:21:28 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 0/2] Improve VM CPUfreq and task placement behavior
-To:     David Dai <davidai@google.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Quentin Perret <qperret@google.com>,
-        Masami Hiramatsu <mhiramat@google.com>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Pavan Kondeti <quic_pkondeti@quicinc.com>,
-        Gupta Pankaj <pankaj.gupta@amd.com>,
-        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
-        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231111014933.1934562-1-davidai@google.com>
+Subject: Re: [PATCH v14 00/34] KVM: guest_memfd() and per-page attributes
 Content-Language: en-US
-From:   Hongyan Xia <hongyan.xia2@arm.com>
-In-Reply-To: <20231111014933.1934562-1-davidai@google.com>
+To:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Anup Patel <anup@brainfault.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Sean Christopherson <seanjc@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Chao Peng <chao.p.peng@linux.intel.com>,
+        Fuad Tabba <tabba@google.com>,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Anish Moorthy <amoorthy@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Yu Zhang <yu.c.zhang@linux.intel.com>,
+        Isaku Yamahata <isaku.yamahata@intel.com>,
+        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8?= =?UTF-8?Q?n?= <mic@digikod.net>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Ackerley Tng <ackerleytng@google.com>,
+        Maciej Szmigiero <mail@maciej.szmigiero.name>,
+        David Hildenbrand <david@redhat.com>,
+        Quentin Perret <qperret@google.com>,
+        Michael Roth <michael.roth@amd.com>,
+        Wang <wei.w.wang@intel.com>,
+        Liam Merwick <liam.merwick@oracle.com>,
+        Isaku Yamahata <isaku.yamahata@gmail.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20231105163040.14904-1-pbonzini@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Autocrypt: addr=pbonzini@redhat.com; keydata=
+ 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
+In-Reply-To: <20231105163040.14904-1-pbonzini@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+On 11/5/23 17:30, Paolo Bonzini wrote:
+> The "development cycle" for this version is going to be very short;
+> ideally, next week I will merge it as is in kvm/next, taking this through
+> the KVM tree for 6.8 immediately after the end of the merge window.
+> The series is still based on 6.6 (plus KVM changes for 6.7) so it
+> will require a small fixup for changes to get_file_rcu() introduced in
+> 6.7 by commit 0ede61d8589c ("file: convert to SLAB_TYPESAFE_BY_RCU").
+> The fixup will be done as part of the merge commit, and most of the text
+> above will become the commit message for the merge.
 
-On 11/11/2023 01:49, David Dai wrote:
-> Hi,
-> 
-> This patch series is a continuation of the talk Saravana gave at LPC 2022
-> titled "CPUfreq/sched and VM guest workload problems" [1][2][3]. The gist
-> of the talk is that workloads running in a guest VM get terrible task
-> placement and CPUfreq behavior when compared to running the same workload
-> in the host. Effectively, no EAS(Energy Aware Scheduling) for threads
-> inside VMs. This would make power and performance terrible just by running
-> the workload in a VM even if we assume there is zero virtualization
-> overhead.
-> 
-> With this series, a workload running in a VM gets the same task placement
-> and CPUfreq behavior as it would when running in the host.
-> 
-> The idea is to improve VM CPUfreq/sched behavior by:
-> - Having guest kernel do accurate load tracking by taking host CPU
->    arch/type and frequency into account.
-> - Sharing vCPU frequency requirements with the host so that the
->    host can do proper frequency scaling and task placement on the host side.
-> 
-> Based on feedback from RFC v1 proposal[4], we've revised our
-> implementation to using MMIO reads and writes to pass information
-> from/to host instead of using hypercalls. In our example, the
-> VMM(Virtual Machine Manager) translates the frequency requests into
-> Uclamp_min and applies it to the vCPU thread as a hint to the host
-> kernel.
+The changes from review are small enough and entirely in tests, so
+I went ahead and pushed it to kvm/next, together with "selftests: kvm/s390x: use vm_create_barebones()" which also fixed testcase failures (similar to the aarch64/page_fault_test.c hunk below).
 
-Sorry for not noticing this series until now.
+The guestmemfd branch on kvm.git was force-pushed, and can be used for further
+development if you don't want to run 6.7-rc1 for whatever reason.
 
-The problem you are having with uclamp is actually the same as what
-I'm tackling right now. Basically my conclusion so far is that uclamp
-max aggregation faces quite many problems, which can be easily solved by
-sum aggregation (summing up the clamped utilization values instead of
-applying the max uclamp value to the whole rq):
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 38882263278d..926241e23aeb 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -1359,7 +1359,6 @@ yet and must be cleared on entry.
+  	__u64 guest_phys_addr;
+  	__u64 memory_size; /* bytes */
+  	__u64 userspace_addr; /* start of the userspace allocated memory */
+-	__u64 pad[16];
+    };
+  
+    /* for kvm_userspace_memory_region::flags */
+diff --git a/tools/testing/selftests/kvm/aarch64/page_fault_test.c b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
+index eb4217b7c768..08a5ca5bed56 100644
+--- a/tools/testing/selftests/kvm/aarch64/page_fault_test.c
++++ b/tools/testing/selftests/kvm/aarch64/page_fault_test.c
+@@ -705,7 +705,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
+  
+  	print_test_banner(mode, p);
+  
+-	vm = ____vm_create(mode);
++	vm = ____vm_create(VM_SHAPE(mode));
+  	setup_memslots(vm, p);
+  	kvm_vm_elf_load(vm, program_invocation_name);
+  	setup_ucall(vm);
+diff --git a/tools/testing/selftests/kvm/guest_memfd_test.c b/tools/testing/selftests/kvm/guest_memfd_test.c
+index ea0ae7e25330..fd389663c49b 100644
+--- a/tools/testing/selftests/kvm/guest_memfd_test.c
++++ b/tools/testing/selftests/kvm/guest_memfd_test.c
+@@ -6,14 +6,6 @@
+   */
+  
+  #define _GNU_SOURCE
+-#include "test_util.h"
+-#include "kvm_util_base.h"
+-#include <linux/bitmap.h>
+-#include <linux/falloc.h>
+-#include <sys/mman.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
+-
+  #include <stdlib.h>
+  #include <string.h>
+  #include <unistd.h>
+@@ -21,6 +13,15 @@
+  #include <stdio.h>
+  #include <fcntl.h>
+  
++#include <linux/bitmap.h>
++#include <linux/falloc.h>
++#include <sys/mman.h>
++#include <sys/types.h>
++#include <sys/stat.h>
++
++#include "test_util.h"
++#include "kvm_util_base.h"
++
+  static void test_file_read_write(int fd)
+  {
+  	char buf[64];
+diff --git a/tools/testing/selftests/kvm/include/kvm_util_base.h b/tools/testing/selftests/kvm/include/kvm_util_base.h
+index e4d2cd9218b2..1b58f943562f 100644
+--- a/tools/testing/selftests/kvm/include/kvm_util_base.h
++++ b/tools/testing/selftests/kvm/include/kvm_util_base.h
+@@ -819,6 +819,7 @@ static inline struct kvm_vm *vm_create_barebones(void)
+  	return ____vm_create(VM_SHAPE_DEFAULT);
+  }
+  
++#ifdef __x86_64__
+  static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
+  {
+  	const struct vm_shape shape = {
+@@ -828,6 +829,7 @@ static inline struct kvm_vm *vm_create_barebones_protected_vm(void)
+  
+  	return ____vm_create(shape);
+  }
++#endif
+  
+  static inline struct kvm_vm *vm_create(uint32_t nr_runnable_vcpus)
+  {
+diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+index d05d95cc3693..9b29cbf49476 100644
+--- a/tools/testing/selftests/kvm/lib/kvm_util.c
++++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+@@ -1214,7 +1214,7 @@ void vm_guest_mem_fallocate(struct kvm_vm *vm, uint64_t base, uint64_t size,
+  		TEST_ASSERT(region && region->region.flags & KVM_MEM_GUEST_MEMFD,
+  			    "Private memory region not found for GPA 0x%lx", gpa);
+  
+-		offset = (gpa - region->region.guest_phys_addr);
++		offset = gpa - region->region.guest_phys_addr;
+  		fd_offset = region->region.guest_memfd_offset + offset;
+  		len = min_t(uint64_t, end - gpa, region->region.memory_size - offset);
+  
+diff --git a/tools/testing/selftests/kvm/set_memory_region_test.c b/tools/testing/selftests/kvm/set_memory_region_test.c
+index 343e807043e1..1efee1cfcff0 100644
+--- a/tools/testing/selftests/kvm/set_memory_region_test.c
++++ b/tools/testing/selftests/kvm/set_memory_region_test.c
+@@ -433,6 +433,7 @@ static void test_add_max_memory_regions(void)
+  }
+  
+  
++#ifdef __x86_64__
+  static void test_invalid_guest_memfd(struct kvm_vm *vm, int memfd,
+  				     size_t offset, const char *msg)
+  {
+@@ -523,14 +524,13 @@ static void test_add_overlapping_private_memory_regions(void)
+  	close(memfd);
+  	kvm_vm_free(vm);
+  }
++#endif
+  
+  int main(int argc, char *argv[])
+  {
+  #ifdef __x86_64__
+  	int i, loops;
+-#endif
+  
+-#ifdef __x86_64__
+  	/*
+  	 * FIXME: the zero-memslot test fails on aarch64 and s390x because
+  	 * KVM_RUN fails with ENOEXEC or EFAULT.
+@@ -542,6 +542,7 @@ int main(int argc, char *argv[])
+  
+  	test_add_max_memory_regions();
+  
++#ifdef __x86_64__
+  	if (kvm_has_cap(KVM_CAP_GUEST_MEMFD) &&
+  	    (kvm_check_cap(KVM_CAP_VM_TYPES) & BIT(KVM_X86_SW_PROTECTED_VM))) {
+  		test_add_private_memory_region();
+@@ -550,7 +551,6 @@ int main(int argc, char *argv[])
+  		pr_info("Skipping tests for KVM_MEM_GUEST_MEMFD memory regions\n");
+  	}
+  
+-#ifdef __x86_64__
+  	if (argc > 1)
+  		loops = atoi_positive("Number of iterations", argv[1]);
+  	else
+diff --git a/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c b/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
+index 2f02f6128482..13e72fcec8dd 100644
+--- a/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
++++ b/tools/testing/selftests/kvm/x86_64/private_mem_kvm_exits_test.c
+@@ -1,6 +1,6 @@
+  // SPDX-License-Identifier: GPL-2.0-only
+  /*
+- * Copyright (C) 2022, Google LLC.
++ * Copyright (C) 2023, Google LLC.
+   */
+  #include <linux/kvm.h>
+  #include <pthread.h>
 
-https://lore.kernel.org/all/cover.1696345700.git.Hongyan.Xia2@arm.com/
+Paolo
 
-What you described as util_guest sounds to me as exactly what uclamp_min
-under sum aggregation does. I'm really tempted to ask you to apply my
-series and see if the new uclamp_min does what you want, instead of
-introducing a new util_guest signal. If you have no time for this I can
-try to replicate your setup and do the experiments myself.
-
-Also, my knowledge with KVM is limited. May I know where the vCPU fork
-happens? Can't you just set the p->sched_reset_on_fork flag on fork to
-not carry forward the uclamp values?
-
-> 
-> [...]
-Hongyan
