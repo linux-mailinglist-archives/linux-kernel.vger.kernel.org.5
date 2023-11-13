@@ -2,79 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98D77E9CAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:01:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A3977E9CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:01:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbjKMNB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:01:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58586 "EHLO
+        id S231465AbjKMNBp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:01:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42008 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230443AbjKMNAz (ORCPT
+        with ESMTP id S231261AbjKMNBZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:00:55 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7FF1727;
-        Mon, 13 Nov 2023 05:00:51 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.54])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4STV0G0LFJzWhLY;
-        Mon, 13 Nov 2023 21:00:30 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- dggpemm500005.china.huawei.com (7.185.36.74) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Mon, 13 Nov 2023 21:00:50 +0800
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-To:     <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Eric Dumazet <edumazet@google.com>
-Subject: [PATCH RFC 8/8] net: temp hack for dmabuf page in __skb_datagram_iter()
-Date:   Mon, 13 Nov 2023 21:00:40 +0800
-Message-ID: <20231113130041.58124-9-linyunsheng@huawei.com>
-X-Mailer: git-send-email 2.33.0
-In-Reply-To: <20231113130041.58124-1-linyunsheng@huawei.com>
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
+        Mon, 13 Nov 2023 08:01:25 -0500
+Received: from out30-112.freemail.mail.aliyun.com (out30-112.freemail.mail.aliyun.com [115.124.30.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A31E42129
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:01:14 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R331e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046060;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0VwL5nxU_1699880472;
+Received: from 30.97.48.50(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VwL5nxU_1699880472)
+          by smtp.aliyun-inc.com;
+          Mon, 13 Nov 2023 21:01:12 +0800
+Message-ID: <e75ce7a4-1294-435c-86eb-d6cf55281a39@linux.alibaba.com>
+Date:   Mon, 13 Nov 2023 21:01:23 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.69.192.56]
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: support large folio numa balancing
+To:     Kefeng Wang <wangkefeng.wang@huawei.com>,
+        David Hildenbrand <david@redhat.com>, akpm@linux-foundation.org
+Cc:     ying.huang@intel.com, willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>
+References: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+ <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+ <70973a55-63a0-4a85-abe5-d8681fdb3886@huawei.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <70973a55-63a0-4a85-abe5-d8681fdb3886@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Yunsheng Lin <linyunsheng@huawei.com>
----
- net/core/datagram.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/datagram.c b/net/core/datagram.c
-index 103d46fa0eeb..5556782ac658 100644
---- a/net/core/datagram.c
-+++ b/net/core/datagram.c
-@@ -436,7 +436,15 @@ static int __skb_datagram_iter(const struct sk_buff *skb, int offset,
- 		end = start + skb_frag_size(frag);
- 		if ((copy = end - offset) > 0) {
- 			struct page *page = skb_frag_page(frag);
--			u8 *vaddr = kmap(page);
-+			u8 *vaddr;
-+
-+			if ((page->pp_magic & ~0x3UL) == PP_SIGNATURE) {
-+				struct page_pool_iov *ppiov = (struct page_pool_iov *)page;
-+
-+				page = ppiov->page;
-+			}
-+
-+			vaddr = kmap(page);
- 
- 			if (copy > len)
- 				copy = len;
--- 
-2.33.0
 
+On 11/13/2023 8:10 PM, Kefeng Wang wrote:
+> 
+> 
+> On 2023/11/13 18:53, David Hildenbrand wrote:
+>> On 13.11.23 11:45, Baolin Wang wrote:
+>>> Currently, the file pages already support large folio, and supporting 
+>>> for
+>>> anonymous pages is also under discussion[1]. Moreover, the numa 
+>>> balancing
+>>> code are converted to use a folio by previous thread[2], and the 
+>>> migrate_pages
+>>> function also already supports the large folio migration.
+>>>
+>>> So now I did not see any reason to continue restricting NUMA 
+>>> balancing for
+>>> large folio.
+>>
+>> I recall John wanted to look into that. CCing him.
+>>
+>> I'll note that the "head page mapcount" heuristic to detect sharers will
+>> now strike on the PTE path and make us believe that a large folios is
+>> exclusive, although it isn't.
+>>
+>> As spelled out in the commit you are referencing:
+>>
+>> commit 6695cf68b15c215d33b8add64c33e01e3cbe236c
+>> Author: Kefeng Wang <wangkefeng.wang@huawei.com>
+>> Date:   Thu Sep 21 15:44:14 2023 +0800
+>>
+>>      mm: memory: use a folio in do_numa_page()
+>>      Numa balancing only try to migrate non-compound page in 
+>> do_numa_page(),
+>>      use a folio in it to save several compound_head calls, note we use
+>>      folio_estimated_sharers(), it is enough to check the folio 
+>> sharers since
+>>      only normal page is handled, if large folio numa balancing is 
+>> supported, a
+>>      precise folio sharers check would be used, no functional change 
+>> intended.
+>>
+>>
+>> I'll send WIP patches for one approach that can improve the situation 
+>> soonish.
+> 
+> When convert numa balance to use folio, I make similar change, it works
+> with large anon folio(test with v5), but David's precise folio sharers
+> should be merged firstly, also if a large folio shared by many process,
+> we maybe split it, don't sure about it, this need some evaluation.
+
+IIUC, numa balancing will not split the large folio.
