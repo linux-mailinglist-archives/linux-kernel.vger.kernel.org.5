@@ -2,126 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1019B7EA6DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AB8D7EA6E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 00:20:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232073AbjKMXRU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 18:17:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57336 "EHLO
+        id S231886AbjKMXUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 18:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231860AbjKMXRM (ORCPT
+        with ESMTP id S229511AbjKMXUR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 18:17:12 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD85173C;
-        Mon, 13 Nov 2023 15:17:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AA07C433C7;
-        Mon, 13 Nov 2023 23:17:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699917426;
-        bh=d/7LlCiNVS1nIuW7H/Teg2UKQha/cVG2+PsK03xJFXQ=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=LI7K/IS22AZ09mbMBkVdw/sA0B/A7+IzXl2u1mNAY54FjC66ikj7Hh/c8tEwMvx9Z
-         h9e/KpoYtyU8BYiFj8q7p+xT1+YmtYZN4A/b3abX4Xo5m/6FwSBnrS421VecXBCkNe
-         6E7g645bvZXQZwYgBeVCFM8md+pEt93AIvWsOsbTK5mkVddxk8h92+kS55itkzKasf
-         kNiogk5nJ/fndt7N222fY+tAmWFjlhTstb5U68JjI1UsWUvdCLAnwGJFEOnopOtuVC
-         cNMDau92c6PcWP75OHgciCsnOlB441uCoO+fNmdFT9AfeJ5QK/wL+UotPB7WTO+3O0
-         O1KOAnb4NAsbg==
-From:   Matthieu Baerts <matttbe@kernel.org>
-Date:   Tue, 14 Nov 2023 00:16:17 +0100
-Subject: [PATCH net 5/5] selftests: mptcp: fix fastclose with csum failure
+        Mon, 13 Nov 2023 18:20:17 -0500
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D35099;
+        Mon, 13 Nov 2023 15:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+        Message-ID:Sender:Reply-To:Content-ID:Content-Description;
+        bh=/4j86DDfCFRUl31Gseuj9AB7ZukfxQFqBPHzvgr2CKE=; b=es2OXuf1qIGwpTn0rMVYpwoPT6
+        BapN0LtveqQJOb5M8mauw2m8LLPvSUv0Ci2hXRaz9cgyfqaFul/il7DFkfuQS2j/K52E4w0zjPR6O
+        TSTEVsHn94PgdG8iiDNVU/D44BuuMIc0gN1+F+t3Tx4VLUyE7AYBuiI/qCu+m6yxPEezv9MFmkirl
+        /IGPcxgb5o31djmIbVH3PKl6fIlx/O0Au8fWU6YsIeNs4y+IaoKzuQqXUXl59MXX9KiHWYiZuD7It
+        erLWHpqodSRlKvfBgbYtUknJPpJdTiE4y6avC9laB8GHDk76zabvt7zTf6TcV6OylwJQuga/RXGIC
+        f5e0fuOg==;
+Received: from [50.53.46.231] (helo=[192.168.254.15])
+        by bombadil.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r2gDd-00Ergs-16;
+        Mon, 13 Nov 2023 23:19:49 +0000
+Message-ID: <ed211ca9-9018-4dc9-91c1-f199fd4dcf11@infradead.org>
+Date:   Mon, 13 Nov 2023 15:19:48 -0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12] platform/x86: Add Silicom Platform Driver
+Content-Language: en-US
+To:     Henry Shi <henryshi2018@gmail.com>, hbshi69@hotmail.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        hdegoede@redhat.com, markgross@kernel.org, jdelvare@suse.com,
+        linux@roeck-us.net, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+Cc:     hb_shi2003@yahoo.com, henrys@silicom-usa.com, wenw@silicom-usa.com
+References: <20231113210216.30237-1-henryshi2018@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+In-Reply-To: <20231113210216.30237-1-henryshi2018@gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-upstream-net-20231113-mptcp-misc-fixes-6-7-rc2-v1-5-7b9cd6a7b7f4@kernel.org>
-References: <20231114-upstream-net-20231113-mptcp-misc-fixes-6-7-rc2-v1-0-7b9cd6a7b7f4@kernel.org>
-In-Reply-To: <20231114-upstream-net-20231113-mptcp-misc-fixes-6-7-rc2-v1-0-7b9cd6a7b7f4@kernel.org>
-To:     mptcp@lists.linux.dev, Mat Martineau <martineau@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Alexander Duyck <alexanderduyck@fb.com>,
-        Geliang Tang <geliang.tang@suse.com>,
-        Poorva Sonparote <psonparo@redhat.com>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org,
-        Matthieu Baerts <matttbe@kernel.org>,
-        Xiumei Mu <xmu@redhat.com>, stable@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1642; i=matttbe@kernel.org;
- h=from:subject:message-id; bh=1VtnS1TKj7lyzMRKX91SxQBtSgw2M4w3HXFlGeZDrN4=;
- b=owEBbQKS/ZANAwAIAfa3gk9CaaBzAcsmYgBlUq5aMuCFwbwzlyq4ysRgP3pqKahOxzRgxFnnw
- l+BNxMHQauJAjMEAAEIAB0WIQToy4X3aHcFem4n93r2t4JPQmmgcwUCZVKuWgAKCRD2t4JPQmmg
- c7BoD/0SIPywq8PWF0/z161pvvpt0tmrXqnaBOoOkASD4y6f02LxkUk05rMrTNWgC7zilJlNX3J
- zFwGVBtcm5oy9rMgshSRH2n93HKzFliMOFwPtNoLH7YJEfbPJ3tSS+lLrHsiLnstgRkxVtHF3x1
- cRvJYr17YuqBxLz1ZfZ8nshn7zRox0YV+SU2K9hivi0iOH2eQ+rZOaOwwZRV7x0zSQcA/x7saWW
- GuDMNfS1JWJYT6tyA4jKMGeVIPcRwFkODGbY+R7FizSjZPU8tlebHweL27O8gO7Uu/7tzB/bloV
- 25RnyYerFDFP0e1nuaZuPNUwTQq+CF8Y9FAeLZKU54drxQFWwcNuU1ROPDO497+glcAeydvY6h5
- dEsFpdquMy7zepnqf0KL4Iz2SzsbbBdN9jg7JCEB1k4Iq1F9LSAaokA2FNmJUv1vF32BhHTfo3v
- uJJQzk/a/kC2l4PlJqFdJWa9RokLJ5Ep2mnUm/dv3VwMkpsKc00nAPJ4YC/9BHtbgjUPlaSmfq2
- 4mVzD5d32cIlossWdbJJOM6cVtyJJJqvmIZiaFC0yOy99wsEy/6STe0x3Rq0y2AjHcXDO1+s2KV
- gA+A/USQQ5tp0sQZCwQt/DpF5WBT3hN4808EpysM1+5xVwd8/GqMhDfhhgwT+8T0nUkpsQjQ/vX
- Zfwyy5OVpsCugUQ==
-X-Developer-Key: i=matttbe@kernel.org; a=openpgp;
- fpr=E8CB85F76877057A6E27F77AF6B7824F4269A073
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Paolo Abeni <pabeni@redhat.com>
 
-Running the mp_join selftest manually with the following command line:
 
-  ./mptcp_join.sh -z -C
+On 11/13/23 13:02, Henry Shi wrote:
+> platform/x86: Add Silicom Platform Driver
+> 
+> Add Silicom platform (silicom-platform) Linux driver for Swisscom
+> Business Box (Swisscom BB) as well as Cordoba family products.
+> 
+> This platform driver provides support for various functions via
+> the Linux LED framework, GPIO framework, Hardware Monitoring (HWMON)
+> and device attributes.
+> 
+> Signed-off-by: Henry Shi <henryshi2018@gmail.com>
+> ---
 
-leads to some failures:
+Hi,
 
-  002 fastclose server test
-  # ...
-  rtx                                 [fail] got 1 MP_RST[s] TX expected 0
-  # ...
-  rstrx                               [fail] got 1 MP_RST[s] RX expected 0
+An x86_64 defconfig + this driver enabled gives me:
 
-The problem is really in the wrong expectations for the RST checks
-implied by the csum validation. Note that the same check is repeated
-explicitly in the same test-case, with the correct expectation and
-pass successfully.
 
-Address the issue explicitly setting the correct expectation for
-the failing checks.
+ld: vmlinux.o: in function `silicom_gpio_get':
+silicom-platform.c:(.text+0xae6639): undefined reference to `gpiochip_get_data'
+ld: vmlinux.o: in function `silicom_gpio_get_direction':
+silicom-platform.c:(.text+0xae66a8): undefined reference to `gpiochip_get_data'
+ld: vmlinux.o: in function `silicom_gpio_direction_input':
+silicom-platform.c:(.text+0xae6888): undefined reference to `gpiochip_get_data'
+ld: vmlinux.o: in function `silicom_gpio_set':
+silicom-platform.c:(.text+0xae68d3): undefined reference to `gpiochip_get_data'
+ld: silicom-platform.c:(.text+0xae68de): undefined reference to `gpiochip_get_data'
+ld: vmlinux.o:silicom-platform.c:(.text+0xae69a1): more undefined references to `gpiochip_get_data' follow
+ld: vmlinux.o: in function `silicom_platform_probe':
+silicom-platform.c:(.init.text+0x656b7): undefined reference to `devm_gpiochip_add_data_with_key'
 
-Reported-by: Xiumei Mu <xmu@redhat.com>
-Fixes: 6bf41020b72b ("selftests: mptcp: update and extend fastclose test-cases")
-Cc: stable@vger.kernel.org
-Signed-off-by: Paolo Abeni <pabeni@redhat.com>
-Reviewed-by: Matthieu Baerts <matttbe@kernel.org>
-Signed-off-by: Matthieu Baerts <matttbe@kernel.org>
----
- tools/testing/selftests/net/mptcp/mptcp_join.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/net/mptcp/mptcp_join.sh b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-index 75a2438efdf3..3c94f2f194d6 100755
---- a/tools/testing/selftests/net/mptcp/mptcp_join.sh
-+++ b/tools/testing/selftests/net/mptcp/mptcp_join.sh
-@@ -3240,7 +3240,7 @@ fastclose_tests()
- 	if reset_check_counter "fastclose server test" "MPTcpExtMPFastcloseRx"; then
- 		test_linkfail=1024 fastclose=server \
- 			run_tests $ns1 $ns2 10.0.1.1
--		chk_join_nr 0 0 0
-+		chk_join_nr 0 0 0 0 0 0 1
- 		chk_fclose_nr 1 1 invert
- 		chk_rst_nr 1 1
- 	fi
 
 -- 
-2.40.1
-
+~Randy
