@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC7E7EA2FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:37:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FFA87EA30C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:45:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230141AbjKMSh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:37:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45360 "EHLO
+        id S230086AbjKMSnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:43:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229974AbjKMShy (ORCPT
+        with ESMTP id S229924AbjKMSnB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:37:54 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB09618B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:37:51 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-58962bf3f89so316421a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:37:51 -0800 (PST)
+        Mon, 13 Nov 2023 13:43:01 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FEA210E2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:42:56 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6d2f002862cso181173a34.0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:42:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699900671; x=1700505471; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699900976; x=1700505776; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
         bh=2mtmd09hFYXnVdRkrFU6g3p7HtLLyzcUAB+w/A7AON4=;
-        b=alUh7CnLWuVsSNeoAsNRS/iBXuRgJFjdaJDFiObTMR5xLoPYU6uG4ckieCe3rp4b47
-         SS4lSD/n/rmmLh2xKegFwfakJBLJmpcCCcHOdEWenfxl2NkkDcOZ0TiH7PFE2abwf5kh
-         bFSGrbH0oS9tREcHJXqk3tAGuaY/QhimdHhE/fbE5RUVV9C83dj5iXDYgWv8+E36YKW1
-         1zjUpv2ngXFthJLv5YLc4ZH0KpUonvakMJK9VSx3LxZFWq0cyVfpbL505D4etnzzBajr
-         /S1QjbTIF90cS88eqVEKH+qrzGOjRKuRUH6Lh2Hy97yLC1C7+RoToVq602/KfrMUYmvC
-         XTyw==
+        b=DbJcbMmLIAX/XDY1ITKcuK+YChGCxaJuqpiXQ8eSn/QnPMsNy8fGKvqNxt4REUZ/wE
+         ftCwiUdrUeBIKEUwq5hsrE199M3cCY/avOL6Rd9Ad+FS6/2lu85DCLWR5u2vW5UxlGSN
+         ezM1Ixh3pI7r9IjMfH/nUGVEyJp/soVqHUhgTNqF28nScjeqfJsn9ObF838sxTnI+wEK
+         HogYkjDPApEX4ekAcwaTiarfSTeXgldYBBGXcy/cKwi/nv7NngczBtlo7P0j9ghiMG8l
+         2dfHBcLgCnvB5O+Xr94lNG10K32bYEd2dX3oo3EVCbsQ0Bbc6zfPNRz1iTJrLbKu2ATV
+         PL5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699900671; x=1700505471;
+        d=1e100.net; s=20230601; t=1699900976; x=1700505776;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
         bh=2mtmd09hFYXnVdRkrFU6g3p7HtLLyzcUAB+w/A7AON4=;
-        b=LwlKcuRemhwrOKmv5z/K9AA93ARwQ2BcPVgkh9WXmNvccXLGhIvSdFOky0IuwX9xnJ
-         M7uXLBWO8fCdxTTh68z7iRBeVoqYrYrytg/WKFra/aM1HXtaEaUU1fQ/2ducGSKm8WAc
-         FkSo9zsy+OtBhy53Ra1etQDPN/K7nAlDsNqsD+1rXqXRTMRZlFk7PrJHMdjNZpQGXWSH
-         bn5FkVlIPK1SYjEIHCMR2GBhmm273wuVrYMB/CarjV4DdWC0n1aIvfqCwQMl7kjzDR6g
-         IV7SZVlqMjw8mZLGY+JeL0nTojOftaFvnzrgqDVQ6YeyO/jMzCOgnwqe82eLwWhMKTrK
-         EHyQ==
-X-Gm-Message-State: AOJu0Ywwtch5eqo6TEdhtuFE8cWWEPkRalfhjdrYKr/cg50MhpJqctTu
-        ufGXO3v1U9Q2R2IDlOs2a+c=
-X-Google-Smtp-Source: AGHT+IF8WqLZR69KCm/civDjgFUbwk1ZPnhnTXEboXMHqRlLQMHKjR9oiG6PqIPphLBYkQjDkLbheg==
-X-Received: by 2002:a05:6a21:9981:b0:17a:d292:25d1 with SMTP id ve1-20020a056a21998100b0017ad29225d1mr93125pzb.6.1699900671212;
-        Mon, 13 Nov 2023 10:37:51 -0800 (PST)
+        b=V/sVtyUPt9s4+B7FXSLjFQoU6woriM/UnorwPhFFla2NOaivIqKEB+asyLUgF1Mzm4
+         2Znvq2EZzSuexQZcOukjYtBHiGfJrp4782ypdQ/l6JbUkNJFRStjmflRAZ9XuvcQ2c9h
+         GUH1BdSAPYZSTObOv2L5/+3B50gco+OpKwVOG34EhaBwbdL9RdWZkP8KCHkQ6mPmPnc3
+         8i6lG4kGlsOnAlJLCPhUTKNtJ/q+uPSTRnFP0Ml/Noo/aXjkuTQnX0Rvlwn8C6Sfvei8
+         qVOd7V2kkYIk5IzpM9mx7DGBiUK0iOKI1K5m4pPqdJRVsVxQ5NP33NinPcj39U4SygVQ
+         pNKg==
+X-Gm-Message-State: AOJu0Ywpol86T96/iCtE5/hsIqugu+TNxh5kquKK02+xovzMHO33KkIh
+        Qk/WXSmK4EH4YcOt8IVL2u4=
+X-Google-Smtp-Source: AGHT+IEA1BUXt8w/1R9eTTYLZmyMjGnY+Z6vq6aMaSD2YdSx84htQATbTZVVwb3NbeXa3fdeWUhkBg==
+X-Received: by 2002:a05:6830:462a:b0:6b9:d3bd:3985 with SMTP id ba42-20020a056830462a00b006b9d3bd3985mr6976344otb.1.1699900975849;
+        Mon, 13 Nov 2023 10:42:55 -0800 (PST)
 Received: from abhinav.. ([103.75.161.208])
-        by smtp.gmail.com with ESMTPSA id e13-20020a056a001a8d00b006b8ffc49ba5sm4058507pfv.38.2023.11.13.10.37.46
+        by smtp.gmail.com with ESMTPSA id 16-20020a630b10000000b005bd627c05c3sm4256693pgl.19.2023.11.13.10.42.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 10:37:50 -0800 (PST)
+        Mon, 13 Nov 2023 10:42:55 -0800 (PST)
 From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
 To:     kherbst@redhat.com, lyude@redhat.com, dakr@redhat.com,
         airlied@gmail.com, daniel@ffwll.ch
@@ -57,9 +57,9 @@ Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
         linux-kernel@vger.kernel.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
         Abhinav Singh <singhabhinav9051571833@gmail.com>
-Subject: [PATCH v2] drivers: gpu: Fixing warning directly dereferencing a rcu pointer v2
-Date:   Tue, 14 Nov 2023 00:07:37 +0530
-Message-Id: <20231113183737.3276419-1-singhabhinav9051571833@gmail.com>
+Subject: [PATCH v2] driver: gpu: Fixing warning directly dereferencing a rcu pointer
+Date:   Tue, 14 Nov 2023 00:12:38 +0530
+Message-Id: <20231113184238.3276835-1-singhabhinav9051571833@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <d33fc41b-5a1f-4186-a0b2-3c82dcb8f00b@redhat.com>
 References: <d33fc41b-5a1f-4186-a0b2-3c82dcb8f00b@redhat.com>
