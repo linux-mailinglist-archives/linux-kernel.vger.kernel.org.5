@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF127EA568
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 22:22:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B27A7EA567
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 22:22:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbjKMVWG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 16:22:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
+        id S229880AbjKMVWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 16:22:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229635AbjKMVWC (ORCPT
+        with ESMTP id S229580AbjKMVWC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Nov 2023 16:22:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4D50D5F
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:21:58 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56D8BB8
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 13:21:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699910518; x=1731446518;
+  t=1699910519; x=1731446519;
   h=date:from:to:cc:subject:message-id;
-  bh=NLqRSoS/2QcEx55fT+Ohzx64MJjlTAX6aJsRu72v8H8=;
-  b=VTPKqtAt/7r27TZC54aTrv0vhSnoXvy34K5K8XMblLBqBbRMrbwAkcFF
-   RmmGb/O5oqcHDtyjlIRXGgkVcrsrmzqBNlvfACCxxFkGZdepwZS43ZYb3
-   OB74xU3fC+jPuVNvvFYCnHeGU00kGs1eSssgBAZRqNYgad4dNhIPGoQui
-   B6Hp0wyJln2J677wSvvoWZCTb/LArXEeIvC33EFctloAg18EBqUR6/Cyq
-   TuFKEN1dDzaHDXaOeHtPFzn98rVDn4cJ3BYcF7uT1DFkVwG1vjaqIQp6Q
-   qON3c9Zfok2MMb4rlxsZXB0seWdqZGsEh2YtB7wxM+t5SIAj5RIOqhHC5
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389376982"
+  bh=n6UvnC/OL6brsgxTiWESQ+3Nv32aJ3eNFZUzz7qvcrc=;
+  b=H/3Yrxy9vUxwJK769cAWljWc0lZBYp/3tP3QvObAjdho4iyHSEhXw9TG
+   wVilBjphmG9boMLnKOnF5IuRKlwyFTqmOJVUnxbR7Dtd/XvkNkwF3UUqH
+   Jq+5z72ypwS9P4lwrR+FY4ujiJ2KKF3W6XCdlZSzVkyZVcXfRw1sWUoOb
+   WzmvavBkwGZGtFYlHn8yloptEainAw6Z23xax68wNuWISocCF89aj85kk
+   5nmRY8w7bhy6U8gHv/hI2iEAaX0lsCFaXdI85DMauHg10CEE8+lSQ4z9p
+   fUT7+S95I1sBWrWdoSned2dxwHH6sYpgpkRjY9aYQS5fphyntYaS6Lpb3
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="370710130"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="389376982"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 13:21:58 -0800
+   d="scan'208";a="370710130"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 13:21:59 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="834817702"
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="714336363"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="834817702"
+   d="scan'208";a="714336363"
 Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
-  by fmsmga004.fm.intel.com with ESMTP; 13 Nov 2023 13:21:57 -0800
+  by orsmga003.jf.intel.com with ESMTP; 13 Nov 2023 13:21:57 -0800
 Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r2eNX-000CVk-0B;
+        id 1r2eNX-000CVn-0N;
         Mon, 13 Nov 2023 21:21:55 +0000
-Date:   Tue, 14 Nov 2023 05:21:30 +0800
+Date:   Tue, 14 Nov 2023 05:21:36 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     "x86-ml" <x86@kernel.org>
 Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:ras/core] BUILD SUCCESS
- 9f3b130048bfa2e44a8cfb1b616f826d9d5d8188
-Message-ID: <202311140528.HVsVL7XL-lkp@intel.com>
+Subject: [tip:x86/cpu] BUILD SUCCESS
+ 04c3024560d3a14acd18d0a51a1d0a89d29b7eb5
+Message-ID: <202311140535.r8sx3aju-lkp@intel.com>
 User-Agent: s-nail v14.9.24
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git ras/core
-branch HEAD: 9f3b130048bfa2e44a8cfb1b616f826d9d5d8188  x86/mce: Mark fatal MCE's page as poison to avoid panic in the kdump kernel
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/cpu
+branch HEAD: 04c3024560d3a14acd18d0a51a1d0a89d29b7eb5  x86/barrier: Do not serialize MSR accesses on AMD
 
-elapsed time: 724m
+elapsed time: 723m
 
 configs tested: 51
 configs skipped: 142
