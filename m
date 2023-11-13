@@ -2,206 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D2A7E9F05
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 15:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E8077EA00F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 16:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231315AbjKMOoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 09:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S229896AbjKMPeC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 10:34:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60742 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230205AbjKMOoo (ORCPT
+        with ESMTP id S229507AbjKMPeA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 09:44:44 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B5FA171C
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 06:44:40 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi7Xl129635;
-        Mon, 13 Nov 2023 08:44:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1699886647;
-        bh=bzGE9Yrc+rwi/fH2bDKqDEhxMKUPsrtHRJDtG0zTHLM=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=ZvoqTeYrpJQv0vr5eIGC7/LIHOJKXTvAmDo1D1z4yL2rbPUinVU4PuhWaMQXFQgDi
-         qxhNQolusIaiH9CKzXgAuG07WKFuJ1iSfyLfj5vIqWljDMTq09377aku4+FARJ2mAD
-         SamzWS8jNqZ5d1Sp5njLOvjImlBPu9UoeoXiDUoI=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3ADEi7d3007976
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 13 Nov 2023 08:44:07 -0600
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 13
- Nov 2023 08:44:07 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 13 Nov 2023 08:44:07 -0600
-Received: from fllv0040.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3ADEi0u3065232;
-        Mon, 13 Nov 2023 08:44:06 -0600
-From:   Andrew Davis <afd@ti.com>
-To:     Russell King <linux@armlinux.org.uk>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Kunihiko Hayashi <hayashi.kunihiko@socionext.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Linus Walleij <linus.walleij@linaro.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH v3 9/9] ARM: mach-nspire: Rework support and directory structure
-Date:   Mon, 13 Nov 2023 08:43:59 -0600
-Message-ID: <20231113144359.174140-10-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231113144359.174140-1-afd@ti.com>
-References: <20231113144359.174140-1-afd@ti.com>
+        Mon, 13 Nov 2023 10:34:00 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D75D71
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 07:33:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699889637; x=1731425637;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=HMywEqsO2ghezpmZYFMkJcktVwdVXA5iB3QMF0BziY4=;
+  b=jgkHertV4pSAJeAg8egFyQcKFEat1KwpzZnHwvWpfm4i4x/i2KoCyDIg
+   BjyoxytA5t4kKZWP3joEkSoM41tyGxYDplw/EbpVwNcqu0AYAKbbvN3WW
+   2206Ta//IHZCJw+5UjtMsNbGroxsDNASrCDqeoThmUPU3VRJxrwTfsZ+r
+   ZiJ9vpElHtfR+jM1Z+mWOnLXFJFW1gWa4irdWiWYk4l/6QmJ3SMi7CURj
+   Cdu8cfzjCxzYuA9tTI3viv3uIMS3sl0G97h6tHM8gnAdPrdH5g5zA7iJr
+   8mRcOGOBq7a2ftU3iFzK/D8Ukj31VGDcmWvPk0JiQSM6lIJ5jrd+zGLDi
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="375480773"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="375480773"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:33:56 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1011570185"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="1011570185"
+Received: from renliang-mobl.amr.corp.intel.com (HELO [10.251.10.75]) ([10.251.10.75])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 07:33:54 -0800
+Message-ID: <1569460d-30bc-47f5-a224-b14618e4eaf2@linux.intel.com>
+Date:   Mon, 13 Nov 2023 08:45:03 -0600
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 2/2] ASoC: amd: acp: add pm ops support for renoir
+ platform
+Content-Language: en-US
+To:     Syed Saba Kareem <Syed.SabaKareem@amd.com>, broonie@kernel.org,
+        alsa-devel@alsa-project.org
+Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
+        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
+        richgong@amd.com, posteuca@mutex.one,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        =?UTF-8?Q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231113123345.2196504-1-Syed.SabaKareem@amd.com>
+ <20231113123345.2196504-2-Syed.SabaKareem@amd.com>
+From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20231113123345.2196504-2-Syed.SabaKareem@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Having a platform need a mach-* directory should be seen as a negative,
-it means the platform needs special non-standard handling. ARM64 support
-does not allow mach-* directories at all. While we may not get to that
-given all the non-standard architectures we support, we should still try
-to get as close as we can and reduce the number of mach directories.
 
-The mach-nspire/ directory and files, provides just one "feature":
-having the kernel print the machine name if the DTB does not also contain
-a "model" string (which they always do). To reduce the number of mach-*
-directories let's do without that feature and remove this directory.
+> @@ -195,7 +196,11 @@ static int renoir_audio_probe(struct platform_device *pdev)
+>  	dev_set_drvdata(dev, adata);
+>  	acp_enable_interrupts(adata);
+>  	acp_platform_register(dev);
+> -
+> +	pm_runtime_set_autosuspend_delay(&pdev->dev, ACP_SUSPEND_DELAY_MS);
+> +	pm_runtime_use_autosuspend(&pdev->dev);
+> +	pm_runtime_mark_last_busy(&pdev->dev);
+> +	pm_runtime_set_active(&pdev->dev);
+> +	pm_runtime_enable(&pdev->dev);
+>  	return 0;
+>  }
+>  
+> @@ -208,11 +213,42 @@ static void renoir_audio_remove(struct platform_device *pdev)
+>  	acp_platform_unregister(dev);
+>  }
+>  
+> +static int __maybe_unused rn_pcm_resume(struct device *dev)
+> +{
+> +	struct acp_dev_data *adata = dev_get_drvdata(dev);
+> +	struct acp_stream *stream;
+> +	struct snd_pcm_substream *substream;
+> +	snd_pcm_uframes_t buf_in_frames;
+> +	u64 buf_size;
+> +
+> +	spin_lock(&adata->acp_lock);
+> +	list_for_each_entry(stream, &adata->stream_list, list) {
+> +		substream = stream->substream;
+> +		if (substream && substream->runtime) {
+> +			buf_in_frames = (substream->runtime->buffer_size);
+> +			buf_size = frames_to_bytes(substream->runtime, buf_in_frames);
+> +			config_pte_for_stream(adata, stream);
+> +			config_acp_dma(adata, stream, buf_size);
+> +			if (stream->dai_id)
+> +				restore_acp_i2s_params(substream, adata, stream);
+> +			else
+> +				restore_acp_pdm_params(substream, adata);
 
-NOTE: The default l2c_aux_mask is now ~0 but these devices never have
-this type of cache controller so this is safe.
+when are those parameters saved...
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- arch/arm/Kconfig              |  2 --
- arch/arm/Kconfig.platforms    | 15 +++++++++++++++
- arch/arm/Makefile             |  1 -
- arch/arm/mach-nspire/Kconfig  | 15 ---------------
- arch/arm/mach-nspire/Makefile |  2 --
- arch/arm/mach-nspire/nspire.c | 18 ------------------
- 6 files changed, 15 insertions(+), 38 deletions(-)
- delete mode 100644 arch/arm/mach-nspire/Kconfig
- delete mode 100644 arch/arm/mach-nspire/Makefile
- delete mode 100644 arch/arm/mach-nspire/nspire.c
+> +		}
+> +	}
+> +	spin_unlock(&adata->acp_lock);
+> +	return 0;
+> +}
+> +
+> +static const struct dev_pm_ops rn_dma_pm_ops = {> +	SET_SYSTEM_SLEEP_PM_OPS(NULL, rn_pcm_resume)
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index ed069b336c308..038cc4ccc8d16 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -411,8 +411,6 @@ source "arch/arm/mach-nomadik/Kconfig"
- 
- source "arch/arm/mach-npcm/Kconfig"
- 
--source "arch/arm/mach-nspire/Kconfig"
--
- source "arch/arm/mach-omap1/Kconfig"
- 
- source "arch/arm/mach-omap2/Kconfig"
-diff --git a/arch/arm/Kconfig.platforms b/arch/arm/Kconfig.platforms
-index b4ad800a17b7e..5c19c1f2cff61 100644
---- a/arch/arm/Kconfig.platforms
-+++ b/arch/arm/Kconfig.platforms
-@@ -140,6 +140,21 @@ config MACH_UC7112LX
- 
- endif
- 
-+config ARCH_NSPIRE
-+	bool "TI-NSPIRE based"
-+	depends on ARCH_MULTI_V4T
-+	depends on CPU_LITTLE_ENDIAN
-+	select CPU_ARM926T
-+	select GENERIC_IRQ_CHIP
-+	select ARM_AMBA
-+	select ARM_VIC
-+	select ARM_TIMER_SP804
-+	select NSPIRE_TIMER
-+	select POWER_RESET
-+	select POWER_RESET_SYSCON
-+	help
-+	  This enables support for systems using the TI-NSPIRE CPU
-+
- config ARCH_RDA
- 	bool "RDA Micro SoCs"
- 	depends on ARCH_MULTI_V7
-diff --git a/arch/arm/Makefile b/arch/arm/Makefile
-index 47c53c068e3d8..05b425b0fc9d3 100644
---- a/arch/arm/Makefile
-+++ b/arch/arm/Makefile
-@@ -199,7 +199,6 @@ machine-$(CONFIG_ARCH_MXS)		+= mxs
- machine-$(CONFIG_ARCH_MSTARV7)		+= mstar
- machine-$(CONFIG_ARCH_NOMADIK)		+= nomadik
- machine-$(CONFIG_ARCH_NPCM)		+= npcm
--machine-$(CONFIG_ARCH_NSPIRE)		+= nspire
- machine-$(CONFIG_ARCH_OMAP1)		+= omap1
- machine-$(CONFIG_ARCH_OMAP2PLUS)	+= omap2
- machine-$(CONFIG_ARCH_ORION5X)		+= orion5x
-diff --git a/arch/arm/mach-nspire/Kconfig b/arch/arm/mach-nspire/Kconfig
-deleted file mode 100644
-index 0ffdcaca1e6b4..0000000000000
---- a/arch/arm/mach-nspire/Kconfig
-+++ /dev/null
-@@ -1,15 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--config ARCH_NSPIRE
--	bool "TI-NSPIRE based"
--	depends on ARCH_MULTI_V4T
--	depends on CPU_LITTLE_ENDIAN
--	select CPU_ARM926T
--	select GENERIC_IRQ_CHIP
--	select ARM_AMBA
--	select ARM_VIC
--	select ARM_TIMER_SP804
--	select NSPIRE_TIMER
--	select POWER_RESET
--	select POWER_RESET_SYSCON
--	help
--	  This enables support for systems using the TI-NSPIRE CPU
-diff --git a/arch/arm/mach-nspire/Makefile b/arch/arm/mach-nspire/Makefile
-deleted file mode 100644
-index 4716b9b9aa7bb..0000000000000
---- a/arch/arm/mach-nspire/Makefile
-+++ /dev/null
-@@ -1,2 +0,0 @@
--# SPDX-License-Identifier: GPL-2.0-only
--obj-y				+= nspire.o
-diff --git a/arch/arm/mach-nspire/nspire.c b/arch/arm/mach-nspire/nspire.c
-deleted file mode 100644
-index 2fbfc23237ffe..0000000000000
---- a/arch/arm/mach-nspire/nspire.c
-+++ /dev/null
-@@ -1,18 +0,0 @@
--// SPDX-License-Identifier: GPL-2.0-only
--/*
-- *	Copyright (C) 2013 Daniel Tang <tangrs@tangrs.id.au>
-- */
--
--#include <asm/mach/arch.h>
--
--static const char *const nspire_dt_match[] __initconst = {
--	"ti,nspire",
--	"ti,nspire-cx",
--	"ti,nspire-tp",
--	"ti,nspire-clp",
--	NULL,
--};
--
--DT_MACHINE_START(NSPIRE, "TI-NSPIRE")
--	.dt_compat	= nspire_dt_match,
--MACHINE_END
--- 
-2.39.2
+... since there's nothing done on suspend?
 
+Also there's something weird here since the patch enables pm_runtime but
+there's nothing related to pm_runtime here, i.e. SET_RUNTIME_PM_OPS()
+is missing.
+
+> +};
+> +
+>  static struct platform_driver renoir_driver = {
+>  	.probe = renoir_audio_probe,
+>  	.remove_new = renoir_audio_remove,
+>  	.driver = {
+>  		.name = "acp_asoc_renoir",
+> +		.pm = &rn_dma_pm_ops,
+>  	},
+>  };
+>  
