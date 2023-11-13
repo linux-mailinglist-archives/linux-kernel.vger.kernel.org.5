@@ -2,191 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9280A7E994C
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:44:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D088F7E9951
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 10:46:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233385AbjKMJof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 04:44:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49360 "EHLO
+        id S233392AbjKMJqq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 04:46:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjKMJod (ORCPT
+        with ESMTP id S232633AbjKMJqo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 04:44:33 -0500
-Received: from mail-4022.proton.ch (mail-4022.proton.ch [185.70.40.22])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53BE410E7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 01:44:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1699868666; x=1700127866;
-        bh=4cUr+dEfME37FPxFHeIbt8JPHNpEiIuEOSNTafJhkXA=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=QlmObd4rIaOKoxhoh2Aob21CpGpT6dZMHpcbPqCeG/BjkzLHXgeIlDZZQ5B8W4fb/
-         YG4SU2vCR28Ov8gRYmeyQfIN4HmQAYH/rU0qyI2yWypJ41fgcrBFGa115ku7qDuqN0
-         YaukYZup6BZNpiPDOvuHAw0qqi25HHxHUuU+T1OHH8st2GK3Tz6SYtypD5DmE7gnBw
-         l8vWO41WSkWXNhVPTX2yHdfMlEJAVVjxFOuMpy88nh85rTWsWPT8rj1kPofaeC0XA+
-         FiRzk+9k5zAWrap6f69IE9oYRRmwuI/lZyF4JPiuR4Tr9Tcb9aPoN6WzoYQBRzklqg
-         e0R4R8isOP6OA==
-Date:   Mon, 13 Nov 2023 09:44:15 +0000
-To:     Pekka Paalanen <ppaalanen@gmail.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     =?utf-8?Q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>,
-        pierre-eric.pelloux-prayer@amd.com,
-        =?utf-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>,
-        kernel-dev@igalia.com,
-        =?utf-8?Q?=27Marek_Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        =?utf-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        dri-devel@lists.freedesktop.org,
-        Randy Dunlap <rdunlap@infradead.org>, xaver.hugl@gmail.com,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        alexander.deucher@amd.com, wayland-devel@lists.freedesktop.org,
-        hwentlan@amd.com, christian.koenig@amd.com, joshua@froggi.es
-Subject: Re: [PATCH v6 6/6] drm/doc: Define KMS atomic state set
-Message-ID: <ha7UwaZ0eilF_Hl6wWqJXJQ0oy9_rD1FKUNDwIlNxC-vT3InSP4bpTRwVnZG9QvzZBsX4W-p_vz5FfByoAXuGewyhVtwVd4KyRSMJ4G8cQ4=@emersion.fr>
-In-Reply-To: <20231113113804.6e2adfa8@eldfell>
-References: <20230815185710.159779-1-andrealmeid@igalia.com> <aa424bf8-5652-4a44-9b93-bdc0a31d835a@igalia.com> <20231016175222.7a89e6ab@eldfell> <ZS1ST6XAUHilBg3d@intel.com> <8NqDNz1Y8H5I_WhNhOj0ERarBH7nJhGQAsDHbmSnwzoOFtXPBPILwxLlF8-vDPKR06Uknp1BDSt7-6gTmHls62k79ETajXDfPRsmIP-cZN0=@emersion.fr> <ZS55mXTSxpXKYbsd@intel.com> <mawSNnD1hQ6vCVrNVMAvuQESnTToKPXrtiHIXXdqC-mq_LkxWOizPCcXx_KiEASVX-Mbm0LgjfTYkMNOjSAKCldpkXHAd9MmRzbC8ECPsTs=@emersion.fr> <5_NYn1PEc-XUYiRf5fC9oQqTaJxoAuvHVvw1PVTume5m8_cbOyku2Q2XKdCm66g0WcMq_RL8oSp52AowBzX9WAEiVBgdmYtPeXI9SWnD6Ts=@emersion.fr> <20231113113804.6e2adfa8@eldfell>
-Feedback-ID: 1358184:user:proton
+        Mon, 13 Nov 2023 04:46:44 -0500
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CBB410D0;
+        Mon, 13 Nov 2023 01:46:41 -0800 (PST)
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-da41acaea52so4271543276.3;
+        Mon, 13 Nov 2023 01:46:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699868800; x=1700473600;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hwzQbtIpe+t3wqED8YWdB5pI957h93jq9NhhCumia7w=;
+        b=OygbZ605ujsm19xrEu5PBDjeQR7F4c435VNLCMPVfi0wvJhI7co0M6fYAkoiqmcI1Z
+         Yh7F8lyxnMIlcJIDITy/zS0akpMy9J/8BfdbmdbbeFRg8x0v7HA+yXAmeF1qK/JyAMTR
+         ksSG7RsWRgVqTX65ogAZTXDDbrONKDwfen7wQlbdf4CvGxF/++pZoXsBCJQvcYIV71ZY
+         IiT84o4zK0Ux5eoe0yJWG+nsZsVPj8vq2xYK2MTFVFrBaWZ0xko9Z4/V4nFp3skmvdvn
+         o1NplzQC4u4lfYlLGci2Cb0bg9BrQLjuMEalp64YcQ2VqhuzhlYYWZsk4MJxnjXLp6y/
+         DdAg==
+X-Gm-Message-State: AOJu0Yzc/tuqtIMxf8HSb9ivC9ZTWyMYNXR8nbXkBhp3gZuheTHFpS8D
+        SPgYId/NHyImOYHasTrB65IScv6Ik14aeA==
+X-Google-Smtp-Source: AGHT+IFXVwV4e0H99wNWhSTg+Q/YTf7vpBF+BUGx/TeF2yPhuDMHqqtuXUZNp6yYoE868yHK+F8azg==
+X-Received: by 2002:a25:ad92:0:b0:d86:357:e314 with SMTP id z18-20020a25ad92000000b00d860357e314mr5432430ybi.47.1699868800501;
+        Mon, 13 Nov 2023 01:46:40 -0800 (PST)
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com. [209.85.219.175])
+        by smtp.gmail.com with ESMTPSA id u11-20020a05690201cb00b00d974c72068fsm1446651ybh.4.2023.11.13.01.46.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 01:46:39 -0800 (PST)
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so4297454276.0;
+        Mon, 13 Nov 2023 01:46:39 -0800 (PST)
+X-Received: by 2002:a25:42d2:0:b0:da0:c8d1:5c5 with SMTP id
+ p201-20020a2542d2000000b00da0c8d105c5mr5227362yba.41.1699868799056; Mon, 13
+ Nov 2023 01:46:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231108125843.3806765-18-arnd@kernel.org> <202311090843.b8ISrsV1-lkp@intel.com>
+ <87h6lu8ed8.fsf@mail.lhotse>
+In-Reply-To: <87h6lu8ed8.fsf@mail.lhotse>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Mon, 13 Nov 2023 10:46:26 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVxpKwkvU5fcZXLdjRAuaBqj3JxE4JtBcEW55EzidxhCQ@mail.gmail.com>
+Message-ID: <CAMuHMdVxpKwkvU5fcZXLdjRAuaBqj3JxE4JtBcEW55EzidxhCQ@mail.gmail.com>
+Subject: Re: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+To:     Michael Ellerman <mpe@ellerman.id.au>
+Cc:     kernel test robot <lkp@intel.com>, Arnd Bergmann <arnd@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Matt Turner <mattst88@gmail.com>,
+        Vineet Gupta <vgupta@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Guo Ren <guoren@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Dinh Nguyen <dinguyen@kernel.org>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Geoff Levand <geoff@infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        Andy Lutomirski <luto@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Monday, November 13th, 2023 at 10:38, Pekka Paalanen <ppaalanen@gmail.co=
-m> wrote:
+Hi Michael,
 
-> On Mon, 13 Nov 2023 09:18:39 +0000
-> Simon Ser contact@emersion.fr wrote:
->=20
-> > On Monday, October 23rd, 2023 at 10:25, Simon Ser contact@emersion.fr w=
-rote:
-> >=20
-> > > > > > > > > > > > +An atomic commit with the flag DRM_MODE_PAGE_FLIP_=
-ASYNC is allowed to
-> > > > > > > > > > > > +effectively change only the FB_ID property on any =
-planes. No-operation changes
-> > > > > > > > > > > > +are ignored as always. [...]
-> > > > > > > > > > > > During the hackfest in Brno, it was mentioned that =
-a commit which re-sets the same FB_ID could actually have an effect with VR=
-R: It could trigger scanout of the next frame before vertical blank has rea=
-ched its maximum duration. Some kind of mechanism is required for this in o=
-rder to allow user space to perform low frame rate compensation.
-> > > > > > > > > >=20
-> > > > > > > > > > Xaver tested this hypothesis in a flipping the same fb =
-in a VRR monitor
-> > > > > > > > > > and it worked as expected, so this shouldn't be a conce=
-rn.
-> > > > > > > > > > Right, so it must have some effect. It cannot be simply=
- ignored like in
-> > > > > > > > > > the proposed doc wording. Do we special-case re-setting=
- the same FB_ID
-> > > > > > > > > > as "not a no-op" or "not ignored" or some other way?
-> > > > > > > > > > There's an effect in the refresh rate, the image won't =
-change but it
-> > > > > > > > > > will report that a flip had happened asynchronously so =
-the reported
-> > > > > > > > > > framerate will be increased. Maybe an additional wordin=
-g could be like:
-> > > > > > > >=20
-> > > > > > > > Flipping to the same FB_ID will result in a immediate flip =
-as if it was
-> > > > > > > > changing to a different one, with no effect on the image bu=
-t effecting
-> > > > > > > > the reported frame rate.
-> > > > > > >=20
-> > > > > > > Re-setting FB_ID to its current value is a special case regar=
-dless of
-> > > > > > > PAGE_FLIP_ASYNC, is it not?
-> > > > > >=20
-> > > > > > No. The rule has so far been that all side effects are observed
-> > > > > > even if you flip to the same fb. And that is one of my annoyanc=
-es
-> > > > > > with this proposal. The rules will now be different for async f=
-lips
-> > > > > > vs. everything else.
-> > > > >=20
-> > > > > Well with the patches the async page-flip case is exactly the sam=
-e as
-> > > > > the non-async page-flip case. In both cases, if a FB_ID is includ=
-ed in
-> > > > > an atomic commit then the side effects are triggered even if the =
-property
-> > > > > value didn't change. The rules are the same for everything.
-> > > >=20
-> > > > I see it only checking if FB_ID changes or not. If it doesn't
-> > > > change then the implication is that the side effects will in
-> > > > fact be skipped as not all planes may even support async flips.
-> > >=20
-> > > Hm right. So the problem is that setting any prop =3D same value as
-> > > previous one will result in a new page-flip for asynchronous page-fli=
-ps,
-> > > but will not result in any side-effect for asynchronous page-flips.
-> > >=20
-> > > Does it actually matter though? For async page-flips, I don't think t=
-his
-> > > would result in any actual difference in behavior?
->=20
->=20
-> Hi Simon,
->=20
-> a fly-by question...
->=20
-> > To sum this up, here is a matrix of behavior as seen by user-space:
-> >=20
-> > - Sync atomic page-flip
-> > - Set FB_ID to different value: programs hw for page-flip, sends uevent
-> > - Set FB_ID to same value: same (important for VRR)
-> > - Set another plane prop to same value: same
-> > - Set another plane prop to different value: maybe rejected if modeset =
-required
-> > - Async atomic page-flip
-> > - Set FB_ID to different value: updates hw with new FB address, sends
-> > immediate uevent
-> > - Set FB_ID to same value: same (no-op for the hw)
->=20
-> It should not be a no-op for the hw, because the hw might be in the
-> middle of a VRR front-porch waiting period, and the commit needs to end
-> the waiting immediately rather than time out?
+On Fri, Nov 10, 2023 at 4:42 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
+> kernel test robot <lkp@intel.com> writes:
+> > kernel test robot noticed the following build errors:
+> >
+> > [auto build test ERROR on linus/master]
+> > [also build test ERROR on next-20231108]
+> > [cannot apply to v6.6]
+> > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > And when submitting patch, we suggest to use '--base' as documented in
+> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> >
+> > url:    https://github.com/intel-lab-lkp/linux/commits/Arnd-Bergmann/ida-make-ida_dump-static/20231109-005742
+> > base:   linus/master
+> > patch link:    https://lore.kernel.org/r/20231108125843.3806765-18-arnd%40kernel.org
+> > patch subject: [PATCH 17/22] powerpc: ps3: move udbg_shutdown_ps3gelic prototype
+> > config: powerpc64-randconfig-001-20231109 (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/config)
+> > compiler: powerpc64-linux-gcc (GCC) 13.2.0
+> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231109/202311090843.b8ISrsV1-lkp@intel.com/reproduce)
+> >
+> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> > the same patch/commit), kindly add following tags
+> > | Reported-by: kernel test robot <lkp@intel.com>
+> > | Closes: https://lore.kernel.org/oe-kbuild-all/202311090843.b8ISrsV1-lkp@intel.com/
+> >
+> > All errors (new ones prefixed by >>):
+> >
+> >    arch/powerpc/platforms/ps3/gelic_udbg.c:59:1: warning: alignment 1 of 'struct debug_block' is less than 32 [-Wpacked-not-aligned]
+> >       59 | } __packed;
+> >          | ^
+> >>> arch/powerpc/platforms/ps3/gelic_udbg.c:240:6: error: redefinition of 'udbg_shutdown_ps3gelic'
+> >      240 | void udbg_shutdown_ps3gelic(void)
+> >          |      ^~~~~~~~~~~~~~~~~~~~~~
+> >    In file included from arch/powerpc/platforms/ps3/gelic_udbg.c:17:
+> >    arch/powerpc/include/asm/ps3.h:520:20: note: previous definition of 'udbg_shutdown_ps3gelic' with type 'void(void)'
+> >      520 | static inline void udbg_shutdown_ps3gelic(void) {}
+> >          |                    ^~~~~~~~~~~~~~~~~~~~~~
+>
+> As pointed out by Arnd this is due to there being two symbols that
+> control the gelic_udbg.c code.
+>
+> I don't see the need for PS3GELIC_UDBG, without PPC_EARLY_DEBUG_PS3GELIC
+> it just causes gelic_udbg.c to be built, but never called.
 
-I'm not sure=20
+My first thought was: PPC_EARLY_DEBUG_PS3GELIC is meant as an early
+debugging console, while PS3GELIC_UDBG can be used with xmon later,
+but that does not seem to be the case.
 
-> > - Set another plane prop to same value: ignored, sends immediate uevent
-> > (special codepath)
->=20
-> If the sync case says "same", then shouldn't this say "same" as well to
-> be consistent?
+> The diff below fixes the error AFAICS.
 
-Okay, I think I chose my words badly. By "same" I meant "same as
-previous item in the list".
+So your changes on top LGTM.
 
-Here I tried to be more explicit and explain why it's the same behavior.
-We have a special path in the kernel code that ignores the change, but
-the effective result is that it doesn't differ from the sync case.
+Gr{oetje,eeting}s,
 
-Here's a fixed matrix where I don't use confusing words:
+                        Geert
 
-- Sync atomic page-flip
-  - Set FB_ID to different value: programs hw for page-flip, sends uevent
-  - Set FB_ID to same value: programs hw for page-flip, sends uevent (impor=
-tant
-    for VRR)
-  - Set another plane prop to same value: programs hw for page-flip, sends
-    uevent
-  - Set another plane prop to different value: maybe rejected if modeset re=
-quired
-- Async atomic page-flip
-  - Set FB_ID to different value: updates hw with new FB address, sends
-    immediate uevent
-  - Set FB_ID to same value: updates hw with new FB address (no-op for the =
-hw),
-    sends immediate uevent
-  - Set another plane prop to same value: ignored, sends immediate uevent
-    (special codepath)
-  - Set another plane prop to different value: always rejected
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
