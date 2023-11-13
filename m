@@ -2,94 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6EB7E9581
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:28:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D516C7E9586
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:29:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232975AbjKMD2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
+        id S232960AbjKMD3L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:29:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230457AbjKMD2M (ORCPT
+        with ESMTP id S230126AbjKMD3J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:28:12 -0500
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b6])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7C11727
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:28:07 -0800 (PST)
-Message-ID: <24d0e85a-4129-4bf3-8ef7-bcece3e9616e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699846083;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DRypFmT0gonA5vA1X1Va423ykewRIIi0SJhwQhSdTlk=;
-        b=Zi+4fq7nb+xqirT7py4dTzwLkfxx4h/GCfvMkg6bz1nJ6/fLugcpFMIYz1QsfbyJ3CvF8F
-        mZ+WA/ldZEzvFN0crm1eRDhzQQ7dIbohlTYg/Hd36WCaEQ6f/ItEM2nOmSdEWd1Ev4ItYz
-        qvDaMG2UmkKhchaffnwb5nMYeAgZPWg=
-Date:   Sun, 12 Nov 2023 22:27:53 -0500
+        Sun, 12 Nov 2023 22:29:09 -0500
+Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC72F171B
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:29:05 -0800 (PST)
+Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7ba6a0bada9so1467262241.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:29:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699846145; x=1700450945; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N2dGyXj5qPWx8L/oD7d/kJ2B1kSBzAWVgjHl9+VbT5g=;
+        b=CSrHsh9BqDX/+zONieAXevR7NLb18gQCuO78q5RU/ltdr9vQOM6ranCrMqhyi32jaL
+         s2UzxX2G44i/g9AwnqRS7KMooFi8rKcU407idcCYkgZgfyIaHJXjIViF1Vf6QgXBhLXp
+         TAFJPZ3A5m0olNiegRJtM4hoU/mm7At7ggx1gOSdH2+fi+NDLdLpauJljnDMQBkOHVbg
+         l3Q0iMNuJn+Ciz9hUm+CN0g31WPchNENDrmiOz29CF7d1aAI4Os1ZmfxJMukV+0rx6GG
+         33ED0ficMpON3UfmQaf2mWdIaNurZPD2uU4wSUJVQ03HqG3Nvg3A5DDiVjVZp5HvN++k
+         aJJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699846145; x=1700450945;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N2dGyXj5qPWx8L/oD7d/kJ2B1kSBzAWVgjHl9+VbT5g=;
+        b=C+N7c4ftJQvOhJITM8SqKejZ1huV3W9uXUmR2qHxYUjcx6b7pOktStT6nwPLfkzFmL
+         FL/8q1DAHkAbmuygL42yDMjGAVGbTwyyQqF3DdnyI/tJGF3dQ/lHQtUmEVA9VOIGtTv5
+         KnEFxDchjaq7NbXgiMzZ1XCy9ss+y89ehnJ+C4Yq+b+6T7evYaYqVyid3Jiwn33Iaslp
+         2D5YfgROWNek+udQh840Nd2qlg4+gnMZ+vXk/gVDqPKUUabeJV+ezZXnCp9NIpLRkj6B
+         bn79AGZgTW9pMzBr81TeYDQ5oe/dP2c+YoiePwVoAZxTS2G9jH+S6poiB682qdNggS0i
+         TthA==
+X-Gm-Message-State: AOJu0YyzvsVClSLvuTu6xHM8nJUrWoCsFTkhjCHPInRdqqTxrQPOeSpF
+        jNEyX9WpMaagmqYpUiZYO87n/t4bYcI1U3AA1tKg+w==
+X-Google-Smtp-Source: AGHT+IHF2Jct5wlvc5iEDA5CXatiC4I+LjFNu9wrknK+tB6gu0XrkZJBw+kq39swHZW/DhuGkGJI2Nhu4+A/S+uBIBE=
+X-Received: by 2002:a05:6102:23cd:b0:45d:989b:da4a with SMTP id
+ x13-20020a05610223cd00b0045d989bda4amr4899045vsr.22.1699846144896; Sun, 12
+ Nov 2023 19:29:04 -0800 (PST)
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf] bpf/tests: Remove test for MOVSX32 with offset=32
-Content-Language: en-GB
-To:     Stanislav Fomichev <sdf@google.com>,
-        Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
-        Jiri Olsa <jolsa@kernel.org>,
-        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
-        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
-References: <20231110175150.87803-1-puranjay12@gmail.com>
- <ZVEkJ9waaH9X11GR@google.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Yonghong Song <yonghong.song@linux.dev>
-In-Reply-To: <ZVEkJ9waaH9X11GR@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-3-almasrymina@google.com> <20231110151907.023c61cd@kernel.org>
+In-Reply-To: <20231110151907.023c61cd@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Sun, 12 Nov 2023 19:28:52 -0800
+Message-ID: <CAHS8izPKRh7ukRytXaweKcY_76sE7F_3s1sYVgsUXYGrypK93Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 02/12] net: page_pool: create hooks for custom page providers
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/12/23 11:14 AM, Stanislav Fomichev wrote:
-> On 11/10, Puranjay Mohan wrote:
->> MOVSX32 only supports sign extending 8-bit and 16-bit operands into 32
->> bit operands. The "ALU_MOVSX | BPF_W" test tries to sign extend a 32 bit
->> operand into a 32 bit operand which is equivalent to a normal BPF_MOV.
->>
->> Remove this test as it tries to run an invalid instruction.
->>
->> Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
->> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
->> Reported-by: kernel test robot <oliver.sang@intel.com>
->> Closes: https://lore.kernel.org/oe-lkp/202310111838.46ff5b6a-oliver.sang@intel.com
-> Acked-by: Stanislav Fomichev <sdf@google.com>
+On Fri, Nov 10, 2023 at 3:19=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
 >
-> (based on the fact that emit_movsx_reg doesn't handle 32 bit case under !is64)
+> On Sun,  5 Nov 2023 18:44:01 -0800 Mina Almasry wrote:
+> > diff --git a/include/net/page_pool/types.h b/include/net/page_pool/type=
+s.h
+> > index 6fc5134095ed..d4bea053bb7e 100644
+> > --- a/include/net/page_pool/types.h
+> > +++ b/include/net/page_pool/types.h
+> > @@ -60,6 +60,8 @@ struct page_pool_params {
+> >       int             nid;
+> >       struct device   *dev;
+> >       struct napi_struct *napi;
+> > +     u8              memory_provider;
+> > +     void            *mp_priv;
+> >       enum dma_data_direction dma_dir;
+> >       unsigned int    max_len;
+> >       unsigned int    offset;
+>
+> you should rebase on top of net-next
+>
+> More importantly I was expecting those fields to be gone from params.
+> The fact that the page pool is configured to a specific provider
+> should be fully transparent to the driver, driver should just tell
+> the core what queue its creating the pool from and if there's a dmabuf
+> bound for that queue - out pops a pp backed by the dmabuf.
+>
 
-The test failure signature is:
-   #83 ALU_MOVSX | BPF_W jited:1 ret 2 != 1 (0x2 != 0x1)FAIL (1 times)
+My issue with this is that if the driver doesn't support dmabuf then
+the driver will accidentally use the pp backed by the dmabuf, allocate
+a page from it, then call page_address() on it or something, and
+crash.
 
-If the asm code went though verifier, we should get a verification failure.
-But in test_bpf.ko case, the asm code is directly jited (see jited:1 above),
-so there is no verification failure.
+Currently I avoid that by having the driver be responsible for picking
+up the dmabuf from the netdev_rx_queue and giving it to the page pool.
+What would be the appropriate way to check for driver support in the
+netlink API? Perhaps adding something to ndo_features_check?
 
-The current jit does not do error handling and assumes asm code are all legal,
-so for !is64 case, the size = 32 asm code is silently ignored for x86 side
-and caused the error. But the test is introduced by arm64 and the test passed
-for arm64.
-
-Not sure how we could prevent such issues. To handle *all* illegal insns in jit
-definitely not a good idea. In any case, the change for this patch looks good.
-
-Acked-by: Yonghong Song <yonghong.song@linux.dev>
-
+--=20
+Thanks,
+Mina
