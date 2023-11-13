@@ -2,66 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8384F7E9395
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DB477E93A1
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 01:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232476AbjKMAaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 19:30:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
+        id S231985AbjKMAjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 19:39:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230394AbjKMAao (ORCPT
+        with ESMTP id S230096AbjKMAjA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 19:30:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 931C01FF7
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:29:54 -0800 (PST)
+        Sun, 12 Nov 2023 19:39:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEFFE1BF1
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:38:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699835393;
+        s=mimecast20190719; t=1699835890;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=N8MbV+ldUGJXtFXnad6b8yZArDRg/WTGKo84KPGxrMw=;
-        b=OnUnWxgNzvhAbmReTtDLNiqz5O263sgsHcUy+Zt4sBkbr3DlR5TUsP/dt1SBhIb6sBdS4P
-        qDcSKrGqfrJPiH9mcwhfBtqFo4IDLv0qp1JJQEObBltLbVxxv0JwyJxU69BQdc5MFnug2H
-        HQ8/hiWGPwE5evo0/4MveNKe8W5TJmk=
-Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com
- [209.85.210.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=O1nf6XEV98s0CEk667q+uBgTZE/SGODZkiF15Lal4kk=;
+        b=F2uSqUlweG9DkN4S5/N6rkmBY2e+cCdClk/PCma0E8oPz5EchhmU7YXaTWMGLlZCfTCndo
+        a3iGVdYUMXfO0d24/eC8lRcSpWAyEH/xHHzX/BlHPPGfQFu/nfU5UamV9/sPMJ18Xvooq9
+        KSaDuIujmbZ0HiSG8f32/iaqMuwdEd0=
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com
+ [209.85.160.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-256-IuDGtvdUNnyVBmhi6jjw7Q-1; Sun, 12 Nov 2023 19:29:52 -0500
-X-MC-Unique: IuDGtvdUNnyVBmhi6jjw7Q-1
-Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-692c0c3bcc5so3632408b3a.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:29:52 -0800 (PST)
+ us-mta-221-m2yy-rEYOiC0RZPSOjeKSQ-1; Sun, 12 Nov 2023 19:38:08 -0500
+X-MC-Unique: m2yy-rEYOiC0RZPSOjeKSQ-1
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-1efb84e655aso3713931fac.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 16:38:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699835391; x=1700440191;
+        d=1e100.net; s=20230601; t=1699835887; x=1700440687;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=N8MbV+ldUGJXtFXnad6b8yZArDRg/WTGKo84KPGxrMw=;
-        b=jr3nKDzh4PGs4djACoHwY0+oRICBSdPF6o5QZSsaMu19XfkubDBzx2DSUqKq9qeI3C
-         SizuxgbbQn5sWUhpmKwpOqoIAODGFqsbCzbkfMWlrs9Hd33rrfircONIVPLYlfj5CMft
-         XmfzG4EH+oVyB3kvSoqlUCtNYedQRV/ZAlpAIAeOBpIRnqk4SbkGh+nNvCjI+NtMmQtf
-         nfnmJoAgpwHjW8LelAwWa3/zNITJktcnXovN4R5xj0F7624dsVc7FUoowvl0eyevO+PN
-         6DV6mLCpKY7p9ZnXBywekU/Z9I+GN6Cq+yqpdyn+L5Cyz8e2dMEYWgcXKu+szq5d7/+1
-         jRuA==
-X-Gm-Message-State: AOJu0YyyWysu0SHNXU4JA8q+RXPXS5JWfpJR+McZkTatUTM+rZYhTPuF
-        5N1XkGW4Vrj5Ms/42vkqHYEyphsWhUEaLg1o+iGtbZZSM0JtB3AbkcRVvPdGY3A7ABfYmw8Ai7b
-        VQHLkOHEkLvxUVK1z3mqwXz5r
-X-Received: by 2002:a05:6a20:430b:b0:186:bb41:180 with SMTP id h11-20020a056a20430b00b00186bb410180mr63925pzk.33.1699835390959;
-        Sun, 12 Nov 2023 16:29:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFfd4yfzq0YXl5QdnKYzie2VCc6U5S9RTqxoEsGgDflqzH9st3ur7RFmEwEZUtvxIYzQtb9pw==
-X-Received: by 2002:a05:6a20:430b:b0:186:bb41:180 with SMTP id h11-20020a056a20430b00b00186bb410180mr63892pzk.33.1699835390683;
-        Sun, 12 Nov 2023 16:29:50 -0800 (PST)
+        bh=O1nf6XEV98s0CEk667q+uBgTZE/SGODZkiF15Lal4kk=;
+        b=oowcmvZ8fxofmAVCvQUCzJ9YOcscoonn+qe0xRVcHJAc50vdnQjUMNL1NlBoD+FD4a
+         NVpNWxSIhiVq+weprNrr2vamivzVcVQWjnbdmWkXQ3z09OYG8TFk6C8ut+5aE+g1s4/Z
+         /atT2TxYWicyLjCOx0QuvOMELiY4KlmsvoNSCq4DKJdUHHWsiFGlcz7utKLXlbwmO/ZY
+         Xy5BhVs8v4EW/ilsccQT9D7JES6IJ0/USCQ1XkvHpzM+xKrjGpcBgWtUbqL2WF5U5UQ2
+         nY27bG/Ri2o5iC9Hwh2KQWVt2cdORRqZdeOs8u+hJxhevwT4RJU/ctCURQLo55D/H/Yy
+         GXFg==
+X-Gm-Message-State: AOJu0Yw/IQd06Zpkvl7SMBjOKeRdYqTrUUTFBIDsdFEpCfvcf5VtHFxj
+        Tn4F0dW3XZGfRshTiP1xQBrlY3RyR8zD7q76bDFlFTCFHbP2U13PSzlyEWxZbSRsrdq8cCdyYhN
+        A+0QCpKb6ykJNDnlTgVddiCb1
+X-Received: by 2002:a05:6870:d0c6:b0:1e9:e605:27a2 with SMTP id k6-20020a056870d0c600b001e9e60527a2mr7371016oaa.40.1699835887696;
+        Sun, 12 Nov 2023 16:38:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEHcRcNW/0WRXgRcvJUbygUPuUiuO/tgZdTNz8Uw3rp5U7itGOHSrxQdNmH0YwAJkfF7sIkzQ==
+X-Received: by 2002:a05:6870:d0c6:b0:1e9:e605:27a2 with SMTP id k6-20020a056870d0c600b001e9e60527a2mr7370991oaa.40.1699835887444;
+        Sun, 12 Nov 2023 16:38:07 -0800 (PST)
 Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id u18-20020a170902e5d200b001c62d63b817sm3035620plf.179.2023.11.12.16.29.40
+        by smtp.gmail.com with ESMTPSA id lx7-20020a17090b4b0700b00280c6f35546sm2774851pjb.49.2023.11.12.16.37.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 16:29:50 -0800 (PST)
-Message-ID: <8e288692-7460-4aa4-86f3-500327256bc3@redhat.com>
-Date:   Mon, 13 Nov 2023 10:29:39 +1000
+        Sun, 12 Nov 2023 16:38:07 -0800 (PST)
+Message-ID: <8cdb97b5-515a-474d-918c-2f0d5ecad266@redhat.com>
+Date:   Mon, 13 Nov 2023 10:37:56 +1000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 05/22] ACPI: Move ACPI_HOTPLUG_CPU to be disabled on
- arm64 and riscv
+Subject: Re: [PATCH RFC 06/22] drivers: base: Use present CPUs in
+ GENERIC_CPU_DEVICES
 Content-Language: en-US
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -75,26 +75,20 @@ Cc:     Salil Mehta <salil.mehta@huawei.com>,
         Jean-Philippe Brucker <jean-philippe@linaro.org>,
         jianyong.wu@arm.com, justin.he@arm.com,
         James Morse <james.morse@arm.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <lenb@kernel.org>,
         Paul Walmsley <paul.walmsley@sifive.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>
 References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JL6-00CTws-3z@rmk-PC.armlinux.org.uk>
+ <E1r0JLB-00CTwy-7y@rmk-PC.armlinux.org.uk>
 From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JL6-00CTws-3z@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r0JLB-00CTwy-7y@rmk-PC.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -106,119 +100,64 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On 11/7/23 20:29, Russell King (Oracle) wrote:
 > From: James Morse <james.morse@arm.com>
 > 
-> Neither arm64 nor riscv support physical hotadd of CPUs that were not
-> present at boot. For arm64 much of the platform description is in static
-> tables which do not have update methods. arm64 does support HOTPLUG_CPU,
-> which is backed by a firmware interface to turn CPUs on and off.
+> Three of the five ACPI architectures create sysfs entries using
+> register_cpu() for present CPUs, whereas arm64, riscv and all
+> GENERIC_CPU_DEVICES do this for possible CPUs.
 > 
-> acpi_processor_hotadd_init() and acpi_processor_remove() are for adding
-> and removing CPUs that were not present at boot. arm64 systems that do this
-> are not supported as there is currently insufficient information in the
-> platform description. (e.g. did the GICR get removed too?)
+> Registering a CPU is what causes them to show up in sysfs.
 > 
-> arm64 currently relies on the MADT enabled flag check in map_gicc_mpidr()
-> to prevent CPUs that were not described as present at boot from being
-> added to the system. Similarly, riscv relies on the same check in
-> map_rintc_hartid(). Both architectures also rely on the weak 'always fails'
-> definitions of acpi_map_cpu() and arch_register_cpu().
+> It makes very little sense to register all possible CPUs. Registering
+> a CPU is what triggers the udev notifications allowing user-space to
+> react to newly added CPUs.
 > 
-> Subsequent changes will redefine ACPI_HOTPLUG_CPU as making possible
-> CPUs present. Neither arm64 nor riscv support this.
+> To allow all five ACPI architectures to use GENERIC_CPU_DEVICES, change
+> it to use for_each_present_cpu(). Making the ACPI architectures use
+> GENERIC_CPU_DEVICES is a pre-requisite step to centralise their
+> cpu_register() logic, before moving it into the ACPI processor driver.
+> When ACPI is disabled this work would be done by
+> cpu_dev_register_generic().
 > 
-> Disable ACPI_HOTPLUG_CPU for arm64 and riscv by removing 'default y' and
-> selecting it on the other three ACPI architectures. This allows the weak
-> definitions of some symbols to be removed.
+> Of the ACPI architectures that register possible CPUs, arm64 and riscv
+> do not support making possible CPUs present as they use the weak 'always
+> fails' version of arch_register_cpu().
+> 
+> Only two of the eight architectures that use GENERIC_CPU_DEVICES have a
+> distinction between present and possible CPUs.
+> 
+> The following architectures use GENERIC_CPU_DEVICES but are not SMP,
+> so possible == present:
+>   * m68k
+>   * microblaze
+>   * nios2
+> 
+> The following architectures use GENERIC_CPU_DEVICES and consider
+> possible == present:
+>   * csky: setup_smp()
+>   * processor_probe() sets possible for all CPUs and present for all CPUs
+>     except the boot cpu, which will have been done by
+>     init/main.c::start_kernel().
+> 
+> um appears to be a subarchitecture of x86.
+> 
+> The remaining architecture using GENERIC_CPU_DEVICES are:
+>   * openrisc and hexagon:
+>     where smp_init_cpus() makes all CPUs < NR_CPUS possible,
+>     whereas smp_prepare_cpus() only makes CPUs < setup_max_cpus present.
+> 
+> After this change, openrisc and hexagon systems that use the max_cpus
+> command line argument would not see the other CPUs present in sysfs.
+> This should not be a problem as these CPUs can't bre brought online as
+> _cpu_up() checks cpu_present().
+> 
+> After this change, only CPUs which are present appear in sysfs.
 > 
 > Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
-> Changes since RFC:
->   * Expanded conditions to avoid ACPI_HOTPLUG_CPU being enabled when
->     HOTPLUG_CPU isn't.
-> Changes since RFC v3:
->   * Dropped ia64 changes
-> ---
->   arch/loongarch/Kconfig        |  1 +
->   arch/x86/Kconfig              |  1 +
->   drivers/acpi/Kconfig          |  1 -
->   drivers/acpi/acpi_processor.c | 18 ------------------
->   4 files changed, 2 insertions(+), 19 deletions(-)
+>   drivers/base/cpu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-With the following nits addressed:
-
 Reviewed-by: Gavin Shan <gshan@redhat.com>
-
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index d889a0b97bc1..64620e90c12c 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -5,6 +5,7 @@ config LOONGARCH
->   	select ACPI
->   	select ACPI_GENERIC_GSI if ACPI
->   	select ACPI_MCFG if ACPI
-> +	select ACPI_HOTPLUG_CPU if ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ACPI_PPTT if ACPI
->   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
->   	select ARCH_BINFMT_ELF_STATE
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3762f41bb092..dbdcfc708369 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -59,6 +59,7 @@ config X86
->   	#
->   	select ACPI_LEGACY_TABLES_LOOKUP	if ACPI
->   	select ACPI_SYSTEM_POWER_STATES_SUPPORT	if ACPI
-> +	select ACPI_HOTPLUG_CPU			if ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ARCH_32BIT_OFF_T			if X86_32
->   	select ARCH_CLOCKSOURCE_INIT
->   	select ARCH_CORRECT_STACKTRACE_ON_KRETPROBE
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index f819e760ff19..a3acfc750fce 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -310,7 +310,6 @@ config ACPI_HOTPLUG_CPU
->   	bool
->   	depends on ACPI_PROCESSOR && HOTPLUG_CPU
->   	select ACPI_CONTAINER
-> -	default y
->   
->   config ACPI_PROCESSOR_AGGREGATOR
->   	tristate "Processor Aggregator"
-> diff --git a/drivers/acpi/acpi_processor.c b/drivers/acpi/acpi_processor.c
-> index 0f5218e361df..4fe2ef54088c 100644
-> --- a/drivers/acpi/acpi_processor.c
-> +++ b/drivers/acpi/acpi_processor.c
-> @@ -184,24 +184,6 @@ static void __init acpi_pcc_cpufreq_init(void) {}
->   
->   /* Initialization */
->   #ifdef CONFIG_ACPI_HOTPLUG_CPU
-> -int __weak acpi_map_cpu(acpi_handle handle,
-> -		phys_cpuid_t physid, u32 acpi_id, int *pcpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -int __weak acpi_unmap_cpu(int cpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -int __weak arch_register_cpu(int cpu)
-> -{
-> -	return -ENODEV;
-> -}
-> -
-> -void __weak arch_unregister_cpu(int cpu) {}
-> -
-
-Since we're here, EXPORT_SYMBOL() can be dropped for these functions on
-x86 and loongarch because they're not called from a module?
-
->   static int acpi_processor_hotadd_init(struct acpi_processor *pr)
->   {
->   	unsigned long long sta;
-
-Thanks,
-Gavin
 
