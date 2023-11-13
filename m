@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E8B57E9510
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 03:34:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0767E951D
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 03:36:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbjKMCel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 21:34:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57970 "EHLO
+        id S232900AbjKMCgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 21:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjKMCej (ORCPT
+        with ESMTP id S230044AbjKMCgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 21:34:39 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD09610E
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 18:34:36 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6c4cf0aea06so2888801b3a.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 18:34:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1699842876; x=1700447676; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3x9HMy2KOCVDwBY1aKyWkU7yvsdzFHPBbEJCciD5yLQ=;
-        b=JuygbspNqMr3rkxFBnw8mb79whkOEmqHm6n3kiFY3P2wDBeVpbmJ7Sx1JfGb3fpKkh
-         Ed4CCOWtlMpKLsel6zhInjMuZgbmxT+Pq+i6gAi/tk11rgSZdfmAT6uGH9NcNxOt43dD
-         VgDB6P068mrPmOjMRE96/YWzeRueurz7TNCb9TnSW9kZoktZrtdDx1lsHC/UdllAydP+
-         AP8i0Dl3xeawdsxRiabAF9P8imei6lWig9EuXYR+HUDu7g77YPCUX1u1xKqnN5fphfAZ
-         xMu0W29Drz3xvDkTWlnZgXsrFFJ6v60OQLIc1IV+oa3gUhk0W4DwWlzjvyTqzQNUvQ+/
-         IRxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699842876; x=1700447676;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3x9HMy2KOCVDwBY1aKyWkU7yvsdzFHPBbEJCciD5yLQ=;
-        b=Ss8S0tc8dcR8Tdz+z9YgOnN0C4H0XZfp4+JEPhMkh63nlLkQsDYqPgo/e6wX0Hzh/2
-         cizP22wP04IrnV5c96NFdueYJmNDQ+/iw/ySQXhd8ivAjXdYzzgZHl7CiAuTxHbIo2ld
-         WCHJSTm/xdolxmnKsAs5kF1WwzyYPDPAo6Lpuxtw7rAtMN1ofZAqQ7LJaicCFprmxiNX
-         5sixdJVAEpaTa5C1+MHGEFiJadUmT4Ltx5CltnpLRxahlaQo+jewFLuMBX2lRdOzUAlr
-         IYbvqR2+Z3M5v6DjNlrSRey01ova1cE2dI1eta5upVqcz8QR9UItgYl2SbyFKtkvVMmm
-         sZ0g==
-X-Gm-Message-State: AOJu0YzHFH575t+d802T0XuU4SNLMr+V+IphBjV0g98xmYhFMICVQuo6
-        DYcRMti42andOKAKbvgvKtURvA==
-X-Google-Smtp-Source: AGHT+IEnZh+aR0sLWPKOFMs80myLNe8uYYzars/PhN40NDuSuCYLfhLw30h/2jkP74tE/0IvSzLuEA==
-X-Received: by 2002:a05:6a00:800c:b0:6c3:5f49:6da5 with SMTP id eg12-20020a056a00800c00b006c35f496da5mr7110474pfb.34.1699842876238;
-        Sun, 12 Nov 2023 18:34:36 -0800 (PST)
-Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id hy12-20020a056a006a0c00b0068fb8080939sm3015184pfb.65.2023.11.12.18.34.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Nov 2023 18:34:35 -0800 (PST)
-From:   Samuel Holland <samuel.holland@sifive.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>
-Cc:     Andrei Coardos <aboutphysycs@gmail.com>,
-        Alexandru Ardelean <alex@shruggie.ro>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH v2] gpio: sifive: remove unneeded call to platform_set_drvdata()
-Date:   Sun, 12 Nov 2023 18:34:32 -0800
-Message-ID: <20231113023434.1186043-1-samuel.holland@sifive.com>
-X-Mailer: git-send-email 2.42.0
+        Sun, 12 Nov 2023 21:36:42 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F2177109;
+        Sun, 12 Nov 2023 18:36:37 -0800 (PST)
+Received: from loongson.cn (unknown [112.20.112.120])
+        by gateway (Coremail) with SMTP id _____8BxNuiyi1FlY245AA--.59289S3;
+        Mon, 13 Nov 2023 10:36:34 +0800 (CST)
+Received: from localhost.localdomain (unknown [112.20.112.120])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxvdyui1FltFJAAA--.9944S2;
+        Mon, 13 Nov 2023 10:36:30 +0800 (CST)
+From:   Binbin Zhou <zhoubinbin@loongson.cn>
+To:     Binbin Zhou <zhoubb.aaron@gmail.com>,
+        Huacai Chen <chenhuacai@loongson.cn>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+Cc:     Huacai Chen <chenhuacai@kernel.org>,
+        loongson-kernel@lists.loongnix.cn, devicetree@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        linux-mips@vger.kernel.org, lvjianmin@loongson.cn,
+        WANG Xuerui <git@xen0n.name>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Binbin Zhou <zhoubinbin@loongson.cn>
+Subject: [PATCH v4 0/5] dt-bindings: interrupt-controller: Fix some loongson,liointc warnings
+Date:   Mon, 13 Nov 2023 10:36:20 +0800
+Message-Id: <cover.1699521866.git.zhoubinbin@loongson.cn>
+X-Mailer: git-send-email 2.39.3
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: AQAAf8Cxvdyui1FltFJAAA--.9944S2
+X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/
+X-Coremail-Antispam: 1Uk129KBj93XoW7WryfJFyxGrW5ur1UWr1kCrX_yoW8tF15pF
+        sxC3ZxGr45tr4xAws8Jay8AFn5ZrW5JasxWFs7A34xCayDX34jvr1SkF48ArW7Cry3Xw1a
+        qrWkKFWUWa4jkFcCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+        Gr1j6F4UJwAaw2AFwI0_JF0_Jw1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwI
+        xGrwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
+        JVW8JwCFI7km07C267AKxVWUAVWUtwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+        vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+        x2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26c
+        xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
+        wI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j0mhrUUUUU=
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andrei Coardos <aboutphysycs@gmail.com>
+Hi all:
 
-This function call was found to be unnecessary as there is no equivalent
-platform_get_drvdata() call to access the private data of the driver. Also,
-the private data is defined in this driver, so there is no risk of it being
-accessed outside of this driver file.
+Some liointc-related DTBS_CHECK warnings were found when trying to
+introduce the Loongson-2K DTS{I} for LoongArch.
+This patch series attempts to fix those warnings, as well as fixing
+non-standard property naming.
 
-Reviewed-by: Alexandru Ardelean <alex@shruggie.ro>
-Signed-off-by: Andrei Coardos <aboutphysycs@gmail.com>
-Reviewed-by: Andy Shevchenko <andy@kernel.org>
-Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
----
+Of course, these fixes also apply to MIPS Loongson-2K1000.
 
-Changes in v2:
- - Rebase on v6.7-rc1
+Thanks.
 
- drivers/gpio/gpio-sifive.c | 1 -
- 1 file changed, 1 deletion(-)
+-----
+V4:
+- Add Acked-by tag;
+patch(2/5):
+  - Just add 'maxitem 2' instead of duplicating the list;
+patch(3/5):
+  - Rewite commit message for 'interrupt-names'.
 
-diff --git a/drivers/gpio/gpio-sifive.c b/drivers/gpio/gpio-sifive.c
-index 8decd9b5d229..067c8edb62e2 100644
---- a/drivers/gpio/gpio-sifive.c
-+++ b/drivers/gpio/gpio-sifive.c
-@@ -250,7 +250,6 @@ static int sifive_gpio_probe(struct platform_device *pdev)
- 	girq->handler = handle_bad_irq;
- 	girq->default_type = IRQ_TYPE_NONE;
- 
--	platform_set_drvdata(pdev, chip);
- 	return gpiochip_add_data(&chip->gc, chip);
- }
- 
+Link to V3:
+https://lore.kernel.org/all/cover.1698717154.git.zhoubinbin@loongson.cn/
+
+V3:
+patch(1/5):
+  - new patch, 'loongson,parent_int_map' renamed to 'loongson,parent-int-map';
+patch(2/5)(3/5):
+  - Separate the change points into separate patches;
+patch(4/5):
+ - new patch, make sure both parent map forms can be parsed;
+patch(5/5):
+ - new patch, fix 'loongson,parent_int_map' references in mips loongson
+   dts{i}.
+
+Link to V2:
+https://lore.kernel.org/all/20230821061315.3416836-1-zhoubinbin@loongson.cn/
+
+V2:
+1. Update commit message;
+2. "interruprt-names" should be "required", the driver gets the parent
+interrupts through it;
+3. Add more descriptions to explain the rationale for multiple nodes;
+4. Rewrite if-else statements.
+
+Link to V1:
+https://lore.kernel.org/all/20230815084713.1627520-1-zhoubinbin@loongson.cn/
+
+Binbin Zhou (5):
+  dt-bindings: interrupt-controller: loongson,liointc: Standardize the
+    naming of 'loongson,parent-int-map'
+  dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check
+    warning for reg-names
+  dt-bindings: interrupt-controller: loongson,liointc: Fix dtbs_check
+    for warning interrupt-names
+  irqchip/loongson-liointc: Fix 'loongson,parent_int_map' parse
+  MIPS: Loongson64: DTS: Fix 'loongson,parent_int_map' references
+
+ .../loongson,liointc.yaml                     | 33 +++++++++++++------
+ .../boot/dts/loongson/loongson64-2k1000.dtsi  |  4 +--
+ .../dts/loongson/loongson64c-package.dtsi     |  2 +-
+ .../dts/loongson/loongson64g-package.dtsi     |  2 +-
+ .../dts/loongson/loongson64v_4core_virtio.dts |  2 +-
+ drivers/irqchip/irq-loongson-liointc.c        |  7 +++-
+ 6 files changed, 34 insertions(+), 16 deletions(-)
+
 -- 
-2.42.0
+2.39.3
 
