@@ -2,47 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2E07EA10A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 065BB7EA10B
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 17:14:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231635AbjKMQOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 11:14:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S231646AbjKMQOz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 11:14:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230034AbjKMQOs (ORCPT
+        with ESMTP id S230034AbjKMQOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 11:14:48 -0500
+        Mon, 13 Nov 2023 11:14:52 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D2FB10E0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:14:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3FE3C433CA;
-        Mon, 13 Nov 2023 16:14:40 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CEBB10E0
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 08:14:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0210C433C8;
+        Mon, 13 Nov 2023 16:14:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699892085;
-        bh=P1HsCRngx2AULeZ5NjJzkJnUfB2/UHXYrbiKx+V3dsw=;
+        s=k20201202; t=1699892089;
+        bh=Wo5otqcyJKAOgLF2JvrplvCMcLhcQRTUClyysnN30PY=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=ZatGpOBLjKNxznQDsZctXqsvFhBhjf8PWoirXtdiwxa9fifmlLOI2Vi5OS8HThuG/
-         o0pkOtnkwKY26BgyOTV/a2W/SrzsOPiD7t/43Pups9X3OC9Ez3lFdPnntPkKV+tMUX
-         mW/b5FCxuuoCJ3Md6Wn/MkEviUOTi373Z4cUuveMAruuicBtM2gTQQV/c0wE6Rmrsm
-         kGyLYCruxDIjr9xg4Xw60IfgcT8FQlxi9wbidKBiquR1IGgYJFkcz88Xg529QIQayz
-         SJMa4c9HrJsKNUL+GlWwDFhNcW5aTKNdFp+du6qqI3eEjFfsDa0V+Qdeeud+4Im8ON
-         A/SQ8kpg/rC4w==
+        b=QBCN6bHyLufLzGNHunYTSxGt1yCYOhXVradn4REqoB/m4LPAo5evtxuAVuVLP3IOl
+         AlZfMPifjMuvPIqUpy5Z3hhsTL40P8CeNTwtsc48UpMWIMuWIn/djlHO780yWF/Qt2
+         f6cqFsw3EQaPLxytHq60PA8rgsH0MCEu6UWzG3ruQbZhUARlIYVQ4FGDIOj1YQabtW
+         +l0CxSTsG7knD9SUrZSgEylwrxixpKxyiN+dI2Tqt278dv5GkuK3H2qcN7bKTnnBez
+         DwSEt6x1dKrR5S9dXqPuk4a6iissCzdbRf0EhV3fB4hUyQckx1lNNSkmfkONVMN4ev
+         mVVSH53jO33IQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     pierre-louis.bossart@linux.intel.com,
-        peter.ujfalusi@linux.intel.com, yung-chuan.liao@linux.intel.com,
-        ranjani.sridharan@linux.intel.com, kai.vehmanen@linux.intel.com,
-        daniel.baluta@nxp.com, lgirdwood@gmail.com, tiwai@suse.com,
-        perex@perex.cz, matthias.bgg@gmail.com,
-        angelogioacchino.delregno@collabora.com,
-        Trevor Wu <trevor.wu@mediatek.com>
-Cc:     yc.hung@mediatek.com, sound-open-firmware@alsa-project.org,
-        alsa-devel@alsa-project.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20231103095433.10475-1-trevor.wu@mediatek.com>
-References: <20231103095433.10475-1-trevor.wu@mediatek.com>
-Subject: Re: [PATCH 0/3] ASoC: SOF: mediatek: remove unused variables
-Message-Id: <169989208005.3289099.6135603822989118878.b4-ty@kernel.org>
-Date:   Mon, 13 Nov 2023 16:14:40 +0000
+To:     Seven Lee <wtli@nuvoton.com>
+Cc:     lgirdwood@gmail.com, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        robh+dt@kernel.org, conor+dt@kernel.org, YHCHuang@nuvoton.com,
+        KCHSU0@nuvoton.com, CTLIN0@nuvoton.com, SJLIN0@nuvoton.com,
+        scott6986@gmail.com, supercraig0719@gmail.com, dardar923@gmail.com
+In-Reply-To: <20231107035230.1241683-1-wtli@nuvoton.com>
+References: <20231107035230.1241683-1-wtli@nuvoton.com>
+Subject: Re: [PATCH v4 0/2] Add DMIC slew rate controls
+Message-Id: <169989208519.3289099.6577549034579346529.b4-ty@kernel.org>
+Date:   Mon, 13 Nov 2023 16:14:45 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -57,16 +53,17 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 03 Nov 2023 17:54:29 +0800, Trevor Wu wrote:
-> There are some variables that are no longer being used because they
-> were declared for the deprecated memory layout. Currently, these code
-> sections confuse the users. Therefore, this series removes the code
-> that was implemented for those variables.
+On Tue, 07 Nov 2023 11:52:28 +0800, Seven Lee wrote:
+> Determine DMIC slew rate via property setup.
 > 
-> Trevor Wu (3):
->   ASoC: SOF: mediatek: mt8195: clean up unused code
->   ASoC: SOF: mediatek: mt8186: clean up unused code
->   ASoC: SOF: mediatek: remove unused variables
+> Change:
+> V3 -> V4:
+>  - add "maximum: 7" description.
+> 
+> V2 -> V3:
+>  - Update description of DMIC slew rate and remove
+>    "selection" key words from property name
+>  - Corrected variable name of DMIC slew rate from c file
 > 
 > [...]
 
@@ -76,12 +73,10 @@ Applied to
 
 Thanks!
 
-[1/3] ASoC: SOF: mediatek: mt8195: clean up unused code
-      commit: ab475966455ce285c2c9978a3e3bfe97d75ff8d4
-[2/3] ASoC: SOF: mediatek: mt8186: clean up unused code
-      commit: a4de5a345cf76c6f294a906e11c2fb675a46fd3d
-[3/3] ASoC: SOF: mediatek: remove unused variables
-      commit: 82e340ca3f25dc3ddd20e88e3606ed9006f90f5d
+[1/2] ASoC: dt-bindings: nau8821: Add DMIC slew rate.
+      commit: 1fb1a7c4a6328aff97eeca513fe7239099c13016
+[2/2] ASoC: nau8821: Add slew rate controls.
+      commit: 91d1a18b6381abd7a0137449fe345924072e4a32
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
