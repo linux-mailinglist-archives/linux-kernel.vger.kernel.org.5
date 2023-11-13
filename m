@@ -2,141 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 888897E9702
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 08:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9352D7E9704
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 08:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232968AbjKMHUL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 02:20:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51670 "EHLO
+        id S232674AbjKMHWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 02:22:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229716AbjKMHUJ (ORCPT
+        with ESMTP id S229768AbjKMHWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 02:20:09 -0500
-Received: from bg4.exmail.qq.com (bg4.exmail.qq.com [43.155.65.254])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62E910E5;
-        Sun, 12 Nov 2023 23:20:04 -0800 (PST)
-X-QQ-mid: bizesmtp63t1699859986trcai2ec
-Received: from main2-ubuntu.tail147f4.ts.net ( [202.201.15.117])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Mon, 13 Nov 2023 15:19:43 +0800 (CST)
-X-QQ-SSF: 01200000000000B06000000A0000000
-X-QQ-FEAT: CR3LFp2JE4kJjXOcdkorczscpSzH6+axHpSU32WFVYbv/RGXMGwZNm0mqCz6D
-        gz9/sgtHdEu0Hpdze0GuS3D6Irg4Df8QiNwDsaA6ysM60/Ho50JMfM3UXJDjxhxTAQJmf08
-        2g+pmLbzG6sqegUOfI7Bqk0cBi8wPyNlP79jzi4+2G/4EB+bteo4XqATZZMPqdIZxNerVW7
-        zYzBrU5bsvqnxAgq9RY7WWSKOF4WLCtt1HmqlkFh/RReaAs7ttv7DELAls5+VJ7BadjYxZ5
-        lnXtZ30WpuH37gpQ2xpywx2N6bQQzJWukdBKANUZas2U6RtWXYUj1hf5q4jZyp24XNNb9tI
-        jXfxcsenjYsV+UPuIj2lO0Tur+eydKLmUqICFwU
-X-QQ-GoodBg: 0
-X-BIZMAIL-ID: 17312017847681261293
-From:   Yuan Tan <tanyuan@tinylab.org>
-To:     i@maskray.me
-Cc:     arnd@arndb.de, falcon@tinylab.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-sparse@vger.kernel.org, linux@weissschuh.net,
-        luc.vanoostenryck@gmail.com, palmer@rivosinc.com,
-        paul.walmsley@sifive.com, paulburton@kernel.org,
-        paulmck@kernel.org, tanyuan@tinylab.org, tim.bird@sony.com,
-        tsbogend@alpha.franken.de, w@1wt.eu
-Subject: Re: [PATCH v1 09/14] DCE/DSE: inhibit .size directive for SHF_GROUP
-Date:   Mon, 13 Nov 2023 15:19:42 +0800
-Message-Id: <20231113071942.35259-1-tanyuan@tinylab.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <DS7PR12MB576503711253C682DCE40524CBABA@DS7PR12MB5765.namprd12.prod.outlook.com>
-References: <DS7PR12MB576503711253C682DCE40524CBABA@DS7PR12MB5765.namprd12.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        Mon, 13 Nov 2023 02:22:31 -0500
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2078.outbound.protection.outlook.com [40.107.220.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 457A810EF
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 23:22:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QLo1GIUnqwvwR37TgwEfR2Uij5Iy4wB9TkZJiKs6xjM4QLQ38gZOAigQ43xKs9xqgNnkMLRmEvPenYE0IQrVwv1r2+jhO7h2f/EMy8IBMRy5VUSsMO28vnmGoaOfinc6Sv0gXo2phdXLcrLV1fME2tA+NrGJnD+aC6hN3UNSjbMBqjutZTxSm6uyVqV5xkYYLm3/+tUx+ND932Gf+165UIEy64sB5tX3sGfPsDI0J+myjEpx7AFe4wACzOV9Sjp3dx3DzSLGjZ4nOGbpo5JR4ig7r3+Id0b2lh2Xp34Ge2F5wva3MN0UwpPBt27WT12l+QnLpjRo+lTzgc8S7G1PnQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OAewY52nRCdR8V/18QbUkJMgvU0waWYcHC8yn6+/Xwc=;
+ b=A4LdtxBuLRYsUYD5JgTmHDsOBCF97nmOlYZgWb/Mg64dezILj6PP2AZxIW0+8Pz1OZYIg3aULPI2DbBb0vHdnBpsbWzDvY81HGEQ4RIeh0sIKk8WO6BXGBVBqTF/N8mTzrMSqsQjFmhmtZ8si4LlPIzzdOGgaR6OsIKa3xWNitCpzXAU5kcfLwcU3XNG2fryFm38tBauZiOq8scTHYNsGypO8qVSxPBOeEG7Zi4H9mmDrTad+0IM9SPbr/RoLZRYY9KBPnwEe2rLEA9t/tv5TtRAEsBn3JPd4GmVKa6IVs9Zy13Dz1Tqbacgw0aZI62iOddWlPrmvSM9atmJHsVdXg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OAewY52nRCdR8V/18QbUkJMgvU0waWYcHC8yn6+/Xwc=;
+ b=iqXReRTOiNgHF2KfnqigiTpVXnAKRAmPHI4usR1kRVoZs8bg987glkFayiN+X52LDtSRjMREdnDBeYp3POIctnVC6Plh0dt7TcLnQkmfmifbpVRMBszJ4V6vdGvwdOOPHf2FQnJsMm95cfWVfW0Z9D6iMVPemPfYPtB35oixlXY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by CY5PR12MB6203.namprd12.prod.outlook.com (2603:10b6:930:24::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Mon, 13 Nov
+ 2023 07:22:24 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.6977.029; Mon, 13 Nov 2023
+ 07:22:24 +0000
+Message-ID: <71a50cac-3253-480f-adff-da475738ae6b@amd.com>
+Date:   Mon, 13 Nov 2023 08:22:18 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH drm-misc-next v8 09/12] drm/gpuvm: reference count
+ drm_gpuvm structures
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>,
+        =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     airlied@gmail.com, daniel@ffwll.ch, matthew.brost@intel.com,
+        sarah.walker@imgtec.com, donald.robson@imgtec.com,
+        boris.brezillon@collabora.com, faith@gfxstrand.net,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20231101233113.8059-10-dakr@redhat.com>
+ <be93d9ef-3d3e-4262-a280-d2922b983ca1@amd.com> <ZUTyGTxcH7WlHKsv@pollux>
+ <a2e13a27-d2e5-4ae3-9c11-c18b425b69cc@amd.com>
+ <b533af44-0404-49c9-9879-3414d0964acc@redhat.com>
+ <51dea5f3-a18b-4797-b4fa-87da7db4624a@amd.com> <ZUjZFFtLM435tTxJ@pollux>
+ <8e87d962-c80c-40d9-94d7-58b6cd9dd794@amd.com> <ZUj0DdYZUgjhcvf5@pollux>
+ <6d3c48f6-a92d-49b3-b836-ee1bc95b56bf@amd.com> <ZUkXkJ+zT7OFGosC@pollux>
+ <44bc28c7-05f4-4419-5183-453c4951aac0@linux.intel.com>
+ <6c536c94-7072-403c-9c63-d932252fd66b@amd.com>
+ <4532d9d5-4c5a-4639-8136-d3ba9995d7b6@redhat.com>
+ <1d4ca394-ee0c-4617-adbe-1d47e295c8fb@amd.com>
+ <987ac707-8f9b-4e33-86c3-decdc1c48a3a@redhat.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <987ac707-8f9b-4e33-86c3-decdc1c48a3a@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:tinylab.org:qybglogicsvrgz:qybglogicsvrgz5a-1
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-ClientProxiedBy: FR5P281CA0047.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f0::10) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CY5PR12MB6203:EE_
+X-MS-Office365-Filtering-Correlation-Id: f0886d0a-5fe3-4a19-6983-08dbe4194861
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /rUCrFBB5t6UbzZPxpQLUYU4UneOvWnrJYrVMiirFs29k3TftHxfocBu9/ovld/OlhloTaRGAAD4gyj4YxF2r5PDU94KfmOGAOM4OMIXmnjT5JEulY/vyq46sD2D52Xv5Zyu/MH3PJKU6Qb4shct5qPn9kvuM1efO1aGj8/Ze0ypclMZBNMLi2p8LccVr2g9myQWM7U/1lZs/0DiFe62YpyOTYI4e4Kt4kCdUiQn8F5HrD9vYojz7lnH6DkazZdoAc8Khg8HmyOORF7JU/wj2ZJwplHAYwWm6N/ESi9RG2Sc5WHMsJORBfjCLm93tBPeXsOgRieTKihE9lYagOUylECRZ9aZxO7B1YTTGHUVq1Rkgmexc4ZF2D/8JXxQBcAls76/nmG5NSYtDLvOBxYrgqVTZgrl34pl3Dc7WfGQ5UEMr9LRS1hUpjXWRqCIPcwlZ9VTKOkoezQpkJjaWaUC0QxFidLFh4l7iFbUVtX64eaoR+ue1qRImEuUXrZVx694jW7bd11Wj4SQvaUOemqbMWeFimgaeZs3LAl/VMvKjo0OyvtwQBk0T/JjE8dUOSu3qCXr0kjPJImY1n1RyDlsFqK25uLw4z+abOPvoFL9lzpilb5kUpQHkUmJau5Jl2vDiD3+TfpgD1OzqzkBkzD74w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(396003)(39860400002)(366004)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(7416002)(5660300002)(86362001)(6486002)(478600001)(2906002)(6666004)(8676002)(8936002)(4326008)(31696002)(316002)(66476007)(66556008)(66946007)(110136005)(26005)(31686004)(36756003)(83380400001)(41300700001)(6512007)(6506007)(53546011)(38100700002)(2616005)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aGxDRnNpcE04ZXVwdG5pcTUvV3d2b2NySzNXSVpaN0QvbU96dm5MR0t3bzFS?=
+ =?utf-8?B?N0o4WU9sMUVtamM4Rmp4ZUhVZ1E5QnRiclhMS1hudjd5NmpsV1lGdXpLMFhT?=
+ =?utf-8?B?RVNtQkxHaW5rOHcvTVF2czNha0ZrR0RYQWo0cDM1YllpcGNKYUhrMHlXZVRq?=
+ =?utf-8?B?K2Y1Qi9nc1FrTTA4VkJVMTZianJva3JhTTdjWTV6MEVSV0Y2TWhUeExDbmI1?=
+ =?utf-8?B?V2V6aGxrZHh0R0I5OFdROUJOYUQzMEdyVkcwaVpmbk4xeDd5blFpeUx0SXJa?=
+ =?utf-8?B?VFNiVFpkWXRzZmlvZjlPWWZzU2tvTlJ4d0JudGhSaTgwSXdYQnlJZitOdDZY?=
+ =?utf-8?B?MHN1VnNhbVBOUGhkQW41U0dTOGFjTXhSdWJZaGxjYTdaQ3l2cERVUWZpSmFE?=
+ =?utf-8?B?ams4aHJPVG03S3VpdjZhbFJEWGhxcllxZllSTDFURkNPbnUyc0dUYytHQ2VR?=
+ =?utf-8?B?QUFYdEJKMGxmZ2pVMTFqT2lGeDMxazF4TWwxOWZseWRvUFYzOVBEZzFYS3g4?=
+ =?utf-8?B?aG1Id1dsVlh6VXQrdktmS1N6MkF1SFkxS0ZwK3IrQitXOW55S2haZVh3ZCtI?=
+ =?utf-8?B?c1ErT295bW5RR3FHN1JRNGRoZklMM2ZpTWFuTHFwR00vYlNjcGNVTkNFM0dx?=
+ =?utf-8?B?MkFCRnB4YjQzU1ZaVVM2akFwaHRlVzBKUVVBTHE5dVlFWTF0QmpKaVFvMWhx?=
+ =?utf-8?B?QThFRXhDVWlMNlVaSVZRaWdiQ3NpVHZZdndVZXY1NENTM3NXUHpBczB3Qm5N?=
+ =?utf-8?B?Qy92VU5vbWlBRk9jNis2RkFycTBOb3JOQWhnM21Sc3NvcWRzN0pZcjFoTjJV?=
+ =?utf-8?B?MkZCVXVCWjg2UTRDYWJUdW9tOTBGZlg3d1Z1K21uRzd2bTUwN2RqTWhidmRJ?=
+ =?utf-8?B?Q0gwQ09NWG1SeG9HaWZPbjlJeDhYMlYwRkI2ZlAyMjNGQ2pJM1BQRS9ieHpr?=
+ =?utf-8?B?QzdaNE5iS3pCSVhCdUJTdWtTOG5Zc2dVUktaYzMwdlYwMjFIUlFFVGlkZTMv?=
+ =?utf-8?B?QVdkdllqYTRORXNoRE9jYTNyWjk1RzVTMVZ2ZU5hK0VIUmN6QTlXVUFkSm13?=
+ =?utf-8?B?WHJMOXJrSVFqRXVUTXRrM29IVnd3cnh3VVNYSXhLbFZMVFZya3RqZEJzSmFu?=
+ =?utf-8?B?bjNZajVGaWdwZ1ZKREQrUkt2QXhWUEZlditBdFdFU0ZlbjlPcXF2QnIvWk90?=
+ =?utf-8?B?NSt6L3FTOWdaRTJvVkRVcFArTFVvbWZuU1JaNSsxbWdEVWFnUzFIRk1EcGtY?=
+ =?utf-8?B?TGNVTDc0eGdZeU1pSkJMbE5uM0I5Qk56RWZVaTl2ZUtITEVwQmxnNGhqNUJE?=
+ =?utf-8?B?UUY0ZGRRZzErZjBzMHBIcHlGVDVhSWdCbUxFTk1vb1VCbXg0VWZyakJZMTFS?=
+ =?utf-8?B?Nll6Y3d0UDRILytMdElEYnBaMmFCY05zY0lwbWNDRC9rTWxPWVNLYmFsRXFI?=
+ =?utf-8?B?dXc4REw1eWRMNjVLdGNPU2JqaDNqcklyZi9mdXFXVllrREdTU2xiaENPTTJw?=
+ =?utf-8?B?emU5U0ZuSjFVdzUxR0d6YzRtdTZqTmZTM1VQTjdkaWhQMDIvWHRYcnEzSDIr?=
+ =?utf-8?B?anVndzhBeThyZzFpY3huR1g2ZGw5U1lnNE5FMjlma1A5QldUMnd3U0lsckxW?=
+ =?utf-8?B?S0RBc0ZyTlFGeVVkdGV2dVFvdTJEUzNFb3NNZkZNRUxUclM3NDRUNmxJeldO?=
+ =?utf-8?B?Y3gwQ2xNSFVJd011NXozZXEydHBzU2RNQzFhbWJIVWQ1NU5mWGs3QmJESXdm?=
+ =?utf-8?B?aDVKWnFvbjdDeThsc2J6eG1LYlREL0pJQVBza0NNK3JmWUs1RjVYUjMyRnNx?=
+ =?utf-8?B?NzNsbnFEZ1RJTE51YkVzTjhWYW01dUkzRmtSTHBtWEEzT3ErRnFGVkMyOHpu?=
+ =?utf-8?B?Rnc3eU9kZWx5YkVvTkg4S0tWc1lTYTM1K24zSThRclNydnFTcStqcFhBTmhm?=
+ =?utf-8?B?R1B2UVJhazVFMk9aVm1FMXZJS0pMTkhXZnRCMGV2Qi9iT1VRaUdvN3QvNFpY?=
+ =?utf-8?B?SkxoKzNtTFdDVyszbFk5b3hWd1FsWmZwM3BrcUZOTmNxWFhraFBkOG5BRmZ0?=
+ =?utf-8?B?QkFmSVlzc0RoeW1GUVBrVFVYRDE3KytnRm9udGRjZEVnTGdBQUJoRnBmbTVa?=
+ =?utf-8?Q?qyk4=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f0886d0a-5fe3-4a19-6983-08dbe4194861
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 07:22:24.3940
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 31TnLx6yeMhxm+KmscF5iqd6UX2t9M/CsXkx2VJiYdJJJum6YMs1DPZFU0VtlqhO
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6203
+X-Spam-Status: No, score=-0.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fangrui
+Am 10.11.23 um 17:57 schrieb Danilo Krummrich:
+> On 11/10/23 09:50, Christian König wrote:
+>> [SNIP]
+>>>>
+>>>>>
+>>>>> Another issue Christian brought up is that something intended to 
+>>>>> be embeddable (a base class) shouldn't really have its own 
+>>>>> refcount. I think that's a valid point. If you at some point need 
+>>>>> to derive from multiple such structs each having its own refcount, 
+>>>>> things will start to get weird. One way to resolve that would be 
+>>>>> to have the driver's subclass provide get() and put() ops, and 
+>>>>> export a destructor for the base-class, rather than to have the 
+>>>>> base-class provide the refcount and a destructor  ops.
+>>>
+>>> GPUVM simply follows the same pattern we have with drm_gem_objects. 
+>>> And I think it makes
+>>> sense. Why would we want to embed two struct drm_gpuvm in a single 
+>>> driver structure?
+>>
+>> Because you need one drm_gpuvm structure for each application using 
+>> the driver? Or am I missing something?
+>
+> Right, *one*, but not more than one. Wasn't that the concern? Maybe I 
+> misunderstood something. :)
 
-Thank you for your time :)
+Well, there is the use case of native context with XEN/KVM. In that 
+situation QEMU opens tons of driver file descriptors on behalves of the 
+virtual environment clients.
 
-On 11/6/2023 4:50 AM, Fangrui Song wrote:
-> On Fri, Nov 3, 2023 at 9:01 AM Yuan Tan <tanyuan@tinylab.org> wrote:
-> >
-> > .size directive fails in some functions with SHF_GROUP, this is not
-> > really required for normal building, inhibit it to silence the compiling
-> > failures with SHF_GROUP.
-> >
-> > Signed-off-by: Yuan Tan <tanyuan@tinylab.org>
-> > Signed-off-by: Zhangjin Wu <falcon@tinylab.org>
-> > ---
-> >  Makefile | 3 +++
-> >  1 file changed, 3 insertions(+)
-> >
-> > diff --git a/Makefile b/Makefile
-> > index a4e522b747cb..f67b6e8d2c45 100644
-> > --- a/Makefile
-> > +++ b/Makefile
-> > @@ -936,6 +936,9 @@ endif
-> >  # `rustc`'s `-Zfunction-sections` applies to data too (as of 1.59.0).
-> >  ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> >  KBUILD_CFLAGS_KERNEL += -ffunction-sections -fdata-sections
-> > +ifdef CONFIG_SECTION_SHF_GROUP_SUPPORT
-> > +KBUILD_CFLAGS_KERNEL += -finhibit-size-directive
-> > +endif
-> >  KBUILD_RUSTFLAGS_KERNEL += -Zfunction-sections=y
-> >  LDFLAGS_vmlinux += --gc-sections
-> >  ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION_DEBUG
-> > --
-> > 2.34.1
-> >
-> 
-> Clang doesn't support -finhibit-size-directive, so this would break
-> Clang builds.
+In this use case you have many drm_gpuvm instances for a single 
+application. So you can't assume that you only have one VM per PID/TGID 
+or something like that.
 
-Currently, Clang doesn't support LD_DEAD_CODE_DATA_ELIMINATION. So in this
-patch series I didn't take much thought about clang.
+AMD already made that mistake with KFD and I strongly suggest not to 
+repeat it :)
 
-> 
-> GCC has had this option since 1992, but it is not used in the wild.
-> https://gcc.gnu.org/onlinedocs/gcc/Code-Gen-Options.html#index-finhibit-size-directive
-> says
-> 
-> > ... This option is used when compiling crtstuff.c; you should not need to use it for anything else.
-> 
-> What problem have you seen with .size directives (st_size field in
-> symbol table entries)?
-
-$ make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu- fs/ioctl.o
-/tmp/ccy5E3wN.s: Error: .size expression for __riscv_sys_ioctl does not evaluate to a constant
-make[3]: *** [scripts/Makefile.build:243: fs/ioctl.o] Error 1
-make[2]: *** [scripts/Makefile.build:480: fs] Error 2
-make[1]: *** [/home/tanyuan/projects/linux/Makefile:1916: .] Error 2
-make: *** [Makefile:234: __sub-make] Error 2
-
-And the fs/ioctl.s is like
-	.section	.text.__riscv_sys_ioctl,"ax",@progbits
-	.align	1
-	.globl	__riscv_sys_ioctl
-	.type	__riscv_sys_ioctl, @function
-__riscv_sys_ioctl:
-        ...
-        ...
-	.size	__riscv_sys_ioctl, .-__riscv_sys_ioctl
-
-I cannot understand this error and this option just solve the problem :)
-
-> 
-> % cat a.c
-> int v;
-> void f() {}
-> % diff -u0 <(gcc -S a.c -o -) <(gcc -S -finhibit-size-directive a.c -o -)
-> --- /proc/self/fd/11    2023-11-05 12:42:51.298618475 -0800
-> +++ /proc/self/fd/15    2023-11-05 12:42:51.298618475 -0800
-> @@ -7 +6,0 @@
-> -       .size   v, 4
-> @@ -27 +25,0 @@
-> -       .size   f, .-f
-> 
-> 
+Regards,
+Christian.
