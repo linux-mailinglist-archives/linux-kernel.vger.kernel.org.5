@@ -2,180 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DC3C7E9C5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14087E9C5F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229838AbjKMMrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55578 "EHLO
+        id S229981AbjKMMri (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:47:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbjKMMrL (ORCPT
+        with ESMTP id S229470AbjKMMrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:47:11 -0500
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com [209.85.210.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9C5BD79
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:47:07 -0800 (PST)
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6c334d2fd40so5825417b3a.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:47:07 -0800 (PST)
+        Mon, 13 Nov 2023 07:47:36 -0500
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF54D7E;
+        Mon, 13 Nov 2023 04:47:33 -0800 (PST)
+Received: by mail-ed1-x52e.google.com with SMTP id 4fb4d7f45d1cf-5446c9f3a77so6848103a12.0;
+        Mon, 13 Nov 2023 04:47:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699879651; x=1700484451; darn=vger.kernel.org;
+        h=message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gI+IXBV+qpvJ7bjdWxUIsbkCiBzZ5O6FKXwTdFM3SRM=;
+        b=eraibkIoka4RsWhXT/VuLpMqmKSnMQIZTbpeXTuIARVG2etpRxGi94pxzOWWz893yT
+         cEF1i+FdJCDbb+7CQ1RgUkJYXC8bYMf+wLVZsqjzl539YOcCoyq068/rM+UC+I5Nh0Mz
+         vsXbsY4irZCaazP+VIGzbSXaKgEH2+IXVhugmhmzI+aE4VfYWBvXdifdpnRVV0OEWT4D
+         zLEj22yOKoBEVWe4P27B20m1VckA/5bSaS5W/hHz2VzA/IlpwL/Jx303FXiBcAeKmpbR
+         lv3rxq/YWTXqpnaH1OQ8NWClZ+HBtTVwPRXJRhcwnqjotXyFJDIwnbJP/K1NOMxQWg/a
+         RRZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699879627; x=1700484427;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2YhNtK4hSUkgQRF+Wp7nwvqD4QStVbTqJ2Vq4CWalls=;
-        b=jOwLpWXnDljHAkP6pZOyDBJWFElAh2nTFIxajEx2qRwn/E8+WmIjc6dkc1jnu7RvdD
-         ovhXElJgCYVaTie9J3SWhlzB1P+Y0ME9MB8wowOQmOEZRrT+rPVwUtQ0EI89lOWcRWjy
-         lxkkh8Lvxlf/fDTbgXf3TwWecVdmu4UxqSoK/7wqrgKgajpL/Phwwgtqh0yd8bFDkicd
-         n7Syid0VQ2rFlb0hmdyo+efNygyg11HvBe61jcvxPXDNLG8Lnupk4DHox0mCYznYy5Aq
-         52OtC0fEA9x/pDqfWKHXg0shnC4GelE5WiP83Fp4/4Tuyuo19LIH4489lkaeSZ7PLkkT
-         u0Og==
-X-Gm-Message-State: AOJu0YwT0hpdxuv6kuwP1haok5J1Wbd2xddnEvB8aQLF9mUS7j9R1H9Z
-        A2OreJ14kJLCd3zuDzEfWD5M90OmL0Me1y/jaeqKo5LlRy7w
-X-Google-Smtp-Source: AGHT+IFn5yKFuYVKCCQBfL5SwOoQ3Ms+yXx/weJ8ebkrpmUlNl9SZX6/SO7ftS4BkoXodndc7bAP2MYpEsdhwLSsxTR8MhtDY7GA
-MIME-Version: 1.0
-X-Received: by 2002:a05:6a00:2809:b0:68f:f868:a4fb with SMTP id
- bl9-20020a056a00280900b0068ff868a4fbmr1602088pfb.5.1699879627221; Mon, 13 Nov
- 2023 04:47:07 -0800 (PST)
-Date:   Mon, 13 Nov 2023 04:47:07 -0800
-In-Reply-To: <fa2828889412ffe9321478f4c5deb0f7@foxhound.fi>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000005770ed060a081130@google.com>
-Subject: Re: [syzbot] [btrfs?] memory leak in add_tree_block
-From:   syzbot <syzbot+be14ed7728594dc8bd42@syzkaller.appspotmail.com>
-To:     jose.pekkarinen@foxhound.fi, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699879651; x=1700484451;
+        h=message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gI+IXBV+qpvJ7bjdWxUIsbkCiBzZ5O6FKXwTdFM3SRM=;
+        b=C7rXEU0cyuuZjARygYmAl1faoahhgqZ6lh1S8fDKUabPh3XMsrjxHs8hsxwz5AKF6I
+         d+abrZ0gwRgAxu83MffGf9hkqZifCo2zC3W+dzi0JHV3mmVoJ3SAVyosuc7kNEYqto6o
+         UbCJU1h77pVdhrCEm8WuzzH5Fx5bAte4ABLO9DWghgkxzJ0tm5iflv1VIMDXze+/42bD
+         3vC+x9BbbU4IrqHI3zDWAEeXhGrXSE+3lqAVx6bTLVIV2kAhfDzBCKuSjFzx72H1KVaL
+         8si8EHK07B0njYd9I0FfC7j63ggbfhcFM2W6pwR2l80kWYPzwugycNaP8zlkF2eoNInt
+         61fw==
+X-Gm-Message-State: AOJu0Yw8JWTsG6F2AtE34PI6PwURgBTweLWAH17imd68jepGA/ur2RyT
+        Dz/BLQBQFYHKFLU+9ZTlrbE=
+X-Google-Smtp-Source: AGHT+IHbwahlfNhfkHJ8gKKKfnq9f/xQ9hlrwf5bhtgfIFyKxaS8hg1JuXDeqkmVwLGGOP2FkPmM8Q==
+X-Received: by 2002:a17:906:32d9:b0:9cc:97b:5a15 with SMTP id k25-20020a17090632d900b009cc097b5a15mr4312892ejk.64.1699879651148;
+        Mon, 13 Nov 2023 04:47:31 -0800 (PST)
+Received: from felia.fritz.box ([2a02:810d:7e40:14b0:d4a9:adca:9d2f:e54c])
+        by smtp.gmail.com with ESMTPSA id ck20-20020a170906c45400b0099ce188be7fsm3976519ejb.3.2023.11.13.04.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 04:47:30 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>, linux-mm@kvack.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] mmap: remove the IA64-specific vma expansion implementation
+Date:   Mon, 13 Nov 2023 13:47:28 +0100
+Message-Id: <20231113124728.3974-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+With commit cf8e8658100d ("arch: Remove Itanium (IA-64) architecture"),
+there is no need to keep the IA64-specific vma expansion.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in add_tree_block
+Clean up the IA64-specific vma expansion implementation.
 
-BUG: memory leak
-unreferenced object 0xffff88811b83f780 (size 64):
-  comm "syz-executor.0", pid 5490, jiffies 4294945002 (age 8.100s)
-  hex dump (first 32 bytes):
-    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81578015>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-    [<ffffffff821ae7a9>] kmalloc include/linux/slab.h:600 [inline]
-    [<ffffffff821ae7a9>] add_tree_block+0x39/0x240 fs/btrfs/ref-verify.c:319
-    [<ffffffff821afdb6>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
-    [<ffffffff821afdb6>] process_leaf fs/btrfs/ref-verify.c:524 [inline]
-    [<ffffffff821afdb6>] walk_down_tree fs/btrfs/ref-verify.c:576 [inline]
-    [<ffffffff821afdb6>] btrfs_build_ref_tree+0x566/0x8c0 fs/btrfs/ref-verify.c:1009
-    [<ffffffff82095365>] open_ctree+0x18c5/0x2370 fs/btrfs/disk-io.c:3523
-    [<ffffffff8205ab21>] btrfs_fill_super fs/btrfs/super.c:1117 [inline]
-    [<ffffffff8205ab21>] btrfs_mount_root+0x5a1/0x750 fs/btrfs/super.c:1478
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d06db>] fc_mount fs/namespace.c:1114 [inline]
-    [<ffffffff816d06db>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1144
-    [<ffffffff816d075f>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1131
-    [<ffffffff8205eb82>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1538
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d882f>] do_new_mount fs/namespace.c:3337 [inline]
-    [<ffffffff816d882f>] path_mount+0xc8f/0x10d0 fs/namespace.c:3664
-    [<ffffffff816d9421>] do_mount fs/namespace.c:3677 [inline]
-    [<ffffffff816d9421>] __do_sys_mount fs/namespace.c:3886 [inline]
-    [<ffffffff816d9421>] __se_sys_mount fs/namespace.c:3863 [inline]
-    [<ffffffff816d9421>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3863
-    [<ffffffff84b4945f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b4945f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0x6b
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+ mm/mmap.c | 37 +------------------------------------
+ 1 file changed, 1 insertion(+), 36 deletions(-)
 
-BUG: memory leak
-unreferenced object 0xffff88811b83fe40 (size 64):
-  comm "syz-executor.0", pid 5490, jiffies 4294945002 (age 8.100s)
-  hex dump (first 32 bytes):
-    03 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
-    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<ffffffff81578015>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-    [<ffffffff821ae165>] kmalloc include/linux/slab.h:600 [inline]
-    [<ffffffff821ae165>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff821ae165>] add_block_entry+0x35/0x320 fs/btrfs/ref-verify.c:270
-    [<ffffffff821ae806>] add_tree_block+0x96/0x240 fs/btrfs/ref-verify.c:332
-    [<ffffffff821afdb6>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
-    [<ffffffff821afdb6>] process_leaf fs/btrfs/ref-verify.c:524 [inline]
-    [<ffffffff821afdb6>] walk_down_tree fs/btrfs/ref-verify.c:576 [inline]
-    [<ffffffff821afdb6>] btrfs_build_ref_tree+0x566/0x8c0 fs/btrfs/ref-verify.c:1009
-    [<ffffffff82095365>] open_ctree+0x18c5/0x2370 fs/btrfs/disk-io.c:3523
-    [<ffffffff8205ab21>] btrfs_fill_super fs/btrfs/super.c:1117 [inline]
-    [<ffffffff8205ab21>] btrfs_mount_root+0x5a1/0x750 fs/btrfs/super.c:1478
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d06db>] fc_mount fs/namespace.c:1114 [inline]
-    [<ffffffff816d06db>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1144
-    [<ffffffff816d075f>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1131
-    [<ffffffff8205eb82>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1538
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d882f>] do_new_mount fs/namespace.c:3337 [inline]
-    [<ffffffff816d882f>] path_mount+0xc8f/0x10d0 fs/namespace.c:3664
-    [<ffffffff816d9421>] do_mount fs/namespace.c:3677 [inline]
-    [<ffffffff816d9421>] __do_sys_mount fs/namespace.c:3886 [inline]
-    [<ffffffff816d9421>] __se_sys_mount fs/namespace.c:3863 [inline]
-    [<ffffffff816d9421>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3863
-    [<ffffffff84b4945f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b4945f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+diff --git a/mm/mmap.c b/mm/mmap.c
+index 1971bfffcc03..72a3bdea4fa4 100644
+--- a/mm/mmap.c
++++ b/mm/mmap.c
+@@ -2207,42 +2207,7 @@ struct vm_area_struct *find_extend_vma_locked(struct mm_struct *mm, unsigned lon
+ }
+ #endif
+ 
+-/*
+- * IA64 has some horrid mapping rules: it can expand both up and down,
+- * but with various special rules.
+- *
+- * We'll get rid of this architecture eventually, so the ugliness is
+- * temporary.
+- */
+-#ifdef CONFIG_IA64
+-static inline bool vma_expand_ok(struct vm_area_struct *vma, unsigned long addr)
+-{
+-	return REGION_NUMBER(addr) == REGION_NUMBER(vma->vm_start) &&
+-		REGION_OFFSET(addr) < RGN_MAP_LIMIT;
+-}
+-
+-/*
+- * IA64 stacks grow down, but there's a special register backing store
+- * that can grow up. Only sequentially, though, so the new address must
+- * match vm_end.
+- */
+-static inline int vma_expand_up(struct vm_area_struct *vma, unsigned long addr)
+-{
+-	if (!vma_expand_ok(vma, addr))
+-		return -EFAULT;
+-	if (vma->vm_end != (addr & PAGE_MASK))
+-		return -EFAULT;
+-	return expand_upwards(vma, addr);
+-}
+-
+-static inline bool vma_expand_down(struct vm_area_struct *vma, unsigned long addr)
+-{
+-	if (!vma_expand_ok(vma, addr))
+-		return -EFAULT;
+-	return expand_downwards(vma, addr);
+-}
+-
+-#elif defined(CONFIG_STACK_GROWSUP)
++#if defined(CONFIG_STACK_GROWSUP)
+ 
+ #define vma_expand_up(vma,addr) expand_upwards(vma, addr)
+ #define vma_expand_down(vma, addr) (-EFAULT)
+-- 
+2.17.1
 
-BUG: memory leak
-unreferenced object 0xffff88811acefb40 (size 96):
-  comm "syz-executor.0", pid 5490, jiffies 4294945002 (age 8.100s)
-  hex dump (first 32 bytes):
-    00 10 10 00 00 00 00 00 00 10 00 00 00 00 00 00  ................
-    01 00 00 00 00 00 00 00 01 00 00 00 01 00 00 00  ................
-  backtrace:
-    [<ffffffff81578015>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1098
-    [<ffffffff821ae17e>] kmalloc include/linux/slab.h:600 [inline]
-    [<ffffffff821ae17e>] kzalloc include/linux/slab.h:721 [inline]
-    [<ffffffff821ae17e>] add_block_entry+0x4e/0x320 fs/btrfs/ref-verify.c:271
-    [<ffffffff821ae806>] add_tree_block+0x96/0x240 fs/btrfs/ref-verify.c:332
-    [<ffffffff821afdb6>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
-    [<ffffffff821afdb6>] process_leaf fs/btrfs/ref-verify.c:524 [inline]
-    [<ffffffff821afdb6>] walk_down_tree fs/btrfs/ref-verify.c:576 [inline]
-    [<ffffffff821afdb6>] btrfs_build_ref_tree+0x566/0x8c0 fs/btrfs/ref-verify.c:1009
-    [<ffffffff82095365>] open_ctree+0x18c5/0x2370 fs/btrfs/disk-io.c:3523
-    [<ffffffff8205ab21>] btrfs_fill_super fs/btrfs/super.c:1117 [inline]
-    [<ffffffff8205ab21>] btrfs_mount_root+0x5a1/0x750 fs/btrfs/super.c:1478
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d06db>] fc_mount fs/namespace.c:1114 [inline]
-    [<ffffffff816d06db>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1144
-    [<ffffffff816d075f>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1131
-    [<ffffffff8205eb82>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1538
-    [<ffffffff816fd5a9>] legacy_get_tree+0x29/0x80 fs/fs_context.c:662
-    [<ffffffff81692d2a>] vfs_get_tree+0x2a/0x130 fs/super.c:1768
-    [<ffffffff816d882f>] do_new_mount fs/namespace.c:3337 [inline]
-    [<ffffffff816d882f>] path_mount+0xc8f/0x10d0 fs/namespace.c:3664
-    [<ffffffff816d9421>] do_mount fs/namespace.c:3677 [inline]
-    [<ffffffff816d9421>] __do_sys_mount fs/namespace.c:3886 [inline]
-    [<ffffffff816d9421>] __se_sys_mount fs/namespace.c:3863 [inline]
-    [<ffffffff816d9421>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3863
-    [<ffffffff84b4945f>] do_syscall_x64 arch/x86/entry/common.c:51 [inline]
-    [<ffffffff84b4945f>] do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
-
-
-
-Tested on:
-
-commit:         5a6a09e9 Merge tag 'cgroup-for-6.7' of git://git.kerne..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=161484b8e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=492c9379bc08e464
-dashboard link: https://syzkaller.appspot.com/bug?extid=be14ed7728594dc8bd42
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
