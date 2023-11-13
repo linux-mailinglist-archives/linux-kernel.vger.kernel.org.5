@@ -2,177 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 136577E9C67
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E7A7E9C6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 13:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230212AbjKMMub (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 07:50:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46898 "EHLO
+        id S230034AbjKMMvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 07:51:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229972AbjKMMu2 (ORCPT
+        with ESMTP id S229507AbjKMMvE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 07:50:28 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 004CAD79
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:50:23 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso6578698a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 04:50:23 -0800 (PST)
+        Mon, 13 Nov 2023 07:51:04 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B74141722;
+        Mon, 13 Nov 2023 04:51:00 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id 98e67ed59e1d1-280200949c3so3279813a91.0;
+        Mon, 13 Nov 2023 04:51:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fairphone.com; s=fair; t=1699879822; x=1700484622; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=N13JBdU904zFnf0HqevyoXQNJ3lJ+1zQrKvMl13vlHo=;
-        b=JZ5lvL5wec3FzGpEvDNeRdBApoD8UYWPUxrMcU62T8whvibXTgLOTio3C/uGDXHXVX
-         d+5E9FE1Ay8Kvxunu7jZtkCRHnnurlRSts8xJJZo5yskLtkQkAgiEEmyVWwqJYJwyG/M
-         ZZ70AOAqSbqK26qlenjy0QaXGHdetMFL5fMFj/NR9FynL1aW+aKNEGZUUlmqHpG7cGkP
-         rqtyX9A+QdH480LdQj0/aDbBlwZXAh3MWnqGOuVrStmr5pMFOHCjD3lQtyqP+I96Wy8E
-         iLgnuGsl7AP4ksGKR2Gx7J9c9WPhPDv1UYJrWeD0EC4iYEGOThWCN2TgwLDcqCsM/hF/
-         jvuA==
+        d=gmail.com; s=20230601; t=1699879860; x=1700484660; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=s1u2wgBJR1eY/vvX4BSIn+hcZj98gJmcG5xtzxqEays=;
+        b=cKHDRoqGMroCQXmP4xuO2obx5UlwwMwm4fnl0qnOey3hV05znUB55g79uTWWox+DGW
+         FyUle/BEogkoy8gW389K9EuKxlzoCcBzpCWXkrmXR6EEUFTowvSo9OD2YkbWhQTro41K
+         ZFYThpWvxAE6xm3Dk3Q9DbCoZUaXBW6NiBDhoGUk4UDNkIpgoH/OhhrLM2mbbyHieDis
+         IcEntkYE3Jn0PmxWC+FKmpdwERwvIBTiKwQeyRp9713OqLaFzGpDUu3524MFsV9/ekE+
+         1ZCH1O/EIVKFx4VAUepkpdO1WI701Gv3Q8CD0TS2oWl7XCYPnStA4qkVPq8jqhRWWTAQ
+         lq+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699879822; x=1700484622;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-transfer-encoding:mime-version:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=N13JBdU904zFnf0HqevyoXQNJ3lJ+1zQrKvMl13vlHo=;
-        b=kptsVZHSaFbYRpSymkmY5bbbZRRARWxZPyPD+85XTUHhp0WqKduVJcZ/S7WX9t5/UY
-         FLdqxzwUMmzUT/2BOkYTNd2LuQpw2yoQvJGs6x9QNktQsabFFsxXiSw9neH6stkUrBei
-         w1E2bucHEb6+fvPaAqj6PikR1mpxirt4fdN1p0qwjXpRHltg92rxcy3rfMGZIQ10RVs0
-         eTQ66tCCeYuyij1CaeA6PiYISSoD2IG/Df7/kuPLdvvMug4NRFAOrCTxFiPl46X/2nA0
-         g8RbH2c9n8qGMLyMtDvFQOjRJf5z8fuwyT3Zc2vWILQfNm9/uaUq6azq6AEUTS2GAbTc
-         kUqA==
-X-Gm-Message-State: AOJu0Yykq+ROe43k12uniy5wDn2Jz45dGKlgPCiHRQW0L6b6LBNCdDqu
-        zmpn5VZHNCrkhcOEN6dU+FKIMg==
-X-Google-Smtp-Source: AGHT+IFAHarCQT9X05gSVzLNnvdGW4iSoxHQZnNRwA8Psb/ROnfXippLqiuXAEGP4HAefaqXNIn0Qw==
-X-Received: by 2002:a05:6402:1a45:b0:53e:1815:ed0f with SMTP id bf5-20020a0564021a4500b0053e1815ed0fmr4884047edb.31.1699879822427;
-        Mon, 13 Nov 2023 04:50:22 -0800 (PST)
-Received: from localhost (k10064.upc-k.chello.nl. [62.108.10.64])
-        by smtp.gmail.com with ESMTPSA id b30-20020a509f21000000b0053d9f427a6bsm3805358edf.71.2023.11.13.04.50.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 04:50:22 -0800 (PST)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Mon, 13 Nov 2023 13:50:21 +0100
-Message-Id: <CWXP3TCW3A1G.2ME0JJT3S540G@fairphone.com>
-Cc:     "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        "Andy Gross" <agross@kernel.org>,
-        "Bjorn Andersson" <andersson@kernel.org>,
-        "Mathieu Poirier" <mathieu.poirier@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Manivannan Sadhasivam" <mani@kernel.org>,
-        <cros-qcom-dts-watchers@chromium.org>,
-        <~postmarketos/upstreaming@lists.sr.ht>,
-        <phone-devel@vger.kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@linaro.org>,
-        "Rob Herring" <robh@kernel.org>,
-        =?utf-8?q?Matti_Lehtim=C3=A4ki?= <matti.lehtimaki@gmail.com>,
-        <linux-arm-msm@vger.kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <ath11k@lists.infradead.org>
-Subject: Re: [PATCH 9/9] arm64: dts: qcom: qcm6490-fairphone-fp5: Enable
- WiFi
-From:   "Luca Weiss" <luca.weiss@fairphone.com>
-To:     "Kalle Valo" <kvalo@kernel.org>,
-        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>
-X-Mailer: aerc 0.15.2
-References: <20231027-sc7280-remoteprocs-v1-0-05ce95d9315a@fairphone.com>
- <20231027-sc7280-remoteprocs-v1-9-05ce95d9315a@fairphone.com>
- <12ea48bd-5022-4820-815a-89ef23ec9385@linaro.org>
- <CWMK0AQRL87L.1F9MIDVQ4J439@fairphone.com>
- <CAA8EJpqCeW8NVcrpwo6JVn0kE2W-QMELB1YH7i7pgOH6qiPbCQ@mail.gmail.com>
- <87zfzhu9kx.fsf@kernel.org>
-In-Reply-To: <87zfzhu9kx.fsf@kernel.org>
+        d=1e100.net; s=20230601; t=1699879860; x=1700484660;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s1u2wgBJR1eY/vvX4BSIn+hcZj98gJmcG5xtzxqEays=;
+        b=CsuQL2QQavP6cRebYXDvNrigrf5z123wpWNSEA6hYvakjsWsCR7i97jYbUKXrhDT1+
+         rtGe0SVqWAweBQECPO7anbuSWlg3Btsil9E2/xNWvv4hD9B7gQct4al6cWruCfxOn+Bp
+         2I6WyNb/ZCSoLeTeGUZf9nULzIFs0ikOZG+cw8lz6aBg4ISTAvnw9U0hCBd+SKQyZDxA
+         Yl/bD8Ngbobr/b8v6L+IRSe2mk52xv/qV054HpmTfvVK62LdK88AxwU22R9s7pnSlq3r
+         mXcsIfu3p1zieLsMQMpOKH7iEposgl2dx7uar6/AWQAiLNtTiKsienElILYV4JW5vaJg
+         T5Uw==
+X-Gm-Message-State: AOJu0YxvP/wfyXzByA6m9wtwsaGlJBssSVMqQqPNctq0A1hErh0r05rp
+        3+bRxt1WGffjDaL9jjW7xaA62gkX3q9nKiBNDrs=
+X-Google-Smtp-Source: AGHT+IFjsWsacLBDEf3mCA9vW/UukdUhufQXIETHl5zYVqAZBxyiINS3gtbD/tXHvfCFOuUcnyECG4ttZv3zavYrymY=
+X-Received: by 2002:a17:90b:4b4b:b0:280:16bb:8169 with SMTP id
+ mi11-20020a17090b4b4b00b0028016bb8169mr3707546pjb.40.1699879860080; Mon, 13
+ Nov 2023 04:51:00 -0800 (PST)
+MIME-Version: 1.0
+References: <20231025104457.628109-1-robimarko@gmail.com> <20231025104457.628109-2-robimarko@gmail.com>
+ <CAOX2RU4MBvDZZ767RPS9XKj0U2L3gviVG5cyR8NKyO4LD+sfYQ@mail.gmail.com>
+ <20c8cfde-3f55-45c5-bc23-21979ac9680d@linaro.org> <CAOX2RU5-XFZhGzjigNtu-qFnPWDd2XkpGpY=HXWigRa5SXw4TA@mail.gmail.com>
+ <ef377506-4132-4805-a76e-18f241afe319@linaro.org> <CAOX2RU4K67evm10giQvF1rcfqTfR+e--KQT3ZePoHQoqASv_fg@mail.gmail.com>
+ <bdf6be0b-c137-48ce-8a3f-ab74bced6f87@linaro.org> <CAOX2RU4z1Dcs7ct0BAaS7wicYVmQEiSe74=w_grFDKQv22uoFg@mail.gmail.com>
+ <4243a841-5509-4d04-8ec7-191f2ba5677a@linaro.org>
+In-Reply-To: <4243a841-5509-4d04-8ec7-191f2ba5677a@linaro.org>
+From:   Robert Marko <robimarko@gmail.com>
+Date:   Mon, 13 Nov 2023 13:50:48 +0100
+Message-ID: <CAOX2RU73n4JUTxGGgN7YOEqjj-1_=n=UZ99xsZ8Easp6O-D_yA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] clk: qcom: ipq6018: add USB GDSCs
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Nov 13, 2023 at 1:22 PM CET, Kalle Valo wrote:
-> (adding ath11k list)
+On Mon, 13 Nov 2023 at 12:58, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
 >
-> Dmitry Baryshkov <dmitry.baryshkov@linaro.org> writes:
->
-> > [Added Kalle to the CC list]
-> >
-> > On Tue, 31 Oct 2023 at 12:31, Luca Weiss <luca.weiss@fairphone.com> wro=
-te:
+> On 11.11.2023 12:28, Robert Marko wrote:
+> > On Tue, 7 Nov 2023 at 22:51, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
 > >>
-> >> On Mon Oct 30, 2023 at 8:26 PM CET, Konrad Dybcio wrote:
-> >> > On 27.10.2023 16:20, Luca Weiss wrote:
-> >> > > Now that the WPSS remoteproc is enabled, enable wifi so we can use=
- it.
-> >> > >
-> >> > > Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
-> >> > > ---
-> >> > >  arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts | 4 ++++
-> >> > >  1 file changed, 4 insertions(+)
-> >> > >
-> >> > > diff --git a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts b/=
-arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-> >> > > index d65eef30091b..e7e20f73cbe6 100644
-> >> > > --- a/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-> >> > > +++ b/arch/arm64/boot/dts/qcom/qcm6490-fairphone-fp5.dts
-> >> > > @@ -713,3 +713,7 @@ &venus {
-> >> > >     firmware-name =3D "qcom/qcm6490/fairphone5/venus.mbn";
-> >> > >     status =3D "okay";
-> >> > >  };
-> >> > > +
-> >> > > +&wifi {
-> >> > > +   status =3D "okay";
-> >> > qcom,ath11k-calibration-variant?
 > >>
-> >> What value would I put there for my device? Based on existing usages
-> >> (mostly for ath10k) I'd say "Fairphone_5"?
+> >>
+> >> On 10/31/23 10:01, Robert Marko wrote:
+> >>> On Mon, 30 Oct 2023 at 22:12, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>>>
+> >>>> On 30.10.2023 21:37, Robert Marko wrote:
+> >>>>> On Mon, 30 Oct 2023 at 20:37, Konrad Dybcio <konrad.dybcio@linaro.org> wrote:
+> >>>>>>
+> >>>>>> On 29.10.2023 12:04, Robert Marko wrote:
+> >>>>>>> On Wed, 25 Oct 2023 at 12:45, Robert Marko <robimarko@gmail.com> wrote:
+> >>>>>>>>
+> >>>>>>>> IPQ6018 has GDSC-s for each of the USB ports, so lets define them as such
+> >>>>>>>> and drop the curent code that is de-asserting the USB GDSC-s as part of
+> >>>>>>>> the GCC probe.
+> >>>>>>>>
+> >>>>>>>> Signed-off-by: Robert Marko <robimarko@gmail.com>
+> >>>>>>>
+> >>>>>>> Unfortunately, after testing on multiple devices I hit the same GDSC
+> >>>>>>> issue I had a long time ago
+> >>>>>>> that was the reason I did not send this upstream.
+> >>>>>>> It seems that USB3 port GDSC (USB0 GDSC in code) works just fine,
+> >>>>>>> however the USB2 one
+> >>>>>>> (USB1 GDSC in code) it is stuck off and USB2 port will fail due to this:
+> >>>>>>>      1.607531] ------------[ cut here ]------------
+> >>>>>>> [    1.607559] usb1_gdsc status stuck at 'off'
+> >>>>>>> [    1.607592] WARNING: CPU: 0 PID: 35 at gdsc_toggle_logic+0x16c/0x174
+> >>>>>>> [    1.615120] Modules linked in:
+> >>>>>> Can you dump GDSCR (the entire 32-bit register) at boot and when toggling?
+> >>>>>
+> >>>>> Sure, here it is:
+> >>>>> [    0.023760] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val: 0x8222004 init
+> >>>>> [    0.023782] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val: 0x8222004 init
+> >>>>> [    0.988626] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
+> >>>>> 0x8282000 before toggle
+> >>>>> [    1.202506] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3f078 val:
+> >>>>> 0x8282000 after toggle
+> >>>>> [    1.207208] qcom,gcc-ipq6018 1800000.gcc: reg: 0x3e078 val:
+> >>>>> 0xa0282000 before toggle
+> >>>> Any chance
+> >>>>
+> >>>> .en_few_wait_val = 0x2
+> >>>>
+> >>>> (turning BIT(19) into BIT(17))
+> >>>>
+> >>>> will make a difference?
+> >>>
+> >>> Sadly, it makes no difference and GDSC status bit newer comes up which is
+> >>> rather weird as USB0 one seems to work just fine.
+> >> What if you add clk_ignore_unused?
 > >
-> > I think this is fine.
->
-> From style point of view I would prefer lower case and dashes, for
-> example "fairphone-5" but I'm just nitpicking, uppercase and underscores
-> work fine as well.
+> > To the USB1 master clock or?
+> That's a command line parameter, effectively setting it on all clks.
 
-I really don't mind, but I used "Fairphone_5" in v2 now, but I can
-change it for v3 if that happens if you wish.
+Oh that, I understand now.
 
 >
-> If you have different SKUs or similar which need different ath11k board
-> files being more specific like "fairphone-5-eu" and "fairphone-5-us" is
-> one option. But I'm sure Luca knows best what is needed for Fairphone,
-> just throwing out ideas here.
-
-As far as I am aware, there's only one hardware variant, so nothing
-extra should be needed there. (We also only really sell in Europe, apart
-from a small rollout in Taiwan and a trial in the US, but same HW there)
-
-Regards
-Luca
-
->
-> >> And you mean I should add this property in dts before even looking int=
-o
-> >> the firmware/calibration side of it?
 > >
-> > From my experience some (most?) of the device manufacturers do the
-> > wrong thing here. They do not program a sensible board_id, leaving it
-> > as 0xff or some other semi-random value. The calibration variant is
-> > the only way for the kernel to distinguish between such poor devices.
+> > There is definitively something broken regarding the GDSC as
+> > GDSC_STATE bits (30-27)
+> > change from 0 to something on the USB0 GDSC but on GDSC1 they are 0 even after
+> > SW_OVERRIDE BIT(2) is set to 1, and the POWER BIT(31) newer changes to 1.
 > >
-> > The kernel will do a smart thing though. If the device-specific
-> > calibration data is not present, it will try to fall back to the
-> > generic data.
->
-> You are correct, just to be specific it's ath11k which will choose which
-> board file to use. I recommend always setting
-> qcom,ath11k-calibration-variant in DTS if you can.
->
-> Back in the day I have tried to push for the firmware team to improve
-> the board file selection but no success. So the only practical solution
-> we have is qcom,ath11k-calibration-variant in DTS.
+> > However, if you manually set BIT(2) to 1 then the USB1 master clock
+> > can come up so
+> > GDSC seems to work.
+> > USB1 (The USB2.0 HS) port is still broken after this if USB mass storage is used
+> > but that was present before the GDSC changes as well and I still need
+> > to figure out
+> > which quirk is missing for this.
+> Please try clk_ignore_unused and see if toggling the GDSC is still broken.
 
+Sadly, passing clk_ignore_unused in the bootargs doesn't help, GDSC is
+still stuck off.
+
+Regards,
+Robert
+
+>
+> Konrad
