@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0607E9CCD
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:14:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3E4D7E9CD8
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 14:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjKMNOn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 08:14:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52784 "EHLO
+        id S230010AbjKMNP2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 08:15:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229791AbjKMNOl (ORCPT
+        with ESMTP id S229791AbjKMNP0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 08:14:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4C3FD7E
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 05:14:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2109CC433C8;
-        Mon, 13 Nov 2023 13:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699881278;
-        bh=EtMfTCKsUg7ufBalhxFNF8jrs+peRdy0cY2hZzRhWmE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nS7ZNMw0hmdXGtW9w0SMYVBq4p59yvF5bYxvk/T84uxjzZf4zpFYR2Ozd7OH2gTCz
-         u2AqN6RpKU4MZp/AkMYYpbeRp3zMOpry8A4u+d/t4zz47VuOUn+TtpUhPVsdG81X0E
-         L0m7EAeVjdkCdzGXaXqPsWSNOGYOb51/E8G/YyTHFtEz7ujWpSSqWXjL0ZUqyq+ecN
-         a9H9EGuWSJw+5DItCmAI5N7bJP5e9hRB0euEJfdiw6PM7LPeGUrL/FVrJc0Ls1U8m9
-         CaqJQhoCyQIo5oI++GMPhggi9LWuB0tP0YzouBFu1To6wLb+VtEj89fAX48qkQdQAT
-         uCMFAS8aTnMyw==
-Date:   Mon, 13 Nov 2023 13:14:34 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Inochi Amaoto <inochiama@outlook.com>
-Cc:     Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Jisheng Zhang <jszhang@kernel.org>, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] riscv: dts: sophgo: remove address-cells from CV1800B
- intc node
-Message-ID: <20231113-portable-garnet-8a04dbb71b51@squawk>
-References: <IA1PR20MB49532613F5B4BD9753A1BB4DBBB3A@IA1PR20MB4953.namprd20.prod.outlook.com>
+        Mon, 13 Nov 2023 08:15:26 -0500
+Received: from relay161.nicmail.ru (relay161.nicmail.ru [91.189.117.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86755D6C;
+        Mon, 13 Nov 2023 05:15:17 -0800 (PST)
+Received: from [10.28.138.149] (port=17042 helo=[192.168.95.111])
+        by relay.hosting.mail.nic.ru with esmtp (Exim 5.55)
+        (envelope-from <kiryushin@ancud.ru>)
+        id 1r2WmW-0000gj-5s; Mon, 13 Nov 2023 16:15:13 +0300
+Received: from [87.245.155.195] (account kiryushin@ancud.ru HELO [192.168.95.111])
+        by incarp1102.mail.hosting.nic.ru (Exim 5.55)
+        with id 1r2WmW-00A2aA-2O;
+        Mon, 13 Nov 2023 16:15:12 +0300
+Message-ID: <b8c5f018-4883-4c14-84ab-0514edac2770@ancud.ru>
+Date:   Mon, 13 Nov 2023 16:15:11 +0300
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="HnJ3G1ILUKIB0LMn"
-Content-Disposition: inline
-In-Reply-To: <IA1PR20MB49532613F5B4BD9753A1BB4DBBB3A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Nikita Kiryushin <kiryushin@ancud.ru>
+Subject: [PATCH] ACPICA: debugger: check status of acpi_evaluate_object in
+ acpi_db_walk_for_fields
+To:     Robert Moore <robert.moore@intel.com>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Erik Kaneda <erik.kaneda@intel.com>,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-MS-Exchange-Organization-SCL: -1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Errors in acpi_evaluate_object can lead to incorrect state of buffer.
+This can lead to access to data in previously ACPI_FREEd buffer and
+secondary ACPI_FREE to the same buffer later.
 
---HnJ3G1ILUKIB0LMn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Handle errors in acpi_evaluate_object the same way it is done earlier
+with acpi_ns_handle_to_pathname.
 
-On Mon, Nov 13, 2023 at 05:26:15PM +0800, Inochi Amaoto wrote:
-> A recent submission from Rob has added additionalProperties: false
-> to the interrupt-controller child node of RISC-V cpus. But CV1800B does
-> not follow this change and still uses #address-cells in its interrupt
-> controller. As it has no child nodes, #address-cells is not needed and
-> can be removed.
->=20
-> Fixes: c3dffa879cca ("riscv: dts: sophgo: add initial CV1800B SoC device =
-tree")
-> Link: https://patchwork.kernel.org/project/linux-riscv/patch/202309152019=
-46.4184468-1-robh@kernel.org/
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-This is a dupe of a patch I already applied, but have not yet sent a PR
-for:
-https://git.kernel.org/pub/scm/linux/kernel/git/conor/linux.git/commit/?h=
-=3Driscv-dt-for-next&id=3Db99df62818919b84e970eea5aec60b0dbc57da18
+Fixes: 5fd033288a86 ("ACPICA: debugger: add command to dump all fields 
+of particular subtype")
+Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+---
+  drivers/acpi/acpica/dbnames.c | 8 ++++++--
+  1 file changed, 6 insertions(+), 2 deletions(-)
 
-Cheers,
-Conor.
+diff --git a/drivers/acpi/acpica/dbnames.c b/drivers/acpi/acpica/dbnames.c
+index b91155ea9c34..c9131259f717 100644
+--- a/drivers/acpi/acpica/dbnames.c
++++ b/drivers/acpi/acpica/dbnames.c
+@@ -550,8 +550,12 @@ acpi_db_walk_for_fields(acpi_handle obj_handle,
+  	ACPI_FREE(buffer.pointer);
+   	buffer.length = ACPI_ALLOCATE_LOCAL_BUFFER;
+-	acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
+-
++	status = acpi_evaluate_object(obj_handle, NULL, NULL, &buffer);
++	if (ACPI_FAILURE(status)) {
++		acpi_os_printf("Could Not evaluate object %p\n",
++			       obj_handle);
++		return (AE_OK);
++	}
+  	/*
+  	 * Since this is a field unit, surround the output in braces
+  	 */
+-- 
+2.34.1
 
->=20
-> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-> ---
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 1 -
->  1 file changed, 1 deletion(-)
->=20
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dt=
-s/sophgo/cv1800b.dtsi
-> index df40e87ee063..aec6401a467b 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -34,7 +34,6 @@ cpu0: cpu@0 {
->  			cpu0_intc: interrupt-controller {
->  				compatible =3D "riscv,cpu-intc";
->  				interrupt-controller;
-> -				#address-cells =3D <0>;
->  				#interrupt-cells =3D <1>;
->  			};
->  		};
-> --
-> 2.42.1
->=20
-
---HnJ3G1ILUKIB0LMn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVIhNwAKCRB4tDGHoIJi
-0rkAAQCDRGINzffMT6MvCnhOlveVMvDNHnDgSN+m8Wjdp5iJ6gD/Zh+u83XnVzPH
-evBzqZTo5OoPvBJr4cZdAXjyS7KMPgY=
-=Kphh
------END PGP SIGNATURE-----
-
---HnJ3G1ILUKIB0LMn--
