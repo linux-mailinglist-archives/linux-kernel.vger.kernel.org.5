@@ -2,37 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B01797E9580
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:25:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6EB7E9581
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 04:28:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232973AbjKMDZc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 22:25:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41006 "EHLO
+        id S232975AbjKMD2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 22:28:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232926AbjKMDZa (ORCPT
+        with ESMTP id S230457AbjKMD2M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 22:25:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AEB41719
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:25:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B8CC433C7;
-        Mon, 13 Nov 2023 03:25:23 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     loongarch@lists.linux.dev, Xuefeng Li <lixuefeng@loongson.cn>,
-        Guo Ren <guoren@kernel.org>, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
-        Huacai Chen <chenhuacai@loongson.cn>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] LoongArch: Add __percpu annotation for __percpu_read()/__percpu_write()
-Date:   Mon, 13 Nov 2023 11:25:11 +0800
-Message-Id: <20231113032511.860159-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+        Sun, 12 Nov 2023 22:28:12 -0500
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b6])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC7C11727
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 19:28:07 -0800 (PST)
+Message-ID: <24d0e85a-4129-4bf3-8ef7-bcece3e9616e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1699846083;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRypFmT0gonA5vA1X1Va423ykewRIIi0SJhwQhSdTlk=;
+        b=Zi+4fq7nb+xqirT7py4dTzwLkfxx4h/GCfvMkg6bz1nJ6/fLugcpFMIYz1QsfbyJ3CvF8F
+        mZ+WA/ldZEzvFN0crm1eRDhzQQ7dIbohlTYg/Hd36WCaEQ6f/ItEM2nOmSdEWd1Ev4ItYz
+        qvDaMG2UmkKhchaffnwb5nMYeAgZPWg=
+Date:   Sun, 12 Nov 2023 22:27:53 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+Subject: Re: [PATCH bpf] bpf/tests: Remove test for MOVSX32 with offset=32
+Content-Language: en-GB
+To:     Stanislav Fomichev <sdf@google.com>,
+        Puranjay Mohan <puranjay12@gmail.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <martin.lau@linux.dev>,
+        Song Liu <song@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>,
+        Jiri Olsa <jolsa@kernel.org>,
+        "open list:BPF [GENERAL] (Safe Dynamic Programs and Tools)" 
+        <bpf@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+References: <20231110175150.87803-1-puranjay12@gmail.com>
+ <ZVEkJ9waaH9X11GR@google.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <ZVEkJ9waaH9X11GR@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -40,84 +59,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When build kernel with C=1, we get:
 
-arch/loongarch/kernel/process.c:234:46: warning: incorrect type in argument 1 (different address spaces)
-arch/loongarch/kernel/process.c:234:46:    expected void *ptr
-arch/loongarch/kernel/process.c:234:46:    got unsigned long [noderef] __percpu *
-arch/loongarch/kernel/process.c:234:46: warning: incorrect type in argument 1 (different address spaces)
-arch/loongarch/kernel/process.c:234:46:    expected void *ptr
-arch/loongarch/kernel/process.c:234:46:    got unsigned long [noderef] __percpu *
-arch/loongarch/kernel/process.c:234:46: warning: incorrect type in argument 1 (different address spaces)
-arch/loongarch/kernel/process.c:234:46:    expected void *ptr
-arch/loongarch/kernel/process.c:234:46:    got unsigned long [noderef] __percpu *
-arch/loongarch/kernel/process.c:234:46: warning: incorrect type in argument 1 (different address spaces)
-arch/loongarch/kernel/process.c:234:46:    expected void *ptr
-arch/loongarch/kernel/process.c:234:46:    got unsigned long [noderef] __percpu *
+On 11/12/23 11:14 AM, Stanislav Fomichev wrote:
+> On 11/10, Puranjay Mohan wrote:
+>> MOVSX32 only supports sign extending 8-bit and 16-bit operands into 32
+>> bit operands. The "ALU_MOVSX | BPF_W" test tries to sign extend a 32 bit
+>> operand into a 32 bit operand which is equivalent to a normal BPF_MOV.
+>>
+>> Remove this test as it tries to run an invalid instruction.
+>>
+>> Fixes: daabb2b098e0 ("bpf/tests: add tests for cpuv4 instructions")
+>> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
+>> Reported-by: kernel test robot <oliver.sang@intel.com>
+>> Closes: https://lore.kernel.org/oe-lkp/202310111838.46ff5b6a-oliver.sang@intel.com
+> Acked-by: Stanislav Fomichev <sdf@google.com>
+>
+> (based on the fact that emit_movsx_reg doesn't handle 32 bit case under !is64)
 
-Add __percpu annotation for __percpu_read()/__percpu_write() can avoid
-such warnings. __percpu_xchg() and other functions don't need annotation
-because their wrapper, i.e. _pcp_protect(), already suppresses warnings.
+The test failure signature is:
+   #83 ALU_MOVSX | BPF_W jited:1 ret 2 != 1 (0x2 != 0x1)FAIL (1 times)
 
-Also adjust the indentations in this file.
+If the asm code went though verifier, we should get a verification failure.
+But in test_bpf.ko case, the asm code is directly jited (see jited:1 above),
+so there is no verification failure.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311080409.LlOfTR3m-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202311080840.Vc2kXhfp-lkp@intel.com/
-Closes: https://lore.kernel.org/oe-kbuild-all/202311081340.3k72KKdg-lkp@intel.com/
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/loongarch/include/asm/percpu.h | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+The current jit does not do error handling and assumes asm code are all legal,
+so for !is64 case, the size = 32 asm code is silently ignored for x86 side
+and caused the error. But the test is introduced by arm64 and the test passed
+for arm64.
 
-diff --git a/arch/loongarch/include/asm/percpu.h b/arch/loongarch/include/asm/percpu.h
-index ed5da02b1cf6..9b36ac003f89 100644
---- a/arch/loongarch/include/asm/percpu.h
-+++ b/arch/loongarch/include/asm/percpu.h
-@@ -40,13 +40,13 @@ static __always_inline unsigned long __percpu_##op(void *ptr,		\
- 	switch (size) {							\
- 	case 4:								\
- 		__asm__ __volatile__(					\
--		"am"#asm_op".w"	" %[ret], %[val], %[ptr]	\n"		\
-+		"am"#asm_op".w"	" %[ret], %[val], %[ptr]	\n"	\
- 		: [ret] "=&r" (ret), [ptr] "+ZB"(*(u32 *)ptr)		\
- 		: [val] "r" (val));					\
- 		break;							\
- 	case 8:								\
- 		__asm__ __volatile__(					\
--		"am"#asm_op".d" " %[ret], %[val], %[ptr]	\n"		\
-+		"am"#asm_op".d" " %[ret], %[val], %[ptr]	\n"	\
- 		: [ret] "=&r" (ret), [ptr] "+ZB"(*(u64 *)ptr)		\
- 		: [val] "r" (val));					\
- 		break;							\
-@@ -63,7 +63,7 @@ PERCPU_OP(and, and, &)
- PERCPU_OP(or, or, |)
- #undef PERCPU_OP
- 
--static __always_inline unsigned long __percpu_read(void *ptr, int size)
-+static __always_inline unsigned long __percpu_read(void __percpu *ptr, int size)
- {
- 	unsigned long ret;
- 
-@@ -100,7 +100,7 @@ static __always_inline unsigned long __percpu_read(void *ptr, int size)
- 	return ret;
- }
- 
--static __always_inline void __percpu_write(void *ptr, unsigned long val, int size)
-+static __always_inline void __percpu_write(void __percpu *ptr, unsigned long val, int size)
- {
- 	switch (size) {
- 	case 1:
-@@ -132,8 +132,7 @@ static __always_inline void __percpu_write(void *ptr, unsigned long val, int siz
- 	}
- }
- 
--static __always_inline unsigned long __percpu_xchg(void *ptr, unsigned long val,
--						   int size)
-+static __always_inline unsigned long __percpu_xchg(void *ptr, unsigned long val, int size)
- {
- 	switch (size) {
- 	case 1:
--- 
-2.39.3
+Not sure how we could prevent such issues. To handle *all* illegal insns in jit
+definitely not a good idea. In any case, the change for this patch looks good.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
 
