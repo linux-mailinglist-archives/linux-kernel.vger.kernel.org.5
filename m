@@ -2,50 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 736267EA3F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:42:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9952F7EA3F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:42:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230463AbjKMTml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 14:42:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52998 "EHLO
+        id S231544AbjKMTmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 14:42:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231906AbjKMTki (ORCPT
+        with ESMTP id S231937AbjKMTkm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 14:40:38 -0500
+        Mon, 13 Nov 2023 14:40:42 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C93D51731
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:40:35 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E3EBC433C8;
-        Mon, 13 Nov 2023 19:40:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54846173F
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:40:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 094DCC433BD;
+        Mon, 13 Nov 2023 19:40:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699904435;
-        bh=nx7dxtYmjGRBmy753Kk0BhkvpRXqbIqSxx3MC3Ik8I8=;
+        s=k20201202; t=1699904437;
+        bh=RVxhWwg82afEMJHueW4OaWFavI/1nAFsbaehh8o1Yz4=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=T/22qNo46KR1wKRMTgq3Y4HCmF10vBRyry/NV7lYdqiNZ26YUU6WfdC63ZNiIvAMN
-         lHdSYG9rrViPgc5ZhSfWx0eRjk0dNv/qklW8QjRImxLo+MGweTuD1HmkB2cW8QGL17
-         QkF8DU8K1gy5/jbiIC1e99b4OXi1MX5B2AsUiMWEisYmFF8a696/js4AoGbFjQc2aN
-         Wi1ZMbTOJyqayvShm75TGkGo5JFD+LoNs0sse5rPlccij1k/qO8oD0Fzlo6P5Db/H5
-         WEqwCaJqpwKuhnPNT9zfv1teJ3YZOcZAzFqPmKeO3zABQFuIQ0ixmmS12KeWLIcVjx
-         4HgJ14r4LjMqA==
+        b=um6Jo+WtEH+iX8Oww51WgbJ9ClcSvtmbfJGPo6SQZMDlmITSdk969ICO54+rFj5li
+         Rk8AfupR+mzUrq3QmAZ5sDuY9DBRkPRukn73WdCilLXipKwz4Ub0vHADNJ2Odwz3yK
+         w18IhnZBgQLXmObpaaMGl9gwruOaKor5kNd0jQIOjbMANAKTHCWRKxE4LQwFGAlPxP
+         tUk6M29vgJ/GuVElRxmqlkD8eFIw18CuNboL8bu0/D80qA6oRqPeiwLQF6B7fiRGef
+         HSmh3JMbN06clPuK7ZeeKNsGLWNUAOlmBK20ZT8UXUHNOefU/jR0qGukI9V8fR5TOl
+         m3EewF57gh3kQ==
 From:   Mark Brown <broonie@kernel.org>
-To:     linux-kernel@vger.kernel.org,
-        Javier Martinez Canillas <javierm@redhat.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Brian Masney <bmasney@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        "Steven Rostedt (Google)" <rostedt@goodmis.org>,
-        Tejun Heo <tj@kernel.org>, linux-doc@vger.kernel.org,
-        Manivannan Sadhasivam <mani@kernel.org>
-In-Reply-To: <20231107190926.1185326-1-javierm@redhat.com>
-References: <20231107190926.1185326-1-javierm@redhat.com>
-Subject: Re: [PATCH v2] regulator: core: Add option to prevent disabling
- unused regulators
-Message-Id: <169990443197.3294075.4873136953876130203.b4-ty@kernel.org>
-Date:   Mon, 13 Nov 2023 19:40:31 +0000
+To:     lgirdwood@gmail.com,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+In-Reply-To: <20231109073925.98783-1-jiapeng.chong@linux.alibaba.com>
+References: <20231109073925.98783-1-jiapeng.chong@linux.alibaba.com>
+Subject: Re: [PATCH] regulator: stpmic1: Fix kernel-doc notation warnings
+Message-Id: <169990443535.3294075.12856282804446124490.b4-ty@kernel.org>
+Date:   Mon, 13 Nov 2023 19:40:35 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -60,15 +50,12 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 07 Nov 2023 20:09:18 +0100, Javier Martinez Canillas wrote:
-> This may be useful for debugging and develompent purposes, when there are
-> drivers that depend on regulators to be enabled but do not request them.
+On Thu, 09 Nov 2023 15:39:25 +0800, Jiapeng Chong wrote:
+> No functional modification involved.
 > 
-> It is inspired from the clk_ignore_unused and pd_ignore_unused parameters,
-> that are used to keep firmware-enabled clocks and power domains on even if
-> these are not used by drivers.
+> drivers/regulator/stpmic1_regulator.c:31: warning: expecting prototype for struct stpmic1. Prototype was for struct stpmic1_regulator_cfg instead.
 > 
-> [...]
+> 
 
 Applied to
 
@@ -76,8 +63,8 @@ Applied to
 
 Thanks!
 
-[1/1] regulator: core: Add option to prevent disabling unused regulators
-      commit: c986968fe92f20f2db26fa6bce27795b2e9ebe22
+[1/1] regulator: stpmic1: Fix kernel-doc notation warnings
+      commit: e1eb745006ac484427fca14feb27d79a71c3770d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
