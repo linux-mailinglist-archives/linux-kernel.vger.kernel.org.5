@@ -2,75 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 948617E94C7
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 03:28:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45477E9470
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 03:22:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233141AbjKMC2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 21:28:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44760 "EHLO
+        id S232860AbjKMCWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 21:22:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232900AbjKMC2G (ORCPT
+        with ESMTP id S229665AbjKMCWj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 21:28:06 -0500
-Received: from fd01.gateway.ufhost.com (fd01.gateway.ufhost.com [61.152.239.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 998E4111;
-        Sun, 12 Nov 2023 18:26:26 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by fd01.gateway.ufhost.com (Postfix) with ESMTP id 1C44F24E004;
-        Mon, 13 Nov 2023 10:26:18 +0800 (CST)
-Received: from EXMBX161.cuchost.com (172.16.6.71) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 13 Nov
- 2023 10:26:17 +0800
-Received: from [192.168.125.131] (113.72.144.54) by EXMBX161.cuchost.com
- (172.16.6.71) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Mon, 13 Nov
- 2023 10:26:16 +0800
-Message-ID: <f1d39129-c4ae-4264-a414-fd18f1d66e9f@starfivetech.com>
-Date:   Mon, 13 Nov 2023 10:19:38 +0800
+        Sun, 12 Nov 2023 21:22:39 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2087.outbound.protection.outlook.com [40.107.223.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F36F11C;
+        Sun, 12 Nov 2023 18:22:35 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=n3JdUwqkKs7bUi82AuIjPdjpKYorS3jLHEkshJW7rCC5WMhXimsPPvmFw6FJt3C090nQSqdgPBVKIMpEqrJSbf7fJSyfCDnCF5r6/ElnMPdVko2Rv0v7Eg+EliOa1ka40MKsz17YXGOCeruBhqlwWGRYcop1bCE8khLmHsUl9bPQG/FbAeH7dNLdKpvRzosiwYBVnUC3cF2Y0hbtmOXz1DS5abhG4q2GEH9Sv5XSBwvoMzPCFbENJYsWhMaCS489HAvnBOzOaW7NjE98BIojRSrRt6PYQkjW/T6qAzakyTkANCVZ+0S3BjHCFlyLzXf4ppWbZKTbNLZ2USt8iUx0Ew==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=FczW7ZbDfZ8fxt7GITKnaXG6oC9QzgSV7+UocEjM558=;
+ b=lAEGzPzOJ1gYamk/uLiXRko/csAAYg1KU2c6kW7S7PjjYoCiK1LInHYDsTOzI7uT+eKDJHT4MMZwi1SsFrdcuPJlXdj673HXMtZoyIKuf8kPBVZ7OCIRmnEXsfOft7uWVx/z3CAkRGPwnLNgkp5cW/ElH19rZwoxb3mnq/mUE4D5uOSUAGYOj88M3QUWVzbZlbNcHCgEFEFoxc3+TcCJ2Hh6Q2KpkjbpydkDEV88w9zqGGxz7jnsxPcZH+pVYio1UGbXBX9JFZmZHW9fEV1po/Uk58oB9RJXCEM4pcp9h+JCWqKDInDMNXgCk8BWNJQxByDrzwSLnf6iTZXHqQrwzA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FczW7ZbDfZ8fxt7GITKnaXG6oC9QzgSV7+UocEjM558=;
+ b=fyhWonLcFQXypXFqH0C/vTPsO+Sp5SU6TxaVSv9QSGTx4OiPgHDj+TCY03L9OL2f5qRphJWTn3U3tcBJtiN/NkUA0+GT52+tJ0n/0/qgLgxukxbzzbqesG2K1AOMPGr0xcL+ftGJJxm5y9GTDQTlY4zYUuLsGNCY0jIuur5Uc94=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by CH3PR17MB7052.namprd17.prod.outlook.com (2603:10b6:610:12d::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.15; Mon, 13 Nov
+ 2023 02:22:31 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7002.014; Mon, 13 Nov 2023
+ 02:22:31 +0000
+Date:   Sun, 12 Nov 2023 21:22:20 -0500
+From:   Gregory Price <gregory.price@memverge.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "tj@kernel.org" <tj@kernel.org>, John Groves <john@jagalactic.com>,
+        Gregory Price <gourry.memverge@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "mhocko@kernel.org" <mhocko@kernel.org>,
+        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "corbet@lwn.net" <corbet@lwn.net>,
+        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
+        "shakeelb@google.com" <shakeelb@google.com>,
+        "muchun.song@linux.dev" <muchun.song@linux.dev>,
+        "jgroves@micron.com" <jgroves@micron.com>
+Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
+Message-ID: <ZVGIXN83qG7jQmuj@memverge.com>
+References: <20231109002517.106829-1-gregory.price@memverge.com>
+ <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
+ <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
+ <ZU6pR46kiuzPricM@slm.duckdns.org>
+ <ZU6uxSrj75EiXise@memverge.com>
+ <ZU7vjsSkGbRLza-K@slm.duckdns.org>
+ <ZU74L9oxWOoTTfpM@memverge.com>
+ <ZU9ijZHZZjRgUctq@mtj.duckdns.org>
+ <6550144fb048d_46f0294be@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6550144fb048d_46f0294be@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+X-ClientProxiedBy: SJ0PR03CA0117.namprd03.prod.outlook.com
+ (2603:10b6:a03:333::32) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 2/3] clocksource: Add JH7110 timer driver
-Content-Language: en-US
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Samuel Holland <samuel.holland@sifive.com>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Emil Renner Berthing <emil.renner.berthing@canonical.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        <linux-riscv@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Walker Chen <walker.chen@starfivetech.com>,
-        Samin Guo <samin.guo@starfivetech.com>,
-        <linux-kernel@vger.kernel.org>, Conor Dooley <conor@kernel.org>
-References: <20231019053501.46899-1-xingyu.wu@starfivetech.com>
- <20231019053501.46899-3-xingyu.wu@starfivetech.com>
- <3f76f965-7c7b-109e-2ee0-3033e332e84b@linaro.org>
- <bb819333-52d3-49fc-9bb9-1a227bd5ca8f@starfivetech.com>
- <d0e70434-e273-4799-c5ec-bbee1b3f5cc7@linaro.org>
- <540136d4-6f8f-49a6-80ff-cc621f2f462b@starfivetech.com>
- <65c38717-3e0c-46d3-a124-29cae48f1a2e@linaro.org>
- <72ad5029-42b2-481a-887f-8f6079d8859b@starfivetech.com>
- <a8f0011c-5689-4071-b5e0-90bd6b7c66bc@linaro.org>
- <b402eb4d-a770-4988-8274-8a2544362229@starfivetech.com>
- <1dd3d765-c583-4db9-a0aa-303bfcf871db@linaro.org>
- <7c2e9b70-201c-45f8-9871-a823cc2ded16@starfivetech.com>
- <a37be8f7-64a4-4cec-8692-28ad92a02b00@sifive.com>
- <bbd2ee8d-4349-4752-859a-02fb0252d496@linaro.org>
-From:   Xingyu Wu <xingyu.wu@starfivetech.com>
-In-Reply-To: <bbd2ee8d-4349-4752-859a-02fb0252d496@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [113.72.144.54]
-X-ClientProxiedBy: EXCAS066.cuchost.com (172.16.6.26) To EXMBX161.cuchost.com
- (172.16.6.71)
-X-YovoleRuleAgent: yovoleflag
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CH3PR17MB7052:EE_
+X-MS-Office365-Filtering-Correlation-Id: a274114f-f75f-4247-c3ad-08dbe3ef633f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4YeqWXOInnMnue6dha8WJ/UMHFWHSXmBlMYzyuTDIVe6EUF2wyccM7Xm9Jhk3fPLptgPldUQzJOTYZAte9VTIji9Rhf6+DdIOx1MvNgERBd5G26EewsCi5KKFMsmsGstddw3KutaTd+CTHPaIfVhwCOxhSXOnquuQASSgaVFp0OyeoJJeEG7l/eQsWRZdAlWGUjtkUDt3F1U/6pwH8KsWJmFZLvHie0FSRgLax+xqLVxxPUndVr/WIcEvmFPfuCfKH5ZbHd4VubECfaudmxJlPRc1Sozov55kJmaUnDf0iRjt2dVrVGpedRgnI8XGrruLsmZaxXVXR2Rv98xOJvd1pRntQWr8STh7XEM1GKuHjtCy8Lr11Unykce0yOOuOVsswKVCxFWko+Pv/XLbqFX8UaVBexr1kAYLPMIrEdCDnjFYCasg8C33LGaI4/eEIt7obRehxoQG712YCfF3ZDgUQVez8p31ofmTPOrYo2QVO/NaGYoZjtF4geSQYIIsY2lF5Iamsp6WdR62zFS8nt5AiHOKQG1ecJyXFwyLV2tYeH9TAGd8UvQ1Qpb+3ea18AkuR3bCEqMlcWREatRcIl0/dfO/FqoRfmdfDtYqnYz1CpZnO66rRhD6wFLlJ7AxcyB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39830400003)(366004)(396003)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(38100700002)(316002)(86362001)(6486002)(36756003)(6916009)(54906003)(66476007)(66556008)(66946007)(478600001)(7416002)(5660300002)(2616005)(2906002)(26005)(6512007)(44832011)(6506007)(6666004)(41300700001)(8936002)(8676002)(4326008)(16393002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?qZ1geNFo7Xvej5Do/WW4S0GeNShlZvsOdf/OrNX7j2jiYujglyWTaxeyD9RQ?=
+ =?us-ascii?Q?ZAYguSLMSM1cLieKb3cm6UHYa1eatK6UXa5AEigV0oXVUkTA1GZxueGatdLw?=
+ =?us-ascii?Q?kc4Zyh1GG9rkz0dH2bG5m0lBp2JwRBvOA87+MaYDC53mbRrF28K8Cr5FCP2L?=
+ =?us-ascii?Q?o06JhJrvexlokJUcPZzBi4HwvjPpaz9E1uWS53+pDPP6qp+/zhCrK0Xamj3C?=
+ =?us-ascii?Q?oVVUqrO2c24iXfFfH/Sy/uiAQvQXWE+lBbSJ0npVIhYOUS5JuaHOIYJE+TzV?=
+ =?us-ascii?Q?wBJ7pnl2G5skpjIorf7Gl/BkOAUn1FPhLp1/Vo1ee9gaYDqAH4ISeuC355Lb?=
+ =?us-ascii?Q?CDG3wZtprsGDdpoKzBfZgaBadg4fiwS6t74UZ1auazY4d9P1YiDeoxFfiLNm?=
+ =?us-ascii?Q?FsC177LvCFne4kFRD555cDc0htHAIuGFsbuuyzOdLNwQB7E2nt+Rmmm7Bwgr?=
+ =?us-ascii?Q?b+9M9u4XjzAfeVYrtHyBIGux+vQj1ntPDtlrzyfPO0ejwnwifQgWTN9RfjY1?=
+ =?us-ascii?Q?/xqrg80lVRo6kd4Yzppd11mBVqlfsjA8RVssVqtK/l31eaDQThHRczEr7vbZ?=
+ =?us-ascii?Q?byUB3+ohzR1LjRkpNJS6iiiti/A+XAtp+wkWJvJdIRYD9sU1peKu2Kvlj7la?=
+ =?us-ascii?Q?HJi7kosFDExMTfRCPl7Q85wMEiFzk0k5I9YmW8DdHsra6PPyn11toKp6HPq1?=
+ =?us-ascii?Q?4/YMlfiIQp+vJH2pE0Q6wccsSOvxgZbbxLe725nEBTI2rg2ZLJpcdUkB/iGi?=
+ =?us-ascii?Q?JWOEPDF0mginpUvVMRe+lsRFCelxsA0UMcUmjLzKiRSx+44VmTbBb7MFwnjM?=
+ =?us-ascii?Q?l8Dlkp8iUvTWzyWk4UCML/qsoQUn5ADgueHmzQAdQ7zo118zb3qDQb52OA7F?=
+ =?us-ascii?Q?8bpzGV9cGTyrqDllZsJSDRjjfJhPLAfGeUElkFE2f80oDqVnbKSBpIBhytf5?=
+ =?us-ascii?Q?UrKX3sGYgnDZOVCqBS3i3/XzjFIo4GZc/1ctaNzPWIJxOCzRk+FPnA1jZ/rA?=
+ =?us-ascii?Q?jVcwTgtYaEzuBpLKrSPOAQjW7fW++2+/Q8cKGeDQnsoB/rD7e4ZdaDxgiLQT?=
+ =?us-ascii?Q?dsboaLALHqyO57CP2bJKmnnOOe/9999ddpXPoXgfnOnmt0d3MDnH9l9TBVdc?=
+ =?us-ascii?Q?3FX34Iz/2UXubRBnAqiivAMW3afPigaRpOE6k/k4ktT15IrBoaMP0LQboY7K?=
+ =?us-ascii?Q?VvD2FzSgjoIZzO8D8cxyA4UAtEwwuzPnzcCv6XAbt4O0mLrqiD/9ZJTcmAPI?=
+ =?us-ascii?Q?5LUy+JO/EhCR7+gQ2HuSNYO6TFJY/Z1DSXuYlP0UC6UR2MfITZ4R+zxmwY+i?=
+ =?us-ascii?Q?+Mrzc2nlqdWeiZLMFrbDb7/GFD9olxEZhk4A6YiIbIYMGZLZNv/9Tai0fAhs?=
+ =?us-ascii?Q?WwxCteJZ8f3b9nMzSxNnTPkn1B3rcYGSV+x9dwg4fbQSZygQF2i3/eS+RjxK?=
+ =?us-ascii?Q?bDkhESYj5ctCknsATyg9EPzTves0xxHB2U4iTb/TIA5pSSseoSJ4FzsjQTBi?=
+ =?us-ascii?Q?2lqMTg66gNtGdayUMUkP4w/KGtrIWerDZ3XDTjkbcDsSCbMmHAUH13yWLO+w?=
+ =?us-ascii?Q?MKbpjzMjbLaQoPTQIdsLwWdoJPTb0Fk/zLczsmV9LAw4O9dYcr2gAI3WSRXe?=
+ =?us-ascii?Q?8Q=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a274114f-f75f-4247-c3ad-08dbe3ef633f
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2023 02:22:30.6127
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: aGiQIlC7fbInknxjOyxj+S0dCRJ4TgV1KS4udvXQFnKBsyBL4zXZ9zIudAv/JAuFs5Vrem+aU+nB9HopRs529FA1rx+EitBHc4fhKMhgzf4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR17MB7052
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,77 +137,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/11 2:02, Daniel Lezcano wrote:
+On Sat, Nov 11, 2023 at 03:54:55PM -0800, Dan Williams wrote:
+> tj@kernel.org wrote:
+> > Hello,
+> > 
+> > On Fri, Nov 10, 2023 at 10:42:39PM -0500, Gregory Price wrote:
+> > > On Fri, Nov 10, 2023 at 05:05:50PM -1000, tj@kernel.org wrote:
 > 
-> Hi Samuel,
+> > Here, even if CXL actually becomes popular, how many are going to use memory
+> > hotplug and need to dynamically rebalance memory in actively running
+> > workloads? What's the scenario? Are there going to be an army of data center
+> > technicians going around plugging and unplugging CXL devices depending on
+> > system memory usage?
 > 
-> On 10/11/2023 18:40, Samuel Holland wrote:
->> On 2023-11-08 11:51 PM, Xingyu Wu wrote:
->>> On 2023/11/8 17:10, Daniel Lezcano wrote:
->>>> On 08/11/2023 04:45, Xingyu Wu wrote:
->>>>> On 2023/11/2 22:29, Daniel Lezcano wrote:
->>>>
->>>> [ ... ]
->>>>
->>>>> Thanks. The riscv-timer has a clocksource with a higher rating but a
->>>>> clockevent with lower rating[1] than jh7110-timer. I tested the
->>>>> jh7110-timer as clockevent and flagged as one shot, which could do some
->>>>> of the works instead of riscv-timer. And the current_clockevent changed
->>>>> to jh7110-timer.
->>>>>
->>>>> Because the jh7110-timer works as clocksource with lower rating and only
->>>>> will be used as global timer at CPU idle time. Is it necessary to be
->>>>> registered as clocksource? If not, should it just be registered as
->>>>> clockevent?
->>>>
->>>> Yes, you can register the clockevent without the clocksource.
->>>>
->>>> You mentioned the JH7110 has a better rating than the CPU architected
->>>> timers. The rating is there to "choose" the best timer, so it is up to the
->>>> author of the driver check against which timers it compares on the
->>>> platform.
->>>>
->>>> Usually, CPU timers are the best.
->>>>
->>>> It is surprising the timer-riscv has a so low rating. You may double check
->>>> if jh7110 is really better. If it is the case, then implementing a
->>>> clockevent per cpu would make more sense, otherwise one clockevent as a
->>>> global timer is enough.
->>
->> The timer-riscv clockevent has a low rating because it requires a call to
->> firmware to set the timer, as well as a trap to firmware to handle the
->> interrupt, which both add overhead. Implementations which support the Sstc
->> extension[1] do not require firmware assistance to implement the clockevent, so
->> in that case we register the clockevent with a higher rating.
->>
->> [1]: https://github.com/riscv/riscv-time-compare
+> While I have personal skepticism that all of the infrastructure in the
+> CXL specification is going to become popular, one mechanism that seems
+> poised to cross that threshold is "dynamic capacity". So it is not the
+> case that techs are running around hot-adjusting physical memory. A host
+> will have a cable hop to a shared memory pool in the rack where it can
+> be dynamically provisioned across hosts.
 > 
-> Thanks for the pointer and the clarification.
+> However, even then the bounds of what is dynamic is going to be
+> constrained to a fixed address space with likely predictable performance
+> characteristics for that address range. That potentially allows for a
+> system wide memory interleave policy to be viable. That might be the
+> place to start and mirrors, at a coarser granularity, what hardware
+> interleaving can do.
 > 
->>>> Unused clocksource, clockevents should be stopped in case the firmware let
->>>> them in a undetermined state.
->>>
->>> The interrupts of jh7110-timer each channel are global interrupts like
->>> SPI(Shared Peripheral Interrupt) not PPI (Private Peripheral Interrupt). They
->>> are up to PLIC to select which core to respond to. So it is hard to implement
->>> a clockevent per cpu core. I tested this with request_percpu_irq() and it
->>> failed.
->>
->> You cannot use request_percpu_irq(), but the driver should be able to set the
->> affinity of each IRQ to a separate CPU.
-> 
-> Absolutely. And given the bad rating of the local timers, it may be worth to implement this driver in a per CPU (affinity set) basis.
-> 
-> At the first glance, the arm_global_timer can be used as an example.
-> 
-> Note in this case, you may want to double check what does with an idle state with a local timer stop flag and this timer which is always on.
-> 
-> 
-> 
+> [..]
 
-Hi Daniel and Samuel,
+Funny enough, this is exactly why I skipped cgroups and went directly to 
+implementing the weights as an attribute of numa nodes. It cuts out a
+middle-man and lets you apply weights globally.
 
-Thanks for your pointers. I will check it. If it works, I will send the new version of this patch.
+BUT the policy is still ultimately opt-in, so you don't really get a
+global effect, just a global control.  Just given that lesson, yeah
+it's better to reduce the scope to mempolicy first.
 
-Best regards,
-Xingyu Wu
+Getting to global interleave weights from there... more complicated.
+
+The simplees way I can think of to test system-wide weighted interleave
+is to have the init task create a default mempolicy and have all tasks
+inherit it.  That feels like a big, dumb hammer - but it might work.
+
+Comparatively, implementing a mempolicy in the root cgroup and having
+tasks use that directly "feels" better, though lessons form this patch
+- interating cgroup parent trees on allocations feels not great.
+
+Barring that, if a cgroup.mempolicy and a default mempolicy for init
+aren't realistic, I don't see a good path to fruition for a global
+interleave approach that doesn't require nastier allocator changes.
+
+In the meantime, unless there's other pro-cgroups voices, I'm going to
+pivot back to my initial approach of doing it in mempolicy, though I
+may explore extending mempolicy into procfs at the same time.
+
+~Gregory
