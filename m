@@ -2,178 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6897EA317
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0AB7EA31C
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229974AbjKMSwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48388 "EHLO
+        id S230041AbjKMSzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 13:55:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKMSwL (ORCPT
+        with ESMTP id S229924AbjKMSzd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:52:11 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D8310EC;
-        Mon, 13 Nov 2023 10:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699901528; x=1731437528;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=r39Ku0xlX347d/TvksU4tDQXuXoO+3UlsSCTAY3iVW8=;
-  b=G7yFJlqVsTWCXvw048BUDCssyWVmsal3gcTKLInZMtYP+wV/zyF7m98c
-   di8k26UyqG5YXC4zVh/WFk3Zm1nlXPFBw7LYKJ0O7xgi6Sh3pqdbCSrWw
-   ptbRI1ZRhaa4+L88gw38F5E6E/tnwtGPRezLmfxcxh9xe7EqpA7Kfdswr
-   p8h/8NJ9Z1dLZhF48MkzML0UZdiYEzx7jc1L03G2BfEA9fOujwAl16Bat
-   wsCPr2tIw9/EQKz2AE6MfOaGogH/kpjxrlnvNIY7z59aw58NMmhzNxlF6
-   oJxF6a7E5y2deonewU6cTVcqw8HRHyjTaVcqcY0R92zrtyMh+i2Yyd98p
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="393354716"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="393354716"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 10:52:07 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="1095829967"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="1095829967"
-Received: from agluck-desk3.sc.intel.com (HELO agluck-desk3) ([172.25.222.74])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 10:52:07 -0800
-Date:   Mon, 13 Nov 2023 10:52:06 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     "Moger, Babu" <babu.moger@amd.com>
-Cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Peter Newman <peternewman@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Shuah Khan <skhan@linuxfoundation.org>, x86@kernel.org,
-        Shaopeng Tan <tan.shaopeng@fujitsu.com>,
-        James Morse <james.morse@arm.com>,
-        Jamie Iles <quic_jiles@quicinc.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v11 2/8] x86/resctrl: Prepare to split rdt_domain
- structure
-Message-ID: <ZVJwVs5ayxKzC5pX@agluck-desk3>
-References: <20231031211708.37390-1-tony.luck@intel.com>
- <20231109230915.73600-1-tony.luck@intel.com>
- <20231109230915.73600-3-tony.luck@intel.com>
- <678ea7e8-e4e5-4848-b77c-a94a1d326f5b@amd.com>
+        Mon, 13 Nov 2023 13:55:33 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8CF710DA
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:55:30 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id d2e1a72fcca58-6bd20c30831so753720b3a.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:55:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699901730; x=1700506530; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G+f4rJoyzPIE0y6h0wORDQt+kRBF7nK+PXXMCBjyvGI=;
+        b=dMuCpyzbCchqX31mYgMW9DkowBYRcjyY7UsXCS4NS09etA0eWmptSNyCwM5oqjypJ0
+         iPG5Yh45gm8Eqlg2OS9YdSiy21yLYOtZyOvSp/Z09bL9/TmoAFQWfiilNc4MJv29Tydm
+         p0sepQ+mH0vZYYP3VXEsjG3+ok+VMi9ParVQy7NHSLnHJv/hdfb5sJ1OcGBVHCCxlIjU
+         dK4EWEpxzBRbtkJbJwo3Ql1E93AsUcWwzfRpadTPhNJsBWjxYLZEFNJPCpGkUDIp3GmU
+         LtcOdDxhGb4eWPzg+pxpn2kke6gKQX12qqgYiTRCagfqdYyN8JbKqpIZInCgxOcjJBSb
+         Sh7g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699901730; x=1700506530;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=G+f4rJoyzPIE0y6h0wORDQt+kRBF7nK+PXXMCBjyvGI=;
+        b=oJO2iJ8/SnRFpAQbHxS9JSmMKEfRqg1iV2tZbT9zZAH13Sy7nM573SwzzXlr4CpO3S
+         F9Gq0vqbU/UFDtaFbWGf3/+mPLc9yY3z+CMBHS0ig0zcuCSeY21Q2az7Z8d8x94xsrl/
+         eyFCp3Fq9yfROtR+ZFVeloxZRD/RXYYCQiCDcGuh0YiKaDe/1QG7+nW80rEFx3OVXHxq
+         SqxxonB4Nk1/52uVI9KmHk5KYTBRrKCrLsxFpn1HhzY1xf+ZIy1oh5VUy5fe1R8+NDpW
+         QIkb95NKbkpz8kFcADhWScbZPuObeyHa6pSE+yZRxoZy7FuPvB6kCRNborGtKXHhQmOr
+         sTWg==
+X-Gm-Message-State: AOJu0YyOd530dp6261v5MTm+/BJs28L82gV/zXN2tqmp0FU3WhCQ8h1y
+        bEZHvbIRA/teuiehzVdRXAGrw4kYV9v21g==
+X-Google-Smtp-Source: AGHT+IE5duZlYWLgqLzfa5RiDEmFjpMM0G68cLOdfphgOn3YyS8OIU25TqGIK0nk9u3XKZly5FW4rQ==
+X-Received: by 2002:a05:6a20:9381:b0:163:d382:ba84 with SMTP id x1-20020a056a20938100b00163d382ba84mr130227pzh.5.1699901730166;
+        Mon, 13 Nov 2023 10:55:30 -0800 (PST)
+Received: from [192.168.0.152] ([103.75.161.210])
+        by smtp.gmail.com with ESMTPSA id ka27-20020a056a00939b00b0069102aa1918sm4091818pfb.48.2023.11.13.10.55.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 10:55:29 -0800 (PST)
+Message-ID: <d0b1fb36-d2a6-446c-8a04-2101981f3a00@gmail.com>
+Date:   Tue, 14 Nov 2023 00:25:24 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <678ea7e8-e4e5-4848-b77c-a94a1d326f5b@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] driver: gpu: Fixing warning directly dereferencing a
+ rcu pointer
+Content-Language: en-US
+To:     Danilo Krummrich <dakr@redhat.com>, kherbst@redhat.com,
+        lyude@redhat.com, airlied@gmail.com, daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <d33fc41b-5a1f-4186-a0b2-3c82dcb8f00b@redhat.com>
+ <20231113184238.3276835-1-singhabhinav9051571833@gmail.com>
+ <373d97fc-0612-40da-ae9d-6702aa4483ba@redhat.com>
+From:   Abhinav Singh <singhabhinav9051571833@gmail.com>
+In-Reply-To: <373d97fc-0612-40da-ae9d-6702aa4483ba@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 12:08:19PM -0600, Moger, Babu wrote:
-> Hi Tony,
+On 11/14/23 00:19, Danilo Krummrich wrote:
+> Hi,
 > 
-> Sorry for the late review. The patches look good for the most part. But we
-> can simplify a little more. Please see my comments below.
+> thanks for sending a v2.
 > 
+> On 11/13/23 19:42, Abhinav Singh wrote:
+>> This patch fixes a sparse warning with this message
+>> "warning:dereference of noderef expression". In this context it means we
+>> are dereferencing a __rcu tagged pointer directly.
 > 
-> On 11/9/23 17:09, Tony Luck wrote:
-> > The rdt_domain structure is used for both control and monitor features.
-> > It is about to be split into separate structures for these two usages
-> > because the scope for control and monitoring features for a resource
-> > will be different for future resources.
-> > 
-> > To allow for common code that scans a list of domains looking for a
-> > specific domain id, move all the common fields ("list", "id", "cpu_mask")
-> > into their own structure within the rdt_domain structure.
-> > 
-> > Signed-off-by: Tony Luck <tony.luck@intel.com>
-> > ---
-> >  include/linux/resctrl.h                   | 16 ++++--
-> >  arch/x86/kernel/cpu/resctrl/core.c        | 26 +++++-----
-> >  arch/x86/kernel/cpu/resctrl/ctrlmondata.c | 22 ++++-----
-> >  arch/x86/kernel/cpu/resctrl/monitor.c     | 10 ++--
-> >  arch/x86/kernel/cpu/resctrl/pseudo_lock.c | 14 +++---
-> >  arch/x86/kernel/cpu/resctrl/rdtgroup.c    | 60 +++++++++++------------
-> >  6 files changed, 78 insertions(+), 70 deletions(-)
-> > 
-> > diff --git a/include/linux/resctrl.h b/include/linux/resctrl.h
-> > index 7d4eb7df611d..c4067150a6b7 100644
-> > --- a/include/linux/resctrl.h
-> > +++ b/include/linux/resctrl.h
-> > @@ -53,10 +53,20 @@ struct resctrl_staged_config {
-> >  };
-> >  
-> >  /**
-> > - * struct rdt_domain - group of CPUs sharing a resctrl resource
-> > + * struct rdt_domain_hdr - common header for different domain types
-> >   * @list:		all instances of this resource
-> >   * @id:			unique id for this instance
-> >   * @cpu_mask:		which CPUs share this resource
-> > + */
-> > +struct rdt_domain_hdr {
-> > +	struct list_head		list;
-> > +	int				id;
-> > +	struct cpumask			cpu_mask;
-> > +};
+> Better use imperative here, e.g. "Fix a sparse warning ...".
 > 
-> I like the idea of separating the domains, one for control and another for
-> monitor. I have some comments on how it can be done to simplify the code.
-> Adding the hdr adds a little complexity to the code.
+> Wouldn't ask you to send a v3 for that alone...
 > 
-> How about converting the current rdt_domain to explicitly to rdt_mon_domain?
+>>
+>> We should not be directly dereferencing a rcu pointer, rather we should
+>> be using rcu helper function rcu_dereferece() inside rcu read critical
+>> section to get a normal pointer which can be dereferenced.
 > 
-> Something like this.
+> ...but this doesn't seem accurate anymore as well.
 > 
-> struct rdt_mon_domain {
->         struct list_head                list;
->         int                             id;
->         struct cpumask                  cpu_mask;
->         unsigned long                   *rmid_busy_llc;
->         struct mbm_state                *mbm_total;
->         struct mbm_state                *mbm_local;
->         struct delayed_work             mbm_over;
->         struct delayed_work             cqm_limbo;
->         int                             mbm_work_cpu;
->         int                             cqm_work_cpu;
-> };
+> - Danilo
 > 
+>>
+>> I tested with qemu with this command
+>> qemu-system-x86_64 \
+>>     -m 2G \
+>>     -smp 2 \
+>>     -kernel bzImage \
+>>     -append "console=ttyS0 root=/dev/sda earlyprintk=serial 
+>> net.ifnames=0" \
+>>     -drive file=bullseye.img,format=raw \
+>>     -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \
+>>     -net nic,model=e1000 \
+>>     -enable-kvm \
+>>     -nographic \
+>>     -pidfile vm.pid \
+>>     2>&1 | tee vm.log
+>> with lockdep enabled.
+>>
+>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+>> ---
+>> v1 -> v2 : Replaced the rcu_dereference(...) with unrcu_pointer(...) and
+>> also removed the rcu locking and unlocking function call.
+>>
+>>   drivers/gpu/drm/nouveau/nv04_fence.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/nouveau/nv04_fence.c 
+>> b/drivers/gpu/drm/nouveau/nv04_fence.c
+>> index 5b71a5a5cd85..cdbc75e3d1f6 100644
+>> --- a/drivers/gpu/drm/nouveau/nv04_fence.c
+>> +++ b/drivers/gpu/drm/nouveau/nv04_fence.c
+>> @@ -39,7 +39,7 @@ struct nv04_fence_priv {
+>>   static int
+>>   nv04_fence_emit(struct nouveau_fence *fence)
+>>   {
+>> -    struct nvif_push *push = fence->channel->chan.push;
+>> +    struct nvif_push *push = unrcu_pointer(fence->channel)->chan.push;
+>>       int ret = PUSH_WAIT(push, 2);
+>>       if (ret == 0) {
+>>           PUSH_NVSQ(push, NV_SW, 0x0150, fence->base.seqno);
 > 
-> Then introduce rdt_ctrl_domain to which separates into two doamins.
-> 
-> struct rdt_ctrl_domain {
->         struct list_head                list;
->         int                             id;
->         struct cpumask                  cpu_mask;
->         struct pseudo_lock_region       *plr;
->         struct resctrl_staged_config    staged_config[CDP_NUM_TYPES];
->         u32                             *mbps_val;
-> };
-> 
-> I feel this will be easy to understand and makes the code simpler. Changes
-> will be minimal.
+Hi maintainers thanks a lot for reviewing this patch.
+I think I should fix my mistake by sending in another patch so that the 
+code changes and description matches. So should I send another patch ?
 
-Babu,
-
-I went in this direction because of rdt_find_domain() which is used
-to search either of the "ctrl" or "mon" lists. So it needs to be sure
-that the "list" and "id" fields are at identical offsets in both the
-rdt_ctrl_domain and rdt_mon_domain structures. Best way to guarantee[1]
-that is to create the "hdr" entry (which later acquired the cpu_mask
-field as a common element after a comment from Reinette).
-
-One way to avoid this would be to essentially duplicate
-rdt_find_domain() into rdt_find_ctrl_domain() and rdt_find_mon_domain()
-... but I fear the function is just big enough to get complaints
-that the two copies should somehow be merged.
-
--Tony
-
-[1] In v5 I tried using a comment in each to say they must be the same,
-but Reinette didn't like comments within declarations:
-https://lore.kernel.org/all/5f1256d3-737e-a447-abbe-f541767b2c8f@intel.com/
+Thank You,
+Abhinav Singh
