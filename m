@@ -2,65 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF897E962A
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:24:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 182657E962F
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbjKMEYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:24:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60670 "EHLO
+        id S233155AbjKMEZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:25:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231474AbjKMEYn (ORCPT
+        with ESMTP id S229793AbjKMEZ3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:24:43 -0500
+        Sun, 12 Nov 2023 23:25:29 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5B071709
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:23:52 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A456D4A
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:24:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699849432;
+        s=mimecast20190719; t=1699849481;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=MDzN//cB8A0tsFhYQj2uRkfSHm3F/Ien9J3CTjaN2xA=;
-        b=VG+F68yKrS/JhmJCO4dCDhBlogYFX/SOJfnBjxPhXGnhTqMfoMP9spIGSoRDO1JVZID8IM
-        lS/Lj2Uxnst0xlrihEDtx1sIFUY7sm3CotstcKXTwiLLSi5aHDhq1eZGmP2LrWce7CyoRq
-        gVaHwPV77s+IZkhJc2vvHcSKM98LPYs=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=+XpkXMncYpwBWWz5YM4lExGVyIZbJdd8k4LtapRIRSU=;
+        b=CVgF/Ab5eTL389IiMxk1obmpK8BphpKW201FcU8D1KN7NkiUIi8UPPNR4q01Eg4r9OF1l1
+        uEviu/PDGkxySk2TNj+KvRrAGGvLbQX/G4fMyBwILqqttdRI9nDWwZB/XSVMgXsEt4U2k6
+        Evumqg/SN6OZMATQ5yy2d/18NBybuL4=
+Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
+ [209.85.167.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-453-5k6bQM80NrCodPpMNXktzA-1; Sun, 12 Nov 2023 23:23:50 -0500
-X-MC-Unique: 5k6bQM80NrCodPpMNXktzA-1
-Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-5bddc607b45so4645382a12.0
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:23:50 -0800 (PST)
+ us-mta-317-lmHQEctAP7Cr9uAYBcDkOA-1; Sun, 12 Nov 2023 23:24:36 -0500
+X-MC-Unique: lmHQEctAP7Cr9uAYBcDkOA-1
+Received: by mail-oi1-f199.google.com with SMTP id 5614622812f47-3b3edaef525so4686036b6e.0
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:24:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699849429; x=1700454229;
+        d=1e100.net; s=20230601; t=1699849475; x=1700454275;
         h=content-transfer-encoding:in-reply-to:from:references:cc:to
          :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MDzN//cB8A0tsFhYQj2uRkfSHm3F/Ien9J3CTjaN2xA=;
-        b=hXixAUrhH3v8wFEpINYlGMuW0jHOzUBALT0SOjC16JGeeUUYfJCdWAmgWBXvzatAMv
-         24J9NvpTyOkJFQ/GSmPHyhgB5gj3yT3Ro5NlBTmdMXzEGECaCoTShkIX8Lr33Hqqnc5m
-         TNRdfaU6g9I9Q0KioLnYgHAzUXEFjXTakd7IH1n01H/+7LOAiiyEbVmc65qP9cUCt9e9
-         oU2+wXTHsSRManEAeeCOuIcJu3U17GqVWhuCyamxu7UGrJ4G6kdPLT7aJHIqNO1srPFq
-         QOQcXGchl7JiuQ5Li4GGh+3j+C8nQqJB6zqdpBQ1JPT1TSqabX92/uIx8A9fnLOaufI/
-         ikLA==
-X-Gm-Message-State: AOJu0YziaFiYMcW0Hw3gjYGSI69V8JGN6L5ChjWgtcoUKFKFANUDPED4
-        APmXVXOmHm+jOwrOnhosKjHMWvHzT4vY4KVlW/Geu0+mPfuu5Uvjo9xNdfbuCc4eYybZAttWcj6
-        5uL3pKId3o5Bb4D7YX3Nto5gU
-X-Received: by 2002:a05:6a20:7292:b0:177:690a:7978 with SMTP id o18-20020a056a20729200b00177690a7978mr7173308pzk.33.1699849429679;
-        Sun, 12 Nov 2023 20:23:49 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFskzK66afv7E0dvEEzwtWe0LILd1YSCQ10I8JNRY4PU48BJW4/+U8P1g/k7SE3CEH/9dkMnA==
-X-Received: by 2002:a05:6a20:7292:b0:177:690a:7978 with SMTP id o18-20020a056a20729200b00177690a7978mr7173300pzk.33.1699849429425;
-        Sun, 12 Nov 2023 20:23:49 -0800 (PST)
+        bh=+XpkXMncYpwBWWz5YM4lExGVyIZbJdd8k4LtapRIRSU=;
+        b=ttDUh/zVMIntiNM1tTi1/BmVWNfq+Z8/G4n+aavNVBgMnKDDR7H8P2Td3yS+z/jqap
+         dc+tgtOgR/4KIiFk77qekTT2fvbRRmt6Mw4b58FZWuwRyVz+TO6iuLc1+1wevTm7DTD+
+         sEsT13iurDPqLvkhVTw/UsS72pEG1BHEzvqfCHz6E3QEitxmkzzQGZGGGvoVPAaFidN4
+         DZLOq1TsfGwWKHfMuRJn9/IPO7MCqYPr4ueivGqGtCvA968o1MC4PO9ICWdtO+W0cHsv
+         ZDlNGTADB0Aw0cOGSjFs/kEOyOD/w7nWg20wP+0vdyCfO7FbG0nsAsNNIdJtZ9OQFWw8
+         XHSA==
+X-Gm-Message-State: AOJu0Yw8241DCizyJbraEgcEdk5x41JL/uYt1Mgt55lAqbATT0kfw4jd
+        /p7rgmwqAJiXv9wXytVLfW+Z0VsCZyj9EpbUDJVbw4fXrbt4EvPtHguNUqcMzW/3eUKGbg2L8Wm
+        fmydt6yU8fRZUKpbZogtUlZnh
+X-Received: by 2002:a05:6808:1907:b0:3b2:a9bd:c38f with SMTP id bf7-20020a056808190700b003b2a9bdc38fmr8909968oib.37.1699849475412;
+        Sun, 12 Nov 2023 20:24:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFGpLquY73YkMUU9Mlaw3xcZEgmE+1wMz9SoOzUS3eERBYDajACgA3kg4BM9OvwoIC+iQZINQ==
+X-Received: by 2002:a05:6808:1907:b0:3b2:a9bd:c38f with SMTP id bf7-20020a056808190700b003b2a9bdc38fmr8909944oib.37.1699849475200;
+        Sun, 12 Nov 2023 20:24:35 -0800 (PST)
 Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id fm6-20020a056a002f8600b006c4db182074sm3111661pfb.196.2023.11.12.20.23.41
+        by smtp.gmail.com with ESMTPSA id fm6-20020a056a002f8600b006c4db182074sm3111661pfb.196.2023.11.12.20.24.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 20:23:48 -0800 (PST)
-Message-ID: <9dc3a438-930f-4503-af91-12771bdb7738@redhat.com>
-Date:   Mon, 13 Nov 2023 14:23:41 +1000
+        Sun, 12 Nov 2023 20:24:34 -0800 (PST)
+Message-ID: <d07a9e11-9752-4155-bbaf-b759ec4f99ac@redhat.com>
+Date:   Mon, 13 Nov 2023 14:24:27 +1000
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 21/22] riscv: Switch over to GENERIC_CPU_DEVICES
+Subject: Re: [PATCH RFC 22/22] riscv: convert to use
+ arch_cpu_is_hotpluggable()
 Content-Language: en-US
 To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
         linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
@@ -78,15 +79,15 @@ Cc:     Salil Mehta <salil.mehta@huawei.com>,
         Palmer Dabbelt <palmer@dabbelt.com>,
         Albert Ou <aou@eecs.berkeley.edu>
 References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JMQ-00CTyb-Ee@rmk-PC.armlinux.org.uk>
+ <E1r0JMV-00CTyh-It@rmk-PC.armlinux.org.uk>
 From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JMQ-00CTyb-Ee@rmk-PC.armlinux.org.uk>
+In-Reply-To: <E1r0JMV-00CTyh-It@rmk-PC.armlinux.org.uk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,30 +96,13 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 11/7/23 20:31, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
+> Convert riscv to use the arch_cpu_is_hotpluggable() helper rather than
+> arch_register_cpu().
 > 
-> Now that GENERIC_CPU_DEVICES calls arch_register_cpu(), which can be
-> overridden by the arch code, switch over to this to allow common code
-> to choose when the register_cpu() call is made.
-> 
-> This allows topology_init() to be removed.
-> 
-> This is an intermediate step to the logic being moved to drivers/acpi,
-> where GENERIC_CPU_DEVICES will do the work when booting with acpi=off.
-> 
-> This patch also has the effect of moving the registration of CPUs from
-> subsys to driver core initialisation, prior to any initcalls running.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
 > ---
-> Changes since RFC v2:
->   * Add note about initialisation order change.
-> ---
->   arch/riscv/Kconfig        |  1 +
->   arch/riscv/kernel/setup.c | 19 ++++---------------
->   2 files changed, 5 insertions(+), 15 deletions(-)
+>   arch/riscv/kernel/setup.c | 7 ++-----
+>   1 file changed, 2 insertions(+), 5 deletions(-)
 > 
 
 Reviewed-by: Gavin Shan <gshan@redhat.com>
