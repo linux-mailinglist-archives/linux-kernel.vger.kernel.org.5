@@ -2,134 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 485D77E95EA
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7351D7E95E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:08:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233121AbjKMEIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:08:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
+        id S233100AbjKMEI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:08:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233055AbjKMEIa (ORCPT
+        with ESMTP id S233055AbjKMEI1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:08:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195F1735
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699848468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4vPpPFrFkMrzqnxNhFYjlLboUr7aR9ku5ew8hulbyck=;
-        b=E0dpLxbI7R5BxBXHoIUwlquXQJXPu9mzaFo1AaAIuiH3eu3V/V/Z7tGFY8rcXTj8RMh638
-        Cr2IWPNBN6p7cIFx6E+vyO+Q+I6pQmOUXrbpFllSOGPiuElCYouQUR2Y5qd2h/RAwWiN6J
-        r36MGRwHg2IBJkareVBAaVREmfnW+Fs=
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
- [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-536-pcRHeA5DPyCoXRKx9eFvlQ-1; Sun, 12 Nov 2023 23:07:46 -0500
-X-MC-Unique: pcRHeA5DPyCoXRKx9eFvlQ-1
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc42d3f61eso45249655ad.3
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:07:46 -0800 (PST)
+        Sun, 12 Nov 2023 23:08:27 -0500
+Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF00111
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:08:24 -0800 (PST)
+Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45f0e332d6bso1767357137.2
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:08:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699848503; x=1700453303; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fNlzfs8IwIwZE9A6q67KhpJlkrTSE+tePrP0YR73OHc=;
+        b=b+FFgZhFiHmLXWmqoAhNMS1lbkXEc0mXk09wrBWGLfC4pSfA6wnJv3t4DUT4cx4ndT
+         ovU1rRVOO6u/o6eOR05cjBJbSLyumJnvo72fEoTqecEDThGeRG4tIyorrirhwUr7jBFh
+         mcd8HfpGU7/QrzGJ5HKySkzPtYQr1Q1iYuKKvgiTJJRbninSAFc4kf2s9tth5JPlVKXR
+         oor5lOrS39Iv79hyG7MYwTnjftV49Vl1yvNPdq7L5SvMO3C4KIEL9NSyzls4AtB5R/+J
+         GGOSFcTuyB3wOwM69hwkPJBZhwATztT0o2pIFn/HjD17prcKn79aPetGM0s6oXTZqBw/
+         5OLw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699848465; x=1700453265;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4vPpPFrFkMrzqnxNhFYjlLboUr7aR9ku5ew8hulbyck=;
-        b=dA3XqzkpHB3XRcKTa7iogCyx/vfa0vfO1OVhmK0rASg4qI2XLp1o/UxPkIxtdSHc10
-         8LlVWF6fWJmCAIOLMWwJTFKK54NY7C/2lG+CDm0JXOmynoQ1GMcwqK+f8SigxW+jUM0s
-         NqOSRDBgJhBDCLNOXNKJMyInKpxOYBQK2BsiTZbQYfZlzwI6TVXf6j04uXu59DCA/xVl
-         bzTUnon1Y3vt92/aBj2cWXOkWp5l8p+LUnRVYBF+dVcOdtSAiJ2FdsbheCWGAb4wUIbz
-         ByhsO0+hKId5qzQaD4tdQUK+640alu2F/KHZF2DS1BW4V5P0V7DDWOauJO7v/cwhyijF
-         q0nA==
-X-Gm-Message-State: AOJu0YyJ/vYFfmXT4X52YpIwPT+kSKpqLFYSuayjqMA0LnVnJJhEwYTR
-        1tS98mQdcsKnYzV2wh9ZbyF4ZwPtjHVEMRGzAfwqMClGDBgDW404npzBQmIKM0V+hIRphVgKi5U
-        qEMdiS/2XAf/VAD1RhG+XP/KV
-X-Received: by 2002:a17:903:18f:b0:1c9:b2c1:139c with SMTP id z15-20020a170903018f00b001c9b2c1139cmr7261843plg.62.1699848465412;
-        Sun, 12 Nov 2023 20:07:45 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHWMylLMVWpWug6Cxx/NC9nXPjOFm1HEloPQE99Sn7p/Alc1N4hJ0inQY3toOaSbmTdKDWFaA==
-X-Received: by 2002:a17:903:18f:b0:1c9:b2c1:139c with SMTP id z15-20020a170903018f00b001c9b2c1139cmr7261816plg.62.1699848465098;
-        Sun, 12 Nov 2023 20:07:45 -0800 (PST)
-Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
-        by smtp.gmail.com with ESMTPSA id b1-20020a170903228100b001cc3098c9f8sm3225162plh.275.2023.11.12.20.07.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 12 Nov 2023 20:07:44 -0800 (PST)
-Message-ID: <a6fe7a98-d215-4639-9949-b0044313681f@redhat.com>
-Date:   Mon, 13 Nov 2023 14:07:36 +1000
+        d=1e100.net; s=20230601; t=1699848503; x=1700453303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fNlzfs8IwIwZE9A6q67KhpJlkrTSE+tePrP0YR73OHc=;
+        b=w5vnAQdVkbemsRDswBdp9Y+hUxZWSSrf9grqK4xtWPBD9IL02GlJe9rXxDGrlAuXN4
+         FOCX4UuOHVRbHYWgOndpSD6AGPGpXvNTor0S3UqWqs69rpaM5ozjUlTxf0yTgAtSHkLd
+         6NvYAgOwNVa5+v99L0RA81wLhKW/VthnwZ/kP7Jstmfnac0Eui8ZXL842agvZfyjQOKb
+         Mfl/1++6rm3l8bSjvnnLjxX4PtKBvh4w9h7Y4yxuh2Nc8T+lmdkuEpcNjnhBNNXdkpUk
+         Wwr6q4F72xnwm1+Hh7JMU0Frvo6bVDMSdZkxrwWsAgOdUy0lr3GI/svVlpJkitmzNHYI
+         VURA==
+X-Gm-Message-State: AOJu0YxOBy97ZvK38OyzqMbHDhEX5Pxjt4D375JfqICcM7Do5uPRfkFI
+        FjCkJ2N3bQiA7//3aD7zBT5RD32GpT0UxvaO/4bF1Q==
+X-Google-Smtp-Source: AGHT+IHqCItyp2X183Is4ZUWWeu08E03+bCPhwHxhH1umjtWjuw2QPn7bjsb51GqQnBkszbQBlUyYv0Wl+YEehcAH+Y=
+X-Received: by 2002:a67:c19a:0:b0:45f:b92c:663b with SMTP id
+ h26-20020a67c19a000000b0045fb92c663bmr5549887vsj.29.1699848503509; Sun, 12
+ Nov 2023 20:08:23 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 13/22] arm64: setup: Switch over to
- GENERIC_CPU_DEVICES using arch_register_cpu()
-Content-Language: en-US
-To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
-        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org
-Cc:     Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
-From:   Gavin Shan <gshan@redhat.com>
-In-Reply-To: <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+References: <20231106024413.2801438-1-almasrymina@google.com>
+ <20231106024413.2801438-13-almasrymina@google.com> <20231110151335.38a1c6ec@kernel.org>
+ <CAHS8izNFnE8RGgBhKzxhVoKXtXgZGVQCLSdm4_dWNeH9Gx-WDQ@mail.gmail.com> <20231110183556.2b7b7502@kernel.org>
+In-Reply-To: <20231110183556.2b7b7502@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Sun, 12 Nov 2023 20:08:10 -0800
+Message-ID: <CAHS8izMQQekAdkLF7eFHfwGJJ=LFmGLHpSpOYiQeLs96ByEK7w@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 12/12] selftests: add ncdevmem, netcat for devmem TCP
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Ahern <dsahern@kernel.org>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Jeroen de Borst <jeroendb@google.com>,
+        Praveen Kaligineedi <pkaligineedi@google.com>,
+        Stanislav Fomichev <sdf@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/7/23 20:30, Russell King (Oracle) wrote:
-> From: James Morse <james.morse@arm.com>
-> 
-> To allow ACPI's _STA value to hide CPUs that are present, but not
-> available to online right now due to VMM or firmware policy, the
-> register_cpu() call needs to be made by the ACPI machinery when ACPI
-> is in use. This allows it to hide CPUs that are unavailable from sysfs.
-> 
-> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
-> five ACPI architectures to be modified at once.
-> 
-> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
-> that populates the hotpluggable flag. arch_register_cpu() is also the
-> interface the ACPI machinery expects.
-> 
-> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
-> it to use the one GENERIC_CPU_DEVICES provides.
-> 
-> This changes the CPUs visible in sysfs from possible to present, but
-> on arm64 smp_prepare_cpus() ensures these are the same.
-> 
-> This patch also has the effect of moving the registration of CPUs from
-> subsys to driver core initialisation, prior to any initcalls running.
-> 
-> Signed-off-by: James Morse <james.morse@arm.com>
-> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> ---
-> Changes since RFC v2:
->   * Add note about initialisation order change.
-> ---
->   arch/arm64/Kconfig           |  1 +
->   arch/arm64/include/asm/cpu.h |  1 -
->   arch/arm64/kernel/setup.c    | 13 ++++---------
->   3 files changed, 5 insertions(+), 10 deletions(-)
-> 
+j
 
-Reviewed-by: Gavin Shan <gshan@redhat.com>
+On Fri, Nov 10, 2023 at 6:36=E2=80=AFPM Jakub Kicinski <kuba@kernel.org> wr=
+ote:
+>
+> On Fri, 10 Nov 2023 18:27:08 -0800 Mina Almasry wrote:
+> > Thanks for the clear requirement. I clearly had something different in =
+mind.
+> >
+> > Might be dumb suggestions, but instead of creating a new ndo that we
+> > maybe end up wanting to deprecate once the queue API is ready, how
+> > about we use either of those existing APIs?
+> >
+> > +void netdev_reset(struct net_device *dev)
+> > +{
+> > +       int flags =3D ETH_RESET_ALL;
+> > +       int err;
+> > +
+> > +#if 1
+> > +       __dev_close(dev);
+> > +       err =3D __dev_open(dev, NULL);
+> > +#else
+> > +       err =3D dev->ethtool_ops->reset(dev, &flags);
+> > +#endif
+> > +}
+> > +
+> >
+> > I've tested both of these to work with GVE on both bind via the
+> > netlink API and unbind via the netlink socket close, but I'm not
+> > enough of an expert to tell if there is some bad side effect that can
+> > happen or something.
+>
+> We generally don't accept drivers doing device reconfiguration with
+> full close() + open() because if the open() fails your machine
+> may be cut off.
+>
+> There are drivers which do it, but they are either old... or weren't
+> reviewed hard enough.
+>
+> The driver should allocate memory and whether else it can without
+> stopping the queues first. Once it has all those, stop the queues,
+> reconfigure with already allocated resources, start queues, free old.
+>
+> Even without the queue API in place, good drivers do full device
+> reconfig this way. Hence my mind goes towards a new (temporary?)
+> ndo. It will be replaced by the queue API, but whoever implements
+> it for now has to follow this careful reconfig strategy...
 
+OK, thanks. I managed to get a POC (but only POC) of the queue API
+working with GVE. I still need to test it more thoroughly and get a
+review before I can conclude it's actually a viable path but it
+doesn't seem as grim as I originally thought:
+
+https://github.com/torvalds/linux/commit/21b8e108fa88d90870eef53be9320f136b=
+96cca0
+
+So, seems there are 2 paths forward:
+
+(a) implement a new 'reconfig' ndo carefully as you described above.
+(b) implement a minimal version of the queue API as you described
+here: https://lore.kernel.org/netdev/20230815171638.4c057dcd@kernel.org/
+
+Some questions, sorry if basic:
+
+1. For (b), would it be OK to implement a very minimal version of
+queue_[stop|start]/queue_mem_[alloc|free], which I use for the sole
+purpose of reposting buffers to an individual queue, and then later
+whoever picks up your queue API effort (maybe me) extends the
+implementation to do the rest of the things you described in your
+email? If not, what is the minimal queue API I can implement and use
+for devmem TCP?
+
+2. Since this is adding ndo, do I need to implement the ndo for 2
+drivers or is GVE sufficient?
+
+--
+Thanks,
+Mina
