@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 176447EA242
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:43:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2D0F7EA24A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 18:45:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231616AbjKMRng (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 12:43:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43724 "EHLO
+        id S230466AbjKMRpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 12:45:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230013AbjKMRne (ORCPT
+        with ESMTP id S229579AbjKMRpW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 12:43:34 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9033E171A
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:43:30 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id 5614622812f47-3b512dd7d5bso3214984b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:43:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699897410; x=1700502210; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:sender:mime-version:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Le091h9+SmT8HEkLKQaXI8mEotPH+FHH8W9gmxh1xkI=;
-        b=N5vgReSSZeyfsvzKKRlaDmYO7MNOPFX6CHzTjZ+I5pnGz9IsEWNQTDsJyVwrwbq1y6
-         L8MvFZlBDwCUCwAjeBz/auYsuekNJWMAnpPyJikmrRI0UZsH+c0/AcodsYtLZ5qZKSgT
-         52wnj4qKgMpl0o38JAkL4Zd608iNFfn6KRCRhy0L68D1EPzm2FcXZSf8O6GE9j8U0gGA
-         YOaTg6Eplgo4QCLM8fmFCnQ6rRUY4sJJ0Qa8lxHNqzJh/ESZvMfkucuEQ3qbjzUOCPBy
-         4fUnCZySffRess41B88C8k96PPCswwzqCLS7ZoIIudw1B47s9Z/8SxYn97i8108qMNbv
-         gLDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699897410; x=1700502210;
-        h=to:subject:message-id:date:from:sender:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Le091h9+SmT8HEkLKQaXI8mEotPH+FHH8W9gmxh1xkI=;
-        b=sQ2dxgHmlIWFiDWAvB9hbgOF8WS+WQppeDFh4HgSLIaT5XVSAyNLc6nTKwZDaaT0KJ
-         5IauABFkPtNT2H4Z6g6dF49cUGce7w6bOrnbKbh3dO06M9Binui79d923H1tgqiqAwCq
-         myn/iinaKH1ciVNyrsdYnqf5e/vasStd7PmeaGxvSomtAOx8yCzQXnO58FM3+s54riqW
-         ZNhPsoDH+8ghYilAhC+rI4zTP1rYrH+a2Y1sTGfO0Uba/gjp5YZnn8iPrYfWb5JHqT4Y
-         ZSk+/OVd93xjRlvut7a7o418+1L6FQZ9K2uoxI7cxt/KXnKnmKgYblIlaS2hHpamBHKX
-         0Hcw==
-X-Gm-Message-State: AOJu0Ywjyiv1iDvkXeWVQv2lCYbtSz1GUGkrC+laWVWxSUGRxvno5OrF
-        ZjcFBIKs56q/6nVLhNQ9NVjzBimlZalsnO2oZjA=
-X-Google-Smtp-Source: AGHT+IHlIhjsg0VZj6UMhdqoVbLKZC4ht57dRTvJRDH91CHrY51Z5g3f/a4lNzS5e6dh2NeHQYe6YFdodZ+u05vQYos=
-X-Received: by 2002:a05:6870:6c05:b0:1f0:6931:e301 with SMTP id
- na5-20020a0568706c0500b001f06931e301mr10348230oab.0.1699897409934; Mon, 13
- Nov 2023 09:43:29 -0800 (PST)
+        Mon, 13 Nov 2023 12:45:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9A7A10EC
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 09:45:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56039C433C8;
+        Mon, 13 Nov 2023 17:45:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699897519;
+        bh=CgcFT+veTcKjCyHdvfNFlsBA0HiNgZz8r9E8ALux3BM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iDSIQ9C8h4TMewndaNKrIC4pIPQktF9e83HNgStjSpPfKs0uBTXF6XNdXUvf5ZfGX
+         1yJYxSWRvwZxvSQIbyMv1HrbAG2SYBCU2AUcf08BgviU1l+ix8sHMzMu7SLVAJiN8C
+         /CRX9bzk/RHQXO7GNP/gKb+bYjqZ+WXxi4Ov1EY2BtKxfRtwV9MQGT3NwyGDTUDnV+
+         IEy0IiUVv178RZHLpZzx/dlQ8zo5fZJM3wPAOMG1O2+Xdy04rK+1crXhUnbiB57kHu
+         p9nG8KnqkqmeQP2fP04l/ZG+xir07sUTjwgJbkpLnGf/ahOLRA0AIeBuCvlxIc6RN5
+         s8reCReUpVWTg==
+Date:   Mon, 13 Nov 2023 12:45:16 -0500
+From:   Wolfram Sang <wsa@kernel.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Peter Korsgaard <peter@korsgaard.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: ocores: Move system PM hooks to the NOIRQ phase
+Message-ID: <ZVJgrJuCSImHpxY0@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
+        Samuel Holland <samuel.holland@sifive.com>,
+        Peter Korsgaard <peter@korsgaard.com>, Andrew Lunn <andrew@lunn.ch>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231113023249.1185682-1-samuel.holland@sifive.com>
 MIME-Version: 1.0
-Sender: aichaadamu883@gmail.com
-Received: by 2002:a05:6358:52d2:b0:169:57f3:7563 with HTTP; Mon, 13 Nov 2023
- 09:43:29 -0800 (PST)
-From:   UBA BANK <info.ubabanksgroup95@gmail.com>
-Date:   Mon, 13 Nov 2023 09:43:29 -0800
-X-Google-Sender-Auth: 8fKionvvk87SFzAqv7Zr4CyIswg
-Message-ID: <CAGb8NjgHd+YbRtre9KnSEOCSCiH389HMLn02HQzdqYNOT1rbBA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: Yes, score=5.5 required=5.0 tests=BAYES_50,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,LOTS_OF_MONEY,LOTTO_DEPT,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNDISC_MONEY,
-        UPPERCASE_75_100 autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Report: *  0.0 RCVD_IN_DNSWL_BLOCKED RBL: ADMINISTRATOR NOTICE: The query to
-        *      DNSWL was blocked.  See
-        *      http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-        *      for more information.
-        *      [2607:f8b0:4864:20:0:0:0:22a listed in]
-        [list.dnswl.org]
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5032]
-        *  0.2 FREEMAIL_ENVFROM_END_DIGIT Envelope-from freemail username ends
-        *       in digit
-        *      [aichaadamu883[at]gmail.com]
-        *  0.0 FREEMAIL_FROM Sender email is commonly abused enduser mail
-        *      provider
-        *      [info.ubabanksgroup95[at]gmail.com]
-        * -0.0 SPF_PASS SPF: sender matches SPF record
-        *  0.0 SPF_HELO_NONE SPF: HELO does not publish an SPF Record
-        *  0.1 DKIM_SIGNED Message has a DKIM or DK signature, not necessarily
-        *       valid
-        * -0.1 DKIM_VALID Message has at least one valid DKIM or DK signature
-        * -0.1 DKIM_VALID_EF Message has a valid DKIM or DK signature from
-        *      envelope-from domain
-        * -0.1 DKIM_VALID_AU Message has a valid DKIM or DK signature from
-        *      author's domain
-        *  0.0 UPPERCASE_75_100 message body is 75-100% uppercase
-        *  0.0 LOTS_OF_MONEY Huge... sums of money
-        * -0.0 T_SCC_BODY_TEXT_LINE No description available.
-        *  2.0 LOTTO_DEPT Claims Department
-        *  2.7 UNDISC_MONEY Undisclosed recipients + money/fraud signs
-X-Spam-Level: *****
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="bDPSe1q/v1JFXA1f"
+Content-Disposition: inline
+In-Reply-To: <20231113023249.1185682-1-samuel.holland@sifive.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GOOD DAY.
-YOU HAVE BEEN REWARDED WITH THE SUM OF ($2,500.000.00 USD) GRANT FROM
-THE IMF EMPOWERMENT FUNDS.
 
-CONTACT US FOR MORE DETAILS ABOUT YOUR PAYMENT.
+--bDPSe1q/v1JFXA1f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-BEST REGARDS
-KRISTALINA GEORGIEVA
-(info.ubabanksgroup95@gmail.com)
-PAYMENT DEPARTMENT UTB
+On Sun, Nov 12, 2023 at 06:32:45PM -0800, Samuel Holland wrote:
+> When an I2C device contains a wake IRQ subordinate to a regmap-irq chip,
+> the regmap-irq code must be able to perform I2C transactions during
+> suspend_device_irqs() and resume_device_irqs(). Therefore, the bus must
+> be suspended/resumed during the NOIRQ phase.
+>=20
+> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+
+Applied to for-current, thanks!
+
+
+--bDPSe1q/v1JFXA1f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmVSYKgACgkQFA3kzBSg
+KbYBdRAAow/OUtEPBVFW487SQNrOBs84oOBnrMBPN5YxBoP/ub7dkYu4PCAmJaaz
+19jdPmT7JrUdi5f9e0wT9xsopxrJqJj7zrtV+x89Rd2N/7/sOM5kULyOTl6XdEQJ
+FSAaImkNkaFYBcslpJ1LoPjQSHahnrzb6MKI+Au82TnN3dwfVwoVuMEpbFfjXtaZ
+h8CbOa7VbD1woF9CZBlKbLMRoU0dWr0tRFoyQJJyrdagvTYoTEB2Y62l96X6BeBj
+hgCvEaBOuvQoA/dDr4TySYY8Kz1DSLPy5nGF0rnuJZAd91eOHf6pRifU5BUd2sF4
+ri8QBzyISLbCzy1C3iO3+Aph8k+3YRe2LRRbotAwI0qN1ehZeJuq56EB0NhOjyQH
+Yj5C1/J0mnETm0u6RfPv7ZNGv7L9ynQ4ztqR0NaHoWJGWr6hvbGoT1IvAy4vJlFm
+9hpafAI/g1M4KnolhVhsm+mB9rHWcP1AQEZRBZxIC0LnIBSdr1kf9Lj8fSRVB75F
+WV3SpptHPwblEvSx8JvcunivPPA6lB5HSXKxyrkuIrAWQxbp8qVtL94ZewYyWSrR
+NWVGg4bOyKL2sF4P9AkR8u2Jzvoe43/7k/Mr4000zO01ccQ2hd+EqMV/MyQpPHIz
+sAJCx2DtCHz69dzGwHZZo/fnlnBgVT4Bg/43YUjb3mv+LONyiKU=
+=T9a0
+-----END PGP SIGNATURE-----
+
+--bDPSe1q/v1JFXA1f--
