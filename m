@@ -2,222 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 771177EA334
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 19:59:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5051F7EA33A
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 20:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231262AbjKMS7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 13:59:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        id S231633AbjKMTBI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 14:01:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231635AbjKMS7o (ORCPT
+        with ESMTP id S229454AbjKMTBG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 13:59:44 -0500
-Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01A621993
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:59:30 -0800 (PST)
-Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-45f19811ae5so3149383137.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 10:59:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699901969; x=1700506769; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vjSpxwY/F7fhr5L617ad0TV5lXXgN/8SlJHN2EzExHI=;
-        b=DiRmceM6LAduTOxkS3t4mq0GY/fvA3cxQoN1e7TahHqqLXlf4T7sdod5IJflH2HnAN
-         WoLg6kLS14tcucVw6oHKZd+SvtAiiDFdWcSZtXrMal2spZkmzT3ycJaSsNouHkE8YoeL
-         XYiVzSHkKlmSd3QAFVbz+xavFZseeUQPdoveF/qO8BACQNSlS7eu7dD/DdtvkrZFvfml
-         TsB83X4Y0MHIXiu9RDHx6TvVqWJOzYnQImFpXBxJ4wrbHhCPeIbMM/XwYVfUeK/3SsGk
-         9Cq9tW4/1lLJW46/5xoGfmGTIzinBwqyc+jMeH4DBc4IYi/qe281//IJ4wK0cIEPNKsH
-         KSLw==
+        Mon, 13 Nov 2023 14:01:06 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5716B10F4
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:00:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699902038;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xjJH04gFEMWV/cqlv7v8adTIMmJNmVfPhb2cpZ40Pn0=;
+        b=MlmGm2TANJqwGLh4Q8b6ptBydoCYd11tGKoZOVVcc6nrBoBw6hguYw96uTdkA2scHT3q3J
+        R+O1JEbMeIYQlvLu3DtoklAjWO4tGEI3IssS/SSvPcXkeZl1/f2KJ9DmO+kD9AelfyjDpV
+        Vsq/FZh0AJKedf1Ee9Njpkiknu8bhp0=
+Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
+ [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-394--puRWvrLMPmHPV9SKTpzAg-1; Mon, 13 Nov 2023 14:00:36 -0500
+X-MC-Unique: -puRWvrLMPmHPV9SKTpzAg-1
+Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c506abc320so37721901fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 11:00:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699901969; x=1700506769;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vjSpxwY/F7fhr5L617ad0TV5lXXgN/8SlJHN2EzExHI=;
-        b=Y87Yex1bOKKduPm45pOXVdc4XKYcwdIKSK459ppH49GTvbjqr2FtzxafGrwSH0HUp4
-         xkHGFKK2P6GpasR3kjOw/Os/cRT0RnprkphApNBlcF0iM3/AiEqdqTSpvgoK3bPw39Im
-         rN25rTrJxhPYGg8ChzwOdZ3QWt3Bdzmcus6/mNyK8vPK24ccjz0/rO02AuIEC8BujR06
-         WSdavx9ae2MZQNsROnBC4wSDZy/ElUWcawf1Wxdq/7JqKkUMep3YJJ/LKO/GQeLWemCd
-         XjgiGIKBEihpfmQOiq9wC4Dv28NmlSpy2SCLAp++t9sAUxkP+6s/TJzz1QI4Sblu4gcs
-         YKAg==
-X-Gm-Message-State: AOJu0YyICMi8Ouv2bXdKTYNU6NGnvDIV559biSVG/p8yimqt+/e5rH0G
-        YB8L3alwPKO9BP+WAIQK3C9nGrXiufcly7eLvro=
-X-Google-Smtp-Source: AGHT+IGfYZsUat1BKfTV0ul7KQN61SFRLXJYsqDKc1hwpvTI8iJMzW9rTy2j3Z0mGLdS0obDstUWyvKfIpsS1oI8Wwo=
-X-Received: by 2002:a05:6102:5c5:b0:452:6d82:56e3 with SMTP id
- v5-20020a05610205c500b004526d8256e3mr261792vsf.6.1699901969382; Mon, 13 Nov
- 2023 10:59:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699902035; x=1700506835;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xjJH04gFEMWV/cqlv7v8adTIMmJNmVfPhb2cpZ40Pn0=;
+        b=ZEMsV86ltuTasptsGr2IiWJETTLwDHS449NF8sa5CMM2DRXPL1k6JmaQa76wF3GH8H
+         m+H5g0Tr3eJn5ng0oky7ruc9NQUAV/mgbjqtMRr2Z2v/Z8wXTwzg+OLYJRtJ3I3UrQF5
+         PrCyTquNzllYiKlurbGRa60O8/kPRnGbqiCvx7eS8SaCkTHTOYnaIFMJmVnmx14Dm+0g
+         djxlNpFRY+Xnwr3madLxP66FhSmLhFd+l15GwTaHmKRtNb9VhRGYkdi2r1igFBJttCPW
+         Mmi8NjONuaidyFEafbdYeyiyQl7fD04Ca6pJoZWjnqTLg4Zgstn1uQEgea52pZt4lMtS
+         sfZA==
+X-Gm-Message-State: AOJu0Yy6rrBghCD+A1PnUfN3eaU4LzVmeJiUqk0PKaOdVKnznfgTMdJT
+        uqhOgrbROfnYfPNTPg2AnRfB9Cn88JMQx2hI2EV0avi1PtfdOf0hrgW7+CNuFcrZOhAkJdpC3/S
+        13Yjy36d5LFXDztiDOe03abpg
+X-Received: by 2002:a2e:be8b:0:b0:2bc:f5a0:cc25 with SMTP id a11-20020a2ebe8b000000b002bcf5a0cc25mr135224ljr.2.1699902035082;
+        Mon, 13 Nov 2023 11:00:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHKOZlXh+pNOQnEDYBQ7KmjIxq11+FS8KLtk5tk8xefyvp983ehULtBUTIJnRwL82VT3c4gjA==
+X-Received: by 2002:a2e:be8b:0:b0:2bc:f5a0:cc25 with SMTP id a11-20020a2ebe8b000000b002bcf5a0cc25mr135210ljr.2.1699902034760;
+        Mon, 13 Nov 2023 11:00:34 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id y3-20020a17090629c300b009b94fe3fc47sm4386719eje.159.2023.11.13.11.00.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 11:00:34 -0800 (PST)
+Message-ID: <8e9efe54-2799-4539-a8b0-aa199f8052f6@redhat.com>
+Date:   Mon, 13 Nov 2023 20:00:33 +0100
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
- <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
- <CAK8ByeJ1fYSVaVQz3tERzj_5QNAN4Ggx850pKcAG3vhsoWnS+w@mail.gmail.com>
- <CAJfuBxyu3VqakFNr4mW0h4QiPVSf-7HSPXobGO2_qC-H8yLgcw@mail.gmail.com> <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
-In-Reply-To: <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Mon, 13 Nov 2023 11:59:03 -0700
-Message-ID: <CAJfuBxz1=9o06Rj_mX-2aZXhCSF7rKxyusayPiy4RuJZ7qKbQw@mail.gmail.com>
-Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] driver: gpu: Fixing warning directly dereferencing a
+ rcu pointer
+Content-Language: en-US
+To:     Abhinav Singh <singhabhinav9051571833@gmail.com>,
+        kherbst@redhat.com, lyude@redhat.com, airlied@gmail.com,
+        daniel@ffwll.ch
+Cc:     dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <d33fc41b-5a1f-4186-a0b2-3c82dcb8f00b@redhat.com>
+ <20231113184238.3276835-1-singhabhinav9051571833@gmail.com>
+ <373d97fc-0612-40da-ae9d-6702aa4483ba@redhat.com>
+ <d0b1fb36-d2a6-446c-8a04-2101981f3a00@gmail.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <d0b1fb36-d2a6-446c-8a04-2101981f3a00@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 12, 2023 at 9:32=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
->
-> pt., 10 lis 2023 o 21:03 <jim.cromie@gmail.com> napisa=C5=82(a):
-> >
-> > On Fri, Nov 10, 2023 at 7:53=E2=80=AFAM =C5=81ukasz Bartosik <lb@semiha=
-lf.com> wrote:
-> > >
-> > > sob., 4 lis 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > >
-> > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb@sem=
-ihalf.com> wrote:
-> > > > >
-> > > > > When trace is enabled (T flag is set) and trace_dst field is set
-> > > > > to value greater than 0 (0 is reserved for trace events) then
-> > > > > debug logs will be written to trace instance pointed by trace_dst
-> > > > > value, for example when trace_dst value is 2 then debug logs will
-> > > > > be written to <debugfs>/tracing/instances/dyndbg_inst_2 instance.
-> > > > > Given trace instance will not be initialized until debug logs are
-> > > > > requested to be written to it and afer init will persist until
-> > > > > reboot.
-> > > > >
-> > > >
-> > > > restating 00 comments -
-> > > >
-> > > > you can get rid of integer destination ids by adding a new command:=
- open/close
-> > > >
-> > > > $> echo  \
-> > > >  open kms-instance \;\
-> > > >  class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites \;\
-> > > > > /proc/dynamic_debug/control
-> > > >
-> > >
-> > > Instead of using above command to preset destination we could preset
-> > > destination with open command. I mean last successful
-> > > open would preset destination ? What do you think ?
-> > >
-> >
-> > I dont think it works - if open maps to a dest-number, (or implicit as
-> > TOP-of-stack)
-> > then you just have +T<dest-number>  (or +T <implicit tos>)
-> > rather than +T:dest-name
-> > and you still have to keep track of what dest-numbers were already used=
-.
-> > (or every new dest needs an explicit OPEN before it)
-> >
-> > and how do you then get back to default instance ?
-> > open 0 ?
-> > close <previous-handle> ?
-> >
-> >
-> > by using names, all opens can be at the top,
-> > (and thus document in 1 block all the named-instances)
-> > and any named dest that hasnt been opened is an error
-> > (not just reusing previous OPEN)
-> >
->
-> Sorry, I should have been more specific with my proposal. Let me use
-> an example to clarify it:
-> open usb    # -> create trace instance "usb" and make it default
-> echo module usbcore +T > /proc/dynamic_debug/control ## --> write usbcore
-> ## debug logs to trace instance named usb
-> open tbt --> create trace instance "tbt" and make it default
-> echo module aaa +T:usb > /proc/dynamic_debug/control --> write aaa
-> debug logs to trace instance named usb, instance usb has to be used
-> explicitly
->
->                          because now tbt is default trace instance
+On 11/13/23 19:55, Abhinav Singh wrote:
+> On 11/14/23 00:19, Danilo Krummrich wrote:
+>> Hi,
+>>
+>> thanks for sending a v2.
+>>
+>> On 11/13/23 19:42, Abhinav Singh wrote:
+>>> This patch fixes a sparse warning with this message
+>>> "warning:dereference of noderef expression". In this context it means we
+>>> are dereferencing a __rcu tagged pointer directly.
+>>
+>> Better use imperative here, e.g. "Fix a sparse warning ...".
+>>
+>> Wouldn't ask you to send a v3 for that alone...
+>>
+>>>
+>>> We should not be directly dereferencing a rcu pointer, rather we should
+>>> be using rcu helper function rcu_dereferece() inside rcu read critical
+>>> section to get a normal pointer which can be dereferenced.
+>>
+>> ...but this doesn't seem accurate anymore as well.
+>>
+>> - Danilo
+>>
+>>>
+>>> I tested with qemu with this command
+>>> qemu-system-x86_64 \
+>>>     -m 2G \
+>>>     -smp 2 \
+>>>     -kernel bzImage \
+>>>     -append "console=ttyS0 root=/dev/sda earlyprintk=serial net.ifnames=0" \
+>>>     -drive file=bullseye.img,format=raw \
+>>>     -net user,host=10.0.2.10,hostfwd=tcp:127.0.0.1:10021-:22 \
+>>>     -net nic,model=e1000 \
+>>>     -enable-kvm \
+>>>     -nographic \
+>>>     -pidfile vm.pid \
+>>>     2>&1 | tee vm.log
+>>> with lockdep enabled.
+>>>
+>>> Signed-off-by: Abhinav Singh <singhabhinav9051571833@gmail.com>
+>>> ---
+>>> v1 -> v2 : Replaced the rcu_dereference(...) with unrcu_pointer(...) and
+>>> also removed the rcu locking and unlocking function call.
+>>>
+>>>   drivers/gpu/drm/nouveau/nv04_fence.c | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/nouveau/nv04_fence.c b/drivers/gpu/drm/nouveau/nv04_fence.c
+>>> index 5b71a5a5cd85..cdbc75e3d1f6 100644
+>>> --- a/drivers/gpu/drm/nouveau/nv04_fence.c
+>>> +++ b/drivers/gpu/drm/nouveau/nv04_fence.c
+>>> @@ -39,7 +39,7 @@ struct nv04_fence_priv {
+>>>   static int
+>>>   nv04_fence_emit(struct nouveau_fence *fence)
+>>>   {
+>>> -    struct nvif_push *push = fence->channel->chan.push;
+>>> +    struct nvif_push *push = unrcu_pointer(fence->channel)->chan.push;
+>>>       int ret = PUSH_WAIT(push, 2);
+>>>       if (ret == 0) {
+>>>           PUSH_NVSQ(push, NV_SW, 0x0150, fence->base.seqno);
+>>
+> Hi maintainers thanks a lot for reviewing this patch.
+> I think I should fix my mistake by sending in another patch so that the code changes and description matches. So should I send another patch ?
 
-that feels too magical/ action at a distance.
+Yes, please send a v3.
 
-ISTM it also muddles what the "default" is:
+> 
+> Thank You,
+> Abhinav Singh
+> 
 
-my-default:
-what each callsite's current/preset dest is/was
-the only way to set it is with explicit [-+]T:outstream
-
-your-default:
-whatever was last opened. whether it was 2 or 50 lines above,
-or set weeks ago, the last time somebody opened an instance.
-
-and as more instances are created
-(potentially by different users?
-after all there are separate instances,
-and presumably separate interests),
-the default gets less predictable.
-
-
-> echo module bbb +T > /proc/dynamic_debug/control --> write bbb debug
-> logs to trace instance named tbt
-> close tbt --> close tbt trace instance, I omit this step but in order
-> for an instance to be successful closed it must not be used by any
-> callsite, after
->                     closing tbt instance the usb becomes default instance
-
-so after 'close tbt',  the previous 'open usb' is now top-of-stack ?
-
-how does that affect all existing callsite-users of tbt ?
-do they continue to use the trace-instance theyve been writing to ?
-If not, then reverting to the global instance seems much more predictable.
-
-Or are you proposing that the close fails because the instance is still in =
-use ?
-this seems least surprising,
-and more robust in the face of the next 'open foo'
-which could otherwize reuse the dst_id mapped to tbt
-
-
->
-> I agree that your method of setting default trace instance is more flexib=
-le:
-> class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites
->
-> Maybe we can combine both to set default trace destination ?
->
-> Also I think we need a reserved keyword for writing debug logs to
-> trace events - maybe "event" keyword ?
-
-do you mean "event" as a selector, like module, function, class, etc ?
-if so, what are the values ?
-any event under  /sys/kernel/debug/tracing/events/ ?
-
-how does this get used ?
-
->
->
-> >
-> > > >
-> > > > and +T  w/o dest means use existing setting, not just 0 (unless tha=
-ts
-> > > > the existing setting)
-> > > >
-> > >
-> > > Sounds good.
-> > >
-> >
-> > :-)
