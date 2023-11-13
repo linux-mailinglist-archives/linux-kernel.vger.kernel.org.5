@@ -2,118 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CAA3B7E95DF
-	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:06:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485D77E95EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 13 Nov 2023 05:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjKMEGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 12 Nov 2023 23:06:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52996 "EHLO
+        id S233121AbjKMEIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 12 Nov 2023 23:08:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233093AbjKMEGU (ORCPT
+        with ESMTP id S233055AbjKMEIa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 12 Nov 2023 23:06:20 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A39C172B
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:06:17 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7b91faf40so46409147b3.1
-        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:06:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1699848376; x=1700453176; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DdulfEzSfHGU40Qe7T9MI/Dcb3TiqFwbhF9mJITGshA=;
-        b=Rs9HkzrE1T4yo2QGbYc/4pXVHXDWmZDRA81eYugBeS/+46GBU6A1etnOI0XFICVgJj
-         cQVPLcbntuWQjCdDUMm020jQbS54y4kfvM4uAFrIUijL13fL0xGinBYIPQ/N/yaVwZgS
-         jkzs6k5tZm84mXjjhjKwg0bJHXSFSBDV++ICurpIrdfMvtWcBWSY7X+o7Xvp3bahMLie
-         lJAkqqh9idYkZNBUMGxMpxGraKiGUv1KHBW45lvvCfEfpwkgje+fffQHm+2COPxePc19
-         e0Fsz5vpjfLFXdoRQuyAcnuPqgmTclt0p0yHGdZ2z4XA7fhgj6iNa3mbgcpVWZ2wjeo2
-         d8MA==
+        Sun, 12 Nov 2023 23:08:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E195F1735
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699848468;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4vPpPFrFkMrzqnxNhFYjlLboUr7aR9ku5ew8hulbyck=;
+        b=E0dpLxbI7R5BxBXHoIUwlquXQJXPu9mzaFo1AaAIuiH3eu3V/V/Z7tGFY8rcXTj8RMh638
+        Cr2IWPNBN6p7cIFx6E+vyO+Q+I6pQmOUXrbpFllSOGPiuElCYouQUR2Y5qd2h/RAwWiN6J
+        r36MGRwHg2IBJkareVBAaVREmfnW+Fs=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-536-pcRHeA5DPyCoXRKx9eFvlQ-1; Sun, 12 Nov 2023 23:07:46 -0500
+X-MC-Unique: pcRHeA5DPyCoXRKx9eFvlQ-1
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc42d3f61eso45249655ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 12 Nov 2023 20:07:46 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699848376; x=1700453176;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DdulfEzSfHGU40Qe7T9MI/Dcb3TiqFwbhF9mJITGshA=;
-        b=ODNbq+kwD+N1HW6nOOM2pomJGCsd6IweBrMy04eBnloQwU/DvEADJcBe9GHHHeRhzR
-         eB96p7SvU2wSZU3L6Kw2YH/urF/cnvLqeoP3Ptlepr/vWriEniULM/kNTDIpVH7ONNvq
-         jKXv1ONmxyQyYiwsd+C/Kpe8s7jg4ECt1hyJjAuI/KQmdXrI6i+t8D7v77lLSunc5L6D
-         A1T4ql3ZzFuz0zoDMgxoz9WonX6jS9Vha8ZvynnVfarwaXLbn1SQZw5aKFf9nKRnV2tk
-         I3znyylg+wJBs4PBzrTArM8ZqtO70jrK1WexRCH+TlqQL1KPB75h3l/PU4iJVHr4xQpa
-         X7tw==
-X-Gm-Message-State: AOJu0Yy61wkKI99o/hBfNNn6wgpLGI3nJAinEws2CQG9TfwE+x1AoB88
-        NJUa2hoiNyyYPMKIXtJvm8v+LSSvu3YaG0yHNmvc
-X-Google-Smtp-Source: AGHT+IEI/peI91Cg3UawMcuS9Yk9mFblaeeU97N3bZNmx6UjEdef/ZKk/ovoWf1eG3YjVOz6NHCes6ELqTMs8g5M1d8=
-X-Received: by 2002:a25:dd8:0:b0:d9c:a485:332b with SMTP id
- 207-20020a250dd8000000b00d9ca485332bmr4377065ybn.4.1699848376543; Sun, 12 Nov
- 2023 20:06:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699848465; x=1700453265;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=4vPpPFrFkMrzqnxNhFYjlLboUr7aR9ku5ew8hulbyck=;
+        b=dA3XqzkpHB3XRcKTa7iogCyx/vfa0vfO1OVhmK0rASg4qI2XLp1o/UxPkIxtdSHc10
+         8LlVWF6fWJmCAIOLMWwJTFKK54NY7C/2lG+CDm0JXOmynoQ1GMcwqK+f8SigxW+jUM0s
+         NqOSRDBgJhBDCLNOXNKJMyInKpxOYBQK2BsiTZbQYfZlzwI6TVXf6j04uXu59DCA/xVl
+         bzTUnon1Y3vt92/aBj2cWXOkWp5l8p+LUnRVYBF+dVcOdtSAiJ2FdsbheCWGAb4wUIbz
+         ByhsO0+hKId5qzQaD4tdQUK+640alu2F/KHZF2DS1BW4V5P0V7DDWOauJO7v/cwhyijF
+         q0nA==
+X-Gm-Message-State: AOJu0YyJ/vYFfmXT4X52YpIwPT+kSKpqLFYSuayjqMA0LnVnJJhEwYTR
+        1tS98mQdcsKnYzV2wh9ZbyF4ZwPtjHVEMRGzAfwqMClGDBgDW404npzBQmIKM0V+hIRphVgKi5U
+        qEMdiS/2XAf/VAD1RhG+XP/KV
+X-Received: by 2002:a17:903:18f:b0:1c9:b2c1:139c with SMTP id z15-20020a170903018f00b001c9b2c1139cmr7261843plg.62.1699848465412;
+        Sun, 12 Nov 2023 20:07:45 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHWMylLMVWpWug6Cxx/NC9nXPjOFm1HEloPQE99Sn7p/Alc1N4hJ0inQY3toOaSbmTdKDWFaA==
+X-Received: by 2002:a17:903:18f:b0:1c9:b2c1:139c with SMTP id z15-20020a170903018f00b001c9b2c1139cmr7261816plg.62.1699848465098;
+        Sun, 12 Nov 2023 20:07:45 -0800 (PST)
+Received: from ?IPV6:2001:8003:e5b0:9f00:b890:3e54:96bb:2a15? ([2001:8003:e5b0:9f00:b890:3e54:96bb:2a15])
+        by smtp.gmail.com with ESMTPSA id b1-20020a170903228100b001cc3098c9f8sm3225162plh.275.2023.11.12.20.07.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 12 Nov 2023 20:07:44 -0800 (PST)
+Message-ID: <a6fe7a98-d215-4639-9949-b0044313681f@redhat.com>
+Date:   Mon, 13 Nov 2023 14:07:36 +1000
 MIME-Version: 1.0
-References: <20231026090259.362945-1-roberto.sassu@huaweicloud.com>
- <dd0f6611c7b46f3cecee2b84681c45b1.paul@paul-moore.com> <447298d65b497fb1a7f8d47c4f1a3137eba24511.camel@huaweicloud.com>
- <CAHC9VhSMVpEvLwWvBCgz0EMEb=DG_AZ7fenVUk5vPM=v5c6kYQ@mail.gmail.com> <CAHC9VhQW1mi5Z72cia7sqC7jERcCxO93xZJnvER=e7U6RqNFxQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhQW1mi5Z72cia7sqC7jERcCxO93xZJnvER=e7U6RqNFxQ@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Sun, 12 Nov 2023 23:06:05 -0500
-Message-ID: <CAHC9VhSwPb71C1Z4DULv_8VyXO-wdjuvf2QqcbUCPvJgdg+H4g@mail.gmail.com>
-Subject: Re: [PATCH] security: Don't yet account for IMA in LSM_CONFIG_COUNT calculation
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     jmorris@namei.org, serge@hallyn.com,
-        linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        linux-integrity@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 13/22] arm64: setup: Switch over to
+ GENERIC_CPU_DEVICES using arch_register_cpu()
+Content-Language: en-US
+To:     "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+        linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
+        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
+        x86@kernel.org, linux-csky@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
+        linux-parisc@vger.kernel.org
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        jianyong.wu@arm.com, justin.he@arm.com,
+        James Morse <james.morse@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
+ <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
+From:   Gavin Shan <gshan@redhat.com>
+In-Reply-To: <E1r0JLl-00CTxk-7O@rmk-PC.armlinux.org.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 12:36=E2=80=AFPM Paul Moore <paul@paul-moore.com> w=
-rote:
-> On Thu, Oct 26, 2023 at 11:59=E2=80=AFAM Paul Moore <paul@paul-moore.com>=
- wrote:
-> > On Thu, Oct 26, 2023 at 11:12=E2=80=AFAM Roberto Sassu
-> > <roberto.sassu@huaweicloud.com> wrote:
-> > > On Thu, 2023-10-26 at 10:48 -0400, Paul Moore wrote:
-> > > > On Oct 26, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote=
-:
-> > > > >
-> > > > > Since IMA is not yet an LSM, don't account for it in the LSM_CONF=
-IG_COUNT
-> > > > > calculation, used to limit how many LSMs can invoke security_add_=
-hooks().
-> > > > >
-> > > > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > > > ---
-> > > > >  security/security.c | 1 -
-> > > > >  1 file changed, 1 deletion(-)
-> > > >
-> > > > Merged into lsm/dev-staging, thanks!
-> > >
-> > > Welcome!
-> > >
-> > > Could you please also rebase lsm/dev-staging, to move ab3888c7198d
-> > > ("LSM: wireup Linux Security Module syscalls") after f7875966dc0c
-> > > ("tools headers UAPI: Sync files changed by new fchmodat2 and
-> > > map_shadow_stack syscalls with the kernel sources")?
-> >
-> > Let me look into that, as long as it doesn't blow up the stuff in
-> > lsm/dev (I don't think it would), I'll go ahead and rebase to v6.6-rc4
-> > which should resolve the syscall numbering conflict.
-> >
-> > FWIW, I also hit the same problem with my kernel-secnext builds, if
-> > you're using those RPMs you'll find it's already resolved there.
->
-> That wasn't very messy so I've rebased lsm/dev-staging to v6.6-rc4 and
-> regenerated lsm/next.  If you notice any problems please let me know.
+On 11/7/23 20:30, Russell King (Oracle) wrote:
+> From: James Morse <james.morse@arm.com>
+> 
+> To allow ACPI's _STA value to hide CPUs that are present, but not
+> available to online right now due to VMM or firmware policy, the
+> register_cpu() call needs to be made by the ACPI machinery when ACPI
+> is in use. This allows it to hide CPUs that are unavailable from sysfs.
+> 
+> Switching to GENERIC_CPU_DEVICES is an intermediate step to allow all
+> five ACPI architectures to be modified at once.
+> 
+> Switch over to GENERIC_CPU_DEVICES, and provide an arch_register_cpu()
+> that populates the hotpluggable flag. arch_register_cpu() is also the
+> interface the ACPI machinery expects.
+> 
+> The struct cpu in struct cpuinfo_arm64 is never used directly, remove
+> it to use the one GENERIC_CPU_DEVICES provides.
+> 
+> This changes the CPUs visible in sysfs from possible to present, but
+> on arm64 smp_prepare_cpus() ensures these are the same.
+> 
+> This patch also has the effect of moving the registration of CPUs from
+> subsys to driver core initialisation, prior to any initcalls running.
+> 
+> Signed-off-by: James Morse <james.morse@arm.com>
+> Reviewed-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
+> ---
+> Changes since RFC v2:
+>   * Add note about initialisation order change.
+> ---
+>   arch/arm64/Kconfig           |  1 +
+>   arch/arm64/include/asm/cpu.h |  1 -
+>   arch/arm64/kernel/setup.c    | 13 ++++---------
+>   3 files changed, 5 insertions(+), 10 deletions(-)
+> 
 
-Now merged into lsm/dev, thanks Roberto!
+Reviewed-by: Gavin Shan <gshan@redhat.com>
 
---=20
-paul-moore.com
