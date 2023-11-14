@@ -2,103 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F27F7EACE1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ECE7EACE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232549AbjKNJSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:18:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
+        id S232535AbjKNJTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:19:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232518AbjKNJSE (ORCPT
+        with ESMTP id S232490AbjKNJTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:18:04 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id 786AEF5;
-        Tue, 14 Nov 2023 01:18:00 -0800 (PST)
-Received: from [172.30.11.106] (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id D4CB26071E21E;
-        Tue, 14 Nov 2023 17:17:50 +0800 (CST)
-Message-ID: <9c90dd30-448c-6d1c-76e4-85b36eb739f9@nfschina.com>
-Date:   Tue, 14 Nov 2023 17:17:50 +0800
+        Tue, 14 Nov 2023 04:19:11 -0500
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4DD0132
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:19:08 -0800 (PST)
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-2801b74012bso6591303a91.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:19:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699953548; x=1700558348;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=S4P5zriqq9zl057m/BWfVOzJfaI/sekxPSXqBh15LVY=;
+        b=djEZMe9VNsyZvACx7pnYdpqIuvOqr5hjVPZW+VVqwxzElBRwnV17wl20iLsFTiI0+Y
+         5lgJSlrDGaf/pf/20gls6JR42tfTquMg2eqFRQfv5dULVeaWHxDFGSKvQSbUgFgdxWbi
+         w71YblWaAYnsOEJWanXkp1Kn55XnJVeQ0JdIR3KD2hQAdLH+rMwX0Pvkia+T4qpcky5D
+         U2hUTTGAFsYoD1fvFnxZh6Gz7cnaz473IbEFZ8NnZAVDC4ZcLw9JgqPoX4mREs/o2YR7
+         nTXX2JsNU3CchQV9sTj7Mv6US/daEOAWdcjLdguPo5covRLMNsDwHwaiagW+4KSVPhjo
+         W+Mg==
+X-Gm-Message-State: AOJu0YyUwP28Gl4J+oRycC8rSfQrlHWt1pWc3Gr1rVIlT7UbfXj4xR0U
+        Fqe1QJyknfWXT9HSbSMu96fjBgIwXkFLKqHFOgBeaHKvHJd3
+X-Google-Smtp-Source: AGHT+IF2TpQGa5xW32lZ23zjnRkeNTwpVAZj30XADoY9wmxhp/YBbu+pZsdQLDCZ0FOrLOK8BvvlV/V4TGl+8xi4HLxheSg3SHUn
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-Subject: Re: [PATCH] wifi: rtl8xxxu: correct the error value of 'timeout'
-Content-Language: en-US
-To:     Ping-Ke Shih <pkshih@realtek.com>,
-        "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>,
-        "kvalo@kernel.org" <kvalo@kernel.org>
-Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-In-Reply-To: <e8b847437ab242d18108d9364360bb8a@realtek.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:4308:b0:27d:5688:23e8 with SMTP id
+ q8-20020a17090a430800b0027d568823e8mr2618033pjg.4.1699953548215; Tue, 14 Nov
+ 2023 01:19:08 -0800 (PST)
+Date:   Tue, 14 Nov 2023 01:19:08 -0800
+In-Reply-To: <tencent_B296DE36444A84758D766566B63D7937F809@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000604eb5060a19473f@google.com>
+Subject: Re: [syzbot] [squashfs?] KASAN: slab-out-of-bounds Write in
+ squashfs_readahead (2)
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/14 14:42, Ping-Ke Shih wrote:
->> -----Original Message-----
->> From: Su Hui <suhui@nfschina.com>
->> Sent: Monday, November 13, 2023 1:49 PM
->> To: Jes.Sorensen@gmail.com; kvalo@kernel.org
->> Cc: Su Hui <suhui@nfschina.com>; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
->> kernel-janitors@vger.kernel.org
->> Subject: [PATCH] wifi: rtl8xxxu: correct the error value of 'timeout'
->>
->> When 'rtl8xxxu_dma_agg_pages <= page_thresh', 'timeout' should equal to
->> 'page_thresh' rather than '4'. Change the code order to fix this problem.
->>
->> Fixes: 614e389f36a9 ("rtl8xxxu: gen1: Set aggregation timeout (REG_RXDMA_AGG_PG_TH + 1) as well")
-> I think this should fix
-> Fixes: fd83f1227826 ("rtl8xxxu: gen1: Add module parameters to adjust DMA aggregation parameters")
-Agreed. Thanks for your reminder!
->
->> Signed-off-by: Su Hui <suhui@nfschina.com>
->> ---
->>   .../net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c    | 12 ++++++------
->>   1 file changed, 6 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
->> b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
->> index 43ee7592bc6e..9cab8b1dc486 100644
->> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
->> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
->> @@ -4757,6 +4757,12 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
->>           *   RxAggPageTimeout = 4 or 6 (absolute time 34ms/(2^6))
->>           */
->>
->> +       /* REG_RXDMA_AGG_PG_TH + 1 seems to be the timeout register on
->> +        * gen2 chips and rtl8188eu. The rtl8723au seems unhappy if we
->> +        * don't set it, so better set both.
->> +        */
->> +       timeout = 4;
->> +
->>          page_thresh = (priv->fops->rx_agg_buf_size / 512);
->>          if (rtl8xxxu_dma_agg_pages >= 0) {
->>                  if (rtl8xxxu_dma_agg_pages <= page_thresh)
-> The logic here is:
->
-> 	page_thresh = (priv->fops->rx_agg_buf_size / 512);
-> 	if (rtl8xxxu_dma_agg_pages >= 0) {
-> 		if (rtl8xxxu_dma_agg_pages <= page_thresh)
-> 			timeout = page_thresh;
->
-> Do you know why 'timeout = page_thresh;'? Intuitively, units of 'timeout' and
-> 'thresh' are different. Maybe, we should correct here instead?
-I don't know the reason about this. :(
-I found this error because clang static checker complains about this 
-code that value stored to 'timeout'
-is never read.
+Hello,
 
-Su Hui
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
+Reported-and-tested-by: syzbot+604424eb051c2f696163@syzkaller.appspotmail.com
+
+Tested on:
+
+commit:         13d88ac5 Merge tag 'vfs-6.7.fsid' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=16dd2f97680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=604424eb051c2f696163
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1258c947680000
+
+Note: testing is done by a robot and is best-effort only.
