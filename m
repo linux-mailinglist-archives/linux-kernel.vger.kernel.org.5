@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB4A77EB7E1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:34:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100D67EB7E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:35:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234014AbjKNUe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:34:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40804 "EHLO
+        id S234022AbjKNUfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:35:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233992AbjKNUez (ORCPT
+        with ESMTP id S234012AbjKNUfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:34:55 -0500
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83722F5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:34:52 -0800 (PST)
-Received: by mail-qv1-xf2e.google.com with SMTP id 6a1803df08f44-67089696545so33767516d6.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:34:52 -0800 (PST)
+        Tue, 14 Nov 2023 15:35:04 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A3E120
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:35:00 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-66d1a05b816so35966336d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:35:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699994091; x=1700598891; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1699994100; x=1700598900; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=phkKYXQ8GVFwbXrMit8GR8BOhmt56OQ/T7n97lFji7s=;
-        b=ksoGDMNT4DGf2cm4WL/fgrpxFJrzgpCn6AEovXRv2FHZqoJddBVCozFqYPt4wiCqAh
-         mFdfUajmwWuEVXXdRMZ2mQJXRR2A/7HTMfHCQwZb5YB/M0OqFdDCUdu4u8T7BwXDrn+Q
-         TCma7wSNHwBPAIE9qDlyqPs1KF+UGr156QCHqXDilyGGD4qKTu6pCs00KaZw92L4cMuO
-         jRxgZlAHYi4RVeTnfwiNY3sbM8o24gGj2ty066Z9/cWrkB3itjHWqwo8VzFxRkNTQADC
-         JW8I5PVtxGFkVXBKiRRc2DIMoWfbsblHbV4SC5tWy7CtcQEQlKlAtqoQtcRnEyYVIt1W
-         aV4g==
+        bh=CVjFswQ/jW2pMZHsfFdNFiwxD/bpTN2LHYTDKvoamzQ=;
+        b=TVxATW196mmxry2eIpFsYrKn8sak9T10Zv9yoEE4xXqYYOCzpWwzOblzyZH5h/dj24
+         WOGvzJoKN0IbKZhrfqw8kSMqHHLNFpRQ5iWrybonI0Oo8HHHjkOJ6BfFswU8dT+spVWj
+         nukWGY8Irh+wV9l3XBQpSScT4XrI4andcTO4P/qahZdKoK8mpBSG2CKW97zP21o1q18B
+         aLMpsgdnYfDT32MKq2h7CWWp2mw6PrKAcH193/nXYxRvuoAaJceztG/oYiWrIKyuER92
+         0sP1yrlZPs7rr19ngD2XQXjNgQu7RGrdtVbL3eehFQEb/Coxhs8te36Hi02KAhX/XdHf
+         igxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699994091; x=1700598891;
+        d=1e100.net; s=20230601; t=1699994100; x=1700598900;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=phkKYXQ8GVFwbXrMit8GR8BOhmt56OQ/T7n97lFji7s=;
-        b=Bqq8n0K+JVWx2K9Io9/EB/yUb7/HEYHUQG6UVREXmTED0NwKgCNNldzmfdRdfDQbe/
-         gIo17dudhtHnNAqulEVyyxp2KGv+yv9wmnnXoRXrOjckZ8h8zI8O/k4f4T15yRaxfscn
-         hr8pNFxw+t/z51IcL++1DfOMneMogSFAUNiB6kADS6yrr1E4zZ/87OnBEAbxPpI01JW4
-         y0zjjmou399wGbmu26gqkiJCVJ5bDthRn9OUj3krcosFx/9sK+/ihXMvFWyBTQBtqZe+
-         9zICgiAVDftgidpWVh+LkKfFsAinnimaQG4bbUgUBpSSDR8Samw4ewuS7bxoI4/ge89G
-         IL1A==
-X-Gm-Message-State: AOJu0YwT10mI6nHguYCul70dQ1tHk8wvAyMP1h210k/Ca6AYnFQtfbD9
-        w98wmKalu9heOcdLoX6TIAPz7tmWBsu5x523IeE=
-X-Google-Smtp-Source: AGHT+IECVrJys6cTO7/sMlL8JmMLPshdA9G+D70qIJJdCicS4dUoKoFbio8OiuQoZeUncLquwHRA1w==
-X-Received: by 2002:ad4:5dc1:0:b0:66d:140a:18f3 with SMTP id m1-20020ad45dc1000000b0066d140a18f3mr3987205qvh.45.1699994091638;
-        Tue, 14 Nov 2023 12:34:51 -0800 (PST)
+        bh=CVjFswQ/jW2pMZHsfFdNFiwxD/bpTN2LHYTDKvoamzQ=;
+        b=EBZOEeIlvM+xmHm6ibG5rjxIcgfqJ8ORO8uLk4pY5dMDEhXYDeRabegNv2PTaETJ6C
+         BtFCYKTjwQrdkjLEhjeHwFggfeNMOIPwMVZTbS2QitVuirdI6PhzsZG6rpTjaCtCvIrl
+         t5Pmhxfyty8QUP2LOwITGPlVK088Uo52vnlO0x6d1g9XCAI5wK0Dhw2wcaeOOURxYHpW
+         GLu1ee7fYeP6Drgg2s6V7dfbUGO0EK4pJdKLrYgsCB0jXqNwDC2zHH8yQq3kzs+BsEH6
+         TcKdXrMJf42kB+mhnJy5h96OWCf8IbAViF4WHj+sYZIbaRN3+fTZSNGiJpRk6pfqlg/z
+         S6UA==
+X-Gm-Message-State: AOJu0Yy0DSAWLHHRYOXgpUD4MJF6UfmJ/yCOp7ZimYff6tJIXYB466HY
+        XiuXCkgY/hLpuC73YUEs1+hlwQ==
+X-Google-Smtp-Source: AGHT+IEdIqnxZ60wqAn54yhi0VfoBEFFWyac1wVwuE1WKmBGODwplZ6ZTn1n0v0cWViKvVnA8qRFBg==
+X-Received: by 2002:a0c:fd81:0:b0:672:3f54:b950 with SMTP id p1-20020a0cfd81000000b006723f54b950mr3092486qvr.50.1699994099920;
+        Tue, 14 Nov 2023 12:34:59 -0800 (PST)
 Received: from [172.25.83.73] ([12.186.190.1])
-        by smtp.gmail.com with ESMTPSA id h13-20020a0ceecd000000b00671b009412asm3132110qvs.141.2023.11.14.12.34.50
+        by smtp.gmail.com with ESMTPSA id h13-20020a0ceecd000000b00671b009412asm3132110qvs.141.2023.11.14.12.34.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 12:34:51 -0800 (PST)
-Message-ID: <a988886c-a799-4dc2-81ba-eb3bd86438dd@linaro.org>
-Date:   Tue, 14 Nov 2023 21:34:50 +0100
+        Tue, 14 Nov 2023 12:34:59 -0800 (PST)
+Message-ID: <1c7cded1-dc24-4312-bbdd-0161c710234a@linaro.org>
+Date:   Tue, 14 Nov 2023 21:34:58 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add ASRock SPC621D8HM3 BMC
+Subject: Re: [PATCH 1/2] dt-bindings: arm: aspeed: document ASRock E3C256D4I
 Content-Language: en-US
 To:     Zev Weiss <zev@bewilderbeest.net>,
         Rob Herring <robh+dt@kernel.org>,
@@ -65,8 +65,8 @@ To:     Zev Weiss <zev@bewilderbeest.net>,
 Cc:     devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
         openbmc@lists.ozlabs.org
-References: <20231114112819.28572-4-zev@bewilderbeest.net>
- <20231114112819.28572-6-zev@bewilderbeest.net>
+References: <20231114112722.28506-4-zev@bewilderbeest.net>
+ <20231114112722.28506-5-zev@bewilderbeest.net>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -112,12 +112,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231114112819.28572-6-zev@bewilderbeest.net>
+In-Reply-To: <20231114112722.28506-5-zev@bewilderbeest.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,87 +125,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/2023 12:28, Zev Weiss wrote:
-> This is a Xeon board broadly similar (aside from CPU vendor) to the
-> already-support romed8hm3 (half-width, single-socket, ast2500).  It
-> doesn't require anything terribly special for OpenBMC support, so this
-> device-tree should provide everything necessary for basic
-> functionality with it.
+On 14/11/2023 12:27, Zev Weiss wrote:
+> Document ASRock E3C256D4I board compatible.
 > 
 > Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
 > ---
->  arch/arm/boot/dts/aspeed/Makefile             |   1 +
->  .../aspeed/aspeed-bmc-asrock-spc621d8hm3.dts  | 316 ++++++++++++++++++
->  2 files changed, 317 insertions(+)
->  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-> 
-> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
-> index d3ac20e316d0..2df0a2e88df7 100644
-> --- a/arch/arm/boot/dts/aspeed/Makefile
-> +++ b/arch/arm/boot/dts/aspeed/Makefile
-> @@ -10,6 +10,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
->  	aspeed-bmc-arm-stardragon4800-rep2.dtb \
->  	aspeed-bmc-asrock-e3c246d4i.dtb \
->  	aspeed-bmc-asrock-romed8hm3.dtb \
-> +	aspeed-bmc-asrock-spc621d8hm3.dtb \
->  	aspeed-bmc-bytedance-g220a.dtb \
->  	aspeed-bmc-delta-ahe50dc.dtb \
->  	aspeed-bmc-facebook-bletchley.dtb \
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-> new file mode 100644
-> index 000000000000..95b440d90f56
-> --- /dev/null
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-spc621d8hm3.dts
-> @@ -0,0 +1,316 @@
-> +// SPDX-License-Identifier: GPL-2.0+
-> +/dts-v1/;
-> +
-> +#include "aspeed-g5.dtsi"
-> +#include <dt-bindings/gpio/aspeed-gpio.h>
-> +#include <dt-bindings/i2c/i2c.h>
-> +#include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +/{
-> +	model = "ASRock SPC621D8HM3 BMC";
-> +	compatible = "asrock,spc621d8hm3-bmc", "aspeed,ast2500";
-> +
-> +	aliases {
-> +		serial4 = &uart5;
-> +
-> +		i2c20 = &i2c1mux0ch0;
-> +		i2c21 = &i2c1mux0ch1;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = &uart5;
-> +		bootargs = "console=tty0 console=ttyS4,115200 earlycon";
 
-Drop bootargs. Serial (and rate) should be selected by stdout path.
-
-earlycon is for debug, not wide usage.
-
-> +	};
-> +
-> +	memory@80000000 {
-> +		reg = <0x80000000 0x20000000>;
-> +	};
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		heartbeat {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
 Best regards,
 Krzysztof
