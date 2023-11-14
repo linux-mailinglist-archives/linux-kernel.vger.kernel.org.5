@@ -2,48 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E23617EAE1C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:31:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39EDE7EAE1F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:34:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232552AbjKNKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53796 "EHLO
+        id S230045AbjKNKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:34:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231945AbjKNKbn (ORCPT
+        with ESMTP id S229441AbjKNKd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:31:43 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 6947E121;
-        Tue, 14 Nov 2023 02:31:39 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 593DBC15;
-        Tue, 14 Nov 2023 02:32:24 -0800 (PST)
-Received: from [10.57.3.30] (unknown [10.57.3.30])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 63DDC3F641;
-        Tue, 14 Nov 2023 02:31:37 -0800 (PST)
-Message-ID: <93c5b287-a643-4e95-a38b-ed301d5cbcb2@arm.com>
-Date:   Tue, 14 Nov 2023 10:32:35 +0000
+        Tue, 14 Nov 2023 05:33:59 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEECD9;
+        Tue, 14 Nov 2023 02:33:55 -0800 (PST)
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9oAUT007228;
+        Tue, 14 Nov 2023 10:33:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=3ULhedtaV0XLSfNu8W0jmu2jCdoQ6/Fn8e2UKpNKH+A=;
+ b=pBZxuQFVezSl2edyBA90H8iJxKN8vu0WTsQ0W+++pT1bGqsaiWQgH0xHz2DS7o0WAahd
+ WxnovsrILcOeLt+pGJOSL3PSIA2JpWLKGCzkuxD6dX0eeQo3WLXfKpMByTpFXta2R3fG
+ xwvddetgs5SiuWUp/jRcy6EebVkHYy73pqBOLdcQhUtZjSgHF5xFL4Ql6LfSmO31qlbc
+ QJKoPftjKsPRI54uujKjp6oFI5v+nfHB0oQFIhjjM4sEv7dDkEMc17LVwp2djO7yERI7
+ n07LrUwS11/oqXIHzIcJ5RJGTSYHOrPcVNb2WZBfA5s83k/QN3SJYgdjHJ/vlSLOD/7M BQ== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubwskh23r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 10:33:45 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEAXik6007401
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 10:33:44 GMT
+Received: from [10.216.63.64] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 14 Nov
+ 2023 02:33:41 -0800
+Message-ID: <bf09fff7-bc13-6545-029e-2bd518111906@quicinc.com>
+Date:   Tue, 14 Nov 2023 16:03:20 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Various Exynos targets never return to no cooling
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] Performance: devfreq: avoid devfreq delay work re-init
+ before
 Content-Language: en-US
-To:     Mateusz Majewski <m.majewski2@samsung.com>
-Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Bartlomiej Zolnierkiewicz <bzolnier@gmail.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        linux-pm@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <CGME20231113130451eucas1p293985c1bee8dc71b9c78a013663ce8e6@eucas1p2.samsung.com>
- <20231113130435.500353-1-m.majewski2@samsung.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <20231113130435.500353-1-m.majewski2@samsung.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+To:     huangzaiyang <huangzaiyang@oppo.com>, <myungjoo.ham@samsung.com>,
+        <kyungmin.park@samsung.com>, <cw00.choi@samsung.com>
+CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        huangzaiyang <joyyoung.wang@gmail.com>
+References: <20231110093457.458-1-huangzaiyang@oppo.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231110093457.458-1-huangzaiyang@oppo.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: kehTum09broLdiB3L8kbjbrzcIEtsQju
+X-Proofpoint-ORIG-GUID: kehTum09broLdiB3L8kbjbrzcIEtsQju
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_09,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
+ suspectscore=0 spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
+ mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311140082
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,217 +81,172 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mateusz,
+Just saw this mail, i have posted a patch to synchronize 
+devfreq_monitor_start/stop.
 
-On 11/13/23 13:04, Mateusz Majewski wrote:
-> Hi,
+https://lore.kernel.org/all/1699957648-31299-1-git-send-email-quic_mojha@quicinc.com/
+
+let me know if that works too.
+
+-Mukesh
+
+On 11/10/2023 3:04 PM, huangzaiyang wrote:
+> From: huangzaiyang <joyyoung.wang@gmail.com>
 > 
-> While working on some fixes on the Exynos thermal driver, I have found that some
-> of the Exynos-based boards will never return to no cooling. That is, after
-> heating the board a bit and letting it cool, we see in the sysfs output similar
-> to this:
+> There is a timer_list race condition when executing the following test shell script:
+> '''
+> while true
+> do
+>          echo "simple_ondemand" > /sys/class/devfreq/1d84000.ufshc/governor
+>          echo "performance" > /sys/class/devfreq/1d84000.ufshc/governor
+> done
+> '''
 > 
-> root@target:~# cat /sys/class/thermal/thermal_zone*/temp
-> 30000
-> 29000
-> 32000
-> 31000
-> 30000
-> root@target:~# cat /sys/class/thermal/cooling_device*/cur_state
-> 1
-> 0
-> 0
-> 0
-
-You can also use this command:
-$ grep . /sys/class/thermal/cooling_device*/cur_state
-
-That would print also the names.
-
+> [13511.214366][    C3] Unable to handle kernel paging request at virtual address dead00000000012a
+> [13511.214393][    C3] Mem abort info:
+> [13511.214398][    C3]   ESR = 0x96000044
+> [13511.214404][    C3]   EC = 0x25: DABT (current EL), IL = 32 bits
+> [13511.214409][    C3]   SET = 0, FnV = 0
+> [13511.214414][    C3]   EA = 0, S1PTW = 0
+> [13511.214417][    C3] Data abort info:
+> [13511.214422][    C3]   ISV = 0, ISS = 0x00000044
+> [13511.214427][    C3]   CM = 0, WnR = 1
+> [13511.214432][    C3] [dead00000000012a] address between user and kernel address ranges
+> [13511.214439][    C3] Internal error: Oops: 96000044 [#1] PREEMPT SMP
+> [13511.215449][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted: G S      W  O      5.10.168-android12-9-o-g63cc297a7b34 #1
+> [13511.215454][    C3] Hardware name: Qualcomm Technologies, Inc. Cape MTP, Whiteswan (DT)
+> [13511.215460][    C3] pstate: 82400085 (Nzcv daIf +PAN -UAO +TCO BTYPE=--)
+> [13511.215472][    C3] pc : expire_timers+0x9c/0x428
+> [13511.215478][    C3] lr : __run_timers+0x1f0/0x328
+> [13511.215483][    C3] sp : ffffffc00801bdd0
+> [13511.215487][    C3] x29: ffffffc00801bdf0 x28: ffffffdb87b31698
+> [13511.215493][    C3] x27: ffffffdb87999e58 x26: ffffffdb87966008
+> [13511.215499][    C3] x25: 0000000000000001 x24: ffffff8001734a00
+> [13511.215506][    C3] x23: 00000000000000e0 x22: dead000000000122
+> [13511.215512][    C3] x21: 000000010032658e x20: ffffff89f7a9ae80
+> [13511.215518][    C3] x19: ffffffc00801be50 x18: ffffffc00801d038
+> [13511.215525][    C3] x17: 0000000000000240 x16: 0000000000000201
+> [13511.215532][    C3] x15: ffffffffffffffff x14: ffffff89f7a9aef8
+> [13511.215538][    C3] x13: 0000000000000240 x12: ffffff89f7a9aea8
+> [13511.215544][    C3] x11: 0000000000000021 x10: 000000014032658e
+> [13511.215550][    C3] x9 : ffffffc00801be50 x8 : dead000000000122
+> [13511.215556][    C3] x7 : ffff71646c68735e x6 : ffffff89f7aaae58
+> [13511.215563][    C3] x5 : 0000000000000000 x4 : 0000000000000101
+> [13511.215569][    C3] x3 : ffffff89f7a9aef0 x2 : ffffff89f7a9aef0
+> [13511.215575][    C3] x1 : ffffffc00801be50 x0 : ffffff8045804428
+> [13511.215581][    C3] Call trace:
+> [13511.215586][    C3]  expire_timers+0x9c/0x428
+> [13511.215591][    C3]  __run_timers+0x1f0/0x328
+> [13511.215596][    C3]  run_timer_softirq+0x28/0x58
+> [13511.215602][    C3]  efi_header_end+0x168/0x5ec
+> [13511.215610][    C3]  __irq_exit_rcu+0x108/0x124
+> [13511.215617][    C3]  __handle_domain_irq+0x118/0x1e4
+> [13511.215625][    C3]  gic_handle_irq.31230+0x6c/0x250
+> [13511.215630][    C3]  el1_irq+0xe4/0x1c0
+> [13511.215638][    C3]  cpuidle_enter_state+0x3a4/0xa04
+> [13511.215644][    C3]  do_idle+0x308/0x574
+> [13511.215649][    C3]  cpu_startup_entry+0x84/0x90
+> [13511.215656][    C3]  secondary_start_kernel+0x204/0x274
+> [13511.215664][    C3] Code: d503201f a9402408 f9000128 b4000048 (f9000509)
+> [13511.215670][    C3] ---[ end trace 5100bad72a35d566 ]---
+> [13511.215676][    C3] Kernel panic - not syncing: Oops: Fatal exception in interrupt
 > 
-> This is on the Odroid XU4 board, where the lowest trip point is 50 deg. C.
-> Similar behavior happens on some other boards, for example TM2E. The issue
-> happens when the stepwise governor is being used and I have not tested the
-> behavior of the other governors.
-
-You won't be able easily test IPA on odroidxu4, but if you like ping me
-offline.
-
-IPA won't work with this current DT thermal, so there is no issue.
-Also, IPA works in polling mode only, more about why you can find below.
-
+> This is because when switching the governor through the sys node,
+> the devfreq_monitor_start function will re-initialize the delayed work task,
+> which will cause the delay work pending flag to become invalid, and the timer pending judgment contained in the delayed work will also become invalid,
+> and then the pending interception will be executed when the queue is executed.
 > 
-> I have attempted to fix this myself, but the issue seems somewhat complex and
-> over my level of understanding. I did some debugging, and here is what I think
-> is happening:
+> So we remove the delay work'initialization work to the devfreq_add_device and timer_store functions,
+> and the delay work pending judgment is performed before the devfreq_monitor_start function performs the queue operation.
 > 
-> 1. Since there is no temperature polling enabled on the mentioned boards, the
->     governor will only be called when a trip point is being passed.
-> 2. The board heats up and a couple trip points get passed through. Each time,
->     the governor is called for each trip point.
-> 3. For the lowest thermal instance, it will find out that the temperature is
->     higher than the lowest trip point (i.e. throttle is true), and that the trend
->     is THERMAL_TREND_RAISING. Therefore, it will attempt to increase the target
->     state each time and the state will be set to the higher limit.
-> 4. Let's now say that the temperature starts falling, which means that the trip
->     points get passed from the other side. Again, the governor will be called for
->     each trip point.
-> 5. For the lowest thermal instance, the trend will be THERMAL_TREND_DROPPING. The
->     temperature will be higher than the lowest trip point all but one time (i.e.
->     throttle will be true). This will mean that in these cases, nothing will
->     happen and the state will remain at the higher limit.
-
-Tricky corner case, but possible for your interrupt only mode. The way
-how step_wise is designed with this activation/deactivation of the
-passive mode linked to the cooling state returned values is confusing
-IMO.
-
-> 6. Finally, when the lowest trip point is passed and the governor is called for
->     its thermal instance, the trend will still be THERMAL_TREND_DROPPING and the
->     temperature will be lower than the trip point (i.e. throttle will be false).
->     Therefore, the governor will reduce the state, but it is unlikely that this
->     will result in deactivation of the thermal instance, since the state has been
->     at the higher limit up until this point.
-
-That's possible. That's why I would separate that control mode, so this
-corner case would not happen. That governor unfortunately has quite a
-lot of legacy platforms with polling only mode.
-
-> 7. Now the governor will never be called anymore, and the state will never
->     change from this point.
+> Signed-off-by: ZaiYang Huang <huangzaiyang@oppo.com>
+> ---
+>   drivers/devfreq/devfreq.c | 36 ++++++++++++++++++++++++------------
+>   1 file changed, 24 insertions(+), 12 deletions(-)
 > 
-> I have found two workarounds, but neither seem satisfactory:
+> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
+> index b3a68d5833bd..8ae6f853a21e 100644
+> --- a/drivers/devfreq/devfreq.c
+> +++ b/drivers/devfreq/devfreq.c
+> @@ -483,18 +483,7 @@ void devfreq_monitor_start(struct devfreq *devfreq)
+>          if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
+>                  return;
 > 
-> 1. The issue doesn't appear when at least two lowest trip points have their
->     lower state limit equal to the higher state limit. For instance, for TM2E,
->     the following change is enough for the issue to not appear:
+> -       switch (devfreq->profile->timer) {
+> -       case DEVFREQ_TIMER_DEFERRABLE:
+> -               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
+> -               break;
+> -       case DEVFREQ_TIMER_DELAYED:
+> -               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+> -               break;
+> -       default:
+> -               return;
+> -       }
+> -
+> -       if (devfreq->profile->polling_ms)
+> +       if (devfreq->profile->polling_ms && !delayed_work_pending(&devfreq->work))
+>                  queue_delayed_work(devfreq_wq, &devfreq->work,
+>                          msecs_to_jiffies(devfreq->profile->polling_ms));
+>   }
+> @@ -830,6 +819,17 @@ struct devfreq *devfreq_add_device(struct device *dev,
+>                  goto err_dev;
+>          }
 > 
-> diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
-> index 81b72393dd0d..145c4c80893a 100644
-> --- a/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
-> +++ b/arch/arm64/boot/dts/exynos/exynos5433-tmu.dtsi
-> @@ -55,14 +55,14 @@ cooling-maps {
->               map0 {
->                   /* Set maximum frequency as 1800MHz  */
->                   trip = <&atlas0_alert_0>;
-> -                cooling-device = <&cpu4 1 2>, <&cpu5 1 2>,
-> -                         <&cpu6 1 2>, <&cpu7 1 2>;
-> +                cooling-device = <&cpu4 1 1>, <&cpu5 1 1>,
-> +                         <&cpu6 1 1>, <&cpu7 1 1>;
->               };
->               map1 {
->                   /* Set maximum frequency as 1700MHz  */
->                   trip = <&atlas0_alert_1>;
-> -                cooling-device = <&cpu4 2 3>, <&cpu5 2 3>,
-> -                         <&cpu6 2 3>, <&cpu7 2 3>;
-> +                cooling-device = <&cpu4 2 2>, <&cpu5 2 2>,
-> +                         <&cpu6 2 2>, <&cpu7 2 2>;
->               };
->               map2 {
->                   /* Set maximum frequency as 1600MHz  */
-> @@ -229,14 +229,14 @@ cooling-maps {
->               map0 {
->                   /* Set maximum frequency as 1200MHz  */
->                   trip = <&apollo_alert_2>;
-> -                cooling-device = <&cpu0 1 2>, <&cpu1 1 2>,
-> -                         <&cpu2 1 2>, <&cpu3 1 2>;
-> +                cooling-device = <&cpu0 1 1>, <&cpu1 1 1>,
-> +                         <&cpu2 1 1>, <&cpu3 1 1>;
->               };
->               map1 {
->                   /* Set maximum frequency as 1100MHz  */
->                   trip = <&apollo_alert_3>;
-> -                cooling-device = <&cpu0 2 3>, <&cpu1 2 3>,
-> -                         <&cpu2 2 3>, <&cpu3 2 3>;
-> +                cooling-device = <&cpu0 2 2>, <&cpu1 2 2>,
-> +                         <&cpu2 2 2>, <&cpu3 2 2>;
->               };
->               map2 {
->                   /* Set maximum frequency as 1000MHz  */
+> +       switch (devfreq->profile->timer) {
+> +       case DEVFREQ_TIMER_DEFERRABLE:
+> +               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
+> +               break;
+> +       case DEVFREQ_TIMER_DELAYED:
+> +               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
+> +               break;
+> +       default:
+> +               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no settings \n", devfreq->governor_name,
+> +                       __func__);
+> +       }
+>          if (!devfreq->profile->max_state || !devfreq->profile->freq_table) {
+>                  mutex_unlock(&devfreq->lock);
+>                  err = set_freq_table(devfreq);
+> @@ -1860,6 +1860,18 @@ static ssize_t timer_store(struct device *dev, struct device_attribute *attr,
+>          df->profile->timer = timer;
+>          mutex_unlock(&df->lock);
 > 
->     Two trip points need to change and not only one, since the calculation in the
->     governor is based on the maximum of all states and not only the state of a
->     single instance. It's not clear if that would be enough in all cases, but
->     this feels hacky anyway. Though since we only give the governor information
->     when the trip point is passed, it does make some limited sense to make it
->     simply set the state to a specific value instead of making decisions.
-
-Yes, this is problematic - playing with the limits for scope in the DT
-+ step_wise governor + only interrupt mode.
-
-Also, I never like this approach, since we are dealing with dynamic
-system (nonlinear) and control with static approach is not recommended.
-BTW, IPA was born to introduce dynamic control alg.
-
-> 2. The issue also disappears when polling is enabled, since this means that the
->     governor is called periodically. However, it would be great to not have to do
->     so and keep using only interrupts, since we already have them in our SoC.
-
-There are pros and cons with the polling approach. The thermal and
-temperature is a dynamic system and observability is important. The
-interrupt mode limits the observability, that's what you've shown.
-
-I understand your requirement for the interrupts only mode, but
-maybe till the moment there is no fix upstream, you can enable
-it as well?
-
+> +       switch (df->profile->timer) {
+> +       case DEVFREQ_TIMER_DEFERRABLE:
+> +               INIT_DEFERRABLE_WORK(&df->work, devfreq_monitor);
+> +               break;
+> +       case DEVFREQ_TIMER_DELAYED:
+> +               INIT_DELAYED_WORK(&df->work, devfreq_monitor);
+> +               break;
+> +       default:
+> +               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no settings \n", df->governor_name,
+> +                       __func__);
+> +       }
+> +
+>          ret = df->governor->event_handler(df, DEVFREQ_GOV_STOP, NULL);
+>          if (ret) {
+>                  dev_warn(dev, "%s: Governor %s not stopped(%d)\n",
+> --
+> 2.17.1
 > 
-> It seems that in the past, there has been an attempt to handle this case
-> differently: https://lore.kernel.org/all/1352348786-24255-1-git-send-email-amit.kachhap@linaro.org/
-> However it seems that the attempt has never been completed, and the remains
-> have been removed: https://lore.kernel.org/all/20220629151012.3115773-2-daniel.lezcano@linaro.org/
+> ________________________________
+> OPPO
 > 
-> There also might be a race condition possible here, as it might be the case
-> that after the interrupt, when the thermal framework calls get_temp, the value
-> will already change to a value that would not trigger the trip point. This
-> could be problematic when the temperature is raising, as then the governor will
-> essentially ignore that trip point (trend will be RAISING, but throttle will be
-> false, so nothing will happen). It is less problematic when the temperature is
-> falling, as the temperature will be much lower than the trip point due to
-> hysteresis. However, for the Exynos 5433 SoC, hysteresis is unfortunately set
-> to 1 deg. C and the temperature values are also rounded to 1 deg. C. This means
-> that the race condition might also be possible in this direction on this SoC. I
-> have once managed to get the state stuck at 2 instead of the usual 1 on TM2E. I
-> have not investigated that further, but it seems that this race condition is a
-> good explanation of this behavior.
-
-Interesting. That's really tough situation in that platform. AFAICS the
-code_to_temp() cannot do much, that rounding happens in the HW.
-
-In such situation that you've described: temp value can 'oscillate'
-very fast around the value point (next gets rounded in HW) in the
-meantime the run of the code is progressing. I would not relay on
-interrupt only mode in this case.
-
-The value stuck at 2 worries me because even if you change those
-values in the DT as above, the race condition could happen and leave
-you with state stuck at 1.
-
-Escaping the control algorithm while going down is less dangerous,
-but based on the code AFAICS it might be also in theory possible
-while going up with the temperature. Very unlikely for the 2nd
-trip point, because the temp would be higher than 1st trip. That would
-set the throttling to true for 1st trip (because we loop over all
-possible trip points). I'm worried about last trip point, because
-it could escape the control alg there. Furthermore, since those
-cooling state values are limited-space and hard-coded for the last
-trip points, the temp can reach hot/critical trip point and shut
-down the device (fortunately it's not handled by the governor
-interpretation code, but fwk and it would work fine).
-So please make sure you have hot/critical trip point as last one,
-if you already don't have that.
-
-
+> ±¾µç×ÓÓÊ¼þ¼°Æä¸½¼þº¬ÓÐOPPO¹«Ë¾µÄ±£ÃÜÐÅÏ¢£¬½öÏÞÓÚÓÊ¼þÖ¸Ã÷µÄÊÕ¼þÈË£¨°üº¬¸öÈË¼°Èº×é£©Ê¹ÓÃ¡£½ûÖ¹ÈÎºÎÈËÔÚÎ´¾­ÊÚÈ¨µÄÇé¿öÏÂÒÔÈÎºÎÐÎÊ½Ê¹ÓÃ¡£Èç¹ûÄú´íÊÕÁË±¾ÓÊ¼þ£¬ÇÐÎð´«²¥¡¢·Ö·¢¡¢¸´ÖÆ¡¢Ó¡Ë¢»òÊ¹ÓÃ±¾ÓÊ¼þÖ®ÈÎºÎ²¿·Ö»òÆäËùÔØÖ®ÈÎºÎÄÚÈÝ£¬²¢ÇëÁ¢¼´ÒÔµç×ÓÓÊ¼þÍ¨Öª·¢¼þÈË²¢É¾³ý±¾ÓÊ¼þ¼°Æä¸½¼þ¡£
+> ÍøÂçÍ¨Ñ¶¹ÌÓÐÈ±ÏÝ¿ÉÄÜµ¼ÖÂÓÊ¼þ±»½ØÁô¡¢ÐÞ¸Ä¡¢¶ªÊ§¡¢ÆÆ»µ»ò°üº¬¼ÆËã»ú²¡¶¾µÈ²»°²È«Çé¿ö£¬OPPO¶Ô´ËÀà´íÎó»òÒÅÂ©¶øÒýÖÂÖ®ÈÎºÎËðÊ§¸Å²»³Ðµ£ÔðÈÎ²¢±£ÁôÓë±¾ÓÊ¼þÏà¹ØÖ®Ò»ÇÐÈ¨Àû¡£
+> ³ý·ÇÃ÷È·ËµÃ÷£¬±¾ÓÊ¼þ¼°Æä¸½¼þÎÞÒâ×÷ÎªÔÚÈÎºÎ¹ú¼Ò»òµØÇøÖ®ÒªÔ¼¡¢ÕÐÀ¿»ò³ÐÅµ£¬ÒàÎÞÒâ×÷ÎªÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ¡£ ·¢¼þÈË¡¢ÆäËùÊô»ú¹¹»òËùÊô»ú¹¹Ö®¹ØÁª»ú¹¹»òÈÎºÎÉÏÊö»ú¹¹Ö®¹É¶«¡¢¶­ÊÂ¡¢¸ß¼¶¹ÜÀíÈËÔ±¡¢Ô±¹¤»òÆäËûÈÎºÎÈË£¨ÒÔÏÂ³Æ¡°·¢¼þÈË¡±»ò¡°OPPO¡±£©²»Òò±¾ÓÊ¼þÖ®ÎóËÍ¶ø·ÅÆúÆäËùÏíÖ®ÈÎºÎÈ¨Àû£¬Òà²»¶ÔÒò¹ÊÒâ»ò¹ýÊ§Ê¹ÓÃ¸ÃµÈÐÅÏ¢¶øÒý·¢»ò¿ÉÄÜÒý·¢µÄËðÊ§³Ðµ£ÈÎºÎÔðÈÎ¡£
+> ÎÄ»¯²îÒìÅûÂ¶£ºÒòÈ«ÇòÎÄ»¯²îÒìÓ°Ïì£¬µ¥´¿ÒÔYES\OK»òÆäËû¼òµ¥´Ê»ãµÄ»Ø¸´²¢²»¹¹³É·¢¼þÈË¶ÔÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ»ò½ÓÊÜ£¬ÇëÓë·¢¼þÈËÔÙ´ÎÈ·ÈÏÒÔ»ñµÃÃ÷È·ÊéÃæÒâ¼û¡£·¢¼þÈË²»¶ÔÈÎºÎÊÜÎÄ»¯²îÒìÓ°Ïì¶øµ¼ÖÂ¹ÊÒâ»ò´íÎóÊ¹ÓÃ¸ÃµÈÐÅÏ¢ËùÔì³ÉµÄÈÎºÎÖ±½Ó»ò¼ä½ÓËðº¦³Ðµ£ÔðÈÎ¡£
+> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
+> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
+> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
+> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
+> ________________________________
+> OPPO
 > 
-> I feel very incompetent to attempt to resolve these issues, as I have only read
-> the thermal framework code for a bit. What do you think should be done here?
-> 
-
-Therefore, IMO this deserves a fix in step_wise governor code. It has to
-be re-designed how it interprets trip point that has checked vs.
-the temperature comparisons. Also, this confusing passive mode
-handled with the cooling state values comparisons (not ideal)...
-
-Regards,
-Lukasz
-
+> 本电子邮件及其附件含有OPPO公司的保密信息，仅限于邮件指明的收件人（包含个人及群组）使用。禁止任何人在未经授权的情况下以任何形式使用。如果您错收了本邮件，切勿传播、分发、复制、印刷或使用本邮件之任何部分或其所载之任何内容，并请立即以电子邮件通知发件人并删除本邮件及其附件。
+> 网络通讯固有缺陷可能导致邮件被截留、修改、丢失、破坏或包含计算机病毒等不安全情况，OPPO对此类错误或遗漏而引致之任何损失概不承担责任并保留与本邮件相关之一切权利。
+> 除非明确说明，本邮件及其附件无意作为在任何国家或地区之要约、招揽或承诺，亦无意作为任何交易或合同之正式确认。 发件人、其所属机构或所属机构之关联机构或任何上述机构之股东、董事、高级管理人员、员工或其他任何人（以下称“发件人”或“OPPO”）不因本邮件之误送而放弃其所享之任何权利，亦不对因故意或过失使用该等信息而引发或可能引发的损失承担任何责任。
+> 文化差异披露：因全球文化差异影响，单纯以YES\OK或其他简单词汇的回复并不构成发件人对任何交易或合同之正式确认或接受，请与发件人再次确认以获得明确书面意见。发件人不对任何受文化差异影响而导致故意或错误使用该等信息所造成的任何直接或间接损害承担责任。
+> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
+> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
+> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
+> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
