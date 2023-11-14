@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F34B67EB843
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:09:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8575D7EB848
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234026AbjKNVJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 16:09:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
+        id S232606AbjKNVLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 16:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234113AbjKNVI4 (ORCPT
+        with ESMTP id S229569AbjKNVLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 16:08:56 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A2A41738
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:08:34 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-77ba6d5123fso18074385a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:08:34 -0800 (PST)
+        Tue, 14 Nov 2023 16:11:03 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65300C3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:10:59 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41cb615c6fbso37019601cf.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:10:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699996113; x=1700600913; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ITgC8CUU1lRZUmEogDrZ1v8W9ctk3212df3sXUl23Y=;
-        b=m2KiGmdUZCUm2ApmyYjCiXnK850PGYSDX7JK5NQ1oCC1/1Citb5dpBEtAy2v1nbavi
-         7Anmlv2R1XM7Vy7qxauW2JxSzOFnYKU77hR8VVNzuNlUt5xHrPC8Hsf1kSECeCrxgmO3
-         EZOdb/pGNoR23vTUhBqfGdnuZjy/VuWnCPyALt8pycylRWz2BOL9WZZuDLjSP2lYkxso
-         5uoDW3AAMohaUUqMEx1KtBg/mJBM3L17ALAd8oUz4fyMK1UOQUrNLBfOwssoudDe5wcM
-         SIm9rG0Y7Ldn35FOKHceCuHTHzH+zP33QUhzZRjtWUojOPdmQ2dnhtRP1OAZCdE5OV9t
-         VVeg==
+        d=linaro.org; s=google; t=1699996258; x=1700601058; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZCXP/b8LzUbZXJ5PFHY6mEdodKrFpUi38A/VBViCSxw=;
+        b=D2ofLG3AXExOTX0r6tAvYyqS2IrBX2jsoHNn6euJ/3Eg/14u4C25mwieVENwnyTCR6
+         wV1BFT7Y9QwDhea4T1YBiJac/8HSt0l62FYNCgP7yanLdEMfcGqBVoG6LSX4sF9uB8iI
+         nCV/4LsIYrPXKxy9W62wUMvn2TZvi4KtRMTf9nnfwfKS8nqlbYg1Ms56oCB3MNPIht7C
+         ZrP6/3DPi0Y3hOxPApOtiCm3x+fnie3fJ6s3DWZ8nKoTcFCGUoexOJZGCShLLIgcwLF3
+         rWLC6uFOc4tbn/06HaTQc5eIIT8kL58u2lA+n0Tatw1hjgfpIP/CCJnQS6uDNiswRQO+
+         WHKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699996113; x=1700600913;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ITgC8CUU1lRZUmEogDrZ1v8W9ctk3212df3sXUl23Y=;
-        b=L2HS10i6QtzARPfnrX8Oxb3pV1LfdUj7bzwglnL+h/kVvpMvUdWZZfLMF461BRj9NU
-         6OzppPyzdMYcuNkgL/6er9G+O8HtjPdBBEGTMxY/0qWmeyKGLvOgtup48y/2qCJDC5BN
-         eU/ioQXRihuklpfguCCA6U/TYLFwxChbAyws9qzndYTkVTWPfB+iutoFcFFX+BxOtrw8
-         Esp+rwo88RjyeKkvploCbNwSJnkgn+Y+U1273TtrjY0tF5W2ETbP39+ZVuCc/SY1aVtS
-         pg86TZftFH2zthx+a4Zlu9+m9HSTUgdikWnbrNVX5DaXYWh+1JPU4ff7yhe0FFyXq5IP
-         p+Ag==
-X-Gm-Message-State: AOJu0YxnnRHUo6Y/fWmu4P2tYVYJW+dkJA+YU88yCt9HJj9Abs+aMvyE
-        /p9Y4yeUZVO7GWOPdVtuvzHcSg==
-X-Google-Smtp-Source: AGHT+IHAri8Js3fCWjOGbjAACQ/pFSZd9qHsYHEomh/oXmCq7vQVQ8BRYDZg5BRX4vDhy/AJvt+RAg==
-X-Received: by 2002:a05:620a:2910:b0:774:21d8:b0bb with SMTP id m16-20020a05620a291000b0077421d8b0bbmr5414483qkp.24.1699996112988;
-        Tue, 14 Nov 2023 13:08:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699996258; x=1700601058;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZCXP/b8LzUbZXJ5PFHY6mEdodKrFpUi38A/VBViCSxw=;
+        b=U7uHPjIDYKBrPNhJAfOZR77r/TeMGECC940oFZm28JFq5DBD4mTNE/D0SPqcqCMATW
+         cwD7LFdvwIooIgk4FAh2Jzk56Je3kyDpNs+WzquK8ZatzxziwcbQA7GxwhYh7s6IrKQh
+         s0WhjRQbbYRwVp0srrVht/gEKhB0IuZ5emmrCFlmEZiX5TrqMaufhy8WNfuQIW5XogP9
+         fufwMyS8euxuGsKovzHsttHZ5PBBsmnBUp8UvCHVQse48Tjks2viYc8lnspFx0v3Qabe
+         ERe4Ow0GWjNebTb0/7a4YHBvpPPwzgNBilc55DYpWJ07A3MOPVoyB/lyVmYHZmwhFzNz
+         2Wfw==
+X-Gm-Message-State: AOJu0YwnGl5iGV6rGu2H1H1oTV8/oVotOqGKGD1OpZqtyVXbwnjddZwV
+        6W6Ol3KpN9OzrBlxn3iGnn8dbw==
+X-Google-Smtp-Source: AGHT+IFefyC3sxzLwG0/nBnVrInr3jKA66qN98yn8IDD86CKaKKsF87Tee3Yzk8d9QCtShVFFkzeUQ==
+X-Received: by 2002:a05:622a:284:b0:41e:204b:f947 with SMTP id z4-20020a05622a028400b0041e204bf947mr4293209qtw.62.1699996258545;
+        Tue, 14 Nov 2023 13:10:58 -0800 (PST)
 Received: from [172.25.83.73] ([12.186.190.2])
-        by smtp.gmail.com with ESMTPSA id rb18-20020a05620a8d1200b0077bc5299c85sm2934513qkn.124.2023.11.14.13.08.32
+        by smtp.gmail.com with ESMTPSA id o2-20020ac841c2000000b0041803dfb240sm3022260qtm.45.2023.11.14.13.10.57
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 13:08:32 -0800 (PST)
-Message-ID: <a68ffc93-1ba7-433d-87b5-a6f2bed0173a@linaro.org>
-Date:   Tue, 14 Nov 2023 22:08:31 +0100
+        Tue, 14 Nov 2023 13:10:58 -0800 (PST)
+Message-ID: <d37db10b-f9fa-49b0-8b1e-36e20acbcfd6@linaro.org>
+Date:   Tue, 14 Nov 2023 22:10:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [LINUX PATCH v2 2/3] dt-bindings: timer: Add bindings for TTC PWM
+Subject: Re: [LINUX PATCH v2 1/3] clocksource: timer-cadence-ttc: Do not probe
+ TTC device configured as PWM
+Content-Language: en-US
 To:     Mubin Sayyed <mubin.sayyed@amd.com>,
         krzysztof.kozlowski+dt@linaro.org, u.kleine-koenig@pengutronix.de,
         thierry.reding@gmail.com, robh+dt@kernel.org, conor+dt@kernel.org,
@@ -64,8 +65,7 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         devicetree@vger.kernel.org, linux-pwm@vger.kernel.org, git@amd.com,
         mubin10@gmail.com
 References: <20231114124748.581850-1-mubin.sayyed@amd.com>
- <20231114124748.581850-3-mubin.sayyed@amd.com>
-Content-Language: en-US
+ <20231114124748.581850-2-mubin.sayyed@amd.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -111,12 +111,12 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231114124748.581850-3-mubin.sayyed@amd.com>
+In-Reply-To: <20231114124748.581850-2-mubin.sayyed@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -125,43 +125,42 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14/11/2023 13:47, Mubin Sayyed wrote:
-> Cadence TTC can act as PWM device, it is supported through
-> separate PWM framework based driver. Decision to configure
-> specific TTC device as PWM or clocksource/clockevent would
-> be done based on presence of "#pwm-cells" property.
+> TTC device can act either as clocksource/clockevent or
+> PWM generator, it would be decided by pwm-cells property.
+> TTC PWM feature would be supported through separate driver
+> based on PWM framework.
+> 
+> If pwm-cells property is present in TTC node, it would be
+> treated as PWM device, and clocksource driver should just
+> skip it.
+> 
+> Signed-off-by: Mubin Sayyed <mubin.sayyed@amd.com>
+> ---
+> Changes for v2:
+>     - Added comment regarding pwm-cells property
+> ---
+>  drivers/clocksource/timer-cadence-ttc.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/clocksource/timer-cadence-ttc.c b/drivers/clocksource/timer-cadence-ttc.c
+> index 32daaac9b132..f8fcb1a4bdd0 100644
+> --- a/drivers/clocksource/timer-cadence-ttc.c
+> +++ b/drivers/clocksource/timer-cadence-ttc.c
+> @@ -477,6 +477,13 @@ static int __init ttc_timer_probe(struct platform_device *pdev)
+>  	u32 timer_width = 16;
+>  	struct device_node *timer = pdev->dev.of_node;
+>  
+> +	/*
+> +	 * If pwm-cells property is present in TTC node,
+> +	 * it would be treated as PWM device.
+> +	 */
+> +	if (of_property_read_bool(timer, "#pwm-cells"))
+> +		return -ENODEV;
 
-This is a friendly reminder during the review process.
+You will introduce dmesg errors, so regressions.
 
-It seems my or other reviewer's previous comments were not fully
-addressed. Maybe the feedback got lost between the quotes, maybe you
-just forgot to apply it. Please go back to the previous discussion and
-either implement all requested changes or keep discussing them.
-
-Thank you.
-
-Missed comments: subject. I don't understand why Cadence was dropped,
-but "bindings" stayed. Opposite of what I asked.
-
-Rest looks good, so with above fixed:
-
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
+This does not look right. What you want is to bind one device driver and
+choose different functionality based on properties.
 
 Best regards,
 Krzysztof
