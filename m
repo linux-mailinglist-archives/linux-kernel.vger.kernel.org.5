@@ -2,564 +2,292 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F0F97EB033
+	by mail.lfdr.de (Postfix) with ESMTP id 090A57EB032
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:49:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232855AbjKNMtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:49:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33598 "EHLO
+        id S232749AbjKNMtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:49:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232283AbjKNMtN (ORCPT
+        with ESMTP id S232283AbjKNMtK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:49:13 -0500
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2088.outbound.protection.outlook.com [40.107.92.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B0A18D;
-        Tue, 14 Nov 2023 04:49:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PbtlPgFZhBDKBUm9d6qPFRloDdRUvbnMn6zsBO+yeSKTUonqhE70gChlu52rtYbnOC/VUrGVmc2h08Zv1nYOhjqs5YU5vC/BbKo6q7Xog7wUiqfH/wxzi139ro0tmWZFTeS1Hh2JWKfdlrwsFxD3BlqKBP1o8zqycMVc7Jy/mK2mrCsnGQmpYmKbkSZyWNaVQolOcxuZOlFowNISWmh1JDJMQ/NdAR1JqvSsg1KCqqx2TiVGI0jj6qgCXqPDPzfgbr8uA1XnPhD/zzu+sERzpCllHEJAY/ohxhsAOJVI0mZYaSp3gD4hQHxXn7Zi9FkYjZwOWVdXrnEFhxFOyT2dzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gyzCluOXSX0AuRgqG25XGUkoJ32Gr/T+43uwSFGn0uc=;
- b=Ibtvu7pnpF7XKfdPAFtQiOXcl49DWgTnkjW3w60Z1nVIE3n/+HDpUvwjs9t0jUp+dL8lms42aa0TO7so4RWe84aJxBgH7Rdgt+e1whDDcWsJl9uqn4hH4R0KQsbwEgO13Hpm+nYxez16qLAmzESzMX+J/13x9ZKfwZmGgg4BqWjLVI67K1Di+ho7UtKMtVbG+WWybLcwI5Nu/jhRh6zYPOxBMaYQcIOAQulZ6oJoNBhvKdyQa8/y7e0xiXPDaqZpKrpNx953QbYmfI0g0l/kGQLg/sgfRB3ZW8+LoUdiwAwHnx9XRjHyJbIIY6/inOWIEzltv9sxjww2my7pR2i/lA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=linaro.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gyzCluOXSX0AuRgqG25XGUkoJ32Gr/T+43uwSFGn0uc=;
- b=tDa8/rdQKzT2N5VhpP00wEMghKHBoUGDbTK5mlo0k6jIH5+5JuiM9olZnqW6F3tosPvonUxeKeKywyE4KEzPhULhdCJbMFKsS8wV0kIJcX4USTpHuU5F/PL0B0H/zpY1rBvnHPaS/HIxfznaV3SmB76mwUfIEcLwFKODd+JQGZA=
-Received: from MN2PR20CA0035.namprd20.prod.outlook.com (2603:10b6:208:e8::48)
- by CY5PR12MB6036.namprd12.prod.outlook.com (2603:10b6:930:2c::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Tue, 14 Nov
- 2023 12:49:04 +0000
-Received: from BL6PEPF0001AB51.namprd04.prod.outlook.com
- (2603:10b6:208:e8:cafe::8e) by MN2PR20CA0035.outlook.office365.com
- (2603:10b6:208:e8::48) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17 via Frontend
- Transport; Tue, 14 Nov 2023 12:49:03 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BL6PEPF0001AB51.mail.protection.outlook.com (10.167.242.75) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7002.13 via Frontend Transport; Tue, 14 Nov 2023 12:49:03 +0000
-Received: from SATLEXMB08.amd.com (10.181.40.132) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 14 Nov
- 2023 06:48:55 -0600
-Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB08.amd.com
- (10.181.40.132) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 14 Nov
- 2023 04:48:41 -0800
-Received: from xhdmubinusm40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
- (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
- Transport; Tue, 14 Nov 2023 06:48:38 -0600
-From:   Mubin Sayyed <mubin.sayyed@amd.com>
-To:     <krzysztof.kozlowski+dt@linaro.org>,
-        <u.kleine-koenig@pengutronix.de>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>, <tglx@linutronix.de>,
-        <daniel.lezcano@linaro.org>, <michal.simek@amd.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-pwm@vger.kernel.org>, <git@amd.com>, <mubin10@gmail.com>,
-        Mubin Sayyed <mubin.sayyed@amd.com>
-Subject: [LINUX PATCH v2 3/3] pwm: pwm-cadence: Add support for TTC PWM
-Date:   Tue, 14 Nov 2023 18:17:48 +0530
-Message-ID: <20231114124748.581850-4-mubin.sayyed@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231114124748.581850-1-mubin.sayyed@amd.com>
-References: <20231114124748.581850-1-mubin.sayyed@amd.com>
+        Tue, 14 Nov 2023 07:49:10 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B7E8192;
+        Tue, 14 Nov 2023 04:49:06 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9lspi005733;
+        Tue, 14 Nov 2023 12:48:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=ZhmJYQjl3F7Ag95sFanvsUwnsEwogKV61yK9PHsLMJM=;
+ b=TmTPad4EC3NZ5hsrawP6B4/Zb9siC4SBFXQgTp3YyN936VWLzBziumMz3fL4hqUvv3WX
+ Md2ZKW/43tVs8JwgPFpy3ebTO/Uu41WGJ/a1Anr2Xfk3J1s/bCN/zmlygI+IY2IC9lNv
+ WRjb5zFbcl9TVf6Ecgc7+cPKQGUmY1AHqzn7Gl9EP2w5pWOP4qHEGUu8gSbmlhB/O7Kn
+ CMcNouQUyw0D0GIVZGZc7STr4N49WfYyz+0NhoInQ08VKSAaC+abEKQ12x3qH0IqKTmf
+ 9uimYz/uaj/HxYSWyvN+QQYbPJoYfI/p+33l+vQy2Tn9akz+KkMtCl+BjTgN2jmhCTMg AA== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubmtvaqm1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 12:48:56 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AECmtIK002825
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 12:48:55 GMT
+Received: from [10.216.63.64] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 14 Nov
+ 2023 04:48:49 -0800
+Message-ID: <dffe07e5-a6f5-397a-7715-ffb25474ac84@quicinc.com>
+Date:   Tue, 14 Nov 2023 18:18:45 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL6PEPF0001AB51:EE_|CY5PR12MB6036:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4b5494cc-2cbc-4f14-9764-08dbe510151a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: p3WeKWf0KqyRDc5P1kNa0ownyLtZolfFVBoJmquZGUK4l/FbHtOFj4hCiOro9zB8KfFVFJcZyKCcE+Rv/YXzkKHvJu0EiQIZ4zbS+DPjwnjw+XAIhOeLp0oxoKAtbpYEIaFoIk2SG3UubBKBavbKQWIEwLFzBbcyfHS0Cp2a6oTjoJTuecUqWFsnytNHj1M5xNMlIEwEOW4y8K0rxE5Ttn15LvKkvChyuoo3w8vbeO9qeyW0FN8Hy4dgo7z0VqdqHkFGzmVhEX/25DCTNbjOrstdeOlzJ6jPao/jVeC20S1Za9nplPbtoXr9kp4ZioPR9ssQMustAmLt325i3ljDosvY3h7wdXnISX0UQHwjQ7GiAUPbcMVErSIA5be7xqA5nV9AA6mTLMUrOfu5zsflxwtHGAyf10BlNvAeS/zVWtDNtw+XF+aBW2ntj/OAwsuNfs3nAEsuK85w+UoA2vAx3GvDhDd7bmYcFT4HwKx2fv393X443uD2XBDP+7GjQoP/c/o+LpI4KlGyOpzy2qLrUFQI20VtDx+eBIEdOlDzxPMZjepaNNoJVmcrzmkxmvc2bQIYPmUfV3ut4f9FM8fUOp7oi8YkgV3SuyNpoowSYOwoM9PlR8FTSTHHPXpL+NTeTRuICutG+crXYjJFwOC92GBdmwaogfRhCwTLPUoLyGre5DW+ODYS5gtLix5lsTWb6wxki15/xA75dTDryQhsZG+X8FdyN7GMuJOy75i020JRTdhNTDyzgXwoVvPo/d0k78PfK3rf2ZTCOFl7czmbvg==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(346002)(136003)(396003)(376002)(39860400002)(230922051799003)(451199024)(1800799009)(186009)(82310400011)(64100799003)(40470700004)(46966006)(36840700001)(2906002)(40460700003)(5660300002)(7416002)(30864003)(41300700001)(36860700001)(356005)(86362001)(36756003)(316002)(6636002)(70206006)(82740400003)(478600001)(81166007)(110136005)(70586007)(2616005)(1076003)(26005)(6666004)(336012)(47076005)(426003)(966005)(83380400001)(4326008)(44832011)(54906003)(8676002)(8936002)(40480700001)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 12:49:03.8890
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4b5494cc-2cbc-4f14-9764-08dbe510151a
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BL6PEPF0001AB51.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6036
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [RFC PATCH 2/2] arm64: dts: qcom: qcm6490: Add qcm6490 idp and
+ rb3 board
+Content-Language: en-US
+To:     Luca Weiss <luca.weiss@fairphone.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Komal Bajaj <quic_kbajaj@quicinc.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_nainmeht@quicinc.com>
+References: <20231103184655.23555-1-quic_kbajaj@quicinc.com>
+ <20231103184655.23555-3-quic_kbajaj@quicinc.com>
+ <CAA8EJprNyu0r_mV9hbKA1fSvoEvTHuk5umxU8H64Voj_cnZcFQ@mail.gmail.com>
+ <1830fc44-7bac-4db5-af59-112410d73a64@linaro.org>
+ <af05dbdb-21bf-34f0-e9b3-9f6b9a0c3115@quicinc.com>
+ <CAA8EJpq89g9EeyKcogU+Mt9ie6Bk-rmgi=GqyycYBm_291i1Bw@mail.gmail.com>
+ <d5492e4d-6c70-7d6c-3f5b-a0b5d9266ab0@quicinc.com>
+ <CAA8EJpr+8MSEHbziTJhhnkeFhPemRARL_bpWEvHmVvAcbp++Cw@mail.gmail.com>
+ <62650f39-9703-fdc5-c72a-801b8e9f6470@quicinc.com>
+ <CWXSYVQ15C8X.2RXH2M2HH62RY@fairphone.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <CWXSYVQ15C8X.2RXH2M2HH62RY@fairphone.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: P9l3dThmnTJRknN7xv4D5ttJ4TpllT_S
+X-Proofpoint-GUID: P9l3dThmnTJRknN7xv4D5ttJ4TpllT_S
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_12,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1015
+ spamscore=0 mlxlogscore=999 phishscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140099
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cadence TTC timer can be configured as clocksource/clockevent
-or PWM device. Specific TTC device would be configured as PWM
-device, if pwm-cells property is present in the device tree
-node.
 
-In case of Zynq, ZynqMP and Versal SoC's, each TTC device has 3
-timers/counters, so maximum 3 PWM channels can be configured for
-each TTC IP instance. Also, output of 0th PWM channel of each TTC
-device can be routed to MIO or EMIO, and output of 2nd and 3rd
-PWM channel can be routed only to EMIO.
 
-Period for given PWM channel is configured through interval timer
-and duty cycle through match counter.
+On 11/13/2023 9:21 PM, Luca Weiss wrote:
+> On Tue Nov 7, 2023 at 9:10 AM CET, Mukesh Ojha wrote:
+>>
+>>
+>> On 11/7/2023 4:02 AM, Dmitry Baryshkov wrote:
+>>> On Mon, 6 Nov 2023 at 16:46, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 11/6/2023 5:24 PM, Dmitry Baryshkov wrote:
+>>>>> On Mon, 6 Nov 2023 at 13:41, Mukesh Ojha <quic_mojha@quicinc.com> wrote:
+>>>>>>
+>>>>>>
+>>>>>> On 11/5/2023 6:38 PM, Krzysztof Kozlowski wrote:
+>>>>>>> On 03/11/2023 23:22, Dmitry Baryshkov wrote:
+>>>>>>>> On Fri, 3 Nov 2023 at 20:49, Komal Bajaj <quic_kbajaj@quicinc.com> wrote:
+>>>>>>>>>
+>>>>>>>>> Add qcm6490 devicetree file for QCM6490 IDP and QCM6490 RB3
+>>>>>>>>> platform. QCM6490 is derived from SC7280 meant for various
+>>>>>>>>> form factor including IoT.
+>>>>>>>>>
+>>>>>>>>> Supported features are, as of now:
+>>>>>>>>> * Debug UART
+>>>>>>>>> * eMMC (only in IDP)
+>>>>>>>>> * USB
+>>>>>>>>>
+>>>>>>>
+>>>>>>> ...
+>>>>>>>
+>>>>>>>>> +
+>>>>>>>>> diff --git a/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
+>>>>>>>>> new file mode 100644
+>>>>>>>>> index 000000000000..01adc97789d0
+>>>>>>>>> --- /dev/null
+>>>>>>>>> +++ b/arch/arm64/boot/dts/qcom/qcm6490-iot-common.dtsi
+>>>>>>>>
+>>>>>>>> I have mixed feelings towards this file. Usually we add such 'common'
+>>>>>>>> files only for the phone platforms where most of the devices are
+>>>>>>>> common.
+>>>>>>>> Do you expect that IDP and RB3 will have a lot of common code other
+>>>>>>>> than these regulator settings?
+>>>>>>>
+>>>>>>> I agree here. What exactly is common in the real hardware between IDP
+>>>>>>> and RB3? Commit msg does not explain it, so I do not see enough
+>>>>>>> justification for common file. Just because some DTS looks similar for
+>>>>>>> different hardware does not mean you should creat common file.
+>>>>>>
+>>>>>> @Dmitry/@Krzysztof,
+>>>>>>
+>>>>>> Thank you for reviewing the RFC, we wanted to continue the
+>>>>>> suggestion/discussion given on [1] , where we discussed that this
+>>>>>> qcm6490 is going to be targeted for IOT segment and will have different
+>>>>>> memory map and it is going to use some of co-processors like adsp/cdsp
+>>>>>> which chrome does not use.
+>>>>>>
+>>>>>> So to your question what is common between RB3 and IDP, mostly they will
+>>>>>> share common memory map(similar to [2]) and regulator settings and both
+>>>>>> will use adsp/cdsp etc., we will be posting the memory map changes as
+>>>>>> well in coming weeks once this RFC is acked.
+>>>>>
+>>>>> Is the memory map going to be the same as the one used on Fairphone5?
+>>>>
+>>>> No, Fairphone5 looks to be using chrome memory map and i suggested
+>>>> here to move them into sc7280.dtsi
+>>>>
+>>>> https://lore.kernel.org/lkml/d5d53346-ca3b-986a-e104-d87c37115b62@quicinc.com/
+>>>>
+>>>>>
+>>>>> Are ADSP and CDSP physically present on sc7280?
+>>>>
+>>>> Yes, they are present but not used.
+>>>
+>>> So ADSP and CDSP should go into sc7280.dtsi. They will anyway have
+>>> status = "disabled";
+>>>
+>>>>
+>>>>>
+>>>>> I think that your goal should be to:
+>>>>> - populate missing device in sc7280.dtsi
+>>>>> - maybe add qcm6490.dtsi which defines SoC-level common data (e.g. memory map)
+>>>>> - push the rest to board files.
+>>>>
+>>>> Agree to all of the point.
+>>>> We started with the same thought at[3] but it got lost in discussion
+>>>> due to its differentiation with mobile counter part(fairphone) which
+>>>> follow chrome memory map and hence we came up with qcm6490-iot-common.
+>>>> Do you think, qcm6490-iot.dtsi should be good ?
+>>>
+>>> No. DT describes hardware, and -iot is not a hardware abstraction / unification.
+>>> If you consider your memory map to be generic for the qcm6490 (and FP5
+>>> being the only exception), add it to the qcm6490.dtsi (and let FP5
+>>> override it, like some of the phones do). If it can not be considered
+>>> generic for the SoC, then you have no other choice than to replicate
+>>> it to all board files.
+>>
+> 
+> Hi Mukesh,
+> 
+>> Thanks for the suggestion.
+>> Let me add @Luca here for information, if he want to share
+>> anything about qcm6490 fp5 memory map.
+> 
+> Not sure I have much to share, just probably that on FP5 the memory
+> setup and all the basics just come from a standard QCM6490.LA.3.0
+> release.
+> I don't see any hint that our ODM changed something in the memory map
+> for the device either.
+> 
+> I'm also aware that other phones also use QCM6490 SoC, so I'm still
+> wondering where the distinction between "FP5/ChromeOS memory map" vs
+> this new QCM6490 memory map is.
+> There's also e.g. this phone using QCM6490, I've not looked into this at
+> all, but I'm guessing that phone uses the same memory map as FP5.
+> https://www.crosscall.com/en_NL/core-z5-COZ5.MASTER.html
 
-Details for cadence TTC IP can be found in Zynq UltraScale+ TRM.
+Was looking for your view on the things about qcm6490.dtsi one common 
+dtsi file for all qcm6490.dtsi suggested in the mail, but looks like FP5
+is following the memory map based out of sc7280, in that case we have to
+replicate the new memory map for all our IOT boards(idp/rb3) based on
+this SoC.
 
-Signed-off-by: Mubin Sayyed <mubin.sayyed@amd.com>
----
-Refer link given below for Zynq UltraScale+ TRM
-https://docs.xilinx.com/r/en-US/ug1085-zynq-ultrascale-trm
-
-Changes for v2:
- Use maybe_unused attribute for ttc_pwm_of_match_driver structure
- Add new function ttc_pwm_set_polarity
- Removed calls to pwm_get_state
- Replace DIV_ROUNF_CLOSEST with mul_u64_u64_div_u64
- Modify ttc_pwm_apply to remove while loop in prescalar logic
- and avoid glitch
- Calculate rate in probe and add it to private structure for further
- Drop ttc_pwm_of_xlate
- Replace of_clk_get with devm_clk_get_enabled
- Drop _OFFSET and _MASK from definitions
- Keep Kconfig and Makefile changes alphabetically sorted
- Use remove_new instead of remove
- Document limitations in driver file
----
- drivers/pwm/Kconfig       |  11 ++
- drivers/pwm/Makefile      |   1 +
- drivers/pwm/pwm-cadence.c | 370 ++++++++++++++++++++++++++++++++++++++
- 3 files changed, 382 insertions(+)
- create mode 100644 drivers/pwm/pwm-cadence.c
-
-diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-index 8ebcddf91f7b..7fd493f06496 100644
---- a/drivers/pwm/Kconfig
-+++ b/drivers/pwm/Kconfig
-@@ -152,6 +152,17 @@ config PWM_BRCMSTB
- 	  To compile this driver as a module, choose M Here: the module
- 	  will be called pwm-brcmstb.c.
- 
-+config PWM_CADENCE
-+        tristate "Cadence PWM support"
-+        depends on OF
-+        depends on COMMON_CLK
-+        help
-+          Generic PWM framework driver for cadence TTC IP found on
-+          Xilinx Zynq/ZynqMP/Versal SOCs. Each TTC device has 3 PWM
-+          channels. Output of 0th PWM channel of each TTC device can
-+          be routed to MIO or EMIO, and output of 1st and 2nd PWM
-+          channels can be routed only to EMIO.
-+
- config PWM_CLK
- 	tristate "Clock based PWM support"
- 	depends on HAVE_CLK || COMPILE_TEST
-diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-index c822389c2a24..a8a11dbcb00f 100644
---- a/drivers/pwm/Makefile
-+++ b/drivers/pwm/Makefile
-@@ -11,6 +11,7 @@ obj-$(CONFIG_PWM_BCM_KONA)	+= pwm-bcm-kona.o
- obj-$(CONFIG_PWM_BCM2835)	+= pwm-bcm2835.o
- obj-$(CONFIG_PWM_BERLIN)	+= pwm-berlin.o
- obj-$(CONFIG_PWM_BRCMSTB)	+= pwm-brcmstb.o
-+obj-$(CONFIG_PWM_CADENCE)	+= pwm-cadence.o
- obj-$(CONFIG_PWM_CLK)		+= pwm-clk.o
- obj-$(CONFIG_PWM_CLPS711X)	+= pwm-clps711x.o
- obj-$(CONFIG_PWM_CRC)		+= pwm-crc.o
-diff --git a/drivers/pwm/pwm-cadence.c b/drivers/pwm/pwm-cadence.c
-new file mode 100644
-index 000000000000..12aaa004bf7f
---- /dev/null
-+++ b/drivers/pwm/pwm-cadence.c
-@@ -0,0 +1,370 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Driver to configure cadence TTC timer as PWM
-+ * generator
-+ *
-+ * Limitations:
-+ * - When PWM is stopped, timer counter gets stopped immediately. This
-+ *   doesn't allow the current PWM period to complete and stops abruptly.
-+ * - Disabled PWM emits inactive level.
-+ * - When user requests a change in  any parameter of PWM (period/duty cycle/polarity)
-+ *   while PWM is in enabled state:
-+ *	- PWM is stopped abruptly.
-+ *	- Requested parameter is changed.
-+ *	- Fresh PWM cycle is started.
-+ *
-+ * Copyright (C) 2023, Advanced Micro Devices, Inc.
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/device.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pwm.h>
-+#include <linux/of_address.h>
-+
-+#define TTC_CLK_CNTRL		0x00
-+#define TTC_CNT_CNTRL		0x0C
-+#define TTC_MATCH_CNT_VAL	0x30
-+#define TTC_COUNT_VAL		0x18
-+#define TTC_INTR_VAL		0x24
-+#define TTC_ISR			0x54
-+#define TTC_IER			0x60
-+#define TTC_PWM_CHANNEL		0x4
-+
-+#define TTC_CLK_CNTRL_CSRC		BIT(5)
-+#define TTC_CLK_CNTRL_PSV		GENMASK(4, 1)
-+#define TTC_CLK_CNTRL_PS_EN		BIT(0)
-+
-+#define TTC_CNTR_CTRL_DIS		BIT(0)
-+#define TTC_CNTR_CTRL_INTR_MODE_EN	BIT(1)
-+#define TTC_CNTR_CTRL_MATCH_MODE_EN	BIT(3)
-+#define TTC_CNTR_CTRL_RST		BIT(4)
-+#define TTC_CNTR_CTRL_WAVE_EN	BIT(5)
-+#define TTC_CNTR_CTRL_WAVE_POL	BIT(6)
-+
-+#define TTC_CNTR_CTRL_WAVE_POL_SHIFT	6
-+#define TTC_CNTR_CTRL_PRESCALE_SHIFT	1
-+#define TTC_PWM_MAX_CH			3
-+
-+/**
-+ * struct ttc_pwm_priv - Private data for TTC PWM drivers
-+ * @chip:	PWM chip structure representing PWM controller
-+ * @clk:	TTC input clock
-+ * @rate:	TTC input clock rate
-+ * @max:	Maximum value of the counters
-+ * @base:	Base address of TTC instance
-+ */
-+struct ttc_pwm_priv {
-+	struct pwm_chip chip;
-+	struct clk *clk;
-+	unsigned long rate;
-+	u32 max;
-+	void __iomem *base;
-+};
-+
-+static inline u32 ttc_pwm_readl(struct ttc_pwm_priv *priv,
-+				unsigned long offset)
-+{
-+	return readl_relaxed(priv->base + offset);
-+}
-+
-+static inline void ttc_pwm_writel(struct ttc_pwm_priv *priv,
-+				  unsigned long offset,
-+				  unsigned long val)
-+{
-+	writel_relaxed(val, priv->base + offset);
-+}
-+
-+static inline u32 ttc_pwm_ch_readl(struct ttc_pwm_priv *priv,
-+				   unsigned int chnum,
-+				   unsigned long offset)
-+{
-+	unsigned long pwm_ch_offset = offset +
-+				       (TTC_PWM_CHANNEL * chnum);
-+
-+	return ttc_pwm_readl(priv, pwm_ch_offset);
-+}
-+
-+static inline void ttc_pwm_ch_writel(struct ttc_pwm_priv *priv,
-+				     unsigned int chnum,
-+				     unsigned long offset,
-+				     unsigned long val)
-+{
-+	unsigned long pwm_ch_offset = offset +
-+				       (TTC_PWM_CHANNEL * chnum);
-+
-+	ttc_pwm_writel(priv, pwm_ch_offset, val);
-+}
-+
-+static inline struct ttc_pwm_priv *xilinx_pwm_chip_to_priv(struct pwm_chip *chip)
-+{
-+	return container_of(chip, struct ttc_pwm_priv, chip);
-+}
-+
-+static void ttc_pwm_enable(struct ttc_pwm_priv *priv, struct pwm_device *pwm)
-+{
-+	u32 ctrl_reg;
-+
-+	ctrl_reg = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CNT_CNTRL);
-+	ctrl_reg |= (TTC_CNTR_CTRL_INTR_MODE_EN
-+				 | TTC_CNTR_CTRL_MATCH_MODE_EN | TTC_CNTR_CTRL_RST);
-+	ctrl_reg &= ~(TTC_CNTR_CTRL_DIS | TTC_CNTR_CTRL_WAVE_EN);
-+	ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_CNT_CNTRL, ctrl_reg);
-+}
-+
-+static void ttc_pwm_disable(struct ttc_pwm_priv *priv, struct pwm_device *pwm)
-+{
-+	u32 ctrl_reg;
-+
-+	ctrl_reg = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CNT_CNTRL);
-+	ctrl_reg |= TTC_CNTR_CTRL_DIS;
-+
-+	ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_CNT_CNTRL, ctrl_reg);
-+}
-+
-+static void ttc_pwm_set_polarity(struct ttc_pwm_priv *priv, struct pwm_device *pwm,
-+				 enum pwm_polarity polarity)
-+{
-+	u32 ctrl_reg;
-+
-+	ctrl_reg = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CNT_CNTRL);
-+
-+	if (polarity == PWM_POLARITY_NORMAL)
-+		ctrl_reg |= TTC_CNTR_CTRL_WAVE_POL;
-+	else
-+		ctrl_reg &= (~TTC_CNTR_CTRL_WAVE_POL);
-+
-+	ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_CNT_CNTRL, ctrl_reg);
-+}
-+
-+static void ttc_pwm_set_counters(struct ttc_pwm_priv *priv,
-+				 struct pwm_device *pwm,
-+				 u32 period_cycles,
-+				 u32 duty_cycles)
-+{
-+	/* Set up period */
-+	ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_INTR_VAL, period_cycles);
-+
-+	/* Set up duty cycle */
-+	ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_MATCH_CNT_VAL, duty_cycles);
-+}
-+
-+static void ttc_pwm_set_prescalar(struct ttc_pwm_priv *priv,
-+				  struct pwm_device *pwm,
-+				  u32 div, bool is_enable)
-+{
-+	u32 clk_reg;
-+
-+	if (is_enable) {
-+		/* Set up prescalar */
-+		clk_reg = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CLK_CNTRL);
-+		clk_reg &= ~TTC_CLK_CNTRL_PSV;
-+		clk_reg |= (div << TTC_CNTR_CTRL_PRESCALE_SHIFT);
-+		clk_reg |= TTC_CLK_CNTRL_PS_EN;
-+		ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_CLK_CNTRL, clk_reg);
-+	} else {
-+		/* Disable prescalar */
-+		clk_reg = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CLK_CNTRL);
-+		clk_reg &= ~TTC_CLK_CNTRL_PS_EN;
-+		ttc_pwm_ch_writel(priv, pwm->hwpwm, TTC_CLK_CNTRL, clk_reg);
-+	}
-+}
-+
-+static int ttc_pwm_apply(struct pwm_chip *chip,
-+			 struct pwm_device *pwm,
-+			 const struct pwm_state *state)
-+{
-+	struct ttc_pwm_priv *priv = xilinx_pwm_chip_to_priv(chip);
-+	u64 duty_cycles, period_cycles;
-+	struct pwm_state cstate;
-+	unsigned long rate;
-+	bool flag = false;
-+	u32 div = 0;
-+
-+	cstate = pwm->state;
-+
-+	if (state->polarity != cstate.polarity) {
-+		if (cstate.enabled)
-+			ttc_pwm_disable(priv, pwm);
-+
-+		ttc_pwm_set_polarity(priv, pwm, state->polarity);
-+	}
-+
-+	rate = priv->rate;
-+
-+	/* Prevent overflow by limiting to the maximum possible period */
-+	period_cycles = min_t(u64, state->period, ULONG_MAX * NSEC_PER_SEC);
-+	period_cycles = mul_u64_u64_div_u64(period_cycles, rate, NSEC_PER_SEC);
-+
-+	if (period_cycles > priv->max) {
-+		/*
-+		 * Prescale frequency to fit requested period cycles within limit.
-+		 * Prescalar divides input clock by 2^(prescale_value + 1). Maximum
-+		 * supported prescalar value is 15.
-+		 */
-+		div = mul_u64_u64_div_u64(state->period, rate, (NSEC_PER_SEC * priv->max));
-+		div = order_base_2(div);
-+		if (div)
-+			div -= 1;
-+
-+		if (div > 15)
-+			return -ERANGE;
-+
-+		rate = DIV_ROUND_CLOSEST(rate, BIT(div + 1));
-+		period_cycles = mul_u64_u64_div_u64(state->period, rate,
-+						    NSEC_PER_SEC);
-+		flag = true;
-+	}
-+
-+	if (cstate.enabled)
-+		ttc_pwm_disable(priv, pwm);
-+
-+	duty_cycles = mul_u64_u64_div_u64(state->duty_cycle, rate,
-+					  NSEC_PER_SEC);
-+	ttc_pwm_set_counters(priv, pwm, period_cycles, duty_cycles);
-+
-+	ttc_pwm_set_prescalar(priv, pwm, div, flag);
-+
-+	if (state->enabled)
-+		ttc_pwm_enable(priv, pwm);
-+	else
-+		ttc_pwm_disable(priv, pwm);
-+
-+	return 0;
-+}
-+
-+static int ttc_pwm_get_state(struct pwm_chip *chip,
-+			     struct pwm_device *pwm,
-+			     struct pwm_state *state)
-+{
-+	struct ttc_pwm_priv *priv = xilinx_pwm_chip_to_priv(chip);
-+	u32 value, pres_en, pres = 1;
-+	unsigned long rate;
-+	u64 tmp;
-+
-+	value = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CNT_CNTRL);
-+
-+	if (value & TTC_CNTR_CTRL_WAVE_POL)
-+		state->polarity = PWM_POLARITY_NORMAL;
-+	else
-+		state->polarity = PWM_POLARITY_INVERSED;
-+
-+	if (value & TTC_CNTR_CTRL_DIS)
-+		state->enabled = false;
-+	else
-+		state->enabled = true;
-+
-+	rate = priv->rate;
-+
-+	pres_en =  ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CLK_CNTRL);
-+	pres_en	&= TTC_CLK_CNTRL_PS_EN;
-+
-+	if (pres_en) {
-+		pres = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_CLK_CNTRL) & TTC_CLK_CNTRL_PSV;
-+		pres >>= TTC_CNTR_CTRL_PRESCALE_SHIFT;
-+		/* If prescale is enabled, the count rate is divided by 2^(pres + 1) */
-+		pres = BIT(pres + 1);
-+	}
-+
-+	tmp = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_INTR_VAL);
-+	tmp *= pres;
-+	state->period = DIV64_U64_ROUND_UP(tmp * NSEC_PER_SEC, rate);
-+
-+	tmp = ttc_pwm_ch_readl(priv, pwm->hwpwm, TTC_MATCH_CNT_VAL);
-+	tmp *= pres;
-+	state->duty_cycle = DIV64_U64_ROUND_UP(tmp * NSEC_PER_SEC, rate);
-+
-+	return 0;
-+}
-+
-+static const struct pwm_ops ttc_pwm_ops = {
-+	.apply = ttc_pwm_apply,
-+	.get_state = ttc_pwm_get_state,
-+	.owner = THIS_MODULE,
-+};
-+
-+static int ttc_pwm_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device_node *np = dev->of_node;
-+	u32 pwm_cells, timer_width;
-+	struct ttc_pwm_priv *priv;
-+	int ret;
-+
-+	/*
-+	 * If pwm-cells property is not present in TTC node,
-+	 * it would be treated as clocksource/clockevent
-+	 * device.
-+	 */
-+	ret = of_property_read_u32(np, "#pwm-cells", &pwm_cells);
-+	if (ret == -EINVAL)
-+		return -ENODEV;
-+
-+	if (ret)
-+		return dev_err_probe(dev, ret, "could not read #pwm-cells\n");
-+
-+	priv = devm_kzalloc(dev, sizeof(*priv), GFP_KERNEL);
-+	if (!priv)
-+		return -ENOMEM;
-+
-+	priv->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(priv->base))
-+		return PTR_ERR(priv->base);
-+
-+	ret = of_property_read_u32(np, "timer-width", &timer_width);
-+	if (ret)
-+		timer_width = 16;
-+
-+	priv->max = BIT(timer_width) - 1;
-+
-+	priv->clk = devm_clk_get_enabled(dev, NULL);
-+	if (IS_ERR(priv->clk))
-+		return dev_err_probe(dev, PTR_ERR(priv->clk),
-+				     "ERROR: timer input clock not found\n");
-+
-+	priv->rate = clk_get_rate(priv->clk);
-+
-+	clk_rate_exclusive_get(priv->clk);
-+
-+	priv->chip.dev = dev;
-+	priv->chip.ops = &ttc_pwm_ops;
-+	priv->chip.npwm = TTC_PWM_MAX_CH;
-+	ret = pwmchip_add(&priv->chip);
-+	if (ret) {
-+		clk_rate_exclusive_put(priv->clk);
-+		return dev_err_probe(dev, ret, "Could not register PWM chip\n");
-+	}
-+
-+	platform_set_drvdata(pdev, priv);
-+
-+	return 0;
-+}
-+
-+static void ttc_pwm_remove(struct platform_device *pdev)
-+{
-+	struct ttc_pwm_priv *priv = platform_get_drvdata(pdev);
-+
-+	pwmchip_remove(&priv->chip);
-+	clk_rate_exclusive_put(priv->clk);
-+}
-+
-+static const struct of_device_id __maybe_unused ttc_pwm_of_match[] = {
-+	{ .compatible = "cdns,ttc"},
-+	{},
-+};
-+MODULE_DEVICE_TABLE(of, ttc_pwm_of_match);
-+
-+static struct platform_driver ttc_pwm_driver = {
-+	.probe = ttc_pwm_probe,
-+	.remove_new = ttc_pwm_remove,
-+	.driver = {
-+		.name = "ttc-pwm",
-+		.of_match_table = of_match_ptr(ttc_pwm_of_match),
-+	},
-+};
-+module_platform_driver(ttc_pwm_driver);
-+
-+MODULE_AUTHOR("Mubin Sayyed <mubin.sayyed@amd.com>");
-+MODULE_DESCRIPTION("Cadence TTC PWM driver");
-+MODULE_LICENSE("GPL");
--- 
-2.25.1
-
+-Mukesh
+> 
+> Regards
+> Luca
+> 
+>>
+>> -Mukesh
+>>>
+>>>>
+>>>> [3]
+>>>> https://lore.kernel.org/linux-arm-msm/20231003175456.14774-3-quic_kbajaj@quicinc.com/
+>>>>
+>>>> -Mukesh
+>>>>>
+>>>>> I don't think that putting regulators to the common file is a good
+>>>>> idea. Platforms will further change and limit voltage limits and
+>>>>> modes, so they usually go to the board file.
+>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Mukesh
+>>>>>>
+>>>>>> [1]
+>>>>>> https://lore.kernel.org/linux-arm-msm/d97ebf74-ad03-86d6-b826-b57be209b9e2@quicinc.com/
+>>>>>>
+>>>>>> [2]
+>>>>>> commit 90c856602e0346ce9ff234062e86a198d71fa723
+>>>>>> Author: Douglas Anderson <dianders@chromium.org>
+>>>>>> Date:   Tue Jan 25 14:44:20 2022 -0800
+>>>>>>
+>>>>>>         arm64: dts: qcom: sc7280: Factor out Chrome common fragment
+>>>>>>
+>>>>>>         This factors out a device tree fragment from some sc7280 device
+>>>>>>         trees. It represents the device tree bits that should be included for
+>>>>>>         "Chrome" based sc7280 boards. On these boards the bootloader (Coreboot
+>>>>>>         + Depthcharge) configures things slightly different than the
+>>>>>>         bootloader that Qualcomm provides. The modem firmware on these boards
+>>>>>>         also works differently than on other Qulacomm products and thus the
+>>>>>>         reserved memory map needs to be adjusted.
+>>>>>>
+>>>>>>         NOTES:
+>>>>>>         - This is _not_ quite a no-op change. The "herobrine" and "idp"
+>>>>>>           fragments here were different and it looks like someone simply
+>>>>>>           forgot to update the herobrine version. This updates a few numbers
+>>>>>>           to match IDP. This will also cause the `pmk8350_pon` to be disabled
+>>>>>>           on idp/crd, which I belive is a correct change.
+>>>>>>         - At the moment this assumes LTE skus. Once it's clearer how WiFi SKUs
+>>>>>>           will work (how much of the memory map they can reclaim) we may add
+>>>>>>           an extra fragment that will rejigger one way or the other.
+>>>>>>
+>>>>>>         Signed-off-by: Douglas Anderson <dianders@chromium.org>
+>>>>>>         Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+>>>>>>         Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+>>>>>>         Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+>>>>>>         Link:
+>>>>>> https://lore.kernel.org/r/20220125144316.v2.3.Iac012fa8d727be46448d47027a1813ea716423ce@changeid
+>>>>>>
+>>>>>>
+>>>>>>>
+>>>>>>> Best regards,
+>>>>>>> Krzysztof
+>>>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+>>>
+> 
