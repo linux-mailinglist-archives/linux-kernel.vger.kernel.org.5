@@ -2,251 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EDE7EAE1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D121F7EAE22
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:35:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230045AbjKNKeB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:34:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60164 "EHLO
+        id S232654AbjKNKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:35:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKNKd7 (ORCPT
+        with ESMTP id S229999AbjKNKfs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:33:59 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEECD9;
-        Tue, 14 Nov 2023 02:33:55 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9oAUT007228;
-        Tue, 14 Nov 2023 10:33:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=3ULhedtaV0XLSfNu8W0jmu2jCdoQ6/Fn8e2UKpNKH+A=;
- b=pBZxuQFVezSl2edyBA90H8iJxKN8vu0WTsQ0W+++pT1bGqsaiWQgH0xHz2DS7o0WAahd
- WxnovsrILcOeLt+pGJOSL3PSIA2JpWLKGCzkuxD6dX0eeQo3WLXfKpMByTpFXta2R3fG
- xwvddetgs5SiuWUp/jRcy6EebVkHYy73pqBOLdcQhUtZjSgHF5xFL4Ql6LfSmO31qlbc
- QJKoPftjKsPRI54uujKjp6oFI5v+nfHB0oQFIhjjM4sEv7dDkEMc17LVwp2djO7yERI7
- n07LrUwS11/oqXIHzIcJ5RJGTSYHOrPcVNb2WZBfA5s83k/QN3SJYgdjHJ/vlSLOD/7M BQ== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubwskh23r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 10:33:45 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEAXik6007401
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 10:33:44 GMT
-Received: from [10.216.63.64] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 14 Nov
- 2023 02:33:41 -0800
-Message-ID: <bf09fff7-bc13-6545-029e-2bd518111906@quicinc.com>
-Date:   Tue, 14 Nov 2023 16:03:20 +0530
+        Tue, 14 Nov 2023 05:35:48 -0500
+Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D311F;
+        Tue, 14 Nov 2023 02:35:44 -0800 (PST)
+Received: from [192.168.1.103] (178.176.75.241) by msexch01.omp.ru
+ (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 14 Nov
+ 2023 13:35:34 +0300
+Subject: Re: [PATCH v2] usb: dwc3: add missing of_node_put and
+ platform_device_put
+To:     Stanley Chang <stanley_chang@realtek.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+CC:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20231114101645.20065-1-stanley_chang@realtek.com>
+From:   Sergey Shtylyov <s.shtylyov@omp.ru>
+Organization: Open Mobile Platform
+Message-ID: <e1686031-aa5a-5692-50c3-0382d32641e6@omp.ru>
+Date:   Tue, 14 Nov 2023 13:35:33 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] Performance: devfreq: avoid devfreq delay work re-init
- before
+In-Reply-To: <20231114101645.20065-1-stanley_chang@realtek.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-To:     huangzaiyang <huangzaiyang@oppo.com>, <myungjoo.ham@samsung.com>,
-        <kyungmin.park@samsung.com>, <cw00.choi@samsung.com>
-CC:     <linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        huangzaiyang <joyyoung.wang@gmail.com>
-References: <20231110093457.458-1-huangzaiyang@oppo.com>
-From:   Mukesh Ojha <quic_mojha@quicinc.com>
-In-Reply-To: <20231110093457.458-1-huangzaiyang@oppo.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: kehTum09broLdiB3L8kbjbrzcIEtsQju
-X-Proofpoint-ORIG-GUID: kehTum09broLdiB3L8kbjbrzcIEtsQju
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-14_09,2023-11-09_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- suspectscore=0 spamscore=0 clxscore=1011 priorityscore=1501 adultscore=0
- mlxscore=0 phishscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311140082
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [178.176.75.241]
+X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
+ (10.188.4.12)
+X-KSE-ServerInfo: msexch01.omp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/14/2023 10:25:05
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 59
+X-KSE-AntiSpam-Info: Lua profiles 181339 [Nov 14 2023]
+X-KSE-AntiSpam-Info: Version: 6.0.0.2
+X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
+X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
+X-KSE-AntiSpam-Info: {rep_avail}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: {relay has no DNS name}
+X-KSE-AntiSpam-Info: {SMTP from is not routable}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
+X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.241
+X-KSE-AntiSpam-Info: {DNS response errors}
+X-KSE-AntiSpam-Info: Rate: 59
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
+ smtp.mailfrom=omp.ru;dkim=none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Heuristic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 11/14/2023 10:30:00
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 11/14/2023 9:07:00 AM
+X-KSE-Attachment-Filter-Triggered-Rules: Clean
+X-KSE-Attachment-Filter-Triggered-Filters: Clean
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just saw this mail, i have posted a patch to synchronize 
-devfreq_monitor_start/stop.
+On 11/14/23 1:16 PM, Stanley Chang wrote:
 
-https://lore.kernel.org/all/1699957648-31299-1-git-send-email-quic_mojha@quicinc.com/
+> of_get_compatible_child performs an of_node_get, so an of_node_get is
 
-let me know if that works too.
+   You mean of_node_put is required?
 
--Mukesh
-
-On 11/10/2023 3:04 PM, huangzaiyang wrote:
-> From: huangzaiyang <joyyoung.wang@gmail.com>
+> required. Add platform_device_put to match with of_find_device_by_node.
 > 
-> There is a timer_list race condition when executing the following test shell script:
-> '''
-> while true
-> do
->          echo "simple_ondemand" > /sys/class/devfreq/1d84000.ufshc/governor
->          echo "performance" > /sys/class/devfreq/1d84000.ufshc/governor
-> done
-> '''
-> 
-> [13511.214366][    C3] Unable to handle kernel paging request at virtual address dead00000000012a
-> [13511.214393][    C3] Mem abort info:
-> [13511.214398][    C3]   ESR = 0x96000044
-> [13511.214404][    C3]   EC = 0x25: DABT (current EL), IL = 32 bits
-> [13511.214409][    C3]   SET = 0, FnV = 0
-> [13511.214414][    C3]   EA = 0, S1PTW = 0
-> [13511.214417][    C3] Data abort info:
-> [13511.214422][    C3]   ISV = 0, ISS = 0x00000044
-> [13511.214427][    C3]   CM = 0, WnR = 1
-> [13511.214432][    C3] [dead00000000012a] address between user and kernel address ranges
-> [13511.214439][    C3] Internal error: Oops: 96000044 [#1] PREEMPT SMP
-> [13511.215449][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted: G S      W  O      5.10.168-android12-9-o-g63cc297a7b34 #1
-> [13511.215454][    C3] Hardware name: Qualcomm Technologies, Inc. Cape MTP, Whiteswan (DT)
-> [13511.215460][    C3] pstate: 82400085 (Nzcv daIf +PAN -UAO +TCO BTYPE=--)
-> [13511.215472][    C3] pc : expire_timers+0x9c/0x428
-> [13511.215478][    C3] lr : __run_timers+0x1f0/0x328
-> [13511.215483][    C3] sp : ffffffc00801bdd0
-> [13511.215487][    C3] x29: ffffffc00801bdf0 x28: ffffffdb87b31698
-> [13511.215493][    C3] x27: ffffffdb87999e58 x26: ffffffdb87966008
-> [13511.215499][    C3] x25: 0000000000000001 x24: ffffff8001734a00
-> [13511.215506][    C3] x23: 00000000000000e0 x22: dead000000000122
-> [13511.215512][    C3] x21: 000000010032658e x20: ffffff89f7a9ae80
-> [13511.215518][    C3] x19: ffffffc00801be50 x18: ffffffc00801d038
-> [13511.215525][    C3] x17: 0000000000000240 x16: 0000000000000201
-> [13511.215532][    C3] x15: ffffffffffffffff x14: ffffff89f7a9aef8
-> [13511.215538][    C3] x13: 0000000000000240 x12: ffffff89f7a9aea8
-> [13511.215544][    C3] x11: 0000000000000021 x10: 000000014032658e
-> [13511.215550][    C3] x9 : ffffffc00801be50 x8 : dead000000000122
-> [13511.215556][    C3] x7 : ffff71646c68735e x6 : ffffff89f7aaae58
-> [13511.215563][    C3] x5 : 0000000000000000 x4 : 0000000000000101
-> [13511.215569][    C3] x3 : ffffff89f7a9aef0 x2 : ffffff89f7a9aef0
-> [13511.215575][    C3] x1 : ffffffc00801be50 x0 : ffffff8045804428
-> [13511.215581][    C3] Call trace:
-> [13511.215586][    C3]  expire_timers+0x9c/0x428
-> [13511.215591][    C3]  __run_timers+0x1f0/0x328
-> [13511.215596][    C3]  run_timer_softirq+0x28/0x58
-> [13511.215602][    C3]  efi_header_end+0x168/0x5ec
-> [13511.215610][    C3]  __irq_exit_rcu+0x108/0x124
-> [13511.215617][    C3]  __handle_domain_irq+0x118/0x1e4
-> [13511.215625][    C3]  gic_handle_irq.31230+0x6c/0x250
-> [13511.215630][    C3]  el1_irq+0xe4/0x1c0
-> [13511.215638][    C3]  cpuidle_enter_state+0x3a4/0xa04
-> [13511.215644][    C3]  do_idle+0x308/0x574
-> [13511.215649][    C3]  cpu_startup_entry+0x84/0x90
-> [13511.215656][    C3]  secondary_start_kernel+0x204/0x274
-> [13511.215664][    C3] Code: d503201f a9402408 f9000128 b4000048 (f9000509)
-> [13511.215670][    C3] ---[ end trace 5100bad72a35d566 ]---
-> [13511.215676][    C3] Kernel panic - not syncing: Oops: Fatal exception in interrupt
-> 
-> This is because when switching the governor through the sys node,
-> the devfreq_monitor_start function will re-initialize the delayed work task,
-> which will cause the delay work pending flag to become invalid, and the timer pending judgment contained in the delayed work will also become invalid,
-> and then the pending interception will be executed when the queue is executed.
-> 
-> So we remove the delay work'initialization work to the devfreq_add_device and timer_store functions,
-> and the delay work pending judgment is performed before the devfreq_monitor_start function performs the queue operation.
-> 
-> Signed-off-by: ZaiYang Huang <huangzaiyang@oppo.com>
+> Fixes: 34c200483569 ("usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver")
+> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
+> Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
 > ---
->   drivers/devfreq/devfreq.c | 36 ++++++++++++++++++++++++------------
->   1 file changed, 24 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/devfreq/devfreq.c b/drivers/devfreq/devfreq.c
-> index b3a68d5833bd..8ae6f853a21e 100644
-> --- a/drivers/devfreq/devfreq.c
-> +++ b/drivers/devfreq/devfreq.c
-> @@ -483,18 +483,7 @@ void devfreq_monitor_start(struct devfreq *devfreq)
->          if (IS_SUPPORTED_FLAG(devfreq->governor->flags, IRQ_DRIVEN))
->                  return;
-> 
-> -       switch (devfreq->profile->timer) {
-> -       case DEVFREQ_TIMER_DEFERRABLE:
-> -               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
-> -               break;
-> -       case DEVFREQ_TIMER_DELAYED:
-> -               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
-> -               break;
-> -       default:
-> -               return;
-> -       }
-> -
-> -       if (devfreq->profile->polling_ms)
-> +       if (devfreq->profile->polling_ms && !delayed_work_pending(&devfreq->work))
->                  queue_delayed_work(devfreq_wq, &devfreq->work,
->                          msecs_to_jiffies(devfreq->profile->polling_ms));
->   }
-> @@ -830,6 +819,17 @@ struct devfreq *devfreq_add_device(struct device *dev,
->                  goto err_dev;
->          }
-> 
-> +       switch (devfreq->profile->timer) {
-> +       case DEVFREQ_TIMER_DEFERRABLE:
-> +               INIT_DEFERRABLE_WORK(&devfreq->work, devfreq_monitor);
-> +               break;
-> +       case DEVFREQ_TIMER_DELAYED:
-> +               INIT_DELAYED_WORK(&devfreq->work, devfreq_monitor);
-> +               break;
-> +       default:
-> +               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no settings \n", devfreq->governor_name,
-> +                       __func__);
-> +       }
->          if (!devfreq->profile->max_state || !devfreq->profile->freq_table) {
->                  mutex_unlock(&devfreq->lock);
->                  err = set_freq_table(devfreq);
-> @@ -1860,6 +1860,18 @@ static ssize_t timer_store(struct device *dev, struct device_attribute *attr,
->          df->profile->timer = timer;
->          mutex_unlock(&df->lock);
-> 
-> +       switch (df->profile->timer) {
-> +       case DEVFREQ_TIMER_DEFERRABLE:
-> +               INIT_DEFERRABLE_WORK(&df->work, devfreq_monitor);
-> +               break;
-> +       case DEVFREQ_TIMER_DELAYED:
-> +               INIT_DELAYED_WORK(&df->work, devfreq_monitor);
-> +               break;
-> +       default:
-> +               dev_err(dev, "%s: Target devfreq(%s)'s profile timer has no settings \n", df->governor_name,
-> +                       __func__);
-> +       }
-> +
->          ret = df->governor->event_handler(df, DEVFREQ_GOV_STOP, NULL);
->          if (ret) {
->                  dev_warn(dev, "%s: Governor %s not stopped(%d)\n",
-> --
-> 2.17.1
-> 
-> ________________________________
-> OPPO
-> 
-> ±¾µç×ÓÓÊ¼þ¼°Æä¸½¼þº¬ÓÐOPPO¹«Ë¾µÄ±£ÃÜÐÅÏ¢£¬½öÏÞÓÚÓÊ¼þÖ¸Ã÷µÄÊÕ¼þÈË£¨°üº¬¸öÈË¼°Èº×é£©Ê¹ÓÃ¡£½ûÖ¹ÈÎºÎÈËÔÚÎ´¾­ÊÚÈ¨µÄÇé¿öÏÂÒÔÈÎºÎÐÎÊ½Ê¹ÓÃ¡£Èç¹ûÄú´íÊÕÁË±¾ÓÊ¼þ£¬ÇÐÎð´«²¥¡¢·Ö·¢¡¢¸´ÖÆ¡¢Ó¡Ë¢»òÊ¹ÓÃ±¾ÓÊ¼þÖ®ÈÎºÎ²¿·Ö»òÆäËùÔØÖ®ÈÎºÎÄÚÈÝ£¬²¢ÇëÁ¢¼´ÒÔµç×ÓÓÊ¼þÍ¨Öª·¢¼þÈË²¢É¾³ý±¾ÓÊ¼þ¼°Æä¸½¼þ¡£
-> ÍøÂçÍ¨Ñ¶¹ÌÓÐÈ±ÏÝ¿ÉÄÜµ¼ÖÂÓÊ¼þ±»½ØÁô¡¢ÐÞ¸Ä¡¢¶ªÊ§¡¢ÆÆ»µ»ò°üº¬¼ÆËã»ú²¡¶¾µÈ²»°²È«Çé¿ö£¬OPPO¶Ô´ËÀà´íÎó»òÒÅÂ©¶øÒýÖÂÖ®ÈÎºÎËðÊ§¸Å²»³Ðµ£ÔðÈÎ²¢±£ÁôÓë±¾ÓÊ¼þÏà¹ØÖ®Ò»ÇÐÈ¨Àû¡£
-> ³ý·ÇÃ÷È·ËµÃ÷£¬±¾ÓÊ¼þ¼°Æä¸½¼þÎÞÒâ×÷ÎªÔÚÈÎºÎ¹ú¼Ò»òµØÇøÖ®ÒªÔ¼¡¢ÕÐÀ¿»ò³ÐÅµ£¬ÒàÎÞÒâ×÷ÎªÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ¡£ ·¢¼þÈË¡¢ÆäËùÊô»ú¹¹»òËùÊô»ú¹¹Ö®¹ØÁª»ú¹¹»òÈÎºÎÉÏÊö»ú¹¹Ö®¹É¶«¡¢¶­ÊÂ¡¢¸ß¼¶¹ÜÀíÈËÔ±¡¢Ô±¹¤»òÆäËûÈÎºÎÈË£¨ÒÔÏÂ³Æ¡°·¢¼þÈË¡±»ò¡°OPPO¡±£©²»Òò±¾ÓÊ¼þÖ®ÎóËÍ¶ø·ÅÆúÆäËùÏíÖ®ÈÎºÎÈ¨Àû£¬Òà²»¶ÔÒò¹ÊÒâ»ò¹ýÊ§Ê¹ÓÃ¸ÃµÈÐÅÏ¢¶øÒý·¢»ò¿ÉÄÜÒý·¢µÄËðÊ§³Ðµ£ÈÎºÎÔðÈÎ¡£
-> ÎÄ»¯²îÒìÅûÂ¶£ºÒòÈ«ÇòÎÄ»¯²îÒìÓ°Ïì£¬µ¥´¿ÒÔYES\OK»òÆäËû¼òµ¥´Ê»ãµÄ»Ø¸´²¢²»¹¹³É·¢¼þÈË¶ÔÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ»ò½ÓÊÜ£¬ÇëÓë·¢¼þÈËÔÙ´ÎÈ·ÈÏÒÔ»ñµÃÃ÷È·ÊéÃæÒâ¼û¡£·¢¼þÈË²»¶ÔÈÎºÎÊÜÎÄ»¯²îÒìÓ°Ïì¶øµ¼ÖÂ¹ÊÒâ»ò´íÎóÊ¹ÓÃ¸ÃµÈÐÅÏ¢ËùÔì³ÉµÄÈÎºÎÖ±½Ó»ò¼ä½ÓËðº¦³Ðµ£ÔðÈÎ¡£
-> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
-> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
-> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
-> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
-> ________________________________
-> OPPO
-> 
-> 本电子邮件及其附件含有OPPO公司的保密信息，仅限于邮件指明的收件人（包含个人及群组）使用。禁止任何人在未经授权的情况下以任何形式使用。如果您错收了本邮件，切勿传播、分发、复制、印刷或使用本邮件之任何部分或其所载之任何内容，并请立即以电子邮件通知发件人并删除本邮件及其附件。
-> 网络通讯固有缺陷可能导致邮件被截留、修改、丢失、破坏或包含计算机病毒等不安全情况，OPPO对此类错误或遗漏而引致之任何损失概不承担责任并保留与本邮件相关之一切权利。
-> 除非明确说明，本邮件及其附件无意作为在任何国家或地区之要约、招揽或承诺，亦无意作为任何交易或合同之正式确认。 发件人、其所属机构或所属机构之关联机构或任何上述机构之股东、董事、高级管理人员、员工或其他任何人（以下称“发件人”或“OPPO”）不因本邮件之误送而放弃其所享之任何权利，亦不对因故意或过失使用该等信息而引发或可能引发的损失承担任何责任。
-> 文化差异披露：因全球文化差异影响，单纯以YES\OK或其他简单词汇的回复并不构成发件人对任何交易或合同之正式确认或接受，请与发件人再次确认以获得明确书面意见。发件人不对任何受文化差异影响而导致故意或错误使用该等信息所造成的任何直接或间接损害承担责任。
-> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
-> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
-> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
-> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
+> v1 to v2 change:
+>     1. Modify the commit message.
+>     2. Add of_node_get in the of_property_read_string() error path.
+[...]
+
+MBR, Sergey
