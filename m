@@ -2,134 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F16797EB0EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:31:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B3C7EB0EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233217AbjKNNbr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 08:31:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48518 "EHLO
+        id S233218AbjKNNcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjKNNbp (ORCPT
+        with ESMTP id S233209AbjKNNcK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:31:45 -0500
-Received: from mail-oo1-f43.google.com (mail-oo1-f43.google.com [209.85.161.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CAA11B9;
-        Tue, 14 Nov 2023 05:31:42 -0800 (PST)
-Received: by mail-oo1-f43.google.com with SMTP id 006d021491bc7-58787a6583aso296215eaf.1;
-        Tue, 14 Nov 2023 05:31:42 -0800 (PST)
+        Tue, 14 Nov 2023 08:32:10 -0500
+Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B23D44
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:32:05 -0800 (PST)
+Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b4145e887bso3136153b6e.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:32:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699968725; x=1700573525; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1vUZuk20r1+GVjNsC7jKBkz3TTC8HOm2KVh27bZ33Zk=;
+        b=UO5mQh5CGMAhgCvyRD0Ap4M0j4qJWCWUExA/SuRLcjRK21bq1cwjtSp5jBE3S6tIMX
+         qqjXXzOUa+AFgLqhijn79VlbD1zFHKjqhsI4zn6V9dDNNEX0E/vznBe26lvA2gX9/QNY
+         9KMlrYGTpCKEyEOsYtBh3cax9BEM5Q9Ahe6hUHQG0y+fn7Mn40TXhNkl1x9RWg3HgmzV
+         kmyCq+QLGDLfvDc1jaazgmQK0MQHe/+QQJ7H/8JG2d210GBvBgBQb6DFYDuPKeyfVPai
+         2BtsOpJNn3vm7H1WDgi/kYe41D+pVqGXY/sNL4lG6joOYD131e4l9PyOaI8cxTQd8/gA
+         DgZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699968701; x=1700573501;
+        d=1e100.net; s=20230601; t=1699968725; x=1700573525;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Xq3TFIR4bve78mwQTQtnI30TuVk/gpeezuxu6f7CCOQ=;
-        b=qVCpo4gXtdv9+ecCIu9VR0oYNzbHB18bzG4F3+gDbBWipTv/5b0B64SPiY8JZIuoeK
-         6NsZDGJgnHXb5dcVglSxN9/8ZqZ7ke5GFIaXmnLFhOgkQSAOcJOQgVWxOXRJZQzjR8qU
-         oQx+X1FH78NajPMvjozQ0YlxXGRf487el6oepkQHa273N2MrZB8lUN7coJ/9ErWWulrP
-         ahk/FbQx2R3+ZJzL6QcXHaAfgOxP1UExgNOz9U9PKYKx998Sm0vluTELSuHNBdXG+9fM
-         hHiGv2h02rNE9j0GAfMnllK5bfWhzRg9yv5Ek6NX7QemcZr7a+KIlGuxUKLV90UURLuA
-         Ueuw==
-X-Gm-Message-State: AOJu0YzZCaUAAUW5qIpEAzAZaNQPgGns49qLs8qE6YCtS0cWSHpoDYHV
-        Z8SS8YRoogglwdvHcyK2UQ6t6XRxNOy/HEgPSQc=
-X-Google-Smtp-Source: AGHT+IH3bNA+igZ7XBPjf6UixfeM2kn1LQ7Fj4EIFd5iBf2RjIehC5eUluJSN8ozSaoZl4za8DrHWP+rsxPoaMpQ2B4=
-X-Received: by 2002:a05:6820:d84:b0:58a:145:fef2 with SMTP id
- ek4-20020a0568200d8400b0058a0145fef2mr2378957oob.0.1699968701394; Tue, 14 Nov
- 2023 05:31:41 -0800 (PST)
+        bh=1vUZuk20r1+GVjNsC7jKBkz3TTC8HOm2KVh27bZ33Zk=;
+        b=Ld2aYs6ghf8XebQWMbfqusvQ78al8ypQxfvkzDwI2aYC5KQCgdjJObZD9OwWPAVqsz
+         c3mTwnGAVIz+eiaQ1/LvfWaqTQT8D/+QDk/WoZqu5Nabt1PkZzRxeAE8pR4d/ogpApQW
+         +8FUqq5CdsmZEZ9HJ6GYmzEYM+Zg73QmD9fQiq7PLO1YiQgRcf1DPeD3BJ/qXo8VcIqY
+         NDRoMY2CNEyjuc2R2FxX235l+kxnIeNCyKqZq+KI6DwW99fJ7PqF4u7jNHxLP7UERS1V
+         ThshCDV8iZduwyGj421cnGZ+OmXVXP1c2HpwqmlwAhnKJwD8vcZkBHFBo6UbYuAb608r
+         wv6Q==
+X-Gm-Message-State: AOJu0YzUI6D46b0yZwjHkuPoZOhTOIb6+ydnEdMcgjfOoVt+ASSjcWOZ
+        bbFJprdKOZ8G3TjSC30sgXkJKdcwTQVAVWXumd088A==
+X-Google-Smtp-Source: AGHT+IHqZdOXQdDV9VPmnwCxEgK4aPNOxm97uGZ843OsMAtoaqKZPV9nM/Tai7R80zUmpCVAX2nvML2llytyNxML3fA=
+X-Received: by 2002:a05:6808:21a0:b0:3b2:f192:5a6b with SMTP id
+ be32-20020a05680821a000b003b2f1925a6bmr13688708oib.16.1699968724871; Tue, 14
+ Nov 2023 05:32:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
- <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com>
- <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu> <CAOuDEK1935=DmToUky8eXA5KxZFu+-phMjGB=Wv7Ox+k5fDvbQ@mail.gmail.com>
-In-Reply-To: <CAOuDEK1935=DmToUky8eXA5KxZFu+-phMjGB=Wv7Ox+k5fDvbQ@mail.gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 14 Nov 2023 14:31:30 +0100
-Message-ID: <CAJZ5v0g_hg9pnnD1DXNPDM9v7kSoiEp-SKqAXcvEntXpxa5Nxw@mail.gmail.com>
-Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
-To:     Guan-Yu Lin <guanyulin@google.com>
-Cc:     linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>,
-        gregkh@linuxfoundation.org, len.brown@intel.com, pavel@ucw.cz,
-        heikki.krogerus@linux.intel.com, mkl@pengutronix.de,
-        hadess@hadess.net, mailhol.vincent@wanadoo.fr,
-        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pumahsu@google.com,
-        raychi@google.com, albertccwang@google.com,
-        Alan Stern <stern@rowland.harvard.edu>
+References: <20231102101357.977886-1-eblanc@baylibre.com> <202311031233.sJVCIk08-lkp@intel.com>
+In-Reply-To: <202311031233.sJVCIk08-lkp@intel.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Nov 2023 14:31:53 +0100
+Message-ID: <CACRpkdZuXk5F_C1id3rRpfA=WF=+VtUtRH_BTkQd5P9pQMGFhw@mail.gmail.com>
+Subject: Re: [PATCH v8] pinctrl: tps6594: Add driver for TPS6594 pinctrl and GPIOs
+To:     kernel test robot <lkp@intel.com>
+Cc:     Esteban Blanc <eblanc@baylibre.com>, oe-kbuild-all@lists.linux.dev,
+        andy.shevchenko@gmail.com, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, jpanis@baylibre.com,
+        jneanne@baylibre.com, u-kumar1@ti.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 10:08 AM Guan-Yu Lin <guanyulin@google.com> wrote:
->
-> On Wed, Nov 8, 2023 at 11:56 PM Alan Stern <stern@rowland.harvard.edu> wrote:
-> >
-> > On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
-> > > Thanks for the questions. Let me first introduce my motivation for
-> > > proposing this feature. We can discuss the implementation details later.
-> > >
-> > > Motivation:
-> > > Currently, system PM operations always override runtime PM operations.
-> > > As runtime PM reflects the power status of devices, there is a
-> > > possibility that runtime PM states that a device is in use, but system
-> > > PM decides to suspend it. Up to now, we have assumed that a device can't
-> > > function without resources from the system, so the device should acquire
-> > > a wakelock to prevent this from happening. However, what if the device
-> >
-> > [From the fact that you mention wakelocks, I assume that you're trying
-> > to implement something for Android systems rather than Linux systems
-> > in general.]
-> >
->
-> Apologies, I should use "wakeup source" here.
->
-> > > does not need the system's support to function? Or only needs limited
-> > > resources (e.g., only limited power source or clock) to function? In this
-> > > situation, we would like to keep the device on but allow the system to
-> > > suspend. This is an example where we would like devices to follow runtime
-> > > PM rather than system PM.
-> >
-> > To put it more simply, you want a way to leave some devices in an active
-> > state while the rest of the system is suspended.  It's not clear why you
-> > have dragged runtime PM into the discussion (apart from the obvious fact
-> > that you won't want to keep a device active if it isn't active already).
-> >
-> > This sounds like a major change, not something to be done with a simple
-> > override.  You should discuss it with Rafael Wysocki and the linux-pm
-> > mailing list before trying to implement anything.
-> >
-> > > Feature Supported:
-> > > 1. Devices could control the priority of system PM and runtime PM during
-> > >    runtime.
-> >
-> > This seems like a totally unnecessary side issue.  Forget about runtime
-> > PM for the time being and concentrate instead on which devices you want
-> > to keep active.
-> >
-> > > 2. The control should be at the device level, meaning that different
-> > >    devices should control their own priorities.
-> > >
-> > > Goal of This Patch:
-> > > 1. Design a framework to support features above.
-> > > 2. Apply it into usb for demonstration.
-> >
-> > You may find that it is easier (and less work in the long run) to design
-> > the general framework and get it working than to concentrate on one
-> > particular subsystem.
-> >
-> > Alan Stern
->
-> Hi Rafael,
-> We'd like to implement a feature to allow system suspend with several
-> devices still active. Do you have any consideration on this?
+On Fri, Nov 3, 2023 at 5:44=E2=80=AFAM kernel test robot <lkp@intel.com> wr=
+ote:
 
-I will have more time to think about this when I'm back from the
-conference I'm participating in now.
+>    ld: drivers/pinctrl/pinctrl-tps6594.o: in function `pinconf_generic_dt=
+_node_to_map_group':
+> >> pinctrl-tps6594.c:(.text+0x139): undefined reference to `pinconf_gener=
+ic_dt_node_to_map'
+>    ld: drivers/pinctrl/pinctrl-tps6594.o:(.rodata+0x14): undefined refere=
+nce to `pinconf_generic_dt_free_map'
 
-In the meantime, I would recommend you to address Alan's comments.
+You Kconfig needs:
+
+depends on OF
+
+Yours,
+Linus Walleij
