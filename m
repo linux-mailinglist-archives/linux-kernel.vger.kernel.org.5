@@ -2,70 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7D37EAE42
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D79B7EAE4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:47:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232665AbjKNKoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:44:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46980 "EHLO
+        id S232281AbjKNKrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:47:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229596AbjKNKoQ (ORCPT
+        with ESMTP id S229441AbjKNKrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:44:16 -0500
-Received: from mail-oa1-x2c.google.com (mail-oa1-x2c.google.com [IPv6:2001:4860:4864:20::2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4872F186
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 02:44:13 -0800 (PST)
-Received: by mail-oa1-x2c.google.com with SMTP id 586e51a60fabf-1ef9f1640a5so3307781fac.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 02:44:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699958652; x=1700563452; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=EtGo2PbI4VhfFCzLF5CTcHmhJXxS0YiF4GH0b4RYzjc=;
-        b=UYA4KFCpaFaA5Vb6lsM8FVWQ/+HU0Oxtm8zhCbwf57Szg8Kf8UA4QAi8m/VmONY/LH
-         BJJwhQDKnQR1yuZaxSc+AYgO6nbdc0bhoiwEV7x0V7v+jDyoTYZdQmk9Fs1Lv0LZTQjY
-         fb/hfeokqDJsF9duBwa4fbIEGH4ncoF4g4L3I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699958652; x=1700563452;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EtGo2PbI4VhfFCzLF5CTcHmhJXxS0YiF4GH0b4RYzjc=;
-        b=EkkP00XmuNXWJzBAQtbowp9DfsCDGXQU5W//4bRU66VZPWeEuQH+TBnUF1faS6wu/V
-         Oe3kL/+MBpriYYYvUnpT+HWp3SMvGDgjJzM95SrdXFphASL4n4POeloptyvIN/nOK3sK
-         TUviPxqBiDJ++S+pyy1zB3KexCJux9+nOIoQP5xH5uwVrcLyTxMvBPeCV9OdkKzCe7AJ
-         PDtj7hJfeQ3zuYuGkBm9Cj5/cY4MVZJ2a9zgPOnt8U9T6Lb5M8ld7/ynB3s+BcMdkWJU
-         WcpR+ocJZH3myEEVqKL+2nbUTTq3oXUIkz2Wjq1PjEPWQvbvaNsJA4cHfe3jSC9+SzLC
-         KrbQ==
-X-Gm-Message-State: AOJu0YxMVK/O6TyAFzUJKhul1p7gYqPGtKXz7+Qz5EC6gfj4KpMQpV/H
-        gTTePB8n68My+G16AmFU+BHbEA==
-X-Google-Smtp-Source: AGHT+IHxmgUlMEBieMM61gtbnmLAhVuEAHgMl6ycbPU13IOxBVkaJ+NHHsqbyyZtI6i0GsUzVhD6Ig==
-X-Received: by 2002:a05:6870:81b:b0:1e9:b550:c05a with SMTP id fw27-20020a056870081b00b001e9b550c05amr12708195oab.53.1699958652536;
-        Tue, 14 Nov 2023 02:44:12 -0800 (PST)
-Received: from treapking.tpe.corp.google.com ([2401:fa00:1:10:b51f:fb1c:5e29:cfc8])
-        by smtp.gmail.com with ESMTPSA id m4-20020aa78a04000000b006c33311965esm926136pfa.68.2023.11.14.02.44.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 02:44:12 -0800 (PST)
-From:   Pin-yen Lin <treapking@chromium.org>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     Chen-Yu Tsai <wenst@chromium.org>, devicetree@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Pin-yen Lin <treapking@chromium.org>
-Subject: [PATCH] arm64: dts: mt8173: Add G2Touch touchscreen node
-Date:   Tue, 14 Nov 2023 18:43:23 +0800
-Message-ID: <20231114104353.1693966-1-treapking@chromium.org>
-X-Mailer: git-send-email 2.42.0.869.gea05f2083d-goog
+        Tue, 14 Nov 2023 05:47:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BB0186;
+        Tue, 14 Nov 2023 02:47:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699958825; x=1731494825;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=F6ST2CZU5lQlX8QXKrdKxRtSIOrwexjLiZAG8hQ68iU=;
+  b=DP1IfjzyurPMSYjBahoYKKChAY2fveY1xgHryjDWX++X7zqrp1AyXERu
+   MEs16AU8JW0HXqogKh7pzpkyQxdQxkIkSfKmiNpnP/VQHhTUjzJsZcT/S
+   AFobzaOZwO3PwxTVwm3uYvDQCrkvEhAFTFMAOPjcQObCF0M2BhGbFqtmZ
+   fzezU5Ixu6mGyCB2JUSk6wahfKvC5H9lXm6UlT0B0wuVPXORaFwHE3gzw
+   vAcLhgJuH4PMLmH6wLTwqbJXx+VH+xAlvGZu9Lwg+cOPlMnjy6ADzDwTy
+   LOWjUbeeGhaAoPVBcySmjLCyY73Uda4znbMKnz6K8ANTE2KvOiUkbac/0
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="457125448"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="457125448"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:47:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="12398950"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.39.179])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:47:02 -0800
+Message-ID: <fc758174-e286-48f7-bec9-64e4f22bce2f@intel.com>
+Date:   Tue, 14 Nov 2023 12:46:57 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mmc: sdhci-pci-gli: Disable LPM during initialization
+Content-Language: en-US
+To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sven van Ashbrook <svenva@google.com>,
+        Jason Lai <jasonlai.genesyslogic@gmail.com>
+Cc:     Victor Shih <victor.shih@genesyslogic.com.tw>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
+        =?UTF-8?Q?Stanis=C5=82aw_Kardach?= <skardach@google.com>,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        stable@vger.kernel.org
+References: <20231109111934.4172565-1-korneld@chromium.org>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <20231109111934.4172565-1-korneld@chromium.org>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,34 +70,70 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Lenovo Ideapad C330 Chromebook (MTK) uses G2Touch touchscreen as a
-second source component.
+On 9/11/23 13:19, Kornel Dulęba wrote:
+> To address IO performance commit f9e5b33934ce
+> ("mmc: host: Improve I/O read/write performance for GL9763E")
+> limited LPM negotiation to runtime suspend state.
+> The problem is that it only flips the switch in the runtime PM
+> resume/suspend logic.
+> 
+> Disable LPM negotiation in gl9763e_add_host.
+> This helps in two ways:
+> 1. It was found that the LPM switch stays in the same position after
+>    warm reboot. Having it set in init helps with consistency.
+> 2. Disabling LPM during the first runtime resume leaves us susceptible
+>    to the performance issue in the time window between boot and the
+>    first runtime suspend.
+> 
+> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for GL9763E")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
+> ---
+>  drivers/mmc/host/sdhci-pci-gli.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
+> index d83261e857a5..ce91d1e63a8e 100644
+> --- a/drivers/mmc/host/sdhci-pci-gli.c
+> +++ b/drivers/mmc/host/sdhci-pci-gli.c
+> @@ -220,6 +220,9 @@
+>  
+>  #define GLI_MAX_TUNING_LOOP 40
+>  
+> +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot,
+> +					      bool enable);
 
-Signed-off-by: Pin-yen Lin <treapking@chromium.org>
----
+Kernel-style is to move the whole function to prevent the need
+for forward declaration.
 
- arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi b/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi
-index bdcd35cecad9..0d6dbc36c352 100644
---- a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi
-@@ -29,6 +29,14 @@ touchscreen3: touchscreen@20 {
- 		interrupt-parent = <&pio>;
- 		interrupts = <88 IRQ_TYPE_LEVEL_LOW>;
- 	};
-+
-+	touchscreen4: touchscreen@40 {
-+		compatible = "hid-over-i2c";
-+		reg = <0x40>;
-+		hid-descr-addr = <0x0001>;
-+		interrupt-parent = <&pio>;
-+		interrupts = <88 IRQ_TYPE_LEVEL_LOW>;
-+	};
- };
- 
- &i2c4 {
--- 
-2.42.0.869.gea05f2083d-goog
+> +
+>  /* Genesys Logic chipset */
+>  static inline void gl9750_wt_on(struct sdhci_host *host)
+>  {
+> @@ -1281,6 +1284,9 @@ static int gl9763e_add_host(struct sdhci_pci_slot *slot)
+>  	if (ret)
+>  		goto cleanup;
+>  
+> +	/* Disable LPM negotiation to avoid entering L1 state. */
+> +	gl9763e_set_low_power_negotiation(slot, false);
+> +
+>  	return 0;
+>  
+>  cleanup:
+> @@ -1323,7 +1329,6 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
+>  	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+>  }
+>  
+> -#ifdef CONFIG_PM
+>  static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool enable)
+>  {
+>  	struct pci_dev *pdev = slot->chip->pdev;
+> @@ -1349,6 +1354,7 @@ static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool
+>  	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
+>  }
+>  
+> +#ifdef CONFIG_PM
+>  static int gl9763e_runtime_suspend(struct sdhci_pci_chip *chip)
+>  {
+>  	struct sdhci_pci_slot *slot = chip->slots[0];
 
