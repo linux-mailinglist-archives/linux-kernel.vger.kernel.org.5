@@ -2,53 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B33BD7EAFC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 147057EAFCC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbjKNMXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41204 "EHLO
+        id S232716AbjKNMZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:25:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230434AbjKNMXU (ORCPT
+        with ESMTP id S229861AbjKNMZA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:23:20 -0500
-X-Greylist: delayed 65 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 14 Nov 2023 04:23:16 PST
-Received: from mail.pcs.gmbh (mail.pcs.gmbh [89.27.162.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A0D8F0;
-        Tue, 14 Nov 2023 04:23:15 -0800 (PST)
-Received: from mail.csna.de (mail.csna.de [89.27.162.50])
-        by mail.pcs.gmbh with ESMTPA
-        ; Tue, 14 Nov 2023 13:23:03 +0100
-Received: from EXCHANGE2019.pcs.ditec.de (mail.pcs.com [89.27.162.5])
-        by mail.csna.de with ESMTPSA
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256)
-        ; Tue, 14 Nov 2023 13:23:02 +0100
-Received: from EXCHANGE2019.pcs.ditec.de (192.168.8.214) by
- EXCHANGE2019.pcs.ditec.de (192.168.8.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.42; Tue, 14 Nov 2023 13:23:03 +0100
-Received: from lxtpfaff.pcs.ditec.de (192.168.9.96) by
- EXCHANGE2019.pcs.ditec.de (192.168.8.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42
- via Frontend Transport; Tue, 14 Nov 2023 13:23:03 +0100
-Date:   Tue, 14 Nov 2023 13:23:03 +0100
-From:   Thomas Pfaff <tpfaff@pcs.com>
-To:     <ludovic.desroches@microchip.com>, <tudor.ambarus@microchip.com>
-CC:     <nicolas.ferre@microchip.com>, <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH RFC 2/2 stable-6.1] dmaengine: at_hdmac: complete chain after
- next message is started
-Message-ID: <4412b25a-d4e1-f455-f7bd-82262e691a2b@pcs.com>
+        Tue, 14 Nov 2023 07:25:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD3513D
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:24:57 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 195FAC433C8;
+        Tue, 14 Nov 2023 12:24:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1699964697;
+        bh=ncW1jlc+LZFs2wFuphiZQkOpBz6QX6RiQ1j55px9Kao=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=l99rIvbLUJu13ZV4yN+aLpcFrZXEL5au01dh2KnmkkAuL8rJz0BX/tmQCk6CcI85I
+         K1eORMZkp/Ga3PsGp0pR5FNMk5DFRzzLY+VQZvBD3Vc4Ovg0W9CKVihkTbZ/b6e2NY
+         zZzg8Yvo8jAh0Q5Bc+kFMBrZ6SG+4IFYbJJ9yDTg=
+Date:   Tue, 14 Nov 2023 07:24:55 -0500
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     John Moon <quic_johmoo@quicinc.com>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, kernel@quicinc.com,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Todd Kjos <tkjos@google.com>,
+        Matthias Maennich <maennich@google.com>,
+        Giuliano Procida <gprocida@google.com>,
+        kernel-team@android.com, libabigail@sourceware.org,
+        Dodji Seketeli <dodji@redhat.com>,
+        Trilok Soni <quic_tsoni@quicinc.com>,
+        Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
+        Jordan Crouse <jorcrous@amazon.com>
+Subject: Re: [PATCH v6 1/3] check-uapi: Introduce check-uapi.sh
+Message-ID: <2023111421-parish-juice-1932@gregkh>
+References: <20231027193016.27516-1-quic_johmoo@quicinc.com>
+ <20231027193016.27516-2-quic_johmoo@quicinc.com>
+ <CAK7LNATWk8psXZvsHXNwxNt9=sUi3J0qOA-P4ceOKqBuS1_VJQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-KSE-ServerInfo: EXCHANGE2019.pcs.ditec.de, 9
-X-KSE-AntiSpam-Interceptor-Info: white sender email list
-X-KSE-AttachmentFiltering-Interceptor-Info: protection disabled
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 14.11.2023 10:04:00
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK7LNATWk8psXZvsHXNwxNt9=sUi3J0qOA-P4ceOKqBuS1_VJQ@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,41 +65,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Pfaff <tpfaff@pcs.com>
+On Tue, Nov 14, 2023 at 07:10:51PM +0900, Masahiro Yamada wrote:
+> On Sat, Oct 28, 2023 at 4:31 AM John Moon <quic_johmoo@quicinc.com> wrote:
+> >
+> > While the kernel community has been good at maintaining backwards
+> > compatibility with kernel UAPIs, it would be helpful to have a tool
+> > to check if a commit introduces changes that break backwards
+> > compatibility.
+> >
+> > To that end, introduce check-uapi.sh: a simple shell script that
+> > checks for changes to UAPI headers using libabigail.
+> >
+> > libabigail is "a framework which aims at helping developers and
+> > software distributors to spot some ABI-related issues like interface
+> > incompatibility in ELF shared libraries by performing a static
+> > analysis of the ELF binaries at hand."
+> >
+> > The script uses one of libabigail's tools, "abidiff", to compile the
+> > changed header before and after the commit to detect any changes.
+> >
+> > abidiff "compares the ABI of two shared libraries in ELF format. It
+> > emits a meaningful report describing the differences between the two
+> > ABIs."
+> >
+> > The script also includes the ability to check the compatibility of
+> > all UAPI headers across commits. This allows developers to inspect
+> > the stability of the UAPIs over time.
+> >
+> > Signed-off-by: John Moon <quic_johmoo@quicinc.com>
+> > ---
+> >     - Add abidiff suppressions to filter out common things like enum
+> >       variants named .*_MAX being changed and expansion into padding
+> >       fields.
+> >     - Bump minimum abidiff version to 2.4 to accomodate new
+> >       suppressions.
+> >     - Add option (-i) to suppress ambiguous breaking changes.
+> >     - Remove printing of full file diffs when ABI breakage is found
+> >       as this was too noisy.
+> >     - Wait for all files to be checked before printing results as
+> >       printing from parallel threads was garbling output.
+> >     - Suppress all output when -q is passed.
+> >     - Avoid messing up user's git tree by using "git archive" instead
+> >       of checking out references.
+> 
+> 
+> 
+> The code looks almost good to me.
+> 
+> (I left some more comments below, but they are minor).
+> 
+> 
+> 
+> Greg,
+> Could you check the output from the tool?
 
-calling atc_chain_complete with unlocked spinlock in the middle of 
-atc_advance_work might cause a race condition regarding the next dma 
-transfer.
-If the dma_callback is handled by a task with higher priority and 
-starts a new dma transfer it might call atc_issue_pending before the 
-spinlock is locked again.
-In this case, the active list contains already a new entry that is started, 
-and atc_advance_work tries to start it again, which will fail because the 
-channel is already enabled.
+I will, give me a chance to catch up after the merge window and this
+week at Plumbers....  Should be a week or so, thanks.
 
-Signed-off-by: Thomas Pfaff <tpfaff@pcs.com>
----
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index 68c1bfbefc5c..9b2a1cf23763 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -529,15 +529,12 @@ static void atc_advance_work(struct at_dma_chan *atchan)
- 	desc = atc_first_active(atchan);
- 	/* Remove the transfer node from the active list. */
- 	list_del_init(&desc->desc_node);
--	spin_unlock_irqrestore(&atchan->lock, flags);
--	atc_chain_complete(atchan, desc);
--
- 	/* advance work */
--	spin_lock_irqsave(&atchan->lock, flags);
- 	atc_start_next(atchan);
- 	spin_unlock_irqrestore(&atchan->lock, flags);
--}
- 
-+	atc_chain_complete(atchan, desc);
-+}
- 
- /**
-  * atc_handle_error - handle errors reported by DMA controller
-
-
+greg k-h
