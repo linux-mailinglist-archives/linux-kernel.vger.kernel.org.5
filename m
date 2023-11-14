@@ -2,137 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6195A7EB490
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:15:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE1F7EB493
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:16:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233800AbjKNQPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:15:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41740 "EHLO
+        id S233854AbjKNQQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:16:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233320AbjKNQPI (ORCPT
+        with ESMTP id S233786AbjKNQQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:15:08 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9329A12C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:15:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699978504;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        Tue, 14 Nov 2023 11:16:50 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B00F129
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:16:47 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C1CA224FE;
+        Tue, 14 Nov 2023 16:16:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699978606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=qQqdDU6BkTtdEZPEXawtARsEiRxQp/2umHj4Nbx11vQ=;
-        b=ASBlRdGMuUbEwPwzYk1ZYh/JK9E8gZ1rIeY++VzV2K5cDJKhaZfPN5JzIb1c+UQeMxjNFx
-        Orx6Onk/WC8gtlqFm5cnq35VeicRIx5Z5jXvLOzkaz9S04NnSZDiJsaY9s3hlkR8w/eQ0l
-        /LzbrrwyHWaIhUTKroGByX+PLxe5osE=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-106-NqP6FwjnMfS_AH9GjWZyfg-1; Tue, 14 Nov 2023 11:15:03 -0500
-X-MC-Unique: NqP6FwjnMfS_AH9GjWZyfg-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-407f9d07b41so36866595e9.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:15:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699978502; x=1700583302;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qQqdDU6BkTtdEZPEXawtARsEiRxQp/2umHj4Nbx11vQ=;
-        b=vobfFuxssDYYl9egLNLlkIR7LgxsHawwW5BRNdpQH06M1iXYVoZqaLSbYQPes6GKf1
-         m5gzhBhyOWUoLTwPf00yH2I1tSW35Yd5NyFl9QBjtMeyX49jrp06DVyjJpOL2mL0jePC
-         QsSZCm2FEIzFzjQF/CMRpLoMmWnNRq5oiezMn1LfSNiMiusUP6PFY8xY4t3T5Ib6dsKh
-         +61FwBYXmBP70NrWqQKYkf+5cjQ1IvU06JlqYtJnuwOjZgdCCbqxQTb5OwYp3sDnwiZ/
-         1P5frZeDrUjtolG6CKvn6HL6qy2puVTlQo32JLpErU+6d1cHqfU1lY+mgRn9f3bVofD8
-         mCuA==
-X-Gm-Message-State: AOJu0Yzs7Hmgre+F7FGhtG85VzAVqq9ov6DAo74UzWBGGHhqb8YM3qM+
-        2aCJP5w3ATFG8tPWV8VDAiZETyyfkDjvX2tp464tjVk9RvHm7eW7xvZLBx3l+EiQ/uKlFUAT7kA
-        ZDDU3CWFEh9ujbkHj6UijOR/U
-X-Received: by 2002:a05:600c:1986:b0:407:8e85:89ad with SMTP id t6-20020a05600c198600b004078e8589admr8467800wmq.14.1699978501998;
-        Tue, 14 Nov 2023 08:15:01 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFjgLMBVuteRAgWkzkndIX3pveFJIEqk4P2Litcso3U6qfsh4sX6A4EQnMXE2pAdfBdnoZd2g==
-X-Received: by 2002:a05:600c:1986:b0:407:8e85:89ad with SMTP id t6-20020a05600c198600b004078e8589admr8467782wmq.14.1699978501516;
-        Tue, 14 Nov 2023 08:15:01 -0800 (PST)
-Received: from ?IPV6:2003:cb:c73e:8900:2d8:c9f0:f3fb:d4fd? (p200300cbc73e890002d8c9f0f3fbd4fd.dip0.t-ipconnect.de. [2003:cb:c73e:8900:2d8:c9f0:f3fb:d4fd])
-        by smtp.gmail.com with ESMTPSA id j21-20020a05600c1c1500b003fee567235bsm14439647wms.1.2023.11.14.08.15.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 08:15:01 -0800 (PST)
-Message-ID: <ee56f523-cd49-47f8-865f-3ce0ab0067a0@redhat.com>
-Date:   Tue, 14 Nov 2023 17:14:59 +0100
+        bh=2CMQ7LEYqv1xmTY9OVp1+RIITtbxU2QWMI/mkLF+qGI=;
+        b=kD+m9FTwhdqO0kA6I1j0CMSlFJzLHr/LHuF/ZuleKkAZTayLrNwNUlmbHx968J5pPc7dmz
+        hk3dm0iTYXJxHT8Z4ZPPB1XETL5NDJ3ILP8CQzs0CfVNE/zdFilb7p6T+/gorDsFarcBM/
+        RJI6Kg1rQ5F0dH0/uVQDk/AEohSkCQ0=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D010D139DD;
+        Tue, 14 Nov 2023 16:16:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id NCALMW2dU2X+agAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 16:16:45 +0000
+Message-ID: <462d0d33-1c3b-4899-9e45-ca72eb8e93f5@suse.com>
+Date:   Tue, 14 Nov 2023 17:16:45 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/2] Introduce a way to expose the interpreted file
- with binfmt_misc
+Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
 Content-Language: en-US
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        Kees Cook <keescook@chromium.org>, sonicadvance1@gmail.com,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, kernel-dev@igalia.com, kernel@gpiccoli.net,
-        oleg@redhat.com, yzaikin@google.com, mcgrof@kernel.org,
-        akpm@linux-foundation.org, brauner@kernel.org,
-        viro@zeniv.linux.org.uk, willy@infradead.org, dave@stgolabs.net,
-        joshua@froggi.es
-References: <20230907204256.3700336-1-gpiccoli@igalia.com>
- <e673d8d6-bfa8-be30-d1c1-fe09b5f811e3@redhat.com>
- <202310091034.4F58841@keescook>
- <8dc5069f-5642-cc5b-60e0-0ed3789c780b@igalia.com>
- <871qctwlpx.fsf@email.froward.int.ebiederm.org>
- <9f83d97e-b7a1-4142-8316-088b3854c30d@redhat.com>
- <87ttpouxgc.fsf@email.froward.int.ebiederm.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <87ttpouxgc.fsf@email.froward.int.ebiederm.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-3-jgross@suse.com>
+ <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------5Vd20OWBea8QFrOzKTMqT5ST"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -11.96
+X-Spamd-Result: default: False [-11.96 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.97)[99.87%];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         SIGNED_PGP(-2.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         MIME_UNKNOWN(0.10)[application/pgp-keys]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -140,75 +122,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.11.23 17:11, Eric W. Biederman wrote:
-> David Hildenbrand <david@redhat.com> writes:
-> 
->> On 13.11.23 19:29, Eric W. Biederman wrote:
->>> "Guilherme G. Piccoli" <gpiccoli@igalia.com> writes:
->>>
->>>> On 09/10/2023 14:37, Kees Cook wrote:
->>>>> On Fri, Oct 06, 2023 at 02:07:16PM +0200, David Hildenbrand wrote:
->>>>>> On 07.09.23 22:24, Guilherme G. Piccoli wrote:
->>>>>>> Currently the kernel provides a symlink to the executable binary, in the
->>>>>>> form of procfs file exe_file (/proc/self/exe_file for example). But what
->>>>>>> happens in interpreted scenarios (like binfmt_misc) is that such link
->>>>>>> always points to the *interpreter*. For cases of Linux binary emulators,
->>>>>>> like FEX [0] for example, it's then necessary to somehow mask that and
->>>>>>> emulate the true binary path.
->>>>>>
->>>>>> I'm absolutely no expert on that, but I'm wondering if, instead of modifying
->>>>>> exe_file and adding an interpreter file, you'd want to leave exe_file alone
->>>>>> and instead provide an easier way to obtain the interpreted file.
->>>>>>
->>>>>> Can you maybe describe why modifying exe_file is desired (about which
->>>>>> consumers are we worrying? ) and what exactly FEX does to handle that (how
->>>>>> does it mask that?).
->>>>>>
->>>>>> So a bit more background on the challenges without this change would be
->>>>>> appreciated.
->>>>>
->>>>> Yeah, it sounds like you're dealing with a process that examines
->>>>> /proc/self/exe_file for itself only to find the binfmt_misc interpreter
->>>>> when it was run via binfmt_misc?
->>>>>
->>>>> What actually breaks? Or rather, why does the process to examine
->>>>> exe_file? I'm just trying to see if there are other solutions here that
->>>>> would avoid creating an ambiguous interface...
->>>>>
->>>>
->>>> Thanks Kees and David! Did Ryan's thorough comment addressed your
->>>> questions? Do you have any take on the TODOs?
->>>>
->>>> I can maybe rebase against 6.7-rc1 and resubmit , if that makes sense!
->>>> But would be better having the TODOs addressed, I guess.
->>> Currently there is a mechanism in the kernel for changing
->>> /proc/self/exe.  Would that be reasonable to use in this case?
->>> It came from the checkpoint/restart work, but given that it is
->>> already
->>> implemented it seems like the path of least resistance to get your
->>> binfmt_misc that wants to look like binfmt_elf to use that mechanism.
->>
->> I had that in mind as well, but
->> prctl_set_mm_exe_file()->replace_mm_exe_file() fails if the executable
->> is still mmaped (due to denywrite handling); that should be the case
->> for the emulator I strongly assume.
-> 
-> Bah yes.  The sanity check that that the old executable is no longer
-> mapped does make it so that we can't trivially change the /proc/self/exe
-> using prctl(PR_SET_MM_EXE_FILE).
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------5Vd20OWBea8QFrOzKTMqT5ST
+Content-Type: multipart/mixed; boundary="------------BqjQvU06BMjsUNEorWhOrO8O";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Message-ID: <462d0d33-1c3b-4899-9e45-ca72eb8e93f5@suse.com>
+Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-3-jgross@suse.com>
+ <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+In-Reply-To: <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
 
-I was wondering if we should have a new file (yet have to come up witha 
-fitting name) that defaults to /proc/self/exe as long as that new file 
-doesn't explicitly get set via  a prctl.
+--------------BqjQvU06BMjsUNEorWhOrO8O
+Content-Type: multipart/mixed; boundary="------------vHSn6MNyjCu37e6PsqRu3WlW"
 
-So /proc/self/exe would indeed always show the emulator (executable), 
-but the new file could be adjusted to something that is being executed 
-by the emulator.
+--------------vHSn6MNyjCu37e6PsqRu3WlW
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Just a thought ... I'd rather leave /proc/self/exe alone.
+T24gMTQuMTEuMjMgMTY6MDYsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gTW9uLCBP
+Y3QgMzAsIDIwMjMgYXQgMDM6MjU6MDVQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
+Cj4+ICsjaWZkZWYgQ09ORklHX1g4Nl82NA0KPj4gKwkvKiBmZiAxNSAwMCAwMCAwMCAwMCAg
+IGNhbGwgICAqMHgwKCVyaXApICovDQo+PiArCXRhcmdldCA9ICoodm9pZCAqKikoaW5zdHIg
+KyBhLT5pbnN0cmxlbiArICooczMyICopKGluc3RyICsgMikpOw0KPj4gKyNlbHNlDQo+PiAr
+CS8qIGZmIDE1IDAwIDAwIDAwIDAwICAgY2FsbCAgICoweDAgKi8NCj4+ICsJdGFyZ2V0ID0g
+Kih2b2lkICoqKSgqKHMzMiAqKShpbnN0ciArIDIpKTsNCj4gDQo+IFllYWgsIGxldCdzIGRv
+Y3VtZW50IHRob3NlIGEgYml0IGJldHRlci4gRWl0aGVyIHdpdGggY29tbWVudHMgYWJvdmUg
+b3INCj4gYXMgUGV0ZXIgc3VnZ2VzdHM6DQo+IA0KPiAJLyogQWRkIDIgdG8gc2tpcCBvcGNv
+ZGUgYW5kIE1vZFJNIGJ5dGU6ICovDQo+IAlkaXNwMzIgPSAqKHMzMiAqKShpbnN0ciArIDIp
+Ow0KPiANCj4gCXJpcF9yZWxhX3B0ciA9ICh2b2lkICoqKShpbnN0ciArIGEtPmluc3RybGVu
+ICsgZGlzcDMyKTsNCj4gCXRhcmdldCA9ICpyaXBfcmVsYV9wdHI7DQo+IA0KPiBzbyB0aGF0
+IGl0IGlzIGNyeXN0YWwgY2xlYXIgd2hhdCB3ZSdyZSBkb2luZyBoZXJlLg0KDQpPa2F5Lg0K
+DQoNCkp1ZXJnZW4NCg0K
+--------------vHSn6MNyjCu37e6PsqRu3WlW
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Cheers,
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-David / dhildenb
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
 
+--------------vHSn6MNyjCu37e6PsqRu3WlW--
+
+--------------BqjQvU06BMjsUNEorWhOrO8O--
+
+--------------5Vd20OWBea8QFrOzKTMqT5ST
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTnW0FAwAAAAAACgkQsN6d1ii/Ey+v
+vggAnzZHfABD2nozFUV2D31bpzQPkc26WVH6QzNFc+T/yOU8Csbya7eOm4ggorkFfR7CHv6Ruq1M
++r1I8xwgMUvosiLc1xRt3zETihIv3m3DQ2qX4x6feZoIq4Ppl91PIhtUxhrlkHTmYQhguduX70cW
+bi3njjIQrV/7kP6ckZePAkM7WZq/1iPRFC9pM2IApRSJGtOIr3jSHBhgRU9RxT8D02uEszkl6gCF
+DRnHPmH4g6C2bBgGxTjUtJ52mE/iglgE0cALH4AwDtdjpHGJVB/GuGyEML84wFVHWthMQUUqNZWk
+ejerrnXEbBNVfXoSagZbbXxRGXVucFYtT6LIIdcB6Q==
+=Qg/o
+-----END PGP SIGNATURE-----
+
+--------------5Vd20OWBea8QFrOzKTMqT5ST--
