@@ -2,208 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 373C27EB4B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:24:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEDA77EB4B9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233692AbjKNQYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:24:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36480 "EHLO
+        id S233786AbjKNQYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:24:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjKNQYJ (ORCPT
+        with ESMTP id S229570AbjKNQYr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:24:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 315F810D
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:24:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699979045;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OMAt2bbB2OtDJnSmDdv+SlogJ2MSXP9BdKgitEjjES4=;
-        b=MOBhll3t70mujD+V3M6p6KdQro+7Ycw5hYiOhhdGMsMshPkfC6L9yWklMZQmJPu0Ty2gG/
-        k/6I+s2QNBHbFnEoS38oTelU9LexWA+chTe1ANEES6HFbJpLTD6Ck0lH3TWD4cr2YEYskD
-        J2zNsc8t9ymHmBqsOwYwWb3ElnC8Wnc=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-517-gqpSxrLeMUOJNZq3jqRIEQ-1; Tue, 14 Nov 2023 11:24:03 -0500
-X-MC-Unique: gqpSxrLeMUOJNZq3jqRIEQ-1
-Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-67166648d77so73771366d6.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:24:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699979043; x=1700583843;
-        h=content-transfer-encoding:in-reply-to:organization:from:references
-         :cc:to:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OMAt2bbB2OtDJnSmDdv+SlogJ2MSXP9BdKgitEjjES4=;
-        b=BLm1uO1KTWZRTEAQdqftbCsMI6qe+w0xUjxSXAg77nVkyQRkYcPPsIclOPBZEXVBFr
-         LZ2yY0qBBUvhyBtkTlidDxf8jxV1gxAauKYzQhhIb8YTojuEshr2FEK19qadeKP9n4/Q
-         WDSfhBE7/0zu6/DNa8ZSTLsqHMtQdxPfWR/9yFK4xoI/1Plx4jyedzeloesKE3Yxa6a6
-         ACxfAfxgWDwTt363mfj5rNOKhMpY38gGUtyIb5jBq6JZ5lzPrvoCCSDeazwXJClZy6Jk
-         aI8z2uTMyI7+VhF8EWbKZM78Bp/up24y6+JLsGLueT8iTUn/BVsDWSYJXDCKvcb21SkB
-         fj4Q==
-X-Gm-Message-State: AOJu0YwlLXK9GAOSNGKLrqayrDdOKV1WvGn+rFzA8K44/Ye0EfPcFRp8
-        9ubtH82KD41VanjnUCF5ESkwwiaQVFjhW6GVT0GZhKlmZiJdLYeyTVq+wozWoHm8NTNO/u703fZ
-        OMm2GG+TMpxBA5eQRupeTvBdX
-X-Received: by 2002:a05:6214:326:b0:66d:630a:79b9 with SMTP id j6-20020a056214032600b0066d630a79b9mr2571505qvu.40.1699979043482;
-        Tue, 14 Nov 2023 08:24:03 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHi30kHAx5KL8eGl/LlTeExArejiri6J6i2eS/UN/F1fLR88NH5AhNiHw7NXj2GlJ54m2/4ew==
-X-Received: by 2002:a05:6214:326:b0:66d:630a:79b9 with SMTP id j6-20020a056214032600b0066d630a79b9mr2571490qvu.40.1699979043228;
-        Tue, 14 Nov 2023 08:24:03 -0800 (PST)
-Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
-        by smtp.gmail.com with ESMTPSA id ee11-20020a0562140a4b00b0066d0ab215b5sm3054571qvb.13.2023.11.14.08.24.01
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 08:24:02 -0800 (PST)
-Message-ID: <6a1ebcef-bade-45a0-9bd9-c05f0226eb88@redhat.com>
-Date:   Tue, 14 Nov 2023 17:23:59 +0100
+        Tue, 14 Nov 2023 11:24:47 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4745F10C;
+        Tue, 14 Nov 2023 08:24:43 -0800 (PST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEGMQhD017526;
+        Tue, 14 Nov 2023 16:24:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=content-type :
+ mime-version : content-transfer-encoding : in-reply-to : references : to :
+ subject : from : cc : message-id : date; s=pp1;
+ bh=RafjzkIIR2dOWUyijObiXeUAlzKgyu3jNkBV4Sb/UTU=;
+ b=jMHQkv4u1L9ZpQU63bPNe9EqH1XdselEdgOPCm4Vzlc+MzKo/MmlmbBMgT3JjXtA6Tgu
+ Je7MXpdh8/tiB7MQs+UwZ6GHYC6qMFfwFtpljjMZh+a6psVducI0iB7DJXQbZps589T/
+ cUnN5HkqfqN/gcPhl2yK+1IcDRxu8O4UN1cLQR3eg/Ld7q+YSf2Rze96IW48aHpYJLpp
+ 92hesa3XQhVzWMc1NaW98zD8X/4o+u1T1AzUja/OkChmiMFLdrHP4aYzXKz1HhEF05HW
+ abr+JSu7OB1mpUGRI6QUFlUGiFNxCMjeC6trKxoF27M3OTzhft+kfcsdElTa6Qwc3InW rA== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uccby81x1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 16:24:42 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEGJANI023997;
+        Tue, 14 Nov 2023 16:24:41 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uakxssddr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 16:24:40 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AEGOcbl18416330
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 14 Nov 2023 16:24:38 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2E3FB20043;
+        Tue, 14 Nov 2023 16:24:38 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A40CA20040;
+        Tue, 14 Nov 2023 16:24:37 +0000 (GMT)
+Received: from t14-nrb (unknown [9.171.71.65])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Tue, 14 Nov 2023 16:24:37 +0000 (GMT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/nouveau: Prevents NULL pointer dereference in
- nouveau_uvmm_sm_prepare
-Content-Language: en-US
-To:     Yuran Pereira <yuran.pereira@hotmail.com>, airlied@gmail.com
-Cc:     kherbst@redhat.com, lyude@redhat.com, daniel@ffwll.ch,
-        sumit.semwal@linaro.org, christian.koenig@amd.com,
-        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <DB3PR10MB6835FA6E15F3C830FC793D2EE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-From:   Danilo Krummrich <dakr@redhat.com>
-Organization: RedHat
-In-Reply-To: <DB3PR10MB6835FA6E15F3C830FC793D2EE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20231109123624.37314-1-imbrenda@linux.ibm.com>
+References: <20231109123624.37314-1-imbrenda@linux.ibm.com>
+To:     Claudio Imbrenda <imbrenda@linux.ibm.com>, kvm@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] KVM: s390/mm: Properly reset no-dat
+From:   Nico Boehr <nrb@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-s390@vger.kernel.org,
+        frankja@linux.ibm.com, nsg@linux.ibm.com, borntraeger@de.ibm.com,
+        hca@linux.ibm.com, gerald.schaefer@linux.ibm.com,
+        gor@linux.ibm.com, svens@linux.ibm.com, agordeev@linux.ibm.com
+Message-ID: <169997907623.92635.8143439570561321958@t14-nrb>
+User-Agent: alot/0.8.1
+Date:   Tue, 14 Nov 2023 17:24:36 +0100
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: JX2NxPfArrkfeQA_1EnMKK7Ov4ehileT
+X-Proofpoint-GUID: JX2NxPfArrkfeQA_1EnMKK7Ov4ehileT
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_16,2023-11-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ priorityscore=1501 mlxscore=0 mlxlogscore=628 suspectscore=0 adultscore=0
+ bulkscore=0 phishscore=0 clxscore=1015 spamscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140125
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Yuran,
+Quoting Claudio Imbrenda (2023-11-09 13:36:24)
+> When the CMMA state needs to be reset, the no-dat bit also needs to be
+> reset. Failure to do so could cause issues in the guest, since the
+> guest expects the bit to be cleared after a reset.
+>=20
+> Signed-off-by: Claudio Imbrenda <imbrenda@linux.ibm.com>
 
-On 10/26/23 19:03, Yuran Pereira wrote:
-> There are instances where the "args" argument passed to
-> nouveau_uvmm_sm_prepare() is NULL.
-> 
-> I.e. when nouveau_uvmm_sm_prepare() is called from
-> nouveau_uvmm_sm_unmap_prepare()
-> 
-> ```
-> static int
-> nouveau_uvmm_sm_unmap_prepare(struct nouveau_uvmm *uvmm,
-> ...
-> {
->      return nouveau_uvmm_sm_prepare(uvmm, new, ops, NULL);
-> }
-> ```
-> 
-> The problem is that op_map_prepare() which nouveau_uvmm_sm_prepare
-> calls, dereferences this value, which can lead to a NULL pointer
-> dereference.
+Please Cc stable and add my:
 
-op_map_prepare() can't be called with `args` being NULL, since when called
-through nouveau_uvmm_sm_unmap_prepare() we can't hit the DRM_GPUVA_OP_MAP
-case at all.
-
-Unmapping something never leads to a new mapping being created, it can lead
-to remaps though.
-
-> 
-> ```
-> static int
-> op_map_prepare(struct nouveau_uvmm *uvmm,
-> ...
-> {
->      ...
->      uvma->region = args->region; <-- Dereferencing of possibly NULL pointer
->      uvma->kind = args->kind;     <--
->      ...
-> }
-> ```
-> 
-> ```
-> static int
-> nouveau_uvmm_sm_prepare(struct nouveau_uvmm *uvmm,
-> ...
->              struct uvmm_map_args *args)
-> {
->      struct drm_gpuva_op *op;
->      u64 vmm_get_start = args ? args->addr : 0;
->      u64 vmm_get_end = args ? args->addr + args->range : 0;
->      int ret;
-> 
->      drm_gpuva_for_each_op(op, ops) {
->          switch (op->op) {
->          case DRM_GPUVA_OP_MAP: {
->              u64 vmm_get_range = vmm_get_end - vmm_get_start;
-> 
->              ret = op_map_prepare(uvmm, &new->map, &op->map, args); <---
->              if (ret)
->                  goto unwind;
-> 
->              if (args && vmm_get_range) {
->                  ret = nouveau_uvmm_vmm_get(uvmm, vmm_get_start,
->                                 vmm_get_range);
->                  if (ret) {
->                      op_map_prepare_unwind(new->map);
->                      goto unwind;
->                  }
->              }
->      ...
-> ```
-> 
-> Since the switch "case DRM_GPUVA_OP_MAP", also NULL checks "args"
-
-This check is not required for the reason given above. If you like, you
-can change this patch up to remove the args check and add a comment like:
-
-/* args can't be NULL when called for a map operation. */
-
-> after the call to op_map_prepare(), my guess is that we should
-> probably relocate this check to a point before op_map_prepare()
-> is called.
-
-Yeah, I see how this unnecessary check made you think so.
-
-- Danilo
-
-> 
-> This patch ensures that the value of args is checked before
-> calling op_map_prepare()
-> 
-> Addresses-Coverity-ID: 1544574 ("Dereference after null check")
-> Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
-> ---
->   drivers/gpu/drm/nouveau/nouveau_uvmm.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/nouveau/nouveau_uvmm.c b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> index aae780e4a4aa..6baa481eb2c8 100644
-> --- a/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> +++ b/drivers/gpu/drm/nouveau/nouveau_uvmm.c
-> @@ -620,11 +620,14 @@ nouveau_uvmm_sm_prepare(struct nouveau_uvmm *uvmm,
->   		case DRM_GPUVA_OP_MAP: {
->   			u64 vmm_get_range = vmm_get_end - vmm_get_start;
->   
-> +			if (!args)
-> +				goto unwind;
-> +
->   			ret = op_map_prepare(uvmm, &new->map, &op->map, args);
->   			if (ret)
->   				goto unwind;
->   
-> -			if (args && vmm_get_range) {
-> +			if (vmm_get_range) {
->   				ret = nouveau_uvmm_vmm_get(uvmm, vmm_get_start,
->   							   vmm_get_range);
->   				if (ret) {
-
+Reviewed-by: Nico Boehr <nrb@linux.ibm.com>
