@@ -2,73 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704C57EB2BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:47:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB157EB2C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233477AbjKNOrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:47:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
+        id S233492AbjKNOwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbjKNOrg (ORCPT
+        with ESMTP id S233320AbjKNOwJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:47:36 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D94CA;
-        Tue, 14 Nov 2023 06:47:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699973254; x=1731509254;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GiTo2oNKnQgB8DobzT7dE9XMXi3HGjrub1UPBLDMX/g=;
-  b=c242ZyIul8sBVmnb+sLuaowENsF72Wbez9QyClprVcz/Nbp/ozrHZudG
-   34/SVyopQ/9PtrYsqoKpQxFrhC0u0GVJc6arJ5ZHBqyLOo53K9GtdD4kq
-   UQBImwcnBfUvcQ2m2rZ93lA3vdMdU3z7kaxLJg4hy2jv3yf8CS6AFYOSt
-   U1nZ/rGJ98AMoDjzcySAICq/qtnXSogi/8DNB4Wx2S/323z0HiXbCJfYD
-   nySzEcGrkUIYtfOZZ65dAkJt57jZHaPX4IEFKoRz4iZ36Uwd1gyG3h0j9
-   lec/zAeV9cgZlRA1Wwn6GR2ehAPIv5Qny0KPOdvTFF4FCSSeDire5i4xL
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="12210151"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="12210151"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:47:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="741110362"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="741110362"
-Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
-  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:47:29 -0800
-Received: from kekkonen.localdomain (localhost [127.0.0.1])
-        by kekkonen.fi.intel.com (Postfix) with SMTP id E4C3C11FB5E;
-        Tue, 14 Nov 2023 16:47:25 +0200 (EET)
-Date:   Tue, 14 Nov 2023 14:47:25 +0000
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Fix %pfwf when current node
- refcount == 0
-Message-ID: <ZVOIfXV8al5hiMQD@kekkonen.localdomain>
-References: <20231114143558.356259-1-herve.codina@bootlin.com>
+        Tue, 14 Nov 2023 09:52:09 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06FEF10D;
+        Tue, 14 Nov 2023 06:52:05 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 9B129240017;
+        Tue, 14 Nov 2023 14:52:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699973524;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=+xLOKyAAZIVKLOKCb0mKpR7Go2KaA91YZcat0nslHDA=;
+        b=WVFrCZzSVomLddWRoyTAJVN2lheLIAPj3akGLiY74f7YjiS1+ffTxbM8+vg/OMO4m6ykC7
+        UtFGvotFxwzjlBpEzo/cvARR+m0zfHNq+X1SlCkP/Pid6aIPDQQohJYXsaRoKfmF0uX0Ml
+        pnmnrxwchg4YNAGoCxmCJJS8ude3MeNK77brvj28DI375A14s3dVPdDkwFdmAYYzZZt+96
+        B/2JmWREq2Vkg67+SWpzNC+F1fOUPSghs1QvaE51SA+S/23l0Li+ZhBx2R8UEhKmhSxqnQ
+        J23A9lKqx2S4I7G6UnG8NYGX8d+tEgRgjeDGMi404SIKNpliz34SRBolqS1s0g==
+From:   Kory Maincent <kory.maincent@bootlin.com>
+Subject: [PATCH v5 0/6] Fix support of dw-edma HDMA NATIVE IP in remote
+ setup
+Date:   Tue, 14 Nov 2023 15:51:53 +0100
+Message-Id: <20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114143558.356259-1-herve.codina@bootlin.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIAIqJU2UC/43NSw7CIBCA4as0rMVAoS9X3sOYBuhgJ7FgoBJN0
+ 7tLu3PX5T+T+WYhEQJCJJdiIQESRvQuR3UqiBmVewDFITcpWSk445xqSS2o+R2gH4dJ9ZNC90Q
+ HVNemamwLQlcDyeevABY/O3275x4xzj58909JbNMDaBKU0VICMNM1nantVXs/59XZ+IlsbJJHK
+ ZkpKQbJG90JLtp/al3XH+ilrpUNAQAA
+To:     Manivannan Sadhasivam <mani@kernel.org>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Cai Huoqing <cai.huoqing@linux.dev>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Herve Codina <herve.codina@bootlin.com>,
+        Kory Maincent <kory.maincent@bootlin.com>,
+        Manivannan Sadhasivam <mani@kernel.org>
+X-Mailer: b4 0.12.4
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,88 +62,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Herve,
+This patch series fix the support of dw-edma HDMA NATIVE IP.
+I can only test it in remote HDMA IP setup with single dma transfer, but
+with these fixes it works properly.
 
-On Tue, Nov 14, 2023 at 03:35:58PM +0100, Herve Codina wrote:
-> A refcount issue can appeared in __fwnode_link_del() due to the
-> pr_debug() call:
->   WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0xe5/0x110
->   Call Trace:
->   <TASK>
->   ...
->   of_node_get+0x1e/0x30
->   of_fwnode_get+0x28/0x40
->   fwnode_full_name_string+0x34/0x90
->   fwnode_string+0xdb/0x140
->   ...
->   vsnprintf+0x17b/0x630
->   ...
->   __fwnode_link_del+0x25/0xa0
->   fwnode_links_purge+0x39/0xb0
->   of_node_release+0xd9/0x180
->   ...
-> 
-> Indeed, an fwnode (of_node) is being destroyed and so, of_node_release()
-> is called because the of_node refcount reached 0.
-> From of_node_release() several function calls are done and lead to
-> a pr_debug() calls with %pfwf to print the fwnode full name.
-> The issue is not present if we change %pfwf to %pfwP.
-> 
-> To print the full name, %pfwf iterates over the current node and its
-> parents and obtain/drop a reference to all nodes involved.
-> 
-> In order to allow to print the full name (%pfwf) of a node while it is
-> being destroyed, do not obtain/drop a reference to this current node.
-> 
-> Fixes: a92eb7621b9f ("lib/vsprintf: Make use of fwnode API to obtain node names and separators")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
-> ---
-> Changes v1 -> v2
->   - Avoid handling current node out of the loop. Instead obtain/drop references
->     in the loop based on the depth value.
->   - Remove some of the backtrace lines in the commit log.
-> 
->  lib/vsprintf.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
-> 
-> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
-> index afb88b24fa74..633f5481ac17 100644
-> --- a/lib/vsprintf.c
-> +++ b/lib/vsprintf.c
-> @@ -2110,15 +2110,20 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
->  
->  	/* Loop starting from the root node to the current node. */
->  	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
-> -		struct fwnode_handle *__fwnode =
-> -			fwnode_get_nth_parent(fwnode, depth);
-> +		/*
-> +		 * Only get a reference for other nodes (ie parents node).
+Few fixes has also been added for eDMA version. Similarly to HDMA I have
+tested only eDMA in remote setup.
 
-"i.e."
+Changes in v2:
+- Update comments and fix typos.
+- Removed patches that tackle hypothetical bug and then were not pertinent.
+- Add the similar HDMA race condition in remote setup fix to eDMA IP driver.
 
-With that,
+Changes in v3:
+- Fix comment style.
+- Split a patch in two to differ bug fix and simple harmless typo.
 
-Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+Changes in v4:
+- Update patch git commit message.
+- Link to v3: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v3-0-24ee0c979c6f@bootlin.com
 
-> +		 * fwnode refcount may be 0 here.
-> +		 */
-> +		struct fwnode_handle *__fwnode = depth ?
-> +			fwnode_get_nth_parent(fwnode, depth) : fwnode;
->  
->  		buf = string(buf, end, fwnode_get_name_prefix(__fwnode),
->  			     default_str_spec);
->  		buf = string(buf, end, fwnode_get_name(__fwnode),
->  			     default_str_spec);
->  
-> -		fwnode_handle_put(__fwnode);
-> +		if (depth)
-> +			fwnode_handle_put(__fwnode);
->  	}
->  
->  	return buf;
+Changes in v5:
+- No change
+- Rebase to mainline 6.7-rc1
+- Link to v4: https://lore.kernel.org/r/20231011-b4-feature_hdma_mainline-v4-0-43d417b93138@bootlin.com
 
+Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
+---
+Kory Maincent (6):
+      dmaengine: dw-edma: Fix the ch_count hdma callback
+      dmaengine: dw-edma: Fix wrong interrupt bit set
+      dmaengine: dw-edma: Typo fix
+      dmaengine: dw-edma: Add HDMA remote interrupt configuration
+      dmaengine: dw-edma: HDMA: Add sync read before starting the DMA transfer in remote setup
+      dmaengine: dw-edma: eDMA: Add sync read before starting the DMA transfer in remote setup
+
+ drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++
+ drivers/dma/dw-edma/dw-hdma-v0-core.c | 39 +++++++++++++++++++++++------------
+ drivers/dma/dw-edma/dw-hdma-v0-regs.h |  2 +-
+ 3 files changed, 44 insertions(+), 14 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231011-b4-feature_hdma_mainline-b6c57f8e3b5d
+
+Best regards,
 -- 
-Regards,
+Köry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
 
-Sakari Ailus
