@@ -2,216 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E0FC7EB6AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 100B37EB6B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:01:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229754AbjKNTAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:00:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53986 "EHLO
+        id S230116AbjKNTBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:01:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNTAL (ORCPT
+        with ESMTP id S229456AbjKNTBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:00:11 -0500
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30888F4;
-        Tue, 14 Nov 2023 11:00:07 -0800 (PST)
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEIxYNV009640;
-        Tue, 14 Nov 2023 18:59:56 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=corp-2023-03-30;
- bh=AcizvDlICP1DLXT5By7JB41hlvyHLoFpFMkP0Zvup9M=;
- b=IZMrglzZZk19efEtOCLSXOYtsB8KASqYBWCso9EcnDxr4NKLU9kOdA8WrDWHcJjs+BRA
- IbS56/bYUCGzEL8k9Ykav4WALTKdYiDtwYgnRmzvrLpT4sgfLGfo24bxAJT4pewAvl3V
- Ca/SaI6EwUa0lrAvC9VPYmIya4nwjpgnhF4DIMSg3IaCKByQ1I0tz26tEG7p3KnwMu/6
- A9kFCiPjucTGEuL5DhrFp1IGq8AApXQKhPI/oIVxLJBAbDnXkW7o8hdh3zZeVhStozpg
- 6h5XGGbazDqow4uvEapnBxs6NZ2tZms9ZYuhCCamR2CScw1o0YsdS15/gMoiw+b4zn3m rQ== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2r06dpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Nov 2023 18:59:56 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEImeT6013085;
-        Tue, 14 Nov 2023 18:59:56 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2040.outbound.protection.outlook.com [104.47.51.40])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxpyrkke-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Nov 2023 18:59:55 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OWtH8bWeMs0Oarc7hvLe+En3dRAnYVphN/e1/7Hboer5yDvzJr+q5KeDSAjTPs3x0UjYjA45rJHuw6Y021qEJ25LswBM3Xy1+vmtYe5cf9Tyz3OsKPuT55NnCOY617VBtNdonMVBOjkDBZlJJBj+yzWedbZYwaiDjt8W/2KXXERK+HzUVv5BogDl6qgvLapE7/6OIExgy07eyvlGdorXmSHC7FVD7/M5H/Tsm5zGCwddsSxW3InxsXMAPQG9Z/38/g4MelCcQz9bmPxB+Y3EMfPYj83dzC+sKKZ6g5D1uRYonCNi8T89mSC6TFdV8UHQ6MzadyLcs1c1OTGgJYS1AQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AcizvDlICP1DLXT5By7JB41hlvyHLoFpFMkP0Zvup9M=;
- b=Xc5AluOKpwNFcwa7yS0sUU8Vxm6z+RbgqxoqCqq+FJU86+JLccNrpwVj1RDsAd/YBquVaSAvGtdpxcQXU0NFBTh9iWgwEwtQpUpSGxO7AHzO82dXYzsY2087lmKgNmmudu5/sdBGx54LnaCF+LAs7CFOxuOpo0ooaL6QFvBF8Lagc2LICn1OyqlDk21/fgkt23R34JIgsJBRexV+I1Ccrreu/stBXHDYpw+xbsEnNHKtIe3PzfNH54rwXQRqW7YaPnNEkL80rJyJ/9Z3K+jGXS58BYXCpTIs+31/ohlwyWDB0lHSCjSiMNOXm7fhHJ1CXJdXk+BinX0aRm0z5Oa6pg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 14 Nov 2023 14:01:20 -0500
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13AD1F7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:01:17 -0800 (PST)
+Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-41cc7b67419so37501351cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:01:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AcizvDlICP1DLXT5By7JB41hlvyHLoFpFMkP0Zvup9M=;
- b=HZtUeQRJPLo10INQn3xoOgh2SGBg8SWAHXLxICb6z3gLhl7dNRzzKPWLY85YJxm7AcOYLzuyWR3Tv8+g0694fHnvmw8PSTP/ecA44STET3HoMZKOvxNXeuucxIUcmPmDrS/rT3NFezGx+ZvYbiu+LIej5w3IdXkpKokDH4iMt0c=
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com (2603:10b6:a03:2d7::19)
- by CH2PR10MB4167.namprd10.prod.outlook.com (2603:10b6:610:ac::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Tue, 14 Nov
- 2023 18:59:53 +0000
-Received: from SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::baa:8a05:4673:738]) by SJ0PR10MB4752.namprd10.prod.outlook.com
- ([fe80::baa:8a05:4673:738%4]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
- 18:59:53 +0000
-From:   Junxiao Bi <junxiao.bi@oracle.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-raid@vger.kernel.org, tj@kernel.org,
-        gregkh@linuxfoundation.org, junxiao.bi@oracle.com
-Subject: [PATCH] kernfs: support kernfs notify in memory recliam context
-Date:   Tue, 14 Nov 2023 10:59:47 -0800
-Message-Id: <20231114185947.42829-1-junxiao.bi@oracle.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-145)
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: LO4P265CA0170.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:312::9) To SJ0PR10MB4752.namprd10.prod.outlook.com
- (2603:10b6:a03:2d7::19)
+        d=marek.ca; s=google; t=1699988476; x=1700593276; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ln8BfCEw41joQaCUa9COZIwEZXTxudxf07hjQ7uch88=;
+        b=U9wNyt0yGDgl0KcgehWtnzDbSJ4lIxs5yYUzd8G5grGasiypLykNl5ku2MVQIpltgD
+         bmXsQ3cAf5EjTgGvo9eulV/v5eAWz7TE3nUQJo0kMLVKvGhNNrVf695kQgaF19aw2Dr/
+         tdq39/lPbwifXB1Jgp7nRnumbQfOi9hj7WlfuhKZshRDB2uf19RdJHkoEyhkGZs2JxtL
+         pffVFrHu+fRf5w4S63tpZ+wpmr+W7TcVAxPR/inhVnUI6WCOIDNjqxqPlKCsFvT0AyuY
+         QkBq3B29jfw1FniYT/PkkE3n39x/XUU1GxNiDAaZjJFMszVOj87w35EEN+sLqNeUxRd+
+         JmEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699988476; x=1700593276;
+        h=content-transfer-encoding:content-language:in-reply-to:mime-version
+         :user-agent:date:message-id:from:references:cc:to:subject
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ln8BfCEw41joQaCUa9COZIwEZXTxudxf07hjQ7uch88=;
+        b=HkWALzAn0PlifBscaxn+oxZDM6K2oYTOcnOg9OQZfhowDuNL+JOK9b9UT7yYoiKBKQ
+         Q2/7rhNJFxIm3aynGbAxZ2X8/RxnakaAxgIJIZ6XTeS67e40MQ+cIEeAG5AuXgRBuno8
+         yuz12G8PbcMQ3PqJeGGiZsKVAiGoWBQYIBJmBy9390RDryF1v0otgXrdVvXAUHltbQHP
+         uA6X3+cpS/wogXqGGBXWb2cuPwFQZEXrZwdcey247pNZxjuEZvvM6cW9KodIb6W/iWlu
+         n+8/07Qk4DX5CHYLrzQftEyuId2zlBzc1Fr35a1WtxHMXoQgRf3nZdTbTsE2MQspe1xR
+         24FQ==
+X-Gm-Message-State: AOJu0Ywhq860ZHSC1n/Wc6QL2fshLGJNfMiNEkjoS/+kKTZzaKjBJTP9
+        f+GTBOwp5XHPPh6eskj1si/xqRoCx2F8NBzvAZA=
+X-Google-Smtp-Source: AGHT+IEZY0mszhjE/XG+0ap4RZgrAiwX+iNlMgnQL+4jhxs+Ugv/XtWsq8FnNFrQ9qJKcauRm5C8IQ==
+X-Received: by 2002:ac8:5a93:0:b0:421:b37c:fdd5 with SMTP id c19-20020ac85a93000000b00421b37cfdd5mr3468998qtc.53.1699988475970;
+        Tue, 14 Nov 2023 11:01:15 -0800 (PST)
+Received: from [192.168.0.189] (modemcable125.110-19-135.mc.videotron.ca. [135.19.110.125])
+        by smtp.gmail.com with ESMTPSA id o24-20020ac85558000000b004198ae7f841sm2944733qtr.90.2023.11.14.11.01.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 11:01:15 -0800 (PST)
+Subject: Re: [PATCH 4/4] drm/msm/dsi: fix DSC for the bonded DSI case
+To:     Marijn Suijten <marijn.suijten@somainline.org>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231114174218.19765-1-jonathan@marek.ca>
+ <20231114174218.19765-4-jonathan@marek.ca>
+ <eanx45rnasj7lu3r2tfhtg4qkqkcidd6zctsz6ci6jlklu4fgi@3nf73w2ka4li>
+From:   Jonathan Marek <jonathan@marek.ca>
+Message-ID: <a9712ef1-5f60-b127-a276-9e437d95914f@marek.ca>
+Date:   Tue, 14 Nov 2023 14:00:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR10MB4752:EE_|CH2PR10MB4167:EE_
-X-MS-Office365-Filtering-Correlation-Id: 0ec9bf53-086c-4c7e-5888-08dbe543e279
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I1pv8CDiblT+NJHrMZuN6UDbuH6HxQ7vXV/bvkmiMlfo23BFziT7UiDH4paalT2UCKQHKCFSwPX94euspgaca6J2Avhf70BqeMao+xX9BfSOBkXop7C1oqHcsqh3xf2o6GeANCGbDf2nGVkR8MXRosfFavRXn117/freHXNh8kfOBTddFmA51pEYt5YvG1gpoSZbo8pmJ20Bo94vO0oIqapKcL6E9KZ/PCw/IWwGoEXgoI3IntfE6Sem1Gj3/8I5yZY7sB0lVtAY9VnqguJ4SARC6bix5yJD0BvF4q7zXgbNTxU9Q/F/36SR7os8VFnff+L5Gfqkwa30lGgT/ndeAW9k7/prWnp0gYhBySIWb75g9ei40slX5qnlf//p0OdObPJajGBAgtTHmM5p9y785nyCgm5Z5O57+FmCkIoKofIfluotvABwzOz0B9Vzmwxc4MYFtHVolNgl0V8I+ZHLS+S4feRBr89OV/EbZesElM34xSF9BLzR00pZdXpioRXw3K+kaNqRKB32XlSkQLrl4DjyuZ6dzd26njsZOduoc1M=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR10MB4752.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(366004)(376002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(6666004)(6506007)(83380400001)(38100700002)(26005)(107886003)(1076003)(6512007)(41300700001)(2906002)(5660300002)(8936002)(4326008)(86362001)(8676002)(44832011)(36756003)(66946007)(66556008)(66476007)(6916009)(316002)(2616005)(966005)(6486002)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?2gDItVMroAztsIQAD6b+QxEOrXqfP7oaAr/doYWdzGF62683gNaklND1FPDu?=
- =?us-ascii?Q?Pzv/rcoyQvrsbxL477h/Yuf0mToRjAFib+imYKqR406TaUpMHQyTJEFdX/9h?=
- =?us-ascii?Q?BRCWPtUOHAgGdkB2J5O80X6HNT5kOTklBUPKBc5SQT9OsUZgloPw0xyOM0gH?=
- =?us-ascii?Q?MEM7b7nlyBxk8EjmCdwpkGCB+IH1fH2a6yDt1CGJc+QIn+14Xf2EzmjmFNcR?=
- =?us-ascii?Q?yyVL4UWkgR0LQ+MKaBVJ2IDc6a4RC3Y04HiuyAjZrnCNIknAFFlNnQcbZHfY?=
- =?us-ascii?Q?3vmzVtLomiMO9k37HFd0d7hwYDljRQGvSjwJugLyUoa7dirFMTrOsEkdGAFm?=
- =?us-ascii?Q?StLDzfpmFxy0/5o2zC+ONetG5qtd3VH6YXpdQIQYgfzlDlzM3wU2c7VNbWq5?=
- =?us-ascii?Q?jXdnPDdsJgjdlNfjr23BmRaYQqNb85Xi1tBtcCj2UUlmfqT+xkXDKb4A3ELc?=
- =?us-ascii?Q?H/H8KgWS0k4gk0JTsgfnny/ShYoxHgtRp/srVo344HZaTeBRw9uG9npQN4Ed?=
- =?us-ascii?Q?8WZBNqBwvTmx1L2RLfg7aA7gHJa5K6JPkRCgyoc2s/L+JG6Nd31TotXtTChz?=
- =?us-ascii?Q?CT1MxnxRSlBW3O45446bw+0WCxhyGb3KllhNpmGZkmpc+/pTVurDFeun45NJ?=
- =?us-ascii?Q?3WXuchd2zBkUFtFjQlYEQu5FFRa9B5dkr438BYeVDvxKxSSFTrmD4ovIlnbz?=
- =?us-ascii?Q?fkIiZ3rbv55V7l2VHbp4mQZkIzBjQFZ3M20UBl00hhe6ADzetqipH+d0L0dW?=
- =?us-ascii?Q?KW/OxLNIMYjWMeoZCBmLeTrXVl8QzaafYiZErjF86XpntcYGuUFM3eGZrnWc?=
- =?us-ascii?Q?vJShQTTdmxsOWb5LA+cVuVwebqHAPcGv/vyl/WKi9B4xLbMlJmDIT5zotUmk?=
- =?us-ascii?Q?p9HBnK0W2uQjMgeRgslPAGvhXIMdhIQsSpZZ6IcELskywnG+3al4o1v9ggRs?=
- =?us-ascii?Q?MK8U1f9XgO12w/YLr1dHXc1cHxmIbwp66IzG14QHGQSMqaGW7KsnyzswRhrS?=
- =?us-ascii?Q?oTmCe2HbRYjR/U/2CSFM48dWjEC2hj1Qi8y+NtyuQCalnRlwO2OOjiVkkwks?=
- =?us-ascii?Q?p5gOAnwU7SKNCiA7kUrESlnyiUZckkw/5Dxn+Dm76kco2KqMceGAb31UnQQC?=
- =?us-ascii?Q?fQHQsGL9NQVmS65zTUCliNe9sr9DqjPPva32tmL5KvsKRkYheVyVdaBBzaTm?=
- =?us-ascii?Q?+ZPv2j+5jmd6aVzZ7EwjhlDL4TusKKbfNQeytm6cURTmYTuaKa8i0uVhWFyH?=
- =?us-ascii?Q?4J03DynqYogQZX+XFhxVLvTxugcblIuSTuRCqe3O4lYBpB404ijsKr0AJ4BA?=
- =?us-ascii?Q?aTkAIlI6/iD/xTQsy2Zwhpv2zrMhaVcgAv/3Di+KJuwxSiFfDJtTpumaThYk?=
- =?us-ascii?Q?ZctyufqD4LeUussE0eL0Oe8MWP1uka5FNxMlCxNec5wwAp+LDFycuj5biNPN?=
- =?us-ascii?Q?nObauIy/W+26VeUSRoSf7Y9OuqTCmdCKlDfpnjAyFzV5aMtsee1o1jyIHM8m?=
- =?us-ascii?Q?UKy/zdxl/x3M07c6fIhu4zBOONXNdDyG4+zGJABjwoTBOnLbIc4Rz/iq2Jkc?=
- =?us-ascii?Q?ATM+slJYHkD7NFjc3/ffZDWuAkeVT7cGvpzg8cdj?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: LD4+ejr6Y1rBAOV1dxRK0lCU/SGN3IsvVOd9lFCZ+kLZ6ge9DxLudxe7b6YLIvct0A8BTuTe2rOHrb6oHCWObDZsSvq/xHtdhaeSWW0YTYJF26SSzEo8rwI4DzJE7K671olyzKxip7zVfKmeJee0Zv+03IT18h2NLLLoSWk+pMSWte6A+0rWNT0NGchOWWiYUkenIdyt9EwxgwENUPZz14MtsU/BxIT+wv0InaHgz7U8mX+yRoy5JRd5Ry958A6ddPx/yFQxIleZ7W68xxAia5ge2Girs02HWiFK9EoCGzlIGxL76Q3ZqLqydX2xVWZTIrkg26RjXAqKGim5bGepSp2eK0zx2oL7XRYjhxzySp+x+1i7oBvZH4riV21Fcku8FJhx08p6sj48QryGJ/HxjYoFXGjAtGWXA1+pYFL2Qv3w9xpf2MFaexcY3znMqerAdrK2rgKXm7cBqxlve7TkT+Yq6j4D4eFJukepp6vZrBZ0r3AtPx/2Z0wbFk2sLDt3p2VdrEC4CsI3L0Q6QwYl6aIZnI/eDxgrdCaq2fe/95FPBXhvb3Uxq8FqWbSD+lfMTiSTU4oijJ5sYlNKUaN6mpHhSGR8usYGuThrRqBSORgS3K7BXw8cVmBpC/torjoncmf2SKMD6Mgu6AIrZ0uB0sFiSKCSWxAa6qPFd7nW1pf0U6gcpEBIYK95d4dg/6HHZretqggLTdeVMivfhFNGAlVMHzZbq/N/6lyYqTwDwDoHsFaPY4vEzdrjadryUciN73QtQQUMAOugU9ORfWjv2YTjHHcFPyzves2jVaM6z6nKcRw0rG37kEBFZJvURNch7LBHyBexolOy3j1IHnmcsRR4yLRjT865C/W5lGBm5CY=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0ec9bf53-086c-4c7e-5888-08dbe543e279
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR10MB4752.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 18:59:53.1173
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ujByPkODo2DFdn+xdx1LQ4aXedneyuwAqHhtjkSOmZqAq0zSCiyktF/hUArNxxQ41Yluwhp8sZu5g0+Nc1T4Cg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4167
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-14_19,2023-11-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 suspectscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311140144
-X-Proofpoint-ORIG-GUID: hs7nn7WLL7TRUF5QXiiV-zc0tKbhM-_P
-X-Proofpoint-GUID: hs7nn7WLL7TRUF5QXiiV-zc0tKbhM-_P
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <eanx45rnasj7lu3r2tfhtg4qkqkcidd6zctsz6ci6jlklu4fgi@3nf73w2ka4li>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kernfs notify is used in write path of md (md_write_start) to wake up
-userspace daemon, like "mdmon" for updating md superblock of imsm raid,
-md write will wait for that update done before issuing the write, if this
-write is used for memory reclaim, the system may hung due to kernel notify
-can't be executed, that's because kernel notify is executed by "system_wq"
-which doesn't have a rescuer thread and kworker thread may not be created
-due to memory pressure, then userspace daemon can't be woke up and md write
-will hung.
+On 11/14/23 1:28 PM, Marijn Suijten wrote:
+> On what hardware have you been testing this?  Dmitry and I have a stack of
+> patches to resolve support for Active CTL programming on newer hardware (DPU
+> 5.0+ IIRC), where a single CTL is responsible for programming multiple INTF and
+> DSC blocks as used in bonded DSI.
+> 
 
-According Tejun, this can't be fixed by add RECLAIM to "system_wq" because
-that workqueue is shared and someone else might occupy that rescuer thread,
-to fix this from md side, have to replace kernfs notify with other way to
-communite with userspace daemon, that will break userspace interface,
-so use a separated workqueue for kernefs notify to allow it be used in
-memory reclaim context.
+I am also using DPU 6+ but I won't be posting patches for DPU to support 
+this as I am not using the upstream DPU codebase.
 
-Link: https://lore.kernel.org/all/a131af22-0a5b-4be1-b77e-8716c63e8883@oracle.com/T/
-Signed-off-by: Junxiao Bi <junxiao.bi@oracle.com>
----
- fs/kernfs/file.c            | 2 +-
- fs/kernfs/kernfs-internal.h | 1 +
- fs/kernfs/mount.c           | 3 +++
- 3 files changed, 5 insertions(+), 1 deletion(-)
+> On 2023-11-14 12:42:16, Jonathan Marek wrote:
+>> For the bonded DSI case, DSC pic_width and timing calculations should use
+>> the width of a single panel instead of the total combined width.
+>>
+>> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+>> ---
+>>   drivers/gpu/drm/msm/dsi/dsi.h         |  3 ++-
+>>   drivers/gpu/drm/msm/dsi/dsi_host.c    | 20 +++++++++++---------
+>>   drivers/gpu/drm/msm/dsi/dsi_manager.c |  2 +-
+>>   3 files changed, 14 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
+>> index 28379b1af63f..3a641e69447c 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi.h
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
+>> @@ -93,7 +93,8 @@ int msm_dsi_host_power_off(struct mipi_dsi_host *host);
+>>   int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+>>   				  const struct drm_display_mode *mode);
+>>   enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+>> -					    const struct drm_display_mode *mode);
+>> +					    const struct drm_display_mode *mode,
+>> +					    bool is_bonded_dsi);
+>>   unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
+>>   int msm_dsi_host_register(struct mipi_dsi_host *host);
+>>   void msm_dsi_host_unregister(struct mipi_dsi_host *host);
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> index 7284346ab787..a6286eb9d006 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+>> @@ -938,8 +938,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>>   			       mode->hdisplay, mode->vdisplay);
+>>   			return;
+>>   		}
+>> -
+>> -		dsc->pic_width = mode->hdisplay;
+>> +		dsc->pic_width = hdisplay;
+> 
+> In my testing and debugging on CMDmode panels downstream this value/register
+> was always programmed to the _full_ width of the bonded panel.  Is that maybe
+> different for video mode?
+> 
 
-diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
-index f0cb729e9a97..726bfd40a912 100644
---- a/fs/kernfs/file.c
-+++ b/fs/kernfs/file.c
-@@ -974,7 +974,7 @@ void kernfs_notify(struct kernfs_node *kn)
- 		kernfs_get(kn);
- 		kn->attr.notify_next = kernfs_notify_list;
- 		kernfs_notify_list = kn;
--		schedule_work(&kernfs_notify_work);
-+		queue_work(kernfs_wq, &kernfs_notify_work);
- 	}
- 	spin_unlock_irqrestore(&kernfs_notify_lock, flags);
- }
-diff --git a/fs/kernfs/kernfs-internal.h b/fs/kernfs/kernfs-internal.h
-index 237f2764b941..beae5d328342 100644
---- a/fs/kernfs/kernfs-internal.h
-+++ b/fs/kernfs/kernfs-internal.h
-@@ -123,6 +123,7 @@ static inline bool kernfs_dir_changed(struct kernfs_node *parent,
- 
- extern const struct super_operations kernfs_sops;
- extern struct kmem_cache *kernfs_node_cache, *kernfs_iattrs_cache;
-+extern struct workqueue_struct *kernfs_wq;
- 
- /*
-  * inode.c
-diff --git a/fs/kernfs/mount.c b/fs/kernfs/mount.c
-index 4628edde2e7e..7346ec49a621 100644
---- a/fs/kernfs/mount.c
-+++ b/fs/kernfs/mount.c
-@@ -24,6 +24,7 @@
- struct kmem_cache *kernfs_node_cache __ro_after_init;
- struct kmem_cache *kernfs_iattrs_cache __ro_after_init;
- struct kernfs_global_locks *kernfs_locks __ro_after_init;
-+struct workqueue_struct *kernfs_wq __ro_after_init;
- 
- static int kernfs_sop_show_options(struct seq_file *sf, struct dentry *dentry)
- {
-@@ -432,4 +433,6 @@ void __init kernfs_init(void)
- 					      0, SLAB_PANIC, NULL);
- 
- 	kernfs_lock_init();
-+
-+	kernfs_wq = alloc_workqueue("kernfs", WQ_MEM_RECLAIM, 0);
- }
--- 
-2.39.3 (Apple Git-145)
+downstream dual DSI panel timings are specified for a single panel 
+("qcom,mdss-dsi-panel-width" is for a single panel, not both panels)
 
+>>   		dsc->pic_height = mode->vdisplay;
+>>   		DBG("Mode %dx%d\n", dsc->pic_width, dsc->pic_height);
+>>   
+>> @@ -950,6 +949,11 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>>   		if (ret)
+>>   			return;
+>>   
+>> +		if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO)
+>> +			dsi_update_dsc_timing(msm_host, false, hdisplay);
+>> +		else
+>> +			dsi_update_dsc_timing(msm_host, true, hdisplay);
+>> +
+> 
+> Such cleanups (which appear unrelated) should probably be posted as separate
+> patches.
+> 
+> - Marijn
+> 
+
+Its not unrelated, dsi_update_dsc_timing call is moved up so it can use 
+the single-panel "hdisplay" value before it gets adjusted for DSC.
+
+>>   		/* Divide the display by 3 but keep back/font porch and
+>>   		 * pulse width same
+>>   		 */
+>> @@ -966,9 +970,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>>   	}
+>>   
+>>   	if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
+>> -		if (msm_host->dsc)
+>> -			dsi_update_dsc_timing(msm_host, false, mode->hdisplay);
+>> -
+>>   		dsi_write(msm_host, REG_DSI_ACTIVE_H,
+>>   			DSI_ACTIVE_H_START(ha_start) |
+>>   			DSI_ACTIVE_H_END(ha_end));
+>> @@ -987,9 +988,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+>>   			DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
+>>   			DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
+>>   	} else {		/* command mode */
+>> -		if (msm_host->dsc)
+>> -			dsi_update_dsc_timing(msm_host, true, mode->hdisplay);
+>> -
+>>   		/* image data and 1 byte write_memory_start cmd */
+>>   		if (!msm_host->dsc)
+>>   			wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
+>> @@ -2487,7 +2485,8 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+>>   }
+>>   
+>>   enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+>> -					    const struct drm_display_mode *mode)
+>> +					    const struct drm_display_mode *mode,
+>> +					    bool is_bonded_dsi)
+>>   {
+>>   	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+>>   	struct drm_dsc_config *dsc = msm_host->dsc;
+>> @@ -2497,6 +2496,9 @@ enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+>>   	if (!msm_host->dsc)
+>>   		return MODE_OK;
+>>   
+>> +	if (is_bonded_dsi)
+>> +		pic_width = mode->hdisplay / 2;
+>> +
+>>   	if (pic_width % dsc->slice_width) {
+>>   		pr_err("DSI: pic_width %d has to be multiple of slice %d\n",
+>>   		       pic_width, dsc->slice_width);
+>> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+>> index 896f369fdd53..2ca1a7ca3659 100644
+>> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+>> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+>> @@ -455,7 +455,7 @@ static enum drm_mode_status dsi_mgr_bridge_mode_valid(struct drm_bridge *bridge,
+>>   			return MODE_ERROR;
+>>   	}
+>>   
+>> -	return msm_dsi_host_check_dsc(host, mode);
+>> +	return msm_dsi_host_check_dsc(host, mode, IS_BONDED_DSI());
+>>   }
+>>   
+>>   static const struct drm_bridge_funcs dsi_mgr_bridge_funcs = {
+>> -- 
+>> 2.26.1
+>>
