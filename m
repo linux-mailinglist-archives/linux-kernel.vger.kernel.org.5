@@ -2,89 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C06F7EAB17
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:50:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 365957EAB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232227AbjKNHuN convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 02:50:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
+        id S232230AbjKNHxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 02:53:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKNHuM (ORCPT
+        with ESMTP id S229566AbjKNHxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 02:50:12 -0500
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C8CC;
-        Mon, 13 Nov 2023 23:50:08 -0800 (PST)
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-daf2eda7efaso3815851276.0;
-        Mon, 13 Nov 2023 23:50:08 -0800 (PST)
+        Tue, 14 Nov 2023 02:53:50 -0500
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E47AADD
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:53:47 -0800 (PST)
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc49991f33so61887505ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:53:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699948208; x=1700553008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZNKgiMastFHu6zZA090ti6BtPSEMiA1kjXskvmbMMYo=;
-        b=q2tqCE6C1Ts03wECqY2AhXgR4YVIFRHBJ81waT+rcW92nSdemaj3dC3O1Svwxczi5G
-         v+xoCw50tiNs5L/ZutOB3KWlBhwXgl4E4el63YO/gGVRBwv1Rmz6i25UevHazjn3b3p7
-         8R4k9ZNo3/4IyYJWqo2nXe/JKELHTIy105G45dgZuiJOrjIVyEHB5PCywdyb5me+r+08
-         cRzrxXBYs538WX1vZNU9yDbaOr1dyYNpL2Q+d0RrPQV9L01+qGatjGcIxpmIM8VYL6Nb
-         cKiU3qhfNv3HbhiDu7lUEevGaHOcRrbYXAM2VYeXkInYjjouCAnrE/51dkE9PUkz/fcS
-         Z24A==
-X-Gm-Message-State: AOJu0YygjMEdD4xV9xYkVG0HkXeuXKhZesWXSOP74oHdfy+CfqY9gjxY
-        pX6fLuwJ+dpCCjYWFmRIAzib6mRP0IaF/A==
-X-Google-Smtp-Source: AGHT+IGS8j3IjpSJimjygO02lvI8vxOAd1pExxvzKvWhnUf2x/31X0MABM5GM8J5YkHScv+ICOfmsw==
-X-Received: by 2002:a25:2d1e:0:b0:d9a:4a5f:415d with SMTP id t30-20020a252d1e000000b00d9a4a5f415dmr8844739ybt.0.1699948207828;
-        Mon, 13 Nov 2023 23:50:07 -0800 (PST)
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
-        by smtp.gmail.com with ESMTPSA id p13-20020a056902014d00b00d9a43500f1dsm1920128ybh.28.2023.11.13.23.50.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Nov 2023 23:50:07 -0800 (PST)
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a7eef0b931so61437687b3.0;
-        Mon, 13 Nov 2023 23:50:06 -0800 (PST)
-X-Received: by 2002:a0d:cc10:0:b0:5a7:c1f1:24b with SMTP id
- o16-20020a0dcc10000000b005a7c1f1024bmr10295001ywd.22.1699948206361; Mon, 13
- Nov 2023 23:50:06 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699948427; x=1700553227;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7jIuM5Eeqb2VBcpuHNbjIziZ1wCSqMb5QFUywRcTf9A=;
+        b=P8p2sLGZ372qIrfzL0oN4nJtBAfY5IYPWAHlVUDFox30ASMwAC/8PMDSYh0RrnQyLl
+         nZPhb40gkASOy9kjZGQjG+vRKxGtJQDrh/e+SHLnTqURrikD4wxxBarTLNr2NtCtNyh/
+         MLaz/UsH9QDIiOdK4Rdpk7dZb0wmR73fkIDtI2x/JG4xmQA7puxI6tDRN5SRMBm9E6v8
+         qbYZ/ESDfF5A0QqbBorMqGgRfZxBpxu5zG+9LK8K4fk3CCK7VeJZTLPUPZIDik+zrMyk
+         X/T4X+MMGWAriwzS8gAHf9ssvILxgr/lsTT7a/fcybq2xKpmHrNh0nvLr/+Lvo7jAapj
+         /ApA==
+X-Gm-Message-State: AOJu0YwCn0N1pKAVNr5IWYVVUwSBo4bhfFtfbOF9J5QBUijnOYmvEKJ7
+        Vw37VtN1ciw3HPp8mXEzsWuOFcrtWU2iwuF4uoasW+sEaYsviMA=
+X-Google-Smtp-Source: AGHT+IFMx1q6pgyUiJLSn8n1mZXTl6brspPi9yVyubPj3NI09qmZYQd1hAMucAl5Gi3ma6nb1ioWgr0hgKV4SfHOcDuIYEkfx1w7
 MIME-Version: 1.0
-References: <20231114075136.3e164b4a@canb.auug.org.au>
-In-Reply-To: <20231114075136.3e164b4a@canb.auug.org.au>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Tue, 14 Nov 2023 08:49:54 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXSD3pXUOKQ_ShDLgDb=YCz26Ot3TzF3hrxjdrax2inJQ@mail.gmail.com>
-Message-ID: <CAMuHMdXSD3pXUOKQ_ShDLgDb=YCz26Ot3TzF3hrxjdrax2inJQ@mail.gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the renesas tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
+X-Received: by 2002:a17:902:f7c5:b0:1cc:3f93:fc2e with SMTP id
+ h5-20020a170902f7c500b001cc3f93fc2emr389201plw.5.1699948427536; Mon, 13 Nov
+ 2023 23:53:47 -0800 (PST)
+Date:   Mon, 13 Nov 2023 23:53:47 -0800
+In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000028efe8060a181604@google.com>
+Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-On Mon, Nov 13, 2023 at 9:51 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
-> Commits
->
->   e443f05dfa8f ("arm64: dts: renesas: rzg2lc-smarc-som: Enable 4-bit tx support")
->   ce2e1b36450e ("arm64: dts: renesas: rzg2l-smarc-som: Enable 4-bit tx support")
->
-> are missing a Signed-off-by from their committer.
+***
 
-Thanks for reporting, please consider it fixed.
+Subject: [PATCH] Test oob in squashfs readahead
+Author: eadavis@qq.com
 
-Gr{oetje,eeting}s,
+please test squashfs readahead oob
 
-                        Geert
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
+index 581ce9519339..1c7c5500206b 100644
+--- a/fs/squashfs/block.c
++++ b/fs/squashfs/block.c
+@@ -314,9 +314,11 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 		bio_uninit(bio);
+ 		kfree(bio);
+ 
++		printk("datal: %d \n", length);
+ 		compressed = SQUASHFS_COMPRESSED(length);
+ 		length = SQUASHFS_COMPRESSED_SIZE(length);
+ 		index += 2;
++		printk("datal2: %d, c:%d, i:%d \n", length, compressed, index);
+ 
+ 		TRACE("Block @ 0x%llx, %scompressed size %d\n", index - 2,
+ 		      compressed ? "" : "un", length);
+@@ -324,6 +326,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 	if (length < 0 || length > output->length ||
+ 			(index + length) > msblk->bytes_used) {
+ 		res = -EIO;
++		printk("srd: l:%d, ol: %d, bu: %d \n", length, output->length, msblk->bytes_used);
+ 		goto out;
+ 	}
+ 
+@@ -340,6 +343,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+ 			goto out_free_bio;
+ 		}
+ 		res = msblk->thread_ops->decompress(msblk, bio, offset, length, output);
++		printk("srd6: r: %d \n", res);
+ 	} else {
+ 		res = copy_bio_to_actor(bio, output, offset, length);
+ 	}
+diff --git a/fs/squashfs/cache.c b/fs/squashfs/cache.c
+index 5062326d0efb..dac9eedea868 100644
+--- a/fs/squashfs/cache.c
++++ b/fs/squashfs/cache.c
+@@ -340,6 +340,7 @@ int squashfs_read_metadata(struct super_block *sb, void *buffer,
+ 	if (unlikely(length < 0))
+ 		return -EIO;
+ 
++	printk("srm: %d\n", length);
+ 	while (length) {
+ 		entry = squashfs_cache_get(sb, msblk->block_cache, *block, 0);
+ 		if (entry->error) {
+@@ -381,6 +382,7 @@ struct squashfs_cache_entry *squashfs_get_fragment(struct super_block *sb,
+ {
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 
++	printk("sgf: %d\n", length);
+ 	return squashfs_cache_get(sb, msblk->fragment_cache, start_block,
+ 		length);
+ }
+@@ -396,6 +398,7 @@ struct squashfs_cache_entry *squashfs_get_datablock(struct super_block *sb,
+ {
+ 	struct squashfs_sb_info *msblk = sb->s_fs_info;
+ 
++	printk("sgd: %d\n", length);
+ 	return squashfs_cache_get(sb, msblk->read_page, start_block, length);
+ }
+ 
+diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
+index 8ba8c4c50770..b54d6b993357 100644
+--- a/fs/squashfs/file.c
++++ b/fs/squashfs/file.c
+@@ -461,6 +461,12 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
+ 	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
+ 				page->index, squashfs_i(inode)->start);
+ 
++	if (!file_end) {
++		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
++		res = -EINVAL;
++		goto out;
++	}
++
+ 	if (page->index >= ((i_size_read(inode) + PAGE_SIZE - 1) >>
+ 					PAGE_SHIFT))
+ 		goto out;
+@@ -547,6 +553,11 @@ static void squashfs_readahead(struct readahead_control *ractl)
+ 	int i, file_end = i_size_read(inode) >> msblk->block_log;
+ 	unsigned int max_pages = 1UL << shift;
+ 
++	if (!file_end && !start) {
++		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
++		return;
++	}
++
+ 	readahead_expand(ractl, start, (len | mask) + 1);
+ 
+ 	pages = kmalloc_array(max_pages, sizeof(void *), GFP_KERNEL);
+diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
+index aa3411354e66..f3b0111e6fbd 100644
+--- a/fs/squashfs/inode.c
++++ b/fs/squashfs/inode.c
+@@ -175,6 +175,7 @@ int squashfs_read_inode(struct inode *inode, long long ino)
+ 		u64 frag_blk;
+ 		struct squashfs_lreg_inode *sqsh_ino = &squashfs_ino.lreg;
+ 
++		printk("in0: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
+ 		err = squashfs_read_metadata(sb, sqsh_ino, &block, &offset,
+ 							sizeof(*sqsh_ino));
+ 		if (err < 0)
+@@ -403,6 +404,7 @@ int squashfs_read_inode(struct inode *inode, long long ino)
+ 	} else
+ 		squashfs_i(inode)->xattr_count = 0;
+ 
++	printk("in: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
+ 	return 0;
+ 
+ failed_read:
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
