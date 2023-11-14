@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D997EB33A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:14:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E1AE7EB34F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:19:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233580AbjKNPO2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 10:14:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
+        id S231877AbjKNPTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233521AbjKNPO0 (ORCPT
+        with ESMTP id S231697AbjKNPTc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:14:26 -0500
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83341F9;
-        Tue, 14 Nov 2023 07:14:23 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9c603e2354fso1154706266b.1;
-        Tue, 14 Nov 2023 07:14:23 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699974861; x=1700579661;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yxz8QkUMUdK70UcIufkcCTFuHM/iFKukNXMBMippDVw=;
-        b=FIBpXliRegubGy+6t3SLZZwguEKbefm3L9aQ85WbDYkbvsfUqFNJ2xN3c0swfetd8n
-         k3GzwS2EFw0z3yde+Ct2F5umIHBEiEdDW2wHRJTS7iGyn9Oydi/zq66aVsb8Uc052PnV
-         HUA2MNawtAFk4T3pwr1xZLsPMVEXL2IAkss7TrIMHcD1RO99rZLbx1y24uYvXL46NJf+
-         W+ecnXIkNrj3Z5rZK/R/DEmNyiG5p84MZUqiFCgpANn4UbEWOYanWHeQnHvhqDg+0K+W
-         bjr/obiRu9qpAe5Kqq/wc28kp38DOwUB53GkkMckBkdar81XSIYqjb34nRaVn0g2AQPy
-         +PfA==
-X-Gm-Message-State: AOJu0YxkV6vet8vlyO/5s3wMSfLt4i3lSjgl4CcBWb7dbVvEDmOM2Wpp
-        77JKRGj4UYO29L8LVbPFsfaTwS2zdHY7iAkYjWo=
-X-Google-Smtp-Source: AGHT+IEgOIolvgTrfEjV0AmDGor4/vOucGkOxuTp6WsVbqYowytfw1cdybx6FVvSq9b7+MGpLatTlg==
-X-Received: by 2002:a17:906:68d6:b0:9a1:b528:d0f6 with SMTP id y22-20020a17090668d600b009a1b528d0f6mr2181514ejr.27.1699974861181;
-        Tue, 14 Nov 2023 07:14:21 -0800 (PST)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id rp13-20020a170906d96d00b009ddb919e0aasm5664465ejb.138.2023.11.14.07.14.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 07:14:20 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so11571581a12.1;
-        Tue, 14 Nov 2023 07:14:20 -0800 (PST)
-X-Received: by 2002:a05:6402:440f:b0:531:14c4:ae30 with SMTP id
- y15-20020a056402440f00b0053114c4ae30mr3214229eda.0.1699974860727; Tue, 14 Nov
- 2023 07:14:20 -0800 (PST)
+        Tue, 14 Nov 2023 10:19:32 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7320B11A;
+        Tue, 14 Nov 2023 07:19:28 -0800 (PST)
+Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 611B6223;
+        Tue, 14 Nov 2023 16:19:00 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1699975141;
+        bh=h8y87f7D/ev7BUNPddYJ6dAtaabpPgoRdBYY8Jj1/3o=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=qOat4FqVX5i7/zbFS6P0gUP4lWx4RZuc+cVpS/rNCUm9TTiNyURthiX9AB0VnJhzw
+         xW3iDaXvY8sVxLEvrWhUiZeaTCAXqK56r66/j7idT/+zvDOE8ZR4xS6Ecc/PeeY6TS
+         VhtzCUTZIIbbKmIBQacOb6h2NeELmppU4tNS58Xw=
+Message-ID: <b3e34178-f111-44da-83f1-70afb67ec49c@ideasonboard.com>
+Date:   Tue, 14 Nov 2023 15:19:23 +0000
 MIME-Version: 1.0
-References: <20231114-bluetooth-msgid-fix-v1-1-1d15394bf342@marcan.st>
-In-Reply-To: <20231114-bluetooth-msgid-fix-v1-1-1d15394bf342@marcan.st>
-From:   Neal Gompa <neal@gompa.dev>
-Date:   Tue, 14 Nov 2023 10:13:43 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je-SvvMpAAqtOPgaKt1PuoZi37K0Tprf3KDts-SBTzNpUA@mail.gmail.com>
-Message-ID: <CAEg-Je-SvvMpAAqtOPgaKt1PuoZi37K0Tprf3KDts-SBTzNpUA@mail.gmail.com>
-Subject: Re: [PATCH] Bluetooth: hci_bcm4377: Fix msgid release
-To:     Hector Martin <marcan@marcan.st>
-Cc:     Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Aditya Garg <gargaditya08@live.com>,
-        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
-        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] media: i2c: st-mipid02: correct format propagation
+Content-Language: en-US
+To:     Alain Volmat <alain.volmat@foss.st.com>,
+        Benjamin Mugnier <benjamin.mugnier@foss.st.com>,
+        Sylvain Petinot <sylvain.petinot@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     stable@vger.kernel.org,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231113145731.89796-1-alain.volmat@foss.st.com>
+From:   Dan Scally <dan.scally@ideasonboard.com>
+Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <20231113145731.89796-1-alain.volmat@foss.st.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 2:05 AM Hector Martin <marcan@marcan.st> wrote:
+Hi Alain
+
+On 13/11/2023 14:57, Alain Volmat wrote:
+> Use a copy of the struct v4l2_subdev_format when propagating
+> format from the sink to source pad in order to avoid impacting the
+> sink format returned to the application.
 >
-> We are releasing a single msgid, so the order argument to
-> bitmap_release_region must be zero.
+> Thanks to Jacopo Mondi for pointing the issue.
 >
-> In practice this was probably harmlessly masked to 0 anyway, which is
-> why it worked, but it trips ubsan.
->
-> Fixes: 8a06127602de ("Bluetooth: hci_bcm4377: Add new driver for BCM4377 PCIe boards")
-> Reported-by: Aditya Garg <gargaditya08@live.com>
+> Fixes: 6c01e6f3f27b ("media: st-mipid02: Propagate format from sink to source pad")
+> Signed-off-by: Alain Volmat <alain.volmat@foss.st.com>
 > Cc: stable@vger.kernel.org
-> Signed-off-by: Hector Martin <marcan@marcan.st>
 > ---
->  drivers/bluetooth/hci_bcm4377.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/bluetooth/hci_bcm4377.c b/drivers/bluetooth/hci_bcm4377.c
-> index 19ad0e788646..5e9f79235cde 100644
-> --- a/drivers/bluetooth/hci_bcm4377.c
-> +++ b/drivers/bluetooth/hci_bcm4377.c
-> @@ -715,7 +715,7 @@ static void bcm4377_handle_ack(struct bcm4377_data *bcm4377,
->                 ring->events[msgid] = NULL;
->         }
->
-> -       bitmap_release_region(ring->msgids, msgid, ring->n_entries);
-> +       bitmap_release_region(ring->msgids, msgid, 0);
->
->  unlock:
->         spin_unlock_irqrestore(&ring->lock, flags);
->
-> ---
-> base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
-> change-id: 20231114-bluetooth-msgid-fix-29769be7e45b
->
-> Best regards,
-> --
-> Hector Martin <marcan@marcan.st>
->
->
 
-LGTM.
-
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+Oops - sorry about that!
 
 
--- 
-真実はいつも一つ！/ Always, there's only one truth!
+Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+
+>   drivers/media/i2c/st-mipid02.c | 9 +++++++--
+>   1 file changed, 7 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/media/i2c/st-mipid02.c b/drivers/media/i2c/st-mipid02.c
+> index fa27638edc07..dab14787116b 100644
+> --- a/drivers/media/i2c/st-mipid02.c
+> +++ b/drivers/media/i2c/st-mipid02.c
+> @@ -770,6 +770,7 @@ static void mipid02_set_fmt_sink(struct v4l2_subdev *sd,
+>   				 struct v4l2_subdev_format *format)
+>   {
+>   	struct mipid02_dev *bridge = to_mipid02_dev(sd);
+> +	struct v4l2_subdev_format source_fmt;
+>   	struct v4l2_mbus_framefmt *fmt;
+>   
+>   	format->format.code = get_fmt_code(format->format.code);
+> @@ -781,8 +782,12 @@ static void mipid02_set_fmt_sink(struct v4l2_subdev *sd,
+>   
+>   	*fmt = format->format;
+>   
+> -	/* Propagate the format change to the source pad */
+> -	mipid02_set_fmt_source(sd, sd_state, format);
+> +	/*
+> +	 * Propagate the format change to the source pad, taking
+> +	 * care not to update the format pointer given back to user
+> +	 */
+> +	source_fmt = *format;
+> +	mipid02_set_fmt_source(sd, sd_state, &source_fmt);
+>   }
+>   
+>   static int mipid02_set_fmt(struct v4l2_subdev *sd,
