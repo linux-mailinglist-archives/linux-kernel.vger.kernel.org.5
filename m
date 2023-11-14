@@ -2,132 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E567EB428
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:51:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A10C87EB42D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:52:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233647AbjKNPvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
+        id S233616AbjKNPwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjKNPvH (ORCPT
+        with ESMTP id S233604AbjKNPwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:51:07 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5F0EFE;
-        Tue, 14 Nov 2023 07:51:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fBavb1OJRuhNdPmd3WZaXH8ZhV0kzJqo2XZQJsQ4F/1vkcrwFRJFSLI3OQxnG+V1AubVK8rv/hpHa7MafdAj5Wx2ktI83Z/qi9jN7ZmMrUFH73QCgf1ueyioY75B1xn7pQbx5tqlqUz6gjLt0pryECIXw7j7NUpR4gyFLtbyovvxhNZLby7hJr7rzJx6vKUk67lbBHnq6ZR+gOOJccxnW7QxAqIWsvE8qayHatuG0MW/fBepKLkgleOtipxRp7iLsxX3dr+o5Rla1Ij7b20ktyqelp3WpQLaUe2+IWSw9Tyoo7yNueAOAZlaG8WpyQccmJlXA8672DE9hFUh1SBA1A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=D2s5yCu+VBTc0peJFZhX9wSLIQyGUKKnAx53gD1QYE4=;
- b=UfMPtXo2iBbwaR0C7zrDUk6t7TZaci4s4KrckfnOAo5yHQ8rrXNYRfHwHjvgRU5jtFqx+BMXBtFg4GSJsN/ozWUmna/2tCPVfW8SO07wUeCZV5IAm0TbUWzXqYud0ZY6rYcaLtUVy0q4BJqqbKEFUik1NA+NWCG1VTxDRjO8JScMoFWjTImGTSjTiaB/cqmts5a3/6BLjxVNzj1ELBlrEBRbQPye7AbCX8akh/0hSyNPAcRcyIHAelrscQgI4scySDHF4moDPn6Q1/YDoP/Wl2Ac5cFATQ0K59NGvd/XF59i8KJ2LqZ5n/vfpSgoU5H1QVY5QRxsm5MWNWfYJR1TlQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D2s5yCu+VBTc0peJFZhX9wSLIQyGUKKnAx53gD1QYE4=;
- b=Ygoe5pFVCwT/mPn9e3VJ69tteAVgmtVeKvTqkpooOitKFfx7oZKx5b9EWNpwTxmddV9oth8TGOU/5nfwzS/BRhC1BkyjR9LNQ+wpvnqsNORj4nqi8wpx2RUpypgI8RmGxz6MOo1pbSL3hetHQCC3WhtM6FZX5RUtXuI8LWrXsuI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by MN2PR17MB3966.namprd17.prod.outlook.com (2603:10b6:208:20d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Tue, 14 Nov
- 2023 15:50:57 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::381c:7f11:1028:15f4%5]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 15:50:56 +0000
-Date:   Tue, 14 Nov 2023 10:50:51 -0500
-From:   Gregory Price <gregory.price@memverge.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>, John Groves <john@jagalactic.com>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "jgroves@micron.com" <jgroves@micron.com>
-Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
-Message-ID: <ZVOXWx8XNJJNC23A@memverge.com>
-References: <20231109002517.106829-1-gregory.price@memverge.com>
- <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
- <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
- <ZU6pR46kiuzPricM@slm.duckdns.org>
- <ZU6uxSrj75EiXise@memverge.com>
- <ZU7vjsSkGbRLza-K@slm.duckdns.org>
- <ZU74L9oxWOoTTfpM@memverge.com>
- <ZVNBMW8iJIGDyp0y@tiehlicka>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVNBMW8iJIGDyp0y@tiehlicka>
-X-ClientProxiedBy: SJ0PR03CA0090.namprd03.prod.outlook.com
- (2603:10b6:a03:331::35) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
-MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|MN2PR17MB3966:EE_
-X-MS-Office365-Filtering-Correlation-Id: 95a65911-6084-4f78-da6e-08dbe5297d35
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 8Yf3xfwMMjIH4Je8NQjzjuGd7LS9ah7lpYqbWIlKS369fAoBYlfgxLKoM8V0WIj7OEVxm5FsE61UXTtbEAhKp91U4XqdArANuyYcD3tYjtBbgUwYxPSuoOtE4GTHBtZUjVxVDFr0o0992MjYsfnG1QzoDk1SAIPbEYPBFNr9eu0IXnYDKHnXQ1vOw633PJtDy9ij7mXspyN8CCspFZR5PKzOlZdaAAk7fzSTso4f3tJgJeR13jFY71KnTYz05LJV7o56npNP4KJgojfAYQIUOrjUx48Fl6LPho5uDSmFOy2OGH6taEHcfoCfqK0jF28mhQsShIRGeFY3tkmyY3QHB49MasOnGRSsBh4JG5VLOe4pcXOux251iDzo994AuV5wTYW4u3C5eBoBH6SufYnAM/e3gK/lvPsssVPBIyIBVcZ62dgMsG2vghd42raB2JkhzUimbsmYyOMMvmclXe1uEdJlR0ITe/YhS/45KxqQHCyuZINwgD7TW4J0D1rmILL5mBJj/O4LkDPTE7ykBWdXqTKbL+3D1kLacDcXJzjc3sKn4SacObWAeYtEkdmCiCeS1bw1nLpnQRgE9MVoKcuD/+ngD/n533nVd8JT/VaSn44glfUdQ2gcVCCB+tM1j7fmhF7WjtOoK9Ax/iLZjpxSOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(39840400004)(136003)(376002)(366004)(230273577357003)(230922051799003)(230173577357003)(64100799003)(1800799009)(186009)(451199024)(66476007)(66556008)(54906003)(6916009)(66946007)(86362001)(38100700002)(36756003)(6512007)(83380400001)(26005)(2616005)(6506007)(6666004)(2906002)(41300700001)(478600001)(316002)(6486002)(966005)(44832011)(4326008)(5660300002)(7416002)(8936002)(8676002)(16393002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N/sMedg17XLb5fEwFbeJRVFghGD9YwHBIIEAujRjxICu4CdNg8xCXUdli+rZ?=
- =?us-ascii?Q?BcPHOC5Dyxkru7YcPHF1/Uapnru9bFEwXThJCMyS4fhjsxAY3+7WVfbJLadR?=
- =?us-ascii?Q?uerW2RDTgCadL46jFMFG1Rr+orIR6fmePmPOT6Iqc2wZtNx88qAS9gNTg3S9?=
- =?us-ascii?Q?hoxHmMSTsQdzR5l5Zok2iBIlojAGD6qQlJ2A7AjRh//0z59Oo2kQXk2AmSyr?=
- =?us-ascii?Q?Tig1RwinS5Qy3uIPZOis3RgXwbbxHynp0Y0BK+xJ90YQB/Aw1R7UjT30xe15?=
- =?us-ascii?Q?g/E72kNNwWOo1HrF+5Ed50LcXiQVSl4lSskP0LRBpOoGtJJe2fn7Xmh1MnI0?=
- =?us-ascii?Q?hAJ2VQiPcUZ8Mser+TgIhNiOXF6bt6s59Am8GMaqiuDxKtZQw2le/BmfVjpM?=
- =?us-ascii?Q?zQb2KUd6vzdYvSbPI/9mE+NqhyPXwpoEdTkDMS4SFTeLSgSVsv2tWB/TaFh7?=
- =?us-ascii?Q?dMIbr2lar/mi0qyt4etTOxvQr9+6WvReqFHoRNngGQdvL/k1E3403pzixNfE?=
- =?us-ascii?Q?ZtsDdCXsjn+jZGD8tEquaLFiCE2eNC2Q2l1UZ/uKcGX8Oi7kFhDkXaj42aXE?=
- =?us-ascii?Q?FrmcWfLlnMjwl7HsU5yD7O17Kdn8j0fBnL9Ja7mvF71JO5JWcB9v8GgKFQq6?=
- =?us-ascii?Q?sn0TUT8O7GEVpeYAlZ/j7vVcZ2ViPOab0tLDnAvKIAT9Ul9+cSfIf/OMQEDk?=
- =?us-ascii?Q?5vVUYGCO7Gh0jgg2bakL+kj1ZmXbUKsKy5GIxsl6rODBgKnSCJh2+oLiAP4q?=
- =?us-ascii?Q?x8p+gp/Si0sooBw1RYLu4nvYMcDk1oDXRFKDxupKiMc6QjkFRGWOJMvTGU1r?=
- =?us-ascii?Q?O5SaKmSB7oIfi8TShrHu1H62F3Ym8vbEytFv+xr2YdlCxN3FJ64hH22HJPfm?=
- =?us-ascii?Q?3TQAAooFIFfu95hUMuGGj6/ISpxJRNSJRnbMrNF6UWQOQ8yRhzQ+9Cd73sXQ?=
- =?us-ascii?Q?a4Png8FxCcbE7WSZ5B+tE9Vjg+HgIZ2aRs+FsmoQsfolOXvb9KXEFrFVtPDd?=
- =?us-ascii?Q?cOFrdkpHopMElqfDx1ZUFHgRCF2w62ht4xH6XpQ0MYovixWMMstT3g0CWAZV?=
- =?us-ascii?Q?6STV5/2pNk3ifBT6VRQJyiuiAhqcKFCEIw+vMCzdj4P5V/cRjdhqR0x6kkzy?=
- =?us-ascii?Q?aakUJOhUjY6vvf/VffOnhsoWkQjoSxCYfWWjXjfkDGNSJ/arlpJGmtk3aZuL?=
- =?us-ascii?Q?eNHLbjit/ikVJ/yonpIeM8Kam4gqrDMsX0/7oocb9X648jmlpwK1ksyZf0Hs?=
- =?us-ascii?Q?BFRdKOwaW5ZQMeEQmlHd30Wre+7TOGmS4SqkJ3HGE3731+THJ1NUdNanERhG?=
- =?us-ascii?Q?hF3jh7KFLHWS5fhs2Zi+kSHXPJwhqfJ/de/VFWzB4Y8f9/j/ttEPg3zG0aKr?=
- =?us-ascii?Q?wmzYkzjEA0loZsUBiY9fHzg6ZXiXB0gNDhDvUnrZTacXT9YBH2qOmVXEyAOT?=
- =?us-ascii?Q?iBHy26BgVHHzGDIVQ2bIbbejLnC/TeQtikFQ3DXaC6evU3j/lPeltk42RyVJ?=
- =?us-ascii?Q?qiCxI9GlS7Ive0Tt0qUGOpjKiO99rp11RScqvidNE+iBb44geANT22PJ5ybd?=
- =?us-ascii?Q?yEMwxXwmSuSTaTF+oP5rCX/H6P+H6P/GoO85KMdl6BmqDxgA9QKMNGD7gDaY?=
- =?us-ascii?Q?TA=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 95a65911-6084-4f78-da6e-08dbe5297d35
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 15:50:56.2024
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ygdfaZKyuKRN0kmHIX6KO4u20g8QAoo0d8eWYpPFsq+w0Cnrfgfp+O4FpONt/YcprPCRisf6jHfwzSLHiy3BU7Q7XAj3v/1mSkl1F9qVQRs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR17MB3966
+        Tue, 14 Nov 2023 10:52:08 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89071BB;
+        Tue, 14 Nov 2023 07:52:05 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-7789577b53fso355931785a.3;
+        Tue, 14 Nov 2023 07:52:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699977124; x=1700581924; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rDIsw6iCRCkkHtZUOVAOy4wE3ySOPjZG0P1Xurh3oQc=;
+        b=eyFexgR4//MePD+62vo2c25tw8tysVgaXO5LiU7Dv3maN6UOeuNZ2/X+LdIxQhwihi
+         EnMCclhINxv1XBm0q0JJv453y9lI/Tivol1tU6u+FDwQnhI+OFDz2erX8GBGqeY3crSz
+         7agJjszweUbFT8sUVOIMnIR72b4SJb0fYYRYDay853RGBeoLc25SK5g+iCt4Q7oIgdCI
+         iGSrdjmSTr0pNL4BKLMd8xzYDcbe2jal4saIKrL+NPo6VMZgtx/QOmfk6KEmoYsYdX7e
+         MSlbdmcCCpXae0aIybLDUVy+vKKlM/3redz5hOT9O2XHlxD2zfxLDBKiPW6mF/QNAL/A
+         KR+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699977124; x=1700581924;
+        h=content-transfer-encoding:mime-version:subject:references
+         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=rDIsw6iCRCkkHtZUOVAOy4wE3ySOPjZG0P1Xurh3oQc=;
+        b=tNkJLDo5z+0ai0CVbxouCNV+8GGGqrYrd38SuMZqahzTgs+2UXLAp50Hq8UOh6x/t+
+         9+i8w71tPJ9lMXJr93uuYcl7/dNPQaSdZmXwVwbhRyPoJGD5xXbuTyP8yIkzd64AseWC
+         WNfb2OeXsLSTbW2/EhG1oBYnkxUMoLfncagdRjFR9EFOSNz2WUtyK3uOQpqKB8m8z6Yn
+         o+qxqdXJMxbXEZtXPN+sBs+8stLwqgzE9cIlhdqVDJPvDtp8uVVEnwOqGKSmovG42fLR
+         MSFIbU48cUakTcVi6BkQAv2kd0mto0URfou38yWigEhB7nvc7RzywLwLDMUi+OObxt2l
+         l+2Q==
+X-Gm-Message-State: AOJu0YzizlfQW7p/ee1rx/kVv4NtPdz9bBuLD8E2BOB8ySEYZanH2RNi
+        ZoanXiLGrYy4+TVWYEDsO64=
+X-Google-Smtp-Source: AGHT+IHYgHhpQNHunVVy4tvWXY0eiuAjucuk61pdXd64PUs0P5jttrqIpT7s44OeH077F3LgTBbkYg==
+X-Received: by 2002:a0c:ebcf:0:b0:66d:25f7:de15 with SMTP id k15-20020a0cebcf000000b0066d25f7de15mr2435603qvq.31.1699977124669;
+        Tue, 14 Nov 2023 07:52:04 -0800 (PST)
+Received: from localhost (240.157.150.34.bc.googleusercontent.com. [34.150.157.240])
+        by smtp.gmail.com with ESMTPSA id b11-20020a0ce88b000000b00668bb8be252sm2974542qvo.60.2023.11.14.07.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 07:52:04 -0800 (PST)
+Date:   Tue, 14 Nov 2023 10:52:04 -0500
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     Kory Maincent <kory.maincent@bootlin.com>,
+        Florian Fainelli <florian.fainelli@broadcom.com>,
+        Broadcom internal kernel review list 
+        <bcm-kernel-feedback-list@broadcom.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Radu Pirea <radu-nicolae.pirea@oss.nxp.com>,
+        Jay Vosburgh <j.vosburgh@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        UNGLinuxDriver@microchip.com, Simon Horman <horms@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Maxime Chevallier <maxime.chevallier@bootlin.com>,
+        Kory Maincent <kory.maincent@bootlin.com>
+Message-ID: <655397a41f1bb_125ffe294aa@willemb.c.googlers.com.notmuch>
+In-Reply-To: <20231114-feature_ptp_netnext-v7-7-472e77951e40@bootlin.com>
+References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
+ <20231114-feature_ptp_netnext-v7-7-472e77951e40@bootlin.com>
+Subject: Re: [PATCH net-next v7 07/16] net_tstamp: Add TIMESTAMPING SOFTWARE
+ and HARDWARE mask
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -135,32 +99,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 10:43:13AM +0100, Michal Hocko wrote:
-> On Fri 10-11-23 22:42:39, Gregory Price wrote:
-> [...]
-> > If I can ask, do you think it would be out of line to propose a major
-> > refactor to mempolicy to enable external task's the ability to change a
-> > running task's mempolicy *as well as* a cgroup-wide mempolicy component?
+Kory Maincent wrote:
+> Timestamping software or hardware flags are often used as a group,
+> therefore adding these masks will easier future use.
 > 
-> No, I actually think this is a reasonable idea. pidfd_setmempolicy is a
-> generally useful extension. The mempolicy code is heavily current task
-> based and there might be some challenges but I believe this will a)
-> improve the code base and b) allow more usecases.
-
-Just read up on the pidfd_set_mempolicy lore, and yes I'm seeing all the
-same problems (I know there was discussion of vma policies, but i think
-that can be a topic for later).  Have some thoughts on this, but will
-take some time to work through a few refactoring tickets first.
-
+> I did not use SOF_TIMESTAMPING_SYS_HARDWARE flag as it is deprecated and
+> not use at all.
 > 
-> That being said, I still believe that a cgroup based interface is a much
-> better choice over a global one. Cpusets seem to be a good fit as the
-> controller does control memory placement wrt NUMA interfaces.
+> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 
-I think cpusets is a non-starter due to the global spinlock required when
-reading informaiton from it:
-
-https://elixir.bootlin.com/linux/latest/source/kernel/cgroup/cpuset.c#L391
-
-Unless the proposal is to place the weights as a global cgroups value,
-in which case I think it would be better placed in default_mempolicy :]
+Reviewed-by: Willem de Bruijn <willemb@google.com>
