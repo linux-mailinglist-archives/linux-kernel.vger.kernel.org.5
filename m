@@ -2,89 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 389477EB0C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:22:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B547EB0CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233210AbjKNNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:22:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39814 "EHLO
+        id S233181AbjKNNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:25:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233061AbjKNNV5 (ORCPT
+        with ESMTP id S231203AbjKNNZU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:21:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6CEF132;
-        Tue, 14 Nov 2023 05:21:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699968115; x=1731504115;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=rrkpp6VYa3MiK2YRsNxBj9zmBpPttdha2PSEd1OiIAQ=;
-  b=MUlllQRKTQroHBb6ZmOTprz+UUK3YU51XRC9jk6+uxYt8/HudbH3Kg8I
-   vPAX4iUqGgvvRDsLsQr20Gee9HlbLMSiL+OZoO4hdoK/HCLX18ZGGieo7
-   zdOE7JSY68knemhCTLM3b5spvLKRKO8m61SytAP5llAxC1JytCjHEy0ES
-   JWyNo+TdJDraG8RD1GAGmt8rdW/sFQLB5nk+gi+dCJLByfiOzu7V7SUSZ
-   Sxyuijp3fgr9vRG8jhw382+JuNRHcF+FKRdjjAjOvLpMudq3xq0nDPa5C
-   M6+ZkjUK3omEDxSv0M586GwRYZDo965FygRuAbXTiWgCGEwgrLc4bcz0I
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="9291539"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="9291539"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 05:21:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1096095488"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="1096095488"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga005.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 05:21:51 -0800
-Date:   Tue, 14 Nov 2023 15:21:48 +0200
-From:   Raag Jadav <raag.jadav@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linus.walleij@linaro.org, brgl@bgdev.pl,
-        mika.westerberg@linux.intel.com, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        mallikarjunappa.sangannavar@intel.com, bala.senthil@intel.com
-Subject: Re: [PATCH v1 0/3] Use the standard _PM_OPS() export macro in Intel
- Tangier GPIO driver
-Message-ID: <ZVN0bNduYm7UHP3s@black.fi.intel.com>
-References: <20231113131600.10828-1-raag.jadav@intel.com>
- <ZVJHqrj5OzoWav5Z@smile.fi.intel.com>
- <ZVL5tMZLTDKNLfP2@black.fi.intel.com>
- <ZVNetJdEEuWMxl2a@smile.fi.intel.com>
+        Tue, 14 Nov 2023 08:25:20 -0500
+Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9DC1AD
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:25:17 -0800 (PST)
+Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5b383b4184fso66159247b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:25:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699968316; x=1700573116; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JoUNc+UAMR3MkcBlAcrSJl9LJzMRrhGFdSqk/t7tLSM=;
+        b=fBMyya43uwflzhsrjshepPwpjcpaZ+MEWuW6SX/FOAyW5XyZRhyVF6ukISflJHlMLk
+         I9LugwlWj6M+fplTzON5UlxWw05w3cIG9YFMOFYCQN6meGptaMchYdg2yZoipJKdTGgG
+         oq4DsZkfS/ri57qXN8wB+t4UnID1AcDQiKJKviJ9stm3RvDimZDtRvZhs1aGamJVv1LV
+         d3Mxptgog5ZbFEJ2ERSjufOVA8kLKDj6/VqeiKyqMSi1m+oEczryQSeipm/SRcmc5MDL
+         4lNJzPsJ8FGbUce2J0jCR1hwjlHw5XyaOFrck5P9ry0K6sLzb3Xsu6omnf+W7qwMlQQh
+         pStA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699968316; x=1700573116;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=JoUNc+UAMR3MkcBlAcrSJl9LJzMRrhGFdSqk/t7tLSM=;
+        b=cZlDkVdghsojvaOQxgCUWh+PvCM8A/I+8AkRCHl3wUvBKixYyogydXJzkuuE7emqx3
+         cqMr8S6vavv73zr6ViaETfpoi8Wscn+gMvr3OSVJ4dVyPf+RUTQ6STnqs1fYAx/Syz50
+         cCuZMG91NftTMis6LHyUXyAM30BbGblH4u3Fk08Ehqu63QrOaYpWOSb9HXrvZ1/BF43Z
+         jF2Nfqt2/zuGrypEko/lnJHWSi3y/NEWtPR5nJeE2mREpbjbOKGyiBvmW6gXo9nV7z/J
+         wnnhHKFaVVkgN6/pZ9SkzyQ3mDUklDq7xzyFl5qG98YbD9+cXJUsjQmn3xkFxqKYpv3f
+         gffA==
+X-Gm-Message-State: AOJu0YyzY96y2e6gSL/3Bik3S7+Ci6syVASdWb5FvU+a1Xv1YZwhRCdm
+        QyVwIIUOR+ifZDgo+1y7E5ErmskCkYSAFNlnLIU+Xw==
+X-Google-Smtp-Source: AGHT+IE0TPtkA1XauwwaY0dSJjd8MxN/U0JrfOVEfCPnoUdkrWeESQDbuceXf62dLQcX3EcI35RVKcfmZwK9dNIcsKU=
+X-Received: by 2002:a81:7189:0:b0:5a7:c8f3:de4b with SMTP id
+ m131-20020a817189000000b005a7c8f3de4bmr9606681ywc.8.1699968316538; Tue, 14
+ Nov 2023 05:25:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVNetJdEEuWMxl2a@smile.fi.intel.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20230814093621.23209-1-brgl@bgdev.pl> <20230814093621.23209-3-brgl@bgdev.pl>
+ <875y54ci86.ffs@tglx> <CAMRc=Mfg52iqFKj0QMB55K5MCxhgPLbF-0WSRG0ktN3RbofMtQ@mail.gmail.com>
+ <873507cziz.ffs@tglx> <CAMRc=MdYteOxy87jdSEvBxnN7tx_J1X2aSsRzKZ6WKL31-ipmA@mail.gmail.com>
+ <87sf87aw36.ffs@tglx> <CAMRc=Mcvkjmy2F=92SWRdCKL0US_YSwsvpWjcfOH9CBGw3GB0g@mail.gmail.com>
+ <87il91c04a.ffs@tglx> <CAMRc=MfB=sMEmK02Y6SaG1T4PFZW2OD+box7NNoDY3KM1AchLA@mail.gmail.com>
+ <87o7ir8hlh.ffs@tglx> <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
+ <873502971b.ffs@tglx> <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
+ <87msya6wmf.ffs@tglx> <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
+ <877cpd7a96.ffs@tglx> <CAMRc=MfNaydT8gnvusKdJrNrtjKVE4LTqdanh3+WNd5QF-2q_Q@mail.gmail.com>
+ <87y1hb1ckk.ffs@tglx> <CAMRc=Meq6qrXsbDQiQHJ8t9tTh2V5Fb2ut6TcWYd5CKJwGBiAg@mail.gmail.com>
+ <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
+In-Reply-To: <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Nov 2023 14:25:05 +0100
+Message-ID: <CACRpkdZw2Z=PnfJvoj4pJ2gd_j32DUJjUiJAQj0LrB4uPXdOgA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wolfram Sang <wsa@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 01:49:08PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 14, 2023 at 06:38:44AM +0200, Raag Jadav wrote:
-> > On Mon, Nov 13, 2023 at 05:58:34PM +0200, Andy Shevchenko wrote:
-> > > On Mon, Nov 13, 2023 at 06:45:57PM +0530, Raag Jadav wrote:
-> > > > This series exports pm_ops structure from Intel Tangier GPIO driver using
-> > > > EXPORT_NS_GPL_SIMPLE_DEV_PM_OPS() helper and reuses it into its users.
-> > > 
-> > > Yet you missed --base...
-> > 
-> > My understanding is that we use --base only for the patches with explicit
-> > in-tree dependency, which this series doesn't have any AFAIK.
-> > 
-> > Will start using it for every patch if it makes everyone happy :)
-> 
-> For single patches it's not so critical, only for the series as I'm using b4
-> to treat them as PRs, so cover letter goes to the merge commit and b4 tries
-> to guess the base (often wrongly).
+On Mon, Nov 13, 2023 at 9:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
 
-Understood, will take care from now on.
+> I am at LPC and will present a talk on Wednesday 5:15pm at the kernel
+> summit about object life-time issues. I'll reference this problem
+> among others. Please consider it in your schedules, I think it'll be
+> useful to discuss it in person as it's a generic problem in many
+> driver subsystems.
 
-Raag
+I'm sadly not at LPC, but this sounds very relevant and I'd love to know
+what you conclude (if we're lucky maybe LWN catches it in a writeup).
+
+Yours,
+Linus Walleij
