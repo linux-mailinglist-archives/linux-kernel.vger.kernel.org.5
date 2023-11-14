@@ -2,119 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 537677EB0B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695107EB0BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:19:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232864AbjKNNTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S233060AbjKNNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:19:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbjKNNTS (ORCPT
+        with ESMTP id S233059AbjKNNTe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:19:18 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3512C1A7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:19:15 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EE98C433C8;
-        Tue, 14 Nov 2023 13:19:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699967954;
-        bh=ajebofFLcCvOKNg3qpy7bOy4DIHswEHw66sRMaGX4Ss=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ggfWaf3x/VsUz49R3n8GRM8jaN3sXlMhoKHx7TQ/JfMZcoUk2NyOypyi0NjbUt3tL
-         XVZE1txN7xHGOgMr723DQgG9TugyUbon4fjFcYRlwP1rLiaOsk1NfmYgYGmS67SknN
-         f+wJfnQFJAHIyi76pTXMq3WUDwwaE0b3ZPK5Tv2E=
-Date:   Tue, 14 Nov 2023 08:19:12 -0500
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        initramfs@vger.kernel.org, Rob Landley <rob@landley.net>
-Subject: Re: [PATCH] rootfs: Fix support for rootfstype= when root= is given
-Message-ID: <2023111455-fabulous-simmering-51fc@gregkh>
-References: <20231113211735.23267-1-stefanb@linux.ibm.com>
+        Tue, 14 Nov 2023 08:19:34 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA8419F;
+        Tue, 14 Nov 2023 05:19:30 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SV6MN0dHQzvQWh;
+        Tue, 14 Nov 2023 21:19:12 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 14 Nov
+ 2023 21:19:27 +0800
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com>
+ <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org>
+ <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+ <fa5d2f4c-5ccc-e23e-1926-2d7625b66b91@huawei.com>
+ <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <3ff54a20-7e5f-562a-ca2e-b078cc4b4120@huawei.com>
+Date:   Tue, 14 Nov 2023 21:19:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113211735.23267-1-stefanb@linux.ibm.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 04:17:35PM -0500, Stefan Berger wrote:
-> Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
-> 
->   If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
->   default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
->   line.
-> 
-> This currently does not work when root= is provided since then
-> saved_root_name contains a string and initfstype= is ignored. Therefore,
-> ramfs is currently always chosen when root= is provided.
-> 
-> The current behavior for rootfs's filesystem is:
-> 
->    root=       | initfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs
->    unspecified | tmpfs       | tmpfs
->    unspecified | ramfs       | ramfs
->     provided   | ignored     | ramfs
-> 
-> initfstype= should be respected regardless whether root= is given,
-> as shown below:
-> 
->    root=       | initfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs  (as before)
->    unspecified | tmpfs       | tmpfs  (as before)
->    unspecified | ramfs       | ramfs  (as before)
->     provided   | unspecified | ramfs  (compatibility with before)
->     provided   | tmpfs       | tmpfs  (new)
->     provided   | ramfs       | ramfs  (new)
-> 
-> This table represents the new behavior.
-> 
-> Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root=  specified")
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Signed-off-by: Rob Landley <rob@landley.net>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  init/do_mounts.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
+On 2023/11/14 20:58, Mina Almasry wrote:
 
-Hi,
+>>
+>> Yes, as above, skb_frags_not_readable() checking is still needed for
+>> kmap() and page_address().
+>>
+>> get_page, put_page related calling is avoided in page_pool_frag_ref()
+>> and napi_pp_put_page() for devmem page as the above checking is true
+>> for devmem page:
+>> (pp_iov->pp_magic & ~0x3UL) == PP_SIGNATURE
+>>
+> 
+> So, devmem needs special handling with if statement for refcounting,
+> even after using struct pages for devmem, which is not allowed (IIUC
+> the dma-buf maintainer).
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+It reuses the already existing checking or optimization, that is the point
+of 'mirror struct'.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+> 
+>>>
+>>>> The main difference between this patchset and RFC v3:
+>>>> 1. It reuses the 'struct page' to have more unified handling between
+>>>>    normal page and devmem page for net stack.
+>>>
+>>> This is what was nacked in RFC v1.
+>>>
+>>>> 2. It relies on the page->pp_frag_count to do reference counting.
+>>>>
+>>>
+>>> I don't see you change any of the page_ref_* calls in page_pool.c, for
+>>> example this one:
+>>>
+>>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L601
+>>>
+>>> So the reference the page_pool is seeing is actually page->_refcount,
+>>> not page->pp_frag_count? I'm confused here. Is this a bug in the
+>>> patchset?
+>>
+>> page->_refcount is the same as page_pool_iov->_refcount for devmem, which
+>> is ensured by the 'PAGE_POOL_MATCH(_refcount, _refcount);', and
+>> page_pool_iov->_refcount is set to one in mp_dmabuf_devmem_alloc_pages()
+>> by calling 'refcount_set(&ppiov->_refcount, 1)' and always remains as one.
+>>
+>> So the 'page_ref_count(page) == 1' checking is always true for devmem page.
+> 
+> Which, of course, is a bug in the patchset, and it only works because
+> it's a POC for you. devmem pages (which shouldn't exist according to
+> the dma-buf maintainer, IIUC) can't be recycled all the time. See
+> SO_DEVMEM_DONTNEED patch in my RFC and refcounting needed for devmem.
 
-- You have marked a patch with a "Fixes:" tag for a commit that is in an
-  older released kernel, yet you do not have a cc: stable line in the
-  signed-off-by area at all, which means that the patch will not be
-  applied to any older kernel releases.  To properly fix this, please
-  follow the documented rules in the
-  Documentation/process/stable-kernel-rules.rst file for how to resolve
-  this.
+I am not sure dma-buf maintainer's concern is still there with this patchset.
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+Whatever name you calling it for the struct, however you arrange each field
+in the struct, some metadata is always needed for dmabuf to intergrate into
+page pool.
 
-thanks,
+If the above is true, why not utilize the 'struct page' to have more unified
+handling?
 
-greg k-h's patch email bot
+> 
