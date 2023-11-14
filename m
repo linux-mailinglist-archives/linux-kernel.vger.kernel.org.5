@@ -2,148 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3247EAAAB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 07:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F5017EAAAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:00:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231382AbjKNGzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 01:55:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S231646AbjKNHAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 02:00:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNGzM (ORCPT
+        with ESMTP id S229580AbjKNHAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 01:55:12 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6D82D43;
-        Mon, 13 Nov 2023 22:55:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699944908; x=1731480908;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GPkBoNsUMQY8CWS7ia3KzqjIuFIsEAor8fkNZkDALeg=;
-  b=G+dE7litinE56E3BZ4VN/qxqNdl0c/HbTC1Zr3ZmBwyTaK9FJpnTLVFi
-   lI8/d4mgVFz2qN7z+C03k9IpU3fYGwZn1GFv1tkoAFcPiIqDgDbz7J9gN
-   asxl87pgBznxwSlcHxaJNDX9eMGTtBF8ChAVyZr8mEYGYTKFpy9I7nxk/
-   9Le8fDNQKszzIPo2rFaMF+uAmg6xEDYdwPk5IJqEeILHYnT3DLnyga5Gy
-   uleYmcO5jYIwKtVKMWlky7RxNLkuKzWs7xTrAIk8WcldToW1HxnhPBWnF
-   0RowlliN6Im03X15rKvAypy5dmY7kzuC94idBibpkjpuN8YxUlIemqhd/
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="421696022"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="421696022"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 22:55:08 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="881950403"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="881950403"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmsmga002.fm.intel.com with ESMTP; 13 Nov 2023 22:55:06 -0800
-Date:   Tue, 14 Nov 2023 14:53:24 +0800
-From:   Xu Yilun <yilun.xu@linux.intel.com>
-To:     Marco Pagani <marpagan@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, Wu Hao <hao.wu@intel.com>,
-        Xu Yilun <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>,
-        Alan Tull <atull@opensource.altera.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] fpga: remove module reference counting from core
- components
-Message-ID: <ZVMZZNyLE0+YtKYz@yilunxu-OptiPlex-7050>
-References: <20231027152928.184012-1-marpagan@redhat.com>
- <ZT9qENE9fE3Z0KCW@yilunxu-OptiPlex-7050>
- <ae202b70-b106-4805-9ce0-ffbb2738bb04@redhat.com>
- <ZUuu1CgVd4h3Qqu7@yilunxu-OptiPlex-7050>
- <5c3c3905-67c2-4cc2-8477-c6fc74676fc9@redhat.com>
+        Tue, 14 Nov 2023 02:00:08 -0500
+Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42322D43
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:00:03 -0800 (PST)
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: marcan@marcan.st)
+        by mail.marcansoft.com (Postfix) with ESMTPSA id B8AAF41F75;
+        Tue, 14 Nov 2023 06:59:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
+        t=1699945200; bh=QFda20ZkGQv23urtjlXxGti8E4jjdJdG88PRBb+IHmA=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=P10myidcp8XUSwKDBWQgwOxvIJlc48tXjteqCM9jtN37zv7eMGr9+WhncMNETJXLC
+         3j8LRRqaBn23vn2hOXeNLYfmQDrCRTjAyMie98S45oH4CzsIihUsO0GjTFBsdQf9cC
+         fKLyJDx+JI8tS1Y/+Zby9CNL+XvVEBfstBZ474RQDDatogbMuoiAfVuf+G6tcwtxoS
+         umlkqHt6MwegQ1oBwA7xd/fbC0nKrkI5MGkFaJBa4mKdEG9nyveIzuNpsVEw5f9jxw
+         u6K5ipzjcKuaEW9GCdCElRXEgnp+FO2FjzyXT+mOma6KAmsY40fnzHBjx6s9dvsxPv
+         KhbRHoHF/EjKA==
+Message-ID: <88fcc70e-9f4b-eeb9-d826-03fa4c40e7c3@marcan.st>
+Date:   Tue, 14 Nov 2023 15:59:53 +0900
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5c3c3905-67c2-4cc2-8477-c6fc74676fc9@redhat.com>
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
+ starting from kernel 6.5
+To:     Aditya Garg <gargaditya08@live.com>,
+        Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Orlando Chamberlain <orlandoch.dev@gmail.com>,
+        Kerem Karabay <kekrby@gmail.com>,
+        Aun-Ali Zaidi <admin@kodeit.net>,
+        Asahi Linux Mailing List <asahi@lists.linux.dev>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Bluetooth <linux-bluetooth@vger.kernel.org>
+References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
+ <ZVKxtD2Mt_eVyttJ@archie.me>
+ <MA0P287MB021794BCCCFB5EA57C1C3B69B8B2A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+Content-Language: en-US
+From:   Hector Martin <marcan@marcan.st>
+In-Reply-To: <MA0P287MB021794BCCCFB5EA57C1C3B69B8B2A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 11:58:37PM +0100, Marco Pagani wrote:
+On 14/11/2023 15.23, Aditya Garg wrote:
 > 
 > 
-> On 2023-11-08 16:52, Xu Yilun wrote:
-> > On Fri, Nov 03, 2023 at 09:31:02PM +0100, Marco Pagani wrote:
-> >>
-> >>
-> >> On 2023-10-30 09:32, Xu Yilun wrote:
-> >>> On Fri, Oct 27, 2023 at 05:29:27PM +0200, Marco Pagani wrote:
-> >>>> Remove unnecessary module reference counting from the core components
-> >>>> of the subsystem. Low-level driver modules cannot be removed before
-> >>>> core modules since they use their exported symbols.
-> >>>
-> >>> Could you help show the code for this conclusion?
-> >>>
-> >>> This is different from what I remember, a module cannot be removed when
-> >>> its exported symbols are being used by other modules. IOW, the core
-> >>> modules cannot be removed when there exist related low-level driver
-> >>> modules. But the low-level driver modules could be removed freely
-> >>> without other protecting mechanism.
-> >>>
-> >>
-> >> My understanding was that we wanted to remove module reference counting
-> >> from the fpga core and ease it from the responsibility of preventing
-> >> low-level driver modules from being unloaded. 
-> > 
-> > FPGA core needs to prevent low-level driver module unloading sometimes,
-> > e.g. when region reprograming is in progress. That's why we get fpga
-> > region driver modules & bridge modules in fpga_region_program_fpga().
-> > 
-> > But we try best to get them only necessary. Blindly geting them all the
-> > time results in no way to unload all modules (core & low level modules).
-> > 
-> >>
-> >> If we want to keep reference counting in the fpga core, we could add a
-> >> struct module *owner field in the struct fpga_manager_ops (and others
-> >> core *_ops) so that the low-level driver can set it to THIS_MODULE.
-> >> In this way, we can later use it in fpga_mgr_register() to bump up the
-> > 
-> > Yes, we should pass the module owner in fpga_mgr_register(), but could
-> > not bump up its refcount at once.
-> > 
-> >> refcount of the low-level driver module by calling
-> >> try_module_get(mgr->mops->owner) directly when it registers the manager.
-> >> Finally, fpga_mgr_unregister() would call module_put(mgr->mops->owner)
-> >> to allow unloading the low-level driver module.
-> > 
-> > As mentioned above, that makes problem. Most of the low level driver
-> > modules call fpga_mgr_unregister() on module_exit(), but bumping up
-> > their module refcount prevents module_exit() been executed. That came
-> > out to be a dead lock.
-> >
+>> On 14-Nov-2023, at 5:01 AM, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
+>>
+>> ﻿On Mon, Nov 13, 2023 at 08:57:35PM +0000, Aditya Garg wrote:
+>>> Starting from kernel 6.5, a regression in the kernel is causing Bluetooth to not work on T2 Macs with BCM4377 chip.
+>>>
+>>> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: https://pastebin.com/u9U3kbFJ
+>>>
+>>> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: https://pastebin.com/aVHNFMRs
+>>>
+>>> Also, the bug hasn’t been fixed even in 6.6.1, as reported by users.
+>>
+>> Can you bisect this regression please?
 > 
-> Initially, I considered calling try_module_get(mgr->mops->owner)
-> in fpga_mgr_get(). But then, the new kernel-doc description of
-> try_module_get() (1) made me question the safety of that approach.
-> My concern is that the low-level driver could be removed right when
-> someone is calling fpga_mgr_get() and hasn't yet reached
-> try_module_get(mgr->mops->owner). In that case, the struct mops
-> (along with the entire low-level driver module) and the manager dev
-> would "disappear" under the feet of fpga_mgr_get().
+> Since I don't have access to this hardware, it's not possible for me to bisect this regression. Let's hope someone is able to do so though.
 
-I don't get what's the problem. fpga_mgr_get() would first of all
-look for mgr_dev via class_find_device(), if low-level module is
-unloaded, then you cannot find the mgr_dev and gracefully error out.
+It's not a regression, it was always broken. I'm sending a patch.
 
-If class_find_device() succeed, mgr_dev got a reference and won't
-disappear. Finally we may still found module removed when
-try_module_get(), but should be another graceful error out.
+- Hector
 
-Am I missing anything?
-
-Thanks,
-Yilun
-
-> 
-> (1) 557aafac1153 ("kernel/module: add documentation for try_module_get()")
->  
