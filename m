@@ -2,74 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3044B7EB20E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:25:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65EED7EB213
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:27:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbjKNOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
+        id S230229AbjKNO1u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:27:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229861AbjKNOZi (ORCPT
+        with ESMTP id S229456AbjKNO1t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:25:38 -0500
+        Tue, 14 Nov 2023 09:27:49 -0500
 Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234F4CA;
-        Tue, 14 Nov 2023 06:25:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A218FCA
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:27:46 -0800 (PST)
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7515E40E0171;
-        Tue, 14 Nov 2023 14:25:32 +0000 (UTC)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id B4DD040E0171;
+        Tue, 14 Nov 2023 14:27:44 +0000 (UTC)
 X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
 Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
         header.d=alien8.de
 Received: from mail.alien8.de ([127.0.0.1])
         by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id NpxUmh6qH1xl; Tue, 14 Nov 2023 14:25:30 +0000 (UTC)
+        with ESMTP id chJwPbpJbe2x; Tue, 14 Nov 2023 14:27:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699971929; bh=S9j4pHyC5eZLovFq9DRdpMMk7CVfs5bDRVFiXlSpQno=;
+        t=1699972062; bh=Lr49NePHfatVliL7iLtk4mJWIWf7OiS9AhN7JnzFX9Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=M7fWSXjw2JBel9ThmJ9QDNCHaD5NxcrsjiYGuZ4LFSYhzr8pwCXECZxnUwimfrnPa
-         ZT9rJ7dRyg8oH+tiW56ux7lLMvP1KtI+FbygIUmL/jGCSSkXDoYS0A0VgYIiUCMA4H
-         bPAqU7d/Kij5AFE9EDHJjIWUpf6jKdoReOKgjceyKEqZQtdbjvzG9FFuETFUvdMcHk
-         x1y5yOAge4H7RuHmAXLyuxBoIh6vT/B+qKDOqvaflDoqGMEi+E4FGCxI3nxB6LOFPa
-         23YOxOgVc93EVki++VYcVYmYETwDpbTg1OVWnlkmz3zV/i+VhwrQU3mnnyukh8Pa1y
-         Z8rYS/I2/juroXA5McUNecg4yFIFOfnOe1th06HlaRw+cczqm25nkp1Ca9kr28KfH7
-         Jid67JdK5aI+qwrWlxyxv6iGDkYtP/SMGTtvgmNL58RV5+bLZ4M9R3Qtx7rpL9/VcZ
-         8l8NJPXXzULhWJbHP89JBGZNca7532vih3kd7jNu2AdSbGK6x+t3foNfol9CXjKC1k
-         +3YZzfVz0Zy+CgOAao/tsmgtYQfzSbGILuVsSsjrGAA6w2jg2HIgkxabDldxFf80/6
-         qJtedObJ0xgbMZB9p0vfuUl/t5UmB8i5Jo/YZ+/6TdZ28Mb3ocaKW1hFc1ApJEqR4V
-         OU5lxwsBX1DQp6rpAf+drH3Y=
+        b=a8VJOeF+82XKqw/9H8ixcxMu5EVXBzi0iafDyrzybEhtS+8MkoFlK45rrgf7lK+1U
+         D2DxO7dPlji8Jcbk9U798bmulD0X+5k2YpsiL+VWxG/a1iiP1jmCveFwchyKldr+ET
+         IwigV+LneUQOR0QNC4asOM8is8WcGgq2cVyN12eU+1+vgcfTwKTBomRpk3t3dHlX8G
+         XjOWbPI6UITW4qV69Lh7ubzUTMDTl7FP5nhdznd/lFolATBkXX3ttUWpbSwyADmpaj
+         jZ6ulGRPu1mT9S4tYCKHeZ0qOAEGlFM7Hsu7pNBs3CwH6uSH0TXKjkuwnu/EnWLm4+
+         JitC1n3Bn7U7uiBEm1OtYL5auK/EiibH/eqwbIj8nSVDdSSPElFACkHM2rouW97CDA
+         IepqEplBbBrV++UmG/p5KHQ02j3sXS5/QljdjTA8oTQucARHnNai13k3Z9/nBW38tI
+         u8ibt1p7Y9pSR0+B2sVpWb6BEFtKGKi/K9lxtr9SsRp8UTCOLeP/cCFUlCphuT4oNY
+         Qfoqw3gUwYjVntUB2kkpf7ExyeVv2NY4+oThtmTDzctstB0UOESgZFWweJ1qHzSDCU
+         Gw8erOeEBCd6cU9syPdRs0lV7noiWggIERgX7TDndOmo1XoNslRzWLoSb2BfNd0YRv
+         3U/xCDk3F191cSyUpPzISI7w=
 Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
         (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0548540E018F;
-        Tue, 14 Nov 2023 14:24:48 +0000 (UTC)
-Date:   Tue, 14 Nov 2023 15:24:42 +0100
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 9EEA240E0030;
+        Tue, 14 Nov 2023 14:27:34 +0000 (UTC)
+Date:   Tue, 14 Nov 2023 15:27:33 +0100
 From:   Borislav Petkov <bp@alien8.de>
-To:     Michael Roth <michael.roth@amd.com>
-Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
-        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
-        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
-        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
-        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
-        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
-        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
-        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
-        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
-        tony.luck@intel.com, marcorr@google.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
-        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
-        pankaj.gupta@amd.com, liam.merwick@oracle.com,
-        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
-Subject: Re: [PATCH v10 07/50] x86/sev: Add RMP entry lookup helpers
-Message-ID: <20231114142442.GCZVODKh03BoMFdlmj@fat_crate.local>
-References: <20231016132819.1002933-1-michael.roth@amd.com>
- <20231016132819.1002933-8-michael.roth@amd.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
+        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+Message-ID: <20231114142733.GCZVOD1TvZ2qq536dg@fat_crate.local>
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-3-jgross@suse.com>
+ <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
+ <20231114125028.GX3818@noisy.programming.kicks-ass.net>
+ <20231114134715.GBZVN6Y97XrLQ4cbSL@fat_crate.local>
+ <20231114141833.GX8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231016132819.1002933-8-michael.roth@amd.com>
+In-Reply-To: <20231114141833.GX8262@noisy.programming.kicks-ass.net>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -80,160 +74,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 08:27:36AM -0500, Michael Roth wrote:
-> From: Brijesh Singh <brijesh.singh@amd.com>
+On Tue, Nov 14, 2023 at 03:18:33PM +0100, Peter Zijlstra wrote:
+> Well, a random absolute address isn't going to be any better or worse
+> than 0. But perhaps adding the relocation as a comment helps?
 > 
-> The snp_lookup_page_in_rmptable() can be used by the host to read the RMP
-
-$ git grep snp_lookup_page_in_rmptable
-$
-
-Stale commit message. And not very telling. Please rewrite.
-
-> entry for a given page. The RMP entry format is documented in AMD PPR, see
-> https://bugzilla.kernel.org/attachment.cgi?id=296015.
-
-<--- Brijesh's SOB comes first here if he's the primary author.
-
-> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> [mdr: separate 'assigned' indicator from return code]
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> ---
->  arch/x86/include/asm/sev-common.h |  4 +++
->  arch/x86/include/asm/sev-host.h   | 22 +++++++++++++
->  arch/x86/virt/svm/sev.c           | 53 +++++++++++++++++++++++++++++++
->  3 files changed, 79 insertions(+)
->  create mode 100644 arch/x86/include/asm/sev-host.h
 > 
-> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
-> index b463fcbd4b90..1e6fb93d8ab0 100644
-> --- a/arch/x86/include/asm/sev-common.h
-> +++ b/arch/x86/include/asm/sev-common.h
-> @@ -173,4 +173,8 @@ struct snp_psc_desc {
->  #define GHCB_ERR_INVALID_INPUT		5
->  #define GHCB_ERR_INVALID_EVENT		6
->  
-> +/* RMP page size */
-> +#define RMP_PG_SIZE_4K			0
+>    ff 15 00 00 00 00       call   *0x0(%rip)  #  R_X86_64_PC32    pv_ops+0x4
+> into:
+>    e8 00 00 00 00 90	   call   +0          #  R_X86_64_PC32 *(pv_ops+0x04)
 
-RMP_PG_LEVEL_4K just like the generic ones.
+A bit better, yeah.
 
-> +#define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
+> ALT_FLAG_DEREFERENCE_INDIRECT_CALL ?
+> 
+> I'm going to already raise my hand and say that's too long ;-)
 
-What else is there besides X86 PG level?
+To your own suggestion? :-P
 
-IOW, RMP_TO_PG_LEVEL simply.
-
-> +
->  #endif
-> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
-
-Nah, we don't need a third sev header:
-
-arch/x86/include/asm/sev-common.h
-arch/x86/include/asm/sev.h
-arch/x86/include/asm/sev-host.h
-
-Put it in sev.h pls.
-
-sev-common.h should be merged into sev.h too unless there's a compelling
-reason not to which I don't see atm.
-
-> new file mode 100644
-> index 000000000000..4c487ce8457f
-> --- /dev/null
-> +++ b/arch/x86/include/asm/sev-host.h
-
-...
-
-> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
-> index 8b9ed72489e4..7d3802605376 100644
-> --- a/arch/x86/virt/svm/sev.c
-> +++ b/arch/x86/virt/svm/sev.c
-> @@ -53,6 +53,9 @@ struct rmpentry {
->   */
->  #define RMPTABLE_CPU_BOOKKEEPING_SZ	0x4000
->  
-> +/* Mask to apply to a PFN to get the first PFN of a 2MB page */
-> +#define PFN_PMD_MASK	(~((1ULL << (PMD_SHIFT - PAGE_SHIFT)) - 1))
-
-GENMASK_ULL
-
->  static struct rmpentry *rmptable_start __ro_after_init;
->  static u64 rmptable_max_pfn __ro_after_init;
->  
-> @@ -237,3 +240,53 @@ static int __init snp_rmptable_init(void)
->   * the page(s) used for DMA are hypervisor owned.
->   */
->  fs_initcall(snp_rmptable_init);
-> +
-> +static int rmptable_entry(u64 pfn, struct rmpentry *entry)
-
-The signature of this one should be:
-
-static struct rmpentry *get_rmp_entry(u64 pfn)
-
-and the callers should use the IS_ERR* macros to check whether it
-returns a valid pointer or a negative value for error.
-
-Ditto for the other two functions here.
-
-> +	if (WARN_ON_ONCE(pfn > rmptable_max_pfn))
-> +		return -EFAULT;
-> +
-> +	*entry = rmptable_start[pfn];
-
-This wants to be called rmptable[] then.
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int __snp_lookup_rmpentry(u64 pfn, struct rmpentry *entry, int *level)
-> +{
-> +	struct rmpentry large_entry;
-> +	int ret;
-> +
-> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
-> +		return -ENXIO;
-
-ENODEV or so.
-
-> +
-> +	ret = rmptable_entry(pfn, entry);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Find the authoritative RMP entry for a PFN. This can be either a 4K
-> +	 * RMP entry or a special large RMP entry that is authoritative for a
-> +	 * whole 2M area.
-> +	 */
-> +	ret = rmptable_entry(pfn & PFN_PMD_MASK, &large_entry);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*level = RMP_TO_X86_PG_LEVEL(large_entry.pagesize);
-> +
-> +	return 0;
-> +}
-> +
-> +int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level)
-> +{
-> +	struct rmpentry e;
-> +	int ret;
-> +
-> +	ret = __snp_lookup_rmpentry(pfn, &e, level);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*assigned = !!e.assigned;
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
-> -- 
+ALT_FLAG_DIRECT_CALL simply, I guess, along with an explanation.
+Meaning, this flag tells the alternatives to produce a direct call.
 
 Thx.
 
