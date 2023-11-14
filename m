@@ -2,129 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 602257EB974
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:36:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A8B27EB975
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:37:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234173AbjKNWgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41592 "EHLO
+        id S234182AbjKNWhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 17:37:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234107AbjKNWge (ORCPT
+        with ESMTP id S234153AbjKNWhO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:36:34 -0500
-Received: from rcdn-iport-3.cisco.com (rcdn-iport-3.cisco.com [173.37.86.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E302AC1;
-        Tue, 14 Nov 2023 14:36:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=2379; q=dns/txt; s=iport;
-  t=1700001392; x=1701210992;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=aqgGUKGQBVUTfW7p4uxQ1YKLQ3kFd6K4NBe7f3cePAw=;
-  b=Rh9vIHHvrIji3iJVqIu3+/ZNccCtYDu9409896kgeSsMLoJ9/MEEHqKT
-   FIQaVqRtV0+uv7kvLKBl2BufEvX+45MzRXVQ2aISadM7Kk9P1kQNdQeXI
-   fxjLIL5yE9lpb4B9uZBG0ubd2cLCHksq4F0nQ4Bfe7k9EyBT8UrdVuaMv
-   k=;
-X-CSE-ConnectionGUID: FSC3dlcaT7uxAwB0SlVC6A==
-X-CSE-MsgGUID: qatHh0ujToOl2Cnj45dALQ==
-X-IronPort-AV: E=Sophos;i="6.03,303,1694736000"; 
-   d="scan'208";a="139025490"
-Received: from rcdn-core-8.cisco.com ([173.37.93.144])
-  by rcdn-iport-3.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 22:36:31 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-8.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3AEMaNhm028773
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 14 Nov 2023 22:36:30 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>,
-        Hannes Reinecke <hare@suse.de>
-Subject: [PATCH v3 08/13] scsi: fnic: Define stats to track multiqueue (MQ) IOs
-Date:   Tue, 14 Nov 2023 14:36:21 -0800
-Message-Id: <20231114223621.634071-1-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 14 Nov 2023 17:37:14 -0500
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCFBBE3;
+        Tue, 14 Nov 2023 14:37:10 -0800 (PST)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 2E07D674;
+        Tue, 14 Nov 2023 14:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1700001430;
+        bh=pS7nzD6GkCGtBT8jmfkhvgNME2ZFftaYudpO4xAJmyM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PXtR/r93P3Q8/hO5l8h9Og+SoYihHKZZaYhDYhg0BqjtfU9YyHgWoFwdwOuLsY4wg
+         cDxCyjfNCFB1UYGMbZPU1Lp+2Cqis5mgTQroT9bfYJvw0jm60cIZEg9ML2J/XkaUk8
+         SNZbSbEVs8s1h8v2dgYo1vz3nioEyeaK9nZNq9XA=
+Date:   Tue, 14 Nov 2023 14:37:08 -0800
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add ASRock E3C256D4I BMC
+Message-ID: <e766e663-0985-4a2e-8023-26ad0228157d@hatter.bewilderbeest.net>
+References: <20231114112722.28506-4-zev@bewilderbeest.net>
+ <20231114112722.28506-6-zev@bewilderbeest.net>
+ <cde26249-1d47-496f-b198-a0c4c02bed5c@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-8.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <cde26249-1d47-496f-b198-a0c4c02bed5c@linaro.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Define an array to track IOs for the different queues,
-print the IO stats in fnic get stats data.
+On Tue, Nov 14, 2023 at 12:35:37PM PST, Krzysztof Kozlowski wrote:
+>On 14/11/2023 12:27, Zev Weiss wrote:
+>> Like the E3C246D4I, this is a reasonably affordable off-the-shelf
+>> mini-ITX AST2500/Xeon motherboard with good potential as an OpenBMC
+>> development platform.  Booting the host requires a modicum of eSPI
+>> support that's not yet in the mainline kernel, but most other basic
+>> BMC functionality is available with this device-tree.
+>>
+>> Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>> ---
+>>  arch/arm/boot/dts/aspeed/Makefile             |   1 +
+>>  .../aspeed/aspeed-bmc-asrock-e3c256d4i.dts    | 314 ++++++++++++++++++
+>>  2 files changed, 315 insertions(+)
+>>  create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>>
+>> diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+>> index d3ac20e316d0..3398ee53f034 100644
+>> --- a/arch/arm/boot/dts/aspeed/Makefile
+>> +++ b/arch/arm/boot/dts/aspeed/Makefile
+>> @@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>>  	aspeed-bmc-ampere-mtmitchell.dtb \
+>>  	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+>>  	aspeed-bmc-asrock-e3c246d4i.dtb \
+>> +	aspeed-bmc-asrock-e3c256d4i.dtb \
+>>  	aspeed-bmc-asrock-romed8hm3.dtb \
+>>  	aspeed-bmc-bytedance-g220a.dtb \
+>>  	aspeed-bmc-delta-ahe50dc.dtb \
+>> diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>> new file mode 100644
+>> index 000000000000..4c55272afd4f
+>> --- /dev/null
+>> +++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>> @@ -0,0 +1,314 @@
+>> +// SPDX-License-Identifier: GPL-2.0+
+>> +/dts-v1/;
+>> +
+>> +#include "aspeed-g5.dtsi"
+>> +#include <dt-bindings/gpio/aspeed-gpio.h>
+>> +#include <dt-bindings/i2c/i2c.h>
+>> +#include <dt-bindings/interrupt-controller/irq.h>
+>> +#include <dt-bindings/watchdog/aspeed-wdt.h>
+>> +
+>> +/{
+>> +	model = "ASRock E3C256D4I BMC";
+>> +	compatible = "asrock,e3c256d4i-bmc", "aspeed,ast2500";
+>> +
+>> +	aliases {
+>> +		serial4 = &uart5;
+>> +
+>> +		i2c20 = &i2c2mux0ch0;
+>> +		i2c21 = &i2c2mux0ch1;
+>> +		i2c22 = &i2c2mux0ch2;
+>> +		i2c23 = &i2c2mux0ch3;
+>> +	};
+>> +
+>> +	chosen {
+>> +		stdout-path = &uart5;
+>> +		bootargs = "console=tty0 console=ttyS4,115200 earlycon";
+>
+>Drop bootargs.
+>
 
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Reviewed-by: Hannes Reinecke <hare@suse.de>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
----
- drivers/scsi/fnic/fnic_stats.h |  2 ++
- drivers/scsi/fnic/fnic_trace.c | 11 +++++++++++
- 2 files changed, 13 insertions(+)
+Ack.
 
-diff --git a/drivers/scsi/fnic/fnic_stats.h b/drivers/scsi/fnic/fnic_stats.h
-index 07d1556e3c32..9d7f98c452dd 100644
---- a/drivers/scsi/fnic/fnic_stats.h
-+++ b/drivers/scsi/fnic/fnic_stats.h
-@@ -2,6 +2,7 @@
- /* Copyright 2013 Cisco Systems, Inc.  All rights reserved. */
- #ifndef _FNIC_STATS_H_
- #define _FNIC_STATS_H_
-+#define FNIC_MQ_MAX_QUEUES 64
- 
- struct stats_timestamps {
- 	struct timespec64 last_reset_time;
-@@ -26,6 +27,7 @@ struct io_path_stats {
- 	atomic64_t io_btw_10000_to_30000_msec;
- 	atomic64_t io_greater_than_30000_msec;
- 	atomic64_t current_max_io_time;
-+	atomic64_t ios[FNIC_MQ_MAX_QUEUES];
- };
- 
- struct abort_stats {
-diff --git a/drivers/scsi/fnic/fnic_trace.c b/drivers/scsi/fnic/fnic_trace.c
-index be0d7c57b242..aaa4ea02fb7c 100644
---- a/drivers/scsi/fnic/fnic_trace.c
-+++ b/drivers/scsi/fnic/fnic_trace.c
-@@ -204,6 +204,7 @@ int fnic_get_stats_data(struct stats_debug_info *debug,
- 	int len = 0;
- 	int buf_size = debug->buf_size;
- 	struct timespec64 val1, val2;
-+	int i = 0;
- 
- 	ktime_get_real_ts64(&val1);
- 	len = scnprintf(debug->debug_buffer + len, buf_size - len,
-@@ -266,6 +267,16 @@ int fnic_get_stats_data(struct stats_debug_info *debug,
- 		  (u64)atomic64_read(&stats->io_stats.io_btw_10000_to_30000_msec),
- 		  (u64)atomic64_read(&stats->io_stats.io_greater_than_30000_msec));
- 
-+	len += scnprintf(debug->debug_buffer + len, buf_size - len,
-+			"------------------------------------------\n"
-+			"\t\tIO Queues and cumulative IOs\n"
-+			"------------------------------------------\n");
-+
-+	for (i = 0; i < FNIC_MQ_MAX_QUEUES; i++) {
-+		len += scnprintf(debug->debug_buffer + len, buf_size - len,
-+				"Q:%d -> %lld\n", i, (u64)atomic64_read(&stats->io_stats.ios[i]));
-+	}
-+
- 	len += scnprintf(debug->debug_buffer + len, buf_size - len,
- 		  "\nCurrent Max IO time : %lld\n",
- 		  (u64)atomic64_read(&stats->io_stats.current_max_io_time));
--- 
-2.31.1
+>> +	};
+>> +
+>> +	memory@80000000 {
+>> +		reg = <0x80000000 0x20000000>;
+>> +	};
+>> +
+>> +	leds {
+>> +		compatible = "gpio-leds";
+>> +
+>> +		heartbeat {
+>
+>It does not look like you tested the DTS against bindings. Please run
+>`make dtbs_check W=1` (see
+>Documentation/devicetree/bindings/writing-schema.rst or
+>https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+>for instructions).
+>
+
+As with my spc621d8hm3 dts patch, I did run that and got no output, so 
+if there are other specific problems please let me know what they are.
+
+>> +			gpios = <&gpio ASPEED_GPIO(H, 6) GPIO_ACTIVE_LOW>;
+>> +			linux,default-trigger = "timer";
+>
+>Missing function and color.
+>
+
+Ack.
+
+
+Thanks,
+Zev
 
