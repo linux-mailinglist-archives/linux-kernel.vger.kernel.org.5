@@ -2,58 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 716447EB385
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:28:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 423247EB389
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233601AbjKNP2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35318 "EHLO
+        id S233603AbjKNP2x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:28:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232193AbjKNP2L (ORCPT
+        with ESMTP id S230200AbjKNP2w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:28:11 -0500
-Received: from 16.mo581.mail-out.ovh.net (16.mo581.mail-out.ovh.net [46.105.72.216])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D011ED
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:28:06 -0800 (PST)
-Received: from director6.ghost.mail-out.ovh.net (unknown [10.109.146.76])
-        by mo581.mail-out.ovh.net (Postfix) with ESMTP id 5AF6027B14
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 15:28:04 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-kk79p (unknown [10.110.103.114])
-        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 0FB981FE70;
-        Tue, 14 Nov 2023 15:28:00 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.102])
-        by ghost-submission-6684bf9d7b-kk79p with ESMTPSA
-        id QNnGNgCSU2UGzg4Aqzq3ag
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 14 Nov 2023 15:28:00 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-102R00447b4aba0-d8b9-4512-b764-96c8bb41a9fd,
-                    39B655737E19CE8DAD14488E69459E8CEBC9C448) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 83.100.46.156
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        airlied@gmail.com, daniel@ffwll.ch, Wayne.Lin@amd.com,
-        qingqing.zhuo@amd.com, lyude@redhat.com,
-        srinivasan.shanmugam@amd.com, aurabindo.pillai@amd.com,
-        sungjoon.kim@amd.com, wenjing.liu@amd.com, hamza.mahfooz@amd.com,
-        mikita.lipski@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev
-Subject: [PATCH v2] drm/amd/display: fix NULL dereference
-Date:   Tue, 14 Nov 2023 17:27:51 +0200
-Message-Id: <20231114152751.30167-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Tue, 14 Nov 2023 10:28:52 -0500
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F8D011F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:28:49 -0800 (PST)
+Received: by mail-qk1-x72f.google.com with SMTP id af79cd13be357-778927f2dd3so295193185a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:28:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699975728; x=1700580528; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BGxQDxhwGJ2nh5zs6ScH+LS4hZ552IQoSeqNqLnSUY0=;
+        b=xG1HpNb5FWSBDUdgLc5TREEouOnlWBRjk5Pn05/jlNHRWzw2onyzzdjF5EaNF5yCh6
+         /svpQVvL09O7YLd/Fp9z+bzk0dnHJXkFycskqHR6Y2oFIVy/I6TluJUUYYw+Lzycvo4I
+         HRdz/Y3+5gM3tFMMS78hBydNN5l/0PV8Cy51msxcS1T1hKTGVshcPwzWPBHn7u9aDNar
+         nhHrSwGaXqvrRD4tIII0BJb8WULJ8ZiQlO8Xz1voykN9V2jgGo9JnS5j+QUy9tFZludZ
+         FmGBWuFy7V6Z6tkFSIZK3KDIGNpYSM3BiB2j7GDkkgq2zvmJqjrHM68hjs8e5yw0Ot5b
+         aDOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699975728; x=1700580528;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BGxQDxhwGJ2nh5zs6ScH+LS4hZ552IQoSeqNqLnSUY0=;
+        b=JmQAoo+5jxgGk+NFouxmrSOGRdgTWxw0HzOEF1mZUAPi7hPCBXSOEjx40SSO2QFgaI
+         dhsKDUvwe4r9rYhhOIuKSR2E2EsNGe9+jzbnCIp28uMibrO3flL3yfk0Pucbe7dU2Ga5
+         EPQWdJqs2IhyI2HjX2c5F8uWYBfeNwUcT6scaGBq62UirfAINem/7MHWwdELG/1XsUeE
+         QJ+sqyDSwDYCXg5bSyHOW10TPkh2AsjHJCkWDZNXYV4FuNNTrDP04mLtl+7QdWgiN7t7
+         AQ9T3bC+Ofp1Srr089gdE8i0gatuFGLlGYWZ39ZPLe4Gv/1va7eVIatKfULW3BFXPVze
+         6QHw==
+X-Gm-Message-State: AOJu0YyPbfPyZ1obWdKwObW2doBj1wu6Rg3ILaWtJ2oCZeNXmOauskNa
+        ZceSXChrqfCXzjWjbzxooAqHTCb2agoLeVcpWd0=
+X-Google-Smtp-Source: AGHT+IE+7rw23tKCHEGTWas8bKZs9IJbGI6dJMY/vX5+Ea8ykwZXNrA1jFDtHohlObVIyQwvBkBf2A==
+X-Received: by 2002:a05:620a:1725:b0:774:3963:41a5 with SMTP id az37-20020a05620a172500b00774396341a5mr2820249qkb.13.1699975728151;
+        Tue, 14 Nov 2023 07:28:48 -0800 (PST)
+Received: from [172.25.83.73] ([12.186.190.2])
+        by smtp.gmail.com with ESMTPSA id bp39-20020a05620a45a700b0076ef004f659sm2734795qkb.1.2023.11.14.07.28.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 07:28:47 -0800 (PST)
+Message-ID: <2323d13a-aa7c-43a9-85e3-95a2d176b990@linaro.org>
+Date:   Tue, 14 Nov 2023 16:28:46 +0100
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm64: dts: qcom: Revert "arm64: dts: qcom: qrb5165-rb5:
+ enable DP altmode"
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231111094645.12520-1-krzysztof.kozlowski@linaro.org>
+ <CAA8EJpoK1N1LBY5ZjL7hb0Sqge7iF4X=rm1n9VZPx-0nOm3bkw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CAA8EJpoK1N1LBY5ZjL7hb0Sqge7iF4X=rm1n9VZPx-0nOm3bkw@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 10521253157812807361
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudefvddgjeehucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpkeefrddutddtrdegiedrudehiedpfeejrdehledrudegvddruddtvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheekuddpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -62,37 +126,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following patch will fix a minor issue where a debug message is
-referencing an struct that has just being checked whether is null or
-not. This has been noticed by using coccinelle, in the following output:
+On 13/11/2023 11:09, Dmitry Baryshkov wrote:
+> On Sat, 11 Nov 2023 at 11:46, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> This reverts commit b3dea914127e9065df003002ed13a2ef40d19877.
+>>
+>> The commit introduced unsupported and undocumented properties:
+>>
+>>   qrb5165-rb5.dtb: pmic@2: typec@1500:connector: 'altmodes' does not match any of the regexes: 'pinctrl-[0-9]+'
+> 
+> We need this property to enable DP altmode on RB5. It has been parsed
+> by the typec subsystem since the commit 7b458a4c5d73 ("usb: typec: Add
+> typec_port_register_altmodes()"), merged in April 2021.
+> 
+> Rather than landing this commit, let me propose to send the proper
+> binding instead. If we can not agree on a compatible bindings document
+> within the sensible timeframe (e.g. 1 month), I'm fine with dropping
+> of the altmodes from qrb5156-rb5.
 
-drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c:540:25-29: ERROR: aconnector is NULL but dereferenced.
+I agree, sounds good for me. I just want to stir the pot and have the
+issue resolved :)
 
-Fixes: 5d72e247e58c9 ("drm/amd/display: switch DC over to the new DRM logging macros")
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
-[v1 -> v2]: Remove the debugging message, requested by Hamza
 
- drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-index ed784cf27d39..c7a29bb737e2 100644
---- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-+++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-@@ -536,11 +536,8 @@ bool dm_helpers_dp_read_dpcd(
- 
- 	struct amdgpu_dm_connector *aconnector = link->priv;
- 
--	if (!aconnector) {
--		drm_dbg_dp(aconnector->base.dev,
--			   "Failed to find connector for link!\n");
-+	if (!aconnector)
- 		return false;
--	}
- 
- 	return drm_dp_dpcd_read(&aconnector->dm_dp_aux.aux, address, data,
- 				size) == size;
--- 
-2.39.2
+Best regards,
+Krzysztof
 
