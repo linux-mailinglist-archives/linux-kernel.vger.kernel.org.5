@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C951A7EAF14
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12FC77EAF17
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232706AbjKNLaB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 06:30:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48432 "EHLO
+        id S232884AbjKNLaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 06:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232984AbjKNL3T (ORCPT
+        with ESMTP id S232993AbjKNL3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 06:29:19 -0500
+        Tue, 14 Nov 2023 06:29:21 -0500
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C9381BF8;
-        Tue, 14 Nov 2023 03:28:59 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 9856860008;
-        Tue, 14 Nov 2023 11:28:56 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9CD6D6B;
+        Tue, 14 Nov 2023 03:29:00 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E88FC60011;
+        Tue, 14 Nov 2023 11:28:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699961337;
+        t=1699961339;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xRVp9zBKQvCZ72vII/R3dn2g9lLmskljfqZbCexdHAY=;
-        b=QZQkWtSl7PmdL73sxcougZ9DULCoiLNr/Jy23LSSav81BScnnp7ruModPFv/n0nEIboFFm
-        D5iZoMMk41fBXAPqdrVKt7/r4BnBMoUfV4X9S6iVLpH2EB+Ork30YBWIYXawhIj1fVUVoh
-        Dbra9ThaRleSY6RFzg1cS83QpLJjSzzhKbquAMAhUyZNAB7doVXurnqrfczCriyGazI2dy
-        GZ/t7Tb/2jSRP7RdO1gvbpnzP0RWTRf+k91zjln9irqjpc7DpsYlGSC4iCgMXXJTLNzzdJ
-        0hbFfz6MYhi+09uBslUlQ/LOSU3o3W9dhT7qf3H37nG6BiFQTQqiX4wX9e7PoQ==
+        bh=10SiBN/4Fj+hMV2c6j8AN3pqV9PZiveL87TjssWFLBw=;
+        b=kX5BXEuakP80zkXB1Wo+QuoL8r+kM1cW+aefIK98bBhvLJMSosQHavmDq3e09P4HllWxNb
+        4TRSSYMKpKf4FP5WEEtmSX9zfBFpijdKI8pTuVIkyaBThZEZ0FmU9h4j/ms6NhyiuKQJTc
+        +nKVdDMD/G9P+W0XnNavlY5QLlaPiQxADQFaLIGHWUILied92JsK8LfUBs5tRsZRZgN4Pf
+        2hSuEo8QXL4CMCGX9mI+HDCjPDGQHeL8c1gb25TXFtnDdxWqjyXC4894MeHWxvEcTB4h1U
+        liJ/1geR+j5bLD153qeiB73bJRKh6mX+6U80y8EymPrIrwFIvf19wboU5aPOvQ==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Tue, 14 Nov 2023 12:28:34 +0100
-Subject: [PATCH net-next v7 06/16] net: phy: micrel: fix ts_info value in
- case of no phc
+Date:   Tue, 14 Nov 2023 12:28:35 +0100
+Subject: [PATCH net-next v7 07/16] net_tstamp: Add TIMESTAMPING SOFTWARE
+ and HARDWARE mask
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-feature_ptp_netnext-v7-6-472e77951e40@bootlin.com>
+Message-Id: <20231114-feature_ptp_netnext-v7-7-472e77951e40@bootlin.com>
 References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
 In-Reply-To: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
 To:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -77,39 +77,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case of no phc we should not return SOFTWARE TIMESTAMPING flags as we do
-not know whether the netdev supports of timestamping.
-Remove it from the lan8841_ts_info and simply return 0.
+Timestamping software or hardware flags are often used as a group,
+therefore adding these masks will easier future use.
+
+I did not use SOF_TIMESTAMPING_SYS_HARDWARE flag as it is deprecated and
+not use at all.
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
+ include/uapi/linux/net_tstamp.h | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-This patch is not tested but it seems consistent to me.
-
-Changes in v6:
-- Update the commit message.
----
- drivers/net/phy/micrel.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
-
-diff --git a/drivers/net/phy/micrel.c b/drivers/net/phy/micrel.c
-index 99af1e500c6c..bd4cd082662f 100644
---- a/drivers/net/phy/micrel.c
-+++ b/drivers/net/phy/micrel.c
-@@ -3629,12 +3629,8 @@ static int lan8841_ts_info(struct mii_timestamper *mii_ts,
+diff --git a/include/uapi/linux/net_tstamp.h b/include/uapi/linux/net_tstamp.h
+index a2c66b3d7f0f..df8091998c8d 100644
+--- a/include/uapi/linux/net_tstamp.h
++++ b/include/uapi/linux/net_tstamp.h
+@@ -48,6 +48,14 @@ enum {
+ 					 SOF_TIMESTAMPING_TX_SCHED | \
+ 					 SOF_TIMESTAMPING_TX_ACK)
  
- 	info->phc_index = ptp_priv->ptp_clock ?
- 				ptp_clock_index(ptp_priv->ptp_clock) : -1;
--	if (info->phc_index == -1) {
--		info->so_timestamping |= SOF_TIMESTAMPING_TX_SOFTWARE |
--					 SOF_TIMESTAMPING_RX_SOFTWARE |
--					 SOF_TIMESTAMPING_SOFTWARE;
-+	if (info->phc_index == -1)
- 		return 0;
--	}
- 
- 	info->so_timestamping = SOF_TIMESTAMPING_TX_HARDWARE |
- 				SOF_TIMESTAMPING_RX_HARDWARE |
++#define SOF_TIMESTAMPING_SOFTWARE_MASK	(SOF_TIMESTAMPING_RX_SOFTWARE | \
++					 SOF_TIMESTAMPING_TX_SOFTWARE | \
++					 SOF_TIMESTAMPING_SOFTWARE)
++
++#define SOF_TIMESTAMPING_HARDWARE_MASK	(SOF_TIMESTAMPING_RX_HARDWARE | \
++					 SOF_TIMESTAMPING_TX_HARDWARE | \
++					 SOF_TIMESTAMPING_RAW_HARDWARE)
++
+ /**
+  * struct so_timestamping - SO_TIMESTAMPING parameter
+  *
 
 -- 
 2.25.1
