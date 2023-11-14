@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F25AA7EAD45
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAA777EAD4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:49:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjKNJsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54058 "EHLO
+        id S232217AbjKNJtK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:49:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjKNJsQ (ORCPT
+        with ESMTP id S229585AbjKNJtI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:48:16 -0500
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1A0D115;
-        Tue, 14 Nov 2023 01:48:13 -0800 (PST)
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-9dd6dc9c00cso810868966b.3;
-        Tue, 14 Nov 2023 01:48:13 -0800 (PST)
+        Tue, 14 Nov 2023 04:49:08 -0500
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6652194;
+        Tue, 14 Nov 2023 01:49:04 -0800 (PST)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-9ae2cc4d17eso806881766b.1;
+        Tue, 14 Nov 2023 01:49:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699955292; x=1700560092;
+        d=1e100.net; s=20230601; t=1699955343; x=1700560143;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xmgsoxyNFNBJw4J08KM/o4qvUbkmavsgJRhDbBneMmY=;
-        b=fxabq41pf8u6xzQ2s4HZRBK4T2rUdoiqzDdSvZlvBHNLRo3CpGZO66LnvvRkdrduy4
-         IcQVjFLhyvXvqECkaTjgk7PCq/KEHz41t1JGn9VJVHcRQ/sFIwOjPdsN6UpVc4NNFBjX
-         SWOwkCd73EyEvo29Pow9zEze7C+9+DcD6N+4PxhxZJ43r4Z2tK3H74ZpAB5hkdmWq2cB
-         FVdgeemNVj5ZEd5Au37SBsZXhMbDjGxMAHaw/BgAffdbW5QI7YE4SMMZ69ZmgdtYF3bB
-         ZGgX7bEDKr4TxzKaxmFKeQ9LYZ1fVuAyc0ZR916vpBIOZTZxB++pdlVeOBq0uXXLaze6
-         xzSw==
-X-Gm-Message-State: AOJu0YwjmrNWEmxyb3XGT7G1FIqla7NOx/cnP9ZyBQa6ppRusxxHPB95
-        e6JFiu7ME12XvGOPO5deuNo=
-X-Google-Smtp-Source: AGHT+IE630q16P809pZHCB8dZm7V0xHgAE4X3XhtoUQIgynu6nai7tw3ePJnYlFHUSjl39B/R2M/8g==
-X-Received: by 2002:a17:907:6d11:b0:9c5:cfa3:d04d with SMTP id sa17-20020a1709076d1100b009c5cfa3d04dmr8556337ejc.52.1699955291947;
-        Tue, 14 Nov 2023 01:48:11 -0800 (PST)
+        bh=RnNorZf32DtShFsUhxvCp+Ac6MkiE0q6VHIj1Ta/m1U=;
+        b=UWyrcrbVzEkRc+4SZM4MPRcsrG1fyW+mKA5mDCSuWO1yBca+2cRxD3enHhhpm+gG0J
+         HQ2prb+CvLG6s+9VJw4YVn8tqYQNf4cI83zQUTu9WYMy1TowS0Ox6eeey1+Yg+oFbkU1
+         oyKOv4hG8w/XmNoc8sAmCGqHupbZAJKani4rWIENVPMfPc0sK7eety7LsSqEg5gMWw58
+         lAYQ+BULnUpvJFIsnlikwGMIhNo9UgGv12gVETJzsjBvcclNgfIH/k4W1qZaeWmGc8O2
+         n0jmjBDAxdCttXbfI5z/FuBNEMA3I/1X668DqLZV3XOQkbstczkZmUpdB9md9c5IfUL+
+         iPdg==
+X-Gm-Message-State: AOJu0YxQXhUcbE6I/G7nn6iZdifnvsQ+RDwOGIohw+yGxyPKyAk25vaG
+        Ad9hDuaVHSZbtup1qVNl3zo=
+X-Google-Smtp-Source: AGHT+IG5TY9se6ngq38fgivY1jTJhWEmb1Ysr500mBpWh+0e1Rf6RLEZt3xOpVEJ4Fe0FKy0P7VGvw==
+X-Received: by 2002:a17:906:d9b:b0:9dd:4d73:9d44 with SMTP id m27-20020a1709060d9b00b009dd4d739d44mr5838517eji.47.1699955343219;
+        Tue, 14 Nov 2023 01:49:03 -0800 (PST)
 Received: from ?IPV6:2a0b:e7c0:0:107::aaaa:59? ([2a0b:e7c0:0:107::aaaa:59])
-        by smtp.gmail.com with ESMTPSA id rp21-20020a170906d97500b009e6af2efd77sm5225001ejb.45.2023.11.14.01.48.11
+        by smtp.gmail.com with ESMTPSA id rp21-20020a170906d97500b009e6af2efd77sm5225001ejb.45.2023.11.14.01.49.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 01:48:11 -0800 (PST)
-Message-ID: <08ce16bc-e4e9-4cad-b724-ea009d9bcbcb@kernel.org>
-Date:   Tue, 14 Nov 2023 10:48:10 +0100
+        Tue, 14 Nov 2023 01:49:02 -0800 (PST)
+Message-ID: <1fbb7691-398c-4b69-abdd-b57606085cd1@kernel.org>
+Date:   Tue, 14 Nov 2023 10:49:02 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/2] serial: uartlite: Use dynamic allocation for major
- number when uart ports > 4
+Subject: Re: [PATCH V2 1/2] Documentation: devices.txt: Update ttyUL major
+ number allocation details
 Content-Language: en-US
 To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>, git@amd.com,
         michal.simek@amd.com, jacmet@sunsite.dk,
@@ -54,7 +54,7 @@ To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>, git@amd.com,
 Cc:     radhey.shyam.pandey@amd.com, srinivas.goud@amd.com,
         shubhrajyoti.datta@amd.com, manion05gk@gmail.com
 References: <20231114093303.2718141-1-manikanta.guntupalli@amd.com>
- <20231114093303.2718141-3-manikanta.guntupalli@amd.com>
+ <20231114093303.2718141-2-manikanta.guntupalli@amd.com>
 From:   Jiri Slaby <jirislaby@kernel.org>
 Autocrypt: addr=jirislaby@kernel.org; keydata=
  xsFNBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -98,14 +98,13 @@ Autocrypt: addr=jirislaby@kernel.org; keydata=
  f/bIWIr0cqQmqQ33FgRhrG1+Xml6UXyJ2jExmlO8JljuOGeXYh6ZkIEyzqzffzBLXZCujlYQ
  DFXpyMNVJ2ZwPmX2mWEoYuaBU0JN7wM+/zWgOf2zRwhEuD3A2cO2PxoiIfyUEfB9SSmffaK/
  S4xXoB6wvGENZ85Hg37C7WDNdaAt6Xh2uQIly5grkgvWppkNy4ZHxE+jeNsU7tg=
-In-Reply-To: <20231114093303.2718141-3-manikanta.guntupalli@amd.com>
+In-Reply-To: <20231114093303.2718141-2-manikanta.guntupalli@amd.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -113,64 +112,35 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14. 11. 23, 10:33, Manikanta Guntupalli wrote:
-> Device number 204 has a range of minors on major number.
-> uart_register_driver is failing due to lack of minor numbers
-> when more number of uart ports used. So, to avoid minor number
-> limitation on 204 major number use dynamic major allocation
-> when more than 4 uart ports used otherwise use static major
-> allocation.
-> 
-> https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
+> Describe when uartlite driver uses static/dynamic allocation for major
+> number based on maximum number of uartlite serial ports.
 > 
 > Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
 > ---
 > Changes for V2:
-> Update logic to use either static or dynamic major allocation.
-> Update commit description.
-> Update description of SERIAL_UARTLITE_NR_UARTS in Kconfig.
+> This patch introduced in V2.
 > ---
->   drivers/tty/serial/Kconfig    | 2 ++
->   drivers/tty/serial/uartlite.c | 5 +++++
->   2 files changed, 7 insertions(+)
+>   Documentation/admin-guide/devices.txt | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-> index 732c893c8d16..368c63066a86 100644
-> --- a/drivers/tty/serial/Kconfig
-> +++ b/drivers/tty/serial/Kconfig
-> @@ -532,6 +532,8 @@ config SERIAL_UARTLITE_NR_UARTS
->   	help
->   	  Set this to the number of uartlites in your system, or the number
->   	  you think you might implement.
-> +	  If maximum number of uartlite serial ports more than 4,
+> diff --git a/Documentation/admin-guide/devices.txt b/Documentation/admin-guide/devices.txt
+> index 839054923530..d2f2c9f436db 100644
+> --- a/Documentation/admin-guide/devices.txt
+> +++ b/Documentation/admin-guide/devices.txt
+> @@ -2707,6 +2707,10 @@
+>   		 187 = /dev/ttyUL0		Xilinx uartlite - port 0
+>   		    ...
+>   		 190 = /dev/ttyUL3		Xilinx uartlite - port 3
+> +
+> +		 If maximum number of uartlite serial ports more than 4, then driver uses
+> +		 dynamic allocation instead of static allocation for major number.
 
-A verb is missing. The same in patch 1/2.
+I am not sure about the placement of this comment. This looks like it 
+holds for xvc below.
 
-> then driver uses
-> +	  dynamic allocation instead of static allocation for major number.
->   
->   config SERIAL_SUNCORE
->   	bool
-> diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
-> index 404c14acafa5..517f1f34143d 100644
-> --- a/drivers/tty/serial/uartlite.c
-> +++ b/drivers/tty/serial/uartlite.c
-> @@ -24,8 +24,13 @@
->   #include <linux/pm_runtime.h>
->   
->   #define ULITE_NAME		"ttyUL"
-> +#if (CONFIG_SERIAL_UARTLITE_NR_UARTS > 4)
-
-The parentheses are unneeded, right?
-
-> +#define ULITE_MAJOR             0       /* use dynamic node allocation */
-> +#define ULITE_MINOR             0
-> +#else
->   #define ULITE_MAJOR		204
->   #define ULITE_MINOR		187
-> +#endif
->   #define ULITE_NR_UARTS		CONFIG_SERIAL_UARTLITE_NR_UARTS
->   
->   /* ---------------------------------------------------------------------
+>   		 191 = /dev/xvc0		Xen virtual console - port 0
+>   		 192 = /dev/ttyPZ0		pmac_zilog - port 0
+>   		    ...
 
 -- 
 js
