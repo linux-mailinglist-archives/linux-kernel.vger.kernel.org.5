@@ -2,172 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7347EB4C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B27D7EB4CD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233774AbjKNQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:30:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
+        id S233878AbjKNQbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233795AbjKNQau (ORCPT
+        with ESMTP id S233792AbjKNQbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:30:50 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65398134
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:30:47 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id ca18e2360f4ac-7a996357550so246665039f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:30:47 -0800 (PST)
+        Tue, 14 Nov 2023 11:31:39 -0500
+Received: from mail-yb1-xb34.google.com (mail-yb1-xb34.google.com [IPv6:2607:f8b0:4864:20::b34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81370181
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:31:35 -0800 (PST)
+Received: by mail-yb1-xb34.google.com with SMTP id 3f1490d57ef6-d9ca471cf3aso5927508276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:31:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699979447; x=1700584247; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eDmYTpQ7ElU68lbzr+9q96SRibKaNKBSn5JxdJQPRH4=;
-        b=SQfQgyN4i2nyEwNVZI+bgoCnMMbCjDvAFeoL+9rL2yodAECJzs/sI3TjXWWxCTr0br
-         6d/9Z8MZQMl/3Uh2E28Wh5/oofCRtVup0jxHR+9GK4w5zTCbpvIcHc+iXcJk7bPU6wxL
-         LxncCZj9UxSyd4GdDsA7h/Rz9Y7OaW1nDkzUy92W2PB9Rt5mis0U9AA28u2uS56sAjTr
-         pljewq4OQ7d0HZjtUNa2BmyDEDIBLaHBKJMCx0HpWjZ480xIEZ9G371ObCI2BDev6ljy
-         heZsaBsN+u8KWqlh/lW37dh9gzvLVDdHUIaDsOLOwNrFSXxpL8Vp/xPRZn0FoCkKdb5z
-         UMdg==
+        d=linaro.org; s=google; t=1699979494; x=1700584294; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=fr9fBrNQghS3PnJBIgxqFuQ3YV89v+EkFP5jOeoN9BI=;
+        b=h0oLxdombhcX61+QbhS50eWQ1gC2f7ymvb1PrvifsdEPOzbPWhmUfqTvCB5ONhKbwE
+         8HGwRvgNRrOtf+Kq6WjmsHHlyuDPxTlYVOLw91Ubg8YlhSkuGZr7OkVwiZJCL1sRVPtt
+         uxre0gBseJrRX39kQ9CfX1n4jRAFQVbWEKMWvlvIRKPPUt0kkWjDsz0KkxZNmvRIzcfQ
+         ZcA6SwWneWcCFlBw0AMBL+JtUNsWYwrxP+bXDpgfkZFp8a73MtUxUFH5gRHW9xY1LBmx
+         PSSf7tba6HmEucd6ABJIaEbLHPigHH16xlU/s7ImXFqGAa+p4l0mCmbheKvphCuqLqIo
+         009g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699979447; x=1700584247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eDmYTpQ7ElU68lbzr+9q96SRibKaNKBSn5JxdJQPRH4=;
-        b=kOzkEupSIbGuEmKRYzC9e4nFRdnVq5m1OgFFNvUDFloi8OBtaN3uy40I+0d3st61qU
-         G3DEjXk+pkbcTRt2vfUlb3ZCrvHvzf0ASohPD/NDJKZVIQYgDMBJadMWJ0TonfesNd4M
-         3cKTgodqB5DAAruGqxTGvQo7Ax1igqNh6zAuL32Yn1qGbsv3433jngvSv9tG2B53TbHB
-         zDIEeMpXIggOuFrTz/5QewIP+bpFPHYHETLrlejsZpuxzfN49QMbiiXwdFg/pVkDP6pY
-         iCBCkkTHhnznw2+Tfc2/GHn6MAgSAIlq0RetdiJc1WJDWMT5+dMvgZQaEWBNgiQCExjf
-         8ZeA==
-X-Gm-Message-State: AOJu0Yy8oS5lwi7w27mYIMaH9PqboVrWWLTbu37HLB5k/9xYJogWGZR6
-        KxtDnJQ67IfvcR/aeMgM7dIvb7nyCpFYzoqY6D0=
-X-Google-Smtp-Source: AGHT+IFKXz+U5SHG/cutGmlpXg4CbVgwipwW7eN+TON4JG4prnDFlquLp9n9k9ipAcRa6lPTdjw2fjR7GaW/qKhaIg4=
-X-Received: by 2002:a05:6602:334f:b0:795:fa0:c15 with SMTP id
- c15-20020a056602334f00b007950fa00c15mr11052248ioz.6.1699979446588; Tue, 14
- Nov 2023 08:30:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699979494; x=1700584294;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fr9fBrNQghS3PnJBIgxqFuQ3YV89v+EkFP5jOeoN9BI=;
+        b=c6/RhZ3WhWR3zoXVqe3F6dukAFEtD8PzFS0AOVHG7EkKoz4vzHuMT7GCqDZ9+bAoRt
+         uFzNXWVAL49dXnAdLGpiFnBXHvq0zxc/dGlbsWut4o4+hDEBwhQeZyP/zsJTUsJbGbqF
+         0TPuwGKE+IdrgNHk3/mDkhYaIBt3QUpcMJSFNxwaY1KTyVIqTsILGcEjz659Rk8nLZdZ
+         J00ijBaaw2m9/bF3kGk14sLAMcOLx0MppnAd5+dp3c36lCb8jOaQKGpQGxTItOvYR6Ai
+         rJS8c7JhzxUiYEDfm6j27fEfko8vkSDkENFJpEwY4fNshI3QpTDsWES+rkB4org9X1bm
+         AeBQ==
+X-Gm-Message-State: AOJu0Yz07oyMJaI9zMYiiy9e0vIYtKIYxUmg51UHoq8lLK3q15vUXj5p
+        1K0bPt0E4gS4NJDXF9TiPaiPNshLdJx1/xAOBQuaoA==
+X-Google-Smtp-Source: AGHT+IE5JRixOjxRGUF+c61qIeYY24wdOAvccV78T4FRZCSUWSvo//Cy7fL+VTmLpOHSicQnDTECRUPpp9z3C1BQ8uY=
+X-Received: by 2002:a25:1646:0:b0:daf:579a:79cd with SMTP id
+ 67-20020a251646000000b00daf579a79cdmr7364262ybw.27.1699979494683; Tue, 14 Nov
+ 2023 08:31:34 -0800 (PST)
 MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAKEwX=NhiGyoqR3HaDCuarqGmM5CCMYDatvVEEtVKzrL8DdDbw@mail.gmail.com> <CACSyD1NyynLrrkrp-A8tGW5gUJeFQiYk_E_SO14m_7wqrddtiQ@mail.gmail.com>
-In-Reply-To: <CACSyD1NyynLrrkrp-A8tGW5gUJeFQiYk_E_SO14m_7wqrddtiQ@mail.gmail.com>
-From:   Nhat Pham <nphamcs@gmail.com>
-Date:   Tue, 14 Nov 2023 11:30:35 -0500
-Message-ID: <CAKEwX=MinEqt_gR+hvyYc1dgU68B1Auw8fypRo7SKFjFK7VHaA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
- failure in two scenarios
-To:     =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        yosryahmed@google.com, sjenning@redhat.com, ddstreet@ieee.org,
-        vitaly.wool@konsulko.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org> <20231108104343.24192-5-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231108104343.24192-5-krzysztof.kozlowski@linaro.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Tue, 14 Nov 2023 17:30:58 +0100
+Message-ID: <CAPDyKFrynEEd+y6Qkv_9aTSJy1iLO4bhg-Jg8hEP0CZiWnRJ0w@mail.gmail.com>
+Subject: Re: [PATCH 04/17] dt-bindings: mmc: samsung,exynos-dw-mshc: add
+ specific compatibles for existing SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 12:21=E2=80=AFAM =E8=B4=BA=E4=B8=AD=E5=9D=A4 <hezho=
-ngkun.hzk@bytedance.com> wrote:
+On Wed, 8 Nov 2023 at 11:44, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
 >
-> Thanks for your time, Nhat.
+> Samsung Exynos SoC reuses several devices from older designs, thus
+> historically we kept the old (block's) compatible only.  This works fine
+> and there is no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
 >
-> >
-> > These two cases should not count as "successful writeback" right?
-> >
+> Add compatibles specific to each SoC in front of all old-SoC-like
+> compatibles.
 >
-> This is true from the perspective of the writeback itself, but should it
-> also be considered successful from the purpose of the writeback,
->  i.e. whether the compressed memory and zswap_entry can be reclaimed?
+> While re-indenting the first enum, put also axis,artpec8-dw-mshc in
+> alphabetical order.
 >
-> > I'm slightly biased of course, since my zswap shrinker depends on this
-> > as one of the potential signals for over-shrinking - but that aside, I =
-think
-> > that this constitutes a failed writeback (i.e should not increment writ=
-eback
-> > counter, and the limit-based reclaim should try again etc.). If anythin=
-g,
-> > it will make it incredibly confusing for users.
->
-> This patch will skip the writeback step=EF=BC=8Cso the writeback counter =
-will not
-> be incremented. Currently MAX_RECLAIM_RETRIES is 14, shrink_worker
-> will often fail if writeback fails.
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Ah my bad, I should have been clearer.
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-I was looking at the zswap shrinker patch series (specifically the
-cgroup-aware LRU patch), which moves the counter update out of
-zswap_writeback_entry. If we apply that patch on top of that series, we wil=
-l
-screw up the counter. Should be easily fixable anyway though.
+Kind regards
+Uffe
 
 >
-> >
-> > For instance, we were trying to estimate the number of zswap store
-> > fails by subtracting the writeback count from the overall pswpout, and
-> > this could throw us off by inflating the writeback count, and deflating
-> > the zswap store failure count as a result.
+> ---
 >
-> As mentioned above, writeback counter will not be incremented.
+> I propose to take the patch through Samsung SoC (me). See cover letter
+> for explanation.
+> ---
+>  .../bindings/mmc/samsung,exynos-dw-mshc.yaml  | 25 ++++++++++++-------
+>  1 file changed, 16 insertions(+), 9 deletions(-)
 >
-> >
-> > Regarding the second case specifically, I thought that was the point of
-> > having zswap_exclusive_loads_enabled disabled - i.e still keeps a copy
-> > around in the zswap pool even after a completed zswap_load? Based
-> > on the Kconfig documentation:
-> >
-> > "This avoids having two copies of the same page in memory
-> > (compressed and uncompressed) after faulting in a page from zswap.
-> > The cost is that if the page was never dirtied and needs to be
-> > swapped out again, it will be re-compressed."
-> >
+> diff --git a/Documentation/devicetree/bindings/mmc/samsung,exynos-dw-mshc.yaml b/Documentation/devicetree/bindings/mmc/samsung,exynos-dw-mshc.yaml
+> index 6ee78a38bd74..5fe65795f796 100644
+> --- a/Documentation/devicetree/bindings/mmc/samsung,exynos-dw-mshc.yaml
+> +++ b/Documentation/devicetree/bindings/mmc/samsung,exynos-dw-mshc.yaml
+> @@ -14,15 +14,22 @@ maintainers:
 >
-> Yes=EF=BC=8Ci know the point=EF=BC=8Cin the case of reading, there is no =
-data update,
-> so the next swapout does not need to be compressed again.
-> Consider this scenario,there is a lot of data cached in memory and zswap,
-> hit the limit=EF=BC=8Cand shrink_worker will fail. The new coming data be=
- written
-> directly to swap due to zswap_store failure. Should we free the last one
-> to store the latest one in zswap.
-
-Ah I think I understand the point of the patch a bit better now.
-
-Essentially, we're invalidating these entries, which does reclaim the
-memory used for these compressed objects, but there is no IO involved.
-Writeback-less shrinking, if you will.
-
-This will still screw up one of the heuristics I'm using for the zswap
-shrinker a bit, but that should be easily fixable with some plumbing.
-Same goes for the writeback counter - but depending on the order in
-which Andrew apply the patches, you might have to resolve the conflicts
-there :)
-
-Other than this objection, I think this optimization makes sense to me:
-
-In the first case, we already freed the swap entry. Might as well also
-dropped the zswap entry.
-
-In the second case, we already have another copy in memory, so
-dropping the compressed copy to make space for warmer objects
-coming into zswap makes sense to me. Might be worth doing a
-micro-benchmark to verify this intuition, but I agree that it's more
-important to maintain the LRU ordering than any CPU saving from
-skipping re-compression.
-
-I would suggest that you should expand on this on the commit log
-to make clearer the motivation behind this optimization, if you were
-to re-submit this patch for some reason (for e.g to resolve the
-aforementioned conflicts with the zswap shrinker series).
-
-But otherwise, LGTM!
-
-Feel free to add the following tag:
-Reviewed-by: Nhat Pham <nphamcs@gmail.com>
+>  properties:
+>    compatible:
+> -    enum:
+> -      - samsung,exynos4210-dw-mshc
+> -      - samsung,exynos4412-dw-mshc
+> -      - samsung,exynos5250-dw-mshc
+> -      - samsung,exynos5420-dw-mshc
+> -      - samsung,exynos5420-dw-mshc-smu
+> -      - samsung,exynos7-dw-mshc
+> -      - samsung,exynos7-dw-mshc-smu
+> -      - axis,artpec8-dw-mshc
+> +    oneOf:
+> +      - enum:
+> +          - axis,artpec8-dw-mshc
+> +          - samsung,exynos4210-dw-mshc
+> +          - samsung,exynos4412-dw-mshc
+> +          - samsung,exynos5250-dw-mshc
+> +          - samsung,exynos5420-dw-mshc
+> +          - samsung,exynos5420-dw-mshc-smu
+> +          - samsung,exynos7-dw-mshc
+> +          - samsung,exynos7-dw-mshc-smu
+> +      - items:
+> +          - enum:
+> +              - samsung,exynos5433-dw-mshc-smu
+> +              - samsung,exynos7885-dw-mshc-smu
+> +              - samsung,exynos850-dw-mshc-smu
+> +          - const: samsung,exynos7-dw-mshc-smu
+>
+>    reg:
+>      maxItems: 1
+> --
+> 2.34.1
+>
