@@ -2,260 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E58D87EB6D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:24:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D2C7EB6DB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbjKNTYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
+        id S231330AbjKNTYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:24:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231542AbjKNTYD (ORCPT
+        with ESMTP id S229551AbjKNTYw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:24:03 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02326FB;
-        Tue, 14 Nov 2023 11:24:00 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc0d0a0355so46000615ad.3;
-        Tue, 14 Nov 2023 11:23:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699989839; x=1700594639; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=oRg/9amNRCNDUA0dPsjr4YlY4vfRo/KbH+WFDWxlwMU=;
-        b=VS+UUI5nc7/5i4wYaOLpMPq3OJlr1tqThDQq9XeNInB/i/Xaqaz9ZkSO/4p9Wkgrqi
-         Lkm8vaI3tPl3JkNzKDuFNbhuh4pUl5dPaVV+P2ZY2M4tyiTI1Ihqr6FYHhrDazxjryRY
-         lir8b6sPHCJO6QpjiQBTELJQK34FFyrjCVcUWnUXbCEVeJ167wPT/ToB/iPBwSQi9KKz
-         wICW0NrBb3T0gQLhYOH0ctNkPh0uJ7KDMMFnenuw3xAuQWEn7vpy8F5Ar7hnORsHhmSj
-         rd9Z7f5FmhyTEZhXU+vfs7XDdu1t2NK07hHrwhyJaYGwBPA2qSGucs7vSu4DLhyEGqrU
-         WgPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699989839; x=1700594639;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oRg/9amNRCNDUA0dPsjr4YlY4vfRo/KbH+WFDWxlwMU=;
-        b=HyPzLLcVpRjGdU2QaiiPEuXXYvg1AUMqM42/KZoj6yHnfCC+yjeHDIyb3Zbg3EeWKq
-         HHjy19RBexKWIdJRBAWxIRql+zDb2LnwvkCMwq+Wtv03FErAb0b76wCLXgaBCo1WCydh
-         3MVmgZE6eg2PLQkCFy/pJzoDRCg0Hn6AtAN8uH+Z1hAnTQ0WkMjUAK0NT798dw8XWlmq
-         vPmkc5TL5hNv0EJb7HrGoCgTQS+8WcctJvC2jCeEqVSQx3k0zbzwbUE1IE3hr43FEmgT
-         YHO3mmN8yl/nyIqOAks1GMTbP/Wgi2R6F/t37spVeX7V5DVhqpNCS+7SVLcY9LurNUst
-         I4VQ==
-X-Gm-Message-State: AOJu0Ywq+08jsBaPR365ZR1rh4bfzo3D8xfNbkAAYqd+wdwB0xyX7ZCk
-        DvjNY9jYkuXBb+7ZgJQM+x4=
-X-Google-Smtp-Source: AGHT+IHS3uxflJr5xZ7v8R8SsVGqdz2WtqnBZlLldfgKr7b9dh6D9gGfP4deOLawiw5HY7ylZcunPg==
-X-Received: by 2002:a17:903:1251:b0:1cc:50f6:7fca with SMTP id u17-20020a170903125100b001cc50f67fcamr3820996plh.24.1699989839296;
-        Tue, 14 Nov 2023 11:23:59 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id j8-20020a17090276c800b001cc52ca2dfbsm5963116plt.120.2023.11.14.11.23.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 11:23:58 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 14 Nov 2023 09:23:57 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-        changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-        andrea.righi@canonical.com
-Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com, David Vernet <void@manifault.com>
-Subject: [PATCH v2 18/36] sched_ext: Print sched_ext info when dumping stack
-Message-ID: <ZVPJTc5ZNEnnYmei@slm.duckdns.org>
-References: <20231111024835.2164816-1-tj@kernel.org>
- <20231111024835.2164816-19-tj@kernel.org>
+        Tue, 14 Nov 2023 14:24:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A070FB;
+        Tue, 14 Nov 2023 11:24:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699989889; x=1731525889;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=DXy0hru+i9t5YWHtrQTgBmZudCR2V4Ap0+DZIcK0UDg=;
+  b=Iq1ob1uoPi5gWsayo5Vu/4+/hdCVg/KJsOtbaG9/E3mR4LSy01i/QjAY
+   fi850irN6P6bLm+0wX5kfKsC96qinPqsTRLcvhFsEYabiD1LmPTvUtU/l
+   ZaiSIkI5zDejvoZIqSfIWsRl+53elTt5Pt4nyZ6zGobBdf4pRsPuYiMf9
+   B1FS5pDlOejxDmlBDoNB0eol6czIZP+mSi3cQza1Q9+4pERjR5h9COaXh
+   NwbHrUg12aRbg7m3GVHoQLLOXHM55EqgxgVGdjLJF9mpAwPzOLXo2veUQ
+   Kir14HhEvCTeAxp/LaDSxdzB9T1hoO/2SnsJStPxxBYDMlT3uQAOgrsds
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="3800376"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="3800376"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:24:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="938221085"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="938221085"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:24:48 -0800
+Date:   Tue, 14 Nov 2023 11:24:47 -0800
+From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To:     Kai Huang <kai.huang@intel.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
+        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
+        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
+        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
+        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com,
+        isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v15 05/23] x86/virt/tdx: Handle SEAMCALL no entropy error
+ in common code
+Message-ID: <20231114192447.GA1109547@ls.amr.corp.intel.com>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <9565b2ccc347752607039e036fd8d19d78401b53.1699527082.git.kai.huang@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231111024835.2164816-19-tj@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <9565b2ccc347752607039e036fd8d19d78401b53.1699527082.git.kai.huang@intel.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From e1a20d192fed44bf672682431d85186a46f275c9 Mon Sep 17 00:00:00 2001
-From: David Vernet <void@manifault.com>
-Date: Tue, 14 Nov 2023 09:19:48 -1000
+On Fri, Nov 10, 2023 at 12:55:42AM +1300,
+Kai Huang <kai.huang@intel.com> wrote:
 
-It would be useful to see what the sched_ext scheduler state is, and what
-scheduler is running, when we're dumping a task's stack. This patch
-therefore adds a new print_scx_info() function that's called in the same
-context as print_worker_info() and print_stop_info(). An example dump
-follows.
+> Some SEAMCALLs use the RDRAND hardware and can fail for the same reasons
+> as RDRAND.  Use the kernel RDRAND retry logic for them.
+> 
+> There are three __seamcall*() variants.  Do the SEAMCALL retry in common
+> code and add a wrapper for each of them.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Reviewed-by: Kirill A. Shutemov <kirll.shutemov@linux.intel.com>
+> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+> ---
+> 
+> v14 -> v15:
+>  - Added Sathy's tag.
+> 
+> v13 -> v14:
+>  - Use real function sc_retry() instead of using macros. (Dave)
+>  - Added Kirill's tag.
+> 
+> v12 -> v13:
+>  - New implementation due to TDCALL assembly series.
+> 
+> ---
+>  arch/x86/include/asm/tdx.h | 26 ++++++++++++++++++++++++++
+>  1 file changed, 26 insertions(+)
+> 
+> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
+> index ea9a0320b1f8..f1c0c15469f8 100644
+> --- a/arch/x86/include/asm/tdx.h
+> +++ b/arch/x86/include/asm/tdx.h
+> @@ -24,6 +24,11 @@
+>  #define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
+>  #define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
+>  
+> +/*
+> + * TDX module SEAMCALL leaf function error codes
+> + */
+> +#define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
+> +
+>  #ifndef __ASSEMBLY__
+>  
+>  /*
+> @@ -84,6 +89,27 @@ u64 __seamcall(u64 fn, struct tdx_module_args *args);
+>  u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
+>  u64 __seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
+>  
+> +#include <asm/archrandom.h>
+> +
+> +typedef u64 (*sc_func_t)(u64 fn, struct tdx_module_args *args);
+> +
+> +static inline u64 sc_retry(sc_func_t func, u64 fn,
+> +			   struct tdx_module_args *args)
+> +{
+> +	int retry = RDRAND_RETRY_LOOPS;
+> +	u64 ret;
+> +
+> +	do {
+> +		ret = func(fn, args);
+> +	} while (ret == TDX_RND_NO_ENTROPY && --retry);
 
-  BUG: kernel NULL pointer dereference, address: 0000000000000999
-  #PF: supervisor write access in kernel mode
-  #PF: error_code(0x0002) - not-present page
-  PGD 0 P4D 0
-  Oops: 0002 [#1] PREEMPT SMP
-  CPU: 13 PID: 2047 Comm: insmod Tainted: G           O       6.6.0-work-10323-gb58d4cae8e99-dirty #34
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS unknown 2/2/2022
-  Sched_ext: qmap (enabled+all), task: runnable_at=-17ms
-  RIP: 0010:init_module+0x9/0x1000 [test_module]
-  ...
+This loop assumes that args isn't touched when TDX_RND_NO_ENTRYPOY is returned.
+It's not true.  TDH.SYS.INIT() and TDH.SYS.LP.INIT() clear RCX, RDX, etc on
+error including TDX_RND_NO_ENTRY.  Because TDH.SYS.INIT() takes RCX as input,
+this wrapper doesn't work.  TDH.SYS.LP.INIT() doesn't use RCX, RDX ... as
+input. So it doesn't matter.
 
-v2: We are now using scx_ops_enable_state_str[] outside CONFIG_SCHED_DEBUG.
-    Move it outside of CONFIG_SCHED_DEBUG and to the top. This was reported
-    by Changwoo and Andrea.
-
-Signed-off-by: David Vernet <void@manifault.com>
-Reported-by: Changwoo Min <changwoo@igalia.com>
-Reported-by: Andrea Righi <andrea.righi@canonical.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
-Hello,
-
-The sched_ext-v5 branch has been updated accordingly.
-
-  https://github.com/htejun/sched_ext sched_ext-v5
-
-Thanks.
-
- include/linux/sched/ext.h |  2 ++
- kernel/sched/core.c       |  1 +
- kernel/sched/ext.c        | 61 ++++++++++++++++++++++++++++++++++-----
- lib/dump_stack.c          |  1 +
- 4 files changed, 57 insertions(+), 8 deletions(-)
-
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 9d41acaf89c0..55f649bd065c 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -428,10 +428,12 @@ struct sched_ext_entity {
- };
- 
- void sched_ext_free(struct task_struct *p);
-+void print_scx_info(const char *log_lvl, struct task_struct *p);
- 
- #else	/* !CONFIG_SCHED_CLASS_EXT */
- 
- static inline void sched_ext_free(struct task_struct *p) {}
-+static inline void print_scx_info(const char *log_lvl, struct task_struct *p) {}
- 
- #endif	/* CONFIG_SCHED_CLASS_EXT */
- #endif	/* _LINUX_SCHED_EXT_H */
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 1906f8397c28..957ae28a6e3f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -9217,6 +9217,7 @@ void sched_show_task(struct task_struct *p)
- 
- 	print_worker_info(KERN_INFO, p);
- 	print_stop_info(KERN_INFO, p);
-+	print_scx_info(KERN_INFO, p);
- 	show_stack(p, NULL, KERN_INFO);
- 	put_task_stack(p);
- }
-diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 4e2aa9f308fb..621559c9f9c5 100644
---- a/kernel/sched/ext.c
-+++ b/kernel/sched/ext.c
-@@ -20,6 +20,14 @@ enum scx_ops_enable_state {
- 	SCX_OPS_DISABLED,
- };
- 
-+static const char *scx_ops_enable_state_str[] = {
-+	[SCX_OPS_PREPPING]	= "prepping",
-+	[SCX_OPS_ENABLING]	= "enabling",
-+	[SCX_OPS_ENABLED]	= "enabled",
-+	[SCX_OPS_DISABLING]	= "disabling",
-+	[SCX_OPS_DISABLED]	= "disabled",
-+};
-+
- /*
-  * sched_ext_entity->ops_state
-  *
-@@ -2560,14 +2568,6 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
- }
- 
- #ifdef CONFIG_SCHED_DEBUG
--static const char *scx_ops_enable_state_str[] = {
--	[SCX_OPS_PREPPING]	= "prepping",
--	[SCX_OPS_ENABLING]	= "enabling",
--	[SCX_OPS_ENABLED]	= "enabled",
--	[SCX_OPS_DISABLING]	= "disabling",
--	[SCX_OPS_DISABLED]	= "disabled",
--};
--
- static int scx_debug_show(struct seq_file *m, void *v)
- {
- 	mutex_lock(&scx_ops_enable_mutex);
-@@ -2787,6 +2787,51 @@ static const struct sysrq_key_op sysrq_sched_ext_reset_op = {
- 	.enable_mask	= SYSRQ_ENABLE_RTNICE,
- };
- 
-+/**
-+ * print_scx_info - print out sched_ext scheduler state
-+ * @log_lvl: the log level to use when printing
-+ * @p: target task
-+ *
-+ * If a sched_ext scheduler is enabled, print the name and state of the
-+ * scheduler. If @p is on sched_ext, print further information about the task.
-+ *
-+ * This function can be safely called on any task as long as the task_struct
-+ * itself is accessible. While safe, this function isn't synchronized and may
-+ * print out mixups or garbages of limited length.
-+ */
-+void print_scx_info(const char *log_lvl, struct task_struct *p)
-+{
-+	enum scx_ops_enable_state state = scx_ops_enable_state();
-+	const char *all = READ_ONCE(scx_switching_all) ? "+all" : "";
-+	char runnable_at_buf[22] = "?";
-+	struct sched_class *class;
-+	unsigned long runnable_at;
-+
-+	if (state == SCX_OPS_DISABLED)
-+		return;
-+
-+	/*
-+	 * Carefully check if the task was running on sched_ext, and then
-+	 * carefully copy the time it's been runnable, and its state.
-+	 */
-+	if (copy_from_kernel_nofault(&class, &p->sched_class, sizeof(class)) ||
-+	    class != &ext_sched_class) {
-+		printk("%sSched_ext: %s (%s%s)", log_lvl, scx_ops.name,
-+		       scx_ops_enable_state_str[state], all);
-+		return;
-+	}
-+
-+	if (!copy_from_kernel_nofault(&runnable_at, &p->scx.runnable_at,
-+				      sizeof(runnable_at)))
-+		scnprintf(runnable_at_buf, sizeof(runnable_at_buf), "%+lldms",
-+			  (s64)(runnable_at - jiffies) * (HZ / MSEC_PER_SEC));
-+
-+	/* Print everything onto one line to conserve console spce. */
-+	printk("%sSched_ext: %s (%s%s), task: runnable_at=%s",
-+	       log_lvl, scx_ops.name, scx_ops_enable_state_str[state], all,
-+	       runnable_at_buf);
-+}
-+
- void __init init_sched_ext_class(void)
- {
- 	int cpu;
-diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-index 83471e81501a..6e667c445539 100644
---- a/lib/dump_stack.c
-+++ b/lib/dump_stack.c
-@@ -68,6 +68,7 @@ void dump_stack_print_info(const char *log_lvl)
- 
- 	print_worker_info(log_lvl, current);
- 	print_stop_info(log_lvl, current);
-+	print_scx_info(log_lvl, current);
- }
- 
- /**
+Other SEAMCALLs doesn't touch registers on the no entropy error.
+TDH.EXPORTS.STATE.IMMUTABLE(), TDH.IMPORTS.STATE.IMMUTABLE(), TDH.MNG.ADDCX(),
+and TDX.MNG.CREATE().  TDH.SYS.INIT() is an exception.
 -- 
-2.42.1
-
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
