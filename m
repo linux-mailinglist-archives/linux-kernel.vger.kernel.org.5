@@ -2,41 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 416987EAD9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:08:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51CC7EADA2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:08:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232574AbjKNKIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60004 "EHLO
+        id S232465AbjKNKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:08:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232435AbjKNKIP (ORCPT
+        with ESMTP id S232528AbjKNKIR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:08:15 -0500
+        Tue, 14 Nov 2023 05:08:17 -0500
 Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02565191;
-        Tue, 14 Nov 2023 02:08:11 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E7119F;
+        Tue, 14 Nov 2023 02:08:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
         Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
         Reply-To:Content-ID:Content-Description;
-        bh=U1jqULllO9yyumvw2SGWYMHOTDF/1W4JaEKNAJ5zL9g=; b=UxxEL2jHHreKo90GBCCSwoWIWo
-        BK0IvKT7BIo8AvjH9p+jhGpnag+bgSLKbojRzqF++uxhYAp66MHtkhCBqCFHJAoR0jDypw2tC/j8z
-        OtPyf5iendwiO82EXogfOWJMVcK+fRsVA+ZPNGw3nit6MreWLBtelCw1aUIGKdqlkAQTSoFHHg3Dl
-        48lLbp5ntWDSzBdEPo0ufpzbKVwRQv9dlSzBIijDnqG/RALi6Cs4jT4V/89/uNEc81eq9UxzciBIo
-        uHzm0n4sMaYjfLW4zYbvuNem0tldizO36ls4ytVh0Gz3uSXlaNc/5gm+WsMcOIyByYlf29JH1MqGi
-        3wA1ytrg==;
+        bh=nMk7zTRFOdK2rz7OlbU43But/2vJEYeFTpihGg8XE7g=; b=SiabwvePpKfwYhWDzfZmkNiNNQ
+        3ZaIv65InR4KA6aJNFIaF9JgNoRa2C/kuMmOHZUbq1sdbczJFTJskPIpIvx8pNDZst2i6oDDgL8Ya
+        fIXA/8Agl+Ru22hY67BJJ1XH6tZzdRpDfGkYYWEAEUwc0yaRFjfq8mLKEKqywU5DDV4e1k+VdYB+s
+        gR+UdQe4ru9fbqlTD8gbky86aoKPdqW5x9FJ2LaOM0QzM64p9xTewGlcIuC89+4XfRfDRRXUjhQcz
+        mWDy349lfOrZdio0Pxp5r4ObvXJAJJD+pUUbus17HiIKt+97xAfHNLa6U9Lr6K/mDvGj6N2toClDj
+        Ul0bMbBQ==;
 Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
         by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1r2qL2-0050az-0X;
-        Tue, 14 Nov 2023 11:08:08 +0100
+        id 1r2qL4-0050az-0q;
+        Tue, 14 Nov 2023 11:08:10 +0100
 From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Tue, 14 Nov 2023 11:07:44 +0100
-Subject: [PATCH v3 2/3] cpufreq: qcom-nvmem: Preserve PM domain votes in
- system suspend
+Date:   Tue, 14 Nov 2023 11:07:45 +0100
+Subject: [PATCH v3 3/3] pmdomain: qcom: rpmpd: Set GENPD_FLAG_ACTIVE_WAKEUP
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-msm8909-cpufreq-v3-2-926097a6e5c1@kernkonzept.com>
+Message-Id: <20231114-msm8909-cpufreq-v3-3-926097a6e5c1@kernkonzept.com>
 References: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
 In-Reply-To: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
 To:     Viresh Kumar <viresh.kumar@linaro.org>,
@@ -63,104 +62,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From the Linux point of view, the power domains used by the CPU must
-stay always-on. This is because we still need the CPU to keep running
-until the last instruction, which will typically be a firmware call that
-shuts down the CPU cleanly.
+Set GENPD_FLAG_ACTIVE_WAKEUP for all RPM power domains so that power
+domains necessary for wakeup/"awake path" devices are kept on across
+suspend.
 
-At the moment the power domain votes (enable + performance state) are
-dropped during system suspend, which means the CPU could potentially
-malfunction while entering suspend.
-
-We need to distinguish between two different setups used with
-qcom-cpufreq-nvmem:
-
- 1. CPR power domain: The backing regulator used by CPR should stay
-    always-on in Linux; it is typically disabled automatically by
-    hardware when the CPU enters a deep idle state. However, we
-    should pause the CPR state machine during system suspend.
-
- 2. RPMPD: The power domains used by the CPU should stay always-on
-    in Linux (also across system suspend). The CPU typically only
-    uses the *_AO ("active-only") variants of the power domains in
-    RPMPD. For those, the RPM firmware will automatically drop
-    the votes internally when the CPU enters a deep idle state.
-
-Make this work correctly by calling device_set_awake_path() on the
-virtual genpd devices, so that the votes are maintained across system
-suspend. The power domain drivers need to set GENPD_FLAG_ACTIVE_WAKEUP
-to opt into staying on during system suspend.
-
-For now we only set this for the RPMPD case. For CPR, not setting it
-will ensure the state machine is still paused during system suspend,
-while the backing regulator will stay on with "regulator-always-on".
+This is needed for example for the *_AO ("active-only") variants of the
+RPMPDs used by the CPU. Those should maintain their votes also across
+system suspend to ensure the CPU can keep running for the whole suspend
+process (ending in a firmware call). When the RPM firmware detects that
+the CPUs are in a deep idle state it will drop those votes automatically.
 
 Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
 ---
-This patch can be merged independently from the pmdomain one for RPMPD.
-Both are needed to actually preserve the votes during system suspend but
-there is no compile-time dependency.
----
- drivers/cpufreq/qcom-cpufreq-nvmem.c | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
+ drivers/pmdomain/qcom/rpmpd.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/cpufreq/qcom-cpufreq-nvmem.c b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-index d239a45ed497..ea05d9d67490 100644
---- a/drivers/cpufreq/qcom-cpufreq-nvmem.c
-+++ b/drivers/cpufreq/qcom-cpufreq-nvmem.c
-@@ -23,6 +23,7 @@
- #include <linux/nvmem-consumer.h>
- #include <linux/of.h>
- #include <linux/platform_device.h>
-+#include <linux/pm.h>
- #include <linux/pm_domain.h>
- #include <linux/pm_opp.h>
- #include <linux/pm_runtime.h>
-@@ -426,6 +427,18 @@ static const struct qcom_cpufreq_match_data match_data_ipq8074 = {
- 	.get_version = qcom_cpufreq_ipq8074_name_version,
- };
+diff --git a/drivers/pmdomain/qcom/rpmpd.c b/drivers/pmdomain/qcom/rpmpd.c
+index 07590a3ef19c..7796d65f96e8 100644
+--- a/drivers/pmdomain/qcom/rpmpd.c
++++ b/drivers/pmdomain/qcom/rpmpd.c
+@@ -1044,6 +1044,7 @@ static int rpmpd_probe(struct platform_device *pdev)
+ 		rpmpds[i]->pd.power_off = rpmpd_power_off;
+ 		rpmpds[i]->pd.power_on = rpmpd_power_on;
+ 		rpmpds[i]->pd.set_performance_state = rpmpd_set_performance;
++		rpmpds[i]->pd.flags = GENPD_FLAG_ACTIVE_WAKEUP;
+ 		pm_genpd_init(&rpmpds[i]->pd, NULL, true);
  
-+static void qcom_cpufreq_suspend_virt_devs(struct qcom_cpufreq_drv *drv, unsigned int cpu)
-+{
-+	const char * const *name = drv->data->genpd_names;
-+	int i;
-+
-+	if (!drv->cpus[cpu].virt_devs)
-+		return;
-+
-+	for (i = 0; *name; i++, name++)
-+		device_set_awake_path(drv->cpus[cpu].virt_devs[i]);
-+}
-+
- static void qcom_cpufreq_put_virt_devs(struct qcom_cpufreq_drv *drv, unsigned int cpu)
- {
- 	const char * const *name = drv->data->genpd_names;
-@@ -578,11 +591,25 @@ static void qcom_cpufreq_remove(struct platform_device *pdev)
- 	}
- }
- 
-+static int qcom_cpufreq_suspend(struct device *dev)
-+{
-+	struct qcom_cpufreq_drv *drv = dev_get_drvdata(dev);
-+	unsigned int cpu;
-+
-+	for_each_possible_cpu(cpu)
-+		qcom_cpufreq_suspend_virt_devs(drv, cpu);
-+
-+	return 0;
-+}
-+
-+static DEFINE_SIMPLE_DEV_PM_OPS(qcom_cpufreq_pm_ops, qcom_cpufreq_suspend, NULL);
-+
- static struct platform_driver qcom_cpufreq_driver = {
- 	.probe = qcom_cpufreq_probe,
- 	.remove_new = qcom_cpufreq_remove,
- 	.driver = {
- 		.name = "qcom-cpufreq-nvmem",
-+		.pm = pm_sleep_ptr(&qcom_cpufreq_pm_ops),
- 	},
- };
- 
+ 		data->domains[i] = &rpmpds[i]->pd;
 
 -- 
 2.39.2
