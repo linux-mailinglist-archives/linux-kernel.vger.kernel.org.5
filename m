@@ -2,190 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 483A37EB3F3
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:41:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 397927EB3EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:41:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbjKNPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
+        id S233661AbjKNPlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjKNPlL (ORCPT
+        with ESMTP id S230200AbjKNPlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:41:11 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77414126
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:41:07 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45d9b477f7bso2549724137.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:41:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699976466; x=1700581266; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qkzCZG3bXMVbyNxn4+yNeclmA7RVlYHI+byE/zFEyOY=;
-        b=GC/duJEuwd6+Q1YIk9AKaUtsD5NPxSpYhTJb/URdXbupnUaJlBVEN1yt4s3Zw6rGy0
-         iKPHxDYEdT9io+U6Xs2qEOwE2xzqZMZYgvpiiUefNJ8oUoLtyT1wGdFFufHWwXYRewAi
-         fKoyjdjLlXyF5UCnKTcrwxbh72oaaGZHzsmZzo+C2/u+FaRVQVMVUvX77tCn6KSv/+tS
-         f3+oi1usX3ZgS/43xrl+miLbbxEybNrThnJMtixscRu3C+VDMW52DWBntjJF/HmjngtK
-         5jaMrkZ/TZBlZpQ2USNDu+wzwFUPlcClK8lvo5wxQlKcWVbm4nj7HvfN2UNRIyJ0whO/
-         zAAg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699976466; x=1700581266;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkzCZG3bXMVbyNxn4+yNeclmA7RVlYHI+byE/zFEyOY=;
-        b=nhHz9bCiXzFnwVXytCkmo8I4xxpnAMIzo1Oiyw4WiP9j4H2dfRwunhAJn5cHw2s9qk
-         xL3eDD2hjZRMxaJGkRm9Yv/sKXeSqHaIuw4ZwUGdAB/IrGXRDh8QfEL4P4t9D0xmBYvK
-         QYzJeJ+BWvqnDHmWvKnfL6Az3kKz1ywlLeOQA1g974tUtkUMmpXuGnekFMvm8PDcnQdT
-         255cmBtZ837HfxbQWBdO01JKGJr7JM/V+tGaVZN6PVHy1rL431YCvzz6AzlxWcQzqCZT
-         b6t8aHYKtHVZeAXhNpK26Z63w1DuwWYa04NEgtIkfb5RX2hrA+7LeL1EF7jWB6X8yKlq
-         WMIA==
-X-Gm-Message-State: AOJu0YyWdNLI8GHVS5Km8DpToAGkvkS47S31h0uPfG3RTpHykw53Q5vL
-        704klnqp29HHEgr3vcEguDQnWQyDJe2Fydm0cW4=
-X-Google-Smtp-Source: AGHT+IFuFIQZ+mZpvOtn+ca8j7Tl2Ztiooh5QfpblKcX1u+E5DCeY6eg1Yy8U3e3pcin6HZ1pIKzgO91iQzbvTtZLxs=
-X-Received: by 2002:a67:b70f:0:b0:45f:80ff:e111 with SMTP id
- h15-20020a67b70f000000b0045f80ffe111mr8422093vsf.22.1699976466471; Tue, 14
- Nov 2023 07:41:06 -0800 (PST)
+        Tue, 14 Nov 2023 10:41:05 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3636212F;
+        Tue, 14 Nov 2023 07:41:02 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id A634020292;
+        Tue, 14 Nov 2023 15:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699976460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HlKJwJwbkvn8CVCt9tJ50RwvruPmU0ls+jBVFbTXQSs=;
+        b=MqJBHt7HpUpC72tXaxADkMsEOh7xii44d3ZNsHMgHo+wecdI2jFsHHpIoQIrCCL76/4fAE
+        Bxd/0fKbnZl6R4yVnF2nxmC6Hx4ZQK9709BVKk+M+jDeSR8QmOeS9BbTQqKvcS+jDUpxpH
+        0xLo+AiLhNiEJyGRmPx+DPrC9EpRg7E=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699976460;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=HlKJwJwbkvn8CVCt9tJ50RwvruPmU0ls+jBVFbTXQSs=;
+        b=qp1ocROcWVcyfokDcmxMCAQZ+gkPyw8ydI02stzPa21teJGFRFx+7Xj/HPlJvL6JJ6Yk4c
+        jpVDIjsEEPoFXnAA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 485BB13460;
+        Tue, 14 Nov 2023 15:41:00 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id krlREAyVU2V8VwAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Tue, 14 Nov 2023 15:41:00 +0000
+Message-ID: <9296c184-22c1-4d71-8b11-2d26f49a5790@suse.de>
+Date:   Tue, 14 Nov 2023 16:40:59 +0100
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
- <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
- <CAK8ByeJ1fYSVaVQz3tERzj_5QNAN4Ggx850pKcAG3vhsoWnS+w@mail.gmail.com>
- <CAJfuBxyu3VqakFNr4mW0h4QiPVSf-7HSPXobGO2_qC-H8yLgcw@mail.gmail.com>
- <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
- <CAJfuBxz1=9o06Rj_mX-2aZXhCSF7rKxyusayPiy4RuJZ7qKbQw@mail.gmail.com>
- <CAK8ByeJH8vKUxeM21ME0vYjKmC_Z=P8XsKiB42k95iZ09bJXJg@mail.gmail.com>
- <CAJfuBxxw6DbmGG-UdiZeUr9680tJVEVcw-czPL+jt-88YUMgbw@mail.gmail.com> <CAK8ByeL4YSCBPPGSeNAPAKtR2=BEZxBjpNE3KeX8TaMmJrficQ@mail.gmail.com>
-In-Reply-To: <CAK8ByeL4YSCBPPGSeNAPAKtR2=BEZxBjpNE3KeX8TaMmJrficQ@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Tue, 14 Nov 2023 08:40:32 -0700
-Message-ID: <CAJfuBxwA_1kkjeqDRCDKvJ+PesUgYcVwdQeL-ePM7+ZFLfnO0w@mail.gmail.com>
-Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/6] drm: Allow the damage helpers to handle buffer damage
+Content-Language: en-US
+To:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Simon Ser <contact@emersion.fr>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Bilal Elmoussaoui <belmouss@redhat.com>,
+        Erico Nunes <nunes.erico@gmail.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20231109172449.1599262-1-javierm@redhat.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <20231109172449.1599262-1-javierm@redhat.com>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------5YCjGXD3oNwS5CkagncGMU0C"
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Score: 1.51
+X-Spamd-Result: default: False [1.51 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         XM_UA_NO_VERSION(0.01)[];
+         TO_DN_SOME(0.00)[];
+         HAS_ATTACHMENT(0.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         MID_RHS_MATCH_FROM(0.00)[];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         RCPT_COUNT_TWELVE(0.00)[21];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[emersion.fr,ffwll.ch,collabora.com,kernel.org,redhat.com,gmail.com,chromium.org,lwn.net,linux.intel.com,vmware.com,lists.freedesktop.org,vger.kernel.org,lists.linux-foundation.org]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 12:45=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.=
-com> wrote:
->
-> wt., 14 lis 2023 o 02:08 <jim.cromie@gmail.com> napisa=C5=82(a):
-> >
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------5YCjGXD3oNwS5CkagncGMU0C
+Content-Type: multipart/mixed; boundary="------------HZJCdyCPyn0A1rzDfgunjj8L";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Javier Martinez Canillas <javierm@redhat.com>,
+ linux-kernel@vger.kernel.org
+Cc: Simon Ser <contact@emersion.fr>, Sima Vetter <daniel.vetter@ffwll.ch>,
+ Pekka Paalanen <pekka.paalanen@collabora.com>,
+ Maxime Ripard <mripard@kernel.org>, Bilal Elmoussaoui <belmouss@redhat.com>,
+ Erico Nunes <nunes.erico@gmail.com>, Chia-I Wu <olvaffe@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ David Airlie <airlied@redhat.com>, Gerd Hoffmann <kraxel@redhat.com>,
+ Gurchetan Singh <gurchetansingh@chromium.org>,
+ Jonathan Corbet <corbet@lwn.net>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ VMware Graphics Reviewers <linux-graphics-maintainer@vmware.com>,
+ Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
+ linux-doc@vger.kernel.org, virtualization@lists.linux-foundation.org
+Message-ID: <9296c184-22c1-4d71-8b11-2d26f49a5790@suse.de>
+Subject: Re: [PATCH 0/6] drm: Allow the damage helpers to handle buffer damage
+References: <20231109172449.1599262-1-javierm@redhat.com>
+In-Reply-To: <20231109172449.1599262-1-javierm@redhat.com>
 
-> > > > > Also I think we need a reserved keyword for writing debug logs to
-> > > > > trace events - maybe "event" keyword ?
-> > > >
-> > > > do you mean "event" as a selector, like module, function, class, et=
-c ?
-> > > > if so, what are the values ?
-> > > > any event under  /sys/kernel/debug/tracing/events/ ?
-> > > >
-> > > > how does this get used ?
-> > > >
-> > >
-> > > I meant that we need to reserve name/keyword to enable writing debug
-> > > logs to trace events (prdbg and devdbg), for example
-> > > echo module usbcore +T:event > /proc/dynamic_debug/control
-> > >
-> > > Or do you anticipate other way to do it ?
-> >
-> > way back, when I had even fewer clues,
-> > I sent patches to call trace-printk when +T was set.
-> > Steve didnt like it, I think cuz it could flood the tracebuf.
-> >
-> > Thats why I added the prdbg and devdbg event-types,
-> > so that they could be disabled easily using /sys/kernel/debug/tracing/
-> > putting them squarely under trace-control.
-> >
-> > Note that this puts 2 off-switches in series,
-> > both tracefs and >control can disable all the pr_debug traffic,
-> > tracefs by event-type, and >control at individual callsite level.
-> >
-> > echo 1 > /sys/kernel/debug/tracing/dyndbg/enable
-> > echo 1 > /sys/kernel/debug/tracing/dyndbg/prdbg/enable
-> > echo 1 > /sys/kernel/debug/tracing/dyndbg/devdbg/enable
-> >
-> > I briefly thought about linking the 2 off-switches,
-> > but punted cuz I thought it complicated things,
-> > (how exactly would they get coupled?)
-> > and I didnt want to distract from larger goals
-> >
-> > Does that address your question ?
-> >
->
-> Jim,
->
-> Thanks but it doesn't answer my question.
->
-> How do you plan to enable output to tracefs event at a callsite level ?
->
-> In my original proposal it was enabled by setting trace destination to
-> 0. Since we are moving to names instead of numbers now I guess we need
-> to reserve a name for it not to clash with trace instance names
-> provided by users. That's why I proposed to reserve name "event" for
-> that purpose and be used as +T:event.
->
+--------------HZJCdyCPyn0A1rzDfgunjj8L
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Ok, I got your point now.
+SGkgSmF2aWVyDQoNCkFtIDA5LjExLjIzIHVtIDE4OjI0IHNjaHJpZWIgSmF2aWVyIE1hcnRp
+bmV6IENhbmlsbGFzOg0KPiBIZWxsbywNCj4gDQo+IFRoaXMgc2VyaWVzIGlzIHRvIGZpeCBh
+biBpc3N1ZSB0aGF0IHN1cmZhY2VkIGFmdGVyIGRhbWFnZSBjbGlwcGluZyB3YXMNCj4gZW5h
+YmxlZCBmb3IgdGhlIHZpcnRpby1ncHUgYnkgY29tbWl0IDAxZjA1OTQwYTlhNyAoImRybS92
+aXJ0aW86IEVuYWJsZQ0KPiBmYiBkYW1hZ2UgY2xpcHMgcHJvcGVydHkgZm9yIHRoZSBwcmlt
+YXJ5IHBsYW5lIikuDQo+IA0KPiBBZnRlciB0aGF0IGNoYW5nZSwgZmxpY2tlcmluZyBhcnRp
+ZmFjdHMgd2FzIHJlcG9ydGVkIHRvIGJlIHByZXNlbnQgd2l0aA0KPiBib3RoIHdlc3RvbiBh
+bmQgd2xyb290cyB3YXlsYW5kIGNvbXBvc2l0b3JzIHdoZW4gcnVubmluZyBpbiBhIHZpcnR1
+YWwNCj4gbWFjaGluZS4gVGhlIGNhdXNlIHdhcyBpZGVudGlmaWVkIGJ5IFNpbWEgVmV0dGVy
+LCB3aG8gcG9pbnRlZCBvdXQgdGhhdA0KPiB2aXJ0aW8tZ3B1IGRvZXMgcGVyLWJ1ZmZlciB1
+cGxvYWRzIGFuZCBmb3IgdGhpcyByZWFzb24gaXQgbmVlZHMgdG8gZG8NCj4gYSBidWZmZXIg
+ZGFtYWdlIGhhbmRsaW5nLCBpbnN0ZWFkIG9mIGZyYW1lIGRhbWFnZSBoYW5kbGluZy4NCg0K
+SSdtIGhhdmluZyBwcm9ibGVtIHVuZGVyc3RhbmRpbmcgdGhlIHR5cGVzIG9mIGRhbWFnZS4g
+WW91IG5ldmVyIHNheSB3aGF0IA0KYnVmZmVyIGRhbWFnZSBpcy4gSSBhbHNvIGRvbid0IGtu
+b3cgd2hhdCBhIGZyYW1lIGlzIGluIHRoaXMgY29udGV4dC4NCg0KUmVndWxhciBkYW1hZ2Ug
+aGFuZGxpbmcgbWFya3MgcGFydHMgb2YgYSBwbGFuZSBhcyBkaXJ0eS9kYW1hZ2VkLiBUaGF0
+IGlzIA0KcGVyLXBsYW5lIGRhbWFnZSBoYW5kbGluZy4gVGhlIGluZGl2aWR1YWwgcGxhbmVz
+IG1vcmUgb3IgbGVzcyANCmluZGVwZW5kZW50IGZyb20gZWFjaCBvdGhlci4NCg0KQnVmZmVy
+IGRhbWFnZSwgSSBndWVzcywgbWFya3MgdGhlIHVuZGVybHlpbmcgYnVmZmVyIGFzIGRpcnR5
+IGFuZCANCnJlcXVpcmVzIHN5bmNocm9uaXphdGlvbiBvZiB0aGUgYnVmZmVyIHdpdGggc29t
+ZSBiYWNraW5nIHN0b3JhZ2UuIFRoZSANCnBsYW5lcyB1c2luZyB0aGF0IGJ1ZmZlciBhcmUg
+dGhlbiB1cGRhdGVkIG1vcmUgb3IgbGVzcyBhdXRvbWF0aWNhbGx5Lg0KDQpJcyB0aGF0IHJp
+Z2h0Pw0KDQpBbmQgd2h5IGRvZXMgaXQgZmxpY2tlcj8gSXMgdGhlcmUgb2xkIGRhdGEgc3Rv
+cmVkIHNvbWV3aGVyZT8NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiANCj4gVGhlaXIg
+c3VnZ2VzdGlvbiB3YXMgdG8gZXh0ZW5kIHRoZSBkYW1hZ2UgaGVscGVycyB0byBjb3ZlciB0
+aGF0IGNhc2UNCj4gYW5kIGdpdmVuIHRoYXQgdGhlcmUncyBpc24ndCBhIGJ1ZmZlciBkYW1h
+Z2UgYWNjdW11bGF0aW9uIGFsZ29yaXRobQ0KPiAoZS5nOiBidWZmZXIgYWdlKSwganVzdCBk
+byBhIGZ1bGwgcGxhbmUgdXBkYXRlIGlmIHRoZSBmcmFtZWJ1ZmZlciB0aGF0DQo+IGlzIGF0
+dGFjaGVkIHRvIGEgcGxhbmUgY2hhbmdlZCBzaW5jZSB0aGUgbGFzdCBwbGFuZSB1cGRhdGUg
+KHBhZ2UtZmxpcCkuDQo+IA0KPiBQYXRjaCAjMSBpcyBqdXN0IGEgcmVmYWN0b3JpbmcgdG8g
+YWxsb3cgdGhlIGxvZ2ljIG9mIHRoZSBmcmFtZSBkYW1hZ2UNCj4gaGVscGVycyB0byBiZSBz
+aGFyZWQgYnkgdGhlIGJ1ZmZlciBkYW1hZ2UgaGVscGVycy4NCj4gDQo+IFBhdGNoICMyIGFk
+ZHMgdGhlIGhlbHBlcnMgdGhhdCBhcmUgbmVlZGVkIGZvciBidWZmZXIgZGFtYWdlIGhhbmRs
+aW5nLg0KPiANCj4gUGF0Y2ggIzMgZml4ZXMgdGhlIHZpcnRpby1ncHUgZGFtYWdlIGhhbmRs
+aW5nIGxvZ2ljIGJ5IHVzaW5nIHRoZQ0KPiBoZWxwZXIgdGhhdCBpcyByZXF1aXJlZCBieSBk
+cml2ZXJzIHRoYXQgbmVlZCB0byBoYW5kbGUgYnVmZmVyIGRhbWFnZS4NCj4gDQo+IFBhdGNo
+ICM0IGZpeGVzIHRoZSB2bXdnZnggc2ltaWxhcmx5LCBzaW5jZSB0aGF0IGRyaXZlciBhbHNv
+IG5lZWRzIHRvDQo+IGhhbmRsZSBidWZmZXIgZGFtYWdlIGFuZCBzaG91bGQgaGF2ZSB0aGUg
+c2FtZSBpc3N1ZSAoYWx0aG91Z2ggSSBoYXZlDQo+IG5vdCB0ZXN0ZWQgaXQgZHVlIG5vdCBo
+YXZpbmcgYSBWTVdhcmUgc2V0dXApLg0KPiANCj4gUGF0Y2ggIzUgYWRkcyB0byB0aGUgS01T
+IGRhbWFnZSB0cmFja2luZyBrZXJuZWwtZG9jIHNvbWUgcGFyYWdyYXBocw0KPiBhYm91dCBk
+YW1hZ2UgdHJhY2tpbmcgdHlwZXMgYW5kIHJlZmVyZW5jZXMgdG8gbGlua3MgdGhhdCBleHBs
+YWluDQo+IGZyYW1lIGRhbWFnZSB2cyBidWZmZXIgZGFtYWdlLg0KPiANCj4gRmluYWxseSBw
+YXRjaCAjNiBhZGRzIGFuIGl0ZW0gdG8gdGhlIERSTS9LTVMgdG9kbywgYWJvdXQgdGhlIG5l
+ZWQgdG8NCj4gaW1wbGVtZW50IHNvbWUgYnVmZmVyIGRhbWFnZSBhY2N1bXVsYXRpb24gYWxn
+b3JpdGhtIGluc3RlYWQgb2YganVzdA0KPiBkb2luZyBhIGZ1bGwgcGxhbmUgdXBkYXRlIGlu
+IHRoaXMgY2FzZS4NCj4gDQo+IEJlY2F1c2UgY29tbWl0IDAxZjA1OTQwYTlhNyBsYW5kZWQg
+aW4gdjYuNCwgdGhlIGZpcnN0IHRocmVlIHBhdGNoZXMNCj4gYXJlIG1hcmtlZCBhcyBGaXhl
+cyBhbmQgQ2Mgc3RhYmxlLg0KPiANCj4gSSd2ZSB0ZXN0ZWQgdGhpcyBvbiBhIFZNIHdpdGgg
+d2VzdG9uLCB3YXMgYWJsZSB0byByZXByb2R1Y2UgdGhlIGlzc3VlDQo+IHJlcG9ydGVkIGFu
+ZCB0aGUgcGF0Y2hlcyBkaWQgZml4IHRoZSBwcm9ibGVtLg0KPiANCj4gUGxlYXNlIGxldCBt
+ZSBrbm93IHdoYXQgeW91IHRoaW5rLiBTcGVjaWFsbHkgb24gdGhlIHdvcmRpbmcgc2luY2Ug
+Y291bGQNCj4gbWFkZSBtaXN0YWtlcyBkdWUganVzdCBsZWFybmluZyBhYm91dCB0aGVzZSBj
+b25jZXB0cyB5ZXN0ZXJkYXkgdGhhbmtzIHRvDQo+IFNpbWEsIFNpbW9uIGFuZCBQZWtrYS4N
+Cj4gDQo+IEJlc3QgcmVnYXJkcywNCj4gSmF2aWVyDQo+IA0KPiANCj4gSmF2aWVyIE1hcnRp
+bmV6IENhbmlsbGFzICg2KToNCj4gICAgZHJtOiBNb3ZlIGRybV9hdG9taWNfaGVscGVyX2Rh
+bWFnZV97aXRlcl9pbml0LG1lcmdlZH0oKSB0byBoZWxwZXJzDQo+ICAgIGRybTogQWRkIGRy
+bV9hdG9taWNfaGVscGVyX2J1ZmZlcl9kYW1hZ2Vfe2l0ZXJfaW5pdCxtZXJnZWR9KCkgaGVs
+cGVycw0KPiAgICBkcm0vdmlydGlvOiBVc2UgZHJtX2F0b21pY19oZWxwZXJfYnVmZmVyX2Rh
+bWFnZV9tZXJnZWQoKSBmb3IgYnVmZmVyDQo+ICAgICAgZGFtYWdlDQo+ICAgIGRybS92bXdn
+Zng6IFVzZSBkcm1fYXRvbWljX2hlbHBlcl9idWZmZXJfZGFtYWdlX2l0ZXJfaW5pdCgpIGZv
+ciBidWZmZXINCj4gICAgICBkYW1hZ2UNCj4gICAgZHJtL3BsYW5lOiBFeHRlbmQgZGFtYWdl
+IHRyYWNraW5nIGtlcm5lbC1kb2MNCj4gICAgZHJtL3RvZG86IEFkZCBlbnRyeSBhYm91dCBp
+bXBsZW1lbnRpbmcgYnVmZmVyIGFnZSBmb3IgZGFtYWdlIHRyYWNraW5nDQo+IA0KPiAgIERv
+Y3VtZW50YXRpb24vZ3B1L3RvZG8ucnN0ICAgICAgICAgICAgIHwgIDIwICsrKw0KPiAgIGRy
+aXZlcnMvZ3B1L2RybS9kcm1fZGFtYWdlX2hlbHBlci5jICAgIHwgMTY2ICsrKysrKysrKysr
+KysrKysrKystLS0tLS0NCj4gICBkcml2ZXJzL2dwdS9kcm0vZHJtX3BsYW5lLmMgICAgICAg
+ICAgICB8ICAyMiArKystDQo+ICAgZHJpdmVycy9ncHUvZHJtL3ZpcnRpby92aXJ0Z3B1X3Bs
+YW5lLmMgfCAgIDIgKy0NCj4gICBkcml2ZXJzL2dwdS9kcm0vdm13Z2Z4L3Ztd2dmeF9rbXMu
+YyAgICB8ICAgMiArLQ0KPiAgIGluY2x1ZGUvZHJtL2RybV9kYW1hZ2VfaGVscGVyLmggICAg
+ICAgIHwgICA3ICsrDQo+ICAgNiBmaWxlcyBjaGFuZ2VkLCAxNzMgaW5zZXJ0aW9ucygrKSwg
+NDYgZGVsZXRpb25zKC0pDQo+IA0KDQotLSANClRob21hcyBaaW1tZXJtYW5uDQpHcmFwaGlj
+cyBEcml2ZXIgRGV2ZWxvcGVyDQpTVVNFIFNvZnR3YXJlIFNvbHV0aW9ucyBHZXJtYW55IEdt
+YkgNCkZyYW5rZW5zdHJhc3NlIDE0NiwgOTA0NjEgTnVlcm5iZXJnLCBHZXJtYW55DQpHRjog
+SXZvIFRvdGV2LCBBbmRyZXcgTXllcnMsIEFuZHJldyBNY0RvbmFsZCwgQm91ZGllbiBNb2Vy
+bWFuDQpIUkIgMzY4MDkgKEFHIE51ZXJuYmVyZykNCg==
 
-how about we call it "0" ?
-it should be an obvious "magical" value,
-cuz it doesnt need to be open'd, and cant be close'd
+--------------HZJCdyCPyn0A1rzDfgunjj8L--
 
-then we can revert to global tracebuf by its "name"
-echo module foo +T:0 > /proc/dynamic_debug/control
+--------------5YCjGXD3oNwS5CkagncGMU0C
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
-we probably should also limit the trace-instance-names to ^\w+
+-----BEGIN PGP SIGNATURE-----
 
-> Or did I miss answer to that in our long discussion :> ?
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmVTlQsFAwAAAAAACgkQlh/E3EQov+AU
+exAAnBXx599cv0UeRemGJTExKkAR7gmTXTnqLNbocwONLfWRngHRYw5l7+m+V/1KH4B/FKb5OUib
+/GyB64BWvvRAVNjG/4yVmK6kIb78lFxXwSc4zOSx5trNhTAPjEgP0UJ6oufF6F0Ap4Vw5pW7fq23
+F7HZca4AkH/naE6EPB1LUgAdkolC8v7n5pcjwaKsIWbxVtq7rNIbjwpy8yg7NWZ4TbUjjC5tnEUA
+DXEbZOP6g3ECy1d2HvLDVY2E490BKZg0qM5CH6H7uogMO1VXsMy1T5ZQnRyNSTzCm710QmU8FS9X
+CQBRVMtudqrJXBvWqEz+OJ75XZGxZiFgNd7JrzKNx54wcNNwOY5AjVvxKAPyIer7ge/TcAq9fZI9
+jIt+6sLt/0OmAGdMK78RbjQ1hpi1F7VeE9/kR2CUdlJyW96UrWLJeh6Oo1I0hIS8O18F1t84xGcK
+m2td0Gn7cNMV1uWi2q3pFr3GHCXxFTB2ThffDZzoXqe9DYX62/9VoaQgqFlXCcD/LRuPbhnaW458
+SZ7c25qQTkfDmd6QTkcHQBDdt/nJmvojoHDCAuhKDXtSMGy7w32LQaIeEuSSJGbA8BHHSBICIXTL
+LXmZzaPx+SvbyOVaAOh7FCfm9L3ZntoWFWD9D+kDbEyYC6maXPpLTwlF+BuMkWTBnmtF/UrjhId0
+wgE=
+=nZv3
+-----END PGP SIGNATURE-----
 
-nope :-)
-
-thanks,
-Jim
-
->
-> Thanks,
-> Lukasz
->
-> > On a related point, I also added drm_dbg and drm_devdbg.
-> > Those are issued from __drm_dbg & __drm_dev_dbg
-> >  respectively when CONFIG_DRM_USE_DYNAMIC_DEBUG=3Dn.
-> >
-> > Im not sure theyre more useful than confusing yet.
-> >
-> > >
-> > > > >
-> > > > >
-> > > > > >
-> > > > > > > >
-> > > > > > > > and +T  w/o dest means use existing setting, not just 0 (un=
-less thats
-> > > > > > > > the existing setting)
-> > > > > > > >
-> > > > > > >
-> > > > > > > Sounds good.
-> > > > > > >
-> > > > > >
-> > > > > > :-)
+--------------5YCjGXD3oNwS5CkagncGMU0C--
