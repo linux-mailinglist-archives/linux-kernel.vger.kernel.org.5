@@ -2,196 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B38067EB2D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:53:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B837EB2DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233646AbjKNOxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:53:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39090 "EHLO
+        id S233420AbjKNOzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:55:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233680AbjKNOwz (ORCPT
+        with ESMTP id S233397AbjKNOzN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:52:55 -0500
-Received: from mail-vs1-xe30.google.com (mail-vs1-xe30.google.com [IPv6:2607:f8b0:4864:20::e30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630B61B5;
-        Tue, 14 Nov 2023 06:52:43 -0800 (PST)
-Received: by mail-vs1-xe30.google.com with SMTP id ada2fe7eead31-45da94f4b90so2449356137.3;
-        Tue, 14 Nov 2023 06:52:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699973562; x=1700578362; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LIQbkwE4qYiMmkgrrvrC/vRWElOWAUQTAZF8XUTl38o=;
-        b=YO2lJABLXhI9ES562p/w5irK8OIZx27RJYMoADNqLgD2rcUCzpHZIIfDYpqsizyQwy
-         351CiuJ866I+tqrKvOlc7UQnC0zhhtojjOGXWRyHw9Um95xkLziwEzk5doDvg0CSwGYh
-         VR3R4g+UggljBnQ9dNqgSDDUjPrAkfDKzWFpBPznZMq/5wgXWDy6zRotsBzvMtsLonuw
-         9EvgbE5D8LPBNwucKHisrosKzL/gcCSyvfByolHl3fFPdWzUcPlkTuwZJPwfvY0Qx7Ze
-         7T8lzMdQ2Il8+A4RPkJJQAI2FxtaiS5NnPzi7ZgTrG1vSVCnlw9NNEF96tnhL8Mx1xjF
-         lm6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699973562; x=1700578362;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LIQbkwE4qYiMmkgrrvrC/vRWElOWAUQTAZF8XUTl38o=;
-        b=faQHfH8ivXiR7SY6gxcrSL1o38OeC4CpuJc1pwx1dSmlgTeOBLfnz8GGtgaptQr5IG
-         ITwuwyB+sIFyUAJFAkmKi3T77+vp5M96noMDzbvC00X2I5ZoS4GuXezW4UIIdMStzCy7
-         UhL5iFPwwj6DEb88IjeCEYms+Yw7pgKoSXEPAxM9gtg/VLjC54FEN0L19RLcWeQ6zSb8
-         5c3YzD5m+1CGHzrgphCKUD/ql3hGKjaD2NPNkbTfDCVNeWBNVmLDScP9MMHV3aXxfjeh
-         Q9Y61Bf8v+2YH+AApMJwSuXj4L2ehJQJEsuzAZ7My5lbqbWCV25/2pY0138sU5R+p/yx
-         Z5gg==
-X-Gm-Message-State: AOJu0YzW2fHMFdkuS7oBaR/o43u4UCgKmf64YaYTTAtVqBzUdf8sXrsu
-        dVIi9dIdCHZ7QT0rp68b6ct3KgfWTqY=
-X-Google-Smtp-Source: AGHT+IHAT5eAXs0OaMM9X2ywWIX9bE+jyDw4UB13bEFULtdfpf3ZE2T5zvAD66+57RF8WEXQFMTqwQ==
-X-Received: by 2002:a67:cc16:0:b0:45f:8b65:28e2 with SMTP id q22-20020a67cc16000000b0045f8b6528e2mr8060279vsl.32.1699973562333;
-        Tue, 14 Nov 2023 06:52:42 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c4-20020a05621401c400b006754772bfd4sm2944138qvt.21.2023.11.14.06.52.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 06:52:41 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 14 Nov 2023 06:52:39 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] hwmon: (aspeed-pwm-tacho) Fix -Wstringop-overflow
- warning in aspeed_create_fan_tach_channel()
-Message-ID: <6a28c219-b047-411b-ab43-02fc8f1824db@roeck-us.net>
-References: <ZVJ7JBFoULzY3VGx@work>
+        Tue, 14 Nov 2023 09:55:13 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BA715CA
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:55:09 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A80CAC15;
+        Tue, 14 Nov 2023 06:55:54 -0800 (PST)
+Received: from pluto.. (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 793D73F6C4;
+        Tue, 14 Nov 2023 06:55:08 -0800 (PST)
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, Cristian Marussi <cristian.marussi@arm.com>
+Subject: [PATCH] firmware: arm_scmi: Add optional flags to extended names helper
+Date:   Tue, 14 Nov 2023 14:54:49 +0000
+Message-ID: <20231114145449.3136412-1-cristian.marussi@arm.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZVJ7JBFoULzY3VGx@work>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 01:38:12PM -0600, Gustavo A. R. Silva wrote:
-> Based on the documentation below, the maximum number of Fan tach
-> channels is 16:
-> 
-> Documentation/devicetree/bindings/hwmon/aspeed-pwm-tacho.txt:45:
->  45 - aspeed,fan-tach-ch : should specify the Fan tach input channel.
->  46                 integer value in the range 0 through 15, with 0 indicating
->  47                 Fan tach channel 0 and 15 indicating Fan tach channel 15.
->  48                 At least one Fan tach input channel is required.
-> 
-> However, the compiler doesn't know that, and legitimaly warns about a potential
-> overwrite in array `u8 fan_tach_ch_source[16]` in `struct aspeed_pwm_tacho_data`,
-> in case `index` takes a value outside the boundaries of the array:
-> 
+Some recently added SCMI protocols needs an additional flags parameter to
+be able to properly configure the command used to query the extended name
+of a resource.
 
-All that doesn't warrant introducing checkpatch warnings.
+Modify extended_name_get helper accordingly.
 
-> drivers/hwmon/aspeed-pwm-tacho.c:
-> 179 struct aspeed_pwm_tacho_data {
-> ...
-> 184         bool fan_tach_present[16];
-> ...
-> 193         u8 fan_tach_ch_source[16];
-> ...
-> 196 };
-> 
-> In function ‘aspeed_create_fan_tach_channel’,
->     inlined from ‘aspeed_create_fan’ at drivers/hwmon/aspeed-pwm-tacho.c:877:2,
->     inlined from ‘aspeed_pwm_tacho_probe’ at drivers/hwmon/aspeed-pwm-tacho.c:936:9:
-> drivers/hwmon/aspeed-pwm-tacho.c:751:49: warning: writing 1 byte into a region of size 0 [-Wstringop-overflow=]
->   751 |                 priv->fan_tach_ch_source[index] = pwm_source;
->       |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
-> drivers/hwmon/aspeed-pwm-tacho.c: In function ‘aspeed_pwm_tacho_probe’:
-> drivers/hwmon/aspeed-pwm-tacho.c:193:12: note: at offset [48, 255] into destination object ‘fan_tach_ch_source’ of size 16
->   193 |         u8 fan_tach_ch_source[16];
->       |            ^~~~~~~~~~~~~~~~~~
-> 
-> Fix this by sanity checking `index` before using it to index arrays of
-> size 16 elements in `struct aspeed_pwm_tacho_data`. Also, and just for
-> completeness, add a `pr_err()` message to display in the unlikely case
-> `0 > index >= 16`.
-> 
-> This is probably the last remaining -Wstringop-overflow issue in the
-> kernel, and this patch helps with the ongoing efforts to enable such
-> compiler option globally.
-> 
+Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+---
+ drivers/firmware/arm_scmi/clock.c     |  2 +-
+ drivers/firmware/arm_scmi/driver.c    | 12 ++++++++----
+ drivers/firmware/arm_scmi/perf.c      |  2 +-
+ drivers/firmware/arm_scmi/power.c     |  2 +-
+ drivers/firmware/arm_scmi/powercap.c  |  2 +-
+ drivers/firmware/arm_scmi/protocols.h |  3 ++-
+ drivers/firmware/arm_scmi/reset.c     |  3 ++-
+ drivers/firmware/arm_scmi/sensors.c   |  2 +-
+ drivers/firmware/arm_scmi/voltage.c   |  2 +-
+ 9 files changed, 18 insertions(+), 12 deletions(-)
 
-I am sorry, but this description almost completely misses the point.
-The real issue is that the values in aspeed,fan-tach-ch are not range
-checked, which can cause real problems if is elements are set to values
-larger than 15. This is a real problem and has nothing to do with string
-overflows.
+diff --git a/drivers/firmware/arm_scmi/clock.c b/drivers/firmware/arm_scmi/clock.c
+index 42b81c181d68..98511a3aa367 100644
+--- a/drivers/firmware/arm_scmi/clock.c
++++ b/drivers/firmware/arm_scmi/clock.c
+@@ -318,7 +318,7 @@ static int scmi_clock_attributes_get(const struct scmi_protocol_handle *ph,
+ 	if (!ret && PROTOCOL_REV_MAJOR(version) >= 0x2) {
+ 		if (SUPPORTS_EXTENDED_NAMES(attributes))
+ 			ph->hops->extended_name_get(ph, CLOCK_NAME_GET, clk_id,
+-						    clk->name,
++						    NULL, clk->name,
+ 						    SCMI_MAX_STR_SIZE);
+ 
+ 		if (SUPPORTS_RATE_CHANGED_NOTIF(attributes))
+diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
+index 09371f40d61f..3eb19ed6f148 100644
+--- a/drivers/firmware/arm_scmi/driver.c
++++ b/drivers/firmware/arm_scmi/driver.c
+@@ -1438,6 +1438,7 @@ struct scmi_msg_resp_domain_name_get {
+  * @ph: A protocol handle reference.
+  * @cmd_id: The specific command ID to use.
+  * @res_id: The specific resource ID to use.
++ * @flags: A pointer to specific flags to use, if any.
+  * @name: A pointer to the preallocated area where the retrieved name will be
+  *	  stored as a NULL terminated string.
+  * @len: The len in bytes of the @name char array.
+@@ -1445,19 +1446,22 @@ struct scmi_msg_resp_domain_name_get {
+  * Return: 0 on Succcess
+  */
+ static int scmi_common_extended_name_get(const struct scmi_protocol_handle *ph,
+-					 u8 cmd_id, u32 res_id, char *name,
+-					 size_t len)
++					 u8 cmd_id, u32 res_id, u32 *flags,
++					 char *name, size_t len)
+ {
+ 	int ret;
++	size_t txlen;
+ 	struct scmi_xfer *t;
+ 	struct scmi_msg_resp_domain_name_get *resp;
+ 
+-	ret = ph->xops->xfer_get_init(ph, cmd_id, sizeof(res_id),
+-				      sizeof(*resp), &t);
++	txlen = !flags ? sizeof(res_id) : sizeof(res_id) + sizeof(*flags);
++	ret = ph->xops->xfer_get_init(ph, cmd_id, txlen, sizeof(*resp), &t);
+ 	if (ret)
+ 		goto out;
+ 
+ 	put_unaligned_le32(res_id, t->tx.buf);
++	if (flags)
++		put_unaligned_le32(*flags, t->tx.buf + sizeof(res_id));
+ 	resp = t->rx.buf;
+ 
+ 	ret = ph->xops->do_xfer(ph, t);
+diff --git a/drivers/firmware/arm_scmi/perf.c b/drivers/firmware/arm_scmi/perf.c
+index c2435be0ae1b..55db621a6fa0 100644
+--- a/drivers/firmware/arm_scmi/perf.c
++++ b/drivers/firmware/arm_scmi/perf.c
+@@ -288,7 +288,7 @@ scmi_perf_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 	if (!ret && PROTOCOL_REV_MAJOR(version) >= 0x3 &&
+ 	    SUPPORTS_EXTENDED_NAMES(flags))
+ 		ph->hops->extended_name_get(ph, PERF_DOMAIN_NAME_GET,
+-					    dom_info->id, dom_info->info.name,
++					    dom_info->id, NULL, dom_info->info.name,
+ 					    SCMI_MAX_STR_SIZE);
+ 
+ 	if (dom_info->level_indexing_mode) {
+diff --git a/drivers/firmware/arm_scmi/power.c b/drivers/firmware/arm_scmi/power.c
+index 356e83631664..077767d6e902 100644
+--- a/drivers/firmware/arm_scmi/power.c
++++ b/drivers/firmware/arm_scmi/power.c
+@@ -133,7 +133,7 @@ scmi_power_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 	if (!ret && PROTOCOL_REV_MAJOR(version) >= 0x3 &&
+ 	    SUPPORTS_EXTENDED_NAMES(flags)) {
+ 		ph->hops->extended_name_get(ph, POWER_DOMAIN_NAME_GET,
+-					    domain, dom_info->name,
++					    domain, NULL, dom_info->name,
+ 					    SCMI_MAX_STR_SIZE);
+ 	}
+ 
+diff --git a/drivers/firmware/arm_scmi/powercap.c b/drivers/firmware/arm_scmi/powercap.c
+index cb5617443a14..62a7780fedbb 100644
+--- a/drivers/firmware/arm_scmi/powercap.c
++++ b/drivers/firmware/arm_scmi/powercap.c
+@@ -270,7 +270,7 @@ scmi_powercap_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 	 */
+ 	if (!ret && SUPPORTS_EXTENDED_NAMES(flags))
+ 		ph->hops->extended_name_get(ph, POWERCAP_DOMAIN_NAME_GET,
+-					    domain, dom_info->name,
++					    domain, NULL, dom_info->name,
+ 					    SCMI_MAX_STR_SIZE);
+ 
+ 	return ret;
+diff --git a/drivers/firmware/arm_scmi/protocols.h b/drivers/firmware/arm_scmi/protocols.h
+index 78e1a01eb656..b3c6314bb4b8 100644
+--- a/drivers/firmware/arm_scmi/protocols.h
++++ b/drivers/firmware/arm_scmi/protocols.h
+@@ -256,7 +256,8 @@ struct scmi_fc_info {
+  */
+ struct scmi_proto_helpers_ops {
+ 	int (*extended_name_get)(const struct scmi_protocol_handle *ph,
+-				 u8 cmd_id, u32 res_id, char *name, size_t len);
++				 u8 cmd_id, u32 res_id, u32 *flags, char *name,
++				 size_t len);
+ 	void *(*iter_response_init)(const struct scmi_protocol_handle *ph,
+ 				    struct scmi_iterator_ops *ops,
+ 				    unsigned int max_resources, u8 msg_id,
+diff --git a/drivers/firmware/arm_scmi/reset.c b/drivers/firmware/arm_scmi/reset.c
+index e9afa8cab730..7217fd7c6afa 100644
+--- a/drivers/firmware/arm_scmi/reset.c
++++ b/drivers/firmware/arm_scmi/reset.c
+@@ -128,7 +128,8 @@ scmi_reset_domain_attributes_get(const struct scmi_protocol_handle *ph,
+ 	if (!ret && PROTOCOL_REV_MAJOR(version) >= 0x3 &&
+ 	    SUPPORTS_EXTENDED_NAMES(attributes))
+ 		ph->hops->extended_name_get(ph, RESET_DOMAIN_NAME_GET, domain,
+-					    dom_info->name, SCMI_MAX_STR_SIZE);
++					    NULL, dom_info->name,
++					    SCMI_MAX_STR_SIZE);
+ 
+ 	return ret;
+ }
+diff --git a/drivers/firmware/arm_scmi/sensors.c b/drivers/firmware/arm_scmi/sensors.c
+index 0b5853fa9d87..9952a7bc6682 100644
+--- a/drivers/firmware/arm_scmi/sensors.c
++++ b/drivers/firmware/arm_scmi/sensors.c
+@@ -644,7 +644,7 @@ iter_sens_descr_process_response(const struct scmi_protocol_handle *ph,
+ 	if (PROTOCOL_REV_MAJOR(si->version) >= 0x3 &&
+ 	    SUPPORTS_EXTENDED_NAMES(attrl))
+ 		ph->hops->extended_name_get(ph, SENSOR_NAME_GET, s->id,
+-					    s->name, SCMI_MAX_STR_SIZE);
++					    NULL, s->name, SCMI_MAX_STR_SIZE);
+ 
+ 	if (s->extended_scalar_attrs) {
+ 		s->sensor_power = le32_to_cpu(sdesc->power);
+diff --git a/drivers/firmware/arm_scmi/voltage.c b/drivers/firmware/arm_scmi/voltage.c
+index eaa8d944926a..36e2df77738c 100644
+--- a/drivers/firmware/arm_scmi/voltage.c
++++ b/drivers/firmware/arm_scmi/voltage.c
+@@ -242,7 +242,7 @@ static int scmi_voltage_descriptors_get(const struct scmi_protocol_handle *ph,
+ 			if (SUPPORTS_EXTENDED_NAMES(attributes))
+ 				ph->hops->extended_name_get(ph,
+ 							VOLTAGE_DOMAIN_NAME_GET,
+-							v->id, v->name,
++							v->id, NULL, v->name,
+ 							SCMI_MAX_STR_SIZE);
+ 			if (SUPPORTS_ASYNC_LEVEL_SET(attributes))
+ 				v->async_level_set = true;
+-- 
+2.42.1
 
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-> ---
->  drivers/hwmon/aspeed-pwm-tacho.c | 18 ++++++++++++------
->  1 file changed, 12 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/hwmon/aspeed-pwm-tacho.c b/drivers/hwmon/aspeed-pwm-tacho.c
-> index 997df4b40509..092a81916325 100644
-> --- a/drivers/hwmon/aspeed-pwm-tacho.c
-> +++ b/drivers/hwmon/aspeed-pwm-tacho.c
-> @@ -166,6 +166,8 @@
->  
->  #define MAX_CDEV_NAME_LEN 16
->  
-> +#define MAX_ASPEED_FAN_TACH_CHANNELS 16
-> +
->  struct aspeed_cooling_device {
->  	char name[16];
->  	struct aspeed_pwm_tacho_data *priv;
-> @@ -181,7 +183,7 @@ struct aspeed_pwm_tacho_data {
->  	struct reset_control *rst;
->  	unsigned long clk_freq;
->  	bool pwm_present[8];
-> -	bool fan_tach_present[16];
-> +	bool fan_tach_present[MAX_ASPEED_FAN_TACH_CHANNELS];
->  	u8 type_pwm_clock_unit[3];
->  	u8 type_pwm_clock_division_h[3];
->  	u8 type_pwm_clock_division_l[3];
-> @@ -190,7 +192,7 @@ struct aspeed_pwm_tacho_data {
->  	u16 type_fan_tach_unit[3];
->  	u8 pwm_port_type[8];
->  	u8 pwm_port_fan_ctrl[8];
-> -	u8 fan_tach_ch_source[16];
-> +	u8 fan_tach_ch_source[MAX_ASPEED_FAN_TACH_CHANNELS];
->  	struct aspeed_cooling_device *cdev[8];
->  	const struct attribute_group *groups[3];
->  };
-> @@ -746,10 +748,14 @@ static void aspeed_create_fan_tach_channel(struct aspeed_pwm_tacho_data *priv,
->  
->  	for (val = 0; val < count; val++) {
->  		index = fan_tach_ch[val];
-> -		aspeed_set_fan_tach_ch_enable(priv->regmap, index, true);
-> -		priv->fan_tach_present[index] = true;
-> -		priv->fan_tach_ch_source[index] = pwm_source;
-> -		aspeed_set_fan_tach_ch_source(priv->regmap, index, pwm_source);
-> +		if (index < MAX_ASPEED_FAN_TACH_CHANNELS) {
-> +			aspeed_set_fan_tach_ch_enable(priv->regmap, index, true);
-> +			priv->fan_tach_present[index] = true;
-> +			priv->fan_tach_ch_source[index] = pwm_source;
-> +			aspeed_set_fan_tach_ch_source(priv->regmap, index, pwm_source);
-> +		} else {
-> +			pr_err("Invalid Fan Tach input channel %u\n.", index);
-
-This should use dev_err() (and, yes, that means dev needs to be passed
-as argument), and the function should return -EINVAL if this is
-encountered. Also, error handling should come first.
-
-		if (index >= MAX_ASPEED_FAN_TACH_CHANNELS) {
-			dev_err(dev, "Invalid Fan Tach input channel %u\n.", index);
-			return -EINVAL;
-		}
-
-Thanks,
-Guenter
