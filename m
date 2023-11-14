@@ -2,226 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9D07EAD69
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A9057EAD6C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232539AbjKNJxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60016 "EHLO
+        id S232556AbjKNJyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:54:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229948AbjKNJxc (ORCPT
+        with ESMTP id S229948AbjKNJyJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:53:32 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22214191;
-        Tue, 14 Nov 2023 01:53:28 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 348DE2BC;
-        Tue, 14 Nov 2023 10:52:59 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1699955579;
-        bh=GNHoQv0bcWc8Y22LUMF0GP8avbvT78ir75Al0FeLhrc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WI5fqCKOj3RvH11obhS8vnqlv7ht3bI7rAl7ESv0LjDPfw60fur+K+v9MIOdfMxri
-         rvvSC99x8NP6aTTTQxfOvJUBKLUzHhPc5SPqOl+2m9bcKEBq4Z+t/JbjhoVr6Kxolm
-         98ZYIlQMsCJG0ZJM2PG6UUtxIiFbqQDezprUl4z4=
-Date:   Tue, 14 Nov 2023 11:53:31 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v9 3/5] media: platform: visconti: add V4L2 vendor
- specific control handlers
-Message-ID: <20231114095331.GA13826@pendragon.ideasonboard.com>
-References: <20231012071329.2542003-1-yuji2.ishikawa@toshiba.co.jp>
- <20231012071329.2542003-4-yuji2.ishikawa@toshiba.co.jp>
- <6095bd3d-2580-44e2-b622-3ad31e12787f@xs4all.nl>
- <a84ce942-e6df-414e-8d0c-e7d3ef3e62f6@xs4all.nl>
+        Tue, 14 Nov 2023 04:54:09 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA2F194;
+        Tue, 14 Nov 2023 01:54:06 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 276141F86A;
+        Tue, 14 Nov 2023 09:54:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699955645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/6QA4vhf9gFLQunzj8BiplEisko+lan8tAZakysSnAE=;
+        b=HrqJG87Uy7vC6THv7iJmclQ0L/Nxw78BjZL6GAnFanuhZKBAssKD+iDEB897QaCMQh9gGH
+        2OhAmC3TJXiceO+687r4+bKjIzQgJuursJOTLkwdL/mUHWfdaW0uL7c1Tc8eHj8DAP/rZG
+        kl+2dcSfNyfSzD82rRJ2WkL2YfNc7fA=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 0BB6E13416;
+        Tue, 14 Nov 2023 09:54:05 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id DvJEA71DU2XRHQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 09:54:05 +0000
+Date:   Tue, 14 Nov 2023 10:54:04 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+Message-ID: <ZVNDvNok1B8qVHOe@tiehlicka>
+References: <ZUzTVgK_i05uiHiB@tiehlicka>
+ <e07c977f-8c73-4772-b069-527c6ac0ae4f@vivo.com>
+ <ZUziy-6QPdTIDJlm@tiehlicka>
+ <f46de374-82a2-467c-8d32-a15b518bff17@vivo.com>
+ <ZU4g9XZvi9mRQD27@tiehlicka>
+ <b4694fbf-92df-4067-878e-6035df46582f@vivo.com>
+ <87edgufakm.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <a09e21a6-6a1e-44ec-9187-600a0a969a45@vivo.com>
+ <87a5rif58s.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <97a3dbb3-9e73-4dcc-877d-f491ff47363b@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a84ce942-e6df-414e-8d0c-e7d3ef3e62f6@xs4all.nl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <97a3dbb3-9e73-4dcc-877d-f491ff47363b@vivo.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.80
+X-Spamd-Result: default: False [-2.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         BAYES_HAM(-0.70)[83.32%];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[intel.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com,vger.kernel.org,kvack.org,vivo.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 10:10:50AM +0100, Hans Verkuil wrote:
-> On 14/11/2023 10:02, Hans Verkuil wrote:
-> > On 12/10/2023 09:13, Yuji Ishikawa wrote:
-> >> Add support to Image Signal Processors of Visconti's Video Input Interface.
-> >> This patch adds vendor specific compound controls
-> >> to configure the image signal processor.
-> >>
-> >> Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
-> >> ---
-> >> Changelog v2:
-> >> - Resend v1 because a patch exceeds size limit.
-> >>
-> >> Changelog v3:
-> >> - Adapted to media control framework
-> >> - Introduced ISP subdevice, capture device
-> >> - Remove private IOCTLs and add vendor specific V4L2 controls
-> >> - Change function name avoiding camelcase and uppercase letters
-> >>
-> >> Changelog v4:
-> >> - Split patches because the v3 patch exceeds size limit
-> >> - Stop using ID number to identify driver instance:
-> >>   - Use dynamically allocated structure to hold HW specific context,
-> >>     instead of static one.
-> >>   - Call HW layer functions with the context structure instead of ID number
-> >>
-> >> Changelog v5:
-> >> - no change
-> >>
-> >> Changelog v6:
-> >> - remove unused macros
-> >> - removed hwd_ and HWD_ prefix
-> >> - update source code documentation
-> >> - Suggestion from Hans Verkuil
-> >>   - pointer to userland memory is removed from uAPI arguments
-> >>     - style of structure is now "nested" instead of "chained by pointer";
-> >>   - use div64_u64 for 64bit division
-> >>   - vendor specific controls support TRY_EXT_CTRLS
-> >>   - add READ_ONLY flag to GET_CALIBRATION_STATUS control and similar ones
-> >>   - human friendry control names for vendor specific controls
-> >>   - add initial value to each vendor specific control
-> >>   - GET_LAST_CAPTURE_STATUS control is updated asyncnously from workqueue
-> >>   - remove EXECUTE_ON_WRITE flag of vendor specific control
-> >>   - uAPI: return value of GET_CALIBRATION_STATUS follows common rules of error codes
-> >>   - applied v4l2-compliance
-> >> - Suggestion from Sakari Ailus
-> >>   - use div64_u64 for 64bit division
-> >>   - update copyright's year
-> >>   - remove redandunt cast
-> >>   - use bool instead of HWD_VIIF_ENABLE/DISABLE
-> >>   - simplify comparison to 0
-> >>   - simplify statements with trigram operator
-> >>   - remove redundant local variables
-> >>   - use general integer types instead of u32/s32
-> >> - Suggestion from Laurent Pinchart
-> >>   - moved VIIF driver to driver/platform/toshiba/visconti
-> >>   - change register access: struct-style to macro-style
-> >>   - remove unused type definitions
-> >>   - define enums instead of successive macro constants
-> >>   - remove redundant parenthesis of macro constant
-> >>   - embed struct hwd_res into struct viif_device
-> >>   - use xxx_dma instead of xxx_paddr for variable names of IOVA
-> >>   - literal value: just 0 instead of 0x0
-> >>   - use literal 1 or 0 instead of HWD_VIIF_ENABLE, DISABLE for register access
-> >>   - use true or false instead of HWD_VIIF_ENABLE, DISABLE for function calls
-> >>   - uAPI: return value of GET_CALIBRATION_STATUS follows common rules of error codes
-> >>
-> >> Changelog v7:
-> >> - remove unused variables
-> >> - split long statements which have multiple logical-OR and trigram operators
-> >>
-> >> Changelog v8:
-> >> - define constant V4L2_CTRL_TYPE_VISCONTI_ISP for datatype
-> >>   of Visconti specific controls
-> >> - Suggestion from Hans Verkuil
-> >>   - remove pr_info()
-> >>   - use pm_runtime_get_if_in_use() to get power status
-> >>
-> >> Changelog v9:
-> >> - fix warning for cast between ptr and dma_addr_t
-> >>
-> >>  .../media/platform/toshiba/visconti/Makefile  |    2 +-
-> >>  .../media/platform/toshiba/visconti/viif.c    |   10 +-
-> >>  .../platform/toshiba/visconti/viif_controls.c | 3395 +++++++++++++++++
-> >>  .../platform/toshiba/visconti/viif_controls.h |   18 +
-> >>  .../platform/toshiba/visconti/viif_isp.c      |   15 +-
-> >>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    7 +-
-> >>  include/uapi/linux/videodev2.h                |    2 +
-> >>  7 files changed, 3431 insertions(+), 18 deletions(-)
-> >>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
-> >>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
-> >>
-> > 
-> > <snip>
-> > 
-> > These core changes below should be in a separate patch, not mixed in with
-> > the driver.
-> > 
-> >> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> >> index a662fb60f73f..0c4df9fffbe0 100644
-> >> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> >> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> >> @@ -367,7 +367,9 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
-> >>  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
-> >>  		pr_cont("AV1_FILM_GRAIN");
-> >>  		break;
-> >> -
-> >> +	case V4L2_CTRL_TYPE_VISCONTI_ISP:
-> >> +		pr_cont("VISCONTI_ISP");
-> >> +		break;
-> >>  	default:
-> >>  		pr_cont("unknown type %d", ctrl->type);
-> >>  		break;
-> >> @@ -1163,6 +1165,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
-> >>  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
-> >>  		return validate_av1_film_grain(p);
-> >>  
-> >> +	case V4L2_CTRL_TYPE_VISCONTI_ISP:
-> >> +		break;
-> >> +
-> >>  	case V4L2_CTRL_TYPE_AREA:
-> >>  		area = p;
-> >>  		if (!area->width || !area->height)
-> >> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> >> index c3d4e490ce7c..bbc3cd3efa65 100644
-> >> --- a/include/uapi/linux/videodev2.h
-> >> +++ b/include/uapi/linux/videodev2.h
-> >> @@ -1915,6 +1915,8 @@ enum v4l2_ctrl_type {
-> >>  	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
-> >>  	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
-> >>  	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
-> >> +
-> >> +	V4L2_CTRL_TYPE_VISCONTI_ISP = 0x290,
-> > 
-> > I see you are using the same V4L2_CTRL_TYPE_VISCONTI_ISP for all the compound
-> > controls. But that's not allowed: the V4L2_CTRL_TYPE_ defines determine the
-> > control type, so each struct used by a control needs its own type.
-> 
-> Actually, you don't want to add such a type at all. This is all driver specific,
-> so support like this belongs in the driver.
-> 
-> A good example of that is V4L2_CID_DW100_DEWARPING_16x16_VERTEX_MAP in
-> drivers/media/platform/nxp/dw100/dw100.c: there all the handling is done in
-> the driver, and it adds init/validate/log/equal ops as well.
+On Mon 13-11-23 16:26:00, Huan Yang wrote:
+[...]
+> However, considering that we need to perform proactive reclaim in batches,
+> suppose that only 5% of the use-once page cache in this memcg can be
+> reclaimed,
+> but we need to call proactive memory reclaim step by step, such as 5%, 10%,
+> 15% ... 100%.
 
-Actually, I think a better option is to use parameters buffers instead
-of controls, like other ISP driver do.
-
-> > I also noticed looking through include/uapi/linux/visconti_viif.h that some
-> > of the struct have holes. I really want to avoid holes in structs used by
-> > controls, it is bad practice.
-> > 
-> > The pahole utility is very useful for testing this. It is also highly
-> > recommended to check for both 32 and 64 bit compilation: the struct layout
-> > must be the same, otherwise you would run into problems if a 32 bit application
-> > is used with a 64 bit kernel.
-> > 
-> > Finally, Laurent and/or Sakari will also take a look at this driver, for some
-> > reason this driver has been mostly reviewed by me, but I am not really the
-> > expert on ISPs.
-> > 
-> >>  };
-> >>  
-> >>  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
+You haven't really explained this and I have asked several times IIRC.
+Why do you even need to do those batches? Why cannot you simply relly on
+the memory pressure triggering the memory reclaim? Do you have any
+actual numbers showing that being pro-active results in smaller
+latencies or anything that would show this is actually needed?
 
 -- 
-Regards,
-
-Laurent Pinchart
+Michal Hocko
+SUSE Labs
