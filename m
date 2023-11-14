@@ -2,90 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F48D7EA92A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:35:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 983867EA92C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:39:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231888AbjKNDfA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 13 Nov 2023 22:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53480 "EHLO
+        id S231195AbjKNDjI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 22:39:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35284 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229626AbjKNDe6 (ORCPT
+        with ESMTP id S229580AbjKNDjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 22:34:58 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 937EA192
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:34:51 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 2220D24E28C;
-        Tue, 14 Nov 2023 11:34:49 +0800 (CST)
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 14 Nov
- 2023 11:34:49 +0800
-Received: from localhost.localdomain (161.142.156.149) by EXMBX066.cuchost.com
- (172.16.6.66) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 14 Nov
- 2023 11:34:47 +0800
-From:   Joshua Yeong <joshua.yeong@starfivetech.com>
-To:     <alexandre.belloni@bootlin.com>, <miquel.raynal@bootlin.com>
-CC:     <linux-i3c@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-        "Joshua Yeong" <joshua.yeong@starfivetech.com>
-Subject: [PATCH v2 1/1] i3c: Add fallback method for GETMXDS CCC
-Date:   Tue, 14 Nov 2023 11:34:30 +0800
-Message-ID: <20231114033430.9623-2-joshua.yeong@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231114033430.9623-1-joshua.yeong@starfivetech.com>
-References: <20231114033430.9623-1-joshua.yeong@starfivetech.com>
+        Mon, 13 Nov 2023 22:39:07 -0500
+Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com [209.85.215.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AA8D42
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:39:03 -0800 (PST)
+Received: by mail-pg1-f199.google.com with SMTP id 41be03b00d2f7-58b57d05c70so4800033a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:39:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699933143; x=1700537943;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Z6uGRbqXiV/RdBfoy3VcxyedeP5/+ifHUBxMJVggmy0=;
+        b=VD5RzpA3EBIuASEOJTgPp5x1mIQJESMrAVOR6rzJmK9xPhmygCNm2216v0/Gh5AC06
+         LrJl0bue5w15oiH48F4E6cOFc99nsp05kvpAD4je3bG88G/kQ9lcwOCFescYiTVguig9
+         O18GbJIX2Kski5LunsuIfBSqkTUAbjBWln7plEjoS2VpNAuUVSgnOYBuVMwksGIjWphm
+         +rXeUxn/RF9u+4AEvKryXlya3PuGHKfF1pEYkvQ64TFIBXzLLBPBSA2Zb6L3CxEkYtG6
+         5Mh0OuzzU2G05a7+4SJxGTSd3rv1A75RfxCJw1WppJuRKjoixH9zuirzMz0d5nqSJWKe
+         V2nQ==
+X-Gm-Message-State: AOJu0YxAnX3yI2CxrtqjQrcH8rmuDsQAaQG88LrTtn9VecIKDodHNS61
+        Gh4UoWZ55GeU9ZhPSk5a1USOTMMtUF7FauwuYRsKJ+VmT+QR
+X-Google-Smtp-Source: AGHT+IGtcPlt1JGrz4cF9ZHE0B+Xu9g9wgw+bvqNKMnJtW7SyiQYk5c84YU7XnNStLyWfphOPcGT7QAm6u8kOMhD1FdNCIq9/Q0t
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [161.142.156.149]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX066.cuchost.com
- (172.16.6.66)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:105f:0:b0:5bd:4149:a123 with SMTP id
+ 31-20020a63105f000000b005bd4149a123mr240302pgq.7.1699933143096; Mon, 13 Nov
+ 2023 19:39:03 -0800 (PST)
+Date:   Mon, 13 Nov 2023 19:39:02 -0800
+In-Reply-To: <tencent_C03638974A36004A90741B76A566583DCD09@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000022e7ce060a14878b@google.com>
+Subject: Re: [syzbot] [squashfs?] KASAN: slab-out-of-bounds Write in
+ squashfs_readahead (2)
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some I3C hardware will report error when incorrect length is received from
-device. GETMXDS CCC are availble in 2 formats; without turnaround time (format
-1) and with turnaround time (format 2). There is no mechanics to determine which
-format is supported by device. In case sending GETMXDS CCC format 2 resulted
-failure, try sending GETMXDS CCC format 1 instead.
+Hello,
 
-Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
----
- drivers/i3c/master.c | 12 ++++++++++--
- 1 file changed, 10 insertions(+), 2 deletions(-)
+syzbot tried to test the proposed patch but the build/boot failed:
 
-diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
-index 0cdc94e4cb77..2fc04d97f07e 100644
---- a/drivers/i3c/master.c
-+++ b/drivers/i3c/master.c
-@@ -1099,8 +1099,16 @@ static int i3c_master_getmxds_locked(struct i3c_master_controller *master,
- 
- 	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETMXDS, &dest, 1);
- 	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
--	if (ret)
--		goto out;
-+	if (ret) {
-+		/*
-+		* Retry when the device does not support max read turnaround
-+		* while expecting shorter length from this CCC command
-+		*/
-+		dest->payload.len -= 3;
-+		ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
-+		if (ret)
-+			goto out;
-+	}
- 
- 	if (dest.payload.len != 2 && dest.payload.len != 5) {
- 		ret = -EIO;
--- 
-2.25.1
+fs/squashfs/inode.c:128:60: error: use of undeclared identifier 'sqsh_ino'
+
+
+Tested on:
+
+commit:         13d88ac5 Merge tag 'vfs-6.7.fsid' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=604424eb051c2f696163
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1566c75b680000
 
