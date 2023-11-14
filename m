@@ -2,165 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B11E7EB206
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:21:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3044B7EB20E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:25:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233370AbjKNOVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36306 "EHLO
+        id S231557AbjKNOZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:25:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230074AbjKNOVV (ORCPT
+        with ESMTP id S229861AbjKNOZi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:21:21 -0500
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2088.outbound.protection.outlook.com [40.107.100.88])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63945BB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:21:18 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=eZLgbpS5RZ5VvVCaRbD6Q5RganIG4R3AHIkN7FlbUQyT02sWifkRvFX7SMIfmh6kUrmUUgw9g9ygEelJJIZWqeoua0r3MsjNwDKWVjt4i6AnpfXNNT5rYtgxjlE0pEE8Q97HCE4V8yrYVfhE+kulIiP9C5HoyyNnLHSnmXALzGiueMII0bss53/wCtf5cP3exz/9I7Rq3eKsxl1o5iFi9oC4xRMYaj3MT+ZCEOO7VPTmZ8en/V+2DybsnCw9biq05Ds1M83yD2tibI7kOjt7jlBXt3XqYpOGPSFDvSs2oZL7GWn7vaWMzSh8EjSzR7NCDuW6xIMj6YkThGJg7wwSTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=qwpstLwAKCPSiISO0gQ1tqEvboxggq8vZVnvQbYYu2o=;
- b=FhKnRGicFvPD3qmBN0z2BqeoggH6n1wpmOYGVlpaGSuuowS2nvwe5JMK6mEcgXIAlUhGhomNhdp4Dn2MkET+7hx/kWC/oFJj5tl8fxQHMbQqiuJC47bWn5G/olHpnicBbeIv6MAtcZN7Kzzi7b1KOIJAocXJWsu5BDLZ84DQ3g/Ju3LA2y6GbzfSgwFzcLs7xqiPrjHFbJ20FEmuGBFKr+PW7SZX4ma4Cg1N8KpRgyHlP8n5oNdV1myHus2Yq0VQpqbFfLF+cm8T0HP6ZpubkJuizkZRLKbeRAop5Yq6v5YpkpKpSptaABmsNVuyok4Ag4Nkj9Z8qu653cXOf8Uc/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qwpstLwAKCPSiISO0gQ1tqEvboxggq8vZVnvQbYYu2o=;
- b=tP51PdnJFe5bJqhK5RwKa6Ni+e4o3PL0OfMEXHy96rStb4IeGZC75tUitanZt2wS6X9IfIUQ/UDIv9ON32gqmpMqnE5bRBfYAQs0I7JVgCXXqulYIPIO8Zv7nd5oED7No5nrrpAPYTqtk9+d5TZHAkVMvQwCfGEybFChAYI3Fak=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- DS7PR12MB8369.namprd12.prod.outlook.com (2603:10b6:8:eb::18) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.29; Tue, 14 Nov 2023 14:21:15 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466%7]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 14:21:15 +0000
-Message-ID: <bd577fa9-d487-457b-8c27-bbbfd338fcea@amd.com>
-Date:   Tue, 14 Nov 2023 09:21:11 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/amd/display: fix NULL dereference
-To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org
-Cc:     airlied@gmail.com, daniel@ffwll.ch, Wayne.Lin@amd.com,
-        qingqing.zhuo@amd.com, lyude@redhat.com, aurabindo.pillai@amd.com,
-        sungjoon.kim@amd.com, srinivasan.shanmugam@amd.com,
-        mikita.lipski@amd.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev
-References: <20231114063647.71929-1-jose.pekkarinen@foxhound.fi>
-Content-Language: en-US
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20231114063647.71929-1-jose.pekkarinen@foxhound.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YQBPR01CA0009.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:c01::17)
- To DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11)
+        Tue, 14 Nov 2023 09:25:38 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 234F4CA;
+        Tue, 14 Nov 2023 06:25:35 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 7515E40E0171;
+        Tue, 14 Nov 2023 14:25:32 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id NpxUmh6qH1xl; Tue, 14 Nov 2023 14:25:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699971929; bh=S9j4pHyC5eZLovFq9DRdpMMk7CVfs5bDRVFiXlSpQno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=M7fWSXjw2JBel9ThmJ9QDNCHaD5NxcrsjiYGuZ4LFSYhzr8pwCXECZxnUwimfrnPa
+         ZT9rJ7dRyg8oH+tiW56ux7lLMvP1KtI+FbygIUmL/jGCSSkXDoYS0A0VgYIiUCMA4H
+         bPAqU7d/Kij5AFE9EDHJjIWUpf6jKdoReOKgjceyKEqZQtdbjvzG9FFuETFUvdMcHk
+         x1y5yOAge4H7RuHmAXLyuxBoIh6vT/B+qKDOqvaflDoqGMEi+E4FGCxI3nxB6LOFPa
+         23YOxOgVc93EVki++VYcVYmYETwDpbTg1OVWnlkmz3zV/i+VhwrQU3mnnyukh8Pa1y
+         Z8rYS/I2/juroXA5McUNecg4yFIFOfnOe1th06HlaRw+cczqm25nkp1Ca9kr28KfH7
+         Jid67JdK5aI+qwrWlxyxv6iGDkYtP/SMGTtvgmNL58RV5+bLZ4M9R3Qtx7rpL9/VcZ
+         8l8NJPXXzULhWJbHP89JBGZNca7532vih3kd7jNu2AdSbGK6x+t3foNfol9CXjKC1k
+         +3YZzfVz0Zy+CgOAao/tsmgtYQfzSbGILuVsSsjrGAA6w2jg2HIgkxabDldxFf80/6
+         qJtedObJ0xgbMZB9p0vfuUl/t5UmB8i5Jo/YZ+/6TdZ28Mb3ocaKW1hFc1ApJEqR4V
+         OU5lxwsBX1DQp6rpAf+drH3Y=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 0548540E018F;
+        Tue, 14 Nov 2023 14:24:48 +0000 (UTC)
+Date:   Tue, 14 Nov 2023 15:24:42 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Michael Roth <michael.roth@amd.com>
+Cc:     kvm@vger.kernel.org, linux-coco@lists.linux.dev,
+        linux-mm@kvack.org, linux-crypto@vger.kernel.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de, mingo@redhat.com,
+        jroedel@suse.de, thomas.lendacky@amd.com, hpa@zytor.com,
+        ardb@kernel.org, pbonzini@redhat.com, seanjc@google.com,
+        vkuznets@redhat.com, jmattson@google.com, luto@kernel.org,
+        dave.hansen@linux.intel.com, slp@redhat.com, pgonda@google.com,
+        peterz@infradead.org, srinivas.pandruvada@linux.intel.com,
+        rientjes@google.com, dovmurik@linux.ibm.com, tobin@ibm.com,
+        vbabka@suse.cz, kirill@shutemov.name, ak@linux.intel.com,
+        tony.luck@intel.com, marcorr@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com,
+        jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com,
+        pankaj.gupta@amd.com, liam.merwick@oracle.com,
+        zhi.a.wang@intel.com, Brijesh Singh <brijesh.singh@amd.com>
+Subject: Re: [PATCH v10 07/50] x86/sev: Add RMP entry lookup helpers
+Message-ID: <20231114142442.GCZVODKh03BoMFdlmj@fat_crate.local>
+References: <20231016132819.1002933-1-michael.roth@amd.com>
+ <20231016132819.1002933-8-michael.roth@amd.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|DS7PR12MB8369:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4a5652ca-3c7d-40d2-a93d-08dbe51cf5e1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: woT5OCI8oy5Y0rImTsbHYhmfOUqT7cgMbaGQFhNae+3AB3kA/X1Qraqh73PXY/Zms5L0vn116jlyIVris6Nj8bP6DE5YwQnLup9+aXbGZjCA0/GymGGOg4hr4ROHWEchFD8B6JZhTgdHHernzRSR+eHB0CUxJSeW0peOEE60rKt0ST1Jq/ySC4IWS+HfjhC9jEzxFKQjN4JF7ZvzpEyFoHR9z6KEFAzhaCX3E+Kqx/+4+u2jf/NoD3uQP2P/wjGAm6XMJfF6bOHfWnveGPw+t955Rcp5pT35QudtN5bRYkMmH3w93lFx4tzf8WWFb2bKt0jYTLjgf8ZOHbWMMWOVZzXMRnHQWgpvRCLNjtxuvmCKJtGXVp5ojAOv2KxTaHpCGUK0ccOYlP//2HTMRjQ8veI5YAKR77wxPrNYuMB+srp/yUbknkDzJv7cslYj2H0xZIYZRTWHNbkCyEZxGUyfe+kHRBuWz3kqkQDlcCouIjrDcvXGJU4gGTjsZPE2kSGEniToNunadUPv6/8hWM/0Ym0vyZPQ/rhnZlv0+rp9689Ts9Cr+WFVZ+hCc1lLfwklfE5lgjG12tuEz37xUOb/sN+3fMWG+utVBM3R3D0XzjGf+NOqyT3hcop4fRRqhIO4bcJchwwWBZ/tyUxvbyeekg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(346002)(366004)(396003)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(36756003)(26005)(31686004)(478600001)(6666004)(6486002)(53546011)(6506007)(66556008)(316002)(6512007)(66946007)(38100700002)(66476007)(2616005)(5660300002)(44832011)(8936002)(4326008)(8676002)(2906002)(41300700001)(83380400001)(86362001)(31696002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?Q2ZORGRnRjl5eW5Oc2g4cys3Y29UMUpEWUdXV0l5YVBub25JYWRqWmNtZVZQ?=
- =?utf-8?B?bDdwYmcwbEdzYnVLeHZNUHgwYm9hKzVwN1ZsUWZSNEE5dklweUFjV2JPRmNk?=
- =?utf-8?B?c28zK0R5blFESmRkb2p6SHE2RDYwUWRBR3FSLzk0MEo0NlhKY0t0R1BLWTJP?=
- =?utf-8?B?ejNDQkxXdTR5a0NaUXNRWE9jTjVSUlIrWWdjTldJdlEwUWw4Qkc3bGJpWVla?=
- =?utf-8?B?eFFibWJnV3Y1MlZETE5TVE1FNit4QWcxUW4wQVp1OXhVS3Q1N1pVdkdpS3Ur?=
- =?utf-8?B?VXlLOVBCanllRFNzOGVIL2Vwcm8vS01FNG9ZcVdEZ3Y4Zms3YTJBNklVVFBh?=
- =?utf-8?B?b3MzWUsxRHRjNzhKbHFUS0gxZmJzOE5vWDN2UkF3TTd6b1Z3NEs4ZUF5d3NC?=
- =?utf-8?B?Wm14UkxXQUVOMGFqRDArM2QrdlVmZlV0YWJZWWFqbzE2djRQL25ISVBTc3Ru?=
- =?utf-8?B?TkhDa3NVeWlndTg2Q2ljT1RiSU5UanhPNmhSbDREeHVXc3YyWEpOb3dNL1FY?=
- =?utf-8?B?MlB5akkrd2pTNEl6OXM2SDlmRVRSSXhBVnlJRlhTK1NUVThYVDNDSEVoUVpj?=
- =?utf-8?B?Y1NoZE45U0dJN0RodUtzZlU1eFBrRjV6TjJEUjRidFIxeldxb0JXbXp2d1Rn?=
- =?utf-8?B?WG9UQVFmdktPc1VYTnZ0L0g1MXZ3T2hQOUtUZlBBdWpEL3BISHI3N05zQmlG?=
- =?utf-8?B?dXFZNDN1dk5HM1JLZER4cFR3ZEZMU2tBWWpqTmVZUmdKZ0t4NW9UV2tya05G?=
- =?utf-8?B?OEVodlFFWVV2YkdxVWJSSHc4TlhtNEtIb1o2NlNLd1hJY013T1pCUEw1K2NP?=
- =?utf-8?B?VVpKdWJyRGZ6aHV0WXYwVjNzL1RBVUI4V09CK2Y1cFBCQnpJSFMyYnp3NlR0?=
- =?utf-8?B?dFQzQWxYWjdzWCtGY1E0WXFRMFREVU00SXpWY0FXSGxVTE9oZ3FBdW9qNjhP?=
- =?utf-8?B?K2xEdGY1aUpxQjhMR0ZMOTQzeHVncGVNcEV4MnpVWHN1YWYxQ3ArUjVLem1H?=
- =?utf-8?B?ZVV3emtTOXNiOFJTczNBQm05ZlBWNGNPTlY1SXBoeWFwemcxSk9vTUM2TVNS?=
- =?utf-8?B?UW1vQWxDQ3ljK01oTURObkl4R0ozc3hMWW1lbDNOemtUdFp4Q01Gd0VRcTRI?=
- =?utf-8?B?dmxSOU1NVlhkUlRvM2kvVHRtcEpHSGloUHJJcWpnbzVYNFRUU0Z1OE1VbGVL?=
- =?utf-8?B?c0NyZ0VXS2ZTcExFYTNUZ2lpWGlHM2UrLzdSbjdBb1VhNDByUlVVc216NnEx?=
- =?utf-8?B?NnEvTmsway9oSklTeWEwcUQwbW1vVnhwRjJMMTJOaThrTmk2NzNnRnRUSGFw?=
- =?utf-8?B?U3NaY1R6OStIZ0tWNFljUkZFdVNpaFdUbWdScmZFUjgwNXBuMWVZMkdQdk9i?=
- =?utf-8?B?K09Fd09abk1KbTFBYzNydDV4cEFTeE96SFRBOEZZMXVTZUo1QlZjN2RuV2RK?=
- =?utf-8?B?cjdMN1FES3Y1STNVSGtSYUhVZ3lwRURTaVBFQzgyZ3hZT0lwWldzeXZyTjhK?=
- =?utf-8?B?NW4vdzUyVHBra2trVCt1SzRCUGFqZUpRWlQrZ1AxSGd5RmFJQ1ZFRzJHa2li?=
- =?utf-8?B?V2hGdXhZV09sQ1BMTTN0UC9GMy9ZdVFtZlFGUDFIVmErQ2ZWZUNEdmpNanlT?=
- =?utf-8?B?ZmMyWjdaL2dwNlBaVjlkdnVYR3duOFh3QS9zelltZTk0cFlTbXp6Q2pSNUdQ?=
- =?utf-8?B?Z21qWFI5OWQwcHcxdGRDbDlCbGFpK0Z3ZHpZTUlxZUliR2oydnppT0FQRjBB?=
- =?utf-8?B?SHFPUXhKYzQzekw4TmVWZTQwYjNHZUtEN3IvcG1zd0Y2R29zTi9zT2NQRlpo?=
- =?utf-8?B?Qk9ZM2tybGg5c0Q4UU91eFk0RDF5NUJIcmNBandFNlVlWVIyelQra1VBd3F5?=
- =?utf-8?B?dkFTYUlodEQ3am9OMFNrRGU0S3N0SW9CTlpMT3lMUzJXbmJaUjdqd1pDUVNL?=
- =?utf-8?B?QlhlTTJWVGdOdmMzWkdZWEJHOVM2QWNJODE2TkxkblU5YlE5eDJMdWJodkJU?=
- =?utf-8?B?aDNjdDRhRHZRVDBSbU5tMm1wZHovVFVUY2NveWtoSlpCVENML0xQRDYwb3pu?=
- =?utf-8?B?LzZWUjlzYnhNMkZTTWllc1ErUmVtK3lYZXREaDlPODFxUG1XOS96M1Bvclg1?=
- =?utf-8?Q?jkM/3S3Beb4HOGXOUB6fyyTAQ?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a5652ca-3c7d-40d2-a93d-08dbe51cf5e1
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 14:21:15.2550
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: i2o00DjnaipG8j7aeR2GvStBMgo8jcSDzWjNLEKmYh3p5pjoBCnnTJ6vR/coCh1ctPLbdqQo7TRz7yxvfO/v7w==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB8369
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231016132819.1002933-8-michael.roth@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 01:36, José Pekkarinen wrote:
-> The following patch will fix a minor issue where a debug message is
-> referencing an struct that has just being checked whether is null or
-> not. This has been noticed by using coccinelle, in the following output:
+On Mon, Oct 16, 2023 at 08:27:36AM -0500, Michael Roth wrote:
+> From: Brijesh Singh <brijesh.singh@amd.com>
 > 
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c:540:25-29: ERROR: aconnector is NULL but dereferenced.
-> 
-> Fixes: 5d72e247e58c9 ("drm/amd/display: switch DC over to the new DRM logging macros")
-> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+> The snp_lookup_page_in_rmptable() can be used by the host to read the RMP
+
+$ git grep snp_lookup_page_in_rmptable
+$
+
+Stale commit message. And not very telling. Please rewrite.
+
+> entry for a given page. The RMP entry format is documented in AMD PPR, see
+> https://bugzilla.kernel.org/attachment.cgi?id=296015.
+
+<--- Brijesh's SOB comes first here if he's the primary author.
+
+> Co-developed-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> [mdr: separate 'assigned' indicator from return code]
+> Signed-off-by: Michael Roth <michael.roth@amd.com>
 > ---
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 3 +--
->   1 file changed, 1 insertion(+), 2 deletions(-)
+>  arch/x86/include/asm/sev-common.h |  4 +++
+>  arch/x86/include/asm/sev-host.h   | 22 +++++++++++++
+>  arch/x86/virt/svm/sev.c           | 53 +++++++++++++++++++++++++++++++
+>  3 files changed, 79 insertions(+)
+>  create mode 100644 arch/x86/include/asm/sev-host.h
 > 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> index ed784cf27d39..7048dab5e356 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> @@ -537,8 +537,7 @@ bool dm_helpers_dp_read_dpcd(
->   	struct amdgpu_dm_connector *aconnector = link->priv;
->   
->   	if (!aconnector) {
-> -		drm_dbg_dp(aconnector->base.dev,
-> -			   "Failed to find connector for link!\n");
-> +		DRM_ERROR("Failed to find connector for link!");
+> diff --git a/arch/x86/include/asm/sev-common.h b/arch/x86/include/asm/sev-common.h
+> index b463fcbd4b90..1e6fb93d8ab0 100644
+> --- a/arch/x86/include/asm/sev-common.h
+> +++ b/arch/x86/include/asm/sev-common.h
+> @@ -173,4 +173,8 @@ struct snp_psc_desc {
+>  #define GHCB_ERR_INVALID_INPUT		5
+>  #define GHCB_ERR_INVALID_EVENT		6
+>  
+> +/* RMP page size */
+> +#define RMP_PG_SIZE_4K			0
 
-I would prefer a patch that drops this error message entirely since
-it's not particularly useful. As, it's only possible before hw init
-(and at that point it's expected).
+RMP_PG_LEVEL_4K just like the generic ones.
 
->   		return false;
->   	}
->   
+> +#define RMP_TO_X86_PG_LEVEL(level)	(((level) == RMP_PG_SIZE_4K) ? PG_LEVEL_4K : PG_LEVEL_2M)
+
+What else is there besides X86 PG level?
+
+IOW, RMP_TO_PG_LEVEL simply.
+
+> +
+>  #endif
+> diff --git a/arch/x86/include/asm/sev-host.h b/arch/x86/include/asm/sev-host.h
+
+Nah, we don't need a third sev header:
+
+arch/x86/include/asm/sev-common.h
+arch/x86/include/asm/sev.h
+arch/x86/include/asm/sev-host.h
+
+Put it in sev.h pls.
+
+sev-common.h should be merged into sev.h too unless there's a compelling
+reason not to which I don't see atm.
+
+> new file mode 100644
+> index 000000000000..4c487ce8457f
+> --- /dev/null
+> +++ b/arch/x86/include/asm/sev-host.h
+
+...
+
+> diff --git a/arch/x86/virt/svm/sev.c b/arch/x86/virt/svm/sev.c
+> index 8b9ed72489e4..7d3802605376 100644
+> --- a/arch/x86/virt/svm/sev.c
+> +++ b/arch/x86/virt/svm/sev.c
+> @@ -53,6 +53,9 @@ struct rmpentry {
+>   */
+>  #define RMPTABLE_CPU_BOOKKEEPING_SZ	0x4000
+>  
+> +/* Mask to apply to a PFN to get the first PFN of a 2MB page */
+> +#define PFN_PMD_MASK	(~((1ULL << (PMD_SHIFT - PAGE_SHIFT)) - 1))
+
+GENMASK_ULL
+
+>  static struct rmpentry *rmptable_start __ro_after_init;
+>  static u64 rmptable_max_pfn __ro_after_init;
+>  
+> @@ -237,3 +240,53 @@ static int __init snp_rmptable_init(void)
+>   * the page(s) used for DMA are hypervisor owned.
+>   */
+>  fs_initcall(snp_rmptable_init);
+> +
+> +static int rmptable_entry(u64 pfn, struct rmpentry *entry)
+
+The signature of this one should be:
+
+static struct rmpentry *get_rmp_entry(u64 pfn)
+
+and the callers should use the IS_ERR* macros to check whether it
+returns a valid pointer or a negative value for error.
+
+Ditto for the other two functions here.
+
+> +	if (WARN_ON_ONCE(pfn > rmptable_max_pfn))
+> +		return -EFAULT;
+> +
+> +	*entry = rmptable_start[pfn];
+
+This wants to be called rmptable[] then.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int __snp_lookup_rmpentry(u64 pfn, struct rmpentry *entry, int *level)
+> +{
+> +	struct rmpentry large_entry;
+> +	int ret;
+> +
+> +	if (!cpu_feature_enabled(X86_FEATURE_SEV_SNP))
+> +		return -ENXIO;
+
+ENODEV or so.
+
+> +
+> +	ret = rmptable_entry(pfn, entry);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/*
+> +	 * Find the authoritative RMP entry for a PFN. This can be either a 4K
+> +	 * RMP entry or a special large RMP entry that is authoritative for a
+> +	 * whole 2M area.
+> +	 */
+> +	ret = rmptable_entry(pfn & PFN_PMD_MASK, &large_entry);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*level = RMP_TO_X86_PG_LEVEL(large_entry.pagesize);
+> +
+> +	return 0;
+> +}
+> +
+> +int snp_lookup_rmpentry(u64 pfn, bool *assigned, int *level)
+> +{
+> +	struct rmpentry e;
+> +	int ret;
+> +
+> +	ret = __snp_lookup_rmpentry(pfn, &e, level);
+> +	if (ret)
+> +		return ret;
+> +
+> +	*assigned = !!e.assigned;
+> +	return 0;
+> +}
+> +EXPORT_SYMBOL_GPL(snp_lookup_rmpentry);
+> -- 
+
+Thx.
+
 -- 
-Hamza
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
