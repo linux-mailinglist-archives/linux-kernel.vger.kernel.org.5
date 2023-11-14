@@ -2,92 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 40B587EB454
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F40B97EB459
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233689AbjKNQCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:02:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57064 "EHLO
+        id S233533AbjKNQDy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:03:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230200AbjKNQCi (ORCPT
+        with ESMTP id S229507AbjKNQDw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:02:38 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28BD1FE;
-        Tue, 14 Nov 2023 08:02:35 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9c41e95efcbso849596166b.3;
-        Tue, 14 Nov 2023 08:02:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699977753; x=1700582553; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v7o5QmUXPo3E3VEamoF4ZTOZ4Zd/AR5NbdIm9cwl4NQ=;
-        b=W0qaTbRxY65vkTDI1zQyqlKcG6Si3x/oVu2GLExbRuCE8AFRRjGfS1AUhyr+PbqH8s
-         O6xGnKxpqbgxSszYPdnCd4aP+DHIUmaWOEGcLhjVe3zXtL/IjzUj3ySYyVzSy2t4K8IE
-         bq21aY2yrBpAHcanfNreMTdSVUFZWICXDW69OYteD8c4DOfz/Ao0REmt+sVLaLZUqElq
-         lq/TCxDMmlSOuefXLr2WG1YZvbNgG6XEQ4SY/mWMwr+F7bdb8DNE48k1R11VKjOYZlbt
-         f/6znF0fCltXG42r5F+i1gB57kVg8MAVk4toB++HKxGnOvd8pNkbriufUyA3ahQsACkV
-         SyDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699977753; x=1700582553;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=v7o5QmUXPo3E3VEamoF4ZTOZ4Zd/AR5NbdIm9cwl4NQ=;
-        b=qD08UVZvSBjjJFmCTK62jXTfSBAVPomFS6WMNGfisd5Mt1Zy7DXlAnbqVVzQLfQvoD
-         EMWLgYScEfe5+VQ4WodsIH3fjcL+PpA+hxjW7RbXEsJMgovVAQZgLQ2PDzOvfO9IyWhz
-         JObzCVGUO3D3LLecJKK83XkDfwjT6zm2brzUwJasbxfj6CT2MH3OQARJWde5J5tTNu/l
-         kTNLdq+TAtN45via2WpTnAcUMlHBRvSwJGefR8pXdXrFlspV6JF223hQU74YVI/4YQqt
-         GsIzV0YsglGrOlIfPHatAMOPbVTuRc/5+3kpaGZMOnz+PlO/eUOmpdg+YuGp0kmtzxvi
-         VNFw==
-X-Gm-Message-State: AOJu0Yz3sQ6HiIQ9VukGiv2CO6KYzVj0z4IIphUMMC9FRc1WzHygOXlr
-        o93OALbha72JtHneAbyLXr8=
-X-Google-Smtp-Source: AGHT+IFijuEq+KWENnhrCTxm6KR4O5FgNbgxdRujmQMAkF+aq8oBCuUwkRXRm1A3/iHVlUkADwA0yw==
-X-Received: by 2002:a17:906:d8d2:b0:9ad:e180:16e3 with SMTP id re18-20020a170906d8d200b009ade18016e3mr7347700ejb.37.1699977753229;
-        Tue, 14 Nov 2023 08:02:33 -0800 (PST)
-Received: from [10.76.84.181] ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id ay18-20020a170906d29200b009ce03057c48sm5766424ejb.214.2023.11.14.08.02.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 08:02:32 -0800 (PST)
-Message-ID: <500eec71-e2f4-4f43-8bc9-6d4914b2493c@gmail.com>
-Date:   Tue, 14 Nov 2023 18:02:30 +0200
+        Tue, 14 Nov 2023 11:03:52 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3F5E12C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:03:49 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEERGwv013886;
+        Tue, 14 Nov 2023 16:03:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mBhJ/ZmMtyg37tj6+hqMrY0TJ1/iMQFw5zerVuPD/fk=;
+ b=mNHJm7XQqqYBJOy52ghFdD13a/H1LMtyVuTtcgVw5+zCHSYG6H7iHF7cV4BD+Gb4HleX
+ n2+EFjWFcmzIvRdf0bu3bcC4qhG7lqDPab+dop83korcp3TzFsWPtTWQR4bGvdHREBjb
+ e0bmvPGOndbCgR7YQIvUWvNNnqeyK2+nTyLhtC8/CUnN4R2uhSnTuAbHBOLaTQLnVKxc
+ YWt/6JqjF6dMvr8kuj3c1tCOF8m3Ey7DNKFQ1+BJHiNmELCNcOcdxf/5b7Fogy60FkX/
+ 7OT6MGpu9QHuFZKTXowrKK9M63KIQRcRW+l5B89PwGGKp2dKfot1RBPQ5I92Z+3UxvzC 2A== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucanq08a8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 16:03:07 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEG36WF010412
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 16:03:06 GMT
+Received: from [10.226.59.182] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 14 Nov
+ 2023 08:03:05 -0800
+Message-ID: <e5ce0994-6698-3ade-4553-76d456fe9110@quicinc.com>
+Date:   Tue, 14 Nov 2023 09:03:04 -0700
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: iio: adc: ad7192: Add AD7194 support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.6.0
+Subject: Re: [PATCH 1/2] drm: Add DRM-managed alloc_workqueue() and
+ alloc_ordered_workqueue()
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     Alisa-Dariana Roman <alisa.roman@analog.com>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Maksim Kiselev <bigunclemax@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Cosmin Tanislav <demonsingur@gmail.com>,
-        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-        Marius Cristea <marius.cristea@microchip.com>,
-        Marcus Folkesson <marcus.folkesson@gmail.com>,
-        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
-        ChiaEn Wu <chiaen_wu@richtek.com>,
-        Ivan Mikhaylov <fr0st61te@gmail.com>,
-        Niklas Schnelle <schnelle@linux.ibm.com>,
-        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231105193132.47009-1-alisadariana@gmail.com>
- <20231105193132.47009-3-alisadariana@gmail.com>
- <e5c9eaaa-a8f3-4ca5-acf6-9ff714a07898@linaro.org>
-From:   Alisa-Dariana Roman <alisadariana@gmail.com>
-In-Reply-To: <e5c9eaaa-a8f3-4ca5-acf6-9ff714a07898@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Jiasheng Jiang <jiasheng@iscas.ac.cn>, <daniel@ffwll.ch>
+CC:     <maarten.lankhorst@linux.intel.com>, <mripard@kernel.org>,
+        <tzimmermann@suse.de>, <airlied@gmail.com>,
+        <dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
+References: <20230118032413.6496-1-jiasheng@iscas.ac.cn>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+In-Reply-To: <20230118032413.6496-1-jiasheng@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yvKzGOeKPCG0UHc-pSXyneF3cJcvhjKv
+X-Proofpoint-ORIG-GUID: yvKzGOeKPCG0UHc-pSXyneF3cJcvhjKv
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_16,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ lowpriorityscore=0 bulkscore=0 phishscore=0 suspectscore=0 adultscore=0
+ malwarescore=0 mlxlogscore=824 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311140122
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,117 +80,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.11.2023 10:56, Krzysztof Kozlowski wrote:
-> On 05/11/2023 20:31, alisadariana@gmail.com wrote:
->> From: Alisa-Dariana Roman <alisa.roman@analog.com>
+On 1/17/2023 8:24 PM, Jiasheng Jiang wrote:
+>> On Tue, Jan 10, 2023 at 11:24:47PM +0800, Jiasheng Jiang wrote:
+>>> Add drmm_alloc_workqueue() and drmm_alloc_ordered_workqueue(), the helpers
+>>> that provide managed workqueue cleanup. The workqueue will be destroyed
+>>> with the final reference of the DRM device.
+>>>
+>>> Signed-off-by: Jiasheng Jiang <jiasheng@iscas.ac.cn>
 >>
->> Unlike the other AD719Xs, AD7194 has configurable differential
->> channels. The default configuration for these channels can be changed
->> from the devicetree.
+>> Yeah I think this looks nice.
 >>
->> Also add an example for AD7194 devicetree.
+>> Reviewed-by: Daniel Vetter <daniel.vetter@ffwll.ch>
 >>
->> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
->> ---
->>   .../bindings/iio/adc/adi,ad7192.yaml          | 69 +++++++++++++++++++
->>   1 file changed, 69 insertions(+)
+>> I'm assuming driver maintainers will pick this up, if not please holler.
 >>
->> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> index 16def2985ab4..b9a9f7b20670 100644
->> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
->> @@ -21,8 +21,15 @@ properties:
->>         - adi,ad7190
->>         - adi,ad7192
->>         - adi,ad7193
->> +      - adi,ad7194
->>         - adi,ad7195
->>   
->> +  '#address-cells':
->> +    const: 1
->> +
->> +  '#size-cells':
->> +    const: 0
->> +
->>     reg:
->>       maxItems: 1
->>   
->> @@ -96,6 +103,31 @@ required:
->>     - spi-cpol
->>     - spi-cpha
->>   
->> +patternProperties:
->> +  "^channel@([0-9a-f])$":
->> +    type: object
->> +    $ref: adc.yaml
->> +    unevaluatedProperties: false
->> +
->> +    properties:
->> +      reg:
->> +        description: The channel index.
->> +        minimum: 0
->> +        maximum: 7
+>> Also the threading seems broken, it's not a patch series. The b4 tool or
+>> git send-email (of all the patches of the entire series at once, not each
+>> individually) should get this right.
+>>
+>> Unfortunately I did't find the right link in the kernel docs, or at least
+>> they're not as detailed as I hoped.
+>>
+>> Also your previous submission had iirc a bunch more patches, do you plan
+>> to include them all in the next patch set?
 > 
-> Your pattern a bit above is not correct then: [0-7]
+> I have found that some previous patches have already been applied.
+> Need I just convert alloc*workqueue into drmm_alloc*workqueue and remove
+> the destroy_workqueue?
+> Or need I convert all the alloc*workqueue in the DRM?
 > 
->> +
->> +      diff-channels:
->> +        description: |
->> +          The differential channel pair for Ad7194 configurable channels. The
->> +          first channel is the positive input, the second channel is the
->> +          negative input.
->> +        items:
->> +          minimum: 1
->> +          maximum: 16
->> +
->> +    required:
->> +      - reg
->> +      - diff-channels
->> +
->>   allOf:
->>     - $ref: /schemas/spi/spi-peripheral-props.yaml#
->>   
->> @@ -127,3 +159,40 @@ examples:
->>               adi,burnout-currents-enable;
->>           };
->>       };
->> +  - |
->> +    spi {
->> +        #address-cells = <1>;
->> +        #size-cells = <0>;
->> +
->> +        adc@0 {
->> +            #address-cells = <1>;
->> +            #size-cells = <0>;
->> +            compatible = "adi,ad7194";
->> +            reg = <0>;
->> +            spi-max-frequency = <1000000>;
->> +            spi-cpol;
->> +            spi-cpha;
->> +            clocks = <&ad7192_mclk>;
->> +            clock-names = "mclk";
->> +            interrupts = <25 0x2>;
->> +            interrupt-parent = <&gpio>;
->> +            dvdd-supply = <&dvdd>;
->> +            avdd-supply = <&avdd>;
->> +            vref-supply = <&vref>;
->> +
->> +            adi,refin2-pins-enable;
->> +            adi,rejection-60-Hz-enable;
->> +            adi,buffer-enable;
->> +            adi,burnout-currents-enable;
->> +
->> +            channel@0 {
-> 
-> Why cannot you add this to the existing example?
-> 
-> 
-> 
-> Best regards,
-> Krzysztof
-> 
-I added another example to highlight the fact that only AD7194 supports 
-configurable channels. How should I proceed?
+> Thanks,
+> Jiang
 
-Kind regards,
-Alisa-Dariana Roman
+Unless I'm missing something, I don't see that this ever got applied.  I 
+have a use for this interface in the qaic driver.
+
+Jiang, are you planning on posting a v2?
+
+-Jeff
