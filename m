@@ -2,111 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F33DB7EB077
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FD8D7EB082
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:05:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233102AbjKNND0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:03:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43206 "EHLO
+        id S232842AbjKNNFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:05:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43726 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjKNNDY (ORCPT
+        with ESMTP id S232725AbjKNNFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:03:24 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA32131;
-        Tue, 14 Nov 2023 05:03:20 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id C7CA01F88C;
-        Tue, 14 Nov 2023 13:03:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699966998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7ffWXtPlsys/5rEUexpHY9hcrypa+3MN4PLEKd6bO20=;
-        b=LUtOFdea4AMkCnD714ZHVgskk1uoJAQncBJ8Z4XS7weR++NsgHZyGeqB+t3Nh1+hK3AgBi
-        NyM851PGgHCq+G8u6r+Pjl+1HDFyJx80v1d9W13WyQ4z70kjOcPSTO1F1eaJmTibPiPd3V
-        91BYS8yU7t34CiVQDvzLEaQ5gPVa0Uo=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9F4F013460;
-        Tue, 14 Nov 2023 13:03:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id XNFPJhZwU2WwfgAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 13:03:18 +0000
-Date:   Tue, 14 Nov 2023 14:03:17 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-ID: <ZVNwFV7Fid34pU-M@tiehlicka>
-References: <ZUy2-vrqDq7URzb6@tiehlicka>
- <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
- <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com>
- <878r76gsvz.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <78128117-ce70-47ef-b7fd-10c772b1c933@vivo.com>
- <ZU4i36tKnyXZ8lZD@tiehlicka>
- <dcd2eff8-400b-4ade-a5b2-becfe26b437b@vivo.com>
- <ZVNGMmvCmQWSqEyF@tiehlicka>
- <e5099669-3d99-4a9d-b56e-15ce4fc3f366@vivo.com>
+        Tue, 14 Nov 2023 08:05:15 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56CFA1A3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:05:11 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-da0344eb3fdso5653635276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:05:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699967110; x=1700571910; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y3kLet+ZFc4FiXhXyJTUcUEX1JsMDtWsRFc0PYkqxJM=;
+        b=nMk4bjzWl2OH2sgI2kginq+JqGE7cwEcr+JGDejTGiX2niImmLs4RpluHd3H9DmyOX
+         39NxMktLxD0KR/1jO0DVPvee/GYRKvdT0NGDyOOY9mugEYri1z7tPGOuN1UaDnDslMPM
+         07KVGoolts85BnWYiBEeoDTKbfNmDvu5SMcH8fkerB/VCr7HRL3nOmT0dMFAw6psXo7L
+         PQ/yETAMDp42UEMSaZHW8fDmMccfGZ99jpCF2zkYMbjDRmxmbKkkPuIGDPaJjXwpkPJN
+         6YRQJ9NnpBeWQwKLA6iHGmEX2qiNv1VB3X4ejZsla3zyizgE0zAnjBWzAhmBMv96hrt4
+         Sceg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699967110; x=1700571910;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y3kLet+ZFc4FiXhXyJTUcUEX1JsMDtWsRFc0PYkqxJM=;
+        b=qCPtrV/II7iyf9wCekQvxlAiMa0isGuhd/AWCvlQMP60XYYCur02eTlBSOODpukmDU
+         OHsN9iMPXFlOouu/s7QBVWdpGpJZMicFhqayh+TCn8dAkKeESV5u4VenpStsYOYOyRZU
+         XOm1RnXCEWsvYSgkf7wkDXueALHWLHA4QvbrRXRW7+KYRqxvtkvd0MbI8bnGZ/z+ztlp
+         B0sBMu2nhvpwPGhvcYWIdOWrg0nR0LtVg07Y0/nUKqd+hQVX/LJNDo5x/6/mU4G8FjLa
+         t2dGBmcSmxwivGeSYPOGrQRsBexchQpjkwvRQMLfzVQYevBnxkpenXd3Uok2tblTj34T
+         P7OA==
+X-Gm-Message-State: AOJu0YzmXp9jbRT84VFy07jMOMIINzVMTIPf9EpTVjEH4eNqNqoUTO+u
+        uckAXbD/Uf8W6J5xmjuje5qMM/HAhazSdiOnzb/mNA==
+X-Google-Smtp-Source: AGHT+IHU/EMXoR/AsvwDR5tVM/hTfhag7Py4pB8zx2h4lfdu8R1hVWGA8wCYGXEvgGG4RCO6d/pEhnbc29+P4adFbGc=
+X-Received: by 2002:a25:35d6:0:b0:daf:66f9:cfab with SMTP id
+ c205-20020a2535d6000000b00daf66f9cfabmr8292993yba.9.1699967110411; Tue, 14
+ Nov 2023 05:05:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <e5099669-3d99-4a9d-b56e-15ce4fc3f366@vivo.com>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -9.10
-X-Spamd-Result: default: False [-9.10 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[intel.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com,vger.kernel.org,kvack.org,vivo.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
+References: <20231108104343.24192-1-krzysztof.kozlowski@linaro.org> <20231108104343.24192-6-krzysztof.kozlowski@linaro.org>
+In-Reply-To: <20231108104343.24192-6-krzysztof.kozlowski@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Nov 2023 14:04:59 +0100
+Message-ID: <CACRpkdaSPTjjPA=TS-WbOb3E=TabtP6MFEx6Q+Dar-Mh=EtknQ@mail.gmail.com>
+Subject: Re: [PATCH 05/17] dt-bindings: pinctrl: samsung: add specific
+ compatibles for existing SoC
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Lee Jones <lee@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Sam Protsenko <semen.protsenko@linaro.org>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-gpio@vger.kernel.org, linux-pwm@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-sound@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -114,105 +101,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-11-23 20:37:07, Huan Yang wrote:
-> 
-> 在 2023/11/14 18:04, Michal Hocko 写道:
-> > On Mon 13-11-23 09:54:55, Huan Yang wrote:
-> > > 在 2023/11/10 20:32, Michal Hocko 写道:
-> > > > On Fri 10-11-23 14:21:17, Huan Yang wrote:
-> > > > [...]
-> > > > > > BTW: how do you know the number of pages to be reclaimed proactively in
-> > > > > > memcg proactive reclaiming based solution?
-> > > > > One point here is that we are not sure how long the frozen application
-> > > > > will be opened, it could be 10 minutes, an hour, or even days.  So we
-> > > > > need to predict and try, gradually reclaim anonymous pages in
-> > > > > proportion, preferably based on the LRU algorithm.  For example, if
-> > > > > the application has been frozen for 10 minutes, reclaim 5% of
-> > > > > anonymous pages; 30min:25%anon, 1hour:75%, 1day:100%.  It is even more
-> > > > > complicated as it requires adding a mechanism for predicting failure
-> > > > > penalties.
-> > > > Why would make your reclaiming decisions based on time rather than the
-> > > > actual memory demand? I can see how a pro-active reclaim could make a
-> > > > head room for an unexpected memory pressure but applying more pressure
-> > > > just because of inactivity sound rather dubious to me TBH. Why cannot
-> > > > you simply wait for the external memory pressure (e.g. from kswapd) to
-> > > > deal with that based on the demand?
-> > > Because the current kswapd and direct memory reclamation are a passive
-> > > memory reclamation based on the watermark, and in the event of triggering
-> > > these reclamation scenarios, the smoothness of the phone application cannot
-> > > be guaranteed.
-> > OK, so you are worried about latencies on spike memory usage.
-> > 
-> > > (We often observe that when the above reclamation is triggered, there
-> > > is a delay in the application startup, usually accompanied by block
-> > > I/O, and some concurrency issues caused by lock design.)
-> > Does that mean you do not have enough head room for kswapd to keep with
+On Wed, Nov 8, 2023 at 11:44=E2=80=AFAM Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+
+> Samsung Exynos SoC reuses several devices from older designs, thus
+> historically we kept the old (block's) compatible only.  This works fine
+> and there is no bug here, however guidelines expressed in
+> Documentation/devicetree/bindings/writing-bindings.rst state that:
+> 1. Compatibles should be specific.
+> 2. We should add new compatibles in case of bugs or features.
 >
-> Yes, but if set high watermark a little high, the power consumption
-> will be very high.  We usually observe that kswapd will run
-> frequently.  Even if we have set a low kswapd water level, kswapd CPU
-> usage can still be high in some extreme scenarios.(For example, when
-> starting a large application that needs to acquire a large amount of
-> memory in a short period of time.)However, we will not discuss it in
-> detail here, the reasons are quite complex, and we have not yet sorted
-> out a complete understanding of them.
+> Add compatibles specific to each SoC in front of all old-SoC-like
+> compatibles.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-This is definitely worth investigating further before resorting to
-proposing a new interface. If the kswapd consumes CPU cycles
-unproductively then we should look into why.
+This is more formally correct indeed.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-If there is a big peak memory demand then that surely requires CPU
-capacity for the memory reclaim. The work has to be done, whether that
-is in kswapd or the pro-active reclaimer context. I can imagine the
-latter one could be invoked with a better timing in mind but that is not
-a trivial thing to do. There are examples where this could be driven by
-PSI feedback loop but from what you have mention earlier you are doing a
-idle time based reclaim. Anyway, this is mostly a tuning related
-discussion. I wanted to learn more about what you are trying to achieve
-and so far it seems to me you are trying to workaround some issues and
-a) we would like to learn about those issues and b) a new interface is
-unlikely a good fit to paper over a suboptimal behavior.
-
-> > This would suggest that MADV_PAGEOUT is really what you are looking
-> > for.
-> 
-> Yes, I agree, especially to avoid reclaiming shared anonymous pages.
-> 
-> However, I did some shallow research and found that MADV_PAGEOUT does
-> not reclaim pages with mapcount != 1. Our applications are usually
-> composed of multiple processes, and some anonymous pages are shared
-> among them. When the application is frozen, the memory that is only
-> shared among the processes within the application should be released,
-> but MADV_PAGEOUT seems not to be suitable for this scenario?(If I
-> misunderstood anything, please correct me.)
-
-Hmm, OK it seems that we are hitting some terminology problems. The
-discussion was about private memory so far (essentially MAP_PRIVATE)
-now you are talking about a shared anonymous memory. That would imply
-shmem and that is indeed not supported by MADV_PAGEOUT. The reason for
-that is that this poses a security risk for time based attacks. I can
-imagine, though, that we could extend the behavior to support shared
-mappings if they do not cross a security boundary (e.g. mapped by the
-same user). This would require some analysis though.
- 
-> In addition, I still have doubts that this approach will consume a lot
-> of strategy resources, but it is worth studying.
-
-> > If you really aim at compressing a specific type of memory then
-> > tweking reclaim to achieve that sounds like a shortcut because
-> > madvise based solution is more involved. But that is not a solid
-> > justification for adding a new interface.
-> Yes, but this RFC is just adding an additional configuration option to
-> the proactive reclaim interface. And in the reclaim path, prioritize
-> processing these requests with reclaim tendencies. However, using
-> `unlikely` judgment should not have much impact.
-
-Just adding an adding configuration option means user interface contract
-that needs to be maintained for ever. Our future reclaim algorithm migh
-change (and in fact it has already changed quite a bit with MGLRU) and
-explicit request for LRU type specific reclaim might not even have any
-sense. See that point?
-
--- 
-Michal Hocko
-SUSE Labs
+Yours,
+Linus Walleij
