@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61AD37EB953
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:28:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8F97EB956
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234046AbjKNW2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:28:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39224 "EHLO
+        id S234100AbjKNWaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 17:30:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKNW2r (ORCPT
+        with ESMTP id S229508AbjKNWad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:28:47 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::224])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C70C2;
-        Tue, 14 Nov 2023 14:28:40 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 0CE91E0003;
-        Tue, 14 Nov 2023 22:28:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700000919;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ZEHoD4WBpLlbQl7puiOVvg50WEg0c6JhbpPtiVhKgls=;
-        b=UgY+orYpDy2L34IqxwH4o51lCKj0h0+vDd/b0aBaHwQYqnCxh2d/vrfkjxnNC/dt/KoreK
-        lhjkQnTw7+CJ9dwmkJ8lE+84tYdMbgf3jVFQZjyzEu0RptiKoP3MTGeA3JZ444HEVo03Wk
-        czewxPJexNhl07K5BnDjh/7//aMQS2WCNQnoLMyoB3RZ5GvnK79LwxOkjGuDZzNGsmGOQm
-        TUoXsDkFsiiU4Qm1YO32ygBv3R6xKgaY8xHozwCyadntw+j+XVSyudU5H4RLYcRWylNI6O
-        B0Wdv6+Cz8bdY6AOy0DoKFyjPzivIVxRlJ9DMRFyabNuTjjvN5s1meNxDseoTA==
-Date:   Tue, 14 Nov 2023 23:28:38 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        alvin.zhuge@gmail.com, renzhamin@gmail.com, kelvie@kelvie.ca,
-        Raul Rangel <rrangel@google.com>
-Subject: Re: [PATCH] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
-Message-ID: <2023111422283827b2a3f2@mail.local>
-References: <20231106162310.85711-1-mario.limonciello@amd.com>
- <CAHQZ30DP8ED4g3bib-tZ53rm2q2_ouEEL3TxD-SgK4YrCe3bew@mail.gmail.com>
- <d55a80f7-ca4d-406f-b2c8-b2bba45e3104@amd.com>
- <20231113223819fb469198@mail.local>
- <ZVM4nFaDTwrKMr8K@duo.ucw.cz>
+        Tue, 14 Nov 2023 17:30:33 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 863B4C1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:30:30 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-777745f1541so395657585a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:30:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700001029; x=1700605829; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4XST0nJe2LTZ4oHvfVDx7eyej+3hWOw1VagBLPa3XUw=;
+        b=xKbUDYIrLlOI33Sp9f82M2rt6VNkOPlg5ByrRzr26yt/7G5zFKeYH1O6pBoZqAkfH7
+         vKZ4JGZR/azgL8e+X33N3ktQ29+Z9QmKdG0A94VsDCdmgDQeMkwrSWGWuNfCc/vyE7oH
+         45uVlJJaWYakhWIItOtwWtSKLt1242WiI5vqPfT6Zykwb+yeSz0KXhnMnbMDkZtQgYZ7
+         LJZqc6tcuZEFy+XY0npgygLf0anZN/l+rLqAFkSpWuWyXtsY2UKvXid7Szfb0S1VkO/l
+         tBraPztCx0bhucOavgCxrmPVW2npCP/QLMXkMuZqoq00yxVAAQALwqJ7XDiq9Tu5dU4g
+         SVww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700001029; x=1700605829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4XST0nJe2LTZ4oHvfVDx7eyej+3hWOw1VagBLPa3XUw=;
+        b=GkAkzCDATaEdzf8h1FzT5mZ8xoMsImWDZZ+0ExkY1vwfEHhwrfpCKYKr7vMEFIiTUq
+         S2k08ZHg1HlgPv9+TNrrkKz+FfA4F9eJIYuRMhc0mTqadA00br7kl2IMfPmeGF6hjLhn
+         A/C2b//5JUu3aRZrEM7B0Hn+Y7cTHBE3TZ8dMeL9TKtoaUcirdxeJnMX4isqzTP5rkqG
+         UJjyYKSBkgIHxv/jD1quTPQgmWcp4eglt3QmRfXNGFJrHeuzz8UmxP4sfhmOmWmghugQ
+         z6MIq3qcIlEOMNXCP23RZpoHzUhUcO/81aoKYCyBt2w+kMupEPy/ny4WyEyWUbljvvCk
+         uKFg==
+X-Gm-Message-State: AOJu0YzDI7iEoaipVOVu9tpljrgKEzqGep2HGp8koElD1YwKL6JAa+DW
+        rLpCemhkhqmQVMClZUUynJjd2A==
+X-Google-Smtp-Source: AGHT+IFMKHaDQrXdjPlVZanAMM7n0JSJwglGmnqidJ3M4rjzD/Zj6FS0kt5MVg8MvJG467X+FEDorg==
+X-Received: by 2002:a0c:f9cc:0:b0:66d:5dd:26f6 with SMTP id j12-20020a0cf9cc000000b0066d05dd26f6mr4147253qvo.25.1700001029699;
+        Tue, 14 Nov 2023 14:30:29 -0800 (PST)
+Received: from x1 ([12.186.190.2])
+        by smtp.gmail.com with ESMTPSA id c14-20020a0cd60e000000b0066cf06339bcsm21546qvj.0.2023.11.14.14.30.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 14:30:29 -0800 (PST)
+Date:   Tue, 14 Nov 2023 17:30:26 -0500
+From:   Drew Fustini <dfustini@baylibre.com>
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v6 5/7] riscv: dts: thead: Add TH1520 mmc controllers and
+ sdhci clock
+Message-ID: <ZVP1AoosripWj3gs@x1>
+References: <20231114-th1520-mmc-v6-0-3273c661a571@baylibre.com>
+ <20231114-th1520-mmc-v6-5-3273c661a571@baylibre.com>
+ <20231114-starring-swarm-0e1b641f888c@squawk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVM4nFaDTwrKMr8K@duo.ucw.cz>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231114-starring-swarm-0e1b641f888c@squawk>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/2023 10:06:36+0100, Pavel Machek wrote:
-> On Mon 2023-11-13 23:38:19, Alexandre Belloni wrote:
-> > On 13/11/2023 15:36:28-0600, Mario Limonciello wrote:
-> > > Now that the merge window is over, can this be picked up?
-> > > 
-> > 
-> > I'd be happy to invoice AMD so they get a quick response time.
+On Tue, Nov 14, 2023 at 09:27:44PM +0000, Conor Dooley wrote:
+> On Tue, Nov 14, 2023 at 04:07:59PM -0500, Drew Fustini wrote:
 > 
-> That is a really bad joke.
+> > +	sdhci_clk: sdhci-clock {
+> > +		compatible = "fixed-clock";
+> > +		clock-frequency = <198000000>;
+> > +		clock-output-names = "sdhci_clk";
+> > +		#clock-cells = <0>;
+> > +	};
+> 
+> If only you had a clock driver to provide these...
+> 
+> Is someone working on a resubmission of the clock driver?
 
-Why would it be a joke?
+Yangtao Li posted an initial revision back [1] in May but I don't think
+there has been any follow up. It is for sure something we need to have
+in mainline so I'll take a look at getting that effort going again.
 
-From what I get this is an issue since 2021, I don't get how this is so
-urgent that I get a ping less than 24h after the end of the merge
-window.
+Drew
 
-This touches a driver that handle a gazillion of broken x86 hardware
-that I don't know anything about and as soon as I apply this patch, this
-becomes my problem so I need to be careful there.
-
-On the other hand, I need to pay my bills so actually, yesterday I was
-actually looking at the patch but got interrupted by a project that
-ironically involved the radeon driver not working properly in 6.5.
-
-So no, I don't actually expect AMD to have to pay to get me to review
-and apply patches but at the same time, they can't expect me to
-prioritize their patches over projects that pay the bills.
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+[1] https://lore.kernel.org/linux-riscv/20230515054402.27633-1-frank.li@vivo.com/
