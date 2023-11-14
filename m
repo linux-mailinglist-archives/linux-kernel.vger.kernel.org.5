@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23DB07EAF06
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935247EAF0E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:29:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233051AbjKNL3m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 06:29:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59886 "EHLO
+        id S233067AbjKNL3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 06:29:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232932AbjKNL3L (ORCPT
+        with ESMTP id S232784AbjKNL3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 06:29:11 -0500
+        Tue, 14 Nov 2023 06:29:17 -0500
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D72621BC8;
-        Tue, 14 Nov 2023 03:28:55 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CD68560002;
-        Tue, 14 Nov 2023 11:28:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5BF81BDA;
+        Tue, 14 Nov 2023 03:28:56 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 27D9B6000F;
+        Tue, 14 Nov 2023 11:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699961334;
+        t=1699961335;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=C2aAKl8aAUGB8CnJuHJk1iCyOBJNsjbnsgy1tmN3prk=;
-        b=I9Az4JIB4EmIyHdaj2Ds0MwGTyBeYILqi1US9V+6RJR8WEdD6I1lyIrNeMqByv/zXU8o8M
-        24Bbm3dgpwPsOkwPW9cq9qDw4oRDSQbFhKiJ3lPFNK9vVu/GAi2Uy7xtPZhfSo4NQbpgQc
-        qNVYfzmlP1jde0fDFuWKF/Jk1mci9MXm2kHpdBYnFnSHffaHB7uF0OOQd5Xmb31gftufM+
-        9mUuR5QByEFGhSe+Y/767fNG9yr7ccr2LS7G4WlRE7TRM84AUd4ifgb5l12lqP1EPGygk4
-        IxIAT+3LCb6NV8my0fa8hIiULOXgSJQzfhm2XrYavs6Igs322c6l8NyTctU3wg==
-From:   =?utf-8?q?K=C3=B6ry_Maincent?= <kory.maincent@bootlin.com>
-Date:   Tue, 14 Nov 2023 12:28:31 +0100
-Subject: [PATCH net-next v7 03/16] net: ethtool: Refactor identical
- get_ts_info implementations.
+        bh=Zf35sOHFYIOY2HOVCtwWkmKHY/uNOiLiCC6UQaPPXNc=;
+        b=Jpg6DCuQNepBQ4ydkDe8NOmP5JfeyerOs3olf2kzcrPfcpYj9YjXKwFfJrUYsZMvLVjDQ1
+        GnHo2donZGqmfpv+8O7pv0okw2n7d9Za7BIrVQsvwXRpaR5MfNPYp5Lqyw/wcfNEYlgEwy
+        UCr2T5RIsc/rxYzRLENUh8UfYCqqr9G+XMi1jEFMjRvuLB97vwER2MP6ajuwFMYx6nE4bI
+        DOcKhmf2SfPSLCY2ORTdFOBqYfMHm2/Dwq79UtXMzFPbhyNsBCOmLAzWaP5+Hap57E0SUW
+        yeoOm/q5yhbdAKYALQNy3T5BtVu1iLKgRC/2FtunoNNVPmW0cXBKRrAfXnCYgw==
+From:   Kory Maincent <kory.maincent@bootlin.com>
+Date:   Tue, 14 Nov 2023 12:28:32 +0100
+Subject: [PATCH net-next v7 04/16] net: macb: Convert to ndo_hwtstamp_get()
+ and ndo_hwtstamp_set()
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-feature_ptp_netnext-v7-3-472e77951e40@bootlin.com>
+Message-Id: <20231114-feature_ptp_netnext-v7-4-472e77951e40@bootlin.com>
 References: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
 In-Reply-To: <20231114-feature_ptp_netnext-v7-0-472e77951e40@bootlin.com>
 To:     Florian Fainelli <florian.fainelli@broadcom.com>,
@@ -64,8 +64,7 @@ Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
         netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org,
         Maxime Chevallier <maxime.chevallier@bootlin.com>,
-        Kory Maincent <kory.maincent@bootlin.com>,
-        Jay Vosburgh <jay.vosburgh@canonical.com>
+        Kory Maincent <kory.maincent@bootlin.com>
 X-Mailer: b4 0.12.4
 X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -78,182 +77,198 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Richard Cochran <richardcochran@gmail.com>
+The hardware timestamping through ndo_eth_ioctl() is going away.
+Convert the macb driver to the new API before that can be removed.
 
-The vlan, macvlan and the bonding drivers call their "real" device driver
-in order to report the time stamping capabilities.  Provide a core
-ethtool helper function to avoid copy/paste in the stack.
-
-Signed-off-by: Richard Cochran <richardcochran@gmail.com>
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 Reviewed-by: Florian Fainelli <florian.fainelli@broadcom.com>
-Reviewed-by: Jay Vosburgh <jay.vosburgh@canonical.com>
 ---
+ drivers/net/ethernet/cadence/macb.h      | 15 ++++++++----
+ drivers/net/ethernet/cadence/macb_main.c | 42 +++++++++++++++++++++++++-------
+ drivers/net/ethernet/cadence/macb_ptp.c  | 28 ++++++++-------------
+ 3 files changed, 53 insertions(+), 32 deletions(-)
 
-Change in v5:
-- Fixe typo.
-
-Change in v6:
-- Removed unused variable spotted by kernel test robot.
----
- drivers/net/bonding/bond_main.c | 29 ++---------------------------
- drivers/net/macvlan.c           | 14 +-------------
- include/linux/ethtool.h         |  8 ++++++++
- net/8021q/vlan_dev.c            | 15 +--------------
- net/ethtool/common.c            |  6 ++++++
- 5 files changed, 18 insertions(+), 54 deletions(-)
-
-diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-index 51d47eda1c87..10181c2c63fc 100644
---- a/drivers/net/bonding/bond_main.c
-+++ b/drivers/net/bonding/bond_main.c
-@@ -5749,10 +5749,8 @@ static int bond_ethtool_get_ts_info(struct net_device *bond_dev,
- {
- 	struct bonding *bond = netdev_priv(bond_dev);
- 	struct ethtool_ts_info ts_info;
--	const struct ethtool_ops *ops;
- 	struct net_device *real_dev;
- 	bool sw_tx_support = false;
--	struct phy_device *phydev;
- 	struct list_head *iter;
- 	struct slave *slave;
- 	int ret = 0;
-@@ -5763,29 +5761,12 @@ static int bond_ethtool_get_ts_info(struct net_device *bond_dev,
- 	rcu_read_unlock();
+diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
+index 78c972bb1d96..aa5700ac9c00 100644
+--- a/drivers/net/ethernet/cadence/macb.h
++++ b/drivers/net/ethernet/cadence/macb.h
+@@ -1165,9 +1165,10 @@ struct macb_ptp_info {
+ 	int (*get_ts_info)(struct net_device *dev,
+ 			   struct ethtool_ts_info *info);
+ 	int (*get_hwtst)(struct net_device *netdev,
+-			 struct ifreq *ifr);
++			 struct kernel_hwtstamp_config *tstamp_config);
+ 	int (*set_hwtst)(struct net_device *netdev,
+-			 struct ifreq *ifr, int cmd);
++			 struct kernel_hwtstamp_config *tstamp_config,
++			 struct netlink_ext_ack *extack);
+ };
  
- 	if (real_dev) {
--		ops = real_dev->ethtool_ops;
--		phydev = real_dev->phydev;
--
--		if (phy_has_tsinfo(phydev)) {
--			ret = phy_ts_info(phydev, info);
--			goto out;
--		} else if (ops->get_ts_info) {
--			ret = ops->get_ts_info(real_dev, info);
--			goto out;
+ struct macb_pm_data {
+@@ -1314,7 +1315,7 @@ struct macb {
+ 	struct ptp_clock *ptp_clock;
+ 	struct ptp_clock_info ptp_clock_info;
+ 	struct tsu_incr tsu_incr;
+-	struct hwtstamp_config tstamp_config;
++	struct kernel_hwtstamp_config tstamp_config;
+ 
+ 	/* RX queue filer rule set*/
+ 	struct ethtool_rx_fs_list rx_fs_list;
+@@ -1363,8 +1364,12 @@ static inline void gem_ptp_do_rxstamp(struct macb *bp, struct sk_buff *skb, stru
+ 
+ 	gem_ptp_rxstamp(bp, skb, desc);
+ }
+-int gem_get_hwtst(struct net_device *dev, struct ifreq *rq);
+-int gem_set_hwtst(struct net_device *dev, struct ifreq *ifr, int cmd);
++
++int gem_get_hwtst(struct net_device *dev,
++		  struct kernel_hwtstamp_config *tstamp_config);
++int gem_set_hwtst(struct net_device *dev,
++		  struct kernel_hwtstamp_config *tstamp_config,
++		  struct netlink_ext_ack *extack);
+ #else
+ static inline void gem_ptp_init(struct net_device *ndev) { }
+ static inline void gem_ptp_remove(struct net_device *ndev) { }
+diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
+index cebae0f418f2..898debfd4db3 100644
+--- a/drivers/net/ethernet/cadence/macb_main.c
++++ b/drivers/net/ethernet/cadence/macb_main.c
+@@ -3773,18 +3773,38 @@ static int macb_ioctl(struct net_device *dev, struct ifreq *rq, int cmd)
+ 	if (!netif_running(dev))
+ 		return -EINVAL;
+ 
+-	if (bp->ptp_info) {
+-		switch (cmd) {
+-		case SIOCSHWTSTAMP:
+-			return bp->ptp_info->set_hwtst(dev, rq, cmd);
+-		case SIOCGHWTSTAMP:
+-			return bp->ptp_info->get_hwtst(dev, rq);
 -		}
-+		ret = ethtool_get_ts_info_by_layer(real_dev, info);
- 	} else {
- 		/* Check if all slaves support software tx timestamping */
- 		rcu_read_lock();
- 		bond_for_each_slave_rcu(bond, slave, iter) {
--			ret = -1;
--			ops = slave->dev->ethtool_ops;
--			phydev = slave->dev->phydev;
+-	}
 -
--			if (phy_has_tsinfo(phydev))
--				ret = phy_ts_info(phydev, &ts_info);
--			else if (ops->get_ts_info)
--				ret = ops->get_ts_info(slave->dev, &ts_info);
+ 	return phylink_mii_ioctl(bp->phylink, rq, cmd);
+ }
+ 
++static int macb_hwtstamp_get(struct net_device *dev,
++			     struct kernel_hwtstamp_config *cfg)
++{
++	struct macb *bp = netdev_priv(dev);
++
++	if (!netif_running(dev))
++		return -EINVAL;
++
++	if (!bp->ptp_info)
++		return -EOPNOTSUPP;
++
++	return bp->ptp_info->get_hwtst(dev, cfg);
++}
++
++static int macb_hwtstamp_set(struct net_device *dev,
++			     struct kernel_hwtstamp_config *cfg,
++			     struct netlink_ext_ack *extack)
++{
++	struct macb *bp = netdev_priv(dev);
++
++	if (!netif_running(dev))
++		return -EINVAL;
++
++	if (!bp->ptp_info)
++		return -EOPNOTSUPP;
++
++	return bp->ptp_info->set_hwtst(dev, cfg, extack);
++}
++
+ static inline void macb_set_txcsum_feature(struct macb *bp,
+ 					   netdev_features_t features)
+ {
+@@ -3884,6 +3904,8 @@ static const struct net_device_ops macb_netdev_ops = {
+ #endif
+ 	.ndo_set_features	= macb_set_features,
+ 	.ndo_features_check	= macb_features_check,
++	.ndo_hwtstamp_set	= macb_hwtstamp_set,
++	.ndo_hwtstamp_get	= macb_hwtstamp_get,
+ };
+ 
+ /* Configure peripheral capabilities according to device tree
+@@ -4539,6 +4561,8 @@ static const struct net_device_ops at91ether_netdev_ops = {
+ #ifdef CONFIG_NET_POLL_CONTROLLER
+ 	.ndo_poll_controller	= at91ether_poll_controller,
+ #endif
++	.ndo_hwtstamp_set	= macb_hwtstamp_set,
++	.ndo_hwtstamp_get	= macb_hwtstamp_get,
+ };
+ 
+ static int at91ether_clk_init(struct platform_device *pdev, struct clk **pclk,
+diff --git a/drivers/net/ethernet/cadence/macb_ptp.c b/drivers/net/ethernet/cadence/macb_ptp.c
+index 51d26fa190d7..a63bf29c4fa8 100644
+--- a/drivers/net/ethernet/cadence/macb_ptp.c
++++ b/drivers/net/ethernet/cadence/macb_ptp.c
+@@ -374,19 +374,16 @@ static int gem_ptp_set_ts_mode(struct macb *bp,
+ 	return 0;
+ }
+ 
+-int gem_get_hwtst(struct net_device *dev, struct ifreq *rq)
++int gem_get_hwtst(struct net_device *dev,
++		  struct kernel_hwtstamp_config *tstamp_config)
+ {
+-	struct hwtstamp_config *tstamp_config;
+ 	struct macb *bp = netdev_priv(dev);
+ 
+-	tstamp_config = &bp->tstamp_config;
++	*tstamp_config = bp->tstamp_config;
+ 	if ((bp->hw_dma_cap & HW_DMA_CAP_PTP) == 0)
+ 		return -EOPNOTSUPP;
+ 
+-	if (copy_to_user(rq->ifr_data, tstamp_config, sizeof(*tstamp_config)))
+-		return -EFAULT;
+-	else
+-		return 0;
++	return 0;
+ }
+ 
+ static void gem_ptp_set_one_step_sync(struct macb *bp, u8 enable)
+@@ -401,22 +398,18 @@ static void gem_ptp_set_one_step_sync(struct macb *bp, u8 enable)
+ 		macb_writel(bp, NCR, reg_val & ~MACB_BIT(OSSMODE));
+ }
+ 
+-int gem_set_hwtst(struct net_device *dev, struct ifreq *ifr, int cmd)
++int gem_set_hwtst(struct net_device *dev,
++		  struct kernel_hwtstamp_config *tstamp_config,
++		  struct netlink_ext_ack *extack)
+ {
+ 	enum macb_bd_control tx_bd_control = TSTAMP_DISABLED;
+ 	enum macb_bd_control rx_bd_control = TSTAMP_DISABLED;
+-	struct hwtstamp_config *tstamp_config;
+ 	struct macb *bp = netdev_priv(dev);
+ 	u32 regval;
+ 
+-	tstamp_config = &bp->tstamp_config;
+ 	if ((bp->hw_dma_cap & HW_DMA_CAP_PTP) == 0)
+ 		return -EOPNOTSUPP;
+ 
+-	if (copy_from_user(tstamp_config, ifr->ifr_data,
+-			   sizeof(*tstamp_config)))
+-		return -EFAULT;
 -
-+			ret = ethtool_get_ts_info_by_layer(slave->dev, &ts_info);
- 			if (!ret && (ts_info.so_timestamping & SOF_TIMESTAMPING_TX_SOFTWARE)) {
- 				sw_tx_support = true;
- 				continue;
-@@ -5797,15 +5778,9 @@ static int bond_ethtool_get_ts_info(struct net_device *bond_dev,
- 		rcu_read_unlock();
+ 	switch (tstamp_config->tx_type) {
+ 	case HWTSTAMP_TX_OFF:
+ 		break;
+@@ -463,12 +456,11 @@ int gem_set_hwtst(struct net_device *dev, struct ifreq *ifr, int cmd)
+ 		return -ERANGE;
  	}
  
--	ret = 0;
--	info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
--				SOF_TIMESTAMPING_SOFTWARE;
- 	if (sw_tx_support)
- 		info->so_timestamping |= SOF_TIMESTAMPING_TX_SOFTWARE;
- 
--	info->phc_index = -1;
--
--out:
- 	dev_put(real_dev);
- 	return ret;
- }
-diff --git a/drivers/net/macvlan.c b/drivers/net/macvlan.c
-index 02bd201bc7e5..759406fbaea8 100644
---- a/drivers/net/macvlan.c
-+++ b/drivers/net/macvlan.c
-@@ -1086,20 +1086,8 @@ static int macvlan_ethtool_get_ts_info(struct net_device *dev,
- 				       struct ethtool_ts_info *info)
- {
- 	struct net_device *real_dev = macvlan_dev_real_dev(dev);
--	const struct ethtool_ops *ops = real_dev->ethtool_ops;
--	struct phy_device *phydev = real_dev->phydev;
- 
--	if (phy_has_tsinfo(phydev)) {
--		return phy_ts_info(phydev, info);
--	} else if (ops->get_ts_info) {
--		return ops->get_ts_info(real_dev, info);
--	} else {
--		info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
--			SOF_TIMESTAMPING_SOFTWARE;
--		info->phc_index = -1;
--	}
--
--	return 0;
-+	return ethtool_get_ts_info_by_layer(real_dev, info);
- }
- 
- static netdev_features_t macvlan_fix_features(struct net_device *dev,
-diff --git a/include/linux/ethtool.h b/include/linux/ethtool.h
-index 689028257fcc..c2bb74143eda 100644
---- a/include/linux/ethtool.h
-+++ b/include/linux/ethtool.h
-@@ -1043,6 +1043,14 @@ static inline int ethtool_mm_frag_size_min_to_add(u32 val_min, u32 *val_add,
- 	return -EINVAL;
- }
- 
-+/**
-+ * ethtool_get_ts_info_by_layer - Obtains time stamping capabilities from the MAC or PHY layer.
-+ * @dev: pointer to net_device structure
-+ * @info: buffer to hold the result
-+ * Returns zero on success, non-zero otherwise.
-+ */
-+int ethtool_get_ts_info_by_layer(struct net_device *dev, struct ethtool_ts_info *info);
++	bp->tstamp_config = *tstamp_config;
 +
- /**
-  * ethtool_sprintf - Write formatted string to ethtool string data
-  * @data: Pointer to a pointer to the start of string to update
-diff --git a/net/8021q/vlan_dev.c b/net/8021q/vlan_dev.c
-index 2a7f1b15714a..407b2335f091 100644
---- a/net/8021q/vlan_dev.c
-+++ b/net/8021q/vlan_dev.c
-@@ -702,20 +702,7 @@ static int vlan_ethtool_get_ts_info(struct net_device *dev,
- 				    struct ethtool_ts_info *info)
- {
- 	const struct vlan_dev_priv *vlan = vlan_dev_priv(dev);
--	const struct ethtool_ops *ops = vlan->real_dev->ethtool_ops;
--	struct phy_device *phydev = vlan->real_dev->phydev;
--
--	if (phy_has_tsinfo(phydev)) {
--		return phy_ts_info(phydev, info);
--	} else if (ops->get_ts_info) {
--		return ops->get_ts_info(vlan->real_dev, info);
--	} else {
--		info->so_timestamping = SOF_TIMESTAMPING_RX_SOFTWARE |
--			SOF_TIMESTAMPING_SOFTWARE;
--		info->phc_index = -1;
--	}
--
--	return 0;
-+	return ethtool_get_ts_info_by_layer(vlan->real_dev, info);
+ 	if (gem_ptp_set_ts_mode(bp, tx_bd_control, rx_bd_control) != 0)
+ 		return -ERANGE;
+ 
+-	if (copy_to_user(ifr->ifr_data, tstamp_config, sizeof(*tstamp_config)))
+-		return -EFAULT;
+-	else
+-		return 0;
++	return 0;
  }
  
- static void vlan_dev_get_stats64(struct net_device *dev,
-diff --git a/net/ethtool/common.c b/net/ethtool/common.c
-index b4419fb6df6a..11d8797f63f6 100644
---- a/net/ethtool/common.c
-+++ b/net/ethtool/common.c
-@@ -661,6 +661,12 @@ int ethtool_get_phc_vclocks(struct net_device *dev, int **vclock_index)
- }
- EXPORT_SYMBOL(ethtool_get_phc_vclocks);
- 
-+int ethtool_get_ts_info_by_layer(struct net_device *dev, struct ethtool_ts_info *info)
-+{
-+	return __ethtool_get_ts_info(dev, info);
-+}
-+EXPORT_SYMBOL(ethtool_get_ts_info_by_layer);
-+
- const struct ethtool_phy_ops *ethtool_phy_ops;
- 
- void ethtool_set_ethtool_phy_ops(const struct ethtool_phy_ops *ops)
 
 -- 
 2.25.1
