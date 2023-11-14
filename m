@@ -2,494 +2,262 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC9227EB81C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:02:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ACE27EB821
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:04:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232388AbjKNVCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 16:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59468 "EHLO
+        id S232109AbjKNVEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 16:04:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233930AbjKNVCF (ORCPT
+        with ESMTP id S229507AbjKNVEK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 16:02:05 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2379F;
-        Tue, 14 Nov 2023 13:02:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jf+PokhswOg8BJPBn7Mv9x/uWTGO2pVZDQn/2MBAL2ztra4DpHVzu0YpUKVWT2x7PITf1cDsHlvvxXUxo34RYbRzVnCztvv9ZOhvnANZMRZ/X8xS3uY0RwDUXRG0WMcGxIc1NUtIDJP2KW6Of+t969fU2UL6SkKzSW5uE1u8YXEQ04EldW+tH5gv7Pjruy12m46CSTw6PKLrSOKtCUlngIVJbbfhIJvGBLIbn+jVFMm6yZHEhLaiwu1+cE+gqtMlMBRMMtAa7QUJel9k9K3ZAAEXidJG9gg1fJbYDwacNIwe+XzacWLF7KZ/ywZhj3RYWQ+DicP3NjwmLl7lMFjwiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2t6K1YNg9q4RH8LBYZvgu0VAI1xleif3ksKZXGipFjw=;
- b=QJU65svYZ7fsClGeIE7wRsm/JGy+/YjqjF3dZSpatzH/r4b7cYdLCiHB89LZeebyXQY20IMdQtbD5Km879K5zO8r8/vYgfxQd05aamByagnf/PELGFZPRD8D7k2EljLW1OZBXC9OlaadEsdGnK/El+St99YNreegHryR0/0+ViSskEgj6pJMOk2cKtZ7kHcNZ2Ry2PQdktzEOaLlyRiIkwJHAZdvEXMy/sFNKld/6KdaIFJVdyMoVHLGLLLA47Zuaxn2FaxVGnv96qQeP736yTSMwl5dNZkgIinzfUsu7TV8cA+s7AMmQ/eD71rtY8hIgOZOy3WyM8FnWj2RkU9EUA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2t6K1YNg9q4RH8LBYZvgu0VAI1xleif3ksKZXGipFjw=;
- b=xs6fXE6VRy1xctCUkE/93tX0UY+RDkyiFIzVI0hLtBkIC/48WIv1LHHs7JvO9P7TB3gMkkeiuqrzZvj7crd0sRYWFrJG8R9p13pDWBv5A2u2luyStNpL/ioOPUtMlxt1rYOinYugDqFta5KcClPJrF5Zhg2UOxdLUQUGTMy25/M=
-Received: from BLAPR05CA0024.namprd05.prod.outlook.com (2603:10b6:208:36e::20)
- by SA0PR12MB4493.namprd12.prod.outlook.com (2603:10b6:806:72::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
- 2023 21:01:57 +0000
-Received: from MN1PEPF0000F0E3.namprd04.prod.outlook.com
- (2603:10b6:208:36e:cafe::88) by BLAPR05CA0024.outlook.office365.com
- (2603:10b6:208:36e::20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.18 via Frontend
- Transport; Tue, 14 Nov 2023 21:01:57 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- MN1PEPF0000F0E3.mail.protection.outlook.com (10.167.242.41) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7002.14 via Frontend Transport; Tue, 14 Nov 2023 21:01:56 +0000
-Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 14 Nov
- 2023 15:01:54 -0600
-From:   Brett Creeley <brett.creeley@amd.com>
-To:     <jgg@ziepe.ca>, <yishaih@nvidia.com>,
-        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
-        <alex.williamson@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <shannon.nelson@amd.com>, <brett.creeley@amd.com>
-Subject: [PATCH vfio 5/5] pds-vfio-pci: Add multi-region support
-Date:   Tue, 14 Nov 2023 13:01:29 -0800
-Message-ID: <20231114210129.34318-6-brett.creeley@amd.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231114210129.34318-1-brett.creeley@amd.com>
-References: <20231114210129.34318-1-brett.creeley@amd.com>
+        Tue, 14 Nov 2023 16:04:10 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C831195
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:04:06 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6bee11456baso5282135b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:04:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699995846; x=1700600646; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VjmcNeZhrefNUyVY1em5QbCLnop7PtKaN2GsNSSWYA4=;
+        b=GqaQhgUMl0p3IygitTYtHmY3xiORWRVlPIzsYKh5jovWXrzE3zMTnhWP3vsUgOFqP+
+         17VJtFAUdYg+X6zPyB8WvQ33g8/CgFCqyFtdJFvn8JtQ8gTPMGKKfaBYqBA4YzQxeThC
+         vLU5/JvI585pea2FZBee86mz7dUCwa/g4z8d/q3DJKz+vb6d9JkO8wQodt7SsfrKChRM
+         U6Z3AVwH2rVbdRIqz64xhSwtqcPEdjJHda8OTItOCavyT2uF7dQ5ehUz+62C6NH6PrdH
+         QsCLjugqLvP8oM3SfD1WqJgL1pkEfhuZ94vA4IzkgdSUgmDUeIXvRKAfLmnYVHfPbL0a
+         VHrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699995846; x=1700600646;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VjmcNeZhrefNUyVY1em5QbCLnop7PtKaN2GsNSSWYA4=;
+        b=Tt6cBHB7oxDREp+vroduJx5+R2tvRfOfi4OX2EZco7EgYuU078+U9pAp3l31svDUDH
+         bBoy/gyiE6Q+SCqCOgb9OZ1seQd1nlvZw54YpVw1nG3HzX75X8oJ8SUZBjCpSnozyacA
+         G9RYru1/ul/nKhVZ+oltfR0rx1FLUmOG+Fzm33qqXeaZn0fjTX41FGAIQ6ooZQQNqL9/
+         rIBJBEPZEwEwqjCQ1G5k5yK4eYvqLsR2Jnt+Sf+qiTdkuCEa75aTZsCR3TCcsOrKVYWx
+         5ADY6RqLqgcRcLWyhdkFk1cv+t8j2mzMHkz2MigpJ43bfmQdtAMr+WXrOQe/ZQdxza7a
+         MXag==
+X-Gm-Message-State: AOJu0YyXaN03kwtfPZ/0p3bAbcV/Y63rbwwmpaa6W4bmu5yRwbhejABM
+        cvC+C9oNAz34D5cff0ohQMhPsg==
+X-Google-Smtp-Source: AGHT+IF+/ubiFsFk/ps5IuxtuTf+htTpjU57D2zMenSQiIigtpnBq4IN+0vtUNNscpMJHjlPjbhE9Q==
+X-Received: by 2002:a05:6a00:3907:b0:6be:43f8:4e0b with SMTP id fh7-20020a056a00390700b006be43f84e0bmr9762580pfb.24.1699995845983;
+        Tue, 14 Nov 2023 13:04:05 -0800 (PST)
+Received: from [192.168.60.239] (183.43.230.35.bc.googleusercontent.com. [35.230.43.183])
+        by smtp.gmail.com with ESMTPSA id i30-20020a056a00005e00b0068ffb8da107sm1564892pfk.212.2023.11.14.13.04.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 13:04:05 -0800 (PST)
+Message-ID: <444878d9-be44-4f52-91c7-f593a24cd930@google.com>
+Date:   Tue, 14 Nov 2023 13:04:04 -0800
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E3:EE_|SA0PR12MB4493:EE_
-X-MS-Office365-Filtering-Correlation-Id: f32e8817-81f7-42e8-0880-08dbe554f002
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fFkrSoJoZ0kqhcNNlP0AMzs89HBYDMhru4p6+H2eq8UmvlF3OB0scYJ8ekwbRyJT1OwsHAvusgmQJVJT+QgREZJ3UJipnY7JE6BOeusTgjWc24GbV41jTXgmoEYLpqnQp0HyhGwBRFaEJDw6Jyawr8MWuGh/uY8X4aLSu0hoGEgxwNbHpXm6TVffC23eEGisZhx1pKx+hxWya/4B/wiOolEhdcOL+rOeT5NxqxMMFMtMJZiykvOF840nzWJf+XqgwDXpncGF8pvw+tfinAUGaffwRj7Ev5ksKCh7kMLodlWBqggzG6aNzgxOOcZq1EsVhDZMDeSsMEPf9at3mddAjKMlN0P5FP8Ui3kB5YTP/YLPgc1QyUZ5Rk7tY88lVjCTYOXsUBvJp7lYb0wNymDa2i1e39vh2A5cimJz1uL+x2DS8KCtvjIw7oy5O3SYiqNlWi3vaQZihA6krnKXhaivRXUlTLgfX1F3M3VwQP/xwUTOZJk6UoUbI2zRhkwNeH+XLHNjC4GWf5gFt4H7X9125Q4vuWqKqmqcIhURLiyUF8CuorOt7UeA2Lu5za1pkO96KphiRnJbOlkJ7SjDvrKTht1sVNyNg2JbAEZkW51EeCPWlzz47bLg9Tz+AwQNAqmyXC1Dmsn3U+KMA+ata4Bbkj9Mf2Q6WQ8ltTmNyEoePogz9z/EWLCiVAQEv1DiDCMliO+IoYWDAkkJ/0dDmf2CzVZh1VtulDKwc1mjqzZsyMnyELBA4OcghBxxgoZPQI9uzr3wt5QuFU7OiUl/c8Gh1g==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(396003)(376002)(136003)(346002)(230922051799003)(1800799009)(82310400011)(186009)(64100799003)(451199024)(40470700004)(46966006)(36840700001)(40480700001)(426003)(40460700003)(70586007)(316002)(110136005)(70206006)(54906003)(81166007)(26005)(356005)(82740400003)(86362001)(36756003)(83380400001)(1076003)(336012)(16526019)(6666004)(2616005)(36860700001)(30864003)(478600001)(2906002)(47076005)(5660300002)(44832011)(41300700001)(4326008)(8676002)(8936002)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 21:01:56.6298
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: f32e8817-81f7-42e8-0880-08dbe554f002
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000F0E3.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR12MB4493
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 1/4] usb: gadget: uvc: prevent use of disabled
+ endpoint
+Content-Language: en-US
+To:     gregkh@linuxfoundation.org
+Cc:     etalvala@google.com, jchowdhary@google.com,
+        laurent.pinchart@ideasonboard.com, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, m.grzeschik@pengutronix.de,
+        dan.scally@ideasonboard.com
+References: <73309396-3856-43a2-9a6f-81a40ed594db@google.com>
+ <20231109004104.3467968-1-arakesh@google.com>
+From:   Avichal Rakesh <arakesh@google.com>
+In-Reply-To: <20231109004104.3467968-1-arakesh@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Only supporting a single region/range is limiting,
-wasteful, and in some cases broken (i.e. when there
-are large gaps in the iova memory ranges). Fix this
-by adding support for multiple regions based on
-what the device tells the driver it can support.
+Hey Greg, I think this patchset is ready for submission. 
+Let me know if I am missing something and something else
+needs to be done.
 
-Signed-off-by: Brett Creeley <brett.creeley@amd.com>
-Signed-off-by: Shannon Nelson <shannon.nelson@amd.com>
----
- drivers/vfio/pci/pds/dirty.c | 227 ++++++++++++++++++++++++-----------
- drivers/vfio/pci/pds/dirty.h |   4 +-
- 2 files changed, 161 insertions(+), 70 deletions(-)
+Thank you!
+- Avi
 
-diff --git a/drivers/vfio/pci/pds/dirty.c b/drivers/vfio/pci/pds/dirty.c
-index d4ab97e39d3f..882e43e6c598 100644
---- a/drivers/vfio/pci/pds/dirty.c
-+++ b/drivers/vfio/pci/pds/dirty.c
-@@ -70,7 +70,7 @@ pds_vfio_print_guest_region_info(struct pds_vfio_pci_device *pds_vfio,
- 	kfree(region_info);
- }
- 
--static int pds_vfio_dirty_alloc_bitmaps(struct pds_vfio_dirty *dirty,
-+static int pds_vfio_dirty_alloc_bitmaps(struct pds_vfio_region *region,
- 					unsigned long bytes)
- {
- 	unsigned long *host_seq_bmp, *host_ack_bmp;
-@@ -85,20 +85,29 @@ static int pds_vfio_dirty_alloc_bitmaps(struct pds_vfio_dirty *dirty,
- 		return -ENOMEM;
- 	}
- 
--	dirty->region.host_seq = host_seq_bmp;
--	dirty->region.host_ack = host_ack_bmp;
--	dirty->region.bmp_bytes = bytes;
-+	region->host_seq = host_seq_bmp;
-+	region->host_ack = host_ack_bmp;
-+	region->bmp_bytes = bytes;
- 
- 	return 0;
- }
- 
- static void pds_vfio_dirty_free_bitmaps(struct pds_vfio_dirty *dirty)
- {
--	vfree(dirty->region.host_seq);
--	vfree(dirty->region.host_ack);
--	dirty->region.host_seq = NULL;
--	dirty->region.host_ack = NULL;
--	dirty->region.bmp_bytes = 0;
-+	int i;
-+
-+	if (!dirty->regions)
-+		return;
-+
-+	for (i = 0; i < dirty->num_regions; i++) {
-+		struct pds_vfio_region *region = &dirty->regions[i];
-+
-+		vfree(region->host_seq);
-+		vfree(region->host_ack);
-+		region->host_seq = NULL;
-+		region->host_ack = NULL;
-+		region->bmp_bytes = 0;
-+	}
- }
- 
- static void __pds_vfio_dirty_free_sgl(struct pds_vfio_pci_device *pds_vfio,
-@@ -119,10 +128,18 @@ static void __pds_vfio_dirty_free_sgl(struct pds_vfio_pci_device *pds_vfio,
- 
- static void pds_vfio_dirty_free_sgl(struct pds_vfio_pci_device *pds_vfio)
- {
--	struct pds_vfio_region *region = &pds_vfio->dirty.region;
-+	struct pds_vfio_dirty *dirty = &pds_vfio->dirty;
-+	int i;
-+
-+	if (!dirty->regions)
-+		return;
-+
-+	for (i = 0; i < dirty->num_regions; i++) {
-+		struct pds_vfio_region *region = &dirty->regions[i];
- 
--	if (region->sgl)
--		__pds_vfio_dirty_free_sgl(pds_vfio, region);
-+		if (region->sgl)
-+			__pds_vfio_dirty_free_sgl(pds_vfio, region);
-+	}
- }
- 
- static int pds_vfio_dirty_alloc_sgl(struct pds_vfio_pci_device *pds_vfio,
-@@ -156,22 +173,90 @@ static int pds_vfio_dirty_alloc_sgl(struct pds_vfio_pci_device *pds_vfio,
- 	return 0;
- }
- 
-+static void pds_vfio_dirty_free_regions(struct pds_vfio_dirty *dirty)
-+{
-+	vfree(dirty->regions);
-+	dirty->regions = NULL;
-+	dirty->num_regions = 0;
-+}
-+
-+static int pds_vfio_dirty_alloc_regions(struct pds_vfio_pci_device *pds_vfio,
-+					struct pds_lm_dirty_region_info *region_info,
-+					u64 region_page_size, u8 num_regions)
-+{
-+	struct pci_dev *pdev = pds_vfio->vfio_coredev.pdev;
-+	struct pds_vfio_dirty *dirty = &pds_vfio->dirty;
-+	u32 dev_bmp_offset_byte = 0;
-+	int err, i;
-+
-+	dirty->regions = vcalloc(num_regions, sizeof(struct pds_vfio_region));
-+	if (!dirty->regions)
-+		return -ENOMEM;
-+	dirty->num_regions = num_regions;
-+
-+	for (i = 0; i < num_regions; i++) {
-+		struct pds_lm_dirty_region_info *ri = &region_info[i];
-+		struct pds_vfio_region *region = &dirty->regions[i];
-+		u64 region_size, region_start;
-+		u32 page_count;
-+
-+		/* page_count might be adjusted by the device */
-+		page_count = le32_to_cpu(ri->page_count);
-+		region_start = le64_to_cpu(ri->dma_base);
-+		region_size = page_count * region_page_size;
-+
-+		err = pds_vfio_dirty_alloc_bitmaps(region,
-+						   page_count / BITS_PER_BYTE);
-+		if (err) {
-+			dev_err(&pdev->dev, "Failed to alloc dirty bitmaps: %pe\n",
-+				ERR_PTR(err));
-+			goto out_free_regions;
-+		}
-+
-+		err = pds_vfio_dirty_alloc_sgl(pds_vfio, region, page_count);
-+		if (err) {
-+			dev_err(&pdev->dev, "Failed to alloc dirty sg lists: %pe\n",
-+				ERR_PTR(err));
-+			goto out_free_regions;
-+		}
-+
-+		region->size = region_size;
-+		region->start = region_start;
-+		region->page_size = region_page_size;
-+		region->dev_bmp_offset_start_byte = dev_bmp_offset_byte;
-+
-+		dev_bmp_offset_byte += page_count / 8;
-+		if (dev_bmp_offset_byte % 8) {
-+			dev_err(&pdev->dev, "Device bitmap offset is mis-aligned\n");
-+			err = -EINVAL;
-+			goto out_free_regions;
-+		}
-+	}
-+
-+	return 0;
-+
-+out_free_regions:
-+	pds_vfio_dirty_free_bitmaps(dirty);
-+	pds_vfio_dirty_free_sgl(pds_vfio);
-+	pds_vfio_dirty_free_regions(dirty);
-+
-+	return err;
-+}
-+
- static int pds_vfio_dirty_enable(struct pds_vfio_pci_device *pds_vfio,
- 				 struct rb_root_cached *ranges, u32 nnodes,
- 				 u64 *page_size)
- {
- 	struct pci_dev *pdev = pds_vfio->vfio_coredev.pdev;
- 	struct device *pdsc_dev = &pci_physfn(pdev)->dev;
--	struct pds_vfio_dirty *dirty = &pds_vfio->dirty;
--	u64 region_start, region_size, region_page_size;
- 	struct pds_lm_dirty_region_info *region_info;
- 	struct interval_tree_node *node = NULL;
-+	u64 region_page_size = *page_size;
- 	u8 max_regions = 0, num_regions;
- 	dma_addr_t regions_dma = 0;
- 	u32 num_ranges = nnodes;
--	u32 page_count;
-+	int err, i;
- 	u16 len;
--	int err;
- 
- 	dev_dbg(&pdev->dev, "vf%u: Start dirty page tracking\n",
- 		pds_vfio->vf_id);
-@@ -198,39 +283,38 @@ static int pds_vfio_dirty_enable(struct pds_vfio_pci_device *pds_vfio,
- 		return -EOPNOTSUPP;
- 	}
- 
--	/*
--	 * Only support 1 region for now. If there are any large gaps in the
--	 * VM's address regions, then this would be a waste of memory as we are
--	 * generating 2 bitmaps (ack/seq) from the min address to the max
--	 * address of the VM's address regions. In the future, if we support
--	 * more than one region in the device/driver we can split the bitmaps
--	 * on the largest address region gaps. We can do this split up to the
--	 * max_regions times returned from the dirty_status command.
--	 */
--	max_regions = 1;
- 	if (num_ranges > max_regions) {
- 		vfio_combine_iova_ranges(ranges, nnodes, max_regions);
- 		num_ranges = max_regions;
- 	}
- 
-+	region_info = kcalloc(num_ranges, sizeof(*region_info), GFP_KERNEL);
-+	if (!region_info)
-+		return -ENOMEM;
-+	len = num_ranges * sizeof(*region_info);
-+
- 	node = interval_tree_iter_first(ranges, 0, ULONG_MAX);
- 	if (!node)
- 		return -EINVAL;
-+	for (i = 0; i < num_ranges; i++) {
-+		struct pds_lm_dirty_region_info *ri = &region_info[i];
-+		u64 region_size = node->last - node->start + 1;
-+		u64 region_start = node->start;
-+		u32 page_count;
- 
--	region_size = node->last - node->start + 1;
--	region_start = node->start;
--	region_page_size = *page_size;
-+		page_count = DIV_ROUND_UP(region_size, region_page_size);
- 
--	len = sizeof(*region_info);
--	region_info = kzalloc(len, GFP_KERNEL);
--	if (!region_info)
--		return -ENOMEM;
-+		ri->dma_base = cpu_to_le64(region_start);
-+		ri->page_count = cpu_to_le32(page_count);
-+		ri->page_size_log2 = ilog2(region_page_size);
- 
--	page_count = DIV_ROUND_UP(region_size, region_page_size);
-+		dev_dbg(&pdev->dev,
-+			"region_info[%d]: region_start 0x%llx region_end 0x%lx region_size 0x%llx page_count %u page_size %llu\n",
-+			i, region_start, node->last, region_size, page_count,
-+			region_page_size);
- 
--	region_info->dma_base = cpu_to_le64(region_start);
--	region_info->page_count = cpu_to_le32(page_count);
--	region_info->page_size_log2 = ilog2(region_page_size);
-+		node = interval_tree_iter_next(node, 0, ULONG_MAX);
-+	}
- 
- 	regions_dma = dma_map_single(pdsc_dev, (void *)region_info, len,
- 				     DMA_BIDIRECTIONAL);
-@@ -239,39 +323,20 @@ static int pds_vfio_dirty_enable(struct pds_vfio_pci_device *pds_vfio,
- 		goto out_free_region_info;
- 	}
- 
--	err = pds_vfio_dirty_enable_cmd(pds_vfio, regions_dma, max_regions);
-+	err = pds_vfio_dirty_enable_cmd(pds_vfio, regions_dma, num_ranges);
- 	dma_unmap_single(pdsc_dev, regions_dma, len, DMA_BIDIRECTIONAL);
- 	if (err)
- 		goto out_free_region_info;
- 
--	/*
--	 * page_count might be adjusted by the device,
--	 * update it before freeing region_info DMA
--	 */
--	page_count = le32_to_cpu(region_info->page_count);
--
--	dev_dbg(&pdev->dev,
--		"region_info: regions_dma 0x%llx dma_base 0x%llx page_count %u page_size_log2 %u\n",
--		regions_dma, region_start, page_count,
--		(u8)ilog2(region_page_size));
--
--	err = pds_vfio_dirty_alloc_bitmaps(dirty, page_count / BITS_PER_BYTE);
--	if (err) {
--		dev_err(&pdev->dev, "Failed to alloc dirty bitmaps: %pe\n",
--			ERR_PTR(err));
--		goto out_free_region_info;
--	}
--
--	err = pds_vfio_dirty_alloc_sgl(pds_vfio, &dirty->region, page_count);
-+	err = pds_vfio_dirty_alloc_regions(pds_vfio, region_info,
-+					   region_page_size, num_ranges);
- 	if (err) {
--		dev_err(&pdev->dev, "Failed to alloc dirty sg lists: %pe\n",
--			ERR_PTR(err));
--		goto out_free_bitmaps;
-+		dev_err(&pdev->dev,
-+			"Failed to allocate %d regions for tracking dirty regions: %pe\n",
-+			num_regions, ERR_PTR(err));
-+		goto out_dirty_disable;
- 	}
- 
--	dirty->region.start = region_start;
--	dirty->region.size = region_size;
--	dirty->region.page_size = region_page_size;
- 	pds_vfio_dirty_set_enabled(pds_vfio);
- 
- 	pds_vfio_print_guest_region_info(pds_vfio, max_regions);
-@@ -280,8 +345,8 @@ static int pds_vfio_dirty_enable(struct pds_vfio_pci_device *pds_vfio,
- 
- 	return 0;
- 
--out_free_bitmaps:
--	pds_vfio_dirty_free_bitmaps(dirty);
-+out_dirty_disable:
-+	pds_vfio_dirty_disable_cmd(pds_vfio);
- out_free_region_info:
- 	kfree(region_info);
- 	return err;
-@@ -295,6 +360,7 @@ void pds_vfio_dirty_disable(struct pds_vfio_pci_device *pds_vfio, bool send_cmd)
- 			pds_vfio_dirty_disable_cmd(pds_vfio);
- 		pds_vfio_dirty_free_sgl(pds_vfio);
- 		pds_vfio_dirty_free_bitmaps(&pds_vfio->dirty);
-+		pds_vfio_dirty_free_regions(&pds_vfio->dirty);
- 	}
- 
- 	if (send_cmd)
-@@ -365,6 +431,7 @@ static int pds_vfio_dirty_seq_ack(struct pds_vfio_pci_device *pds_vfio,
- 
- 	num_sge = sg_table.nents;
- 	size = num_sge * sizeof(struct pds_lm_sg_elem);
-+	offset += region->dev_bmp_offset_start_byte;
- 	dma_sync_single_for_device(pdsc_dev, region->sgl_addr, size, dma_dir);
- 	err = pds_vfio_dirty_seq_ack_cmd(pds_vfio, region->sgl_addr, num_sge,
- 					 offset, bmp_bytes, read_seq);
-@@ -437,13 +504,28 @@ static int pds_vfio_dirty_process_bitmaps(struct pds_vfio_pci_device *pds_vfio,
- 	return 0;
- }
- 
-+static struct pds_vfio_region *
-+pds_vfio_get_region(struct pds_vfio_pci_device *pds_vfio, unsigned long iova)
-+{
-+	struct pds_vfio_dirty *dirty = &pds_vfio->dirty;
-+	int i;
-+
-+	for (i = 0; i < dirty->num_regions; i++) {
-+		struct pds_vfio_region *region = &dirty->regions[i];
-+
-+		if (iova >= region->start && iova < (region->size - 1))
-+			return region;
-+	}
-+
-+	return NULL;
-+}
-+
- static int pds_vfio_dirty_sync(struct pds_vfio_pci_device *pds_vfio,
- 			       struct iova_bitmap *dirty_bitmap,
- 			       unsigned long iova, unsigned long length)
- {
- 	struct device *dev = &pds_vfio->vfio_coredev.pdev->dev;
--	struct pds_vfio_dirty *dirty = &pds_vfio->dirty;
--	struct pds_vfio_region *region = &dirty->region;
-+	struct pds_vfio_region *region;
- 	u64 bmp_offset, bmp_bytes;
- 	u64 bitmap_size, pages;
- 	int err;
-@@ -456,6 +538,13 @@ static int pds_vfio_dirty_sync(struct pds_vfio_pci_device *pds_vfio,
- 		return -EINVAL;
- 	}
- 
-+	region = pds_vfio_get_region(pds_vfio, iova);
-+	if (!region) {
-+		dev_err(dev, "vf%u: Failed to find region that contains iova %lx\n",
-+			pds_vfio->vf_id, iova);
-+		return -EINVAL;
-+	}
-+
- 	pages = DIV_ROUND_UP(length, region->page_size);
- 	bitmap_size =
- 		round_up(pages, sizeof(u64) * BITS_PER_BYTE) / BITS_PER_BYTE;
-@@ -490,8 +579,8 @@ static int pds_vfio_dirty_sync(struct pds_vfio_pci_device *pds_vfio,
- 		return -EINVAL;
- 	}
- 
--	bmp_offset = DIV_ROUND_UP(iova / region->page_size, sizeof(u64));
--
-+	bmp_offset = DIV_ROUND_UP((iova - region->start) /
-+				  region->page_size, sizeof(u64));
- 	dev_dbg(dev,
- 		"Syncing dirty bitmap, iova 0x%lx length 0x%lx, bmp_offset %llu bmp_bytes %llu\n",
- 		iova, length, bmp_offset, bmp_bytes);
-diff --git a/drivers/vfio/pci/pds/dirty.h b/drivers/vfio/pci/pds/dirty.h
-index a1f6d894f913..c8e23018b801 100644
---- a/drivers/vfio/pci/pds/dirty.h
-+++ b/drivers/vfio/pci/pds/dirty.h
-@@ -13,11 +13,13 @@ struct pds_vfio_region {
- 	u64 page_size;
- 	struct pds_lm_sg_elem *sgl;
- 	dma_addr_t sgl_addr;
-+	u32 dev_bmp_offset_start_byte;
- 	u16 num_sge;
- };
- 
- struct pds_vfio_dirty {
--	struct pds_vfio_region region;
-+	struct pds_vfio_region *regions;
-+	u8 num_regions;
- 	bool is_enabled;
- };
- 
--- 
-2.17.1
-
+On 11/8/23 16:41, Avichal Rakesh wrote:
+> Currently the set_alt callback immediately disables the endpoint and queues
+> the v4l2 streamoff event. However, as the streamoff event is processed
+> asynchronously, it is possible that the video_pump thread attempts to queue
+> requests to an already disabled endpoint.
+> 
+> This change moves disabling usb endpoint to the end of streamoff event
+> callback. As the endpoint's state can no longer be used, video_pump is
+> now guarded by uvc->state as well. To be consistent with the actual
+> streaming state, uvc->state is now toggled between CONNECTED and STREAMING
+> from the v4l2 event callback only.
+> 
+> Link: https://lore.kernel.org/20230615171558.GK741@pendragon.ideasonboard.com/
+> Link: https://lore.kernel.org/20230531085544.253363-1-dan.scally@ideasonboard.com/
+> Reviewed-by: Daniel Scally <dan.scally@ideasonboard.com>
+> Reviewed-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Tested-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> Signed-off-by: Avichal Rakesh <arakesh@google.com>
+> ---
+> v1  -> v2  : Rebased to ToT and reworded commit message.
+> v2  -> v3  : Fix email threading goof-up
+> v3  -> v4  : Address review comments & re-rebase to ToT
+> v4  -> v5  : Add Reviewed-by & Tested-by
+> v5  -> v6  : No change
+> v6  -> v7  : No change
+> v7  -> v8  : No change. Getting back in review queue
+> v8  -> v9  : Fix typo. No functional change.
+> v9  -> v10 : Rebase to ToT (usb-next)
+> v10 -> v11 : No change
+> v11 -> v12 : Rebase to ToT (usb-next)
+> 
+>  drivers/usb/gadget/function/f_uvc.c     | 11 +++++------
+>  drivers/usb/gadget/function/f_uvc.h     |  2 +-
+>  drivers/usb/gadget/function/uvc.h       |  2 +-
+>  drivers/usb/gadget/function/uvc_v4l2.c  | 20 +++++++++++++++++---
+>  drivers/usb/gadget/function/uvc_video.c |  3 ++-
+>  5 files changed, 26 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/usb/gadget/function/f_uvc.c b/drivers/usb/gadget/function/f_uvc.c
+> index 786379f1b7b7..77999ed53d33 100644
+> --- a/drivers/usb/gadget/function/f_uvc.c
+> +++ b/drivers/usb/gadget/function/f_uvc.c
+> @@ -263,10 +263,13 @@ uvc_function_setup(struct usb_function *f, const struct usb_ctrlrequest *ctrl)
+>  	return 0;
+>  }
+> 
+> -void uvc_function_setup_continue(struct uvc_device *uvc)
+> +void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep)
+>  {
+>  	struct usb_composite_dev *cdev = uvc->func.config->cdev;
+> 
+> +	if (disable_ep && uvc->video.ep)
+> +		usb_ep_disable(uvc->video.ep);
+> +
+>  	usb_composite_setup_continue(cdev);
+>  }
+> 
+> @@ -337,15 +340,11 @@ uvc_function_set_alt(struct usb_function *f, unsigned interface, unsigned alt)
+>  		if (uvc->state != UVC_STATE_STREAMING)
+>  			return 0;
+> 
+> -		if (uvc->video.ep)
+> -			usb_ep_disable(uvc->video.ep);
+> -
+>  		memset(&v4l2_event, 0, sizeof(v4l2_event));
+>  		v4l2_event.type = UVC_EVENT_STREAMOFF;
+>  		v4l2_event_queue(&uvc->vdev, &v4l2_event);
+> 
+> -		uvc->state = UVC_STATE_CONNECTED;
+> -		return 0;
+> +		return USB_GADGET_DELAYED_STATUS;
+> 
+>  	case 1:
+>  		if (uvc->state != UVC_STATE_CONNECTED)
+> diff --git a/drivers/usb/gadget/function/f_uvc.h b/drivers/usb/gadget/function/f_uvc.h
+> index 1db972d4beeb..083aef0c65c6 100644
+> --- a/drivers/usb/gadget/function/f_uvc.h
+> +++ b/drivers/usb/gadget/function/f_uvc.h
+> @@ -11,7 +11,7 @@
+> 
+>  struct uvc_device;
+> 
+> -void uvc_function_setup_continue(struct uvc_device *uvc);
+> +void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+> 
+>  void uvc_function_connect(struct uvc_device *uvc);
+> 
+> diff --git a/drivers/usb/gadget/function/uvc.h b/drivers/usb/gadget/function/uvc.h
+> index 6751de8b63ad..989bc6b4e93d 100644
+> --- a/drivers/usb/gadget/function/uvc.h
+> +++ b/drivers/usb/gadget/function/uvc.h
+> @@ -177,7 +177,7 @@ struct uvc_file_handle {
+>   * Functions
+>   */
+> 
+> -extern void uvc_function_setup_continue(struct uvc_device *uvc);
+> +extern void uvc_function_setup_continue(struct uvc_device *uvc, int disable_ep);
+>  extern void uvc_function_connect(struct uvc_device *uvc);
+>  extern void uvc_function_disconnect(struct uvc_device *uvc);
+> 
+> diff --git a/drivers/usb/gadget/function/uvc_v4l2.c b/drivers/usb/gadget/function/uvc_v4l2.c
+> index 3f0a9795c0d4..7cb8d027ff0c 100644
+> --- a/drivers/usb/gadget/function/uvc_v4l2.c
+> +++ b/drivers/usb/gadget/function/uvc_v4l2.c
+> @@ -451,7 +451,7 @@ uvc_v4l2_streamon(struct file *file, void *fh, enum v4l2_buf_type type)
+>  	 * Complete the alternate setting selection setup phase now that
+>  	 * userspace is ready to provide video frames.
+>  	 */
+> -	uvc_function_setup_continue(uvc);
+> +	uvc_function_setup_continue(uvc, 0);
+>  	uvc->state = UVC_STATE_STREAMING;
+> 
+>  	return 0;
+> @@ -463,11 +463,18 @@ uvc_v4l2_streamoff(struct file *file, void *fh, enum v4l2_buf_type type)
+>  	struct video_device *vdev = video_devdata(file);
+>  	struct uvc_device *uvc = video_get_drvdata(vdev);
+>  	struct uvc_video *video = &uvc->video;
+> +	int ret = 0;
+> 
+>  	if (type != video->queue.queue.type)
+>  		return -EINVAL;
+> 
+> -	return uvcg_video_enable(video, 0);
+> +	uvc->state = UVC_STATE_CONNECTED;
+> +	ret = uvcg_video_enable(video, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	uvc_function_setup_continue(uvc, 1);
+> +	return 0;
+>  }
+> 
+>  static int
+> @@ -500,6 +507,14 @@ uvc_v4l2_subscribe_event(struct v4l2_fh *fh,
+>  static void uvc_v4l2_disable(struct uvc_device *uvc)
+>  {
+>  	uvc_function_disconnect(uvc);
+> +	/*
+> +	 * Drop uvc->state to CONNECTED if it was streaming before.
+> +	 * This ensures that the usb_requests are no longer queued
+> +	 * to the controller.
+> +	 */
+> +	if (uvc->state == UVC_STATE_STREAMING)
+> +		uvc->state = UVC_STATE_CONNECTED;
+> +
+>  	uvcg_video_enable(&uvc->video, 0);
+>  	uvcg_free_buffers(&uvc->video.queue);
+>  	uvc->func_connected = false;
+> @@ -647,4 +662,3 @@ const struct v4l2_file_operations uvc_v4l2_fops = {
+>  	.get_unmapped_area = uvcg_v4l2_get_unmapped_area,
+>  #endif
+>  };
+> -
+> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+> index 91af3b1ef0d4..c334802ac0a4 100644
+> --- a/drivers/usb/gadget/function/uvc_video.c
+> +++ b/drivers/usb/gadget/function/uvc_video.c
+> @@ -384,13 +384,14 @@ static void uvcg_video_pump(struct work_struct *work)
+>  	struct uvc_video_queue *queue = &video->queue;
+>  	/* video->max_payload_size is only set when using bulk transfer */
+>  	bool is_bulk = video->max_payload_size;
+> +	struct uvc_device *uvc = video->uvc;
+>  	struct usb_request *req = NULL;
+>  	struct uvc_buffer *buf;
+>  	unsigned long flags;
+>  	bool buf_done;
+>  	int ret;
+> 
+> -	while (video->ep->enabled) {
+> +	while (uvc->state == UVC_STATE_STREAMING && video->ep->enabled) {
+>  		/*
+>  		 * Retrieve the first available USB request, protected by the
+>  		 * request lock.
+> --
+> 2.42.0.869.gea05f2083d-goog
