@@ -2,50 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D6F947EB0B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:17:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98AE17EB0B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:18:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233168AbjKNNRL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:17:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42832 "EHLO
+        id S232628AbjKNNSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:18:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjKNNRI (ORCPT
+        with ESMTP id S231203AbjKNNSv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:17:08 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86628196
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:17:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D992BC433C8;
-        Tue, 14 Nov 2023 13:17:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699967825;
-        bh=95s2UhAyv7w3qkWGxOMjyvVxTKgmywcvyhwdCB9sRus=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=skCpHjl77gyyq3x8ZmKDtmcQ0WaVAtMKkeKcpSd/Wkj3+5+034RBC/OUtMmcwbD5D
-         vanenJlaqbnsTeN9t9K3EvtQ4XviPFqNOgKEgn9CrxmLPaaRyX5bXu7cUhybXZWTu4
-         MO0yV4Cox/hkGrQQ5YBsFSRhVitsrCfdllerzNl0=
-Date:   Tue, 14 Nov 2023 08:17:03 -0500
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     "arnd@arndb.de" <arnd@arndb.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "frank.li@vivo.com" <frank.li@vivo.com>,
-        "yangyingliang@huawei.com" <yangyingliang@huawei.com>,
-        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
-Subject: Re: [PATCH v4 1/3] misc: rtsx: add to support new card reader
- rts5264 new  definition and function
-Message-ID: <2023111423-unloved-preflight-fc7f@gregkh>
-References: <bf45a73f01cc43669dc3796ccff25598@realtek.com>
- <5342711849f545f783d9b0f40f4dd94f@realtek.com>
+        Tue, 14 Nov 2023 08:18:51 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8836E196;
+        Tue, 14 Nov 2023 05:18:48 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 73274C15;
+        Tue, 14 Nov 2023 05:19:33 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 98F5B3F6C4;
+        Tue, 14 Nov 2023 05:18:43 -0800 (PST)
+Message-ID: <3daaa2aa-61d4-40db-b36d-cd825a340d2b@arm.com>
+Date:   Tue, 14 Nov 2023 13:18:35 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5342711849f545f783d9b0f40f4dd94f@realtek.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 6/8] dt-bindings: reserved-memory: Add secure CMA
+ reserved memory range
+To:     =?UTF-8?B?WW9uZyBXdSAo5ZC05YuHKQ==?= <Yong.Wu@mediatek.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
+        "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "krzysztof.kozlowski@linaro.org" <krzysztof.kozlowski@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "jstultz@google.com" <jstultz@google.com>,
+        "nicolas@ndufresne.ca" <nicolas@ndufresne.ca>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        =?UTF-8?B?SmlhbmppYW8gWmVuZyAo5pu+5YGl5aejKQ==?= 
+        <Jianjiao.Zeng@mediatek.com>,
+        =?UTF-8?B?S3VvaG9uZyBXYW5nICjnjovlnIvptLsp?= 
+        <kuohong.wang@mediatek.com>,
+        "quic_vjitta@quicinc.com" <quic_vjitta@quicinc.com>,
+        "ckoenig.leichtzumerken@gmail.com" <ckoenig.leichtzumerken@gmail.com>,
+        "jkardatzke@google.com" <jkardatzke@google.com>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "Brian.Starkey@arm.com" <Brian.Starkey@arm.com>,
+        "benjamin.gaignard@collabora.com" <benjamin.gaignard@collabora.com>,
+        "tjmercier@google.com" <tjmercier@google.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "joakim.bech@linaro.org" <joakim.bech@linaro.org>,
+        "angelogioacchino.delregno@collabora.com" 
+        <angelogioacchino.delregno@collabora.com>
+References: <20231111111559.8218-1-yong.wu@mediatek.com>
+ <20231111111559.8218-7-yong.wu@mediatek.com>
+ <0ccee72f-98ac-4a08-9253-9c22dad4d95a@linaro.org>
+ <5d7b2458b8d1896ce575f4ed2d413f4e8eeb92b4.camel@mediatek.com>
+Content-Language: en-GB
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <5d7b2458b8d1896ce575f4ed2d413f4e8eeb92b4.camel@mediatek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -53,25 +78,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 02:27:36AM +0000, Ricky WU wrote:
-> Hi Greg k-h and Ulf hansson,
+On 13/11/2023 6:37 am, Yong Wu (吴勇) wrote:
+[...]
+>>> +properties:
+>>> +  compatible:
+>>> +    const: secure_cma_region
+>>
+>> Still wrong compatible. Look at other bindings - there is nowhere
+>> underscore. Look at other reserved memory bindings especially.
+>>
+>> Also, CMA is a Linux thingy, so either not suitable for bindings at
+>> all,
+>> or you need Linux specific compatible. I don't quite get why do you
+>> evennot
+>> put CMA there - adding Linux specific stuff will get obvious
+>> pushback...
 > 
-> Can I know what is the status of this patch?
+> Thanks. I will change to: secure-region. Is this ok?
 
-The merge window _just_ ended yesterday, please give us a chance to
-catch up with patches and reviews for everything that has been submitted
-in the past 2 weeks.
+No, the previous discussion went off in entirely the wrong direction. To 
+reiterate, the point of the binding is not to describe the expected 
+usage of the thing nor the general concept of the thing, but to describe 
+the actual thing itself. There are any number of different ways software 
+may interact with a "secure region", so that is meaningless as a 
+compatible. It needs to describe *this* secure memory interface offered 
+by *this* TEE, so that software knows that to use it requires making 
+those particular SiP calls with that particular UUID etc.
 
-To help that out, please review other changes that have been submitted
-for the misc subsystem, which will help move your patches to the top of
-the list.
-
-> This new Reader is going on some new product, need this patch to support
-
-The earliest this will end up in a release will be the 6.8 kernel, and
-we do not have deadlines for new features, it will be merged when it has
-been properly reviewed.
-
-thanks,
-
-greg k-h
+Thanks,
+Robin.
