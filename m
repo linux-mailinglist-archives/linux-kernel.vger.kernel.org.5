@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 813FE7EB265
+	by mail.lfdr.de (Postfix) with ESMTP id D858C7EB266
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:37:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233401AbjKNOhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:37:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52210 "EHLO
+        id S233592AbjKNOhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233434AbjKNOhG (ORCPT
+        with ESMTP id S233520AbjKNOhN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:37:06 -0500
+        Tue, 14 Nov 2023 09:37:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE762199F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:36:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C67B4C433BB;
-        Tue, 14 Nov 2023 14:36:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33FA2210A
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:36:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E92E0C116B8;
+        Tue, 14 Nov 2023 14:36:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699972583;
-        bh=irtBwegYB+DXpSWW34B5isPMLTYQBsVR3AqcPDPAR5U=;
+        s=k20201202; t=1699972586;
+        bh=fY7XsyGWBCyMThKR5lWJhW/9PqmzwSI9SznLLw/I8/I=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=FhClDHVgXQ/fUVGGo+9j2VibBnmAldzFuTcCJZ886zPUWd4NIHoFe72o+MSYU+RZ7
-         FDL8CV47LqKn7c/E8psg7spZeGkAka28Fj/P02/BH6zziAk4ILXBgYlJUHAxEtZRwG
-         jM2IwfPrLcUbv4nDb4E7pgw+Rcuf5HttsEYoK7TzdogX5Uldm0w0+0Ht1Kx06b8/43
-         OzbfENcf3G/f+CPGIXZ6ZPCGK+8lN85z3vc9kGZy0XKjeO+NgM2TlK12/HR6jol7Rx
-         KZf6ob+3YQBUFbxruPlEp5n58jfq8dAlLlXpvwMHnxMw2kzQVhrS6XCt1QS5s4D9tu
-         XvT0gUR14Zobg==
+        b=U2ZzEUiJ3wWx0kzLgjxvRKTz7YA/Pd7m7OqgcVPfgYhBG/daZI5OMXfmYCICpanw2
+         0M5Hn90wsaxXkivI978MGkZEhPPHYgJBQgYxpIx2xpLD19JHdtlDXJwSIM21RzXbFe
+         vu0wPVTZnYQXIjahhT1VenU1WHC+idr2x9WPlcwIwf+pbI60ZA3bg8W7SViQKiAIz0
+         QzkoNpKRGbYrm8hSwjc0o4OIZvjC6IM6Rgxbu3z9wrGvEzHOs76aqo+Rl3UO2HBV+t
+         EDJQ6L+hTO/1r4Vjt0KH9M/0X+WzLeHnFZGrrCZQ6EWqSU/+mrvPVF1CkumY5X2auX
+         UeQL9YQIbrbUA==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 14 Nov 2023 14:35:03 +0000
-Subject: [PATCH v2 18/21] kselftest/arm64: Add basic FPMR test
+Date:   Tue, 14 Nov 2023 14:35:04 +0000
+Subject: [PATCH v2 19/21] kselftest/arm64: Add 2023 DPISA hwcap test
+ coverage
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-arm64-2023-dpisa-v2-18-47251894f6a8@kernel.org>
+Message-Id: <20231114-arm64-2023-dpisa-v2-19-47251894f6a8@kernel.org>
 References: <20231114-arm64-2023-dpisa-v2-0-47251894f6a8@kernel.org>
 In-Reply-To: <20231114-arm64-2023-dpisa-v2-0-47251894f6a8@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -46,15 +47,15 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
         linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2813; i=broonie@kernel.org;
- h=from:subject:message-id; bh=irtBwegYB+DXpSWW34B5isPMLTYQBsVR3AqcPDPAR5U=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU4WiPCcK6g4XDzQH51CyEevmUoVhDX+62HmCkTct
- 0KWEm/uJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVOFogAKCRAk1otyXVSH0F2FB/
- 0cINuYxh6O1Ud5ocIKz/tH4Kx1xJwIDq45elc+inBWQXF3MQXvo9AuL8Y8wSllDzU034b0PRWp6Q9K
- 160Wk+yFlP+0QdY07e+iljh0M5eOqMMnlzxK9bIJdtpBGM/Cp3i0ElxXvTOP62YIGL32zhlXeemoWB
- 4LbITXGpVsQ6KFwFwIpr9+bwoL01Sckmko65LpsNZQHrlnCmsVwt1YHNDKd2jBDi8tgHUtmdRbpAL7
- fOesE2IzJT6CwdwPVkeaq37hX3YI3U0EMZG85C+RY15p1hmt1fLdI5kXQfbWhHI7YM3cd8b92gnwQe
- Q0w/J8+lHLsUuO8KFUbqz7Em9dBuZ2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6393; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=fY7XsyGWBCyMThKR5lWJhW/9PqmzwSI9SznLLw/I8/I=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU4Wj/4DkTI74HONGL+kPoEJ65fWKRa+nL0DBlwok
+ B0asQAuJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVOFowAKCRAk1otyXVSH0HvTCA
+ CC7E6j5q4tx6cJuoQwcXq2HmscRKa1+FjE5yC1QvuF/Wq78X3qmB/wV8q1EBRI/Ouz47jBCbS1rwiM
+ yOANxHk/dmXUdIcuFKoci5e+kryBc4oH7BOoXxZbx+7GOWErWjqz1Dh+eK8Yz7xJAv0jq3eHO4+os4
+ tifWXCbGq2jJ2Y1qpckV8Ii7uzIhFVv8HCF0MyjZEKp2vP0eawXKrbafXH0145gtfn8ce/gCzYngJy
+ hJvv50zhpNQjCF8bP02N1SH6YGT0LO6vf/k7JVS7zypwA4WMPNWS+iWmQ/YSO3jl9ZNcmM05diQh/t
+ 55Q5m0LT6ZjKv9n/q/GFtD6qFc8A5Z
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,115 +68,289 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Verify that a FPMR frame is generated on systems that support FPMR and not
-generated otherwise.
+Add the hwcaps added for the 2023 DPISA extensions to the hwcaps test
+program.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- tools/testing/selftests/arm64/signal/.gitignore    |  1 +
- .../arm64/signal/testcases/fpmr_siginfo.c          | 82 ++++++++++++++++++++++
- 2 files changed, 83 insertions(+)
+ tools/testing/selftests/arm64/abi/hwcap.c | 217 ++++++++++++++++++++++++++++++
+ 1 file changed, 217 insertions(+)
 
-diff --git a/tools/testing/selftests/arm64/signal/.gitignore b/tools/testing/selftests/arm64/signal/.gitignore
-index 839e3a252629..1ce5b5eac386 100644
---- a/tools/testing/selftests/arm64/signal/.gitignore
-+++ b/tools/testing/selftests/arm64/signal/.gitignore
-@@ -1,6 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0-only
- mangle_*
- fake_sigreturn_*
-+fpmr_*
- sme_*
- ssve_*
- sve_*
-diff --git a/tools/testing/selftests/arm64/signal/testcases/fpmr_siginfo.c b/tools/testing/selftests/arm64/signal/testcases/fpmr_siginfo.c
-new file mode 100644
-index 000000000000..e9d24685e741
---- /dev/null
-+++ b/tools/testing/selftests/arm64/signal/testcases/fpmr_siginfo.c
-@@ -0,0 +1,82 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (C) 2023 ARM Limited
-+ *
-+ * Verify that the FPMR register context in signal frames is set up as
-+ * expected.
-+ */
-+
-+#include <signal.h>
-+#include <ucontext.h>
-+#include <sys/auxv.h>
-+#include <sys/prctl.h>
-+#include <unistd.h>
-+#include <asm/sigcontext.h>
-+
-+#include "test_signals_utils.h"
-+#include "testcases.h"
-+
-+static union {
-+	ucontext_t uc;
-+	char buf[1024 * 128];
-+} context;
-+
-+#define SYS_FPMR "S3_3_C4_C4_2"
-+
-+static uint64_t get_fpmr(void)
+diff --git a/tools/testing/selftests/arm64/abi/hwcap.c b/tools/testing/selftests/arm64/abi/hwcap.c
+index 1189e77c8152..d8909b2b535a 100644
+--- a/tools/testing/selftests/arm64/abi/hwcap.c
++++ b/tools/testing/selftests/arm64/abi/hwcap.c
+@@ -58,11 +58,46 @@ static void cssc_sigill(void)
+ 	asm volatile(".inst 0xdac01c00" : : : "x0");
+ }
+ 
++static void f8cvt_sigill(void)
 +{
-+	uint64_t val;
-+
-+	asm volatile (
-+		"mrs	%0, " SYS_FPMR "\n"
-+		: "=r"(val)
-+		:
-+		: "cc");
-+
-+	return val;
++	/* FSCALE V0.4H, V0.4H, V0.4H */
++	asm volatile(".inst 0x2ec03c00");
 +}
 +
-+int fpmr_present(struct tdescr *td, siginfo_t *si, ucontext_t *uc)
++static void f8dp2_sigill(void)
 +{
-+	struct _aarch64_ctx *head = GET_BUF_RESV_HEAD(context);
-+	struct fpmr_context *fpmr_ctx;
-+	size_t offset;
-+	bool in_sigframe;
-+	bool have_fpmr;
-+	__u64 orig_fpmr;
-+
-+	have_fpmr = getauxval(AT_HWCAP2) & HWCAP2_FPMR;
-+	if (have_fpmr)
-+		orig_fpmr = get_fpmr();
-+
-+	if (!get_current_context(td, &context.uc, sizeof(context)))
-+		return 1;
-+
-+	fpmr_ctx = (struct fpmr_context *)
-+		get_header(head, FPMR_MAGIC, td->live_sz, &offset);
-+
-+	in_sigframe = fpmr_ctx != NULL;
-+
-+	fprintf(stderr, "FPMR sigframe %s on system %s FPMR\n",
-+		in_sigframe ? "present" : "absent",
-+		have_fpmr ? "with" : "without");
-+
-+	td->pass = (in_sigframe == have_fpmr);
-+
-+	if (have_fpmr && fpmr_ctx) {
-+		if (fpmr_ctx->fpmr != orig_fpmr) {
-+			fprintf(stderr, "FPMR in frame is %llx, was %llx\n",
-+				fpmr_ctx->fpmr, orig_fpmr);
-+			td->pass = false;
-+		}
-+	}
-+
-+	return 0;
++	/* FDOT V0.4H, V0.4H, V0.5H */
++	asm volatile(".inst 0xe40fc00");
 +}
 +
-+struct tdescr tde = {
-+	.name = "FPMR",
-+	.descr = "Validate that FPMR is present as expected",
-+	.timeout = 3,
-+	.run = fpmr_present,
-+};
++static void f8dp4_sigill(void)
++{
++	/* FDOT V0.2S, V0.2S, V0.2S */
++	asm volatile(".inst 0xe00fc00");
++}
++
++static void f8fma_sigill(void)
++{
++	/* FMLALB V0.8H, V0.16B, V0.16B */
++	asm volatile(".inst 0xec0fc00");
++}
++
++static void faminmax_sigill(void)
++{
++	/* FAMIN V0.4H, V0.4H, V0.4H */
++	asm volatile(".inst 0x2ec01c00");
++}
++
+ static void fp_sigill(void)
+ {
+ 	asm volatile("fmov s0, #1");
+ }
+ 
++static void fpmr_sigill(void)
++{
++	asm volatile("mrs x0, S3_3_C4_C4_2" : : : "x0");
++}
++
+ static void ilrcpc_sigill(void)
+ {
+ 	/* LDAPUR W0, [SP, #8] */
+@@ -95,6 +130,12 @@ static void lse128_sigill(void)
+ 		     : "cc", "memory");
+ }
+ 
++static void lut_sigill(void)
++{
++	/* LUTI2 V0.16B, { V0.16B }, V[0] */
++	asm volatile(".inst 0x4e801000");
++}
++
+ static void mops_sigill(void)
+ {
+ 	char dst[1], src[1];
+@@ -216,6 +257,78 @@ static void smef16f16_sigill(void)
+ 	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
+ }
+ 
++static void smef8f16_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT ZA.H[W0, 0], Z0.B-Z1.B, Z0.B-Z1.B */
++	asm volatile(".inst 0xc1a01020" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smef8f32_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT ZA.S[W0, 0], { Z0.B-Z1.B }, Z0.B[0] */
++	asm volatile(".inst 0xc1500038" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smelutv2_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* LUTI4 { Z0.B-Z3.B }, ZT0, { Z0-Z1 } */
++	asm volatile(".inst 0xc08b0000" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8dp2_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT Z0.H, Z0.B, Z0.B[0] */
++	asm volatile(".inst 0x64204400" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8dp4_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FDOT Z0.S, Z0.B, Z0.B[0] */
++	asm volatile(".inst 0xc1a41C00" : : : );
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
++static void smesf8fma_sigill(void)
++{
++	/* SMSTART */
++	asm volatile("msr S0_3_C4_C7_3, xzr" : : : );
++
++	/* FMLALB V0.8H, V0.16B, V0.16B */
++	asm volatile(".inst 0xec0fc00");
++
++	/* SMSTOP */
++	asm volatile("msr S0_3_C4_C6_3, xzr" : : : );
++}
++
+ static void sve_sigill(void)
+ {
+ 	/* RDVL x0, #0 */
+@@ -353,6 +466,53 @@ static const struct hwcap_data {
+ 		.cpuinfo = "cssc",
+ 		.sigill_fn = cssc_sigill,
+ 	},
++	{
++		.name = "F8CVT",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8CVT,
++		.cpuinfo = "f8cvt",
++		.sigill_fn = f8cvt_sigill,
++	},
++	{
++		.name = "F8DP4",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8DP4,
++		.cpuinfo = "f8dp4",
++		.sigill_fn = f8dp4_sigill,
++	},
++	{
++		.name = "F8DP2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8DP2,
++		.cpuinfo = "f8dp4",
++		.sigill_fn = f8dp2_sigill,
++	},
++	{
++		.name = "F8E5M2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8E5M2,
++		.cpuinfo = "f8e5m2",
++	},
++	{
++		.name = "F8E4M3",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8E4M3,
++		.cpuinfo = "f8e4m3",
++	},
++	{
++		.name = "F8FMA",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_F8FMA,
++		.cpuinfo = "f8fma",
++		.sigill_fn = f8fma_sigill,
++	},
++	{
++		.name = "FAMINMAX",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_FAMINMAX,
++		.cpuinfo = "faminmax",
++		.sigill_fn = faminmax_sigill,
++	},
+ 	{
+ 		.name = "FP",
+ 		.at_hwcap = AT_HWCAP,
+@@ -360,6 +520,14 @@ static const struct hwcap_data {
+ 		.cpuinfo = "fp",
+ 		.sigill_fn = fp_sigill,
+ 	},
++	{
++		.name = "FPMR",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_FPMR,
++		.cpuinfo = "fpmr",
++		.sigill_fn = fpmr_sigill,
++		.sigill_reliable = true,
++	},
+ 	{
+ 		.name = "JSCVT",
+ 		.at_hwcap = AT_HWCAP,
+@@ -411,6 +579,13 @@ static const struct hwcap_data {
+ 		.cpuinfo = "lse128",
+ 		.sigill_fn = lse128_sigill,
+ 	},
++	{
++		.name = "LUT",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_LUT,
++		.cpuinfo = "lut",
++		.sigill_fn = lut_sigill,
++	},
+ 	{
+ 		.name = "MOPS",
+ 		.at_hwcap = AT_HWCAP2,
+@@ -511,6 +686,48 @@ static const struct hwcap_data {
+ 		.cpuinfo = "smef16f16",
+ 		.sigill_fn = smef16f16_sigill,
+ 	},
++	{
++		.name = "SME F8F16",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_F8F16,
++		.cpuinfo = "smef8f16",
++		.sigill_fn = smef8f16_sigill,
++	},
++	{
++		.name = "SME F8F32",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_F8F32,
++		.cpuinfo = "smef8f32",
++		.sigill_fn = smef8f32_sigill,
++	},
++	{
++		.name = "SME LUTV2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_LUTV2,
++		.cpuinfo = "smelutv2",
++		.sigill_fn = smelutv2_sigill,
++	},
++	{
++		.name = "SME SF8FMA",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8FMA,
++		.cpuinfo = "smesf8fma",
++		.sigill_fn = smesf8fma_sigill,
++	},
++	{
++		.name = "SME SF8DP2",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8DP2,
++		.cpuinfo = "smesf8dp2",
++		.sigill_fn = smesf8dp2_sigill,
++	},
++	{
++		.name = "SME SF8DP4",
++		.at_hwcap = AT_HWCAP2,
++		.hwcap_bit = HWCAP2_SME_SF8DP4,
++		.cpuinfo = "smesf8dp4",
++		.sigill_fn = smesf8dp4_sigill,
++	},
+ 	{
+ 		.name = "SVE",
+ 		.at_hwcap = AT_HWCAP,
 
 -- 
 2.30.2
