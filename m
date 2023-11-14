@@ -2,78 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FA647EB0E0
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:29:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C231F7EB0E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:30:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229497AbjKNN24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:28:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S232103AbjKNNaM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:30:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231612AbjKNN2w (ORCPT
+        with ESMTP id S229640AbjKNNaL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:28:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F7E91B5;
-        Tue, 14 Nov 2023 05:28:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699968529; x=1731504529;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=imjIYLKBTVSlegQE2rvCKcNc9nXKA3MpxHpU4ufHEXw=;
-  b=fqRC0isIKWZo5Y/maw6XIBM2IUGdec9N8wTSJcV3uQtBf070mpuDAElT
-   Gg5Noswke+1MIw0Bh2OLqFzfDtJSluwToVmzwUIXY/Mrt+p6nBoJqw9rQ
-   mPUnWnISr/cne3XXvMJS0b0xouW73M7r7S4r2PyCY+lhb3JF5pgsh/i68
-   MYrFskXA0QpzdhqqW6H9ueEVfOPOrWR7CHD+XWDMIvSeB6bDggLwKA49d
-   55niFY7PKd4o1k/benHpPricHYECHhfnhTIFapytekIe8tKbph29fnTOf
-   /bwsDKC9oO5+onOB83IUojpIcK6YQQQ6oCYpAkLMFc8ZfMZvsDKWAgf72
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="3758997"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="3758997"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 05:28:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908360728"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="908360728"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga001.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 05:28:45 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r2tT7-0000000Dp4R-3ayb;
-        Tue, 14 Nov 2023 15:28:41 +0200
-Date:   Tue, 14 Nov 2023 15:28:41 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Herve Codina <herve.codina@bootlin.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 1/1] lib/vsprintf: Fix %pfwf when current node refcount
- == 0
-Message-ID: <ZVN2Ce46vSTTpE6U@smile.fi.intel.com>
-References: <20231114110456.273844-1-herve.codina@bootlin.com>
- <ZVNyT6qTw6mpy6BY@smile.fi.intel.com>
- <20231114141934.1b0d44e2@bootlin.com>
- <ZVN1z5zuCRhVQ2Kw@smile.fi.intel.com>
+        Tue, 14 Nov 2023 08:30:11 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E151B5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:30:07 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507c5249d55so8738351e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:30:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699968605; x=1700573405; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=M20ZdrtdL4mxBFowxVPsPIZrP+Nk6G9G7Ln02uErXU0=;
+        b=Iwa7FL6BDniv0iPHKBBHNj5+75pONPLefd1Nb0d0shFitp62KYE28S/+6vcaTN3t4/
+         ukS1KrKm1sSVOTDC4Lul38tQsMHfmcu0NgKHh19C3UTti5iCH7n4voUklnsDkC2TPLdt
+         w33y5e00c3fI9rpPKib0ECqt3CXhK3jMC6A4uVJsCFtvgTM72/+DNy3Aiz1EpEk5XYjE
+         YMyAT1y6qcTY/l7gL9bsOgbK5JlXNdDWpwM7Ctb16tvEnbcLcJE0COlhhWYN+Ye3slmQ
+         0K4nKyB40dnRKxMOpGEhfcp+HR/8MfbPkByQ6lzI58EDum6pu1EklGQKha911nt+zwaE
+         8AoA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699968605; x=1700573405;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=M20ZdrtdL4mxBFowxVPsPIZrP+Nk6G9G7Ln02uErXU0=;
+        b=AmD0DG27BdvEP/sJ7QAy2eDsnJsIxLqN19BmLqDTcBEejzSTn2RmJ5Xg39pDgyz8OW
+         TNn6eMbsiC15u9Y61ANwC90Uz3RS7TKvCkeJrhWLWxPZw0CNhuNz72pNKZ9CObpiVDxj
+         NbNS5bT4V3cZ6YM1/QrdLnuF4fn7AgqQR+gFuY0w6w+iTvREwHSHrKJFZueYmEQyRsD2
+         6rYW8/p8SQ7SasRenGwC3ZSpfPKRoUxXr1dXpqS2T8TMDcg86eCjjjHAmKPkm5IL/Vc6
+         xQmoI+K9l738Y2/2SRBdytb9xrROA2cbwp5dVVHNOkb4ZdZYV4uZf6KWiv3LGoJIimQq
+         GCOw==
+X-Gm-Message-State: AOJu0Yx4Ztjf8GeB1P9qjxGsL2tKEgUQadGSx4BvjVy7xdujv9fdda7J
+        fckJQq9sXGAsQqrn3qPNeTZlNQ==
+X-Google-Smtp-Source: AGHT+IGQZ5W8krMJo5A5oV2eHBatfpOu32KBHpFDNp9vB113dOCGQxUYSSQsgX/yfJAV0DzO9TffWA==
+X-Received: by 2002:a05:6512:3d18:b0:500:92f1:c341 with SMTP id d24-20020a0565123d1800b0050092f1c341mr9226552lfv.54.1699968604692;
+        Tue, 14 Nov 2023 05:30:04 -0800 (PST)
+Received: from [127.0.1.1] ([85.235.12.238])
+        by smtp.gmail.com with ESMTPSA id t9-20020a056512068900b00507b1783b3csm1339714lfe.54.2023.11.14.05.30.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 05:30:04 -0800 (PST)
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Nov 2023 14:30:04 +0100
+Subject: [PATCH] pinctrl: cy8c95x0: Fix doc warning
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVN1z5zuCRhVQ2Kw@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231114-cy8c95x0-doc-v1-1-31674103ad18@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAFt2U2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQ0MT3eRKi2RL0woD3ZT8ZN0042QDi9REsxQzYwsloJaCotS0zAqwcdG
+ xtbUA2CcB5V4AAAA=
+To:     Patrick Rudolph <patrick.rudolph@9elements.com>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel test robot <lkp@intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>
+X-Mailer: b4 0.12.4
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -81,50 +74,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 03:27:43PM +0200, Andy Shevchenko wrote:
-> On Tue, Nov 14, 2023 at 02:19:34PM +0100, Herve Codina wrote:
-> > On Tue, 14 Nov 2023 15:12:47 +0200
-> > Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Nov 14, 2023 at 12:04:56PM +0100, Herve Codina wrote:
-> > > > A refcount issue can appeared in __fwnode_link_del() due to the
-> > > > pr_debug() call:  
+One member of struct cy8c95x0_pinctrl is missing kerneldoc,
+which leads to warnings.
 
----8<---
+Reported-by: kernel test robot <lkp@intel.com>
+Closes: https://lore.kernel.org/oe-kbuild-all/202311031342.r4To3GaD-lkp@intel.com/
+Signed-off-by: Linus Walleij <linus.walleij@linaro.org>
+---
+ drivers/pinctrl/pinctrl-cy8c95x0.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-> > > >   WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0xe5/0x110
-> > > >   Call Trace:
+diff --git a/drivers/pinctrl/pinctrl-cy8c95x0.c b/drivers/pinctrl/pinctrl-cy8c95x0.c
+index 04285c930e94..4ccfa99ed93a 100644
+--- a/drivers/pinctrl/pinctrl-cy8c95x0.c
++++ b/drivers/pinctrl/pinctrl-cy8c95x0.c
+@@ -143,6 +143,7 @@ static const struct dmi_system_id cy8c95x0_dmi_acpi_irq_info[] = {
+  * @pinctrl_desc:   pin controller description
+  * @name:           Chip controller name
+  * @tpin:           Total number of pins
++ * @gpio_reset:     GPIO line handler that can reset the IC
+  */
+ struct cy8c95x0_pinctrl {
+ 	struct regmap *regmap;
 
-> > > >   ? refcount_warn_saturate+0xe5/0x110
-> 
-> 	...
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231114-cy8c95x0-doc-f3c08ea6d638
 
-These are actually not needed as duplicating WARNING above.
-
-> > > >   of_node_get+0x1e/0x30
-> > > >   of_fwnode_get+0x28/0x40
-> > > >   fwnode_full_name_string+0x34/0x90
-> > > >   fwnode_string+0xdb/0x140
-> 	...
-> 
-> > > >   vsnprintf+0x17b/0x630
-> 	...
-> > > >   __fwnode_link_del+0x25/0xa0
-> > > >   fwnode_links_purge+0x39/0xb0
-> > > >   of_node_release+0xd9/0x180
-> 	...
-
----8<---
-
-> > > Please, do not put so many unrelated lines of backtrace in the commit message.
-> > > Leave only the important ones (the Submitting Patches document suggests some
-> > > like ~3-5 lines only).
-> > 
-> > Ok, I will remove some of them.
-> 
-> Thanks (my suggestion is above).
-
+Best regards,
 -- 
-With Best Regards,
-Andy Shevchenko
-
+Linus Walleij <linus.walleij@linaro.org>
 
