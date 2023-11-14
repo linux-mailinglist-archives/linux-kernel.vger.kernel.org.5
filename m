@@ -2,175 +2,386 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0467EB5BC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:44:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB9687EB5AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:42:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233882AbjKNRoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 12:44:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39082 "EHLO
+        id S233711AbjKNRmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 12:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233868AbjKNRoL (ORCPT
+        with ESMTP id S229566AbjKNRms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 12:44:11 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30AB794
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:44:08 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id af79cd13be357-7788f727dd7so358331385a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:44:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek.ca; s=google; t=1699983847; x=1700588647; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jOopcK9K4HsHFD0FhRzafDXESddDDjm1WV41GtBAoVg=;
-        b=NNOlHeT6V2tk7tkOEN1XsYXa+HDykthr64IZi2AdUKw/5/8FEma3YPdRdmQ8IJr6fV
-         hXPM8nnX3GHmpUjtlj/v6ibTby0lLq6D8kblpw3qpJnQd28gXkZ+BjdvHWuw4N39VsSB
-         RQ0vsTE82U3jG09y+fLfsbhN+foHANDwB1qj+0lPZWAQ0VTflCPFD+TnaieOsCdjNFQh
-         PGeEwafnIGRvX7LJzyEebM3zdanpfWKG1rxd+P7NL6/zBaas09YamM45qBHOdewcVwDI
-         WEooIGlLa6R1/6pJhnM0amgjG8amSgiEHB1XAtOLDOwx+MHIGDS8H7Bz/hsjYGp0TKLs
-         7Wjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699983847; x=1700588647;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jOopcK9K4HsHFD0FhRzafDXESddDDjm1WV41GtBAoVg=;
-        b=wE2dnY6vNKpmcUNcUWAoav2a+jrlRRzrlX4XT+Du95ll5lVjA8RfPj/U5qiGDZAtDc
-         xB+xFkcUpujbYDkbSK6STI+NEuq/fmj47TKFhqARMmKCVIfF3w3PbUNJE+MueYHPt4II
-         QMVEem/jDwEEFxiACsqr25bhPGIP+lzL6I9ubV9kUaikcLsKqIax18yDkGHqd9K5IJZL
-         1flqdeQAOev3RoLetlKGsy/VQdEBBTPxjgbkjsBFXfDEFHRU5TtEsJP9s2d0ve/eAnJo
-         0sDyCxTVC48pfBgG3T/YQKXBqqdYShujq4MsifwatzXPkCKSqsIQbPlyWxmNA3kipQQI
-         j3eA==
-X-Gm-Message-State: AOJu0YwGDEfK7w8Jpj7s/3bpwaiYHptqRMwfpjKUD6Pp6mi84jtdgz/D
-        HTDtnWdaIrwVkwbhCuo7sVComA==
-X-Google-Smtp-Source: AGHT+IEoUWi2pDWF6jdLsDdB9bo4yCiuTcH+dJCQhosEkkKLGNi7bZ3RwGK2wPPoN9/9Te+GQZRRKg==
-X-Received: by 2002:a05:620a:4453:b0:77b:d90e:dd91 with SMTP id w19-20020a05620a445300b0077bd90edd91mr3857377qkp.46.1699983847240;
-        Tue, 14 Nov 2023 09:44:07 -0800 (PST)
-Received: from localhost.localdomain (modemcable125.110-19-135.mc.videotron.ca. [135.19.110.125])
-        by smtp.gmail.com with ESMTPSA id bi8-20020a05620a318800b007671cfe8a18sm2833350qkb.13.2023.11.14.09.44.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 09:44:07 -0800 (PST)
-From:   Jonathan Marek <jonathan@marek.ca>
-To:     freedreno@lists.freedesktop.org
-Cc:     Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 3/4] drm/msm/dsi: support DSC configurations with slice_per_pkt > 1
-Date:   Tue, 14 Nov 2023 12:42:15 -0500
-Message-Id: <20231114174218.19765-3-jonathan@marek.ca>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20231114174218.19765-1-jonathan@marek.ca>
-References: <20231114174218.19765-1-jonathan@marek.ca>
+        Tue, 14 Nov 2023 12:42:48 -0500
+Received: from pidgin.makrotopia.org (pidgin.makrotopia.org [185.142.180.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC75310A;
+        Tue, 14 Nov 2023 09:42:43 -0800 (PST)
+Received: from local
+        by pidgin.makrotopia.org with esmtpsa (TLS1.3:TLS_AES_256_GCM_SHA384:256)
+         (Exim 4.96.2)
+        (envelope-from <daniel@makrotopia.org>)
+        id 1r2xQd-0000r4-31;
+        Tue, 14 Nov 2023 17:42:24 +0000
+Date:   Tue, 14 Nov 2023 17:42:16 +0000
+From:   Daniel Golle <daniel@makrotopia.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Mark Lee <Mark-MC.Lee@mediatek.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Alexander Couzens <lynxis@fe80.eu>,
+        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
+Subject: Re: [RFC PATCH 7/8] dt-bindings: net: mediatek,net: fix and complete
+ mt7988-eth binding
+Message-ID: <ZVOxeCAUhFPnxzQr@makrotopia.org>
+References: <cover.1699565880.git.daniel@makrotopia.org>
+ <d8152679b6558ce9fd177ff20478e3fbc2ab73b4.1699565880.git.daniel@makrotopia.org>
+ <20231114140719.GA1664629-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114140719.GA1664629-robh@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a dsc_slice_per_pkt field to mipi_dsi_device struct and the necessary
-changes to msm driver to support this field.
+Hi Rob,
 
-Note that the removed "pkt_per_line = slice_per_intf * slice_per_pkt"
-comment is incorrect.
+thank you for reviewing this patch.
 
-Signed-off-by: Jonathan Marek <jonathan@marek.ca>
----
- drivers/gpu/drm/msm/dsi/dsi_host.c | 25 ++++++++++---------------
- include/drm/drm_mipi_dsi.h         |  1 +
- 2 files changed, 11 insertions(+), 15 deletions(-)
+On Tue, Nov 14, 2023 at 08:07:19AM -0600, Rob Herring wrote:
+> On Thu, Nov 09, 2023 at 09:52:09PM +0000, Daniel Golle wrote:
+> > Remove clocks which were copied from the vendor driver but are now taken
+> > care of by dedicated drivers for PCS and PHY in the upstream driver.
+> > Also remove mediatek,sgmiisys phandle which isn't required on MT7988
+> > because we use pcs-handle on the MAC nodes instead.
+> > Last but not least, add an example for MT7988.
+> 
+> 'Also' is a clue for it should be a separate patch. These changes are 
+> all ABI breakage. Please explain why that's okay.
 
-diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-index 2ea2fc105fbf..7284346ab787 100644
---- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-+++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-@@ -161,6 +161,7 @@ struct msm_dsi_host {
- 
- 	struct drm_display_mode *mode;
- 	struct drm_dsc_config *dsc;
-+	unsigned int dsc_slice_per_pkt;
- 
- 	/* connected device info */
- 	unsigned int channel;
-@@ -855,17 +856,10 @@ static void dsi_update_dsc_timing(struct msm_dsi_host *msm_host, bool is_cmd_mod
- 	slice_per_intf = msm_dsc_get_slices_per_intf(dsc, hdisplay);
- 
- 	total_bytes_per_intf = dsc->slice_chunk_size * slice_per_intf;
--	bytes_per_pkt = dsc->slice_chunk_size; /* * slice_per_pkt; */
-+	bytes_per_pkt = dsc->slice_chunk_size * msm_host->dsc_slice_per_pkt;
- 
- 	eol_byte_num = total_bytes_per_intf % 3;
--
--	/*
--	 * Typically, pkt_per_line = slice_per_intf * slice_per_pkt.
--	 *
--	 * Since the current driver only supports slice_per_pkt = 1,
--	 * pkt_per_line will be equal to slice per intf for now.
--	 */
--	pkt_per_line = slice_per_intf;
-+	pkt_per_line = slice_per_intf / msm_host->dsc_slice_per_pkt;
- 
- 	if (is_cmd_mode) /* packet data type */
- 		reg = DSI_COMMAND_COMPRESSION_MODE_CTRL_STREAM0_DATATYPE(MIPI_DSI_DCS_LONG_WRITE);
-@@ -1002,12 +996,8 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
- 		else
- 			/*
- 			 * When DSC is enabled, WC = slice_chunk_size * slice_per_pkt + 1.
--			 * Currently, the driver only supports default value of slice_per_pkt = 1
--			 *
--			 * TODO: Expand mipi_dsi_device struct to hold slice_per_pkt info
--			 *       and adjust DSC math to account for slice_per_pkt.
- 			 */
--			wc = msm_host->dsc->slice_chunk_size + 1;
-+			wc = msm_host->dsc->slice_chunk_size * msm_host->dsc_slice_per_pkt + 1;
- 
- 		dsi_write(msm_host, REG_DSI_CMD_MDP_STREAM0_CTRL,
- 			DSI_CMD_MDP_STREAM0_CTRL_WORD_COUNT(wc) |
-@@ -1634,8 +1624,13 @@ static int dsi_host_attach(struct mipi_dsi_host *host,
- 	msm_host->lanes = dsi->lanes;
- 	msm_host->format = dsi->format;
- 	msm_host->mode_flags = dsi->mode_flags;
--	if (dsi->dsc)
-+	if (dsi->dsc) {
- 		msm_host->dsc = dsi->dsc;
-+		msm_host->dsc_slice_per_pkt = dsi->dsc_slice_per_pkt;
-+		/* for backwards compatibility, assume 1 if not set */
-+		if (!msm_host->dsc_slice_per_pkt)
-+			msm_host->dsc_slice_per_pkt = 1;
-+	}
- 
- 	/* Some gpios defined in panel DT need to be controlled by host */
- 	ret = dsi_host_init_panel_gpios(msm_host, &dsi->dev);
-diff --git a/include/drm/drm_mipi_dsi.h b/include/drm/drm_mipi_dsi.h
-index c9df0407980c..3e32fa52d94b 100644
---- a/include/drm/drm_mipi_dsi.h
-+++ b/include/drm/drm_mipi_dsi.h
-@@ -193,6 +193,7 @@ struct mipi_dsi_device {
- 	unsigned long hs_rate;
- 	unsigned long lp_rate;
- 	struct drm_dsc_config *dsc;
-+	unsigned int dsc_slice_per_pkt;
- };
- 
- #define MIPI_DSI_MODULE_PREFIX "mipi-dsi:"
--- 
-2.26.1
+I hope that it's ok because the driver at this point never supported
+any SerDes modes and we are still in the process of bringing up
+mainline support for this SoC. All of clk, pinctrl, reset, ... driver
+and dt-bindings are still pending or being prepared for submission.
 
+> 
+> > 
+> > Fixes: c94a9aabec36 ("dt-bindings: net: mediatek,net: add mt7988-eth binding")
+> > Signed-off-by: Daniel Golle <daniel@makrotopia.org>
+> > ---
+> >  .../devicetree/bindings/net/mediatek,net.yaml | 171 +++++++++++++++---
+> >  1 file changed, 142 insertions(+), 29 deletions(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/net/mediatek,net.yaml b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> > index e74502a0afe86..c0f7bb6f3ef8d 100644
+> > --- a/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> > +++ b/Documentation/devicetree/bindings/net/mediatek,net.yaml
+> > @@ -27,9 +27,6 @@ properties:
+> >        - mediatek,mt7988-eth
+> >        - ralink,rt5350-eth
+> >  
+> > -  reg:
+> > -    maxItems: 1
+> > -
+> 
+> It's not clear what this change is from the commit msg.
+> 
+> This should stay and be:
+> 
+> reg:
+>   minItems: 1
+>   items:
+>     - description: what's in the 1st region
+>     - description: what's in the 2nd region
+
+Ack.
+
+> 
+> >    clocks: true
+> >    clock-names: true
+> >  
+> > @@ -115,6 +112,9 @@ allOf:
+> >                - mediatek,mt7623-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> >          interrupts:
+> >            maxItems: 3
+> >  
+> > @@ -149,6 +149,9 @@ allOf:
+> >                - mediatek,mt7621-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> >          interrupts:
+> >            maxItems: 1
+> >  
+> > @@ -174,6 +177,9 @@ allOf:
+> >              const: mediatek,mt7622-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> >          interrupts:
+> >            maxItems: 3
+> >  
+> > @@ -215,6 +221,9 @@ allOf:
+> >              const: mediatek,mt7629-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> >          interrupts:
+> >            maxItems: 3
+> >  
+> > @@ -257,6 +266,9 @@ allOf:
+> >              const: mediatek,mt7981-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> >          interrupts:
+> >            minItems: 4
+> >  
+> > @@ -295,6 +307,9 @@ allOf:
+> >              const: mediatek,mt7986-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 1
+> > +
+> 
+> Looks like lots of duplication. Perhaps there's a cleaner way.
+
+Hm, I don't really see any better way. Suggestions anyone?
+
+> 
+> >          interrupts:
+> >            minItems: 4
+> >  
+> > @@ -333,36 +348,32 @@ allOf:
+> >              const: mediatek,mt7988-eth
+> >      then:
+> >        properties:
+> > +        reg:
+> > +          maxItems: 2
+> > +          minItems: 2
+> > +
+> >          interrupts:
+> >            minItems: 4
+> > +          maxItems: 4
+> >  
+> >          clocks:
+> > -          minItems: 34
+> > -          maxItems: 34
+> > +          minItems: 24
+> > +          maxItems: 24
+> >  
+> >          clock-names:
+> >            items:
+> > -            - const: crypto
+> > +            - const: xgp1
+> > +            - const: xgp2
+> > +            - const: xgp3
+> >              - const: fe
+> >              - const: gp2
+> >              - const: gp1
+> >              - const: gp3
+> > +            - const: esw
+> > +            - const: crypto
+> >              - const: ethwarp_wocpu2
+> >              - const: ethwarp_wocpu1
+> >              - const: ethwarp_wocpu0
+> > -            - const: esw
+> > -            - const: netsys0
+> > -            - const: netsys1
+> > -            - const: sgmii_tx250m
+> > -            - const: sgmii_rx250m
+> > -            - const: sgmii2_tx250m
+> > -            - const: sgmii2_rx250m
+> > -            - const: top_usxgmii0_sel
+> > -            - const: top_usxgmii1_sel
+> > -            - const: top_sgm0_sel
+> > -            - const: top_sgm1_sel
+> > -            - const: top_xfi_phy0_xtal_sel
+> > -            - const: top_xfi_phy1_xtal_sel
+> >              - const: top_eth_gmii_sel
+> >              - const: top_eth_refck_50m_sel
+> >              - const: top_eth_sys_200m_sel
+> > @@ -375,18 +386,9 @@ allOf:
+> >              - const: top_netsys_sync_250m_sel
+> >              - const: top_netsys_ppefb_250m_sel
+> >              - const: top_netsys_warp_sel
+> > -            - const: wocpu1
+> > -            - const: wocpu0
+> > -            - const: xgp1
+> > -            - const: xgp2
+> > -            - const: xgp3
+> > -
+> > -        mediatek,sgmiisys:
+> > -          minItems: 2
+> > -          maxItems: 2
+> >  
+> >  patternProperties:
+> > -  "^mac@[0-1]$":
+> > +  "^mac@[0-2]$":
+> >      type: object
+> >      unevaluatedProperties: false
+> >      allOf:
+> > @@ -577,3 +579,114 @@ examples:
+> >          };
+> >        };
+> >      };
+> > +
+> > +  - |
+> > +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +    #include <dt-bindings/interrupt-controller/irq.h>
+> > +    #include <dt-bindings/clock/mediatek,mt7988-clk.h>
+> > +
+> > +    soc {
+> > +      #address-cells = <2>;
+> > +      #size-cells = <2>;
+> > +
+> > +      ethernet@15100000 {
+> > +        compatible = "mediatek,mt7988-eth";
+> > +        reg = <0 0x15100000 0 0x80000>, <0 0x15400000 0 0x380000>;
+> > +        interrupts = <GIC_SPI 196 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI 197 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI 198 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH>;
+> > +
+> > +        clocks = <&ethsys CLK_ETHDMA_XGP1_EN>,
+> > +                 <&ethsys CLK_ETHDMA_XGP2_EN>,
+> > +                 <&ethsys CLK_ETHDMA_XGP3_EN>,
+> > +                 <&ethsys CLK_ETHDMA_FE_EN>,
+> > +                 <&ethsys CLK_ETHDMA_GP2_EN>,
+> > +                 <&ethsys CLK_ETHDMA_GP1_EN>,
+> > +                 <&ethsys CLK_ETHDMA_GP3_EN>,
+> > +                 <&ethsys CLK_ETHDMA_ESW_EN>,
+> > +                 <&ethsys CLK_ETHDMA_CRYPT0_EN>,
+> > +                 <&ethwarp CLK_ETHWARP_WOCPU2_EN>,
+> > +                 <&ethwarp CLK_ETHWARP_WOCPU1_EN>,
+> > +                 <&ethwarp CLK_ETHWARP_WOCPU0_EN>,
+> > +                 <&topckgen CLK_TOP_ETH_GMII_SEL>,
+> > +                 <&topckgen CLK_TOP_ETH_REFCK_50M_SEL>,
+> > +                 <&topckgen CLK_TOP_ETH_SYS_200M_SEL>,
+> > +                 <&topckgen CLK_TOP_ETH_SYS_SEL>,
+> > +                 <&topckgen CLK_TOP_ETH_XGMII_SEL>,
+> > +                 <&topckgen CLK_TOP_ETH_MII_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_500M_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_PAO_2X_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_SYNC_250M_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_PPEFB_250M_SEL>,
+> > +                 <&topckgen CLK_TOP_NETSYS_WARP_SEL>;
+> > +
+> > +        clock-names = "xgp1", "xgp2", "xgp3", "fe", "gp2", "gp1",
+> > +                      "gp3", "esw", "crypto",
+> > +                      "ethwarp_wocpu2", "ethwarp_wocpu1",
+> > +                      "ethwarp_wocpu0", "top_eth_gmii_sel",
+> > +                      "top_eth_refck_50m_sel", "top_eth_sys_200m_sel",
+> > +                      "top_eth_sys_sel", "top_eth_xgmii_sel",
+> > +                      "top_eth_mii_sel", "top_netsys_sel",
+> > +                      "top_netsys_500m_sel", "top_netsys_pao_2x_sel",
+> > +                      "top_netsys_sync_250m_sel",
+> > +                      "top_netsys_ppefb_250m_sel",
+> > +                      "top_netsys_warp_sel";
+> > +        assigned-clocks = <&topckgen CLK_TOP_NETSYS_2X_SEL>,
+> > +                          <&topckgen CLK_TOP_NETSYS_GSW_SEL>,
+> > +                          <&topckgen CLK_TOP_USXGMII_SBUS_0_SEL>,
+> > +                          <&topckgen CLK_TOP_USXGMII_SBUS_1_SEL>,
+> > +                          <&topckgen CLK_TOP_SGM_0_SEL>,
+> > +                          <&topckgen CLK_TOP_SGM_1_SEL>;
+> > +        assigned-clock-parents = <&apmixedsys CLK_APMIXED_NET2PLL>,
+> > +                                 <&topckgen CLK_TOP_NET1PLL_D4>,
+> > +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> > +                                 <&topckgen CLK_TOP_NET1PLL_D8_D4>,
+> > +                                 <&apmixedsys CLK_APMIXED_SGMPLL>,
+> > +                                 <&apmixedsys CLK_APMIXED_SGMPLL>;
+> > +        mediatek,ethsys = <&ethsys>;
+> > +        mediatek,infracfg = <&topmisc>;
+> > +        #address-cells = <1>;
+> > +        #size-cells = <0>;
+> > +
+> > +        mac@0 {
+> > +          compatible = "mediatek,eth-mac";
+> > +          reg = <0>;
+> > +          phy-mode = "internal";
+> > +          status = "disabled";
+> 
+> Examples should be enabled.
+
+Ack.
+
+> 
+> > +
+> > +          fixed-link {
+> > +            speed = <10000>;
+> > +            full-duplex;
+> > +            pause;
+> > +          };
+> > +        };
+> > +
+> > +        mac@1 {
+> > +          compatible = "mediatek,eth-mac";
+> > +          reg = <1>;
+> > +          status = "disabled";
+> > +          pcs-handle = <&usxgmiisys1>;
+> > +        };
+> > +
+> > +        mac@2 {
+> > +          compatible = "mediatek,eth-mac";
+> > +          reg = <2>;
+> > +          status = "disabled";
+> > +          pcs-handle = <&usxgmiisys0>;
+> > +        };
+> > +
+> > +        mdio_bus: mdio-bus {
+> 
+> mdio {
+> 
+> > +          #address-cells = <1>;
+> > +          #size-cells = <0>;
+> > +
+> > +          /* internal 2.5G PHY */
+> > +          int_2p5g_phy: ethernet-phy@15 {
+> > +            reg = <15>;
+> > +            compatible = "ethernet-phy-ieee802.3-c45";
+> > +            phy-mode = "internal";
+> > +          };
+> > +        };
+> > +      };
+> > +    };
+> > -- 
+> > 2.42.1
+> 
