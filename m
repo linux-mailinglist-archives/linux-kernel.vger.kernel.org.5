@@ -2,281 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 611A27EA81A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BD977EA81C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231370AbjKNBIv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 20:08:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56510 "EHLO
+        id S231451AbjKNBJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 20:09:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33946 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNBIt (ORCPT
+        with ESMTP id S229551AbjKNBJc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 20:08:49 -0500
-Received: from mail-vs1-xe35.google.com (mail-vs1-xe35.google.com [IPv6:2607:f8b0:4864:20::e35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F265D51
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:08:46 -0800 (PST)
-Received: by mail-vs1-xe35.google.com with SMTP id ada2fe7eead31-45ef8c21e8aso2056204137.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:08:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699924125; x=1700528925; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AGgQXmlApHAVakndCGgpAS18nj7Grq29NxlZqQQt5zY=;
-        b=FtBo1msq5pjyk7NfNj+4F3qLg5XZMr7Vs/Jb8uhO7UFTomjMaFoaD6YqL63nRYZ4lM
-         px9zVNcskKmezLXq4s7S1vM6TLxV2cOO6gpeuZLggMoMNAdm1nDStvsc57iBrVCzPLAD
-         xqmcWQq1TodVa8/yEG6I4yIFylwWegFBrk7M8ngxTz1huSL3SroSYnRL3GZ2gpZntWij
-         BQkRjXhPEqcEIUwub0XcHiq77Arv8ERRyeq4MeIH0H3gKuLeXU1l2R3bFLwJUcz1a5Du
-         3hcPmUSzocnC2mS1IekWjgiShTm4QM08nJDeR0Kqtj/W8wYLa9s/7LbwJbE0sTg5fb26
-         s7OA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699924125; x=1700528925;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AGgQXmlApHAVakndCGgpAS18nj7Grq29NxlZqQQt5zY=;
-        b=R9B1VZy9eCS7b6mQf4v3uQfxlv2BzChSzCr7mAVxxB8M6EZ13y7Rc//ITrWej9rCpg
-         Jj/VTtoNmT+Hx9MeZt3ZXxwDTtUtmh5arPPa+OK8hKLeE2o2SeP/mxzoar3zvtrg4nXw
-         LbEYyzdWA/dlbSgYJhxY2MRBMSISTJqXFnOUcWj4GQTcKObG5vYEg9tDi2CtGXA2nApH
-         /X1Bl4qYbPVNZqBvtCpMxtZbP1ebsMhlT6pciK8wAitEzrlveGd6StCOkdViIDYFyrlq
-         UXz7fwdcT6xhW0ZvzasQvOFfoUrvu1XPAioRJLkaRpagmS1DXmjWyKeykGGTxD/yymz6
-         XAxw==
-X-Gm-Message-State: AOJu0YxN05R8rw9QC4J+EoLgAa8lnmpQoWH9mCaNqIx2vL81vNIsdMxK
-        iZI0eWMBiou4AWKBWvf3w2BrOe+cKv6t9ARGRoM=
-X-Google-Smtp-Source: AGHT+IF8jYbSt5snceu5F/A9kPLTXsHKQYKG50Xw7E9vvr1iYOo5ZzVPGns73PHf3MmTahQRX2vCOuaQMiDZyH+xrvA=
-X-Received: by 2002:a67:e15a:0:b0:45d:7671:8253 with SMTP id
- o26-20020a67e15a000000b0045d76718253mr7563463vsl.13.1699924125226; Mon, 13
- Nov 2023 17:08:45 -0800 (PST)
+        Mon, 13 Nov 2023 20:09:32 -0500
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2074.outbound.protection.outlook.com [40.92.103.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10767D51;
+        Mon, 13 Nov 2023 17:09:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Bk8n+mdfUyKurQw3kxOWRwVMEAO3GE+UiRbZ7N38Fp4GuVq/fdh3FC3Jy5hac+AJhvZKMo6BDi+7JW+o+v9QDwwJjlpJAwz8Q2jp3aU9gs24FLIj2KuCvOD/MxRExcnjxevVc/dEzWSjIao7cgq8Ry6v4S/D8e+lB3rwJZUqsWAKLDcxpozFKOMljHrQqm9v7GtyC0z6l5Z7Tb1A+7L94bDW+tzhRSa+Xyq0ElR4I8patbE/NYDgPxqGqAM7+OZyDw6QEzCjQOwwLF2r4M5EGP+2+bpunAN4o5L8dG+YuhNj0ivHWokVjLaAp1gOjTkDvYsp/eqbJNbv9LgYhqGxeg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=YjdOsaqtBFefFjJCKAcezFaKp3L5uHdfJ6RYOodcp2o=;
+ b=X4kDI/CLkTiMgavVb7/iix6YmXc/HB7dTpFdQmNfseyg8Mtc1O8AKtKkquw8PDvuHEjC/hU/ge11P0jEsFDU58sGrcAreOiPSxPzW0uDi5jk+STRXDrw3jbFnzZ/olMyPJYTp/12ddnXSkT+CjnNbYAtd+QIO6MIJzRtTj9sALFvMh/m2JP6//In+OIwIYimPHfnpJCWpm/OsfRKFrKeDnKsOyzevYkwRySAvhBksdR/KcS+ca7lymse+oFjvhV2AmFD5WnkYKb7MqtILDDaoiMvoUQ1RaGW+Ice3kU8wBlTTZtbQ1fIIt/cpMtBgNcakzvsCEPfEYh112tzyAREvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=YjdOsaqtBFefFjJCKAcezFaKp3L5uHdfJ6RYOodcp2o=;
+ b=XOyimdL3oUSkMhfFDcEuN2KgEFVbIS3/OrK5qcbAWIevSkWRMGaikz7xcmTcfeRRvIBQ/GdTZIboSyK4tT6rL8e4+i0PJoA1sSspq9azk9p5IuQboCI1NpeYUURd+LxxmKPHS2qajmWGbma7YYEefoCFX9cXDCUnV0Mv2xN8Xboz0b246p+SOPPvNLiIh8Y3OwA5po1fI0p2oyNM+13K1dgNQJgRdlyVxVAQMftuY9082Bvp8inIbjuhjIiIzLOrwHtiPwi5cqULVp3tu/W0ugXco8QmFHsplrr+4kCvqZI0a2DKu7NbSleBWYKg9kPtftN7TttIJBa3sQwj18vz2g==
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:ab::5) by
+ MA0P287MB2474.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:139::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.31; Tue, 14 Nov 2023 01:09:20 +0000
+Received: from MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3]) by MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ ([fe80::b1a7:eee7:e903:9ef3%6]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
+ 01:09:20 +0000
+Message-ID: <MA0P287MB03326F420E96FE3198C81C21FEB2A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+Date:   Tue, 14 Nov 2023 09:09:15 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: timer: thead,c900-aclint-mtimer:
+ separate mtime and mtimecmp regs
+To:     Inochi Amaoto <inochiama@outlook.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+References: <IA1PR20MB4953BB0ABD29F5AE938A54ECBBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB49533EEEB2F7E8D93762DC1ABBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
+From:   Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <IA1PR20MB49533EEEB2F7E8D93762DC1ABBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN:  [/sXPbWpfETNcYHET56ebrpKqazvuun7pDuRXeJ/pV3I=]
+X-ClientProxiedBy: TYCPR01CA0145.jpnprd01.prod.outlook.com
+ (2603:1096:400:2b7::18) To MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:ab::5)
+X-Microsoft-Original-Message-ID: <8b83a3f1-6bf5-45b5-972c-4c43757ea9b1@outlook.com>
 MIME-Version: 1.0
-References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
- <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
- <CAK8ByeJ1fYSVaVQz3tERzj_5QNAN4Ggx850pKcAG3vhsoWnS+w@mail.gmail.com>
- <CAJfuBxyu3VqakFNr4mW0h4QiPVSf-7HSPXobGO2_qC-H8yLgcw@mail.gmail.com>
- <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
- <CAJfuBxz1=9o06Rj_mX-2aZXhCSF7rKxyusayPiy4RuJZ7qKbQw@mail.gmail.com> <CAK8ByeJH8vKUxeM21ME0vYjKmC_Z=P8XsKiB42k95iZ09bJXJg@mail.gmail.com>
-In-Reply-To: <CAK8ByeJH8vKUxeM21ME0vYjKmC_Z=P8XsKiB42k95iZ09bJXJg@mail.gmail.com>
-From:   jim.cromie@gmail.com
-Date:   Mon, 13 Nov 2023 18:08:18 -0700
-Message-ID: <CAJfuBxxw6DbmGG-UdiZeUr9680tJVEVcw-czPL+jt-88YUMgbw@mail.gmail.com>
-Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
-To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Jason Baron <jbaron@akamai.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kees Cook <keescook@chromium.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        Guenter Roeck <groeck@google.com>,
-        Yaniv Tzoreff <yanivt@google.com>,
-        Benson Leung <bleung@google.com>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
-        upstream@semihalf.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB0332:EE_|MA0P287MB2474:EE_
+X-MS-Office365-Filtering-Correlation-Id: 15ee098e-bc7f-4c61-8bc5-08dbe4ae54df
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +NYDa3dMOmCuw1bPemgudnMAKeWXII1ULeDySHKarxBIRPOx5LG2qL/EjCufux/SveiKjh4dbMwepdU6DLo+J33JntY7UK1zVArQ4xJ1TjJ5hUgEwGtxLdNzCHsKye3tmvM8wgPX7NIpXPArrRN4s8ShWn8dyuYzm1rChV8vcEU5jkASkcFoh9B+ZAN/y+XixZohaZ5Y4OyKFIe5Ws2pWuUSxSS7t4fdeRHq0x3h7Y4okJHkEkZbheiuvkkp5Zqiw+sr9ILslXm/i3cI6/UufIZSMp0CueKwF9fyuYt6nqVlj0DlEG+KlnFtSwPIfMVhr32Onc33rTs3taYj6XBDrSPc2br45WiTbdnslE8YSc3ReUZy8pmAa5VWD8ytc364opDz924UdzMmKmPXVR41rT/9WSsVkqN/DSipD7Mg+9u7kpfz32o6TG3COZ1YBmy9NGUND2lUDReAfND+wcKw9Vb9+Mz6JEII0mnz33t07J4AOqhKd88U9b0ck1QrLIBO0LT4QxaDOucwgeq8tqmEmMnXNoD4CJiyfrm6DsfvRM7PYQH0TCU+8f3PZK2DEwNbyxQvoG8h5kN/POpTSblczX13BYLhPYA8utKEBIue22I=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NlllM2xrNDhOZkNvQ0NVQlN3MFp2eFVsNE1SaEsxUDFmaDkwQ0FiMFhiRTJx?=
+ =?utf-8?B?WSs3cFdLaDFIR3Z6VDhKSXljV05VV24zUUdlUmpSa1E5R3MyNzhlVGhPOW1r?=
+ =?utf-8?B?dmZmSWU1c1JoLy9VdUxPMXlsemtSS0txWmJyVjhKUTJyMFdKeXR6NXA0TFlv?=
+ =?utf-8?B?ODdqNzBHeXh6azRPekRXTXdPamVVcndpbzh5ZmF4QUxGandqRGhGRU5xZ2hl?=
+ =?utf-8?B?dEpjVlN5SjA1VTRjcVhGZWRRaHFZTXhYaE9aM0kyTzFlSVZOem83c0Yvb01S?=
+ =?utf-8?B?cVdQSE4wMkJIZmFKL3FySnlxWXo1ZEdyZUJ4VGFUaFNzZDBMc0ZWWU45cmI2?=
+ =?utf-8?B?UnZDUy9Lc0UyWXc2Kzg1ZUtXeFBiS3RJaHVLTFpGRG0wamRIUVFlUkxDd3Q3?=
+ =?utf-8?B?Z3dOaVZ4UFdUWG1GUDU5dGFoQnk1Y2FWSEJxTG0xQy92SmlnUWV3MHRqOXZy?=
+ =?utf-8?B?amdMUS92U0dRVVRIdk1lcE1qYkNJbWM5VHpWcmM5Vnk0S3VDM3VvQjdmT3Ba?=
+ =?utf-8?B?WXFPT3VnYUxoTWMvMHNlMmNUQmJMMlc3cXNDUHZzallpTmR0elllYjBSR1BY?=
+ =?utf-8?B?U2pOWW1aQklQc01RaUFRenZPMXhBVWVscjdoZXp0eGdXUHplYXAyQXVQdUZC?=
+ =?utf-8?B?MGZKazJrMTVrNFcxY3liWnltaWxTZ0pGR0tvQysrTXhKbjhBUjAvcFlhWjhl?=
+ =?utf-8?B?YU9KM0ttUlByUllFWHl5QkEzTDlGWFRTa0kzWERBSHFPK2kzdVBJbGMxNWZP?=
+ =?utf-8?B?YkhLRjY5aHFEaUkvNHJzeVBVOGM1aHFDblFQdVNwZ2NTWGRXVzlBTm9OeXRl?=
+ =?utf-8?B?UVVEQTAzbSsybXFEVXlwYWlUTHRuVzRnbnJ4emQ3M29XZzVISGxyOEpYNjdv?=
+ =?utf-8?B?a2N2cE8yamU1KzUwZWJVOVJKcDhwTzFZSHhwQTJEV0FrSkdWQ0pSTWg2Qk0x?=
+ =?utf-8?B?WlFnMCtlRnE0UEJ6cmZkbWJJd1RicVJsaVpZcklXOWloQVFUNnBia2luU09K?=
+ =?utf-8?B?YVRIZE1MQW1VOXZQb21ibzBvRGpURHN5dVJDWE5tWUw2elFHZHpYRDl5b2Zh?=
+ =?utf-8?B?TFpJcjQ5MlVpeWozY0dPNVZ5M1UySDdBQWNoQmxSbXdsczljWFZ1N2dKbFVV?=
+ =?utf-8?B?SUZkWVM2MWcrRHVLWEEwanpYWHJlVHF5anB4dHJCbk5aWENWcTRxVEtLR3px?=
+ =?utf-8?B?VlhObmtVRlJWa3dRcy9WaHRiOHp0dXZJSlMyOEttM3NBelFscGE1RmVlUE1W?=
+ =?utf-8?B?a3dXSXF4UTl1aUhwRFhDdE5lZDk4bVFWUWR5OEFxYzNLbnJBSTJzQjVxS01K?=
+ =?utf-8?B?QmtTa1lSS3U4LzBrOEh6OUd3SWoxQWcydW4xeHZoUldDNHNBM0U4Uk9vUGQ5?=
+ =?utf-8?B?TFNvaHpxQkVjeEhwekZSMzNzZjlCZmh1MiszVDlEMG52QkI3a0VVRVd6UzEv?=
+ =?utf-8?B?Q1Rac2pybnlXZHNyOTc5cnB0MHRiMkJUbGh2bUFRR0FEb3ZWSnZkSEZBVnBu?=
+ =?utf-8?B?N1oyMlFyVmU0N0EyOEs0MXViMEVjSFEvenRjeWl6WUFOTlJpNVZ4Z3laWHVB?=
+ =?utf-8?B?clZHdUNqZWF1L0FQM3JObjI0T2ljZVM3am5jN0kydHpOM0d3NnlqeXphQWls?=
+ =?utf-8?Q?oqdAmfvFnq1J9yJLOtpGBaLzaPt0nTOTJXyixY1Pih3c=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 15ee098e-bc7f-4c61-8bc5-08dbe4ae54df
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB0332.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 01:09:20.7492
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MA0P287MB2474
+X-Spam-Status: No, score=0.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 4:44=E2=80=AFPM =C5=81ukasz Bartosik <lb@semihalf.c=
-om> wrote:
+
+On 2023/11/14 8:45, Inochi Amaoto wrote:
+> The timer registers of aclint don't follow the clint layout and can
+> be mapped on any different offset. As sg2042 uses separated timer
+> and mswi for its clint, it should follow the aclint spec and have
+> separated registers.
 >
-> pon., 13 lis 2023 o 19:59 <jim.cromie@gmail.com> napisa=C5=82(a):
-> >
-> > On Sun, Nov 12, 2023 at 9:32=E2=80=AFAM =C5=81ukasz Bartosik <lb@semiha=
-lf.com> wrote:
-> > >
-> > > pt., 10 lis 2023 o 21:03 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > >
-> > > > On Fri, Nov 10, 2023 at 7:53=E2=80=AFAM =C5=81ukasz Bartosik <lb@se=
-mihalf.com> wrote:
-> > > > >
-> > > > > sob., 4 lis 2023 o 22:49 <jim.cromie@gmail.com> napisa=C5=82(a):
-> > > > > >
-> > > > > > On Fri, Nov 3, 2023 at 7:10=E2=80=AFAM =C5=81ukasz Bartosik <lb=
-@semihalf.com> wrote:
-> > > > > > >
-> > > > > > > When trace is enabled (T flag is set) and trace_dst field is =
-set
-> > > > > > > to value greater than 0 (0 is reserved for trace events) then
-> > > > > > > debug logs will be written to trace instance pointed by trace=
-_dst
-> > > > > > > value, for example when trace_dst value is 2 then debug logs =
-will
-> > > > > > > be written to <debugfs>/tracing/instances/dyndbg_inst_2 insta=
-nce.
-> > > > > > > Given trace instance will not be initialized until debug logs=
- are
-> > > > > > > requested to be written to it and afer init will persist unti=
-l
-> > > > > > > reboot.
-> > > > > > >
-> > > > > >
-> > > > > > restating 00 comments -
-> > > > > >
-> > > > > > you can get rid of integer destination ids by adding a new comm=
-and: open/close
-> > > > > >
-> > > > > > $> echo  \
-> > > > > >  open kms-instance \;\
-> > > > > >  class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites=
- \;\
-> > > > > > > /proc/dynamic_debug/control
-> > > > > >
-> > > > >
-> > > > > Instead of using above command to preset destination we could pre=
-set
-> > > > > destination with open command. I mean last successful
-> > > > > open would preset destination ? What do you think ?
-> > > > >
-> > > >
-> > > > I dont think it works - if open maps to a dest-number, (or implicit=
- as
-> > > > TOP-of-stack)
-> > > > then you just have +T<dest-number>  (or +T <implicit tos>)
-> > > > rather than +T:dest-name
-> > > > and you still have to keep track of what dest-numbers were already =
-used.
-> > > > (or every new dest needs an explicit OPEN before it)
-> > > >
-> > > > and how do you then get back to default instance ?
-> > > > open 0 ?
-> > > > close <previous-handle> ?
-> > > >
-> > > >
-> > > > by using names, all opens can be at the top,
-> > > > (and thus document in 1 block all the named-instances)
-> > > > and any named dest that hasnt been opened is an error
-> > > > (not just reusing previous OPEN)
-> > > >
-> > >
-> > > Sorry, I should have been more specific with my proposal. Let me use
-> > > an example to clarify it:
-> > > open usb    # -> create trace instance "usb" and make it default
-> > > echo module usbcore +T > /proc/dynamic_debug/control ## --> write usb=
-core
-> > > ## debug logs to trace instance named usb
-> > > open tbt --> create trace instance "tbt" and make it default
-> > > echo module aaa +T:usb > /proc/dynamic_debug/control --> write aaa
-> > > debug logs to trace instance named usb, instance usb has to be used
-> > > explicitly
-> > >
-> > >                          because now tbt is default trace instance
-> >
-> > that feels too magical/ action at a distance.
-> >
-> > ISTM it also muddles what the "default" is:
-> >
-> > my-default:
-> > what each callsite's current/preset dest is/was
-> > the only way to set it is with explicit [-+]T:outstream
-> >
+> The previous patch introduces a new type of T-HEAD aclint timer which
+> has clint timer layout. Although the timer has the clint layout, it
+> should follow the aclint spec and uses the separated mtime and mtimecmp
+> regs. So a ABI change is needed to make the timer fit the aclint spec.
 >
-> I see your point, I will follow your suggestion.
+> To make T-HEAD aclint timer more closer to the aclint spec, use two regs
+> to represent the mtime and mtimecmp.
 >
-> > your-default:
-> > whatever was last opened. whether it was 2 or 50 lines above,
-> > or set weeks ago, the last time somebody opened an instance.
-> >
-> > and as more instances are created
-> > (potentially by different users?
-> > after all there are separate instances,
-> > and presumably separate interests),
-> > the default gets less predictable.
-> >
-> >
-> > > echo module bbb +T > /proc/dynamic_debug/control --> write bbb debug
-> > > logs to trace instance named tbt
-> > > close tbt --> close tbt trace instance, I omit this step but in order
-> > > for an instance to be successful closed it must not be used by any
-> > > callsite, after
-> > >                     closing tbt instance the usb becomes default inst=
-ance
-> >
-> > so after 'close tbt',  the previous 'open usb' is now top-of-stack ?
-> >
-> > how does that affect all existing callsite-users of tbt ?
-> > do they continue to use the trace-instance theyve been writing to ?
-> > If not, then reverting to the global instance seems much more predictab=
-le.
-> >
-> > Or are you proposing that the close fails because the instance is still=
- in use ?
-> > this seems least surprising,
-> > and more robust in the face of the next 'open foo'
-> > which could otherwize reuse the dst_id mapped to tbt
-> >
-> >
-> > >
-> > > I agree that your method of setting default trace instance is more fl=
-exible:
-> > > class DRM_UT_KMS -T:kms-instance  # preset-dests-disable-sites
-> > >
-> > > Maybe we can combine both to set default trace destination ?
-> > >
-> > > Also I think we need a reserved keyword for writing debug logs to
-> > > trace events - maybe "event" keyword ?
-> >
-> > do you mean "event" as a selector, like module, function, class, etc ?
-> > if so, what are the values ?
-> > any event under  /sys/kernel/debug/tracing/events/ ?
-> >
-> > how does this get used ?
-> >
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> Fixes: 4734449f7311 ("dt-bindings: timer: Add Sophgo sg2042 CLINT timer")
+> Link: https://lists.infradead.org/pipermail/opensbi/2023-October/005693.html
+> Link: https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
+> ---
+>   .../devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml  | 5 +++--
+>   1 file changed, 3 insertions(+), 2 deletions(-)
 >
-> I meant that we need to reserve name/keyword to enable writing debug
-> logs to trace events (prdbg and devdbg), for example
-> echo module usbcore +T:event > /proc/dynamic_debug/control
+> diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
+> index fbd235650e52..c3080962d902 100644
+> --- a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
+> +++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
+> @@ -17,7 +17,7 @@ properties:
+>         - const: thead,c900-aclint-mtimer
 >
-> Or do you anticipate other way to do it ?
+>     reg:
+> -    maxItems: 1
+> +    maxItems: 2
 
-way back, when I had even fewer clues,
-I sent patches to call trace-printk when +T was set.
-Steve didnt like it, I think cuz it could flood the tracebuf.
+The first one is for mtime and the second one is for mtimecmp, right? 
+Recommend to add some comment in binding file to make it clear.
 
-Thats why I added the prdbg and devdbg event-types,
-so that they could be disabled easily using /sys/kernel/debug/tracing/
-putting them squarely under trace-control.
-
-Note that this puts 2 off-switches in series,
-both tracefs and >control can disable all the pr_debug traffic,
-tracefs by event-type, and >control at individual callsite level.
-
-echo 1 > /sys/kernel/debug/tracing/dyndbg/enable
-echo 1 > /sys/kernel/debug/tracing/dyndbg/prdbg/enable
-echo 1 > /sys/kernel/debug/tracing/dyndbg/devdbg/enable
-
-I briefly thought about linking the 2 off-switches,
-but punted cuz I thought it complicated things,
-(how exactly would they get coupled?)
-and I didnt want to distract from larger goals
-
-Does that address your question ?
-
-On a related point, I also added drm_dbg and drm_devdbg.
-Those are issued from __drm_dbg & __drm_dev_dbg
- respectively when CONFIG_DRM_USE_DYNAMIC_DEBUG=3Dn.
-
-Im not sure theyre more useful than confusing yet.
+Chen
 
 >
-> > >
-> > >
-> > > >
-> > > > > >
-> > > > > > and +T  w/o dest means use existing setting, not just 0 (unless=
- thats
-> > > > > > the existing setting)
-> > > > > >
-> > > > >
-> > > > > Sounds good.
-> > > > >
-> > > >
-> > > > :-)
+>     interrupts-extended:
+>       minItems: 1
+> @@ -38,6 +38,7 @@ examples:
+>                               <&cpu2intc 7>,
+>                               <&cpu3intc 7>,
+>                               <&cpu4intc 7>;
+> -      reg = <0xac000000 0x00010000>;
+> +      reg = <0xac000000 0x00000000>,
+> +            <0xac000000 0x0000c000>;
+>       };
+>   ...
+> --
+> 2.42.1
+>
