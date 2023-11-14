@@ -2,32 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C8567EAE5C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:55:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 059997EAE60
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232803AbjKNKz7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:55:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35508 "EHLO
+        id S231768AbjKNK4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:56:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbjKNKzz (ORCPT
+        with ESMTP id S232795AbjKNKz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:55:55 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24411186;
-        Tue, 14 Nov 2023 02:55:49 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 32BA62000A;
-        Tue, 14 Nov 2023 10:55:46 +0000 (UTC)
+        Tue, 14 Nov 2023 05:55:56 -0500
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF5D9187;
+        Tue, 14 Nov 2023 02:55:51 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7C22E20002;
+        Tue, 14 Nov 2023 10:55:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699959348;
+        t=1699959350;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uX1qAm3PoNBjcV71gubQoriGUAtfUipgUKlDAbAe2Og=;
-        b=YyMEmwGcOAZb3/vG+C4mQhSrCpsNt1hxFFDhRqeN/3udwY0nnAIJsvavTcIDzJPmr1F1+K
-        9ulvGXleLBQBazGSodrxSYe1X+1NxgGTGJuOC1R+9BaJfYyNUgBAKL+j03oV+E8ZVibXBu
-        1UoJoMy9ANnL2keTWm6nwnFfwpvSF1tfyCOzcMtY3KT5oH+X2hqrKvY1AL4sqVkkNtcTxE
-        YAejF1dUw3zZdOdtNKEPBEkgR40GL4lYN2Agk0p6RKHwShMvGMlHluEbenx8V37XOVfH66
-        G03shzfxke5RnDyXFc1ecJQAfDepID1fMeBlutnhTrFwhLvRr7h8MyrxvqP1yw==
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MCcgkROjkqRmSaewuhx+Nh0bpW8Kj9/qV17c/F/G7C8=;
+        b=JyqQ58aAz+ig6pno2nuqErpaO0xWIPCYSH0GzNmN9D6w0zUOPfJMheu3rpTGpdPTZQdQ9A
+        Ve+ImyP4WWBrawli4AwGugLwC4W53UC+BygEBrv7rDn7wQvSmvAYOkS+2fEeXh40BPrXas
+        WRMLh5OOBnxGvrUXs1ITpBJDnQNnbBhZQYpa4JuYkl2lHPyh4KJ3i73lZXuHcC3aAGlDt0
+        8yYRa/c/n1MfWuXtzmaWS1205jitFpgGJu0Wr0cg/5Wc5ODfjuVt7R1l65UhMgqWuLZxV9
+        fAd1g7U7B9GsaKBkgEsUSutSOsx0LmNiwNa3Wj18zzowkbI6jnVcx1Qj+vn5Jg==
 From:   Romain Gantois <romain.gantois@bootlin.com>
 To:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
@@ -47,117 +48,195 @@ Cc:     Romain Gantois <romain.gantois@bootlin.com>,
         Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: [PATCH net-next v3 0/8] net: qualcomm: ipqess: introduce Qualcomm IPQESS driver
-Date:   Tue, 14 Nov 2023 11:55:50 +0100
-Message-ID: <20231114105600.1012056-1-romain.gantois@bootlin.com>
+Subject: [PATCH net-next v3 1/8] dt-bindings: net: Introduce the Qualcomm IPQESS Ethernet switch
+Date:   Tue, 14 Nov 2023 11:55:51 +0100
+Message-ID: <20231114105600.1012056-2-romain.gantois@bootlin.com>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231114105600.1012056-1-romain.gantois@bootlin.com>
+References: <20231114105600.1012056-1-romain.gantois@bootlin.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: romain.gantois@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone,
+Add the DT binding for the IPQESS Ethernet switch subsystem, that
+integrates a modified QCA8K switch and an EDMA MAC controller. It inherits
+from a basic ethernet switch binding and adds three regmaps, a phandle and
+reset line for the PSGMII, a phandle to the MDIO bus, a clock, and 32
+interrupts.
 
-This is the 3rd iteration on the Qualcomm IPQ4019 Ethernet Switch Subsystem
-driver. I made some patch separation mistakes in the v2, sorry about that.
-
-Notable changes in v3:
- - Fixed formatting of 3/8.
-
-Notable changes in v2:
- - Refactored the PSGMII calibration procedure to exclude
-   PHY-model-specific code from the switch driver. Added two new callbacks
-   to the phy_driver struct to enable PHY-agnostic calibration control from
-   the MAC driver.
- - Modified the EDMA Ethernet driver to use page_pool for skb handling.
- - Refactored several qca8k-common.c functions to enable calling them from
-   the IPQESS driver rather than reimplementing them.
-
-The IPQ4019 SoC integrates a modified version of the QCA8K Ethernet switch.
-One major difference with the original switch IP is that port tags are
-passed to the integrated Ethernet controller out-of-band.
-
-Previous DSA versions of this driver were rejected because they required
-adding out-of-band tagging support to the DSA subsystem. Therefore, we
-rewrote the driver as a pure switchdev module, which shares a common
-backend library with the current QCA8K driver.
-
-The main driver components are:
- - ipqess_switch.c which registers and configures the integrated switch
- - ipqess_port.c which creates net devices for each one of the front-facing
-   ports.
- - ipqess_edma.c which handles the integrated EDMA Ethernet controller
-   linked to the CPU port.
- - drivers/net/dsa/qca/qca8k-common.c which defines low-level ESS access
-   methods common to this driver and the original DSA QCA8K driver.
-
-Thanks to the people from Sartura for providing us hardware and working on
-the base QCA8K driver, and to Maxime for his work on the EDMA code.
-
-Best regards,
-
-Romain
-
-Romain Gantois (8):
-  dt-bindings: net: Introduce the Qualcomm IPQESS Ethernet switch
-  net: dsa: qca8k: Make the QCA8K hardware library available globally
-  net: qualcomm: ipqess: introduce the Qualcomm IPQESS driver
-  net: qualcomm: ipqess: Add Ethtool ops to IPQESS port netdevices
-  net: qualcomm: ipqess: add bridge offloading features to the IPQESS
-    driver
-  net: phy: add calibration callbacks to phy_driver
-  net: qualcomm: ipqess: add a PSGMII calibration procedure to the
-    IPQESS driver
-  ARM: dts: qcom: ipq4019: Add description for the IPQ4019 ESS EDMA and
-    switch
-
- .../bindings/net/qcom,ipq4019-ess.yaml        |  152 ++
- MAINTAINERS                                   |    7 +
- .../boot/dts/qcom/qcom-ipq4018-ap120c-ac.dtsi |   13 +
- arch/arm/boot/dts/qcom/qcom-ipq4019.dtsi      |   94 +
- drivers/net/dsa/qca/Kconfig                   |   10 +
- drivers/net/dsa/qca/Makefile                  |    5 +-
- drivers/net/dsa/qca/qca8k-8xxx.c              |   51 +-
- drivers/net/dsa/qca/qca8k-common.c            |  126 +-
- drivers/net/dsa/qca/qca8k-leds.c              |    2 +-
- drivers/net/ethernet/qualcomm/Kconfig         |   15 +
- drivers/net/ethernet/qualcomm/Makefile        |    2 +
- drivers/net/ethernet/qualcomm/ipqess/Makefile |    8 +
- .../ethernet/qualcomm/ipqess/ipqess_calib.c   |  156 ++
- .../ethernet/qualcomm/ipqess/ipqess_edma.c    | 1195 ++++++++++++
- .../ethernet/qualcomm/ipqess/ipqess_edma.h    |  488 +++++
- .../ethernet/qualcomm/ipqess/ipqess_ethtool.c |  245 +++
- .../qualcomm/ipqess/ipqess_notifiers.c        |  306 +++
- .../qualcomm/ipqess/ipqess_notifiers.h        |   29 +
- .../ethernet/qualcomm/ipqess/ipqess_port.c    | 1686 +++++++++++++++++
- .../ethernet/qualcomm/ipqess/ipqess_port.h    |  102 +
- .../ethernet/qualcomm/ipqess/ipqess_switch.c  |  533 ++++++
- .../ethernet/qualcomm/ipqess/ipqess_switch.h  |   36 +
- .../net/dsa/qca => include/linux/dsa}/qca8k.h |   61 +-
- include/linux/phy.h                           |   28 +
- 24 files changed, 5296 insertions(+), 54 deletions(-)
+Signed-off-by: Romain Gantois <romain.gantois@bootlin.com>
+---
+ .../bindings/net/qcom,ipq4019-ess.yaml        | 152 ++++++++++++++++++
+ 1 file changed, 152 insertions(+)
  create mode 100644 Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/Makefile
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_calib.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_edma.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_edma.h
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_ethtool.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_notifiers.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_notifiers.h
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_port.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_port.h
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_switch.c
- create mode 100644 drivers/net/ethernet/qualcomm/ipqess/ipqess_switch.h
- rename {drivers/net/dsa/qca => include/linux/dsa}/qca8k.h (90%)
 
+diff --git a/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml b/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
+new file mode 100644
+index 000000000000..85dff85e50b5
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/qcom,ipq4019-ess.yaml
+@@ -0,0 +1,152 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/qcom,ipq4019-ess.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Qualcomm IPQ4019 Ethernet Switch Subsystem
++
++maintainers:
++  - Romain Gantois <romain.gantois@bootlin.com>
++
++$ref: ethernet-switch.yaml#
++
++properties:
++  compatible:
++    const: qcom,ipq4019-ess
++
++  reg:
++    items:
++      - description: Base ESS registers, which configure the integrated QCA8K switch.
++      - description: ESS PSGMII-related registers, which control VCO calibration and link
++                     modes.
++      - description: ESS EDMA controller registers. The EDMA controller is an Ethernet
++                     controller connected to the integrated switch's CPU port.
++  reg-names:
++    items:
++      - const: base
++      - const: psgmii_phy
++      - const: edma
++
++  resets:
++    items:
++      - description: Handle to the PSGMII reset line.
++      - description: Handle to the ESS reset line.
++
++  reset-names:
++    items:
++      - const: psgmii
++      - const: ess
++
++  clocks:
++    maxItems: 1
++    description: Handle to the GCC ESS clock
++
++  mdio:
++    maxItems: 1
++    description: Handle to the IPQ4019 MDIO Controller
++
++  interrupts:
++    maxItems: 32
++    description: One interrupt per tx and rx queue, the first 16 are rx queues
++                 and the last 16 are the tx queues
++
++required:
++  - compatible
++  - reg
++  - reg-names
++  - resets
++  - reset-names
++  - clocks
++  - mdio
++  - interrupts
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/qcom,gcc-ipq4019.h>
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    switch: switch@c000000 {
++        compatible = "qcom,ipq4019-ess";
++        reg = <0xc000000 0x80000>, <0x98000 0x800>, <0xc080000 0x80000>;
++        reg-names = "base", "psgmii_phy", "edma";
++        resets = <&gcc ESS_PSGMII_ARES>, <&gcc ESS_RESET>;
++        reset-names = "psgmii", "ess";
++        clocks = <&gcc GCC_ESS_CLK>;
++        mdio = <&mdio>;
++        interrupts = <GIC_SPI  65 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  66 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  67 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  68 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  69 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  70 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  71 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  72 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  73 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  74 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  75 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  76 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  77 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  78 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  79 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI  80 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 240 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 241 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 242 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 243 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 244 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 245 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 246 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 247 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 248 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 249 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 250 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 251 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 252 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 253 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 254 IRQ_TYPE_EDGE_RISING>,
++                     <GIC_SPI 255 IRQ_TYPE_EDGE_RISING>;
++
++        ports {
++            #address-cells = <1>;
++            #size-cells = <0>;
++
++            swport1: port@1 { /* MAC1 */
++                 reg = <1>;
++                 label = "lan1";
++                 phy-handle = <&ethphy0>;
++                 phy-mode = "psgmii";
++            };
++
++            swport2: port@2 { /* MAC2 */
++                 reg = <2>;
++                 label = "lan2";
++                 phy-handle = <&ethphy1>;
++                 phy-mode = "psgmii";
++            };
++
++            swport3: port@3 { /* MAC3 */
++                 reg = <3>;
++                 label = "lan3";
++                 phy-handle = <&ethphy2>;
++                 phy-mode = "psgmii";
++            };
++
++            swport4: port@4 { /* MAC4 */
++                 reg = <4>;
++                 label = "lan4";
++                 phy-handle = <&ethphy3>;
++                 phy-mode = "psgmii";
++            };
++
++            swport5: port@5 { /* MAC5 */
++                 reg = <5>;
++                 label = "wan";
++                 phy-handle = <&ethphy4>;
++                 phy-mode = "psgmii";
++            };
++        };
++    };
++
++...
 -- 
 2.42.0
 
