@@ -2,169 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 006BE7EB787
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3007EB78F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:14:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233906AbjKNUMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:12:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46432 "EHLO
+        id S233818AbjKNUOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:14:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbjKNUMc (ORCPT
+        with ESMTP id S232388AbjKNUOR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:12:32 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0050AD9;
-        Tue, 14 Nov 2023 12:12:28 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id A85D6228DF;
-        Tue, 14 Nov 2023 20:12:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1699992747; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3oWHSyp79oNEAgxAW4ytBgCxzKxU2JyVRlj3iU9Pw8Q=;
-        b=KL32TVBxQW6+GtVEfqM8IxU1HpDPnjwzKYDi8t7DlqxtkVGoll2S6coi19xOD+SetzF8as
-        CfxAmzEA17DWL6Ubjz4iuSkfiWCjwh+Phjz0Z+gam96Bey9MZuDrTCAeSxu3ZE1HZEsmPD
-        Yk2+zEFYTUNyxJHsa7cN2HDO4Y63C6c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1699992747;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=3oWHSyp79oNEAgxAW4ytBgCxzKxU2JyVRlj3iU9Pw8Q=;
-        b=L3J2R54NClnDf61QqWa1WxXEGfMp3intqNZu57qpKVE39SYitMa5NuODSNEbw/0PLiBjV6
-        6Da9th5iNMO/5SAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 658A613460;
-        Tue, 14 Nov 2023 20:12:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id I44uGKvUU2XOWAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Tue, 14 Nov 2023 20:12:27 +0000
-Message-ID: <893d2289-e463-dd00-84cc-e77aed93cf53@suse.cz>
-Date:   Tue, 14 Nov 2023 21:12:27 +0100
+        Tue, 14 Nov 2023 15:14:17 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3694CD9;
+        Tue, 14 Nov 2023 12:14:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=5uS+7I/hdEi/j2d0v3U0nBW/3e8OdQbcjBLfaqo5fyE=; b=HXbNj79hUL/5Ub5itbEm9PybKB
+        NCqN7/gz0LISFlHa5/xxpoB7CU0TLhU++Ja7zjWOUu2G/Q5QDEUDHO3lshLpJy0dmtsmf3YxNs2pF
+        swsw9Pg9udmdl60h+A0dDCR0eOHWD0hgWsqvmLy/ez75SyMfZALCemr7C6blMD7pae14rso/vLK5j
+        wzz3unbnayfDGsKpEP8Nc8nkCarWpeY8qac5Oimq5G+0jrETK2P1BsyAqVhJID0j4gFVjixX5e4vV
+        bOfmoueLJ04Q/LIiOojemprgSKSYxEsLpW2B2ofbl2hEdBrTdGLccG1q0Khc7925jo+4psSm6A/QB
+        H9Bg9jRQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r2znO-002hgP-2v;
+        Tue, 14 Nov 2023 20:14:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D811300581; Tue, 14 Nov 2023 21:14:02 +0100 (CET)
+Date:   Tue, 14 Nov 2023 21:14:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Xi Ruoyao <xry111@xry111.site>, libc-alpha@sourceware.org,
+        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
+Subject: Re: Several tst-robust* tests time out with recent Linux kernel
+Message-ID: <20231114201402.GA25315@noisy.programming.kicks-ass.net>
+References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
+ <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
+ <20231114153100.GY8262@noisy.programming.kicks-ass.net>
+ <20231114154017.GI4779@noisy.programming.kicks-ass.net>
+ <87ttpowajb.fsf@oldenburg.str.redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH 05/20] cpu/hotplug: remove CPUHP_SLAB_PREPARE hooks
-Content-Language: en-US
-To:     Kees Cook <keescook@chromium.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-References: <20231113191340.17482-22-vbabka@suse.cz>
- <20231113191340.17482-27-vbabka@suse.cz> <202311132020.5A4B63D@keescook>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <202311132020.5A4B63D@keescook>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.62
-X-Spamd-Result: default: False [-2.62 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MID_RHS_MATCH_FROM(0.00)[];
-         R_RATELIMIT(0.00)[to_ip_from(RL563rtnmcmc9sawm86hmgtctc)];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         BAYES_HAM(-0.02)[51.67%];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[google.com,linux.com,kernel.org,lge.com,linux-foundation.org,gmail.com,linux.dev,kvack.org,vger.kernel.org,lists.linux.dev,arm.com,cmpxchg.org,googlegroups.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87ttpowajb.fsf@oldenburg.str.redhat.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 05:20, Kees Cook wrote:
-> On Mon, Nov 13, 2023 at 08:13:46PM +0100, Vlastimil Babka wrote:
->> The CPUHP_SLAB_PREPARE hooks are only used by SLAB which is removed.
->> SLUB defines them as NULL, so we can remove those altogether.
->> 
->> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
->> ---
->>  include/linux/slab.h | 8 --------
->>  kernel/cpu.c         | 5 -----
->>  2 files changed, 13 deletions(-)
->> 
->> diff --git a/include/linux/slab.h b/include/linux/slab.h
->> index d6d6ffeeb9a2..34e43cddc520 100644
->> --- a/include/linux/slab.h
->> +++ b/include/linux/slab.h
->> @@ -788,12 +788,4 @@ size_t kmalloc_size_roundup(size_t size);
->>  
->>  void __init kmem_cache_init_late(void);
->>  
->> -#if defined(CONFIG_SMP) && defined(CONFIG_SLAB)
->> -int slab_prepare_cpu(unsigned int cpu);
->> -int slab_dead_cpu(unsigned int cpu);
->> -#else
->> -#define slab_prepare_cpu	NULL
->> -#define slab_dead_cpu		NULL
->> -#endif
->> -
->>  #endif	/* _LINUX_SLAB_H */
->> diff --git a/kernel/cpu.c b/kernel/cpu.c
->> index 9e4c6780adde..530b026d95a1 100644
->> --- a/kernel/cpu.c
->> +++ b/kernel/cpu.c
->> @@ -2125,11 +2125,6 @@ static struct cpuhp_step cpuhp_hp_states[] = {
->>  		.startup.single		= relay_prepare_cpu,
->>  		.teardown.single	= NULL,
->>  	},
->> -	[CPUHP_SLAB_PREPARE] = {
->> -		.name			= "slab:prepare",
->> -		.startup.single		= slab_prepare_cpu,
->> -		.teardown.single	= slab_dead_cpu,
->> -	},
->>  	[CPUHP_RCUTREE_PREP] = {
->>  		.name			= "RCU/tree:prepare",
->>  		.startup.single		= rcutree_prepare_cpu,
+On Tue, Nov 14, 2023 at 05:43:20PM +0100, Florian Weimer wrote:
+> * Peter Zijlstra:
 > 
-> Should CPUHP_SLAB_PREPARE be removed from the enum too?
+> >> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
+> >> index b5379c0e6d6d..1a1f9301251f 100644
+> >> --- a/kernel/futex/futex.h
+> >> +++ b/kernel/futex/futex.h
+> >> @@ -17,7 +17,7 @@
+> >>   * restarts.
+> >>   */
+> >>  #ifdef CONFIG_MMU
+> >> -# define FLAGS_SHARED		0x01
+> >> +# define FLAGS_SHARED		0x10
+> >>  #else
+> >>  /*
+> >>   * NOMMU does not have per process address space. Let the compiler optimize
+> >
+> > Just the above seems sufficient.
+> 
+> There are a few futex_wake calls which hard-code the flags argument as
+> 1:
+> 
+> kernel/futex/core.c=637=static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
+> --
+> kernel/futex/core.c-686-         * this.
+> kernel/futex/core.c-687-         */
+> kernel/futex/core.c-688-        owner = uval & FUTEX_TID_MASK;
+> kernel/futex/core.c-689-
+> kernel/futex/core.c-690-        if (pending_op && !pi && !owner) {
+> kernel/futex/core.c:691:                futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
+> kernel/futex/core.c-692-                return 0;
+> kernel/futex/core.c-693-        }
+> kernel/futex/core.c-694-
+> kernel/futex/core.c-695-        if (owner != task_pid_vnr(curr))
+> kernel/futex/core.c-696-                return 0;
+> --
+> kernel/futex/core.c-739-        /*
+> kernel/futex/core.c-740-         * Wake robust non-PI futexes here. The wakeup of
+> kernel/futex/core.c-741-         * PI futexes happens in exit_pi_state():
+> kernel/futex/core.c-742-         */
+> kernel/futex/core.c-743-        if (!pi && (uval & FUTEX_WAITERS))
+> kernel/futex/core.c:744:                futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
+> kernel/futex/core.c-745-
+> kernel/futex/core.c-746-        return 0;
+> kernel/futex/core.c-747-}
+> kernel/futex/core.c-748-
+> kernel/futex/core.c-749-/*
 
-Yep, will do, thanks!
+Urgh, thanks!
 
+Confirmed, the below cures things. Although I should probably make that
+FLAGS_SIZE_32 | FLAGS_SHARED against Linus' tree.
+
+Let me go do a proper patch.
+
+---
+ kernel/futex/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/kernel/futex/core.c b/kernel/futex/core.c
+index d1d7b3c175a4..e7793f0d5757 100644
+--- a/kernel/futex/core.c
++++ b/kernel/futex/core.c
+@@ -687,7 +687,7 @@ static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
+ 	owner = uval & FUTEX_TID_MASK;
+ 
+ 	if (pending_op && !pi && !owner) {
+-		futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
++		futex_wake(uaddr, FLAGS_SHARED, 1, FUTEX_BITSET_MATCH_ANY);
+ 		return 0;
+ 	}
+ 
+@@ -740,7 +740,7 @@ static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
+ 	 * PI futexes happens in exit_pi_state():
+ 	 */
+ 	if (!pi && (uval & FUTEX_WAITERS))
+-		futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
++		futex_wake(uaddr, FLAGS_SHARED, 1, FUTEX_BITSET_MATCH_ANY);
+ 
+ 	return 0;
+ }
