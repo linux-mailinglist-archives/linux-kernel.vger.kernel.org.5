@@ -2,59 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE1F7EB493
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:16:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5A937EB495
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:17:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233854AbjKNQQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:16:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55740 "EHLO
+        id S233713AbjKNQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:17:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjKNQQu (ORCPT
+        with ESMTP id S232317AbjKNQRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:16:50 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B00F129
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:16:47 -0800 (PST)
+        Tue, 14 Nov 2023 11:17:20 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CE7129
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:17:17 -0800 (PST)
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 1C1CA224FE;
-        Tue, 14 Nov 2023 16:16:46 +0000 (UTC)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 31CCB224FE;
+        Tue, 14 Nov 2023 16:17:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699978606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1699978635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=2CMQ7LEYqv1xmTY9OVp1+RIITtbxU2QWMI/mkLF+qGI=;
-        b=kD+m9FTwhdqO0kA6I1j0CMSlFJzLHr/LHuF/ZuleKkAZTayLrNwNUlmbHx968J5pPc7dmz
-        hk3dm0iTYXJxHT8Z4ZPPB1XETL5NDJ3ILP8CQzs0CfVNE/zdFilb7p6T+/gorDsFarcBM/
-        RJI6Kg1rQ5F0dH0/uVQDk/AEohSkCQ0=
+        bh=jWXTH0JvQrBxD4rDOTtsRL9dr7IR9nzd18FzxBQ6Uyw=;
+        b=WAvP5Gf+j4WbaaanYqrYcWLpsRC/dvb8OCDZsSXIF+Zu064GhdjO2O61irXBUx/CEgidBv
+        ymKdPGAWHUhQDNX/SDUICGTBrsNt9ce+hSlvHzbeWnljlTKF54nVDi+NcatorZ2ot0qFqd
+        wyddcwz7aPa1/e/B9LSFFpiCu81K6i4=
 Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
         (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D010D139DD;
-        Tue, 14 Nov 2023 16:16:45 +0000 (UTC)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B49D813460;
+        Tue, 14 Nov 2023 16:17:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([192.168.254.65])
         by imap2.suse-dmz.suse.de with ESMTPSA
-        id NCALMW2dU2X+agAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 16:16:45 +0000
-Message-ID: <462d0d33-1c3b-4899-9e45-ca72eb8e93f5@suse.com>
-Date:   Tue, 14 Nov 2023 17:16:45 +0100
+        id ULspKoqdU2X+agAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 16:17:14 +0000
+Message-ID: <973a05fe-4c02-46c2-a4a7-b2e40416e82b@suse.com>
+Date:   Tue, 14 Nov 2023 17:17:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+Subject: Re: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
 Content-Language: en-US
 To:     Borislav Petkov <bp@alien8.de>
 Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
         "H. Peter Anvin" <hpa@zytor.com>,
         Peter Zijlstra <peterz@infradead.org>
 References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-3-jgross@suse.com>
- <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+ <20231030142508.1407-4-jgross@suse.com>
+ <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
 From:   Juergen Gross <jgross@suse.com>
 Autocrypt: addr=jgross@suse.com; keydata=
  xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
@@ -79,22 +83,22 @@ Autocrypt: addr=jgross@suse.com; keydata=
  HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
  QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
  ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+In-Reply-To: <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="------------5Vd20OWBea8QFrOzKTMqT5ST"
+ boundary="------------Pc02vmEryzdSZHAYv2yiwa2U"
 Authentication-Results: smtp-out1.suse.de;
         none
 X-Spam-Level: 
-X-Spam-Score: -11.96
-X-Spamd-Result: default: False [-11.96 / 50.00];
+X-Spam-Score: -11.99
+X-Spamd-Result: default: False [-11.99 / 50.00];
          ARC_NA(0.00)[];
          RCVD_VIA_SMTP_AUTH(0.00)[];
          XM_UA_NO_VERSION(0.01)[];
          FROM_HAS_DN(0.00)[];
          TO_DN_SOME(0.00)[];
          TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-2.97)[99.87%];
+         BAYES_HAM(-3.00)[99.98%];
          MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
          HAS_ATTACHMENT(0.00)[];
          REPLY(-4.00)[];
@@ -103,7 +107,7 @@ X-Spamd-Result: default: False [-11.96 / 50.00];
          DKIM_SIGNED(0.00)[suse.com:s=susede1];
          NEURAL_HAM_SHORT(-1.00)[-1.000];
          MIME_BASE64_TEXT(0.10)[];
-         RCPT_COUNT_SEVEN(0.00)[8];
+         RCPT_COUNT_TWELVE(0.00)[12];
          SIGNED_PGP(-2.00)[];
          FUZZY_BLOCKED(0.00)[rspamd.com];
          FROM_EQ_ENVFROM(0.00)[];
@@ -112,10 +116,10 @@ X-Spamd-Result: default: False [-11.96 / 50.00];
          RCVD_TLS_ALL(0.00)[];
          MID_RHS_MATCH_FROM(0.00)[];
          MIME_UNKNOWN(0.10)[application/pgp-keys]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -123,44 +127,41 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------5Vd20OWBea8QFrOzKTMqT5ST
-Content-Type: multipart/mixed; boundary="------------BqjQvU06BMjsUNEorWhOrO8O";
+--------------Pc02vmEryzdSZHAYv2yiwa2U
+Content-Type: multipart/mixed; boundary="------------OLLtIHKBS0ZKHifoeSIVq0IJ";
  protected-headers="v1"
 From: Juergen Gross <jgross@suse.com>
 To: Borislav Petkov <bp@alien8.de>
 Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ virtualization@lists.linux-foundation.org, Ajay Kaher <akaher@vmware.com>,
+ Alexey Makhalov <amakhalov@vmware.com>,
+ VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
  Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
  Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
  Peter Zijlstra <peterz@infradead.org>
-Message-ID: <462d0d33-1c3b-4899-9e45-ca72eb8e93f5@suse.com>
-Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+Message-ID: <973a05fe-4c02-46c2-a4a7-b2e40416e82b@suse.com>
+Subject: Re: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
 References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-3-jgross@suse.com>
- <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
-In-Reply-To: <20231114150627.GDZVOM82VPHDlnD3lF@fat_crate.local>
+ <20231030142508.1407-4-jgross@suse.com>
+ <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
+In-Reply-To: <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
 
---------------BqjQvU06BMjsUNEorWhOrO8O
-Content-Type: multipart/mixed; boundary="------------vHSn6MNyjCu37e6PsqRu3WlW"
+--------------OLLtIHKBS0ZKHifoeSIVq0IJ
+Content-Type: multipart/mixed; boundary="------------yO470KuQM0uj7zGLHqIoIAxH"
 
---------------vHSn6MNyjCu37e6PsqRu3WlW
+--------------yO470KuQM0uj7zGLHqIoIAxH
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: base64
 
-T24gMTQuMTEuMjMgMTY6MDYsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gTW9uLCBP
-Y3QgMzAsIDIwMjMgYXQgMDM6MjU6MDVQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
-Cj4+ICsjaWZkZWYgQ09ORklHX1g4Nl82NA0KPj4gKwkvKiBmZiAxNSAwMCAwMCAwMCAwMCAg
-IGNhbGwgICAqMHgwKCVyaXApICovDQo+PiArCXRhcmdldCA9ICoodm9pZCAqKikoaW5zdHIg
-KyBhLT5pbnN0cmxlbiArICooczMyICopKGluc3RyICsgMikpOw0KPj4gKyNlbHNlDQo+PiAr
-CS8qIGZmIDE1IDAwIDAwIDAwIDAwICAgY2FsbCAgICoweDAgKi8NCj4+ICsJdGFyZ2V0ID0g
-Kih2b2lkICoqKSgqKHMzMiAqKShpbnN0ciArIDIpKTsNCj4gDQo+IFllYWgsIGxldCdzIGRv
-Y3VtZW50IHRob3NlIGEgYml0IGJldHRlci4gRWl0aGVyIHdpdGggY29tbWVudHMgYWJvdmUg
-b3INCj4gYXMgUGV0ZXIgc3VnZ2VzdHM6DQo+IA0KPiAJLyogQWRkIDIgdG8gc2tpcCBvcGNv
-ZGUgYW5kIE1vZFJNIGJ5dGU6ICovDQo+IAlkaXNwMzIgPSAqKHMzMiAqKShpbnN0ciArIDIp
-Ow0KPiANCj4gCXJpcF9yZWxhX3B0ciA9ICh2b2lkICoqKShpbnN0ciArIGEtPmluc3RybGVu
-ICsgZGlzcDMyKTsNCj4gCXRhcmdldCA9ICpyaXBfcmVsYV9wdHI7DQo+IA0KPiBzbyB0aGF0
-IGl0IGlzIGNyeXN0YWwgY2xlYXIgd2hhdCB3ZSdyZSBkb2luZyBoZXJlLg0KDQpPa2F5Lg0K
-DQoNCkp1ZXJnZW4NCg0K
---------------vHSn6MNyjCu37e6PsqRu3WlW
+T24gMTQuMTEuMjMgMTY6MDksIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gTW9uLCBP
+Y3QgMzAsIDIwMjMgYXQgMDM6MjU6MDZQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
+Cj4+IEludHJvZHVjZSB0aGUgbWFjcm8gQUxUX05PVF9YRU4gYXMgYSBzaG9ydCBmb3JtIG9m
+DQo+PiBBTFRfTk9UKFg4Nl9GRUFUVVJFX1hFTlBWKS4NCj4gDQo+IE5vdCBjcmF6eSBhYm91
+dCBhZGRpbmcgeWV0IGFub3RoZXIgbWFjcm8gaW5kaXJlY3Rpb24gLSBhdCBsZWFzdCB3aXRo
+IHRoZQ0KPiBYODZfRkVBVFVSRV8gaXQgaXMgY2xlYXIgd2hhdCB0aGlzIGlzLiBCdXQgb2ss
+IHdoYXRldmVyLg0KPiANCj4gQW55d2F5LCB0aGlzIHBhdGNoIGNhbiBiZSB0aGUgZmlyc3Qg
+b25lIGluIHRoZSBzZXJpZXMuDQo+IA0KDQpPa2F5Lg0KDQoNCkp1ZXJnZW4NCg==
+--------------yO470KuQM0uj7zGLHqIoIAxH
 Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
 Content-Description: OpenPGP public key
@@ -218,24 +219,24 @@ jR/i1DG86lem3iBDXzXsZDn8R38=3D
 =3D2wuH
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------vHSn6MNyjCu37e6PsqRu3WlW--
+--------------yO470KuQM0uj7zGLHqIoIAxH--
 
---------------BqjQvU06BMjsUNEorWhOrO8O--
+--------------OLLtIHKBS0ZKHifoeSIVq0IJ--
 
---------------5Vd20OWBea8QFrOzKTMqT5ST
+--------------Pc02vmEryzdSZHAYv2yiwa2U
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTnW0FAwAAAAAACgkQsN6d1ii/Ey+v
-vggAnzZHfABD2nozFUV2D31bpzQPkc26WVH6QzNFc+T/yOU8Csbya7eOm4ggorkFfR7CHv6Ruq1M
-+r1I8xwgMUvosiLc1xRt3zETihIv3m3DQ2qX4x6feZoIq4Ppl91PIhtUxhrlkHTmYQhguduX70cW
-bi3njjIQrV/7kP6ckZePAkM7WZq/1iPRFC9pM2IApRSJGtOIr3jSHBhgRU9RxT8D02uEszkl6gCF
-DRnHPmH4g6C2bBgGxTjUtJ52mE/iglgE0cALH4AwDtdjpHGJVB/GuGyEML84wFVHWthMQUUqNZWk
-ejerrnXEbBNVfXoSagZbbXxRGXVucFYtT6LIIdcB6Q==
-=Qg/o
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTnYoFAwAAAAAACgkQsN6d1ii/Ey8l
+YwgAh/LDDdwJSaxkkG+MR/zRlyJdCmEb07blKm3Jf7fhIwlGqCc4RXyeJdp3cGTNMuQ7/CSrnV2/
+90HcBBiyuxcHuuqd6fabeNKaa/TNc4upC+GSqiGgqDf+iWVMDDjcxIfFXlvtOTqfXjCcPydD+df3
+y+r0DBlYMTRpn992dvFut/CMfGQiAKMqwNOEjpfYybwvYpni20m5jOWGJgB10TaRMy5w5W9WdJQl
+QRt/uqCXcCbM1t333hb4hnkB98pdhsnWiMqfav6S3fPDajLdJAzfpbGu6uvkE30mq4J3wEhn8QFa
+QMVgwD/C7k//o1TdeBvFO0jOQ7d8FY7+FqEYnwDEyw==
+=g6dP
 -----END PGP SIGNATURE-----
 
---------------5Vd20OWBea8QFrOzKTMqT5ST--
+--------------Pc02vmEryzdSZHAYv2yiwa2U--
