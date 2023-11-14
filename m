@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C1777EABDD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:45:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511517EABD9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:45:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232400AbjKNIpt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:45:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49402 "EHLO
+        id S232399AbjKNIpo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:45:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232383AbjKNIpj (ORCPT
+        with ESMTP id S232394AbjKNIpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:45:39 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9F131A8;
-        Tue, 14 Nov 2023 00:45:34 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6b77ab73c6fso4142629b3a.1;
-        Tue, 14 Nov 2023 00:45:34 -0800 (PST)
+        Tue, 14 Nov 2023 03:45:40 -0500
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 932621AA;
+        Tue, 14 Nov 2023 00:45:36 -0800 (PST)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1f0f94943d9so2586057fac.2;
+        Tue, 14 Nov 2023 00:45:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699951534; x=1700556334; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699951536; x=1700556336; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=D03uI3RFs+q47sPLqFS/hl468TfZmA9CDM9quyOjWII=;
-        b=Rc+wf/+xxTRFw2sLW/MX49h2Vyjtr5uaC9f74IPZumBsYP69ages2i6TzpLCRpUCzn
-         TARk/evMn9Dk1/NbCEKe02wxDy441DgltNk9hcWvffRuxPSodMjAmOquphR9LD9fQnZC
-         CGImK2CJHt5FnqyGCsgRZeSbJ0C94RuAfZXB4Ax5T8b2ru5mND4u1fkFiHDGuhL+O1Hw
-         kXQuC+BR+qz5SMN+sYFzyzA8M/teEgbcbKbXsXraU2PFHrpBiuW0rBvGpW7v75nEX0Ze
-         3tpAzLt+IH1j1I0flTTO9OzT1nR5kFrIvdSN6ic2eLHxDlSB3crVVQ9FhfHL1keF7uak
-         k3DA==
+        bh=yWvfE7i+Wd531m2SA+EEUbQTk1YRMjmDg9WKu9uNV+I=;
+        b=ZcZ009AiJgpxRqcxcMEfaPhOlJV0MCqCrRPP0QfluVr3EkRyDN1zFwpKHh3c2xNYl8
+         AAg8wrdIZYrBtMBMMs/d1FFoGTNCCkAEhBQa/kY4g50h5C24v58hepmmziRLJkxk59yz
+         XeEVbbba6fSDetEK7ain4lcOT6oMrHBKqyEzrkCt3boL9OHHYhx3cSxplJqbmFcv7Sdf
+         FHZaFbuz0HQliOKa09WLJdz7U/nO09099u+9uNRVj0EguBVgpzT/WcT467704YauVbjL
+         Pnaw8UnoaGaAHLlqc0zrqZCNRpgdl6Wr69MGIWbVaFdh/ofQ07CyLJBaxYgwwpShsbBd
+         lAWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699951534; x=1700556334;
+        d=1e100.net; s=20230601; t=1699951536; x=1700556336;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=D03uI3RFs+q47sPLqFS/hl468TfZmA9CDM9quyOjWII=;
-        b=DaR9K2bmE2NG34BNReBhBRMzmLkzcTRGc2NNllEVSxrEZjwVAWm25NosRhzPQUMzWJ
-         UUW4TtRXKZ41W8TJ8hhBBt1V3+3DqRUlwVdvlYMy2GI6EtLES3emxgAeiUlRzpEifmiK
-         eT7lGFLEylZfVMNjUJoDnlRDWb5kFbbilvS/fglQbxBX+LCBR8KNx64iiTqjV85CtgV8
-         cz3J0x3d8BI6BnfW/UxyBraSje49ccjp9WaWxD+DQ+DF8DkC1iIpC8jgQ2BlHiKULCQq
-         EaUPKP0L+EK78WO7ysqEyigRnH0YYHqO05NQuAFw7IdiF1S/CbHXha2kVnvG5yuJcb7m
-         7ZXg==
-X-Gm-Message-State: AOJu0YxmOrnaVlFNHi0vhcvOybzIc0XwMkTpZf3GBMYbw8YuyroOtokK
-        dU6YG66D6tore4v/XZ+feMA1TWG89Z4=
-X-Google-Smtp-Source: AGHT+IFTIQDQhqAT8S4VE3G5UfriA4ZrFNQdjbbK9wOemjVyzHPD+0R5dVIHsGTw+hJV6WpBmnk3wg==
-X-Received: by 2002:aa7:8b45:0:b0:6bf:15fb:4b32 with SMTP id i5-20020aa78b45000000b006bf15fb4b32mr2783598pfd.8.1699951533944;
-        Tue, 14 Nov 2023 00:45:33 -0800 (PST)
+        bh=yWvfE7i+Wd531m2SA+EEUbQTk1YRMjmDg9WKu9uNV+I=;
+        b=oS3jVLA/u0cL3pGNOVoeCrHVyMxnmVuMSEankOPnZrT7xh5O1LiBtOa302UqAP4x2m
+         N5iVbndN++ufS1rFUE58QJlL1Ht5nHLsCncRKSvadgMe3FyvWWKMZ8iUl64blEBjlImZ
+         X009s5iH5As7oRSCqtIjMEX5UKkoMv2bKg2uboUvJIlHDEjqTsGsZtWjYtBQvtsJAdhA
+         ZLvscumrzXqT026mei6hZ5ooCWvJR4rMztog2sULacKLvdb+Lk0dBUebKd+X8qZo4nkP
+         HeXJxTWh2sr5ApzdLY+/1WgVI/fZ5aF02TC6y9e55/GqUxfByWVjPlTwZeQuR4Bn/AJ4
+         yvDQ==
+X-Gm-Message-State: AOJu0YyHc/6sml8aiBXXUyIDWvU+kqkWcCmbYtQn6kAS4xjZWZfrscW7
+        +E1iuzx3E/HpM+oNATzddqPSu695rz8=
+X-Google-Smtp-Source: AGHT+IGmFz6ZefiBoSRP2wkdhVdW9RaUeRwHNSD7WB7NGAVstoQ0BYpCQNvMLK1A5dLk79uh8yDumg==
+X-Received: by 2002:a05:6871:5a8f:b0:1f0:630b:c84e with SMTP id oo15-20020a0568715a8f00b001f0630bc84emr9199228oac.57.1699951535866;
+        Tue, 14 Nov 2023 00:45:35 -0800 (PST)
 Received: from carrot.. (i223-218-133-131.s42.a014.ap.plala.or.jp. [223.218.133.131])
-        by smtp.gmail.com with ESMTPSA id u17-20020a056a00159100b006c4d2479c1asm748083pfk.219.2023.11.14.00.45.32
+        by smtp.gmail.com with ESMTPSA id u17-20020a056a00159100b006c4d2479c1asm748083pfk.219.2023.11.14.00.45.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 00:45:33 -0800 (PST)
+        Tue, 14 Nov 2023 00:45:35 -0800 (PST)
 From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-nilfs@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 01/20] nilfs2: Add nilfs_end_folio_io()
-Date:   Tue, 14 Nov 2023 17:44:17 +0900
-Message-Id: <20231114084436.2755-2-konishi.ryusuke@gmail.com>
+Subject: [PATCH 02/20] nilfs2: Convert nilfs_abort_logs to use folios
+Date:   Tue, 14 Nov 2023 17:44:18 +0900
+Message-Id: <20231114084436.2755-3-konishi.ryusuke@gmail.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231114084436.2755-1-konishi.ryusuke@gmail.com>
 References: <20231114084436.2755-1-konishi.ryusuke@gmail.com>
@@ -74,85 +74,74 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
 
-This is the folio counterpart of the existing nilfs_end_page_io()
-which is retained as a wrapper of nilfs_end_folio_io().  Replaces
-nine hidden calls to compound_head() with one.
+Use the new folio APIs, saving five hidden calls to compound_head().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 Signed-off-by: Ryusuke Konishi <konishi.ryusuke@gmail.com>
 ---
- fs/nilfs2/segment.c | 36 ++++++++++++++++++++++--------------
- 1 file changed, 22 insertions(+), 14 deletions(-)
+ fs/nilfs2/segment.c | 28 ++++++++++++++--------------
+ 1 file changed, 14 insertions(+), 14 deletions(-)
 
 diff --git a/fs/nilfs2/segment.c b/fs/nilfs2/segment.c
-index 55e31cc903d1..1df03d0895be 100644
+index 1df03d0895be..730062e79bfc 100644
 --- a/fs/nilfs2/segment.c
 +++ b/fs/nilfs2/segment.c
-@@ -1739,17 +1739,18 @@ static int nilfs_segctor_write(struct nilfs_sc_info *sci,
- 	return ret;
- }
- 
--static void nilfs_end_page_io(struct page *page, int err)
-+static void nilfs_end_folio_io(struct folio *folio, int err)
- {
--	if (!page)
-+	if (!folio)
- 		return;
- 
--	if (buffer_nilfs_node(page_buffers(page)) && !PageWriteback(page)) {
-+	if (buffer_nilfs_node(folio_buffers(folio)) &&
-+			!folio_test_writeback(folio)) {
- 		/*
- 		 * For b-tree node pages, this function may be called twice
- 		 * or more because they might be split in a segment.
- 		 */
--		if (PageDirty(page)) {
-+		if (folio_test_dirty(folio)) {
- 			/*
- 			 * For pages holding split b-tree node buffers, dirty
- 			 * flag on the buffers may be cleared discretely.
-@@ -1757,24 +1758,31 @@ static void nilfs_end_page_io(struct page *page, int err)
- 			 * remaining buffers, and it must be cancelled if
- 			 * all the buffers get cleaned later.
- 			 */
--			lock_page(page);
--			if (nilfs_page_buffers_clean(page))
--				__nilfs_clear_page_dirty(page);
--			unlock_page(page);
-+			folio_lock(folio);
-+			if (nilfs_page_buffers_clean(&folio->page))
-+				__nilfs_clear_page_dirty(&folio->page);
-+			folio_unlock(folio);
- 		}
- 		return;
- 	}
- 
- 	if (!err) {
--		if (!nilfs_page_buffers_clean(page))
--			__set_page_dirty_nobuffers(page);
--		ClearPageError(page);
-+		if (!nilfs_page_buffers_clean(&folio->page))
-+			filemap_dirty_folio(folio->mapping, folio);
-+		folio_clear_error(folio);
- 	} else {
--		__set_page_dirty_nobuffers(page);
--		SetPageError(page);
-+		filemap_dirty_folio(folio->mapping, folio);
-+		folio_set_error(folio);
- 	}
- 
--	end_page_writeback(page);
-+	folio_end_writeback(folio);
-+}
-+
-+static void nilfs_end_page_io(struct page *page, int err)
-+{
-+	if (!page)
-+		return;
-+	nilfs_end_folio_io(page_folio(page), err);
- }
- 
+@@ -1788,7 +1788,7 @@ static void nilfs_end_page_io(struct page *page, int err)
  static void nilfs_abort_logs(struct list_head *logs, int err)
+ {
+ 	struct nilfs_segment_buffer *segbuf;
+-	struct page *bd_page = NULL, *fs_page = NULL;
++	struct folio *bd_folio = NULL, *fs_folio = NULL;
+ 	struct buffer_head *bh;
+ 
+ 	if (list_empty(logs))
+@@ -1798,10 +1798,10 @@ static void nilfs_abort_logs(struct list_head *logs, int err)
+ 		list_for_each_entry(bh, &segbuf->sb_segsum_buffers,
+ 				    b_assoc_buffers) {
+ 			clear_buffer_uptodate(bh);
+-			if (bh->b_page != bd_page) {
+-				if (bd_page)
+-					end_page_writeback(bd_page);
+-				bd_page = bh->b_page;
++			if (bh->b_folio != bd_folio) {
++				if (bd_folio)
++					folio_end_writeback(bd_folio);
++				bd_folio = bh->b_folio;
+ 			}
+ 		}
+ 
+@@ -1810,22 +1810,22 @@ static void nilfs_abort_logs(struct list_head *logs, int err)
+ 			clear_buffer_async_write(bh);
+ 			if (bh == segbuf->sb_super_root) {
+ 				clear_buffer_uptodate(bh);
+-				if (bh->b_page != bd_page) {
+-					end_page_writeback(bd_page);
+-					bd_page = bh->b_page;
++				if (bh->b_folio != bd_folio) {
++					folio_end_writeback(bd_folio);
++					bd_folio = bh->b_folio;
+ 				}
+ 				break;
+ 			}
+-			if (bh->b_page != fs_page) {
+-				nilfs_end_page_io(fs_page, err);
+-				fs_page = bh->b_page;
++			if (bh->b_folio != fs_folio) {
++				nilfs_end_folio_io(fs_folio, err);
++				fs_folio = bh->b_folio;
+ 			}
+ 		}
+ 	}
+-	if (bd_page)
+-		end_page_writeback(bd_page);
++	if (bd_folio)
++		folio_end_writeback(bd_folio);
+ 
+-	nilfs_end_page_io(fs_page, err);
++	nilfs_end_folio_io(fs_folio, err);
+ }
+ 
+ static void nilfs_segctor_abort_construction(struct nilfs_sc_info *sci,
 -- 
 2.34.1
 
