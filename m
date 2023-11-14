@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C87277EAB1D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C06F7EAB17
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232244AbjKNH6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 02:58:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53024 "EHLO
+        id S232227AbjKNHuN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 02:50:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKNH6f (ORCPT
+        with ESMTP id S229566AbjKNHuM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 02:58:35 -0500
-X-Greylist: delayed 554 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Mon, 13 Nov 2023 23:58:31 PST
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BC86619B;
-        Mon, 13 Nov 2023 23:58:31 -0800 (PST)
-Received: from hq-00595.fritz.box (unknown [178.19.214.146])
-        by mail.bugwerft.de (Postfix) with ESMTPSA id 05DF928071D;
-        Tue, 14 Nov 2023 07:49:15 +0000 (UTC)
-From:   Daniel Mack <daniel@zonque.org>
-To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Daniel Mack <daniel@zonque.org>,
-        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
-Subject: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
-Date:   Tue, 14 Nov 2023 08:49:04 +0100
-Message-ID: <20231114074904.239458-1-daniel@zonque.org>
-X-Mailer: git-send-email 2.41.0
+        Tue, 14 Nov 2023 02:50:12 -0500
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C80C8CC;
+        Mon, 13 Nov 2023 23:50:08 -0800 (PST)
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-daf2eda7efaso3815851276.0;
+        Mon, 13 Nov 2023 23:50:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699948208; x=1700553008;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZNKgiMastFHu6zZA090ti6BtPSEMiA1kjXskvmbMMYo=;
+        b=q2tqCE6C1Ts03wECqY2AhXgR4YVIFRHBJ81waT+rcW92nSdemaj3dC3O1Svwxczi5G
+         v+xoCw50tiNs5L/ZutOB3KWlBhwXgl4E4el63YO/gGVRBwv1Rmz6i25UevHazjn3b3p7
+         8R4k9ZNo3/4IyYJWqo2nXe/JKELHTIy105G45dgZuiJOrjIVyEHB5PCywdyb5me+r+08
+         cRzrxXBYs538WX1vZNU9yDbaOr1dyYNpL2Q+d0RrPQV9L01+qGatjGcIxpmIM8VYL6Nb
+         cKiU3qhfNv3HbhiDu7lUEevGaHOcRrbYXAM2VYeXkInYjjouCAnrE/51dkE9PUkz/fcS
+         Z24A==
+X-Gm-Message-State: AOJu0YygjMEdD4xV9xYkVG0HkXeuXKhZesWXSOP74oHdfy+CfqY9gjxY
+        pX6fLuwJ+dpCCjYWFmRIAzib6mRP0IaF/A==
+X-Google-Smtp-Source: AGHT+IGS8j3IjpSJimjygO02lvI8vxOAd1pExxvzKvWhnUf2x/31X0MABM5GM8J5YkHScv+ICOfmsw==
+X-Received: by 2002:a25:2d1e:0:b0:d9a:4a5f:415d with SMTP id t30-20020a252d1e000000b00d9a4a5f415dmr8844739ybt.0.1699948207828;
+        Mon, 13 Nov 2023 23:50:07 -0800 (PST)
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com. [209.85.128.173])
+        by smtp.gmail.com with ESMTPSA id p13-20020a056902014d00b00d9a43500f1dsm1920128ybh.28.2023.11.13.23.50.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 23:50:07 -0800 (PST)
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-5a7eef0b931so61437687b3.0;
+        Mon, 13 Nov 2023 23:50:06 -0800 (PST)
+X-Received: by 2002:a0d:cc10:0:b0:5a7:c1f1:24b with SMTP id
+ o16-20020a0dcc10000000b005a7c1f1024bmr10295001ywd.22.1699948206361; Mon, 13
+ Nov 2023 23:50:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231114075136.3e164b4a@canb.auug.org.au>
+In-Reply-To: <20231114075136.3e164b4a@canb.auug.org.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 14 Nov 2023 08:49:54 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXSD3pXUOKQ_ShDLgDb=YCz26Ot3TzF3hrxjdrax2inJQ@mail.gmail.com>
+Message-ID: <CAMuHMdXSD3pXUOKQ_ShDLgDb=YCz26Ot3TzF3hrxjdrax2inJQ@mail.gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the renesas tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This devices has a silicon bug that makes it report a timeout interrupt
-but no data in FIFO.
+Hi Stephen,
 
-The datasheet states the following in the errata section 18.1.4:
+On Mon, Nov 13, 2023 at 9:51 PM Stephen Rothwell <sfr@canb.auug.org.au> wrote:
+> Commits
+>
+>   e443f05dfa8f ("arm64: dts: renesas: rzg2lc-smarc-som: Enable 4-bit tx support")
+>   ce2e1b36450e ("arm64: dts: renesas: rzg2l-smarc-som: Enable 4-bit tx support")
+>
+> are missing a Signed-off-by from their committer.
 
-  "If the host reads the receive FIFO at the at the same time as a
-  time-out interrupt condition happens, the host might read 0xCC
-  (time-out) in the Interrupt Indication Register (IIR), but bit 0
-  of the Line Status Register (LSR) is not set (means there is not
-  data in the receive FIFO)."
+Thanks for reporting, please consider it fixed.
 
-When this happens, the loop in sc16is7xx_irq() will run forever,
-which effectively blocks the i2c bus and breaks the functionality
-of the UART.
+Gr{oetje,eeting}s,
 
-From the information above, it is assumed that when the bug is
-triggered, the FIFO does in fact have payload in its buffer, but the
-fill level reporting is off-by-one. Hence this patch fixes the issue
-by reading one byte from the FIFO when that condition is detected.
+                        Geert
 
-This clears the interrupt and hence breaks the polling loop.
-
-Signed-off-by: Daniel Mack <daniel@zonque.org>
-Co-Developed-by: Maxim Popov <maxim.snafu@gmail.com>
-Cc: stable@vger.kernel.org
----
- drivers/tty/serial/sc16is7xx.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
-index 289ca7d4e566..76f76e510ed1 100644
---- a/drivers/tty/serial/sc16is7xx.c
-+++ b/drivers/tty/serial/sc16is7xx.c
-@@ -765,6 +765,18 @@ static bool sc16is7xx_port_irq(struct sc16is7xx_port *s, int portno)
- 		case SC16IS7XX_IIR_RTOI_SRC:
- 		case SC16IS7XX_IIR_XOFFI_SRC:
- 			rxlen = sc16is7xx_port_read(port, SC16IS7XX_RXLVL_REG);
-+
-+			/*
-+			 * There is a silicon bug that makes the chip report a
-+			 * time-out interrupt but no data in the FIFO. This is
-+			 * described in errata section 18.1.4.
-+			 *
-+			 * When this happens, read one byte from the FIFO to
-+			 * clear the interrupt.
-+			 */
-+			if (iir == SC16IS7XX_IIR_RTOI_SRC && !rxlen)
-+				rxlen = 1;
-+
- 			if (rxlen)
- 				sc16is7xx_handle_rx(port, rxlen, iir);
- 			break;
 -- 
-2.41.0
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
