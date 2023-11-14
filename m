@@ -2,95 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8210C7EB301
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:06:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 804607EB308
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:09:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbjKNPGv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:06:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S232210AbjKNPJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:09:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKNPGs (ORCPT
+        with ESMTP id S229504AbjKNPJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:06:48 -0500
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B715310D
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:06:43 -0800 (PST)
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1r2uzv-0007D6-1O; Tue, 14 Nov 2023 16:06:39 +0100
-Message-ID: <c6212bcb-e2d8-4bb8-bef9-0a0f29c8726e@leemhuis.info>
-Date:   Tue, 14 Nov 2023 16:06:38 +0100
+        Tue, 14 Nov 2023 10:09:30 -0500
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14CF124
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:09:27 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A530440E0171;
+        Tue, 14 Nov 2023 15:09:25 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+        header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id G3AX9jz7husn; Tue, 14 Nov 2023 15:09:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+        t=1699974563; bh=xht2qTGG5m+Qk/3MJxB19SlmIWOtdwjcdQHyOC+cgh0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hMnbDHKW9vz0py+I8oKiODpkC6egFa32y2qtmkUHRrDJPpIRAzSyceM5Ospv0l8yY
+         upH0OzyyU1NSMRPuYMvHyMOVldBG5wOWGKSvdbAIOfjpihOv9sIOhzc+yz4auSE7N8
+         WKyRvaBC1Tbvqohg2+t9ut1GyjoIr0zCYC/U3L8QYlaVOEtKdc4zh/oALIqOtyW/H7
+         pjjOLh86KeoITHkg2dkAILgkDRAKnrPBu+TTvzsJw0f1WhjaXhp7Pa6+t3Zvk6DTt0
+         QLAn9x3BTH/+Rbo2olMoIxOrgdlvY/aZjIbarc44BVSdva2wmIaNVKzuZBB7dAQnDo
+         HsNMwclI7ychnOSzNoPk3bbYc70CrCvxobwKPmxYVyc8fKHhLhhprvLJ3MUFIDIqU2
+         Jvc8QN/6KR/8cjpeL2c4EmQlRpAttKYBdGlRPKSgeP2ZNP0bOeTAWg0vtXNn89USa5
+         8VR1QkztArRQXjVh4ErLqENGF5tBrI6YtI5l2C8PQHir5562q+qy0u4FTAMy3GgIJa
+         9JgBXardLrJWFzghTiPyq09U7O5GhbrexkNbSRcPI8pEP+HVRWokqvR4lPLuTpcljU
+         VbMs8KjRiCzo6EBe5s4fTfFYBZc4JQ5RJm2vdLKV88NjnlEv51Qk4K19y6WU056Uui
+         qpZY9edoTt8tvJB76UnCXlFw=
+Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+        (No client certificate requested)
+        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 7729540E0030;
+        Tue, 14 Nov 2023 15:09:11 +0000 (UTC)
+Date:   Tue, 14 Nov 2023 16:09:10 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Ajay Kaher <akaher@vmware.com>,
+        Alexey Makhalov <amakhalov@vmware.com>,
+        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
+Message-ID: <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-4-jgross@suse.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: NULL pointer dereference regression when running `chmod -R
- root:tracing /sys/kernel/debug/tracing`
-Content-Language: en-US, de-DE
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux regressions mailing list <regressions@lists.linux.dev>,
-        Milian Wolff <milian.wolff@kdab.com>, akaher@vmware.com,
-        akpm@linux-foundation.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com,
-        mhiramat@kernel.org
-References: <20231105160139.660634360@goodmis.org>
- <20231112104158.6638-1-milian.wolff@kdab.com>
- <2053f011-3c85-41e2-8685-1f46a2bc5fb8@leemhuis.info>
- <20231114085529.77099439@rorschach.local.home>
-From:   Thorsten Leemhuis <regressions@leemhuis.info>
-In-Reply-To: <20231114085529.77099439@rorschach.local.home>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1699974404;bcf27ff2;
-X-HE-SMSGID: 1r2uzv-0007D6-1O
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231030142508.1407-4-jgross@suse.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 30, 2023 at 03:25:06PM +0100, Juergen Gross wrote:
+> Introduce the macro ALT_NOT_XEN as a short form of
+> ALT_NOT(X86_FEATURE_XENPV).
 
+Not crazy about adding yet another macro indirection - at least with the
+X86_FEATURE_ it is clear what this is. But ok, whatever.
 
-On 14.11.23 14:55, Steven Rostedt wrote:
-> On Tue, 14 Nov 2023 14:38:57 +0100
-> "Linux regression tracking #adding (Thorsten Leemhuis)" <regressions@leemhuis.info> wrote:
-> 
->> [TLDR: I'm adding this report to the list of tracked Linux kernel
->> regressions; the text you find below is based on a few templates
->> paragraphs you might have encountered already in similar form.
->> See link in footer if these mails annoy you.]
->>
->> On 12.11.23 11:41, Milian Wolff wrote:
->>>
->>> this patch seems to have introduced a kernel bug causing
->>> a NULL pointer dereference when one runs:
->>>
->>>     sudo chown -R root:tracing /sys/kernel/debug/tracing/
->>>
->>> See the archlinux bug report I created initially for some more information:
->>> https://bugs.archlinux.org/task/80230
->>>
->>> With 6.6.1 and 9aaee3eebc91dd9ccebf6b6bc8a5f59d04ef718b reverted,
->>> the above `chmod` command works. With a normal 6.6.1 build, or re-applying
->>> the patch again, the command fails and `dmesg` shows:  
->>
->> Steven is already working on this, but to ensure the issue doesn't fall
->> through the cracks unnoticed, I'm adding it to regzbot, the Linux kernel
->> regression tracking bot (and from the context I assume it happens in
->> mainline as well)
-> 
-> Note, the code in question was rewritten in 6.7 and the bug does not
-> exist there. It only exists in 6.6 and I already sent Greg the patch,
-> and he told me that it's in his queue.
-> 
-> It's only a regression in 6.6 and not in mainline.
+Anyway, this patch can be the first one in the series.
 
-Ahh, sorry fot getting this wrong and thx for letting me know.
+-- 
+Regards/Gruss,
+    Boris.
 
-#regzbot introduced 9aaee3eebc91dd9ccebf6b6bc8a5f59d04ef718b
-#regzbot fix: eventfs: Check for NULL ef in eventfs_set_attr()
-
-Ciao, Thorsten
-
-P.S.: Enjoy LPC, hope to be there again next year.
+https://people.kernel.org/tglx/notes-about-netiquette
