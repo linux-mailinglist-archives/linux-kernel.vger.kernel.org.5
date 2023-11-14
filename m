@@ -2,40 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B95D7EB2C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:52:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624DD7EB2CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233511AbjKNOwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:52:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S233543AbjKNOwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:52:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231697AbjKNOwJ (ORCPT
+        with ESMTP id S233473AbjKNOwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:52:09 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52189126;
+        Tue, 14 Nov 2023 09:52:10 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D527912A;
         Tue, 14 Nov 2023 06:52:06 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A3D59240003;
-        Tue, 14 Nov 2023 14:52:04 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 2A164240013;
+        Tue, 14 Nov 2023 14:52:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
         t=1699973525;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9zfuTvre0UzAi4GpamYmN3E9uemUolgHrcnYVxe0/6o=;
-        b=WYk2bi0RayS5KdrXFqbBs1ZUT9c5Dp0Ig/yyDAl+rGqTB0JGPqachk9W2nn3szazQliexh
-        bJu4e+X7001Ndf3IAj2ulsFJoD+/h2Mr3OzLL8CNMtSVk8kx1VanZDTwjyPgIcoTKiQ46Q
-        zddanlA29ytFqh6mN/fXTdq/iI1lfq2HfgLyDtO8MwREiWpc3C52OupHDWcrfrRqRySEk8
-        HJzevquDlmD3osMZ2ChzrpwPLbIRlR7YObCAFt8aOF3O55P1+sKkaHcNu4ANYei6B/jldt
-        mzu6Q2h93Q3YOj6sAHbNj6hRRqHW9qrbqhyR8xXGFZcQuam3c3iudq7sQYKSmg==
+        bh=iPCuxXS6fiLAq+ZD6dKRSHgB+AgJYpeJ58Nq57Fi1fk=;
+        b=LTi65E4Tlircxae7M6pf96+eWA6ie+/jpuEiLF891xQxSMoGf7b2b2dRtvl9+ET3M6ro82
+        m11cQHytfNvz6x+v6P+Rrn10m2FWjqm8oVRtWwQdOHopBNp2hTMw7cA39S7Drpije9NeYD
+        UpMx4MYp+wbAxCN7K0ELXHXT+fBOWTEsjPqzdifAnBxUXzwq66/9n1fazUep9MOueXN4LV
+        kq0lDF7Diwc9r9nfLYjhOSIr2qpRBV+yYNFG75ntcZBSul27yjQBhxv1B2anuDbsEezJC3
+        4Caz1BnFpW/QXYlx/cbcUf1/rbgpcUQihIXWHLFYlGHR3RB1G81//ORU+83Enw==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Tue, 14 Nov 2023 15:51:55 +0100
-Subject: [PATCH v5 2/6] dmaengine: dw-edma: Fix wrong interrupt bit set
+Date:   Tue, 14 Nov 2023 15:51:56 +0100
+Subject: [PATCH v5 3/6] dmaengine: dw-edma: Typo fix
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-b4-feature_hdma_mainline-v5-2-7bc86d83c6f7@bootlin.com>
+Message-Id: <20231114-b4-feature_hdma_mainline-v5-3-7bc86d83c6f7@bootlin.com>
 References: <20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com>
 In-Reply-To: <20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com>
 To:     Manivannan Sadhasivam <mani@kernel.org>,
@@ -51,16 +51,15 @@ X-Mailer: b4 0.12.4
 X-GND-Sasl: kory.maincent@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix "HDMA_V0_LOCAL_STOP_INT_EN" to "HDMA_V0_LOCAL_ABORT_INT_EN" as the STOP
-bit is already set in the same line.
+Fix "HDMA_V0_REMOTEL_STOP_INT_EN" typo error
 
 Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
@@ -70,22 +69,22 @@ Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 Changes in v3:
 - Split the patch in two to differ bug fix and simple harmless typo.
 ---
- drivers/dma/dw-edma/dw-hdma-v0-core.c | 2 +-
+ drivers/dma/dw-edma/dw-hdma-v0-regs.h | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-index 1f4cb7db5475..108f9127aaaa 100644
---- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-+++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-@@ -236,7 +236,7 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- 		/* Interrupt enable&unmask - done, abort */
- 		tmp = GET_CH_32(dw, chan->dir, chan->id, int_setup) |
- 		      HDMA_V0_STOP_INT_MASK | HDMA_V0_ABORT_INT_MASK |
--		      HDMA_V0_LOCAL_STOP_INT_EN | HDMA_V0_LOCAL_STOP_INT_EN;
-+		      HDMA_V0_LOCAL_STOP_INT_EN | HDMA_V0_LOCAL_ABORT_INT_EN;
- 		SET_CH_32(dw, chan->dir, chan->id, int_setup, tmp);
- 		/* Channel control */
- 		SET_CH_32(dw, chan->dir, chan->id, control1, HDMA_V0_LINKLIST_EN);
+diff --git a/drivers/dma/dw-edma/dw-hdma-v0-regs.h b/drivers/dma/dw-edma/dw-hdma-v0-regs.h
+index a974abdf8aaf..eab5fd7177e5 100644
+--- a/drivers/dma/dw-edma/dw-hdma-v0-regs.h
++++ b/drivers/dma/dw-edma/dw-hdma-v0-regs.h
+@@ -15,7 +15,7 @@
+ #define HDMA_V0_LOCAL_ABORT_INT_EN		BIT(6)
+ #define HDMA_V0_REMOTE_ABORT_INT_EN		BIT(5)
+ #define HDMA_V0_LOCAL_STOP_INT_EN		BIT(4)
+-#define HDMA_V0_REMOTEL_STOP_INT_EN		BIT(3)
++#define HDMA_V0_REMOTE_STOP_INT_EN		BIT(3)
+ #define HDMA_V0_ABORT_INT_MASK			BIT(2)
+ #define HDMA_V0_STOP_INT_MASK			BIT(0)
+ #define HDMA_V0_LINKLIST_EN			BIT(0)
 
 -- 
 2.25.1
