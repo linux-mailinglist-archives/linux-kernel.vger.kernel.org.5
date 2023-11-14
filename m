@@ -2,199 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 529407EB214
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:29:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14267EB21B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:33:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231419AbjKNO3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42766 "EHLO
+        id S231605AbjKNOdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:33:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNO3n (ORCPT
+        with ESMTP id S229456AbjKNOdD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:29:43 -0500
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2115.outbound.protection.outlook.com [40.107.21.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7E29BB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:29:39 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aauCOwO6E7rNouHAVDq4t+hviQYCY13bGw+Dvsefhplchz2GrW6xcsbqxHXpHsYhX0xm/2XFWtAjCFWvyUF7OKM8Fj9rac5eOiXqW7qeejjnjnIKUmAOYlDTbqpw71B0dRtf5R/C9JSBcc/QctQkuplmmyDPh3a4rGZLUKUxNo5oBYdSHMfc/h8cfzaMSflg29PyWQ18QC5p02bRqO9jiO43deg4tC5uhNFGLGhQpCBkkaPDWdM1Hmrkcmm+wjPZq4nO5gMalmpp0i0eoMRikl5sfRkHrw2Vus5vBkFmEZUlENNJjIQ4d/JQI26OKMtVKAjmFapDTG+2RgUO/Rc5nQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=KkLasijjWyEIpmxEP7fIUf8RVPE8JtC3j+UmKCcQDkk=;
- b=VPToyIpDb+H8vDZNaB1SGdpleb+sbtcBqv/O8EGHhNdGfFaSv0dYRR7p2zMcWR9XvJXN3GcAOXFE4dvyX7fBhE+/Ga+1P4yugRf4TMqHEisjtkPPTp74KkbV9Bj8L4pBGZD+YzyssEy14Rl4sNVuEEJEDN9LlBizc6+XvSDij/Vjl2uEEM+/jv0xPcsOZ+2j2g04jS0lLhTSVGmCMW6Px6CM8mcgrqLITPscR89m44yc1Vz/SdPGqOpTlrdn3hKUYUFTvmq9CCC2S/bTSmdXm539NemER+qxg5s5qwmeVFfaDK7HMOLe+hQLpc4rkRqCTsgUfalR99axqVUzmHPFmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
- dkim=pass header.d=kontron.de; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
- s=selector2-mysnt-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KkLasijjWyEIpmxEP7fIUf8RVPE8JtC3j+UmKCcQDkk=;
- b=e4pvsofrfAD32JMXYT3ZWRxeO4gCO6ZnBtRZnJFssenfEhrvlqM47ZVdWsclmfN+oLn86ifIhyUvn+natZ+ZYBxZbjDkWpQOLwnBEMD1OzspheID0fUvlIC/7Gwvfhpu9MecSGU4YIt9bDPEg1q1cw2CFoqKzSczkPoPgOVR0QI=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=kontron.de;
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:102:263::10)
- by DB9PR10MB6356.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:10:3c4::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.18; Tue, 14 Nov
- 2023 14:29:37 +0000
-Received: from PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d]) by PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- ([fe80::27ba:9922:8d12:7b3d%5]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
- 14:29:36 +0000
-Message-ID: <11fe6f0e-49e7-44d4-a31a-3b739f77489f@kontron.de>
-Date:   Tue, 14 Nov 2023 15:29:33 +0100
-User-Agent: Mozilla Thunderbird
-From:   Frieder Schrempf <frieder.schrempf@kontron.de>
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-To:     Michael Walle <mwalle@kernel.org>, Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Alexander Stein <alexander.stein@ew.tq-group.com>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231113164344.1612602-1-mwalle@kernel.org>
-Content-Language: en-US, de-DE
-In-Reply-To: <20231113164344.1612602-1-mwalle@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR01CA0146.eurprd01.prod.exchangelabs.com
- (2603:10a6:208:aa::15) To PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
- (2603:10a6:102:263::10)
+        Tue, 14 Nov 2023 09:33:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 448A510D
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:33:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699972379;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=vLqA6B8ILvjoZHm5Kjx5UvL4QdH66sld3iEB6MCOoHs=;
+        b=UNU/qomw7wWTg8K6i8unzhNW1IdRfnVpggD1oTKf3oPWCoDPYchKCObxhsY+Ok07pmQA9p
+        qTQbWbBan9Ci/SOqMewQXiPjr2a8XZFSddJD8ZMbZTwLxh7oohEm7f2I+3pra9bB2/l4th
+        FyckplvGU9QXEzvhGBEKo6siFKxQ36I=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-260-Ipd_ZZkzMmy5NB21W5IC8w-1; Tue, 14 Nov 2023 09:32:57 -0500
+X-MC-Unique: Ipd_ZZkzMmy5NB21W5IC8w-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66cffe51b07so64135576d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:32:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699972377; x=1700577177;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vLqA6B8ILvjoZHm5Kjx5UvL4QdH66sld3iEB6MCOoHs=;
+        b=LunXWIUuVIrKfdoi5ao5MzM0uAh1Y2b+uwYRnNFpq29Eq1B5Vj1PcVe9af4fq7p8DC
+         ICpN0CXteZHnyFwK3DiXWqsonHoq9Leqsx4XiV66BYOUwjn+dUhXyqTs6/kbwexy51sR
+         3ryAkzlKNE2cSrKMlCMwJVBu5k5vTFhn+VChpTARLATK5SZS5Sxt981r2ctP1D6OqUyf
+         b/e7cOpvJuV+I2B3cLs+b2GZQQSwmaw+z7kOPgqrlbKaT0FFX1Nw1caS14Bp7lZJhaKO
+         b2OSSqcCvgNYWo9QWnK05H3CJLvLyb8RiQT3Ujm/ndfffhcZbckILQ3Bd7zoL1hDxbDR
+         4DtA==
+X-Gm-Message-State: AOJu0YzgmL2tEhwxCvfek1ofHOfSt1c8NFn02HVShuWukhKe0KM8Tp/W
+        kGSXo3SJCWbYJKkSMZ57SMW7FHENUqdr1+03ACNbf2qAYGz4dbbILl4xWGkgcSZQBEdlZ3GYd+r
+        wX6gba517nBPpwLRxlbZKIrnRvyZ0K64T
+X-Received: by 2002:ad4:5d6c:0:b0:656:4712:af9f with SMTP id fn12-20020ad45d6c000000b006564712af9fmr2951713qvb.13.1699972377304;
+        Tue, 14 Nov 2023 06:32:57 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF+F+DuNTNR6J7TO3eUurmVnigBll6V6yWuPMrEo7og8X7tHnyT+OT6thh8B5Tpri41rDBdyA==
+X-Received: by 2002:ad4:5d6c:0:b0:656:4712:af9f with SMTP id fn12-20020ad45d6c000000b006564712af9fmr2951690qvb.13.1699972377024;
+        Tue, 14 Nov 2023 06:32:57 -0800 (PST)
+Received: from [192.168.0.6] (ip-109-43-176-122.web.vodafone.de. [109.43.176.122])
+        by smtp.gmail.com with ESMTPSA id r7-20020a0cf807000000b0065b1f90ff8csm2941320qvn.40.2023.11.14.06.32.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 06:32:56 -0800 (PST)
+Message-ID: <8305a632-730a-4113-a638-0a9a520ee0f7@redhat.com>
+Date:   Tue, 14 Nov 2023 15:32:54 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR10MB5681:EE_|DB9PR10MB6356:EE_
-X-MS-Office365-Filtering-Correlation-Id: a2ab9457-9c66-4031-7ddb-08dbe51e20dd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: FpwbgEI04B3hmlKJtn3ac0A5uwuCGU6QYGHdjzObl67hqnHi1vA4VqfEp81TaLLsjFYT+WxDa9YUuW2w7VFNAWdPhMmt1oE71chr2BonzEiCVEtyqi+VzWrN80knSg8dVOM6yTlx7RybEHut0oavo++/jXWhCG3Pe3JdRZ3oWwmW4k+UphMtMjuanhPb00ImPrJjVwPu9dnp8uwd7wyoXI1WPhDqQHyMIg9vqGS5JvVr61SzkEFeXZAf1ZGb5sL0IdCZ9SIueYe56TUqc/dtoT4HCYc/JWjCZtZDAe8UKzqZGcUcK2ucE9lHjD2w/zkHP/CsT5S7XlbyOtz9sxjMuakKHpWiLyAhVZ9CxoKt+thfni+cLqO4SznkgdTzd2NVTFRYUR8hrOkgRHFCOA0ckHKT2Fz0h/aJRxdXHxy1mlTYX4TI0qvoxzp+YEbSSdchVKUx+QyXBaWhEfPz5TU0bpEsoXut1mdPNcQvrUxvRxCLB3XhPq6UjFi8aG4LXu15gNNJsLJvc4/JalZJheQoaJnhtb12TlLKxO+d/J3EghnxDydmNGWxovcvJkuCh6fBlh+9OB69JEsryq4IP6LPDkQvzUVvE8LDpUsSCwTn4KttLnI3qSM4SWdyCUUPnj/ArBFD2xDZM4S+6s8tqiclIaDjWg6VEzZjRki57dQa8LE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376002)(136003)(39860400002)(396003)(366004)(346002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(53546011)(44832011)(26005)(6486002)(478600001)(8676002)(6506007)(6666004)(4326008)(8936002)(2616005)(7416002)(6512007)(316002)(66476007)(31686004)(110136005)(66556008)(66946007)(5660300002)(2906002)(41300700001)(83380400001)(36756003)(31696002)(86362001)(38100700002)(921008)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?K2tsSUxhVDZ2Y0lKWU1DR3N5b0VzWm5uNjZ4SWhWbmlVcllUMVcvOE1yeGY4?=
- =?utf-8?B?WU1vSEVsMVZUdkJPWjF5TDY1azhhSFFnZGFiNElsRlV5OWI4R3dJZFY2eDNa?=
- =?utf-8?B?Nm0vK3VYUmtIbjI2ejVKVUJVVENJTVIrM1BjRS9tbm9VNE1xMW5YWFVkeU5P?=
- =?utf-8?B?dm9JakoreFpPNEpiaUt1TGRkWUYvdHBkdm5JTWRheDN0SUVuajRwVzhvR3hM?=
- =?utf-8?B?T0FLQkI3TUxnb0JaL01XVkJ0cW1ZcmpUQW9ZekphRmhUaDBUU0hYOGNpYTUv?=
- =?utf-8?B?WTZQckJkSDdSMXg5ak1IODRYVlA5b012UmpSb2RNK2JWNGNzTEFDR0g3aDQ0?=
- =?utf-8?B?bk5pRkU5Vzd3OTdGT2ZXVHZZSVN1REZCMDMyaVZuUmdpMVM1RVc4NDVkMWt2?=
- =?utf-8?B?amZnRFBvcS9qa0dkUE8vbnBTSmxBOGJrUDMzd0FOUjFMbUtTVWN5b0l4MnBF?=
- =?utf-8?B?VTlQOGpndzJUcHpJc2ZyUHVvNXU3TW44V1RiMy9ZdUlHWUVpYU0rZi80NFJE?=
- =?utf-8?B?ZHRUdnJERXBVcWtvK2NoR091TDR2ZGVMTGpteWRhYWZWWHpmMnNsdVVQU3BL?=
- =?utf-8?B?c3VFbWJ0UnNmS2w0aVdWVE00SzZsNzdDSnRWQk5TbG5ZcE9JWmdjNm5XQndv?=
- =?utf-8?B?U3NqeHdCakp3V3htSlR1emtJRXNFTGkxZDdxWjRWVEhTT1lpZElPTmdxRG9p?=
- =?utf-8?B?eXFMNlloMTlPMk5GUnRuaExhUDQ1Q1hGTi94ajgvdXppWHdCaTF2MUJGNmZO?=
- =?utf-8?B?YmNEVStnTVYwSnprZnVSSWhyMmRKNEQ4VTdiQThiWkw1OW53ZjVFL2puWUZq?=
- =?utf-8?B?b3pDMytIcFJybCtnYmFSWDlUVVV5ZHRIRDNMQmlyai9NZEVzZndyVmFOSDBu?=
- =?utf-8?B?SUlpQkg2UW9mdU5lMUxHa3VmNzJlTmpBRTFjWUFyL0pJZEF3eGNIdjBLRWJq?=
- =?utf-8?B?bWwxbzM1bWNxRTBaL1FENnVaSDVQYjRjV3U0cTRpbE13S3RFZlVkc0Y4aDAv?=
- =?utf-8?B?Mk42Y3FaZ241SWZXMTdjemcvTFJiVGZsZ1VWeHhTdm43L00xV0ZTWmVUUWxt?=
- =?utf-8?B?ZHZ3VTdHRjZvVUN2MWc0K0NZOCtHVnA2YmZVWFlKc05qM0RjYUN6OCsreEkw?=
- =?utf-8?B?WVE5ZFVKcVMzUVZIbFh6NnFEVkVEWWVRaTQvQmRGYkE3NnZIZ3N0Vk5TbllR?=
- =?utf-8?B?TDc3ODlhSFlJR3BGK2lMdk43cGlvNUhJc3pvTitWM2hFWHQ0QUF4VVJOWkQ3?=
- =?utf-8?B?RjVaUWU1c2VsdlpzWFJiUjFtVGZFbU5Id2hqdmlMZ05WSXN4UGhiMnBEZ2l1?=
- =?utf-8?B?S1Jsd01xUHpnWGVIYmJxUUJoZjNzZm5hdk9LaUttT20yN09CS0VuemNjMUV3?=
- =?utf-8?B?NWFETm5EV2FkNUJXSDMrNmxIbjg4d2F4RGlnQ2RpSDhkVUFVeXhQT2dtT281?=
- =?utf-8?B?L05TQ0hIYk1YUnp5Z3BqN1VpRmh0Sk04YXgyTzdEMFFFV2xmaXluVDNnRU1H?=
- =?utf-8?B?S29LRmtBSnoxVUZpQjUvWmU1b0k5aENsL3pLd09GMDc5Rmg4MU03dGpHWitE?=
- =?utf-8?B?MlZxdFNZUWUwQ2ZnWGVzMU9KUWt0d0k4TVVQQzIxS01MU1hxRWYzaWNLN0NB?=
- =?utf-8?B?b1VGTFg4QnBlTllmdFMzdEFiR3N6V3ZVa3dhUW5SZFBpMWQ0S3hSLzdwZXBv?=
- =?utf-8?B?UTN1T3pZR3RLWWxmSFFTYW9ubjhLMzRBcXNuYnE2ZnhKZSt6WkpUYWVURVFU?=
- =?utf-8?B?cmwweHlRWHdwSUhISFZRZTJDMDVPc25pSHB5b3V4TVBDR2htaFVLS2lHbE9I?=
- =?utf-8?B?TXdCT2xEaVJKOS91bmpkUmhxVXQxRjM1MDJGT1M0QWVYdmcwT3NmTVlUT29U?=
- =?utf-8?B?K3lhR2prWWdRYUQ2eFI5TnBpdjRSbVlucUhxeWpwVFZzMTF5SWxQa3ZuL1VY?=
- =?utf-8?B?d0FVbWFLTmtZaUlTcURXQlArRkc1UUpoQUcrcnZNUHdMRXZsQVZlbTZrcDV0?=
- =?utf-8?B?cWJJMm9sTm5NaUNKdW5PbmZsK2FDNUsvR2VxVVRPbWg0TzR5amw1aVZqVWlO?=
- =?utf-8?B?cXY0dktaend5T1V3SmU2a1pqMGYvc1BZdzhpMnhLVTAySUZ1WXA3amhKdmxo?=
- =?utf-8?B?T21scVU1WGMzdXJqNlFLdFBxc0pSdlZYNnRtNWZBa2tMbVl0eEdKMmc1L3Nz?=
- =?utf-8?B?NFE9PQ==?=
-X-OriginatorOrg: kontron.de
-X-MS-Exchange-CrossTenant-Network-Message-Id: a2ab9457-9c66-4031-7ddb-08dbe51e20dd
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR10MB5681.EURPRD10.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 14:29:36.8051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8/QLZDMJ+DcOSoK1qV/PP35HmIE0rj3FMUcRIzWQl3J1NBQmdrsqJf6vZ4K9aj1xnv0dGf7c0PmFbJxnfGCX83o59i4tTqY1n3+ehM8IeJ0=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9PR10MB6356
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
+Content-Language: en-US
+To:     Greg Ungerer <gerg@linux-m68k.org>, Arnd Bergmann <arnd@arndb.de>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-m68k@lists.linux-m68k.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20231110103120.387517-1-thuth@redhat.com>
+ <571ed28a-9690-4f85-9122-4b0f76975cb3@app.fastmail.com>
+ <6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org>
+From:   Thomas Huth <thuth@redhat.com>
+Autocrypt: addr=thuth@redhat.com; keydata=
+ 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
+In-Reply-To: <6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
-
-On 13.11.23 17:43, Michael Walle wrote:
-> The FORCE_STOP_STATE bit is unsuitable to force the DSI link into LP-11
-> mode. It seems the bridge internally queues DSI packets and when the
-> FORCE_STOP_STATE bit is cleared, they are sent in close succession
-> without any useful timing (this also means that the DSI lanes won't go
-> into LP-11 mode). The length of this gibberish varies between 1ms and
-> 5ms. This sometimes breaks an attached bridge (TI SN65DSI84 in this
-> case). In our case, the bridge will fail in about 1 per 500 reboots.
+On 14/11/2023 15.20, Greg Ungerer wrote:
 > 
-> The FORCE_STOP_STATE handling was introduced to have the DSI lanes in
-> LP-11 state during the .pre_enable phase. But as it turns out, none of
-> this is needed at all. Between samsung_dsim_init() and
-> samsung_dsim_set_display_enable() the lanes are already in LP-11 mode.
-> The code as it was before commit 20c827683de0 ("drm: bridge:
-> samsung-dsim: Fix init during host transfer") and 0c14d3130654 ("drm:
-> bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec") was correct
-> in this regard.
 > 
-> This patch basically reverts both commits. It was tested on an i.MX8M
-> SoC with an SN65DSI84 bridge. The signals were probed and the DSI
-> packets were decoded during initialization and link start-up. After this
-> patch the first DSI packet on the link is a VSYNC packet and the timing
-> is correct.
+> On 10/11/23 21:19, Arnd Bergmann wrote:
+>> On Fri, Nov 10, 2023, at 11:31, Thomas Huth wrote:
+>>> We should not use any CONFIG switches in uapi headers since
+>>> these only work during kernel compilation. They are not defined
+>>> for userspace. Let's use the __mcoldfire__ switch from the
+>>> compiler here instead.
+>>>
+>>> Signed-off-by: Thomas Huth <thuth@redhat.com>
+>>> ---
+>>>   Marked as RFC since I didn't test it - I'd appreciate if someone
+>>>   could give it a try on a real system.
+>>>
+>>>   arch/m68k/include/uapi/asm/ptrace.h | 2 +-
+>>>   scripts/headers_install.sh          | 1 -
+>>>   2 files changed, 1 insertion(+), 2 deletions(-)
+>>>
+>>> diff --git a/arch/m68k/include/uapi/asm/ptrace.h
+>>> b/arch/m68k/include/uapi/asm/ptrace.h
+>>> index 5b50ea592e00..ebd9fccb3d11 100644
+>>> --- a/arch/m68k/include/uapi/asm/ptrace.h
+>>> +++ b/arch/m68k/include/uapi/asm/ptrace.h
+>>> @@ -39,7 +39,7 @@ struct pt_regs {
+>>>     long     d0;
+>>>     long     orig_d0;
+>>>     long     stkadj;
+>>> -#ifdef CONFIG_COLDFIRE
+>>> +#ifdef __mcoldfire__
+>>>     unsigned format :  4; /* frame format specifier */
+>>>     unsigned vector : 12; /* vector offset */
+>>>     unsigned short sr;
+>>
+>> I think this should be harmless,
 > 
-> Command mode between .pre_enable and .enable was also briefly tested by
-> a quick hack. There was no DSI link partner which would have responded,
-> but it was made sure the DSI packet was send on the link. As a side
-> note, the command mode seems to just work in HS mode. I couldn't find
-> that the bridge will handle commands in LP mode.
+> I expect it would be, we have done this in at least one other uapi file,
+> arch/m68k/include/uapi/asm/swab.h.
 > 
-> Fixes: 20c827683de0 ("drm: bridge: samsung-dsim: Fix init during host transfer")
-> Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec")
-> Signed-off-by: Michael Walle <mwalle@kernel.org>
+> 
+>> but I'm not sure we even
+>> need the structure in a uapi header: about half the architectures
+>> define this in a user-visible way, while the others don't.
+>>
+>> On csky, powerpc and microblaze, pt_regs is used inside
+>> of the 'struct sigcontext' definition, but I don't think
+>> this was ever the case on m68k.
+>>
+>> The other one that is accessed in userspace is 'struct
+>> user_regs_struct', but this one is actually not in the
+>> uapi headers on m68k or x86.
+> 
+> I don't think we need them in the uapi header at all. Trivially moving
+> those 2 structures into the non-uapi ptrace.h seems to build fine on
+> most simple setups I tried (systems using uClibc, with applications like
+> strace). Should we try moving them out?
 
-Thanks for the fix. Your explanation sounds convincing.
+Yes, please! Can you send your patch?
 
-Unfortunately I'm currently not able to understand why I had to
-introduce these changes in the first place. What I tried to fix was
-exactly this kind of issue where the display stays black every few
-hundred boot cycles.
+  Thomas
 
-My current guess would be that the issue I was seeing was already fixed
-with dd9e329af723 ("drm/bridge: ti-sn65dsi83: Fix enable/disable flow to
-meet spec") and I didn't properly test both changes separately.
 
-My cheap scope is not able to capture the DSI signals and I admit that
-we didn't use our more expensive equipment to verify the changes back then.
-
-Instead, we had an automated test setup to do cyclic on/off switching
-for the display and check for a black screen using a sensor. It is quite
-a hassle to set up and I'm currently not planning to spend that much
-effort to verify this change again.
-
-Anyway, I currently don't see any reasons to not revert my changes. Your
-revert looks correct and seems to work fine as far as I can tell.
-
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
-
-Thanks
-Frieder
