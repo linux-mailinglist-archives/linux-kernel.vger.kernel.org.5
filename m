@@ -2,142 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C3007EB78F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:14:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914C37EB7A0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:16:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233818AbjKNUOT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:14:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48516 "EHLO
+        id S233936AbjKNUQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232388AbjKNUOR (ORCPT
+        with ESMTP id S233816AbjKNUQz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:14:17 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3694CD9;
-        Tue, 14 Nov 2023 12:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5uS+7I/hdEi/j2d0v3U0nBW/3e8OdQbcjBLfaqo5fyE=; b=HXbNj79hUL/5Ub5itbEm9PybKB
-        NCqN7/gz0LISFlHa5/xxpoB7CU0TLhU++Ja7zjWOUu2G/Q5QDEUDHO3lshLpJy0dmtsmf3YxNs2pF
-        swsw9Pg9udmdl60h+A0dDCR0eOHWD0hgWsqvmLy/ez75SyMfZALCemr7C6blMD7pae14rso/vLK5j
-        wzz3unbnayfDGsKpEP8Nc8nkCarWpeY8qac5Oimq5G+0jrETK2P1BsyAqVhJID0j4gFVjixX5e4vV
-        bOfmoueLJ04Q/LIiOojemprgSKSYxEsLpW2B2ofbl2hEdBrTdGLccG1q0Khc7925jo+4psSm6A/QB
-        H9Bg9jRQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r2znO-002hgP-2v;
-        Tue, 14 Nov 2023 20:14:03 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7D811300581; Tue, 14 Nov 2023 21:14:02 +0100 (CET)
-Date:   Tue, 14 Nov 2023 21:14:02 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Xi Ruoyao <xry111@xry111.site>, libc-alpha@sourceware.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-mm@kvack.org, linux-arch@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Subject: Re: Several tst-robust* tests time out with recent Linux kernel
-Message-ID: <20231114201402.GA25315@noisy.programming.kicks-ass.net>
-References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
- <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
- <20231114153100.GY8262@noisy.programming.kicks-ass.net>
- <20231114154017.GI4779@noisy.programming.kicks-ass.net>
- <87ttpowajb.fsf@oldenburg.str.redhat.com>
+        Tue, 14 Nov 2023 15:16:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 209F7124
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:16:52 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B87C1C433C7;
+        Tue, 14 Nov 2023 20:16:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699993011;
+        bh=8mmL3I3erEwwdl8wOfZypEEHw8UywftF8yDJWg/57kM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=M3p2RH03l1i6INY0wbihE+Jde/WWCLYu7RCYouEgYsVe8pqVXx5qbivbIlnThfgNs
+         c2e8Le2gNfZXZHHcM2JhmuWOhMsCKu2nx6MGLyWjYkDOpNo3ABSu7YQeF4yGTyWTcu
+         O45GOQUnyunGrJVcutsbdFGm9a063bhoEmVBQ9WMtC6thEf9WU4pSUL4BYy4Fmzav7
+         2TFh0x/NyFFi3FWq2RWoyBsNRb/6iIQV5RMcf7D6605ezwP4kLfJxrLHhi+1eVIzH4
+         nLaleIpKIcY9B6OZ93ZiCFqMowPzecuinhoS7JGc0UFmAMMtgClWD62JFFMdPdr7L0
+         fPh9wHDHn1t9Q==
+Message-ID: <0fe29f0c-5418-49a6-ab62-f210f8f7e765@kernel.org>
+Date:   Tue, 14 Nov 2023 22:16:45 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87ttpowajb.fsf@oldenburg.str.redhat.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/3] net: ethernet: am65-cpsw: Set default TX
+ channels to maximum
+Content-Language: en-US
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, s-vadapalli@ti.com, r-gunasekaran@ti.com,
+        srk@ti.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pekka Varis <p-varis@ti.com>
+References: <20231113110708.137379-1-rogerq@kernel.org>
+ <20231113110708.137379-3-rogerq@kernel.org>
+ <20231114121343.o3nk3lddzy57mqgw@skbuf>
+From:   Roger Quadros <rogerq@kernel.org>
+In-Reply-To: <20231114121343.o3nk3lddzy57mqgw@skbuf>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 05:43:20PM +0100, Florian Weimer wrote:
-> * Peter Zijlstra:
+
+
+On 14/11/2023 14:13, Vladimir Oltean wrote:
+> On Mon, Nov 13, 2023 at 01:07:07PM +0200, Roger Quadros wrote:
+>> am65-cpsw supports 8 TX hardware queues. Set this as default.
 > 
-> >> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-> >> index b5379c0e6d6d..1a1f9301251f 100644
-> >> --- a/kernel/futex/futex.h
-> >> +++ b/kernel/futex/futex.h
-> >> @@ -17,7 +17,7 @@
-> >>   * restarts.
-> >>   */
-> >>  #ifdef CONFIG_MMU
-> >> -# define FLAGS_SHARED		0x01
-> >> +# define FLAGS_SHARED		0x10
-> >>  #else
-> >>  /*
-> >>   * NOMMU does not have per process address space. Let the compiler optimize
-> >
-> > Just the above seems sufficient.
-> 
-> There are a few futex_wake calls which hard-code the flags argument as
-> 1:
-> 
-> kernel/futex/core.c=637=static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
-> --
-> kernel/futex/core.c-686-         * this.
-> kernel/futex/core.c-687-         */
-> kernel/futex/core.c-688-        owner = uval & FUTEX_TID_MASK;
-> kernel/futex/core.c-689-
-> kernel/futex/core.c-690-        if (pending_op && !pi && !owner) {
-> kernel/futex/core.c:691:                futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
-> kernel/futex/core.c-692-                return 0;
-> kernel/futex/core.c-693-        }
-> kernel/futex/core.c-694-
-> kernel/futex/core.c-695-        if (owner != task_pid_vnr(curr))
-> kernel/futex/core.c-696-                return 0;
-> --
-> kernel/futex/core.c-739-        /*
-> kernel/futex/core.c-740-         * Wake robust non-PI futexes here. The wakeup of
-> kernel/futex/core.c-741-         * PI futexes happens in exit_pi_state():
-> kernel/futex/core.c-742-         */
-> kernel/futex/core.c-743-        if (!pi && (uval & FUTEX_WAITERS))
-> kernel/futex/core.c:744:                futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
-> kernel/futex/core.c-745-
-> kernel/futex/core.c-746-        return 0;
-> kernel/futex/core.c-747-}
-> kernel/futex/core.c-748-
-> kernel/futex/core.c-749-/*
+> Motivation? Drawbacks / reasons why this was not done from the beginning?
 
-Urgh, thanks!
+Motivation was to get the "kselftest -t net/forwarding:ethtool_mm.sh" test to work
+without requiring additional manual step of increasing the TX channels.
 
-Confirmed, the below cures things. Although I should probably make that
-FLAGS_SIZE_32 | FLAGS_SHARED against Linus' tree.
+Another issue is that all network interfaces (can be up to 4 on some devices) have to be
+brought down if TX channel count needs to change.
 
-Let me go do a proper patch.
+I am not aware why this was not done from the beginning.
 
----
- kernel/futex/core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/futex/core.c b/kernel/futex/core.c
-index d1d7b3c175a4..e7793f0d5757 100644
---- a/kernel/futex/core.c
-+++ b/kernel/futex/core.c
-@@ -687,7 +687,7 @@ static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
- 	owner = uval & FUTEX_TID_MASK;
- 
- 	if (pending_op && !pi && !owner) {
--		futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
-+		futex_wake(uaddr, FLAGS_SHARED, 1, FUTEX_BITSET_MATCH_ANY);
- 		return 0;
- 	}
- 
-@@ -740,7 +740,7 @@ static int handle_futex_death(u32 __user *uaddr, struct task_struct *curr,
- 	 * PI futexes happens in exit_pi_state():
- 	 */
- 	if (!pi && (uval & FUTEX_WAITERS))
--		futex_wake(uaddr, 1, 1, FUTEX_BITSET_MATCH_ANY);
-+		futex_wake(uaddr, FLAGS_SHARED, 1, FUTEX_BITSET_MATCH_ANY);
- 
- 	return 0;
- }
+-- 
+cheers,
+-roger
