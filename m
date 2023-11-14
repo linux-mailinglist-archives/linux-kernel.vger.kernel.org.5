@@ -2,105 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A05D37EB12D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 015AE7EB12E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:47:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233284AbjKNNrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:47:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        id S233256AbjKNNrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:47:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233228AbjKNNrg (ORCPT
+        with ESMTP id S233228AbjKNNrd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:47:36 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147AB1B5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:47:33 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 1B2E940E018F;
-        Tue, 14 Nov 2023 13:47:31 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id sSZDH4Z35msb; Tue, 14 Nov 2023 13:47:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699969649; bh=Bz2wr5hUsFGQnH+osaeuDzSJTLNKM+ey40ld1RnYKHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=PICg1ympgy7+K5qTkxUp7rLGJUPY/jNDAbN8GixhviDP+OT9ahBTLWBg8XBJcczdK
-         vxnwMFNS37ZT7OefmdSIiZcG9ftRIYBSnBwYdWsMWAt4mNqY/v50Hi93YZqzte7VgW
-         6ty9uhP2XJU+X2CPrVhzLWth6CXidQU38dW6anzvIbH2h6e6gBumFGeQ9Y8rwr1j/P
-         3WOOQDfsIuoGg/yzJJOtqCB4ryPTgHQB81XQDpjl0XUAIoWEz31Oe79iB9zkRYxPZM
-         WFXsulxfwvJP/Y7Q6/735b8fdw35orA3Zn9aGqqfcS4JIfbiiWhjB111eS4yRNZDBa
-         9QOvuxoAaqW00EzNY9lIDDuG/5hfzdXPHI1TQ0Y+mgRRSWYdCGbyAxwce6EMmZQwp3
-         XO+hS1Tx66RKdDVpGd71flc3DbelkMoidQdGQYA8CbNuWsd+ODCCO+fXcsAUpr6L4q
-         OYpFhZEv9825eaIWc338gdi/c0a1KOvpcqSQQeejLMkg0NPL1cK/semlpBZWM4qPIU
-         LqgIeNDC8SnhLpFjdtVh8X+QGyQ3+XX56DW+41enU8d/VQZUOHaXOkp1va0haJHLaj
-         Ry5NOrzWiijug6pGqA9KVx1DxDJdnOF+4ZKZX/6A4jexzyxj8k9yn3Pd/cjZXaDUtu
-         2gxd+orbG01tFp5Ju05fLwEU=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E9A8240E0171;
-        Tue, 14 Nov 2023 13:47:20 +0000 (UTC)
-Date:   Tue, 14 Nov 2023 14:47:15 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Juergen Gross <jgross@suse.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
-Message-ID: <20231114134715.GBZVN6Y97XrLQ4cbSL@fat_crate.local>
-References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-3-jgross@suse.com>
- <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
- <20231114125028.GX3818@noisy.programming.kicks-ass.net>
+        Tue, 14 Nov 2023 08:47:33 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C06471A1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:47:29 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2809C15;
+        Tue, 14 Nov 2023 05:48:14 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2AD0C3F6C4;
+        Tue, 14 Nov 2023 05:47:27 -0800 (PST)
+Message-ID: <e5ebfde9-7a74-4908-b0b9-db47c4e76315@arm.com>
+Date:   Tue, 14 Nov 2023 13:47:25 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231114125028.GX3818@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] arm/mm: add option to prefer IOMMU ops for DMA on Xen
+Content-Language: en-GB
+To:     Chuck Zmudzinski <brchuckz@aol.com>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Julien Grall <julien@xen.org>,
+        Mario Marietto <marietto2008@gmail.com>,
+        Bertrand Marquis <bertrand.marquis@arm.com>
+References: <20231111184538.2371-1-brchuckz.ref@aol.com>
+ <20231111184538.2371-1-brchuckz@aol.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <20231111184538.2371-1-brchuckz@aol.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 01:50:28PM +0100, Peter Zijlstra wrote:
-> This loads the function target from the pv_ops table. We can't otherwise
-> do this.
+On 11/11/2023 6:45 pm, Chuck Zmudzinski wrote:
+> Enabling the new option, ARM_DMA_USE_IOMMU_XEN, fixes this error when
+> attaching the Exynos mixer in Linux dom0 on Xen on the Chromebook Snow
+> (and probably on other devices that use the Exynos mixer):
+> 
+> [drm] Exynos DRM: using 14400000.fimd device for DMA mapping operations
+> exynos-drm exynos-drm: bound 14400000.fimd (ops 0xc0d96354)
+> exynos-mixer 14450000.mixer: [drm:exynos_drm_register_dma] *ERROR* Device
+>                               14450000.mixer lacks support for IOMMU
+> exynos-drm exynos-drm: failed to bind 14450000.mixer (ops 0xc0d97554): -22
+> exynos-drm exynos-drm: adev bind failed: -22
+> exynos-dp: probe of 145b0000.dp-controller failed with error -22
+> 
+> Linux normally uses xen_swiotlb_dma_ops for DMA for all devices when
+> xen_swiotlb is detected even when Xen exposes an IOMMU to Linux. Enabling
+> the new config option allows devices such as the Exynos mixer to use the
+> IOMMU instead of xen_swiotlb_dma_ops for DMA and this fixes the error.
+> 
+> The new config option is not set by default because it is likely some
+> devices that use IOMMU for DMA on Xen will cause DMA errors and memory
+> corruption when Xen PV block and network drivers are in use on the system.
+> 
+> Link: https://lore.kernel.org/xen-devel/acfab1c5-eed1-4930-8c70-8681e256c820@netscape.net/
+> 
+> Signed-off-by: Chuck Zmudzinski <brchuckz@aol.com>
+> ---
+> The reported error with the Exynos mixer is not fixed by default by adding
+> a second patch to select the new option in the Kconfig definition for the
+> Exynos mixer if EXYNOS_IOMMU and SWIOTLB_XEN are enabled because it is
+> not certain setting the config option is suitable for all cases. So it is
+> necessary to explicitly select the new config option during the config
+> stage of the Linux kernel build to fix the reported error or similar
+> errors that have the same cause of lack of support for IOMMU on Xen. This
+> is necessary to avoid any regressions that might be caused by enabling the
+> new option by default for the Exynos mixer.
+>   arch/arm/mm/dma-mapping.c |  6 ++++++
+>   drivers/xen/Kconfig       | 16 ++++++++++++++++
+>   2 files changed, 22 insertions(+)
+> 
+> diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> index 5409225b4abc..ca04fdf01be3 100644
+> --- a/arch/arm/mm/dma-mapping.c
+> +++ b/arch/arm/mm/dma-mapping.c
+> @@ -1779,6 +1779,12 @@ void arch_setup_dma_ops(struct device *dev, u64 dma_base, u64 size,
+>   	if (iommu)
+>   		arm_setup_iommu_dma_ops(dev, dma_base, size, iommu, coherent);
+>   
+> +#ifdef CONFIG_ARM_DMA_USE_IOMMU_XEN
 
-On Tue, Nov 14, 2023 at 01:56:37PM +0100, Juergen Gross wrote:
-> It is replacing an _indirect_ call with a _direct_ one, taking the
-> call target from the pointer used by the indirect call.
+FWIW I don't think this really needs a config option - if Xen *has* made 
+an IOMMU available, then there isn't really much reason not to use it, 
+and if for some reason someone really didn't want to then they could 
+simply disable the IOMMU driver anyway.
 
-Then this is not just a ALT_FLAG_CALL. This is something special. The
-flag definition needs a better name along with an explanation what it
-does, perhaps best with an example from the final vmlinux - not from the
-object file:
+> +	if (dev->dma_ops == &iommu_ops) {
+> +		dev->archdata.dma_ops_setup = true;
 
-call   *0x0(%rip)
+The existing assignment is effectively unconditional by this point 
+anyway, so could probably just be moved earlier to save duplicating it 
+(or perhaps just make the xen_setup_dma_ops() call conditional instead 
+to save the early return as well).
 
-==>
+However, are the IOMMU DMA ops really compatible with Xen? The comments 
+about hypercalls and foreign memory in xen_arch_need_swiotlb() leave me 
+concerned that assuming non-coherent DMA to any old Dom0 page is OK 
+might not actually work in general :/
 
-call   *0x0
+Thanks,
+Robin.
 
-where the offsets haven't been linked in yet.
-
-If this is going into the generic infrastructure, then it better be
-explained properly so that other stuff can potentially use it too.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+> +		return;
+> +	}
+> +#endif
+>   	xen_setup_dma_ops(dev);
+>   	dev->archdata.dma_ops_setup = true;
+>   }
+> diff --git a/drivers/xen/Kconfig b/drivers/xen/Kconfig
+> index d5989871dd5d..44e1334b6acd 100644
+> --- a/drivers/xen/Kconfig
+> +++ b/drivers/xen/Kconfig
+> @@ -181,6 +181,22 @@ config SWIOTLB_XEN
+>   	select DMA_OPS
+>   	select SWIOTLB
+>   
+> +config ARM_DMA_USE_IOMMU_XEN
+> +	bool "Prefer IOMMU DMA ops on Xen"
+> +	depends on SWIOTLB_XEN
+> +	depends on ARM_DMA_USE_IOMMU
+> +	help
+> +	  Normally on Xen, the IOMMU is used by Xen and not exposed to
+> +	  Linux. Some Arm systems such as Exynos have an IOMMU that
+> +	  Xen does not use so the IOMMU is exposed to Linux in those
+> +	  cases. This option enables Linux to use the IOMMU instead of
+> +	  using the Xen swiotlb_dma_ops for DMA on Xen.
+> +
+> +	  Say N here unless support for one or more devices that use
+> +	  IOMMU ops instead of Xen swiotlb ops for DMA is needed and the
+> +	  devices that use the IOMMU do not cause any problems on the
+> +	  Xen system in use.
+> +
+>   config XEN_PCI_STUB
+>   	bool
+>   
