@@ -2,105 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B99477EB6EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B42EE7EB6F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbjKNTjV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:39:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57382 "EHLO
+        id S229570AbjKNTj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:39:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232007AbjKNTjR (ORCPT
+        with ESMTP id S231390AbjKNTjx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:39:17 -0500
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1B912E;
-        Tue, 14 Nov 2023 11:39:10 -0800 (PST)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-586ad15f9aaso3068603eaf.2;
-        Tue, 14 Nov 2023 11:39:10 -0800 (PST)
+        Tue, 14 Nov 2023 14:39:53 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA64116
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:39:49 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c1bfd086f0so1164451a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:39:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699990789; x=1700595589; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=YOy2Jb1yR8H+KDVAUkMuOWbnw7u2AlKs0q0OU4Ox4dg=;
+        b=1eyvjaKPkOM9/syod/APwe8rlxIwK30ARa9MZJGVqFCG3NVtEyevw7exzedQVttEAN
+         BnNFs/Q6XJq2nkVllvikQhlKGoB/QMhhHX75HK2C8ZIa+MruMRGDhO1w4qd0UnYw/Xjm
+         Zp95YT/dVeRGFTqwGAmzB387ymv6D5mbilZ7y9Ceu1vPGS8dFL0dk96F+uiygTeHT1bC
+         EyNtv10r9ZyuuIHntlvmCjPX3oQ3np+W6HobxuBxtTxcUGI6Qnli1XFHljubG6UM5WfO
+         drqO+rEHXqAwizZpUua7CbMKE7fE9mqt0OQP1zzjpkgVsTimXjo+KGkj+UZvjDXi7Ve9
+         qHXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699990750; x=1700595550;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=rOp/7D19t5KiQPv67ZkS/lW4hFfliiklN4u28M8krzo=;
-        b=X9qkgWHfSZI5aJo1C2jOHfRVkXcVvsTTEqrp+Ml16a/YtSpP1JN5JpBKzBSZ1X+Q+0
-         PSP7e9juZCdhmeUV0owlXJRES1ol+6pgk30rGsGCjGIqBvuxe64h7pU9pQ4xX/Ncs1m4
-         /cPwL8HZ9jt3wEdTrcYMUA8gccJ7WvZ+SnY8WfeaV6rJZtDuObBWc8B0sHlKeSsBjxRW
-         lnYrVXVYSWKA/ow6oIHRRApudAfX9Bow5nNeH/Y1wItmsd/gZMcQLIZUlS6/U1ZhgZi5
-         hmLpL1r0wuOMl9A6adhV/wagJaNmFcRtbguiyOsCjLNCzkrtnftCqmgHYr4vzGaI6WhL
-         /sgg==
-X-Gm-Message-State: AOJu0Yx/7WR0PHsPld/jhKw2nRYL+qcrtd9NxpTxmDqU66poVeihbJAR
-        PNzlVeTCUQ+h+J+DBQQxEg==
-X-Google-Smtp-Source: AGHT+IERcJTwSE2IjznQUMFUWd+Hpf2yVdVpcnreOJTebqZqadSeZxqKirG0CXS/ZH9d1EgSh8MI0w==
-X-Received: by 2002:a4a:6342:0:b0:56c:cd0c:1d67 with SMTP id r2-20020a4a6342000000b0056ccd0c1d67mr8416884oof.7.1699990750072;
-        Tue, 14 Nov 2023 11:39:10 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id cz26-20020a0568306a1a00b006ce2fce83cbsm318662otb.25.2023.11.14.11.39.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 11:39:09 -0800 (PST)
-Received: (nullmailer pid 396917 invoked by uid 1000);
-        Tue, 14 Nov 2023 19:39:08 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Davis <afd@ti.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>, Conor Dooley <conor+dt@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-In-Reply-To: <20231114185613.322570-1-afd@ti.com>
-References: <20231114185613.322570-1-afd@ti.com>
-Message-Id: <169999074731.396816.12767576201162917485.robh@kernel.org>
-Subject: Re: [PATCH 1/4] dt-bindings: spi: Convert spi-davinci.txt to YAML
-Date:   Tue, 14 Nov 2023 13:39:08 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        d=1e100.net; s=20230601; t=1699990789; x=1700595589;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YOy2Jb1yR8H+KDVAUkMuOWbnw7u2AlKs0q0OU4Ox4dg=;
+        b=AgytL5bi5ZjvNn/uT6D8bWYbECzYnl76IW142KXrkZ+/ty3UiZCNEchtOKa2sgYQmU
+         c+qUpBiXoV2JvZPyDxluhkh555Zlt3pGjwzFg9ppo29+OjwsrNgtqGIBW0UmeXyCqoU3
+         lgRBWpNFgggdKIPiQyzIu9A589Q9gW6Q3svDFabpLTRrymC1ocjSneozXbhDbE/z8rwx
+         +b5qzpdA5UGvNbr3+ZhANphzvOwnuL5kzAmFh1ootj6eBa+v2Vvnim5VIc1JcxKUALs/
+         RUZQME53AE53U4+Z0HWKU6Qur/9I5dtm2YuocIEfURh/59oz/Pup1cHvT3x6XRT0ekjd
+         iI1Q==
+X-Gm-Message-State: AOJu0YzZ2/Sz8uDVmy1Cq4xpCX0tFTUMKjubVZac0xKxD/3Q5eNdd4bc
+        bv5KB+8hU+M6UXvdIu6N2whsilldOqE=
+X-Google-Smtp-Source: AGHT+IELdNJfmBdSyGP1UazLrbiVBbECc8jW+oar24BNIoRCoD71ecIN2G1p5PdKbnM8GZXagF+ybaigYRQ=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:8b82:b0:68e:3c6d:da66 with SMTP id
+ ig2-20020a056a008b8200b0068e3c6dda66mr2732255pfb.6.1699990789174; Tue, 14 Nov
+ 2023 11:39:49 -0800 (PST)
+Date:   Tue, 14 Nov 2023 11:39:39 -0800
+In-Reply-To: <0e27a686-43f9-5120-5097-3fd99982df62@oracle.com>
+Mime-Version: 1.0
+References: <20231018195638.1898375-1-seanjc@google.com> <e8002e94-33c5-617c-e951-42cd76666fad@oracle.com>
+ <0e27a686-43f9-5120-5097-3fd99982df62@oracle.com>
+Message-ID: <ZVPM-8MKW56hHCuw@google.com>
+Subject: Re: [PATCH] KVM: x86: Don't unnecessarily force masterclock update on
+ vCPU hotplug
+From:   Sean Christopherson <seanjc@google.com>
+To:     Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Woodhouse <dwmw2@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue, 14 Nov 2023 12:56:10 -0600, Andrew Davis wrote:
-> Convert spi-davinci.txt to ti,dm6441-spi.yaml.
+On Tue, Nov 14, 2023, Dongli Zhang wrote:
+> Hi Sean,
 > 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  .../devicetree/bindings/spi/spi-davinci.txt   | 100 ------------------
->  .../bindings/spi/ti,dm6441-spi.yaml           |  76 +++++++++++++
->  2 files changed, 76 insertions(+), 100 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/spi-davinci.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml
+> Would mind sharing if the patch is waiting for Reviewed-by, and when it will be
+> merged into kvm-x86 tree?
+
+I'm at LPC this week, and out next week, so nothing is going to get applied to
+kvm-x86 until after -rc3.  I considered trying to squeeze in a few things this
+week, but decided to just wait until -rc3 and not rush anything, as the timing
+doesn't really matter in the end.
+
+> While I not sure if the same developer can give both Tested-by and Reviewed-by ...
 > 
+> Reviewed-by: Dongli Zhang <dongli.zhang@oracle.com>
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/spi/ti,dm6441-spi.example.dtb: /example-0/spi@20bf0000: failed to match any schema with compatible: ['ti,dm6446-spi']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231114185613.322570-1-afd@ti.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+Thanks!  Providing both a Reviewed-by and Tested-by is totally valid.
