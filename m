@@ -2,91 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCD2B7EA8FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:13:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86287EA90B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbjKNDNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 22:13:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S231837AbjKNDRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 22:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNDNc (ORCPT
+        with ESMTP id S229454AbjKNDRx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 22:13:32 -0500
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3277C91;
-        Mon, 13 Nov 2023 19:13:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1699931608;
-        bh=mEjM4aj+NkL7GUkm5VQRa7ZEFTmJWuTrMYLwB+YCYns=;
-        h=Date:From:To:Cc:Subject:From;
-        b=rLLBCTa2KsDb0Xhg+fv9eL6HJ7PlKLX/fQfTyabroEY5twa6b9bosOycxzSG0ES1m
-         fyuZttRj/+rrOZVSvVY/OzgIe+w7Qw6zuVLLpidFOdM8DErQycSUc+D1kvol81aLJ1
-         hTZ6nmAOGA3H6uTzT/4laSmHhmi8wazn+XXOH7S9M+GfychtRjKBBZSYY5ODT2QQVY
-         ut1D3n0Ycp6JPlTpUsHijl0DrQ4668Vg1HR4BkQaJno8YMSx2+BE8I810LT9zGTEaB
-         g7GsGW8/y6DxM3w04JSxCzrFvxyJ+jWOckk+mEVRvD4V1zGmrPnNZ2eBUTg7PXWD67
-         8smnWHGujr2KA==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4STrwR5xVKz4wch;
-        Tue, 14 Nov 2023 14:13:27 +1100 (AEDT)
-Date:   Tue, 14 Nov 2023 14:13:26 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Paolo Bonzini <pbonzini@redhat.com>, KVM <kvm@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the kvm tree
-Message-ID: <20231114141326.38a3dcd4@canb.auug.org.au>
+        Mon, 13 Nov 2023 22:17:53 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E806191
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:17:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699931870; x=1731467870;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=jwo/jHiMXyVUADYct4D+5LfJifoti2Yg0Flyy8wZEW0=;
+  b=JPpj15JlphtnOtQAJTkHSHfo4cWGHSBfGIM1rL7UCmtITP7BJt4AAFYr
+   ehuy90KYmkmMj1c71Wj90kDVVJqTAFNoyCXcQjsaTivoYaiMobjF2nKWE
+   Ch+pOzeoBqujpGjnJB/jFLCktaVNDoLYzsXG8fPmIp3IZvKtGoLRjfNAS
+   pCvj5/OlpiiEZRRsURe5vQ8QdLLErOi1Gcohwbap8D8zjjcvrpkHgUgxW
+   Bn+gs9xvppuxyemC8qj8CFXNCMVi+1pIjLCcNGYJq1eqCHgw8F8R1i0To
+   tCWQTjGJZLTiT6BYWLdGtwk3Y7yl4AwGKjj3M7gBj2PETT1djDpOyw7vZ
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389424495"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="389424495"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 19:17:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="758018670"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="758018670"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orsmga007.jf.intel.com with ESMTP; 13 Nov 2023 19:17:48 -0800
+Message-ID: <1a07a265-f834-4834-b9cb-5c7016ee9142@linux.intel.com>
+Date:   Tue, 14 Nov 2023 11:13:37 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/+DOfe=f.BDu0TPE2QI61Sg+";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Cc:     baolu.lu@linux.intel.com,
+        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] iommu/vt-d: Omit devTLB invalidation requests when
+ TES=0
+To:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>
+References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
+ <20231114011036.70142-2-baolu.lu@linux.intel.com>
+ <BN9PR11MB52764263BE04AAFAC0907A8D8CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Language: en-US
+From:   Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <BN9PR11MB52764263BE04AAFAC0907A8D8CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/+DOfe=f.BDu0TPE2QI61Sg+
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 11/14/23 11:14 AM, Tian, Kevin wrote:
+>> From: Lu Baolu<baolu.lu@linux.intel.com>
+>> Sent: Tuesday, November 14, 2023 9:11 AM
+>>
+>> The latest VT-d spec indicates that when remapping hardware is disabled
+>> (TES=0 in Global Status Register), upstream ATS Invalidation Completion
+>> requests are treated as UR (Unsupported Request).
+>>
+>> Consequently, the spec recommends in section 4.3 Handling of Device-TLB
+>> Invalidations that software refrain from submitting any Device-TLB
+>> invalidation requests when address remapping hardware is disabled.
+>>
+>> Verify address remapping hardware is enabled prior to submitting Device-
+>> TLB invalidation requests.
+>>
+>> Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by
+>> default")
+>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
+>>   1 file changed, 18 insertions(+)
+>>
+>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
+>> index a3414afe11b0..23cb80d62a9a 100644
+>> --- a/drivers/iommu/intel/dmar.c
+>> +++ b/drivers/iommu/intel/dmar.c
+>> @@ -1522,6 +1522,15 @@ void qi_flush_dev_iotlb(struct intel_iommu
+>> *iommu, u16 sid, u16 pfsid,
+>>   {
+>>   	struct qi_desc desc;
+>>
+>> +	/*
+>> +	 * VT-d spec, section 4.3:
+>> +	 *
+>> +	 * Software is recommended to not submit any Device-TLB
+>> invalidation
+>> +	 * requests while address remapping hardware is disabled.
+>> +	 */
+>> +	if (!(iommu->gcmd & DMA_GCMD_TE))
+>> +		return;
+>> +
+> Is it a valid case to see such request when the iommu is disabled?
+> If not then let's add a WARN.
 
-Hi all,
+There might be valid cases. The VT-d translation is turned on after all
+devices get probed.
 
-After merging the kvm tree, today's linux-next build (htmldocs) produced
-this warning:
-
-Documentation/filesystems/api-summary:74: fs/anon_inodes.c:167: ERROR: Unex=
-pected indentation.
-Documentation/filesystems/api-summary:74: fs/anon_inodes.c:168: WARNING: Bl=
-ock quote ends without a blank line; unexpected unindent.
-
-Introduced by commit
-
-  e4c866e72563 ("fs: Rename anon_inode_getfile_secure() and anon_inode_getf=
-d_secure()")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/+DOfe=f.BDu0TPE2QI61Sg+
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVS5dYACgkQAVBC80lX
-0GxaRAf/fSqatinvrWZzaI2/+c9YCjKfIzui+Dbry8Gh8GdZ2g5DlY0/LnxSkMyi
-UrFZ1Q6BchZDUHhAcXqbQBC7Gj9/NJ70n3h7stAKfzbd8jIQbpd/Iw+3FWMIT1gk
-2MiCrWDOd0wmmPw7KMPzuHGEMaIIjPl4H1LmLB8U17Za1jy+JZ83Sn/KiJmSpw+O
-9OjKf2LNMEWkFpv6v0Hw2/nnBHDx2pJHpPADd2YSVPH7Y2VWSUerAs1X+IyJmOed
-Ufy19ttVQyNn/TvvPG3xRODXE8aSmiVMn/X7ZUfzFCtbUAGS7Lt/pR5BVxOZfXou
-SC2THURxPiB5dqcajinlvvOssEYXaQ==
-=Tp1g
------END PGP SIGNATURE-----
-
---Sig_/+DOfe=f.BDu0TPE2QI61Sg+--
+Best regards,
+baolu
