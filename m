@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 503BF7EB3B4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:33:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 652327EB3C2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:33:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233685AbjKNPdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:33:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
+        id S233677AbjKNPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233670AbjKNPda (ORCPT
+        with ESMTP id S233713AbjKNPdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:33:30 -0500
+        Tue, 14 Nov 2023 10:33:44 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86B68125
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:33:26 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69B37188
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699976005;
+        s=mimecast20190719; t=1699976013;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=/+dElhLP1quyzdQBmNveEGvmbZDs+wXRqJTs6dmoqmk=;
-        b=fGJo1gVLU6TfcouM7CLVUj+a7O2Jb1EBgzX3nCKhTgSajWgDRx2/KGciX6stJ+wqdtl21Y
-        9Cpq6EngAPBOXGSNomvR13N0K0cPpd6DbASfaGIjj22uJQhV8jBgVYOYW2jP+jlJ4OlyFG
-        oWhMmeax/1PTBlturri54ylqXeTObvE=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-85-N9Dy5BYSNKe1LYvnmcJoug-1; Tue, 14 Nov 2023 10:33:22 -0500
-X-MC-Unique: N9Dy5BYSNKe1LYvnmcJoug-1
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uyeWVmLOn2JLlMGOiKTLkdbq3lsSPR6w1wGNV6RcYZE=;
+        b=KTdIC4lwrtc+5ofd6UXQLmysmMXVH1WF6410lGqD9pRRWC2+Q4OFBUZU6qbj1DO7ucVOEH
+        1JMJ7rzURN3ZZF6FhL2Dekh1NPhbGJVlt6m35gMv3ptHMtRXl9OCrMbofAkqXGMMyh1EpX
+        jj7z//7QLJ2aube2XLItMCfXM7nZ8yY=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-329-vpv-XXKAOiq83ZmBq6vDFQ-1; Tue,
+ 14 Nov 2023 10:33:30 -0500
+X-MC-Unique: vpv-XXKAOiq83ZmBq6vDFQ-1
 Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CB809103B81C;
-        Tue, 14 Nov 2023 15:32:59 +0000 (UTC)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 8B4BE3C02B55;
+        Tue, 14 Nov 2023 15:33:03 +0000 (UTC)
 Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id A09871C060AE;
-        Tue, 14 Nov 2023 15:32:56 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C7AE1C060AE;
+        Tue, 14 Nov 2023 15:33:00 +0000 (UTC)
 From:   Baoquan He <bhe@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     kexec@lists.infradead.org, x86@kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
         linux-parisc@vger.kernel.org, Baoquan He <bhe@redhat.com>
-Subject: [PATCH 0/7] kexec_file: print out debugging message if required
-Date:   Tue, 14 Nov 2023 23:32:46 +0800
-Message-ID: <20231114153253.241262-1-bhe@redhat.com>
+Subject: [PATCH 1/7] kexec_file: add kexec_file flag to control debug printing
+Date:   Tue, 14 Nov 2023 23:32:47 +0800
+Message-ID: <20231114153253.241262-2-bhe@redhat.com>
+In-Reply-To: <20231114153253.241262-1-bhe@redhat.com>
+References: <20231114153253.241262-1-bhe@redhat.com>
 MIME-Version: 1.0
 Content-type: text/plain
 Content-Transfer-Encoding: 8bit
@@ -54,98 +57,118 @@ X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, specifying '-d' will print a lot of debugging information
-about kexec/kdump loading with kexec_load interface.
+When specifying 'kexec -c -d', kexec_load interface will print loading
+information, e.g the regions where kernel/initrd/purgatory/cmdline
+are put, the memmap passed to 2nd kernel taken as system RAM ranges,
+and printing all contents of struct kexec_segment, etc. These are
+very helpful for analyzing or positioning what's happening when
+kexec/kdump itself failed. The debugging printing for kexec_load
+interface is made in user space utility kexec-tools.
 
-However, kexec_file_load prints nothing even though '-d' is specified.
-It's very inconvenient to debug or analyze the kexec/kdump loading when
-something wrong happened with kexec/kdump itself or develper want to
-check the kexec/kdump loading.
+Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
+Because kexec_file code is mostly implemented in kernel space, and the
+debugging printing functionality is missed. It's not convenient when
+debugging kexec/kdump loading and jumping with kexec_file_load
+interface.
 
-In this patchset, a kexec_file flag is KEXEC_FILE_DEBUG added and checked
-in code. If it's passed in, debugging message of kexec_file code will be
-printed out and can be seen from console and dmesg. Otherwise, the
-debugging message is printed via pr_debug().
+Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
+message printing. And add global variable kexec_file_dbg_print and
+macro kexec_dprintk() to facilitate the printing.
 
-Note:
-=====
-1) The code in kexec-tools utility also need be changed to support
-passing KEXEC_FILE_DEBUG to kernel when 'kexec -s -d' is specified.
-The patch link is here:
-=========
-[PATCH] kexec_file: add kexec_file flag to support debug printing
-http://lists.infradead.org/pipermail/kexec/2023-November/028505.html
+This is a preparation, later kexec_dprintk() will be used to replace the
+existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
+kexec/kdump loading information. If '-d' is not specified, it regresses
+to pr_debug().
 
-2) s390 also has kexec_file code, while I am not sure what debugging
-information is necessary. So leave it to s390 dev to add if they think
-it's needed.
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ include/linux/kexec.h      | 14 +++++++++++++-
+ include/uapi/linux/kexec.h |  1 +
+ kernel/kexec_file.c        |  5 +++++
+ 3 files changed, 19 insertions(+), 1 deletion(-)
 
-Test:
-======
-I did testing on x86_64 and arm64. On x86_64, the printed messages look
-like below:
---------------------------------------------------------------
-kexec measurement buffer for the loaded kernel at 0x207fffe000.
-Loaded purgatory at 0x207fff9000
-Loaded boot_param, command line and misc at 0x207fff3000 bufsz=0x1180 memsz=0x1180
-Loaded 64bit kernel at 0x207c000000 bufsz=0xc88200 memsz=0x3c4a000
-Loaded initrd at 0x2079e79000 bufsz=0x2186280 memsz=0x2186280
-Final command line is: root=/dev/mapper/fedora_intel--knightslanding--lb--02-root ro rd.lvm.lv=fedora_intel-knightslanding-lb-02/root console=ttyS0,115200N81 crashkernel=256M
-E820 memmap:
-0000000000000000-000000000009a3ff (1)
-000000000009a400-000000000009ffff (2)
-00000000000e0000-00000000000fffff (2)
-0000000000100000-000000006ff83fff (1)
-000000006ff84000-000000007ac50fff (2)
-......
-000000207fff6150-000000207fff615f (128)
-000000207fff6160-000000207fff714f (1)
-000000207fff7150-000000207fff715f (128)
-000000207fff7160-000000207fff814f (1)
-000000207fff8150-000000207fff815f (128)
-000000207fff8160-000000207fffffff (1)
-nr_segments = 5
-segment[0]: buf=0x000000004e5ece74 bufsz=0x211 mem=0x207fffe000 memsz=0x1000
-segment[1]: buf=0x000000009e871498 bufsz=0x4000 mem=0x207fff9000 memsz=0x5000
-segment[2]: buf=0x00000000d879f1fe bufsz=0x1180 mem=0x207fff3000 memsz=0x2000
-segment[3]: buf=0x000000001101cd86 bufsz=0xc88200 mem=0x207c000000 memsz=0x3c4a000
-segment[4]: buf=0x00000000c6e38ac7 bufsz=0x2186280 mem=0x2079e79000 memsz=0x2187000
-kexec_file_load: type:0, start:0x207fff91a0 head:0x109e004002 flags:0x8
----------------------------------------------------------------------------
-
-Baoquan He (7):
-  kexec_file: add kexec_file flag to control debug printing
-  kexec_file: print out debugging message if required
-  kexec_file, x86: print out debugging message if required
-  kexec_file, arm64: print out debugging message if required
-  kexec_file, ricv: print out debugging message if required
-  kexec_file, power: print out debugging message if required
-  kexec_file, parisc: print out debugging message if required
-
- arch/arm64/kernel/kexec_image.c        |  2 +-
- arch/arm64/kernel/machine_kexec.c      | 24 ++++++------------------
- arch/arm64/kernel/machine_kexec_file.c |  6 +++---
- arch/parisc/kernel/kexec_file.c        |  6 +++---
- arch/powerpc/kexec/elf_64.c            |  8 ++++----
- arch/powerpc/kexec/file_load_64.c      | 14 +++++++-------
- arch/riscv/kernel/elf_kexec.c          |  9 +++++----
- arch/riscv/kernel/machine_kexec.c      | 26 --------------------------
- arch/x86/kernel/crash.c                |  2 +-
- arch/x86/kernel/kexec-bzimage64.c      | 23 ++++++++++++++---------
- include/linux/kexec.h                  | 14 +++++++++++++-
- include/uapi/linux/kexec.h             |  1 +
- kernel/crash_core.c                    |  3 ++-
- kernel/kexec_file.c                    | 12 +++++++++++-
- security/integrity/ima/ima_kexec.c     |  2 +-
- 15 files changed, 72 insertions(+), 80 deletions(-)
-
+diff --git a/include/linux/kexec.h b/include/linux/kexec.h
+index 8227455192b7..189a6c5bec84 100644
+--- a/include/linux/kexec.h
++++ b/include/linux/kexec.h
+@@ -264,6 +264,18 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
+ 	return -ENOEXEC;
+ }
+ #endif
++
++extern bool kexec_file_dbg_print;
++
++#define kexec_dprintk(fmt, args...)			\
++	do {						\
++		if (kexec_file_dbg_print)		\
++			printk(KERN_INFO fmt, ##args);	\
++		else					\
++			printk(KERN_DEBUG fmt, ##args);	\
++	} while (0)
++
++
+ #endif /* CONFIG_KEXEC_FILE */
+ 
+ #ifdef CONFIG_KEXEC_ELF
+@@ -403,7 +415,7 @@ bool kexec_load_permitted(int kexec_image_type);
+ 
+ /* List of defined/legal kexec file flags */
+ #define KEXEC_FILE_FLAGS	(KEXEC_FILE_UNLOAD | KEXEC_FILE_ON_CRASH | \
+-				 KEXEC_FILE_NO_INITRAMFS)
++				 KEXEC_FILE_NO_INITRAMFS | KEXEC_FILE_DEBUG)
+ 
+ /* flag to track if kexec reboot is in progress */
+ extern bool kexec_in_progress;
+diff --git a/include/uapi/linux/kexec.h b/include/uapi/linux/kexec.h
+index 01766dd839b0..c17bb096ea68 100644
+--- a/include/uapi/linux/kexec.h
++++ b/include/uapi/linux/kexec.h
+@@ -25,6 +25,7 @@
+ #define KEXEC_FILE_UNLOAD	0x00000001
+ #define KEXEC_FILE_ON_CRASH	0x00000002
+ #define KEXEC_FILE_NO_INITRAMFS	0x00000004
++#define KEXEC_FILE_DEBUG	0x00000008
+ 
+ /* These values match the ELF architecture values.
+  * Unless there is a good reason that should continue to be the case.
+diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
+index f9a419cd22d4..4c35500ae40a 100644
+--- a/kernel/kexec_file.c
++++ b/kernel/kexec_file.c
+@@ -38,6 +38,8 @@ void set_kexec_sig_enforced(void)
+ }
+ #endif
+ 
++bool kexec_file_dbg_print;
++
+ static int kexec_calculate_store_digests(struct kimage *image);
+ 
+ /* Maximum size in bytes for kernel/initrd files. */
+@@ -123,6 +125,8 @@ void kimage_file_post_load_cleanup(struct kimage *image)
+ 	 */
+ 	kfree(image->image_loader_data);
+ 	image->image_loader_data = NULL;
++
++	kexec_file_dbg_print = false;
+ }
+ 
+ #ifdef CONFIG_KEXEC_SIG
+@@ -278,6 +282,7 @@ kimage_file_alloc_init(struct kimage **rimage, int kernel_fd,
+ 	if (!image)
+ 		return -ENOMEM;
+ 
++	kexec_file_dbg_print = !!(flags & KEXEC_FILE_DEBUG);
+ 	image->file_mode = 1;
+ 
+ 	if (kexec_on_panic) {
 -- 
 2.41.0
 
