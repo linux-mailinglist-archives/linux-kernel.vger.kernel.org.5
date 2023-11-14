@@ -2,54 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 87BAA7EB2E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:58:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704C57EB2BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:47:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233409AbjKNO6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:58:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37614 "EHLO
+        id S233477AbjKNOrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNO6m (ORCPT
+        with ESMTP id S231697AbjKNOrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:58:42 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59DC710D
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:58:39 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A79EC433C8;
-        Tue, 14 Nov 2023 14:58:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699973918;
-        bh=0EG0AEP+OoGuvIOQpS68GDDBe/uBCpjeDc5+bp7MX8g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=N0aobSsAdILu3wEY6NGHTWkUN5ZL4RJ7fB806eCXdAcEqEEuvwAom4L+HtjuSTklZ
-         ANBiJltW/qtuqTjPzMhpDpmaGH3t17M/f1gXJ9cWunSTz46oA3s3nOfWJyIalKCJy6
-         tI7wy+Uazfq/RX4ByDdVS+vpPHh2X9j/uH/eTFlnOTiMqxCvLITbY2XzHvDAGWK9+R
-         USxZNZUuyWAhUuOe7jihyWNV0ukCrK4E3zRoY/1bnPMK1mSVRlcuuNbDsyD4iExwPg
-         Xbh2gjsOcWSWa5x21UwbYS4lG9CgnDHcWErZajVjNki9liJDTkFphbQUYpv6TgY+5Y
-         iUfyb8G+YMcTA==
-Date:   Tue, 14 Nov 2023 22:46:11 +0800
-From:   Jisheng Zhang <jszhang@kernel.org>
-To:     Chen Wang <unicorn_wang@outlook.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chao Wei <chao.wei@sophgo.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 1/2] riscv: dts: cv1800b: add pinctrl node for cv1800b
-Message-ID: <ZVOIMy0BB1eVwWup@xhacker>
-References: <20231113005702.2467-1-jszhang@kernel.org>
- <20231113005702.2467-2-jszhang@kernel.org>
- <MA0P287MB033298A1F0F1B59CDF110E52FEB2A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
+        Tue, 14 Nov 2023 09:47:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D94CA;
+        Tue, 14 Nov 2023 06:47:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699973254; x=1731509254;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=GiTo2oNKnQgB8DobzT7dE9XMXi3HGjrub1UPBLDMX/g=;
+  b=c242ZyIul8sBVmnb+sLuaowENsF72Wbez9QyClprVcz/Nbp/ozrHZudG
+   34/SVyopQ/9PtrYsqoKpQxFrhC0u0GVJc6arJ5ZHBqyLOo53K9GtdD4kq
+   UQBImwcnBfUvcQ2m2rZ93lA3vdMdU3z7kaxLJg4hy2jv3yf8CS6AFYOSt
+   U1nZ/rGJ98AMoDjzcySAICq/qtnXSogi/8DNB4Wx2S/323z0HiXbCJfYD
+   nySzEcGrkUIYtfOZZ65dAkJt57jZHaPX4IEFKoRz4iZ36Uwd1gyG3h0j9
+   lec/zAeV9cgZlRA1Wwn6GR2ehAPIv5Qny0KPOdvTFF4FCSSeDire5i4xL
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="12210151"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="12210151"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:47:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="741110362"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="741110362"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:47:29 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id E4C3C11FB5E;
+        Tue, 14 Nov 2023 16:47:25 +0200 (EET)
+Date:   Tue, 14 Nov 2023 14:47:25 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] lib/vsprintf: Fix %pfwf when current node
+ refcount == 0
+Message-ID: <ZVOIfXV8al5hiMQD@kekkonen.localdomain>
+References: <20231114143558.356259-1-herve.codina@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <MA0P287MB033298A1F0F1B59CDF110E52FEB2A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231114143558.356259-1-herve.codina@bootlin.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,80 +76,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 09:38:47AM +0800, Chen Wang wrote:
-> 
-> On 2023/11/13 8:57, Jisheng Zhang wrote:
-> > Add the reset device tree node to cv1800b SoC reusing the
-> > pinctrl-single driver.
-> > 
-> > Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> > ---
-> >   arch/riscv/boot/dts/sophgo/cv-pinctrl.h | 19 +++++++++++++++++++
-> >   arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 10 ++++++++++
-> >   2 files changed, 29 insertions(+)
-> >   create mode 100644 arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> 
-> 
-> I'm afraid there will not be more cv* chip in coming days. So I would
-> suggest you use "cv1800b-pinctrl.h" first here. If we see more cv* coming,
-> and if they will reuse the definition here, we can consider optimize the
-> filename, what do you think?
-> 
-> BTW, how about defining the file name as "cv1800b.h" and I'm not sure if you
+Hi Herve,
 
-hmm, cv1800b-pinctrl.h is fine. Only pinctrl related stuff will be put
-there.
-
-> will have more macro const definition for other modules?
+On Tue, Nov 14, 2023 at 03:35:58PM +0100, Herve Codina wrote:
+> A refcount issue can appeared in __fwnode_link_del() due to the
+> pr_debug() call:
+>   WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0xe5/0x110
+>   Call Trace:
+>   <TASK>
+>   ...
+>   of_node_get+0x1e/0x30
+>   of_fwnode_get+0x28/0x40
+>   fwnode_full_name_string+0x34/0x90
+>   fwnode_string+0xdb/0x140
+>   ...
+>   vsnprintf+0x17b/0x630
+>   ...
+>   __fwnode_link_del+0x25/0xa0
+>   fwnode_links_purge+0x39/0xb0
+>   of_node_release+0xd9/0x180
+>   ...
 > 
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv-pinctrl.h b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> > new file mode 100644
-> > index 000000000000..ed78b6fb3142
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> > @@ -0,0 +1,19 @@
-> > +/* SPDX-License-Identifier: GPL-2.0 */
-> > +/*
-> > + * This header provides constants for pinctrl bindings for Sophgo CV* SoC.
-> > + *
-> > + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> > + */
-> > +#ifndef _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > +#define _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> > +
-> > +#define MUX_M0		0
-> > +#define MUX_M1		1
-> > +#define MUX_M2		2
-> > +#define MUX_M3		3
-> > +#define MUX_M4		4
-> > +#define MUX_M5		5
-> > +#define MUX_M6		6
-> > +#define MUX_M7		7
-> > +
-> > +#endif
-> > diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > index e04df04a91c0..7a44d8e8672b 100644
-> > --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> > @@ -6,6 +6,8 @@
-> >   #include <dt-bindings/interrupt-controller/irq.h>
-> >   #include <dt-bindings/reset/sophgo,cv1800b-reset.h>
-> > +#include "cv-pinctrl.h"
-> > +
-> >   / {
-> >   	compatible = "sophgo,cv1800b";
-> >   	#address-cells = <1>;
-> > @@ -55,6 +57,14 @@ soc {
-> >   		dma-noncoherent;
-> >   		ranges;
-> > +		pinctrl0: pinctrl@3001000 {
-> > +			compatible = "pinctrl-single";
-> > +			reg = <0x3001000 0x130>;
-> > +			#pinctrl-cells = <1>;
-> > +			pinctrl-single,register-width = <32>;
-> > +			pinctrl-single,function-mask = <0x00000007>;
-> > +		};
-> > +
-> >   		rst: reset-controller@3003000 {
-> >   			compatible = "sophgo,cv1800b-reset";
-> >   			reg = <0x03003000 0x1000>;
+> Indeed, an fwnode (of_node) is being destroyed and so, of_node_release()
+> is called because the of_node refcount reached 0.
+> From of_node_release() several function calls are done and lead to
+> a pr_debug() calls with %pfwf to print the fwnode full name.
+> The issue is not present if we change %pfwf to %pfwP.
+> 
+> To print the full name, %pfwf iterates over the current node and its
+> parents and obtain/drop a reference to all nodes involved.
+> 
+> In order to allow to print the full name (%pfwf) of a node while it is
+> being destroyed, do not obtain/drop a reference to this current node.
+> 
+> Fixes: a92eb7621b9f ("lib/vsprintf: Make use of fwnode API to obtain node names and separators")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Herve Codina <herve.codina@bootlin.com>
+> ---
+> Changes v1 -> v2
+>   - Avoid handling current node out of the loop. Instead obtain/drop references
+>     in the loop based on the depth value.
+>   - Remove some of the backtrace lines in the commit log.
+> 
+>  lib/vsprintf.c | 11 ++++++++---
+>  1 file changed, 8 insertions(+), 3 deletions(-)
+> 
+> diff --git a/lib/vsprintf.c b/lib/vsprintf.c
+> index afb88b24fa74..633f5481ac17 100644
+> --- a/lib/vsprintf.c
+> +++ b/lib/vsprintf.c
+> @@ -2110,15 +2110,20 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
+>  
+>  	/* Loop starting from the root node to the current node. */
+>  	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
+> -		struct fwnode_handle *__fwnode =
+> -			fwnode_get_nth_parent(fwnode, depth);
+> +		/*
+> +		 * Only get a reference for other nodes (ie parents node).
+
+"i.e."
+
+With that,
+
+Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+> +		 * fwnode refcount may be 0 here.
+> +		 */
+> +		struct fwnode_handle *__fwnode = depth ?
+> +			fwnode_get_nth_parent(fwnode, depth) : fwnode;
+>  
+>  		buf = string(buf, end, fwnode_get_name_prefix(__fwnode),
+>  			     default_str_spec);
+>  		buf = string(buf, end, fwnode_get_name(__fwnode),
+>  			     default_str_spec);
+>  
+> -		fwnode_handle_put(__fwnode);
+> +		if (depth)
+> +			fwnode_handle_put(__fwnode);
+>  	}
+>  
+>  	return buf;
+
+-- 
+Regards,
+
+Sakari Ailus
