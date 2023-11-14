@@ -2,176 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 542AA7EB26C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:38:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 248C37EB28F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:40:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233619AbjKNOil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:38:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56976 "EHLO
+        id S233476AbjKNOj6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:39:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233473AbjKNOiX (ORCPT
+        with ESMTP id S233479AbjKNOjp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:38:23 -0500
-Received: from EUR04-VI1-obe.outbound.protection.outlook.com (mail-vi1eur04on2083.outbound.protection.outlook.com [40.107.8.83])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 213C5173E;
-        Tue, 14 Nov 2023 06:37:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jJl5dByr2EVDQNLIoDXezCs3afl66xMtVbvJLnZyVNtgnp9d7bgzyJtKqJVaEaTurPlHTklUEbHVDK/cXFf6woLvu/o6WjcbZEi4+njy/gJkjAkFVDJ7lckFb5Wh+kcZE0JMoimlwCDp6dT49+FdcFdFUMk31hrgUxNXBacSdYBOuEaJtVosOdNf+u6RzdZaKiJIGXehZvT6kqgcbmtcehG1UJSFfpcxhRev12mKkBfGKtqQ95vnzPs8IB2/1iiAcvaz4cMS1NRgTlwucNPzrnrfsCUrJ++kI3CgU9NDovyXfc94NyE0XQvEyeFAB54HkDWB0WVrbTBykzU7ygEQQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=fIp7OUZzg+QhnQ96ayhhLPJF21ZFpnDr328N3mBePF4=;
- b=iaVgV++ffTxZCBHT39XcUs06k+Eo+bvVjcNvipYzI06iXDVebXJagEPz4U0wD1teXddtb9pz+3AQfHMQGIaW+9dZfYalNYPhUfkU5oWItzrrslIk1mDvQFaQKcitB3kdTl+GBI6702DMfqBRqfbJlLAl53xgNcKOjlWNQdb2H6cmKqzCwlTXm7l8yAbETiRxQtVANv//MXa2aSWtDUFhTflxG2nH4NKNGrseqg2un/cMMb5csiztHB1Gcrbpn5CEtH0tL9eGOOIws6lfSgMApU4qg9OSW+a3QveB+KmksU5b79Va2ykbvHL5AUNErOSamXnOQbsKiGcUo+vwKiF3/A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fIp7OUZzg+QhnQ96ayhhLPJF21ZFpnDr328N3mBePF4=;
- b=0V6piuLy1Cq9SgD1vJgXEVP1f7iW9KB69EL1PHBqqHX/JYR7bZPSXnVwGMpv0JHqfRu1KwywO9IDm6QN6IHBn4MqudK8iTN1xI2FwMmXxPcXziXR/KPs3UZw8ylL6hEVGifBbGCkx2kV/WAZIIR3qswgj0Qsd9vHEjvwGB4g+IHpL+/cBh7XfAi4TBY62sHlusPasCz9ZRP7LUL3gIFeWnBb13ST8x7d32Ug2NmMPrByhSvvMFdd8CT9COiWbJgkmhuEK7UG8abCc0ROgaj+tETwocRkOc0mmIdXLz8TdwLRFs9TzUpeQMfnvnmn/BfvsmX4CHL+2HBf7SkIX5rp2A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=suse.com;
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com (2603:10a6:102:cc::8)
- by AM9PR04MB8456.eurprd04.prod.outlook.com (2603:10a6:20b:3df::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Tue, 14 Nov
- 2023 14:37:06 +0000
-Received: from PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17]) by PA4PR04MB7790.eurprd04.prod.outlook.com
- ([fe80::e665:a062:c68b:dd17%3]) with mapi id 15.20.7002.014; Tue, 14 Nov 2023
- 14:37:05 +0000
-Message-ID: <71636309-3bf1-4e7a-b586-c61fea30f7c0@suse.com>
-Date:   Tue, 14 Nov 2023 16:36:59 +0200
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 14/23] KVM: VMX: Dump FRED context in dump_vmcs()
-Content-Language: en-US
-To:     Xin Li <xin3.li@intel.com>, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hyperv@vger.kernel.org, linux-kselftest@vger.kernel.org
-Cc:     seanjc@google.com, pbonzini@redhat.com, corbet@lwn.net,
-        kys@microsoft.com, haiyangz@microsoft.com, wei.liu@kernel.org,
-        decui@microsoft.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, dave.hansen@linux.intel.com, x86@kernel.org,
-        hpa@zytor.com, vkuznets@redhat.com, peterz@infradead.org,
-        ravi.v.shankar@intel.com
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-15-xin3.li@intel.com>
-From:   Nikolay Borisov <nik.borisov@suse.com>
-In-Reply-To: <20231108183003.5981-15-xin3.li@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: ZR0P278CA0016.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:16::26) To PA4PR04MB7790.eurprd04.prod.outlook.com
- (2603:10a6:102:cc::8)
+        Tue, 14 Nov 2023 09:39:45 -0500
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81D91D4D;
+        Tue, 14 Nov 2023 06:38:34 -0800 (PST)
+Received: by mail-wr1-x42b.google.com with SMTP id ffacd0b85a97d-32f9268bf8cso3509354f8f.0;
+        Tue, 14 Nov 2023 06:38:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699972713; x=1700577513; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Vorw/gu3GSENL4iOEf1h3n+d1k2FLNe0fLO0LG+3W6c=;
+        b=OyHS/uUAheVZfq33d9mXkEL8bMthKdvS02PXgisJW/QtGv4TuBDHv8150Ctp4O6eaH
+         Kb9LNn4XpGnaPxTPMTtGHftJPeNAKXDbNs/D9nYFSSkpB4SWLnc07c2Y5g0uI1LBrGwO
+         aoV0VRV1tARhgds7Qa8CVxy+s7qHeZ7Vne1Zqb/V9lEeobZBOo6g035V2s6REzYMmi0K
+         0xlMNh6EgROn1bauq6m3ZjYIQwwuDwd1xykiUK/j+ObrWmWsRgg/R4wggQI1uSS23yI7
+         N/WCS2kZp+05CEkCJc1ES2546GCQN+p/DFWJYxAfnTBOK6WVYUkjCNmRq76qxOxj4PYY
+         KEjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699972713; x=1700577513;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vorw/gu3GSENL4iOEf1h3n+d1k2FLNe0fLO0LG+3W6c=;
+        b=w5jhK/W0znUOKfTOGbSw5rSmhtzRPVW/kwYTXWR2/5zNvGobGu29kpq18yZWTMXWE6
+         o435WgCCZC+PlwKBDnqzCzyfTOz9msdxrC32JxqctmWeIqB1fZJB83LC7IvyBO5xnmQt
+         HX6SZRxOYyBslXVBiqRjGZehDz++Q8awo+IL6vcg7EIBQw1s7OuVCtf/sTKQQlKTTJBR
+         4nV4+E2yn4QAHci1vmKCBuOHHh8O0lBAv9zc4uIf8dPIRCneoxLnVinylWjlzGHwTPUb
+         4ZEzjy7b0ezkyEhG5vDYK5O1SuMtNFjOmYJquZ0Xyxmv02L5UiS2T/NV3VdHshR5gChJ
+         uIrA==
+X-Gm-Message-State: AOJu0Ywlg/cd1y2wSEhpLHMX2wWfyUvMc/uzK6iWquei1qlcRI2IPQi7
+        me9GhmJsk76HUIl68hK8xC3YpCDT+Zg3QGEpI08=
+X-Google-Smtp-Source: AGHT+IEa3756+IK7kLn8TfUIhyxRe5b/b+mREq0xSgDtiRMc+7zmEFv+NGYQSChhd2xJgv/8L7sNxuGpwYP0239K3rE=
+X-Received: by 2002:a05:6000:184c:b0:32d:a022:8559 with SMTP id
+ c12-20020a056000184c00b0032da0228559mr6469652wri.47.1699972712797; Tue, 14
+ Nov 2023 06:38:32 -0800 (PST)
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PA4PR04MB7790:EE_|AM9PR04MB8456:EE_
-X-MS-Office365-Filtering-Correlation-Id: f56ab1d0-0f47-4c60-4fd9-08dbe51f2c14
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VuzdpoEvH9l5gF96VrW/BYUyPCtUMKYQH9UxfESN1ZOrnjflh5b+/lOU/WFsnuTgSnUUM8PNNJqtiXDrKbEHhAZx6w79yh7Ziotp+VBDZsg6STjkw9e4VctckE6XcpY/CLdNdn7kdxXViKhwGUOX7wTl1SUcfN8Yp2erWu363HbHUlGVHGp6MX1n7O6U2bjFZ3kkPSGe2lLH7Ro7ot1zxqRVKDR9dI/bd1ZJsTSLtnLn8hdA2zjsVotfgV1yu2t4uFwY4ZnG/YXKmMkl4tJrVeTGJC+0B6QZvDaI9b7R+3OhyNdVdUxC6rWrjA2O3Ohb71PcJTAVPQhF+1rCoUJFYXryWh6ssde23DwcQH6SbAdSpWf8zD+2xsNcj64U0J9Zqd4tm6+ON37ti3OG7clICg8DJmCbF/BUmhvVI3/vMgPDgBl+9MgpnF4P2x+p/ihvwmrzQdzlVM+u9n7dlNaIzFWktv5UkgdHf9xUkq4G8/bml0DJr96DirCWEMg3yV+GT7LXPd+XKliTm8if+fX+H5btrkM0hQJoOe+203ncxk546plz9qQCXHxUQronYBSiHPYNT+OthDCB5AXZX1wb+H0uEFjCyI4sqNk7RUdG/Xavc7tbpgKUorIPPIBYdk+A//zkfr40Mas+R8Gnu7C2Kw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB7790.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(136003)(346002)(376002)(366004)(39860400002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(86362001)(31696002)(2616005)(6512007)(478600001)(6486002)(6506007)(6666004)(38100700002)(83380400001)(2906002)(41300700001)(316002)(66946007)(66476007)(66556008)(7416002)(5660300002)(8936002)(4326008)(8676002)(36756003)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?ZTgvVTlyaUFMcUNuNXJ0VTM0QllRdmxuK0xUSlE2KzN6Zkx3aXJlMXhlRWNT?=
- =?utf-8?B?Mm0ycytLUTVyWGNvUnMwM2dwK2QvMElYN0FXeTZmbU9kdG1YeWpQLzZVUGZv?=
- =?utf-8?B?R215U0dUM1J1MGVlMWxuZlBjME5yOVJwL3A0UDA2Z2QzVkdBSWJVWjB5YTA1?=
- =?utf-8?B?NFkwRXc5ZW42WVZJV1ZTL3pZdUlpcGtCbDlqNkIxY0hjcE5sbUc2eXNscE1P?=
- =?utf-8?B?Mm4zNUN6KzBTTVYvUnV4NEdja3JRWUNCejlBaE9RVldpVWpiSUFGWGp6b2pu?=
- =?utf-8?B?bWdVSDYzL2laakVxcWtCSFF2VmZJMWpUTThlOG1PU2VDSEJMbTFQZWcxdktm?=
- =?utf-8?B?cGZDUWdPQmRwZlNHeitiVTdjTXpJam5adUxkNFhGdWxKSnNjQmtMd3MzWkVR?=
- =?utf-8?B?cXVBZS9RcENRdXNOaHVDWkRyT0cyVHdmZkViUVd0Y3BZMnhqYVNXbTN1bHhT?=
- =?utf-8?B?Q1JJcGFqbnU3WDhzOFVtNjBac2gzdkRvWmh4WTN5RjlKWWppQmNLaDhGTjM2?=
- =?utf-8?B?ZEVVZHpoZGtiZkhVcDN3R0VzdTcyVzRhNHhKZ0hML3lwM2ZjNVQyZlVrNUpC?=
- =?utf-8?B?Y2c1VkxsNmNRU1B3UGJNNmtRU3BiM0JlNE1sVjA1cWRsRjlCTGdvUGJJbVFE?=
- =?utf-8?B?VVltb3g1S1ljSEQwMXJwMlozWEZ2Ky9SL2p1OFh3dlV1aXlkVGZDMW1zOHRN?=
- =?utf-8?B?MUxGeEF6MEdWY21MS3hVRXk2bjBoVzFmYlhmSEJJZlp4N2Z0Q28xamh1U3Ux?=
- =?utf-8?B?cmJZMGRzeHNoT2IrMmtPWFREYnh5VzJ0bTliZm5jdkNvUkxCb3JUYzk2ZmZa?=
- =?utf-8?B?RWtpVGlEMXMvc2pvSmI4QmQyTmx0K05iVVhOYjZ4TUlWeEtQVkhzWjZMcEt4?=
- =?utf-8?B?QkQzOFZLR1M3UnJqaHZYL0wxZkRrSmwvSkpxY1lyZFpydVkyamtUZTcyS0tU?=
- =?utf-8?B?L29rRFJhNmdvMTEyQkdRdjYzQ0QzQUM0eThYU0F1b0lLaFpEVEJRMWhZcjNO?=
- =?utf-8?B?a0psSytsYnJUeFFDb2pjeC9JdkovamZscXpCaUZteVlCdTByVTJOVkJqM01H?=
- =?utf-8?B?NStzNFJoNHZUanhEQ3FmT2RjdnovVGhteExwalhuQ0xwS0FnLzBuQXFqanZ5?=
- =?utf-8?B?RkRvRXMzb2x2UThXemoxUWlKWmx6cmhFeVZtM0lxV0REQm9MS3R0aFFKZlY0?=
- =?utf-8?B?V3MrT040UUtDak10WXpVZGtJZG5LdDhuVDAzYWdhaWxxVEcrSGRmeUQ1NHNl?=
- =?utf-8?B?bTh3SWhsTkJMMVBFUjZoRTliRk90bkdIRndxb0hKRzlEdnl5MDJ6Z2JDemp3?=
- =?utf-8?B?eDBuZ1hGVHVJbWY2b0RjeGI0bmZERXY2RmFFOFJXQlJsTGZaRjVaT3ZmeVd0?=
- =?utf-8?B?eHVMZk5Rd210MTNmYVZPS2dybDJTVitiUUtHcmo0WFJDdDdZcHVLNjl1YmVr?=
- =?utf-8?B?dG1pczVwRVZGaW1MbnhPZk12NGJURzFQT2lFTCtQdkVjZHgzcDF6bkJaZGlI?=
- =?utf-8?B?dGhaeElLODU4U0RNZnBPWFQvQUFqdmNsbEtQNmkxK0FqanJLbjQweVpoZTJr?=
- =?utf-8?B?eTlCaVA5cTRSVVFRZWRhVGdpU2xEVlVtK015bmd0MjhFK1o5OERDQ3dBd1B6?=
- =?utf-8?B?RFJpZVRScUV5YTJ1L3NuWlgrc1VqYkJLeW1uMVNZbmRUeCthNlBHY21Mb1Qx?=
- =?utf-8?B?TmVvZE8vcVR6alB3V2VBb01ZN0F6MzN1R2lPV25Ia3ZwWHFyYWZhTWVKaWsx?=
- =?utf-8?B?d0krVGlpSlVHaFdncVdiZGJHLzg1dGExRXQwdlpYWUpWdGxTTS9LZTJ2dE5u?=
- =?utf-8?B?dlk0MzR6S0UvTHVBVjJVOHNBMXZnbkJWSlhZdE1EOEc3ZUIrM1Q3MXdnZW9I?=
- =?utf-8?B?OEtPMEczT1BmVFY1TFg3NGdDTUVZWTRoMkEzOTZWWlNIc0JLV212QXhEdDNz?=
- =?utf-8?B?VWpPdGx5RTZEbEJLTnFWUmdOQzdFb0F6RVZZcTdPbzc3NzNCRDliZFBVaTVR?=
- =?utf-8?B?Q0x4S0ZRYmxvcGFpZTRZYnR3Q29IWi9admJrL2gzUU51ajNzcUM3SnhPT1pD?=
- =?utf-8?B?b1BMN3VJWmN2MEJRRXR1U1hZNnI3anA4MXRWUUZjWlE1OEFrbHd3MkRDOG9a?=
- =?utf-8?B?VkN0WHUxRnlZUXY5SXFjNUxtRE1vc2tSUU1ML3I1eUo1TjJxQUZCU1F0anFY?=
- =?utf-8?Q?sVY3Tg/ZOd4OLo3gAIMeRo0lNw+i4H/0aWxFdK1MJBOM?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f56ab1d0-0f47-4c60-4fd9-08dbe51f2c14
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB7790.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 14:37:05.3435
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: RwdCejv0FO1iXWIkDXjjf/b+tOSEB4e2rpggmksbwcOKAxoaYCf0lBMLhVh1y+ShBgq/m5uiCileXgCV3aSAeg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8456
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231112095353.579855-1-debug.penguin32@gmail.com>
+ <2655833.BddDVKsqQX@oscar> <CALk6UxoRHWsJYuTcqg7zvf5rxGwMQymMpjGuSEw3d+syAVyt=g@mail.gmail.com>
+ <13392533.uLZWGnKmhe@oscar>
+In-Reply-To: <13392533.uLZWGnKmhe@oscar>
+From:   Ronald Monthero <debug.penguin32@gmail.com>
+Date:   Wed, 15 Nov 2023 00:38:21 +1000
+Message-ID: <CALk6UxqF26rpNi1wD1Q8VmX6X-woe5YuuRK-Uk7bNcwqsRFKZA@mail.gmail.com>
+Subject: Re: [PATCH] qnx4: fix to avoid panic due to buffer overflow
+To:     Anders Larsen <al@alarsen.net>
+Cc:     keescook@chromium.org, gustavoars@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
+        Niek Nooijens <nieknooijens@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 14, 2023 at 1:40=E2=80=AFAM Anders Larsen <al@alarsen.net> wrot=
+e:
+>
+< Snipped>
+>
+> sizeof(de->di_fname) is evaluated as QNX4_SHORT_NAME_MAX already at compi=
+le
+> time, see the definition of di_fname in uapi/linux/qnx4_fs.h
+>
+> I agree that the code is confusing, as 'de' is declared as a pointer to a
+> struct qnx4_inode_entry but in reality points to a struct qnx4_link_info =
+iff
+> QNX4_FILE_LINK is set in de->di_status.
+> (Note that the corresponding field dl_status in qnx4_link_info is at the =
+same
+> offset as di_status in qnx4_inode_entry - that's the disk layout.)
+>
 
+Thanks for the details, yes in  struct qnx4_inode_entry  its size
+char di_fname[QNX4_SHORT_NAME_MAX];
 
-On 8.11.23 г. 20:29 ч., Xin Li wrote:
-> Add FRED related VMCS fields to dump_vmcs() to have it dump FRED context.
-> 
-> Tested-by: Shan Kang <shan.kang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> ---
->   arch/x86/kvm/vmx/vmx.c | 48 ++++++++++++++++++++++++++++++++++++------
->   1 file changed, 41 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 518e68ee5a0d..b826dc188fc7 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -6429,7 +6429,7 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
->   	struct vcpu_vmx *vmx = to_vmx(vcpu);
->   	u32 vmentry_ctl, vmexit_ctl;
->   	u32 cpu_based_exec_ctrl, pin_based_exec_ctrl, secondary_exec_control;
-> -	u64 tertiary_exec_control;
-> +	u64 tertiary_exec_control, secondary_vmexit_ctl;
->   	unsigned long cr4;
->   	int efer_slot;
->   
-> @@ -6440,6 +6440,8 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
->   
->   	vmentry_ctl = vmcs_read32(VM_ENTRY_CONTROLS);
->   	vmexit_ctl = vmcs_read32(VM_EXIT_CONTROLS);
-> +	secondary_vmexit_ctl = cpu_has_secondary_vmexit_ctrls() ?
-> +			       vmcs_read64(SECONDARY_VM_EXIT_CONTROLS) : 0;
->   	cpu_based_exec_ctrl = vmcs_read32(CPU_BASED_VM_EXEC_CONTROL);
->   	pin_based_exec_ctrl = vmcs_read32(PIN_BASED_VM_EXEC_CONTROL);
->   	cr4 = vmcs_readl(GUEST_CR4);
-> @@ -6486,6 +6488,19 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
->   	vmx_dump_sel("LDTR:", GUEST_LDTR_SELECTOR);
->   	vmx_dump_dtsel("IDTR:", GUEST_IDTR_LIMIT);
->   	vmx_dump_sel("TR:  ", GUEST_TR_SELECTOR);
-> +#ifdef CONFIG_X86_64
-> +	if (cpu_feature_enabled(X86_FEATURE_FRED)) {
+< snipped>
+>
+> Niek reported that this fix improved the situation, but he later got a cr=
+ash,
+> albeit at a different place (but still within the qnx4fs).
 
-Shouldn't this be gated on whether FRED is enabled in kvm aka the CPUID 
-bit is enumerated ?
+Yes I saw that Niek has shared the second crash dump stack in above email t=
+hread
+and also in [1] Bugzilla 218111.The dump stack of the crash looks to
+be doing a similar
+lookup call context, do_statx =3D> vfs_statx =3D> filename_lookup =3D>
+qn4x_lookup =3D> fortify_panic ( )
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D218111#c4
 
-<snip>
+But  I also see a softlockup also in the dump stack, so something in
+their environment
+is causing softlock ups.  And that tallies with the symptoms of system
+freeze that Niek
+mentioned " I can mount and view the directories, but after several hours
+my system froze up again."
+
+watchdog: BUG: soft lockup - CPU#7 stuck for 26s! [pool-gvfsd-admi:31952]  =
+ <<<<
+
+It's possible the softlockups were occurring on fews of the CPUs on the sys=
+tem
+for a few hours before the crash occurred that caused a system slow down.
+
+BR,
+Ronald
