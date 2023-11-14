@@ -2,101 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B5E7EA8C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 03:45:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378D37EA8C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 03:45:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229677AbjKNCoQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 21:44:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43818 "EHLO
+        id S230255AbjKNCpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 21:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33524 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKNCoP (ORCPT
+        with ESMTP id S229454AbjKNCpN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 21:44:15 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D47DD4D
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 18:44:11 -0800 (PST)
-X-UUID: 26bfdf990ac844479c482bc4dafd3440-20231114
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:057b3a47-a8d6-4999-a647-aa790bf2bff1,IP:15,
-        URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:1
-X-CID-INFO: VERSION:1.1.32,REQID:057b3a47-a8d6-4999-a647-aa790bf2bff1,IP:15,UR
-        L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-        :release,TS:1
-X-CID-META: VersionHash:5f78ec9,CLOUDID:6e5e5b95-10ce-4e4b-85c2-c9b5229ff92b,B
-        ulkID:231114103432VTG881I7,BulkQuantity:1,Recheck:0,SF:24|17|19|45|66|102,
-        TC:nil,Content:0,EDM:-3,IP:-2,URL:11|1,File:nil,Bulk:40,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULN,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,
-        TF_CID_SPAM_FSI
-X-UUID: 26bfdf990ac844479c482bc4dafd3440-20231114
-X-User: heminhong@kylinos.cn
-Received: from localhost.localdomain [(116.128.244.169)] by mailgw
-        (envelope-from <heminhong@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1319809308; Tue, 14 Nov 2023 10:43:57 +0800
-From:   heminhong <heminhong@kylinos.cn>
-To:     heminhong@kylinos.cn
-Cc:     airlied@gmail.com, animesh.manna@intel.com,
-        ankit.k.nautiyal@intel.com, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, intel-gfx@lists.freedesktop.org,
-        jani.nikula@linux.intel.com, joonas.lahtinen@linux.intel.com,
-        linux-kernel@vger.kernel.org, rodrigo.vivi@intel.com,
-        tvrtko.ursulin@linux.intel.com, kernel test robot <lkp@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Uma Shankar <uma.shankar@intel.com>
-Subject: [PATCH v2] drm/i915: correct the input parameter on _intel_dsb_commit()
-Date:   Tue, 14 Nov 2023 10:43:41 +0800
-Message-Id: <20231114024341.14524-1-heminhong@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231113033613.30339-1-heminhong@kylinos.cn>
-References: <20231113033613.30339-1-heminhong@kylinos.cn>
+        Mon, 13 Nov 2023 21:45:13 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C29198;
+        Mon, 13 Nov 2023 18:45:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699929908;
+        bh=Gi8y97nQFqKGwgOJbbb6k7fZuwkjoq/Rvdu4DGIdq0Y=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=cnd7nFvJdvOa8NHLiAvKAAGPVxc4TY1BhFDJr4l2rXWH7Gx6/Tzbb1se3T4Ul4x64
+         OTlVX97R1KAWSqZvKePa4j5PDI4nSC6zVq4PCiWhQ/SgwY/Ow7hnw/1SATDYBDvmY0
+         S4YcklyQ4aiUhxQ7/FqUn32QjASdP/OCJ8NwsJHThB5bjgl+xI/1kJTGW8D9yFvsrS
+         3jrVTDALrt9C+YwMrm6/tU4N+usDR2WFXLSTUeG0s7xKVa4zlm10eIN/llZeRc4A9B
+         aP2BcJkmF0/UEYVTy7SClXN9mCfwJ/ev0zh33myspE93xPPSr17DIS7xo/S1Vm5N0P
+         BNWJmsp9yu/lQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4STrHl3gCGz4wcH;
+        Tue, 14 Nov 2023 13:45:07 +1100 (AEDT)
+Date:   Tue, 14 Nov 2023 13:45:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Luben Tuikov <ltuikov89@gmail.com>
+Cc:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc
+ tree
+Message-ID: <20231114134506.2ba0de1f@canb.auug.org.au>
+In-Reply-To: <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
+References: <20231114075501.61321c29@canb.auug.org.au>
+        <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
+        <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/vfjO+_ZRiq3XzHms7GsPcc9";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current, the dewake_scanline variable is defined as unsigned int,
-an unsigned int variable that is always greater than or equal to 0.
-when _intel_dsb_commit function is called by intel_dsb_commit function,
-the dewake_scanline variable may have an int value.
-So the dewake_scanline variable is necessary to defined as an int.
+--Sig_/vfjO+_ZRiq3XzHms7GsPcc9
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: f83b94d23770 ("drm/i915/dsb: Use DEwake to combat PkgC latency")
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202310052201.AnVbpgPr-lkp@intel.com/
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Cc: Uma Shankar <uma.shankar@intel.com>
+Hi Luben,
 
-Signed-off-by: heminhong <heminhong@kylinos.cn>
----
- drivers/gpu/drm/i915/display/intel_dsb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Mon, 13 Nov 2023 20:32:40 -0500 Luben Tuikov <ltuikov89@gmail.com> wrote:
+>
+> On 2023-11-13 20:08, Luben Tuikov wrote:
+> > On 2023-11-13 15:55, Stephen Rothwell wrote: =20
+> >> Hi all,
+> >>
+> >> Commit
+> >>
+> >>   0da611a87021 ("dma-buf: add dma_fence_timestamp helper")
+> >>
+> >> is missing a Signed-off-by from its committer.
+> >> =20
+> >=20
+> > In order to merge the scheduler changes necessary for the Xe driver, th=
+ose changes
+> > were based on drm-tip, which included this change from drm-misc-fixes, =
+but which
+> > wasn't present in drm-misc-next.
+> >=20
+> > I didn't want to create a merge conflict between drm-misc-next and drm-=
+misc-fixes,
+> > when pulling that change from drm-misc-next to drm-misc-fixes, so that =
+I can apply =20
+>=20
+> ... when pulling that change from from drm-misc-fixes into drm-misc-next,=
+ so that I can apply...
+>=20
+> > the Xe scheduler changes on top of drm-misc-next. =20
+>=20
+> The change in drm-misc-fixes is b83ce9cb4a465b. The latter is contained
+> in linus-master, and in drm-misc-fixes, while the former is in drm-misc-n=
+ext.
+> When we merge linus-master/drm-misc-fixes into drm-misc-next, or whicheve=
+r way
+> it happens, I'd like to avoid a merge conflict, but wanted to expedite th=
+e changes
+> for Xe.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_dsb.c b/drivers/gpu/drm/i915/display/intel_dsb.c
-index 78b6fe24dcd8..7fd6280c54a7 100644
---- a/drivers/gpu/drm/i915/display/intel_dsb.c
-+++ b/drivers/gpu/drm/i915/display/intel_dsb.c
-@@ -340,7 +340,7 @@ static int intel_dsb_dewake_scanline(const struct intel_crtc_state *crtc_state)
- }
- 
- static void _intel_dsb_commit(struct intel_dsb *dsb, u32 ctrl,
--			      unsigned int dewake_scanline)
-+			      int dewake_scanline)
- {
- 	struct intel_crtc *crtc = dsb->crtc;
- 	struct drm_i915_private *dev_priv = to_i915(crtc->base.dev);
--- 
-2.25.1
+None of that is relevant ... if you commit a patch to a tree that will
+be in the linux kernel tree, you must add your Signed-off-by to the commit.
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/vfjO+_ZRiq3XzHms7GsPcc9
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVS3zIACgkQAVBC80lX
+0GwJtggAkD7+ISMdGhuawUsK8eHqoe6XD78rEGSbC5QjpkKyNnQejtovwRHAMibV
+pzhHOonfSs8uxfbU61N0SI6iLlnPVydhUUwHDYXk/RxRAVodVrVW/uWbkXS5Oxtv
+UbFigYw3Hcs5Vy6/p77YnFsgVXs8Ba09iIKd3uZgDZTX3K8pnN0RGyw343rInPR0
+d9TFMjpn3hWzANScGffubmX4Wa4zeRcuz79o1Rk15G8G5KxSfema9AqWGnjircVn
+cqgR4poVpb4rAJVGy20ylEWVOiCjU/NY+zDFk8bACgzkGMCAJXxeF27pSwGi1fP/
+VgGh82PauC3TcQJFsYQJd3bj2ZWBfg==
+=EZ5f
+-----END PGP SIGNATURE-----
+
+--Sig_/vfjO+_ZRiq3XzHms7GsPcc9--
