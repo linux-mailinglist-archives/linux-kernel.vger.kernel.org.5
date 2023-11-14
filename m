@@ -2,257 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 47D507EAB9B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:28:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 200757EAB9E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:30:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232270AbjKNI2y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:28:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47638 "EHLO
+        id S232217AbjKNIal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:30:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjKNI2w (ORCPT
+        with ESMTP id S232136AbjKNIak (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:28:52 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F2381A8
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:28:49 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id AB4D41F86A;
-        Tue, 14 Nov 2023 08:28:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699950527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1VImW4B6srxfXA5nWuLhdIDVhpu29w9bggFGA6dC5dc=;
-        b=XzRe5y8JUQsLEs8n8QZQ1FvRBv5c5YzWtiBu6mCXqoyKck1c+pKg5DUgHArOvsoSO6YQQC
-        n8YHLcVpYf4uteBfcTEGXkIfZfTCSpLKHE5owUPNHPo/dQqkmnKU/wis0LOAPPSLLlaP7p
-        elIFO5+CobI6oxsVnZNpdHjnLtco2u4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 89B6B13460;
-        Tue, 14 Nov 2023 08:28:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id HOkrIL8vU2VQcAAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 08:28:47 +0000
-Message-ID: <54d307d7-6785-47b0-bc2a-698e46adc25f@suse.com>
-Date:   Tue, 14 Nov 2023 09:28:46 +0100
+        Tue, 14 Nov 2023 03:30:40 -0500
+Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356491AC;
+        Tue, 14 Nov 2023 00:30:36 -0800 (PST)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+        by mailout.nyi.internal (Postfix) with ESMTP id B4D995C02AD;
+        Tue, 14 Nov 2023 03:30:32 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Tue, 14 Nov 2023 03:30:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
+        :cc:content-transfer-encoding:content-type:content-type:date
+        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
+        1699950632; x=1700037032; bh=e9TuNY/MgUAE3JgFVSVk32xC4oXMQG0XMcL
+        r2XaWy5s=; b=YieOsOBya8bi01V64pl/+Hptg6wcpg+kVdeuU9ed4rD0x4RjOhI
+        9ZwBL3+FTduDfzW4KY9bGh0/kKDL7Ys92YgPYB6bOI9QEusE+mNsVOOoUgdRRLvY
+        PGTSaxuze3nE/EPW38vZbgoRye72FL5jpaDjyT3DiGodyC1mDBLgxaIBvNxm4Lb+
+        NtIjqx7oiUfIQIECa8xGxKYSyQMjVuTOE9SVUs4Xq0fEoN819okpN2ghADO+I1l3
+        2/QM82COZwBijH8E4A5J1EvineaNNdXbwUTSxuR4HPvxKhkLWhZ8hbva0FQQLv0C
+        6eBo6kic09UJgTCi/A6UNSEy/mridC57rUA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1699950632; x=1700037032; bh=e9TuNY/MgUAE3JgFVSVk32xC4oXMQG0XMcL
+        r2XaWy5s=; b=QPS1DterzM8AsAGl81Tkm4vZn97jwLaC/Rutn1rScC6FlEipkTo
+        84myra5htLkhpFljrnmap/3tNud3W8O1YM9fxyGalrcnHwIZOEvB8Yy+mbdGLA9n
+        RwL7H0vdtgCSLle2e6VH0SFi1cTGfXj8o1UlsmR9gOSKudHHtUdu6938IHsEsEuC
+        3t7Xz22l5Mkez4qteQkGXqa4Gg8+bMrgwICvrXehL7RNYV1TDhoaii1hIfzJp3E9
+        v/E22t71mJHtEsRI6jR6TV0fCtlwEHnCRDdky/0/0dlIxTxtjlxjdQrkHp+cWpoo
+        k8iE4Bj07pe1vmbJqikqW9OHKNLejbI7yOw==
+X-ME-Sender: <xms:KDBTZfMcuTtXDXICwtvbv4qf_XMylGYCPutk41fE8WCpH7xuXNKqyw>
+    <xme:KDBTZZ_BzW-wQPmrB64Sx_QGQLWu3TpPIKJ6DymnRK-EwIa6IcGvHiYMfOiB8a-0l
+    NnBDvje3Mvn>
+X-ME-Received: <xmr:KDBTZeSihM5Z3EHZ8FJPq0v3K7Wo-Rcd8AKj0285Cuxj8nIi54aW1vykRpKX2ZePGdKBra1mhriPzHFQzsOqE5mwqgX8AqS_2Ma6E7kLgb9KjENLnCdrQumk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefuddguddvudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefkffggfgfvvehfhffujggtgfesthekredttdefjeenucfhrhhomhepkfgr
+    nhcumfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrh
+    hnpeeujedtffffueehfefgvdefkeduffdvjeevvedukeevveekhedtheegkeeujedvveen
+    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvg
+    hnsehthhgvmhgrfidrnhgvth
+X-ME-Proxy: <xmx:KDBTZTuf5T_ThwE16gXqlZ5AD7OszJbFQdKytzxGlMKusvfXBt14hQ>
+    <xmx:KDBTZXeSe7JDugEs0T-RobutcW2XHYtbFIaB5fPdvz8uluxCxa-FMQ>
+    <xmx:KDBTZf3izrydV4SUDjECloqGgppoSG8cFJPjJhd5BfZ6LXv3YqT4Og>
+    <xmx:KDBTZe7cnqUJYvhPHKIVHZkMcN72xMwSaT-IXPfG4N1b5v1-w-xtzw>
+Feedback-ID: i31e841b0:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Nov 2023 03:30:29 -0500 (EST)
+Message-ID: <e2654c2c-947a-60e5-7b86-9a13590f6211@themaw.net>
+Date:   Tue, 14 Nov 2023 16:30:25 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/7] xen/events: remove some simple helpers from
- events_base.c
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Edward Adam Davis <eadavis@qq.com>,
+        syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com,
+        autofs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000ae5995060a125650@google.com>
+ <tencent_3744B76B9760E6DA33798369C96563B2C405@qq.com>
+ <4fcf49456c32087f5306e84c4a8df5b2bd9f4146.camel@themaw.net>
+ <20231114044110.GR1957730@ZenIV>
 Content-Language: en-US
-To:     Oleksandr Tyshchenko <Oleksandr_Tyshchenko@epam.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Stefano Stabellini <sstabellini@kernel.org>,
-        "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-References: <20231016062831.20630-1-jgross@suse.com>
- <20231016062831.20630-5-jgross@suse.com>
- <b7b705e6-584b-4655-b005-521be3f23c1e@epam.com>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <b7b705e6-584b-4655-b005-521be3f23c1e@epam.com>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------tlfKjd7d3b3VFnEzLdQErORx"
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -4.41
-X-Spamd-Result: default: False [-4.41 / 50.00];
-         ARC_NA(0.00)[];
-         TO_DN_EQ_ADDR_SOME(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         RCPT_COUNT_THREE(0.00)[4];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         BAYES_HAM(-0.42)[78.09%];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         MIME_BASE64_TEXT(0.10)[];
-         SIGNED_PGP(-2.00)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+From:   Ian Kent <raven@themaw.net>
+Subject: Re: [PATCH] autofs: fix null deref in autofs_fill_super
+In-Reply-To: <20231114044110.GR1957730@ZenIV>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------tlfKjd7d3b3VFnEzLdQErORx
-Content-Type: multipart/mixed; boundary="------------rpRBaSTtX6qjOtxWiXEMNL6e";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Oleksandr Tyshchenko <Oleksandr_Tyshchenko@epam.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: Stefano Stabellini <sstabellini@kernel.org>,
- "xen-devel@lists.xenproject.org" <xen-devel@lists.xenproject.org>
-Message-ID: <54d307d7-6785-47b0-bc2a-698e46adc25f@suse.com>
-Subject: Re: [PATCH 4/7] xen/events: remove some simple helpers from
- events_base.c
-References: <20231016062831.20630-1-jgross@suse.com>
- <20231016062831.20630-5-jgross@suse.com>
- <b7b705e6-584b-4655-b005-521be3f23c1e@epam.com>
-In-Reply-To: <b7b705e6-584b-4655-b005-521be3f23c1e@epam.com>
+On 14/11/23 12:41, Al Viro wrote:
+> On Tue, Nov 14, 2023 at 12:25:35PM +0800, Ian Kent wrote:
+>>>          root_inode = autofs_get_inode(s, S_IFDIR | 0755);
+>>> +       if (!root_inode)
+>>> +               goto fail;
+>> Yes, I think this is the only thing it could be.
+>>
+>> There's one small problem though, it leaks the dentry info. ino,
+>> allocated just above. I think this should goto label fail_ino instead.
+>>
+>> Note that once the root dentry is allocated then the ino struct will
+>> be freed when the dentry is freed so ino doesn't need to be freed.
+> There's a simpler solution:
+>
+>          root_inode = autofs_get_inode(s, S_IFDIR | 0755);
+> 	if (root_inode) {
+> 		root_inode->i_uid = ctx->uid;
+> 		root_inode->i_gid = ctx->gid;
+> 	}
+>          root = d_make_root(root_inode);
+>          if (!root)
+>                  goto fail_ino;
+>
+> d_make_root(NULL) will quietly return NULL, which is all you
+> need.  FWIW, I would probably bring the rest of initialization
+>          root_inode->i_fop = &autofs_root_operations;
+>          root_inode->i_op = &autofs_dir_inode_operations;
+> in there as well.
+>
+> Incidentally, why bother with separate fail_dput thing?  Shove it
+> into ->s_root and return ret - autofs_kill_sb() will take care
+> of dropping it...
+>
+> How about the following:
 
---------------rpRBaSTtX6qjOtxWiXEMNL6e
-Content-Type: multipart/mixed; boundary="------------1lQOOysRt0k0EE08u1oWzwrQ"
+Yes, I think so, AFAICS so far it looks like everything is covered.
 
---------------1lQOOysRt0k0EE08u1oWzwrQ
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+I'll look around a bit longer, I need to go over that mount API code
 
-T24gMTMuMTEuMjMgMTg6MzUsIE9sZWtzYW5kciBUeXNoY2hlbmtvIHdyb3RlOg0KPiANCj4g
-DQo+IE9uIDE2LjEwLjIzIDA5OjI4LCBKdWVyZ2VuIEdyb3NzIHdyb3RlOg0KPiANCj4gDQo+
-IEhlbGxvIEp1ZXJnZW4uDQo+IA0KPiANCj4+IFRoZSBoZWxwZXIgZnVuY3Rpb25zIHR5cGVf
-ZnJvbV9pcnEoKSBhbmQgY3B1X2Zyb21faXJxKCkgYXJlIGp1c3Qgb25lDQo+PiBsaW5lIGZ1
-bmN0aW9ucyB1c2VkIG9ubHkgaW50ZXJuYWxseS4NCj4+DQo+PiBPcGVuIGNvZGUgdGhlbSB3
-aGVyZSBuZWVkZWQuIEF0IHRoZSBzYW1lIHRpbWUgbW9kaWZ5IGFuZCByZW5hbWUNCj4+IGdl
-dF9ldnRjaG5fdG9faXJxKCkgdG8gcmV0dXJuIGEgc3RydWN0IGlycV9pbmZvIGluc3RlYWQg
-b2YgdGhlIElSUQ0KPj4gbnVtYmVyLg0KPj4NCj4+IFNpZ25lZC1vZmYtYnk6IEp1ZXJnZW4g
-R3Jvc3MgPGpncm9zc0BzdXNlLmNvbT4NCj4gDQo+IA0KPiANCj4gW3NuaXBdDQo+IA0KPiAN
-Cj4gDQo+Pg0KPj4gQEAgLTExODEsMTUgKzExNzIsMTYgQEAgc3RhdGljIGludCBiaW5kX2V2
-dGNobl90b19pcnFfY2hpcChldnRjaG5fcG9ydF90IGV2dGNobiwgc3RydWN0IGlycV9jaGlw
-ICpjaGlwLA0KPj4gICAgew0KPj4gICAgCWludCBpcnE7DQo+PiAgICAJaW50IHJldDsNCj4+
-ICsJc3RydWN0IGlycV9pbmZvICppbmZvOw0KPj4gICAgDQo+PiAgICAJaWYgKGV2dGNobiA+
-PSB4ZW5fZXZ0Y2huX21heF9jaGFubmVscygpKQ0KPj4gICAgCQlyZXR1cm4gLUVOT01FTTsN
-Cj4gDQo+IA0KPiBJIGFzc3VtZSB0aGlzIGNoZWNrIGlzIGNhbGxlZCBoZXJlICgqYmVmb3Jl
-KiBob2xkaW5nIGEgbG9jaykgYnkNCj4gaW50ZW50aW9uLCBhcyBldnRjaG5fdG9faW5mbygp
-IGJlbG93IGNvbnRhaW5zIHRoZSBzYW1lIGNoZWNrLg0KDQpZZXMuDQoNCj4gDQo+PiAgICAN
-Cj4+ICAgIAltdXRleF9sb2NrKCZpcnFfbWFwcGluZ191cGRhdGVfbG9jayk7DQo+PiAgICAN
-Cj4+IC0JaXJxID0gZ2V0X2V2dGNobl90b19pcnEoZXZ0Y2huKTsNCj4+ICsJaW5mbyA9IGV2
-dGNobl90b19pbmZvKGV2dGNobikgPg0KPj4gLQlpZiAoaXJxID09IC0xKSB7DQo+PiArCWlm
-ICghaW5mbykgew0KPj4gICAgCQlpcnEgPSB4ZW5fYWxsb2NhdGVfaXJxX2R5bmFtaWMoKTsN
-Cj4+ICAgIAkJaWYgKGlycSA8IDApDQo+PiAgICAJCQlnb3RvIG91dDsNCj4+IEBAIC0xMjEy
-LDggKzEyMDQsOCBAQCBzdGF0aWMgaW50IGJpbmRfZXZ0Y2huX3RvX2lycV9jaGlwKGV2dGNo
-bl9wb3J0X3QgZXZ0Y2huLCBzdHJ1Y3QgaXJxX2NoaXAgKmNoaXAsDQo+PiAgICAJCSAqLw0K
-Pj4gICAgCQliaW5kX2V2dGNobl90b19jcHUoZXZ0Y2huLCAwLCBmYWxzZSk7DQo+PiAgICAJ
-fSBlbHNlIHsNCj4+IC0JCXN0cnVjdCBpcnFfaW5mbyAqaW5mbyA9IGluZm9fZm9yX2lycShp
-cnEpOw0KPj4gLQkJV0FSTl9PTihpbmZvID09IE5VTEwgfHwgaW5mby0+dHlwZSAhPSBJUlFU
-X0VWVENITik7DQo+PiArCQlXQVJOX09OKGluZm8tPnR5cGUgIT0gSVJRVF9FVlRDSE4pOw0K
-Pj4gKwkJaXJxID0gaW5mby0+aXJxOw0KPj4gICAgCX0NCj4gDQo+IA0KPiBUaGlzIGh1bmsg
-ZG9lc24ndCBhcHBseSBjbGVhcmx5IHRvIHRoZSBsYXRlc3Qgc3RhdGUsIGJlY2F1c2Ugb2YN
-Cj4gIjllOTBlNThjMTFiNyB4ZW46IGV2dGNobjogQWxsb3cgc2hhcmVkIHJlZ2lzdHJhdGlv
-biBvZiBJUlEgaGFuZGVycyINCj4gd2VudCBpbi4gUGxlYXNlIHJlYmFzZS4NCj4gDQo+IA0K
-PiBXaXRoIHRoYXQ6DQo+IFJldmlld2VkLWJ5OiBPbGVrc2FuZHIgVHlzaGNoZW5rbyA8b2xl
-a3NhbmRyX3R5c2hjaGVua29AZXBhbS5jb20+DQoNClRoYW5rcywNCg0KDQpKdWVyZ2VuDQoN
-Cg==
---------------1lQOOysRt0k0EE08u1oWzwrQ
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+again anyway ...
 
------BEGIN PGP PUBLIC KEY BLOCK-----
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+I'll prepare a patch, the main thing that I was concerned about was
 
---------------1lQOOysRt0k0EE08u1oWzwrQ--
+whether the cause really was NULL root_inode but Edward more or less
 
---------------rpRBaSTtX6qjOtxWiXEMNL6e--
+tested that.
 
---------------tlfKjd7d3b3VFnEzLdQErORx
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
------BEGIN PGP SIGNATURE-----
+Ian
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTL74FAwAAAAAACgkQsN6d1ii/Ey/G
-HAf+PzNlux/UYkkq7m/KJ8DOOP2nKXi5u0oKhFohSqxlsjaLOzQEO1zROt5UbKrjahI647eOUGNt
-/s/yCMcIpgL/DjG3riW3kykBJm7O7d91BZQBTGDhhtEJGWW4ILkcQCSD5YBQ12wxuVMuss9yHaRn
-UOJ+yxdQHNN6sQpV6LD9i3+xRM+RwJc7lTsDKqIZ6/Vt+fJL3ytu90MtjMWPvnwZKBaFdmcBNFHQ
-5ldcD4F96jecp7tILPolC7bURR4N20r+sTQ5PNRWE1sIixEemiORN7r6KWyhd+fYivEblMymxfSA
-sP3y13uJewdHjmRaxqoSIeigACW6cmEK7o2vZOlbzw==
-=mHlO
------END PGP SIGNATURE-----
-
---------------tlfKjd7d3b3VFnEzLdQErORx--
+> static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
+> {
+> 	struct autofs_fs_context *ctx = fc->fs_private;
+> 	struct autofs_sb_info *sbi = s->s_fs_info;
+> 	struct inode *root_inode;
+> 	struct autofs_info *ino;
+>
+> 	pr_debug("starting up, sbi = %p\n", sbi);
+>
+> 	sbi->sb = s;
+> 	s->s_blocksize = 1024;
+> 	s->s_blocksize_bits = 10;
+> 	s->s_magic = AUTOFS_SUPER_MAGIC;
+> 	s->s_op = &autofs_sops;
+> 	s->s_d_op = &autofs_dentry_operations;
+> 	s->s_time_gran = 1;
+>
+> 	/*
+> 	 * Get the root inode and dentry, but defer checking for errors.
+> 	 */
+> 	ino = autofs_new_ino(sbi);
+> 	if (!ino)
+> 		return -ENOMEM;
+>
+> 	root_inode = autofs_get_inode(s, S_IFDIR | 0755);
+> 	if (root_inode) {
+> 		root_inode->i_uid = ctx->uid;
+> 		root_inode->i_gid = ctx->gid;
+> 		root_inode->i_fop = &autofs_root_operations;
+> 		root_inode->i_op = &autofs_dir_inode_operations;
+> 	}
+> 	s->s_root = d_make_root(root_inode);
+> 	if (unlikely(!s->s_root)) {
+> 		autofs_free_ino(ino);
+> 		return -ENOMEM;
+> 	}
+> 	s->s_root->d_fsdata = ino;
+>
+> 	if (ctx->pgrp_set) {
+> 		sbi->oz_pgrp = find_get_pid(ctx->pgrp);
+> 		if (!sbi->oz_pgrp) {
+> 			int ret = invalf(fc, "Could not find process group %d",
+> 				     ctx->pgrp);
+> 			return ret;
+> 		}
+> 	} else {
+> 		sbi->oz_pgrp = get_task_pid(current, PIDTYPE_PGID);
+> 	}
+>
+> 	if (autofs_type_trigger(sbi->type))
+> 		managed_dentry_set_managed(s->s_root);
+>
+> 	pr_debug("pipe fd = %d, pgrp = %u\n",
+> 		 sbi->pipefd, pid_nr(sbi->oz_pgrp));
+>
+> 	sbi->flags &= ~AUTOFS_SBI_CATATONIC;
+> 	return 0;
+> }
+>
+> No gotos, no labels to keep track of...
