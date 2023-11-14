@@ -2,51 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1797EA809
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:02:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2938F7EA80F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:04:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229962AbjKNBCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 20:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46308 "EHLO
+        id S229720AbjKNBEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 20:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKNBCY (ORCPT
+        with ESMTP id S229511AbjKNBEr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 20:02:24 -0500
-Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5D5D57
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:02:21 -0800 (PST)
-Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-5b62a669d61so4623831a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:02:21 -0800 (PST)
+        Mon, 13 Nov 2023 20:04:47 -0500
+Received: from mail-pf1-f197.google.com (mail-pf1-f197.google.com [209.85.210.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DE43D57
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:04:44 -0800 (PST)
+Received: by mail-pf1-f197.google.com with SMTP id d2e1a72fcca58-6bf2b098e43so4928144b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:04:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699923740; x=1700528540;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=KN1VPTD/XwpbHmD08h+5JEdAa2L6wLXqNqbY4sMw3iY=;
-        b=vS0higlcHAxQebUdU6KkW77ROfz7lFZNVRwWb9Zg6J2zvtL+Bp53CecX9Nz7hRORBw
-         Jy7J4NAtLyo2SxAuyZSR++nfG/+kbEYsABIPD1FjxtpLm0Djd5A6DFeRvyzTHfuwnXga
-         NUTqf356185D/d0gK+BbhM26umlMJq2Vgyhy5aUOSAGZ4AsdEonmy8lYhh0Q0Hy1VA2x
-         EBwSEH1GuAjqbkefhLxJwdwUWD6Bm8lbwsA3JsYkj7EoHQyOYmQg2qhlw8O+f5lqh40O
-         ZxrIphkWzOeKzdFBOEOBR/ZDfnDtggP5cW7LUNUwbfrqIjqeCzhtWOInUa40kma4elpa
-         kgCw==
-X-Gm-Message-State: AOJu0YxzU1OZg4Y5ZmKxxVVWnKs3h3R9X3ot4Wy4I+QE0zXbN5xwAV3G
-        hHOb8cN+zqhkoSJ27JKBVSgUScWVF7KiMlQ2xh9NDqTXj8zQ
-X-Google-Smtp-Source: AGHT+IGQDS/+RsZx5/GmMdEPaSRZ42IsNktfLincp8HEf8aX2nQeqvyPv0Nm1z1fXUxlSQCivx5TbtfzlKj9YnLKWjuOl/3xTeYN
+        d=1e100.net; s=20230601; t=1699923884; x=1700528684;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eB2Gj39aJe1+ysQg7fVX0jXH8R4SexdhR8CmObDPcGY=;
+        b=D7OaLHjvhEaA1RqSv0SZOVxc4zlS0MOz9r4x6n2kGws2JmmL5KR+AS4q5uUMvnGQTj
+         A8Oi/st5kA6KsohOLOJlYsIq/3mAlCVO8RRCYYtKgdY6Bm/uX4ovLBK8BS3BHzXt9l9J
+         8Y7tDzoU+TWylE/Azub12x/pFsrT5cnhRVbvHxX/DVZpaf4WSfRHvfn55jQ8tSCwTD2L
+         MTSu2TUXBTnSE52VlmXNtgcKc/46iAT6qs9y8BQTVmoMy2atsTSrLr6nGE4FxVgqRg9M
+         BkD0xSoeWfdKCi4Xpvl/f4InURemzFQq7GODwC7qKKGLKkhWmIWSB9TRZDr5oQ4WBgJr
+         I0ZA==
+X-Gm-Message-State: AOJu0YycELCGS+uwZdraOxASow8Fp8Cko+n89oN6Lnvkdmpj5t3OqlBn
+        jKJkOhtTNqN+tbuj1ouAzpXgIWojFopUYcCof6puz6DKmRWmzLY=
+X-Google-Smtp-Source: AGHT+IHZZISfTEW08AkLkRl2SgHO2RMmkhOmJLZ1gpQSWoa2DowRNI1tEIMTrOJOH5Q37o5CNKvBwUN0v7YtutSu2RkqvboDl8fZ
 MIME-Version: 1.0
-X-Received: by 2002:a63:104a:0:b0:5c1:7124:d9aa with SMTP id
- 10-20020a63104a000000b005c17124d9aamr165450pgq.12.1699923740213; Mon, 13 Nov
- 2023 17:02:20 -0800 (PST)
-Date:   Mon, 13 Nov 2023 17:02:20 -0800
+X-Received: by 2002:a05:6a00:3027:b0:6c4:ec00:2941 with SMTP id
+ ay39-20020a056a00302700b006c4ec002941mr2451130pfb.4.1699923884044; Mon, 13
+ Nov 2023 17:04:44 -0800 (PST)
+Date:   Mon, 13 Nov 2023 17:04:43 -0800
+In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ae5995060a125650@google.com>
-Subject: [syzbot] [autofs?] general protection fault in autofs_fill_super
-From:   syzbot <syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com>
-To:     autofs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, raven@themaw.net,
-        syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000411acb060a125f72@google.com>
+Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,134 +54,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-syzbot found the following issue on:
+***
 
-HEAD commit:    4bbdb725a36b Merge tag 'iommu-updates-v6.7' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15dc14a8e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=662f87a8ef490f45fa64
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14384a7b680000
+Subject: [PATCH] Test oob in squashfs readahead
+Author: eadavis@qq.com
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/fd459eb1acfc/disk-4bbdb725.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d784829734e1/vmlinux-4bbdb725.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/db2c9e9ae9c3/bzImage-4bbdb725.xz
+please test squashfs readahead oob
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
 
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe4723a6f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fae5d99bf80 RCX: 00007fae5d87cae9
-RDX: 0000000020000040 RSI: 0000000020000380 RDI: 0000000000000000
-RBP: 00007ffe4723a750 R08: 0000000020000400 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00000000000009f9 R14: 00007fae5d99bf80 R15: 00007fae5d99bf80
- </TASK>
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 0 PID: 5098 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-15601-g4bbdb725a36b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:autofs_fill_super+0x47d/0xb50 fs/autofs/inode.c:334
-Code: 03 60 d7 9f 8b 4d 8d 67 04 48 8b 14 24 48 89 d0 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 58 03 00 00 8b 1a 4c 89 e0 48 c1 e8 03 <42> 0f b6 04 30 84 c0 4c 89 f5 0f 85 61 03 00 00 41 89 5f 04 4d 8d
-RSP: 0018:ffffc90003bafc90 EFLAGS: 00010247
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88807b190000
-RDX: ffff8880136beac0 RSI: ffffffff8bbdc620 RDI: ffffffff8bbdc5e0
-RBP: ffff8880206d0580 R08: ffffffff8da2aa13 R09: 1ffffffff1b45542
-R10: dffffc0000000000 R11: fffffbfff1b45543 R12: 0000000000000004
-R13: ffff8880206d0500 R14: dffffc0000000000 R15: 0000000000000000
-FS:  0000555555cbc480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe47239e08 CR3: 0000000024f32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- vfs_get_super fs/super.c:1338 [inline]
- get_tree_nodev+0xb4/0x140 fs/super.c:1357
- vfs_get_tree+0x8c/0x280 fs/super.c:1771
- do_new_mount+0x28f/0xae0 fs/namespace.c:3337
- do_mount fs/namespace.c:3677 [inline]
- __do_sys_mount fs/namespace.c:3886 [inline]
- __se_sys_mount+0x2d9/0x3c0 fs/namespace.c:3863
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fae5d87cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe4723a6f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fae5d99bf80 RCX: 00007fae5d87cae9
-RDX: 0000000020000040 RSI: 0000000020000380 RDI: 0000000000000000
-RBP: 00007ffe4723a750 R08: 0000000020000400 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000002
-R13: 00000000000009f9 R14: 00007fae5d99bf80 R15: 00007fae5d99bf80
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:autofs_fill_super+0x47d/0xb50 fs/autofs/inode.c:334
-Code: 03 60 d7 9f 8b 4d 8d 67 04 48 8b 14 24 48 89 d0 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 58 03 00 00 8b 1a 4c 89 e0 48 c1 e8 03 <42> 0f b6 04 30 84 c0 4c 89 f5 0f 85 61 03 00 00 41 89 5f 04 4d 8d
-RSP: 0018:ffffc90003bafc90 EFLAGS: 00010247
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff88807b190000
-RDX: ffff8880136beac0 RSI: ffffffff8bbdc620 RDI: ffffffff8bbdc5e0
-RBP: ffff8880206d0580 R08: ffffffff8da2aa13 R09: 1ffffffff1b45542
-R10: dffffc0000000000 R11: fffffbfff1b45543 R12: 0000000000000004
-R13: ffff8880206d0500 R14: dffffc0000000000 R15: 0000000000000000
-FS:  0000555555cbc480(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffe47239e08 CR3: 0000000024f32000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	28 00                	sub    %al,(%rax)
-   2:	00 00                	add    %al,(%rax)
-   4:	75 05                	jne    0xb
-   6:	48 83 c4 28          	add    $0x28,%rsp
-   a:	c3                   	ret
-   b:	e8 e1 20 00 00       	call   0x20f1
-  10:	90                   	nop
-  11:	48 89 f8             	mov    %rdi,%rax
-  14:	48 89 f7             	mov    %rsi,%rdi
-  17:	48 89 d6             	mov    %rdx,%rsi
-  1a:	48 89 ca             	mov    %rcx,%rdx
-  1d:	4d 89 c2             	mov    %r8,%r10
-  20:	4d 89 c8             	mov    %r9,%r8
-  23:	4c 8b 4c 24 08       	mov    0x8(%rsp),%r9
-  28:	0f 05                	syscall
-* 2a:	48 3d 01 f0 ff ff    	cmp    $0xfffffffffffff001,%rax <-- trapping instruction
-  30:	73 01                	jae    0x33
-  32:	c3                   	ret
-  33:	48 c7 c1 b0 ff ff ff 	mov    $0xffffffffffffffb0,%rcx
-  3a:	f7 d8                	neg    %eax
-  3c:	64 89 01             	mov    %eax,%fs:(%rcx)
-  3f:	48                   	rex.W
+diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
+index 8ba8c4c50770..0a586a7f470e 100644
+--- a/fs/squashfs/file.c
++++ b/fs/squashfs/file.c
+@@ -547,6 +547,9 @@ static void squashfs_readahead(struct readahead_control *ractl)
+ 	int i, file_end = i_size_read(inode) >> msblk->block_log;
+ 	unsigned int max_pages = 1UL << shift;
+ 
++	if (!file_end && !start)
++		return;
++
+ 	readahead_expand(ractl, start, (len | mask) + 1);
+ 
+ 	pages = kmalloc_array(max_pages, sizeof(void *), GFP_KERNEL);
+diff --git a/fs/squashfs/file_direct.c b/fs/squashfs/file_direct.c
+index f1ccad519e28..9c167df9248d 100644
+--- a/fs/squashfs/file_direct.c
++++ b/fs/squashfs/file_direct.c
+@@ -35,6 +35,9 @@ int squashfs_readpage_block(struct page *target_page, u64 block, int bsize,
+ 	struct squashfs_page_actor *actor;
+ 	void *pageaddr;
+ 
++	if (!file_end)
++		return -EINVAL;
++
+ 	if (end_index > file_end)
+ 		end_index = file_end;
+ 
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
