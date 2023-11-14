@@ -2,186 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3ED17EB470
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:06:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AB8B7EB471
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbjKNQG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:06:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47856 "EHLO
+        id S233790AbjKNQH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233788AbjKNQGy (ORCPT
+        with ESMTP id S229507AbjKNQH4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:06:54 -0500
-Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7041B134
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:06:49 -0800 (PST)
-Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7afd45199so68381727b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:06:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699978009; x=1700582809; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8Y7pSbHxAeptPMpbGtw1Nyu9tRet4KDB8iz60TRRUZY=;
-        b=WYqzT3aIfO4Mw8K7GRPepvig5um5q6AQkaErX6B8STJcrS/s9PjLVtKkO60Ls+nSI9
-         2NlsutBj6kRgQsfzQPXhBtJ0sB3tByn0XniR+/rhbh44p529C9I1Uxbc+sKkoR4TnC75
-         mAx0hCMaHGSTc/RHt++2EREyJgssQNo6In/rRfDBUg7mcBUuDDHbcOR5WKF8Gw5jqXJe
-         fH7xBc0hXl/MoCGnHV234ZvhQ/YL6gZvK/TPBVikz4PBxgylrcAP8yHtytB+R1oHLCgO
-         4KUOUX9SzLw0RGuijRUmXcVUIAQ230V0tqwIpEThEhfN8l5Ku6BJTJXd8hfV9Fs4ZE/I
-         fqXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699978009; x=1700582809;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8Y7pSbHxAeptPMpbGtw1Nyu9tRet4KDB8iz60TRRUZY=;
-        b=LtrIU2rVoalRhWFwD+z4mAZCu3+hZawPN4oUytey+/mCnh3zZNDVnouWgYwLrtyPVs
-         YlRvHMQ7+FhUD0QQYtHZ+YChy0bes0SvSzPrv9JIIDTENip9zs/Nr2E/XajN7K94Y300
-         1GdUtmze5yzY+0nQq+Ffy4A+WUTmIzeQUb06rL0ODcoQU37Grk/66XJ1lfYnroLvpL7y
-         ldWLq9XLmMiQXxB2z+mIEoCrRpOpjDz7Le+df93d8ETgEvsFW6CL7AYSvaWp4PX6sl6s
-         O6Xvd0g3n+nBuINjApgduL2loVT8h//j+RCiJeD9XOMWUwPFbdkSyef+wAmIuOPUPeBE
-         PqmA==
-X-Gm-Message-State: AOJu0Yze29hwPR5nZKRwFSeaT8vmnVrcvrKsDWNWrRqw+YrP5KyFrcn8
-        0X6OUDgcUGe5xiimGJqAhFHGYERy/N3fF11YJdAEIw==
-X-Google-Smtp-Source: AGHT+IGKnxLbqMi0TPe5TBa4FgaIVmyvb8hFukBEwfaro0b+XieoQDT5QEOxlHajv9JhlfHFixRwD7rpQSLkUUFt1qM=
-X-Received: by 2002:a81:49c2:0:b0:5b3:23f7:4254 with SMTP id
- w185-20020a8149c2000000b005b323f74254mr10635050ywa.25.1699978008914; Tue, 14
- Nov 2023 08:06:48 -0800 (PST)
+        Tue, 14 Nov 2023 11:07:56 -0500
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB01131;
+        Tue, 14 Nov 2023 08:07:52 -0800 (PST)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 28F865C027F;
+        Tue, 14 Nov 2023 11:07:48 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Tue, 14 Nov 2023 11:07:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
+        :cc:content-transfer-encoding:content-type:date:date:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to; s=fm3; t=1699978068; x=1700064468; bh=/o+gGzs0tL
+        AoVAa+IINmr16/aOhoTBXojzZiBHw5gCQ=; b=CJqOeyWKwx7CA87TzPMKzYmj2y
+        gS1YT4bb1NYNBSzq9lpBdXzybCGBTh0GPpAwhGxGel53I2tC9l/0g+wkS23Lltee
+        OffEsA4+cogGZKYTqB2SG9kJpCRUsHcpS3YCcBkiqGZ7Uu6pM6D/awAuXlJzPHon
+        qu6RbXnYMo9elr2XE0/TQxkzDMNYbF6gMA+78yKcxZ9fOwqUhCOnVi1xADxG9v6m
+        aM4LevkMUPWrni1ymeE0MfnV2GFAGODR9bvOSNW0+iLZ4CwTofvF806IjAbUH69r
+        bmiKZpvmcxRXOJyvdun0aZa5UPRXSm8vinvjl4wvHyPCPqnN7zt7X3wi9FZQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:message-id:mime-version:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; t=1699978068; x=1700064468; bh=/o+gGzs0tLAoV
+        Aa+IINmr16/aOhoTBXojzZiBHw5gCQ=; b=GiNU4WY9h6T2zC53oaCbFZgjR4O0P
+        FFcBMqepglcSFCLYhjMTf3BrO+jtecLaOIaqVpw4jz1xqagzt9j6rINnCG046pJJ
+        rJGbrvhztXCU77LlmA7q2ImJaVqpmGVqb75z7I8oF2celdNyCQ7K3r9fqPSc2JYx
+        2Nb2S0IitcLmZupwz3L9u/Hru+N4n6smUxBjEkZNGNUdtEKM8rQf0eKEo2bSkxq7
+        FHxLaTuuZ4mtWoPrysQV0f7hlxeWAazSQnW6invXsyESSufUoEVtnjRCuiNiyg9Q
+        Ki1F5xT7bWMHrd9U1i+11nYxvx3Vi4GErpR/CBYt0d8l8N3lJ/tQdT4yA==
+X-ME-Sender: <xms:UptTZZp5_ZvDt201OUXVwXf7OfeypWxbtrkb5SNwsREFh9PbcCG2dw>
+    <xme:UptTZbo-GxSXEmhmKQaFHNtMdyini6-QBitVkLWjQl0mzSm2nLY5IhzLNIFW0-yMw
+    dSQDZrLutZTbCj-PEg>
+X-ME-Received: <xmr:UptTZWMpzSAE5CH16fKX2HMKzw2PMhTu1W7eYwHkHdN26qbD2JQs6tEwMLECJARIaal5jVh0ipsxEUZJMq7KEvFgHJy1bBW6Jbg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefvddgkeefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnegfrhhlucfvnfffucdlvdefmden
+    ogetfedtuddqtdduucdludehmdenucfjughrpefhvfevufffkffoggfgsedtkeertdertd
+    dtnecuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghksehs
+    thiftgigrdighiiiqeenucggtffrrghtthgvrhhnpeegheevvdfhtdeljeefgfeugeekue
+    ejueehveduvdekteeugfekkeelgffggedvffenucffohhmrghinhepughmthhfrdhorhhg
+    pdhkvghrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehprghtrhhitghksehsthiftgigrdighiii
+X-ME-Proxy: <xmx:UptTZU79sJC_D3YRNekszXMlDXHFivXS2W_pKZBToigsJaUpoC0Ptw>
+    <xmx:UptTZY6yGwNhS2CREnf1DoHXnj8QpJT2gxnNlxTvWRbXzwvO4RTkNA>
+    <xmx:UptTZcg2BXVIM7n8wUs17-chxGDx-8EG6fAxMEQoIfDmRBWP1TQ3zw>
+    <xmx:VJtTZZENWEM2k5zTR5MNYr1TZqWmjjJYJD_4Mw_0EysHr3tYNzh3yg>
+Feedback-ID: i68a1478a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 14 Nov 2023 11:07:45 -0500 (EST)
+From:   Patrick Williams <patrick@stwcx.xyz>
+Cc:     Patrick Williams <patrick@stwcx.xyz>,
+        Samuel Mendoza-Jonas <sam@mendozajonas.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, Joel Stanley <joel@jms.id.au>,
+        Gavin Shan <gwshan@linux.vnet.ibm.com>,
+        Peter Delevoryas <peter@pjd.dev>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next v2 0/3] net/ncsi: Add NC-SI 1.2 Get MC MAC Address command
+Date:   Tue, 14 Nov 2023 10:07:32 -0600
+Message-ID: <20231114160737.3209218-1-patrick@stwcx.xyz>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev> <20231114150130.497915-6-sui.jingfeng@linux.dev>
-In-Reply-To: <20231114150130.497915-6-sui.jingfeng@linux.dev>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Tue, 14 Nov 2023 18:06:37 +0200
-Message-ID: <CAA8EJprkDpjuHEi5R01p4XNvFBr94BvXhr7AZCLr6dC8Mk=yPw@mail.gmail.com>
-Subject: Re: [PATCH 5/8] drm/bridge: it66121: Add a helper function to read
- chip id
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023 at 17:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->
-> From: Sui Jingfeng <suijingfeng@loongson.cn>
->
-> Read the required chip id data back by calling regmap_bulk_read() once,
-> reduce the number of local variables needed in it66121_probe() function.
-> And store its values into struct it66121_ctx, as it will be used latter.
->
-> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> ---
->  drivers/gpu/drm/bridge/ite-it66121.c | 47 ++++++++++++++++++++--------
->  1 file changed, 34 insertions(+), 13 deletions(-)
->
-> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> index 7e473beefc79..f36d05331f25 100644
-> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> @@ -313,6 +313,9 @@ struct it66121_ctx {
->                 bool auto_cts;
->         } audio;
->         const struct it66121_chip_info *info;
-> +       u16 vender_id;
-> +       u16 device_id;
-> +       u8 revision;
+NC-SI 1.2 has now been published[1] and adds a new command for "Get MC
+MAC Address".  This is often used by BMCs to get the assigned MAC
+address for the channel used by the BMC.
 
-There is no need to store them, they are not used by the driver anywhere.
+This change set has been tested on a Broadcomm 200G NIC with updated
+firmware for NC-SI 1.2 and at least one other non-public NIC design.
 
->  };
->
->  static inline struct it66121_ctx *bridge_to_it66121(struct drm_bridge *bridge)
-> @@ -399,6 +402,30 @@ static void it66121_hw_reset(struct it66121_ctx *ctx)
->         gpiod_set_value(ctx->gpio_reset, 0);
->  }
->
-> +static int it66121_read_chip_id(struct it66121_ctx *ctx, bool verbose)
-> +{
-> +       u8 id[4];
-> +       int ret;
-> +
-> +       ret = regmap_bulk_read(ctx->regmap, IT66121_VENDOR_ID0_REG, id, 4);
-> +       if (ret < 0) {
-> +               dev_err(ctx->dev, "Failed to read chip ID: %d\n", ret);
-> +               return ret;
-> +       }
-> +
-> +       ctx->vender_id = (u16)id[1] << 8 | id[0];
-> +       ctx->device_id = ((u16)(id[3] & IT66121_DEVICE_ID1_MASK) << 8 | id[2]);
-> +       /* Revision is shared with DEVICE_ID1 */
-> +       ctx->revision = FIELD_GET(IT66121_REVISION_MASK, id[3]);
-> +
-> +       if (verbose) {
-> +               dev_info(ctx->dev, "Found ITE66121: 0x%x%x, revision: %u\n",
-> +                        ctx->vender_id, ctx->device_id, ctx->revision);
-> +       }
-> +
-> +       return 0;
-> +}
-> +
->  static inline int it66121_preamble_ddc(struct it66121_ctx *ctx)
->  {
->         return regmap_write(ctx->regmap, IT66121_MASTER_SEL_REG, IT66121_MASTER_SEL_HOST);
-> @@ -1561,7 +1588,6 @@ static const char * const it66121_supplies[] = {
->
->  static int it66121_probe(struct i2c_client *client)
->  {
-> -       u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
->         int ret;
->         struct it66121_ctx *ctx;
->         struct device *dev = &client->dev;
-> @@ -1603,19 +1629,13 @@ static int it66121_probe(struct i2c_client *client)
->         if (IS_ERR(ctx->regmap))
->                 return PTR_ERR(ctx->regmap);
->
-> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
-> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID1_REG, &vendor_ids[1]);
-> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID0_REG, &device_ids[0]);
-> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID1_REG, &device_ids[1]);
-> -
-> -       /* Revision is shared with DEVICE_ID1 */
-> -       revision_id = FIELD_GET(IT66121_REVISION_MASK, device_ids[1]);
-> -       device_ids[1] &= IT66121_DEVICE_ID1_MASK;
-> +       ret = it66121_read_chip_id(ctx, false);
-> +       if (ret)
-> +               return ret;
->
-> -       if ((vendor_ids[1] << 8 | vendor_ids[0]) != ctx->info->vid ||
-> -           (device_ids[1] << 8 | device_ids[0]) != ctx->info->pid) {
-> +       if (ctx->vender_id != ctx->info->vid ||
-> +           ctx->device_id != ctx->info->pid)
->                 return -ENODEV;
-> -       }
->
->         ctx->bridge.funcs = &it66121_bridge_funcs;
->         ctx->bridge.of_node = dev->of_node;
-> @@ -1633,7 +1653,8 @@ static int it66121_probe(struct i2c_client *client)
->
->         drm_bridge_add(&ctx->bridge);
->
-> -       dev_info(dev, "IT66121 revision %d probed\n", revision_id);
-> +       dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
-> +                ctx->vender_id, ctx->device_id, ctx->revision);
->
->         return 0;
->  }
-> --
-> 2.34.1
->
+1. https://www.dmtf.org/sites/default/files/standards/documents/DSP0222_1.2.0.pdf
 
+Peter Delevoryas (3):
+  net/ncsi: Simplify Kconfig/dts control flow
+  net/ncsi: Fix netlink major/minor version numbers
+  net/ncsi: Add NC-SI 1.2 Get MC MAC Address command
+
+ net/ncsi/internal.h     |  7 +++--
+ net/ncsi/ncsi-cmd.c     |  3 +-
+ net/ncsi/ncsi-manage.c  | 29 ++++++------------
+ net/ncsi/ncsi-netlink.c |  4 +--
+ net/ncsi/ncsi-pkt.h     | 17 +++++++++--
+ net/ncsi/ncsi-rsp.c     | 67 +++++++++++++++++++++++++++++++++++++++--
+ 6 files changed, 98 insertions(+), 29 deletions(-)
+
+Signed-off-by: Peter Delevoryas <peter@pjd.dev>
+Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
+
+---
+
+I am taking over this patch set for Peter D, who has moved to another
+team and no longer working on this.
+
+Changes v2:
+    - Conform to published NC-SI 1.2 spec (switch byte order).
+    - Use netdev_info instead of netdev_warn for MAC.
+    - Fix checkpatch warnings.
+
+v1: https://lore.kernel.org/lkml/20221221052246.519674-1-peter@pjd.dev/
 
 -- 
-With best wishes
-Dmitry
+2.41.0
+
