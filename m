@@ -2,64 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD217EB058
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:53:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BFEB7EB05D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbjKNMx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:53:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39130 "EHLO
+        id S232733AbjKNM4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233082AbjKNMxt (ORCPT
+        with ESMTP id S229441AbjKNM4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:53:49 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C79F11A4;
-        Tue, 14 Nov 2023 04:53:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699966425; x=1731502425;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Kz92UTQM38hm45Yzql0q2iZjHJv9ZJ5h/3LRMWYuIVo=;
-  b=C+ZuNEcHAh2Q0ik6rgjrMfBn8Sp8iGCAGNQHBDiC/miGPnjPg5jkaemT
-   tt+L/BsgF7TCE27ZD1VNZnjhhiQgYBfylWIVO553PZ2E9lPL3oWPQuhwD
-   WXFJp/M3SpdDE0Mh5IA5DxmYYrVhTebA8feDJFqC05t053tmlVrrTXVDp
-   stZ+nMUVBL4mqoIo0se1m/oVRffLjW7PhwBtvOVF8/U2Y3Ybh/AMR+eQQ
-   f6jKzrBnBxFSkqYCwhJUopLjJ+VC/2NpIBGHljhFoBrRaMjRf6yUWD3YN
-   fvjIL7UAUY68ik3EQq0Bu5vWqLS/FoCTyQlm80ZYfiBhgEgsM/IxUeBgs
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="12193723"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="12193723"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 04:53:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="908352573"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="908352573"
-Received: from rauhjoha-mobl2.ger.corp.intel.com ([10.251.217.194])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 04:53:42 -0800
-Date:   Tue, 14 Nov 2023 14:53:39 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Hans de Goede <hdegoede@redhat.com>
-cc:     Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>,
-        Jorge Lopez <jorge.lopez2@hp.com>,
-        Mark Gross <markgross@kernel.org>,
-        =?ISO-8859-15?Q?Thomas_Wei=DFschuh?= <linux@weissschuh.net>,
-        platform-driver-x86@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>, dan.carpenter@linaro.org,
-        kernel-janitors@vger.kernel.org, error27@gmail.com,
-        vegard.nossum@oracle.com, kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH v4 3/4] platform/x86: hp-bioscfg: Fix error handling in
- hp_add_other_attributes()
-In-Reply-To: <b3d2f6aa-4dc4-4570-9c00-54b7211fb851@redhat.com>
-Message-ID: <7884dff1-c2b9-8b8a-8ca-7a5cb28530f7@linux.intel.com>
-References: <20231113200742.3593548-1-harshit.m.mogalapalli@oracle.com> <20231113200742.3593548-3-harshit.m.mogalapalli@oracle.com> <36e7a170-bd87-4462-fc6b-eec446fbb551@linux.intel.com> <b3d2f6aa-4dc4-4570-9c00-54b7211fb851@redhat.com>
+        Tue, 14 Nov 2023 07:56:43 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B5D131
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:56:39 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id F1CB7218E5;
+        Tue, 14 Nov 2023 12:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699966597; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=k9v1dkRDysinTH/krXIEVZQworuVzVteyhRfs7r0u4w=;
+        b=GoucSlXHHaRZBGt5UP3C++Fv1BX9wtN9UxK7YHzxW+3yTKMfbWsfgdUhALgiwFQnds+3Mt
+        LM2Qg+rp3EA3PEi5lKreoqT8Lyc0JaDaOqPvNW8/oibkVeYO+blly656O7BiDp9jrUzlU7
+        eZM1hvrumJn0e/R1m2kJOsc/w01Li0Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id AA61D13460;
+        Tue, 14 Nov 2023 12:56:37 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id MsH5J4VuU2WxegAAMHmgww
+        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 12:56:37 +0000
+Message-ID: <9ccdcff2-90f9-47da-9aea-46cffe7fae85@suse.com>
+Date:   Tue, 14 Nov 2023 13:56:37 +0100
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-2073173931-1699966424=:1748"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+Content-Language: en-US
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-3-jgross@suse.com>
+ <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
+From:   Juergen Gross <jgross@suse.com>
+Autocrypt: addr=jgross@suse.com; keydata=
+ xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
+ ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
+ dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
+ NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
+ XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
+ AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
+ CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
+ mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
+ G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
+ kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
+ Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
+ RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
+ vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
+ sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
+ aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
+ w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
+ auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
+ 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
+ fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
+ HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
+ QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
+ ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
+In-Reply-To: <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------Ms0EaXnjV1Z3KXiPbzghXFu8"
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -11.77
+X-Spamd-Result: default: False [-11.77 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         BAYES_HAM(-2.78)[99.03%];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         MID_RHS_MATCH_FROM(0.00)[];
+         MIME_UNKNOWN(0.10)[application/pgp-keys]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,55 +121,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------Ms0EaXnjV1Z3KXiPbzghXFu8
+Content-Type: multipart/mixed; boundary="------------jHFHMOTCUUpGOdBTyW06n0dC";
+ protected-headers="v1"
+From: Juergen Gross <jgross@suse.com>
+To: Borislav Petkov <bp@alien8.de>
+Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
+ Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+ Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
+ Peter Zijlstra <peterz@infradead.org>
+Message-ID: <9ccdcff2-90f9-47da-9aea-46cffe7fae85@suse.com>
+Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
+References: <20231030142508.1407-1-jgross@suse.com>
+ <20231030142508.1407-3-jgross@suse.com>
+ <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
+In-Reply-To: <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
 
---8323329-2073173931-1699966424=:1748
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+--------------jHFHMOTCUUpGOdBTyW06n0dC
+Content-Type: multipart/mixed; boundary="------------QCZejmhIzNDojQlHGWq0EDMj"
 
-On Tue, 14 Nov 2023, Hans de Goede wrote:
-> On 11/14/23 11:31, Ilpo Järvinen wrote:
-> > On Mon, 13 Nov 2023, Harshit Mogalapalli wrote:
-> > 
-> >> 'attr_name_kobj' is allocated using kzalloc, but on all the error paths
-> >> it is not freed, hence we have a memory leak.
-> >>
-> >> Fix the error path before kobject_init_and_add() by adding kfree().
-> >>
-> >> kobject_put() must be always called after passing the object to
-> >> kobject_init_and_add(). Only the error path which is immediately next
-> >> to kobject_init_and_add() calls kobject_put() and not any other error
-> >> path after it.
-> >>
-> >> Fix the error handling after kobject_init_and_add() by moving the
-> >> kobject_put() into the goto label err_other_attr_init that is already
-> >> used by all the error paths after kobject_init_and_add().
-> >>
-> >> Fixes: a34fc329b189 ("platform/x86: hp-bioscfg: bioscfg")
-> >> Reported-by: kernel test robot <lkp@intel.com>
-> >> Reported-by: Dan Carpenter <error27@gmail.com>
-> >> Closes: https://lore.kernel.org/r/202309201412.on0VXJGo-lkp@intel.com/
-> >> Signed-off-by: Harshit Mogalapalli <harshit.m.mogalapalli@oracle.com>
-> >> ---
-> >> This is based on static analysis, only compile tested.
-> >>
-> >> v3->v4: Add more explicit statement on how we are fixing it, suggested
-> >> by Ilpo
-> > 
-> > Thanks a lot, this looks fine too now.
-> > 
-> > Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-> 
-> Thank you for reviewing this series. I believe that it is best
-> to submit this as fixes for the current cycle.
-> 
-> Under the assumption that you agree with this I've delegated
-> these 4 patches to you (Ilpo) in patchwork.
+--------------QCZejmhIzNDojQlHGWq0EDMj
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Yes, I'll take care of it later this week.
+T24gMTQuMTEuMjMgMTM6MzcsIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gTW9uLCBP
+Y3QgMzAsIDIwMjMgYXQgMDM6MjU6MDVQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
+Cj4+ICsgKiBSZXdyaXRlIHRoZSAiY2FsbCBCVUdfZnVuYyIgcmVwbGFjZW1lbnQgdG8gcG9p
+bnQgdG8gdGhlIHRhcmdldCBvZiB0aGUNCj4+ICsgKiBpbmRpcmVjdCBwdl9vcHMgY2FsbCAi
+Y2FsbCAqZGlzcCglaXApIi4NCj4+ICsgKi8NCj4+ICtzdGF0aWMgaW50IGFsdF9yZXBsYWNl
+X2NhbGwodTggKmluc3RyLCB1OCAqaW5zbl9idWZmLCBzdHJ1Y3QgYWx0X2luc3RyICphKQ0K
+Pj4gK3sNCj4+ICsJdm9pZCAqdGFyZ2V0LCAqYnVnID0gJkJVR19mdW5jOw0KPj4gKw0KPj4g
+KwlpZiAoYS0+cmVwbGFjZW1lbnRsZW4gIT0gNSB8fCBpbnNuX2J1ZmZbMF0gIT0gQ0FMTF9J
+TlNOX09QQ09ERSkgew0KPj4gKwkJcHJfZXJyKCJBbHRlcm5hdGl2ZTogQUxUX0ZMQUdfQ0FM
+TCBzZXQgZm9yIGEgbm9uLWNhbGwgcmVwbGFjZW1lbnQgaW5zdHJ1Y3Rpb25cbiIpOw0KPiAN
+Cj4gTm8gbmVlZCBmb3IgdGhlIHByaW50ayBwcmVmaXguDQoNCk9rYXkuDQoNCj4gDQo+PiAr
+CQlwcl9lcnIoIiAgSWdub3JpbmcgdGhlIGZsYWcgZm9yIHRoZSBpbnN0cnVjdGlvbiBhdCAl
+cFMgKCVweClcbiIsIGluc3RyLCBpbnN0cik7DQo+IA0KPiBObyBpZ25vcmluZyAtIEJVRw0K
+DQpPa2F5Lg0KDQo+IA0KPj4gKwkJcmV0dXJuIDU7DQo+PiArCX0NCj4+ICsNCj4+ICsJaWYg
+KGEtPmluc3RybGVuICE9IDYgfHwgaW5zdHJbMF0gIT0gMHhmZiB8fCBpbnN0clsxXSAhPSAw
+eDE1KSB7DQo+PiArCQlwcl9lcnIoIkFsdGVybmF0aXZlOiBBTFRfRkxBR19DQUxMIHNldCBm
+b3IgdW5yZWNvZ25pemVkIGluZGlyZWN0IGNhbGxcbiIpOw0KPj4gKwkJcHJfZXJyKCIgIE5v
+dCByZXBsYWNpbmcgdGhlIGluc3RydWN0aW9uIGF0ICVwUyAoJXB4KVxuIiwgaW5zdHIsIGlu
+c3RyKTsNCj4+ICsJCXJldHVybiAtMTsNCj4gDQo+IERpdHRvLg0KDQpPa2F5Lg0KDQo+IA0K
+Pj4gKwl9DQo+PiArDQo+PiArI2lmZGVmIENPTkZJR19YODZfNjQNCj4+ICsJLyogZmYgMTUg
+MDAgMDAgMDAgMDAgICBjYWxsICAgKjB4MCglcmlwKSAqLw0KPj4gKwl0YXJnZXQgPSAqKHZv
+aWQgKiopKGluc3RyICsgYS0+aW5zdHJsZW4gKyAqKHMzMiAqKShpbnN0ciArIDIpKTsNCj4+
+ICsjZWxzZQ0KPj4gKwkvKiBmZiAxNSAwMCAwMCAwMCAwMCAgIGNhbGwgICAqMHgwICovDQo+
+PiArCXRhcmdldCA9ICoodm9pZCAqKikoKihzMzIgKikoaW5zdHIgKyAyKSk7DQo+PiArI2Vu
+ZGlmDQo+PiArCWlmICghdGFyZ2V0KQ0KPj4gKwkJdGFyZ2V0ID0gYnVnOw0KPj4gKw0KPj4g
+KwkvKiAoQlVHX2Z1bmMgLSAuKSArICh0YXJnZXQgLSBCVUdfZnVuYykgOj0gdGFyZ2V0IC0g
+LiAqLw0KPj4gKwkqKHMzMiAqKShpbnNuX2J1ZmYgKyAxKSArPSB0YXJnZXQgLSBidWc7DQo+
+IA0KPiBJZiBJIHNxdWludCBoYXJkIGVub3VnaCwgdGhpcyBsb29rcyBsaWtlIGl0IGlzIHJl
+cGxhY2luZyBvbmUgY2FsbCB3aXRoDQo+IGFub3RoZXIuIFdlIGhhdmUgYSBDIG1hY3JvIGFs
+dGVybmF0aXZlX2NhbGwoKSB3aGljaCBkb2VzIGV4YWN0bHkgdGhhdC4NCj4gV2h5IGNhbid0
+IHlvdSBkZWZpbmUgYW4gYXNtIHZlcnNpb24gQUxURVJOQVRJVkVfQ0FMTCBhbmQgdXNlIGl0
+DQo+IGluc3RlYWQgb2YgdXNpbmcgYWRkaW5nIGEgbmV3IGZsYWc/IFdlIGhhdmUgMTYgcG9z
+c2libGUgb25lcyBpbiB0b3RhbC4NCg0KSXQgaXMgcmVwbGFjaW5nIGFuIF9pbmRpcmVjdF8g
+Y2FsbCB3aXRoIGEgX2RpcmVjdF8gb25lLCB0YWtpbmcgdGhlIGNhbGwgdGFyZ2V0DQpmcm9t
+IHRoZSBwb2ludGVyIHVzZWQgYnkgdGhlIGluZGlyZWN0IGNhbGwuDQoNCg0KSnVlcmdlbg0K
 
--- 
- i.
+--------------QCZejmhIzNDojQlHGWq0EDMj
+Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
---8323329-2073173931-1699966424=:1748--
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+jR/i1DG86lem3iBDXzXsZDn8R38=3D
+=3D2wuH
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------QCZejmhIzNDojQlHGWq0EDMj--
+
+--------------jHFHMOTCUUpGOdBTyW06n0dC--
+
+--------------Ms0EaXnjV1Z3KXiPbzghXFu8
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTboUFAwAAAAAACgkQsN6d1ii/Ey/g
+HAf+IPH7xPYv9Mq8H5I1vhLX7TR+U3ghLsFrDXVdMdGBLrMgbYDUVd3iY/cIoXMGTnuK3Y0/Blzw
+2RJ6ZU5FGuP6Uya2m35/MHBwkWIMNN89R0aO4WEtQgaxaSAocW443gNa8apaaJJYNLKbBeYtGdwf
++ZKr2gmsJGfd2EaNwzIVPcEJIx5rork1G8bDztT8NVa7T8qB0ZsDMv3YqbEEin5o4wnGdRBacuxD
+8NwrVKQMgo2QxJ+A9IWSZDnB5zBnEBCiTg/Kod4FnzaP/wsjzpAsit0SBcob3mVWyxgQDw2dolHx
+Ga5Vk1Jdm76rIJoS/PYhRuSb8xCIRkN4fEEHEivf6A==
+=4Z1n
+-----END PGP SIGNATURE-----
+
+--------------Ms0EaXnjV1Z3KXiPbzghXFu8--
