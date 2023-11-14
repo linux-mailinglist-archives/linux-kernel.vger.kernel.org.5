@@ -2,178 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4F97EAF98
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24D757EAFA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232753AbjKNMBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:01:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53400 "EHLO
+        id S232739AbjKNMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:06:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232716AbjKNMBb (ORCPT
+        with ESMTP id S232716AbjKNMGv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:01:31 -0500
-Received: from mail-vk1-xa2f.google.com (mail-vk1-xa2f.google.com [IPv6:2607:f8b0:4864:20::a2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DCF2126
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:01:28 -0800 (PST)
-Received: by mail-vk1-xa2f.google.com with SMTP id 71dfb90a1353d-4ac3083ca04so2531456e0c.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:01:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699963287; x=1700568087; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=w+cNKD/DZD2lkmgn//C/a4VZOCUEay1a0fxR4tTnP1Y=;
-        b=hGCuizFkQJDvUZM8SlED/YrkZ5wzev7JTsJNC93J48EK6Gp4Y3AzhWfaaxAH6jgEfH
-         FNcYFV+Uxmy4UGcqI5zf3qVeEvCnSLWmrluJM/cFkp3FXxgutjX7jujp2Oh1Vw3JPfr3
-         MneCNJ9tzqysS3x0E3V8yI0eSamvHgMKj/tUpoaUpWgfbnW2OkKpChN0zJhc25ilO7B6
-         AuJvYc5wEFWZeEU1XDMYMawMxhbnbKPcv1MnqRD9cS/osoqIrbxc0JgYMy8U07q3Jf0p
-         ezzTSI+rSKp5wmuD1Q4Bf7VNwhdJ+AWLhBHrLcA/8c3adlxqlp1GxSUBJJlK27/vgoPM
-         Ad7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699963287; x=1700568087;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=w+cNKD/DZD2lkmgn//C/a4VZOCUEay1a0fxR4tTnP1Y=;
-        b=FdtrHGdB/ndkFsttTzl7A7Hs7YSB2AXAr7dAkw83UZl27SsorSHlTWWV0XVEo6KN8W
-         a39/E83U1451W4kwDORdQ9xiNWcbo/q8Iozbo2S5+ooxJ9YPK0DjGsRSNmGjFTQfDWAK
-         6doKFq4QHSe2PFRjWoyM847DFrFE6xO1ukbDz0PWJzQSLzjQUrMgv2SAbf5q+lqLTr8c
-         R1YIjdXX0DiyEIhMLumQ+jqxJp8tpKr6pjQ/WcdUz+pEZ7ZzhcBOg6IkE+hC41eZSDJQ
-         vgp8A36zZbzvUZp+CKq9QfFyGPtnV6LdRjUCisZohFgqIXT625Q4JT1fPH0Mz7dTbtKu
-         RAfA==
-X-Gm-Message-State: AOJu0YxBFkaiBXgXedQZhGM7RzxMKdoRf0Ej0wA5jek8pT0KqUSBTR9x
-        VGmKIA8wPs5jRzlWfv50ilca/3zyfRBqi1EZmIRMZg==
-X-Google-Smtp-Source: AGHT+IGdPTgrNucIG+Lo6vRM+7FUzSZPC0zMXelLtqwy0mDzkjNg/l2YT2+nTW9YrVKzffzwqrRySMvvW/+/It1UJuA=
-X-Received: by 2002:a05:6122:1689:b0:4ac:593b:e9f4 with SMTP id
- 9-20020a056122168900b004ac593be9f4mr9715321vkl.9.1699963287127; Tue, 14 Nov
- 2023 04:01:27 -0800 (PST)
+        Tue, 14 Nov 2023 07:06:51 -0500
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C7FF1;
+        Tue, 14 Nov 2023 04:06:42 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1699963593; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=QRiZ0ovh7eNv3NVE9cFBIjepjH+y2iEhgs2VFfsJI+y+GvfkMvDH3FV3/kEPkzr1dcofnhyXlD2grZpxVRRY2NBMzH0NoxjYZDUbOpiVAtR1TExxWtSpK8DhOMRoyCGxNtVqTTigfAujkLASEzH/3p1oEH99jULySt8M1IIVGac=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1699963593; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=T4rNGeLByRlCebNC4mv6V/yHuowhMU4zziKayPFdTiE=; 
+        b=H3RHCjwewdZnogcWkC2fpLbJfxQrcdM+Wsq2VToczthSAfUCzQk6VqxakucJbff3092QYWpv1cgSqI3rJoaJonK5imRqHvdoM1x0KEROzii2gbiHHZXb8LBxabDyC3lLRd6yhfyPUCiZyWwg8nM3yFgN3o51YrEyHqQY4KL4xvA=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1699963593;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=T4rNGeLByRlCebNC4mv6V/yHuowhMU4zziKayPFdTiE=;
+        b=QiTqiAeTWzfy+kAbVtuZQgouw+bKgwAUKoDOysuvp7WEVI7OWEDeUfV/p7DEQrgk
+        3Qf2ynFkgu7wOEfVOlKF2TnOi6KmIIXt9JN0W9tWa76JR2mOkDqf5grWtiPVvrR9S5e
+        ElNBdIlheRUBHoHSGP8Z7ty7eNmuGq7B7p1Kv+Rk=
+Received: from [192.168.1.11] (106.201.112.144 [106.201.112.144]) by mx.zoho.in
+        with SMTPS id 1699963591183647.2368112754372; Tue, 14 Nov 2023 17:36:31 +0530 (IST)
+Message-ID: <3df56245-d104-4ce2-ab88-0fb1d29cd629@siddh.me>
+Date:   Tue, 14 Nov 2023 17:36:27 +0530
 MIME-Version: 1.0
-References: <20231113191340.17482-22-vbabka@suse.cz> <20231113191340.17482-24-vbabka@suse.cz>
-In-Reply-To: <20231113191340.17482-24-vbabka@suse.cz>
-From:   Marco Elver <elver@google.com>
-Date:   Tue, 14 Nov 2023 13:00:00 +0100
-Message-ID: <CANpmjNOy+K_jBkaZ9_+He9tT83PaYLama517YvQ1TH13ayg3vg@mail.gmail.com>
-Subject: Re: [PATCH 02/20] KASAN: remove code paths guarded by CONFIG_SLAB
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Kees Cook <keescook@chromium.org>, kasan-dev@googlegroups.com,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+To:     syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+References: <000000000000cb112e0609b419d3@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
+ nfc_alloc_send_skb
+Content-Language: en-US, en-GB, hi-IN
+From:   Siddh Raman Pant <code@siddh.me>
+In-Reply-To: <000000000000cb112e0609b419d3@google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Nov 2023 at 20:14, Vlastimil Babka <vbabka@suse.cz> wrote:
->
-> With SLAB removed and SLUB the only remaining allocator, we can clean up
-> some code that was depending on the choice.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-Reviewed-by: Marco Elver <elver@google.com>
+---
+ net/nfc/llcp_sock.c | 30 ++++++++++++++++++------------
+ 1 file changed, 18 insertions(+), 12 deletions(-)
 
-> ---
->  mm/kasan/common.c     | 13 ++-----------
->  mm/kasan/kasan.h      |  3 +--
->  mm/kasan/quarantine.c |  7 -------
->  3 files changed, 3 insertions(+), 20 deletions(-)
->
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 256930da578a..5d95219e69d7 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -153,10 +153,6 @@ void __kasan_poison_object_data(struct kmem_cache *cache, void *object)
->   * 2. A cache might be SLAB_TYPESAFE_BY_RCU, which means objects can be
->   *    accessed after being freed. We preassign tags for objects in these
->   *    caches as well.
-> - * 3. For SLAB allocator we can't preassign tags randomly since the freelist
-> - *    is stored as an array of indexes instead of a linked list. Assign tags
-> - *    based on objects indexes, so that objects that are next to each other
-> - *    get different tags.
->   */
->  static inline u8 assign_tag(struct kmem_cache *cache,
->                                         const void *object, bool init)
-> @@ -171,17 +167,12 @@ static inline u8 assign_tag(struct kmem_cache *cache,
->         if (!cache->ctor && !(cache->flags & SLAB_TYPESAFE_BY_RCU))
->                 return init ? KASAN_TAG_KERNEL : kasan_random_tag();
->
-> -       /* For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU: */
-> -#ifdef CONFIG_SLAB
-> -       /* For SLAB assign tags based on the object index in the freelist. */
-> -       return (u8)obj_to_index(cache, virt_to_slab(object), (void *)object);
-> -#else
->         /*
-> -        * For SLUB assign a random tag during slab creation, otherwise reuse
-> +        * For caches that either have a constructor or SLAB_TYPESAFE_BY_RCU,
-> +        * assign a random tag during slab creation, otherwise reuse
->          * the already assigned tag.
->          */
->         return init ? kasan_random_tag() : get_tag(object);
-> -#endif
->  }
->
->  void * __must_check __kasan_init_slab_obj(struct kmem_cache *cache,
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index 8b06bab5c406..eef50233640a 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -373,8 +373,7 @@ void kasan_set_track(struct kasan_track *track, gfp_t flags);
->  void kasan_save_alloc_info(struct kmem_cache *cache, void *object, gfp_t flags);
->  void kasan_save_free_info(struct kmem_cache *cache, void *object);
->
-> -#if defined(CONFIG_KASAN_GENERIC) && \
-> -       (defined(CONFIG_SLAB) || defined(CONFIG_SLUB))
-> +#ifdef CONFIG_KASAN_GENERIC
->  bool kasan_quarantine_put(struct kmem_cache *cache, void *object);
->  void kasan_quarantine_reduce(void);
->  void kasan_quarantine_remove_cache(struct kmem_cache *cache);
-> diff --git a/mm/kasan/quarantine.c b/mm/kasan/quarantine.c
-> index ca4529156735..138c57b836f2 100644
-> --- a/mm/kasan/quarantine.c
-> +++ b/mm/kasan/quarantine.c
-> @@ -144,10 +144,6 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
->  {
->         void *object = qlink_to_object(qlink, cache);
->         struct kasan_free_meta *meta = kasan_get_free_meta(cache, object);
-> -       unsigned long flags;
-> -
-> -       if (IS_ENABLED(CONFIG_SLAB))
-> -               local_irq_save(flags);
->
->         /*
->          * If init_on_free is enabled and KASAN's free metadata is stored in
-> @@ -166,9 +162,6 @@ static void qlink_free(struct qlist_node *qlink, struct kmem_cache *cache)
->         *(u8 *)kasan_mem_to_shadow(object) = KASAN_SLAB_FREE;
->
->         ___cache_free(cache, object, _THIS_IP_);
-> -
-> -       if (IS_ENABLED(CONFIG_SLAB))
-> -               local_irq_restore(flags);
->  }
->
->  static void qlist_free_all(struct qlist_head *q, struct kmem_cache *cache)
-> --
-> 2.42.1
->
+diff --git a/net/nfc/llcp_sock.c b/net/nfc/llcp_sock.c
+index 645677f84dba..699f7f6cc0b8 100644
+--- a/net/nfc/llcp_sock.c
++++ b/net/nfc/llcp_sock.c
+@@ -791,33 +791,39 @@ static int llcp_sock_sendmsg(struct socket *sock, struct msghdr *msg,
+ 	lock_sock(sk);
+ 
+ 	if (!llcp_sock->local) {
+-		release_sock(sk);
+-		return -ENODEV;
++		ret = -ENODEV;
++		goto out;
+ 	}
+ 
+ 	if (sk->sk_type == SOCK_DGRAM) {
++		if (sk->sk_state != LLCP_BOUND) {
++			ret = -ENOLINK;
++			goto out;
++		}
++
+ 		DECLARE_SOCKADDR(struct sockaddr_nfc_llcp *, addr,
+ 				 msg->msg_name);
+ 
+ 		if (msg->msg_namelen < sizeof(*addr)) {
+-			release_sock(sk);
+-			return -EINVAL;
++			ret = -EINVAL;
++			goto out;
+ 		}
+ 
+-		release_sock(sk);
+-
+-		return nfc_llcp_send_ui_frame(llcp_sock, addr->dsap, addr->ssap,
+-					      msg, len);
++		ret = nfc_llcp_send_ui_frame(llcp_sock, addr->dsap, addr->ssap,
++					     msg, len);
++		goto out;
+ 	}
+ 
+ 	if (sk->sk_state != LLCP_CONNECTED) {
+-		release_sock(sk);
+-		return -ENOTCONN;
++		ret = -ENOTCONN;
++		goto out;
+ 	}
+ 
+-	release_sock(sk);
++	ret = nfc_llcp_send_i_frame(llcp_sock, msg, len);
+ 
+-	return nfc_llcp_send_i_frame(llcp_sock, msg, len);
++out:
++	release_sock(sk);
++	return ret;
+ }
+ 
+ static int llcp_sock_recvmsg(struct socket *sock, struct msghdr *msg,
+-- 
+2.42.0
