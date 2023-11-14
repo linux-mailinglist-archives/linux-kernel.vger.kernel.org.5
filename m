@@ -2,81 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ED097EB474
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:08:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D4957EB476
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233802AbjKNQIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:08:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58560 "EHLO
+        id S233836AbjKNQIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233786AbjKNQH5 (ORCPT
+        with ESMTP id S233794AbjKNQH7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:07:57 -0500
+        Tue, 14 Nov 2023 11:07:59 -0500
 Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BD5F132;
-        Tue, 14 Nov 2023 08:07:53 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id C92595C02AC;
-        Tue, 14 Nov 2023 11:07:52 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 14 Nov 2023 11:07:52 -0500
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFFF13D;
+        Tue, 14 Nov 2023 08:07:56 -0800 (PST)
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+        by mailout.nyi.internal (Postfix) with ESMTP id 8D0805C02A6;
+        Tue, 14 Nov 2023 11:07:55 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 14 Nov 2023 11:07:55 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=stwcx.xyz; h=cc
         :cc:content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1699978072; x=
-        1700064472; bh=kIut46fx2IEds+GnftD+Puxb3jCN/JHSvCNajszxUrc=; b=F
-        d43aS4fP5efyh6m/Qrc09jOR9M3wJUOTP7+Tld62RdpM29wLjQYMmITHC+BvrHU8
-        dXMDVOxWnFsDkvJ/ocUq5SLoQHmUNrIlKx2TqkPsMclS1Ddcd2IAgFLEEm3DHgH9
-        rAdE5sakxcHSuCCr1SaDnXLqXRik6md8khuu1rTEdmUNIzy+rp6gQfCjlLtMViRT
-        DEH8iyCeeE8Ogx4F1tnyYCMaV2fidb+LmzGEZtgtEAOyg4gno8kqQ7m/kH84RTWu
-        Y6R2Z3gf3SaBX054m7ri5Ptn18J7F10h+ngVRA9suDWZFZWSGJo2SVcP6W45RxXN
-        WlQYmcaRL/YFUk4WX8KPw==
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1699978075; x=
+        1700064475; bh=20tfSKNtHL+rKOlEuM96Y15IraCN16Lw4pR+Bb7sBnM=; b=n
+        uz9FySiZwgmabLbS+33isxpTquEj7qDTwpswH6tug+s/deFbwh465LwmfjzhGa0a
+        b9k/HD8UWNSJFAQmIeYQ5AmBwv0GI4c0368yaMQoxCHRdUioHJw+MXRkZd1D40ir
+        x2jCjPtzJgeMTOqpIDMrSMsBh+EULWRIPHgET6ucSvRjhRkT/IXrxB6Xj5tpWTnV
+        PjLNBB+Gk30kTiaQIKOJJAx+xjRmw2xrO8Iw6hlONMnOUPPewF3rsgm8CriAlC/n
+        zfWFt9vjod1peaTI3TGKt549NmoG1ZE8PGlUTYisqcFcDdF9zsl65Vh0hf3ld8ly
+        3WT9ZemJNd2R59VE20l5A==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:cc:content-transfer-encoding
         :content-type:date:date:feedback-id:feedback-id:from:from
         :in-reply-to:in-reply-to:message-id:mime-version:references
         :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1699978072; x=
-        1700064472; bh=kIut46fx2IEds+GnftD+Puxb3jCN/JHSvCNajszxUrc=; b=C
-        /4D1mzyEwHG3nSz92fZDDpb2nFEIVZVpT+bjVOBjYD5MA50zM37LQRS3n/9vvXfq
-        JI9DoNe424qCYQ1OF4SZx+XXATHqwEAbj8tMU7xR6TYuOggZ1IPvVoDBfp6PGtl/
-        rMewhBt/vo86hNUF1P9c2kcGEhSN7e9uRKKNB5fpnFEJNEamyjFIJaRkj2+scShl
-        2uE3Ka7uF43WP69VUjKnlLDvB0sdT1CRo0LJB1UOEnafLOtFa0iWz8z0ehdsgehL
-        MkDurzYK+kMxeTmKXOCE0fwsfLNFCoxotYk07UfnfdobcQk1Zjnbs6C7jrYLkHkH
-        YIAs6Zh7wozwcI5NGZSFA==
-X-ME-Sender: <xms:V5tTZRULtkETzTaeIopdup6Ob8UmS0N_7JZxFf9kBGq3tAxxdFGY3w>
-    <xme:V5tTZRmyyT1JqgC3KjPXGyYa2KlHbf__ob62SS4uuViI9NCcKHC1xQOQWITde5EzL
-    U1fWkvnoiGU56VVMYE>
-X-ME-Received: <xmr:V5tTZdaiT1mJUwiurSPDpuyRXATD_0C8i-QVOxER8FY1eppAYfBLdtQddJCB_l1u9MPaXhjW7_JwhF2RVKmr8ImHzQk3-1WQ3rk>
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1699978075; x=
+        1700064475; bh=20tfSKNtHL+rKOlEuM96Y15IraCN16Lw4pR+Bb7sBnM=; b=t
+        uRA20ZQNoGPMXxR8yH1MzaBsgatm/pc2QgyCUE3NS69RLfS61OZark6Gxxcna7Hm
+        WLm6UjJYqLkMMyew0cDA0svi9bDPunWBb+hpZLYQEvk+EVvpY644neuCM1tqFVD0
+        +hAJEailPRdIMNKfzbOx/LDNYM+I35IP7Pz0UZcAqKDHigKtHPFhY5bmHSeo/8Cz
+        5KjR/ULCmFdhpaL0gHWR6BNhE5IbKY8v3jeDTolwnClW+pCF+Xv2bDMijDnPvude
+        skg2sfLybP0m+MxEPUywuA946/wvCjKaSLurZrm47IcwQicH668FFv3PNsPOpgzs
+        jJHnUkx8UeF9YQb4H5r6g==
+X-ME-Sender: <xms:W5tTZc1FSEtx_CwNLhEQ4QX9S2Aq1Dvyl25QtRxEPxDJmcisVmZgiA>
+    <xme:W5tTZXECbmPRP0X01JdTr3qx9LPdmi9Dq9Di5mjBBUxQlb09FYXyF382jYg8xoZ8E
+    4rCOB2Q9huYkMVaCyQ>
+X-ME-Received: <xmr:W5tTZU7olGFBczUG3xNfC1Qfl7BO5Oo9XIEX9x0MJYdPY0-KDjeo-omL-k7KcSKKCgl6dAxqx3gZg2_4dBkx_85gXka85fBnHMs>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefvddgkeefucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     gfrhhlucfvnfffucdlvdefmdenucfjughrpefhvfevufffkffojghfggfgsedtkeertder
     tddtnecuhfhrohhmpefrrghtrhhitghkucghihhllhhirghmshcuoehprghtrhhitghkse
-    hsthiftgigrdighiiiqeenucggtffrrghtthgvrhhnpeejtddvjeetffekleekfeeljeet
-    jeelgeefjeejjefhfeetfedvtdejfeehffekveenucffohhmrghinhepughmthhfrdhorh
-    hgpdifihhkihhpvgguihgrrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepphgrthhrihgtkhesshhtfigtgidrgiihii
-X-ME-Proxy: <xmx:V5tTZUUFYImaL0gBu3MKyWznWjBhhW58dsg7AHwYTuQbNBTvcEqwPQ>
-    <xmx:V5tTZbkAfrBgQHUSXFEXXG9VcSFigbiREl47EGSIi-_60FaYNCd-2A>
-    <xmx:V5tTZRchv_OZCUsbeJ_PT1mWZq-51ApDbShKpbRj1Ck-xpEJCtwpGA>
-    <xmx:WJtTZd7sJI2vJytcuVkVV_dLKVF9h_uWcYMKjN_0N-ON2qC-gtmufA>
+    hsthiftgigrdighiiiqeenucggtffrrghtthgvrhhnpeejffekudffkeefiedtjeelgeej
+    hfffgeffgedvgfffleevgfekkeetffdtheefhfenucffohhmrghinhepughmthhfrdhorh
+    hgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepphgr
+    thhrihgtkhesshhtfigtgidrgiihii
+X-ME-Proxy: <xmx:W5tTZV1p6GWv88jJ9dVAJ4NPqXxpyV3LzNgl6g2G2FmwCUo5WbnOdg>
+    <xmx:W5tTZfEunjZ6IQ3fJ-vbeuXV6FKxXhyd_1D96mPiIaAb-1NUy9SWgA>
+    <xmx:W5tTZe8emSTO7Vr-OhilWG1VSvnRtCbCZa5QDV0ceNTVg_FawXs6HQ>
+    <xmx:W5tTZe0KkYgPJa4G9rx1SJct61ICzChuImbGPH3XzgiMYLPSgaCI0g>
 Feedback-ID: i68a1478a:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Nov 2023 11:07:51 -0500 (EST)
+ 14 Nov 2023 11:07:54 -0500 (EST)
 From:   Patrick Williams <patrick@stwcx.xyz>
 To:     Samuel Mendoza-Jonas <sam@mendozajonas.com>,
         "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Gavin Shan <gwshan@linux.vnet.ibm.com>,
-        Joel Stanley <joel@jms.id.au>
-Cc:     Peter Delevoryas <peter@pjd.dev>, netdev@vger.kernel.org,
+        Paolo Abeni <pabeni@redhat.com>
+Cc:     Peter Delevoryas <peter@pjd.dev>,
+        Patrick Williams <patrick@stwcx.xyz>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH net-next v2 2/3] net/ncsi: Fix netlink major/minor version numbers
-Date:   Tue, 14 Nov 2023 10:07:34 -0600
-Message-ID: <20231114160737.3209218-3-patrick@stwcx.xyz>
+Subject: [PATCH net-next v2 3/3] net/ncsi: Add NC-SI 1.2 Get MC MAC Address command
+Date:   Tue, 14 Nov 2023 10:07:35 -0600
+Message-ID: <20231114160737.3209218-4-patrick@stwcx.xyz>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231114160737.3209218-1-patrick@stwcx.xyz>
 References: <20231114160737.3209218-1-patrick@stwcx.xyz>
@@ -94,194 +93,164 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Peter Delevoryas <peter@pjd.dev>
 
-The netlink interface for major and minor version numbers doesn't actually
-return the major and minor version numbers.
+This change adds support for the NC-SI 1.2 Get MC MAC Address command,
+specified here:
 
-It reports a u32 that contains the (major, minor, update, alpha1)
-components as the major version number, and then alpha2 as the minor
-version number.
+https://www.dmtf.org/sites/default/files/standards/documents/DSP0222_1.2.0.pdf
 
-For whatever reason, the u32 byte order was reversed (ntohl): maybe it was
-assumed that the encoded value was a single big-endian u32, and alpha2 was
-the minor version.
+It serves the exact same function as the existing OEM Get MAC Address
+commands, so if a channel reports that it supports NC-SI 1.2, we prefer
+to use the standard command rather than the OEM command.
 
-The correct way to get the supported NC-SI version from the network
-controller is to parse the Get Version ID response as described in 8.4.44
-of the NC-SI spec[1].
+Verified with an invalid MAC address and 2 valid ones:
 
-    Get Version ID Response Packet Format
-
-              Bits
-            +--------+--------+--------+--------+
-     Bytes  | 31..24 | 23..16 | 15..8  | 7..0   |
-    +-------+--------+--------+--------+--------+
-    | 0..15 | NC-SI Header                      |
-    +-------+--------+--------+--------+--------+
-    | 16..19| Response code   | Reason code     |
-    +-------+--------+--------+--------+--------+
-    |20..23 | Major  | Minor  | Update | Alpha1 |
-    +-------+--------+--------+--------+--------+
-    |24..27 |         reserved         | Alpha2 |
-    +-------+--------+--------+--------+--------+
-    |            .... other stuff ....          |
-
-The major, minor, and update fields are all binary-coded decimal (BCD)
-encoded [2]. The spec provides examples below the Get Version ID response
-format in section 8.4.44.1, but for practical purposes, this is an example
-from a live network card:
-
-    root@bmc:~# ncsi-util 0x15
-    NC-SI Command Response:
-    cmd: GET_VERSION_ID(0x15)
-    Response: COMMAND_COMPLETED(0x0000)  Reason: NO_ERROR(0x0000)
-    Payload length = 40
-
-    20: 0xf1 0xf1 0xf0 0x00 <<<<<<<<< (major, minor, update, alpha1)
-    24: 0x00 0x00 0x00 0x00 <<<<<<<<< (_, _, _, alpha2)
-
-    28: 0x6d 0x6c 0x78 0x30
-    32: 0x2e 0x31 0x00 0x00
-    36: 0x00 0x00 0x00 0x00
-    40: 0x16 0x1d 0x07 0xd2
-    44: 0x10 0x1d 0x15 0xb3
-    48: 0x00 0x17 0x15 0xb3
-    52: 0x00 0x00 0x81 0x19
-
-This should be parsed as "1.1.0".
-
-"f" in the upper-nibble means to ignore it, contributing zero.
-
-If both nibbles are "f", I think the whole field is supposed to be ignored.
-Major and minor are "required", meaning they're not supposed to be "ff",
-but the update field is "optional" so I think it can be ff. I think the
-simplest thing to do is just set the major and minor to zero instead of
-juggling some conditional logic or something.
-
-bcd2bin() from "include/linux/bcd.h" seems to assume both nibbles are 0-9,
-so I've provided a custom BCD decoding function.
-
-Alpha1 and alpha2 are ISO/IEC 8859-1 encoded, which just means ASCII
-characters as far as I can tell, although the full encoding table for
-non-alphabetic characters is slightly different (I think).
-
-I imagine the alpha fields are just supposed to be alphabetic characters,
-but I haven't seen any network cards actually report a non-zero value for
-either.
-
-If people wrote software against this netlink behavior, and were parsing
-the major and minor versions themselves from the u32, then this would
-definitely break their code.
-
-[1] https://www.dmtf.org/sites/default/files/standards/documents/DSP0222_1.0.0.pdf
-[2] https://en.wikipedia.org/wiki/Binary-coded_decimal
-[2] https://en.wikipedia.org/wiki/ISO/IEC_8859-1
+[   55.137072] ftgmac100 1e690000.ftgmac eth0: NCSI: Received 3 provisioned MAC addresses
+[   55.137614] ftgmac100 1e690000.ftgmac eth0: NCSI: MAC address 0: 00:00:00:00:00:00
+[   55.138026] ftgmac100 1e690000.ftgmac eth0: NCSI: MAC address 1: fa:ce:b0:0c:20:22
+[   55.138528] ftgmac100 1e690000.ftgmac eth0: NCSI: MAC address 2: fa:ce:b0:0c:20:23
+[   55.139241] ftgmac100 1e690000.ftgmac eth0: NCSI: Unable to assign 00:00:00:00:00:00 to device
+[   55.140098] ftgmac100 1e690000.ftgmac eth0: NCSI: Set MAC address to fa:ce:b0:0c:20:22
 
 Signed-off-by: Peter Delevoryas <peter@pjd.dev>
-Fixes: 138635cc27c9 ("net/ncsi: NCSI response packet handler")
+Signed-off-by: Patrick Williams <patrick@stwcx.xyz>
 ---
- net/ncsi/internal.h     |  7 +++++--
- net/ncsi/ncsi-netlink.c |  4 ++--
- net/ncsi/ncsi-pkt.h     |  7 +++++--
- net/ncsi/ncsi-rsp.c     | 26 ++++++++++++++++++++++++--
- 4 files changed, 36 insertions(+), 8 deletions(-)
+ net/ncsi/ncsi-cmd.c    |  3 ++-
+ net/ncsi/ncsi-manage.c |  9 +++++++--
+ net/ncsi/ncsi-pkt.h    | 10 ++++++++++
+ net/ncsi/ncsi-rsp.c    | 41 ++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 59 insertions(+), 4 deletions(-)
 
-diff --git a/net/ncsi/internal.h b/net/ncsi/internal.h
-index 03757e76bb6b..374412ed780b 100644
---- a/net/ncsi/internal.h
-+++ b/net/ncsi/internal.h
-@@ -105,8 +105,11 @@ enum {
+diff --git a/net/ncsi/ncsi-cmd.c b/net/ncsi/ncsi-cmd.c
+index fd2236ee9a79..b3ff37a181d7 100644
+--- a/net/ncsi/ncsi-cmd.c
++++ b/net/ncsi/ncsi-cmd.c
+@@ -270,7 +270,8 @@ static struct ncsi_cmd_handler {
+ 	{ NCSI_PKT_CMD_GPS,    0, ncsi_cmd_handler_default },
+ 	{ NCSI_PKT_CMD_OEM,   -1, ncsi_cmd_handler_oem     },
+ 	{ NCSI_PKT_CMD_PLDM,   0, NULL                     },
+-	{ NCSI_PKT_CMD_GPUUID, 0, ncsi_cmd_handler_default }
++	{ NCSI_PKT_CMD_GPUUID, 0, ncsi_cmd_handler_default },
++	{ NCSI_PKT_CMD_GMCMA,  0, ncsi_cmd_handler_default }
+ };
  
+ static struct ncsi_request *ncsi_alloc_command(struct ncsi_cmd_arg *nca)
+diff --git a/net/ncsi/ncsi-manage.c b/net/ncsi/ncsi-manage.c
+index f3d7fe86fea1..745c788f1d1d 100644
+--- a/net/ncsi/ncsi-manage.c
++++ b/net/ncsi/ncsi-manage.c
+@@ -1038,11 +1038,16 @@ static void ncsi_configure_channel(struct ncsi_dev_priv *ndp)
+ 	case ncsi_dev_state_config_oem_gma:
+ 		nd->state = ncsi_dev_state_config_clear_vids;
  
- struct ncsi_channel_version {
--	u32 version;		/* Supported BCD encoded NCSI version */
--	u32 alpha2;		/* Supported BCD encoded NCSI version */
-+	u8   major;		/* NCSI version major */
-+	u8   minor;		/* NCSI version minor */
-+	u8   update;		/* NCSI version update */
-+	char alpha1;		/* NCSI version alpha1 */
-+	char alpha2;		/* NCSI version alpha2 */
- 	u8  fw_name[12];	/* Firmware name string                */
- 	u32 fw_version;		/* Firmware version                   */
- 	u16 pci_ids[4];		/* PCI identification                 */
-diff --git a/net/ncsi/ncsi-netlink.c b/net/ncsi/ncsi-netlink.c
-index a3a6753a1db7..2f872d064396 100644
---- a/net/ncsi/ncsi-netlink.c
-+++ b/net/ncsi/ncsi-netlink.c
-@@ -71,8 +71,8 @@ static int ncsi_write_channel_info(struct sk_buff *skb,
- 	if (nc == nc->package->preferred_channel)
- 		nla_put_flag(skb, NCSI_CHANNEL_ATTR_FORCED);
+-		nca.type = NCSI_PKT_CMD_OEM;
+ 		nca.package = np->id;
+ 		nca.channel = nc->id;
+ 		ndp->pending_req_num = 1;
+-		ret = ncsi_gma_handler(&nca, nc->version.mf_id);
++		if (nc->version.major >= 1 && nc->version.minor >= 2) {
++			nca.type = NCSI_PKT_CMD_GMCMA;
++			ret = ncsi_xmit_cmd(&nca);
++		} else {
++			nca.type = NCSI_PKT_CMD_OEM;
++			ret = ncsi_gma_handler(&nca, nc->version.mf_id);
++		}
+ 		if (ret < 0)
+ 			schedule_work(&ndp->work);
  
--	nla_put_u32(skb, NCSI_CHANNEL_ATTR_VERSION_MAJOR, nc->version.version);
--	nla_put_u32(skb, NCSI_CHANNEL_ATTR_VERSION_MINOR, nc->version.alpha2);
-+	nla_put_u32(skb, NCSI_CHANNEL_ATTR_VERSION_MAJOR, nc->version.major);
-+	nla_put_u32(skb, NCSI_CHANNEL_ATTR_VERSION_MINOR, nc->version.minor);
- 	nla_put_string(skb, NCSI_CHANNEL_ATTR_VERSION_STR, nc->version.fw_name);
- 
- 	vid_nest = nla_nest_start_noflag(skb, NCSI_CHANNEL_ATTR_VLAN_LIST);
 diff --git a/net/ncsi/ncsi-pkt.h b/net/ncsi/ncsi-pkt.h
-index ba66c7dc3a21..c9d1da34dc4d 100644
+index c9d1da34dc4d..f2f3b5c1b941 100644
 --- a/net/ncsi/ncsi-pkt.h
 +++ b/net/ncsi/ncsi-pkt.h
-@@ -197,9 +197,12 @@ struct ncsi_rsp_gls_pkt {
- /* Get Version ID */
- struct ncsi_rsp_gvi_pkt {
- 	struct ncsi_rsp_pkt_hdr rsp;          /* Response header */
--	__be32                  ncsi_version; /* NCSI version    */
-+	unsigned char           major;        /* NCSI version major */
-+	unsigned char           minor;        /* NCSI version minor */
-+	unsigned char           update;       /* NCSI version update */
-+	unsigned char           alpha1;       /* NCSI version alpha1 */
- 	unsigned char           reserved[3];  /* Reserved        */
--	unsigned char           alpha2;       /* NCSI version    */
-+	unsigned char           alpha2;       /* NCSI version alpha2 */
- 	unsigned char           fw_name[12];  /* f/w name string */
- 	__be32                  fw_version;   /* f/w version     */
- 	__be16                  pci_ids[4];   /* PCI IDs         */
+@@ -338,6 +338,14 @@ struct ncsi_rsp_gpuuid_pkt {
+ 	__be32                  checksum;
+ };
+ 
++/* Get MC MAC Address */
++struct ncsi_rsp_gmcma_pkt {
++	struct ncsi_rsp_pkt_hdr rsp;
++	unsigned char           address_count;
++	unsigned char           reserved[3];
++	unsigned char           addresses[][ETH_ALEN];
++};
++
+ /* AEN: Link State Change */
+ struct ncsi_aen_lsc_pkt {
+ 	struct ncsi_aen_pkt_hdr aen;        /* AEN header      */
+@@ -398,6 +406,7 @@ struct ncsi_aen_hncdsc_pkt {
+ #define NCSI_PKT_CMD_GPUUID	0x52 /* Get package UUID                 */
+ #define NCSI_PKT_CMD_QPNPR	0x56 /* Query Pending NC PLDM request */
+ #define NCSI_PKT_CMD_SNPR	0x57 /* Send NC PLDM Reply  */
++#define NCSI_PKT_CMD_GMCMA	0x58 /* Get MC MAC Address */
+ 
+ 
+ /* NCSI packet responses */
+@@ -433,6 +442,7 @@ struct ncsi_aen_hncdsc_pkt {
+ #define NCSI_PKT_RSP_GPUUID	(NCSI_PKT_CMD_GPUUID + 0x80)
+ #define NCSI_PKT_RSP_QPNPR	(NCSI_PKT_CMD_QPNPR   + 0x80)
+ #define NCSI_PKT_RSP_SNPR	(NCSI_PKT_CMD_SNPR   + 0x80)
++#define NCSI_PKT_RSP_GMCMA	(NCSI_PKT_CMD_GMCMA  + 0x80)
+ 
+ /* NCSI response code/reason */
+ #define NCSI_PKT_RSP_C_COMPLETED	0x0000 /* Command Completed        */
 diff --git a/net/ncsi/ncsi-rsp.c b/net/ncsi/ncsi-rsp.c
-index 069c2659074b..480e80e3c283 100644
+index 480e80e3c283..bee290d0f48b 100644
 --- a/net/ncsi/ncsi-rsp.c
 +++ b/net/ncsi/ncsi-rsp.c
-@@ -19,6 +19,19 @@
- #include "ncsi-pkt.h"
- #include "ncsi-netlink.h"
+@@ -1091,6 +1091,44 @@ static int ncsi_rsp_handler_netlink(struct ncsi_request *nr)
+ 	return ret;
+ }
  
-+/* Nibbles within [0xA, 0xF] add zero "0" to the returned value.
-+ * Optional fields (encoded as 0xFF) will default to zero.
-+ */
-+static u8 decode_bcd_u8(u8 x)
++static int ncsi_rsp_handler_gmcma(struct ncsi_request *nr)
 +{
-+	int lo = x & 0xF;
-+	int hi = x >> 4;
++	struct ncsi_dev_priv *ndp = nr->ndp;
++	struct net_device *ndev = ndp->ndev.dev;
++	struct ncsi_rsp_gmcma_pkt *rsp;
++	struct sockaddr saddr;
++	int ret = -1;
++	int i;
 +
-+	lo = lo < 0xA ? lo : 0;
-+	hi = hi < 0xA ? hi : 0;
-+	return lo + hi * 10;
++	rsp = (struct ncsi_rsp_gmcma_pkt *)skb_network_header(nr->rsp);
++	saddr.sa_family = ndev->type;
++	ndev->priv_flags |= IFF_LIVE_ADDR_CHANGE;
++
++	netdev_info(ndev, "NCSI: Received %d provisioned MAC addresses\n",
++		    rsp->address_count);
++	for (i = 0; i < rsp->address_count; i++) {
++		netdev_info(ndev, "NCSI: MAC address %d: %02x:%02x:%02x:%02x:%02x:%02x\n",
++			    i, rsp->addresses[i][0], rsp->addresses[i][1],
++			    rsp->addresses[i][2], rsp->addresses[i][3],
++			    rsp->addresses[i][4], rsp->addresses[i][5]);
++	}
++
++	for (i = 0; i < rsp->address_count; i++) {
++		memcpy(saddr.sa_data, &rsp->addresses[i], ETH_ALEN);
++		ret = ndev->netdev_ops->ndo_set_mac_address(ndev, &saddr);
++		if (ret < 0) {
++			netdev_warn(ndev, "NCSI: Unable to assign %pM to device\n",
++				    saddr.sa_data);
++			continue;
++		}
++		netdev_warn(ndev, "NCSI: Set MAC address to %pM\n", saddr.sa_data);
++		break;
++	}
++
++	ndp->gma_flag = ret == 0;
++	return ret;
 +}
 +
- static int ncsi_validate_rsp_pkt(struct ncsi_request *nr,
- 				 unsigned short payload)
- {
-@@ -755,9 +768,18 @@ static int ncsi_rsp_handler_gvi(struct ncsi_request *nr)
- 	if (!nc)
- 		return -ENODEV;
+ static struct ncsi_rsp_handler {
+ 	unsigned char	type;
+ 	int             payload;
+@@ -1127,7 +1165,8 @@ static struct ncsi_rsp_handler {
+ 	{ NCSI_PKT_RSP_PLDM,   -1, ncsi_rsp_handler_pldm    },
+ 	{ NCSI_PKT_RSP_GPUUID, 20, ncsi_rsp_handler_gpuuid  },
+ 	{ NCSI_PKT_RSP_QPNPR,  -1, ncsi_rsp_handler_pldm    },
+-	{ NCSI_PKT_RSP_SNPR,   -1, ncsi_rsp_handler_pldm    }
++	{ NCSI_PKT_RSP_SNPR,   -1, ncsi_rsp_handler_pldm    },
++	{ NCSI_PKT_RSP_GMCMA,  -1, ncsi_rsp_handler_gmcma   },
+ };
  
--	/* Update to channel's version info */
-+	/* Update channel's version info
-+	 *
-+	 * Major, minor, and update fields are supposed to be
-+	 * unsigned integers encoded as packed BCD.
-+	 *
-+	 * Alpha1 and alpha2 are ISO/IEC 8859-1 characters.
-+	 */
- 	ncv = &nc->version;
--	ncv->version = ntohl(rsp->ncsi_version);
-+	ncv->major = decode_bcd_u8(rsp->major);
-+	ncv->minor = decode_bcd_u8(rsp->minor);
-+	ncv->update = decode_bcd_u8(rsp->update);
-+	ncv->alpha1 = rsp->alpha1;
- 	ncv->alpha2 = rsp->alpha2;
- 	memcpy(ncv->fw_name, rsp->fw_name, 12);
- 	ncv->fw_version = ntohl(rsp->fw_version);
+ int ncsi_rcv_rsp(struct sk_buff *skb, struct net_device *dev,
 -- 
 2.41.0
 
