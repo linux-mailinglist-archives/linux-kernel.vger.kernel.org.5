@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 905797EB06B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D0F47EB070
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:02:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230110AbjKNM7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40868 "EHLO
+        id S233082AbjKNNCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46732 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232897AbjKNM7J (ORCPT
+        with ESMTP id S232179AbjKNNCD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:59:09 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9B18019B
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:59:06 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9FC75C15;
-        Tue, 14 Nov 2023 04:59:51 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 799A33F6C4;
-        Tue, 14 Nov 2023 04:59:04 -0800 (PST)
-Message-ID: <7790c176-6af3-458c-9995-8bceb73b64bc@arm.com>
-Date:   Tue, 14 Nov 2023 13:59:02 +0100
+        Tue, 14 Nov 2023 08:02:03 -0500
+Received: from mail-yw1-x112c.google.com (mail-yw1-x112c.google.com [IPv6:2607:f8b0:4864:20::112c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7DFEDD
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:02:00 -0800 (PST)
+Received: by mail-yw1-x112c.google.com with SMTP id 00721157ae682-5b499b18b28so64782497b3.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:02:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699966920; x=1700571720; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9iUh9bh4g34uEd8ne3mi/ZU8ueseqaQ4Cq4ajTU9LBk=;
+        b=VwiI1fSiwC3wFoKPDg/O1vnRDWP5cgtGbrfie43ouTLfdw5gF+wWwKk0PxHV4W9yCr
+         tzXwlgacJJG6WRIM/O/JCf1TB5W+HNBcKcJoYlv26A2ltCKrSmxFUoGCPcPGMwmLqKnM
+         0x6XPbol7rH0gQrXPMN3yYfzj1n8u9rS42CwpTw12wCd/6llPlSeQooRrBnuDj7cLZ+n
+         sG4Gi6movCw3F8RnfoVvzZOCnchB6WMWLu2TxMs3cJ4+FaSF3pP/UDklZfGe9a50yhlO
+         PPP/r+puT33krN456TkX3AfCoDqK6GZnTXhaWWjjE1x/laOq91Z7+OG960hFPiBjNpxK
+         Eaqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699966920; x=1700571720;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9iUh9bh4g34uEd8ne3mi/ZU8ueseqaQ4Cq4ajTU9LBk=;
+        b=DiW5PBFAMZ6Nbb1g41iY2GEv0ho5OKHUWbayRMktIVre0QrkV8ymIk6d0smJVR6Ds3
+         +YBgG/QCaB+fYpOSIELuckYd8NfsjYJsBnBcIrVXSawHIkS8SXIbZBzdEtKaIytPGfwt
+         prdSDgYGFDB3xl+cA31ImdFNoWgb8g0w0NzGDYyGQ1b33v2MCQ3tRHVXwYYKj2zVHqg6
+         TwkCB7phQWhvPwYrwKxQAxIYMnAanl8dnnrVEp9XjzDxyHcp/GdJyyL+uvAXGGheAJuw
+         fe++2usgYWjYKZ1FubRypOxus5J3EHujC1R2N7usWH0ziTMpceykl+ubLobJEJNRpg9H
+         D5Sw==
+X-Gm-Message-State: AOJu0YzbmAln3tDPzcDCT89xwPlDXjtA/ycJ3sn00u+4OEgqiV1Icmh8
+        CuZaJiEHJISXW3WJcrxLqC3KD+ir+BZHDEG6tHj4XA==
+X-Google-Smtp-Source: AGHT+IEwiv+yUa6bXQUbd2NNRU+2d9nlZK9YjvigWUECwxlTDLOqpL3zemAMdzElEyhWah6jsD5lOqad+swtthrcxwc=
+X-Received: by 2002:a81:5fc1:0:b0:589:fad6:c17c with SMTP id
+ t184-20020a815fc1000000b00589fad6c17cmr11738976ywb.45.1699966919909; Tue, 14
+ Nov 2023 05:01:59 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/6] sched/uclamp: Track uclamped util_avg in
- sched_avg
-Content-Language: en-US
-To:     Hongyan Xia <hongyan.xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>
-Cc:     Qais Yousef <qyousef@layalina.io>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Lukasz Luba <lukasz.luba@arm.com>,
-        Christian Loehle <christian.loehle@arm.com>,
-        linux-kernel@vger.kernel.org
-References: <cover.1696345700.git.Hongyan.Xia2@arm.com>
- <5564fc23d5e6425d069c36b4cef48edbe77fe64d.1696345700.git.Hongyan.Xia2@arm.com>
- <d1b613d5-2207-45dd-8aa2-a276502ccaa1@arm.com>
- <cda9bff0-1fcb-4736-93e7-19659cac9a01@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <cda9bff0-1fcb-4736-93e7-19659cac9a01@arm.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231110102054.1393570-1-joychakr@google.com>
+In-Reply-To: <20231110102054.1393570-1-joychakr@google.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Tue, 14 Nov 2023 14:01:48 +0100
+Message-ID: <CACRpkdZ9RHcHh4o5g62ywK0eQHpLZuGUF0Ud6jogk9Sfqe4krA@mail.gmail.com>
+Subject: Re: [RFC PATCH] PM: runtime: Apply pinctrl settings if defined
+To:     Joy Chakraborty <joychakr@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, manugautam@google.com,
+        aniketmaurya@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 09/11/2023 17:05, Hongyan Xia wrote:
-> On 31/10/2023 15:52, Dietmar Eggemann wrote:
->> On 04/10/2023 11:04, Hongyan Xia wrote:
->>> From: Hongyan Xia <hongyan.xia2@arm.com>
->>
->> [...]
->>
->>> @@ -6445,6 +6450,21 @@ static int sched_idle_cpu(int cpu)
->>>   }
->>>   #endif
->>>   +void ___update_util_avg_uclamp(struct sched_avg *avg, struct
->>> sched_entity *se);
->>
->> IMHO, `struct sched_avg *avg` can only be the one of a cfs_rq. So
->> passing a cfs_rq would eliminate the question whether this can be from
->> another se.
-> 
-> At the moment, yes, the avg can only come from cfs_rq. The reason why I
-> kept sched_avg is that once we have sum aggregation for RT tasks, it's
-> very likely we will end up calling this function on rt_rq->avg, so
-> having just sched_avg here will work for RT in the future.
+On Fri, Nov 10, 2023 at 11:21=E2=80=AFAM Joy Chakraborty <joychakr@google.c=
+om> wrote:
 
-Ah, OK. IMHO would be better to use cfs_rq for now and widen this
-interface once RT is covered.
+> Apply pinctrl state from  runtime framework device state transtion.
+>
+> Pinctrl states if defined in DT are bookmarked in device structures
+> but they need to be explicitly applied from device driver callbacks
+> which is boiler plate code and also not present in many drivers.
+>
+> If there is a specific order of setting pinctrl state with other driver
+> actions then the device driver can choose to do it from its pm callbacks,
+> in such a case this call will be a no-op from the pinctrl core framework
+> since the desired pinctrl state would already be set.
+>
+> We could also add a Kconfig knob to enable/disable this, but I do not
+> see a need to.
+>
+> Signed-off-by: Joy Chakraborty <joychakr@google.com>
 
-[...]
+It has a certain beauty to it does it not!
 
->> Question for me is why can't you integrate the util_avg_uclamp signals
->> for se's and cfs_rq's/rq's much closer into existing PELT functions?
-> 
-> So the problem is that when we enqueue the task (say UCLAMP_MIN of 200),
-> at that exact moment se->on_rq is false, so we only decay and not
-> enforce UCLAMP_MIN. Further up in the hierarchy we do update_load_avg(),
-> but the se of the task has already been processed so UCLAMP_MIN has not
-> taken any effect. To make sure UCLAMP_MIN is immediately effective, I
-> just re-evaluate the whole hierarchy from bottom to top.
-> 
-> I probably didn't quite catch what you said here. Could you elaborate a
-> bit on what 'much closer' means?
+The reason it wasn't done like this from the start was, if I recall correct=
+ly,
+that in some cases a device needs to do the pin control state switching
+in a special sequence with other operations, that can not be reordered,
+i.e.:
 
-I see. But can we not use DO_ATTACH (and DO_DETACH) for this?
+1. The pin control state change is not context-free.
 
-(flags & DO_ATTACH) characterizes the enqueuing of the task. So with
-DO_ATTACH (and so !se->on_rq (and cfs_rq->curr != se)) we could (a)
-decay the task and (b) add it to the cfs_rq in enqueue_entity() ->
-update_load_avg(..., | DO_ATTACH).
+2. The order of events, i.e. context, does not necessarily match the
+     order that Linux subsystems happen to do things.
 
-Like we do for PELT and a wakeup migration enqueuing (a)
+When looking through the kernel tree I don't see that people use
+the sleep state and idle state much, so we could very well go
+with this, and then expect people that need special-casing to name
+their states differently.
 
-update_load_avg()
+What do people thing about that?
 
-  __update_load_avg_se()
-
-    if (___update_load_sum(..., cfs_rq->curr == se)
-                                ^^^^^^^^^^^^^^^^^^
-                                'int running' for utilization
-
-      ___update_load_avg()
-
-  if (!se->avg.last_update_time && (flags & DO_ATTACH))
-      ^^^^^^^^^^^^^^^^^^^^^^^^^
-      wakeup migration
-
-    attach_entity_load_avg()
-
-Notice, for PELT we attach/detach to/from the cfs_rq which gives us
-blocked contribution. For util_avg_clamped we do enqueue/dequeue, so
-only runnable contribution.
+Yours,
+Linus Walleij
