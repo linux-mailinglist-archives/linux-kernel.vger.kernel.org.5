@@ -1,167 +1,259 @@
 Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FA747EA7CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:46:15 +0100 (CET)
+Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
+	by mail.lfdr.de (Postfix) with ESMTP id 02F7C7EA7CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230437AbjKNAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 19:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        id S231503AbjKNArR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 19:47:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjKNAqL (ORCPT
+        with ESMTP id S229720AbjKNArP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 19:46:11 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7445D53
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:46:07 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc5ef7e815so51031085ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:46:07 -0800 (PST)
+        Mon, 13 Nov 2023 19:47:15 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F390D4E
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:47:12 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc37fb1310so37923565ad.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:47:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1699922832; x=1700527632; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TWjT9ne0La6w5gxKbeJmbLGVR5GGM8mkAGe/XcLyyLk=;
+        b=Ge/QaUcN/2EQzW3XIXa3u7XXQ0idHGlf3zX4Zv7eQddhiFgqeFpEqWocDdGKmXr0MF
+         iVvXKWSwymyb7CQVZ+SYkT0Ar+RzY34XReqt3VxyYukfcD4nybDQSl2/UtnV57KXUzW/
+         IS7EmKWGEutYcEghFiOr3aPKzxTcTYPTlv0SA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699922767; x=1700527567;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PdY9i4WxreFLp6T+Tntb6z+snepGb2eA6NwpVorJ4X8=;
-        b=LwcDLJIB/u8Mkd6e2qw8tWd14lK3Lm/mP/2AMoWcnO19or1CDegln7mJF31zGhiaH+
-         9f//PVGIu3/u5D5wWOLTd8U9T2UvVLhMDdjafT/5p8z39TyLfskzJzw9V1W9rMkovqG3
-         74k0k/4DhPyFcKdF2dSTF7SS/qd9iBIxwfL47n0hb/tJOrWuRjLtwjXtkdaNn+yKx+ah
-         FN/OCUAW1+wfVy6ChxN4mnwIZQGWZwKoyl7ukIGPPhJnqOgVEnArgCInU7jXwmkUefn7
-         1d2ot6IdzGKbO01xeitRCMhKW2jyTsS83cwH9WS0stGKZMa1TU06WDaNZEP/AtG0+msT
-         wflA==
-X-Gm-Message-State: AOJu0Yw2O4xRFMAdG6HR1sHv/I4ztngy4u41z/SCE2HAxuapW0hppMGZ
-        PHfa/H4ihbBad6wOa4yl8A6UmxITPQZp1UHG3s1cNuifTo9w
-X-Google-Smtp-Source: AGHT+IERudvwaOO4vtDOSe88bRy7IEARwzbdGivos3k79GY11GuGPhTU8jikB4n//jT/QY271e89yBDEPOuqhKem0M4i8fPEoQp7
+        d=1e100.net; s=20230601; t=1699922832; x=1700527632;
+        h=in-reply-to:autocrypt:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TWjT9ne0La6w5gxKbeJmbLGVR5GGM8mkAGe/XcLyyLk=;
+        b=Y0xorr6ppV0O0x6UdK/dNnRqHbdCj90SRvREAtmKIZEc8eZIU3qsQZOH48+ftWU0h2
+         tpHLiDOL13W31cqHOiEqBVCiHpRW7D0yTWuXQFH/pME2zjcImk61gzkror/quVo7z5uV
+         q8aJJ9q9tCTMVelJV9Me4sgEHc3Z5LjjpVvAlOdZCIRHI26UJXcRTf3Me524eZocD3fP
+         h1Z6kDZc7bVb0EAa/WhkbCkQ7hjmSjFXk9W+CUgsRUJeMIIATWe7em+ZjocqT8FoGEV2
+         LmJ1yH205w3my2RukKxmzi9m16JDqp/DB3FfGt5TzcoIj7D8x+7ADfGW7YuKx+8diQys
+         Kw2w==
+X-Gm-Message-State: AOJu0Yy+NqiD6oep/swmKQOYm/Bjd8yB1c/ZYDF3NxOta1wKYz+dT1Cs
+        NxVFZCaEEPYVhP+9xL9ZJ/XFJA==
+X-Google-Smtp-Source: AGHT+IFthkGR0qmPq+xbKDJ4Nxah80ljZuv6PKinoHwMSaY5IjvHhu0AHCGeW9vpSSIAaurgG8j+xg==
+X-Received: by 2002:a17:902:a9c9:b0:1c9:e229:f5e2 with SMTP id b9-20020a170902a9c900b001c9e229f5e2mr750700plr.34.1699922831578;
+        Mon, 13 Nov 2023 16:47:11 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id g9-20020a170902740900b001cc67103a15sm4599801pll.16.2023.11.13.16.47.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Nov 2023 16:47:10 -0800 (PST)
+Message-ID: <a2c45f02-1845-4324-af36-1d4084a46008@broadcom.com>
+Date:   Mon, 13 Nov 2023 16:47:08 -0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:f815:b0:1cc:2a6f:ab91 with SMTP id
- ix21-20020a170902f81500b001cc2a6fab91mr226890plb.0.1699922767377; Mon, 13 Nov
- 2023 16:46:07 -0800 (PST)
-Date:   Mon, 13 Nov 2023 16:46:07 -0800
-In-Reply-To: <tencent_66EE4A0C753B774F674A3CED37CA96BA3609@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b1fd99060a121c78@google.com>
-Subject: Re: [syzbot] [squashfs?] KASAN: slab-out-of-bounds Write in
- squashfs_readahead (2)
-From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
-To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 2/2] PCI: brcmstb: Configure HW CLKREQ# mode
+ appropriate for downstream device
+To:     Jim Quinlan <james.quinlan@broadcom.com>,
+        linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Cyril Brulebois <kibi@debian.org>,
+        Phil Elwell <phil@raspberrypi.com>,
+        bcm-kernel-feedback-list@broadcom.com
+Cc:     Jim Quinlan <jim2101024@gmail.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Rob Herring <robh@kernel.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231113185607.1756-1-james.quinlan@broadcom.com>
+ <20231113185607.1756-3-james.quinlan@broadcom.com>
+From:   Florian Fainelli <florian.fainelli@broadcom.com>
+Autocrypt: addr=florian.fainelli@broadcom.com; keydata=
+ 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
+In-Reply-To: <20231113185607.1756-3-james.quinlan@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="0000000000008c4237060a122089"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+--0000000000008c4237060a122089
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-general protection fault in squashfs_page_actor_init_special
+On 11/13/23 10:56, Jim Quinlan wrote:
+> The Broadcom STB/CM PCIe HW core, which is also used in RPi SOCs, must be
+> deliberately set by the PCIe RC HW into one of three mutually exclusive
+> modes:
+> 
+> "safe" -- No CLKREQ# expected or required, refclk is always provided.  This
+>      mode should work for all devices but is not be capable of any refclk
+>      power savings.
+> 
+> "no-l1ss" -- CLKREQ# is expected to be driven by the downstream device for
+>      CPM and ASPM L0s and L1.  Provides Clock Power Management, L0s, and L1,
+>      but cannot provide L1 substate (L1SS) power savings. If the downstream
+>      device connected to the RC is L1SS capable AND the OS enables L1SS, all
+>      PCIe traffic may abruptly halt, potentially hanging the system.
+> 
+> "default" -- Bidirectional CLKREQ# between the RC and downstream device.
+>      Provides ASPM L0s, L1, and L1SS, but not compliant to provide Clock
+>      Power Management; specifically, may not be able to meet the T_CLRon max
+>      timing of 400ns as specified in "Dynamic Clock Control", section
+>      3.2.5.2.2 of the PCIe Express Mini CEM 2.1 specification.  This
+>      situation is atypical and should happen only with older devices.
+> 
+> Previously, this driver always set the mode to "no-l1ss", as almost all
+> STB/CM boards operate in this mode.  But now there is interest in
+> activating L1SS power savings from STB/CM customers, which requires "aspm"
+> mode.  In addition, a bug was filed for RPi4 CM platform because most
+> devices did not work in "no-l1ss" mode.
+> 
+> Note that the mode is specified by the DT property "brcm,clkreq-mode".  If
+> this property is omitted, then "default" mode is chosen.
+> 
+> Note: Since L1 substates are now possible, a modification was made
+> regarding an internal bus timeout: During long periods of the PCIe RC HW
+> being in an L1SS sleep state, there may be a timeout on an internal bus
+> access, even though there may not be any PCIe access involved.  Such a
+> timeout will cause a subsequent CPU abort.
+> 
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=217276
+> 
+> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
+> Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-SQUASHFS error: Unable to read metadata cache entry [6fa]
-general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
-CPU: 0 PID: 5484 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-15156-g13d88ac54ddd-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:squashfs_page_actor_init_special+0x20e/0x4c0 fs/squashfs/page_actor.c:128
-Code: 00 00 00 49 8d 6c 24 48 48 89 e8 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 32 02 00 00 c7 45 00 00 00 00 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 30 00 74 08 4c 89 ff e8 93 34 8c ff 49 8b 2f 48 83 c5 20
-RSP: 0018:ffffc90004fce4f8 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888015ad3b80
-RDX: ffff888015ad3b80 RSI: 0000000000000000 RDI: ffff888027646840
-RBP: ffff888027646848 R08: ffffffff825ea873 R09: 1ffffffff21ba48f
-R10: dffffc0000000000 R11: fffffbfff21ba490 R12: ffff888027646800
-R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000010
-FS:  00007f7b9e9ea6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7b9dd0662e CR3: 0000000020cfe000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- squashfs_readpage_block+0x62a/0xf60 fs/squashfs/file_direct.c:70
- squashfs_read_folio+0x569/0xed0 fs/squashfs/file.c:479
- filemap_read_folio+0x19c/0x770 mm/filemap.c:2323
- filemap_create_folio mm/filemap.c:2451 [inline]
- filemap_get_pages+0xdf7/0x2080 mm/filemap.c:2504
- filemap_read+0x42b/0x10b0 mm/filemap.c:2593
- __kernel_read+0x425/0x8b0 fs/read_write.c:428
- integrity_kernel_read+0xb0/0xf0 security/integrity/iint.c:221
- ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:485 [inline]
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0xad1/0x1b30 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x554/0xb30 security/integrity/ima/ima_api.c:290
- process_measurement+0x1373/0x21c0 security/integrity/ima/ima_main.c:359
- ima_file_check+0xf1/0x170 security/integrity/ima/ima_main.c:557
- do_open fs/namei.c:3624 [inline]
- path_openat+0x2893/0x3280 fs/namei.c:3779
- do_filp_open+0x234/0x490 fs/namei.c:3809
- do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_open fs/open.c:1463 [inline]
- __se_sys_open fs/open.c:1459 [inline]
- __x64_sys_open+0x225/0x270 fs/open.c:1459
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f7b9dc7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f7b9e9ea0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 00007f7b9dd9bf80 RCX: 00007f7b9dc7cae9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
-RBP: 00007f7b9dcc847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f7b9dd9bf80 R15: 00007fff0acb6118
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:squashfs_page_actor_init_special+0x20e/0x4c0 fs/squashfs/page_actor.c:128
-Code: 00 00 00 49 8d 6c 24 48 48 89 e8 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 32 02 00 00 c7 45 00 00 00 00 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 30 00 74 08 4c 89 ff e8 93 34 8c ff 49 8b 2f 48 83 c5 20
-RSP: 0018:ffffc90004fce4f8 EFLAGS: 00010202
-RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888015ad3b80
-RDX: ffff888015ad3b80 RSI: 0000000000000000 RDI: ffff888027646840
-RBP: ffff888027646848 R08: ffffffff825ea873 R09: 1ffffffff21ba48f
-R10: dffffc0000000000 R11: fffffbfff21ba490 R12: ffff888027646800
-R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000010
-FS:  00007f7b9e9ea6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000555d54061950 CR3: 0000000020cfe000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-----------------
-Code disassembly (best guess):
-   0:	00 00                	add    %al,(%rax)
-   2:	00 49 8d             	add    %cl,-0x73(%rcx)
-   5:	6c                   	insb   (%dx),%es:(%rdi)
-   6:	24 48                	and    $0x48,%al
-   8:	48 89 e8             	mov    %rbp,%rax
-   b:	48 c1 e8 03          	shr    $0x3,%rax
-   f:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax
-  14:	84 c0                	test   %al,%al
-  16:	0f 85 32 02 00 00    	jne    0x24e
-  1c:	c7 45 00 00 00 00 00 	movl   $0x0,0x0(%rbp)
-  23:	4c 89 f8             	mov    %r15,%rax
-  26:	48 c1 e8 03          	shr    $0x3,%rax
-* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
-  2f:	74 08                	je     0x39
-  31:	4c 89 ff             	mov    %r15,%rdi
-  34:	e8 93 34 8c ff       	call   0xff8c34cc
-  39:	49 8b 2f             	mov    (%r15),%rbp
-  3c:	48 83 c5 20          	add    $0x20,%rbp
+I don't think you could have carried that Tested-by tag given that I 
+tested the previous version which is subtly different from this one, but 
+since I now just did test this v8 and all is still well, I suppose that 
+works just as well.
+
+Thanks!
+-- 
+Florian
 
 
-Tested on:
+--0000000000008c4237060a122089
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-commit:         13d88ac5 Merge tag 'vfs-6.7.fsid' of git://git.kernel...
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10ed2f97680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
-dashboard link: https://syzkaller.appspot.com/bug?extid=604424eb051c2f696163
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17f132ff680000
-
+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
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBVgwggRAoAMCAQICDBP8P9hKRVySg3Qv5DANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjE4MTFaFw0yNTA5MTAxMjE4MTFaMIGW
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xGTAXBgNVBAMTEEZsb3JpYW4gRmFpbmVsbGkxLDAqBgkqhkiG
+9w0BCQEWHWZsb3JpYW4uZmFpbmVsbGlAYnJvYWRjb20uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOC
+AQ8AMIIBCgKCAQEA+oi3jMmHltY4LMUy8Up5+1zjd1iSgUBXhwCJLj1GJQF+GwP8InemBbk5rjlC
+UwbQDeIlOfb8xGqHoQFGSW8p9V1XUw+cthISLkycex0AJ09ufePshLZygRLREU0H4ecNPMejxCte
+KdtB4COST4uhBkUCo9BSy1gkl8DJ8j/BQ1KNUx6oYe0CntRag+EnHv9TM9BeXBBLfmMRnWNhvOSk
+nSmRX0J3d9/G2A3FIC6WY2XnLW7eAZCQPa1Tz3n2B5BGOxwqhwKLGLNu2SRCPHwOdD6e0drURF7/
+Vax85/EqkVnFNlfxtZhS0ugx5gn2pta7bTdBm1IG4TX+A3B1G57rVwIDAQABo4IB3jCCAdowDgYD
+VR0PAQH/BAQDAgWgMIGjBggrBgEFBQcBAQSBljCBkzBOBggrBgEFBQcwAoZCaHR0cDovL3NlY3Vy
+ZS5nbG9iYWxzaWduLmNvbS9jYWNlcnQvZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3J0MEEG
+CCsGAQUFBzABhjVodHRwOi8vb2NzcC5nbG9iYWxzaWduLmNvbS9nc2djY3IzcGVyc29uYWxzaWdu
+MmNhMjAyMDBNBgNVHSAERjBEMEIGCisGAQQBoDIBKAowNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93
+d3cuZ2xvYmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBJBgNVHR8EQjBAMD6gPKA6
+hjhodHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwLmNy
+bDAoBgNVHREEITAfgR1mbG9yaWFuLmZhaW5lbGxpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggr
+BgEFBQcDBDAfBgNVHSMEGDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUUwwfJ6/F
+KL0fRdVROal/Lp4lAF0wDQYJKoZIhvcNAQELBQADggEBAKBgfteDc1mChZjKBY4xAplC6uXGyBrZ
+kNGap1mHJ+JngGzZCz+dDiHRQKGpXLxkHX0BvEDZLW6LGOJ83ImrW38YMOo3ZYnCYNHA9qDOakiw
+2s1RH00JOkO5SkYdwCHj4DB9B7KEnLatJtD8MBorvt+QxTuSh4ze96Jz3kEIoHMvwGFkgObWblsc
+3/YcLBmCgaWpZ3Ksev1vJPr5n8riG3/N4on8gO5qinmmr9Y7vGeuf5dmZrYMbnb+yCBalkUmZQwY
+NxADYvcRBA0ySL6sZpj8BIIhWiXiuusuBmt2Mak2eEv0xDbovE6Z6hYyl/ZnRadbgK/ClgbY3w+O
+AfUXEZ0xggJtMIICaQIBATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52
+LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwT
+/D/YSkVckoN0L+QwDQYJYIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEIDJQNtsk/3JtaN+o
+TqYtUiUgBI4sJF8Xk2weME2x9pE7MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcN
+AQkFMQ8XDTIzMTExNDAwNDcxMlowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZI
+AWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEH
+MAsGCWCGSAFlAwQCATANBgkqhkiG9w0BAQEFAASCAQAh20JcVuhWlt/+klcDSi3ZIZzhZfOlRWbz
+9i9N5oA7YqJdTECxDst/VXxweyrZHjNOaJcfLuWkIfZ0PVAluFkNUcFg8PZwesliqt3/ryHtKQgA
+tUGURrwhi7Dwj7c736rhVANkzK6Oq1UaQJ+jKoLi0xdMYS/GyvQRnUihwnHBo/XWrwU8sdSST0D7
+bVQ76MSWrzvO/yhsdkxc7yCqLYSQBHlvD/+nOpHennoOvh1iFv1uwlFTKh6oO6CceAMVin0zVgXd
+KeXqioyQPmwPY9ask4doSOg/KiBk4LojD01TB6QyB9SrsJFaeeipEmsajq/jlzxEchlOGEZeJHTU
+KaXu
+--0000000000008c4237060a122089--
