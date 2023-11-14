@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 790177EB7C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F737EB7CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:31:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233993AbjKNUaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56246 "EHLO
+        id S233997AbjKNUbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:31:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229507AbjKNUaE (ORCPT
+        with ESMTP id S233960AbjKNUbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:30:04 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CB0100
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:30:00 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-da7238b3eb4so6587058276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:30:00 -0800 (PST)
+        Tue, 14 Nov 2023 15:31:01 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5648100
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:30:57 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4ac05ca3935so2771546e0c.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:30:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699993800; x=1700598600; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=gEp6jVcSot0l1bj0gSPJMJ72IrrC8N/v9YLLwxK2Z+M=;
-        b=LvtooO/Yzb6CxvLpwAd90JXJDhxg18uhIm3fDSB4y+xjWsmxlpWmHPwlmhQ1g+Z5M2
-         Cp/cLW+9B2U83t1tTbjlZEcIkj8X9Ysm/JRMQsOk0J/LYI+h33sKFsn7m2OnIiE3iL2U
-         vqnchpV3xZKHxfRQWa/iE0OwtnRkhcecBrCGuZqthuhDbK1lxMMnWCJZSFB4T9Uw8GKU
-         pxPCIO7PoV7h9JRHK2Z5r8QeqnX5nr+Hn0eExyD8gEpF08vNrTszN3SPNDERu7tIped2
-         Bjd5Dpt+5tUCN+3LWvf9AmIdD4wfas00oQmsemEdfW/2LDgeHWUj4sydsyo/XFGJpxQR
-         afEQ==
+        d=linaro.org; s=google; t=1699993857; x=1700598657; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Tl1+Gkehjt1by60mLu4159xJvTILEA2zeoCgrTTns8A=;
+        b=lTiAQsZ3zw2lXto717VD/qcS3eivIGtWMDVa5HScelOKma+DBWylVaNpawS0sum9fu
+         f2Ju7lwgaO6oNLhkAhNro7k8JFRbJ5c9cGezySRuOFRScp+9U92cE0pb1uxvJPeL1K97
+         1IFihFWDACTv+fRhvwu3tutRdVz6EoVvBc+75KyffdhiFDrHrsGClRoeek1WNK7WNhgE
+         xEyIL0IxIy+/pt2T2ia76mPFwQu1OdErHg7PJYKS6GBWgSuU9bVxKk/ke0XGCWqCM5sr
+         FN+Ztt9NWy2TJOB2V/K0Rpgln74w1/PH84NzySStQ+8b1TKjj8BkcdT/YkWbm5x0UVgt
+         xHIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699993800; x=1700598600;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gEp6jVcSot0l1bj0gSPJMJ72IrrC8N/v9YLLwxK2Z+M=;
-        b=TIxNIWe30BAFo+4mr/RbFhI6ixFxHeGPmsitUpZ2wDXnSK3WN3o0ETgHm79/GdYaGV
-         1lK+LWG8a0Th/9nJLQ8fYeg8ezAM10MapweX6XxhllKOrDtEy4T3duYeE7hBxPU37NQS
-         /CB+ZtfgunxUcCPw87Jh3WrOs4OhaApjousSscRcgHTqV507J0N97M9CXWY59sjEvate
-         SuDlf4CViY5oXbVuvU6KI7HQ8pC6HEXh9sYNBZf+lwD7Sz5iw72i0waKTIy9/jMqrCxw
-         iK0EruE1bjhSPmxuTyFiDdvA2K6SbyPssWYBClkQ/mmXiFiYh5QFZ22B2nhq3IVZvVN4
-         /SEg==
-X-Gm-Message-State: AOJu0Yxuhill3Jna1seJ+vLPP3GwiYNzkIiejMw9dDKYJVKNIoEh3YAy
-        q5HF/Lac35Ng2TFSWjEBwCljag==
-X-Google-Smtp-Source: AGHT+IFqBwWtuibP5DuuIJ9ie6ZfT/kFbYkL0UEeiCbDQopeMHCRZHQCG4qRiDAkFZMivqoXc2XDIw==
-X-Received: by 2002:a25:3302:0:b0:d72:a54d:4b7 with SMTP id z2-20020a253302000000b00d72a54d04b7mr10783111ybz.1.1699993800023;
-        Tue, 14 Nov 2023 12:30:00 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699993857; x=1700598657;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Tl1+Gkehjt1by60mLu4159xJvTILEA2zeoCgrTTns8A=;
+        b=vT8T6n5WKM3A/7Zo687Qhx66lceRYkgivYyGwQsmBbwBGh2Rnoyy+c/VTjYtPb4ixT
+         hIk6Y5zSydQm74StiZFm11gEdj4Dx71B11zbLEUpcNGz7yKYXfaXGARqacYMKA+F/EkE
+         T7kCr2IvBPmWhD47xYcSgzF2ADh+TbWpA1cU3f8VMOfL217PL04ob5vS11NRiHmhVCHd
+         jnBrWKjWTS5kIK6E4rI1egVP6vl7L2xKa1Q5ivVqhemL2JhwTMUU0uPd/b750wbfSoLV
+         QZUhwQZ3fV46o1Tiwie9wq8Zl4nB/20fzNzq6/LjiKe2/GJ36XwVlfgGZU9vtWXuKWcr
+         HSsA==
+X-Gm-Message-State: AOJu0YyKgWiDa/WyFs07dtob4bP9PTpBtzkiER+pHre/tXPQqBbxHSBX
+        BtbaHhxo1lFvauanvWcS9+sEEg==
+X-Google-Smtp-Source: AGHT+IGV69USJ3JzgBy/S+1Svwq+5Q6qUvBOJYPXvyJ7WhrMmUn8OO2UIzY/nyc7EYqID+8yCMrPuw==
+X-Received: by 2002:a05:6122:1163:b0:496:2e22:29e3 with SMTP id q3-20020a056122116300b004962e2229e3mr10298944vko.1.1699993856815;
+        Tue, 14 Nov 2023 12:30:56 -0800 (PST)
 Received: from [172.25.83.73] ([12.186.190.1])
-        by smtp.gmail.com with ESMTPSA id h13-20020a0ceecd000000b00671b009412asm3132110qvs.141.2023.11.14.12.29.59
+        by smtp.gmail.com with ESMTPSA id h13-20020a0ceecd000000b00671b009412asm3132110qvs.141.2023.11.14.12.30.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 12:29:59 -0800 (PST)
-Message-ID: <c6ca5a25-2d41-4a46-95a5-eb994c4cf529@linaro.org>
-Date:   Tue, 14 Nov 2023 21:29:58 +0100
+        Tue, 14 Nov 2023 12:30:56 -0800 (PST)
+Message-ID: <ce63dba2-27d8-4285-8bf6-679e78675bb2@linaro.org>
+Date:   Tue, 14 Nov 2023 21:30:56 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/4] dt-bindings: iio: adc: ad7192: Add properties
+Subject: Re: [PATCH v2 3/4] dt-bindings: iio: adc: ad7192: Add AD7194 support
+Content-Language: en-US
 To:     Alisa-Dariana Roman <alisadariana@gmail.com>,
         Alisa-Dariana Roman <alisa.roman@analog.com>,
         Michael Hennerich <michael.hennerich@analog.com>
 Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
+        linux-kernel@vger.kernel.org,
         Alexandru Tachici <alexandru.tachici@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
         Jonathan Cameron <jic23@kernel.org>,
         Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>
 References: <20231114200533.137995-1-alisa.roman@analog.com>
- <20231114200533.137995-2-alisa.roman@analog.com>
-Content-Language: en-US
+ <20231114200533.137995-4-alisa.roman@analog.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,7 +114,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231114200533.137995-2-alisa.roman@analog.com>
+In-Reply-To: <20231114200533.137995-4-alisa.roman@analog.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -128,47 +128,56 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 14/11/2023 21:05, Alisa-Dariana Roman wrote:
-> Document properties used for clock configuration.
-
-Some background here is missing - otherwise it looks like you are adding
-new properties...
-
+> Unlike the other AD719Xs, AD7194 has configurable differential
+> channels. The default configuration for these channels can be changed
+> from the devicetree.
+> 
+> Also add an example for AD7194 devicetree.
 > 
 > Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
 > ---
->  .../devicetree/bindings/iio/adc/adi,ad7192.yaml        | 10 ++++++++++
->  1 file changed, 10 insertions(+)
+
+Where is the changelog?
+
+>  .../bindings/iio/adc/adi,ad7192.yaml          | 74 +++++++++++++++++++
+>  1 file changed, 74 insertions(+)
 > 
 > diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
-> index 16def2985ab4..9b59d6eea368 100644
+> index 9b59d6eea368..800b396f5993 100644
 > --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
 > +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
-> @@ -80,6 +80,16 @@ properties:
->        and when chop is disabled.
->      type: boolean
+> @@ -21,6 +21,7 @@ properties:
+>        - adi,ad7190
+>        - adi,ad7192
+>        - adi,ad7193
+> +      - adi,ad7194
+>        - adi,ad7195
 >  
-> +  adi,clock-xtal:
-> +    description: |
-> +      External crystal connected from MCLK1 to MCLK2.
+>    reg:
+> @@ -108,6 +109,42 @@ required:
+>  
+>  allOf:
+>    - $ref: /schemas/spi/spi-peripheral-props.yaml#
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          const: adi,ad7194
+> +    then:
+> +      properties:
+> +        '#address-cells':
 
-And this should be input clock.
+Use consistent quotes through the file, either ' or ".
 
-> +    type: boolean
+> +          const: 1
 > +
-> +  adi,int-clock-output-enable:
-> +    description: |
-> +      Internal 4.92 MHz clock available on MCLK2 pin.
-> +    type: boolean
-
-This should be clock-cells and clock provider.
-
-Unless you are just documenting already used interface which you do not
-want to break...
-
+> +        '#size-cells':
+> +          const: 0
 > +
->    bipolar:
->      description: see Documentation/devicetree/bindings/iio/adc/adc.yaml
->      type: boolean
+> +      patternProperties:
+> +        "^channel@([0-7a-f])$":
+
+Properties always go to top-level. In allOf you only constrain them or
+disallow (: false).
 
 Best regards,
 Krzysztof
