@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D7C37EA935
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:45:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A428B7EA94A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231949AbjKNDpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 22:45:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        id S231965AbjKNEEe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:04:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNDpQ (ORCPT
+        with ESMTP id S229454AbjKNEEa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 22:45:16 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15C3D42;
-        Mon, 13 Nov 2023 19:45:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1699933512;
-        bh=XIw5E3P3t2yLzlvGyA8lzacW3IabO9mJ0GsOxrwMCRg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=I9xGW1iB2zsBmyv98fqpd78W1XE+T3x6+8dNiefqoLEgQAOhwpRoB6TlZPX16eJeI
-         jyAI4WOlTylYzYHXe59EkwEYM7Gz3v50TrOSO8ct4OVbaB4MEiAgHjb3g/rRqKy3FI
-         +rC3iifd5wfUaSDU4Cc486UlcLVVnGyaFCEsoO7n1OCyGtEr7oWWlGCamBBOfBCSgW
-         3SrtwaoUSOqDvabpMqKvUn616yPHI8VWME049+rdM5MhyKm4kLcgqqKCWsBPrCaliq
-         BiDhkdAnT7hxThr21etiT9370+wv1eYQ4p3CEuR0KdwWWgz7COqZHwNGWvQDhvqMbM
-         dK9uKsvo9P/og==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4STsd34smjz4wbr;
-        Tue, 14 Nov 2023 14:45:10 +1100 (AEDT)
-Date:   Tue, 14 Nov 2023 14:45:10 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Kentaro Takeda <takedakn@nttdata.co.jp>
-Subject: Re: linux-next: the fetch of the tomoyo tree failed
-Message-ID: <20231114144510.49fd3688@canb.auug.org.au>
-In-Reply-To: <20231017163242.62af10b3@canb.auug.org.au>
-References: <20231017163242.62af10b3@canb.auug.org.au>
+        Mon, 13 Nov 2023 23:04:30 -0500
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A51CD42
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:04:26 -0800 (PST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.54])
+        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4STszP4LPsz1P8JJ;
+        Tue, 14 Nov 2023 12:01:05 +0800 (CST)
+Received: from localhost.localdomain (10.50.165.33) by
+ canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Tue, 14 Nov 2023 12:04:23 +0800
+From:   Yicong Yang <yangyicong@huawei.com>
+To:     <catalin.marinas@arm.com>, <will@kernel.org>,
+        <sudeep.holla@arm.com>, <linux-arm-kernel@lists.infradead.org>
+CC:     <dietmar.eggemann@arm.com>, <gregkh@linuxfoundation.org>,
+        <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
+        <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
+        <yangyicong@hisilicon.com>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v3 0/4] Support SMT control on arm64
+Date:   Tue, 14 Nov 2023 12:01:06 +0800
+Message-ID: <20231114040110.54590-1-yangyicong@huawei.com>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4jnyz5B/=fSu586N0oHCO+4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.50.165.33]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500009.china.huawei.com (7.192.105.203)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4jnyz5B/=fSu586N0oHCO+4
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+From: Yicong Yang <yangyicong@hisilicon.com>
 
-Hi all,
+The core CPU control framework supports runtime SMT control which
+is not yet supported on arm64. Besides the general vulnerabilities
+concerns we want this runtime control on our arm64 server for:
 
-On Tue, 17 Oct 2023 16:32:42 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
-wrote:
->=20
-> It failed like this:
->=20
-> fatal: unable to access 'https://scm.osdn.net/gitroot/tomoyo/tomoyo-test1=
-.git/': SSL certificate problem: certificate has expired
->=20
-> and indeed it expired at 2023-10-16 23:59:59 UTC.
+- better single CPU performance in some cases
+- saving overall power consumption
 
-I am still getting this failure (an so am unable to fetch the tomoya
-tree).
+This patchset implements it in the following aspects:
 
---=20
-Cheers,
-Stephen Rothwell
+- implements the basic support in arch_topology driver
+- support retrieve SMT thread number on OF based system
+- support retrieve SMT thread number on ACPI based system
+- select HOTPLUG_SMT for arm64
 
---Sig_/4jnyz5B/=fSu586N0oHCO+4
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Tests has been done on our real ACPI based arm64 server and on
+ACPI/OF based QEMU VMs.
 
------BEGIN PGP SIGNATURE-----
+The patchset is based on v6.7-rc1.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVS7UYACgkQAVBC80lX
-0GxixAgAo80j4i+/zREmbLZnRrTT39i0gamcnN2026csPLPfgneZoDespKQAyQr2
-ZbTbaTxFPyEQdQAvlb995wp6upmZPRuMkLEE0MJN7fkjPRaIjZ4aGQz5N0H3B2ZI
-GWGaKWBgfqqYSUpwog9Wbwlht6B+qcGY82QWCidbbUz2zlt73gJtZ4fGtVpGW8AK
-n10cANy3uudV/3KV0sHe/D7wAvv12rrXX27gPJ2BSbZeOrYkj4cZJUvw/7QrwH7T
-Jf4XcTe2PmeZUdf2nUhaqzdVFsCvQYz4ARSDvLw643/N4Jjt3C8PFSeDo6zGOuTY
-kBkyL4Qpdo+M1balO5sQY3MEVzbDLQ==
-=fcKW
------END PGP SIGNATURE-----
+Change since v2:
+- Detect SMT thread number at topology build from ACPI/DT, avoid looping CPUs
+- Split patches into ACPI/OF/arch_topology path and enable the kconfig for arm64
+Link: https://lore.kernel.org/linux-arm-kernel/20231010115335.13862-1-yangyicong@huawei.com/
 
---Sig_/4jnyz5B/=fSu586N0oHCO+4--
+Yicong Yang (4):
+  arch_topology: Support basic SMT control for the driver
+  arch_topology: Support SMT control for OF based system
+  arm64: topology: Support SMT control on ACPI based system
+  arm64: Kconfig: Enable HOTPLUG_SMT
+
+ arch/arm64/Kconfig            |  1 +
+ arch/arm64/kernel/topology.c  | 23 +++++++++++++++++++++
+ drivers/base/arch_topology.c  | 39 +++++++++++++++++++++++++++++++++++
+ include/linux/arch_topology.h |  9 ++++++++
+ 4 files changed, 72 insertions(+)
+
+-- 
+2.24.0
+
