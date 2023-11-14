@@ -2,135 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 38BBB7EAD37
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:45:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51AB67EAD3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:46:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230465AbjKNJo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:44:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S231336AbjKNJq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:46:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229585AbjKNJo5 (ORCPT
+        with ESMTP id S229585AbjKNJqz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:44:57 -0500
-Received: from mail.marcansoft.com (marcansoft.com [212.63.210.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507A7191;
-        Tue, 14 Nov 2023 01:44:53 -0800 (PST)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
+        Tue, 14 Nov 2023 04:46:55 -0500
+Received: from xry111.site (xry111.site [89.208.246.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2B5C12C;
+        Tue, 14 Nov 2023 01:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+        s=default; t=1699955206;
+        bh=satinxlx0MAD+yis9bfpesgap/Kipwt793BTW81wdaY=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=VBueanTJYrYcd14G9qi/23MRd4/ENc28NIPvSkbLnkOfu2wW8bUfj6KMzGRFItt/O
+         FPZK6G3PQDSI+moLq/5mMrcyCGcB/8/PLABOaiw51SMGlnL7gFN4YZhNMGNXGhhREN
+         ElwF7VG4CoZSuNSVnw8P7P6NKK+aNPCet4cyzJN8=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: marcan@marcan.st)
-        by mail.marcansoft.com (Postfix) with ESMTPSA id 72654425C8;
-        Tue, 14 Nov 2023 09:44:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=marcan.st; s=default;
-        t=1699955089; bh=LoayNsgjh6Dn6iZehZ5Fl+EuN1byKvLu1MmbdWR0Slk=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=dUcLu8j+C97zwCZwIPXHJWA1tqihkLkH8KbelZweaDqtD+2sJd2X7rdqVkaEtwuMe
-         VQIAJVLtAalOTYwL0U50r4ujqmoD6BWclAWeaKe7qfavAhBoxmnXERCkaxr6I9tq42
-         1/trLYeLhJvYQ7fr5sNlNdLAdsxeKu2YrsY09K7yEIKWnItVgHMbveTUu35DBrOyPO
-         /6EagiTIzrLApLy23tyR+2dZMhmsZwmRhF1OKWwtcGhj7V1KLblFLrT/XO90vgDTvc
-         wKqsmuo2Y5Ktdn6IxXB1qOK7rXxC9p4DeUDCRnqWSpqW3kWWpUY+umyl6PaSqX7Z+a
-         9OyR++F76fhSg==
-Message-ID: <03cdd06c-3991-dbf8-6068-e76384db8240@marcan.st>
-Date:   Tue, 14 Nov 2023 18:44:43 +0900
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+        (Client did not present a certificate)
+        (Authenticated sender: xry111@xry111.site)
+        by xry111.site (Postfix) with ESMTPSA id 7CF0D66A03;
+        Tue, 14 Nov 2023 04:46:45 -0500 (EST)
+Message-ID: <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
+Subject: Re: Several tst-robust* tests time out with recent Linux kernel
+From:   Xi Ruoyao <xry111@xry111.site>
+To:     "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        libc-alpha@sourceware.org
+Cc:     linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
+        linux-mm@kvack.org, linux-arch@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        =?ISO-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
+Date:   Tue, 14 Nov 2023 17:46:43 +0800
+In-Reply-To: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
+References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
+Autocrypt: addr=xry111@xry111.site; prefer-encrypt=mutual;
+ keydata=mDMEYnkdPhYJKwYBBAHaRw8BAQdAsY+HvJs3EVKpwIu2gN89cQT/pnrbQtlvd6Yfq7egugi0HlhpIFJ1b3lhbyA8eHJ5MTExQHhyeTExMS5zaXRlPoiTBBMWCgA7FiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwMFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcCF4AACgkQrKrSDhnnEOPHFgD8D9vUToTd1MF5bng9uPJq5y3DfpcxDp+LD3joA3U2TmwA/jZtN9xLH7CGDHeClKZK/ZYELotWfJsqRcthOIGjsdAPuDgEYnkdPhIKKwYBBAGXVQEFAQEHQG+HnNiPZseiBkzYBHwq/nN638o0NPwgYwH70wlKMZhRAwEIB4h4BBgWCgAgFiEEkdD1djAfkk197dzorKrSDhnnEOMFAmJ5HT4CGwwACgkQrKrSDhnnEOPjXgD/euD64cxwqDIqckUaisT3VCst11RcnO5iRHm6meNIwj0BALLmWplyi7beKrOlqKfuZtCLbiAPywGfCNg8LOTt4iMD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.1 
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [REGRESSION] Bluetooth is not working on Macs with BCM4377 chip
- starting from kernel 6.5
-Content-Language: en-US
-To:     Aditya Garg <gargaditya08@live.com>
-Cc:     Bagas Sanjaya <bagasdotme@gmail.com>,
-        Sven Peter <sven@svenpeter.dev>,
-        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Orlando Chamberlain <orlandoch.dev@gmail.com>,
-        Kerem Karabay <kekrby@gmail.com>,
-        Aun-Ali Zaidi <admin@kodeit.net>,
-        Asahi Linux Mailing List <asahi@lists.linux.dev>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Bluetooth <linux-bluetooth@vger.kernel.org>
-References: <22582194-DE99-45E5-ABEE-C1C7900DA523@live.com>
- <ZVKxtD2Mt_eVyttJ@archie.me>
- <MA0P287MB021794BCCCFB5EA57C1C3B69B8B2A@MA0P287MB0217.INDP287.PROD.OUTLOOK.COM>
- <88fcc70e-9f4b-eeb9-d826-03fa4c40e7c3@marcan.st>
- <e2909986-34b5-3ae2-cf5c-a1f8c46a1e0a@marcan.st>
- <6574A65F-3C4D-4E26-8848-F12C38668478@live.com>
-From:   Hector Martin <marcan@marcan.st>
-In-Reply-To: <6574A65F-3C4D-4E26-8848-F12C38668478@live.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/2023 18.03, Aditya Garg wrote:
-> 
-> 
->> On 14-Nov-2023, at 1:28 PM, Hector Martin <marcan@marcan.st> wrote:
->>
->> On 14/11/2023 15.59, Hector Martin wrote:
->>> On 14/11/2023 15.23, Aditya Garg wrote:
->>>>
->>>>
->>>>> On 14-Nov-2023, at 5:01 AM, Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->>>>>
->>>>> ﻿On Mon, Nov 13, 2023 at 08:57:35PM +0000, Aditya Garg wrote:
->>>>>> Starting from kernel 6.5, a regression in the kernel is causing Bluetooth to not work on T2 Macs with BCM4377 chip.
->>>>>>
->>>>>> Journalctl of kernel 6.4.8 which has Bluetooth working is given here: https://pastebin.com/u9U3kbFJ
->>>>>>
->>>>>> Journalctl of kernel 6.5.2, which has Bluetooth broken is given here: https://pastebin.com/aVHNFMRs
->>>>>>
->>>>>> Also, the bug hasn’t been fixed even in 6.6.1, as reported by users.
->>>>>
->>>>> Can you bisect this regression please?
->>>>
->>>> Since I don't have access to this hardware, it's not possible for me to bisect this regression. Let's hope someone is able to do so though.
->>>
->>> It's not a regression, it was always broken. I'm sending a patch.
->>>
->>> - Hector
->>
->> You are quite likely conflating two problems. The ubsan issue you quoted
->> was always there and the patch I just sent fixes it, but it almost
->> certainly always worked fine in practice without ubsan.
->>
->> The Bluetooth problem you are referring to is likely *specific to
->> Bluetooth LE devices* and the regression was introduced by 288c90224e
->> and fixed by 41e9cdea9c, which is also in 6.5.11 and 6.6.1.
->>
->> If Bluetooth is broken in *some other way* in 6.6.1 then we need a
->> proper report or a bisect. Your logs don't show any issues other than
->> the ubsan noise, which is not a regression.
->>
->> - Hector
->>
-> 
-> UBSAN noise seems to be fixed, Bluetooth not working though
-> 
-> https://pastebin.com/HeVvMVk4
-> 
-> Ill try setting .broken_le_coded = true,
+On Tue, 2023-11-14 at 02:33 +0800, Xi Ruoyao wrote:
+> Hi,
+>=20
+> With Linux 6.7.0-rc1, several tst-robust* tests time out on x86_64:
+>=20
+> FAIL: nptl/tst-robust1
+> FAIL: nptl/tst-robust3
+> FAIL: nptl/tst-robust4
+> FAIL: nptl/tst-robust6
+> FAIL: nptl/tst-robust7
+> FAIL: nptl/tst-robust9
+>=20
+> This does not happen with Linux 6.6.0.=C2=A0 Do you have some clue about
+> it?
 
-Now you have a probe timeout, which you didn't have before. That's a
-different problem.
+Bisected to the kernel commit:
 
-Please try this commit and see if it helps:
+commit 5694289ce183bc3336407a78c8c722a0b9208f9b (HEAD)
+Author: peterz@infradead.org <peterz@infradead.org>
+Date:   Thu Sep 21 12:45:08 2023 +0200
 
-https://github.com/AsahiLinux/linux/commit/8ec770b4f78fc14629705206e2db54d9d6439686
+    futex: Flag conversion
+   =20
+    Futex has 3 sets of flags:
+   =20
+     - legacy futex op bits
+     - futex2 flags
+     - internal flags
+   =20
+    Add a few helpers to convert from the API flags into the internal
+    flags.
+   =20
+    Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+    Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+    Reviewed-by: Andr<C3><A9> Almeida <andrealmeid@igalia.com>
+    Link: https://lore.kernel.org/r/20230921105247.722140574@noisy.programm=
+ing.kicks-ass.net
 
-If it's this then it's still not a regression, it's probably just random
-chance since I think the old timeout value was borderline for the older
-chips.
-
-- Hector
-
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
