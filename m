@@ -2,94 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B51CC7EADA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A6317EADB0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232465AbjKNKI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:08:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60020 "EHLO
+        id S231734AbjKNKOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:14:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50042 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232528AbjKNKIR (ORCPT
+        with ESMTP id S229697AbjKNKN6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:08:17 -0500
-Received: from mx.kernkonzept.com (serv1.kernkonzept.com [IPv6:2a01:4f8:1c1c:b490::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02E7119F;
-        Tue, 14 Nov 2023 02:08:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=kernkonzept.com; s=mx1; h=Cc:To:In-Reply-To:References:Message-Id:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:
-        Reply-To:Content-ID:Content-Description;
-        bh=nMk7zTRFOdK2rz7OlbU43But/2vJEYeFTpihGg8XE7g=; b=SiabwvePpKfwYhWDzfZmkNiNNQ
-        3ZaIv65InR4KA6aJNFIaF9JgNoRa2C/kuMmOHZUbq1sdbczJFTJskPIpIvx8pNDZst2i6oDDgL8Ya
-        fIXA/8Agl+Ru22hY67BJJ1XH6tZzdRpDfGkYYWEAEUwc0yaRFjfq8mLKEKqywU5DDV4e1k+VdYB+s
-        gR+UdQe4ru9fbqlTD8gbky86aoKPdqW5x9FJ2LaOM0QzM64p9xTewGlcIuC89+4XfRfDRRXUjhQcz
-        mWDy349lfOrZdio0Pxp5r4ObvXJAJJD+pUUbus17HiIKt+97xAfHNLa6U9Lr6K/mDvGj6N2toClDj
-        Ul0bMbBQ==;
-Received: from [10.22.3.24] (helo=serv1.dd1.int.kernkonzept.com)
-        by mx.kernkonzept.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim 4.96)
-        id 1r2qL4-0050az-0q;
-        Tue, 14 Nov 2023 11:08:10 +0100
-From:   Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-Date:   Tue, 14 Nov 2023 11:07:45 +0100
-Subject: [PATCH v3 3/3] pmdomain: qcom: rpmpd: Set GENPD_FLAG_ACTIVE_WAKEUP
+        Tue, 14 Nov 2023 05:13:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4DB8197
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 02:13:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699956835; x=1731492835;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=czLBxCG0ycMVlzSI8YTc4LkTPbQ2ByuuFTnPd0JyF1A=;
+  b=k27v+xpK+QpHksd2FiUEoaiNjXoaWuiw1ox8ySTKCW/oJsqI2rqMIHsr
+   NRQt2heVAsKjId/DB5V/ruBVnbde5NrWYYnOwbmIak/y0pjrMgtNNS+KO
+   o8SPjZ8fduquhhO1x9vkstKBiHvioCiqnf+7aWjvShpGT4KXNBtUA9XSC
+   XNssORDr7LJxJSCmvg23gntHp3y0xKrgV1nUqMlEQT76+2LntsL9y8IyJ
+   IHiB2gYeV0m2bSf3fp4DDkHWuEMnJYuSnIX2WCFV1qtNLb9o+8M8XRgDY
+   74nNclNKtJJATrIt9qnE1KhskVPDbkI6u88yUVjgFAfZvEwm4P2uCzw8+
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="375669075"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="375669075"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:13:55 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="5974142"
+Received: from sannilnx-dsk.jer.intel.com ([10.12.231.107])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:13:53 -0800
+From:   Alexander Usyskin <alexander.usyskin@intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Daniele Ceraolo Spurio <daniele.ceraolospurio@intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Tomas Winkler <tomas.winkler@intel.com>,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        Vitaly Lubart <vitaly.lubart@intel.com>,
+        intel-xe@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/5] mei: hdcp/pxp: adapt for Xe driver
+Date:   Tue, 14 Nov 2023 12:08:38 +0200
+Message-Id: <20231114100843.1923977-1-alexander.usyskin@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-msm8909-cpufreq-v3-3-926097a6e5c1@kernkonzept.com>
-References: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
-In-Reply-To: <20231114-msm8909-cpufreq-v3-0-926097a6e5c1@kernkonzept.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Ilia Lin <ilia.lin@kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, Stephan Gerhold <stephan@gerhold.net>,
-        Stephan Gerhold <stephan.gerhold@kernkonzept.com>
-X-Mailer: b4 0.12.4
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Set GENPD_FLAG_ACTIVE_WAKEUP for all RPM power domains so that power
-domains necessary for wakeup/"awake path" devices are kept on across
-suspend.
+Update mei-hdcp and mei-pxp drivers to work with Xe driver
+alongside with i195 driver.
+Revert previous partial attempt.
+Update match functions to match without driver name
+and update module dependencies to optionally depend on Xe.
 
-This is needed for example for the *_AO ("active-only") variants of the
-RPMPDs used by the CPU. Those should maintain their votes also across
-system suspend to ensure the CPU can keep running for the whole suspend
-process (ending in a firmware call). When the RPM firmware detects that
-the CPUs are in a deep idle state it will drop those votes automatically.
+GregKH: this series intended to bake and merge through drm-xe tree
+where Xe driver is developed.
 
-Signed-off-by: Stephan Gerhold <stephan.gerhold@kernkonzept.com>
----
- drivers/pmdomain/qcom/rpmpd.c | 1 +
- 1 file changed, 1 insertion(+)
+V2:
+ - drop first empty line cleanup, will be sent separately
+ - add commit message to revert patch
 
-diff --git a/drivers/pmdomain/qcom/rpmpd.c b/drivers/pmdomain/qcom/rpmpd.c
-index 07590a3ef19c..7796d65f96e8 100644
---- a/drivers/pmdomain/qcom/rpmpd.c
-+++ b/drivers/pmdomain/qcom/rpmpd.c
-@@ -1044,6 +1044,7 @@ static int rpmpd_probe(struct platform_device *pdev)
- 		rpmpds[i]->pd.power_off = rpmpd_power_off;
- 		rpmpds[i]->pd.power_on = rpmpd_power_on;
- 		rpmpds[i]->pd.set_performance_state = rpmpd_set_performance;
-+		rpmpds[i]->pd.flags = GENPD_FLAG_ACTIVE_WAKEUP;
- 		pm_genpd_init(&rpmpds[i]->pd, NULL, true);
- 
- 		data->domains[i] = &rpmpds[i]->pd;
+Alexander Usyskin (5):
+  Revert "mei/hdcp: Also enable for XE"
+  mei: hdcp: match without driver name
+  mei: pxp: match without driver name
+  mei: hdcp: add dependency on Xe driver
+  mei: pxp: add dependency on Xe driver
+
+ drivers/misc/mei/hdcp/mei_hdcp.c | 15 ++++++++++++---
+ drivers/misc/mei/pxp/Kconfig     |  2 +-
+ drivers/misc/mei/pxp/mei_pxp.c   | 14 ++++++++++++--
+ 3 files changed, 25 insertions(+), 6 deletions(-)
 
 -- 
-2.39.2
+2.34.1
 
