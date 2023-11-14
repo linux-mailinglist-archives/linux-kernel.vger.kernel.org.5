@@ -2,82 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFEFB7EB115
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:44:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813E07EB119
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbjKNNoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:44:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35132 "EHLO
+        id S232390AbjKNNo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:44:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232390AbjKNNoc (ORCPT
+        with ESMTP id S231203AbjKNNo4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:44:32 -0500
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD3E132;
-        Tue, 14 Nov 2023 05:44:29 -0800 (PST)
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3b3f55e1bbbso3651905b6e.2;
-        Tue, 14 Nov 2023 05:44:29 -0800 (PST)
+        Tue, 14 Nov 2023 08:44:56 -0500
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 476DE1B6;
+        Tue, 14 Nov 2023 05:44:53 -0800 (PST)
+Received: by mail-oi1-f171.google.com with SMTP id 5614622812f47-3b2f28caab9so3451350b6e.1;
+        Tue, 14 Nov 2023 05:44:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699969469; x=1700574269;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fVoXranZuhbJagmViZ0Bh2J7LLpRAZVBS/w9Sa8ohYo=;
-        b=oo3i4EJBDK9xmtwN/AlOKqnnWDKzSPtkTocPTsjX04qmfBhVx6FV9NG6wFtNmsby6F
-         VFj/shDxp4BoARd+HtkFMQRiAEt606G3HRrGUa+aV6/Yp2dLAAu1ARG6RY8W9QHEkN/5
-         CzFpM8uK0cqYORRxxI+hHEQlIOSeH+lPEgdb91t+CQ7NKhYrciFweE/1hzErio0YLizB
-         OuuyGndR6mB88SkNWePgJ/rtAaEC40Ee0c67dOQjU1ZrnVF4C7wAKXHJiVfTfi6VG8/2
-         SQUx+2Ok/ULD3N8zuR0/6z5M/2qT4IPt1i2BjGfBkb+sp6GnJ6vqnNhuiVASHkpUw911
-         XC0w==
-X-Gm-Message-State: AOJu0Yzg5AII6t289z+IAcSEGKXIHjpAERh3xqCUT+psDv+KdQdprLCC
-        ftiI4pmH5cBSYQ5XHaT+0g==
-X-Google-Smtp-Source: AGHT+IEa2yiGK/vrgIGrYDQftkP/r/QgCl5oWffc3V6kN1weHVqSkoufro4lODlc4XqFTDIWhqoefQ==
-X-Received: by 2002:aca:f07:0:b0:3b6:cc01:aba2 with SMTP id 7-20020aca0f07000000b003b6cc01aba2mr10713866oip.55.1699969469146;
-        Tue, 14 Nov 2023 05:44:29 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699969492; x=1700574292;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PmEgb+EV0Zl7D8C3uAM8E/H1l2y9vB0lqB3Tm7vb8U4=;
+        b=SsWvmobV893/MEC6DfXVrfvvKAHbgBO/py1LO7DDHbG4W/yvG9kKuY/j65e0qtn8AU
+         Oel8LvI6UN9jP2GIV04BXM4fzBCiILMZOAq9U+tEd640WklRUnSAVY8qlaU8NmL+bvcd
+         pupQBrPR43DJchANHl5e/6glRIi0xiq9c29pttucmN9qUwm1YtZ5UVJofHjIco3X2WQb
+         MxTyQz41URaW5iXMzbIS/42eSlZA01SHUGIcH2N3FKhKuTvOGDAZgRvfMWz7eQTbShkB
+         UbZevPt4RT6rfoM/OEzJTQvJjlcYRUGCycEr/81Ghf/ehxu7d2drFB+tKCtrLcQ5Y/ni
+         GgMQ==
+X-Gm-Message-State: AOJu0YzK99ozdPqUZzZKRB13EBDaWOTDJI95MttQ/wawpcFEF2lyJhlR
+        Cr8G4bXB2INg9JddTPI9Ug==
+X-Google-Smtp-Source: AGHT+IEoAU1Lg6SlYx8VqG5eB7OWyqoEYSPcEMHmWoXzIY4/iBbuR3rMHc1ozP3vv2heVSdCnLsY+w==
+X-Received: by 2002:a05:6871:7291:b0:1ea:85a:db2e with SMTP id mm17-20020a056871729100b001ea085adb2emr14076992oac.45.1699969492557;
+        Tue, 14 Nov 2023 05:44:52 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id k13-20020a54440d000000b003ac9e775706sm1115062oiw.1.2023.11.14.05.44.27
+        by smtp.gmail.com with ESMTPSA id wh6-20020a056871a68600b001e12bb81363sm1394830oab.35.2023.11.14.05.44.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 05:44:28 -0800 (PST)
-Received: (nullmailer pid 1651909 invoked by uid 1000);
-        Tue, 14 Nov 2023 13:44:27 -0000
-Date:   Tue, 14 Nov 2023 07:44:27 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH 1/8] dt-bindings: phy: mediatek,xfi-pextp: add new
- bindings
-Message-ID: <20231114134427.GB1645963-robh@kernel.org>
-References: <cover.1699565880.git.daniel@makrotopia.org>
- <924c2c6316e6d51a17423eded3a2c5c5bbf349d2.1699565880.git.daniel@makrotopia.org>
- <797ea94b-9c26-43a2-85d7-633990ed8c57@lunn.ch>
- <ZU1nBgdspMtsI5aS@makrotopia.org>
+        Tue, 14 Nov 2023 05:44:51 -0800 (PST)
+Received: (nullmailer pid 1652367 invoked by uid 1000);
+        Tue, 14 Nov 2023 13:44:51 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZU1nBgdspMtsI5aS@makrotopia.org>
+From:   Rob Herring <robh@kernel.org>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     devicetree@vger.kernel.org, s.hauer@pengutronix.de,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Andy Yan <andy.yan@rock-chips.com>,
+        dri-devel@lists.freedesktop.org, sebastian.reichel@collabora.com,
+        kever.yang@rock-chips.com, chris.obbard@collabora.com,
+        heiko@sntech.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, hjc@rock-chips.com
+In-Reply-To: <20231114112841.1771312-1-andyshrk@163.com>
+References: <20231114112534.1770731-1-andyshrk@163.com>
+ <20231114112841.1771312-1-andyshrk@163.com>
+Message-Id: <169996949102.1652338.14967893657318401842.robh@kernel.org>
+Subject: Re: [PATCH 08/11] dt-bindings: display: vop2: Add rk3588 support
+Date:   Tue, 14 Nov 2023 07:44:51 -0600
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
         HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
@@ -89,30 +69,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 11:11:02PM +0000, Daniel Golle wrote:
-> Hi Andrew,
-> 
-> On Thu, Nov 09, 2023 at 10:55:55PM +0100, Andrew Lunn wrote:
-> > > +  mediatek,usxgmii-performance-errata:
-> > > +    $ref: /schemas/types.yaml#/definitions/flag
-> > > +    description:
-> > > +      USXGMII0 on MT7988 suffers from a performance problem in 10GBase-R
-> > > +      mode which needs a work-around in the driver. The work-around is
-> > > +      enabled using this flag.
-> > 
-> > Is there more details about this? I'm just wondering if this should be
-> > based on the compatible, rather than a bool property.
-> 
-> The vendor sources where this is coming from are here:
-> 
-> https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/a500d94cd47e279015ce22947e1ce396a7516598%5E%21/#F0
-> 
-> And I'm afraid this is as much detail as it gets. And yes, we could
-> also base this on the compatible and just have two different ones for
-> the two PEXTP instances found in MT7988.
-> Let me know your conclusion in that regard.
 
-I'd go with a property in this case unless you think there may be other 
-per instance differences.
+On Tue, 14 Nov 2023 19:28:41 +0800, Andy Yan wrote:
+> From: Andy Yan <andy.yan@rock-chips.com>
+> 
+> The vop2 on rk3588 is similar to which on rk356x
+> but with 4 video outputs and need to reference
+> more grf modules.
+> 
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
+> ---
+> 
+>  .../display/rockchip/rockchip-vop2.yaml       | 25 +++++++++++++++++++
+>  1 file changed, 25 insertions(+)
+> 
 
-Rob
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.example.dtb: vop@fe040000: clocks: [[4294967295, 221], [4294967295, 222], [4294967295, 223], [4294967295, 224], [4294967295, 225]] is too short
+	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip-vop2.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/display/rockchip/rockchip-vop2.example.dtb: vop@fe040000: clock-names: ['aclk', 'hclk', 'dclk_vp0', 'dclk_vp1', 'dclk_vp2'] is too short
+	from schema $id: http://devicetree.org/schemas/display/rockchip/rockchip-vop2.yaml#
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231114112841.1771312-1-andyshrk@163.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
