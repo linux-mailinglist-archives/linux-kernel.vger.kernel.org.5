@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 856777EB31F
+	by mail.lfdr.de (Postfix) with ESMTP id DA6777EB320
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:10:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233639AbjKNPJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39914 "EHLO
+        id S233578AbjKNPKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233498AbjKNPJi (ORCPT
+        with ESMTP id S233506AbjKNPJi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Nov 2023 10:09:38 -0500
-Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9901D1A5
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0FE31B5
         for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:09:32 -0800 (PST)
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699974147;
+        t=1699974151;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=7fhy2BdhWb4isZ8fdQwycwXhv0lYWLOPVT6/N56SGbY=;
-        b=mmQDOwqK8B5ctogSr2HC/KmzDYYRDtMtPUdLgd4bOhuRUXf+o2wbSvB60vY1wXe4Trwv8N
-        JSoEbBgebPLxXManXcCNGf4wDGVv7+gXTY1y6+0AE0XBKESbyoqG/LRpzFeL2R2Fj4o1hW
-        gJKplKgscixJPf4rRPCLhYQEiKzq2P0=
+        bh=un07RUcu2zgWpUGIkjqz4RZwf2xRaP/AV1IDnwLkbiQ=;
+        b=hbWJRAWGsb2GqirQOKQlvdC45YacNeKEi/rBOc4EJTe9WDpiaj6qOwW+Qf4/9hSOJSbGp8
+        mdMq5IocqxI5teuylhH5gVTr6qB9+xwhTPScfL7rJEmaa7LOzCK+zIEenJ4Uwdsj6jDvlH
+        8TBlWGDj2kfglMhHbLSBt1wAZnhyj5c=
 From:   Sui Jingfeng <sui.jingfeng@linux.dev>
 To:     Phong LE <ple@baylibre.com>,
         Neil Armstrong <neil.armstrong@linaro.org>
@@ -34,9 +34,9 @@ Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
         linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         Sui Jingfeng <suijingfeng@loongson.cn>
-Subject: [PATCH 7/8] drm/bridge: it66121: Add another implementation for getting match data
-Date:   Tue, 14 Nov 2023 23:01:29 +0800
-Message-Id: <20231114150130.497915-8-sui.jingfeng@linux.dev>
+Subject: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+Date:   Tue, 14 Nov 2023 23:01:30 +0800
+Message-Id: <20231114150130.497915-9-sui.jingfeng@linux.dev>
 In-Reply-To: <20231114150130.497915-1-sui.jingfeng@linux.dev>
 References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
 MIME-Version: 1.0
@@ -54,155 +54,238 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Sui Jingfeng <suijingfeng@loongson.cn>
 
-Because if use the i2c_get_match_data() function on our platform, the
-following error will emerge.
-
-[    3.597872] ACPI: bus type drm_connector registered
-[    3.602877] loongson 0000:00:06.1: Found LS7A1000 bridge chipset, revision: 1
-[    3.610013] loongson 0000:00:06.1: [drm] dc: 264MHz, gmc: 529MHz, gpu: 529MHz
-[    3.617111] loongson 0000:00:06.1: [drm] Dedicated vram start: 0xe0030000000, size: 64MiB
-[    3.633628] loongson 0000:00:06.1: [drm] Loongson VBIOS version: 0.3
-[    3.639944] loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
-[    3.646271] Console: switching to colour dummy device 80x25
-[    3.651902] loongson 0000:00:06.1: [drm] VRAM: 4096 pages ready
-[    3.657791] loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
-[    3.663731] loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
-[    3.671966] loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
-[    3.680188] loongson 0000:00:06.1: [drm] DisplayPipe-0 has DVO-0 connector
-[    3.711860] debugfs: Directory '1-004c' with parent 'regmap' already present!
-[    3.720312] CPU 0 Unable to handle kernel paging request at virtual address 0000000000000090, era == 9000000002faffec, ra == 9000000002faffc8
-[    3.732935] Oops[#1]:
-[    3.735187] CPU: 0 PID: 8 Comm: kworker/0:0 Not tainted 6.6.0-rc3+ #941
-[    3.741757] Hardware name: Loongson Loongson-3A5000-7A1000-1w-ML5A/Loongson-LS3A5000-7A1000-1w-ML5A, BIOS vUDK2018-LoongArch-V4.0.05-test-stable202305 06/
-[    3.755500] Workqueue: events work_for_cpu_fn
-[    3.759833] pc 9000000002faffec ra 9000000002faffc8 tp 900000010017c000 sp 900000010017fb80
-[    3.768132] a0 0000000000000000 a1 9000000101c00420 a2 0000000000000001 a3 900000010017fbc0
-[    3.776430] a4 0000000000000004 a5 0000000000000000 a6 0000000000000001 a7 0000000000000001
-[    3.784727] t0 0000000000000000 t1 0000000000000001 t2 0000000006124954 t3 0000000000000012
-[    3.793026] t4 0000000000004954 t5 900000000800b530 t6 0000000000000000 t7 0000000000018500
-[    3.801324] t8 90000001019c90c0 u0 9000000101c00c00 s9 fffffffffffff000 s0 9000000101c00400
-[    3.809621] s1 0000000000000000 s2 0000000000000000 s3 9000000003c42cb0 s4 9000000101c00420
-[    3.817920] s5 900000010017fc48 s6 0000000000000000 s7 0000000000000000 s8 90000000037fa000
-[    3.826219]    ra: 9000000002faffc8 i2c_get_match_data+0x24/0xac
-[    3.832189]   ERA: 9000000002faffec i2c_get_match_data+0x48/0xac
-[    3.838156]  CRMD: 000000b0 (PLV0 -IE -DA +PG DACF=CC DACM=CC -WE)
-[    3.844303]  PRMD: 00000004 (PPLV0 +PIE -PWE)
-[    3.848631]  EUEN: 00000000 (-FPE -SXE -ASXE -BTE)
-[    3.853391]  ECFG: 00071c1d (LIE=0,2-4,10-12 VS=7)
-[    3.858149] ESTAT: 00010000 [PIL] (IS= ECode=1 EsubCode=0)
-[    3.863599]  BADV: 0000000000000090
-[    3.867058]  PRID: 0014c011 (Loongson-64bit, Loongson-3A5000)
-[    3.872764] Modules linked in:
-[    3.875793] Process kworker/0:0 (pid: 8, threadinfo=(____ptrval____), task=(____ptrval____))
-[    3.884180] Stack : 9000000101c00400 0000000000000000 900000010177f428 9000000002ceb734
-[    3.892137]         9000000101c00404 90000000037fa000 900000010017fc60 9000000101c00400
-[    3.900093]         9000000016124954 8c326e68047d36df 0000004c037fa000 900000010017fc50
-[    3.908050]         0000000000000080 9000000003c44490 900000010017fcb0 90000001003e9ec0
-[    3.916007]         0000000000000001 900000010044f000 900000010017fc60 9000000101c00400
-[    3.923964]         90000000037fa000 9000000002cf05a8 90000001003e8000 900000010017fcb2
-[    3.931920]         000000304c17fc68 0000000000000000 000000000000004c 0000000000000000
-[    3.939877]         4031323136365449 0000000000006334 004c000000000000 0000000000000000
-[    3.947833]         0000000000000000 0000000000000000 0000000000000000 0000000000000000
-[    3.955790]         0000000000000000 0000000000000000 9000000100449a98 8c326e68047d36df
-[    3.963746]         ...
-[    3.966170] Call Trace:
-[    3.966172] [<9000000002faffec>] i2c_get_match_data+0x48/0xac
-[    3.974304] [<9000000002ceb734>] it66121_create_bridge+0x15c/0x404
-[    3.980446] [<9000000002cf05a8>] ls7a1000_output_init+0x228/0x248
-[    3.986503] [<9000000002cee494>] lsdc_pci_probe+0x4dc/0x5b0
-[    3.992038] [<9000000002b86b50>] local_pci_probe+0x48/0xa0
-[    3.997487] [<90000000023b5d04>] work_for_cpu_fn+0x1c/0x30
-[    4.002936] [<90000000023b7c0c>] process_one_work+0x14c/0x288
-[    4.008644] [<90000000023b8084>] worker_thread+0x33c/0x438
-[    4.014092] [<90000000023c1ccc>] kthread+0x124/0x130
-[    4.019023] [<9000000002381188>] ret_from_kernel_thread+0xc/0xa4
-[    4.024991]
-[    4.026463] Code: 26000079  02c08063  4c000020 <28c24318> 43ffe31f  43ffdeff  2a00030c  43ffd59f  02c012f7
-[    4.036154]
-[    4.037630] ---[ end trace 0000000000000000 ]---
+The it66121_create_bridge() and it66121_destroy_bridge() are added to
+export the core functionalities. Create a connector manually by using
+bridge connector helpers when link as a lib.
 
 Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
 ---
- drivers/gpu/drm/bridge/ite-it66121.c | 51 +++++++++++++++++++---------
- 1 file changed, 35 insertions(+), 16 deletions(-)
+ drivers/gpu/drm/bridge/ite-it66121.c | 134 +++++++++++++++++++--------
+ include/drm/bridge/ite-it66121.h     |  17 ++++
+ 2 files changed, 113 insertions(+), 38 deletions(-)
+ create mode 100644 include/drm/bridge/ite-it66121.h
 
 diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-index 2f7f00f1bedb..8971414a2a60 100644
+index 8971414a2a60..f5968b679c5d 100644
 --- a/drivers/gpu/drm/bridge/ite-it66121.c
 +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-@@ -292,8 +292,39 @@ enum chip_id {
- struct it66121_chip_info {
- 	enum chip_id id;
- 	u16 vid, pid;
-+	char name[24];
+@@ -22,6 +22,7 @@
+ 
+ #include <drm/drm_atomic_helper.h>
+ #include <drm/drm_bridge.h>
++#include <drm/drm_bridge_connector.h>
+ #include <drm/drm_edid.h>
+ #include <drm/drm_modes.h>
+ #include <drm/drm_print.h>
+@@ -703,14 +704,32 @@ static int it66121_bridge_attach(struct drm_bridge *bridge,
+ 				 enum drm_bridge_attach_flags flags)
+ {
+ 	struct it66121_ctx *ctx = bridge_to_it66121(bridge);
++	struct drm_bridge *next_bridge = ctx->next_bridge;
++	struct drm_encoder *encoder = bridge->encoder;
+ 	int ret;
+ 
+-	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
+-		return -EINVAL;
++	if (next_bridge) {
++		if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
++			WARN_ON(1);
++			flags |= DRM_BRIDGE_ATTACH_NO_CONNECTOR;
++		}
++		ret = drm_bridge_attach(encoder, next_bridge, bridge, flags);
++		if (ret)
++			return ret;
++	} else {
++		struct drm_connector *connector;
+ 
+-	ret = drm_bridge_attach(bridge->encoder, ctx->next_bridge, bridge, flags);
+-	if (ret)
+-		return ret;
++		if (flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)
++			WARN_ON(1);
++
++		connector = drm_bridge_connector_init(bridge->dev, encoder);
++		if (IS_ERR(connector))
++			return PTR_ERR(connector);
++
++		drm_connector_attach_encoder(connector, encoder);
++
++		ctx->connector = connector;
++	}
+ 
+ 	if (ctx->info->id == ID_IT66121) {
+ 		ret = regmap_write_bits(ctx->regmap, IT66121_CLK_BANK_REG,
+@@ -1632,16 +1651,13 @@ static const char * const it66121_supplies[] = {
+ 	"vcn33", "vcn18", "vrf12"
  };
  
-+static const struct it66121_chip_info it66121_chip_info[] = {
-+	{
-+		.id = ID_IT66121,
-+		.vid = 0x4954,
-+		.pid = 0x0612,
-+		.name = "IT66121",
-+	},
-+	{
-+		.id = ID_IT6610,
-+		.vid = 0xca00,
-+		.pid = 0x0611,
-+		.name = "IT6610",
-+	},
-+};
+-static int it66121_probe(struct i2c_client *client)
++int it66121_create_bridge(struct i2c_client *client, bool of_support,
++			  bool hpd_support, bool audio_support,
++			  struct drm_bridge **bridge)
+ {
++	struct device *dev = &client->dev;
+ 	int ret;
+ 	struct it66121_ctx *ctx;
+-	struct device *dev = &client->dev;
+-
+-	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+-		dev_err(dev, "I2C check functionality failed.\n");
+-		return -ENXIO;
+-	}
+ 
+ 	ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+ 	if (!ctx)
+@@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client *client)
+ 
+ 	ctx->dev = dev;
+ 	ctx->client = client;
+-	ctx->info = i2c_get_match_data(client);
+-
+-	ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+-	if (ret)
+-		return ret;
+-
+-	ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+-	if (ret)
+-		return ret;
+-
+-	i2c_set_clientdata(client, ctx);
+ 	mutex_init(&ctx->lock);
+ 
+-	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
+-					     it66121_supplies);
+-	if (ret) {
+-		dev_err(dev, "Failed to enable power supplies\n");
+-		return ret;
++	if (of_support) {
++		ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
++		if (ret)
++			return ret;
 +
-+static const struct it66121_chip_info *
-+it66121_get_match_data(u16 vender_id, u16 device_id)
++		ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
++		if (ret)
++			return ret;
++	} else {
++		ctx->bus_width = 24;
++		ctx->next_bridge = NULL;
+ 	}
+ 
+ 	it66121_hw_reset(ctx);
+@@ -1679,33 +1690,80 @@ static int it66121_probe(struct i2c_client *client)
+ 	if (ret)
+ 		return ret;
+ 
+-	if (ctx->vender_id != ctx->info->vid ||
+-	    ctx->device_id != ctx->info->pid)
++	ctx->info = it66121_get_match_data(ctx->vender_id, ctx->device_id);
++	if (!ctx->info)
+ 		return -ENODEV;
+ 
+-	ret = devm_request_threaded_irq(dev, client->irq, NULL,	it66121_irq_threaded_handler,
+-					IRQF_ONESHOT, dev_name(dev), ctx);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to request irq %d:%d\n", client->irq, ret);
+-		return ret;
++	if (hpd_support) {
++		ret = devm_request_threaded_irq(dev, client->irq, NULL,
++						it66121_irq_threaded_handler,
++						IRQF_ONESHOT, dev_name(dev),
++						ctx);
++		if (ret < 0) {
++			dev_err(dev, "Failed to request irq: %d\n", ret);
++			return ret;
++		}
+ 	}
+ 
+ 	it66121_bridge_init_base(&ctx->bridge, dev->of_node, true);
+ 
+-	it66121_audio_codec_init(ctx, dev);
++	if (audio_support)
++		it66121_audio_codec_init(ctx, dev);
++
++	*bridge = &ctx->bridge;
+ 
+ 	dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
+ 		 ctx->vender_id, ctx->device_id, ctx->revision);
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(it66121_create_bridge);
++
++static int it66121_probe(struct i2c_client *client)
 +{
-+	const struct it66121_chip_info *info;
-+	unsigned int i;
++	struct device *dev = &client->dev;
++	struct it66121_ctx *ctx;
++	struct drm_bridge *bridge;
++	int ret;
 +
-+	for (i = 0; i < ARRAY_SIZE(it66121_chip_info); i++) {
-+		info = &it66121_chip_info[i];
-+		if (info->vid == vender_id && info->pid == device_id)
-+			return info;
++	if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
++		dev_err(dev, "I2C check functionality failed.\n");
++		return -ENXIO;
 +	}
 +
-+	return NULL;
++	ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
++					     it66121_supplies);
++	if (ret) {
++		dev_err(dev, "Failed to enable power supplies\n");
++		return ret;
++	}
++
++	ret = it66121_create_bridge(client, true, true, true, &bridge);
++	if (ret)
++		return ret;
++
++	ctx = bridge_to_it66121(bridge);
++
++	i2c_set_clientdata(client, ctx);
++
++	return 0;
 +}
 +
- struct it66121_ctx {
- 	struct regmap *regmap;
- 	struct drm_bridge bridge;
-@@ -1677,28 +1708,16 @@ static void it66121_remove(struct i2c_client *client)
- 	mutex_destroy(&ctx->lock);
++void it66121_destroy_bridge(struct drm_bridge *bridge)
++{
++	struct it66121_ctx *ctx = bridge_to_it66121(bridge);
++
++	drm_bridge_remove(bridge);
++
++	mutex_destroy(&ctx->lock);
++}
++EXPORT_SYMBOL_GPL(it66121_destroy_bridge);
+ 
+ static void it66121_remove(struct i2c_client *client)
+ {
+ 	struct it66121_ctx *ctx = i2c_get_clientdata(client);
+ 
+-	drm_bridge_remove(&ctx->bridge);
+-	mutex_destroy(&ctx->lock);
++	it66121_destroy_bridge(&ctx->bridge);
  }
  
--static const struct it66121_chip_info it66121_chip_info = {
--	.id = ID_IT66121,
--	.vid = 0x4954,
--	.pid = 0x0612,
--};
--
--static const struct it66121_chip_info it6610_chip_info = {
--	.id = ID_IT6610,
--	.vid = 0xca00,
--	.pid = 0x0611,
--};
--
  static const struct of_device_id it66121_dt_match[] = {
--	{ .compatible = "ite,it66121", &it66121_chip_info },
--	{ .compatible = "ite,it6610", &it6610_chip_info },
-+	{ .compatible = "ite,it66121", &it66121_chip_info[0] },
-+	{ .compatible = "ite,it6610", &it66121_chip_info[1] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, it66121_dt_match);
- 
- static const struct i2c_device_id it66121_id[] = {
--	{ "it66121", (kernel_ulong_t) &it66121_chip_info },
--	{ "it6610", (kernel_ulong_t) &it6610_chip_info },
-+	{ "it66121", (kernel_ulong_t) &it66121_chip_info[0] },
-+	{ "it6610", (kernel_ulong_t) &it66121_chip_info[1] },
- 	{ }
- };
- MODULE_DEVICE_TABLE(i2c, it66121_id);
+diff --git a/include/drm/bridge/ite-it66121.h b/include/drm/bridge/ite-it66121.h
+new file mode 100644
+index 000000000000..e6753f695b7f
+--- /dev/null
++++ b/include/drm/bridge/ite-it66121.h
+@@ -0,0 +1,17 @@
++/* SPDX-License-Identifier: GPL-2.0-only */
++
++#ifndef __ITE_IT66121_H__
++#define __ITE_IT66121_H__
++
++#include <linux/i2c.h>
++
++#include <drm/drm_bridge.h>
++#include <drm/drm_device.h>
++
++int it66121_create_bridge(struct i2c_client *client, bool of_support,
++			  bool hpd_support, bool audio_support,
++			  struct drm_bridge **bridge);
++
++void it66121_destroy_bridge(struct drm_bridge *bridge);
++
++#endif
 -- 
 2.34.1
 
