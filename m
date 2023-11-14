@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77C0C7EA969
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DBE7EA96C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:16:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232026AbjKNEPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:15:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48898 "EHLO
+        id S232034AbjKNEP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:15:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231994AbjKNEPF (ORCPT
+        with ESMTP id S231970AbjKNEP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 23:15:05 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102DDD49
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:15:01 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc3bc5df96so37691555ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:15:01 -0800 (PST)
+        Mon, 13 Nov 2023 23:15:56 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF84ED0;
+        Mon, 13 Nov 2023 20:15:51 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id 98e67ed59e1d1-28099d11c49so1092883a91.1;
+        Mon, 13 Nov 2023 20:15:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699935300; x=1700540100; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1699935351; x=1700540151; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=OUC30dXlQK5fmzms4eR9YZ2PZDBao2AfV4/azmUSi6E=;
-        b=CUsWneXIcMotUZhN15TwQakUl4TojQ16Fly7Zo0z1Bnk+y+4D6683M6XAF+U1rpWUj
-         H8CSlLmqqegdrg3tety2aNkL8gTPnz+vXFiMoLXMIrrYXyN2XRlE002mM4Szg4B50wRV
-         xkLqYuwqrTkBRf5gJPbaODkPbGmU4P53hZx3g=
+        bh=RE6VvMtBCo/S66AHg+l/y7o7DeXG142T7fh8adrCVRU=;
+        b=VY0EXT9DhjkwauQy4GuJoboDuFUFFod56LKCa6cRqA2z4wtySGsE8HrBrbkBw2XRyd
+         VAN8Lou6sLBEmYdU/sZgi2+JK2HXeATDyA0NtIoKZU+YcuCJx6NFKFxbImZR/g1ee4Hb
+         wol278qI7bylw6Dz96+LyzPJoiFSA+IjIzMpjO8KZZnmmgj0zXFXHa6KMsueLxIbe0So
+         NMIAF1fq4k0c+vnVjYM6GGiIBhZjQZBKICl9zVVsWYlTBdHaA5FHBCa30xsXOLJFbKCe
+         xkqKZeBVA/LIqsNOaNA4++aKSaaI1z+qXjrZPdSP10XdzHUX2nHICwSSZBNBCjM34np9
+         ZxUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699935300; x=1700540100;
+        d=1e100.net; s=20230601; t=1699935351; x=1700540151;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OUC30dXlQK5fmzms4eR9YZ2PZDBao2AfV4/azmUSi6E=;
-        b=vUNWJJSpJ3+sjeH6OWj6BCdTBaLsuoRqYDWQS26tS7hQPi1mZkdg/4KeIhHcOTjonG
-         hQA3ydbpOxeoifdL4EBgr95gz3FgACuBT0D4nl7qoQmucYvOhXE7aYTbuxPn5zrKchSF
-         qDVQUFTn1lxTAes/XhW1NHUXAYf2odTf1BU/1DWZ08B2UcyqT/lD2P7/y9s0CKZ1E1SD
-         lO/ez8rNfX/LrMaLjaiBPex5wbyirDg1h6ZeG8ht0s4orOVdi3ycL7TQXBcR1CG7o/t8
-         ypWpHEmGJs0AAc7SnR3imWeDnlLokLFBVKGA0spepvUx1pbRE50sT28qMh5Go5NcqKnK
-         PWRg==
-X-Gm-Message-State: AOJu0YwXyj+r2gqT1CuPgN/18fDkrhSMMx9j5dA1uvoxn69/jh8ilfFY
-        6StjjpSQ+hGeg2Qd0xdlZVQhQA==
-X-Google-Smtp-Source: AGHT+IEmPIYVtjWrKxgWx/6E037p3LrYP3ZvBjQTSGRoCVVM2HVRsHTaY6qgDIjr5rZO1Nl3XZts5A==
-X-Received: by 2002:a17:902:7d8e:b0:1c5:d063:b70e with SMTP id a14-20020a1709027d8e00b001c5d063b70emr1114726plm.53.1699935300585;
-        Mon, 13 Nov 2023 20:15:00 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id iw17-20020a170903045100b001c9cc44eb60sm4799660plb.201.2023.11.13.20.15.00
+        bh=RE6VvMtBCo/S66AHg+l/y7o7DeXG142T7fh8adrCVRU=;
+        b=d5Uy486kzzVp65MrWUhP2YhPkQ4mI7VklYPiZY1W35M+J63lnyIA61tZRANeeYP04X
+         JIMSQ/9MLkJLYiFUq55JlxZdMoNhGqCyIZGSyZctCmov244w0QVJy+DuGg5d/dusI/Ez
+         bCAiwCiY0VoyVPwTYOQqo5UILg4fxwwPoZHD9IqnA/z1E7jSRalS23zz5uobqzHtXyKN
+         8UiPf/CnEhuFqbxu7nGIao5mRSogb2Xsxuw+ta/s6Txna7l97+CIsDuS8YOqZrwAHI3I
+         Il4OzOXcLbljk4yjeUBr7Kl6VFIMiMhyVz0JSRG0PAOcBvp0xp9mL7Y8nlElu66BNXC4
+         vDWw==
+X-Gm-Message-State: AOJu0Yy2v39PNG2PFL1heffjiH7kvGqZZvA09czGd1GHO8OAkhGaRTL4
+        3KiywKoFHGG+aHPmcma0rli7DJkLmaM=
+X-Google-Smtp-Source: AGHT+IGD0DYTC/XhPUxLNhCWa3XebHSt7NuxtQDxk3WZdWqhVNDlNiQL9U5WCkhJfeGD+iGDRsjI/A==
+X-Received: by 2002:a17:90b:e13:b0:27f:f8d6:9622 with SMTP id ge19-20020a17090b0e1300b0027ff8d69622mr1021370pjb.0.1699935351275;
+        Mon, 13 Nov 2023 20:15:51 -0800 (PST)
+Received: from hoboy.vegasvil.org ([2601:640:8000:54:e2d5:5eff:fea5:802f])
+        by smtp.gmail.com with ESMTPSA id c3-20020a17090ad90300b002805740d668sm6324359pjv.4.2023.11.13.20.15.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 20:15:00 -0800 (PST)
-Date:   Mon, 13 Nov 2023 20:14:59 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 04/20] mm/memcontrol: remove CONFIG_SLAB #ifdef guards
-Message-ID: <202311132014.F03494F@keescook>
-References: <20231113191340.17482-22-vbabka@suse.cz>
- <20231113191340.17482-26-vbabka@suse.cz>
+        Mon, 13 Nov 2023 20:15:50 -0800 (PST)
+Date:   Mon, 13 Nov 2023 20:15:48 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Jacob Keller <jacob.e.keller@intel.com>
+Cc:     Min Li <lnimi@hotmail.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next RFC 1/1] ptp: use extts interface for the
+ measured external offset
+Message-ID: <ZVL0dIpwCE94ylfH@hoboy.vegasvil.org>
+References: <MW5PR03MB6932F6DB45F5ED179DF0BA4DA0B3A@MW5PR03MB6932.namprd03.prod.outlook.com>
+ <490abfce-47b6-430c-8fc1-99536284c1a6@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231113191340.17482-26-vbabka@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+In-Reply-To: <490abfce-47b6-430c-8fc1-99536284c1a6@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -86,12 +73,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 08:13:45PM +0100, Vlastimil Babka wrote:
-> With SLAB removed, these are never true anymore so we can clean up.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+On Mon, Nov 13, 2023 at 03:00:15PM -0800, Jacob Keller wrote:
+> You mention GNSS, but is there an example or a link to a driver change
+> you could provide to show its use?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Yes, the new option must wait for a driver that implements it.  Can
+you make a patch series where the driver change appears in the second
+patch?
 
--- 
-Kees Cook
+Thanks,
+Richard
