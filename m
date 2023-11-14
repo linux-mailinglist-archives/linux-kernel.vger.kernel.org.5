@@ -2,104 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 507817EADCE
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:17:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE5627EADD3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:18:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbjKNKRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:17:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48760 "EHLO
+        id S230451AbjKNKSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:18:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230451AbjKNKRD (ORCPT
+        with ESMTP id S229555AbjKNKSb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:17:03 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4006783;
-        Tue, 14 Nov 2023 02:16:56 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AEAGkayE842045, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AEAGkayE842045
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 14 Nov 2023 18:16:46 +0800
-Received: from RTEXMBS02.realtek.com.tw (172.21.6.95) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Tue, 14 Nov 2023 18:16:47 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXMBS02.realtek.com.tw (172.21.6.95) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Tue, 14 Nov 2023 18:16:45 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Tue, 14 Nov 2023 18:16:45 +0800
-From:   Stanley Chang <stanley_chang@realtek.com>
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Stanley Chang <stanley_chang@realtek.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] usb: dwc3: add missing of_node_put and platform_device_put
-Date:   Tue, 14 Nov 2023 18:16:45 +0800
-Message-ID: <20231114101645.20065-1-stanley_chang@realtek.com>
-X-Mailer: git-send-email 2.42.0
+        Tue, 14 Nov 2023 05:18:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B5D0A4;
+        Tue, 14 Nov 2023 02:18:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D14F7C433C8;
+        Tue, 14 Nov 2023 10:18:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699957108;
+        bh=E6qJf5xkvt72gnGBq8WeS8tYIMgOIXLwZyGWKa+8WKg=;
+        h=Subject:From:In-Reply-To:References:To:Cc:Date:From;
+        b=OSN0dq8HLeTBHO7ktFmZI0+Y0fLYQbP9RpOimeZAMk2sDz7G8L6a614RYO2Y90VdS
+         lfiyMaBRQyKomTtwqwbiaaEGtXyDDfJNmQ5a0YbQYtsaGN6NGis6CtX8IN4H8UPdwx
+         pGuDD4L3TBXwr3NvU9kuVZND3uv+GyDG+jnQqYL5lHHLfiudOOVmXtxzwVvlESBw8i
+         6/JCTGTUlQTZLxuLGLAVmrXsU5euzEircU/9B1ZJ5tpuD8NPidPfsLWBDiUTOBS9MB
+         CynAdPjjWMJUbOpKYDPU2z8iJ2nvy4MVxbBAOIIYI3idenzZEscGFzsjNPldhJ96HD
+         xEBtzeBGd2blQ==
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXMBS02.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH] wifi: rt2x00: correct wrong BBP register in RxDCOC
+ calibration
+From:   Kalle Valo <kvalo@kernel.org>
+In-Reply-To: <TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+References: <TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM>
+To:     Shiji Yang <yangshiji66@outlook.com>
+Cc:     linux-wireless@vger.kernel.org, Stanislaw Gruszka <stf_xl@wp.pl>,
+        linux-kernel@vger.kernel.org, Shiji Yang <yangshiji66@outlook.com>
+User-Agent: pwcli/0.1.1-git (https://github.com/kvalo/pwcli/) Python/3.11.2
+Message-ID: <169995710456.3786790.695504990029617196.kvalo@kernel.org>
+Date:   Tue, 14 Nov 2023 10:18:26 +0000 (UTC)
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-of_get_compatible_child performs an of_node_get, so an of_node_get is
-required. Add platform_device_put to match with of_find_device_by_node.
+Shiji Yang <yangshiji66@outlook.com> wrote:
 
-Fixes: 34c200483569 ("usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver")
-Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
----
-v1 to v2 change:
-    1. Modify the commit message.
-    2. Add of_node_get in the of_property_read_string() error path.
----
- drivers/usb/dwc3/dwc3-rtk.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+> Refer to Mediatek vendor driver RxDCOC_Calibration() function, when
+> performing gainfreeze calibration, we should write register 140
+> instead of 141. This fix can reduce the total calibration time from
+> 6 seconds to 1 second.
+> 
+> Signed-off-by: Shiji Yang <yangshiji66@outlook.com>
+> Acked-by: Stanislaw Gruszka <stf_xl@wp.pl>
 
-diff --git a/drivers/usb/dwc3/dwc3-rtk.c b/drivers/usb/dwc3/dwc3-rtk.c
-index 590028e8fdcb..3cd6b184551c 100644
---- a/drivers/usb/dwc3/dwc3-rtk.c
-+++ b/drivers/usb/dwc3/dwc3-rtk.c
-@@ -183,10 +183,13 @@ static enum usb_device_speed __get_dwc3_maximum_speed(struct device_node *np)
- 
- 	ret = of_property_read_string(dwc3_np, "maximum-speed", &maximum_speed);
- 	if (ret < 0)
--		return USB_SPEED_UNKNOWN;
-+		goto out;
- 
- 	ret = match_string(speed_names, ARRAY_SIZE(speed_names), maximum_speed);
- 
-+out:
-+	of_node_put(dwc3_np);
-+
- 	return (ret < 0) ? USB_SPEED_UNKNOWN : ret;
- }
- 
-@@ -339,6 +342,9 @@ static int dwc3_rtk_probe_dwc3_core(struct dwc3_rtk *rtk)
- 
- 	switch_usb2_role(rtk, rtk->cur_role);
- 
-+	platform_device_put(dwc3_pdev);
-+	of_node_put(dwc3_node);
-+
- 	return 0;
- 
- err_pdev_put:
+Patch applied to wireless-next.git, thanks.
+
+50da74e1e8b6 wifi: rt2x00: correct wrong BBP register in RxDCOC calibration
+
 -- 
-2.34.1
+https://patchwork.kernel.org/project/linux-wireless/patch/TYAP286MB0315B13B89DF57B6B27BB854BCAFA@TYAP286MB0315.JPNP286.PROD.OUTLOOK.COM/
+
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
