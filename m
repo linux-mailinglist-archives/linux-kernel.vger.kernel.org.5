@@ -2,39 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B79E7EB1FD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:20:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0C1C7EB1FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233354AbjKNOUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:20:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44056 "EHLO
+        id S233379AbjKNOUb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:20:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjKNOUK (ORCPT
+        with ESMTP id S233293AbjKNOU2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:20:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2624CA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:20:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 695BEC433C8;
-        Tue, 14 Nov 2023 14:20:06 +0000 (UTC)
-Message-ID: <6e3f2a2e-2430-4b4f-9ead-d9a4d5e42713@linux-m68k.org>
-Date:   Wed, 15 Nov 2023 00:20:03 +1000
+        Tue, 14 Nov 2023 09:20:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C724418A;
+        Tue, 14 Nov 2023 06:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699971624; x=1731507624;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=N8HloDum7I1cC4eEg1gfAFdHU8xz4cl4PXvQCbmBgMA=;
+  b=j8gtv/QbIyR8BNnZ1tw5Zn7VTQRPd0t8B0Y7EhKKjkjZYoKAyVVodfQn
+   7YDJyUziMmgWSLeU8U1nwqKcQR8AOACs2IIfe0IrJsd+BN1JYo1gZV2H9
+   Z+JjCeW4MttdHOfxVgqyrjQH8BUyFow0Ar+ydE0imJuQ/fkoIhG/yilrx
+   gYCyVXeDshUJkeV+hIT45wgrSojI2McMBwA2DQkIRHUBUg6FfbamJxb1m
+   yYsdzrdbiBQmyw1huPbIKbygeOpflp92f1SLYuq/yyfLyxdQSNLAvRgNe
+   N4M7Y3sOux2EYOLA7HqpaTv7MHfuQaqkGRXJoxBNKbrdCLEtQHn7mEb0f
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393519409"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="393519409"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:20:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="830608183"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="830608183"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga008.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:20:21 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r2uH4-0000000DpnY-1fIi;
+        Tue, 14 Nov 2023 16:20:18 +0200
+Date:   Tue, 14 Nov 2023 16:20:18 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "larry.lai" <larry.lai@yunjingtech.com>
+Cc:     lee@kernel.org, linus.walleij@linaro.org, pavel@ucw.cz,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
+        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
+        noah.hung@yunjingtech.com
+Subject: Re: [PATCH V7 0/3] Add support control UP board CPLD/FPGA pin control
+Message-ID: <ZVOCIj1oPoEcKe7L@smile.fi.intel.com>
+References: <20231031015119.29756-1-larry.lai@yunjingtech.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH] m68k: Avoid CONFIG_COLDFIRE switch in uapi header
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>, Thomas Huth <thuth@redhat.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     linux-kernel@vger.kernel.org
-References: <20231110103120.387517-1-thuth@redhat.com>
- <571ed28a-9690-4f85-9122-4b0f76975cb3@app.fastmail.com>
-From:   Greg Ungerer <gerg@linux-m68k.org>
-In-Reply-To: <571ed28a-9690-4f85-9122-4b0f76975cb3@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231031015119.29756-1-larry.lai@yunjingtech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -42,62 +69,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/11/23 21:19, Arnd Bergmann wrote:
-> On Fri, Nov 10, 2023, at 11:31, Thomas Huth wrote:
->> We should not use any CONFIG switches in uapi headers since
->> these only work during kernel compilation. They are not defined
->> for userspace. Let's use the __mcoldfire__ switch from the
->> compiler here instead.
->>
->> Signed-off-by: Thomas Huth <thuth@redhat.com>
->> ---
->>   Marked as RFC since I didn't test it - I'd appreciate if someone
->>   could give it a try on a real system.
->>
->>   arch/m68k/include/uapi/asm/ptrace.h | 2 +-
->>   scripts/headers_install.sh          | 1 -
->>   2 files changed, 1 insertion(+), 2 deletions(-)
->>
->> diff --git a/arch/m68k/include/uapi/asm/ptrace.h
->> b/arch/m68k/include/uapi/asm/ptrace.h
->> index 5b50ea592e00..ebd9fccb3d11 100644
->> --- a/arch/m68k/include/uapi/asm/ptrace.h
->> +++ b/arch/m68k/include/uapi/asm/ptrace.h
->> @@ -39,7 +39,7 @@ struct pt_regs {
->>     long     d0;
->>     long     orig_d0;
->>     long     stkadj;
->> -#ifdef CONFIG_COLDFIRE
->> +#ifdef __mcoldfire__
->>     unsigned format :  4; /* frame format specifier */
->>     unsigned vector : 12; /* vector offset */
->>     unsigned short sr;
+On Tue, Oct 31, 2023 at 09:51:16AM +0800, larry.lai wrote:
+> The UP board <https://up-board.org/> is the computer board for 
+> Professional Makers and Industrial Applications. We want to upstream 
+> the UP board 40-pin GP-bus Kernel driver for giving the users better 
+> experience on the software release. (not just download from UP board 
+> github)
 > 
-> I think this should be harmless,
-
-I expect it would be, we have done this in at least one other uapi file,
-arch/m68k/include/uapi/asm/swab.h.
-
-
-> but I'm not sure we even
-> need the structure in a uapi header: about half the architectures
-> define this in a user-visible way, while the others don't.
+> These patches are generated from the Linux kernel mainline tag v6.0.
 > 
-> On csky, powerpc and microblaze, pt_regs is used inside
-> of the 'struct sigcontext' definition, but I don't think
-> this was ever the case on m68k.
-> 
-> The other one that is accessed in userspace is 'struct
-> user_regs_struct', but this one is actually not in the
-> uapi headers on m68k or x86.
+> This is the PATCH V7 and fixed kernel test robot compiler warning and 
+> addressed Lee Jones review comments.
 
-I don't think we need them in the uapi header at all. Trivially moving
-those 2 structures into the non-uapi ptrace.h seems to build fine on
-most simple setups I tried (systems using uClibc, with applications like
-strace). Should we try moving them out?
+(You have trailing white spaces in the above multi-line paragraphs.)
 
-Regards
-Greg
+Sorry for the delay, but this series needs much more work before being
+considered for the inclusion. I just finished commenting each patch
+individually.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
 
