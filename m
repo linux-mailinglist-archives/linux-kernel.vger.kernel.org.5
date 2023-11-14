@@ -2,150 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 45EFC7EB5A8
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:40:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5327B7EB5AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:41:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232453AbjKNRk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 12:40:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55510 "EHLO
+        id S233633AbjKNRlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 12:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKNRk1 (ORCPT
+        with ESMTP id S229566AbjKNRle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 12:40:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D005CFF
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:40:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8121AC433C8;
-        Tue, 14 Nov 2023 17:40:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699983624;
-        bh=z9PwBTSGVM1q27ATk+TMybFpQRzzSFtVdprhH4R8Ytk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YPq+NIIdBj7YLws2oaM2krjeCUtZ8V97BQueGz5nDfeAhkmKi1uaZYlzsRhy5NHZi
-         7bqwW0XHxgaJpVaRgO6JMzf9dKNS2PupqbmwnOHIEPs5MMedPu1wGSSO2w1e4fWRQ8
-         tPQLX3t8fs2p+Te3m95wj0suqTypCdHLGWW4/x8ftNwXylBPvc/zXsmwF3vXFvA8Uy
-         4BGyuCgWCPfUYDTk1TJ/e2eu+rjkZqcNFcdlILrzE/nWc3b2Ozrs2m75OG51ZbBapX
-         5j7bpSe/UuErrJ7VwU+PfylJT8w2bJhqMbHbEJR1g8nbyUiH+rzjjiupwRF79scyVe
-         jHCZj+Y4QXARQ==
-Date:   Tue, 14 Nov 2023 17:40:20 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Chen Wang <unicornxw@gmail.com>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, robh+dt@kernel.org, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH 2/5] dt-bindings: soc: sophgo: Add Sophgo syscon module
-Message-ID: <20231114-timid-habitat-a06e52e59c9c@squawk>
-References: <cover.1699879741.git.unicorn_wang@outlook.com>
- <3c286171af30101b88f0aaf645fb0a7d5880ac0a.1699879741.git.unicorn_wang@outlook.com>
+        Tue, 14 Nov 2023 12:41:34 -0500
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EEA10A
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:41:30 -0800 (PST)
+Received: by mail-ot1-x32a.google.com with SMTP id 46e09a7af769-6ce2de8da87so3623071a34.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:41:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699983689; x=1700588489; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HLGvE6w2nI/I1UWxr+lpIoR/ViMo1XgqtZtp21yYr4U=;
+        b=VpcK59r5CrZ3QCH78240cjVtgXDGWCQH7bfIykn5Iviwllo8QJxqY4dQf3VOgGB51O
+         RL6mlFZCTDmoMUwTw/GAbrsx5i3FgDMP/+/ePVchDHCgfmla6bJe0pIq2XGog4s5vSSr
+         E5qA1jpbug7T8h05bcUjW2u2lR8eHdicnFicQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699983689; x=1700588489;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HLGvE6w2nI/I1UWxr+lpIoR/ViMo1XgqtZtp21yYr4U=;
+        b=IZC0DxPMoSuuniNJCPzbk2npf9VgF874U07y0GdhCRL0z1yYZ9rncwfofQZq4Cblsv
+         2ZTqA7WkV4npI5Shyp5u+ubx4B7YOScmgD0OdTcYPeTQs5g0VznTWJMehvn7Zad9UU2z
+         4AqKIAUMh5kQtq6EpzXgwZPb/w7bC1G3bCp0JC0fgjP8zeqor1X+21wBVNgWcFFnNlH9
+         Msu6JuTqf/PV1LZbl9pd4ZeLtTvcQ6YzLchVwfxnscbn0pmiz6ax4ZbJ3+lTVG4kkOkN
+         ureTYfem+wO+o8LWqLQQONtLRun2cM2H78UadCV2VABE0pj92sL58AKRMDN+p1WZEo18
+         Ihxw==
+X-Gm-Message-State: AOJu0YwJXfgwhEiOnk1V3zZ6Bk3jt+nmpDsI6D4q/B4Es9Gi9ed8ncUU
+        GNa7wHC6j425B2jK3YuIOXUJ8Q==
+X-Google-Smtp-Source: AGHT+IGJzqjH4yljoCElrUZVFhXFzpSL5gTIxu5k3uXhgG3mqXWu6aooLTEXVEWJO+CRKYVvjAIkhg==
+X-Received: by 2002:a05:6830:41:b0:6d6:4557:bb2 with SMTP id d1-20020a056830004100b006d645570bb2mr3148326otp.30.1699983689582;
+        Tue, 14 Nov 2023 09:41:29 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id 37-20020a631365000000b00578afd8e012sm5838502pgt.92.2023.11.14.09.41.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 09:41:29 -0800 (PST)
+Date:   Tue, 14 Nov 2023 09:41:28 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Bill Wendling <morbo@google.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Konstantin Runov <runebone1@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, linux-hardening@vger.kernel.org
+Subject: [GIT PULL] hardening fixes for v6.7-rc2
+Message-ID: <202311140940.5D358293F0@keescook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="7x2SPF0LZcIrRSv8"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3c286171af30101b88f0aaf645fb0a7d5880ac0a.1699879741.git.unicorn_wang@outlook.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
 
---7x2SPF0LZcIrRSv8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Please pull these small hardening fixes for v6.7-rc2.
 
-On Mon, Nov 13, 2023 at 09:19:02PM +0800, Chen Wang wrote:
-> From: Chen Wang <unicorn_wang@outlook.com>
->=20
-> Add documentation to describe Sophgo System Controller Registers for
-> SG2042.
->=20
-> Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> ---
->  .../soc/sophgo/sophgo,sg2042-syscon.yaml      | 38 +++++++++++++++++++
->  1 file changed, 38 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,s=
-g2042-syscon.yaml
->=20
-> diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-s=
-yscon.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-sys=
-con.yaml
-> new file mode 100644
-> index 000000000000..829abede4fd5
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-syscon.y=
-aml
-> @@ -0,0 +1,38 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-syscon.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Sophgo SG2042 SoC system controller
-> +
-> +maintainers:
-> +  - Chen Wang <unicorn_wang@outlook.com>
-> +
-> +description:
-> +  The Sophgo SG2042 SoC system controller provides register information =
-such
-> +  as offset, mask and shift to configure related modules.
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +          - enum:
-> +              - sophgo,sg2042-syscon
-> +          - const: syscon
+Thanks!
 
-THere's only one option here, so the oneOf should be removed. Similarly,
-since there's only one SoC, and it sounds like the next large sophgo
-system is going to be using an entirely different core provider, I think
-should just simplify this to a pair of "const:" entries.
+-Kees
 
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    syscon@30010000 {
-> +        compatible =3D "sophgo,sg2042-syscon", "syscon";
-> +        reg =3D <0x30010000 0x1000>;
-> +    };
+The following changes since commit 9cca73d7b4bfec75b2fcef751015f31691afa792:
 
-Per my comments elsewhere, I think the clock controller should be a
-child of this node, rather than an unrelated node, linked by a phandle.
+  hwmon: (acpi_power_meter) replace open-coded kmemdup_nul (2023-10-24 14:10:53 -0700)
 
-Cheers,
-Conor.
+are available in the Git repository at:
 
---7x2SPF0LZcIrRSv8
-Content-Type: application/pgp-signature; name="signature.asc"
+  https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git tags/hardening-v6.7-rc2
 
------BEGIN PGP SIGNATURE-----
+for you to fetch changes up to 782ce431613cf08c3a00dca42ad925c3b1108d09:
 
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVOxAAAKCRB4tDGHoIJi
-0iTVAP4xqsqRPb18xDpU2gdHBpqavoQRucplJdovfCUwjpJR5gD/cxDZbzW9yvV+
-GQOC1Uef/4CbdqURfao9Zf5pzfrisgo=
-=lwGH
------END PGP SIGNATURE-----
+  gcc-plugins: latent_entropy: Fix typo (args -> argc) in plugin description (2023-11-14 09:32:47 -0800)
 
---7x2SPF0LZcIrRSv8--
+----------------------------------------------------------------
+kernel hardening fixes for v6.7-rc2
+
+- stackleak: add declarations for global functions (Arnd Bergmann)
+
+- gcc-plugins: randstruct: Only warn about true flexible arrays (Kees Cook)
+
+- gcc-plugins: latent_entropy: Fix description typo (Konstantin Runov)
+
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      stackleak: add declarations for global functions
+
+Kees Cook (1):
+      gcc-plugins: randstruct: Only warn about true flexible arrays
+
+Konstantin Runov (1):
+      gcc-plugins: latent_entropy: Fix typo (args -> argc) in plugin description
+
+ include/linux/stackleak.h                     |  6 ++++++
+ scripts/gcc-plugins/latent_entropy_plugin.c   |  4 ++--
+ scripts/gcc-plugins/randomize_layout_plugin.c | 10 ----------
+ 3 files changed, 8 insertions(+), 12 deletions(-)
+
+-- 
+Kees Cook
