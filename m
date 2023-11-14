@@ -2,256 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0B17EB564
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FEFA7EB56B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233753AbjKNRMl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 12:12:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
+        id S233741AbjKNRQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 12:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKNRMj (ORCPT
+        with ESMTP id S229925AbjKNRQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 12:12:39 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21857124;
-        Tue, 14 Nov 2023 09:12:34 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id F3D6724E24A;
-        Wed, 15 Nov 2023 01:12:32 +0800 (CST)
-Received: from EXMBX168.cuchost.com (172.16.6.78) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 15 Nov
- 2023 01:12:32 +0800
-Received: from ubuntu.localdomain (161.142.156.101) by EXMBX168.cuchost.com
- (172.16.6.78) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Wed, 15 Nov
- 2023 01:12:30 +0800
-From:   Jia Jie Ho <jiajie.ho@starfivetech.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>
-CC:     <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] crypto: starfive - RSA poll csr for done status
-Date:   Wed, 15 Nov 2023 01:12:14 +0800
-Message-ID: <20231114171214.240855-3-jiajie.ho@starfivetech.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231114171214.240855-1-jiajie.ho@starfivetech.com>
-References: <20231114171214.240855-1-jiajie.ho@starfivetech.com>
+        Tue, 14 Nov 2023 12:16:45 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9132BF1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:16:41 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id a640c23a62f3a-9e8b36e36e0so368858566b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:16:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699982200; x=1700587000; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dAVNf+jCyvS75fkl/2NtoKz0DKo34v5WTcJW0Y9PyNU=;
+        b=WX/8S6r5CDImn7t9gDH0KidZmrvIvXcmXu2Y2Q/LiyPMO11jpxAhvYBhi/ACgohtdN
+         4SuhE2VLlf9PkbZIer8KGFezXcvu7jWqvrIHqIlmdmIYQiPfaoKA9ZnX41n96KZSmbgL
+         bGs8ZJKAOQMU3e8MzI/rUhn2em13qHual/UYihE4ev9Rc9PEXTpg+VEdbFNKAfGyLxY+
+         bDaBQMYftccYx4oBBUsIEUSSF3X7VrHw7zbfrh0H4GRnWEFp6OrE5zSGg3OaIUyQ172T
+         g0Ke7j7xLpAmJIDSZdFouQ5pAJF6k4XdMW9kQUvMTGeCtKg0OkHgHGElA+A1AydYkclw
+         FlrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699982200; x=1700587000;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dAVNf+jCyvS75fkl/2NtoKz0DKo34v5WTcJW0Y9PyNU=;
+        b=Y1m0I3M6AlIQUeoAxLoMdXntE7tC4bPrjbVakvrcZ1OEF3PVlB0r5Db7SzzfjS9h+o
+         y3Ldvk9WSuKVWjDuLfgZkdYiEoDOPBMxvuZdW6cWW3ZKAm2bj5rycGOYCiJuhWLoUtsm
+         4i6ll5oLzBzR//qqJ0ivr22ZcvfJDwgpsrEXEP2mIB1a4ygswg8gaWUq3jRtj4w9AO7u
+         PPyxgxSTkWtrQFwPCE1nqCqoNbxfvG3In2xQx+0v16gtKwaYA4Gd9oNaXjsEfXn0k6Pq
+         Kfrq2PT8CNpGaLfE/ftnBTye44b2uAYEMiusCPPHUSMUY8gZy3ZJi5F7q+kJyoNj8qdw
+         5akQ==
+X-Gm-Message-State: AOJu0Yxx3xYQfbvzQwK/8IPDPEk9fRvustj9ZG/9yrc7qDHs7ILQWtmD
+        YJnH+FNgVaRhyVwEEbC6mgU2GkBGy19EUhNM5W9TpQ==
+X-Google-Smtp-Source: AGHT+IFl7JJuXtCC8JLjhkYFV4WBpMBnFEg5b5Xq+prOKKPQuzAcPjz8Bx8Mw0CAsJmq/tHmtx/SIJkiH9H2h7A0oKg=
+X-Received: by 2002:a17:906:6d11:b0:9d0:2da2:ee64 with SMTP id
+ m17-20020a1709066d1100b009d02da2ee64mr7685273ejr.70.1699982199571; Tue, 14
+ Nov 2023 09:16:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [161.142.156.101]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX168.cuchost.com
- (172.16.6.78)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+In-Reply-To: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Tue, 14 Nov 2023 09:16:00 -0800
+Message-ID: <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+Subject: Re: [PATCH] mm:zswap: fix zswap entry reclamation failure in two scenarios
+To:     Zhongkun He <hezhongkun.hzk@bytedance.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hardware could not clear irq status without resetting the entire module.
-Driver receives irq immediately when mask bit is cleared causing
-intermittent errors in RSA calculations. Switch to use csr polling for
-done status instead.
++Ying
 
-Signed-off-by: Jia Jie Ho <jiajie.ho@starfivetech.com>
----
- drivers/crypto/starfive/jh7110-cryp.c |  8 -----
- drivers/crypto/starfive/jh7110-cryp.h | 10 +++++-
- drivers/crypto/starfive/jh7110-rsa.c  | 49 +++++++--------------------
- 3 files changed, 22 insertions(+), 45 deletions(-)
+On Mon, Nov 13, 2023 at 5:06=E2=80=AFAM Zhongkun He
+<hezhongkun.hzk@bytedance.com> wrote:
+>
+> I recently found two scenarios where zswap entry could not be
+> released, which will cause shrink_worker and active recycling
+> to fail.
+> 1)The swap entry has been freed, but cached in swap_slots_cache,
+> no swap cache and swapcount=3D0.
+> 2)When the option zswap_exclusive_loads_enabled disabled and
+> zswap_load completed(page in swap_cache and swapcount =3D 0).
 
-diff --git a/drivers/crypto/starfive/jh7110-cryp.c b/drivers/crypto/starfive/jh7110-cryp.c
-index 08e974e0dd12..1e3cadcb179b 100644
---- a/drivers/crypto/starfive/jh7110-cryp.c
-+++ b/drivers/crypto/starfive/jh7110-cryp.c
-@@ -109,12 +109,6 @@ static irqreturn_t starfive_cryp_irq(int irq, void *priv)
- 		tasklet_schedule(&cryp->hash_done);
- 	}
- 
--	if (status & STARFIVE_IE_FLAG_PKA_DONE) {
--		mask |= STARFIVE_IE_MASK_PKA_DONE;
--		writel(mask, cryp->base + STARFIVE_IE_MASK_OFFSET);
--		complete(&cryp->pka_done);
--	}
--
- 	return IRQ_HANDLED;
- }
- 
-@@ -159,8 +153,6 @@ static int starfive_cryp_probe(struct platform_device *pdev)
- 		return dev_err_probe(&pdev->dev, PTR_ERR(cryp->rst),
- 				     "Error getting hardware reset line\n");
- 
--	init_completion(&cryp->pka_done);
--
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
- 		return irq;
-diff --git a/drivers/crypto/starfive/jh7110-cryp.h b/drivers/crypto/starfive/jh7110-cryp.h
-index fe011d50473d..8510f8c1f307 100644
---- a/drivers/crypto/starfive/jh7110-cryp.h
-+++ b/drivers/crypto/starfive/jh7110-cryp.h
-@@ -125,6 +125,15 @@ union starfive_pka_cacr {
- 	};
- };
- 
-+union starfive_pka_casr {
-+	u32 v;
-+	struct {
-+#define STARFIVE_PKA_DONE			BIT(0)
-+		u32 done			:1;
-+		u32 rsvd_0			:31;
-+	};
-+};
-+
- struct starfive_rsa_key {
- 	u8	*n;
- 	u8	*e;
-@@ -183,7 +192,6 @@ struct starfive_cryp_dev {
- 	struct crypto_engine			*engine;
- 	struct tasklet_struct			aes_done;
- 	struct tasklet_struct			hash_done;
--	struct completion			pka_done;
- 	size_t					assoclen;
- 	size_t					total_in;
- 	size_t					total_out;
-diff --git a/drivers/crypto/starfive/jh7110-rsa.c b/drivers/crypto/starfive/jh7110-rsa.c
-index f31bbd825f88..c2b1f598873c 100644
---- a/drivers/crypto/starfive/jh7110-rsa.c
-+++ b/drivers/crypto/starfive/jh7110-rsa.c
-@@ -6,13 +6,7 @@
-  */
- 
- #include <linux/crypto.h>
--#include <linux/delay.h>
--#include <linux/device.h>
--#include <linux/dma-direct.h>
--#include <linux/interrupt.h>
- #include <linux/iopoll.h>
--#include <linux/io.h>
--#include <linux/mod_devicetable.h>
- #include <crypto/akcipher.h>
- #include <crypto/algapi.h>
- #include <crypto/internal/akcipher.h>
-@@ -28,13 +22,13 @@
- #define STARFIVE_PKA_CAER_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x108)
- #define STARFIVE_PKA_CANR_OFFSET	(STARFIVE_PKA_REGS_OFFSET + 0x208)
- 
--// R^2 mod N and N0'
-+/* R ^ 2 mod N and N0' */
- #define CRYPTO_CMD_PRE			0x0
--// A * R mod N   ==> A
-+/* A * R mod N   ==> A */
- #define CRYPTO_CMD_ARN			0x5
--// A * E * R mod N ==> A
-+/* A * E * R mod N ==> A */
- #define CRYPTO_CMD_AERN			0x6
--// A * A * R mod N ==> A
-+/* A * A * R mod N ==> A */
- #define CRYPTO_CMD_AARN			0x7
- 
- #define STARFIVE_RSA_MAX_KEYSZ		256
-@@ -43,21 +37,10 @@
- static inline int starfive_pka_wait_done(struct starfive_cryp_ctx *ctx)
- {
- 	struct starfive_cryp_dev *cryp = ctx->cryp;
-+	u32 status;
- 
--	return wait_for_completion_timeout(&cryp->pka_done,
--					   usecs_to_jiffies(100000));
--}
--
--static inline void starfive_pka_irq_mask_clear(struct starfive_cryp_ctx *ctx)
--{
--	struct starfive_cryp_dev *cryp = ctx->cryp;
--	u32 stat;
--
--	stat = readl(cryp->base + STARFIVE_IE_MASK_OFFSET);
--	stat &= ~STARFIVE_IE_MASK_PKA_DONE;
--	writel(stat, cryp->base + STARFIVE_IE_MASK_OFFSET);
--
--	reinit_completion(&cryp->pka_done);
-+	return readl_relaxed_poll_timeout(cryp->base + STARFIVE_PKA_CASR_OFFSET, status,
-+					  status & STARFIVE_PKA_DONE, 10, 100000);
- }
- 
- static void starfive_rsa_free_key(struct starfive_rsa_key *key)
-@@ -114,10 +97,9 @@ static int starfive_rsa_montgomery_form(struct starfive_cryp_ctx *ctx,
- 		rctx->csr.pka.not_r2 = 1;
- 		rctx->csr.pka.ie = 1;
- 
--		starfive_pka_irq_mask_clear(ctx);
- 		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
--		if (!starfive_pka_wait_done(ctx))
-+		if (starfive_pka_wait_done(ctx))
- 			return -ETIMEDOUT;
- 
- 		for (loop = 0; loop <= opsize; loop++)
-@@ -136,10 +118,9 @@ static int starfive_rsa_montgomery_form(struct starfive_cryp_ctx *ctx,
- 		rctx->csr.pka.start = 1;
- 		rctx->csr.pka.ie = 1;
- 
--		starfive_pka_irq_mask_clear(ctx);
- 		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
--		if (!starfive_pka_wait_done(ctx))
-+		if (starfive_pka_wait_done(ctx))
- 			return -ETIMEDOUT;
- 	} else {
- 		rctx->csr.pka.v = 0;
-@@ -151,10 +132,9 @@ static int starfive_rsa_montgomery_form(struct starfive_cryp_ctx *ctx,
- 		rctx->csr.pka.pre_expf = 1;
- 		rctx->csr.pka.ie = 1;
- 
--		starfive_pka_irq_mask_clear(ctx);
- 		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
--		if (!starfive_pka_wait_done(ctx))
-+		if (starfive_pka_wait_done(ctx))
- 			return -ETIMEDOUT;
- 
- 		for (loop = 0; loop <= count; loop++)
-@@ -172,10 +152,9 @@ static int starfive_rsa_montgomery_form(struct starfive_cryp_ctx *ctx,
- 		rctx->csr.pka.start = 1;
- 		rctx->csr.pka.ie = 1;
- 
--		starfive_pka_irq_mask_clear(ctx);
- 		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
--		if (!starfive_pka_wait_done(ctx))
-+		if (starfive_pka_wait_done(ctx))
- 			return -ETIMEDOUT;
- 	}
- 
-@@ -226,11 +205,10 @@ static int starfive_rsa_cpu_start(struct starfive_cryp_ctx *ctx, u32 *result,
- 		rctx->csr.pka.start = 1;
- 		rctx->csr.pka.ie = 1;
- 
--		starfive_pka_irq_mask_clear(ctx);
- 		writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
- 		ret = -ETIMEDOUT;
--		if (!starfive_pka_wait_done(ctx))
-+		if (starfive_pka_wait_done(ctx))
- 			goto rsa_err;
- 
- 		if (mlen) {
-@@ -242,10 +220,9 @@ static int starfive_rsa_cpu_start(struct starfive_cryp_ctx *ctx, u32 *result,
- 			rctx->csr.pka.start = 1;
- 			rctx->csr.pka.ie = 1;
- 
--			starfive_pka_irq_mask_clear(ctx);
- 			writel(rctx->csr.pka.v, cryp->base + STARFIVE_PKA_CACR_OFFSET);
- 
--			if (!starfive_pka_wait_done(ctx))
-+			if (starfive_pka_wait_done(ctx))
- 				goto rsa_err;
- 		}
- 	}
--- 
-2.34.1
+For case (1), I think a cleaner solution would be to move the
+zswap_invalidate() call from swap_range_free() (which is called after
+the cached slots are freed) to __swap_entry_free_locked() if the usage
+goes to 0. I actually think conceptually this makes not just for
+zswap_invalidate(), but also for the arch call, memcg uncharging, etc.
+Slots caching is a swapfile optimization that should be internal to
+swapfile code. Once a swap entry is freed (i.e. swap count is 0 AND
+not in the swap cache), all the hooks should be called (memcg, zswap,
+arch, ..) as the swap entry is effectively freed. The fact that
+swapfile code internally batches and caches slots should be
+transparent to other parts of MM. I am not sure if the calls can just
+be moved or if there are underlying assumptions in the implementation
+that would be broken, but it feels like the right thing to do.
 
+For case (2), I don't think zswap can just decide to free the entry.
+
+In that case, the page is in the swap cache pointing to a swp_entry
+which has a corresponding zswap entry, and the page is clean because
+it is already in swap/zswap, so we don't need to write it out again
+unless it is redirtied. If zswap just drops the entry, and reclaim
+tries to reclaim the page in the swap cache, it will drop the page
+assuming that there is a copy in swap/zswap (because it is clean). Now
+we lost all copies of the page.
+
+Am I missing something?
+
+>
+> The above two cases need to be determined by swapcount=3D0,
+> fix it.
+>
+> Signed-off-by: Zhongkun He <hezhongkun.hzk@bytedance.com>
+> ---
+>  mm/zswap.c | 35 +++++++++++++++++++++++++----------
+>  1 file changed, 25 insertions(+), 10 deletions(-)
+>
+> diff --git a/mm/zswap.c b/mm/zswap.c
+> index 74411dfdad92..db95491bcdd5 100644
+> --- a/mm/zswap.c
+> +++ b/mm/zswap.c
+> @@ -1063,11 +1063,12 @@ static int zswap_writeback_entry(struct zswap_ent=
+ry *entry,
+>         struct mempolicy *mpol;
+>         struct scatterlist input, output;
+>         struct crypto_acomp_ctx *acomp_ctx;
+> +       struct swap_info_struct *si;
+>         struct zpool *pool =3D zswap_find_zpool(entry);
+>         bool page_was_allocated;
+>         u8 *src, *tmp =3D NULL;
+>         unsigned int dlen;
+> -       int ret;
+> +       int ret =3D 0;
+>         struct writeback_control wbc =3D {
+>                 .sync_mode =3D WB_SYNC_NONE,
+>         };
+> @@ -1082,16 +1083,30 @@ static int zswap_writeback_entry(struct zswap_ent=
+ry *entry,
+>         mpol =3D get_task_policy(current);
+>         page =3D __read_swap_cache_async(swpentry, GFP_KERNEL, mpol,
+>                                 NO_INTERLEAVE_INDEX, &page_was_allocated)=
+;
+> -       if (!page) {
+> +       if (!page)
+>                 ret =3D -ENOMEM;
+> -               goto fail;
+> -       }
+> -
+> -       /* Found an existing page, we raced with load/swapin */
+> -       if (!page_was_allocated) {
+> +       else if (!page_was_allocated) {
+> +               /* Found an existing page, we raced with load/swapin */
+>                 put_page(page);
+>                 ret =3D -EEXIST;
+> -               goto fail;
+> +       }
+> +
+> +       if (ret) {
+> +               si =3D get_swap_device(swpentry);
+> +               if (!si)
+> +                       goto out;
+> +
+> +               /* Two cases to directly release zswap_entry.
+> +                * 1) -ENOMEM,if the swpentry has been freed, but cached =
+in
+> +                * swap_slots_cache(no page and swapcount =3D 0).
+> +                * 2) -EEXIST, option zswap_exclusive_loads_enabled disab=
+led and
+> +                * zswap_load completed(page in swap_cache and swapcount =
+=3D 0).
+> +                */
+> +               if (!swap_swapcount(si, swpentry))
+> +                       ret =3D 0;
+> +
+> +               put_swap_device(si);
+> +               goto out;
+>         }
+>
+>         /*
+> @@ -1106,7 +1121,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>                 spin_unlock(&tree->lock);
+>                 delete_from_swap_cache(page_folio(page));
+>                 ret =3D -ENOMEM;
+> -               goto fail;
+> +               goto out;
+>         }
+>         spin_unlock(&tree->lock);
+>
+> @@ -1151,7 +1166,7 @@ static int zswap_writeback_entry(struct zswap_entry=
+ *entry,
+>
+>         return ret;
+>
+> -fail:
+> +out:
+>         if (!zpool_can_sleep_mapped(pool))
+>                 kfree(tmp);
+>
+> --
+> 2.25.1
+>
