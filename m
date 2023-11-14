@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDABD7EB161
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:57:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 315297EB162
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:57:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233349AbjKNN5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:57:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46360 "EHLO
+        id S233315AbjKNN5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:57:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233313AbjKNN5j (ORCPT
+        with ESMTP id S233341AbjKNN5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:57:39 -0500
+        Tue, 14 Nov 2023 08:57:44 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B657CD49;
-        Tue, 14 Nov 2023 05:57:35 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B514D184;
+        Tue, 14 Nov 2023 05:57:40 -0800 (PST)
 Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9m9mT004924;
-        Tue, 14 Nov 2023 13:57:22 GMT
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AEBu2W1022180;
+        Tue, 14 Nov 2023 13:57:28 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=v0ugZAmGtZM6OYg49h3KER813b5S/HZM2D9TdCmqmww=;
- b=ZL/iAzULaMBkCPjQsaCwKufH9x4tTdWXrB1OVbByBLSQcHp/IOWtBmp72ou+KjW1OlYM
- Ux3x1Vz2WLrRREj3cnjusK55HMdWRjtHIa8erXPupTiKpp2KYyDo45vWY/wbXm5T2ZK3
- jyz06Tm6DNmifnoQ3RQPdt68+zJsw3HiZoklMZCdlrZv9/LsHhLFo1wwVxR2rzxPwJUG
- jJZhRw06A1JG88uoRP33uoQTjSUaPq+nsQvELKhZ5nJjRyICIEnKWheiz+Kx/Q0/u2Wg
- +qW+utQZ53i/CN8SxigGsdlC12TtsEIXvDiFNetTzVOW2AX4vUtj0e5QjrFCznYgnBON Ug== 
-Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubw6hhk24-1
+ bh=w5UCpaz3Zq6dC68llce1pHBAMDao5lmmp9n6zlvVR3Y=;
+ b=jhuREr3yE2G9/Mk+UGYl9Kw93vwAis+3Oatj/oKdSVCcvjZlPYgNaASeu2xHRuCMRNPg
+ 1k+fxreUaxTzwvumFn2hc82+R2oB1ASdswn/P0FdlhAQ+Tc7YvmG+sO4QAHY0u6tIeVC
+ qxUZuZU9rETH5SMGonCuqi4w2jSo27vQllbqpNXMIVKYqMR1omBnEzy5R/UTQvjrE0BI
+ ig0Z2VDaD3U72wxuIU9p8J8FMO3hcVbBeDHYSs7HO5mxOqjSemJifIdJ70EPYc8rI2GE
+ Y8U4j5T/lFrbYMr51uXD5XrP9nrQ9YwPMv9IBBFFBgHcKn/NguW1k0JX36s72VJg9lHi 3g== 
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubw6hhk29-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 13:57:22 +0000
+        Tue, 14 Nov 2023 13:57:27 +0000
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEDvLtJ032104
+        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEDvRIj011379
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 13:57:21 GMT
+        Tue, 14 Nov 2023 13:57:27 GMT
 Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Tue, 14 Nov 2023 05:57:16 -0800
+ 15.2.1118.39; Tue, 14 Nov 2023 05:57:22 -0800
 From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
         <dmitry.baryshkov@linaro.org>, <a39.skl@gmail.com>,
@@ -48,9 +48,9 @@ CC:     <linux-arm-msm@vger.kernel.org>,
         <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
         <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>,
         Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-Subject: [PATCH v2 1/3] iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
-Date:   Tue, 14 Nov 2023 19:26:52 +0530
-Message-ID: <20231114135654.30475-2-quic_bibekkum@quicinc.com>
+Subject: [PATCH v2 2/3] iommu/arm-smmu: add ACTLR data and support for SM8550
+Date:   Tue, 14 Nov 2023 19:26:53 +0530
+Message-ID: <20231114135654.30475-3-quic_bibekkum@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
 References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
@@ -61,8 +61,8 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: GltvTZ9lulHL0lMFPUwYh9gcU9Kkhz9H
-X-Proofpoint-GUID: GltvTZ9lulHL0lMFPUwYh9gcU9Kkhz9H
+X-Proofpoint-ORIG-GUID: XbffI96zI-q3OP_M_XGVtx2D4bx4DjXA
+X-Proofpoint-GUID: XbffI96zI-q3OP_M_XGVtx2D4bx4DjXA
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-14_13,2023-11-09_01,2023-05-22_02
@@ -81,146 +81,151 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
-the TLB to fetch just the next page table. MMU-500 features ACTLR
-register which is implementation defined and is used for Qualcomm SoCs
-to have a prefetch setting of 1/3/7/15 enabling TLB to prefetch
-the next set of page tables accordingly allowing for faster translations.
-
-ACTLR value is unique for each SMR (Stream matching register) and stored
-in a pre-populated table. This value is set to the register during
-context bank initialisation.
+Add ACTLR data table for SM8550 along with support for
+same including SM8550 specific implementation operations.
 
 Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 ---
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 41 ++++++++++++++++++++++
- drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  2 ++
- drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 +--
- drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
- 4 files changed, 51 insertions(+), 2 deletions(-)
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 92 +++++++++++++++++++++-
+ 1 file changed, 88 insertions(+), 4 deletions(-)
 
 diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-index 549ae4dba3a6..578c662c7c30 100644
+index 578c662c7c30..0eaf6f2a2e49 100644
 --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
 +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
-@@ -14,6 +14,17 @@
+@@ -25,6 +25,70 @@ struct actlr_data {
+ 	u32 actlr;
+ };
 
- #define QCOM_DUMMY_VAL	-1
-
-+struct actlr_config {
-+	const struct actlr_data *adata;
-+	size_t size;
-+};
++#define PRE_FETCH_1	0
++#define PRE_FETCH_2	BIT(8)
++#define PRE_FETCH_3	(BIT(9) | BIT(8))
++#define CPRE		BIT(1)		/* Enable context caching in the prefetch buffer */
++#define CMTLB		BIT(0)		/* Enable context caching in the macro TLB */
 +
-+struct actlr_data {
-+	u16 sid;
-+	u16 mask;
-+	u32 actlr;
++static const struct actlr_data sm8550_apps_actlr_data[] = {
++	{ 0x18a0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x18e0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x0800, 0x0020, PRE_FETCH_1 | CMTLB },
++	{ 0x1800, 0x00c0, PRE_FETCH_1 | CMTLB },
++	{ 0x1820, 0x0000, PRE_FETCH_1 | CMTLB },
++	{ 0x1860, 0x0000, PRE_FETCH_1 | CMTLB },
++	{ 0x0c01, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c02, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c03, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c04, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c05, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c06, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c07, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c08, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c09, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c0c, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c0d, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c0e, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x0c0f, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1961, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1962, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1963, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1964, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1965, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1966, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1967, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1968, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1969, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x196c, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x196d, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x196e, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x196f, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c1, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c2, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c3, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c4, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c5, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c6, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c7, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c8, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19c9, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19cc, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19cd, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19ce, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x19cf, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
++	{ 0x1c00, 0x0002, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1c01, 0x0000, PRE_FETCH_1 | CMTLB },
++	{ 0x1920, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1923, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1924, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1940, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1941, 0x0004, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1943, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1944, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
++	{ 0x1947, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
 +};
 +
  static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
  {
  	return container_of(smmu, struct qcom_smmu, smmu);
-@@ -261,9 +272,36 @@ static const struct of_device_id qcom_smmu_client_of_match[] __maybe_unused = {
+@@ -459,6 +523,16 @@ static const struct arm_smmu_impl sdm845_smmu_500_impl = {
+ 	.tlb_sync = qcom_smmu_tlb_sync,
+ };
+
++
++static const struct arm_smmu_impl sm8550_smmu_500_impl = {
++	.init_context = qcom_smmu_init_context,
++	.cfg_probe = qcom_smmu_cfg_probe,
++	.def_domain_type = qcom_smmu_def_domain_type,
++	.reset = arm_mmu500_reset,
++	.write_s2cr = qcom_smmu_write_s2cr,
++	.tlb_sync = qcom_smmu_tlb_sync,
++};
++
+ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+ 	.init_context = qcom_adreno_smmu_init_context,
+ 	.def_domain_type = qcom_smmu_def_domain_type,
+@@ -522,6 +596,11 @@ static const struct qcom_smmu_config qcom_smmu_impl0_cfg = {
+ 	.reg_offset = qcom_smmu_impl0_reg_offset,
+ };
+
++static const struct actlr_config sm8550_actlrcfg = {
++	.adata = sm8550_apps_actlr_data,
++	.size = ARRAY_SIZE(sm8550_apps_actlr_data),
++};
++
+ /*
+  * It is not yet possible to use MDP SMMU with the bypass quirk on the msm8996,
+  * there are not enough context banks.
+@@ -545,16 +624,20 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
+ 	/* Also no debug configuration. */
+ };
+
++
++static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
++	.impl = &sm8550_smmu_500_impl,
++	.adreno_impl = &qcom_adreno_smmu_500_impl,
++	.cfg = &qcom_smmu_impl0_cfg,
++	.actlrcfg = &sm8550_actlrcfg,
++};
++
+ static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
+ 	.impl = &qcom_smmu_500_impl,
+ 	.adreno_impl = &qcom_adreno_smmu_500_impl,
+ 	.cfg = &qcom_smmu_impl0_cfg,
+ };
+
+-/*
+- * Do not add any more qcom,SOC-smmu-500 entries to this list, unless they need
+- * special handling and can not be covered by the qcom,smmu-500 entry.
+- */
+ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+ 	{ .compatible = "qcom,msm8996-smmu-v2", .data = &msm8996_smmu_data },
+ 	{ .compatible = "qcom,msm8998-smmu-v2", .data = &qcom_smmu_v2_data },
+@@ -579,6 +662,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+ 	{ .compatible = "qcom,sm8250-smmu-500", .data = &qcom_smmu_500_impl0_data },
+ 	{ .compatible = "qcom,sm8350-smmu-500", .data = &qcom_smmu_500_impl0_data },
+ 	{ .compatible = "qcom,sm8450-smmu-500", .data = &qcom_smmu_500_impl0_data },
++	{ .compatible = "qcom,sm8550-smmu-500", .data = &sm8550_smmu_500_impl0_data },
+ 	{ .compatible = "qcom,smmu-500", .data = &qcom_smmu_500_impl0_data },
  	{ }
  };
-
-+static void arm_smmu_set_actlr(struct arm_smmu_device *smmu, int idx,
-+		const struct actlr_config *actlrcfg)
-+{
-+	struct arm_smmu_smr *smr = smmu->smrs;
-+	int i;
-+	u16 id;
-+	u16 mask;
-+
-+	for (i = 0; i < actlrcfg->size; ++i) {
-+		id = actlrcfg->adata[i].sid;
-+		mask = actlrcfg->adata[i].mask;
-+		if (!smr_is_subset(*smr, id, mask))
-+			arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_ACTLR,
-+					actlrcfg->adata[i].actlr);
-+	}
-+}
-+
- static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
- 		struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
- {
-+	struct arm_smmu_device *smmu = smmu_domain->smmu;
-+	struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
-+	const struct actlr_config *actlrcfg;
-+	int idx = smmu_domain->cfg.cbndx;
-+
-+	if (qsmmu->actlrcfg) {
-+		actlrcfg = qsmmu->actlrcfg;
-+		arm_smmu_set_actlr(smmu, idx, actlrcfg);
-+	}
-+
- 	smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
-
- 	return 0;
-@@ -467,6 +505,9 @@ static struct arm_smmu_device *qcom_smmu_create(struct arm_smmu_device *smmu,
- 	qsmmu->smmu.impl = impl;
- 	qsmmu->cfg = data->cfg;
-
-+	if (data->actlrcfg && (data->actlrcfg->size))
-+		qsmmu->actlrcfg = data->actlrcfg;
-+
- 	return &qsmmu->smmu;
- }
-
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-index 593910567b88..4b6862715070 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
-@@ -9,6 +9,7 @@
- struct qcom_smmu {
- 	struct arm_smmu_device smmu;
- 	const struct qcom_smmu_config *cfg;
-+	const struct actlr_config *actlrcfg;
- 	bool bypass_quirk;
- 	u8 bypass_cbndx;
- 	u32 stall_enabled;
-@@ -25,6 +26,7 @@ struct qcom_smmu_config {
- };
-
- struct qcom_smmu_match_data {
-+	const struct actlr_config *actlrcfg;
- 	const struct qcom_smmu_config *cfg;
- 	const struct arm_smmu_impl *impl;
- 	const struct arm_smmu_impl *adreno_impl;
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-index d6d1a2a55cc0..8e4faf015286 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
-@@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct arm_smmu_device *smmu, u16 id, u16 mask)
- 		 * expect simply identical entries for this case, but there's
- 		 * no harm in accommodating the generalisation.
- 		 */
--		if ((mask & smrs[i].mask) == mask &&
--		    !((id ^ smrs[i].id) & ~smrs[i].mask))
-+
-+		if (smr_is_subset(smrs[i], id, mask))
- 			return i;
-+
- 		/*
- 		 * If the new entry has any other overlap with an existing one,
- 		 * though, then there always exists at least one stream ID
-diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-index 703fd5817ec1..b1638bbc41d4 100644
---- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
-+++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
-@@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct arm_smmu_device *smmu, int page,
- 		writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
- }
-
-+static inline bool smr_is_subset(struct arm_smmu_smr smrs, u16 id, u16 mask)
-+{
-+	return (mask & smrs.mask) == mask && !((id ^ smrs.id) & ~smrs.mask);
-+}
-+
- #define ARM_SMMU_GR0		0
- #define ARM_SMMU_GR1		1
- #define ARM_SMMU_CB(s, n)	((s)->numpage + (n))
 --
 2.17.1
 
