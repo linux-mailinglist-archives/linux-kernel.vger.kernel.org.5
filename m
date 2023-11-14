@@ -2,64 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B5647EAFDB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC4AA7EAFDA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:30:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233036AbjKNMay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42508 "EHLO
+        id S233000AbjKNMag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:30:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233034AbjKNMau (ORCPT
+        with ESMTP id S232988AbjKNMaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:30:50 -0500
-Received: from mail-m49197.qiye.163.com (mail-m49197.qiye.163.com [45.254.49.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80AEE1AC
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:30:44 -0800 (PST)
-Received: from Vostro-3710.lan (unknown [58.61.140.31])
-        by mail-m121145.qiye.163.com (Hmail) with ESMTPA id 2EB4A80010C;
-        Tue, 14 Nov 2023 20:30:18 +0800 (CST)
-From:   Chukun Pan <amadeus@jmu.edu.cn>
-To:     miquel.raynal@bootlin.com
-Cc:     amadeus@jmu.edu.cn, linux-kernel@vger.kernel.org,
-        linux-mtd@lists.infradead.org, richard@nod.at, vigneshr@ti.com
-Subject: Re: [PATCH 1/1] mtd: rawnand: add support for TH58NYG3S0HBAI4 NAND flash
-Date:   Tue, 14 Nov 2023 20:30:08 +0800
-Message-Id: <20231114123008.185071-1-amadeus@jmu.edu.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231029144840.484facee@xps-13>
-References: <20231029144840.484facee@xps-13>
+        Tue, 14 Nov 2023 07:30:35 -0500
+Received: from harvie.cz (harvie.cz [77.87.242.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8590E13D
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:30:31 -0800 (PST)
+Received: from anemophobia.amit.cz (unknown [31.30.84.130])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by harvie.cz (Postfix) with ESMTPSA id 2C964180251;
+        Tue, 14 Nov 2023 13:30:29 +0100 (CET)
+From:   Tomas Mudrunka <tomas.mudrunka@gmail.com>
+To:     jeff@labundy.com
+Cc:     dmitry.torokhov@gmail.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tomas.mudrunka@gmail.com
+Subject: [PATCH v6] Fix freeze in lm8333 i2c keyboard driver
+Date:   Tue, 14 Nov 2023 13:30:23 +0100
+Message-ID: <20231114123023.95570-1-tomas.mudrunka@gmail.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <ZF53JVcb8UJQFmfP@nixie71>
+References: <ZF53JVcb8UJQFmfP@nixie71>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFITzdXWS1ZQUlXWQ8JGhUIEh9ZQVkaHh9IVkhMQkJPS09MTR5MTFUTARMWGhIXJBQOD1
-        lXWRgSC1lBWU5DVU1KVUpPS1VISllXWRYaDxIVHRRZQVlPS0hVSkxKT05PVUpLS1VKQktLWQY+
-X-HM-Tid: 0a8bcdcfa0fbb03akuuu2eb4a80010c
-X-HM-MType: 10
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6MS46Pww6GDwrLU9DPjlLMRVL
-        MzNPCRJVSlVKTUJCQk1OS0pDQk9CVTMWGhIXVRoWGh8eDgg7ERYOVR4fDlUYFUVZV1kSC1lBWU5D
-        VU1KVUpPS1VISllXWQgBWUFKT0hCNwY+
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+LM8333 uses gpio interrupt line which is active-low.
+When interrupt is set to FALLING edge and button is pressed
+before driver loads, driver will miss the edge and never respond.
+To fix this we should handle ONESHOT LOW interrupt rather than edge.
 
-> It's more like a request than a question. Please fix the parameter page
-> at run time by registering a ->.fixup_onfi_param_page() hook in
-> Toshiba's nand_manufacturer_ops structure.
+Rather than hardcoding this, we simply remove the override from
+driver by calling request_threaded_irq() with IRQF_TRIGGER_NONE flag.
+This will keep interrupt trigger configuration as per devicetree. eg.:
 
-Sorry for the late reply. This flash is not ONFI compliant NAND,
-so onfi fixup can't work. Datasheet available at:
-https://europe.kioxia.com/content/dam/kioxia/newidr/productinfo/datasheet/201910/DST_TH58NYG3S0HBAI4-TDE_EN_31565.pdf
+	lm8333@51 {
+		compatible = "ti,lm8333";
+		interrupt-parent = <&gpio1>;
+		interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
+		...
+	}
 
-Thanks,
-Chukun
+Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
+---
+ drivers/input/keyboard/lm8333.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/input/keyboard/lm8333.c b/drivers/input/keyboard/lm8333.c
+index 7457c3220..c5770ebb2 100644
+--- a/drivers/input/keyboard/lm8333.c
++++ b/drivers/input/keyboard/lm8333.c
+@@ -179,7 +179,7 @@ static int lm8333_probe(struct i2c_client *client)
+ 	}
+ 
+ 	err = request_threaded_irq(client->irq, NULL, lm8333_irq_thread,
+-				   IRQF_TRIGGER_FALLING | IRQF_ONESHOT,
++				   IRQF_TRIGGER_NONE | IRQF_ONESHOT,
+ 				   "lm8333", lm8333);
+ 	if (err)
+ 		goto free_mem;
 -- 
-2.25.1
-
+2.40.0
