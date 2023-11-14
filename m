@@ -2,104 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25A1E7EB94A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B225C7EB94D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234094AbjKNWZJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:25:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44512 "EHLO
+        id S233930AbjKNWZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 17:25:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232511AbjKNWZI (ORCPT
+        with ESMTP id S229796AbjKNWZk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:25:08 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3258CDD
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:24:59 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5ac376d311aso68446587b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:24:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700000698; x=1700605498; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VZH1moAA0yVg/Bb0Aws1epxcC7ep8j8z+Au9OoiC60Y=;
-        b=YLwfwu8f4r9Why3kj5g+LjIriHAIWAZSK2cqGUVcK/FL1qccdznGhtlV0Mi1ZtMhNG
-         PzEDavVxIdD2i7wac6AxaWnvXvuYDZhBLu0lA8OBrn/ofkPDaF9wynJzXVS8E9COnA4a
-         1DiIsn8Q1mHdL1PVWRfkLmtL3nMS974daABG8RyoE32AeIls5DnjSIA4XC3le11UFDgO
-         EVAhfRi33dHllU2nvt+/dO5EvSzVn2yYoP4z9Traqp3H6Vzrv6a0WDgsgv+Q76PpYUUB
-         S3tfo5wvatOEnrfNEZvziq5t9JXtN/NTNO4u3S8lxS09iDr5bVaWre/Okw+/1ly16hDh
-         iIFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700000698; x=1700605498;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=VZH1moAA0yVg/Bb0Aws1epxcC7ep8j8z+Au9OoiC60Y=;
-        b=i07X7+i/g1wy+MqgrsKha4vS8sER7xeJsBDkZBHUanoXOBdTAjZzZTqE90pGHFz1H1
-         CROfsTI8rJYA1O2tD5am3viXO9xHOoYvlVyQt2ysyTlIlaOzE1aOI/jsBO74V8O2r5YI
-         Yj1vhExuYnwccZiJJB0FE5gCuxTOLw+oGf7yof1/llcGX0/BOsH6ntXsbuYde3lPwYZi
-         x3yM258Zp/mGZPdYmbtg6iHvdlQJebkEYERi0tihNZGi93RZNI/hBN6bwGt7mlmRf40T
-         juzvoccHqUvwjbrlPvSPo3KT5AFo2t2GP2ZYJPHFZBRmpdYslkp4Cdjt7AV+ZfyRYiK1
-         BAEQ==
-X-Gm-Message-State: AOJu0Ywbv/tSUzm0oqUJ0jwoaZPqa+VsRBVksuRsoXA34TowgE4G05DJ
-        I+C3mLQX49EtgDNqJaZ9mOwYMg==
-X-Google-Smtp-Source: AGHT+IEz88PTlxccW21WoEn2f42pE+pucQRcPi0Qyotu8SKV4KH1w7/IOT3aZDt9e1YeaqgPDQ7h+A==
-X-Received: by 2002:a81:73c2:0:b0:59c:aea:d877 with SMTP id o185-20020a8173c2000000b0059c0aead877mr11208270ywc.40.1700000698319;
-        Tue, 14 Nov 2023 14:24:58 -0800 (PST)
-Received: from x1 ([12.186.190.2])
-        by smtp.gmail.com with ESMTPSA id m1-20020ad44d41000000b00670c7fd09cbsm3706qvm.95.2023.11.14.14.24.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 14:24:58 -0800 (PST)
-Date:   Tue, 14 Nov 2023 17:24:55 -0500
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, linux-mmc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v6 6/7] riscv: dts: thead: Enable BeagleV Ahead eMMC and
- microSD
-Message-ID: <ZVPzt0w2+wNz6PnH@x1>
-References: <20231114-th1520-mmc-v6-0-3273c661a571@baylibre.com>
- <20231114-th1520-mmc-v6-6-3273c661a571@baylibre.com>
- <20231114-subsiding-tipoff-f3c15ef22985@squawk>
+        Tue, 14 Nov 2023 17:25:40 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22AC2BE
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:25:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E3CFC433C7;
+        Tue, 14 Nov 2023 22:25:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700000736;
+        bh=CmbeBBJW6eNCnDWG7XFbzoz+Cww0cN4u7zfWKAxDRDQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=fURdyQnSVpbf5t99V71LcNGLgelOR6R2rlvm4Ps4Y94iRNSdGks4P+r39GuN8prsE
+         SnwMYYPOcrMFzpgeZv5zPIx0DGuPNU0m4yZsJZH7GJ/3OycmmbUSdySaqA5cQpDsf1
+         54YN7mHw2Ctl2/qxN2x6uury/PSVoI5x19U6FVTmQOnITzYzOfTAjI1MJiWNYaUNMx
+         9N65IAi9cn+VznLN7nGXUZ/T5Xc/ufmD18N7dZH/ZWpRsySs1vJ06WkrIbw+Ea+hXA
+         W2fV1SIKoKukwV8p6nFWFUwpDBuYf+L05OTkqLy9/75bseMChSyXwYbsZ51VS2y8Ra
+         8b2fSnaLiENmg==
+Date:   Tue, 14 Nov 2023 17:25:34 -0500
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Christian =?UTF-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+Message-ID: <20231114172534.124f544c@kernel.org>
+In-Reply-To: <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+        <20231113130041.58124-4-linyunsheng@huawei.com>
+        <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+        <20231113180554.1d1c6b1a@kernel.org>
+        <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114-subsiding-tipoff-f3c15ef22985@squawk>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 09:24:40PM +0000, Conor Dooley wrote:
-> On Tue, Nov 14, 2023 at 04:08:00PM -0500, Drew Fustini wrote:
-> 
-> > +&mmc0 {
-> > +	bus-width = <8>;
-> > +	max-frequency = <198000000>;
-> 
-> > +&mmc1 {
-> > +	max-frequency = <198000000>;
-> > +	bus-width = <4>;
-> 
-> If there's another iteration of this patchset, can you use a consistent
-> ordering for your properties please?
+On Tue, 14 Nov 2023 16:23:29 +0800 Yunsheng Lin wrote:
+> I would expect net stack, page pool, driver still see the 'struct page',
+> only memory provider see the specific struct for itself, for the above,
+> devmem memory provider sees the 'struct page_pool_iov'.
 
-Bah, I don't know how I missed that. Thanks for spotting that. I'll fix
-it if there is another rev. I still need to see if Jisheng's is okay
-with the most recent changes in the driver patch.
+You can't lie to the driver that an _iov is a page either.
+The driver must explicitly "opt-in" to using the _iov variant,
+by calling the _iov set of APIs.
 
-Drew
+Only drivers which can support header-data split can reasonably
+use the _iov API, for data pages.
