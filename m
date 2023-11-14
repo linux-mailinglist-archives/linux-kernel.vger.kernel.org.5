@@ -2,137 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CCDF7EB621
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8B2B7EB625
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:09:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232267AbjKNSG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 13:06:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
+        id S233813AbjKNSJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 13:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKNSG4 (ORCPT
+        with ESMTP id S229607AbjKNSJn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 13:06:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 159E094
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 10:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699985211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g+Ea5F9/sxF9OVzOjdMf3/GKiJbULr6v8M/iO5If8mA=;
-        b=PgySCaPV7U6702rTpjynAX5Vykg1VSUbWo3v5PSGNsI/qx06dGHnC7anhrw92awqGGJeFH
-        tlmcC9+fE8N3cXQXEby9ZCbw+3swPTatcAlmjWiqSJqDH19AU3GH9TY5QaeKSyRR5HCMYa
-        dFnjI8mrHhsgUpr0mHzPCv5Jjz8mfJs=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-573-aOpNgmtAN3acZXbxO1LaIQ-1; Tue, 14 Nov 2023 13:06:49 -0500
-X-MC-Unique: aOpNgmtAN3acZXbxO1LaIQ-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4090181eec2so38452935e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 10:06:49 -0800 (PST)
+        Tue, 14 Nov 2023 13:09:43 -0500
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F019120;
+        Tue, 14 Nov 2023 10:09:40 -0800 (PST)
+Received: by mail-il1-x135.google.com with SMTP id e9e14a558f8ab-359d796abd6so152575ab.0;
+        Tue, 14 Nov 2023 10:09:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699985379; x=1700590179; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xxYwdpdF8JJ3J8eR5fcrs9vFQuvJKtKmfDNv9P4y+IA=;
+        b=kj4Due+VxC0eBjuUNFu/x5bKCBu4pT7/jcXIlet9Fs3d6NN4YhWg3T4JECIYEkzWz9
+         2Tfn78u4wnKTrC2WGn04ubK7eUirYGdTx8U8i5o3SJcw5NN9S57HfPkYd7oiVocTlc4D
+         HFf65K7tHPKYabo0v+z8gXWwvcCeMVNPjHIAliCdh3rVfMx0A0MBzighb+yLDbyFr4vo
+         oqrUp/S+PcPvvcpcS0obNwItFIh0EikPUTrDsSlEWb6xiVNcQVIaydf1zx/mUnG9ZN9D
+         wNe3GL/TKLIXcA7eIalDtya93nKc/hIt3TD/vdlo/XdxexhfLeAnL8pQeMRnv8UWAptj
+         hReg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699985208; x=1700590008;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=g+Ea5F9/sxF9OVzOjdMf3/GKiJbULr6v8M/iO5If8mA=;
-        b=D4lg2Ylx7xCCTpL5WzBGmVxrQc87iupCI6EWjgOlGUW34t/vXYlGqitcfsZgHZbxwt
-         P4P8SrwTwUhpgZLiJRkrxcQPtvgs8JQ7CUieX9+hTgZyMLcvslvxPqaj2yh5Gra0MKiR
-         8ibANrTA7BQ0Bsvi30NM9E89+u53JNdv1WjrfvN9b1ETSZRL1Xlw1ML/5iXAzNs4Lz0c
-         fqg9ZdCs0AI3NBSjT1nMO8Ze4F9f0bz1dFlpRXn1vMRr02yx69TzRW8NAoXEFPSljD3j
-         4DtHmdCHTwhNjP/V9BygzN1yZMWmhSs2g4wAp87isGQkXGdzucBJnpO0HNG9d6eErxKQ
-         SN9A==
-X-Gm-Message-State: AOJu0YyFh5OXMZ6OcDIP/N2aXgYVGprgNT0HUpqiOF3XBKchc5WbmFfK
-        uu5qr48nKR/PeDZ1CeB+dEjcKcmG2JXwltjtbOBMD/6vFqr5iY/4nRGj4lbHkwLtdTP+xjp3NV/
-        0u4Sue/cDsegkJeF362Fhecs3
-X-Received: by 2002:a05:600c:5247:b0:405:39c1:a98b with SMTP id fc7-20020a05600c524700b0040539c1a98bmr8106100wmb.20.1699985208347;
-        Tue, 14 Nov 2023 10:06:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IENiVmHUzsZj8Er9uv42BdyJgrcXyOCc16SNziUSzQjnDVU3jq0kl5Cj3OWEcuy37bKRTjH0g==
-X-Received: by 2002:a05:600c:5247:b0:405:39c1:a98b with SMTP id fc7-20020a05600c524700b0040539c1a98bmr8106082wmb.20.1699985207946;
-        Tue, 14 Nov 2023 10:06:47 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id v18-20020a05600c4d9200b004068495910csm17570724wmp.23.2023.11.14.10.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 10:06:47 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
-        dri-devel@lists.freedesktop.org, Jonathan Corbet <corbet@lwn.net>,
-        Bilal Elmoussaoui <belmouss@redhat.com>,
-        linux-doc@vger.kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        VMware Graphics Reviewers 
-        <linux-graphics-maintainer@vmware.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Sima Vetter <daniel.vetter@ffwll.ch>,
-        David Airlie <airlied@redhat.com>,
-        virtualization@lists.linux-foundation.org,
-        Erico Nunes <nunes.erico@gmail.com>
-Subject: Re: [PATCH 0/6] drm: Allow the damage helpers to handle buffer damage
-In-Reply-To: <c28b6e4a-aea0-4de4-a194-aa1024a93476@suse.de>
-References: <20231109172449.1599262-1-javierm@redhat.com>
- <9296c184-22c1-4d71-8b11-2d26f49a5790@suse.de>
- <87wmuk5mfj.fsf@minerva.mail-host-address-is-not-set>
- <c28b6e4a-aea0-4de4-a194-aa1024a93476@suse.de>
-Date:   Tue, 14 Nov 2023 19:06:47 +0100
-Message-ID: <87ttpo5hvs.fsf@minerva.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1699985379; x=1700590179;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xxYwdpdF8JJ3J8eR5fcrs9vFQuvJKtKmfDNv9P4y+IA=;
+        b=ZiLR8zzGZPXgAYlTnA+eOTcTBeUE0uV8tlfALwNLxT9k4RU47ywDS7uXUgDaquFqdR
+         Hy0w5/StLJutpnrvstJG9rTzLOJd5QAHbA+NMpP/x92wgp2Wqe6XPeDMUmaTNxmymNnS
+         QpZQCgYBcX5OUqWWr+/ou+oXmAyjDBqM7Y7G8UPOds6hTduf8X/3jiboXkzlQes6aRhG
+         0PRqGmHBXWIHQw2WtcMPNpQ57ahlDJbrZOI+AsHKWIzPVusUgIGOxl0/SXjDyu1DT+2O
+         sTBHpci95+/R4MC+jf/I6dX9YhA6jaX9xhVYEw0y90JRsLBqDHAXzfHxYAE7pOupobIt
+         Nc7w==
+X-Gm-Message-State: AOJu0Yy3Zu6Cay1hcEaecBdn2zYzbH9BcnAGTI09xpUbN9xVZQAwn0lT
+        4W1c6CggFjS8vFdYODvpKes=
+X-Google-Smtp-Source: AGHT+IFRlkfEouch/0EEOLd8mbYLL0IWatZQFkhv2orilRN+MVYu2ZPc6Aiq2uW+RdzhcoQXU8703A==
+X-Received: by 2002:a05:6e02:1b05:b0:359:315c:368b with SMTP id i5-20020a056e021b0500b00359315c368bmr3551685ilv.4.1699985379589;
+        Tue, 14 Nov 2023 10:09:39 -0800 (PST)
+Received: from ?IPV6:2001:470:42c4:101:767d:e2ee:ed0:5f02? ([2001:470:42c4:101:767d:e2ee:ed0:5f02])
+        by smtp.gmail.com with ESMTPSA id i15-20020a056e021b0f00b0035acf801fe5sm347413ilv.64.2023.11.14.10.09.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 10:09:39 -0800 (PST)
+Message-ID: <b2354c21-3a1a-c446-fee0-db0c78d05c71@gmail.com>
+Date:   Tue, 14 Nov 2023 11:09:37 -0700
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] ACPI: acenv: Permit compilation from within the kernel
+Content-Language: en-US
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Robert Moore <robert.moore@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Hanjun Guo <guohanjun@huawei.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Cc:     "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+From:   Sam Edwards <cfsworks@gmail.com>
+In-Reply-To: <20231114-arm-build-bug-v1-1-458745fe32a4@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thomas Zimmermann <tzimmermann@suse.de> writes:
+On 11/13/23 16:08, Linus Walleij wrote:
+> After commit a103f46633fd the kernel stopped compiling for
+> several ARM32 platforms that I am building with a bare metal
+> compiler. Bare metal compilers (arm-none-eabi-) don't
+> define __linux__.
 
-Hello Thomas,
+Hi Linus,
 
-> Hi
+I saw the same baremetal-compiler error here on the ARM64 side of the 
+fence, and narrowed the problem to the same commit as you.
 
-[...]
+> 
+> This is because the header <acpi/platform/acenv.h> is now
+> in the include path for <linux/irq.h>:
 
->>> And why does it flicker? Is there old data stored somewhere?
->>>
->> 
->> It flickers because the framebuffer changed and so the damage tracking
->> is not used correctly to flush the damaged areas to the backing storage.
->
-> I think I got it from the links in patch 5.  In out other drivers, 
-> there's a single backing storage for each plane (for example in the 
-> video memory). Here, there's a backing storage for each buffer. On page
+More generally, I think it's because of this addition to linux/acpi.h:
++#include <linux/fw_table.h>
 
-Correct, that's what I understood too.
+linux/acpi.h is supposed to ensure _LINUX is defined (if it isn't 
+already done by a non-baremetal compiler) before we start pulling in 
+ACPICA includes, so that ACPICA knows the platform. But because 
+fw_table.h contains:
+#include <linux/acpi.h>
+#include <acpi/acpi.h>
 
-> flips, the plane changes its backing storage.  Our GEM buffer is up to 
-> date, but the respective backing storage is missing all the intermediate 
-> changes.
->
-> If I'm not mistaken, an entirely different solution would be to 
-> implement a per-plane back storage in these drivers.
->
+...the circular include does nothing (linux/acpi.h's include guard stops 
+the include before _LINUX is defined) and we end up pulling in 
+acpi/acpi.h before we're ready.
 
-I believe so but I'm not sure if that's possible since the virtio-gpu spec
-defines that the VM should send a VIRTIO_GPU_CMD_RESOURCE_FLUSH to the VMM
-in the host to do an update and the granularity for that is a framebuffer.
+> 
+>    CC      arch/arm/kernel/irq.o
+>    CC      kernel/sysctl.o
+>    CC      crypto/api.o
+> In file included from ../include/acpi/acpi.h:22,
+>                   from ../include/linux/fw_table.h:29,
+>                   from ../include/linux/acpi.h:18,
+>                   from ../include/linux/irqchip.h:14,
+>                   from ../arch/arm/kernel/irq.c:25:
+> ../include/acpi/platform/acenv.h:218:2: error: #error Unknown target environment
+>    218 | #error Unknown target environment
+>        |  ^~~~~
+> 
+> One solution to make compilation with a bare metal compiler
+> work again is to say the file is used with Linux from within
+> the kernel if __KERNEL__ is defined so I did that.
 
-For that reason the only solution (other than forcing a full plane update
-like this patch-set does) is to implement tracking suppor for buffer damage.
+I am not an ACPI subsystem maintainer, but my understanding is that the 
+files in include/acpi/ are copied verbatim from ACPICA, so any change to 
+those files will have to be sent to the ACPICA project and wouldn't be 
+accepted here.
 
-> Best regards
-> Thomas
->
+More likely, we'd want to do something about the circular-include 
+situation between linux/fw_table.h<->linux/acpi.h. That may have further 
+consequences down the road than just our problem here. Perhaps just 
+dropping both #includes from fw_table.h, and lowering the fw_table.h 
+include from within linux/acpi.h to be below <acpi/acpi.h>, is the way 
+to go?
 
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Kind regards,
+Sam
