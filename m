@@ -2,219 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4876C7EB064
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:57:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DEFB7EB068
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjKNM51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:57:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36342 "EHLO
+        id S233112AbjKNM6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:58:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233100AbjKNM5O (ORCPT
+        with ESMTP id S232177AbjKNM6C (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:57:14 -0500
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A307A19E;
-        Tue, 14 Nov 2023 04:57:09 -0800 (PST)
-Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SV5rW3Jxqz6K9LJ;
-        Tue, 14 Nov 2023 20:55:55 +0800 (CST)
-Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
- lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 14 Nov 2023 12:57:07 +0000
-From:   <shiju.jose@huawei.com>
-To:     <linux-cxl@vger.kernel.org>
-CC:     <jonathan.cameron@huawei.com>, <Vilas.Sridharan@amd.com>,
-        <leo.duran@amd.com>, <Yazen.Ghannam@amd.com>,
-        <rientjes@google.com>, <jiaqiyan@google.com>,
-        <tony.luck@intel.com>, <Jon.Grimm@amd.com>,
-        <dave.hansen@linux.intel.com>, <linux-acpi@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <rafael@kernel.org>, <lenb@kernel.org>, <naoya.horiguchi@nec.com>,
-        <james.morse@arm.com>, <david@redhat.com>, <jthoughton@google.com>,
-        <somasundaram.a@hpe.com>, <erdemaktas@google.com>,
-        <"pgonda@pgonda"@google.com>, <duenwen@google.com>,
-        <mike.malvestuto@intel.com>, <gthelen@google.com>,
-        <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
-        <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 6/6] cxl: scrub: sysfs: Add Documentation for CXL memory device scrub control attributes
-Date:   Tue, 14 Nov 2023 20:56:47 +0800
-Message-ID: <20231114125648.1146-7-shiju.jose@huawei.com>
-X-Mailer: git-send-email 2.35.1.windows.2
-In-Reply-To: <20231114125648.1146-1-shiju.jose@huawei.com>
-References: <20231114125648.1146-1-shiju.jose@huawei.com>
+        Tue, 14 Nov 2023 07:58:02 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7382D4D;
+        Tue, 14 Nov 2023 04:57:46 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso8633742a12.3;
+        Tue, 14 Nov 2023 04:57:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699966665; x=1700571465; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cJjJKHUZUNOQdXGf9Dy6Kq7pWnEcJwiJCLLR5OWai7w=;
+        b=djIpqb7CuHruhDOGUfkXdK/lEOo36LJzpi3tEoQR4jpVF+sXPh+j+Jr3j/Z6Ig/WFN
+         i/GBG0nsELCdiS7N+fgIQFs5ikdSXubfNy2fSLzgCclvnG9BrsU05DOw7WfhsP3QJveB
+         IfRLRWz9SkjtyxVA/15RdkGOvar/aecUhIL/vbbGyxXQAiC9cOMDffMvMDA9ilvmrNGb
+         6K+dC/jZpPNkeeP0Mvc1s3iCHZQXr9vCQTg33q648M3EzkiolO3TI9tOgO3IY6VOw47E
+         scYyxHdqp3vV/v5s0NWK1VhssWL4MFbvqu/DOe7I4CUkM0FELUCkbeM2YSnSuHBhhANH
+         DyFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699966665; x=1700571465;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cJjJKHUZUNOQdXGf9Dy6Kq7pWnEcJwiJCLLR5OWai7w=;
+        b=EDA9WBVR/db4LvdQnmvIoyWGm0EKteJw57KSLUtEEw0Se0tErOPR6TkvcfMqErx48y
+         QrPKRz7sDPzZoIGdWahSf4UNQPYNki06hXQSYhHCovOa5lFeuBFVzrx9kTnfLCIeDt2X
+         +lmL0KBN/i0B8nGgRRHrUVLYAnjl50OMeFtCgh4unq+UaX8eBHhwbedtnYix9TsByyPJ
+         cuQJMTn+5tl0A/O+O3WWYpN0qqnhlI9cHzBJOPK4mALf71lB+hhPknH+gDHE7NcMw0hE
+         Vn08tKeiotIgFenD/A6oI/nr4jb5q+CjdnUs3TKw2QNbPHel4LObawoeykAf+6dTH2uX
+         2YtA==
+X-Gm-Message-State: AOJu0YwgBRKAVGt7zzsScy/p/g6KFCDssAAObo4RfQ5ihmtCECXldokH
+        EzTXeBL/qlw6339dLR4vGVIAX1VDkRlMtxGFvuQ=
+X-Google-Smtp-Source: AGHT+IHgRd3gNlLXkJM9oqK5fEqaNFkOqkCsKijQhqu/BmgP88zXwR1Br7dHJnsSppo3pBXT6VEnVfgmwS/fz81trQs=
+X-Received: by 2002:aa7:d316:0:b0:545:4bf3:ac89 with SMTP id
+ p22-20020aa7d316000000b005454bf3ac89mr7125996edq.23.1699966665174; Tue, 14
+ Nov 2023 04:57:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.122.247.234]
-X-ClientProxiedBy: lhrpeml100001.china.huawei.com (7.191.160.183) To
- lhrpeml500006.china.huawei.com (7.191.161.198)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231112225444.4487-1-wsa+renesas@sang-engineering.com> <20231112225911.4650-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20231112225911.4650-2-wsa+renesas@sang-engineering.com>
+From:   Tali Perry <tali.perry1@gmail.com>
+Date:   Tue, 14 Nov 2023 14:57:34 +0200
+Message-ID: <CAHb3i=tTvK9w4LgAiHhORWK-d3W6HKwGTv2BSAPTDc4siVkP9A@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] i2c: npcm7xx: move to per-adapter debugfs directory
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Andi Shyti <andi.shyti@kernel.org>, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Shiju Jose <shiju.jose@huawei.com>
+On Mon, Nov 13, 2023 at 12:59=E2=80=AFAM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+>
+> The I2C core now provides a per-adapter debugfs directory. Use it
+> instead of creating a custom one.
+>
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> ---
+>  drivers/i2c/busses/i2c-npcm7xx.c | 49 +++++---------------------------
+>  1 file changed, 7 insertions(+), 42 deletions(-)
+>
+> diff --git a/drivers/i2c/busses/i2c-npcm7xx.c b/drivers/i2c/busses/i2c-np=
+cm7xx.c
+> index ae4bae63ad4f..54181b3f1919 100644
+> --- a/drivers/i2c/busses/i2c-npcm7xx.c
+> +++ b/drivers/i2c/busses/i2c-npcm7xx.c
+> @@ -326,7 +326,6 @@ struct npcm_i2c {
+>         u8 slv_rd_buf[MAX_I2C_HW_FIFO_SIZE];
+>         u8 slv_wr_buf[MAX_I2C_HW_FIFO_SIZE];
+>  #endif
+> -       struct dentry *debugfs; /* debugfs device directory */
+>         u64 ber_cnt;
+>         u64 rec_succ_cnt;
+>         u64 rec_fail_cnt;
+> @@ -2250,27 +2249,15 @@ static const struct i2c_algorithm npcm_i2c_algo =
+=3D {
+>  #endif
+>  };
+>
+> -/* i2c debugfs directory: used to keep health monitor of i2c devices */
+> -static struct dentry *npcm_i2c_debugfs_dir;
+> -
+>  static void npcm_i2c_init_debugfs(struct platform_device *pdev,
+>                                   struct npcm_i2c *bus)
+>  {
+> -       struct dentry *d;
+> -
+> -       if (!npcm_i2c_debugfs_dir)
+> -               return;
+> -       d =3D debugfs_create_dir(dev_name(&pdev->dev), npcm_i2c_debugfs_d=
+ir);
+> -       if (IS_ERR_OR_NULL(d))
+> -               return;
+> -       debugfs_create_u64("ber_cnt", 0444, d, &bus->ber_cnt);
+> -       debugfs_create_u64("nack_cnt", 0444, d, &bus->nack_cnt);
+> -       debugfs_create_u64("rec_succ_cnt", 0444, d, &bus->rec_succ_cnt);
+> -       debugfs_create_u64("rec_fail_cnt", 0444, d, &bus->rec_fail_cnt);
+> -       debugfs_create_u64("timeout_cnt", 0444, d, &bus->timeout_cnt);
+> -       debugfs_create_u64("tx_complete_cnt", 0444, d, &bus->tx_complete_=
+cnt);
+> -
+> -       bus->debugfs =3D d;
+> +       debugfs_create_u64("ber_cnt", 0444, bus->adap.debugfs, &bus->ber_=
+cnt);
+> +       debugfs_create_u64("nack_cnt", 0444, bus->adap.debugfs, &bus->nac=
+k_cnt);
+> +       debugfs_create_u64("rec_succ_cnt", 0444, bus->adap.debugfs, &bus-=
+>rec_succ_cnt);
+> +       debugfs_create_u64("rec_fail_cnt", 0444, bus->adap.debugfs, &bus-=
+>rec_fail_cnt);
+> +       debugfs_create_u64("timeout_cnt", 0444, bus->adap.debugfs, &bus->=
+timeout_cnt);
+> +       debugfs_create_u64("tx_complete_cnt", 0444, bus->adap.debugfs, &b=
+us->tx_complete_cnt);
+>  }
+>
+>  static int npcm_i2c_probe_bus(struct platform_device *pdev)
+> @@ -2362,7 +2349,6 @@ static void npcm_i2c_remove_bus(struct platform_dev=
+ice *pdev)
+>         unsigned long lock_flags;
+>         struct npcm_i2c *bus =3D platform_get_drvdata(pdev);
+>
+> -       debugfs_remove_recursive(bus->debugfs);
+>         spin_lock_irqsave(&bus->lock, lock_flags);
+>         npcm_i2c_disable(bus);
+>         spin_unlock_irqrestore(&bus->lock, lock_flags);
+> @@ -2385,28 +2371,7 @@ static struct platform_driver npcm_i2c_bus_driver =
+=3D {
+>         }
+>  };
+>
+> -static int __init npcm_i2c_init(void)
+> -{
+> -       int ret;
+> -
+> -       npcm_i2c_debugfs_dir =3D debugfs_create_dir("npcm_i2c", NULL);
+> -
+> -       ret =3D platform_driver_register(&npcm_i2c_bus_driver);
+> -       if (ret) {
+> -               debugfs_remove_recursive(npcm_i2c_debugfs_dir);
+> -               return ret;
+> -       }
+> -
+> -       return 0;
+> -}
+> -module_init(npcm_i2c_init);
+> -
+> -static void __exit npcm_i2c_exit(void)
+> -{
+> -       platform_driver_unregister(&npcm_i2c_bus_driver);
+> -       debugfs_remove_recursive(npcm_i2c_debugfs_dir);
+> -}
+> -module_exit(npcm_i2c_exit);
+> +module_platform_driver(npcm_i2c_bus_driver);
+>
+>  MODULE_AUTHOR("Avi Fishman <avi.fishman@gmail.com>");
+>  MODULE_AUTHOR("Tali Perry <tali.perry@nuvoton.com>");
+> --
+> 2.35.1
+>
 
-Add sysfs documentation entries for the CXL memory device scrub
-control attributes those are exposed in /sys/class/scrub/ by the
-scrub driver. These attributes support configuring a CXL memory
-device scrub.
+Test pass on npcm8xx device.
 
-Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
----
- .../testing/sysfs-class-cxl-scrub-configure   | 135 ++++++++++++++++++
- 1 file changed, 135 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
+Reviewed-by: Tali Perry <tali.perry1@gmail.com>
 
-diff --git a/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure b/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
-new file mode 100644
-index 000000000000..9dd0c18451aa
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-class-cxl-scrub-configure
-@@ -0,0 +1,135 @@
-+What:		/sys/class/scrub/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The scrub/ class subdirectory belongs to the scrub
-+		subsystem.
-+
-+What:		/sys/class/scrub/scrubX/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrub{0,1,2,3,...} directories
-+		correspond to each scrub device.
-+
-+What:		/sys/class/scrub/scrubX/name
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) name of the memory scrub device
-+
-+What:		/sys/class/scrub/scrubX/regionY/
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		The /sys/class/scrub/scrubX/region{0,1,2,3,...}
-+		directories correspond to each scrub region under a scrub device.
-+		Scrub region is a physical address range or for example
-+		memory media FRU of DDR5 ECS feature for which scrub may be
-+		separately controlled.
-+
-+What:		/sys/class/scrub/scrubX/regionY/enable
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) Start/Stop CXL memory patrol scrub.
-+		1 - enable the CXL memory patrol scrub.
-+		0 - disable the CXL memory patrol scrub.
-+
-+What:		/sys/class/scrub/scrubX/regionY/speed
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The scrub cycle to set for the CXL memory
-+		patrol scrub and it must be within the supported
-+		range. The unit of the scrub cycle is hour.
-+
-+What:		/sys/class/scrub/scrubX/regionY/speed_available
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported range of the scrub cycle by the
-+		CXL memory patrol scrub.
-+		The unit of the scrub cycle is hour.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The log entry type of how the DDR5 ECS log is
-+		reported.
-+		00b - per DRAM.
-+		01b - per memory media FRU.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type_per_dram
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current log entry type of DDR5 ECS
-+		region is per DRAM.
-+
-+What:		/sys/class/scrub/scrubX/regionY/ecs_log_entry_type_per_memory_media
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current log entry type of DDR5 ECS
-+		region is per memory media FRU.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) The mode of how the DDR5 ECS counts the errors.
-+		0 - ECS counts rows with errors.
-+		1 - ECS counts codewords with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode_counts_rows
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current mode of DDR5 ECS region
-+		is counts rows with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/mode_counts_codewords
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Returns true if current mode of DDR5 ECS region
-+		is counts codewords with errors.
-+
-+What:		/sys/class/scrub/scrubX/regionY/reset_counter
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(WO) DDR5 ECS reset ECC counter.
-+		0 - normal, ECC counter running actively.
-+		1 - reset ECC counter to the default value.
-+
-+What:		/sys/class/scrub/scrubX/regionY/threshold
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RW) DDR5 ECS threshold count per GB of memory cells.
-+
-+What:		/sys/class/scrub/scrubX/regionY/threshold_available
-+Date:		November 2023
-+KernelVersion:	6.8
-+Contact:	linux-kernel@vger.kernel.org
-+Description:
-+		(RO) Supported list of DDR5 ECS threshold count per GB of
-+		memory cells.
--- 
-2.34.1
-
+Thanks Wolfram for the patch!
