@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB2477EB1DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:14:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2BD7EB1DF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233433AbjKNONz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:13:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S233450AbjKNON5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:13:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233391AbjKNONp (ORCPT
+        with ESMTP id S233410AbjKNONq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:13:45 -0500
-Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2640D43
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:40 -0800 (PST)
-Received: by mail-qk1-x734.google.com with SMTP id af79cd13be357-779d0c05959so55567185a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:40 -0800 (PST)
+        Tue, 14 Nov 2023 09:13:46 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F53F114
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:41 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id 6a1803df08f44-66d15bdd5abso10573406d6.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699971220; x=1700576020; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+g4r4bjsySLwk77l9XIM5/wH2ybzV4V3VQlpQWbskRU=;
-        b=K53flC5fBqqG+5jhqhEWH4JsAdSVYGIMx8oEfpdz0EddE5AB43a1OkbAMUfig20mPE
-         02xi73vNlYddWGJ20mkCK8/5F9gZU6eLWSSxwDt5CaXc5slzshAUu7XvKB42D8okBrKP
-         HZPAPWs1v2wq8+ZzMJ4x3mO67PxWeWgyQJCRoG92NdiphYairvgBxDPs3T1lsgDixNLu
-         NXZG8DZRD/uuq+lN1zeaG/fIvdlYoAeCHf6dFwkP+h8o6lLs3cBv4dkO/VrJOvJvjGUp
-         Kh8O7mOBAnnbRcNyAxze/9ml1L1OC5Wj4m6c41Ex4Xo9PK1ZbZqRfr75n4Gt6OTlrzo1
-         XyYw==
+        bh=keCbZUlhJhR2ZwXU737WvxpdBzfAu930SEAq7brrB2I=;
+        b=l6CokWOZqVrzhHF+vsc+H+M4KEZVPhFAXq1iUfvErmv5zCfyovHSAIL+Rlo4LZ0gDo
+         8aBy6NEZnjc9KUnSw6kEjJHUIJl6N8DmZfwG6gJIpCGbGI1WaDE/vYVLX9iTmfk9H70e
+         R1HGVciQjnfc9KVBGmQiv0bF0bK1U1CvbgVLxQ0C4g137F2wtJkRR+AnWt+1xCTUZn5j
+         NjDBvw5fQxNhuyJjLa5lQBhLcf5lGGOsJ4bwnOxl2KbUTUQon4KWB4CXnoOZEm/PMapT
+         Vacr5Iuy4oWjhiAyWxZI0QC7/Shg9YqoQ1SrZyileAY/eq+uJoYKllY92gQAwUKbpVE8
+         jdgQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1699971220; x=1700576020;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=+g4r4bjsySLwk77l9XIM5/wH2ybzV4V3VQlpQWbskRU=;
-        b=nWghlxdorep8cUEncS0rMntlEwpYfwLsBwKPyj12ZbwcDTtXQ+e/yzy9NjDky44x65
-         15cmFBnlZzUfdVzWTVgn0yHp7So22fbf6M+aiIvJsD59VFa1l0TWPQNsrjXmm+Nc9hHZ
-         /fRRO/54waNbJpXsvU7gWPj1kXIjr+gPAaki+nDMk0dVh86UgeDAdokQ8Se/dupMbUvj
-         mx5qHC1of9AJ91vyPlIwnuu9DOF/ZHtEy8SEs48VwY2mqWJaUcdbIiv+xcE5SNtvsF9N
-         ThFWPi/CqNemvei5aWCxUzo9U2NUF1xJXT6dCt4+OMRwEk4saWpXwSqggWMTnjCAH6If
-         UNrA==
-X-Gm-Message-State: AOJu0YxYt5j5iexyvLgxUwjBulSpcw6KL/XKK26fxRrcofWqStpiZVTr
-        AB4br9GC8kuC/mJM2Q5FzaXlIg==
-X-Google-Smtp-Source: AGHT+IH7kpjtCOGgFTVn0VXhNLv2IfiHOGHCQO3TA/WLBqK62He/u3Tqp6my3moeV85XJ3AUbedh2w==
-X-Received: by 2002:a05:620a:3945:b0:776:f188:eee6 with SMTP id qs5-20020a05620a394500b00776f188eee6mr2482783qkn.2.1699971218961;
-        Tue, 14 Nov 2023 06:13:38 -0800 (PST)
+        bh=keCbZUlhJhR2ZwXU737WvxpdBzfAu930SEAq7brrB2I=;
+        b=SXVB9aypX3raYLFQ0oLlu231HljaqXldfJ8Q7Xm2lt/q9Re3oFQYoAn3cjTVjXMIfM
+         5oZk5m2A/iZJSMlQUPjdBMQlxwHv+lR9+H+wvhXPGqQXtV8fLyrmlD/X6JrZMzFYzTIE
+         0874BgWHYNXWKsOWuwXxeNFs0fAjDHXfjsbfBd1FU/Y/JSu/llINVcFa5AiiEBtr7Ieu
+         dBApKS/kkeQOGNRvc4sg8M2olODyClDMsfLsQ2Gn+4rPuNV2HnZPlvmCPXJSey4fVVTX
+         q83Gs9SadNpa108PH/PMjs+3Mnjt8pq64w8oDeHQWeVljis/txib3ViLIvE9q7VyOXXf
+         EJ2Q==
+X-Gm-Message-State: AOJu0YxTK0CbJrQGo4ANi6EgqwbaQjqEMmIoFyNTrtaEeBzXUJZe9JpO
+        7rnfCw0oznwBaLa92ut+G84cBg==
+X-Google-Smtp-Source: AGHT+IH/a2FfbthDBterj2ExvRydm8PsEE46bPyI6vhg+6wuJOSTbSR3GQBAEKTJRnI4P9fwyid4gg==
+X-Received: by 2002:a05:6214:5ec5:b0:66d:1178:8729 with SMTP id mn5-20020a0562145ec500b0066d11788729mr2432438qvb.0.1699971220091;
+        Tue, 14 Nov 2023 06:13:40 -0800 (PST)
 Received: from carbon-x1.. ([12.186.190.2])
-        by smtp.gmail.com with ESMTPSA id m2-20020a05620a220200b00777611164c5sm2701263qkh.106.2023.11.14.06.13.36
+        by smtp.gmail.com with ESMTPSA id m2-20020a05620a220200b00777611164c5sm2701263qkh.106.2023.11.14.06.13.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 06:13:37 -0800 (PST)
+        Tue, 14 Nov 2023 06:13:39 -0800 (PST)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
@@ -65,9 +65,9 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         Conor Dooley <conor@kernel.org>,
         Samuel Ortiz <sameo@rivosinc.com>,
         Jerry Shih <jerry.shih@sifive.com>
-Subject: [PATCH v4 06/20] riscv: add ISA extension parsing for vector crypto
-Date:   Tue, 14 Nov 2023 09:12:42 -0500
-Message-ID: <20231114141256.126749-7-cleger@rivosinc.com>
+Subject: [PATCH v4 07/20] riscv: hwprobe: export vector crypto ISA extensions
+Date:   Tue, 14 Nov 2023 09:12:43 -0500
+Message-ID: <20231114141256.126749-8-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231114141256.126749-1-cleger@rivosinc.com>
 References: <20231114141256.126749-1-cleger@rivosinc.com>
@@ -83,9 +83,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add parsing of some Zv* vector crypto ISA extensions that are mentioned
-in "RISC-V Cryptography Extensions Volume II" [1]. These ISA extensions
-are the following:
+Export Zv* vector crypto ISA extensions that were added in "RISC-V
+Cryptography Extensions Volume II" specification[1] through hwprobe.
+This adds support for the following instructions:
 
 - Zvbb: Vector Basic Bit-manipulation
 - Zvbc: Vector Carryless Multiplication
@@ -95,134 +95,109 @@ are the following:
 - Zvknh[ab]: NIST Suite: Vector SHA-2 Secure Hash
 - Zvksed: ShangMi Suite: SM4 Block Cipher
 - Zvksh: ShangMi Suite: SM3 Secure Hash
-- Zvkn: NIST Algorithm Suite
 - Zvknc: NIST Algorithm Suite with carryless multiply
 - Zvkng: NIST Algorithm Suite with GCM.
-- Zvks: ShangMi Algorithm Suite
 - Zvksc: ShangMi Algorithm Suite with carryless multiplication
 - Zvksg: ShangMi Algorithm Suite with GCM.
 - Zvkt: Vector Data-Independent Execution Latency.
 
+Zvkn and Zvks are ommited since they are a superset of other extensions.
+
 Link: https://drive.google.com/file/d/1gb9OLH-DhbCgWp7VwpPOVrrY6f3oSJLL/view [1]
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
 ---
- arch/riscv/include/asm/hwcap.h | 12 ++++++-
- arch/riscv/kernel/cpufeature.c | 64 ++++++++++++++++++++++++++++++++++
- 2 files changed, 75 insertions(+), 1 deletion(-)
+ Documentation/arch/riscv/hwprobe.rst  | 30 +++++++++++++++++++++++++++
+ arch/riscv/include/uapi/asm/hwprobe.h | 10 +++++++++
+ arch/riscv/kernel/sys_riscv.c         | 13 ++++++++++++
+ 3 files changed, 53 insertions(+)
 
-diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
-index b0857c64bf6e..477254668d82 100644
---- a/arch/riscv/include/asm/hwcap.h
-+++ b/arch/riscv/include/asm/hwcap.h
-@@ -68,8 +68,18 @@
- #define RISCV_ISA_EXT_ZKSED		53
- #define RISCV_ISA_EXT_ZKSH		54
- #define RISCV_ISA_EXT_ZKT		55
-+#define RISCV_ISA_EXT_ZVBB		56
-+#define RISCV_ISA_EXT_ZVBC		57
-+#define RISCV_ISA_EXT_ZVKB		58
-+#define RISCV_ISA_EXT_ZVKG		59
-+#define RISCV_ISA_EXT_ZVKNED		60
-+#define RISCV_ISA_EXT_ZVKNHA		61
-+#define RISCV_ISA_EXT_ZVKNHB		62
-+#define RISCV_ISA_EXT_ZVKSED		63
-+#define RISCV_ISA_EXT_ZVKSH		64
-+#define RISCV_ISA_EXT_ZVKT		65
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index 3a18a31e32c3..a08fcd899b6d 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -110,6 +110,36 @@ The following keys are defined:
+   * :c:macro:`RISCV_HWPROBE_EXT_ZKT` The Zkt extension is supported, as defined
+        in version 1.0 of the Scalar Crypto ISA extensions.
  
--#define RISCV_ISA_EXT_MAX		64
-+#define RISCV_ISA_EXT_MAX		128
- #define RISCV_ISA_EXT_INVALID		U32_MAX
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVBB`: The Zvbb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVBC`: The Zvbc extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKB`: The Zvkb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKG`: The Zvkg extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNED`: The Zvkned extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNHA`: The Zvknha extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKNHB`: The Zvknhb extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKSED`: The Zvksed extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKSH`: The Zvksh extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVKT`: The Zvkt extension is supported as
++       defined in version 1.0 of the RISC-V Cryptography Extensions Volume II.
++
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
  
- #ifdef CONFIG_RISCV_M_MODE
-diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
-index a2871bceaad9..c4d0f16c29b9 100644
---- a/arch/riscv/kernel/cpufeature.c
-+++ b/arch/riscv/kernel/cpufeature.c
-@@ -123,6 +123,10 @@ static bool riscv_isa_extension_check(int id)
- #define __RISCV_ISA_EXT_BUNDLE(_name, _bundled_exts) \
- 	_RISCV_ISA_EXT_DATA(_name, RISCV_ISA_EXT_INVALID, _bundled_exts, ARRAY_SIZE(_bundled_exts))
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 624abd5cde29..89628a76ca04 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -40,6 +40,16 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZKSED		(1 << 14)
+ #define		RISCV_HWPROBE_EXT_ZKSH		(1 << 15)
+ #define		RISCV_HWPROBE_EXT_ZKT		(1 << 16)
++#define		RISCV_HWPROBE_EXT_ZVBB		(1 << 17)
++#define		RISCV_HWPROBE_EXT_ZVBC		(1 << 18)
++#define		RISCV_HWPROBE_EXT_ZVKB		(1 << 19)
++#define		RISCV_HWPROBE_EXT_ZVKG		(1 << 20)
++#define		RISCV_HWPROBE_EXT_ZVKNED	(1 << 21)
++#define		RISCV_HWPROBE_EXT_ZVKNHA	(1 << 22)
++#define		RISCV_HWPROBE_EXT_ZVKNHB	(1 << 23)
++#define		RISCV_HWPROBE_EXT_ZVKSED	(1 << 24)
++#define		RISCV_HWPROBE_EXT_ZVKSH		(1 << 25)
++#define		RISCV_HWPROBE_EXT_ZVKT		(1 << 26)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+diff --git a/arch/riscv/kernel/sys_riscv.c b/arch/riscv/kernel/sys_riscv.c
+index 43aa66e71418..9bbcd7334d96 100644
+--- a/arch/riscv/kernel/sys_riscv.c
++++ b/arch/riscv/kernel/sys_riscv.c
+@@ -173,6 +173,19 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+ 		EXT_KEY(ZKSED);
+ 		EXT_KEY(ZKSH);
+ 		EXT_KEY(ZKT);
++
++		if (has_vector()) {
++			EXT_KEY(ZVBB);
++			EXT_KEY(ZVBC);
++			EXT_KEY(ZVKB);
++			EXT_KEY(ZVKG);
++			EXT_KEY(ZVKNED);
++			EXT_KEY(ZVKNHA);
++			EXT_KEY(ZVKNHB);
++			EXT_KEY(ZVKSED);
++			EXT_KEY(ZVKSH);
++			EXT_KEY(ZVKT);
++		}
+ #undef EXT_KEY
+ 	}
  
-+/* Used to declare extensions that are a superset of other extensions (Zvbb for instance) */
-+#define __RISCV_ISA_EXT_SUPERSET(_name, _id, _sub_exts) \
-+	_RISCV_ISA_EXT_DATA(_name, _id, _sub_exts, ARRAY_SIZE(_sub_exts))
-+
- static const unsigned int riscv_zk_bundled_exts[] = {
- 	RISCV_ISA_EXT_ZBKB,
- 	RISCV_ISA_EXT_ZBKC,
-@@ -149,6 +153,50 @@ static const unsigned int riscv_zks_bundled_exts[] = {
- 	RISCV_ISA_EXT_ZKSH
- };
- 
-+#define RISCV_ISA_EXT_ZVKN	\
-+	RISCV_ISA_EXT_ZVKNED,	\
-+	RISCV_ISA_EXT_ZVKNHB,	\
-+	RISCV_ISA_EXT_ZVKB,	\
-+	RISCV_ISA_EXT_ZVKT
-+
-+static const unsigned int riscv_zvkn_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKN
-+};
-+
-+static const unsigned int riscv_zvknc_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKN,
-+	RISCV_ISA_EXT_ZVBC
-+};
-+
-+static const unsigned int riscv_zvkng_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKN,
-+	RISCV_ISA_EXT_ZVKG
-+};
-+
-+#define RISCV_ISA_EXT_ZVKS	\
-+	RISCV_ISA_EXT_ZVKSED,	\
-+	RISCV_ISA_EXT_ZVKSH,	\
-+	RISCV_ISA_EXT_ZVKB,	\
-+	RISCV_ISA_EXT_ZVKT
-+
-+static const unsigned int riscv_zvks_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKS
-+};
-+
-+static const unsigned int riscv_zvksc_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKS,
-+	RISCV_ISA_EXT_ZVBC
-+};
-+
-+static const unsigned int riscv_zvksg_bundled_exts[] = {
-+	RISCV_ISA_EXT_ZVKS,
-+	RISCV_ISA_EXT_ZVKG
-+};
-+
-+static const unsigned int riscv_zvbb_exts[] = {
-+	RISCV_ISA_EXT_ZVKB
-+};
-+
- /*
-  * The canonical order of ISA extension names in the ISA string is defined in
-  * chapter 27 of the unprivileged specification.
-@@ -227,6 +275,22 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
- 	__RISCV_ISA_EXT_DATA(zkt, RISCV_ISA_EXT_ZKT),
- 	__RISCV_ISA_EXT_DATA(zksed, RISCV_ISA_EXT_ZKSED),
- 	__RISCV_ISA_EXT_DATA(zksh, RISCV_ISA_EXT_ZKSH),
-+	__RISCV_ISA_EXT_SUPERSET(zvbb, RISCV_ISA_EXT_ZVBB, riscv_zvbb_exts),
-+	__RISCV_ISA_EXT_DATA(zvbc, RISCV_ISA_EXT_ZVBC),
-+	__RISCV_ISA_EXT_DATA(zvkb, RISCV_ISA_EXT_ZVKB),
-+	__RISCV_ISA_EXT_DATA(zvkg, RISCV_ISA_EXT_ZVKG),
-+	__RISCV_ISA_EXT_BUNDLE(zvkn, riscv_zvkn_bundled_exts),
-+	__RISCV_ISA_EXT_BUNDLE(zvknc, riscv_zvknc_bundled_exts),
-+	__RISCV_ISA_EXT_DATA(zvkned, RISCV_ISA_EXT_ZVKNED),
-+	__RISCV_ISA_EXT_BUNDLE(zvkng, riscv_zvkng_bundled_exts),
-+	__RISCV_ISA_EXT_DATA(zvknha, RISCV_ISA_EXT_ZVKNHA),
-+	__RISCV_ISA_EXT_DATA(zvknhb, RISCV_ISA_EXT_ZVKNHB),
-+	__RISCV_ISA_EXT_BUNDLE(zvks, riscv_zvks_bundled_exts),
-+	__RISCV_ISA_EXT_BUNDLE(zvksc, riscv_zvksc_bundled_exts),
-+	__RISCV_ISA_EXT_DATA(zvksed, RISCV_ISA_EXT_ZVKSED),
-+	__RISCV_ISA_EXT_DATA(zvksh, RISCV_ISA_EXT_ZVKSH),
-+	__RISCV_ISA_EXT_BUNDLE(zvksg, riscv_zvksg_bundled_exts),
-+	__RISCV_ISA_EXT_DATA(zvkt, RISCV_ISA_EXT_ZVKT),
- 	__RISCV_ISA_EXT_DATA(smaia, RISCV_ISA_EXT_SMAIA),
- 	__RISCV_ISA_EXT_DATA(smstateen, RISCV_ISA_EXT_SMSTATEEN),
- 	__RISCV_ISA_EXT_DATA(ssaia, RISCV_ISA_EXT_SSAIA),
 -- 
 2.42.0
 
