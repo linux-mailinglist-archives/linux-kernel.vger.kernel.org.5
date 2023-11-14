@@ -2,254 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9997EA99F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:35:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 314117EA99A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:35:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232200AbjKNEfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
+        id S232056AbjKNEfb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:35:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232110AbjKNEfm (ORCPT
+        with ESMTP id S232008AbjKNEfZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 23:35:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 237EAD4A;
-        Mon, 13 Nov 2023 20:35:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699936537; x=1731472537;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yc6VKjNt+crImAjw3puzjZq+J/HZw6p8aCrfmOzXkLc=;
-  b=QaYJwHTdQSZH56a39qPdCksyeoKE+OagisWnDw6dIq/6pHFjXHG3NFlV
-   5fvFQzCiECFY/7EaF5MjvYgN0xa06IUpQL06DT5JUV8HFcEFjLRQqns+j
-   pLzVLMEN9sKkBvIXt8easIzhrWio+R0+zjFrf68t7QAiNxg2ZrA6yCVu9
-   pq3lLs+9AxcHQaNlc0i41/Tzb8o81Zs/c412sx0vhjMgai3K4ssD75GR6
-   EWNBM8VHC2QZ6YfUYwTet1h49DD5Fi5JGJVRk20p4LQR7kDGIeflf7iSW
-   5JNUnX++UvSaiknl8igFqy7I8BdHkS2zdJY+DMJYnO+Fcwb7Vjbch/wwZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389437306"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="389437306"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 20:35:32 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="830467509"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="830467509"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 20:35:32 -0800
-From:   isaku.yamahata@intel.com
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-        Sean Christopherson <seanjc@google.com>,
-        Vishal Annapurve <vannapurve@google.com>,
-        Jim Mattson <jmattson@google.com>
-Subject: [PATCH v2 3/3] KVM: selftests: Add test case for x86 apic_bus_clock_frequency
-Date:   Mon, 13 Nov 2023 20:35:04 -0800
-Message-Id: <232d64219c6df684f99f9072d41e8783f1a4fe46.1699936040.git.isaku.yamahata@intel.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <cover.1699936040.git.isaku.yamahata@intel.com>
-References: <cover.1699936040.git.isaku.yamahata@intel.com>
+        Mon, 13 Nov 2023 23:35:25 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88584D42;
+        Mon, 13 Nov 2023 20:35:20 -0800 (PST)
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE2enuY015545;
+        Tue, 14 Nov 2023 04:35:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=mmSUoAY3idS7EMo1OCwa4Vlm1FH71gDEVXdoggFmtBU=;
+ b=dosNbqsgW/q1pTNuSCxKi3ZzAxlHAOo7REBG5XPeMeCJzuLZ7+7i8K/P2OsDjs896yvN
+ XZSneSk9dAhG6buk8YVksZbnaUMvlnrMHZeWR3Jjib/98/CpeDhxReNq6Z/+SXd8x86i
+ LwJHtmEv+MbT9rPNU0wBnvDAFmLBwG+NiTMl7n8ai42ynv8xQdWIQ4LKLWqVPnw51mg8
+ hV/rEbLvbiH39HYCRmwOdN7HsPZ7nn0YGXZbj4Xtqyz5Q/r4mMtzwXWb9oFb8k89NWX/
+ HBXx+wtNFvR5JlU+WoztxrlF3nUnQaTSmspyZlDEiQ3MjtlgZcMbLfx4fCTArd3Kp7ql QQ== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubj731qsb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 04:35:13 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AE4ZCg4011384
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 04:35:12 GMT
+Received: from [10.217.219.216] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Mon, 13 Nov
+ 2023 20:35:08 -0800
+Message-ID: <311c74f4-82ba-9a8e-3351-d9c96a369ec5@quicinc.com>
+Date:   Tue, 14 Nov 2023 10:05:04 +0530
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
+ Thunderbird/91.13.1
+Subject: Re: [PATCH v4] bus: mhi: host: Add tracing support
+Content-Language: en-US
+To:     Steven Rostedt <rostedt@goodmis.org>
+CC:     Manivannan Sadhasivam <mani@kernel.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <mhi@lists.linux.dev>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-trace-kernel@vger.kernel.org>, <quic_vbadigan@quicinc.com>,
+        <quic_ramkri@quicinc.com>, <quic_nitegupt@quicinc.com>,
+        <quic_skananth@quicinc.com>, <quic_parass@quicinc.com>
+References: <20231111-ftrace_support-v4-1-c83602399461@quicinc.com>
+ <20231111143710.3474e05a@rorschach.local.home>
+From:   Krishna Chaitanya Chundru <quic_krichai@quicinc.com>
+In-Reply-To: <20231111143710.3474e05a@rorschach.local.home>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 4Wya69WRhd6HbwTtk4tdIMaZsN_sI4l8
+X-Proofpoint-ORIG-GUID: 4Wya69WRhd6HbwTtk4tdIMaZsN_sI4l8
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_01,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 malwarescore=0 bulkscore=0 phishscore=0 adultscore=0
+ lowpriorityscore=0 spamscore=0 suspectscore=0 impostorscore=0
+ mlxlogscore=935 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140033
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-Test if the apic bus clock frequency is exptected to the configured value.
-Set APIC TMICT to the maximum value and busy wait for 100 msec (any value
-is okay) with tsc value, and read TMCCT. Calculate apic bus clock frequency
-based on TSC frequency.
+On 11/12/2023 1:07 AM, Steven Rostedt wrote:
+> On Sat, 11 Nov 2023 11:25:22 +0530
+> Krishna chaitanya chundru <quic_krichai@quicinc.com> wrote:
+>> diff --git a/drivers/bus/mhi/host/trace.h b/drivers/bus/mhi/host/trace.h
+>> new file mode 100644
+>> index 000000000000..0e99318f5d08
+>> --- /dev/null
+>> +++ b/drivers/bus/mhi/host/trace.h
+>> +
+>> +TRACE_EVENT(mhi_update_channel_state_start,
+>> +
+>> +	TP_PROTO(const char *name, int ch_num, int state),
+>> +
+>> +	TP_ARGS(name, ch_num, state),
+>> +
+>> +	TP_STRUCT__entry(
+>> +		__string(name, name)
+>> +		__field(int, ch_num)
+>> +		__field(int, state)
+>> +	),
+>> +
+>> +	TP_fast_assign(
+>> +		__assign_str(name, name);
+>> +		__entry->ch_num = ch_num;
+>> +		__entry->state = state;
+>> +	),
+>> +
+>> +	TP_printk("%s: ch%d: Updating state to: %s\n",
+>> +		  __get_str(name), __entry->ch_num,
+>> +		  TO_CH_STATE_TYPE_STR(__entry->state))
+>> +);
+>> +
+>> +TRACE_EVENT(mhi_update_channel_state_end,
+>> +
+>> +	TP_PROTO(const char *name, int ch_num, int state),
+>> +
+>> +	TP_ARGS(name, ch_num, state),
+>> +
+>> +	TP_STRUCT__entry(
+>> +		__string(name, name)
+>> +		__field(int, ch_num)
+>> +		__field(int, state)
+>> +	),
+>> +
+>> +	TP_fast_assign(
+>> +		__assign_str(name, name);
+>> +		__entry->ch_num = ch_num;
+>> +		__entry->state = state;
+>> +	),
+>> +
+>> +	TP_printk("%s: ch%d: Updated state to: %s\n",
+>> +		  __get_str(name), __entry->ch_num,
+>> +		  TO_CH_STATE_TYPE_STR(__entry->state))
+>> +);
+>> +
+> The above three events have the same format. You can save kilobytes of
+> memory by converting them into a DECLARE_EVENT_CLASS() and use
+> DEFINE_EVENT() for each event.
+>
+> A TRACE_EVENT() macro is really just a wrapper around
+> DECLARE_EVENT_CLASS() and DEFINE_EVENT(). The DECLARE_EVENT_CLASS()
+> does the bulk of the work and adds the most memory footprint. By
+> breaking it apart for several events, it does save memory.
+>
+> Whenever you can use a single DECLARE_EVENT_CLASS() for multiple
+> events, I strongly suggest doing so.
+>
+> Thanks,
+>
+> -- Steve
 
-Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
----
-Changes v2:
-- Newly added
----
- tools/testing/selftests/kvm/Makefile          |   1 +
- .../selftests/kvm/include/x86_64/apic.h       |   7 +
- .../kvm/x86_64/apic_bus_clock_test.c          | 132 ++++++++++++++++++
- 3 files changed, 140 insertions(+)
- create mode 100644 tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+Sure steve I will change as suggested in my next patch.
 
-diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-index a5963ab9215b..74ed3f71b6e8 100644
---- a/tools/testing/selftests/kvm/Makefile
-+++ b/tools/testing/selftests/kvm/Makefile
-@@ -115,6 +115,7 @@ TEST_GEN_PROGS_x86_64 += x86_64/vmx_invalid_nested_guest_state
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_set_nested_state_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_tsc_adjust_test
- TEST_GEN_PROGS_x86_64 += x86_64/vmx_nested_tsc_scaling_test
-+TEST_GEN_PROGS_x86_64 += x86_64/apic_bus_clock_test
- TEST_GEN_PROGS_x86_64 += x86_64/xapic_ipi_test
- TEST_GEN_PROGS_x86_64 += x86_64/xapic_state_test
- TEST_GEN_PROGS_x86_64 += x86_64/xcr0_cpuid_test
-diff --git a/tools/testing/selftests/kvm/include/x86_64/apic.h b/tools/testing/selftests/kvm/include/x86_64/apic.h
-index bed316fdecd5..866a58d5fa11 100644
---- a/tools/testing/selftests/kvm/include/x86_64/apic.h
-+++ b/tools/testing/selftests/kvm/include/x86_64/apic.h
-@@ -60,6 +60,13 @@
- #define		APIC_VECTOR_MASK	0x000FF
- #define	APIC_ICR2	0x310
- #define		SET_APIC_DEST_FIELD(x)	((x) << 24)
-+#define APIC_LVT0       0x350
-+#define         APIC_LVT_TIMER_ONESHOT          (0 << 17)
-+#define         APIC_LVT_TIMER_PERIODIC         (1 << 17)
-+#define         APIC_LVT_TIMER_TSCDEADLINE      (2 << 17)
-+#define APIC_TMICT	0x380
-+#define APIC_TMCCT	0x390
-+#define APIC_TDCR	0x3E0
- 
- void apic_disable(void);
- void xapic_enable(void);
-diff --git a/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
-new file mode 100644
-index 000000000000..91f558d7c624
---- /dev/null
-+++ b/tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
-@@ -0,0 +1,132 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+#define _GNU_SOURCE /* for program_invocation_short_name */
-+
-+#include "apic.h"
-+#include "test_util.h"
-+
-+/* Pick one convenient value, 1Ghz.  No special meaning. */
-+#define TSC_HZ			(1 * 1000 * 1000 * 1000ULL)
-+
-+/* Wait for 100 msec, not too long, not too short value. */
-+#define LOOP_MSEC		100ULL
-+#define TSC_WAIT_DELTA		(TSC_HZ / 1000 * LOOP_MSEC)
-+
-+/* Pick up typical value.  Different enough from the default value, 1GHz.  */
-+#define APIC_BUS_CLOCK_FREQ	(25 * 1000 * 1000ULL)
-+
-+static void guest_code(void)
-+{
-+	/* Possible tdcr values and its divide count. */
-+	struct {
-+		u32 tdcr;
-+		u32 divide_count;
-+	} tdcrs[] = {
-+		{0x0, 2},
-+		{0x1, 4},
-+		{0x2, 8},
-+		{0x3, 16},
-+		{0x8, 32},
-+		{0x9, 64},
-+		{0xa, 128},
-+		{0xb, 1},
-+	};
-+
-+	u32 tmict, tmcct;
-+	u64 tsc0, tsc1;
-+	int i;
-+
-+	asm volatile("cli");
-+
-+	xapic_enable();
-+
-+	/*
-+	 * Setup one-shot timer.  Because we don't fire the interrupt, the
-+	 * vector doesn't matter.
-+	 */
-+	xapic_write_reg(APIC_LVT0, APIC_LVT_TIMER_ONESHOT);
-+
-+	for (i = 0; i < ARRAY_SIZE(tdcrs); i++) {
-+		xapic_write_reg(APIC_TDCR, tdcrs[i].tdcr);
-+
-+		/* Set the largest value to not trigger the interrupt. */
-+		tmict = ~0;
-+		xapic_write_reg(APIC_TMICT, tmict);
-+
-+		/* Busy wait for LOOP_MSEC */
-+		tsc0 = rdtsc();
-+		tsc1 = tsc0;
-+		while (tsc1 - tsc0 < TSC_WAIT_DELTA)
-+			tsc1 = rdtsc();
-+
-+		/* Read apic timer and tsc */
-+		tmcct = xapic_read_reg(APIC_TMCCT);
-+		tsc1 = rdtsc();
-+
-+		/* Stop timer */
-+		xapic_write_reg(APIC_TMICT, 0);
-+
-+		/* Report it. */
-+		GUEST_SYNC_ARGS(tdcrs[i].divide_count, tmict - tmcct,
-+				tsc1 - tsc0, 0, 0);
-+	}
-+
-+	GUEST_DONE();
-+}
-+
-+void test_apic_bus_clock(struct kvm_vcpu *vcpu)
-+{
-+	bool done = false;
-+	struct ucall uc;
-+
-+	while (!done) {
-+		vcpu_run(vcpu);
-+		TEST_ASSERT_KVM_EXIT_REASON(vcpu, KVM_EXIT_IO);
-+
-+		switch (get_ucall(vcpu, &uc)) {
-+		case UCALL_DONE:
-+			done = true;
-+			break;
-+		case UCALL_ABORT:
-+			REPORT_GUEST_ASSERT(uc);
-+			break;
-+		case UCALL_SYNC: {
-+			u32 divide_counter = uc.args[1];
-+			u32 apic_cycles = uc.args[2];
-+			u64 tsc_cycles = uc.args[3];
-+			u64 freq;
-+
-+			TEST_ASSERT(tsc_cycles > 0,
-+				    "tsc cycles must not be zero.");
-+
-+			/* Allow 1% slack. */
-+			freq = apic_cycles * divide_counter * TSC_HZ / tsc_cycles;
-+			TEST_ASSERT(freq < APIC_BUS_CLOCK_FREQ * 101 / 100,
-+				    "APIC bus clock frequency is too large");
-+			TEST_ASSERT(freq > APIC_BUS_CLOCK_FREQ * 99 / 100,
-+				    "APIC bus clock frequency is too small");
-+			break;
-+		}
-+		default:
-+			TEST_FAIL("Unknown ucall %lu", uc.cmd);
-+			break;
-+		}
-+	}
-+}
-+
-+int main(int argc, char *argv[])
-+{
-+	struct kvm_vm *vm;
-+	struct kvm_vcpu *vcpu;
-+
-+	vm = __vm_create(VM_MODE_DEFAULT, 1, 0);
-+	vm_ioctl(vm, KVM_SET_TSC_KHZ, (void *) (TSC_HZ / 1000));
-+	/*  KVM_CAP_X86_BUS_FREQUENCY_CONTROL requires that no vcpu is created. */
-+	vm_enable_cap(vm, KVM_CAP_X86_BUS_FREQUENCY_CONTROL,
-+		      APIC_BUS_CLOCK_FREQ);
-+	vcpu = vm_vcpu_add(vm, 0, guest_code);
-+
-+	virt_pg_map(vm, APIC_DEFAULT_GPA, APIC_DEFAULT_GPA);
-+
-+	test_apic_bus_clock(vcpu);
-+	kvm_vm_free(vm);
-+}
--- 
-2.25.1
+- Krishna Chaitanya.
 
+>
+>> +#endif
+>> +#undef TRACE_INCLUDE_PATH
+>> +#define TRACE_INCLUDE_PATH .
+>> +#undef TRACE_INCLUDE_FILE
+>> +#define TRACE_INCLUDE_FILE trace
+>> +
+>> +#include <trace/define_trace.h>
+>>
+>> ---
+>> base-commit: 3006adf3be79cde4d14b1800b963b82b6e5572e0
+>> change-id: 20231005-ftrace_support-6869d4156139
+>>
+>> Best regards,
