@@ -2,171 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 343AE7EB6D7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E58D87EB6D9
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjKNTXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:23:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
+        id S231313AbjKNTYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:24:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKNTXr (ORCPT
+        with ESMTP id S231542AbjKNTYD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:23:47 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95696FB;
-        Tue, 14 Nov 2023 11:23:43 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DCEA440E018F;
-        Tue, 14 Nov 2023 19:23:40 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id nxOVEvKxnXQi; Tue, 14 Nov 2023 19:23:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1699989818; bh=9DUPwmxmZUVmPS/P37KJn65M2sh/+Gd6LIFKTA6w0Xg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fhbAG0uU8wqQyx5OrvGVl2RjU0fJkob8NkFsAR64SjVppoIjyxfZ8My9w4ZL8YqSl
-         JjwtRuaFHJRi7SH/PYzPVWRyruFYiscK15+YlvAw4e/S+SP0Rt5wYOrIyhr+yo+fP7
-         yO+rnnhOTLZvPe0W/LfBJsZJC2Oh7EwiRIsTocRdPrUqL/nSATCM7GGzsH7giwKAZa
-         ASZCM1c4BL2c4j+r/c8+Vg3tY22C+wye1RLd40GqdwQ8vFY+eehwbx7pp6rIa0dHIN
-         2WHhwTeiS2OIk36i98PrGOZnN8VYivfvw9B3dUCN96hUuf0DicTBJQLfOTx0TMl+jX
-         EoUct4o0WjjHhQhbfIvUOwUQwkSNFm7I0GXipjtH2aHGXhZfquvPgFnQex94NyArOK
-         yWd7pq7S6LnQe1IBqRBEv8odhN6TdMnOKpZG5l+cKNyMRIbkm1wuqEQ/sebSTmSZvQ
-         iXyeoglNoxw2nDVz2Fb2QU31boGt52Bn+gpc0P+/tpe0ky84HfTM+1UdjPFF7Gsz9m
-         1cew78d8XMjGWA+eUNCpCNgzBIO4hTeuj3vxPhcHhAS/YWqJJHJjEcOXBMVkH1ij3z
-         +zkE2jF4wPriDJvOs2aAkm1uGTLCaIkYn4uiFhzv7xzEtkgFTNe4F7L0aK940Dx7KT
-         raIftZIjoYqTwRb/E+Vud7Wk=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 55D5540E0171;
-        Tue, 14 Nov 2023 19:23:30 +0000 (UTC)
-Date:   Tue, 14 Nov 2023 20:23:24 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Yazen Ghannam <yazen.ghannam@amd.com>,
-        Smita.KoralahalliChannabasappa@amd.com,
-        dave.hansen@linux.intel.com, x86@kernel.org,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org,
-        patches@lists.linux.dev
-Subject: Re: [PATCH v9 2/3] x86/mce: Add per-bank CMCI storm mitigation
-Message-ID: <20231114192324.GAZVPJLGZmfJBS181/@fat_crate.local>
-References: <20230929181626.210782-1-tony.luck@intel.com>
- <20231004183623.17067-1-tony.luck@intel.com>
- <20231004183623.17067-3-tony.luck@intel.com>
- <20231019151211.GHZTFHS3osBIL1IJbF@fat_crate.local>
- <ZTa37L2nlnbok8dz@agluck-desk3>
+        Tue, 14 Nov 2023 14:24:03 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02326FB;
+        Tue, 14 Nov 2023 11:24:00 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc0d0a0355so46000615ad.3;
+        Tue, 14 Nov 2023 11:23:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699989839; x=1700594639; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=oRg/9amNRCNDUA0dPsjr4YlY4vfRo/KbH+WFDWxlwMU=;
+        b=VS+UUI5nc7/5i4wYaOLpMPq3OJlr1tqThDQq9XeNInB/i/Xaqaz9ZkSO/4p9Wkgrqi
+         Lkm8vaI3tPl3JkNzKDuFNbhuh4pUl5dPaVV+P2ZY2M4tyiTI1Ihqr6FYHhrDazxjryRY
+         lir8b6sPHCJO6QpjiQBTELJQK34FFyrjCVcUWnUXbCEVeJ167wPT/ToB/iPBwSQi9KKz
+         wICW0NrBb3T0gQLhYOH0ctNkPh0uJ7KDMMFnenuw3xAuQWEn7vpy8F5Ar7hnORsHhmSj
+         rd9Z7f5FmhyTEZhXU+vfs7XDdu1t2NK07hHrwhyJaYGwBPA2qSGucs7vSu4DLhyEGqrU
+         WgPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699989839; x=1700594639;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oRg/9amNRCNDUA0dPsjr4YlY4vfRo/KbH+WFDWxlwMU=;
+        b=HyPzLLcVpRjGdU2QaiiPEuXXYvg1AUMqM42/KZoj6yHnfCC+yjeHDIyb3Zbg3EeWKq
+         HHjy19RBexKWIdJRBAWxIRql+zDb2LnwvkCMwq+Wtv03FErAb0b76wCLXgaBCo1WCydh
+         3MVmgZE6eg2PLQkCFy/pJzoDRCg0Hn6AtAN8uH+Z1hAnTQ0WkMjUAK0NT798dw8XWlmq
+         vPmkc5TL5hNv0EJb7HrGoCgTQS+8WcctJvC2jCeEqVSQx3k0zbzwbUE1IE3hr43FEmgT
+         YHO3mmN8yl/nyIqOAks1GMTbP/Wgi2R6F/t37spVeX7V5DVhqpNCS+7SVLcY9LurNUst
+         I4VQ==
+X-Gm-Message-State: AOJu0Ywq+08jsBaPR365ZR1rh4bfzo3D8xfNbkAAYqd+wdwB0xyX7ZCk
+        DvjNY9jYkuXBb+7ZgJQM+x4=
+X-Google-Smtp-Source: AGHT+IHS3uxflJr5xZ7v8R8SsVGqdz2WtqnBZlLldfgKr7b9dh6D9gGfP4deOLawiw5HY7ylZcunPg==
+X-Received: by 2002:a17:903:1251:b0:1cc:50f6:7fca with SMTP id u17-20020a170903125100b001cc50f67fcamr3820996plh.24.1699989839296;
+        Tue, 14 Nov 2023 11:23:59 -0800 (PST)
+Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
+        by smtp.gmail.com with ESMTPSA id j8-20020a17090276c800b001cc52ca2dfbsm5963116plt.120.2023.11.14.11.23.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 11:23:58 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 14 Nov 2023 09:23:57 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     torvalds@linux-foundation.org, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
+        joshdon@google.com, brho@google.com, pjt@google.com,
+        derkling@google.com, haoluo@google.com, dvernet@meta.com,
+        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
+        changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
+        andrea.righi@canonical.com
+Cc:     linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        kernel-team@meta.com, David Vernet <void@manifault.com>
+Subject: [PATCH v2 18/36] sched_ext: Print sched_ext info when dumping stack
+Message-ID: <ZVPJTc5ZNEnnYmei@slm.duckdns.org>
+References: <20231111024835.2164816-1-tj@kernel.org>
+ <20231111024835.2164816-19-tj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZTa37L2nlnbok8dz@agluck-desk3>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231111024835.2164816-19-tj@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 23, 2023 at 11:14:04AM -0700, Tony Luck wrote:
-> I want to track whether each bank is in storm mode, or not. But there's
-> no indication when a CMCI is delivered which bank was the source. Code
-> just has to scan all the banks, and might find more than one with an
-> error. While no bank is in polling mode, there isn't a set time interval
-> between scanning banks.
+From e1a20d192fed44bf672682431d85186a46f275c9 Mon Sep 17 00:00:00 2001
+From: David Vernet <void@manifault.com>
+Date: Tue, 14 Nov 2023 09:19:48 -1000
 
-Well, if no bank is in *storm* polling mode - I presume you mean that
-when you say "polling mode" - then we have the default polling interval
-of machine_check_poll() of INITIAL_CHECK_INTERVAL, i.e., 5 mins, I'd
-say.
+It would be useful to see what the sched_ext scheduler state is, and what
+scheduler is running, when we're dumping a task's stack. This patch
+therefore adds a new print_scx_info() function that's called in the same
+context as print_worker_info() and print_stop_info(). An example dump
+follows.
 
-> A scan is just triggered when a CMCI happens. So it's non-trivial to
-> compute a rate. Would require saving a timestamp for every logged
-> error.
+  BUG: kernel NULL pointer dereference, address: 0000000000000999
+  #PF: supervisor write access in kernel mode
+  #PF: error_code(0x0002) - not-present page
+  PGD 0 P4D 0
+  Oops: 0002 [#1] PREEMPT SMP
+  CPU: 13 PID: 2047 Comm: insmod Tainted: G           O       6.6.0-work-10323-gb58d4cae8e99-dirty #34
+  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS unknown 2/2/2022
+  Sched_ext: qmap (enabled+all), task: runnable_at=-17ms
+  RIP: 0010:init_module+0x9/0x1000 [test_module]
+  ...
 
-So what I'm trying to establish first is, what our entry vectors into
-the storm code are.
+v2: We are now using scx_ops_enable_state_str[] outside CONFIG_SCHED_DEBUG.
+    Move it outside of CONFIG_SCHED_DEBUG and to the top. This was reported
+    by Changwoo and Andrea.
 
-1. You can enter storm tracking when you poll normally. I.e.,
-   machine_check_poll() each 5 mins once.
+Signed-off-by: David Vernet <void@manifault.com>
+Reported-by: Changwoo Min <changwoo@igalia.com>
+Reported-by: Andrea Righi <andrea.righi@canonical.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+Hello,
 
-   mce_track_storm() tracks history only for MCI_STATUS_VAL=1b CEs, which
-   is what I was wondering. It is hidden a bit down in that function.
+The sched_ext-v5 branch has been updated accordingly.
 
-2. As a result of a CMCI interrupt. That will call machine_check_poll()
-   too and go down the same path.
+  https://github.com/htejun/sched_ext sched_ext-v5
 
-So that flow should be called out in the commit message so that the big
-picture is clear - how we're doing that storm tracking.
+Thanks.
 
-Now, what is protecting this against concurrent runs of
-machine_check_poll()? Imagine the timer fires and a CMCI happens at the
-same time and on the same core.
+ include/linux/sched/ext.h |  2 ++
+ kernel/sched/core.c       |  1 +
+ kernel/sched/ext.c        | 61 ++++++++++++++++++++++++++++++++++-----
+ lib/dump_stack.c          |  1 +
+ 4 files changed, 57 insertions(+), 8 deletions(-)
 
-> In a simple case there's just one bank responsible for a ton of CMCI.
-> No need for complexity here, the count of interrupts from that bank will
-> hit a threshold and a storm is declared.
-
-Right.
-
-> But more complex scenarois are possible. Other banks may trigger small
-> numbers of CMCI. Not enough to call it a storm.  Or multiple banks may
-> be screaming together.
-> 
-> By tracking both the hits and misses in each bank, I end up with a
-> bitmap history for the past 64 polls. If there are enough "1" bits in
-> that bitmap to meet the threshold, then declare a storm for that
-> bank.
-
-Yap, I only want to be crystal clear on the flow and the entry points.
-
-> I need to stare at this again to refresh my memory of what's going on
-> here. This code may need pulling apart into a routine that is used for
-> systems with no CMCI (or have CMCI disabled). Then the whole "divide the
-> poll interval by two" when you see an error and double the interval
-> when you don't see an error makes sense.
-> 
-> For systems with CMCI ... I think just polling a one second interval
-> until the storm is over makes sense.
-
-Ok.
-
-> These are only used in threshold.c now. What's the point of them
-> being in internal.h. That's for defintiones shared by multiple
-> mcs/*.c files. Isn't it? But will move there if you still want this.
-
-Structs hidden in .c files looks weird but ok.
-
-> Ideally the new CPU would inherit the precise state of the previous
-> owner of this bank. But there's no easy way to track that as the bank
-> is abanoned by the CPU going offline, and there is a free-for-all with
-> remaining CPUs racing to claim ownership. It is known that this bank
-> was in storm mode (because the threshold in the CTL2 bank register is
-> set to CMCI_STORM_THRESHOLD).
-> 
-> I went with "worst case" to make sure the new CPU didn't prematurely
-> declare an end to the storm.
-> 
-> I'll add a comment in mce_inherit_storm() to explain this.
-
-Yap, exactly.
-
-> Like this?
-> 
-> #define NUM_HISTORY_BITS (sizeof(u64) * BITS_PER_BYTE)
-> 
-> 	if (shift < NUM_HISTORY_BITS)
-
-Yap.
-
-Thx.
-
+diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
+index 9d41acaf89c0..55f649bd065c 100644
+--- a/include/linux/sched/ext.h
++++ b/include/linux/sched/ext.h
+@@ -428,10 +428,12 @@ struct sched_ext_entity {
+ };
+ 
+ void sched_ext_free(struct task_struct *p);
++void print_scx_info(const char *log_lvl, struct task_struct *p);
+ 
+ #else	/* !CONFIG_SCHED_CLASS_EXT */
+ 
+ static inline void sched_ext_free(struct task_struct *p) {}
++static inline void print_scx_info(const char *log_lvl, struct task_struct *p) {}
+ 
+ #endif	/* CONFIG_SCHED_CLASS_EXT */
+ #endif	/* _LINUX_SCHED_EXT_H */
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1906f8397c28..957ae28a6e3f 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -9217,6 +9217,7 @@ void sched_show_task(struct task_struct *p)
+ 
+ 	print_worker_info(KERN_INFO, p);
+ 	print_stop_info(KERN_INFO, p);
++	print_scx_info(KERN_INFO, p);
+ 	show_stack(p, NULL, KERN_INFO);
+ 	put_task_stack(p);
+ }
+diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
+index 4e2aa9f308fb..621559c9f9c5 100644
+--- a/kernel/sched/ext.c
++++ b/kernel/sched/ext.c
+@@ -20,6 +20,14 @@ enum scx_ops_enable_state {
+ 	SCX_OPS_DISABLED,
+ };
+ 
++static const char *scx_ops_enable_state_str[] = {
++	[SCX_OPS_PREPPING]	= "prepping",
++	[SCX_OPS_ENABLING]	= "enabling",
++	[SCX_OPS_ENABLED]	= "enabled",
++	[SCX_OPS_DISABLING]	= "disabling",
++	[SCX_OPS_DISABLED]	= "disabled",
++};
++
+ /*
+  * sched_ext_entity->ops_state
+  *
+@@ -2560,14 +2568,6 @@ static int scx_ops_enable(struct sched_ext_ops *ops)
+ }
+ 
+ #ifdef CONFIG_SCHED_DEBUG
+-static const char *scx_ops_enable_state_str[] = {
+-	[SCX_OPS_PREPPING]	= "prepping",
+-	[SCX_OPS_ENABLING]	= "enabling",
+-	[SCX_OPS_ENABLED]	= "enabled",
+-	[SCX_OPS_DISABLING]	= "disabling",
+-	[SCX_OPS_DISABLED]	= "disabled",
+-};
+-
+ static int scx_debug_show(struct seq_file *m, void *v)
+ {
+ 	mutex_lock(&scx_ops_enable_mutex);
+@@ -2787,6 +2787,51 @@ static const struct sysrq_key_op sysrq_sched_ext_reset_op = {
+ 	.enable_mask	= SYSRQ_ENABLE_RTNICE,
+ };
+ 
++/**
++ * print_scx_info - print out sched_ext scheduler state
++ * @log_lvl: the log level to use when printing
++ * @p: target task
++ *
++ * If a sched_ext scheduler is enabled, print the name and state of the
++ * scheduler. If @p is on sched_ext, print further information about the task.
++ *
++ * This function can be safely called on any task as long as the task_struct
++ * itself is accessible. While safe, this function isn't synchronized and may
++ * print out mixups or garbages of limited length.
++ */
++void print_scx_info(const char *log_lvl, struct task_struct *p)
++{
++	enum scx_ops_enable_state state = scx_ops_enable_state();
++	const char *all = READ_ONCE(scx_switching_all) ? "+all" : "";
++	char runnable_at_buf[22] = "?";
++	struct sched_class *class;
++	unsigned long runnable_at;
++
++	if (state == SCX_OPS_DISABLED)
++		return;
++
++	/*
++	 * Carefully check if the task was running on sched_ext, and then
++	 * carefully copy the time it's been runnable, and its state.
++	 */
++	if (copy_from_kernel_nofault(&class, &p->sched_class, sizeof(class)) ||
++	    class != &ext_sched_class) {
++		printk("%sSched_ext: %s (%s%s)", log_lvl, scx_ops.name,
++		       scx_ops_enable_state_str[state], all);
++		return;
++	}
++
++	if (!copy_from_kernel_nofault(&runnable_at, &p->scx.runnable_at,
++				      sizeof(runnable_at)))
++		scnprintf(runnable_at_buf, sizeof(runnable_at_buf), "%+lldms",
++			  (s64)(runnable_at - jiffies) * (HZ / MSEC_PER_SEC));
++
++	/* Print everything onto one line to conserve console spce. */
++	printk("%sSched_ext: %s (%s%s), task: runnable_at=%s",
++	       log_lvl, scx_ops.name, scx_ops_enable_state_str[state], all,
++	       runnable_at_buf);
++}
++
+ void __init init_sched_ext_class(void)
+ {
+ 	int cpu;
+diff --git a/lib/dump_stack.c b/lib/dump_stack.c
+index 83471e81501a..6e667c445539 100644
+--- a/lib/dump_stack.c
++++ b/lib/dump_stack.c
+@@ -68,6 +68,7 @@ void dump_stack_print_info(const char *log_lvl)
+ 
+ 	print_worker_info(log_lvl, current);
+ 	print_stop_info(log_lvl, current);
++	print_scx_info(log_lvl, current);
+ }
+ 
+ /**
 -- 
-Regards/Gruss,
-    Boris.
+2.42.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
