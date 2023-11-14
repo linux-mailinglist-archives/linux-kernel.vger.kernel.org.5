@@ -2,205 +2,404 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 200757EAB9E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:30:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F867EABA3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:31:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232217AbjKNIal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:30:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44242 "EHLO
+        id S232361AbjKNIbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:31:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjKNIak (ORCPT
+        with ESMTP id S232227AbjKNIa6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:30:40 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 356491AC;
-        Tue, 14 Nov 2023 00:30:36 -0800 (PST)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-        by mailout.nyi.internal (Postfix) with ESMTP id B4D995C02AD;
-        Tue, 14 Nov 2023 03:30:32 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Tue, 14 Nov 2023 03:30:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1699950632; x=1700037032; bh=e9TuNY/MgUAE3JgFVSVk32xC4oXMQG0XMcL
-        r2XaWy5s=; b=YieOsOBya8bi01V64pl/+Hptg6wcpg+kVdeuU9ed4rD0x4RjOhI
-        9ZwBL3+FTduDfzW4KY9bGh0/kKDL7Ys92YgPYB6bOI9QEusE+mNsVOOoUgdRRLvY
-        PGTSaxuze3nE/EPW38vZbgoRye72FL5jpaDjyT3DiGodyC1mDBLgxaIBvNxm4Lb+
-        NtIjqx7oiUfIQIECa8xGxKYSyQMjVuTOE9SVUs4Xq0fEoN819okpN2ghADO+I1l3
-        2/QM82COZwBijH8E4A5J1EvineaNNdXbwUTSxuR4HPvxKhkLWhZ8hbva0FQQLv0C
-        6eBo6kic09UJgTCi/A6UNSEy/mridC57rUA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1699950632; x=1700037032; bh=e9TuNY/MgUAE3JgFVSVk32xC4oXMQG0XMcL
-        r2XaWy5s=; b=QPS1DterzM8AsAGl81Tkm4vZn97jwLaC/Rutn1rScC6FlEipkTo
-        84myra5htLkhpFljrnmap/3tNud3W8O1YM9fxyGalrcnHwIZOEvB8Yy+mbdGLA9n
-        RwL7H0vdtgCSLle2e6VH0SFi1cTGfXj8o1UlsmR9gOSKudHHtUdu6938IHsEsEuC
-        3t7Xz22l5Mkez4qteQkGXqa4Gg8+bMrgwICvrXehL7RNYV1TDhoaii1hIfzJp3E9
-        v/E22t71mJHtEsRI6jR6TV0fCtlwEHnCRDdky/0/0dlIxTxtjlxjdQrkHp+cWpoo
-        k8iE4Bj07pe1vmbJqikqW9OHKNLejbI7yOw==
-X-ME-Sender: <xms:KDBTZfMcuTtXDXICwtvbv4qf_XMylGYCPutk41fE8WCpH7xuXNKqyw>
-    <xme:KDBTZZ_BzW-wQPmrB64Sx_QGQLWu3TpPIKJ6DymnRK-EwIa6IcGvHiYMfOiB8a-0l
-    NnBDvje3Mvn>
-X-ME-Received: <xmr:KDBTZeSihM5Z3EHZ8FJPq0v3K7Wo-Rcd8AKj0285Cuxj8nIi54aW1vykRpKX2ZePGdKBra1mhriPzHFQzsOqE5mwqgX8AqS_2Ma6E7kLgb9KjENLnCdrQumk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefuddguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefkffggfgfvvehfhffujggtgfesthekredttdefjeenucfhrhhomhepkfgr
-    nhcumfgvnhhtuceorhgrvhgvnhesthhhvghmrgifrdhnvghtqeenucggtffrrghtthgvrh
-    hnpeeujedtffffueehfefgvdefkeduffdvjeevvedukeevveekhedtheegkeeujedvveen
-    ucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehrrghvvg
-    hnsehthhgvmhgrfidrnhgvth
-X-ME-Proxy: <xmx:KDBTZTuf5T_ThwE16gXqlZ5AD7OszJbFQdKytzxGlMKusvfXBt14hQ>
-    <xmx:KDBTZXeSe7JDugEs0T-RobutcW2XHYtbFIaB5fPdvz8uluxCxa-FMQ>
-    <xmx:KDBTZf3izrydV4SUDjECloqGgppoSG8cFJPjJhd5BfZ6LXv3YqT4Og>
-    <xmx:KDBTZe7cnqUJYvhPHKIVHZkMcN72xMwSaT-IXPfG4N1b5v1-w-xtzw>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Nov 2023 03:30:29 -0500 (EST)
-Message-ID: <e2654c2c-947a-60e5-7b86-9a13590f6211@themaw.net>
-Date:   Tue, 14 Nov 2023 16:30:25 +0800
+        Tue, 14 Nov 2023 03:30:58 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 595A51BE
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:30:54 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-50797cf5b69so7291553e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:30:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699950652; x=1700555452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=obryca9n2eNb5yg2DndPtpmeZlGBNrVGOB13odmFpHw=;
+        b=U86BdM2dMN4FNMh5eiDMcD3u3/tNizcTaertRLnxeb8PQEJLjTVV8xb8EMWq1i4YlV
+         sklrp7Hmgju86aLEkT13a/tANPmBpy/DDmyqopNknGr3UQBfTc+oh2dk4WfWx2t+DuAS
+         htz8l1fLy8AFl2ckI6+vHGkZRuACcG79d5CWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699950652; x=1700555452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=obryca9n2eNb5yg2DndPtpmeZlGBNrVGOB13odmFpHw=;
+        b=wsZnnCg6I0wmb3knaChrAfI+Jqglb+7WnRMO66dsEDuNviMZ5aTI2JJ5KrXc5xmSC8
+         2ExFzEu31zIG0C+brrXXMGoIEQnVyJJPhsu+cTlFJk7ibuemvT4b+T67UrzBT7s6vJiU
+         ODSobMw72WROucq54WrLoomYpR2DHQPQo3JoQGNoEDKZllEmwPA1ymErl8N2/7xgU74F
+         cA7LjfifHQsOElrmqHEEfSU83SgQDC28gNqEhJNHwqy9eufd2mCoAwambVvnOHd8wm7m
+         Le1L1yGnKwFXSNMKEDEvxfhXt9GK4zSOqiUBidrz9gpDSaRR/NCzdrUPVfCzyAF4pD9E
+         +9dQ==
+X-Gm-Message-State: AOJu0Yx4XT7yoNvqqQ49Fgz8kb3DerW6Vo/npqJyfFd8oWj8i9owp/bV
+        UcJaaUswS7U2tsL4cK9HC5KpEdGLr+RefMxjWUmG3g==
+X-Google-Smtp-Source: AGHT+IGkiQteXVxpQxEnN5T5mBHos8SiV3ZYgzB1M48PVBVO51h7FzcCr3+88xaVaOrfvXnrEkoxyrFPYL6ySRMKMIA=
+X-Received: by 2002:ac2:58f3:0:b0:507:b1f8:7895 with SMTP id
+ v19-20020ac258f3000000b00507b1f87895mr5865847lfo.38.1699950652551; Tue, 14
+ Nov 2023 00:30:52 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com,
-        autofs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000ae5995060a125650@google.com>
- <tencent_3744B76B9760E6DA33798369C96563B2C405@qq.com>
- <4fcf49456c32087f5306e84c4a8df5b2bd9f4146.camel@themaw.net>
- <20231114044110.GR1957730@ZenIV>
-Content-Language: en-US
-From:   Ian Kent <raven@themaw.net>
-Subject: Re: [PATCH] autofs: fix null deref in autofs_fill_super
-In-Reply-To: <20231114044110.GR1957730@ZenIV>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-6.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231109100606.1245545-1-wenst@chromium.org> <20231109100606.1245545-3-wenst@chromium.org>
+ <CAL_JsqJgUNcuXqtzHKdz5FdbxsrnLeZpgq-F+E21BvYS9qL0xg@mail.gmail.com>
+In-Reply-To: <CAL_JsqJgUNcuXqtzHKdz5FdbxsrnLeZpgq-F+E21BvYS9qL0xg@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 14 Nov 2023 16:30:41 +0800
+Message-ID: <CAGXv+5GD1VugmdGeU+YL9EPoBkPZXSzwimM4EgsVZVyLbMZ5WA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 2/7] of: Introduce hardware prober driver
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Douglas Anderson <dianders@chromium.org>,
+        Johan Hovold <johan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/23 12:41, Al Viro wrote:
-> On Tue, Nov 14, 2023 at 12:25:35PM +0800, Ian Kent wrote:
->>>          root_inode = autofs_get_inode(s, S_IFDIR | 0755);
->>> +       if (!root_inode)
->>> +               goto fail;
->> Yes, I think this is the only thing it could be.
->>
->> There's one small problem though, it leaks the dentry info. ino,
->> allocated just above. I think this should goto label fail_ino instead.
->>
->> Note that once the root dentry is allocated then the ino struct will
->> be freed when the dentry is freed so ino doesn't need to be freed.
-> There's a simpler solution:
+On Thu, Nov 9, 2023 at 11:14=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
+ote:
 >
->          root_inode = autofs_get_inode(s, S_IFDIR | 0755);
-> 	if (root_inode) {
-> 		root_inode->i_uid = ctx->uid;
-> 		root_inode->i_gid = ctx->gid;
-> 	}
->          root = d_make_root(root_inode);
->          if (!root)
->                  goto fail_ino;
+> On Thu, Nov 9, 2023 at 4:06=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
+wrote:
+> >
+> > Some devices are designed and manufactured with some components having
+> > multiple drop-in replacement options. These components are often
+> > connected to the mainboard via ribbon cables, having the same signals
+> > and pin assignments across all options. These may include the display
+> > panel and touchscreen on laptops and tablets, and the trackpad on
+> > laptops. Sometimes which component option is used in a particular devic=
+e
+> > can be detected by some firmware provided identifier, other times that
+> > information is not available, and the kernel has to try to probe each
+> > device.
+> >
+> > This change attempts to make the "probe each device" case cleaner. The
+> > current approach is to have all options added and enabled in the device
+> > tree. The kernel would then bind each device and run each driver's prob=
+e
+> > function. This works, but has been broken before due to the introductio=
+n
+> > of asynchronous probing, causing multiple instances requesting "shared"
+> > resources, such as pinmuxes, GPIO pins, interrupt lines, at the same
+> > time, with only one instance succeeding. Work arounds for these include
+> > moving the pinmux to the parent I2C controller, using GPIO hogs or
+> > pinmux settings to keep the GPIO pins in some fixed configuration, and
+> > requesting the interrupt line very late. Such configurations can be see=
+n
+> > on the MT8183 Krane Chromebook tablets, and the Qualcomm sc8280xp-based
+> > Lenovo Thinkpad 13S.
+> >
+> > Instead of this delicate dance between drivers and device tree quirks,
+> > this change introduces a simple I2C component prober. For any given
+> > class of devices on the same I2C bus, it will go through all of them,
+> > doing a simple I2C read transfer and see which one of them responds.
+> > It will then enable the device that responds.
+> >
+> > This requires some minor modifications in the existing device tree.
+> > The status for all the device nodes for the component options must be
+> > set to "failed-needs-probe-xxx". This makes it clear that some mechanis=
+m
+> > is needed to enable one of them, and also prevents the prober and devic=
+e
+> > drivers running at the same time.
+> >
+> > Signed-off-by: Chen-Yu Tsai <wenst@chromium.org>
+> > ---
+> >  drivers/of/Kconfig     |  13 ++++
+> >  drivers/of/Makefile    |   1 +
+> >  drivers/of/hw_prober.c | 154 +++++++++++++++++++++++++++++++++++++++++
 >
-> d_make_root(NULL) will quietly return NULL, which is all you
-> need.  FWIW, I would probably bring the rest of initialization
->          root_inode->i_fop = &autofs_root_operations;
->          root_inode->i_op = &autofs_dir_inode_operations;
-> in there as well.
->
-> Incidentally, why bother with separate fail_dput thing?  Shove it
-> into ->s_root and return ret - autofs_kill_sb() will take care
-> of dropping it...
->
-> How about the following:
+> Not sure about having this in drivers/of/, but fine for now... Really,
+> the I2C bus stuff should be in the I2C core with the rest of the code
+> that knows how to parse I2C bus nodes.
 
-Yes, I think so, AFAICS so far it looks like everything is covered.
+I think we can move the majority of this patch into the I2C core and
+export just the one prober function. The remainder and the other SKU
+ID based prober could be moved to drivers/platform/chrome.
 
-I'll look around a bit longer, I need to go over that mount API code
+Not sure how we want to place probers for other platforms though?
 
-again anyway ...
+> >  3 files changed, 168 insertions(+)
+> >  create mode 100644 drivers/of/hw_prober.c
+> >
+> > diff --git a/drivers/of/Kconfig b/drivers/of/Kconfig
+> > index da9826accb1b..269d20d51936 100644
+> > --- a/drivers/of/Kconfig
+> > +++ b/drivers/of/Kconfig
+> > @@ -102,4 +102,17 @@ config OF_OVERLAY
+> >  config OF_NUMA
+> >         bool
+> >
+> > +config HW_PROBER
+> > +       bool "Hardware Prober driver"
+> > +       select I2C
+>
+> You should not select I2C, but enable/disable I2C functionality based
+> on it being enabled.
 
+Ack.
 
-I'll prepare a patch, the main thing that I was concerned about was
+> > +       select OF_DYNAMIC
+> > +       help
+> > +         Some devices will have multiple drop-in options for one compo=
+nent.
+> > +         In many cases the different options are indistinguishable by =
+the
+> > +         kernel without actually probing each possible option.
+> > +
+> > +         This driver is meant to handle the probing of such components=
+, and
+> > +         update the running device tree such that the correct variant =
+is
+> > +         made available.
+> > +
+> >  endif # OF
+> > diff --git a/drivers/of/Makefile b/drivers/of/Makefile
+> > index eff624854575..ed3875cdc554 100644
+> > --- a/drivers/of/Makefile
+> > +++ b/drivers/of/Makefile
+> > @@ -12,6 +12,7 @@ obj-$(CONFIG_OF_RESERVED_MEM) +=3D of_reserved_mem.o
+> >  obj-$(CONFIG_OF_RESOLVE)  +=3D resolver.o
+> >  obj-$(CONFIG_OF_OVERLAY) +=3D overlay.o
+> >  obj-$(CONFIG_OF_NUMA) +=3D of_numa.o
+> > +obj-$(CONFIG_HW_PROBER) +=3D hw_prober.o
+> >
+> >  ifdef CONFIG_KEXEC_FILE
+> >  ifdef CONFIG_OF_FLATTREE
+> > diff --git a/drivers/of/hw_prober.c b/drivers/of/hw_prober.c
+> > new file mode 100644
+> > index 000000000000..442da6eff896
+> > --- /dev/null
+> > +++ b/drivers/of/hw_prober.c
+> > @@ -0,0 +1,154 @@
+> > +// SPDX-License-Identifier: GPL-2.0-only
+> > +/*
+> > + * hw_prober.c - Hardware prober driver
+> > + *
+> > + * Copyright (c) 2023 Google LLC
+> > + */
+> > +
+> > +#include <linux/array_size.h>
+> > +#include <linux/i2c.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +
+> > +#define DRV_NAME       "hw_prober"
+> > +
+> > +/**
+> > + * struct hw_prober_entry - Holds an entry for the hardware prober
+> > + *
+> > + * @compatible:        compatible string to match against the machine
+> > + * @prober:    prober function to call when machine matches
+> > + * @data:      extra data for the prober function
+> > + */
+> > +struct hw_prober_entry {
+> > +       const char *compatible;
+> > +       int (*prober)(struct platform_device *pdev, const void *data);
+> > +       const void *data;
+> > +};
+> > +
+> > +/*
+> > + * Some devices, such as Google Hana Chromebooks, are produced by mult=
+iple
+> > + * vendors each using their preferred components. This prober assumes =
+such
+> > + * drop-in parts are on dedicated I2C busses, have non-conflicting add=
+resses,
+> > + * and can be directly probed by seeing which address responds without=
+ needing
+> > + * regulators or GPIOs being enabled or toggled.
+> > + */
+> > +static int i2c_component_prober(struct platform_device *pdev, const vo=
+id *data)
+> > +{
+> > +       const char *node_name =3D data;
+> > +       struct device_node *node, *i2c_node;
+> > +       struct i2c_adapter *i2c;
+> > +       int ret =3D 0;
+> > +
+> > +       node =3D of_find_node_by_name(NULL, node_name);
+> > +       if (!node)
+> > +               return dev_err_probe(&pdev->dev, -ENODEV, "Could not fi=
+nd %s device node\n",
+> > +                                    node_name);
+> > +
+> > +       i2c_node =3D of_get_next_parent(node);
+> > +       if (strcmp(i2c_node->name, "i2c")) {
+>
+> We have functions for comparing node names, use them and don't access
+> ->name directly.
 
-whether the cause really was NULL root_inode but Edward more or less
+Ack.
 
-tested that.
+> > +               of_node_put(i2c_node);
+> > +               return dev_err_probe(&pdev->dev, -EINVAL, "%s device is=
+n't on I2C bus\n",
+> > +                                    node_name);
+> > +       }
+> > +
+> > +       for_each_child_of_node(i2c_node, node) {
+> > +               if (!of_node_name_prefix(node, node_name))
+> > +                       continue;
+> > +               if (!of_device_is_fail(node)) {
+> > +                       /* device tree has component already enabled */
+>
+> This isn't quite right if there's a disabled device. To check 'is
+> enabled', you just need to use of_device_is_available().
 
+I wanted to distinguish between explicitly disabled, i.e. components
+known to not exist on some specific variant, vs fail or components
+that need probing. I suppose this is overengineered since the previous
+of_node_name_prefix() already restricts the check to the class of
+components we are interested in.
 
-Ian
+> > +                       of_node_put(node);
+> > +                       of_node_put(i2c_node);
+> > +                       return 0;
+> > +               }
+> > +       }
+> > +
+> > +       i2c =3D of_get_i2c_adapter_by_node(i2c_node);
+> > +       if (!i2c) {
+> > +               of_node_put(i2c_node);
+> > +               return dev_err_probe(&pdev->dev, -EPROBE_DEFER, "Couldn=
+'t get I2C adapter\n");
+> > +       }
+> > +
+> > +       for_each_child_of_node(i2c_node, node) {
+>
+> The I2C core will walk the devices too. Perhaps if that saves off a
+> list of failed devices, then we don't need to walk the nodes again.
 
-> static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
-> {
-> 	struct autofs_fs_context *ctx = fc->fs_private;
-> 	struct autofs_sb_info *sbi = s->s_fs_info;
-> 	struct inode *root_inode;
-> 	struct autofs_info *ino;
+I will look into it.
+
+> > +               struct property *prop;
+> > +               union i2c_smbus_data data;
+> > +               u32 addr;
+> > +
+> > +               if (!of_node_name_prefix(node, node_name))
+> > +                       continue;
+> > +               if (of_property_read_u32(node, "reg", &addr))
+> > +                       continue;
+> > +               if (i2c_smbus_xfer(i2c, addr, 0, I2C_SMBUS_READ, 0, I2C=
+_SMBUS_BYTE, &data) < 0)
+> > +                       continue;
+> > +
+> > +               dev_info(&pdev->dev, "Enabling %pOF\n", node);
+> > +
+> > +               prop =3D kzalloc(sizeof(*prop), GFP_KERNEL);
+> > +               if (!prop) {
+> > +                       ret =3D -ENOMEM;
+> > +                       of_node_put(node);
+> > +                       break;
+> > +               }
+> > +
+> > +               prop->name      =3D "status";
+> > +               prop->length    =3D 5;
+> > +               prop->value     =3D "okay";
+> > +
+> > +               /* Found a device that is responding */
+> > +               ret =3D of_update_property(node, prop);
 >
-> 	pr_debug("starting up, sbi = %p\n", sbi);
+> Use the changeset API instead and make an update flavor of
+> of_changeset_add_prop_string().
+
+Ack. However I don't really like the API, as there is no easy way to free
+the allocated property if of_changeset_apply fails and we want to clean up.
+
+> > +               if (ret)
+> > +                       kfree(prop);
+> > +
+> > +               of_node_put(node);
+> > +               break;
+> > +       }
+> > +
+> > +       i2c_put_adapter(i2c);
+> > +       of_node_put(i2c_node);
+> > +
+> > +       return ret;
+> > +}
+> > +
+> > +static const struct hw_prober_entry hw_prober_platforms[] =3D {
+> > +       { .compatible =3D "google,hana", .prober =3D i2c_component_prob=
+er, .data =3D "touchscreen" },
+> > +       { .compatible =3D "google,hana", .prober =3D i2c_component_prob=
+er, .data =3D "trackpad" },
 >
-> 	sbi->sb = s;
-> 	s->s_blocksize = 1024;
-> 	s->s_blocksize_bits = 10;
-> 	s->s_magic = AUTOFS_SUPER_MAGIC;
-> 	s->s_op = &autofs_sops;
-> 	s->s_d_op = &autofs_dentry_operations;
-> 	s->s_time_gran = 1;
+> Not generic code. Needs to be somewhere else.
+
+OK. How about drivers/platform/chrome/ for the non-generic bits and the oth=
+er
+prober patch?
+
+> > +};
+> > +
+> > +static int hw_prober_probe(struct platform_device *pdev)
+> > +{
+> > +       for (int i =3D 0; i < ARRAY_SIZE(hw_prober_platforms); i++)
+> > +               if (of_machine_is_compatible(hw_prober_platforms[i].com=
+patible)) {
+> > +                       int ret;
+> > +
+> > +                       ret =3D hw_prober_platforms[i].prober(pdev, hw_=
+prober_platforms[i].data);
+> > +                       if (ret)
+> > +                               return ret;
+> > +               }
+> > +
+> > +       return 0;
+> > +}
+> > +
+> > +static struct platform_driver hw_prober_driver =3D {
+> > +       .probe  =3D hw_prober_probe,
+> > +       .driver =3D {
+> > +               .name =3D DRV_NAME,
+> > +       },
+> > +};
+> > +
+> > +static int __init hw_prober_driver_init(void)
+> > +{
+> > +       struct platform_device *pdev;
+> > +       int ret;
+> > +
+> > +       ret =3D platform_driver_register(&hw_prober_driver);
+> > +       if (ret)
+> > +               return ret;
+> > +
+> > +       pdev =3D platform_device_register_simple(DRV_NAME, -1, NULL, 0)=
+;
 >
-> 	/*
-> 	 * Get the root inode and dentry, but defer checking for errors.
-> 	 */
-> 	ino = autofs_new_ino(sbi);
-> 	if (!ino)
-> 		return -ENOMEM;
->
-> 	root_inode = autofs_get_inode(s, S_IFDIR | 0755);
-> 	if (root_inode) {
-> 		root_inode->i_uid = ctx->uid;
-> 		root_inode->i_gid = ctx->gid;
-> 		root_inode->i_fop = &autofs_root_operations;
-> 		root_inode->i_op = &autofs_dir_inode_operations;
-> 	}
-> 	s->s_root = d_make_root(root_inode);
-> 	if (unlikely(!s->s_root)) {
-> 		autofs_free_ino(ino);
-> 		return -ENOMEM;
-> 	}
-> 	s->s_root->d_fsdata = ino;
->
-> 	if (ctx->pgrp_set) {
-> 		sbi->oz_pgrp = find_get_pid(ctx->pgrp);
-> 		if (!sbi->oz_pgrp) {
-> 			int ret = invalf(fc, "Could not find process group %d",
-> 				     ctx->pgrp);
-> 			return ret;
-> 		}
-> 	} else {
-> 		sbi->oz_pgrp = get_task_pid(current, PIDTYPE_PGID);
-> 	}
->
-> 	if (autofs_type_trigger(sbi->type))
-> 		managed_dentry_set_managed(s->s_root);
->
-> 	pr_debug("pipe fd = %d, pgrp = %u\n",
-> 		 sbi->pipefd, pid_nr(sbi->oz_pgrp));
->
-> 	sbi->flags &= ~AUTOFS_SBI_CATATONIC;
-> 	return 0;
-> }
->
-> No gotos, no labels to keep track of...
+> This should be dependent on platforms that need it, not everyone. IOW,
+> this is where checking for "google,hana" belongs.
+
+Ack.
+
+Thanks
+ChenYu
