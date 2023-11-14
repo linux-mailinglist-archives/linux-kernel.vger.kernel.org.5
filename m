@@ -2,177 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3ED187EAB8B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70EDA7EAB8D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232361AbjKNIXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:23:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34244 "EHLO
+        id S232257AbjKNIZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:25:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231486AbjKNIXg (ORCPT
+        with ESMTP id S231161AbjKNIZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:23:36 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 653E41B2;
-        Tue, 14 Nov 2023 00:23:32 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4STzhv6WCdzMmvG;
-        Tue, 14 Nov 2023 16:18:55 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 14 Nov
- 2023 16:23:30 +0800
-Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Mina Almasry <almasrymina@google.com>
-CC:     <davem@davemloft.net>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
- <20231113130041.58124-4-linyunsheng@huawei.com>
- <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
- <20231113180554.1d1c6b1a@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
-Date:   Tue, 14 Nov 2023 16:23:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 14 Nov 2023 03:25:13 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B1241B2;
+        Tue, 14 Nov 2023 00:25:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699950310; x=1731486310;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=ZsluGkovvLZGSDBjAzFoyP9oHyQ46jeHVYC5LAYknI0=;
+  b=a0v8gkrVcIagCXjhVf0jI3q0Fw+vrzs3joGsa4+zxeN8orUV2ihaV22f
+   iGp+E7kfxUW+vz4r/ZxVpOzM+GL9XjyphibQwpUV0fQ+HBO+z37HQ0fLj
+   LNF/1Cc0bujYJh7hCzXJ3Yw4ocXF7HGc46YCNc8awKoNlzAk6R1fR8evl
+   fTbvdEEr5WpocMiRME9wuK9mC2Q/In8/KBx0MYaqEQnKLzBnDYAgAZHSS
+   axTnLNIK1ImERsBWHg8qQK6/fMsmKi4kP3STI+MTgTugGqAyl7B+cVRQg
+   dHAf5GbopeBb1EYfiQewChTxRpo0NRCyHKF8rawl4pDtdW/Vd9wVIIlvX
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389467475"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="389467475"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 00:25:10 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="758099845"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="758099845"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.39.179])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 00:25:07 -0800
+Message-ID: <df204135-f12b-4892-963c-a4c87b1dd3cb@intel.com>
+Date:   Tue, 14 Nov 2023 10:25:03 +0200
 MIME-Version: 1.0
-In-Reply-To: <20231113180554.1d1c6b1a@kernel.org>
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: SDHCI AM654 driver delaying boot time
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+To:     Francesco Dolcini <francesco@dolcini.it>,
+        Nishanth Menon <nm@ti.com>
+Cc:     =?UTF-8?Q?Jo=C3=A3o_Paulo_Silva_Gon=C3=A7alves?= 
+        <joao.goncalves@toradex.com>,
+        "faiz_abbas@ti.com" <faiz_abbas@ti.com>,
+        "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Francesco Dolcini <francesco.dolcini@toradex.com>
+References: <0e81af80de3d55e72f79af83fa5db87f5c9938f8.camel@toradex.com>
+ <20231109175159.wylup6z45h7mgxji@clump>
+ <ZU4748HsFFMx/bsT@francesco-nb.int.toradex.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <ZU4748HsFFMx/bsT@francesco-nb.int.toradex.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+cc Christian, Jason and Willy
-
-On 2023/11/14 7:05, Jakub Kicinski wrote:
-> On Mon, 13 Nov 2023 05:42:16 -0800 Mina Almasry wrote:
->> You're doing exactly what I think you're doing, and what was nacked in RFC v1.
+On 10/11/23 16:19, Francesco Dolcini wrote:
+> Hello Nishant,
+> 
+> On Thu, Nov 09, 2023 at 11:51:59AM -0600, Nishanth Menon wrote:
+>> On 18:56-20231108, João Paulo Silva Gonçalves wrote:
+>>> Hello all, 
+>>>
+>>> We are trying to minimize boot time for our AM62 devices.
+>>> Unfortunately, we have identified a delay of approximately 1.5
+>>> seconds caused by the sdhci_am654 driver. This delay is a result of
+>>> a timeout within the driver (MAX_POWER_ON_TIMEOUT) and was
+>>> introduced in commit 7ca0f16 ("mmc: sdhci_am654: Add workaround for
+>>> card detect debounce timer"). This issue arises only when there is
+>>> no SD card present in the MMC slot.  We tested the driver with a
+>>> lower timeout value and everything worked. However, as indicated in
+>>> the commit message, this timeout may be related to the way the sdhci
+>>> controller hardware IP works. Currently, the driver employs a sort
+>>> of a "busy loop" to wait for this timeout to pass delaying the boot.
+>>> Why is need to busy loop for this timeout? Is it possible to wait
+>>> for it in the backgroud? Am I am missing something here? 
 >>
->> You've converted 'struct page_pool_iov' to essentially become a
->> duplicate of 'struct page'. Then, you're casting page_pool_iov* into
->> struct page* in mp_dmabuf_devmem_alloc_pages(), then, you're calling
->> mm APIs like page_ref_*() on the page_pool_iov* because you've fooled
->> the mm stack into thinking dma-buf memory is a struct page.
-
-Yes, something like above, but I am not sure about the 'fooled the mm
-stack into thinking dma-buf memory is a struct page' part, because:
-1. We never let the 'struct page' for devmem leaking out of net stacking
-   through the 'not kmap()able and not readable' checking in your patchset.
-2. We inititiate page->_refcount for devmem to one and it remains as one,
-   we will never call page_ref_inc()/page_ref_dec()/get_page()/put_page(),
-   instead, we use page pool's pp_frag_count to do reference counting for
-   devmem page in patch 6.
-
->>
->> RFC v1 was almost exactly the same, except instead of creating a
->> duplicate definition of struct page, it just allocated 'struct page'
->> instead of allocating another struct that is identical to struct page
->> and casting it into struct page.
-
-Perhaps it is more accurate to say this is something between RFC v1 and
-RFC v3, in order to decouple 'struct page' for devmem from mm subsystem,
-but still have most unified handling for both normal memory and devmem
-in page pool and net stack.
-
-The main difference between this patchset and RFC v1:
-1. The mm subsystem is not supposed to see the 'struct page' for devmem
-   in this patchset, I guess we could say it is decoupled from the mm
-   subsystem even though we still call PageTail()/page_ref_count()/
-   page_is_pfmemalloc() on 'struct page' for devmem.
-
-The main difference between this patchset and RFC v3:
-1. It reuses the 'struct page' to have more unified handling between
-   normal page and devmem page for net stack.
-2. It relies on the page->pp_frag_count to do reference counting.
-
->>
->> I don't think what you're doing here reverses the nacks I got in RFC
->> v1. You also did not CC any dma-buf or mm people on this proposal that
->> would bring up these concerns again.
+>> I am not an mmc expert, but, Isn't this sequence part of the programmer
+>> manual in the TRM[1]?
 > 
-> Right, but the mirror struct has some appeal to a non-mm person like
-> myself. The problem IIUC is that this patch is the wrong way around, we
-> should be converting everyone who can deal with non-host mem to struct
-> page_pool_iov. Using page_address() on ppiov which hns3 seems to do in
-> this series does not compute for me.
-
-The hacking use of ppiov in hns3 is only used to do the some prototype
-testing, so ignore it.
-
+> Probably original question from Joao was not fully understood.
 > 
-> Then we can turn the existing non-iov helpers to be a thin wrapper with
-> just a cast from struct page to struct page_pool_iov, and a call of the
-> iov helper. Again - never cast the other way around.
-
-I am agreed that a cast from struct page to struct page_pool_iov is allowed,
-but a cast from struct page_pool_iov to struct page is not allowed if I am
-understanding you correctly.
-
-Before we can also completely decouple 'struct page' allocated using buddy
-allocator directly from mm subsystem in netstack, below is what I have in
-mind in order to support different memory provider.
-
-                                +--------------+
-                                |   Netstack   |
-                                |'struct page' |
-                                +--------------+
-                                        ^
-                                        |
-                                        |
-                                        v
-                              +---------------------+
-+----------------------+      |                     |      +---------------+
-|      devmem MP       |<---->|     Page pool       |----->|    **** MP    |
-|'struct page_pool_iov'|      |   'struct page'     |      |'struct **_iov'|
-+----------------------+      |                     |      +---------------+
-                              +---------------------+
-                                        ^
-                                        |
-                                        |
-                                        v
-                                +---------------+
-                                |    Driver     |
-                                | 'struct page' |
-                                +---------------+
-
-I would expect net stack, page pool, driver still see the 'struct page',
-only memory provider see the specific struct for itself, for the above,
-devmem memory provider sees the 'struct page_pool_iov'.
-
-The reason I still expect driver to see the 'struct page' is that driver
-will still need to support normal memory besides devmem.
-
+> It is clear why the code is waiting for the CD, the issue we are
+> experiencing is that the whole boot is delayed by 1.5 seconds because of
+> that piece of code for no reason.
 > 
-> Also I think this conversion can be done completely separately from the
-> mem provider changes. Just add struct page_pool_iov and start using it.
+> - SD card exists in the system, but it's not used and the card slot is empty
+> - We boot from eMMC (that has no CD pin)
+> - Boot is delayed by 1.5 second because of that piece of code
 
-I am not sure I understand what does "Just add struct page_pool_iov and
-start using it" mean yet.
+So maybe don't use that code for eMMC?
 
-> 
-> Does that make more sense?
-> 
-> .
-> 
