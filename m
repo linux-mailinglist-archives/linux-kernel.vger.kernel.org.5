@@ -2,124 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 204F97EB810
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:01:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5163D7EB815
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 22:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbjKNVB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 16:01:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55182 "EHLO
+        id S231894AbjKNVBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 16:01:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNVB0 (ORCPT
+        with ESMTP id S229569AbjKNVBv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 16:01:26 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2074.outbound.protection.outlook.com [40.107.244.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73630FB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 13:01:22 -0800 (PST)
+        Tue, 14 Nov 2023 16:01:51 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2074.outbound.protection.outlook.com [40.107.93.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D2F7A1;
+        Tue, 14 Nov 2023 13:01:46 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NWN/j3etZd+47G+ZvneYvfMBK4DNRKWfhc4VBJt16GoXdPwkPmkcBz56w0ZMWjbLKK0LjQyk9zTj3KmY8gIlO3CondyNxxtMiZ1Yvj5vZxHDS4/J7xEeQ9kJuogMgY+8SppTHotASdEB3J2T5TyhNim9dnmembg1jcgLtE2l8LqPWOrHx8jEytFc+//IB7ehnymurVRO6VErKBD0LTokrnQOPBiyp+PLczEPcvmQ6xXtOPc4PLMCI8Xury32MQ4CZqFUGLVy3rVUaEyMYdfty/6C1Oz+xgEHB27awFgKn68KZnGhTBIrtwozXRQnf1NmJiXUhkE1wy7mUdu5hZUZig==
+ b=Rn/ecIAw77oUpZ+xoORQGac7vxXJH3c2DkKMSIcbXZHvfYZVVH7ko7H+AgAzrS6dhGJHyaWYclm42Qq2kN6+V/lufBZazZVTlxadMyl7O1dtv50WDW3UdAuUckrocCAo54GDtYVxwuLF0xlmlteuq1paEsGx393PA6a23YoI8P38eeHHYn0H1RVO7aCahRXt0VY3P7rYfj7DVFZXO/+acmjxpHJhUZbMyLJMYq6Ravwn9aROzU0G8EiyCmMzK83YiQWHl1/YFuFPc5Y909cIpAf72QjOVthjFZYn2/b9WzmD0VGX20xbk9suAaLUmlTEM9SLOiTnzZYHDeRpIVJpNA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bMy3a6q41TetShNkIiUHauKfv/BFEDOhF0VSlxLQSzk=;
- b=asD5EPwTWS5t4mbuYHvgvzpA0jHDCfzPLgJ+sAUSwSdO2ZiN2Nm/d1sjeieYP/Wvv/ttxoi93i69cRCoQI5366Xxk3qW8rby84YTWKHY+YbDQk0FK88CLIyWjo63i/svpyUlfK7NJLJl3TeMvrhiVUauAaaXHT+X8jFZDcdK8sulsf2aN+qIvL2Ds/RRHj3iZe+Nj4Y/AktveI2S4Rb/tdbI4HsHPv/zoVrajvuO4i8nzF+YH28iOLc83aHwXzjIyzOnO+HWJ1+9Hvj6Ubqk2eRadrZSzDKnMSiZiG34P0ICqPJ/3KD8VhPe/RfqlsgBOFcQAUSUm1XbITNDlgBGeg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+ bh=5jbeUg+HJ8fRTpw2rXxXdvCrsrLiJlw16RhTyzKnevc=;
+ b=dxDx0ZCX64YHyqRXoFYUEn0L1gMAUvFY2DZGluh6MwXnmMukG8v9CalmyZ75yFVnwFyFs3DBIDLI+YAYAqdrsWQKtsvPHLkR+lXcj+BBF9BtEOc7k2L71W2ypDya7rid9M7NJI3Sy7lf9irKfjaP4dLDOeV4vUsotgaW/xW3YGpiHwvQo3eOgjOnItja9nZ7kXx9ndP/xXBvGDdbXjP7A/c33iZL2Ko1lYoejIIP4vlPKbp+XdzHa6+yIWJO6f52n1QaFB8IeL7ANNufE280gXpkhyQpVa1MfVXFqDegnnQYv+L184inyv1kK+EO4zoByHIpwfciA+ZlGwZyeu0YmA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=ziepe.ca smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bMy3a6q41TetShNkIiUHauKfv/BFEDOhF0VSlxLQSzk=;
- b=JbCyR7WdOyRfIqqlq458NzVyMF36L2tBRxGaYIU+FlJZJpz3jYo5AUBTfyZoWEKoKKw2JQ24kGn7v0dsmv8b1Gmx20/rFeVpeCJry9Ty/hprgKhRaIDmBf/1noaZ5VsUFdVOAxOhQF0rq3F3zXz/d4Brfs7AaWTHM5yTAreBWg4=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com (2603:10b6:8:a2::11) by
- DM4PR12MB5722.namprd12.prod.outlook.com (2603:10b6:8:5d::11) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.17; Tue, 14 Nov 2023 21:01:19 +0000
-Received: from DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466]) by DM4PR12MB6280.namprd12.prod.outlook.com
- ([fe80::5588:7117:d54e:9466%7]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 21:01:17 +0000
-Message-ID: <689f3862-09d5-448d-b418-fd52d7288106@amd.com>
-Date:   Tue, 14 Nov 2023 16:01:14 -0500
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drm/amd/display: fix NULL dereference
-Content-Language: en-US
-To:     =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org
-Cc:     airlied@gmail.com, daniel@ffwll.ch, Wayne.Lin@amd.com,
-        qingqing.zhuo@amd.com, lyude@redhat.com,
-        srinivasan.shanmugam@amd.com, aurabindo.pillai@amd.com,
-        sungjoon.kim@amd.com, wenjing.liu@amd.com, mikita.lipski@amd.com,
-        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev
-References: <20231114152751.30167-1-jose.pekkarinen@foxhound.fi>
-From:   Hamza Mahfooz <hamza.mahfooz@amd.com>
-In-Reply-To: <20231114152751.30167-1-jose.pekkarinen@foxhound.fi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: YT4PR01CA0068.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:111::28) To DM4PR12MB6280.namprd12.prod.outlook.com
- (2603:10b6:8:a2::11)
+ bh=5jbeUg+HJ8fRTpw2rXxXdvCrsrLiJlw16RhTyzKnevc=;
+ b=QWk2O0d+lSoCOHw7dhFSugtr3FG11Gds7ntHrqsqLt9RQdZu+lIgk3kqoN0cXu7ePIYju5F6kej2/B5Owt9BWGdaywSKSE8p5r3zA26paH5OfNh9XeO49vo3q3iCc6ETX8UniaNEOUxljTEYDegSFnFaUgNq2sCGbDdQP1+78Yk=
+Received: from BLAPR05CA0004.namprd05.prod.outlook.com (2603:10b6:208:36e::8)
+ by SJ0PR12MB8613.namprd12.prod.outlook.com (2603:10b6:a03:44d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
+ 2023 21:01:44 +0000
+Received: from MN1PEPF0000F0E3.namprd04.prod.outlook.com
+ (2603:10b6:208:36e:cafe::2d) by BLAPR05CA0004.outlook.office365.com
+ (2603:10b6:208:36e::8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17 via Frontend
+ Transport; Tue, 14 Nov 2023 21:01:43 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ MN1PEPF0000F0E3.mail.protection.outlook.com (10.167.242.41) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7002.14 via Frontend Transport; Tue, 14 Nov 2023 21:01:43 +0000
+Received: from driver-dev1.pensando.io (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 14 Nov
+ 2023 15:01:41 -0600
+From:   Brett Creeley <brett.creeley@amd.com>
+To:     <jgg@ziepe.ca>, <yishaih@nvidia.com>,
+        <shameerali.kolothum.thodi@huawei.com>, <kevin.tian@intel.com>,
+        <alex.williamson@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <shannon.nelson@amd.com>, <brett.creeley@amd.com>
+Subject: [PATCH vfio 0/5] pds-vfio-pci: Clean-ups and multi-region support
+Date:   Tue, 14 Nov 2023 13:01:24 -0800
+Message-ID: <20231114210129.34318-1-brett.creeley@amd.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM4PR12MB6280:EE_|DM4PR12MB5722:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1601b413-be29-416a-d365-08dbe554d899
+X-MS-TrafficTypeDiagnostic: MN1PEPF0000F0E3:EE_|SJ0PR12MB8613:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26cff021-2572-4949-12fb-08dbe554e7f6
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: HpRsVqnykqLEuNaveGV9tMyITIUBj9SxE/MAPymLDIeAmB5TSxTJaT0sVBSt2OTwso5rILcESBf7EgUAuetL9l9/cNGKApaVCrmaZCAh/aThD1uTSVdIWv2Jr9045fj7DjyK+h8A1HJCdNZnOjazEmyMabTI510kMQrkq8XlEF20ci6iX1sTRXyKV3dLZBSMYRinBEdXoUPJqOEqvF93B1WmjzGz7wCXVk6QbRn1juewxL64C8mqJdQ4obH5ROo4VhMtIY/pXNLIIepvFdiqbA2mGgTCCPM0dx2IcQ3BUaTgxNzklxTWnXLfoMsko9lxjgfvZ0wMWVWOUrdsqdBagmbEE52kqqbKiRC2rg9FdLXw8HG4HETFHFviipERbuprpQbbDAPUZBHFzOvVSzs0oU8SHYZ8HtqU4R1d3GLo9pT4Badh8rRDJ4jcRXqaZTsW5KMU7oJ8E0Pr4MR/tlupNFAa8FdTsqcNvdYQXqKW4e5TJy/Uq12WfUSXC8gFiPNtG2yAO6pbdXJEEh+2I8zXO9qXcjs2/Elg2Kak5W1t16w87/DCXG13ND1uQ5MySSuhxMZBNzjFsDKGpa4K+1TX1CEtDfAg2war7fAdTQjwVhrwiJsEdzbve0YiVh5QZDk+wvYptUqvLVEplk8hwcTZow==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB6280.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(346002)(366004)(39860400002)(396003)(376002)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(26005)(53546011)(6506007)(6666004)(2616005)(6512007)(83380400001)(44832011)(8936002)(5660300002)(4326008)(8676002)(41300700001)(2906002)(6486002)(478600001)(316002)(86362001)(66476007)(66556008)(66946007)(31696002)(36756003)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?emdFVGd3YUJaZmJ5TEF3MGRwRkc1YmY0aExRbHBZMWF4WVVyYnd2b25zMldo?=
- =?utf-8?B?b0xWeWdmL2hjVC9XZ2xDVXRHcjl1QUsrbEpEbHpzSlJrVWg1NEZOOWVJTXkx?=
- =?utf-8?B?S0VmRm81VXhJU05McGIrS203NmJqNjdGZXBHejV2K3hyL3FPcTIxRk56KzZO?=
- =?utf-8?B?NWViNFlxYjlJU1pQMTdlWVBvWHQ4ejBWYnBxS0U1citlbk9KbU9zZ1pQTWhW?=
- =?utf-8?B?MG55c1JrRWJpcVB5eEcvM3dVYTZ2d1FsWnl2bUNwME53VzNiQUw5NTQ1ZnlE?=
- =?utf-8?B?eExvSS9Hb2JiL05Ra0RNYTMramdVb3pMRVZiajZib2E0VmEwVWtpRy8reVhv?=
- =?utf-8?B?ckdKWTBuOWY3Zzk5NDRadEgvdXRKSTJFWlM3SS91MDV2OVRBY1FZcVI4WGZt?=
- =?utf-8?B?K2czR3Q1RFNUMFh0amZwZ3huL1ZTREdSRFFtY2VONFdjMkRENUdxRzN6Mk5k?=
- =?utf-8?B?YXBoQi9MRnFhOW1wTkllU0RpQUc3SlBzVkxla3hicG8rdzhML3R3QTN3d2po?=
- =?utf-8?B?eGRLM0s1Um9neUQ3WWNFekpmN3h4NW5rM3BaK3RRLzcxMGhYOUVYUmJySzIr?=
- =?utf-8?B?SERqV2J4QllvWmwwMWJpTEU3cE5ERjBwaE42Q0xWY2o5UDJoNWZBSFV6NDdW?=
- =?utf-8?B?M3lSaFR3ZmRONml3aE96M2tOL3pJZVhlWU9ncTNJWS9PVk4ybXMvSnFFMlRq?=
- =?utf-8?B?SUg4cjBFU0huL2ZHa2F6TkRxUTIwMURSVmJCQ3dzNlZXbzFnbFNETEJjY0Nx?=
- =?utf-8?B?elRZKzVWRE5mRW1pYXExSUg2V2N1K2VSUXZhUk5KMGNwM042dGN5eDV1L0Jz?=
- =?utf-8?B?MU9odjZNV0F6cjlwbjZGN1ZCKzRHT2dOSkkxQWRzbzc3eE1ndmN2NitOMWNq?=
- =?utf-8?B?cU5nemd0MHJRZklXZjllR2Y0MVNQSmVBUGQwSEhwektlNGxoeFJ2QzhCRGFZ?=
- =?utf-8?B?SGwxc2tqSXdUaWtpR2pXUnY1MnFPSDJxbk5RUlJMbHpyNWdjL2JtbmVZY2NK?=
- =?utf-8?B?WkVIWmt2TlR4M2V6RDB4SHQzMjNkTHh2bUpFSmgvaHg0SnowNmlSdnRzaFJW?=
- =?utf-8?B?bkFqd2dwb3RpRzZUWWU4VHYzMlZkRHB5WUlFMzZNSUNBWGk3QUhDSmJVbjZG?=
- =?utf-8?B?VjF0Z0wvcTNhMm1ubmxIdVA2Z1lzWDJ6Uk10ZjZtcjVHWC85NFQwc1ZEWW1W?=
- =?utf-8?B?bElpL3Z4TEYrM202d3JtaTdmTnU5RERiemc2K1l4dFVRa0JISXNhWHk3dnd2?=
- =?utf-8?B?eGFwd1pvYnZnZzF4dHg0WmtjdDFJamNGVWNZdEhrWldBNnBQbGM4TnFIbi9O?=
- =?utf-8?B?OTRRM2g2QWNxSUxoTmpDNEs4V05PZ2lDbVNJenlhR1JVLzVjRkRTcG9FWW5K?=
- =?utf-8?B?QWdrQ3JvS1RFVlNXVTV0T1BCTzltdmVmYUlEakxUS1M5RFVZSmplQVdoQkc0?=
- =?utf-8?B?U0tmTllQL3ArL0FEREdtNVNnQlppRXNvUHEyZThvQjVUZmY4bWIxclRwdnNN?=
- =?utf-8?B?LzNhU1lCSVFRQk10WFFGd0VGMEJrRkFuWm5YSzV6SzhnWnNsN1lBVkJ6dTZC?=
- =?utf-8?B?NEhjb0F1cVhySmNxMnV5eUtSMGswK1psL25CTFBzdjBRY0ZoSURnZkk1Z3gv?=
- =?utf-8?B?c21rRDNjSGVRaHpjSUxaZTRzbzBwWnpKZ1BtdUtrUmg4N3p3Q2toYWhFeU1J?=
- =?utf-8?B?OXRRNEhOM1JQa0xnbUxiOUkrcjlDb29LM2NpN1J0L1JGeFBmNXd0NkxmcWZq?=
- =?utf-8?B?a0Z6UW9VK2FDS3JMMElFSTlFbGRjeEwwR0xpd1JGWVFmOEJEZ3VQNXVOc1NL?=
- =?utf-8?B?UE1icXV3VFBtYUxBd3JBZlpHcCs2SnNiWE5jTDR6elNJbkYzQ042MGx1NFdt?=
- =?utf-8?B?STM5RnNjMEFGR052MlFUd25EdVJrUllRUnpkWlptekxRYkc4Y2xRdG1CS0Vi?=
- =?utf-8?B?YkZaK3d0V01YaEQ2QkxhTHlHM2tmckdyMGVqMnYrbE1hMUd5RkE5cUdMK3B0?=
- =?utf-8?B?YldiemNqb00vM0E2a2cxZVZZSWlLd0xGajhQd01KTTdNK1BueGd0aHJrL2VY?=
- =?utf-8?B?MVh6NitsaDNOd2U3YWFZWmZBYXhVM295dDZDMCtBTGZlaldkWGtTMjlmcDJX?=
- =?utf-8?Q?ncgwtksjb9BtFb3wWRD/uctj3?=
+X-Microsoft-Antispam-Message-Info: at87GNbC/cqeEov95IQvW3jYI9WGpDXFXmhC5qbxT6/OKKnTlZAuSrUfY1YBsXB6bnMqAE4DdTNmNrpJ8SPirt3Ps60d9A3Q51MYGgIybXhS3auefwoZZVLh7GrRnMoHuPoFsGIKGQdH++ti10iPPN4VYFBQZO13v5jNvZ9UB71XHIse6gxXqjIw/eZoMwEGcAzlKLUo0GsIAsK61rl0cVEy/tHs1XxjH4gXjphjOQo7pXNPG6UkwFu7tazfHX+UaD74MHBkYoH1flzX5hWbX0geG3bNHc8hAUlvVuBePK6qoZNUOcdVkS3w62SZy9A/YPgrMGDkPPHbAiZIeKB26d2ktnUozf9TwTC2RP8UvQm1i/X97WO0du6pTZAYZ6oEhQ2IsaTPxzJ5FEXIfXXCoAwXA15PiXY5rTq18PmxsM94hvggwWrrjspsF8gFsSErpHcah253OVdPHIXn5aebVSLLWh18OqyxffxxFfCpVegN24bMEWuBk1sAg2+VHCglgG+UhN+GGtJe9kTfEZPpDmRXxPKP9vM0O4/c9kvSUJrhg2Q4uDMd5oX+xLC3Mh35pl+DQIKagKjnSHSpLhggcU6SzX+t09SRVZU8vzzRzQp4Ll0jV78MuGlRgKS5F0T3g0v6IrZOa33Jd37JmtghKyzKCtHuT6RxmKwSbw25uJU2K4LUIgaHjfrmeXJSvy7K4n5Jdrp7YsY3ASi0KuZorSZdxiul+W4GB+DcMOjsuq1aMYrrErh6GxDFWDYuPVkKAuHGbkxhZqg71kQh7Y8GTQ==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(376002)(136003)(396003)(230922051799003)(82310400011)(64100799003)(451199024)(186009)(1800799009)(40470700004)(36840700001)(46966006)(40480700001)(40460700003)(86362001)(2906002)(1076003)(2616005)(5660300002)(4744005)(41300700001)(36756003)(44832011)(82740400003)(356005)(36860700001)(8936002)(70586007)(81166007)(4326008)(47076005)(8676002)(336012)(16526019)(26005)(83380400001)(70206006)(316002)(6666004)(54906003)(478600001)(426003)(110136005)(36900700001);DIR:OUT;SFP:1101;
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1601b413-be29-416a-d365-08dbe554d899
-X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB6280.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 21:01:17.8398
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 21:01:43.3171
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26cff021-2572-4949-12fb-08dbe554e7f6
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: uc+Sp1/+ev8TMDIRsmEmV1xr3Lz1dW8u228QxJRzblLTM8BlL3EoSPMjufZUQVYSQg/8LtWKqEYMByfrIe22Aw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5722
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: MN1PEPF0000F0E3.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB8613
 X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
@@ -130,44 +98,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 10:27, José Pekkarinen wrote:
-> The following patch will fix a minor issue where a debug message is
-> referencing an struct that has just being checked whether is null or
-> not. This has been noticed by using coccinelle, in the following output:
-> 
-> drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c:540:25-29: ERROR: aconnector is NULL but dereferenced.
-> 
-> Fixes: 5d72e247e58c9 ("drm/amd/display: switch DC over to the new DRM logging macros")
+This series contains various clean-ups, improvements, and support
+for multiple dirty tracking regions. The majority of clean-up and
+improvements are in preparation for patch 5/5, which adds support
+for multiple dirty tracking regions.
 
-You only need the first 12 characters of the hash here. I have fixed it
-for you and applied the patch in this case. But, in the future please
-test your patches against `./scripts/checkpatch.pl` before submitting
-them.
+Brett Creeley (5):
+  pds-vfio-pci: Only use a single SGL for both seq and ack
+  pds-vfio-pci: Move and rename region specific info
+  pds-vfio-pci: Pass region info to relevant functions
+  pds-vfio-pci: Move seq/ack bitmaps into region struct
+  pds-vfio-pci: Add multi-region support
 
-> Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
-> ---
-> [v1 -> v2]: Remove the debugging message, requested by Hamza
-> 
->   drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 5 +----
->   1 file changed, 1 insertion(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> index ed784cf27d39..c7a29bb737e2 100644
-> --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
-> @@ -536,11 +536,8 @@ bool dm_helpers_dp_read_dpcd(
->   
->   	struct amdgpu_dm_connector *aconnector = link->priv;
->   
-> -	if (!aconnector) {
-> -		drm_dbg_dp(aconnector->base.dev,
-> -			   "Failed to find connector for link!\n");
-> +	if (!aconnector)
->   		return false;
-> -	}
->   
->   	return drm_dp_dpcd_read(&aconnector->dm_dp_aux.aux, address, data,
->   				size) == size;
+ drivers/vfio/pci/pds/dirty.c | 311 ++++++++++++++++++++++-------------
+ drivers/vfio/pci/pds/dirty.h |  18 +-
+ 2 files changed, 207 insertions(+), 122 deletions(-)
+
 -- 
-Hamza
+2.17.1
 
