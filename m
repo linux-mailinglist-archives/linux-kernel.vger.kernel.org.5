@@ -2,220 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EA80A7EAC80
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56CAF7EACA0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:09:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232452AbjKNJIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:08:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47998 "EHLO
+        id S232568AbjKNJJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:09:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjKNJIN (ORCPT
+        with ESMTP id S232658AbjKNJIt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:08:13 -0500
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8468123
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:08:09 -0800 (PST)
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231114090806epoutp02e86636e3582551533ebadf505d08e5d9~XciSm4TH80917909179epoutp02r
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:08:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231114090806epoutp02e86636e3582551533ebadf505d08e5d9~XciSm4TH80917909179epoutp02r
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1699952886;
-        bh=Vp4dd4/NjtzTg6uPkQ0NQC0+Zz9GCW5jd8SMRqJkBew=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=p0iK73Bg09LChraEpvQnysniMfkk34PwWCTAhjY6BSOLZHTuhR9LeXS/Ey47O01Yo
-         UNtaYHcW5aY3psuge2qcv5eXm8a3SgbLx3qTctGp7wIPzns3n59lju9/CRgh7WXBe1
-         RBg3ocrQutbHBJHo6EHMZIu3X7sDXVuIs6cQ7cXo=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231114090805epcas1p2cc1703367d5b6380e8335dfb7ffab8d9~XciSNdOlv2649526495epcas1p24;
-        Tue, 14 Nov 2023 09:08:05 +0000 (GMT)
-Received: from epsmgec1p1.samsung.com (unknown [182.195.38.241]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4SV0nd1PFFz4x9Pv; Tue, 14 Nov
-        2023 09:08:05 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmgec1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        10.56.08572.5F833556; Tue, 14 Nov 2023 18:08:05 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231114090804epcas1p35fde5f79e9ad1419b3199e6cdc45bc0b~XciQzpEib2665226652epcas1p3V;
-        Tue, 14 Nov 2023 09:08:04 +0000 (GMT)
-Received: from epsmgmcp1.samsung.com (unknown [182.195.42.82]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231114090804epsmtrp14e771ce47042c22e21a099d5c3946e30~XciQzCfsO2768527685epsmtrp1C;
-        Tue, 14 Nov 2023 09:08:04 +0000 (GMT)
-X-AuditID: b6c32a33-cefff7000000217c-0d-655338f59077
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgmcp1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        B6.F4.18939.4F833556; Tue, 14 Nov 2023 18:08:04 +0900 (KST)
-Received: from U20PB1-0469.tn.corp.samsungelectronics.net (unknown
-        [10.253.238.38]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231114090803epsmtip16997e4ecf1165d871aa8f532971a0e51~XciQnWWIy1771417714epsmtip19;
-        Tue, 14 Nov 2023 09:08:03 +0000 (GMT)
-From:   Jong eon Park <jongeon.park@samsung.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongha7.kang@samsung.com, jongeon.park@samsung.com
-Subject: [PATCH net-next v2] netlink: introduce netlink poll to resolve fast
- return issue
-Date:   Tue, 14 Nov 2023 18:07:48 +0900
-Message-Id: <20231114090748.694646-1-jongeon.park@samsung.com>
-X-Mailer: git-send-email 2.25.1
+        Tue, 14 Nov 2023 04:08:49 -0500
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 017641980
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:08:42 -0800 (PST)
+Received: by mail-ed1-x530.google.com with SMTP id 4fb4d7f45d1cf-53eeb28e8e5so7087a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:08:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699952921; x=1700557721; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gBqGDewyQb1wIg3vSqoaW/U1G0Rs3GT3EROexmJYFD4=;
+        b=qFAYzuRO4Tri8pcZlpOaqz3ocjTp/5191Q0dwFaRpXSsaarU3QhWBrDoFtucUW7/RG
+         gJiEamrtVJElKv8+tIOwNoSOnnUys21RiI+s2VEfqLM2y7UubeYuZy/GTTbtaE35+Gu/
+         Apc/t8qgqJUZBFj2BbHDVip4llFeHFCnbLnWKgf51g5PC/3VUMOwPieR7f0QgobP2o0f
+         p6gczxBaE1VLdWGQlB/XW6xRCCTsYf4mtO8ASlEVhGgQ52aws4jdD6HA8RVfksC7sznC
+         s+lr1mGYbykyHaQnFkPIi+1jfmgnxZO7iVko4iWfkaDNQB1ELi66aajwoir2Trc4eH+F
+         +YxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699952921; x=1700557721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=gBqGDewyQb1wIg3vSqoaW/U1G0Rs3GT3EROexmJYFD4=;
+        b=hPclcLf2oxQFCGyIbuu4RgRDs9agfMk21n+8flr8gd9jhLSCCOtiicGQIxmR6mBd6G
+         E/SfqWcllpNgqMwMaBFKqYvXG/kCAiXplvwpEZtJan5nJD/javJhEgNRfVUKcW7qV8pk
+         o2XNWN3+ObrKmL5k2N6L/EhnjdNI8eteezGUP7Kxma1JVO4hejSiifMiPnJwjxYNX38A
+         89VT9JBy3epSfIQKNbj3u5QLk2z8hvosfqeQWecSMMTBl5W2/UKWuFK/osW/+eCUUGoh
+         yuGWqNHoVELDhOabVKf55r51ikVkXdWFyaNhMjTZ6Ysf2soJ80j/d7FASnkE2eFB0Be1
+         IHFg==
+X-Gm-Message-State: AOJu0Yy+AI6ZNDQiADZBVBlBbamzqo2NFbd2Ts9LT0IpxEQxpI5Exgwx
+        pfh7QTwISDRmX+Zt2JV4OUTpLRbx9CFiCueD5k8VQg==
+X-Google-Smtp-Source: AGHT+IEM89+rvpoYdVEvpOvoyQvbxLoJZXGfsA++k6fh+jX9l9VBf8QUHCETEiq8I3BkHbE+15Kb97BCpgmg9wRPams=
+X-Received: by 2002:a05:6402:1cc8:b0:545:279:d075 with SMTP id
+ ds8-20020a0564021cc800b005450279d075mr108521edb.1.1699952921166; Tue, 14 Nov
+ 2023 01:08:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmphk+LIzCtJLcpLzFFi42LZdljTQPerRXCqwbJZ7BZzzrewWEy/OZXZ
-        4umxR+wWD6fHWlzY1sdqcXnXHDaLYwvELL6dfsPowOGxZeVNJo8Fm0o9Nq3qZPN4v+8qm0ff
-        llWMHp83yQWwRWXbZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE
-        6Lpl5gBdo6RQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMCvQK07MLS7NS9fLSy2x
-        MjQwMDIFKkzIzvjZspGp4Jh8xYSJy5gaGKeLdzFyckgImEisWjmTuYuRi0NIYAejxL6b/5gg
-        nE+MElee3GKFc449nsgI07Lx+mEWiMRORolzbVOgqjqYJC5MXs8OUsUmoCdx8dlxdpCEiMA0
-        Rokjs1aBtTML5Elc+nWBBcQWFoiWWP/uKBuIzSKgKvHlXBPQJRwcvAJ2Ehf+CkJsk5eYeek7
-        2ExeAUGJkzOfsECMkZdo3jqbGaLmGrvEtW4jCNtF4vaHTSwQtrDEq+Nb2CFsKYmX/W1QdrbE
-        i2PHWEFWSQgUSFw9ogRh2ku8v2QBYjILaEqs36UPUawosfP3XKjb+STefe2BauSV6GgTgihR
-        k3h48i0rhC0jsXrFXTYI20PizJ8WsBuFBGIlJl6+zTyBUX4WkldmIXllFsLiBYzMqxjFUguK
-        c9NTkw0LDOFRmpyfu4kRnBy1jHcwXp7/T+8QIxMH4yFGCQ5mJRHePM2AVCHelMTKqtSi/Pii
-        0pzU4kOMpsCwncgsJZqcD0zPeSXxhiaWBiZmRiYWxpbGZkrivIoTZqcICaQnlqRmp6YWpBbB
-        9DFxcEo1MMlvfPLB/oUO5/zr5umn1F393T/KPcgq4D3XtOJs9//uzYfbHHOCgj7ni674bi6x
-        LDiFL3LS8uUaF274//wkKbN+itefS7kra15fmHj3ps3E2XtZ/70Jb3m0ZsPHpJtfZkSeYPii
-        PdHvipeTmATXpv6Fc6+vC+GeKfLKQd9TIfa6QU+CjI1d4qrklMN3Xr5tMIy4Knm76Ngub8Mv
-        78WVV+749cTPZYJ235YpG14ofmO/qDRd3dsrYgprzdNZ3h90xB+6nz21Oeo/6z/nVHvFJW9P
-        ZGduO355c+rmT2xCveWdz5/6ZK9qqVywWu73pfkP/E+UyfMwePTqNFVoabyaK2bQt+y90w8x
-        jaPXGphlK7OUWIozEg21mIuKEwHo9XzEFwQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrALMWRmVeSWpSXmKPExsWy7bCSnO4Xi+BUg+ffmS3mnG9hsZh+cyqz
-        xdNjj9gtHk6PtbiwrY/V4vKuOWwWxxaIWXw7/YbRgcNjy8qbTB4LNpV6bFrVyebxft9VNo++
-        LasYPT5vkgtgi+KySUnNySxLLdK3S+DK+NmykangmHzFhInLmBoYp4t3MXJySAiYSGy8fpil
-        i5GLQ0hgO6NEy7y5LBAJGYnrC/YB2RxAtrDE4cPFEDVtTBJvHp5iB6lhE9CTuPjsOJgtIjCD
-        UaLxkCiIzSxQJLH+yUI2EFtYIFLi/9d9jCA2i4CqxJdzTcwgM3kF7CQu/BWEWCUvMfPSd7Ax
-        vAKCEidnPmGBGCMv0bx1NvMERr5ZSFKzkKQWMDKtYhRNLSjOTc9NLjDUK07MLS7NS9dLzs/d
-        xAgOVK2gHYzL1v/VO8TIxMF4iFGCg1lJhDdPMyBViDclsbIqtSg/vqg0J7X4EKM0B4uSOK9y
-        TmeKkEB6YklqdmpqQWoRTJaJg1OqgSnwVceefO9izpLnkVbXCsq/HnP1WcKp+2jup5kfVn06
-        tO3U58RLP3aWbIxoCBQ0fi8yb+mLPw+Sjj66GTLVTE/cNUxI5vqE7PY4b55TJ/Tz1/vFr8+o
-        fOY29fKX0LVs7QdsKrjDDllf7fI7yXJIr9btF8/lR6oMi1jCApO2O+dbRsdOe3t21Xa3X1Nj
-        2+a8UDpz6MEL19TSf40JNmt8DC1XHN3DlS3qf71yq17MjsjPjW/3Jp3hWxiiJn90G6Nxb29u
-        05MlVa76dhUvxLmOvT8s1d69ged8MO/EVYpVpvISn018ry2Y0n52z7q1UjU7HeunVgUExyQe
-        3WAamH/n4NX9uZdPHbrUEn/f1/71z8NKLMUZiYZazEXFiQCO/pQXwwIAAA==
-X-CMS-MailID: 20231114090804epcas1p35fde5f79e9ad1419b3199e6cdc45bc0b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231114090804epcas1p35fde5f79e9ad1419b3199e6cdc45bc0b
-References: <CGME20231114090804epcas1p35fde5f79e9ad1419b3199e6cdc45bc0b@epcas1p3.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
+ <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com> <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
+In-Reply-To: <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
+From:   Guan-Yu Lin <guanyulin@google.com>
+Date:   Tue, 14 Nov 2023 17:08:29 +0800
+Message-ID: <CAOuDEK1935=DmToUky8eXA5KxZFu+-phMjGB=Wv7Ox+k5fDvbQ@mail.gmail.com>
+Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
+To:     linux-pm@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     gregkh@linuxfoundation.org, len.brown@intel.com, pavel@ucw.cz,
+        heikki.krogerus@linux.intel.com, mkl@pengutronix.de,
+        hadess@hadess.net, mailhol.vincent@wanadoo.fr,
+        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, pumahsu@google.com,
+        raychi@google.com, albertccwang@google.com,
+        Alan Stern <stern@rowland.harvard.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In very rare cases, there was an issue where a user's 'poll' function
-waiting for a uevent would continuously return very quickly, causing
-excessive CPU usage due to the following scenario.
+On Wed, Nov 8, 2023 at 11:56=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
+du> wrote:
+>
+> On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
+> > Thanks for the questions. Let me first introduce my motivation for
+> > proposing this feature. We can discuss the implementation details later=
+.
+> >
+> > Motivation:
+> > Currently, system PM operations always override runtime PM operations.
+> > As runtime PM reflects the power status of devices, there is a
+> > possibility that runtime PM states that a device is in use, but system
+> > PM decides to suspend it. Up to now, we have assumed that a device can'=
+t
+> > function without resources from the system, so the device should acquir=
+e
+> > a wakelock to prevent this from happening. However, what if the device
+>
+> [From the fact that you mention wakelocks, I assume that you're trying
+> to implement something for Android systems rather than Linux systems
+> in general.]
+>
 
-When sk_rmem_alloc exceeds sk_rcvbuf, netlink_broadcast_deliver returns an
-error and netlink_overrun is called. However, if netlink_overrun was
-called in a context just before a another context returns from the 'poll'
-and 'recv' is invoked, emptying the rcv queue, sk->sk_err = ENOBUF is
-written to the netlink socket belatedly and it enters the
-NETLINK_S_CONGESTED state. If the user does not check for POLLERR, they
-cannot consume and clean sk_err and repeatedly enter the situation where
-they call 'poll' again but return immediately. Moreover, in this
-situation, rcv queue is already empty and NETLINK_S_CONGESTED flag
-prevents any more incoming packets. This makes it impossible for the user
-to call 'recv'.
+Apologies, I should use "wakeup source" here.
 
-This "congested" situation is a bit ambiguous. The queue is empty, yet
-'congested' remains. This means kernel can no longer deliver uevents
-despite the empty queue, and it lead to the persistent 'congested' status.
+> > does not need the system's support to function? Or only needs limited
+> > resources (e.g., only limited power source or clock) to function? In th=
+is
+> > situation, we would like to keep the device on but allow the system to
+> > suspend. This is an example where we would like devices to follow runti=
+me
+> > PM rather than system PM.
+>
+> To put it more simply, you want a way to leave some devices in an active
+> state while the rest of the system is suspended.  It's not clear why you
+> have dragged runtime PM into the discussion (apart from the obvious fact
+> that you won't want to keep a device active if it isn't active already).
+>
+> This sounds like a major change, not something to be done with a simple
+> override.  You should discuss it with Rafael Wysocki and the linux-pm
+> mailing list before trying to implement anything.
+>
+> > Feature Supported:
+> > 1. Devices could control the priority of system PM and runtime PM durin=
+g
+> >    runtime.
+>
+> This seems like a totally unnecessary side issue.  Forget about runtime
+> PM for the time being and concentrate instead on which devices you want
+> to keep active.
+>
+> > 2. The control should be at the device level, meaning that different
+> >    devices should control their own priorities.
+> >
+> > Goal of This Patch:
+> > 1. Design a framework to support features above.
+> > 2. Apply it into usb for demonstration.
+>
+> You may find that it is easier (and less work in the long run) to design
+> the general framework and get it working than to concentrate on one
+> particular subsystem.
+>
+> Alan Stern
 
-------------CPU1 (kernel)----------  --------------CPU2 (app)--------------
-...
-a driver delivers uevent.            poll was waiting for schedule.
-a driver delivers uevent.
-a driver delivers uevent.
-...
-1) netlink_broadcast_deliver fails.
-(sk_rmem_alloc > sk_rcvbuf)
-                                      getting schedule and poll returns,
-                                      and the app calls recv.
-                                      (rcv queue is empied)
-                                      2)
+Hi Rafael,
+We'd like to implement a feature to allow system suspend with several
+devices still active. Do you have any consideration on this?
 
-netlink_overrun is called.
-(NETLINK_S_CONGESTED flag is set,
-ENOBUF is written in sk_err and,
-wake up poll.)
-                                      finishing its job and call poll.
-                                      poll returns POLLERR.
-
-                                      (the app doesn't have POLLERR handler)
-                                      it calls poll, but getting POLLERR.
-                                      it calls poll, but getting POLLERR.
-                                      it calls poll, but getting POLLERR.
-                                      ...
-
-To address this issue, I would like to introduce the following netlink
-poll.
-
-After calling the datagram_poll, netlink poll checks the
-NETLINK_S_CONGESTED status and rcv queue, and this make the user to be
-readable once more even if the user has already emptied rcv queue. This
-allows the user to be able to consume sk->sk_err value through
-netlink_recvmsg, thus the situation described above can be avoided.
-
-Co-developed-by: Dong ha Kang <dongha7.kang@samsung.com>
-Signed-off-by: Jong eon Park <jongeon.park@samsung.com>
-
----
-v2:
- - Add more detailed explanation.
----
- net/netlink/af_netlink.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/net/netlink/af_netlink.c b/net/netlink/af_netlink.c
-index eb086b06d60d..f08c10220041 100644
---- a/net/netlink/af_netlink.c
-+++ b/net/netlink/af_netlink.c
-@@ -2002,6 +2002,20 @@ static int netlink_recvmsg(struct socket *sock, struct msghdr *msg, size_t len,
- 	return err ? : copied;
- }
- 
-+static __poll_t netlink_poll(struct file *file, struct socket *sock,
-+			     poll_table *wait)
-+{
-+	__poll_t mask = datagram_poll(file, sock, wait);
-+	struct sock *sk = sock->sk;
-+	struct netlink_sock *nlk = nlk_sk(sk);
-+
-+	if (test_bit(NETLINK_S_CONGESTED, &nlk->state) &&
-+	    skb_queue_empty_lockless(&sk->sk_receive_queue))
-+		mask |= EPOLLIN | EPOLLRDNORM;
-+
-+	return mask;
-+}
-+
- static void netlink_data_ready(struct sock *sk)
- {
- 	BUG();
-@@ -2803,7 +2817,7 @@ static const struct proto_ops netlink_ops = {
- 	.socketpair =	sock_no_socketpair,
- 	.accept =	sock_no_accept,
- 	.getname =	netlink_getname,
--	.poll =		datagram_poll,
-+	.poll =		netlink_poll,
- 	.ioctl =	netlink_ioctl,
- 	.listen =	sock_no_listen,
- 	.shutdown =	sock_no_shutdown,
--- 
-2.25.1
-
+Thanks,
+Guan-Yu
