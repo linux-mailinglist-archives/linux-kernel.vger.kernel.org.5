@@ -2,73 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19A7C7EB750
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F3597EB73A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233918AbjKNUHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:07:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59650 "EHLO
+        id S233493AbjKNUG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:06:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53430 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233988AbjKNUGt (ORCPT
+        with ESMTP id S233554AbjKNUGW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:06:49 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B4F3124;
-        Tue, 14 Nov 2023 12:06:40 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 2adb3069b0e04-507ad511315so8678546e87.0;
-        Tue, 14 Nov 2023 12:06:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699992398; x=1700597198; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jzxakurDFhuOGXvo9vBEbL3SYK0M5/oRNZ8JnfWuaeI=;
-        b=kHYNKJ0NNj7JKW4mX+xqeLKIK0uKAMJWwdTRRW9u/zSLEPfPZ3SlNVW1DOfw9IC3Qy
-         2XgrRGQVSqIPUMKIwSdyvFtIoOQ4/aTezPzfTbH2dontSOF1d9q3lD33/u2dBgRBgjzJ
-         TmW+7ZBQRm/fndTmQPaQQ93WPlPDUOfifQlmV/lVZ0PH9sQQrlm1wW/riOCcbOdYjSSH
-         I4ieof5y0XkKjtAk8F7fIPPKnFGwlrgbfNVlwIQApGcJ7OIDhOv9kaPPdrcgEtPdilyB
-         AIFEsKATbygqaPnQZM/G6tbmtWGVoSU1L5tXqXhV1W/mgFQWs5LUsBhDJqpKa3hpdfgh
-         QXGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699992398; x=1700597198;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jzxakurDFhuOGXvo9vBEbL3SYK0M5/oRNZ8JnfWuaeI=;
-        b=svSw0n/WIbBKGnBPTAHKmOe3glRLieNYkCJ64SK9U2vORlanhZ9zDEqPqfuBv1AMlC
-         5yc9Zf4qPB+t1lM2ZwhIcFVEmnK4vpW1AeGzbh0U8MbR23k038W8iyf+4mZLoNAlBgnl
-         uP3zfeVqRqyL7TaCHmm88jKV8qJQkQW2YeyBdCGMva/hHGeBvi9LWEL3lrZIs32RGsfp
-         wMao6cr1t02K1wOvQhLkgnR0ZvmV2Z9VkEt+523CKnHk4nSJaLNoQaqhBUU00mMK9CAy
-         9LXPBUVhoOjEQrzYZQlPpyuuZUcWIu9T4dadoH5a+yt5yyxU7qOB/sFtb6+Fq5gZy6xp
-         4PzQ==
-X-Gm-Message-State: AOJu0YxmoJILJPz75mGrR3lV2njWi8MdJmrhM1milpRauo6i4p0y2/Y6
-        E1yMUdx9AuRyhZ8SIgsIJMs=
-X-Google-Smtp-Source: AGHT+IHv+HkF9SxXDR9kYtk+0rkvDn+zNvMDjKRgzljxGkAIYywFP2s9pZ8mqEjVLz2sFBjn98aOAA==
-X-Received: by 2002:a19:5017:0:b0:502:ff3b:766f with SMTP id e23-20020a195017000000b00502ff3b766fmr6978545lfb.6.1699992398234;
-        Tue, 14 Nov 2023 12:06:38 -0800 (PST)
-Received: from spiri.. ([5.2.194.157])
-        by smtp.gmail.com with ESMTPSA id me19-20020a170906aed300b009ae587ce133sm5984429ejb.188.2023.11.14.12.06.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 12:06:37 -0800 (PST)
-From:   Alisa-Dariana Roman <alisadariana@gmail.com>
-X-Google-Original-From: Alisa-Dariana Roman <alisa.roman@analog.com>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Alisa-Dariana Roman <alisa.roman@analog.com>
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Michael Hennerich <Michael.Hennerich@analog.com>,
-        Alexandru Tachici <alexandru.tachici@analog.com>
-Subject: [PATCH v2 4/4] iio: adc: ad7192: Add AD7194 support
-Date:   Tue, 14 Nov 2023 22:05:33 +0200
-Message-Id: <20231114200533.137995-5-alisa.roman@analog.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231114200533.137995-1-alisa.roman@analog.com>
-References: <20231114200533.137995-1-alisa.roman@analog.com>
+        Tue, 14 Nov 2023 15:06:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC7DC120
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:06:17 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BBC6AC433C8;
+        Tue, 14 Nov 2023 20:06:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699992377;
+        bh=MfWlzzX7L8lz94mh8rv9WnWcKbtpvpSrDtFPJuz1FkY=;
+        h=From:Subject:Date:To:Cc:From;
+        b=Hn2kwbk3nSu+0e4wDUNVRZDYSQr6g5KPAu0StmRkF/ho8ubAx7AiDvl9lIl9HSnd7
+         KauF2TvGOydl4drevyqTvhy7o/31se2eUoWYhScFiMFDS0uE2N1qFfJHxLgNxMEk8g
+         M5pWO26n2uvPWsZA0aEi0Ri7oMjb3dnrMXpJ2F9KnTPW0IB+ypGQ7ZkK8CzuKaCNTT
+         TkKDoAs4F2oFXyNZCTsPzgZiZv4Bf1yyAaYlxZUAJzctjNwlovMdYIeaMJU2f6d/xG
+         alU2SE+4mXfc+8M7LdartfnITPOJGtSmEQl5q6SVoEmIbtX3s+2U5DSaZSj/sLnL3C
+         PML75dQMwgM1w==
+From:   Mark Brown <broonie@kernel.org>
+Subject: [PATCH RFC RFT v2 0/5] fork: Support shadow stacks in clone3()
+Date:   Tue, 14 Nov 2023 20:05:53 +0000
+Message-Id: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACHTU2UC/22NzQ6CMBCEX4Xs2TX9Efw5mZjwAMSb4QDsIg2kN
+ S1BDeHdrXj1NJnJzDczBPaGA5ySGTxPJhhno1GbBJqusndGQ9GDEkpLIY/YDM6yxtBV5J4Yxqr
+ pUaa0E6TqNtUZxOXDc2teK/UGRX75ZkV+hTJqZ8Lo/Hs9nOTa+LGV/sueJAqkQ7YnUccbEueev
+ eVh6/wdymVZPuOoiCTDAAAA
+To:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Deepak Gupta <debug@rivosinc.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        bsegall@google.com, linux-kselftest@vger.kernel.org,
+        linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        David Hildenbrand <david@redhat.com>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4195; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=MfWlzzX7L8lz94mh8rv9WnWcKbtpvpSrDtFPJuz1FkY=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU9Ms07rh6zd2XIxqOwQmLb7yl+tzUKaiLOM8+zVg
+ H8bjGLOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVPTLAAKCRAk1otyXVSH0BIWB/
+ 9w04C2iBH4mhSydpLa4tmVedxFN519c2gnTs4utY3o6cWf+gX6HHShvAUkMGrQPuyi1ClPakmiTEui
+ keXqyemNKH7NUKPKb3jGayT9Z+f/KL/fdEvIXajnxIHLfn68NHWRDoJ8MrI3R6wzAufQuRaauaD4DB
+ rVRKjPZ/6BAccI1Ht72CMK9uNZYHCZetQyBCTWddHIPx9hOPk5TOY+Y/sE15gMxO0OtdWtJUyMvyXO
+ 9FI7h7LglUacOdP1AVMtm8wKKdpjLotAqAFGbU6bAowIbU8NffnGoOH8rbPps7rGedKbiKHolocAxi
+ 5bf/RXLkR0ucr5VTMMk1FMY9PvmeFm
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -77,280 +86,86 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Unlike the other AD719Xs, AD7194 has configurable differential
-channels. The default configuration for these channels can be changed
-from the devicetree.
+The kernel has recently added support for shadow stacks, currently
+x86 only using their CET feature but both arm64 and RISC-V have
+equivalent features (GCS and Zisslpcfi respectively), I am actively
+working on GCS[1].  With shadow stacks the hardware maintains an
+additional stack containing only the return addresses for branch
+instructions which is not generally writeable by userspace and ensures
+that any returns are to the recorded addresses.  This provides some
+protection against ROP attacks and making it easier to collect call
+stacks.  These shadow stacks are allocated in the address space of the
+userspace process.
 
-The default configuration is hardcoded in order to have a stable number
-of channels.
+Our API for shadow stacks does not currently offer userspace any
+flexiblity for managing the allocation of shadow stacks for newly
+created threads, instead the kernel allocates a new shadow stack with
+the same size as the normal stack whenever a thread is created with the
+feature enabled.  The stacks allocated in this way are freed by the
+kernel when the thread exits or shadow stacks are disabled for the
+thread.  This lack of flexibility and control isn't ideal, in the vast
+majority of cases the shadow stack will be over allocated and the
+implicit allocation and deallocation is not consistent with other
+interfaces.  As far as I can tell the interface is done in this manner
+mainly because the shadow stack patches were in development since before
+clone3() was implemented.
 
-Also modify config AD7192 description for better scaling.
+Since clone3() is readily extensible let's add support for specifying a
+shadow stack when creating a new thread or process in a similar manner
+to how the normal stack is specified, keeping the current implicit
+allocation behaviour if one is not specified either with clone3() or
+through the use of clone().  Unlike normal stacks only the shadow stack
+size is specified, similar issues to those that lead to the creation of
+map_shadow_stack() apply.
 
-Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+Please note that the x86 portions of this code are build tested only, I
+don't appear to have a system that can run CET avaible to me, I have
+done testing with an integration into my pending work for GCS.  There is
+some possibility that the arm64 implementation may require the use of
+clone3() and explicit userspace allocation of shadow stacks, this is
+still under discussion.
+
+A new architecture feature Kconfig option for shadow stacks is added as
+here, this was suggested as part of the review comments for the arm64
+GCS series and since we need to detect if shadow stacks are supported it
+seemed sensible to roll it in here.
+
+[1] https://lore.kernel.org/r/20231009-arm64-gcs-v6-0-78e55deaa4dd@kernel.org/
+
+Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- drivers/iio/adc/Kconfig  |  11 ++-
- drivers/iio/adc/ad7192.c | 144 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 150 insertions(+), 5 deletions(-)
+Changes in v2:
+- Rebase onto v6.7-rc1.
+- Remove ability to provide preallocated shadow stack, just specify the
+  desired size.
+- Link to v1: https://lore.kernel.org/r/20231023-clone3-shadow-stack-v1-0-d867d0b5d4d0@kernel.org
 
-diff --git a/drivers/iio/adc/Kconfig b/drivers/iio/adc/Kconfig
-index 1e2b7a2c67c6..05344054b88e 100644
---- a/drivers/iio/adc/Kconfig
-+++ b/drivers/iio/adc/Kconfig
-@@ -55,12 +55,17 @@ config AD7124
- 	  called ad7124.
- 
- config AD7192
--	tristate "Analog Devices AD7190 AD7192 AD7193 AD7195 ADC driver"
-+	tristate "Analog Devices AD7192 and similar ADC driver"
- 	depends on SPI
- 	select AD_SIGMA_DELTA
- 	help
--	  Say yes here to build support for Analog Devices AD7190,
--	  AD7192, AD7193 or AD7195 SPI analog to digital converters (ADC).
-+	  Say yes here to build support for Analog Devices SPI analog to digital
-+	  converters (ADC):
-+	  - AD7190
-+	  - AD7192
-+	  - AD7193
-+	  - AD7194
-+	  - AD7195
- 	  If unsure, say N (but it's safe to say "Y").
- 
- 	  To compile this driver as a module, choose M here: the
-diff --git a/drivers/iio/adc/ad7192.c b/drivers/iio/adc/ad7192.c
-index 48e0357564af..0532678ad665 100644
---- a/drivers/iio/adc/ad7192.c
-+++ b/drivers/iio/adc/ad7192.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * AD7190 AD7192 AD7193 AD7195 SPI ADC driver
-+ * AD7190 AD7192 AD7193 AD7194 AD7195 SPI ADC driver
-  *
-  * Copyright 2011-2015 Analog Devices Inc.
-  */
-@@ -125,10 +125,39 @@
- #define AD7193_CH_AIN8		0x480 /* AIN7 - AINCOM */
- #define AD7193_CH_AINCOM	0x600 /* AINCOM - AINCOM */
- 
-+#define AD7194_CH_TEMP		0x100 /* Temp sensor */
-+#define AD7194_CH_AIN1		0x400 /* AIN1 - AINCOM */
-+#define AD7194_CH_AIN2		0x410 /* AIN2 - AINCOM */
-+#define AD7194_CH_AIN3		0x420 /* AIN3 - AINCOM */
-+#define AD7194_CH_AIN4		0x430 /* AIN4 - AINCOM */
-+#define AD7194_CH_AIN5		0x440 /* AIN5 - AINCOM */
-+#define AD7194_CH_AIN6		0x450 /* AIN6 - AINCOM */
-+#define AD7194_CH_AIN7		0x460 /* AIN7 - AINCOM */
-+#define AD7194_CH_AIN8		0x470 /* AIN8 - AINCOM */
-+#define AD7194_CH_AIN9		0x480 /* AIN9 - AINCOM */
-+#define AD7194_CH_AIN10		0x490 /* AIN10 - AINCOM */
-+#define AD7194_CH_AIN11		0x4A0 /* AIN11 - AINCOM */
-+#define AD7194_CH_AIN12		0x4B0 /* AIN12 - AINCOM */
-+#define AD7194_CH_AIN13		0x4C0 /* AIN13 - AINCOM */
-+#define AD7194_CH_AIN14		0x4D0 /* AIN14 - AINCOM */
-+#define AD7194_CH_AIN15		0x4E0 /* AIN15 - AINCOM */
-+#define AD7194_CH_AIN16		0x4F0 /* AIN16 - AINCOM */
-+#define AD7194_CH_POS_MASK	GENMASK(7, 4)
-+#define AD7194_CH_POS(x)	FIELD_PREP(AD7194_CH_POS_MASK, (x))
-+#define AD7194_CH_NEG_MASK	GENMASK(3, 0)
-+#define AD7194_CH_NEG(x)	FIELD_PREP(AD7194_CH_NEG_MASK, (x))
-+#define AD7194_CH_DIFF(pos, neg) \
-+		(AD7194_CH_POS(pos) | AD7194_CH_NEG(neg))
-+#define AD7194_CH_DIFF_START	0
-+#define AD7194_CH_DIFF_NR	8
-+#define AD7194_CH_AIN_START	1
-+#define AD7194_CH_AIN_NR	16
-+
- /* ID Register Bit Designations (AD7192_REG_ID) */
- #define CHIPID_AD7190		0x4
- #define CHIPID_AD7192		0x0
- #define CHIPID_AD7193		0x2
-+#define CHIPID_AD7194		0x3
- #define CHIPID_AD7195		0x6
- #define AD7192_ID_MASK		GENMASK(3, 0)
- 
-@@ -166,6 +195,7 @@ enum {
- 	ID_AD7190,
- 	ID_AD7192,
- 	ID_AD7193,
-+	ID_AD7194,
- 	ID_AD7195,
- };
- 
-@@ -644,6 +674,15 @@ static const struct attribute_group ad7192_attribute_group = {
- 	.attrs = ad7192_attributes,
- };
- 
-+static struct attribute *ad7194_attributes[] = {
-+	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group ad7194_attribute_group = {
-+	.attrs = ad7194_attributes,
-+};
-+
- static struct attribute *ad7195_attributes[] = {
- 	&iio_dev_attr_filter_low_pass_3db_frequency_available.dev_attr.attr,
- 	&iio_dev_attr_bridge_switch_en.dev_attr.attr,
-@@ -928,6 +967,16 @@ static const struct iio_info ad7192_info = {
- 	.update_scan_mode = ad7192_update_scan_mode,
- };
- 
-+static const struct iio_info ad7194_info = {
-+	.read_raw = ad7192_read_raw,
-+	.write_raw = ad7192_write_raw,
-+	.write_raw_get_fmt = ad7192_write_raw_get_fmt,
-+	.read_avail = ad7192_read_avail,
-+	.attrs = &ad7194_attribute_group,
-+	.validate_trigger = ad_sd_validate_trigger,
-+	.update_scan_mode = ad7192_update_scan_mode,
-+};
-+
- static const struct iio_info ad7195_info = {
- 	.read_raw = ad7192_read_raw,
- 	.write_raw = ad7192_write_raw,
-@@ -1017,6 +1066,35 @@ static const struct iio_chan_spec ad7193_channels[] = {
- 	IIO_CHAN_SOFT_TIMESTAMP(14),
- };
- 
-+static struct iio_chan_spec ad7194_channels[] = {
-+	AD7193_DIFF_CHANNEL(0, 1, 2, 0x001),
-+	AD7193_DIFF_CHANNEL(1, 3, 4, 0x023),
-+	AD7193_DIFF_CHANNEL(2, 5, 6, 0x045),
-+	AD7193_DIFF_CHANNEL(3, 7, 8, 0x067),
-+	AD7193_DIFF_CHANNEL(4, 9, 10, 0x089),
-+	AD7193_DIFF_CHANNEL(5, 11, 12, 0x0AB),
-+	AD7193_DIFF_CHANNEL(6, 13, 14, 0x0CD),
-+	AD7193_DIFF_CHANNEL(7, 15, 16, 0x0EF),
-+	AD719x_TEMP_CHANNEL(8, AD7194_CH_TEMP),
-+	AD7193_CHANNEL(9, 1, AD7194_CH_AIN1),
-+	AD7193_CHANNEL(10, 2, AD7194_CH_AIN2),
-+	AD7193_CHANNEL(11, 3, AD7194_CH_AIN3),
-+	AD7193_CHANNEL(12, 4, AD7194_CH_AIN4),
-+	AD7193_CHANNEL(13, 5, AD7194_CH_AIN5),
-+	AD7193_CHANNEL(14, 6, AD7194_CH_AIN6),
-+	AD7193_CHANNEL(15, 7, AD7194_CH_AIN7),
-+	AD7193_CHANNEL(16, 8, AD7194_CH_AIN8),
-+	AD7193_CHANNEL(17, 9, AD7194_CH_AIN9),
-+	AD7193_CHANNEL(18, 10, AD7194_CH_AIN10),
-+	AD7193_CHANNEL(19, 11, AD7194_CH_AIN11),
-+	AD7193_CHANNEL(20, 12, AD7194_CH_AIN12),
-+	AD7193_CHANNEL(21, 13, AD7194_CH_AIN13),
-+	AD7193_CHANNEL(22, 14, AD7194_CH_AIN14),
-+	AD7193_CHANNEL(23, 15, AD7194_CH_AIN15),
-+	AD7193_CHANNEL(24, 16, AD7194_CH_AIN16),
-+	IIO_CHAN_SOFT_TIMESTAMP(25),
-+};
-+
- static const struct ad7192_chip_info ad7192_chip_info_tbl[] = {
- 	[ID_AD7190] = {
- 		.chip_id = CHIPID_AD7190,
-@@ -1039,6 +1117,13 @@ static const struct ad7192_chip_info ad7192_chip_info_tbl[] = {
- 		.num_channels = ARRAY_SIZE(ad7193_channels),
- 		.info = &ad7192_info,
- 	},
-+	[ID_AD7194] = {
-+		.chip_id = CHIPID_AD7194,
-+		.name = "ad7194",
-+		.channels = ad7194_channels,
-+		.num_channels = ARRAY_SIZE(ad7194_channels),
-+		.info = &ad7194_info,
-+	},
- 	[ID_AD7195] = {
- 		.chip_id = CHIPID_AD7195,
- 		.name = "ad7195",
-@@ -1053,6 +1138,53 @@ static void ad7192_reg_disable(void *reg)
- 	regulator_disable(reg);
- }
- 
-+static int ad7192_parse_channel(struct iio_dev *indio_dev,
-+				struct fwnode_handle *child)
-+{
-+	u32 reg, ain[2];
-+	int ret;
-+
-+	ret = fwnode_property_read_u32(child, "reg", &reg);
-+	if (ret)
-+		return ret;
-+
-+	if (!in_range(reg, AD7194_CH_DIFF_START, AD7194_CH_DIFF_NR))
-+		return -EINVAL;
-+
-+	ret = fwnode_property_read_u32_array(child, "diff-channels", ain,
-+					     ARRAY_SIZE(ain));
-+	if (ret)
-+		return ret;
-+
-+	if (!in_range(ain[0], AD7194_CH_AIN_START, AD7194_CH_AIN_NR) ||
-+	    !in_range(ain[1], AD7194_CH_AIN_START, AD7194_CH_AIN_NR))
-+		return -EINVAL;
-+
-+	ad7194_channels[reg].channel = ain[0];
-+	ad7194_channels[reg].channel2 = ain[1];
-+	ad7194_channels[reg].address = AD7194_CH_DIFF(ain[0], ain[1]);
-+
-+	return 0;
-+}
-+
-+static int ad7192_parse_channels(struct iio_dev *indio_dev)
-+{
-+	struct ad7192_state *st = iio_priv(indio_dev);
-+	struct device *dev = &st->sd.spi->dev;
-+	struct fwnode_handle *child;
-+	int ret;
-+
-+	device_for_each_child_node(dev, child) {
-+		ret = ad7192_parse_channel(indio_dev, child);
-+		if (ret) {
-+			fwnode_handle_put(child);
-+			return ret;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int ad7192_probe(struct spi_device *spi)
- {
- 	struct ad7192_state *st;
-@@ -1150,6 +1282,12 @@ static int ad7192_probe(struct spi_device *spi)
- 		}
- 	}
- 
-+	if (st->chip_info->chip_id == CHIPID_AD7194) {
-+		ret = ad7192_parse_channels(indio_dev);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	ret = ad7192_setup(indio_dev);
- 	if (ret)
- 		return ret;
-@@ -1161,6 +1299,7 @@ static const struct of_device_id ad7192_of_match[] = {
- 	{ .compatible = "adi,ad7190", .data = &ad7192_chip_info_tbl[ID_AD7190] },
- 	{ .compatible = "adi,ad7192", .data = &ad7192_chip_info_tbl[ID_AD7192] },
- 	{ .compatible = "adi,ad7193", .data = &ad7192_chip_info_tbl[ID_AD7193] },
-+	{ .compatible = "adi,ad7194", .data = &ad7192_chip_info_tbl[ID_AD7194] },
- 	{ .compatible = "adi,ad7195", .data = &ad7192_chip_info_tbl[ID_AD7195] },
- 	{}
- };
-@@ -1170,6 +1309,7 @@ static const struct spi_device_id ad7192_ids[] = {
- 	{ "ad7190", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7190] },
- 	{ "ad7192", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7192] },
- 	{ "ad7193", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7193] },
-+	{ "ad7194", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7194] },
- 	{ "ad7195", (kernel_ulong_t)&ad7192_chip_info_tbl[ID_AD7195] },
- 	{}
- };
-@@ -1186,6 +1326,6 @@ static struct spi_driver ad7192_driver = {
- module_spi_driver(ad7192_driver);
- 
- MODULE_AUTHOR("Michael Hennerich <michael.hennerich@analog.com>");
--MODULE_DESCRIPTION("Analog Devices AD7190, AD7192, AD7193, AD7195 ADC");
-+MODULE_DESCRIPTION("Analog Devices AD7190, AD7192, AD7193, AD7194, AD7195 ADC");
- MODULE_LICENSE("GPL v2");
- MODULE_IMPORT_NS(IIO_AD_SIGMA_DELTA);
+---
+Mark Brown (5):
+      mm: Introduce ARCH_HAS_USER_SHADOW_STACK
+      fork: Add shadow stack support to clone3()
+      selftests/clone3: Factor more of main loop into test_clone3()
+      selftests/clone3: Allow tests to flag if -E2BIG is a valid error code
+      kselftest/clone3: Test shadow stack support
+
+ arch/x86/Kconfig                                  |   1 +
+ arch/x86/include/asm/shstk.h                      |  11 +-
+ arch/x86/kernel/process.c                         |   2 +-
+ arch/x86/kernel/shstk.c                           |  30 ++++-
+ fs/proc/task_mmu.c                                |   2 +-
+ include/linux/mm.h                                |   2 +-
+ include/linux/sched/task.h                        |   2 +
+ include/uapi/linux/sched.h                        |   4 +
+ kernel/fork.c                                     |  24 +++-
+ mm/Kconfig                                        |   6 +
+ tools/testing/selftests/clone3/clone3.c           | 151 ++++++++++++++++------
+ tools/testing/selftests/clone3/clone3_selftests.h |   7 +
+ 12 files changed, 188 insertions(+), 54 deletions(-)
+---
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231019-clone3-shadow-stack-15d40d2bf536
+
+Best regards,
 -- 
-2.34.1
+Mark Brown <broonie@kernel.org>
 
