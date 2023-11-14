@@ -2,121 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4B9B7EB3EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:40:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 483A37EB3F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:41:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233660AbjKNPke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:40:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50724 "EHLO
+        id S233681AbjKNPlQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233521AbjKNPkc (ORCPT
+        with ESMTP id S230200AbjKNPlL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:40:32 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B16D127;
-        Tue, 14 Nov 2023 07:40:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=jt5Y5DJTQLPOXJN8Beqfd+8guMZO4ilEpveznFWpyRQ=; b=ABAK7Zk/jGV8iInT3x/fc7EiHU
-        VjcCGnxxvobpPJYs89YyUFYS07sQHPDSFrQ4xUFr1czrRIWEY/k5SO/y4FswegOpPbLDbeULIozhx
-        6sNoTazWUS7MI2khNxdAfsM9ViiWOjwysrWKrQlXO6zIf6UJpgDWnmXpAv2vLTPcTZD5B3+SJIN7G
-        exkjy+iUjf6iEeOqw41ZhJdWybX8wcMYLOtj8QEZkwuB6Uym1BDv97zajtq6mBhsLuJK1kYUg3etZ
-        flnNcHRQ869XzWvfhzy5IR2XYF29TfIVHC46c4SFkIbIdj6toQ8o1n2D+hxDhXcgG8Av+NF2uS+or
-        O+VKNhBg==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r2vWT-002X5L-2Q;
-        Tue, 14 Nov 2023 15:40:17 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1EE74300581; Tue, 14 Nov 2023 16:40:17 +0100 (CET)
-Date:   Tue, 14 Nov 2023 16:40:17 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Xi Ruoyao <xry111@xry111.site>
-Cc:     libc-alpha@sourceware.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-mm@kvack.org,
-        linux-arch@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Subject: Re: Several tst-robust* tests time out with recent Linux kernel
-Message-ID: <20231114154017.GI4779@noisy.programming.kicks-ass.net>
-References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
- <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
- <20231114153100.GY8262@noisy.programming.kicks-ass.net>
+        Tue, 14 Nov 2023 10:41:11 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77414126
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:41:07 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45d9b477f7bso2549724137.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:41:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699976466; x=1700581266; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qkzCZG3bXMVbyNxn4+yNeclmA7RVlYHI+byE/zFEyOY=;
+        b=GC/duJEuwd6+Q1YIk9AKaUtsD5NPxSpYhTJb/URdXbupnUaJlBVEN1yt4s3Zw6rGy0
+         iKPHxDYEdT9io+U6Xs2qEOwE2xzqZMZYgvpiiUefNJ8oUoLtyT1wGdFFufHWwXYRewAi
+         fKoyjdjLlXyF5UCnKTcrwxbh72oaaGZHzsmZzo+C2/u+FaRVQVMVUvX77tCn6KSv/+tS
+         f3+oi1usX3ZgS/43xrl+miLbbxEybNrThnJMtixscRu3C+VDMW52DWBntjJF/HmjngtK
+         5jaMrkZ/TZBlZpQ2USNDu+wzwFUPlcClK8lvo5wxQlKcWVbm4nj7HvfN2UNRIyJ0whO/
+         zAAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699976466; x=1700581266;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=qkzCZG3bXMVbyNxn4+yNeclmA7RVlYHI+byE/zFEyOY=;
+        b=nhHz9bCiXzFnwVXytCkmo8I4xxpnAMIzo1Oiyw4WiP9j4H2dfRwunhAJn5cHw2s9qk
+         xL3eDD2hjZRMxaJGkRm9Yv/sKXeSqHaIuw4ZwUGdAB/IrGXRDh8QfEL4P4t9D0xmBYvK
+         QYzJeJ+BWvqnDHmWvKnfL6Az3kKz1ywlLeOQA1g974tUtkUMmpXuGnekFMvm8PDcnQdT
+         255cmBtZ837HfxbQWBdO01JKGJr7JM/V+tGaVZN6PVHy1rL431YCvzz6AzlxWcQzqCZT
+         b6t8aHYKtHVZeAXhNpK26Z63w1DuwWYa04NEgtIkfb5RX2hrA+7LeL1EF7jWB6X8yKlq
+         WMIA==
+X-Gm-Message-State: AOJu0YyWdNLI8GHVS5Km8DpToAGkvkS47S31h0uPfG3RTpHykw53Q5vL
+        704klnqp29HHEgr3vcEguDQnWQyDJe2Fydm0cW4=
+X-Google-Smtp-Source: AGHT+IFuFIQZ+mZpvOtn+ca8j7Tl2Ztiooh5QfpblKcX1u+E5DCeY6eg1Yy8U3e3pcin6HZ1pIKzgO91iQzbvTtZLxs=
+X-Received: by 2002:a67:b70f:0:b0:45f:80ff:e111 with SMTP id
+ h15-20020a67b70f000000b0045f80ffe111mr8422093vsf.22.1699976466471; Tue, 14
+ Nov 2023 07:41:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231114153100.GY8262@noisy.programming.kicks-ass.net>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231103131011.1316396-1-lb@semihalf.com> <20231103131011.1316396-12-lb@semihalf.com>
+ <CAJfuBxzhz7pBYkfqfPomH4PUzqLPX1nxsev4yrQ2P6m5hyMT+Q@mail.gmail.com>
+ <CAK8ByeJ1fYSVaVQz3tERzj_5QNAN4Ggx850pKcAG3vhsoWnS+w@mail.gmail.com>
+ <CAJfuBxyu3VqakFNr4mW0h4QiPVSf-7HSPXobGO2_qC-H8yLgcw@mail.gmail.com>
+ <CAK8ByeL1WwdVKSMtGfbHZLfYm73ZwjiEbtNZJiWur-spMc74Zg@mail.gmail.com>
+ <CAJfuBxz1=9o06Rj_mX-2aZXhCSF7rKxyusayPiy4RuJZ7qKbQw@mail.gmail.com>
+ <CAK8ByeJH8vKUxeM21ME0vYjKmC_Z=P8XsKiB42k95iZ09bJXJg@mail.gmail.com>
+ <CAJfuBxxw6DbmGG-UdiZeUr9680tJVEVcw-czPL+jt-88YUMgbw@mail.gmail.com> <CAK8ByeL4YSCBPPGSeNAPAKtR2=BEZxBjpNE3KeX8TaMmJrficQ@mail.gmail.com>
+In-Reply-To: <CAK8ByeL4YSCBPPGSeNAPAKtR2=BEZxBjpNE3KeX8TaMmJrficQ@mail.gmail.com>
+From:   jim.cromie@gmail.com
+Date:   Tue, 14 Nov 2023 08:40:32 -0700
+Message-ID: <CAJfuBxwA_1kkjeqDRCDKvJ+PesUgYcVwdQeL-ePM7+ZFLfnO0w@mail.gmail.com>
+Subject: Re: [PATCH v1 11/12] dyndbg: write debug logs to trace instance
+To:     =?UTF-8?Q?=C5=81ukasz_Bartosik?= <lb@semihalf.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Jason Baron <jbaron@akamai.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kees Cook <keescook@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Guenter Roeck <groeck@google.com>,
+        Yaniv Tzoreff <yanivt@google.com>,
+        Benson Leung <bleung@google.com>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Pekka Paalanen <ppaalanen@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        upstream@semihalf.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 04:31:00PM +0100, Peter Zijlstra wrote:
-> On Tue, Nov 14, 2023 at 05:46:43PM +0800, Xi Ruoyao wrote:
-> > On Tue, 2023-11-14 at 02:33 +0800, Xi Ruoyao wrote:
-> > > Hi,
-> > > 
-> > > With Linux 6.7.0-rc1, several tst-robust* tests time out on x86_64:
-> > > 
-> > > FAIL: nptl/tst-robust1
-> > > FAIL: nptl/tst-robust3
-> > > FAIL: nptl/tst-robust4
-> > > FAIL: nptl/tst-robust6
-> > > FAIL: nptl/tst-robust7
-> > > FAIL: nptl/tst-robust9
-> > > 
-> > > This does not happen with Linux 6.6.0.  Do you have some clue about
-> > > it?
-> > 
-> > Bisected to the kernel commit:
-> > 
-> > commit 5694289ce183bc3336407a78c8c722a0b9208f9b (HEAD)
-> > Author: peterz@infradead.org <peterz@infradead.org>
-> > Date:   Thu Sep 21 12:45:08 2023 +0200
-> > 
-> >     futex: Flag conversion
-> >     
-> >     Futex has 3 sets of flags:
-> >     
-> >      - legacy futex op bits
-> >      - futex2 flags
-> >      - internal flags
-> >     
-> >     Add a few helpers to convert from the API flags into the internal
-> >     flags.
-> >     
-> >     Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> >     Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-> >     Reviewed-by: Andr<C3><A9> Almeida <andrealmeid@igalia.com>
-> >     Link: https://lore.kernel.org/r/20230921105247.722140574@noisy.programming.kicks-ass.net
-> 
-> I can confirm. I'm also going crazy trying to figure out how this
-> happens.
-> 
-> The below is sufficient to make it unhappy...
-> 
-> /me most puzzled
-> 
-> ---
-> diff --git a/kernel/futex/futex.h b/kernel/futex/futex.h
-> index b5379c0e6d6d..1a1f9301251f 100644
-> --- a/kernel/futex/futex.h
-> +++ b/kernel/futex/futex.h
-> @@ -17,7 +17,7 @@
->   * restarts.
->   */
->  #ifdef CONFIG_MMU
-> -# define FLAGS_SHARED		0x01
-> +# define FLAGS_SHARED		0x10
->  #else
->  /*
->   * NOMMU does not have per process address space. Let the compiler optimize
+On Tue, Nov 14, 2023 at 12:45=E2=80=AFAM =C5=81ukasz Bartosik <lb@semihalf.=
+com> wrote:
+>
+> wt., 14 lis 2023 o 02:08 <jim.cromie@gmail.com> napisa=C5=82(a):
+> >
 
-Just the above seems sufficient.
+> > > > > Also I think we need a reserved keyword for writing debug logs to
+> > > > > trace events - maybe "event" keyword ?
+> > > >
+> > > > do you mean "event" as a selector, like module, function, class, et=
+c ?
+> > > > if so, what are the values ?
+> > > > any event under  /sys/kernel/debug/tracing/events/ ?
+> > > >
+> > > > how does this get used ?
+> > > >
+> > >
+> > > I meant that we need to reserve name/keyword to enable writing debug
+> > > logs to trace events (prdbg and devdbg), for example
+> > > echo module usbcore +T:event > /proc/dynamic_debug/control
+> > >
+> > > Or do you anticipate other way to do it ?
+> >
+> > way back, when I had even fewer clues,
+> > I sent patches to call trace-printk when +T was set.
+> > Steve didnt like it, I think cuz it could flood the tracebuf.
+> >
+> > Thats why I added the prdbg and devdbg event-types,
+> > so that they could be disabled easily using /sys/kernel/debug/tracing/
+> > putting them squarely under trace-control.
+> >
+> > Note that this puts 2 off-switches in series,
+> > both tracefs and >control can disable all the pr_debug traffic,
+> > tracefs by event-type, and >control at individual callsite level.
+> >
+> > echo 1 > /sys/kernel/debug/tracing/dyndbg/enable
+> > echo 1 > /sys/kernel/debug/tracing/dyndbg/prdbg/enable
+> > echo 1 > /sys/kernel/debug/tracing/dyndbg/devdbg/enable
+> >
+> > I briefly thought about linking the 2 off-switches,
+> > but punted cuz I thought it complicated things,
+> > (how exactly would they get coupled?)
+> > and I didnt want to distract from larger goals
+> >
+> > Does that address your question ?
+> >
+>
+> Jim,
+>
+> Thanks but it doesn't answer my question.
+>
+> How do you plan to enable output to tracefs event at a callsite level ?
+>
+> In my original proposal it was enabled by setting trace destination to
+> 0. Since we are moving to names instead of numbers now I guess we need
+> to reserve a name for it not to clash with trace instance names
+> provided by users. That's why I proposed to reserve name "event" for
+> that purpose and be used as +T:event.
+>
+
+Ok, I got your point now.
+
+how about we call it "0" ?
+it should be an obvious "magical" value,
+cuz it doesnt need to be open'd, and cant be close'd
+
+then we can revert to global tracebuf by its "name"
+echo module foo +T:0 > /proc/dynamic_debug/control
+
+we probably should also limit the trace-instance-names to ^\w+
+
+> Or did I miss answer to that in our long discussion :> ?
+
+nope :-)
+
+thanks,
+Jim
+
+>
+> Thanks,
+> Lukasz
+>
+> > On a related point, I also added drm_dbg and drm_devdbg.
+> > Those are issued from __drm_dbg & __drm_dev_dbg
+> >  respectively when CONFIG_DRM_USE_DYNAMIC_DEBUG=3Dn.
+> >
+> > Im not sure theyre more useful than confusing yet.
+> >
+> > >
+> > > > >
+> > > > >
+> > > > > >
+> > > > > > > >
+> > > > > > > > and +T  w/o dest means use existing setting, not just 0 (un=
+less thats
+> > > > > > > > the existing setting)
+> > > > > > > >
+> > > > > > >
+> > > > > > > Sounds good.
+> > > > > > >
+> > > > > >
+> > > > > > :-)
