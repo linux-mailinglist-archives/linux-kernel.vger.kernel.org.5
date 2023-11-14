@@ -2,282 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A906E7EAABA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:05:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9AC7EAAC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:06:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232132AbjKNHFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 02:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43422 "EHLO
+        id S232143AbjKNHGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 02:06:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232068AbjKNHFf (ORCPT
+        with ESMTP id S230451AbjKNHG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 02:05:35 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C514186
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:05:30 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id 2adb3069b0e04-507bd644a96so7585531e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:05:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699945529; x=1700550329; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yyb2EwjVD2jfx+kZp1EpPuK0eXya7TglNpKpzi4k5bM=;
-        b=itJIdkFC92yVY3butSQjHOVvkfPg6axVtj1ugWycGwDI4aHxP4NxA9Tbkc01dK2gzb
-         gNHfXbdydmkhKutVKyv6NFNnJ0NIRlbbZLrrz8mpntAVWUEehXLjRLwTOGTaRqYK7T4Y
-         qg/HkoQ+iBTeZOQ7IuI0ZsHZS4I+KsxoTwgMA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699945529; x=1700550329;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yyb2EwjVD2jfx+kZp1EpPuK0eXya7TglNpKpzi4k5bM=;
-        b=fed8ZIwgdXW0y5CrGnXHVSMX/wS+INRO7rQtRJbxXhWTC3Hv7MNhjJn/3Xn61eyH7c
-         lLQP1txBQoF0X2T3+6mXMqVwlJvM0Hkx0osK0Hd+5Tf0FzxZQQbw1A5ZHuhrZG/hdc7/
-         nchkAWG0/pYnW97reFweYvBwN4IwrZNLeNdp74BLR4KYHChWaD8czguQ/vyfKZG4Tsg4
-         z8+CcdC9lVXHGujWgSeJWCxuU7kPjZcvZDhnxWgoh5VaUbreQoNQGoebbj8gBTVVJt3Z
-         fXQAVd99R9hDl3uS09eUg2qndbbQiaLrt4RFyk3UmgN3uAys0px+r2O+kqL+3h2ye262
-         3WnQ==
-X-Gm-Message-State: AOJu0Yw7tswx2LPCaTTA8u3dCe7LAPFYSq+MnMbmDtmpllkIdhhb+CvL
-        JaLT4bcwcjbrAaT4WuIdxGSPH7fYwsQUwAZlBSTKlw==
-X-Google-Smtp-Source: AGHT+IE75Kw2yjHCmLuUlzVR4qEfz+s0VaQYGbP1keBehuM963WhuH0JPG9R0sbEQN/xTp0cRos+bLKEQ/NqAXRUufY=
-X-Received: by 2002:ac2:5dcd:0:b0:507:b4b7:a198 with SMTP id
- x13-20020ac25dcd000000b00507b4b7a198mr5694032lfq.57.1699945528627; Mon, 13
- Nov 2023 23:05:28 -0800 (PST)
+        Tue, 14 Nov 2023 02:06:27 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A44013E;
+        Mon, 13 Nov 2023 23:06:23 -0800 (PST)
+Received: from loongson.cn (unknown [10.180.129.93])
+        by gateway (Coremail) with SMTP id _____8Bx5fBtHFNlQN05AA--.49116S3;
+        Tue, 14 Nov 2023 15:06:21 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.180.129.93])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxrdxoHFNlvqRBAA--.12287S2;
+        Tue, 14 Nov 2023 15:06:17 +0800 (CST)
+From:   Hongchen Zhang <zhanghongchen@loongson.cn>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org, loongson-kernel@lists.loongnix.cn,
+        Hongchen Zhang <zhanghongchen@loongson.cn>,
+        Weihao Li <liweihao@loongson.cn>
+Subject: [PATCH] PM: hibernate: use acquire/release ordering when compress/decompress image
+Date:   Tue, 14 Nov 2023 15:05:53 +0800
+Message-Id: <20231114070553.1568212-1-zhanghongchen@loongson.cn>
+X-Mailer: git-send-email 2.33.0
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <859ac058-c50a-4eb8-99b6-3011ef4e7529@collabora.com>
- <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com>
-In-Reply-To: <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Tue, 14 Nov 2023 15:05:17 +0800
-Message-ID: <CAGXv+5Fta3JvtVz6CYg9xRzE+wjoUtpmy1XrCiU7fMbEJbkGgA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Douglas Anderson <dianders@chromium.org>,
-        Johan Hovold <johan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8BxrdxoHFNlvqRBAA--.12287S2
+X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAOB2VRh6kbhABdsQ
+X-Coremail-Antispam: 1Uk129KBj93XoW3Gw4rWw15ZF47tw43Jr1rZrc_yoW7uFW8pF
+        W8Xan0kr4UXrs8Z39rAay8Z345AFnYyFZrGrsxC34fuasIgrsYya40gF9Yvr1YyFy8t34v
+        9w47K34qgryqqFXCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUU9Yb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        AVWUtwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7V
+        AKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v2
+        6r1Y6r17MI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17
+        CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF
+        0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIx
+        AIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIev
+        Ja73UjIFyTuYvjxUc0eHDUUUU
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 9, 2023 at 9:52=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wro=
-te:
->
-> On Thu, Nov 9, 2023 at 4:54=E2=80=AFAM AngeloGioacchino Del Regno
-> <angelogioacchino.delregno@collabora.com> wrote:
-> >
-> > Il 09/11/23 11:05, Chen-Yu Tsai ha scritto:
-> > > Hi everyone,
-> > >
-> > > This v2 series continues Doug's "of: device: Support 2nd sources of
-> > > probeable but undiscoverable devices" [1] series, but follows the sch=
-eme
-> > > suggested by Rob, marking all second source component device nodes
-> > > as "fail-needs-probe-XXX", and having a hardware prober driver enable
-> > > the one of them. I tried to include everyone from the original Cc: li=
-st.
-> > > Please let me know if you would like to be dropped from future
-> > > submissions.
-> > >
-> > >
-> > > For the I2C component (touchscreens and trackpads) case from the
-> > > original series, the hardware prober driver finds the particular
-> > > class of device in the device tree, gets its parent I2C adapter,
-> > > and tries to initiate a simple I2C read for each device under that
-> > > I2C bus. When it finds one that responds, it considers that one
-> > > present, marks it as "okay", and returns, letting the driver core
-> > > actually probe the device.
-> > >
-> > > This works fine in most cases since these components are connected
-> > > via ribbon cable and always have the same resources. The driver as
-> > > implemented currently doesn't deal with regulators or GPIO pins,
-> > > since in the existing device trees they are either always on for
-> > > regulators, or have GPIO hogs or pinmux and pinconfig directly
-> > > tied to the pin controller.
-> > >
-> > >
-> > > Another case this driver could handle is selecting components based
-> > > on some identifier passed in by the firmware. On Chromebooks we have
-> > > a SKU ID which is inserted by the bootloader at
-> > > /firmware/coreboot/sku-id. When a new combination of components is
-> > > introduced, a new SKU ID is allocated to it. To have SKU ID based
-> > > device trees, we would need to have one per SKU ID. This ends up
-> > > increasing the number of device trees we have a lot. The recent
-> > > MT8186 devices already have 10+10 SKUs [2], with possibly more to com=
-e.
-> > >
-> > > Instead, we could have just one device tree for each device, with
-> > > component options listed and marked as "fail-needs-probe-XXX", and
-> > > let the hardware prober enable one of them based on the given SKU ID.
-> > > The driver will also fix up OF graph remote endpoints to point to the
-> > > enabled component.
-> > >
-> > > The MT8186 Corsola series [2] can also benefit from this, though I
-> > > haven't implemented anything yet.
-> > >
-> > >
-> > > Patch 1 adds of_device_is_fail() for the new driver to use.
-> > >
-> > > Patch 2 implements the first case, probing the I2C bus for presence
-> > > of components. This initial version targets the Hana Chromebooks.
-> > >
-> > > Patch 3 modifies the Hana device tree and marks the touchscreens
-> > > and trackpads as "fail-needs-probe-XXX", ready for the driver to
-> > > probe.
-> > >
-> > > Patch 4 adds a missing touchscreen variant to Hana.
-> > >
-> > > Patch 5 implements the second case, selectively enabling components
-> > > based on the SKU ID. This initial version targets the Krane ChromeOS
-> > > tablet, which has two possible MIPI DSI display panel options.
-> > >
-> > > Patch 6 drops Krane's SKU-specific compatible strings from the bindin=
-gs.
-> > >
-> > > Patch 7 merges Krane's SKU-specific device trees into one, with the
-> > > device tree now containing two possible panels. This unfortunately
-> > > introduces a dtc warning:
-> > >
-> > >      arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dts:81.13-83.6:
-> > >          Warning (graph_endpoint): /soc/dsi@14014000/panel2@0/port/en=
-dpoint:
-> > >       graph connection to node '/soc/dsi@14014000/ports/port/endpoint=
-'
-> > >           is not bidirectional
-> > >
-> > >
-> > > Please take a look.
-> > >
-> > > Johan, I'm not sure if this works as is for the Lenovo Thinkpad 13S
-> > > case, since it looks like the trackpad shares the I2C bus with the
-> > > keyboard.
-> > >
-> > >
-> > > Thanks
-> > > ChenYu
-> > >
-> > >
-> > > Background as given in Doug's cover letter:
-> > >
-> > > Support for multiple "equivalent" sources for components (also known
-> > > as second sourcing components) is a standard practice that helps keep
-> > > cost down and also makes sure that if one component is unavailable du=
-e
-> > > to a shortage that we don't need to stop production for the whole
-> > > product.
-> > >
-> > > Some components are very easy to second source. eMMC, for instance, i=
-s
-> > > fully discoverable and probable so you can stuff a wide variety of
-> > > similar eMMC chips on your board and things will work without a hitch=
-.
-> > >
-> > > Some components are more difficult to second source, specifically
-> > > because it's difficult for software to probe what component is presen=
-t
-> > > on any given board. In cases like this software is provided
-> > > supplementary information to help it, like a GPIO strap or a SKU ID
-> > > programmed into an EEPROM. This helpful information can allow the
-> > > bootloader to select a different device tree. The various different
-> > > "SKUs" of different Chromebooks are examples of this.
-> > >
-> > > Some components are somewhere in between. These in-between components
-> > > are the subject of this patch. Specifically, these components are
-> > > easily "probeable" but not easily "discoverable".
-> > >
-> > > A good example of a probeable but undiscoverable device is an
-> > > i2c-connected touchscreen or trackpad. Two separate components may be
-> > > electrically compatible with each other and may have compatible power
-> > > sequencing requirements but may require different software. If
-> > > software is told about the different possible components (because it
-> > > can't discover them), it can safely probe them to figure out which
-> > > ones are present.
-> > >
-> > > On systems using device tree, if we want to tell the OS about all of
-> > > the different components we need to list them all in the device
-> > > tree. This leads to a problem. The multiple sources for components
-> > > likely use the same resources (GPIOs, interrupts, regulators). If the
-> > > OS tries to probe all of these components at the same time then it
-> > > will detect a resource conflict and that's a fatal error.
-> > >
-> > > The fact that Linux can't handle these probeable but undiscoverable
-> > > devices well has had a few consequences:
-> > > 1. In some cases, we've abandoned the idea of second sourcing
-> > >     components for a given board, which increases cost / generates
-> > >     manufacturing headaches.
-> > > 2. In some cases, we've been forced to add some sort of strapping /
-> > >     EEPROM to indicate which component is present. This adds difficul=
-ty
-> > >     to manufacturing / refurb processes.
-> > > 3. In some cases, we've managed to make things work by the skin of ou=
-r
-> > >     teeth through slightly hacky solutions. Specifically, if we remov=
-e
-> > >     the "pinctrl" entry from the various options then it won't
-> > >     conflict. Regulators inherently can have more than one consumer, =
-so
-> > >     as long as there are no GPIOs involved in power sequencing and
-> > >     probing devices then things can work. This is how
-> > >     "sc8280xp-lenovo-thinkpad-x13s" works and also how
-> > >     "mt8173-elm-hana" works.
-> > >
-> > > End of background from Doug's cover letter.
-> >
-> > I think that using "status" is not a good idea, I find that confusing.
->
-> "status" is what defines a device's state in terms of enabled,
-> present, available. That's exactly what we're expressing here.
->
-> Now, I do not think we should be mixing the device class (e.g.
-> touchscreen) into status. I said this on v1, but apparently that was
-> not listened to.
+When we test S4(suspend to disk) on LoongArch 3A6000 platform, the
+test case sometimes fails. The dmesg log shows the following error:
+	Invalid LZO compressed length
+After we dig into the code, we find out that:
+When compress/decompress the image, the synchronization operation
+between the control thread and the compress/decompress/crc thread
+uses relaxed ordering interface, which is unreliable, and the
+following situation may occur:
+CPU 0					CPU 1
+save_image_lzo				lzo_compress_threadfn
+					  atomic_set(&d->stop, 1);
+  atomic_read(&data[thr].stop)
+  data[thr].cmp = data[thr].cmp_len;
+	  				  WRITE data[thr].cmp_len
+Then CPU0 get a old cmp_len and write to disk. When cpu resume from S4,
+wrong cmp_len is loaded.
 
-I must have missed it and only took in Doug's final response.
+To maintain data consistency between two threads, we should use the
+acquire/release ordering interface. So we change atomic_read/atomic_set
+to atomic_read_acquire/atomic_set_release.
 
-My code doesn't actually use the class in the status property though.
-I will remove it and just keep "fail-needs-probe".
+Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
+Signed-off-by: Weihao Li <liweihao@loongson.cn>
+---
+ kernel/power/swap.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-ChenYu
+diff --git a/kernel/power/swap.c b/kernel/power/swap.c
+index a2cb0babb5ec..d44f5937f1e5 100644
+--- a/kernel/power/swap.c
++++ b/kernel/power/swap.c
+@@ -606,11 +606,11 @@ static int crc32_threadfn(void *data)
+ 	unsigned i;
+ 
+ 	while (1) {
+-		wait_event(d->go, atomic_read(&d->ready) ||
++		wait_event(d->go, atomic_read_acquire(&d->ready) ||
+ 		                  kthread_should_stop());
+ 		if (kthread_should_stop()) {
+ 			d->thr = NULL;
+-			atomic_set(&d->stop, 1);
++			atomic_set_release(&d->stop, 1);
+ 			wake_up(&d->done);
+ 			break;
+ 		}
+@@ -619,7 +619,7 @@ static int crc32_threadfn(void *data)
+ 		for (i = 0; i < d->run_threads; i++)
+ 			*d->crc32 = crc32_le(*d->crc32,
+ 			                     d->unc[i], *d->unc_len[i]);
+-		atomic_set(&d->stop, 1);
++		atomic_set_release(&d->stop, 1);
+ 		wake_up(&d->done);
+ 	}
+ 	return 0;
+@@ -649,12 +649,12 @@ static int lzo_compress_threadfn(void *data)
+ 	struct cmp_data *d = data;
+ 
+ 	while (1) {
+-		wait_event(d->go, atomic_read(&d->ready) ||
++		wait_event(d->go, atomic_read_acquire(&d->ready) ||
+ 		                  kthread_should_stop());
+ 		if (kthread_should_stop()) {
+ 			d->thr = NULL;
+ 			d->ret = -1;
+-			atomic_set(&d->stop, 1);
++			atomic_set_release(&d->stop, 1);
+ 			wake_up(&d->done);
+ 			break;
+ 		}
+@@ -663,7 +663,7 @@ static int lzo_compress_threadfn(void *data)
+ 		d->ret = lzo1x_1_compress(d->unc, d->unc_len,
+ 		                          d->cmp + LZO_HEADER, &d->cmp_len,
+ 		                          d->wrk);
+-		atomic_set(&d->stop, 1);
++		atomic_set_release(&d->stop, 1);
+ 		wake_up(&d->done);
+ 	}
+ 	return 0;
+@@ -798,7 +798,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
+ 
+ 			data[thr].unc_len = off;
+ 
+-			atomic_set(&data[thr].ready, 1);
++			atomic_set_release(&data[thr].ready, 1);
+ 			wake_up(&data[thr].go);
+ 		}
+ 
+@@ -806,12 +806,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
+ 			break;
+ 
+ 		crc->run_threads = thr;
+-		atomic_set(&crc->ready, 1);
++		atomic_set_release(&crc->ready, 1);
+ 		wake_up(&crc->go);
+ 
+ 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+ 			wait_event(data[thr].done,
+-			           atomic_read(&data[thr].stop));
++				atomic_read_acquire(&data[thr].stop));
+ 			atomic_set(&data[thr].stop, 0);
+ 
+ 			ret = data[thr].ret;
+@@ -850,7 +850,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
+ 			}
+ 		}
+ 
+-		wait_event(crc->done, atomic_read(&crc->stop));
++		wait_event(crc->done, atomic_read_acquire(&crc->stop));
+ 		atomic_set(&crc->stop, 0);
+ 	}
+ 
+@@ -1132,12 +1132,12 @@ static int lzo_decompress_threadfn(void *data)
+ 	struct dec_data *d = data;
+ 
+ 	while (1) {
+-		wait_event(d->go, atomic_read(&d->ready) ||
++		wait_event(d->go, atomic_read_acquire(&d->ready) ||
+ 		                  kthread_should_stop());
+ 		if (kthread_should_stop()) {
+ 			d->thr = NULL;
+ 			d->ret = -1;
+-			atomic_set(&d->stop, 1);
++			atomic_set_release(&d->stop, 1);
+ 			wake_up(&d->done);
+ 			break;
+ 		}
+@@ -1150,7 +1150,7 @@ static int lzo_decompress_threadfn(void *data)
+ 			flush_icache_range((unsigned long)d->unc,
+ 					   (unsigned long)d->unc + d->unc_len);
+ 
+-		atomic_set(&d->stop, 1);
++		atomic_set_release(&d->stop, 1);
+ 		wake_up(&d->done);
+ 	}
+ 	return 0;
+@@ -1335,7 +1335,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 		}
+ 
+ 		if (crc->run_threads) {
+-			wait_event(crc->done, atomic_read(&crc->stop));
++			wait_event(crc->done, atomic_read_acquire(&crc->stop));
+ 			atomic_set(&crc->stop, 0);
+ 			crc->run_threads = 0;
+ 		}
+@@ -1371,7 +1371,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 					pg = 0;
+ 			}
+ 
+-			atomic_set(&data[thr].ready, 1);
++			atomic_set_release(&data[thr].ready, 1);
+ 			wake_up(&data[thr].go);
+ 		}
+ 
+@@ -1390,7 +1390,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 
+ 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
+ 			wait_event(data[thr].done,
+-			           atomic_read(&data[thr].stop));
++				atomic_read_acquire(&data[thr].stop));
+ 			atomic_set(&data[thr].stop, 0);
+ 
+ 			ret = data[thr].ret;
+@@ -1421,7 +1421,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 				ret = snapshot_write_next(snapshot);
+ 				if (ret <= 0) {
+ 					crc->run_threads = thr + 1;
+-					atomic_set(&crc->ready, 1);
++					atomic_set_release(&crc->ready, 1);
+ 					wake_up(&crc->go);
+ 					goto out_finish;
+ 				}
+@@ -1429,13 +1429,13 @@ static int load_image_lzo(struct swap_map_handle *handle,
+ 		}
+ 
+ 		crc->run_threads = thr;
+-		atomic_set(&crc->ready, 1);
++		atomic_set_release(&crc->ready, 1);
+ 		wake_up(&crc->go);
+ 	}
+ 
+ out_finish:
+ 	if (crc->run_threads) {
+-		wait_event(crc->done, atomic_read(&crc->stop));
++		wait_event(crc->done, atomic_read_acquire(&crc->stop));
+ 		atomic_set(&crc->stop, 0);
+ 	}
+ 	stop = ktime_get();
+-- 
+2.33.0
 
-> >
-> > Perhaps we could have a node like
-> >
-> > something {
-> >         device-class-one =3D <&device1>, <&device2>, <&device3>;
-> >         device-class-two =3D <&device4>, <&device5>, <&device6>;
-> > }
-> >
-> > so that'd be more or less
-> >
-> > hw-prober {
-> >         trackpads =3D <&tp1>, <&tp2>;
-> >         keyboards =3D <&kb1>, <&kb2>;
-> >         touchscreens =3D <&ts1>, <&ts2>;
-> > }
->
-> No. That's more or less what v1 had.
->
-> Rob
