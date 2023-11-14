@@ -2,89 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABB27EAF46
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:34:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AE857EAF48
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231641AbjKNLeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 06:34:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40500 "EHLO
+        id S232598AbjKNLed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 06:34:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231991AbjKNLeN (ORCPT
+        with ESMTP id S232085AbjKNLec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 06:34:13 -0500
-Received: from 1.mo576.mail-out.ovh.net (1.mo576.mail-out.ovh.net [178.33.251.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA2E1192
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 03:34:08 -0800 (PST)
-Received: from director6.ghost.mail-out.ovh.net (unknown [10.108.1.93])
-        by mo576.mail-out.ovh.net (Postfix) with ESMTP id AA1BE2E21F
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:34:06 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-b2n22 (unknown [10.110.103.249])
-        by director6.ghost.mail-out.ovh.net (Postfix) with ESMTPS id C796C1FD91;
-        Tue, 14 Nov 2023 11:34:03 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.106])
-        by ghost-submission-6684bf9d7b-b2n22 with ESMTPSA
-        id zqp4KytbU2UpiAAAZEbziQ
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 14 Nov 2023 11:34:03 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-106R006f8a2c5f3-9a69-4238-9eb7-c409d0b8b06f,
-                    39B655737E19CE8DAD14488E69459E8CEBC9C448) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 83.100.46.156
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     harry.wentland@amd.com, sunpeng.li@amd.com,
-        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
-        christian.koenig@amd.com, Xinhui.Pan@amd.com,
-        skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        airlied@gmail.com, daniel@ffwll.ch, Qingqing.Zhuo@amd.com,
-        charlene.liu@amd.com, stylon.wang@amd.com,
-        yang.lee@linux.alibaba.com, daniel.miess@amd.com,
-        colin.i.king@gmail.com, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev
-Subject: [PATCH] drm/amd/display: fix ptr comparison to 0
-Date:   Tue, 14 Nov 2023 13:33:56 +0200
-Message-Id: <20231114113356.127779-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
+        Tue, 14 Nov 2023 06:34:32 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B821BE
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 03:34:29 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2rgI-00066n-9u; Tue, 14 Nov 2023 12:34:10 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2rgG-008ytE-MN; Tue, 14 Nov 2023 12:34:08 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2rgG-001K07-Cd; Tue, 14 Nov 2023 12:34:08 +0100
+Date:   Tue, 14 Nov 2023 12:34:08 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Devi Priya <quic_devipriy@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        lee@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        thierry.reding@gmail.com, baruch@tkos.co.il,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
+Subject: Re: [PATCH 0/4] Enable pwm support for IPQ5332 & IPQ9574 SoCs
+Message-ID: <20231114113408.f7xvbvmhvf256jis@pengutronix.de>
+References: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 6570188909338076865
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudefvddgvdekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpkeefrddutddtrdegiedrudehiedpfeejrdehledrudegvddruddtieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejiedpmhhouggvpehsmhhtphhouhht
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3wbsy6jm65ldlr2s"
+Content-Disposition: inline
+In-Reply-To: <20231006045317.1056625-1-quic_devipriy@quicinc.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch will address the following coccinelle warning where a pointer
-is compared to 0 instead of NULL.
 
-drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c:5423:19-20: WARNING comparing pointer to 0
+--3wbsy6jm65ldlr2s
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 7966f319c66d9 ("drm/amd/display: Introduce DML2")
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
----
- drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Fri, Oct 06, 2023 at 10:23:13AM +0530, Devi Priya wrote:
+> Enable pwm support for IPQ5332 & IPQ9574 SoCs and document the
+> pwm compatibles.
+> While at it, use qcom,ipq6018-pwm as the fallback compatible and extend t=
+he
+> simple-mfd support for ipq5332 & ipq9574 targets.
+>=20
+> This series depends on the below series which adds support
+> for the PWM driver on IPQ targets:
+> https://lore.kernel.org/linux-arm-msm/20231005160550.2423075-1-quic_devip=
+riy@quicinc.com/
 
-diff --git a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-index 510be909cd75..7dceaa486841 100644
---- a/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-+++ b/drivers/gpu/drm/amd/display/dc/dml2/display_mode_core.c
-@@ -5420,7 +5420,7 @@ static void CalculateOutputLink(
- 					*OutBpp = TruncToValidBPP((1 - Downspreading / 100) * 13500, OutputLinkDPLanes, HTotal, HActive, PixelClockBackEnd, ForcedOutputLinkBPP, LinkDSCEnable, Output,
- 												OutputFormat, DSCInputBitPerComponent, NumberOfDSCSlices, (dml_uint_t)AudioSampleRate, AudioSampleLayout, ODMModeNoDSC, ODMModeDSC, RequiredSlots);
- 
--					if (OutBpp == 0 && PHYCLKD32PerState < 20000 / 32 && DSCEnable == dml_dsc_enable_if_necessary && ForcedOutputLinkBPP == 0) {
-+					if (OutBpp == NULL && PHYCLKD32PerState < 20000 / 32 && DSCEnable == dml_dsc_enable_if_necessary && ForcedOutputLinkBPP == 0) {
- 						*RequiresDSC = true;
- 						LinkDSCEnable = true;
- 						*OutBpp = TruncToValidBPP((1 - Downspreading / 100) * 13500, OutputLinkDPLanes, HTotal, HActive, PixelClockBackEnd, ForcedOutputLinkBPP, LinkDSCEnable, Output,
--- 
-2.39.2
+Given this dependency, I suggest you add the patches from this series to
+the next revision of the IPQ base series.
 
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--3wbsy6jm65ldlr2s
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVTWy8ACgkQj4D7WH0S
+/k4UvAf7B9DckIZWg1K3ifzsa+9ogP0hip9vJ46qYWw7pn+SwRGNyx/H60eYzD8e
+nLc/dCllG6IvI/JyZSDvBcgZZouKSaeheZpEWRyhcXzRTbJrtFId0gGpSr6fJ2Wx
+rhMSV6isay4bfhkGilPV3ne/iQeEtUl+hoSFkICK7QW1n0yB9stsgXylOhyZsUq5
+DLjIqqGTlTkqUTJqLz/KbEHg71X4XUE8FDIyO/O9DC4joIpXmr9I7g80SZmtRmi7
+eFFRkPzlz7gRoRm6tfmoYaCMNK4y/BLKI0ZBjaqhbSSHRe0PAY8nFEc1JqmT2mk0
+tUsXZm/AjfZWChyV5t/9b57x6Cg2YQ==
+=WCAE
+-----END PGP SIGNATURE-----
+
+--3wbsy6jm65ldlr2s--
