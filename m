@@ -2,97 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B547EB0CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:25:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362E47EB0DA
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:28:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233181AbjKNNZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48072 "EHLO
+        id S230319AbjKNN2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:28:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231203AbjKNNZU (ORCPT
+        with ESMTP id S229640AbjKNN2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:25:20 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F9DC1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:25:17 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5b383b4184fso66159247b3.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:25:17 -0800 (PST)
+        Tue, 14 Nov 2023 08:28:04 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DF401A1;
+        Tue, 14 Nov 2023 05:28:01 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-28037d046b0so4612947a91.3;
+        Tue, 14 Nov 2023 05:28:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1699968316; x=1700573116; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=JoUNc+UAMR3MkcBlAcrSJl9LJzMRrhGFdSqk/t7tLSM=;
-        b=fBMyya43uwflzhsrjshepPwpjcpaZ+MEWuW6SX/FOAyW5XyZRhyVF6ukISflJHlMLk
-         I9LugwlWj6M+fplTzON5UlxWw05w3cIG9YFMOFYCQN6meGptaMchYdg2yZoipJKdTGgG
-         oq4DsZkfS/ri57qXN8wB+t4UnID1AcDQiKJKviJ9stm3RvDimZDtRvZhs1aGamJVv1LV
-         d3Mxptgog5ZbFEJ2ERSjufOVA8kLKDj6/VqeiKyqMSi1m+oEczryQSeipm/SRcmc5MDL
-         4lNJzPsJ8FGbUce2J0jCR1hwjlHw5XyaOFrck5P9ry0K6sLzb3Xsu6omnf+W7qwMlQQh
-         pStA==
+        d=gmail.com; s=20230601; t=1699968480; x=1700573280; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pJTc18Dq8cauhdDP2mnhlAYqSmKqYG3BV6eLgfA16hg=;
+        b=fWsKGeLFQLm/woc+cXYsoJLi5ffK/Q6s2V7eOvzaP8k8xouglYgBBtu2CZPpaS4XP6
+         G83yxL93fxdR7i0Gvbacd51RC8vr54H9TEDk+HaoQTB64e7eOIahyAhUgGq894KNID/1
+         77HeVyUCESAnwrNxGNibQWcPBYsBb/r1Sc+8bIINZEvxUMzzrDck4c1qvCsYRc2aBfi0
+         j3FrSqf8Q0JqxPP/Grr8VpxuW4KTX1SmHhBimra4N/vPt19t5BkZEfn8G14ANvT1xqCB
+         DIXrDDxmRv5ot8eqfzg2oEumSREGYDI++GrIFWvrmdUBaBA373QdoQcPizTFN3EAtaE8
+         Zifg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699968316; x=1700573116;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=JoUNc+UAMR3MkcBlAcrSJl9LJzMRrhGFdSqk/t7tLSM=;
-        b=cZlDkVdghsojvaOQxgCUWh+PvCM8A/I+8AkRCHl3wUvBKixYyogydXJzkuuE7emqx3
-         cqMr8S6vavv73zr6ViaETfpoi8Wscn+gMvr3OSVJ4dVyPf+RUTQ6STnqs1fYAx/Syz50
-         cCuZMG91NftTMis6LHyUXyAM30BbGblH4u3Fk08Ehqu63QrOaYpWOSb9HXrvZ1/BF43Z
-         jF2Nfqt2/zuGrypEko/lnJHWSi3y/NEWtPR5nJeE2mREpbjbOKGyiBvmW6gXo9nV7z/J
-         wnnhHKFaVVkgN6/pZ9SkzyQ3mDUklDq7xzyFl5qG98YbD9+cXJUsjQmn3xkFxqKYpv3f
-         gffA==
-X-Gm-Message-State: AOJu0YyzY96y2e6gSL/3Bik3S7+Ci6syVASdWb5FvU+a1Xv1YZwhRCdm
-        QyVwIIUOR+ifZDgo+1y7E5ErmskCkYSAFNlnLIU+Xw==
-X-Google-Smtp-Source: AGHT+IE0TPtkA1XauwwaY0dSJjd8MxN/U0JrfOVEfCPnoUdkrWeESQDbuceXf62dLQcX3EcI35RVKcfmZwK9dNIcsKU=
-X-Received: by 2002:a81:7189:0:b0:5a7:c8f3:de4b with SMTP id
- m131-20020a817189000000b005a7c8f3de4bmr9606681ywc.8.1699968316538; Tue, 14
- Nov 2023 05:25:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699968480; x=1700573280;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pJTc18Dq8cauhdDP2mnhlAYqSmKqYG3BV6eLgfA16hg=;
+        b=wucSu1/lqTciPTap5ei8EeuVGbOQcbmsdSfewCsBifOF63tqw9F5hdlmQLPXqJimQG
+         raXgA/eXnFsO6EMl3mvxEEyDv0uGixvV8EKTU1rSEEmUiEvVy4+l0AAJgHQU6V6TKp4M
+         qKMxuniyXA5LwS8+JxZjRXSsYl3vm9WI9A/k6hZWzIp/1UMTMpFq9mTxyCa4Mo3AgANH
+         9rMBblcvg9rpNyxPIHnhExEEj+1HbpKIK4FqmSyYm0IpXiX2UJg68QjDYfccidZFbt8Y
+         DY/MXO0+V7380ikekaUx0hEj3kIyQa0NriacSGF5EhuYl5+8sr3Ugq6umA9qFlsu6GHw
+         TAZQ==
+X-Gm-Message-State: AOJu0YySZRFckDSOTZggolTHGsOxCj0cXDaiPAKRl3UCMxGgb84ZErOQ
+        rr4dDd3tKj9CxXv4mJJPv2k=
+X-Google-Smtp-Source: AGHT+IEFXKIj+sDkAvDnBoLBTuw0fzrerZqXQZe0oLFbbujfd/4KdXIpoOLoh0oHAIbyA28Mh549uw==
+X-Received: by 2002:a17:90b:1c82:b0:27c:f80a:2c8a with SMTP id oo2-20020a17090b1c8200b0027cf80a2c8amr6619797pjb.0.1699968480499;
+        Tue, 14 Nov 2023 05:28:00 -0800 (PST)
+Received: from anfanite396-Predator-PH315-51.gateway.iitmandi.ac.in ([14.139.34.151])
+        by smtp.gmail.com with ESMTPSA id 22-20020a17090a001600b0027ceac90684sm5896451pja.18.2023.11.14.05.27.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 05:28:00 -0800 (PST)
+From:   Dipam Turkar <dipamt1729@gmail.com>
+To:     robdclark@gmail.com
+Cc:     quic_abhinavk@quicinc.com, dmitry.baryshkov@linaro.org,
+        sean@poorly.run, marijn.suijten@somainline.org, airlied@gmail.com,
+        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, Dipam Turkar <dipamt1729@gmail.com>
+Subject: [PATCH] Remove custom dumb_map_offset implementation in msm driver
+Date:   Tue, 14 Nov 2023 18:57:13 +0530
+Message-Id: <20231114132713.403443-1-dipamt1729@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20230814093621.23209-1-brgl@bgdev.pl> <20230814093621.23209-3-brgl@bgdev.pl>
- <875y54ci86.ffs@tglx> <CAMRc=Mfg52iqFKj0QMB55K5MCxhgPLbF-0WSRG0ktN3RbofMtQ@mail.gmail.com>
- <873507cziz.ffs@tglx> <CAMRc=MdYteOxy87jdSEvBxnN7tx_J1X2aSsRzKZ6WKL31-ipmA@mail.gmail.com>
- <87sf87aw36.ffs@tglx> <CAMRc=Mcvkjmy2F=92SWRdCKL0US_YSwsvpWjcfOH9CBGw3GB0g@mail.gmail.com>
- <87il91c04a.ffs@tglx> <CAMRc=MfB=sMEmK02Y6SaG1T4PFZW2OD+box7NNoDY3KM1AchLA@mail.gmail.com>
- <87o7ir8hlh.ffs@tglx> <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
- <873502971b.ffs@tglx> <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
- <87msya6wmf.ffs@tglx> <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
- <877cpd7a96.ffs@tglx> <CAMRc=MfNaydT8gnvusKdJrNrtjKVE4LTqdanh3+WNd5QF-2q_Q@mail.gmail.com>
- <87y1hb1ckk.ffs@tglx> <CAMRc=Meq6qrXsbDQiQHJ8t9tTh2V5Fb2ut6TcWYd5CKJwGBiAg@mail.gmail.com>
- <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
-In-Reply-To: <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Tue, 14 Nov 2023 14:25:05 +0100
-Message-ID: <CACRpkdZw2Z=PnfJvoj4pJ2gd_j32DUJjUiJAQj0LrB4uPXdOgA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Wolfram Sang <wsa@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 9:53=E2=80=AFPM Bartosz Golaszewski <brgl@bgdev.pl>=
- wrote:
+Make msm use drm_gem_create_map_offset() instead of its custom
+implementation for associating GEM object with a fake offset. Since,
+we already have this generic implementation, we don't need the custom
+implementation and it is better to standardize the code for GEM based drivers.
 
-> I am at LPC and will present a talk on Wednesday 5:15pm at the kernel
-> summit about object life-time issues. I'll reference this problem
-> among others. Please consider it in your schedules, I think it'll be
-> useful to discuss it in person as it's a generic problem in many
-> driver subsystems.
+Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
+---
+ drivers/gpu/drm/msm/msm_drv.c |  2 +-
+ drivers/gpu/drm/msm/msm_gem.c | 21 ---------------------
+ drivers/gpu/drm/msm/msm_gem.h |  2 --
+ 3 files changed, 1 insertion(+), 24 deletions(-)
 
-I'm sadly not at LPC, but this sounds very relevant and I'd love to know
-what you conclude (if we're lucky maybe LWN catches it in a writeup).
+diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+index a428951ee539..86a15992c717 100644
+--- a/drivers/gpu/drm/msm/msm_drv.c
++++ b/drivers/gpu/drm/msm/msm_drv.c
+@@ -1085,7 +1085,7 @@ static const struct drm_driver msm_driver = {
+ 	.open               = msm_open,
+ 	.postclose          = msm_postclose,
+ 	.dumb_create        = msm_gem_dumb_create,
+-	.dumb_map_offset    = msm_gem_dumb_map_offset,
++	.dumb_map_offset    = drm_gem_dumb_map_offset,
+ 	.gem_prime_import_sg_table = msm_gem_prime_import_sg_table,
+ #ifdef CONFIG_DEBUG_FS
+ 	.debugfs_init       = msm_debugfs_init,
+diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+index db1e748daa75..489694ef79cb 100644
+--- a/drivers/gpu/drm/msm/msm_gem.c
++++ b/drivers/gpu/drm/msm/msm_gem.c
+@@ -671,27 +671,6 @@ int msm_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
+ 			MSM_BO_SCANOUT | MSM_BO_WC, &args->handle, "dumb");
+ }
+ 
+-int msm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+-		uint32_t handle, uint64_t *offset)
+-{
+-	struct drm_gem_object *obj;
+-	int ret = 0;
+-
+-	/* GEM does all our handle to object mapping */
+-	obj = drm_gem_object_lookup(file, handle);
+-	if (obj == NULL) {
+-		ret = -ENOENT;
+-		goto fail;
+-	}
+-
+-	*offset = msm_gem_mmap_offset(obj);
+-
+-	drm_gem_object_put(obj);
+-
+-fail:
+-	return ret;
+-}
+-
+ static void *get_vaddr(struct drm_gem_object *obj, unsigned madv)
+ {
+ 	struct msm_gem_object *msm_obj = to_msm_bo(obj);
+diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+index 8ddef5443140..dc74a0ef865d 100644
+--- a/drivers/gpu/drm/msm/msm_gem.h
++++ b/drivers/gpu/drm/msm/msm_gem.h
+@@ -139,8 +139,6 @@ struct page **msm_gem_pin_pages(struct drm_gem_object *obj);
+ void msm_gem_unpin_pages(struct drm_gem_object *obj);
+ int msm_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
+ 		struct drm_mode_create_dumb *args);
+-int msm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+-		uint32_t handle, uint64_t *offset);
+ void *msm_gem_get_vaddr_locked(struct drm_gem_object *obj);
+ void *msm_gem_get_vaddr(struct drm_gem_object *obj);
+ void *msm_gem_get_vaddr_active(struct drm_gem_object *obj);
+-- 
+2.34.1
 
-Yours,
-Linus Walleij
