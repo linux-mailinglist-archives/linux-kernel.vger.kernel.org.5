@@ -2,189 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63E3E7EB41A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:49:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D9727EB41C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:49:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233750AbjKNPtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33460 "EHLO
+        id S233744AbjKNPte (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:49:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233727AbjKNPtF (ORCPT
+        with ESMTP id S233751AbjKNPtX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:49:05 -0500
-Received: from EUR04-DB3-obe.outbound.protection.outlook.com (mail-db3eur04on2055.outbound.protection.outlook.com [40.107.6.55])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 434B2D43;
-        Tue, 14 Nov 2023 07:49:01 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WWIuZmiaAL1N5DnRpL/9TWobJ31NdFlq/CnOEcxyrIrdJAeZcrLvh/hTGXOOzsHeUzwDnEoRByNVagmbIDE86HYKOzK0IDuauLhFjY9n2+/z6gyaQJLaS4GtVxMtF5Npe7oKz9v8S8nVdGn6Y9w442hR4rUTlDn7yW7garPb1ZK5+26Je9J7271il2Hjyr0Zyj/W3heMnZP2Jc0nVUONb+VhuzUdDPOodKek7ADPLvmL4Vp4SzL24t+zVXQKJwrX7QCFiBDaMqnv+By8qWfpUdtlRdrKTZlqXEmB2yJrSOzKOkKZ1WJltO+Sx7UJllDxLFAQopKUzulf4HyJ+VE6lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uxdH3nsXBgcDAIR9AkVzdF+sl+BFzEQbk+JwUbgHX+4=;
- b=dbZk37galVTwckuhrCqTJ9PGri7Wo6RKp8u1Khk/2xXMSMYagVp0HVm07p639OfDG3IDXC0aNnIpEqxKg3swxFNo3hGHzElXFNPcaUfjT6vazH8MRJvjmFB7M7CZe5w5RntxZlR6tTjpIApSwD3j1StzTnDfrP03DOerPuYsbd4txG5yptGB2/rvk9eiKqV8Ag2s/InKmftHOURIbwHspPXmFWBuQimmqd0TPC4/nV3AOH0v2BiM6NTEWqCOfSO+qKRrgssVbx3RnmwdHvN5AQ6Qekx6GQXbsRPObdOEjblrR2J+1GsfN9Lj+w1ouxB82HUC/YNeK51XF63Petb4hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=uxdH3nsXBgcDAIR9AkVzdF+sl+BFzEQbk+JwUbgHX+4=;
- b=QMrzt4x3BgoUBl4i0VMOjBqUwBGgU81rLBah87rn/YoJbcg3Cg0z1GxNCcBO7xG6xDhAspGY0r6prerOfQLNCIKKw90l+c0QWMpqaPjMEuwsZWHW4anDV55aK/w6HwnvA/vesybs5Cz0fM9RPU1mM48OxdjV+B94cK2+C/AXirs=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
- by AM9PR04MB8113.eurprd04.prod.outlook.com (2603:10a6:20b:3b5::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Tue, 14 Nov
- 2023 15:48:59 +0000
-Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::bc7:1dcd:684d:4494]) by AM6PR04MB4838.eurprd04.prod.outlook.com
- ([fe80::bc7:1dcd:684d:4494%4]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 15:48:59 +0000
-From:   Frank Li <Frank.Li@nxp.com>
-To:     krzysztof.kozlowski@linaro.org, shawnguo@kernel.org,
-        festevam@denx.de
-Cc:     Frank.li@nxp.com, devicetree@vger.kernel.org,
-        dmaengine@vger.kernel.org, imx@lists.linux.dev, joy.zou@nxp.com,
-        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
-        peng.fan@nxp.com, robh+dt@kernel.org, shenwei.wang@nxp.com,
-        vkoul@kernel.org
-Subject: [PATCH 4/4] arm64: dts: imx93: Fix EDMA transfer failure
-Date:   Tue, 14 Nov 2023 10:48:24 -0500
-Message-Id: <20231114154824.3617255-5-Frank.Li@nxp.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231114154824.3617255-1-Frank.Li@nxp.com>
-References: <20231114154824.3617255-1-Frank.Li@nxp.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: BY5PR13CA0010.namprd13.prod.outlook.com
- (2603:10b6:a03:180::23) To AM6PR04MB4838.eurprd04.prod.outlook.com
- (2603:10a6:20b:4::16)
+        Tue, 14 Nov 2023 10:49:23 -0500
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B132172C;
+        Tue, 14 Nov 2023 07:49:16 -0800 (PST)
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so8915011a12.0;
+        Tue, 14 Nov 2023 07:49:16 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699976954; x=1700581754;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=8bC0gh5GtET+GY1POn83wCGMR6SSUdpI6TGA9ZU4YvM=;
+        b=GVupiTHviyl7vEUphbr5I2TK8Rs1nURtxoUssbARItdl4CU5PROA+SLTb4Zp3D021b
+         QCRJKkWMrWV7Wx+U/FgSSIUo/onv7vnZxXmmxWEJjMLKDteAKKtsO4T+JZhlQqHM4UTK
+         8NHeeuu2UevEGlcUL3e85JaEAhOXBRwB9APVXmUcLU2qcIOJ3HTovRJRuWIfuFOMnA9m
+         Enj6oaROnliG663o5dZ/TO3kL+lKi+ocGKuxwtzOqZra69poz88cqEuLJYb45A57uKbv
+         2wODTaPslxqMpemOTVVuuzMlisndPFbVjRekucZULZQpA0+ra0+vk2dRbmsH7/cqa7zT
+         BkNQ==
+X-Gm-Message-State: AOJu0Yw1oLTJWQMRpYUSR7hGvZ8nH5Le0bIWYjUrq99kmhW+9M7+W+kE
+        tEtBmAR8KVf/s/vOsholozk=
+X-Google-Smtp-Source: AGHT+IENt1pIK+n+wp8H+la5uVQPNjn4/lEW7n+Ls2HMUqOuHCwh3SZzMgv4ZZ05LH+OzNrW4jjdfA==
+X-Received: by 2002:aa7:d889:0:b0:543:5741:c9cd with SMTP id u9-20020aa7d889000000b005435741c9cdmr6861999edq.34.1699976954369;
+        Tue, 14 Nov 2023 07:49:14 -0800 (PST)
+Received: from ramallet.home (cst-prg-38-127.cust.vodafone.cz. [46.135.38.127])
+        by smtp.gmail.com with ESMTPSA id v22-20020aa7d816000000b00533e915923asm5211770edq.49.2023.11.14.07.49.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 07:49:13 -0800 (PST)
+From:   Tomeu Vizoso <tomeu@tomeuvizoso.net>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: amlogic: meson-g12-common: Set the rates of the clocks for the NPU
+Date:   Tue, 14 Nov 2023 16:48:43 +0100
+Message-ID: <20231114154843.1262225-1-tomeu@tomeuvizoso.net>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231106092202.11127-1-tomeu@tomeuvizoso.net>
+References: <20231106092202.11127-1-tomeu@tomeuvizoso.net>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AM9PR04MB8113:EE_
-X-MS-Office365-Filtering-Correlation-Id: f261359b-e079-4001-9f4e-08dbe5293755
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: VbfDgHyMAXvvgC53mpAb+qdgAxRhRUeRrR2tf9LoywGhJM7YKNhd0+jpmaSdbvW6SeBLMD0/7Zk+QOw3yCJ9p8LgzkIFIvzHv+0lH3S+0Cxw1KBbY4dZe2pyHj/54pn+9T/5BN7Wh/h2P5ctQSD5bUeReFoLJYHJKKnSd/ewSC7sNcLIUdDWdNt7TnDRTv7TceWpy6h9JMZKKfWDyyGI8sDT+iOcmph/7wGTsNrtWMvBEykFSPmtWohGOE4l5nvgeQf3dFpI2KaKYfsI81ImE0AHLyKkCi2dkCau4bpg6NAVcmcq/w+k1KI+j++nxCDnHjLeH1zNjsR8b8I0vb1FN1ywGqLKkIJ2E8WQTGMIife5AkSJlM0GGeRBbuZQmRECsM8gtpchWFLCG/rik7h1ddloG2WKii+CBWut7IIzFnYiwvwOuO/spQKQVW5xRE5Z32rs5WYNYQvERV6KfgzD1CvkcEQKPI9hAXNyQ7ZVX7Er/8PsLb1oaAVmxXHt9dL9bNW4Pdrr6j6ZDw603TAhpksbwgRlRTizqd4b3Pv2mHze84ltj2xgOSEGwFpHirgNzroxRZ4GLGSonfpyWwnlbxWDdOLtFoBYAGa0mKyTKFsLAvXf90TNBVBz4CmSoNV0
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(366004)(346002)(396003)(39860400002)(376002)(230922051799003)(1800799009)(451199024)(64100799003)(186009)(1076003)(2616005)(83380400001)(38350700005)(26005)(478600001)(52116002)(6666004)(6506007)(6512007)(6486002)(2906002)(38100700002)(8676002)(8936002)(4326008)(36756003)(41300700001)(5660300002)(86362001)(7416002)(316002)(66556008)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?yXWRvgi3wvdL7jS7j2VDdZocD62j+PnooVIGT0pzrjb8p6t3Z27eZmlKf4Eu?=
- =?us-ascii?Q?C/jfBR1Th4gUuVshXnudGGdhgYti2VsJIbMVGDAQJWHGG1hwr67F3ivSWSp8?=
- =?us-ascii?Q?oRqRORuW11l98Zv4fNelV21ySmtwKojM4MW6zd5PULFjKQYGf6v9uS1Kbc4v?=
- =?us-ascii?Q?w9r7x1VG0+BeBoh4w83bGFssBNQrBEiU/Dv2rCtBqs7wvLgQJba/gmBaeJbC?=
- =?us-ascii?Q?YIVylqfIsp5V7J34pZUTGz4BAfPT2K0A/co/OCXvr9Nok2djSyesNyBL3Ms5?=
- =?us-ascii?Q?xjY7l0iktP+w9Dsnzfkri29VsLV8bDaXNdM91D5hRP7bFgak47p4F1wpZMPf?=
- =?us-ascii?Q?CoPDmY2WyTu+UofQzEGiyvAtUYv0wi90VkOt1pCfBWpm6FDqFN7TlDMDsr4S?=
- =?us-ascii?Q?1uB84Ebn67M2ElxfwaM3k1bCvr2hPS6iTa8Q4R0UNRW+C3JlzsoaTiXPTZyy?=
- =?us-ascii?Q?m8nhswmOM0Uq1+AwLioS09MpcqorVVONNY0Oi9pwqwrbtPuMAnx4FP5aqj+D?=
- =?us-ascii?Q?e4ZKj8zS6U6+TL+eqnmZpxmpPCkCRG61NXZqXvw9DwDLYmHCTrQQCAhox1sc?=
- =?us-ascii?Q?nN4gGlQ/7dwIUsudpXGDxKRBT/OwJS18sF++gVQAa+EfMkWRY00xjxZsJZW/?=
- =?us-ascii?Q?EK+9UlasoxOV6veZEvNU000+CGmR6lWDrQndwpbgC54rRz6SXYA96AZx8qGD?=
- =?us-ascii?Q?ystkvx+6/RXoSS8n9AwHgQR7H5XSQO8DIURLgiUe2LjiKRIgjB93wI+NLDV2?=
- =?us-ascii?Q?GBoWTlyAfkZ8vrIe128gW/lRQCT+S0aIWUEDxWei3NLR34/7k4mmAr1r1aSo?=
- =?us-ascii?Q?f4SFvW3CC4q/6vceBrPQkjMbKs/JC5sIobCtiQNxgfOXvg2ln36PuRwz6xYt?=
- =?us-ascii?Q?fEZvCk56APNYGXoM4suxMmTzPXygFHQFdH/Mn0gQ1LA/XbAyyUNf3T5Wf7vf?=
- =?us-ascii?Q?mPyVMrVShYaZRFhcwSshMGuXiJGGX8FvdJLdM+6Ks6HqOAu1czVpwxT4jonY?=
- =?us-ascii?Q?BO9sjXX4uMov7mGTnwcwJVbIRZnIsta9/VoUA0lqUYJ8ozL/g+J04RhfbQu8?=
- =?us-ascii?Q?lqaJd8ERjDLB0FQBdovXBO7SljtWsFWyksPlkYRAmPmDADQOID8eX5qkrNZE?=
- =?us-ascii?Q?9kdf8u1l5NeRscCHOrD8HoNqSKb40yt2g/mAH+ODCyirHyhmgeK4Yte9n2iH?=
- =?us-ascii?Q?/VT1pzoHLJMle9acLCJ4bTMDnuWVJOeEH+8PkgnQtaIQYntBMgLRsciDbegT?=
- =?us-ascii?Q?phsUXF7mxj0eqs0YHhVNTPPK26CkS1TiikG0cHY+dfg63VXL8d8QP/39Dw1/?=
- =?us-ascii?Q?Y5FXQW8j/j6uGVgEUs4sATBmtGDPRvCMlh6BT/5dHU2jcUETIfolGTiCyNeb?=
- =?us-ascii?Q?M2v8GdjZv6KyyDp+0UTstT8Wd1Bju9We12DILfV4okIc9iT3LRmL18qIzlcW?=
- =?us-ascii?Q?40iFOioiI8TGKs66EC5SYd/pXftWX4ypF03sLSzCEkwQzMCPFd4KegkFFima?=
- =?us-ascii?Q?H5FcP66KJJ6m+lLz3pLIr2X7xIbO+Mz2jEtVJA8RQTXI4d4HBy9ATbAteK3k?=
- =?us-ascii?Q?N+HdLfgP0t1qbY0ZtZ8=3D?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f261359b-e079-4001-9f4e-08dbe5293755
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 15:48:58.9537
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vsGD1iqtLjK5nUMDOcWdSTCjqDhbhmcOFNwCUv0uaJgPm4t+WM5q/3fxwvQW+WbI76fFAtavBC+VY1KLoid/Kg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8113
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The EDMAv4 has hardware restrictions, requiring some channels to be
-allocated to ODD and others to EVEN. The previous eDMA driver did not
-account for these restrictions, and it worked due to the order in dts
-matching the requirements. The commit below reverts the rx/tx channel,
-triggering this issue.
+Otherwise they are left at 24MHz and the NPU runs very slowly.
 
-Adds channel requirements to the dts to instruct the driver to allocate
-odd or even channels, ensuring it is not dependent on the order of rx/tx in
-dts.
+Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
+Suggested-by: Lucas Stach <l.stach@pengutronix.de>
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Fixes: a725990557e7 ("arm64: dts: imx93: Fix the dmas entries order")
-Signed-off-by: Frank Li <Frank.Li@nxp.com>
 ---
- arch/arm64/boot/dts/freescale/imx93.dtsi | 13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/imx93.dtsi b/arch/arm64/boot/dts/freescale/imx93.dtsi
-index ceccf47664407..6f06ebdcb2513 100644
---- a/arch/arm64/boot/dts/freescale/imx93.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx93.dtsi
-@@ -4,6 +4,7 @@
-  */
- 
- #include <dt-bindings/clock/imx93-clock.h>
-+#include <dt-bindings/dma/fsl-edma.h>
- #include <dt-bindings/gpio/gpio.h>
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/interrupt-controller/arm-gic.h>
-@@ -670,7 +671,8 @@ lpuart3: serial@42570000 {
- 				interrupts = <GIC_SPI 68 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX93_CLK_LPUART3_GATE>;
- 				clock-names = "ipg";
--				dmas = <&edma2 18 0 1>, <&edma2 17 0 0>;
-+				dmas = <&edma2 18 0 (FSL_EDMA_RX | FSL_EDMA_ODD_CH)>,
-+				       <&edma2 17 0 FSL_EDMA_EVEN_CH>;
- 				dma-names = "rx", "tx";
- 				status = "disabled";
- 			};
-@@ -681,7 +683,8 @@ lpuart4: serial@42580000 {
- 				interrupts = <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX93_CLK_LPUART4_GATE>;
- 				clock-names = "ipg";
--				dmas = <&edma2 20 0 1>, <&edma2 19 0 0>;
-+				dmas = <&edma2 20 0 (FSL_EDMA_RX | FSL_EDMA_ODD_CH)>,
-+				       <&edma2 19 0 FSL_EDMA_EVEN_CH>;
- 				dma-names = "rx", "tx";
- 				status = "disabled";
- 			};
-@@ -692,7 +695,8 @@ lpuart5: serial@42590000 {
- 				interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX93_CLK_LPUART5_GATE>;
- 				clock-names = "ipg";
--				dmas = <&edma2 22 0 1>, <&edma2 21 0 0>;
-+				dmas = <&edma2 22 0 (FSL_EDMA_RX | FSL_EDMA_ODD_CH)>,
-+				       <&edma2 21 0 FSL_EDMA_EVEN_CH>;
- 				dma-names = "rx", "tx";
- 				status = "disabled";
- 			};
-@@ -703,7 +707,8 @@ lpuart6: serial@425a0000 {
- 				interrupts = <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
- 				clocks = <&clk IMX93_CLK_LPUART6_GATE>;
- 				clock-names = "ipg";
--				dmas = <&edma2 24 0 1>, <&edma2 23 0 0>;
-+				dmas = <&edma2 24 0 (FSL_EDMA_RX | FSL_EDMA_ODD_CH)>,
-+				       <&edma2 23 0 FSL_EDMA_EVEN_CH>;
- 				dma-names = "rx", "tx";
- 				status = "disabled";
- 			};
+v2: Fix subject (Jerome Brunet)
+---
+ arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+index ff68b911b729..9d5eab6595d0 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
++++ b/arch/arm64/boot/dts/amlogic/meson-g12-common.dtsi
+@@ -2502,6 +2502,9 @@ npu: npu@ff100000 {
+ 		clocks = <&clkc CLKID_NNA_CORE_CLK>,
+ 			 <&clkc CLKID_NNA_AXI_CLK>;
+ 		clock-names = "core", "bus";
++		assigned-clocks = <&clkc CLKID_NNA_CORE_CLK>,
++				  <&clkc CLKID_NNA_AXI_CLK>;
++		assigned-clock-rates = <800000000>, <800000000>;
+ 		resets = <&reset RESET_NNA>;
+ 		status = "disabled";
+ 	};
 -- 
-2.34.1
+2.41.0
 
