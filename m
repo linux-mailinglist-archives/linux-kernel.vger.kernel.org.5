@@ -2,134 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CFB7EABCF
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:44:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A2E947EABD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232369AbjKNIo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
+        id S232350AbjKNIph (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:45:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbjKNIo0 (ORCPT
+        with ESMTP id S232168AbjKNIpg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:44:26 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345AB1AA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:44:23 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5094727fa67so7827634e87.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:44:23 -0800 (PST)
+        Tue, 14 Nov 2023 03:45:36 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB19E1A8;
+        Tue, 14 Nov 2023 00:45:32 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id 46e09a7af769-6d2de704f53so3306647a34.2;
+        Tue, 14 Nov 2023 00:45:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699951461; x=1700556261; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EOI0CPqc9rDEial0ZWLikbzbAhp2oEQwcaX5s3JL5lU=;
-        b=GaBkddCtVV4Cx5R32RvyNisa4XpVVlW4VTDJv072taqKn8xuHBn+vUWncuWPIEt21k
-         UbAKHTpVdQCUSAUi2ojfoZfaBAZ36yhUIFiM/dphEoWhLckF0Fqqh87fz32AJ2qm1Gd+
-         NyMd7q3lS5Sb0fFD4QAHMjzuw7yUDs1wf5+MU=
+        d=gmail.com; s=20230601; t=1699951532; x=1700556332; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HmPI87GXXhzcCcyXWnBkmBBMe8gHKSUCEC5PcL6O7N8=;
+        b=lzKdzWJRsXS28TbHKF/sIMU5GeCVUo+lFWon+9ABQ3YPFcz4aFCYS9JIKz3o/JBM1F
+         wdUZeqPoc7GWjCJyyR6cDOBBCbjQ1/czoJl7XucKxpXkyaUfxV9ecx3ZJ1zZJzXFRvp0
+         jX4og2x8O62qE9yc6hAKnNdNJJ1fLKNhEFmJu4htGr2PSwgx98KoL+dy29rcxfooV/jz
+         0IOMT0y88ybRCXQMzHRR6TFrFkDeOvqJPDbX5D8xJhhFzb8fJlgYeSIQKJG8oBraKORI
+         RBtlgiMSJnuKVxU69Lg0n1mbchLf3NXV4lpGk1/yntowE+49Jupl7DWyubu7M2iL1yX1
+         UwCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699951461; x=1700556261;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=EOI0CPqc9rDEial0ZWLikbzbAhp2oEQwcaX5s3JL5lU=;
-        b=J1etXG+EyHNei+8VEaPhjm4n4w70V7pprUn6LJrjAzv6nq3llSjisqiVTsHPmdsIS7
-         FunrmHawwJSr3LPcrsV/5g+9AzK/uBYPDGBHlq3v0JwY/gjS2A2j0e7UT/OWIRo3XuT+
-         Stj4Qc1vdHRTY7oh6vBWw9o0wgWFUWQzonyM1cMGqvM7DEmNkixlT9pqQHn+BBm6Wx2g
-         uzDJSKAOqDtyFbAZe7DzODMva0ESnsHS/JEKBYcCD/3IF1EMNGrcZyAEJSq0/o1f7+Pl
-         +xBPJ4zSb0ejXECs1LR2KQVhleZqlOBLHAgp8N8ixhwaiuLIHsjM7Gpxz8g6U11EXL+6
-         JFrw==
-X-Gm-Message-State: AOJu0Yxr3qfPddtC/EcArJubPArN/BeIpdefx1A35M+wfgbz30zbEk2k
-        ue1bjk24iv29WH8ICY3tTsVookJJHecrWwm98eK12g==
-X-Google-Smtp-Source: AGHT+IEa6VnEgDgdb660juJcwqvPMHNrvPtOFZUPkY8aSdfT4qRPasNYPWnpX+E9xWBXVGeBHiyk1pNobLJZBUesJiM=
-X-Received: by 2002:ac2:5dd6:0:b0:507:9d70:b297 with SMTP id
- x22-20020ac25dd6000000b005079d70b297mr5427659lfq.60.1699951461277; Tue, 14
- Nov 2023 00:44:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1699951532; x=1700556332;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HmPI87GXXhzcCcyXWnBkmBBMe8gHKSUCEC5PcL6O7N8=;
+        b=Ywva3E3PFiaCv1dwTjIg5l5zsiMGp2tE6mBU9KsThz0dl5DRSwbWO2d5BfzNdg9bGA
+         A45cUZZgkdBGtf/cCTIdCsPNTWbl0a9EoDxrHcI3/l67modkFjL0ebU28M90MTj2gEkq
+         DKAu7SKvFsErQ3sOed13Rz3PuBZIpbPL9a4L1aIY6lJDSLSZgPrek6n3Q0wMExY9H+sB
+         wT4Bho6RI/2PWHeJnD81q1ebLF0c/trv7kt1vBoQ3o20aE1A0GvmABPT+79Bm6+bgHSd
+         Hi6FLwMLxdg62z9zL01EBUW5qPskLFcKkSFAjtN/lup0wos9wfi0l2A1sd5OSL9KQ8ap
+         sPsw==
+X-Gm-Message-State: AOJu0Yzi+BxYqwW2nkieNcTDQIc4m6oUteYXPYNK4hmxuwRfhjbLExoZ
+        ouQHFZJRAKO6WkqMAExj+B8kGbEjWK8=
+X-Google-Smtp-Source: AGHT+IEX7RjXev2XQltkrJXPfVRcuBRK0VCen1Onv2L8UNWzex6MaDtzPKTDE4jw6g5Fj8QP4FZ4jA==
+X-Received: by 2002:a05:6870:7886:b0:1e9:896a:8055 with SMTP id hc6-20020a056870788600b001e9896a8055mr12703000oab.25.1699951532104;
+        Tue, 14 Nov 2023 00:45:32 -0800 (PST)
+Received: from carrot.. (i223-218-133-131.s42.a014.ap.plala.or.jp. [223.218.133.131])
+        by smtp.gmail.com with ESMTPSA id u17-20020a056a00159100b006c4d2479c1asm748083pfk.219.2023.11.14.00.45.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 00:45:31 -0800 (PST)
+From:   Ryusuke Konishi <konishi.ryusuke@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-nilfs@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/20] nilfs2: Folio conversions for file paths
+Date:   Tue, 14 Nov 2023 17:44:16 +0900
+Message-Id: <20231114084436.2755-1-konishi.ryusuke@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <CAD=FV=WZCyp1aaSmpF-_TQ0CTWG1ZuvPZVw4mR=wJH=NTkKqqg@mail.gmail.com>
-In-Reply-To: <CAD=FV=WZCyp1aaSmpF-_TQ0CTWG1ZuvPZVw4mR=wJH=NTkKqqg@mail.gmail.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Tue, 14 Nov 2023 16:44:10 +0800
-Message-ID: <CAGXv+5GHFn_Xr0ta7b5M9WMBJzCE6NJWo_PR+XOYXO0oaoPeaQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 8:22=E2=80=AFAM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> Hi,
->
-> On Thu, Nov 9, 2023 at 2:06=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
-wrote:
-> >
-> > The driver as
-> > implemented currently doesn't deal with regulators or GPIO pins,
-> > since in the existing device trees they are either always on for
-> > regulators, or have GPIO hogs or pinmux and pinconfig directly
-> > tied to the pin controller.
->
-> I guess I won't object too much about this limitation for v1, but IMO
-> it would be good to get this sorted out since I think part of the
-> power of having the HW Prober is specifically that it can handle this
-> type of use case. You have a little bit of board-specific code that
-> knows how to turn on the regulators / GPIOs and can then probe the
-> devices.
->
-> Note: even if this is "board specific", it doesn't mean you couldn't
-> share code between boards. For instance, you could have a helper
-> function that would turn on regulators/GPIOs based on some type of
-> table and that helper function could be used across a whole pile of
-> Chromebooks. If a Chromebook is sufficiently different that it
-> couldn't use the helper function then it could call its own function,
-> but presumably it wouldn't be hard to support a bunch of boards
-> without much code.
+Hi Andrew, please queue this series for the next merge window.
 
-I agree this part is fairly generic and should be implemented.
+This series advances page->folio conversions for a wide range of
+nilfs2, including its file operations, block routines, and the log
+writer's writeback routines.  It doesn't cover large folios support,
+but it saves a lot of hidden compound_head() calls while preserving
+the existing support range behavior.
 
-We probably don't even need such a table. If these components share
-a common connection to the mainboard, they certainly will have the
-same GPIO lines and regulator supplies. The prober could just scan
-the nodes looking for -gpio and -supply properties, de-duplicate
-them, and turn them on.
+The original series in post [1] also covered directory-related
+page->folio conversions, but that was put on hold because a regression
+was found in testing, so this is an excerpt from the first half of the
+original post.
 
-The reason this isn't implemented in this version is because the devices
-I'm currently using do not have these resources togglable. The supply is
-always on, and the GPIO line is disconnected from the SoC. So I have no
-way of testing it yet.
+[1] https://lkml.kernel.org/r/20231106173903.1734114-1-willy@infradead.org
 
-> As part of this, I think that your main "HW Prober" for Chromebooks
-> should be in "drivers/platform/chrome/". I think that the only things
-> that should be in the "drivers/of" directory should be helper
-> functions used by the Chromebook HW Probers.
+I tested this series in both 32-bit and 64-bit environments, switching
+between normal and small block sizes.  I also reviewed all changes in
+all patches to ensure they do not break existing behavior.
 
-Sound like what Rob wants.
+There were no problems, so I'm sending this part first because I would
+like you to keep it in the -mm tree at an early stage.
 
-ChenYu
+Thanks,
+Ryusuke Konishi
+
+
+Matthew Wilcox (Oracle) (20):
+  nilfs2: Add nilfs_end_folio_io()
+  nilfs2: Convert nilfs_abort_logs to use folios
+  nilfs2: Convert nilfs_segctor_complete_write to use folios
+  nilfs2: Convert nilfs_forget_buffer to use a folio
+  nilfs2: Convert to nilfs_folio_buffers_clean()
+  nilfs2: Convert nilfs_writepage() to use a folio
+  nilfs2: Convert nilfs_mdt_write_page() to use a folio
+  nilfs2: Convert to nilfs_clear_folio_dirty()
+  nilfs2: Convert to __nilfs_clear_folio_dirty()
+  nilfs2: Convert nilfs_segctor_prepare_write to use folios
+  nilfs2: Convert nilfs_page_mkwrite() to use a folio
+  nilfs2: Convert nilfs_mdt_create_block to use a folio
+  nilfs2: Convert nilfs_mdt_submit_block to use a folio
+  nilfs2: Convert nilfs_gccache_submit_read_data to use a folio
+  nilfs2: Convert nilfs_btnode_create_block to use a folio
+  nilfs2: Convert nilfs_btnode_submit_block to use a folio
+  nilfs2: Convert nilfs_btnode_delete to use a folio
+  nilfs2: Convert nilfs_btnode_prepare_change_key to use a folio
+  nilfs2: Convert nilfs_btnode_commit_change_key to use a folio
+  nilfs2: Convert nilfs_btnode_abort_change_key to use a folio
+
+ fs/nilfs2/btnode.c  |  62 ++++++++---------
+ fs/nilfs2/file.c    |  28 ++++----
+ fs/nilfs2/gcinode.c |   4 +-
+ fs/nilfs2/inode.c   |  11 ++--
+ fs/nilfs2/mdt.c     |  23 +++----
+ fs/nilfs2/page.c    |  68 +++++++++----------
+ fs/nilfs2/page.h    |   6 +-
+ fs/nilfs2/segment.c | 157 ++++++++++++++++++++++----------------------
+ 8 files changed, 183 insertions(+), 176 deletions(-)
+
+-- 
+2.34.1
+
