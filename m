@@ -2,133 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98B87EA9E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:59:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE347EA9E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 06:00:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbjKNE7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51512 "EHLO
+        id S231512AbjKNFAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 00:00:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNE7D (ORCPT
+        with ESMTP id S229501AbjKNFA3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 23:59:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FE619B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:59:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699937940; x=1731473940;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=vzuLGZppEUfGNm/Q6z7GNvK1qKKvMHzq4ZmTZdmNAeU=;
-  b=Ns1bn67gYC3sXEHqhWxWXPNDEBJMdqip22u1/yPYzjrObyt350RrvtSa
-   NxNGYJfKvY9JweV4xp1b27qierPgHQGLFwC6+1KMlFyQOxdkJGnwi/vE7
-   Zwdlf+EWzBd5qD1xRwcUAaPD9AmG3LF7SWOQx5jk/dPaP4qw6NOj7eLVy
-   DJrT0Xhv135c/y/mdWgGfoc3emLXCuIe6JIC96DauB9uCL7+FeXgi7XMo
-   wZjgssHFIgsNKSeIWdW/x/bfWEDhaKePR9bDNeiExgrbZt69eEtWkn476
-   cwZ3q8IK5+qX0MlRgrSm0CerjEEjjgNglVn3xiZVQItdbe1hD4oyg94QK
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="390376979"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="390376979"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 20:58:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="937938476"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="937938476"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga005.jf.intel.com with ESMTP; 13 Nov 2023 20:58:57 -0800
-Message-ID: <79b2f656-6342-4f46-a4cf-fe8152f1c67f@linux.intel.com>
-Date:   Tue, 14 Nov 2023 12:54:46 +0800
+        Tue, 14 Nov 2023 00:00:29 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FB3123
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 21:00:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 400C5C433CA;
+        Tue, 14 Nov 2023 05:00:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699938025;
+        bh=8c49J/Hz0npPJend6pBAuCS3MAFdn1Aa9h+mSQMr4Lo=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=WbfsXMxBjfMqna2n+NpmuWhw13v64Ik48gmZJBGDE21hXsQETytFzyoDGlZhw8Ush
+         NKGXuM5y7bZ3KbaFIVH/UzqAzD58FwsBmtTakyg48nHhuRrs7ysdTYGxXeigNM3MSc
+         4PxUPPznHK2aTyNWDyPbuMb71PT9dAMsLujDcG4nCWqzlEohpjQ9OCu8+f1pUKNSLX
+         nJDpTFOtWhsBbcva+NZjPMy15aJ7ayZVftjmcgY/jk1sDjWyzN4fTod3O8qFT8OYqc
+         fCLEYks5oBSb62kbbss45uYLlZVPcgtf2Oq7VnuSK0Q8u/WL6uSE2ZBHvgxRJ1dtk5
+         IcfrZB3ZfqW7g==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 24965E1F673;
+        Tue, 14 Nov 2023 05:00:25 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Omit devTLB invalidation requests when
- TES=0
-Content-Language: en-US
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
- <20231114011036.70142-2-baolu.lu@linux.intel.com>
- <BN9PR11MB52764263BE04AAFAC0907A8D8CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <1a07a265-f834-4834-b9cb-5c7016ee9142@linux.intel.com>
- <BN9PR11MB52761EDB3AE90DE87661A3C28CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52761EDB3AE90DE87661A3C28CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net v4 0/3] Fix large frames in the Gemini ethernet driver
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <169993802514.31854.14137380425875500865.git-patchwork-notify@kernel.org>
+Date:   Tue, 14 Nov 2023 05:00:25 +0000
+References: <20231109-gemini-largeframe-fix-v4-0-6e611528db08@linaro.org>
+In-Reply-To: <20231109-gemini-largeframe-fix-v4-0-6e611528db08@linaro.org>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     ulli.kroll@googlemail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        mirq-linux@rere.qmqm.pl, olteanv@gmail.com, andrew@lunn.ch,
+        linux-arm-kernel@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 12:45 PM, Tian, Kevin wrote:
->> From: Baolu Lu <baolu.lu@linux.intel.com>
->> Sent: Tuesday, November 14, 2023 11:14 AM
->>
->> On 11/14/23 11:14 AM, Tian, Kevin wrote:
->>>> From: Lu Baolu<baolu.lu@linux.intel.com>
->>>> Sent: Tuesday, November 14, 2023 9:11 AM
->>>>
->>>> The latest VT-d spec indicates that when remapping hardware is disabled
->>>> (TES=0 in Global Status Register), upstream ATS Invalidation Completion
->>>> requests are treated as UR (Unsupported Request).
->>>>
->>>> Consequently, the spec recommends in section 4.3 Handling of Device-TLB
->>>> Invalidations that software refrain from submitting any Device-TLB
->>>> invalidation requests when address remapping hardware is disabled.
->>>>
->>>> Verify address remapping hardware is enabled prior to submitting Device-
->>>> TLB invalidation requests.
->>>>
->>>> Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by
->>>> default")
->>>> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->>>> ---
->>>>    drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
->>>>    1 file changed, 18 insertions(+)
->>>>
->>>> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->>>> index a3414afe11b0..23cb80d62a9a 100644
->>>> --- a/drivers/iommu/intel/dmar.c
->>>> +++ b/drivers/iommu/intel/dmar.c
->>>> @@ -1522,6 +1522,15 @@ void qi_flush_dev_iotlb(struct intel_iommu
->>>> *iommu, u16 sid, u16 pfsid,
->>>>    {
->>>>    	struct qi_desc desc;
->>>>
->>>> +	/*
->>>> +	 * VT-d spec, section 4.3:
->>>> +	 *
->>>> +	 * Software is recommended to not submit any Device-TLB
->>>> invalidation
->>>> +	 * requests while address remapping hardware is disabled.
->>>> +	 */
->>>> +	if (!(iommu->gcmd & DMA_GCMD_TE))
->>>> +		return;
->>>> +
->>> Is it a valid case to see such request when the iommu is disabled?
->>> If not then let's add a WARN.
->>
->> There might be valid cases. The VT-d translation is turned on after all
->> devices get probed.
->>
+Hello:
+
+This series was applied to netdev/net.git (main)
+by Jakub Kicinski <kuba@kernel.org>:
+
+On Thu, 09 Nov 2023 10:03:11 +0100 you wrote:
+> This is the result of a bug hunt for a problem with the
+> RTL8366RB DSA switch leading me wrong all over the place.
 > 
-> but I didn't get why there will be actual mapping changes before
-> vtd translation is enabled...
+> I am indebted to Vladimir Oltean who as usual pointed
+> out where the real problem was, many thanks!
+> 
+> Tryig to actually use big ("jumbo") frames on this
+> hardware uncovered the real bugs. Then I tested it on
+> the DSA switch and it indeed fixes the issue.
+> 
+> [...]
 
-For an example, in iommu_create_device_direct_mappings(),
-iommu_flush_iotlb_all() is called after direct mappings are created.
+Here is the summary with links:
+  - [net,v4,1/3] net: ethernet: cortina: Fix max RX frame define
+    https://git.kernel.org/netdev/net/c/510e35fb931f
+  - [net,v4,2/3] net: ethernet: cortina: Handle large frames
+    https://git.kernel.org/netdev/net/c/d4d0c5b4d279
+  - [net,v4,3/3] net: ethernet: cortina: Fix MTU max setting
+    https://git.kernel.org/netdev/net/c/dc6c0bfbaa94
 
-Best regards,
-baolu
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
