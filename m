@@ -2,147 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EB9F7EB5A1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:38:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8691A7EB5A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 18:39:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232329AbjKNRiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 12:38:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43700 "EHLO
+        id S233446AbjKNRjT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 12:39:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229566AbjKNRiK (ORCPT
+        with ESMTP id S229925AbjKNRjR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 12:38:10 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69416B7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:38:06 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5be0d0248e5so5309463a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:38:06 -0800 (PST)
+        Tue, 14 Nov 2023 12:39:17 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEFC710F
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:39:13 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-66d24ccc6f2so131166d6.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 09:39:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699983553; x=1700588353; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=9XiKxA5VDNsAvUBLkxgGxX4wbMhEnlVk81pKqwltiZQ=;
+        b=ZMb2uT+v7ygOzsfntA28Bh+4DWVDZGkW6HMt5NiRVBPEdNlR4Q+Qf9LGBSrpMd5MdI
+         lGXAO0rNTQdfHlZ5fZWCjQBXqxiVjKSzVLFelsgYetMqebQoCgLig7DpEej3ZYxE3G8+
+         AmvbWwb/21ZTqPLe/74l6y0FLBRYP/y7bGXxbw6g3dRdaCEiNucurH3ZUoT2Abpj/f6z
+         2aJ2qAwyhAZi6QkviXw1Ol8GpZFP3yRO6wK4skwmad4Xun9dPWbvt8NUeGE2vwqqb4gu
+         3s7IvBbqgtY2lx2hov7gZR4cKCt99OCPryZSUOMwoi25mpMK40Z402mAn5yh+fsgoWsX
+         L0tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699983486; x=1700588286;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jjAm8HkuBsc4IAqzr04NFQyext4ct4ShwaKRF4OCyk8=;
-        b=G8nBd/VQh1jEY/J9LJckH3ciLSYMZ3mVScQuFmq7+fdpYtUpXZ/qTEjvXg7OQ7jYU9
-         AcrQX84JKXJkDbLhNmlGbiJUYVFsdQh8ALGbvqv8RumfaZGN9p44LF8HQbIR2Or4T27q
-         IKCX9I4mcnMIgR2N1LynFhll+04LuVdcEuTjSsSQL5nNp2Osrdb7tUd2l84WTgF8of4V
-         kiV5a68xqq+CnW5I68p1Z8tbxhfagDKrZudOplcakVB8uRBbDPQv6QR5+hs8lwkLl4NN
-         sbb+WJioHUUFQlxu6iPFZCDIG57z4knnv/gxittM3c1PVWoMSUZDHh+OflIKV4bl2BRA
-         Sr6w==
-X-Gm-Message-State: AOJu0YwQJ3ukY7XHnYlVCQjKziZ1xICsnmLj0E3OvHMk/nNSlZwv/szl
-        6C9iBMeB9mPjtAW1ENDrX4Y9UqtPecbD+wpRlurPIzyfk0m8
-X-Google-Smtp-Source: AGHT+IHMosRYg3F5O77ODJo4bXzsq8HBkVtGHpvdLMaYlbkglZUt7He6eUxlfLwefXhpQB8+q6W40kmlO4pt8UkJ74NDcgru5b4C
+        d=1e100.net; s=20230601; t=1699983553; x=1700588353;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9XiKxA5VDNsAvUBLkxgGxX4wbMhEnlVk81pKqwltiZQ=;
+        b=HNyeOVIJZeUOg6WXQ1gIfb0ph1QU4A0HE+Abim7RBQaqAV7CAzXth3+XWSQGF9hPXq
+         oJcRl2v/4IpVl1yxRmR1jirVDbIkuhiYcx+B9SJIK6EHOsge+Behb9Vo6uBvxKEj/dVr
+         XO884hsp2M5MD4U7qXgN0JZeBv2+aeooHyTt9YG13SNWNWdA10+aYBsCrddgyH1RZj5o
+         fC/jsvjl7TrRMLJ4zgXT0vPlEjmqjQhbWOd2U/yoPKiXbP4zV6qZQpuJwyclnI8HP1st
+         rXKx0xN5MZUkzFulrJL6kbKyraligonUw0TGXPhbEFNAtoJZzW/AKQ+ezbLtUjUdkAOq
+         BgAg==
+X-Gm-Message-State: AOJu0YwUCxEozVHfXr61uPGBBJBr+LXKM0hb6Cs8flY4HDb+7yUrpTHq
+        W0aXQoP1qyNjq9wujjhAJGRY9g==
+X-Google-Smtp-Source: AGHT+IHyPfODvFvqlazTjiSu6P7NjTZkmBilmM93IuC7GXNUAOoY2aRTwpkj8O8rEzQl+QB2+V7iUw==
+X-Received: by 2002:a0c:ebcb:0:b0:66f:b580:8836 with SMTP id k11-20020a0cebcb000000b0066fb5808836mr4364269qvq.1.1699983552768;
+        Tue, 14 Nov 2023 09:39:12 -0800 (PST)
+Received: from [172.25.83.73] ([12.186.190.1])
+        by smtp.gmail.com with ESMTPSA id n12-20020a056214008c00b0066d1d2242desm3086378qvr.120.2023.11.14.09.39.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 09:39:12 -0800 (PST)
+Message-ID: <124c97ca-0c2c-4b92-8d8e-99d589daf2da@linaro.org>
+Date:   Tue, 14 Nov 2023 18:39:09 +0100
 MIME-Version: 1.0
-X-Received: by 2002:a63:200d:0:b0:5bd:37e8:fc26 with SMTP id
- g13-20020a63200d000000b005bd37e8fc26mr640451pgg.2.1699983485950; Tue, 14 Nov
- 2023 09:38:05 -0800 (PST)
-Date:   Tue, 14 Nov 2023 09:38:05 -0800
-In-Reply-To: <674a0d1a2b541f6d3c199b5bddda8db9@foxhound.fi>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cde3d5060a203f1f@google.com>
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in __pte_offset_map_lock
-From:   syzbot <syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com>
-To:     jose.pekkarinen@foxhound.fi, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] dt-bindings: iio: adc: ad7192: Add AD7194 support
+To:     Alisa-Dariana Roman <alisadariana@gmail.com>
+Cc:     Alisa-Dariana Roman <alisa.roman@analog.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Alexandru Tachici <alexandru.tachici@analog.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Maksim Kiselev <bigunclemax@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Cosmin Tanislav <demonsingur@gmail.com>,
+        Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+        Marius Cristea <marius.cristea@microchip.com>,
+        Marcus Folkesson <marcus.folkesson@gmail.com>,
+        Ibrahim Tilki <Ibrahim.Tilki@analog.com>,
+        ChiaEn Wu <chiaen_wu@richtek.com>,
+        Ivan Mikhaylov <fr0st61te@gmail.com>,
+        Niklas Schnelle <schnelle@linux.ibm.com>,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231105193132.47009-1-alisadariana@gmail.com>
+ <20231105193132.47009-3-alisadariana@gmail.com>
+ <e5c9eaaa-a8f3-4ca5-acf6-9ff714a07898@linaro.org>
+ <500eec71-e2f4-4f43-8bc9-6d4914b2493c@gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <500eec71-e2f4-4f43-8bc9-6d4914b2493c@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 14/11/2023 17:02, Alisa-Dariana Roman wrote:
+> On 06.11.2023 10:56, Krzysztof Kozlowski wrote:
+>> On 05/11/2023 20:31, alisadariana@gmail.com wrote:
+>>> From: Alisa-Dariana Roman <alisa.roman@analog.com>
+>>>
+>>> Unlike the other AD719Xs, AD7194 has configurable differential
+>>> channels. The default configuration for these channels can be changed
+>>> from the devicetree.
+>>>
+>>> Also add an example for AD7194 devicetree.
+>>>
+>>> Signed-off-by: Alisa-Dariana Roman <alisa.roman@analog.com>
+>>> ---
+>>>   .../bindings/iio/adc/adi,ad7192.yaml          | 69 +++++++++++++++++++
+>>>   1 file changed, 69 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+>>> index 16def2985ab4..b9a9f7b20670 100644
+>>> --- a/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+>>> +++ b/Documentation/devicetree/bindings/iio/adc/adi,ad7192.yaml
+>>> @@ -21,8 +21,15 @@ properties:
+>>>         - adi,ad7190
+>>>         - adi,ad7192
+>>>         - adi,ad7193
+>>> +      - adi,ad7194
+>>>         - adi,ad7195
+>>>   
+>>> +  '#address-cells':
+>>> +    const: 1
+>>> +
+>>> +  '#size-cells':
+>>> +    const: 0
+>>> +
+>>>     reg:
+>>>       maxItems: 1
+>>>   
+>>> @@ -96,6 +103,31 @@ required:
+>>>     - spi-cpol
+>>>     - spi-cpha
+>>>   
+>>> +patternProperties:
+>>> +  "^channel@([0-9a-f])$":
+>>> +    type: object
+>>> +    $ref: adc.yaml
+>>> +    unevaluatedProperties: false
+>>> +
+>>> +    properties:
+>>> +      reg:
+>>> +        description: The channel index.
+>>> +        minimum: 0
+>>> +        maximum: 7
+>>
+>> Your pattern a bit above is not correct then: [0-7]
+>>
+>>> +
+>>> +      diff-channels:
+>>> +        description: |
+>>> +          The differential channel pair for Ad7194 configurable channels. The
+>>> +          first channel is the positive input, the second channel is the
+>>> +          negative input.
+>>> +        items:
+>>> +          minimum: 1
+>>> +          maximum: 16
+>>> +
+>>> +    required:
+>>> +      - reg
+>>> +      - diff-channels
+>>> +
+>>>   allOf:
+>>>     - $ref: /schemas/spi/spi-peripheral-props.yaml#
+>>>   
+>>> @@ -127,3 +159,40 @@ examples:
+>>>               adi,burnout-currents-enable;
+>>>           };
+>>>       };
+>>> +  - |
+>>> +    spi {
+>>> +        #address-cells = <1>;
+>>> +        #size-cells = <0>;
+>>> +
+>>> +        adc@0 {
+>>> +            #address-cells = <1>;
+>>> +            #size-cells = <0>;
+>>> +            compatible = "adi,ad7194";
+>>> +            reg = <0>;
+>>> +            spi-max-frequency = <1000000>;
+>>> +            spi-cpol;
+>>> +            spi-cpha;
+>>> +            clocks = <&ad7192_mclk>;
+>>> +            clock-names = "mclk";
+>>> +            interrupts = <25 0x2>;
+>>> +            interrupt-parent = <&gpio>;
+>>> +            dvdd-supply = <&dvdd>;
+>>> +            avdd-supply = <&avdd>;
+>>> +            vref-supply = <&vref>;
+>>> +
+>>> +            adi,refin2-pins-enable;
+>>> +            adi,rejection-60-Hz-enable;
+>>> +            adi,buffer-enable;
+>>> +            adi,burnout-currents-enable;
+>>> +
+>>> +            channel@0 {
+>>
+>> Why cannot you add this to the existing example?
+>>
+>>
+>>
+>> Best regards,
+>> Krzysztof
+>>
+> I added another example to highlight the fact that only AD7194 supports 
+> configurable channels. How should I proceed?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: unable to handle kernel paging request in __pte_offset_map_lock
+Bindings did not tell that, so it seems you miss that part - allOf
+constraining channels per variant.
 
-Unable to handle kernel paging request at virtual address dfff800000000004
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000004] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 8592 Comm: syz-executor.4 Not tainted 6.7.0-rc1-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
-lr : lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
-sp : ffff800097706d40
-x29: ffff800097707000 x28: ffff8000808f718c x27: ffff700012ee0e18
-x26: 1ffff00011c62088 x25: 0000000000000000 x24: 0000000000000000
-x23: ffff700012ee0dd0 x22: 0000000000000000 x21: 0000000000000000
-x20: 0000000000000000 x19: 0000000000000022 x18: ffff800097707750
-x17: 0000000000000000 x16: ffff80008a7369ec x15: 0000000000000001
-x14: ffff80008e310448 x13: ffff800097706e80 x12: dfff800000000000
-x11: ffff80008031ef10 x10: ffff80008e310444 x9 : 00000000000000f3
-x8 : 0000000000000004 x7 : ffff8000808f718c x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000022
-Call trace:
- __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- __pte_offset_map_lock+0x160/0x2a8 mm/pgtable-generic.c:375
- pte_offset_map_lock include/linux/mm.h:2946 [inline]
- filemap_map_pages+0x5cc/0x112c mm/filemap.c:3531
- do_fault_around mm/memory.c:4586 [inline]
- do_read_fault mm/memory.c:4619 [inline]
- do_fault mm/memory.c:4762 [inline]
- do_pte_missing mm/memory.c:3730 [inline]
- handle_pte_fault mm/memory.c:5038 [inline]
- __handle_mm_fault mm/memory.c:5179 [inline]
- handle_mm_fault+0x35ec/0x49f8 mm/memory.c:5344
- faultin_page mm/gup.c:956 [inline]
- __get_user_pages+0x3e0/0xa24 mm/gup.c:1239
- populate_vma_page_range+0x254/0x328 mm/gup.c:1677
- __mm_populate+0x240/0x3d8 mm/gup.c:1786
- mm_populate include/linux/mm.h:3379 [inline]
- vm_mmap_pgoff+0x2bc/0x3d4 mm/util.c:551
- ksys_mmap_pgoff+0xd0/0x5b0 mm/mmap.c:1425
- __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
- __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
- __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: 900704a8 b9424108 34000208 d343fe68 (386c6908) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	900704a8 	adrp	x8, 0xe094000
-   4:	b9424108 	ldr	w8, [x8, #576]
-   8:	34000208 	cbz	w8, 0x48
-   c:	d343fe68 	lsr	x8, x19, #3
-* 10:	386c6908 	ldrb	w8, [x8, x12] <-- trapping instruction
-
-
-Tested on:
-
-commit:         b85ea95d Linux 6.7-rc1
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=121fa70f680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fffc11e84313b7c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=89edd67979b52675ddec
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17cf0304e80000
+Best regards,
+Krzysztof
 
