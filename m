@@ -2,139 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A3A987EA92D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:42:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7C37EA935
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:45:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231514AbjKNDmY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 22:42:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38704 "EHLO
+        id S231949AbjKNDpS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 22:45:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNDmX (ORCPT
+        with ESMTP id S229580AbjKNDpQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 22:42:23 -0500
-Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 212B619B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:42:20 -0800 (PST)
-Received: by mail-pg1-x531.google.com with SMTP id 41be03b00d2f7-5a9bf4fbd3fso4187204a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:42:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699933339; x=1700538139; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=nBnWxULz4sB1k282R2qRVUVWhPl11XVq897JPJpGZLo=;
-        b=IIpLaHMTw5oIil4R5tl9aVdqLPRwFpWsBhBMJkO/tmlJxhoCpK8P8l+0xPgGA/nFyQ
-         dvL1c8/wxsVp3xiIdY2vfSZ1Cej2QNjScNuOdHvMqOEyVHE2FMHVVH7eVEba1zihneFI
-         CfQYl//cLHRZz6X+0QM8pZNxq3dFzX6tt87Z+ljHT2ALuIBpzjHLPBvc9MiJ3MfSSCbp
-         sOmYfzqZSqRxwuiTvhOJQV36u2Ak+7H7aTqdos186MQDrL7lNHsSY8SR3IqDwkErBs4P
-         TBQGgjs+9PrHrm5d+0HZsblIhQtOiPB2bBqbTPRhi1zL7gpXigEhQ2ps5zMpM3IcxqTf
-         z1Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699933339; x=1700538139;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=nBnWxULz4sB1k282R2qRVUVWhPl11XVq897JPJpGZLo=;
-        b=WiQPHwXhoBADSHs1KAcwDXEkhMq8sVMAvDZhiUICkg1CaDGCmk3vVhwxUQB1D4ekLX
-         9rrFivg+U0PbnK/cwG6Vo01J/qagap5btF4RW/8x5dGKiRCDM9LwXGX5gaMNTshcD63x
-         oC6kQEUvsZ1WKNqTTBb2YCtnRW5tvQ8UC1A/2mDXq1m5jbm+AGzVzC1t5EakJXwgoYLt
-         53qXTbA5tB0VvU13toipK2aFr2QZ5iKXmPkaH7IsS+z5UCi6rUkn8qsxu9ZKcQBF2iK2
-         2JVE3LI3SRm9H8mgXhLunBTkcgelHmNTkN5gmLjMm5WmG1k26ulajAmnrmnPYoOMdoQ0
-         HeCA==
-X-Gm-Message-State: AOJu0YybmEVm/O1wfirQ+CPiKmAe8X7gqXze05YCzYphD3T5CYLJMkVJ
-        SghXjplcFtunsgKJFh4kJWk=
-X-Google-Smtp-Source: AGHT+IFZKyWTgOnAf2RyU4KYRqc/ajBaxuHyq8HIRTRHEhtfedd4oYxuHtV1own8Sm6lL4ko3S23Pw==
-X-Received: by 2002:a17:902:e54f:b0:1cc:520a:544 with SMTP id n15-20020a170902e54f00b001cc520a0544mr1322488plf.48.1699933339496;
-        Mon, 13 Nov 2023 19:42:19 -0800 (PST)
-Received: from barry-desktop.hub ([2407:7000:8942:5500:4df7:6a7e:83c8:9693])
-        by smtp.gmail.com with ESMTPSA id jd12-20020a170903260c00b001ae0152d280sm4774143plb.193.2023.11.13.19.42.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 19:42:19 -0800 (PST)
-From:   Barry Song <21cnbao@gmail.com>
-X-Google-Original-From: Barry Song <v-songbaohua@oppo.com>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org,
-        iamjoonsoo.kim@lge.com, audra@redhat.com
-Cc:     linux-kernel@vger.kernel.org, shikemeng@huaweicloud.com,
-        quic_yingangl@quicinc.com, 42.hyeyoo@gmail.com,
-        Barry Song <v-songbaohua@oppo.com>
-Subject: [PATCH v2] mm/page_owner: record and dump free_pid and free_tgid
-Date:   Tue, 14 Nov 2023 16:42:02 +1300
-Message-Id: <20231114034202.73098-1-v-songbaohua@oppo.com>
-X-Mailer: git-send-email 2.34.1
+        Mon, 13 Nov 2023 22:45:16 -0500
+Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A15C3D42;
+        Mon, 13 Nov 2023 19:45:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699933512;
+        bh=XIw5E3P3t2yLzlvGyA8lzacW3IabO9mJ0GsOxrwMCRg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=I9xGW1iB2zsBmyv98fqpd78W1XE+T3x6+8dNiefqoLEgQAOhwpRoB6TlZPX16eJeI
+         jyAI4WOlTylYzYHXe59EkwEYM7Gz3v50TrOSO8ct4OVbaB4MEiAgHjb3g/rRqKy3FI
+         +rC3iifd5wfUaSDU4Cc486UlcLVVnGyaFCEsoO7n1OCyGtEr7oWWlGCamBBOfBCSgW
+         3SrtwaoUSOqDvabpMqKvUn616yPHI8VWME049+rdM5MhyKm4kLcgqqKCWsBPrCaliq
+         BiDhkdAnT7hxThr21etiT9370+wv1eYQ4p3CEuR0KdwWWgz7COqZHwNGWvQDhvqMbM
+         dK9uKsvo9P/og==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4STsd34smjz4wbr;
+        Tue, 14 Nov 2023 14:45:10 +1100 (AEDT)
+Date:   Tue, 14 Nov 2023 14:45:10 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Kentaro Takeda <takedakn@nttdata.co.jp>
+Subject: Re: linux-next: the fetch of the tomoyo tree failed
+Message-ID: <20231114144510.49fd3688@canb.auug.org.au>
+In-Reply-To: <20231017163242.62af10b3@canb.auug.org.au>
+References: <20231017163242.62af10b3@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/4jnyz5B/=fSu586N0oHCO+4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-While investigating some complex memory allocation and free bugs
-especially in multi-processes and multi-threads cases, from time
-to time, I feel the free stack isn't sufficient as a page can be
-freed by processes or threads other than the one allocating it.
-And other processes and threads which free the page often have
-the exactly same free stack with the one allocating the page. We
-can't know who free the page only through the free stack though
-the current page_owner does tell us the pid and tgid of the one
-allocating the page. This makes the bug investigation often hard.
+--Sig_/4jnyz5B/=fSu586N0oHCO+4
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Thus, This patch adds free pid and tgid in page_owner, so that we
-can easily figure out if the freeing is crossing processes or
-threads.
+Hi all,
 
-Signed-off-by: Barry Song <v-songbaohua@oppo.com>
----
- -v2:
- add missed free_pid and free_tgid copy in __folio_copy_owner
+On Tue, 17 Oct 2023 16:32:42 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>=20
+> It failed like this:
+>=20
+> fatal: unable to access 'https://scm.osdn.net/gitroot/tomoyo/tomoyo-test1=
+.git/': SSL certificate problem: certificate has expired
+>=20
+> and indeed it expired at 2023-10-16 23:59:59 UTC.
 
- mm/page_owner.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+I am still getting this failure (an so am unable to fetch the tomoya
+tree).
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 4f13ce7d2452..e7eba7688881 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -32,6 +32,8 @@ struct page_owner {
- 	char comm[TASK_COMM_LEN];
- 	pid_t pid;
- 	pid_t tgid;
-+	pid_t free_pid;
-+	pid_t free_tgid;
- };
- 
- static bool page_owner_enabled __initdata;
-@@ -152,6 +154,8 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 		page_owner = get_page_owner(page_ext);
- 		page_owner->free_handle = handle;
- 		page_owner->free_ts_nsec = free_ts_nsec;
-+		page_owner->free_pid = current->pid;
-+		page_owner->free_tgid = current->tgid;
- 		page_ext = page_ext_next(page_ext);
- 	}
- 	page_ext_put(page_ext);
-@@ -253,6 +257,8 @@ void __folio_copy_owner(struct folio *newfolio, struct folio *old)
- 	new_page_owner->handle = old_page_owner->handle;
- 	new_page_owner->pid = old_page_owner->pid;
- 	new_page_owner->tgid = old_page_owner->tgid;
-+	new_page_owner->free_pid = old_page_owner->free_pid;
-+	new_page_owner->free_tgid = old_page_owner->free_tgid;
- 	new_page_owner->ts_nsec = old_page_owner->ts_nsec;
- 	new_page_owner->free_ts_nsec = old_page_owner->ts_nsec;
- 	strcpy(new_page_owner->comm, old_page_owner->comm);
-@@ -495,7 +501,8 @@ void __dump_page_owner(const struct page *page)
- 	if (!handle) {
- 		pr_alert("page_owner free stack trace missing\n");
- 	} else {
--		pr_alert("page last free stack trace:\n");
-+		pr_alert("page last free pid %d tgid %d stack trace:\n",
-+			  page_owner->free_pid, page_owner->free_tgid);
- 		stack_depot_print(handle);
- 	}
- 
--- 
-2.34.1
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/4jnyz5B/=fSu586N0oHCO+4
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVS7UYACgkQAVBC80lX
+0GxixAgAo80j4i+/zREmbLZnRrTT39i0gamcnN2026csPLPfgneZoDespKQAyQr2
+ZbTbaTxFPyEQdQAvlb995wp6upmZPRuMkLEE0MJN7fkjPRaIjZ4aGQz5N0H3B2ZI
+GWGaKWBgfqqYSUpwog9Wbwlht6B+qcGY82QWCidbbUz2zlt73gJtZ4fGtVpGW8AK
+n10cANy3uudV/3KV0sHe/D7wAvv12rrXX27gPJ2BSbZeOrYkj4cZJUvw/7QrwH7T
+Jf4XcTe2PmeZUdf2nUhaqzdVFsCvQYz4ARSDvLw643/N4Jjt3C8PFSeDo6zGOuTY
+kBkyL4Qpdo+M1balO5sQY3MEVzbDLQ==
+=fcKW
+-----END PGP SIGNATURE-----
+
+--Sig_/4jnyz5B/=fSu586N0oHCO+4--
