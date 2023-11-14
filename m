@@ -2,77 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42BA7EB64C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 255347EB650
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:22:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233912AbjKNSU3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 13:20:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55672 "EHLO
+        id S233887AbjKNSWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 13:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229607AbjKNSU1 (ORCPT
+        with ESMTP id S229607AbjKNSWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 13:20:27 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2300121;
-        Tue, 14 Nov 2023 10:20:23 -0800 (PST)
-Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9nLBZ027118;
-        Tue, 14 Nov 2023 18:19:53 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=X1VJdgR4tz03dcjXQbECSZw/oGJ+qUKedww40+GLQIY=;
- b=i8BEesgr/IlekKM9WdnGC8xCepZKv9CLyhC8tYCvhwnOaHzI8/tEL6P3cpxxiCTjWK0W
- Yr51N2c+RDaHAbQBRNSLFDQ1bqHKt52rTy7LnQEMhq+D3pOlEbeAmYN0o7hG9PwP4nPg
- hu6bWRolcTSkONBIRTC5uTHY3OZb2r2pcXXXDCOfmicpfuc7Vz8TwrniBk4s9aq+3G2x
- D1OdvCv0iXAejqGwmIN4SlXKddgRbYpa9n1utwJMVtp4RGkiGxFvBHzsufOfd/oIzavj
- n1wS8S/xz4PrW6ndB+lPIqRUfI0nHx7KG1/ti0n8NdPJq40dzDZpIjYRefDChu+b7K0X uw== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uc4fy1hqs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 18:19:53 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEIJqMU014141
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 14 Nov 2023 18:19:52 GMT
-Received: from [10.110.49.55] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Tue, 14 Nov
- 2023 10:19:51 -0800
-Message-ID: <2e4be606-68a9-455b-a43d-20b8375efc49@quicinc.com>
-Date:   Tue, 14 Nov 2023 10:19:51 -0800
+        Tue, 14 Nov 2023 13:22:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F5D9121
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 10:22:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699986157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=JrgxpS9b6RH/dIRyuh67+QVxOU1qulfPt53kMoouXlk=;
+        b=LZd6BTAU275HOZSpa693UppKjtR24VuA/+z2sSDzagPMKIpX8g+8FpIZytc9CxwCoXCYNa
+        mGJGe3fC2OFrsRwOnJy0pf0JVBC+XSeKrlr5GM7lSUx8Wl57bvpej8v4PTozYj+qWujhZl
+        hmlbCRfYSsRqSCbXUB8ePa85pSK6urI=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-JAyWkMu4MmCICzIFuBYArg-1; Tue, 14 Nov 2023 13:22:36 -0500
+X-MC-Unique: JAyWkMu4MmCICzIFuBYArg-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4094158c899so37619545e9.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 10:22:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699986155; x=1700590955;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JrgxpS9b6RH/dIRyuh67+QVxOU1qulfPt53kMoouXlk=;
+        b=BJfgw3qs1NDPTOtQSqH1KutyMM9cm2mQ1QCIQziolEXpGD2EJnANmEUsjz6RqBPhAS
+         8O4w1w3LA9FxwbovMd4NsU7Nz/3pvnXulscc/44T3gg5+egJt+b0MgD2qcm2uynKG6Fy
+         s7XyHnD3GmQw0V1dHOAHv10iea5KsIi6CT+MsT2rzOQ6USJenNkD1AKe+WwGz3naQ0Z4
+         UX48JlTWHDkWwzpTZqYr2KMqV9oJjSuX1pI3fJkrthkwnLHKfh+mLVnMrpP1pk1h3VcC
+         E0R+5V2X+A+Y/ZD8t274nydzGNupqIkzoLJCOD67vplrPIIQ4T9bwg26kZT6XQtoD4Xb
+         1IvQ==
+X-Gm-Message-State: AOJu0YxrsbRj1Kd1zedqJETWI6U/IPa2mI/Ay1/ykVEM/SyhnZbCLChm
+        7X9FfDb+b4X5CFG58vlG6FU4cwxgITkQ4LrRuKEoab87jSi65viR2oCCuLId9mrMeT29RacEAc6
+        x3x0AFjlxmdNxyUm3uMbNt6WFBXMNLUiX
+X-Received: by 2002:a05:600c:4715:b0:40a:42dd:c82c with SMTP id v21-20020a05600c471500b0040a42ddc82cmr8263505wmo.27.1699986155163;
+        Tue, 14 Nov 2023 10:22:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFn/GeMx7sBAgFV3p8wQXfRgUF2SWBFj/UeA4oLtE0jb5nkAdUsv27yq7SwbP4ZK++6gN0n4w==
+X-Received: by 2002:a05:600c:4715:b0:40a:42dd:c82c with SMTP id v21-20020a05600c471500b0040a42ddc82cmr8263482wmo.27.1699986154681;
+        Tue, 14 Nov 2023 10:22:34 -0800 (PST)
+Received: from ?IPV6:2003:cb:c73e:8900:2d8:c9f0:f3fb:d4fd? (p200300cbc73e890002d8c9f0f3fbd4fd.dip0.t-ipconnect.de. [2003:cb:c73e:8900:2d8:c9f0:f3fb:d4fd])
+        by smtp.gmail.com with ESMTPSA id n40-20020a05600c3ba800b004094c5d929asm12490539wms.10.2023.11.14.10.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 10:22:34 -0800 (PST)
+Message-ID: <cbf8863a-d987-472f-8df3-bc621599f1ee@redhat.com>
+Date:   Tue, 14 Nov 2023 19:22:33 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: ath10k_pci logs errors about missing pre-cal and cal firmware on
- a laptop
+Subject: Re: [PATCH 1/8] mm/memory_hotplug: fix memory hotplug locking order
 Content-Language: en-US
-From:   Jeff Johnson <quic_jjohnson@quicinc.com>
-To:     Paul Menzel <pmenzel@molgen.mpg.de>, Kalle Valo <kvalo@kernel.org>
-CC:     <linux-wireless@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, <ath10k@lists.infradead.org>
-References: <7158e5e9-8bdc-4660-ac5d-5e3f81cf6158@molgen.mpg.de>
- <b70d8041-901c-48f6-8790-35e354c30865@quicinc.com>
-In-Reply-To: <b70d8041-901c-48f6-8790-35e354c30865@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: UJ2b_q-aVrCi3ID0Crd25oJh5yHl8dJh
-X-Proofpoint-ORIG-GUID: UJ2b_q-aVrCi3ID0Crd25oJh5yHl8dJh
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-14_18,2023-11-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
- mlxscore=0 malwarescore=0 adultscore=0 clxscore=1015 priorityscore=1501
- mlxlogscore=999 impostorscore=0 spamscore=0 phishscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311140139
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
+ <20231114180238.1522782-2-sumanthk@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
+ dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
+ QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
+ XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
+ Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
+ PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
+ WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
+ UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
+ jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
+ B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
+ ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
+ AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
+ 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
+ rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
+ wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
+ 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
+ pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
+ KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
+ BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
+ 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
+ 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
+ M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
+ Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
+ T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
+ 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
+ CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
+ NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
+ 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
+ 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
+ lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
+ AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
+ N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
+ AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
+ boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
+ 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
+ XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
+ a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
+ Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
+ 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
+ kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
+ th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
+ jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231114180238.1522782-2-sumanthk@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,76 +137,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/2023 9:32 AM, Jeff Johnson wrote:
-> On 11/12/2023 4:13 AM, Paul Menzel wrote:
->> Dear Linux folks,
->>
->>
->> Onn the Dell XPS 13 9360 with Debian sid/unstable, Linux 6.5.10 logs the 
->> error below:
->>
->>      $ sudo dmesg | grep -e "DMI:" -e "Linux version" -e microcode
->>      [    0.000000] microcode: updated early: 0xf0 -> 0xf4, date = 
->> 2023-02-22
->>      [    0.000000] Linux version 6.5.0-4-amd64 
->> (debian-kernel@lists.debian.org) (gcc-13 (Debian 13.2.0-6) 13.2.0, GNU 
->> ld (GNU Binutils for Debian) 2.41) #1 SMP PREEMPT_DYNAMIC Debian 
->> 6.5.10-1 (2023-11-03)
->>      [    0.000000] DMI: Dell Inc. XPS 13 9360/0596KF, BIOS 2.21.0 
->> 06/02/2022
->>      [    0.580689] microcode: Microcode Update Driver: v2.2.
->>
->>      $ sudo dmesg --level alert,crit,err
->>      [    0.053566] x86/cpu: SGX disabled by BIOS.
->>      [    1.942183] psmouse serio1: synaptics: Unable to query device: -5
->>      [   14.401112] ath10k_pci 0000:3a:00.0: firmware: failed to load 
->> ath10k/pre-cal-pci-0000:3a:00.0.bin (-2)
->>      [   14.401143] firmware_class: See https://wiki.debian.org/Firmware 
->> for information about missing firmware
->>      [   14.401185] ath10k_pci 0000:3a:00.0: firmware: failed to load 
->> ath10k/pre-cal-pci-0000:3a:00.0.bin (-2)
->>      [   14.401233] ath10k_pci 0000:3a:00.0: firmware: failed to load 
->> ath10k/cal-pci-0000:3a:00.0.bin (-2)
->>      [   14.401273] ath10k_pci 0000:3a:00.0: firmware: failed to load 
->> ath10k/cal-pci-0000:3a:00.0.bin (-2)
->>
->> As it’s logged with error level, I’d like to address the ath10k_pci 
->> errors, but I am unable to find the firmware in the Linux firmware 
->> archive [1].
->>
->> What can I do about this?
->>
->>
->> Kind regards,
->>
->> Paul
->>
->>
->> [1]: 
->> https://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git/
+On 14.11.23 19:02, Sumanth Korikkar wrote:
+
+The patch subject talks about "fixing locking order", but it's actually 
+missing locking, no?
+
+>  From Documentation/core-api/memory-hotplug.rst:
+> When adding/removing/onlining/offlining memory or adding/removing
+> heterogeneous/device memory, we should always hold the mem_hotplug_lock
+> in write mode to serialise memory hotplug (e.g. access to global/zone
+> variables).
 > 
-> Adding the ath10k list so this isn't lost in the noise
+> mhp_(de)init_memmap_on_memory() functions can change zone stats and
+> struct page content, but they are currently called w/o the
+> mem_hotplug_lock.
+> 
+> When memory block is being offlined and when kmemleak goes through each
+> populated zone, the following theoretical race conditions could occur:
+> CPU 0:					     | CPU 1:
+> memory_offline()			     |
+> -> offline_pages()			     |
+> 	-> mem_hotplug_begin()		     |
+> 	   ...				     |
+> 	-> mem_hotplug_done()		     |
+> 					     | kmemleak_scan()
+> 					     | -> get_online_mems()
+> 					     |    ...
+> -> mhp_deinit_memmap_on_memory()	     |
+>    [not protected by mem_hotplug_begin/done()]|
+>    Marks memory section as offline,	     |   Retrieves zone_start_pfn
+>    poisons vmemmap struct pages and updates   |   and struct page members.
+>    the zone related data			     |
+>     					     |    ...
+>     					     | -> put_online_mems()
+> 
+> Fix this by ensuring mem_hotplug_lock is taken before performing
+> mhp_init_memmap_on_memory(). Also ensure that
+> mhp_deinit_memmap_on_memory() holds the lock.
 
-The calibration files are optional and you should not see any warnings
-if they are not present.
+What speaks against grabbing that lock in these functions?
 
-Note ath10k explicitly calls firmware_request_nowarn() when it loads the
-files since it doesn't want any warnings from the firmware loader if the
-files aren't present.
-<https://elixir.bootlin.com/linux/v6.5.10/source/drivers/net/wireless/ath/ath10k/core.c#L929>
+-- 
+Cheers,
 
-And ath10k itself explicitly doesn't warn:
-<https://elixir.bootlin.com/linux/v6.5.10/source/drivers/net/wireless/ath/ath10k/core.c#L1259>
+David / dhildenb
 
-So I'm confused where these warnings originate.
-
-Based upon the message:
-[   14.401143] firmware_class: See https://wiki.debian.org/Firmware
-for information about missing firmware
-
-it seems you are not running a stock kernel. So perhaps Debian has
-modified the firmware loading such that it ignores the FW_OPT_NO_WARN
-flag and warns even when told not to do so? This does not appear to be
-an upstream kernel issue.
-
-/jeff
