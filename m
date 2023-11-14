@@ -2,113 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7C97EA954
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 826387EA956
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbjKNEGN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:06:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41318 "EHLO
+        id S231976AbjKNEHg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:07:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51992 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229742AbjKNEGL (ORCPT
+        with ESMTP id S229742AbjKNEHd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 23:06:11 -0500
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE2031A7
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:06:08 -0800 (PST)
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc385e90e2so53224005ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:06:08 -0800 (PST)
+        Mon, 13 Nov 2023 23:07:33 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98172135
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:07:30 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6bd0e1b1890so4028704b3a.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:07:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699934850; x=1700539650; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KGZDmoEeCuoU4ORpnmk9KfAQBb9nHs+S5VafgrXpLog=;
+        b=OfNKxU322KZVjePI1loy34wSlGlIKMBmDmy99ZOFtq4ztAVQq4NX54XXXzwcAsbI9G
+         FbNPsBy+4IXbY9XPuyIc/HyafVB5Il5Xh94msMqXDmOuca4YNNJjP03kUCSWksg5GaV6
+         P7vIjnV0EiZE9e0iruk+nA7B2LHuo1R10Uhmc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699934768; x=1700539568;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1lOAWyANnk6qBk5R5NezK6vdjso9mZKLI7KGGcXdX7k=;
-        b=JQg0zRFQwe48/oGKBd0cBxdX4UY4FStSXB2JbF0CD9+xq1EsIKCWxzZ98nV7o9GXZs
-         OidXeZPIJdGWaqz/P5nBRC1aj8gEzrVhVKsMvb3BbNLxA7x7auya1GUV/AMboD9G8XTR
-         NrJtpJNhZQcM9aZH/aNllRsW9ldKcffL/VEKBTpYjzj+B4XBYDgp+wSIdQUhVDQHWUHQ
-         QHJiEh1I4oicpphwaaTPQcH0LiyYRJgigCDBxgrUSly9vMiJAjcRs0Gg2YKODbpQXJBZ
-         ZAu74N3/bvefrGiVSzv3wwFfN1MqvZoIdMaS2H4d8cx/A2ZXm0/iDOtRrRxM0A/w1XRS
-         MOKQ==
-X-Gm-Message-State: AOJu0Ywn1YFd77RdIlvWD4eLKJHENYVg/iB7QoP091+o2DAX7OIjH50o
-        tdkPZ9q/De02zzEkg0fBzWH3MjIwYc9kLLo6mjzU8OWMU4VQCDY=
-X-Google-Smtp-Source: AGHT+IGuoKINpfjIWcuC/7YUwz2qb315ewSPkls9LoAxn/349/dh+KZxNRxGeXal7/f5KXUAPnMSfZ+NtG4/v/WLQbiwMzqW/Pd3
+        d=1e100.net; s=20230601; t=1699934850; x=1700539650;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KGZDmoEeCuoU4ORpnmk9KfAQBb9nHs+S5VafgrXpLog=;
+        b=cZVgZZhbkiPXqeoV2NVMrKMo5kL9uVtvU7VnPqZC7l7hrc6s/OhxkAOHIgAkb8UOFt
+         tHT4IR9dESEeHcm3SbIAhPkRJ/kpNy7i2O4Ok3FImPoIp08MMKKbcrQ/IPzSnm07Igen
+         qSLKujnVkHg2rXS5iNlmOa2+q6nTH31svZKFtk9sN1q0x/PkctOFjqeo/asuT4nJ0xIO
+         Kkp7Suz4hEyOYsSVPYOJvoBNjemVo4qaG/u7I6jExagKBtKZnMDCwcTGir6Xl3UCMKEK
+         D4CFJPW1omhr2z72Tw/8tcvHlARF8lI2QvmIdk1DGDr1Q1WpFdvMVl0IdOVFL8XZXptR
+         7prw==
+X-Gm-Message-State: AOJu0YwU+bQvFqP8zFtCQEDwH5wseyxQOj3fPrDzmsrgAbfu4B5fchml
+        XoAb14VyThR2HXapO9ofrhP35g==
+X-Google-Smtp-Source: AGHT+IFyU2MADg9EleoYCMTUi5z42Da4Qrzy3K4tyZn3glXnx25v+sXlqweMXpTqFAPp362Amxy4Qg==
+X-Received: by 2002:a05:6a20:6a04:b0:186:7988:c747 with SMTP id p4-20020a056a206a0400b001867988c747mr4329657pzk.19.1699934850013;
+        Mon, 13 Nov 2023 20:07:30 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j15-20020a170903024f00b001c62b9a51a4sm4782100plh.239.2023.11.13.20.07.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 20:07:29 -0800 (PST)
+Date:   Mon, 13 Nov 2023 20:07:28 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     David Rientjes <rientjes@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marco Elver <elver@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH 16/20] mm/slab: move kmalloc_slab() to mm/slab.h
+Message-ID: <202311132006.51222C473@keescook>
+References: <20231113191340.17482-22-vbabka@suse.cz>
+ <20231113191340.17482-38-vbabka@suse.cz>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d4d2:b0:1cc:408e:1b19 with SMTP id
- o18-20020a170902d4d200b001cc408e1b19mr381162plg.1.1699934768406; Mon, 13 Nov
- 2023 20:06:08 -0800 (PST)
-Date:   Mon, 13 Nov 2023 20:06:08 -0800
-In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000328cc060a14e823@google.com>
-Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
-From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113191340.17482-38-vbabka@suse.cz>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+On Mon, Nov 13, 2023 at 08:13:57PM +0100, Vlastimil Babka wrote:
+> In preparation for the next patch, move the kmalloc_slab() function to
+> the header, as it will have callers from two files, and make it inline.
+> To avoid unnecessary bloat, remove all size checks/warnings from
+> kmalloc_slab() as they just duplicate those in callers, especially after
+> recent changes to kmalloc_size_roundup(). We just need to adjust handling
+> of zero size in __do_kmalloc_node(). Also we can stop handling NULL
+> result from kmalloc_slab() there as that now cannot happen (unless
+> called too early during boot).
+> 
+> The size_index array becomes visible so rename it to a more specific
+> kmalloc_size_index.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-***
+Yeah, removing the redundant size checks does make this nicer to look at. :)
 
-Subject: [PATCH] Test oob in squashfs readahead
-Author: eadavis@qq.com
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-please test squashfs readahead oob
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
-
-diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
-index 8ba8c4c50770..b54d6b993357 100644
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -461,6 +461,12 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
- 	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
- 				page->index, squashfs_i(inode)->start);
- 
-+	if (!file_end) {
-+		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
-+		res = -EINVAL;
-+		goto out;
-+	}
-+
- 	if (page->index >= ((i_size_read(inode) + PAGE_SIZE - 1) >>
- 					PAGE_SHIFT))
- 		goto out;
-@@ -547,6 +553,11 @@ static void squashfs_readahead(struct readahead_control *ractl)
- 	int i, file_end = i_size_read(inode) >> msblk->block_log;
- 	unsigned int max_pages = 1UL << shift;
- 
-+	if (!file_end && !start) {
-+		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
-+		return;
-+	}
-+
- 	readahead_expand(ractl, start, (len | mask) + 1);
- 
- 	pages = kmalloc_array(max_pages, sizeof(void *), GFP_KERNEL);
-diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
-index aa3411354e66..e7c2ccd6a382 100644
---- a/fs/squashfs/inode.c
-+++ b/fs/squashfs/inode.c
-@@ -403,9 +403,11 @@ int squashfs_read_inode(struct inode *inode, long long ino)
- 	} else
- 		squashfs_i(inode)->xattr_count = 0;
- 
-+	printk("in: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
- 	return 0;
- 
- failed_read:
-+	printk("in: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
- 	ERROR("Unable to read inode 0x%llx\n", ino);
- 	return err;
- }
-
+-- 
+Kees Cook
