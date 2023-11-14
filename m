@@ -2,138 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D79B7EAE4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE3707EAE4E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:48:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232281AbjKNKrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:47:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55714 "EHLO
+        id S232662AbjKNKs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:48:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46682 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKNKrI (ORCPT
+        with ESMTP id S229441AbjKNKs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:47:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37BB0186;
-        Tue, 14 Nov 2023 02:47:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699958825; x=1731494825;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=F6ST2CZU5lQlX8QXKrdKxRtSIOrwexjLiZAG8hQ68iU=;
-  b=DP1IfjzyurPMSYjBahoYKKChAY2fveY1xgHryjDWX++X7zqrp1AyXERu
-   MEs16AU8JW0HXqogKh7pzpkyQxdQxkIkSfKmiNpnP/VQHhTUjzJsZcT/S
-   AFobzaOZwO3PwxTVwm3uYvDQCrkvEhAFTFMAOPjcQObCF0M2BhGbFqtmZ
-   fzezU5Ixu6mGyCB2JUSk6wahfKvC5H9lXm6UlT0B0wuVPXORaFwHE3gzw
-   vAcLhgJuH4PMLmH6wLTwqbJXx+VH+xAlvGZu9Lwg+cOPlMnjy6ADzDwTy
-   LOWjUbeeGhaAoPVBcySmjLCyY73Uda4znbMKnz6K8ANTE2KvOiUkbac/0
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="457125448"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="457125448"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:47:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="12398950"
-Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.252.39.179])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 02:47:02 -0800
-Message-ID: <fc758174-e286-48f7-bec9-64e4f22bce2f@intel.com>
-Date:   Tue, 14 Nov 2023 12:46:57 +0200
+        Tue, 14 Nov 2023 05:48:27 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E83B9185
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 02:48:23 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 8AF341F86A;
+        Tue, 14 Nov 2023 10:48:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699958902; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BrjlFQJPB430Xww/Nj/QXjsT479LtYaL6hPDX+DNKB8=;
+        b=JU5lArdPfGDm1DJ0lLlBDaFe4KTYtNY9VHXm9Kaug+gC/56aa9A1dVvwPPk+nhO8OkfSjQ
+        S4CBlurK4XNTVsJ8ugJTPfcvHPx8vtwK5Y5ehIPfyEO0gVD2J3t/BTef+rLN3KWeWg7fwr
+        Z3TelnIsPf2HVChfLPNxFv9K7xlrPj8=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 62C6C13460;
+        Tue, 14 Nov 2023 10:48:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id gpsLFXZQU2W2OQAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 10:48:22 +0000
+Date:   Tue, 14 Nov 2023 11:48:21 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Charan Teja Kalla <quic_charante@quicinc.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org,
+        quic_pkondeti@quicinc.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
+Message-ID: <ZVNQdQKQAMjgOK9y@tiehlicka>
+References: <cover.1699104759.git.quic_charante@quicinc.com>
+ <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
+ <ZUy1dNvbvHc6gquo@tiehlicka>
+ <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mmc: sdhci-pci-gli: Disable LPM during initialization
-Content-Language: en-US
-To:     =?UTF-8?Q?Kornel_Dul=C4=99ba?= <korneld@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Sven van Ashbrook <svenva@google.com>,
-        Jason Lai <jasonlai.genesyslogic@gmail.com>
-Cc:     Victor Shih <victor.shih@genesyslogic.com.tw>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        =?UTF-8?Q?Stanis=C5=82aw_Kardach?= <skardach@google.com>,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        stable@vger.kernel.org
-References: <20231109111934.4172565-1-korneld@chromium.org>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-In-Reply-To: <20231109111934.4172565-1-korneld@chromium.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -4.78
+X-Spamd-Result: default: False [-4.78 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-1.18)[88.99%]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 9/11/23 13:19, Kornel Dulęba wrote:
-> To address IO performance commit f9e5b33934ce
-> ("mmc: host: Improve I/O read/write performance for GL9763E")
-> limited LPM negotiation to runtime suspend state.
-> The problem is that it only flips the switch in the runtime PM
-> resume/suspend logic.
+On Fri 10-11-23 22:06:22, Charan Teja Kalla wrote:
+> Thanks Michal!!
 > 
-> Disable LPM negotiation in gl9763e_add_host.
-> This helps in two ways:
-> 1. It was found that the LPM switch stays in the same position after
->    warm reboot. Having it set in init helps with consistency.
-> 2. Disabling LPM during the first runtime resume leaves us susceptible
->    to the performance issue in the time window between boot and the
->    first runtime suspend.
+> On 11/9/2023 4:03 PM, Michal Hocko wrote:
+> >> VM system running with ~50MB of memory shown the below stats during OOM
+> >> kill:
+> >> Normal free:760kB boost:0kB min:768kB low:960kB high:1152kB
+> >> reserved_highatomic:0KB managed:49152kB free_pcp:460kB
+> >>
+> >> Though in such system state OOM kill is imminent, but the current kill
+> >> could have been delayed if the pcp is drained as pcp + free is even
+> >> above the high watermark.
+> > TBH I am not sure this is really worth it. Does it really reduce the
+> > risk of the OOM in any practical situation?
 > 
-> Fixes: f9e5b33934ce ("mmc: host: Improve I/O read/write performance for GL9763E")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Kornel Dulęba <korneld@chromium.org>
-> ---
->  drivers/mmc/host/sdhci-pci-gli.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/mmc/host/sdhci-pci-gli.c b/drivers/mmc/host/sdhci-pci-gli.c
-> index d83261e857a5..ce91d1e63a8e 100644
-> --- a/drivers/mmc/host/sdhci-pci-gli.c
-> +++ b/drivers/mmc/host/sdhci-pci-gli.c
-> @@ -220,6 +220,9 @@
->  
->  #define GLI_MAX_TUNING_LOOP 40
->  
-> +static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot,
-> +					      bool enable);
+> At least in my particular stress test case it just delayed the OOM as i
+> can see that at the time of OOM kill, there are no free pcp pages. My
+> understanding of the OOM is that it should be the last resort and only
+> after doing the enough reclaim retries. CMIW here.
 
-Kernel-style is to move the whole function to prevent the need
-for forward declaration.
+Yes it is a last resort but it is a heuristic as well. So the real
+questoin is whether this makes any practical difference outside of
+artificial workloads. I do not see anything particularly worrying to
+drain the pcp cache but it should be noted that this won't be 100%
+either as racing freeing of memory will end up on pcp lists first.
 
-> +
->  /* Genesys Logic chipset */
->  static inline void gl9750_wt_on(struct sdhci_host *host)
->  {
-> @@ -1281,6 +1284,9 @@ static int gl9763e_add_host(struct sdhci_pci_slot *slot)
->  	if (ret)
->  		goto cleanup;
->  
-> +	/* Disable LPM negotiation to avoid entering L1 state. */
-> +	gl9763e_set_low_power_negotiation(slot, false);
-> +
->  	return 0;
->  
->  cleanup:
-> @@ -1323,7 +1329,6 @@ static void gli_set_gl9763e(struct sdhci_pci_slot *slot)
->  	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->  }
->  
-> -#ifdef CONFIG_PM
->  static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool enable)
->  {
->  	struct pci_dev *pdev = slot->chip->pdev;
-> @@ -1349,6 +1354,7 @@ static void gl9763e_set_low_power_negotiation(struct sdhci_pci_slot *slot, bool
->  	pci_write_config_dword(pdev, PCIE_GLI_9763E_VHS, value);
->  }
->  
-> +#ifdef CONFIG_PM
->  static int gl9763e_runtime_suspend(struct sdhci_pci_chip *chip)
->  {
->  	struct sdhci_pci_slot *slot = chip->slots[0];
-
+-- 
+Michal Hocko
+SUSE Labs
