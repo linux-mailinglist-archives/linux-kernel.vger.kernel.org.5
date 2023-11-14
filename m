@@ -2,108 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64F887EB6BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:07:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112707EB6C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:07:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229784AbjKNTHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:07:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56436 "EHLO
+        id S230089AbjKNTHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:07:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229557AbjKNTHh (ORCPT
+        with ESMTP id S229989AbjKNTHw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:07:37 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43DE0FC;
-        Tue, 14 Nov 2023 11:07:34 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id 98e67ed59e1d1-2809a824bbbso4748127a91.3;
-        Tue, 14 Nov 2023 11:07:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699988854; x=1700593654; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eTdxwqjsCHAfUHLS9E9O/GYEc/cGPlpr/fwvTx4EeE4=;
-        b=BLYptecSPpNTtRzRt2nmFIAUgy0Wa4Di/cPdfXapr9X3A0tRMUHqYvtZR4XXNXPOHX
-         Gy4099Z/YHg/P0p/ic+tuAui0IqCAXEJ/roPhchglylKrl9//Ad6B1hOTW8Cwe0n4geN
-         igKYF7uGdXNOZ8xSEo2ysZinlflfVnbl18khnPmJ1g/VCqJ3iIh2drOQ6I78GOmJJ+zH
-         7P26gXyQqeI7RsEbL0PCqhe7h6+AUzXa70OXliCC+fBqa4NsR7wRuRpyTiXSDtcH/jTd
-         4ziwT5NR+I6gtYBKhAoDetewnuxHJ2j8+b90fcYBQr+sBpRX668AvT0QoMqNzr7aMRQJ
-         3VFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699988854; x=1700593654;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=eTdxwqjsCHAfUHLS9E9O/GYEc/cGPlpr/fwvTx4EeE4=;
-        b=tR1RSa6Z+F6W3BSDadGSwjDBHt+kJci8p/CjPf+mhizv1ncy9iZnUiZOftYJ+TQtwO
-         qrW4l94Cy8CyxLwOXNP9ZUPBleDGdCvNmVx9FnBvJNvt3B0UEu2/yAW2GF6eYU/Eyea6
-         7gzsdgEBrRCF5UIb6dqJhswoQD6OT0iH6T1QOZGWjc1KaSlyto50kxq6l3M/AYA2eohp
-         FHzy1ASXuKXWVsGWDDIGygQTpEh34t4OOnlrvUaw/wYZIX2XcPdnTd1wg2LhUT0tVuQ7
-         II4XuMbdsFWeLcxndmt/wI8fsEbWPB1BruIU4jsbBRMX1ZMFxuowPQLXsXezcpR23Ur+
-         UDxQ==
-X-Gm-Message-State: AOJu0Yz25+QsqAGq0H+e40oG1AUL9ftRIxXLG1+4lCQIQEFYwgqj0XdI
-        ydtYECDSQ+Bi7uexRapMZno=
-X-Google-Smtp-Source: AGHT+IFaLpasVhp8zQGEXaSudejE6IuzaZWdVvddFYiCVKRvwmxTXkuG+a1PWyBjlc0LXrcPrSXP9Q==
-X-Received: by 2002:a17:90b:1e03:b0:27d:8d42:6def with SMTP id pg3-20020a17090b1e0300b0027d8d426defmr8808064pjb.34.1699988853635;
-        Tue, 14 Nov 2023 11:07:33 -0800 (PST)
-Received: from localhost (dhcp-72-253-202-210.hawaiiantel.net. [72.253.202.210])
-        by smtp.gmail.com with ESMTPSA id p12-20020a17090ad30c00b002790ded9c6dsm5568472pju.31.2023.11.14.11.07.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 11:07:33 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 14 Nov 2023 09:07:32 -1000
-From:   Tejun Heo <tj@kernel.org>
-To:     Andrea Righi <andrea.righi@canonical.com>
-Cc:     torvalds@linux-foundation.org, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, ast@kernel.org,
-        daniel@iogearbox.net, andrii@kernel.org, martin.lau@kernel.org,
-        joshdon@google.com, brho@google.com, pjt@google.com,
-        derkling@google.com, haoluo@google.com, dvernet@meta.com,
-        dschatzberg@meta.com, dskarlat@cs.cmu.edu, riel@surriel.com,
-        changwoo@igalia.com, himadrics@inria.fr, memxor@gmail.com,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        kernel-team@meta.com
-Subject: Re: [PATCH 12/36] sched_ext: Implement BPF extensible scheduler class
-Message-ID: <ZVPFdKqUxmtW1jaJ@slm.duckdns.org>
-References: <20231111024835.2164816-1-tj@kernel.org>
- <20231111024835.2164816-13-tj@kernel.org>
- <ZVKBSIPqJnAvrE3g@gpd>
+        Tue, 14 Nov 2023 14:07:52 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2FF8FB
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:07:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699988869; x=1731524869;
+  h=date:from:to:cc:subject:message-id:reply-to:references:
+   mime-version:in-reply-to;
+  bh=3MLx/VKCp7Z6CZe1ZWabnlu0cIKVThj0kbq/QnvpMS8=;
+  b=SgG1ydkAANE6XfJjI4lSzfHtKLpIbN7yIVAu60LHuo2EZftA98yVaD3o
+   gUE3GwIKAELU5ro2vytNmeDk2H7mjMTgG1iVOTbkBQ5EsnzxdLxnMa9GK
+   SIDy/VDPErwamgF5/r16ILn77OiyrVeeFf5wJsJEZRQvyljfmBmNwl9dd
+   4KhWhZni5ecMOu3YfHRuWMlky4dsnPX8Mti2Hu6T822uHLNsrMoTyEIpI
+   4le35CoEnE/ZytxOvfKMsMN80i/sz2VVYdSHI02aHBUCEdyiYDYAksLc1
+   UKQrY3GEwkFH6VacdYOHQwI/rGjR0lymK8ZwVTTQkMwGxFRbhWaz0ZGtg
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="381125221"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="381125221"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:07:49 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="12528598"
+Received: from ideak-desk.fi.intel.com ([10.237.72.78])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:07:46 -0800
+Date:   Tue, 14 Nov 2023 21:07:45 +0200
+From:   Imre Deak <imre.deak@intel.com>
+To:     David Laight <David.Laight@aculab.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: Build fail in drivers/gpu/drm/i915/display/intel_tc.c
+Message-ID: <ZVPFUdc6Q/qCI8M7@ideak-desk.fi.intel.com>
+Reply-To: imre.deak@intel.com
+References: <4df68c74c4da46ac943ac21578e9b084@AcuMS.aculab.com>
+ <ZU1shQH64ryxp/l5@ideak-desk.fi.intel.com>
+ <CAHk-=wgiPxF6GnvaSGV+xOjcBO-T1vxLYhSvho0Q5Cdqw7t74w@mail.gmail.com>
+ <39709b4bb3e447159759a9923bd4a564@AcuMS.aculab.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZVKBSIPqJnAvrE3g@gpd>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+In-Reply-To: <39709b4bb3e447159759a9923bd4a564@AcuMS.aculab.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 03:04:24PM -0500, Andrea Righi wrote:
-> > +#ifdef CONFIG_SCHED_DEBUG
-> > +static const char *scx_ops_enable_state_str[] = {
-> > +	[SCX_OPS_PREPPING]	= "prepping",
-> > +	[SCX_OPS_ENABLING]	= "enabling",
-> > +	[SCX_OPS_ENABLED]	= "enabled",
-> > +	[SCX_OPS_DISABLING]	= "disabling",
-> > +	[SCX_OPS_DISABLED]	= "disabled",
-> > +};
+On Fri, Nov 10, 2023 at 09:00:21AM +0000, David Laight wrote:
+> From: Linus Torvalds
+> > Sent: 10 November 2023 00:52
+> > 
+> > On Thu, 9 Nov 2023 at 15:34, Imre Deak <imre.deak@intel.com> wrote:
+> > >
+> > > The compiler warn should be fixed/suppressed by:
+> > > https://lore.kernel.org/all/20231026125636.5080-1-nirmoy.das@intel.com
+> > 
+> > Ugh, so now it's a dynamic allocation, wasting memory, and a pointer
+> > to it, using as much memory as the array did in the first place.
+> > 
+> > All because of a pointless warning that was a false positive - and was
+> > always harmless anyway, since snprintf() is safe (ie it was only a
+> > "might be truncated").
 > 
-> We may want to move scx_ops_enable_state_str[] outside of
-> CONFIG_SCHED_DEBUG, because we're using it later in print_scx_info()
-> ("sched_ext: Print sched_ext info when dumping stack"), or we make
-> print_scx_info() dependent of CONFIG_SCHED_DEBUG.
+> That entire warning for snprintf() is a false positive.
+> The ones that are likely to overflow unexpectedly are the ones
+> with a "%s" format for a 'char *' pointer where there is no
+> implied length.
+> 
+> The same check for printf() using the implied buffer length
+> probably does make sense.
+> 
+> I don't even think there is a way of avoiding it on a case by case
+> basis - apart from passing both the buffer address and length
+> to an inline asm that the compiler has to assume might change
+> the values, but that tends to generate an extra 'mov' instruction
+> for no good reason at all.
+> 
+> > 
+> > Please don't do this. Either do that ((tc_port & 7) + 1) suggestion of
+> > David's, or just do '%c' and make the expression be
+> > 
+> >   '1' + tc_port
+> > 
+> > which should be fine since I915_MAX_PORTS is 8 or whatever.
 
-Yeah, Changwoo noticed the same problem. Will fix and post an updated patch.
+Ok, the patch above was merged already to drm-tip, but I agree not to
+use kasprintf for this. The above looks ok and there is already
+tc_port_name() for this, would just need to export that from
+intel_display.h.
 
-Thanks.
+I can follow up with a patch for this, or if you or David wanted to do
+that please send a patch to the intel-gfx@lists.freedesktop.org list.
 
--- 
-tejun
+Thanks,
+Imre
+
+> If I'd though for 2 seconds that is what I'd have done.
+> But I wanted to get something through the compiler.
+> 
+> > I do wonder why those ports are printed out as '1-8', when the 'enum
+> > port' is PORT_A..I.
+> 
+> They look like TC_PORT_[1..6] to me - the enum values are 0..5
+> which is why there is a 'random' '+ 1'.
+> 
+> 	David
+> 
+> > 
+> > So it would actually have made more sense to print them out as %c with
+> > the expression being
+> > 
+> >    'A'+tc_port
+> > 
+> > but I guess by now people might depend on the 1..8 naming?
+> > 
+> >              Linus
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
