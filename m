@@ -2,88 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1627EA745
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:04:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9BC97EA766
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229720AbjKNAEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 19:04:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58308 "EHLO
+        id S229696AbjKNAQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 19:16:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKNAD7 (ORCPT
+        with ESMTP id S229511AbjKNAQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 19:03:59 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0673196;
-        Mon, 13 Nov 2023 16:03:56 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-545ed16b137so7072266a12.1;
-        Mon, 13 Nov 2023 16:03:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699920235; x=1700525035; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=OrAvSd87a7tN+Yr+cywvAUwRhFU/yIlb0TCaKPOOEqs=;
-        b=VaKZ1Uvun8jeYtQd0GiyOmVaK3nrCOObplGD0DCC2YvcA/EHImigL/27Pp0r6XgJDs
-         gKiJZeRccjI2wUsb15QFHPGHYnU8UvLUCJ2RgGW/Vi9e7ngZwX3E5CNZXZaH6NtvBRnB
-         ArnVhBglrk+4WlA4OwTT5OW/WO+rPDvqFyOLbFL/K8LwYpAl5gqO0EB9WryUJucW255O
-         lPY8W0zw5HeAN2w0/J4WwetoLKQva5vCKXzlKZozGrjj8Y1XY6ie0jyI6Wt48GovhSoW
-         LIujyBR0zh4NF499ajReqfT5xdYqZuVuX4GS7J0f936oV0/ajbl7utWUAAnEk6s//CCR
-         VY3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699920235; x=1700525035;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=OrAvSd87a7tN+Yr+cywvAUwRhFU/yIlb0TCaKPOOEqs=;
-        b=nnWzGzkwa93XOWw7VTHfKFJ+rjQhUGfCarIQQ87461FZF0tSxrwpxLSh7M3TsZPpNi
-         6FovqCoMWZmp0g/5UwFHS5AOUrgZSfYp66VN+cRX566D0pdpgh6NOK5Q087xy1+4GYIo
-         FQa02jBSWkKdOvPfxIKWdJuSG8za5+DtKqoGupdhY4A19ebkiHx0uLiohjWvDduWhhWt
-         vjYxUabwWwSz+/SHfD9YlURdw9hUZ2tz5fzQyMgCWbS7kGS4ch2dwMgjbHpT5QCHjoLi
-         5FvvPU6QPdM+xwhvg5Ly3oeaZg0y5aDxlYbFzVBwjvf5dxgkwK/T+uAm6WSK34gCcXwJ
-         QfEw==
-X-Gm-Message-State: AOJu0YwjuJOMWx7GDwM8LL2LvkizPYA3XSdJgac8LOeUeQD9fa20zwvU
-        byrtSNMSCQy8tk/GPbWhAbbqN/DJxU9ZF4EC83k=
-X-Google-Smtp-Source: AGHT+IFxeqCNoHbRXoGQHIRWu/pCXhkOWB1OvijL+Z+GiHdMOYEoM3UWHslUsclC9IMzWDjUhMRlNkNhsvAaLfzBdVw=
-X-Received: by 2002:aa7:c759:0:b0:543:5a91:a8b2 with SMTP id
- c25-20020aa7c759000000b005435a91a8b2mr6116970eds.19.1699920234763; Mon, 13
- Nov 2023 16:03:54 -0800 (PST)
-MIME-Version: 1.0
-References: <CACkBjsbUytfJS1ns0pp=o=Lk5qbQ5weD4_f8bPFrW5oV0tCXZw@mail.gmail.com>
- <CABWLsev9g8UP_c3a=1qbuZUi20tGoUXoU07FPf-5FLvhOKOY+Q@mail.gmail.com>
-In-Reply-To: <CABWLsev9g8UP_c3a=1qbuZUi20tGoUXoU07FPf-5FLvhOKOY+Q@mail.gmail.com>
-From:   Andrei Matei <andreimatei1@gmail.com>
-Date:   Mon, 13 Nov 2023 19:03:43 -0500
-Message-ID: <CABWLsesED+S_XNnWJDvJnPV7D0K5U4y3VjGQ7EKeecnufw4xbQ@mail.gmail.com>
-Subject: Re: bpf: incorrect stack_depth after var off stack access causes OOB
-To:     Hao Sun <sunhao.th@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        Mon, 13 Nov 2023 19:16:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50102115
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:16:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699920962; x=1731456962;
+  h=date:from:to:cc:subject:message-id;
+  bh=U8HTs17MfBzzyIHw4wyGjiOzARLAsJSEWjhPN6ns7+A=;
+  b=WV2rlhbAN7pYn1YYxi5ItTsDPR+/sm6bS5MFhKo/Emf1Uf2gZ8wNeRqL
+   ABT3s0WXSz1EOT1EIuxDMuL9HEdnwJoMKp11ZgG4/uCH6JzD3vnD4ci95
+   mXkdxUulLurgxBDYsXexHKRj9MW4qQxWzSak18KBiWTgT5pyVbUoNRD0n
+   0GJP7vKHI3EI782wCR6sACije6IpyRSZrzPyiixOfo5/PSmieE40KzvWv
+   chbW/M/579smEx8R+89XP8GUy3Pw4PiM8JMDgauzRhuk+Ju/UJhYixKZt
+   eF6BVO+b52rBuLyzSqXMgsOPfszT0ihRhKF5LxqY0qdmAN32PYmsuOTYs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="457030564"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="457030564"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 16:16:01 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="12239575"
+Received: from lkp-server01.sh.intel.com (HELO 17d9e85e5079) ([10.239.97.150])
+  by orviesa001.jf.intel.com with ESMTP; 13 Nov 2023 16:16:01 -0800
+Received: from kbuild by 17d9e85e5079 with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r2h5y-000Cdu-12;
+        Tue, 14 Nov 2023 00:15:58 +0000
+Date:   Tue, 14 Nov 2023 08:15:14 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/paravirt] BUILD SUCCESS
+ fe22bc430c9d24394e541e16e0941a075f02fcb7
+Message-ID: <202311140813.kwKCxqby-lkp@intel.com>
+User-Agent: s-nail v14.9.24
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have sent https://lore.kernel.org/bpf/20231113235008.127238-1-andreimatei1@gmail.com/T/#u
-as a fix.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/paravirt
+branch HEAD: fe22bc430c9d24394e541e16e0941a075f02fcb7  x86/paravirt: Make the struct paravirt_patch_site packed
 
-Hao, thanks again for the report. For my edification, how did you get
-the KASAN bug report with your repro / which tree exactly were you
-running against and with what config? I've run your repro program in
-the VM created by vmtest.sh, with an added CONFIG_KASAN=y in the
-config, and I did not get the bug report in dmesg; I got nothing.
-However, if I change the variable offset bounds to be around 200 bytes
-instead of 12, then I do get a kernel panic because of a page fault.
+elapsed time: 721m
+
+configs tested: 51
+configs skipped: 142
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+tested configs:
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20231113   gcc  
+i386         buildonly-randconfig-002-20231113   gcc  
+i386         buildonly-randconfig-003-20231113   gcc  
+i386         buildonly-randconfig-004-20231113   gcc  
+i386         buildonly-randconfig-005-20231113   gcc  
+i386         buildonly-randconfig-006-20231113   gcc  
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231113   gcc  
+i386                  randconfig-002-20231113   gcc  
+i386                  randconfig-003-20231113   gcc  
+i386                  randconfig-004-20231113   gcc  
+i386                  randconfig-005-20231113   gcc  
+i386                  randconfig-006-20231113   gcc  
+i386                  randconfig-011-20231113   gcc  
+i386                  randconfig-012-20231113   gcc  
+i386                  randconfig-013-20231113   gcc  
+i386                  randconfig-014-20231113   gcc  
+i386                  randconfig-015-20231113   gcc  
+i386                  randconfig-016-20231113   gcc  
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   gcc  
+x86_64       buildonly-randconfig-001-20231113   gcc  
+x86_64       buildonly-randconfig-002-20231113   gcc  
+x86_64       buildonly-randconfig-003-20231113   gcc  
+x86_64       buildonly-randconfig-004-20231113   gcc  
+x86_64       buildonly-randconfig-005-20231113   gcc  
+x86_64       buildonly-randconfig-006-20231113   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231113   gcc  
+x86_64                randconfig-002-20231113   gcc  
+x86_64                randconfig-003-20231113   gcc  
+x86_64                randconfig-004-20231113   gcc  
+x86_64                randconfig-005-20231113   gcc  
+x86_64                randconfig-006-20231113   gcc  
+x86_64                randconfig-011-20231113   gcc  
+x86_64                randconfig-012-20231113   gcc  
+x86_64                randconfig-013-20231113   gcc  
+x86_64                randconfig-014-20231113   gcc  
+x86_64                randconfig-015-20231113   gcc  
+x86_64                randconfig-016-20231113   gcc  
+x86_64                randconfig-071-20231113   gcc  
+x86_64                randconfig-072-20231113   gcc  
+x86_64                randconfig-073-20231113   gcc  
+x86_64                randconfig-074-20231113   gcc  
+x86_64                randconfig-075-20231113   gcc  
+x86_64                randconfig-076-20231113   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
