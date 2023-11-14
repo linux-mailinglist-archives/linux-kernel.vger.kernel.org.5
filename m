@@ -2,90 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F59A7EAFD4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:28:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4583B7EAFD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:29:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232314AbjKNM2E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:28:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45524 "EHLO
+        id S232964AbjKNM3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229798AbjKNM2C (ORCPT
+        with ESMTP id S229798AbjKNM3i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:28:02 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8E8F13A
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:27:59 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D5C4C433C7;
-        Tue, 14 Nov 2023 12:27:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1699964879;
-        bh=OOtLX4L5bvbZ/lYycLXinIfawDRqNeWMFk6Eb+zcll0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tnn+9IFg9FBefbaw+BFnxwDnMO7Br7OzuHOvhjxsuAg139WQPvbtl0KHsFDCdFav6
-         lufPJUJSW+J9s2Svbvr627euOvntzMRVuHJJXAXutAxDB1FAJuZB/v28HfsBZcqW3Y
-         UhE2slJwbYmfu5UOEWW5RnGuQVH11UCVGvrt5tw4=
-Date:   Tue, 14 Nov 2023 07:27:57 -0500
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa@kernel.org>
-Subject: Re: [PATCH 2/2] genirq: proc: fix a procfs entry leak
-Message-ID: <2023111440-stray-uncloak-484c@gregkh>
-References: <CAMRc=Mf9f9MxfRY+=Et9+wO5fZr61SRthcGhoHZsJ6-x6k+BgQ@mail.gmail.com>
- <873502971b.ffs@tglx>
- <CAMRc=Meigus=WOGwM-fStkhtDeKyTd+9vZH19HoP+U1xpwYx9Q@mail.gmail.com>
- <87msya6wmf.ffs@tglx>
- <CAMRc=Md6NA6-rBWL1ti66X5Rt3C4Y2irfrSZnCo3wQSCqT6nPQ@mail.gmail.com>
- <877cpd7a96.ffs@tglx>
- <CAMRc=MfNaydT8gnvusKdJrNrtjKVE4LTqdanh3+WNd5QF-2q_Q@mail.gmail.com>
- <87y1hb1ckk.ffs@tglx>
- <CAMRc=Meq6qrXsbDQiQHJ8t9tTh2V5Fb2ut6TcWYd5CKJwGBiAg@mail.gmail.com>
- <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
+        Tue, 14 Nov 2023 07:29:38 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4194C13D;
+        Tue, 14 Nov 2023 04:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699964975; x=1731500975;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/yJPHD0JWAZGjixOiPU2UbAep1ug0nJDTNewYaan4VM=;
+  b=AnCw2sj/zjEr0xzYXJ97u0z6LuM5qXXjgvqyxJBfKagpGOrbcyVD5gzR
+   P+AV5cXI7SEY4jGvH48oj2gEPaVizUWBXCwM8hMz/oRQccvdh2khFFEjN
+   C6aM18UpJ4aof+PCl4o85/5eYhmkkhbqZquO+/4FfrHcgA8Lv5MCix8rL
+   fSKNdYhMFcyC5Yrpu4kBob02L9w5nOUdTrX3QMjmpMVponHioDZALtFsV
+   gTvJJaXmXtTMmqF6OlJqwvqzA/7l+gn+lODbcjpqYVaoHS9HPgEvBxuzR
+   jNvBcU53Ukju45cu2pkxNSEekKiakh/YZo9qph1Vwsi22122Hp/4R6MAY
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="9283899"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="9283899"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 04:29:35 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="938077782"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="938077782"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 04:29:31 -0800
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+        by kekkonen.fi.intel.com (Postfix) with SMTP id 23D1111FB5E;
+        Tue, 14 Nov 2023 14:29:28 +0200 (EET)
+Date:   Tue, 14 Nov 2023 12:29:28 +0000
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Herve Codina <herve.codina@bootlin.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] lib/vsprintf: Fix %pfwf when current node refcount
+ == 0
+Message-ID: <ZVNoKAHlb1CXnND7@kekkonen.localdomain>
+References: <20231114110456.273844-1-herve.codina@bootlin.com>
+ <ZVNZ63HdoRKT4IQ9@kekkonen.localdomain>
+ <20231114124832.40d4ced4@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=MeWPcaiB12f_R5jR+b-THZgHYS2bx3KypX+o5Afz1ebyg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231114124832.40d4ced4@bootlin.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 09:53:47PM +0100, Bartosz Golaszewski wrote:
-> On Fri, Sep 15, 2023 at 9:50 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
-> >
-> 
-> [snip]
-> 
-> >
-> > My point is: the same rule should apply to in-kernel consumers. When
-> > they request a resource, they get a reference to it. The resource is
-> > managed by its provider. If the provider is going down, it frees the
-> > resource. The consumer tries to use it -> it gets an error. I'm not
-> > convinced by the life-time rules argument. The consumer is not
-> > CREATING a resource. It's REQUESTING it for usage. IMO this means it
-> > REFERENCES it, not OWNS it. And so is only responsible for putting the
-> > reference.
-> >
-> > Bartosz
-> >
-> 
-> Hi Thomas, Greg et al,
-> 
-> I am at LPC and will present a talk on Wednesday 5:15pm at the kernel
-> summit about object life-time issues. I'll reference this problem
-> among others. Please consider it in your schedules, I think it'll be
-> useful to discuss it in person as it's a generic problem in many
-> driver subsystems.
+Hi Herve,
 
-Sounds great, I'll try to make it there!
+On Tue, Nov 14, 2023 at 12:48:32PM +0100, Herve Codina wrote:
+> Hi Sakari,
+> 
+> On Tue, 14 Nov 2023 11:28:43 +0000
+> Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
+> 
+> > > --- a/lib/vsprintf.c
+> > > +++ b/lib/vsprintf.c
+> > > @@ -2108,8 +2108,8 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
+> > >  {
+> > >  	int depth;
+> > >  
+> > > -	/* Loop starting from the root node to the current node. */
+> > > -	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
+> > > +	/* Loop starting from the root node to the parent of current node. */
+> > > +	for (depth = fwnode_count_parents(fwnode); depth > 0; depth--) {
+> > >  		struct fwnode_handle *__fwnode =
+> > >  			fwnode_get_nth_parent(fwnode, depth);  
+> > 
+> > How about, without changing the loop:
+> > 
+> > 		/*
+> > 		 * Only get a reference for other nodes, fwnode refcount
+> > 		 * may be 0 here.
+> > 		 */
+> > 		struct fwnode_handle *__fwnode =
+> > 			depth ? fwnode_get_nth_parent(fwnode, depth) : fwnode;
+> > 
+> > >  
+> > > @@ -2121,6 +2121,16 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
+> > >  		fwnode_handle_put(__fwnode);  
+> > 
+> > And:
+> > 
+> > 		if (__fwnode != fwnode)
+> > 			fwnode_handle_put(__fwnode);
+> > 
+> 
+> Sure.
+> I will just change to keep the both tests consistent.
+> I mean test with depth or test with __fwnode != fwnode but avoid
+> mixing them.
+> 
+> What do you think about testing using depth in all cases and so:
+> 	if (depth)
+> 		fwnode_handle_put(__fwnode);
 
-greg k-h
+I'd compare fwnodes as we're putting __fwnode since we've gotten a
+reference to fwnodes different from fwnode. I don't have a strong opinion
+on this though, up to you.
+
+-- 
+Regards,
+
+Sakari Ailus
