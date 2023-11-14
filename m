@@ -2,120 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 101257EB699
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:53:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 903ED7EB69C
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 19:56:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjKNSxO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 13:53:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        id S231416AbjKNS4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 13:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKNSxN (ORCPT
+        with ESMTP id S229584AbjKNS4e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 13:53:13 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EFEFF4;
-        Tue, 14 Nov 2023 10:53:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=t-8ch.de; s=mail;
-        t=1699987988; bh=oWTjGNgiiSfK20lJ/TB1B4T8+FLsUM8QG3pKaCOeMtc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XrOH30ayUwdjFc2odNnAUbQ25kDfXHmaKQHxERmh8mP7iAOpa9L35b9nd515v0jya
-         Km0OAlRJmmqNatCpT5vzU0Hx6Mat4Kkbzz8J5QV3AKJLZEy+kUDQA+fgGyvut3AvDW
-         TyDuis3eyr7vPKraE963bOR1vgQph/atJptzmwJU=
-Date:   Tue, 14 Nov 2023 19:53:08 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <thomas@t-8ch.de>
-To:     Bean Huo <beanhuo@iokpp.de>
-Cc:     avri.altman@wdc.com, bvanassche@acm.org, alim.akhtar@samsung.com,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        stanley.chu@mediatek.com, mani@kernel.org, quic_cang@quicinc.com,
-        quic_asutoshd@quicinc.com, beanhuo@micron.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mikebi@micron.com, lporzio@micron.com
-Subject: Re: [PATCH v1 1/2] scsi: ufs: core: Add UFS RTC support
-Message-ID: <18f826db-3146-46ca-9214-eb400588131e@t-8ch.de>
-References: <20231109125217.185462-1-beanhuo@iokpp.de>
- <20231109125217.185462-2-beanhuo@iokpp.de>
- <e2e77da5-c344-4913-a321-4cfdcc4a3915@t-8ch.de>
- <e408ce14d322223c1412efa46e8e4d30f44fa98c.camel@iokpp.de>
+        Tue, 14 Nov 2023 13:56:34 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 593E7FE;
+        Tue, 14 Nov 2023 10:56:30 -0800 (PST)
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AEIuPd7041011;
+        Tue, 14 Nov 2023 12:56:25 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1699988185;
+        bh=fRVLA3iaivCqu1EutUd8GewEfQQfLcXGTufYyBRusdE=;
+        h=From:To:CC:Subject:Date;
+        b=kDzB9rVjSTG9QfF4p7UL7gB8dzwhvH8PUQpqdnOWnProLj9VJ/MXJ+K/xYvQZfU67
+         uMEBWOm3/cnM6hJTm/xH/hoCwpKqv3kMMangPe24cxlEQ8SARwbXGobdb1dk1uTIjw
+         5gjXWSVYPufweBX7s/2OL5UWz57BFvUC3yiNAq64=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AEIuPMV018688
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 14 Nov 2023 12:56:25 -0600
+Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 14
+ Nov 2023 12:56:25 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
+ (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 14 Nov 2023 12:56:25 -0600
+Received: from lelv0327.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AEIuOAK088527;
+        Tue, 14 Nov 2023 12:56:24 -0600
+From:   Andrew Davis <afd@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH 1/4] dt-bindings: spi: Convert spi-davinci.txt to YAML
+Date:   Tue, 14 Nov 2023 12:56:10 -0600
+Message-ID: <20231114185613.322570-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <e408ce14d322223c1412efa46e8e4d30f44fa98c.camel@iokpp.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-14 19:27:37+0100, Bean Huo wrote:
-> Thank you for your review. I will resolve the highlighted issue in the
-> upcoming version. Two separate questions that require individual
-> answers as below: 
+Convert spi-davinci.txt to ti,dm6441-spi.yaml.
 
-Thanks for taking the feedback into account!
+Signed-off-by: Andrew Davis <afd@ti.com>
+---
+ .../devicetree/bindings/spi/spi-davinci.txt   | 100 ------------------
+ .../bindings/spi/ti,dm6441-spi.yaml           |  76 +++++++++++++
+ 2 files changed, 76 insertions(+), 100 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/spi/spi-davinci.txt
+ create mode 100644 Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml
 
-> On Thu, 2023-11-09 at 15:05 +0100, Thomas Weißschuh wrote:
-> > >   static int ufs_get_device_desc(struct ufs_hba *hba)
-> > >   {
-> > >         int err;
-> > > @@ -8237,6 +8321,8 @@ static int ufs_get_device_desc(struct ufs_hba
-> > > *hba)
-> > >   
-> > >         ufshcd_temp_notif_probe(hba, desc_buf);
-> > >   
-> > > +       ufs_init_rtc(hba, desc_buf);
-> > > +
-> > 
-> > As somebody with no idea and no access to the specs:
-> > 
-> > Is this available for all devices and all protocol versions?
-> > 
-> > > 
-> I would like to mention that while I cannot confirm that RTC works on
-> all protocol versions, it has been consistently functional on all
-> devices in the market since the introduction of UFS 2.0, which also
-> introduced RTC. I am not aware of any UFS version lower than 2.0
-> currently available on the market. In the event that a vendor has a
-> product with a lower UFS version, we can consider implementing a
-> version check.
+diff --git a/Documentation/devicetree/bindings/spi/spi-davinci.txt b/Documentation/devicetree/bindings/spi/spi-davinci.txt
+deleted file mode 100644
+index f012888656eca..0000000000000
+--- a/Documentation/devicetree/bindings/spi/spi-davinci.txt
++++ /dev/null
+@@ -1,100 +0,0 @@
+-Davinci SPI controller device bindings
+-
+-Links on DM:
+-Keystone 2 - https://www.ti.com/lit/ug/sprugp2a/sprugp2a.pdf
+-dm644x - https://www.ti.com/lit/ug/sprue32a/sprue32a.pdf
+-OMAP-L138/da830 - http://www.ti.com/lit/ug/spruh77a/spruh77a.pdf
+-
+-Required properties:
+-- #address-cells: number of cells required to define a chip select
+-	address on the SPI bus. Should be set to 1.
+-- #size-cells: should be zero.
+-- compatible:
+-	- "ti,dm6441-spi" for SPI used similar to that on DM644x SoC family
+-	- "ti,da830-spi" for SPI used similar to that on DA8xx SoC family
+-	- "ti,keystone-spi" for SPI used similar to that on Keystone2 SoC
+-		family
+-- reg: Offset and length of SPI controller register space
+-- num-cs: Number of chip selects. This includes internal as well as
+-	GPIO chip selects.
+-- ti,davinci-spi-intr-line: interrupt line used to connect the SPI
+-	IP to the interrupt controller within the SoC. Possible values
+-	are 0 and 1. Manual says one of the two possible interrupt
+-	lines can be tied to the interrupt controller. Set this
+-	based on a specific SoC configuration.
+-- interrupts: interrupt number mapped to CPU.
+-- clocks: spi clk phandle
+-          For 66AK2G this property should be set per binding,
+-          Documentation/devicetree/bindings/clock/ti,sci-clk.yaml
+-
+-SoC-specific Required Properties:
+-
+-The following are mandatory properties for Keystone 2 66AK2G SoCs only:
+-
+-- power-domains:	Should contain a phandle to a PM domain provider node
+-			and an args specifier containing the SPI device id
+-			value. This property is as per the binding,
+-
+-Optional:
+-- cs-gpios: gpio chip selects
+-	For example to have 3 internal CS and 2 GPIO CS, user could define
+-	cs-gpios = <0>, <0>, <0>, <&gpio1 30 0>, <&gpio1 31 0>;
+-	where first three are internal CS and last two are GPIO CS.
+-
+-Optional properties for slave devices:
+-SPI slave nodes can contain the following properties.
+-Not all SPI Peripherals from Texas Instruments support this.
+-Please check SPI peripheral documentation for a device before using these.
+-
+-- ti,spi-wdelay : delay between transmission of words
+-	(SPIFMTn.WDELAY, SPIDAT1.WDEL) must be specified in number of SPI module
+-	clock periods.
+-
+-	delay = WDELAY * SPI_module_clock_period + 2 * SPI_module_clock_period
+-
+-Below is timing diagram which shows functional meaning of
+-"ti,spi-wdelay" parameter.
+-
+-             +-+ +-+ +-+ +-+ +-+                           +-+ +-+ +-+
+-SPI_CLK      | | | | | | | | | |                           | | | | | |
+-  +----------+ +-+ +-+ +-+ +-+ +---------------------------+ +-+ +-+ +-
+-
+-SPI_SOMI/SIMO+-----------------+                           +-----------
+-  +----------+ word1           +---------------------------+word2
+-             +-----------------+                           +-----------
+-                                          WDELAY
+-                                <-------------------------->
+-
+-Example of a NOR flash slave device (n25q032) connected to DaVinci
+-SPI controller device over the SPI bus.
+-
+-spi0:spi@20bf0000 {
+-	#address-cells			= <1>;
+-	#size-cells			= <0>;
+-	compatible			= "ti,dm6446-spi";
+-	reg				= <0x20BF0000 0x1000>;
+-	num-cs				= <4>;
+-	ti,davinci-spi-intr-line	= <0>;
+-	interrupts			= <338>;
+-	clocks				= <&clkspi>;
+-
+-	flash: flash@0 {
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-		compatible = "st,m25p32";
+-		spi-max-frequency = <25000000>;
+-		reg = <0>;
+-		ti,spi-wdelay = <8>;
+-
+-		partition@0 {
+-			label = "u-boot-spl";
+-			reg = <0x0 0x80000>;
+-			read-only;
+-		};
+-
+-		partition@1 {
+-			label = "test";
+-			reg = <0x80000 0x380000>;
+-		};
+-	};
+-};
+diff --git a/Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml b/Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml
+new file mode 100644
+index 0000000000000..b48e37d80daf0
+--- /dev/null
++++ b/Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml
+@@ -0,0 +1,76 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/spi/ti,dm6441-spi.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Davinci SPI Controller
++
++description:
++  SPI controllers on TI Davinci, OMAP-L138, and Keystone2 SoCs.
++
++maintainers:
++  - Andrew Davis <afd@ti.com>
++
++allOf:
++  - $ref: spi-controller.yaml#
++
++properties:
++  compatible:
++    items:
++      - enum:
++          - ti,dm6441-spi # for SPI used on DM644x SoC family
++          - ti,da830-spi # for SPI used on DA8xx SoC family
++          - ti,keystone-spi # for SPI used on Keystone2 SoC family
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clock-names:
++    maxItems: 1
++
++  clocks:
++    maxItems: 1
++
++  power-domains:
++    maxItems: 1
++
++  ti,davinci-spi-intr-line:
++    description:
++      Interrupt line used to connect the SPI IP to the interrupt controller
++        within the SoC. Possible values are 0 and 1. Manual says one of the
++        two possible interrupt lines can be tied to the interrupt controller.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    enum: [0, 1]
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    spi@20bf0000 {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        compatible = "ti,dm6446-spi";
++        reg = <0x20bf0000 0x1000>;
++        interrupts = <338>;
++        clocks = <&clkspi>;
++
++        num-cs = <4>;
++        ti,davinci-spi-intr-line = <0>;
++
++        flash@0 {
++            compatible = "st,m25p32";
++            spi-max-frequency = <50000000>;
++            reg = <0>;
++            ti,spi-wdelay = <8>;
++        };
++    };
+-- 
+2.39.2
 
-Thanks for the info!
-Could you mention this somewhere in the commit message?
-
-> > >         goto out;
-> > >   
-> > >   set_link_active:
-> > > @@ -9840,6 +9930,8 @@ static int __ufshcd_wl_resume(struct ufs_hba
-> > > *hba, enum ufs_pm_op pm_op)
-> > >                 if (ret)
-> > >                         goto set_old_link_state;
-> > >                 ufshcd_set_timestamp_attr(hba);
-> > > +               schedule_delayed_work(&hba->ufs_rtc_delayed_work,
-> > > +                                                       msecs_to_ji
-> > > ffies(UFS_RTC_UPDATE_EVERY_MS));
-> > >         }
-> > >   
-> > >         if (ufshcd_keep_autobkops_enabled_except_suspend(hba))
-> > > diff --git a/include/ufs/ufs.h b/include/ufs/ufs.h
-> > > index e77ab1786856..18b39c6b3a97 100644
-> > > --- a/include/ufs/ufs.h
-> > > +++ b/include/ufs/ufs.h
-> > > @@ -14,6 +14,7 @@
-> > >   #include <linux/bitops.h>
-> > >   #include <linux/types.h>
-> > >   #include <uapi/scsi/scsi_bsg_ufs.h>
-> > > +#include <linux/rtc.h>
-> > 
-> > Seems unnecessary.
-> 
-> seems it's needed, otherwise, I will get:
-> ./include/ufs/ufs.h:599:9: error: unknown type name ‘time64_t’
-
-Then it should be "#include <linux/time64.h>", which is more specific.
-
-
-Thomas
