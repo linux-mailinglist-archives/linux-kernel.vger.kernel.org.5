@@ -2,145 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33D2C7EB6DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 069957EB6E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbjKNTYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41648 "EHLO
+        id S229585AbjKNTdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKNTYw (ORCPT
+        with ESMTP id S229456AbjKNTdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:24:52 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A070FB;
-        Tue, 14 Nov 2023 11:24:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699989889; x=1731525889;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=DXy0hru+i9t5YWHtrQTgBmZudCR2V4Ap0+DZIcK0UDg=;
-  b=Iq1ob1uoPi5gWsayo5Vu/4+/hdCVg/KJsOtbaG9/E3mR4LSy01i/QjAY
-   fi850irN6P6bLm+0wX5kfKsC96qinPqsTRLcvhFsEYabiD1LmPTvUtU/l
-   ZaiSIkI5zDejvoZIqSfIWsRl+53elTt5Pt4nyZ6zGobBdf4pRsPuYiMf9
-   B1FS5pDlOejxDmlBDoNB0eol6czIZP+mSi3cQza1Q9+4pERjR5h9COaXh
-   NwbHrUg12aRbg7m3GVHoQLLOXHM55EqgxgVGdjLJF9mpAwPzOLXo2veUQ
-   Kir14HhEvCTeAxp/LaDSxdzB9T1hoO/2SnsJStPxxBYDMlT3uQAOgrsds
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="3800376"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="3800376"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:24:49 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="938221085"
-X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
-   d="scan'208";a="938221085"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 11:24:48 -0800
-Date:   Tue, 14 Nov 2023 11:24:47 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v15 05/23] x86/virt/tdx: Handle SEAMCALL no entropy error
- in common code
-Message-ID: <20231114192447.GA1109547@ls.amr.corp.intel.com>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <9565b2ccc347752607039e036fd8d19d78401b53.1699527082.git.kai.huang@intel.com>
+        Tue, 14 Nov 2023 14:33:18 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A172107;
+        Tue, 14 Nov 2023 11:33:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=s31663417; t=1699990367; x=1700595167; i=wahrenst@gmx.net;
+        bh=0l/qJoqBf6nReycMlif7uqnkpKDrwiJccsu4IcAzFIg=;
+        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+         In-Reply-To;
+        b=uiDtIorLWt9MeDK9i9FBqPtdEr9rpszNS1jcd8TUfMLZjPjZ6DXZjlZYhboPzZ5Y
+         klANs8AUmTqd7H5qGz7bdP307sW8LmtHyRAwVgnfVEcas2NYCbI4gpdjOczEfVzas
+         VKiAU14rFEnDb/5LlBk/d1LSb+MGrXSlx6YCNL9T/S8h+WKE75u4q6H54ogXgFxa3
+         vdFMisORqnD8QYN6wHYxpl7agbEyRd/GoaAOOkcZV2x/cLEep4Ei7nwv1C7BPQDDh
+         NJKJAStAMRUDtPFOkt0MexHLjrGBfdFJw/mknG+lProOtcR+GmraN+BiSR4IJJ+h2
+         xEWzqkzcamjht3imIw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MKsnP-1qoKwd3iyj-00LE1x; Tue, 14
+ Nov 2023 20:32:46 +0100
+Message-ID: <856622a5-c636-4677-a218-12070afe960a@gmx.net>
+Date:   Tue, 14 Nov 2023 20:32:45 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <9565b2ccc347752607039e036fd8d19d78401b53.1699527082.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/15] staging: vc04_services: vchiq_arm: Register
+ vcsm-cma driver
+Content-Language: en-US
+To:     Umang Jain <umang.jain@ideasonboard.com>,
+        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
+Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>
+References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+ <20231109210309.638594-3-umang.jain@ideasonboard.com>
+From:   Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <20231109210309.638594-3-umang.jain@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:tol0ZL1AgesNjpcIresGp3hLMBAjqiB9APiylxirondgLz/H3GA
+ Ox2cspkyQZqx8xZSqYZVo1daKJRABXg12GI91ngnobscpztKeq9VTigmxx5g8HIgnPKBe9Y
+ reHbcO8Y2mt3bucJLHMh3+TKVAGjmIMgoHf6O+pgo9imZi+JE2dDOFd40mhNJfSnMl1dFy+
+ nsz+kSI/VS+HZAXfFkC2g==
+UI-OutboundReport: notjunk:1;M01:P0:OgCA92FrxV0=;i6D1chp3+1ZPO9W8hP8BWP3elFY
+ N3qXALD7LCzrTTHwInWhnPi23WzOVokqpc9XiLScMZQK9ZCgDwHTvDG7pgrzV0wfTeDOM8ERz
+ 7D87mLaJqMlmHgkgTWZTmbhAxsi056I93skw+y6/HM/QC+hqHPLXrwy5PsmlwRpDAMouAEG8j
+ mQppNizNU/8Dut9jRXI84ZznOF7OMaav0H83CwWWljj/AD4j9MTx5uEj9nUUqkp6n2NvVjiIO
+ Suav64mS14z1QposPi03TgAO+cSFLShoxd0EY9YbsSxp/eEZXRdA06bj6QqLCmfo/TQXKvw5D
+ UuCbV7J5Cu6lbb3nSt/N7NZEGKtCw0uvxJPGvOq6FUKTRS0+6ukMAh98wzDKji7W8WibQIpSR
+ B1EVCHWq6F1LHoMRbscRIkCseA6lGAdP+F3xIaCMPeX6ffZz0YMtSyjoxD10ytYantoAgA72b
+ w812u6hf3SpJTUSY7DwUbHoH7q8KDB02cyF/0LVgKzLnS3wd7jbJMr9bWJmRwhLk4Kw1KTml3
+ e6eGYCTL81jpJ6Yv/UTbnlAy+BQprw4+74FOYWn1dK8v9xMW7C/j5eum3I5600iQ1b3y9Yrmi
+ le+BhjZzy7/PqUiyyFCJVbwGi6P52NROa58dtzjN2wDyPAIpXBrnF8h3lo/h7PjmasHNUT3ex
+ YtlTvXeNa4E2oSpZi5z1iaQr34EDRswEU8S2f5mH1x1W7BtbQcYTxMPWCIdzBuwalg3p/tegJ
+ XYlXm7iSTWH6Nxm9ipqe6OftPdWbFsFDbX5xCTEGMpTK9zvbyr0trFzh5AQ7b75Kg24IU6cSG
+ MhXrI8L6Yo/3mgiQiBIV2tq8OKVNtauffeqXlibMXvHi/fir7wvUQGgaGYQodcifeq8oq23Eu
+ 1rYx47VpuRj3Y46iqKyIqACcJ4ZpsuSWwgRcaDBi6viGlIHooiNPghTtvWHXmCw7DUPbAjRCe
+ nprlxDExZy/zHIwgnsul7ubJc6o=
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:55:42AM +1300,
-Kai Huang <kai.huang@intel.com> wrote:
+Hi Umang,
 
-> Some SEAMCALLs use the RDRAND hardware and can fail for the same reasons
-> as RDRAND.  Use the kernel RDRAND retry logic for them.
-> 
-> There are three __seamcall*() variants.  Do the SEAMCALL retry in common
-> code and add a wrapper for each of them.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> Reviewed-by: Kirill A. Shutemov <kirll.shutemov@linux.intel.com>
-> Reviewed-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Am 09.11.23 um 22:02 schrieb Umang Jain:
+> Register the vcsm-cma driver with the vchiq_bus_type.
+
+please squash into patch #1
+
+>
+> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
 > ---
-> 
-> v14 -> v15:
->  - Added Sathy's tag.
-> 
-> v13 -> v14:
->  - Use real function sc_retry() instead of using macros. (Dave)
->  - Added Kirill's tag.
-> 
-> v12 -> v13:
->  - New implementation due to TDCALL assembly series.
-> 
-> ---
->  arch/x86/include/asm/tdx.h | 26 ++++++++++++++++++++++++++
->  1 file changed, 26 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/tdx.h b/arch/x86/include/asm/tdx.h
-> index ea9a0320b1f8..f1c0c15469f8 100644
-> --- a/arch/x86/include/asm/tdx.h
-> +++ b/arch/x86/include/asm/tdx.h
-> @@ -24,6 +24,11 @@
->  #define TDX_SEAMCALL_GP			(TDX_SW_ERROR | X86_TRAP_GP)
->  #define TDX_SEAMCALL_UD			(TDX_SW_ERROR | X86_TRAP_UD)
->  
-> +/*
-> + * TDX module SEAMCALL leaf function error codes
-> + */
-> +#define TDX_RND_NO_ENTROPY	0x8000020300000000ULL
-> +
->  #ifndef __ASSEMBLY__
->  
->  /*
-> @@ -84,6 +89,27 @@ u64 __seamcall(u64 fn, struct tdx_module_args *args);
->  u64 __seamcall_ret(u64 fn, struct tdx_module_args *args);
->  u64 __seamcall_saved_ret(u64 fn, struct tdx_module_args *args);
->  
-> +#include <asm/archrandom.h>
-> +
-> +typedef u64 (*sc_func_t)(u64 fn, struct tdx_module_args *args);
-> +
-> +static inline u64 sc_retry(sc_func_t func, u64 fn,
-> +			   struct tdx_module_args *args)
-> +{
-> +	int retry = RDRAND_RETRY_LOOPS;
-> +	u64 ret;
-> +
-> +	do {
-> +		ret = func(fn, args);
-> +	} while (ret == TDX_RND_NO_ENTROPY && --retry);
-
-This loop assumes that args isn't touched when TDX_RND_NO_ENTRYPOY is returned.
-It's not true.  TDH.SYS.INIT() and TDH.SYS.LP.INIT() clear RCX, RDX, etc on
-error including TDX_RND_NO_ENTRY.  Because TDH.SYS.INIT() takes RCX as input,
-this wrapper doesn't work.  TDH.SYS.LP.INIT() doesn't use RCX, RDX ... as
-input. So it doesn't matter.
-
-Other SEAMCALLs doesn't touch registers on the no entropy error.
-TDH.EXPORTS.STATE.IMMUTABLE(), TDH.IMPORTS.STATE.IMMUTABLE(), TDH.MNG.ADDCX(),
-and TDX.MNG.CREATE().  TDH.SYS.INIT() is an exception.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+>   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 3 +++
+>   1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm=
+.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> index 9fb8f657cc78..5a9073480dd3 100644
+> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
+> @@ -70,6 +70,7 @@ struct vchiq_state g_state;
+>    */
+>   static struct vchiq_device *bcm2835_audio;
+>   static struct vchiq_device *bcm2835_camera;
+> +static struct vchiq_device *vcsm_cma;
+>
+>   struct vchiq_drvdata {
+>   	const unsigned int cache_line_size;
+> @@ -1840,6 +1841,7 @@ static int vchiq_probe(struct platform_device *pde=
+v)
+>   		goto error_exit;
+>   	}
+>
+> +	vcsm_cma =3D vchiq_device_register(&pdev->dev, "vcsm-cma");
+>   	bcm2835_audio =3D vchiq_device_register(&pdev->dev, "bcm2835-audio");
+>   	bcm2835_camera =3D vchiq_device_register(&pdev->dev, "bcm2835-camera"=
+);
+>
+> @@ -1855,6 +1857,7 @@ static void vchiq_remove(struct platform_device *p=
+dev)
+>   {
+>   	vchiq_device_unregister(bcm2835_audio);
+>   	vchiq_device_unregister(bcm2835_camera);
+> +	vchiq_device_unregister(vcsm_cma);
+>   	vchiq_debugfs_deinit();
+>   	vchiq_deregister_chrdev();
+>   }
