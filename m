@@ -2,129 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 902797EABC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2CFB7EABCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:44:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232292AbjKNIm4 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 03:42:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57858 "EHLO
+        id S232369AbjKNIo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:44:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232151AbjKNImz (ORCPT
+        with ESMTP id S232230AbjKNIo0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:42:55 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF3091AA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:42:49 -0800 (PST)
-Received: from EXMBX166.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX166", Issuer "EXMBX166" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id C888C24E249;
-        Tue, 14 Nov 2023 16:42:46 +0800 (CST)
-Received: from EXMBX066.cuchost.com (172.16.7.66) by EXMBX166.cuchost.com
- (172.16.6.76) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 14 Nov
- 2023 16:42:46 +0800
-Received: from [192.168.100.10] (172.16.6.8) by EXMBX066.cuchost.com
- (172.16.6.66) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Tue, 14 Nov
- 2023 16:42:45 +0800
-Message-ID: <d0e473f3-7b05-2d18-9874-eb9fe26f8478@starfivetech.com>
-Date:   Tue, 14 Nov 2023 16:42:44 +0800
+        Tue, 14 Nov 2023 03:44:26 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345AB1AA
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:44:23 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id 2adb3069b0e04-5094727fa67so7827634e87.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:44:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1699951461; x=1700556261; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EOI0CPqc9rDEial0ZWLikbzbAhp2oEQwcaX5s3JL5lU=;
+        b=GaBkddCtVV4Cx5R32RvyNisa4XpVVlW4VTDJv072taqKn8xuHBn+vUWncuWPIEt21k
+         UbAKHTpVdQCUSAUi2ojfoZfaBAZ36yhUIFiM/dphEoWhLckF0Fqqh87fz32AJ2qm1Gd+
+         NyMd7q3lS5Sb0fFD4QAHMjzuw7yUDs1wf5+MU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699951461; x=1700556261;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=EOI0CPqc9rDEial0ZWLikbzbAhp2oEQwcaX5s3JL5lU=;
+        b=J1etXG+EyHNei+8VEaPhjm4n4w70V7pprUn6LJrjAzv6nq3llSjisqiVTsHPmdsIS7
+         FunrmHawwJSr3LPcrsV/5g+9AzK/uBYPDGBHlq3v0JwY/gjS2A2j0e7UT/OWIRo3XuT+
+         Stj4Qc1vdHRTY7oh6vBWw9o0wgWFUWQzonyM1cMGqvM7DEmNkixlT9pqQHn+BBm6Wx2g
+         uzDJSKAOqDtyFbAZe7DzODMva0ESnsHS/JEKBYcCD/3IF1EMNGrcZyAEJSq0/o1f7+Pl
+         +xBPJ4zSb0ejXECs1LR2KQVhleZqlOBLHAgp8N8ixhwaiuLIHsjM7Gpxz8g6U11EXL+6
+         JFrw==
+X-Gm-Message-State: AOJu0Yxr3qfPddtC/EcArJubPArN/BeIpdefx1A35M+wfgbz30zbEk2k
+        ue1bjk24iv29WH8ICY3tTsVookJJHecrWwm98eK12g==
+X-Google-Smtp-Source: AGHT+IEa6VnEgDgdb660juJcwqvPMHNrvPtOFZUPkY8aSdfT4qRPasNYPWnpX+E9xWBXVGeBHiyk1pNobLJZBUesJiM=
+X-Received: by 2002:ac2:5dd6:0:b0:507:9d70:b297 with SMTP id
+ x22-20020ac25dd6000000b005079d70b297mr5427659lfq.60.1699951461277; Tue, 14
+ Nov 2023 00:44:21 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2 1/1] i3c: Add fallback method for GETMXDS CCC
-Content-Language: en-US
-To:     Miquel Raynal <miquel.raynal@bootlin.com>
-CC:     <alexandre.belloni@bootlin.com>, <linux-i3c@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-References: <20231114033430.9623-1-joshua.yeong@starfivetech.com>
- <20231114033430.9623-2-joshua.yeong@starfivetech.com>
- <20231114091956.0b8dd6c5@xps-13>
-From:   Joshua Yeong <joshua.yeong@starfivetech.com>
-In-Reply-To: <20231114091956.0b8dd6c5@xps-13>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-X-Originating-IP: [172.16.6.8]
-X-ClientProxiedBy: EXCAS081.cuchost.com (172.16.6.41) To EXMBX066.cuchost.com
- (172.16.6.66)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-5.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231109100606.1245545-1-wenst@chromium.org> <CAD=FV=WZCyp1aaSmpF-_TQ0CTWG1ZuvPZVw4mR=wJH=NTkKqqg@mail.gmail.com>
+In-Reply-To: <CAD=FV=WZCyp1aaSmpF-_TQ0CTWG1ZuvPZVw4mR=wJH=NTkKqqg@mail.gmail.com>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Tue, 14 Nov 2023 16:44:10 +0800
+Message-ID: <CAGXv+5GHFn_Xr0ta7b5M9WMBJzCE6NJWo_PR+XOYXO0oaoPeaQ@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
+        linus.walleij@linaro.org, broonie@kernel.org,
+        gregkh@linuxfoundation.org, hdegoede@redhat.com,
+        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
+        rafael@kernel.org, tglx@linutronix.de,
+        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Johan Hovold <johan@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Miquel,
+On Sat, Nov 11, 2023 at 8:22=E2=80=AFAM Doug Anderson <dianders@chromium.or=
+g> wrote:
+>
+> Hi,
+>
+> On Thu, Nov 9, 2023 at 2:06=E2=80=AFAM Chen-Yu Tsai <wenst@chromium.org> =
+wrote:
+> >
+> > The driver as
+> > implemented currently doesn't deal with regulators or GPIO pins,
+> > since in the existing device trees they are either always on for
+> > regulators, or have GPIO hogs or pinmux and pinconfig directly
+> > tied to the pin controller.
+>
+> I guess I won't object too much about this limitation for v1, but IMO
+> it would be good to get this sorted out since I think part of the
+> power of having the HW Prober is specifically that it can handle this
+> type of use case. You have a little bit of board-specific code that
+> knows how to turn on the regulators / GPIOs and can then probe the
+> devices.
+>
+> Note: even if this is "board specific", it doesn't mean you couldn't
+> share code between boards. For instance, you could have a helper
+> function that would turn on regulators/GPIOs based on some type of
+> table and that helper function could be used across a whole pile of
+> Chromebooks. If a Chromebook is sufficiently different that it
+> couldn't use the helper function then it could call its own function,
+> but presumably it wouldn't be hard to support a bunch of boards
+> without much code.
 
-On 14-Nov-23 4:19 PM, Miquel Raynal wrote:
-> Hi Joshua,
->
-> joshua.yeong@starfivetech.com wrote on Tue, 14 Nov 2023 11:34:30 +0800:
->
->> Some I3C hardware will report error when incorrect length is received from
-> 					an
->
->> device. GETMXDS CCC are availble in 2 formats; without turnaround time (format
-> 			  available		:
->
->> 1) and with turnaround time (format 2). There is no mechanics to determine which
->> format is supported by device. In case sending GETMXDS CCC format 2 resulted
-> 				So in case?
->
->> failure, try sending GETMXDS CCC format 1 instead.
-> in a
->
->> Signed-off-by: Joshua Yeong <joshua.yeong@starfivetech.com>
->> ---
->>   drivers/i3c/master.c | 12 ++++++++++--
->>   1 file changed, 10 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c
->> index 0cdc94e4cb77..2fc04d97f07e 100644
->> --- a/drivers/i3c/master.c
->> +++ b/drivers/i3c/master.c
->> @@ -1099,8 +1099,16 @@ static int i3c_master_getmxds_locked(struct i3c_master_controller *master,
->>   
->>   	i3c_ccc_cmd_init(&cmd, true, I3C_CCC_GETMXDS, &dest, 1);
->>   	ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
->> -	if (ret)
->> -		goto out;
->> +	if (ret) {
->> +		/*
-> 		 ^
-> Wrong alignment of the starts below
-> 		v
->> +		* Retry when the device does not support max read turnaround
->> +		* while expecting shorter length from this CCC command
-> period?
->
->> +		*/
->> +		dest->payload.len -= 3;
->> +		ret = i3c_master_send_ccc_cmd_locked(master, &cmd);
->> +		if (ret)
->> +			goto out;
->> +	}
-> I believe this is a per-device configuration and we should save this in
-> order to only fail once, no?
+I agree this part is fairly generic and should be implemented.
 
-This behavior depends on the hardware designed whether it will return an 
-error
-in case of shorter length from i3c devices in dest->payload.len. I made 
-it so it
-will retry by expecting a shorter length instead, in case it still fails 
-then
-it means GETMXDS CCC really failed.
+We probably don't even need such a table. If these components share
+a common connection to the mainboard, they certainly will have the
+same GPIO lines and regulator supplies. The prober could just scan
+the nodes looking for -gpio and -supply properties, de-duplicate
+them, and turn them on.
 
-We do not have to initialize the same hardware twice and do GETMXDS CCC more
-than once as far as I know?
+The reason this isn't implemented in this version is because the devices
+I'm currently using do not have these resources togglable. The supply is
+always on, and the GPIO line is disconnected from the SoC. So I have no
+way of testing it yet.
 
->
->>   
->>   	if (dest.payload.len != 2 && dest.payload.len != 5) {
->>   		ret = -EIO;
->
-> Thanks,
-> Miquèl
->
+> As part of this, I think that your main "HW Prober" for Chromebooks
+> should be in "drivers/platform/chrome/". I think that the only things
+> that should be in the "drivers/of" directory should be helper
+> functions used by the Chromebook HW Probers.
+
+Sound like what Rob wants.
+
+ChenYu
