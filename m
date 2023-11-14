@@ -2,108 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 616E17EACDC
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:17:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F27F7EACE1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232470AbjKNJRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:17:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55796 "EHLO
+        id S232549AbjKNJSJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:18:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232600AbjKNJRi (ORCPT
+        with ESMTP id S232518AbjKNJSE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:17:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19B2FD43
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:17:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699953439;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=FCQMK3tvMnlcAutGAmjADx8NXWTNg1Te+2YY/zMRKiU=;
-        b=UOXWY2Wb5epXuiGqQH9cxn/kj6gjrvbmGwh+n0F1HXq6gqlZg9fJ0i9tkL2u0Bah+USKB5
-        /ytg2GeEM4neBQFyJvFHoptZD9YkpHjhWvxr4UMK/fB7VaYj5Oi/7nBGF27FmjTkcoN2zJ
-        0NjYFIF6gRIEVY99tkj9g9ZMv5p0ZjA=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-155-AtEvHmVsOLW5Ae-g10RPxA-1; Tue, 14 Nov 2023 04:17:15 -0500
-X-MC-Unique: AtEvHmVsOLW5Ae-g10RPxA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EB275101A53B;
-        Tue, 14 Nov 2023 09:17:14 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.112.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id E3A2D2166B26;
-        Tue, 14 Nov 2023 09:17:10 +0000 (UTC)
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        linux-parisc@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
-        akpm@linux-foundation.org, ebiederm@xmission.com,
-        takahiro.akashi@linaro.org, Baoquan He <bhe@redhat.com>
-Subject: [PATCH 2/2] kexec_file: Load kernel at top of system RAM if required
-Date:   Tue, 14 Nov 2023 17:16:58 +0800
-Message-ID: <20231114091658.228030-3-bhe@redhat.com>
-In-Reply-To: <20231114091658.228030-1-bhe@redhat.com>
-References: <20231114091658.228030-1-bhe@redhat.com>
+        Tue, 14 Nov 2023 04:18:04 -0500
+Received: from mail.nfschina.com (unknown [42.101.60.195])
+        by lindbergh.monkeyblade.net (Postfix) with SMTP id 786AEF5;
+        Tue, 14 Nov 2023 01:18:00 -0800 (PST)
+Received: from [172.30.11.106] (unknown [180.167.10.98])
+        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPSA id D4CB26071E21E;
+        Tue, 14 Nov 2023 17:17:50 +0800 (CST)
+Message-ID: <9c90dd30-448c-6d1c-76e4-85b36eb739f9@nfschina.com>
+Date:   Tue, 14 Nov 2023 17:17:50 +0800
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
+ Thunderbird/91.8.0
+Subject: Re: [PATCH] wifi: rtl8xxxu: correct the error value of 'timeout'
+Content-Language: en-US
+To:     Ping-Ke Shih <pkshih@realtek.com>,
+        "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>,
+        "kvalo@kernel.org" <kvalo@kernel.org>
+Cc:     "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+X-MD-Sfrom: suhui@nfschina.com
+X-MD-SrcIP: 180.167.10.98
+From:   Su Hui <suhui@nfschina.com>
+In-Reply-To: <e8b847437ab242d18108d9364360bb8a@realtek.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kexec_load interface has been doing top down searching and loading
-kernel/initrd/purgtory etc to prepare for kexec reboot. In that way,
-the benefits are that it avoids to consume and fragment limited low
-memory which satisfy DMA buffer allocation and big chunk of continuous
-memory during system init; and avoids to stir with BIOS/FW reserved
-or occupied areas, or corner case handling/work around/quirk occupied
-areas when doing system init. By the way, the top-down searching and
-loading of kexec-ed kernel is done in user space utility code.
+On 2023/11/14 14:42, Ping-Ke Shih wrote:
+>> -----Original Message-----
+>> From: Su Hui <suhui@nfschina.com>
+>> Sent: Monday, November 13, 2023 1:49 PM
+>> To: Jes.Sorensen@gmail.com; kvalo@kernel.org
+>> Cc: Su Hui <suhui@nfschina.com>; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>> kernel-janitors@vger.kernel.org
+>> Subject: [PATCH] wifi: rtl8xxxu: correct the error value of 'timeout'
+>>
+>> When 'rtl8xxxu_dma_agg_pages <= page_thresh', 'timeout' should equal to
+>> 'page_thresh' rather than '4'. Change the code order to fix this problem.
+>>
+>> Fixes: 614e389f36a9 ("rtl8xxxu: gen1: Set aggregation timeout (REG_RXDMA_AGG_PG_TH + 1) as well")
+> I think this should fix
+> Fixes: fd83f1227826 ("rtl8xxxu: gen1: Add module parameters to adjust DMA aggregation parameters")
+Agreed. Thanks for your reminder!
+>
+>> Signed-off-by: Su Hui <suhui@nfschina.com>
+>> ---
+>>   .../net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c    | 12 ++++++------
+>>   1 file changed, 6 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+>> b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+>> index 43ee7592bc6e..9cab8b1dc486 100644
+>> --- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+>> +++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+>> @@ -4757,6 +4757,12 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
+>>           *   RxAggPageTimeout = 4 or 6 (absolute time 34ms/(2^6))
+>>           */
+>>
+>> +       /* REG_RXDMA_AGG_PG_TH + 1 seems to be the timeout register on
+>> +        * gen2 chips and rtl8188eu. The rtl8723au seems unhappy if we
+>> +        * don't set it, so better set both.
+>> +        */
+>> +       timeout = 4;
+>> +
+>>          page_thresh = (priv->fops->rx_agg_buf_size / 512);
+>>          if (rtl8xxxu_dma_agg_pages >= 0) {
+>>                  if (rtl8xxxu_dma_agg_pages <= page_thresh)
+> The logic here is:
+>
+> 	page_thresh = (priv->fops->rx_agg_buf_size / 512);
+> 	if (rtl8xxxu_dma_agg_pages >= 0) {
+> 		if (rtl8xxxu_dma_agg_pages <= page_thresh)
+> 			timeout = page_thresh;
+>
+> Do you know why 'timeout = page_thresh;'? Intuitively, units of 'timeout' and
+> 'thresh' are different. Maybe, we should correct here instead?
+I don't know the reason about this. :(
+I found this error because clang static checker complains about this 
+code that value stored to 'timeout'
+is never read.
 
-For kexec_file loading, even if kexec_buf.top_down is 'true', it's simply
-ignored. It calls walk_system_ram_res() directly to go through all
-resources of System RAM bottom up, to find an available memory region,
-then call locate_mem_hole_callback() to allocate memory in that found
-memory region from top to down. This is not expected and inconsistent
-with kexec_load.
-
-Here check if kexec_buf.top_down is 'true' in kexec_walk_resources(),
-if yes, call the newly added walk_system_ram_res_rev() to find memory
-region of system RAM from top to down to load kernel/initrd etc.
-
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- kernel/kexec_file.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index f9a419cd22d4..ba3ef30921b8 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -592,6 +592,8 @@ static int kexec_walk_resources(struct kexec_buf *kbuf,
- 					   IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY,
- 					   crashk_res.start, crashk_res.end,
- 					   kbuf, func);
-+	else if (kbuf->top_down)
-+		return walk_system_ram_res_rev(0, ULONG_MAX, kbuf, func);
- 	else
- 		return walk_system_ram_res(0, ULONG_MAX, kbuf, func);
- }
--- 
-2.41.0
+Su Hui
 
