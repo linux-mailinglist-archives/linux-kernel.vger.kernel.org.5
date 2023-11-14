@@ -2,87 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B42EE7EB6F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:39:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6FA7EB6F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:41:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229570AbjKNTj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35176 "EHLO
+        id S231938AbjKNTlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:41:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231390AbjKNTjx (ORCPT
+        with ESMTP id S229569AbjKNTlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:39:53 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDA64116
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:39:49 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id 41be03b00d2f7-5c1bfd086f0so1164451a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:39:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1699990789; x=1700595589; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YOy2Jb1yR8H+KDVAUkMuOWbnw7u2AlKs0q0OU4Ox4dg=;
-        b=1eyvjaKPkOM9/syod/APwe8rlxIwK30ARa9MZJGVqFCG3NVtEyevw7exzedQVttEAN
-         BnNFs/Q6XJq2nkVllvikQhlKGoB/QMhhHX75HK2C8ZIa+MruMRGDhO1w4qd0UnYw/Xjm
-         Zp95YT/dVeRGFTqwGAmzB387ymv6D5mbilZ7y9Ceu1vPGS8dFL0dk96F+uiygTeHT1bC
-         EyNtv10r9ZyuuIHntlvmCjPX3oQ3np+W6HobxuBxtTxcUGI6Qnli1XFHljubG6UM5WfO
-         drqO+rEHXqAwizZpUua7CbMKE7fE9mqt0OQP1zzjpkgVsTimXjo+KGkj+UZvjDXi7Ve9
-         qHXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699990789; x=1700595589;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YOy2Jb1yR8H+KDVAUkMuOWbnw7u2AlKs0q0OU4Ox4dg=;
-        b=AgytL5bi5ZjvNn/uT6D8bWYbECzYnl76IW142KXrkZ+/ty3UiZCNEchtOKa2sgYQmU
-         c+qUpBiXoV2JvZPyDxluhkh555Zlt3pGjwzFg9ppo29+OjwsrNgtqGIBW0UmeXyCqoU3
-         lgRBWpNFgggdKIPiQyzIu9A589Q9gW6Q3svDFabpLTRrymC1ocjSneozXbhDbE/z8rwx
-         +b5qzpdA5UGvNbr3+ZhANphzvOwnuL5kzAmFh1ootj6eBa+v2Vvnim5VIc1JcxKUALs/
-         RUZQME53AE53U4+Z0HWKU6Qur/9I5dtm2YuocIEfURh/59oz/Pup1cHvT3x6XRT0ekjd
-         iI1Q==
-X-Gm-Message-State: AOJu0YzZ2/Sz8uDVmy1Cq4xpCX0tFTUMKjubVZac0xKxD/3Q5eNdd4bc
-        bv5KB+8hU+M6UXvdIu6N2whsilldOqE=
-X-Google-Smtp-Source: AGHT+IELdNJfmBdSyGP1UazLrbiVBbECc8jW+oar24BNIoRCoD71ecIN2G1p5PdKbnM8GZXagF+ybaigYRQ=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a05:6a00:8b82:b0:68e:3c6d:da66 with SMTP id
- ig2-20020a056a008b8200b0068e3c6dda66mr2732255pfb.6.1699990789174; Tue, 14 Nov
- 2023 11:39:49 -0800 (PST)
-Date:   Tue, 14 Nov 2023 11:39:39 -0800
-In-Reply-To: <0e27a686-43f9-5120-5097-3fd99982df62@oracle.com>
-Mime-Version: 1.0
-References: <20231018195638.1898375-1-seanjc@google.com> <e8002e94-33c5-617c-e951-42cd76666fad@oracle.com>
- <0e27a686-43f9-5120-5097-3fd99982df62@oracle.com>
-Message-ID: <ZVPM-8MKW56hHCuw@google.com>
-Subject: Re: [PATCH] KVM: x86: Don't unnecessarily force masterclock update on
- vCPU hotplug
-From:   Sean Christopherson <seanjc@google.com>
-To:     Dongli Zhang <dongli.zhang@oracle.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        David Woodhouse <dwmw2@infradead.org>,
+        Tue, 14 Nov 2023 14:41:18 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C2C107;
+        Tue, 14 Nov 2023 11:41:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
+        :MIME-Version:Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=y2B2n6o5s66GYrU/6AX0x5LJjn5iab4+r1wbNLKGJjY=; b=YoGJ91uXtsqo8U8+OXPAkv2Npm
+        3ZXQhG6dF55DNdRW8PFBg61JFf6biewmuldFciGlX5sjN1t1RnUVXBeGWFTQgqjiA9Jvn4Z9VqPeC
+        W29NJEX1T9oSnux71BmIcNf+nReGgiqk0B5QcaQSZFhA0sN1M7QlepXeSY8PckJLJHbgfVqknwatF
+        xWSjujNHqcYDX7KRiICFmGO8OrS1JfoIPFHVU+yF9WpgfY21FTO3Lx9CmpXnfNHGhIiML7HtWNgeV
+        WzZ/bqDmo48ITwgsWrfsDKtbvl+Mae4D4cw8ancrHlbl5JQ4w8ECEwB7Gc2Q3F+61hpSsOlZo980r
+        maeMV6Fw==;
+Received: from [12.186.190.2] (helo=[127.0.0.1])
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r2zHY-002g7X-38;
+        Tue, 14 Nov 2023 19:41:09 +0000
+Date:   Tue, 14 Nov 2023 14:41:03 -0500
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Sean Christopherson <seanjc@google.com>,
+        Dongli Zhang <dongli.zhang@oracle.com>
+CC:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
         Paolo Bonzini <pbonzini@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: =?US-ASCII?Q?Re=3A_=5BPATCH=5D_KVM=3A_x86=3A_Don=27t_unnecessarily?= =?US-ASCII?Q?_force_masterclock_update_on_vCPU_hotplug?=
+User-Agent: K-9 Mail for Android
+In-Reply-To: <ZVPM-8MKW56hHCuw@google.com>
+References: <20231018195638.1898375-1-seanjc@google.com> <e8002e94-33c5-617c-e951-42cd76666fad@oracle.com> <0e27a686-43f9-5120-5097-3fd99982df62@oracle.com> <ZVPM-8MKW56hHCuw@google.com>
+Message-ID: <380C83F0-5F0D-4B30-9E5C-F0DB9FDED44B@infradead.org>
+MIME-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023, Dongli Zhang wrote:
-> Hi Sean,
-> 
-> Would mind sharing if the patch is waiting for Reviewed-by, and when it will be
-> merged into kvm-x86 tree?
+On 14 November 2023 14:39:39 GMT-05:00, Sean Christopherson <seanjc@google=
+=2Ecom> wrote:
+> timing doesn't really matter in the end=2E
 
-I'm at LPC this week, and out next week, so nothing is going to get applied to
-kvm-x86 until after -rc3.  I considered trying to squeeze in a few things this
-week, but decided to just wait until -rc3 and not rush anything, as the timing
-doesn't really matter in the end.
+No pun intended?=20
 
-> While I not sure if the same developer can give both Tested-by and Reviewed-by ...
-> 
-> Reviewed-by: Dongli Zhang <dongli.zhang@oracle.com>
-
-Thanks!  Providing both a Reviewed-by and Tested-by is totally valid.
