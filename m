@@ -2,106 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEDA97EAE9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:10:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B122F7EAEA1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232821AbjKNLK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 06:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46124 "EHLO
+        id S232754AbjKNLLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 06:11:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKNLK0 (ORCPT
+        with ESMTP id S229441AbjKNLLv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 06:10:26 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02CE8187;
-        Tue, 14 Nov 2023 03:10:21 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EEDEE1C0005;
-        Tue, 14 Nov 2023 11:10:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699960220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UZk2NG7LMF4weSGGvdqw6ZXKkgHMu8ga7kKv8OtqZLM=;
-        b=bbntZNgUvrYTXujYXIPpbH9Qpd8qEzus+iOoYJzgOWMbiWXsGHdPzV8d+fWi2Z69Eu6i8s
-        /iFV+vezys8YOQWFpGwTvq0RmuNmugyYopXkVhJXCs2y4+it7g9d4SWVFR397LSmA6zY3g
-        ci45ynp9fRVauFc6nzm8QK9JVcYX7u2YdKooNCjo8sDI0iQCoafndVNT5rwPQUNYrpmaar
-        CNDKcUdfumwvgDLBfIUkhm6Q+2PXSBER5rYWZlVyhvEBzO67xHwBWtQSOTA86keHYnS6V3
-        +amL+d1/HM9Q4J9u5HasCznEUScCm9F0srD7h/iYzaz7nsOUzOV7uazUHHtlkg==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 14 Nov 2023 12:10:18 +0100
-Message-Id: <CWYHLRBFE1X1.15330WETL2R7U@tleb-bootlin-xps13-01>
-From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Subject: Re: [PATCH 4/6] usb: cdns3: support power-off of controller when in
- host role
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
-        "Conor Dooley" <conor+dt@kernel.org>,
-        "Roger Quadros" <rogerq@kernel.org>,
-        "Pawel Laszczak" <pawell@cadence.com>,
-        "Nishanth Menon" <nm@ti.com>,
-        "Vignesh Raghavendra" <vigneshr@ti.com>,
-        "Tero Kristo" <kristo@kernel.org>, <linux-usb@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-To:     "Peter Chen" <peter.chen@kernel.org>
-X-Mailer: aerc 0.15.2
-References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
- <20231113-j7200-usb-suspend-v1-4-ad1ee714835c@bootlin.com>
- <20231114083838.GC64573@nchen-desktop>
-In-Reply-To: <20231114083838.GC64573@nchen-desktop>
-X-GND-Sasl: theo.lebrun@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 14 Nov 2023 06:11:51 -0500
+Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DE318C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 03:11:47 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0VwPD2sM_1699960303;
+Received: from 30.97.48.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0VwPD2sM_1699960303)
+          by smtp.aliyun-inc.com;
+          Tue, 14 Nov 2023 19:11:44 +0800
+Message-ID: <f22001bb-e474-4ddb-8440-2668e6cec000@linux.alibaba.com>
+Date:   Tue, 14 Nov 2023 19:11:56 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: support large folio numa balancing
+To:     "Huang, Ying" <ying.huang@intel.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+References: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+ <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+ <871qctf89m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+From:   Baolin Wang <baolin.wang@linux.alibaba.com>
+In-Reply-To: <871qctf89m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-On Tue Nov 14, 2023 at 9:38 AM CET, Peter Chen wrote:
-> On 23-11-13 15:26:59, Th=C3=A9o Lebrun wrote:
-> > The controller is not being reconfigured at resume. Change resume to
-> > redo hardware config if quirk CDNS3_RESET_ON_RESUME is active.
->
-> Current logic has power off judgement, see cdns3_controller_resume for
-> detail.
 
-Indeed! Thanks for the pointer. I had not noticed that, those patches
-come from an older kernel which didn't have it. That'll make for less
-changes; patches 4 & 5 can go away.
+On 11/14/2023 9:12 AM, Huang, Ying wrote:
+> David Hildenbrand <david@redhat.com> writes:
+> 
+>> On 13.11.23 11:45, Baolin Wang wrote:
+>>> Currently, the file pages already support large folio, and supporting for
+>>> anonymous pages is also under discussion[1]. Moreover, the numa balancing
+>>> code are converted to use a folio by previous thread[2], and the migrate_pages
+>>> function also already supports the large folio migration.
+>>> So now I did not see any reason to continue restricting NUMA
+>>> balancing for
+>>> large folio.
+>>
+>> I recall John wanted to look into that. CCing him.
+>>
+>> I'll note that the "head page mapcount" heuristic to detect sharers will
+>> now strike on the PTE path and make us believe that a large folios is
+>> exclusive, although it isn't.
+> 
+> Even 4k folio may be shared by multiple processes/threads.  So, numa
+> balancing uses a multi-stage node selection algorithm (mostly
+> implemented in should_numa_migrate_memory()) to identify shared folios.
+> I think that the algorithm needs to be adjusted for PTE mapped large
+> folio for shared folios.
 
-> > +	if (cdns->pdata && cdns->pdata->quirks & CDNS3_RESET_ON_RESUME)
-> > +		cdns->xhci_plat_data->quirks |=3D XHCI_RESET_ON_RESUME | XHCI_SUSPEN=
-D_RESUME_CLKS;
-> > +
->
-> If you set this flag, how could you support the USB remote wakeup
-> request? In that case, the USB bus does not expect re-enumeration.
+Not sure I get you here. In should_numa_migrate_memory(), it will use 
+last CPU id, last PID and group numa faults to determine if this page 
+can be migrated to the target node. So for large folio, a precise folio 
+sharers check can make the numa faults of a group more accurate, which 
+is enough for should_numa_migrate_memory() to make a decision?
 
-We didn't support remote USB wakeup. Only S2R mattered in our case and
-USB remote wakeup wasn't a possibility.
+Could you provide a more detailed description of the algorithm you would 
+like to change for large folio? Thanks.
 
-> > +static int cdns_host_resume(struct cdns *cdns, bool hibernated)
-> > +{
-> > +	return cdns_drd_host_on(cdns);
->
-> This one will redo if controller's power is off, please consider both
-> on and power situation.
+> And, as a performance improvement patch, some performance data needs to
 
-Clearly. Can see that at runtime.
+Do you have some benchmark recommendation? I know the the autonuma can 
+not support large folio now.
 
-Thanks for the review!
-
---
-Th=C3=A9o Lebrun, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> be provided.  And, the effect of shared folio detection needs to be
+> tested too
