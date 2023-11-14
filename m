@@ -2,71 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C12067EAF78
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:47:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382F97EAF7E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 12:48:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232678AbjKNLrK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 06:47:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44410 "EHLO
+        id S232707AbjKNLsk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 06:48:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKNLrJ (ORCPT
+        with ESMTP id S229441AbjKNLsi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 06:47:09 -0500
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4517A7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 03:47:05 -0800 (PST)
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-58b57d05c70so5112744a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 03:47:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699962425; x=1700567225;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IIYWJN8lpILSyfiEcNiBTbqHzMRwjY0acvjNOZwjQY4=;
-        b=IcJpQCab/LJXcYbfgVrZrt2u6071YmeVnzphy8LFDICdwbSOIB0DkIRN2fmPdH47lJ
-         1EbecEfIpaUygVVN8qaRvoozhZ9VQ35MTQoepSNgpFFEDkv0lNR54ihhSG4wBNSMjpgf
-         IPFfdmctruB8UFkRS1xH6V4IyfzCO+KfJH5T54GuE305s0Ty0GarFz4uZtXlflINK22R
-         LzsxERqS/wru1xi6V0d6aVdUg6QP4iWfUFZSX0yXrG0IsyZHuQAmlUZP3S305jpbkOp+
-         t1cNMNaiPCVXeT2rewDtZFpuuy93wgtUcgbEPiZFr3PJKKqHbsn/f53aNUPVtpFPCrvG
-         nvdQ==
-X-Gm-Message-State: AOJu0YyZwvkBdZVkg3uWq2EnNBEyY4sHSE4PjM/VFJILlsLCFoz7o92X
-        b6YYGkL8SkKioCHwt2OEvOn4SvUPpuzNtJohxOQ1soW/LsNyWSY=
-X-Google-Smtp-Source: AGHT+IFp5D5GjwNQhJUBlCsA6beHRqs8t/sdQ40nhQ9hi7KTuUUujOOt4trJuLJCQ6Qv02Xhjxztm2o9ZrySE9XyTAzcj96AsTFC
+        Tue, 14 Nov 2023 06:48:38 -0500
+Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BAAF1A7;
+        Tue, 14 Nov 2023 03:48:35 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 3821AFF803;
+        Tue, 14 Nov 2023 11:48:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699962514;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ecc2U8XKNAiKPYVEs6kOx9hM2XH9Tt8TCuws1240YTw=;
+        b=WTnPxPVyckP+A0BzC7eaUF/2H8p8/YNg/sg7BmqSWyd7UP8TY5OwzJRhkgq+AYfexSM5Yr
+        js51iQf9AqX1FcmCaQm8LmT5XNQVOceD75MYOjJGe9Niyqm7ppgaSdY+uUU2TkcDn13lUK
+        sS4YdHGe7f3amOLybBZ9xcsB1b7VR4KROu5tiV3cZRJjUx0xzkSIWJN491T7B1EUkf5mTP
+        fa8FQInIoiC9c6gYc5oU3ct2BF3QbQV1KnvjmKkuFUREDpzJdsM5l8DBVCqcIxnxjnE2gJ
+        XXJOkgslyXRWnb0tZJkTVVqzrke6aSLEkYgLpfmBc6fJGhAKv1p5d26CMQwI4Q==
+Date:   Tue, 14 Nov 2023 12:48:32 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] lib/vsprintf: Fix %pfwf when current node refcount
+ == 0
+Message-ID: <20231114124832.40d4ced4@bootlin.com>
+In-Reply-To: <ZVNZ63HdoRKT4IQ9@kekkonen.localdomain>
+References: <20231114110456.273844-1-herve.codina@bootlin.com>
+        <ZVNZ63HdoRKT4IQ9@kekkonen.localdomain>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-X-Received: by 2002:a63:4d24:0:b0:5bd:3d6e:26fd with SMTP id
- a36-20020a634d24000000b005bd3d6e26fdmr442289pgb.0.1699962425467; Tue, 14 Nov
- 2023 03:47:05 -0800 (PST)
-Date:   Tue, 14 Nov 2023 03:47:05 -0800
-In-Reply-To: <0000000000005e44550608a0806c@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000806b0b060a1b58a6@google.com>
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in __pte_offset_map_lock
-From:   syzbot <syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+Hi Sakari,
 
-***
+On Tue, 14 Nov 2023 11:28:43 +0000
+Sakari Ailus <sakari.ailus@linux.intel.com> wrote:
 
-Subject: BUG: unable to handle kernel paging request in __pte_offset_map_lock
-Author: jose.pekkarinen@foxhound.fi
+> > --- a/lib/vsprintf.c
+> > +++ b/lib/vsprintf.c
+> > @@ -2108,8 +2108,8 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
+> >  {
+> >  	int depth;
+> >  
+> > -	/* Loop starting from the root node to the current node. */
+> > -	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
+> > +	/* Loop starting from the root node to the parent of current node. */
+> > +	for (depth = fwnode_count_parents(fwnode); depth > 0; depth--) {
+> >  		struct fwnode_handle *__fwnode =
+> >  			fwnode_get_nth_parent(fwnode, depth);  
+> 
+> How about, without changing the loop:
+> 
+> 		/*
+> 		 * Only get a reference for other nodes, fwnode refcount
+> 		 * may be 0 here.
+> 		 */
+> 		struct fwnode_handle *__fwnode =
+> 			depth ? fwnode_get_nth_parent(fwnode, depth) : fwnode;
+> 
+> >  
+> > @@ -2121,6 +2121,16 @@ char *fwnode_full_name_string(struct fwnode_handle *fwnode, char *buf,
+> >  		fwnode_handle_put(__fwnode);  
+> 
+> And:
+> 
+> 		if (__fwnode != fwnode)
+> 			fwnode_handle_put(__fwnode);
+> 
 
+Sure.
+I will just change to keep the both tests consistent.
+I mean test with depth or test with __fwnode != fwnode but avoid
+mixing them.
 
-#syz test: 
-git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 
-03d1179639b1515dce087335c1fb5c962908683b
+What do you think about testing using depth in all cases and so:
+	if (depth)
+		fwnode_handle_put(__fwnode);
 
-     José Pekkarinen.
+Best regards,
+Hervé
+
