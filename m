@@ -2,176 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 83A647EB96D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F22787EB96E
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:35:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbjKNWfA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:35:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47702 "EHLO
+        id S234161AbjKNWfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 17:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234097AbjKNWe6 (ORCPT
+        with ESMTP id S234137AbjKNWff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:34:58 -0500
-Received: from rcdn-iport-6.cisco.com (rcdn-iport-6.cisco.com [173.37.86.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B89BDD;
-        Tue, 14 Nov 2023 14:34:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=3195; q=dns/txt; s=iport;
-  t=1700001295; x=1701210895;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=mcaSeiV3DCOZVPr6R0+RWxfvehrcdQLMAkhm3bXZX8w=;
-  b=IMY2pvoLm9ldXbI8CX6+3zYNWuwJNGLR5xhqt9jQYV3YWMao2+pzBWSM
-   zunRPzHm7ST8AeRjpdzXH8E+hNP01Hf3LEWlCEWC1gY61ACR/a67qy7fs
-   tLBqqtxHDIYo5BwTEluUNIukAymuFVmUUm+AuQtGeDdqnixeBOu7AMXei
-   g=;
-X-CSE-ConnectionGUID: ArWM3z76SQGiZM1o+ER9JQ==
-X-CSE-MsgGUID: UdjsLy7XTpS8FL+2DSCr4g==
-X-IronPort-AV: E=Sophos;i="6.03,303,1694736000"; 
-   d="scan'208";a="138689550"
-Received: from rcdn-core-12.cisco.com ([173.37.93.148])
-  by rcdn-iport-6.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 22:34:54 +0000
-Received: from localhost.cisco.com ([10.193.101.253])
-        (authenticated bits=0)
-        by rcdn-core-12.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3AEMYlrY013637
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Tue, 14 Nov 2023 22:34:53 GMT
-From:   Karan Tilak Kumar <kartilak@cisco.com>
-To:     sebaddel@cisco.com
-Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
-        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Karan Tilak Kumar <kartilak@cisco.com>
-Subject: [PATCH v3 06/13] scsi: fnic: Refactor and redefine fnic.h for multiqueue
-Date:   Tue, 14 Nov 2023 14:34:44 -0800
-Message-Id: <20231114223444.633950-1-kartilak@cisco.com>
-X-Mailer: git-send-email 2.31.1
+        Tue, 14 Nov 2023 17:35:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB7F3DB
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:35:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700001331;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WJDlbKUfQP9B8xSvbtng6SeSLwGz931vpn2DrplDtEM=;
+        b=R8LHUqrr2bFNa7pzIa6VRGUyNPIuYKabzzT1jjF94iN0kwS9FdN8OY4Y5IeLCYJJ2/eqBi
+        D58rOxqPYePH6s3WP+rhzQfMs63Rn6AfS93rjnAq6wndFj5+dFPwtPTkC8dC0gSNOJcR1T
+        gK/2fDaoeHMK9HXsN6jrenyuCLTSzBM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-563-ruqsAX9qNpGJAh4smGLHfw-1; Tue, 14 Nov 2023 17:35:25 -0500
+X-MC-Unique: ruqsAX9qNpGJAh4smGLHfw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 40B49811E7B;
+        Tue, 14 Nov 2023 22:35:25 +0000 (UTC)
+Received: from swamp.redhat.com (unknown [10.45.224.10])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id B421936EE;
+        Tue, 14 Nov 2023 22:35:23 +0000 (UTC)
+From:   Petr Oros <poros@redhat.com>
+To:     intel-wired-lan@lists.osuosl.org
+Cc:     netdev@vger.kernel.org, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        linux-kernel@vger.kernel.org, wojciech.drewek@intel.com
+Subject: [Intel-wired-lan] [PATCH v2 iwl-next] iavf: use iavf_schedule_aq_request() helper
+Date:   Tue, 14 Nov 2023 23:35:22 +0100
+Message-ID: <20231114223522.2110214-1-poros@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Authenticated-User: kartilak@cisco.com
-X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
-X-Outbound-Node: rcdn-core-12.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor and re-define values in fnic.h to implement
-multiqueue(MQ) functionality.
+Use the iavf_schedule_aq_request() helper when we need to
+schedule a watchdog task immediately. No functional change.
 
-VIC firmware allows fnic to create up to 64 copy
-workqueues. Update the copy workqueue max to 64.
-Modify the interrupt index to be in sync with the firmware
-to support MQ.
-Add irq number to the MSIX entry.
-Define a software workqueue table to track the status of
-io_reqs. Define a base for the copy workqueue.
-
-Changes between v2 and v3:
-    Replace cpy_wq_base with copy_wq_base.
-
-Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
-Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
-Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+Signed-off-by: Petr Oros <poros@redhat.com>
+Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
 ---
- drivers/scsi/fnic/fnic.h | 30 ++++++++++++++++++++++--------
- 1 file changed, 22 insertions(+), 8 deletions(-)
+v2: rebased on net-next
+---
+drivers/net/ethernet/intel/iavf/iavf_ethtool.c | 10 +++-------
+ drivers/net/ethernet/intel/iavf/iavf_main.c    | 15 +++++----------
+ 2 files changed, 8 insertions(+), 17 deletions(-)
 
-diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
-index f4bd0e13203d..07d67fe903f2 100644
---- a/drivers/scsi/fnic/fnic.h
-+++ b/drivers/scsi/fnic/fnic.h
-@@ -167,12 +167,21 @@ do {								\
- #define FNIC_MAIN_NOTE(kern_level, host, fmt, args...)          \
- 	shost_printk(kern_level, host, fmt, ##args)
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+index 6f236d1a6444e8..6b3d3e54b8b772 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_ethtool.c
+@@ -1445,10 +1445,9 @@ static int iavf_add_fdir_ethtool(struct iavf_adapter *adapter, struct ethtool_rx
+ 	iavf_fdir_list_add_fltr(adapter, fltr);
+ 	adapter->fdir_active_fltr++;
+ 	fltr->state = IAVF_FDIR_FLTR_ADD_REQUEST;
+-	adapter->aq_required |= IAVF_FLAG_AQ_ADD_FDIR_FILTER;
+ 	spin_unlock_bh(&adapter->fdir_fltr_lock);
  
-+#define FNIC_WQ_COPY_MAX 64
-+#define FNIC_WQ_MAX 1
-+#define FNIC_RQ_MAX 1
-+#define FNIC_CQ_MAX (FNIC_WQ_COPY_MAX + FNIC_WQ_MAX + FNIC_RQ_MAX)
-+#define FNIC_DFLT_IO_COMPLETIONS 256
-+
-+#define FNIC_MQ_CQ_INDEX        2
-+
- extern const char *fnic_state_str[];
+-	mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++	iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_FDIR_FILTER);
  
- enum fnic_intx_intr_index {
- 	FNIC_INTX_WQ_RQ_COPYWQ,
--	FNIC_INTX_ERR,
-+	FNIC_INTX_DUMMY,
- 	FNIC_INTX_NOTIFY,
-+	FNIC_INTX_ERR,
- 	FNIC_INTX_INTR_MAX,
- };
+ ret:
+ 	if (err && fltr)
+@@ -1479,7 +1478,6 @@ static int iavf_del_fdir_ethtool(struct iavf_adapter *adapter, struct ethtool_rx
+ 	if (fltr) {
+ 		if (fltr->state == IAVF_FDIR_FLTR_ACTIVE) {
+ 			fltr->state = IAVF_FDIR_FLTR_DEL_REQUEST;
+-			adapter->aq_required |= IAVF_FLAG_AQ_DEL_FDIR_FILTER;
+ 		} else {
+ 			err = -EBUSY;
+ 		}
+@@ -1489,7 +1487,7 @@ static int iavf_del_fdir_ethtool(struct iavf_adapter *adapter, struct ethtool_rx
+ 	spin_unlock_bh(&adapter->fdir_fltr_lock);
  
-@@ -180,7 +189,7 @@ enum fnic_msix_intr_index {
- 	FNIC_MSIX_RQ,
- 	FNIC_MSIX_WQ,
- 	FNIC_MSIX_WQ_COPY,
--	FNIC_MSIX_ERR_NOTIFY,
-+	FNIC_MSIX_ERR_NOTIFY = FNIC_MSIX_WQ_COPY + FNIC_WQ_COPY_MAX,
- 	FNIC_MSIX_INTR_MAX,
- };
+ 	if (fltr && fltr->state == IAVF_FDIR_FLTR_DEL_REQUEST)
+-		mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++		iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_DEL_FDIR_FILTER);
  
-@@ -189,6 +198,7 @@ struct fnic_msix_entry {
- 	char devname[IFNAMSIZ + 11];
- 	irqreturn_t (*isr)(int, void *);
- 	void *devid;
-+	int irq_num;
- };
+ 	return err;
+ }
+@@ -1658,7 +1656,6 @@ iavf_set_adv_rss_hash_opt(struct iavf_adapter *adapter,
+ 			rss_old->hash_flds = hash_flds;
+ 			memcpy(&rss_old->cfg_msg, &rss_new->cfg_msg,
+ 			       sizeof(rss_new->cfg_msg));
+-			adapter->aq_required |= IAVF_FLAG_AQ_ADD_ADV_RSS_CFG;
+ 		} else {
+ 			err = -EEXIST;
+ 		}
+@@ -1668,12 +1665,11 @@ iavf_set_adv_rss_hash_opt(struct iavf_adapter *adapter,
+ 		rss_new->packet_hdrs = hdrs;
+ 		rss_new->hash_flds = hash_flds;
+ 		list_add_tail(&rss_new->list, &adapter->adv_rss_list_head);
+-		adapter->aq_required |= IAVF_FLAG_AQ_ADD_ADV_RSS_CFG;
+ 	}
+ 	spin_unlock_bh(&adapter->adv_rss_lock);
  
- enum fnic_state {
-@@ -198,12 +208,6 @@ enum fnic_state {
- 	FNIC_IN_ETH_TRANS_FC_MODE,
- };
+ 	if (!err)
+-		mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++		iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_ADV_RSS_CFG);
  
--#define FNIC_WQ_COPY_MAX 1
--#define FNIC_WQ_MAX 1
--#define FNIC_RQ_MAX 1
--#define FNIC_CQ_MAX (FNIC_WQ_COPY_MAX + FNIC_WQ_MAX + FNIC_RQ_MAX)
--#define FNIC_DFLT_IO_COMPLETIONS 256
--
- struct mempool;
+ 	mutex_unlock(&adapter->crit_lock);
  
- enum fnic_evt {
-@@ -218,6 +222,13 @@ struct fnic_event {
- 	enum fnic_evt event;
- };
+diff --git a/drivers/net/ethernet/intel/iavf/iavf_main.c b/drivers/net/ethernet/intel/iavf/iavf_main.c
+index c862ebcd2e392e..1a9c78d9f5d56c 100644
+--- a/drivers/net/ethernet/intel/iavf/iavf_main.c
++++ b/drivers/net/ethernet/intel/iavf/iavf_main.c
+@@ -1059,13 +1059,12 @@ static int iavf_replace_primary_mac(struct iavf_adapter *adapter,
+ 	 */
+ 	new_f->is_primary = true;
+ 	new_f->add = true;
+-	adapter->aq_required |= IAVF_FLAG_AQ_ADD_MAC_FILTER;
+ 	ether_addr_copy(hw->mac.addr, new_mac);
  
-+struct fnic_cpy_wq {
-+	unsigned long hw_lock_flags;
-+	u16 active_ioreq_count;
-+	u16 ioreq_table_size;
-+	____cacheline_aligned struct fnic_io_req **io_req_table;
-+};
-+
- /* Per-instance private data structure */
- struct fnic {
- 	int fnic_num;
-@@ -287,6 +298,7 @@ struct fnic {
- 	mempool_t *io_sgl_pool[FNIC_SGL_NUM_CACHES];
- 	spinlock_t io_req_lock[FNIC_IO_LOCKS];	/* locks for scsi cmnds */
+ 	spin_unlock_bh(&adapter->mac_vlan_list_lock);
  
-+	unsigned int copy_wq_base;
- 	struct work_struct link_work;
- 	struct work_struct frame_work;
- 	struct sk_buff_head frame_queue;
-@@ -306,6 +318,8 @@ struct fnic {
+ 	/* schedule the watchdog task to immediately process the request */
+-	mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++	iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ADD_MAC_FILTER);
+ 	return 0;
+ }
  
- 	/* copy work queue cache line section */
- 	____cacheline_aligned struct vnic_wq_copy hw_copy_wq[FNIC_WQ_COPY_MAX];
-+	____cacheline_aligned struct fnic_cpy_wq sw_copy_wq[FNIC_WQ_COPY_MAX];
-+
- 	/* completion queue cache line section */
- 	____cacheline_aligned struct vnic_cq cq[FNIC_CQ_MAX];
+@@ -1284,8 +1283,7 @@ static void iavf_up_complete(struct iavf_adapter *adapter)
  
+ 	iavf_napi_enable_all(adapter);
+ 
+-	adapter->aq_required |= IAVF_FLAG_AQ_ENABLE_QUEUES;
+-	mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++	iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_ENABLE_QUEUES);
+ }
+ 
+ /**
+@@ -1439,8 +1437,7 @@ void iavf_down(struct iavf_adapter *adapter)
+ 			adapter->aq_required |= IAVF_FLAG_AQ_DEL_ADV_RSS_CFG;
+ 	}
+ 
+-	adapter->aq_required |= IAVF_FLAG_AQ_DISABLE_QUEUES;
+-	mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
++	iavf_schedule_aq_request(adapter, IAVF_FLAG_AQ_DISABLE_QUEUES);
+ }
+ 
+ /**
+@@ -2337,10 +2334,8 @@ iavf_set_vlan_offload_features(struct iavf_adapter *adapter,
+ 		}
+ 	}
+ 
+-	if (aq_required) {
+-		adapter->aq_required |= aq_required;
+-		mod_delayed_work(adapter->wq, &adapter->watchdog_task, 0);
+-	}
++	if (aq_required)
++		iavf_schedule_aq_request(adapter, aq_required);
+ }
+ 
+ /**
 -- 
-2.31.1
+2.42.1
 
