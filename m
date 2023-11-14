@@ -2,175 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2528C7EA858
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:45:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9CB7EA861
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbjKNBpL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 20:45:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48780 "EHLO
+        id S231966AbjKNBvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 20:51:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjKNBpJ (ORCPT
+        with ESMTP id S229580AbjKNBvk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 20:45:09 -0500
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10olkn2060.outbound.protection.outlook.com [40.92.42.60])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD901D43;
-        Mon, 13 Nov 2023 17:45:05 -0800 (PST)
+        Mon, 13 Nov 2023 20:51:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0F78D43;
+        Mon, 13 Nov 2023 17:51:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699926693; x=1731462693;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=3ID4rrwdWAeS80sFWnAxXxHh+jePKbvmqPRZeH/XTME=;
+  b=mLnjDK215z9W1iXyFp6XGl8WpVkRVt7NaFFPbxu5ywbGvzSZ/YCvC7r9
+   XlqpEKjyFf1tMIrSwP13AHvf+CwMpMQKpZom8d5NtFtHtnP+nmi65bEKq
+   DeikFjXNHetXBhg96rxn0xmuOsu0fxS136wxHbjuwU8XlFExJL57rLSeg
+   K3kc1l+0hfvsoM0AkNeP/Go2BVoEwTne0xIJuanlMtcUN8FTTBb2a/8f6
+   rXPZdcDI9wyQ1gchSGW6RZoscmdQTC1VyDXItW8F9uCR/SOmBtM5jxYNa
+   Pc69tbRBaTrM+bs2twyaj8oL/Zg8xvXW8yPHdmNOIWktmaphOfE30DtPj
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389409202"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="389409202"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP; 13 Nov 2023 17:50:58 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="757995408"
+X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
+   d="scan'208";a="757995408"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orsmga007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Nov 2023 17:50:57 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Mon, 13 Nov 2023 17:50:56 -0800
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Mon, 13 Nov 2023 17:50:56 -0800
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Mon, 13 Nov 2023 17:50:56 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KUX7ZqQVQyAMLouds+alBOUXtXi1DPdr89WTQqFroFWsTzcuD4B+70DUg6YKNeVHXzAcpKuBf7zG/TFR4LfpKd1q6uu4JplNLxcCeiZsoLHXkyXZnDiBxauzi/K/NoXN9nYtUeZ6mSW1qfWdBSs0V5Zk3lhWPVSg4isJGbALy49FDEhVDZdjCaQINSJLZ8Jp0ze/VvP5jerAUjmDxbRKjiLvsJvTLe93hH0CD78sZccw1L26dgzioxsznsPyD14s1WP8xqWRoPUN70+SQ4wjhMLwsYDBYPzX4CZC4DGHqbKpP9ILudckhJenaHaOAHB9TnrnOJMaVQCb5ttpa+aVSA==
+ b=nivHqOElgQfGpNL7ve0HuvQGUwMRs4lsCvneVnIccxj+Rc9eP+25ncNIkVdC6U6PgIg74GTbrPKHkAjf0JSW66Vt3GJY2a8+npIBa07486aUDvnN6TUMpXhmfE2kCtCfGH1n1Fm36eWidLbCTAplqQU/s7UVapVqkHOvn9RXAB7exl7Pl/QctEdJ2cpSbQbg6n9p60JC5MTLg0LhKDcqcpZrUnFYGdWqJ8Bd9fZ2ggTEme8fnKmDwNltlsYodxOAFRVuyPetPCxKt9XHXjRSbmcOJOY7iGs/fFX+GtzAy93nFUQyimmoM2yvQeRK9a8dW8yPS8BWCh2KmBayLC+WWQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=w55uGHYAiXPyE2WciqceQNTFuT5ytx+sDK/NNdoyhVw=;
- b=ix5GC4RFiNDUt5ameNxfIvVMwOY1au0/SeA53S3mCGf1ErAmS5q4uvhdfeyY6SkFxlPfiqxKzcWsZ8Ii26UaQZKywHRUo7x/oa1/kUAvOOkWHoQ/4+d1YXTToCbssuLoG2SMRBb03ADE2pfmjIoYzC37lgT9DA7GYPWJSE1olfJ4BhxGKQKlS1nimiGVwFglxV+Avu4lhgMnbJjZ76TLWKVG41Q5U8SxkIR22Zc0psNjgPBFnbtcCwc42c8RJ2ngBhquc8diUDKSVuUDuLNWN/iuVnzoTo8wYbILWmLaRabYvPKE7ptojkTD5UyKjK+NwGrenxDqtb4Hle6zmMXLYQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=w55uGHYAiXPyE2WciqceQNTFuT5ytx+sDK/NNdoyhVw=;
- b=iChFUhSbrC/i37uTjzYbMtL1ELPWQh6ltqHI0hWOlWoeebfpOQd9kUEbtop0owH7yxVHPPc8YaX15Y+J9KYiwlu5sj9fAkHm4bzEeE2RvhignMCHQ+qcgMKRgnSH/itphuUARSlIRiO9gGqZ8Nz9Q5pv99e2Hs+DBH/MrZ3Hqip+Aw9wHbhxgGtBG99DkkhLs2TA8GLi1sViKQ/XPm0Ubc55WjI30HUsuJ3okO+tBWvs8ue8+bRFVQ3drprHOzh3RkqnZcabVEhyE0B/B5kQ7VKv2PpmjgOmjDFPfuYS4yAh1ePZueFCZyOKHIztXwvPfzjwKZpXLO4+rTxVYihiBQ==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by DS0PR20MB5894.namprd20.prod.outlook.com (2603:10b6:8:14c::15) with
+ bh=UoCr5jGAHrdMab+9lzwvK0qE3mlLRa46A3570XQkYPw=;
+ b=Pnkt1FPZdjugWoM94YgDnC797pWEqmJGhq/p1sz4A7R+0+3NtQzCIxG6gJ3DFr5UK6ms9Dk/KqID2NTf996xKHCke52AFEFCgk752DQyuRQSAV9DL6ZDFBCXSW4wz8NjnYB01Zoh+rL+joFoxR+3OelQes3jk2Sc8aKALFB5j3Usyi5HmzHlP0NtisGOax2HCopQi36AULZng4K5AKY/WBCt6QkeNFCAGCTZPfDqs0KAiHGfs+fd9Zetq1dAZaSl+MJk7aCrMHUDw7S5DYEFxUT96Hgo583Xl9CjaKZgmRU4RGibVocOA9v9eOrN1/kDijSW9YTxozs+mWhZzO6j7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by SA1PR11MB7699.namprd11.prod.outlook.com (2603:10b6:806:338::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
- 2023 01:45:03 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
- 01:45:03 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Chen Wang <unicorn_wang@outlook.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>
-Cc:     Inochi Amaoto <inochiama@outlook.com>, Guo Ren <guoren@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v2 1/2] dt-bindings: timer: thead,c900-aclint-mtimer: separate mtime and mtimecmp regs
-Date:   Tue, 14 Nov 2023 09:45:33 +0800
-Message-ID: <IA1PR20MB4953EBB4DA58A7170D865B0CBBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <MA0P287MB03326F420E96FE3198C81C21FEB2A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-References: <MA0P287MB03326F420E96FE3198C81C21FEB2A@MA0P287MB0332.INDP287.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [14V6GTMZK3kth1r3/4lzfeAFY3jxbNQPNYYCugxXz/k=]
-X-ClientProxiedBy: TYCPR01CA0023.jpnprd01.prod.outlook.com (2603:1096:405::35)
- To IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231114014535.54585-1-inochiama@outlook.com>
+ 2023 01:50:49 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.6933.028; Tue, 14 Nov 2023
+ 01:50:49 +0000
+Date:   Tue, 14 Nov 2023 09:46:07 +0800
+From:   kernel test robot <yujie.liu@intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Raag Jadav <raag.jadav@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>
+CC:     <oe-kbuild-all@lists.linux.dev>,
+        Linus Walleij <linus.walleij@linaro.org>
+Subject: Re: [PATCH v2 2/2] pinctrl: intel: Add a generic Intel pin control
+ platform driver
+Message-ID: <202311140345.etMnKZeR-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231113123147.4075203-3-andriy.shevchenko@linux.intel.com>
+X-ClientProxiedBy: SI2PR06CA0015.apcprd06.prod.outlook.com
+ (2603:1096:4:186::7) To CY5PR11MB6392.namprd11.prod.outlook.com
+ (2603:10b6:930:37::15)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|DS0PR20MB5894:EE_
-X-MS-Office365-Filtering-Correlation-Id: 3ca5a701-e052-438d-6d21-08dbe4b3526b
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|SA1PR11MB7699:EE_
+X-MS-Office365-Filtering-Correlation-Id: 18ba1f74-f8bc-478e-e35a-08dbe4b42063
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BVZZ5ObqbowdWHTRqtpw8vN+RYGgj7akjK+/rIuFQ53LvedTijVQIZNvT0MMAKyqqsokZhk2Udek3D60HA0MYWYWjXrngGdRhqLlKg2mf6h3QzmQ9A88Y0KB0pbt224J552fXFFD+I+tDcnydflKRgXwjYd8mYbqd9WGLXBVHvJB+5Zl62TVnS5O/UtzhJ8szy+aWtywqShmqFe42uplVwfqxfpY06TLY4pdjgtusMabfgu83rf9uiOYB738dZ+LNloS5VkNAYepIYqEf48YD7Aj+RjXSyQk14RV8e8jyS2Lo4WEFoy30ErruAInmEMPmI8xz04EapojQ8MiuO1kLhSRjM7yZYUgXZdv2uBRfElsVW7lgUcSPiZk5NubYTaSFzidtc4R4N9YRbbNnGAqlF0Ljaey1wy+spHn4Ynuami49xvgdNO9o/vgi3bjI9XPex1Yq9NlN7GRiZTf1Zd+xSsimbsIY6A1nPT6SGw6gL8WfWAo2r1Qp3G2g4AVf52Am7STpzERnLARU1xmlK/LvpW1aBCBIvd8NhuYwxSxauIvMfani6UwfKx4vcAhP416oZwQAxN5CwNWfrbnUY019EqtdLRrTBDHH8XmN38YYoHYqo4YiDMQhJotB8xPUcnQ
+X-Microsoft-Antispam-Message-Info: 5FMrlUsIKDb4KL8eKanL4Spi8duir7JsQZC/nW6dYL+JvcDtQcSIZlprM67vLql5yUbLrckE5ggPCfeskJJxPrZIy8ir2pmoJcX+lfSGTBfrybjQf3NqvrXMgljTxgGHwyZ7++VSPC2DrrmU4ebUPv3OjvOJ6AJ8Rf7BAvNXc3MAb6u9vboymf0lOzZCd7IOzx3UeGVKcvmrO7v+6+qfaGczwRW+dDmPDlc70NXnWwyte5hxa2jCYjDEYZJ3IBWw1nEeH/nmjukCHutKh2gQgK2Q3J5ollqKyF3RwybLbksgQo1FWBHeAqusvT77jeuyZ8lCY17FW8yg40jmWJAMHxKPPob12zFf/IDuwCKPzMCbCbMRujmhthCB7bEQ0Rcc8i8JbcyMhRSL60+EEqXZsyySugN4y2RtmQ9jGwy0D3XZHqrAqT9dtnTXmGmdhAAbnZ4v0qBQrvBqDxYOlD6ATPwGiidD0hI5+srnBjfu6MXkwPYakJcnsv25jX1/Z/nq1iXTwMiI+zAJTLh+EyShdNfwBh4vlHfn9lvurL3hkDbz9UWGzRKfu3Ck8cK2vJ/IovAk1Ie96qj0p9Ds5kl5Us8cWHRUR5eaA1zIph1fX2/0LdE1nrSxAjE7bktnT8gmzkODzO+ukvY4/q5UC5JpwA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(366004)(396003)(136003)(39860400002)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(2906002)(8676002)(4326008)(8936002)(66946007)(316002)(66556008)(66476007)(110136005)(4001150100001)(41300700001)(86362001)(5660300002)(83380400001)(2616005)(82960400001)(1076003)(26005)(38100700002)(478600001)(6486002)(36756003)(6666004)(966005)(6512007)(6506007)(41533002);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?3XjcRCNnH4DTNwFoK0h/HNXn6MW/YyU8VT6iCXGW6xP1dokv9gtHvUG4kU6B?=
- =?us-ascii?Q?idAnTWlmDTM42lSrOpLpF0wjUBBDP9e82fzyjKy5z15K15kaeDmWH+8vD6zf?=
- =?us-ascii?Q?NA9ABqCevBeZDcMlssstDXMYsK+kIY9Gyse603b0fXJOwfSPtyOipXFmdjlJ?=
- =?us-ascii?Q?1X2ulDUPcaT3u+N6y8KFQc729aP4n+1yjPLV2DLYdGwaMOahrefooc6rHa9A?=
- =?us-ascii?Q?Wmo4+TGQYrwtoP6nPuTI+JBj0GeUiZPTeWLuFPjZ6/qZsxvw1d8/xcUqSAPj?=
- =?us-ascii?Q?6gBZU0AB+ua9Y5TaCEdfe9FbzWK0a9YyUPbjRmPluu4beqbo2ktpi4jBSY4H?=
- =?us-ascii?Q?KbtYVbz0LlbSkUnw61FujnrSj4JqZ7LsJDdsMyhnDbVAusaWgheW8SzuDnL1?=
- =?us-ascii?Q?GA3oDIvO3cAw5tvtZD42kzg93QJY/ow8XxdRDfttYqsJU7axi/v+iWNgopJ1?=
- =?us-ascii?Q?Nx4Z0Bly21iWcirbFRXASFvTY9uAuYqlNNg7UZ3PmcTYpcu9/PGbDN4PgTDB?=
- =?us-ascii?Q?35zsxpXlkBGmXtlmnSsbA8jNi5TIAx+6r9kmUgqHGaSm20lOkO5M17N53GVW?=
- =?us-ascii?Q?/RdjcaUcB2MS7OGpcR/YA9ojmw5D07R389VK7tGsOOAYGbF9aIJA0LO3exR3?=
- =?us-ascii?Q?6kQmul/Yg/4fOIfJvW2qth/enbAaaXxoPs5E07mDS74W1F8RWJkM+O/mcvFa?=
- =?us-ascii?Q?9+vVUOOwnyN+7w/LYT9JBNeKqFQ+J7S4rCfozZWqV+dtD6WK0gguYOqe5A3j?=
- =?us-ascii?Q?28hbK+BFHXrcJRcCXrukjvN4cxjjK3FRdsV2fd67iJBQulp9xghh0qjPpwsk?=
- =?us-ascii?Q?6fb6yPLl5wags0HEuaga9QNRCKJhUrUj227fOozkZxcXDrxwuidjXaYaERP8?=
- =?us-ascii?Q?awuuF8jJ+YTi/oBx3XIxYLBm8fJvQe1C3DULRPnsd4T+xpyhyVa1KPVnFNYX?=
- =?us-ascii?Q?uXf57AVGFBqyERWGvBsLByYrlDtOo5GGTz8jKLfsbLmqR5qNJ3WuTrwPHlcf?=
- =?us-ascii?Q?YkdGvI/m8IwS81lox5QDYz0JmFs+++CUOXeHkH7dBXCad7ShTiwmDAfeyEAr?=
- =?us-ascii?Q?Qsfmu9tkncJ8iSoMCeulce1R5C76Q9LWE6aLVcpGCKGqC50FrENbJybaXTSG?=
- =?us-ascii?Q?DFF86Kh/3w+7/JR6cuUyDvvIPjPJ2g8736PdWY86R08N02g0g1kNsRj2ba+s?=
- =?us-ascii?Q?KvL8a0JnOBjisJyMcIdPraDWmf+Muojfw0TGFMBya+YEAq+R14bY/Ts1q6g?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3ca5a701-e052-438d-6d21-08dbe4b3526b
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?N1v3jZnVqWK/GTtoRcJ5u5Z7reegq2ovuI1ATRCuoTYob/Nv4QgTRBszFmQF?=
+ =?us-ascii?Q?ZEmNOflntE2zauflVYlda3fe7HKUeMnO0bj88EhXk46qWeQ/c8F8qIBZ8oYX?=
+ =?us-ascii?Q?ON1eQOXivwT44lh8iQrlAuFqweLOIvzmB+Flbof79fU3YnSlN1iV1gLzTgw7?=
+ =?us-ascii?Q?Rpy6GBOGdXdC14sx1gtlwh4MIEHX6hQIe55ReYr9Od+EIpvqQvRyQoigDQ0f?=
+ =?us-ascii?Q?ykTfnBBtzWdaZiCL065U78xNGtLziA430Rz5UJ74vOhY5SHqBuREOww9fkh4?=
+ =?us-ascii?Q?suJ5IMZvEICkWd8/gW5ZfkNlOgxfqbMPtfzHm0+cPkzrrPYby7J85Z1oSFVr?=
+ =?us-ascii?Q?kZM2EF1YQGKX/b8hYr5Bhlei5d7L3t6iCyNtU2mhQgFN9cFVETl7vJI5AvKd?=
+ =?us-ascii?Q?lXNHpSmCUvzXI+rVdJJR1kiBZD2I07XHB8zXWBgRBoHogAOr2+vLzMAnP2tZ?=
+ =?us-ascii?Q?O7k2nlac7lipPI5kFq2978NO7Hj8jpJkwPk7WE+yZL0KlLOl2To4k6sexrw/?=
+ =?us-ascii?Q?kuXya/OZORc38WsJJOW1HfJ1PHzcpi8ORkr6ZcYw5h5qXALQkP/0HojpFC/d?=
+ =?us-ascii?Q?3HLcsjKe9FjOrsJ90owrpi3KaEz0Ph3t4TcF1mDVylntCH/1LfsjV3qBd/uK?=
+ =?us-ascii?Q?RMTdRQ3DPG8Dd17WPQp9y44xZbyhzVwJJFI7lvj8MX093OB1TlYebsLD1WE+?=
+ =?us-ascii?Q?/ZgTqPSN+ETJBjdttWSeq8VE+fSqPs+nq4sWr2Ne5a3MktXDFIX4w9eJpiL9?=
+ =?us-ascii?Q?kMSjrXXf8Z6DNgozeBQTHYGDhJXLSCLrus7K0yf2nkk/qA++QRe8dGXTqthb?=
+ =?us-ascii?Q?TGq+5d5wewWpWhNkvL46KmbpWvzKOXvRHGCB8yiw+nyQMWozKgOADxskAH3v?=
+ =?us-ascii?Q?Gj8/POFwFf/jMXAJXSyXAnj6mXVyusj4dNXT/LHcOK7+ZNsGQtxPMrz5Z+tz?=
+ =?us-ascii?Q?oVf7Eq14B9qCfSRG3OrepnLunojoFJdKW8nS+2fSwrHJ1X+T8+HVSU9K7R5I?=
+ =?us-ascii?Q?VJxacq456+ciddk/SgPhWRwpRYVlN6wHoTe4a/YJ7ynCbEZvS6oaRk5bGGhv?=
+ =?us-ascii?Q?oVdZTiL7JHJJRyQUrK6EW2r+8wKM0KthHITqE+I7D8JKMUiQzAH1BvBYp0Hr?=
+ =?us-ascii?Q?BZ6nvyca8mrKLVrp7UQ1KKv7njbSDhik3i2axlXFBE34K+RUcGPSN8fKyEbj?=
+ =?us-ascii?Q?Xv4kRdNWqqxD813A8afjeYIzf2YwVcb/vdIsgAqTGA+B1hcwsqbaO2kKWfLS?=
+ =?us-ascii?Q?yEeqcaCJSdNuT9A8OUufdk5JbgpY6FB+7LNDh+GRYd7DPZBLo6o5+ysMfFMB?=
+ =?us-ascii?Q?HcFpONM5Ao9j8+p1BVJHy+1YGhWc0KkNaxf1XcnU0nS6f0MBrn9JbWJSjDrX?=
+ =?us-ascii?Q?c/DxpG/ULwMBZ2RchTJUU0MfdsuqTi1ShOSFxRO59BLoTrGQbf3WCYbCXlaV?=
+ =?us-ascii?Q?kYSFzfbDgzRFHPmjsBExy2yjO7Qx/dH474iiTQdqshCUu/OlF4FNCjnlNbOZ?=
+ =?us-ascii?Q?yGuE0y7TnrEFvceYXYTkJ0WdRzIUnlf7swAJ4ysl2PAU0CbUg19j+iJlEuCq?=
+ =?us-ascii?Q?E+AxDetFyKEZocNCIRUxjDspoft8AmccRDe8ZjqG?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 18ba1f74-f8bc-478e-e35a-08dbe4b42063
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 01:45:03.8674
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 01:50:49.5335
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR20MB5894
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: eqJ7TDJfyKFp+znpfiPkVrBfs5l6PCGQLSKbEFWcKrwtc0tuzf7D9jtcx4yyMYpTiO0WEeJmjdDRgJeHAPzHdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR11MB7699
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 2023/11/14 8:45, Inochi Amaoto wrote:
->> The timer registers of aclint don't follow the clint layout and can
->> be mapped on any different offset. As sg2042 uses separated timer
->> and mswi for its clint, it should follow the aclint spec and have
->> separated registers.
->>
->> The previous patch introduces a new type of T-HEAD aclint timer which
->> has clint timer layout. Although the timer has the clint layout, it
->> should follow the aclint spec and uses the separated mtime and mtimecmp
->> regs. So a ABI change is needed to make the timer fit the aclint spec.
->>
->> To make T-HEAD aclint timer more closer to the aclint spec, use two regs
->> to represent the mtime and mtimecmp.
->>
->> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
->> Fixes: 4734449f7311 ("dt-bindings: timer: Add Sophgo sg2042 CLINT timer")
->> Link: https://lists.infradead.org/pipermail/opensbi/2023-October/005693.html
->> Link: https://github.com/riscv/riscv-aclint/blob/main/riscv-aclint.adoc
->> ---
->>   .../devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml  | 5 +++--
->>   1 file changed, 3 insertions(+), 2 deletions(-)
->>
->> diff --git a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> index fbd235650e52..c3080962d902 100644
->> --- a/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> +++ b/Documentation/devicetree/bindings/timer/thead,c900-aclint-mtimer.yaml
->> @@ -17,7 +17,7 @@ properties:
->>         - const: thead,c900-aclint-mtimer
->>
->>     reg:
->> -    maxItems: 1
->> +    maxItems: 2
->
->The first one is for mtime and the second one is for mtimecmp, right?
+Hi Andy,
 
-Yes, that is right.
+kernel test robot noticed the following build errors:
 
->Recommend to add some comment in binding file to make it clear.
->
+[auto build test ERROR on linusw-pinctrl/devel]
+[also build test ERROR on linusw-pinctrl/for-next linus/master v6.7-rc1 next-20231113]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Thanks for your advice.
+url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/pinctrl-intel-Revert-Unexport-intel_pinctrl_probe/20231113-204318
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/linusw/linux-pinctrl.git devel
+patch link:    https://lore.kernel.org/r/20231113123147.4075203-3-andriy.shevchenko%40linux.intel.com
+patch subject: [PATCH v2 2/2] pinctrl: intel: Add a generic Intel pin control platform driver
+config: x86_64-allyesconfig (https://download.01.org/0day-ci/archive/20231114/202311140345.etMnKZeR-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231114/202311140345.etMnKZeR-lkp@intel.com/reproduce)
 
->Chen
->
->>
->>     interrupts-extended:
->>       minItems: 1
->> @@ -38,6 +38,7 @@ examples:
->>                               <&cpu2intc 7>,
->>                               <&cpu3intc 7>,
->>                               <&cpu4intc 7>;
->> -      reg = <0xac000000 0x00010000>;
->> +      reg = <0xac000000 0x00000000>,
->> +            <0xac000000 0x0000c000>;
->>       };
->>   ...
->> --
->> 2.42.1
->>
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/r/202311140345.etMnKZeR-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from arch/x86/include/asm/percpu.h:27,
+                    from arch/x86/include/asm/nospec-branch.h:14,
+                    from arch/x86/include/asm/paravirt_types.h:27,
+                    from arch/x86/include/asm/ptrace.h:97,
+                    from arch/x86/include/asm/math_emu.h:5,
+                    from arch/x86/include/asm/processor.h:13,
+                    from arch/x86/include/asm/timex.h:5,
+                    from include/linux/timex.h:67,
+                    from include/linux/time32.h:13,
+                    from include/linux/time.h:60,
+                    from include/linux/stat.h:19,
+                    from include/linux/module.h:13,
+                    from drivers/pinctrl/intel/pinctrl-intel-platform.c:10:
+>> drivers/pinctrl/intel/pinctrl-intel-platform.c:217:37: error: 'intel_pinctrl_pm_ops' undeclared here (not in a function); did you mean 'intel_pinctrl_probe'?
+     217 |                 .pm = pm_sleep_ptr(&intel_pinctrl_pm_ops),
+         |                                     ^~~~~~~~~~~~~~~~~~~~
+   include/linux/kernel.h:54:44: note: in definition of macro 'PTR_IF'
+      54 | #define PTR_IF(cond, ptr)       ((cond) ? (ptr) : NULL)
+         |                                            ^~~
+   drivers/pinctrl/intel/pinctrl-intel-platform.c:217:23: note: in expansion of macro 'pm_sleep_ptr'
+     217 |                 .pm = pm_sleep_ptr(&intel_pinctrl_pm_ops),
+         |                       ^~~~~~~~~~~~
+
+
+vim +217 drivers/pinctrl/intel/pinctrl-intel-platform.c
+
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  211  
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  212  static struct platform_driver intel_platform_pinctrl_driver = {
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  213  	.probe = intel_platform_pinctrl_probe,
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  214  	.driver = {
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  215  		.name = "intel-pinctrl",
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  216  		.acpi_match_table = intel_platform_pinctrl_acpi_match,
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13 @217  		.pm = pm_sleep_ptr(&intel_pinctrl_pm_ops),
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  218  	},
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  219  };
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  220  module_platform_driver(intel_platform_pinctrl_driver);
+5dacd710dc5f8ca8 Andy Shevchenko 2023-11-13  221  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
