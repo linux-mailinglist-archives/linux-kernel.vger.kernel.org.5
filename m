@@ -2,95 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9860B7EB335
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D997EB33A
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:14:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233569AbjKNPNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:13:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
+        id S233580AbjKNPO2 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 10:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbjKNPNs (ORCPT
+        with ESMTP id S233521AbjKNPO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:13:48 -0500
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44809E3;
-        Tue, 14 Nov 2023 07:13:45 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 82C5920007;
-        Tue, 14 Nov 2023 15:13:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1699974823;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zIcfcJYo9Q7ijv30KQH5KiYGvf5xWIQo8n+CJ3Rxw+g=;
-        b=aUuZEWbRx1iLY38fnY9G+BloSdQqrYYOwWrdbra7rWGe+i+EZmP/MqEMKX6tqHOtJ0pkuS
-        PfVbI7T2VhBfZTqiSrermTIDO/qvxd4jSKWm8DfocPlKXHt2+1u2Jshl0nLw1pwBedrrxe
-        X436bGzAp85vZjVDN8avAJ54YTk2921mi8Obl1b4QfBalmy/RjZqAgfiucnpxhJVerTqUv
-        H/5FCFkkMUwUmXw0dQ9I8sALC8Ox9qepAyp1GNevSxjmqifa50XIg6EaZAq/SR2J0AhbTL
-        ckX1xVsCyOFgGcgYRNhv0ifguU/4djzTzWvivgo+u9kKIO7dXdgjPFbEj/PQsw==
-Date:   Tue, 14 Nov 2023 16:13:41 +0100
-From:   Herve Codina <herve.codina@bootlin.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        linux-kernel@vger.kernel.org,
-        Allan Nielsen <allan.nielsen@microchip.com>,
-        Horatiu Vultur <horatiu.vultur@microchip.com>,
-        Steen Hegelund <steen.hegelund@microchip.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] lib/vsprintf: Fix %pfwf when current node
- refcount == 0
-Message-ID: <20231114161341.2651d393@bootlin.com>
-In-Reply-To: <ZVOLV008PaKFXRy9@smile.fi.intel.com>
-References: <20231114143558.356259-1-herve.codina@bootlin.com>
-        <ZVOLV008PaKFXRy9@smile.fi.intel.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Tue, 14 Nov 2023 10:14:26 -0500
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83341F9;
+        Tue, 14 Nov 2023 07:14:23 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9c603e2354fso1154706266b.1;
+        Tue, 14 Nov 2023 07:14:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699974861; x=1700579661;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yxz8QkUMUdK70UcIufkcCTFuHM/iFKukNXMBMippDVw=;
+        b=FIBpXliRegubGy+6t3SLZZwguEKbefm3L9aQ85WbDYkbvsfUqFNJ2xN3c0swfetd8n
+         k3GzwS2EFw0z3yde+Ct2F5umIHBEiEdDW2wHRJTS7iGyn9Oydi/zq66aVsb8Uc052PnV
+         HUA2MNawtAFk4T3pwr1xZLsPMVEXL2IAkss7TrIMHcD1RO99rZLbx1y24uYvXL46NJf+
+         W+ecnXIkNrj3Z5rZK/R/DEmNyiG5p84MZUqiFCgpANn4UbEWOYanWHeQnHvhqDg+0K+W
+         bjr/obiRu9qpAe5Kqq/wc28kp38DOwUB53GkkMckBkdar81XSIYqjb34nRaVn0g2AQPy
+         +PfA==
+X-Gm-Message-State: AOJu0YxkV6vet8vlyO/5s3wMSfLt4i3lSjgl4CcBWb7dbVvEDmOM2Wpp
+        77JKRGj4UYO29L8LVbPFsfaTwS2zdHY7iAkYjWo=
+X-Google-Smtp-Source: AGHT+IEgOIolvgTrfEjV0AmDGor4/vOucGkOxuTp6WsVbqYowytfw1cdybx6FVvSq9b7+MGpLatTlg==
+X-Received: by 2002:a17:906:68d6:b0:9a1:b528:d0f6 with SMTP id y22-20020a17090668d600b009a1b528d0f6mr2181514ejr.27.1699974861181;
+        Tue, 14 Nov 2023 07:14:21 -0800 (PST)
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
+        by smtp.gmail.com with ESMTPSA id rp13-20020a170906d96d00b009ddb919e0aasm5664465ejb.138.2023.11.14.07.14.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 07:14:20 -0800 (PST)
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so11571581a12.1;
+        Tue, 14 Nov 2023 07:14:20 -0800 (PST)
+X-Received: by 2002:a05:6402:440f:b0:531:14c4:ae30 with SMTP id
+ y15-20020a056402440f00b0053114c4ae30mr3214229eda.0.1699974860727; Tue, 14 Nov
+ 2023 07:14:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231114-bluetooth-msgid-fix-v1-1-1d15394bf342@marcan.st>
+In-Reply-To: <20231114-bluetooth-msgid-fix-v1-1-1d15394bf342@marcan.st>
+From:   Neal Gompa <neal@gompa.dev>
+Date:   Tue, 14 Nov 2023 10:13:43 -0500
+X-Gmail-Original-Message-ID: <CAEg-Je-SvvMpAAqtOPgaKt1PuoZi37K0Tprf3KDts-SBTzNpUA@mail.gmail.com>
+Message-ID: <CAEg-Je-SvvMpAAqtOPgaKt1PuoZi37K0Tprf3KDts-SBTzNpUA@mail.gmail.com>
+Subject: Re: [PATCH] Bluetooth: hci_bcm4377: Fix msgid release
+To:     Hector Martin <marcan@marcan.st>
+Cc:     Sven Peter <sven@svenpeter.dev>,
+        Alyssa Rosenzweig <alyssa@rosenzweig.io>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Aditya Garg <gargaditya08@live.com>,
+        Luiz Augusto von Dentz <luiz.von.dentz@intel.com>,
+        asahi@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, Nov 14, 2023 at 2:05 AM Hector Martin <marcan@marcan.st> wrote:
+>
+> We are releasing a single msgid, so the order argument to
+> bitmap_release_region must be zero.
+>
+> In practice this was probably harmlessly masked to 0 anyway, which is
+> why it worked, but it trips ubsan.
+>
+> Fixes: 8a06127602de ("Bluetooth: hci_bcm4377: Add new driver for BCM4377 PCIe boards")
+> Reported-by: Aditya Garg <gargaditya08@live.com>
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Hector Martin <marcan@marcan.st>
+> ---
+>  drivers/bluetooth/hci_bcm4377.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/bluetooth/hci_bcm4377.c b/drivers/bluetooth/hci_bcm4377.c
+> index 19ad0e788646..5e9f79235cde 100644
+> --- a/drivers/bluetooth/hci_bcm4377.c
+> +++ b/drivers/bluetooth/hci_bcm4377.c
+> @@ -715,7 +715,7 @@ static void bcm4377_handle_ack(struct bcm4377_data *bcm4377,
+>                 ring->events[msgid] = NULL;
+>         }
+>
+> -       bitmap_release_region(ring->msgids, msgid, ring->n_entries);
+> +       bitmap_release_region(ring->msgids, msgid, 0);
+>
+>  unlock:
+>         spin_unlock_irqrestore(&ring->lock, flags);
+>
+> ---
+> base-commit: ffc253263a1375a65fa6c9f62a893e9767fbebfa
+> change-id: 20231114-bluetooth-msgid-fix-29769be7e45b
+>
+> Best regards,
+> --
+> Hector Martin <marcan@marcan.st>
+>
+>
 
-On Tue, 14 Nov 2023 16:59:35 +0200
-Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
+LGTM.
 
-[...]
+Reviewed-by: Neal Gompa <neal@gompa.dev>
 
-> 
-> One nit-pick below, otherwise
-> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> 
-> ...
-> 
-> >  	/* Loop starting from the root node to the current node. */
-> >  	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
-> > -		struct fwnode_handle *__fwnode =
-> > -			fwnode_get_nth_parent(fwnode, depth);
-> > +		/*
-> > +		 * Only get a reference for other nodes (ie parents node).  
-> 
-> "parent's node" (doesn't look right)? Or "parent nodes"?
-> 
 
-Will be changed to "parent nodes" in the next iteration.
-
-Best regards,
-Hervé
+-- 
+真実はいつも一つ！/ Always, there's only one truth!
