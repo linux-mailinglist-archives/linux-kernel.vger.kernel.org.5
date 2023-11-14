@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CF297EB966
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:33:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE6A7EB961
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:32:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234155AbjKNWdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:33:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44158 "EHLO
+        id S234139AbjKNWcg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 17:32:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234151AbjKNWdf (ORCPT
+        with ESMTP id S234112AbjKNWcf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:33:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2812DE4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:33:32 -0800 (PST)
+        Tue, 14 Nov 2023 17:32:35 -0500
+Received: from rcdn-iport-1.cisco.com (rcdn-iport-1.cisco.com [173.37.86.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 312CDC1;
+        Tue, 14 Nov 2023 14:32:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700001212; x=1731537212;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=snM5KEmJLeTNgAj+zDHScO/pAxovr1E0BUg7Tuy0k4A=;
-  b=LtAPoj6fMkoA8//Wle67Xt+qc+YhxJPs2xIyfBBv+/aHnhV5EU9eL2H0
-   I7s8MrtlV0bLLD1DPs2CBkutodOiSu7ELIC42IBbvl6shZg4lahhO2SDO
-   3atW+x3S8VpHBXRTMTJ7uXXapmhIJBExuUfnH5Xx9FY/rCt47Kl07AZoS
-   nnXVoO9t2+4pbt4FVC/mOetlHF3MZEQQp6dsg52opzS+pWqm3Ui7eaJMF
-   JPkQUhup2Ir3TQh0W7PoukYptiF1ouhwOER83Apxl1I2UmoqXFufL6LXu
-   kksApaf743grUrPOMy/iJBdh5vBWum07JFt4rS6tac4R3nBohX4IOpTZP
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="389613446"
-X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
-   d="scan'208";a="389613446"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 14:33:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="888395057"
-X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
-   d="scan'208";a="888395057"
-Received: from lkp-server02.sh.intel.com (HELO 83346ef18697) ([10.239.97.151])
-  by orsmga004.jf.intel.com with ESMTP; 14 Nov 2023 14:33:29 -0800
-Received: from kbuild by 83346ef18697 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r31yJ-0000kO-0v;
-        Tue, 14 Nov 2023 22:33:27 +0000
-Date:   Wed, 15 Nov 2023 06:32:09 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Shayne Chen <shayne.chen@mediatek.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Felix Fietkau <nbd@nbd.name>
-Subject: include/linux/compiler_types.h:397:45: error: call to
- '__compiletime_assert_381' declared with attribute error: BUILD_BUG_ON
- failed: sizeof(mstat) > sizeof(skb->cb)
-Message-ID: <202311150613.eBPa9MqT-lkp@intel.com>
+  d=cisco.com; i=@cisco.com; l=2502; q=dns/txt; s=iport;
+  t=1700001152; x=1701210752;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=slFAmSPvNAgschnNw3qQmhrZbli7ashLCnTbqYkfOek=;
+  b=aqfDCjQotxitWhRpSeubt4Qtv6BDJMuqtBLEX1n9tp+IMQhVwXQRjcp9
+   DTr6CI2JPCmUhVXWQQV7fuo8W2HcX7P3u4SQ7xI2pSuqOTgpMHB56EOu0
+   F5dInmLk48b0Uk7a51jgjgjaSj8gLb9xheF9JBISd5DXMR6sDO+YAY2SY
+   w=;
+X-CSE-ConnectionGUID: k7q/d/YARROrfkENkvbo5A==
+X-CSE-MsgGUID: OmkiRmonSQyRNR7uV8Y0uw==
+X-IronPort-AV: E=Sophos;i="6.03,303,1694736000"; 
+   d="scan'208";a="138480103"
+Received: from rcdn-core-3.cisco.com ([173.37.93.154])
+  by rcdn-iport-1.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 22:32:31 +0000
+Received: from localhost.cisco.com ([10.193.101.253])
+        (authenticated bits=0)
+        by rcdn-core-3.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3AEMWNTY004130
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Tue, 14 Nov 2023 22:32:30 GMT
+From:   Karan Tilak Kumar <kartilak@cisco.com>
+To:     sebaddel@cisco.com
+Cc:     arulponn@cisco.com, djhawar@cisco.com, gcboffa@cisco.com,
+        mkai2@cisco.com, satishkh@cisco.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Karan Tilak Kumar <kartilak@cisco.com>
+Subject: [PATCH v3 02/13] scsi: fnic: Add and use fnic number
+Date:   Tue, 14 Nov 2023 14:32:21 -0800
+Message-Id: <20231114223221.633719-1-kartilak@cisco.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Authenticated-User: kartilak@cisco.com
+X-Outbound-SMTP-Client: 10.193.101.253, [10.193.101.253]
+X-Outbound-Node: rcdn-core-3.cisco.com
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,72 +63,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shayne,
+Add fnic_num in fnic.h to identify fnic in a multi-fnic environment.
+Increment and set the fnic number during driver load in fnic_probe.
+Replace the host number with fnic number in debugfs.
 
-FYI, the error/warning still remains.
+Reviewed-by: Sesidhar Baddela <sebaddel@cisco.com>
+Reviewed-by: Arulprabhu Ponnusamy <arulponn@cisco.com>
+Signed-off-by: Karan Tilak Kumar <kartilak@cisco.com>
+---
+ drivers/scsi/fnic/fnic.h         | 1 +
+ drivers/scsi/fnic/fnic_debugfs.c | 2 +-
+ drivers/scsi/fnic/fnic_main.c    | 6 +++++-
+ 3 files changed, 7 insertions(+), 2 deletions(-)
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9bacdd8996c77c42ca004440be610692275ff9d0
-commit: 021af945997ffaeaa37c9673d71afad7cde6bdef wifi: mt76: mt7996: add eht rx rate support
-date:   7 months ago
-config: arm-buildonly-randconfig-r003-20220914 (https://download.01.org/0day-ci/archive/20231115/202311150613.eBPa9MqT-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311150613.eBPa9MqT-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311150613.eBPa9MqT-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from <command-line>:
-   drivers/net/wireless/mediatek/mt76/mac80211.c: In function 'mt76_rx_convert':
->> include/linux/compiler_types.h:397:45: error: call to '__compiletime_assert_381' declared with attribute error: BUILD_BUG_ON failed: sizeof(mstat) > sizeof(skb->cb)
-     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |                                             ^
-   include/linux/compiler_types.h:378:25: note: in definition of macro '__compiletime_assert'
-     378 |                         prefix ## suffix();                             \
-         |                         ^~~~~~
-   include/linux/compiler_types.h:397:9: note: in expansion of macro '_compiletime_assert'
-     397 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-         |         ^~~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:39:37: note: in expansion of macro 'compiletime_assert'
-      39 | #define BUILD_BUG_ON_MSG(cond, msg) compiletime_assert(!(cond), msg)
-         |                                     ^~~~~~~~~~~~~~~~~~
-   include/linux/build_bug.h:50:9: note: in expansion of macro 'BUILD_BUG_ON_MSG'
-      50 |         BUILD_BUG_ON_MSG(condition, "BUILD_BUG_ON failed: " #condition)
-         |         ^~~~~~~~~~~~~~~~
-   drivers/net/wireless/mediatek/mt76/mac80211.c:1094:9: note: in expansion of macro 'BUILD_BUG_ON'
-    1094 |         BUILD_BUG_ON(sizeof(mstat) > sizeof(skb->cb));
-         |         ^~~~~~~~~~~~
-
-
-vim +/__compiletime_assert_381 +397 include/linux/compiler_types.h
-
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  383  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  384  #define _compiletime_assert(condition, msg, prefix, suffix) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  385  	__compiletime_assert(condition, msg, prefix, suffix)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  386  
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  387  /**
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  388   * compiletime_assert - break build and emit msg if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  389   * @condition: a compile-time constant condition to check
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  390   * @msg:       a message to emit if condition is false
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  391   *
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  392   * In tradition of POSIX assert, this macro will break the build if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  393   * supplied condition is *false*, emitting the supplied error message if the
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  394   * compiler has support to do so.
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  395   */
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  396  #define compiletime_assert(condition, msg) \
-eb5c2d4b45e3d2 Will Deacon 2020-07-21 @397  	_compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
-eb5c2d4b45e3d2 Will Deacon 2020-07-21  398  
-
-:::::: The code at line 397 was first introduced by commit
-:::::: eb5c2d4b45e3d2d5d052ea6b8f1463976b1020d5 compiler.h: Move compiletime_assert() macros into compiler_types.h
-
-:::::: TO: Will Deacon <will@kernel.org>
-:::::: CC: Will Deacon <will@kernel.org>
-
+diff --git a/drivers/scsi/fnic/fnic.h b/drivers/scsi/fnic/fnic.h
+index 93c68931a593..c6c549c633b1 100644
+--- a/drivers/scsi/fnic/fnic.h
++++ b/drivers/scsi/fnic/fnic.h
+@@ -216,6 +216,7 @@ struct fnic_event {
+ 
+ /* Per-instance private data structure */
+ struct fnic {
++	int fnic_num;
+ 	struct fc_lport *lport;
+ 	struct fcoe_ctlr ctlr;		/* FIP FCoE controller structure */
+ 	struct vnic_dev_bar bar0;
+diff --git a/drivers/scsi/fnic/fnic_debugfs.c b/drivers/scsi/fnic/fnic_debugfs.c
+index c4d9ed0d7d75..fac617672868 100644
+--- a/drivers/scsi/fnic/fnic_debugfs.c
++++ b/drivers/scsi/fnic/fnic_debugfs.c
+@@ -676,7 +676,7 @@ void fnic_stats_debugfs_init(struct fnic *fnic)
+ {
+ 	char name[16];
+ 
+-	snprintf(name, sizeof(name), "host%d", fnic->lport->host->host_no);
++	snprintf(name, sizeof(name), "fnic%d", fnic->fnic_num);
+ 
+ 	fnic->fnic_stats_debugfs_host = debugfs_create_dir(name,
+ 						fnic_stats_debugfs_root);
+diff --git a/drivers/scsi/fnic/fnic_main.c b/drivers/scsi/fnic/fnic_main.c
+index 984bc5fc55e2..ea7b1ba27ac7 100644
+--- a/drivers/scsi/fnic/fnic_main.c
++++ b/drivers/scsi/fnic/fnic_main.c
+@@ -84,6 +84,9 @@ static struct libfc_function_template fnic_transport_template = {
+ 	.exch_mgr_reset = fnic_exch_mgr_reset
+ };
+ 
++
++atomic_t fnic_num;
++
+ static int fnic_slave_alloc(struct scsi_device *sdev)
+ {
+ 	struct fc_rport *rport = starget_to_rport(scsi_target(sdev));
+@@ -587,6 +590,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 	int i;
+ 	unsigned long flags;
+ 
++	atomic_inc(&fnic_num);
+ 	/*
+ 	 * Allocate SCSI Host and set up association between host,
+ 	 * local port, and fnic
+@@ -608,7 +612,7 @@ static int fnic_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
+ 		 host->host_no);
+ 
+ 	host->transportt = fnic_fc_transport;
+-
++	fnic->fnic_num = atomic_read(&fnic_num);
+ 	fnic_stats_debugfs_init(fnic);
+ 
+ 	/* Setup PCI resources */
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.31.1
+
