@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB3E97EB1E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 201477EB1E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:14:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbjKNOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:14:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54944 "EHLO
+        id S233455AbjKNOOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:14:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233437AbjKNONx (ORCPT
+        with ESMTP id S233394AbjKNONx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 14 Nov 2023 09:13:53 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 752CAD52
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:43 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d3099818c0so573994a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:43 -0800 (PST)
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46B37D6C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:45 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-778a25cad6dso14500885a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:13:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699971222; x=1700576022; darn=vger.kernel.org;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1699971224; x=1700576024; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=LJxzqFw+iRCRAp409dtPRDTd4Cqq/JWi5Ol6ihv9w4s=;
-        b=WROfJ/SDcYdtua1UuEnFC/yqRHVka+Y7de1ghL0thFp+IOKjgFkxBQfpmbFyIA058I
-         A/5ugkQzqtjxuQROTWVakV8zOcY7jUaNm0nE4KtM1oqqfeXmlSwMVQxpMJDCfGmNSXHd
-         hcTukHp4NgP/sPduq8ZeQw8qMkgZq7ZQBbD0Ff2646d+uSjDzzcPISu4uN3vVBhoFIjz
-         BScXpOaQSoM01BpckgKEZZVnDMqjmXV/y4NJNuUGgC1XDigMon8L34jTgH7EDO+oyRu+
-         pDboEQcpdH9Nj+b76QtenLcf9EbqcQZVFm8hiCVP8xcQ/okzT2FmlUk84RUhSKEOiw56
-         ebmg==
+        bh=R1n1l7La6nGZIqWqCT5nqMrjtDpsd0w2BPU1/F2EaPQ=;
+        b=qdk9B3tCvRVp5HJczA2iqiVAC84HCdZDdYELhYBDImasDjTQJl8y3/p1R5twMAqDeH
+         ncF5tnIXr3HWAA9yV+LGlM8uWVLNR1H5mR0E7xQYvM9v8s0boHsOYTecTd82Fa90Un6c
+         9SCsUesIFhXtmd8U9Al1y3JA0uLGkJLEMLMJIvgQ24AUgT5+5kcNoBxfOnIkfME8fIK2
+         mwAWoO8SEciFxjl7nEUXc2zjDk3T4+mmqiJbD+pMq2NVSbSjKpY9ag7LiK1Gi/vXxZCo
+         jj1g6ME/c99lPmj8Ru6z/kykndgSXMk2YhgUwRiLxHBAV0fQfmgT9m/IkxRarzVD8cLv
+         bmug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699971222; x=1700576022;
+        d=1e100.net; s=20230601; t=1699971224; x=1700576024;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=LJxzqFw+iRCRAp409dtPRDTd4Cqq/JWi5Ol6ihv9w4s=;
-        b=GwI1F2CNuYFrKtIo95N+LffLYRM53Nk3a1sX49YkL3Nd/wU7WfB5Hc8i0BID0XnU1L
-         VqyC7IXj1uw0m+UGmsgBFzS26ud20BtE+8GihqQ9p2jo0TybDLpOLw/KoTE8Yi5AhOFs
-         9cPxnMWi24wDVM70MmcmUh6WqmayckmgqbGpARUndMhfQ2izQrObGWggoYads3pTV/Nz
-         VZ1Aklh65A52l9EWj7VDVtj9ye2wyd7JJFmyweVxpExh9rKKtG8gJQgwQw4bqIQSE1EK
-         /pJ1I27xBP2N0ELIYbfcqmytZ0drsabxq/ATE2su2/q3C9fGQ6UTx3yrESlQZthchv9Y
-         izQw==
-X-Gm-Message-State: AOJu0YwtqKZBcrF4wUyKxjOtq1BqGQwz+fdEy47Vhl+cHFAtR65+FH6v
-        mzwVKiMjrq0+8I3boS+GbUXUTQ==
-X-Google-Smtp-Source: AGHT+IFgajfszQOvIS9zHpqlXWy/Ja3Phv8JGz7/cMe3MoO7xsUg3ckGQ7HGu11jTeRueJ8PltXSWA==
-X-Received: by 2002:a05:6830:7102:b0:6b1:9646:2ea0 with SMTP id ek2-20020a056830710200b006b196462ea0mr2803747otb.1.1699971222044;
-        Tue, 14 Nov 2023 06:13:42 -0800 (PST)
+        bh=R1n1l7La6nGZIqWqCT5nqMrjtDpsd0w2BPU1/F2EaPQ=;
+        b=aQsuUs4BqI/7OYFLjzNLhurPWfScoJzjvhVPp0PyaeLmI/m6Nh2vtQb74Rfb67ziRP
+         flDYC/sM1QrD6e6loN6yg39Ut0qMHvx8iJ+v4R8LFlM02p58VQ/fH2hDUgWazGIiwpn0
+         Izb0/cEBST+c955Nw3T0c6idJWhcRHJUc+jj0oh0peif/+CUvACRxfzeCy/cljUqcGtX
+         KBcKWsVjeONQyt1cCIMTWVtmsQMCovYwFfBHDrCGnZyJyUCnf2j5trV/5c7UC4EA0S8G
+         wUnqBiC9flQ/P1EB5ca/3oBVuMmSIvoIBJ4QWE6sY0BLy5U2uv0gRRDzvS1baxPgnSBw
+         dS8Q==
+X-Gm-Message-State: AOJu0YzM65znaXBYwtVc8VYUWF8KTQsO3qdjUy8HAPEZAbKr8nrVCDAK
+        PitQJoThlzASdjZLX88UEmkSJw==
+X-Google-Smtp-Source: AGHT+IGdVmknHr9YfYcSME+isGh9g75eDYraT29RTc8VoNjDP7MZEDOfcBgxO+xlzZuc8oVMqtvnkQ==
+X-Received: by 2002:a05:620a:1a03:b0:76f:1614:577d with SMTP id bk3-20020a05620a1a0300b0076f1614577dmr2495334qkb.4.1699971224044;
+        Tue, 14 Nov 2023 06:13:44 -0800 (PST)
 Received: from carbon-x1.. ([12.186.190.2])
-        by smtp.gmail.com with ESMTPSA id m2-20020a05620a220200b00777611164c5sm2701263qkh.106.2023.11.14.06.13.40
+        by smtp.gmail.com with ESMTPSA id m2-20020a05620a220200b00777611164c5sm2701263qkh.106.2023.11.14.06.13.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 06:13:41 -0800 (PST)
+        Tue, 14 Nov 2023 06:13:43 -0800 (PST)
 From:   =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>
 To:     linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
@@ -64,11 +64,10 @@ Cc:     =?UTF-8?q?Cl=C3=A9ment=20L=C3=A9ger?= <cleger@rivosinc.com>,
         Evan Green <evan@rivosinc.com>,
         Conor Dooley <conor@kernel.org>,
         Samuel Ortiz <sameo@rivosinc.com>,
-        Jerry Shih <jerry.shih@sifive.com>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: [PATCH v4 08/20] dt-bindings: riscv: add vector crypto ISA extensions description
-Date:   Tue, 14 Nov 2023 09:12:44 -0500
-Message-ID: <20231114141256.126749-9-cleger@rivosinc.com>
+        Jerry Shih <jerry.shih@sifive.com>
+Subject: [PATCH v4 09/20] riscv: add ISA extension parsing for Zfh/Zfh[min]
+Date:   Tue, 14 Nov 2023 09:12:45 -0500
+Message-ID: <20231114141256.126749-10-cleger@rivosinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231114141256.126749-1-cleger@rivosinc.com>
 References: <20231114141256.126749-1-cleger@rivosinc.com>
@@ -85,138 +84,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add Zv* vector crypto extensions that were added in "RISC-V Cryptography
-Extensions Volume II" specificationi[1]:
+Add parsing for Zfh[min] ISA extensions[1].
 
-- Zvbb: Vector Basic Bit-manipulation
-- Zvbc: Vector Carryless Multiplication
-- Zvkb: Vector Cryptography Bit-manipulation
-- Zvkg: Vector GCM/GMAC.
-- Zvkned: NIST Suite: Vector AES Block Cipher
-- Zvknh[ab]: NIST Suite: Vector SHA-2 Secure Hash
-- Zvksed: ShangMi Suite: SM4 Block Cipher
-- Zvksh: ShangMi Suite: SM3 Secure Hash
-- Zvkn: NIST Algorithm Suite
-- Zvknc: NIST Algorithm Suite with carryless multiply
-- Zvkng: NIST Algorithm Suite with GCM.
-- Zvks: ShangMi Algorithm Suite
-- Zvksc: ShangMi Algorithm Suite with carryless multiplication
-- Zvksg: ShangMi Algorithm Suite with GCM.
-- Zvkt: Vector Data-Independent Execution Latency.
-
-Link: https://drive.google.com/file/d/1gb9OLH-DhbCgWp7VwpPOVrrY6f3oSJLL/view [1]
+Link: https://drive.google.com/file/d/1z3tQQLm5ALsAD77PM0l0CHnapxWCeVzP/view [1]
 Signed-off-by: Clément Léger <cleger@rivosinc.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Reviewed-by: Evan Green <evan@rivosinc.com>
 ---
- .../devicetree/bindings/riscv/extensions.yaml | 96 +++++++++++++++++++
- 1 file changed, 96 insertions(+)
+ arch/riscv/include/asm/hwcap.h | 2 ++
+ arch/riscv/kernel/cpufeature.c | 2 ++
+ 2 files changed, 4 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-index a3803b22cf4f..e845e461b6e1 100644
---- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-+++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-@@ -338,5 +338,101 @@ properties:
-             in commit 2e5236 ("Ztso is now ratified.") of the
-             riscv-isa-manual.
+diff --git a/arch/riscv/include/asm/hwcap.h b/arch/riscv/include/asm/hwcap.h
+index 477254668d82..6a6ee93a3c9a 100644
+--- a/arch/riscv/include/asm/hwcap.h
++++ b/arch/riscv/include/asm/hwcap.h
+@@ -78,6 +78,8 @@
+ #define RISCV_ISA_EXT_ZVKSED		63
+ #define RISCV_ISA_EXT_ZVKSH		64
+ #define RISCV_ISA_EXT_ZVKT		65
++#define RISCV_ISA_EXT_ZFH		66
++#define RISCV_ISA_EXT_ZFHMIN		67
  
-+        - const: zvbb
-+          description:
-+            The standard Zvbb extension for vectored basic bit-manipulation
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvbc
-+          description:
-+            The standard Zvbc extension for vectored carryless multiplication
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvkb
-+          description:
-+            The standard Zvkb extension for vector cryptography bit-manipulation
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvkg
-+          description:
-+            The standard Zvkg extension for vector GCM/GMAC instructions, as
-+            ratified in commit 56ed795 ("Update riscv-crypto-spec-vector.adoc")
-+            of riscv-crypto.
-+
-+        - const: zvkn
-+          description:
-+            The standard Zvkn extension for NIST algorithm suite instructions, as
-+            ratified in commit 56ed795 ("Update riscv-crypto-spec-vector.adoc")
-+            of riscv-crypto.
-+
-+        - const: zvknc
-+          description:
-+            The standard Zvknc extension for NIST algorithm suite with carryless
-+            multiply instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvkned
-+          description:
-+            The standard Zvkned extension for Vector AES block cipher
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvkng
-+          description:
-+            The standard Zvkng extension for NIST algorithm suite with GCM
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvknha
-+          description: |
-+            The standard Zvknha extension for NIST suite: vector SHA-2 secure,
-+            hash (SHA-256 only) instructions, as ratified in commit
-+            56ed795 ("Update riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvknhb
-+          description: |
-+            The standard Zvknhb extension for NIST suite: vector SHA-2 secure,
-+            hash (SHA-256 and SHA-512) instructions, as ratified in commit
-+            56ed795 ("Update riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvks
-+          description:
-+            The standard Zvks extension for ShangMi algorithm suite
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvksc
-+          description:
-+            The standard Zvksc extension for ShangMi algorithm suite with
-+            carryless multiplication instructions, as ratified in commit 56ed795
-+            ("Update riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvksed
-+          description: |
-+            The standard Zvksed extension for ShangMi suite: SM4 block cipher
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvksh
-+          description: |
-+            The standard Zvksh extension for ShangMi suite: SM3 secure hash
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvksg
-+          description:
-+            The standard Zvksg extension for ShangMi algorithm suite with GCM
-+            instructions, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
-+        - const: zvkt
-+          description:
-+            The standard Zvkt extension for vector data-independent execution
-+            latency, as ratified in commit 56ed795 ("Update
-+            riscv-crypto-spec-vector.adoc") of riscv-crypto.
-+
- additionalProperties: true
- ...
+ #define RISCV_ISA_EXT_MAX		128
+ #define RISCV_ISA_EXT_INVALID		U32_MAX
+diff --git a/arch/riscv/kernel/cpufeature.c b/arch/riscv/kernel/cpufeature.c
+index c4d0f16c29b9..7182cf278b1c 100644
+--- a/arch/riscv/kernel/cpufeature.c
++++ b/arch/riscv/kernel/cpufeature.c
+@@ -258,6 +258,8 @@ const struct riscv_isa_ext_data riscv_isa_ext[] = {
+ 	__RISCV_ISA_EXT_DATA(zifencei, RISCV_ISA_EXT_ZIFENCEI),
+ 	__RISCV_ISA_EXT_DATA(zihintpause, RISCV_ISA_EXT_ZIHINTPAUSE),
+ 	__RISCV_ISA_EXT_DATA(zihpm, RISCV_ISA_EXT_ZIHPM),
++	__RISCV_ISA_EXT_DATA(zfh, RISCV_ISA_EXT_ZFH),
++	__RISCV_ISA_EXT_DATA(zfhmin, RISCV_ISA_EXT_ZFHMIN),
+ 	__RISCV_ISA_EXT_DATA(zba, RISCV_ISA_EXT_ZBA),
+ 	__RISCV_ISA_EXT_DATA(zbb, RISCV_ISA_EXT_ZBB),
+ 	__RISCV_ISA_EXT_DATA(zbc, RISCV_ISA_EXT_ZBC),
 -- 
 2.42.0
 
