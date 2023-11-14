@@ -2,100 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D121F7EAE22
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:35:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD3F17EAE27
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:36:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232654AbjKNKfv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:35:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45454 "EHLO
+        id S232278AbjKNKgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:36:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229999AbjKNKfs (ORCPT
+        with ESMTP id S229441AbjKNKgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:35:48 -0500
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C2D311F;
-        Tue, 14 Nov 2023 02:35:44 -0800 (PST)
-Received: from [192.168.1.103] (178.176.75.241) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Tue, 14 Nov
- 2023 13:35:34 +0300
-Subject: Re: [PATCH v2] usb: dwc3: add missing of_node_put and
- platform_device_put
-To:     Stanley Chang <stanley_chang@realtek.com>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-CC:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20231114101645.20065-1-stanley_chang@realtek.com>
-From:   Sergey Shtylyov <s.shtylyov@omp.ru>
-Organization: Open Mobile Platform
-Message-ID: <e1686031-aa5a-5692-50c3-0382d32641e6@omp.ru>
-Date:   Tue, 14 Nov 2023 13:35:33 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Tue, 14 Nov 2023 05:36:36 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE69D184
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 02:36:32 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2qmC-000319-AS; Tue, 14 Nov 2023 11:36:12 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2qmB-008yF9-4C; Tue, 14 Nov 2023 11:36:11 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r2qmA-001JJi-R6; Tue, 14 Nov 2023 11:36:10 +0100
+Date:   Tue, 14 Nov 2023 11:36:10 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/1] dt-bindings: pwm: ti,pwm-omap-dmtimer: Update
+ binding for yaml
+Message-ID: <20231114103610.sbiicumbh2xju6lj@pengutronix.de>
+References: <20231114082709.54138-1-tony@atomide.com>
 MIME-Version: 1.0
-In-Reply-To: <20231114101645.20065-1-stanley_chang@realtek.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [178.176.75.241]
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.0.0, Database issued on: 11/14/2023 10:25:05
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 59
-X-KSE-AntiSpam-Info: Lua profiles 181339 [Nov 14 2023]
-X-KSE-AntiSpam-Info: Version: 6.0.0.2
-X-KSE-AntiSpam-Info: Envelope from: s.shtylyov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {relay has no DNS name}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1
-X-KSE-AntiSpam-Info: ApMailHostAddress: 178.176.75.241
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 59
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 11/14/2023 10:30:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 11/14/2023 9:07:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-Spam-Status: No, score=-2.3 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="7b6i2lxusyiit2rg"
+Content-Disposition: inline
+In-Reply-To: <20231114082709.54138-1-tony@atomide.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 1:16 PM, Stanley Chang wrote:
 
-> of_get_compatible_child performs an of_node_get, so an of_node_get is
+--7b6i2lxusyiit2rg
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   You mean of_node_put is required?
+Hello,
 
-> required. Add platform_device_put to match with of_find_device_by_node.
-> 
-> Fixes: 34c200483569 ("usb: dwc3: add Realtek DHC RTD SoC dwc3 glue layer driver")
-> Signed-off-by: Stanley Chang <stanley_chang@realtek.com>
-> Acked-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-> ---
-> v1 to v2 change:
->     1. Modify the commit message.
->     2. Add of_node_get in the of_property_read_string() error path.
-[...]
+On Tue, Nov 14, 2023 at 10:27:06AM +0200, Tony Lindgren wrote:
+> +  ti,timers:
+> +    description: Timer instance phandle for the PWM
+> +    $ref: /schemas/types.yaml#/definitions/phandle
+> +
+> +  ti,prescaler:
+> +    description: |
+> +      Legacy clock prescaler for timer. The timer counter is prescaled
+> +      with 2^n where n is the prescaler.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1, 2, 3, 4, 5, 6, 7 ]
+> +    deprecated: true
+> +
+> +  ti,clock-source:
+> +    description: |
+> +      Legacy clock for timer, please use assigned-clocks instead.
+> +      0x00 - high-frequency system clock (timer_sys_ck)
+> +      0x01 - 32-kHz always-on clock (timer_32k_ck)
+> +      0x02 - external clock (timer_ext_ck, OMAP2 only)
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1, 2 ]
+> +    deprecated: true
 
-MBR, Sergey
+Someone could collect some bonus points by converting these:
+
+	$ git grep ti,clock-source arch/arm/boot
+	arch/arm/boot/dts/ti/omap/am335x-guardian.dts:          ti,clock-source =
+=3D <0x01>;
+	arch/arm/boot/dts/ti/omap/am3517-evm.dts:               ti,clock-source =
+=3D <0x01>;
+	arch/arm/boot/dts/ti/omap/logicpd-torpedo-baseboard.dtsi:               ti=
+,clock-source =3D <0x01>;
+	arch/arm/boot/dts/ti/omap/motorola-mapphone-common.dtsi:                ti=
+,clock-source =3D <0x01>;
+	arch/arm/boot/dts/ti/omap/motorola-mapphone-common.dtsi:                ti=
+,clock-source =3D <0x01>;
+	arch/arm/boot/dts/ti/omap/omap3-gta04.dtsi:             ti,clock-source =
+=3D <0x01>;
+	arch/arm/boot/dts/ti/omap/omap3-n900.dts:               ti,clock-source =
+=3D <0x00>; /* timer_sys_ck */
+
+(I verified, this are all about this binding.)
+
+otherwise LGTM:
+
+Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+
+Should this go via the pwm tree or via some arm or omap or dt tree?
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--7b6i2lxusyiit2rg
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVTTZkACgkQj4D7WH0S
+/k7ERgf+IaYSSEKLl5KVBFqv40539YINuhNaIstLunhrxIN+o899MuLjyLl/DM13
+DCXIGigv9OBuBnflHhUy3DCsMEiF400x469OXwNhtHjjmEXbo2XlxODea/hkrIGw
++tbrf8c7wc4Tca/R0ZN411wCtaE7o2zPsKM5/fL6evW9dB9qhonCX+KeAlE1IKAo
+8HS5J/NT8ZonhYPtGHLUt7Uee+b8VzZVPkGVjxb+eZ/ZWbX5NZq2XyOh0yCfPvVm
+fpTc40h0wUGIjQu5TO06ZyF0zC218hJOdpO6YvrJAmpTeUKTgPwjfNeZBRjtpIjl
+WRxfbSvCKi0L7StGP6Bgcqsd++tWvg==
+=TLmH
+-----END PGP SIGNATURE-----
+
+--7b6i2lxusyiit2rg--
