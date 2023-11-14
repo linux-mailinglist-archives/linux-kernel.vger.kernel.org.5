@@ -2,51 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F7B97EB6C1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFD897EB6C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:10:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjKNTIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55916 "EHLO
+        id S229738AbjKNTK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:10:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231598AbjKNTIA (ORCPT
+        with ESMTP id S229570AbjKNTKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:08:00 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B8FB119;
-        Tue, 14 Nov 2023 11:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1699988874;
-        bh=SYGluN3+4eLJfq22jk0bwc/x8ZAsdhZvXpbOhM3QM08=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QWhmlB5sfntwHNnwjF3kgTBZ9EsKDPxtPP/rsElLiZ+4IM+G1LxbgQLTglDj/zf/o
-         uPDylesv+SAAd8SBnOuNro6NXN8fHkvxJwRKlnzT3abEdjragcsb75obLkj/vi1pXr
-         oBC6RKTUZV68Jul3EPrbLV+mpK2jADhY1nGAIrZQ=
-Date:   Tue, 14 Nov 2023 20:07:53 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Anshul Dalal <anshulusr@gmail.com>
-Cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-        Conor Dooley <conor+dt@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Conor Dooley <conor.dooley@microchip.com>,
-        Rob Herring <robh+dt@kernel.org>,
+        Tue, 14 Nov 2023 14:10:54 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EDF7F4;
+        Tue, 14 Nov 2023 11:10:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=JNLArOzkNx8faUQdzL9sGLoJY9ZsQNr6hJmyeuSCIjs=; b=aIxpFehFBgHsJiDqKEQaZW/qA9
+        ASVTxqLZ1v/IOlscBs5X7ED5dczyvRV7bg8AwSpDB/gEGCzYNtz3s2huaE0xPeMqznS8uj+rgJv+9
+        xKlKeH6gkvBRL0BQZIy6pFeDjKXHeQtQFfJ793tyxkjTnF062VnJU03+19qcuY5NGf7U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r2yo8-000BUO-Dm; Tue, 14 Nov 2023 20:10:44 +0100
+Date:   Tue, 14 Nov 2023 20:10:44 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Romain Gantois <romain.gantois@bootlin.com>
+Cc:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jeff LaBundy <jeff@labundy.com>,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v8 2/2] input: joystick: driver for Adafruit Seesaw
- Gamepad
-Message-ID: <6384a19d-8b47-43ce-a8ad-16843b8fabf2@t-8ch.de>
-References: <20231108005337.45069-1-anshulusr@gmail.com>
- <20231108005337.45069-2-anshulusr@gmail.com>
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH net-next v3 3/8] net: qualcomm: ipqess: introduce the
+ Qualcomm IPQESS driver
+Message-ID: <f6ce0c15-8b72-4568-8ba2-f0216db84ffd@lunn.ch>
+References: <20231114105600.1012056-1-romain.gantois@bootlin.com>
+ <20231114105600.1012056-4-romain.gantois@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231108005337.45069-2-anshulusr@gmail.com>
+In-Reply-To: <20231114105600.1012056-4-romain.gantois@bootlin.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -54,369 +64,197 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-08 06:23:36+0530, Anshul Dalal wrote:
-> Adds a driver for a mini gamepad that communicates over i2c, the gamepad
-> has bidirectional thumb stick input and six buttons.
-
-With or without the tiny nitpicks mentioned below:
-
-Reviewed-by: Thomas Weißschuh <linux@weissschuh.net>
-
-> The gamepad chip utilizes the open framework from Adafruit called 'Seesaw'
-> to transmit the ADC data for the joystick and digital pin state for the
-> buttons. I have only implemented the functionality required to receive the
-> thumb stick and button state.
-
-[..]
-
-> diff --git a/drivers/input/joystick/adafruit-seesaw.c b/drivers/input/joystick/adafruit-seesaw.c
-> new file mode 100644
-> index 000000000000..8e8ef26a585f
-> --- /dev/null
-> +++ b/drivers/input/joystick/adafruit-seesaw.c
-> @@ -0,0 +1,315 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * Copyright (C) 2023 Anshul Dalal <anshulusr@gmail.com>
-> + *
-> + * Driver for Adafruit Mini I2C Gamepad
-> + *
-> + * Based on the work of:
-> + *	Oleh Kravchenko (Sparkfun Qwiic Joystick driver)
-> + *
-> + * Datasheet: https://cdn-learn.adafruit.com/downloads/pdf/gamepad-qt.pdf
-> + * Product page: https://www.adafruit.com/product/5743
-> + * Firmware and hardware sources: https://github.com/adafruit/Adafruit_Seesaw
-> + *
-> + * TODO:
-> + *	- Add interrupt support
-> + */
-> +
-> +#include <asm-generic/unaligned.h>
-
-#include <asm/unaligned.h>
-
-> +#include <linux/bits.h>
-> +#include <linux/delay.h>
-> +#include <linux/i2c.h>
-> +#include <linux/input.h>
-> +#include <linux/input/sparse-keymap.h>
-> +#include <linux/kernel.h>
-> +#include <linux/module.h>
-> +
-> +#define SEESAW_DEVICE_NAME	     "seesaw-gamepad"
-> +
-> +#define SEESAW_STATUS_BASE	     0x00
-> +#define SEESAW_GPIO_BASE	     0x01
-> +#define SEESAW_ADC_BASE		     0x09
-> +
-> +#define SEESAW_GPIO_DIRCLR_BULK	     0x03
-> +#define SEESAW_GPIO_BULK	     0x04
-> +#define SEESAW_GPIO_BULK_SET	     0x05
-> +#define SEESAW_GPIO_PULLENSET	     0x0b
-> +
-> +#define SEESAW_STATUS_HW_ID	     0x01
-> +#define SEESAW_STATUS_SWRST	     0x7f
-> +
-> +#define SEESAW_ADC_OFFSET	     0x07
-> +
-> +#define SEESAW_BUTTON_A		     0x05
-> +#define SEESAW_BUTTON_B		     0x01
-> +#define SEESAW_BUTTON_X		     0x06
-> +#define SEESAW_BUTTON_Y		     0x02
-> +#define SEESAW_BUTTON_START	     0x10
-> +#define SEESAW_BUTTON_SELECT	     0x00
-> +
-> +#define SEESAW_ANALOG_X		     0x0e
-> +#define SEESAW_ANALOG_Y		     0x0f
-> +
-> +#define SEESAW_JOYSTICK_MAX_AXIS     1023
-> +#define SEESAW_JOYSTICK_FUZZ	     2
-> +#define SEESAW_JOYSTICK_FLAT	     4
-> +
-> +#define SEESAW_GAMEPAD_POLL_INTERVAL 16
-> +#define SEESAW_GAMEPAD_POLL_MIN	     8
-> +#define SEESAW_GAMEPAD_POLL_MAX	     32
-> +
-> +static const u32 SEESAW_BUTTON_MASK =
-> +	BIT(SEESAW_BUTTON_A) | BIT(SEESAW_BUTTON_B) | BIT(SEESAW_BUTTON_X) |
-> +	BIT(SEESAW_BUTTON_Y) | BIT(SEESAW_BUTTON_START) |
-> +	BIT(SEESAW_BUTTON_SELECT);
-> +
-> +struct seesaw_gamepad {
-> +	struct input_dev *input_dev;
-
-This field is not used, but it doesn't hurt.
-If you remove the field you can get rid of the whole struct itself.
-
-> +	struct i2c_client *i2c_client;
-> +};
-> +
-> +struct seesaw_data {
-> +	u16 x;
-> +	u16 y;
-> +	u32 button_state;
-> +};
-> +
-> +struct seesaw_button_description {
-> +	unsigned int code;
-> +	unsigned int bit;
-> +};
-
-Not used anymore.
-
-> +
-> +static const struct key_entry seesaw_buttons_new[] = {
-> +	{ KE_KEY, SEESAW_BUTTON_A, .keycode = BTN_SOUTH },
-> +	{ KE_KEY, SEESAW_BUTTON_B, .keycode = BTN_EAST },
-> +	{ KE_KEY, SEESAW_BUTTON_X, .keycode = BTN_NORTH },
-> +	{ KE_KEY, SEESAW_BUTTON_Y, .keycode = BTN_WEST },
-> +	{ KE_KEY, SEESAW_BUTTON_START, .keycode = BTN_START },
-> +	{ KE_KEY, SEESAW_BUTTON_SELECT, .keycode = BTN_SELECT },
-> +	{ KE_END, 0 },
-
-No comma after sentinel element.
-
-> +};
-> +
-> +static int seesaw_register_read(struct i2c_client *client, u8 register_high,
-> +				u8 register_low, char *buf, int count)
+> +static void ipqess_port_stp_state_set(struct ipqess_port *port,
+> +				      u8 state)
 > +{
-> +	int ret;
-> +	u8 register_buf[2] = { register_high, register_low };
+> +	struct qca8k_priv *priv = port->sw->priv;
+> +	u32 stp_state;
+> +	int err;
 > +
-> +	struct i2c_msg message_buf[2] = {
-> +		{
-> +			.addr = client->addr,
-> +			.flags = client->flags,
-> +			.len = sizeof(register_buf),
-> +			.buf = register_buf
+> +	switch (state) {
+> +	case BR_STATE_DISABLED:
+> +		stp_state = QCA8K_PORT_LOOKUP_STATE_DISABLED;
+> +		break;
+> +	case BR_STATE_BLOCKING:
+> +		stp_state = QCA8K_PORT_LOOKUP_STATE_BLOCKING;
+> +		break;
+> +	case BR_STATE_LISTENING:
+> +		stp_state = QCA8K_PORT_LOOKUP_STATE_LISTENING;
+> +		break;
+> +	case BR_STATE_LEARNING:
+> +		stp_state = QCA8K_PORT_LOOKUP_STATE_LEARNING;
+> +		break;
+> +	case BR_STATE_FORWARDING:
+> +	default:
+> +		stp_state = QCA8K_PORT_LOOKUP_STATE_FORWARD;
+> +		break;
+> +	}
+> +
+> +	err = qca8k_rmw(priv, QCA8K_PORT_LOOKUP_CTRL(port->index),
+> +			QCA8K_PORT_LOOKUP_STATE_MASK, stp_state);
 
-Commas after normal last elements.
+When i compare this to qca8k_port_stp_state_set() it is 90% identical.
+What differs is how you get to struct qca8k_priv *priv. What you need
+to do is refactor the existing functions to separate the DSA parts out
+and have a core function which takes qca8k_priv and in port. The DSA
+core can then call it, and this function can call it, after extracting
+qca8k_priv and index from port.
 
-> +		},
-> +		{
-> +			.addr = client->addr,
-> +			.flags = client->flags | I2C_M_RD,
-> +			.len = count,
-> +			.buf = buf
+> +static int ipqess_port_enable_rt(struct ipqess_port *port,
+> +				 struct phy_device *phy)
+> +{
+> +	struct qca8k_priv *priv = port->sw->priv;
+> +
+> +	qca8k_port_set_status(priv, port->index, 1);
+> +	priv->port_enabled_map |= BIT(port->index);
+> +
+> +	phy_support_asym_pause(phy);
+> +
+> +	ipqess_port_set_state_now(port, BR_STATE_FORWARDING, false);
+> +
+> +	if (port->pl)
+> +		phylink_start(port->pl);
 
-Same as above.
+That looks odd. You unconditionally call phy_support_asym_pause() yet
+conditionally call phylink_start(). I would expect there to always be
+a phylink instance.
 
-> +		},
+Also, you should be telling phylink about the pause capabilities in
+config->mac_capabilities. It is then phylinks problem to tell the PHY,
+or the PCS driving the SFP etc about pause.
+
+
+> +static int
+> +ipqess_port_fdb_do_dump(const unsigned char *addr, u16 vid,
+> +			bool is_static, void *data)
+> +{
+> +	struct ipqess_port_dump_ctx *dump = data;
+> +	u32 portid = NETLINK_CB(dump->cb->skb).portid;
+> +	u32 seq = dump->cb->nlh->nlmsg_seq;
+> +	struct nlmsghdr *nlh;
+> +	struct ndmsg *ndm;
+> +
+> +	if (dump->idx < dump->cb->args[2])
+> +		goto skip;
+> +
+> +	nlh = nlmsg_put(dump->skb, portid, seq, RTM_NEWNEIGH,
+> +			sizeof(*ndm), NLM_F_MULTI);
+> +	if (!nlh)
+> +		return -EMSGSIZE;
+> +
+> +	ndm = nlmsg_data(nlh);
+> +	ndm->ndm_family  = AF_BRIDGE;
+> +	ndm->ndm_pad1    = 0;
+> +	ndm->ndm_pad2    = 0;
+> +	ndm->ndm_flags   = NTF_SELF;
+> +	ndm->ndm_type    = 0;
+> +	ndm->ndm_ifindex = dump->dev->ifindex;
+> +	ndm->ndm_state   = is_static ? NUD_NOARP : NUD_REACHABLE;
+> +
+> +	if (nla_put(dump->skb, NDA_LLADDR, ETH_ALEN, addr))
+> +		goto nla_put_failure;
+> +
+> +	if (vid && nla_put_u16(dump->skb, NDA_VLAN, vid))
+> +		goto nla_put_failure;
+> +
+> +	nlmsg_end(dump->skb, nlh);
+> +
+> +skip:
+> +	dump->idx++;
+> +	return 0;
+> +
+> +nla_put_failure:
+> +	nlmsg_cancel(dump->skb, nlh);
+> +	return -EMSGSIZE;
+> +}
+
+This looks identical to dsa_slave_port_fdb_do_dump(). Please export
+and reuse it.
+
+> +
+> +static int
+> +ipqess_port_fdb_dump(struct sk_buff *skb, struct netlink_callback *cb,
+> +		     struct net_device *dev, struct net_device *filter_dev,
+> +		     int *idx)
+> +{
+> +	struct ipqess_port *port = netdev_priv(dev);
+> +	struct qca8k_priv *priv = port->sw->priv;
+> +	struct ipqess_port_dump_ctx dump = {
+> +		.dev = dev,
+> +		.skb = skb,
+> +		.cb = cb,
+> +		.idx = *idx,
 > +	};
-> +	ret = i2c_transfer(client->adapter, message_buf,
-> +			   ARRAY_SIZE(message_buf));
+> +	int cnt = QCA8K_NUM_FDB_RECORDS;
+> +	struct qca8k_fdb _fdb = { 0 };
+> +	bool is_static;
+> +	int ret = 0;
 > +
-> +	if (ret < 0)
-> +		return ret;
+> +	mutex_lock(&priv->reg_mutex);
+> +	while (cnt-- && !qca8k_fdb_next(priv, &_fdb, port->index)) {
+> +		if (!_fdb.aging)
+> +			break;
+> +		is_static = (_fdb.aging == QCA8K_ATU_STATUS_STATIC);
+> +		ret = ipqess_port_fdb_do_dump(_fdb.mac, _fdb.vid, is_static, &dump);
+> +		if (ret)
+> +			break;
+> +	}
+> +	mutex_unlock(&priv->reg_mutex);
 > +
-> +	return 0;
+> +	*idx = dump.idx;
+> +
+> +	return ret;
 > +}
-> +
-> +static int seesaw_register_write_u8(struct i2c_client *client, u8 register_high,
-> +				    u8 register_low, u8 value)
+
+And with a little bit of refactoring you can reuse the core of
+qca8k_port_fdb_dump.
+
+> +static void ipqess_phylink_mac_link_up(struct phylink_config *config,
+> +				       struct phy_device *phydev,
+> +				       unsigned int mode,
+> +				       phy_interface_t interface,
+> +				       int speed, int duplex,
+> +				       bool tx_pause, bool rx_pause)
 > +{
-> +	int ret;
-> +	u8 write_buf[3] = { register_high, register_low, value };
+> +	struct ipqess_port *port = ipqess_port_from_pl_state(config, pl_config);
+> +	struct qca8k_priv *priv = port->sw->priv;
+> +	u32 reg;
 > +
-> +	ret = i2c_master_send(client, write_buf, sizeof(write_buf));
-> +	if (ret < 0)
-> +		return ret;
+> +	if (phylink_autoneg_inband(mode)) {
+> +		reg = QCA8K_PORT_STATUS_LINK_AUTO;
+> +	} else {
+> +		switch (speed) {
+> +		case SPEED_10:
+> +			reg = QCA8K_PORT_STATUS_SPEED_10;
+> +			break;
+> +		case SPEED_100:
+> +			reg = QCA8K_PORT_STATUS_SPEED_100;
+> +			break;
+> +		case SPEED_1000:
+> +			reg = QCA8K_PORT_STATUS_SPEED_1000;
+> +			break;
+> +		default:
+> +			reg = QCA8K_PORT_STATUS_LINK_AUTO;
+> +			break;
+> +		}
 > +
-> +	return 0;
-> +}
+> +		if (duplex == DUPLEX_FULL)
+> +			reg |= QCA8K_PORT_STATUS_DUPLEX;
 > +
-> +static int seesaw_register_write_u32(struct i2c_client *client,
-> +				     u8 register_high, u8 register_low,
-> +				     u32 value)
-> +{
-> +	int ret;
-> +	u8 write_buf[6] = { register_high, register_low };
+> +		if (rx_pause || port->index == 0)
+> +			reg |= QCA8K_PORT_STATUS_RXFLOW;
 > +
-> +	put_unaligned_be32(value, write_buf + 2);
-> +	ret = i2c_master_send(client, write_buf, sizeof(write_buf));
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return 0;
-> +}
-> +
-> +static int seesaw_read_data(struct i2c_client *client, struct seesaw_data *data)
-> +{
-> +	int ret;
-> +	__be16 adc_data;
-> +	__be32 read_buf;
-> +
-> +	ret = seesaw_register_read(client, SEESAW_GPIO_BASE, SEESAW_GPIO_BULK,
-> +				   (char *)&read_buf, sizeof(read_buf));
-> +	if (ret)
-> +		return ret;
-> +
-> +	data->button_state = ~be32_to_cpu(read_buf);
-> +
-> +	ret = seesaw_register_read(client, SEESAW_ADC_BASE,
-> +				   SEESAW_ADC_OFFSET + SEESAW_ANALOG_X,
-> +				   (char *)&adc_data, sizeof(adc_data));
-> +	if (ret)
-> +		return ret;
-> +	/*
-> +	 * ADC reads left as max and right as 0, must be reversed since kernel
-> +	 * expects reports in opposite order.
-> +	 */
-> +	data->x = SEESAW_JOYSTICK_MAX_AXIS - be16_to_cpu(adc_data);
-> +
-> +	ret = seesaw_register_read(client, SEESAW_ADC_BASE,
-> +				   SEESAW_ADC_OFFSET + SEESAW_ANALOG_Y,
-> +				   (char *)&adc_data, sizeof(adc_data));
-> +	if (ret)
-> +		return ret;
-> +	data->y = be16_to_cpu(adc_data);
-> +
-> +	return 0;
-> +}
-> +
-> +static void seesaw_poll(struct input_dev *input)
-> +{
-> +	int err, i;
-> +	struct seesaw_gamepad *private = input_get_drvdata(input);
-> +	struct seesaw_data data;
-> +
-> +	err = seesaw_read_data(private->i2c_client, &data);
-> +	if (err) {
-> +		dev_err_ratelimited(&input->dev,
-> +				    "failed to read joystick state: %d\n", err);
-> +		return;
+> +		if (tx_pause || port->index == 0)
+> +			reg |= QCA8K_PORT_STATUS_TXFLOW;
 > +	}
 > +
-> +	input_report_abs(input, ABS_X, data.x);
-> +	input_report_abs(input, ABS_Y, data.y);
+> +	reg |= QCA8K_PORT_STATUS_TXMAC | QCA8K_PORT_STATUS_RXMAC;
 > +
-> +	for_each_set_bit(i, (long *)&SEESAW_BUTTON_MASK,
-> +			 BITS_PER_TYPE(SEESAW_BUTTON_MASK)) {
-> +		if (!sparse_keymap_report_event(
-> +			    input, i, data.button_state & BIT(i), false)) {
-> +			dev_err_ratelimited(&input->dev,
-> +					    "failed to report keymap event");
-> +			return;
-
-I would drop this return. Report as much data as possible.
-
-> +		};
-> +	}
-> +
-> +	input_sync(input);
+> +	qca8k_write(priv, QCA8K_REG_PORT_STATUS(port->index), reg);
 > +}
-> +
-> +static int seesaw_probe(struct i2c_client *client)
-> +{
-> +	int ret;
-> +	u8 hardware_id;
-> +	struct seesaw_gamepad *seesaw;
-> +
-> +	ret = seesaw_register_write_u8(client, SEESAW_STATUS_BASE,
-> +				       SEESAW_STATUS_SWRST, 0xFF);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Wait for the registers to reset before proceeding */
-> +	usleep_range(10000, 15000);
 
-This would be a very tiny bit clearer:
+qca8k_phylink_mac_link_up() with some refactoring can be
+reused. Please look through the driver and find other instances like
+this where you can reuse more code.
 
-usleep_range(10 * MSEC_PER_USEC, 15 * MSEC_PER_USEC);
-
-> +
-> +	seesaw = devm_kzalloc(&client->dev, sizeof(*seesaw), GFP_KERNEL);
-> +	if (!seesaw)
-> +		return -ENOMEM;
-> +
-> +	ret = seesaw_register_read(client, SEESAW_STATUS_BASE,
-> +				   SEESAW_STATUS_HW_ID, &hardware_id,
-> +				   sizeof(hardware_id));
-> +	if (ret)
-> +		return ret;
-> +
-> +	dev_dbg(&client->dev, "Adafruit Seesaw Gamepad, Hardware ID: %02x\n",
-> +		hardware_id);
-> +
-> +	/* Set Pin Mode to input and enable pull-up resistors */
-> +	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-> +					SEESAW_GPIO_DIRCLR_BULK,
-> +					SEESAW_BUTTON_MASK);
-> +	if (ret)
-> +		return ret;
-> +	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-> +					SEESAW_GPIO_PULLENSET,
-> +					SEESAW_BUTTON_MASK);
-> +	if (ret)
-> +		return ret;
-> +	ret = seesaw_register_write_u32(client, SEESAW_GPIO_BASE,
-> +					SEESAW_GPIO_BULK_SET,
-> +					SEESAW_BUTTON_MASK);
-> +	if (ret)
-> +		return ret;
-> +
-> +	seesaw->i2c_client = client;
-> +	seesaw->input_dev = devm_input_allocate_device(&client->dev);
-> +	if (!seesaw->input_dev)
-> +		return -ENOMEM;
-> +
-> +	seesaw->input_dev->id.bustype = BUS_I2C;
-> +	seesaw->input_dev->name = "Adafruit Seesaw Gamepad";
-> +	seesaw->input_dev->phys = "i2c/" SEESAW_DEVICE_NAME;
-> +	input_set_drvdata(seesaw->input_dev, seesaw);
-> +	input_set_abs_params(seesaw->input_dev, ABS_X, 0,
-> +			     SEESAW_JOYSTICK_MAX_AXIS, SEESAW_JOYSTICK_FUZZ,
-> +			     SEESAW_JOYSTICK_FLAT);
-> +	input_set_abs_params(seesaw->input_dev, ABS_Y, 0,
-> +			     SEESAW_JOYSTICK_MAX_AXIS, SEESAW_JOYSTICK_FUZZ,
-> +			     SEESAW_JOYSTICK_FLAT);
-> +
-> +	ret = sparse_keymap_setup(seesaw->input_dev, seesaw_buttons_new, NULL);
-> +	if (ret) {
-> +		dev_err(&client->dev,
-> +			"failed to set up input device keymap: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	ret = input_setup_polling(seesaw->input_dev, seesaw_poll);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to set up polling: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	input_set_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_INTERVAL);
-> +	input_set_max_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MAX);
-> +	input_set_min_poll_interval(seesaw->input_dev, SEESAW_GAMEPAD_POLL_MIN);
-> +
-> +	ret = input_register_device(seesaw->input_dev);
-> +	if (ret) {
-> +		dev_err(&client->dev, "failed to register joystick: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct i2c_device_id seesaw_id_table[] = {
-> +	{ SEESAW_DEVICE_NAME, 0 },
-> +	{ /* Sentinel */ }
-> +};
-> +MODULE_DEVICE_TABLE(i2c, seesaw_id_table);
-> +
-> +static struct i2c_driver seesaw_driver = {
-> +	.driver = {
-> +		.name = SEESAW_DEVICE_NAME,
-> +	},
-> +	.id_table = seesaw_id_table,
-> +	.probe = seesaw_probe,
-> +};
-> +module_i2c_driver(seesaw_driver);
-> +
-> +MODULE_AUTHOR("Anshul Dalal <anshulusr@gmail.com>");
-> +MODULE_DESCRIPTION("Adafruit Mini I2C Gamepad driver");
-> +MODULE_LICENSE("GPL");
-> -- 
-> 2.42.0
-> 
+     Andrew
