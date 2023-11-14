@@ -2,109 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39BBA7EAD61
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:51:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0BE7EAD63
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjKNJvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41642 "EHLO
+        id S232502AbjKNJwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:52:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232550AbjKNJux (ORCPT
+        with ESMTP id S229585AbjKNJwc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:50:53 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FB791AC;
-        Tue, 14 Nov 2023 01:50:50 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 66AAB218D6;
-        Tue, 14 Nov 2023 09:50:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699955447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Xk27T3NxTwbnlJ5P3tH7QSavlHidd8/4W2N+WOglPOs=;
-        b=o9+byrf9oaOteVJp06CiArSYrYnZpqhQXZmvmMM5LOiuPUsTg8RzF/X5qetT9q4sS1a4i/
-        uujODQOVmJnUNizVf1cLqjYuavqPDYK5rt0HDcoost94BdF9NCVeU8aO0n46pt9y0zLB4B
-        9VbdGAnoF+RLE8+GtvsEqo/PON4evFg=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3BDD813416;
-        Tue, 14 Nov 2023 09:50:47 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 3RVnC/dCU2U1HAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 09:50:47 +0000
-Date:   Tue, 14 Nov 2023 10:50:46 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Huan Yang <link@vivo.com>
-Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        Peter Xu <peterx@redhat.com>,
-        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Liu Shixin <liushixin2@huawei.com>,
-        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, opensource.kernel@vivo.com
-Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
-Message-ID: <ZVNC9mDOOWgjen7U@tiehlicka>
-References: <ZUytB5lSwxeKkBW8@tiehlicka>
- <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
- <ZUy2-vrqDq7URzb6@tiehlicka>
- <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
- <ZUzTVgK_i05uiHiB@tiehlicka>
- <e07c977f-8c73-4772-b069-527c6ac0ae4f@vivo.com>
- <ZUziy-6QPdTIDJlm@tiehlicka>
- <f46de374-82a2-467c-8d32-a15b518bff17@vivo.com>
- <ZU4g9XZvi9mRQD27@tiehlicka>
- <b4694fbf-92df-4067-878e-6035df46582f@vivo.com>
+        Tue, 14 Nov 2023 04:52:32 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD8FD191
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:52:27 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so5560829b3a.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:52:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699955547; x=1700560347; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=pW2g3h0YSixWVQuQUxLWfTqlFixwduolLwJaUX59Vl8=;
+        b=tEG9WnEI0+cXqq1HCDkxg4cxXGvoUXzGTO7JQotLBx2orCDCFOyD0j13ffspo5+FfG
+         ds53uXcSnlbJNlUTBWO/+WU1NIFqfxkPTdezE3uylf/kpKoUiznV9C3/DTKgHzD0AjPP
+         yog+XQ06DrUyx+RBvW7O21HTY4Lz8rnqhmGw+Ue/vRvrp2ASRmYx/qg2jW/R4Ch444OC
+         hEVSdi035W7jPxc7EC5bxlkTRkst8F3b6sc/6OzH0eNDRAACnb/KMvQKuLFzbim6RzLn
+         4XMFBY4bFpJA8Te9W3D9S7F2nenp2IZ8Ff+20lwYwzb+XFlmBb2QFkGq6CPyqoeU7M6P
+         Xqjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699955547; x=1700560347;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pW2g3h0YSixWVQuQUxLWfTqlFixwduolLwJaUX59Vl8=;
+        b=IPwBmm2+Gazoq7rlrpzVQzhb1BuT2LvWPyJ+9ngxrMoVin2RCG3wF9RTE99J/x6g9D
+         Kob76xJrF5/Vh16S2Qj7QM5CaWiNJxsa9lmWhMYfcKlfsY2/9Ia0pam0s2BZiwQg0hOW
+         /uWWal4sQes86GlC2MkxxjnNO6nIjVnuFxvClUOH6W0TtkOEX38vTshzOoVSeDelkwuy
+         I9cQkbxTVfXDtUEKfWgYUoBVKaq50LEwC6gOHGimqydnPnGsvji/RjeXD/tZOQd9ND4s
+         AKi1AmroAJSt6fwb9bcl3TNlT033KbURDpFxpUKVWuHzHSYiAP59e5pfkHCwCdR6FVDn
+         z79A==
+X-Gm-Message-State: AOJu0YwAqJNT/mCRdqSvfOc1kU+qzWXd3D/Agqu5OyDDPqPpVbmEknuV
+        IW4wud0e381YqZcowXlKv9TMnyA6Ax/4qgOJ528=
+X-Google-Smtp-Source: AGHT+IGulTBPou3swbKe/8ItCjG4L/qYNuL+sh/4MGasmite0+AHatY0TzqK/LDYTbfI85TpjFli6Q==
+X-Received: by 2002:a05:6a00:1c83:b0:6c3:4c72:8b81 with SMTP id y3-20020a056a001c8300b006c34c728b81mr10004017pfw.3.1699955547055;
+        Tue, 14 Nov 2023 01:52:27 -0800 (PST)
+Received: from rayden.urgonet (h-217-31-164-171.A175.priv.bahnhof.se. [217.31.164.171])
+        by smtp.gmail.com with ESMTPSA id h10-20020a056a00218a00b006c34015a8f2sm874749pfi.146.2023.11.14.01.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 01:52:26 -0800 (PST)
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+To:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org
+Cc:     Sumit Garg <sumit.garg@linaro.org>,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Shyam Saini <shyamsaini@linux.microsoft.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>
+Subject: [PATCH v3 0/2] OP-TEE kernel private shared memory optimizations
+Date:   Tue, 14 Nov 2023 10:52:15 +0100
+Message-Id: <20231114095217.1142360-1-jens.wiklander@linaro.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b4694fbf-92df-4067-878e-6035df46582f@vivo.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -2.21
-X-Spamd-Result: default: False [-2.21 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         RCVD_TLS_ALL(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         BAYES_HAM(-0.11)[66.40%];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[23];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         FREEMAIL_CC(0.00)[intel.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com,vger.kernel.org,kvack.org,vivo.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         SUSPICIOUS_RECIPS(1.50)[]
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -113,79 +71,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 13-11-23 10:17:57, Huan Yang wrote:
-> 
-> 在 2023/11/10 20:24, Michal Hocko 写道:
-> > On Fri 10-11-23 11:48:49, Huan Yang wrote:
-> > [...]
-> > > Also, When the application enters the foreground, the startup speed
-> > > may be slower. Also trace show that here are a lot of block I/O.
-> > > (usually 1000+ IO count and 200+ms IO Time) We usually observe very
-> > > little block I/O caused by zram refault.(read: 1698.39MB/s, write:
-> > > 995.109MB/s), usually, it is faster than random disk reads.(read:
-> > > 48.1907MB/s write: 49.1654MB/s). This test by zram-perf and I change a
-> > > little to test UFS.
-> > > 
-> > > Therefore, if the proactive reclamation encounters many file pages,
-> > > the application may become slow when it is opened.
-> > OK, this is an interesting information. From the above it seems that
-> > storage based IO refaults are order of magnitude more expensive than
-> > swap (zram in this case). That means that the memory reclaim should
-> > _in general_ prefer anonymous memory reclaim over refaulted page cache,
-> > right? Or is there any reason why "frozen" applications are any
-> > different in this case?
-> Frozen applications mean that the application process is no longer active,
-> so once its private anonymous page data is swapped out, the anonymous
-> pages will not be refaulted until the application becomes active again.
+Hi,
 
-I was probably not clear in my question. It is quite clear that frozen
-applications are inactive. It is not really clear why they should be
-treated any differently though. Their memory will be naturally cold as
-the memory is not in use so why cannot we realy on the standard memory
-reclaim to deal with the implicit inactivity and you need to handle that
-explicitly?
+This patch set optimizes OP-TEE driver private shared memory allocated as
+dynamic shared memory (not from the static shared memory pool). The first
+patch handles kernel private RPC allocatations larger than one page and the
+second changes from alloc_pages_exact() instead of alloc_pages() for more
+efficient memory usage.
 
-[...]
-> > Our traditional interface to control the anon vs. file balance has been
-> > swappiness. It is not the best interface and it has its flaws but
-> > have you experimented with the global swappiness to express that
-> > preference? What were your observations? Please note that the behavior
-> We have tested this part and found that no version of the code has the
-> priority control over swappiness.
-> 
-> This means that even if we modify swappiness to 0 or 200,
-> we cannot achieve the goal of unbalanced reclaim if some conditions
-> are not met during the reclaim process. Under certain conditions,
-> we may mistakenly reclaim file pages, and since we usually trigger
-> active reclaim when there is sufficient memory(before LMKD trigger),
-> this will cause higher block IO.
+v1->v2:
+* Split into two patches as requested
 
-Yes there are heuristics which might override the global swappinness but
-have you investigated those cases and can show that those heuristics
-could be changed?
+v2->v3:
+* Simplified optee_pool_op_alloc_helper() by always doing the same thing
 
-[...]
-> > It is quite likely that a IO cost aspect is not really easy to integrate
-> > into the memory reclaim but it seems to me this is a better way to focus
-> > on for a better long term solution. Our existing refaulting
-> > infrastructure should help in that respect. Also MGLRU could fit for
-> > that purpose better than the traditional LRU based reclaim as the higher
-> > generations could be used for more more expensive pages.
-> 
-> Yes, your insights are very informative.
-> 
-> However, before our algorithm is perfected, I think it is reasonable
-> to provide different reclaim tendencies for the active reclaim
-> interface. This will provide greater flexibility for the strategy
-> layer.
+Thanks,
+Jens
 
-Flexibility is really nice but it comes with a price and interface cost
-can be really high. There were several attempts to make memory reclaim
-LRU type specific but I still maintain my opinion that this is not
-really a good abstraction. As stated above even page cache is not all
-the same. A more future proof interface should really consider the IO
-refault cost rather than all anon/file.
+Jens Wiklander (2):
+  optee: add page list to kernel private shared memory
+  optee: allocate shared memory with alloc_pages_exact()
 
+ drivers/tee/optee/core.c    | 44 +++++++++++++++++++-----------------
+ drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
+ 2 files changed, 44 insertions(+), 45 deletions(-)
+
+
+base-commit: 05d3ef8bba77c1b5f98d941d8b2d4aeab8118ef1
 -- 
-Michal Hocko
-SUSE Labs
+2.34.1
+
