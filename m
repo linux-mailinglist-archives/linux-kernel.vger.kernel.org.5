@@ -2,325 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76B77EA7CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FA747EA7CC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231920AbjKNAo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 19:44:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40146 "EHLO
+        id S230437AbjKNAqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 19:46:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229962AbjKNAo4 (ORCPT
+        with ESMTP id S229962AbjKNAqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 19:44:56 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2085.outbound.protection.outlook.com [40.92.41.85])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E444FD57;
-        Mon, 13 Nov 2023 16:44:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HEuGDaUM4PDxJd1VNdJ3lULZYZdbgspu95Sat3cfjlPspN8CG1udP2v45qOh8pXbjxL9GHxeQA7yc2jr+pIJphD/yXmA6xAYgjNQ8gHV5Q+YbQcUSmf5hwb5wZiQ+60aEjdEFr2djJtni3aAMvV4/4aat7/L8hFjcZGqBYIf/tqKvOJWTZNepzYMQyYCzjaMcJVTi8j6yE3jG5dDr5HEMR0WNxzb2gZgvgBvXW+SDq8FUoZVz1UUFbaZi3ueTX3pIKY4INSU466JiUJ+mYMT6uEUPgGfK/ScuU0akBGUjdJ8Und58vIF6UpAeNn/15HYT1vVmDp+u6i08Az2oyxlHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=W3p2gWsaGfy+eN0wYhaYS9pM5sfYQbyopz4lxiaPD+I=;
- b=Eh69fzCRB8GyNei/JtW2hZSUt9/e1xIygXRXhm44bqUnl1H8eP0Fmzm71lChJ+0KcdJD4BaegOdU9/jSCRvvm3XaARsOV5PV3sfiEddEY++NgOhwE51jalp6Rq/rRv0fjPDMHRV36VyLMNPXdYnOxPMMkyIaXU8p0fVRJxsu7hVYPd9xOQPYuyI6YKIuS+hfHpiqXxrinE2n1W4++/isSN/v9zeSk+H2zDwxfgi0wqIwoEObZSNzMbBhY8JyxBKIFMu/qOGdLKFImSRDEa5c5ZFbya6QadopZHxl5mBDcRdo5Oqk7rdW2waWMUvGUHLlqnNuGphHwz5Wg8gGKP9dNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=W3p2gWsaGfy+eN0wYhaYS9pM5sfYQbyopz4lxiaPD+I=;
- b=l5RkHVAO38g8Lu9M7h/LBsYK5AOFCifBHvUW6oNLvNiUSUSdV4N59LdDiL0QAlFkRRQLxJeRP+SamIR/5M4WVJv+MkiZ1rb7CmKYWrrX0Ks1rSFo7lYkoosUFBOee41ZTOVoR/o+EykdUNC1VPbzILH/C5GmS1swZv9pNO4xM3IdyOTiEgtRQUxVXZqj2hw2UIo1a8zIrhQ6t0ZNQnvotry6BEQKkhs0Pgo7cTkX0kJGsaBKzTloilukT+U56gbDblmgfI6paUlJB90M0jtU8I88yPtGRmKdaV115KAjExACFVcP2zi6pZ2+usg8TV34tH4JldebWiZeCIBK44P08g==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by DM6PR20MB3492.namprd20.prod.outlook.com (2603:10b6:5:2a3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
- 2023 00:44:51 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.6977.029; Tue, 14 Nov 2023
- 00:44:51 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Conor Dooley <conor@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Inochi Amaoto <inochiama@outlook.com>,
-        Xiaoguang Xing <xiaoguang.xing@sophgo.com>
-Cc:     Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
-        linux-riscv@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 2/2] riscv: dts: sophgo: separate sg2042 mtime and mtimecmp to fit aclint format
-Date:   Tue, 14 Nov 2023 08:45:32 +0800
-Message-ID: <IA1PR20MB4953B943AF1B43CD1EFD7BC4BBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <IA1PR20MB4953BB0ABD29F5AE938A54ECBBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
-References: <IA1PR20MB4953BB0ABD29F5AE938A54ECBBB2A@IA1PR20MB4953.namprd20.prod.outlook.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [s1u8kyEb7LUZGOEBX/k+s+0hJ1OmD+0zX/swTeX/NvY=]
-X-ClientProxiedBy: TYBP286CA0019.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:404:ce::31) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231114004534.43833-2-inochiama@outlook.com>
+        Mon, 13 Nov 2023 19:46:11 -0500
+Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com [209.85.214.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7445D53
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:46:07 -0800 (PST)
+Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc5ef7e815so51031085ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:46:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699922767; x=1700527567;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PdY9i4WxreFLp6T+Tntb6z+snepGb2eA6NwpVorJ4X8=;
+        b=LwcDLJIB/u8Mkd6e2qw8tWd14lK3Lm/mP/2AMoWcnO19or1CDegln7mJF31zGhiaH+
+         9f//PVGIu3/u5D5wWOLTd8U9T2UvVLhMDdjafT/5p8z39TyLfskzJzw9V1W9rMkovqG3
+         74k0k/4DhPyFcKdF2dSTF7SS/qd9iBIxwfL47n0hb/tJOrWuRjLtwjXtkdaNn+yKx+ah
+         FN/OCUAW1+wfVy6ChxN4mnwIZQGWZwKoyl7ukIGPPhJnqOgVEnArgCInU7jXwmkUefn7
+         1d2ot6IdzGKbO01xeitRCMhKW2jyTsS83cwH9WS0stGKZMa1TU06WDaNZEP/AtG0+msT
+         wflA==
+X-Gm-Message-State: AOJu0Yw2O4xRFMAdG6HR1sHv/I4ztngy4u41z/SCE2HAxuapW0hppMGZ
+        PHfa/H4ihbBad6wOa4yl8A6UmxITPQZp1UHG3s1cNuifTo9w
+X-Google-Smtp-Source: AGHT+IERudvwaOO4vtDOSe88bRy7IEARwzbdGivos3k79GY11GuGPhTU8jikB4n//jT/QY271e89yBDEPOuqhKem0M4i8fPEoQp7
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|DM6PR20MB3492:EE_
-X-MS-Office365-Filtering-Correlation-Id: 38a5bd1d-79ee-4285-c022-08dbe4aae927
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ibnJdM95xVjXXLUTasErrmQrkX03kne5f95f0j+oRSxa8XPe4KCsxN+/6keJYmhE6LMm7cZx6FHXwBbD19FBJ5KouAQBZC9i+RvyjKp1STypcproyaND1w3PTIsQrtuzzlMPRwXrw7iJQrJLV6mg1viUcSanwDg/2RqHLPcsgrW/hvmEFovWBqwGXoMlP0uS3DKSu3DZdryGaWRRer7epecQhakgC2YzhXM7KNg7ADPQr3aGSfkox9L9rx+dFBzDLVFcCX8hbAlQ8QRRK70ibEt+dg2yP+VZJV2+W7pHHXO8SC9zcA1G95ZTI46pKjatUJisC1Y+bfmd4sAntKZkBRvZ/TV+A0Ks0XTjUuuu5dYvCOrgKjzkG2U4qM3mjq+Nw8rsfaLiCr2z1EoAWSocQVPsV2PU757TBC5myMJJHrZddlGVevI1OFEa52JOlBfmKSFbOcbV5mrDQuuAi30DzxIWf3038foFO7HMvs3iRdD9LUC4RTbogdwJTXS1T3OkWt9XbGAISMZObSbt0YLSKFEO8Dy+6L7OLmwxUgAuaX1fnYNKrYjihWbLxZLfoIG/cC3S5LvtPPsq/ekVYy84bpBZ5R/1KSNEGyzAsUR3xvf267LLj79AF5oRiyExR+DU
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?tPCSZhlrhYJzo7SeoygTkiAEYmls2FgAOMOxlz4EGlcmtmVjif2ycZYbq53c?=
- =?us-ascii?Q?UnGs3Hj385n57Xp0IAypnz0gb1zua6jSyZjD0Y7sAwpNS5/RsimqzLCApMIB?=
- =?us-ascii?Q?Y8YIO7CWi9Bj1GIefMmZ3eJt8ZtabHZWTG+pb9HG7C5qVzc6Yu88qHbF2AMb?=
- =?us-ascii?Q?5Iq50qdzRIKXg8naRRXhsRYiOY9p9x/1sXIF4aBfAx0YmTFusZEFjhnmfMqF?=
- =?us-ascii?Q?oC0XAcuEiBdpnMnJwqyes4vWNd8L2i02Oy4F2o3bqeFwX41q7rmRN/LWwdNQ?=
- =?us-ascii?Q?LXFfYpI4s4vnzlS6BZ52D6ye/UDDC0UCDERv+mdN3OJY95B+kXhN0qC/sdor?=
- =?us-ascii?Q?+A5uGbCm1AzFaIWRh7i9VremkjsfBLygciV29PA/WMCnrq3IkFG0+4mVXdv4?=
- =?us-ascii?Q?rSVvMHogsPAAwCWD8q1lnGOaSrnudOqV95BBAYhmM4hH3FpOFoDeqSW2y4gz?=
- =?us-ascii?Q?uR1p3Spn05299WzQL56V33ekHoM+EuIgyTXbsHsKMfbjn5LIviWCvkNjFZRZ?=
- =?us-ascii?Q?lxaa5ilEYAkchlUAj0nh/5Iy90OfTL8D7JMOtyWeVFjrJj81rxbaSPrYogdp?=
- =?us-ascii?Q?n3UbZGZY+LGq58TLo7USmIuil7rD47G1aWsOQ19/isAnMLPKinFOqTAYhphq?=
- =?us-ascii?Q?NL5A9z9wg/3HFy6Jr+vfrhp8osR6o19rShy6yZ4G/xPhu7FXjtcbXXUtX0qL?=
- =?us-ascii?Q?uYqjho0cuSV3pCs1hewfiv/aBiQbigwi+x5G8LT17kXH2LvWYGhN0c5FZpKa?=
- =?us-ascii?Q?D3cHa4EWaiO/GRbEpwAJiPUcpQey2UCiYmHy9mri+C+k5rXLMDbyMp6yxkr9?=
- =?us-ascii?Q?XX7AkvDJltCLGR2rt5uiY3BGrkCY5bHw52RRBfXrQrEG+p9NJdu2OX0P9XmZ?=
- =?us-ascii?Q?5KWpueS9NY2tCsk42C3akPCrjYeaufCP8OLLf8xloNgTtNImTegKHd/yAf7K?=
- =?us-ascii?Q?4v7zM1/4Pq+aiVc3Le/VYaX1dgNecycBXIHDM+XCKmdlWgF6tW6KmvgoUlGI?=
- =?us-ascii?Q?LuL+RKRjmidl6NANQFYc4XTnRhLJOiUQjp1qGlBuhJYfPTZ34/rNCuzlMF/3?=
- =?us-ascii?Q?HkX7EB14FQtpGWcyRcauemxrGyKGEyg43vOSMwRavk/vb4x4qKMfodky7PHz?=
- =?us-ascii?Q?AoSS68W1oqfDqoy7jqe1N/JFjxVY286qNlULMmWHZfyk7ACvjmwiN05H+Csm?=
- =?us-ascii?Q?rFVSUcV7AoIK9QM3/gYA2teZEbh03q/vPW6soWJDPcBh8x083cmQaLJ7N1s?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 38a5bd1d-79ee-4285-c022-08dbe4aae927
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 00:44:51.3715
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR20MB3492
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:902:f815:b0:1cc:2a6f:ab91 with SMTP id
+ ix21-20020a170902f81500b001cc2a6fab91mr226890plb.0.1699922767377; Mon, 13 Nov
+ 2023 16:46:07 -0800 (PST)
+Date:   Mon, 13 Nov 2023 16:46:07 -0800
+In-Reply-To: <tencent_66EE4A0C753B774F674A3CED37CA96BA3609@qq.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1fd99060a121c78@google.com>
+Subject: Re: [syzbot] [squashfs?] KASAN: slab-out-of-bounds Write in
+ squashfs_readahead (2)
+From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
+To:     eadavis@qq.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the timer layout in the dtb to fit the format that needed by
-the SBI.
+Hello,
 
-Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
-Fixes: 967a94a92aaa ("riscv: dts: add initial Sophgo SG2042 SoC device tree")
----
- arch/riscv/boot/dts/sophgo/sg2042.dtsi | 80 +++++++++++++++-----------
- 1 file changed, 48 insertions(+), 32 deletions(-)
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+general protection fault in squashfs_page_actor_init_special
 
-diff --git a/arch/riscv/boot/dts/sophgo/sg2042.dtsi b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-index 93256540d078..0b5d93b5c783 100644
---- a/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-+++ b/arch/riscv/boot/dts/sophgo/sg2042.dtsi
-@@ -93,144 +93,160 @@ clint_mswi: interrupt-controller@7094000000 {
- 					      <&cpu63_intc 3>;
- 		};
+SQUASHFS error: Unable to read metadata cache entry [6fa]
+SQUASHFS error: Unable to read metadata cache entry [6fa]
+SQUASHFS error: Unable to read metadata cache entry [6fa]
+SQUASHFS error: Unable to read metadata cache entry [6fa]
+general protection fault, probably for non-canonical address 0xdffffc0000000002: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000010-0x0000000000000017]
+CPU: 0 PID: 5484 Comm: syz-executor.0 Not tainted 6.6.0-syzkaller-15156-g13d88ac54ddd-dirty #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:squashfs_page_actor_init_special+0x20e/0x4c0 fs/squashfs/page_actor.c:128
+Code: 00 00 00 49 8d 6c 24 48 48 89 e8 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 32 02 00 00 c7 45 00 00 00 00 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 30 00 74 08 4c 89 ff e8 93 34 8c ff 49 8b 2f 48 83 c5 20
+RSP: 0018:ffffc90004fce4f8 EFLAGS: 00010202
+RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888015ad3b80
+RDX: ffff888015ad3b80 RSI: 0000000000000000 RDI: ffff888027646840
+RBP: ffff888027646848 R08: ffffffff825ea873 R09: 1ffffffff21ba48f
+R10: dffffc0000000000 R11: fffffbfff21ba490 R12: ffff888027646800
+R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000010
+FS:  00007f7b9e9ea6c0(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f7b9dd0662e CR3: 0000000020cfe000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ squashfs_readpage_block+0x62a/0xf60 fs/squashfs/file_direct.c:70
+ squashfs_read_folio+0x569/0xed0 fs/squashfs/file.c:479
+ filemap_read_folio+0x19c/0x770 mm/filemap.c:2323
+ filemap_create_folio mm/filemap.c:2451 [inline]
+ filemap_get_pages+0xdf7/0x2080 mm/filemap.c:2504
+ filemap_read+0x42b/0x10b0 mm/filemap.c:2593
+ __kernel_read+0x425/0x8b0 fs/read_write.c:428
+ integrity_kernel_read+0xb0/0xf0 security/integrity/iint.c:221
+ ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:485 [inline]
+ ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
+ ima_calc_file_hash+0xad1/0x1b30 security/integrity/ima/ima_crypto.c:573
+ ima_collect_measurement+0x554/0xb30 security/integrity/ima/ima_api.c:290
+ process_measurement+0x1373/0x21c0 security/integrity/ima/ima_main.c:359
+ ima_file_check+0xf1/0x170 security/integrity/ima/ima_main.c:557
+ do_open fs/namei.c:3624 [inline]
+ path_openat+0x2893/0x3280 fs/namei.c:3779
+ do_filp_open+0x234/0x490 fs/namei.c:3809
+ do_sys_openat2+0x13e/0x1d0 fs/open.c:1440
+ do_sys_open fs/open.c:1455 [inline]
+ __do_sys_open fs/open.c:1463 [inline]
+ __se_sys_open fs/open.c:1459 [inline]
+ __x64_sys_open+0x225/0x270 fs/open.c:1459
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f7b9dc7cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f7b9e9ea0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 00007f7b9dd9bf80 RCX: 00007f7b9dc7cae9
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00000000200000c0
+RBP: 00007f7b9dcc847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f7b9dd9bf80 R15: 00007fff0acb6118
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:squashfs_page_actor_init_special+0x20e/0x4c0 fs/squashfs/page_actor.c:128
+Code: 00 00 00 49 8d 6c 24 48 48 89 e8 48 c1 e8 03 42 0f b6 04 30 84 c0 0f 85 32 02 00 00 c7 45 00 00 00 00 00 4c 89 f8 48 c1 e8 03 <42> 80 3c 30 00 74 08 4c 89 ff e8 93 34 8c ff 49 8b 2f 48 83 c5 20
+RSP: 0018:ffffc90004fce4f8 EFLAGS: 00010202
+RAX: 0000000000000002 RBX: 0000000000000000 RCX: ffff888015ad3b80
+RDX: ffff888015ad3b80 RSI: 0000000000000000 RDI: ffff888027646840
+RBP: ffff888027646848 R08: ffffffff825ea873 R09: 1ffffffff21ba48f
+R10: dffffc0000000000 R11: fffffbfff21ba490 R12: ffff888027646800
+R13: 0000000000000000 R14: dffffc0000000000 R15: 0000000000000010
+FS:  00007f7b9e9ea6c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000555d54061950 CR3: 0000000020cfe000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess):
+   0:	00 00                	add    %al,(%rax)
+   2:	00 49 8d             	add    %cl,-0x73(%rcx)
+   5:	6c                   	insb   (%dx),%es:(%rdi)
+   6:	24 48                	and    $0x48,%al
+   8:	48 89 e8             	mov    %rbp,%rax
+   b:	48 c1 e8 03          	shr    $0x3,%rax
+   f:	42 0f b6 04 30       	movzbl (%rax,%r14,1),%eax
+  14:	84 c0                	test   %al,%al
+  16:	0f 85 32 02 00 00    	jne    0x24e
+  1c:	c7 45 00 00 00 00 00 	movl   $0x0,0x0(%rbp)
+  23:	4c 89 f8             	mov    %r15,%rax
+  26:	48 c1 e8 03          	shr    $0x3,%rax
+* 2a:	42 80 3c 30 00       	cmpb   $0x0,(%rax,%r14,1) <-- trapping instruction
+  2f:	74 08                	je     0x39
+  31:	4c 89 ff             	mov    %r15,%rdi
+  34:	e8 93 34 8c ff       	call   0xff8c34cc
+  39:	49 8b 2f             	mov    (%r15),%rbp
+  3c:	48 83 c5 20          	add    $0x20,%rbp
 
--		clint_mtimer0: timer@70ac000000 {
-+		clint_mtimer0: timer@70ac004000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac000000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac004000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac004000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu0_intc 7>,
- 					      <&cpu1_intc 7>,
- 					      <&cpu2_intc 7>,
- 					      <&cpu3_intc 7>;
- 		};
 
--		clint_mtimer1: timer@70ac010000 {
-+		clint_mtimer1: timer@70ac014000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac010000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac014000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac014000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu4_intc 7>,
- 					      <&cpu5_intc 7>,
- 					      <&cpu6_intc 7>,
- 					      <&cpu7_intc 7>;
- 		};
+Tested on:
 
--		clint_mtimer2: timer@70ac020000 {
-+		clint_mtimer2: timer@70ac024000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac020000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac024000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac024000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu8_intc 7>,
- 					      <&cpu9_intc 7>,
- 					      <&cpu10_intc 7>,
- 					      <&cpu11_intc 7>;
- 		};
-
--		clint_mtimer3: timer@70ac030000 {
-+		clint_mtimer3: timer@70ac034000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac030000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac034000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac034000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu12_intc 7>,
- 					      <&cpu13_intc 7>,
- 					      <&cpu14_intc 7>,
- 					      <&cpu15_intc 7>;
- 		};
-
--		clint_mtimer4: timer@70ac040000 {
-+		clint_mtimer4: timer@70ac044000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac040000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac044000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac044000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu16_intc 7>,
- 					      <&cpu17_intc 7>,
- 					      <&cpu18_intc 7>,
- 					      <&cpu19_intc 7>;
- 		};
-
--		clint_mtimer5: timer@70ac050000 {
-+		clint_mtimer5: timer@70ac054000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac050000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac054000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac054000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu20_intc 7>,
- 					      <&cpu21_intc 7>,
- 					      <&cpu22_intc 7>,
- 					      <&cpu23_intc 7>;
- 		};
-
--		clint_mtimer6: timer@70ac060000 {
-+		clint_mtimer6: timer@70ac064000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac060000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac064000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac064000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu24_intc 7>,
- 					      <&cpu25_intc 7>,
- 					      <&cpu26_intc 7>,
- 					      <&cpu27_intc 7>;
- 		};
-
--		clint_mtimer7: timer@70ac070000 {
-+		clint_mtimer7: timer@70ac074000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac070000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac074000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac074000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu28_intc 7>,
- 					      <&cpu29_intc 7>,
- 					      <&cpu30_intc 7>,
- 					      <&cpu31_intc 7>;
- 		};
-
--		clint_mtimer8: timer@70ac080000 {
-+		clint_mtimer8: timer@70ac084000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac080000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac084000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac084000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu32_intc 7>,
- 					      <&cpu33_intc 7>,
- 					      <&cpu34_intc 7>,
- 					      <&cpu35_intc 7>;
- 		};
-
--		clint_mtimer9: timer@70ac090000 {
-+		clint_mtimer9: timer@70ac094000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac090000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac094000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac094000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu36_intc 7>,
- 					      <&cpu37_intc 7>,
- 					      <&cpu38_intc 7>,
- 					      <&cpu39_intc 7>;
- 		};
-
--		clint_mtimer10: timer@70ac0a0000 {
-+		clint_mtimer10: timer@70ac0a4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0a0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0a4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0a4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu40_intc 7>,
- 					      <&cpu41_intc 7>,
- 					      <&cpu42_intc 7>,
- 					      <&cpu43_intc 7>;
- 		};
-
--		clint_mtimer11: timer@70ac0b0000 {
-+		clint_mtimer11: timer@70ac0b4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0b0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0b4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0b4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu44_intc 7>,
- 					      <&cpu45_intc 7>,
- 					      <&cpu46_intc 7>,
- 					      <&cpu47_intc 7>;
- 		};
-
--		clint_mtimer12: timer@70ac0c0000 {
-+		clint_mtimer12: timer@70ac0c4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0c0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0c4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0c4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu48_intc 7>,
- 					      <&cpu49_intc 7>,
- 					      <&cpu50_intc 7>,
- 					      <&cpu51_intc 7>;
- 		};
-
--		clint_mtimer13: timer@70ac0d0000 {
-+		clint_mtimer13: timer@70ac0d4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0d0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0d4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0d4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu52_intc 7>,
- 					      <&cpu53_intc 7>,
- 					      <&cpu54_intc 7>,
- 					      <&cpu55_intc 7>;
- 		};
-
--		clint_mtimer14: timer@70ac0e0000 {
-+		clint_mtimer14: timer@70ac0e4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0e0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0e4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0e4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu56_intc 7>,
- 					      <&cpu57_intc 7>,
- 					      <&cpu58_intc 7>,
- 					      <&cpu59_intc 7>;
- 		};
-
--		clint_mtimer15: timer@70ac0f0000 {
-+		clint_mtimer15: timer@70ac0f4000 {
- 			compatible = "sophgo,sg2042-aclint-mtimer", "thead,c900-aclint-mtimer";
--			reg = <0x00000070 0xac0f0000 0x00000000 0x00007ff8>;
-+			reg = <0x00000070 0xac0f4000 0x00000000 0x00000000>,
-+			      <0x00000070 0xac0f4000 0x00000000 0x0000c000>;
- 			interrupts-extended = <&cpu60_intc 7>,
- 					      <&cpu61_intc 7>,
- 					      <&cpu62_intc 7>,
---
-2.42.1
+commit:         13d88ac5 Merge tag 'vfs-6.7.fsid' of git://git.kernel...
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10ed2f97680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=beb32a598fd79db9
+dashboard link: https://syzkaller.appspot.com/bug?extid=604424eb051c2f696163
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=17f132ff680000
 
