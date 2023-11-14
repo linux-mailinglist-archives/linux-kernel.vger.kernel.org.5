@@ -2,101 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B3647EB77F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 817A47EB79D
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:16:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233962AbjKNUKN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:10:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55388 "EHLO
+        id S233054AbjKNUQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:16:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233929AbjKNUKJ (ORCPT
+        with ESMTP id S233967AbjKNUKc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:10:09 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58DAD11C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:09:46 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9dd9808c308so139813266b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:09:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1699992585; x=1700597385; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sjVE7g4gLV36CCD94RH1v3GPVVRu0rmQH9p/wSPfCGI=;
-        b=L62Wc6ndv85HUT5yXWCi3swVU5nQ7yesZ0T5naVF4BcniVSGqoACtsJJJmKgWm6k5D
-         CR+NLHVnRmKhKQzq61rPBZejQxNcMqelAV8xhNAXABez9JtewZf0GsCnPuBSoF0PExgK
-         wAXFyBls8/OBXlD5I5GO7a5JxC95M2ho/V5UaCFoHLoxflMf5Y0MCmqTQG1oRtvS4w8h
-         5LLgeWRu7BDNvuDoEma+oxvwjmflx+bH3xk6bMTbPj53BymXDacsrYEK6OeZPKBRpXpv
-         fjU1HfH69uQaC7SH512LiJiLO3SKgGXV6T5B88fSF+temwFUQ27yypPIauZjWuqqlOZY
-         Ctww==
+        Tue, 14 Nov 2023 15:10:32 -0500
+Received: from mail-pg1-f208.google.com (mail-pg1-f208.google.com [209.85.215.208])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA68118
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:10:27 -0800 (PST)
+Received: by mail-pg1-f208.google.com with SMTP id 41be03b00d2f7-5be10675134so5885987a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:10:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699992585; x=1700597385;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sjVE7g4gLV36CCD94RH1v3GPVVRu0rmQH9p/wSPfCGI=;
-        b=Dtz2TZpkRmTtmwJOk2COWSwt7cyEinLnTNk3DMI2ZFRlWkigCD8WXSWyF3W0UDvgEd
-         7j6NSIDS4cGLqYRBRTwxiOQOW8RfDqjrNiXUMG4Qmk4FUQtHKdIpbXyYM0ttVMDM1j5l
-         aV6gYVwzZ890sKI7T4MhmBZsUBXZfV6+TezHx9BpwcHqyx1hHXTFD9XUNmdIEW6x/tBv
-         +u5InfU0v4iuh2w2s5e/lZOACcqIPVyaWAmMfPNKdJarZbZC0Qwqll7ejHUdGa2FreLW
-         6zQgP+mJ3PfF+xvp7h+2G/sUzofsw++h2zYnf15m+ikwf6GGvXaYJqUCeCxWzJjHQYzx
-         FYag==
-X-Gm-Message-State: AOJu0Ywiw6BmnCH5t1HmQOZKnwRGp8mEA/6cgfGZTcd4krqbj0xJnMBT
-        Ep+g0v5dDwygbTBZ+Ue8A1A=
-X-Google-Smtp-Source: AGHT+IEssApvIbQKpflYjf6NlHMo7r/dIDUj6kFmDMDIp8yG6Cl4/TVje9dZ8ZzLBwbPRsNpHuD0Yg==
-X-Received: by 2002:a17:906:1da:b0:9e6:dfee:8154 with SMTP id 26-20020a17090601da00b009e6dfee8154mr2249304ejj.3.1699992584387;
-        Tue, 14 Nov 2023 12:09:44 -0800 (PST)
-Received: from [192.168.0.102] (p579356c7.dip0.t-ipconnect.de. [87.147.86.199])
-        by smtp.gmail.com with ESMTPSA id fy15-20020a170906b7cf00b009e5e1710ae7sm6077032ejb.191.2023.11.14.12.09.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 12:09:44 -0800 (PST)
-Message-ID: <c464f4a8-753b-417c-97bb-7aa29ab5bf59@gmail.com>
-Date:   Tue, 14 Nov 2023 21:09:43 +0100
+        d=1e100.net; s=20230601; t=1699992626; x=1700597426;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8OmEtRgexLuao6rUTYjJiY3r0edSaCvPRTeIf9Q3x4Y=;
+        b=frR4Y8/dXhV9r8OR4h31+kzef9FAus2QzBznkTJlNGjB6Pct+ugVdKEaHaehWQbYT2
+         RejpVkdoiTiFN7Fp8CN9/A1/No1iWFGGDXak3iwplsxMCoS595qw9Fc9znLDI1R/1MAr
+         lGooHJecNp/zgjvMxUkhcYBFk+mTLdwK7sbYrOYzx7sl9GprbAb/tPEgrt57rUPaBCgq
+         PQo2ZML6o1ILUuEBOgNIt1neoqvlfLLbV/+K7VIU9t7oxt0BWVGBxu69RVCJnYbdFEuK
+         NpXpijhqvSzMa/wtSvNOEmXWSFgCgvRMCJqlFes/l9g2K172VHiqbRVhOAYHXQuRb2xo
+         qSSg==
+X-Gm-Message-State: AOJu0YyduAfg9/1N+LwioOUB2fJGCHqJH4zeBzdZwjwTO97IzJNJN6Tj
+        s4XkZtsbtscB+qEEK3JE7D2ZJ6RoyS+6NX4pqmH1LP0KdVpH
+X-Google-Smtp-Source: AGHT+IETYdbtUIRvCyXXpYa3AFqr3GveSx+wlGUsWoZqM5BQf1q0ceXvYVfxWA/DSQfm4ey42OtxaYOEc06BLy+8Nm0V40d2HsgW
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/7] Staging: rtl8192e: Rename bool variables
-To:     Tree Davies <tdavies@darkphysics.net>, gregkh@linuxfoundation.org,
-        anjan@momi.ca
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231113195910.8423-1-tdavies@darkphysics.net>
-Content-Language: en-US
-From:   Philipp Hortmann <philipp.g.hortmann@gmail.com>
-In-Reply-To: <20231113195910.8423-1-tdavies@darkphysics.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a65:6702:0:b0:5bd:579:c5bb with SMTP id
+ u2-20020a656702000000b005bd0579c5bbmr893745pgf.4.1699992626605; Tue, 14 Nov
+ 2023 12:10:26 -0800 (PST)
+Date:   Tue, 14 Nov 2023 12:10:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a135c0060a2260b3@google.com>
+Subject: [syzbot] [bluetooth?] KASAN: null-ptr-deref Read in ida_free (4)
+From:   syzbot <syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 20:59, Tree Davies wrote:
-> This series renames bool variables to fix checkpatch warnings
-> Thank you in advance to reviewers
-> regards,
-> ~Tree
-> 
-> Tree Davies (7):
->    Staging: rtl8192e: Rename variable bSendDELBA
->    Staging: rtl8192e: Rename variable bCurrentAMPDUEnable
->    Staging: rtl8192e: Rename variable bAddBaReqInProgress
->    Staging: rtl8192e: Rename variable bAddBaReqDelayed
->    Staging: rtl8192e: Rename variable bUsingBa
->    Staging: rtl8192e: Rename variable bOverwritePending
->    Staging: rtl8192e: Rename variable bDisable_AddBa
-> 
->   drivers/staging/rtl8192e/rtl819x_BAProc.c | 40 +++++++++++------------
->   drivers/staging/rtl8192e/rtl819x_HT.h     |  2 +-
->   drivers/staging/rtl8192e/rtl819x_HTProc.c |  6 ++--
->   drivers/staging/rtl8192e/rtl819x_TS.h     |  8 ++---
->   drivers/staging/rtl8192e/rtl819x_TSProc.c | 14 ++++----
->   drivers/staging/rtl8192e/rtllib.h         |  2 +-
->   drivers/staging/rtl8192e/rtllib_tx.c      |  8 ++---
->   7 files changed, 40 insertions(+), 40 deletions(-)
-> 
+Hello,
 
-Tested-by: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+syzbot found the following issue on:
+
+HEAD commit:    9bacdd8996c7 Merge tag 'for-6.7-rc1-tag' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1121f91f680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=84217b7fc4acdc59
+dashboard link: https://syzkaller.appspot.com/bug?extid=51baee846ddab52d5230
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/8889f0a9f059/disk-9bacdd89.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f78cb4c03467/vmlinux-9bacdd89.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bb88d4b4f745/bzImage-9bacdd89.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+51baee846ddab52d5230@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: null-ptr-deref in _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+BUG: KASAN: null-ptr-deref in ida_free+0x218/0x2e0 lib/idr.c:511
+Read of size 8 at addr 0000000000000050 by task kworker/u5:2/5100
+
+CPU: 0 PID: 5100 Comm: kworker/u5:2 Not tainted 6.7.0-rc1-syzkaller-00012-g9bacdd8996c7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Workqueue: hci4 hci_error_reset
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ kasan_report+0xda/0x110 mm/kasan/report.c:588
+ check_region_inline mm/kasan/generic.c:181 [inline]
+ kasan_check_range+0xef/0x190 mm/kasan/generic.c:187
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ _test_bit include/asm-generic/bitops/instrumented-non-atomic.h:141 [inline]
+ ida_free+0x218/0x2e0 lib/idr.c:511
+ hci_conn_cleanup net/bluetooth/hci_conn.c:157 [inline]
+ hci_conn_del+0x78c/0xe10 net/bluetooth/hci_conn.c:1182
+ hci_conn_hash_flush+0x189/0x260 net/bluetooth/hci_conn.c:2615
+ hci_dev_close_sync+0x5a7/0x1160 net/bluetooth/hci_sync.c:5021
+ hci_dev_do_close+0x2e/0x90 net/bluetooth/hci_core.c:554
+ hci_error_reset+0xa6/0x190 net/bluetooth/hci_core.c:1059
+ process_one_work+0x886/0x15d0 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
+ kthread+0x2c6/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
