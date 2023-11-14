@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5819A7EB32E
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9860B7EB335
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:13:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233567AbjKNPNG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
+        id S233569AbjKNPNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:13:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233518AbjKNPND (ORCPT
+        with ESMTP id S233518AbjKNPNs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:13:03 -0500
-Received: from harvie.cz (harvie.cz [77.87.242.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id AFABBC3;
-        Tue, 14 Nov 2023 07:13:00 -0800 (PST)
-Received: from anemophobia.amit.cz (unknown [31.30.84.130])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by harvie.cz (Postfix) with ESMTPSA id B5E7F180282;
-        Tue, 14 Nov 2023 16:12:58 +0100 (CET)
-From:   Tomas Mudrunka <tomas.mudrunka@gmail.com>
-To:     tomas.mudrunka@gmail.com
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org
-Subject: [PATCH v6] /proc/sysrq-trigger: accept multiple keys at once
-Date:   Tue, 14 Nov 2023 16:12:52 +0100
-Message-ID: <20231114151252.117575-1-tomas.mudrunka@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231114124152.97010-1-tomas.mudrunka@gmail.com>
-References: <20231114124152.97010-1-tomas.mudrunka@gmail.com>
+        Tue, 14 Nov 2023 10:13:48 -0500
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44809E3;
+        Tue, 14 Nov 2023 07:13:45 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 82C5920007;
+        Tue, 14 Nov 2023 15:13:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699974823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zIcfcJYo9Q7ijv30KQH5KiYGvf5xWIQo8n+CJ3Rxw+g=;
+        b=aUuZEWbRx1iLY38fnY9G+BloSdQqrYYOwWrdbra7rWGe+i+EZmP/MqEMKX6tqHOtJ0pkuS
+        PfVbI7T2VhBfZTqiSrermTIDO/qvxd4jSKWm8DfocPlKXHt2+1u2Jshl0nLw1pwBedrrxe
+        X436bGzAp85vZjVDN8avAJ54YTk2921mi8Obl1b4QfBalmy/RjZqAgfiucnpxhJVerTqUv
+        H/5FCFkkMUwUmXw0dQ9I8sALC8Ox9qepAyp1GNevSxjmqifa50XIg6EaZAq/SR2J0AhbTL
+        ckX1xVsCyOFgGcgYRNhv0ifguU/4djzTzWvivgo+u9kKIO7dXdgjPFbEj/PQsw==
+Date:   Tue, 14 Nov 2023 16:13:41 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] lib/vsprintf: Fix %pfwf when current node
+ refcount == 0
+Message-ID: <20231114161341.2651d393@bootlin.com>
+In-Reply-To: <ZVOLV008PaKFXRy9@smile.fi.intel.com>
+References: <20231114143558.356259-1-herve.codina@bootlin.com>
+        <ZVOLV008PaKFXRy9@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just for convenience.
-This way we can do:
-`echo _reisub > /proc/sysrq-trigger`
-Instead of:
-`for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
+Hi Andy,
 
-This can be very useful when trying to execute sysrq combo remotely
-or from userspace. When sending keys in multiple separate writes,
-userspace can be killed before whole combo is completed.
-Therefore putting all keys in single write is more robust approach.
+On Tue, 14 Nov 2023 16:59:35 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
-Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
----
-V5 -> V6: Documentation now has notice about undefined behavior
-V4 -> V5: Added this list of changes
-V3 -> V4: Bulk is now bool instead of char (and fixed typo)
-V2 -> V3: Fixed code styling (and introduced typo)
-V1 -> V2: Bulk mode only activated by underscore now, added docs
+[...]
 
- Documentation/admin-guide/sysrq.rst | 11 ++++++++++-
- drivers/tty/sysrq.c                 | 17 ++++++++++++++---
- 2 files changed, 24 insertions(+), 4 deletions(-)
+> 
+> One nit-pick below, otherwise
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> 
+> ...
+> 
+> >  	/* Loop starting from the root node to the current node. */
+> >  	for (depth = fwnode_count_parents(fwnode); depth >= 0; depth--) {
+> > -		struct fwnode_handle *__fwnode =
+> > -			fwnode_get_nth_parent(fwnode, depth);
+> > +		/*
+> > +		 * Only get a reference for other nodes (ie parents node).  
+> 
+> "parent's node" (doesn't look right)? Or "parent nodes"?
+> 
 
-diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-index 51906e473..e7a82cba7 100644
---- a/Documentation/admin-guide/sysrq.rst
-+++ b/Documentation/admin-guide/sysrq.rst
-@@ -75,10 +75,19 @@ On other
- 	submit a patch to be included in this section.
- 
- On all
--	Write a character to /proc/sysrq-trigger.  e.g.::
-+	Write single character to /proc/sysrq-trigger.
-+	Only first character is interpreted, rest of string is ignored.
-+	However it is not reccomended to write any extra characters
-+	as the behavior is undefined and might change in the future versions.
-+	e.g.::
- 
- 		echo t > /proc/sysrq-trigger
- 
-+	Alternatively write multiple keys combo prepended by underscore.
-+	All characters are interpreted this way. e.g.::
-+
-+		echo _reisub > /proc/sysrq-trigger
-+
- The :kbd:`<command key>` is case sensitive.
- 
- What are the 'command' keys?
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 6b4a28bcf..ad07bc812 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -1150,16 +1150,27 @@ EXPORT_SYMBOL(unregister_sysrq_key);
- #ifdef CONFIG_PROC_FS
- /*
-  * writing 'C' to /proc/sysrq-trigger is like sysrq-C
-+ * If first character in write is underscore, all characters are interpreted.
-  */
- static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
- 				   size_t count, loff_t *ppos)
- {
--	if (count) {
-+	bool bulk = false;
-+	size_t i;
-+
-+	for (i = 0; i < count; i++) {
- 		char c;
- 
--		if (get_user(c, buf))
-+		if (get_user(c, buf + i))
- 			return -EFAULT;
--		__handle_sysrq(c, false);
-+
-+		if (c == '_')
-+			bulk = true;
-+		else
-+			__handle_sysrq(c, false);
-+
-+		if (!bulk)
-+			break;
- 	}
- 
- 	return count;
--- 
-2.42.1
+Will be changed to "parent nodes" in the next iteration.
+
+Best regards,
+Hervé
