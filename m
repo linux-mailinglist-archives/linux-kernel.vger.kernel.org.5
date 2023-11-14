@@ -2,133 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E98FE7EB006
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:43:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D43B7EAFC3
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:23:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232218AbjKNMnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:43:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41446 "EHLO
+        id S232932AbjKNMWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:22:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229441AbjKNMnm (ORCPT
+        with ESMTP id S230434AbjKNMWX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:43:42 -0500
-Received: from mail.pcs.gmbh (mail.pcs.gmbh [89.27.162.52])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF6F184;
-        Tue, 14 Nov 2023 04:43:37 -0800 (PST)
-Received: from mail.csna.de (mail.csna.de [89.27.162.50])
-        by mail.pcs.gmbh with ESMTPA
-        ; Tue, 14 Nov 2023 13:22:06 +0100
-Received: from EXCHANGE2019.pcs.ditec.de (mail.pcs.com [89.27.162.5])
-        by mail.csna.de with ESMTPSA
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256)
-        ; Tue, 14 Nov 2023 13:22:06 +0100
-Received: from EXCHANGE2019.pcs.ditec.de (192.168.8.214) by
- EXCHANGE2019.pcs.ditec.de (192.168.8.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.986.42; Tue, 14 Nov 2023 13:22:06 +0100
-Received: from lxtpfaff.pcs.ditec.de (192.168.9.96) by
- EXCHANGE2019.pcs.ditec.de (192.168.8.214) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.42
- via Frontend Transport; Tue, 14 Nov 2023 13:22:06 +0100
-Date:   Tue, 14 Nov 2023 13:22:06 +0100
-From:   Thomas Pfaff <tpfaff@pcs.com>
-To:     <ludovic.desroches@microchip.com>, <tudor.ambarus@microchip.com>
-CC:     <nicolas.ferre@microchip.com>, <vkoul@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <dmaengine@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH RFC 1/2 stable-6.1] dmaengine: at_hdmac: get next dma transfer
- from the right list
-Message-ID: <15c92c2f-71e7-f4fd-b90b-412ab53e5a25@pcs.com>
+        Tue, 14 Nov 2023 07:22:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C157C130;
+        Tue, 14 Nov 2023 04:22:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699964540; x=1731500540;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=83oVHOMWmo585ZtLA1OZ4XOOSq7Vg/fHO3TUuPuK0GU=;
+  b=k0cFwMG97mv084oKamncnPK9pEm4cTpTxAiidTzJEkZuVRwLbrdr2nHY
+   rQabH8EDlgzMWMUEj4Eml+ZBE+9S1PYSr8Cg47c5tNN6Iif2fB31MF8aF
+   xjsAtRr53Kh8flQKl3tIMcbquOPk9JJSF4LqeAlo5q9fL1oiDp4T/OQ8I
+   +zgD5GrfZ1nZsr2Y4u70zKugKrKJVZ5JPLoJz9THHZi7tGrlEHCgUfZ8m
+   pgm/xfTp/yiKZ2nlQibT4LnD5wPZUBIzWOA6FrSnEb4/jriFQ9gvuEL7S
+   zQqLg2jAabWtC+bnjG4Y7HsTJ03BNSZLimVyq5DFHZ2WnfT0jEX1aDhit
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="9283010"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="9283010"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 04:22:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="938075811"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="938075811"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga005.jf.intel.com with ESMTP; 14 Nov 2023 04:22:17 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 0B0AF5E2; Tue, 14 Nov 2023 14:22:15 +0200 (EET)
+Date:   Tue, 14 Nov 2023 14:22:15 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Colin Ian King <colin.i.king@gmail.com>
+Cc:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>,
+        linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][next] thunderbolt: remove duplicated re-assignment of
+ pointer 'out'
+Message-ID: <20231114122215.GX17433@black.fi.intel.com>
+References: <20231111201543.338893-1-colin.i.king@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-KSE-ServerInfo: EXCHANGE2019.pcs.ditec.de, 9
-X-KSE-AntiSpam-Interceptor-Info: white sender email list
-X-KSE-AttachmentFiltering-Interceptor-Info: protection disabled
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 14.11.2023 10:04:00
-X-KSE-BulkMessagesFiltering-Scan-Result: protection disabled
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20231111201543.338893-1-colin.i.king@gmail.com>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Thomas Pfaff <tpfaff@pcs.com>
+On Sat, Nov 11, 2023 at 08:15:43PM +0000, Colin Ian King wrote:
+> The pointer 'out' is initialized and then a few statments later being
+> re-assigned the same value. The second re-assignment is redundant and
+> can be removed.
+> 
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
 
-In kernel 6.1, atc_advance_work and atc_handle_error are checking for the 
-next dma transfer inside active list, but the descriptor is taken from the 
-queue instead.
-
-Signed-off-by: Thomas Pfaff <tpfaff@pcs.com>
----
-diff --git a/drivers/dma/at_hdmac.c b/drivers/dma/at_hdmac.c
-index 858bd64f1313..68c1bfbefc5c 100644
---- a/drivers/dma/at_hdmac.c
-+++ b/drivers/dma/at_hdmac.c
-@@ -490,6 +490,27 @@ atc_chain_complete(struct at_dma_chan *atchan, struct at_desc *desc)
- 	}
- }
- 
-+/**
-+ * atc_start_next - start next pending transaction if any
-+ * @atchan: channel where the transaction ended
-+ *
-+ * Called with atchan->lock held
-+ */
-+static void atc_start_next(struct at_dma_chan *atchan)
-+{
-+	struct at_desc *desc = NULL;
-+
-+	if (!list_empty(&atchan->active_list))
-+		desc = atc_first_active(atchan);
-+	else if (!list_empty(&atchan->queue)) {
-+		desc = atc_first_queued(atchan);
-+		list_move_tail(&desc->desc_node, &atchan->active_list);
-+	}
-+
-+	if (desc)
-+		atc_dostart(atchan, desc);
-+}
-+
- /**
-  * atc_advance_work - at the end of a transaction, move forward
-  * @atchan: channel where the transaction ended
-@@ -513,11 +534,7 @@ static void atc_advance_work(struct at_dma_chan *atchan)
- 
- 	/* advance work */
- 	spin_lock_irqsave(&atchan->lock, flags);
--	if (!list_empty(&atchan->active_list)) {
--		desc = atc_first_queued(atchan);
--		list_move_tail(&desc->desc_node, &atchan->active_list);
--		atc_dostart(atchan, desc);
--	}
-+	atc_start_next(atchan);
- 	spin_unlock_irqrestore(&atchan->lock, flags);
- }
- 
-@@ -529,7 +546,6 @@ static void atc_advance_work(struct at_dma_chan *atchan)
- static void atc_handle_error(struct at_dma_chan *atchan)
- {
- 	struct at_desc *bad_desc;
--	struct at_desc *desc;
- 	struct at_desc *child;
- 	unsigned long flags;
- 
-@@ -543,11 +559,7 @@ static void atc_handle_error(struct at_dma_chan *atchan)
- 	list_del_init(&bad_desc->desc_node);
- 
- 	/* Try to restart the controller */
--	if (!list_empty(&atchan->active_list)) {
--		desc = atc_first_queued(atchan);
--		list_move_tail(&desc->desc_node, &atchan->active_list);
--		atc_dostart(atchan, desc);
--	}
-+	atc_start_next(atchan);
- 
- 	/*
- 	 * KERN_CRITICAL may seem harsh, but since this only happens
-
-
+Applied to thunderbolt.git/next, thanks!
