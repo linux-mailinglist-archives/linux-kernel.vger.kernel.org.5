@@ -2,38 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 580597EB25A
+	by mail.lfdr.de (Postfix) with ESMTP id B08107EB25B
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:37:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233508AbjKNOg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:36:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52136 "EHLO
+        id S233517AbjKNOhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233551AbjKNOg2 (ORCPT
+        with ESMTP id S233615AbjKNOgd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:36:28 -0500
+        Tue, 14 Nov 2023 09:36:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60F041724
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:36:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42084C433D9;
-        Tue, 14 Nov 2023 14:36:02 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850FC1BFF
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:36:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 71CF3C116B4;
+        Tue, 14 Nov 2023 14:36:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699972565;
-        bh=2lwb/HSWzM5tgdqcRY+V9adtYXXgaHL2EUDsgIl8iAQ=;
+        s=k20201202; t=1699972569;
+        bh=p49U0rB8BLfyvHeTkXNyujHDJxY2xWglioVFZrQRPgM=;
         h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=KEYsetiV6MaKRvSP2qTYGyOt6FTXMtZHH5rnhGvGeHym+yDLW2n7f3qK/gLamETzg
-         G+QO8rMtRiQMm2avjkoPSJbDf/AK1cy4amP7GlfQouAoj+dBb+MFHHuKSaF2/9EEAv
-         45Rht04crG3HYhTOPB3vpLINSm+9Bu2R4gedci/AJs7vo2mXBrI3X9FjRUrDowcatR
-         mfq0kN0gzMOoYDu4SyZeiyQFsJq0Y9fv0af9iF1vpSabijN2iDBK0i4wLd6B0n4pEA
-         U00T40Xbwi7+scmTmVBHGngGGsUIvpDRHsFA8eGG4gzPO8hKQASjtS//4Oew1oFM0H
-         XuRJ3kUyariwQ==
+        b=AlpAM4p/PpDtnGa+P+8MSgHGTJ0ojhyv3MXbEXP5fT2nd+uKNEhre27nS3KShUuOw
+         yv1LT6A8pMrshhhOeqccPV/j0EmbpO89/6v63x7E2GX84G0ngC5F9cPFgUcJypBWLa
+         juOJYFe8Qu7RMoI+ALWZAtXZCEiGkhXTyXIIAFRt7P2O0fRnBsuq0mclLGf3uhM5RT
+         gouns62U5thbp4juKWG56dUPRJrkPJEdTVEHPq0zu3N5AVYZsUUfZVJtVGo+bUnIQe
+         6KaKGtRtZVsjbYiH9cAmi+qngFKBCBIesxcdg4spOPiOCCXt8MLN26b6G2p19grEG5
+         vHj3e1XHGxFYg==
 From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 14 Nov 2023 14:34:58 +0000
-Subject: [PATCH v2 13/21] arm64/ptrace: Expose FPMR via ptrace
+Date:   Tue, 14 Nov 2023 14:34:59 +0000
+Subject: [PATCH v2 14/21] KVM: arm64: Add newly allocated ID registers to
+ register descriptions
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-arm64-2023-dpisa-v2-13-47251894f6a8@kernel.org>
+Message-Id: <20231114-arm64-2023-dpisa-v2-14-47251894f6a8@kernel.org>
 References: <20231114-arm64-2023-dpisa-v2-0-47251894f6a8@kernel.org>
 In-Reply-To: <20231114-arm64-2023-dpisa-v2-0-47251894f6a8@kernel.org>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -46,15 +47,15 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kvmarm@lists.linux.dev, linux-doc@vger.kernel.org,
         linux-kselftest@vger.kernel.org, Mark Brown <broonie@kernel.org>
 X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2850; i=broonie@kernel.org;
- h=from:subject:message-id; bh=2lwb/HSWzM5tgdqcRY+V9adtYXXgaHL2EUDsgIl8iAQ=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU4Wezz8fhVXghjJg399hUEAcrCZzENLJijL4NWsO
- Sa+6tuOJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVOFngAKCRAk1otyXVSH0PRgB/
- 9AktNcdpCKGPO+EG0Sv4Ug0mwEFOJeJj1bTis0Oqw5Y6betpj1xiH6x25BDr9vn5Fc57mgE0nOTGfi
- 2BEo7s8lkYhcsTCIA7sq1IXn2QgU/W4uERUmmt4Je31beCS6aVl7iODRIEo11vT/z+1HNXgLVdqtce
- rv0lYUk9A0HhP2Vtmr6K3MXFVqSooFd3jZ+2Rwj8mupg3Qeb6WbMHiTt0tisrmZlzu5w/vS/kaZjf9
- zQKipE/3j+F5Agad97zfIL9qmqQn9GqxFRIGuDMx7XFbBo9zXUsNYmwid6nO94e97I2f6niOZHQeqr
- L6/GxB2tu/AFY542AhaHO/vC2w8Y5A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1330; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=p49U0rB8BLfyvHeTkXNyujHDJxY2xWglioVFZrQRPgM=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU4WfNE845a8JBj/7uYktPGecHrfg665x4pinSKM3
+ 7IYoRbiJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVOFnwAKCRAk1otyXVSH0EPRB/
+ 0ej5UCRBRTqxqq1+eo0b3oJ3DQGFdnXwe003TSlUsDlKV3KkFJCceXkwq3fxrsW2Q+LMfcDMMSd5OY
+ foJyuloV449NruHS2/7rzQW+3aaURgprNDwmu8yJjtO+cDH6VucQK4dFBWQz36wuw/G3z+L5Sk/4BU
+ BNSeOCUZsXMNqWiH6+bYjN2onVo/oUY1I/JIY/01cCu+XfgYz2SBm0s8dNKf5H8l2MCF6X0yWFxp6j
+ seYcd3kLbVN3MRPNy4LNoCQLgW7uWOf8k+zuC+Zp6IheOj5CPN6l5/I8qZnc9D9B5K/LCco2kyUrJ8
+ tp3828pzHxoG36ciTt0ft3yCCnuKAx
 X-Developer-Key: i=broonie@kernel.org; a=openpgp;
  fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
 X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -67,95 +68,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a new regset to expose FPMR via ptrace. It is not added to the FPSIMD
-registers since that structure is exposed elsewhere without any allowance
-for extension we don't add there.
+The 2023 architecture extensions have allocated some new ID registers, add
+them to the KVM system register descriptions so that they are visible to
+guests.
 
 Signed-off-by: Mark Brown <broonie@kernel.org>
 ---
- arch/arm64/kernel/ptrace.c | 42 ++++++++++++++++++++++++++++++++++++++++++
- include/uapi/linux/elf.h   |  1 +
- 2 files changed, 43 insertions(+)
+ arch/arm64/kvm/sys_regs.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/arm64/kernel/ptrace.c b/arch/arm64/kernel/ptrace.c
-index 20d7ef82de90..cfb8a4d213be 100644
---- a/arch/arm64/kernel/ptrace.c
-+++ b/arch/arm64/kernel/ptrace.c
-@@ -697,6 +697,39 @@ static int tls_set(struct task_struct *target, const struct user_regset *regset,
- 	return ret;
- }
+diff --git a/arch/arm64/kvm/sys_regs.c b/arch/arm64/kvm/sys_regs.c
+index 4735e1b37fb3..b843da5e4bb9 100644
+--- a/arch/arm64/kvm/sys_regs.c
++++ b/arch/arm64/kvm/sys_regs.c
+@@ -2139,12 +2139,12 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 		   ID_AA64PFR0_EL1_AdvSIMD |
+ 		   ID_AA64PFR0_EL1_FP), },
+ 	ID_SANITISED(ID_AA64PFR1_EL1),
+-	ID_UNALLOCATED(4,2),
++	ID_SANITISED(ID_AA64PFR2_EL1),
+ 	ID_UNALLOCATED(4,3),
+ 	ID_WRITABLE(ID_AA64ZFR0_EL1, ~ID_AA64ZFR0_EL1_RES0),
+ 	ID_HIDDEN(ID_AA64SMFR0_EL1),
+ 	ID_UNALLOCATED(4,6),
+-	ID_UNALLOCATED(4,7),
++	ID_SANITISED(ID_AA64FPFR0_EL1),
  
-+static int fpmr_get(struct task_struct *target, const struct user_regset *regset,
-+		   struct membuf to)
-+{
-+	if (!system_supports_fpmr())
-+		return -EINVAL;
-+
-+	if (target == current)
-+		fpsimd_preserve_current_state();
-+
-+	return membuf_store(&to, target->thread.fpmr);
-+}
-+
-+static int fpmr_set(struct task_struct *target, const struct user_regset *regset,
-+		   unsigned int pos, unsigned int count,
-+		   const void *kbuf, const void __user *ubuf)
-+{
-+	int ret;
-+	unsigned long fpmr;
-+
-+	if (!system_supports_fpmr())
-+		return -EINVAL;
-+
-+	ret = user_regset_copyin(&pos, &count, &kbuf, &ubuf, &fpmr, 0, count);
-+	if (ret)
-+		return ret;
-+
-+	target->thread.fpmr = fpmr;
-+
-+	fpsimd_flush_task_state(target);
-+
-+	return 0;
-+}
-+
- static int system_call_get(struct task_struct *target,
- 			   const struct user_regset *regset,
- 			   struct membuf to)
-@@ -1417,6 +1450,7 @@ enum aarch64_regset {
- 	REGSET_HW_BREAK,
- 	REGSET_HW_WATCH,
- #endif
-+	REGSET_FPMR,
- 	REGSET_SYSTEM_CALL,
- #ifdef CONFIG_ARM64_SVE
- 	REGSET_SVE,
-@@ -1495,6 +1529,14 @@ static const struct user_regset aarch64_regsets[] = {
- 		.regset_get = system_call_get,
- 		.set = system_call_set,
- 	},
-+	[REGSET_FPMR] = {
-+		.core_note_type = NT_ARM_FPMR,
-+		.n = 1,
-+		.size = sizeof(u64),
-+		.align = sizeof(u64),
-+		.regset_get = fpmr_get,
-+		.set = fpmr_set,
-+	},
- #ifdef CONFIG_ARM64_SVE
- 	[REGSET_SVE] = { /* Scalable Vector Extension */
- 		.core_note_type = NT_ARM_SVE,
-diff --git a/include/uapi/linux/elf.h b/include/uapi/linux/elf.h
-index 9417309b7230..b54b313bcf07 100644
---- a/include/uapi/linux/elf.h
-+++ b/include/uapi/linux/elf.h
-@@ -440,6 +440,7 @@ typedef struct elf64_shdr {
- #define NT_ARM_SSVE	0x40b		/* ARM Streaming SVE registers */
- #define NT_ARM_ZA	0x40c		/* ARM SME ZA registers */
- #define NT_ARM_ZT	0x40d		/* ARM SME ZT registers */
-+#define NT_ARM_FPMR	0x40e		/* ARM floating point mode register */
- #define NT_ARC_V2	0x600		/* ARCv2 accumulator/extra registers */
- #define NT_VMCOREDD	0x700		/* Vmcore Device Dump Note */
- #define NT_MIPS_DSP	0x800		/* MIPS DSP ASE registers */
+ 	/* CRm=5 */
+ 	{ SYS_DESC(SYS_ID_AA64DFR0_EL1),
+@@ -2171,7 +2171,7 @@ static const struct sys_reg_desc sys_reg_descs[] = {
+ 	ID_WRITABLE(ID_AA64ISAR2_EL1, ~(ID_AA64ISAR2_EL1_RES0 |
+ 					ID_AA64ISAR2_EL1_APA3 |
+ 					ID_AA64ISAR2_EL1_GPA3)),
+-	ID_UNALLOCATED(6,3),
++	ID_WRITABLE(ID_AA64ISAR3_EL1, ~ID_AA64ISAR3_EL1_RES0),
+ 	ID_UNALLOCATED(6,4),
+ 	ID_UNALLOCATED(6,5),
+ 	ID_UNALLOCATED(6,6),
 
 -- 
 2.30.2
