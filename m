@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D47F17EB097
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:10:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 976177EB094
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbjKNNKq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:10:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43276 "EHLO
+        id S233065AbjKNNKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232241AbjKNNKj (ORCPT
+        with ESMTP id S232320AbjKNNKO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:10:39 -0500
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97B7C19D
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:10:35 -0800 (PST)
-Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32f8441dfb5so3865370f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 05:10:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1699967434; x=1700572234; darn=vger.kernel.org;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:from:to:cc:subject:date:message-id:reply-to;
-        bh=kylEPySB/5FfOKILQp0wcgiznvVbaF9pAdNSaICh0gU=;
-        b=1EhKFpv9vfdMGmBcW+Z6TL893F2Hhzoh1GYxTxra5II3v/4wLitzg9OdchqrJa72lB
-         UUcga1gdhNnJ8ECeWztSYTaEusHoSoiSm/VXYa2o+Ov2pmh1V+yYlbr95WlXzbPBURB2
-         fm0K3sI9kYbkraDxuPKPwVhp7mT7f7FsBZ2ljDLSm8ByFZ8VgBXIUdFXrYyREWuWzTNH
-         C5d/taRxg1GuMUWmkhBc52FGzsWYe6JiXBRrnAAhmtSQyojaL708yvIGzYvjfNVMR6Et
-         Y/AY5kXf7RClVstmBGvFEC85gZaUt++X/5KYV0jOin6ZZadaow+1+3GJhS4kVRuYoVQg
-         vXgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699967434; x=1700572234;
-        h=mime-version:message-id:in-reply-to:date:subject:cc:to:from
-         :user-agent:references:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kylEPySB/5FfOKILQp0wcgiznvVbaF9pAdNSaICh0gU=;
-        b=TiOQ8RiDpCRYVKs9i/mFF0qfZVJrWLNc1xr292qswa5G7C0HFrFh9aLT2a9J26CcBV
-         RWWpH9KZaSnA3HK4DnvA3hCtAWl3GY05jfz0QE20V9ad3zFhrTMVYwU1ZJV7NI0u/zMK
-         FS4pgMOCenTxz4w09qno+D2XPFkC2bg1W+DIDxNQLLRKEwOXYREjJOrmnCEYET7309Jc
-         rivHhi9ferjHwJ5RSMHP2jZVDL3AFCpOyH09d/wE+MlPww9zv7HpWt7tzUvrRisLmqUb
-         lyaAKG0N8dIBsg6BYfCanw/S0NguJHKPy4tZz4Sj/XpfwNjmKJaCV/Cv8vx3jOvy90HD
-         A6xw==
-X-Gm-Message-State: AOJu0YwvaqoJ8QY/D2pn/YvDTdDPbL4+wXhmenaXm6I0yJ5koWbmAL4P
-        BB3NTvmQXEvXMDpHe56cj4LcUQ==
-X-Google-Smtp-Source: AGHT+IGziU1soHXdOrIYoiZhkJ3lrSemdXNvFyCejd2ntbWKzDN90NoFHYrl0P9aRWDq0a+dBQ2I1w==
-X-Received: by 2002:a05:6000:4024:b0:32d:b991:1a71 with SMTP id cp36-20020a056000402400b0032db9911a71mr7443849wrb.0.1699967433842;
-        Tue, 14 Nov 2023 05:10:33 -0800 (PST)
-Received: from localhost ([2a01:e0a:3c5:5fb1:8fe7:3223:c57b:4b01])
-        by smtp.gmail.com with ESMTPSA id i20-20020a5d5234000000b003196b1bb528sm7843980wra.64.2023.11.14.05.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 05:10:33 -0800 (PST)
-References: <20231106085554.3237511-1-xianwei.zhao@amlogic.com>
- <eab3869c-7529-484d-983f-dd85ecfbeb0b@linaro.org>
- <1j34xdcwf4.fsf@starbuckisacylon.baylibre.com>
-User-agent: mu4e 1.8.13; emacs 29.1
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Xianwei Zhao <xianwei.zhao@amlogic.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Chuan Liu <chuan.liu@amlogic.com>
-Subject: Re: [PATCH V6 0/4] Add C3 SoC PLLs and Peripheral clock
-Date:   Tue, 14 Nov 2023 14:07:16 +0100
-In-reply-to: <1j34xdcwf4.fsf@starbuckisacylon.baylibre.com>
-Message-ID: <1jleb0bhvb.fsf@starbuckisacylon.baylibre.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        Tue, 14 Nov 2023 08:10:14 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86506185;
+        Tue, 14 Nov 2023 05:10:11 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 6BD0E1F86A;
+        Tue, 14 Nov 2023 13:10:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1699967409; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UdKGYYZPHz9oLSF/GPQkv/zIiz3pCkDlwsJZ0EvwJbg=;
+        b=pGL5QXsf/7kDX/csv7iPatJ1hr20Ed7DP93tWdxUz9c0HRzODX0L8kKo8O2lfowVVYkOlQ
+        nXMWwt9f9EpC0WsNK1lJF9HjQKqASfQIRabPjeETRtF4VUWLTCHECDCZQ6dOyoiPqBjTr4
+        jV7hYDADDTyEKAVq5R+yP50+CFeozsw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1699967409;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UdKGYYZPHz9oLSF/GPQkv/zIiz3pCkDlwsJZ0EvwJbg=;
+        b=en1gL9PqCX6jpKmEy0HXVI/fVksJKcxwkpwHalI+ttO5VUlyvm74JxEJHY6PtG/kVX1zjo
+        lY5ul88kqei5LqDw==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 3F90B13460;
+        Tue, 14 Nov 2023 13:10:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id eX2dDrFxU2XeAwAAMHmgww
+        (envelope-from <tiwai@suse.de>); Tue, 14 Nov 2023 13:10:09 +0000
+Date:   Tue, 14 Nov 2023 14:10:08 +0100
+Message-ID: <87r0kstr9r.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     <tiwai@suse.com>, <alsa-devel@alsa-project.org>,
+        <linux-sound@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <patches@opensource.cirrus.com>,
+        "Simon Trimmer" <simont@opensource.cirrus.com>
+Subject: Re: [PATCH RESEND] ALSA: hda: cs35l56: Enable low-power hibernation mode on i2c
+In-Reply-To: <20231113164029.1156669-1-rf@opensource.cirrus.com>
+References: <20231113164029.1156669-1-rf@opensource.cirrus.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -3.12
+X-Spamd-Result: default: False [-3.12 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         MIME_GOOD(-0.10)[text/plain];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         MID_CONTAINS_FROM(1.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         BAYES_HAM(-0.02)[52.16%]
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, 13 Nov 2023 17:40:29 +0100,
+Richard Fitzgerald wrote:
+> 
+> From: Simon Trimmer <simont@opensource.cirrus.com>
+> 
+> This can now be re-enabled as the sequence to reliably wake the device
+> has been implemented in the shared ASoC code.
+> 
+> This has a functional dependency on commit 3df761bdbc8b
+> ("ASoC: cs35l56: Wake transactions need to be issued twice")
+> 
+> To protect against this, enabling hibernation is conditional on
+> CS35L56_WAKE_HOLD_TIME_US being defined, which indicates that the new
+> hibernation sequences are available.
+> 
+> Signed-off-by: Simon Trimmer <simont@opensource.cirrus.com>
+> Signed-off-by: Richard Fitzgerald <rf@opensource.cirrus.com>
 
-On Fri 10 Nov 2023 at 18:50, Jerome Brunet <jbrunet@baylibre.com> wrote:
+Thanks, applied.
 
-> On Fri 10 Nov 2023 at 14:20, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
->
->> On 06/11/2023 09:55, Xianwei Zhao wrote:
->>> The patchset adds support for the peripheral and PLL clock controller
->>> found on the Amlogic C3 SoC family, such as C302X or C308L.
->>> 
->>> Changes since V5 [3]:
->>>  - Fix some typo and modify formart for MARCO. Suggested by Jerome.
->>>  - Add pad clock for peripheral input clock in bindings.
->>>  - Add some description for explaining why ddr_dpll_pt_clk and cts_msr_clk are out of tree.
->>> Changes since V4 [10]:
->>>  - Change some fw_name of clocks. Suggested by Jerome.
->>>  - Delete minItem of clocks.
->>>  - Add CLk_GET_RATE_NOCACHE flags for gp1_pll
->>>  - Fix some format. and fix width as 8 for mclk_pll_dco.
->>>  - exchange gate and divder for fclk_50m clock.
->>>  - add CLK_SET_RATE_PARENT for axi_a_divder & axi_b_divder.
->>>  - add CLK_IS_CRITICAL for axi_clk
->>>  - Optimized macro define for pwm clk.
->>>  - add cts_oscin_clk mux between 24M and 32k
->>>  - add some missing gate clock, such as ddr_pll.
->>
->> Where are all these versions? Please provide links.
->
-> I have provided some guidance offline at the request of Amlogic.
->
-> This should have been v4 and the cover-letter should have summarized the
-> change from v3 to this. Unfortunately it was sent as v6 :/
->
->>
->> Best regards,
->> Krzysztof
 
-While labeling this v6 was a mistake, please continue from there:
-next to be v7. Don't reset to v4 or v5. If more versions are needed, I
-don't want to end up with 2 v6 on the list, that would be even more
-confusing.
-
-Thanks
+Takashi
