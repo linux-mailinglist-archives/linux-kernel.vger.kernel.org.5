@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA9C7EA94D
+	by mail.lfdr.de (Postfix) with ESMTP id 40C237EA94C
 	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:04:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232063AbjKNEEo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:04:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41140 "EHLO
+        id S232013AbjKNEEl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:04:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbjKNEEb (ORCPT
+        with ESMTP id S229742AbjKNEEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 13 Nov 2023 23:04:31 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C590D45
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C11DD44
         for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:04:26 -0800 (PST)
-Received: from canpemm500009.china.huawei.com (unknown [172.30.72.57])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4STt2x0HVNzvQh4;
-        Tue, 14 Nov 2023 12:04:09 +0800 (CST)
+Received: from canpemm500009.china.huawei.com (unknown [172.30.72.55])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4STsxx6GSyzMmPP;
+        Tue, 14 Nov 2023 11:59:49 +0800 (CST)
 Received: from localhost.localdomain (10.50.165.33) by
  canpemm500009.china.huawei.com (7.192.105.203) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
@@ -29,9 +29,9 @@ CC:     <dietmar.eggemann@arm.com>, <gregkh@linuxfoundation.org>,
         <rafael@kernel.org>, <jonathan.cameron@huawei.com>,
         <prime.zeng@hisilicon.com>, <linuxarm@huawei.com>,
         <yangyicong@hisilicon.com>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v3 3/4] arm64: topology: Support SMT control on ACPI based system
-Date:   Tue, 14 Nov 2023 12:01:09 +0800
-Message-ID: <20231114040110.54590-4-yangyicong@huawei.com>
+Subject: [PATCH v3 4/4] arm64: Kconfig: Enable HOTPLUG_SMT
+Date:   Tue, 14 Nov 2023 12:01:10 +0800
+Message-ID: <20231114040110.54590-5-yangyicong@huawei.com>
 X-Mailer: git-send-email 2.31.0
 In-Reply-To: <20231114040110.54590-1-yangyicong@huawei.com>
 References: <20231114040110.54590-1-yangyicong@huawei.com>
@@ -54,77 +54,25 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Yicong Yang <yangyicong@hisilicon.com>
 
-For ACPI we'll build the topology from PPTT and we cannot directly
-get the SMT number of each core. Instead using a temporary xarray
-to record the SMT number of each core when building the topology
-and we can know the largest SMT number in the system. Then we can
-notify the arch_topology for supporting SMT control.
+Enable HOTPLUG_SMT for SMT control.
 
 Signed-off-by: Yicong Yang <yangyicong@hisilicon.com>
 ---
- arch/arm64/kernel/topology.c | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
+ arch/arm64/Kconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm64/kernel/topology.c b/arch/arm64/kernel/topology.c
-index 817d788cd866..0dc360c32ec8 100644
---- a/arch/arm64/kernel/topology.c
-+++ b/arch/arm64/kernel/topology.c
-@@ -17,6 +17,7 @@
- #include <linux/cpufreq.h>
- #include <linux/init.h>
- #include <linux/percpu.h>
-+#include <linux/xarray.h>
- 
- #include <asm/cpu.h>
- #include <asm/cputype.h>
-@@ -43,11 +44,16 @@ static bool __init acpi_cpu_is_threaded(int cpu)
-  */
- int __init parse_acpi_topology(void)
- {
-+	int thread_num, max_smt_thread_num = 1;
-+	struct xarray core_threads;
- 	int cpu, topology_id;
-+	void *entry;
- 
- 	if (acpi_disabled)
- 		return 0;
- 
-+	xa_init(&core_threads);
-+
- 	for_each_possible_cpu(cpu) {
- 		topology_id = find_acpi_cpu_topology(cpu, 0);
- 		if (topology_id < 0)
-@@ -57,6 +63,20 @@ int __init parse_acpi_topology(void)
- 			cpu_topology[cpu].thread_id = topology_id;
- 			topology_id = find_acpi_cpu_topology(cpu, 1);
- 			cpu_topology[cpu].core_id   = topology_id;
-+
-+			entry = xa_load(&core_threads, topology_id);
-+			if (!entry) {
-+				xa_store(&core_threads, topology_id,
-+					 xa_mk_value(1), GFP_KERNEL);
-+			} else {
-+				thread_num = xa_to_value(entry);
-+				thread_num++;
-+				xa_store(&core_threads, topology_id,
-+					 xa_mk_value(thread_num), GFP_KERNEL);
-+
-+				if (thread_num > max_smt_thread_num)
-+					max_smt_thread_num = thread_num;
-+			}
- 		} else {
- 			cpu_topology[cpu].thread_id  = -1;
- 			cpu_topology[cpu].core_id    = topology_id;
-@@ -67,6 +87,9 @@ int __init parse_acpi_topology(void)
- 		cpu_topology[cpu].package_id = topology_id;
- 	}
- 
-+	topology_smt_set_num_threads(max_smt_thread_num);
-+
-+	xa_destroy(&core_threads);
- 	return 0;
- }
- #endif
+diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+index 7b071a00425d..002bcde32575 100644
+--- a/arch/arm64/Kconfig
++++ b/arch/arm64/Kconfig
+@@ -233,6 +233,7 @@ config ARM64
+ 	select HAVE_KRETPROBES
+ 	select HAVE_GENERIC_VDSO
+ 	select HOTPLUG_CORE_SYNC_DEAD if HOTPLUG_CPU
++	select HOTPLUG_SMT if SMP
+ 	select IRQ_DOMAIN
+ 	select IRQ_FORCED_THREADING
+ 	select KASAN_VMALLOC if KASAN
 -- 
 2.24.0
 
