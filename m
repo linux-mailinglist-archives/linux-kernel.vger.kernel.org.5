@@ -2,120 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C86287EA90B
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:17:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AF5F7EA902
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 04:16:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231837AbjKNDRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 22:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58092 "EHLO
+        id S231740AbjKNDQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 22:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229454AbjKNDRx (ORCPT
+        with ESMTP id S229626AbjKNDQN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 22:17:53 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E806191
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699931870; x=1731467870;
-  h=message-id:date:mime-version:cc:subject:to:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=jwo/jHiMXyVUADYct4D+5LfJifoti2Yg0Flyy8wZEW0=;
-  b=JPpj15JlphtnOtQAJTkHSHfo4cWGHSBfGIM1rL7UCmtITP7BJt4AAFYr
-   ehuy90KYmkmMj1c71Wj90kDVVJqTAFNoyCXcQjsaTivoYaiMobjF2nKWE
-   Ch+pOzeoBqujpGjnJB/jFLCktaVNDoLYzsXG8fPmIp3IZvKtGoLRjfNAS
-   pCvj5/OlpiiEZRRsURe5vQ8QdLLErOi1Gcohwbap8D8zjjcvrpkHgUgxW
-   Bn+gs9xvppuxyemC8qj8CFXNCMVi+1pIjLCcNGYJq1eqCHgw8F8R1i0To
-   tCWQTjGJZLTiT6BYWLdGtwk3Y7yl4AwGKjj3M7gBj2PETT1djDpOyw7vZ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389424495"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="389424495"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 19:17:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="758018670"
-X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="758018670"
-Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
-  by orsmga007.jf.intel.com with ESMTP; 13 Nov 2023 19:17:48 -0800
-Message-ID: <1a07a265-f834-4834-b9cb-5c7016ee9142@linux.intel.com>
-Date:   Tue, 14 Nov 2023 11:13:37 +0800
+        Mon, 13 Nov 2023 22:16:13 -0500
+Received: from mail-qv1-xf33.google.com (mail-qv1-xf33.google.com [IPv6:2607:f8b0:4864:20::f33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F228691
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:16:09 -0800 (PST)
+Received: by mail-qv1-xf33.google.com with SMTP id 6a1803df08f44-66d0f945893so43347796d6.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 19:16:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699931769; x=1700536569; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3w4/XG+aeffoi7OUILSvtJfbbHtJ+I3FPPCWJDaC/+g=;
+        b=AQV5PNI8vitkswZM03pQLKc+1qXP3Xlk44bNqOI89Rg2/c8pcpSyaDCchMqXU3nb6B
+         +jJ2OXtAqHH3uwMr/DbIiVtTCDu8QdefkkKaXcaegz8FyGUfo+zBYSSrBR+PpxSQulBP
+         dE74QefxqMopWxJcvS0APhX9gnlIklUe+020ajllZEU3K88Hk6LjSPw0vgqn9q0cspr7
+         qHnHoWuI3e3+wOIJBDh3G+uPkDwvjtSwW9qNqFpPflT077HtmcTkxRBZmd8t3Nel2PNT
+         /hr/JkpXok3vzqn8XkQlJ3HMBOaxcq031ugdfUzmk5Ko7huxHK5wLEhl3/kyxD9l+Ix7
+         YBgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699931769; x=1700536569;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3w4/XG+aeffoi7OUILSvtJfbbHtJ+I3FPPCWJDaC/+g=;
+        b=dA9txHpFZz/i+yzYeZycxwS4282XPN8CYRi5t6/dvXLT5KjxApyPlllVhet4EiN+p7
+         ZYkHmIHHDb8ZDIlW/Qym0PGKi9XPrxajWVOYnji7B+ga/GucwvKp768F06GPgTsoJZvF
+         4WdLRlSytHSjd4llXP8TQ5LD9TQDtIQ7M3jIEG5mNltrvUkTDpUUp/OHk+Mg+DQXypvm
+         HsZnF7Kb9vDOtj0BEQXqhzg9topUAoaMnWTBbhdP34FU+ZLTF0tofsjwMkCUdVo2AlG0
+         GvquwLu43UJ6gWPDTsx577DkFTkXI7daU47UMPpIupidVMU/PZY55Mxlvo7a+hSaUHLe
+         sehw==
+X-Gm-Message-State: AOJu0YzRT/qaNnQ87355sy7eBxkxUX4fdBTrz9KUMDa7EHOLY2sGo707
+        tZqbbYzz3uwuBVZkjU60mBY=
+X-Google-Smtp-Source: AGHT+IFHmPCxCJXDVEYmNeGRF85+PQ7lJSbERLpMiq0NiC77tUu/9UMBdfyJ+QrzC+Y1UEeUKDTvvw==
+X-Received: by 2002:a05:6214:e4f:b0:675:ac72:f4ce with SMTP id o15-20020a0562140e4f00b00675ac72f4cemr1738052qvc.28.1699931769038;
+        Mon, 13 Nov 2023 19:16:09 -0800 (PST)
+Received: from code.. ([144.202.108.46])
+        by smtp.gmail.com with ESMTPSA id j16-20020a0cc350000000b00670867d7bdfsm2550355qvi.122.2023.11.13.19.16.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Nov 2023 19:16:08 -0800 (PST)
+From:   Yuntao Wang <ytcoode@gmail.com>
+To:     x86@kernel.org, linux-kernel@vger.kernel.org
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Juergen Gross <jgross@suse.com>, Baoquan He <bhe@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Saurabh Sengar <ssengar@linux.microsoft.com>,
+        Yuntao Wang <ytcoode@gmail.com>
+Subject: [PATCH] x86/setup: Use a more concise memblock API
+Date:   Tue, 14 Nov 2023 11:14:18 +0800
+Message-ID: <20231114031418.60745-1-ytcoode@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Cc:     baolu.lu@linux.intel.com,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] iommu/vt-d: Omit devTLB invalidation requests when
- TES=0
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>
-References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
- <20231114011036.70142-2-baolu.lu@linux.intel.com>
- <BN9PR11MB52764263BE04AAFAC0907A8D8CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Language: en-US
-From:   Baolu Lu <baolu.lu@linux.intel.com>
-In-Reply-To: <BN9PR11MB52764263BE04AAFAC0907A8D8CB2A@BN9PR11MB5276.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 11:14 AM, Tian, Kevin wrote:
->> From: Lu Baolu<baolu.lu@linux.intel.com>
->> Sent: Tuesday, November 14, 2023 9:11 AM
->>
->> The latest VT-d spec indicates that when remapping hardware is disabled
->> (TES=0 in Global Status Register), upstream ATS Invalidation Completion
->> requests are treated as UR (Unsupported Request).
->>
->> Consequently, the spec recommends in section 4.3 Handling of Device-TLB
->> Invalidations that software refrain from submitting any Device-TLB
->> invalidation requests when address remapping hardware is disabled.
->>
->> Verify address remapping hardware is enabled prior to submitting Device-
->> TLB invalidation requests.
->>
->> Fixes: 792fb43ce2c9 ("iommu/vt-d: Enable Intel IOMMU scalable mode by
->> default")
->> Signed-off-by: Lu Baolu<baolu.lu@linux.intel.com>
->> ---
->>   drivers/iommu/intel/dmar.c | 18 ++++++++++++++++++
->>   1 file changed, 18 insertions(+)
->>
->> diff --git a/drivers/iommu/intel/dmar.c b/drivers/iommu/intel/dmar.c
->> index a3414afe11b0..23cb80d62a9a 100644
->> --- a/drivers/iommu/intel/dmar.c
->> +++ b/drivers/iommu/intel/dmar.c
->> @@ -1522,6 +1522,15 @@ void qi_flush_dev_iotlb(struct intel_iommu
->> *iommu, u16 sid, u16 pfsid,
->>   {
->>   	struct qi_desc desc;
->>
->> +	/*
->> +	 * VT-d spec, section 4.3:
->> +	 *
->> +	 * Software is recommended to not submit any Device-TLB
->> invalidation
->> +	 * requests while address remapping hardware is disabled.
->> +	 */
->> +	if (!(iommu->gcmd & DMA_GCMD_TE))
->> +		return;
->> +
-> Is it a valid case to see such request when the iommu is disabled?
-> If not then let's add a WARN.
+When executing relocate_initrd(), the memblock.current_limit field has
+already been set to `max_pfn_mapped << PAGE_SHIFT`, so we can replace
+memblock_phys_alloc_range() with memblock_phys_alloc(), which has the same
+functionality but is more concise.
 
-There might be valid cases. The VT-d translation is turned on after all
-devices get probed.
+Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+---
+ arch/x86/kernel/setup.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Best regards,
-baolu
+diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+index ec2c21a1844e..422497c17eec 100644
+--- a/arch/x86/kernel/setup.c
++++ b/arch/x86/kernel/setup.c
+@@ -259,8 +259,7 @@ static void __init relocate_initrd(void)
+ 	u64 area_size     = PAGE_ALIGN(ramdisk_size);
+ 
+ 	/* We need to move the initrd down into directly mapped mem */
+-	u64 relocated_ramdisk = memblock_phys_alloc_range(area_size, PAGE_SIZE, 0,
+-						      PFN_PHYS(max_pfn_mapped));
++	u64 relocated_ramdisk = memblock_phys_alloc(area_size, PAGE_SIZE);
+ 	if (!relocated_ramdisk)
+ 		panic("Cannot find place for new RAMDISK of size %lld\n",
+ 		      ramdisk_size);
+-- 
+2.42.1
+
