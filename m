@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DCBC87EA992
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:34:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE2597EA99B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 05:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231994AbjKNEei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 23:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33884 "EHLO
+        id S232126AbjKNEfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 23:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231417AbjKNEef (ORCPT
+        with ESMTP id S232072AbjKNEfl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 23:34:35 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7841CD48
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:34:32 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id d2e1a72fcca58-6bee11456baso4443450b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 20:34:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1699936472; x=1700541272; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=o11HARQxoCvg8Gx5zjjgZkRsPvVu73rMm7hpUxapQ0A=;
-        b=nCjAYxdqkxTcu4IH1X2BoihM3eISHye9R89txlKCrNR1Z21wy+2EWieTDV8Lt7FRcc
-         8oDzGftIS6Xl+kf3lbraPK9h5hHKtFVG5zLOqK9qvFklCKwOR9twagX5h7dtuDQ4e+TH
-         RHbCs7s5CBh9e8cJAp2tnrrOlRwc8lEfqZwBY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699936472; x=1700541272;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o11HARQxoCvg8Gx5zjjgZkRsPvVu73rMm7hpUxapQ0A=;
-        b=TaGPZnCIFOaQaNIJXFmcwmrk+kwt/7ZMeDf59nWbPyaJkIDDf6mA7yEeB9flImTyVr
-         kR3SyU60d33YlWsfIpXX6O++akVUgYTQXTnZS8fFEIkPuuHRbtwQBtFBAVbaIWiaG8RY
-         kgeho/kAXj8hscSAlqfpj81t87mlVm6fjaducBflg50Hajf1yD341E+pfmQJyALVfuJ1
-         Ia/mqPOxaEQZr1tXU7oE40qq/wf6lyNms4BIEc3teXOmc0UoO9Lq4XVra05yeDJieDSn
-         VIN09uaVcT9B5YLYYUjFYARPjgLIdvEp2pI+9WpqT6RhVwDHU4mtry1wUVxrbVQxHu2U
-         IJuQ==
-X-Gm-Message-State: AOJu0YwyZe4964iWsg92MGmivNtVJb5VXSibhNoMLmpHwEnzwHQI6My0
-        /CpV5/pd7Wy1n6e/Mgvqpo8l7A==
-X-Google-Smtp-Source: AGHT+IGseueIFF+JmLoGhwnqLpZw2W4u0dwVJZMG/dnzFetGq2hz6yOEFr5CcVgcKPJNd+w2yidtYw==
-X-Received: by 2002:a05:6a20:729e:b0:186:7ac3:41c8 with SMTP id o30-20020a056a20729e00b001867ac341c8mr4469072pzk.56.1699936472009;
-        Mon, 13 Nov 2023 20:34:32 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id a13-20020a170902b58d00b001c465bedaccsm4835731pls.83.2023.11.13.20.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 20:34:31 -0800 (PST)
-Date:   Mon, 13 Nov 2023 20:34:31 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, patches@lists.linux.dev,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Marco Elver <elver@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        kasan-dev@googlegroups.com, cgroups@vger.kernel.org,
-        Mark Hemment <markhe@nextd.demon.co.uk>
-Subject: Re: [PATCH 08/20] mm/slab: remove mm/slab.c and slab_def.h
-Message-ID: <202311132032.1BB9A17@keescook>
-References: <20231113191340.17482-22-vbabka@suse.cz>
- <20231113191340.17482-30-vbabka@suse.cz>
+        Mon, 13 Nov 2023 23:35:41 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5810010C6;
+        Mon, 13 Nov 2023 20:35:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699936533; x=1731472533;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=LicepLvuxX8MsuqiDGUanI1SzH7zkogiKG9oBJpEPec=;
+  b=GrJE1Zw92I0Pno3KGmGwW5AFRSJANMRuIcbccBNgU7mYYWRkW1vCWyxp
+   EzXyT+8EqKi6jCkvEYVLINWPzDVgvuP2efv36L6kAKg4iH68f9NV4GIMJ
+   Oh7aRxibWhQYiCeJcGHs7lPE9i09Hqy6HWecyp6FiuZx6Oa4x28SA+gaz
+   3IVUtQIQsiTOL6cdOuZsLjn0iB85JBhnvvHRu4naOWICaUNeGWmk4GdmP
+   kbC0UKSBgO2zaMk6rxhgS9pxxOEByfclNT5yedjGufbYsBsQrxA31ZpKK
+   mDPQPQz+mssrIzqfqCnsyoZ2OoAtWG/7IgEgGAiqy1YPIZDkRSuTeilWL
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="389437292"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="389437292"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 20:35:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="830467499"
+X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
+   d="scan'208";a="830467499"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 20:35:31 -0800
+From:   isaku.yamahata@intel.com
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     isaku.yamahata@intel.com, isaku.yamahata@gmail.com,
+        Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+        Sean Christopherson <seanjc@google.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Jim Mattson <jmattson@google.com>
+Subject: [PATCH v2 0/3] KVM: X86: Make bus clock frequency for vapic timer configurable
+Date:   Mon, 13 Nov 2023 20:35:01 -0800
+Message-Id: <cover.1699936040.git.isaku.yamahata@intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113191340.17482-30-vbabka@suse.cz>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 08:13:49PM +0100, Vlastimil Babka wrote:
-> Remove the SLAB implementation. Update CREDITS (also sort the SLOB entry
-> properly).
-> 
-> RIP SLAB allocator (1996 - 2024)
+From: Isaku Yamahata <isaku.yamahata@intel.com>
 
-/me does math on -rc schedule... Yeah, okay, next merge window likely
-opens Jan 1st. So, this will land in 2024. :)
+Changes from v1:
+  https://lore.kernel.org/all/cover.1699383993.git.isaku.yamahata@intel.com/
+- Added a test case
+- Fix a build error for i386 platform
+- Add check if vcpu isn't created.
+- Add check if lapic chip is in-kernel emulation.
+- Updated api.rst
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Add KVM_CAP_X86_BUS_FREQUENCY_CONTROL capability to configure the core
+crystal clock (or processor's bus clock) for APIC timer emulation.  Allow
+KVM_ENABLE_CAPABILITY(KVM_CAP_X86_BUS_FREUQNCY_CONTROL) to set the
+frequency.  When using this capability, the user space VMM should configure
+CPUID[0x15] to advertise the frequency.
 
+TDX virtualizes CPUID[0x15] for the core crystal clock to be 25MHz.  The
+x86 KVM hardcodes its freuqncy for APIC timer to be 1GHz.  This mismatch
+causes the vAPIC timer to fire earlier than the guest expects. [1] The KVM
+APIC timer emulation uses hrtimer, whose unit is nanosecond.
+
+There are options to reconcile the mismatch.  1) Make apic bus clock frequency
+configurable (this patch).  2) TDX KVM code adjusts TMICT value.  This is hacky
+and it results in losing MSB bits from 32 bit width to 30 bit width.  3). Make
+the guest kernel use tsc deadline timer instead of acpi oneshot/periodic timer.
+This is guest kernel choice.  It's out of control of VMM.
+
+[1] https://lore.kernel.org/lkml/20231006011255.4163884-1-vannapurve@google.com/
+
+Isaku Yamahata (3):
+  KVM: x86: Make the hardcoded APIC bus frequency vm variable
+  KVM: X86: Add a capability to configure bus frequency for APIC timer
+  KVM: selftests: Add test case for x86 apic_bus_clock_frequency
+
+ Documentation/virt/kvm/api.rst                |  14 ++
+ arch/x86/include/asm/kvm_host.h               |   2 +
+ arch/x86/kvm/hyperv.c                         |   2 +-
+ arch/x86/kvm/lapic.c                          |   6 +-
+ arch/x86/kvm/lapic.h                          |   4 +-
+ arch/x86/kvm/x86.c                            |  37 +++++
+ include/uapi/linux/kvm.h                      |   1 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/include/x86_64/apic.h       |   7 +
+ .../kvm/x86_64/apic_bus_clock_test.c          | 132 ++++++++++++++++++
+ 10 files changed, 201 insertions(+), 5 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/apic_bus_clock_test.c
+
+
+base-commit: be3ca57cfb777ad820c6659d52e60bbdd36bf5ff
 -- 
-Kees Cook
+2.25.1
+
