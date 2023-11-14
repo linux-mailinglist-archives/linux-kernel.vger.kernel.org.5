@@ -2,177 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7227EB147
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:56:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 762637EB160
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbjKNN4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:56:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51250 "EHLO
+        id S233317AbjKNN5u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:57:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37046 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229521AbjKNN4K (ORCPT
+        with ESMTP id S233368AbjKNN5h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:56:10 -0500
-Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91B98132;
-        Tue, 14 Nov 2023 05:56:07 -0800 (PST)
-Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-1efa01323b4so3443564fac.3;
-        Tue, 14 Nov 2023 05:56:07 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699970167; x=1700574967;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QiASBl9VrAjzQgmOuXmfWuxNZgNwYoFGLkzwqXtE/qw=;
-        b=hcEPTm2ogQo3AX1d8RkwYEdT95D16WfIGCgK9lYmPJSnGhhMZYYS/MEGow9VB3ZLNB
-         OzrDoyQRQqzBR4DctL9bSIoWHXGqMWUV0U24yXhguiqPDv+V/eUgACphFn0kz/Z3NdBf
-         Ex357we+IpZIUxCdBnFPBrGe2eCfsYMhO5X5XVwBLPEgkPgJJs1XDpHWUBNvYUi8Zkea
-         vi9Ps2LVuqnhzzvw7fqitENFY4J0eUzz8NhSx8G69YgGeesswgACZKm7pj33mRqGa1ud
-         DujMP+sMmpooYEdBN+4Ty96P2hsRvyvutInE6fdO02gcPfBJesWz2XSFxztYdZE7w+Q1
-         0MqA==
-X-Gm-Message-State: AOJu0Yyvt6+6aNEglA33//BiWbj/EsE7jP7Zy3VfT8VVcWkxkpR35V8y
-        nh844IFYVqBiP2peEYHwKm6b1WFudA==
-X-Google-Smtp-Source: AGHT+IFYOuCtYvhZonQy046WfyrIoy4A+vOjsLbnefhLS1WXzW1gHM/v6TjGpVo+25v7X/N6wfLMGQ==
-X-Received: by 2002:a05:6870:40d2:b0:1e9:d8a4:551f with SMTP id l18-20020a05687040d200b001e9d8a4551fmr11788936oal.17.1699970166709;
-        Tue, 14 Nov 2023 05:56:06 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id ec21-20020a0568708c1500b001e5ad4b2f65sm1372872oab.19.2023.11.14.05.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 05:56:06 -0800 (PST)
-Received: (nullmailer pid 1664148 invoked by uid 1000);
-        Tue, 14 Nov 2023 13:56:04 -0000
-Date:   Tue, 14 Nov 2023 07:56:04 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Daniel Golle <daniel@makrotopia.org>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Felix Fietkau <nbd@nbd.name>, John Crispin <john@phrozen.org>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Mark Lee <Mark-MC.Lee@mediatek.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Alexander Couzens <lynxis@fe80.eu>,
-        Philipp Zabel <p.zabel@pengutronix.de>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-phy@lists.infradead.org
-Subject: Re: [RFC PATCH 5/8] dt-bindings: net: pcs: add bindings for MediaTek
- USXGMII PCS
-Message-ID: <20231114135604.GA1661768-robh@kernel.org>
-References: <cover.1699565880.git.daniel@makrotopia.org>
- <2dff6aff7006573d3232ec2ddd93c1792740d4d3.1699565880.git.daniel@makrotopia.org>
+        Tue, 14 Nov 2023 08:57:37 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6535D53;
+        Tue, 14 Nov 2023 05:57:33 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AE9lONG004872;
+        Tue, 14 Nov 2023 13:57:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=YyPNtowo/JzT1pSI0wSSYFY69fK6vWqtjP2754NoftQ=;
+ b=C1sBOC8Bkwu9Fgc5EaMNRRWxxrwXGR7n+3C9F2Vm5rAGdROrZFAzvQzsxpZny17jgWUx
+ M8SGKvt9aWfzQhoQ1iL1umnnk3Ep+VoUh8whGtX/TfeQce1+LgPD5XSwbFMfU6mf/Cax
+ EEd7k38gM5d7m8e3odty1i4bDeuvaUt3SsM4ZomBrT9jlNMphrVoJfmLdrv08Qs+OHKL
+ 2aVPgmbivzSn1r4zUQUgNFLFyfuI7k7thMu+HYIrM64t6103DpBRR7sMoBYPfnJchgbs
+ Vu8Hl7ymkaHVxejrazJpq80tcMda3AhMUXOvTDkS9HPhbgHoGosFnXkmMASMj+5eEMmn +Q== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ubmtvava2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 13:57:15 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AEDvELm016720
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 14 Nov 2023 13:57:14 GMT
+Received: from hyd-lablnx450.qualcomm.com (10.80.80.8) by
+ nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 14 Nov 2023 05:57:09 -0800
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+To:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <a39.skl@gmail.com>,
+        <konrad.dybcio@linaro.org>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Subject: [PATCH v2 0/3] iommu/arm-smmu: introduction of ACTLR implementation for Qualcomm SoCs
+Date:   Tue, 14 Nov 2023 19:26:51 +0530
+Message-ID: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2dff6aff7006573d3232ec2ddd93c1792740d4d3.1699565880.git.daniel@makrotopia.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: MuRpWg32HSPcaImZL-FbIaTNgIIbirJ0
+X-Proofpoint-GUID: MuRpWg32HSPcaImZL-FbIaTNgIIbirJ0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-14_12,2023-11-09_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 bulkscore=0 lowpriorityscore=0 mlxscore=0 clxscore=1011
+ spamscore=0 mlxlogscore=790 phishscore=0 adultscore=0 malwarescore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311140107
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 09:51:47PM +0000, Daniel Golle wrote:
-> MediaTek's USXGMII can be found in the MT7988 SoC. We need to access
-> it in order to configure and monitor the Ethernet SerDes link in
-> USXGMII, 10GBase-R and 5GBase-R mode. By including a wrapped
-> legacy 1000Base-X/2500Base-X/Cisco SGMII LynxI PCS as well, those
-> interface modes are also available.
-> 
-> Signed-off-by: Daniel Golle <daniel@makrotopia.org>
-> ---
->  .../bindings/net/pcs/mediatek,usxgmii.yaml    | 105 ++++++++++++++++++
->  1 file changed, 105 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.yaml b/Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.yaml
-> new file mode 100644
-> index 0000000000000..199cf47859e31
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/pcs/mediatek,usxgmii.yaml
-> @@ -0,0 +1,105 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/pcs/mediatek,usxgmii.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: MediaTek USXGMII PCS
-> +
-> +maintainers:
-> +  - Daniel Golle <daniel@makrotopia.org>
-> +
-> +description:
-> +  The MediaTek USXGMII PCS provides physical link control and status
-> +  for USXGMII, 10GBase-R and 5GBase-R links on the SerDes interfaces
-> +  provided by the PEXTP PHY.
-> +  In order to also support legacy 2500Base-X, 1000Base-X and Cisco
-> +  SGMII an existing mediatek,*-sgmiisys LynxI PCS is wrapped to
-> +  provide those interfaces modes on the same SerDes interfaces shared
-> +  with the USXGMII PCS.
-> +
-> +properties:
-> +  $nodename:
-> +    pattern: "^pcs@[0-9a-f]+$"
-> +
-> +  compatible:
-> +    const: mediatek,mt7988-usxgmiisys
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    items:
-> +      - description: USXGMII top-level clock
-> +      - description: SGMII top-level clock
-> +      - description: SGMII subsystem TX clock
-> +      - description: SGMII subsystem RX clock
-> +      - description: XFI PLL clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: usxgmii
-> +      - const: sgmii_sel
-> +      - const: sgmii_tx
-> +      - const: sgmii_rx
-> +      - const: xfi_pll
-> +
-> +  phys:
-> +    items:
-> +      - description: PEXTP SerDes PHY
-> +
-> +  mediatek,sgmiisys:
-> +    $ref: /schemas/types.yaml#/definitions/phandle
-> +    description:
-> +      Phandle to the syscon node of the corresponding SGMII LynxI PCS.
-> +
-> +  resets:
-> +    items:
-> +      - description: XFI reset
-> +      - description: SGMII reset
-> +
-> +  reset-names:
-> +    items:
-> +      - const: xfi
-> +      - const: sgmii
-> +
-> +  "#pcs-cells":
+This patch series consists of three parts and covers the following:
 
-There is no such property defined.
+1. Introducing intital set of driver changes to implement ACTLR register
+   for custom prefetcher settings in Qualcomm SoCs.
 
-Rob
+2. Adding ACTLR data and implementation operations for SM8550.
+
+3. Re-enabling context caching for Qualcomm SoCs to retain prefetcher
+   settings during reset and runtime suspend.
+
+Changes in v2 from v1:
+ - Incorporated suggestions on v1 from Dmitry,Konrad,Pratyush.
+ - Added defines for ACTLR values.
+ - Linked sm8550 implementation structure to corresponding
+   compatible string.
+ - Repackaged actlr value set implementation to separate function.
+ - Fixed indentation errors.
+ - Link to v1: https://lore.kernel.org/all/20231103215124.1095-1-quic_bibekkum@quicinc.com/
+
+Changes in v1 from RFC:
+ - Incorporated suggestion form Robin on RFC.
+ - Moved the actlr data table into driver, instead of maintaining
+   it inside soc specific DT and piggybacking on exisiting iommus
+   property (iommu = <SID, MASK, ACTLR>) to set this value during
+   smmu probe.
+ - Link to RFC: //lore.kernel.org/all/a01e7e60-6ead-4a9e-ba90-22a8a6bbd03f@quicinc.com/
+
+Bibek Kumar Patro (3):
+  iommu/arm-smmu: introduction of ACTLR for custom prefetcher settings
+  iommu/arm-smmu: add ACTLR data and support for SM8550
+  iommu/arm-smmu: re-enable context caching in smmu reset operation
+
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 156 ++++++++++++++++++++-
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |   2 +
+ drivers/iommu/arm/arm-smmu/arm-smmu.c      |   5 +-
+ drivers/iommu/arm/arm-smmu/arm-smmu.h      |   5 +
+ 4 files changed, 159 insertions(+), 9 deletions(-)
+
+--
+2.17.1
+
