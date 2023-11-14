@@ -2,26 +2,26 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 698417EB062
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:57:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E88BE7EB063
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:57:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233126AbjKNM5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:57:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55890 "EHLO
+        id S233141AbjKNM5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:57:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232889AbjKNM5K (ORCPT
+        with ESMTP id S232283AbjKNM5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:57:10 -0500
+        Tue, 14 Nov 2023 07:57:12 -0500
 Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2730F131;
-        Tue, 14 Nov 2023 04:57:07 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B82B819B;
+        Tue, 14 Nov 2023 04:57:08 -0800 (PST)
 Received: from lhrpeml500006.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SV5mX4rsVz6JB1b;
-        Tue, 14 Nov 2023 20:52:28 +0800 (CST)
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4SV5rV0dvgz6K9Ky;
+        Tue, 14 Nov 2023 20:55:54 +0800 (CST)
 Received: from SecurePC30232.china.huawei.com (10.122.247.234) by
  lhrpeml500006.china.huawei.com (7.191.161.198) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Tue, 14 Nov 2023 12:57:04 +0000
+ 15.1.2507.31; Tue, 14 Nov 2023 12:57:05 +0000
 From:   <shiju.jose@huawei.com>
 To:     <linux-cxl@vger.kernel.org>
 CC:     <jonathan.cameron@huawei.com>, <Vilas.Sridharan@amd.com>,
@@ -38,9 +38,9 @@ CC:     <jonathan.cameron@huawei.com>, <Vilas.Sridharan@amd.com>,
         <tanxiaofei@huawei.com>, <prime.zeng@hisilicon.com>,
         <kangkang.shen@futurewei.com>, <wanghuiqiang@huawei.com>,
         <linuxarm@huawei.com>, <shiju.jose@huawei.com>
-Subject: [RFC PATCH 3/6] memory: scrub: Add function to show scrub attributes in decimal
-Date:   Tue, 14 Nov 2023 20:56:44 +0800
-Message-ID: <20231114125648.1146-4-shiju.jose@huawei.com>
+Subject: [RFC PATCH 4/6] memory: scrub: Add scrub control attributes for the DDR5 ECS
+Date:   Tue, 14 Nov 2023 20:56:45 +0800
+Message-ID: <20231114125648.1146-5-shiju.jose@huawei.com>
 X-Mailer: git-send-email 2.35.1.windows.2
 In-Reply-To: <20231114125648.1146-1-shiju.jose@huawei.com>
 References: <20231114125648.1146-1-shiju.jose@huawei.com>
@@ -63,54 +63,90 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Shiju Jose <shiju.jose@huawei.com>
 
-Add function to show scrub control attributes to the user
-in decimal.
+Add scrub control attributes for the DDR5 ECS feature.
+
+The Error Check Scrub (ECS) is a feature defined in JEDEC DDR5 SDRAM
+Specification (JESD79-5) and allows the DRAM to internally read, correct
+single-bit errors, and write back corrected data bits to the DRAM array
+while providing transparency to error counts. The ECS control feature
+allows the request to configure ECS input configurations during system
+boot or at run-time.
+
+The ECS control allows the requester to change the ECS threshold count
+provided that the request is within the definition specified in DDR5 mode
+registers, change mode between codeword mode and row count mode, and reset
+the ECS counter.
 
 Signed-off-by: Shiju Jose <shiju.jose@huawei.com>
 ---
- drivers/memory/scrub/memory-scrub.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+ drivers/memory/scrub/memory-scrub.c | 14 +++++++++++++-
+ include/memory/memory-scrub.h       | 11 +++++++++++
+ 2 files changed, 24 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/memory/scrub/memory-scrub.c b/drivers/memory/scrub/memory-scrub.c
-index b3011e7cd062..ff5b4a52d2da 100755
+index ff5b4a52d2da..5f7b1fd73fb1 100755
 --- a/drivers/memory/scrub/memory-scrub.c
 +++ b/drivers/memory/scrub/memory-scrub.c
-@@ -130,6 +130,20 @@ static ssize_t scrub_attr_show(struct device *dev,
- 	u64 val;
- 	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
+@@ -211,7 +211,8 @@ static bool is_hex_attr(u32 attr)
  
-+	ret = hattr->ops->read(dev, hattr->attr, hattr->region_id, &val);
-+	if (ret < 0)
-+		return ret;
-+
-+	return sprintf(buf, "%lld\n", val);
-+}
-+
-+static ssize_t scrub_attr_show_hex(struct device *dev,
-+				   struct device_attribute *devattr, char *buf)
-+{
-+	int ret;
-+	u64 val;
-+	struct scrub_device_attribute *hattr = to_scrub_attr(devattr);
-+
- 	ret = hattr->ops->read(dev, hattr->attr, hattr->region_id, &val);
- 	if (ret < 0)
- 		return ret;
-@@ -236,8 +250,12 @@ static struct attribute *scrub_genattr(const void *drvdata,
- 	hattr->region_id = region_id;
+ static bool is_string_attr(u32 attr)
+ {
+-	return	attr == scrub_speed_available;
++	return	attr == scrub_speed_available ||
++		attr == scrub_threshold_available;
+ }
  
- 	dattr = &hattr->dev_attr;
--	dattr->show = is_string ? scrub_attr_show_string : scrub_attr_show;
--	dattr->store = is_hex ? scrub_attr_store_hex : scrub_attr_store;
-+	if (is_string) {
-+		dattr->show = scrub_attr_show_string;
-+	} else {
-+		dattr->show = is_hex ? scrub_attr_show_hex : scrub_attr_show;
-+		dattr->store = is_hex ? scrub_attr_store_hex : scrub_attr_store;
-+	}
+ static struct attribute *scrub_genattr(const void *drvdata,
+@@ -266,11 +267,22 @@ static struct attribute *scrub_genattr(const void *drvdata,
+ }
  
- 	a = &dattr->attr;
- 	sysfs_attr_init(a);
+ static const char * const scrub_common_attrs[] = {
++	/* scrub attributes - common */
+ 	[scrub_addr_base] = "addr_base",
+ 	[scrub_addr_size] = "addr_size",
+ 	[scrub_enable] = "enable",
+ 	[scrub_speed] = "speed",
+ 	[scrub_speed_available] = "speed_available",
++	/* scrub attributes - DDR5 ECS/common */
++	[scrub_ecs_log_entry_type] = "ecs_log_entry_type",
++	[scrub_ecs_log_entry_type_per_dram] = "ecs_log_entry_type_per_dram",
++	[scrub_ecs_log_entry_type_per_memory_media] = "ecs_log_entry_type_per_memory_media",
++	[scrub_mode] = "mode",
++	[scrub_mode_counts_rows] = "mode_counts_rows",
++	[scrub_mode_counts_codewords] = "mode_counts_codewords",
++	[scrub_reset_counter] = "reset_counter",
++	[scrub_threshold] = "threshold",
++	[scrub_threshold_available] = "threshold_available",
+ };
+ 
+ static struct attribute **
+diff --git a/include/memory/memory-scrub.h b/include/memory/memory-scrub.h
+index 8e999c9daaed..2e223e29a5bc 100755
+--- a/include/memory/memory-scrub.h
++++ b/include/memory/memory-scrub.h
+@@ -17,11 +17,22 @@ enum scrub_types {
+ };
+ 
+ enum scrub_attributes {
++	/* scrub attributes - common */
+ 	scrub_addr_base,
+ 	scrub_addr_size,
+ 	scrub_enable,
+ 	scrub_speed,
+ 	scrub_speed_available,
++	/* scrub attributes - DDR5 ECS/common */
++	scrub_ecs_log_entry_type,
++	scrub_ecs_log_entry_type_per_dram,
++	scrub_ecs_log_entry_type_per_memory_media,
++	scrub_mode,
++	scrub_mode_counts_rows,
++	scrub_mode_counts_codewords,
++	scrub_reset_counter,
++	scrub_threshold,
++	scrub_threshold_available,
+ 	max_attrs,
+ };
+ 
 -- 
 2.34.1
 
