@@ -2,241 +2,585 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A5A937EB495
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AF587EB499
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:18:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233713AbjKNQRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 11:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38528 "EHLO
+        id S232317AbjKNQSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232317AbjKNQRU (ORCPT
+        with ESMTP id S229570AbjKNQSU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:17:20 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74CE7129
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:17:17 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 31CCB224FE;
-        Tue, 14 Nov 2023 16:17:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1699978635; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=jWXTH0JvQrBxD4rDOTtsRL9dr7IR9nzd18FzxBQ6Uyw=;
-        b=WAvP5Gf+j4WbaaanYqrYcWLpsRC/dvb8OCDZsSXIF+Zu064GhdjO2O61irXBUx/CEgidBv
-        ymKdPGAWHUhQDNX/SDUICGTBrsNt9ce+hSlvHzbeWnljlTKF54nVDi+NcatorZ2ot0qFqd
-        wyddcwz7aPa1/e/B9LSFFpiCu81K6i4=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id B49D813460;
-        Tue, 14 Nov 2023 16:17:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id ULspKoqdU2X+agAAMHmgww
-        (envelope-from <jgross@suse.com>); Tue, 14 Nov 2023 16:17:14 +0000
-Message-ID: <973a05fe-4c02-46c2-a4a7-b2e40416e82b@suse.com>
-Date:   Tue, 14 Nov 2023 17:17:14 +0100
+        Tue, 14 Nov 2023 11:18:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCC1512A
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:18:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1699978695;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hw4Bw5O59qe5xsXMRfcSSDQ86e49jjUAP8rW0qG/g2M=;
+        b=bSbYBXGS9yBZL9zJ8U1YbaGQvZAqwQ0WyEbqAiYzbNMGlp6FIfOMkl5tX7rETf0kMEu2WI
+        MjJFEvGV3kJA2bwS6Jk6oEEmPx4dlbISSVUFuSk0ERlmfRI/HeHYOkNU6YcTD/N+zZ9j0i
+        TuidNje6X5Mq3zj5n/VxlqBAFwyZ6ek=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-509-HGV7YYUvPo-OQH3y52EMRA-1; Tue, 14 Nov 2023 11:18:13 -0500
+X-MC-Unique: HGV7YYUvPo-OQH3y52EMRA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66d87503d24so70435046d6.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:18:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699978693; x=1700583493;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:from:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hw4Bw5O59qe5xsXMRfcSSDQ86e49jjUAP8rW0qG/g2M=;
+        b=tSHFZ5yQrlk//aVQu+frHXFOk79hG/QNU6Tfz3W7u5oGaVjon4mJsEhvPecUuCdqf2
+         7180+NXn5TZb+cO+mf/A1zVqMl4wWU9IEILl50BArnggdJYui/SwO1lR4p9lmr1lX9g1
+         ZBN1MF1FyLrRW1nFNoDYTj+uGHvvVcmkITyeCRx6JZDDLp7ZMvh2gabyeFlVKpPlW1v7
+         nJaEA2if7VEA19AY00ZjTrrNClveQCqBZXLl17L3fL7R1gXpK6PJIi+PTnCgidkN+XyJ
+         iCpAuOu/sZS/kgAyhiBh84vJU/OPXVyQ7JSbT7eFFFyTMFoEJV7thISc0My/1J2wUTzS
+         wphw==
+X-Gm-Message-State: AOJu0YyAwC07SBBGCfROLE9VA6OinXR6MTOMRhXqMIV0LTbSYkH9CAMO
+        Wzfn6MCLaTt7DuY7X4bKHUl8XmdsgrXAQvdwhwEfwI/t7Uh9q5OmTOmyFpLteXjVqnIvCWefMCc
+        YM+s8Q9o5Fmp+3YVSaXUgYco=
+X-Received: by 2002:a05:6214:5842:b0:672:96a7:4614 with SMTP id ml2-20020a056214584200b0067296a74614mr2872765qvb.17.1699978693078;
+        Tue, 14 Nov 2023 08:18:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFeBHtArb07IqJkCI4XTGeDMk0v6lnoxQr19rGiPyvGHV/TNX2WVpnXhaSvTgTMuspuNfNx+A==
+X-Received: by 2002:a05:6214:5842:b0:672:96a7:4614 with SMTP id ml2-20020a056214584200b0067296a74614mr2872740qvb.17.1699978692706;
+        Tue, 14 Nov 2023 08:18:12 -0800 (PST)
+Received: from [192.168.9.34] (net-2-34-24-154.cust.vodafonedsl.it. [2.34.24.154])
+        by smtp.gmail.com with ESMTPSA id y15-20020a0ceacf000000b006779f7e68cdsm3005288qvp.79.2023.11.14.08.18.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 08:18:12 -0800 (PST)
+Message-ID: <e2c3e589-880c-4b24-8aa3-5084d1d40e21@redhat.com>
+Date:   Tue, 14 Nov 2023 17:18:08 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
+From:   Marco Pagani <marpagan@redhat.com>
+Subject: Re: [RFC PATCH v2] drm/test: add a test suite for GEM objects backed
+ by shmem
+To:     Maxime Ripard <mripard@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+References: <20231108134205.111478-1-marpagan@redhat.com>
+ <dqpsjdpedvpbooffrn2nwg6hxr2bhdizwx27icwz2dx5bgsho4@id5drrg66e7h>
 Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        virtualization@lists.linux-foundation.org,
-        Ajay Kaher <akaher@vmware.com>,
-        Alexey Makhalov <amakhalov@vmware.com>,
-        VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-4-jgross@suse.com>
- <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
-From:   Juergen Gross <jgross@suse.com>
-Autocrypt: addr=jgross@suse.com; keydata=
- xsBNBFOMcBYBCACgGjqjoGvbEouQZw/ToiBg9W98AlM2QHV+iNHsEs7kxWhKMjrioyspZKOB
- ycWxw3ie3j9uvg9EOB3aN4xiTv4qbnGiTr3oJhkB1gsb6ToJQZ8uxGq2kaV2KL9650I1SJve
- dYm8Of8Zd621lSmoKOwlNClALZNew72NjJLEzTalU1OdT7/i1TXkH09XSSI8mEQ/ouNcMvIJ
- NwQpd369y9bfIhWUiVXEK7MlRgUG6MvIj6Y3Am/BBLUVbDa4+gmzDC9ezlZkTZG2t14zWPvx
- XP3FAp2pkW0xqG7/377qptDmrk42GlSKN4z76ELnLxussxc7I2hx18NUcbP8+uty4bMxABEB
- AAHNH0p1ZXJnZW4gR3Jvc3MgPGpncm9zc0BzdXNlLmNvbT7CwHkEEwECACMFAlOMcK8CGwMH
- CwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgAAKCRCw3p3WKL8TL8eZB/9G0juS/kDY9LhEXseh
- mE9U+iA1VsLhgDqVbsOtZ/S14LRFHczNd/Lqkn7souCSoyWsBs3/wO+OjPvxf7m+Ef+sMtr0
- G5lCWEWa9wa0IXx5HRPW/ScL+e4AVUbL7rurYMfwCzco+7TfjhMEOkC+va5gzi1KrErgNRHH
- kg3PhlnRY0Udyqx++UYkAsN4TQuEhNN32MvN0Np3WlBJOgKcuXpIElmMM5f1BBzJSKBkW0Jc
- Wy3h2Wy912vHKpPV/Xv7ZwVJ27v7KcuZcErtptDevAljxJtE7aJG6WiBzm+v9EswyWxwMCIO
- RoVBYuiocc51872tRGywc03xaQydB+9R7BHPzsBNBFOMcBYBCADLMfoA44MwGOB9YT1V4KCy
- vAfd7E0BTfaAurbG+Olacciz3yd09QOmejFZC6AnoykydyvTFLAWYcSCdISMr88COmmCbJzn
- sHAogjexXiif6ANUUlHpjxlHCCcELmZUzomNDnEOTxZFeWMTFF9Rf2k2F0Tl4E5kmsNGgtSa
- aMO0rNZoOEiD/7UfPP3dfh8JCQ1VtUUsQtT1sxos8Eb/HmriJhnaTZ7Hp3jtgTVkV0ybpgFg
- w6WMaRkrBh17mV0z2ajjmabB7SJxcouSkR0hcpNl4oM74d2/VqoW4BxxxOD1FcNCObCELfIS
- auZx+XT6s+CE7Qi/c44ibBMR7hyjdzWbABEBAAHCwF8EGAECAAkFAlOMcBYCGwwACgkQsN6d
- 1ii/Ey9D+Af/WFr3q+bg/8v5tCknCtn92d5lyYTBNt7xgWzDZX8G6/pngzKyWfedArllp0Pn
- fgIXtMNV+3t8Li1Tg843EXkP7+2+CQ98MB8XvvPLYAfW8nNDV85TyVgWlldNcgdv7nn1Sq8g
- HwB2BHdIAkYce3hEoDQXt/mKlgEGsLpzJcnLKimtPXQQy9TxUaLBe9PInPd+Ohix0XOlY+Uk
- QFEx50Ki3rSDl2Zt2tnkNYKUCvTJq7jvOlaPd6d/W0tZqpyy7KVay+K4aMobDsodB3dvEAs6
- ScCnh03dDAFgIq5nsB11j3KPKdVoPlfucX2c7kGNH+LUMbzqV6beIENfNexkOfxHfw==
-In-Reply-To: <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------Pc02vmEryzdSZHAYv2yiwa2U"
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -11.99
-X-Spamd-Result: default: False [-11.99 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         BAYES_HAM(-3.00)[99.98%];
-         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
-         HAS_ATTACHMENT(0.00)[];
-         REPLY(-4.00)[];
-         MIME_BASE64_TEXT_BOGUS(1.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         MIME_BASE64_TEXT(0.10)[];
-         RCPT_COUNT_TWELVE(0.00)[12];
-         SIGNED_PGP(-2.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+,1:+,2:+,3:+,4:~,5:~];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         MIME_UNKNOWN(0.10)[application/pgp-keys]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <dqpsjdpedvpbooffrn2nwg6hxr2bhdizwx27icwz2dx5bgsho4@id5drrg66e7h>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------Pc02vmEryzdSZHAYv2yiwa2U
-Content-Type: multipart/mixed; boundary="------------OLLtIHKBS0ZKHifoeSIVq0IJ";
- protected-headers="v1"
-From: Juergen Gross <jgross@suse.com>
-To: Borislav Petkov <bp@alien8.de>
-Cc: linux-kernel@vger.kernel.org, x86@kernel.org,
- virtualization@lists.linux-foundation.org, Ajay Kaher <akaher@vmware.com>,
- Alexey Makhalov <amakhalov@vmware.com>,
- VMware PV-Drivers Reviewers <pv-drivers@vmware.com>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>,
- Peter Zijlstra <peterz@infradead.org>
-Message-ID: <973a05fe-4c02-46c2-a4a7-b2e40416e82b@suse.com>
-Subject: Re: [PATCH v4 3/5] x86/paravirt: introduce ALT_NOT_XEN
-References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-4-jgross@suse.com>
- <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
-In-Reply-To: <20231114150910.GEZVONlhGbKpkrx7El@fat_crate.local>
 
---------------OLLtIHKBS0ZKHifoeSIVq0IJ
-Content-Type: multipart/mixed; boundary="------------yO470KuQM0uj7zGLHqIoIAxH"
 
---------------yO470KuQM0uj7zGLHqIoIAxH
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+On 2023-11-10 15:41, Maxime Ripard wrote:
+> On Wed, Nov 08, 2023 at 02:42:03PM +0100, Marco Pagani wrote:
+>> This patch introduces an initial KUnit test suite for GEM objects
+>> backed by shmem buffers.
+>>
+>> Suggested-by: Javier Martinez Canillas <javierm@redhat.com>
+>> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+>>
+>> v2:
+>> - Improved description of test cases
+>> - Cleaner error handling using KUnit actions
+>> - Alphabetical order in Kconfig and Makefile
+>> ---
+>>  drivers/gpu/drm/Kconfig                    |   9 +-
+>>  drivers/gpu/drm/tests/Makefile             |   5 +-
+>>  drivers/gpu/drm/tests/drm_gem_shmem_test.c | 381 +++++++++++++++++++++
+>>  3 files changed, 389 insertions(+), 6 deletions(-)
+>>  create mode 100644 drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>>
+>> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+>> index 3eee8636f847..a2551c8c393a 100644
+>> --- a/drivers/gpu/drm/Kconfig
+>> +++ b/drivers/gpu/drm/Kconfig
+>> @@ -76,14 +76,15 @@ config DRM_KUNIT_TEST
+>>  	tristate "KUnit tests for DRM" if !KUNIT_ALL_TESTS
+>>  	depends on DRM && KUNIT
+>>  	select PRIME_NUMBERS
+>> +	select DRM_BUDDY
+>>  	select DRM_DISPLAY_DP_HELPER
+>>  	select DRM_DISPLAY_HELPER
+>> -	select DRM_LIB_RANDOM
+>> -	select DRM_KMS_HELPER
+>> -	select DRM_BUDDY
+>> +	select DRM_EXEC
+>>  	select DRM_EXPORT_FOR_TESTS if m
+>> +	select DRM_GEM_SHMEM_HELPER
+>> +	select DRM_KMS_HELPER
+>>  	select DRM_KUNIT_TEST_HELPERS
+>> -	select DRM_EXEC
+>> +	select DRM_LIB_RANDOM
+>>  	default KUNIT_ALL_TESTS
+>>  	help
+>>  	  This builds unit tests for DRM. This option is not useful for
+>> diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makefile
+>> index ba7baa622675..d6183b3d7688 100644
+>> --- a/drivers/gpu/drm/tests/Makefile
+>> +++ b/drivers/gpu/drm/tests/Makefile
+>> @@ -9,15 +9,16 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
+>>  	drm_connector_test.o \
+>>  	drm_damage_helper_test.o \
+>>  	drm_dp_mst_helper_test.o \
+>> +	drm_exec_test.o \
+>>  	drm_format_helper_test.o \
+>>  	drm_format_test.o \
+>>  	drm_framebuffer_test.o \
+>> +	drm_gem_shmem_test.o \
+>>  	drm_managed_test.o \
+>>  	drm_mm_test.o \
+>>  	drm_modes_test.o \
+>>  	drm_plane_helper_test.o \
+>>  	drm_probe_helper_test.o \
+>> -	drm_rect_test.o	\
+>> -	drm_exec_test.o
+>> +	drm_rect_test.o
+> 
+> Thanks for reordering the tests and symbols, but they should part of a
+> preliminary patch.
+> 
 
-T24gMTQuMTEuMjMgMTY6MDksIEJvcmlzbGF2IFBldGtvdiB3cm90ZToNCj4gT24gTW9uLCBP
-Y3QgMzAsIDIwMjMgYXQgMDM6MjU6MDZQTSArMDEwMCwgSnVlcmdlbiBHcm9zcyB3cm90ZToN
-Cj4+IEludHJvZHVjZSB0aGUgbWFjcm8gQUxUX05PVF9YRU4gYXMgYSBzaG9ydCBmb3JtIG9m
-DQo+PiBBTFRfTk9UKFg4Nl9GRUFUVVJFX1hFTlBWKS4NCj4gDQo+IE5vdCBjcmF6eSBhYm91
-dCBhZGRpbmcgeWV0IGFub3RoZXIgbWFjcm8gaW5kaXJlY3Rpb24gLSBhdCBsZWFzdCB3aXRo
-IHRoZQ0KPiBYODZfRkVBVFVSRV8gaXQgaXMgY2xlYXIgd2hhdCB0aGlzIGlzLiBCdXQgb2ss
-IHdoYXRldmVyLg0KPiANCj4gQW55d2F5LCB0aGlzIHBhdGNoIGNhbiBiZSB0aGUgZmlyc3Qg
-b25lIGluIHRoZSBzZXJpZXMuDQo+IA0KDQpPa2F5Lg0KDQoNCkp1ZXJnZW4NCg==
---------------yO470KuQM0uj7zGLHqIoIAxH
-Content-Type: application/pgp-keys; name="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Disposition: attachment; filename="OpenPGP_0xB0DE9DD628BF132F.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
+Okay, I'll send it as a separate patch before v3.
 
------BEGIN PGP PUBLIC KEY BLOCK-----
 
-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
-jR/i1DG86lem3iBDXzXsZDn8R38=3D
-=3D2wuH
------END PGP PUBLIC KEY BLOCK-----
+>>  CFLAGS_drm_mm_test.o := $(DISABLE_STRUCTLEAK_PLUGIN)
+>> diff --git a/drivers/gpu/drm/tests/drm_gem_shmem_test.c b/drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>> new file mode 100644
+>> index 000000000000..983380490673
+>> --- /dev/null
+>> +++ b/drivers/gpu/drm/tests/drm_gem_shmem_test.c
+>> @@ -0,0 +1,381 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * KUnit test suite for GEM objects backed by shmem buffers
+>> + *
+>> + * Copyright (C) 2023 Red Hat, Inc.
+>> + *
+>> + * Author: Marco Pagani <marpagan@redhat.com>
+>> + */
+>> +
+>> +#include <linux/dma-buf.h>
+>> +#include <linux/iosys-map.h>
+>> +#include <linux/sizes.h>
+>> +
+>> +#include <kunit/test.h>
+>> +
+>> +#include <drm/drm_device.h>
+>> +#include <drm/drm_drv.h>
+>> +#include <drm/drm_gem.h>
+>> +#include <drm/drm_gem_shmem_helper.h>
+>> +#include <drm/drm_kunit_helpers.h>
+>> +
+>> +#define TEST_SIZE		SZ_1M
+>> +#define TEST_BYTE		0xae
+>> +
+>> +struct fake_dev {
+>> +	struct drm_device drm_dev;
+>> +	struct device *dev;
+> 
+> AFAICS, you're not using the dev pointer anywhere. You could remove the
+> fake_dev struct entirely and pass the drm_device pointer in test->priv
+>
 
---------------yO470KuQM0uj7zGLHqIoIAxH--
+Nice catch, thanks! It's a leftover from the previous version, where it
+was used in the .exit function to free the parent dev. I'll drop it in v3.
 
---------------OLLtIHKBS0ZKHifoeSIVq0IJ--
+>> +};
+>> +
+>> +/*
+>> + * Wrappers to avoid an explicit type casting when passing action
+>> + * functions to kunit_add_action().
+>> + */
+>> +static void kfree_wrapper(void *p)
+>> +{
+>> +	kfree(p);
+>> +}
+>> +
+>> +static void sg_free_table_wrapper(void *sgt)
+>> +{
+>> +	sg_free_table(sgt);
+>> +}
+>> +
+>> +static void drm_gem_shmem_free_wrapper(void *shmem)
+>> +{
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+> 
+> I think you need to explicitly cast the pointer (or do a temporary
+> assignment to the proper type) to avoid a compiler warning.
+> 
 
---------------Pc02vmEryzdSZHAYv2yiwa2U
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+Do you mean like:
 
------BEGIN PGP SIGNATURE-----
+static void drm_gem_shmem_free_wrapper(void *shmem)
+{
+	drm_gem_shmem_free((struct drm_gem_shmem_object *)shmem);
+}
 
-wsB5BAABCAAjFiEEhRJncuj2BJSl0Jf3sN6d1ii/Ey8FAmVTnYoFAwAAAAAACgkQsN6d1ii/Ey8l
-YwgAh/LDDdwJSaxkkG+MR/zRlyJdCmEb07blKm3Jf7fhIwlGqCc4RXyeJdp3cGTNMuQ7/CSrnV2/
-90HcBBiyuxcHuuqd6fabeNKaa/TNc4upC+GSqiGgqDf+iWVMDDjcxIfFXlvtOTqfXjCcPydD+df3
-y+r0DBlYMTRpn992dvFut/CMfGQiAKMqwNOEjpfYybwvYpni20m5jOWGJgB10TaRMy5w5W9WdJQl
-QRt/uqCXcCbM1t333hb4hnkB98pdhsnWiMqfav6S3fPDajLdJAzfpbGu6uvkE30mq4J3wEhn8QFa
-QMVgwD/C7k//o1TdeBvFO0jOQ7d8FY7+FqEYnwDEyw==
-=g6dP
------END PGP SIGNATURE-----
+I built the current version with clang 16.0.6 and gcc 13.2.1 but got
+no cast warnings. Clang spotted an uninitialized variable, though.
 
---------------Pc02vmEryzdSZHAYv2yiwa2U--
+>> +/*
+>> + * Test creating a shmem GEM object backed by shmem buffer. The test
+>> + * case succeeds if the GEM object is successfully allocated with the
+>> + * shmem file node and object functions attributes set, and the size
+>> + * attribute is equal to the correct size.
+>> + */
+> 
+> Thanks for all those comments, it's super helpful
+> 
+>> +static void drm_gem_shmem_test_obj_create(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_EXPECT_EQ(test, shmem->base.size, TEST_SIZE);
+>> +	KUNIT_EXPECT_NOT_NULL(test, shmem->base.filp);
+>> +	KUNIT_EXPECT_NOT_NULL(test, shmem->base.funcs);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/*
+>> + * Test creating a shmem GEM object from a scatter/gather table exported
+>> + * via a DMA-BUF. The test case succeed if the GEM object is successfully
+>> + * created with the shmem file node attribute equal to NULL and the sgt
+>> + * attribute pointing to the scatter/gather table that has been imported.
+>> + */
+>> +static void drm_gem_shmem_test_obj_create_private(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct drm_gem_object *gem_obj;
+>> +	struct dma_buf buf_mock;
+>> +	struct dma_buf_attachment attach_mock;
+>> +	struct sg_table *sgt;
+>> +	char *buf;
+>> +	int ret;
+>> +
+>> +	/* Create a mock scatter/gather table */
+>> +	buf = kunit_kzalloc(test, TEST_SIZE, GFP_KERNEL);
+>> +	KUNIT_ASSERT_NOT_NULL(test, buf);
+>> +
+>> +	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
+>> +	KUNIT_ASSERT_NOT_NULL(test, sgt);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, kfree_wrapper, sgt);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = sg_alloc_table(sgt, 1, GFP_KERNEL);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, sg_free_table_wrapper, sgt);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	sg_init_one(sgt->sgl, buf, TEST_SIZE);
+>> +
+>> +	/* Init a mock DMA-BUF */
+>> +	buf_mock.size = TEST_SIZE;
+>> +	attach_mock.dmabuf = &buf_mock;
+>> +
+>> +	gem_obj = drm_gem_shmem_prime_import_sg_table(&fdev->drm_dev, &attach_mock, sgt);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, gem_obj);
+>> +	KUNIT_EXPECT_EQ(test, gem_obj->size, TEST_SIZE);
+>> +	KUNIT_EXPECT_NULL(test, gem_obj->filp);
+>> +	KUNIT_EXPECT_NOT_NULL(test, gem_obj->funcs);
+>> +
+>> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+>> +	kunit_remove_action(test, sg_free_table_wrapper, sgt);
+>> +	kunit_remove_action(test, kfree_wrapper, sgt);
+>> +
+>> +	shmem = to_drm_gem_shmem_obj(gem_obj);
+>> +	KUNIT_EXPECT_PTR_EQ(test, shmem->sgt, sgt);
+>> +
+>> +	drm_gem_shmem_free(shmem);
+>> +}
+>> +
+>> +/*
+>> + * Test pinning backing pages for a shmem GEM object. The test case
+>> + * succeeds if a suitable number of backing pages are allocated, and
+>> + * the pages table counter attribute is increased by one.
+>> + */
+>> +static void drm_gem_shmem_test_pin_pages(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	int i, ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+>> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 0);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = drm_gem_shmem_pin(shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->pages);
+>> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 1);
+>> +
+>> +	for (i = 0; i < (shmem->base.size >> PAGE_SHIFT); i++)
+>> +		KUNIT_ASSERT_NOT_NULL(test, shmem->pages[i]);
+>> +
+>> +	drm_gem_shmem_unpin(shmem);
+>> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+>> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 0);
+>> +}
+>> +
+>> +/*
+>> + * Test creating a virtual mapping for a shmem GEM object. The test
+>> + * case succeeds if the backing memory is mapped and the reference
+>> + * counter for virtual mapping is increased by one. Moreover, the test
+>> + * case writes and then reads a test pattern over the mapped memory.
+>> + */
+>> +static void drm_gem_shmem_test_vmap(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct iosys_map map;
+>> +	int ret, i;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_EXPECT_NULL(test, shmem->vaddr);
+>> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 0);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = drm_gem_shmem_vmap(shmem, &map);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->vaddr);
+>> +	KUNIT_ASSERT_FALSE(test, iosys_map_is_null(&map));
+>> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 1);
+>> +
+>> +	iosys_map_memset(&map, 0, TEST_BYTE, TEST_SIZE);
+>> +	for (i = 0; i < TEST_SIZE; i++)
+>> +		KUNIT_EXPECT_EQ(test, iosys_map_rd(&map, i, u8), TEST_BYTE);
+>> +
+>> +	drm_gem_shmem_vunmap(shmem, &map);
+>> +	KUNIT_EXPECT_NULL(test, shmem->vaddr);
+>> +	KUNIT_EXPECT_EQ(test, shmem->vmap_use_count, 0);
+>> +}
+>> +
+>> +/*
+>> + * Test exporting a scatter/gather table of pinned pages suitable for
+>> + * PRIME usage from a shmem GEM object. The test case succeeds if a
+>> + * scatter/gather table large enough to accommodate the backing memory
+>> + * is successfully exported.
+>> + */
+>> +static void drm_gem_shmem_test_get_pages_sgt(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	struct scatterlist *sg;
+>> +	unsigned int si, len = 0;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = drm_gem_shmem_pin(shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	sgt = drm_gem_shmem_get_sg_table(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +	KUNIT_EXPECT_NULL(test, shmem->sgt);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, sg_free_table_wrapper, sgt);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	for_each_sgtable_sg(sgt, sg, si) {
+>> +		KUNIT_EXPECT_NOT_NULL(test, sg);
+>> +		len += sg->length;
+>> +	}
+>> +
+>> +	KUNIT_EXPECT_GE(test, len, TEST_SIZE);
+>> +}
+>> +
+>> +/*
+>> + * Test pinning pages and exporting a scatter/gather table suitable for
+>> + * driver usage from a shmem GEM object. The test case succeeds if the
+>> + * backing pages are pinned and a scatter/gather table large enough to
+>> + * accommodate the backing memory is successfully exported.
+>> + */
+>> +static void drm_gem_shmem_test_get_sg_table(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	struct scatterlist *sg;
+>> +	unsigned int si, len, ret = 0;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+>> +	sgt = drm_gem_shmem_get_pages_sgt(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +	KUNIT_ASSERT_NOT_NULL(test, shmem->pages);
+>> +	KUNIT_EXPECT_EQ(test, shmem->pages_use_count, 1);
+>> +	KUNIT_EXPECT_PTR_EQ(test, sgt, shmem->sgt);
+>> +
+>> +	for_each_sgtable_sg(sgt, sg, si) {
+>> +		KUNIT_EXPECT_NOT_NULL(test, sg);
+>> +		len += sg->length;
+>> +	}
+>> +
+>> +	KUNIT_EXPECT_GE(test, len, TEST_SIZE);
+>> +}
+>> +
+>> +/*
+>> + * Test updating the madvise state of a shmem GEM object. The test
+>> + * case checks that the function for setting madv updates it only if
+>> + * its current value is greater or equal than zero and returns false
+>> + * if it has a negative value.
+>> + */
+>> +static void drm_gem_shmem_test_madvise(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, 0);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, 1);
+>> +	KUNIT_EXPECT_TRUE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, 1);
+>> +
+>> +	/* Set madv to a negative value */
+>> +	ret = drm_gem_shmem_madvise(shmem, -1);
+>> +	KUNIT_EXPECT_FALSE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+>> +
+>> +	/* Check that madv cannot be set back to a positive value */
+>> +	ret = drm_gem_shmem_madvise(shmem, 0);
+>> +	KUNIT_EXPECT_FALSE(test, ret);
+>> +	KUNIT_ASSERT_EQ(test, shmem->madv, -1);
+>> +}
+>> +
+>> +/*
+>> + * Test purging a shmem GEM object. First, assert that a newly created
+>> + * shmem GEM object is not purgeable. Then, set madvise to a positive
+>> + * value and call drm_gem_shmem_get_pages_sgt() to pin and dma-map the
+>> + * backing pages. Finally, assert that the shmem GEM object is now
+>> + * purgeable and purge it.
+>> + */
+>> +static void drm_gem_shmem_test_purge(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev = test->priv;
+>> +	struct drm_gem_shmem_object *shmem;
+>> +	struct sg_table *sgt;
+>> +	int ret;
+>> +
+>> +	shmem = drm_gem_shmem_create(&fdev->drm_dev, TEST_SIZE);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, shmem);
+>> +
+>> +	ret = kunit_add_action_or_reset(test, drm_gem_shmem_free_wrapper, shmem);
+>> +	KUNIT_ASSERT_EQ(test, ret, 0);
+>> +
+>> +	ret = drm_gem_shmem_is_purgeable(shmem);
+>> +	KUNIT_EXPECT_FALSE(test, ret);
+>> +
+>> +	ret = drm_gem_shmem_madvise(shmem, 1);
+>> +	KUNIT_EXPECT_TRUE(test, ret);
+>> +
+>> +	/* The scatter/gather table will be freed by drm_gem_shmem_free */
+>> +	sgt = drm_gem_shmem_get_pages_sgt(shmem);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, sgt);
+>> +
+>> +	ret = drm_gem_shmem_is_purgeable(shmem);
+>> +	KUNIT_EXPECT_TRUE(test, ret);
+>> +
+>> +	drm_gem_shmem_purge(shmem);
+>> +	KUNIT_EXPECT_NULL(test, shmem->pages);
+>> +	KUNIT_EXPECT_NULL(test, shmem->sgt);
+>> +	KUNIT_EXPECT_EQ(test, shmem->madv, -1);
+>> +}
+>> +
+>> +static int drm_gem_shmem_test_init(struct kunit *test)
+>> +{
+>> +	struct fake_dev *fdev;
+>> +	struct device *dev;
+>> +
+>> +	/* Allocate a parent device */
+>> +	dev = drm_kunit_helper_alloc_device(test);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, dev);
+>> +
+>> +	/*
+>> +	 * The DRM core will automatically initialize the GEM core and create
+>> +	 * a DRM Memory Manager object which provides an address space pool
+>> +	 * for GEM objects allocation.
+>> +	 */
+>> +	fdev = drm_kunit_helper_alloc_drm_device(test, dev, struct fake_dev,
+>> +						 drm_dev, DRIVER_GEM);
+>> +	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, fdev);
+>> +
+>> +	fdev->dev = dev;
+>> +	test->priv = fdev;
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static struct kunit_case drm_gem_shmem_test_cases[] = {
+>> +	KUNIT_CASE(drm_gem_shmem_test_obj_create),
+>> +	KUNIT_CASE(drm_gem_shmem_test_obj_create_private),
+>> +	KUNIT_CASE(drm_gem_shmem_test_pin_pages),
+>> +	KUNIT_CASE(drm_gem_shmem_test_vmap),
+>> +	KUNIT_CASE(drm_gem_shmem_test_get_pages_sgt),
+>> +	KUNIT_CASE(drm_gem_shmem_test_get_sg_table),
+>> +	KUNIT_CASE(drm_gem_shmem_test_madvise),
+>> +	KUNIT_CASE(drm_gem_shmem_test_purge),
+>> +	{}
+>> +};
+>> +
+>> +static struct kunit_suite drm_gem_shmem_suite = {
+>> +	.name = "drm_gem_shmem",
+>> +	.init = drm_gem_shmem_test_init,
+>> +	.test_cases = drm_gem_shmem_test_cases
+>> +};
+>> +
+>> +kunit_test_suite(drm_gem_shmem_suite);
+> 
+> Looks great otherwise, thanks!
+> Maxime
+
+Thanks,
+Marco
+
