@@ -2,71 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 464567EB999
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 23:50:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF127EBA25
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 00:12:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231598AbjKNWus (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 17:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36350 "EHLO
+        id S234154AbjKNXMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 18:12:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232322AbjKNWup (ORCPT
+        with ESMTP id S230162AbjKNWzn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 17:50:45 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4C09DE3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 14:50:42 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2640BC433C8;
-        Tue, 14 Nov 2023 22:50:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1700002241;
-        bh=N6HqswbYFj8oQ63GBlegHfbRdhg4wqQxWCHvJV54ZCM=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=OgjCzaqRU3NzDSlEFgW7HdJNRVstmszAwYAAfqtQckuts3E8nrAh/KTpW2xN5fDpk
-         XkNoq9Y2rZRYlNNYruTF6vaFT8MVWYVqoHJZocMgZe25E23lsYxylIFRI6hbq/HwKv
-         q1JYLJZt302R3wXVMELnHyUXbYXf9Gxj6NDNccBc=
-Date:   Tue, 14 Nov 2023 14:50:40 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Nhat Pham <nphamcs@gmail.com>
-Cc:     Chris Li <chrisl@kernel.org>, tj@kernel.org,
-        lizefan.x@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        Yosry Ahmed <yosryahmed@google.com>,
-        Seth Jennings <sjenning@redhat.com>,
-        Dan Streetman <ddstreet@ieee.org>,
-        Vitaly Wool <vitaly.wool@konsulko.com>, mhocko@kernel.org,
-        roman.gushchin@linux.dev, Shakeel Butt <shakeelb@google.com>,
-        muchun.song@linux.dev, Hugh Dickins <hughd@google.com>,
-        corbet@lwn.net, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm <linux-mm@kvack.org>, kernel-team@meta.com,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Subject: Re: [PATCH v4] zswap: memcontrol: implement zswap writeback
- disabling
-Message-Id: <20231114145040.4b90d49d4ace1621c87f9c79@linux-foundation.org>
-In-Reply-To: <CAKEwX=PT=5nvLhUyMmi=hq0_2H-4kmO9tOdqFvHEtaWF+e8M1Q@mail.gmail.com>
-References: <20231106231158.380730-1-nphamcs@gmail.com>
-        <CAF8kJuPXBLpG2d4sje6ntrA+U-AnLzu3sNpJK02YxNcg04YNng@mail.gmail.com>
-        <CAKEwX=OgN_xQWrp_OYkK1BRq3DFW4he9OSycdjBm0BNy+vpPAg@mail.gmail.com>
-        <CAF8kJuN--EUY95O1jpV39yv5FDu0OYanY6SZeBPk5ng4kRyrjA@mail.gmail.com>
-        <CAKEwX=PT=5nvLhUyMmi=hq0_2H-4kmO9tOdqFvHEtaWF+e8M1Q@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Tue, 14 Nov 2023 17:55:43 -0500
+Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [IPv6:2605:2700:0:5::4713:9cab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6A4DD0;
+        Tue, 14 Nov 2023 14:55:39 -0800 (PST)
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:7e5d:5300::2])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 6FC24674;
+        Tue, 14 Nov 2023 14:55:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1700002539;
+        bh=qaYU2IGMX1lsBoaugoYAT/ndPiiRSEGxP3R5Evh8Msw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=WJkJyXJEZtlDmqI29zqijW0seV4wA4tzePyRVk4ckQDIrzNRIKBXGeWisF38spT6l
+         +SQpfwWG41J1UVLsEvV8RQCDSRIhGkrcrLcQwW/Saa/GicltsB021dvTR4X3cJQgLz
+         SRFJdfSF9y/e6mK0L4xoAhcVUErf1RcWyP8o9bwI=
+Date:   Tue, 14 Nov 2023 14:55:38 -0800
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org
+Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add ASRock E3C256D4I BMC
+Message-ID: <beafed87-a77d-4347-9648-24a51890eaa6@hatter.bewilderbeest.net>
+References: <20231114112722.28506-4-zev@bewilderbeest.net>
+ <20231114112722.28506-6-zev@bewilderbeest.net>
+ <cde26249-1d47-496f-b198-a0c4c02bed5c@linaro.org>
+ <e766e663-0985-4a2e-8023-26ad0228157d@hatter.bewilderbeest.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <e766e663-0985-4a2e-8023-26ad0228157d@hatter.bewilderbeest.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Nov 2023 16:06:58 -0800 Nhat Pham <nphamcs@gmail.com> wrote:
+On Tue, Nov 14, 2023 at 02:37:10PM PST, Zev Weiss wrote:
+>On Tue, Nov 14, 2023 at 12:35:37PM PST, Krzysztof Kozlowski wrote:
+>>On 14/11/2023 12:27, Zev Weiss wrote:
+>>>Like the E3C246D4I, this is a reasonably affordable off-the-shelf
+>>>mini-ITX AST2500/Xeon motherboard with good potential as an OpenBMC
+>>>development platform.  Booting the host requires a modicum of eSPI
+>>>support that's not yet in the mainline kernel, but most other basic
+>>>BMC functionality is available with this device-tree.
+>>>
+>>>Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+>>>---
+>>> arch/arm/boot/dts/aspeed/Makefile             |   1 +
+>>> .../aspeed/aspeed-bmc-asrock-e3c256d4i.dts    | 314 ++++++++++++++++++
+>>> 2 files changed, 315 insertions(+)
+>>> create mode 100644 arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>>>
+>>>diff --git a/arch/arm/boot/dts/aspeed/Makefile b/arch/arm/boot/dts/aspeed/Makefile
+>>>index d3ac20e316d0..3398ee53f034 100644
+>>>--- a/arch/arm/boot/dts/aspeed/Makefile
+>>>+++ b/arch/arm/boot/dts/aspeed/Makefile
+>>>@@ -9,6 +9,7 @@ dtb-$(CONFIG_ARCH_ASPEED) += \
+>>> 	aspeed-bmc-ampere-mtmitchell.dtb \
+>>> 	aspeed-bmc-arm-stardragon4800-rep2.dtb \
+>>> 	aspeed-bmc-asrock-e3c246d4i.dtb \
+>>>+	aspeed-bmc-asrock-e3c256d4i.dtb \
+>>> 	aspeed-bmc-asrock-romed8hm3.dtb \
+>>> 	aspeed-bmc-bytedance-g220a.dtb \
+>>> 	aspeed-bmc-delta-ahe50dc.dtb \
+>>>diff --git a/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>>>new file mode 100644
+>>>index 000000000000..4c55272afd4f
+>>>--- /dev/null
+>>>+++ b/arch/arm/boot/dts/aspeed/aspeed-bmc-asrock-e3c256d4i.dts
+>>>@@ -0,0 +1,314 @@
+>>>+// SPDX-License-Identifier: GPL-2.0+
+>>>+/dts-v1/;
+>>>+
+>>>+#include "aspeed-g5.dtsi"
+>>>+#include <dt-bindings/gpio/aspeed-gpio.h>
+>>>+#include <dt-bindings/i2c/i2c.h>
+>>>+#include <dt-bindings/interrupt-controller/irq.h>
+>>>+#include <dt-bindings/watchdog/aspeed-wdt.h>
+>>>+
+>>>+/{
+>>>+	model = "ASRock E3C256D4I BMC";
+>>>+	compatible = "asrock,e3c256d4i-bmc", "aspeed,ast2500";
+>>>+
+>>>+	aliases {
+>>>+		serial4 = &uart5;
+>>>+
+>>>+		i2c20 = &i2c2mux0ch0;
+>>>+		i2c21 = &i2c2mux0ch1;
+>>>+		i2c22 = &i2c2mux0ch2;
+>>>+		i2c23 = &i2c2mux0ch3;
+>>>+	};
+>>>+
+>>>+	chosen {
+>>>+		stdout-path = &uart5;
+>>>+		bootargs = "console=tty0 console=ttyS4,115200 earlycon";
+>>
+>>Drop bootargs.
+>>
+>
+>Ack.
+>
+>>>+	};
+>>>+
+>>>+	memory@80000000 {
+>>>+		reg = <0x80000000 0x20000000>;
+>>>+	};
+>>>+
+>>>+	leds {
+>>>+		compatible = "gpio-leds";
+>>>+
+>>>+		heartbeat {
+>>
+>>It does not look like you tested the DTS against bindings. Please run
+>>`make dtbs_check W=1` (see
+>>Documentation/devicetree/bindings/writing-schema.rst or
+>>https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
+>>for instructions).
+>>
+>
+>As with my spc621d8hm3 dts patch, I did run that and got no output, so 
+>if there are other specific problems please let me know what they are.
+>
 
-> It's a bit of a micro-optimization indeed. But if for some reason I need
-> to send v5 or a fixlet, I'll keep this in mind!
+Whoops, and of course now I realize I also sent the first reply to this 
+thread instead of the spc621d8hm3 one...
 
-I'm seeing a lot of rejects against current mainline, so yes please.
+
+Zev
+
