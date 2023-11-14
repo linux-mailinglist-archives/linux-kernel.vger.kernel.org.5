@@ -2,147 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C21397EAFB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:16:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A2377EAFBE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 13:22:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbjKNMQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 07:16:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60094 "EHLO
+        id S232752AbjKNMVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 07:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232177AbjKNMQP (ORCPT
+        with ESMTP id S232177AbjKNMVo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 07:16:15 -0500
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710A0130
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:16:12 -0800 (PST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2800e025bc7so5783305a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:16:12 -0800 (PST)
+        Tue, 14 Nov 2023 07:21:44 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F25D2D1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:21:40 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45d8c405696so1981529137.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 04:21:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1699964500; x=1700569300; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7rB/rX7UtaFpyUffk9v/aC4bo/cSeZRZqRPvQXU+ii4=;
+        b=RzDdaCIrrEQFTNYqm9vP0XVvrltW2psmt0183H4aVzZSkvEUNeXtpW21q4rBMqNgLw
+         i1oglvZeAx8NjJSjyVG67yG2IJdZIt5DE1gVkX1WPstlOFP0Np7vQ49mt9LJslFjBXSc
+         YZF/9OaZu5lNHaN/WcANhIHSIRnOXuaQeBLUUDaVM2611cLtjgFmes7YZssFhXBMsdnC
+         SpUzY5TkVmH1PTx8oJMX1NIZ4XsfEZk9VPifmbaX11FqLI03HMxeApt1xFw0ospZ7hPJ
+         WWjV1r9nvmSClml0A/O6aqlm1tsQZ5Gs1OcWCLooIEGpl1Azc/tsAAZ6uJsR44SzrvyE
+         N9IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699964172; x=1700568972;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ycFRbsOtgNGHZUuoIQykml5/FWD0Wnwxuu5LXF7/WPs=;
-        b=S2g+oDNntNoBc9lh2x1fCo/q14GMaXvCMioV4FkcQhhHZ99JGXBJDAMF9FsNyEh0IK
-         y/ouELAQBHbfQGIuVBaJqslYMVMB5NU2LyN3x0AcIWk+NvDy6ZimgnihHug0ah/+SMED
-         pd4TjmkQiL23I0EEpgzZ5ss7gdsvcTaYlYqSsj44JVkRlebG8Wuma0YEQFQp0S60uFNO
-         mV4U8e3clHLKAoosI4JRoIsbhry+yS67ho/Q9SHtxpMEQ5SQNajdkphyaST8Pn7OMG+S
-         ItubTs+ZjGHf76kVR4/gT6cSj8TMnXqRg8Vfi2AHliFc0olkaNwQ+NWKQdp3v/EV0f6p
-         BMMQ==
-X-Gm-Message-State: AOJu0Yy1aO+ARM+/UqQ0Wdl0bY5gWi4AtBnZbXwwKrw1mtWYJET1kD9M
-        r5sQA4tHgdp/wheA9OQNAm86vknJcG5YkKItcIJpRXNLwpAn
-X-Google-Smtp-Source: AGHT+IE4nVvNHarFadufz7fK+2D5bGHbPbbLkTHJxwhNrWm/eQMxBOzNLZlP19iW4AVlzLt359qY9d3YsFn2n7JFNxi8zjjSv/P1
+        d=1e100.net; s=20230601; t=1699964500; x=1700569300;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7rB/rX7UtaFpyUffk9v/aC4bo/cSeZRZqRPvQXU+ii4=;
+        b=nBNLpF+Ab9GHW20ENuZm25+hX07C7tk9xuZTpg9fRO/577pNqff0hI41QksEqW6cbO
+         MAJnsefKd2akF2bwq3gNpGfHM7+ekfHwGKM34nGNZYKmv7M4M1uH3NhCDQ4S4ES//QjR
+         A1Gfa62l+QbI6GbaS1AEeeO0d/o4XFyxoyBYnxNM2wMi04dY+I3Vy5LZV1FMd96VDnYN
+         ch3h9FnIaolkWOCrUjaybUXe1kK89KFFrwA2SuBgz7X1hrJ+EbzHBu9e81UgHYNji446
+         Kx4CxgMDSpFoPbIWsSpUwYhlZAaD2TNQv4o3lB2j44Cl8rnx0XAwev8kO1kMpCUmxEQH
+         P+4g==
+X-Gm-Message-State: AOJu0YwUz15ZKOnL7of3BQo+HsUqOyLyMNJHdJsJ60M0lhixATFdvL7E
+        jWZHqbonJc5fwCkidX7wW/UUjWWQOu9cG7ZoJ2/Kfg==
+X-Google-Smtp-Source: AGHT+IGc1Ov9oNbuvwvh4LdxXUNBo/5A+bmcIQaRqmSXDOC/iNxjkaUqIkEq8ZfknmFTAIOaX2mUNtHflVlsKzJ2EtE=
+X-Received: by 2002:a67:e10d:0:b0:45f:68cb:d55d with SMTP id
+ d13-20020a67e10d000000b0045f68cbd55dmr8102580vsl.15.1699964499870; Tue, 14
+ Nov 2023 04:21:39 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:3c0f:b0:280:990b:3c29 with SMTP id
- pb15-20020a17090b3c0f00b00280990b3c29mr2843551pjb.1.1699964172046; Tue, 14
- Nov 2023 04:16:12 -0800 (PST)
-Date:   Tue, 14 Nov 2023 04:16:11 -0800
-In-Reply-To: <82909cf60e85b216c14be8fa3ef036f0@foxhound.fi>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009b1b20060a1bc04e@google.com>
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in __pte_offset_map_lock
-From:   syzbot <syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com>
-To:     jose.pekkarinen@foxhound.fi, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com> <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org> <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+In-Reply-To: <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 14 Nov 2023 04:21:26 -0800
+Message-ID: <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, Nov 14, 2023 at 12:23=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.c=
+om> wrote:
+>
+> +cc Christian, Jason and Willy
+>
+> On 2023/11/14 7:05, Jakub Kicinski wrote:
+> > On Mon, 13 Nov 2023 05:42:16 -0800 Mina Almasry wrote:
+> >> You're doing exactly what I think you're doing, and what was nacked in=
+ RFC v1.
+> >>
+> >> You've converted 'struct page_pool_iov' to essentially become a
+> >> duplicate of 'struct page'. Then, you're casting page_pool_iov* into
+> >> struct page* in mp_dmabuf_devmem_alloc_pages(), then, you're calling
+> >> mm APIs like page_ref_*() on the page_pool_iov* because you've fooled
+> >> the mm stack into thinking dma-buf memory is a struct page.
+>
+> Yes, something like above, but I am not sure about the 'fooled the mm
+> stack into thinking dma-buf memory is a struct page' part, because:
+> 1. We never let the 'struct page' for devmem leaking out of net stacking
+>    through the 'not kmap()able and not readable' checking in your patchse=
+t.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-BUG: unable to handle kernel paging request in __pte_offset_map_lock
+RFC never used dma-buf pages outside the net stack, so that is the same.
 
-Unable to handle kernel paging request at virtual address dfff800000000004
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000004] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 8555 Comm: syz-executor.5 Not tainted 6.7.0-rc1-syzkaller-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
-lr : lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
-sp : ffff80009b8e6d40
-x29: ffff80009b8e7000 x28: ffff8000808f70a8 x27: ffff70001371ce18
-x26: 1ffff00011c62088 x25: 0000000000000000 x24: 0000000000000000
-x23: ffff70001371cdd0 x22: 0000000000000000 x21: 0000000000000000
-x20: 0000000000000000 x19: 0000000000000022 x18: ffff80009b8e7750
-x17: 0000000000000000 x16: ffff80008a7375ec x15: 0000000000000001
-x14: ffff80008e310448 x13: ffff80009b8e6e80 x12: dfff800000000000
-x11: ffff80008031ef10 x10: ffff80008e310444 x9 : 00000000000000f3
-x8 : 0000000000000004 x7 : ffff8000808f70a8 x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000022
-Call trace:
- __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- __pte_offset_map_lock+0x154/0x288 mm/pgtable-generic.c:375
- pte_offset_map_lock include/linux/mm.h:2948 [inline]
- filemap_map_pages+0x5cc/0x112c mm/filemap.c:3531
- do_fault_around mm/memory.c:4586 [inline]
- do_read_fault mm/memory.c:4619 [inline]
- do_fault mm/memory.c:4762 [inline]
- do_pte_missing mm/memory.c:3730 [inline]
- handle_pte_fault mm/memory.c:5038 [inline]
- __handle_mm_fault mm/memory.c:5179 [inline]
- handle_mm_fault+0x35ec/0x49f8 mm/memory.c:5344
- faultin_page mm/gup.c:956 [inline]
- __get_user_pages+0x3e0/0xa24 mm/gup.c:1239
- populate_vma_page_range+0x254/0x328 mm/gup.c:1677
- __mm_populate+0x240/0x3d8 mm/gup.c:1786
- mm_populate include/linux/mm.h:3381 [inline]
- vm_mmap_pgoff+0x2bc/0x3d4 mm/util.c:551
- ksys_mmap_pgoff+0xd0/0x5b0 mm/mmap.c:1425
- __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
- __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
- __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: 900704a8 b9424108 34000208 d343fe68 (386c6908) 
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	900704a8 	adrp	x8, 0xe094000
-   4:	b9424108 	ldr	w8, [x8, #576]
-   8:	34000208 	cbz	w8, 0x48
-   c:	d343fe68 	lsr	x8, x19, #3
-* 10:	386c6908 	ldrb	w8, [x8, x12] <-- trapping instruction
+You are not able to get rid of the 'net kmap()able and not readable'
+checking with this approach, because dma-buf memory is fundamentally
+unkmapable and unreadable. This approach would still need
+skb_frags_not_readable checks in net stack, so that is also the same.
+
+> 2. We inititiate page->_refcount for devmem to one and it remains as one,
+>    we will never call page_ref_inc()/page_ref_dec()/get_page()/put_page()=
+,
+>    instead, we use page pool's pp_frag_count to do reference counting for
+>    devmem page in patch 6.
+>
+
+I'm not sure that moves the needle in terms of allowing dma-buf
+memory to look like struct pages.
+
+> >>
+> >> RFC v1 was almost exactly the same, except instead of creating a
+> >> duplicate definition of struct page, it just allocated 'struct page'
+> >> instead of allocating another struct that is identical to struct page
+> >> and casting it into struct page.
+>
+> Perhaps it is more accurate to say this is something between RFC v1 and
+> RFC v3, in order to decouple 'struct page' for devmem from mm subsystem,
+> but still have most unified handling for both normal memory and devmem
+> in page pool and net stack.
+>
+> The main difference between this patchset and RFC v1:
+> 1. The mm subsystem is not supposed to see the 'struct page' for devmem
+>    in this patchset, I guess we could say it is decoupled from the mm
+>    subsystem even though we still call PageTail()/page_ref_count()/
+>    page_is_pfmemalloc() on 'struct page' for devmem.
+>
+
+In this patchset you pretty much allocate a struct page for your
+dma-buf memory, and then cast it into a struct page, so all the mm
+calls in page_pool.c are seeing a struct page when it's really dma-buf
+memory.
+
+'even though we still call
+PageTail()/page_ref_count()/page_is_pfmemalloc() on 'struct page' for
+devmem' is basically making dma-buf memory look like struct pages.
+
+Actually because you put the 'strtuct page for devmem' in
+skb->bv_frag, the net stack will grab the 'struct page' for devmem
+using skb_frag_page() then call things like page_address(), kmap,
+get_page, put_page, etc, etc, etc.
+
+> The main difference between this patchset and RFC v3:
+> 1. It reuses the 'struct page' to have more unified handling between
+>    normal page and devmem page for net stack.
+
+This is what was nacked in RFC v1.
+
+> 2. It relies on the page->pp_frag_count to do reference counting.
+>
+
+I don't see you change any of the page_ref_* calls in page_pool.c, for
+example this one:
+
+https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L601
+
+So the reference the page_pool is seeing is actually page->_refcount,
+not page->pp_frag_count? I'm confused here. Is this a bug in the
+patchset?
+
+> >>
+> >> I don't think what you're doing here reverses the nacks I got in RFC
+> >> v1. You also did not CC any dma-buf or mm people on this proposal that
+> >> would bring up these concerns again.
+> >
+> > Right, but the mirror struct has some appeal to a non-mm person like
+> > myself. The problem IIUC is that this patch is the wrong way around, we
+> > should be converting everyone who can deal with non-host mem to struct
+> > page_pool_iov. Using page_address() on ppiov which hns3 seems to do in
+> > this series does not compute for me.
+>
+> The hacking use of ppiov in hns3 is only used to do the some prototype
+> testing, so ignore it.
+>
+> >
+> > Then we can turn the existing non-iov helpers to be a thin wrapper with
+> > just a cast from struct page to struct page_pool_iov, and a call of the
+> > iov helper. Again - never cast the other way around.
+>
+> I am agreed that a cast from struct page to struct page_pool_iov is allow=
+ed,
+> but a cast from struct page_pool_iov to struct page is not allowed if I a=
+m
+> understanding you correctly.
+>
+> Before we can also completely decouple 'struct page' allocated using budd=
+y
+> allocator directly from mm subsystem in netstack, below is what I have in
+> mind in order to support different memory provider.
+>
+>                                 +--------------+
+>                                 |   Netstack   |
+>                                 |'struct page' |
+>                                 +--------------+
+>                                         ^
+>                                         |
+>                                         |
+>                                         v
+>                               +---------------------+
+> +----------------------+      |                     |      +-------------=
+--+
+> |      devmem MP       |<---->|     Page pool       |----->|    **** MP  =
+  |
+> |'struct page_pool_iov'|      |   'struct page'     |      |'struct **_io=
+v'|
+> +----------------------+      |                     |      +-------------=
+--+
+>                               +---------------------+
+>                                         ^
+>                                         |
+>                                         |
+>                                         v
+>                                 +---------------+
+>                                 |    Driver     |
+>                                 | 'struct page' |
+>                                 +---------------+
+>
+> I would expect net stack, page pool, driver still see the 'struct page',
+> only memory provider see the specific struct for itself, for the above,
+> devmem memory provider sees the 'struct page_pool_iov'.
+>
+> The reason I still expect driver to see the 'struct page' is that driver
+> will still need to support normal memory besides devmem.
+>
+> >
+> > Also I think this conversion can be done completely separately from the
+> > mem provider changes. Just add struct page_pool_iov and start using it.
+>
+> I am not sure I understand what does "Just add struct page_pool_iov and
+> start using it" mean yet.
+>
+> >
+> > Does that make more sense?
+> >
+> > .
+> >
 
 
-Tested on:
 
-commit:         b85ea95d Linux 6.7-rc1
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=11ae6aff680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fffc11e84313b7c6
-dashboard link: https://syzkaller.appspot.com/bug?extid=89edd67979b52675ddec
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=161a7338e80000
-
+--
+Thanks,
+Mina
