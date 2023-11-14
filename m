@@ -2,221 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 374C27EAAC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:16:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E16C7EAAD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 08:17:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbjKNHQB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 02:16:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59524 "EHLO
+        id S232123AbjKNHRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 02:17:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38882 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229580AbjKNHP7 (ORCPT
+        with ESMTP id S229580AbjKNHRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 02:15:59 -0500
-Received: from mx1.tq-group.com (mx1.tq-group.com [93.104.207.81])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5690195
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 23:15:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=tq-group.com; i=@tq-group.com; q=dns/txt; s=key1;
-  t=1699946155; x=1731482155;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=kL2Yx2dJrpAiJS/uLrK4fhWhgsrhYskS23er0DBU1PM=;
-  b=gLecCij4uHePKQICp6v3nz8szKz5UfDIT+wywsojLYqbPOMc6l9q0JcE
-   dSSNHMsaT2MX/8gqJx4lPxnjFeEsfoOXuMUrygX6tGGgTPp1lCNDVq/Bk
-   otZhbVXer1tFmMu0sUMIYCCnhcbtIPQUtAa9PvqwaDSuG5lp3TU/YA5pL
-   vuJi2rYuIKTy0XQGAXYgnlWuhZACAQG6NFSVpfE6FT3SQPVwjJBlpIGGp
-   5KEYE9XnQuhssoRDh4ZqRoqCWqL6uBtAd6OcfHYxdhI7nQb5jvDHlbCJR
-   btgH3qlXxwX4RJ9peFighRCJ9LDyyV9QyYSA1PRAPhc+JyHKyTLmlbKYP
-   Q==;
-X-IronPort-AV: E=Sophos;i="6.03,301,1694728800"; 
-   d="scan'208";a="33960176"
-Received: from vtuxmail01.tq-net.de ([10.115.0.20])
-  by mx1.tq-group.com with ESMTP; 14 Nov 2023 08:15:53 +0100
-Received: from steina-w.localnet (steina-w.tq-net.de [10.123.53.18])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by vtuxmail01.tq-net.de (Postfix) with ESMTPSA id 7CC5B28007F;
-        Tue, 14 Nov 2023 08:15:51 +0100 (CET)
-From:   Alexander Stein <alexander.stein@ew.tq-group.com>
-To:     Inki Dae <inki.dae@samsung.com>,
-        Jagan Teki <jagan@amarulasolutions.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Frieder Schrempf <frieder.schrempf@kontron.de>,
-        Tim Harvey <tharvey@gateworks.com>,
-        Michael Walle <mwalle@kernel.org>
-Cc:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Michael Walle <mwalle@kernel.org>
-Subject: Re: [PATCH] drm: bridge: samsung-dsim: Don't use FORCE_STOP_STATE
-Date:   Tue, 14 Nov 2023 08:15:54 +0100
-Message-ID: <4527280.LvFx2qVVIh@steina-w>
-Organization: TQ-Systems GmbH
-In-Reply-To: <20231113164344.1612602-1-mwalle@kernel.org>
-References: <20231113164344.1612602-1-mwalle@kernel.org>
+        Tue, 14 Nov 2023 02:17:38 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 332FE18D;
+        Mon, 13 Nov 2023 23:17:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F83AC433C7;
+        Tue, 14 Nov 2023 07:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699946254;
+        bh=+4kSS2cqW5ZV1rlUePkSMz5J6w5P2YeUyYN7VwsA6kQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mcXD9sWhg1oF72RJY/959llE/tvISFPr+2WfofYm3m3oKO+2p5SxNmb9gXqCaGQQz
+         Pbc87hA717014dq07liKmSVat76mbxrnGNQ/pFQ2jkt5atJ/zK3qdwCKaU8iHp4SCt
+         gYY4BbDtD/mp87pDGOuZNAsQJIrx9YmvwYlh5klAHrge8l0ZYlyZUh3wO+JfSeqjJw
+         cmCC1QWkjFuuM9/iGXglSRUe+iGw9iD1YRqllYa4hifHN0363u8nl9N3jWnOpaq9nh
+         crCOJDfZpAcOYVmPJrWYJF0iciXPF+WzLxdeZWwX3QZ3gPTHJRUhrMRPS1KWTL/RaR
+         /GSSWyaMmS1cw==
+Date:   Tue, 14 Nov 2023 15:17:20 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     Pawel Laszczak <pawell@cadence.com>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] usb: cdnsp: Fix deadlock issue during using NCM gadget
+Message-ID: <20231114071720.GA64573@nchen-desktop>
+References: <20231108093125.224963-1-pawell@cadence.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231108093125.224963-1-pawell@cadence.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On 23-11-08 10:31:25, Pawel Laszczak wrote:
+> The interrupt service routine registered for the gadget is a primary
+> handler which mask the interrupt source and a threaded handler which
+> handles the source of the interrupt. Since the threaded handler is
+> voluntary threaded, the IRQ-core does not disable bottom halves before
+> invoke the handler like it does for the forced-threaded handler.
+> 
+> Due to changes in networking it became visible that a network gadget's
+> completions handler may schedule a softirq which remains unprocessed.
+> The gadget's completion handler is usually invoked either in hard-IRQ or
+> soft-IRQ context. In this context it is enough to just raise the softirq
+> because the softirq itself will be handled once that context is left.
+> In the case of the voluntary threaded handler, there is nothing that
+> will process pending softirqs. Which means it remain queued until
+> another random interrupt (on this CPU) fires and handles it on its exit
+> path or another thread locks and unlocks a lock with the bh suffix.
+> Worst case is that the CPU goes idle and the NOHZ complains about
+> unhandled softirqs.
+> 
+> Disable bottom halves before acquiring the lock (and disabling
+> interrupts) and enable them after dropping the lock. This ensures that
+> any pending softirqs will handled right away.
+> 
+> cc: <stable@vger.kernel.org>
+> Fixes: 3d82904559f4 ("usb: cdnsp: cdns3 Add main part of Cadence USBSSP DRD Driver")
+> Signed-off-by: Pawel Laszczak <pawell@cadence.com>
 
-Am Montag, 13. November 2023, 17:43:44 CET schrieb Michael Walle:
-> The FORCE_STOP_STATE bit is unsuitable to force the DSI link into LP-11
-> mode. It seems the bridge internally queues DSI packets and when the
-> FORCE_STOP_STATE bit is cleared, they are sent in close succession
-> without any useful timing (this also means that the DSI lanes won't go
-> into LP-11 mode). The length of this gibberish varies between 1ms and
-> 5ms. This sometimes breaks an attached bridge (TI SN65DSI84 in this
-> case). In our case, the bridge will fail in about 1 per 500 reboots.
->=20
-> The FORCE_STOP_STATE handling was introduced to have the DSI lanes in
-> LP-11 state during the .pre_enable phase. But as it turns out, none of
-> this is needed at all. Between samsung_dsim_init() and
-> samsung_dsim_set_display_enable() the lanes are already in LP-11 mode.
+Acked-by: Peter Chen <peter.chen@kernel.org>
 
-Apparently LP-11 is actually entered with the call to=20
-samsung_dsim_enable_lane(), but I don't know about other requisites on that=
-=20
-matter. Unfortunately documentation lacks a lot in that regard.
+Peter
 
-> The code as it was before commit 20c827683de0 ("drm: bridge:
-> samsung-dsim: Fix init during host transfer") and 0c14d3130654 ("drm:
-> bridge: samsung-dsim: Fix i.MX8M enable flow to meet spec") was correct
-> in this regard.
->=20
-> This patch basically reverts both commits. It was tested on an i.MX8M
-> SoC with an SN65DSI84 bridge. The signals were probed and the DSI
-> packets were decoded during initialization and link start-up. After this
-> patch the first DSI packet on the link is a VSYNC packet and the timing
-> is correct.
-
-At which point does SN65DSI84 require LP-11?
-You have access to a DSI/D-PHY analyzer?
-
-> Command mode between .pre_enable and .enable was also briefly tested by
-> a quick hack. There was no DSI link partner which would have responded,
-> but it was made sure the DSI packet was send on the link. As a side
-> note, the command mode seems to just work in HS mode. I couldn't find
-> that the bridge will handle commands in LP mode.
-
-AFAIK ti-sn65dsi83.c only uses I2C for communication. Did you send DSI read/
-writes instead?
-
-best regards,
-Alexander
-
-> Fixes: 20c827683de0 ("drm: bridge: samsung-dsim: Fix init during host
-> transfer") Fixes: 0c14d3130654 ("drm: bridge: samsung-dsim: Fix i.MX8M
-> enable flow to meet spec") Signed-off-by: Michael Walle <mwalle@kernel.or=
-g>
 > ---
-> Let me know wether this should be two commits each reverting one, but both
-> commits appeared first in kernel 6.5.
->=20
->  drivers/gpu/drm/bridge/samsung-dsim.c | 32 ++-------------------------
->  1 file changed, 2 insertions(+), 30 deletions(-)
->=20
-> diff --git a/drivers/gpu/drm/bridge/samsung-dsim.c
-> b/drivers/gpu/drm/bridge/samsung-dsim.c index cf777bdb25d2..4233a50baac7
-> 100644
-> --- a/drivers/gpu/drm/bridge/samsung-dsim.c
-> +++ b/drivers/gpu/drm/bridge/samsung-dsim.c
-> @@ -939,10 +939,6 @@ static int samsung_dsim_init_link(struct samsung_dsim
-> *dsi) reg =3D samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
->  	reg &=3D ~DSIM_STOP_STATE_CNT_MASK;
->  	reg |=3D DSIM_STOP_STATE_CNT(driver_data->reg_values[STOP_STATE_CNT]);
-> -
-> -	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-> -		reg |=3D DSIM_FORCE_STOP_STATE;
-> -
->  	samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
->=20
->  	reg =3D DSIM_BTA_TIMEOUT(0xff) | DSIM_LPDR_TIMEOUT(0xffff);
-> @@ -1387,18 +1383,6 @@ static void samsung_dsim_disable_irq(struct
-> samsung_dsim *dsi) disable_irq(dsi->irq);
->  }
->=20
-> -static void samsung_dsim_set_stop_state(struct samsung_dsim *dsi, bool
-> enable) -{
-> -	u32 reg =3D samsung_dsim_read(dsi, DSIM_ESCMODE_REG);
-> -
-> -	if (enable)
-> -		reg |=3D DSIM_FORCE_STOP_STATE;
-> -	else
-> -		reg &=3D ~DSIM_FORCE_STOP_STATE;
-> -
-> -	samsung_dsim_write(dsi, DSIM_ESCMODE_REG, reg);
-> -}
-> -
->  static int samsung_dsim_init(struct samsung_dsim *dsi)
->  {
->  	const struct samsung_dsim_driver_data *driver_data =3D dsi-
->driver_data;
-> @@ -1448,9 +1432,6 @@ static void samsung_dsim_atomic_pre_enable(struct
-> drm_bridge *bridge, ret =3D samsung_dsim_init(dsi);
->  		if (ret)
->  			return;
-> -
-> -		samsung_dsim_set_display_mode(dsi);
-> -		samsung_dsim_set_display_enable(dsi, true);
+>  drivers/usb/cdns3/cdnsp-ring.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/usb/cdns3/cdnsp-ring.c b/drivers/usb/cdns3/cdnsp-ring.c
+> index 07f6068342d4..275a6a2fa671 100644
+> --- a/drivers/usb/cdns3/cdnsp-ring.c
+> +++ b/drivers/usb/cdns3/cdnsp-ring.c
+> @@ -1529,6 +1529,7 @@ irqreturn_t cdnsp_thread_irq_handler(int irq, void *data)
+>  	unsigned long flags;
+>  	int counter = 0;
+>  
+> +	local_bh_disable();
+>  	spin_lock_irqsave(&pdev->lock, flags);
+>  
+>  	if (pdev->cdnsp_state & (CDNSP_STATE_HALTED | CDNSP_STATE_DYING)) {
+> @@ -1541,6 +1542,7 @@ irqreturn_t cdnsp_thread_irq_handler(int irq, void *data)
+>  			cdnsp_died(pdev);
+>  
+>  		spin_unlock_irqrestore(&pdev->lock, flags);
+> +		local_bh_enable();
+>  		return IRQ_HANDLED;
 >  	}
+>  
+> @@ -1557,6 +1559,7 @@ irqreturn_t cdnsp_thread_irq_handler(int irq, void *data)
+>  	cdnsp_update_erst_dequeue(pdev, event_ring_deq, 1);
+>  
+>  	spin_unlock_irqrestore(&pdev->lock, flags);
+> +	local_bh_enable();
+>  
+>  	return IRQ_HANDLED;
 >  }
->=20
-> @@ -1459,12 +1440,8 @@ static void samsung_dsim_atomic_enable(struct
-> drm_bridge *bridge, {
->  	struct samsung_dsim *dsi =3D bridge_to_dsi(bridge);
->=20
-> -	if (samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type)) {
-> -		samsung_dsim_set_display_mode(dsi);
-> -		samsung_dsim_set_display_enable(dsi, true);
-> -	} else {
-> -		samsung_dsim_set_stop_state(dsi, false);
-> -	}
-> +	samsung_dsim_set_display_mode(dsi);
-> +	samsung_dsim_set_display_enable(dsi, true);
->=20
->  	dsi->state |=3D DSIM_STATE_VIDOUT_AVAILABLE;
->  }
-> @@ -1477,9 +1454,6 @@ static void samsung_dsim_atomic_disable(struct
-> drm_bridge *bridge, if (!(dsi->state & DSIM_STATE_ENABLED))
->  		return;
->=20
-> -	if (!samsung_dsim_hw_is_exynos(dsi->plat_data->hw_type))
-> -		samsung_dsim_set_stop_state(dsi, true);
-> -
->  	dsi->state &=3D ~DSIM_STATE_VIDOUT_AVAILABLE;
->  }
->=20
-> @@ -1781,8 +1755,6 @@ static ssize_t samsung_dsim_host_transfer(struct
-> mipi_dsi_host *host, if (ret)
->  		return ret;
->=20
-> -	samsung_dsim_set_stop_state(dsi, false);
-> -
->  	ret =3D mipi_dsi_create_packet(&xfer.packet, msg);
->  	if (ret < 0)
->  		return ret;
+> -- 
+> 2.37.2
+> 
 
+-- 
 
-=2D-=20
-TQ-Systems GmbH | M=FChlstra=DFe 2, Gut Delling | 82229 Seefeld, Germany
-Amtsgericht M=FCnchen, HRB 105018
-Gesch=E4ftsf=FChrer: Detlef Schneider, R=FCdiger Stahl, Stefan Schneider
-http://www.tq-group.com/
-
-
+Thanks,
+Peter Chen
