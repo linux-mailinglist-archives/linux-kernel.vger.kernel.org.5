@@ -2,56 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 287BF7EB1F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE107EB1F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 15:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232307AbjKNOSy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 09:18:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39424 "EHLO
+        id S233308AbjKNOTH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 09:19:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229556AbjKNOSw (ORCPT
+        with ESMTP id S233354AbjKNOTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 09:18:52 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 985AECA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:18:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7duO4gPNFFFjkCQqPoix25b9GKJcYpvqIEJLF9AbZkQ=; b=HybZ87qwbZ9zBNrOkylyD2D+eI
-        CDIXlefh3MWoojhahVwoCKsrRE5fr0W65DW+4Zau8FIgmsE2YX5EMyQW/o3KOYZOeYv2JqVODzL1s
-        ZaLUEaHSOs/cLkwcAurgfLNU/Nd/xwsYCndA+QMAeShllzEs5m813+eZpaOvLC7I4j5WRGsfGwahq
-        9cJb4pFaVA1/wZLcvelBNgps3WUeDWoyvFLKvRwVQyErxi68PMduiB1lfl5cFR7ZPNehNls892+tq
-        dEkzWhQzd6cwNWvnTCoibITYpRNzN/q0AdijLEBHDQ3dk2yXmTQJGgj5ajoQEdaBwmpB2sViYFNpt
-        mup23a+Q==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r2uFN-008PbO-Tz; Tue, 14 Nov 2023 14:18:34 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 96955300581; Tue, 14 Nov 2023 15:18:33 +0100 (CET)
-Date:   Tue, 14 Nov 2023 15:18:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Juergen Gross <jgross@suse.com>, linux-kernel@vger.kernel.org,
-        x86@kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>
-Subject: Re: [PATCH v4 2/5] x86/alternative: add indirect call patching
-Message-ID: <20231114141833.GX8262@noisy.programming.kicks-ass.net>
-References: <20231030142508.1407-1-jgross@suse.com>
- <20231030142508.1407-3-jgross@suse.com>
- <20231114123737.GBZVNqEXKgt+6P1Wiv@fat_crate.local>
- <20231114125028.GX3818@noisy.programming.kicks-ass.net>
- <20231114134715.GBZVN6Y97XrLQ4cbSL@fat_crate.local>
+        Tue, 14 Nov 2023 09:19:05 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EB1D122;
+        Tue, 14 Nov 2023 06:19:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1699971542; x=1731507542;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=g9zYZnZiNzto+K7m9pFPS+Sot20cLnI/IhhfnjZUFKE=;
+  b=T48Xlf/UBchPkxy5RkzwVti1uh6yL5av2JXzn1kw5QWczsA1EKm2HdjR
+   ZfKlBcJF4kOQxR1UsIE8M4yqNlhN8DQ0aBo1Krd7XTYq+nIs8EavP7WTZ
+   4akJU2hI14kSBGiomKx0Knk7uk3Mmwda8FWsmqwvg8LRKRR+aDcr2Kv3j
+   uzXSL1Xs52jbmncWM+M2DN1ELiZs2jU+3NCgigurkQFW5fyYlL4/XyRtF
+   nbDUmo3OS5KWD5Va1+cy+s3sAe0OQa6AO+CRvGuCsrAEadYHDlqq+L348
+   yt3BQECCioIxfp1OzgZm8MtmqLa79rwy0mDXLUdoYD+QW4KqPEWxZ8U9s
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="3725019"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="3725019"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:19:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="741106694"
+X-IronPort-AV: E=Sophos;i="6.03,302,1694761200"; 
+   d="scan'208";a="741106694"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga006.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 06:18:58 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97-RC3)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r2uFk-0000000Dpmn-0ceR;
+        Tue, 14 Nov 2023 16:18:56 +0200
+Date:   Tue, 14 Nov 2023 16:18:55 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     "larry.lai" <larry.lai@yunjingtech.com>
+Cc:     lee@kernel.org, linus.walleij@linaro.org, pavel@ucw.cz,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-leds@vger.kernel.org, GaryWang@aaeon.com.tw,
+        musa.lin@yunjingtech.com, jack.chang@yunjingtech.com,
+        noah.hung@yunjingtech.com
+Subject: Re: [PATCH V7 2/3] pinctrl: Add support pin control for UP board
+ CPLD/FPGA
+Message-ID: <ZVOBz8-tahhrVmO-@smile.fi.intel.com>
+References: <20231031015119.29756-1-larry.lai@yunjingtech.com>
+ <20231031015119.29756-3-larry.lai@yunjingtech.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114134715.GBZVN6Y97XrLQ4cbSL@fat_crate.local>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231031015119.29756-3-larry.lai@yunjingtech.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLACK autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,40 +71,143 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 02:47:15PM +0100, Borislav Petkov wrote:
-> On Tue, Nov 14, 2023 at 01:50:28PM +0100, Peter Zijlstra wrote:
-> > This loads the function target from the pv_ops table. We can't otherwise
-> > do this.
+On Tue, Oct 31, 2023 at 09:51:18AM +0800, larry.lai wrote:
+> The UP Squared board <http://www.upboard.com> implements certain
+> features (pin control) through an on-board FPGA.
 > 
-> On Tue, Nov 14, 2023 at 01:56:37PM +0100, Juergen Gross wrote:
-> > It is replacing an _indirect_ call with a _direct_ one, taking the
-> > call target from the pointer used by the indirect call.
-> 
-> Then this is not just a ALT_FLAG_CALL. This is something special. The
-> flag definition needs a better name along with an explanation what it
-> does, perhaps best with an example from the final vmlinux - not from the
-> object file:
-> 
-> call   *0x0(%rip)
-> 
-> ==>
-> 
-> call   *0x0
-> 
-> where the offsets haven't been linked in yet.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Gary Wang <garywang@aaeon.com.tw>
+> Signed-off-by: larry.lai <larry.lai@yunjingtech.com>
 
-Well, a random absolute address isn't going to be any better or worse
-than 0. But perhaps adding the relocation as a comment helps?
+Same comments as per previous patch.
+
+...
+
+> +	help
+> +	  Pin controller for the FPGA GPIO lines on UP boards. Due to the
+> +	  hardware layout, these are meant to be controlled in tandem with their
+> +	  corresponding Intel SoC GPIOs.
+
++ blank line here.
+
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called pinctrl-upboard.
+
+...
+
+> + * UP Board HAT pin controller driver
+> + * remapping native pin to RPI pin and set CPLD pin dir
+
+Same comment to all the comments as per previous patch.
+
+...
+
++ Missing bits.h, types.h and maybe others.
+
+> +#include <linux/dmi.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/gpio/driver.h>
+
+> +#include <linux/kernel.h>
+
+array_size.h ?
+
+> +#include <linux/mfd/upboard-fpga.h>
+> +#include <linux/module.h>
+
+> +#include <linux/pinctrl/pinctrl.h>
+> +#include <linux/pinctrl/pinmux.h>
+
+Move this...
+
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/string.h>
+
+...here to be a group of pinctrl headers.
 
 
-   ff 15 00 00 00 00       call   *0x0(%rip)  #  R_X86_64_PC32    pv_ops+0x4
-into:
-   e8 00 00 00 00 90	   call   +0          #  R_X86_64_PC32 *(pv_ops+0x04)
+> +#include "core.h"
+
+...
 
 
-> If this is going into the generic infrastructure, then it better be
-> explained properly so that other stuff can potentially use it too.
+> +#include "intel/pinctrl-intel.h"
 
-ALT_FLAG_DEREFERENCE_INDIRECT_CALL ?
+I do not think it's correct use of the header.
 
-I'm going to already raise my hand and say that's too long ;-)
+...
+
+> +/* for older kernel lost DIRECTION_IN/OUT definition */
+> +#ifndef GPIO_LINE_DIRECTION_IN
+> +#define GPIO_LINE_DIRECTION_IN		1
+> +#define GPIO_LINE_DIRECTION_OUT		0
+> +#endif
+
+Are you submitting this to older kernel here? No. Then why this?
+
+...
+
+> +/* Offset from regs */
+> +#define REVID						0x000
+> +#define REVID_SHIFT					16
+> +#define REVID_MASK					GENMASK(31, 16)
+> +#define PADBAR						0x00c
+> +
+> +/* Offset from pad_regs */
+> +#define PADCFG0						0x000
+> +#define PADCFG0_RXEVCFG_SHIFT		25
+> +#define PADCFG0_RXEVCFG_MASK		GENMASK(26, 25)
+> +#define PADCFG0_RXEVCFG_LEVEL		0
+> +#define PADCFG0_RXEVCFG_EDGE		1
+> +#define PADCFG0_RXEVCFG_DISABLED	2
+> +#define PADCFG0_RXEVCFG_EDGE_BOTH	3
+> +#define PADCFG0_PREGFRXSEL			BIT(24)
+> +#define PADCFG0_RXINV				BIT(23)
+> +#define PADCFG0_GPIROUTIOXAPIC		BIT(20)
+> +#define PADCFG0_GPIROUTSCI			BIT(19)
+> +#define PADCFG0_GPIROUTSMI			BIT(18)
+> +#define PADCFG0_GPIROUTNMI			BIT(17)
+> +#define PADCFG0_PMODE_SHIFT			10
+> +#define PADCFG0_PMODE_MASK			GENMASK(13, 10)
+> +#define PADCFG0_PMODE_GPIO			0
+> +#define PADCFG0_GPIORXDIS			BIT(9)
+> +#define PADCFG0_GPIOTXDIS			BIT(8)
+> +#define PADCFG0_GPIORXSTATE			BIT(1)
+> +#define PADCFG0_GPIOTXSTATE			BIT(0)
+> +
+> +#define PADCFG1						0x004
+> +#define PADCFG1_TERM_UP				BIT(13)
+> +#define PADCFG1_TERM_SHIFT			10
+> +#define PADCFG1_TERM_MASK			GENMASK(12, 10)
+> +#define PADCFG1_TERM_20K			BIT(2)
+> +#define PADCFG1_TERM_5K				BIT(1)
+> +#define PADCFG1_TERM_1K				BIT(0)
+> +#define PADCFG1_TERM_833			(BIT(1) | BIT(0))
+> +
+> +#define PADCFG2						0x008
+> +#define PADCFG2_DEBEN				BIT(0)
+> +#define PADCFG2_DEBOUNCE_SHIFT		1
+> +#define PADCFG2_DEBOUNCE_MASK		GENMASK(4, 1)
+> +
+> +#define DEBOUNCE_PERIOD_NSEC		31250
+> +
+> +/* Additional features supported by the hardware */
+> +#define PINCTRL_FEATURE_DEBOUNCE	BIT(0)
+> +#define PINCTRL_FEATURE_1K_PD		BIT(1)
+
+Huh?! No way it should be here in _any_ form!
+
+...
+
+I'm done with review as design wise this one is broken. Please, redesign and
+reimplement. Also split this per platform addition (as suggested for MFD),
+it will be easier to review.
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
