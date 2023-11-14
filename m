@@ -2,246 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAB27EB751
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:07:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882577EB756
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 21:08:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233979AbjKNUHU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 15:07:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38990 "EHLO
+        id S233727AbjKNUIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 15:08:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233966AbjKNUHA (ORCPT
+        with ESMTP id S232196AbjKNUIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 15:07:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AE361B5
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 12:06:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DABDC433CA;
-        Tue, 14 Nov 2023 20:06:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1699992407;
-        bh=E/vO68ZFg6z/6OFrFC7xPTTrAHCnKC1HTh6WooalFG0=;
-        h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-        b=COcQPXbgQRtRh6McXlLmwmXao6NZB3DoRessUOEzmGfXy4Q/yfYUiqe2WOLh/IYGF
-         FMBnikyOgbZ4guVGrh4thejR7lpM9/J7elIeMvqn0TvaqPkguJ+s3Aq37l4LuqxRFC
-         v4p5MmzIlI1cXY3d+ExzvWO6rv1/BAv2iZM/SxWfFH+irRYyhcVt5iA5XOIAtofqZs
-         ff55nzUXFCkjKqaW3ENaYA+/zyjpH1diIaH8FSe0+DzEzNzf12qZRNKc9wraAurRpB
-         QTq0/Y8N6T3asG2FNY6JVFVGgPdEAYk1sGStNyZsJR1xaOjloUaEo2iNq1d878F5q1
-         KPBFNtezCOfpA==
-From:   Mark Brown <broonie@kernel.org>
-Date:   Tue, 14 Nov 2023 20:05:58 +0000
-Subject: [PATCH RFC RFT v2 5/5] kselftest/clone3: Test shadow stack support
+        Tue, 14 Nov 2023 15:08:35 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4247DA7;
+        Tue, 14 Nov 2023 12:08:32 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ACKe81I/dkv6oAfRnQjRns8TjBi4NZml7Ryxq+BdRHs7RKUOJe663EgknQRCi6t5CRv7WubdrNmc2VKQY4ZPDzBr+L328T2o2298p+Vk8jdEru0fR0Sn8Fuw/o0S2MC/3pM1x7s0L2WOvZ81pimIvs79qvsV998589qgMNec1kKrmdou3pzWVFlzfgJ6ovOTji9Isq7n2td5ZnlsCikdHgX2Ojg/keTPLeN+2BFx6VbL576ZL9BK7fh+wtaTAHOiIBamewKsj6oAw7dCt5RSPOXRbJlRLB5RKUsVFCp6lTFq/zpf9hacv8eHcZ72LSZVmL1xhPomaa2zeUrkHIBlXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=S0uKy1Xm1rWD9Jdy+8po3LnaPS/HJN09FwRY9lmAFoI=;
+ b=Kub9XDiOAakfT8iAje2X3sXke2H6BEIyaJLSzZFxLm1cnlm8lp02pUd08QQFZrtph2dY+dzBxwwK/bltgVALs+wIxc3f8E7pxyuNDv0hv9rMWZ09u//CTRGxP9iCsj9iTl+ODEO1o5lZd2vt7TpWV42fG0hPGTijXP51XjUtE/zlWMQjBJUKn2E20bk+SypyrlNLSG3lySvhcIwyl1pYhkCX2TtI/Nc/k8zZyQ4KwV09A/VWSGOCr7nJWHlWEITqWxtAaUJsp3IjsQsclv0kR3C2mX7DLN3Hop3/WJ7zJkmWhUWPf0rMLGwq7x1KhiTj8ZUG/GYyG6Gexzgpmy4+GA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=S0uKy1Xm1rWD9Jdy+8po3LnaPS/HJN09FwRY9lmAFoI=;
+ b=lYTgdqqJPPT+CFZLkuFHjx9CFyl8KQj1xLoBvD0GKCkLwqgUOcjPVYjhXspIomO4KJGHWwgTUlFwcKASxU7cEYPaWcuC0/TJmmcITeiBfoBx8RTEMQJYva3T95mGp7a3cIIiGar1nXLBybyMUAyjOtj/DKqmrgON7u1hEmLXBuA=
+Received: from BL1PR13CA0280.namprd13.prod.outlook.com (2603:10b6:208:2bc::15)
+ by CH3PR12MB8211.namprd12.prod.outlook.com (2603:10b6:610:125::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Tue, 14 Nov
+ 2023 20:08:29 +0000
+Received: from BL02EPF0001A107.namprd05.prod.outlook.com
+ (2603:10b6:208:2bc:cafe::f4) by BL1PR13CA0280.outlook.office365.com
+ (2603:10b6:208:2bc::15) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17 via Frontend
+ Transport; Tue, 14 Nov 2023 20:08:29 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A107.mail.protection.outlook.com (10.167.241.136) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7002.13 via Frontend Transport; Tue, 14 Nov 2023 20:08:29 +0000
+Received: from test-TBI1100B.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Tue, 14 Nov
+ 2023 14:08:27 -0600
+From:   Mario Limonciello <mario.limonciello@amd.com>
+To:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        "Alex Deucher" <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        "Mika Westerberg" <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>
+CC:     Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Mario Limonciello <mario.limonciello@amd.com>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>
+Subject: [PATCH v3 0/7] Improvements to pcie_bandwidth_available() for eGPUs
+Date:   Tue, 14 Nov 2023 14:07:48 -0600
+Message-ID: <20231114200755.14911-1-mario.limonciello@amd.com>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20231114-clone3-shadow-stack-v2-5-b613f8681155@kernel.org>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
-In-Reply-To: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
-To:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        bsegall@google.com, linux-kselftest@vger.kernel.org,
-        linux-api@vger.kernel.org, Mark Brown <broonie@kernel.org>
-X-Mailer: b4 0.13-dev-0438c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4655; i=broonie@kernel.org;
- h=from:subject:message-id; bh=E/vO68ZFg6z/6OFrFC7xPTTrAHCnKC1HTh6WooalFG0=;
- b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlU9Mw/E0ZsNXT9pAEZkYqPqXgi0HGwFTiejBMba7Z
- 6cP6PmaJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVPTMAAKCRAk1otyXVSH0LQGB/
- 4oDg/SgcY9WyortMyVY5pGTeVD+7/87/hOdY7hfIp+F1K7NuGnb1VAshA9GDrQrRrVDJR33MztYPws
- ERtdrqnCijOhMif91Jz0Mb6PPxhuPwdQM2wrWk3v7RpgcOyxMN0RaDlVwz4cfhfT8lM1btzDn+R8gP
- lv1fW6naRVaEBk1u+XByiBjDcNuC2gN6PnxA2uviZWaJEfRitQhRtzZLzcS7JF7G/LDzK9DX985Qcp
- XKNXyEOsQRryZb01iDaU7uZElG619LThNkspj0Ssw4LBsC1LbumQi+5yiwNW1+WR1Ms0PvU5OPq8JD
- Gq2E+E1TMJzFmDyydw6e59q55JmVey
-X-Developer-Key: i=broonie@kernel.org; a=openpgp;
- fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A107:EE_|CH3PR12MB8211:EE_
+X-MS-Office365-Filtering-Correlation-Id: 610ac2fd-a322-4f0a-d177-08dbe54d7845
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: eJe68kh5X0IFzbVx6LfZEbHj1T+YvcDAmMpKhXjBzcWiRCoZ0oo4zxAnRQm0Ly95fgfGVDykxoAZpYN5q/1X1fdHhQGjuAxMEBMNPSHAhIT7ZyKPg/mP9yJUFFhsUSG6n3j0d4r7bv6zEIrlt9Ytb5Axc2az+gCZLUQUVagEIGb4m/bFXpd+GPO2jlrsHIQCCEsPN+dCL2u/8rhci+D6cWVjG/GYoUCxb/NTT3Eg1swqLzfmvZCMXmkttW5NKAr9ycd0pf2Nn/JaQVPuCUInGhzrqNIPXY5I6Z3O/Q2aa33Hv7liSSqdJExq4Y+khuRagk5A1yjh3vKWby/NyATBYL/2skeGCvEHJ4C9XfEFkGhrfD2thq1opPxIETB4RADhkBw5PVgU4PpJlM4dNqog15HuWx+1Tt/1JfyB4NjoF0JTU65ee0E/xLguXDckmK2NZRNATtuAkn7l1kl01R79iQAytcD8DNCG7HqBb6TqvA5s52lPY6d8N3dq/hpKkMJhlL1X0yuFfgyBPE26a92ukFtMXmUMk9sfs64iC8TBb+pQKuyWBZTEL5YApLJuffH8bsmamyS/1ugGArpByIHw6BnezvVHi5QVAChwDVebLcz2wmE7G6xUEGHxaSxMdWT9Os+bCpJbvDuoXPLP1gsUMPUKUrLYHb6eT0e3pHoTrbhzCNL0vsEr+Oln7gDl2n3vc+XeIE+E28yQoddTaHco2kvhoBxhC+0TTMVEqYzS5+pC5ZAKMOnb8gTpAHnVJnj6ACDxzeRBFK+zMYQ/a+rM+A==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(346002)(396003)(136003)(376002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(7416002)(2906002)(40480700001)(44832011)(47076005)(41300700001)(5660300002)(40460700003)(36860700001)(82740400003)(36756003)(86362001)(356005)(81166007)(110136005)(6666004)(70206006)(70586007)(16526019)(26005)(54906003)(426003)(316002)(2616005)(336012)(478600001)(1076003)(8676002)(83380400001)(4326008)(8936002)(7696005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 20:08:29.4734
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 610ac2fd-a322-4f0a-d177-08dbe54d7845
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A107.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8211
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add basic test coverage for specifying the shadow stack for a newly
-created thread via clone3(), including coverage of the newly extended
-argument structure. We detect support for shadow stacks on the running
-system by attempting to allocate a shadow stack page during initialisation
-using map_shadow_stack().
+The wrong values are reported from pcie_bandwidth_available() which
+can cause problems for performance of eGPUs.
 
-Signed-off-by: Mark Brown <broonie@kernel.org>
----
- tools/testing/selftests/clone3/clone3.c           | 68 +++++++++++++++++++++++
- tools/testing/selftests/clone3/clone3_selftests.h |  7 +++
- 2 files changed, 75 insertions(+)
+This series overhauls Thunderbolt related device detection and uses
+the changes to change the behavior of pcie_bandwidth_available().
 
-diff --git a/tools/testing/selftests/clone3/clone3.c b/tools/testing/selftests/clone3/clone3.c
-index 6adbfd14c841..10e0487c402a 100644
---- a/tools/testing/selftests/clone3/clone3.c
-+++ b/tools/testing/selftests/clone3/clone3.c
-@@ -11,6 +11,7 @@
- #include <stdint.h>
- #include <stdio.h>
- #include <stdlib.h>
-+#include <sys/mman.h>
- #include <sys/syscall.h>
- #include <sys/types.h>
- #include <sys/un.h>
-@@ -21,6 +22,9 @@
- #include "../kselftest.h"
- #include "clone3_selftests.h"
- 
-+static bool shadow_stack_supported;
-+static size_t max_supported_args_size;
-+
- enum test_mode {
- 	CLONE3_ARGS_NO_TEST,
- 	CLONE3_ARGS_ALL_0,
-@@ -28,6 +32,7 @@ enum test_mode {
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_NEG,
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_CSIG,
- 	CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG,
-+	CLONE3_ARGS_SHADOW_STACK,
- };
- 
- typedef bool (*filter_function)(void);
-@@ -44,6 +49,27 @@ struct test {
- 	filter_function filter;
- };
- 
-+#ifndef __NR_map_shadow_stack
-+#define __NR_map_shadow_stack 453
-+#endif
-+
-+static void test_shadow_stack_supported(void)
-+{
-+        long shadow_stack;
-+
-+	shadow_stack = syscall(__NR_map_shadow_stack, 0, getpagesize(), 0);
-+	if (shadow_stack == -1) {
-+		ksft_print_msg("map_shadow_stack() not supported\n");
-+	} else if ((void *)shadow_stack == MAP_FAILED) {
-+		ksft_print_msg("Failed to map shadow stack\n");
-+	} else {
-+		ksft_print_msg("Shadow stack supportd\n");
-+		shadow_stack_supported = true;
-+
-+		munmap((void *)shadow_stack, getpagesize());
-+	}
-+}
-+
- static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- {
- 	struct __clone_args args = {
-@@ -89,6 +115,9 @@ static int call_clone3(uint64_t flags, size_t size, enum test_mode test_mode)
- 	case CLONE3_ARGS_INVAL_EXIT_SIGNAL_NSIG:
- 		args.exit_signal = 0x00000000000000f0ULL;
- 		break;
-+	case CLONE3_ARGS_SHADOW_STACK:
-+		args.shadow_stack_size = getpagesize();
-+		break;
- 	}
- 
- 	memcpy(&args_ext.args, &args, sizeof(struct __clone_args));
-@@ -179,6 +208,26 @@ static bool no_timenamespace(void)
- 	return true;
- }
- 
-+static bool have_shadow_stack(void)
-+{
-+	if (shadow_stack_supported) {
-+		ksft_print_msg("Shadow stack supported\n");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
-+static bool no_shadow_stack(void)
-+{
-+	if (!shadow_stack_supported) {
-+		ksft_print_msg("Shadow stack not supported\n");
-+		return true;
-+	}
-+
-+	return false;
-+}
-+
- static size_t page_size_plus_8(void)
- {
- 	return getpagesize() + 8;
-@@ -322,6 +371,24 @@ static const struct test tests[] = {
- 		.expected = -EINVAL,
- 		.test_mode = CLONE3_ARGS_NO_TEST,
- 	},
-+	{
-+		.name = "Shadow stack on system with shadow stack",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = 0,
-+		.e2big_valid = true,
-+		.test_mode = CLONE3_ARGS_SHADOW_STACK,
-+		.filter = no_shadow_stack,
-+	},
-+	{
-+		.name = "Shadow stack on system without shadow stack",
-+		.flags = 0,
-+		.size = 0,
-+		.expected = -EINVAL,
-+		.e2big_valid = true,
-+		.test_mode = CLONE3_ARGS_SHADOW_STACK,
-+		.filter = have_shadow_stack,
-+	},
- };
- 
- int main(int argc, char *argv[])
-@@ -332,6 +399,7 @@ int main(int argc, char *argv[])
- 	ksft_print_header();
- 	ksft_set_plan(ARRAY_SIZE(tests));
- 	test_clone3_supported();
-+	test_shadow_stack_supported();
- 
- 	for (i = 0; i < ARRAY_SIZE(tests); i++)
- 		test_clone3(&tests[i]);
-diff --git a/tools/testing/selftests/clone3/clone3_selftests.h b/tools/testing/selftests/clone3/clone3_selftests.h
-index 3d2663fe50ba..2e06127091f5 100644
---- a/tools/testing/selftests/clone3/clone3_selftests.h
-+++ b/tools/testing/selftests/clone3/clone3_selftests.h
-@@ -31,6 +31,13 @@ struct __clone_args {
- 	__aligned_u64 set_tid;
- 	__aligned_u64 set_tid_size;
- 	__aligned_u64 cgroup;
-+#ifndef CLONE_ARGS_SIZE_VER2
-+#define CLONE_ARGS_SIZE_VER2 88	/* sizeof third published struct */
-+#endif
-+	__aligned_u64 shadow_stack_size;
-+#ifndef CLONE_ARGS_SIZE_VER3
-+#define CLONE_ARGS_SIZE_VER3 96 /* sizeof fourth published struct */
-+#endif
- };
- 
- static pid_t sys_clone3(struct __clone_args *args, size_t size)
+v2->v3:
+ * Stop lumping all thunderbolt VSEC and USB4 devices together, introduce
+   is_virtual_link instead
+ * Drop unnecessary patches
 
+Mario Limonciello (7):
+  drm/nouveau: Switch from pci_is_thunderbolt_attached() to
+    dev_is_removable()
+  drm/radeon: Switch from pci_is_thunderbolt_attached() to
+    dev_is_removable()
+  PCI: Drop pci_is_thunderbolt_attached()
+  PCI: pciehp: Move check for is_thunderbolt into a quirk
+  PCI: ACPI: Detect PCIe root ports that are used for tunneling
+  PCI: Split up some logic in pcie_bandwidth_available() to separate
+    function
+  PCI: Exclude PCIe ports used for virtual links in
+    pcie_bandwidth_available()
+
+ drivers/gpu/drm/nouveau/nouveau_vga.c  |  6 +-
+ drivers/gpu/drm/radeon/radeon_device.c |  4 +-
+ drivers/gpu/drm/radeon/radeon_kms.c    |  2 +-
+ drivers/pci/hotplug/pciehp_hpc.c       |  6 +-
+ drivers/pci/pci-acpi.c                 | 16 ++++++
+ drivers/pci/pci.c                      | 77 +++++++++++++++++---------
+ drivers/pci/quirks.c                   | 20 +++++++
+ include/linux/pci.h                    | 24 +-------
+ 8 files changed, 97 insertions(+), 58 deletions(-)
+
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-2.30.2
+2.34.1
 
