@@ -2,95 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11FE7EB313
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:09:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FAC77EB2F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:01:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233586AbjKNPJs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:09:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39866 "EHLO
+        id S233405AbjKNPBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:01:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233460AbjKNPJh (ORCPT
+        with ESMTP id S229456AbjKNPB2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:09:37 -0500
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992DD1AD
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:09:32 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1699974115;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=aSK3PhR7N6sZarhUbzOpQIf2xDy+MEi2YkvSFf8r3Lk=;
-        b=ZETvjTr/XoDUk1cALkokOKwWkjnYzpn+7hVWxVNdT9D8sYNONctRfHkEHuSBSNWYpvVaca
-        One6lWWPF3vAxPEkZ19n1MKps/UJ16JOpyTi3fEZdzDyJ9K3sNFo6976rZNa7gcsPT4Zi0
-        r7t23nPYD7WdzKYoyk0LpAJEREJAES4=
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-To:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>
-Cc:     Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Sui Jingfeng <suijingfeng@loongson.cn>
-Subject: [PATCH 0/8] Allow link the it66121 display bridge driver as a lib
-Date:   Tue, 14 Nov 2023 23:01:22 +0800
-Message-Id: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+        Tue, 14 Nov 2023 10:01:28 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 205E0114;
+        Tue, 14 Nov 2023 07:01:25 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id 6a1803df08f44-6711dd6595fso29357196d6.3;
+        Tue, 14 Nov 2023 07:01:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1699974084; x=1700578884; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=vsyBtl43yR5XGf9p1vfaDNOB+yJIZUr3JZKeUV5WTyA=;
+        b=EzzuFOaKpn3dQn4d2BtlxjxEv9tzRLGiE1AwrPB51GP8UydCciyKHJE4RZrPQ3Bfk0
+         LSnY2b3Y/Ec5Nv79yzImQlulFwrbBdhFNgpf5isXAUxNa/xZkIP9F4ir9r5lTgkUSRxV
+         RM3PjulP+yNAwRYuPrOYtIBX85zLiqc3XpZvHxItKOuNI1128Ldp88wlAqVxvQyCZT2V
+         AhvPsbNoLXU853BmtvHq9l2QP+MBYG1Lx1ivYeDBSvS/CSzwiyYMV8kNuPoRH1yxYOp8
+         URGEsz9O3AWLgLoj7vHjw3k4VuC4rysAmvqkAaSJ9sGf0Fi2fNR6zIFoF9Tl7c0sF8Ey
+         8atg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699974084; x=1700578884;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vsyBtl43yR5XGf9p1vfaDNOB+yJIZUr3JZKeUV5WTyA=;
+        b=lWI2gx+/yGOW6Omq/5Ar6T4mQopjZvl/0XsxCBzvvxC1YAsYzElN0O++OeSNx4FUIl
+         GcUWAwGOIBf4cCS6Z2KqnJ7VozHd0tAonGuLoOnVZzRgadF4Yy3pB2Vk+R2N6JiaRc7N
+         TCoLHFhngRfyP0HuHyLjzptVy/MMJFnvsOU1T3fWv16BPsVG4VYPygQJyNd7mpvrcv2K
+         owE5ZCA18hv1D9uD4HLnHreBqOV9h8oqnSCGaGaYVTKc1jLPzRnyN3HI/iQyNJBuvgvw
+         h6kw4AIsihHwGZIz5UA0Jve/uVrP8oUtVWEarY4P8LVyv0I4a7SzfAEMqb82jsQgBc/9
+         ystg==
+X-Gm-Message-State: AOJu0YxRnfBbeq57hP78B3O1+Bx3zAGnkQ3M14InUyhFfI8nHL0DcHk9
+        B2i1z1beczpXa2flZQLkpFVVETKnFaZzOQ==
+X-Google-Smtp-Source: AGHT+IHyp9k1Wsoe1cGwtSdjLvnYyonjSdcUNkDZyJCd3YFdyY6jmNvzWaCrLAqQECOdJR7nsPImhA==
+X-Received: by 2002:a05:6214:2b4f:b0:671:25b2:7dbd with SMTP id jy15-20020a0562142b4f00b0067125b27dbdmr2392610qvb.3.1699974084011;
+        Tue, 14 Nov 2023 07:01:24 -0800 (PST)
+Received: from ?IPV6:2001:470:8:94a::251? ([2001:470:8:94a::251])
+        by smtp.googlemail.com with ESMTPSA id i15-20020ad4410f000000b00655e2005350sm2956188qvp.9.2023.11.14.07.01.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 14 Nov 2023 07:01:23 -0800 (PST)
+Message-ID: <ea1d2505-7396-92c0-4687-facad575d299@gmail.com>
+Date:   Tue, 14 Nov 2023 10:01:22 -0500
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.0
+Subject: Re: [PATCH v2] rtlwifi: rtl8723be: Disable ASPM if RTL8723BE connects
+ to Intel PCI bridge
+To:     Jian-Hong Pan <jhp@endlessos.org>,
+        Ping-Ke Shih <pkshih@realtek.com>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Kalle Valo <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux@endlessos.org" <linux@endlessos.org>, helgaas@kernel.org
+References: <05390e0b-27fd-4190-971e-e70a498c8221@lwfinger.net>
+ <20231113043454.10053-2-jhp@endlessos.org>
+ <2614f3f7a386435ea7d5f989061c7780@realtek.com>
+ <CAPpJ_eeNbq5saQFTq0tz72r05Z4ROSWqn_CNBx=bEpLsd6vT7g@mail.gmail.com>
+Content-Language: en-US
+From:   Jonathan Bither <jonbither@gmail.com>
+In-Reply-To: <CAPpJ_eeNbq5saQFTq0tz72r05Z4ROSWqn_CNBx=bEpLsd6vT7g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sui Jingfeng <suijingfeng@loongson.cn>
 
-The goal is to make this driver usuable on non-DT based systems, while
-without introduce duplication and preserve code sharing. The first seven
-patch just doing trivial cleanup, the last patch try to solve the mentioned
-problem by allowing static linking. Tested on a ACPI-based platform:
+On 11/13/23 22:01, Jian-Hong Pan wrote:
+> Ping-Ke Shih <pkshih@realtek.com> 於 2023年11月14日 週二 上午9:41寫道：
+>>
+>>
+>>> -----Original Message-----
+>>> From: Jian-Hong Pan <jhp@endlessos.org>
+>>> Sent: Monday, November 13, 2023 12:35 PM
+>>> To: Larry Finger <Larry.Finger@lwfinger.net>; Ping-Ke Shih <pkshih@realtek.com>
+>>> Cc: Kalle Valo <kvalo@kernel.org>; linux-wireless@vger.kernel.org; linux-kernel@vger.kernel.org;
+>>> linux@endlessos.org; Jian-Hong Pan <jhp@endlessos.org>
+>>> Subject: [PATCH v2] rtlwifi: rtl8723be: Disable ASPM if RTL8723BE connects to Intel PCI bridge
+>>>
+>>> Disable rtl8723be's ASPM if the Realtek RTL8723BE PCIe Wireless adapter
+>>> connects to some Intel PCI bridges, such as Skylake and Kabylake.
+>>> Otherwise, the PCI AER flood hangs system:
+>>>
+>>> pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
+>>> pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00000001/00002000
+>>> pcieport 0000:00:1c.5:    [ 0] RxErr                  (First)
+>>> pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+>>> pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+>>> pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
+>>> pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+>>> pcieport 0000:00:1c.5: AER: Multiple Corrected error received: 0000:00:1c.5
+>>> pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+>>>
+>>> Buglink: https://bugzilla.kernel.org/show_bug.cgi?id=218127
+>> Seemingly, you can use "Link" or "Closes" tag.
+>>
+>>> Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
+>> Acked-by: Ping-Ke Shih <pkshih@realtek.com>
+>>
+>>
+>>> ---
+>>> v2: Add the switch case's default condition with comment:
+>>>      "The ASPM has already been enabled by initializing
+>>>      rtl8723be_mod_params' aspm_support as 1."
+>>>
+>>>   .../wireless/realtek/rtlwifi/rtl8723be/sw.c   | 24 +++++++++++++++++++
+>>>   1 file changed, 24 insertions(+)
+>>>
+>>> diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+>>> b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+>>> index 43b611d5288d..b20c0b9d8393 100644
+>>> --- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+>>> +++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
+>>> @@ -25,10 +25,34 @@ static void rtl8723be_init_aspm_vars(struct ieee80211_hw *hw)
+>>>   {
+>>>          struct rtl_priv *rtlpriv = rtl_priv(hw);
+>>>          struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
+>>> +       struct pci_dev *bridge_pdev;
+>>>
+>>>          /*close ASPM for AMD defaultly */
+>>>          rtlpci->const_amdpci_aspm = 0;
+>>>
+>>> +       /* Disable ASPM if RTL8723BE connects to some Intel PCI bridges, such as
+>>> +        * Skylake and Kabylake. Otherwise, the PCI AER flood hangs system.
+>>> +        */
+>>> +       bridge_pdev = rtlpci->pdev->bus->self;
+>>> +       if (bridge_pdev->vendor == PCI_VENDOR_ID_INTEL) {
+>>> +               switch(bridge_pdev->device) {
+>>> +               case 0x9d15:
+>>> +               /* PCI bridges on Skylake */
+>>> +               case 0xa110 ... 0xa11f:
+>>> +               case 0xa167 ... 0xa16a:
+>>> +               /* PCI bridges on Kabylake */
+>>> +               case 0xa290 ... 0xa29f:
+>>> +               case 0xa2e7 ... 0xa2ee:
+>> Out of curiosity, do you have so many real platforms to test?
+> We have tested those platforms before, because of the hardware
+> enablement.  They all have the same error, and the error bothers
+> people many years.
+> https://groups.google.com/g/fa.linux.kernel/c/0uz8Nr_NVOI
+>
+> However, most of them are returned back to the owner now.  By
+> accident, we keep the ASUS X555UQ equipped with Intel i7-6500U CPU and
+> Realtek RTL8723BE PCIe Wireless adapter on hands for more test.
 
-$ dmseg | grep drm
+The device matching that you're doing follows what was also done in 
+commit 7184f5b451cf3dc61de79091d235b5d2bba2782d for an ACS quirk on the 
+same chipsets.
 
- ACPI: bus type drm_connector registered
- loongson 0000:00:06.1: [drm] dc: 264MHz, gmc: 529MHz, gpu: 529MHz
- loongson 0000:00:06.1: [drm] Dedicated vram start: 0xe0030000000, size: 64MiB
- loongson 0000:00:06.1: [drm] Loongson VBIOS version: 0.3
- loongson 0000:00:06.1: [drm] Loongson VBIOS: has 8 DCBs
- loongson 0000:00:06.1: [drm] VRAM: 4096 pages ready
- loongson 0000:00:06.1: [drm] GTT: 32768 pages ready
- loongson 0000:00:06.1: [drm] lsdc-i2c0(sda pin mask=1, scl pin mask=2) created
- loongson 0000:00:06.1: [drm] lsdc-i2c1(sda pin mask=4, scl pin mask=8) created
- loongson 0000:00:06.1: [drm] DisplayPipe-0 has DVO-0 connector
- i2c 1-004c: IT66121 probed, chip id: 0x4954:0x612, revision: 1
- loongson 0000:00:06.1: [drm] DisplayPipe-1 has IT66121@4c attached
- loongson 0000:00:06.1: [drm] Total 2 outputs
- loongson 0000:00:06.1: [drm] registered irq: 40
- [drm] Initialized loongson 1.0.0 20220701 for 0000:00:06.1 on minor 0
- loongson 0000:00:06.1: [drm] fb0: loongsondrmfb frame buffer device
+I'm just curious if the issue is a more universal Intel one and 
+can/should be resolved with a pci quirk as opposed to inside an 
+individual driver.
 
-Sui Jingfeng (8):
-  drm/bridge: it66121: Use dev replace ctx->dev in the it66121_probe()
-  drm/bridge: it66121: Add bridge_to_it66121() helper and use it
-  drm/bridge: it66121: Add a helper function to read bus width
-  drm/bridge: it66121: Add a helper function to get the next bridge
-  drm/bridge: it66121: Add a helper function to read chip id
-  drm/bridge: it66121: Add a helper to initialize the DRM bridge
-    structure
-  drm/bridge: it66121: Add another implementation for getting match data
-  drm/bridge: it66121: Allow link this driver as a lib
-
- drivers/gpu/drm/bridge/ite-it66121.c | 340 +++++++++++++++++++--------
- include/drm/bridge/ite-it66121.h     |  17 ++
- 2 files changed, 258 insertions(+), 99 deletions(-)
- create mode 100644 include/drm/bridge/ite-it66121.h
-
--- 
-2.34.1
-
+>
+> Jian-Hong Pan
