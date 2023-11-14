@@ -2,127 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 069957EB6E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A59F97EB6EB
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 20:34:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229585AbjKNTdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 14:33:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42786 "EHLO
+        id S229653AbjKNTes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 14:34:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNTdS (ORCPT
+        with ESMTP id S229456AbjKNTer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 14:33:18 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A172107;
-        Tue, 14 Nov 2023 11:33:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=s31663417; t=1699990367; x=1700595167; i=wahrenst@gmx.net;
-        bh=0l/qJoqBf6nReycMlif7uqnkpKDrwiJccsu4IcAzFIg=;
-        h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-         In-Reply-To;
-        b=uiDtIorLWt9MeDK9i9FBqPtdEr9rpszNS1jcd8TUfMLZjPjZ6DXZjlZYhboPzZ5Y
-         klANs8AUmTqd7H5qGz7bdP307sW8LmtHyRAwVgnfVEcas2NYCbI4gpdjOczEfVzas
-         VKiAU14rFEnDb/5LlBk/d1LSb+MGrXSlx6YCNL9T/S8h+WKE75u4q6H54ogXgFxa3
-         vdFMisORqnD8QYN6wHYxpl7agbEyRd/GoaAOOkcZV2x/cLEep4Ei7nwv1C7BPQDDh
-         NJKJAStAMRUDtPFOkt0MexHLjrGBfdFJw/mknG+lProOtcR+GmraN+BiSR4IJJ+h2
-         xEWzqkzcamjht3imIw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.1.129] ([37.4.248.43]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MKsnP-1qoKwd3iyj-00LE1x; Tue, 14
- Nov 2023 20:32:46 +0100
-Message-ID: <856622a5-c636-4677-a218-12070afe960a@gmx.net>
-Date:   Tue, 14 Nov 2023 20:32:45 +0100
+        Tue, 14 Nov 2023 14:34:47 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE74E102
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 11:34:43 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C113C433C7;
+        Tue, 14 Nov 2023 19:34:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699990483;
+        bh=EAHDqUEEKtXeWe5W9DXxOytpOiD9zxXvd26YHTDARZ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SNRCsM6BWahAGQ4iw/ouMLweTkrArRy3nv5NL64fQFrU7TRyJMBX6oPqu4yopRH83
+         +LEjrBnNFBW2VgUqRF4M4YQcOHvhdPNmxOHYPqUrRiSEf8pgDf7NiA2AyudxUQ1lcb
+         yNKZG6b8XtozsybWJbbpDJfPScp1nuo2x9HYgtcCfReoTGaTWN9YT5KalAVA2NwH+Y
+         iZ97MXkR98kPcEcHimti30QSmvHAeSw2xEreWv+gcXXdt9OFQUerKDZsa3LEsgphjP
+         HXkB48ED8OuWgzK4KHx9jJ2EjqJJZUq8ny6/y+CcgxUdKcASafzpLdTrnxVrfw6uNH
+         L6x2Yub73LbkA==
+Date:   Tue, 14 Nov 2023 19:34:39 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Min Li <lnimi@hotmail.com>
+Cc:     richardcochran@gmail.com, lee@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Min Li <min.li.xe@renesas.com>
+Subject: Re: [PATCH net-next v3 1/1] ptp: clockmatrix: support 32-bit address
+ space
+Message-ID: <20231114193439.GF74656@kernel.org>
+References: <MW5PR03MB69324AE8F4C54FE03BD93A55A0B3A@MW5PR03MB6932.namprd03.prod.outlook.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 02/15] staging: vc04_services: vchiq_arm: Register
- vcsm-cma driver
-Content-Language: en-US
-To:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "Ricardo B . Marliere" <ricardo@marliere.net>,
-        Dan Carpenter <error27@gmail.com>
-References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
- <20231109210309.638594-3-umang.jain@ideasonboard.com>
-From:   Stefan Wahren <wahrenst@gmx.net>
-In-Reply-To: <20231109210309.638594-3-umang.jain@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:tol0ZL1AgesNjpcIresGp3hLMBAjqiB9APiylxirondgLz/H3GA
- Ox2cspkyQZqx8xZSqYZVo1daKJRABXg12GI91ngnobscpztKeq9VTigmxx5g8HIgnPKBe9Y
- reHbcO8Y2mt3bucJLHMh3+TKVAGjmIMgoHf6O+pgo9imZi+JE2dDOFd40mhNJfSnMl1dFy+
- nsz+kSI/VS+HZAXfFkC2g==
-UI-OutboundReport: notjunk:1;M01:P0:OgCA92FrxV0=;i6D1chp3+1ZPO9W8hP8BWP3elFY
- N3qXALD7LCzrTTHwInWhnPi23WzOVokqpc9XiLScMZQK9ZCgDwHTvDG7pgrzV0wfTeDOM8ERz
- 7D87mLaJqMlmHgkgTWZTmbhAxsi056I93skw+y6/HM/QC+hqHPLXrwy5PsmlwRpDAMouAEG8j
- mQppNizNU/8Dut9jRXI84ZznOF7OMaav0H83CwWWljj/AD4j9MTx5uEj9nUUqkp6n2NvVjiIO
- Suav64mS14z1QposPi03TgAO+cSFLShoxd0EY9YbsSxp/eEZXRdA06bj6QqLCmfo/TQXKvw5D
- UuCbV7J5Cu6lbb3nSt/N7NZEGKtCw0uvxJPGvOq6FUKTRS0+6ukMAh98wzDKji7W8WibQIpSR
- B1EVCHWq6F1LHoMRbscRIkCseA6lGAdP+F3xIaCMPeX6ffZz0YMtSyjoxD10ytYantoAgA72b
- w812u6hf3SpJTUSY7DwUbHoH7q8KDB02cyF/0LVgKzLnS3wd7jbJMr9bWJmRwhLk4Kw1KTml3
- e6eGYCTL81jpJ6Yv/UTbnlAy+BQprw4+74FOYWn1dK8v9xMW7C/j5eum3I5600iQ1b3y9Yrmi
- le+BhjZzy7/PqUiyyFCJVbwGi6P52NROa58dtzjN2wDyPAIpXBrnF8h3lo/h7PjmasHNUT3ex
- YtlTvXeNa4E2oSpZi5z1iaQr34EDRswEU8S2f5mH1x1W7BtbQcYTxMPWCIdzBuwalg3p/tegJ
- XYlXm7iSTWH6Nxm9ipqe6OftPdWbFsFDbX5xCTEGMpTK9zvbyr0trFzh5AQ7b75Kg24IU6cSG
- MhXrI8L6Yo/3mgiQiBIV2tq8OKVNtauffeqXlibMXvHi/fir7wvUQGgaGYQodcifeq8oq23Eu
- 1rYx47VpuRj3Y46iqKyIqACcJ4ZpsuSWwgRcaDBi6viGlIHooiNPghTtvWHXmCw7DUPbAjRCe
- nprlxDExZy/zHIwgnsul7ubJc6o=
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <MW5PR03MB69324AE8F4C54FE03BD93A55A0B3A@MW5PR03MB6932.namprd03.prod.outlook.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Umang,
-
-Am 09.11.23 um 22:02 schrieb Umang Jain:
-> Register the vcsm-cma driver with the vchiq_bus_type.
-
-please squash into patch #1
-
->
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+On Mon, Nov 13, 2023 at 10:50:46AM -0500, Min Li wrote:
+> From: Min Li <min.li.xe@renesas.com>
+> 
+> We used to assume 0x2010xxxx address. Now that
+> we need to access 0x2011xxxx address, we need
+> to support read/write the whole 32-bit address space.
+> 
+> Signed-off-by: Min Li <min.li.xe@renesas.com>
 > ---
->   drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c | 3 +++
->   1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm=
-.c b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> index 9fb8f657cc78..5a9073480dd3 100644
-> --- a/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> +++ b/drivers/staging/vc04_services/interface/vchiq_arm/vchiq_arm.c
-> @@ -70,6 +70,7 @@ struct vchiq_state g_state;
->    */
->   static struct vchiq_device *bcm2835_audio;
->   static struct vchiq_device *bcm2835_camera;
-> +static struct vchiq_device *vcsm_cma;
->
->   struct vchiq_drvdata {
->   	const unsigned int cache_line_size;
-> @@ -1840,6 +1841,7 @@ static int vchiq_probe(struct platform_device *pde=
-v)
->   		goto error_exit;
->   	}
->
-> +	vcsm_cma =3D vchiq_device_register(&pdev->dev, "vcsm-cma");
->   	bcm2835_audio =3D vchiq_device_register(&pdev->dev, "bcm2835-audio");
->   	bcm2835_camera =3D vchiq_device_register(&pdev->dev, "bcm2835-camera"=
-);
->
-> @@ -1855,6 +1857,7 @@ static void vchiq_remove(struct platform_device *p=
-dev)
->   {
->   	vchiq_device_unregister(bcm2835_audio);
->   	vchiq_device_unregister(bcm2835_camera);
-> +	vchiq_device_unregister(vcsm_cma);
->   	vchiq_debugfs_deinit();
->   	vchiq_deregister_chrdev();
->   }
+> - Drop MAX_ABS_WRITE_PHASE_PICOSECONDS advised by Rahul
+> - Apply SCSR_ADDR to scrach register in idtcm_load_firmware advised by Simon
+
+Hi Min Li,
+
+thanks for addressing my earlier feedback.
+I have done a more thorough review of this version,
+I hope that it is useful.
+
+>  drivers/ptp/ptp_clockmatrix.c    |  59 ++--
+>  drivers/ptp/ptp_clockmatrix.h    |  32 +-
+>  include/linux/mfd/idt8a340_reg.h | 542 ++++++++++++++++---------------
+>  3 files changed, 325 insertions(+), 308 deletions(-)
+> 
+> diff --git a/drivers/ptp/ptp_clockmatrix.c b/drivers/ptp/ptp_clockmatrix.c
+> index f6f9d4adce04..4d7898dc39d5 100644
+> --- a/drivers/ptp/ptp_clockmatrix.c
+> +++ b/drivers/ptp/ptp_clockmatrix.c
+> @@ -41,7 +41,7 @@ module_param(firmware, charp, 0);
+>  static int _idtcm_adjfine(struct idtcm_channel *channel, long scaled_ppm);
+>  
+>  static inline int idtcm_read(struct idtcm *idtcm,
+> -			     u16 module,
+> +			     u32 module,
+>  			     u16 regaddr,
+>  			     u8 *buf,
+>  			     u16 count)
+> @@ -50,7 +50,7 @@ static inline int idtcm_read(struct idtcm *idtcm,
+>  }
+>  
+>  static inline int idtcm_write(struct idtcm *idtcm,
+> -			      u16 module,
+> +			      u32 module,
+>  			      u16 regaddr,
+>  			      u8 *buf,
+>  			      u16 count)
+
+I see that this patch expands the width of the module parameter of
+idtcm_read() and idtcm_write(). And that with this change the module
+parameter's leading 16bits are 0x2010. And that this is done to allow the
+leading bits to be a different value, which I assume will be utilised in a
+follow-up patch. But I am unclear on how the code handles that the
+underlying read/write is now to an address 0x2010000 bytes greater than
+before, or alternatively, how 0x2010000 was previously taken into account.
+
+Also:
+
+1. idtcm_output_enable() still seems to pass a 16-bit value as the module
+   parameter to idtcm_read() and idtcm_write(), which seems inconsistent
+   with this patch.
+
+2. Related to 1., get_output_base_addr() returns an int which either
+   encodes a negative error value (good) or a 32bit address (maybe not so
+   good).
+
+3. Some more of the idtcm_write() calls in _sync_pll_output() seem
+   to need updating by inverting the 2nd and 3rd parameters
+   so that the 2nd parameter is 32bits. I'm referring to the use
+   of sync_ctrl0 and sync_ctrl1 as arguments to idtcm_write().
+
+...
+
+> @@ -1705,7 +1720,7 @@ static s32 idtcm_getmaxphase(struct ptp_clock_info *ptp __always_unused)
+>  }
+>  
+>  /*
+> - * Internal function for implementing support for write phase offset
+> + * Maximum absolute value for write phase offset in picoseconds
+>   *
+>   * @channel:  channel
+>   * @delta_ns: delta in nanoseconds
+> @@ -1717,6 +1732,7 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
+>  	u8 i;
+>  	u8 buf[4] = {0};
+>  	s32 phase_50ps;
+> +	s64 offset_ps;
+>  
+>  	if (channel->mode != PTP_PLL_MODE_WRITE_PHASE) {
+>  		err = channel->configure_write_phase(channel);
+> @@ -1724,7 +1740,8 @@ static int _idtcm_adjphase(struct idtcm_channel *channel, s32 delta_ns)
+>  			return err;
+>  	}
+>  
+> -	phase_50ps = div_s64((s64)delta_ns * 1000, 50);
+> +	offset_ps = (s64)delta_ns * 1000;
+> +	phase_50ps = div_s64(offset_ps, 50);
+>  
+>  	for (i = 0; i < 4; i++) {
+>  		buf[i] = phase_50ps & 0xff;
+
+It is unclear to me how the _idtcm_adjphase changes in the above 3 hunks
+relate to the patch description. I wonder if this should be a separate patch?
+
+> diff --git a/drivers/ptp/ptp_clockmatrix.h b/drivers/ptp/ptp_clockmatrix.h
+> index 7c17c4f7f573..ad39dc6decdf 100644
+> --- a/drivers/ptp/ptp_clockmatrix.h
+> +++ b/drivers/ptp/ptp_clockmatrix.h
+> @@ -54,21 +54,9 @@
+>  #define LOCK_TIMEOUT_MS			(2000)
+>  #define LOCK_POLL_INTERVAL_MS		(10)
+>  
+> -#define IDTCM_MAX_WRITE_COUNT		(512)
+> -
+
+Removing IDTCM_MAX_WRITE_COUNT seems nice, if it is unused.
+But this doesn't seem related to the rest of this patch,
+so perhaps it should be a separate patch.
+
+...
+
+> diff --git a/include/linux/mfd/idt8a340_reg.h b/include/linux/mfd/idt8a340_reg.h
+> index 0c706085c205..b680a0eb5f68 100644
+> --- a/include/linux/mfd/idt8a340_reg.h
+> +++ b/include/linux/mfd/idt8a340_reg.h
+> @@ -7,20 +7,20 @@
+>  #ifndef HAVE_IDT8A340_REG
+>  #define HAVE_IDT8A340_REG
+>  
+> -#define PAGE_ADDR_BASE                    0x0000
+> -#define PAGE_ADDR                         0x00fc
+
+Likewise, cleaning up PAGE_ADDR_BASE and PAGE_ADDR doesn't
+seem strictly related to this patch. Though perhaps I am missing
+something obvious.
+
+...
