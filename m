@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0A57EAD20
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B54FE7EAD28
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231486AbjKNJfm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 04:35:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36258 "EHLO
+        id S232520AbjKNJi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:38:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjKNJfl (ORCPT
+        with ESMTP id S232245AbjKNJi1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 04:35:41 -0500
-Received: from harvie.cz (harvie.cz [77.87.242.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1C47A18C
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:35:36 -0800 (PST)
-Received: from anemophobia.amit.cz (unknown [31.30.84.130])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by harvie.cz (Postfix) with ESMTPSA id 5124E180251;
-        Tue, 14 Nov 2023 10:35:34 +0100 (CET)
-From:   Tomas Mudrunka <tomas.mudrunka@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, tomas.mudrunka@gmail.com,
-        corbet@lwn.net, linux-doc@vger.kernel.org
-Subject: [PATCH v2] /proc/sysrq-trigger: accept multiple keys at once
-Date:   Tue, 14 Nov 2023 10:35:25 +0100
-Message-ID: <20231114093525.71871-1-tomas.mudrunka@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <2023111330-headstone-pyromania-c57e@gregkh>
-References: <2023111330-headstone-pyromania-c57e@gregkh>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        Tue, 14 Nov 2023 04:38:27 -0500
+Received: from cmccmta2.chinamobile.com (cmccmta6.chinamobile.com [111.22.67.139])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 288C418E;
+        Tue, 14 Nov 2023 01:38:20 -0800 (PST)
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from spf.mail.chinamobile.com (unknown[10.188.0.87])
+        by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee565534009c5c-d14fe;
+        Tue, 14 Nov 2023 17:38:17 +0800 (CST)
+X-RM-TRANSID: 2ee565534009c5c-d14fe
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG: 00000000
+Received: from ubuntu.localdomain (unknown[10.54.5.255])
+        by rmsmtp-syy-appsvr05-12005 (RichMail) with SMTP id 2ee565534008686-5bf03;
+        Tue, 14 Nov 2023 17:38:17 +0800 (CST)
+X-RM-TRANSID: 2ee565534008686-5bf03
+From:   zhujun2 <zhujun2@cmss.chinamobile.com>
+To:     shuah@kernel.org
+Cc:     mathieu.desnoyers@efficios.com, zhujun2@cmss.chinamobile.com,
+        ivan.orlov0322@gmail.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] selftests/media_tests: fix a resource leak
+Date:   Tue, 14 Nov 2023 01:38:12 -0800
+Message-Id: <20231114093812.7169-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.17.1
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just for convenience.
-This way we can do:
-`echo _reisub > /proc/sysrq-trigger`
-Instead of:
-`for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
+The opened file should be closed in main(), otherwise resource
+leak will occur that this problem was discovered by code reading
 
-This can be very useful when trying to execute sysrq combo remotely
-or from userspace. When sending keys in multiple separate writes,
-userspace can be killed before whole combo is completed.
-Therefore putting all keys in single write is more robust approach.
-
-Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
+Signed-off-by: zhujun2 <zhujun2@cmss.chinamobile.com>
 ---
- Documentation/admin-guide/sysrq.rst |  4 ++++
- drivers/tty/sysrq.c                 | 17 ++++++++++++++---
- 2 files changed, 18 insertions(+), 3 deletions(-)
+ tools/testing/selftests/media_tests/media_device_open.c | 3 +++
+ tools/testing/selftests/media_tests/media_device_test.c | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-index 51906e473..9d46a33e5 100644
---- a/Documentation/admin-guide/sysrq.rst
-+++ b/Documentation/admin-guide/sysrq.rst
-@@ -79,6 +79,10 @@ On all
- 
- 		echo t > /proc/sysrq-trigger
- 
-+	Alternatively write key combo prepended by underscore. e.g.::
-+
-+		echo _reisub > /proc/sysrq-trigger
-+
- The :kbd:`<command key>` is case sensitive.
- 
- What are the 'command' keys?
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 6b4a28bcf..3455e6dd3 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -1150,16 +1150,27 @@ EXPORT_SYMBOL(unregister_sysrq_key);
- #ifdef CONFIG_PROC_FS
- /*
-  * writing 'C' to /proc/sysrq-trigger is like sysrq-C
-+ * If first character in write is underscore, all characters are interpreted.
-  */
- static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
- 				   size_t count, loff_t *ppos)
- {
--	if (count) {
-+	char bulk = false;
-+	size_t i;
-+
-+	for (i = 0; i < count; i++) {
- 		char c;
- 
--		if (get_user(c, buf))
-+		if (get_user(c, buf+i))
- 			return -EFAULT;
--		__handle_sysrq(c, false);
-+
-+		if (c == '_')
-+			bulk = true;
-+		else
-+			__handle_sysrq(c, false);
-+
-+		if (!bulk)
-+			break;
+diff --git a/tools/testing/selftests/media_tests/media_device_open.c b/tools/testing/selftests/media_tests/media_device_open.c
+index 93183a37b133..2dfb2a11b148 100644
+--- a/tools/testing/selftests/media_tests/media_device_open.c
++++ b/tools/testing/selftests/media_tests/media_device_open.c
+@@ -70,6 +70,7 @@ int main(int argc, char **argv)
+ 	fd = open(media_device, O_RDWR);
+ 	if (fd == -1) {
+ 		printf("Media Device open errno %s\n", strerror(errno));
++		close(fd);
+ 		exit(-1);
  	}
  
- 	return count;
+@@ -79,4 +80,6 @@ int main(int argc, char **argv)
+ 	else
+ 		printf("Media device model %s driver %s\n",
+ 			mdi.model, mdi.driver);
++
++	close(fd);
+ }
+diff --git a/tools/testing/selftests/media_tests/media_device_test.c b/tools/testing/selftests/media_tests/media_device_test.c
+index 4b9953359e40..7cabb62535a7 100644
+--- a/tools/testing/selftests/media_tests/media_device_test.c
++++ b/tools/testing/selftests/media_tests/media_device_test.c
+@@ -79,6 +79,7 @@ int main(int argc, char **argv)
+ 	fd = open(media_device, O_RDWR);
+ 	if (fd == -1) {
+ 		printf("Media Device open errno %s\n", strerror(errno));
++		close(fd);
+ 		exit(-1);
+ 	}
+ 
+@@ -100,4 +101,6 @@ int main(int argc, char **argv)
+ 		sleep(10);
+ 		count--;
+ 	}
++
++	close(fd);
+ }
 -- 
-2.42.1
+2.17.1
+
+
 
