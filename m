@@ -2,98 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5549B7EA825
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:15:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 168C87EA821
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 02:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231906AbjKNBPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 20:15:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49076 "EHLO
+        id S229720AbjKNBON (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 20:14:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230437AbjKNBPE (ORCPT
+        with ESMTP id S229511AbjKNBOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 20:15:04 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5BA4D5A
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:15:01 -0800 (PST)
+        Mon, 13 Nov 2023 20:14:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E5119B
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 17:14:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699924501; x=1731460501;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=S/Mo+SEe2nMEOiLcS05N5VORyWVbnY8E6CLbpkYork4=;
-  b=LZhNXfpMUADYlrle3BHoUpZIcFSC27t+fGkUD3kqCR4r4jm3D8KwEz5U
-   Djn8gmsevry98Z+Ey20gko+7hOVIRzzd9ze+OL6yEgMHohHVAvnU2PbZE
-   RaFZEg5K3lDWAxNOAocDLH1CPebWoPSuKn255Q/zyoTh0xt0HUH55Qwp9
-   7FP6Ed4X0WtCoqQleXhkwYq25J654qaiSUYW5k5CcOcVzp4CJaVTFDXBK
-   q00QR63sQHC0gIqaXUV2bnfOk4lC/KksHlN4pLATutfPDqof9iZVj9q++
-   kBBs/MlAsByUzA9jko0fQ3Y9V3sQ7kI1WwoXjReVIAYBXusdFC70xcyY3
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="454833584"
+  t=1699924449; x=1731460449;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=oQJpuKDOhuR/4NqGomdXErid0IdxtIX2pZNk0d/K/XQ=;
+  b=Ubc3wtQmYkJrOhLeGXTRsgiZm08IQaA0DJ8jBhJCHeLaQLcWEaW7R7ko
+   WgdF/ZtnNcQMYeM14fxACrL3H/7G/hF4lOu6fABuWO6/uXn2twayTEaDx
+   kw6VxuCJhn+9HcxbJ1XWg9tCoAnVTgcDcRY7eFmnP6v2hZT4+/Q3H45ar
+   J4tngyRNy0nZAQ6hqwmfXyX0cudWXaISWZpeangpJG/VQYUIrMNfo4cAx
+   fie5B0vNZZTGsm5UcTrYqhBt9Sx4s67qxEyMWVOx6MOieHBetVC31jJtd
+   hmBpT4w8rLoKL3II22/aQVwGmToR1OyCXhWF6RVKrZSrIFLyaH1AkN9XL
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="387704496"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="454833584"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 17:15:01 -0800
+   d="scan'208";a="387704496"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 17:14:09 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="740928125"
+X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="768080707"
 X-IronPort-AV: E=Sophos;i="6.03,299,1694761200"; 
-   d="scan'208";a="740928125"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga006.jf.intel.com with ESMTP; 13 Nov 2023 17:14:59 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Make context clearing consistent with context mapping
-Date:   Tue, 14 Nov 2023 09:10:36 +0800
-Message-Id: <20231114011036.70142-4-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231114011036.70142-1-baolu.lu@linux.intel.com>
-References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
+   d="scan'208";a="768080707"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Nov 2023 17:14:06 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>,
+        David Hildenbrand <david@redhat.com>
+Cc:     akpm@linux-foundation.org, wangkefeng.wang@huawei.com,
+        willy@infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH] mm: support large folio numa balancing
+In-Reply-To: <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com> (David
+        Hildenbrand's message of "Mon, 13 Nov 2023 11:53:12 +0100")
+References: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+        <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+Date:   Tue, 14 Nov 2023 09:12:05 +0800
+Message-ID: <871qctf89m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the iommu probe_device path, domain_context_mapping() allows setting
-up the context entry for a non-PCI device. However, in the iommu
-release_device path, domain_context_clear() only clears context entries
-for PCI devices.
+David Hildenbrand <david@redhat.com> writes:
 
-Make domain_context_clear() behave consistently with
-domain_context_mapping() by clearing context entries for both PCI and
-non-PCI devices.
+> On 13.11.23 11:45, Baolin Wang wrote:
+>> Currently, the file pages already support large folio, and supporting for
+>> anonymous pages is also under discussion[1]. Moreover, the numa balancing
+>> code are converted to use a folio by previous thread[2], and the migrate_pages
+>> function also already supports the large folio migration.
+>> So now I did not see any reason to continue restricting NUMA
+>> balancing for
+>> large folio.
+>
+> I recall John wanted to look into that. CCing him.
+>
+> I'll note that the "head page mapcount" heuristic to detect sharers will
+> now strike on the PTE path and make us believe that a large folios is
+> exclusive, although it isn't.
 
-Fixes: 579305f75d34 ("iommu/vt-d: Update to use PCI DMA aliases")
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Even 4k folio may be shared by multiple processes/threads.  So, numa
+balancing uses a multi-stage node selection algorithm (mostly
+implemented in should_numa_migrate_memory()) to identify shared folios.
+I think that the algorithm needs to be adjusted for PTE mapped large
+folio for shared folios.
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index c3ec09118ab1..061df1b68ff7 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -3931,8 +3931,8 @@ static int domain_context_clear_one_cb(struct pci_dev *pdev, u16 alias, void *op
-  */
- static void domain_context_clear(struct device_domain_info *info)
- {
--	if (!info->iommu || !info->dev || !dev_is_pci(info->dev))
--		return;
-+	if (!dev_is_pci(info->dev))
-+		domain_context_clear_one(info, info->bus, info->devfn);
- 
- 	pci_for_each_dma_alias(to_pci_dev(info->dev),
- 			       &domain_context_clear_one_cb, info);
--- 
-2.34.1
+And, as a performance improvement patch, some performance data needs to
+be provided.  And, the effect of shared folio detection needs to be
+tested too.
 
+--
+Best Regards,
+Huang, Ying
