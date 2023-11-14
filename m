@@ -2,138 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E69F7EABB1
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:37:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8DE57EABB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:39:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232245AbjKNIhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:37:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
+        id S232249AbjKNIjC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 03:39:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36922 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230271AbjKNIhF (ORCPT
+        with ESMTP id S230271AbjKNIjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:37:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD01A4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:37:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699951021;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gRa0cgOuGSbx17AxlwEuUbrIiLUWRvMO5s1P7qxyaKw=;
-        b=WJehPB8G589HfPqGo1h8vUTa/voNB8r7MRLCNOI19h3LZctq1+9oIYu+G0kjIhFboFazA/
-        /7fFkLUUIPy1oZNai4JZOCYx+Q3CGE21Zfkk9emRuV2n/MQ1gaERqWFO3Z1SDkSykASji5
-        cyIqLRjfnVJ0iUiJGVLXaZWzf6NpzQo=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-277-fuibdTbmNsKhckfdhdfNWw-1; Tue,
- 14 Nov 2023 03:36:58 -0500
-X-MC-Unique: fuibdTbmNsKhckfdhdfNWw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EA9432932480;
-        Tue, 14 Nov 2023 08:36:57 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.231])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F05C925C0;
-        Tue, 14 Nov 2023 08:36:56 +0000 (UTC)
-Date:   Tue, 14 Nov 2023 16:36:53 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     Yuntao Wang <ytcoode@gmail.com>
-Cc:     alexander.shishkin@linux.intel.com, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, jgross@suse.com,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        peterz@infradead.org, ssengar@linux.microsoft.com,
-        tglx@linutronix.de, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: Re: [PATCH v2] x86/setup: Use a more concise memblock API
-Message-ID: <ZVMxpXBrE4p3IqhU@MiWiFi-R3L-srv>
-References: <ZVLzZlHMXeHIO9eG@MiWiFi-R3L-srv>
- <20231114073700.126543-1-ytcoode@gmail.com>
+        Tue, 14 Nov 2023 03:39:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 713AAA4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 00:38:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF65BC433C8;
+        Tue, 14 Nov 2023 08:38:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1699951138;
+        bh=Qz4bqCfb39E5fvYkFxANSDUiv0YU+cze73hZIqUJoas=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Evo9Jq1Z02upcf0EdAXLr4DlJDNCEFzN9aofJ05Ssk28wE/s7yhMnPCIvtgjG0ebI
+         YM6fuhkTs2jJDiOoKnHakIJYHuesen4hL+NtfDBjRZvQF8EuPFzgLbCkoBmgNzOZsE
+         s3n/I/E9TmOG/fgt1nv3OA3McT+8vff5mbv0UJyMud8/LPvkoJ6JH5x0L/A9jKkM+j
+         7txpZPI0iD1r3pY5eyEyrFoBp5IL1uS3Seukf8ep1Cy8W1L4C8p18vwf0qlBY4/6U+
+         +6XOvxBO1VkkzrCzFAJVUCL8vBorLhLrC2Na/51HzRKdACb/vSbbch47ukXavw6VqS
+         7H3lwKgnE9B8Q==
+Date:   Tue, 14 Nov 2023 16:38:38 +0800
+From:   Peter Chen <peter.chen@kernel.org>
+To:     =?iso-8859-1?Q?Th=E9o?= Lebrun <theo.lebrun@bootlin.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Roger Quadros <rogerq@kernel.org>,
+        Pawel Laszczak <pawell@cadence.com>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 4/6] usb: cdns3: support power-off of controller when in
+ host role
+Message-ID: <20231114083838.GC64573@nchen-desktop>
+References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
+ <20231113-j7200-usb-suspend-v1-4-ad1ee714835c@bootlin.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231114073700.126543-1-ytcoode@gmail.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231113-j7200-usb-suspend-v1-4-ad1ee714835c@bootlin.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/14/23 at 03:37pm, Yuntao Wang wrote:
-> When executing relocate_initrd()/numa_emulation()/numa_alloc_distance(),
-> the memblock.current_limit field has already been set to
-> `max_pfn_mapped << PAGE_SHIFT`, therefore we can replace
-> memblock_phys_alloc_range() with memblock_phys_alloc(), which has the same
-> functionality but is more concise.
+On 23-11-13 15:26:59, Théo Lebrun wrote:
+> The controller is not being reconfigured at resume. Change resume to
+> redo hardware config if quirk CDNS3_RESET_ON_RESUME is active.
+
+Current logic has power off judgement, see cdns3_controller_resume for
+detail.
+
 > 
-> Signed-off-by: Yuntao Wang <ytcoode@gmail.com>
+> Platform data comes from the parent driver (eg cdns3-ti).
+> 
+> The quirk should be passed if the platform driver knows that the
+> controller might be in reset state at resume. We do NOT reconfigure the
+> hardware without this quirk to avoid losing state if we did a suspend
+> without reset.
+> 
+> If the quirk is on, we notify the xHCI subsystem that:
+> 
+> 1. We reset on resume. It will therefore redo the xHC init & trigger
+>    such message as "root hub lost power or was reset" in dmesg.
+> 
+> 2. It should disable/enable clocks on suspend/resume. This does not
+>    matter on our platform as xhci-plat does not get access to any clock
+>    but it would be the right thing to do if we indeed had such clocks.
+> 
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 > ---
-> v1 -> v2:
+>  drivers/usb/cdns3/core.h |  1 +
+>  drivers/usb/cdns3/host.c | 20 ++++++++++++++++++++
+>  2 files changed, 21 insertions(+)
 > 
-> Also replace memblock_phys_alloc_range() in numa_emulation() and
-> numa_alloc_distance() with memblock_phys_alloc()
+> diff --git a/drivers/usb/cdns3/core.h b/drivers/usb/cdns3/core.h
+> index 81a9c9d6be08..7487067ba23f 100644
+> --- a/drivers/usb/cdns3/core.h
+> +++ b/drivers/usb/cdns3/core.h
+> @@ -44,6 +44,7 @@ struct cdns3_platform_data {
+>  			bool suspend, bool wakeup);
+>  	unsigned long quirks;
+>  #define CDNS3_DEFAULT_PM_RUNTIME_ALLOW	BIT(0)
+> +#define CDNS3_RESET_ON_RESUME		BIT(1)
+>  };
+>  
+>  /**
+> diff --git a/drivers/usb/cdns3/host.c b/drivers/usb/cdns3/host.c
+> index 6164fc4c96a4..a81019a7c8cc 100644
+> --- a/drivers/usb/cdns3/host.c
+> +++ b/drivers/usb/cdns3/host.c
+> @@ -88,6 +88,9 @@ static int __cdns_host_init(struct cdns *cdns)
+>  		goto err1;
+>  	}
+>  
+> +	if (cdns->pdata && cdns->pdata->quirks & CDNS3_RESET_ON_RESUME)
+> +		cdns->xhci_plat_data->quirks |= XHCI_RESET_ON_RESUME | XHCI_SUSPEND_RESUME_CLKS;
+> +
 
-LGTM,
+If you set this flag, how could you support the USB remote wakeup
+request? In that case, the USB bus does not expect re-enumeration.
 
-Reviewed-by: Baoquan He <bhe@redhat.com>
+>  	if (cdns->pdata && (cdns->pdata->quirks & CDNS3_DEFAULT_PM_RUNTIME_ALLOW))
+>  		cdns->xhci_plat_data->quirks |= XHCI_DEFAULT_PM_RUNTIME_ALLOW;
+>  
+> @@ -124,6 +127,18 @@ static void cdns_host_exit(struct cdns *cdns)
+>  	cdns_drd_host_off(cdns);
+>  }
+>  
+> +static int cdns_host_suspend(struct cdns *cdns, bool do_wakeup)
+> +{
+> +	if (!do_wakeup)
+> +		cdns_drd_host_off(cdns);
+> +	return 0;
+> +}
+> +
+> +static int cdns_host_resume(struct cdns *cdns, bool hibernated)
+> +{
+> +	return cdns_drd_host_on(cdns);
 
+This one will redo if controller's power is off, please consider both
+on and power situation.
+
+> +}
+> +
+>  int cdns_host_init(struct cdns *cdns)
+>  {
+>  	struct cdns_role_driver *rdrv;
+> @@ -137,6 +152,11 @@ int cdns_host_init(struct cdns *cdns)
+>  	rdrv->state	= CDNS_ROLE_STATE_INACTIVE;
+>  	rdrv->name	= "host";
+>  
+> +	if (cdns->pdata && cdns->pdata->quirks & CDNS3_RESET_ON_RESUME) {
+> +		rdrv->suspend = cdns_host_suspend;
+> +		rdrv->resume = cdns_host_resume;
+> +	}
+> +
+>  	cdns->roles[USB_ROLE_HOST] = rdrv;
+>  
+>  	return 0;
 > 
->  arch/x86/kernel/setup.c      | 3 +--
->  arch/x86/mm/numa.c           | 3 +--
->  arch/x86/mm/numa_emulation.c | 3 +--
->  3 files changed, 3 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
-> index ec2c21a1844e..422497c17eec 100644
-> --- a/arch/x86/kernel/setup.c
-> +++ b/arch/x86/kernel/setup.c
-> @@ -259,8 +259,7 @@ static void __init relocate_initrd(void)
->  	u64 area_size     = PAGE_ALIGN(ramdisk_size);
-> 
->  	/* We need to move the initrd down into directly mapped mem */
-> -	u64 relocated_ramdisk = memblock_phys_alloc_range(area_size, PAGE_SIZE, 0,
-> -						      PFN_PHYS(max_pfn_mapped));
-> +	u64 relocated_ramdisk = memblock_phys_alloc(area_size, PAGE_SIZE);
->  	if (!relocated_ramdisk)
->  		panic("Cannot find place for new RAMDISK of size %lld\n",
->  		      ramdisk_size);
-> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> index b29ceb19e46e..29cd8fc8ede1 100644
-> --- a/arch/x86/mm/numa.c
-> +++ b/arch/x86/mm/numa.c
-> @@ -378,8 +378,7 @@ static int __init numa_alloc_distance(void)
->  	cnt++;
->  	size = cnt * cnt * sizeof(numa_distance[0]);
-> 
-> -	phys = memblock_phys_alloc_range(size, PAGE_SIZE, 0,
-> -					 PFN_PHYS(max_pfn_mapped));
-> +	phys = memblock_phys_alloc(size, PAGE_SIZE);
->  	if (!phys) {
->  		pr_warn("Warning: can't allocate distance table!\n");
->  		/* don't retry until explicitly reset */
-> diff --git a/arch/x86/mm/numa_emulation.c b/arch/x86/mm/numa_emulation.c
-> index 9a9305367fdd..8acb8d0f7d0f 100644
-> --- a/arch/x86/mm/numa_emulation.c
-> +++ b/arch/x86/mm/numa_emulation.c
-> @@ -447,8 +447,7 @@ void __init numa_emulation(struct numa_meminfo *numa_meminfo, int numa_dist_cnt)
->  	if (numa_dist_cnt) {
->  		u64 phys;
-> 
-> -		phys = memblock_phys_alloc_range(phys_size, PAGE_SIZE, 0,
-> -						 PFN_PHYS(max_pfn_mapped));
-> +		phys = memblock_phys_alloc(phys_size, PAGE_SIZE);
->  		if (!phys) {
->  			pr_warn("NUMA: Warning: can't allocate copy of distance table, disabling emulation\n");
->  			goto no_emu;
-> --
-> 2.42.1
+> -- 
+> 2.41.0
 > 
 
+-- 
+
+Thanks,
+Peter Chen
