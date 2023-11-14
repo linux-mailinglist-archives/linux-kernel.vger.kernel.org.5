@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 695107EB0BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F177EB0BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 14:19:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233060AbjKNNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 08:19:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50954 "EHLO
+        id S233158AbjKNNTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 08:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233059AbjKNNTe (ORCPT
+        with ESMTP id S233061AbjKNNTn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 08:19:34 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABA8419F;
-        Tue, 14 Nov 2023 05:19:30 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SV6MN0dHQzvQWh;
-        Tue, 14 Nov 2023 21:19:12 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Tue, 14 Nov
- 2023 21:19:27 +0800
-Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
-To:     Mina Almasry <almasrymina@google.com>
-CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
- <20231113130041.58124-4-linyunsheng@huawei.com>
- <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
- <20231113180554.1d1c6b1a@kernel.org>
- <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
- <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
- <fa5d2f4c-5ccc-e23e-1926-2d7625b66b91@huawei.com>
- <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <3ff54a20-7e5f-562a-ca2e-b078cc4b4120@huawei.com>
-Date:   Tue, 14 Nov 2023 21:19:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Tue, 14 Nov 2023 08:19:43 -0500
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::222])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09381AD;
+        Tue, 14 Nov 2023 05:19:38 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 681CE40008;
+        Tue, 14 Nov 2023 13:19:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1699967976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1adG2pCQdrlIqa/Ui8p/cDDYSt28mMMCweJGLBFYJWU=;
+        b=VSPco1j3fCKFQr9M4kS7BykKzTCBU6+7sD8kLLTUxRhvhfYNx8NB9umErCXmVrPtObkB77
+        NvtckRZ7dMv8RGrfc0fmuqrccD1IVswYv172CB8napmAyV13fAIrjtD/KrEE7gvudAC0X1
+        t9eQDEawlOlxd7T1nLynndlR9p6oe/mZOPsdd+9XvS6csa2KjfgJhrfir5P6+tzht2Q5iC
+        jfGBP4+ib1SaDqwz/ZK4UtWs/8w+/nh9T9yLlPX2PIkD7V6oG2AcTWoHxF41dNBLCl4fzy
+        jxNm9AyEJ1JFtaH7CvVGcK8GwzWktp0vbcH6wIRFpp0FyRnIYZIdXtHsawGVvQ==
+Date:   Tue, 14 Nov 2023 14:19:34 +0100
+From:   Herve Codina <herve.codina@bootlin.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
+        linux-kernel@vger.kernel.org,
+        Allan Nielsen <allan.nielsen@microchip.com>,
+        Horatiu Vultur <horatiu.vultur@microchip.com>,
+        Steen Hegelund <steen.hegelund@microchip.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 1/1] lib/vsprintf: Fix %pfwf when current node refcount
+ == 0
+Message-ID: <20231114141934.1b0d44e2@bootlin.com>
+In-Reply-To: <ZVNyT6qTw6mpy6BY@smile.fi.intel.com>
+References: <20231114110456.273844-1-herve.codina@bootlin.com>
+        <ZVNyT6qTw6mpy6BY@smile.fi.intel.com>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: herve.codina@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,64 +67,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/14 20:58, Mina Almasry wrote:
+On Tue, 14 Nov 2023 15:12:47 +0200
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> wrote:
 
->>
->> Yes, as above, skb_frags_not_readable() checking is still needed for
->> kmap() and page_address().
->>
->> get_page, put_page related calling is avoided in page_pool_frag_ref()
->> and napi_pp_put_page() for devmem page as the above checking is true
->> for devmem page:
->> (pp_iov->pp_magic & ~0x3UL) == PP_SIGNATURE
->>
+> On Tue, Nov 14, 2023 at 12:04:56PM +0100, Herve Codina wrote:
+> > A refcount issue can appeared in __fwnode_link_del() due to the
+> > pr_debug() call:  
 > 
-> So, devmem needs special handling with if statement for refcounting,
-> even after using struct pages for devmem, which is not allowed (IIUC
-> the dma-buf maintainer).
-
-It reuses the already existing checking or optimization, that is the point
-of 'mirror struct'.
-
+> >   WARNING: CPU: 0 PID: 901 at lib/refcount.c:25 refcount_warn_saturate+0xe5/0x110
+> >   Call Trace:
+> >   <TASK>
+> >   ? refcount_warn_saturate+0xe5/0x110
+> >   ? __warn+0x81/0x130
+> >   ? refcount_warn_saturate+0xe5/0x110
+> >   ? report_bug+0x191/0x1c0
+> >   ? srso_alias_return_thunk+0x5/0x7f
+> >   ? prb_read_valid+0x1b/0x30
+> >   ? handle_bug+0x3c/0x80
+> >   ? exc_invalid_op+0x17/0x70
+> >   ? asm_exc_invalid_op+0x1a/0x20
+> >   ? refcount_warn_saturate+0xe5/0x110
+> >   kobject_get+0x68/0x70
+> >   of_node_get+0x1e/0x30
+> >   of_fwnode_get+0x28/0x40
+> >   fwnode_full_name_string+0x34/0x90
+> >   fwnode_string+0xdb/0x140
+> >   vsnprintf+0x17b/0x630
+> >   va_format.isra.0+0x71/0x130
+> >   vsnprintf+0x17b/0x630
+> >   vprintk_store+0x162/0x4d0
+> >   ? srso_alias_return_thunk+0x5/0x7f
+> >   ? srso_alias_return_thunk+0x5/0x7f
+> >   ? srso_alias_return_thunk+0x5/0x7f
+> >   ? try_to_wake_up+0x9c/0x620
+> >   ? rwsem_mark_wake+0x1b2/0x310
+> >   vprintk_emit+0xe4/0x2b0
+> >   _printk+0x5c/0x80
+> >   __dynamic_pr_debug+0x131/0x160
+> >   ? srso_alias_return_thunk+0x5/0x7f
+> >   __fwnode_link_del+0x25/0xa0
+> >   fwnode_links_purge+0x39/0xb0
+> >   of_node_release+0xd9/0x180
+> >   kobject_put+0x7b/0x190
+> >   ...  
 > 
->>>
->>>> The main difference between this patchset and RFC v3:
->>>> 1. It reuses the 'struct page' to have more unified handling between
->>>>    normal page and devmem page for net stack.
->>>
->>> This is what was nacked in RFC v1.
->>>
->>>> 2. It relies on the page->pp_frag_count to do reference counting.
->>>>
->>>
->>> I don't see you change any of the page_ref_* calls in page_pool.c, for
->>> example this one:
->>>
->>> https://elixir.bootlin.com/linux/latest/source/net/core/page_pool.c#L601
->>>
->>> So the reference the page_pool is seeing is actually page->_refcount,
->>> not page->pp_frag_count? I'm confused here. Is this a bug in the
->>> patchset?
->>
->> page->_refcount is the same as page_pool_iov->_refcount for devmem, which
->> is ensured by the 'PAGE_POOL_MATCH(_refcount, _refcount);', and
->> page_pool_iov->_refcount is set to one in mp_dmabuf_devmem_alloc_pages()
->> by calling 'refcount_set(&ppiov->_refcount, 1)' and always remains as one.
->>
->> So the 'page_ref_count(page) == 1' checking is always true for devmem page.
-> 
-> Which, of course, is a bug in the patchset, and it only works because
-> it's a POC for you. devmem pages (which shouldn't exist according to
-> the dma-buf maintainer, IIUC) can't be recycled all the time. See
-> SO_DEVMEM_DONTNEED patch in my RFC and refcounting needed for devmem.
+> Please, do not put so many unrelated lines of backtrace in the commit message.
+> Leave only the important ones (the Submitting Patches document suggests some
+> like ~3-5 lines only).
 
-I am not sure dma-buf maintainer's concern is still there with this patchset.
+Ok, I will remove some of them.
 
-Whatever name you calling it for the struct, however you arrange each field
-in the struct, some metadata is always needed for dmabuf to intergrate into
-page pool.
-
-If the above is true, why not utilize the 'struct page' to have more unified
-handling?
-
-> 
+Best regards,
+Hervé
