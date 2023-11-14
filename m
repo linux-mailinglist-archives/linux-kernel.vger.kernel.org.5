@@ -2,234 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC95E7EAC4D
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 09:59:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620977EAC5F
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 10:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232399AbjKNI7Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 03:59:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33438 "EHLO
+        id S232227AbjKNJCY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 04:02:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231680AbjKNI7W (ORCPT
+        with ESMTP id S230271AbjKNJCW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 03:59:22 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 348DBA4;
-        Tue, 14 Nov 2023 00:59:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1699952359; x=1731488359;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=QvaTaGk2DQ5nitvBuPs4aIJdUkfKrTAsbVZwFqvx9eo=;
-  b=glnImyLMgNIwQ4E0QnCAwT19+tSH5Rt4gBKwRQfi2axhGWu1xzajuH7w
-   NK3VK5vf2Uy6owlmX+k/Aak3Nq3oooTD8lM1EV8BIButQFcXx6MdfP9qu
-   WF+z1Ce+akiLAC3rwp6OwZ0ZS1WKoyR2Watdym3vKhKaaLrh+CfMkunLX
-   XqKkTkZ7DFeOVMxtT93NVQ3Tl9VAUoMHjG+jBF4+y1llZm7eWrXSz2Vv/
-   LZ6/G9fAalRAWRAdbKv7+DLZqb+owG91ZYqwhydpd62TJHYu7F7AGF4Yu
-   7HEHx99X8+VcXwGye+IcM+Xe1DwhOZX4vOEazdYszDG3YZ/C7KrdWQqj3
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="375657293"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="375657293"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 00:59:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10893"; a="830517736"
-X-IronPort-AV: E=Sophos;i="6.03,301,1694761200"; 
-   d="scan'208";a="830517736"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Nov 2023 00:59:17 -0800
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 14 Nov 2023 00:59:17 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Tue, 14 Nov 2023 00:59:16 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Tue, 14 Nov 2023 00:59:16 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Tue, 14 Nov 2023 00:59:16 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Tna5+KUzu6k8s7cR7U/sPLnQ/GjEefJgGE0mxj9ZuGkhbOUVyZm0+CYfsvM2+UVskDjHIhjnj/hf72oaJ12e+QsCnFY9xE5E49zecS2Ho1vN3e/A/pawGfU5hKgGzkz8QgJmHzSR8IyS59KmZLvMGmSGr/Hevir3hCA63D4MHA4SyIZAne7WkVdDpjDSlJozET7o/0m7KSYBFCA1a70eENo7gQI2qAQHvX7CifQ7epX+eadWtTYtZrkgX3sNks1sfCYQNQwDoyy1NT3iCuLhf14rqFiMATjdnQVqR04cnIkbBOMxlj5EiglT6ou+giZ/KqFWxl/Y0yzCf7FyVvx96A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UNgAIguzSbh5yk7rmRs5Ud1iSw1cXu8yAsvM6Lj+buQ=;
- b=jc3UXS5IW/jyANaeADeRkFKV9tEj3tj4C0OpyJxCwaDz01mDHPqiSNgmc8vZeil0YNHnoZG3EO4D7mBpnXpXAS7PHP/IYPkeQF617P4ElKXgrpWvVcbdToKBFaXTJW+lVwuWklsf/R4isVc1Qa1Mv51k/+hn1+0UXvW5bT4R2ppwhEezSuRX5A+Jih5z0grvpZcWMGYt2x+8bmD9HWtZBSTK5nLa/upOFqusfuIpaMyStfn576QTJ41EcyIl5qZvSnORU28UHQwxPG3pK1PVlMthBzyIjVdoPux7IOPultES0q1wQFfWmM6rtLLdJPqIhUDM78f/unxgAaedbcSUBQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com (2603:10b6:610:1ce::13)
- by PH8PR11MB7048.namprd11.prod.outlook.com (2603:10b6:510:214::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Tue, 14 Nov
- 2023 08:59:13 +0000
-Received: from CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038]) by CH3PR11MB8660.namprd11.prod.outlook.com
- ([fe80::66ec:5c08:f169:6038%3]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
- 08:59:12 +0000
-Date:   Tue, 14 Nov 2023 16:58:59 +0800
-From:   Chao Gao <chao.gao@intel.com>
-To:     "Li, Xin3" <xin3.li@intel.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "seanjc@google.com" <seanjc@google.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "kys@microsoft.com" <kys@microsoft.com>,
-        "haiyangz@microsoft.com" <haiyangz@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "Cui, Dexuan" <decui@microsoft.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "x86@kernel.org" <x86@kernel.org>, "hpa@zytor.com" <hpa@zytor.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "Shankar, Ravi V" <ravi.v.shankar@intel.com>
-Subject: Re: [PATCH v1 12/23] KVM: VMX: Handle FRED event data
-Message-ID: <ZVM203KI5D3o+ksS@chao-email>
-References: <20231108183003.5981-1-xin3.li@intel.com>
- <20231108183003.5981-13-xin3.li@intel.com>
- <ZVH3IUsfvzuPaj6L@chao-email>
- <SA1PR11MB6734B2389911D76A4B95319AA8B2A@SA1PR11MB6734.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <SA1PR11MB6734B2389911D76A4B95319AA8B2A@SA1PR11MB6734.namprd11.prod.outlook.com>
-X-ClientProxiedBy: SI2PR04CA0008.apcprd04.prod.outlook.com
- (2603:1096:4:197::20) To CH3PR11MB8660.namprd11.prod.outlook.com
- (2603:10b6:610:1ce::13)
+        Tue, 14 Nov 2023 04:02:22 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0758FA4
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 01:02:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57952C433C7;
+        Tue, 14 Nov 2023 09:02:16 +0000 (UTC)
+Message-ID: <6095bd3d-2580-44e2-b622-3ad31e12787f@xs4all.nl>
+Date:   Tue, 14 Nov 2023 10:02:14 +0100
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR11MB8660:EE_|PH8PR11MB7048:EE_
-X-MS-Office365-Filtering-Correlation-Id: b02dbee7-54c5-4baf-5075-08dbe4eff8b9
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: RhutysPbHVrYsUdzyLc+So+8VaV3j3ylNgNyatkKMSp/HEpq6qo99xKszgiexfgVHRTr2a++0g+coljQD3ms4IDtVddUD4ltD91xM88BBzIcHr8zarewPEEwalj80fq63Tr4uUR+gjQtKJ37LDRgZ+ueauEk4a7paSGDYdsPfGxfPKqpBAYBQFlJoy4WGSXAxfiSQk26SU9ciGqMS4pu+J6CxNgna2ZsW5Yctoo8QbmfNpCl+OvThF4CkDJVzXflhBsS3r14wTT2XROsv5u7Beu0mnD5iA4RYVXs2JPDhtRk6GMKxGzjRSc9N5OmXomb8UZaW4XUYgbhqHZx42mahRrVvJ6fTUnsfJxA4HtO5d2dOmbutca5fYGp6riJNxIJQXYS5rCoR04dfmTpM38X7vMXXN05v19E8HNUw0VTHjPltnF6LBFRta0WAKpfL5zIvJiVsrD90QYPxSFcFmEsBXqo0xC5kdGOm0tkJyody+K2WZUKGN8+8u6ZOuNC8jZkew5uTYpIjEW/KEVHb9PieXUhQVYpItad5MKFjBcQ1/KqGaiby+e+Y0DfKT5h4CMEuAbK6XTkHd3W1l3LduzEvF7B3uLlSG+euO3myZCYcU4=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR11MB8660.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(376002)(396003)(136003)(39860400002)(366004)(346002)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(82960400001)(26005)(38100700002)(44832011)(9686003)(6512007)(6506007)(316002)(6486002)(478600001)(6636002)(6666004)(54906003)(66476007)(66556008)(66946007)(41300700001)(6862004)(8936002)(4326008)(2906002)(8676002)(33716001)(86362001)(7416002)(5660300002)(67856001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gi3PSN+rnPGAqgFQVPU8YyS21GwyNTgY4aZwKpYIlaoSTZn9tRZFsSchVLD4?=
- =?us-ascii?Q?75aqVND+OMHYZYduKy7z1UCJ0+RDJli7vR2Q+vpp30j808vOFYNNDvNe2nEv?=
- =?us-ascii?Q?MN5mQeWMDXQW7xtp3rT/NITqP3/xrIS3oONX+Vm3YTwFSQydioT4Jqn2oIlv?=
- =?us-ascii?Q?Pv1ddpD3Z/A+vuHa9WJsyi9E0KuAd/5VVCa0w5WRc9/uaOcwxhbHvz7Gkctp?=
- =?us-ascii?Q?Y6LaYjkeiSc6VuCY9Ua5YozNMjfHm2XYDm+EA5O28ONRC/gvDJuyXm/8xwLh?=
- =?us-ascii?Q?r8wcd1BR1gA9arSGp19mmqaT6QJPoreAg+cHkVGxws1GL6QfsUoU9OpAw31u?=
- =?us-ascii?Q?0gSkacKzd4ENhL0LN75vqtIzMlD04I3KE7EruyjS+PKqAZ3rnQ+DT0Svh2iJ?=
- =?us-ascii?Q?JTr2r4203BBU9gXavzOb6uYWLvcZDoJdCiwJjerX/9LMW4c8Kmz8rdzEmXbj?=
- =?us-ascii?Q?z7dcYNpXDMAjrNhYt+Msr8yBVpt3LWMMgZa5izvSbK7G5SdeJPMyNRtjYUx7?=
- =?us-ascii?Q?WGzZFC27Z9XVK7ObbOabkjBhoBUULKi3QZv5JVJIJ6ZyEC4gsHYT9tH9klLr?=
- =?us-ascii?Q?JDnbgmRfru4zd2Kz5YFAYBeXqLa9ltdaYvBVz9qsxjlfe9ofTLzOwK9zoj/v?=
- =?us-ascii?Q?TxTR/pgk53yU98SQDJJaQsAS27g4Y0i5rT/227pZOvOMrXyhl9+XvOIPM03N?=
- =?us-ascii?Q?oHekYAfL0zM+BkG1SKl5zZ8TagkQZnCNf1A7TVqIRBIcOkDPQvno6Xndd6ej?=
- =?us-ascii?Q?N/kT/wwzLj1d10ZbBhflqX6TOQUiDqR541LeP1yD9Uqhfno10WOUB0ED5JMR?=
- =?us-ascii?Q?CqLt7awyTxCA1haNhjWKi5IS0HH5qgEsNpotEYAwhX/1Id5G35oCzHbnXGy4?=
- =?us-ascii?Q?XDoImOVseIXqX4vXi1uAL2a+rwJ3EVuwvcfMssTYnP+zWSuVCFjAheRwTfdT?=
- =?us-ascii?Q?9xrk5L4+BTMAIE3dq3/Ek0cUXQKzSRmiRnf3oJ0uDP65fHmnq5eJjC4EVLtT?=
- =?us-ascii?Q?isosWtdueCLeB5+1c69ybTa2bLOMyxVegOUIPfFgCANjRpOWaeD7Giec9okG?=
- =?us-ascii?Q?liiCHh5/EYZP1i5pbHfCiErwH4TMWiY71m52jqsVk3+g08vKp2eHixZRKSQu?=
- =?us-ascii?Q?+LUKOrW9z84f1f8W0cEi0ctw+GGGOPkkPK4MILBBke5PUvVdYGPdcL7fULfO?=
- =?us-ascii?Q?kMbT4LvBWHSd3LzGnjgFOv1kGMO8G499CrCtk1ty+Vm6+Pd/s/DxWMky4deT?=
- =?us-ascii?Q?4S8qdMC+I6yI1FitTAboDP+t3pFq15Umx+UoAKX4VAE11t5JdYr7JkIEZDCF?=
- =?us-ascii?Q?oGJHY4KcnyOr2CZe0bjwYQgLlrKd4W5Z06B/FEe+joKSKXNiiFm1YPYARVFE?=
- =?us-ascii?Q?0laH4NEuC6SKLfHsEvwNZV/u0KmVmUzO/qVvrdQ146G4mEWRTX7w8zccrmlj?=
- =?us-ascii?Q?JcO2YpFb/0tlM3BUNsbdDUhV+tYyrSarRL72gHnJ7XCnzik3Ew/pUuxvOT8J?=
- =?us-ascii?Q?wfu8lbNVoYffARiC++LcUR5g6Mb7F5l/WCqQPNtoccpXcHe72iCkdt5Bq9SY?=
- =?us-ascii?Q?SPIv9/VWGlu02dYf7K/n+x6i2j3h8encumq+D870?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: b02dbee7-54c5-4baf-5075-08dbe4eff8b9
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR11MB8660.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 08:59:12.6528
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rhP1BU1T3LJs5uIsgf0IFgcirhi0n6z6JbPKgcVL2C2eI7/A/sp4sOL2ohJdWd+gjpjt6ecp9AYz9ZkZ+bd+9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR11MB7048
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 3/5] media: platform: visconti: add V4L2 vendor
+ specific control handlers
+Content-Language: en-US, nl
+To:     Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231012071329.2542003-1-yuji2.ishikawa@toshiba.co.jp>
+ <20231012071329.2542003-4-yuji2.ishikawa@toshiba.co.jp>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <20231012071329.2542003-4-yuji2.ishikawa@toshiba.co.jp>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 12:34:02PM +0800, Li, Xin3 wrote:
->> >+			else if (is_nm_fault(intr_info) &&
->> >+				 vcpu->arch.guest_fpu.fpstate->xfd)
->> 
->> does this necessarily mean the #NM is caused by XFD?
->
->Then the event data should be 0.  Or I missed something obvious? I.e.,
->it can be easily differentiated and we should just explicitly set it
->to 0.
+On 12/10/2023 09:13, Yuji Ishikawa wrote:
+> Add support to Image Signal Processors of Visconti's Video Input Interface.
+> This patch adds vendor specific compound controls
+> to configure the image signal processor.
+> 
+> Signed-off-by: Yuji Ishikawa <yuji2.ishikawa@toshiba.co.jp>
+> ---
+> Changelog v2:
+> - Resend v1 because a patch exceeds size limit.
+> 
+> Changelog v3:
+> - Adapted to media control framework
+> - Introduced ISP subdevice, capture device
+> - Remove private IOCTLs and add vendor specific V4L2 controls
+> - Change function name avoiding camelcase and uppercase letters
+> 
+> Changelog v4:
+> - Split patches because the v3 patch exceeds size limit
+> - Stop using ID number to identify driver instance:
+>   - Use dynamically allocated structure to hold HW specific context,
+>     instead of static one.
+>   - Call HW layer functions with the context structure instead of ID number
+> 
+> Changelog v5:
+> - no change
+> 
+> Changelog v6:
+> - remove unused macros
+> - removed hwd_ and HWD_ prefix
+> - update source code documentation
+> - Suggestion from Hans Verkuil
+>   - pointer to userland memory is removed from uAPI arguments
+>     - style of structure is now "nested" instead of "chained by pointer";
+>   - use div64_u64 for 64bit division
+>   - vendor specific controls support TRY_EXT_CTRLS
+>   - add READ_ONLY flag to GET_CALIBRATION_STATUS control and similar ones
+>   - human friendry control names for vendor specific controls
+>   - add initial value to each vendor specific control
+>   - GET_LAST_CAPTURE_STATUS control is updated asyncnously from workqueue
+>   - remove EXECUTE_ON_WRITE flag of vendor specific control
+>   - uAPI: return value of GET_CALIBRATION_STATUS follows common rules of error codes
+>   - applied v4l2-compliance
+> - Suggestion from Sakari Ailus
+>   - use div64_u64 for 64bit division
+>   - update copyright's year
+>   - remove redandunt cast
+>   - use bool instead of HWD_VIIF_ENABLE/DISABLE
+>   - simplify comparison to 0
+>   - simplify statements with trigram operator
+>   - remove redundant local variables
+>   - use general integer types instead of u32/s32
+> - Suggestion from Laurent Pinchart
+>   - moved VIIF driver to driver/platform/toshiba/visconti
+>   - change register access: struct-style to macro-style
+>   - remove unused type definitions
+>   - define enums instead of successive macro constants
+>   - remove redundant parenthesis of macro constant
+>   - embed struct hwd_res into struct viif_device
+>   - use xxx_dma instead of xxx_paddr for variable names of IOVA
+>   - literal value: just 0 instead of 0x0
+>   - use literal 1 or 0 instead of HWD_VIIF_ENABLE, DISABLE for register access
+>   - use true or false instead of HWD_VIIF_ENABLE, DISABLE for function calls
+>   - uAPI: return value of GET_CALIBRATION_STATUS follows common rules of error codes
+> 
+> Changelog v7:
+> - remove unused variables
+> - split long statements which have multiple logical-OR and trigram operators
+> 
+> Changelog v8:
+> - define constant V4L2_CTRL_TYPE_VISCONTI_ISP for datatype
+>   of Visconti specific controls
+> - Suggestion from Hans Verkuil
+>   - remove pr_info()
+>   - use pm_runtime_get_if_in_use() to get power status
+> 
+> Changelog v9:
+> - fix warning for cast between ptr and dma_addr_t
+> 
+>  .../media/platform/toshiba/visconti/Makefile  |    2 +-
+>  .../media/platform/toshiba/visconti/viif.c    |   10 +-
+>  .../platform/toshiba/visconti/viif_controls.c | 3395 +++++++++++++++++
+>  .../platform/toshiba/visconti/viif_controls.h |   18 +
+>  .../platform/toshiba/visconti/viif_isp.c      |   15 +-
+>  drivers/media/v4l2-core/v4l2-ctrls-core.c     |    7 +-
+>  include/uapi/linux/videodev2.h                |    2 +
+>  7 files changed, 3431 insertions(+), 18 deletions(-)
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.c
+>  create mode 100644 drivers/media/platform/toshiba/visconti/viif_controls.h
+> 
 
-vcpu->arch.guest_fpu.fpstate->xfd just means the guest is enabling XFD.
-I don't think we can conclude that this #NM is caused by XFD only from
-this.  i.e., there may be some false positives.
+<snip>
 
->> >+			u64 event_data = vmcs_read64(event_data_field);
->> >+
->> >+			switch (vector) {
->> >+			case DB_VECTOR:
->> >+				get_debugreg(vcpu->arch.dr6, 6);
->> >+				WARN_ON(vcpu->arch.dr6 != (event_data ^
->> DR6_RESERVED));
->> >+				vcpu->arch.dr6 = event_data ^ DR6_RESERVED;
->> >+				break;
->> >+			case NM_VECTOR:
->> >+				if (vcpu->arch.guest_fpu.fpstate->xfd) {
->> >+					rdmsrl(MSR_IA32_XFD_ERR, vcpu-
->> >arch.guest_fpu.xfd_err);
->> >+					WARN_ON(vcpu-
->> >arch.guest_fpu.xfd_err != event_data);
->> >+					vcpu->arch.guest_fpu.xfd_err =
->> event_data;
->> >+				} else {
->> >+					WARN_ON(event_data != 0);
->> >+				}
->> >+				break;
->> >+			case PF_VECTOR:
->> >+				WARN_ON(vcpu->arch.cr2 != event_data);
->> >+				vcpu->arch.cr2 = event_data;
->> >+				break;
->> >+			default:
->> >+				WARN_ON(event_data != 0);
->> 
->> I am not sure if this WARN_ON() can be triggeded by nested VMX. It is legitimate
->> for L1 VMM to inject any event w/ an event_data.
->> 
->> FRED spec says:
->> 
->> Section 5.2.1 specifies the event data that FRED event delivery of certain events
->> saves on the stack. When FRED event delivery is used for an event injected by VM
->> entry, the event data saved is the value of the injected-event-data field in the
->> VMCS. This value is used instead of what is specified in Section 5.2.1 and is done
->> for __ALL__ injected events using FRED event delivery
->
->5.2.1 Saving Information on the Regular Stack also says:
->- For any other event, the event data are not currently defined and will
->  be zero until they are.
->
->Or you mean something else?
+These core changes below should be in a separate patch, not mixed in with
+the driver.
 
-IIUC, L1 KVM can inject a nested exception whose vector isn't #DB, or #NM or
-#PF with a non-zero event_data to L2. If delivering the nested exception causes a
-VM-exit to L0 KVM, the assertion that event_data is always 0 for vectors other
-than #DB/#NM/#PF fails.
+> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> index a662fb60f73f..0c4df9fffbe0 100644
+> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+> @@ -367,7 +367,9 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+>  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
+>  		pr_cont("AV1_FILM_GRAIN");
+>  		break;
+> -
+> +	case V4L2_CTRL_TYPE_VISCONTI_ISP:
+> +		pr_cont("VISCONTI_ISP");
+> +		break;
+>  	default:
+>  		pr_cont("unknown type %d", ctrl->type);
+>  		break;
+> @@ -1163,6 +1165,9 @@ static int std_validate_compound(const struct v4l2_ctrl *ctrl, u32 idx,
+>  	case V4L2_CTRL_TYPE_AV1_FILM_GRAIN:
+>  		return validate_av1_film_grain(p);
+>  
+> +	case V4L2_CTRL_TYPE_VISCONTI_ISP:
+> +		break;
+> +
+>  	case V4L2_CTRL_TYPE_AREA:
+>  		area = p;
+>  		if (!area->width || !area->height)
+> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+> index c3d4e490ce7c..bbc3cd3efa65 100644
+> --- a/include/uapi/linux/videodev2.h
+> +++ b/include/uapi/linux/videodev2.h
+> @@ -1915,6 +1915,8 @@ enum v4l2_ctrl_type {
+>  	V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY = 0x281,
+>  	V4L2_CTRL_TYPE_AV1_FRAME	    = 0x282,
+>  	V4L2_CTRL_TYPE_AV1_FILM_GRAIN	    = 0x283,
+> +
+> +	V4L2_CTRL_TYPE_VISCONTI_ISP = 0x290,
+
+I see you are using the same V4L2_CTRL_TYPE_VISCONTI_ISP for all the compound
+controls. But that's not allowed: the V4L2_CTRL_TYPE_ defines determine the
+control type, so each struct used by a control needs its own type.
+
+I also noticed looking through include/uapi/linux/visconti_viif.h that some
+of the struct have holes. I really want to avoid holes in structs used by
+controls, it is bad practice.
+
+The pahole utility is very useful for testing this. It is also highly
+recommended to check for both 32 and 64 bit compilation: the struct layout
+must be the same, otherwise you would run into problems if a 32 bit application
+is used with a 64 bit kernel.
+
+Finally, Laurent and/or Sakari will also take a look at this driver, for some
+reason this driver has been mostly reviewed by me, but I am not really the
+expert on ISPs.
+
+Regards,
+
+	Hans
+
+>  };
+>  
+>  /*  Used in the VIDIOC_QUERYCTRL ioctl for querying controls */
+
