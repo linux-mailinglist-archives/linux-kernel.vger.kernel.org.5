@@ -2,118 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF317EB457
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:03:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C2537EB45B
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 17:04:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232193AbjKNQDb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 14 Nov 2023 11:03:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43430 "EHLO
+        id S233771AbjKNQEE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 11:04:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229640AbjKNQDa (ORCPT
+        with ESMTP id S233765AbjKNQEC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 11:03:30 -0500
-Received: from relay.hostedemail.com (smtprelay0016.hostedemail.com [216.40.44.16])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 258C7132
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:03:25 -0800 (PST)
-Received: from omf17.hostedemail.com (a10.router.float.18 [10.200.18.1])
-        by unirelay09.hostedemail.com (Postfix) with ESMTP id 5849480ADD;
-        Tue, 14 Nov 2023 16:03:24 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf17.hostedemail.com (Postfix) with ESMTPA id B79FD17;
-        Tue, 14 Nov 2023 16:03:19 +0000 (UTC)
-Message-ID: <1e7863ec4e4ab10b84fd0e64f30f8464d2e484a3.camel@perches.com>
-Subject: Re: [PATCH 1/7] kexec_file: add kexec_file flag to control debug
- printing
-From:   Joe Perches <joe@perches.com>
-To:     Baoquan He <bhe@redhat.com>, linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org
-Date:   Tue, 14 Nov 2023 08:03:17 -0800
-In-Reply-To: <20231114153253.241262-2-bhe@redhat.com>
-References: <20231114153253.241262-1-bhe@redhat.com>
-         <20231114153253.241262-2-bhe@redhat.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Tue, 14 Nov 2023 11:04:02 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2E24131
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:03:58 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5a822f96aedso68645827b3.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 08:03:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1699977838; x=1700582638; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=84sMBLOoP3332x+kaQPC6WEmGeMSigBRO9sqFIeWhaw=;
+        b=zvsGM/400BiQFbWcUKAVEWlmUA5gGCtVyA7WHcVkhEOhrKOkUNlKAWCJrFkJ5F6V5d
+         RiLtazUazVEMlB4tSR6QoeUS+dkV8zLua03mPPjQoEaCj2xLXsBf3z/E08uBNPQabxG9
+         B97R44PalDhR4OaHn8xYdWEq4R7SCMXFxL9hbGPkxF0VT+XAJsP3xl/psLwnJnKb7n+n
+         +jDSBtYKgkhiNsS49ZsX49K2JtGjefcFXsWBE0KgN1Om6l/XgtPlN0wFkAtX0FMU232q
+         00xtXgGMgVVvukri1SOXJdhkNDSBFLj4meCKb/DMC/69RLuMgKAkDK1/ZOrbNIq6ZVrW
+         xVJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1699977838; x=1700582638;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=84sMBLOoP3332x+kaQPC6WEmGeMSigBRO9sqFIeWhaw=;
+        b=oSPJWCKpgyeCvMEs38at2Xn3k4kAwIIdrXSMW0qUCfYJjmhbOcdt1LJOVsfKqpcIKd
+         Ln9MqRirbNFEJFDJH7MDwG5fQEaoZ8RsNUYDrpAJgjFexqQPSrG84e00PPg2qT19Pms6
+         o0234Pu1S4m9fMpbtx/MoZNsdsaQURmhC97HRQe3KCRCRaoczavKdlvi7rAcuigskP5d
+         2v5ionRU1Ztb2Lo9Uu+mUb/cewQFYPFifAy/7bBA39GrNsk//24a+Pvh94AevKvr3+Xp
+         Sa9I7XCdRs3SAZoqq3vDPj9CFgWOnb0mz/HdGemvdkku7fG94pjHDmWmob9rRLA2flrZ
+         W/cw==
+X-Gm-Message-State: AOJu0YynzImW8H+WjQW7GDXF9bl7hYxawM40vtIHewSCTsRGjQ/w2F6w
+        xxVqC2fHj3E22JC4cVq7mkcDBEmeh0e2jS43Xz4ewxYw8M0F4JEn
+X-Google-Smtp-Source: AGHT+IFIv/dr950N6/LEfu34S82r9+GhcCMi5FKjW5Jcm5LagL4BVhGWPQCJjXVH0we8WxFPHGlKtF0/97aoe9Dk3L4=
+X-Received: by 2002:a0d:f304:0:b0:5a8:2b82:a031 with SMTP id
+ c4-20020a0df304000000b005a82b82a031mr9872136ywf.26.1699977837957; Tue, 14 Nov
+ 2023 08:03:57 -0800 (PST)
 MIME-Version: 1.0
-X-Rspamd-Queue-Id: B79FD17
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Rspamd-Server: rspamout06
-X-Stat-Signature: hfguyu43qitk9i95uumxmjn7sq3qxaae
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+TPCSBX5eIBtFS7cutbFXyyoB+lO2Ea1A=
-X-HE-Tag: 1699977799-197779
-X-HE-Meta: U2FsdGVkX199MxvfdP2OiWMaMCgnF+zen3H+uDaMOt+eo18KFoigVkpo/j1mPnNdRxZsnaKbc/2TMWhhtZ1WYbE4xnaRnZ9D8ImVTw0nNbwHPVmM8K50LsJ54PlQr2IROfdWLMnnNPpRHRTXWI450/26vHlRs47bJHW69JfdozUlDgILIKSRfePjUbHAIXoIKr9/NzIpcA6QdsnzFrKhA8GVb/HExMWgTm+7q60/jyGC6TQFrwo3I1762UXDKC1ld2/TBOn7K4fNFKAezne04n/qoyaeJN2h75PDcDpXFrJm8izGV0wc97AWTmYxsKdc
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev> <20231114150130.497915-4-sui.jingfeng@linux.dev>
+In-Reply-To: <20231114150130.497915-4-sui.jingfeng@linux.dev>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Tue, 14 Nov 2023 18:03:47 +0200
+Message-ID: <CAA8EJprhnxx6bS6cn1JAbdzyB_+N1BbajkuO8zs2_OxXPeV84Q@mail.gmail.com>
+Subject: Re: [PATCH 3/8] drm/bridge: it66121: Add a helper function to read
+ bus width
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-14 at 23:32 +0800, Baoquan He wrote:
-> When specifying 'kexec -c -d', kexec_load interface will print loading
-> information, e.g the regions where kernel/initrd/purgatory/cmdline
-> are put, the memmap passed to 2nd kernel taken as system RAM ranges,
-> and printing all contents of struct kexec_segment, etc. These are
-> very helpful for analyzing or positioning what's happening when
-> kexec/kdump itself failed. The debugging printing for kexec_load
-> interface is made in user space utility kexec-tools.
-> 
-> Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
-> Because kexec_file code is mostly implemented in kernel space, and the
-> debugging printing functionality is missed. It's not convenient when
-> debugging kexec/kdump loading and jumping with kexec_file_load
-> interface.
-> 
-> Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
-> message printing. And add global variable kexec_file_dbg_print and
-> macro kexec_dprintk() to facilitate the printing.
-> 
-> This is a preparation, later kexec_dprintk() will be used to replace the
-> existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
-> kexec/kdump loading information. If '-d' is not specified, it regresses
-> to pr_debug().
-
-Not quite as pr_debug is completely eliminated with
-zero object size when DEBUG is not #defined.
-
-Now the object size will be larger and contain the
-formats in .text.
-
-[]
-> diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-[]
-> @@ -264,6 +264,18 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
->  	return -ENOEXEC;
+On Tue, 14 Nov 2023 at 17:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>
+> Group those relavent code lines (which with common purpose) into one helper
+> function, suppress the dependency on DT to function level. Just trivial
+> cleanup, no functional change.
+>
+> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+> ---
+>  drivers/gpu/drm/bridge/ite-it66121.c | 32 ++++++++++++++++++++--------
+>  1 file changed, 23 insertions(+), 9 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+> index 83dbdbfc9ed8..0f78737adc83 100644
+> --- a/drivers/gpu/drm/bridge/ite-it66121.c
+> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+> @@ -320,6 +320,26 @@ static inline struct it66121_ctx *bridge_to_it66121(struct drm_bridge *bridge)
+>         return container_of(bridge, struct it66121_ctx, bridge);
 >  }
->  #endif
+>
+> +static int it66121_of_read_bus_width(struct device *dev, u32 *bus_width)
+
+Using a pointer to return int value doesn't look right. Just return a
+signed int here and if it is not an error, assign it to ctx->bus_width
+
+> +{
+> +       struct device_node *np;
+> +       u32 bw;
 > +
-> +extern bool kexec_file_dbg_print;
+> +       np = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
+> +       if (!np)
+> +               return -EINVAL;
 > +
-> +#define kexec_dprintk(fmt, args...)			\
-> +	do {						\
-> +		if (kexec_file_dbg_print)		\
-> +			printk(KERN_INFO fmt, ##args);	\
-> +		else					\
-> +			printk(KERN_DEBUG fmt, ##args);	\
-> +	} while (0)
+> +       of_property_read_u32(np, "bus-width", &bw);
+> +       of_node_put(np);
 > +
+> +       if (bw != 12 && bw != 24)
+> +               return -EINVAL;
 > +
+> +       *bus_width = bw;
+> +
+> +       return 0;
+> +}
+> +
+>  static const struct regmap_range_cfg it66121_regmap_banks[] = {
+>         {
+>                 .name = "it66121",
+> @@ -1525,19 +1545,13 @@ static int it66121_probe(struct i2c_client *client)
+>         if (!ctx)
+>                 return -ENOMEM;
+>
+> -       ep = of_graph_get_endpoint_by_regs(dev->of_node, 0, 0);
+> -       if (!ep)
+> -               return -EINVAL;
+> -
+>         ctx->dev = dev;
+>         ctx->client = client;
+>         ctx->info = i2c_get_match_data(client);
+>
+> -       of_property_read_u32(ep, "bus-width", &ctx->bus_width);
+> -       of_node_put(ep);
+> -
+> -       if (ctx->bus_width != 12 && ctx->bus_width != 24)
+> -               return -EINVAL;
+> +       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+> +       if (ret)
+> +               return ret;
+>
+>         ep = of_graph_get_remote_node(dev->of_node, 1, -1);
+>         if (!ep) {
+> --
+> 2.34.1
+>
 
-I don't know how many of these printks exist and if
-overall object size matters but using
 
-#define kexec_dprintkfmt, ...)					\
-	printk("%s" fmt,					\
-	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-	       ##__VA_ARGS__)
-
-should reduce overall object size by eliminating the
-mostly duplicated format in .text which differs only
-by the KERN_<PREFIX>
-
-
+-- 
+With best wishes
+Dmitry
