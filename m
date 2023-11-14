@@ -2,116 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 948837EA8AA
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 03:16:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F6A7EA8AE
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 03:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbjKNCQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 21:16:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
+        id S231651AbjKNCSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 21:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229659AbjKNCQi (ORCPT
+        with ESMTP id S229659AbjKNCSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 21:16:38 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34750D46
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 18:16:12 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id 98e67ed59e1d1-282ff1a97dcso3286921a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 18:16:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1699928171; x=1700532971; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=wa4ZJv7rUNTP3/ylhEWG9OF00fr3EHQMVvz1/RJFAQs=;
-        b=V3M7T1oASYHMF3z2ucRMZ1JoUPZADqitX6+SFPVgsc4Milxsbrr0doHL1RscCjqzSa
-         0//o509iwk5hTpU9P5XwfBq+svSbz/v0kW2tCJs432gXBlp/HLA4jbyAGM4/xXktYcpi
-         64ucKSfumnwPR0epd/N5oChkjG4eYKvuT5fSDu21785EJ5shGZvn5cyx7chPK4oPedIr
-         kAHw/+u6QKldJ0gtpveau85RD3U2CZ2PFC+QgLm40+jfNa/4rDQGBtYkzIDaRJblHmOU
-         oD2A+S2rmKpBBgSfLBfzdxpPYs3b6wNWAa5jl/DFNshCl9FPwhrlCb0l3W6RLaG6zPiR
-         IcqA==
+        Mon, 13 Nov 2023 21:18:02 -0500
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39CAEF3
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 18:18:00 -0800 (PST)
+Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5b7fb057153so6022050a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 18:18:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699928171; x=1700532971;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wa4ZJv7rUNTP3/ylhEWG9OF00fr3EHQMVvz1/RJFAQs=;
-        b=V+S6qSQG2JcM3sCSn0PiJqW/4TarV7tTq/x2YRIoFhLIMQzm9cMbojQidoWqIthCyG
-         ULFSnWRstQTRm5p3WGLKaxBEqHqlvjQXR7G2RxQYZVb+TBAS6GINWYYFaqUgbx1R5siR
-         OYWpk8T7+4tu6PxttUGW7wmiVbtkGkAd30ndh13CZeJke05V8JRLvhoj6cWaROjuGEd4
-         SsHm1c18ytq6owFUHrDoGFlhuXKHDNoZmCdMVSAKuZGqJBAcoRGwGw5Bu4ZerzcDmHCH
-         x6z9s42U0b0t5B2/keaj6wubqujlIS063gQk4tOMjRDHGyUhahgh1xOJchb+TPNqF/St
-         yaew==
-X-Gm-Message-State: AOJu0Yz47ylQVhRHPgfESxLdyAsCeDzMly9zrShRNj1fwifvO+eRBRiP
-        xxJ+2OtnOLH9BI26trwioW/7WQ==
-X-Google-Smtp-Source: AGHT+IEBj1KF283h4A+HrovF6MuviyiqE8BHxWm5uLfavpH7ZSYb+xwKd1830UowN8kVWMA64AVuAA==
-X-Received: by 2002:a17:90b:38b:b0:281:691:e58c with SMTP id ga11-20020a17090b038b00b002810691e58cmr6374064pjb.37.1699928171744;
-        Mon, 13 Nov 2023 18:16:11 -0800 (PST)
-Received: from localhost.localdomain ([203.208.189.7])
-        by smtp.gmail.com with ESMTPSA id 22-20020a17090a001600b0027ceac90684sm4892726pja.18.2023.11.13.18.16.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Nov 2023 18:16:11 -0800 (PST)
-From:   lizhe.67@bytedance.com
-To:     akpm@linux-foundation.org, dianders@chromium.org, pmladek@suse.com,
-        kernelfans@gmail.com, lecopzer.chen@mediatek.com
-Cc:     linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
-        lizhe.67@bytedance.com
-Subject: [RFC] softlockup: serialized softlockup's log
-Date:   Tue, 14 Nov 2023 10:15:29 +0800
-Message-Id: <20231114021529.1834-1-lizhe.67@bytedance.com>
-X-Mailer: git-send-email 2.39.0
+        d=1e100.net; s=20230601; t=1699928280; x=1700533080;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8IQBKmMVHldNmqwsu1FOhAa3LFwsAemxqs/7UxPZ5rQ=;
+        b=fNOMR9YGA2SyydsPWMh2DLeGGEKhQ7xIMFLAVtzZOTnaXh+fG8FH/HLwoW5AORg80W
+         cDe7t7lVRRwVAGjf65k5vB8bM/3VgC2iiDgoGGiCjIhvXn4qT1NpLDcOy+8/WiqFc4yB
+         GCr0uTnJFiXSs+UwKeYCHhDvnx6K2Xsk9e8UWxO2xJiJfkibCGP97BEDFbLcTpKe2/ah
+         M1W6ixg2VvxV9dqEw6j/DhvM5LewHP90sgwb/56X4eTVwShIFWN6KZonlHdPILTChhdA
+         Ii2fMxJ7hMab+pXmFzyFUMTSTyZUfBm2uck6UXQAIh9o9AjnT1RUkE91mjjjguAT/dDO
+         UWIQ==
+X-Gm-Message-State: AOJu0YzUVubbjuaH3DDwUQbtaxvVzGQDsRITQ+qddAVYcZEawUVwXedT
+        Rk3h3HtgJid2DoeBSC5wrEOQBa4pkeWey2ke2bMLOeV3zbCY5xI=
+X-Google-Smtp-Source: AGHT+IFciV0KAGsBwG8Ae+V1FhtbDkGvyebLRU3JNX8mqi/2UfqSK/ThqDjrCWEPL+FQw96D+H9pPAKKW33KYCVZZ7DBrffQEfP6
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:4142:0:b0:585:6402:41e4 with SMTP id
+ o63-20020a634142000000b00585640241e4mr216050pga.7.1699928279838; Mon, 13 Nov
+ 2023 18:17:59 -0800 (PST)
+Date:   Mon, 13 Nov 2023 18:17:59 -0800
+In-Reply-To: <000000000000ae5995060a125650@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000437473060a1365b7@google.com>
+Subject: Re: [syzbot] [PATCH] Test np in autofs_fill_super
+From:   syzbot <syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Zhe <lizhe.67@bytedance.com>
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-If multiple CPUs trigger softlockup at the same time, the softlockup's
-logs will appear staggeredly in dmesg, which will affect the viewing of
-the logs for developer. Since the code path for outputting softlockup logs
-is not a kernel hotspot and the performance requirements for the code
-are not strict, locks are used to serialize the softlockup log output
-to improve the readability of the logs.
+***
 
-Signed-off-by: Li Zhe <lizhe.67@bytedance.com>
----
- kernel/watchdog.c | 3 +++
- 1 file changed, 3 insertions(+)
+Subject: [PATCH] Test np in autofs_fill_super
+Author: eadavis@qq.com
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 5cd6d4e26915..8324ac194d0a 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -448,6 +448,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	struct pt_regs *regs = get_irq_regs();
- 	int duration;
- 	int softlockup_all_cpu_backtrace = sysctl_softlockup_all_cpu_backtrace;
-+	static DEFINE_SPINLOCK(watchdog_timer_lock);
+please test null ptr in autofs_fill_super
+
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 4bbdb725a36b
+
+diff --git a/fs/autofs/inode.c b/fs/autofs/inode.c
+index a5083d447a62..f2e89a444edf 100644
+--- a/fs/autofs/inode.c
++++ b/fs/autofs/inode.c
+@@ -331,6 +331,9 @@ static int autofs_fill_super(struct super_block *s, struct fs_context *fc)
+ 		goto fail;
  
- 	if (!watchdog_enabled)
- 		return HRTIMER_NORESTART;
-@@ -514,6 +515,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		/* Start period for the next softlockup warning. */
- 		update_report_ts();
+ 	root_inode = autofs_get_inode(s, S_IFDIR | 0755);
++	if (!root_inode)
++		goto fail;
++
+ 	root_inode->i_uid = ctx->uid;
+ 	root_inode->i_gid = ctx->gid;
  
-+		spin_lock(&watchdog_timer_lock);
- 		pr_emerg("BUG: soft lockup - CPU#%d stuck for %us! [%s:%d]\n",
- 			smp_processor_id(), duration,
- 			current->comm, task_pid_nr(current));
-@@ -523,6 +525,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			show_regs(regs);
- 		else
- 			dump_stack();
-+		spin_unlock(&watchdog_timer_lock);
- 
- 		if (softlockup_all_cpu_backtrace) {
- 			trigger_allbutcpu_cpu_backtrace(smp_processor_id());
--- 
-2.20.1
 
