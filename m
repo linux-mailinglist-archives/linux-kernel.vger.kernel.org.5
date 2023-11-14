@@ -2,81 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B4037EA76F
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 526087EA772
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 01:25:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229846AbjKNAWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 13 Nov 2023 19:22:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41918 "EHLO
+        id S230437AbjKNAZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 13 Nov 2023 19:25:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52470 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKNAWt (ORCPT
+        with ESMTP id S229511AbjKNAZN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 13 Nov 2023 19:22:49 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 104FBD55
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:22:47 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5bdbd1e852dso5934397a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 16:22:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699921366; x=1700526166;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FZXkQmXxs9uLoWmPwbfBonw96/b5rk+ItiuC8yaL3uw=;
-        b=VBSG9+EAf24gtub9gZ9alqUwDssqg7O+ydmXTj5Gh2dd4r8FJ0BSHAsHXUse77ogdf
-         xAA/mI0O39bxYlqdIzRfrOTqRLmBZnst/bGI51pD16yxVKnLKCj47VZw57BQMXBLWOWw
-         U0ko/ulRnqbg1TPu/D8v1JF6R3kKld201BPTx1gxnK4pN+lQpzmSfZi/mIiv5DcaDr5B
-         12gekI8zZuAAszpVmcA0JWqiGUWE2odkPs3UQzbJQI3377RXnqBIWOST8YAgYYyhvbaA
-         1SPl5X9wgQHj6Y8+cwzSpW/pn9A9m2tMtMotPXvCz8QYZdTkkJ/3de3ZM73WzFh6FDc8
-         jhpQ==
-X-Gm-Message-State: AOJu0Yz8gZLIRNEU0bdX0mtI8Epk2AepK375gI2A6njfJx574BXXKZbj
-        djUwYrVYBAQM+eP0c2ySk6S66DMyy5chwc77v2gLuqjDQpiAfUI=
-X-Google-Smtp-Source: AGHT+IFNH7ffKoAVkF9Y/Te3aRPho1BUZKdpE56f36mFQGzHMMq1YfU2ugRHiV02TTiRN3mDeHI0ILBq1vDKQ7z3pGkKtKOyVMjU
+        Mon, 13 Nov 2023 19:25:13 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E28CD50;
+        Mon, 13 Nov 2023 16:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1699921507;
+        bh=0OLCvVOkYstpdcz9x3Fniksg/NrhBMGEfgtUuBgeYaU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=ZgFK4Z5xVWHQiwE9Oh0UIAxGoBI5/cW9TvTJoBUCYs4y/QxMuemzRn2O2B8ePGiDS
+         AU/8q2L9iSAf+kDi6U3j7dLuQzAhzD0UCEq8x33MOc8Jahe8dOgs1+2zcy8Z8l1Mrg
+         dhWivIpdxLehYAdu0o1PgxrEkm5hzrrxjGlsLscU0nBjZJSX0yEa2mJK/hnOGA6bWH
+         xluDfos+akAfuQaw3UlWyrDKtcbRGlUcUnKiH2gQHYYk/n0cqqQIs7iLLZo9zmdTsY
+         PERkah7OjrnSS7zPnjVziouwRT78MLvlLVSX7WhRW9UKRKfWs/Q5qQFhqRxbOEn6iy
+         Kku4rkXUKDmrg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4STnBB2v1Zz4xQZ;
+        Tue, 14 Nov 2023 11:25:05 +1100 (AEDT)
+Date:   Tue, 14 Nov 2023 11:25:03 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>
+Cc:     Jacek Lawrynowicz <jacek.lawrynowicz@linux.intel.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Stanislaw Gruszka <stanislaw.gruszka@linux.intel.com>
+Subject: linux-next: manual merge of the drm-misc tree with Linus' tree
+Message-ID: <20231114112503.6e098829@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a63:f54e:0:b0:5bd:d3f7:5192 with SMTP id
- e14-20020a63f54e000000b005bdd3f75192mr155049pgk.6.1699921366345; Mon, 13 Nov
- 2023 16:22:46 -0800 (PST)
-Date:   Mon, 13 Nov 2023 16:22:46 -0800
-In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000308657060a11c90b@google.com>
-Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
-From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/iPB_Kq5N=avBmm1/F4ReNpJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+--Sig_/iPB_Kq5N=avBmm1/F4ReNpJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-***
+Hi all,
 
-Subject: [PATCH] Test oob in squashfs readahead
-Author: eadavis@qq.com
+Today's linux-next merge of the drm-misc tree got a conflict in:
 
-please test squashfs readahead oob
+  drivers/accel/ivpu/ivpu_drv.c
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
+between commit:
 
-diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
-index 8ba8c4c50770..cb3753782d85 100644
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -566,6 +566,8 @@ static void squashfs_readahead(struct readahead_control *ractl)
- 
- 		max_pages = (expected + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 
-+		if (!max_pages)
-+			break;
- 		nr_pages = __readahead_batch(ractl, pages, max_pages);
- 		if (!nr_pages)
- 			break;
+  828d63042aec ("accel/ivpu: Don't enter d0i3 during FLR")
 
+from Linus' tree and commit:
+
+  57c7e3e4800a ("accel/ivpu: Stop job_done_thread on suspend")
+
+from the drm-misc tree.
+
+I fixed it up (I think - see below) and can carry the fix as necessary.
+This is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/accel/ivpu/ivpu_drv.c
+index 790603017653,51fa60b6254c..000000000000
+--- a/drivers/accel/ivpu/ivpu_drv.c
++++ b/drivers/accel/ivpu/ivpu_drv.c
+@@@ -389,13 -390,7 +388,14 @@@ void ivpu_prepare_for_reset(struct ivpu
+  	disable_irq(vdev->irq);
+  	ivpu_ipc_disable(vdev);
+  	ivpu_mmu_disable(vdev);
++ 	ivpu_job_done_thread_disable(vdev);
+ +}
+ +
+ +int ivpu_shutdown(struct ivpu_device *vdev)
+ +{
+ +	int ret;
+ +
+ +	ivpu_prepare_for_reset(vdev);
+ =20
+  	ret =3D ivpu_hw_power_down(vdev);
+  	if (ret)
+
+--Sig_/iPB_Kq5N=avBmm1/F4ReNpJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVSvmAACgkQAVBC80lX
+0GxgaAgAgYZvkvJS8o3jOn8Cpzr1F+VAS8lx2oXk0Jfhzft4Y5rEgscfl8ja8Hu2
+uJ9n6rtqsFNd1q6AEikjBcoAn0rzrQ7RJp9MKB/xbtMPi1DBDlYcGIh7YMJVH9i1
+OWCmz0hcWtlsfi7OUY4zX2wKUEwBr/1PGloRcXJyOklUvm1qP2ES20B+EVi2MDru
+QBKNyxQeP30wZfQ9YqmkOs6WEqAUlM/0SBMfnb18yCkaQi94b/vFglBoCXqd1uwF
+QZAUa2c8bfQd67s0BesSvKwIEUIh46L9Jo6Z58tom9ZvWllZZU8YMKJbd2Yedd1M
+lDaPNkBKsRmOBuDcdwHI7Fu6kWz/kw==
+=3A1u
+-----END PGP SIGNATURE-----
+
+--Sig_/iPB_Kq5N=avBmm1/F4ReNpJ--
