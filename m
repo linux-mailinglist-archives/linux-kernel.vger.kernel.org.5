@@ -2,230 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CE37EB324
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5592A7EB327
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 16:12:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232340AbjKNPLl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 10:11:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
+        id S233495AbjKNPMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 10:12:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229456AbjKNPLj (ORCPT
+        with ESMTP id S231877AbjKNPMC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 10:11:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B7BE3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:11:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1699974695;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=m/doj/T8nqtKHRc2PP5ZmgpfbSgB0XHlZpghgNdMkI4=;
-        b=V6/jzaqeGA0KVZTTy+OiBNzPOO7lRV1qFqMf+K7/mcIgJU8THMtIrJdBNvB1XbPw9yH3B+
-        Dx1q/Cgkg7RrR5i1O5+S1vDKvyjA/MQ36y/Tpl7ft+TJdLZK/MaplikanOc5UdN5Lv+J4X
-        kMcNNtiuW0+iekVULs/VWDl1jdRqf7o=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-247-xyUMiUYkNWSqUArVx0MXBg-1; Tue, 14 Nov 2023 10:11:33 -0500
-X-MC-Unique: xyUMiUYkNWSqUArVx0MXBg-1
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-66d4aa946ceso98350636d6.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 07:11:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699974693; x=1700579493;
-        h=user-agent:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=m/doj/T8nqtKHRc2PP5ZmgpfbSgB0XHlZpghgNdMkI4=;
-        b=SeEZexdrGuWyIhcO27qmU8Csz9hKmlUweEUj1ov5400m+V0EUltDvS450ZxJrZ/OtE
-         nG64mY2n2vnxh2taS4Q/fhvE5g8n8NIj2ECVctgqTFIsVh9tUwnBlhsYyhoXIfgAZTXd
-         SJJer0evRWkHYEKJw5ZGL4qZoPriia6kwsZvkfT5mjRZTzyktxDw/QAjhpp7XS4nxzo6
-         TELuOaAD5/J3nWVVdsmTW8aj1yZ/jPYQ2SR3XrQHBrAozeKH/FqTup9SLI8bWX4pYxcm
-         FpYFUz3SUDF80GGsLumyo9nwDIqO8CKqZ1euBsjpo4jr0TJ/KNeYeuuRKUrbU1PaKF+k
-         b98w==
-X-Gm-Message-State: AOJu0YwzbSVmbvkNAU0Wp83i5LA7/WVRqbJMEQaiHf8mnPf0bapE/a/5
-        YbwfCsKWVDQ5AC82E0IKD9npzNPe431JHYDF3Ie9ENFedlP5RktqTq2gmjng+SunkV02zDkLCtM
-        +3rDUaYxWDUVzhmkggCWXwm35
-X-Received: by 2002:a05:6214:a6b:b0:671:560f:3306 with SMTP id ef11-20020a0562140a6b00b00671560f3306mr4222477qvb.4.1699974693059;
-        Tue, 14 Nov 2023 07:11:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IETr8rC65ge7cAq25brn2IswFpgUjOqN5yHvyuJsXuhW2wFWXuNITxZngmj3KoUixz/DqtrQw==
-X-Received: by 2002:a05:6214:a6b:b0:671:560f:3306 with SMTP id ef11-20020a0562140a6b00b00671560f3306mr4222433qvb.4.1699974692710;
-        Tue, 14 Nov 2023 07:11:32 -0800 (PST)
-Received: from fedora ([142.181.225.135])
-        by smtp.gmail.com with ESMTPSA id u12-20020a0cea4c000000b00655d711180dsm2988835qvp.17.2023.11.14.07.11.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 07:11:32 -0800 (PST)
-Date:   Tue, 14 Nov 2023 10:11:31 -0500
-From:   Lucas Karpinski <lkarpins@redhat.com>
-To:     "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: [PATCH net-next v3] selftests/net: synchronize udpgro tests' tx and
- rx connection
-Message-ID: <jvzrm33xjrhal3qro37tfpfw2w4jbh35byjlogcc776xt4fpzy@zkmfoqn5ipil>
-MIME-Version: 1.0
+        Tue, 14 Nov 2023 10:12:02 -0500
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2059.outbound.protection.outlook.com [40.107.7.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77C5D100;
+        Tue, 14 Nov 2023 07:11:58 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Qkb6X/5Nhm9vP1xy/R8jvU7XFTrwwoT79jJRIwJrM0R0OWTujsm8D5u0bqHzy0xLIwFMJOqCU0hbgfodhkzgvpmd5DilLNh2I6thLu6mGyEZvhfZ9o+r302M5CRBnN0rsYYyg3vOhTqecCh2r7N1aoOS7PSbb1eQfZ1oqOAOY7zzJbC9JFaAsY7jiytu5o7Qw5flP139l7HmT1hy8Fv0Pal0XAtT7T8xYE+YxefW3x82cFB1uVHAKS7fcvIgjNOla4GTK4umts0iymPxolHflQFTI+TuOwQ2L14RBXQyVW8HfeykGj/eo27UKiU+BQNjhFYdMiYfzUM/2QjjpeH+gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1SAU5x7X14RGLZmCU1oRp7TgvU4QRnu3vrTZva+yBoA=;
+ b=LQIIf30/tDTkKCCQY8PBuudLllbkExLAD8kergo95nT3QoeGT2GL1t0Bdtw6oCg9s3HueD2pU2QVPfh9z5Yri6AGLWbZgi3F8x2vv7IBKkxF6ChCdLQg+OQuEoc4QxUzzTbmGWo121FaLoSvYsHzwfOEucES7JMhENuKAr9zvsKLnI8EZTKm3kWlrXtN5VbB70opes31KCSOX1C3w919rxDexTIHHpsVjzsEYW+hBv4lZgNgvzMxujOhRfEGS2+BdL0/6ed7YHc4125NYYXP//QVFS3LGOhtdg8mVUr8sM6ifjECkogfUKUM43D7soZidHVN1Ftscc1hA6KmMiLaSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1SAU5x7X14RGLZmCU1oRp7TgvU4QRnu3vrTZva+yBoA=;
+ b=beXjEUf57K1o7Qu31Vqjr95jDx8pwA3+3Cvkz9+F6/5Aj4z+VDt2yw8BAzavnrFoKu+mnlt6lsbrWccif4hxXRoE/p7cB3IQM+Hn46IP4M+q9dznJ1ZvtPdMBHcroE0sGvd23Vy+bxkGRpNacjIWn6Wjq8MoDWpSj+xM9+ZYTzo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com (2603:10a6:20b:4::16)
+ by AS8PR04MB7493.eurprd04.prod.outlook.com (2603:10a6:20b:293::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.15; Tue, 14 Nov
+ 2023 15:11:56 +0000
+Received: from AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::bc7:1dcd:684d:4494]) by AM6PR04MB4838.eurprd04.prod.outlook.com
+ ([fe80::bc7:1dcd:684d:4494%4]) with mapi id 15.20.7002.015; Tue, 14 Nov 2023
+ 15:11:56 +0000
+Date:   Tue, 14 Nov 2023 10:11:50 -0500
+From:   Frank Li <Frank.li@nxp.com>
+To:     Xiaolei Wang <xiaolei.wang@windriver.com>
+Cc:     vkoul@kernel.org, imx@lists.linux.dev, dmaengine@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] dmaengine: fsl-edma: Add judgment on enabling
+ round robin arbitration
+Message-ID: <ZVOONj4Ham/Ez1Dm@lizhi-Precision-Tower-5810>
+References: <20231113225713.1892643-1-xiaolei.wang@windriver.com>
+ <20231113225713.1892643-3-xiaolei.wang@windriver.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: NeoMutt/20231023
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231113225713.1892643-3-xiaolei.wang@windriver.com>
+X-ClientProxiedBy: BY3PR04CA0012.namprd04.prod.outlook.com
+ (2603:10b6:a03:217::17) To AM6PR04MB4838.eurprd04.prod.outlook.com
+ (2603:10a6:20b:4::16)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: AM6PR04MB4838:EE_|AS8PR04MB7493:EE_
+X-MS-Office365-Filtering-Correlation-Id: f9d3bbab-35a8-4ba4-4c31-08dbe5240a86
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 8nlTmMoEZy+I0a7WdjzdTtk1iFFTk1O553sbdzuTMcVXdH7qgbe8H0vSP5RAncjRvVy+Ak3L/UhLGfDihk+xH1Q5UE0oCt7mT1nkftfHnv0s/rZ0Cly5BzE/J2KEybbG2hy4zOO3+OURUV3h0myYzITF3jsAutnb1PlmPaS4k52GXzi7PogX5J/IPuHCYU8tW5pOHTx2P8JtDDCoT8/0bBJNT4Ww/b0bvfPtoaT2+2gLs+tImnYh8ARTcInuc1qfUaNSABcfQ9XaDjtCcGhCi53a00qgHvGhpoZf3uuA+rFiteVF4ROlWD7UztSFawG1e27uVuTVwRw+SCTTVs/IVPyMYiymV1/Ceijs+RySWVze8R+LEF0nbKJgGMjsKvSM2mw2lsPhsG0FlW7h0dc588inl8Vb8WwJDMZnhcNZvaLmO6nwo9yvGvcn1rs81I0Amans+fC92KcXF1+1oiLOtpbj1Y+Gvk2vrdrQ4COWmXspsdD9Vf9Om92hrDiTeHz4E5cPGUUzmjWbrvl98D5tnfsPR1lLphcG1WtbA58m2Z52IpkaWi6eYVCKcsaraPLQcttF9Ow7QfunE98rjtFX1JEibY2VAyPIsj1EJYqh/Rl648CaXciAqSc0TyXhf7KZ
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB4838.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(376002)(366004)(396003)(39860400002)(346002)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(6512007)(6666004)(6486002)(478600001)(9686003)(52116002)(6506007)(38100700002)(86362001)(33716001)(66476007)(6916009)(66946007)(2906002)(66556008)(41300700001)(83380400001)(26005)(5660300002)(38350700005)(4326008)(316002)(8936002)(8676002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ZU5A2Lk6gtm2/Cd+xj05CVa88zle3arJc54oF7OfwIWJYpv1v/1HlSWgypql?=
+ =?us-ascii?Q?4FxSsNtU/UhTxN302qTAIGXB/wqhQ0Df5JKA/nYWeyFU31o2kxlvJxEHHijx?=
+ =?us-ascii?Q?J+HGyUPIvwwc6sdZ7uG+wUW67TIWC1Sy9ZqZqQZWmKs2yP4g9E4OkP/n/4c3?=
+ =?us-ascii?Q?7qV5w6rLFJJo1wO/6jbBBvN7F9J2R8YqCnIi0l9GpLL1Qz2/R2fD6YinmmE/?=
+ =?us-ascii?Q?TBB70euuP4p4HQ6Nxx821ORl1O5RCJJLDiScyjdVGrFwzfBTYOoH8yoz/YC5?=
+ =?us-ascii?Q?0QkRHPgpewFKGm2tBVqAlWf3Dli1ToUjoK8IUk2wCAS7p5Io6TBbW8D9ozNr?=
+ =?us-ascii?Q?IxTMSCS2x+ss1vLS7gxPPJ/YbiO8K8YjaCJb5asKmGf2P96Fw77vUOn8T2H3?=
+ =?us-ascii?Q?HQR19dChrKz8+NZxCLXi5ldDy8MVaErq/VTc3dmqph0wlX/S6FFxT5aImB8x?=
+ =?us-ascii?Q?nsSaWyPIb0rh4le7MFHIHTP9ulLi6MEbXLDzMfDQ9K+xO/Pg0mYq+JzFG+xp?=
+ =?us-ascii?Q?iSkoVS99fTU3OUpW1XZHmi29tGoV3sD0oZnNsJodeb+PNV41raidhm2DYxEz?=
+ =?us-ascii?Q?ObrdtOPJyjHZO8GYb9iAzDRzFeTyuFlmICKqEI93aCjx8VHLFpSgRas5/7a9?=
+ =?us-ascii?Q?Bnrx30yUk1lIW7cQGrp8Dpf7NjtzwVeFBkgmr31RZfFU2cTqpofCtrVBFb3n?=
+ =?us-ascii?Q?AjnogQbX/2wEQDG9KF0NQZiYUNHdmbHeZ+vx+O+I5OUsuahlrCFjwQ++fc7b?=
+ =?us-ascii?Q?XKFQUq+OgGZ4pxL5DGtqXd39eS/gTztnqXBdSQUpRaot6oDy7FfdMkatEBLr?=
+ =?us-ascii?Q?6YNlwuoZYutpBamVZJWfM4ZCju4xp9+Lqq6qCZ6RJhUQjxyKJc0Vu7OFV6DK?=
+ =?us-ascii?Q?qcmUwsmoNSC2hrr9ujQyZ/+D9jdt8BjT6H9IHLuzJoar1wMRGcL7xvNjQ0fJ?=
+ =?us-ascii?Q?uh37SR9R8BJAXtzgKsg6PoIITCN0nz12x0IFsmgBD51sjet6erth1j2X+WDL?=
+ =?us-ascii?Q?oJ4TIoz5Ky+KjMNrFBPYb0ylKx3UIg0o/FQO/9/LAPTd0/nEDQxSQYRRkDl3?=
+ =?us-ascii?Q?3Q3LSABNggy6k98EV80jG8OTSsmNb5mq++mCsufAAkSvIkak4Gd5jl1t0vbJ?=
+ =?us-ascii?Q?fb5PeUh88EwfPlMKtbrTE44ZIJZhczBAU29HS5JLkLsMufIiZSP1Z1TThSyM?=
+ =?us-ascii?Q?E9UvM65e7GYjQODiE67oamNOT4H6kiu7afkRcediWtIhBeHcNP4R9FcyFipR?=
+ =?us-ascii?Q?uFtWDkDzwrYfk19A/ArS5kdSybJuPVaSJsi5EqPA5W54O9jZYxY6JZUboN4w?=
+ =?us-ascii?Q?Cp7EvgJ2KqL5+6zC9mTmXWvRwZcEfn/M46XLOKvhYwSSRY/E0H1OAH3N//Pv?=
+ =?us-ascii?Q?HfXC0mcfsmC2iHXBPGpcX7gVLx2B6bzvuEfVo7w1Ap3XqbRBTrRgKnYLL+0d?=
+ =?us-ascii?Q?vh4KTbu2bDA0949FidkZCL+fwAtVWoeRvbVl6GrCOZIekZVlQXWjmWcGl6O9?=
+ =?us-ascii?Q?t7cOk+ou55WHmax1Zz6Qs9BVT9m8mIATWMf1pNklodbLAbQqDmhCuSmEclJz?=
+ =?us-ascii?Q?wCbqFQSKOmKFCkRZmSdrsJkfgCRBge4mLORg5+9K?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f9d3bbab-35a8-4ba4-4c31-08dbe5240a86
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB4838.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Nov 2023 15:11:56.2336
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +C/hqyJFYYtSCCnE5ateSfZFa+lL9MrT4HAhnestf0zGaDB5FPE1HzTg9adJ22iZp2Y7uBuV0OT5dxasl7nSDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB7493
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The sockets used by udpgso_bench_tx aren't always ready when
-udpgso_bench_tx transmits packets. This issue is more prevalent in -rt
-kernels, but can occur in both. Replace the hacky sleep calls with a
-function that checks whether the ports in the namespace are ready for
-use.
+On Tue, Nov 14, 2023 at 06:57:13AM +0800, Xiaolei Wang wrote:
+> Add judgment on enabling round robin arbitration to avoid
+> exceptions if this function is not supported.
+> 
+> Call trace:
+>  fsl_edma_resume_early+0x1d4/0x208
+>  dpm_run_callback+0xd4/0x304
+>  device_resume_early+0xb0/0x208
+>  dpm_resume_early+0x224/0x528
+>  suspend_devices_and_enter+0x3e4/0xd00
+>  pm_suspend+0x3c4/0x910
+>  state_store+0x90/0x124
+>  kobj_attr_store+0x48/0x64
+>  sysfs_kf_write+0x84/0xb4
+>  kernfs_fop_write_iter+0x19c/0x264
+>  vfs_write+0x664/0x858
+>  ksys_write+0xc8/0x180
+>  __arm64_sys_write+0x44/0x58
+>  invoke_syscall+0x5c/0x178
+>  el0_svc_common.constprop.0+0x11c/0x14c
+>  do_el0_svc+0x30/0x40
+>  el0_svc+0x58/0xa8
+>  el0t_64_sync_handler+0xc0/0xc4
+>  el0t_64_sync+0x190/0x194
+> 
+> Fixes: 72f5801a4e2b ("dmaengine: fsl-edma: integrate v3 support")
+> Signed-off-by: Xiaolei Wang <xiaolei.wang@windriver.com>
+> ---
 
-Suggested-by: Paolo Abeni <pabeni@redhat.com>
-Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
----
-https://lore.kernel.org/all/6ceki76bcv7qz6de5rxc26ot6aezdmeoz2g4ubtve7qwozmyyw@zibbg64wsdjp/
-v3:
-- moved redundant code to net_helper.sh
-- replaced awk with grep
-- changed commit message to specify udpgro
-- added target tree
+Reviewed-by: Frank Li <Frank.Li@nxp.com>
 
-v2:
-- applied synchronization method suggested by Paolo
-- changed commit message to code
-
-tools/testing/selftests/net/net_helper.sh     | 22 +++++++++++++++++++
- tools/testing/selftests/net/udpgro.sh         | 13 +++++------
- tools/testing/selftests/net/udpgro_bench.sh   |  5 +++--
- tools/testing/selftests/net/udpgro_frglist.sh |  5 +++--
- 4 files changed, 34 insertions(+), 11 deletions(-)
- create mode 100755 tools/testing/selftests/net/net_helper.sh
-
-diff --git a/tools/testing/selftests/net/net_helper.sh b/tools/testing/selftests/net/net_helper.sh
-new file mode 100755
-index 000000000000..4fe0befa13fb
---- /dev/null
-+++ b/tools/testing/selftests/net/net_helper.sh
-@@ -0,0 +1,22 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+#
-+# Helper functions
-+
-+wait_local_port_listen()
-+{
-+	local listener_ns="${1}"
-+	local port="${2}"
-+	local protocol="${3}"
-+	local port_hex
-+	local i
-+
-+	port_hex="$(printf "%04X" "${port}")"
-+	for i in $(seq 10); do
-+		if ip netns exec "${listener_ns}" cat /proc/net/"${protocol}"* | \
-+		   grep -q "${port_hex}"; then
-+			break
-+		fi
-+		sleep 0.1
-+	done
-+}
-diff --git a/tools/testing/selftests/net/udpgro.sh b/tools/testing/selftests/net/udpgro.sh
-index 0c743752669a..af5dc57c8ce9 100755
---- a/tools/testing/selftests/net/udpgro.sh
-+++ b/tools/testing/selftests/net/udpgro.sh
-@@ -3,6 +3,8 @@
- #
- # Run a series of udpgro functional tests.
- 
-+source net_helper.sh
-+
- readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
- 
- BPF_FILE="../bpf/xdp_dummy.bpf.o"
-@@ -51,8 +53,7 @@ run_one() {
- 		echo "ok" || \
- 		echo "failed" &
- 
--	# Hack: let bg programs complete the startup
--	sleep 0.2
-+	wait_local_port_listen ${PEER_NS} 8000 udp
- 	./udpgso_bench_tx ${tx_args}
- 	ret=$?
- 	wait $(jobs -p)
-@@ -97,7 +98,7 @@ run_one_nat() {
- 		echo "ok" || \
- 		echo "failed"&
- 
--	sleep 0.1
-+	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
- 	ret=$?
- 	kill -INT $pid
-@@ -118,11 +119,9 @@ run_one_2sock() {
- 		echo "ok" || \
- 		echo "failed" &
- 
--	# Hack: let bg programs complete the startup
--	sleep 0.2
-+	wait_local_port_listen "${PEER_NS}" 12345 udp
- 	./udpgso_bench_tx ${tx_args} -p 12345
--	sleep 0.1
--	# first UDP GSO socket should be closed at this point
-+	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
- 	ret=$?
- 	wait $(jobs -p)
-diff --git a/tools/testing/selftests/net/udpgro_bench.sh b/tools/testing/selftests/net/udpgro_bench.sh
-index 894972877e8b..cb664679b434 100755
---- a/tools/testing/selftests/net/udpgro_bench.sh
-+++ b/tools/testing/selftests/net/udpgro_bench.sh
-@@ -3,6 +3,8 @@
- #
- # Run a series of udpgro benchmarks
- 
-+source net_helper.sh
-+
- readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
- 
- BPF_FILE="../bpf/xdp_dummy.bpf.o"
-@@ -40,8 +42,7 @@ run_one() {
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx -t ${rx_args} -r &
- 
--	# Hack: let bg programs complete the startup
--	sleep 0.2
-+	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
- }
- 
-diff --git a/tools/testing/selftests/net/udpgro_frglist.sh b/tools/testing/selftests/net/udpgro_frglist.sh
-index 0a6359bed0b9..dd47fa96f6b3 100755
---- a/tools/testing/selftests/net/udpgro_frglist.sh
-+++ b/tools/testing/selftests/net/udpgro_frglist.sh
-@@ -3,6 +3,8 @@
- #
- # Run a series of udpgro benchmarks
- 
-+source net_helper.sh
-+
- readonly PEER_NS="ns-peer-$(mktemp -u XXXXXX)"
- 
- BPF_FILE="../bpf/xdp_dummy.bpf.o"
-@@ -45,8 +47,7 @@ run_one() {
-         echo ${rx_args}
- 	ip netns exec "${PEER_NS}" ./udpgso_bench_rx ${rx_args} -r &
- 
--	# Hack: let bg programs complete the startup
--	sleep 0.2
-+	wait_local_port_listen "${PEER_NS}" 8000 udp
- 	./udpgso_bench_tx ${tx_args}
- }
- 
--- 
-2.41.0
-
+>  drivers/dma/fsl-edma-main.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/dma/fsl-edma-main.c b/drivers/dma/fsl-edma-main.c
+> index 52577fffc62b..aea7a703dda7 100644
+> --- a/drivers/dma/fsl-edma-main.c
+> +++ b/drivers/dma/fsl-edma-main.c
+> @@ -665,7 +665,8 @@ static int fsl_edma_resume_early(struct device *dev)
+>  			fsl_edma_chan_mux(fsl_chan, fsl_chan->slave_id, true);
+>  	}
+>  
+> -	edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
+> +	if (!(fsl_edma->drvdata->flags & FSL_EDMA_DRV_SPLIT_REG))
+> +		edma_writel(fsl_edma, EDMA_CR_ERGA | EDMA_CR_ERCA, regs->cr);
+>  
+>  	return 0;
+>  }
+> -- 
+> 2.25.1
+> 
