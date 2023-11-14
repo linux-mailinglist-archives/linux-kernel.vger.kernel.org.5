@@ -2,162 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 185757EAA90
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 07:35:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E24B7EAA99
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 07:44:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232143AbjKNGfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 01:35:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
+        id S232112AbjKNGn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 01:43:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232117AbjKNGfp (ORCPT
+        with ESMTP id S229596AbjKNGn5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 01:35:45 -0500
-Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com [209.85.215.198])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5466D19B
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 22:35:42 -0800 (PST)
-Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-5c16f262317so2568957a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 22:35:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1699943742; x=1700548542;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=k+b4tjqYTMo+ud+h4iO/4QGJnvZwgd6PsWcf8tqR6bk=;
-        b=ObO94ViBaj+hDn9qVg+CG8cvK2sbUND04qOtZNmvgX6/XKCqlQL9a1h2CtQ3tqCRfX
-         Yx/e0Az4AxNogMcRmRpWxulMEckYC9RYQWUxdARdYml1afiFZlFCWlC+3K9R2MYJK1lh
-         Ofa7foaj0sOJnJFuhevsEfh3Fm9R30nlTJ5KuFaoNnXl7jghseWoXTomMsYt+WTnSIya
-         dag/RnJmAOhRQiR21/WC1u3kwUwW0ALMIS1RZ9Qt3qXuyuU/8G7JQeRO4sQf71SsUfEg
-         QhWmzfQuWymkgTDHvx8FioNeu8RQNZh7m8oJSQ40Rrdp67gBXOG3UKQv6eTYnrkigU0B
-         yXIQ==
-X-Gm-Message-State: AOJu0YxibUWTHyn2e5vNliBxz3GOmp16qmQCRgK402JTz9g2Vlly7Kan
-        VoGR/LYc5PSkPcaNjTxVXzeEarzxeW5SDPx5KqNhKE7TrXyfRrg=
-X-Google-Smtp-Source: AGHT+IGuWJ1r32yOOblPmxgjl916/opxFHO6jwKYAg6bhRvGuNqxtHpOk13NyVkHJRoZ7VplVMtN0Xc2zeIINFqQu1qlwvDZA9+t
+        Tue, 14 Nov 2023 01:43:57 -0500
+Received: from 8.mo584.mail-out.ovh.net (8.mo584.mail-out.ovh.net [188.165.33.112])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C4EC19B
+        for <linux-kernel@vger.kernel.org>; Mon, 13 Nov 2023 22:43:53 -0800 (PST)
+Received: from director9.ghost.mail-out.ovh.net (unknown [10.108.20.161])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id 5967D28496
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 06:36:58 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-xkfk5 (unknown [10.110.208.213])
+        by director9.ghost.mail-out.ovh.net (Postfix) with ESMTPS id 7942A1FDCE;
+        Tue, 14 Nov 2023 06:36:55 +0000 (UTC)
+Received: from foxhound.fi ([37.59.142.99])
+        by ghost-submission-6684bf9d7b-xkfk5 with ESMTPSA
+        id ONtBGYcVU2XrtQYAFz0/+Q
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Tue, 14 Nov 2023 06:36:55 +0000
+Authentication-Results: garm.ovh; auth=pass (GARM-99G00388b5308c-d874-4d8f-9cc7-23e6befe93bc,
+                    39B655737E19CE8DAD14488E69459E8CEBC9C448) smtp.auth=jose.pekkarinen@foxhound.fi
+X-OVh-ClientIp: 83.100.46.156
+From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     harry.wentland@amd.com, sunpeng.li@amd.com,
+        Rodrigo.Siqueira@amd.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, Xinhui.Pan@amd.com,
+        skhan@linuxfoundation.org
+Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        airlied@gmail.com, daniel@ffwll.ch, Wayne.Lin@amd.com,
+        qingqing.zhuo@amd.com, lyude@redhat.com, aurabindo.pillai@amd.com,
+        sungjoon.kim@amd.com, srinivasan.shanmugam@amd.com,
+        hamza.mahfooz@amd.com, mikita.lipski@amd.com,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-kernel-mentees@lists.linux.dev
+Subject: [PATCH] drm/amd/display: fix NULL dereference
+Date:   Tue, 14 Nov 2023 08:36:46 +0200
+Message-Id: <20231114063647.71929-1-jose.pekkarinen@foxhound.fi>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-X-Received: by 2002:a63:d712:0:b0:5c1:814b:890f with SMTP id
- d18-20020a63d712000000b005c1814b890fmr333910pgg.1.1699943741894; Mon, 13 Nov
- 2023 22:35:41 -0800 (PST)
-Date:   Mon, 13 Nov 2023 22:35:41 -0800
-In-Reply-To: <000000000000b1fda20609ede0d1@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000dfb54d060a16fec6@google.com>
-Subject: Re: [syzbot] [PATCH] Test oob in squashfs readahead
-From:   syzbot <syzbot+604424eb051c2f696163@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 1552053025768449729
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: 0
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudefuddgleekucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeeftdelueetieetvdettdetueeivedujeefffdvteefkeelhefhleelfeetteejjeenucfkphepuddvjedrtddrtddruddpkeefrddutddtrdegiedrudehiedpfeejrdehledrudegvddrleelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+The following patch will fix a minor issue where a debug message is
+referencing an struct that has just being checked whether is null or
+not. This has been noticed by using coccinelle, in the following output:
 
-***
+drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c:540:25-29: ERROR: aconnector is NULL but dereferenced.
 
-Subject: [PATCH] Test oob in squashfs readahead
-Author: eadavis@qq.com
+Fixes: 5d72e247e58c9 ("drm/amd/display: switch DC over to the new DRM logging macros")
+Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+---
+ drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-please test squashfs readahead oob
-
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 13d88ac54ddd
-
-diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-index 581ce9519339..7db8f2920c9e 100644
---- a/fs/squashfs/block.c
-+++ b/fs/squashfs/block.c
-@@ -287,6 +287,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+index ed784cf27d39..7048dab5e356 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm_helpers.c
+@@ -537,8 +537,7 @@ bool dm_helpers_dp_read_dpcd(
+ 	struct amdgpu_dm_connector *aconnector = link->priv;
  
- 		if (index + 2 > msblk->bytes_used) {
- 			res = -EIO;
-+			printk("srd1: i:%d, bu:%d \n", index, msblk->bytes_used);
- 			goto out;
- 		}
- 		res = squashfs_bio_read(sb, index, 2, &bio, &offset);
-@@ -295,6 +296,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 
- 		if (WARN_ON_ONCE(!bio_next_segment(bio, &iter_all))) {
- 			res = -EIO;
-+			printk("srd2 \n");
- 			goto out_free_bio;
- 		}
- 		/* Extract the length of the metadata block */
-@@ -305,6 +307,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 		} else {
- 			if (WARN_ON_ONCE(!bio_next_segment(bio, &iter_all))) {
- 				res = -EIO;
-+				printk("srd3 \n");
- 				goto out_free_bio;
- 			}
- 			data = bvec_virt(bvec);
-@@ -324,6 +327,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 	if (length < 0 || length > output->length ||
- 			(index + length) > msblk->bytes_used) {
- 		res = -EIO;
-+		printk("srd4: l:%d, ol: %d, bu: %d \n", length, output->length, msblk->bytes_used);
- 		goto out;
+ 	if (!aconnector) {
+-		drm_dbg_dp(aconnector->base.dev,
+-			   "Failed to find connector for link!\n");
++		DRM_ERROR("Failed to find connector for link!");
+ 		return false;
  	}
  
-@@ -336,10 +340,12 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
- 
- 	if (compressed) {
- 		if (!msblk->stream) {
-+			printk("srd5 \n");
- 			res = -EIO;
- 			goto out_free_bio;
- 		}
- 		res = msblk->thread_ops->decompress(msblk, bio, offset, length, output);
-+		printk("srd6: r: %d \n", res);
- 	} else {
- 		res = copy_bio_to_actor(bio, output, offset, length);
- 	}
-diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
-index 8ba8c4c50770..b54d6b993357 100644
---- a/fs/squashfs/file.c
-+++ b/fs/squashfs/file.c
-@@ -461,6 +461,12 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
- 	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
- 				page->index, squashfs_i(inode)->start);
- 
-+	if (!file_end) {
-+		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
-+		res = -EINVAL;
-+		goto out;
-+	}
-+
- 	if (page->index >= ((i_size_read(inode) + PAGE_SIZE - 1) >>
- 					PAGE_SHIFT))
- 		goto out;
-@@ -547,6 +553,11 @@ static void squashfs_readahead(struct readahead_control *ractl)
- 	int i, file_end = i_size_read(inode) >> msblk->block_log;
- 	unsigned int max_pages = 1UL << shift;
- 
-+	if (!file_end && !start) {
-+		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
-+		return;
-+	}
-+
- 	readahead_expand(ractl, start, (len | mask) + 1);
- 
- 	pages = kmalloc_array(max_pages, sizeof(void *), GFP_KERNEL);
-diff --git a/fs/squashfs/inode.c b/fs/squashfs/inode.c
-index aa3411354e66..e7c2ccd6a382 100644
---- a/fs/squashfs/inode.c
-+++ b/fs/squashfs/inode.c
-@@ -403,9 +403,11 @@ int squashfs_read_inode(struct inode *inode, long long ino)
- 	} else
- 		squashfs_i(inode)->xattr_count = 0;
- 
-+	printk("in: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
- 	return 0;
- 
- failed_read:
-+	printk("in: %p, fs: %d, it: %d, %s\n", inode, inode->i_size, type, __func__);
- 	ERROR("Unable to read inode 0x%llx\n", ino);
- 	return err;
- }
+-- 
+2.39.2
 
