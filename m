@@ -2,224 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C7B7EAD86
-	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:04:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEFD77EAD88
+	for <lists+linux-kernel@lfdr.de>; Tue, 14 Nov 2023 11:04:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231146AbjKNKEk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 05:04:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
+        id S231859AbjKNKEm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 05:04:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230411AbjKNKEi (ORCPT
+        with ESMTP id S230460AbjKNKEk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 05:04:38 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB690199;
-        Tue, 14 Nov 2023 02:04:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=MliSkT+C97r/xoKb00has1+pOVRxGmmTM9aHZqmFb/M=; b=w4XFJJSuIadpNAeBv0oFJvheSh
-        XwUK9PQmPMEhgdmwSDbAapoeDa9K9HWgMz38zdIGLe/sPLp7TUYkOcvYDg3LX9m6snr5MAMtXZp1G
-        vIR6D8/EEfGWaAmd1K5HqJ20zzwHZj47NTHQMs5MZLrvpche7UN5fFTZUSmZeSZsKEMQLad0LQu28
-        zunJCFl41N8ZLAphzoOqhGQGVtYmuTDPoGwmCXhpcmyCL6DPgOGWWOwereFReVboNc6aRwnyTdllh
-        LRSDUTGxHde7yh8aZ/Yc3qmiS/Sv9HtEFiSqz9Vn7XPbLYjDyO5VYNCX+0/pgAR76YDhy0QX4GYMr
-        Kd1NjHnw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:44278)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r2qHP-0007em-2q;
-        Tue, 14 Nov 2023 10:04:23 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r2qHO-0005UR-In; Tue, 14 Nov 2023 10:04:22 +0000
-Date:   Tue, 14 Nov 2023 10:04:22 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     James Morse <james.morse@arm.com>, linux-pm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-acpi@vger.kernel.org,
-        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com, gregkh@linuxfoundation.org
-Subject: Re: [RFC PATCH v2 11/35] arch_topology: Make
- register_cpu_capacity_sysctl() tolerant to late CPUs
-Message-ID: <ZVNGJuUEkwei+CwY@shell.armlinux.org.uk>
-References: <20230913163823.7880-1-james.morse@arm.com>
- <20230913163823.7880-12-james.morse@arm.com>
- <20230914130126.000069db@Huawei.com>
- <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
+        Tue, 14 Nov 2023 05:04:40 -0500
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76175197;
+        Tue, 14 Nov 2023 02:04:36 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out1.suse.de (Postfix) with ESMTPS id 0F4852189A;
+        Tue, 14 Nov 2023 10:04:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1699956275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HikEMLbWxEVzvyuBuhlgY1v61UUO53h7x3i8QbDBxPA=;
+        b=Euj6KvtzEFXW41rjtYwsll8g5sMbKlmsGymplUNyLRBZpuR27W1ZceHjpTXOQ1UdSepabS
+        T4dvs6dnt0gQOvgDjtusoAqjz6hnK9Lj5Y8C8y0QWuwt9s8Zsm4WLzyJIQdFSdqSNyjAEL
+        7lFNShTf6XgGpx3WCRg3UMLmgqrBS+Q=
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D7CBE13416;
+        Tue, 14 Nov 2023 10:04:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id YqE3MjJGU2WnIwAAMHmgww
+        (envelope-from <mhocko@suse.com>); Tue, 14 Nov 2023 10:04:34 +0000
+Date:   Tue, 14 Nov 2023 11:04:34 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Huan Yang <link@vivo.com>
+Cc:     "Huang, Ying" <ying.huang@intel.com>, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeelb@google.com>,
+        Muchun Song <muchun.song@linux.dev>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Peter Xu <peterx@redhat.com>,
+        "Vishal Moola (Oracle)" <vishal.moola@gmail.com>,
+        Yosry Ahmed <yosryahmed@google.com>,
+        Liu Shixin <liushixin2@huawei.com>,
+        Hugh Dickins <hughd@google.com>, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, opensource.kernel@vivo.com
+Subject: Re: [RFC 0/4] Introduce unbalance proactive reclaim
+Message-ID: <ZVNGMmvCmQWSqEyF@tiehlicka>
+References: <ZUytB5lSwxeKkBW8@tiehlicka>
+ <6b539e16-c835-49ff-9fae-a65960567657@vivo.com>
+ <ZUy2-vrqDq7URzb6@tiehlicka>
+ <e8c0c069-a685-482d-afad-d1069c6a95ba@vivo.com>
+ <87a5rmiewp.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <ab108b82-87a9-4927-9d29-f60713281e8a@vivo.com>
+ <878r76gsvz.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <78128117-ce70-47ef-b7fd-10c772b1c933@vivo.com>
+ <ZU4i36tKnyXZ8lZD@tiehlicka>
+ <dcd2eff8-400b-4ade-a5b2-becfe26b437b@vivo.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZTKEQz0DJuv/tqNH@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <dcd2eff8-400b-4ade-a5b2-becfe26b437b@vivo.com>
+Authentication-Results: smtp-out1.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -2.10
+X-Spamd-Result: default: False [-2.10 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         RCVD_TLS_ALL(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         NEURAL_HAM_LONG(-3.00)[-1.000];
+         BAYES_HAM(-0.00)[25.95%];
+         DKIM_SIGNED(0.00)[suse.com:s=susede1];
+         NEURAL_HAM_SHORT(-1.00)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[23];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         MID_RHS_NOT_FQDN(0.50)[];
+         FREEMAIL_CC(0.00)[intel.com,kernel.org,bytedance.com,cmpxchg.org,lwn.net,linux.dev,google.com,linux-foundation.org,redhat.com,infradead.org,huawei.com,gmail.com,vger.kernel.org,kvack.org,vivo.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Okay, after 25 days, I'm now changing James' comment to:
+On Mon 13-11-23 09:54:55, Huan Yang wrote:
+> 
+> 在 2023/11/10 20:32, Michal Hocko 写道:
+> > On Fri 10-11-23 14:21:17, Huan Yang wrote:
+> > [...]
+> > > > BTW: how do you know the number of pages to be reclaimed proactively in
+> > > > memcg proactive reclaiming based solution?
+> > > One point here is that we are not sure how long the frozen application
+> > > will be opened, it could be 10 minutes, an hour, or even days.  So we
+> > > need to predict and try, gradually reclaim anonymous pages in
+> > > proportion, preferably based on the LRU algorithm.  For example, if
+> > > the application has been frozen for 10 minutes, reclaim 5% of
+> > > anonymous pages; 30min:25%anon, 1hour:75%, 1day:100%.  It is even more
+> > > complicated as it requires adding a mechanism for predicting failure
+> > > penalties.
+> > Why would make your reclaiming decisions based on time rather than the
+> > actual memory demand? I can see how a pro-active reclaim could make a
+> > head room for an unexpected memory pressure but applying more pressure
+> > just because of inactivity sound rather dubious to me TBH. Why cannot
+> > you simply wait for the external memory pressure (e.g. from kswapd) to
+> > deal with that based on the demand?
+> Because the current kswapd and direct memory reclamation are a passive
+> memory reclamation based on the watermark, and in the event of triggering
+> these reclamation scenarios, the smoothness of the phone application cannot
+> be guaranteed.
 
-    If the offline CPUs thing is a problem for the tools that consume
-    this value, we'd need to move cpu_capacity to be part of cpu.c's
-    common_cpu_attr_groups. However, attempts to discuss this just end
-    up in a black hole, so this is a non-starter. Thus, if this needs
-    to be done, it can be done as a separate patch.
+OK, so you are worried about latencies on spike memory usage. 
 
-and thus I'm going to consider this patch acceptable to everyone.
+> (We often observe that when the above reclamation is triggered, there
+> is a delay in the application startup, usually accompanied by block
+> I/O, and some concurrency issues caused by lock design.)
 
-On Fri, Oct 20, 2023 at 02:44:35PM +0100, Russell King (Oracle) wrote:
-> On Thu, Sep 14, 2023 at 01:01:26PM +0100, Jonathan Cameron wrote:
-> > On Wed, 13 Sep 2023 16:37:59 +0000
-> > James Morse <james.morse@arm.com> wrote:
-> > 
-> > > register_cpu_capacity_sysctl() adds a property to sysfs that describes
-> > > the CPUs capacity. This is done from a subsys_initcall() that assumes
-> > > all possible CPUs are registered.
-> > > 
-> > > With CPU hotplug, possible CPUs aren't registered until they become
-> > > present, (or for arm64 enabled). This leads to messages during boot:
-> > > | register_cpu_capacity_sysctl: too early to get CPU1 device!
-> > > and once these CPUs are added to the system, the file is missing.
-> > > 
-> > > Move this to a cpuhp callback, so that the file is created once
-> > > CPUs are brought online. This covers CPUs that are added late by
-> > > mechanisms like hotplug.
-> > > One observable difference is the file is now missing for offline CPUs.
-> > > 
-> > > Signed-off-by: James Morse <james.morse@arm.com>
-> > > ---
-> > > If the offline CPUs thing is a problem for the tools that consume
-> > > this value, we'd need to move cpu_capacity to be part of cpu.c's
-> > > common_cpu_attr_groups.
-> > 
-> > I think we should do that anyway and then use an is_visible() if we want to
-> > change whether it is visible in offline cpus.
-> > 
-> > Dynamic sysfs file creation is horrible - particularly when done
-> > from an totally different file from where the rest of the attributes
-> > are registered.  I'm curious what the history behind that is.
-> > 
-> > Whilst here, why is there a common_cpu_attr_groups which is
-> > identical to the hotpluggable_cpu_attr_groups in base/cpu.c?
+Does that mean you do not have enough head room for kswapd to keep with
+the memory demand? It is really hard to discuss this without some actual
+numbers or more specifics.
+ 
+> To ensure the smoothness of application startup, we have a module in
+> Android called LMKD (formerly known as lowmemorykiller). Based on a
+> certain algorithm, LMKD detects if application startup may be delayed
+> and proactively kills inactive applications.  (For example, based on
+> factors such as refault IO and swap usage.)
 > 
-> Looking into doing this, the easy bit is adding the attribute group
-> with an appropriate .is_visible dependent on cpu_present(), but we
-> need to be able to call sysfs_update_groups() when the state of the
-> .is_visible() changes.
-> 
-> Given the comment in sysfs_update_groups() about "if an error occurs",
-> rather than making this part of common_cpu_attr_groups, would it be
-> better that it's part of its own set of groups, thus limiting the
-> damage from a possible error? I suspect, however, that any error at
-> that point means that the system is rather fatally wounded.
-> 
-> This is what I have so far to implement your idea, less the necessary
-> sysfs_update_groups() call when we need to change the visibility of
-> the attributes.
-> 
-> diff --git a/drivers/base/arch_topology.c b/drivers/base/arch_topology.c
-> index 9ccb7daee78e..06c9fc6620d2 100644
-> --- a/drivers/base/arch_topology.c
-> +++ b/drivers/base/arch_topology.c
-> @@ -215,43 +215,24 @@ static ssize_t cpu_capacity_show(struct device *dev,
->  	return sysfs_emit(buf, "%lu\n", topology_get_cpu_scale(cpu->dev.id));
->  }
->  
-> -static void update_topology_flags_workfn(struct work_struct *work);
-> -static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
-> -
->  static DEVICE_ATTR_RO(cpu_capacity);
->  
-> -static int cpu_capacity_sysctl_add(unsigned int cpu)
-> -{
-> -	struct device *cpu_dev = get_cpu_device(cpu);
-> -
-> -	if (!cpu_dev)
-> -		return -ENOENT;
-> -
-> -	device_create_file(cpu_dev, &dev_attr_cpu_capacity);
-> -
-> -	return 0;
-> -}
-> -
-> -static int cpu_capacity_sysctl_remove(unsigned int cpu)
-> +static umode_t cpu_present_attrs_visible(struct kobject *kobi,
-> +					 struct attribute *attr, int index)
->  {
-> -	struct device *cpu_dev = get_cpu_device(cpu);
-> -
-> -	if (!cpu_dev)
-> -		return -ENOENT;
-> -
-> -	device_remove_file(cpu_dev, &dev_attr_cpu_capacity);
-> +	struct device *dev = kobj_to_dev(kobj);
-> +	struct cpu *cpu = container_of(dev, struct cpu, dev);
->  
-> -	return 0;
-> +	return cpu_present(cpu->dev.id) ? attr->mode : 0;
->  }
->  
-> -static int register_cpu_capacity_sysctl(void)
-> -{
-> -	cpuhp_setup_state(CPUHP_AP_ONLINE_DYN, "topology/cpu-capacity",
-> -			  cpu_capacity_sysctl_add, cpu_capacity_sysctl_remove);
-> +const struct attribute_group cpu_capacity_attr_group = {
-> +	.is_visible = cpu_present_attrs_visible,
-> +	.attrs = cpu_capacity_attrs
-> +};
->  
-> -	return 0;
-> -}
-> -subsys_initcall(register_cpu_capacity_sysctl);
-> +static void update_topology_flags_workfn(struct work_struct *work);
-> +static DECLARE_WORK(update_topology_flags_work, update_topology_flags_workfn);
->  
->  static int update_topology;
->  
-> diff --git a/drivers/base/cpu.c b/drivers/base/cpu.c
-> index a19a8be93102..954b045705c2 100644
-> --- a/drivers/base/cpu.c
-> +++ b/drivers/base/cpu.c
-> @@ -192,6 +192,9 @@ static const struct attribute_group crash_note_cpu_attr_group = {
->  static const struct attribute_group *common_cpu_attr_groups[] = {
->  #ifdef CONFIG_KEXEC
->  	&crash_note_cpu_attr_group,
-> +#endif
-> +#ifdef CONFIG_GENERIC_ARCH_TOPOLOGY
-> +	&cpu_capacity_attr_group,
->  #endif
->  	NULL
->  };
-> diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-> index e117c06e0c6b..745ad21e3dc8 100644
-> --- a/include/linux/cpu.h
-> +++ b/include/linux/cpu.h
-> @@ -30,6 +30,8 @@ struct cpu {
->  	struct device dev;
->  };
->  
-> +extern const struct attribute_group cpu_capacity_attr_group;
-> +
->  extern void boot_cpu_init(void);
->  extern void boot_cpu_hotplug_init(void);
->  extern void cpu_init(void);
-> 
-> -- 
-> RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-> FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+> However, this behavior may cause the applications we want to protect
+> to be killed, which will result in users having to wait for them to
+> restart when they are reopened, which may affect the user
+> experience.(For example, if the user wants to reopen the application
+> interface they are working on, or re-enter the order interface they
+> were viewing.)
 
+This suggests that your LMKD doesn't pick up the right victim to kill.
+And I suspect this is a fundamental problem of those pro-active oom
+killer solutions.
+
+> Therefore, the above proactive reclamation interface is designed to
+> compress memory types with minimal cost for upper-layer applications
+> based on reasonable strategies, in order to avoid triggering LMKD or
+> memory reclamation as much as possible, even if it is not balanced.
+
+This would suggest that MADV_PAGEOUT is really what you are looking for.
+If you really aim at compressing a specific type of memory then tweking
+reclaim to achieve that sounds like a shortcut because madvise based
+solution is more involved. But that is not a solid justification for
+adding a new interface.
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+Michal Hocko
+SUSE Labs
