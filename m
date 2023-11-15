@@ -2,56 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 375737ED1FA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:26:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A5287ED222
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:34:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235426AbjKOU0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58564 "EHLO
+        id S1344467AbjKOUeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:34:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235683AbjKOU0J (ORCPT
+        with ESMTP id S1344443AbjKOUek (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:26:09 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A501A3;
-        Wed, 15 Nov 2023 12:26:05 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A47D5C433C7;
-        Wed, 15 Nov 2023 20:26:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700079965;
-        bh=SOtNdL3JNKTm9VZJNKO/kZNG8OS7jX2bdSzi5ufh4lE=;
-        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
-        b=SEcG3JwWR9EHg0HanBYt9kAKoVhebzyuN8a5B/Bnjnx2gmbTSqlc5Sr68shkiBImV
-         sHG41zk7Gtm7zoich93lUtwe4S6ME5fuKaEjIWg2/qCAjo2iq2xKZQA47SlfgO1Syi
-         crxwNUMZRnkMvkofc/G22ogt0s2I3wDWaECpJXr9d8iguwvtXthk35q/KuJT5I+3Hg
-         AcwMLM4Jdljot9Ty9Yqdo3dq3TLQUSJrrGaNwcmyFObPNdzaalds/F1UriqeBBIGyi
-         uESZrM65RXUZ1BzIZIRq2UpYhBd8/4V7S/ZYoNCb8zBOGn9ZfmQGfXI7gFjqUwVmsE
-         rNzWEH0zXxUJQ==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 15 Nov 2023 22:25:59 +0200
-Message-Id: <CWZO1RHFPIS6.P82WIOYW54YP@kernel.org>
-Subject: Re: [PATCH v6 01/12] cgroup/misc: Add per resource callbacks for
- CSS events
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Haitao Huang" <haitao.huang@linux.intel.com>,
-        <dave.hansen@linux.intel.com>, <tj@kernel.org>, <mkoutny@suse.com>,
-        <linux-kernel@vger.kernel.org>, <linux-sgx@vger.kernel.org>,
-        <x86@kernel.org>, <cgroups@vger.kernel.org>, <tglx@linutronix.de>,
-        <mingo@redhat.com>, <bp@alien8.de>, <hpa@zytor.com>,
-        <sohil.mehta@intel.com>
-Cc:     <zhiquan1.li@intel.com>, <kristen@linux.intel.com>,
-        <seanjc@google.com>, <zhanb@microsoft.com>,
-        <anakrish@microsoft.com>, <mikko.ylinen@linux.intel.com>,
-        <yangjie@microsoft.com>
-X-Mailer: aerc 0.15.2
-References: <20231030182013.40086-1-haitao.huang@linux.intel.com>
- <20231030182013.40086-2-haitao.huang@linux.intel.com>
-In-Reply-To: <20231030182013.40086-2-haitao.huang@linux.intel.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 15 Nov 2023 15:34:40 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3F911D;
+        Wed, 15 Nov 2023 12:34:34 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKWucR031174;
+        Wed, 15 Nov 2023 20:34:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=ZvlPFgCBT1EmH5DZbvTajf8H3CytU5Hp1eV8d/t1KuQ=;
+ b=lVtuxA53NpIasyLyVxsb8g2sO7n8jgKLZr6WnZGjEh2kEwrnxiopq3HP8FWgG/eQr9Xr
+ VtL3WdYhimBH1fouhUkdcRUzN33PjcEORadF8YUTrABEMSxyViiwsRsDkAJsXvhhQ+XP
+ AAuztH9oUnPhD+B38hj/6Jwi2GfSUNsu/rs8rorkASI1NPrszjVN0Zy76poT0sD3oAsA
+ tfDurEFrPEVlDMukq5rTIihutLZBqdHJtzkTqdMmkA8orFXaIIF9SGWftXNY62W18CRw
+ gRht2dTN9GPQ0WvFXWJMk+ei5CPWLLNTytlpBbnw+YdeEFYe5iyGfV7sxGEeULGOvfbJ ew== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud543g10h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:34:12 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKYBS4003580;
+        Wed, 15 Nov 2023 20:34:11 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud543g0yw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:34:11 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKIvA1015481;
+        Wed, 15 Nov 2023 20:34:10 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamxnj0hb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:34:10 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKY7n744434146
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 20:34:07 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DE54B20043;
+        Wed, 15 Nov 2023 20:34:06 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 835E020040;
+        Wed, 15 Nov 2023 20:34:05 +0000 (GMT)
+Received: from heavy.boeblingen.de.ibm.com (unknown [9.179.9.51])
+        by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Nov 2023 20:34:05 +0000 (GMT)
+From:   Ilya Leoshkevich <iii@linux.ibm.com>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>,
+        Ilya Leoshkevich <iii@linux.ibm.com>
+Subject: [PATCH 00/32] kmsan: Enable on s390
+Date:   Wed, 15 Nov 2023 21:30:32 +0100
+Message-ID: <20231115203401.2495875-1-iii@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: s_HIgjGFEkw2r82SbnJKsme_JpUxwIpl
+X-Proofpoint-GUID: O24-gF0cUI_VPwI0_OAIJDvWxXDnx7n2
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_20,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
+ spamscore=0 adultscore=0 priorityscore=1501 suspectscore=0 clxscore=1011
+ mlxlogscore=999 bulkscore=0 mlxscore=0 lowpriorityscore=0 malwarescore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311150163
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,169 +108,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon Oct 30, 2023 at 8:20 PM EET, Haitao Huang wrote:
-> From: Kristen Carlson Accardi <kristen@linux.intel.com>
->
-> The misc cgroup controller (subsystem) currently does not perform
-> resource type specific action for Cgroups Subsystem State (CSS) events:
-> the 'css_alloc' event when a cgroup is created and the 'css_free' event
-> when a cgroup is destroyed.
->
-> Define callbacks for those events and allow resource providers to
-> register the callbacks per resource type as needed. This will be
-> utilized later by the EPC misc cgroup support implemented in the SGX
-> driver.
->
-> Also add per resource type private data for those callbacks to store and
-> access resource specific data.
->
-> Signed-off-by: Kristen Carlson Accardi <kristen@linux.intel.com>
-> Co-developed-by: Haitao Huang <haitao.huang@linux.intel.com>
-> Signed-off-by: Haitao Huang <haitao.huang@linux.intel.com>
-> ---
-> V6:
-> - Create ops struct for per resource callbacks (Jarkko)
-> - Drop max_write callback (Dave, Michal)
-> - Style fixes (Kai)
-> ---
->  include/linux/misc_cgroup.h | 14 ++++++++++++++
->  kernel/cgroup/misc.c        | 27 ++++++++++++++++++++++++---
->  2 files changed, 38 insertions(+), 3 deletions(-)
->
-> diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> index e799b1f8d05b..5dc509c27c3d 100644
-> --- a/include/linux/misc_cgroup.h
-> +++ b/include/linux/misc_cgroup.h
-> @@ -27,16 +27,30 @@ struct misc_cg;
-> =20
->  #include <linux/cgroup.h>
-> =20
-> +/**
-> + * struct misc_operations_struct: per resource callback ops.
-> + * @alloc: invoked for resource specific initialization when cgroup is a=
-llocated.
-> + * @free: invoked for resource specific cleanup when cgroup is deallocat=
-ed.
-> + */
-> +struct misc_operations_struct {
-> +	int (*alloc)(struct misc_cg *cg);
-> +	void (*free)(struct misc_cg *cg);
-> +};
+Hi,
 
-Maybe just misc_operations, or even misc_ops?
+This series provides the minimal support for Kernel Memory Sanitizer on
+s390. Kernel Memory Sanitizer is clang-only instrumentation for finding
+accesses to uninitialized memory. The clang support for s390 has already
+been merged [1].
 
-> +
->  /**
->   * struct misc_res: Per cgroup per misc type resource
->   * @max: Maximum limit on the resource.
->   * @usage: Current usage of the resource.
->   * @events: Number of times, the resource limit exceeded.
-> + * @priv: resource specific data.
-> + * @misc_ops: resource specific operations.
->   */
->  struct misc_res {
->  	u64 max;
->  	atomic64_t usage;
->  	atomic64_t events;
-> +	void *priv;
+With this series, I can successfully boot s390 defconfig and
+debug_defconfig with kmsan.panic=1. The tool found one real
+s390-specific bug (fixed in master).
 
-priv is the wrong patch, it just confuses the overall picture heere.
-please move it to 04/12. Let's deal with the callbacks here.
+Best regards,
+Ilya
 
-> +	const struct misc_operations_struct *misc_ops;
->  };
+[1] https://reviews.llvm.org/D148596
 
-misc_ops would be at least consistent with this, as misc_res also has an
-acronym.
+Ilya Leoshkevich (32):
+  ftrace: Unpoison ftrace_regs in ftrace_ops_list_func()
+  kmsan: Make the tests compatible with kmsan.panic=1
+  kmsan: Disable KMSAN when DEFERRED_STRUCT_PAGE_INIT is enabled
+  kmsan: Increase the maximum store size to 4096
+  kmsan: Fix is_bad_asm_addr() on arches with overlapping address spaces
+  kmsan: Fix kmsan_copy_to_user() on arches with overlapping address
+    spaces
+  kmsan: Remove a useless assignment from
+    kmsan_vmap_pages_range_noflush()
+  kmsan: Remove an x86-specific #include from kmsan.h
+  kmsan: Introduce kmsan_memmove_metadata()
+  kmsan: Expose kmsan_get_metadata()
+  kmsan: Export panic_on_kmsan
+  kmsan: Allow disabling KMSAN checks for the current task
+  kmsan: Support SLAB_POISON
+  kmsan: Use ALIGN_DOWN() in kmsan_get_metadata()
+  mm: slub: Let KMSAN access metadata
+  mm: kfence: Disable KMSAN when checking the canary
+  lib/string: Add KMSAN support to strlcpy() and strlcat()
+  lib/zlib: Unpoison DFLTCC output buffers
+  kmsan: Accept ranges starting with 0 on s390
+  s390: Turn off KMSAN for boot, vdso and purgatory
+  s390: Use a larger stack for KMSAN
+  s390/boot: Add the KMSAN runtime stub
+  s390/checksum: Add a KMSAN check
+  s390/cpacf: Unpoison the results of cpacf_trng()
+  s390/ftrace: Unpoison ftrace_regs in kprobe_ftrace_handler()
+  s390/mm: Define KMSAN metadata for vmalloc and modules
+  s390/string: Add KMSAN support
+  s390/traps: Unpoison the kernel_stack_overflow()'s pt_regs
+  s390/uaccess: Add KMSAN support to put_user() and get_user()
+  s390/unwind: Disable KMSAN checks
+  s390: Implement the architecture-specific kmsan functions
+  kmsan: Enable on s390
 
-> =20
->  /**
-> diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> index 79a3717a5803..d971ede44ebf 100644
-> --- a/kernel/cgroup/misc.c
-> +++ b/kernel/cgroup/misc.c
-> @@ -383,23 +383,37 @@ static struct cftype misc_cg_files[] =3D {
->  static struct cgroup_subsys_state *
->  misc_cg_alloc(struct cgroup_subsys_state *parent_css)
->  {
-> +	struct misc_cg *parent_cg, *cg;
->  	enum misc_res_type i;
-> -	struct misc_cg *cg;
-> +	int ret;
-> =20
->  	if (!parent_css) {
-> -		cg =3D &root_cg;
-> +		parent_cg =3D cg =3D &root_cg;
->  	} else {
->  		cg =3D kzalloc(sizeof(*cg), GFP_KERNEL);
->  		if (!cg)
->  			return ERR_PTR(-ENOMEM);
-> +		parent_cg =3D css_misc(parent_css);
->  	}
-> =20
->  	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
->  		WRITE_ONCE(cg->res[i].max, MAX_NUM);
->  		atomic64_set(&cg->res[i].usage, 0);
-> +		if (parent_cg->res[i].misc_ops && parent_cg->res[i].misc_ops->alloc) {
-> +			ret =3D parent_cg->res[i].misc_ops->alloc(cg);
-> +			if (ret)
-> +				goto alloc_err;
+ Documentation/dev-tools/kmsan.rst   |   4 +-
+ arch/s390/Kconfig                   |   1 +
+ arch/s390/Makefile                  |   2 +-
+ arch/s390/boot/Makefile             |   2 +
+ arch/s390/boot/kmsan.c              |   6 ++
+ arch/s390/boot/startup.c            |   8 ++
+ arch/s390/boot/string.c             |  15 ++++
+ arch/s390/include/asm/checksum.h    |   2 +
+ arch/s390/include/asm/cpacf.h       |   2 +
+ arch/s390/include/asm/kmsan.h       |  36 +++++++++
+ arch/s390/include/asm/pgtable.h     |  10 +++
+ arch/s390/include/asm/string.h      |  49 ++++++++-----
+ arch/s390/include/asm/thread_info.h |   2 +-
+ arch/s390/include/asm/uaccess.h     | 110 ++++++++++++++++++++--------
+ arch/s390/kernel/ftrace.c           |   1 +
+ arch/s390/kernel/traps.c            |   2 +
+ arch/s390/kernel/unwind_bc.c        |   2 +
+ arch/s390/kernel/vdso32/Makefile    |   1 +
+ arch/s390/kernel/vdso64/Makefile    |   1 +
+ arch/s390/purgatory/Makefile        |   1 +
+ include/linux/kmsan-checks.h        |  26 +++++++
+ include/linux/kmsan.h               |  14 ++++
+ include/linux/kmsan_types.h         |   2 +-
+ kernel/trace/ftrace.c               |   1 +
+ lib/string.c                        |   6 ++
+ lib/zlib_dfltcc/dfltcc.h            |   1 +
+ lib/zlib_dfltcc/dfltcc_util.h       |  23 ++++++
+ mm/Kconfig                          |   1 +
+ mm/kfence/core.c                    |   5 +-
+ mm/kmsan/core.c                     |   2 +-
+ mm/kmsan/hooks.c                    |  30 +++++++-
+ mm/kmsan/init.c                     |   4 +-
+ mm/kmsan/instrumentation.c          |  11 +--
+ mm/kmsan/kmsan.h                    |   3 +-
+ mm/kmsan/kmsan_test.c               |   5 ++
+ mm/kmsan/report.c                   |   7 +-
+ mm/kmsan/shadow.c                   |   9 +--
+ mm/slub.c                           |   5 +-
+ 38 files changed, 331 insertions(+), 81 deletions(-)
+ create mode 100644 arch/s390/boot/kmsan.c
+ create mode 100644 arch/s390/include/asm/kmsan.h
 
-The patch set only has a use case for both operations defined - any
-partial combinations should never be allowed.
+-- 
+2.41.0
 
-To enforce this invariant you could create a set of operations (written
-out of top of my head):
-
-static int misc_res_init(struct misc_res *res, struct misc_ops *ops)
-{
-	if (!misc_ops->alloc) {
-		pr_err("%s: alloc missing\n", __func__);
-		return -EINVAL;
-	}
-
-	if (!misc_ops->free) {
-		pr_err("%s: free missing\n", __func__);
-		return -EINVAL;
-	}
-
-	res->misc_ops =3D misc_ops;
-	return 0;
-}
-
-static inline int misc_res_alloc(struct misc_cg *cg, struct misc_res *res)
-{
-	int ret;
-
-	if (!res->misc_ops)
-		return 0;
-=09
-	return res->misc_ops->alloc(cg);
-}
-
-static inline void misc_res_free(struct misc_cg *cg, struct misc_res *res)
-{
-	int ret;
-
-	if (!res->misc_ops)
-		return 0;
-=09
-	return res->misc_ops->alloc(cg);
-}
-
-Now if anything has misc_ops, it will also always have *both* callback,
-and nothing half-baked gets in.
-
-The above loops would be then:
-
-	for (i =3D 0; i < MISC_CG_RES_TYPES; i++) {
-		WRITE_ONCE(cg->res[i].max, MAX_NUM);
-		atomic64_set(&cg->res[i].usage, 0);
-		ret =3D misc_res_alloc(&parent_cg->res[i]);
-		if (ret)
-			goto alloc_err;
-
-Cleaner and better guards for state consistency. In 04/12 you need to
-then call misc_res_init() instead of direct assignment.
-
-BR, Jarkko
