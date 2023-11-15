@@ -2,66 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DCC17ECAE9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:00:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EA07ECAED
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjKOTA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38596 "EHLO
+        id S230270AbjKOTCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:02:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230270AbjKOTAZ (ORCPT
+        with ESMTP id S229661AbjKOTCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:00:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F7EDD56
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:00:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700074819; x=1731610819;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=RbfB0ZGkhYRqW4QZA7aVOGXCT2F/bcJXMOiBzTdbGqE=;
-  b=ZIzpHvugWS114ljVmx2L32/H2OMkzdf29Cww4vMuISG2cMIuakRJgqPx
-   vznJkU7EbAz2lgXn/plbLFelpoCG8DUuTO7NQRPK7daHQN5dZKxz3s/u1
-   yl+cf8E9bYbGrmoBYFASexFLU7hqUdnSf+U02150ZffGb+3/tTBpH1S4D
-   JC/dzd+zTZ/LOcP/pAdPp9jvLxbRYBiTmJ2BnGyh0+hsBA8T8iKUZ48jg
-   I6joUGaUkljadfQqbhTK38vrFZiSZeIP5AtYPNu9Tjf0nzASHXhGem/tK
-   TPMtk73qALlN4Fuv5ryW2TOlg1ople250xFi6ifaCJn9ub+7V4++nNfzr
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="390733049"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="390733049"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:00:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="714956002"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="714956002"
-Received: from linux.intel.com ([10.54.29.200])
-  by orsmga003.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:00:18 -0800
-Received: from [10.212.65.57] (kliang2-mobl1.ccr.corp.intel.com [10.212.65.57])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by linux.intel.com (Postfix) with ESMTPS id AD25E580D77;
-        Wed, 15 Nov 2023 11:00:17 -0800 (PST)
-Message-ID: <ceb47045-3188-49ff-85b2-b37c9d0721e1@linux.intel.com>
-Date:   Wed, 15 Nov 2023 14:00:16 -0500
+        Wed, 15 Nov 2023 14:02:04 -0500
+Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 42E60DC;
+        Wed, 15 Nov 2023 11:02:00 -0800 (PST)
+Received: from hq-00595.fritz.box (pd95ef485.dip0.t-ipconnect.de [217.94.244.133])
+        by mail.bugwerft.de (Postfix) with ESMTPSA id 9641B2800D8;
+        Wed, 15 Nov 2023 19:01:58 +0000 (UTC)
+From:   Daniel Mack <daniel@zonque.org>
+To:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Daniel Mack <daniel@zonque.org>,
+        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
+Subject: [PATCH v3] serial: sc16is7xx: address RX timeout interrupt errata
+Date:   Wed, 15 Nov 2023 20:01:44 +0100
+Message-ID: <20231115190144.740291-1-daniel@zonque.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] perf/x86/intel/uncore: Fix NULL pointer dereference issue
- in upi_fill_topology()
-Content-Language: en-US
-To:     alexander.antonov@linux.intel.com, peterz@infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     kyle.meyer@hpe.com, alexey.v.bayduraev@linux.intel.com
-References: <20231115151327.1874060-1-alexander.antonov@linux.intel.com>
-From:   "Liang, Kan" <kan.liang@linux.intel.com>
-In-Reply-To: <20231115151327.1874060-1-alexander.antonov@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,78 +39,62 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This device has a silicon bug that makes it report a timeout interrupt
+but no data in the FIFO.
 
+The datasheet states the following in the errata section 18.1.4:
 
-On 2023-11-15 10:13 a.m., alexander.antonov@linux.intel.com wrote:
-> From: Alexander Antonov <alexander.antonov@linux.intel.com>
-> 
-> The NULL dereference happens inside upi_fill_topology() procedure in
-> case of disabling one of the sockets on the system.
-> 
-> For example, if you disable the 2nd socket on a 4-socket system then
-> uncore_max_dies() returns 3 and inside pmu_alloc_topology() memory will
-> be allocated only for 3 sockets and stored in type->topology.
-> In discover_upi_topology() memory is accessed by socket id from CPUNODEID
-> registers which contain physical ids (from 0 to 3) and on the line:
-> 
->     upi = &type->topology[nid][idx];
-> 
-> out-of-bound access will happen and the 'upi' pointer will be passed to
-> upi_fill_topology() where it will be dereferenced.
-> 
-> To avoid this issue update the code to convert physical socket id to
-> logical socket id in discover_upi_topology() before accessing memory.
-> 
-> Fixes: f680b6e6062e ("perf/x86/intel/uncore: Enable UPI topology discovery for Icelake Server")
-> Reported-by: Kyle Meyer <kyle.meyer@hpe.com>
-> Tested-by: Kyle Meyer <kyle.meyer@hpe.com>
-> Signed-off-by: Alexander Antonov <alexander.antonov@linux.intel.com>
-> ---
->  arch/x86/events/intel/uncore_snbep.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/events/intel/uncore_snbep.c b/arch/x86/events/intel/uncore_snbep.c
-> index 8250f0f59c2b..49bc27ab26ad 100644
-> --- a/arch/x86/events/intel/uncore_snbep.c
-> +++ b/arch/x86/events/intel/uncore_snbep.c
-> @@ -5596,7 +5596,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->  	struct pci_dev *ubox = NULL;
->  	struct pci_dev *dev = NULL;
->  	u32 nid, gid;
-> -	int i, idx, ret = -EPERM;
-> +	int i, idx, lgc_pkg, ret = -EPERM;
->  	struct intel_uncore_topology *upi;
->  	unsigned int devfn;
->  
-> @@ -5614,8 +5614,13 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->  		for (i = 0; i < 8; i++) {
->  			if (nid != GIDNIDMAP(gid, i))
->  				continue;
-> +			lgc_pkg = topology_phys_to_logical_pkg(i);
-> +			if (lgc_pkg < 0) {
-> +				ret = -EPERM;
-> +				goto err;
-> +			}
+  "If the host reads the receive FIFO at the same time as a
+  time-out interrupt condition happens, the host might read 0xCC
+  (time-out) in the Interrupt Indication Register (IIR), but bit 0
+  of the Line Status Register (LSR) is not set (means there is no
+  data in the receive FIFO)."
 
-In the snbep_pci2phy_map_init(), there are similar codes to find the
-logical die id. Can we factor a common function for both of them?
+The errata doesn't explicitly mention that, but tests have shown
+that the RXLVL register is equally affected.
 
-Thanks,
-Kan
+This bug has hit us on production units and when it does, sc16is7xx_irq()
+would spin forever because sc16is7xx_port_irq() keeps seeing an
+interrupt in the IIR register that is not cleared because the driver
+does not call into sc16is7xx_handle_rx() unless the RXLVL register
+reports at least one byte in the FIFO.
 
->  			for (idx = 0; idx < type->num_boxes; idx++) {
-> -				upi = &type->topology[nid][idx];
-> +				upi = &type->topology[lgc_pkg][idx];
->  				devfn = PCI_DEVFN(dev_link0 + idx, ICX_UPI_REGS_ADDR_FUNCTION);
->  				dev = pci_get_domain_bus_and_slot(pci_domain_nr(ubox->bus),
->  								  ubox->bus->number,
-> @@ -5626,6 +5631,7 @@ static int discover_upi_topology(struct intel_uncore_type *type, int ubox_did, i
->  						goto err;
->  				}
->  			}
-> +			break;
->  		}
->  	}
->  err:
-> 
-> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+Fix this by always reading one byte when this condition is detected
+in order to clear the interrupt.
+
+Signed-off-by: Daniel Mack <daniel@zonque.org>
+Co-Developed-by: Maxim Popov <maxim.snafu@gmail.com>
+Cc: stable@vger.kernel.org
+---
+v3: re-added the additional Co-Developed-by and stable@ tags
+v2: reworded the commit log a bit for more context.
+
+ drivers/tty/serial/sc16is7xx.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+index 289ca7d4e566..76f76e510ed1 100644
+--- a/drivers/tty/serial/sc16is7xx.c
++++ b/drivers/tty/serial/sc16is7xx.c
+@@ -765,6 +765,18 @@ static bool sc16is7xx_port_irq(struct sc16is7xx_port *s, int portno)
+ 		case SC16IS7XX_IIR_RTOI_SRC:
+ 		case SC16IS7XX_IIR_XOFFI_SRC:
+ 			rxlen = sc16is7xx_port_read(port, SC16IS7XX_RXLVL_REG);
++
++			/*
++			 * There is a silicon bug that makes the chip report a
++			 * time-out interrupt but no data in the FIFO. This is
++			 * described in errata section 18.1.4.
++			 *
++			 * When this happens, read one byte from the FIFO to
++			 * clear the interrupt.
++			 */
++			if (iir == SC16IS7XX_IIR_RTOI_SRC && !rxlen)
++				rxlen = 1;
++
+ 			if (rxlen)
+ 				sc16is7xx_handle_rx(port, rxlen, iir);
+ 			break;
+-- 
+2.41.0
+
