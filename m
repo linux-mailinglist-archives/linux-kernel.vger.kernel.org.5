@@ -2,222 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 072CD7EC90F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6CF7EC905
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232406AbjKOQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:51:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
+        id S231938AbjKOQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:53:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231938AbjKOQvf (ORCPT
+        with ESMTP id S229570AbjKOQxc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:51:35 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95880196
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:51:32 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6F2ADA7;
-        Wed, 15 Nov 2023 08:52:17 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E91BF3F641;
-        Wed, 15 Nov 2023 08:51:30 -0800 (PST)
-Message-ID: <bac9a753-b1fb-5cd2-404b-832c80a94f89@arm.com>
-Date:   Wed, 15 Nov 2023 16:51:29 +0000
+        Wed, 15 Nov 2023 11:53:32 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0ABB4196
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:53:29 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9f2a53704aaso130693666b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:53:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700067207; x=1700672007; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1sF8rVm6qSPjNpZ4MRVa5Fv/0C/XbN0BqIbvH3bfCTs=;
+        b=CittDcDJ1wVtSCjyL5fWXInFxIdKqCscNgE6EYK44k4QZ/ipZHrR3qytruJT0WAETo
+         dMBZfxKsMhHxi9tztR4OF5e3hjUf3/G9tQPal0JOVDVKngpibDTamOnqHictQpYmuw8O
+         fzNqjrg+oYXVnis1XPxyCNTyMY0opFFdZP1kw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700067207; x=1700672007;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1sF8rVm6qSPjNpZ4MRVa5Fv/0C/XbN0BqIbvH3bfCTs=;
+        b=bspEO+BnREi8+k7B6zALKeY1boOwBLTG1ca3pJoeCs50Id8EcE3Xy4rKWIgYUinuML
+         6adPNpUTDoR5f9RECvhSCQc1Sbf7B4seiYmz4VmF+56ZoeUes02kxzAKj7xF6A8rNPSr
+         HrlaVqdEHxIlQPcTpAuzCmoTNjd8nob8WQ0iXgeFYF6xS86Vi9hUNyuES2LCCPFYzIkh
+         /W9VNN3RVOXcSioAiqCs9FJGsjllVvw6/ktNG8Nk+BAAeHcNix2n6PjxEZCLoJ2Ezmc7
+         vDoH1P8jcKsChft/yv7LZe2p9axIr4WymeBKVPa9N9K/jhzItnUOj0hdUiwgUUnrFZiv
+         Fwxg==
+X-Gm-Message-State: AOJu0YzgS+6WRsUIkk6X22mreced9hNL11fGw0PFloN2lA7lgiSOOtmM
+        T1ZDTyaGky6ctfgrUWjPv8tlyLZBnU+Gg2kLz1GnagbF
+X-Google-Smtp-Source: AGHT+IGWCa13hpHFy/o8hN8xeuMjS0+P4Toqm3Ei1NOAj2IVMRtqzFvkQ+v8Cfh3LEBXqSMYF9y36Q==
+X-Received: by 2002:a17:906:d9b:b0:9e5:d268:d750 with SMTP id m27-20020a1709060d9b00b009e5d268d750mr9536577eji.60.1700067207347;
+        Wed, 15 Nov 2023 08:53:27 -0800 (PST)
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com. [209.85.208.49])
+        by smtp.gmail.com with ESMTPSA id l4-20020a1709066b8400b00988e953a586sm7248886ejr.61.2023.11.15.08.53.25
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 08:53:26 -0800 (PST)
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-53df747cfe5so10878391a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:53:25 -0800 (PST)
+X-Received: by 2002:a05:6402:1052:b0:542:d69d:d075 with SMTP id
+ e18-20020a056402105200b00542d69dd075mr8367028edu.6.1700067205341; Wed, 15 Nov
+ 2023 08:53:25 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v3 4/4] coresight: ultrasoc-smb: Use guards to cleanup
-Content-Language: en-US
-To:     Junhao He <hejunhao3@huawei.com>, suzuki.poulose@arm.com
-Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        jonathan.cameron@huawei.com, yangyicong@huawei.com,
-        prime.zeng@hisilicon.com, u.kleine-koenig@pengutronix.de
-References: <20231114133346.30489-1-hejunhao3@huawei.com>
- <20231114133346.30489-5-hejunhao3@huawei.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <20231114133346.30489-5-hejunhao3@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
+In-Reply-To: <3865842.1700061614@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 11:53:08 -0500
+X-Gmail-Original-Message-ID: <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+Message-ID: <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+To:     David Howells <dhowells@redhat.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 15 Nov 2023 at 10:28, David Howells <dhowells@redhat.com> wrote:
+>
+> But the outcome is a bit variable and the result spaces overlap considerably.
+> I certainly don't see a 17% performance reduction.  Now, this may be due to
+> hardware differences.  The CPU I'm using is an Intel i3-4170 - which is a few
+> years old at this point.
 
+I tried to look at the perf profile changes in the original report,
+and very little of it makes sense to me.
 
-On 14/11/2023 13:33, Junhao He wrote:
-> Use guards to reduce gotos and simplify control flow.
-> 
-> Signed-off-by: Junhao He <hejunhao3@huawei.com>
+Having looked at quite a lot of those in the past (although certainly
+less than Oliver) hat's *usually* a result of a test that is unstable.
 
-Nice cleanup!
+In this case, though, I think the big difference is
 
-Reviewed-by: James Clark <james.clark@arm.com>
+  -11.0  perf-profile.self.cycles-pp.memcpy_orig
+  +14.7  perf-profile.self.cycles-pp.copy_page_from_iter_atomic
 
-> ---
->  drivers/hwtracing/coresight/ultrasoc-smb.c | 70 +++++++---------------
->  1 file changed, 22 insertions(+), 48 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
-> index 6e32d31a95fe..cd14b2eded4e 100644
-> --- a/drivers/hwtracing/coresight/ultrasoc-smb.c
-> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
-> @@ -97,27 +97,19 @@ static int smb_open(struct inode *inode, struct file *file)
->  {
->  	struct smb_drv_data *drvdata = container_of(file->private_data,
->  					struct smb_drv_data, miscdev);
-> -	int ret = 0;
->  
-> -	spin_lock(&drvdata->spinlock);
-> +	guard(spinlock)(&drvdata->spinlock);
->  
-> -	if (drvdata->reading) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (drvdata->reading)
-> +		return -EBUSY;
->  
-> -	if (atomic_read(&drvdata->csdev->refcnt)) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (atomic_read(&drvdata->csdev->refcnt))
-> +		return -EBUSY;
->  
->  	smb_update_data_size(drvdata);
-> -
->  	drvdata->reading = true;
-> -out:
-> -	spin_unlock(&drvdata->spinlock);
->  
-> -	return ret;
-> +	return 0;
->  }
->  
->  static ssize_t smb_read(struct file *file, char __user *data, size_t len,
-> @@ -160,9 +152,8 @@ static int smb_release(struct inode *inode, struct file *file)
->  	struct smb_drv_data *drvdata = container_of(file->private_data,
->  					struct smb_drv_data, miscdev);
->  
-> -	spin_lock(&drvdata->spinlock);
-> +	guard(spinlock)(&drvdata->spinlock);
->  	drvdata->reading = false;
-> -	spin_unlock(&drvdata->spinlock);
->  
->  	return 0;
->  }
-> @@ -255,19 +246,15 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
->  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
->  	int ret = 0;
->  
-> -	spin_lock(&drvdata->spinlock);
-> +	guard(spinlock)(&drvdata->spinlock);
->  
->  	/* Do nothing, the trace data is reading by other interface now */
-> -	if (drvdata->reading) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (drvdata->reading)
-> +		return -EBUSY;
->  
->  	/* Do nothing, the SMB is already enabled as other mode */
-> -	if (drvdata->mode != CS_MODE_DISABLED && drvdata->mode != mode) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (drvdata->mode != CS_MODE_DISABLED && drvdata->mode != mode)
-> +		return -EBUSY;
->  
->  	switch (mode) {
->  	case CS_MODE_SYSFS:
-> @@ -281,13 +268,10 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
->  	}
->  
->  	if (ret)
-> -		goto out;
-> +		return ret;
->  
->  	atomic_inc(&csdev->refcnt);
-> -
->  	dev_dbg(&csdev->dev, "Ultrasoc SMB enabled\n");
-> -out:
-> -	spin_unlock(&drvdata->spinlock);
->  
->  	return ret;
->  }
-> @@ -295,19 +279,14 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
->  static int smb_disable(struct coresight_device *csdev)
->  {
->  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
-> -	int ret = 0;
->  
-> -	spin_lock(&drvdata->spinlock);
-> +	guard(spinlock)(&drvdata->spinlock);
->  
-> -	if (drvdata->reading) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (drvdata->reading)
-> +		return -EBUSY;
->  
-> -	if (atomic_dec_return(&csdev->refcnt)) {
-> -		ret = -EBUSY;
-> -		goto out;
-> -	}
-> +	if (atomic_dec_return(&csdev->refcnt))
-> +		return -EBUSY;
->  
->  	/* Complain if we (somehow) got out of sync */
->  	WARN_ON_ONCE(drvdata->mode == CS_MODE_DISABLED);
-> @@ -317,12 +296,9 @@ static int smb_disable(struct coresight_device *csdev)
->  	/* Dissociate from the target process. */
->  	drvdata->pid = -1;
->  	drvdata->mode = CS_MODE_DISABLED;
-> -
->  	dev_dbg(&csdev->dev, "Ultrasoc SMB disabled\n");
-> -out:
-> -	spin_unlock(&drvdata->spinlock);
->  
-> -	return ret;
-> +	return 0;
->  }
->  
->  static void *smb_alloc_buffer(struct coresight_device *csdev,
-> @@ -395,17 +371,17 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
->  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
->  	struct smb_data_buffer *sdb = &drvdata->sdb;
->  	struct cs_buffers *buf = sink_config;
-> -	unsigned long data_size = 0;
-> +	unsigned long data_size;
->  	bool lost = false;
->  
->  	if (!buf)
->  		return 0;
->  
-> -	spin_lock(&drvdata->spinlock);
-> +	guard(spinlock)(&drvdata->spinlock);
->  
->  	/* Don't do anything if another tracer is using this sink. */
->  	if (atomic_read(&csdev->refcnt) != 1)
-> -		goto out;
-> +		return 0;
->  
->  	smb_disable_hw(drvdata);
->  	smb_update_data_size(drvdata);
-> @@ -424,8 +400,6 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
->  	smb_sync_perf_buffer(drvdata, buf, handle->head);
->  	if (!buf->snapshot && lost)
->  		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
-> -out:
-> -	spin_unlock(&drvdata->spinlock);
->  
->  	return data_size;
->  }
+which is a bit odd. It looks like the old code used to use a regular
+out-of-line memcpy (and that machine doesn't have FSRM), and the new
+code for some reason does it inline.
+
+I wonder if gcc somehow decided to inline "memcpy()" in
+memcpy_from_iter() as a "rep movsb" because of other inlining changes?
+
+[ Goes out to look ]
+
+Yup, I think that's exactly what happened. Gcc seems to decide that it
+might be a small memcpy(), and seems to do at least part of it
+directly.
+
+So I *think* this all is mainly an artifact of gcc having changed code
+generation due to the code re-organization.
+
+         Linus
