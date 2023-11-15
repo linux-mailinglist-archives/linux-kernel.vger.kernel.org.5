@@ -2,125 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 884577EC831
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:12:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DD367EC834
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:12:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232103AbjKOQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:12:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
+        id S232391AbjKOQMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:12:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230402AbjKOQMO (ORCPT
+        with ESMTP id S232405AbjKOQMj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:12:14 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26347AD;
-        Wed, 15 Nov 2023 08:12:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=3agsLpsSM2d58FHz7b5hDOIxhzFLmj2e63YxikopHhQ=; b=zH/neAjbIjs/dCVDLjp/tyn0Hm
-        D46MRYuvFBN3YS+CfmEu+uK3mDflXyPxOyXoNQW3mjIacteJRwkCOCyLYic8chi3Qi9GLwmvjJiyi
-        PsgLEgOeTJuTy17cCqCzDgZ77KbhmsCTO7yA3RbjXrN9HwBLTNcQIRNFDBpJSgceQu4U=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r3IUl-000GHP-EA; Wed, 15 Nov 2023 17:12:03 +0100
-Date:   Wed, 15 Nov 2023 17:12:03 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Romain Gantois <romain.gantois@bootlin.com>
-Cc:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        thomas.petazzoni@bootlin.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH net-next v3 6/8] net: phy: add calibration callbacks to
- phy_driver
-Message-ID: <8bd7abff-9b6d-42ac-b98f-fbfe5f0d7c00@lunn.ch>
-References: <20231114105600.1012056-1-romain.gantois@bootlin.com>
- <20231114105600.1012056-7-romain.gantois@bootlin.com>
- <a4dd8cb4-f662-4dc7-8311-712c64de6f21@lunn.ch>
- <2d4c7054-1aa8-1531-ffa3-7be342ed9a07@bootlin.com>
+        Wed, 15 Nov 2023 11:12:39 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA2F7FA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:12:35 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9df8d0c2505so209756666b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:12:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700064754; x=1700669554; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=1ab4jnXj8Bjx21zU5WbouPNL4gj/h303kBNvkdQgDmY=;
+        b=B2OkhE7x05d4w3oQTaBkB6Io4Ug4UjGVP9vrDzCyeOtkX22hK3oo0Wb1PE1NUihxxo
+         4CDEkzae3AL2iJ31u2arE6FuhIui1xKbXOuWOMvuLcWLy28X4wTLvOutjRnooR/Vx0z8
+         JiK+UxgfvX6gGgcp9y6taxYXzgG9i8tpqq+YQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700064754; x=1700669554;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1ab4jnXj8Bjx21zU5WbouPNL4gj/h303kBNvkdQgDmY=;
+        b=q9u2C9YHQHnbbKGd1hNWnvTgen1HB1a1lHZH+++YL4ox6Yf6Sp4iU5QRVmld7lh4tp
+         aAX1Jzsddat1r5Su9Zo/7j2tfcADb76o39g2SMCVVzInbte4buSuqk0s4VjLbWHsY+Ef
+         f/f7j76koQTasayON7+rBeaWFWN0lt3+7fMtb+uO1+/noI0RmqbMu/kVyAQUIirL8MRF
+         4T1cik8nnUcwy7fEdE2j760H8qZovpUbbwdxAsRqDmR1dIWE237/twD5tc8tL8xvDNOS
+         QI6fo9XKW5/cWIYvOM7RxrrFIRb9KTw3C/tifMhSrZXlb3GHKL/zTYbLTWAkMTEVCSXv
+         M1VA==
+X-Gm-Message-State: AOJu0YysbM/hWW+xGzTZ08ahBpe/TnbU/jaJvvh9Hta/JMsvHw4FjyPh
+        81Xoe1fwVENaPuyof8FvY7dJI2leKUrl2VRr8t1EZvWi
+X-Google-Smtp-Source: AGHT+IEvZ+kvz21C3hlbVUAH8qlLc2TIFONXp5yeQ5Mj88bUzaU+532IKS+aIhpUzQRXrEfa5w377Q==
+X-Received: by 2002:a17:906:730f:b0:9b2:b15b:383d with SMTP id di15-20020a170906730f00b009b2b15b383dmr6766559ejc.11.1700064754378;
+        Wed, 15 Nov 2023 08:12:34 -0800 (PST)
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com. [209.85.208.41])
+        by smtp.gmail.com with ESMTPSA id i11-20020a170906264b00b0099bd5d28dc4sm7302909ejc.195.2023.11.15.08.12.34
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 08:12:34 -0800 (PST)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-540c54944c4so2072910a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:12:34 -0800 (PST)
+X-Received: by 2002:aa7:da07:0:b0:542:ff1b:6c7a with SMTP id
+ r7-20020aa7da07000000b00542ff1b6c7amr5958727eds.9.1700064753769; Wed, 15 Nov
+ 2023 08:12:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2d4c7054-1aa8-1531-ffa3-7be342ed9a07@bootlin.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231115154946.3933808-1-dhowells@redhat.com> <20231115154946.3933808-6-dhowells@redhat.com>
+In-Reply-To: <20231115154946.3933808-6-dhowells@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 11:12:17 -0500
+X-Gmail-Original-Message-ID: <CAHk-=wgHciqm3iaq6hhtP64+Zsca6Y6z5UfzHzjfhUhA=jP0zA@mail.gmail.com>
+Message-ID: <CAHk-=wgHciqm3iaq6hhtP64+Zsca6Y6z5UfzHzjfhUhA=jP0zA@mail.gmail.com>
+Subject: Re: [PATCH v3 05/10] iov_iter: Create a function to prepare userspace
+ VM for UBUF/IOVEC tests
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        WANG Xuerui <kernel@xen0n.name>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Sven Schnelle <svens@linux.ibm.com>, loongarch@lists.linux.dev,
+        linux-s390@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 04:31:07PM +0100, Romain Gantois wrote:
-> On Tue, 14 Nov 2023, Andrew Lunn wrote:
-> 
-> > > +static inline
-> > > +int phy_start_calibration(struct phy_device *phydev)
-> > > +{
-> > > +	if (!(phydev->drv &&
-> > > +	      phydev->drv->calibration_start &&
-> > > +	      phydev->drv->calibration_stop))
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > > +	return phydev->drv->calibration_start(phydev);
-> > > +}
-> > > +
-> > > +static inline
-> > > +int phy_stop_calibration(struct phy_device *phydev)
-> > > +{
-> > > +	if (!(phydev->drv &&
-> > > +	      phydev->drv->calibration_stop))
-> > > +		return -EOPNOTSUPP;
-> > > +
-> > > +	return phydev->drv->calibration_stop(phydev);
-> > > +}
-> > > +
-> > 
-> > What is the locking model?
-> > 
-> >      Andrew
-> > 
-> This driver currently uses an atomic flag to make sure that the calibration 
-> doesn't run twice. It doesn't acquire any locks before calling 
-> phy_start_calibration(), which is a mistake.
-> 
-> I think a good locking model for this would be similar to the one used for 
-> phy_cable_test. The phy_start_calibration() and phy_stop_calibration() wrappers 
-> would acquire a lock on the PHY device and then test phydev->state, to check for 
-> an ongoing calibration. A new enum member such as PHY_CALIB could be defined for 
-> this purpose. The lock would be released by the phylib wrapper once the 
-> phy_driver callback returns.
-> 
-> The problem with this is that one calibration run can access multiple 
-> phy_device instances at the same time, e.g. if a switch is linked to a multiport 
-> PHY via a PSGMII link.
-> 
-> So acquiring a lock on a single phy device isn't enough. Ideally, these 
-> calls could somehow acquire one lock on all the hardware resources of a 
-> multiport PHY simultaneously. From what I've seen, there is no standard kernel 
-> interface that allows MAC drivers to know about link-sharing between phy 
-> devices. I'll have to do more research on this but if you know of an existing 
-> interface that I can use for this, please tell me.
+On Wed, 15 Nov 2023 at 10:50, David Howells <dhowells@redhat.com> wrote:
+>
+> This requires access to otherwise unexported core symbols: mm_alloc(),
+> vm_area_alloc(), insert_vm_struct() arch_pick_mmap_layout() and
+> anon_inode_getfile_secure(), which I've exported _GPL.
+>
+> [?] Would it be better if this were done in core and not in a module?
 
-Lets get the switch parts merged first, then we can think about this
-calibration problem. I need a better understanding of the requirements
-before i can suggest something.
+I'm not going to take this, even if it were to be sent to me through Christian.
 
-       Andrew
+I think the exports really show that this shouldn't be done. And yes,
+doing it in core would avoid the exports, but would be even worse.
 
+Those functions exist for setting up user space. You should be doing
+this in user space.
+
+I'm getting really fed up with the problems that ther KUnit tests
+cause. We have a long history of self-inflicted pain due to "unit
+testing", where it has caused stupid problems like just overflowing
+the kernel stack etc.
+
+This needs to stop. And this is where I'm putting my foot down. No
+more KUnit tests that make up interfaces - or use interfaces - that
+they have absolutely no place using.
+
+From a quick look, what you were doing was checking that the patterns
+you set up in user space came through ok. Dammit, what's wrong with
+just using read()/write() on a pipe, or splice, or whatever. It will
+test exactly the same iov_iter thing.
+
+Kernel code should do things that can *only* be done in the kernel.
+This is not it.
+
+              Linus
