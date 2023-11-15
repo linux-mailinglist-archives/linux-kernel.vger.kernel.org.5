@@ -2,64 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C4B7EC6AE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:07:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00BFF7EC6B2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344360AbjKOPH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:07:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32882 "EHLO
+        id S1344353AbjKOPH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:07:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344352AbjKOPH1 (ORCPT
+        with ESMTP id S1344066AbjKOPH5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:07:27 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65605125;
-        Wed, 15 Nov 2023 07:07:22 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 12BBC24000C;
-        Wed, 15 Nov 2023 15:07:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700060840;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9dy5Pt08X+zZERsZIfegEmYR9OttXODBuhXhRa0MCI8=;
-        b=jcZbQDDDhYGFHk72VXnxdjYiNDUyrCQ/WJb2qldiqupZ+jnENFi6d7pXZXPO7zaOXqZN3n
-        Z4UOhaIhkVC0nXMh7vH5oTL0/A06nc1Txuz7OmqMXjFECAuutFDIXTdSMJnAfYB8UnmMZe
-        ttvMHMAJWf0cvaeB8X0L6KngKx0ZRIaZk9xXtWdkDQfUBJhitM4g2/Jbs8COQHx07UPjoo
-        xfezyffYVPzr6Mtk1f7i/r+PEdAxk8EAWmkanywsqEyVwyx3fvhrbNXW76JSBg6B4Z+dM6
-        nC9XZV4NrBVjciM+ew12qhG8KmvR/dsxMEt7PvLivSOyDLVDu/zKCnN3L15jSA==
-Date:   Wed, 15 Nov 2023 16:07:32 +0100 (CET)
-From:   Romain Gantois <romain.gantois@bootlin.com>
-To:     Wojciech Drewek <wojciech.drewek@intel.com>
-cc:     Romain Gantois <romain.gantois@bootlin.com>, davem@davemloft.net,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        thomas.petazzoni@bootlin.com, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH net-next v3 3/8] net: qualcomm: ipqess: introduce the
- Qualcomm IPQESS driver
-In-Reply-To: <59e1edc3-2ebc-40a9-a05b-cab02e8b0c10@intel.com>
-Message-ID: <d52d766f-11a5-494a-63cc-cbffd2945069@bootlin.com>
-References: <20231114105600.1012056-1-romain.gantois@bootlin.com> <20231114105600.1012056-4-romain.gantois@bootlin.com> <59e1edc3-2ebc-40a9-a05b-cab02e8b0c10@intel.com>
+        Wed, 15 Nov 2023 10:07:57 -0500
+Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C6E8101
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:07:54 -0800 (PST)
+Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5afbdbf3a19so78598687b3.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:07:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700060873; x=1700665673; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=dAkdFR38VbZr+retwYJvC4pXK2CLkuRAU6TUrfj2Y/Q=;
+        b=iD7dcYUa4VoSX4q9U3C7wFBJ8aDP6XbFtaho/fSFilRoBmPmqMUv0xSD6ZZ2ALQwd1
+         vsDu6RAX3/Y4x3rqrUVnkymENzRx9WW1tCjl6YoiC1gH/7yBpuJoPtrFy/hwto8WYBq+
+         FymlqAg2ThYH+3bYP+WGHeOEXN4odM0QSNIUVBV95BQ7wIjbD84k8tlFdDpLq8R1xfFm
+         VeEWsVaKqMKLYAmFmg4z9ACV4jQUgo5DwriJ16vXA09q+q2EZVrdzGCLdIFL+YmgyqvJ
+         e9tZ/n35dPy0fnipGS4pQr2PuBRwugp4U+9T0zF4+pHyKJA0LyxgRqFTQzvrjnygKPiH
+         5wEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700060873; x=1700665673;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=dAkdFR38VbZr+retwYJvC4pXK2CLkuRAU6TUrfj2Y/Q=;
+        b=MDWYW5QZI7pT+mNwOeP1rPXSWP/qnt65yb1mJLeY5EIbCP1xilEtwYIMa2S1dZ7+GL
+         PRnoMJnuVZJoTHrIHNkdjXTtbdMOXYJwV3QCMvaglr5NPdHq9cwYCkoSQdaYSPRbV2VL
+         sz1bM5wYtvR+mT2DMRB2LHqZMFPpcLLBueHKDTN6tYBQ9v3Zt6KTh7eMA13vdzy3Tbdj
+         CaOs+sDYTI+TJVJeWrCErwG1fS1QVeApAuZ51TalS2ox0mA5yt5bMl9qpe9i3L/b/zOi
+         QF9cHjQrdLSbgje6aQw98UXVMNL/4N0TTzyPMauVjcSr71pjWNCc/RyA87bh/y7bT5kW
+         MEdg==
+X-Gm-Message-State: AOJu0Yz8j9lgyuPXAi3KdGxlUpKVVoRg4DHJyl5nZUE+xRyp6dPQusIA
+        bUL+qYNxwghEEqzgDzcBa95ioG+It9R6YhqJOLJjfg==
+X-Google-Smtp-Source: AGHT+IFWMAAPr69IJZOrpc5SNuEM+oacpGbG5vuVdTWdzsr6zLBxZ1vBt7gGnTY8n6wgmwhM4whO4LzzuHfj/jYhdaU=
+X-Received: by 2002:a0d:cb0f:0:b0:5a7:dbd1:4889 with SMTP id
+ n15-20020a0dcb0f000000b005a7dbd14889mr15802748ywd.2.1700060873202; Wed, 15
+ Nov 2023 07:07:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
+References: <20231115141928.429688-1-dipamt1729@gmail.com>
+In-Reply-To: <20231115141928.429688-1-dipamt1729@gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 15 Nov 2023 17:07:41 +0200
+Message-ID: <CAA8EJprqnUGQxmj4Y=qttVuj0zJxdD9B6neHa6sPseLLETpk5A@mail.gmail.com>
+Subject: Re: [PATCH v2] Remove custom dumb_map_offset implementation in msm driver
+To:     Dipam Turkar <dipamt1729@gmail.com>
+Cc:     robdclark@gmail.com, quic_abhinavk@quicinc.com, sean@poorly.run,
+        marijn.suijten@somainline.org, airlied@gmail.com, daniel@ffwll.ch,
+        linux-arm-msm@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,65 +69,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023, Wojciech Drewek wrote:
-...
-> > +static int ipqess_port_vlan_rx_add_vid(struct net_device *dev, __be16 proto,
-> > +				       u16 vid)
-> > +{
-> > +	struct ipqess_port *port = netdev_priv(dev);
-> > +	struct switchdev_obj_port_vlan vlan = {
-> > +		.obj.id = SWITCHDEV_OBJ_ID_PORT_VLAN,
-> > +		.vid = vid,
-> > +		/* This API only allows programming tagged, non-PVID VIDs */
-> > +		.flags = 0,
-> > +	};
-> > +	struct netlink_ext_ack extack = {0};
-> > +	int ret;
-> > +
-> > +	/* User port... */
-> > +	ret = ipqess_port_do_vlan_add(port->sw->priv, port->index, &vlan, &extack);
-> > +	if (ret) {
-> > +		if (extack._msg)
-> > +			netdev_err(dev, "%s\n", extack._msg);
-> > +		return ret;
-> > +	}
-> > +
-> > +	/* And CPU port... */
-> > +	ret = ipqess_port_do_vlan_add(port->sw->priv, 0, &vlan, &extack);
-> > +	if (ret) {
-> 
-> Should we delete vlan from user port if this fails?
-I'll have to look into how and when this API is called in more detail but I 
-think this would indeed make sense.
+On Wed, 15 Nov 2023 at 16:30, Dipam Turkar <dipamt1729@gmail.com> wrote:
+>
+> Make msm use drm_gem_create_map_offset() instead of its custom
+> implementation for associating GEM object with a fake offset. Since,
+> we already have this generic implementation, we don't need the custom
+> implementation and it is better to standardize the code for GEM based
+> drivers. This also removes the outdated locking leftovers.
 
-> > +
-> > +	/* Flush the FDB table */
-> > +	qca8k_fdb_flush(priv);
-> > +
-> > +	if (ret < 0)
-> > +		goto devlink_free;
-> > +
-> > +	/* set Port0 status */
-> > +	reg  = QCA8K_PORT_STATUS_LINK_AUTO;
-> > +	reg |= QCA8K_PORT_STATUS_DUPLEX;
-> > +	reg |= QCA8K_PORT_STATUS_SPEED_1000;
-> > +	reg |= QCA8K_PORT_STATUS_RXFLOW;
-> > +	reg |= QCA8K_PORT_STATUS_TXFLOW;
-> > +	reg |= QCA8K_PORT_STATUS_TXMAC | QCA8K_PORT_STATUS_RXMAC;
-> > +	qca8k_write(priv, QCA8K_REG_PORT_STATUS(0), reg);
-> > +	sw->port0_enabled = true;
-> > +
-> > +	return 0;
-> > +
-> > +devlink_free:
-> 
-> Why is it called devlink_free, I don't see any connection to devlink.
-I think this is leftover from a previous version of this function, where it 
-interacted with devlink. I'll rename it to error.
+Why are they outdated?
 
-Best,
+>
+> Signed-off-by: Dipam Turkar <dipamt1729@gmail.com>
+> ---
+>  drivers/gpu/drm/msm/msm_drv.c |  2 +-
+>  drivers/gpu/drm/msm/msm_gem.c | 21 ---------------------
+>  drivers/gpu/drm/msm/msm_gem.h |  2 --
+>  3 files changed, 1 insertion(+), 24 deletions(-)
+>
+> Changes in v2:
+> Modify commit message to include the absence of internal locking leftovers
+> around allocating a fake offset in msm_gem_mmap_offset() in the generic
+> implementation drm_gem_create_map_offset().
+>
+> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
+> index a428951ee539..86a15992c717 100644
+> --- a/drivers/gpu/drm/msm/msm_drv.c
+> +++ b/drivers/gpu/drm/msm/msm_drv.c
+> @@ -1085,7 +1085,7 @@ static const struct drm_driver msm_driver = {
+>         .open               = msm_open,
+>         .postclose          = msm_postclose,
+>         .dumb_create        = msm_gem_dumb_create,
+> -       .dumb_map_offset    = msm_gem_dumb_map_offset,
+> +       .dumb_map_offset    = drm_gem_dumb_map_offset,
+>         .gem_prime_import_sg_table = msm_gem_prime_import_sg_table,
+>  #ifdef CONFIG_DEBUG_FS
+>         .debugfs_init       = msm_debugfs_init,
+> diff --git a/drivers/gpu/drm/msm/msm_gem.c b/drivers/gpu/drm/msm/msm_gem.c
+> index db1e748daa75..489694ef79cb 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.c
+> +++ b/drivers/gpu/drm/msm/msm_gem.c
+> @@ -671,27 +671,6 @@ int msm_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
+>                         MSM_BO_SCANOUT | MSM_BO_WC, &args->handle, "dumb");
+>  }
+>
+> -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+> -               uint32_t handle, uint64_t *offset)
+> -{
+> -       struct drm_gem_object *obj;
+> -       int ret = 0;
+> -
+> -       /* GEM does all our handle to object mapping */
+> -       obj = drm_gem_object_lookup(file, handle);
+> -       if (obj == NULL) {
+> -               ret = -ENOENT;
+> -               goto fail;
+> -       }
+> -
+> -       *offset = msm_gem_mmap_offset(obj);
+> -
+> -       drm_gem_object_put(obj);
+> -
+> -fail:
+> -       return ret;
+> -}
+> -
+>  static void *get_vaddr(struct drm_gem_object *obj, unsigned madv)
+>  {
+>         struct msm_gem_object *msm_obj = to_msm_bo(obj);
+> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+> index 8ddef5443140..dc74a0ef865d 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.h
+> +++ b/drivers/gpu/drm/msm/msm_gem.h
+> @@ -139,8 +139,6 @@ struct page **msm_gem_pin_pages(struct drm_gem_object *obj);
+>  void msm_gem_unpin_pages(struct drm_gem_object *obj);
+>  int msm_gem_dumb_create(struct drm_file *file, struct drm_device *dev,
+>                 struct drm_mode_create_dumb *args);
+> -int msm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
+> -               uint32_t handle, uint64_t *offset);
+>  void *msm_gem_get_vaddr_locked(struct drm_gem_object *obj);
+>  void *msm_gem_get_vaddr(struct drm_gem_object *obj);
+>  void *msm_gem_get_vaddr_active(struct drm_gem_object *obj);
+> --
+> 2.34.1
+>
+
 
 -- 
-Romain Gantois, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+With best wishes
+Dmitry
