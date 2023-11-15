@@ -2,51 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 958697ED751
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43F2E7ED754
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:34:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343676AbjKOWeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:34:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
+        id S1344326AbjKOWeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:34:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjKOWd6 (ORCPT
+        with ESMTP id S235621AbjKOWeP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:33:58 -0500
+        Wed, 15 Nov 2023 17:34:15 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C6D9B;
-        Wed, 15 Nov 2023 14:33:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F09C433C8;
-        Wed, 15 Nov 2023 22:33:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700087635;
-        bh=RTr4fWU6Tt3Im0fO1nO9h6Mw8Oa66xoA0Jf/b37HYR8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ExO911IR4Z5lD9yd3ebsGMecX8zutOq/Mwr3DrGoPFnzDBaUbbEg2KBq0K/dM6VFc
-         TLmt4fYkfJrZCFbsOnAbWaJfqXqmHa8P3t+q5hlfSNIxe3ZIHI9m3oKPAh0QLYaA4m
-         SL8FICW9IXNan/07i9daSsZEqeddgQpBJpee11Doisdf+TKGfJ2jPRVjk1p4m1VQKh
-         abxDkZFemfyLCOpQ2pJeXx5/yCjc3QAzpgsa+Kc671jWC/+R3MjmvfYmgNDlVP5Mgd
-         RXA3V2f2xsov3bkgvb8/gcttWejNHLUqby46aflNfqvQwx9yUKzAXlzwaBiX1cpFGX
-         egszGAV1Y7pyw==
-From:   SeongJae Park <sj@kernel.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org, damon@lists.linux.dev,
-        SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
-Date:   Wed, 15 Nov 2023 22:33:52 +0000
-Message-Id: <20231115223352.46459-1-sj@kernel.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
-References: 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43E01197
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:34:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C64AC433C7;
+        Wed, 15 Nov 2023 22:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1700087651;
+        bh=RPCr+mo1zODqFJlwyYvp8P0sgcWngl4DsJin7qkkwfA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ZxcdXi/89TPqDqOX33gxismO3xXIZLPF0QaLfUYnx5uOf66VdC0NzXlyZMYC9DDQe
+         7BVIzb5Dm5t3lfDNA8Yxn47isviP3R0geoxMcVbswDuOYO6kSRUrrKaLtYAGvd2Ftn
+         BZ3T6S/9qBGkg3WKY9zwy8xN+G4xCqwgGzqMOB4Y=
+Date:   Wed, 15 Nov 2023 14:34:10 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Paul =?ISO-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@tum.de>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kasan: default to inline instrumentation
+Message-Id: <20231115143410.e2c1ea567221d591b58ada1f@linux-foundation.org>
+In-Reply-To: <918c3ff64f352427731104c5275786c815b860d9.camel@perches.com>
+References: <20231109155101.186028-1-paul.heidekrueger@tum.de>
+        <CA+fCnZcMY_z6nOVBR73cgB6P9Kd3VHn8Xwi8m9W4dV-Y4UR-Yw@mail.gmail.com>
+        <CANpmjNNQP5A0Yzv-pSCZyJ3cqEXGRc3x7uzFOxdsVREkHmRjWQ@mail.gmail.com>
+        <20231114151128.929a688ad48cd06781beb6e5@linux-foundation.org>
+        <918c3ff64f352427731104c5275786c815b860d9.camel@perches.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -55,66 +57,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Tue, 14 Nov 2023 21:38:50 -0800 Joe Perches <joe@perches.com> wrote:
 
-On Wed, 15 Nov 2023 14:09:05 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-
-> This is the start of the stable review cycle for the 6.6.2 release.
-> There are 603 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+> > +LIBRARY CODE
+> > +M:	Andrew Morton <akpm@linux-foundation.org>
+> > +L:	linux-kernel@vger.kernel.org
+> > +S:	Supported
 > 
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
+> Dunno.
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
+> There are a lot of already specifically maintained or
+> supported files in lib/
 
-This rc kernel passes DAMON functionality test[1] on my test machine.
-Attaching the test results summary below.  Please note that I retrieved the
-kernel from linux-stable-rc tree[2].
+That's OK.  I'll get printed out along with the existing list of
+maintainers, if any.
 
-Tested-by: SeongJae Park <sj@kernel.org>
+> Maybe be a reviewer?
 
-[1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] df34d612fd4e ("Linux 6.6.2-rc1")
+Would that alter the get_maintainer output in any way?
 
-Thanks,
-SJ
+I suppose I could list each file individually, but I'm not sure what
+that would gain.
 
-[...]
-
----
-
-ok 1 selftests: damon: debugfs_attrs.sh
-ok 2 selftests: damon: debugfs_schemes.sh
-ok 3 selftests: damon: debugfs_target_ids.sh
-ok 4 selftests: damon: debugfs_empty_targets.sh
-ok 5 selftests: damon: debugfs_huge_count_read_write.sh
-ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
-ok 7 selftests: damon: debugfs_rm_non_contexts.sh
-ok 8 selftests: damon: sysfs.sh
-ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
-ok 10 selftests: damon: reclaim.sh
-ok 11 selftests: damon: lru_sort.sh
-ok 1 selftests: damon-tests: kunit.sh
-ok 2 selftests: damon-tests: huge_count_read_write.sh
-ok 3 selftests: damon-tests: buffer_overflow.sh
-ok 4 selftests: damon-tests: rm_contexts.sh
-ok 5 selftests: damon-tests: record_null_deref.sh
-ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
-ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
-ok 8 selftests: damon-tests: damo_tests.sh
-ok 9 selftests: damon-tests: masim-record.sh
-ok 10 selftests: damon-tests: build_i386.sh
-ok 11 selftests: damon-tests: build_arm64.sh
-ok 12 selftests: damon-tests: build_i386_idle_flag.sh
-ok 13 selftests: damon-tests: build_i386_highpte.sh
-ok 14 selftests: damon-tests: build_nomemcg.sh
- [33m
- [92mPASS [39m
-_remote_run_corr.sh SUCCESS
-
+btw, I see MAINTAINERS lists non-existent file[s] (lib/fw_table.c). 
+Maybe someone has a script to check...
