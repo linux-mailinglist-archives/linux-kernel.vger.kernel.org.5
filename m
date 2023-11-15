@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 20FE77EC1CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CE37EC1CE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234947AbjKOMBt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:01:49 -0500
+        id S1343673AbjKOMBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:01:43 -0500
 Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49514 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343745AbjKOMBb (ORCPT
+        with ESMTP id S1343727AbjKOMB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:01:31 -0500
+        Wed, 15 Nov 2023 07:01:29 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 769D718F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:01:27 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB20F11D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:01:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049687; x=1731585687;
+  t=1700049685; x=1731585685;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=baddqEIghmkFajP6rpIfXbNavqQAwsBb4c0/kd75gPA=;
-  b=nB5qB0mHHuZk7APNFGFW6gTaBTNEQNqj6jcN1+ybMk/kN0f/bdh++ZT0
-   8J1Ku0PM7y9xb4yIIB629Frb2rSVeJ4v4VGsa121St9hBc07uIdnBAVj7
-   eiWe7FQuAOQweaSTSQIeS/zNIxe/W4uNHMkQy+nYQ9ypiZeXD0UmNiFEb
-   2nC23xCJPwA8jzQFUlusanbxxyP8F0CjWe2WrZgBU3bcu6lLMJtsnQb1E
-   GIiFOP/S6ntPvHWMRPrnzH2S2QUzYM8/shDKjgDiz/gDiHtYknjik4ixt
-   LxfWS5bI7qaqVH7MyqtB5g7NRMGZuq4zUSR+KTBGYXthoRyGYdSVLCOyx
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="394780435"
+  bh=EufwntLcxHa17lX7vkyRAITUbajJMYhr8ams+J+dhGY=;
+  b=lMzG4Zbm3y94ets4a4RAtnwoU66X4f/3PsjBqJyZjyn+twVODAXEfcmj
+   m7WvRu9fJUiEE1rF1t8p+3CQaq4p6jHRcyBDsdRgcpEAKyRXinr+aCwFu
+   xid6A9xXfrnthJ31qhwmlUIMdgN32TTZvQRl7Nin2RbGBMq9eTCmyDzM3
+   VAWno9HTLTAE/r48vOg5xrEiwafpYb+9OkXsJToDi7HDwwaLcQQMJrIZv
+   6zam/XHJXUDqvBbIswX0nGTHYeyFqTm12xrMNEH9gNOwvA12ATGVYpoP/
+   xAf/zucWeLy1K48y78j3fGv6oBsqg8kn6eRp9VPKqDex8cB8EZcPZ6zIW
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="394780425"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="394780435"
+   d="scan'208";a="394780425"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:25 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="13160244"
+   d="scan'208";a="13160242"
 Received: from mituomis-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.44.135])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:19 -0800
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:20 -0800
 Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 657C910A151; Wed, 15 Nov 2023 15:01:12 +0300 (+03)
+        id 6F3B710A22F; Wed, 15 Nov 2023 15:01:12 +0300 (+03)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -58,13 +58,10 @@ Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
         kexec@lists.infradead.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>
-Subject: [PATCHv3 05/14] x86/kvm: Do not try to disable kvmclock if it was not enabled
-Date:   Wed, 15 Nov 2023 15:00:35 +0300
-Message-ID: <20231115120044.8034-6-kirill.shutemov@linux.intel.com>
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv3 06/14] x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+Date:   Wed, 15 Nov 2023 15:00:36 +0300
+Message-ID: <20231115120044.8034-7-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
 References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
@@ -80,64 +77,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm_guest_cpu_offline() tries to disable kvmclock regardless if it is
-present in the VM. It leads to write to a MSR that doesn't exist on some
-configurations, namely in TDX guest:
+TDX guests are not allowed to clear CR4.MCE. Attempt to clear it leads
+to #VE.
 
-	unchecked MSR access error: WRMSR to 0x12 (tried to write 0x0000000000000000)
-	at rIP: 0xffffffff8110687c (kvmclock_disable+0x1c/0x30)
+Use alternatives to keep the flag during kexec for TDX guests.
 
-kvmclock enabling is gated by CLOCKSOURCE and CLOCKSOURCE2 KVM paravirt
-features.
-
-Do not disable kvmclock if it was not enabled.
+The change doesn't affect non-TDX-guest environments.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Fixes: c02027b5742b ("x86/kvm: Disable kvmclock on all CPUs on shutdown")
-Reviewed-by: Sean Christopherson <seanjc@google.com>
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc: Paolo Bonzini <pbonzini@redhat.com>
-Cc: Wanpeng Li <wanpengli@tencent.com>
+Reviewed-by: Kai Huang <kai.huang@intel.com>
 ---
- arch/x86/kernel/kvmclock.c | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
+ arch/x86/kernel/relocate_kernel_64.S | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-diff --git a/arch/x86/kernel/kvmclock.c b/arch/x86/kernel/kvmclock.c
-index fb8f52149be9..f2fff625576d 100644
---- a/arch/x86/kernel/kvmclock.c
-+++ b/arch/x86/kernel/kvmclock.c
-@@ -24,8 +24,8 @@
- 
- static int kvmclock __initdata = 1;
- static int kvmclock_vsyscall __initdata = 1;
--static int msr_kvm_system_time __ro_after_init = MSR_KVM_SYSTEM_TIME;
--static int msr_kvm_wall_clock __ro_after_init = MSR_KVM_WALL_CLOCK;
-+static int msr_kvm_system_time __ro_after_init;
-+static int msr_kvm_wall_clock __ro_after_init;
- static u64 kvm_sched_clock_offset __ro_after_init;
- 
- static int __init parse_no_kvmclock(char *arg)
-@@ -195,7 +195,8 @@ static void kvm_setup_secondary_clock(void)
- 
- void kvmclock_disable(void)
- {
--	native_write_msr(msr_kvm_system_time, 0, 0);
-+	if (msr_kvm_system_time)
-+		native_write_msr(msr_kvm_system_time, 0, 0);
- }
- 
- static void __init kvmclock_init_mem(void)
-@@ -294,7 +295,10 @@ void __init kvmclock_init(void)
- 	if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE2)) {
- 		msr_kvm_system_time = MSR_KVM_SYSTEM_TIME_NEW;
- 		msr_kvm_wall_clock = MSR_KVM_WALL_CLOCK_NEW;
--	} else if (!kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE)) {
-+	} else if (kvm_para_has_feature(KVM_FEATURE_CLOCKSOURCE)) {
-+		msr_kvm_system_time = MSR_KVM_SYSTEM_TIME;
-+		msr_kvm_wall_clock = MSR_KVM_WALL_CLOCK;
-+	} else {
- 		return;
- 	}
+diff --git a/arch/x86/kernel/relocate_kernel_64.S b/arch/x86/kernel/relocate_kernel_64.S
+index 56cab1bb25f5..bea89814b48e 100644
+--- a/arch/x86/kernel/relocate_kernel_64.S
++++ b/arch/x86/kernel/relocate_kernel_64.S
+@@ -145,11 +145,16 @@ SYM_CODE_START_LOCAL_NOALIGN(identity_mapped)
+ 	 * Set cr4 to a known state:
+ 	 *  - physical address extension enabled
+ 	 *  - 5-level paging, if it was enabled before
++	 *  - Machine check exception on TDX guest. Clearing MCE is not allowed
++	 *    in TDX guests.
+ 	 */
+ 	movl	$X86_CR4_PAE, %eax
+ 	testq	$X86_CR4_LA57, %r13
+ 	jz	1f
+ 	orl	$X86_CR4_LA57, %eax
++1:
++	ALTERNATIVE "jmp 1f", "", X86_FEATURE_TDX_GUEST
++	orl	$X86_CR4_MCE, %eax
+ 1:
+ 	movq	%rax, %cr4
  
 -- 
 2.41.0
