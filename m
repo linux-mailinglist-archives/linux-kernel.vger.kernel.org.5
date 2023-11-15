@@ -2,66 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD88F7EC583
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:40:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A00A67EC58D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344056AbjKOOkM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:40:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43434 "EHLO
+        id S1344107AbjKOOkU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:40:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjKOOkK (ORCPT
+        with ESMTP id S1344065AbjKOOkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:40:10 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC38FB6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:40:07 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61F7DC433C9;
-        Wed, 15 Nov 2023 14:40:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700059207;
-        bh=BaGIA4l4ejhYWBQISc1C+sD93500hrAcYx7aVH8JMVo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qhDBs1seuSmSug6Q4RjM8AVkxVtJg3I1chbH7NIG18ioJz+zMIQR5EsTh/63/w8zO
-         vbGelQqDTwYs9c7u1KpgqK6cXL8gxXge3QenH3Pa4t5IjVlFt99vgfgOYIuPCSgU64
-         v7i8HaqbbJ3vZ9NiJTGj5oN5AyTF8cOKFkMp7gZw05j+c7DftEskPRI3Rbbfhv4l0g
-         OaQHStJIW4IB43DEyLLl9WdNHzTsdp3UyNKswCrGlaPE2MfaHMqP1EubCJpXX6MK6T
-         +Wwi8yZemDQpYLsau7/TWrzW/Wq5SLBibcSQNMgxeD2LVKeLFXWS3xA6ezMxcw1Pwz
-         iE9BLLETPiX+Q==
-Date:   Wed, 15 Nov 2023 14:40:03 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Francesco Dolcini <francesco@dolcini.it>
-Cc:     Adrien Grassein <adrien.grassein@gmail.com>,
-        Andrzej Hajda <andrzej.hajda@intel.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Stefan Eichenberger <stefan.eichenberger@toradex.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v1 2/3] dt-bindings: display: bridge: lt8912b: Add power
- supplies
-Message-ID: <20231115-epidural-vantage-89ff91774805@squawk>
-References: <20231115121338.22959-1-francesco@dolcini.it>
- <20231115121338.22959-3-francesco@dolcini.it>
+        Wed, 15 Nov 2023 09:40:18 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 47130A9
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:40:14 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 631081FB;
+        Wed, 15 Nov 2023 06:40:59 -0800 (PST)
+Received: from [10.57.40.146] (unknown [10.57.40.146])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D0E523F641;
+        Wed, 15 Nov 2023 06:40:08 -0800 (PST)
+Message-ID: <0164d185-12db-478a-93fd-b07d5fe00599@arm.com>
+Date:   Wed, 15 Nov 2023 14:40:11 +0000
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GZwI/uocM5eJlZ54"
-Content-Disposition: inline
-In-Reply-To: <20231115121338.22959-3-francesco@dolcini.it>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
+ large folios
+Content-Language: en-GB
+To:     Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
+        ryan.roberts@arm.com, catalin.marinas@arm.com, will@kernel.org
+Cc:     david@redhat.com, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@suse.com, shy828301@gmail.com, v-songbaohua@oppo.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com
+References: <20231114014313.67232-1-v-songbaohua@oppo.com>
+From:   Steven Price <steven.price@arm.com>
+In-Reply-To: <20231114014313.67232-1-v-songbaohua@oppo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -69,78 +48,258 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 14/11/2023 01:43, Barry Song wrote:
+> This patch makes MTE tags saving and restoring support large folios,
+> then we don't need to split them into base pages for swapping out
+> on ARM64 SoCs with MTE.
+> 
+> arch_prepare_to_swap() should take folio rather than page as parameter
+> because we support THP swap-out as a whole.
+> 
+> Meanwhile, arch_swap_restore() should use page parameter rather than
+> folio as swap-in always works at the granularity of base pages right
+> now.
+> 
+> arch_thp_swp_supported() is dropped since ARM64 MTE was the only one
+> who needed it.
+> 
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
 
---GZwI/uocM5eJlZ54
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LGTM!
 
-On Wed, Nov 15, 2023 at 01:13:37PM +0100, Francesco Dolcini wrote:
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
->=20
-> Add Lontium lt8912b power supplies.
->=20
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
+Reviewed: Steven Price <steven.price@arm.com>
 
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor,
+Although one NIT below you might want to fix.
 
 > ---
->  .../display/bridge/lontium,lt8912b.yaml       | 21 +++++++++++++++++++
->  1 file changed, 21 insertions(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/display/bridge/lontium,lt8=
-912b.yaml b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912=
-b.yaml
-> index f201ae4af4fb..2cef25215798 100644
-> --- a/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.ya=
-ml
-> +++ b/Documentation/devicetree/bindings/display/bridge/lontium,lt8912b.ya=
-ml
-> @@ -55,6 +55,27 @@ properties:
->        - port@0
->        - port@1
-> =20
-> +  vcchdmipll-supply:
-> +    description: A 1.8V supply that powers the HDMI PLL.
-> +
-> +  vcchdmitx-supply:
-> +    description: A 1.8V supply that powers the HDMI TX part.
-> +
-> +  vcclvdspll-supply:
-> +    description: A 1.8V supply that powers the LVDS PLL.
-> +
-> +  vcclvdstx-supply:
-> +    description: A 1.8V supply that powers the LVDS TX part.
-> +
-> +  vccmipirx-supply:
-> +    description: A 1.8V supply that powers the MIPI RX part.
-> +
-> +  vccsysclk-supply:
-> +    description: A 1.8V supply that powers the SYSCLK.
-> +
-> +  vdd-supply:
-> +    description: A 1.8V supply that powers the digital part.
-> +
->  required:
->    - compatible
->    - reg
-> --=20
-> 2.25.1
->=20
+>  rfc v3:
+>  * move arch_swap_restore() to take page rather than folio according to
+>  the discussion with Ryan and Steven;
+>  * fix some other issues commented by Ryan
+> 
+>  rfc v2:
+>  https://lore.kernel.org/lkml/20231104093423.170054-1-v-songbaohua@oppo.com/
+>  rfc v1:
+>  https://lore.kernel.org/lkml/20231102223643.7733-1-v-songbaohua@oppo.com/
+> 
+>  arch/arm64/include/asm/pgtable.h | 21 ++++----------------
+>  arch/arm64/mm/mteswap.c          | 34 ++++++++++++++++++++++++++++++++
+>  include/linux/huge_mm.h          | 12 -----------
+>  include/linux/pgtable.h          |  4 ++--
+>  mm/memory.c                      |  2 +-
+>  mm/page_io.c                     |  2 +-
+>  mm/shmem.c                       |  2 +-
+>  mm/swap_slots.c                  |  2 +-
+>  mm/swapfile.c                    |  2 +-
+>  9 files changed, 45 insertions(+), 36 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
+> index b19a8aee684c..c3eef11c1a9e 100644
+> --- a/arch/arm64/include/asm/pgtable.h
+> +++ b/arch/arm64/include/asm/pgtable.h
+> @@ -45,12 +45,6 @@
+>  	__flush_tlb_range(vma, addr, end, PUD_SIZE, false, 1)
+>  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+>  
+> -static inline bool arch_thp_swp_supported(void)
+> -{
+> -	return !system_supports_mte();
+> -}
+> -#define arch_thp_swp_supported arch_thp_swp_supported
+> -
+>  /*
+>   * Outside of a few very special situations (e.g. hibernation), we always
+>   * use broadcast TLB invalidation instructions, therefore a spurious page
+> @@ -1036,12 +1030,8 @@ static inline pmd_t pmdp_establish(struct vm_area_struct *vma,
+>  #ifdef CONFIG_ARM64_MTE
+>  
+>  #define __HAVE_ARCH_PREPARE_TO_SWAP
+> -static inline int arch_prepare_to_swap(struct page *page)
+> -{
+> -	if (system_supports_mte())
+> -		return mte_save_tags(page);
+> -	return 0;
+> -}
+> +#define arch_prepare_to_swap arch_prepare_to_swap
+> +extern int arch_prepare_to_swap(struct folio *folio);
+>  
+>  #define __HAVE_ARCH_SWAP_INVALIDATE
+>  static inline void arch_swap_invalidate_page(int type, pgoff_t offset)
+> @@ -1057,11 +1047,8 @@ static inline void arch_swap_invalidate_area(int type)
+>  }
+>  
+>  #define __HAVE_ARCH_SWAP_RESTORE
+> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> -{
+> -	if (system_supports_mte())
+> -		mte_restore_tags(entry, &folio->page);
+> -}
+> +#define arch_swap_restore arch_swap_restore
+> +extern void arch_swap_restore(swp_entry_t entry, struct page *page);
+>  
+>  #endif /* CONFIG_ARM64_MTE */
+>  
+> diff --git a/arch/arm64/mm/mteswap.c b/arch/arm64/mm/mteswap.c
+> index a31833e3ddc5..75c2836e8240 100644
+> --- a/arch/arm64/mm/mteswap.c
+> +++ b/arch/arm64/mm/mteswap.c
+> @@ -68,6 +68,12 @@ void mte_invalidate_tags(int type, pgoff_t offset)
+>  	mte_free_tag_storage(tags);
+>  }
+>  
+> +static inline void __mte_invalidate_tags(struct page *page)
+> +{
+> +	swp_entry_t entry = page_swap_entry(page);
+> +	mte_invalidate_tags(swp_type(entry), swp_offset(entry));
 
---GZwI/uocM5eJlZ54
-Content-Type: application/pgp-signature; name="signature.asc"
+NIT: checkpatch will complain there should be blank line between these
+two lines (declarations are followed by a blank line).
 
------BEGIN PGP SIGNATURE-----
+Steve
 
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVTYQAAKCRB4tDGHoIJi
-0ra9AP9qgkDDNxwgVnODaITFA4y+M13nhrU7tTP38T1RTbT5VAD+IT57rAccR244
-fPUa50O7sdrTRuV6XocSiiIKqp5eNQ4=
-=DqWG
------END PGP SIGNATURE-----
+> +}
+> +
+>  void mte_invalidate_tags_area(int type)
+>  {
+>  	swp_entry_t entry = swp_entry(type, 0);
+> @@ -83,3 +89,31 @@ void mte_invalidate_tags_area(int type)
+>  	}
+>  	xa_unlock(&mte_pages);
+>  }
+> +
+> +int arch_prepare_to_swap(struct folio *folio)
+> +{
+> +	int err;
+> +	long i;
+> +
+> +	if (system_supports_mte()) {
+> +		long nr = folio_nr_pages(folio);
+> +
+> +		for (i = 0; i < nr; i++) {
+> +			err = mte_save_tags(folio_page(folio, i));
+> +			if (err)
+> +				goto out;
+> +		}
+> +	}
+> +	return 0;
+> +
+> +out:
+> +	while (i--)
+> +		__mte_invalidate_tags(folio_page(folio, i));
+> +	return err;
+> +}
+> +
+> +void arch_swap_restore(swp_entry_t entry, struct page *page)
+> +{
+> +	if (system_supports_mte())
+> +		mte_restore_tags(entry, page);
+> +}
+> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+> index fa0350b0812a..f83fb8d5241e 100644
+> --- a/include/linux/huge_mm.h
+> +++ b/include/linux/huge_mm.h
+> @@ -400,16 +400,4 @@ static inline int split_folio(struct folio *folio)
+>  	return split_folio_to_list(folio, NULL);
+>  }
+>  
+> -/*
+> - * archs that select ARCH_WANTS_THP_SWAP but don't support THP_SWP due to
+> - * limitations in the implementation like arm64 MTE can override this to
+> - * false
+> - */
+> -#ifndef arch_thp_swp_supported
+> -static inline bool arch_thp_swp_supported(void)
+> -{
+> -	return true;
+> -}
+> -#endif
+> -
+>  #endif /* _LINUX_HUGE_MM_H */
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index af7639c3b0a3..87e3140a55ca 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -897,7 +897,7 @@ static inline int arch_unmap_one(struct mm_struct *mm,
+>   * prototypes must be defined in the arch-specific asm/pgtable.h file.
+>   */
+>  #ifndef __HAVE_ARCH_PREPARE_TO_SWAP
+> -static inline int arch_prepare_to_swap(struct page *page)
+> +static inline int arch_prepare_to_swap(struct folio *folio)
+>  {
+>  	return 0;
+>  }
+> @@ -914,7 +914,7 @@ static inline void arch_swap_invalidate_area(int type)
+>  #endif
+>  
+>  #ifndef __HAVE_ARCH_SWAP_RESTORE
+> -static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
+> +static inline void arch_swap_restore(swp_entry_t entry, struct page *page)
+>  {
+>  }
+>  #endif
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1f18ed4a5497..fad238dd38e7 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4022,7 +4022,7 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  	 * when reading from swap. This metadata may be indexed by swap entry
+>  	 * so this must be called before swap_free().
+>  	 */
+> -	arch_swap_restore(entry, folio);
+> +	arch_swap_restore(entry, page);
+>  
+>  	/*
+>  	 * Remove the swap entry and conditionally try to free up the swapcache.
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index cb559ae324c6..0fd832474c1d 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -189,7 +189,7 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
+>  	 * Arch code may have to preserve more data than just the page
+>  	 * contents, e.g. memory tags.
+>  	 */
+> -	ret = arch_prepare_to_swap(&folio->page);
+> +	ret = arch_prepare_to_swap(folio);
+>  	if (ret) {
+>  		folio_mark_dirty(folio);
+>  		folio_unlock(folio);
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 91e2620148b2..7d32e50da121 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1892,7 +1892,7 @@ static int shmem_swapin_folio(struct inode *inode, pgoff_t index,
+>  	 * Some architectures may have to restore extra metadata to the
+>  	 * folio after reading from swap.
+>  	 */
+> -	arch_swap_restore(swap, folio);
+> +	arch_swap_restore(swap, &folio->page);
+>  
+>  	if (shmem_should_replace_folio(folio, gfp)) {
+>  		error = shmem_replace_folio(&folio, gfp, info, index);
+> diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+> index 0bec1f705f8e..2325adbb1f19 100644
+> --- a/mm/swap_slots.c
+> +++ b/mm/swap_slots.c
+> @@ -307,7 +307,7 @@ swp_entry_t folio_alloc_swap(struct folio *folio)
+>  	entry.val = 0;
+>  
+>  	if (folio_test_large(folio)) {
+> -		if (IS_ENABLED(CONFIG_THP_SWAP) && arch_thp_swp_supported())
+> +		if (IS_ENABLED(CONFIG_THP_SWAP))
+>  			get_swap_pages(1, &entry, folio_nr_pages(folio));
+>  		goto out;
+>  	}
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 4bc70f459164..6450e0279e35 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1784,7 +1784,7 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
+>  	 * when reading from swap. This metadata may be indexed by swap entry
+>  	 * so this must be called before swap_free().
+>  	 */
+> -	arch_swap_restore(entry, page_folio(page));
+> +	arch_swap_restore(entry, page);
+>  
+>  	/* See do_swap_page() */
+>  	BUG_ON(!PageAnon(page) && PageMappedToDisk(page));
 
---GZwI/uocM5eJlZ54--
