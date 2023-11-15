@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27F727EBC5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32ECF7EBC60
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:43:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234564AbjKODnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60628 "EHLO
+        id S234353AbjKODnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:43:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234540AbjKODnB (ORCPT
+        with ESMTP id S234529AbjKODnN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:43:01 -0500
+        Tue, 14 Nov 2023 22:43:13 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AED1B8;
-        Tue, 14 Nov 2023 19:42:53 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A29FC433C8;
-        Wed, 15 Nov 2023 03:42:46 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E686110;
+        Tue, 14 Nov 2023 19:43:10 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A836C433C8;
+        Wed, 15 Nov 2023 03:43:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019773;
+        s=k20201202; t=1700019790;
         bh=yN8yC7Ian6+pDeHYcYG2ppXHfWI5M/c+8L5DzjrbU54=;
         h=From:To:Cc:Subject:Date:From;
-        b=SXhOHM8g5m3BzFwldYp6UvW9XA0ObzjCnZpPTecPryHnsfvdsK2ar+HYuXc4/EnRO
-         wYSpCsyAyn5DQBTVEKdJ2f4xVufaC8Al4Lg29zEDwf8mMvBdbb6r8GveaMRQMrRy9v
-         WNiE98ZeiBK5UnU7+VCHpVjtp4tNzP26nDRko2xBXFGvwHdeyWtdDdZskQBakKyRnd
-         uAVzTszFEwYsPxrIMiCfv1grs98c41DDgzj4jNC1M6p/o6gG9+I1s0IvOmJowEQyhO
-         HTUvM5VjhYdAReq4avJx0WXg/HVWdRo/m3/v2NFA+dZLvFqXwA/fCoRzWgoAEPvhLT
-         kueVpJOapt+4A==
+        b=ZXSgseGFAHfcIYEJw9+OoJvWCuThEJlNJWAURgfnN5CW6uTLIoQYvyhOb0dfmH7a/
+         7DiklAIBw6KKD8XmRkE28G8j2SSDYZZmWpStEIoCctuMBW/fOVbQEcXqrZAdaAYRS8
+         IHGhNQ35rwppJp1k42p04/PIKzOpqVINpBhg+CkFO/1tzaZ6uXh3g2zu7wo+QIbIN0
+         N0W6D/VYn2mspLq+OLmftYUNuzL02A+ERmjN8rX0WZz3CzPbg3O6I6ZLNpI+3rbMGn
+         hycTNOnOj8mEyMiKAwOQcZGX6Oi+9cJ7E41iiVh1afXCBKX5M8xAt1sbC9EGBFRpd4
+         8CE1Utt4Wzffw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
@@ -35,15 +35,15 @@ Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
         Sam Protsenko <semen.protsenko@linaro.org>,
         Thierry Reding <thierry.reding@gmail.com>,
         Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19] pwm: Fix double shift bug
-Date:   Tue, 14 Nov 2023 22:42:28 -0500
-Message-ID: <20231115034230.1243196-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14] pwm: Fix double shift bug
+Date:   Tue, 14 Nov 2023 22:42:54 -0500
+Message-ID: <20231115034255.1244454-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.19.298
+X-stable-base: Linux 4.14.329
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
