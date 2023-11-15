@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 161257EBF01
+	by mail.lfdr.de (Postfix) with ESMTP id 702D47EBF02
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:04:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234697AbjKOJE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 04:04:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41766 "EHLO
+        id S234689AbjKOJEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 04:04:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234675AbjKOJEy (ORCPT
+        with ESMTP id S234651AbjKOJEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Nov 2023 04:04:54 -0500
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38384116;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D97114;
         Wed, 15 Nov 2023 01:04:51 -0800 (PST)
 Date:   Wed, 15 Nov 2023 09:04:48 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700039089;
+        s=2020; t=1700039088;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CiagETb+EIhLnlRlKgxN+Qn60M9WIRvjphEzuDjgzB8=;
-        b=2hJwdjws3Kr+gjDuD09s+jOlHs9Rp9CgB78iRIo0YqAXdNQ6ONvV9BjY7BT6dL2eGcVIQI
-        NtBM6WYo34VXG9v5MerOuHd5qY13M4R/hD0Ui7/Mv40g+85S0pAMXef8Rd5qb3C334e8L4
-        CVuvqQbRnxD6Hdc3pSwTkaXiGEalXx7mndov7ojGGh78hOEIwUZhfOd1MEbxrC8qhmRGWq
-        Abd986crt8YtZ+mtMfbvxnpZa5VDI8vS0T4AqhXHmc1Uw8pjytbqR2Kk+Yq7KbDotsih3j
-        EC7wo4a2FK8R2iboMydLfv37nELV4CXs/ZhbMJ9kcNP3SzmP1t/Z+mjZoK7m0g==
+        bh=XYjLZIFHPeTFyFVUPt8LdW6UDKPYrmKzL1aYRxJ9lag=;
+        b=k2XIrqJcyOecy+XDLqmYRNxz8R9ToP9FIE3uwjWHkz59xOLSyRnMUegm545/Y3Ue/9P2ZY
+        xJieYiH2QPUWAVtecvxwgrc1beI3Mi82Ly5XF07c1l3eHio5ub2fxFhK5Zxg7+nqz8wvrD
+        BW24r7rD0+kG0m4y7OaliOfwUWjxjPOoOeEa6YC7rFKUP9bpgFqD+MEG45qE/cX4VNpX3f
+        BZlIE/1AnwElZ4IdjdQ5TKN+QBosealVu4aUESGWOKi5HK4MLmqzfQ9bfdN9YYpH9qMEnx
+        GEqwPmcYHXyLqePiRhB5nNeO21hj3YQBqL0zP48rtM1TbvexhaYJoFwcfgVctQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700039089;
+        s=2020e; t=1700039088;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=CiagETb+EIhLnlRlKgxN+Qn60M9WIRvjphEzuDjgzB8=;
-        b=L0A82ts+pJSxc8152bNLSc3s6kkwShfbTfhTmkwTDYRiHwmabTrMfFmMBfRGANbhj6dc5+
-        nWZKeOEJv4gtfHDw==
+        bh=XYjLZIFHPeTFyFVUPt8LdW6UDKPYrmKzL1aYRxJ9lag=;
+        b=P5g4iQT6hQpHBN46BHO93rPBv62BQNKu2znlmcBNHyCsM9bJqzr9MTnMe2DrajRuUz8RgR
+        MYRxbvhR5Z1uLdBw==
 From:   "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: sched/core] sched/cpuidle: Comment about timers requirements VS
- idle handler
+Subject: [tip: sched/core] sched/timers: Explain why idle task schedules out
+ on remote timer enqueue
 Cc:     Frederic Weisbecker <frederic@kernel.org>,
         "Peter Zijlstra (Intel)" <peterz@infradead.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20231114193840.4041-2-frederic@kernel.org>
-References: <20231114193840.4041-2-frederic@kernel.org>
+In-Reply-To: <20231114193840.4041-3-frederic@kernel.org>
+References: <20231114193840.4041-3-frederic@kernel.org>
 MIME-Version: 1.0
-Message-ID: <170003908886.391.2109617605485917006.tip-bot2@tip-bot2>
+Message-ID: <170003908811.391.7438992731780383646.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -69,64 +69,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the sched/core branch of tip:
 
-Commit-ID:     dd5403869a40595eb953f12e8cd2bb57bb88bb67
-Gitweb:        https://git.kernel.org/tip/dd5403869a40595eb953f12e8cd2bb57bb88bb67
+Commit-ID:     194600008d5c43b5a4ba98c4b81633397e34ffad
+Gitweb:        https://git.kernel.org/tip/194600008d5c43b5a4ba98c4b81633397e34ffad
 Author:        Frederic Weisbecker <frederic@kernel.org>
-AuthorDate:    Tue, 14 Nov 2023 14:38:39 -05:00
+AuthorDate:    Tue, 14 Nov 2023 14:38:40 -05:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 15 Nov 2023 09:57:51 +01:00
+CommitterDate: Wed, 15 Nov 2023 09:57:52 +01:00
 
-sched/cpuidle: Comment about timers requirements VS idle handler
+sched/timers: Explain why idle task schedules out on remote timer enqueue
 
-Add missing explanation concerning IRQs re-enablement constraints in
-the cpuidle path against timers.
+Trying to avoid that didn't bring much value after testing, add comment
+about this.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-Link: https://lkml.kernel.org/r/20231114193840.4041-2-frederic@kernel.org
+Link: https://lkml.kernel.org/r/20231114193840.4041-3-frederic@kernel.org
 ---
- kernel/sched/idle.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ kernel/sched/core.c | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
 
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 565f837..3123192 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -258,6 +258,36 @@ static void do_idle(void)
- 	while (!need_resched()) {
- 		rmb();
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index f5f4495..2de77a6 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1131,6 +1131,28 @@ static void wake_up_idle_cpu(int cpu)
+ 	if (cpu == smp_processor_id())
+ 		return;
  
-+		/*
-+		 * Interrupts shouldn't be re-enabled from that point on until
-+		 * the CPU sleeping instruction is reached. Otherwise an interrupt
-+		 * may fire and queue a timer that would be ignored until the CPU
-+		 * wakes from the sleeping instruction. And testing need_resched()
-+		 * doesn't tell about pending needed timer reprogram.
-+		 *
-+		 * Several cases to consider:
-+		 *
-+		 * - SLEEP-UNTIL-PENDING-INTERRUPT based instructions such as
-+		 *   "wfi" or "mwait" are fine because they can be entered with
-+		 *   interrupt disabled.
-+		 *
-+		 * - sti;mwait() couple is fine because the interrupts are
-+		 *   re-enabled only upon the execution of mwait, leaving no gap
-+		 *   in-between.
-+		 *
-+		 * - ROLLBACK based idle handlers with the sleeping instruction
-+		 *   called with interrupts enabled are NOT fine. In this scheme
-+		 *   when the interrupt detects it has interrupted an idle handler,
-+		 *   it rolls back to its beginning which performs the
-+		 *   need_resched() check before re-executing the sleeping
-+		 *   instruction. This can leak a pending needed timer reprogram.
-+		 *   If such a scheme is really mandatory due to the lack of an
-+		 *   appropriate CPU sleeping instruction, then a FAST-FORWARD
-+		 *   must instead be applied: when the interrupt detects it has
-+		 *   interrupted an idle handler, it must resume to the end of
-+		 *   this idle handler so that the generic idle loop is iterated
-+		 *   again to reprogram the tick.
-+		 */
- 		local_irq_disable();
- 
- 		if (cpu_is_offline(cpu)) {
++	/*
++	 * Set TIF_NEED_RESCHED and send an IPI if in the non-polling
++	 * part of the idle loop. This forces an exit from the idle loop
++	 * and a round trip to schedule(). Now this could be optimized
++	 * because a simple new idle loop iteration is enough to
++	 * re-evaluate the next tick. Provided some re-ordering of tick
++	 * nohz functions that would need to follow TIF_NR_POLLING
++	 * clearing:
++	 *
++	 * - On most archs, a simple fetch_or on ti::flags with a
++	 *   "0" value would be enough to know if an IPI needs to be sent.
++	 *
++	 * - x86 needs to perform a last need_resched() check between
++	 *   monitor and mwait which doesn't take timers into account.
++	 *   There a dedicated TIF_TIMER flag would be required to
++	 *   fetch_or here and be checked along with TIF_NEED_RESCHED
++	 *   before mwait().
++	 *
++	 * However, remote timer enqueue is not such a frequent event
++	 * and testing of the above solutions didn't appear to report
++	 * much benefits.
++	 */
+ 	if (set_nr_and_not_polling(rq->idle))
+ 		smp_send_reschedule(cpu);
+ 	else
