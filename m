@@ -2,62 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE487ED256
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:36:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 235837ED25A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:36:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235696AbjKOUgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
+        id S1344538AbjKOUgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:36:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235731AbjKOUf2 (ORCPT
+        with ESMTP id S1344492AbjKOUfb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:35:28 -0500
+        Wed, 15 Nov 2023 15:35:31 -0500
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AC5B19B9;
-        Wed, 15 Nov 2023 12:34:58 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKGBf9020343;
-        Wed, 15 Nov 2023 20:34:42 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10E181BD1;
+        Wed, 15 Nov 2023 12:35:00 -0800 (PST)
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKRoBX004604;
+        Wed, 15 Nov 2023 20:34:44 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=FBHiR0R3HqDameObtBi5tDwt9B6xgR+xiaoV3r5rhIA=;
- b=Fsbw4u7figkGz1teJMQ8day7onkmLRVQHzQQoQohRyi12JtEc4E+THn9ncooeU1blL95
- BSNrmP6042dwc2gTk3PtIT3ZaPtRz5G3nE8fT130QRaywFogH6cOz+yX7seocVTQ3OEQ
- OLcP8i+gO/6updNe1Wh9Bcm6M3uTRMccbL90MJr6HJbHMQA1tEeaceaprV/0JDzkHyAO
- HHsf9P12TzXM81H/2ksj4UK5laexB6lxpNfnRFikO5/v5KPh3CFSqfC1zUm/LZtmEJDB
- IbsVe3RBRne0bOE+fKv3osgoJD4TfGRisBCHguVl9A33hlBA9duhPIg2UJ++MxrN/Ipw rA== 
+ : date : message-id : in-reply-to : references : content-transfer-encoding
+ : mime-version; s=pp1; bh=JR4hU8usmRDdin50s82nkAgu6ZMVd3+rhBewhZJH1Ks=;
+ b=YKFBdcKbdSJgTB+aM79PQbFV4a0TjU+i1B/9byBiNFmDJRLCYX8tYRTHpuPlpdOK0adD
+ lZGVr/mLGa3f4zozDmKbjjECp/fBHUf0DoO/O1s9D2KPXx9ksLl8013dSEg3AQeqHXA6
+ j6+HjT3q4CCtfIeivsmA9elAr+XfUGrB5ozyixaqgr4T9GcF38xZW81o3NQZkMgx0nl0
+ 53KuaCWsxD9k29VbGkRBlrfL/nHrx37OvaSGR8f9KbjClX70YkzrFHe4ZWV8gW6ERXLD
+ /p648HsVC+k/G6ABvWtA9NSDxiQChjuORdtNqTwgldfiIUcnrgRT44EYIxS2EGBEeyyT cQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4ch9bv2-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud51q060w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:34:44 +0000
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKSEvw006055;
+        Wed, 15 Nov 2023 20:34:43 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud51q060h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:34:43 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKItrc010007;
+        Wed, 15 Nov 2023 20:34:42 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uakxt2dv3-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 15 Nov 2023 20:34:42 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKGRQZ022066;
-        Wed, 15 Nov 2023 20:34:41 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4ch9bun-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 20:34:41 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKIvqo021610;
-        Wed, 15 Nov 2023 20:34:40 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uap5k9kay-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 20:34:40 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKYbWA23069318
+        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKYdCM65012072
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 20:34:37 GMT
+        Wed, 15 Nov 2023 20:34:39 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 9EA3A2004B;
+        by IMSVA (Postfix) with ESMTP id 55E0920040;
+        Wed, 15 Nov 2023 20:34:39 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id EA6ED20043;
         Wed, 15 Nov 2023 20:34:37 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5288420040;
-        Wed, 15 Nov 2023 20:34:36 +0000 (GMT)
 Received: from heavy.boeblingen.de.ibm.com (unknown [9.179.9.51])
         by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Nov 2023 20:34:36 +0000 (GMT)
+        Wed, 15 Nov 2023 20:34:37 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Alexander Potapenko <glider@google.com>,
@@ -81,23 +80,24 @@ Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Sven Schnelle <svens@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH 17/32] lib/string: Add KMSAN support to strlcpy() and strlcat()
-Date:   Wed, 15 Nov 2023 21:30:49 +0100
-Message-ID: <20231115203401.2495875-18-iii@linux.ibm.com>
+Subject: [PATCH 18/32] lib/zlib: Unpoison DFLTCC output buffers
+Date:   Wed, 15 Nov 2023 21:30:50 +0100
+Message-ID: <20231115203401.2495875-19-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115203401.2495875-1-iii@linux.ibm.com>
 References: <20231115203401.2495875-1-iii@linux.ibm.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: WE4fc2MWwcSfv1ysVLGFiuvMJSpg76OK
-X-Proofpoint-ORIG-GUID: Mee9YG8eX7q6Hn736J-ftydiuuw4ftdn
+X-Proofpoint-ORIG-GUID: FcmPA45PTLlNdzoYRSKo5ivTe4t5LzGg
+X-Proofpoint-GUID: 9RBqKpW0ebiKf9o1-LJaYDwqoA8WDNjK
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-15_20,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- mlxscore=0 bulkscore=0 mlxlogscore=999 lowpriorityscore=0 impostorscore=0
- priorityscore=1501 phishscore=0 spamscore=0 suspectscore=0 clxscore=1015
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ phishscore=0 suspectscore=0 bulkscore=0 priorityscore=1501 mlxlogscore=999
+ mlxscore=0 adultscore=0 malwarescore=0 lowpriorityscore=0 clxscore=1015
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
  definitions=main-2311150163
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -110,42 +110,89 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently KMSAN does not fully propagate metadata in strlcpy() and
-strlcat(), because they are built with -ffreestanding and call
-memcpy(). In this combination memcpy() calls are not instrumented.
+The constraints of the DFLTCC inline assembly are not precise: they
+do not communicate the size of the output buffers to the compiler, so
+it cannot automatically instrument it.
 
-Fix by copying the metadata manually. Add the __STDC_HOSTED__ #ifdef in
-case the code is compiled with different flags in the future.
+Add the manual kmsan_unpoison_memory() calls for the output buffers.
+The logic is the same as in [1].
 
+[1] https://github.com/zlib-ng/zlib-ng/commit/1f5ddcc009ac3511e99fc88736a9e1a6381168c5
+
+Reported-by: Alexander Gordeev <agordeev@linux.ibm.com>
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- lib/string.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ lib/zlib_dfltcc/dfltcc.h      |  1 +
+ lib/zlib_dfltcc/dfltcc_util.h | 23 +++++++++++++++++++++++
+ 2 files changed, 24 insertions(+)
 
-diff --git a/lib/string.c b/lib/string.c
-index be26623953d2..e83c6dd77ec6 100644
---- a/lib/string.c
-+++ b/lib/string.c
-@@ -111,6 +111,9 @@ size_t strlcpy(char *dest, const char *src, size_t size)
- 	if (size) {
- 		size_t len = (ret >= size) ? size - 1 : ret;
- 		__builtin_memcpy(dest, src, len);
-+#if __STDC_HOSTED__ == 0
-+		kmsan_memmove_metadata(dest, src, len);
-+#endif
- 		dest[len] = '\0';
- 	}
- 	return ret;
-@@ -261,6 +264,9 @@ size_t strlcat(char *dest, const char *src, size_t count)
- 	if (len >= count)
- 		len = count-1;
- 	__builtin_memcpy(dest, src, len);
-+#if __STDC_HOSTED__ == 0
-+	kmsan_memmove_metadata(dest, src, len);
-+#endif
- 	dest[len] = 0;
- 	return res;
- }
+diff --git a/lib/zlib_dfltcc/dfltcc.h b/lib/zlib_dfltcc/dfltcc.h
+index b96232bdd44d..0f2a16d7a48a 100644
+--- a/lib/zlib_dfltcc/dfltcc.h
++++ b/lib/zlib_dfltcc/dfltcc.h
+@@ -80,6 +80,7 @@ struct dfltcc_param_v0 {
+     uint8_t csb[1152];
+ };
+ 
++static_assert(offsetof(struct dfltcc_param_v0, csb) == 384);
+ static_assert(sizeof(struct dfltcc_param_v0) == 1536);
+ 
+ #define CVT_CRC32 0
+diff --git a/lib/zlib_dfltcc/dfltcc_util.h b/lib/zlib_dfltcc/dfltcc_util.h
+index 4a46b5009f0d..ce2e039a55b5 100644
+--- a/lib/zlib_dfltcc/dfltcc_util.h
++++ b/lib/zlib_dfltcc/dfltcc_util.h
+@@ -2,6 +2,7 @@
+ #ifndef DFLTCC_UTIL_H
+ #define DFLTCC_UTIL_H
+ 
++#include "dfltcc.h"
+ #include <linux/zutil.h>
+ 
+ /*
+@@ -20,6 +21,7 @@ typedef enum {
+ #define DFLTCC_CMPR 2
+ #define DFLTCC_XPND 4
+ #define HBT_CIRCULAR (1 << 7)
++#define DFLTCC_FN_MASK ((1 << 7) - 1)
+ #define HB_BITS 15
+ #define HB_SIZE (1 << HB_BITS)
+ 
+@@ -34,6 +36,7 @@ static inline dfltcc_cc dfltcc(
+ )
+ {
+     Byte *t2 = op1 ? *op1 : NULL;
++    unsigned char *orig_t2 = t2;
+     size_t t3 = len1 ? *len1 : 0;
+     const Byte *t4 = op2 ? *op2 : NULL;
+     size_t t5 = len2 ? *len2 : 0;
+@@ -59,6 +62,26 @@ static inline dfltcc_cc dfltcc(
+                      : "cc", "memory");
+     t2 = r2; t3 = r3; t4 = r4; t5 = r5;
+ 
++    switch (fn & DFLTCC_FN_MASK) {
++    case DFLTCC_QAF:
++        kmsan_unpoison_memory(param, sizeof(struct dfltcc_qaf_param));
++        break;
++    case DFLTCC_GDHT:
++        kmsan_unpoison_memory(param, offsetof(struct dfltcc_param_v0, csb));
++        break;
++    case DFLTCC_CMPR:
++        kmsan_unpoison_memory(param, sizeof(struct dfltcc_param_v0));
++        kmsan_unpoison_memory(
++                orig_t2,
++                t2 - orig_t2 +
++                    (((struct dfltcc_param_v0 *)param)->sbb == 0 ? 0 : 1));
++        break;
++    case DFLTCC_XPND:
++        kmsan_unpoison_memory(param, sizeof(struct dfltcc_param_v0));
++        kmsan_unpoison_memory(orig_t2, t2 - orig_t2);
++        break;
++    }
++
+     if (op1)
+         *op1 = t2;
+     if (len1)
 -- 
 2.41.0
 
