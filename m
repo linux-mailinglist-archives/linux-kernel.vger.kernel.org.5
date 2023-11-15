@@ -2,127 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 71FAF7EC90A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4EA7EC908
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230319AbjKOQ7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:59:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37726 "EHLO
+        id S232307AbjKOQ72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:59:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKOQ7O (ORCPT
+        with ESMTP id S229497AbjKOQ71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:59:14 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62D7218E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:59:09 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c788f5bf53so81585531fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:59:09 -0800 (PST)
+        Wed, 15 Nov 2023 11:59:27 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B72318D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:59:24 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id af79cd13be357-77bac408851so90961585a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:59:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700067547; x=1700672347; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ac4Ls6gftQvQgbcRf5XLhX5PwcgnIwraX4CtQN05HrE=;
-        b=ISToxIFwv32EAIpVkhDLFkDZCmzsjj7iEL7z4lL9dWknjh7m/SwyKBjF4gmLs7MbOp
-         BBQDAjbMS1dSLB0rOsfeRW76HT+wYD78wxoI5/RfwL5PA07Is3NMz1Y/R2l8pz+ayAe0
-         edNZ/avSIq+f+GVmo8imQDB/SOG9TedAuXbl0=
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700067563; x=1700672363; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XNv5c7iU2hI6ghC00LRA79XwFr7LnW8ceDW1TiDNSy0=;
+        b=pZMEMauyBQev6kw2y3HygaW++nXr1Wg5OK7I9eIa74p059UUSMsnK4g3hHjEwwtDdh
+         oK9Evz+D7rorv81RhJ+dCIMZ2qW7aqdmILba8rlTertIA8VtJdD7n0vBoWWcAzPdNC4n
+         58A8CBe5AqNCj0GPXQljYLH2xGOmWgjzrwGFkee4Y0hv2Fac7gfFeh2EkhFgcp3tHpKL
+         jvL8CILAffDLcRlieMXw0CLSdNQlDZ4PpCkGUlrT7PFOttVSgA3GEFm6sHs0GMSZ9SqI
+         DE7uJB9X6xBvCQIcWMUodVXe/Rriu5Rpb8xrkES7mNSEdvXlzm/M0Li0YMimQm0o/XoF
+         TneQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700067547; x=1700672347;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1700067563; x=1700672363;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=ac4Ls6gftQvQgbcRf5XLhX5PwcgnIwraX4CtQN05HrE=;
-        b=NVHGl7eH8Dibrh0m+WxJmF4gS37wizhWGLrU+D7XdN1sosYzn9mZXSgRDPcomPj9+2
-         xnUbNeqTjQfvSZRALK3qgy4RRAvuH/rK0ZCQ8gGzEyyhVk2NEP5mR9qwlTv9OA4es1hg
-         F8R7w2qLVH37PCxilfIEhwSPBexf/ex37/dJ+CqD/wauCV510UoTe9eH9O92954r4PhP
-         Z3NshZL0T8bMWwP8ZHaG+8FkUWdnq/RKlWLH7ZDugUy1MdcH+oKF9uSOXZ6LyR/WrWca
-         /h8DHXMiYA31RrmYKpPc209H7NtjdpC+63nMfMTznaEtlDqd9CHm6x6zLMeVgn0Hz871
-         LXfQ==
-X-Gm-Message-State: AOJu0YwanVkPdnICPxNzXY3zso/VAgXwJWGoTeKkJxlhQqs83yUhbOOm
-        6MuoLXV1thqU9W465yZHeZyORRMTIP4Hr+/W8nopg8Hg
-X-Google-Smtp-Source: AGHT+IFthxDTTt0dRR1ix11kTKn1F3ponp3MiFCnga+UVQIfDdsEYEzsvpJ7OGuxvgNMazSDfYdqbw==
-X-Received: by 2002:a05:651c:1549:b0:2c5:2813:5538 with SMTP id y9-20020a05651c154900b002c528135538mr5617596ljp.21.1700067547445;
-        Wed, 15 Nov 2023 08:59:07 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id i19-20020a2e8093000000b002c596731419sm1710679ljg.23.2023.11.15.08.59.06
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 08:59:06 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-50943ccbbaeso10007901e87.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:59:06 -0800 (PST)
-X-Received: by 2002:a19:7119:0:b0:507:9787:6773 with SMTP id
- m25-20020a197119000000b0050797876773mr9107681lfc.36.1700067545585; Wed, 15
- Nov 2023 08:59:05 -0800 (PST)
+        bh=XNv5c7iU2hI6ghC00LRA79XwFr7LnW8ceDW1TiDNSy0=;
+        b=ak8+gDLeFEZGQ2a7n63k0Hhc+wFTjATqUYu24N5rz2rjXDhfZWhtVY+4KyEiLX1Fyu
+         bc2LZJejFX+zYkTzHH/p6fdwnfkBnhnWzZLi5aL/pYCuUvF9lC+JxbNP3UtcsdnTxdUm
+         iN/+oosFPyBvviFqV7C/+dX2SbnCTU7snow5BCW/uRbOY5ucRQEEnBMh4eUYIR9WaAjE
+         y8lKKMLvI7czsn66qxyAom0nZtTCFhb3dU/ZtBMEaQ82RNt13iRXFxD+145AuibLAJVZ
+         4JIDzNXnIjDa4hKSR0xp36C9rkKfWXg2dQP4ttgXTB/9/Xn5B2VuOU6uBVcK7oUuiAx9
+         PuMw==
+X-Gm-Message-State: AOJu0Yzi7hhpa9n5XPmOVnXURjWppKLRLqRaxOzbtyX5S71T5kyVCeeg
+        f9u6GJBc/+0TOyySi2ymdPjOpBgzXt8tFHOKCPxMWQ==
+X-Google-Smtp-Source: AGHT+IHGLVHQmm3aPUnsHwqUFedvCOgWo3TAh291r77vapR79AlKzlSTTm58S5i6UNilTlcmXaPazg==
+X-Received: by 2002:a05:620a:304:b0:778:8f26:6846 with SMTP id s4-20020a05620a030400b007788f266846mr7192148qkm.37.1700067563410;
+        Wed, 15 Nov 2023 08:59:23 -0800 (PST)
+Received: from brgl-uxlite.. ([12.186.190.2])
+        by smtp.gmail.com with ESMTPSA id x19-20020a05620a449300b0077772296f9dsm3572219qkp.126.2023.11.15.08.59.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 08:59:23 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Yury Norov <yury.norov@gmail.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <marc.zyngier@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Subject: [RESEND PATCH v2 0/4] genirq/irq_sim: misc updates
+Date:   Wed, 15 Nov 2023 17:59:11 +0100
+Message-Id: <20231115165915.2936349-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-References: <20231115154946.3933808-1-dhowells@redhat.com> <20231115154946.3933808-6-dhowells@redhat.com>
- <CAHk-=wgHciqm3iaq6hhtP64+Zsca6Y6z5UfzHzjfhUhA=jP0zA@mail.gmail.com> <3936726.1700066370@warthog.procyon.org.uk>
-In-Reply-To: <3936726.1700066370@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Nov 2023 11:58:48 -0500
-X-Gmail-Original-Message-ID: <CAHk-=whEj_+oP0mwNr7eArnOzWf_380-+-6LD9RtQXVs29fYJQ@mail.gmail.com>
-Message-ID: <CAHk-=whEj_+oP0mwNr7eArnOzWf_380-+-6LD9RtQXVs29fYJQ@mail.gmail.com>
-Subject: Re: [PATCH v3 05/10] iov_iter: Create a function to prepare userspace
- VM for UBUF/IOVEC tests
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christian Brauner <christian@brauner.io>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Sven Schnelle <svens@linux.ibm.com>, loongarch@lists.linux.dev,
-        linux-s390@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 11:39, David Howells <dhowells@redhat.com> wrote:
->
-> I was trying to make it possible to do these tests before starting userspace
-> as there's a good chance that if the UBUF/IOVEC iterators don't work right
-> then your system can't be booted.
+From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
 
-Oh, I don't think that any unit test should bother to check for that
-kind of catastrophic case.
+Here are a couple of updates to the interrupt simulator. Two are minor:
+remove an unused field and reorder includes for readability. The third
+one simplifies the error paths by using new cleanup macros. To that end
+we also add a cleanup definition for dynamic bitmaps.
 
-If something is so broken that the kernel doesn't boot properly even
-into some basic test infrastructure, then bisection will trivially
-find where that breakage was introduced.
+Resending rebased on top of v6.7-rc1 and with tags collected.
 
-And if it's something as core as the iov iterators, it won't even get
-past the initial developer unless it's some odd build system
-interaction.
+v1 -> v2:
+- add a NULL-pointer check to the bitmap cleanup macro as advised by
+  Peter Zijlstra
+- initialize managed pointers when declaring them to create a clear pairing
+  between the type and the cleanup action
 
-So extreme cases aren't even worth checking for. What's worth testing
-is "the system boots and works, but I want to check the edge cases".
+Bartosz Golaszewski (4):
+  bitmap: define a cleanup function for bitmaps
+  genirq/irq_sim: remove unused field from struct irq_sim_irq_ctx
+  genirq/irq_sim: order headers alphabetically
+  genirq/irq_sim: shrink code by using cleanup helpers
 
-IOW, when it comes to things like user copies, it's things like
-alignment, and the page fault edge cases with EFAULT in particular.
-You can easily get the return value wrong for a user copy that ends up
-with an unaligned fault at the end of the last mapped page. Everything
-normal will still work fine, because nobody does something that odd.
+ include/linux/bitmap.h |  3 +++
+ kernel/irq/irq_sim.c   | 30 ++++++++++++------------------
+ 2 files changed, 15 insertions(+), 18 deletions(-)
 
-But those are best handled as user mode tests.
+-- 
+2.40.1
 
-           Linus
