@@ -2,125 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 86E227ECC12
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:26:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABD6C7ECC30
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:27:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbjKOT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:26:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
+        id S233582AbjKOT1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:27:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233951AbjKOT0b (ORCPT
+        with ESMTP id S233495AbjKOT1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:26:31 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD491AB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:24 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9e62f903e88so4328766b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700076383; x=1700681183; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=shjpDJFgEA7bY447zVelsVqtgQ9wtQbPGXjY7wm8MLo=;
-        b=TfcjMdv8W3ShLC3M03Es+pC07ZaE2B/imbUN0QLCywJpyz/MMWpAxAX6Z0M/V4ZSO4
-         Yg/Ol2gY0NcRh51IPAkRjKK6TvJJ1iWKLSS8WL1qvrtR6cE6xYaxCALuuQAVs9RchL8C
-         nYJM1GxM2pX+XuJeethkfIu1QNxhABUVr7ivI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700076383; x=1700681183;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=shjpDJFgEA7bY447zVelsVqtgQ9wtQbPGXjY7wm8MLo=;
-        b=b9a8yq7FdmlMWyIKU6Pp5FL91Vii5Y9Rg8iIm1OdndHmxw7oWSkq5WIUZcpPJmNhFm
-         fv4Co0qR+kaA6cnGVMXLP7mOjKCTwjVRJui6eCMlvbIylJ3rQkGOVjlom1SmIBQb7xfZ
-         a4woX5EagdUe5yedTV+/mIOPoQCIBGx/6f947goKc3dQGNKnUvu5j2G1rFTLVXJFph4z
-         9sr2FgzLkJR5kzcgWhRfvey07aoMvHG6oj5Mb+qBZjR99wj1Uy6CMlCQvdN15YOzEyvS
-         zuT+QhUzP9sH3KJWflX8tuv8Yf3phAAPhKS0YKxHA4YNJBy2BcwOwFEkxCrf3to9QXjU
-         BMDg==
-X-Gm-Message-State: AOJu0Yw2yEWOWett2zgspvRZOFawI0pwKw3Yyk4JivkXtdAYkqBkZBmU
-        fTaUUHG8RvMZ6PalndE2WkWoYk5T7MPtisHzMPZiqL7a
-X-Google-Smtp-Source: AGHT+IEN8vgyj+8G5RcwteFz19O/6DHahY+1Bm/LEjookeDkVTXn28IBmPdSlT9qayTAaBpT99A0og==
-X-Received: by 2002:a17:906:855:b0:9ae:82b4:e309 with SMTP id f21-20020a170906085500b009ae82b4e309mr10044761ejd.0.1700076383315;
-        Wed, 15 Nov 2023 11:26:23 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id c7-20020a170906340700b009a9fbeb15f2sm7392726ejb.62.2023.11.15.11.26.19
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 11:26:20 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso68438a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:19 -0800 (PST)
-X-Received: by 2002:aa7:d545:0:b0:543:6f8e:58ee with SMTP id
- u5-20020aa7d545000000b005436f8e58eemr8359172edr.41.1700076379472; Wed, 15 Nov
- 2023 11:26:19 -0800 (PST)
+        Wed, 15 Nov 2023 14:27:15 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FEF1AB;
+        Wed, 15 Nov 2023 11:27:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700076431; x=1731612431;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=I+mMbHRrdn5krrXbIHqhTFESIktjUGAwXJKl6TU3/ec=;
+  b=ipjzapR9PRyq61AZichvhS4svsfE/zIjMAtdfYmZJfi6SN9GdKzipuaU
+   deMjsUdqDCtoIvU21N/7vnoZOg7lJBbF/ZCVmFXXVu0fBC1OlUB/+fPuK
+   Ixj6x7kaZV8S++xx87Ti3flc3OJ63ASaaUdAE0iZ4U8ZzwouVUgD2MEW/
+   rzmQWcG5V0xWPMvrdWZ4+jJKGVO4G0DMLOUO6QL6VP7hU20+Kx3naWjd1
+   X4gdbRW3+M56ix3DPKZ1DjuYYzY7FHmxQlMZ2wm9GU8h87Tzpsjbeaqw9
+   wGqhiWCKJg1m4+bgDHfQEY4GtBWYAgAykKIVrxz748ThLGP3T1PI/vo4l
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="394858927"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="394858927"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:26:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="882482919"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="882482919"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:26:50 -0800
+Date:   Wed, 15 Nov 2023 11:26:50 -0800
+From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
+To:     "Huang, Kai" <kai.huang@intel.com>
+Cc:     "isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "sathyanarayanan.kuppuswamy@linux.intel.com" 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "david@redhat.com" <david@redhat.com>,
+        "bagasdotme@gmail.com" <bagasdotme@gmail.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "ak@linux.intel.com" <ak@linux.intel.com>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "seanjc@google.com" <seanjc@google.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "nik.borisov@suse.com" <nik.borisov@suse.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "Shahar, Sagi" <sagis@google.com>,
+        "imammedo@redhat.com" <imammedo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "Gao, Chao" <chao.gao@intel.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: [PATCH v15 05/23] x86/virt/tdx: Handle SEAMCALL no entropy error
+ in common code
+Message-ID: <20231115192650.GB1109547@ls.amr.corp.intel.com>
+References: <cover.1699527082.git.kai.huang@intel.com>
+ <9565b2ccc347752607039e036fd8d19d78401b53.1699527082.git.kai.huang@intel.com>
+ <20231114192447.GA1109547@ls.amr.corp.intel.com>
+ <63e9754ec059190cd1734650b8968952cbe00ee9.camel@intel.com>
 MIME-Version: 1.0
-References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com> <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
-In-Reply-To: <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Nov 2023 14:26:02 -0500
-X-Gmail-Original-Message-ID: <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
-Message-ID: <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     David Howells <dhowells@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <63e9754ec059190cd1734650b8968952cbe00ee9.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 14:10, Borislav Petkov <bp@alien8.de> wrote:
->
-> > Borislav, see
-> >
-> >     https://lore.kernel.org/all/CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com/
-> >
-> > for some truly crazy code generation by gcc.
->
-> Yeah, lemme show that to gcc folks. That asm is with your compiler,
-> right? Version?
+On Wed, Nov 15, 2023 at 10:41:46AM +0000,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-That was with gcc version 13.2.1.
+> 
+> > > +#include <asm/archrandom.h>
+> > > +
+> > > +typedef u64 (*sc_func_t)(u64 fn, struct tdx_module_args *args);
+> > > +
+> > > +static inline u64 sc_retry(sc_func_t func, u64 fn,
+> > > +			   struct tdx_module_args *args)
+> > > +{
+> > > +	int retry = RDRAND_RETRY_LOOPS;
+> > > +	u64 ret;
+> > > +
+> > > +	do {
+> > > +		ret = func(fn, args);
+> > > +	} while (ret == TDX_RND_NO_ENTROPY && --retry);
+> > 
+> > This loop assumes that args isn't touched when TDX_RND_NO_ENTRYPOY is returned.
+> > It's not true.  TDH.SYS.INIT() and TDH.SYS.LP.INIT() clear RCX, RDX, etc on
+> > error including TDX_RND_NO_ENTRY.  Because TDH.SYS.INIT() takes RCX as input,
+> > this wrapper doesn't work.  TDH.SYS.LP.INIT() doesn't use RCX, RDX ... as
+> > input. So it doesn't matter.
+> > 
+> > Other SEAMCALLs doesn't touch registers on the no entropy error.
+> > TDH.EXPORTS.STATE.IMMUTABLE(), TDH.IMPORTS.STATE.IMMUTABLE(), TDH.MNG.ADDCX(),
+> > and TDX.MNG.CREATE().  TDH.SYS.INIT() is an exception.
+> 
+> If I am reading the spec (TDX module 1.5 ABI) correctly the TDH.SYS.INIT doesn't
+> return TDX_RND_NO_ENTROPY.
 
-Note that I only see that crazy thing in lib/iov_iter.s, so I really
-do think it has something to do with inlining __builtin_memcpy()
-behind a conditional function pointer.
+The next updated spec would fix it.
+                                  
 
-In normal cases, gcc seems to just do the obvious thing (ie expand a
-small constant-sized memcpy inline, or just call the external 'memcpy'
-function.
+> TDH.SYS.LP.INIT indeed can return NO_ENTROPY but as
+> you said it doesn't take any register as input.  So technically the code works
+> fine.  (Even the TDH.SYS.INIT can return NO_ENTROPY the code still works fine
+> because the RCX must be 0 for TDH.SYS.INIT.)
 
-So it's some odd pattern that triggers that "expand non-constant
-memcpy inline". And once that happens, the odd code generation is
-still a bit odd but is at least explicable.
+Ah yes, I agree with you. So it doesn't matter.
 
-That "do first word by hand, then do aligned 'rep movsq' on top of it"
-pattern is weird, but we've seen some similar strange patterns in
-hand-written memcpy (eg "use two overlapping 8-byte writes to handle
-the 8-15 byte case").
 
-So the real issue is that we don't want an inlined memcpy at all,
-unless it's the simple constant-sized case that has been turned into
-individual moves with no loop.
+> Also, I can hardly think out of any reason why TDX module needs to clobber input
+> registers in case of NO_ENTROPY for *ANY* SEAMCALL.  But despite that, I am not
+> opposing the idea that it *MIGHT* be better to "not assume" NO_ENTROPY will
+> never clobber registers either, e.g., for the sake of future extendibility.  In
+> this case, the below diff should address:
 
-Or it's a "rep movsb" with FSRM as a CPUID-based alternative, of course.
+Now we agreed that TDH.SYS.INIT() and TDH.SYS.LP.INIT() doesn't matter,
+I'm fine with this patch. (TDX KVM handles other SEAMCALLS itself.)
 
-                 Linus
+Reviewed-by: Isaku Yamahata <isaku.yamahata@intel.com>
+-- 
+Isaku Yamahata <isaku.yamahata@linux.intel.com>
