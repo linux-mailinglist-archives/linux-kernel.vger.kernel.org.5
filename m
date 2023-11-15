@@ -2,114 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 427CB7EC37B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:19:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 700E67EC380
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:21:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343925AbjKONTX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:19:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
+        id S1343924AbjKONVo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:21:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343916AbjKONTV (ORCPT
+        with ESMTP id S1343884AbjKONVm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:19:21 -0500
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F10DF123;
-        Wed, 15 Nov 2023 05:19:15 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 19B58E000B;
-        Wed, 15 Nov 2023 13:19:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700054354;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kh863IS7u51LKmMBYZ7PkwB+t+FoHqfRUvoHcoXoRyA=;
-        b=ZemHxIE0oh3YTdce0+h4sKgelzDV1AcYbfoDS8gsEMMeKHWCNWXEeTBlBbXZAy559nPtE1
-        onOHHFmd1eNjCGnWsCNFUTryj/3SsCvAMGFzEW8ZuYfQS4pxFlE9WAJ7/z/m6Z7Rrtb38A
-        3F1y522W1zGTWSr4dsdgv+BNSj6uPS0e4f7JSLjnXgr0rBuMGoU2pl7gFPQkq9k8iu4TN7
-        6/FAv7I/qOMdl/fprO4Fb2Foy9pA29UrpWEkzG2/B20wyAsCB6AZReXPfosP4mVPTHrUk8
-        9b/D4lILeauWdJLknHWNSWm2h3MRf42ysFBPcQN5YyXOSh3yXH+6DzZIdEBTFQ==
-Date:   Wed, 15 Nov 2023 14:19:12 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     Nicolas Dufresne <nicolas.dufresne@collabora.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Michael Tretter <m.tretter@pengutronix.de>,
-        Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: Stateless Encoding uAPI Discussion and Proposal
-Message-ID: <ZVTFUKPxKvcBjg95@aptenodytes>
-References: <ZK2NiQd1KnraAr20@aptenodytes>
- <ZNTp1e4gJ2zeYmS-@aptenodytes>
- <a2e8e01ea754232dd3562b34702b6600d7358605.camel@collabora.com>
- <ZNaVQ-zxIuCpGGha@aptenodytes>
- <720c476189552596cbd61dd74d6fa12818718036.camel@collabora.com>
- <ZOW91rIXS8fTWZ6I@aptenodytes>
+        Wed, 15 Nov 2023 08:21:42 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9648811F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:21:38 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5be6d6c04bfso70423377b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:21:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700054498; x=1700659298; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qmhC7cUoOMTfZNr8tTpl5VWN0/bC5ZVilmLHQGwcmA8=;
+        b=FlzbVDhs5FPuEtsQgfwfZg+P5HLgzgGLJlFhk81vB8KES59dcCdJHuk8MAYRhT7H2J
+         2HuMN/YuQ5n9TdSresmvEC64GBy+kKDFqoLDuTQEKYUvPcKWWteW2tljkSwNST85YLJY
+         0wU6v5hEXDiYO65wGwP4oTMURm1KIUx6jfgeQC3J5NqXAWUr+IJFYiJ0fuMg1Wj50Lri
+         q+qi4NAvFxHtAyMsI8CxudB4KBCNNAFbUUJqjkyCBwxDA+Urr74PjDW4jMzH1P2TwmVE
+         oculpuRsxAA8BEpaYpyGfutUTAnwTIpigBN9ncveMGZ+bE69iaj33P8UBveZuXC0vVMP
+         21Kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700054498; x=1700659298;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qmhC7cUoOMTfZNr8tTpl5VWN0/bC5ZVilmLHQGwcmA8=;
+        b=Fh7bk0qXTqsbiyVczlKWf5sxNZUAbrxn+IlGB/HlWNbpFLjKWcP0XxaNoFBHUfAmvC
+         P+VZJpOim6kSx4E6fTXilwaebXp8XtaMvelwlyJxtN3iSvaMV7w7JEQXVbDOwvA4tk3N
+         nyuuuje5ZHUnHEYNPq8/y1MEBj1zDS569L9WV1tzx4Cd/QljADrLH7A+nyZgdJ3RQ5rS
+         4YrzA5wgVszbSCerBdNl19wKbUnrAfz2XjVo9FooOoSveWwRCr2BUm2/FOYtWCm1MhVR
+         ec6HNnyYVdRO3V3uKyYl98TRzHzX6mO3az5m49DtiPvwJfIKsi//khpRcozlKZ2c4a9R
+         Ythw==
+X-Gm-Message-State: AOJu0Yw2zXh+v830lReijb+dv6gY9K2OyAuafjtzS5Q2cOF30WpPr3vc
+        5WQ5eNb5SlfeMJYPWSLP4FekKNP6d6tDg82qAqZ97g==
+X-Google-Smtp-Source: AGHT+IGosDu2W9oeWYt/RNw56Tl9pnmCGdRN+gpQGKe0jrfOUiv7Tybc5XhJ8xYmVnJpsuRetbjrvZnCAoPAC6D6rWE=
+X-Received: by 2002:a25:c5c4:0:b0:d9a:fe8c:c29c with SMTP id
+ v187-20020a25c5c4000000b00d9afe8cc29cmr9934442ybe.58.1700054497731; Wed, 15
+ Nov 2023 05:21:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="3XZa7c14TyG2LllA"
-Content-Disposition: inline
-In-Reply-To: <ZOW91rIXS8fTWZ6I@aptenodytes>
-X-GND-Sasl: paul.kocialkowski@bootlin.com
+References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700051821-1087-2-git-send-email-quic_msarkar@quicinc.com> <CAA8EJprWP3ThYyPZDF7ddG9Awdk9D7ovxes--r0VS3Ma53VqxA@mail.gmail.com>
+In-Reply-To: <CAA8EJprWP3ThYyPZDF7ddG9Awdk9D7ovxes--r0VS3Ma53VqxA@mail.gmail.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 15 Nov 2023 15:21:26 +0200
+Message-ID: <CAA8EJprouEiex2YGuMjJCmwiWmhbYXaUpTBkWhEXpF08iGzk6Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        robh@kernel.org, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?Q?Krzysztof_Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 15 Nov 2023 at 15:18, Dmitry Baryshkov
+<dmitry.baryshkov@linaro.org> wrote:
+>
+> On Wed, 15 Nov 2023 at 14:37, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+> >
+> > This change will enable cache snooping logic to support
+> > cache coherency for 8775 RC platform.
+> >
+> > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> > ---
+> >  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+> >  1 file changed, 13 insertions(+)
+> >
+> > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > index 6902e97..b82ccd1 100644
+> > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > @@ -51,6 +51,7 @@
+> >  #define PARF_SID_OFFSET                                0x234
+> >  #define PARF_BDF_TRANSLATE_CFG                 0x24c
+> >  #define PARF_SLV_ADDR_SPACE_SIZE               0x358
+> > +#define PCIE_PARF_NO_SNOOP_OVERIDE             0x3d4
+> >  #define PARF_DEVICE_TYPE                       0x1000
+> >  #define PARF_BDF_TO_SID_TABLE_N                        0x2000
+> >
+> > @@ -117,6 +118,10 @@
+> >  /* PARF_LTSSM register fields */
+> >  #define LTSSM_EN                               BIT(8)
+> >
+> > +/* PARF_NO_SNOOP_OVERIDE register fields */
+> > +#define WR_NO_SNOOP_OVERIDE_EN                 BIT(1)
+> > +#define RD_NO_SNOOP_OVERIDE_EN                 BIT(3)
+> > +
+> >  /* PARF_DEVICE_TYPE register fields */
+> >  #define DEVICE_TYPE_RC                         0x4
+> >
+> > @@ -961,6 +966,14 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+> >
+> >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> >  {
+> > +       struct dw_pcie *pci = pcie->pci;
+> > +       struct device *dev = pci->dev;
+> > +
+> > +       /* Enable cache snooping for SA8775P */
+> > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
+>
+> Quoting my feedback from v1:
+>
+> Obviously: please populate a flag in the data structures instead of
+> doing of_device_is_compatible(). Same applies to the patch 2.
 
---3XZa7c14TyG2LllA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Mani, I saw your response for the v1, but I forgot to respond. In my
+opinion, it's better to have the flag now, even if it is just for a
+single platform. It allows us to follow the logic of the driver and
+saves few string ops.
 
-Hi folks,
+>
+>
+> > +               writel(WR_NO_SNOOP_OVERIDE_EN | RD_NO_SNOOP_OVERIDE_EN,
+> > +                               pcie->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
+> > +
+> >         qcom_pcie_clear_hpc(pcie->pci);
+> >
+> >         return 0;
+> > --
+> > 2.7.4
+> >
+>
+>
+> --
+> With best wishes
+> Dmitry
 
-Just a quick message on this thread to let you know that we have just publi=
-shed
-the code for the H.264 encoding extension to cedrus for the V3/V3s/S3.
 
-You can find more details in the dedicated blog post:
-- https://bootlin.com/blog/open-source-linux-kernel-support-for-the-allwinn=
-er-v3-v3s-s3-h-264-video-encoder/
 
-And the code is at:
-- https://github.com/bootlin/linux/tree/cedrus/h264-encoding
-- https://github.com/bootlin/v4l2-cedrus-enc-test
-
-As announced this doesn't really help advance our uAPI discussion here since
-there is no rate-control yet and the stateful controls are reused for
-controlling the encoding features (including things like GOP).
-
-Cheers,
-
-Paul
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---3XZa7c14TyG2LllA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVUxVAACgkQ3cLmz3+f
-v9ENfAf/cJNtVqIttbn+OgAhNyMjAzoHsBnfzqQ3PxedfqcycLxpqNweZtSAhdjz
-r/hZKT88PmyX0hilYA7dz/PNiqWVdYcokLyIKIDoDvWQhVR2fiUj7sc/w0485Cpk
-lA6LH/t2dlQwPbL94AkXqdXt0mbk9u+YzrCEuyUwUcn3+kwR4bWBkheGXC98Y0Q2
-KymMYlBPzgBpWp2XKdpq6wx3ldSwBzXmEg61pWhivQ21mX5f3JFBA211jM9qZJsi
-BYhvd79JKDVW87bdE7m0leMkrgfL2NG+c7z80cdaHWm4FlCmCN1aRegWCIqySKKP
-cvn+flA7FJdmz18rYhVQYWQfToAFFQ==
-=Db/e
------END PGP SIGNATURE-----
-
---3XZa7c14TyG2LllA--
+-- 
+With best wishes
+Dmitry
