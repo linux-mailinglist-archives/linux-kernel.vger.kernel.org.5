@@ -2,52 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F6667EBD2C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:44:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30D757EBD31
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:47:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234593AbjKOGoK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 01:44:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S234598AbjKOGrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229600AbjKOGoH (ORCPT
+        with ESMTP id S229551AbjKOGrL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:44:07 -0500
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D0B2CA
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:44:04 -0800 (PST)
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2806501f8efso380796a91.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:44:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700030643; x=1700635443;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DPkpJiyboP3YDsqMigwzj3L9aPPH8ZkCr0KvfUH0uFs=;
-        b=rTx0TtPWUHmw3x4Sokx/MoQHsluqLcf+DDStPd+PkL4x9D8vaSDUynXLHsn1QWt/9N
-         YLt00K8Pig7e2wRYc+5r8E5CvSbmPX3iDK7dEr+E/BiKk8z4iaOmsp19e6huDmVu3Ey7
-         6yBifQpqZ3aP7IBksHimyx3YSOdac7Q+YKEzwX20vM0zxS1BQX9crk8hgTQd2fjg0T5m
-         ETmaFlCmdGGSmvKQPyNQGbWErgS2pnkmIawd1A3sP2buMyx5haUhOeA6Z+4Eqm+4HdUh
-         kDEq9gCXIk85UsFSGqBUq5fxwjgcDbfa84Orl4iSSahPhmuNUaUVdSPltwgp/xPD/ORl
-         Qzjw==
-X-Gm-Message-State: AOJu0YyTZ/rqukO6pOn9j1WuaAqUnZThN59TjfWDPRPlk8KTzlilHUZk
-        //9hBg2e2qlUSZppu3fKRlg5sA2QJaP66px3SCGXDMoJNXIQf1Q=
-X-Google-Smtp-Source: AGHT+IEz+m5ZExnHJOCyrXVXqFFNbhGEh/IIgnncuPaMrp+MHRF4oDHJo15QvoPxJzORKJLjy1H2LWDRZwAiUtsyAm8L3R8brnJE
+        Wed, 15 Nov 2023 01:47:11 -0500
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2049.outbound.protection.outlook.com [40.107.102.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B741B3;
+        Tue, 14 Nov 2023 22:47:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OnfIkxUvTpcVy7iDt4H3ax7imyOqiHwyy4UFALKq6NyOevbmsNi/RkoPKh9UAKeoiu2mK8nqW03/jso2sYMmmePrAXfiSwr8PfAOg4nC9bgV/ofTSHS6tf+FDNGt1W7IzRw+3ltci50dYVQt6sanXBwshqLJZmoNDexekvmn2qQY3czOBF1xELd5SmG/DhgqaMgu16GEYXsXziDi8E1atbLvqDgaVIG90oe3eti/RtNBtnJ//4TOAkUVmJIAIP9nMdss9kSdGr00QEJMWnuC+AHzFbhQnjCZL3hEl6GkZ0q19WJ3I15fhuNkmxtxrhxO3s64nNIypIrEbLa5TJtttw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hlOdvYwyaNN56+4A+zj8ZYUmrnyxcqPQBRPsUIJhbeg=;
+ b=nZDEK/Y2NWhrSuP37AWtv1kNWxpXByvoLwDldMZC6a5sztB3lSRJedGV9bNaf/QZL3PvkTfb66ey4DFT7F5uCAKpYX9u7fM1gJCXMU7eCgCSmXpz9d+XuN5RLbwJHg29vHuThFfGYhv5qyP3h0T5KbyofjyeaK9ac5CtGiCKOG077ZM8lCXTHq4RMdW9wBt01i7HwSqrgcTy29/5k5PMqDVDc+zra9VdhkuFosvu8ECgPDw3KqyKGxnulQ6wcNeC9t1OV/StCHUlgNeCRAA/SDPRWBZs2RUT1t1CHNfRCDY9936BnlBbpIKfrkfO4GW8Xi/E12eO4GECeJqJNDBR9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=hlOdvYwyaNN56+4A+zj8ZYUmrnyxcqPQBRPsUIJhbeg=;
+ b=igjuWsUObT+tYg2IAtIFxg+1FRtRg73WjUYR8Dit3TtYBWrvzOE6KNkgW+T3CKSVkQu5F3Qw87NB0sJuCvaUMyoMVnmrBKDEhCXFfHwUnUbCGQD1W6b8+/dQs7FAIBD14hyWgMMkVI/MvSQgDyHi374NOdgB4GhfZKlwG4JyT2Q=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
+ by CO6PR12MB5460.namprd12.prod.outlook.com (2603:10b6:5:357::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.18; Wed, 15 Nov
+ 2023 06:47:01 +0000
+Received: from BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
+ ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.6977.033; Wed, 15 Nov 2023
+ 06:47:01 +0000
+Message-ID: <6f5b2c30-8336-4e03-9239-be2be736a09f@amd.com>
+Date:   Wed, 15 Nov 2023 07:46:56 +0100
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com>
+ <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org>
+ <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+ <ZVNzS2EA4zQRwIQ7@nvidia.com>
+From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+In-Reply-To: <ZVNzS2EA4zQRwIQ7@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: FR4P281CA0190.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:ca::15) To BN8PR12MB3587.namprd12.prod.outlook.com
+ (2603:10b6:408:43::13)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:9a82:b0:280:98bd:d8df with SMTP id
- e2-20020a17090a9a8200b0028098bdd8dfmr3574078pjp.7.1700030643661; Tue, 14 Nov
- 2023 22:44:03 -0800 (PST)
-Date:   Tue, 14 Nov 2023 22:44:03 -0800
-In-Reply-To: <CA+LQOUfmbgj9a769zcp_7AYz-=RkTeaxsinKarhyKO17Sij6FA@mail.gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009f7441060a2b3ac8@google.com>
-Subject: Re: [syzbot] [wireless?] [net?] WARNING in ieee80211_rfkill_poll
-From:   syzbot <syzbot+7e59a5bfc7a897247e18@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, mukattreyee@gmail.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|CO6PR12MB5460:EE_
+X-MS-Office365-Filtering-Correlation-Id: 44cde0b0-4dab-4e0b-0450-08dbe5a6abb8
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: p+Nl0W769+dbdcHUox8lVmullEsbovN3/b1kN3koUcZWL5B35KShVSuPJQXAkeJnqSenIznd3aj1iTcZFtUwR5Mmj8jI34AVZA+SH1adwtDNABGHJTLwCxJfQnyvNLwjiT0iDUqDGU0gz6ecvkJrT900OxvXXgEI2Km0On6LyTKAthY2mJ/EEWo77y8ZrVfEoPncgafhASArOz+hKsyAbZd4q6JnngOzFfI6UR9nZgWczKY8amYwE+2fTkAgZRF5xu/kDXjZSQ3Q5nd/9Svl5tAvMZKfy3HpTGy1jiFW46Q+05nlOtiepiSw0cyJwWuA03oCJEEUEjR/kij7yIj7tWSmhf27b2j1Va7T2OIizmAILt3yoE2kgk78ux3tlCiG3HUwQKcIhR6omlOht08TlQUnTRHm+MEwjOtjSDoQMZqz9NyJrvo68fcX57xp4lW01JXOXGN5e6wT3C6LooAyLxHw8bcTpE7RvPopBxGlwg7A8apyRCsfZ4fDkqKA4tzkF+rSByJo15IKfooa6fMNAse1PRkB5hMqwyxiYjr0qG0NvmL25uro0qk+x5lg8orBsbYTkTnnNRpTSbQcIQn/pmccw/aPg7tLnvbWh3SFJMcrcY5HY2MNlzbSDbnxtMiQAOciuOlNW9WtlCX9iKuUAA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(366004)(376002)(136003)(396003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(2906002)(41300700001)(36756003)(7416002)(4744005)(86362001)(31696002)(5660300002)(316002)(478600001)(2616005)(66476007)(66946007)(66556008)(6506007)(38100700002)(110136005)(54906003)(26005)(31686004)(6512007)(6666004)(4326008)(8936002)(8676002)(6486002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eU04dG56bUFFWVRpdUpHb25qemZHZ0hya1cxYWNzSXJGVEdKZnNSUHZOTE1K?=
+ =?utf-8?B?YUZwS1h1NzB6MnR1bjNRR2QrOVE1UG0vbk11cVlsZGNRRG5vZlJZUjZaVWVC?=
+ =?utf-8?B?cG0zMTFobUxUU3l1UWYvbmR5ekFqbXlQQTZoeHBRUVg2N3haTEZQd2ZHN016?=
+ =?utf-8?B?Tndkak8yWVJhWWxlYjVTV0dMUU5EWHNBcVhqSTJsL29jc1Y4bjk0bklFT01D?=
+ =?utf-8?B?QTF2SW5OcjlCKzIvQkhaWjZoNzNjK0tzcTdTVFpXclRGcDB6cTVhc014ZnY5?=
+ =?utf-8?B?dmNMY1JHTXJLZEQ5MHZlK2VYSHk5aU1RM2I1SThoeDRWcndqSmZqNmJHNWpi?=
+ =?utf-8?B?MW5pTFVyRE9FQit0aExSTThlL1l0WWI0QmYwbnpUMis1bmNOT3ZUZWNJelVr?=
+ =?utf-8?B?Mi9Sd2RLdzUvWTZxbDRwYkVKc3lVRDlyMDFmTzRTQWdGYjVHQWp0dUwzdFEr?=
+ =?utf-8?B?UWJtT1c4Rm41MHRLcjRxZXdYczNvdWZ1UXZ1eW0vNFltZ3M0eExDbnNMbW5S?=
+ =?utf-8?B?cVU5b2tzd3RzOEhkV2REQWs2RGhMTkhQL0R4SjJ5ZFYyOVg3cExJNFFtM3VC?=
+ =?utf-8?B?Z25vaEFnNEJFdXpkaU5HN3NNbk1zZTFmbVg1K2V2T1Noa2xOTDFhbGl5TGxK?=
+ =?utf-8?B?S2llYWNZcmdDbGh2emFFSHlNc21kN2lQSWM5VVFOL2Z1WmsxR1JtakVYSDBT?=
+ =?utf-8?B?dlJhNzFpVDFPVEFIWGlGR0xUc3JBei9KWFJMQURMeW5rbnJLUlpUZkNTcG1w?=
+ =?utf-8?B?MkNtNG9MY0w1YzNrajJEd2xmT3dMaWJKNVcxRUxFVmUrVG16Yk9nWXZDLzM4?=
+ =?utf-8?B?cmxNMmRMVWw3OXV3Nk1tNWRjSXBiMGVSdDQ5WDQyWU1Vc0loY3Vaa3o5b0kw?=
+ =?utf-8?B?TzRXc3dHbjJBTC81V2NrMW03TFNKNDlQaU9aQkF1UkpDMjdGRXRpdllLNE9n?=
+ =?utf-8?B?c2VKZ2xXZ3Z1QlFzNWxQUDU3WllpdnN1emZkZW5Ybi9jVnVEUVpKODA0eDNo?=
+ =?utf-8?B?SUs4ZlpXYWVJdmNacHN4WHg1UTRqRFg3VW5odGZaMnR5aXdJNXh3NkZmVHVt?=
+ =?utf-8?B?c1N1eHpXYzhXamFxM1FkMStOM0lia25vUjZ6b2hqSTlmc2o1S3lreEVHZGtp?=
+ =?utf-8?B?aHFwckgxMjhNY2NPZGF0cXlnZ0VrOVFrdmQ5d1RuU2xnc2ErWE9WNnNwL2U1?=
+ =?utf-8?B?TEZGdDI2eGhCNjY3djdUQ1VtN0NaSFIxK1VXb1FhTnZUeWtMZThJK2tVWUtj?=
+ =?utf-8?B?dE5EbkxCR00zdjU0NW5wYXZIQVRzUy8xRERvZTNCQ29zcTNoRnBXSlJxaGhs?=
+ =?utf-8?B?bXRoVG0veDdPMWxydFhVMmx6MTJyOHVrbmZBMkNsRWhjb1ZTL1NGVzJLV1My?=
+ =?utf-8?B?eXpMeWRpOExLNTAyaUowZ2FDcFlqVzR4Y1BHZ3QrWkp3cU41RmhqUUNZU05x?=
+ =?utf-8?B?eGs0ZW02Y1BLS3JzN0xmbVRZdnlRLzY5Ymg1RG1wYThFeHY3Sk9aUnVIaVo5?=
+ =?utf-8?B?N2Eydm9oWU1Na1hnYWcxMS9RTjFJaGo0aDQ0dzBBZTNiYVZNMTBXNXRGamhl?=
+ =?utf-8?B?R1lmZ292SFR1ZUlBV1hNaGdYZEZ3bGN6SXlRZmhWTkRUZmVmdWlLWHZ2ajdT?=
+ =?utf-8?B?WWlCaENPNTh2QWF6ckVsY1BGNVl5WTRWaEwzWndwRlRKNlEvOHJNQUtQTFFN?=
+ =?utf-8?B?SW4rTEFPVHVDOUZkZDdnMVY5L2tnVFVtTEhLc0l0MmMyUHJyUGlTTENtOWJk?=
+ =?utf-8?B?UlZTQ1owSEFZUzk1Q3QyME0wWTNyRnVSWFJZanE3dDkvTlR1TFJxRVQvQzBP?=
+ =?utf-8?B?azdISWJEK254QnNyN2lHN0UvN3AxZldLWmM4Qlh2R05QdFJxQmU1T01vMUdy?=
+ =?utf-8?B?ZmVHb2lVRnNzNmk0bWFyTGVpSVR0UUdxNEdRek1kK09XakdpbjJEYzNOelk4?=
+ =?utf-8?B?ZG9MR0NDUEtLc1Nhd0Y1eXFDcXBmdUZweFUzcUw4Nk1sc1pzU1g1a1g1Rjhv?=
+ =?utf-8?B?WGFvYlA1enJ4c0tKRXFXTVdsRFZ0K1ptaU5IcjA3VjhVTXdJUGJWQWNUejhG?=
+ =?utf-8?B?YnA1SHgwd3JjUUltOXZ2bjFxYmFtOUY5cDFabUN3R0d0dnBxVGhhWDNSeTh1?=
+ =?utf-8?Q?0XoY=3D?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44cde0b0-4dab-4e0b-0450-08dbe5a6abb8
+X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 06:47:01.3693
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ygMZLdcsam0UnH6sy2l8skZ3ZneLGGRySdmKSW+EA15Y9fR009VELCkRmHytgTlP
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR12MB5460
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
         T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -55,53 +139,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Am 14.11.23 um 14:16 schrieb Jason Gunthorpe:
+> A non-mm owned struct page should not be
+> passed into mm calls. It is just way too hacky to be seriously
+> considered :(
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING in ieee80211_rfkill_poll
+Can we please print this sentence on T-Shirts? Or framed on the wall of 
+meeting rooms?
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 22 at net/mac80211/driver-ops.h:688 drv_rfkill_poll net/mac80211/driver-ops.h:688 [inline]
-WARNING: CPU: 1 PID: 22 at net/mac80211/driver-ops.h:688 ieee80211_rfkill_poll+0x134/0x170 net/mac80211/cfg.c:3100
-Modules linked in:
-CPU: 1 PID: 22 Comm: kworker/1:0 Not tainted 6.7.0-rc1-syzkaller-00019-gc42d9eeef8e5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-Workqueue: events_power_efficient rfkill_poll
-RIP: 0010:drv_rfkill_poll net/mac80211/driver-ops.h:688 [inline]
-RIP: 0010:ieee80211_rfkill_poll+0x134/0x170 net/mac80211/cfg.c:3100
-Code: 60 07 00 00 be ff ff ff ff 48 8d 78 68 e8 24 f4 38 00 31 ff 89 c5 89 c6 e8 79 22 39 fb 85 ed 0f 85 44 ff ff ff e8 fc 26 39 fb <0f> 0b e9 38 ff ff ff e8 f0 26 39 fb 0f 0b 48 c7 c7 78 13 34 89 e8
-RSP: 0018:ffffc9000017fc90 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888112e50700 RCX: ffffffff8614d1d7
-RDX: ffff888103a6ba00 RSI: ffffffff8614d1e4 RDI: 0000000000000005
-RBP: 0000000000000000 R08: 0000000000000005 R09: 0000000000000000
-R10: 0000000000000000 R11: 1ffffffff15c0565 R12: ffff888112e50700
-R13: 0000000000000001 R14: ffffc9000017fd80 R15: ffff8881f673ad40
-FS:  0000000000000000(0000) GS:ffff8881f6700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000056206539e088 CR3: 0000000109b43000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- rdev_rfkill_poll net/wireless/rdev-ops.h:636 [inline]
- cfg80211_rfkill_poll+0xc9/0x240 net/wireless/core.c:224
- rfkill_poll+0x8d/0x110 net/rfkill/core.c:1037
- process_one_work+0x884/0x15c0 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x8b9/0x1290 kernel/workqueue.c:2784
- kthread+0x33c/0x440 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
- </TASK>
+I don't know how often I had to repeat that to people.
 
-
-Tested on:
-
-commit:         c42d9eee Merge tag 'hardening-v6.7-rc2' of git://git.k..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=1232175b680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=bc2b6251fe8086ab
-dashboard link: https://syzkaller.appspot.com/bug?extid=7e59a5bfc7a897247e18
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Note: no patches were applied.
+Regards,
+Christian.
