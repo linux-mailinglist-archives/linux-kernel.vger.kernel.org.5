@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBF9E7EC1BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54C177EC1BE
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:56:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343696AbjKOL4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:56:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        id S1343691AbjKOL4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:56:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343735AbjKOL4G (ORCPT
+        with ESMTP id S1343745AbjKOL4W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:56:06 -0500
+        Wed, 15 Nov 2023 06:56:22 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB0AC12F;
-        Wed, 15 Nov 2023 03:55:57 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07AAD185;
+        Wed, 15 Nov 2023 03:56:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049357; x=1731585357;
+  t=1700049379; x=1731585379;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=rIkeGWe0vKeWaaGNiLfcCs1mZGJqvuSfSNOI2QChTzM=;
-  b=eJoOEaygiOlOgsnYY4L6NGhMdA5EigBPjCvNg+gJvmfyEmdcm+qH4njI
-   E4Vg+ckS6iFng7e4CgR2mXUjLhHa3tBd5QYOafmcrWqTSltdTpB9Xxgrj
-   hj48CpB8GnHm3KogMBl2pCXK9cCsWwKmeT4F3b/9TiKBg8A4CxJ87oFbP
-   lO4q/OqPB1qlyiCAXbrH0eVEMTY0hHF7o6C1ZDD8ap6uoQoPSdZO2DNsJ
-   z4Ci5M/W6cnme843amNAp0uTkIhO52ABh076AkXTB/PtgfBAalbwqCCRq
-   Yj876bcz/2Ccj8XdoQwmMFpyat62aLQ+9ZKYWFmYAj6Lh+24jvO093ArL
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393720174"
+  bh=L6qaJ3+rKPeVp+q5HB8PXSZDCg0Q2iPlZERycRqy9VA=;
+  b=QoBVV7T2Wlv96tp0OvC35hxB3cm/f6r/x+YeQ2g5N2mjrSH+H8Uj3Qls
+   hFB5diUYRWN/odNR5TYUfS5Tm73jX9vir9BS/+2b+r4kxYXEdxda+UqTw
+   GDoXdA8c2N9B6p0gMxve4+nCoBF2E6p4EL+9FOiAA9C0Aw8d/S18EKyne
+   d5opUjEfvfXkJJTm2j+z4UUsiIEgaIMf8m2E0Bmqr37S2AFOZtiEivA2z
+   U4s51Jhm1F24EJex7hrqbJCfBG/827dMrz78e4YZKOwvegJUF+LTezevN
+   shtOZIL6uNu1usY9rUMO6OfusNInFaHCQ9AsHqwziaTT8wlYe4uvmG36n
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393720201"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="393720174"
+   d="scan'208";a="393720201"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:57 -0800
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:56:18 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753452"
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753481"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="908753452"
+   d="scan'208";a="908753481"
 Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.214.157.166]) ([10.214.157.166])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:53 -0800
-Message-ID: <bb08dc5d-8287-45e1-9b53-f56676768e60@linux.intel.com>
-Date:   Wed, 15 Nov 2023 19:55:53 +0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:56:15 -0800
+Message-ID: <361e8a7a-ff82-4baf-9996-1a46994545ca@linux.intel.com>
+Date:   Wed, 15 Nov 2023 19:56:15 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net 4/7] net/sched: taprio: get corrected value of
- cycle_time and interval
+Subject: Re: [PATCH v2 net 5/7] net/sched: taprio: fix delayed switching to
+ new schedule after timer expiry
 Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Vinicius Costa Gomes <vinicius.gomes@intel.com>
-Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>,
         Cong Wang <xiyou.wangcong@gmail.com>,
         Jiri Pirko <jiri@resnulli.us>,
         "David S . Miller" <davem@davemloft.net>,
@@ -57,14 +57,12 @@ Cc:     Jamal Hadi Salim <jhs@mojatatu.com>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-5-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-5-faizal.abdul.rahim@linux.intel.com>
- <20231109111146.qrnekz6ykyzrcpbd@skbuf>
+ <20231107112023.676016-6-faizal.abdul.rahim@linux.intel.com>
+ <20231109115052.xz2vhaknno6nycbo@skbuf>
 From:   "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20231109111146.qrnekz6ykyzrcpbd@skbuf>
+In-Reply-To: <20231109115052.xz2vhaknno6nycbo@skbuf>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
@@ -77,87 +75,108 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/11/2023 7:11 pm, Vladimir Oltean wrote:
-> On Tue, Nov 07, 2023 at 06:20:20AM -0500, Faizal Rahim wrote:
->> Retrieve adjusted cycle_time and interval values through new APIs.
->> Note that in some cases where the original values are required,
->> such as in dump_schedule() and setup_first_end_time(), direct calls
->> to cycle_time and interval are retained without using the new APIs.
+On 9/11/2023 7:50 pm, Vladimir Oltean wrote:
+> On Tue, Nov 07, 2023 at 06:20:21AM -0500, Faizal Rahim wrote:
+>> If a new GCL is triggered and the new admin base time falls before the
+>> expiry of advance_timer (current running entry from oper),
+>> taprio_start_sched() resets the current advance_timer expiry to the
+>> new admin base time. However, upon expiry, advance_sched() doesn't
+>> immediately switch to the admin schedule. It continues running entries
+>> from the old oper schedule, and only switches to the new admin schedule
+>> much later. Ideally, if the advance_timer is shorten to align with the
+>> new admin base time, when the timer expires, advance_sched() should
+>> trigger switch_schedules() at the beginning.
 >>
->> Added a new field, correction_active, in the sched_entry struct to
->> determine the entry's correction state. This field is required due
->> to specific flow like find_entry_to_transmit() -> get_interval_end_time()
->> which retrieves the interval for each entry. During positive cycle
->> time correction, it's known that the last entry interval requires
->> correction. However, for negative correction, the affected entry
->> is unknown, which is why this new field is necessary.
+>> To resolve this issue, set the cycle_time_correction to a non-initialized
+>> value in taprio_start_sched(). advance_sched() will use it to initiate
+>> switch_schedules() at the beginning.
+>>
+>> Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
 > 
-> I agree with the motivation, but I'm not sure if the chosen solution is
-> correct.
-> 
-> static u32 get_interval(const struct sched_entry *entry,
-> 			const struct sched_gate_list *oper)
-> {
-> 	if (entry->correction_active)
-> 		return entry->interval + oper->cycle_time_correction;
-> 
-> 	return entry->interval;
-> }
-> 
-> What if the schedule looks like this:
-> 
-> 	sched-entry S 0x01 125000000
-> 	sched-entry S 0x02 125000000
-> 	sched-entry S 0x04 125000000
-> 	sched-entry S 0x08 125000000
-> 	sched-entry S 0x10 125000000
-> 	sched-entry S 0x20 125000000
-> 	sched-entry S 0x40 125000000
-> 	sched-entry S 0x80 125000000
-> 
-> and the calculated cycle_time_correction is -200000000? That would
-> eliminate the entire last sched-entry (0x80), and the previous one
-> (0x40) would run for just 75000000 ns. But your calculation would say
-> that its interval is −75000000 ns (actually reported as an u32 positive
-> integer, so it would be a completely bogus value).
-> 
-> So not only is the affected entry unknown, but also the amount of cycle
-> time correction that applies to it is unknown.
+> Did the commit you blame really introduce this issue, or was it your
+> rework to trigger switch_schedules() based on the correction?
 > 
 
-Just an FYI, my cycle time extension test for sending packets fails without 
-updating the interval and cycle_time – the duration doesn't extend 
-properly. I only observe proper extension when this patch is included.
+Ohh actually this issue happens even without my whole patch set.
 
-In patch series v1, interval and cycle_time were updated directly. However, 
-due to concerns in v1 comments about updating the fields directly, v2 
-doesn't do that.
-
-Regarding the concern about negative correction exceeding the interval 
-value, I've checked the logic in get_cycle_time_correction() that sets 
-cycle_time_correction, I don't see the possibility of this happening.... 
-Still, if it does, it suggests an error much earlier than the 
-get_interval() call. So, I propose a failure check in 
-get_cycle_time_correction(). If the correction value is negative and 
-consumes the entire entry interval or more, we set the negative 
-cycle_time_correction to some arbitrary value, maybe half of the interval, 
-just to mitigate the impact of the unknown error that occurred earlier.
-
-What do you think ?
-
-> I'm looking at where we need get_interval(), and it's from:
+>> Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
+>> ---
+>>   net/sched/sch_taprio.c | 21 ++++++++++++++++++---
+>>   1 file changed, 18 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
+>> index f18a5fe12f0c..01b114edec30 100644
+>> --- a/net/sched/sch_taprio.c
+>> +++ b/net/sched/sch_taprio.c
+>> @@ -1379,14 +1379,19 @@ static void setup_first_end_time(struct taprio_sched *q,
+>>   }
+>>   
+>>   static void taprio_start_sched(struct Qdisc *sch,
+>> -			       ktime_t start, struct sched_gate_list *new)
+>> +			       ktime_t new_base_time,
+>> +			       struct sched_gate_list *new)
+>>   {
+>>   	struct taprio_sched *q = qdisc_priv(sch);
+>> -	ktime_t expires;
+>> +	struct sched_gate_list *oper = NULL;
+>> +	ktime_t expires, start;
+>>   
+>>   	if (FULL_OFFLOAD_IS_ENABLED(q->flags))
+>>   		return;
+>>   
+>> +	oper = rcu_dereference_protected(q->oper_sched,
+>> +					 lockdep_is_held(&q->current_entry_lock));
+>> +
+>>   	expires = hrtimer_get_expires(&q->advance_timer);
+>>   	if (expires == 0)
+>>   		expires = KTIME_MAX;
+>> @@ -1395,7 +1400,17 @@ static void taprio_start_sched(struct Qdisc *sch,
+>>   	 * reprogram it to the earliest one, so we change the admin
+>>   	 * schedule to the operational one at the right time.
+>>   	 */
+>> -	start = min_t(ktime_t, start, expires);
+>> +	start = min_t(ktime_t, new_base_time, expires);
+>> +
+>> +	if (expires != KTIME_MAX &&
+>> +	    ktime_compare(start, new_base_time) == 0) {
+>> +		/* Since timer was changed to align to the new admin schedule,
+>> +		 * setting the variable below to a non-initialized value will
 > 
-> taprio_enqueue_one()
-> -> is_valid_interval()
->     -> find_entry_to_transmit()
->        -> get_interval_end_time()
-> -> get_packet_txtime()
->     -> find_entry_to_transmit()
+> I find the wording "setting the variable below to a non-initialized value"
+> confusing. 0 is non-initialized? You're talking about a value different
+> than INIT_CYCLE_TIME_CORRECTION. What about "setting a specific cycle
+> correction will indicate ..."?
 > 
-> I admit it's a part of taprio which I don't understand too well. Why do
-> we perform such complex calculations in get_interval_end_time() when we
-> should have struct sched_entry :: end_time precomputed and available for
-> this purpose (although it was primarily inteded for advance_sched() and
-> not for enqueue())?
+
+Sure
+
+>> +		 * indicate to advance_sched() to call switch_schedules() after
+>> +		 * this timer expires.
+>> +		 */
+>> +		oper->cycle_time_correction = 0;
 > 
-> Vinicius, do you know?
+> Why 0 and not ktime_sub(new_base_time, oper->cycle_end_time)? Doesn't
+> the precise correction value make a difference?
+> 
+
+Negative correction and its calculation is a separate problem handled in 
+different patch.
+
+My intention is to highlight a specific issue and address it with a single 
+patch. The core problem stemmed from the new admin schedule not making an 
+immediate transition in advance_sched().
+
+I'll rework this patch to focus specifically on resolving this problem 
+while gradually aligning with the overall series. Importantly, I won't be 
+removing anything from this patch in the process.
+
+Is that okay ?
+
+>> +	}
+>>   
+>>   	hrtimer_start(&q->advance_timer, start, HRTIMER_MODE_ABS);
+>>   }
+>> -- 
+>> 2.25.1
+>>
+> 
