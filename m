@@ -2,448 +2,435 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 923147EC1B4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 847687EC1B9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:55:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343650AbjKOLzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:55:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
+        id S1343654AbjKOLzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:55:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343625AbjKOLzP (ORCPT
+        with ESMTP id S1343661AbjKOLzj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:55:15 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629B8CC;
-        Wed, 15 Nov 2023 03:55:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049311; x=1731585311;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=5d7wdOlrdZD9uZZJ/q32HHZkqEvQWjCC2nVfcDplrmQ=;
-  b=blnQAWAqQEg+NWf+GMVYqnOSiJTl39QdKkIYjpZyuIfvLHKPTdq20rz6
-   qpAOy/0Zz8Jtq4BjvLPdFnXhRTqR/T8CUCK2AwB91GYTn73UKgqKyeBCh
-   mgNay9MqaLabhhE58eSg039CgnCWB+IdpR2D4c8CC7q8XjfZa9L3Vc0MD
-   MRGA7GP7p1KnnBNncovPV348H8J9RZK2ngzpmxQyCr9duOpkWgK0ahn74
-   fCZMI2BuKZQPr9VjHb9TE4bHli41pGc4i5WpIfUwTDwb3gfcHzquHVZ6U
-   JPYleN2kCmGlsO/wlxuPcMIT1uG4EGxDGo94Grwr4ROE1tGWaJsdRbupl
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393719987"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="393719987"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753381"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="908753381"
-Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.214.157.166]) ([10.214.157.166])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:07 -0800
-Message-ID: <27189622-372b-41d9-96ff-710f3a24d1b2@linux.intel.com>
-Date:   Wed, 15 Nov 2023 19:55:07 +0800
+        Wed, 15 Nov 2023 06:55:39 -0500
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2074.outbound.protection.outlook.com [40.107.117.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C5F181;
+        Wed, 15 Nov 2023 03:55:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ZdZP1CDI8HaxQxgCZh1p2L+TuZ/8mNRAdDyeFLYuvXiw56GpFxXbHR5cnP3nBoWXhOR2OLq5sb7MmZnEFFRyW1TQxUvr3TCq0HSjP5XTaJis/el5lUio8xQ2cMNc2UeCamB/KjGLlV/K9QSgWK+5e06REqdZ/sfs0JPQK0qDBJA0ZrdFHXHCMpeQ6jq6foLhw4RxZQSoLg35hbzx1QGao5UhE2eaZAbkXpZYHBW1Pu8nhM7XTeSFC8WadNwizcp9KZ/waobqpxfSC6bzO+eZAoCzimdueIZXQnJcWzv1WrdS9Js/j4858qNL4DNvenqdCdrfPHJAfzT0yisVpXsyoA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=qt6Xt2panvsQSHWrpYfXGmbZ4rmxHhb7wFWSuIX3RhQ=;
+ b=gIsFRZIQ37gqYV4vY3m+csv3QaiYw7WX5kIQGFsm3J2hwXekR0pNAE9jQR4Dkc6B8OaDBnNi1aMeXZfTDBOLD8+8XB6YAON/SiCEDOr66WYzQdeMf2cl0nay7bZrVlmyPT9KvWUCcKlD07p6vNXkmdwTzw7LDUvoIIW4gnRs6sn/g6eAaGUpQzImCPFFcItmdalbADmL3N0Tst4yvP7NT49pKQAmm+w5nSbZIAmJEvvP2qmYXgMw8nn3tWmnBPdF/J497v2b2+eCROQovPMvnHQlXQ49FEVtwUwA81YFgL3lSlSn3nunlJ23RkV7r1+uy90diM479vXcomfpJNFRAw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qt6Xt2panvsQSHWrpYfXGmbZ4rmxHhb7wFWSuIX3RhQ=;
+ b=Nbb/ITD4q5+5DGnrmfS3vJ5psZS2hdywvSvJwgd5lxEk4E8wg2K5RJ6SbG2IENbWceL85pWDBCIoq6Vwj6KmW6miarDI2o8ElEowtT66QpdbUC0uRVMIQR57I7cQSRNJYbrT6vIhDrrUHQGSE+Q1AaNxoNJ8kC2Tp/Qg3g+WJ1E=
+Received: from SEYPR02MB5653.apcprd02.prod.outlook.com (2603:1096:101:56::11)
+ by SEZPR02MB6583.apcprd02.prod.outlook.com (2603:1096:101:12f::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Wed, 15 Nov
+ 2023 11:55:30 +0000
+Received: from SEYPR02MB5653.apcprd02.prod.outlook.com
+ ([fe80::164b:4e8c:754e:f133]) by SEYPR02MB5653.apcprd02.prod.outlook.com
+ ([fe80::164b:4e8c:754e:f133%4]) with mapi id 15.20.6977.028; Wed, 15 Nov 2023
+ 11:55:30 +0000
+From:   =?utf-8?B?6buE5YaN5ry+KEpveXlvdW5nIEh1YW5nKQ==?= 
+        <huangzaiyang@oppo.com>
+To:     Mukesh Ojha <quic_mojha@quicinc.com>,
+        "myungjoo.ham@samsung.com" <myungjoo.ham@samsung.com>,
+        "kyungmin.park@samsung.com" <kyungmin.park@samsung.com>,
+        "cw00.choi@samsung.com" <cw00.choi@samsung.com>
+CC:     "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        huangzaiyang <joyyoung.wang@gmail.com>
+Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIFBlcmZvcm1hbmNlOiBkZXZmcmVxOiBhdm9pZCBk?=
+ =?utf-8?Q?evfreq_delay_work_re-init_before?=
+Thread-Topic: [PATCH] Performance: devfreq: avoid devfreq delay work re-init
+ before
+Thread-Index: AQHaE7ktw9S+4MHEbkGRU6+y80L/AbB5wDqAgAAUYICAAXhpwA==
+Date:   Wed, 15 Nov 2023 11:55:30 +0000
+Message-ID: <SEYPR02MB5653EC6FA16817D2DF7022EAA3B1A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+References: <20231110093457.458-1-huangzaiyang@oppo.com>
+ <fe8f6f37-2534-6481-cc34-e561b3b7a510@quicinc.com>
+ <SEYPR02MB5653E9452D4BC57B10384D54A3B2A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+In-Reply-To: <SEYPR02MB5653E9452D4BC57B10384D54A3B2A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR02MB5653:EE_|SEZPR02MB6583:EE_
+x-ms-office365-filtering-correlation-id: 67573574-f379-4b9e-7eb0-08dbe5d1c3fc
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: Nxti+AFEXT7fkngWDDsb9AcF7P2zD6qb2OTQ0F/XY0CBAZ0CmdOmFICfHizhqt19fdqtxnAhxqeFT6iKUN7Om2+FAiuOcpParm8UhG2nDbBpvfETtsV8ES2QDn9VgOnwg35lDsML5quu41uTceLdF8MSi8cKQpM8CXkSzZFI0/ju+HQUbJvazKD1h0MO+IEjI9ZkyPjOwozI6aS55JZ/W7hycAJMjGjeEfamdXEXaoM2/X9lmF8j80myan38tRkhK3Ap2RQJPU2CF4v1bRQCns+g3gNIM1hvCuJfSkXY8rhKfzedxxOuqeUFyfIhRU6QJ/t6c81JF58QBkjT1rtPOn24JDdWAYaumknWBqF5cPBAT8szViYW0e2f2oiLKGA+dUuGCtUgIF2ERZwtoEAFvOnrlc3cuMFn1bcoiLxZGDKMA+P+vqYN/kkmgHkKIVrNKOXr12asYldNXPzrno5gCjmUt6dDBuhDo6pGb+SuOQgq4uWzxy1m2FLUV5JRBBRGKCw9APKjvpv+zY/JxMX5pzh7s8ATCVtUhVvGkxwtvCxW4iv7bfA1+rpld9NhKZpIBDyFvfEqBS595sxap4fpCnhTgcpkx08SYuepvSRvVVE=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR02MB5653.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(346002)(376002)(396003)(366004)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(83380400001)(567974003)(30864003)(26005)(224303003)(122000001)(85182001)(38100700002)(33656002)(38070700009)(86362001)(2906002)(41300700001)(4326008)(8936002)(71200400001)(966005)(478600001)(55016003)(53546011)(7696005)(6506007)(52536014)(54906003)(66476007)(64756008)(76116006)(66556008)(66446008)(110136005)(66946007)(316002)(5660300002)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?aGpvSTlhd2JYcEdyNzNvSnFQYmFMTWh6OHJhUTVKK01mZ2RCRFd1azZXeUdl?=
+ =?utf-8?B?ZHlwZTNwMDV0K2dGNU9xNlB1TE5yb0Z3UGc1VmFoNU5kalFuQ2tsMlZ2ZjNC?=
+ =?utf-8?B?U0lPYXVmRVI2SVpuSGkzek51cDhzeGtXZUlhZVcza3d1OHRicmVKSk4wMmVN?=
+ =?utf-8?B?M2ZuSi96RGhoR3IwcjdpT0VhOHZGZkZidGp2UFlTdTcxSHdsR2JCVlgyRDc5?=
+ =?utf-8?B?N2NzSVNFZWRRQlRXRnFtMFJ0R2NnY01oVk9OdGgwOVhsbDM4eWhvRDlvSHNF?=
+ =?utf-8?B?QUFEUVo5NGgyQlN2dVdrc0lwUE8wQ0dhVGdUY2tkNDNCZElMY2VLVlEwR0M1?=
+ =?utf-8?B?ZExZa3pRd01NVCtwZllLdDdhRks4K29KWXpGSmRLOCs4a04yS2g1Z2twd0I4?=
+ =?utf-8?B?UzZUNVFrN29tNmgrS0IwODhxN2xDei9OK1E2TXYyVkUybW5IT1NoekY0U0ps?=
+ =?utf-8?B?VGhtakNSbFNzLytneTErM255c0pkNEJGYTJvd0Z5SnVuK3AzbDBsVUl2OHQz?=
+ =?utf-8?B?ZUtKZjcyZzhObkt3aEZPRUNSODM5Lzh0ZktSSFpTMURzK3BXUjUyb1htbjBD?=
+ =?utf-8?B?djR4R093bEtPeU1zN3ZTM0tqZE5zNm1WdW00T2pDUUhDcGk1ZGVpUmxKREFw?=
+ =?utf-8?B?MnRGSVBBVXdBZklVaEIxWURFcHFoQ2Joak1KTmQ2ZWQ2VzZjNFRqaDd3OWtq?=
+ =?utf-8?B?SHNaV2NTS3AyeUVVekR3UGJDMDJ6UFdYQkU3bG9OZlRONG1TRTNpTFlsaWVa?=
+ =?utf-8?B?TmIwelYrZVBJcDdtenlNMlRTNU9mS3NtNU5xZnVSd0s0T0I4RFJNZEhmcUNr?=
+ =?utf-8?B?dVJpL2JDeGpQUGozc1h4S0xrK1pVdyt6dXF4aGlXZHIyY0hnWUhsVzFBZFdW?=
+ =?utf-8?B?NjV3cjNRdzIzMC9mZmduNytlK01CdlFQSjlkRmJnU3BOd2g4Y1ErcXVSbE42?=
+ =?utf-8?B?Mmt2QmZYNFBLZzlIR0RTOXZGSXZmbXgrZnI1aFFiekR6YUFJMHQ1blA1Ukkx?=
+ =?utf-8?B?Nm1ySGF6a3VtaW4yNDViQWxTRFFWMTk5dUxnSCtTaFY1NVNhcGd2UEkzNXpw?=
+ =?utf-8?B?alEwL1JMNjVjZkU0Y01ETHZTRW1xeHJnTW1GMWhUMWZmVFBYK3QwVStIVGVt?=
+ =?utf-8?B?QW5VWEY5elN5UXBCVlowMndqZFNLS09yYXFLcExEQjJVRlN6ekZBL3dtNWtF?=
+ =?utf-8?B?czBvNSt6dWZienY5R0Y2WGd3aHhuTmwxWWdYL0ZmUVJFbnpoNkNEUndoVDgw?=
+ =?utf-8?B?WW41ODR2Q0c1a3VaNS9RaWs2OGVJei9SNHplTTBwRU1MSURQUktUZDZiR0ha?=
+ =?utf-8?B?U3pRZnVldUhKdHlld1loaTlHbFErSXlRVkJjRTVQZitZbkI5VisxM0Jqa0x3?=
+ =?utf-8?B?Zys0WHdjSWpWbzYwQVlZbFF3cHdpakZTLy9vVDExWVdLZ1ZHbms5dStnWDhT?=
+ =?utf-8?B?cERUeHNBQ2k3L01BTzBUenNIa0JZTmNJOW80UlJMOHVVcXVtZlRFaVVtWjFN?=
+ =?utf-8?B?UTg1TEp2NGo0MlViMmJRR2Y2MUx3aHRUdU1ueW5ZUk9iR1phOEowcUtOT2R6?=
+ =?utf-8?B?VzdHVnFlTGhhaTJQZ0tNSlRad1N1MzVucFpQYnRJM1NEZ0xHSisrQlkwVTN5?=
+ =?utf-8?B?aDZzSVlSdTRvdHFkVXdRNTRCbkdZWHJsd0RUOFlnUHNweHlRUkFleG13QVVu?=
+ =?utf-8?B?VklYaGJVYWdtZC8xV0dkblhjUi96d3RHaUcvYS85VGZGQ1JOclY1M1ZWMXRO?=
+ =?utf-8?B?R1Y4VGZPMmVsSEpkYitHU2Y1YzhMaHVIRWRXMzVoTnNOR05YL1lKNWdjRkM1?=
+ =?utf-8?B?YlkzZHp4T0VheUpiaDU5ZThITkFQSi9Nall6NThCN2VDZ3EyK3l2NkZhOGJU?=
+ =?utf-8?B?bXFWNVh2Zk5XOG9ybDZEaGg5VkxXYWZvRVIyWXA2TXg2NCtvSzAzYXNHNVJn?=
+ =?utf-8?B?VklISi80Zlh3UFNYSFdCMTNRMWVWMEVsdjQ0SDBMdWpqSmJxQzVXRU8xVG84?=
+ =?utf-8?B?am5DZ2tObjRFV3M1bjBEVVYwZlhDOXpCa1JUUHpnaTVhMlVSVm9lbEk5a3ZF?=
+ =?utf-8?B?RjJpRDlrUlBTNThtSG5JN1NsWWJSZEowUHZBc3VaSEhOem1NOUd6N0JyVTBr?=
+ =?utf-8?Q?HRBuBiDifJIFfUwby3fG1/ZmQ?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net 2/7] net/sched: taprio: fix cycle time adjustment
- for next entry
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-3-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-3-faizal.abdul.rahim@linux.intel.com>
- <20231108232038.dhk64dtsxrw2p6h7@skbuf>
-From:   "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20231108232038.dhk64dtsxrw2p6h7@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR02MB5653.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 67573574-f379-4b9e-7eb0-08dbe5d1c3fc
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2023 11:55:30.2052
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: UCsOqOqAohcxpqGX0Y+N0Sq1a/Nw773Eid0IBdh6mDEVAxWKtFOj4YzBijsZcf8hE8xi9hh+NWUXqo4tMS+GJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SEZPR02MB6583
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 9/11/2023 7:20 am, Vladimir Oltean wrote:
-> On Tue, Nov 07, 2023 at 06:20:18AM -0500, Faizal Rahim wrote:
->> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension:
->> "the Cycle Time Extension variable allows this extension of the last old
->> cycle to be done in a defined way. If the last complete old cycle would
->> normally end less than OperCycleTimeExtension nanoseconds before the new
->> base time, then the last complete cycle before AdminBaseTime is reached
->> is extended so that it ends at AdminBaseTime."
-> 
-> So far, so good.
-> 
->> The current taprio implementation does not extend the last old cycle in
->> the defined manner specified in the Qbv Spec. This is part of the fix
->> covered in this patch.
-> 
-> In the discussion on v1, I said that prior to commit a1e6ad30fa19
-> ("net/sched: taprio: calculate guard band against actual TC gate close
-> time"), the last entry's next->close_time actually used to include the
-> oper schedule's correction, but it no longer does. This points to a
-> regression, and not to something that was never there. Am I wrong?
-
-That is correct, that patch you mentioned is a regression to some of the 
-extension correction logic.
-
-The regression caused by the patch you mentioned is resolved by 
-("net/sched: taprio: update impacted fields during cycle time adjustment").
-Here's a snippet:
-		if (cycle_corr_active(oper->cycle_time_correction) &&
-		    (next->gate_mask & BIT(tc)))
-			next->gate_close_time[tc] = end_time;
-
-The `end_time` here is already corrected. The corrected `gate_close_time` 
-is then used by taprio_dequeue_from_txq() -> taprio_entry_allows_tx(), 
-which now takes dynamic scheduling into account.
-
-
-However, the extension logic had other issues even before that patch. 
-Example, in should_change_schedules(), it didn't consider if the next entry 
-is the last one in the oper cycle before extending the schedule.
-Although this comes as no surprise as there was already a FIXME tag in 
-should_change_schedules().
-
-
-This patch primarily addresses the should_change_schedules() logic using 
-the new get_cycle_time_correction().
-
-
->> Here are the changes made:
->>
->> 1. A new API, get_cycle_time_correction(), has been added to return the
-> 
-> I would call an "API" an interface between two distinct software layers,
-> based on an agreed-upon contract. Not a function in sch_taprio.c which
-> is called by another function in sch_taprio.c.
-
-Alright, my use of the term "API" was a bit casual without much 
-consideration – my mistake.
-
->> correction value. If it returns a non-initialize value, it indicates
->> changes required for the next entry schedule, and upon the completion
->> of the next entry's duration, entries will be loaded from the new admin
->> schedule.
-> 
-> This paragraph doesn't really help. It gets the reader lost in
-> irrelevant details which are actually not that hard to deduce from the
-> code with some good naming. Actually I find it poor naming to say
-> "non-initialize value" when what you mean is "!= INIT_CYCLE_TIME_CORRECTION".
-> I think I would name this a "specific" or "valid" cycle correction, when
-> it takes a value different from CYCLE_TIME_CORRECTION_UNSPEC.
-
-Will rename
-
->>
->> 2. Store correction values in cycle_time_correction:
->> a) Positive correction value/extension
->> We calculate the correction between the last operational cycle and the
->> new admin base time. Note that for positive correction to take place,
->> the next entry should be the last entry from oper and the new admin base
->> time falls within the next cycle time of old oper.
->>
->> b) Negative correction value
->> The new admin base time starts earlier than the next entry's end time.
->>
->> c) Zero correction value
->> The new admin base time aligns exactly with the old cycle.
->>
->> 3. When cycle_time_correction is set to a non-initialized value, it is
->> used to:
->> a) Indicate that cycle correction is active to trigger adjustments in
->> affected fields like interval and cycle_time. A new API,
->> cycle_corr_active(), has been created to help with this purpose.
-> 
-> Again, it's exaggerated to call this an "API".
-> Although, what you can do is provide a kerneldoc-style comment above the
-> functions which you wish to describe, and remove this explanation from
-> the commit message.
-
-okay
-
->>
->> b) Transition to the new admin schedule at the beginning of
->> advance_sched(). A new API, should_change_sched(), has been introduced
->> for this purpose.
-> 
-> This should have been done since patch 1, not here.
-
-Understood. My bad - that would have been a better choice.
-
->> 4. Remove the previous definition of should_change_scheds() API. A new
->> should_change_sched() API has been introduced, but it serves a
->> completely different purpose than the one that was removed.
-> 
-> So don't name it the same!
-> 
->>
->> Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
->> Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
->> ---
->>   net/sched/sch_taprio.c | 105 +++++++++++++++++++++++++++--------------
->>   1 file changed, 70 insertions(+), 35 deletions(-)
->>
->> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
->> index dee103647823..ed32654b46f5 100644
->> --- a/net/sched/sch_taprio.c
->> +++ b/net/sched/sch_taprio.c
->> @@ -259,6 +259,14 @@ static int duration_to_length(struct taprio_sched *q, u64 duration)
->>   	return div_u64(duration * PSEC_PER_NSEC, atomic64_read(&q->picos_per_byte));
->>   }
->>   
->> +static bool cycle_corr_active(s64 cycle_time_correction)
->> +{
->> +	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
->> +		return false;
->> +	else
->> +		return true;
->> +}
->> +
-> 
-> Could look like this:
-> 
-> static bool cycle_corr_active(struct sched_gate_list *oper)
-> {
-> 	return oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION;
-> }
-> 
->>   /* Sets sched->max_sdu[] and sched->max_frm_len[] to the minimum between the
->>    * q->max_sdu[] requested by the user and the max_sdu dynamically determined by
->>    * the maximum open gate durations at the given link speed.
->> @@ -888,38 +896,59 @@ static bool should_restart_cycle(const struct sched_gate_list *oper,
->>   	return false;
->>   }
->>   
->> -static bool should_change_schedules(const struct sched_gate_list *admin,
->> -				    const struct sched_gate_list *oper,
->> -				    ktime_t end_time)
->> +static bool should_change_sched(struct sched_gate_list *oper)
->>   {
->> -	ktime_t next_base_time, extension_time;
->> +	bool change_to_admin_sched = false;
->>   
->> -	if (!admin)
->> -		return false;
->> +	if (oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
->> +		/* The recent entry ran is the last one from oper */
->> +		change_to_admin_sched = true;
->> +		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
-> 
-> Don't make a function called should_change_sched() stateful. Don't make
-> this function reset the value of oper->cycle_time_correction, since that
-> practically equates with actually starting the schedule change.
-> 
-> The oper->cycle_time_correction assignment actually belongs to
-> switch_schedules(), in my opinion.
-> 
-> And if you make should_change_sched() stateless, then surprise-surprise,
-> it will contain the exact same logic, and return the exact same thing,
-> as cycle_corr_active(). I think that naming this single function
-> sched_change_pending() and providing a kerneldoc comment as to why it is
-> implemented the way it is should be sufficient.
-> 
-
-I intentionally made should_change_schedule() slightly different from 
-cycle_corr_active() and, unfortunately, stateful by resetting 
-oper->cycle_time_correction. My aim was to have two functions with clear 
-names reflecting their intentions based on usage.
-
-For instance, this:
-	if (should_change_schedule(oper)) {
-    		oper->cycle_end_time = new_base_time;
-    		end_time = new_base_time;
-
-is less intuitive than this:
-	if (cycle_corr_active(oper->cycle_time_correction)) {
-    		oper->cycle_end_time = new_base_time;
-    		end_time = new_base_time;
-
-And this:
-	if (!oper || should_change_sched(oper))
-	   	switch_schedules(q, &admin, &oper);
-
-reads clearer than:
-	if (!oper || cycle_corr_active(oper->cycle_time_correction))
-		switch_schedules(q, &admin, &oper);
-
-
-Normally I prefer clear function names that don't need comments for 
-explanation. But I probably overthink it, seems to have more cons than 
-pros. Will replace with a single sched_change_pending() as suggested, thanks.
-
-
->> +	}
->>   
->> -	next_base_time = sched_base_time(admin);
->> +	return change_to_admin_sched;
->> +}
->>   
->> -	/* This is the simple case, the end_time would fall after
->> -	 * the next schedule base_time.
->> -	 */
->> -	if (ktime_compare(next_base_time, end_time) <= 0)
->> +static bool should_extend_cycle(const struct sched_gate_list *oper,
->> +				ktime_t new_base_time,
->> +				ktime_t entry_end_time,
->> +				const struct sched_entry *entry)
->> +{
->> +	ktime_t next_cycle_end_time = ktime_add_ns(oper->cycle_end_time,
->> +						   oper->cycle_time);
->> +	bool extension_supported = oper->cycle_time_extension > 0 ? true : false;
-> 
-> "? true : false" is redundant. Just "extension_supported = oper->cycle_time_extension > 0"
-> is enough.
-
-Ooops sorry for this blunder. Will change.
-
->> +	s64 extension_limit = oper->cycle_time_extension;
->> +
->> +	if (extension_supported &&
->> +	    list_is_last(&entry->list, &oper->entries) &&
->> +	    ktime_before(new_base_time, next_cycle_end_time) &&
->> +	    ktime_sub(new_base_time, entry_end_time) < extension_limit)
->>   		return true;
->> +	else
->> +		return false;
-> 
-> Style nitpick:
-> 
-> 	return extension_supported &&
-> 	       list_is_last(&entry->list, &oper->entries) &&
-> 	       ktime_before(new_base_time, next_cycle_end_time) &&
-> 	       ktime_sub(new_base_time, entry_end_time) < extension_limit;
-> 
->> +}
->>   
->> -	/* This is the cycle_time_extension case, if the end_time
->> -	 * plus the amount that can be extended would fall after the
->> -	 * next schedule base_time, we can extend the current schedule
->> -	 * for that amount.
->> -	 */
->> -	extension_time = ktime_add_ns(end_time, oper->cycle_time_extension);
->> +static s64 get_cycle_time_correction(const struct sched_gate_list *oper,
->> +				     ktime_t new_base_time,
->> +				     ktime_t entry_end_time,
->> +				     const struct sched_entry *entry)
->> +{
->> +	s64 correction = INIT_CYCLE_TIME_CORRECTION;
->>   
->> -	/* FIXME: the IEEE 802.1Q-2018 Specification isn't clear about
->> -	 * how precisely the extension should be made. So after
->> -	 * conformance testing, this logic may change.
->> -	 */
->> -	if (ktime_compare(next_base_time, extension_time) <= 0)
->> -		return true;
->> +	if (!entry || !oper)
->> +		return correction;
-> 
-> This function is called as follows:
-> 
-> 	oper->cycle_time_correction = get_cycle_time_correction(oper, ...);
-> 
-> So, "oper" cannot be NULL if we dereference "oper" in the left hand side
-> of the assignment and expect the kernel not to crash, no?
-> 
-> "entry" - assigned from the "next" variable in advance_sched() - should
-> not be NULL either, from the way in which it is assigned.
-
-My bad on the oper null check.
-Will remove both.
-
->>   
->> -	return false;
->> +	if (ktime_compare(new_base_time, entry_end_time) <= 0) {
->> +		/* negative or zero correction */
-> 
-> At least for me, it would be helpful if you could transplant the
-> explanation from the commit message ("The new admin base time starts
-> earlier than the next entry's end time") into an expanded comment here.
-> I am easily confused about the "ktime_compare(a, b) <= 0" construction.
-> 
->> +		correction = ktime_sub(new_base_time, entry_end_time);
->> +	} else if (ktime_after(new_base_time, entry_end_time) &&
->> +		   should_extend_cycle(oper, new_base_time,
->> +				       entry_end_time, entry)) {
->> +		/* positive correction */
-> 
-> Same here - move the explanation from the commit message to the comment,
-> please.
-
-Will do.
-
-> 
->> +		correction = ktime_sub(new_base_time, entry_end_time);
->> +	}
->> +
->> +	return correction;
->>   }
->>   
->>   static enum hrtimer_restart advance_sched(struct hrtimer *timer)
->> @@ -942,10 +971,8 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
->>   	admin = rcu_dereference_protected(q->admin_sched,
->>   					  lockdep_is_held(&q->current_entry_lock));
->>   
->> -	if (!oper || oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
->> -		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
->> +	if (!oper || should_change_sched(oper))
->>   		switch_schedules(q, &admin, &oper);
->> -	}
->>   
->>   	/* This can happen in two cases: 1. this is the very first run
->>   	 * of this function (i.e. we weren't running any schedule
->> @@ -972,6 +999,22 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
->>   	end_time = ktime_add_ns(entry->end_time, next->interval);
->>   	end_time = min_t(ktime_t, end_time, oper->cycle_end_time);
->>   
->> +	if (admin) {
->> +		ktime_t new_base_time = sched_base_time(admin);
->> +
->> +		oper->cycle_time_correction =
->> +			get_cycle_time_correction(oper, new_base_time,
->> +						  end_time, next);
->> +
->> +		if (cycle_corr_active(oper->cycle_time_correction)) {
->> +			/* The next entry is the last entry we will run from
->> +			 * oper, subsequent ones will take from the new admin
->> +			 */
->> +			oper->cycle_end_time = new_base_time;
->> +			end_time = new_base_time;
->> +		}
->> +	}
->> +
->>   	for (tc = 0; tc < num_tc; tc++) {
->>   		if (next->gate_duration[tc] == oper->cycle_time)
->>   			next->gate_close_time[tc] = KTIME_MAX;
->> @@ -980,14 +1023,6 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
->>   								 next->gate_duration[tc]);
->>   	}
->>   
->> -	if (should_change_schedules(admin, oper, end_time)) {
->> -		/* Set things so the next time this runs, the new
->> -		 * schedule runs.
->> -		 */
->> -		end_time = sched_base_time(admin);
->> -		oper->cycle_time_correction = 0;
->> -	}
->> -
->>   	next->end_time = end_time;
->>   	taprio_set_budgets(q, oper, next);
->>   
->> -- 
->> 2.25.1
->>
+SGkgTXVrZXNoDQpJIHRyeSB0aGUgYmVsb3cgcGF0Y2ggb24gbXkgc2lkZe+8jGlzc3VlIHN0aWxs
+IGhhcHBlbmVkIO+8m2J1dCBJIGFtIHdvcmtpbmcgb24ga2VybmVsIDUuMTAuDQpodHRwczovL2xv
+cmUua2VybmVsLm9yZy9hbGwvMTY5OTk1NzY0OC0zMTI5OS0xLWdpdC1zZW5kLWVtYWlsLXF1aWNf
+bW9qaGFAcXVpY2luYy5jb20vDQoNCkkgd2lsbCB0cnkgdG8gZGVidWcgdGhlIHBhdGNoIG9uIG15
+IHNpZGUgLCBJIHdpbGwgdXBkYXRlIHlvdSB3aGVuIHRoZXJlIGlzIG5ldyBwcm9ncmVzcy4NCg0K
+DQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hku7bkuro6IOm7hOWGjea8vihKb3l5b3VuZyBI
+dWFuZykgDQrlj5HpgIHml7bpl7Q6IDIwMjPlubQxMeaciDE05pelIDIxOjM3DQrmlLbku7bkuro6
+IE11a2VzaCBPamhhIDxxdWljX21vamhhQHF1aWNpbmMuY29tPjsgbXl1bmdqb28uaGFtQHNhbXN1
+bmcuY29tOyBreXVuZ21pbi5wYXJrQHNhbXN1bmcuY29tOyBjdzAwLmNob2lAc2Ftc3VuZy5jb20N
+CuaKhOmAgTogbGludXgtcG1Admdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJu
+ZWwub3JnOyBodWFuZ3phaXlhbmcgPGpveXlvdW5nLndhbmdAZ21haWwuY29tPg0K5Li76aKYOiDl
+m57lpI06IFtQQVRDSF0gUGVyZm9ybWFuY2U6IGRldmZyZXE6IGF2b2lkIGRldmZyZXEgZGVsYXkg
+d29yayByZS1pbml0IGJlZm9yZQ0KDQoNCk9uIDExLzEwLzIwMjMgMzowNCBQTSwgaHVhbmd6YWl5
+YW5nIHdyb3RlOg0KPiBGcm9tOiBodWFuZ3phaXlhbmcgPGpveXlvdW5nLndhbmdAZ21haWwuY29t
+Pg0KPiANCj4gVGhlcmUgaXMgYSB0aW1lcl9saXN0IHJhY2UgY29uZGl0aW9uIHdoZW4gZXhlY3V0
+aW5nIHRoZSBmb2xsb3dpbmcgdGVzdCBzaGVsbCBzY3JpcHQ6DQo+ICcnJw0KPiB3aGlsZSB0cnVl
+DQo+IGRvDQo+ICAgICAgICAgIGVjaG8gInNpbXBsZV9vbmRlbWFuZCIgPiAvc3lzL2NsYXNzL2Rl
+dmZyZXEvMWQ4NDAwMC51ZnNoYy9nb3Zlcm5vcg0KPiAgICAgICAgICBlY2hvICJwZXJmb3JtYW5j
+ZSIgPg0KPiAvc3lzL2NsYXNzL2RldmZyZXEvMWQ4NDAwMC51ZnNoYy9nb3Zlcm5vcg0KPiBkb25l
+DQo+ICcnJw0KPiANCj4gWzEzNTExLjIxNDM2Nl1bICAgIEMzXSBVbmFibGUgdG8gaGFuZGxlIGtl
+cm5lbCBwYWdpbmcgcmVxdWVzdCBhdCB2aXJ0dWFsIGFkZHJlc3MgZGVhZDAwMDAwMDAwMDEyYQ0K
+PiBbMTM1MTEuMjE0MzkzXVsgICAgQzNdIE1lbSBhYm9ydCBpbmZvOg0KPiBbMTM1MTEuMjE0Mzk4
+XVsgICAgQzNdICAgRVNSID0gMHg5NjAwMDA0NA0KPiBbMTM1MTEuMjE0NDA0XVsgICAgQzNdICAg
+RUMgPSAweDI1OiBEQUJUIChjdXJyZW50IEVMKSwgSUwgPSAzMiBiaXRzDQo+IFsxMzUxMS4yMTQ0
+MDldWyAgICBDM10gICBTRVQgPSAwLCBGblYgPSAwDQo+IFsxMzUxMS4yMTQ0MTRdWyAgICBDM10g
+ICBFQSA9IDAsIFMxUFRXID0gMA0KPiBbMTM1MTEuMjE0NDE3XVsgICAgQzNdIERhdGEgYWJvcnQg
+aW5mbzoNCj4gWzEzNTExLjIxNDQyMl1bICAgIEMzXSAgIElTViA9IDAsIElTUyA9IDB4MDAwMDAw
+NDQNCj4gWzEzNTExLjIxNDQyN11bICAgIEMzXSAgIENNID0gMCwgV25SID0gMQ0KPiBbMTM1MTEu
+MjE0NDMyXVsgICAgQzNdIFtkZWFkMDAwMDAwMDAwMTJhXSBhZGRyZXNzIGJldHdlZW4gdXNlciBh
+bmQga2VybmVsIGFkZHJlc3MgcmFuZ2VzDQo+IFsxMzUxMS4yMTQ0MzldWyAgICBDM10gSW50ZXJu
+YWwgZXJyb3I6IE9vcHM6IDk2MDAwMDQ0IFsjMV0gUFJFRU1QVCBTTVANCj4gWzEzNTExLjIxNTQ0
+OV1bICAgIEMzXSBDUFU6IDMgUElEOiAwIENvbW06IHN3YXBwZXIvMyBUYWludGVkOiBHIFMgICAg
+ICBXICBPICAgICAgNS4xMC4xNjgtYW5kcm9pZDEyLTktby1nNjNjYzI5N2E3YjM0ICMxDQo+IFsx
+MzUxMS4yMTU0NTRdWyAgICBDM10gSGFyZHdhcmUgbmFtZTogUXVhbGNvbW0gVGVjaG5vbG9naWVz
+LCBJbmMuIENhcGUgTVRQLCBXaGl0ZXN3YW4gKERUKQ0KPiBbMTM1MTEuMjE1NDYwXVsgICAgQzNd
+IHBzdGF0ZTogODI0MDAwODUgKE56Y3YgZGFJZiArUEFOIC1VQU8gK1RDTyBCVFlQRT0tLSkNCj4g
+WzEzNTExLjIxNTQ3Ml1bICAgIEMzXSBwYyA6IGV4cGlyZV90aW1lcnMrMHg5Yy8weDQyOA0KPiBb
+MTM1MTEuMjE1NDc4XVsgICAgQzNdIGxyIDogX19ydW5fdGltZXJzKzB4MWYwLzB4MzI4DQo+IFsx
+MzUxMS4yMTU0ODNdWyAgICBDM10gc3AgOiBmZmZmZmZjMDA4MDFiZGQwDQo+IFsxMzUxMS4yMTU0
+ODddWyAgICBDM10geDI5OiBmZmZmZmZjMDA4MDFiZGYwIHgyODogZmZmZmZmZGI4N2IzMTY5OA0K
+PiBbMTM1MTEuMjE1NDkzXVsgICAgQzNdIHgyNzogZmZmZmZmZGI4Nzk5OWU1OCB4MjY6IGZmZmZm
+ZmRiODc5NjYwMDgNCj4gWzEzNTExLjIxNTQ5OV1bICAgIEMzXSB4MjU6IDAwMDAwMDAwMDAwMDAw
+MDEgeDI0OiBmZmZmZmY4MDAxNzM0YTAwDQo+IFsxMzUxMS4yMTU1MDZdWyAgICBDM10geDIzOiAw
+MDAwMDAwMDAwMDAwMGUwIHgyMjogZGVhZDAwMDAwMDAwMDEyMg0KPiBbMTM1MTEuMjE1NTEyXVsg
+ICAgQzNdIHgyMTogMDAwMDAwMDEwMDMyNjU4ZSB4MjA6IGZmZmZmZjg5ZjdhOWFlODANCj4gWzEz
+NTExLjIxNTUxOF1bICAgIEMzXSB4MTk6IGZmZmZmZmMwMDgwMWJlNTAgeDE4OiBmZmZmZmZjMDA4
+MDFkMDM4DQo+IFsxMzUxMS4yMTU1MjVdWyAgICBDM10geDE3OiAwMDAwMDAwMDAwMDAwMjQwIHgx
+NjogMDAwMDAwMDAwMDAwMDIwMQ0KPiBbMTM1MTEuMjE1NTMyXVsgICAgQzNdIHgxNTogZmZmZmZm
+ZmZmZmZmZmZmZiB4MTQ6IGZmZmZmZjg5ZjdhOWFlZjgNCj4gWzEzNTExLjIxNTUzOF1bICAgIEMz
+XSB4MTM6IDAwMDAwMDAwMDAwMDAyNDAgeDEyOiBmZmZmZmY4OWY3YTlhZWE4DQo+IFsxMzUxMS4y
+MTU1NDRdWyAgICBDM10geDExOiAwMDAwMDAwMDAwMDAwMDIxIHgxMDogMDAwMDAwMDE0MDMyNjU4
+ZQ0KPiBbMTM1MTEuMjE1NTUwXVsgICAgQzNdIHg5IDogZmZmZmZmYzAwODAxYmU1MCB4OCA6IGRl
+YWQwMDAwMDAwMDAxMjINCj4gWzEzNTExLjIxNTU1Nl1bICAgIEMzXSB4NyA6IGZmZmY3MTY0NmM2
+ODczNWUgeDYgOiBmZmZmZmY4OWY3YWFhZTU4DQo+IFsxMzUxMS4yMTU1NjNdWyAgICBDM10geDUg
+OiAwMDAwMDAwMDAwMDAwMDAwIHg0IDogMDAwMDAwMDAwMDAwMDEwMQ0KPiBbMTM1MTEuMjE1NTY5
+XVsgICAgQzNdIHgzIDogZmZmZmZmODlmN2E5YWVmMCB4MiA6IGZmZmZmZjg5ZjdhOWFlZjANCj4g
+WzEzNTExLjIxNTU3NV1bICAgIEMzXSB4MSA6IGZmZmZmZmMwMDgwMWJlNTAgeDAgOiBmZmZmZmY4
+MDQ1ODA0NDI4DQo+IFsxMzUxMS4yMTU1ODFdWyAgICBDM10gQ2FsbCB0cmFjZToNCj4gWzEzNTEx
+LjIxNTU4Nl1bICAgIEMzXSAgZXhwaXJlX3RpbWVycysweDljLzB4NDI4DQo+IFsxMzUxMS4yMTU1
+OTFdWyAgICBDM10gIF9fcnVuX3RpbWVycysweDFmMC8weDMyOA0KPiBbMTM1MTEuMjE1NTk2XVsg
+ICAgQzNdICBydW5fdGltZXJfc29mdGlycSsweDI4LzB4NTgNCj4gWzEzNTExLjIxNTYwMl1bICAg
+IEMzXSAgZWZpX2hlYWRlcl9lbmQrMHgxNjgvMHg1ZWMNCj4gWzEzNTExLjIxNTYxMF1bICAgIEMz
+XSAgX19pcnFfZXhpdF9yY3UrMHgxMDgvMHgxMjQNCj4gWzEzNTExLjIxNTYxN11bICAgIEMzXSAg
+X19oYW5kbGVfZG9tYWluX2lycSsweDExOC8weDFlNA0KPiBbMTM1MTEuMjE1NjI1XVsgICAgQzNd
+ICBnaWNfaGFuZGxlX2lycS4zMTIzMCsweDZjLzB4MjUwDQo+IFsxMzUxMS4yMTU2MzBdWyAgICBD
+M10gIGVsMV9pcnErMHhlNC8weDFjMA0KPiBbMTM1MTEuMjE1NjM4XVsgICAgQzNdICBjcHVpZGxl
+X2VudGVyX3N0YXRlKzB4M2E0LzB4YTA0DQo+IFsxMzUxMS4yMTU2NDRdWyAgICBDM10gIGRvX2lk
+bGUrMHgzMDgvMHg1NzQNCj4gWzEzNTExLjIxNTY0OV1bICAgIEMzXSAgY3B1X3N0YXJ0dXBfZW50
+cnkrMHg4NC8weDkwDQo+IFsxMzUxMS4yMTU2NTZdWyAgICBDM10gIHNlY29uZGFyeV9zdGFydF9r
+ZXJuZWwrMHgyMDQvMHgyNzQNCj4gWzEzNTExLjIxNTY2NF1bICAgIEMzXSBDb2RlOiBkNTAzMjAx
+ZiBhOTQwMjQwOCBmOTAwMDEyOCBiNDAwMDA0OCAoZjkwMDA1MDkpDQo+IFsxMzUxMS4yMTU2NzBd
+WyAgICBDM10gLS0tWyBlbmQgdHJhY2UgNTEwMGJhZDcyYTM1ZDU2NiBdLS0tDQo+IFsxMzUxMS4y
+MTU2NzZdWyAgICBDM10gS2VybmVsIHBhbmljIC0gbm90IHN5bmNpbmc6IE9vcHM6IEZhdGFsIGV4
+Y2VwdGlvbiBpbiBpbnRlcnJ1cHQNCj4gDQo+IFRoaXMgaXMgYmVjYXVzZSB3aGVuIHN3aXRjaGlu
+ZyB0aGUgZ292ZXJub3IgdGhyb3VnaCB0aGUgc3lzIG5vZGUsIHRoZSANCj4gZGV2ZnJlcV9tb25p
+dG9yX3N0YXJ0IGZ1bmN0aW9uIHdpbGwgcmUtaW5pdGlhbGl6ZSB0aGUgZGVsYXllZCB3b3JrIA0K
+PiB0YXNrLCB3aGljaCB3aWxsIGNhdXNlIHRoZSBkZWxheSB3b3JrIHBlbmRpbmcgZmxhZyB0byBi
+ZWNvbWUgaW52YWxpZCwgDQo+IGFuZCB0aGUgdGltZXIgcGVuZGluZyBqdWRnbWVudCBjb250YWlu
+ZWQgaW4gdGhlIGRlbGF5ZWQgd29yayB3aWxsIGFsc28gYmVjb21lIGludmFsaWQsIGFuZCB0aGVu
+IHRoZSBwZW5kaW5nIGludGVyY2VwdGlvbiB3aWxsIGJlIGV4ZWN1dGVkIHdoZW4gdGhlIHF1ZXVl
+IGlzIGV4ZWN1dGVkLg0KPiANCj4gU28gd2UgcmVtb3ZlIHRoZSBkZWxheSB3b3JrJ2luaXRpYWxp
+emF0aW9uIHdvcmsgdG8gdGhlIA0KPiBkZXZmcmVxX2FkZF9kZXZpY2UgYW5kIHRpbWVyX3N0b3Jl
+IGZ1bmN0aW9ucywgYW5kIHRoZSBkZWxheSB3b3JrIHBlbmRpbmcganVkZ21lbnQgaXMgcGVyZm9y
+bWVkIGJlZm9yZSB0aGUgZGV2ZnJlcV9tb25pdG9yX3N0YXJ0IGZ1bmN0aW9uIHBlcmZvcm1zIHRo
+ZSBxdWV1ZSBvcGVyYXRpb24uDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBaYWlZYW5nIEh1YW5nIDxo
+dWFuZ3phaXlhbmdAb3Bwby5jb20+DQo+IC0tLQ0KPiAgIGRyaXZlcnMvZGV2ZnJlcS9kZXZmcmVx
+LmMgfCAzNiArKysrKysrKysrKysrKysrKysrKysrKystLS0tLS0tLS0tLS0NCj4gICAxIGZpbGUg
+Y2hhbmdlZCwgMjQgaW5zZXJ0aW9ucygrKSwgMTIgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZmIC0t
+Z2l0IGEvZHJpdmVycy9kZXZmcmVxL2RldmZyZXEuYyBiL2RyaXZlcnMvZGV2ZnJlcS9kZXZmcmVx
+LmMgDQo+IGluZGV4IGIzYTY4ZDU4MzNiZC4uOGFlNmY4NTNhMjFlIDEwMDY0NA0KPiAtLS0gYS9k
+cml2ZXJzL2RldmZyZXEvZGV2ZnJlcS5jDQo+ICsrKyBiL2RyaXZlcnMvZGV2ZnJlcS9kZXZmcmVx
+LmMNCj4gQEAgLTQ4MywxOCArNDgzLDcgQEAgdm9pZCBkZXZmcmVxX21vbml0b3Jfc3RhcnQoc3Ry
+dWN0IGRldmZyZXEgKmRldmZyZXEpDQo+ICAgICAgICAgIGlmIChJU19TVVBQT1JURURfRkxBRyhk
+ZXZmcmVxLT5nb3Zlcm5vci0+ZmxhZ3MsIElSUV9EUklWRU4pKQ0KPiAgICAgICAgICAgICAgICAg
+IHJldHVybjsNCj4gDQo+IC0gICAgICAgc3dpdGNoIChkZXZmcmVxLT5wcm9maWxlLT50aW1lcikg
+ew0KPiAtICAgICAgIGNhc2UgREVWRlJFUV9USU1FUl9ERUZFUlJBQkxFOg0KPiAtICAgICAgICAg
+ICAgICAgSU5JVF9ERUZFUlJBQkxFX1dPUksoJmRldmZyZXEtPndvcmssIGRldmZyZXFfbW9uaXRv
+cik7DQo+IC0gICAgICAgICAgICAgICBicmVhazsNCj4gLSAgICAgICBjYXNlIERFVkZSRVFfVElN
+RVJfREVMQVlFRDoNCj4gLSAgICAgICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JLKCZkZXZmcmVx
+LT53b3JrLCBkZXZmcmVxX21vbml0b3IpOw0KPiAtICAgICAgICAgICAgICAgYnJlYWs7DQo+IC0g
+ICAgICAgZGVmYXVsdDoNCj4gLSAgICAgICAgICAgICAgIHJldHVybjsNCj4gLSAgICAgICB9DQo+
+IC0NCj4gLSAgICAgICBpZiAoZGV2ZnJlcS0+cHJvZmlsZS0+cG9sbGluZ19tcykNCj4gKyAgICAg
+ICBpZiAoZGV2ZnJlcS0+cHJvZmlsZS0+cG9sbGluZ19tcyAmJg0KPiArICFkZWxheWVkX3dvcmtf
+cGVuZGluZygmZGV2ZnJlcS0+d29yaykpDQo+ICAgICAgICAgICAgICAgICAgcXVldWVfZGVsYXll
+ZF93b3JrKGRldmZyZXFfd3EsICZkZXZmcmVxLT53b3JrLA0KPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgbXNlY3NfdG9famlmZmllcyhkZXZmcmVxLT5wcm9maWxlLT5wb2xsaW5nX21zKSk7DQo+
+ICAgfQ0KPiBAQCAtODMwLDYgKzgxOSwxNyBAQCBzdHJ1Y3QgZGV2ZnJlcSAqZGV2ZnJlcV9hZGRf
+ZGV2aWNlKHN0cnVjdCBkZXZpY2UgKmRldiwNCj4gICAgICAgICAgICAgICAgICBnb3RvIGVycl9k
+ZXY7DQo+ICAgICAgICAgIH0NCj4gDQo+ICsgICAgICAgc3dpdGNoIChkZXZmcmVxLT5wcm9maWxl
+LT50aW1lcikgew0KPiArICAgICAgIGNhc2UgREVWRlJFUV9USU1FUl9ERUZFUlJBQkxFOg0KPiAr
+ICAgICAgICAgICAgICAgSU5JVF9ERUZFUlJBQkxFX1dPUksoJmRldmZyZXEtPndvcmssIGRldmZy
+ZXFfbW9uaXRvcik7DQo+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICBjYXNlIERF
+VkZSRVFfVElNRVJfREVMQVlFRDoNCj4gKyAgICAgICAgICAgICAgIElOSVRfREVMQVlFRF9XT1JL
+KCZkZXZmcmVxLT53b3JrLCBkZXZmcmVxX21vbml0b3IpOw0KPiArICAgICAgICAgICAgICAgYnJl
+YWs7DQo+ICsgICAgICAgZGVmYXVsdDoNCj4gKyAgICAgICAgICAgICAgIGRldl9lcnIoZGV2LCAi
+JXM6IFRhcmdldCBkZXZmcmVxKCVzKSdzIHByb2ZpbGUgdGltZXIgaGFzIG5vIHNldHRpbmdzIFxu
+IiwgZGV2ZnJlcS0+Z292ZXJub3JfbmFtZSwNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgX19m
+dW5jX18pOw0KPiArICAgICAgIH0NCg0KWy4uXQ0KDQo+ICAgICAgICAgIGlmICghZGV2ZnJlcS0+
+cHJvZmlsZS0+bWF4X3N0YXRlIHx8ICFkZXZmcmVxLT5wcm9maWxlLT5mcmVxX3RhYmxlKSB7DQo+
+ICAgICAgICAgICAgICAgICAgbXV0ZXhfdW5sb2NrKCZkZXZmcmVxLT5sb2NrKTsNCj4gICAgICAg
+ICAgICAgICAgICBlcnIgPSBzZXRfZnJlcV90YWJsZShkZXZmcmVxKTsgQEAgLTE4NjAsNiArMTg2
+MCwxOCBAQCANCj4gc3RhdGljIHNzaXplX3QgdGltZXJfc3RvcmUoc3RydWN0IGRldmljZSAqZGV2
+LCBzdHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwNCj4gICAgICAgICAgZGYtPnByb2ZpbGUt
+PnRpbWVyID0gdGltZXI7DQo+ICAgICAgICAgIG11dGV4X3VubG9jaygmZGYtPmxvY2spOw0KPiAN
+Cj4gKyAgICAgICBzd2l0Y2ggKGRmLT5wcm9maWxlLT50aW1lcikgew0KPiArICAgICAgIGNhc2Ug
+REVWRlJFUV9USU1FUl9ERUZFUlJBQkxFOg0KPiArICAgICAgICAgICAgICAgSU5JVF9ERUZFUlJB
+QkxFX1dPUksoJmRmLT53b3JrLCBkZXZmcmVxX21vbml0b3IpOw0KPiArICAgICAgICAgICAgICAg
+YnJlYWs7DQo+ICsgICAgICAgY2FzZSBERVZGUkVRX1RJTUVSX0RFTEFZRUQ6DQo+ICsgICAgICAg
+ICAgICAgICBJTklUX0RFTEFZRURfV09SSygmZGYtPndvcmssIGRldmZyZXFfbW9uaXRvcik7DQo+
+ICsgICAgICAgICAgICAgICBicmVhazsNCj4gKyAgICAgICBkZWZhdWx0Og0KPiArICAgICAgICAg
+ICAgICAgZGV2X2VycihkZXYsICIlczogVGFyZ2V0IGRldmZyZXEoJXMpJ3MgcHJvZmlsZSB0aW1l
+ciBoYXMgbm8gc2V0dGluZ3MgXG4iLCBkZi0+Z292ZXJub3JfbmFtZSwNCj4gKyAgICAgICAgICAg
+ICAgICAgICAgICAgX19mdW5jX18pOw0KPiArICAgICAgIH0NCj4gKw0KSGVyZSwgdGhpcyBjYW4g
+Y2F1c2UgaXNzdWUgcmlnaHQsIGFzIGl0IGlzIG1vZGlmeWluZyB0aGUgZGVsYXllZCB3b3JrIGRh
+dGEgZXZlbiBiZWZvcmUgc3RvcHBpbmcgdGhlIGN1cnJlbnQgcnVubmluZyBpbnN0YW5jZXMuLg0K
+DQpTaG91bGQgdGhlIGFib3ZlIHRoaW5nIGJlIGRvbmUgYWZ0ZXIgREVWRlJFUV9HT1ZfU1RPUCA/
+DQpCdXQgYWdhaW4gaXQgd2lsbCBib2lsIGRvd24gdG8gdGhlIHNhbWUgdGhpbmcgYXMgaXQgaXMg
+Y3VycmVudGx5IG5vdyAuDQo+ICAgICAgICAgIHJldCA9IGRmLT5nb3Zlcm5vci0+ZXZlbnRfaGFu
+ZGxlcihkZiwgREVWRlJFUV9HT1ZfU1RPUCwgTlVMTCk7DQo+ICAgICAgICAgIGlmIChyZXQpIHsN
+Cj4gICAgICAgICAgICAgICAgICBkZXZfd2FybihkZXYsICIlczogR292ZXJub3IgJXMgbm90IHN0
+b3BwZWQoJWQpXG4iLA0KLS0+YWdyZWUsIHNlZW1zIGJldHRlciB0byBwdXQgdGhlc2UgY29kZXMg
+YWZ0ZXIgYWZ0ZXIgREVWRlJFUV9HT1ZfU1RPUCwgYXMgZm9sbG93PyANCkBAIC0xODU2LDEwICsx
+ODU2LDYgQEAgc3RhdGljIHNzaXplX3QgdGltZXJfc3RvcmUoc3RydWN0IGRldmljZSAqZGV2LCBz
+dHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwNCiAJCWdvdG8gb3V0Ow0KIAl9DQogDQotCW11
+dGV4X2xvY2soJmRmLT5sb2NrKTsNCi0JZGYtPnByb2ZpbGUtPnRpbWVyID0gdGltZXI7DQotCW11
+dGV4X3VubG9jaygmZGYtPmxvY2spOw0KLQ0KIAlyZXQgPSBkZi0+Z292ZXJub3ItPmV2ZW50X2hh
+bmRsZXIoZGYsIERFVkZSRVFfR09WX1NUT1AsIE5VTEwpOw0KIAlpZiAocmV0KSB7DQogCQlkZXZf
+d2FybihkZXYsICIlczogR292ZXJub3IgJXMgbm90IHN0b3BwZWQoJWQpXG4iLCBAQCAtMTg2Nyw2
+ICsxODYzLDIxIEBAIHN0YXRpYyBzc2l6ZV90IHRpbWVyX3N0b3JlKHN0cnVjdCBkZXZpY2UgKmRl
+diwgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKmF0dHIsDQogCQlnb3RvIG91dDsNCiAJfQ0KIA0K
+KwltdXRleF9sb2NrKCZkZi0+bG9jayk7DQorCWRmLT5wcm9maWxlLT50aW1lciA9IHRpbWVyOw0K
+Kwlzd2l0Y2ggKGRmLT5wcm9maWxlLT50aW1lcikgew0KKwljYXNlIERFVkZSRVFfVElNRVJfREVG
+RVJSQUJMRToNCisJCUlOSVRfREVGRVJSQUJMRV9XT1JLKCZkZi0+d29yaywgZGV2ZnJlcV9tb25p
+dG9yKTsNCisJCWJyZWFrOw0KKwljYXNlIERFVkZSRVFfVElNRVJfREVMQVlFRDoNCisJCUlOSVRf
+REVMQVlFRF9XT1JLKCZkZi0+d29yaywgZGV2ZnJlcV9tb25pdG9yKTsNCisJCWJyZWFrOw0KKwlk
+ZWZhdWx0Og0KKwkJZGV2X2VycihkZXYsICIlczogVGFyZ2V0IGRldmZyZXEoJXMpJ3MgcHJvZmls
+ZSB0aW1lciBoYXMgbm8gc2V0dGluZ3MgXG4iLCBkZi0+Z292ZXJub3JfbmFtZSwNCisJCQlfX2Z1
+bmNfXyk7DQorICAgICAgIG11dGV4X3VubG9jaygmZGYtPmxvY2spOw0KKyAgICAgICBnb3RvIG91
+dDsNCisJfQ0KKwltdXRleF91bmxvY2soJmRmLT5sb2NrKTsNCisNCiAJcmV0ID0gZGYtPmdvdmVy
+bm9yLT5ldmVudF9oYW5kbGVyKGRmLCBERVZGUkVRX0dPVl9TVEFSVCwgTlVMTCk7DQogCWlmIChy
+ZXQpDQogCQlkZXZfd2FybihkZXYsICIlczogR292ZXJub3IgJXMgbm90IHN0YXJ0ZWQoJWQpXG4i
+LA0KLS0gDQoNCkkgd2FzIHRoaW5raW5nIGlmIGkgcHV0IG11dGV4IGFyb3VuZCBjYW5jZWxfZGVs
+YXllZF93b3JrX3N5bmMoKSBhcyB3ZWxsIGluIGRldmZyZXFfbW9uaXRvcl9zdG9wKCkgb24gdG9w
+IG9mIGJlbG93IHBhdGNoLCBzaG91bGQgY292ZXIgdGhlIGNvcnJ1cHRpb24gb2Ygd29ya2RhdGEu
+DQoNCmh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2FsbC8xNjk5OTU3NjQ4LTMxMjk5LTEtZ2l0LXNl
+bmQtZW1haWwtcXVpY19tb2poYUBxdWljaW5jLmNvbS8NCg0KLU11a2VzaA0KDQo+IC0tDQo+IDIu
+MTcuMQ0KDQpSZW1vdmUgdGhlIGVudGlyZSBiZWxvdyB0aGluZy4uPg0KPiBfX19fX19fX19fX19f
+X19fX19fX19fX19fX19fX19fXw0KPiBPUFBPDQo+IA0KPiDCscK+wrXDp8OXw5PDk8OKwrzDvsK8
+wrDDhsOkwrjCvcK8w77CusKsw5PDkE9QUE/CucKrw4vCvsK1w4TCscKjw4PDnMOQw4XDj8KiwqPC
+rMK9w7bDj8Oew5PDmsOTw4rCvMO+w5bCuMODw7fCtcOEw4rDlcK8w77DiMOLwqPCqMKww7zCusKs
+DQo+IMK4w7bDiMOLwrzCsMOIwrrDl8OpwqPCqcOKwrnDk8ODwqHCo8K9w7vDlsK5w4jDjsK6w47D
+iMOLw5TDmsOOwrTCvsKtw4rDmsOIwqjCtcOEw4fDqcK/w7bDj8OCw5LDlMOIw47CusOOw5DDjsOK
+wr3DisK5w5PDg8KhwqPDiMOnwrnDu8OEw7rCtMOtDQo+IMOKw5XDgcOLwrHCvsOTw4rCvMO+wqPC
+rMOHw5DDjsOwwrTCq8KywqXCocKiwrfDlsK3wqLCocKiwrjCtMOWw4bCocKiw5PCocOLwqLCu8Oy
+w4rCucOTw4PCscK+w5PDisK8w77DlsKuw4jDjsK6w47CssK/wrfDlsK7w7LDhsOkw4vDucOUw5jD
+lsKuDQo+IMOIw47CusOOw4TDmsOIw53Co8KswrLCosOHw6vDgcKiwrzCtMOSw5TCtcOnw5fDk8OT
+w4rCvMO+w43CqMOWwqrCt8KiwrzDvsOIw4vCssKiw4nCvsKzw73CscK+w5PDisK8w77CvMKww4bD
+pMK4wr3CvMO+wqHCow0KPiDDjcO4w4LDp8ONwqjDkcK2wrnDjMOTw5DDiMKxw4/DncK/w4nDhMOc
+wrXCvMOWw4LDk8OKwrzDvsKxwrvCvcOYw4HDtMKhwqLDkMOewrjDhMKhwqLCtsKqw4rCp8KhwqLD
+hsOGwrvCtcK7w7LCsMO8wrrCrMK8w4bDi8OjwrvDusKywqHCtsK+wrXDiA0KPiDCssK7wrDCssOI
+wqvDh8Opwr/DtsKjwqxPUFBPwrbDlMK0w4vDgMOgwrTDrcOOw7PCu8Oyw5LDhcOCwqnCtsO4w5LD
+vcOWw4LDlsKuw4jDjsK6w47Di8Oww4rCp8K4w4XCssK7wrPDkMK1wqPDlMOww4jDjsKywqLCscKj
+w4HDtMOTw6vCscK+DQo+IMOTw4rCvMO+w4/DoMK5w5jDlsKuw5LCu8OHw5DDiMKow4DDu8KhwqMN
+Cj4gwrPDvcK3w4fDg8O3w4jCt8OLwrXDg8O3wqPCrMKxwr7Dk8OKwrzDvsK8wrDDhsOkwrjCvcK8
+w77DjsOew5LDosOXw7fDjsKqw5TDmsOIw47CusOOwrnDusK8w5LCu8OywrXDmMOHw7jDlsKuw5LC
+qsOUwrzCocKiw5XDkMOAwr/Cu8OywrPDkMOFwrUNCj4gwqPCrMOSw6DDjsOew5LDosOXw7fDjsKq
+w4jDjsK6w47CvcK7w5LDl8K7w7LCusOPw43CrMOWwq7DlcO9w4rCvcOIwrfDiMOPwqHCow0KPiDC
+t8KiwrzDvsOIw4vCocKiw4bDpMOLw7nDisO0wrvDusK5wrnCu8Oyw4vDucOKw7TCu8O6wrnCucOW
+wq7CucOYw4HCqsK7w7rCucK5wrvDssOIw47CusOOw4nDj8OKw7bCu8O6wrnCucOWwq7CucOJwrbC
+q8KhwqLCtsKtw4rDgsKhwqLCuMOfwrzCtg0KPiDCucOcw4DDrcOIw4vDlMKxwqHCosOUwrHCucKk
+wrvDssOGw6TDi8O7w4jDjsK6w47DiMOLwqPCqMOSw5TDj8OCwrPDhsKhwrDCt8KiwrzDvsOIw4vC
+ocKxwrvDssKhwrBPUFBPwqHCscKjwqnCssK7w5LDssKxwr7Dk8OKwrzDvsOWwq7DjsOzDQo+IMOL
+w43CtsO4wrfDhcOGw7rDhsOkw4vDucOPw63DlsKuw4jDjsK6w47DiMKow4DDu8KjwqzDksOgwrLC
+u8K2w5TDksOywrnDisOSw6LCu8OywrnDvcOKwqfDisK5w5PDg8K4w4PCtcOIw5DDhcOPwqLCtsO4
+w5LDvcK3wqLCu8Oywr/DicOEw5zDksO9DQo+IMK3wqLCtcOEw4vDsMOKwqfCs8OQwrXCo8OIw47C
+usOOw5TDsMOIw47CocKjDQo+IMOOw4TCu8KvwrLDrsOSw6zDhcO7w4LCtsKjwrrDksOyw4jCq8OH
+w7LDjsOEwrvCr8Kyw67DksOsw5PCsMOPw6zCo8KswrXCpcK0wr/DksOUWUVTXE9LwrvDssOGw6TD
+i8O7wrzDssK1wqXCtMOKwrvDo8K1w4TCu8OYwrjCtMKywqLCssK7DQo+IMK5wrnCs8OJwrfCosK8
+w77DiMOLwrbDlMOIw47CusOOwr3Cu8OSw5fCu8OywrrDj8ONwqzDlsKuw5XDvcOKwr3DiMK3w4jD
+j8K7w7LCvcOTw4rDnMKjwqzDh8Orw5PDq8K3wqLCvMO+w4jDi8OUw5nCtMOOw4jCt8OIw4/DksOU
+wrvDscK1w4PDg8O3DQo+IMOIwrfDisOpw4PDpsOSw6LCvMO7wqHCo8K3wqLCvMO+w4jDi8KywrvC
+tsOUw4jDjsK6w47DisOcw47DhMK7wq/CssOuw5LDrMOTwrDDj8OswrbDuMK1wrzDlsOCwrnDisOS
+w6LCu8OywrTDrcOOw7PDisK5w5PDg8K4w4PCtcOIw5DDhcOPwqLDi8O5DQo+IMOUw6zCs8OJwrXD
+hMOIw47CusOOw5bCscK9w5PCu8OywrzDpMK9w5PDi8OwwrrCpsKzw5DCtcKjw5TDsMOIw47CocKj
+DQo+IFRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMgY29udGFpbiBjb25maWRlbnRpYWwg
+aW5mb3JtYXRpb24gZnJvbSBPUFBPLCB3aGljaCBpcyBpbnRlbmRlZCBvbmx5IGZvciB0aGUgcGVy
+c29uIG9yIGVudGl0eSB3aG9zZSBhZGRyZXNzIGlzIGxpc3RlZCBhYm92ZS4gQW55IHVzZSBvZiB0
+aGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgd2F5IChpbmNsdWRpbmcsIGJ1
+dCBub3QgbGltaXRlZCB0bywgdG90YWwgb3IgcGFydGlhbCBkaXNjbG9zdXJlLCByZXByb2R1Y3Rp
+b24sIG9yIGRpc3NlbWluYXRpb24pIGJ5IHBlcnNvbnMgb3RoZXIgdGhhbiB0aGUgaW50ZW5kZWQg
+cmVjaXBpZW50KHMpIGlzIHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRoZSBpbnRlbmRlZCBy
+ZWNpcGllbnQsIHBsZWFzZSBkbyBub3QgcmVhZCwgY29weSwgZGlzdHJpYnV0ZSwgb3IgdXNlIHRo
+aXMgaW5mb3JtYXRpb24uIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgdHJhbnNtaXNzaW9uIGlu
+IGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkgYnkgcmVwbHkgZS1t
+YWlsIGFuZCB0aGVuIGRlbGV0ZSB0aGlzIG1lc3NhZ2UuDQo+IEVsZWN0cm9uaWMgY29tbXVuaWNh
+dGlvbnMgbWF5IGNvbnRhaW4gY29tcHV0ZXIgdmlydXNlcyBvciBvdGhlciBkZWZlY3RzIGluaGVy
+ZW50bHksIG1heSBub3QgYmUgYWNjdXJhdGVseSBhbmQvb3IgdGltZWx5IHRyYW5zbWl0dGVkIHRv
+IG90aGVyIHN5c3RlbXMsIG9yIG1heSBiZSBpbnRlcmNlcHRlZCwgbW9kaWZpZWQgLGRlbGF5ZWQs
+IGRlbGV0ZWQgb3IgaW50ZXJmZXJlZC4gT1BQTyBzaGFsbCBub3QgYmUgbGlhYmxlIGZvciBhbnkg
+ZGFtYWdlcyB0aGF0IGFyaXNlIG9yIG1heSBhcmlzZSBmcm9tIHN1Y2ggbWF0dGVyIGFuZCByZXNl
+cnZlcyBhbGwgcmlnaHRzIGluIGNvbm5lY3Rpb24gd2l0aCB0aGUgZW1haWwuDQo+IFVubGVzcyBl
+eHByZXNzbHkgc3RhdGVkLCB0aGlzIGUtbWFpbCBhbmQgaXRzIGF0dGFjaG1lbnRzIGFyZSBwcm92
+aWRlZCB3aXRob3V0IGFueSB3YXJyYW50eSwgYWNjZXB0YW5jZSBvciBwcm9taXNlIG9mIGFueSBr
+aW5kIGluIGFueSBjb3VudHJ5IG9yIHJlZ2lvbiwgbm9yIGNvbnN0aXR1dGUgYSBmb3JtYWwgY29u
+ZmlybWF0aW9uIG9yIGFjY2VwdGFuY2Ugb2YgYW55IHRyYW5zYWN0aW9uIG9yIGNvbnRyYWN0LiBU
+aGUgc2VuZGVyLCB0b2dldGhlciB3aXRoIGl0cyBhZmZpbGlhdGVzIG9yIGFueSBzaGFyZWhvbGRl
+ciwgZGlyZWN0b3IsIG9mZmljZXIsIGVtcGxveWVlIG9yIGFueSBvdGhlciBwZXJzb24gb2YgYW55
+IHN1Y2ggaW5zdGl0dXRpb24gKGhlcmVpbmFmdGVyIHJlZmVycmVkIHRvIGFzICJzZW5kZXIiIG9y
+ICJPUFBPIikgZG9lcyBub3Qgd2FpdmUgYW55IHJpZ2h0cyBhbmQgc2hhbGwgbm90IGJlIGxpYWJs
+ZSBmb3IgYW55IGRhbWFnZXMgdGhhdCBhcmlzZSBvciBtYXkgYXJpc2UgZnJvbSB0aGUgaW50ZW50
+aW9uYWwgb3IgbmVnbGlnZW50IHVzZSBvZiBzdWNoIGluZm9ybWF0aW9uLg0KPiBDdWx0dXJhbCBE
+aWZmZXJlbmNlcyBEaXNjbG9zdXJlOiBEdWUgdG8gZ2xvYmFsIGN1bHR1cmFsIGRpZmZlcmVuY2Vz
+LCBhbnkgcmVwbHkgd2l0aCBvbmx5IFlFU1xPSyBvciBvdGhlciBzaW1wbGUgd29yZHMgZG9lcyBu
+b3QgY29uc3RpdHV0ZSBhbnkgY29uZmlybWF0aW9uIG9yIGFjY2VwdGFuY2Ugb2YgYW55IHRyYW5z
+YWN0aW9uIG9yIGNvbnRyYWN0LCBwbGVhc2UgY29uZmlybSB3aXRoIHRoZSBzZW5kZXIgYWdhaW4g
+dG8gZW5zdXJlIGNsZWFyIG9waW5pb24gaW4gd3JpdHRlbiBmb3JtLiBUaGUgc2VuZGVyIHNoYWxs
+IG5vdCBiZSByZXNwb25zaWJsZSBmb3IgYW55IGRpcmVjdCBvciBpbmRpcmVjdCBkYW1hZ2VzIHJl
+c3VsdGluZyBmcm9tIHRoZSBpbnRlbnRpb25hbCBvciBtaXN1c2Ugb2Ygc3VjaCBpbmZvcm1hdGlv
+bi4NCj4gX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18NCj4gT1BQTw0KPiANCj4g5pys
+55S15a2Q6YKu5Lu25Y+K5YW26ZmE5Lu25ZCr5pyJT1BQT+WFrOWPuOeahOS/neWvhuS/oeaBr++8
+jOS7hemZkOS6jumCruS7tuaMh+aYjueahOaUtuS7tuS6uu+8iOWMheWQq+S4quS6uuWPiue+pOe7
+hO+8ieS9v+eUqOOAguemgeatouS7u+S9leS6uuWcqOacque7j+aOiOadg+eahOaDheWGteS4i+S7
+peS7u+S9leW9ouW8j+S9v+eUqOOAguWmguaenA0KPiDmgqjplJnmlLbkuobmnKzpgq7ku7bvvIzl
+iIfli7/kvKDmkq3jgIHliIblj5HjgIHlpI3liLbjgIHljbDliLfmiJbkvb/nlKjmnKzpgq7ku7bk
+uYvku7vkvZXpg6jliIbmiJblhbbmiYDovb3kuYvku7vkvZXlhoXlrrnvvIzlubbor7fnq4vljbPk
+u6XnlLXlrZDpgq7ku7bpgJrnn6Xlj5Hku7bkurrlubbliKDpmaTmnKzpgq7ku7blj4rlhbbpmYTk
+u7bjgIINCj4g572R57uc6YCa6K6v5Zu65pyJ57y66Zm35Y+v6IO95a+86Ie06YKu5Lu26KKr5oiq
+55WZ44CB5L+u5pS544CB5Lii5aSx44CB56C05Z2P5oiW5YyF5ZCr6K6h566X5py655eF5q+S562J
+5LiN5a6J5YWo5oOF5Ya177yMT1BQT+WvueatpOexu+mUmeivr+aIlumBl+a8j+iAjOW8leiHtOS5
+i+S7u+S9leaNn+WkseamguS4jeaJv+aLhei0o+S7u+W5tuS/neeVmQ0KPiDkuI7mnKzpgq7ku7bn
+m7jlhbPkuYvkuIDliIfmnYPliKnjgIINCj4g6Zmk6Z2e5piO56Gu6K+05piO77yM5pys6YKu5Lu2
+5Y+K5YW26ZmE5Lu25peg5oSP5L2c5Li65Zyo5Lu75L2V5Zu95a625oiW5Zyw5Yy65LmL6KaB57qm
+44CB5oub5o+95oiW5om/6K+677yM5Lqm5peg5oSP5L2c5Li65Lu75L2V5Lqk5piT5oiW5ZCI5ZCM
+5LmL5q2j5byP56Gu6K6k44CCDQo+IOWPkeS7tuS6uuOAgeWFtuaJgOWxnuacuuaehOaIluaJgOWx
+nuacuuaehOS5i+WFs+iBlOacuuaehOaIluS7u+S9leS4iui/sOacuuaehOS5i+iCoeS4nOOAgeiR
+o+S6i+OAgemrmOe6p+euoeeQhuS6uuWRmOOAgeWRmOW3peaIluWFtuS7luS7u+S9leS6uu+8iOS7
+peS4i+ensOKAnOWPkeS7tuS6uuKAneaIluKAnE9QUE/igJ3vvInkuI3lm6DmnKzpgq7ku7YNCj4g
+5LmL6K+v6YCB6ICM5pS+5byD5YW25omA5Lqr5LmL5Lu75L2V5p2D5Yip77yM5Lqm5LiN5a+55Zug
+5pWF5oSP5oiW6L+H5aSx5L2/55So6K+l562J5L+h5oGv6ICM5byV5Y+R5oiW5Y+v6IO95byV5Y+R
+55qE5o2f5aSx5om/5ouF5Lu75L2V6LSj5Lu744CCDQo+IOaWh+WMluW3ruW8guaKq+mcsu+8muWb
+oOWFqOeQg+aWh+WMluW3ruW8guW9seWTje+8jOWNlee6r+S7pVlFU1xPS+aIluWFtuS7lueugOWN
+leivjeaxh+eahOWbnuWkjeW5tuS4jeaehOaIkOWPkeS7tuS6uuWvueS7u+S9leS6pOaYk+aIluWQ
+iOWQjOS5i+ato+W8j+ehruiupOaIluaOpeWPl++8jOivt+S4juWPkeS7tuS6uuWGjeasoeehruiu
+pOS7pQ0KPiDojrflvpfmmI7noa7kuabpnaLmhI/op4HjgILlj5Hku7bkurrkuI3lr7nku7vkvZXl
+j5fmlofljJblt67lvILlvbHlk43ogIzlr7zoh7TmlYXmhI/miJbplJnor6/kvb/nlKjor6XnrYnk
+v6Hmga/miYDpgKDmiJDnmoTku7vkvZXnm7TmjqXmiJbpl7TmjqXmjZ/lrrPmib/mi4XotKPku7vj
+gIINCj4gVGhpcyBlLW1haWwgYW5kIGl0cyBhdHRhY2htZW50cyBjb250YWluIGNvbmZpZGVudGlh
+bCBpbmZvcm1hdGlvbiBmcm9tIE9QUE8sIHdoaWNoIGlzIGludGVuZGVkIG9ubHkgZm9yIHRoZSBw
+ZXJzb24gb3IgZW50aXR5IHdob3NlIGFkZHJlc3MgaXMgbGlzdGVkIGFib3ZlLiBBbnkgdXNlIG9m
+IHRoZSBpbmZvcm1hdGlvbiBjb250YWluZWQgaGVyZWluIGluIGFueSB3YXkgKGluY2x1ZGluZywg
+YnV0IG5vdCBsaW1pdGVkIHRvLCB0b3RhbCBvciBwYXJ0aWFsIGRpc2Nsb3N1cmUsIHJlcHJvZHVj
+dGlvbiwgb3IgZGlzc2VtaW5hdGlvbikgYnkgcGVyc29ucyBvdGhlciB0aGFuIHRoZSBpbnRlbmRl
+ZCByZWNpcGllbnQocykgaXMgcHJvaGliaXRlZC4gSWYgeW91IGFyZSBub3QgdGhlIGludGVuZGVk
+IHJlY2lwaWVudCwgcGxlYXNlIGRvIG5vdCByZWFkLCBjb3B5LCBkaXN0cmlidXRlLCBvciB1c2Ug
+dGhpcyBpbmZvcm1hdGlvbi4gSWYgeW91IGhhdmUgcmVjZWl2ZWQgdGhpcyB0cmFuc21pc3Npb24g
+aW4gZXJyb3IsIHBsZWFzZSBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBieSByZXBseSBl
+LW1haWwgYW5kIHRoZW4gZGVsZXRlIHRoaXMgbWVzc2FnZS4NCj4gRWxlY3Ryb25pYyBjb21tdW5p
+Y2F0aW9ucyBtYXkgY29udGFpbiBjb21wdXRlciB2aXJ1c2VzIG9yIG90aGVyIGRlZmVjdHMgaW5o
+ZXJlbnRseSwgbWF5IG5vdCBiZSBhY2N1cmF0ZWx5IGFuZC9vciB0aW1lbHkgdHJhbnNtaXR0ZWQg
+dG8gb3RoZXIgc3lzdGVtcywgb3IgbWF5IGJlIGludGVyY2VwdGVkLCBtb2RpZmllZCAsZGVsYXll
+ZCwgZGVsZXRlZCBvciBpbnRlcmZlcmVkLiBPUFBPIHNoYWxsIG5vdCBiZSBsaWFibGUgZm9yIGFu
+eSBkYW1hZ2VzIHRoYXQgYXJpc2Ugb3IgbWF5IGFyaXNlIGZyb20gc3VjaCBtYXR0ZXIgYW5kIHJl
+c2VydmVzIGFsbCByaWdodHMgaW4gY29ubmVjdGlvbiB3aXRoIHRoZSBlbWFpbC4NCj4gVW5sZXNz
+IGV4cHJlc3NseSBzdGF0ZWQsIHRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMgYXJlIHBy
+b3ZpZGVkIHdpdGhvdXQgYW55IHdhcnJhbnR5LCBhY2NlcHRhbmNlIG9yIHByb21pc2Ugb2YgYW55
+IGtpbmQgaW4gYW55IGNvdW50cnkgb3IgcmVnaW9uLCBub3IgY29uc3RpdHV0ZSBhIGZvcm1hbCBj
+b25maXJtYXRpb24gb3IgYWNjZXB0YW5jZSBvZiBhbnkgdHJhbnNhY3Rpb24gb3IgY29udHJhY3Qu
+IFRoZSBzZW5kZXIsIHRvZ2V0aGVyIHdpdGggaXRzIGFmZmlsaWF0ZXMgb3IgYW55IHNoYXJlaG9s
+ZGVyLCBkaXJlY3Rvciwgb2ZmaWNlciwgZW1wbG95ZWUgb3IgYW55IG90aGVyIHBlcnNvbiBvZiBh
+bnkgc3VjaCBpbnN0aXR1dGlvbiAoaGVyZWluYWZ0ZXIgcmVmZXJyZWQgdG8gYXMgInNlbmRlciIg
+b3IgIk9QUE8iKSBkb2VzIG5vdCB3YWl2ZSBhbnkgcmlnaHRzIGFuZCBzaGFsbCBub3QgYmUgbGlh
+YmxlIGZvciBhbnkgZGFtYWdlcyB0aGF0IGFyaXNlIG9yIG1heSBhcmlzZSBmcm9tIHRoZSBpbnRl
+bnRpb25hbCBvciBuZWdsaWdlbnQgdXNlIG9mIHN1Y2ggaW5mb3JtYXRpb24uDQo+IEN1bHR1cmFs
+IERpZmZlcmVuY2VzIERpc2Nsb3N1cmU6IER1ZSB0byBnbG9iYWwgY3VsdHVyYWwgZGlmZmVyZW5j
+ZXMsIGFueSByZXBseSB3aXRoIG9ubHkgWUVTXE9LIG9yIG90aGVyIHNpbXBsZSB3b3JkcyBkb2Vz
+IG5vdCBjb25zdGl0dXRlIGFueSBjb25maXJtYXRpb24gb3IgYWNjZXB0YW5jZSBvZiBhbnkgdHJh
+bnNhY3Rpb24gb3IgY29udHJhY3QsIHBsZWFzZSBjb25maXJtIHdpdGggdGhlIHNlbmRlciBhZ2Fp
+biB0byBlbnN1cmUgY2xlYXIgb3BpbmlvbiBpbiB3cml0dGVuIGZvcm0uIFRoZSBzZW5kZXIgc2hh
+bGwgbm90IGJlIHJlc3BvbnNpYmxlIGZvciBhbnkgZGlyZWN0IG9yIGluZGlyZWN0IGRhbWFnZXMg
+cmVzdWx0aW5nIGZyb20gdGhlIGludGVudGlvbmFsIG9yIG1pc3VzZSBvZiBzdWNoIGluZm9ybWF0
+aW9uLg0K
