@@ -2,71 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DC4067ED628
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:38:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 388BC7ED62C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:43:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344560AbjKOViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:38:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
+        id S235622AbjKOVnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:43:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235076AbjKOViu (ORCPT
+        with ESMTP id S229655AbjKOVnw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:38:50 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0A1A7
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:38:47 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6c34e87b571so92894b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:38:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700084327; x=1700689127; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=viq9qvmJ3LM7HHbpPLpRFQxdnfMhe+VmNzi8uiGAz9o=;
-        b=PSimt4LY1wWQIX3H7isGsOIl/SesLfbXmqLnUhZ3SO5LzLNxSvSS89xmfOZhEwShY+
-         +/IY0lHA7cxuLl1WeFFuKMviMvHVxd63NSOaZ8HgHsa5WUAiSC6PLrwt2i7ZFKhN+ja5
-         nZE+brp2Lb+eFqHlixNbPwNh9X3BQ+5/DP1gnJ6CB4N7GC6cte4Gab4hbsyATWEOryfI
-         PNaKd5Jg92Z0hyiINvtArPapXVw6LGb0+S5He076fKu4au1hkQroeRrB1A2Rp1denqoJ
-         tAVEdgRw1cwM2rP/Y8aXQl7XvsRlo6isq6xilXZDHyzk6bdUW5IdRLM7rg80eFiB4cRU
-         G1pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700084327; x=1700689127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=viq9qvmJ3LM7HHbpPLpRFQxdnfMhe+VmNzi8uiGAz9o=;
-        b=Fp5drfZxYRxcgy32sEvUmuZXw882QNhWYh4MUXcP0U+gNgnvowfzP3UeCiWAItwTvM
-         a6KhI1Q2p2h4IfFUXOuc7gKeXB7LijRL/J8fVOMRpyaVMY8/tEWh+BbUyO6oO5ivn9R9
-         mulxst+q366Hq3thr8euw2Ev0mZzquB0gS+Ywe+RAh48UZDzievcEKHSmxzw3f/J7cpZ
-         rkVdYv7Im26VrU6JiSZq8xjbXJhFDZhHbnfYj3XtShNr2qHkKX2+ikia+yqdYVp4EbW7
-         A2yt5O0cY94E+zCqeDMyQ9KczV18ljpOnoeE8mzT1Iz5ryGjS4WyTqXJViE5IHbVTzEh
-         ErMg==
-X-Gm-Message-State: AOJu0YywQrwUrtxdsZ0Bh+iyqhWkGupyEkZ1w8jajJ1agdptv2/3egti
-        xpBgRZ3ZekvBg6bIBaWB0kOtH8YEMW9a4WnHKZTZyg==
-X-Google-Smtp-Source: AGHT+IGsT1CibUn6Ia99KLaPjPtxI5AQqKcH5XAZwaf3OwLZ4vdydJ8RnA0NKLZ+rMU0rAcfhpGprFwG1SHgmX5tAe4=
-X-Received: by 2002:a05:6a00:1394:b0:6c6:1648:5ac6 with SMTP id
- t20-20020a056a00139400b006c616485ac6mr14670509pfg.5.1700084326699; Wed, 15
- Nov 2023 13:38:46 -0800 (PST)
+        Wed, 15 Nov 2023 16:43:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A4EDE1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:43:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700084628;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=y0sd3KVgqm2Hr+/w0M78+lQuRWNqCNiH7NNttu2olag=;
+        b=dl7no4csnRS18uUCm4KtCWczEBL8gqyE9EUKJqbXmZkJBblrGx3YQXvBC9l3PxJIetEYse
+        hMAtV+vXempwnHXPkVtepDxnWnqa6KTqN21gx/FIAsvYMdD8UkSIcBSuhBq+eCFFbvSOX5
+        eFQdIxYl5YYFyrdtq2cqVKgkc3nnu/0=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-176-roBR4RgdPHOO-T9YuhAVqw-1; Wed,
+ 15 Nov 2023 16:43:43 -0500
+X-MC-Unique: roBR4RgdPHOO-T9YuhAVqw-1
+Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id E46BF38062A6;
+        Wed, 15 Nov 2023 21:43:42 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id EE6E2492BE0;
+        Wed, 15 Nov 2023 21:43:40 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
+References: <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com> <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk> <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com> <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     dhowells@redhat.com, Borislav Petkov <bp@alien8.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com
+Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput -16.9% regression
 MIME-Version: 1.0
-References: <20231115191600.708733204@linuxfoundation.org>
-In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Wed, 15 Nov 2023 15:38:35 -0600
-Message-ID: <CAEUSe7_KQ_-Q2ADLVcuKjb9vGOpkgAEgzgq5o-Hf=7a7c9NLXw@mail.gmail.com>
-Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4097022.1700084620.1@warthog.procyon.org.uk>
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+Date:   Wed, 15 Nov 2023 21:43:40 +0000
+Message-ID: <4097023.1700084620@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,80 +77,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+I get:
 
-On Wed, 15 Nov 2023 at 13:20, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 6.5.12 release.
-> There are 550 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.5.12-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+  LD      arch/x86/purgatory/purgatory.chk
+ld: arch/x86/purgatory/purgatory.ro:(.altinstr_replacement+0x1): undefined=
+ reference to `rep_movs_alternative'
+ld: arch/x86/purgatory/purgatory.ro:(.altinstr_replacement+0x6): undefined=
+ reference to `rep_movs_alternative'
 
-We're seeing build regressions on Arm, Arm64, i386, x86, with KUnit
-defconfigs (and multi_v5_defconfig on Arm32):
------8<-----
-  In file included from /builds/linux/lib/kunit/executor.c:225:
-  /builds/linux/lib/kunit/executor_test.c: In function 'free_suite_set':
-  /builds/linux/lib/kunit/executor_test.c:130:30: error: invalid use
-of undefined type 'struct kunit_suite_set'
-    130 |         kunit_free_suite_set(*(struct kunit_suite_set *)suite_set=
-);
-        |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  /builds/linux/lib/kunit/executor_test.c: In function 'free_suite_set_at_e=
-nd':
-  /builds/linux/lib/kunit/executor_test.c:141:49: error: invalid use
-of undefined type 'struct kunit_suite_set'
-    141 |         if (!((struct kunit_suite_set *)to_free)->start)
-        |                                                 ^~
-  /builds/linux/lib/kunit/executor_test.c:144:31: error: invalid
-application of 'sizeof' to incomplete type 'struct kunit_suite_set'
-    144 |         free =3D kzalloc(sizeof(struct kunit_suite_set), GFP_KERN=
-EL);
-        |                               ^~~~~~
-  /builds/linux/lib/kunit/executor_test.c:145:17: error: invalid use
-of undefined type 'struct kunit_suite_set'
-    145 |         *free =3D *(struct kunit_suite_set *)to_free;
-        |                 ^
-  /builds/linux/lib/kunit/executor_test.c:145:15: error: invalid use
-of undefined type 'struct kunit_suite_set'
-    145 |         *free =3D *(struct kunit_suite_set *)to_free;
-        |               ^
-  make[5]: *** [/builds/linux/scripts/Makefile.build:243:
-lib/kunit/executor.o] Error 1
------>8-----
+The symbol is available in the arch lib directory:
 
-This is with defconfig, CONFIG_KASAN=3Dy, CONFIG_KUNIT=3Dy, and
-CONFIG_KUNIT_ALL_TESTS=3Dy. To reproduce,
+warthog>nm build3/arch/x86/lib/copy_user_64.o =
 
-tuxmake \
-  --runtime podman \
-  --target-arch arm64 \
-  --toolchain gcc-13 \
-  --kconfig defconfig \
-  --kconfig-add CONFIG_KASAN=3Dy \
-  --kconfig-add CONFIG_KUNIT=3Dy \
-  --kconfig-add CONFIG_KUNIT_ALL_TESTS=3Dy
+0000000000000000 r __export_symbol_rep_movs_alternative
+0000000000000000 T rep_movs_alternative
+                 U __x86_return_thunk
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+so I'm not sure what's going on there.
 
-Bisection is on-going.
+David
 
-Greetings!
-
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
