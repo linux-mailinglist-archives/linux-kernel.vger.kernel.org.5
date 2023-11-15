@@ -2,217 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6757EBAB3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 01:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4980E7EBAB5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 01:54:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234243AbjKOAue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 19:50:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S234248AbjKOAyn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 19:54:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjKOAuc (ORCPT
+        with ESMTP id S229937AbjKOAym (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 19:50:32 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3707CDB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:50:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700009429; x=1731545429;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=Vd08LoyVEWnxZ5T+q5GPkFLvm5e9l0fj5U/OOVJ0kQI=;
-  b=ljjdn4xCieUwmhSeuhEp95Qo/xmK1AaMaDEvGwFAW0rOYk5pgnY/e9oP
-   1uMezBDUb++3Vrn4b7pCUwh2JymFm5FiCbyCvS2f7hVa2UlxdvoqCQ8zH
-   5sUcppHzsF8FmZbRjTlti5HXID5fs/4VrBbsFFIfcY2Xmt92edA6j9D6M
-   JHBD+nLp4pFehA8ORnmYX5sGZzqsJTrTvG89chzL7YpbLpcPDH1D2nXak
-   XE43MHnF23ARZ6DM5CjBu3pIEolMiJ/4DUqqcwowHu+w3QsgurHflQgGZ
-   NA3XGA5/TWzoIpIziESzFzinBfS24JJLQTqoF3hdoVUx5j+LJnqeNwadm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393637538"
-X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
-   d="scan'208";a="393637538"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 16:50:22 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
-   d="scan'208";a="5964509"
-Received: from lkp-server02.sh.intel.com (HELO 83346ef18697) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 14 Nov 2023 16:50:10 -0800
-Received: from kbuild by 83346ef18697 with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r346Z-0000qR-0N;
-        Wed, 15 Nov 2023 00:50:07 +0000
-Date:   Wed, 15 Nov 2023 08:49:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Joerg Roedel <jroedel@suse.de>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Steve Wahl <steve.wahl@hpe.com>
-Subject: drivers/iommu/intel/dmar.c:1050:35: error: '%d' directive writing
- between 1 and 10 bytes into a region of size 9
-Message-ID: <202311150851.QD7VEYOT-lkp@intel.com>
+        Tue, 14 Nov 2023 19:54:42 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC3CCC7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:54:37 -0800 (PST)
+Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 483EA40262
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:54:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1700009676;
+        bh=WDpC+/TU8OYxwd/ov/BIBH/XSQn/0HPjA18j9hJej6Q=;
+        h=From:To:cc:Subject:In-reply-to:References:MIME-Version:
+         Content-Type:Date:Message-ID;
+        b=TPHgo+LylhDCJ8i4MFjUMv/pvzb8ZhEiGPvRop6QHIWKT+lh/+hmwRLiMSVM/iUpB
+         vzWWUylpPyJfaV7nt96tY5yLgYHVRoI5QRQ2UqZyGWjq1hvm+kzxSj5bG0ydFmKTEU
+         s9ophOHZsOzArppr+yCSMksv5ufBB5jerCcuebGM2rTJgxwVEkkZocUCjdxm5yGdjQ
+         oaaKvJN7Ee68ZO0w8oPKNQYqr8Xi6FPqn8r3ZYQ2tTNlJksQtu0VxGiINEii2jHuIn
+         Pm0TNzZV5L6+0svzy6YafJ3D0Dxg3jhwt94UnOEtgauuPC4TrxIZD6Wpuboo/Vid4a
+         G9vZWdrEpQiRw==
+Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-581da174501so5886621eaf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:54:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700009675; x=1700614475;
+        h=message-id:date:content-transfer-encoding:content-id:mime-version
+         :comments:references:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WDpC+/TU8OYxwd/ov/BIBH/XSQn/0HPjA18j9hJej6Q=;
+        b=XZt78mCqNPlE1DntAr3aQwqZWAfkd9JNh0dH9nxCFndPoOcPfFvrZWe/jntFyEJutP
+         oI67g0hy0JuFLswD37u82F4Znwq6o3Hieg+EIPnyDoH0ZnsekMRO23iTmsQiVJYKCgYy
+         PuC4yT/XSFGvGcJEVZly/u0z30tsMetIl8fph9DvYeF1EvakQwb+hZSkhXeF3TPqkFn1
+         Rnadg/OJ9O+MSY421ezZNPTH0XNjyliRI0LqhP+ZUHRG0sku5lS6ukjh/dJ/+64uKCB9
+         BC2vBdDJ0hSsg8IbQKstRMyq8snYnAHLMtyu/cmC5hM4kZt/MIIStXXw/cwXoLytzjMt
+         BDcw==
+X-Gm-Message-State: AOJu0YzEYAJvCg8kYRP+taqe3ZKgSUv0+rRbbPM+NrbGgUzSddJf/QPl
+        LV2bxOTVyb7uUrye+blRXGFOeDGAUDU3PdRBnTgJdUs5oEvltKEd995vFmuf7RWlWSH0ctU2wVN
+        5nblJQArzOK/Z6K20pzh2Q0ScMbElHoTwNQciMEDaow==
+X-Received: by 2002:a05:6358:24a3:b0:16b:7049:e8f9 with SMTP id m35-20020a05635824a300b0016b7049e8f9mr4744187rwc.8.1700009675079;
+        Tue, 14 Nov 2023 16:54:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGjS1Eza3HfJ+1w5VNAFHLX0iHyrhrcjQz7hpZTmu4fpoC03xWrJ7Vip0QyJP/Ynp1eP/c67g==
+X-Received: by 2002:a05:6358:24a3:b0:16b:7049:e8f9 with SMTP id m35-20020a05635824a300b0016b7049e8f9mr4744177rwc.8.1700009674772;
+        Tue, 14 Nov 2023 16:54:34 -0800 (PST)
+Received: from famine.localdomain ([50.125.80.253])
+        by smtp.gmail.com with ESMTPSA id a20-20020a634d14000000b005b83bc255fbsm136600pgb.71.2023.11.14.16.54.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 14 Nov 2023 16:54:34 -0800 (PST)
+Received: by famine.localdomain (Postfix, from userid 1000)
+        id 02DAE5FFF6; Tue, 14 Nov 2023 16:54:33 -0800 (PST)
+Received: from famine (localhost [127.0.0.1])
+        by famine.localdomain (Postfix) with ESMTP id EFDF99F88E;
+        Tue, 14 Nov 2023 16:54:33 -0800 (PST)
+From:   Jay Vosburgh <jay.vosburgh@canonical.com>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Thorsten Leemhuis <regressions@leemhuis.info>,
+        Linux Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Anil Choudhary <anilchabba@gmail.com>
+Subject: Re: sr-iov related bonding regression (two regressions in one report)
+In-reply-to: <986716ed-f898-4a02-a8f6-94f85b355a05@gmail.com>
+References: <986716ed-f898-4a02-a8f6-94f85b355a05@gmail.com>
+Comments: In-reply-to Bagas Sanjaya <bagasdotme@gmail.com>
+   message dated "Wed, 15 Nov 2023 06:59:06 +0700."
+X-Mailer: MH-E 8.6+git; nmh 1.6; Emacs 29.0.50
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <32715.1700009673.1@famine>
+Content-Transfer-Encoding: quoted-printable
+Date:   Tue, 14 Nov 2023 16:54:33 -0800
+Message-ID: <32716.1700009673@famine>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   9bacdd8996c77c42ca004440be610692275ff9d0
-commit: 913432f217c843a69ff9d11a6474a7982033087b iommu/vt-d: Use IDA interface to manage iommu sequence id
-date:   1 year, 4 months ago
-config: x86_64-sof-customedconfig-edison-defconfig (https://download.01.org/0day-ci/archive/20231115/202311150851.QD7VEYOT-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311150851.QD7VEYOT-lkp@intel.com/reproduce)
+Bagas Sanjaya <bagasdotme@gmail.com> wrote:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311150851.QD7VEYOT-lkp@intel.com/
+>Hi Thorsten and all,
+>
+>I come across LACP bonding regression on Bugzilla [1]. The reporter
+>(Cc'ed) has two regressions. The first is actual LACP bonding
+>regression (but terse):
+>
+>> Till linkx kernel 6.5.7 it is working fine, but after upgrading to 6.6.=
+1 ping stop working with LACP bonding.
+>> When we disable SR-IOV from bios , everything working fine
+>
+>And the second is out-of-tree module FTBFS:
 
-All errors (new ones prefixed by >>):
+[... skip OOT stuff ...]
 
-   drivers/iommu/intel/dmar.c: In function 'dmar_parse_one_drhd':
->> drivers/iommu/intel/dmar.c:1050:35: error: '%d' directive writing between 1 and 10 bytes into a region of size 9 [-Werror=format-overflow=]
-    1050 |         sprintf(iommu->name, "dmar%d", iommu->seq_id);
-         |                                   ^~
-   In function 'alloc_iommu',
-       inlined from 'dmar_parse_one_drhd' at drivers/iommu/intel/dmar.c:439:8:
-   drivers/iommu/intel/dmar.c:1050:30: note: directive argument in the range [0, 2147483647]
-    1050 |         sprintf(iommu->name, "dmar%d", iommu->seq_id);
-         |                              ^~~~~~~~
-   drivers/iommu/intel/dmar.c:1050:9: note: 'sprintf' output between 6 and 15 bytes into a destination of size 13
-    1050 |         sprintf(iommu->name, "dmar%d", iommu->seq_id);
-         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+>
+>Should I add the first regression to regzbot (since the second one
+>is obviously out-of-tree problem), or should I asked detailed regression
+>info to the reporter?
 
+	My vote is to get additional information.  Given the nature of
+the workaround ("When we disable SR-IOV from bios , everything working
+fine"), it's plausible that the underlying cause is something
+platform-specific.
 
-vim +1050 drivers/iommu/intel/dmar.c
+	Interestingly, we've been chasing internally an issue with
+bonding LACP mode on ice (E810-XXV, I think) when running on the Ubuntu
+kernel.  That manifests as occasional TX timeouts, and doesn't happen if
+the Intel OOT driver is used, so I wonder if that bugzilla reporter is
+also seeing TX timeouts that correlate with their ping failures.
 
-  1025	
-  1026	static int alloc_iommu(struct dmar_drhd_unit *drhd)
-  1027	{
-  1028		struct intel_iommu *iommu;
-  1029		u32 ver, sts;
-  1030		int agaw = -1;
-  1031		int msagaw = -1;
-  1032		int err;
-  1033	
-  1034		if (!drhd->reg_base_addr) {
-  1035			warn_invalid_dmar(0, "");
-  1036			return -EINVAL;
-  1037		}
-  1038	
-  1039		iommu = kzalloc(sizeof(*iommu), GFP_KERNEL);
-  1040		if (!iommu)
-  1041			return -ENOMEM;
-  1042	
-  1043		iommu->seq_id = ida_alloc_range(&dmar_seq_ids, 0,
-  1044						DMAR_UNITS_SUPPORTED - 1, GFP_KERNEL);
-  1045		if (iommu->seq_id < 0) {
-  1046			pr_err("Failed to allocate seq_id\n");
-  1047			err = iommu->seq_id;
-  1048			goto error;
-  1049		}
-> 1050		sprintf(iommu->name, "dmar%d", iommu->seq_id);
-  1051	
-  1052		err = map_iommu(iommu, drhd->reg_base_addr);
-  1053		if (err) {
-  1054			pr_err("Failed to map %s\n", iommu->name);
-  1055			goto error_free_seq_id;
-  1056		}
-  1057	
-  1058		err = -EINVAL;
-  1059		if (cap_sagaw(iommu->cap) == 0) {
-  1060			pr_info("%s: No supported address widths. Not attempting DMA translation.\n",
-  1061				iommu->name);
-  1062			drhd->ignored = 1;
-  1063		}
-  1064	
-  1065		if (!drhd->ignored) {
-  1066			agaw = iommu_calculate_agaw(iommu);
-  1067			if (agaw < 0) {
-  1068				pr_err("Cannot get a valid agaw for iommu (seq_id = %d)\n",
-  1069				       iommu->seq_id);
-  1070				drhd->ignored = 1;
-  1071			}
-  1072		}
-  1073		if (!drhd->ignored) {
-  1074			msagaw = iommu_calculate_max_sagaw(iommu);
-  1075			if (msagaw < 0) {
-  1076				pr_err("Cannot get a valid max agaw for iommu (seq_id = %d)\n",
-  1077				       iommu->seq_id);
-  1078				drhd->ignored = 1;
-  1079				agaw = -1;
-  1080			}
-  1081		}
-  1082		iommu->agaw = agaw;
-  1083		iommu->msagaw = msagaw;
-  1084		iommu->segment = drhd->segment;
-  1085	
-  1086		iommu->node = NUMA_NO_NODE;
-  1087	
-  1088		ver = readl(iommu->reg + DMAR_VER_REG);
-  1089		pr_info("%s: reg_base_addr %llx ver %d:%d cap %llx ecap %llx\n",
-  1090			iommu->name,
-  1091			(unsigned long long)drhd->reg_base_addr,
-  1092			DMAR_VER_MAJOR(ver), DMAR_VER_MINOR(ver),
-  1093			(unsigned long long)iommu->cap,
-  1094			(unsigned long long)iommu->ecap);
-  1095	
-  1096		/* Reflect status in gcmd */
-  1097		sts = readl(iommu->reg + DMAR_GSTS_REG);
-  1098		if (sts & DMA_GSTS_IRES)
-  1099			iommu->gcmd |= DMA_GCMD_IRE;
-  1100		if (sts & DMA_GSTS_TES)
-  1101			iommu->gcmd |= DMA_GCMD_TE;
-  1102		if (sts & DMA_GSTS_QIES)
-  1103			iommu->gcmd |= DMA_GCMD_QIE;
-  1104	
-  1105		raw_spin_lock_init(&iommu->register_lock);
-  1106	
-  1107		/*
-  1108		 * This is only for hotplug; at boot time intel_iommu_enabled won't
-  1109		 * be set yet. When intel_iommu_init() runs, it registers the units
-  1110		 * present at boot time, then sets intel_iommu_enabled.
-  1111		 */
-  1112		if (intel_iommu_enabled && !drhd->ignored) {
-  1113			err = iommu_device_sysfs_add(&iommu->iommu, NULL,
-  1114						     intel_iommu_groups,
-  1115						     "%s", iommu->name);
-  1116			if (err)
-  1117				goto err_unmap;
-  1118	
-  1119			err = iommu_device_register(&iommu->iommu, &intel_iommu_ops, NULL);
-  1120			if (err)
-  1121				goto err_sysfs;
-  1122		}
-  1123	
-  1124		drhd->iommu = iommu;
-  1125		iommu->drhd = drhd;
-  1126	
-  1127		return 0;
-  1128	
-  1129	err_sysfs:
-  1130		iommu_device_sysfs_remove(&iommu->iommu);
-  1131	err_unmap:
-  1132		unmap_iommu(iommu);
-  1133	error_free_seq_id:
-  1134		ida_free(&dmar_seq_ids, iommu->seq_id);
-  1135	error:
-  1136		kfree(iommu);
-  1137		return err;
-  1138	}
-  1139	
+	-J
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+>Thanks.
+>
+>[1]: https://bugzilla.kernel.org/show_bug.cgi?id=3D218139
+>
+>-- =
+
+>An old man doll... just what I always wanted! - Clara
+
+---
+	-Jay Vosburgh, jay.vosburgh@canonical.com
