@@ -2,147 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A2F7EC6D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DC627EC6DF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344413AbjKOPNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34906 "EHLO
+        id S1344411AbjKOPN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:13:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344405AbjKOPNB (ORCPT
+        with ESMTP id S1344423AbjKOPNW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:13:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 214EFB8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:12:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700061177;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=1vpeVSkQSN5Cc84JVJPa41eUhmal473AXk2MWuCa9pY=;
-        b=cSXGftyiUiRsjU7+h2jiao0nBi+HQqKnZDDhEcZsUcc9tzzNvjdR8NdeER9tqq3iyPOEmY
-        XP5tz1Q5wVOW3DH9Kjgu6/4l3cFRj+iZg+83axt680KBiYcv7mHN7LgvN5hWL3HFXjwTB+
-        DbF98gntHfnpdMxAAOap3WOdDAdU+Mo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-637-oy90omeFOheKmPakXuDY6w-1; Wed, 15 Nov 2023 10:12:54 -0500
-X-MC-Unique: oy90omeFOheKmPakXuDY6w-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32dc767e619so3222712f8f.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:12:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700061173; x=1700665973;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1vpeVSkQSN5Cc84JVJPa41eUhmal473AXk2MWuCa9pY=;
-        b=jbnLt6eNc2mZ5Zu587paq0ZCtKJA1hh8n7mGqwv/OmW3WSWW9PF9/a6e+dy0jn+L5h
-         /2kKtSunFHUTr+ZnS28a8kTpYz448dj80LWAWEA7f4qmZCG3+pIH5ctMAky6nwwA5SDU
-         APaPdFDmntQfZ4f70/13RIcnPUMp4ukpM7kZIlzeYaAHCFgzdRdBhDmyZqE28uAsXAZl
-         YJdLixWNTTJ+WqwcvAUCsi6HCy1z2zP1CX4jykYRnd2FJhIirIuhCm2BPB43eSRwub5/
-         3po0dcmiAvZRQa0EXDjVy/gVcElrvfY6Iws7mbPgwgxahhHcl/i/nJXOm4t7Ctqq9AKx
-         aD0w==
-X-Gm-Message-State: AOJu0YxnVuMKrCcgYWO1kMtY+Vq+i1UiBnbMHfz34NjfhE5bV3IXGYA5
-        G0XFg7+FNy1XkKiCVVdHp6TPJc4z8avKgQDjV2QP7UxS9s/xTdNpNbpdv1EEX1o6369Sr7Lhd3t
-        vDi1nBw3w988rzJ3XWM8fErQv
-X-Received: by 2002:adf:ec0b:0:b0:32f:7867:112 with SMTP id x11-20020adfec0b000000b0032f78670112mr9447018wrn.13.1700061173140;
-        Wed, 15 Nov 2023 07:12:53 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHya+Kw12o5Oq8HpHRwzsHHH2umNz9vFMY1lchKtT7bYuggtJeYehNxgDcTB++R7ORLgbxLxA==
-X-Received: by 2002:adf:ec0b:0:b0:32f:7867:112 with SMTP id x11-20020adfec0b000000b0032f78670112mr9446984wrn.13.1700061172656;
-        Wed, 15 Nov 2023 07:12:52 -0800 (PST)
-Received: from ?IPV6:2003:cb:c706:ed00:59ee:f048:4ed9:62a6? (p200300cbc706ed0059eef0484ed962a6.dip0.t-ipconnect.de. [2003:cb:c706:ed00:59ee:f048:4ed9:62a6])
-        by smtp.gmail.com with ESMTPSA id e6-20020adff346000000b0032ddc3b88e9sm10906034wrp.0.2023.11.15.07.12.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 07:12:52 -0800 (PST)
-Message-ID: <ede57bf9-de69-48bc-9e09-b0ae3e37c8ab@redhat.com>
-Date:   Wed, 15 Nov 2023 16:12:50 +0100
+        Wed, 15 Nov 2023 10:13:22 -0500
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5B621A8;
+        Wed, 15 Nov 2023 07:13:19 -0800 (PST)
+Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFE4g2g017281;
+        Wed, 15 Nov 2023 15:13:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2023-03-30;
+ bh=nDez5tRetN1AJgLDMvel4wminLzFvgWM5mFAzZfyJXQ=;
+ b=FqWppTjVjLypjuwDl/gQIG7dXKSSfUaB3Yj+9cXNgvmvhQ0dKLSJYsgFY48eqsxWdoDV
+ 78OdPqWD60C+eUWljmIBfepowHwHTclADPu4tvucW+s4nZ+0yY3DGbBEygWzDva6WobR
+ jpklQ1dYf/fOdKwQpQTNUlZ47TrAKdnCk6FPzsZtw4ojckDxKRTt9lU8+tNV8kCDleb3
+ v4KHuiToIcWmnCcCDkoSvsTuuwKd2Qdbuz3D5AeFkTfv2GRrG+R3jNjj47pa4n4wyngs
+ 1sQn9kOV7xkT74fIyvODwCBx1dNFBFPYsPRaupH5Jc+IuqQYITe1K3AuJ7+E8TsBrne4 zw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2strr7b-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 15:13:11 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFF8rIw004087;
+        Wed, 15 Nov 2023 15:13:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxj4087e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 15:13:09 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFFD8SP011253;
+        Wed, 15 Nov 2023 15:13:09 GMT
+Received: from ca-mkp2.ca.oracle.com.com (mpeterse-ol9.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.251.135])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3uaxj4085x-2;
+        Wed, 15 Nov 2023 15:13:08 +0000
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>, naomi.chu@mediatek.com
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        wsd_upstream@mediatek.com, peter.wang@mediatek.com,
+        casper.li@mediatek.com, powen.kao@mediatek.com,
+        alice.chao@mediatek.com, chun-hung.wu@mediatek.com,
+        cc.chou@mediatek.com, eddie.huang@mediatek.com
+Subject: Re: [PATCH v3 0/1] ufs: core: Expand MCQ queue slot to DeviceQueueDepth + 1
+Date:   Wed, 15 Nov 2023 10:13:00 -0500
+Message-Id: <170006111387.506874.30054136833694357.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20231102052426.12006-1-naomi.chu@mediatek.com>
+References: <20231102052426.12006-1-naomi.chu@mediatek.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC RFT v2 1/5] mm: Introduce ARCH_HAS_USER_SHADOW_STACK
-Content-Language: en-US
-To:     Mark Brown <broonie@kernel.org>,
-        "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
-        Deepak Gupta <debug@rivosinc.com>,
-        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Christian Brauner <brauner@kernel.org>,
-        Shuah Khan <shuah@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Kees Cook <keescook@chromium.org>, jannh@google.com,
-        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-1-b613f8681155@kernel.org>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231114-clone3-shadow-stack-v2-1-b613f8681155@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_13,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=846 mlxscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150115
+X-Proofpoint-GUID: 8NkSe1YHupy-NeYHRS_P7bkfejE5w5w8
+X-Proofpoint-ORIG-GUID: 8NkSe1YHupy-NeYHRS_P7bkfejE5w5w8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -150,81 +85,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.11.23 21:05, Mark Brown wrote:
-> Since multiple architectures have support for shadow stacks and we need to
-> select support for this feature in several places in the generic code
-> provide a generic config option that the architectures can select.
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Mark Brown <broonie@kernel.org>
-> ---
->   arch/x86/Kconfig   | 1 +
->   fs/proc/task_mmu.c | 2 +-
->   include/linux/mm.h | 2 +-
->   mm/Kconfig         | 6 ++++++
->   4 files changed, 9 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
-> index 3762f41bb092..14b7703a9a2b 100644
-> --- a/arch/x86/Kconfig
-> +++ b/arch/x86/Kconfig
-> @@ -1952,6 +1952,7 @@ config X86_USER_SHADOW_STACK
->   	depends on AS_WRUSS
->   	depends on X86_64
->   	select ARCH_USES_HIGH_VMA_FLAGS
-> +	select ARCH_HAS_USER_SHADOW_STACK
->   	select X86_CET
->   	help
->   	  Shadow stack protection is a hardware feature that detects function
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index ef2eb12906da..f0a904aeee8e 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -699,7 +699,7 @@ static void show_smap_vma_flags(struct seq_file *m, struct vm_area_struct *vma)
->   #ifdef CONFIG_HAVE_ARCH_USERFAULTFD_MINOR
->   		[ilog2(VM_UFFD_MINOR)]	= "ui",
->   #endif /* CONFIG_HAVE_ARCH_USERFAULTFD_MINOR */
-> -#ifdef CONFIG_X86_USER_SHADOW_STACK
-> +#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
->   		[ilog2(VM_SHADOW_STACK)] = "ss",
->   #endif
->   	};
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 418d26608ece..10462f354614 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -341,7 +341,7 @@ extern unsigned int kobjsize(const void *objp);
->   #endif
->   #endif /* CONFIG_ARCH_HAS_PKEYS */
->   
-> -#ifdef CONFIG_X86_USER_SHADOW_STACK
-> +#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
->   /*
->    * VM_SHADOW_STACK should not be set with VM_SHARED because of lack of
->    * support core mm.
-> diff --git a/mm/Kconfig b/mm/Kconfig
-> index 89971a894b60..b8638da636e1 100644
-> --- a/mm/Kconfig
-> +++ b/mm/Kconfig
-> @@ -1270,6 +1270,12 @@ config LOCK_MM_AND_FIND_VMA
->   	bool
->   	depends on !STACK_GROWSUP
->   
-> +config ARCH_HAS_USER_SHADOW_STACK
-> +	bool
-> +	help
-> +	  The architecture has hardware support for userspace shadow call
-> +          stacks (eg, x86 CET, arm64 GCS, RISC-V Zisslpcfi).
-> +
+On Thu, 02 Nov 2023 13:24:23 +0800, naomi.chu@mediatek.com wrote:
 
-Probably less controversial if we start with one example we have in 
-place: "e.g., x86 CET". That should be sufficient to understand what 
-this is about :)
+> Expand the MCQ queue slots to comply with the UFSHCI 4.0 specification,
+> enabling host controllers to fully utilize the MCQ queue slots.
+> 
+> v2 -> v3
+> - Add patch description that why this patch is necessary
+> 
+> v1 -> v2
+> - Remove QUIRK_MCQ_EXPAND_QUEUE_SLOT quirk and make the change for all host controllers
+> 
+> [...]
 
-Acked-by: David Hildenbrand <david@redhat.com>
+Applied to 6.7/scsi-fixes, thanks!
+
+[1/1] ufs: core: Expand MCQ queue slot to DeviceQueueDepth + 1
+      https://git.kernel.org/mkp/scsi/c/defde5a50d91
 
 -- 
-Cheers,
-
-David / dhildenb
-
+Martin K. Petersen	Oracle Linux Engineering
