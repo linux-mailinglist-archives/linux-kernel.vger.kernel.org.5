@@ -2,106 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0387EC893
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708367EC895
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231374AbjKOQ3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54656 "EHLO
+        id S230336AbjKOQai (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:30:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232255AbjKOQ3L (ORCPT
+        with ESMTP id S229497AbjKOQag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:29:11 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED15CA6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:29:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id d75a77b69052e-41ccd38eaa5so9488371cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:29:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700065747; x=1700670547; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zWfB6Pfx3SaiRXKdJrtjr1wBtGr3UGnibkVdLL5HdSY=;
-        b=uNGX4SLQZ3SqWe0BBeXTLRHw1X5RmIPM2HKEK1heYbj2zMwIZIvST+LKeq6j7zIOph
-         iHH06GEb6Jyd/DFIcmIFAHm+599OXeimIYzMouUGPOqXtagZU1GRomDJYd6X2clT9fio
-         Fm/CTcOL1Hy/iBp3d5N/EArWppcQlqDaE0/TIH6O84569Q/z5RDb/iqrtNR3PpzexzYA
-         i+ISakhpbXEUjeSQ0zsvRUaYGjWlPAQDPm66rLhrjMabYMEq7PZcdzcdlV6IjyP03UJl
-         kDYf5fUnqmgVQJadaveruAIqH30wkq2kGys5UNiQADBAG4zkbWNWj4t8TPgg/fyk+S7B
-         KwCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700065747; x=1700670547;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zWfB6Pfx3SaiRXKdJrtjr1wBtGr3UGnibkVdLL5HdSY=;
-        b=UpnkeQv5CIPhQYk40guZfWBSTHjfBneBwtJIFkSdigKXYiMyR6kRnIwW5RM1sg91DQ
-         RcaSjyqvtmYK7yKHwsOwVhTVu1rVtVm7HYgvYaGOFabrCrcvFyNx5jDktu92Lzhw2D6v
-         QIkIadGSTgtisltydDs2CF1DJVtfcEdP2cw9lOe1sXUFwoabAN4+KxXHMEH7W054AfjJ
-         Ilh/luk5GvTSL5jM0PSxq6UqCLQA+QxWR/cCr1iokBjzwJCyFEgCzK3D9EOi6oyZoho/
-         QeSgWj+m8M2NWHYcYOFw7UGIpQi8xLOP7NZ9yvv/xEN5X7ExcKIomaUx7tG6BylVYQtX
-         Uv2Q==
-X-Gm-Message-State: AOJu0Ywnei4eWwuUrAUa+6MtABicMHKK2LjIsIQcwNS+FTbiBBCmlu/+
-        0oZJ6KfW6UQdZuQzc4PTo8gicg==
-X-Google-Smtp-Source: AGHT+IGbQpcw6KBTm98RikYpu9miHWjOeCRL5OJ7iTqf/uU0fxIkVuFIIbP5+Gm3dZbTwjRb7khCDQ==
-X-Received: by 2002:a05:622a:18a9:b0:403:a662:a3c1 with SMTP id v41-20020a05622a18a900b00403a662a3c1mr10578328qtc.29.1700065747040;
-        Wed, 15 Nov 2023 08:29:07 -0800 (PST)
-Received: from brgl-uxlite.. ([12.186.190.1])
-        by smtp.gmail.com with ESMTPSA id d22-20020ac86696000000b0041818df8a0dsm3645419qtp.36.2023.11.15.08.29.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 08:29:06 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
-Subject: [PATCH] gpio: mockup: initialize a managed pointer in place
-Date:   Wed, 15 Nov 2023 17:29:01 +0100
-Message-Id: <20231115162901.2575969-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.40.1
+        Wed, 15 Nov 2023 11:30:36 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0F2A3A6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:30:33 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67F18DA7;
+        Wed, 15 Nov 2023 08:31:18 -0800 (PST)
+Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id ABB813F641;
+        Wed, 15 Nov 2023 08:30:29 -0800 (PST)
+From:   Ryan Roberts <ryan.roberts@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
+Cc:     Ryan Roberts <ryan.roberts@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 00/14] Transparent Contiguous PTEs for User Mappings
+Date:   Wed, 15 Nov 2023 16:30:04 +0000
+Message-Id: <20231115163018.1303287-1-ryan.roberts@arm.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+Hi All,
 
-The preferred pattern for autopointers is to initialize them when they're
-declared unless it doesn't make sense. Move the declaration of the
-managed device pointer to where it's initialized.
+This is v2 of a series to opportunistically and transparently use contpte
+mappings (set the contiguous bit in ptes) for user memory when those mappings
+meet the requirements. It is part of a wider effort to improve performance by
+allocating and mapping variable-sized blocks of memory (folios). One aim is for
+the 4K kernel to approach the performance of the 16K kernel, but without
+breaking compatibility and without the associated increase in memory. Another
+aim is to benefit the 16K and 64K kernels by enabling 2M THP, since this is the
+contpte size for those kernels. We have good performance data that demonstrates
+both aims are being met (see below).
 
-Signed-off-by: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
----
- drivers/gpio/gpio-mockup.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Of course this is only one half of the change. We require the mapped physical
+memory to be the correct size and alignment for this to actually be useful (i.e.
+64K for 4K pages, or 2M for 16K/64K pages). Fortunately folios are solving this
+problem for us. Filesystems that support it (XFS, AFS, EROFS, tmpfs, ...) will
+allocate large folios up to the PMD size today, and more filesystems are coming.
+And the other half of my work, to enable "small-sized THP" (large folios) for
+anonymous memory, makes contpte sized folios prevalent for anonymous memory too
+[2].
 
-diff --git a/drivers/gpio/gpio-mockup.c b/drivers/gpio/gpio-mockup.c
-index 4870e267a402..455eecf6380e 100644
---- a/drivers/gpio/gpio-mockup.c
-+++ b/drivers/gpio/gpio-mockup.c
-@@ -354,7 +354,6 @@ static const struct file_operations gpio_mockup_debugfs_ops = {
- static void gpio_mockup_debugfs_setup(struct device *dev,
- 				      struct gpio_mockup_chip *chip)
- {
--	struct device *child __free(put_device) = NULL;
- 	struct gpio_mockup_dbgfs_private *priv;
- 	struct gpio_chip *gc;
- 	const char *devname;
-@@ -367,7 +366,7 @@ static void gpio_mockup_debugfs_setup(struct device *dev,
- 	 * There can only be a single GPIO device per platform device in
- 	 * gpio-mockup so using device_find_any_child() is OK.
- 	 */
--	child = device_find_any_child(dev);
-+	struct device *child __free(put_device) = device_find_any_child(dev);
- 	if (!child)
- 		return;
- 
--- 
-2.40.1
+Optimistically, I would really like to get this series merged for v6.8; there is
+a chance that the small-sized THP series will also get merged for that version.
+But even if it doesn't, this series still benefits file-backed memory from the
+file systems that support large folios so shouldn't be held up for it.
+Additionally I've got data that shows this series adds no regression when the
+system has no appropriate large folios.
+
+All dependecies listed against v1 are now resolved; This series applies cleanly
+against v6.7-rc1.
+
+Note that the first patch is for core-mm and provides the refactoring to make a
+crucial optimization possible - which is then implemented in patch 13. The
+remaining patches are arm64-specific.
+
+Testing
+=======
+
+I've tested this series together with small-sized THP [2] on both Ampere Altra
+(bare metal) and Apple M2 (VM):
+  - mm selftests (inc new tests written for small-sized THP); no regressions
+  - Speedometer Java script benchmark in Chromium web browser; no issues
+  - Kernel compilation; no issues
+  - Various tests under high memory pressure with swap enabled; no issues
+
+
+Performance
+===========
+
+John Hubbard at Nvidia has indicated dramatic 10x performance improvements for
+some workloads at [3], when using 64K base page kernel.
+
+You can also see the original performance results I posted against v1 [1] which
+are still valid.
+
+I've additionally run the kernel compilation and speedometer benchmarks on a
+system with small-sized THP disabled and large folio support for file-backed
+memory intentionally disabled; I see no change in performance in this case (i.e.
+no regression when this change is "present but not useful").
+
+
+Changes since v1
+================
+
+  - Export contpte_* symbols so that modules can continue to call inline
+    functions (e.g. ptep_get) which may now call the contpte_* functions (thanks
+    to JohnH)
+  - Use pte_valid() instead of pte_present() where sensible (thanks to Catalin)
+  - Factor out (pte_valid() && pte_cont()) into new pte_valid_cont() helper
+    (thanks to Catalin)
+  - Fixed bug in contpte_ptep_set_access_flags() where TLBIs were missed (thanks
+    to Catalin)
+  - Added ARM64_CONTPTE expert Kconfig (enabled by default) (thanks to Anshuman)
+  - Simplified contpte_ptep_get_and_clear_full()
+  - Improved various code comments
+
+
+[1] https://lore.kernel.org/linux-arm-kernel/20230622144210.2623299-1-ryan.roberts@arm.com/
+[2] https://lore.kernel.org/linux-arm-kernel/20231115132734.931023-1-ryan.roberts@arm.com/
+[3] https://lore.kernel.org/linux-mm/c507308d-bdd4-5f9e-d4ff-e96e4520be85@nvidia.com/
+
+
+Thanks,
+Ryan
+
+
+Ryan Roberts (14):
+  mm: Batch-copy PTE ranges during fork()
+  arm64/mm: set_pte(): New layer to manage contig bit
+  arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
+  arm64/mm: pte_clear(): New layer to manage contig bit
+  arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
+  arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
+  arm64/mm: ptep_clear_flush_young(): New layer to manage contig bit
+  arm64/mm: ptep_set_wrprotect(): New layer to manage contig bit
+  arm64/mm: ptep_set_access_flags(): New layer to manage contig bit
+  arm64/mm: ptep_get(): New layer to manage contig bit
+  arm64/mm: Split __flush_tlb_range() to elide trailing DSB
+  arm64/mm: Wire up PTE_CONT for user mappings
+  arm64/mm: Implement ptep_set_wrprotects() to optimize fork()
+  arm64/mm: Add ptep_get_and_clear_full() to optimize process teardown
+
+ arch/arm64/Kconfig                |  10 +-
+ arch/arm64/include/asm/pgtable.h  | 325 +++++++++++++++++++---
+ arch/arm64/include/asm/tlbflush.h |  13 +-
+ arch/arm64/kernel/efi.c           |   4 +-
+ arch/arm64/kernel/mte.c           |   2 +-
+ arch/arm64/kvm/guest.c            |   2 +-
+ arch/arm64/mm/Makefile            |   1 +
+ arch/arm64/mm/contpte.c           | 447 ++++++++++++++++++++++++++++++
+ arch/arm64/mm/fault.c             |  12 +-
+ arch/arm64/mm/fixmap.c            |   4 +-
+ arch/arm64/mm/hugetlbpage.c       |  40 +--
+ arch/arm64/mm/kasan_init.c        |   6 +-
+ arch/arm64/mm/mmu.c               |  16 +-
+ arch/arm64/mm/pageattr.c          |   6 +-
+ arch/arm64/mm/trans_pgd.c         |   6 +-
+ include/linux/pgtable.h           |  13 +
+ mm/memory.c                       | 175 +++++++++---
+ 17 files changed, 956 insertions(+), 126 deletions(-)
+ create mode 100644 arch/arm64/mm/contpte.c
+
+--
+2.25.1
 
