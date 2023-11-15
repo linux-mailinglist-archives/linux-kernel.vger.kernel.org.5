@@ -2,108 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A24C7EC87E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1497EC886
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231557AbjKOQ0X convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 11:26:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
+        id S231599AbjKOQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:28:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229746AbjKOQ0V (ORCPT
+        with ESMTP id S229570AbjKOQ2r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:26:21 -0500
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85A3AAB;
-        Wed, 15 Nov 2023 08:26:18 -0800 (PST)
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5bdbe2de25fso5441242a12.3;
-        Wed, 15 Nov 2023 08:26:18 -0800 (PST)
+        Wed, 15 Nov 2023 11:28:47 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360DBD5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:44 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507bd644a96so9967929e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700065722; x=1700670522; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jsVx/Q3YhVxHOvs8227jfNskpZuE2YqOrJ9wOZRuNEs=;
+        b=WFuvjd7xuhCBhnJzRLvJiaDaDpenV7NQDapH0uL43DQC9r3vDlwdEULAfiYiGV3uRV
+         4zYkTYj3R8rBHrJaBvuyP0WGvF3QOoMbfE89C8tp5MMqYjg5AVqD/Um3XbHDugLfRdui
+         a2Lb9RNab2KQFGzcx5M6XKshzqUTNvYEVQwAM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700065578; x=1700670378;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7XbGNtZYQzrg+K/86U5tkkq4BRBUIpICB/C0IOeiM6Q=;
-        b=KLHUmA4/es8Rcr3QDHXNmJv6QrcaZJ6zXcIjGA37Vc8IBpFxjc4cm4LImrxbzwKuam
-         4QDmDcQQirFOT+uEVJWEM9w0aTfW5ZFdqRbKFG4IOsDgNK547IhUWhyY5JZ5U4Xytqv4
-         zvsQsbRoR1eAl1rTHgxS5kqWzbnldHIoC2+rYGqOQ5pv9C1jP5hqnpmaSVA18BQlwxsI
-         wnJMF60cuoIaEogI7ALYTO+HC3igpkw4GAVNcn5RUMqD+FCEPtjnymn2ZqBZR6s0Tdol
-         BoDgmuPGupBzVBvsZhbx+tyi/gnct9q8tFiW6QzNdJboJ1eBWSeWgHTSTbVPZoJfoZWf
-         mMgA==
-X-Gm-Message-State: AOJu0YwuXTOOK0har0fLWXRdvvMIzWNXl2l2K4KD5I4pYXUithxGU9Mr
-        Z/aTJ+/dLaGlAG8VOUCGlwN8stRBmo6eG/K8fDY=
-X-Google-Smtp-Source: AGHT+IF5g1wRBbrnBPwjzq/pQzH6gj1NY7XTcsRAlsqoLpnDnPN1IgoVgSxKIo3KkCbBz+xSQQapxKxtokP116cJH24=
-X-Received: by 2002:a17:90b:2789:b0:283:2932:e912 with SMTP id
- pw9-20020a17090b278900b002832932e912mr14944255pjb.28.1700065577790; Wed, 15
- Nov 2023 08:26:17 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700065722; x=1700670522;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jsVx/Q3YhVxHOvs8227jfNskpZuE2YqOrJ9wOZRuNEs=;
+        b=OQterUd0q0MjOMOzO0IOyb6z+EY1UueMHYCbW2FIfSeJJ1hPqeDj0ms9U/tP95Wz7c
+         UV0UGx4copS3dad+uzfG0bSRx2wVe2cqeN6bUacJm5gauNkayKbe9Mxg9VwTh/ZKNn7F
+         Ce4Qsd0pSXitUNExK2Ug3mRMKLjVP01s0a/tiBihm3b0MX364rzJk1FKDRm8OBTZoqQh
+         ygz0pfUM3hB4yQVEO2FWi1qYkbQtZ+v5o87LWkJLVzENvD0PJalYX+YDy/r6wtM3TtTI
+         8baJwp2I5qneerhAsqYy1xHTMD5cj0x7YwOh2UpD01jLVSRzMOEtEvmJeulDZ8CD2qKF
+         R6jg==
+X-Gm-Message-State: AOJu0YxQCVCdj2L43FbKlVsu1Z4qmDzk2Z+ybzNlw5khTeZf8P2jVZiM
+        H+LJzx/t/l1cCxmlO3SfHUtONe+38pjrPr6F+uIteIdK
+X-Google-Smtp-Source: AGHT+IEVEiwGiAzLNd6zIFTLXWbUxZkRtssvdu86O1kF2xlvZBfy2kD40cm6ud/W1m93ymNCqGxHZQ==
+X-Received: by 2002:a05:6512:ad0:b0:509:4405:d5a8 with SMTP id n16-20020a0565120ad000b005094405d5a8mr10898763lfu.68.1700065722164;
+        Wed, 15 Nov 2023 08:28:42 -0800 (PST)
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
+        by smtp.gmail.com with ESMTPSA id i16-20020a056512341000b00507ae0a5eb7sm1692203lfr.164.2023.11.15.08.28.40
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 08:28:40 -0800 (PST)
+Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c788f5bf53so81115711fa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:40 -0800 (PST)
+X-Received: by 2002:a05:6512:12cf:b0:503:3781:ac32 with SMTP id
+ p15-20020a05651212cf00b005033781ac32mr12684125lfg.41.1700065720301; Wed, 15
+ Nov 2023 08:28:40 -0800 (PST)
 MIME-Version: 1.0
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com> <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com> <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
-In-Reply-To: <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 15 Nov 2023 08:26:06 -0800
-Message-ID: <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
-Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed for
- aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-To:     David Wang <00107082@163.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231115154946.3933808-1-dhowells@redhat.com> <20231115154946.3933808-9-dhowells@redhat.com>
+In-Reply-To: <20231115154946.3933808-9-dhowells@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 11:28:22 -0500
+X-Gmail-Original-Message-ID: <CAHk-=wjytv+Gy-Ra0rhLCAW_120BvnzLC63tfkkZVXzGgD3_+w@mail.gmail.com>
+Message-ID: <CAHk-=wjytv+Gy-Ra0rhLCAW_120BvnzLC63tfkkZVXzGgD3_+w@mail.gmail.com>
+Subject: Re: [PATCH v3 08/10] iov_iter: Add benchmarking kunit tests
+To:     David Howells <dhowells@redhat.com>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Jens Axboe <axboe@kernel.dk>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@aculab.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 8:12 AM David Wang <00107082@163.com> wrote:
+On Wed, 15 Nov 2023 at 10:50, David Howells <dhowells@redhat.com> wrote:
 >
->
-> 在 2023-11-15 23:48:33，"Namhyung Kim" <namhyung@kernel.org> 写道：
-> >On Wed, Nov 15, 2023 at 3:00 AM David Wang <00107082@163.com> wrote:
-> >>
-> >>
-> >>
-> >> At 2023-11-15 18:32:41, "Peter Zijlstra" <peterz@infradead.org> wrote:
-> >> >
-> >> >Namhyung, could you please take a look, you know how to operate this
-> >> >cgroup stuff.
-> >> >
-> >>
-> >> More information,  I run the profiling with 8cpu machine on a SSD with ext4 filesystem :
-> >>
-> >> # mkdir /sys/fs/cgroup/mytest
-> >> # echo $$ > /sys/fs/cgroup/mytest/cgroup.procs
-> >> ## Start profiling targeting cgroup /sys/fs/cgroup/mytest   on another terminal
-> >> # fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=4 --time_based=1
-> >>
-> >> I got a feeling that f06cc667f7990 would decrease total samples by 10%~20% when profiling IO benchmark within cgroup.
-> >
-> >Oh sorry, I missed this message.  Can you please share the
-> >command line and the output?
-> >
-> I did not use perf..... This is the part where  it is not quite convincing to report the change, I am using a profiling tool of my own as I mentioned in the first mail.....
-> But I believe my profiling tools did detect some changes.
+> Add kunit tests to benchmark 256MiB copies to a KVEC iterator, a BVEC
+> iterator, an XARRAY iterator and to a loop that allocates 256-page BVECs
+> and fills them in (similar to a maximal bio struct being set up).
 
-Oh.. ok.  You didn't use perf.
+I see *zero* advantage of doing this in the kernel as opposed to doing
+this benchmarking in user space.
 
-Then what is your profiling tool?  Where did you see
-the 10%~20% drop in samples?
+If you cannot see the performance difference due to some user space
+interface costs, then the performance difference doesn't matter.
 
->
-> I am not experienced with the perf-tool at all,   too complicated a tool for me.... But I think I can try it.
+Yes, some of the cases may be harder to trigger than others.
+iov_iter_xarray() isn't as common an op as ubuf/iovec/etc, but that
+either means that it doesn't matter enough, or that maybe some more
+filesystems could be taught to use it for splice or whatever.
 
-I feel sorry about that.  In most cases, just `perf record -a` and
-then `perf report` would work well. :)
+Particularly for something like different versions of memcpy(), this
+whole benchmarking would want
 
-Thanks,
-Namhyung
+ (a) profiles
+
+ (b) be run on many different machines
+
+ (c) be run repeatedly to get some idea of variance
+
+and all of those only get *harder* to do with Kunit tests. In user
+space? Just run the damn binary (ok, to get profiles you then have to
+make sure you have the proper permission setup to get the kernel
+profiles too, but a
+
+   echo 1 > /proc/sys/kernel/perf_event_paranoid
+
+as root will do that for you without you having to then do the actual
+profiling run as root)
+
+                Linus
