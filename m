@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5207EC8DB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0487EC8D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbjKOQj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        id S232417AbjKOQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:39:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43800 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjKOQjZ (ORCPT
+        with ESMTP id S231901AbjKOQj1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:39:25 -0500
+        Wed, 15 Nov 2023 11:39:27 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F036ED5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:21 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA64EC433C7;
-        Wed, 15 Nov 2023 16:39:20 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EDB2FA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:23 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E81BC433C9;
+        Wed, 15 Nov 2023 16:39:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700066361;
-        bh=NbtSh1xIKXUY0wdMyrpHBah0tEYTkXI939m/krGZXYA=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=tFj3UGZgfqVN6AHFEPIheLZkcKXr0yXlbZNf+ejnR2Yp5h4MTosnNtrWxlPfvX87c
-         43z7FChfk+BotOyOXk1RAmUky+v0Dz7GB8gQWj6qcHUbsJgx8k0wmEpfBNaZRst+Ux
-         AH5VUkatVXRq926yqif8vnMa/sTIMtkr3319WeZI8P4VDdFx+zbO/hzM/5ByYmCHcT
-         KpxHZv+SAQXe0lHEL83JQV7vK6Wa0y1SOx/3RO6BlpoEdrjwheKIFrHsY9P81YcvH9
-         Y1jLpvvfQSj3PDvWc8WfefBkrqy4Qlb4MWgdilZj3vGjDVgKoK31ZCB5blT8GX/Qpe
-         RoZzrk9nE4B9w==
+        s=k20201202; t=1700066363;
+        bh=hH/MtPMheBE4FRnp6r7JcZVzm3gOuvyKUwNseHulg94=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kVyduxGw7RGktXNcN7T+SGle97iooX2quLtnli9mnVApOKEa8BtmFwngJ42Km8A32
+         jARlxlOP9xx6aSCE5ndmrJWMEYasSv0811arbT+bdmSpDodAnf3PY44FCYS+ok/O3b
+         uBsOix7P4nF7OBGQtbnE6JD/7+Nfp+SllJcuYjUzKChNuoO8zis+ifrbTAnDBJczU3
+         S1M3V2jTYPkMTsMaKM649uBdQJlMDKMR67tlzwYw6BEHvOpnY/fPVRWGq8/Jm/oOeq
+         rR4FIwzNS193Ipxn92zAvkqOBH4Pw+anMtS4zxQ7HaTgkYzunzrrN9VD44/l4PDasM
+         PZrGVAHbIGckA==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 03/10] accel/habanalabs: add support for Gaudi2C device
-Date:   Wed, 15 Nov 2023 18:39:05 +0200
-Message-Id: <20231115163912.1243175-3-ogabbay@kernel.org>
+Cc:     Farah Kassabri <fkassabri@habana.ai>
+Subject: [PATCH 04/10] accel/habanalabs: fix EQ heartbeat mechanism
+Date:   Wed, 15 Nov 2023 18:39:06 +0200
+Message-Id: <20231115163912.1243175-4-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231115163912.1243175-1-ogabbay@kernel.org>
 References: <20231115163912.1243175-1-ogabbay@kernel.org>
@@ -47,105 +48,61 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gaudi2 with PCI revision ID with the value of '3' represents Gaudi2C
-device and should be detected and initialized as Gaudi2.
+From: Farah Kassabri <fkassabri@habana.ai>
 
+Stop rescheduling another heartbeat check when EQ heartbeat check fails
+as it generates confusing logs in dmesg that the heartbeat fails.
+
+Signed-off-by: Farah Kassabri <fkassabri@habana.ai>
+Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/accel/habanalabs/common/device.c                 | 3 +++
- drivers/accel/habanalabs/common/habanalabs.h             | 2 ++
- drivers/accel/habanalabs/common/habanalabs_drv.c         | 3 +++
- drivers/accel/habanalabs/common/mmu/mmu.c                | 1 +
- drivers/accel/habanalabs/common/sysfs.c                  | 3 +++
- drivers/accel/habanalabs/include/hw_ip/pci/pci_general.h | 1 +
- 6 files changed, 13 insertions(+)
+ drivers/accel/habanalabs/common/device.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
-index d95a981b2906..d9447aeb3937 100644
+index d9447aeb3937..6bf5f1d0d005 100644
 --- a/drivers/accel/habanalabs/common/device.c
 +++ b/drivers/accel/habanalabs/common/device.c
-@@ -853,6 +853,9 @@ static int device_early_init(struct hl_device *hdev)
- 		gaudi2_set_asic_funcs(hdev);
- 		strscpy(hdev->asic_name, "GAUDI2B", sizeof(hdev->asic_name));
- 		break;
-+	case ASIC_GAUDI2C:
-+		gaudi2_set_asic_funcs(hdev);
-+		strscpy(hdev->asic_name, "GAUDI2C", sizeof(hdev->asic_name));
- 		break;
- 	default:
- 		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
-diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
-index 5c69a482b8de..7b0209e5bad6 100644
---- a/drivers/accel/habanalabs/common/habanalabs.h
-+++ b/drivers/accel/habanalabs/common/habanalabs.h
-@@ -1262,6 +1262,7 @@ struct hl_dec {
-  * @ASIC_GAUDI_SEC: Gaudi secured device (HL-2000).
-  * @ASIC_GAUDI2: Gaudi2 device.
-  * @ASIC_GAUDI2B: Gaudi2B device.
-+ * @ASIC_GAUDI2C: Gaudi2C device.
-  */
- enum hl_asic_type {
- 	ASIC_INVALID,
-@@ -1270,6 +1271,7 @@ enum hl_asic_type {
- 	ASIC_GAUDI_SEC,
- 	ASIC_GAUDI2,
- 	ASIC_GAUDI2B,
-+	ASIC_GAUDI2C,
- };
+@@ -1044,20 +1044,21 @@ static bool is_pci_link_healthy(struct hl_device *hdev)
+ 	return (vendor_id == PCI_VENDOR_ID_HABANALABS);
+ }
  
- struct hl_cs_parser;
-diff --git a/drivers/accel/habanalabs/common/habanalabs_drv.c b/drivers/accel/habanalabs/common/habanalabs_drv.c
-index 35ae0ff347f5..e542fd40e16c 100644
---- a/drivers/accel/habanalabs/common/habanalabs_drv.c
-+++ b/drivers/accel/habanalabs/common/habanalabs_drv.c
-@@ -141,6 +141,9 @@ static enum hl_asic_type get_asic_type(struct hl_device *hdev)
- 		case REV_ID_B:
- 			asic_type = ASIC_GAUDI2B;
- 			break;
-+		case REV_ID_C:
-+			asic_type = ASIC_GAUDI2C;
-+			break;
- 		default:
- 			break;
- 		}
-diff --git a/drivers/accel/habanalabs/common/mmu/mmu.c b/drivers/accel/habanalabs/common/mmu/mmu.c
-index b2145716c605..b654302a68fc 100644
---- a/drivers/accel/habanalabs/common/mmu/mmu.c
-+++ b/drivers/accel/habanalabs/common/mmu/mmu.c
-@@ -596,6 +596,7 @@ int hl_mmu_if_set_funcs(struct hl_device *hdev)
- 		break;
- 	case ASIC_GAUDI2:
- 	case ASIC_GAUDI2B:
-+	case ASIC_GAUDI2C:
- 		/* MMUs in Gaudi2 are always host resident */
- 		hl_mmu_v2_hr_set_funcs(hdev, &hdev->mmu_func[MMU_HR_PGT]);
- 		break;
-diff --git a/drivers/accel/habanalabs/common/sysfs.c b/drivers/accel/habanalabs/common/sysfs.c
-index 01f89f029355..278606373055 100644
---- a/drivers/accel/habanalabs/common/sysfs.c
-+++ b/drivers/accel/habanalabs/common/sysfs.c
-@@ -251,6 +251,9 @@ static ssize_t device_type_show(struct device *dev,
- 	case ASIC_GAUDI2B:
- 		str = "GAUDI2B";
- 		break;
-+	case ASIC_GAUDI2C:
-+		str = "GAUDI2C";
-+		break;
- 	default:
- 		dev_err(hdev->dev, "Unrecognized ASIC type %d\n",
- 				hdev->asic_type);
-diff --git a/drivers/accel/habanalabs/include/hw_ip/pci/pci_general.h b/drivers/accel/habanalabs/include/hw_ip/pci/pci_general.h
-index f5d497dc9bdc..4f951cada077 100644
---- a/drivers/accel/habanalabs/include/hw_ip/pci/pci_general.h
-+++ b/drivers/accel/habanalabs/include/hw_ip/pci/pci_general.h
-@@ -25,6 +25,7 @@ enum hl_revision_id {
- 	REV_ID_INVALID				= 0x00,
- 	REV_ID_A				= 0x01,
- 	REV_ID_B				= 0x02,
-+	REV_ID_C				= 0x03
- };
+-static void hl_device_eq_heartbeat(struct hl_device *hdev)
++static int hl_device_eq_heartbeat_check(struct hl_device *hdev)
+ {
+-	u64 event_mask = HL_NOTIFIER_EVENT_DEVICE_RESET | HL_NOTIFIER_EVENT_DEVICE_UNAVAILABLE;
+ 	struct asic_fixed_properties *prop = &hdev->asic_prop;
  
- #endif /* INCLUDE_PCI_GENERAL_H_ */
+ 	if (!prop->cpucp_info.eq_health_check_supported)
+-		return;
++		return 0;
+ 
+ 	if (hdev->eq_heartbeat_received) {
+ 		hdev->eq_heartbeat_received = false;
+ 	} else {
+ 		dev_err(hdev->dev, "EQ heartbeat event was not received!\n");
+-		hl_device_cond_reset(hdev, HL_DRV_RESET_HARD, event_mask);
++		return -EIO;
+ 	}
++
++	return 0;
+ }
+ 
+ static void hl_device_heartbeat(struct work_struct *work)
+@@ -1074,10 +1075,9 @@ static void hl_device_heartbeat(struct work_struct *work)
+ 	/*
+ 	 * For EQ health check need to check if driver received the heartbeat eq event
+ 	 * in order to validate the eq is working.
++	 * Only if both the EQ is healthy and we managed to send the next heartbeat reschedule.
+ 	 */
+-	hl_device_eq_heartbeat(hdev);
+-
+-	if (!hdev->asic_funcs->send_heartbeat(hdev))
++	if ((!hl_device_eq_heartbeat_check(hdev)) && (!hdev->asic_funcs->send_heartbeat(hdev)))
+ 		goto reschedule;
+ 
+ 	if (hl_device_operational(hdev, NULL))
 -- 
 2.34.1
 
