@@ -2,102 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A71DB7EC64E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:51:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 191837EC64F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:51:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344290AbjKOOvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:51:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53100 "EHLO
+        id S1344270AbjKOOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:51:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344040AbjKOOvF (ORCPT
+        with ESMTP id S1344091AbjKOOvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Nov 2023 09:51:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E52A8F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:51:02 -0800 (PST)
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07AD8E;
+        Wed, 15 Nov 2023 06:51:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
   t=1700059862; x=1731595862;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=9D3T4M10CW55F/QDP/Mvbsq/NHZU+GWFUpkbGjqS5g4=;
-  b=nb5Nj/ryw3WXJDS8wAb83wFmeUF4B72jBz3uTzDwlWTb2XMhDQjDFmrh
-   U05t+8XeRa8ajnjN9KIL0IbaXUWGkCWGz0axldTUW+Apq8/P1JnpURo+T
-   ocz6M2jdQxDeQVlbV0sH4YkOJA3rl0v8p9qP2I3lyY/k5EkfhY0xgKqoa
-   KkbmXaaDToD4JbteipuXllXFmPq2uqjnbW8q9pwEvUebNs/uiypjgY7bT
-   2/aIV2+wxLzfoiOCOfFCtxF52Sz4tMdludLtc/JlqoyrmtZUJFpzJo4Io
-   6+SDRf1oObmMOx2ONWbLRZzPQ326l5wAxUUvMBc97ZtvWokN6UV7y2i6j
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9524551"
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=pkIPOw810249sk90oDTDuwzqTKjcTyNRgT3NVxcT2Gk=;
+  b=oFWBzk+7OfA4UHxsIT2/iAs8kgNUQXuj9O3wU3hWlAw/6OKwbTQRbPtx
+   NiNZRoNoMYgOc+ZseV65BB+1OEGt9P086Zlh0wweABqrYsuKZu7o5tRHh
+   hXdhdUNutALXPx0MCtaU1mreKmhsSs5o+/QZuPfybVKUGPISFxg329m2Y
+   OXW+4gFFnWKzHX7wu3n9oVuCiP/B10TlAwZixZ2k21scv2MNgufRmHrpR
+   tPkorRHILw8g9DmiFIBiwRvqqyFORHz9lr2KFHNznS3IXc0NkoF8JVG4q
+   gpoaV9BFV+R3Jf0M1Ug0v0sJJc6wsQTs8XGfp4gCx5iq2RSWleAR9l+ks
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="371075734"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="9524551"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 06:51:01 -0800
+   d="scan'208";a="371075734"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 06:51:02 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="938496598"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="908801239"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="938496598"
+   d="scan'208";a="908801239"
 Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 15 Nov 2023 06:50:59 -0800
+  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2023 06:50:59 -0800
 Received: from kbuild by b8de5498638e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r3HEG-0000Pu-2g;
+        id 1r3HEG-0000Ps-2c;
         Wed, 15 Nov 2023 14:50:56 +0000
 Date:   Wed, 15 Nov 2023 22:50:37 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Guo Ren <guoren@linux.alibaba.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>
-Subject: arch/riscv/kernel/irq.c:49:1: sparse: sparse: symbol
- '__pcpu_scope_irq_stack' was not declared. Should it be static?
-Message-ID: <202311152232.0ru8PmcL-lkp@intel.com>
+To:     Huang Shijie <shijie@os.amperecomputing.com>,
+        catalin.marinas@arm.com
+Cc:     oe-kbuild-all@lists.linux.dev, will@kernel.org,
+        gregkh@linuxfoundation.org, rafael@kernel.org, arnd@arndb.de,
+        mark.rutland@arm.com, broonie@kernel.org, keescook@chromium.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, patches@amperecomputing.com,
+        Huang Shijie <shijie@os.amperecomputing.com>
+Subject: Re: [PATCH] arm64: irq: set the correct node for VMAP stack
+Message-ID: <202311152250.ozO781vZ-lkp@intel.com>
+References: <20231114091643.59530-1-shijie@os.amperecomputing.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231114091643.59530-1-shijie@os.amperecomputing.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: 163e76cc6ef43b7a5e9b6e245a6d6667c9d9b4a7 riscv: stack: Support HAVE_IRQ_EXIT_ON_IRQ_STACK
-date:   5 months ago
-config: riscv-randconfig-r122-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152232.0ru8PmcL-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231115/202311152232.0ru8PmcL-lkp@intel.com/reproduce)
+Hi Huang,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arnd-asm-generic/master linus/master v6.7-rc1 next-20231115]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Huang-Shijie/arm64-irq-set-the-correct-node-for-VMAP-stack/20231114-171932
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20231114091643.59530-1-shijie%40os.amperecomputing.com
+patch subject: [PATCH] arm64: irq: set the correct node for VMAP stack
+config: arm64-randconfig-001-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152250.ozO781vZ-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152250.ozO781vZ-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311152232.0ru8PmcL-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311152250.ozO781vZ-lkp@intel.com/
 
-sparse warnings: (new ones prefixed by >>)
-   WARNING: invalid argument to '-march': '_zihintpause'
->> arch/riscv/kernel/irq.c:49:1: sparse: sparse: symbol '__pcpu_scope_irq_stack' was not declared. Should it be static?
+All errors (new ones prefixed by >>):
 
-vim +/__pcpu_scope_irq_stack +49 arch/riscv/kernel/irq.c
+   arch/arm64/kernel/irq.c: In function 'init_irq_stacks':
+>> arch/arm64/kernel/irq.c:60:59: error: implicit declaration of function 'early_cpu_to_node'; did you mean 'early_pfn_to_nid'? [-Werror=implicit-function-declaration]
+      60 |                 p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
+         |                                                           ^~~~~~~~~~~~~~~~~
+         |                                                           early_pfn_to_nid
+   cc1: some warnings being treated as errors
 
-    35	
-    36	#ifdef CONFIG_VMAP_STACK
-    37	static void init_irq_stacks(void)
-    38	{
-    39		int cpu;
-    40		ulong *p;
-    41	
-    42		for_each_possible_cpu(cpu) {
-    43			p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, cpu_to_node(cpu));
-    44			per_cpu(irq_stack_ptr, cpu) = p;
-    45		}
-    46	}
-    47	#else
-    48	/* irq stack only needs to be 16 byte aligned - not IRQ_STACK_SIZE aligned. */
-  > 49	DEFINE_PER_CPU_ALIGNED(ulong [IRQ_STACK_SIZE/sizeof(ulong)], irq_stack);
-    50	
+
+vim +60 arch/arm64/kernel/irq.c
+
+    52	
+    53	#ifdef CONFIG_VMAP_STACK
+    54	static void init_irq_stacks(void)
+    55	{
+    56		int cpu;
+    57		unsigned long *p;
+    58	
+    59		for_each_possible_cpu(cpu) {
+  > 60			p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
+    61			per_cpu(irq_stack_ptr, cpu) = p;
+    62		}
+    63	}
+    64	#else
+    65	/* irq stack only needs to be 16 byte aligned - not IRQ_STACK_SIZE aligned. */
+    66	DEFINE_PER_CPU_ALIGNED(unsigned long [IRQ_STACK_SIZE/sizeof(long)], irq_stack);
+    67	
 
 -- 
 0-DAY CI Kernel Test Service
