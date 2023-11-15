@@ -2,114 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DCD27EBD54
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:07:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ADFD7EBD59
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:08:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234613AbjKOHHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 02:07:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57692 "EHLO
+        id S234616AbjKOHIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 02:08:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOHHR (ORCPT
+        with ESMTP id S229551AbjKOHIT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 02:07:17 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9574EE9;
-        Tue, 14 Nov 2023 23:07:14 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id 006d021491bc7-586753b0ab0so3575729eaf.0;
-        Tue, 14 Nov 2023 23:07:14 -0800 (PST)
+        Wed, 15 Nov 2023 02:08:19 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E08F1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:08:14 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54744e66d27so9996a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:08:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700032034; x=1700636834; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DD6loysLm1if0z26gUfJWR92/8dI2bMs4fySErE1LEY=;
-        b=GWViByNOB6QFa47gtiwgot+lcOC2McHU/geONAV6dDG5dydanxRUngS9lLTcRvqAbL
-         FptC+PJNItd/bIMJKjoDsZgP4TGQnx3mVu59RVWeqUd8MTd5GgX4uYFm/TN/gbmhB/ZI
-         4DmlkmODWyveOOem/MmROEr6iBT0BckkTQumj/8Hfs4wox7X0ytCIovPvF+8WnXqBsMN
-         QHALUi5HLt57LsTilQxc2MEwsnBfsFZorKg0dTfs/5/7glwJjg5Dk/7GbWBHtAGcUFZU
-         XJbI13DXnuj1q17N0yYpxVnnKZ4gCq/Rh5aSEjBgCXkpUA7VVDG80BhNBzI4v/4xAw1u
-         DWmA==
+        d=google.com; s=20230601; t=1700032092; x=1700636892; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sjgDYCiVZoQHvB83kALIeM9OtG/SOdaCJiN+nH0BdL0=;
+        b=PWFchHxOLnIDxyxQOW7xkwrUL4GrQYkU7STtHNvjjtK24qbbpOBVd6RqWcdQeOXWmk
+         b/XrC2McPwJpyuC2lH0eDdK/NSd2Tx5lpY51GgWlNwZDIevaZADJp7saj2I3noNTkE/N
+         bEczc7939AoxqKnpzqTF4wyrVrBX8z5OJ8wQZMYzc/ZyV75tX1WIdZ0f1URKw3v4XyF1
+         73MZaarDAWBW2PWioeAB7lWGNSxB0r6d2rWvJKZZRBe/RbWk0h6RBbKPEv35qFPTccoR
+         RM4HhthEvGjHhwnebUjwuSAuoOGAJNqOkRkaKkOK5HV7IZdlLtfuAoGg/dLexRdgIWMP
+         11iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700032034; x=1700636834;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DD6loysLm1if0z26gUfJWR92/8dI2bMs4fySErE1LEY=;
-        b=vpQ0dK19hqAR+xKgOpHh6LmMU9VIM0FO7igVz2NDVF78tT7d1jkI5ZSm/KtuxSMXPN
-         9+rJDtmPq5G3AuDoKclrwDUAt+5PPf1mZR870UiIh3krezSlT/zioegWF5ibW4BVxe7I
-         sy0pYSt+64tWf7AdnUPa9jzoKpshqFrk0sVSzZdiSangNgL6EVs0AoIv2K251LNcO5PI
-         xh8hEj9C0wwpOcb+fD9OT4tn8yGn5J28isi9LwZP0S4mL3e4P9sU6iUrcWt/QDJvyDGQ
-         pWmbW3dRLAY4hL1/NdVz2//eg28CEU9ZeWYjW45DBAtz8x2rURjdjs1fxvD/qYF2vK99
-         W/kw==
-X-Gm-Message-State: AOJu0Yy6tDfgTyUqJy8NlZ5kulmo/ioKpWSqE4LpEwkl3RVpQ51erDhw
-        p4DdfGpqXaxnYGabtrtrgIZ5KjogatcdvUaB2wU=
-X-Google-Smtp-Source: AGHT+IGraImbABbVnYg6Ry57RVFnd3IqKf02szE055lgCefoqqyZvE2zfw+kuPwbsXcgZfPjjXz5Afh8lqooVZbQ9JU=
-X-Received: by 2002:a4a:305e:0:b0:58a:211:acf8 with SMTP id
- z30-20020a4a305e000000b0058a0211acf8mr10912431ooz.7.1700032033893; Tue, 14
- Nov 2023 23:07:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700032092; x=1700636892;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sjgDYCiVZoQHvB83kALIeM9OtG/SOdaCJiN+nH0BdL0=;
+        b=FKlRyHgvaOY8JktWiIEwpHm1QyguShA7f2pNp0WzAIAa9cBUKZa2NKzFesjSzSTCpj
+         MM8BemvXhkaN6zkVFwLw4FXu0tNE5B8O2GhRzwoYR1bjBQlSRwwt85u1Z8AHJ42knqyE
+         rS3OFUVgxznYAvOAxhNcE/nb3r6PDlIPJG3UDncwnnGJNsg8HwH3yXpHnYaWUyBXVDwP
+         k3BNBORBZZLBNAmVGK/uQW7MLAANppz7S0+dxXP9zWuvveWQGY3nqMVCCJ0HK74cNCMn
+         y438muRArvDYt7S6SiQFboBUTEtLljWo1LyJ9bozdX/D/UZvmeORUIpnhHu8qh18gGCK
+         r8dA==
+X-Gm-Message-State: AOJu0Yx6sszhhgy2WERNvX/rF/JOMsMcTBAZHqkVw2W3m8LYlEMfxniM
+        5L2ugJXomIfbpNktm1fZjRKoVL0XPmYb+e41RHrkZw==
+X-Google-Smtp-Source: AGHT+IEe/GNSXejvYayQJoBdKOorcpj9IYPMyfVBFxUm3h3zM4PXIN9nobRvzoCrHFQpIYokeDhIZ64IC16bT6CHdfw=
+X-Received: by 2002:a05:6402:1948:b0:546:d479:9c90 with SMTP id
+ f8-20020a056402194800b00546d4799c90mr69953edz.5.1700032092427; Tue, 14 Nov
+ 2023 23:08:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20231115033459.1228900-1-sashal@kernel.org> <20231115033459.1228900-2-sashal@kernel.org>
-In-Reply-To: <20231115033459.1228900-2-sashal@kernel.org>
-From:   Frediano Ziglio <freddy77@gmail.com>
-Date:   Wed, 15 Nov 2023 07:07:02 +0000
-Message-ID: <CAHt6W4cdQSXbBf4gO_jR-q-Q8SAonNDoQ0f2cO7LsnT__priWA@mail.gmail.com>
-Subject: Re: [Spice-devel] [PATCH AUTOSEL 6.5 2/6] drm/qxl: prevent memory leak
-To:     Sasha Levin <sashal@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        maarten.lankhorst@linux.intel.com, virtualization@lists.linux.dev,
-        Maxime Ripard <mripard@kernel.org>,
-        Zongmin Zhou <zhouzongmin@kylinos.cn>, kraxel@redhat.com,
-        tzimmermann@suse.de, spice-devel@lists.freedesktop.org,
-        Dave Airlie <airlied@redhat.com>
+References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
+ <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com> <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
+In-Reply-To: <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
+From:   Guan-Yu Lin <guanyulin@google.com>
+Date:   Wed, 15 Nov 2023 15:08:01 +0800
+Message-ID: <CAOuDEK3UuVGgP63NG9HtuJ0D2ERZsFGBwF5+GNynk=P7zSVUhg@mail.gmail.com>
+Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        gregkh@linuxfoundation.org, len.brown@intel.com, pavel@ucw.cz,
+        heikki.krogerus@linux.intel.com, mkl@pengutronix.de,
+        hadess@hadess.net, mailhol.vincent@wanadoo.fr,
+        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pumahsu@google.com, raychi@google.com, albertccwang@google.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno mer 15 nov 2023 alle ore 06:57 Sasha Levin
-<sashal@kernel.org> ha scritto:
+On Wed, Nov 8, 2023 at 11:56=E2=80=AFPM Alan Stern <stern@rowland.harvard.e=
+du> wrote:
 >
-> From: Zongmin Zhou <zhouzongmin@kylinos.cn>
+> On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
+> > Thanks for the questions. Let me first introduce my motivation for
+> > proposing this feature. We can discuss the implementation details later=
+.
+> >
+> > Motivation:
+> > Currently, system PM operations always override runtime PM operations.
+> > As runtime PM reflects the power status of devices, there is a
+> > possibility that runtime PM states that a device is in use, but system
+> > PM decides to suspend it. Up to now, we have assumed that a device can'=
+t
+> > function without resources from the system, so the device should acquir=
+e
+> > a wakelock to prevent this from happening. However, what if the device
 >
-> [ Upstream commit 0e8b9f258baed25f1c5672613699247c76b007b5 ]
+> [From the fact that you mention wakelocks, I assume that you're trying
+> to implement something for Android systems rather than Linux systems
+> in general.]
 >
-> The allocated memory for qdev->dumb_heads should be released
-> in qxl_destroy_monitors_object before qxl suspend.
-> otherwise,qxl_create_monitors_object will be called to
-
-Minor, typo: otherwise -> Otherwise.
-
-> reallocate memory for qdev->dumb_heads after qxl resume,
-> it will cause memory leak.
+> > does not need the system's support to function? Or only needs limited
+> > resources (e.g., only limited power source or clock) to function? In th=
+is
+> > situation, we would like to keep the device on but allow the system to
+> > suspend. This is an example where we would like devices to follow runti=
+me
+> > PM rather than system PM.
 >
-> Signed-off-by: Zongmin Zhou <zhouzongmin@kylinos.cn>
-> Link: https://lore.kernel.org/r/20230801025309.4049813-1-zhouzongmin@kylinos.cn
-> Reviewed-by: Dave Airlie <airlied@redhat.com>
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
-> ---
->  drivers/gpu/drm/qxl/qxl_display.c | 3 +++
->  1 file changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
-> index 6492a70e3c396..404b0483bb7cb 100644
-> --- a/drivers/gpu/drm/qxl/qxl_display.c
-> +++ b/drivers/gpu/drm/qxl/qxl_display.c
-> @@ -1229,6 +1229,9 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
->         if (!qdev->monitors_config_bo)
->                 return 0;
->
-> +       kfree(qdev->dumb_heads);
-> +       qdev->dumb_heads = NULL;
-> +
->         qdev->monitors_config = NULL;
->         qdev->ram_header->monitors_config = 0;
+> To put it more simply, you want a way to leave some devices in an active
+> state while the rest of the system is suspended.  It's not clear why you
+> have dragged runtime PM into the discussion (apart from the obvious fact
+> that you won't want to keep a device active if it isn't active already).
 >
 
-Frediano
+The determination of which device should remain active when the system
+suspends can be based on various factors. One straightforward approach
+is to consider the device's runtime pm state. Alternatively, we could
+explore more elaborate techniques that consider additional criteria.
+
+> This sounds like a major change, not something to be done with a simple
+> override.  You should discuss it with Rafael Wysocki and the linux-pm
+> mailing list before trying to implement anything.
+>
+> > Feature Supported:
+> > 1. Devices could control the priority of system PM and runtime PM durin=
+g
+> >    runtime.
+>
+> This seems like a totally unnecessary side issue.  Forget about runtime
+> PM for the time being and concentrate instead on which devices you want
+> to keep active.
+>
+> > 2. The control should be at the device level, meaning that different
+> >    devices should control their own priorities.
+> >
+> > Goal of This Patch:
+> > 1. Design a framework to support features above.
+> > 2. Apply it into usb for demonstration.
+>
+> You may find that it is easier (and less work in the long run) to design
+> the general framework and get it working than to concentrate on one
+> particular subsystem.
+>
+> Alan Stern
+
+The big picture is "a way to leave some devices in an active state
+while the rest of the system is suspended", I think it could be
+separated into:
+(1) Each system should be able to choose which device(s) is included
+    in this feature.
+(2) For devices chosen in (1), each of them should have the flexibility
+    to determine when it will not suspend with the system, not just
+    always being active when the system suspends.
+
+Regards,
+Guan-Yu
