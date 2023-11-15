@@ -2,143 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10EC87EC686
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08A577EC68B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:01:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344305AbjKOPAv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:00:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47470 "EHLO
+        id S1344304AbjKOPBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:01:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234954AbjKOPAt (ORCPT
+        with ESMTP id S1344288AbjKOPBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:00:49 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787B4101;
-        Wed, 15 Nov 2023 07:00:46 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id d2e1a72fcca58-6c34e87b571so5845603b3a.3;
-        Wed, 15 Nov 2023 07:00:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700060446; x=1700665246; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wk//b/44SpaY6x16B5W5sNmaMz2/gBaDq0KHkpkbQWE=;
-        b=L+0JimstNlPwV98gWbapTovOoNxNrSRoTSX9Qd84t4Ao9OEJ56gHSiR+XXbl4oDt41
-         yRGgF6NZC/BwjU5rMkk/M7dNj/ZlgOyv52xqjowOeIgOzvRAhBblINYjwLCn/iTDRv3K
-         zrSkDrORB60mItw5ffg/fvnx1/3GsJ6BAxR8smqFHpG51GIZyKYbhisXEVw1JkV5Ko9p
-         qV7iaTQFGmbQsy5Os0Xg0LCbyBCBHYmLsWFyrBTsvar/hAegVJDQo1h1Q2teQW85kCeM
-         ItFczANc/+noDQV0qI+otCAvdkdk0jKpwQ7wqf6UYDD4Js+9OinOoTWtdVQ17sNr2X9E
-         oCIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700060446; x=1700665246;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wk//b/44SpaY6x16B5W5sNmaMz2/gBaDq0KHkpkbQWE=;
-        b=U+kOfiq+xNcNvuhL/xF4T7A5Sa04VgKvU/RKHvns4dSD0XdvGpEDgk4zSZuKEDLsv4
-         peq1HLbokxWm+SXMAV4wgVBmWjOGedtPTPV2Oi4/iIYVcAoyiVCxWFOm1vlvwZLjGuFG
-         tmAut5iE+0eyi4PETVImPLAezY1Og8wKrhIYgZh3nfbxCAPLpygFigQr746ALSHssFnx
-         1Zcu3UR7rR9B6N25EARcUjb0XFI+0IjruaViti4dQYgpspDx1cLh2hiHk6A5FaLcA/Po
-         7gFFyWd4fmZLzxdLI4mL8bOMAVxBqvgx6NVt/WVB31QPpeaRrSgiNwOmVFkbOnbHR+o7
-         OUNA==
-X-Gm-Message-State: AOJu0YzRC8zMT24mhGy83Xqep18BMJDRYYq1RhLCucB0yLzMIfhX4uG4
-        /GBN9itgESbVjIJyaTqjBYz1GL9XCWzDzCWRCdk=
-X-Google-Smtp-Source: AGHT+IFES6h9/DKjhqBaWgyZPzFL9fEJSQPlCWZV//0MH8HJO+4a5yXo/kWWb0Sg5QvHY7y78rynth2VBACtRmH8QFA=
-X-Received: by 2002:a05:6a00:1d2a:b0:6c3:41fd:3a3e with SMTP id
- a42-20020a056a001d2a00b006c341fd3a3emr11265622pfx.27.1700060445747; Wed, 15
- Nov 2023 07:00:45 -0800 (PST)
-MIME-Version: 1.0
-References: <20231106141704.866455-1-zyytlz.wz@163.com> <87o7g7ueom.fsf@kernel.org>
- <CAJedcCytuGmvubqbSZgsU3Db=rg=xM+kSuLZn8BSvA18Yn+9Jw@mail.gmail.com>
- <18ba5520da0.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
- <CAJedcCxoL+L1QPaZty27k6kqR2JRjxPVY=BV5xn7BSPojbxe=A@mail.gmail.com> <fa0e7536-9b05-42fb-9fff-acd2ffad9af9@broadcom.com>
-In-Reply-To: <fa0e7536-9b05-42fb-9fff-acd2ffad9af9@broadcom.com>
-From:   Zheng Hacker <hackerzheng666@gmail.com>
-Date:   Wed, 15 Nov 2023 23:00:33 +0800
-Message-ID: <CAJedcCzj9SFbx-=xDymqJyV2fu0xjmz2RH4+gT+Gxsqubg35ZA@mail.gmail.com>
-Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in brcmf_cfg80211_detach
-To:     Arend van Spriel <arend.vanspriel@broadcom.com>
-Cc:     Kalle Valo <kvalo@kernel.org>, Zheng Wang <zyytlz.wz@163.com>,
-        aspriel@gmail.com, franky.lin@broadcom.com,
-        hante.meuleman@broadcom.com, johannes.berg@intel.com,
-        marcan@marcan.st, linus.walleij@linaro.org,
-        jisoo.jang@yonsei.ac.kr, linuxlovemin@yonsei.ac.kr,
-        wataru.gohda@cypress.com, linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        SHA-cyfmac-dev-list@infineon.com, linux-kernel@vger.kernel.org,
-        security@kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 15 Nov 2023 10:01:33 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8F3AB;
+        Wed, 15 Nov 2023 07:01:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=YCgL2ztxtDiVu3eA8ljQ93m5dha9B9l8BgMn8Bi6WTk=; b=G1P0VEDbI+fPM86puwbmL/Zoal
+        NCzgGfhf2Gg+s7fQzaauU1PrAiLcSbt7QiaWr2rENJyzXQ3dhCxEpyKV+M78HObWM/nYk+IJl6YbQ
+        Qd/Nrjs/OO1Q8XDU75UOodwJUkYEa3vv1E7n6Od5K700PMmVuFWJ2FzMJCL1BSjBX7/I=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:52530 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r3HOL-0001hg-UI; Wed, 15 Nov 2023 10:01:22 -0500
+Date:   Wed, 15 Nov 2023 10:01:21 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Daniel Mack <daniel@zonque.org>
+Cc:     Lech Perczak <lech.perczak@camlingroup.com>,
+        gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        u.kleine-koenig@pengutronix.de, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Popov <maxim.snafu@gmail.com>,
+        stable@vger.kernel.org
+Message-Id: <20231115100121.5c926d4eb6d3abb02234887d@hugovil.com>
+In-Reply-To: <ecc90a62-7cfa-45c9-9f6c-188e2c8ac50f@zonque.org>
+References: <20231114074904.239458-1-daniel@zonque.org>
+        <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
+        <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
+        <3fac7d72-0a1b-4d93-9245-a0f8af1240a6@camlingroup.com>
+        <ecc90a62-7cfa-45c9-9f6c-188e2c8ac50f@zonque.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arend van Spriel <arend.vanspriel@broadcom.com> =E4=BA=8E2023=E5=B9=B411=E6=
-=9C=8813=E6=97=A5=E5=91=A8=E4=B8=80 17:18=E5=86=99=E9=81=93=EF=BC=9A
->
-> On November 8, 2023 4:03:26 AM Zheng Hacker <hackerzheng666@gmail.com>
-> wrote:
->
-> > Arend Van Spriel <arend.vanspriel@broadcom.com> =E4=BA=8E2023=E5=B9=B41=
-1=E6=9C=886=E6=97=A5=E5=91=A8=E4=B8=80 23:48=E5=86=99=E9=81=93=EF=BC=9A
-> >>
-> >> On November 6, 2023 3:44:53 PM Zheng Hacker <hackerzheng666@gmail.com>=
- wrote:
-> >>
-> >>> Thanks! I didn't test it for I don't have a device. Very appreciated
-> >>> if anyone could help with that.
-> >>
-> >> I would volunteer, but it made me dig deep and not sure if there is a
-> >> problem to solve here.
-> >>
-> >> brcmf_cfg80211_detach() calls wl_deinit_priv() -> brcmf_abort_scanning=
-() ->
-> >> brcmf_notify_escan_complete() which does delete the timer.
-> >>
-> >> What am I missing here?
-> >
-> > Thanks four your detailed review. I did see the code and not sure if
-> > brcmf_notify_escan_complete
-> > would be triggered for sure. So in the first version I want to delete
-> > the pending timer ahead of time.
->
-> Why requesting a CVE when you are not sure? Seems a bit hasty to put it
-> mildly.
+On Wed, 15 Nov 2023 12:22:10 +0100
+Daniel Mack <daniel@zonque.org> wrote:
 
-I'm sure the issue exists because there's only cancler of timer but not wok=
-er.
-As there's similar CVEs before like : https://github.com/V4bel/CVE-2022-412=
-18,
-I submit it as soon as I found it.
+> Hi Lech,
+>=20
+> On 11/15/23 11:51, Lech Perczak wrote:
+> > W dniu 14.11.2023 o=A016:55, Daniel Mack pisze:
+> >> Hi Hugo,
+> >>
+> >> On 11/14/23 16:20, Hugo Villeneuve wrote:
+> >>> On Tue, 14 Nov 2023 08:49:04 +0100
+> >>> Daniel Mack <daniel@zonque.org> wrote:
+> >>>> This devices has a silicon bug that makes it report a timeout interr=
+upt
+> >>>> but no data in FIFO.
+> >>>>
+> >>>> The datasheet states the following in the errata section 18.1.4:
+> >>>>
+> >>>>   "If the host reads the receive FIFO at the at the same time as a
+> >>>>   time-out interrupt condition happens, the host might read 0xCC
+> >>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
+> >>>>   of the Line Status Register (LSR) is not set (means there is not
+> >>>>   data in the receive FIFO)."
+> >>>>
+> >>>> When this happens, the loop in sc16is7xx_irq() will run forever,
+> >>>> which effectively blocks the i2c bus and breaks the functionality
+> >>>> of the UART.
+> >>>>
+> >>>> From the information above, it is assumed that when the bug is
+> >>>> triggered, the FIFO does in fact have payload in its buffer, but the
+> >>>> fill level reporting is off-by-one. Hence this patch fixes the issue
+> >>>> by reading one byte from the FIFO when that condition is detected.
+> >>> From what I understand from the errata, when the problem occurs, it
+> >>> affects bit 0 of the LSR register. I see no mention that it
+> >>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
+> >> True, the errata doesn't explicitly mention that, but tests have shown
+> >> that the RXLVL register is equally affected.
+> >>
+> >>> LSR[0] would be checked only if we were using polled mode of
+> >>> operation, but we always use the interrupt mode (IRQ), and therefore I
+> >>> would say that this errata doesn't apply to this driver, and the
+> >>> patch is not necessary...
+> >> Well, it is. We have seen this bug in the wild and extensively
+> >> stress-tested the patch on dozens of boards for many days. Without this
+> >> patch, kernels on affected systems would consume a lot of CPU cycles in
+> >> the interrupt threads and effectively render the I2C bus unusable due =
+to
+> >> the busy polling.
+> >>
+> >> With this patch applied, we were no longer able to reproduce the issue.
+> > Could you share some more details on the setup you use to reproduce thi=
+s? I'd like to try out as well.
+>=20
+> We have boards with 2 I2C busses with an SC16IS752IBS on both. The UARTs
+> are configured in infrared mode, and they send receive IR signals
+> constantly. I guess the same would happen with other electrical
+> interfaces, but the important bit is that the UARTs see a steady stream
+> of inbound data.
+>=20
 
->
-> > As I'm not very familiar with the logic here. I'm still not sure if we
-> > should delete the timer_shutdown_sync.
-> > Looking forward to your reply :)
->
-> Reading the kerneldoc of timer_shutdown_sync() has the advantage that
-> the timer can not be rearmed by another thread. However, that will only
-> happen when a new scan is initiated in firmware, but the bus is already
-> down so that can not happen. The only improvement (no bug fix!) I see
-> here is to replace timer handling code in brcmf_notify_escan_complete():
->
-> -       if (timer_pending(&cfg->escan_timeout))
-> -               del_timer_sync(&cfg->escan_timeout);
-> +       timer_delete_sync(&cfg->escan_timeout);
->
+Hi Daniel,
 
-Very thanks for your reviews and suggestions! I thinks it's a good
-idea. I'll make
-another patch sooner or later.
+> The bug has hit us on production units and when it does, sc16is7xx_irq()
+> would spin forever because sc16is7xx_port_irq() keeps seeing an
+> interrupt in the IIR register that is not cleared because the driver
+> does not call into sc16is7xx_handle_rx() unless the RXLVL register
+> reports at least one byte in the FIFO.
 
-Best regards,
-Zheng
+I would suggest that you replace the second paragraph or your original
+commit message with this, it better explains what is the problem.
 
-> Regards,
-> Arend
+Also, when the problem happens, you say that "the fill level reporting
+is off-by-one", so doest it mean that RXLVL can sometimes be non-zero
+when the bug occurs?
+
+
+> Note that this issue might only occur in revision E of the silicon. And
+
+Is this just a supposition or based on NXP info or some actual tests?
+
+> there seems to be now way to read the revision code through I2C, so I
+> guess you won't be able to figure out easily whether your chip is affecte=
+d.
+>=20
+> Let me know if I can provide more information.
+
+I have a board with two SC16IS752IPW using SPI interface, but I don't
+know (yet) what is the revision. I will try to determine it if possible,
+although I do not see any info on that in the datasheet.
+
+I will also try to reproduce the issue, and test your patch.
+
+Hugo.
