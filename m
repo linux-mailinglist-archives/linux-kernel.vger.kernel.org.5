@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AA537EC97E
+	by mail.lfdr.de (Postfix) with ESMTP id 8F7367EC97F
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232417AbjKORRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:17:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
+        id S232489AbjKORRK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:17:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231856AbjKORRC (ORCPT
+        with ESMTP id S232470AbjKORRF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:17:02 -0500
+        Wed, 15 Nov 2023 12:17:05 -0500
 Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E715127
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:16:59 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da307fb7752so8929774276.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:16:59 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81E75197
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:17:01 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da2b8af7e89so8334817276.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:17:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700068618; x=1700673418; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700068620; x=1700673420; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y0A/JzsGt28jdcT80BavCxCwKvAhE81Bu7nGud0PArE=;
-        b=WWo5FwtPlJqJm5DvQ3UAKpvrkNXOxnLvErKLqK7nAaEjDyqK8WG2nKPnBsRgUWWgk4
-         JJpqpr8+5NvPaLXK3spIW68zcfV6GMVb4KXgzggr/PR0pw3eU9XgSmH9XdNRoCmZiang
-         vIVhuLhmMeOJMpFnaCg1Nw2A4D6yJYS/7ytD7+WVWxZ+55c9eQZPQffjEO1NamHYwcJw
-         SHGwQDizgPSSemTLQk31jv++6LlXuh8nAUrIyCEXFwxWBceg4ThWfrlh8e0TVBq0JRDP
-         DP0sStsjpLIK3rSDeNBFycQwAFKguEJDiVsdAPR3slmHrdppj+ewIz08DV6E/5vgp+8v
-         OlKw==
+        bh=ancG5BntywgLYEtvolLfMGCRB6TUL9+Qsz3r5K1PW+Y=;
+        b=xrWsTiyCHBiwz7mSj9bK7ctp7FaEseGHYVltxpTbsvsJ4EkO8ejqyPyA25FFtQ2kPC
+         lRc8zKpqCSq+dTp7K8XgCFgIQbiAy7lRV11KtDDlqqCKU1NPlqKA/Ex6FySx8Oh1Cbrm
+         w6OCt/xSgzdSrD6NgF59v7NEjkcVirfui50mPgdly6Rc04JPt2Qh750gsWJLhZ95G5/S
+         AoA4LsXGCkRAKalKlnkEylI/d0o/N5spOyjtWl4Ep6cFNNOBhvKj0DmRiNn9e1+m7rvR
+         nswgOvw0vuM8IOJFPwVptBjK8HiKiGkJdGGbsNktRhNhnG0SUw2M2MMTI7YW9/BPGtOl
+         vCqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700068618; x=1700673418;
+        d=1e100.net; s=20230601; t=1700068620; x=1700673420;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y0A/JzsGt28jdcT80BavCxCwKvAhE81Bu7nGud0PArE=;
-        b=dXeAOqdBOYt+JxEH23fnVA1viHuzqe/XBtkGwal5Ga8k5kKPklJJ2Rr/sAcsfduVmN
-         7BvhtRtkpMw9WBP1FLq8UchjpG5Te4ykETohV331DttW/zo+jVt/mPIXJ6vzGV2wtH+l
-         94vkZevMNrrQXBj0B3IgHVUtsEcBQB0GekP0Qzq08f5Dcq7m5DJ37ofeJftKcaYvHqhQ
-         5/BVNV6aldVqTHM6VYl2Y/k4a8I4nUoC8hMfJHEP2udheQEdF0S+PBcmggRUB6FLgTgk
-         tbGI8g69vFINF5vz0gmTlDMcq0iPr/hxVQJVtwNM6ek0DefJa7fdq3VG5XafIQWH9MwR
-         Xvww==
-X-Gm-Message-State: AOJu0Yx13j9EKTDqRPZgvXtf3Xn3BaLAhESYnoN8/3/nxXsIks0VNsfc
-        rjEhCRNBwnvuWqxj/9ArT0DI5xlYdxv+jUhCbgQ=
-X-Google-Smtp-Source: AGHT+IHvlCAUAQ7rynEQW7WXWvObMDPO+YBhC2cqr0pMjotcdPVLuo899EzI/e2mZHuLUOn3sEwympOD+yO+Oto2Btk=
+        bh=ancG5BntywgLYEtvolLfMGCRB6TUL9+Qsz3r5K1PW+Y=;
+        b=IHydyqEkdiRytYXIMG4hOmlBVCjtA5UWYSEzDiKleE2LucU+yRXUDSahb3LTwBT/FQ
+         ppUZ1r7/lbQiiCKoeU1+zwaxaGI1yEKP55Ow7Rh2PCKRr8IlCMEFJHXl7JLTvowVkVFp
+         qBgSg5u7mjZE8bld222iF84bnTAcw2Mb9Ue+OOLO+Z6siXgP1OwbJG0s5NSRUsRAuzA5
+         9vcl20WceH4c6j5ZSAcEOLjV7bcUuXgQUV6e3oyUNHZ+noZHexI9YbeCTgWEGSu1hXCU
+         HzQ1330uzXuChkgdUsO0lX0OB0VbrHevNyfUystqzX/8gicmVKhffzM6qw1YKO6RQdu5
+         EsqA==
+X-Gm-Message-State: AOJu0Yy3RXBYuJxjolvlNyxsZVUkNbcPA1W9wVn2+FFag4Id+kqBrtPy
+        5YWRXY7yBGmCkUa4wYnaBLwMaeZ+MxyWAlDOdaA=
+X-Google-Smtp-Source: AGHT+IGj2sqWbMdL/6D9g7CRzAYqqT3mXvwK0Hse86EHkE+8SGctzk4vkst4vCcjMP9s+i6Vnuewpw1qh5ywF521RY0=
 X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
- (user=sebastianene job=sendgmr) by 2002:a25:3206:0:b0:da0:3da9:ce08 with SMTP
- id y6-20020a253206000000b00da03da9ce08mr324716yby.10.1700068618426; Wed, 15
- Nov 2023 09:16:58 -0800 (PST)
-Date:   Wed, 15 Nov 2023 17:16:32 +0000
+ (user=sebastianene job=sendgmr) by 2002:a25:dcc3:0:b0:d9a:4fb2:16a2 with SMTP
+ id y186-20020a25dcc3000000b00d9a4fb216a2mr310123ybe.12.1700068620695; Wed, 15
+ Nov 2023 09:17:00 -0800 (PST)
+Date:   Wed, 15 Nov 2023 17:16:33 +0000
 In-Reply-To: <20231115171639.2852644-2-sebastianene@google.com>
 Mime-Version: 1.0
 References: <20231115171639.2852644-2-sebastianene@google.com>
 X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231115171639.2852644-4-sebastianene@google.com>
-Subject: [PATCH v3 02/10] arm64: ptdump: Use the mask from the state structure
+Message-ID: <20231115171639.2852644-5-sebastianene@google.com>
+Subject: [PATCH v3 03/10] arm64: ptdump: Add the walker function to the ptdump
+ info structure
 From:   Sebastian Ene <sebastianene@google.com>
 To:     will@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
         James Morse <james.morse@arm.com>,
@@ -74,76 +75,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Printing the descriptor attributes requires accessing a mask which has a
-different set of attributes for stage-2. In preparation for adding support
-for the stage-2 pagetables dumping, use the mask from the local context
-and not from the globally defined pg_level array. Store a pointer to
-the pg_level array in the ptdump state structure. This will allow us to
-extract the mask which is wrapped in the pg_level array and use it for
-descriptor parsing in the note_page.
+Stage-2 needs a dedicated walk function to be able to parse concatenated
+pagetables. The ptdump info structure is used to hold different
+configuration options for the walker. This structure is registered with
+the debugfs entry and is stored in the argument for the debugfs file.
+Hence, in preparation for parsing the stage-2 pagetables add the walk
+function as an argument for the debugfs file.
 
 Signed-off-by: Sebastian Ene <sebastianene@google.com>
 ---
- arch/arm64/mm/ptdump.c | 14 +++++++++-----
- 1 file changed, 9 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/ptdump.h | 1 +
+ arch/arm64/mm/ptdump.c          | 1 +
+ arch/arm64/mm/ptdump_debugfs.c  | 3 ++-
+ 3 files changed, 4 insertions(+), 1 deletion(-)
 
+diff --git a/arch/arm64/include/asm/ptdump.h b/arch/arm64/include/asm/ptdump.h
+index 581caac525b0..1f6e0aabf16a 100644
+--- a/arch/arm64/include/asm/ptdump.h
++++ b/arch/arm64/include/asm/ptdump.h
+@@ -19,6 +19,7 @@ struct ptdump_info {
+ 	struct mm_struct		*mm;
+ 	const struct addr_marker	*markers;
+ 	unsigned long			base_addr;
++	void (*ptdump_walk)(struct seq_file *s, struct ptdump_info *info);
+ };
+ 
+ void ptdump_walk(struct seq_file *s, struct ptdump_info *info);
 diff --git a/arch/arm64/mm/ptdump.c b/arch/arm64/mm/ptdump.c
-index e305b6593c4e..8761a70f916f 100644
+index 8761a70f916f..d531e24ea0b2 100644
 --- a/arch/arm64/mm/ptdump.c
 +++ b/arch/arm64/mm/ptdump.c
-@@ -75,6 +75,7 @@ static struct addr_marker address_markers[] = {
- struct pg_state {
- 	struct ptdump_state ptdump;
- 	struct seq_file *seq;
-+	struct pg_level *pg_level;
- 	const struct addr_marker *marker;
- 	unsigned long start_address;
- 	int level;
-@@ -252,11 +253,12 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
- 		      u64 val)
- {
- 	struct pg_state *st = container_of(pt_st, struct pg_state, ptdump);
-+	struct pg_level *pg_info = st->pg_level;
- 	static const char units[] = "KMGTPE";
- 	u64 prot = 0;
+@@ -346,6 +346,7 @@ static struct ptdump_info kernel_ptdump_info = {
+ 	.mm		= &init_mm,
+ 	.markers	= address_markers,
+ 	.base_addr	= PAGE_OFFSET,
++	.ptdump_walk	= &ptdump_walk,
+ };
  
- 	if (level >= 0)
--		prot = val & pg_level[level].mask;
-+		prot = val & pg_info[level].mask;
+ void ptdump_check_wx(void)
+diff --git a/arch/arm64/mm/ptdump_debugfs.c b/arch/arm64/mm/ptdump_debugfs.c
+index 68bf1a125502..7564519db1e6 100644
+--- a/arch/arm64/mm/ptdump_debugfs.c
++++ b/arch/arm64/mm/ptdump_debugfs.c
+@@ -10,7 +10,8 @@ static int ptdump_show(struct seq_file *m, void *v)
+ 	struct ptdump_info *info = m->private;
  
- 	if (st->level == -1) {
- 		st->level = level;
-@@ -282,10 +284,10 @@ static void note_page(struct ptdump_state *pt_st, unsigned long addr, int level,
- 			unit++;
- 		}
- 		pt_dump_seq_printf(st->seq, "%9lu%c %s", delta, *unit,
--				   pg_level[st->level].name);
--		if (st->current_prot && pg_level[st->level].bits)
--			dump_prot(st, pg_level[st->level].bits,
--				  pg_level[st->level].num);
-+				   pg_info[st->level].name);
-+		if (st->current_prot && pg_info[st->level].bits)
-+			dump_prot(st, pg_info[st->level].bits,
-+				  pg_info[st->level].num);
- 		pt_dump_seq_puts(st->seq, "\n");
- 
- 		if (addr >= st->marker[1].start_address) {
-@@ -316,6 +318,7 @@ void ptdump_walk(struct seq_file *s, struct ptdump_info *info)
- 	st = (struct pg_state){
- 		.seq = s,
- 		.marker = info->markers,
-+		.pg_level = &pg_level[0],
- 		.level = -1,
- 		.ptdump = {
- 			.note_page = note_page,
-@@ -353,6 +356,7 @@ void ptdump_check_wx(void)
- 			{ 0, NULL},
- 			{ -1, NULL},
- 		},
-+		.pg_level = &pg_level[0],
- 		.level = -1,
- 		.check_wx = true,
- 		.ptdump = {
+ 	get_online_mems();
+-	ptdump_walk(m, info);
++	if (info->ptdump_walk)
++		info->ptdump_walk(m, info);
+ 	put_online_mems();
+ 	return 0;
+ }
 -- 
 2.43.0.rc0.421.g78406f8d94-goog
 
