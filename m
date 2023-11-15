@@ -2,56 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B138D7ED607
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA6887ED60C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235635AbjKOV1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S1344879AbjKOV3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjKOV1P (ORCPT
+        with ESMTP id S230210AbjKOV3V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:27:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3121E127;
-        Wed, 15 Nov 2023 13:27:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC37C433C7;
-        Wed, 15 Nov 2023 21:27:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700083631;
-        bh=Jt1L1aPAah1jOyoVMf4tYtUHoQebBZuGPlZfdj8gZNk=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=lmUYwucwDYjCWJh4fp5Zyn8GaxpDDah3MxtpIDt7EoMqZZw+0f5drxETILL2PMD+U
-         W4Ju5wknmTZ0T46AvHNrj41zcnr1mLh123dzcnTLz6IEiNr/A4axU2BA+kVPFiMyS7
-         T4z55U+smK6AsNG2SuPDGTxPwSa2Ne7v/Av1kV3/dabFztQiIUnmLQh34fkYVa6s5O
-         5Rv0G30ys718VrVImy8Vj9XU+oa1CJ2FE4jMgGo/H1xm6ttgeO74fzHzLeWNUcqR3T
-         Jq9PfWDuXtOjH4VyTQMEYL/ZgBEsTlYwdt8VTGMu0UGcY9P01scw1EZRyKZQxhg0nH
-         9jyjvO+xH+80Q==
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 15 Nov 2023 23:27:08 +0200
-Message-Id: <CWZPCL3WPNIC.DUVAB7WXWHFL@kernel.org>
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Dave Hansen" <dave.hansen@intel.com>,
-        "Jo Van Bulck" <jo.vanbulck@kuleuven.be>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
-X-Mailer: aerc 0.15.2
-References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
- <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
- <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
- <7e729488e2f841f384b719d0509a4f78f491d477.camel@kernel.org>
- <be63771f-080e-4832-955e-13f5b06b2010@kuleuven.be>
- <CWG522A78YHD.37CO0T9F3FVXB@suppilovahvero>
- <55d6aa33-4ffd-4a0c-a449-63b136f5a1a9@kuleuven.be>
- <4163a276-895b-418d-aab3-5f4d8da69230@intel.com>
-In-Reply-To: <4163a276-895b-418d-aab3-5f4d8da69230@intel.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        Wed, 15 Nov 2023 16:29:21 -0500
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232F38F;
+        Wed, 15 Nov 2023 13:29:18 -0800 (PST)
+Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-40838915cecso606645e9.2;
+        Wed, 15 Nov 2023 13:29:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700083756; x=1700688556; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3p4zCP4pU6Jd5DKB3xx9Zwmjhwd0cEt27vibrvZH2uc=;
+        b=XEt42Kh4E/CJdVLdPLauj6+HTmM3fP/x+7Hx/B0+6CZpP+n8Nfxb0wVY/5Knxxryz7
+         laTl4m8rSFwgb3gAc5uzGqN4cNHAc6tdKfRx33IXLOXx4XFbgReU5hEVZZNdqUOZNnMP
+         6cCXw7i6vFFuNaI0YsI4LYq2awSK/a+DKTmAYq7D/JQImpPONTy++9dkmUBsgauk84go
+         cHTeXImERr7aTA7rlCBsPd6z1cVy/j7P0IOP6kLxofSoyQ/TfbdsgSvBcV6N9NAwHxCX
+         eJbhJYaCGFewgbWoYJMIvIO/Hytjg6rBWe5/o9JkhDmcLl4BDDVLFK5tjLK9SZ4OjoAW
+         w9BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700083756; x=1700688556;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3p4zCP4pU6Jd5DKB3xx9Zwmjhwd0cEt27vibrvZH2uc=;
+        b=Uz8tVLfpbFC4TxHAlmP3L8Uq76VcqPZjpNr9smhgrzYdZVM4gzCgNR+te0mrQfmG1A
+         CJtNpL8gFVmQ98KkSxmMC/lTxg3QU3Dk+8qzfcpslW0WM4JYpMS9CC3/C8MaPy4TwmAe
+         TNaPhPTunsW5wyrPysxo+RVmmMD7CAeL0mwX2aV69mYlCZ740NFl3BEoaTxQF/U+pV0D
+         17jyL3qA8YZO3on60/y/Kv9dUgthJSGToO1QH+IQX0l2cWR1aMkconMJ+PweDehWCGFV
+         WfShlPqWaYHf1mqNhQV1LBVRFSKHL4WCuIx31x+FhoCBBwVE4sACtAaQOgcR1Ixz8We8
+         Imkw==
+X-Gm-Message-State: AOJu0Yzv7OAjkXiCtdY22QJZgTtAMPhp2DIR2o6pM1pWZwRw4rsWbs17
+        eHW+wPUFWK9DGmw717Q/YMXGOkxGyMM=
+X-Google-Smtp-Source: AGHT+IFlHfdE0QzX1nTBQOBcq9idiB3h4X5+9ha3O//W4lTlmpBYRnBfVQRYA0fF28aQCbzVoeEJxA==
+X-Received: by 2002:a05:600c:6022:b0:409:c1e:7fe8 with SMTP id az34-20020a05600c602200b004090c1e7fe8mr11460736wmb.19.1700083756209;
+        Wed, 15 Nov 2023 13:29:16 -0800 (PST)
+Received: from prasmi.home ([2a00:23c8:2500:a01:e8e:4851:e049:93fd])
+        by smtp.gmail.com with ESMTPSA id m10-20020a7bca4a000000b00407b93d8085sm910631wml.27.2023.11.15.13.29.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 13:29:15 -0800 (PST)
+From:   Prabhakar <prabhakar.csengg@gmail.com>
+X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chris Brandt <chris.brandt@renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] dt-bindings: timer: renesas: ostm: Document RZ/Five SoC
+Date:   Wed, 15 Nov 2023 21:29:08 +0000
+Message-Id: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -60,34 +83,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Nov 8, 2023 at 10:46 PM EET, Dave Hansen wrote:
-> On 11/8/23 12:31, Jo Van Bulck wrote:
-> > Just a kind follow-up: from what I can see, this series has not been
-> > merged into the x86/sgx branch of tip yet (assuming that's where it
-> > should go next)?
-> >=20
-> > Apologies if I've overlooked anything, and please let me know if there'=
-s
-> > something on my end that can help!
->
-> Yes, you've missed something.  For your reading pleasure:
->
-> https://www.kernel.org/doc/html/latest/process/2.Process.html?highlight=
-=3Dmerge%20window
-> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
->
-> I honestly didn't even think about applying this until Jarkko said
-> something on 23rd.  By that point, it was far too late for it to get
-> sorted out for 6.7.  So, that puts it in the next merge window.
-> Specifically:
->
-> 	The release candidate -rc1 is the starting point for new
-> 	patches to be applied which are targeted for the next merge
-> 	window.
->
-> So wait for the next -rc1, and you'll hopefully see your series get merge=
-d.
+From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-OK, great, thank you Dave.
+The OSTM block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+SoC. "renesas,r9a07g043-ostm" compatible string will be used on the RZ/Five
+SoC so to make this clear and to keep this file consistent, update the
+comment to include RZ/Five SoC.
 
-BR, Jarkko
+No driver changes are required as generic compatible string "renesas,ostm"
+will be used as a fallback on RZ/Five SoC.
+
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ Documentation/devicetree/bindings/timer/renesas,ostm.yaml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/devicetree/bindings/timer/renesas,ostm.yaml b/Documentation/devicetree/bindings/timer/renesas,ostm.yaml
+index 7207929e5cd6..8b06a681764e 100644
+--- a/Documentation/devicetree/bindings/timer/renesas,ostm.yaml
++++ b/Documentation/devicetree/bindings/timer/renesas,ostm.yaml
+@@ -23,7 +23,7 @@ properties:
+       - enum:
+           - renesas,r7s72100-ostm  # RZ/A1H
+           - renesas,r7s9210-ostm   # RZ/A2M
+-          - renesas,r9a07g043-ostm # RZ/G2UL
++          - renesas,r9a07g043-ostm # RZ/G2UL and RZ/Five
+           - renesas,r9a07g044-ostm # RZ/G2{L,LC}
+           - renesas,r9a07g054-ostm # RZ/V2L
+       - const: renesas,ostm        # Generic
+-- 
+2.34.1
+
