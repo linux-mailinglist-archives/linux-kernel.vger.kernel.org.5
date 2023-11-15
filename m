@@ -2,171 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BFF37EC3BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:32:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8577EC3DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343951AbjKONc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:32:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
+        id S1344075AbjKONgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:36:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343722AbjKONcX (ORCPT
+        with ESMTP id S1344037AbjKONgX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:32:23 -0500
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028BF9B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:32:20 -0800 (PST)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-2802c0b610dso712372a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:32:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700055139; x=1700659939;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=eiUWWAK8hFsU91ktuG0aBOn9mRyPVX1KZ66LKphaOsM=;
-        b=ZRT33YUNT3ZPOCJh1ijk6LhEtHuOC/gH8dKRISLnfTZDAACVINQDoey21f328OZvic
-         xA0hPsh+v1VBgsTumDk5VPJZAr/Ns+Lz7xYEV8YRjR83f0Az+jMznE27o40kvE7Gl+a3
-         vjStYISKauzmMgEhoj3GCB1R4sHqJtTYaN65vbd8Jgv/R2PiuaM5Qk7cMKOz7svp/NzM
-         iMKXVWsRPsxYVr2YdgTbNZvB4gnHU3kJevctrcQO0zHBUDGJQH7rHugziq4aKzHik2Hc
-         5Rb+zr6e65iY1Lr+dz82w7QCV5NSzXV2Dyz11rFFsMdNSmIiiMc4aOjf8UxwntIuDK/V
-         bEUw==
-X-Gm-Message-State: AOJu0YwlYq8TzvbkfCm7fmKmrWBQok02XnZli/4wLynztn74mUvzbqGq
-        5XOfvEY5Qm8SocbT0AeKFvPRJ+wM75/F9OVAkQJazLsgmei7
-X-Google-Smtp-Source: AGHT+IHQciS6h1jPmUiLqvMgAMIin4uULzptWzeI8+RwCVMuG/H/DumfPZBvBZ5xxMRXeNAd/yLL+NJDHS1H3OMM9tIJene435AS
+        Wed, 15 Nov 2023 08:36:23 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80F1919A8;
+        Wed, 15 Nov 2023 05:36:08 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AFDZmUkA1694208, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AFDZmUkA1694208
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 21:35:48 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Wed, 15 Nov 2023 21:34:22 +0800
+Received: from RTDOMAIN (172.21.210.160) by RTEXMBS04.realtek.com.tw
+ (172.21.6.97) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2375.7; Wed, 15 Nov
+ 2023 21:34:21 +0800
+From:   Justin Lai <justinlai0215@realtek.com>
+To:     <kuba@kernel.org>
+CC:     <davem@davemloft.net>, <edumazet@google.com>, <pabeni@redhat.com>,
+        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <andrew@lunn.ch>, <pkshih@realtek.com>, <larry.chiu@realtek.com>,
+        Justin Lai <justinlai0215@realtek.com>
+Subject: [PATCH net-next v11 00/13] Add Realtek automotive PCIe driver
+Date:   Wed, 15 Nov 2023 21:34:01 +0800
+Message-ID: <20231115133414.1221480-1-justinlai0215@realtek.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:d803:b0:27d:a0b:bff with SMTP id
- a3-20020a17090ad80300b0027d0a0b0bffmr3748368pjv.2.1700055139538; Wed, 15 Nov
- 2023 05:32:19 -0800 (PST)
-Date:   Wed, 15 Nov 2023 05:32:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b0e576060a30ee3b@google.com>
-Subject: [syzbot] [mm?] WARNING in unmap_page_range (2)
-From:   syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, david@redhat.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        usama.anjum@collabora.com, wangkefeng.wang@huawei.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_BL_SPAMCOP_NET,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
-X-Spam-Level: **
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.21.210.160]
+X-ClientProxiedBy: RTEXH36506.realtek.com.tw (172.21.6.27) To
+ RTEXMBS04.realtek.com.tw (172.21.6.97)
+X-KSE-ServerInfo: RTEXMBS04.realtek.com.tw, 9
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-KSE-Antivirus-Interceptor-Info: fallback
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+This series includes adding realtek automotive ethernet driver 
+and adding rtase ethernet driver entry in MAINTAINERS file.
 
-syzbot found the following issue on:
+This ethernet device driver for the PCIe interface of 
+Realtek Automotive Ethernet Switch,applicable to 
+RTL9054, RTL9068, RTL9072, RTL9075, RTL9068, RTL9071.
 
-HEAD commit:    ac347a0655db Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15ff3057680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
-dashboard link: https://syzkaller.appspot.com/bug?extid=7ca4b2719dc742b8d0a4
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162a25ff680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d62338e80000
+v1 -> v2:
+- Remove redundent debug message.
+- Modify coding rule.
+- Remove other function codes not related to netdev.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/00e30e1a5133/disk-ac347a06.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/07c43bc37935/vmlinux-ac347a06.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c6690c715398/bzImage-ac347a06.xz
+v2 -> v3:
+- Remove SR-IOV function - We will add the SR-IOV function together when
+uploading the vf driver in the future.
+- Remove other unnecessary code and macro.
 
-The issue was bisected to:
+v3 -> v4:
+- Remove function prototype - Our driver does not use recursion, so we
+have reordered the code and removed the function prototypes.
+- Define macro precisely - Improve macro code readability to make the
+source code cleaner.
 
-commit 12f6b01a0bcbeeab8cc9305673314adb3adf80f7
-Author: Muhammad Usama Anjum <usama.anjum@collabora.com>
-Date:   Mon Aug 21 14:15:15 2023 +0000
+v4 -> v5:
+- Modify ethtool function - Remove some unnecessary code.
+- Don't use inline function - Let the compiler decide.
 
-    fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag
+v5 -> v6:
+- Some old macro definitions have been removed and replaced with the
+lastest usage.
+- Replace s32 with int to ensure consistency.
+- Clearly point out the objects of the service and remove unnecessary
+struct.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e5591f680000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e5591f680000
-console output: https://syzkaller.appspot.com/x/log.txt?x=12e5591f680000
+v6 -> v7:
+- Split this driver into multiple patches.
+- Reorganize this driver code and remove redundant code to make this
+driver more concise.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
-Fixes: 12f6b01a0bcb ("fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag")
+v7 -> v8:
+- Add the function to calculate time mitigation and the function to 
+calculate packet number mitigation. Users can use these two functions 
+to calculate the reg value that needs to be set for the mitigation value
+they want to set.
+- This device is usually used in automotive embedded systems. The page
+pool api will use more memory in receiving packets and requires more 
+verification, so we currently do not plan to use it in this patch.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pte_range mm/memory.c:1520 [inline]
-WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pmd_range mm/memory.c:1582 [inline]
-WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pud_range mm/memory.c:1611 [inline]
-WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_p4d_range mm/memory.c:1632 [inline]
-WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 unmap_page_range+0x1711/0x2c00 mm/memory.c:1653
-Modules linked in:
-CPU: 0 PID: 5059 Comm: syz-executor416 Not tainted 6.6.0-syzkaller-16039-gac347a0655db #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:zap_pte_range mm/memory.c:1520 [inline]
-RIP: 0010:zap_pmd_range mm/memory.c:1582 [inline]
-RIP: 0010:zap_pud_range mm/memory.c:1611 [inline]
-RIP: 0010:zap_p4d_range mm/memory.c:1632 [inline]
-RIP: 0010:unmap_page_range+0x1711/0x2c00 mm/memory.c:1653
-Code: 0f 8e 4a 12 00 00 48 8b 44 24 30 31 ff 0f b6 58 08 89 de e8 d1 00 bf ff 84 db 0f 85 88 f3 ff ff e9 0a f4 ff ff e8 8f 05 bf ff <0f> 0b e9 77 f3 ff ff e8 83 05 bf ff 48 83 44 24 10 08 e9 9d f6 ff
-RSP: 0018:ffffc900034bf8f8 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000007 RCX: ffffffff81c894fd
-RDX: ffff88801ff66040 RSI: ffffffff81c89561 RDI: 0000000000000007
-RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
-R13: ffff888074017008 R14: dffffc0000000000 R15: 0000000000000004
-FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f70d28ca0d0 CR3: 000000001d5be000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- unmap_single_vma+0x194/0x2b0 mm/memory.c:1699
- unmap_vmas+0x229/0x470 mm/memory.c:1743
- exit_mmap+0x1ad/0xa60 mm/mmap.c:3308
- __mmput+0x12a/0x4d0 kernel/fork.c:1349
- mmput+0x62/0x70 kernel/fork.c:1371
- exit_mm kernel/exit.c:567 [inline]
- do_exit+0x9ad/0x2ae0 kernel/exit.c:858
- do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
- __do_sys_exit_group kernel/exit.c:1032 [inline]
- __se_sys_exit_group kernel/exit.c:1030 [inline]
- __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f70d284ef39
-Code: Unable to access opcode bytes at 0x7f70d284ef0f.
-RSP: 002b:00007ffc9cfa2fb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f70d284ef39
-RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
-RBP: 00007f70d28c9270 R08: ffffffffffffffb8 R09: 65732f636f72702f
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f70d28c9270
-R13: 0000000000000000 R14: 00007f70d28c9cc0 R15: 00007f70d2820ae0
- </TASK>
+v8 -> v9:
+- Declare functions that are not extern as static functions and increase
+the size of the character array named name in the rtase_int_vector struct
+to correct the build warning noticed by the kernel test robot.
 
+v9 -> v10:
+- Currently we change to use the page pool api. However, when we allocate
+more than one page to an rx buffer, it will cause system errors
+in some cases. Therefore, we set the rx buffer to fixed size with 3776
+(PAGE_SIZE - SKB_DATA_ALIGN(sizeof(skb_shared_info) )), and the maximum 
+value of mtu is set to 3754(rx buffer size - VLAN_ETH_HLEN - ETH_FCS_LEN).
+- When ndo_tx_timeout is called, it will dump some device information,
+which can be used for debugging.
+- When the mtu is greater than 1500, the device supports checksums
+but not TSO.
+- Fix compiler warnning.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+v10 -> v11:
+- Added error handling of rtase_init_ring().
+- Modify the error related to asymmetric pause in rtase_get_settings.
+- Fix compiler error.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Justin Lai (13):
+  net:ethernet:realtek:rtase: Add pci table supported in this module
+  net:ethernet:realtek:rtase: Implement the .ndo_open function
+  net:ethernet:realtek:rtase: Implement the rtase_down function
+  net:ethernet:realtek:rtase: Implement the interrupt routine and
+    rtase_poll
+  net:ethernet:realtek:rtase: Implement hardware configuration function
+  net:ethernet:realtek:rtase: Implement .ndo_start_xmit function
+  net:ethernet:realtek:rtase: Implement a function to receive packets
+  net:ethernet:realtek:rtase: Implement net_device_ops
+  net:ethernet:realtek:rtase: Implement pci_driver suspend and resume
+    function
+  net:ethernet:realtek:rtase: Implement ethtool function
+  net:ethernet:realtek:rtase: Add a Makefile in the rtase folder
+  net:ethernet:realtek: Update the Makefile and Kconfig in the realtek
+    folder
+  MAINTAINERS: Add the rtase ethernet driver entry
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+ MAINTAINERS                                   |    7 +
+ drivers/net/ethernet/realtek/Kconfig          |   17 +
+ drivers/net/ethernet/realtek/Makefile         |    1 +
+ drivers/net/ethernet/realtek/rtase/Makefile   |   10 +
+ drivers/net/ethernet/realtek/rtase/rtase.h    |  353 +++
+ .../net/ethernet/realtek/rtase/rtase_main.c   | 2542 +++++++++++++++++
+ drivers/net/ethernet/realtek/rtase/tt.c       | 2542 +++++++++++++++++
+ drivers/net/ethernet/realtek/rtase/tt.h       |  353 +++
+ 8 files changed, 5825 insertions(+)
+ create mode 100644 drivers/net/ethernet/realtek/rtase/Makefile
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase.h
+ create mode 100644 drivers/net/ethernet/realtek/rtase/rtase_main.c
+ create mode 100644 drivers/net/ethernet/realtek/rtase/tt.c
+ create mode 100644 drivers/net/ethernet/realtek/rtase/tt.h
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+-- 
+2.34.1
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
