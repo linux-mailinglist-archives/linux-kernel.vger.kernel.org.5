@@ -2,155 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 700B77EC767
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:35:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D54957EC76D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:36:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjKOPfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:35:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        id S229768AbjKOPgR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:36:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36246 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjKOPfF (ORCPT
+        with ESMTP id S229457AbjKOPgP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:35:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125C2C2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:35:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700062501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AcyB6Agx9sfZRibieWrvHauKN3lxIyqP/C2CN7o4mVs=;
-        b=iyKuU+ldlpOmsxcp3CKBxCNHX8L7JPZ34qSrcG8f4dkUvxVodNEMH+eRbjoz2CLK0JAiq0
-        iIJjywcWblPaAt9ipnHa9KR+IE11gCMPcf86PY25lk6rpPGj/VRRtYJKgOTxmBMTDF4gno
-        2y1KKtu/wBGnIHqAXGRQ9s3uhrbkDG4=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-146-TXhdF6mIOaqIWZFHTguonA-1; Wed,
- 15 Nov 2023 10:34:56 -0500
-X-MC-Unique: TXhdF6mIOaqIWZFHTguonA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id C81193C000AA;
-        Wed, 15 Nov 2023 15:34:54 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 979B32166B27;
-        Wed, 15 Nov 2023 15:34:54 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     kvm@vger.kernel.org, kvmarm@lists.linux.dev
-Cc:     Shaoqin Huang <shahuang@redhat.com>, Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KVM: arm64: selftests: Clean up the GIC[D,R]_BASE_GPA
-Date:   Wed, 15 Nov 2023 10:34:48 -0500
-Message-Id: <20231115153449.17815-1-shahuang@redhat.com>
+        Wed, 15 Nov 2023 10:36:15 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 231E0C2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:36:12 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6c34e87b571so5881891b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:36:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700062571; x=1700667371; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3Wpoudhb3vVHFBoeOvpD9W3TMZTjpbuJDlDAFO1VUr8=;
+        b=buhmx0KkVx3Tc3vrxKFdc8wmYLvaFRmFmEJ/HLwFJGlzVVByw2cRBUNw3EAkF3oiFj
+         omSRaDaF4lmN87Bc4Pd2rzE1NiOEKt6wxQMjtKfep2aFwYh6nWGUmdMShQul5YzTndTx
+         jx+/LUCFI8hDhdHHgWxgMH/iKZoiKydhy40rW9lulKGMT2OHtKfwbLCSS3ncozA+uCwT
+         EyU+sCv7+zAB4EiuaYcbL0J/5FLqKUl9uIzT/GpQG2VSd/1dgfNRvE2QlXvaIoK3Hfdy
+         lRcS8w/v/YKdMahxmREL3vq1yM4sU+93gVjHu7XDey7/dFOXC8s5g545rm4HM4+zsdPA
+         4tMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700062571; x=1700667371;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Wpoudhb3vVHFBoeOvpD9W3TMZTjpbuJDlDAFO1VUr8=;
+        b=WyRSqpisusVzmwPE2ItvZ7+Afnegs3tw2IwyiqYUbgvKa0H8SQrjzNqi1haYLIIYj0
+         zPU5+hcAQ1tpX8Q/sLBt8T/02QCzH5Z1CsPnYKPFuBEVRM6cB9OFFlrlfQfNxWqyWFlE
+         TWfNhUavEtzhUUPxxai38GMmp7LR/uFUk7Pvd7REqvc74pgusR3jNnj8TYY5EKZ7YYeD
+         G0tE0AYNi7UAitdBc+fzdw1WBMkONFvnGtL9lXtzrvbCIyBRZtThDHuymyyPXXKlCTy6
+         x5HxZM+XaQdx1lX1fW13Bn9dM6vqOTt12y7VQfJDBTNbNsRQvPfmKAjT6y+6lE9FhLKK
+         PvYQ==
+X-Gm-Message-State: AOJu0YyFcSdYhDhlTWQVs2RdZbT6wnlpIHUBg/I1c6tttqDExOB2Hg8f
+        Wo/mPptHl91odeyoz2jFKRE=
+X-Google-Smtp-Source: AGHT+IH1o2o0Iy91deaWxTXzVPNUO0oiT0oXMUwT774sNsmj+LOcxz+KKrRoOcpwVjkdIiAB5YgciA==
+X-Received: by 2002:a05:6a20:394b:b0:17a:4891:e33 with SMTP id r11-20020a056a20394b00b0017a48910e33mr11918460pzg.4.1700062571406;
+        Wed, 15 Nov 2023 07:36:11 -0800 (PST)
+Received: from [192.168.1.105] (111-255-239-171.dynamic-ip.hinet.net. [111.255.239.171])
+        by smtp.gmail.com with ESMTPSA id b66-20020a633445000000b005b8ea15c338sm1318628pga.62.2023.11.15.07.36.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 07:36:11 -0800 (PST)
+Message-ID: <da42f1d7-adfe-485e-987e-3e8dae78b4c2@gmail.com>
+Date:   Wed, 15 Nov 2023 23:36:06 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
+Content-Language: en-US
+To:     Abel Wu <wuyun.abel@bytedance.com>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Qais Yousef <qyousef@layalina.io>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Yicong Yang <yangyicong@huawei.com>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
+ <20231107090510.71322-2-wuyun.abel@bytedance.com>
+From:   Yiwei Lin <s921975628@gmail.com>
+In-Reply-To: <20231107090510.71322-2-wuyun.abel@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GIC[D,R]_BASE_GPA has been defined in multiple files with the same
-value, define it in one place to make the code clean.
 
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+On 11/7/23 17:05, Abel Wu wrote:
+> vruntime of the (on_rq && !0-lag) entity needs to be adjusted when
+> it gets re-weighted, and the calculations can be simplified based
+> on the fact that re-weight won't change the w-average of all the
+> entities. Please check the proofs in comments.
+>
+> But adjusting vruntime can also cause position change in RB-tree
+> hence require re-queue to fix up which might be costly. This might
+> be avoided by deferring adjustment to the time the entity actually
+> leaves tree (dequeue/pick), but that will negatively affect task
+> selection and probably not good enough either.
+>
+> Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
+> Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+> ---
+>   kernel/sched/fair.c | 151 +++++++++++++++++++++++++++++++++++++-------
+>   1 file changed, 128 insertions(+), 23 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 8767988242ee..b00d09a9b601 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -3666,41 +3666,140 @@ static inline void
+>   dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se) { }
+>   #endif
+>   
+> +static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
+> +			   unsigned long weight)
+> +{
+> +	unsigned long old_weight = se->load.weight;
+> +	u64 avruntime = avg_vruntime(cfs_rq);
+> +	s64 vlag, vslice;
+> +
+> +	/*
+> +	 * VRUNTIME
+> +	 * ========
+> +	 *
+> +	 * COROLLARY #1: The virtual runtime of the entity needs to be
+> +	 * adjusted if re-weight at !0-lag point.
+> +	 *
+> +	 * Proof: For contradiction assume this is not true, so we can
+> +	 * re-weight without changing vruntime at !0-lag point.
+> +	 *
+> +	 *             Weight	VRuntime   Avg-VRuntime
+> +	 *     before    w          v            V
+> +	 *      after    w'         v'           V'
+> +	 *
+> +	 * Since lag needs to be preserved through re-weight:
+> +	 *
+> +	 *	lag = (V - v)*w = (V'- v')*w', where v = v'
+> +	 *	==>	V' = (V - v)*w/w' + v		(1)
+> +	 *
+> +	 * Let W be the total weight of the entities before reweight,
+> +	 * since V' is the new weighted average of entities:
+> +	 *
+> +	 *	V' = (WV + w'v - wv) / (W + w' - w)	(2)
+> +	 *
+> +	 * by using (1) & (2) we obtain:
+> +	 *
+> +	 *	(WV + w'v - wv) / (W + w' - w) = (V - v)*w/w' + v
+> +	 *	==> (WV-Wv+Wv+w'v-wv)/(W+w'-w) = (V - v)*w/w' + v
+> +	 *	==> (WV - Wv)/(W + w' - w) + v = (V - v)*w/w' + v
+> +	 *	==>	(V - v)*W/(W + w' - w) = (V - v)*w/w' (3)
+> +	 *
+> +	 * Since we are doing at !0-lag point which means V != v, we
+> +	 * can simplify (3):
+> +	 *
+> +	 *	==>	W / (W + w' - w) = w / w'
+> +	 *	==>	Ww' = Ww + ww' - ww
+> +	 *	==>	W * (w' - w) = w * (w' - w)
+> +	 *	==>	W = w	(re-weight indicates w' != w)
+> +	 *
+> +	 * So the cfs_rq contains only one entity, hence vruntime of
+> +	 * the entity @v should always equal to the cfs_rq's weighted
+> +	 * average vruntime @V, which means we will always re-weight
+> +	 * at 0-lag point, thus breach assumption. Proof completed.
+> +	 *
+> +	 *
+> +	 * COROLLARY #2: Re-weight does NOT affect weighted average
+> +	 * vruntime of all the entities.
+> +	 *
+> +	 * Proof: According to corollary #1, Eq. (1) should be:
+> +	 *
+> +	 *	(V - v)*w = (V' - v')*w'
+> +	 *	==>    v' = V' - (V - v)*w/w'		(4)
+> +	 *
+> +	 * According to the weighted average formula, we have:
+> +	 *
+> +	 *	V' = (WV - wv + w'v') / (W - w + w')
+> +	 *	   = (WV - wv + w'(V' - (V - v)w/w')) / (W - w + w')
+> +	 *	   = (WV - wv + w'V' - Vw + wv) / (W - w + w')
+> +	 *	   = (WV + w'V' - Vw) / (W - w + w')
+> +	 *
+> +	 *	==>  V'*(W - w + w') = WV + w'V' - Vw
+> +	 *	==>	V' * (W - w) = (W - w) * V	(5)
+> +	 *
+> +	 * If the entity is the only one in the cfs_rq, then reweight
+> +	 * always occurs at 0-lag point, so V won't change. Or else
+> +	 * there are other entities, hence W != w, then Eq. (5) turns
+> +	 * into V' = V. So V won't change in either case, proof done.
+> +	 *
+> +	 *
+> +	 * So according to corollary #1 & #2, the effect of re-weight
+> +	 * on vruntime should be:
+> +	 *
+> +	 *	v' = V' - (V - v) * w / w'		(4)
+> +	 *	   = V  - (V - v) * w / w'
+> +	 *	   = V  - vl * w / w'
+> +	 *	   = V  - vl'
+> +	 */
+> +	if (avruntime != se->vruntime) {
+> +		vlag = (s64)(avruntime - se->vruntime);
+> +		vlag = div_s64(vlag * old_weight, weight);
+> +		se->vruntime = avruntime - vlag;
+> +	}
+> +
+> +	/*
+> +	 * DEADLINE
+> +	 * ========
+> +	 *
+> +	 * When the weight changes, the virtual time slope changes and
+> +	 * we should adjust the relative virtual deadline accordingly.
+> +	 *
+> +	 *	d' = v' + (d - v)*w/w'
+> +	 *	   = V' - (V - v)*w/w' + (d - v)*w/w'
+> +	 *	   = V  - (V - v)*w/w' + (d - v)*w/w'
+> +	 *	   = V  + (d - V)*w/w'
+> +	 */
+> +	vslice = (s64)(se->deadline - avruntime);
+> +	vslice = div_s64(vslice * old_weight, weight);
+> +	se->deadline = avruntime + vslice;
+> +}
+> +
+>   static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>   			    unsigned long weight)
+>   {
+> -	unsigned long old_weight = se->load.weight;
+> +	bool curr = cfs_rq->curr == se;
+>   
+>   	if (se->on_rq) {
+>   		/* commit outstanding execution time */
+> -		if (cfs_rq->curr == se)
+> +		if (curr)
+>   			update_curr(cfs_rq);
+>   		else
+> -			avg_vruntime_sub(cfs_rq, se);
+> +			__dequeue_entity(cfs_rq, se);
+>   		update_load_sub(&cfs_rq->load, se->load.weight);
+>   	}
+>   	dequeue_load_avg(cfs_rq, se);
+>   
+> -	update_load_set(&se->load, weight);
+> -
+>   	if (!se->on_rq) {
+>   		/*
+>   		 * Because we keep se->vlag = V - v_i, while: lag_i = w_i*(V - v_i),
+>   		 * we need to scale se->vlag when w_i changes.
+>   		 */
+> -		se->vlag = div_s64(se->vlag * old_weight, weight);
+> +		se->vlag = div_s64(se->vlag * se->load.weight, weight);
+>   	} else {
+> -		s64 deadline = se->deadline - se->vruntime;
+> -		/*
+> -		 * When the weight changes, the virtual time slope changes and
+> -		 * we should adjust the relative virtual deadline accordingly.
+> -		 */
+> -		deadline = div_s64(deadline * old_weight, weight);
+> -		se->deadline = se->vruntime + deadline;
+> -		if (se != cfs_rq->curr)
+> -			min_deadline_cb_propagate(&se->run_node, NULL);
+> +		reweight_eevdf(cfs_rq, se, weight);
+>   	}
+>   
+> +	update_load_set(&se->load, weight);
+> +
+>   #ifdef CONFIG_SMP
+>   	do {
+>   		u32 divider = get_pelt_divider(&se->avg);
+> @@ -3712,8 +3811,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>   	enqueue_load_avg(cfs_rq, se);
+>   	if (se->on_rq) {
+>   		update_load_add(&cfs_rq->load, se->load.weight);
+> -		if (cfs_rq->curr != se)
+> -			avg_vruntime_add(cfs_rq, se);
+> +		if (!curr) {
+> +			/*
+> +			 * The entity's vruntime has been adjusted, so let's check
+> +			 * whether the rq-wide min_vruntime needs updated too. Since
+> +			 * the calculations above require stable min_vruntime rather
+> +			 * than up-to-date one, we do the update at the end of the
+> +			 * reweight process.
+> +			 */
+> +			__enqueue_entity(cfs_rq, se);
+> +			update_min_vruntime(cfs_rq);
+> +		}
+>   	}
+>   }
+Sorry if I am asking stupid question...... It looks like 
+reweight_entity() may have chance to change the weight of cfs_rq->curr 
+entity, but we'll never update_min_vruntime() when reweighting it. Is 
+there any reason that we can skip the update_min_vruntime() for this case?
+>   
+> @@ -3857,14 +3965,11 @@ static void update_cfs_group(struct sched_entity *se)
+>   
+>   #ifndef CONFIG_SMP
+>   	shares = READ_ONCE(gcfs_rq->tg->shares);
+> -
+> -	if (likely(se->load.weight == shares))
+> -		return;
+>   #else
+> -	shares   = calc_group_shares(gcfs_rq);
+> +	shares = calc_group_shares(gcfs_rq);
+>   #endif
+> -
+> -	reweight_entity(cfs_rq_of(se), se, shares);
+> +	if (unlikely(se->load.weight != shares))
+> +		reweight_entity(cfs_rq_of(se), se, shares);
+>   }
+>   
+>   #else /* CONFIG_FAIR_GROUP_SCHED */
 
----
-v1->v2:
-  - Clean up the vpmu_counter_access.c.
-
----
- tools/testing/selftests/kvm/aarch64/arch_timer.c          | 3 ---
- tools/testing/selftests/kvm/aarch64/vgic_irq.c            | 3 ---
- tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c | 3 ---
- tools/testing/selftests/kvm/dirty_log_perf_test.c         | 3 ---
- tools/testing/selftests/kvm/include/aarch64/vgic.h        | 3 +++
- 5 files changed, 3 insertions(+), 12 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-index 274b8465b42a..818854007bfd 100644
---- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
-+++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
-@@ -59,9 +59,6 @@ static struct test_args test_args = {
- 
- #define msecs_to_usecs(msec)		((msec) * 1000LL)
- 
--#define GICD_BASE_GPA			0x8000000ULL
--#define GICR_BASE_GPA			0x80A0000ULL
--
- enum guest_stage {
- 	GUEST_STAGE_VTIMER_CVAL = 1,
- 	GUEST_STAGE_VTIMER_TVAL,
-diff --git a/tools/testing/selftests/kvm/aarch64/vgic_irq.c b/tools/testing/selftests/kvm/aarch64/vgic_irq.c
-index 2e64b4856e38..a48aff110fb6 100644
---- a/tools/testing/selftests/kvm/aarch64/vgic_irq.c
-+++ b/tools/testing/selftests/kvm/aarch64/vgic_irq.c
-@@ -19,9 +19,6 @@
- #include "gic_v3.h"
- #include "vgic.h"
- 
--#define GICD_BASE_GPA		0x08000000ULL
--#define GICR_BASE_GPA		0x080A0000ULL
--
- /*
-  * Stores the user specified args; it's passed to the guest and to every test
-  * function.
-diff --git a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-index 5ea78986e665..325a8ead0660 100644
---- a/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-+++ b/tools/testing/selftests/kvm/aarch64/vpmu_counter_access.c
-@@ -421,9 +421,6 @@ static void guest_code(uint64_t expected_pmcr_n)
- 	GUEST_DONE();
- }
- 
--#define GICD_BASE_GPA	0x8000000ULL
--#define GICR_BASE_GPA	0x80A0000ULL
--
- /* Create a VM that has one vCPU with PMUv3 configured. */
- static void create_vpmu_vm(void *guest_code)
- {
-diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-index d374dbcf9a53..4971e8f77a0a 100644
---- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
-@@ -22,9 +22,6 @@
- #ifdef __aarch64__
- #include "aarch64/vgic.h"
- 
--#define GICD_BASE_GPA			0x8000000ULL
--#define GICR_BASE_GPA			0x80A0000ULL
--
- static int gic_fd;
- 
- static void arch_setup_vm(struct kvm_vm *vm, unsigned int nr_vcpus)
-diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-index 0ac6f05c63f9..9dbb342fd808 100644
---- a/tools/testing/selftests/kvm/include/aarch64/vgic.h
-+++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
-@@ -33,4 +33,7 @@ void kvm_irq_write_isactiver(int gic_fd, uint32_t intid, struct kvm_vcpu *vcpu);
- 
- #define KVM_IRQCHIP_NUM_PINS	(1020 - 32)
- 
-+#define GICD_BASE_GPA		0x08000000ULL
-+#define GICR_BASE_GPA		0x080A0000ULL
-+
- #endif // SELFTEST_KVM_VGIC_H
--- 
-2.40.1
+Thanks,
+Yiwei Lin
 
