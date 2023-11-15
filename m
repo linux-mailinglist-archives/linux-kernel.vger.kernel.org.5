@@ -2,164 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 166D47EC646
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:49:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4C857EC64B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:50:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344242AbjKOOt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:49:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55080 "EHLO
+        id S1344275AbjKOOuF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:50:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36728 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234978AbjKOOtZ (ORCPT
+        with ESMTP id S1344106AbjKOOuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:49:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C837187
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:49:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700059761;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zHkzs+ps70Z5GXuD30h9mGNv1mAJncdsZa6jleaf8rI=;
-        b=DqcJbqlHOv7fQMPXSqR0DD/V2YMU1KSW2R4zrrJbTI+k1IWjaSvx0BmPo1W0gmco7eLgHg
-        xGnlBZSiloq0nJwPlY8bZfkOSrA/figl9lYZasvVtEKU4uVTWgXk7K94uCS6Z7rCDF04Eh
-        KdxF+h+eChQF4GOSwxx5YbIyvx6l2kI=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-AeBtmgJZPqup2gnubeQMhg-1; Wed, 15 Nov 2023 09:49:19 -0500
-X-MC-Unique: AeBtmgJZPqup2gnubeQMhg-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9c39f53775fso52345866b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:49:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700059758; x=1700664558;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zHkzs+ps70Z5GXuD30h9mGNv1mAJncdsZa6jleaf8rI=;
-        b=uGC0WH8FtmLnMVF7NpClUPQ5jBAgWB8lDwE/av378yMBw1ghRl2YGgrSdvLJa2bXL0
-         1OQDRLt/nmSoNwHy0SMTIlwM/8g6wHaHUWyWzc5FTa5APHCtewoOKwjUOVYNUpbioOpo
-         M/APVNsixhR0I8jLTjyuDAatkkZMSSPMeZbJnPAzltybcnajAD0xCC44bDj8Pntb8upL
-         VI2ycwJTads5jGBQkQxvQv/7MsT5JZ64ifma/NSxX6VO0VbuO6JJh3qmTX/fBrU8vA+1
-         hmlYFfLTzAxP3/Fef7EDFYmindlMOaTyFOqaFE3pJy3q8QbS5w8q8dQsY07FuMfSzAIx
-         5vLg==
-X-Gm-Message-State: AOJu0YxLAhtT2hcsuALNuSyk0AjpzgzjUUlqbaWQWZyL1PJiQ/nnwJPg
-        IL9wLtlYW1yI+Qux/3qe+jxGTCDAe6uGiMOfcVnwbLrVOQb5KJ5OnNenq+h3aM7g9zUBNN5lq7G
-        wZoiBFeNd8y+oyfvnOSLj2l87
-X-Received: by 2002:a17:906:74c7:b0:9c4:4b20:44a5 with SMTP id z7-20020a17090674c700b009c44b2044a5mr3818322ejl.4.1700059758554;
-        Wed, 15 Nov 2023 06:49:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHvgKtKBhigODP4vMAdyOAfLJaUmOSX75yR/hH8B496MgTOteUFPLgPY9ZiDpnInT3OHyNX5w==
-X-Received: by 2002:a17:906:74c7:b0:9c4:4b20:44a5 with SMTP id z7-20020a17090674c700b009c44b2044a5mr3818307ejl.4.1700059758184;
-        Wed, 15 Nov 2023 06:49:18 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-232-35.dyn.eolo.it. [146.241.232.35])
-        by smtp.gmail.com with ESMTPSA id y10-20020a1709064b0a00b009dd7bc622fbsm7149455eju.113.2023.11.15.06.49.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 06:49:17 -0800 (PST)
-Message-ID: <d599922fd89b3e61c7cf531a03ea8b81cbcb003e.camel@redhat.com>
-Subject: Re: [PATCH net-next v2] netlink: introduce netlink poll to resolve
- fast return issue
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jong eon Park <jongeon.park@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dongha7.kang@samsung.com
-Date:   Wed, 15 Nov 2023 15:49:16 +0100
-In-Reply-To: <20231114090748.694646-1-jongeon.park@samsung.com>
-References: <CGME20231114090804epcas1p35fde5f79e9ad1419b3199e6cdc45bc0b@epcas1p3.samsung.com>
-         <20231114090748.694646-1-jongeon.park@samsung.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
-MIME-Version: 1.0
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Wed, 15 Nov 2023 09:50:03 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 473358E;
+        Wed, 15 Nov 2023 06:50:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=N4nOVNPHN/GNaTgQVzsx/iDuZLO8JZV/hkIdjCBQPKU=; b=hy9smrm8aioCpyQ50Y+b+qF/mR
+        Tv4TUTLXXigyWiu7IyXVdkZ6k63lNhVUYECakrlpBnDmrylv/S6f6hqFfmqsdGZ/jYVBrFzyGCAbB
+        jWRepxP8g91xFM/LH4TbzCaCHruQRiN+bJ4VcF19etJtdomIJIslOwXzFgSGB31J6gp4=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:55162 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r3HDF-0001ej-N4; Wed, 15 Nov 2023 09:49:54 -0500
+Date:   Wed, 15 Nov 2023 09:49:53 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Daniel Mack <daniel@zonque.org>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
+Message-Id: <20231115094953.f2a3fee202765c11421b7fb7@hugovil.com>
+In-Reply-To: <20231114074904.239458-1-daniel@zonque.org>
+References: <20231114074904.239458-1-daniel@zonque.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Tue, 14 Nov 2023 08:49:04 +0100
+Daniel Mack <daniel@zonque.org> wrote:
 
-I'm sorry for the delayed feedback.
+Hi Daniel,
 
-On Tue, 2023-11-14 at 18:07 +0900, Jong eon Park wrote:
-> In very rare cases, there was an issue where a user's 'poll' function
-> waiting for a uevent would continuously return very quickly, causing
-> excessive CPU usage due to the following scenario.
->=20
-> When sk_rmem_alloc exceeds sk_rcvbuf, netlink_broadcast_deliver returns a=
-n
-> error and netlink_overrun is called. However, if netlink_overrun was
-> called in a context just before a another context returns from the 'poll'
-> and 'recv' is invoked, emptying the rcv queue, sk->sk_err =3D ENOBUF is
-> written to the netlink socket belatedly and it enters the
-> NETLINK_S_CONGESTED state. If the user does not check for POLLERR, they
-> cannot consume and clean sk_err and repeatedly enter the situation where
-> they call 'poll' again but return immediately. Moreover, in this
-> situation, rcv queue is already empty and NETLINK_S_CONGESTED flag
-> prevents any more incoming packets. This makes it impossible for the user
-> to call 'recv'.
->=20
-> This "congested" situation is a bit ambiguous. The queue is empty, yet
-> 'congested' remains. This means kernel can no longer deliver uevents
-> despite the empty queue, and it lead to the persistent 'congested' status=
-.
->=20
-> ------------CPU1 (kernel)----------  --------------CPU2 (app)------------=
---
-> ...
-> a driver delivers uevent.            poll was waiting for schedule.
-> a driver delivers uevent.
-> a driver delivers uevent.
-> ...
-> 1) netlink_broadcast_deliver fails.
-> (sk_rmem_alloc > sk_rcvbuf)
->                                       getting schedule and poll returns,
->                                       and the app calls recv.
->                                       (rcv queue is empied)
->                                       2)
->=20
-> netlink_overrun is called.
-> (NETLINK_S_CONGESTED flag is set,
-> ENOBUF is written in sk_err and,
-> wake up poll.)
->                                       finishing its job and call poll.
->                                       poll returns POLLERR.
->=20
->                                       (the app doesn't have POLLERR handl=
-er)
->                                       it calls poll, but getting POLLERR.
->                                       it calls poll, but getting POLLERR.
->                                       it calls poll, but getting POLLERR.
->                                       ...
->=20
-> To address this issue, I would like to introduce the following netlink
-> poll.
+> This devices has a silicon bug that makes it report a timeout interrupt
 
-IMHO the above is an application bug, and should not be addressed in
-the kernel.
+devices -> device
 
-If you want to limit the amount of CPU time your application could use,
-you have to resort to process scheduler setting and/or container
-limits: nothing could prevent a [buggy?] application from doing:
+> but no data in FIFO.
+> 
+> The datasheet states the following in the errata section 18.1.4:
+> 
+>   "If the host reads the receive FIFO at the at the same time as a
 
-# in shell script
-while true; do :; done
+"at the at the" -> "at the"
 
-The above condition is IMHO not very different from the above: the
-application is requesting POLLERR event and not processing them.
+Note: I know this error is part of the errata in NXP datasheet.
 
-To more accurate is like looping on poll() getting read event without
-reading any data. Nothing we should address in the kernel.
 
-Cheers,
+>   time-out interrupt condition happens, the host might read 0xCC
+>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
+>   of the Line Status Register (LSR) is not set (means there is not
+>   data in the receive FIFO)."
+> 
+> When this happens, the loop in sc16is7xx_irq() will run forever,
+> which effectively blocks the i2c bus and breaks the functionality
 
-Paolo
+i2c -> i2c/spi
 
+Hugo.
+
+
+> of the UART.
+> 
+> From the information above, it is assumed that when the bug is
+> triggered, the FIFO does in fact have payload in its buffer, but the
+> fill level reporting is off-by-one. Hence this patch fixes the issue
+> by reading one byte from the FIFO when that condition is detected.
+> 
+> This clears the interrupt and hence breaks the polling loop.
+> 
+> Signed-off-by: Daniel Mack <daniel@zonque.org>
+> Co-Developed-by: Maxim Popov <maxim.snafu@gmail.com>
+> Cc: stable@vger.kernel.org
+> ---
+>  drivers/tty/serial/sc16is7xx.c | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/sc16is7xx.c b/drivers/tty/serial/sc16is7xx.c
+> index 289ca7d4e566..76f76e510ed1 100644
+> --- a/drivers/tty/serial/sc16is7xx.c
+> +++ b/drivers/tty/serial/sc16is7xx.c
+> @@ -765,6 +765,18 @@ static bool sc16is7xx_port_irq(struct sc16is7xx_port *s, int portno)
+>  		case SC16IS7XX_IIR_RTOI_SRC:
+>  		case SC16IS7XX_IIR_XOFFI_SRC:
+>  			rxlen = sc16is7xx_port_read(port, SC16IS7XX_RXLVL_REG);
+> +
+> +			/*
+> +			 * There is a silicon bug that makes the chip report a
+> +			 * time-out interrupt but no data in the FIFO. This is
+> +			 * described in errata section 18.1.4.
+> +			 *
+> +			 * When this happens, read one byte from the FIFO to
+> +			 * clear the interrupt.
+> +			 */
+> +			if (iir == SC16IS7XX_IIR_RTOI_SRC && !rxlen)
+> +				rxlen = 1;
+> +
+>  			if (rxlen)
+>  				sc16is7xx_handle_rx(port, rxlen, iir);
+>  			break;
+> -- 
+> 2.41.0
+> 
