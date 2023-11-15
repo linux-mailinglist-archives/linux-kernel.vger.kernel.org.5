@@ -2,63 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CABF27ECA1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F8F57ECA22
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjKOR5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:57:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60470 "EHLO
+        id S232587AbjKOR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:59:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232587AbjKOR5g (ORCPT
+        with ESMTP id S229689AbjKOR75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:57:36 -0500
+        Wed, 15 Nov 2023 12:59:57 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55E481B8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:57:33 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 347A3C433C9;
-        Wed, 15 Nov 2023 17:57:32 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04E7F196
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:59:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9866BC433C9;
+        Wed, 15 Nov 2023 17:59:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700071052;
-        bh=E3+pzFE8iRYk10BdpmIpByslUyT/gQ7QPb0/TlBw07E=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=sYMwAppSrkFvV55qdH71dJUqxdPf4EtCzT7b0rurs6aACyonFhzTdiwzdo1A2Rwt/
-         4p2lM+kUPpklLWYibyFLRyndk751SQPckZZrT4NuTgBABNyNDqmhOs7nwEMSRLYlE+
-         HQPUpzMnCC1oBIIbqqafAZ8wFo0g0dAJZy9cTbxWiozd2mutJyPno5SsG/TxsAKZp2
-         A0scdnVV2KQ4M069VtaVI5APNpWlDj5rxGmpsTnDsLsNqAH/NwbYEeov5CHDnHb+cZ
-         YHl1i1jAJ6oxfwysQQcqQ8wIM9e8hzADbH2frm4is9g+Xr721q45TnI1MzZJA1Q+eu
-         1J63Z1wtuZcNQ==
-Message-ID: <ee10d050-ef24-49b2-8712-c9bc8a911c2a@kernel.org>
-Date:   Wed, 15 Nov 2023 10:57:30 -0700
+        s=k20201202; t=1700071194;
+        bh=qJI2z0ReFfzq8M+WOh0oHBJMpUIn9L9pdYg857SZGY0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DEH30KYa+z8fuMcvGKVHOCb7nabg24cQjk9qizAUfFn8JMrOivyxgEOjSjqBYdTf5
+         JJUsreegDd1Htec7k05AJdDtwfb/nE5J3JEHpbTssIzVc3JUD2qTo6QBNdCBl83Pnm
+         KgZvpUmAYAWQmidHvRcnZuelai5qFb4VaZcVy7rUrJ9VjuVkT2BFCa3TUB1wfexc21
+         IBVKD0oVd5xEv19U3t19K1sca8fP68nu68rIWMgQ9nzS7Sj9jYhh2tSExJgaKQmPeL
+         +G8yaWI7KpUg5cfI6CHOsay7LbN3lnt4nNFLG9eJHDigAi5bL4QyWy0KNePc+ICuC7
+         XryTMJKex4jbg==
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 7C2F940094; Wed, 15 Nov 2023 12:59:53 -0500 (EST)
+Date:   Wed, 15 Nov 2023 12:59:53 -0500
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Thomas Richter <tmricht@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        sumanthk@linux.ibm.com, svens@linux.ibm.com, gor@linux.ibm.com,
+        hca@linux.ibm.com
+Subject: Re: [PATCH v3] perf report: Add s390 raw data interpretation for PAI
+ counters
+Message-ID: <ZVUHGRgTBXyUjezY@kernel.org>
+References: <20231110110908.2312308-1-tmricht@linux.ibm.com>
+ <ZU4d0G23WOKwpIwb@kernel.org>
+ <ZU9vUEzF4opW5Gb/@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
-Content-Language: en-US
-To:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
- <20231113130041.58124-4-linyunsheng@huawei.com>
- <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
- <20231113180554.1d1c6b1a@kernel.org>
- <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
- <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
- <ZVNzS2EA4zQRwIQ7@nvidia.com>
- <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
-From:   David Ahern <dsahern@kernel.org>
-In-Reply-To: <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZU9vUEzF4opW5Gb/@kernel.org>
+X-Url:  http://acmel.wordpress.com
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -69,24 +56,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 2:21 AM, Yunsheng Lin wrote:
-> On 2023/11/14 21:16, Jason Gunthorpe wrote:
->> On Tue, Nov 14, 2023 at 04:21:26AM -0800, Mina Almasry wrote:
->>
->>> Actually because you put the 'strtuct page for devmem' in
->>> skb->bv_frag, the net stack will grab the 'struct page' for devmem
->>> using skb_frag_page() then call things like page_address(), kmap,
->>> get_page, put_page, etc, etc, etc.
->>
->> Yikes, please no. If net has its own struct page look alike it has to
->> stay entirely inside net. A non-mm owned struct page should not be
->> passed into mm calls. It is just way too hacky to be seriously
->> considered :(
+Em Sat, Nov 11, 2023 at 09:10:56AM -0300, Arnaldo Carvalho de Melo escreveu:
+> Em Fri, Nov 10, 2023 at 09:10:56AM -0300, Arnaldo Carvalho de Melo escreveu:
+> > Em Fri, Nov 10, 2023 at 12:09:08PM +0100, Thomas Richter escreveu:
+> > > +/*
+> > > + * Check for consistency of PAI_CRYPTO/PAI_NNPA raw data.
+> > > + */
+> > > +struct pai_data {		/* Event number and value */
+> > > +	u16 event_nr;
+> > > +	u64 event_val;
+> > > +} __packed;
+ 
+> We'll have to disable this warning:
 > 
-> Yes, that is something this patchset is trying to do, defining its own
-> struct page look alike for page pool to support devmem.
-> 
+>   19    10.55 debian:experimental-x-mips    : FAIL gcc version 12.3.0 (Debian 12.3.0-6)
+>     util/s390-sample-raw.c:222:13: error: packed attribute causes inefficient alignment for 'event_nr' [-Werror=attributes]
+>       222 |         u16 event_nr;
+>           |             ^~~~~~~~
+>     cc1: all warnings being treated as errors
+ 
+> I'll do it while waiting for flights later today.
 
-Networking needs to be able to move away from struct page references.
-The devmem and host memory for Rx use cases do not need to be page based.
+this got it cured, pushing out.
 
+- Arnaldo
+
+diff --git a/tools/perf/util/s390-sample-raw.c b/tools/perf/util/s390-sample-raw.c
+index d4dc84aa889a04cf..29a744eeb71eb2bd 100644
+--- a/tools/perf/util/s390-sample-raw.c
++++ b/tools/perf/util/s390-sample-raw.c
+@@ -215,6 +215,9 @@ static void s390_cpumcfdg_dump(struct perf_pmu *pmu, struct perf_sample *sample)
+ 	}
+ }
+ 
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wpacked"
++#pragma GCC diagnostic ignored "-Wattributes"
+ /*
+  * Check for consistency of PAI_CRYPTO/PAI_NNPA raw data.
+  */
+@@ -223,6 +226,8 @@ struct pai_data {		/* Event number and value */
+ 	u64 event_val;
+ } __packed;
+ 
++#pragma GCC diagnostic pop
++
+ /*
+  * Test for valid raw data. At least one PAI event should be in the raw
+  * data section.
