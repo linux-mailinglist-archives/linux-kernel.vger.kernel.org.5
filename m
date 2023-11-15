@@ -2,71 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD6F7EC7BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:51:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0AE77EC79B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:50:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231901AbjKOPug (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:50:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37424 "EHLO
+        id S231877AbjKOPuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:50:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232136AbjKOPuP (ORCPT
+        with ESMTP id S231810AbjKOPuH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:50:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 683F01A5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:50:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700063409;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0wrDnIJNvyLeCaZ76kAPm12sjpZAz+xrWcuHtRTLq38=;
-        b=dhb5NmnDcONvjd+lk4B0yPMXqAoREMF2HGTaCBVTBJpOnwBYiOvILXjCmGpTrr/O8vBAbs
-        F8aLkLuS+jsuq2gJ6giRZzilur4+EGJbNE3+xivt1unDrTOvayUA7MsGiEng/gR/xsToD3
-        Cbyj7+9DwCyy68NABFztXpsgQWpvrf0=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-637-gyuK2To_O1O0ylvqZp2Mmg-1; Wed,
- 15 Nov 2023 10:50:07 -0500
-X-MC-Unique: gyuK2To_O1O0ylvqZp2Mmg-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 780DE280FEC2;
-        Wed, 15 Nov 2023 15:50:06 +0000 (UTC)
-Received: from warthog.procyon.org.com (unknown [10.42.28.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EE6DB492BFD;
-        Wed, 15 Nov 2023 15:50:03 +0000 (UTC)
-From:   David Howells <dhowells@redhat.com>
-To:     Christian Brauner <christian@brauner.io>
-Cc:     David Howells <dhowells@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@ACULAB.COM>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Subject: [PATCH v3 04/10] iov_iter: Consolidate bvec pattern checking
-Date:   Wed, 15 Nov 2023 15:49:40 +0000
-Message-ID: <20231115154946.3933808-5-dhowells@redhat.com>
-In-Reply-To: <20231115154946.3933808-1-dhowells@redhat.com>
-References: <20231115154946.3933808-1-dhowells@redhat.com>
+        Wed, 15 Nov 2023 10:50:07 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B0B1AC;
+        Wed, 15 Nov 2023 07:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700063402; x=1731599402;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=er/1zsYTEUqBc9l1o82eaHeGbKLxLZP8/d4Zg+MKFYM=;
+  b=nM6YNaYBQTKCSbY5uK8nExxOv7Hrvt/M4rk93xIg17AW2J0mzRBRaXyB
+   0+by1E0cmAmUJNqyaTaT6pgZ5WqBv6ufCGxHCCA/lZmGDnNeMaULuz0YA
+   EtTG+x6xfvzLu4sR67RYwzq/AjWEfowb6i2p88HYACL0kZPmW0CYjrhAl
+   gxq7U8YwI1cs0/VLL+aMuS7A/KTiaxdL3H8u7AWrUaAHPRBw7z3hDY+Y1
+   E9kRYAvvdxOnRv/xDkVFOubud+5IG6Mit7/rRUjBO5eGT553eAlyvo+vn
+   XMA0XRuMVeFlW/WiLDHbqOJ3IKLKM8+R2MkdQwcVi11rJ3XGPl2XMJooO
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="477119132"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="477119132"
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 07:50:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="741469101"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="741469101"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2023 07:49:59 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 1C3E4305; Wed, 15 Nov 2023 17:49:58 +0200 (EET)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Tony Luck <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Subject: [PATCH v1 3/3] EDAC, pnd2: Sort headers alphabetically
+Date:   Wed, 15 Nov 2023 17:49:40 +0200
+Message-ID: <20231115154940.664664-3-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+In-Reply-To: <20231115154940.664664-1-andriy.shevchenko@linux.intel.com>
+References: <20231115154940.664664-1-andriy.shevchenko@linux.intel.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,124 +66,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make the BVEC-testing functions use the consolidated pattern checking
-functions to reduce the amount of duplicated code.
+Sort the headers in alphabetic order in order to ease
+the maintenance for this part.
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Christoph Hellwig <hch@lst.de>
-cc: Christian Brauner <brauner@kernel.org>
-cc: Jens Axboe <axboe@kernel.dk>
-cc: Al Viro <viro@zeniv.linux.org.uk>
-cc: David Hildenbrand <david@redhat.com>
-cc: John Hubbard <jhubbard@nvidia.com>
-cc: Brendan Higgins <brendanhiggins@google.com>
-cc: David Gow <davidgow@google.com>
-cc: linux-kselftest@vger.kernel.org
-cc: kunit-dev@googlegroups.com
-cc: linux-mm@kvack.org
-cc: linux-fsdevel@vger.kernel.org
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 ---
- lib/kunit_iov_iter.c | 42 +++++++++++-------------------------------
- 1 file changed, 11 insertions(+), 31 deletions(-)
+ drivers/edac/pnd2_edac.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
-index 4925ca37cde6..eb86371b67d0 100644
---- a/lib/kunit_iov_iter.c
-+++ b/lib/kunit_iov_iter.c
-@@ -107,9 +107,11 @@ static void iov_kunit_build_to_reference_pattern(struct kunit *test, u8 *scratch
- 	int i, patt = 0;
+diff --git a/drivers/edac/pnd2_edac.c b/drivers/edac/pnd2_edac.c
+index 676e02c8dc43..1bbedd59e36b 100644
+--- a/drivers/edac/pnd2_edac.c
++++ b/drivers/edac/pnd2_edac.c
+@@ -16,19 +16,20 @@
+  * rank, bank, row and column using the appropriate "dunit_ops" functions/parameters.
+  */
  
- 	memset(scratch, 0, bufsize);
--	for (; pr->page >= 0; pr++)
-+	for (; pr->page >= 0; pr++) {
-+		u8 *p = scratch + pr->page * PAGE_SIZE;
- 		for (i = pr->from; i < pr->to; i++)
--			scratch[i] = pattern(patt++);
-+			p[i] = pattern(patt++);
-+	}
- }
- 
- /*
-@@ -124,8 +126,10 @@ static void iov_kunit_build_from_reference_pattern(struct kunit *test, u8 *buffe
- 
- 	memset(buffer, 0, bufsize);
- 	for (; pr->page >= 0; pr++) {
-+		size_t patt = pr->page * PAGE_SIZE;
+-#include <linux/module.h>
+-#include <linux/init.h>
+-#include <linux/pci.h>
+-#include <linux/pci_ids.h>
+-#include <linux/slab.h>
++#include <linux/bitmap.h>
+ #include <linux/delay.h>
+ #include <linux/edac.h>
+-#include <linux/mmzone.h>
+-#include <linux/sizes.h>
+-#include <linux/smp.h>
+-#include <linux/bitmap.h>
++#include <linux/init.h>
+ #include <linux/math64.h>
++#include <linux/mmzone.h>
+ #include <linux/mod_devicetable.h>
++#include <linux/module.h>
++#include <linux/pci.h>
++#include <linux/pci_ids.h>
++#include <linux/sizes.h>
++#include <linux/slab.h>
++#include <linux/smp.h>
 +
- 		for (j = pr->from; j < pr->to; j++) {
--			buffer[i++] = pattern(j);
-+			buffer[i++] = pattern(patt + j);
- 			if (i >= bufsize)
- 				return;
- 		}
-@@ -287,13 +291,12 @@ static void __init iov_kunit_load_bvec(struct kunit *test,
-  */
- static void __init iov_kunit_copy_to_bvec(struct kunit *test)
- {
--	const struct iov_kunit_range *pr;
- 	struct iov_iter iter;
- 	struct bio_vec bvec[8];
- 	struct page **spages, **bpages;
- 	u8 *scratch, *buffer;
- 	size_t bufsize, npages, size, copied;
--	int i, patt;
-+	int i;
+ #include <linux/platform_data/x86/p2sb.h>
  
- 	bufsize = 0x100000;
- 	npages = bufsize / PAGE_SIZE;
-@@ -315,16 +318,7 @@ static void __init iov_kunit_copy_to_bvec(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, iter.count, 0);
- 	KUNIT_EXPECT_EQ(test, iter.nr_segs, 0);
- 
--	/* Build the expected image in the scratch buffer. */
--	patt = 0;
--	memset(scratch, 0, bufsize);
--	for (pr = bvec_test_ranges; pr->page >= 0; pr++) {
--		u8 *p = scratch + pr->page * PAGE_SIZE;
--
--		for (i = pr->from; i < pr->to; i++)
--			p[i] = pattern(patt++);
--	}
--
-+	iov_kunit_build_to_reference_pattern(test, scratch, bufsize, bvec_test_ranges);
- 	iov_kunit_check_pattern(test, buffer, scratch, bufsize);
- 	KUNIT_SUCCEED();
- }
-@@ -334,13 +328,12 @@ static void __init iov_kunit_copy_to_bvec(struct kunit *test)
-  */
- static void __init iov_kunit_copy_from_bvec(struct kunit *test)
- {
--	const struct iov_kunit_range *pr;
- 	struct iov_iter iter;
- 	struct bio_vec bvec[8];
- 	struct page **spages, **bpages;
- 	u8 *scratch, *buffer;
- 	size_t bufsize, npages, size, copied;
--	int i, j;
-+	int i;
- 
- 	bufsize = 0x100000;
- 	npages = bufsize / PAGE_SIZE;
-@@ -362,20 +355,7 @@ static void __init iov_kunit_copy_from_bvec(struct kunit *test)
- 	KUNIT_EXPECT_EQ(test, iter.count, 0);
- 	KUNIT_EXPECT_EQ(test, iter.nr_segs, 0);
- 
--	/* Build the expected image in the main buffer. */
--	i = 0;
--	memset(buffer, 0, bufsize);
--	for (pr = bvec_test_ranges; pr->page >= 0; pr++) {
--		size_t patt = pr->page * PAGE_SIZE;
--
--		for (j = pr->from; j < pr->to; j++) {
--			buffer[i++] = pattern(patt + j);
--			if (i >= bufsize)
--				goto stop;
--		}
--	}
--stop:
--
-+	iov_kunit_build_from_reference_pattern(test, buffer, bufsize, bvec_test_ranges);
- 	iov_kunit_check_pattern(test, buffer, scratch, bufsize);
- 	KUNIT_SUCCEED();
- }
+ #include <asm/cpu_device_id.h>
+-- 
+2.43.0.rc1.1.gbec44491f096
 
