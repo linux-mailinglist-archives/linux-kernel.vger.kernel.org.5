@@ -2,264 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FBB67EC715
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:23:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED9967EC741
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344463AbjKOPXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54624 "EHLO
+        id S231959AbjKOP3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:29:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344442AbjKOPXU (ORCPT
+        with ESMTP id S231641AbjKOP3R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:23:20 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A3DB9C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:23:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 82E40C433C9;
-        Wed, 15 Nov 2023 15:23:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700061795;
-        bh=8xQ64PrJ2r1RKXD2ge4xYHHnqovHMM4KOyXknKJ04QU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kpZZteBhAL9H1KTmPyNx7ikQLfKMsMVaRL4GQcWRZZGPhrnujZQKScATqof0lddny
-         MdWmFHCsJEQYXXL5wV3CMxKJXr2rrd903frBLnbRpkljLIhjCAvRZ5mEvw7Rc1ysi1
-         Lb6KEvOncIF9cWGWdsuPZ/FwFevgpa4FpJeViewmLLm/YhC+BSg1JSoL04M8rPvPW5
-         M4U6y3TeHoraU3PV/F939T5gNFeCIJpm//mTCDSid8GQ4NkXBlTLukwAccLS28sQN3
-         3L41ZYUnq3ttFHXk0+O9y0X/Tex65d+iABwxzcGj7iXZvfFeyRTcgzUVL2WBomMrzN
-         QqMGgCHQ69+ag==
-Date:   Wed, 15 Nov 2023 08:23:12 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     David Gow <davidgow@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        Rae Moar <rmoar@google.com>, dlatypov@google.com,
-        Maxime Ripard <mripard@kernel.org>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        =?iso-8859-1?Q?Ma=EDra?= Canal <mairacanal@riseup.net>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        kunit-dev@googlegroups.com, llvm@lists.linux.dev,
-        linux-hardening@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Benjamin Berg <benjamin.berg@intel.com>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        linux-kernel@vger.kernel.org,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Emma Anholt <emma@anholt.net>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH 1/3] kunit: Add a macro to wrap a deferred action function
-Message-ID: <20231115152312.GA51310@dev-arch.thelio-3990X>
-References: <20231110200830.1832556-1-davidgow@google.com>
+        Wed, 15 Nov 2023 10:29:17 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6D941A5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:29:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700062154; x=1731598154;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=JbigwBrughK1HrVAdmTEZJCVpTmiWAiYfLaWLhvOPOY=;
+  b=bO1piXyngz/afBnx9RftnaYC25hsI4qaRkSZlzl7YApnG69MhhnBKaMR
+   1mEV84qwKPcwDuX86XuiuNn7/fhQOuj0o0Ovt6p2swkth0eyQm2vR4O3P
+   pG4gWGPCjSqV78XzW6jrQeN4rlKJ5ATCuIrnGrtATgmc92Db9MA+skChc
+   h+vDIV7XYPOUeaNCVHG3252UtbnXskJ0kOR3Po0Nr20h3/eFcAN3eHPDq
+   SeDko9vXul+sUy1fr3TKT/K1S/d6moyKjQ0QumSVqpUv4curiW++cTgsc
+   JGxUzCkz7oxG1WzeX/KPImN7NzduT2mgmV8KeHDCi2Pt+DYFPE83TdRIm
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="12444185"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="12444185"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 07:24:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="830978622"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="830978622"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Nov 2023 07:24:22 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3HkZ-0000SS-10;
+        Wed, 15 Nov 2023 15:24:19 +0000
+Date:   Wed, 15 Nov 2023 23:23:27 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Yicong Yang <yangyicong@huawei.com>, catalin.marinas@arm.com,
+        will@kernel.org, sudeep.holla@arm.com,
+        linux-arm-kernel@lists.infradead.org
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        dietmar.eggemann@arm.com, gregkh@linuxfoundation.org,
+        rafael@kernel.org, jonathan.cameron@huawei.com,
+        prime.zeng@hisilicon.com, linuxarm@huawei.com,
+        yangyicong@hisilicon.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] arch_topology: Support basic SMT control for the
+ driver
+Message-ID: <202311152356.OWWDpFRB-lkp@intel.com>
+References: <20231114040110.54590-2-yangyicong@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231110200830.1832556-1-davidgow@google.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231114040110.54590-2-yangyicong@huawei.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi David,
+Hi Yicong,
 
-On Sat, Nov 11, 2023 at 04:08:26AM +0800, David Gow wrote:
-> KUnit's deferred action API accepts a void(*)(void *) function pointer
-> which is called when the test is exited. However, we very frequently
-> want to use existing functions which accept a single pointer, but which
-> may not be of type void*. While this is probably dodgy enough to be on
-> the wrong side of the C standard, it's been often used for similar
-> callbacks, and gcc's -Wcast-function-type seems to ignore cases where
-> the only difference is the type of the argument, assuming it's
-> compatible (i.e., they're both pointers to data).
-> 
-> However, clang 16 has introduced -Wcast-function-type-strict, which no
-> longer permits any deviation in function pointer type. This seems to be
-> because it'd break CFI, which validates the type of function calls.
-> 
-> This rather ruins our attempts to cast functions to defer them, and
-> leaves us with a few options. The one we've chosen is to implement a
-> macro which will generate a wrapper function which accepts a void*, and
-> casts the argument to the appropriate type.
-> 
-> For example, if you were trying to wrap:
-> void foo_close(struct foo *handle);
-> you could use:
-> KUNIT_DEFINE_ACTION_WRAPPER(kunit_action_foo_close,
-> 			    foo_close,
-> 			    struct foo *);
-> 
-> This would create a new kunit_action_foo_close() function, of type
-> kunit_action_t, which could be passed into kunit_add_action() and
-> similar functions.
-> 
-> In addition to defining this macro, update KUnit and its tests to use
-> it.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1750
-> Signed-off-by: David Gow <davidgow@google.com>
-> ---
-> 
-> This is a follow-up to the RFC here:
-> https://lore.kernel.org/linux-kselftest/20230915050125.3609689-1-davidgow@google.com/
-> 
-> There's no difference in the macro implementation, just an update to the
-> KUnit tests to use it. This version is intended to complement:
-> https://lore.kernel.org/all/20231106172557.2963-1-rf@opensource.cirrus.com/
-> 
-> There are also two follow-up patches in the series to use this macro in
-> various DRM tests.
-> 
-> Hopefully this will solve any CFI issues that show up with KUnit.
-> 
-> Thanks,
-> -- David
-> 
-> ---
+kernel test robot noticed the following build warnings:
 
-Prior to this series, there is indeed a crash when running the KUnit
-tests with CONFIG_CFI_CLANG=y:
+[auto build test WARNING on arm64/for-next/core]
+[also build test WARNING on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arm/for-next kvmarm/next soc/for-next linus/master arm/fixes v6.7-rc1 next-20231115]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-$ tools/testing/kunit/kunit.py run \
-    --alltests \
-    --arch x86_64 \
-    --kconfig_add CONFIG_CFI_CLANG=y \
-    --make_options LLVM=1 \
-    --timeout 30
-...
-[08:06:03] [ERROR] Test: sysctl_test: missing subtest result line!
-[08:06:03]     # module: sysctl_test
-[08:06:03]     1..10
-[08:06:03] CFI failure at __kunit_action_free+0x18/0x20 (target: kfree+0x0/0x80; expected type: 0xe82c6923)
-[08:06:03] invalid opcode: 0000 [#1] PREEMPT NOPTI
-[08:06:03] CPU: 0 PID: 53 Comm: kunit_try_catch Tainted: G                 N 6.7.0-rc1-00019-gc42d9eeef8e5 #3
-[08:06:03] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-14-g1e1da7a96300-prebuilt.qemu.org 04/01/2014
-[08:06:03] RIP: 0010:__kunit_action_free+0x18/0x20
-[08:06:03] Code: 00 00 b8 ae 55 f1 4d 90 90 90 90 90 90 90 90 90 90 90 f3 0f 1e fa 4c 8b 5f 38 48 8b 7f 40 41 ba dd 96 d3 17 45 03 53 f1 74 02 <0f> 0b 2e e9 f0 b5 46 00 b8 fa f1 06 5e 90 90 90 90 90 90 90 90 90
-[08:06:03] RSP: 0018:ffffb0d2c00ebea0 EFLAGS: 00000292
-[08:06:03] RAX: 0000000000000001 RBX: ffff993d41949a80 RCX: ffff993d41949aa0
-[08:06:03] RDX: 0000000000000282 RSI: ffff993d41949a80 RDI: ffff993d4186b6b0
-[08:06:03] RBP: ffffb0d2c0013ad8 R08: ffffffffc9c84000 R09: 0000000000000400
-[08:06:03] R10: 00000000f707d502 R11: ffffffff8f33aa40 R12: ffff993d418d2e00
-[08:06:03] R13: ffff993d41a05600 R14: ffffb0d2c0013cc0 R15: ffff993d41949ae0
-[08:06:03] FS:  0000000000000000(0000) GS:ffffffff90049000(0000) knlGS:0000000000000000
-[08:06:03] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[08:06:03] CR2: ffff993d55c01000 CR3: 000000001563e000 CR4: 00000000000006f0
-[08:06:03] Call Trace:
-[08:06:03]  <TASK>
-[08:06:03]  ? __die+0xd6/0x120
-[08:06:03]  ? die+0x5f/0xa0
-[08:06:03]  ? do_trap+0x9b/0x180
-[08:06:03]  ? __kunit_action_free+0x18/0x20
-[08:06:03]  ? __kunit_action_free+0x18/0x20
-[08:06:03]  ? handle_invalid_op+0x64/0x80
-[08:06:03]  ? __kunit_action_free+0x18/0x20
-[08:06:03]  ? exc_invalid_op+0x38/0x60
-[08:06:03]  ? asm_exc_invalid_op+0x1a/0x20
-[08:06:03]  ? __cfi_kfree+0x10/0x10
-[08:06:03]  ? __kunit_action_free+0x18/0x20
-[08:06:03]  kunit_remove_resource+0x8f/0xf0
-[08:06:03]  kunit_cleanup+0x60/0xe0
-[08:06:03]  kunit_generic_run_threadfn_adapter+0x24/0x30
-[08:06:03]  ? __cfi_kunit_generic_run_threadfn_adapter+0x10/0x10
-[08:06:03]  kthread+0xd9/0xf0
-[08:06:03]  ? __cfi_kthread+0x10/0x10
-[08:06:03]  ret_from_fork+0x43/0x50
-[08:06:03]  ? __cfi_kthread+0x10/0x10
-[08:06:03]  ret_from_fork_asm+0x1a/0x30
-[08:06:03]  </TASK>
-[08:06:03] ---[ end trace 0000000000000000 ]---
-[08:06:03] RIP: 0010:__kunit_action_free+0x18/0x20
-...
+url:    https://github.com/intel-lab-lkp/linux/commits/Yicong-Yang/arch_topology-Support-basic-SMT-control-for-the-driver/20231114-120544
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20231114040110.54590-2-yangyicong%40huawei.com
+patch subject: [PATCH v3 1/4] arch_topology: Support basic SMT control for the driver
+config: arm-socfpga_defconfig (https://download.01.org/0day-ci/archive/20231115/202311152356.OWWDpFRB-lkp@intel.com/config)
+compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152356.OWWDpFRB-lkp@intel.com/reproduce)
 
-With this series applied with
-https://lore.kernel.org/20231106172557.2963-1-rf@opensource.cirrus.com/,
-all the tests pass for arm64 and x86_64 on my machine. I see no
-remaining casts in the tree in this state. It seems like the
-documentation in Documentation/dev-tools/kunit/usage.rst may want to be
-updated to remove mention of casting to kunit_action_t as well?
-Regardless:
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311152356.OWWDpFRB-lkp@intel.com/
 
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-Tested-by: Nathan Chancellor <nathan@kernel.org>
+All warnings (new ones prefixed by >>):
 
->  include/kunit/resource.h | 9 +++++++++
->  lib/kunit/kunit-test.c   | 5 +----
->  lib/kunit/test.c         | 6 ++++--
->  3 files changed, 14 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/kunit/resource.h b/include/kunit/resource.h
-> index c7383e90f5c9..4110e13970dc 100644
-> --- a/include/kunit/resource.h
-> +++ b/include/kunit/resource.h
-> @@ -390,6 +390,15 @@ void kunit_remove_resource(struct kunit *test, struct kunit_resource *res);
->  /* A 'deferred action' function to be used with kunit_add_action. */
->  typedef void (kunit_action_t)(void *);
->  
-> +/* We can't cast function pointers to kunit_action_t if CFI is enabled. */
-> +#define KUNIT_DEFINE_ACTION_WRAPPER(wrapper, orig, arg_type) \
-> +	static void wrapper(void *in) \
-> +	{ \
-> +		arg_type arg = (arg_type)in; \
-> +		orig(arg); \
-> +	}
-> +
-> +
->  /**
->   * kunit_add_action() - Call a function when the test ends.
->   * @test: Test case to associate the action with.
-> diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-> index de2113a58fa0..ee6927c60979 100644
-> --- a/lib/kunit/kunit-test.c
-> +++ b/lib/kunit/kunit-test.c
-> @@ -538,10 +538,7 @@ static struct kunit_suite kunit_resource_test_suite = {
->  #if IS_BUILTIN(CONFIG_KUNIT_TEST)
->  
->  /* This avoids a cast warning if kfree() is passed direct to kunit_add_action(). */
-> -static void kfree_wrapper(void *p)
-> -{
-> -	kfree(p);
-> -}
-> +KUNIT_DEFINE_ACTION_WRAPPER(kfree_wrapper, kfree, const void *);
->  
->  static void kunit_log_test(struct kunit *test)
->  {
-> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
-> index f2eb71f1a66c..0308865194bb 100644
-> --- a/lib/kunit/test.c
-> +++ b/lib/kunit/test.c
-> @@ -772,6 +772,8 @@ static struct notifier_block kunit_mod_nb = {
->  };
->  #endif
->  
-> +KUNIT_DEFINE_ACTION_WRAPPER(kfree_action_wrapper, kfree, const void *)
-> +
->  void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
->  {
->  	void *data;
-> @@ -781,7 +783,7 @@ void *kunit_kmalloc_array(struct kunit *test, size_t n, size_t size, gfp_t gfp)
->  	if (!data)
->  		return NULL;
->  
-> -	if (kunit_add_action_or_reset(test, (kunit_action_t *)kfree, data) != 0)
-> +	if (kunit_add_action_or_reset(test, kfree_action_wrapper, data) != 0)
->  		return NULL;
->  
->  	return data;
-> @@ -793,7 +795,7 @@ void kunit_kfree(struct kunit *test, const void *ptr)
->  	if (!ptr)
->  		return;
->  
-> -	kunit_release_action(test, (kunit_action_t *)kfree, (void *)ptr);
-> +	kunit_release_action(test, kfree_action_wrapper, (void *)ptr);
->  }
->  EXPORT_SYMBOL_GPL(kunit_kfree);
->  
-> -- 
-> 2.42.0.869.gea05f2083d-goog
-> 
+>> drivers/base/arch_topology.c:32:12: warning: unused variable 'topology_smt_num_threads' [-Wunused-variable]
+      32 | static int topology_smt_num_threads = 1;
+         |            ^
+   1 warning generated.
+
+
+vim +/topology_smt_num_threads +32 drivers/base/arch_topology.c
+
+    30	
+    31	/* Maximum threads number per-Core */
+  > 32	static int topology_smt_num_threads = 1;
+    33	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
