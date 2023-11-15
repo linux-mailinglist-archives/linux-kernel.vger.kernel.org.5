@@ -2,73 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 919697EC998
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B83E7EC99C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:24:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232509AbjKORXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:23:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59592 "EHLO
+        id S232568AbjKORYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKORXt (ORCPT
+        with ESMTP id S232555AbjKORX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:23:49 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBAA4B6;
-        Wed, 15 Nov 2023 09:23:45 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id d2e1a72fcca58-6c320a821c4so6160618b3a.2;
-        Wed, 15 Nov 2023 09:23:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700069025; x=1700673825; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=vTK9z1mQzSb0VlhTBdpKdiKWd6PG5ky2hj7vrHjyW9I=;
-        b=hfqI1Sop2sFHQqWmdBp1ruLCEyZqcFGnl1oCx4U2ddQZ1V5pucHaeWx5/wyjUm/d0R
-         wVL7itmUXsma+gdE6UVafr6QvU2kUHrgWE3yaBp4q1riE3qnxqkHBZfmBHz4bFTBBWHX
-         t2bfPvJp1l82v4utFucyuGQCU0t+a5Bos4DWtWoR08cQ4arapapmzrbNBJBd4SwcMCC8
-         l0GWg8Hk3IC0SPrGeG/WlECl3AJfbP81ag6CzubXlRsTt7YZCqBsf5YOi6pRNOnkYHfp
-         YubrTpJIENt9BPWJgzZnE/kOJmKCDmy2EA4X6Uw+RmT3/3j2g3zOOktqLzHwktGHnAuq
-         KOwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700069025; x=1700673825;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vTK9z1mQzSb0VlhTBdpKdiKWd6PG5ky2hj7vrHjyW9I=;
-        b=H4wFWYKXMBSK6qbVM8hu6ahSp/qSsOe2q4aOKJpcAJRXV5ik6daGFXzy2GlnGOKaxP
-         kAEWjcSI98K+JcLj9siFDcw5QNPaGZISS/Pn1KOahwT5f9z47jb4A7e1E3ZAOa+5tBbW
-         Dj0dhXfaDGxBOH4np0PxXUiSaliFZuvzP9tYf4FCRJxvyETan2vcU3duXeHrfqNPywBR
-         p1CuA+fmmgwsMF0ouJ7QcZ/97Lz4qBbwW8MxaPKss2NzAQWX0rBFR2NmlzAIgcDs0Zv8
-         +EJly0j9vi+JYNc51/XyROLxKCGQ5Ci3i0/RJrL56eKw3/DgyevaclBamzgjaxjodrQ0
-         9Eew==
-X-Gm-Message-State: AOJu0YzzurVsEBhu9dgZE2HFzBAe1qbrnuMKX0crbcs0Ub1CRCPSF61s
-        04DyOaY7HwWMv874q1nUpuk=
-X-Google-Smtp-Source: AGHT+IGNsXjvW227SqhFPnx1Frisjm2+pSechijeDmxtfugz9FHzFwX6/mOFCBiXaFoXWITxZzIjjQ==
-X-Received: by 2002:a17:90b:1c8c:b0:281:5860:12f3 with SMTP id oo12-20020a17090b1c8c00b00281586012f3mr11011502pjb.3.1700069024963;
-        Wed, 15 Nov 2023 09:23:44 -0800 (PST)
-Received: from localhost (fwdproxy-prn-016.fbsv.net. [2a03:2880:ff:10::face:b00c])
-        by smtp.gmail.com with ESMTPSA id a23-20020a17090a6d9700b00267b38f5e13sm122648pjk.2.2023.11.15.09.23.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 09:23:44 -0800 (PST)
-From:   Nhat Pham <nphamcs@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cerasuolodomenico@gmail.com, yosryahmed@google.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        mhocko@kernel.org, roman.gushchin@linux.dev, shakeelb@google.com,
-        muchun.song@linux.dev, hughd@google.com, corbet@lwn.net,
-        konrad.wilk@oracle.com, senozhatsky@chromium.org, rppt@kernel.org,
-        linux-mm@kvack.org, kernel-team@meta.com,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        david@ixit.cz
-Subject: [PATCH v5] zswap: memcontrol: implement zswap writeback disabling
-Date:   Wed, 15 Nov 2023 09:23:44 -0800
-Message-Id: <20231115172344.4155593-1-nphamcs@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 15 Nov 2023 12:23:58 -0500
+Received: from relay05.th.seeweb.it (relay05.th.seeweb.it [5.144.164.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DABC18E;
+        Wed, 15 Nov 2023 09:23:52 -0800 (PST)
+Received: from SoMainline.org (94-211-6-86.cable.dynamic.v4.ziggo.nl [94.211.6.86])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 09CA93F8F8;
+        Wed, 15 Nov 2023 18:23:47 +0100 (CET)
+Date:   Wed, 15 Nov 2023 18:23:46 +0100
+From:   Marijn Suijten <marijn.suijten@somainline.org>
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>, David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
+        Doug Anderson <dianders@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 4/4] drm/msm/dsi: fix DSC for the bonded DSI case
+Message-ID: <74ou4xly7pjnsqbavvt2iuonvpgioznriq2vgbccprn5uagkhm@ntq6sq7ywelv>
+References: <20231114174218.19765-1-jonathan@marek.ca>
+ <20231114174218.19765-4-jonathan@marek.ca>
+ <eanx45rnasj7lu3r2tfhtg4qkqkcidd6zctsz6ci6jlklu4fgi@3nf73w2ka4li>
+ <a9712ef1-5f60-b127-a276-9e437d95914f@marek.ca>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a9712ef1-5f60-b127-a276-9e437d95914f@marek.ca>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,294 +57,167 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-During our experiment with zswap, we sometimes observe swap IOs due to
-occasional zswap store failures and writebacks-to-swap. These swapping
-IOs prevent many users who cannot tolerate swapping from adopting zswap
-to save memory and improve performance where possible.
+On 2023-11-14 14:00:19, Jonathan Marek wrote:
+> On 11/14/23 1:28 PM, Marijn Suijten wrote:
+> > On what hardware have you been testing this?  Dmitry and I have a stack of
+> > patches to resolve support for Active CTL programming on newer hardware (DPU
+> > 5.0+ IIRC), where a single CTL is responsible for programming multiple INTF and
+> > DSC blocks as used in bonded DSI.
+> > 
+> 
+> I am also using DPU 6+ but I won't be posting patches for DPU to support 
+> this as I am not using the upstream DPU codebase.
 
-This patch adds the option to disable this behavior entirely: do not
-writeback to backing swapping device when a zswap store attempt fail,
-and do not write pages in the zswap pool back to the backing swap
-device (both when the pool is full, and when the new zswap shrinker is
-called).
+Oh that is an odd situation!  At least glad to hear we aren't completely
+duplicating our efforts :)
 
-This new behavior can be opted-in/out on a per-cgroup basis via a new
-cgroup file. By default, writebacks to swap device is enabled, which is
-the previous behavior. Initially, writeback is enabled for the root
-cgroup, and a newly created cgroup will inherit the current setting of
-its parent.
+> > On 2023-11-14 12:42:16, Jonathan Marek wrote:
+> >> For the bonded DSI case, DSC pic_width and timing calculations should use
+> >> the width of a single panel instead of the total combined width.
+> >>
+> >> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> >> ---
+> >>   drivers/gpu/drm/msm/dsi/dsi.h         |  3 ++-
+> >>   drivers/gpu/drm/msm/dsi/dsi_host.c    | 20 +++++++++++---------
+> >>   drivers/gpu/drm/msm/dsi/dsi_manager.c |  2 +-
+> >>   3 files changed, 14 insertions(+), 11 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
+> >> index 28379b1af63f..3a641e69447c 100644
+> >> --- a/drivers/gpu/drm/msm/dsi/dsi.h
+> >> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
+> >> @@ -93,7 +93,8 @@ int msm_dsi_host_power_off(struct mipi_dsi_host *host);
+> >>   int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+> >>   				  const struct drm_display_mode *mode);
+> >>   enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+> >> -					    const struct drm_display_mode *mode);
+> >> +					    const struct drm_display_mode *mode,
+> >> +					    bool is_bonded_dsi);
+> >>   unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
+> >>   int msm_dsi_host_register(struct mipi_dsi_host *host);
+> >>   void msm_dsi_host_unregister(struct mipi_dsi_host *host);
+> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> >> index 7284346ab787..a6286eb9d006 100644
+> >> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
+> >> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
+> >> @@ -938,8 +938,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+> >>   			       mode->hdisplay, mode->vdisplay);
+> >>   			return;
+> >>   		}
+> >> -
+> >> -		dsc->pic_width = mode->hdisplay;
+> >> +		dsc->pic_width = hdisplay;
+> > 
+> > In my testing and debugging on CMDmode panels downstream this value/register
+> > was always programmed to the _full_ width of the bonded panel.  Is that maybe
+> > different for video mode?
+> > 
+> 
+> downstream dual DSI panel timings are specified for a single panel 
+> ("qcom,mdss-dsi-panel-width" is for a single panel, not both panels)
 
-Note that this is subtly different from setting memory.swap.max to 0, as
-it still allows for pages to be stored in the zswap pool (which itself
-consumes swap space in its current form).
+_dual panels_?  In my case I have a "single panel" that is driven by two
+"bonded" DSI hosts, just to achieve enough bandwidth.
 
-This patch should be applied on top of the zswap shrinker series:
+Indeed my downstream DTS has qcom,mdss-dsi-panel-width set to half the total
+panel width, but I recall seeing the full width in the register dump.  I'll scan
+through my logs and see if I can back this up.
 
-https://lore.kernel.org/lkml/20231106183159.3562879-1-nphamcs@gmail.com/
+> >>   		dsc->pic_height = mode->vdisplay;
+> >>   		DBG("Mode %dx%d\n", dsc->pic_width, dsc->pic_height);
+> >>   
+> >> @@ -950,6 +949,11 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+> >>   		if (ret)
+> >>   			return;
+> >>   
+> >> +		if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO)
+> >> +			dsi_update_dsc_timing(msm_host, false, hdisplay);
+> >> +		else
+> >> +			dsi_update_dsc_timing(msm_host, true, hdisplay);
 
-as it also disables the zswap shrinker, a major source of zswap
-writebacks.
+Another thought: it's probably clearer to write:
 
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Nhat Pham <nphamcs@gmail.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 12 ++++++++
- Documentation/admin-guide/mm/zswap.rst  |  6 ++++
- include/linux/memcontrol.h              | 12 ++++++++
- include/linux/zswap.h                   |  6 ++++
- mm/memcontrol.c                         | 38 +++++++++++++++++++++++++
- mm/page_io.c                            |  6 ++++
- mm/shmem.c                              |  3 +-
- mm/zswap.c                              | 14 +++++++++
- 8 files changed, 95 insertions(+), 2 deletions(-)
+	bool is_cmd_mode = msm_host->mode_flags & MIPI_DSI_MODE_VIDEO;
+	dsi_update_dsc_timing(msm_host, is_cmd_mode, hdisplay);
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 3f85254f3cef..2b4ac43efdc8 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1679,6 +1679,18 @@ PAGE_SIZE multiple when read back.
- 	limit, it will refuse to take any more stores before existing
- 	entries fault back in or are written out to disk.
- 
-+  memory.zswap.writeback
-+	A read-write single value file. The default value is "1". The
-+	initial value of the root cgroup is 1, and when a new cgroup is
-+	created, it inherits the current value of its parent.
-+
-+	When this is set to 0, all swapping attempts to swapping devices
-+	are disabled. This included both zswap writebacks, and swapping due
-+	to zswap store failure.
-+
-+	Note that this is subtly different from setting memory.swap.max to
-+	0, as it still allows for pages to be written to the zswap pool.
-+
-   memory.pressure
- 	A read-only nested-keyed file.
- 
-diff --git a/Documentation/admin-guide/mm/zswap.rst b/Documentation/admin-guide/mm/zswap.rst
-index 522ae22ccb84..b987e58edb70 100644
---- a/Documentation/admin-guide/mm/zswap.rst
-+++ b/Documentation/admin-guide/mm/zswap.rst
-@@ -153,6 +153,12 @@ attribute, e. g.::
- 
- Setting this parameter to 100 will disable the hysteresis.
- 
-+Some users cannot tolerate the swapping that comes with zswap store failures
-+and zswap writebacks. Swapping can be disabled entirely (without disabling
-+zswap itself) on a cgroup-basis as follows:
-+
-+	echo 0 > /sys/fs/cgroup/<cgroup-name>/memory.zswap.writeback
-+
- When there is a sizable amount of cold memory residing in the zswap pool, it
- can be advantageous to proactively write these cold pages to swap and reclaim
- the memory for other use cases. By default, the zswap shrinker is disabled.
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 83590fd0d6d1..3901ff4dae63 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -219,6 +219,12 @@ struct mem_cgroup {
- 
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	unsigned long zswap_max;
-+
-+	/*
-+	 * Prevent pages from this memcg from being written back from zswap to
-+	 * swap, and from being swapped out on zswap store failures.
-+	 */
-+	bool zswap_writeback;
- #endif
- 
- 	unsigned long soft_limit;
-@@ -1931,6 +1937,7 @@ static inline void count_objcg_event(struct obj_cgroup *objcg,
- bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
- void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
- void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
-+bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
- #else
- static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- {
-@@ -1944,6 +1951,11 @@ static inline void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg,
- 					     size_t size)
- {
- }
-+static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-+{
-+	/* if zswap is disabled, do not block pages going to the swapping device */
-+	return true;
-+}
- #endif
- 
- #endif /* _LINUX_MEMCONTROL_H */
-diff --git a/include/linux/zswap.h b/include/linux/zswap.h
-index cbd373ba88d2..b4997e27a74b 100644
---- a/include/linux/zswap.h
-+++ b/include/linux/zswap.h
-@@ -35,6 +35,7 @@ void zswap_swapoff(int type);
- void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg);
- void zswap_lruvec_state_init(struct lruvec *lruvec);
- void zswap_lruvec_swapin(struct page *page);
-+bool is_zswap_enabled(void);
- #else
- 
- struct zswap_lruvec_state {};
-@@ -55,6 +56,11 @@ static inline void zswap_swapoff(int type) {}
- static inline void zswap_memcg_offline_cleanup(struct mem_cgroup *memcg) {}
- static inline void zswap_lruvec_init(struct lruvec *lruvec) {}
- static inline void zswap_lruvec_swapin(struct page *page) {}
-+
-+static inline bool is_zswap_enabled(void)
-+{
-+	return false;
-+}
- #endif
- 
- #endif /* _LINUX_ZSWAP_H */
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 786c7edf5836..5ad71ce31c74 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5522,6 +5522,8 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 	WRITE_ONCE(memcg->soft_limit, PAGE_COUNTER_MAX);
- #if defined(CONFIG_MEMCG_KMEM) && defined(CONFIG_ZSWAP)
- 	memcg->zswap_max = PAGE_COUNTER_MAX;
-+	WRITE_ONCE(memcg->zswap_writeback,
-+		!parent || READ_ONCE(parent->zswap_writeback));
- #endif
- 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
- 	if (parent) {
-@@ -8146,6 +8148,12 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- 	rcu_read_unlock();
- }
- 
-+bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
-+{
-+	/* if zswap is disabled, do not block pages going to the swapping device */
-+	return !is_zswap_enabled() || !memcg || READ_ONCE(memcg->zswap_writeback);
-+}
-+
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
-@@ -8176,6 +8184,31 @@ static ssize_t zswap_max_write(struct kernfs_open_file *of,
- 	return nbytes;
- }
- 
-+static int zswap_writeback_show(struct seq_file *m, void *v)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
-+	return 0;
-+}
-+
-+static ssize_t zswap_writeback_write(struct kernfs_open_file *of,
-+				char *buf, size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	int zswap_writeback;
-+	ssize_t parse_ret = kstrtoint(strstrip(buf), 0, &zswap_writeback);
-+
-+	if (parse_ret)
-+		return parse_ret;
-+
-+	if (zswap_writeback != 0 && zswap_writeback != 1)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(memcg->zswap_writeback, zswap_writeback);
-+	return nbytes;
-+}
-+
- static struct cftype zswap_files[] = {
- 	{
- 		.name = "zswap.current",
-@@ -8188,6 +8221,11 @@ static struct cftype zswap_files[] = {
- 		.seq_show = zswap_max_show,
- 		.write = zswap_max_write,
- 	},
-+	{
-+		.name = "zswap.writeback",
-+		.seq_show = zswap_writeback_show,
-+		.write = zswap_writeback_write,
-+	},
- 	{ }	/* terminate */
- };
- #endif /* CONFIG_MEMCG_KMEM && CONFIG_ZSWAP */
-diff --git a/mm/page_io.c b/mm/page_io.c
-index cb559ae324c6..5e606f1aa2f6 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -201,6 +201,12 @@ int swap_writepage(struct page *page, struct writeback_control *wbc)
- 		folio_end_writeback(folio);
- 		return 0;
- 	}
-+
-+	if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
-+		folio_mark_dirty(folio);
-+		return AOP_WRITEPAGE_ACTIVATE;
-+	}
-+
- 	__swap_writepage(&folio->page, wbc);
- 	return 0;
- }
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 0d1ce70bce38..ccbaaa5f1c16 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1514,8 +1514,7 @@ static int shmem_writepage(struct page *page, struct writeback_control *wbc)
- 
- 		mutex_unlock(&shmem_swaplist_mutex);
- 		BUG_ON(folio_mapped(folio));
--		swap_writepage(&folio->page, wbc);
--		return 0;
-+		return swap_writepage(&folio->page, wbc);
- 	}
- 
- 	mutex_unlock(&shmem_swaplist_mutex);
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 943090dfe793..caa467e40009 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -152,6 +152,11 @@ module_param_named(exclusive_loads, zswap_exclusive_loads_enabled, bool, 0644);
- static bool zswap_shrinker_enabled;
- module_param_named(shrinker_enabled, zswap_shrinker_enabled, bool, 0644);
- 
-+bool is_zswap_enabled(void)
-+{
-+	return zswap_enabled;
-+}
-+
- /*********************************
- * data structures
- **********************************/
-@@ -589,6 +594,9 @@ static unsigned long zswap_shrinker_scan(struct shrinker *shrinker,
- 	struct zswap_pool *pool = shrinker->private_data;
- 	bool encountered_page_in_swapcache = false;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(sc->memcg))
-+		return SHRINK_STOP;
-+
- 	nr_protected =
- 		atomic_long_read(&lruvec->zswap_lruvec_state.nr_zswap_protected);
- 	lru_size = list_lru_shrink_count(&pool->list_lru, sc);
-@@ -619,6 +627,9 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(sc->nid));
- 	unsigned long nr_backing, nr_stored, nr_freeable, nr_protected;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(memcg))
-+		return 0;
-+
- #ifdef CONFIG_MEMCG_KMEM
- 	cgroup_rstat_flush(memcg->css.cgroup);
- 	nr_backing = memcg_page_state(memcg, MEMCG_ZSWAP_B) >> PAGE_SHIFT;
-@@ -934,6 +945,9 @@ static int shrink_memcg(struct mem_cgroup *memcg)
- 	struct zswap_pool *pool;
- 	int nid, shrunk = 0;
- 
-+	if (!mem_cgroup_zswap_writeback_enabled(memcg))
-+		return -EINVAL;
-+
- 	/*
- 	 * Skip zombies because their LRUs are reparented and we would be
- 	 * reclaiming from the parent instead of the dead memcg.
--- 
-2.34.1
+> >> +
+> > 
+> > Such cleanups (which appear unrelated) should probably be posted as separate
+> > patches.
+> > 
+> > - Marijn
+> > 
+> 
+> Its not unrelated, dsi_update_dsc_timing call is moved up so it can use 
+> the single-panel "hdisplay" value before it gets adjusted for DSC.
+
+This reply was mostly expected after not looking at the original code folded in
+the diff, and pretty much solidifies my point: it's a hidden semantical change
+that's not immediately obvious from reading the patch, and why I'd like to see
+this split up in a few smaller patches.
+
+> >>   		/* Divide the display by 3 but keep back/font porch and
+> >>   		 * pulse width same
+> >>   		 */
+> >> @@ -966,9 +970,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+> >>   	}
+> >>   
+> >>   	if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
+> >> -		if (msm_host->dsc)
+> >> -			dsi_update_dsc_timing(msm_host, false, mode->hdisplay);
+> >> -
+> >>   		dsi_write(msm_host, REG_DSI_ACTIVE_H,
+> >>   			DSI_ACTIVE_H_START(ha_start) |
+> >>   			DSI_ACTIVE_H_END(ha_end));
+> >> @@ -987,9 +988,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
+> >>   			DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
+> >>   			DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
+> >>   	} else {		/* command mode */
+> >> -		if (msm_host->dsc)
+> >> -			dsi_update_dsc_timing(msm_host, true, mode->hdisplay);
+> >> -
+> >>   		/* image data and 1 byte write_memory_start cmd */
+> >>   		if (!msm_host->dsc)
+> >>   			wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
+
+Regarding another patch: cmdmode calculates and uses word count here, but video
+mode does it as part of timing calculations?
+
+- Marijn
+
+> >> @@ -2487,7 +2485,8 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
+> >>   }
+> >>   
+> >>   enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+> >> -					    const struct drm_display_mode *mode)
+> >> +					    const struct drm_display_mode *mode,
+> >> +					    bool is_bonded_dsi)
+> >>   {
+> >>   	struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
+> >>   	struct drm_dsc_config *dsc = msm_host->dsc;
+> >> @@ -2497,6 +2496,9 @@ enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
+> >>   	if (!msm_host->dsc)
+> >>   		return MODE_OK;
+> >>   
+> >> +	if (is_bonded_dsi)
+> >> +		pic_width = mode->hdisplay / 2;
+> >> +
+> >>   	if (pic_width % dsc->slice_width) {
+> >>   		pr_err("DSI: pic_width %d has to be multiple of slice %d\n",
+> >>   		       pic_width, dsc->slice_width);
+> >> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> >> index 896f369fdd53..2ca1a7ca3659 100644
+> >> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> >> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
+> >> @@ -455,7 +455,7 @@ static enum drm_mode_status dsi_mgr_bridge_mode_valid(struct drm_bridge *bridge,
+> >>   			return MODE_ERROR;
+> >>   	}
+> >>   
+> >> -	return msm_dsi_host_check_dsc(host, mode);
+> >> +	return msm_dsi_host_check_dsc(host, mode, IS_BONDED_DSI());
+> >>   }
+> >>   
+> >>   static const struct drm_bridge_funcs dsi_mgr_bridge_funcs = {
+> >> -- 
+> >> 2.26.1
+> >>
