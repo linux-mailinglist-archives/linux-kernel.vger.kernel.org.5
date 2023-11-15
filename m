@@ -2,67 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4279B7ED71E
+	by mail.lfdr.de (Postfix) with ESMTP id 985D97ED71F
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:23:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjKOWWw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:22:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60704 "EHLO
+        id S234528AbjKOWXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:23:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjKOWWu (ORCPT
+        with ESMTP id S229608AbjKOWXa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:22:50 -0500
-Received: from mail-oi1-x22c.google.com (mail-oi1-x22c.google.com [IPv6:2607:f8b0:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6839719B;
-        Wed, 15 Nov 2023 14:22:47 -0800 (PST)
-Received: by mail-oi1-x22c.google.com with SMTP id 5614622812f47-3b3e13fc1f7so108748b6e.0;
-        Wed, 15 Nov 2023 14:22:47 -0800 (PST)
+        Wed, 15 Nov 2023 17:23:30 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC36C192;
+        Wed, 15 Nov 2023 14:23:27 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-586ad15f9aaso84549eaf.2;
+        Wed, 15 Nov 2023 14:23:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700086966; x=1700691766; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700087007; x=1700691807; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=/aI6R9aaYD107OtUapB5oOZMDCikpKBXLRbioJLRf0o=;
-        b=e5eTu3gWNYpJJGRA7raynoBv1Iw4WGxFCxdaAfETwCyEPDsiPSNiufArfl0ng+FdWe
-         DLMPDDLhgEdE3YW2HFg9FV1LYfQlU4aAJX4BaSciFILlXd/JQXZ/PLA1VeySKJlWrybt
-         dPay+PsNgTrWuvE0j5QUinQXWiGyOoC27Whphha/b92zaEF2tbvrB2+Zgl/L/sM4BtTW
-         JfSy9sZtm5qZATWAbS3JAsQTzMZpakIgvcb3rtt0gXKU7rtfK6dQlIkZ0syUfaFRuSZd
-         OEkPH2d2YD5tRdR1ZuWJFDwSSjlld0FJVm5qWNPgktkMXXXfLi7blgRuTNq6ty/x5rRY
-         EMFg==
+        bh=zj8kRfNUogWaVW2Nbf21N+NiPzH0NEKBCgCHTXITBSU=;
+        b=c49XPiTvAL4xdkYC1oM0QA3aK6PkISrPv4YP3q8H5tksz1Ws3jIODYq22KDgvKfVhf
+         KVK5AST75Pm5Q+d2NGvSo99VxkeQw1uLJNifidwHwDQLVrDNNOM224OP1KVrgUjPaA//
+         Pj4rRI8LjFFW3EzrQ7rQ0ZMYRRgHNo2qtfmZCTHZiC8iV5789p5J55Md83NZbDqVzVue
+         ZWlkROY/MWQhwj/rjknEe5jL+U1sguke8b5fGIjy6+xJQ8KMwoz09wlKKidZWHJ+r2vl
+         sHNx4wVAdt4UQBMUMHSNYkHJSVSgQVUHrzthbuNZ10R7c4OGHAjtqWIFrvITTzvGwwOz
+         q4fQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700086966; x=1700691766;
+        d=1e100.net; s=20230601; t=1700087007; x=1700691807;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/aI6R9aaYD107OtUapB5oOZMDCikpKBXLRbioJLRf0o=;
-        b=QrtyPCnEADj4wfUti2fNPUcvkDfb6zb93wl9koGXqerK/FLMS1eIimWSDxzz+k8l7/
-         a7yK6E/eHqIAnvgbf44g0v7zKaCaQMLUlJMTXgzJDX6lrbRPZesTFH98fKsSxtpEJfaL
-         cg/6vy3hXSercuNkYVkzoFGEXI0YeB7Y5XDli9pz1X5BFy9AdDETOvX0+NSjNCqAABO3
-         WZZx5kH/ZxtVIlid5mFxZTsVYG8V5++TB03LQNsjfoFJ2NYwcuVknGEn1ZyN0EmozoBJ
-         VZM5aVjjnwt7GfJm2KLJ/PWoUfEud1g56PEFTq9RPwXTs98PJOFnGZhswmuVic6EfnEL
-         6XUA==
-X-Gm-Message-State: AOJu0YyQ0GXAPW8Z9qL803uql+j/tpnzxW+9PmcAc8lIK2n5yFmpKTOZ
-        pi+bFrRZHOqKM9EcDGP5UjR0M27efgo=
-X-Google-Smtp-Source: AGHT+IFbDKt0KJHE3OrotFdhddTB0L5qxCOcVWTxS4UIoOAB8JuwemAqmCZcKjpoRCzdPqfQP7C/eA==
-X-Received: by 2002:a54:478b:0:b0:3b6:a8cb:1ecb with SMTP id o11-20020a54478b000000b003b6a8cb1ecbmr15527165oic.40.1700086966644;
-        Wed, 15 Nov 2023 14:22:46 -0800 (PST)
+        bh=zj8kRfNUogWaVW2Nbf21N+NiPzH0NEKBCgCHTXITBSU=;
+        b=Ew6fw4rEjcGxRh8tt7ydUAAt1luZRE1Tk8iqRpnrU0xjuCXA/2HhVGEn106I9nOpDG
+         q1MwHkuVdXLfbMMPapNBMkf0XRWuy9IEUAbGvIcA4O+vepDW2cAid5XcbXd37wWkomqt
+         TNEEZI6bDrJ/RfSPCtmlWQGnlEfDRWTysMDrLbppqAHociggkKoGj5q8zhM+u0S5MgCk
+         y4zXyCMpkHgfgnWFUtPezepWYenEvdMhkB329vqDYz3MmMLx7wteEqAvwnmmjFiNA/2R
+         WmHMLXF0LvNkmm+WvwodqF1oq1glxu2X8S6jXrnyAb3HYJKifrXVvIgzV8pLQcThXgjB
+         E6Vg==
+X-Gm-Message-State: AOJu0YzK+urD7tQOwm/5atObOoqAbkV76Xy6Exhtm7wGjRA8/vAfueto
+        B4eH4p2utEOcChzcdandH2YtlxkqVss=
+X-Google-Smtp-Source: AGHT+IEz38H0loKzeJtBOFX9LovIU0xhGSPzZzPwdZ4TW9iwoC2JymoE9dAk7QueSbFD/uNqk8InaA==
+X-Received: by 2002:a4a:9241:0:b0:582:99ae:ca4c with SMTP id g1-20020a4a9241000000b0058299aeca4cmr14413814ooh.8.1700087006949;
+        Wed, 15 Nov 2023 14:23:26 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l22-20020a544516000000b003ae425fc9bdsm1610901oil.23.2023.11.15.14.22.45
+        by smtp.gmail.com with ESMTPSA id h6-20020a4ab446000000b0058a784d6ff2sm621681ooo.12.2023.11.15.14.23.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 14:22:45 -0800 (PST)
+        Wed, 15 Nov 2023 14:23:26 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Nov 2023 14:22:44 -0800
+Date:   Wed, 15 Nov 2023 14:23:25 -0800
 From:   Guenter Roeck <linux@roeck-us.net>
 To:     Rob Herring <robh@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+Cc:     Jean Delvare <jdelvare@suse.com>,
+        Zev Weiss <zev@bewilderbeest.net>, linux-hwmon@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] hwmon: max6650: Use i2c_get_match_data()
-Message-ID: <1d2d6251-1301-4a15-b1ee-fe48a3f745c9@roeck-us.net>
+Subject: Re: [PATCH v2 2/3] hwmon: nct6775-i2c: Use i2c_get_match_data()
+Message-ID: <d143a5a3-73f7-4c54-94c6-92d1ce8bbf76@roeck-us.net>
 References: <20231115205703.3730448-1-robh@kernel.org>
+ <20231115205703.3730448-2-robh@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231115205703.3730448-1-robh@kernel.org>
+In-Reply-To: <20231115205703.3730448-2-robh@kernel.org>
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
@@ -74,10 +76,13 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 02:57:00PM -0600, Rob Herring wrote:
+On Wed, Nov 15, 2023 at 02:57:01PM -0600, Rob Herring wrote:
 > Use preferred i2c_get_match_data() instead of of_match_device() and
 > i2c_match_id() to get the driver match data. With this, adjust the
 > includes to explicitly include the correct headers.
+> 
+> Adjust the 'kinds' enum to not use 0, so that no match data can be
+> distinguished from a valid enum value.
 > 
 > Signed-off-by: Rob Herring <robh@kernel.org>
 
