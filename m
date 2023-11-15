@@ -2,73 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 274E57EC70A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D1EF7EC764
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344443AbjKOPU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:20:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51784 "EHLO
+        id S229937AbjKOPeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:34:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344389AbjKOPUZ (ORCPT
+        with ESMTP id S229457AbjKOPeX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:20:25 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BF31B9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:20:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700061620;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=VyQzbJEnX2TdDTDcKx6zAX1Mn/CHxaqqGd8YZWvobWQ=;
-        b=jDdX/KYS07U0bTKgAAu6x1+QEswB83+QLLnciCoeGxl8idLuEcoUU9EDvqBzkGWbPRNufG
-        SqhGbuyHuCJmIIZwleckv15c49rGj4/cWlL7S4H6VDHAtraIb+1rN8IIArtx6nidlFoiZE
-        b3kdXQacXCVWoueXE9Itw5U1kupNt5U=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-645-7iAGC8ihN7-vKfyUrNYFRw-1; Wed,
- 15 Nov 2023 10:20:17 -0500
-X-MC-Unique: 7iAGC8ihN7-vKfyUrNYFRw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC44D38117E6;
-        Wed, 15 Nov 2023 15:20:16 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C8D381121308;
-        Wed, 15 Nov 2023 15:20:14 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <202311061616.cd495695-oliver.sang@intel.com>
-References: <202311061616.cd495695-oliver.sang@intel.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     dhowells@redhat.com, oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David Laight" <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput -16.9% regression
+        Wed, 15 Nov 2023 10:34:23 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09A5C2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:34:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F31F7C433C7;
+        Wed, 15 Nov 2023 15:34:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700062460;
+        bh=liyVVxI+t71I+vY5uI83Hmd86EuxG1knRDKO8hE8oe4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uk5xbh1Ykg0ULD8pxMCIhGDb1yfEo17ac6HO50HCdD6Ll+DweurC8oXNMTMk8tCLw
+         fUMvNqVvTWKLVb3pHAxPFS9xGMepJRsElQLDUszpSv4mEp48DB9HCNv1dJuMnnEDNO
+         uf2gbOIdN/2EWLGv9TZNZ+0VQW4VQMPpkVqpEghylPJNN1ac/wkjayiSoQaYdGGR3y
+         XmzZxCgHLlIt0t0vl7Gs1vdj/9av4wR/qmTsxTnkudn632rXv+6SLSejnpB+UO4aFy
+         eq2Kc8wWRpbfcL0sjBF/sP0VA1wZM5T8aRB2HtOyfqKsQ9qIPhk2P6ECUhVKoNiB2L
+         BBBSLMZRacqWA==
+Date:   Wed, 15 Nov 2023 23:21:57 +0800
+From:   Jisheng Zhang <jszhang@kernel.org>
+To:     Drew Fustini <dfustini@baylibre.com>
+Cc:     Conor Dooley <conor@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
+        Fu Wei <wefu@redhat.com>, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v6 5/7] riscv: dts: thead: Add TH1520 mmc controllers and
+ sdhci clock
+Message-ID: <ZVTiFVHSsBxk3pLH@xhacker>
+References: <20231114-th1520-mmc-v6-0-3273c661a571@baylibre.com>
+ <20231114-th1520-mmc-v6-5-3273c661a571@baylibre.com>
+ <20231114-starring-swarm-0e1b641f888c@squawk>
+ <ZVP1AoosripWj3gs@x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3865841.1700061614.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 15 Nov 2023 15:20:14 +0000
-Message-ID: <3865842.1700061614@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZVP1AoosripWj3gs@x1>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -76,171 +63,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Okay, I've got this to work - kind of.  Your test box has a lot more RAM t=
-han
-mine (192G according to the email), so I had to reduce the sizes and make =
-it
-delete the files between tests.  I ended up using the attached script to r=
-un
-things.  I don't see the statistical analysis stuff.
+On Tue, Nov 14, 2023 at 05:30:26PM -0500, Drew Fustini wrote:
+> On Tue, Nov 14, 2023 at 09:27:44PM +0000, Conor Dooley wrote:
+> > On Tue, Nov 14, 2023 at 04:07:59PM -0500, Drew Fustini wrote:
+> > 
+> > > +	sdhci_clk: sdhci-clock {
+> > > +		compatible = "fixed-clock";
+> > > +		clock-frequency = <198000000>;
+> > > +		clock-output-names = "sdhci_clk";
+> > > +		#clock-cells = <0>;
+> > > +	};
+> > 
+> > If only you had a clock driver to provide these...
+> > 
+> > Is someone working on a resubmission of the clock driver?
+> 
+> Yangtao Li posted an initial revision back [1] in May but I don't think
+> there has been any follow up. It is for sure something we need to have
+> in mainline so I'll take a look at getting that effort going again.
 
-Anyway, with upstream Linus, I see something like:
+Hi Drew,
 
-	Count: 27
-	Total: 10649173
-	Range: 391374...398472
-	Mean : 394413
-	Stdev: 10218
+Based on Yangtao's version, I cooked an updated version in last
+development window but still can't complete it and met some issues
+which need the clk/pll register document.
+IIRC, the document was released a few days ago before soc tree frozen.
 
-With that patch reverted, I see something like:
+It's nice if you can continue the effort! I'll read the sdhci driver
+soon.
 
-	Count: 27
-	Total: 10665161
-	Range: 391427...399601
-	Mean : 395005
-	Stdev: 13720
-
-But the outcome is a bit variable and the result spaces overlap considerab=
-ly.
-I certainly don't see a 17% performance reduction.  Now, this may be due t=
-o
-hardware differences.  The CPU I'm using is an Intel i3-4170 - which is a =
-few
-years old at this point.
-
-David
----
-for cpu_dir in /sys/devices/system/cpu/cpu[0-9]*
-do
-	online_file=3D"$cpu_dir"/online
-	[ -f "$online_file" ] && [ "$(cat "$online_file")" -eq 0 ] && continue
-
-	file=3D"$cpu_dir"/cpufreq/scaling_governor
-	[ -f "$file" ] && echo "performance" > "$file"
-done
-
-#DATADIR=3D/mnt2/vm-scalability-tmp
-#WORKDIR=3D$DATADIR/vm-scalability
-#WORKDIR=3D/mnt2/vm-scalability
-WORKDIR=3D/tmp/vm-scalability
-
-cd /root/lkp-tests/pkg/vm-scalability/vm-scalability-lkp/lkp/benchmarks/vm=
--scalability
-#mount -t tmpfs -o size=3D100% vm-scalability-tmp $DATADIR
-#mkdir -p $DATADIR || exit $?
-#truncate -s 10G $WORKDIR.img || exit $?
-#mkfs.xfs -f -q $WORKDIR.img || exit $?
-mkdir -p $WORKDIR || exit $?
-#mount -o loop $WORKDIR.img $WORKDIR || exit $?
-#./case-msync
-
-truncate $WORKDIR/sparse-msync-1 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-1 -F --prealloc --open-=
-rw 449340754
-rm $WORKDIR/sparse-msync-1
-
-truncate $WORKDIR/sparse-msync-2 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-2 -F --prealloc --open-=
-rw 449340754
-rm $WORKDIR/sparse-msync-2
-
-truncate $WORKDIR/sparse-msync-3 -s 10G
-truncate $WORKDIR/sparse-msync-4 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-3 -F --prealloc --open-=
-rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-4 -F --prealloc --open-=
-rw 449340754
-rm $WORKDIR/sparse-msync-[34]
-
-truncate $WORKDIR/sparse-msync-5 -s 10G
-truncate $WORKDIR/sparse-msync-6 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-5 -F --prealloc --open-=
-rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-6 -F --prealloc --open-=
-rw 449340754
-rm $WORKDIR/sparse-msync-[56]
-
-truncate $WORKDIR/sparse-msync-7 -s 10G
-truncate $WORKDIR/sparse-msync-8 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-7 -F --prealloc --open-=
-rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-8 -F --prealloc --open-=
-rw 449340754
-rm $WORKDIR/sparse-msync-[78]
-
-truncate $WORKDIR/sparse-msync-9 -s 10G
-truncate $WORKDIR/sparse-msync-10 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-9 -F --prealloc --open-=
-rw 449340754
-truncate $WORKDIR/sparse-msync-11 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-10 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{9,10}
-
-truncate $WORKDIR/sparse-msync-12 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-11 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-12 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{11,12}
-
-truncate $WORKDIR/sparse-msync-13 -s 10G
-truncate $WORKDIR/sparse-msync-14 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-13 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-14 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{13,14}
-
-truncate $WORKDIR/sparse-msync-15 -s 10G
-truncate $WORKDIR/sparse-msync-16 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-15 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-16 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{15,16}
-
-truncate $WORKDIR/sparse-msync-17 -s 10G
-truncate $WORKDIR/sparse-msync-18 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-17 -F --prealloc --open=
--rw 449340754
-truncate $WORKDIR/sparse-msync-19 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-18 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-19 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{17,18,19}
-
-truncate $WORKDIR/sparse-msync-20 -s 10G
-truncate $WORKDIR/sparse-msync-21 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-20 -F --prealloc --open=
--rw 449340754
-truncate $WORKDIR/sparse-msync-22 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-21 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-22 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{20,21,22}
-
-truncate $WORKDIR/sparse-msync-23 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-23 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-23
-truncate $WORKDIR/sparse-msync-24 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-24 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-24
-truncate $WORKDIR/sparse-msync-25 -s 10G
-truncate $WORKDIR/sparse-msync-26 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-25 -F --prealloc --open=
--rw 449340754
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-26 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{25,26}
-
-truncate $WORKDIR/sparse-msync-27 -s 10G
-truncate $WORKDIR/sparse-msync-28 -s 10G
-./usemem --runtime 300 -S -f $WORKDIR/sparse-msync-27 -F --prealloc --open=
--rw 449340754
-rm $WORKDIR/sparse-msync-{27,28}
-
+Thanks
+> 
+> Drew
+> 
+> [1] https://lore.kernel.org/linux-riscv/20230515054402.27633-1-frank.li@vivo.com/
