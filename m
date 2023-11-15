@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D3B87ED782
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:44:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 631327ED787
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:46:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344450AbjKOWo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:44:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59972 "EHLO
+        id S1343515AbjKOWp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:45:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235621AbjKOWoX (ORCPT
+        with ESMTP id S229592AbjKOWp6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:44:23 -0500
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01DF01B1;
-        Wed, 15 Nov 2023 14:44:19 -0800 (PST)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1eb7a8e9dd0so71178fac.3;
-        Wed, 15 Nov 2023 14:44:18 -0800 (PST)
+        Wed, 15 Nov 2023 17:45:58 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03892195
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:45:55 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c1acc1fa98so1066765a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:45:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700088258; x=1700693058; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=x+9rvLvdX2lnfyBf2vZqm86qvEOYTf/3b77ELh1X624=;
-        b=bvr6X1ZYQtDjBvoOu7MgKyONeMF6dWAxg3AJaO0jTNF6GPTJV1ff+k82O9u3jXIOqk
-         6bI/7q94cHJwqICOtxIMAoHHr5JJ7ea1jPRDEIjZh6pMM2Pta6q6nzZLSNgcJDrqV3n4
-         nMs2iEWM7EPIwexaZG9tv7Tk5aq6fTx2RErH3N52Et9WnohImnj8X0eCrMMohQjGqez4
-         qFDOQbYBAHQlUi7MQf75c490SYYgdKwEwbNf8uLjNbl3TVrtXUPfFmfs1zDnPwQEM/nw
-         SvHyeDLZ9UMJW9b7rdSu2ULkmsauvbtNVDfNIGlgnMuOgCy5taKoQxVcBy1EdYA6A57n
-         eRKA==
+        d=gmail.com; s=20230601; t=1700088354; x=1700693154; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7nJjkgwnquHHuOaLHOOrng4yzhJOgtCK4+wbNH+tNy8=;
+        b=QdW4KQU6LpPqzA4SiMIpkmoxYUSgaBp6XagGXRBdCQ/AFe1/a7wn0gpB1S607yIJFH
+         gj9Mw5JvCjYVJL0nwgf8BnJ6EBboopsglzbWrmoVq7l3+lqHKCB0EILBPvM8faiR192r
+         YQ0iM6UYtAdqb80M3vKdRyO4iJ8WaLExmW886D52iEDUDCdyYxB12T6OViyJAc+qfGOF
+         CFwa0XhxOZprHKsS+dNkcpRsAP4TLXRLkDItkaJdZV/PSsutuR705m973h9ldUpay4Nn
+         qC6SGD3W5uJlyn+UBvsKi98XdRZ2kXO3CzG4UX5S9LcP8intW0FcXTSxhowwcRiOMYMi
+         YAtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700088258; x=1700693058;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=x+9rvLvdX2lnfyBf2vZqm86qvEOYTf/3b77ELh1X624=;
-        b=s4kJUBi4wiwIBamx8ZVI8a7gPjm/r0oD8iItTAXSrquWOSJK+49FG7FolSgA/7O5mD
-         4wi5+qSKnH0PXy7MTVRqHNZoRktpVrWASbhl4QUyCdJde6/KjYwptcv676DgquchIP/K
-         CJPLEvMvo8whLcvDq0TqAkSBLSXdvHWhw964jz4UwKleuNKB6yWDjhjGbanW9pJ0tWem
-         EN6U7pH8fovh5iLcrHcGXsJw4HOWO+iy15Q8aX2u2c1Hl1M02M5n9CTaztnGBO1xCz81
-         d0PT1qPf7pwzlcMW2M1McbAu6/mgJJ10lvvw0YPXtutzfBxKOg+MtRqAI6SSuV6qfO+Y
-         tsdA==
-X-Gm-Message-State: AOJu0Yz1GGsS7KG5MuWiYxV0cniO7XFSikxXNZ147+75o/A4Sn0fiZy2
-        IkoMDDEsH8QmS2M4+W4dvlk=
-X-Google-Smtp-Source: AGHT+IGGu9YvLECkiUq/lUX8OxBjWJ2MyG6XyX8H/OEa527Kf4K81t3xUlEcdPUh+ltOWMuaIPKgcg==
-X-Received: by 2002:a05:6870:b48e:b0:1e9:8182:a29d with SMTP id y14-20020a056870b48e00b001e98182a29dmr18474426oap.41.1700088258174;
-        Wed, 15 Nov 2023 14:44:18 -0800 (PST)
-Received: from localhost ([2a00:79e1:2e00:1301:e1c5:6354:b45d:8ffc])
-        by smtp.gmail.com with ESMTPSA id r4-20020aa78b84000000b006870ed427b2sm3358092pfd.94.2023.11.15.14.44.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 14:44:17 -0800 (PST)
-From:   Rob Clark <robdclark@gmail.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/msm/gpu: Move gpu devcore's to gpu device
-Date:   Wed, 15 Nov 2023 14:44:09 -0800
-Message-ID: <20231115224409.240935-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.41.0
+        d=1e100.net; s=20230601; t=1700088354; x=1700693154;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7nJjkgwnquHHuOaLHOOrng4yzhJOgtCK4+wbNH+tNy8=;
+        b=gyy3fUfHtbOmxK1Yr184BmfuSp7tqLrAtTM4ZDC5iEO/W0Bn5FqoQLNsYiJealV7O+
+         5yIeBYMnbB7Ro3N6XHCYohokqPDvxOBatj3g/0AuMAhLbPGcVD0vco47ArNQ90GloKWD
+         JDcDuuXfetwpqoyvnXgJLhlhlQNyKgez61Nlf8198CZkRxfz4HKw4i9ZOMszM+2exHEn
+         aP8boSCFIFlwMz/ihJukrseXYuSTxuAUmfvQpwphflk81h9qjCE+RbNGVODjixucXG8q
+         7I9W2/+V5HP2qpPp58oX7ewH37wxsNO+6XnB/1yGWf8CgntMxgHunNNVqvHXkwtILCWK
+         rB3w==
+X-Gm-Message-State: AOJu0Yw9YrgWSu2msqmlWJwCV9fb4pqGBco2PHZNdm32/aC+iwlFWkXv
+        P9LYpnL4orFkZk3rdhwnKSDvQS1RWAIqBcn5HlE=
+X-Google-Smtp-Source: AGHT+IFWJLMP35QdB/HcbXYKW5MUQcrpjrSbORoDJin7bLHVuHfxxHIuONYZtUmWSljUE66jKlaFV8nIZgBGIwSTQb8=
+X-Received: by 2002:a17:90b:1056:b0:280:8e7d:5701 with SMTP id
+ gq22-20020a17090b105600b002808e7d5701mr9875600pjb.2.1700088354411; Wed, 15
+ Nov 2023 14:45:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
+ <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
+In-Reply-To: <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 15 Nov 2023 14:45:42 -0800
+Message-ID: <CAHbLzkoNAFGikx-pRwTVr2Bf5mvv8Xb8c6oWV5t4JZ4m0KAurA@mail.gmail.com>
+Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
+ large folios
+To:     Barry Song <21cnbao@gmail.com>
+Cc:     David Hildenbrand <david@redhat.com>, steven.price@arm.com,
+        akpm@linux-foundation.org, ryan.roberts@arm.com,
+        catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        v-songbaohua@oppo.com, wangkefeng.wang@huawei.com,
+        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
+        yuzhao@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Wed, Nov 15, 2023 at 12:49=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
+te:
+>
+> On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <david@redhat.=
+com> wrote:
+> >
+> > On 14.11.23 02:43, Barry Song wrote:
+> > > This patch makes MTE tags saving and restoring support large folios,
+> > > then we don't need to split them into base pages for swapping out
+> > > on ARM64 SoCs with MTE.
+> > >
+> > > arch_prepare_to_swap() should take folio rather than page as paramete=
+r
+> > > because we support THP swap-out as a whole.
+> > >
+> > > Meanwhile, arch_swap_restore() should use page parameter rather than
+> > > folio as swap-in always works at the granularity of base pages right
+> > > now.
+> >
+> > ... but then we always have order-0 folios and can pass a folio, or wha=
+t
+> > am I missing?
+>
+> Hi David,
+> you missed the discussion here:
+>
+> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68=
+MkhjMDw@mail.gmail.com/
+> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzm=
+h1Veocg@mail.gmail.com/
+>
+> >
+> > >
+> > > arch_thp_swp_supported() is dropped since ARM64 MTE was the only one
+> > > who needed it.
+> >
+> > Can we do that separately?
+>
+> i think it is ok.
 
-The dpu devcore's are already associated with the dpu device.  So we
-should associate the gpu devcore's with the gpu device, for easier
-classification.
+IMHO keeping it in this patch makes more sense. IIRC removing
+arch_thp_swp_supported() is just because this patch made swapping
+large folio with MTE more efficiently.
 
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- drivers/gpu/drm/msm/msm_gpu.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/gpu/drm/msm/msm_gpu.c b/drivers/gpu/drm/msm/msm_gpu.c
-index cfcb4317afdb..3fad5d58262f 100644
---- a/drivers/gpu/drm/msm/msm_gpu.c
-+++ b/drivers/gpu/drm/msm/msm_gpu.c
-@@ -292,8 +292,7 @@ static void msm_gpu_crashstate_capture(struct msm_gpu *gpu,
- 	/* Set the active crash state to be dumped on failure */
- 	gpu->crashstate = state;
- 
--	/* FIXME: Release the crashstate if this errors out? */
--	dev_coredumpm(gpu->dev->dev, THIS_MODULE, gpu, 0, GFP_KERNEL,
-+	dev_coredumpm(&gpu->pdev->dev, THIS_MODULE, gpu, 0, GFP_KERNEL,
- 		msm_gpu_devcoredump_read, msm_gpu_devcoredump_free);
- }
- #else
--- 
-2.41.0
-
+>
+> >
+> > --
+> > Cheers,
+> >
+> > David / dhildenb
+> >
+>
+> Thanks
+> Barry
