@@ -2,59 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 782997ED53E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:02:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0CA57ED5B0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:11:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344674AbjKOVCk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:02:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36904 "EHLO
+        id S235627AbjKOVLc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:11:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47092 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344704AbjKOVCA (ORCPT
+        with ESMTP id S229781AbjKOVL3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:02:00 -0500
-Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74E4CD79;
-        Wed, 15 Nov 2023 13:01:34 -0800 (PST)
-Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5869914484fso66072eaf.0;
-        Wed, 15 Nov 2023 13:01:34 -0800 (PST)
+        Wed, 15 Nov 2023 16:11:29 -0500
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26AB5BD;
+        Wed, 15 Nov 2023 13:02:15 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-6ce2eaf7c2bso56667a34.0;
+        Wed, 15 Nov 2023 13:02:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700082094; x=1700686894;
+        d=1e100.net; s=20230601; t=1700082134; x=1700686934;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Duhiu363zZXggZ2tT9xIehHJIKV7YXtPT/E+W7lu59o=;
-        b=X+FOlwkhkepXg0QMxwUliO87bV2PrfEsIJyNdzTqkZqMwC7cfXK/Da1mJnu3qNNPet
-         nFKNHg6rwYanRYUH0oYYn9obP2NEBB/XtU4PPKrJ3E+ZOiaS7OGdJuoBeZ6/A74j1QaN
-         vK0Nlq+61ZzJTRP8uWmBSoM8xp9BdE+BOKcK1gfTcJqCmzW945NUyJ3meElF8jkIxAHL
-         Zkq7+g5az9QixsKACOWKZdY+uoWADHLUXG/RzfiNBCS1uayTjvKQuYi8q/AWmUwTWsfq
-         sIzkC55ZJ7p1ezxLnkjfpyxeoZVSjk9Mz6EIY7bSVcefPXuWIFunMbQPleXDCfqyEEYO
-         V2Sg==
-X-Gm-Message-State: AOJu0YzuoyGg7z6DLw3dTMBBgJnEaM3de9oa2okjn6mLtX9jrNIewBgE
-        lKUzDZQGzJvpwHZJQ5xn9Q==
-X-Google-Smtp-Source: AGHT+IFPPnhO39v8qSE2EKT/HxIVWh6OStRmuQ0hHy6sDMZSxY8Jttc7oJW7BQ2s36jYm/8+/W5SXQ==
-X-Received: by 2002:a4a:3457:0:b0:56c:d297:164c with SMTP id n23-20020a4a3457000000b0056cd297164cmr13317917oof.4.1700082094065;
-        Wed, 15 Nov 2023 13:01:34 -0800 (PST)
+        bh=T2Lx7bpHkEQXXmBaZiy/OLdr3mXj8JC+CtgHgux9ZD0=;
+        b=h8zn7uSeAdlpB+yTkww06+Wf5rYiVB62uuyTVbUb9sBjz5+gr9gwy/+7nRWYpI0tlo
+         /bODdTezf050cKsec5NIt2sSyB13jd5uhpGxpXbQCQVJoTrFC+hOymfwiPQGoJalTM1R
+         CFEgwT5gyQMHaPR3YJGyZmJ35tHrv6oZqsnLEFnrH3nlSFA+cQfstIjSbOYypJAbNCxP
+         W5NaL6glCKdDwD8m1MrlIFpQrKblJR++KusyiIKfqakmrca/E0vDEIVW9cX1YxT/76zF
+         objDxMkk5pB/g6IAin/LJBibdhnBOXej8kNHSX3zJzMh2Q6Qkdx98ASMdyXjTQR5PP3H
+         aX+g==
+X-Gm-Message-State: AOJu0YxWLYaJgfhulYbty7gYm1eO9bv9mUP7hzBJ0lQg0h/haxW095Mj
+        cwOFqKiuIS+8zkdMTklPkQ==
+X-Google-Smtp-Source: AGHT+IHF9xNKIrGqT7/hCzzhhO/f/Ss+YhiO4n+OnUXCarrX9ozu4waz/7x1ZbmM6jWxeDRyItFHYg==
+X-Received: by 2002:a05:6830:4109:b0:6ba:865b:ca72 with SMTP id w9-20020a056830410900b006ba865bca72mr7119247ott.31.1700082134428;
+        Wed, 15 Nov 2023 13:02:14 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id 123-20020a4a0081000000b00584078d1e17sm826254ooh.45.2023.11.15.13.01.32
+        by smtp.gmail.com with ESMTPSA id t15-20020a9d774f000000b006d653b68fdesm692218otl.55.2023.11.15.13.02.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:01:33 -0800 (PST)
-Received: (nullmailer pid 3740022 invoked by uid 1000);
-        Wed, 15 Nov 2023 21:01:32 -0000
+        Wed, 15 Nov 2023 13:02:13 -0800 (PST)
+Received: (nullmailer pid 3743815 invoked by uid 1000);
+        Wed, 15 Nov 2023 21:02:12 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Michal Simek <michal.simek@amd.com>
-Cc:     linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: [RESEND PATCH] net: can: Use device_get_match_data()
-Date:   Wed, 15 Nov 2023 15:01:28 -0600
-Message-ID: <20231115210129.3739377-1-robh@kernel.org>
+To:     Dinh Nguyen <dinguyen@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>
+Cc:     linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] EDAC: altera: Use device_get_match_data()
+Date:   Wed, 15 Nov 2023 15:02:01 -0600
+Message-ID: <20231115210201.3743564-1-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -75,157 +70,50 @@ include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/net/can/c_can/c_can_platform.c | 9 +++------
- drivers/net/can/flexcan/flexcan-core.c | 9 +++------
- drivers/net/can/mscan/mpc5xxx_can.c    | 8 ++++----
- drivers/net/can/xilinx_can.c           | 7 ++-----
- 4 files changed, 12 insertions(+), 21 deletions(-)
+ drivers/edac/altera_edac.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/net/can/c_can/c_can_platform.c b/drivers/net/can/c_can/c_can_platform.c
-index f44ba2600415..caa781018b09 100644
---- a/drivers/net/can/c_can/c_can_platform.c
-+++ b/drivers/net/can/c_can/c_can_platform.c
-@@ -30,9 +30,9 @@
- #include <linux/io.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/clk.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/mfd/syscon.h>
- #include <linux/regmap.h>
- 
-@@ -259,17 +259,14 @@ static int c_can_plat_probe(struct platform_device *pdev)
- 	void __iomem *addr;
- 	struct net_device *dev;
- 	struct c_can_priv *priv;
--	const struct of_device_id *match;
- 	struct resource *mem;
- 	int irq;
- 	struct clk *clk;
- 	const struct c_can_driver_data *drvdata;
- 	struct device_node *np = pdev->dev.of_node;
- 
--	match = of_match_device(c_can_of_table, &pdev->dev);
--	if (match) {
--		drvdata = match->data;
--	} else if (pdev->id_entry->driver_data) {
-+	drvdata = device_get_match_data(&pdev->dev);
-+	if (!drvdata && pdev->id_entry->driver_data) {
- 		drvdata = (struct c_can_driver_data *)
- 			platform_get_device_id(pdev)->driver_data;
- 	} else {
-diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
-index d15f85a40c1e..19ea7ebc04ab 100644
---- a/drivers/net/can/flexcan/flexcan-core.c
-+++ b/drivers/net/can/flexcan/flexcan-core.c
-@@ -23,11 +23,11 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
- #include <linux/pinctrl/consumer.h>
- #include <linux/platform_device.h>
- #include <linux/can/platform/flexcan.h>
- #include <linux/pm_runtime.h>
-+#include <linux/property.h>
- #include <linux/regmap.h>
- #include <linux/regulator/consumer.h>
- 
-@@ -2034,7 +2034,6 @@ MODULE_DEVICE_TABLE(platform, flexcan_id_table);
- 
- static int flexcan_probe(struct platform_device *pdev)
- {
--	const struct of_device_id *of_id;
- 	const struct flexcan_devtype_data *devtype_data;
- 	struct net_device *dev;
- 	struct flexcan_priv *priv;
-@@ -2090,10 +2089,8 @@ static int flexcan_probe(struct platform_device *pdev)
- 	if (IS_ERR(regs))
- 		return PTR_ERR(regs);
- 
--	of_id = of_match_device(flexcan_of_match, &pdev->dev);
--	if (of_id)
--		devtype_data = of_id->data;
--	else if (platform_get_device_id(pdev)->driver_data)
-+	devtype_data = device_get_match_data(&pdev->dev);
-+	if (!devtype_data && pdev->id_entry->driver_data)
- 		devtype_data = (struct flexcan_devtype_data *)
- 			platform_get_device_id(pdev)->driver_data;
- 	else
-diff --git a/drivers/net/can/mscan/mpc5xxx_can.c b/drivers/net/can/mscan/mpc5xxx_can.c
-index 4837df6efa92..5b3d69c3b6b6 100644
---- a/drivers/net/can/mscan/mpc5xxx_can.c
-+++ b/drivers/net/can/mscan/mpc5xxx_can.c
-@@ -12,8 +12,10 @@
- #include <linux/module.h>
- #include <linux/interrupt.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/netdevice.h>
- #include <linux/can/dev.h>
-+#include <linux/of.h>
- #include <linux/of_address.h>
- #include <linux/of_irq.h>
+diff --git a/drivers/edac/altera_edac.c b/drivers/edac/altera_edac.c
+index 8b31cd54bdb6..541acf5eba05 100644
+--- a/drivers/edac/altera_edac.c
++++ b/drivers/edac/altera_edac.c
+@@ -22,6 +22,7 @@
  #include <linux/of_platform.h>
-@@ -290,7 +292,7 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
- 	int irq, mscan_clksrc = 0;
- 	int err = -ENOMEM;
- 
--	data = of_device_get_match_data(&ofdev->dev);
-+	data = device_get_match_data(&ofdev->dev);
- 	if (!data)
- 		return -EINVAL;
- 
-@@ -351,13 +353,11 @@ static int mpc5xxx_can_probe(struct platform_device *ofdev)
- 
- static void mpc5xxx_can_remove(struct platform_device *ofdev)
- {
--	const struct of_device_id *match;
- 	const struct mpc5xxx_can_data *data;
- 	struct net_device *dev = platform_get_drvdata(ofdev);
- 	struct mscan_priv *priv = netdev_priv(dev);
- 
--	match = of_match_device(mpc5xxx_can_table, &ofdev->dev);
--	data = match ? match->data : NULL;
-+	data = device_get_match_data(&ofdev->dev);
- 
- 	unregister_mscandev(dev);
- 	if (data && data->put_clock)
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index abe58f103043..f17fd43d03c0 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -20,8 +20,8 @@
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/of.h>
--#include <linux/of_device.h>
+ #include <linux/panic_notifier.h>
  #include <linux/platform_device.h>
 +#include <linux/property.h>
- #include <linux/skbuff.h>
- #include <linux/spinlock.h>
- #include <linux/string.h>
-@@ -1726,7 +1726,6 @@ static int xcan_probe(struct platform_device *pdev)
- 	struct net_device *ndev;
- 	struct xcan_priv *priv;
- 	struct phy *transceiver;
--	const struct of_device_id *of_id;
- 	const struct xcan_devtype_data *devtype = &xcan_axi_data;
- 	void __iomem *addr;
- 	int ret;
-@@ -1741,9 +1740,7 @@ static int xcan_probe(struct platform_device *pdev)
- 		goto err;
+ #include <linux/regmap.h>
+ #include <linux/types.h>
+ #include <linux/uaccess.h>
+@@ -279,7 +280,6 @@ static int a10_unmask_irq(struct platform_device *pdev, u32 mask)
+ 
+ static int altr_sdram_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *id;
+ 	struct edac_mc_layer layers[2];
+ 	struct mem_ctl_info *mci;
+ 	struct altr_sdram_mc_data *drvdata;
+@@ -290,10 +290,6 @@ static int altr_sdram_probe(struct platform_device *pdev)
+ 	int irq, irq2, res = 0;
+ 	unsigned long mem_size, irqflags = 0;
+ 
+-	id = of_match_device(altr_sdram_ctrl_of_match, &pdev->dev);
+-	if (!id)
+-		return -ENODEV;
+-
+ 	/* Grab the register range from the sdr controller in device tree */
+ 	mc_vbase = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 						   "altr,sdr-syscon");
+@@ -304,8 +300,7 @@ static int altr_sdram_probe(struct platform_device *pdev)
  	}
  
--	of_id = of_match_device(xcan_of_match, &pdev->dev);
--	if (of_id && of_id->data)
--		devtype = of_id->data;
-+	devtype = device_get_match_data(&pdev->dev);
+ 	/* Check specific dependencies for the module */
+-	priv = of_match_node(altr_sdram_ctrl_of_match,
+-			     pdev->dev.of_node)->data;
++	priv = device_get_match_data(&pdev->dev);
  
- 	hw_tx_max_property = devtype->flags & XCAN_FLAG_TX_MAILBOXES ?
- 			     "tx-mailbox-count" : "tx-fifo-depth";
+ 	/* Validate the SDRAM controller has ECC enabled */
+ 	if (regmap_read(mc_vbase, priv->ecc_ctrl_offset, &read_reg) ||
 -- 
 2.42.0
 
