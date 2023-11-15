@@ -2,123 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CD7B77EC432
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C58987EC435
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:58:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343996AbjKON6N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:58:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60924 "EHLO
+        id S1343935AbjKON6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:58:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231659AbjKON6M (ORCPT
+        with ESMTP id S234924AbjKON6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:58:12 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D227AC
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:58:08 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cc56255e3so42713261cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:58:08 -0800 (PST)
+        Wed, 15 Nov 2023 08:58:31 -0500
+Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AC6C8;
+        Wed, 15 Nov 2023 05:58:27 -0800 (PST)
+Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4abf86c5ae1so2837540e0c.3;
+        Wed, 15 Nov 2023 05:58:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1700056687; x=1700661487; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KL+XKeTm+HS5yIv1+qB2Kl+EdYaEuM6uxRpozUNk15w=;
-        b=fxE5AZTqZNA1c3pM8PnL1ZfVKuwJpxUheldfHGEsWEtAp2gEVDDCk/sQbeVIYFoPxf
-         9KGVuG2GTZ61BFzp6iB80uFJEEgO+3AcP74J0XslGkuiEeomjUVANK79vYcLWKYP4xyS
-         2LgGCbLrvB/pQw6jo94DnBTy0KASnx4Dq0zcgzgTmGzfAnIu0l+CQa08/nM1FfDi0klD
-         8lmM/ZtEAne1zy4g4j5vifdPvxi4iYwH78y+Shm8tYEYEiDWLvvK/1pfqtmYfrkpgLuW
-         6zdCfOmRw/hQ9xXIzXdRA9MhRyYweUY7Gf/m2FFpFEx2vzp/qthF0gtt7XlhbzRn9XZi
-         zq8w==
+        d=gmail.com; s=20230601; t=1700056706; x=1700661506; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=wbdCxcW1bM04wm/L/s8Y2gRMdaMFjHOvymiH7hppgtY=;
+        b=V9j2CsHIAvAH/q92nHBJkNQKuQRIToHS5k2JP0PyDl+NZidkS5NR9HYVKt2Dr3bYnj
+         0u4Pj+nOBNq/wjSFYNdZqzf0FRepo0n6n6SUSu3r2FjxKjyFd9whncmwExVqtAGG14Yz
+         xsQRuAPYbv6BG2L5YFxf35MWPjJI512SmZBb8QIZ9z8a68YY8LeCffqarC/uJ3NEdLbF
+         2QQAg6bLaUB0PKLJd+S5tfeI1G9pdDFpxqgQh6glliDubL83MQLTnmNw2fh/7fQMsOpK
+         kxvAaE91C74bUATkh30v1Tc1HCd6YTKqTkTUj3N+8dACf3Fcrb+a3kUZ/OjAOygfb4yr
+         ohbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700056687; x=1700661487;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KL+XKeTm+HS5yIv1+qB2Kl+EdYaEuM6uxRpozUNk15w=;
-        b=vISWELZPFbUR6msaWmUQSH3SmAG+Q25esRlWpLGQppARZqB9Qp+zh/p2BgTqvml7Le
-         fXiqG0exVg7I2iqk1vZc987aLIXCJYwWJqjITg434D62Oj3vqHpQbU+BLW11NnAtIcgH
-         YBqVjJG/zit4lSJUwq50wQIgDOSPxUBkgKqqj/o/eFBwPBRpL9bIjFnsy3kv9lYHh34W
-         q+o9Z2qzvfFnZTIyihnGq3Zaw4BVpeLlFG4etIbmb0jiw750Q7tNepbY4uv6gSb86gNh
-         4PlwSspsu7asjKcpcVKNKg6ecxHTNbWPBVg+b2ruIcScL2AnfMwpdhzhfgD+kTp8dQTM
-         m9wQ==
-X-Gm-Message-State: AOJu0Yyu3aoms/bNkysC3EPoWaMQaO2fHnu4INw799z9f4oSwXtGh5mw
-        q9bd0qXVTZ29aOuZpm7YUMyNvA==
-X-Google-Smtp-Source: AGHT+IHaKxJpp001exVovZ4EBDqBHs310q9gAHegSv6c6n8XW7Wb8GybvCcKXWJGvY9i5/iI45wjWw==
-X-Received: by 2002:ac8:5dd4:0:b0:421:f8d8:e0d8 with SMTP id e20-20020ac85dd4000000b00421f8d8e0d8mr1428187qtx.38.1700056687165;
-        Wed, 15 Nov 2023 05:58:07 -0800 (PST)
-Received: from ziepe.ca ([12.186.190.2])
-        by smtp.gmail.com with ESMTPSA id d22-20020ac86696000000b0041818df8a0dsm3553547qtp.36.2023.11.15.05.58.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 05:58:06 -0800 (PST)
-Received: from jgg by jggl with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r3GP8-0007bi-2i;
-        Wed, 15 Nov 2023 09:58:06 -0400
-Date:   Wed, 15 Nov 2023 09:58:06 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     "Liu, Jing2" <jing2.liu@linux.intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Kevin Tian <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Nicolin Chen <nicolinc@nvidia.com>,
-        Yi Liu <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        iommu@lists.linux.dev, linux-kselftest@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] IOMMUFD: Deliver IO page faults to user space
-Message-ID: <ZVTObiybC1MYlSam@ziepe.ca>
-References: <20231026024930.382898-1-baolu.lu@linux.intel.com>
- <20231102124742.GA4634@ziepe.ca>
- <c774e157-9b47-4fb8-80dd-37441c69b43d@linux.intel.com>
+        d=1e100.net; s=20230601; t=1700056706; x=1700661506;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wbdCxcW1bM04wm/L/s8Y2gRMdaMFjHOvymiH7hppgtY=;
+        b=sqNvLFkwY281FtZ4wD0cgLk9f4Tv4bbV/OXF1xqXefpEYWKJzRsLom0QLP4Hl7Kfae
+         HIUEDcKg6JwiYWtgKvSr8jt16rbKVPyitEBvDuj3kdBwEEGp8E/WilxQ7EvMWY18D81i
+         P1n/UzwgcO3A7e8naa9tgIKM0UBtbaRj/iMeOgH0xLmfELJVQN8HfVmOOsHbUE3p3MnF
+         BkEtk0LYuhTOHotaZvWQIIR4Dg0JoIZ7n+AEhAb/IzNXCXiINNW1lSVQGdcTQU5lVz2N
+         3wrOdAh656pIGpaIhjUD5sMwsJgrzMJUn8m0Qe3THy7iI03/RoP8As05sMPUJJiwW2ds
+         dynQ==
+X-Gm-Message-State: AOJu0YytGr0Nyc5G2wDD82QZxoA0NRTmPdlNVnQufUx+l9JQeAbzcu/g
+        3FbmUpP9fVaHazPzNqpxAqLbsz8g+CdDG8DO12e/z5AEJJLqEd7h8go=
+X-Google-Smtp-Source: AGHT+IG45llVTSM7aCPzbHEMcmkhcPZSZqYorahRKlAy4i7Fc7oXeo0hcYVQiy+3tUKeSk0gbpGXkwD643QbuSi0JeM=
+X-Received: by 2002:a05:6122:788:b0:4ac:6a9d:a51e with SMTP id
+ k8-20020a056122078800b004ac6a9da51emr14199862vkr.9.1700056706261; Wed, 15 Nov
+ 2023 05:58:26 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c774e157-9b47-4fb8-80dd-37441c69b43d@linux.intel.com>
+References: <CACDmYyf4hxbuw+cpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com>
+ <a3e35d3b-906a-4540-924c-0103cf32efa4@linaro.org>
+In-Reply-To: <a3e35d3b-906a-4540-924c-0103cf32efa4@linaro.org>
+From:   Legale Legale <legale.legale@gmail.com>
+Date:   Wed, 15 Nov 2023 16:58:13 +0300
+Message-ID: <CACDmYydnLQd0n9ACnTQ6P4wYf38eMzokyHrF7r6LisG4oTFtyg@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: qcom: ipq6018: add QUP5 I2C node
+To:     "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 01:17:06PM +0800, Liu, Jing2 wrote:
+update:
 
-> This is the right way to approach it,
-> 
->    I learned that there was discussion about using io_uring to get the
->    page fault without
-> 
->    eventfd notification in [1], and I am new at io_uring and studying the
->    man page of
-> 
->    liburing, but there're questions in my mind on how can QEMU get the
->    coming page fault
-> 
->    with a good performance.
-> 
->    Since both QEMU and Kernel don't know when comes faults, after QEMU
->    submits one
-> 
->    read task to io_uring, we want kernel pending until fault comes. While
->    based on
-> 
->    hwpt_fault_fops_read() in [patch v2 4/6], it just returns 0 since
->    there's now no fault,
-> 
->    thus this round of read completes to CQ but it's not what we want. So
->    I'm wondering
-> 
->    how kernel pending on the read until fault comes. Does fops callback
->    need special work to
+---
+ arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Implement a fops with poll support that triggers when a new event is
-pushed and everything will be fine. There are many examples in the
-kernel. The ones in the mlx5 vfio driver spring to mind as a scheme I
-recently looked at.
+diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+index e59b9df96..822ac51a0 100644
+--- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
++++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+@@ -506,6 +506,21 @@ blsp1_i2c3: i2c@78b7000 {
+                        dma-names = "tx", "rx";
+                        status = "disabled";
+                };
++
++               blsp1_i2c6: i2c@78ba000 {
++                       compatible = "qcom,i2c-qup-v2.2.1";
++                       #address-cells = <1>;
++                       #size-cells = <0>;
++                       reg = <0x078ba000 0x600>;
++                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
++                       clocks = <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>,
++                                <&gcc GCC_BLSP1_AHB_CLK>;
++                       clock-names = "core", "iface";
++                       clock-frequency = <400000>;
++                       dmas = <&blsp_dma 22>, <&blsp_dma 23>;
++                       dma-names = "tx", "rx";
++                       status = "disabled";
++               };
 
-Jason
+                qpic_bam: dma-controller@7984000 {
+                        compatible = "qcom,bam-v1.7.0";
+--
+2.42.0
+
+
+
+On Wed, 15 Nov 2023 at 14:32, Bryan O'Donoghue
+<bryan.odonoghue@linaro.org> wrote:
+>
+> On 15/11/2023 09:55, Legale Legale wrote:
+> > Add node to support this bus inside of IPQ6018.
+> > For example, this bus is used to work with the
+> > voltage regulator (mp5496) on the Yuncore AX840 wireless AP.
+> >
+> > Signed-off-by: Isaev Ruslan <legale.legale@gmail.com>
+> > ---
+> >   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 +++++++++++++++
+> >   1 file changed, 15 insertions(+)
+> >
+> > diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > index e59b9df96c7e..745bfc6e2907 100644
+> > --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
+> > @@ -507,6 +507,21 @@ blsp1_i2c3: i2c@78b7000 {
+> >                          status = "disabled";
+> >                  };
+> >
+> > +               blsp1_i2c6: i2c@78ba000 {
+> > +                       compatible = "qcom,i2c-qup-v2.2.1";
+> > +                       #address-cells = <1>;
+> > +                       #size-cells = <0>;
+> > +                       reg = <0x078ba000 0x600>;
+>
+> reg = <0x0 0x078ba000 0x0 0x600>;
+> like the other regs here
+>
+> > +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
+> > +                       clocks = <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>,
+> > +                                <&gcc GCC_BLSP1_AHB_CLK>;
+> > +                       clock-names = "core", "iface";
+> > +                       clock-frequency = <100000>;
+>
+> Why not <400000>; as with other nodes ?
+This is typo.
+
+>
+> > +                       dmas = <&blsp_dma 22>, <&blsp_dma 23>;
+> > +                       dma-names = "tx", "rx";
+> > +                       status = "disabled";
+> > +               };
+> > +
+> >                  qpic_bam: dma-controller@7984000 {
+> >                          compatible = "qcom,bam-v1.7.0";
+> >                          reg = <0x0 0x07984000 0x0 0x1a000>;
+> > --
+> > 2.42.0
+> >
+>
+> What tree does this apply to ?
+this is master branch
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-6.7-rc1.tar.gz
+--branch master --depth=1 ./kernel
+>
+> git checkout -b linux-next-6.7-rc1 v6.7-rc1
+> Switched to a new branch 'linux-next-6.7-rc1'
+>
+> deckard@sagittarius-a:~/Development/qualcomm/qlt-kernel$ b4 shazam
+> CACDmYyf4hxbuw+cpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com
+>
+> Grabbing thread from
+> lore.kernel.org/all/CACDmYyf4hxbuw%2BcpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com/t.mbox.gz
+> Checking for newer revisions
+> Grabbing search results from lore.kernel.org
+> Analyzing 1 messages in the thread
+> Checking attestation on all messages, may take a moment...
+> ---
+>    [PATCH] arm64: dts: qcom: ipq6018: add QUP5 I2C node
+>    ---
+>    NOTE: install dkimpy for DKIM signature verification
+> ---
+> Total patches: 1
+> ---
+> Applying: arm64: dts: qcom: ipq6018: add QUP5 I2C node
+> Patch failed at 0001 arm64: dts: qcom: ipq6018: add QUP5 I2C node
+> When you have resolved this problem, run "git am --continue".
+> If you prefer to skip this patch, run "git am --skip" instead.
+> To restore the original branch and stop patching, run "git am --abort".
+> error: git diff header lacks filename information when removing 1
+> leading pathname component (line 6)
+> hint: Use 'git am --show-current-patch=diff' to see the failed patch
+>
+> ---
+> bod
