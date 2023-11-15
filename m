@@ -2,131 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 631327ED787
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:46:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EE07ED789
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343515AbjKOWp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:45:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47936 "EHLO
+        id S1343741AbjKOWqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:46:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOWp6 (ORCPT
+        with ESMTP id S229592AbjKOWqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:45:58 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03892195
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:45:55 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c1acc1fa98so1066765a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:45:54 -0800 (PST)
+        Wed, 15 Nov 2023 17:46:09 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC571AC;
+        Wed, 15 Nov 2023 14:46:06 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b6d88dbaa3so112319b6e.1;
+        Wed, 15 Nov 2023 14:46:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700088354; x=1700693154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7nJjkgwnquHHuOaLHOOrng4yzhJOgtCK4+wbNH+tNy8=;
-        b=QdW4KQU6LpPqzA4SiMIpkmoxYUSgaBp6XagGXRBdCQ/AFe1/a7wn0gpB1S607yIJFH
-         gj9Mw5JvCjYVJL0nwgf8BnJ6EBboopsglzbWrmoVq7l3+lqHKCB0EILBPvM8faiR192r
-         YQ0iM6UYtAdqb80M3vKdRyO4iJ8WaLExmW886D52iEDUDCdyYxB12T6OViyJAc+qfGOF
-         CFwa0XhxOZprHKsS+dNkcpRsAP4TLXRLkDItkaJdZV/PSsutuR705m973h9ldUpay4Nn
-         qC6SGD3W5uJlyn+UBvsKi98XdRZ2kXO3CzG4UX5S9LcP8intW0FcXTSxhowwcRiOMYMi
-         YAtQ==
+        d=gmail.com; s=20230601; t=1700088365; x=1700693165; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=8GRR5+TtT69P//O5Q8RWJy3CDQOAIoE5wweaPetEfz0=;
+        b=mHyjgMg6IcYpAyRsjaTqNK9TCLsL6h4DV133+xiuitD7tMXeDbhRs2Lb/G/REwGeaI
+         y236aeXyENdDf9hUe2jehkUPRsmhcSFYKgh6g+8KLWEYBQXBuoQWc9Wf7O1HOqSw0Nu+
+         xIUd4PCmsWawPI8yOjZzF/llfTHmt1+vAtABBDKWF/3K7PocYLmzZIPNvkEF8evw8kf1
+         ipsGP7d51iAq2dFoU4ZvN9ceshOd3vzCo5r0nDCXvHRZrEMVN97K3MSeEamBPocNXWto
+         YUojP1Y328nmvPoa0Hr2JM0pqWSPsKc9I5puKm1nQyio+GN4hx41ovYv4QMOtZwYNqnH
+         j25w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700088354; x=1700693154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7nJjkgwnquHHuOaLHOOrng4yzhJOgtCK4+wbNH+tNy8=;
-        b=gyy3fUfHtbOmxK1Yr184BmfuSp7tqLrAtTM4ZDC5iEO/W0Bn5FqoQLNsYiJealV7O+
-         5yIeBYMnbB7Ro3N6XHCYohokqPDvxOBatj3g/0AuMAhLbPGcVD0vco47ArNQ90GloKWD
-         JDcDuuXfetwpqoyvnXgJLhlhlQNyKgez61Nlf8198CZkRxfz4HKw4i9ZOMszM+2exHEn
-         aP8boSCFIFlwMz/ihJukrseXYuSTxuAUmfvQpwphflk81h9qjCE+RbNGVODjixucXG8q
-         7I9W2/+V5HP2qpPp58oX7ewH37wxsNO+6XnB/1yGWf8CgntMxgHunNNVqvHXkwtILCWK
-         rB3w==
-X-Gm-Message-State: AOJu0Yw9YrgWSu2msqmlWJwCV9fb4pqGBco2PHZNdm32/aC+iwlFWkXv
-        P9LYpnL4orFkZk3rdhwnKSDvQS1RWAIqBcn5HlE=
-X-Google-Smtp-Source: AGHT+IFWJLMP35QdB/HcbXYKW5MUQcrpjrSbORoDJin7bLHVuHfxxHIuONYZtUmWSljUE66jKlaFV8nIZgBGIwSTQb8=
-X-Received: by 2002:a17:90b:1056:b0:280:8e7d:5701 with SMTP id
- gq22-20020a17090b105600b002808e7d5701mr9875600pjb.2.1700088354411; Wed, 15
- Nov 2023 14:45:54 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700088365; x=1700693165;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=8GRR5+TtT69P//O5Q8RWJy3CDQOAIoE5wweaPetEfz0=;
+        b=D7prfZFQTZ6bbDmU0wNamF9LTrUicfQd/EdNusNEsE72s63byRxifxVu8trV6YIQPE
+         wRAKSxoIFYERKowrD9AGdDbUScHnyuA1R+LCIxjfFFM2yV9kU3BeeQ102gALDD/p+067
+         ru/qr67ZBgPWsfSWUIxZLkSCRxMuY0TkiHdpOk37JoZ34O+aOQAxfXDQXZMcW1kmkA+k
+         CaeKbZDlZs1xOjm6XLCcv/AIcnrF2KzwTYTa1R0RWK2HknA5LxSo43ruFOwYhsi5oaDx
+         MmeM7SaW6dmsSpSDqRKEdP1CS8tk3haInzZTavTaT9XVIdPvdkffDFtWo6LgsRmdM1BJ
+         Ii3g==
+X-Gm-Message-State: AOJu0YwrhY4CtRbSwFWieebmNUJC1yGgrjpp1ZmQ7SV6VRE29UsejrVG
+        EzD1FqcuYD2Py5kqN3tt+7Tt+qz5WdY=
+X-Google-Smtp-Source: AGHT+IEbaMZLZppucpqDyccqgHp3E4itdOMwPQDI8ude5VDnReEr7rQm62RVYEEJSUegcE1B5kUZvA==
+X-Received: by 2002:a54:4389:0:b0:3b5:9541:cb43 with SMTP id u9-20020a544389000000b003b59541cb43mr15234608oiv.14.1700088365661;
+        Wed, 15 Nov 2023 14:46:05 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h1-20020a056808014100b003ae0e57874fsm1626254oie.21.2023.11.15.14.46.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 14:46:05 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 15 Nov 2023 14:46:03 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+Cc:     "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
+Message-ID: <e2d17ee5-f09a-4c29-b719-9ac6178af1e4@roeck-us.net>
+References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231026081514.3610343-3-Delphine_CC_Chiu@Wiwynn.com>
+ <2ef2e804-d498-a2ae-9717-dd03bfd26853@roeck-us.net>
+ <SG2PR04MB5543FEAFC1777ADE29239AC9A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+ <e223764a-c081-4634-810b-56886a29804a@roeck-us.net>
+ <SG2PR04MB55436CFA902895FD5472838AA1A9A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+ <4b73a239-c90e-4515-b89d-65de15a1e9a9@roeck-us.net>
+ <SG2PR04MB55430E53CC7229B5BB5592E7A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
 MIME-Version: 1.0
-References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
-In-Reply-To: <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Wed, 15 Nov 2023 14:45:42 -0800
-Message-ID: <CAHbLzkoNAFGikx-pRwTVr2Bf5mvv8Xb8c6oWV5t4JZ4m0KAurA@mail.gmail.com>
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>, steven.price@arm.com,
-        akpm@linux-foundation.org, ryan.roberts@arm.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        v-songbaohua@oppo.com, wangkefeng.wang@huawei.com,
-        willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
-        yuzhao@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <SG2PR04MB55430E53CC7229B5BB5592E7A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 12:49=E2=80=AFPM Barry Song <21cnbao@gmail.com> wro=
-te:
->
-> On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <david@redhat.=
-com> wrote:
-> >
-> > On 14.11.23 02:43, Barry Song wrote:
-> > > This patch makes MTE tags saving and restoring support large folios,
-> > > then we don't need to split them into base pages for swapping out
-> > > on ARM64 SoCs with MTE.
+On Wed, Nov 15, 2023 at 08:42:22AM +0000, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
+> > -----Original Message-----
+> > From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+> > Sent: Tuesday, November 7, 2023 11:30 AM
+> > To: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
+> > patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Jonathan Corbet
+> > <corbet@lwn.net>
+> > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+> > linux-i2c@vger.kernel.org; linux-hwmon@vger.kernel.org;
+> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
+> > linux-doc@vger.kernel.org
+> > Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
+> > 
+> >   Security Reminder: Please be aware that this email is sent by an external
+> > sender.
+> > 
+> > On 11/6/23 19:08, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
+> > >> -----Original Message-----
+> > >> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
+> > >> Sent: Tuesday, October 31, 2023 9:47 PM
+> > >> To: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
+> > >> patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Jonathan Corbet
+> > >> <corbet@lwn.net>
+> > >> Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+> > >> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
+> > >> <conor+dt@kernel.org>; linux-i2c@vger.kernel.org;
+> > >> linux-hwmon@vger.kernel.org; devicetree@vger.kernel.org;
+> > >> linux-kernel@vger.kernel.org; linux-doc@vger.kernel.org
+> > >> Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
+> > >>
+> > >>    Security Reminder: Please be aware that this email is sent by an
+> > >> external sender.
+> > >>
+> > >> On 10/30/23 23:46, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
+> > >> [ ... ]
+> > >>>>
+> > >>>>> +
+> > >>>>> +     ret = of_property_read_u32(client->dev.of_node,
+> > >>>>> +                                "shunt-resistor-micro-ohms",
+> > >>>> &rsense);
+> > >>>>> +     if (ret < 0)
+> > >>>>> +             return ret;
+> > >>>>> +
+> > >>>>> +     if (rsense == 0)
+> > >>>>> +             return -EINVAL;
+> > >>>>> +
+> > >>>>> +     info = &ltc4286_info;
+> > >>>>> +
+> > >>>>> +     /* Default of VRANGE_SELECT = 1, 102.4V */
+> > >>>>> +     if (device_property_read_bool(&client->dev,
+> > >>>> "adi,vrange-select-25p6")) {
+> > >>>>
+> > >>>> What if the adi,vrange-select-25p6 property is not provided, but
+> > >>>> the chip is programmed for this range ?
+> > >>> The binding document tells programmers how to fill the dts.
+> > >>> Thus, programmers must fill this property if their system is 25.6
+> > >>> volts voltage
+> > >> range.
+> > >>>
+> > >>
+> > >> Sure, but there is no else case, meaning VRANGE_SELECT is unmodified
+> > >> in that case. There is no guarantee that the chip is in its power-on state.
 > > >
-> > > arch_prepare_to_swap() should take folio rather than page as paramete=
-r
-> > > because we support THP swap-out as a whole.
-> > >
-> > > Meanwhile, arch_swap_restore() should use page parameter rather than
-> > > folio as swap-in always works at the granularity of base pages right
-> > > now.
-> >
-> > ... but then we always have order-0 folios and can pass a folio, or wha=
-t
-> > am I missing?
->
-> Hi David,
-> you missed the discussion here:
->
-> https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac68=
-MkhjMDw@mail.gmail.com/
-> https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkNzm=
-h1Veocg@mail.gmail.com/
->
-> >
-> > >
-> > > arch_thp_swp_supported() is dropped since ARM64 MTE was the only one
-> > > who needed it.
-> >
-> > Can we do that separately?
->
-> i think it is ok.
+> > > The else case is in v2 ltc4286.c line 133 It means that the voltage
+> > > range for programmer is 102.4 volts which is default value, so driver
+> > > doesn't need to do any change for VRANGE_SELECT bit.
+> > 
+> > There is no guarantee that the value wasn't changed before the driver was
+> > loaded.
+> 
+> We still can’t get your point.
+> Could you tell us about your concern here?
 
-IMHO keeping it in this patch makes more sense. IIRC removing
-arch_thp_swp_supported() is just because this patch made swapping
-large folio with MTE more efficiently.
+I have repeated it several times. You are making assumptions about
+register values when the driver is loaded. Those asumptions
+are wrong since the state of the chip is unknown when the driver
+is loaded. Any entty (BIOS, ROMMON, i2cset, some operating system
+loaded earlier, or even some other driver or platform code) may
+have changed those values.
 
->
-> >
-> > --
-> > Cheers,
-> >
-> > David / dhildenb
-> >
->
-> Thanks
-> Barry
+On top of that, as I also have pointed out, LTC4287 supports
+saving its configuration data in eeprom. That means that any chip
+configuration set during production or anytime later will be
+retained, meaning any assumption about chip configuration
+when the driver is loaded is even more wrong.
+
+Guenter
