@@ -2,141 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7267E7ECC51
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AADA7ECC8E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:31:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbjKOT2c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:28:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51744 "EHLO
+        id S234014AbjKOTbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:31:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233646AbjKOT2a (ORCPT
+        with ESMTP id S234009AbjKOTbJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:28:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 859559E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:28:27 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 323DFC433CB;
-        Wed, 15 Nov 2023 19:28:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700076507;
-        bh=6X29YxgOJSekJMMYnxMuAiE4h71bPpKLkyOGCG+ZdDw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Or31r+GDQxBg0Kl8952bupTT20NKuDwPAAhds0bRUOCSZpFXveuXNiRPeMF9U4ZFC
-         AvZlT63J2FDw7+KmeblxmRPR4g5Vzt0k5NC4KfM41F7s7MjmEPfuSQ+P4J7ydI9oVD
-         RJiksoxrLz7lCCBhDKMXsqog4bhDw0xNI9zPLaN1G/e6lKLuBptX7qINXIZDokxuWt
-         WplEtsGC5+kLHE64Dvk+Anp0N+yInACzDd1UP7BuR52jRkPU6rnnE3t9i9qMr9smHu
-         4SU5hizO3uCkiFzud6h13enoHxr6HU1OvKZM8mdcDPdJqWAWQU2dfZcIq3tmPAasfy
-         JwiL2+5acw0qg==
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-507adc3381cso9569949e87.3;
-        Wed, 15 Nov 2023 11:28:27 -0800 (PST)
-X-Gm-Message-State: AOJu0YxYLkeGNB1MwJsOGObG0WBrmDTdIlugbfB7vOm83DeDvdDJBPDE
-        3A1MpMmL6gLNGveBIzHLZql28/I95G9499v3Wg==
-X-Google-Smtp-Source: AGHT+IGtuiOaHigoe4PCchL0ez6WkPrADjlwvvM4lywCiYHOdKs1gl3YzfWtoBm3uafJe5HtghJLBMHgFaaktMSfqQo=
-X-Received: by 2002:ac2:54b9:0:b0:500:d4d9:25b5 with SMTP id
- w25-20020ac254b9000000b00500d4d925b5mr9071774lfk.56.1700076505201; Wed, 15
- Nov 2023 11:28:25 -0800 (PST)
+        Wed, 15 Nov 2023 14:31:09 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAD2CA1;
+        Wed, 15 Nov 2023 11:31:05 -0800 (PST)
+Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 7BF1929A;
+        Wed, 15 Nov 2023 20:30:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1700076636;
+        bh=VG1aMvjuyEjHJfeeciYccDaZR4VmWCZdcztVpSsBQws=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DAOdraz76XQD0sbIC3knIYtUGx5E+j6Jv8+x8BDAOyZy9+/XccbKVNgc8o2fyn0kT
+         VJwVjUEi3AQvh5UUDbCoo24qXhx/ti2gRaUpPLmyoyCPt4ozjzmX1KB2KOW1oN9FR3
+         FEeMVeEB1CUz75/SuM+6/BC6maXz3BqjBYXVbjoQ=
+Date:   Wed, 15 Nov 2023 21:31:07 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Stefan Wahren <wahrenst@gmx.net>
+Cc:     Umang Jain <umang.jain@ideasonboard.com>,
+        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
+        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-staging@lists.linux.dev,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        "Ricardo B . Marliere" <ricardo@marliere.net>,
+        Dan Carpenter <error27@gmail.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.org>
+Subject: Re: [PATCH v2 03/15] media: videobuf2: Allow exporting of a struct
+ dmabuf
+Message-ID: <20231115193107.GB29486@pendragon.ideasonboard.com>
+References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
+ <20231109210309.638594-4-umang.jain@ideasonboard.com>
+ <72f83177-cd34-480a-afcc-a79f85219751@gmx.net>
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <859ac058-c50a-4eb8-99b6-3011ef4e7529@collabora.com>
- <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com> <CAD=FV=VUZy9DaZgKafSpXXopD5k8ExGSR97BjAqC5tupPoxNfQ@mail.gmail.com>
-In-Reply-To: <CAD=FV=VUZy9DaZgKafSpXXopD5k8ExGSR97BjAqC5tupPoxNfQ@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 15 Nov 2023 13:28:12 -0600
-X-Gmail-Original-Message-ID: <CAL_Jsq+puq20EWkQg1RTs2zfmh4DGbqz1krp+19c=wPXnLT5dA@mail.gmail.com>
-Message-ID: <CAL_Jsq+puq20EWkQg1RTs2zfmh4DGbqz1krp+19c=wPXnLT5dA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <72f83177-cd34-480a-afcc-a79f85219751@gmx.net>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 6:12=E2=80=AFPM Doug Anderson <dianders@chromium.or=
-g> wrote:
->
-> Hi,
->
-> On Thu, Nov 9, 2023 at 5:52=E2=80=AFAM Rob Herring <robh+dt@kernel.org> w=
-rote:
+On Tue, Nov 14, 2023 at 08:41:11PM +0100, Stefan Wahren wrote:
+> Am 09.11.23 um 22:02 schrieb Umang Jain:
+> > From: Dave Stevenson <dave.stevenson@raspberrypi.org>
 > >
-> > > > End of background from Doug's cover letter.
-> > >
-> > > I think that using "status" is not a good idea, I find that confusing=
-.
+> > videobuf2 only allowed exporting a dmabuf as a file descriptor,
+> > but there are instances where having the struct dma_buf is
+> > useful within the kernel.
 > >
-> > "status" is what defines a device's state in terms of enabled,
-> > present, available. That's exactly what we're expressing here.
+> > Split the current implementation into two, one step which
+> > exports a struct dma_buf, and the second which converts that
+> > into an fd.
 > >
-> > Now, I do not think we should be mixing the device class (e.g.
-> > touchscreen) into status. I said this on v1, but apparently that was
-> > not listened to.
->
-> Interesting. I must have missed the "don't mix device class into
-> status" part. Do you have a link to your post about that? Maybe
-> there's other stuff I missed... Having the device class stuck at the
-> end there was at least part of my last post [1] which gathered no
-> response.
+> > Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.org>
+> > Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
+> > ---
+> 
+> ...
+> 
+> > diff --git a/include/media/videobuf2-core.h b/include/media/videobuf2-core.h
+> > index 4b6a9d2ea372..cba4e495f6a2 100644
+> > --- a/include/media/videobuf2-core.h
+> > +++ b/include/media/videobuf2-core.h
+> > @@ -925,6 +925,21 @@ int vb2_core_streamon(struct vb2_queue *q, unsigned int type);
+> >    */
+> >   int vb2_core_streamoff(struct vb2_queue *q, unsigned int type);
+> >
+> > +/**
+> > + * vb2_core_expbuf_dmabuf() - Export a buffer as a dma_buf structure
+> > + * @q:         videobuf2 queue
+> > + * @type:      buffer type
+> > + * @index:     id number of the buffer
+> > + * @plane:     index of the plane to be exported, 0 for single plane queues
+> > + * @flags:     flags for newly created file, currently only O_CLOEXEC is
+> > + *             supported, refer to manual of open syscall for more details
+> 
+> i think "newly created file" could be confusing here
 
-https://lore.kernel.org/all/CAL_JsqKK0tjeXNv=3Da8L3k0AjhCa15XOq1tPWqVod9myc=
-sKXJHg@mail.gmail.com/
+Would "newly created dmabuf file handle" be clearer and work for
+everybody ?
 
-"I would not combine the 2 things. Knowing the class/type of the device
-may be useful independent of your problem."
+> > + *
+> > + * Return: Returns the dmabuf pointer
+> > + */
+> > +struct dma_buf *vb2_core_expbuf_dmabuf(struct vb2_queue *q, unsigned int type,
+> > +				       unsigned int index, unsigned int plane,
+> > +				       unsigned int flags);
+> > +
+> >   /**
+> >    * vb2_core_expbuf() - Export a buffer as a file descriptor.
+> >    * @q:		pointer to &struct vb2_queue with videobuf2 queue.
 
+-- 
+Regards,
 
-> I think one of the reasons that I felt we needed to mux the device
-> class into status was that it was going to make the code a lot less
-> fragile. Everything I've seen indicates that you don't want us to
-> create a "HW prober" node that could be used to provide relevant
-> phandles for different classes of devices, so the "HW prober" code
-> needs to either search through the whole device tree for a status of
-> "failed-needs-probe" or needs to contain per-board, hardcoded,
-> fully-qualified paths.
->
-> I don't think we want to include hardcoded, fully-qualified paths in
-> the code. That would mean that if someone changed a node name
-> somewhere in the path to one of the devices that we're dealing with
-> then it would break.
-
-Right, nothing should depend on the full path. That's not an ABI just
-like the device path in sysfs is not (despite what Android HALs do).
-
-> So if we're searching the whole device tree for "failed-needs-probe"
-> then we need to figure out which devices are related to each other. If
-> a given board has second sources for MIPI panels, touchscreens, and
-> trackpads then we need to know which of the "failed-needs-probe"
-> devices are trackpads, which are touchscreens, and which are MIPI
-> panels. Do you have any suggestions for how we should do that? Maybe
-> it was in some other thread that I missed? I guess we could have a
-> board-specific table mapping (compatible + node name + reg) to a
-> class, but that feels awkward.
-
-Node name is supposed to correspond to device class, so why not use
-that (no path or unit-address.) and nothing else (well, besides
-"status")?
-
-Rob
+Laurent Pinchart
