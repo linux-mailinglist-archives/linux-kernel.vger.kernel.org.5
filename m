@@ -2,61 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFBC7ED7FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80A927ED7FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233734AbjKOXBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 18:01:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48052 "EHLO
+        id S1343676AbjKOXCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 18:02:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOXBk (ORCPT
+        with ESMTP id S229592AbjKOXCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 18:01:40 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF059E1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:01:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700089295; x=1731625295;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=56CdDY6FYsPjduY5DbqYX0LDa9vSmX9/ofpMMduC834=;
-  b=EfGtl/zsnNFCPhweadt7Vyo1a5/Vu1HB10vhYMkozrL0idAm/jlcQJwf
-   jplweIrN7eizRIA5pxsid/9YU/zCY0PdN6oe2f5JPen7PndjuEUd3S9rp
-   7LFOWNq2V/1YrVTcMCWVnMz6ghvN7j7sLObmkVD0xP+UIwfb9ultN2Xoq
-   p86ObGHJnqjihdWxpK1rs1B9Fg6PZ8XhiUZaeTXtsgwzfriLyuLq6ngDn
-   ddY7aVdqPtIDTeHsWEjTuadcb2aS4xc1EE/yOjBxmDvBx3nUaoDBo1W93
-   80LRmr0GXuSnPCTyRrWvIPC0rMeg0v3fzGlnpDGu5vMtyDyJN7F4g8K4W
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="381365205"
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="381365205"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 15:00:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="938634702"
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="938634702"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 15 Nov 2023 15:00:57 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3OsR-0000wA-0v;
-        Wed, 15 Nov 2023 23:00:55 +0000
-Date:   Thu, 16 Nov 2023 07:00:22 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Emil Renner Berthing <kernel@esmil.dk>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Palmer Dabbelt <palmer@rivosinc.com>,
-        Charlie Jenkins <charlie@rivosinc.com>
-Subject: arch/riscv/kernel/module.c:33:25: sparse: sparse: cast to restricted
- __le16
-Message-ID: <202311160648.Adh0V2Wd-lkp@intel.com>
+        Wed, 15 Nov 2023 18:02:35 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA25DD;
+        Wed, 15 Nov 2023 15:02:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1700089347;
+        bh=zPmcuJI/QqEirtF3Hay0wkc2/6ukXaLWGmJ6j2CS9zY=;
+        h=Date:From:To:Cc:Subject:From;
+        b=dXR5+zTUhLLGzvGN8YFuqrdharXvZ8xDpeN6XvLOfoZTtbmZ5B9swoimRILj8jH2J
+         do/M3ldaZAfM9wpOcOysxYPh8964gKLbzYyFlimRyvZwnSIPVekFBnkKvTK3k2ce//
+         CptHh5e5izNfeLwe1mnM1KQPtCivNTWlvcT/SfHXvi6mx06lHVVSsq99qSpWZAj+65
+         rDwdwME2FemkK5cCQ1pwx2g5aVcFvzSYLQImgt6toJqoV1Un//M5i/CQY7inSSuDv3
+         j2miVVWtYASMUyfcbLdIcGC/NUfmIgcTh9M0ugic/lVEh1GunX66PBd72i7oJmPXG0
+         5rYI4/tEtvJwQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SVzFt5ZFNz4x5p;
+        Thu, 16 Nov 2023 10:02:26 +1100 (AEDT)
+Date:   Thu, 16 Nov 2023 10:02:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Kent Overstreet <kent.overstreet@linux.dev>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the bcachefs tree
+Message-ID: <20231116100225.28b82435@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; boundary="Sig_/pBK4s3Hvzqcxg4El=w/1slI";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,51 +51,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: 8cbe0accc4a6ba7ed34812a1c7e1ba67e7f7b2a4 riscv: Avoid unaligned access when relocating modules
-date:   8 days ago
-config: riscv-randconfig-r133-20231115 (https://download.01.org/0day-ci/archive/20231116/202311160648.Adh0V2Wd-lkp@intel.com/config)
-compiler: riscv64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231116/202311160648.Adh0V2Wd-lkp@intel.com/reproduce)
+--Sig_/pBK4s3Hvzqcxg4El=w/1slI
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311160648.Adh0V2Wd-lkp@intel.com/
+Hi all,
 
-sparse warnings: (new ones prefixed by >>)
-   WARNING: invalid argument to '-march': '_zihintpause'
->> arch/riscv/kernel/module.c:33:25: sparse: sparse: cast to restricted __le16
-   arch/riscv/kernel/module.c:33:55: sparse: sparse: cast to restricted __le16
->> arch/riscv/kernel/module.c:38:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   arch/riscv/kernel/module.c:38:19: sparse:     expected unsigned short [usertype]
-   arch/riscv/kernel/module.c:38:19: sparse:     got restricted __le16 [usertype]
-   arch/riscv/kernel/module.c:39:19: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   arch/riscv/kernel/module.c:39:19: sparse:     expected unsigned short [usertype]
-   arch/riscv/kernel/module.c:39:19: sparse:     got restricted __le16 [usertype]
-   arch/riscv/kernel/module.c:46:20: sparse: sparse: cast to restricted __le16
-   arch/riscv/kernel/module.c:51:17: sparse: sparse: incorrect type in assignment (different base types) @@     expected unsigned short [usertype] @@     got restricted __le16 [usertype] @@
-   arch/riscv/kernel/module.c:51:17: sparse:     expected unsigned short [usertype]
-   arch/riscv/kernel/module.c:51:17: sparse:     got restricted __le16 [usertype]
+After merging the btrfs tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-vim +33 arch/riscv/kernel/module.c
+ERROR: modpost: "getname" [fs/bcachefs/bcachefs.ko] undefined!
 
-    29	
-    30	static int riscv_insn_rmw(void *location, u32 keep, u32 set)
-    31	{
-    32		u16 *parcel = location;
-  > 33		u32 insn = (u32)le16_to_cpu(parcel[0]) | (u32)le16_to_cpu(parcel[1]) << 16;
-    34	
-    35		insn &= keep;
-    36		insn |= set;
-    37	
-  > 38		parcel[0] = cpu_to_le16(insn);
-    39		parcel[1] = cpu_to_le16(insn >> 16);
-    40		return 0;
-    41	}
-    42	
+Caused by commit
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+  6c43bd2cbe7f ("bch2_ioctl_subvolume_destroy(): fix locking")
+
+I have used the bcachefs tree from next-20232215 for today.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/pBK4s3Hvzqcxg4El=w/1slI
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVVTgEACgkQAVBC80lX
+0GxlXAf+MEdq5BrjDHAyMawtFwxZLsZlL1fbC/B+WNOhVziiJ6QgcM30Ap+VXa8X
+vPfhjcCUvNqQb+l4yjDUIWXlBegNZxME2WwipGRhdG34KFltpEkS/uCeakCLWEjk
+RfviciJo2L9igob+AFtCZ88DsNFAKASZk523eij8c6ZyfFsKxG9jsWjrPs8pbWam
+ho/be9L776/map2mP0xE/6aXg+gkHpDQrga/gskJaE0l2vXSdryZCdSHJKrskM0K
+zYrjaCDRGolQnC0dYI8+kES0cgu7r538uCn9WzHv9rjXE1hfwxZCTmFXHsyrsY/1
+FMvSFUT97o2PQULlwaluVbqSbdlVSg==
+=3H/G
+-----END PGP SIGNATURE-----
+
+--Sig_/pBK4s3Hvzqcxg4El=w/1slI--
