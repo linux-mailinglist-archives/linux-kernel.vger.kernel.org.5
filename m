@@ -2,174 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9EF7EC2E5
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:51:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D52CE7EC2EC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343621AbjKOMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:51:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53078 "EHLO
+        id S1343853AbjKOMv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:51:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjKOMvT (ORCPT
+        with ESMTP id S234924AbjKOMvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:51:19 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B84B11C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:51:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700052675;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ehFjwhsPPcv7nimSjR09jzg4Dqe1DEZTTTAxghtYd8o=;
-        b=Bbx7OUieKyLhEbhg8f/de496HWsERiEdaT/xSroutd79BNgLmrtUdInZAZwKopz82ZGCH+
-        T7aIvJV8lnSKPeJwshbok2E6AT9oaPJNbCrQ0VCxtNheaq78YvLZnHy3RNTjURQg4yYQoC
-        xLRzSkVvzkBTK9RJK6g7llQD89VSqa8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-378-LR_rUWiCNDKtUhiOdXXDbA-1; Wed,
- 15 Nov 2023 07:51:13 -0500
-X-MC-Unique: LR_rUWiCNDKtUhiOdXXDbA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9AB1C1C068CA;
-        Wed, 15 Nov 2023 12:51:10 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.9])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E5CD41121307;
-        Wed, 15 Nov 2023 12:51:09 +0000 (UTC)
-Date:   Wed, 15 Nov 2023 20:51:06 +0800
-From:   Baoquan He <bhe@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kexec@lists.infradead.org, x86@kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
-        linux-parisc@vger.kernel.org
-Subject: Re: [PATCH v2 1/7] kexec_file: add kexec_file flag to control debug
- printing
-Message-ID: <ZVS+usu5jCveUIiv@MiWiFi-R3L-srv>
-References: <20231114153253.241262-1-bhe@redhat.com>
- <20231114153253.241262-2-bhe@redhat.com>
+        Wed, 15 Nov 2023 07:51:24 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57686E6;
+        Wed, 15 Nov 2023 04:51:19 -0800 (PST)
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFCgKV1004414;
+        Wed, 15 Nov 2023 12:51:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=sdg0tZeHq4CWFHZzWnTeZUL4/SbOzBOaLLU0UV06BxE=;
+ b=RrchHLT7d76wgGFI2or2vuTDL4hdtxJ+YdfvNE36evquM84qvmyDKzerGGm11lz+ntrS
+ fm0rCmcUAiTA7psJCrK1k1EaUlf3taOJndxPq7rrcUFarMEy2LWYsLuNTyC18Lx2tjNN
+ dAXHlL2qf34Ubgi0p+U3iJ6sbUhcqXsSCaRk4SJeKmWfvSQ10gyrdQypjd588q6G3+7y
+ ydKqpj7EVXsDsnjah/h+mekZUvod3F3KzOxyQFx8gqTc4SRukr4U5uyammtAIVXXmB5a
+ ujwgC2r6U+J/t97lseI+2qGIvRhQMw7ACKA7lTUz0SezUlyTXVsluFt2Cmj7qu5LTNoJ 9A== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucx7p0a6q-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:51:18 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFCgoiN006516;
+        Wed, 15 Nov 2023 12:51:18 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucx7p0a5m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:51:18 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFCYE49000988;
+        Wed, 15 Nov 2023 12:51:17 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamxnf5ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:51:16 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFCpBRL4063844
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 12:51:11 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 936EF20043;
+        Wed, 15 Nov 2023 12:51:11 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 6714A20040;
+        Wed, 15 Nov 2023 12:51:11 +0000 (GMT)
+Received: from p-imbrenda.boeblingen.de.ibm.com (unknown [9.152.224.66])
+        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Nov 2023 12:51:11 +0000 (GMT)
+From:   Claudio Imbrenda <imbrenda@linux.ibm.com>
+To:     pbonzini@redhat.com
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-s390@vger.kernel.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, hca@linux.ibm.com, agordeev@linux.ibm.com,
+        gor@linux.ibm.com
+Subject: [GIT PULL v1 0/2] KVM: s390: two small but important fixes
+Date:   Wed, 15 Nov 2023 13:51:09 +0100
+Message-ID: <20231115125111.28217-1-imbrenda@linux.ibm.com>
+X-Mailer: git-send-email 2.41.0
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: n-gkju0PLL4g0dNKmyT8cm4LPxWcBa_p
+X-Proofpoint-GUID: M8FsnaIQZauswbhmTxxbDAr2icgBcK4s
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114153253.241262-2-bhe@redhat.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_11,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 clxscore=1015
+ suspectscore=0 malwarescore=0 adultscore=0 phishscore=0 mlxlogscore=680
+ bulkscore=0 spamscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150099
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When specifying 'kexec -c -d', kexec_load interface will print loading
-information, e.g the regions where kernel/initrd/purgatory/cmdline
-are put, the memmap passed to 2nd kernel taken as system RAM ranges,
-and printing all contents of struct kexec_segment, etc. These are
-very helpful for analyzing or positioning what's happening when
-kexec/kdump itself failed. The debugging printing for kexec_load
-interface is made in user space utility kexec-tools.
+Hi Paolo,
 
-Whereas, with kexec_file_load interface, 'kexec -s -d' print nothing.
-Because kexec_file code is mostly implemented in kernel space, and the
-debugging printing functionality is missed. It's not convenient when
-debugging kexec/kdump loading and jumping with kexec_file_load
-interface.
+two small but important fixes, please pull :)
 
-Now add KEXEC_FILE_DEBUG to kexec_file flag to control the debugging
-message printing. And add global variable kexec_file_dbg_print and
-macro kexec_dprintk() to facilitate the printing.
 
-This is a preparation, later kexec_dprintk() will be used to replace the
-existing pr_debug(). Once 'kexec -s -d' is specified, it will print out
-kexec/kdump loading information at KERN_INFO level. If '-d' is not
-specified, it regresses to print message at KERN_DEBUG level.
+Claudio
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
-v1->v2:
-- Rewrite the kexec_dprintk() macro as Joe suggested to reduce kernel
-  text size.
 
- include/linux/kexec.h      | 10 +++++++++-
- include/uapi/linux/kexec.h |  1 +
- kernel/kexec_file.c        |  5 +++++
- 3 files changed, 15 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/kexec.h b/include/linux/kexec.h
-index 8227455192b7..66997efe36f1 100644
---- a/include/linux/kexec.h
-+++ b/include/linux/kexec.h
-@@ -264,6 +264,14 @@ arch_kexec_apply_relocations(struct purgatory_info *pi, Elf_Shdr *section,
- 	return -ENOEXEC;
- }
- #endif
-+
-+extern bool kexec_file_dbg_print;
-+
-+#define kexec_dprintk(fmt, ...)					\
-+	printk("%s" fmt,					\
-+	       kexec_file_dbg_print ? KERN_INFO : KERN_DEBUG,	\
-+	       ##__VA_ARGS__)
-+
- #endif /* CONFIG_KEXEC_FILE */
- 
- #ifdef CONFIG_KEXEC_ELF
-@@ -403,7 +411,7 @@ bool kexec_load_permitted(int kexec_image_type);
- 
- /* List of defined/legal kexec file flags */
- #define KEXEC_FILE_FLAGS	(KEXEC_FILE_UNLOAD | KEXEC_FILE_ON_CRASH | \
--				 KEXEC_FILE_NO_INITRAMFS)
-+				 KEXEC_FILE_NO_INITRAMFS | KEXEC_FILE_DEBUG)
- 
- /* flag to track if kexec reboot is in progress */
- extern bool kexec_in_progress;
-diff --git a/include/uapi/linux/kexec.h b/include/uapi/linux/kexec.h
-index 01766dd839b0..c17bb096ea68 100644
---- a/include/uapi/linux/kexec.h
-+++ b/include/uapi/linux/kexec.h
-@@ -25,6 +25,7 @@
- #define KEXEC_FILE_UNLOAD	0x00000001
- #define KEXEC_FILE_ON_CRASH	0x00000002
- #define KEXEC_FILE_NO_INITRAMFS	0x00000004
-+#define KEXEC_FILE_DEBUG	0x00000008
- 
- /* These values match the ELF architecture values.
-  * Unless there is a good reason that should continue to be the case.
-diff --git a/kernel/kexec_file.c b/kernel/kexec_file.c
-index f9a419cd22d4..4c35500ae40a 100644
---- a/kernel/kexec_file.c
-+++ b/kernel/kexec_file.c
-@@ -38,6 +38,8 @@ void set_kexec_sig_enforced(void)
- }
- #endif
- 
-+bool kexec_file_dbg_print;
-+
- static int kexec_calculate_store_digests(struct kimage *image);
- 
- /* Maximum size in bytes for kernel/initrd files. */
-@@ -123,6 +125,8 @@ void kimage_file_post_load_cleanup(struct kimage *image)
- 	 */
- 	kfree(image->image_loader_data);
- 	image->image_loader_data = NULL;
-+
-+	kexec_file_dbg_print = false;
- }
- 
- #ifdef CONFIG_KEXEC_SIG
-@@ -278,6 +282,7 @@ kimage_file_alloc_init(struct kimage **rimage, int kernel_fd,
- 	if (!image)
- 		return -ENOMEM;
- 
-+	kexec_file_dbg_print = !!(flags & KEXEC_FILE_DEBUG);
- 	image->file_mode = 1;
- 
- 	if (kexec_on_panic) {
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  https://git.kernel.org/pub/scm/linux/kernel/git/kvms390/linux.git tags/kvm-s390-master-6.7-1
+
+for you to fetch changes up to 27072b8e18a73ffeffb1c140939023915a35134b:
+
+  KVM: s390/mm: Properly reset no-dat (2023-11-14 18:56:46 +0100)
+
+----------------------------------------------------------------
+Two small but important bugfixes.
+
+----------------------------------------------------------------
+Claudio Imbrenda (2):
+      KVM: s390: vsie: fix wrong VIR 37 when MSO is used
+      KVM: s390/mm: Properly reset no-dat
+
+ arch/s390/kvm/vsie.c   | 4 ----
+ arch/s390/mm/pgtable.c | 2 +-
+ 2 files changed, 1 insertion(+), 5 deletions(-)
+
 -- 
 2.41.0
 
