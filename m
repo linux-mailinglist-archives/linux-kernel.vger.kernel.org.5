@@ -2,78 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D22857EBF22
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E22D7EBF29
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:09:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234700AbjKOJHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 04:07:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38728 "EHLO
+        id S234728AbjKOJJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 04:09:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234680AbjKOJHw (ORCPT
+        with ESMTP id S234704AbjKOJJe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 04:07:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEC0114
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 01:07:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94CFEC433C8;
-        Wed, 15 Nov 2023 09:07:43 +0000 (UTC)
-From:   Huacai Chen <chenhuacai@loongson.cn>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Tianrui Zhao <zhaotianrui@loongson.cn>,
-        Bibo Mao <maobibo@loongson.cn>
-Cc:     kvm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Xuerui Wang <kernel@xen0n.name>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Huacai Chen <chenhuacai@loongson.cn>
-Subject: [PATCH] LoongArch: KVM: Fix build due to API changes
-Date:   Wed, 15 Nov 2023 17:07:35 +0800
-Message-Id: <20231115090735.2404866-1-chenhuacai@loongson.cn>
-X-Mailer: git-send-email 2.39.3
+        Wed, 15 Nov 2023 04:09:34 -0500
+Received: from EUR02-DB5-obe.outbound.protection.outlook.com (mail-db5eur02olkn2063.outbound.protection.outlook.com [40.92.50.63])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2746911C;
+        Wed, 15 Nov 2023 01:09:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Npdft/OGYuMbmyAUX0ZvKN51KFI/lSAI0Wtst8V2Ct9zVLJZKrgvpJl2Yt5OgQjleoSZHrjVWu/MiSbgMLs6liphGqlG5FS3E86u0e+NC/NkN06KYopI2Zp6BLmRffaEN0OSgz4z/g6w7fUrqjwHF86G1DwpoYUlRNJ5pLXsvq9yAsjP7VATY0JddW8g38AVIlaNTLl6QFRfy8Lf2IYkJ/aHxta37cnoMFlnhd0syrmxNoGLDWtsyEByMbvVhg4Epws9C0yfJxAgnGNOmYaBqfLSq096YSZ6rykdpen6XoKDK5UqC46+VzVbYVun2ar9SnXK6qTF6ZBa0j0fwY1Zqg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=BVufSnjklVtqYF/i2zyON1MCgifDrEx/Ju38yb3+pAM=;
+ b=S7HXj9W6fd5f2lDgomLVneLC/IJdwkIjOsoJGLmeiowJucva6gD9UIs0roJrPJxU+WCU0lxX90EvDoHvcq50jfpt7EA6tGp/pQeYjf3Nu4fSyqMEf8zHUP/SdHfdvB1dv7vrcAuPaVXm3UT/LVoVPrtJgymsNtRWxDevjZCCxkGuUf8V4XgFYEboa63qiVN17SPWstgrISCa3k6pYptuNK0Wn656DNbGEjtvaMX3qOuXYpxTS8z0Kej2veIfNpImoDcir+vTDobmQ0+0nMKXQQLctDOA7jf0+EzMS4/N8YrcDrsRnZeV7M10fcy0gDdFPSzOyXnf7qX7nVZLrT7vJA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=BVufSnjklVtqYF/i2zyON1MCgifDrEx/Ju38yb3+pAM=;
+ b=IW542DAiHHO6tkqqS6GfvEVWMmSOuNXJ5oa2Z8S8OFxVhBy3EfOPDCX3z0JLzJvGX8iopHkpAGt1uBY9qTF2Vx7snr+dQEc1p45F9sRcHrp4FDvqm0OadG57rXWguJ8y5ao3zEQR750ERcXiG7LRGleJVNdYimiHZ10st3pN+Z2NCKbpncaCDKHOjYCGt0QvVuK+IASENuey2EVfrsaoUIMT6xZs3M4FY/+e54g6T6hnN58jBpulqFgmccw9tWz3zd7omASdQRhYFaHZfAiBiIfx4p5AbSVEB/bMxQz5TXjMqWL1bVgdk+zXEGyqt7TmoEaAbuDmMpFdIP0arkp2gg==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by GV1PR10MB5937.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:59::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Wed, 15 Nov
+ 2023 09:09:14 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%6]) with mapi id 15.20.6977.029; Wed, 15 Nov 2023
+ 09:09:14 +0000
+Date:   Wed, 15 Nov 2023 14:38:12 +0530
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     Danilo Krummrich <dakr@redhat.com>
+Cc:     airlied@gmail.com, kherbst@redhat.com, lyude@redhat.com,
+        daniel@ffwll.ch, sumit.semwal@linaro.org, christian.koenig@amd.com,
+        dri-devel@lists.freedesktop.org, nouveau@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linaro-mm-sig@lists.linaro.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH] drm/nouveau: Prevents NULL pointer dereference in
+ nouveau_uvmm_sm_prepare
+Message-ID: <GV1PR10MB6563980A0097762C6868E2DCE8B1A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <DB3PR10MB6835FA6E15F3C830FC793D2EE8DDA@DB3PR10MB6835.EURPRD10.PROD.OUTLOOK.COM>
+ <6a1ebcef-bade-45a0-9bd9-c05f0226eb88@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6a1ebcef-bade-45a0-9bd9-c05f0226eb88@redhat.com>
+X-TMN:  [6Iqutr5U9611Hn/yxu9KtnQuiFevF5DX]
+X-ClientProxiedBy: JN2P275CA0034.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:2::22)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231115090812.GA2381420@nmj-network>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|GV1PR10MB5937:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8d6aafc1-a82f-4db3-7b09-08dbe5ba6e59
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: aM6hab7v2ftiW148wwotWQ8J/R3WvAn6+iq+8Id/xRZUpKp51RLxQLSQMyhoUlfTTSDZn59/IvTPYPqFwRm+y4wVjIO47TDebKb3+B/eMWx6aeBn8YqdBgyRd6biwtNGY3ED7FgT8B1GTm5oOmKk9nzG3/F6hfbi2Rarx+GN+FAFgeAtX/NquGI2XfRutVUa6N9exKA5vN9fgcwlNZrAflM/Damdhkyn+WtJVlZvvJyKbTTQYB1PUQmCiumn0O6Edq4c/OoVMDLrzNUAgdgSnCe9XPVcKn5cfeGVAQ58IPbmT67lJ0VyZp1vvcxlR2qewFfT+u70//3IYLCM0tk9B20c7ji3pEpO0LHNnzRv4p1IjORUPA+s2cHW4cORL/8dmgazbesBJzXjdL1bKs7QU2tPXbjkSVD6zt1QXsSus16UvUT1kR4grfhdby9VMvzRcPJOfTcxokOBGoovBJ4tFjv4Fj2i0qa6++EA9xQnCux7z3cKfm8mw6auS6gxk/iK+E8816um045AlEx9Xb6/Ud7SD8ywrbKUgyzPatOO0IFbUkohFgc8fr6fqCS9Cvy+
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?h3CH4Q8PKXybcKFv5OAy88ojmkvCZdx3xRLcOSq3Dg8uWYc6gd0vc9DLp5Sl?=
+ =?us-ascii?Q?fGXNnW/CgZq8fxsIIrZU34+mfUiCRuLzLWZUfJ/x9FkBlIJ2A3J5t0iG/1K/?=
+ =?us-ascii?Q?QarvwQcKo2jXvtiYyL6NiZC9LChAtgoh4JNNSBmxtI4cEaVOxdC3GAbC92ZB?=
+ =?us-ascii?Q?ZEqP/lv7pwUOF/mss5m29Ll+7aaI0QrjAR+e8wHNmGRu4PuV7HZt2R3zuxQ2?=
+ =?us-ascii?Q?XwgQx3spbofO7R+HhzAgTL+v/+kp9nWweGDG5GyTgONKN+8yoiO8vRIf3Fw6?=
+ =?us-ascii?Q?xg7pn3ja3dg3woIpghFB/ae2syrmkdtxyeDQx8CXLNujj2NrfuBnN6PE+E49?=
+ =?us-ascii?Q?JQokkvfjKqUtjv4eb97fXjYMeIryKSHH8iMLOSdebmlvlMYplByNvepqTdHM?=
+ =?us-ascii?Q?D/AdSJgnjBygjVkpDi0nAeAEmulxndx48EYu1NCpnktxWEngjdYH9CzqLux7?=
+ =?us-ascii?Q?3tXuYCpQIXtjiO9yQltTe3euMS8eZLJSSrJusybM1Mj5WxOQJe59NDXpFE4Y?=
+ =?us-ascii?Q?FprLe9R4blEC21fH5RxEJFAlFTErdVn+hRnJz7uExTiNolEuy5GMTcZ358nS?=
+ =?us-ascii?Q?YmpI4iuxuaCjb5s/yjOCDcLrYnVt5AD15TnlCWT4elgOllG3EXB3JZxza6Xf?=
+ =?us-ascii?Q?VmPyIvoQ4xzX26FxvYzt9G31Aimj0c/vd01IF+mPwM1pfSV0JEXO00yPwVt3?=
+ =?us-ascii?Q?TrI9cYDEQCAHeulxiA/d30T7DKwNk8iCEUtDAbcQkd11UX1uQXSKA3asnHiF?=
+ =?us-ascii?Q?IK/8iCZBuxblC3StJyMS7QBd+2AQP26nZDhqM7/qfHozHYzTjJ1KCUKgl9CC?=
+ =?us-ascii?Q?7tPBYAAH2N8vzEWT6FO0JubLGnug66LJiOciqm+w1eR7q1c6Faha9eBf0CP2?=
+ =?us-ascii?Q?+LuaKFpairwXlsS1b7JCssm1xDiSNASWZaSD47Yp1fRSh8MzvGgLFT1USyZh?=
+ =?us-ascii?Q?Ya1tzuzIkNZrpQpCwoB5xfBX9M8xTOOwWFssaBqZvqcNr8w4fWegjrddaq6P?=
+ =?us-ascii?Q?SmMe9/p4xi7eHrUNJHf9Zw6Sf6mAQ6PAqIfW/N1Zf03Rb6aPqtnAeFGFcJrR?=
+ =?us-ascii?Q?qPysucbZaQoHnlYuKFrWxMyahVECcxomffCtSucwzvk2gVUjjT1xgDJx8kiQ?=
+ =?us-ascii?Q?yy6SzYYuJsz5HT1ocjw4ZC+xF27zrzIVvq7IdJwvVCSvkQ89ElcTNxLl8Zf5?=
+ =?us-ascii?Q?/1wZltK3VLf26dKRZ5sPOGeIB+ZxblV2rTKPURMQRdQE1gYr26CKPLY2jwI?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8d6aafc1-a82f-4db3-7b09-08dbe5ba6e59
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 09:09:14.3652
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR10MB5937
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8569992d64b8f750e34b7858eac ("KVM: Use gfn instead of hva for
-mmu_notifier_retry") replaces mmu_invalidate_retry_hva() usage with
-mmu_invalidate_retry_gfn() for X86, LoongArch also need similar changes
-to fix build.
+Hello Danilo,
+On Tue, Nov 14, 2023 at 05:23:59PM +0100, Danilo Krummrich wrote:
+> Hi Yuran,
+> 
+> op_map_prepare() can't be called with `args` being NULL, since when called
+> through nouveau_uvmm_sm_unmap_prepare() we can't hit the DRM_GPUVA_OP_MAP
+> case at all.
+> 
+> Unmapping something never leads to a new mapping being created, it can lead
+> to remaps though.
+> 
+Yes, you're right. I certainly hadn't noticed that when I first
+submitted this patch.
+> 
+> This check is not required for the reason given above. If you like, you
+> can change this patch up to remove the args check and add a comment like:
+> 
+> /* args can't be NULL when called for a map operation. */
+> 
+Sure, I'll do that, sounds reasonable.
 
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
----
- arch/loongarch/kvm/mmu.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Thank you for your feedback.
 
-diff --git a/arch/loongarch/kvm/mmu.c b/arch/loongarch/kvm/mmu.c
-index 80480df5f550..9463ebecd39b 100644
---- a/arch/loongarch/kvm/mmu.c
-+++ b/arch/loongarch/kvm/mmu.c
-@@ -627,7 +627,7 @@ static bool fault_supports_huge_mapping(struct kvm_memory_slot *memslot,
-  *
-  * There are several ways to safely use this helper:
-  *
-- * - Check mmu_invalidate_retry_hva() after grabbing the mapping level, before
-+ * - Check mmu_invalidate_retry_gfn() after grabbing the mapping level, before
-  *   consuming it.  In this case, mmu_lock doesn't need to be held during the
-  *   lookup, but it does need to be held while checking the MMU notifier.
-  *
-@@ -807,7 +807,7 @@ static int kvm_map_page(struct kvm_vcpu *vcpu, unsigned long gpa, bool write)
- 
- 	/* Check if an invalidation has taken place since we got pfn */
- 	spin_lock(&kvm->mmu_lock);
--	if (mmu_invalidate_retry_hva(kvm, mmu_seq, hva)) {
-+	if (mmu_invalidate_retry_gfn(kvm, mmu_seq, gfn)) {
- 		/*
- 		 * This can happen when mappings are changed asynchronously, but
- 		 * also synchronously if a COW is triggered by
--- 
-2.39.3
-
+Yuran
+> 
+> Yeah, I see how this unnecessary check made you think so.
+> 
+> - Danilo
+> 
+> 
