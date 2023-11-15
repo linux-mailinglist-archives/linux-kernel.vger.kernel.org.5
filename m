@@ -2,107 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A147EC6D3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8B2D7EC6D9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344387AbjKOPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:12:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
+        id S1344426AbjKOPNH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 10:13:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343952AbjKOPMg (ORCPT
+        with ESMTP id S1344410AbjKOPNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:12:36 -0500
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4210818A;
-        Wed, 15 Nov 2023 07:12:32 -0800 (PST)
-Received: from [192.168.178.97] (pd95ef485.dip0.t-ipconnect.de [217.94.244.133])
-        by mail.bugwerft.de (Postfix) with ESMTPSA id 1FB5228157A;
-        Wed, 15 Nov 2023 15:12:31 +0000 (UTC)
-Message-ID: <beb4421c-c012-4833-abf8-f2780bcc43db@zonque.org>
-Date:   Wed, 15 Nov 2023 16:12:30 +0100
+        Wed, 15 Nov 2023 10:13:04 -0500
+Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2A6DC7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:13:00 -0800 (PST)
+Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-282ff1a97dcso498829a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:13:00 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700061180; x=1700665980;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FXCJixjJgHg5fxVASLxV1bYeFt3XpDHx8wFlXRdXihw=;
+        b=HOIbmgHoz2aCsNNubIYu1tw6SEm5DGuCi1C9ho0iJkeGf0OkbRhaeIAEe2MA035dcR
+         iTqTjXdFYqk0M4eATNlny00sL9wDu1yJbpYmjRWxC7gKk78ZsrmFY49Ld1HtVe2yGf6O
+         Y4XmwTnBqfZAamYPHvVvGjj2ZcXXKSRQ6s3vhxiZudhzKK5bRRCJ2O8E92myFZlmwKOM
+         2kikABbkX7fsy65JftVwgRqcrSZENCkvw6VtS4jD6ZpR6zOE0F7g59l1EIvE4KQ20JNU
+         90VI5cDBNtaNvzL5k6cMi/OLyk4zu6TAUFX2sh2I1r1fktGZB+j/zWmq2INkracmjgOR
+         W7Gw==
+X-Gm-Message-State: AOJu0Yx/0EGE0Lkdamu1AeiHfITTuXsgot2d0iGs9TcpIjljUD1JZ2AK
+        K6sgM/RKuM8N6pK0h3BhuR73u/4MAFugJWAKF2c=
+X-Google-Smtp-Source: AGHT+IFXlt9vMBSrAjbwFL+yhHWyFG2zg+6cbrMfogN3Od09w9GxjIFcawWuItk/eMXx73cr/19oKD0nypL17aa5fgo=
+X-Received: by 2002:a17:90b:1d8e:b0:27d:3be:8e13 with SMTP id
+ pf14-20020a17090b1d8e00b0027d03be8e13mr11015849pjb.12.1700061179919; Wed, 15
+ Nov 2023 07:12:59 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
-Content-Language: en-US
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     Lech Perczak <lech.perczak@camlingroup.com>,
-        gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        u.kleine-koenig@pengutronix.de, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Popov <maxim.snafu@gmail.com>,
-        stable@vger.kernel.org
-References: <20231114074904.239458-1-daniel@zonque.org>
- <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
- <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
- <3fac7d72-0a1b-4d93-9245-a0f8af1240a6@camlingroup.com>
- <ecc90a62-7cfa-45c9-9f6c-188e2c8ac50f@zonque.org>
- <20231115100121.5c926d4eb6d3abb02234887d@hugovil.com>
-From:   Daniel Mack <daniel@zonque.org>
-In-Reply-To: <20231115100121.5c926d4eb6d3abb02234887d@hugovil.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231102150919.719936610@infradead.org> <20231102152017.847792675@infradead.org>
+ <ZUTprUojg7eHoxQI@krava> <CAM9d7cj-Y8BwxiqDcpJj0CoPAip3cc6mr+5WQcGYeFX7esw6sg@mail.gmail.com>
+ <20231115095817.GB3818@noisy.programming.kicks-ass.net>
+In-Reply-To: <20231115095817.GB3818@noisy.programming.kicks-ass.net>
+From:   Namhyung Kim <namhyung@kernel.org>
+Date:   Wed, 15 Nov 2023 07:12:48 -0800
+Message-ID: <CAM9d7chKHryDF45QUV+UtgZ+qiLsOsseXR5hXb=D8JS74HREDw@mail.gmail.com>
+Subject: Re: [PATCH 01/13] perf: Simplify perf_event_alloc() error path
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jiri Olsa <olsajiri@gmail.com>, mingo@kernel.org,
+        linux-kernel@vger.kernel.org, acme@kernel.org,
+        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
+        irogers@google.com, adrian.hunter@intel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hugo,
+On Wed, Nov 15, 2023 at 1:58 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Fri, Nov 03, 2023 at 12:50:19PM -0700, Namhyung Kim wrote:
+>
+> > > > -err_pmu:
+> > > > -     if (is_cgroup_event(event))
+> > > > -             perf_detach_cgroup(event);
+> > > > -     if (event->destroy)
+> > > > -             event->destroy(event);
+> > > > -     module_put(pmu->module);
+> >
+> > I'm afraid of this part.  If it failed at perf_init_event(), it might
+> > call event->destroy() already.  I saw you cleared event->pmu
+> > in the failure path.  Maybe we need the same thing for the
+> > event->destroy.
+>
+> In that case event->destroy will not yet have been set, no?
 
-On 11/15/23 16:01, Hugo Villeneuve wrote:
-> On Wed, 15 Nov 2023 12:22:10 +0100
-> Daniel Mack <daniel@zonque.org> wrote:
-> Hi Daniel,
-> 
->> The bug has hit us on production units and when it does, sc16is7xx_irq()
->> would spin forever because sc16is7xx_port_irq() keeps seeing an
->> interrupt in the IIR register that is not cleared because the driver
->> does not call into sc16is7xx_handle_rx() unless the RXLVL register
->> reports at least one byte in the FIFO.
-> 
-> I would suggest that you replace the second paragraph or your original
-> commit message with this, it better explains what is the problem.
+In perf_try_init_event(), it calls event->destroy() if set when it
+has EXTENDED_REGS or NO_EXCLUDE capabilities and returns an error.
 
-Good idea, will do.
-
-> Also, when the problem happens, you say that "the fill level reporting
-> is off-by-one", so doest it mean that RXLVL can sometimes be non-zero
-> when the bug occurs?
-
-Maybe, but if that happens we would read one byte too less, which
-doesn't harm as we would get another interrupt later to handle the rest.
-The problematic case is when we don't read any data at all even though
-there is something in the FIFO, and the interrupt suggested that as well.
-
->> Note that this issue might only occur in revision E of the silicon. And
-> 
-> Is this just a supposition or based on NXP info or some actual tests?
-
-Well, the datasheet states "Errata for Rev. E added 12 August 2011", and
-as "Revision E" does not seem to refer to a datasheet version, it will
-most likely be about the silicon revision. And another assumption is
-that the issue would fixed in subsequent versions of the chip, in case
-there are any at all.
-
-FTR, this is the document I'm looking at:
-
-  https://www.nxp.com/docs/en/data-sheet/SC16IS752_SC16IS762.pdf
-
->> there seems to be now way to read the revision code through I2C, so I
->> guess you won't be able to figure out easily whether your chip is affected.
->>
->> Let me know if I can provide more information.
-> 
-> I have a board with two SC16IS752IPW using SPI interface, but I don't
-> know (yet) what is the revision. I will try to determine it if possible,
-> although I do not see any info on that in the datasheet.
-> 
-> I will also try to reproduce the issue, and test your patch.
-
-Great, thanks!
-
-
-Best regards,
-Daniel
+Thanks,
+Namhyung
