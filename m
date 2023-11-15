@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B699B7EC1CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:01:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6F87EC1CB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343606AbjKOMBg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:01:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49364 "EHLO
+        id S1343716AbjKOMB3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:01:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49348 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343703AbjKOMBY (ORCPT
+        with ESMTP id S1343607AbjKOMBX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:01:24 -0500
+        Wed, 15 Nov 2023 07:01:23 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B23DCC
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:01:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611B9120
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:01:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049681; x=1731585681;
+  t=1700049680; x=1731585680;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=rVDdAYq1Ch/guP+3CGD6S7ZzZZb7LGAbyXgUV4HgkN0=;
-  b=GLHpGEF5RniPwMyM5FpUKjmOwWJTXv7rwUSbuAUtIgzWaj8asi+2W7WC
-   CNjgl7Vzku/y98mI9kviDSKTdrkcWP3oKjcAhpeLkzKOSOMXiv/dgZIVl
-   9EOawzBsIjFLd9WZPXlE/ImcRQUlpq9Z90i210DVvyj4Jzh2x5IYWkYck
-   0kcw6riVoK+qTuY9aMCI6JHu6czwu89gAJ6lgDie26pGyUoNrbVx6yoxN
-   oJP6J9RbLK5SPqHRnlft9NEidrhJY+6nM5dtRYt+9huESpAXEqXmOl8I1
-   d6RIfsqMqxmN8LJEpROlcP1ghr7+/m2WOEDjzCSHRO88ClpbOrRgO6qjW
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="12411897"
+  bh=x3xuiVtppGTtNOfAwJhMe/qF1cFiWNEHa9BAkXdB+As=;
+  b=B/Cc9Fytx2ykAXucScNIf4m9S8lKwEqVlOdpZv5bUAE+c3t3qfjrcMKe
+   +HxGYmzTRi/tAVIF6xcaQMdvA9quSI1MjwdyL0mQF5vm6MAaIdVyemjg/
+   h/9sR6/izGcb/LscpFtj+p9n6msRzbzVf1p6Ie6gGkWKfU/YAIzCoHk1O
+   V2MbRVUKeO2RvKTC2yXBF3hYYsHvA5gQPyLrPDQtPN8r44dq6G9Psh2m/
+   WQlfqtiXXMh12/vd11jTM7pdLfwmKYuG+AlqOODySGVregJmWs2D3qqxC
+   o7dJujwVMYm1kofXIVC7zEijMbuQiVvqePlChhiCXq8ytA6/8Okkfmgde
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="12411886"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="12411897"
+   d="scan'208";a="12411886"
 Received: from fmviesa002.fm.intel.com ([10.60.135.142])
   by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:19 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="6377679"
+   d="scan'208";a="6377673"
 Received: from mituomis-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.44.135])
   by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:15 -0800
 Received: by box.shutemov.name (Postfix, from userid 1000)
-        id 5088E10A0F9; Wed, 15 Nov 2023 15:01:12 +0300 (+03)
+        id 5A69510A119; Wed, 15 Nov 2023 15:01:12 +0300 (+03)
 From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
@@ -59,9 +59,9 @@ Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
         kexec@lists.infradead.org, linux-coco@lists.linux.dev,
         linux-kernel@vger.kernel.org,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: [PATCHv3 03/14] cpu/hotplug: Add support for declaring CPU offlining not supported
-Date:   Wed, 15 Nov 2023 15:00:33 +0300
-Message-ID: <20231115120044.8034-4-kirill.shutemov@linux.intel.com>
+Subject: [PATCHv3 04/14] cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+Date:   Wed, 15 Nov 2023 15:00:34 +0300
+Message-ID: <20231115120044.8034-5-kirill.shutemov@linux.intel.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
 References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
@@ -77,82 +77,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ACPI MADT mailbox wakeup method doesn't allow to offline CPU after
-it got woke up.
+ACPI MADT doesn't allow to offline CPU after it got woke up.
 
-Currently offlining hotplug is prevented based on the confidential
-computing attribute which is set for Intel TDX. But TDX is not
-the only possible user of the wake up method. The MADT wakeup can be
-implemented outside of a confidential computing environment. Offline
-support is a property of the wakeup method, not the CoCo implementation.
+Currently hotplug prevented based on the confidential computing
+attribute which is set for Intel TDX. But TDX is not the only possible
+user of the wake up method.
 
-Introduce cpu_hotplug_not_supported() that can be called to indicate
-that CPU offlining should be disabled.
-
-This function is going to replace CC_ATTR_HOTPLUG_DISABLED for ACPI
-MADT.
+Disable CPU offlining on ACPI MADT wakeup enumeration.
 
 Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 ---
- include/linux/cpu.h |  2 ++
- kernel/cpu.c        | 13 ++++++++++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ arch/x86/coco/core.c               |  1 -
+ arch/x86/kernel/acpi/madt_wakeup.c |  3 +++
+ include/linux/cc_platform.h        | 10 ----------
+ kernel/cpu.c                       |  3 +--
+ 4 files changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index fc8094419084..46f2e34a0c5e 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -134,6 +134,7 @@ extern void cpus_read_lock(void);
- extern void cpus_read_unlock(void);
- extern int  cpus_read_trylock(void);
- extern void lockdep_assert_cpus_held(void);
-+extern void cpu_hotplug_disable_offlining(void);
- extern void cpu_hotplug_disable(void);
- extern void cpu_hotplug_enable(void);
- void clear_tasks_mm_cpumask(int cpu);
-@@ -149,6 +150,7 @@ static inline void cpus_read_lock(void) { }
- static inline void cpus_read_unlock(void) { }
- static inline int  cpus_read_trylock(void) { return true; }
- static inline void lockdep_assert_cpus_held(void) { }
-+static inline void cpu_hotplug_disable_offlining(void) { }
- static inline void cpu_hotplug_disable(void) { }
- static inline void cpu_hotplug_enable(void) { }
- static inline int remove_cpu(unsigned int cpu) { return -EPERM; }
+diff --git a/arch/x86/coco/core.c b/arch/x86/coco/core.c
+index eeec9986570e..f07c3bb7deab 100644
+--- a/arch/x86/coco/core.c
++++ b/arch/x86/coco/core.c
+@@ -20,7 +20,6 @@ static bool noinstr intel_cc_platform_has(enum cc_attr attr)
+ {
+ 	switch (attr) {
+ 	case CC_ATTR_GUEST_UNROLL_STRING_IO:
+-	case CC_ATTR_HOTPLUG_DISABLED:
+ 	case CC_ATTR_GUEST_MEM_ENCRYPT:
+ 	case CC_ATTR_MEM_ENCRYPT:
+ 		return true;
+diff --git a/arch/x86/kernel/acpi/madt_wakeup.c b/arch/x86/kernel/acpi/madt_wakeup.c
+index 38ffd4524e44..f7e33cea1be5 100644
+--- a/arch/x86/kernel/acpi/madt_wakeup.c
++++ b/arch/x86/kernel/acpi/madt_wakeup.c
+@@ -1,4 +1,5 @@
+ #include <linux/acpi.h>
++#include <linux/cpu.h>
+ #include <linux/io.h>
+ #include <asm/apic.h>
+ #include <asm/barrier.h>
+@@ -75,6 +76,8 @@ int __init acpi_parse_mp_wake(union acpi_subtable_headers *header,
+ 
+ 	acpi_mp_wake_mailbox_paddr = mp_wake->base_address;
+ 
++	cpu_hotplug_disable_offlining();
++
+ 	apic_update_callback(wakeup_secondary_cpu_64, acpi_wakeup_cpu);
+ 
+ 	return 0;
+diff --git a/include/linux/cc_platform.h b/include/linux/cc_platform.h
+index cb0d6cd1c12f..d08dd65b5c43 100644
+--- a/include/linux/cc_platform.h
++++ b/include/linux/cc_platform.h
+@@ -80,16 +80,6 @@ enum cc_attr {
+ 	 * using AMD SEV-SNP features.
+ 	 */
+ 	CC_ATTR_GUEST_SEV_SNP,
+-
+-	/**
+-	 * @CC_ATTR_HOTPLUG_DISABLED: Hotplug is not supported or disabled.
+-	 *
+-	 * The platform/OS is running as a guest/virtual machine does not
+-	 * support CPU hotplug feature.
+-	 *
+-	 * Examples include TDX Guest.
+-	 */
+-	CC_ATTR_HOTPLUG_DISABLED,
+ };
+ 
+ #ifdef CONFIG_ARCH_HAS_CC_PLATFORM
 diff --git a/kernel/cpu.c b/kernel/cpu.c
-index a86972a91991..af8034ccda8e 100644
+index af8034ccda8e..a9e1628cebbb 100644
 --- a/kernel/cpu.c
 +++ b/kernel/cpu.c
-@@ -484,6 +484,8 @@ static int cpu_hotplug_disabled;
- 
- DEFINE_STATIC_PERCPU_RWSEM(cpu_hotplug_lock);
- 
-+static bool cpu_hotplug_offline_disabled;
-+
- void cpus_read_lock(void)
- {
- 	percpu_down_read(&cpu_hotplug_lock);
-@@ -543,6 +545,14 @@ static void lockdep_release_cpus_lock(void)
- 	rwsem_release(&cpu_hotplug_lock.dep_map, _THIS_IP_);
- }
- 
-+/* Declare CPU offlining not supported */
-+void cpu_hotplug_disable_offlining(void)
-+{
-+	cpu_maps_update_begin();
-+	cpu_hotplug_offline_disabled = true;
-+	cpu_maps_update_done();
-+}
-+
- /*
-  * Wait for currently running CPU hotplug operations to complete (if any) and
-  * disable future CPU hotplug (from sysfs). The 'cpu_add_remove_lock' protects
-@@ -1522,7 +1532,8 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
+@@ -1532,8 +1532,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
  	 * If the platform does not support hotplug, report it explicitly to
  	 * differentiate it from a transient offlining failure.
  	 */
--	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED))
-+	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) ||
-+	    cpu_hotplug_offline_disabled)
+-	if (cc_platform_has(CC_ATTR_HOTPLUG_DISABLED) ||
+-	    cpu_hotplug_offline_disabled)
++	if (cpu_hotplug_offline_disabled)
  		return -EOPNOTSUPP;
  	if (cpu_hotplug_disabled)
  		return -EBUSY;
