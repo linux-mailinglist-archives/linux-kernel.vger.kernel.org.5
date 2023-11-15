@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D40D27ED265
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:36:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3CB7ED269
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344536AbjKOUgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:36:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41356 "EHLO
+        id S235737AbjKOUhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:37:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344519AbjKOUgL (ORCPT
+        with ESMTP id S1344604AbjKOUgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:36:11 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0AB11BD;
-        Wed, 15 Nov 2023 12:35:14 -0800 (PST)
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKQk3x031373;
-        Wed, 15 Nov 2023 20:34:59 GMT
+        Wed, 15 Nov 2023 15:36:38 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 284532108;
+        Wed, 15 Nov 2023 12:35:15 -0800 (PST)
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKKGTF020216;
+        Wed, 15 Nov 2023 20:35:00 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=asdPuKgysJe4FAig3LXjVvUDTsM5pyq4fMAhQ66oWUQ=;
- b=IoV/CdLKOtJ8YS59KWbuPK43v6ToOxJkopuPBHzHX1OKEI6lF3VElkjKEuF9Kbs0PJsr
- 9PY1PEKVxT4j5R4qXvmbaNaHHzqfwQew+POtTAn+FxQ+Pp1rLjk5BR/ywGWuQ4XU1eT6
- /zmfHYCIeE3GJKaS0pp9Q9WvrHBJG4d+O93U8UxYaNqnuwCMU1zu1JVBf7JjS0rtnIcv
- Knh9USFDjtE7XzVFXo+oAMwqoYJeOWLmiVYSqIl0w2Zx9a6S21qA8c1VATKwTLx2mRsv
- CvcfN77GmQpgw88twaU1JZS7bda0zKJSW/qjoARMYLaZvUcXEsOdj/Jqpun8/jmsBqIY xg== 
+ bh=nq9e5Kh1g7nUcH6hHoYLD2BDAEyO/grN3klBejPwfzM=;
+ b=Um1Q9Qholsw0ojBN6dlk7AT6jZ6hU1TGcl9R0e2Pzr0R4Sr1cTfoFznAb6kOACesvz9P
+ pE5ItJ2GD3cWNrOMSlPSpQlWX/UGHivgwQVS71xIgVX+3qxj+4D6HDxqLWC5mgYx3Db+
+ /3VARMtbx7BW0+xDGLvueDZ3l3vgA75iW/oufkHI8iQXQcQJduEazYnXeYwjNFf51cmv
+ eKwt/HptZV9/jttbT0tpVOCwOtzrVkoomnrDCoyWzufLjy14QPn9tFr+ioProi+NvAfT
+ qfv47VzXcCzJXyZcbAc8Dc8lntbalZc1g3fJ+UXUTzYtALSgIFsPhM2RPubXHJbtYFg7 zQ== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4tk8fwx-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4xc8cje-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:35:00 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKMA2V026068;
+        Wed, 15 Nov 2023 20:34:59 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4xc8cj2-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 15 Nov 2023 20:34:59 +0000
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKQjbM031266;
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKIusa015453;
         Wed, 15 Nov 2023 20:34:58 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4tk8fw9-1
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamxnj0qm-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 15 Nov 2023 20:34:58 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKJ070014625;
-        Wed, 15 Nov 2023 20:34:56 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uaneksvxb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 20:34:56 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKYrrj22938112
+        by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKYtlr42074872
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 20:34:53 GMT
+        Wed, 15 Nov 2023 20:34:55 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 58D382004B;
+        by IMSVA (Postfix) with ESMTP id EC46F2004B;
+        Wed, 15 Nov 2023 20:34:54 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9A57520040;
         Wed, 15 Nov 2023 20:34:53 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0BBD120040;
-        Wed, 15 Nov 2023 20:34:52 +0000 (GMT)
 Received: from heavy.boeblingen.de.ibm.com (unknown [9.179.9.51])
         by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Nov 2023 20:34:51 +0000 (GMT)
+        Wed, 15 Nov 2023 20:34:53 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Alexander Potapenko <glider@google.com>,
@@ -81,25 +81,25 @@ Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Sven Schnelle <svens@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH 26/32] s390/mm: Define KMSAN metadata for vmalloc and modules
-Date:   Wed, 15 Nov 2023 21:30:58 +0100
-Message-ID: <20231115203401.2495875-27-iii@linux.ibm.com>
+Subject: [PATCH 27/32] s390/string: Add KMSAN support
+Date:   Wed, 15 Nov 2023 21:30:59 +0100
+Message-ID: <20231115203401.2495875-28-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115203401.2495875-1-iii@linux.ibm.com>
 References: <20231115203401.2495875-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 9rXu4AjXUjT1J9zSVl2CpI0z2C-CA11e
-X-Proofpoint-GUID: s4ZHT-IpHSSL7EXtoiGwwWPzfBiMndPZ
+X-Proofpoint-ORIG-GUID: ui8k3Y8VmDpWZcOWLfPqxXUDgEJ41dXf
+X-Proofpoint-GUID: UXrJJp2IUCZ86lgkxA4hnMPl1rgWzyiC
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-15_20,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- impostorscore=0 phishscore=0 adultscore=0 clxscore=1015 mlxlogscore=839
- mlxscore=0 bulkscore=0 malwarescore=0 spamscore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150163
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ malwarescore=0 phishscore=0 mlxscore=0 lowpriorityscore=0 adultscore=0
+ clxscore=1015 suspectscore=0 mlxlogscore=999 spamscore=0
+ priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311150163
 X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
         RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -110,65 +110,152 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pages for the KMSAN metadata associated with most kernel mappings
-are taken from memblock by the common code. However, vmalloc and module
-metadata needs to be defined by the architectures.
-
-Be a little bit more careful than x86: allocate exactly MODULES_LEN
-for the module shadow and origins, and then take 2/3 of vmalloc for
-the vmalloc shadow and origins. This ensures that users passing small
-vmalloc= values on the command line do not cause module metadata
-collisions.
+Add KMSAN support for the s390 implementations of the string functions.
+Do this similar to how it's already done for KASAN, except that the
+optimized memset{16,32,64}() functions need to be disabled: it's
+important for KMSAN to know that they initialized something.
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/boot/startup.c        |  8 ++++++++
- arch/s390/include/asm/pgtable.h | 10 ++++++++++
- 2 files changed, 18 insertions(+)
+ arch/s390/boot/string.c        | 15 +++++++++++
+ arch/s390/include/asm/string.h | 49 ++++++++++++++++++++--------------
+ 2 files changed, 44 insertions(+), 20 deletions(-)
 
-diff --git a/arch/s390/boot/startup.c b/arch/s390/boot/startup.c
-index 8104e0e3d188..297c1062372a 100644
---- a/arch/s390/boot/startup.c
-+++ b/arch/s390/boot/startup.c
-@@ -253,9 +253,17 @@ static unsigned long setup_kernel_memory_layout(void)
- 	MODULES_END = round_down(__abs_lowcore, _SEGMENT_SIZE);
- 	MODULES_VADDR = MODULES_END - MODULES_LEN;
- 	VMALLOC_END = MODULES_VADDR;
-+#ifdef CONFIG_KMSAN
-+	VMALLOC_END -= MODULES_LEN * 2;
-+#endif
+diff --git a/arch/s390/boot/string.c b/arch/s390/boot/string.c
+index faccb33b462c..6d886c84075b 100644
+--- a/arch/s390/boot/string.c
++++ b/arch/s390/boot/string.c
+@@ -4,8 +4,14 @@
+ #include <linux/errno.h>
+ #undef CONFIG_KASAN
+ #undef CONFIG_KASAN_GENERIC
++#undef CONFIG_KMSAN
+ #include "../lib/string.c"
  
- 	/* allow vmalloc area to occupy up to about 1/2 of the rest virtual space left */
- 	vmalloc_size = min(vmalloc_size, round_down(VMALLOC_END / 2, _REGION3_SIZE));
-+#ifdef CONFIG_KMSAN
-+	/* take 2/3 of vmalloc area for KMSAN shadow and origins */
-+	vmalloc_size = round_down(vmalloc_size / 3, PAGE_SIZE);
-+	VMALLOC_END -= vmalloc_size * 2;
-+#endif
- 	VMALLOC_START = VMALLOC_END - vmalloc_size;
- 
- 	/* split remaining virtual space between 1:1 mapping & vmemmap array */
-diff --git a/arch/s390/include/asm/pgtable.h b/arch/s390/include/asm/pgtable.h
-index 601e87fa8a9a..d764abeb9e6d 100644
---- a/arch/s390/include/asm/pgtable.h
-+++ b/arch/s390/include/asm/pgtable.h
-@@ -107,6 +107,16 @@ static inline int is_module_addr(void *addr)
- 	return 1;
++/*
++ * Duplicate some functions from the common lib/string.c
++ * instead of fully including it.
++ */
++
+ int strncmp(const char *cs, const char *ct, size_t count)
+ {
+ 	unsigned char c1, c2;
+@@ -22,6 +28,15 @@ int strncmp(const char *cs, const char *ct, size_t count)
+ 	return 0;
  }
  
-+#ifdef CONFIG_KMSAN
-+#define KMSAN_VMALLOC_SIZE (VMALLOC_END - VMALLOC_START)
-+#define KMSAN_VMALLOC_SHADOW_START VMALLOC_END
-+#define KMSAN_VMALLOC_ORIGIN_START (KMSAN_VMALLOC_SHADOW_START + \
-+				    KMSAN_VMALLOC_SIZE)
-+#define KMSAN_MODULES_SHADOW_START (KMSAN_VMALLOC_ORIGIN_START + \
-+				    KMSAN_VMALLOC_SIZE)
-+#define KMSAN_MODULES_ORIGIN_START (KMSAN_MODULES_SHADOW_START + MODULES_LEN)
++void *memset64(uint64_t *s, uint64_t v, size_t count)
++{
++	uint64_t *xs = s;
++
++	while (count--)
++		*xs++ = v;
++	return s;
++}
++
+ char *skip_spaces(const char *str)
+ {
+ 	while (isspace(*str))
+diff --git a/arch/s390/include/asm/string.h b/arch/s390/include/asm/string.h
+index 351685de53d2..94925024cb26 100644
+--- a/arch/s390/include/asm/string.h
++++ b/arch/s390/include/asm/string.h
+@@ -15,15 +15,12 @@
+ #define __HAVE_ARCH_MEMCPY	/* gcc builtin & arch function */
+ #define __HAVE_ARCH_MEMMOVE	/* gcc builtin & arch function */
+ #define __HAVE_ARCH_MEMSET	/* gcc builtin & arch function */
+-#define __HAVE_ARCH_MEMSET16	/* arch function */
+-#define __HAVE_ARCH_MEMSET32	/* arch function */
+-#define __HAVE_ARCH_MEMSET64	/* arch function */
+ 
+ void *memcpy(void *dest, const void *src, size_t n);
+ void *memset(void *s, int c, size_t n);
+ void *memmove(void *dest, const void *src, size_t n);
+ 
+-#ifndef CONFIG_KASAN
++#if !defined(CONFIG_KASAN) && !defined(CONFIG_KMSAN)
+ #define __HAVE_ARCH_MEMCHR	/* inline & arch function */
+ #define __HAVE_ARCH_MEMCMP	/* arch function */
+ #define __HAVE_ARCH_MEMSCAN	/* inline & arch function */
+@@ -36,6 +33,9 @@ void *memmove(void *dest, const void *src, size_t n);
+ #define __HAVE_ARCH_STRNCPY	/* arch function */
+ #define __HAVE_ARCH_STRNLEN	/* inline & arch function */
+ #define __HAVE_ARCH_STRSTR	/* arch function */
++#define __HAVE_ARCH_MEMSET16	/* arch function */
++#define __HAVE_ARCH_MEMSET32	/* arch function */
++#define __HAVE_ARCH_MEMSET64	/* arch function */
+ 
+ /* Prototypes for non-inlined arch strings functions. */
+ int memcmp(const void *s1, const void *s2, size_t n);
+@@ -44,7 +44,7 @@ size_t strlcat(char *dest, const char *src, size_t n);
+ char *strncat(char *dest, const char *src, size_t n);
+ char *strncpy(char *dest, const char *src, size_t n);
+ char *strstr(const char *s1, const char *s2);
+-#endif /* !CONFIG_KASAN */
++#endif /* !defined(CONFIG_KASAN) && !defined(CONFIG_KMSAN) */
+ 
+ #undef __HAVE_ARCH_STRCHR
+ #undef __HAVE_ARCH_STRNCHR
+@@ -74,21 +74,6 @@ void *__memset16(uint16_t *s, uint16_t v, size_t count);
+ void *__memset32(uint32_t *s, uint32_t v, size_t count);
+ void *__memset64(uint64_t *s, uint64_t v, size_t count);
+ 
+-static inline void *memset16(uint16_t *s, uint16_t v, size_t count)
+-{
+-	return __memset16(s, v, count * sizeof(v));
+-}
+-
+-static inline void *memset32(uint32_t *s, uint32_t v, size_t count)
+-{
+-	return __memset32(s, v, count * sizeof(v));
+-}
+-
+-static inline void *memset64(uint64_t *s, uint64_t v, size_t count)
+-{
+-	return __memset64(s, v, count * sizeof(v));
+-}
+-
+ #if !defined(IN_ARCH_STRING_C) && (!defined(CONFIG_FORTIFY_SOURCE) || defined(__NO_FORTIFY))
+ 
+ #ifdef __HAVE_ARCH_MEMCHR
+@@ -194,6 +179,27 @@ static inline size_t strnlen(const char * s, size_t n)
+ 	return end - s;
+ }
+ #endif
++
++#ifdef __HAVE_ARCH_MEMSET16
++static inline void *memset16(uint16_t *s, uint16_t v, size_t count)
++{
++	return __memset16(s, v, count * sizeof(v));
++}
 +#endif
 +
- /*
-  * A 64 bit pagetable entry of S390 has following format:
-  * |			 PFRA			      |0IPC|  OS  |
++#ifdef __HAVE_ARCH_MEMSET32
++static inline void *memset32(uint32_t *s, uint32_t v, size_t count)
++{
++	return __memset32(s, v, count * sizeof(v));
++}
++#endif
++
++#ifdef __HAVE_ARCH_MEMSET64
++static inline void *memset64(uint64_t *s, uint64_t v, size_t count)
++{
++	return __memset64(s, v, count * sizeof(v));
++}
++#endif
+ #else /* IN_ARCH_STRING_C */
+ void *memchr(const void * s, int c, size_t n);
+ void *memscan(void *s, int c, size_t n);
+@@ -201,6 +207,9 @@ char *strcat(char *dst, const char *src);
+ char *strcpy(char *dst, const char *src);
+ size_t strlen(const char *s);
+ size_t strnlen(const char * s, size_t n);
++void *memset16(uint16_t *s, uint16_t v, size_t count);
++void *memset32(uint32_t *s, uint32_t v, size_t count);
++void *memset64(uint64_t *s, uint64_t v, size_t count);
+ #endif /* !IN_ARCH_STRING_C */
+ 
+ #endif /* __S390_STRING_H_ */
 -- 
 2.41.0
 
