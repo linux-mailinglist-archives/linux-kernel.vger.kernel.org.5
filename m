@@ -2,177 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2727EC697
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:03:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 952E47EC68E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:02:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344363AbjKOPC4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:02:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58154 "EHLO
+        id S1344311AbjKOPCa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:02:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344315AbjKOPCs (ORCPT
+        with ESMTP id S234954AbjKOPC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:02:48 -0500
-Received: from mout.web.de (mout.web.de [212.227.17.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F95A125;
-        Wed, 15 Nov 2023 07:02:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=web.de; s=s29768273;
-        t=1700060538; x=1700665338; i=heiner.kallweit@web.de;
-        bh=1XGJVR5EsV2PqMjL0uCouljZURA98tfjKWIQF+yrTiQ=;
-        h=X-UI-Sender-Class:Date:From:Subject:To:Cc:References:
-         In-Reply-To;
-        b=nZkqOwy9OZDJB3Q8d/PAdO15bois2ZqHfx3omEieYmYMSAO5CfYYAIBtS7EHRAC8
-         1cP8tAZlJT21lu6MsR8xAiJ5Q8mnw/BBNnuLWIGZQ7b2PkfLlVpaamz9bl3HIO4zZ
-         9SZURLBheUw44YeB9Dayv/x7BfIagiHTNVVVI/P8wePRBMwUAg27VV/d2MKlSZ4zd
-         SmIQ5ruFSI6H2n4q2G26YIJdtVMIXBqSPFYvRElRjI66g229k+sLIWKeU0N/lJAVs
-         sR2iYR/uG8xyckj28dFPRhqpfE8XJVkfdK1cCqNFvKJhbPGToDyc/4P40g6qNLV4T
-         AYRXmKq37O4V7Gr7pw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.86] ([95.117.28.160]) by smtp.web.de (mrweb106
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N1d7i-1rVhJK0RQm-012G7h; Wed, 15
- Nov 2023 16:02:18 +0100
-Message-ID: <22d15e87-a629-4c4c-a2dc-dcae50822e72@web.de>
-Date:   Wed, 15 Nov 2023 16:02:18 +0100
+        Wed, 15 Nov 2023 10:02:28 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D08D3A6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:02:25 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09DD0C433C7;
+        Wed, 15 Nov 2023 15:02:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700060545;
+        bh=1uBxQWcMUMhx7JwMi2EAENFmweyIXNrXqQTDSAkq8nU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=srOc4P2LWfKIwfv3lfqYZiy95RzCY0dyWse6TKe7qf+1CFAXQ4diGZ8GNMoksbLex
+         Fc7IpHozB6Yg8emHwCVl32wXEf4eZItb0SbtMTSOp+NQu8GGeFM4/4sLUCMWH7K7KZ
+         MH3m6a5ki5p0RTcZ9cwNX9b7V+MNhd73uy/fpwiDTGybt/g9glJ8oG6PC52xGG8bma
+         SGMCUoM0jD9hhG7DW34+WkgBcHGMEaZSEkoNkc/H1z+P255AgsNUqKZslSWIDYx5xa
+         kvoSo+fPvAL0FoRQtzE7YR8y+AdFLi5ANZn+N0pJUljM5R29QuN9lXaRiXeMrPtLYz
+         ogcNOzJJmIL8w==
+Date:   Wed, 15 Nov 2023 15:02:21 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Samuel Holland <samuel.holland@sifive.com>
+Cc:     Jisheng Zhang <jszhang@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chao Wei <chao.wei@sophgo.com>,
+        Chen Wang <unicorn_wang@outlook.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH 1/4] dt-bindings: reset: Add binding for Sophgo CV1800B
+ reset controller
+Message-ID: <20231115-upward-unsworn-7746e0aeb5dd@squawk>
+References: <20231113005503.2423-1-jszhang@kernel.org>
+ <20231113005503.2423-2-jszhang@kernel.org>
+ <44f21244-5bf1-4e0f-80a9-6ec76d65eea4@linaro.org>
+ <ZVTHMsXaPdHiuUOF@xhacker>
+ <80e28d77-4a0e-4827-91c0-951094176bbd@sifive.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From:   Heiner Kallweit <heiner.kallweit@web.de>
-Subject: Re: [PATCH net-next v11 09/13] net:ethernet:realtek:rtase: Implement
- pci_driver suspend and resume function
-To:     Justin Lai <justinlai0215@realtek.com>, kuba@kernel.org
-Cc:     davem@davemloft.net, edumazet@google.com, pabeni@redhat.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        andrew@lunn.ch, pkshih@realtek.com, larry.chiu@realtek.com
-References: <20231115133414.1221480-1-justinlai0215@realtek.com>
- <20231115133414.1221480-10-justinlai0215@realtek.com>
-Content-Language: en-US
-In-Reply-To: <20231115133414.1221480-10-justinlai0215@realtek.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:e6jKnEIV3n1u6T3RkYr6AqL5gkc7Eu/zW/ktHBr4E8C+BvLG9Oj
- x58TwvvO9X3t0UCqlXgQD0uYubul6Lkf4FsahyGw2xpsxgXdppol/rtODcxXiqg6Um87HL1
- wYj4NI6Psm4BcHQ2esobAshiyMM5LAdTibRzlIAFf48RXXzzH4AomHm35RCDxQC6MynlT7z
- l6l55WTv9jfGkk6BpXLcg==
-UI-OutboundReport: notjunk:1;M01:P0:QXQgC+6F2YY=;HtuUTlb7oCQ0XE/Jsx86HW8Ghw4
- F+Kvh3zigqHCXcuuTXmzlepa//mvY4QHRARZvypSYEi+/ap0RuVxF/LDe7nI4Biv88rmh3NqF
- uhLxSxygBJiLWzFRuMs+/yXYRgE7GUqo8yWQkAmf1BgMyj5kLYo4dzkYBSPFfPDHis54BmceZ
- 9H1S3QT+0U72B6C+aFMcYYmIw0RrrCwQzmqEzHMwXKbf/h/GK7pR5zcSTPkkRXdplFec8GHzP
- 3v/+YKj7LXXYi5CJxUK4kKuHgpJoqeAxd0cgot8j/ZCOm1hlYrumWClCpzjvGPjj26n9H+5Mr
- vFK1S6RAzEPNst4MlclQXuDgcgMw5fG744wQyVIqGs0hJmhu1wtcy06s+3ijjAM/5GSq68/IH
- gOZkTtqLWdcZr1584TPXgguDMQc5oIU43ySHdHKV0ysq9Sqt1mJT1kdYiQHf/jik6plK5pGsc
- f54Q8KZzZoyf9K8CV5SselYKh8goxk/s+B/QhBT6aEqVXo/Z63LJZhZd5TmKvh24w66zlYX3T
- V758nKjM+e+HgXRrAJyO6BK6C4UzKuKgcf/6TKIAvReD6t40qpQuxZH6cF6QBRQL9Vr05tzhy
- JVd9mYghvbN/ic+I4gNemgirB5gsX94siRGbhAeFGD65NQBMxzxmw2YdbWnzdpIqHcLQ/ZIw/
- JA3DcZP1b9h22Dxpei7/FceiGfiaxUn122F27XoII1wi8cddbSrEiPuy2qGRx298DFW/tFJRm
- QjBFN1afyOaWuaGWDQ4NTofPH3JI0jHyi3naxlFe0URAflCH5Tt0daXt/sgzBh3rGpTr2lnFa
- lE
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sQsiKWp4mGkRvLKL"
+Content-Disposition: inline
+In-Reply-To: <80e28d77-4a0e-4827-91c0-951094176bbd@sifive.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.11.2023 14:34, Justin Lai wrote:
-> Implement the pci_driver suspend function to enable the device
-> to sleep, and implement the resume function to enable the device
-> to resume operation.
->
-> Signed-off-by: Justin Lai <justinlai0215@realtek.com>
-> ---
->  .../net/ethernet/realtek/rtase/rtase_main.c   | 64 +++++++++++++++++++
->  1 file changed, 64 insertions(+)
->
-> diff --git a/drivers/net/ethernet/realtek/rtase/rtase_main.c b/drivers/n=
-et/ethernet/realtek/rtase/rtase_main.c
-> index 12607663dd72..b7679b74cc8a 100644
-> --- a/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> +++ b/drivers/net/ethernet/realtek/rtase/rtase_main.c
-> @@ -2323,12 +2323,76 @@ static void rtase_shutdown(struct pci_dev *pdev)
->  	rtase_reset_interrupt(pdev, tp);
->  }
->
-> +#ifdef CONFIG_PM
-> +static int rtase_suspend(struct pci_dev *pdev, pm_message_t state)
-> +{
-> +	struct net_device *dev =3D pci_get_drvdata(pdev);
-> +
-> +	if (!netif_running(dev))
-> +		goto out;
-> +
-> +	netif_stop_queue(dev);
-> +	netif_carrier_off(dev);
-> +	netif_device_detach(dev);
-> +	rtase_hw_reset(dev);
-> +
-> +out:
-> +	pci_save_state(pdev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int rtase_resume(struct pci_dev *pdev)
-> +{
-> +	struct net_device *dev =3D pci_get_drvdata(pdev);
-> +	struct rtase_private *tp =3D netdev_priv(dev);
-> +	int ret;
-> +
-> +	pci_set_power_state(pdev, PCI_D0);
-> +	pci_restore_state(pdev);
-> +	pci_enable_wake(pdev, PCI_D0, 0);
-> +
 
-IMO this is done by the PCI core already. See other drivers
-and PCI core code.
+--sQsiKWp4mGkRvLKL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> +	/* restore last modified mac address */
-> +	rtase_rar_set(tp, dev->dev_addr);
-> +
-> +	if (!netif_running(dev))
-> +		goto out;
-> +
-> +	rtase_wait_for_quiescence(dev);
-> +
-> +	rtase_tx_clear(tp);
-> +	rtase_rx_clear(tp);
-> +
-> +	ret =3D rtase_init_ring(dev);
-> +	if (ret) {
-> +		netdev_err(dev, "unable to init ring\n");
-> +		rtase_free_desc(tp);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	rtase_hw_config(dev);
-> +	/* always link, so start to transmit & receive */
-> +	rtase_hw_start(dev);
-> +
-> +	netif_carrier_on(dev);
-> +	netif_wake_queue(dev);
-> +	netif_device_attach(dev);
-> +
-> +out:
-> +	return 0;
-> +}
-> +#endif /* CONFIG_PM */
-> +
->  static struct pci_driver rtase_pci_driver =3D {
->  	.name =3D KBUILD_MODNAME,
->  	.id_table =3D rtase_pci_tbl,
->  	.probe =3D rtase_init_one,
->  	.remove =3D rtase_remove_one,
->  	.shutdown =3D rtase_shutdown,
-> +#ifdef CONFIG_PM
-> +	.suspend =3D rtase_suspend,
-> +	.resume =3D rtase_resume,
+On Wed, Nov 15, 2023 at 09:56:07AM -0500, Samuel Holland wrote:
+> On 2023-11-15 7:27 AM, Jisheng Zhang wrote:
+> > On Tue, Nov 14, 2023 at 10:12:35PM +0100, Krzysztof Kozlowski wrote:
+> >> On 13/11/2023 01:55, Jisheng Zhang wrote:
+> >> ...
+> >>
+> >>> diff --git a/include/dt-bindings/reset/sophgo,cv1800b-reset.h b/inclu=
+de/dt-bindings/reset/sophgo,cv1800b-reset.h
+> >>> new file mode 100644
+> >>> index 000000000000..28dda71369b4
+> >>> --- /dev/null
+> >>> +++ b/include/dt-bindings/reset/sophgo,cv1800b-reset.h
+> >>> @@ -0,0 +1,96 @@
+> >>> +/* SPDX-License-Identifier: GPL-2.0 OR MIT */
+> >>> +/*
+> >>> + * Copyright (C) 2023 Sophgo Technology Inc. All rights reserved.
+> >>> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
+> >>> + */
+> >>> +
+> >>> +#ifndef _DT_BINDINGS_CV1800B_RESET_H
+> >>> +#define _DT_BINDINGS_CV1800B_RESET_H
+> >>> +
+> >>> +/*				0-1	*/
+> >>> +#define RST_DDR			2
+> >>> +#define RST_H264C		3
+> >>> +#define RST_JPEG		4
+> >>> +#define RST_H265C		5
+> >>> +#define RST_VIPSYS		6
+> >>> +#define RST_TDMA		7
+> >>> +#define RST_TPU			8
+> >>> +#define RST_TPUSYS		9
+> >>> +/*				10	*/
+> >>
+> >> Why do you have empty IDs? IDs start at 0 and are incremented by 1.
+> >=20
+> > there's 1:1 mapping between the ID and bit. Some bits are reserved, I.E
+> > no actions at all. Is "ID start at 0 and increment by 1" documented
+> > in some docs? From another side, I also notice some SoCs especially
+> > those which make use of reset-simple driver don't strictly follow
+> > this rule, for example, amlogic,meson-a1-reset.h and so on. What
+> > happened?
+> >=20
+> > And I'd like to ask a question here before cooking 2nd version:
+> > if the HW programming logic is the same as reset-simple, but some
+> > or many bits are reserved, what's the can-be-accepted way to support
+> > the reset controller? Use reset-simple? Obviously if we want the
+> > "ID start at 0 and increment by 1" rule, then we have to write
+> > a custom driver which almost use the reset-simple but with a
+> > customized mapping.
+>=20
+> There are two possible situations. Either the reset specifier maps direct=
+ly to
+> something in the hardware, or you are inventing some brand new enumeratio=
+n to
+> use as a specifier.
+>=20
+> In the first situation, you do not need a header. We assume the user will=
+ look
+> to the SoC documentation if they want to know what the numbers mean. (You=
+ aren't
+> _creating_ an ABI, since the ABI is already defined by the hardware.)
+>=20
+> In the second situation, since we are inventing something new, the numbers
+> should be contiguous. This is what Krzysztof's comment was about.
+>=20
+> For this reset device, the numbers are hardware bit offsets, so you are i=
+n the
+> first situation. So I think the recommended solution here is to remove the
+> header entirely and use the bit numbers directly in the SoC devicetree.
+>=20
+> It's still appropriate to use reset-simple. Adding some new mapping would=
+ make
+> things more complicated for no benefit.
 
-Use pm_sleep_ptr and related macros then you don't need the
-conditional compiling.
+Further, I think it is fine in that case to have a header, just the
+header doesn't belong as a binding, and can instead go in the dts
+directory.
 
-> +#endif
->  };
->
->  module_pci_driver(rtase_pci_driver);
+--sQsiKWp4mGkRvLKL
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVTdegAKCRB4tDGHoIJi
+0r6fAQCPXMjSpES01q/k2sT0z3umMcWMIpUKT/3X4UCvd/SghQD/aYjlcWbc34J9
+1xUWupmleFR685Yebdp5rF6SeyZccAI=
+=siUt
+-----END PGP SIGNATURE-----
+
+--sQsiKWp4mGkRvLKL--
