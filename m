@@ -2,64 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B315C7EC880
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 572717EC629
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229796AbjKOQ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:28:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60022 "EHLO
+        id S1344096AbjKOOqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:46:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229497AbjKOQ2C (ORCPT
+        with ESMTP id S1344238AbjKOOqL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:28:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E91C8E;
-        Wed, 15 Nov 2023 08:27:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700065679; x=1731601679;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=XSWLyJxFTqyYvobQOApnn9qgzueYzqYkv2eVyB9iQuM=;
-  b=a850aYS/7BjwXIP2ZfpiGUBI5zWrreMQZslbuIiDPPY5PcAlyQYjL25w
-   e4/CA4taU2bR/GRW5lzBirPM+/XLmFt+8UEuwkoVxglyQ4zb3OLNUCjuu
-   0ON3s32tv/PnhBXQCtWj63CnbQTs6h+tD4mTVu1KP1Bm9oVPMbrM8Vf8S
-   DhhiaMlRQ246Wi75MapVryzhu3bT8rEXSkGEqtOuBPjeH4wPRGx5t3EKI
-   ePti2FQYnizjbpZoYm4PZgi2KV6q8rqTQZJnIxW95rllXYdJ8icNmImTK
-   Tc87961HJIcSDPb17UKCrbRXWwdmALYbbVG2Cr2jIT8Kr8FvzZ8xXmd7c
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="370252753"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="370252753"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 08:27:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="855690652"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="855690652"
-Received: from ipaliych-mobl2.amr.corp.intel.com (HELO [10.212.183.137]) ([10.212.183.137])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 08:27:56 -0800
-Message-ID: <3e461bb5-fa6b-4729-8ff5-ccc1d2887066@linux.intel.com>
-Date:   Wed, 15 Nov 2023 08:44:16 -0600
+        Wed, 15 Nov 2023 09:46:11 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BA231B3;
+        Wed, 15 Nov 2023 06:46:04 -0800 (PST)
+Received: from [100.107.97.3] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: kholk11)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 6803566072F6;
+        Wed, 15 Nov 2023 14:46:02 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700059563;
+        bh=SysEHQyfnDl2ED6yEuD/ZWURaU47ZbaPWA3AZzp3zCU=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=l1TITT5hAZpW8tHUZnZdSzdJPAzIaOspip8Wsbds8NnwpadodZgJv2VFzRso4KS0o
+         HB2g+EKaRIDWxmAsn56WIecMVN4rF6mm75zr43ZOjq0EVW0CfG1GQvSx7S74zfYmCP
+         LUuPpKZaBS0o9A+ow8WojcipY6Uau/37wmvFSbXDGVxlIObHPDZ+FYNmSXX+kHkFCe
+         2iL87MNv3OfavWKBRJE8mrpDQ1cto5ETHcTtRSx1mS4eIL03PknrAGzb3U2bvVnGNQ
+         BvNBaik3KqhQmQ0MAZVw299c316P16p0gWGhsDE8qe1dzbCdqn9NqVGGEx/hJjyWl5
+         iP/J1L/AcOBEw==
+Message-ID: <8e40838f-1a72-4167-8ff5-0ca1584e0246@collabora.com>
+Date:   Wed, 15 Nov 2023 15:45:59 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] soundwire: amd: add an error code check in
- amd_sdw_clock_stop_exit
-To:     Su Hui <suhui@nfschina.com>, vkoul@kernel.org,
-        yung-chuan.liao@linux.intel.com, sanyog.r.kale@intel.com,
-        nathan@kernel.org, ndesaulniers@google.com, trix@redhat.com,
-        Vijendar Mukunda <Vijendar.Mukunda@amd.com>
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        llvm@lists.linux.dev, kernel-janitors@vger.kernel.org
-References: <20231115095407.1059704-1-suhui@nfschina.com>
+Subject: Re: [PATCH] thermal: Add support for device tree thermal zones
+ consumers
 Content-Language: en-US
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-In-Reply-To: <20231115095407.1059704-1-suhui@nfschina.com>
-Content-Type: text/plain; charset=UTF-8
+To:     kernel test robot <lkp@intel.com>, rafael@kernel.org
+Cc:     oe-kbuild-all@lists.linux.dev, daniel.lezcano@linaro.org,
+        rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel@collabora.com,
+        wenst@chromium.org
+References: <20231114131514.89031-1-angelogioacchino.delregno@collabora.com>
+ <202311152230.nzJVHaeG-lkp@intel.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+In-Reply-To: <202311152230.nzJVHaeG-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -67,38 +61,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/15/23 03:54, Su Hui wrote:
-> Clang static analyzer complains that value stored to 'ret' is never read.
-> Add an error code check and print an error message if 'readl_poll_timeout'
-> failed.
+Il 15/11/23 15:37, kernel test robot ha scritto:
+> Hi AngeloGioacchino,
 > 
-> Signed-off-by: Su Hui <suhui@nfschina.com>
-> ---
->  drivers/soundwire/amd_manager.c | 4 ++++
->  1 file changed, 4 insertions(+)
+> kernel test robot noticed the following build errors:
 > 
-> diff --git a/drivers/soundwire/amd_manager.c b/drivers/soundwire/amd_manager.c
-> index 3a99f6dcdfaf..f391b541f4b7 100644
-> --- a/drivers/soundwire/amd_manager.c
-> +++ b/drivers/soundwire/amd_manager.c
-> @@ -1029,6 +1029,10 @@ static int amd_sdw_clock_stop_exit(struct amd_sdw_manager *amd_manager)
->  		ret = readl_poll_timeout(amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL, val,
->  					 (val & AMD_SDW_CLK_RESUME_DONE), ACP_DELAY_US,
->  					 AMD_SDW_TIMEOUT);
-> +		if (ret)
-> +			dev_err(amd_manager->dev, "%s: timed out: %pe\n", __func__,
-> +				ERR_PTR(ret));
+> [auto build test ERROR on rafael-pm/thermal]
+> [also build test ERROR on linus/master v6.7-rc1 next-20231115]
+> [If your patch is applied to the wrong git tree, kindly drop us a note.
+> And when submitting patch, we suggest to use '--base' as documented in
+> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regno/thermal-Add-support-for-device-tree-thermal-zones-consumers/20231114-211656
+> base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
+> patch link:    https://lore.kernel.org/r/20231114131514.89031-1-angelogioacchino.delregno%40collabora.com
+> patch subject: [PATCH] thermal: Add support for device tree thermal zones consumers
+> config: x86_64-rhel-8.3 (https://download.01.org/0day-ci/archive/20231115/202311152230.nzJVHaeG-lkp@intel.com/config)
+> compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152230.nzJVHaeG-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202311152230.nzJVHaeG-lkp@intel.com/
 
-Is this really the desired behavior?
+..snip..
 
-This patch fixes the static analysis issue by logging the error code,
-but does it make sense to continue resuming here and trying to exit from
-the clock stop mode?
+> 
+> 
+> vim +282 include/linux/thermal.h
+> 
+>     280	
 
-At this point a bus reset might be a more relevant behavior...
+That's right, I forgot to add "static inline" :-)
 
->  		if (val & AMD_SDW_CLK_RESUME_DONE) {
->  			writel(0, amd_manager->mmio + ACP_SW_CLK_RESUME_CTRL);
->  			ret = sdw_bus_exit_clk_stop(&amd_manager->bus);
+Fixing and sending a v2.
+
+>     281	struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
+>   > 282	{
+>     283		return ERR_PTR(-EOPNOTSUPP);
+>     284	}
+>     285	
+>     286	struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
+>   > 287	{
+>     288		return ERR_PTR(-EOPNOTSUPP);
+>     289	}
+>     290	#endif
+>     291	
+> 
+
+
+
