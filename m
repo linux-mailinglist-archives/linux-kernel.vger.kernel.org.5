@@ -2,105 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 211687EBD10
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4037EBD16
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:29:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234577AbjKOG3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 01:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55176 "EHLO
+        id S234084AbjKOG3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:29:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234084AbjKOG3E (ORCPT
+        with ESMTP id S234575AbjKOG3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:29:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70E5D9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:29:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6E0F8C433C7;
-        Wed, 15 Nov 2023 06:29:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700029741;
-        bh=L8aS70wCeZHXd9bSYTpdvYQwgG0Gn4rLS8gBbZvlwHY=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=BrdbpUmo27fDVhHtmSsHprxs9HvkdzIYcfuhcpJ0Ab63OtZ+7RLbCS/zTCqwT8phM
-         ijNqjG7lzVSgmePPnk6eoerp5tCWJRNoCIk/q9gXPeFAoV04nxFkc61lmQLYcTXsse
-         qKr3tB8bSIEEL49kQC/xHLIAjOUMc2dxD+yOnNBI5JyJUlFa1SC25mgXQgv8Ndd08X
-         yxSkolJujqdwQEOfMx5ZV5bamvDrE0gR8y4EZbZ8z0ZC59e9iRZEew3rNlVPCYSgBP
-         xFN5MpMoQK4v4I0q+XRnPH4VOqf0YFP54FfVZONyuQ3/h83zmZmdpej4N31vDBNL0n
-         fT99yXCMww4eA==
-Message-ID: <236866a2-41b0-2ad0-db77-4c377367c80e@kernel.org>
-Date:   Wed, 15 Nov 2023 14:28:57 +0800
+        Wed, 15 Nov 2023 01:29:40 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40C1E8
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:29:35 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id d2e1a72fcca58-6c4cf0aea06so5359249b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:29:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700029775; x=1700634575; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ijWgB/n7wQWOhBbaV1md72p8BCrVtoBj2gz5Jm1idO0=;
+        b=BrLPsIcbbxEeDIlp/W6DNYnO7aFe9v/lWyJ9wXQfaHy54r50+uLkAZfeeY9P1lAhBn
+         S9+G2/jnK2ZaDjho2gMvEYxlniqc2qT9Ty9VMUVgBfSGerEly11jSY/0TU5+MnsNl0yT
+         S0256uC4zYisWcT10Z+uz2XW/xpZkSwONPhZCxcqKDwrrMeDa4ujhK5USuhTvmjdtTuH
+         D/LeRBeHntStjb63XuvRPQdyLYXJ1soFFSjvD+iNnfVwkviglGfkPQhnHZWIc2wUeECM
+         Uhj4VPju1NxAF4lVVrxgpvmHRdjndMyFdGtnBOiHbYJFj4ogEi61KuA7KkWb0gWTo/Qi
+         JsnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700029775; x=1700634575;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ijWgB/n7wQWOhBbaV1md72p8BCrVtoBj2gz5Jm1idO0=;
+        b=FYBHZe2qwcZM9OalOlEu1TJKf7rdsHS6a+5Hlx98klWIhs7gGaRhfrA+qrZfDsHq1V
+         Fokd4ZpCh5tA/YdZsQ5IgKx+pKStvHuwrklNvELzUzD+LoE5vJNN5PulaZsImNbBM8i1
+         7vgmoz9QYyJIZBwe6uigvjesWuGbriAzOZOlXjfdVlJLMJUNGsgFcu1AiOSywBoEBHeM
+         1ynGjes8ItSH+yqb0+87CM54AdBPaLY86Ugbqolavxoxtg5mCrsIq1yp3ESVuv8yIOy6
+         /mJpHD0iL1E1LfE3uQ4QGY4an9LGDs+W1R7H7/N8sghbHX0LeGyCgza360+y81ChbdDG
+         t+GA==
+X-Gm-Message-State: AOJu0YwvXhCyoXtUdAjqIwmCGMPTRfUt05MrteBUew+p3fmPft8eg+QK
+        t1UrsUTXoVN61VQlwGpltnK05w==
+X-Google-Smtp-Source: AGHT+IHNQoS9uDAn0ReyTwQP6t3z0RVvRg7vMQN4mCOr0kGFtghMcGt9yzA+q1gHzzOarfaJd1+BRw==
+X-Received: by 2002:a05:6a20:244e:b0:15e:d84:1c5e with SMTP id t14-20020a056a20244e00b0015e0d841c5emr15202326pzc.38.1700029775212;
+        Tue, 14 Nov 2023 22:29:35 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id oo3-20020a17090b1c8300b0028328057c67sm5810344pjb.45.2023.11.14.22.29.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 22:29:34 -0800 (PST)
+Date:   Wed, 15 Nov 2023 11:59:32 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     David Dai <davidai@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] cpufreq: add virtual-cpufreq driver
+Message-ID: <20231115062932.vz2tyg6wgux5lx6t@vireshk-i7>
+References: <20231111014933.1934562-1-davidai@google.com>
+ <20231111014933.1934562-3-davidai@google.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.0
-Subject: Re: [f2fs-dev] [PATCH] f2fs: skip adding a discard command if exists
-Content-Language: en-US
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-References: <20231114212414.3498074-1-jaegeuk@kernel.org>
- <4a0e1c6f-12c4-f3dd-bb26-4bf0aee6be4b@kernel.org>
- <ZVQwz5ubx9LojzEf@google.com>
-From:   Chao Yu <chao@kernel.org>
-In-Reply-To: <ZVQwz5ubx9LojzEf@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-8.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231111014933.1934562-3-davidai@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/15 10:45, Jaegeuk Kim wrote:
-> On 11/15, Chao Yu wrote:
->> On 2023/11/15 5:24, Jaegeuk Kim wrote:
->>> When recovering zoned UFS, sometimes we add the same zone to discard multiple
->>> times. Simple workaround is to bypass adding it.
->>
->> What about skipping f2fs_bug_on() just for zoned UFS case? so that the check
->> condition can still be used for non-zoned UFS case.
-> 
-> Hmm, I've never seen this bug_on before, but even this really happens, it does
+On 10-11-23, 17:49, David Dai wrote:
+> diff --git a/drivers/cpufreq/virtual-cpufreq.c b/drivers/cpufreq/virtual-cpufreq.c
+> +static unsigned int virt_cpufreq_set_perf(struct cpufreq_policy *policy)
+> +{
+> +	writel_relaxed(policy->cached_target_freq,
 
-I've never seen it was been triggered as well.
+Drivers shouldn't be using the cached_target_freq directly. Use the target freq
+or index passed from cpufreq core.
 
-> not make sense to move forward to create duplicate commands resulting in a loop.
+> +static int virt_cpufreq_cpu_exit(struct cpufreq_policy *policy)
+> +{
+> +	topology_clear_scale_freq_source(SCALE_FREQ_SOURCE_VIRT, policy->related_cpus);
+> +	kfree(policy->freq_table);
+> +	policy->freq_table = NULL;
 
-Agreed.
+No need of doing this. Also the order of above two calls is wrong anyway.
 
-It looks those codes were copied from extent_cache code base, do we need to fix
-all cases to avoid loop?
-
-> 
-> So, the question is, do we really need to check this? Have we hit this before?
-Not sure, just be worry about that flaw of newly developed feature can make
-code run into that branch.
-
-Thanks,
-
-> 
->>
->> Thanks,
->>
->>>
->>> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->>> ---
->>>    fs/f2fs/segment.c | 3 ++-
->>>    1 file changed, 2 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>> index 727d016318f9..f4ffd64b44b2 100644
->>> --- a/fs/f2fs/segment.c
->>> +++ b/fs/f2fs/segment.c
->>> @@ -1380,7 +1380,8 @@ static void __insert_discard_cmd(struct f2fs_sb_info *sbi,
->>>    			p = &(*p)->rb_right;
->>>    			leftmost = false;
->>>    		} else {
->>> -			f2fs_bug_on(sbi, 1);
->>> +			/* Let's skip to add, if exists */
->>> +			return;
->>>    		}
->>>    	}
+-- 
+viresh
