@@ -2,126 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 191837EC64F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:51:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 581AD7EC655
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344270AbjKOOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53108 "EHLO
+        id S1344040AbjKOOwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:52:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344091AbjKOOvF (ORCPT
+        with ESMTP id S234954AbjKOOwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:51:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07AD8E;
-        Wed, 15 Nov 2023 06:51:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700059862; x=1731595862;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=pkIPOw810249sk90oDTDuwzqTKjcTyNRgT3NVxcT2Gk=;
-  b=oFWBzk+7OfA4UHxsIT2/iAs8kgNUQXuj9O3wU3hWlAw/6OKwbTQRbPtx
-   NiNZRoNoMYgOc+ZseV65BB+1OEGt9P086Zlh0wweABqrYsuKZu7o5tRHh
-   hXdhdUNutALXPx0MCtaU1mreKmhsSs5o+/QZuPfybVKUGPISFxg329m2Y
-   OXW+4gFFnWKzHX7wu3n9oVuCiP/B10TlAwZixZ2k21scv2MNgufRmHrpR
-   tPkorRHILw8g9DmiFIBiwRvqqyFORHz9lr2KFHNznS3IXc0NkoF8JVG4q
-   gpoaV9BFV+R3Jf0M1Ug0v0sJJc6wsQTs8XGfp4gCx5iq2RSWleAR9l+ks
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="371075734"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="371075734"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 06:51:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="908801239"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="908801239"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2023 06:50:59 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3HEG-0000Ps-2c;
-        Wed, 15 Nov 2023 14:50:56 +0000
-Date:   Wed, 15 Nov 2023 22:50:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Huang Shijie <shijie@os.amperecomputing.com>,
-        catalin.marinas@arm.com
-Cc:     oe-kbuild-all@lists.linux.dev, will@kernel.org,
-        gregkh@linuxfoundation.org, rafael@kernel.org, arnd@arndb.de,
-        mark.rutland@arm.com, broonie@kernel.org, keescook@chromium.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, patches@amperecomputing.com,
-        Huang Shijie <shijie@os.amperecomputing.com>
-Subject: Re: [PATCH] arm64: irq: set the correct node for VMAP stack
-Message-ID: <202311152250.ozO781vZ-lkp@intel.com>
-References: <20231114091643.59530-1-shijie@os.amperecomputing.com>
+        Wed, 15 Nov 2023 09:52:36 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEAE88E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:52:33 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17A45C433C8;
+        Wed, 15 Nov 2023 14:52:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700059953;
+        bh=7qrZK4ggcFRaOA/zhECZHHj8eddVbuixMF/Jksd0y/U=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=AgklWTk0BSaawUGJ+5SzMBVsrTYyhwM6e1+ts9tWmQvCLvEXSh2HFsPjE5dYX8i0r
+         Q6KlXuzUI8kfx5pdPb+re0KxV9PXODsFlCksI9RbLQ5ZEb6MlbG3NTEzbeJWJvxbIB
+         /s5zG0p9xOsPQ/mD5XWHzFrZaid6xV03Nk9/HX7O4HfcE2pu34dRALX2AHxH2Efiw2
+         wMYHA6AzqtwyCL0Mbbl/tYvf3LnwRmyjPfm8+SXQVN0vCcXtHVOi1MSRGGJZaPBhgn
+         YDmEM501u9WOF5HeqyDVn68PC6ALxTcUVm0MGJmxDpWTNsuf8fUVoWEXhpVG00uaS4
+         ArKrLODnXZIjA==
+Message-ID: <4dfab9ac-8d62-3a7e-04f1-219d496f97fe@kernel.org>
+Date:   Wed, 15 Nov 2023 22:52:26 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114091643.59530-1-shijie@os.amperecomputing.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [f2fs-dev] [PATCH] f2fs-tools: use total_node_count when creating
+ a new node block in fsck
+To:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>
+References: <20231027153043.1381438-1-daeho43@gmail.com>
+Content-Language: en-US
+From:   Chao Yu <chao@kernel.org>
+In-Reply-To: <20231027153043.1381438-1-daeho43@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Huang,
+On 2023/10/27 23:30, Daeho Jeong wrote:
+> From: Daeho Jeong <daehojeong@google.com>
+> 
+> We might allocate more node blocks than total_valid_node_count, when we
+> recreate quota files.
+> 
+> Signed-off-by: Daeho Jeong <daehojeong@google.com>
 
-kernel test robot noticed the following build errors:
+Reviewed-by: Chao Yu <chao@kernel.org>
 
-[auto build test ERROR on arm64/for-next/core]
-[also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arnd-asm-generic/master linus/master v6.7-rc1 next-20231115]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Huang-Shijie/arm64-irq-set-the-correct-node-for-VMAP-stack/20231114-171932
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-patch link:    https://lore.kernel.org/r/20231114091643.59530-1-shijie%40os.amperecomputing.com
-patch subject: [PATCH] arm64: irq: set the correct node for VMAP stack
-config: arm64-randconfig-001-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152250.ozO781vZ-lkp@intel.com/config)
-compiler: aarch64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152250.ozO781vZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311152250.ozO781vZ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   arch/arm64/kernel/irq.c: In function 'init_irq_stacks':
->> arch/arm64/kernel/irq.c:60:59: error: implicit declaration of function 'early_cpu_to_node'; did you mean 'early_pfn_to_nid'? [-Werror=implicit-function-declaration]
-      60 |                 p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
-         |                                                           ^~~~~~~~~~~~~~~~~
-         |                                                           early_pfn_to_nid
-   cc1: some warnings being treated as errors
-
-
-vim +60 arch/arm64/kernel/irq.c
-
-    52	
-    53	#ifdef CONFIG_VMAP_STACK
-    54	static void init_irq_stacks(void)
-    55	{
-    56		int cpu;
-    57		unsigned long *p;
-    58	
-    59		for_each_possible_cpu(cpu) {
-  > 60			p = arch_alloc_vmap_stack(IRQ_STACK_SIZE, early_cpu_to_node(cpu));
-    61			per_cpu(irq_stack_ptr, cpu) = p;
-    62		}
-    63	}
-    64	#else
-    65	/* irq stack only needs to be 16 byte aligned - not IRQ_STACK_SIZE aligned. */
-    66	DEFINE_PER_CPU_ALIGNED(unsigned long [IRQ_STACK_SIZE/sizeof(long)], irq_stack);
-    67	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Thanks,
