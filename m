@@ -2,111 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 63B027ED616
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:34:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 702CA7ED61D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:35:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235036AbjKOVeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:34:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33298 "EHLO
+        id S1344664AbjKOVfB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:35:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjKOVeN (ORCPT
+        with ESMTP id S229577AbjKOVe7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:34:13 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD35B8;
-        Wed, 15 Nov 2023 13:34:09 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id 5b1f17b1804b1-407da05f05aso623445e9.3;
-        Wed, 15 Nov 2023 13:34:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700084047; x=1700688847; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TJq9RwRehs4D7WXODBH5ujBwSEz9WoRdCdezm7e5LdI=;
-        b=CI9VI4IX3/Y7I7kovV2zUqXNJa7zrS9O2ZU0Zu3iOPwhAYXGleOFG57/vnop2rtg3E
-         WPegyPypcT2GGfNh31wJeRvG5mgU1xmMPsFes2esgJIbpV4Ih452p20BTvt7WMW1ZqkE
-         RIXiPjyO1ZofbzttGLS+H0xDsptZXcIMPNQKkde69CMMI/h+MFeSCJwaAfsDBzJy8bWO
-         D2q7P0ml/gaSrzW/hb+3bT2U7peqFeqMkTLJ/p1zZg15k4TBwZvuzJMvcrLwlNr7kPx1
-         icA36TKRRGYjdfwtLhE89DxvG/F9WnBaKvFipGREOAojyXUI78yEYu8hHud8wOCMDGZ+
-         hhZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700084047; x=1700688847;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TJq9RwRehs4D7WXODBH5ujBwSEz9WoRdCdezm7e5LdI=;
-        b=dk+7TKPBqQQkaG0/vNEL1Hq8tvmaSLM/k89Y5HaNoKNrtC1H6S2Pg/mo6Yzo8RY3Nl
-         2uhNqGr7BwlnpFxuxPUWurupd5Xt2B7Hg/2QNSoXoN/vzUyyGWwn4XiurBTcaORdkw1Y
-         5+ISXXJdGx4d5hQpckB5GQsCngIk1gXrk1V5O4vBIuPXlyXfyqdKlWBx4xokjj84fBx7
-         TPBkLo2OWmh/ChsOX6W0UMjLNL5875RHZAvkELkU/Rms+bTOyvDczU+LU6KMiQWJbMIX
-         GQBpZQl8xcQ8FxrGORaWZRHaGzmVBhCJukASY6+YLV2cB+avP2izf/W6Leq/RHCchf9Q
-         z+mw==
-X-Gm-Message-State: AOJu0Yze7JAsYJbzDllCncDoMNqUmU/QyHWF51NDIYdh7ttylaGfZnIZ
-        qqlsQ5yf/f0Tl8aJpcYl7LQ=
-X-Google-Smtp-Source: AGHT+IHb3SyTdwLXt/HE/cynHBAK02Y53Amu6UoXjOtymiJSVwp87yE+gVeFZi19CMpgtwP80m5dNg==
-X-Received: by 2002:a05:600c:4f8d:b0:40a:6235:e82d with SMTP id n13-20020a05600c4f8d00b0040a6235e82dmr2265604wmq.15.1700084047522;
-        Wed, 15 Nov 2023 13:34:07 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:e8e:4851:e049:93fd])
-        by smtp.gmail.com with ESMTPSA id x16-20020a05600c2a5000b00405391f485fsm914104wme.41.2023.11.15.13.34.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:34:07 -0800 (PST)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/Five SoC
-Date:   Wed, 15 Nov 2023 21:33:58 +0000
-Message-Id: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 15 Nov 2023 16:34:59 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF8A5B0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:34:56 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3NXA-0004XD-Ec; Wed, 15 Nov 2023 22:34:52 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3NX9-009JIF-R8; Wed, 15 Nov 2023 22:34:51 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3NX9-002Dev-Ht; Wed, 15 Nov 2023 22:34:51 +0100
+Date:   Wed, 15 Nov 2023 22:34:51 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Heiko Stuebner <heiko@sntech.de>, linux-pwm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: Re: [RESEND PATCH] pwm: Use device_get_match_data()
+Message-ID: <20231115213451.cvrmuzdbtfrpysth@pengutronix.de>
+References: <20231115210121.3738487-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jc2xrudroiknumgj"
+Content-Disposition: inline
+In-Reply-To: <20231115210121.3738487-1-robh@kernel.org>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-The SSI block on the RZ/Five SoC is identical to one found on the RZ/G2UL
-SoC. "renesas,r9a07g043-ssi" compatible string will be used on the RZ/Five
-SoC so to make this clear and to keep this file consistent, update the
-comment to include RZ/Five SoC.
+--jc2xrudroiknumgj
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-No driver changes are required as generic compatible string
-"renesas,rz-ssi" will be used as a fallback on RZ/Five SoC.
+Hello Rob,
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+this is a resend of v2, I'd say. Would have been helpful to indicate
+that in the Subject line.
 
-diff --git a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-index 3b5ae45eee4a..8b9695f5decc 100644
---- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-+++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
-@@ -16,7 +16,7 @@ properties:
-   compatible:
-     items:
-       - enum:
--          - renesas,r9a07g043-ssi  # RZ/G2UL
-+          - renesas,r9a07g043-ssi  # RZ/G2UL and RZ/Five
-           - renesas,r9a07g044-ssi  # RZ/G2{L,LC}
-           - renesas,r9a07g054-ssi  # RZ/V2L
-       - const: renesas,rz-ssi
--- 
-2.34.1
+On Wed, Nov 15, 2023 at 03:01:20PM -0600, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
+>=20
+> As these drivers only do DT based matching, of_match_device() will never
+> return NULL if we've gotten to probe(). Therefore, the NULL check and
+> error returns can be dropped.
+>=20
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
+I send a Reviewed-by tag in reply to (original) v2 that wasn't added
+here. As v2 is still "new" in the pwm patchwork, I'll mark this resend
+as non-actionable.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--jc2xrudroiknumgj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVVOXoACgkQj4D7WH0S
+/k7kpAf/bl4KKfAUBzghYI6z/50HL7esIThFBaGzzgnzJERN+uCxApkuHsLFN9kn
+/he+aasBSn8kXa1A3DELf0byviI8xBJRn+OFXJbWkVMk0VIc8BQavnm0iE/NaxuH
+KnyOdFDwc4Rcmip0Yus5iP8U3kaj6ikdMNYla9NFMuQ61AaWZHnQX/SQ+bTVJmeX
+p3JF7ZJPvC9YNHXAFJwbPRWhWn6dLYRSOWoV6ulHWhuQg8/zJKUxW5s97eLPNHL5
+X1pqlVJr+KUCaxNfAgjrQCweQs5y5hyUj7aarrhTBKtZtw1YYdcpgiRszp4qD0Qu
+0CJwfOp3awhDbcSIav0CxkeTQZQDrQ==
+=DR7L
+-----END PGP SIGNATURE-----
+
+--jc2xrudroiknumgj--
