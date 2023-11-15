@@ -2,44 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 987C87EBC14
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:36:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E4F87EBC21
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234442AbjKODga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:36:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
+        id S234462AbjKODjG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:39:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234404AbjKODg2 (ORCPT
+        with ESMTP id S234404AbjKODjE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:36:28 -0500
+        Tue, 14 Nov 2023 22:39:04 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA5AF0;
-        Tue, 14 Nov 2023 19:36:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DAAC433C7;
-        Wed, 15 Nov 2023 03:36:21 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0156AD5;
+        Tue, 14 Nov 2023 19:39:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDA5BC433C8;
+        Wed, 15 Nov 2023 03:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019384;
-        bh=0+NfibdCD4VeZDLIRZHoC1Mv9PlzLQwXwbu//MhvxdQ=;
-        h=From:To:Cc:Subject:Date:From;
-        b=UctmX1ybctCzhs0y9pgMddcneMzf3H3WfdRTC1UytY96/nT2i9joK4+uTyzFis5CD
-         g+eNU1wAFleh+ToVwmsh85dbqka+cqLp19oDP4f88JBQUDxPq8G2tn8Ie5A1BMRE5m
-         xypLeZ4U4r3Ct21vXc2N9ZgszW48ht18d5h4qv3Jp22KVzNP3eJ4DF0BtF0a7gIh81
-         LXgrUie1OoT05fU6AEH45/WFi5Y0IGqDpjfRC8WsU2sBimoY2ww99d+jAWL0nTcuQI
-         gg9IGlTyoyVMeoS8Oi1Ab5abkm5kMl9QwcGHRMU3/JmCszk7eBRnT/PleFUJRUWsSY
-         iinBXupGnpkmw==
+        s=k20201202; t=1700019541;
+        bh=bcUStvzoYBQPxGOjaHvVyWseLm4bdC+hbtjNlPqnaJE=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=L4SSRwB7FntGu3sWvBSW4D9+8CJ9niVhjwKTIBQaFsXkMHX7KLaFh5Xx29wZwGHkR
+         TdsVyiookbxlP9M3m7YKE7mQXJiQaSymtzaN8ztIJMSv3x4lIWHETAAReT9jbGmeMC
+         7+wn8m2/lKWeXx7bDa2/dXVsLaO72skVqFq7njehh+tFRM0SaaMVN63oaXxrv8zfRk
+         DWTGN37HJEHk75yAZac5uxdU6VHGuEkDzAYjjYe0qjjzG1wbGN/CzlzTNoCJq/DLZB
+         iJu6jDubhPzwBgc8feVLzw9XSU/L1ypT6In4Q3fLwqrK8c3fUeSUiMY+WQgjOvht93
+         7TMxVFUNvPwKA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, peter.ujfalusi@gmail.com,
-        jarkko.nikula@bitmer.com, lgirdwood@gmail.com, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-omap@vger.kernel.org, linux-sound@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.1 1/6] ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
-Date:   Tue, 14 Nov 2023 22:35:55 -0500
-Message-ID: <20231115033608.1229058-1-sashal@kernel.org>
+Cc:     Zongmin Zhou <zhouzongmin@kylinos.cn>,
+        Dave Airlie <airlied@redhat.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, kraxel@redhat.com,
+        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
+        airlied@gmail.com, daniel@ffwll.ch, virtualization@lists.linux.dev,
+        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.1 2/6] drm/qxl: prevent memory leak
+Date:   Tue, 14 Nov 2023 22:35:56 -0500
+Message-ID: <20231115033608.1229058-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
+In-Reply-To: <20231115033608.1229058-1-sashal@kernel.org>
+References: <20231115033608.1229058-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -55,44 +57,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tony Lindgren <tony@atomide.com>
+From: Zongmin Zhou <zhouzongmin@kylinos.cn>
 
-[ Upstream commit fbb74e56378d8306f214658e3d525a8b3f000c5a ]
+[ Upstream commit 0e8b9f258baed25f1c5672613699247c76b007b5 ]
 
-We need to check for an active device as otherwise we get warnings
-for some mcbsp instances for "Runtime PM usage count underflow!".
+The allocated memory for qdev->dumb_heads should be released
+in qxl_destroy_monitors_object before qxl suspend.
+otherwise,qxl_create_monitors_object will be called to
+reallocate memory for qdev->dumb_heads after qxl resume,
+it will cause memory leak.
 
-Reported-by: Andreas Kemnade <andreas@kemnade.info>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
-Link: https://lore.kernel.org/r/20231030052340.13415-1-tony@atomide.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Zongmin Zhou <zhouzongmin@kylinos.cn>
+Link: https://lore.kernel.org/r/20230801025309.4049813-1-zhouzongmin@kylinos.cn
+Reviewed-by: Dave Airlie <airlied@redhat.com>
+Signed-off-by: Maxime Ripard <mripard@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/ti/omap-mcbsp.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/qxl/qxl_display.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
-index 7c539a41a6a34..4b8aac1a36fa2 100644
---- a/sound/soc/ti/omap-mcbsp.c
-+++ b/sound/soc/ti/omap-mcbsp.c
-@@ -74,14 +74,16 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
- 		return -EINVAL;
- 	}
+diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
+index a152a7c6db215..f91a86225d5e7 100644
+--- a/drivers/gpu/drm/qxl/qxl_display.c
++++ b/drivers/gpu/drm/qxl/qxl_display.c
+@@ -1229,6 +1229,9 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
+ 	if (!qdev->monitors_config_bo)
+ 		return 0;
  
--	pm_runtime_put_sync(mcbsp->dev);
-+	if (mcbsp->active)
-+		pm_runtime_put_sync(mcbsp->dev);
- 
- 	r = clk_set_parent(mcbsp->fclk, fck_src);
- 	if (r)
- 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
- 			src);
- 
--	pm_runtime_get_sync(mcbsp->dev);
-+	if (mcbsp->active)
-+		pm_runtime_get_sync(mcbsp->dev);
- 
- 	clk_put(fck_src);
++	kfree(qdev->dumb_heads);
++	qdev->dumb_heads = NULL;
++
+ 	qdev->monitors_config = NULL;
+ 	qdev->ram_header->monitors_config = 0;
  
 -- 
 2.42.0
