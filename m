@@ -2,115 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4A3A7ED77A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD6FE7ED773
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:43:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230107AbjKOWoP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:44:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52780 "EHLO
+        id S230138AbjKOWnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:43:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOWoO (ORCPT
+        with ESMTP id S229592AbjKOWm6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:44:14 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EE69195
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:44:11 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id af79cd13be357-77bb668d941so6730685a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:44:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700088250; x=1700693050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PnPNvgYVe/a3KXEsnvx4GNWysFw45MMaqeVr2951f4Q=;
-        b=XlkCkQTRQrayA+u8rRgICNJcT9kOdTf1G87HZs9BvjdaHpNVJ84Q5IPEee9tEq6V2Q
-         QlboSang2I73/U1smTY2yLLJR3116OdJpm3yKCacKkBLjWk74mQOQs1PshL0Ys/QDE0q
-         YHPaRTkazBrwX2PV1YeTDOGHu3PVqGdayIMZYnxTM1VFrkO4hzjBM0u/DX8vOqvRgY3E
-         GT/6dwkGGANrKUV5DdMKGe6gw4nRpWauSEjCgBkXQ4znBwbzRggxzVktvYqKOzvRa2bG
-         MaseNbnig/MmS5uMXYTwkkOpi64FhbzvPKh1hEYfhyd55Me0cENWZ83Yz71Y8K/pli2w
-         D3jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700088250; x=1700693050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PnPNvgYVe/a3KXEsnvx4GNWysFw45MMaqeVr2951f4Q=;
-        b=XmctVlHqHzlY1HAT+Bkp7goy1zT9yNCrCGiKi7jGO3MVWFyT+TOz/j1Yehc7cznpuG
-         aAUiJ/jlw2Q1Zkj9g8ORYKLIPBIPdad1hUPs+G325pYa2ZVSHS005eSEFIgVrNrZGJFA
-         i/Nm/V0CTeHC3YuzOnCEqyhpomDoVyWMwbRDsZDkVUNoLIsJ6es3f/8dP6aQ7VLrd/7m
-         F3XsCcSyow5SzyE7NnBMH806ulQcscuDGbxYwYl5Pl+FIEDdcqTbos1YtdVZD3HLywm4
-         iWLyzIwRUJ9Lg8Y4hK6mRYc7rDguaRnyZ1Ds8+dymyqgsuEUPjPEcu6d9qO0HwaV2Ccz
-         02EA==
-X-Gm-Message-State: AOJu0Ywic9ly9LCui36XjgZdPMdmOPy7ZhjJdujoB+xRZ4ewpBPVvb0P
-        U8TVSeLQvO443lLWxtIMSBtamg==
-X-Google-Smtp-Source: AGHT+IEXDa9AqDk6k23ASNVZlgKVGyl4b96qGCZ+OOAUM0YbtOUy7P5HZ7bH5z4OmceD3xsVsN2MMQ==
-X-Received: by 2002:a05:620a:480e:b0:77b:c47e:727f with SMTP id eb14-20020a05620a480e00b0077bc47e727fmr7898555qkb.28.1700088250234;
-        Wed, 15 Nov 2023 14:44:10 -0800 (PST)
-Received: from localhost (ip-185-104-139-34.ptr.icomera.net. [185.104.139.34])
-        by smtp.gmail.com with ESMTPSA id s19-20020a05620a16b300b00772662b7804sm3815744qkj.100.2023.11.15.14.42.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 14:42:58 -0800 (PST)
-Date:   Wed, 15 Nov 2023 17:42:17 -0500
-From:   Dan Carpenter <dan.carpenter@linaro.org>
-To:     mripard@kernel.org
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Richard Fitzgerald <rf@opensource.cirrus.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Brendan Higgins <brendan.higgins@linux.dev>,
-        David Gow <davidgow@google.com>,
-        =?iso-8859-1?Q?Ma=EDra?= Canal <mcanal@igalia.com>,
-        Arthur Grillo <arthurgrillo@riseup.net>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        kernel-janitors@vger.kernel.org,
-        Ville =?iso-8859-1?Q?Syrj=E4l=E4?= 
-        <ville.syrjala@linux.intel.com>, kv-team <kv-team@linaro.org>
-Subject: Re: [RFC] drm/tests: annotate intentional stack trace in
- drm_test_rect_calc_hscale()
-Message-ID: <8489c4db-6639-43f5-b6c4-8598652cdce6@suswa.mountain>
-References: <02546e59-1afe-4b08-ba81-d94f3b691c9a@moroto.mountain>
- <CA+G9fYuA643RHHpPnz9Ww7rr3zV5a0y=7_uFcybBSL=QP_sQvQ@mail.gmail.com>
- <7b58926a-a7c3-4ad0-b8a3-56baf36939ca@kadam.mountain>
- <s4blvjs4ipcqdzodmgsbvgegqh2kxgdnoerpwthvc57hpsulu5@gb2kh7vbv7nq>
+        Wed, 15 Nov 2023 17:42:58 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2045.outbound.protection.outlook.com [40.107.96.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001F419B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:42:54 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OuYmksxSDtJUYVFyZzb6cFRH9NGtpbb9zGSM6+onAM1obsZJERjN+CTgHWTWfOIXNYgJYfi4bBNQA5iIqXHj7WVPzOK3AxT4x4qh370AHHAZ6rIfQRinBOqoxCWgD2fqXfH17SpOjk01iFbvsw2vqnnvU7cGgdMvhXShFV9Xo3Mqsix7fySO5s997U8/hi770q6JzQcPVkMlEISsm7l3F8AaAghYyZqEfHFi0/JolZkKXXkFboxNmcMb1sM8HKEk7JAyFU00Cr0xWwhSw2rreayoONYxMSZ1gAq/tcjuAGI7t4bPih3w1EyojsULqVgawzXHp1M1EMH0dxmZLkuKmQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Tx4f8RChWmElYB2mrNBfpiiJXzAp+U51Usc5oWYwHsM=;
+ b=Cuoe6BPbfYcFwsycnTz6YSW4Td/5QmEZb9BcZDBi0wfC5pYsC7G/kkqpFfI4ZGk6uTlDONk/HNLLjgf1QT9TPqkrCGGWwcgClcj0rVcgYtJ+LSQ2KXWCBUKWC206yHQLATlsnxT1ZIcwoO38NqSkf0OzXsKnGqVr087rsMgWnMULdTYURxTr+p5+n7cwZARCREVVFpGgH8CszNPR3Ad3Jt0nyWP19Fn0LABigFAHdxyjShje23kS8iKO/uHZHv+sDYPTNoA6k9roTIJ2iGRX5gMnma+PW85ztHR+6DQVT1lwhqnzYRBnZQ++GxztdhscDbqzhZ/rJ+iyO+XbO+Ir6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Tx4f8RChWmElYB2mrNBfpiiJXzAp+U51Usc5oWYwHsM=;
+ b=MsSvVk8NKGq/Ju0J7TflUYIBphSDYgf5X5zxVDdLToXtPi6D5G1rX3cZDFjgyNPBmzW8jXKLSlywLALr1WoAsbNhZobqfFMx7lIDcnv+B3jG6j0IrRNblgxDQWHsZ3jqimV9MndJmetwlaU3nj8NoHtIvKfr51mVSn2hQCKdQus=
+Received: from MW4PR03CA0341.namprd03.prod.outlook.com (2603:10b6:303:dc::16)
+ by BL0PR12MB5010.namprd12.prod.outlook.com (2603:10b6:208:17c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.19; Wed, 15 Nov
+ 2023 22:42:52 +0000
+Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
+ (2603:10b6:303:dc:cafe::70) by MW4PR03CA0341.outlook.office365.com
+ (2603:10b6:303:dc::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20 via Frontend
+ Transport; Wed, 15 Nov 2023 22:42:52 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7025.9 via Frontend Transport; Wed, 15 Nov 2023 22:42:52 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Wed, 15 Nov
+ 2023 16:42:51 -0600
+Date:   Wed, 15 Nov 2023 16:42:31 -0600
+From:   Michael Roth <michael.roth@amd.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+CC:     <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        "Tom Lendacky" <thomas.lendacky@amd.com>,
+        Joerg Roedel <jroedel@suse.de>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] x86: Ensure input to pfn_to_kaddr() is treated as a
+ 64-bit type
+Message-ID: <20231115224231.xmxfktqcb4sls3fb@amd.com>
+References: <20231115201431.820278-1-michael.roth@amd.com>
+ <e42524f9-87ef-47f4-9c79-bc06b4d71a58@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <s4blvjs4ipcqdzodmgsbvgegqh2kxgdnoerpwthvc57hpsulu5@gb2kh7vbv7nq>
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+In-Reply-To: <e42524f9-87ef-47f4-9c79-bc06b4d71a58@intel.com>
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|BL0PR12MB5010:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7f737a3f-c274-4608-b38e-08dbe62c33d2
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WiPylsic782ckdf7BCx9BgfkVkQ4stK57C28Kz7lVkbqgcgUsKgWkSb/wywMBQ4ycW5TPDCKgbSvRTaNrtVEN6fy+MKJinvokhn0F4eswV9nHH6J8c9E8j2s8gi9cS9um1I3gxdLlPE3KHrsce05DxEmgJAsTgpA+9RJXJlaTnLk9mK8OUaHYXe86KuOxmmSU/VKHEAyNQd++yJpnuxVlcSxI2+EC0cSLYpAvWTo+ym2Jxd2jKrqZUvGVNmYjuxRFeJ2unJbXlrbmA88NLXU9nQQlmje91cO1dShK/vBO4lDPQq6ZzzVtdAO2mHIY6xBE+TpCWtbYR4D28NiTp5KWVAtjkmXySndvLIKaYRvDJ0yBPdfYTdStxyOE3QjLF7jpHirP3fdrYtHKptcslu0IAaxoimT+1/J1MzqBvmR2q5BilaSnrD40nAmCvIXicTZDzLnEObQ3thT4u02qXm1sbp6IPgvhh70piEWLCOIK6/w43AerAAEUKtgiRP3BJMGcveaDzlvc/tRPclr+fdowSvKKfO3rqWj/sRbO5bpAPqeNQjArPFNrX63ifmPc4GfDMSFtDD16gcFj7U7Ql3DrXmQQQ/ghhtMm/dWm4hoIQDhipOsXH8tmlRzRkLpKp1p/rispZCbz1Oy6MnBouQQdraPt+6UAbBhNJlLAYpNPmzoyksWbbc9RHPwQTig3DYdboyqLHF2zz4tkHGZI9fjaqPF4SecwPyd7rnSd0t+XoM=
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(82310400011)(1800799009)(451199024)(36840700001)(46966006)(40470700004)(40480700001)(316002)(4326008)(6916009)(2616005)(1076003)(5660300002)(53546011)(83380400001)(6666004)(86362001)(336012)(2906002)(426003)(26005)(70206006)(70586007)(16526019)(8676002)(82740400003)(54906003)(478600001)(44832011)(8936002)(41300700001)(356005)(36756003)(47076005)(40460700003)(36860700001)(66899024)(81166007)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 22:42:52.3734
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7f737a3f-c274-4608-b38e-08dbe62c33d2
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FC.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5010
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 02:58:12PM +0100, mripard@kernel.org wrote:
-> > But a similar thing is happening here where we have so many bogus
-> > warnings that we missed a real bug.
+On Wed, Nov 15, 2023 at 12:48:58PM -0800, Dave Hansen wrote:
+> On 11/15/23 12:14, Michael Roth wrote:
+> > While it might be argued that the issue is on the caller side, other
+> > archs/macros have taken similar approaches to deal with instances like
+> > this, such as commit e48866647b48 ("ARM: 8396/1: use phys_addr_t in
+> > pfn_to_kaddr()").
 > 
-> IIRC, there was a similar discussion for lockdep issues. IMO, any
-> (unintended) warning should trigger a test failure.
+> Gah, I really hope nobody is arguing that for real, or is even thinking
+> about this as a valid argument.
+
+Not that I'm aware, but I did have my own doubts initially, which is
+why I thought it warranted a note in the commit just in case it came up
+from someone else.
+
 > 
-> I guess that would require adding some intrumentation to __WARN somehow,
-> and also allowing tests to check whether a warning had been generated
-> during their execution for tests that want to trigger one.
+> The helper should, well, help the caller.  It makes zero sense to me
+> that every single call site would need to know if the argument's type
+> was big enough to hold the _return_ value.  This nonsense can only even
+> happen with macros.  Type promotion would just do the right thing for
+> any sanely declared actual helper function.
 
-I think this is a good idea.  I was looking at how lockdep prints
-warnings (see print_circular_bug_header()).  It doesn't use WARN() it
-prints a bunch of pr_warn() statements and then a stack trace.  We would
-have to have a increment the counter manually in that situation.
+My thought was that it is easier to expect developers to know the pitfalls
+of bit-field types, since it is universally applicable to all C code,
+whereas expecting developers to anticipate such issues when writing similar
+macros is potentially harder to enforce/audit and could lead to similar
+issues popping up as things are refactored over time and new macros get
+added that don't take such usages into account.
 
-I'm writing a script to parse a dmesg and collect Oopses.  So now I know
-to look for WARN(), lockdep, and KASAN.  What other bugs formats do we
-have?  Probably someone like the syzbot devs have already has written a
-script like this?
+But neither argument seems to hold up in reality. Experienced developers
+obviously do fall victim to the subtleties of of bit-field types, and
+kernel devs obviously do tend to address these instances in more robust
+ways based on the various pfn-related macros I looked through.
 
-regards,
-dan carpenter
+-Mike
