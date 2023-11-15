@@ -2,129 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 24A987ECA2F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:03:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFB67ECA32
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232990AbjKOSDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53214 "EHLO
+        id S232633AbjKOSFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:05:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKOSDf (ORCPT
+        with ESMTP id S230402AbjKOSFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:03:35 -0500
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08BA61A8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:03:31 -0800 (PST)
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-        by cmsmtp with ESMTPS
-        id 3HpIr8c1GL9Ag3KEdrx1ob; Wed, 15 Nov 2023 18:03:31 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with ESMTPS
-        id 3KEcrq8Pl1b9N3KEcrBhp1; Wed, 15 Nov 2023 18:03:30 +0000
-X-Authority-Analysis: v=2.4 cv=FLYIesks c=1 sm=1 tr=0 ts=655507f3
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=WzbPXH4gqzPVN0x6HrNMNA==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=wYkD_t78qR0A:10
- a=S00qe9fmEFB4g_Oc0sEA:9 a=QEXdDO2ut3YA:10
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=d3z9OY1ASsj06BcNejAFwfI5K6xeH/UKNLHo3vm3gFw=; b=wSPavG1dD8LzP7Sj10g9wwA6x9
-        xeOnDrihtD/QS8OreY+1XsqjwNBnZiQMlytNkwpXPpsfATBHVSC0UOs/Pp+V/RRzmMbTk/pskVGnm
-        8pWYtvGvk+8uZat6N9UCAWNKQxsVJ06yAWsP1S4q+JxXQyi1QohZhTnDu1ab+CzsNiqv+iAAVhBSw
-        CVFyoFH29KZHh99tk3ojYkKA4Kov78Bx+SYKbRajtggRAT1CgXT4J8LOvMKbiNsdH74IkzJ+n623Q
-        DkX1bzpDXDThoiymiy9raUdDcvffFiDsjJx4v+RfMYlSji5QpK+muEgLdg5cUFlxAGa5MdCzm1BsL
-        OiqMUsFQ==;
-Received: from 187-162-21-192.static.axtel.net ([187.162.21.192]:37850 helo=[192.168.15.10])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1r3KEb-002hns-1z;
-        Wed, 15 Nov 2023 12:03:29 -0600
-Message-ID: <f8f106ee-bccf-4ae3-b9c2-684f6bd938f5@embeddedor.com>
-Date:   Wed, 15 Nov 2023 12:03:27 -0600
+        Wed, 15 Nov 2023 13:05:12 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81C991A8
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:05:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700071508; x=1731607508;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=0CXrzxnxRmYJ+KhzCeCWE6sEaMJv3OLuGZ3pWOvpH64=;
+  b=GiKnO3/ue1fF+FbceFPhe5zoLS69A/Dz1ORvI0ZWfZtm7RGZlReigFaI
+   sWGIYY+9cSyz8ywk6OrK4bS3rkS3slTqUGqlpdLb91QL1wEDpUmcUU7x2
+   zwjHNVbIRraqGTrBVlidnkmBy3RTRaRXeoKLy/KWJHGMLxdlvGTnh2+nk
+   ZeWeHll1CdrZUyRuS2D1xBFD/ZfQWo6GLQROOtUN3JIgvm9gxUlaPV3l/
+   jGefOpQ347BC2K+rNFlDS25w0yj1MkahAfkkFpfogw/gBmb2vjhDP/+8s
+   cmiYg/nuCYg3hkVwEDm7YUgRPI6Uof4pIJQBsIEO506acNRKNcBWdnagc
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="388085588"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="388085588"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 10:04:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="13278526"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmviesa001.fm.intel.com with ESMTP; 15 Nov 2023 10:04:36 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3KFe-0000gK-0a;
+        Wed, 15 Nov 2023 18:04:34 +0000
+Date:   Thu, 16 Nov 2023 02:03:57 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sui Jingfeng <suijingfeng@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse:
+ incorrect type in argument 1 (different address spaces)
+Message-ID: <202311160119.XD4pGvlO-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2][next] hwmon: (aspeed-pwm-tacho) Fix
- -Wstringop-overflow warning in aspeed_create_fan_tach_channel()
-Content-Language: en-US
-To:     Guenter Roeck <linux@roeck-us.net>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-References: <ZVPQJIP26dIzRAr6@work>
- <9ed5116f-cf36-49f6-833e-75eeab4570b4@roeck-us.net>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <9ed5116f-cf36-49f6-833e-75eeab4570b4@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.21.192
-X-Source-L: No
-X-Exim-ID: 1r3KEb-002hns-1z
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-21-192.static.axtel.net ([192.168.15.10]) [187.162.21.192]:37850
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org:  HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfLG5qFVCLp9p4fLVonxnAjiVTgdz5RNxQsTAJa201rWSeJ32pUszy+81+9o8fuJBTrXtm6AEWxPHaWyDjRFHYdWV927QRcpVnxb2280sEuIpKI+a1wpM
- PTZnuicV4iJmr67n2zzwIt5ABY0DPiGD8iQO2UlCOxSCkvoaQJDvGRJOFP439Ows9x9QqO7JkrdmGPr29+NRaAVSYZOCFk9p2FBzfP1SdUPADU5ov/jW3HOA
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
+date:   4 months ago
+config: powerpc-randconfig-r113-20231106 (https://download.01.org/0day-ci/archive/20231116/202311160119.XD4pGvlO-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231116/202311160119.XD4pGvlO-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311160119.XD4pGvlO-lkp@intel.com/
 
-On 11/15/23 07:12, Guenter Roeck wrote:
-> On Tue, Nov 14, 2023 at 01:53:08PM -0600, Gustavo A. R. Silva wrote:
->> Based on the documentation below, the maximum number of Fan tach
->> channels is 16:
->>
->> Documentation/devicetree/bindings/hwmon/aspeed-pwm-tacho.txt:45:
->>   45 - aspeed,fan-tach-ch : should specify the Fan tach input channel.
->>   46                 integer value in the range 0 through 15, with 0 indicating
->>   47                 Fan tach channel 0 and 15 indicating Fan tach channel 15.
->>   48                 At least one Fan tach input channel is required.
->>
->> However, the compiler doesn't know that, and legitimaly warns about a potential
->> overwrite in array `u8 fan_tach_ch_source[16]` in `struct aspeed_pwm_tacho_data`,
->> in case `index` takes a value outside the boundaries of the array:
->>
-> 
-> Still messes the point. This isn't about "the compiler doesn't know that",
-> it is a real bug which may result in out-of-bounds accesses.
+sparse warnings: (new ones prefixed by >>)
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void volatile [noderef] __iomem *d @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     expected void volatile [noderef] __iomem *d
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:27:35: sparse:     got void *kptr
+>> drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const volatile [noderef] __iomem *s @@     got void *kptr @@
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     expected void const volatile [noderef] __iomem *s
+   drivers/gpu/drm/loongson/lsdc_benchmark.c:42:51: sparse:     got void *kptr
 
-Oh, I mentioned that in anticipation of people saying something in the tone of
-'that's never going to happen.' :p
+vim +27 drivers/gpu/drm/loongson/lsdc_benchmark.c
 
-However, if this is a real bug, it should probably be tagged for -stable.
+    12	
+    13	typedef void (*lsdc_copy_proc_t)(struct lsdc_bo *src_bo,
+    14					 struct lsdc_bo *dst_bo,
+    15					 unsigned int size,
+    16					 int n);
+    17	
+    18	static void lsdc_copy_gtt_to_vram_cpu(struct lsdc_bo *src_bo,
+    19					      struct lsdc_bo *dst_bo,
+    20					      unsigned int size,
+    21					      int n)
+    22	{
+    23		lsdc_bo_kmap(src_bo);
+    24		lsdc_bo_kmap(dst_bo);
+    25	
+    26		while (n--)
+  > 27			memcpy_toio(dst_bo->kptr, src_bo->kptr, size);
+    28	
+    29		lsdc_bo_kunmap(src_bo);
+    30		lsdc_bo_kunmap(dst_bo);
+    31	}
+    32	
+    33	static void lsdc_copy_vram_to_gtt_cpu(struct lsdc_bo *src_bo,
+    34					      struct lsdc_bo *dst_bo,
+    35					      unsigned int size,
+    36					      int n)
+    37	{
+    38		lsdc_bo_kmap(src_bo);
+    39		lsdc_bo_kmap(dst_bo);
+    40	
+    41		while (n--)
+  > 42			memcpy_fromio(dst_bo->kptr, src_bo->kptr, size);
+    43	
+    44		lsdc_bo_kunmap(src_bo);
+    45		lsdc_bo_kunmap(dst_bo);
+    46	}
+    47	
 
-> 
-> Oh, never mind, I'll just apply it.
-
-Thank you!
-
---
-Gustavo
-
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
