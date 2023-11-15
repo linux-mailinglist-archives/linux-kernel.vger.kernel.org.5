@@ -2,61 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 924E67EBB94
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2D8B7EBB96
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:11:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbjKODKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:10:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51104 "EHLO
+        id S234322AbjKODLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:11:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjKODKb (ORCPT
+        with ESMTP id S229572AbjKODLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:10:31 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09F7CC;
-        Tue, 14 Nov 2023 19:10:26 -0800 (PST)
-X-UUID: df0923009789443b92081bd86a10a190-20231115
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:c51b2fcb-1af7-4c37-a47a-515b1231aefe,IP:5,U
-        RL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:-5
-X-CID-INFO: VERSION:1.1.32,REQID:c51b2fcb-1af7-4c37-a47a-515b1231aefe,IP:5,URL
-        :0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:-5
-X-CID-META: VersionHash:5f78ec9,CLOUDID:8db4a972-1bd3-4f48-b671-ada88705968c,B
-        ulkID:231115111019276MBX4M,BulkQuantity:0,Recheck:0,SF:24|100|17|19|42|101
-        |66|102,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:n
-        il,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: df0923009789443b92081bd86a10a190-20231115
-X-User: chentao@kylinos.cn
-Received: from [172.20.15.254] [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA)
-        with ESMTP id 1716298209; Wed, 15 Nov 2023 11:10:15 +0800
-Message-ID: <65077e87-25a6-40dd-a81d-8a6987979b28@kylinos.cn>
-Date:   Wed, 15 Nov 2023 11:10:14 +0800
+        Tue, 14 Nov 2023 22:11:38 -0500
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57E7ED5
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:11:34 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id d2e1a72fcca58-6b87c1edfd5so5104983b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:11:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700017894; x=1700622694; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0ZDkwNsNq+X79quW0/EG+q9SX4HEapk0fZkP3MS7px0=;
+        b=GWRuPLARyqdnQ+Y1MJRJhTy9CumtYC0kJLlo60WMYQd4WKJlA4ViLgj9xTFjDfjUTx
+         MuIu0dL7Va2OZHvT4sAjUzLc5m2H2MRj+xQdyLYJUa5QgaCBLgjMVmhA8K8TPPTNCjA+
+         o1UMwGZTviIBr2tThqHNe+8yE84se1qRVocH0jkDibXybPngocAl+lXj3EdotUpXmOXg
+         KNQVIS3qOkFPeiZx3oTXRgNvmHOzycyHTa9xJr6UcDFwPyJtdeIVoDo9yMEzFQ8vk0X2
+         kVbwhrHIxnOH+x+rTyhI2QP2Uq1ROA285mLLPPmt8hZhYzA+3+quMg8wxhjPiHAxUj5C
+         kOhg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700017894; x=1700622694;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0ZDkwNsNq+X79quW0/EG+q9SX4HEapk0fZkP3MS7px0=;
+        b=tkmtxG1gvAvjzsI/GWnTc8uCF1GChWPbDWTmZn0pqXu4AbwzuLlsd8+8SRMVlznAO7
+         NNr7PNNEOXrWlpmaPpmsPCbIWaGUraKLjS4+egT67xN0RGsZ2MFEVDUVJ6SsrWc5pdG1
+         2w7tlUUi/I3VlhdwKBXH3Pg7TDMQwBDYm2rtx6BpKBByKDRIYPanuMGQ4dYaeX+A2SAA
+         D4ebY1+HkwnHKGtPdphBbhXWwC1VU2OlCBue6AB8mRk9j5KLD8VSj3JprByJxQJYWJw7
+         ck+6elIrYY20bBV5T/rfTr37vP6XeBWe+6PwWaEQUlubk/Y+Dapx6n8eRYgVY1hixNF2
+         kFQA==
+X-Gm-Message-State: AOJu0YzoYAakWZtOU1hn4/GFPrPJ2PFEMZ6k4YyCIw9aKA4qKr7cbaLc
+        dObCg5iATpZtnb1F0+BvggE=
+X-Google-Smtp-Source: AGHT+IG1o/fG8d7Eq8VE+C7PkIjGpCGxhDqAFugd3BfFy7cE501Vpo0YeGb45YzYPWTU914xFMAjhg==
+X-Received: by 2002:a05:6a00:4c8d:b0:68e:2478:d6c9 with SMTP id eb13-20020a056a004c8d00b0068e2478d6c9mr10523019pfb.2.1700017893652;
+        Tue, 14 Nov 2023 19:11:33 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id r1-20020aa78441000000b006933f85bc29sm1893797pfn.111.2023.11.14.19.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 19:11:33 -0800 (PST)
+From:   xu <xu.xin.sc@gmail.com>
+X-Google-Original-From: xu <xu.xin16@zte.com.cn>
+To:     david@redhat.com
+Cc:     akpm@linux-foundation.org, imbrenda@linux.ibm.com,
+        jiang.xuexin@zte.com.cn, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, ran.xiaokai@zte.com.cn, wang.yong12@zte.com.cn,
+        xu.xin.sc@gmail.com, xu.xin16@zte.com.cn, yang.yang29@zte.com.cn
+Subject: Re: [PATCH] ksm: delay the check of splitting compound pages
+Date:   Wed, 15 Nov 2023 03:11:29 +0000
+Message-Id: <20231115031129.1970581-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b4a11840-0118-44af-9397-30b5bcdd6552@redhat.com>
+References: <b4a11840-0118-44af-9397-30b5bcdd6552@redhat.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] i40e: Use correct buffer size
-Content-Language: en-US
-To:     Simon Horman <horms@kernel.org>
-Cc:     jesse.brandeburg@intel.com, anthony.l.nguyen@intel.com,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, jeffrey.t.kirsher@intel.com,
-        shannon.nelson@amd.com, kunwu.chan@hotmail.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org
-References: <20231112110146.3879030-1-chentao@kylinos.cn>
- <20231113093112.GL705326@kernel.org>
-From:   Kunwu Chan <chentao@kylinos.cn>
-In-Reply-To: <20231113093112.GL705326@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,24 +75,75 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Simon,
-Thank you very much for taking the valuable time to point out my 
-problems and shortcomings in detail.
-It's my  bad.I misinterpreted 'IFALIASZ' in 'include/uapi/linux/if.h' as 
-'IFNAMSIZ'. This led me to think that 'IFNAMSIZ' could be up to 256. 
-Sorry again for the trouble.
-Yes, it is good code to dynamically calculate the size of the parts that 
-make up the 'buffer' and add them up to the size of the whole 'buffer', 
-I got lazy because I saw that the other parts had a lot of fixed 'buffer 
-size'. I will immediately modify the patch according to your detailed 
-suggestions.
- From the code analysis, this place should have a 'snprintf truncation' 
-problem, but the impact may not be very big, I found the potential 
-problem during the compilation process, after changing the buffer size, 
-recompilation will not alarm.
-I'll follow your detailed suggestions and remove the 'Fixes' tag and add 
-'iwl-next' to the subject.
-Thank you again for your reply and guidance.
+>> diff --git a/mm/ksm.c b/mm/ksm.c
+>> index 7efcc68ccc6e..c952fe5d9e43 100644
+>> --- a/mm/ksm.c
+>> +++ b/mm/ksm.c
+>> @@ -2229,24 +2229,10 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+>>   	tree_rmap_item =
+>>   		unstable_tree_search_insert(rmap_item, page, &tree_page);
+>>   	if (tree_rmap_item) {
+>> -		bool split;
+>> -
+>>   		kpage = try_to_merge_two_pages(rmap_item, page,
+>>   						tree_rmap_item, tree_page);
+>> -		/*
+>> -		 * If both pages we tried to merge belong to the same compound
+>> -		 * page, then we actually ended up increasing the reference
+>> -		 * count of the same compound page twice, and split_huge_page
+>> -		 * failed.
+>> -		 * Here we set a flag if that happened, and we use it later to
+>> -		 * try split_huge_page again. Since we call put_page right
+>> -		 * afterwards, the reference count will be correct and
+>> -		 * split_huge_page should succeed.
+>> -		 */
+>
+>I'm curious, why can't we detect that ahead of time and keep only a 
+>single reference? Why do we need the backup code? Anything I am missing?
 
-在 2023/11/13 17:31, Simon Horman 写道:
-> [PATCH iwl-next]
+I don't know the original reason, better ask Claudio Imbrenda <imbrenda@linux.vnet.ibm.com>. 
+Maybe because doing detection that ahead of time will break several funtions' semantic,
+such as try_to_merge_two_pages(), try_to_merge_with_ksm_page() and try_to_merge_one_page()
+
+Adding the backup code don't change the old code and fixing the old problem, it's good.
+
+>
+>> -		split = PageTransCompound(page)
+>> -			&& compound_head(page) == compound_head(tree_page);
+>> -		put_page(tree_page);
+>>   		if (kpage) {
+>> +			put_page(tree_page);
+>>   			/*
+>>   			 * The pages were successfully merged: insert new
+>>   			 * node in the stable tree and add both rmap_items.
+>> @@ -2271,7 +2257,25 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+>>   				break_cow(tree_rmap_item);
+>>   				break_cow(rmap_item);
+>>   			}
+>> -		} else if (split) {
+>> +		} else {
+>> +			bool split;
+>> +			/*
+>> +			 * If both pages we tried to merge belong to the same compound
+>> +			 * page, then we actually ended up increasing the reference
+>> +			 * count of the same compound page twice, and split_huge_page
+>> +			 * failed.
+>> +			 * Here we set a flag if that happened, and we use it later to
+>> +			 * try split_huge_page again. Since we call put_page right
+>> +			 * afterwards, the reference count will be correct and
+>> +			 * split_huge_page should succeed.
+>> +			 */
+>> +
+>> +			split = PageTransCompound(page)
+>> +				&& compound_head(page) == compound_head(tree_page);
+>
+>Would
+>
+>split = page_folio(page) == page_folio(tree_page);
+>
+>do the trick? No need to mess with compound pages.
+
+In terms of function correctness, it should work correctly because here 'page' and 'tree_page' are never
+the same page, which is guaranteed by unstable_tree_search_insert(). But it's not very intuitive, maybe
+ww need to add some comment.
+
