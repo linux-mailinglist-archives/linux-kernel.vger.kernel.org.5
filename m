@@ -2,255 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6872F7ECD59
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F7C7ECDDB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:38:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234458AbjKOTf7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:35:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47674 "EHLO
+        id S234678AbjKOTir (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:38:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbjKOTf5 (ORCPT
+        with ESMTP id S234684AbjKOTip (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:35:57 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55D871AD;
-        Wed, 15 Nov 2023 11:35:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700076953; x=1731612953;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=GvYvx+mKWLKYJc2e+pAjgt0Tizth739YSXCTWMvC0Ao=;
-  b=LrS8WyrpCfuKe16qWWbksvx4ilHKbnIT5L1XMPJO2SbUL96lZ3n9J4XO
-   uchrsGnh8IYpedKUNNE9yHjeRCj2C+xdKjhEUVauEvE6dmV9dOgLv8ExZ
-   itb2XNLtVWWuCASfp2nN2dXECogsBjj6WHrPOM9E+pEupnqjnP8nXOeZw
-   gJBp8W6rKBVgTzK6UF6IVqIuPmPkpHnNOMu4RUFWCCt5fu83a6X7EMCIE
-   jgZbuuPJFU7TuWW9EbDqnnrl7WoX9VZNym7ofD+vEazJ25i8hLgzvFdFI
-   JbgRM4+zgFws8MyKzUKSn+8BKn8r65+sv1EwbYfbQMi+dWGJ4xWquQqEJ
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="477162383"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="477162383"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:35:52 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="794256178"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="794256178"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:35:51 -0800
-Date:   Wed, 15 Nov 2023 11:35:50 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     Kai Huang <kai.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
-        dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
-        peterz@infradead.org, tony.luck@intel.com, tglx@linutronix.de,
-        bp@alien8.de, mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
-        pbonzini@redhat.com, rafael@kernel.org, david@redhat.com,
-        dan.j.williams@intel.com, len.brown@intel.com, ak@linux.intel.com,
-        isaku.yamahata@intel.com, ying.huang@intel.com, chao.gao@intel.com,
-        sathyanarayanan.kuppuswamy@linux.intel.com, nik.borisov@suse.com,
-        bagasdotme@gmail.com, sagis@google.com, imammedo@redhat.com,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v15 09/23] x86/virt/tdx: Get module global metadata for
- module initialization
-Message-ID: <20231115193550.GC1109547@ls.amr.corp.intel.com>
-References: <cover.1699527082.git.kai.huang@intel.com>
- <30906e3cf94fe48d713de21a04ffd260bd1a7268.1699527082.git.kai.huang@intel.com>
+        Wed, 15 Nov 2023 14:38:45 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A693E9E;
+        Wed, 15 Nov 2023 11:38:42 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2ea7cc821so16666b6e.1;
+        Wed, 15 Nov 2023 11:38:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700077122; x=1700681922; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XFx0ekih11cOSCq3z7TR5VeZ62EcRixYTQFMUdafBX0=;
+        b=lsY1/n01dSgimPQtPyjtgTEkbiAWKFwNdrGziHjaINQZJkL3A+FZoue3cjs6Uqmusc
+         CWfnd/rapg8tnaoT2eyylGbYFsTLUWK7cElk5lyZvH9w9DRWmnkyAnAm5XBGv69tEaQM
+         u/i8IZhDWjKCPIQR8sii7H3b3aK7A2qnBui9JLbfENJs7C97Yy+4IZKXkZbVrEpt5GNG
+         FHRm4dgAC6mFQVBSUSnFJ+CFhS7h0i3vjX/Q3Zpv/OD1XEYiQtPGn4WOb0iy1l4IiyCl
+         l29pBzq7am5A8+UYc3vl7CoDaxF0R41enPR470SgzbDjJ3QwThLo0/kTVoUknNe8czEB
+         R8oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700077122; x=1700681922;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=XFx0ekih11cOSCq3z7TR5VeZ62EcRixYTQFMUdafBX0=;
+        b=vdLUp4KdShmiFgW8ChFZWTq/zTZPnUBARLpYLAFwwA1/QVk4eSyr5zHpbpeNihWjp/
+         HZTznPHTs9prMu9epeFSe8O7GOoCfeMayuu/ZUBn1Ym+JlmqkeckAlraIpapHeDMfRIX
+         lb5p4Fk87yxclLVEHapxqromJcJiCEU88kivO1yCpOAxZ2VJtjgJ1eSUh0Gu15cfwibR
+         U5DU9gZw7So2BfMfK9X5MMvI7xHDdaCYOI7DIaG575tULBGcGa1NCXq9wVCHlINBEMZm
+         10bboEhEdnBHvFubnKHkQIRDFsDQG06Bd7heQ73vTRRssoxP5fmxHqwBb0mQhMzevIrB
+         WdCw==
+X-Gm-Message-State: AOJu0YzMVqDUZFxeuyUHD/X0nTtYmQ+/4/G7Xxqmega9ptJsGf9qIFHE
+        xmCF6xjd83VCh8BLT7y66WjvEQAwQRE=
+X-Google-Smtp-Source: AGHT+IE9lQnZB3PWooEWwKrWprNsROTgUn1GfyeuPLXbeFCz8a3jVbe/iz5qJ9CHEge/G/4XifpZLA==
+X-Received: by 2002:a05:6870:4997:b0:1e9:fd9b:735 with SMTP id ho23-20020a056870499700b001e9fd9b0735mr17664766oab.56.1700077121736;
+        Wed, 15 Nov 2023 11:38:41 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s23-20020ac85297000000b00419c39dd28fsm3744298qtn.20.2023.11.15.11.38.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 11:38:41 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 15 Nov 2023 11:38:39 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     marius.cristea@microchip.com
+Cc:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
+        jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/2] adding support for Microchip PAC193X Power Monitor
+Message-ID: <3679da4c-fd70-4d2f-adfe-23592290eb30@roeck-us.net>
+References: <20231115134453.6656-1-marius.cristea@microchip.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <30906e3cf94fe48d713de21a04ffd260bd1a7268.1699527082.git.kai.huang@intel.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231115134453.6656-1-marius.cristea@microchip.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:55:46AM +1300,
-Kai Huang <kai.huang@intel.com> wrote:
+On Wed, Nov 15, 2023 at 03:44:51PM +0200, marius.cristea@microchip.com wrote:
+> From: Marius Cristea <marius.cristea@microchip.com>
+> 
+> Adding support for Microchip PAC193X series of Power Monitor with
+> Accumulator chip family. This driver covers the following part numbers:
+>  - PAC1931, PAC1932, PAC1933 and PAC1934
+> 
+>   This device is at the boundary between IIO and HWMON (if you are
+> looking just at the "shunt resistors, vsense, power, energy"). The
+> device also has ADC internally that can measure voltages (up to 4
+> channels) and also currents (up to 4 channels). The current is measured as
+> voltage across the shunt_resistor.
+> 
+>   I have started with a simple driver (this one that is more appropriate to be a
+> HWMON) and willing to add more functionality later (like data buffering that is quite
+> important for example if someone wants to profile power consumption of the
+> processor itself, or a peripheral device, or a battery, this kind of functionality
+> was requested by our customers).
+> 
 
-> The TDX module global metadata provides system-wide information about
-> the module.  The TDX module provides SEAMCALls to allow the kernel to
-> query one specific global metadata field (entry) or all fields.
-> 
-> TL;DR:
-> 
-> Use the TDH.SYS.RD SEAMCALL to read the essential global metadata for
-> module initialization, and at the same time, to only initialize TDX
-> module with version 1.5 and later.
-> 
-> Long Version:
-> 
-> 1) Only initialize TDX module with version 1.5 and later
-> 
-> TDX module 1.0 has some compatibility issues with the later versions of
-> module, as documented in the "Intel TDX module ABI incompatibilities
-> between TDX1.0 and TDX1.5" spec.  Basically there's no value to use TDX
-> module 1.0 when TDX module 1.5 and later versions are already available.
-> To keep things simple, just support initializing the TDX module 1.5 and
-> later.
-> 
-> 2) Get the essential global metadata for module initialization
-> 
-> TDX reports a list of "Convertible Memory Region" (CMR) to tell the
-> kernel which memory is TDX compatible.  The kernel needs to build a list
-> of memory regions (out of CMRs) as "TDX-usable" memory and pass them to
-> the TDX module.  The kernel does this by constructing a list of "TD
-> Memory Regions" (TDMRs) to cover all these memory regions and passing
-> them to the TDX module.
-> 
-> Each TDMR is a TDX architectural data structure containing the memory
-> region that the TDMR covers, plus the information to track (within this
-> TDMR): a) the "Physical Address Metadata Table" (PAMT) to track each TDX
-> memory page's status (such as which TDX guest "owns" a given page, and
-> b) the "reserved areas" to tell memory holes that cannot be used as TDX
-> memory.
-> 
-> The kernel needs to get below metadata from the TDX module to build the
-> list of TDMRs: a) the maximum number of supported TDMRs, b) the maximum
-> number of supported reserved areas per TDMR and, c) the PAMT entry size
-> for each TDX-supported page size.
-> 
-> Note the TDX module internally checks whether the "TDX-usable" memory
-> regions passed via TDMRs are truly convertible.  Just skipping reading
-> the CMRs and manually checking memory regions against them, but let the
-> TDX module do the check.
-> 
-> == Implementation ==
-> 
-> TDX module 1.0 uses TDH.SYS.INFO SEAMCALL to report the global metadata
-> in a fixed-size (1024-bytes) structure 'TDSYSINFO_STRUCT'.  TDX module
-> 1.5 adds more metadata fields, and introduces the new TDH.SYS.{RD|RDALL}
-> SEAMCALLs for reading the metadata.  The new metadata mechanism removes
-> the fixed-size limitation of the structure 'TDSYSINFO_STRUCT' and allows
-> the TDX module to support unlimited number of metadata fields.
-> 
-> TDX module 1.5 and later versions still support the TDH.SYS.INFO for
-> compatibility to the TDX module 1.0, but it may only report part of
-> metadata via the 'TDSYSINFO_STRUCT'.  For any new metadata the kernel
-> must use TDH.SYS.{RD|RDALL} to read.
-> 
-> To achieve the above two goals mentioned in 1) and 2), just use the
-> TDH.SYS.RD to read the essential metadata fields related to the TDMRs.
-> 
-> TDH.SYS.RD returns *one* metadata field at a given "Metadata Field ID".
-> It is enough for getting these few fields for module initialization.
-> On the other hand, TDH.SYS.RDALL reports all metadata fields to a 4KB
-> buffer provided by the kernel which is a little bit overkill here.
-> 
-> It may be beneficial to get all metadata fields at once here so they can
-> also be used by KVM (some are essential for creating basic TDX guests),
-> but technically it's unknown how many 4K pages are needed to fill all
-> the metadata.  Thus it's better to read metadata when needed.
-> 
-> Signed-off-by: Kai Huang <kai.huang@intel.com>
-> ---
-> 
-> v14 -> v15:
->  - New patch to use TDH.SYS.RD to read TDX module global metadata for
->    module initialization and stop initializing 1.0 module.
-> 
-> ---
->  arch/x86/include/asm/shared/tdx.h |  1 +
->  arch/x86/virt/vmx/tdx/tdx.c       | 75 ++++++++++++++++++++++++++++++-
->  arch/x86/virt/vmx/tdx/tdx.h       | 39 ++++++++++++++++
->  3 files changed, 114 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/x86/include/asm/shared/tdx.h b/arch/x86/include/asm/shared/tdx.h
-> index a4036149c484..fdfd41511b02 100644
-> --- a/arch/x86/include/asm/shared/tdx.h
-> +++ b/arch/x86/include/asm/shared/tdx.h
-> @@ -59,6 +59,7 @@
->  #define TDX_PS_4K	0
->  #define TDX_PS_2M	1
->  #define TDX_PS_1G	2
-> +#define TDX_PS_NR	(TDX_PS_1G + 1)
->  
->  #ifndef __ASSEMBLY__
->  
-> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
-> index d1affb30f74d..d24027993983 100644
-> --- a/arch/x86/virt/vmx/tdx/tdx.c
-> +++ b/arch/x86/virt/vmx/tdx/tdx.c
-> @@ -235,8 +235,75 @@ static int build_tdx_memlist(struct list_head *tmb_list)
->  	return ret;
->  }
->  
-> +static int read_sys_metadata_field(u64 field_id, u64 *data)
-> +{
-> +	struct tdx_module_args args = {};
-> +	int ret;
-> +
-> +	/*
-> +	 * TDH.SYS.RD -- reads one global metadata field
-> +	 *  - RDX (in): the field to read
-> +	 *  - R8 (out): the field data
-> +	 */
-> +	args.rdx = field_id;
-> +	ret = seamcall_prerr_ret(TDH_SYS_RD, &args);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*data = args.r8;
-> +
-> +	return 0;
-> +}
-> +
-> +static int read_sys_metadata_field16(u64 field_id, u16 *data)
-> +{
-> +	u64 _data;
-> +	int ret;
-> +
-> +	if (WARN_ON_ONCE(MD_FIELD_ID_ELE_SIZE_CODE(field_id) !=
-> +			MD_FIELD_ID_ELE_SIZE_16BIT))
-> +		return -EINVAL;
-> +
-> +	ret = read_sys_metadata_field(field_id, &_data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	*data = (u16)_data;
-> +
-> +	return 0;
-> +}
-> +
-> +static int get_tdx_tdmr_sysinfo(struct tdx_tdmr_sysinfo *tdmr_sysinfo)
-> +{
-> +	int ret;
-> +
-> +	ret = read_sys_metadata_field16(MD_FIELD_ID_MAX_TDMRS,
-> +			&tdmr_sysinfo->max_tdmrs);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = read_sys_metadata_field16(MD_FIELD_ID_MAX_RESERVED_PER_TDMR,
-> +			&tdmr_sysinfo->max_reserved_per_tdmr);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = read_sys_metadata_field16(MD_FIELD_ID_PAMT_4K_ENTRY_SIZE,
-> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_4K]);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = read_sys_metadata_field16(MD_FIELD_ID_PAMT_2M_ENTRY_SIZE,
-> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_2M]);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return read_sys_metadata_field16(MD_FIELD_ID_PAMT_1G_ENTRY_SIZE,
-> +			&tdmr_sysinfo->pamt_entry_size[TDX_PS_1G]);
-> +}
-> +
+I sdon't immediately see any typical hwmon properties such as limit registers
+or alarms. The hwmon subsystem also doesn't support data buffering.
+Given that, the iio implementation seems more appropriate to me.
+Anyone using the chip for hardware monitoring can use the iio->hwmon bridge.
 
-Now we don't query the versions, build info, attributes, and etc.  Because it's
-important to know its version/attributes, can we query and print them
-as before? Maybe with another path.
-In long term, those info would be exported via sysfs, though.
--- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+Thanks,
+Guenter
