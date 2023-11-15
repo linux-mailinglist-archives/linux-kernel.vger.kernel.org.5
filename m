@@ -2,166 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 357517EBCE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 06:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49E6D7EBCE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234140AbjKOF7F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 00:59:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42624 "EHLO
+        id S234534AbjKOGBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:01:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOF7D (ORCPT
+        with ESMTP id S229551AbjKOGA6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 00:59:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E5E8E;
-        Tue, 14 Nov 2023 21:58:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700027939; x=1731563939;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=NQ+2z4Rav2ZbtZH8OQfdAniDcS40hfa5W0SOiCZegZ4=;
-  b=ToJD1HbZ/UdqNEC/Ka2FUr+u241GhxeyQB0/cnMp57Lv1OypsiyOi+K7
-   73ySd4EFvpH/DxYOoMEndJa575ltwodKP4jQpLfK0HeOx6Hoz6POmMwx3
-   YoNOTJ+i/PCAKnOCXENh/XrwNugLIeVut80Qfi1IqsNomSv40Tohk2iup
-   ymA9RsWuKqdSBPOrkTdDRzHS+aH9aGXwurzZ9XrpnLgiJPKFDxi12cefe
-   5D009BqSGrdtWWo0Vm8uE82Xoxz0dQK86wGX6+JN7nlTHA77ps6sEDWza
-   BwObLscnfvPiHa2PfN07ji3X7oCOrI7GElzNUrvxHu9rsnFefbeFlfDSH
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="381212929"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="381212929"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 21:58:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1012165444"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="1012165444"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 21:58:54 -0800
-From:   "Huang, Ying" <ying.huang@intel.com>
-To:     Gregory Price <gregory.price@memverge.com>,
-        Michal Hocko <mhocko@suse.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>, John Groves <john@jagalactic.com>,
-        Gregory Price <gourry.memverge@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-cxl@vger.kernel.org" <linux-cxl@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "lizefan.x@bytedance.com" <lizefan.x@bytedance.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "roman.gushchin@linux.dev" <roman.gushchin@linux.dev>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "muchun.song@linux.dev" <muchun.song@linux.dev>,
-        "jgroves@micron.com" <jgroves@micron.com>
-Subject: Re: [RFC PATCH v4 0/3] memcg weighted interleave mempolicy control
-In-Reply-To: <ZVOzMEtDYB4l8qFy@memverge.com> (Gregory Price's message of "Tue,
-        14 Nov 2023 12:49:36 -0500")
-References: <20231109002517.106829-1-gregory.price@memverge.com>
-        <klhcqksrg7uvdrf6hoi5tegifycjltz2kx2d62hapmw3ulr7oa@woibsnrpgox4>
-        <0100018bb64636ef-9daaf0c0-813c-4209-94e4-96ba6854f554-000000@email.amazonses.com>
-        <ZU6pR46kiuzPricM@slm.duckdns.org> <ZU6uxSrj75EiXise@memverge.com>
-        <ZU7vjsSkGbRLza-K@slm.duckdns.org> <ZU74L9oxWOoTTfpM@memverge.com>
-        <ZVNBMW8iJIGDyp0y@tiehlicka> <ZVOXWx8XNJJNC23A@memverge.com>
-        <ZVOn2T_Qg_NTKlB2@tiehlicka> <ZVOzMEtDYB4l8qFy@memverge.com>
-Date:   Wed, 15 Nov 2023 13:56:53 +0800
-Message-ID: <87o7fveeze.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+        Wed, 15 Nov 2023 01:00:58 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140D9D8;
+        Tue, 14 Nov 2023 22:00:55 -0800 (PST)
+Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: dmitry.osipenko)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 03AF1660576C;
+        Wed, 15 Nov 2023 06:00:51 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700028053;
+        bh=yfayPrn571VzLj0DChlXExCPpGyqXY7FpICvXV2pcfQ=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=afCwFUPafWW5njQKIYmarOcHMEB+Zm9AQPBETDM+WtNSwDMblTGzBiRS4xdVLjJFR
+         Md1s0N75+L56ITHR+pcaw+TL70hdTQ39p4BevgqfPyN5yZ/PS3JJeZ37wuGa1Tp/T3
+         iTQgegNWL4MvJ0em+8S/+hHVhavte82cFbG/0m79OB0Namc1gvBLl9VZgy4nMfIfrb
+         SH0J44w9a9Mypr4noThhyOY2kDbEjQPNdwUT2sRHR+UhYKxZkrfAXtxTE8TughICaF
+         1/T8g8F4Uff35fotBNm+Pc50xnc8xEahwv6vs8AD5E3/l9bIJwrVO9hxrIHJkhg8OO
+         0bvucSIiuiMlg==
+Message-ID: <de40e307-2f97-dda0-e697-19c382a506d7@collabora.com>
+Date:   Wed, 15 Nov 2023 09:00:47 +0300
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v7 2/5] i2c: core: run atomic i2c xfer when !preemptible
+Content-Language: en-US
+To:     Chris Morgan <macroalpha82@gmail.com>
+Cc:     Benjamin Bara <bbara93@gmail.com>, Wolfram Sang <wsa@kernel.org>,
+        Lee Jones <lee@kernel.org>, rafael.j.wysocki@intel.com,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        peterz@infradead.org, jonathanh@nvidia.com,
+        richard.leitner@linux.dev, treding@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-tegra@vger.kernel.org,
+        Benjamin Bara <benjamin.bara@skidata.com>,
+        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>,
+        heiko@sntech.de, max.schwarz@online.de
+References: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
+ <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
+ <655177f4.050a0220.d85c9.3ba0@mx.google.com>
+ <69941f8e-de1f-0319-6729-58625b362b8e@collabora.com>
+ <655238b2.050a0220.209e.4ad5@mx.google.com>
+From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
+In-Reply-To: <655238b2.050a0220.209e.4ad5@mx.google.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Gregory Price <gregory.price@memverge.com> writes:
+On 11/13/23 17:54, Chris Morgan wrote:
+..
+> I can confirm I no longer get any of the errors with this patch. Tested
+> on both an Anbernic RG353P (RK3566 with an RK817 PMIC) and an Odroid
+> Go Advance (RK3326 with an RK817 PMIC). The device appears to shut
+> down consistently again and I no longer see these messages in my dmesg
+> log when I shut down.
 
-> On Tue, Nov 14, 2023 at 06:01:13PM +0100, Michal Hocko wrote:
->> On Tue 14-11-23 10:50:51, Gregory Price wrote:
->> > On Tue, Nov 14, 2023 at 10:43:13AM +0100, Michal Hocko wrote:
->> [...]
->> > > That being said, I still believe that a cgroup based interface is a much
->> > > better choice over a global one. Cpusets seem to be a good fit as the
->> > > controller does control memory placement wrt NUMA interfaces.
->> > 
->> > I think cpusets is a non-starter due to the global spinlock required when
->> > reading informaiton from it:
->> > 
->> > https://elixir.bootlin.com/linux/latest/source/kernel/cgroup/cpuset.c#L391
->> 
->> Right, our current cpuset implementation indeed requires callback lock
->> from the page allocator. But that is an implementation detail. I do not
->> remember bug reports about the lock being a bottle neck though. If
->> anything cpusets lock optimizations would be win also for users who do
->> not want to use weighted interleave interface.
->
-> Definitely agree, but that's a rather large increase of scope :[
->
-> We could consider a push-model similar to how cpuset nodemasks are
-> pushed down to mempolicies, rather than a pull-model of having
-> mempolicy read directly from cpusets, at least until cpusets lock
-> optimization is undertaken.
->
-> This pattern looks like a wart to me, which is why I avoided it, but the
-> locking implications on the pull-model make me sad.
->
-> Would like to point out that Tejun pushed back on implementing weights
-> in cgroups (regardless of subcomponent), so I think we need to come
-> to a consensus on where this data should live in a "more global"
-> context (cpusets, memcg, nodes, etc) before I go mucking around
-> further.
->
-> So far we have:
-> * mempolicy: updating weights is a very complicated undertaking,
->              and no (good) way to do this from outside the task.
-> 	     would be better to have a coarser grained control.
->
->              New syscall is likely needed to add/set weights in the
-> 	     per-task mempolicy, or bite the bullet on set_mempolicy2
-> 	     and make the syscall extensible for the future.
->
-> * memtiers: tier=node when devices are already interleaved or when all
->             devices are different, so why add yet another layer of
-> 	    complexity if other constructs already exist.  Additionally,
-> 	    you lose task-placement relative weighting (or it becomes
-> 	    very complex to implement.
+I'll prepare the proper patch, thanks.
 
-Because we usually have multiple nodes in one mem-tier, I still think
-mem-tier-based interface is simpler than node-based.  But, it seems more
-complex to introduce mem-tier into mempolicy.  Especially if we have
-per-task weights.  So, I am fine to go with node-based interface.
+-- 
+Best regards,
+Dmitry
 
-> * cgroups: "this doesn't involve dynamic resource accounting /
->             enforcement at all" and "these aren't resource
-> 	    allocations, it's unclear what the hierarchical
-> 	    relationship mean".
->
-> * node: too global, explore smaller scope first then expand.
-
-Why is it too global?  I understand that it doesn't cover all possible
-use cases (although I don't know whether these use cases are practical
-or not).  But it can provide a reasonable default per-node weight based
-on available node performance information (such as, HMAT, CDAT, etc.).
-And, quite some workloads can just use it.  I think this is an useful
-feature.
-
-> For now I think there is consensus that mempolicy should have weights
-> per-task regardless of how the more-global mechanism is defined, so i'll
-> go ahead and put up another RFC for some options on that in the next
-> week or so.
->
-> The limitations on the first pass will be that only the task is capable
-> of re-weighting should cpusets.mems or the nodemask change.
-
---
-Best Regards,
-Huang, Ying
