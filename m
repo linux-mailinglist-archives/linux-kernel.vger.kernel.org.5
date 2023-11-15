@@ -2,141 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 70D5A7EC38D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F7EC7EC38F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:26:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343934AbjKONZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:25:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49072 "EHLO
+        id S1343875AbjKON0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34478 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234953AbjKONZh (ORCPT
+        with ESMTP id S1343686AbjKON0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:25:37 -0500
-Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CF6E120;
-        Wed, 15 Nov 2023 05:25:34 -0800 (PST)
-Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-778925998cbso447128385a.0;
-        Wed, 15 Nov 2023 05:25:34 -0800 (PST)
+        Wed, 15 Nov 2023 08:26:09 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8EE123;
+        Wed, 15 Nov 2023 05:26:03 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id 006d021491bc7-586753b0ab0so3700378eaf.0;
+        Wed, 15 Nov 2023 05:26:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700054733; x=1700659533; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3vuQNx0saY2ItGRKdBl26Lb/Oz25BKx0ZaIePLBjp78=;
-        b=lJTWNsPgkvArhJfx4mLzea66zYOPRDRqShORfizWt7bJwxyfZkIXlZoZpXiNpkYX7b
-         Ie9VxfSoTJ8ISvgqoq4CKoF2O7hVN7TGbaw/AV1H8VDXX9Fxyi+hNyFdbfL+WqPFDQjq
-         AsBN1/AY9K6AOugiCty/leyHi+zlF1Tax1husrlbiGg6nSG7l4+XjPyDk0XaMGx8HlxR
-         C4HqEpQ4WmxM8mR08upTH/Q3Ox5ycJ8673wZ40j4YZFfVbhyrhtFwm7ddZznVH+0B8L8
-         Pk0S9cghW+PejIMoLtKLY1HJvLRJde9RQf3NlOkpWOWhqeknqFoP49lMFOtTH7Jsritj
-         DTRg==
+        d=gmail.com; s=20230601; t=1700054763; x=1700659563; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=b4lW5vykFz0T3X7jPgJSMsLKowLbiXE9f/JbX5taq3Y=;
+        b=gQ1UlyOBHFy3D5i7VDemiMqIoEI7w1/fjMwSaCOEe0coY1l0G2jO5FWGcCL1NNVDR9
+         tg+ITRvc9S48oIts8ICdUHpCRbq+aNRxUh8xoTbKlc7cO6d98vN3EB5lkBYHhBhyQT7+
+         sNti8R4rSgO1MZcf1OQrjujaxOOgUeyhCt3zQRIZ7h76dR1QuGD99CFCf2ZPJ1bWsmZo
+         TS3E+gKx3Pk3JfD523ddOGThKqaxmuJM71XYmcMvfs+xap1Iltjlg43bJNZ4U6kTna49
+         JDA4a5XXsmAbHWfaPQT9zymXcCr7BQc49j3Mki6MERUzG44Ke3xrExdgTuRXd4e5SiZz
+         C3TQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700054733; x=1700659533;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700054763; x=1700659563;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3vuQNx0saY2ItGRKdBl26Lb/Oz25BKx0ZaIePLBjp78=;
-        b=FUCzcEEjeMTfo1FOEnSEEBRA22fJG7nZNf+lKt7h7euSHz8Vrt2FlQuEPm5KHpqNlB
-         pW/v44mI9udgtjtREu0IMIGXIMOwUrcoDALcIwr4MdOjo3m+gsL81ndVYa7FBKPnYokU
-         T8voOwc9fcJ0W2y4Uu5YszLeMXyEKGAb7HxM6JAud3FzAoXaVUzFMl1fc7PnBZLSPbO4
-         /Z+KMGWK5TDgBD40I2Ijsk46++iZH57VF78zzNp2IhdmfzVgUQFbbuV41s5OLG2o1kRS
-         2gcV9xoUv61Pfs4P0PTzBXFA4Drh4VydVMmsNmvRqy/hGr5kzt47T6IElDl49M3Y5pox
-         kiSQ==
-X-Gm-Message-State: AOJu0Ywej8tnD8LOEx2BzpDxGk7FP1zvO92yRQv0/Iu02rCRHOA2yVXr
-        58VbYV7zrC03zGpNqXppAI2zzSR3wkY=
-X-Google-Smtp-Source: AGHT+IF4gKYfsnPTfy77RCqBJS3PI8cTib/dwl7HH/3rcJTzhH91a7+Qu0a6cI2q5Hc8xdw7+fnmIA==
-X-Received: by 2002:a05:620a:4627:b0:767:923:48e7 with SMTP id br39-20020a05620a462700b00767092348e7mr6223765qkb.5.1700054733626;
-        Wed, 15 Nov 2023 05:25:33 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id dp12-20020a05620a2b4c00b0076f0744ff50sm3433522qkb.136.2023.11.15.05.25.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 05:25:33 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Nov 2023 05:25:31 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] hwmon: (core) Add support for humidity min/max
- alarm
-Message-ID: <1ef7a10c-d9cf-4042-a198-f72dbdf9d05a@roeck-us.net>
-References: <20231020-topic-chipcap2-v2-0-f5c325966fdb@gmail.com>
- <20231020-topic-chipcap2-v2-2-f5c325966fdb@gmail.com>
- <44f1eaa3-a90d-42cf-9808-4f39aacbf270@roeck-us.net>
- <25059951-ca50-4b19-8f74-5631b34c719b@gmail.com>
+        bh=b4lW5vykFz0T3X7jPgJSMsLKowLbiXE9f/JbX5taq3Y=;
+        b=ph05CxfPkenJAqO/9l1dTtwWD96jdLI3IBJ+gZCEUPoBpJVort5kEp8nRL8H/536T/
+         83lSBJpEORC3l3TbzHig2DSkHZJPCVJj9R6VxM7z4XRh1dOR/tN2pzKTDHQg+OZUTtIB
+         nEDeNCQSGmDMbER/8UkSgxbDQy6V/Y0Qw9SFZIfqRsoRfvulZDQrx+YKLWeRpd0gI6MP
+         mf8ghzVBkoo4XydUgCWfOQgJ8vNff3k9S2l9FBS3fxh8jhLqJLk4H99kKAyDfLe9pfW0
+         nWGXhghxdgiLhNRlHXXuoixTfvX/PtuBN/kZWWp0qWQ4/0fPHR2kzTi2ksWReZG3aoGr
+         5XnQ==
+X-Gm-Message-State: AOJu0YzfkRPgoIBjeTHHMo/Y7QfuKjSMqRFhpN0pFqrwM/Ho97qTUsog
+        lGLP959vdyIO+6K7FYixPAO6z94x8+WSX7HDoGhSo0xrD9c=
+X-Google-Smtp-Source: AGHT+IGGbuD0XYn11878bhTbk2Yq16yMB0LLWfmIiUMAJscEZFCt9JBrtPZCKzTfCX66xw7H+3SGlyLc8gdZ1p7EzHE=
+X-Received: by 2002:a4a:851d:0:b0:581:d922:e7f3 with SMTP id
+ k29-20020a4a851d000000b00581d922e7f3mr12511898ooh.9.1700054763087; Wed, 15
+ Nov 2023 05:26:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25059951-ca50-4b19-8f74-5631b34c719b@gmail.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231114153108.1932884-1-haowenchao2@huawei.com>
+ <af8549c8-a468-6505-6dd1-3589fc76be8e@redhat.com> <CAOi1vP9TnF+BWiEauddskmTO_+V2uvHiqpEg5EoxzZPKb0oEAQ@mail.gmail.com>
+ <aeb8b9e7-c2ce-e758-1b45-67572e686e2c@redhat.com>
+In-Reply-To: <aeb8b9e7-c2ce-e758-1b45-67572e686e2c@redhat.com>
+From:   Ilya Dryomov <idryomov@gmail.com>
+Date:   Wed, 15 Nov 2023 14:25:51 +0100
+Message-ID: <CAOi1vP-H9zHJEthzocxv7D7m6XX67sE2Dy1Aq=hP9GQRN+qj_g@mail.gmail.com>
+Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
+To:     Xiubo Li <xiubli@redhat.com>
+Cc:     Wenchao Hao <haowenchao2@huawei.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, louhongxiang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 07:24:00AM +0100, Javier Carrasco wrote:
-> Hello,
-> 
-> On 09.11.23 01:02, Guenter Roeck wrote:
-> > On 11/8/23 07:37, Javier Carrasco wrote:
-> >> Add min_alarm and max_alarm attributes for humidityX to support devices
-> >> that can generate these alarms.
-> >> Such attributes already exist for other magnitudes such as tempX.
+On Wed, Nov 15, 2023 at 2:17=E2=80=AFPM Xiubo Li <xiubli@redhat.com> wrote:
+>
+>
+> On 11/15/23 20:32, Ilya Dryomov wrote:
+> > On Wed, Nov 15, 2023 at 1:35=E2=80=AFAM Xiubo Li <xiubli@redhat.com> wr=
+ote:
 > >>
-> >> Tested with a ChipCap 2 temperature-humidity sensor.
+> >> On 11/14/23 23:31, Wenchao Hao wrote:
+> >>> This issue is reported by smatch, get_quota_realm() might return
+> >>> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the return
+> >>> value.
+> >>>
+> >>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+> >>> ---
+> >>>    fs/ceph/quota.c | 2 +-
+> >>>    1 file changed, 1 insertion(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+> >>> index 9d36c3532de1..c4b2929c6a83 100644
+> >>> --- a/fs/ceph/quota.c
+> >>> +++ b/fs/ceph/quota.c
+> >>> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct ceph_fs_clie=
+nt *fsc, struct kstatfs *buf)
+> >>>        realm =3D get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
+> >>>                                QUOTA_GET_MAX_BYTES, true);
+> >>>        up_read(&mdsc->snap_rwsem);
+> >>> -     if (!realm)
+> >>> +     if (IS_ERR_OR_NULL(realm))
+> >>>                return false;
+> >>>
+> >>>        spin_lock(&realm->inodes_with_caps_lock);
+> >> Good catch.
 > >>
-> > 
-> > No objection, but the new attributes also need to be added to the ABI
-> > documentation at
-> > Documentation/ABI/testing/sysfs-class-hwmon and
-> > Documentation/hwmon/sysfs-interface.rst
-> > 
-> > Which made me notice that humidityX_alarm isn't documented either.
-> > Please document that attribute as well while you are at it.
-> > 
-> > Thanks,
-> > Guenter
-> > 
-> Actually there are several attributes without ABI documentation or at
-> least the attributes enum is much larger than the objects in the ABI
-> documentation (in testing/sysfs-class-hwmon).
-> For humidity there is only input, enable, rated_min and rated_max. Are
-> some attributes not described for a good reason or should all be
-> documented? the current humidity_attributes contains:
-> 
-> hwmon_humidity_enable -> documented in sysfs-class-hwmon
-> hwmon_humidity_input -> documented in sysfs-class-hwmon
-> hwmon_humidity_label
-> hwmon_humidity_min
-> hwmon_humidity_min_hyst
-> hwmon_humidity_max
-> hwmon_humidity_max_hyst
-> hwmon_humidity_alarm
-> hwmon_humidity_fault
-> hwmon_humidity_rated_min -> documented in sysfs-class-hwmon
-> hwmon_humidity_rated_max -> documented in sysfs-class-hwmon
-> 
-> I could not find the temperature counterparts of my new additions
-> (temp_min_alarm and temp_max_alarm).
-> 
-> Should all be added to sysfs-class-hwmon or am I missing some other
-> document? I am alright adding the ones I mentioned.
-> 
+> >> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+> >>
+> >> We should CC the stable mail list.
+> > Hi Xiubo,
+> >
+> > What exactly is being fixed here?  get_quota_realm() is called with
+> > retry=3Dtrue, which means that no errors can be returned -- EAGAIN, the
+> > only error that get_quota_realm() can otherwise generate, would be
+> > handled internally by retrying.
+>
+> Yeah, that's true.
+>
+> > Am I missing something that makes this qualify for stable?
+>
+> Actually it's just for the smatch check for now.
+>
+> IMO we shouldn't depend on the 'retry', just potentially for new changes
+> in future could return a ERR_PTR and cause potential bugs.
 
-They should all be documented. It would be great if you volunteer
-to add the missing ones, but that won't be a mandate. I just don't want
-the situation to get worse.
+At present, ceph_quota_is_same_realm() also depends on it -- note how
+old_realm isn't checked for errors at all and new_realm is only checked
+for EAGAIN there.
+
+>
+> If that's not worth to make it for stable, let's remove it.
+
+Yes, let's remove it.  Please update the commit message as well, so
+that it's clear that this is squashing a static checker warning and
+doesn't actually fix any immediate bug.
 
 Thanks,
-Guenter
+
+                Ilya
