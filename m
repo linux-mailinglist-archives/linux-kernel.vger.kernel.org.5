@@ -2,142 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8431C7ED51C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:00:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1E77ED532
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:02:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344939AbjKOVAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:00:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34418 "EHLO
+        id S1344783AbjKOVCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:02:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344925AbjKOU7v (ORCPT
+        with ESMTP id S235721AbjKOVBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:59:51 -0500
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF462173B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:59:05 -0800 (PST)
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3b2e72fe47fso63616b6e.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:59:05 -0800 (PST)
+        Wed, 15 Nov 2023 16:01:47 -0500
+Received: from mail-oa1-f52.google.com (mail-oa1-f52.google.com [209.85.160.52])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320841BE;
+        Wed, 15 Nov 2023 13:01:11 -0800 (PST)
+Received: by mail-oa1-f52.google.com with SMTP id 586e51a60fabf-1f0f160e293so32769fac.0;
+        Wed, 15 Nov 2023 13:01:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700081945; x=1700686745;
+        d=1e100.net; s=20230601; t=1700082070; x=1700686870;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rWue5MGrIGXtdwa0DXl26EeYVBaPfv4b8agF9tN7BTk=;
-        b=YofpyesxDUNmWDWE91fSi5uorgYYyWs0Jxh9dIidcyyMR8o116h8CyvPKvmjmg9gKb
-         taONfl+X6CqxmaIbtKaP8HE42GXoUdEtQ+jf1+3ow/hU4L2fLsPy6yOkY9x58mQFI2wQ
-         5A5Evsz/qywQf33L/vEPVzx6hSZzVrhKyjkBWnE82XGnD+shObhS7NjEULitzuhVCYzR
-         kCZSdYaMKk+PeojB+WmC5Hccs7ccddBf4KgYKWn1A30IXbcVyxhnlLyrWoPuCXvwV48W
-         xxCnPSNkesfz+fKyBh7zJqtT67/6nvbSnVHqr7aKOqjvVcEBxGE+kUP+CPM5WZBaaHuw
-         Wgzg==
-X-Gm-Message-State: AOJu0YxX5HrWM5DFhq7+9ooykIUlaXYKTIE7zk1umAw54TC7szd2bKcA
-        0kcDZww+G3X/iDYOqjo4qOVQB5yMxg==
-X-Google-Smtp-Source: AGHT+IFuVEdngiswllHpeBpLA6ZHJAf8BU1GB6j5HsXZXn+UNlYH2/CSecjlOqxQWtnfpSG25qCQ2A==
-X-Received: by 2002:a05:6808:4193:b0:3b6:cb02:533b with SMTP id dj19-20020a056808419300b003b6cb02533bmr13975007oib.44.1700081945112;
-        Wed, 15 Nov 2023 12:59:05 -0800 (PST)
+        bh=yeu2Yqk+1W7JwaGj7n+VfzHpUfLi9VX9pa9cQ1fxjWY=;
+        b=RhMvEzt5IUz2v91D8lzduKZ7XBmVYgUAQtUDFUJqci8WwCkfY0eapyiCJxw/Ve1S9B
+         7kfQSGA82DWQ8sp+zVgR/RgpkptUhjjtyn4FOMsKkRX6EMFndKlG5AZTNYpfDdZ6JPQ3
+         Po5Po48rK+wSH9q/Ea5mKXb+PPPyGy8WqspvDvwiL0fJuTQEuffnALziWBVbHwpLPR+X
+         rN+kBcWFNs0MSZktyokhLSHSncuVwv9HjYNU/wUFAiSOsF+GZnErI9HsCW0bqlbyBu14
+         fxx+xFU8T0qE9Gi6+13BLQVaCWjRAqFVmlf3TUjTk/32CmiiF7cjKjIKBtAKgvZfbJOh
+         rUQw==
+X-Gm-Message-State: AOJu0YyoQPqqsdXDJ49ARN0us7C0wtVYLBgA+l7iYnZuddfTDELcljoP
+        ZcY5ElGBzGFwZaeXUj8dig==
+X-Google-Smtp-Source: AGHT+IEVvxd3MCaCvVBahCTroW9oJyYWp33cFwoR5qhRxQiQVxo5B8PsmQhF/yPdTGut1NK8vIwcew==
+X-Received: by 2002:a05:6870:c1d1:b0:1e9:c18b:b2da with SMTP id i17-20020a056870c1d100b001e9c18bb2damr18542152oad.18.1700082070487;
+        Wed, 15 Nov 2023 13:01:10 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id a9-20020a05680804c900b003b29c2f50f0sm1588527oie.18.2023.11.15.12.59.02
+        by smtp.gmail.com with ESMTPSA id bs14-20020a056830398e00b006ce1f9c62a1sm692803otb.39.2023.11.15.13.01.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 12:59:04 -0800 (PST)
-Received: (nullmailer pid 3732930 invoked by uid 1000);
-        Wed, 15 Nov 2023 20:59:01 -0000
+        Wed, 15 Nov 2023 13:01:09 -0800 (PST)
+Received: (nullmailer pid 3738084 invoked by uid 1000);
+        Wed, 15 Nov 2023 21:01:08 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Patrice Chotard <patrice.chotard@foss.st.com>
-Cc:     openbmc@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [RESEND PATCH] reset: Use device_get_match_data()
-Date:   Wed, 15 Nov 2023 14:58:48 -0600
-Message-ID: <20231115205848.3732609-1-robh@kernel.org>
+To:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc:     linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] media: stm32-dcmi: Drop unnecessary of_match_device() call
+Date:   Wed, 15 Nov 2023 14:59:04 -0600
+Message-ID: <20231115205904.3732985-1-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use preferred device_get_match_data() instead of of_match_device() to
-get the driver match data. With this, adjust the includes to explicitly
-include the correct headers.
+If probe is reached, we've already matched the device and in the case of
+DT matching, the struct device_node pointer will be set. Therefore, there
+is no need to call of_match_device() in probe.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/reset/reset-npcm.c       |  5 ++---
- drivers/reset/sti/reset-syscfg.c | 11 ++++++-----
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ drivers/media/platform/st/stm32/stm32-dcmi.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/drivers/reset/reset-npcm.c b/drivers/reset/reset-npcm.c
-index f6c4f854f2be..8935ef95a2d1 100644
---- a/drivers/reset/reset-npcm.c
-+++ b/drivers/reset/reset-npcm.c
-@@ -6,8 +6,8 @@
- #include <linux/io.h>
- #include <linux/init.h>
+diff --git a/drivers/media/platform/st/stm32/stm32-dcmi.c b/drivers/media/platform/st/stm32/stm32-dcmi.c
+index 8cb4fdcae137..48140fdf40bb 100644
+--- a/drivers/media/platform/st/stm32/stm32-dcmi.c
++++ b/drivers/media/platform/st/stm32/stm32-dcmi.c
+@@ -20,7 +20,6 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
  #include <linux/of.h>
 -#include <linux/of_device.h>
+ #include <linux/of_graph.h>
+ #include <linux/pinctrl/consumer.h>
  #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/reboot.h>
- #include <linux/reset-controller.h>
- #include <linux/spinlock.h>
-@@ -351,8 +351,7 @@ static int npcm_usb_reset(struct platform_device *pdev, struct npcm_rc_data *rc)
- 		}
- 	}
- 
--	rc->info = (const struct npcm_reset_info *)
--			of_match_device(dev->driver->of_match_table, dev)->data;
-+	rc->info = device_get_match_data(dev);
- 	switch (rc->info->bmc_id) {
- 	case BMC_NPCM7XX:
- 		npcm_usb_reset_npcm7xx(rc);
-diff --git a/drivers/reset/sti/reset-syscfg.c b/drivers/reset/sti/reset-syscfg.c
-index c1ba04f6f155..2324060b747c 100644
---- a/drivers/reset/sti/reset-syscfg.c
-+++ b/drivers/reset/sti/reset-syscfg.c
-@@ -7,10 +7,11 @@
-  */
- #include <linux/kernel.h>
- #include <linux/platform_device.h>
-+#include <linux/property.h>
- #include <linux/module.h>
- #include <linux/err.h>
- #include <linux/types.h>
--#include <linux/of_device.h>
-+#include <linux/of.h>
- #include <linux/regmap.h>
- #include <linux/mfd/syscon.h>
- 
-@@ -183,14 +184,14 @@ static int syscfg_reset_controller_register(struct device *dev,
- int syscfg_reset_probe(struct platform_device *pdev)
+@@ -1890,7 +1889,6 @@ static int dcmi_graph_init(struct stm32_dcmi *dcmi)
+ static int dcmi_probe(struct platform_device *pdev)
  {
- 	struct device *dev = pdev ? &pdev->dev : NULL;
--	const struct of_device_id *match;
-+	const void *data;
+ 	struct device_node *np = pdev->dev.of_node;
+-	const struct of_device_id *match = NULL;
+ 	struct v4l2_fwnode_endpoint ep = { .bus_type = 0 };
+ 	struct stm32_dcmi *dcmi;
+ 	struct vb2_queue *q;
+@@ -1899,12 +1897,6 @@ static int dcmi_probe(struct platform_device *pdev)
+ 	struct clk *mclk;
+ 	int ret = 0;
  
- 	if (!dev || !dev->driver)
- 		return -ENODEV;
- 
--	match = of_match_device(dev->driver->of_match_table, dev);
--	if (!match || !match->data)
-+	data = device_get_match_data(&pdev->dev);
-+	if (!data)
- 		return -EINVAL;
- 
--	return syscfg_reset_controller_register(dev, match->data);
-+	return syscfg_reset_controller_register(dev, data);
- }
+-	match = of_match_device(of_match_ptr(stm32_dcmi_of_match), &pdev->dev);
+-	if (!match) {
+-		dev_err(&pdev->dev, "Could not find a match in devicetree\n");
+-		return -ENODEV;
+-	}
+-
+ 	dcmi = devm_kzalloc(&pdev->dev, sizeof(struct stm32_dcmi), GFP_KERNEL);
+ 	if (!dcmi)
+ 		return -ENOMEM;
 -- 
 2.42.0
 
