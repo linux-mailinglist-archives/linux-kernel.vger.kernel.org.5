@@ -2,303 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF807EC1C1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:57:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7650F7EC1C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:01:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343649AbjKOL5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:57:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34212 "EHLO
+        id S1343678AbjKOMBW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:01:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343702AbjKOL5I (ORCPT
+        with ESMTP id S1343607AbjKOMBV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:57:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 652EA12C;
-        Wed, 15 Nov 2023 03:57:04 -0800 (PST)
+        Wed, 15 Nov 2023 07:01:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F18611D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:01:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049424; x=1731585424;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=gU+Dv3Q+4CFNxj/wf+kPLc05Qtm3qrTvL9243w2RAPg=;
-  b=R+B0I+WJ3lFeor5zE9DMvpVCa9lt1emn1YTizsnMy75D8g5pd68lMo2F
-   vBbHW9jIOLQeM4Vpjo+JDjOeCfSqvU8zm3OhrxYtAZxtbrdDf3ifUnCsk
-   toalAAPEQPL57qkDqyOqKfvt1f2Kff5VOW1OprnUTCbucZI//pDMiizeR
-   I0Nb92/4ZUlz86biEKPeaojPAVT8VGZNj7xpcg3zqTrTKEsaPQMD+YTZ9
-   npRQwVahLWPe3bZNsQOcHZwO66fWmNRLhT+VzD696i06IWrIoTtyfk3rF
-   ks9yONZTdwAE93nkU77n1xiLnE3mKuA9Hw00VOGu5LsB2Odoc15TAlCW6
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393720288"
+  t=1700049678; x=1731585678;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=2EtIF3ixgiNlt80godwBv9gDxaOhRsjIZTUxXE2EFZA=;
+  b=f9DxIPqj8qqJT/rJ1UA3F9mBw4YFuL1hCWSuHEWD0Pxyq0XBiQwHZYak
+   rVa5WXJ2Oh83BjOBDkjOBblGP6q+ne7FxMSVb+9ODVaaMXflUVvG5cpRH
+   WVNVQtIFKevrqH+VNzwH9PpQa/7N14b7kPiKId8diRww5tAO3xoxWkaDE
+   AwsMC9Znvcx7huHVPHGeeQ/c9DSuhvqGqsD1vWU+BDvOoALTb5S49yiNM
+   Yb+bXFcYsos2ZXApmby4KIiDnH3o84JUv2GfWoDhCIEAMfjsQg1wNqCeI
+   HK6QU85eZ2Z5griIhjq5mpYg6TguXqlt5apnNJNe99Q1K7qyE96q3F5VW
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="394780367"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="393720288"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:57:03 -0800
+   d="scan'208";a="394780367"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:17 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753543"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="908753543"
-Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.214.157.166]) ([10.214.157.166])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:57:00 -0800
-Message-ID: <e37c0ba6-292d-4afe-a563-a82691b1a8f3@linux.intel.com>
-Date:   Wed, 15 Nov 2023 19:57:00 +0800
+   d="scan'208";a="13160205"
+Received: from mituomis-mobl.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.44.135])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:01:12 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 8E4C2109F3E; Wed, 15 Nov 2023 15:01:09 +0300 (+03)
+From:   "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, Baoquan He <bhe@redhat.com>,
+        kexec@lists.infradead.org, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: [PATCHv3 00/14] x86/tdx: Add kexec support
+Date:   Wed, 15 Nov 2023 15:00:30 +0300
+Message-ID: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net 7/7] net/sched: taprio: enable cycle time
- adjustment for current entry
-Content-Language: en-US
-To:     Vladimir Oltean <vladimir.oltean@nxp.com>
-Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        "David S . Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-8-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-8-faizal.abdul.rahim@linux.intel.com>
- <20231109131840.wgfrzuk5kz4wtd2h@skbuf>
-From:   "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20231109131840.wgfrzuk5kz4wtd2h@skbuf>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The patchset adds bits and pieces to get kexec (and crashkernel) work on
+TDX guest.
 
+The last patch implements CPU offlining according to the approved ACPI
+spec change poposal[1]. It unlocks kexec with all CPUs visible in the target
+kernel. It requires BIOS-side enabling. If it missing we fallback to booting
+2nd kernel with single CPU.
 
-On 9/11/2023 9:18 pm, Vladimir Oltean wrote:
-> On Tue, Nov 07, 2023 at 06:20:23AM -0500, Faizal Rahim wrote:
->> Handles cycle time adjustments for the current active entry
-> 
-> Use the imperative mood for commit messages, i.e. "handle".
-> 
->> when new admin base time occurs quickly, either within the
->> current entry or the next one.
->>
->> Changes covers:
->> 1. Negative cycle correction or truncation
->> Occurs when the new admin base time falls before the expiry of the
->> current running entry.
->>
->> 2. Positive cycle correction or extension
->> Occurs when the new admin base time falls within the next entry,
->> and the current entry is the cycle's last entry. In this case, the
->> changes in taprio_start_sched() extends the schedule, preventing
->> old oper schedule from resuming and getting truncated in the next
->> advance_sched() call.
->>
->> 3. A new API, update_gate_close_time(), has been created to update
->> the gate_close_time of the current entry in the event of cycle
->> correction.
->>
->> Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
->> ---
->>   net/sched/sch_taprio.c | 72 +++++++++++++++++++++++++++++++-----------
->>   1 file changed, 53 insertions(+), 19 deletions(-)
->>
->> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
->> index c60e9e7ac193..56743754d42e 100644
->> --- a/net/sched/sch_taprio.c
->> +++ b/net/sched/sch_taprio.c
->> @@ -1379,41 +1379,75 @@ static void setup_first_end_time(struct taprio_sched *q,
->>   		rcu_assign_pointer(q->current_entry, NULL);
->>   }
->>   
->> +static void update_gate_close_time(struct sched_entry *current_entry,
->> +				   ktime_t new_end_time,
->> +				   int num_tc)
->> +{
->> +	int tc;
->> +
->> +	for (tc = 0; tc < num_tc; tc++) {
->> +		if (current_entry->gate_mask & BIT(tc))
->> +			current_entry->gate_close_time[tc] = new_end_time;
->> +	}
->> +}
->> +
->>   static void taprio_start_sched(struct Qdisc *sch,
->>   			       ktime_t new_base_time,
->> -			       struct sched_gate_list *new)
->> +			       struct sched_gate_list *admin)
->>   {
->>   	struct taprio_sched *q = qdisc_priv(sch);
->> +	ktime_t expires = hrtimer_get_expires(&q->advance_timer);
->> +	struct net_device *dev = qdisc_dev(q->root);
->> +	struct sched_entry *curr_entry = NULL;
->>   	struct sched_gate_list *oper = NULL;
->> -	ktime_t expires, start;
->>   
->>   	if (FULL_OFFLOAD_IS_ENABLED(q->flags))
->>   		return;
->>   
->>   	oper = rcu_dereference_protected(q->oper_sched,
->>   					 lockdep_is_held(&q->current_entry_lock));
->> +	curr_entry = rcu_dereference_protected(q->current_entry,
->> +					       lockdep_is_held(&q->current_entry_lock));
->>   
->> -	expires = hrtimer_get_expires(&q->advance_timer);
->> -	if (expires == 0)
->> -		expires = KTIME_MAX;
->> +	if (hrtimer_active(&q->advance_timer)) {
->> +		oper->cycle_time_correction =
->> +			get_cycle_time_correction(oper, new_base_time,
->> +						  curr_entry->end_time,
->> +						  curr_entry);
->>   
->> -	/* If the new schedule starts before the next expiration, we
->> -	 * reprogram it to the earliest one, so we change the admin
->> -	 * schedule to the operational one at the right time.
->> -	 */
->> -	start = min_t(ktime_t, new_base_time, expires);
->> -
->> -	if (expires != KTIME_MAX &&
->> -	    ktime_compare(start, new_base_time) == 0) {
->> -		/* Since timer was changed to align to the new admin schedule,
->> -		 * setting the variable below to a non-initialized value will
->> -		 * indicate to advance_sched() to call switch_schedules() after
->> -		 * this timer expires.
-> 
-> I would appreciate not changing things that you've established in
-> earlier changes. Try to keep stuff introduced earlier in a form that is
-> as close as possible to the final form.
-> 
+Please review. I would be glad for any feedback.
 
-Sorry for that, it occurred because I aimed to split a patch that 
-specifically addressed a problem I identified, versus my entire patch set.
+v3:
+  - Rework acpi_mp_crash_stop_other_cpus() to avoid invoking hotplug state
+    machine;
+  - Free page tables if reset vector setup failed;
+  - Change asm_acpi_mp_play_dead() to pass reset vector and PGD as arguments;
+  - Mark acpi_mp_* variables as static and __ro_after_init;
+  - Use u32 for apicid;
+  - Disable CPU offlining if reset vector setup failed;
+  - Rename madt.S -> madt_playdead.S;
+  - Mark tdx_kexec_unshare_mem() as static;
+  - Rebase onto up-to-date tip/master;
+  - Whitespace fixes;
+  - Reorder patches;
+  - Add Reviewed-bys;
+  - Update comments and commit messages;
+v2:
+  - Rework how unsharing hook ups into kexec codepath;
+  - Rework kvmclock_disable() fix based on Sean's;
+  - s/cpu_hotplug_not_supported()/cpu_hotplug_disable_offlining()/;
+  - use play_dead_common() to implement acpi_mp_play_dead();
+  - cond_resched() in tdx_shared_memory_show();
+  - s/target kernel/second kernel/;
+  - Update commit messages and comments;
 
-I'll keep that feedback in mind going forward.
+[1] https://lore.kernel.org/all/13356251.uLZWGnKmhe@kreacher
 
->> +		if (cycle_corr_active(oper->cycle_time_correction)) {
->> +			/* This is the last entry we are running from oper,
->> +			 * subsequent entry will take from the new admin.
->> +			 */
->> +			ktime_t	now = taprio_get_time(q);
->> +			u64 gate_duration_left = ktime_sub(new_base_time, now);
-> 
-> What is special about "now" as a moment in time? Gate durations are
-> calculated relative to the moment when the sched_entry begins.
-> 
+Kirill A. Shutemov (14):
+  x86/acpi: Extract ACPI MADT wakeup code into a separate file
+  x86/apic: Mark acpi_mp_wake_* variables as __ro_after_init
+  cpu/hotplug: Add support for declaring CPU offlining not supported
+  cpu/hotplug, x86/acpi: Disable CPU offlining for ACPI MADT wakeup
+  x86/kvm: Do not try to disable kvmclock if it was not enabled
+  x86/kexec: Keep CR4.MCE set during kexec for TDX guest
+  x86/mm: Make x86_platform.guest.enc_status_change_*() return errno
+  x86/mm: Return correct level from lookup_address() if pte is none
+  x86/tdx: Account shared memory
+  x86/tdx: Convert shared memory back to private on kexec
+  x86/mm: Make e820_end_ram_pfn() cover E820_TYPE_ACPI ranges
+  x86/acpi: Rename fields in acpi_madt_multiproc_wakeup structure
+  x86/acpi: Do not attempt to bring up secondary CPUs in kexec case
+  x86/acpi: Add support for CPU offlining for ACPI MADT wakeup method
 
-My reasoning behind using "now" is that, by the time taprio_start_sched() 
-is called, "maybe" the entry has already run—up to 80% of its total 
-duration, for example. So, if an extension is needed for this last entry, 
-wouldn't it be more accurate to calculate the remaining 20% of the entry 
-duration plus the duration to the new base time? That's the idea behind the 
-calculation above.
+ arch/x86/Kconfig                     |   7 +
+ arch/x86/coco/core.c                 |   1 -
+ arch/x86/coco/tdx/kexec.c            |   0
+ arch/x86/coco/tdx/tdx.c              | 205 +++++++++++++-
+ arch/x86/hyperv/ivm.c                |   9 +-
+ arch/x86/include/asm/acpi.h          |   5 +
+ arch/x86/include/asm/pgtable_types.h |   1 +
+ arch/x86/include/asm/x86_init.h      |   5 +-
+ arch/x86/kernel/acpi/Makefile        |  11 +-
+ arch/x86/kernel/acpi/boot.c          |  88 +-----
+ arch/x86/kernel/acpi/madt_playdead.S |  21 ++
+ arch/x86/kernel/acpi/madt_wakeup.c   | 400 +++++++++++++++++++++++++++
+ arch/x86/kernel/crash.c              |   4 +
+ arch/x86/kernel/e820.c               |   9 +-
+ arch/x86/kernel/kvmclock.c           |  12 +-
+ arch/x86/kernel/reboot.c             |   5 +
+ arch/x86/kernel/relocate_kernel_64.S |   5 +
+ arch/x86/kernel/x86_init.c           |   4 +-
+ arch/x86/mm/mem_encrypt_amd.c        |   8 +-
+ arch/x86/mm/pat/set_memory.c         |  17 +-
+ include/acpi/actbl2.h                |  19 +-
+ include/linux/cc_platform.h          |  10 -
+ include/linux/cpu.h                  |   2 +
+ kernel/cpu.c                         |  12 +-
+ 24 files changed, 716 insertions(+), 144 deletions(-)
+ create mode 100644 arch/x86/coco/tdx/kexec.c
+ create mode 100644 arch/x86/kernel/acpi/madt_playdead.S
+ create mode 100644 arch/x86/kernel/acpi/madt_wakeup.c
 
-In contrast, in the case of extension in `advance_sched()`, gate durations 
-during correction are calculated using the full interval duration. This is 
-because the entry hasn't run yet and will run for the entire interval 
-duration. Hence, the logic in the code below makes sense for advance_sched():
-      u64 new_gate_duration = next->interval + oper->cycle_time_correction;
+-- 
+2.41.0
 
-
-Let me know what you think, my interpretation of what value gate_duration 
-should be, in this scenario, could be wrong.
-
-
->> +			struct qdisc_size_table *stab =
->> +				rtnl_dereference(q->root->stab);
-> 
-> "q->root" is "sch".
-> 
->> +			int num_tc = netdev_get_num_tc(dev);
-> 
-> It would be nice if you could pay some attention to the preferred
-> variable declaration style, i.e. longer lines come first. If you cannot
-> easily respect that, you could split the variable declarations from
-> their initialization.
-> 
-
-Hmm, I usually try to follow that that reverse Christmas tree style, but in 
-this scenario, ensuring the proper initialization value for the local 
-variable seemed more important to me than adhering to that style.
-
-I wasn't aware it was a set-in-stone kind of rule.
-I'll make the change accordingly then.
-
->> +
->> +			oper->cycle_end_time = new_base_time;
->> +			curr_entry->end_time = new_base_time;
->> +			curr_entry->correction_active = true;
->> +
->> +			update_open_gate_duration(curr_entry, oper, num_tc,
->> +						  gate_duration_left);
-> 
-> Recalculating open gate durations with a cycle time correction seems
-> very complicated, at least from this code path. What depends on this?
-> The data path only looks at the gate_close_time. Can we get away with
-> updating only the gate_close_time?
-> 
-
-Actually, it follows a similar logic to the earlier patches:
-"net/sched: taprio: fix cycle time adjustment for next entry" and 
-"net/sched: taprio: update impacted fields during cycle time adjustment." 
-Those patches also involved recalculating gate duration with cycle time 
-correction.
-
-Skipping the update for max_open_gate_duration means max_sdu value will be 
-incorrect. Neglecting gate_duration means entry->budget[tc] won't get the 
-correct update. Both of these affect taprio_dequeue_from_txq() and 
-taprio_enqueue().
-
-By the way, weren't all these consequences part of your original concern in 
-the comment back in v1?
-
-The only difference in this patch is that it's handling the "current entry" 
-instead of the "next entry" - like in advance_sched().
-
->> +			update_gate_close_time(curr_entry, new_base_time, num_tc);
->> +			taprio_update_queue_max_sdu(q, oper, stab);
->> +			taprio_set_budgets(q, oper, curr_entry);
-> 
-> There's a lot of duplication between the correction management from
-> advance_sched() and the one from taprio_start_sched(). I wonder if some
-> of it can go into a common function.
-> 
-
-Considered that, but it's not as doable as it seems.
-
-I can't toss all of these into a single function and call it for both 
-because there are some differences to navigate.
-The common functions being called are taprio_update_queue_max_sdu(), 
-update_open_gate_duration(), and taprio_set_budgets().
-However, advance_sched() doesn't call update_gate_close_time(), and there 
-are some differences in the order of where it's called in advance_sched().
-
-Nevertheless, I'm all ears for suggestion on the common function.
-
->> +		}
->> +	}
->> +
->> +	if (!hrtimer_active(&q->advance_timer) ||
->> +	    cycle_corr_active(oper->cycle_time_correction)) {
->> +		/* Use new admin base time if :
->> +		 * 1. there's no active oper
->> +		 * 2. there's active oper and we will change to the new admin
->> +		 * schedule after the current entry from oper ends
->>   		 */
->> -		oper->cycle_time_correction = 0;
->> +		expires = new_base_time;
->>   	}
->>   
->> -	hrtimer_start(&q->advance_timer, start, HRTIMER_MODE_ABS);
->> +	hrtimer_start(&q->advance_timer, expires, HRTIMER_MODE_ABS);
->>   }
->>   
->>   static void taprio_set_picos_per_byte(struct net_device *dev,
->> -- 
->> 2.25.1
->>
-> 
