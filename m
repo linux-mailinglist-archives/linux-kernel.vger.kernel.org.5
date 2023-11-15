@@ -2,55 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B4E67ED667
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EB07ED669
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:57:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343676AbjKOV5V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:57:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44622 "EHLO
+        id S229692AbjKOV5h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:57:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229655AbjKOV5U (ORCPT
+        with ESMTP id S235055AbjKOV5f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:57:20 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A58FA9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:57:17 -0800 (PST)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 91A3C66072F7;
-        Wed, 15 Nov 2023 21:57:15 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700085435;
-        bh=8BTs9yx4JAS070rqw8IXxHKIzy22Gc1HzQDYLoQjwWo=;
+        Wed, 15 Nov 2023 16:57:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C971C1A7;
+        Wed, 15 Nov 2023 13:57:32 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5C7C433C8;
+        Wed, 15 Nov 2023 21:57:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700085452;
+        bh=utRWzAUPDR/YGuRAiQgw7t0J+7beCClfBghAq9tfy7s=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WDkwmptRFdAft+Nlah2v3hD4hnSPJS4Qfx7kSjHBHoKYXvYjayWsegPL0q4Ee23xZ
-         k9DdRdZ3YJXxypOtp9xgBm+igu3EplvUMdpO9BP4ELu1GneELZe9CFncC22sS4TGRP
-         XHII9PMIGdPgJbfX1vq+cCWSyGy8orLCNsidTFjtUKp6xyVlnFD/37/5+jHfqMbscK
-         XmWcH6zq706PZY2AUgEJfdIF68Yb57fUsFf9nZUIOpzu51s0lZlh6LrlUOeIp8dpHC
-         +hIFM/Be3weRwcKV2ne+J4safTYqDyNr8Bf59FNqKRivHNAVtmQk5pKWrMZAvqgFz5
-         x+hx6lKSC1Tkw==
-Received: by mercury (Postfix, from userid 1000)
-        id 94D1F1062B52; Wed, 15 Nov 2023 22:57:12 +0100 (CET)
-Date:   Wed, 15 Nov 2023 22:57:12 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Heiko Stuebner <heiko@sntech.de>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: rockchip: fix rk356x pcie msg interrupt name
-Message-ID: <20231115215712.ha6asalk6iiakfsr@mercury.elektranox.org>
-References: <20231114153834.934978-1-heiko@sntech.de>
+        b=A2kFn1/qvdpWpt6Sa7+G3dXsJ4Cbv1CzVhvzu5dwJsUqmu6iyOBj92/iAP71LyWS/
+         jq9esZ/hPoY3l1tjHBR/OvQhykIHE7aPhN8YdTgP/PLj7wd7RxkMagETuErzXWWPln
+         sa1S95Bv9wII2Fsh/2Wi+eJnpjbRHmmeFS26QcFkIkEYQcu7EJjvrZ2HqcvSCTniH3
+         oC3eucpdS3xJAee2huLROhIBCdXn2OHG8glRQyL2JJ/IiOTFY6HJzKeDoXRJXupYmH
+         rbxs/qEmZjYlSOGYJN3S2Ug+XIXce5G39JyWXQ2DXihOW7acP8ane0RmDfs5oWrNwi
+         mPDpGauwFHNZw==
+Date:   Wed, 15 Nov 2023 21:57:28 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] dt-bindings: net: renesas,etheravb: Document RZ/Five SoC
+Message-ID: <20231115-marry-lagoon-d78d6085f7d7@squawk>
+References: <20231115210448.31575-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qnoje2wmiy5nuuru"
+        protocol="application/pgp-signature"; boundary="bQAUvGBLU9yZJPAS"
 Content-Disposition: inline
-In-Reply-To: <20231114153834.934978-1-heiko@sntech.de>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <20231115210448.31575-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -58,64 +64,38 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---qnoje2wmiy5nuuru
+--bQAUvGBLU9yZJPAS
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
-
-On Tue, Nov 14, 2023 at 04:38:34PM +0100, Heiko Stuebner wrote:
-> The expected name by the binding at this position is "msg" and the SoC's
-> manual also calls the interrupt in question "msg", so fix the rk356x dtsi
-> to use the correct name.
+On Wed, Nov 15, 2023 at 09:04:48PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 >=20
-> Signed-off-by: Heiko Stuebner <heiko@sntech.de>
-
-Reviewed-by: Sebastian Reichel <sebastian.reichel@collabora.com>
-
--- Sebastian
-
-> ---
->  arch/arm64/boot/dts/rockchip/rk356x.dtsi | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> The Gigabit Ethernet IP block on the RZ/Five SoC is identical to one
+> found on the RZ/G2UL SoC. "renesas,r9a07g043-gbeth" compatible string
+> will be used on the RZ/Five SoC so to make this clear and to keep this
+> file consistent, update the comment to include RZ/Five SoC.
 >=20
-> diff --git a/arch/arm64/boot/dts/rockchip/rk356x.dtsi b/arch/arm64/boot/d=
-ts/rockchip/rk356x.dtsi
-> index 0964761e3ce9..c19c0f1b3778 100644
-> --- a/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/rk356x.dtsi
-> @@ -977,7 +977,7 @@ pcie2x1: pcie@fe260000 {
->  			     <GIC_SPI 73 IRQ_TYPE_LEVEL_HIGH>,
->  			     <GIC_SPI 72 IRQ_TYPE_LEVEL_HIGH>,
->  			     <GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH>;
-> -		interrupt-names =3D "sys", "pmc", "msi", "legacy", "err";
-> +		interrupt-names =3D "sys", "pmc", "msg", "legacy", "err";
->  		bus-range =3D <0x0 0xf>;
->  		clocks =3D <&cru ACLK_PCIE20_MST>, <&cru ACLK_PCIE20_SLV>,
->  			 <&cru ACLK_PCIE20_DBI>, <&cru PCLK_PCIE20>,
-> --=20
-> 2.39.2
+> No driver changes are required as generic compatible string
+> "renesas,rzg2l-gbeth" will be used as a fallback on RZ/Five SoC.
 >=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
---qnoje2wmiy5nuuru
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+--bQAUvGBLU9yZJPAS
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmVVPqsACgkQ2O7X88g7
-+ppTIA//YaQ/isC2OXwvph8tPd3dtAScGgFrUUFmG+p89QSblLWHkB9GVKhzUWbO
-poiajuCHtNY/ggiCeuP1kXgAHfGFSAamqezz6d28Anm8bS9kj4o/kp5Yz60THyPG
-XVVj4oIqX2z9aTyguQRw03Cn882uRf8kG1VqXgcPR6D/oXg6W8KdIY0T3qtvfX4g
-XN9cfQDq+qEMVdFZ9XAUSAJCLRSdg4JfVVA3gb8WlSxb32zUMUQ9smqAcfppoF9H
-0xqRKRJOJgkiGjzLBF8mPSfl/dXRYgK7dIpgoXeMO3qw6EloQggczxOV6XN59ACb
-tJfXNJ6IXPc+Zbenp0/LVnvgL4H/XIzeJOvHqIWJ3I7h0y6+OnDx2sLgfvJ7OZJX
-vP5kNRAp3D7GjG/PtIvMPulafkcd080CASQMh4DhosHnIplQSmpdAEZB826mRKLf
-63mpzMvbRB9z0bIrEWGI+jInde3etqsoNYVugte/I7/BD6a9AINk3ZonCpTcjgKW
-GyUNWe6EOT95JGwhxyhvLk39xSuj2Il27zwgveenbZTGJVgUuZXZg1L5nIuZC+jz
-a9R8vOVVZn/uECJr4Nx80QyD8UfecY83V8pEVvGd3XwUJ8prLYy8cUtBkdWg1XBf
-Bm1F79rg7zTcWXa8C5T2trGYJ6/W6B6mdxBkLjhShXWv7YYb724=
-=zvfq
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVU+xQAKCRB4tDGHoIJi
+0ksWAQCrH2BGWrEy+3mGVr9EmqX6AEJBK8pFi/wB9kpSOcLm+AD9FhX7YgTDDIxI
+1mt+waCdmjiuk7XHFmrMnYATmhKa2AA=
+=f8sj
 -----END PGP SIGNATURE-----
 
---qnoje2wmiy5nuuru--
+--bQAUvGBLU9yZJPAS--
