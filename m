@@ -2,120 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7A7ED64C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5C557ED651
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235195AbjKOVxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:53:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42790 "EHLO
+        id S1343621AbjKOVyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59828 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229757AbjKOVxx (ORCPT
+        with ESMTP id S229732AbjKOVyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:53:53 -0500
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C88418B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:53:49 -0800 (PST)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 393652C044A;
-        Thu, 16 Nov 2023 10:53:46 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1700085226;
-        bh=oo5m3qyagvPDHSC+KwUDEF9RLpa1IBC5fH94joe2/eo=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To:From;
-        b=lc9R61nxte8zp1/WIlTNf7WVhCFzpXK9fLRYP8G3vxtf+J2z6mPchRanC65/J6QYO
-         mv5OsdCCzJ7dSeGsVw8/cOdEng4ePNHk8CCNtH8lNcecGiIR3mP0MhBqucibCKOdRq
-         6ecCOACvrWXe0qYRePAkMOp+OeW91jXVAZ0pzQRY9VXpTfESvjYKC/cGVdQZg4VhIa
-         HXYZGWKTDBC5tyT23pizBduIp5gSU44UPE0gMxx9Vp5z5Fs5InLbw0Ab0XW3mbyOJQ
-         wvYSgARW77Ne4a9OgSGwPYcQ5cpy9oucSkwWKDRdWFhZF4fB+p3aIh/DYCD3xGc0sb
-         egVEhx2EIgCIw==
-Received: from svr-chch-ex2.atlnz.lc (Not Verified[2001:df5:b000:bc8::76]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B65553dea0001>; Thu, 16 Nov 2023 10:53:46 +1300
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.2.1118.39; Thu, 16 Nov 2023 10:53:46 +1300
-Received: from svr-chch-ex2.atlnz.lc (2001:df5:b000:bc8::76) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8:409d:36f5:8899:92e8) with Microsoft
- SMTP Server (TLS) id 15.0.1497.48; Thu, 16 Nov 2023 10:53:45 +1300
-Received: from svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567]) by
- svr-chch-ex2.atlnz.lc ([fe80::a9eb:c9b7:8b52:9567%15]) with mapi id
- 15.02.1118.039; Thu, 16 Nov 2023 10:53:45 +1300
-From:   Chris Packham <Chris.Packham@alliedtelesis.co.nz>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        "wsa@kernel.org" <wsa@kernel.org>,
-        "andi.shyti@kernel.org" <andi.shyti@kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "krzysztof.kozlowski+dt@linaro.org" 
-        <krzysztof.kozlowski+dt@linaro.org>,
-        "conor+dt@kernel.org" <conor+dt@kernel.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>
-CC:     "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
-Thread-Topic: [PATCH v6 1/2] dt-bindings: i2c: add bus-reset-gpios property
-Thread-Index: AQHaF3ftbmVMkvsnVUGkUfJZcnXixrB7DOKAgAAGpwA=
-Date:   Wed, 15 Nov 2023 21:53:45 +0000
-Message-ID: <5a52b0c9-8858-4f55-8dd7-9269c29c10a7@alliedtelesis.co.nz>
-References: <20231115035753.925534-1-chris.packham@alliedtelesis.co.nz>
- <20231115035753.925534-2-chris.packham@alliedtelesis.co.nz>
- <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
-In-Reply-To: <f24b9b2d-aeb1-47f7-bf21-4383fdcf94aa@linaro.org>
-Accept-Language: en-NZ, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.32.14.96]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <B1D6441B8311464BA666AA1FA29E90D8@atlnz.lc>
-Content-Transfer-Encoding: base64
+        Wed, 15 Nov 2023 16:54:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26818195;
+        Wed, 15 Nov 2023 13:54:18 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E85AC433C7;
+        Wed, 15 Nov 2023 21:54:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700085257;
+        bh=HNdL+Be6cMlMkW4vDhJAvj7UWUwF0byt9crJztV3lyc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uuUklBQ0B/CTCk0nFXbhW8lC3h087uMYaSyhnyTxcDjjo05NoFHRTxCsf+K3hP2SC
+         HA7aqD+mPmtWsMirc0/Q3VlWZNTSx1vCuEdAgBxm6hI1OtSGe26oCEWWt0h8tZZMQ8
+         Kr8FrFtXZwKxnxh2h8uudv9WpK4euUj9kscV2GlymFLqce8HBRSDaTafn8r38UtQyG
+         0TDEE3rZaQZQGM8gmluT3YqOxkcMgHxeabQrqScGxGJK4E3EZUjh+Z0ZYgPuVNF3NE
+         xpG3XmKSPfLH10ibWUInlQUJ22O2/Mhp4vNZn5PULLc5AvxwDFmjfrVmwdeuGM6JcY
+         yJdmpGpOBwM3Q==
+Date:   Wed, 15 Nov 2023 21:54:14 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/Five SoC
+Message-ID: <20231115-support-hankering-907c9f496a52@squawk>
+References: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=AZXP4EfG c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=oOnywjR1vmkA:10 a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=S1fl2u1ynVkmC_t_ytwA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="5vok2DPxacar78Hn"
+Content-Disposition: inline
+In-Reply-To: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgS3J5c3RvZiwNCg0KT24gMTYvMTEvMjMgMTA6MjksIEtyenlzenRvZiBLb3psb3dza2kgd3Jv
-dGU6DQo+IE9uIDE1LzExLzIwMjMgMDQ6NTcsIENocmlzIFBhY2toYW0gd3JvdGU6DQo+PiBBZGQg
-YnVzLXJlc2V0LWdwaW9zIGFuZCBidXMtcmVzZXQtZHVyYXRpb24tdXMgcHJvcGVydGllcyB0byB0
-aGUgYmluZGluZw0KPj4gZGVzY3JpcHRpb24gZm9yIGkyYyBidXNzZXMuIFRoZXNlIGNhbiBiZSB1
-c2VkIHRvIGRlc2NyaWJlIGhhcmR3YXJlIHdoZXJlDQo+PiBhIGNvbW1vbiByZXNldCBHUElPIGlz
-IGNvbm5lY3RlZCB0byBhbGwgZG93bnN0cmVhbSBkZXZpY2VzIG9uIGFuZCBJMkMNCj4+IGJ1cy4g
-VGhpcyByZXNldCB3aWxsIGJlIGFzc2VydGVkIHRoZW4gcmVsZWFzZWQgYmVmb3JlIHRoZSBkb3du
-c3RyZWFtDQo+PiBkZXZpY2VzIG9uIHRoZSBidXMgYXJlIHByb2JlZC4NCj4+DQo+PiBTaWduZWQt
-b2ZmLWJ5OiBDaHJpcyBQYWNraGFtIDxjaHJpcy5wYWNraGFtQGFsbGllZHRlbGVzaXMuY28ubno+
-DQo+PiAtLS0NCj4+DQo+IC4uLg0KPg0KPj4gICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmlu
-ZGluZ3MvaTJjL2kyYy50eHQgfCA4ICsrKysrKysrDQo+PiAgIDEgZmlsZSBjaGFuZ2VkLCA4IGlu
-c2VydGlvbnMoKykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
-L2JpbmRpbmdzL2kyYy9pMmMudHh0IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdz
-L2kyYy9pMmMudHh0DQo+PiBpbmRleCBmYzNkZDdlYzA0NDUuLjNmOTVkNzFiOTk4NSAxMDA2NDQN
-Cj4+IC0tLSBhL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9pMmMvaTJjLnR4dA0K
-Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2kyYy9pMmMudHh0DQo+
-PiBAQCAtOTksNiArOTksMTQgQEAgd2FudHMgdG8gc3VwcG9ydCBvbmUgb2YgdGhlIGJlbG93IGZl
-YXR1cmVzLCBpdCBzaG91bGQgYWRhcHQgdGhlc2UgYmluZGluZ3MuDQo+PiAgIAlpbmRpY2F0ZXMg
-dGhhdCB0aGUgc3lzdGVtIGlzIGFjY2Vzc2libGUgdmlhIHRoaXMgYnVzIGFzIGFuIGVuZHBvaW50
-IGZvcg0KPj4gICAJTUNUUCBvdmVyIEkyQyB0cmFuc3BvcnQuDQo+PiAgIA0KPj4gKy0gYnVzLXJl
-c2V0LWdwaW9zOg0KPj4gKwlHUElPIHBpbiBwcm92aWRpbmcgYSBjb21tb24gcmVzZXQgZm9yIGFs
-bCBkb3duc3RyZWFtIGRldmljZXMuIFRoaXMgR1BJTw0KPj4gKwl3aWxsIGJlIGFzc2VydGVkIHRo
-ZW4gcmVsZWFzZWQgYmVmb3JlIHRoZSBkb3duc3RyZWFtIGRldmljZXMgYXJlIHByb2JlZC4NCj4g
-SSBpbml0aWFsbHkgcmV2aWV3ZWQgaXQsIGJ1dCBkaWQgbm90IHRoaW5rIGVub3VnaCBhYm91dCBp
-dC4gQWZ0ZXIgbW9yZQ0KPiBjb25zaWRlcmF0aW9uLCBJIGJlbGlldmUgdGhpcyBpcyBub3QgYSBw
-cm9wZXJ0eSBvZiB0aGUgSTJDIGJ1cw0KPiBjb250cm9sbGVyLiBUaGlzIGlzIGEgcHJvcGVydHkg
-b2YgZWFjaCBkZXZpY2UsIGV2ZW4gaWYgdGhlIEdQSU8gaXMgdGhlIHNhbWUuDQo+DQo+IExpbnV4
-IGtlcm5lbCBhbHJlYWR5IHN1cHBvcnRzIHNoYXJlZCBHUElPLCBzbyB5b3Ugb25seSBuZWVkDQo+
-IGVuYWJsZS1yZWYtY291bnRpbmcgb24gaXQuDQoNClRoYXQncyB0aGUga2luZCBvZiBicmVhZGNy
-dW1iIEkgbmVlZC4gQWx0aG91Z2ggSSBjYW4ndCBzZWUgDQplbmFibGUtcmVmLWNvdW50aW5nIGFz
-IGFueSBraW5kIG9mIERUIHByb3BlcnR5LiBEbyB5b3UgbWVhbiANCkdQSU9EX0ZMQUdTX0JJVF9O
-T05FWENMVVNJVkU/DQoNCj4gUHV0dGluZyBpdCBpbnRvIHRoZSBjb250cm9sbGVyIGJpbmRpbmdz
-IGxvb2tzIGxpa2Ugc29sdmluZyBPUyBpc3N1ZSB3aXRoDQo+IGluY29ycmVjdCBoYXJkd2FyZSBk
-ZXNjcmlwdGlvbi4NClllcyB0aGF0J3MgZW50aXJlbHkgd2hhdHMgaGFwcGVuaW5nIGhlcmUuDQo+
-IEJlc3QgcmVnYXJkcywNCj4gS3J6eXN6dG9mDQo+
+
+--5vok2DPxacar78Hn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, Nov 15, 2023 at 09:33:58PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> The SSI block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+> SoC. "renesas,r9a07g043-ssi" compatible string will be used on the RZ/Five
+> SoC so to make this clear and to keep this file consistent, update the
+> comment to include RZ/Five SoC.
+>=20
+> No driver changes are required as generic compatible string
+> "renesas,rz-ssi" will be used as a fallback on RZ/Five SoC.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor,
+
+> ---
+>  Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml =
+b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+> index 3b5ae45eee4a..8b9695f5decc 100644
+> --- a/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+> +++ b/Documentation/devicetree/bindings/sound/renesas,rz-ssi.yaml
+> @@ -16,7 +16,7 @@ properties:
+>    compatible:
+>      items:
+>        - enum:
+> -          - renesas,r9a07g043-ssi  # RZ/G2UL
+> +          - renesas,r9a07g043-ssi  # RZ/G2UL and RZ/Five
+>            - renesas,r9a07g044-ssi  # RZ/G2{L,LC}
+>            - renesas,r9a07g054-ssi  # RZ/V2L
+>        - const: renesas,rz-ssi
+> --=20
+> 2.34.1
+>=20
+
+--5vok2DPxacar78Hn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVU+AgAKCRB4tDGHoIJi
+0u9xAQCy6Ri2/SWQe6N9pq0RvPqF9PoATlrxkwPve5pN0sw1QwEAuu5eaYnksBkj
+LccHnxnG5WeHC80HRTULAmQagAAjiQw=
+=THQ4
+-----END PGP SIGNATURE-----
+
+--5vok2DPxacar78Hn--
