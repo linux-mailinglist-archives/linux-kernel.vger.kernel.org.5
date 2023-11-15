@@ -2,89 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21DD67ED721
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:24:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0180B7ED724
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:24:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343676AbjKOWYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50244 "EHLO
+        id S229608AbjKOWYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:24:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229608AbjKOWYV (ORCPT
+        with ESMTP id S229912AbjKOWYg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:24:21 -0500
-Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4807219D;
-        Wed, 15 Nov 2023 14:24:18 -0800 (PST)
-Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b587bd1a63so644497b6e.1;
-        Wed, 15 Nov 2023 14:24:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700087057; x=1700691857; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7pK7x80v/TUk+HNYdR00Nsp/GdzaTg3DmSY6zCPIMGg=;
-        b=A98c5IgwxRX3p2FGO34UArDsfhs+2wQG9M7rmPcUg6aaNCMNQKS4R51pkOIS/o9dHg
-         DpBZm6BwTr0nRR01WTo+bx3KGyJm8u2xg6Dy8LMoM+1D9x5jMXNVRytuxWLCJGE7Ni3U
-         pA3JeUDD3oNu9psEWeoNik04FjbB+L7RWlJAn8wCSvqW+Bt29S6iYkZlIRS4At0IkOAW
-         yqLXp0LKDlmew3bUbMtnaUeHenwoMehMOvPer/l00kIFwcjCTd48pg2QEiduyo4I7DW1
-         3bw55ksuV15ZHwfTbnCCPvOdCWckPwjXGC2U5R6sfpQlOr/dDlkv9hb2Bpj0OjWB4ify
-         x0jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700087057; x=1700691857;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7pK7x80v/TUk+HNYdR00Nsp/GdzaTg3DmSY6zCPIMGg=;
-        b=T8zPtsUWyJiAZ9yJdGu1U1D13jr8X6sHWXKFV0wuoU07ZONTWBz+yoIapHxLNvXqEp
-         cDMGLrNRUFiWgmJ3partRN98g0817BBvAxB2qQwpLZ6WSe6SjotiQrpOaA6BWhne1xkJ
-         cr600nLTaih6PLs37D/C6brbVQq2kIKJzC3c19nBHP00usWTVMEb9VifhgJhNOO5of09
-         /Rj96QYUZtLC8xjv1fojDf0rTJ2NLiIAQmWgLO6P9uSRtUfkANutQSNs0b9o98PNAGc4
-         1L/7RLvMIusN9xHzjCD+/1aNlY1UJNOjtXmeO8rRHPj32fvmX8+Indj72oocV+j2Do+g
-         K2aQ==
-X-Gm-Message-State: AOJu0Yxfwv+QXoyVJKGwINUoudVCn8D7hU6Zm+8u4bI1QkloNxP0AI1Q
-        YrAlqMgdiRhTNk7050bHSa4stWX3bbw=
-X-Google-Smtp-Source: AGHT+IHdq1afOr17zIpOmnrFXKOSA54kmUEhDEWVRk4T9O0ItiEcdIypqDNf0UUNOIKrqBjSoC7Vyw==
-X-Received: by 2002:a05:6808:1918:b0:3a7:3791:706a with SMTP id bf24-20020a056808191800b003a73791706amr4029129oib.5.1700087057509;
-        Wed, 15 Nov 2023 14:24:17 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h1-20020a056808014100b003ae0e57874fsm1620531oie.21.2023.11.15.14.24.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 14:24:17 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Nov 2023 14:24:16 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] hwmon: lm25066: Use i2c_get_match_data()
-Message-ID: <69c0290f-ab61-4f6a-95f5-3ef0486c4bce@roeck-us.net>
-References: <20231115205703.3730448-1-robh@kernel.org>
- <20231115205703.3730448-3-robh@kernel.org>
+        Wed, 15 Nov 2023 17:24:36 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07531A8;
+        Wed, 15 Nov 2023 14:24:32 -0800 (PST)
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3A04C660731B;
+        Wed, 15 Nov 2023 22:24:31 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700087071;
+        bh=WdfO82We6xf1GigqFgRt6NA0I8OKWnoJqDezVvwjbnA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G7xDrnHdTlOLbBCoI6tMeK19bQ1k/9Nd3iqyWwOTNOq/5siEqtshuWOJ7ZBH1IQsj
+         Nf8OwmAiI1MbzsES5J6GLsyJB8vx69MDpRSNGqI3/tZFTqybanba6Jk1Pp8OEDzOKD
+         qdOSD4OLQ/ljn6IT0QpCbGGUYiIXRrWEKcsZSvOjXoDQ0mlcWIoLwfp59U/awBRhGV
+         K+XkANefsvqPyemWWzYjnK/X1NltGwwMXgVyLbPnxq8xGUm5QGBlEY3jb4nOXV1u4n
+         ag/QAemxr1/uGQ08PNi00dYhbT6s8FwlXuTit0QtJruWx9rJblhYuBLyo3uOADNf5M
+         cLpoN3b1wdALg==
+Received: by mercury (Postfix, from userid 1000)
+        id 7F2A61062B52; Wed, 15 Nov 2023 23:24:28 +0100 (CET)
+Date:   Wed, 15 Nov 2023 23:24:28 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Nikita Kiryushin <kiryushin@ancud.ru>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Stephen Boyd <sboyd@codeaurora.org>,
+        Pramod Gurav <pramod.gurav@smartplayin.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: Re: [PATCH] power: reset: msm: Process register_restart_handler()
+ error
+Message-ID: <20231115222428.rhykr6e5koyzsyw6@mercury.elektranox.org>
+References: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6ouri3jfeknszkjz"
 Content-Disposition: inline
-In-Reply-To: <20231115205703.3730448-3-robh@kernel.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <feeb1a89-59bd-4fd6-81a5-1d828f95b0f0@ancud.ru>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 02:57:02PM -0600, Rob Herring wrote:
-> Use preferred i2c_get_match_data() instead of of_match_device() and
-> i2c_match_id() to get the driver match data. With this, adjust the
-> includes to explicitly include the correct headers.
-> 
-> Adjust the 'chips' enum to not use 0, so that no match data can be
-> distinguished from a valid enum value.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
 
-Applied.
+--6ouri3jfeknszkjz
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Guenter
+Hi,
+
+On Wed, Nov 08, 2023 at 08:27:57PM +0300, Nikita Kiryushin wrote:
+> If registering restart handler fails for msm-restart result is not checke=
+d.
+> It may be irrelevant now (as stated in comment to register_restart_handle=
+r,
+> the function currently always returns zero), but if the behavior changes
+> in the future, an error at registration of handler will be silently skipp=
+ed.
+>=20
+> Add return error code and print error message too debug log in case of
+> non-zero result of register_restart_handler.
+>=20
+> Found by Linux Verification Center (linuxtesting.org) with SVACE.
+>=20
+> Fixes: 18a702e0de98 ("power: reset: use restart_notifier mechanism for
+> msm-poweroff")
+>=20
+> Signed-off-by: Nikita Kiryushin <kiryushin@ancud.ru>
+> ---
+
+If register_restart_handler fails, it might actually be a good idea
+to continue and at least have a poweroff handler :)
+
+>  drivers/power/reset/msm-poweroff.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/power/reset/msm-poweroff.c
+> b/drivers/power/reset/msm-poweroff.c
+> index b9a401bd280b..5877a1ba2778 100644
+> --- a/drivers/power/reset/msm-poweroff.c
+> +++ b/drivers/power/reset/msm-poweroff.c
+> @@ -35,11 +35,16 @@ static void do_msm_poweroff(void)
+>   static int msm_restart_probe(struct platform_device *pdev)
+>  {
+> +	int ret =3D -EINVAL;
+
+no need to initialize, it's overwritten before being used.
+
+>  	msm_ps_hold =3D devm_platform_ioremap_resource(pdev, 0);
+>  	if (IS_ERR(msm_ps_hold))
+>  		return PTR_ERR(msm_ps_hold);
+>  -	register_restart_handler(&restart_nb);
+> +	ret =3D register_restart_handler(&restart_nb);
+> +	if (ret) {
+> +		dev_err(&pdev->dev, "unable to register restart handler, %d\n", ret);
+> +		return ret;
+
+There is dev_err_probe() for this, but as mentioned above it's more
+sensible not to fail here.
+
+-- Sebastian
+
+> +	}
+>   	pm_power_off =3D do_msm_poweroff;
+>  -- 2.34.1
+>=20
+
+--6ouri3jfeknszkjz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmVVRRgACgkQ2O7X88g7
++pqI/Q//UzlIPHOkLnn8rNBgiRTj+0aHo5M12V75qJoce+s1EPhX1T7XNgtOfZCl
+EYzgc+RgHOI+YpvPM/X07RO8LNubyvjdEBZJdG6LXua5dpxyi0FOhFYM0GJeHH2f
+uP7UP6T0sJeNB3tv2Gy6HzouIcItS1IKJoGiGRHOuyPTR5cojCFbN/hG1TOFNRyp
+gK8mSpeGNVzJtDfAfZgZ7X0gZAKj8tOSemHg397RTOMlMZhdu0aRt7Xx3zryn5SO
+C2QYZjCf5SJ6EFlaoL5aifqBNejppko8rLzRukmh4itKPF7FD20paPUkE5Trr2Ka
+E1IHJ2v02iDqTyMH/tc+lzoQVwq7IVtGWDBGxhtzbMN37ezncEDSL1+xgOwOPo00
+3eq5pHujH0L8kYkZx5Fy9I6AyHiao3GlqC/HRtJF+QqTHMRgtjtI0cJgVVF3P2zE
+vuNpRJ6gh0ekLg5TwnAG/dhM/mh8cA9B1k3CCCiDAlmWMXrYh3iMk76Hxu/MQXb7
+ZVNgHA4qSbqOGxDJyivHHGLw2EEdDQj+EDtJLzzStc7MnNrH1L1/ASjbspN3gQsr
+T2AB7k9p0uaOpGgZhNCRM6y0nI+ecHkxpQUd6kgggGpWdoys4S0VaeJVp6iewEZL
+JGxHgV4/w4zSzNgQqQo8vPrGjVDQFWX83vj0zyD7FbtHaq0wYxg=
+=sYCK
+-----END PGP SIGNATURE-----
+
+--6ouri3jfeknszkjz--
