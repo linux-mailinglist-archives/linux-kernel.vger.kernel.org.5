@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A07F17EBE44
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD0F7EBE48
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:55:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234663AbjKOHzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 02:55:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54222 "EHLO
+        id S1343494AbjKOHz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 02:55:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOHzP (ORCPT
+        with ESMTP id S234619AbjKOHz4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 02:55:15 -0500
-Received: from mail-yw1-x1135.google.com (mail-yw1-x1135.google.com [IPv6:2607:f8b0:4864:20::1135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBD5D9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:55:12 -0800 (PST)
-Received: by mail-yw1-x1135.google.com with SMTP id 00721157ae682-5afbdbf3a19so74434557b3.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:55:12 -0800 (PST)
+        Wed, 15 Nov 2023 02:55:56 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E30CD9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:55:53 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id 3f1490d57ef6-d9abc069c8bso6383559276.3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:55:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700034911; x=1700639711; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=15PRWbRTiCU1VNIlXZWdSysxSpbXy5GgKNCUAYG7W5w=;
-        b=kYVIOtXsduV0G6R73xeKydwmue26qOc3V94V0DtkpqkS6xKwLVsnD2vOuDc7VSJRo5
-         Pkx4w/YDBPRx0lkQiUcF5Sg9YOR/9A87JQZCKjzpvrk/39gkjJzkRHyagaMymnnmfoHP
-         pV2iehewqEkXV13Xvm26JW+eTA28naUyFPZkFO8aZhZ730+GIIc1izzoQHXAHdPJEpXd
-         zrB5b3bCgtDlwfAAxKxGsb8sSiaoJQb4AfvbOHxxjvQZ3uVPg1GmQMTYB22hqmmpI2H1
-         BC4LeCXUMXP2LGa1rvheW/0hD2v/p0+4tTCDD4J1OY71kgBStn40wyedjCnpn60Dmr82
-         7mTA==
+        d=linaro.org; s=google; t=1700034952; x=1700639752; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1cL1YF7VYkHyUQDre6FeOXMq1Y6gs7hRDyZk7Lj8ek4=;
+        b=mfNRmCiME5CwNOhpgcKo7gX9/jzjkkY+uHHKRUNKgkSi+CQj0MRz9lhLS7IX7icHCp
+         PYeyAinmKzDpwDYI9HHSnm7GRr2q0xxyMV87m1UpbEzR/yZZQLXChrlRlnTURpMIljV7
+         DBIunOXR21MsPu5jtzaEg5fgNO+L0D+OgAS6kmElsOR7gjgcjbRkkBvjuGxcGro6Ge3w
+         3JMRzFredeoATbcG4nKhfQSSgIeey4fi5k51tabi41Z1DsU1S0zAwbn1sYTVfHUBofU6
+         +ddpYkXtUBOs1lqDfQDbkmGAEsVCTeu5EsjYm9oZHr3PQqdZjNSGQ/Qq2pVT1xcncpiB
+         h4pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700034911; x=1700639711;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=15PRWbRTiCU1VNIlXZWdSysxSpbXy5GgKNCUAYG7W5w=;
-        b=WDd8IZdnWcKYJkOvfBkHgGQq4cyJdxk/tHrIF/0NGYtOwmKPM6yzq78cFNFhq1zGZH
-         IZIYrHkF5av6UPVB42z8kGyUC7Mkuk+At5k5ZKtkUkIcAG5eVNTUItLxIzCHjshE1Nes
-         xwH+R1FSIhV7yaRsK4lkMQLeWJ6shDhnh5n9g+bt61DqYpFf43deKm/2R9DEutC+5Uqg
-         IljH3LoDe6O1AVceUs03oena1z7Um344XquBCgiSRlrZbUefn2eUbaRrybPvuR9gAZp1
-         nhua4s85wQit60rYikRckQFh+w+RhqRpmshm9ovmYmyEhKyVIw/92NMqbIIQcET9k6d2
-         kR4A==
-X-Gm-Message-State: AOJu0YxRGWoRHsheECbflGA0xr9x53p2M8mUHxl4rBX88y3wKNFz5xny
-        sFRBmBM7qYsekl6freXX4/d+rfqbxrdZMFt2Lmb/3g==
-X-Google-Smtp-Source: AGHT+IGF0QFxsq04qkcDH1xFplg+U57Jq/Gcno4gH3SYxLIhnKNkUwuqZj7ahhye+SflHFUwIXeq6RwbBxjolai3xoI=
-X-Received: by 2002:a81:4f12:0:b0:59a:f131:50fa with SMTP id
- d18-20020a814f12000000b0059af13150famr13475836ywb.47.1700034911416; Tue, 14
- Nov 2023 23:55:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700034952; x=1700639752;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1cL1YF7VYkHyUQDre6FeOXMq1Y6gs7hRDyZk7Lj8ek4=;
+        b=wXGP2V5keO0vFL5o5OOcagj5735i/Z5LasZNuxxjIS+hAHJ6aiFQdmepyk5PjhH1hD
+         MKzuvNij4cSN/GTwVU4I5UXT9l8gi4mWaLGgDgH3GA2OjK2MacN7ccpQKJFa4zh+3NrU
+         oorpowkr+7D1h906Xjk+MW18TWv4f385hsUlfCVedVm1zRc15dbarba5QoqahOPeIQoV
+         vAdi1oV3DglnnXhvU171f7LjkTT7P8LNfzylCuQahjYw3KKpMIgYkeEaBlkmGB3u7pM7
+         w9SPSol89InRwW8JPA1wGXtVUMN2ade2lykQYUZ05tKq7ispMXvOlfjfekXbW7xiFgUe
+         6POw==
+X-Gm-Message-State: AOJu0YwECkos4VsPOjl/UYcO7U2hhklB/RegvgJqR7XJggrjUjo+HK0K
+        Aq+xpfzsrzUK7euaFjDiMx9K
+X-Google-Smtp-Source: AGHT+IH6yC5GdbaOIWZXJDVCumwRsf2gOHHZ7eQVvr7ft8F6sZFGm9FyqwuaVHz4x820Pelgc1BuYA==
+X-Received: by 2002:a25:ce85:0:b0:d9a:5220:d6b3 with SMTP id x127-20020a25ce85000000b00d9a5220d6b3mr9275344ybe.56.1700034952390;
+        Tue, 14 Nov 2023 23:55:52 -0800 (PST)
+Received: from workstation ([117.217.189.60])
+        by smtp.gmail.com with ESMTPSA id i6-20020ad44106000000b006731d3380f1sm350475qvp.15.2023.11.14.23.55.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 14 Nov 2023 23:55:51 -0800 (PST)
+Date:   Wed, 15 Nov 2023 13:25:42 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Johan Hovold <johan@kernel.org>, Viresh Kumar <vireshk@kernel.org>,
+        Nishanth Menon <nm@ti.com>, Stephen Boyd <sboyd@kernel.org>,
+        linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, linux-kernel@vger.kernel.org,
+        robdclark@gmail.com, dmitry.baryshkov@linaro.org
+Subject: Re: [PATCH 2/2] OPP: Disallow "opp-hz" property without a
+ corresponding clk
+Message-ID: <20231115075542.GA20982@workstation>
+References: <cover.1669012140.git.viresh.kumar@linaro.org>
+ <c03c4f2b9d4dcc3264d1902606c6c5c464b4b043.1669012140.git.viresh.kumar@linaro.org>
+ <Y3snGQet8yc7HnJK@hovoldconsulting.com>
+ <20221121073946.GE11945@thinkpad>
+ <20230125042145.hrjpnskywwqn7b6v@vireshk-i7>
+ <20230216064727.GA2420@thinkpad>
+ <20231011054858.3vvnr76u5enu5lf6@vireshk-i7>
+ <20231115063201.rc3pf3pga6zhoqb5@vireshk-i7>
 MIME-Version: 1.0
-References: <20231114225857.19702-1-jonathan@marek.ca> <20231114225857.19702-7-jonathan@marek.ca>
-In-Reply-To: <20231114225857.19702-7-jonathan@marek.ca>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 15 Nov 2023 09:55:00 +0200
-Message-ID: <CAA8EJpr8DhKncsGV3hdtJk9DoTTyhi2x6+o55jTcVUFadfcMbg@mail.gmail.com>
-Subject: Re: [PATCH v2 6/6] drm/msm/dsi: fix DSC for the bonded DSI case
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        Doug Anderson <dianders@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115063201.rc3pf3pga6zhoqb5@vireshk-i7>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,124 +86,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> For the bonded DSI case, DSC pic_width and timing calculations should use
-> the width of a single panel instead of the total combined width.
->
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
++ Dmitry
 
-Fixes tag?
+On Wed, Nov 15, 2023 at 12:02:01PM +0530, Viresh Kumar wrote:
+> On 11-10-23, 11:18, Viresh Kumar wrote:
+> > On 16-02-23, 12:17, Manivannan Sadhasivam wrote:
+> > > Sorry for the delay. I've submitted the dts changes [1] to handle the CPU clocks
+> > > for the rest of the Qcom SoCs.
+> > > 
+> > > For the Qcom GPUs, I've CCed Rob Clark who is the maintainer.
+> > > 
+> > > Rob, here is the background on the issue that is being discussed in this
+> > > thread:
+> > > 
+> > > Viresh submitted a series [2] back in July to improve the OPP framework, but
+> > > that ended up breaking cpufreq on multiple Qcom SoCs. After investigation, it
+> > > was found that the series was expecting the clocks supplied to the OPP end
+> > > devices like CPUs/GPUs to be modeled in DT. But on Qcom platforms even though
+> > > the clocks for these nodes are supplied by a separate entity, like CPUFreq
+> > > (EPSS/OSM) for CPUs and GMU for GPUs, there was no clock property present in
+> > > the respective nodes. And these nodes are using OPP table to switch frequencies
+> > > dynamically.
+> > > 
+> > > While the series was merged with a hack that still allows the OPP nodes without
+> > > clock property in DT, we came to an agreement that the clock hierarchy should
+> > > be modeled properly.
+> > > 
+> > > So I submitted a series [3] that added clock provider support to cpufreq driver
+> > > and sourced the clock from cpufreq node to CPU nodes in DT.
+> > > 
+> > > Likewise, it should be handled for the adreno GPUs whose clock is managed by
+> > > GMU on newer SoCs. Can you take a look at this?
+> > 
+> > Any update on this ?
+> 
+> Mani,
+> 
+> Ping.
+> 
 
-I'll wait for the Tested-by by Marijn, otherwise LGTM.
+Dmitry, can you please look into this? Please read my above reply to Rob
+to get the background.
 
-> ---
->  drivers/gpu/drm/msm/dsi/dsi.h         |  3 ++-
->  drivers/gpu/drm/msm/dsi/dsi_host.c    | 20 +++++++++++---------
->  drivers/gpu/drm/msm/dsi/dsi_manager.c |  2 +-
->  3 files changed, 14 insertions(+), 11 deletions(-)
->
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.h b/drivers/gpu/drm/msm/dsi/dsi.h
-> index 28379b1af63f..3a641e69447c 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.h
-> @@ -93,7 +93,8 @@ int msm_dsi_host_power_off(struct mipi_dsi_host *host);
->  int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
->                                   const struct drm_display_mode *mode);
->  enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
-> -                                           const struct drm_display_mode *mode);
-> +                                           const struct drm_display_mode *mode,
-> +                                           bool is_bonded_dsi);
->  unsigned long msm_dsi_host_get_mode_flags(struct mipi_dsi_host *host);
->  int msm_dsi_host_register(struct mipi_dsi_host *host);
->  void msm_dsi_host_unregister(struct mipi_dsi_host *host);
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> index 892a463a7e03..cf06736e5a60 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
-> @@ -940,8 +940,7 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                                mode->hdisplay, mode->vdisplay);
->                         return;
->                 }
-> -
+- Mani
 
-Nit: keep it please.
-
-> -               dsc->pic_width = mode->hdisplay;
-> +               dsc->pic_width = hdisplay;
->                 dsc->pic_height = mode->vdisplay;
->                 DBG("Mode %dx%d\n", dsc->pic_width, dsc->pic_height);
->
-> @@ -952,6 +951,11 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                 if (ret)
->                         return;
->
-> +               if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO)
-> +                       dsi_update_dsc_timing(msm_host, false, hdisplay);
-> +               else
-> +                       dsi_update_dsc_timing(msm_host, true, hdisplay);
-> +
->                 /* Divide the display by 3 but keep back/font porch and
->                  * pulse width same
->                  */
-> @@ -968,9 +972,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->         }
->
->         if (msm_host->mode_flags & MIPI_DSI_MODE_VIDEO) {
-> -               if (msm_host->dsc)
-> -                       dsi_update_dsc_timing(msm_host, false, mode->hdisplay);
-> -
->                 dsi_write(msm_host, REG_DSI_ACTIVE_H,
->                         DSI_ACTIVE_H_START(ha_start) |
->                         DSI_ACTIVE_H_END(ha_end));
-> @@ -989,9 +990,6 @@ static void dsi_timing_setup(struct msm_dsi_host *msm_host, bool is_bonded_dsi)
->                         DSI_ACTIVE_VSYNC_VPOS_START(vs_start) |
->                         DSI_ACTIVE_VSYNC_VPOS_END(vs_end));
->         } else {                /* command mode */
-> -               if (msm_host->dsc)
-> -                       dsi_update_dsc_timing(msm_host, true, mode->hdisplay);
-> -
->                 /* image data and 1 byte write_memory_start cmd */
->                 if (!msm_host->dsc)
->                         wc = hdisplay * dsi_get_bpp(msm_host->format) / 8 + 1;
-> @@ -2479,7 +2477,8 @@ int msm_dsi_host_set_display_mode(struct mipi_dsi_host *host,
->  }
->
->  enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
-> -                                           const struct drm_display_mode *mode)
-> +                                           const struct drm_display_mode *mode,
-> +                                           bool is_bonded_dsi)
->  {
->         struct msm_dsi_host *msm_host = to_msm_dsi_host(host);
->         struct drm_dsc_config *dsc = msm_host->dsc;
-> @@ -2489,6 +2488,9 @@ enum drm_mode_status msm_dsi_host_check_dsc(struct mipi_dsi_host *host,
->         if (!msm_host->dsc)
->                 return MODE_OK;
->
-> +       if (is_bonded_dsi)
-> +               pic_width = mode->hdisplay / 2;
-> +
->         if (pic_width % dsc->slice_width) {
->                 pr_err("DSI: pic_width %d has to be multiple of slice %d\n",
->                        pic_width, dsc->slice_width);
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi_manager.c b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> index 896f369fdd53..2ca1a7ca3659 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> +++ b/drivers/gpu/drm/msm/dsi/dsi_manager.c
-> @@ -455,7 +455,7 @@ static enum drm_mode_status dsi_mgr_bridge_mode_valid(struct drm_bridge *bridge,
->                         return MODE_ERROR;
->         }
->
-> -       return msm_dsi_host_check_dsc(host, mode);
-> +       return msm_dsi_host_check_dsc(host, mode, IS_BONDED_DSI());
->  }
->
->  static const struct drm_bridge_funcs dsi_mgr_bridge_funcs = {
-> --
-> 2.26.1
->
-
-
--- 
-With best wishes
-Dmitry
+> -- 
+> viresh
