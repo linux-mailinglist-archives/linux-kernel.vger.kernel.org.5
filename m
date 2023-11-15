@@ -2,171 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 649687EC83C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ACE27EC83D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:13:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232408AbjKOQNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:13:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60134 "EHLO
+        id S232428AbjKOQNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:13:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231745AbjKOQND (ORCPT
+        with ESMTP id S231745AbjKOQNj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:13:03 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 636BBC2;
-        Wed, 15 Nov 2023 08:13:00 -0800 (PST)
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFG1wmW017446;
-        Wed, 15 Nov 2023 16:12:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=EvMqOw3WBKC6enPj70/lAFSGGI91IAwvZnPmWM1l5NY=;
- b=dmVVUR717LfyRiRMesBz9qzW7migwmFbzQ8Pss1f+xSN2rzjccS3drSe5JixzPFAUXLz
- BePtan3ABA5i/rwVzvIg3RF5Wr/2E7nQbdxuv67mcsiFjdS9uqD6vymAwSKMEN8JEBQ+
- +n21AIIVoexsAOiljmNy0tZivCFB67aK1bDy4N9y5FlqO6lWb8MuFvLvsM9CsNHPn+jx
- jhohn4HTQRJ+TbmmC+W1T/9OBhCqjOEq7XC0i3XjJ3rC6lBUIqcZUhGfFVJo69UZNP6M
- 8JXbwqDPoujWykQKUCY0k0/g28X2ZORR7Y/W3HVdQ5joEOs5TTbXDI91YHEEqhZKJpr+ xw== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2na1081-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 16:12:58 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFF9qot003972;
-        Wed, 15 Nov 2023 16:12:58 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxj43jck-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 16:12:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dwa2DqNSz0nfJRisvzUDF2sXaUmOycr+OR6I3spSMmcMP3gA9CZoz3NtV/QZOTEpcdbIdGmII4nJ3su76A3to9RUOQ9zrtmbJmg9VKEc5eCh8uCQU/D2mU8KMvSO9QvZnEo2Q3pyHKOQ1T6PYqhg9X3OghEIUAwWC9SFjbflMlFCI/ULJ5cSGp6JSQvS67j5Fj9Bype63y+HJnOvJ+f5aHpwY6vKnCgsaOJ4VCTLvUJDS4zU1G58kVHTGJpS76BzxRc/p3P9qTjqYIBKMdAV080yzPoUN0zX//1QcwacfgIMdifbSuYTn8hFxlqMGfqBZmeumgriF3fhGr1RDGvAHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EvMqOw3WBKC6enPj70/lAFSGGI91IAwvZnPmWM1l5NY=;
- b=NNsfJozglWT40+HtOydleavHvuPTkm1vToYXz8KhIGw3/3OKqJftVI/54+eeuO0lvc430JVzTEfZ+sgdwWLbjR31d4tcxOO4RVsC8997LVPZABg5qCMNZS/OFhVlN6b+vltV3Qi1zyw9rUxG6gjiLWvBsBw+QFlpdu8bSKnMAN1kzdmh971pxrxGTOdXNuGv+bHpdi+PUMWEqhsQwVuJTaYcOJ1OYOm7WgszR6qYSJxJKMzjRbvOCl0xkEMlIdKa6xShVAZWZ6qHJ34kjTIJiW4ZEkgpqqo2K1pAUYf7hjr9tuetE+I9SzWG9ZX8beBMFI+pwfjl0+G28Y5SeyhFQw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Wed, 15 Nov 2023 11:13:39 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E653AD;
+        Wed, 15 Nov 2023 08:13:36 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-778927f2dd3so365805585a.2;
+        Wed, 15 Nov 2023 08:13:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EvMqOw3WBKC6enPj70/lAFSGGI91IAwvZnPmWM1l5NY=;
- b=IMWoOI/P198rJqtgF3AcHp5ESUd85R29fWW5vVkz8lBbfDi/ediiw0O+zcJINTzzshQ2E7ZsMXgokjYkFRkOiowtEptL1trFTr51ftlJpUrc0WVJy1+PdLDQYlnWzAPwjp6+qlUsYNkf97D9BWgbRgBNFvrQeMDd+gDvkZpg38A=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by SN7PR10MB7032.namprd10.prod.outlook.com (2603:10b6:806:345::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.26; Wed, 15 Nov
- 2023 16:12:55 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660%4]) with mapi id 15.20.6977.018; Wed, 15 Nov 2023
- 16:12:55 +0000
-To:     Muhammad Muzammil <m.muzzammilashraf@gmail.com>
-Cc:     martin.petersen@oracle.com, bostroesser@gmail.com,
-        michael.christie@oracle.com, linux-scsi@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers: target: Fixed multiple typos in multiple files
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq17cmj10bl.fsf@ca-mkp.ca.oracle.com>
-References: <20231023105915.29482-1-m.muzzammilashraf@gmail.com>
-Date:   Wed, 15 Nov 2023 11:12:53 -0500
-In-Reply-To: <20231023105915.29482-1-m.muzzammilashraf@gmail.com> (Muhammad
-        Muzammil's message of "Mon, 23 Oct 2023 15:59:15 +0500")
-Content-Type: text/plain
-X-ClientProxiedBy: MN2PR05CA0062.namprd05.prod.outlook.com
- (2603:10b6:208:236::31) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=gmail.com; s=20230601; t=1700064815; x=1700669615; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=K4l2S5IU2Yw8qLrFVo0w/N0DBaTHJYaMr800eANEyqg=;
+        b=mDFJiS8XIXXEC+YI4mW5jHWK3yJrQ7ErWnxcepiJo1zfRCMGOLlVAfQzz2lVZOvECy
+         cUljMiOYQkSQPktGJkP4pEgpZ6dB66f/meIOv96CVjQgUzVDjchFh7UdeHVTESNuvG1Q
+         Tun2m/H0uBW429HfDe6rUwAPZUfINOxBcIxvkM1JQEuysmipruvqdrKGdvS/12Ijjf+F
+         P5J6ePit6xm0X7FY8dbyzfyjuorT9Y+ppU2SqgD7t1DHkO/tBythu9gBqTn2NxpIJfwn
+         JeEn528YarMAvANYt57iKbX8iN+xYra+1NACZTuXYsA24pizVSM9NDP6RvWeSUuBVFtj
+         0YeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700064815; x=1700669615;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:sender
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=K4l2S5IU2Yw8qLrFVo0w/N0DBaTHJYaMr800eANEyqg=;
+        b=YrRB/UZTUvAsXgxfr0OdFgdxVZ+mn1u9z50vQlUBS2/Q6pkwEoXyWaZUWDppDQfZII
+         qzscwfWPKazaZwLN+5V+jr4CAkC4PnECUkQLfgBxSDym4/47u8eytuxgs3vRr2YBpG9q
+         O53NXlm5zlZ7ZBWXLod737ESFPrQMFkD/Y+TKB0lr2jKNYYD++rXAwUHypIlISeWOg44
+         n1FhNjkIJ4J1Y3ene/VPicaOWcPxWs5bH+QxGHTekkkxYYnzXdIsBkHPfevdZjrVVfpU
+         rVEZrAKX9+KlLJTAfjd8Bw0/5gbUgHQ0CholvRKMuyglrm2uXbmOdAcXpn6ZyjJ8hRcJ
+         YCxg==
+X-Gm-Message-State: AOJu0YzcZatmD8nM/mcOxHJNhZN6ds2e3KokKRA8xJj5VXMpyskWZw6M
+        HI8bw8jFt2hlCyrRvSzxaso=
+X-Google-Smtp-Source: AGHT+IGtw3Ve5XJ0wDd2OznzHFIjYM2SvIb/peNumSCl4D0lS935XS7P4JTGg/fyqOqJrRgzrBRFOw==
+X-Received: by 2002:a05:6214:5c7:b0:671:567d:b13c with SMTP id t7-20020a05621405c700b00671567db13cmr4995854qvz.63.1700064815082;
+        Wed, 15 Nov 2023 08:13:35 -0800 (PST)
+Received: from google.com ([2607:fb91:ecf:35fc:41f6:151:da39:2a3])
+        by smtp.gmail.com with ESMTPSA id l18-20020a0ce852000000b0066e0c924109sm631858qvo.106.2023.11.15.08.13.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 08:13:34 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+Date:   Wed, 15 Nov 2023 08:13:31 -0800
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Josh Poimboeuf <jpoimboe@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        Indu Bhagat <indu.bhagat@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        linux-perf-users@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH RFC 04/10] perf: Introduce deferred user callchains
+Message-ID: <ZVTuK5VRQfY1JOEY@google.com>
+References: <cover.1699487758.git.jpoimboe@kernel.org>
+ <d5def69b0c88bcbe2a85d0e1fd6cfca62b472ed4.1699487758.git.jpoimboe@kernel.org>
+ <CAM9d7chZcqR8WCEYtjpP4KzUOeNdJ=kSvae0UrjsO8OgsepjDw@mail.gmail.com>
+ <20231111184908.ym4l6cwzwnkl7e6m@treble>
+ <CAM9d7chgoiwc3ZfQ8SzO7gV0oQOKMK3bJAdxa63Pzgcqo4i7tQ@mail.gmail.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|SN7PR10MB7032:EE_
-X-MS-Office365-Filtering-Correlation-Id: e62e0b2d-d9ef-49f9-63c9-08dbe5f5ba2b
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: tRxK+p6Ih4TZG3/eedbnPR2dFVixI4V/8T9Yq5DXoEIrtAJ2wOVJOQVzKvlCFeCZHuzr2KytAk7+jxXLrpISeRvtjVEYMj7K4cOiDzpqhqz644bvEcYUPa5v/luwfaBnSOsRLZu0ONZJa1w0Ep3kX87ry93xLGyCb+y2mE759Cl4KHBYwrhJ+FT/aBbOfUoxcAW4yNFjzTfHv5evAu5awUzAnUHvJ1c+w1AhB2aw5L2E045dvC1hoUiDp/f40annB5ns6jdvUEElvWLo0GNRFq1s0iJKYuvmkIttvJn+/7A+PAfwz/YVvm7/KXw+++z3t/JCRTJUkqrNsr6lzzHcKfWEXbIyjgbJLX1bJoyw5QLbhsHkD//httKzCO+iXtMNpcuFgZB1pzgWJG3fw/NqRnerO0+hPQpp08PPYAHNWp5RqWtN7cnmA+NtpJd+g25lz4mRtvEElTaDkDis2cPWWmpl4n3Jg6EJSFf+js06WtYVWO3GS9ev3N/cZAWrNdIeSay2iYaRSye+xzqXKnHbiUu6QtTr0kDQqEjUsx1jKlesUNDUlc5P9itq/XpWzJGW
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(366004)(136003)(346002)(39860400002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(8936002)(316002)(66946007)(4326008)(8676002)(6916009)(66476007)(66556008)(2906002)(41300700001)(4744005)(5660300002)(86362001)(83380400001)(26005)(38100700002)(478600001)(6486002)(6512007)(6506007)(36916002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?fiGVDOlILerFDnIhJPLBNdJUv2lJVBAtZVyKc9FhESrBH64efaHUsdv6OV9V?=
- =?us-ascii?Q?NoX24ZaFXgMXRnHNKJokxitnRZtTjpZ70xx3F+Uw9JVCCsBTIM4LEXVU0L4I?=
- =?us-ascii?Q?NdzJlf5C+jiKAdH78UOOdHVFdswookqDx3jrkQfHG2F8BORmEnLlvuzrtvqj?=
- =?us-ascii?Q?/66He0KnN5vKJBduNhC1KCTJIfV6wqwzT5iXxUs/RfFot0CIL1anIvraKANu?=
- =?us-ascii?Q?PrvPVD7LkbnHoYIbTmTrmmWz6EkKGQ68mSIrhFTTDNoBeqhSxOog0ftYTJar?=
- =?us-ascii?Q?NO7k/8DXHsrydtuhaRguTsQM+WaqqXGaLxAKw188XP2I81xNxlns/Mg/s42E?=
- =?us-ascii?Q?PlQFRIrC9GnCP9zkVG/NZ+nL7BS5kHmEQcu5q+tMMFQAJlTK7yzHYBL5eiqf?=
- =?us-ascii?Q?cBKzPRXmJvP4QBYSmroFOgx/xjdemy499rtf3PwFRVnSjBnILytqZNKmqp99?=
- =?us-ascii?Q?M/5LvWq6ovTkCghM6nr3ERNDy7AKtRv6D2U6wepQjSPM8+gZRrwfR4HMV73T?=
- =?us-ascii?Q?7U5Z2Dq8mWWdzBZKWdlBXSkl1YhXJ3NRx3Yroq3DGN7RjhdvZJnjCvPI0XpS?=
- =?us-ascii?Q?DyYk4dAlycVBlaWs3HhyeZOWb2kzpRF8QhdLUCSklLUStnAa3iV96LdUZ0/p?=
- =?us-ascii?Q?Xy73VW8QC2L74L7AvAYj59AS3+qSDWjCyxZk9a3vAyk5wLZhMhBC6rF+OBlP?=
- =?us-ascii?Q?L5BI2DEuPAr9/qGIO6Atgsfu/l+Kg+G0y1N4L4EwRniVRehZgF4UGEAvYeWM?=
- =?us-ascii?Q?E68ynFqPmzqoGL9WpKMaTHb6nx/9lrd0I9ei3ON4Lc9x6QvkBbTYMoBGcSAG?=
- =?us-ascii?Q?zBch08Msz30eVNJf8EjjFGDo8v3z+FLsLj4LlZpA014Ef6JZcYAjgwMp+4Dp?=
- =?us-ascii?Q?gz7zfBmEommqxJOVbL8lSRi09JelKr91sPNOqkdHcqao/Vo16K7fmJgPiKMJ?=
- =?us-ascii?Q?uhe2P03a7qSNv89BlLg8CvJ9R5ZObgADG1fXgxhzQTUxoOJoyZpUyE85BkKe?=
- =?us-ascii?Q?gOwr/exAndQLRtDk1uFBFXbxl5HxNAUkprWtE66DpSGNAF7iXyT7iZMZCu8V?=
- =?us-ascii?Q?N+AMQoVf6mKHvN2VQNdfL57JEwPw+Q/J0K8U0UyOoFjNHoeV/+CVaYWtFUDX?=
- =?us-ascii?Q?npmIcmPGRKAitxnTGEB0sz2163FIQUcNjieBB/3vs29gcdBTRJBQGnPX9gL6?=
- =?us-ascii?Q?2bwIw2GRfmST98HCChbyytH0Pd5Fp/CZ78HUwzuiEsUrvnILrS8r8oHJ/LfW?=
- =?us-ascii?Q?IrS9Yl0UgDzn+JdPr06USk02CY1SMtInpKjneU7oMlJZV9N2sTsc0iy+Hb5E?=
- =?us-ascii?Q?9ToDl0gCEJTM/d10mR/qSTxss/GeGhM/y+sToFpQOsY7nczDSPKorQZAaeDe?=
- =?us-ascii?Q?2IXEzgDN2NF1cdtizT22RbdHFN0FQQBA2RdEGUsPBXsGyUXxcvY2M+bIZsz6?=
- =?us-ascii?Q?BOhbXQd3/iPU3WGoXB0SJoYBb1nKKx34LaUfl4xthbQ64ywVtyFQ2fNCyLfz?=
- =?us-ascii?Q?qGJo0Y0Hnb3xk2bubZJEX4rIRPqtdHK/s/kP5cP4NGtR+UqcJnfaIA2hEjIQ?=
- =?us-ascii?Q?XAPtg6A/opS8Wb5UN3NjU4EgzP4ZU30L6sz+53k/FmtzkrF42fdEw7kpLqCA?=
- =?us-ascii?Q?0A=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: BK9ZBfZhs6NtrGtK9y+ZSDCI5eUks1MTXFEZpA2B9v+dUAsZXMnMPYE0Wao/MZztsAmy7KvpbeeF6VPeSuNm5sSHgAereNS0m4TdNrUJ5+OcfPpkcspYVhLfbfiDQ+KSphX7MrslZ+ELi6fwZe7O3lDs2XF6mJoA4A2YB9GAtYkZ+Ut2+poXffe0Xv1cTET6SC1mWT4aZzklWQ6q/yrZ/VICwOoOSSRm5mDxOFH/d6W4+MTayipPIGNCvPNI+NN0kmqkcnzzrrN+wCqDzt3+V0M08ylP884i9mVMhqnyqPJOJRY+BNwPW7sVYRKbliW61Dg1/Y2GMnboMnVzOTZLI8FEGAAC8RYEBZUiMDNkULmdfkYt+p1DcNyTWXyMavKHhLPEr3TWwTMD/r6jMgDgkX8zHLGhOAWJFkFOIkybKM2jc/MYydjhfR5jKuEwITYP4pxKCwToL3xS2Lfz44GXeVIIBCQ24jecVavJm7BYJG4sNePWEYdq8bCkh9cY4vBr44wkW5A9av8gQsEUwMlNp4x2Vj9EfIVIbTvZJiIq96UyxnoKC+3J5b5iNnDDgomF8Aa27HZKiuEfgrLrtXnNWneHWGbYjv7En08idlvrGfRILlZheXTGNcVpUug0OPW4kZx6UdSwN9o+iE4lbO4ixxaqNC+bWySvOD7UrxPkKAdoiN4srpZrfZuOj52iBgOBkSpt4pgPefTzuESl9I/6PFzX2EwENqxERaHf1QvESjxzXp6pwB8fVPpGlPpGgE40oHXtDc1jupFq5ZY60Wx+1OswDF852MYXz7FoltA2XMk=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e62e0b2d-d9ef-49f9-63c9-08dbe5f5ba2b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 16:12:55.7335
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: olpvtDb2DTuebEPRP6kzXJ+zJaWIAjndvrxJFH8sB94XuyF8VPdtOLtbb3l6kH9B3LrUdvcBxAtx539DweFNxHbae7TjNCNUXbJNgfCBPfc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR10MB7032
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_15,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
- mlxlogscore=971 mlxscore=0 malwarescore=0 phishscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150123
-X-Proofpoint-GUID: DnyxKST1U-GjnwVSmApql0qoO1Pa5o4c
-X-Proofpoint-ORIG-GUID: DnyxKST1U-GjnwVSmApql0qoO1Pa5o4c
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAM9d7chgoiwc3ZfQ8SzO7gV0oQOKMK3bJAdxa63Pzgcqo4i7tQ@mail.gmail.com>
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        FSL_HELO_FAKE,HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 13, 2023 at 08:56:39AM -0800, Namhyung Kim wrote:
+> On Sat, Nov 11, 2023 at 10:49 AM Josh Poimboeuf <jpoimboe@kernel.org> wrote:
+> >
+> > On Fri, Nov 10, 2023 at 10:57:58PM -0800, Namhyung Kim wrote:
+> > > Anyway I'm not sure it can support these additional samples for
+> > > deferred callchains without breaking the existing perf tools.
+> > > Anyway it doesn't know PERF_CONTEXT_USER_DEFERRED at least.
+> > > I think this should be controlled by a new feature bit in the
+> > > perf_event_attr.
+> > >
+> > > Then we might add a breaking change to have a special
+> > > sample record for the deferred callchains and sample ID only.
+> >
+> > Sounds like a good idea.  I'll need to study the code to figure out how
+> > to do that on the perf tool side.  Or would you care to write a patch?
+> 
+> Sure, I'd be happy to write one.
 
-Hi Muhammad,
+I think we can start with something like the below.
+The sample id (attr.sample_type) should have
+IDENTIFIER | TID | TIME to enable defer_callchain
+in order to match sample and callchain records.
 
-> -	 * CID we do connection reinstatement.  Currently we dont not
-> +	 * CID we do connection reinstatement.  Currently we don't not
+Thanks,
+Namhyung
 
-"Currently we don't not" does not parse. Fixing misspelled words in
-isolation is not necessarily an improvement. The criteria should be
-whether the entire sentence or comment becomes easier to read.
 
-> -		 * status, with the sense key set to ILLEGAL REQUEST,and the additonal
-> +		 * status, with the sense key set to ILLEGAL REQUEST,and the additional
-
-There's a space missing after "ILLEGAL REQUEST,".
-
-> - * Called thru fc_lport_iterate().
-> + * Called through fc_lport_iterate().
-
-"thru" is perfectly valid and the author's choice.
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+---8<---
+diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
+index 39c6a250dd1b..a3765ff59798 100644
+--- a/include/uapi/linux/perf_event.h
++++ b/include/uapi/linux/perf_event.h
+@@ -456,7 +456,8 @@ struct perf_event_attr {
+ 				inherit_thread :  1, /* children only inherit if cloned with CLONE_THREAD */
+ 				remove_on_exec :  1, /* event is removed from task on exec */
+ 				sigtrap        :  1, /* send synchronous SIGTRAP on event */
+-				__reserved_1   : 26;
++				defer_callchain:  1, /* generate DEFERRED_CALLCHAINS records for userspace */
++				__reserved_1   : 25;
+ 
+ 	union {
+ 		__u32		wakeup_events;	  /* wakeup every n events */
+@@ -1207,6 +1208,20 @@ enum perf_event_type {
+ 	 */
+ 	PERF_RECORD_AUX_OUTPUT_HW_ID		= 21,
+ 
++	/*
++	 * Deferred user stack callchains (for SFrame).  Previous samples would
++	 * have kernel callchains only and they need to be stitched with this
++	 * to make full callchains.
++	 *
++	 * struct {
++	 *	struct perf_event_header	header;
++	 *	u64				nr;
++	 *	u64				ips[nr];
++	 *	struct sample_id		sample_id;
++	 * };
++	 */
++	PERF_RECORD_DEFERRED_CALLCHAINS		= 22,
++
+ 	PERF_RECORD_MAX,			/* non-ABI */
+ };
+ 
