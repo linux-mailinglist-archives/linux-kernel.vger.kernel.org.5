@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7417EC41B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:51:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B127EC422
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344009AbjKONvf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:51:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45942 "EHLO
+        id S234241AbjKONyH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343868AbjKONvd (ORCPT
+        with ESMTP id S230336AbjKONyF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:51:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F6FC8;
-        Wed, 15 Nov 2023 05:51:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700056289; x=1731592289;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=of9AMIKCSH75RHDLANVQfD/mECbR5A8WG8K4l8+mfqY=;
-  b=E0w5aFJnq4s4zjmrN7Dj269fr+fMtZTP80SpgSmE1uSURiL5iBLUonW0
-   upBXgKYDYTE0Ux/KxEuP2EuRzYG7C/DoFYslChjT1fqmLy70i06lIjFwU
-   X5CXY4reA7VWPt1brzEFw4sRvhx3GgkrF8/UDTPDvtXgu8lVVluZ3LwlF
-   jXgyUCFpJ2gONXmJYQJB6h5dne0Pmz7th3xlcyCG8e+ECKJrDTc4tsobQ
-   y9egKUGsNVMM5EQqvo17ICwQYSC0lyP6vZE4TRHb5Cqy4HeH2K6ZtJlWV
-   MVf/jifc6oEpyzbMfE407JnDDi7RkQ8aYol6BHPOcJyRBk+gfbmqHYXzo
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="375917076"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="375917076"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:51:28 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="882397802"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="882397802"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:51:25 -0800
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1r3GIc-0000000EKQa-0jnW;
-        Wed, 15 Nov 2023 15:51:22 +0200
-Date:   Wed, 15 Nov 2023 15:51:21 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Cc:     Mario Limonciello <mario.limonciello@amd.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v3 02/25] i2c: designware: Fix PM calls order in
- dw_i2c_plat_probe()
-Message-ID: <ZVTM2UgTMgNIBWGA@smile.fi.intel.com>
-References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
- <20231110182304.3894319-3-andriy.shevchenko@linux.intel.com>
- <e299ee44-7de1-4542-828d-a0c86b217fb4@linux.intel.com>
- <ZVTMJA5JsQI13dhz@smile.fi.intel.com>
+        Wed, 15 Nov 2023 08:54:05 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id B231EAF;
+        Wed, 15 Nov 2023 05:54:02 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12847DA7;
+        Wed, 15 Nov 2023 05:54:48 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EBC473F641;
+        Wed, 15 Nov 2023 05:54:00 -0800 (PST)
+Message-ID: <92d6a66d-3270-3378-2ab9-9214c004d5c7@arm.com>
+Date:   Wed, 15 Nov 2023 13:53:59 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVTMJA5JsQI13dhz@smile.fi.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH 4/7] coresight: tpiu: Move ACPI support from AMBA driver
+ to platform driver
+Content-Language: en-US
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, suzuki.poulose@arm.com
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20231027072943.3418997-1-anshuman.khandual@arm.com>
+ <20231027072943.3418997-5-anshuman.khandual@arm.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231027072943.3418997-5-anshuman.khandual@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 03:48:20PM +0200, Andy Shevchenko wrote:
-> On Wed, Nov 15, 2023 at 01:14:36PM +0200, Jarkko Nikula wrote:
-> > On 11/10/23 20:11, Andy Shevchenko wrote:
 
-...
 
-> > Is it intended change the reset isn't asserted after this patch in case
-> > i2c_dw_probe() fails?
+On 27/10/2023 08:29, Anshuman Khandual wrote:
+> Add support for the tpiu device in the platform driver, which can then be
+> used on ACPI based platforms. This change would now allow runtime power
+> management for ACPI based systems. The driver would try to enable the APB
+> clock if available.
 > 
-> Did you miss that this is become managed with this patch and hence the above
-> is false scenario?
+[...]
+> +#ifdef CONFIG_ACPI
+> +static const struct acpi_device_id tpiu_acpi_ids[] = {
+> +	{"ARMHC979", 0}, /* ARM CoreSight TPIU */
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(acpi, tpiu_acpi_ids);
+> +#endif
+> +
+> +static struct platform_driver tpiu_platform_driver = {
+> +	.probe	= tpiu_platform_probe,
+> +	.remove	= tpiu_platform_remove,
+> +	.driver = {
+> +		.name			= "coresight-tpiu-platform",
+> +		.acpi_match_table	= ACPI_PTR(tpiu_acpi_ids),
+> +		.suppress_bind_attrs	= true,
+> +		.pm			= &tpiu_dev_pm_ops,
+> +	},
+> +};
+> +module_platform_driver(tpiu_platform_driver);
+> +
 
-Ah, I see now what you mean. Sorry, I though about next patch in mind.
-Indeed, I need to amend this one.
+Is there a special build config where this works? I get an error here
+because module_platform_driver() redefines things that are in
+module_amba_driver() which is defined above:
 
--- 
-With Best Regards,
-Andy Shevchenko
+  module_amba_driver(tpiu_driver);
 
+This isn't a W=1 build or anything, just a normal one. And it applies to
+most of the patches in this set.
 
