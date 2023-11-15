@@ -2,51 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DDC27ED536
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BA57ED53C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:02:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344887AbjKOVCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34614 "EHLO
+        id S235568AbjKOVC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:02:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53002 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235754AbjKOVBv (ORCPT
+        with ESMTP id S1343823AbjKOVBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:01:51 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AB32BD;
-        Wed, 15 Nov 2023 13:01:20 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d30d9f4549so53100a34.0;
-        Wed, 15 Nov 2023 13:01:20 -0800 (PST)
+        Wed, 15 Nov 2023 16:01:54 -0500
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F8BC199B;
+        Wed, 15 Nov 2023 13:01:27 -0800 (PST)
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-586f68b78ddso55068eaf.2;
+        Wed, 15 Nov 2023 13:01:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700082079; x=1700686879;
+        d=1e100.net; s=20230601; t=1700082086; x=1700686886;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=RCg6f5/T02V1q5il/uuEVJCsez595XWmMuk/ZZxOjtI=;
-        b=XioGdLP+Dsiied9KwmIlx12WIlEqlY1YTtqBZratTC8/tOClbBbsXHJvJ78SYWiuL1
-         RqkbBWN74zcSxkaC6v8wZo5n0AeN+UYGoGntf63IJOgGpBqwitPge51uZ90IFiB2Y9mO
-         T2FnMmZH/BAmx/fxlTvM84ETXuMRZVbDn9BmYwKk3fdI0vSPtiLs5cSLva8OAUrfIJk+
-         evQzllrsb+PKg0DHce2QdvqzCx9rfRxvyYXxzegEfbmG3TffoSIefVybZT2+b13auPIX
-         J7zrlYMd1dnxr5vwLzYw/wr4omq9rMtPanSOcOBhmUKhnKy+BO3rfLDUl5W60NGlm2Ub
-         NahA==
-X-Gm-Message-State: AOJu0Yw/jNdZsAk5NPmXK1kTttGOBMRJPvdpcM1OUkb+RQb8x/afhdrW
-        DsZGmENcwQFkuLSfSvSy+A==
-X-Google-Smtp-Source: AGHT+IHEarBzCTJVSMjCJKEP0XCaIp/Pvxrcdn3rQUfQ4FIMqA49jZ5b0pLbkM6cNJnOhp4Mj/2sDQ==
-X-Received: by 2002:a05:6830:614:b0:6d2:e1fd:9f5e with SMTP id w20-20020a056830061400b006d2e1fd9f5emr7098733oti.6.1700082079446;
-        Wed, 15 Nov 2023 13:01:19 -0800 (PST)
+        bh=K03zmxasEq9FnnjGJz4u1w2YR1+3fOaUQl9N4LzfX7o=;
+        b=JcBbdeVQh1houhbecenMGnI/oO0qUaxntpyhn7QkCg/n8vzYjbgwojFOXHgjtSFzlg
+         vUHXyB8zC3uNQMcgSjfy/c7VoTZqwjyqfZjxQkFS9akr1QYVdMyxLrzxIqy4QUzabgJb
+         PUEHQSCRiXlTkQ555Qk8MVt+8e6Ve2Jqk9pekdOLhuk0xLAMPgvNg53A9Vm6Q54OuVmY
+         upYyKvsATf7ylttGRqqAUjXFeKEcrheaEBnL+HrZV9YX59Ux4m9UBo6DBazKKSqWTrCE
+         ymObh9hpTfkuP+RJ6rLahAELk+hzjh7R+EW2bKIF5Jax32NOspnJGzH31y/tbYhykZtk
+         sBtw==
+X-Gm-Message-State: AOJu0YzqtlJQKXAULfdSjbkHnSX2i1S3SHro9tjT/9pHwfO1Iog6D8tb
+        qw2AQQwoYWsDcPJ8Ji3Drg==
+X-Google-Smtp-Source: AGHT+IHMGTv0+6qVwF7GC4xCcEfHpb+VL7SmBzNPo8jG4WM3SE4T2Y5RwR9z/bwlw/l/h6yWQYLSGA==
+X-Received: by 2002:a4a:7648:0:b0:581:dd3e:dbce with SMTP id w8-20020a4a7648000000b00581dd3edbcemr12906231ooe.0.1700082086640;
+        Wed, 15 Nov 2023 13:01:26 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s30-20020a056830439e00b006ce2e464a45sm692655otv.29.2023.11.15.13.01.18
+        by smtp.gmail.com with ESMTPSA id 129-20020a4a0687000000b00587947707aasm819964ooj.4.2023.11.15.13.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:01:18 -0800 (PST)
-Received: (nullmailer pid 3738432 invoked by uid 1000);
-        Wed, 15 Nov 2023 21:01:17 -0000
+        Wed, 15 Nov 2023 13:01:26 -0800 (PST)
+Received: (nullmailer pid 3739323 invoked by uid 1000);
+        Wed, 15 Nov 2023 21:01:25 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Sean Young <sean@mess.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] media: ir-hix5hd2: Use device_get_match_data()
-Date:   Wed, 15 Nov 2023 15:01:13 -0600
-Message-ID: <20231115210113.3738233-1-robh@kernel.org>
+To:     Thierry Reding <thierry.reding@gmail.com>,
+        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Heiko Stuebner <heiko@sntech.de>
+Cc:     linux-pwm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org
+Subject: [RESEND PATCH] pwm: Use device_get_match_data()
+Date:   Wed, 15 Nov 2023 15:01:20 -0600
+Message-ID: <20231115210121.3738487-1-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -65,49 +68,91 @@ Use preferred device_get_match_data() instead of of_match_device() to
 get the driver match data. With this, adjust the includes to explicitly
 include the correct headers.
 
+As these drivers only do DT based matching, of_match_device() will never
+return NULL if we've gotten to probe(). Therefore, the NULL check and
+error returns can be dropped.
+
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/media/rc/ir-hix5hd2.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/pwm/pwm-img.c      | 8 ++------
+ drivers/pwm/pwm-rockchip.c | 9 ++-------
+ 2 files changed, 4 insertions(+), 13 deletions(-)
 
-diff --git a/drivers/media/rc/ir-hix5hd2.c b/drivers/media/rc/ir-hix5hd2.c
-index 0034f615b466..de5bb9a08ea4 100644
---- a/drivers/media/rc/ir-hix5hd2.c
-+++ b/drivers/media/rc/ir-hix5hd2.c
-@@ -9,7 +9,9 @@
- #include <linux/interrupt.h>
+diff --git a/drivers/pwm/pwm-img.c b/drivers/pwm/pwm-img.c
+index 116fa060e302..0d218c0b690e 100644
+--- a/drivers/pwm/pwm-img.c
++++ b/drivers/pwm/pwm-img.c
+@@ -13,9 +13,9 @@
  #include <linux/mfd/syscon.h>
  #include <linux/module.h>
+ #include <linux/of.h>
 -#include <linux/of_device.h>
-+#include <linux/of.h>
-+#include <linux/platform_device.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
 +#include <linux/property.h>
+ #include <linux/pwm.h>
  #include <linux/regmap.h>
- #include <media/rc-core.h>
+ #include <linux/slab.h>
+@@ -260,7 +260,6 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 	u64 val;
+ 	unsigned long clk_rate;
+ 	struct img_pwm_chip *imgchip;
+-	const struct of_device_id *of_dev_id;
  
-@@ -251,7 +253,6 @@ static int hix5hd2_ir_probe(struct platform_device *pdev)
- 	struct device *dev = &pdev->dev;
- 	struct hix5hd2_ir_priv *priv;
- 	struct device_node *node = pdev->dev.of_node;
--	const struct of_device_id *of_id;
- 	const char *map_name;
- 	int ret;
+ 	imgchip = devm_kzalloc(&pdev->dev, sizeof(*imgchip), GFP_KERNEL);
+ 	if (!imgchip)
+@@ -272,10 +271,7 @@ static int img_pwm_probe(struct platform_device *pdev)
+ 	if (IS_ERR(imgchip->base))
+ 		return PTR_ERR(imgchip->base);
  
-@@ -259,12 +260,11 @@ static int hix5hd2_ir_probe(struct platform_device *pdev)
- 	if (!priv)
+-	of_dev_id = of_match_device(img_pwm_of_match, &pdev->dev);
+-	if (!of_dev_id)
+-		return -ENODEV;
+-	imgchip->data = of_dev_id->data;
++	imgchip->data = device_get_match_data(&pdev->dev);
+ 
+ 	imgchip->periph_regs = syscon_regmap_lookup_by_phandle(pdev->dev.of_node,
+ 							       "img,cr-periph");
+diff --git a/drivers/pwm/pwm-rockchip.c b/drivers/pwm/pwm-rockchip.c
+index cce4381e188a..a7c647e37837 100644
+--- a/drivers/pwm/pwm-rockchip.c
++++ b/drivers/pwm/pwm-rockchip.c
+@@ -10,8 +10,8 @@
+ #include <linux/io.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_device.h>
+ #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/pwm.h>
+ #include <linux/time.h>
+ 
+@@ -296,16 +296,11 @@ MODULE_DEVICE_TABLE(of, rockchip_pwm_dt_ids);
+ 
+ static int rockchip_pwm_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *id;
+ 	struct rockchip_pwm_chip *pc;
+ 	u32 enable_conf, ctrl;
+ 	bool enabled;
+ 	int ret, count;
+ 
+-	id = of_match_device(rockchip_pwm_dt_ids, &pdev->dev);
+-	if (!id)
+-		return -EINVAL;
+-
+ 	pc = devm_kzalloc(&pdev->dev, sizeof(*pc), GFP_KERNEL);
+ 	if (!pc)
  		return -ENOMEM;
+@@ -344,7 +339,7 @@ static int rockchip_pwm_probe(struct platform_device *pdev)
  
--	of_id = of_match_device(hix5hd2_ir_table, dev);
--	if (!of_id) {
-+	priv->socdata = device_get_match_data(dev);
-+	if (!priv->socdata) {
- 		dev_err(dev, "Unable to initialize IR data\n");
- 		return -ENODEV;
- 	}
--	priv->socdata = of_id->data;
+ 	platform_set_drvdata(pdev, pc);
  
- 	priv->regmap = syscon_regmap_lookup_by_phandle(node,
- 						       "hisilicon,power-syscon");
+-	pc->data = id->data;
++	pc->data = device_get_match_data(&pdev->dev);
+ 	pc->chip.dev = &pdev->dev;
+ 	pc->chip.ops = &rockchip_pwm_ops;
+ 	pc->chip.npwm = 1;
 -- 
 2.42.0
 
