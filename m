@@ -2,77 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0474F7ECDEF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:39:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DFDC7ED28E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234734AbjKOTjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37502 "EHLO
+        id S235023AbjKOTk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:40:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234721AbjKOTjN (ORCPT
+        with ESMTP id S234829AbjKOTkj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:39:13 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 665381A5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:39:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=fBJcHqQEVaFglNHQdjjrI1nuF758JCtqWF32MgFM9JY=; b=Nepq4AU8q7jweHyqtxjH47ST2P
-        OIZrV1uHP2cWjonavRphGtw6KmjvicMzQE7MUu9momz6ErjdNyc4WAZWQAOVvobZCy3mfirkHCXrA
-        cEdHjYdaAB0oSOCAQJH08+D/+T7q0Zy/liRGnLbyXC975xVKyrmatuZpD7FjXHpmK/EN3GYMerEJn
-        GlxomJxCxSD/8FcpXrTd12oQ5NKwskDjyUeSbst9ZNClSZolBhqj01ekFj/Av3Vfy6NpAHD3+SKFG
-        2LvuWIe5lzExBgF6UYUPbnvGJ8CFFh9L6ytKZvqBUPXVqBE4nGxON4fdSAEt14jELOYDP7L26b6Hw
-        aoM6O4tw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r3Lj8-00G2SN-DY; Wed, 15 Nov 2023 19:39:06 +0000
-Date:   Wed, 15 Nov 2023 19:39:06 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     linux-arm-kernel@lists.infradead.org, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        syzkaller-bugs@googlegroups.com, jose.pekkarinen@foxhound.fi
-Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
- __pte_offset_map_lock
-Message-ID: <ZVUeWvO4ypVmqlyX@casper.infradead.org>
-References: <0000000000005e44550608a0806c@google.com>
- <b66659e9-a59e-fdf9-904c-ec25395b97ef@google.com>
+        Wed, 15 Nov 2023 14:40:39 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357A5CE
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:40:35 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12590C433CC;
+        Wed, 15 Nov 2023 19:40:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700077235;
+        bh=Gn1w687cIR3BQUoucpzaPxl0Q1GbBJKVcB2M7xuBnuM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=LhI5JtKz5wz/vXpuWj71ouvklZMuSk/3RZQNVUlnGfbmI+bu8FtkzTplVnNwHppPC
+         oZDJHP0IG3r7Sqg//4+4YWyV4rME9ph/f1Ti7CcP0LSOjBaPi2yRl+1WgkZz5RSkaP
+         ftNATPozh7EcFT0EsLB0Q1pCmvt1rUAgXkWl8RATqGa0Hes2l7Ht6mEW+7uquGQQ3M
+         5fB71zpUs/L5758F6mZwdt3CHQ5u36Arp3dd/73o2BX8kskYQTmaITxeNeZr2UzT1K
+         KJx5gBNhKRAVOltojh1raAgIlC8sqtcanz+TOIQ1RAjQwPvLx6q6qfEzIbepoELrud
+         sRWE0zqaJbycA==
+Date:   Wed, 15 Nov 2023 19:40:31 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Anshul Dalal <anshulusr@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: trivial-devices: add aosong,ags02ma
+Message-ID: <20231115-humble-sleek-e401e01de5dd@squawk>
+References: <20231115125810.1394854-1-anshulusr@gmail.com>
+ <20231115125810.1394854-2-anshulusr@gmail.com>
+ <20231115-stability-arrive-e0458f6f7b0f@squawk>
+ <9b1674d7-c41d-4d8b-bb28-09ed201c72cd@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6bQ9hniIbQJIrogH"
 Content-Disposition: inline
-In-Reply-To: <b66659e9-a59e-fdf9-904c-ec25395b97ef@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <9b1674d7-c41d-4d8b-bb28-09ed201c72cd@gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 26, 2023 at 11:07:35PM -0700, Hugh Dickins wrote:
-> I've spent a while worrying over this report, but have not been able
-> glean much from it: I'm not at all familiar with arm64 debugging, so
-> cannot deduce anything from the registers shown, though suspect they
-> would shed good light on it; but it may just be a waste of time, since
-> it was on a transient 6.6-rc6-based for-kernelci branch from last week.
-> 
-> If I read right, the reproducer is exercising MADV_PAGEOUT (splitting
-> huge pages) and MADV_COLLAPSE (assembling huge pages), on mmaps
-> MAP_FIXED MAP_SHARED MAP_ANONYMOUS i.e. shmem.
-> 
-> Suspicion falls on my 6.6-rc1 mm/khugepaged.c changes; but I don't see
-> what's wrong, and shall probably give up and ignore this - unless an
-> arm64 expert can take it further, or syzbot reproduces it on x86 on a
-> known tree.
 
-Just to tie the two threads together ... it looks to me like what's
-happening is __pte_offset_map_lock() is racing with pagetable_pte_dtor().
-That is, we're walking the page tables, find a pmd, look up its
-page/ptdesc, but because CONFIG_LOCKDEP is enabled, ptdesc->ptl is a
-pointer to a lock, and that pointer is NULL.
+--6bQ9hniIbQJIrogH
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-More discussion here:
-https://lore.kernel.org/linux-mm/ZVUWLgFgu+jE3QmW@casper.infradead.org/T/#t
+On Wed, Nov 15, 2023 at 09:29:20PM +0530, Anshul Dalal wrote:
+> On 11/15/23 20:08, Conor Dooley wrote:
+> > On Wed, Nov 15, 2023 at 06:28:07PM +0530, Anshul Dalal wrote:
+> >> Add bindings for Aosong AGS02MA TVOC sensor.
+> >>
+> >> The sensor communicates over i2c with the default address 0x1a.
+> >> TVOC values can be read in the units of ppb and ug/m^3 at register 0x0=
+0.
+> >>
+> >> Datasheet:
+> >>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> >> Product-Page:
+> >>   http://www.aosong.com/m/en/products-33.html
+> >>
+> >> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> >> ---
+> >>
+> >> Changes for v2:
+> >> - Removed device from trivial-devices
+> >=20
+> > Your $subject still says "trivial-devices" though, so please fix that in
+> > your next submission.
+> >=20
+> >> - Added standalone binding with vdd-supply property
+> >> ---
+> >>  .../bindings/iio/chemical/aosong,ags02ma.yaml | 48 +++++++++++++++++++
+> >>  1 file changed, 48 insertions(+)
+> >>  create mode 100644 Documentation/devicetree/bindings/iio/chemical/aos=
+ong,ags02ma.yaml
+> >>
+> >> diff --git a/Documentation/devicetree/bindings/iio/chemical/aosong,ags=
+02ma.yaml b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.y=
+aml
+> >> new file mode 100644
+> >> index 000000000000..4a0278c6318c
+> >> --- /dev/null
+> >> +++ b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.ya=
+ml
+> >> @@ -0,0 +1,48 @@
+> >> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> >> +%YAML 1.2
+> >> +---
+> >> +$id: http://devicetree.org/schemas/iio/chemical/aosong,ags02ma.yaml#
+> >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> >> +
+> >> +title: Aosong AGS02MA VOC Sensor
+> >> +
+> >> +description: |
+> >> +  AGS02MA is an TVOC (Total Volatile Organic Compounds) i2c sensor wi=
+th default
+> >> +  address of 0x1a.
+> >> +
+> >> +  Datasheet:
+> >> +    https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> >> +
+> >> +maintainers:
+> >> +  - Anshul Dalal <anshulusr@gmail.com>
+> >> +
+> >> +properties:
+> >> +  compatible:
+> >> +    enum:
+> >> +      - aosong,ags02ma
+> >> +      - asair,ags02ma
+> >=20
+> > Why do you have two compatibles for the same device? Please document and
+> > use only one of these. The aoson website says:
+> > "Guangzhou ASAIR Electronic Co., Ltd"
+>=20
+> I'm sorry but I couldn't find any reference to such name on
+> http://www.aosong.com/en/
+> In the contact page (http://www.aosong.com/en/article-34.html),
+> I could only find references to "Guangzhou Aosong Electronic Co., Ltd."
+
+On the page you linked in your original submission:
+www.aosong.com/m/en/products-33.html
+(scroll down)
+
+> > so I suspect "asair" is a more apt vendor prefix.
+> >=20
+>=20
+> Asair is the brand name under which Guangzhou Aosong Electronics sells
+> their products [0]. After a prior discussion with Krzysztof [1], I
+> thought it would be the best to go with Aosong instead.
+>=20
+> The rationale being since a vendor can only have a single prefix, if
+> Aosong were to sell some new product under the name Aosong, it would
+> then have to have the same vendor-prefix as other products under the
+> Asair brand.
+
+Go with Aosong then, sure. But please drop the "asair" prefixed
+compatible from your binding.
+
+Cheers,
+Conor,
+
+--6bQ9hniIbQJIrogH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVUeqwAKCRB4tDGHoIJi
+0tLpAQDj4G3DmRTIQHEIDDn1GmniyFse4HIbtrauRyEkPgM7vQEAnBi4IctZcpXS
+Q/SrA/dHRQNpGzD2TDRyG5vYyzVcdAo=
+=AjOV
+-----END PGP SIGNATURE-----
+
+--6bQ9hniIbQJIrogH--
