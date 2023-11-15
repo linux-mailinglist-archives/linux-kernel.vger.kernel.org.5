@@ -2,139 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD6FE7ED773
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:43:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D7C87ED77F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:44:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230138AbjKOWnA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:43:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39758 "EHLO
+        id S1343698AbjKOWoZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:44:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOWm6 (ORCPT
+        with ESMTP id S235620AbjKOWoX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:42:58 -0500
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2045.outbound.protection.outlook.com [40.107.96.45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001F419B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:42:54 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OuYmksxSDtJUYVFyZzb6cFRH9NGtpbb9zGSM6+onAM1obsZJERjN+CTgHWTWfOIXNYgJYfi4bBNQA5iIqXHj7WVPzOK3AxT4x4qh370AHHAZ6rIfQRinBOqoxCWgD2fqXfH17SpOjk01iFbvsw2vqnnvU7cGgdMvhXShFV9Xo3Mqsix7fySO5s997U8/hi770q6JzQcPVkMlEISsm7l3F8AaAghYyZqEfHFi0/JolZkKXXkFboxNmcMb1sM8HKEk7JAyFU00Cr0xWwhSw2rreayoONYxMSZ1gAq/tcjuAGI7t4bPih3w1EyojsULqVgawzXHp1M1EMH0dxmZLkuKmQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Tx4f8RChWmElYB2mrNBfpiiJXzAp+U51Usc5oWYwHsM=;
- b=Cuoe6BPbfYcFwsycnTz6YSW4Td/5QmEZb9BcZDBi0wfC5pYsC7G/kkqpFfI4ZGk6uTlDONk/HNLLjgf1QT9TPqkrCGGWwcgClcj0rVcgYtJ+LSQ2KXWCBUKWC206yHQLATlsnxT1ZIcwoO38NqSkf0OzXsKnGqVr087rsMgWnMULdTYURxTr+p5+n7cwZARCREVVFpGgH8CszNPR3Ad3Jt0nyWP19Fn0LABigFAHdxyjShje23kS8iKO/uHZHv+sDYPTNoA6k9roTIJ2iGRX5gMnma+PW85ztHR+6DQVT1lwhqnzYRBnZQ++GxztdhscDbqzhZ/rJ+iyO+XbO+Ir6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tx4f8RChWmElYB2mrNBfpiiJXzAp+U51Usc5oWYwHsM=;
- b=MsSvVk8NKGq/Ju0J7TflUYIBphSDYgf5X5zxVDdLToXtPi6D5G1rX3cZDFjgyNPBmzW8jXKLSlywLALr1WoAsbNhZobqfFMx7lIDcnv+B3jG6j0IrRNblgxDQWHsZ3jqimV9MndJmetwlaU3nj8NoHtIvKfr51mVSn2hQCKdQus=
-Received: from MW4PR03CA0341.namprd03.prod.outlook.com (2603:10b6:303:dc::16)
- by BL0PR12MB5010.namprd12.prod.outlook.com (2603:10b6:208:17c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.19; Wed, 15 Nov
- 2023 22:42:52 +0000
-Received: from CO1PEPF000044FC.namprd21.prod.outlook.com
- (2603:10b6:303:dc:cafe::70) by MW4PR03CA0341.outlook.office365.com
- (2603:10b6:303:dc::16) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20 via Frontend
- Transport; Wed, 15 Nov 2023 22:42:52 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CO1PEPF000044FC.mail.protection.outlook.com (10.167.241.202) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7025.9 via Frontend Transport; Wed, 15 Nov 2023 22:42:52 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Wed, 15 Nov
- 2023 16:42:51 -0600
-Date:   Wed, 15 Nov 2023 16:42:31 -0600
-From:   Michael Roth <michael.roth@amd.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-CC:     <x86@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        "Tom Lendacky" <thomas.lendacky@amd.com>,
-        Joerg Roedel <jroedel@suse.de>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] x86: Ensure input to pfn_to_kaddr() is treated as a
- 64-bit type
-Message-ID: <20231115224231.xmxfktqcb4sls3fb@amd.com>
-References: <20231115201431.820278-1-michael.roth@amd.com>
- <e42524f9-87ef-47f4-9c79-bc06b4d71a58@intel.com>
+        Wed, 15 Nov 2023 17:44:23 -0500
+Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 235871A7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:44:17 -0800 (PST)
+Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-586b512ba0aso94438eaf.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:44:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=purestorage.com; s=google2022; t=1700088256; x=1700693056; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=LXrgWyvWAa7mpo5Hy0ExAVZUfBAE64Xn9mUeqoQEoh4=;
+        b=G6P1KuxC/8vgxmJjt8e61ALhjOaPcnCCjXRG9YaWtG+H3OpebOg+XM3J4W2yizHvBr
+         xv6Xdhv/6xvOj1ogEg7wIFTV1Ybgr+alR2aerFP3ZGDaDUVYuxHSDho/24o9U/z8SMia
+         bkAoWu1N3RDiWjxDniySLR5aF3PLf4FSNVzlCNfPcI74ReIcNvg+kzI3A9XTi0TwiPiq
+         uoBvOJSiKDTvyAP/o/w3Y+j46ZWot6U/NHksKKXK86UYneIgIjyCex+uojROOGEdALGm
+         iohnvUur2kCTPfcAFSDGoZns29kA9xKmhHJI0vOL1Nk6YGZk4dJ4DbsgQaIj2YbkvSFs
+         AGEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700088256; x=1700693056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LXrgWyvWAa7mpo5Hy0ExAVZUfBAE64Xn9mUeqoQEoh4=;
+        b=F4oCT4jmQbeNckIFiA6/wHcvyKv8RdJGV1IUehXTdDy2u/bekkzMI6c14EZrAdsYUN
+         xMQMLJE5d8XL6rhLYfCotLsQX1CvHNdRp0M2TBeQvBk6j/h0bFp2+gMew7/Fec8oGDy9
+         KjrCnBYlzxFJ0gydq1YPb43hanqaTnIcbp/jJ3NuKh/yjWPI2tQdbJn0pV0u/oxY768W
+         D5YA/WDVHZaqcj6gkSngUsGYxfi0UNx6PgVKTd9VHAW+VblPd5EHs72iOb6RRWm/tY9I
+         QPMewVuy9wiscUiv8U8lYbN38VvOVdD03ydsd5rE6Kca0RuXIWgMMHhP5OXKmsLP5P4x
+         y6qw==
+X-Gm-Message-State: AOJu0YzpOSO9BuztDv7IMwRGj2AJBbxWq7QjhdiEyLyxwHdIru8B2jU3
+        AjfiFwcVyoV9sT3i8dhmgIer9DwE3DLR42S6CP3+uTvvacZn5iPBvT9+vd47
+X-Google-Smtp-Source: AGHT+IGrycqa+3tW5XHyxAo6jk4d3g94Kstx3L4T6j5UriD6ILVj1s4cuFgwmiT04zhqz0EokZUAdXeiJ2vS6qbrCkw=
+X-Received: by 2002:a05:6358:88f:b0:168:e55a:853e with SMTP id
+ m15-20020a056358088f00b00168e55a853emr6625450rwj.4.1700088256000; Wed, 15 Nov
+ 2023 14:44:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <e42524f9-87ef-47f4-9c79-bc06b4d71a58@intel.com>
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CO1PEPF000044FC:EE_|BL0PR12MB5010:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7f737a3f-c274-4608-b38e-08dbe62c33d2
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: WiPylsic782ckdf7BCx9BgfkVkQ4stK57C28Kz7lVkbqgcgUsKgWkSb/wywMBQ4ycW5TPDCKgbSvRTaNrtVEN6fy+MKJinvokhn0F4eswV9nHH6J8c9E8j2s8gi9cS9um1I3gxdLlPE3KHrsce05DxEmgJAsTgpA+9RJXJlaTnLk9mK8OUaHYXe86KuOxmmSU/VKHEAyNQd++yJpnuxVlcSxI2+EC0cSLYpAvWTo+ym2Jxd2jKrqZUvGVNmYjuxRFeJ2unJbXlrbmA88NLXU9nQQlmje91cO1dShK/vBO4lDPQq6ZzzVtdAO2mHIY6xBE+TpCWtbYR4D28NiTp5KWVAtjkmXySndvLIKaYRvDJ0yBPdfYTdStxyOE3QjLF7jpHirP3fdrYtHKptcslu0IAaxoimT+1/J1MzqBvmR2q5BilaSnrD40nAmCvIXicTZDzLnEObQ3thT4u02qXm1sbp6IPgvhh70piEWLCOIK6/w43AerAAEUKtgiRP3BJMGcveaDzlvc/tRPclr+fdowSvKKfO3rqWj/sRbO5bpAPqeNQjArPFNrX63ifmPc4GfDMSFtDD16gcFj7U7Ql3DrXmQQQ/ghhtMm/dWm4hoIQDhipOsXH8tmlRzRkLpKp1p/rispZCbz1Oy6MnBouQQdraPt+6UAbBhNJlLAYpNPmzoyksWbbc9RHPwQTig3DYdboyqLHF2zz4tkHGZI9fjaqPF4SecwPyd7rnSd0t+XoM=
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(346002)(376002)(136003)(39860400002)(230922051799003)(64100799003)(186009)(82310400011)(1800799009)(451199024)(36840700001)(46966006)(40470700004)(40480700001)(316002)(4326008)(6916009)(2616005)(1076003)(5660300002)(53546011)(83380400001)(6666004)(86362001)(336012)(2906002)(426003)(26005)(70206006)(70586007)(16526019)(8676002)(82740400003)(54906003)(478600001)(44832011)(8936002)(41300700001)(356005)(36756003)(47076005)(40460700003)(36860700001)(66899024)(81166007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 22:42:52.3734
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7f737a3f-c274-4608-b38e-08dbe62c33d2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1PEPF000044FC.namprd21.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5010
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+References: <20231115185439.2616073-1-yzhong@purestorage.com>
+ <69218380-45f0-41cc-8a65-50878d44219e@kernel.dk> <CA+AMecFkR0k9ofJt0_iHrPOvfMQ_ePv8QCPYy9m=U7xEjsNCKg@mail.gmail.com>
+ <ZVUiLr3g1_i5YmRQ@kbusch-mbp.dhcp.thefacebook.com>
+In-Reply-To: <ZVUiLr3g1_i5YmRQ@kbusch-mbp.dhcp.thefacebook.com>
+From:   Yuanyuan Zhong <yzhong@purestorage.com>
+Date:   Wed, 15 Nov 2023 14:44:04 -0800
+Message-ID: <CA+AMecH1TZc3zVm0OF1VwwTBCrLp9mZnOa5zw59yr_W0WbH_uw@mail.gmail.com>
+Subject: Re: [PATCH] nvme-core: remove head->effects to fix use-after-free
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, hch@lst.de, sagi@grimberg.me,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        randyj@purestorage.com, hcoutinho@purestorage.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 12:48:58PM -0800, Dave Hansen wrote:
-> On 11/15/23 12:14, Michael Roth wrote:
-> > While it might be argued that the issue is on the caller side, other
-> > archs/macros have taken similar approaches to deal with instances like
-> > this, such as commit e48866647b48 ("ARM: 8396/1: use phys_addr_t in
-> > pfn_to_kaddr()").
-> 
-> Gah, I really hope nobody is arguing that for real, or is even thinking
-> about this as a valid argument.
-
-Not that I'm aware, but I did have my own doubts initially, which is
-why I thought it warranted a note in the commit just in case it came up
-from someone else.
-
-> 
-> The helper should, well, help the caller.  It makes zero sense to me
-> that every single call site would need to know if the argument's type
-> was big enough to hold the _return_ value.  This nonsense can only even
-> happen with macros.  Type promotion would just do the right thing for
-> any sanely declared actual helper function.
-
-My thought was that it is easier to expect developers to know the pitfalls
-of bit-field types, since it is universally applicable to all C code,
-whereas expecting developers to anticipate such issues when writing similar
-macros is potentially harder to enforce/audit and could lead to similar
-issues popping up as things are refactored over time and new macros get
-added that don't take such usages into account.
-
-But neither argument seems to hold up in reality. Experienced developers
-obviously do fall victim to the subtleties of of bit-field types, and
-kernel devs obviously do tend to address these instances in more robust
-ways based on the various pfn-related macros I looked through.
-
--Mike
+On Wed, Nov 15, 2023 at 11:55=E2=80=AFAM Keith Busch <kbusch@kernel.org> wr=
+ote:
+>
+> On Wed, Nov 15, 2023 at 11:21:53AM -0800, Yuanyuan Zhong wrote:
+> > On Wed, Nov 15, 2023 at 11:02=E2=80=AFAM Jens Axboe <axboe@kernel.dk> w=
+rote:
+> >
+> > Do you mean something like this? If not, can you please elaborate
+> > "when we need"?
+> > -               struct nvme_effects_log *cel =3D xa_load(&ctrl->cels, n=
+s->head->ids.csi);
+> > +               struct nvme_effects_log *cel =3D (ns->head->ids.csi =3D=
+=3D NVME_CSI_NVM) ?
+> > +                       ctrl->effects : xa_load(&ctrl->cels, ns->head->=
+ids.csi);
+> > Will it be good to change ctrl->effects to ctrl->effects[3] for
+> > already defined CSI?
+>
+> I suggest either re-assign the cached head->effects to one from a still
+> live controller when current path is removed, or move the saved effects
+> to the subsystem instead of the controller. All controllers in the
+> subsystem should be reporting the same effects log anyway, so
+Is it specified in spec that all controllers in the subsystem
+should be reporting the same effects log?
+> duplicating all that per-controller is kind of wasteful.
