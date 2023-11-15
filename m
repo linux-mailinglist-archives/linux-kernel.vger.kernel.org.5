@@ -2,76 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 537F97EC572
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:38:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 17C4C7EC578
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:39:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344047AbjKOOit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:38:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42384 "EHLO
+        id S1344069AbjKOOjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:39:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343949AbjKOOir (ORCPT
+        with ESMTP id S1344040AbjKOOjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:38:47 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A73A9
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:38:43 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id d9443c01a7336-1cc921a4632so61784135ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:38:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700059123; x=1700663923; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MrQuxkzbwU4E8/k5Bt18ic1YvcYfXRCP4owTm7VijZs=;
-        b=FBs8lc1kjiHzGTFPxKWU11STESE4s7DKgmaOqyHAbLmao4mkJmh7Kx3o8LrI3+iZaR
-         IcCM6uWFJpqk+brTEmo/kD5AoGIalSqOYMKcuhCJPsgwTJnh5OABn+VlYeODJKuckx0i
-         zfSpMyyJdVp19WUYCfDBw5asUjjG6LBC2xmNs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700059123; x=1700663923;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MrQuxkzbwU4E8/k5Bt18ic1YvcYfXRCP4owTm7VijZs=;
-        b=nL+Y1C57RC6sNs58NgCqBRuz4eJm/E8prWQPTvZ2zyKLWW/qjg96xvvoKNP5gfpejf
-         Z2vB2uv/HI+VcjYcg0EMsXetDMzuB0esSlm8A9xe5MgPC583TrEc6HH/bO+I82MSOp/q
-         RAZNqc760fGiEp5kpmNDaRIlD93jJXXhih7fhAX2fcSVAeJnHYAR8OuYMW8HcqD5ctv/
-         ZrfjbTPd7uiUg0FXKLCMxYXYHxztf/AA44Qq3Lv7+9IZrrV9nGiAjK7KqCis/TE48fbK
-         fHT/7lCFxEnVIx4swsOJBav1wnYgcPQOJTiMXHKyROzkpfLJeBKSm9PPZ0WOp09wCtGT
-         0kvg==
-X-Gm-Message-State: AOJu0Yx+iN2qZY2Zu4RtwC90YuEk0p+/MhNzo3LM8SK8uJxoUv+1SXrh
-        LCc6tdu+Ae3p5/TJofm9j9ijyQ==
-X-Google-Smtp-Source: AGHT+IHH/cJMF6jF0j5MpKf3mNTEfjoZwddw5DE3EkX9x8IUXTz+RcQT0KKSr1pgZ+pD/2t5OWuqSQ==
-X-Received: by 2002:a17:903:32c5:b0:1ca:72f9:253a with SMTP id i5-20020a17090332c500b001ca72f9253amr6085927plr.23.1700059122783;
-        Wed, 15 Nov 2023 06:38:42 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id m18-20020a170902db1200b001c9c6a78a56sm7416420plx.97.2023.11.15.06.38.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 06:38:42 -0800 (PST)
-Date:   Wed, 15 Nov 2023 06:38:41 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        James Seo <james@equiv.tech>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] scsi: mpt3sas: Use flexible arrays and do a few
- cleanups
-Message-ID: <202311150638.3BB079EB@keescook>
-References: <20230806170604.16143-1-james@equiv.tech>
- <202310230929.494FD6E14E@keescook>
- <yq1il6vfoiu.fsf@ca-mkp.ca.oracle.com>
- <202310251533.1A27F79450@keescook>
- <yq1o7fv2kcx.fsf@ca-mkp.ca.oracle.com>
+        Wed, 15 Nov 2023 09:39:01 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6E695
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:38:58 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14A5C433C8;
+        Wed, 15 Nov 2023 14:38:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700059137;
+        bh=V6YbwlGcrf2Z9pv+riw05AJ1AB+MKCO/JbUd36Barhs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZCHf3pqhF4URY84pt75400f8LCvqCFX9rOe1/AJnXhtMQQYT0KHbR4ow9znYb58lx
+         JmcfqiDM8oTaMGjZPmLodk6uwmKBauUUrk91Wo3fDSTpmnfUHsIoLoNgt536vSprve
+         CBk56G0MBPrhaDxO/zt5Kaw9khOJiAENffeXtryF6cLWyb7rJamSLh4WMOjBPSM1ho
+         cL3vzpvromKAMWA9+rR7s1VjI8fbHbxP6ZQrbFXDan8nX1C5BbSjFe7KXGgFNOlAGf
+         tzB9NT+Hk6oNGAlM8KiXkTqqq78emc5aQjWj5to/KieCytTXdSngjnPmd0tlqNkbU+
+         4MmvO85fN9CZQ==
+Date:   Wed, 15 Nov 2023 14:38:54 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Anshul Dalal <anshulusr@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: Re: [PATCH v2 2/3] dt-bindings: trivial-devices: add aosong,ags02ma
+Message-ID: <20231115-stability-arrive-e0458f6f7b0f@squawk>
+References: <20231115125810.1394854-1-anshulusr@gmail.com>
+ <20231115125810.1394854-2-anshulusr@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1U46IvZoQyzS/ftn"
 Content-Disposition: inline
-In-Reply-To: <yq1o7fv2kcx.fsf@ca-mkp.ca.oracle.com>
+In-Reply-To: <20231115125810.1394854-2-anshulusr@gmail.com>
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -82,13 +56,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 08:54:22AM -0500, Martin K. Petersen wrote:
-> >> I'm a bit concerned bringing this in just before the merge window.
-> >> Please ping me if I forget to merge once -rc1 is out.
-> 
-> Applied to 6.8/scsi-staging, thanks!
 
-Great! Thanks for picking this up. :)
+--1U46IvZoQyzS/ftn
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Kees Cook
+On Wed, Nov 15, 2023 at 06:28:07PM +0530, Anshul Dalal wrote:
+> Add bindings for Aosong AGS02MA TVOC sensor.
+>=20
+> The sensor communicates over i2c with the default address 0x1a.
+> TVOC values can be read in the units of ppb and ug/m^3 at register 0x00.
+>=20
+> Datasheet:
+>   https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> Product-Page:
+>   http://www.aosong.com/m/en/products-33.html
+>=20
+> Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+> ---
+>=20
+> Changes for v2:
+> - Removed device from trivial-devices
+
+Your $subject still says "trivial-devices" though, so please fix that in
+your next submission.
+
+> - Added standalone binding with vdd-supply property
+> ---
+>  .../bindings/iio/chemical/aosong,ags02ma.yaml | 48 +++++++++++++++++++
+>  1 file changed, 48 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/iio/chemical/aosong=
+,ags02ma.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/iio/chemical/aosong,ags02m=
+a.yaml b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml
+> new file mode 100644
+> index 000000000000..4a0278c6318c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/iio/chemical/aosong,ags02ma.yaml
+> @@ -0,0 +1,48 @@
+> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/iio/chemical/aosong,ags02ma.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Aosong AGS02MA VOC Sensor
+> +
+> +description: |
+> +  AGS02MA is an TVOC (Total Volatile Organic Compounds) i2c sensor with =
+default
+> +  address of 0x1a.
+> +
+> +  Datasheet:
+> +    https://asairsensors.com/wp-content/uploads/2021/09/AGS02MA.pdf
+> +
+> +maintainers:
+> +  - Anshul Dalal <anshulusr@gmail.com>
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - aosong,ags02ma
+> +      - asair,ags02ma
+
+Why do you have two compatibles for the same device? Please document and
+use only one of these. The aoson website says:
+"Guangzhou ASAIR Electronic Co., Ltd"
+so I suspect "asair" is a more apt vendor prefix.
+
+
+Thanks,
+Conor.
+
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  vdd-supply: true
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    i2c {
+> +        #address-cells =3D <1>;
+> +        #size-cells =3D <0>;
+> +
+> +        light-sensor@1a {
+> +            compatible =3D "aosong,ags02ma";
+> +            reg =3D <0x1a>;
+> +            vdd-supply =3D <&vdd_regulator>;
+> +        };
+> +    };
+> --=20
+> 2.42.0
+>=20
+
+--1U46IvZoQyzS/ftn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVTX6AAKCRB4tDGHoIJi
+0p8YAP97yIsknJKuaKNoFLpkjtdd7KHr4eWGOq6p5+3kJSLLdQEArd6XtnHdgfui
+DfxPLrSxiaGIQHzHgjrlBCnSVV4pLAU=
+=f488
+-----END PGP SIGNATURE-----
+
+--1U46IvZoQyzS/ftn--
