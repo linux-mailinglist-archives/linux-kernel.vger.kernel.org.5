@@ -2,124 +2,281 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1497EC886
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:28:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D2F7EC885
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:28:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbjKOQ2t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:28:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38404 "EHLO
+        id S231901AbjKOQ2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:28:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38414 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229570AbjKOQ2r (ORCPT
+        with ESMTP id S231745AbjKOQ2t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:28:47 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360DBD5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:44 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-507bd644a96so9967929e87.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700065722; x=1700670522; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=jsVx/Q3YhVxHOvs8227jfNskpZuE2YqOrJ9wOZRuNEs=;
-        b=WFuvjd7xuhCBhnJzRLvJiaDaDpenV7NQDapH0uL43DQC9r3vDlwdEULAfiYiGV3uRV
-         4zYkTYj3R8rBHrJaBvuyP0WGvF3QOoMbfE89C8tp5MMqYjg5AVqD/Um3XbHDugLfRdui
-         a2Lb9RNab2KQFGzcx5M6XKshzqUTNvYEVQwAM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700065722; x=1700670522;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jsVx/Q3YhVxHOvs8227jfNskpZuE2YqOrJ9wOZRuNEs=;
-        b=OQterUd0q0MjOMOzO0IOyb6z+EY1UueMHYCbW2FIfSeJJ1hPqeDj0ms9U/tP95Wz7c
-         UV0UGx4copS3dad+uzfG0bSRx2wVe2cqeN6bUacJm5gauNkayKbe9Mxg9VwTh/ZKNn7F
-         Ce4Qsd0pSXitUNExK2Ug3mRMKLjVP01s0a/tiBihm3b0MX364rzJk1FKDRm8OBTZoqQh
-         ygz0pfUM3hB4yQVEO2FWi1qYkbQtZ+v5o87LWkJLVzENvD0PJalYX+YDy/r6wtM3TtTI
-         8baJwp2I5qneerhAsqYy1xHTMD5cj0x7YwOh2UpD01jLVSRzMOEtEvmJeulDZ8CD2qKF
-         R6jg==
-X-Gm-Message-State: AOJu0YxQCVCdj2L43FbKlVsu1Z4qmDzk2Z+ybzNlw5khTeZf8P2jVZiM
-        H+LJzx/t/l1cCxmlO3SfHUtONe+38pjrPr6F+uIteIdK
-X-Google-Smtp-Source: AGHT+IEVEiwGiAzLNd6zIFTLXWbUxZkRtssvdu86O1kF2xlvZBfy2kD40cm6ud/W1m93ymNCqGxHZQ==
-X-Received: by 2002:a05:6512:ad0:b0:509:4405:d5a8 with SMTP id n16-20020a0565120ad000b005094405d5a8mr10898763lfu.68.1700065722164;
-        Wed, 15 Nov 2023 08:28:42 -0800 (PST)
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com. [209.85.208.178])
-        by smtp.gmail.com with ESMTPSA id i16-20020a056512341000b00507ae0a5eb7sm1692203lfr.164.2023.11.15.08.28.40
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 08:28:40 -0800 (PST)
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2c788f5bf53so81115711fa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:40 -0800 (PST)
-X-Received: by 2002:a05:6512:12cf:b0:503:3781:ac32 with SMTP id
- p15-20020a05651212cf00b005033781ac32mr12684125lfg.41.1700065720301; Wed, 15
- Nov 2023 08:28:40 -0800 (PST)
+        Wed, 15 Nov 2023 11:28:49 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 0A23E8E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:28:46 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6E19CDA7;
+        Wed, 15 Nov 2023 08:29:31 -0800 (PST)
+Received: from e127643.broadband (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 98CA23F641;
+        Wed, 15 Nov 2023 08:28:43 -0800 (PST)
+From:   James Clark <james.clark@arm.com>
+To:     coresight@lists.linaro.org, suzuki.poulose@arm.com
+Cc:     James Clark <james.clark@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: [PATCH v2] coresight: Make current W=1 warnings default
+Date:   Wed, 15 Nov 2023 16:28:33 +0000
+Message-Id: <20231115162834.355598-1-james.clark@arm.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231115154946.3933808-1-dhowells@redhat.com> <20231115154946.3933808-9-dhowells@redhat.com>
-In-Reply-To: <20231115154946.3933808-9-dhowells@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Nov 2023 11:28:22 -0500
-X-Gmail-Original-Message-ID: <CAHk-=wjytv+Gy-Ra0rhLCAW_120BvnzLC63tfkkZVXzGgD3_+w@mail.gmail.com>
-Message-ID: <CAHk-=wjytv+Gy-Ra0rhLCAW_120BvnzLC63tfkkZVXzGgD3_+w@mail.gmail.com>
-Subject: Re: [PATCH v3 08/10] iov_iter: Add benchmarking kunit tests
-To:     David Howells <dhowells@redhat.com>
-Cc:     Christian Brauner <christian@brauner.io>,
-        Jens Axboe <axboe@kernel.dk>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-mm@kvack.org,
-        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        David Hildenbrand <david@redhat.com>,
-        John Hubbard <jhubbard@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 10:50, David Howells <dhowells@redhat.com> wrote:
->
-> Add kunit tests to benchmark 256MiB copies to a KVEC iterator, a BVEC
-> iterator, an XARRAY iterator and to a loop that allocates 256-page BVECs
-> and fills them in (similar to a maximal bio struct being set up).
+Similarly to drivers/gpu/drm/amd/amdgpu/Makefile and
+fs/btrfs/Makefile, copy the current set of W=1 warnings from
+Makefile.extrawarn to the coresight makefile to make them default.
+Unfortunately there is no easy way to do this without copying.
 
-I see *zero* advantage of doing this in the kernel as opposed to doing
-this benchmarking in user space.
+In addition to the default set of warnings, add -Wno-sign-compare to
+disable that warning. That's because Makefile.extrawarn does some extra
+steps to disable some -Wextra warnings unless W=2 or W=3 are used.
+That's the only one that's needed for Coresight, so disable it.
 
-If you cannot see the performance difference due to some user space
-interface costs, then the performance difference doesn't matter.
+Although a W=1 currently works for Coresight, because we're not
+disabling all of the -Wextra warnings that Makefile.extrawarn does, a
+few struct initialiser warnings need to be fixed, so fix those in the
+code rather than disabling even more warnings.
 
-Yes, some of the cases may be harder to trigger than others.
-iov_iter_xarray() isn't as common an op as ubuf/iovec/etc, but that
-either means that it doesn't matter enough, or that maybe some more
-filesystems could be taught to use it for splice or whatever.
+Signed-off-by: James Clark <james.clark@arm.com>
+---
 
-Particularly for something like different versions of memcpy(), this
-whole benchmarking would want
+Changes since V1:
+ * Fix arm32 build by fixing struct initialiser in coresight-etm3x-core.c
 
- (a) profiles
+ drivers/hwtracing/coresight/Makefile          | 20 +++++++++++++++++++
+ .../hwtracing/coresight/coresight-cti-core.c  |  2 +-
+ drivers/hwtracing/coresight/coresight-etb10.c |  2 +-
+ .../coresight/coresight-etm3x-core.c          |  2 +-
+ .../coresight/coresight-etm4x-core.c          |  2 +-
+ .../hwtracing/coresight/coresight-funnel.c    |  4 ++--
+ .../coresight/coresight-replicator.c          |  2 +-
+ drivers/hwtracing/coresight/coresight-stm.c   |  2 +-
+ .../hwtracing/coresight/coresight-tmc-core.c  |  2 +-
+ drivers/hwtracing/coresight/coresight-tpda.c  |  2 +-
+ drivers/hwtracing/coresight/coresight-tpdm.c  |  2 +-
+ drivers/hwtracing/coresight/coresight-tpiu.c  |  2 +-
+ drivers/hwtracing/coresight/ultrasoc-smb.c    |  2 +-
+ 13 files changed, 33 insertions(+), 13 deletions(-)
 
- (b) be run on many different machines
+diff --git a/drivers/hwtracing/coresight/Makefile b/drivers/hwtracing/coresight/Makefile
+index 995d3b2c76df..4ba478211b31 100644
+--- a/drivers/hwtracing/coresight/Makefile
++++ b/drivers/hwtracing/coresight/Makefile
+@@ -2,6 +2,26 @@
+ #
+ # Makefile for CoreSight drivers.
+ #
++
++# Current W=1 warnings
++subdir-ccflags-y += -Wextra -Wunused -Wno-unused-parameter
++subdir-ccflags-y += -Wmissing-declarations
++subdir-ccflags-y += -Wmissing-format-attribute
++subdir-ccflags-y += -Wmissing-prototypes
++subdir-ccflags-y += -Wold-style-definition
++subdir-ccflags-y += -Wmissing-include-dirs
++subdir-ccflags-y += -Wno-sign-compare
++condflags := \
++	$(call cc-option, -Wrestrict)				\
++	$(call cc-option, -Wunused-but-set-variable)		\
++	$(call cc-option, -Wunused-const-variable)		\
++	$(call cc-option, -Wpacked-not-aligned)			\
++	$(call cc-option, -Wformat-overflow)			\
++	$(call cc-option, -Wformat-truncation)			\
++	$(call cc-option, -Wstringop-overflow)			\
++	$(call cc-option, -Wstringop-truncation)
++subdir-ccflags-y += $(condflags)
++
+ obj-$(CONFIG_CORESIGHT) += coresight.o
+ coresight-y := coresight-core.o  coresight-etm-perf.o coresight-platform.o \
+ 		coresight-sysfs.o coresight-syscfg.o coresight-config.o \
+diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
+index 3999d0a2cb60..e805617020d0 100644
+--- a/drivers/hwtracing/coresight/coresight-cti-core.c
++++ b/drivers/hwtracing/coresight/coresight-cti-core.c
+@@ -974,7 +974,7 @@ static const struct amba_id cti_ids[] = {
+ 	CS_AMBA_ID(0x000bb9aa), /* CTI - C-A73 */
+ 	CS_AMBA_UCI_ID(0x000bb9da, uci_id_cti), /* CTI - C-A35 */
+ 	CS_AMBA_UCI_ID(0x000bb9ed, uci_id_cti), /* Coresight CTI (SoC 600) */
+-	{ 0, 0},
++	{ 0, 0, NULL },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, cti_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+index fa80039e0821..3ae42c5a29eb 100644
+--- a/drivers/hwtracing/coresight/coresight-etb10.c
++++ b/drivers/hwtracing/coresight/coresight-etb10.c
+@@ -837,7 +837,7 @@ static const struct amba_id etb_ids[] = {
+ 		.id	= 0x000bb907,
+ 		.mask	= 0x000fffff,
+ 	},
+-	{ 0, 0},
++	{ 0, 0, 0 },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, etb_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+index 116a91d90ac2..8da1622e0837 100644
+--- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+@@ -1003,7 +1003,7 @@ static const struct amba_id etm_ids[] = {
+ 	CS_AMBA_ID_DATA(0x000bb95f, "PTM 1.1"),
+ 	/* PTM 1.1 Qualcomm */
+ 	CS_AMBA_ID_DATA(0x000b006f, "PTM 1.1"),
+-	{ 0, 0},
++	{ 0, 0, NULL},
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, etm_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index 285539104bcc..5faa9c85c272 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -2392,7 +2392,7 @@ static const struct of_device_id etm4_sysreg_match[] = {
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id etm4x_acpi_ids[] = {
+-	{"ARMHC500", 0}, /* ARM CoreSight ETM4x */
++	{"ARMHC500", 0, 0, 0}, /* ARM CoreSight ETM4x */
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, etm4x_acpi_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+index b8e150e45b27..24cee5408b86 100644
+--- a/drivers/hwtracing/coresight/coresight-funnel.c
++++ b/drivers/hwtracing/coresight/coresight-funnel.c
+@@ -351,7 +351,7 @@ MODULE_DEVICE_TABLE(of, static_funnel_match);
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id static_funnel_ids[] = {
+-	{"ARMHC9FE", 0},
++	{"ARMHC9FE", 0, 0, 0},
+ 	{},
+ };
+ 
+@@ -392,7 +392,7 @@ static const struct amba_id dynamic_funnel_ids[] = {
+ 		.id     = 0x000bb9eb,
+ 		.mask   = 0x000fffff,
+ 	},
+-	{ 0, 0},
++	{ 0, 0, 0 },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, dynamic_funnel_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+index b6be73034996..33e3ba4f97fa 100644
+--- a/drivers/hwtracing/coresight/coresight-replicator.c
++++ b/drivers/hwtracing/coresight/coresight-replicator.c
+@@ -364,7 +364,7 @@ MODULE_DEVICE_TABLE(of, static_replicator_match);
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id static_replicator_acpi_ids[] = {
+-	{"ARMHC985", 0}, /* ARM CoreSight Static Replicator */
++	{"ARMHC985", 0, 0, 0}, /* ARM CoreSight Static Replicator */
+ 	{}
+ };
+ 
+diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+index a1c27c901ad1..891ee64efed8 100644
+--- a/drivers/hwtracing/coresight/coresight-stm.c
++++ b/drivers/hwtracing/coresight/coresight-stm.c
+@@ -950,7 +950,7 @@ static const struct dev_pm_ops stm_dev_pm_ops = {
+ static const struct amba_id stm_ids[] = {
+ 	CS_AMBA_ID_DATA(0x000bb962, "STM32"),
+ 	CS_AMBA_ID_DATA(0x000bb963, "STM500"),
+-	{ 0, 0},
++	{ 0, 0, NULL },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, stm_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+index 7ec5365e2b64..39bae35d4ffd 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-core.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+@@ -594,7 +594,7 @@ static const struct amba_id tmc_ids[] = {
+ 	CS_AMBA_ID(0x000bb9e9),
+ 	/* Coresight SoC 600 TMC-ETF */
+ 	CS_AMBA_ID(0x000bb9ea),
+-	{ 0, 0},
++	{ 0, 0, NULL },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, tmc_ids);
+diff --git a/drivers/hwtracing/coresight/coresight-tpda.c b/drivers/hwtracing/coresight/coresight-tpda.c
+index 5f82737c37bb..4ac954f4bc13 100644
+--- a/drivers/hwtracing/coresight/coresight-tpda.c
++++ b/drivers/hwtracing/coresight/coresight-tpda.c
+@@ -300,7 +300,7 @@ static struct amba_id tpda_ids[] = {
+ 		.id     = 0x000f0f00,
+ 		.mask   = 0x000fff00,
+ 	},
+-	{ 0, 0},
++	{ 0, 0, NULL },
+ };
+ 
+ static struct amba_driver tpda_driver = {
+diff --git a/drivers/hwtracing/coresight/coresight-tpdm.c b/drivers/hwtracing/coresight/coresight-tpdm.c
+index 97654aa4b772..1a8735fa0a19 100644
+--- a/drivers/hwtracing/coresight/coresight-tpdm.c
++++ b/drivers/hwtracing/coresight/coresight-tpdm.c
+@@ -933,7 +933,7 @@ static struct amba_id tpdm_ids[] = {
+ 		.id = 0x000f0e00,
+ 		.mask = 0x000fff00,
+ 	},
+-	{ 0, 0},
++	{ 0, 0, 0 },
+ };
+ 
+ static struct amba_driver tpdm_driver = {
+diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+index 59eac93fd6bb..7e69048ac944 100644
+--- a/drivers/hwtracing/coresight/coresight-tpiu.c
++++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+@@ -218,7 +218,7 @@ static const struct amba_id tpiu_ids[] = {
+ 		.id	= 0x000bb9e7,
+ 		.mask	= 0x000fffff,
+ 	},
+-	{ 0, 0},
++	{ 0, 0, NULL },
+ };
+ 
+ MODULE_DEVICE_TABLE(amba, tpiu_ids);
+diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
+index e9a32a97fbee..83f5eea1302f 100644
+--- a/drivers/hwtracing/coresight/ultrasoc-smb.c
++++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
+@@ -626,7 +626,7 @@ static int smb_remove(struct platform_device *pdev)
+ 
+ #ifdef CONFIG_ACPI
+ static const struct acpi_device_id ultrasoc_smb_acpi_match[] = {
+-	{"HISI03A1", 0},
++	{"HISI03A1", 0, 0, 0},
+ 	{}
+ };
+ MODULE_DEVICE_TABLE(acpi, ultrasoc_smb_acpi_match);
+-- 
+2.34.1
 
- (c) be run repeatedly to get some idea of variance
-
-and all of those only get *harder* to do with Kunit tests. In user
-space? Just run the damn binary (ok, to get profiles you then have to
-make sure you have the proper permission setup to get the kernel
-profiles too, but a
-
-   echo 1 > /proc/sys/kernel/perf_event_paranoid
-
-as root will do that for you without you having to then do the actual
-profiling run as root)
-
-                Linus
