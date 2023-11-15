@@ -2,113 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBC1F7EC81F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:05:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F38AE7EC841
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:15:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232278AbjKOQFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:05:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34332 "EHLO
+        id S229640AbjKOQPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:15:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232217AbjKOQFL (ORCPT
+        with ESMTP id S229457AbjKOQPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:05:11 -0500
-Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 644E4181
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:05:07 -0800 (PST)
-Received: by mail-qv1-xf35.google.com with SMTP id 6a1803df08f44-66d0f945893so9123826d6.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:05:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700064306; x=1700669106; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MejHG9v78thYt1KCbL5Bhup5VOWpNmj9HgzD1QZtMTA=;
-        b=AeBXp3FjmYcu6PwTQOMYiY6hY8V9m64eef4+yd7Rxcifr4LlNJezuuFpQ6wzh0RRVU
-         5F0kcaICBeyizPSoqFXOm7YVQ9ncSQ8shEeT2gflMsnNwjgD13OdLogs16Lt+ZJ5MDHV
-         TylzYiqzc2G2TZ7UW16OxKdxICpu9dyDFr4VnAFaDlr3OKo3fJDWDSJ7yyA2dh3JgTn1
-         ynpRgHQ2eds3c1A7uNohCtierwscpGZZGcy+OVF+APHbzCxCIlRVQVrJsBGfJsdSyL9Y
-         4w5TwJFVgU0gNjKnMNF8KAX9ZgvHrI4V/7NCBaZQWOXei0iZApimMfZx6m/9OUuOxup4
-         UmhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700064306; x=1700669106;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MejHG9v78thYt1KCbL5Bhup5VOWpNmj9HgzD1QZtMTA=;
-        b=VwVot5m7i2nex41l5L/zLMp9DFnt6FWygz+mnuXUqKwomzybiHTAztNR+dPF+emGm5
-         7Wn/v5aGVXizMvSzbjhCifrMh7KezmbcD2zsUnmGPSWrFAvMpfQet11Xfg9bB/Wa5C2+
-         02BBDV03xagZGHihmHA8sfnXnGRHWmD60sYbnh7rlZH5fd1aI5vUz57g1+2jmTqxMpTk
-         WDUJaEtVMzffKH7qurjHSUUk32Fbg2uX/eRyiD4gij4kGUFwpg3P0ZLbxBU5PrHjLDHR
-         chog/AWLD8G3m+upHNlMPcyxPaxsW8BVeMHORHzSyRMNAQ1N+wEODKNRt65rvtb6j5/s
-         0Lvg==
-X-Gm-Message-State: AOJu0Yw1/nBc6n+x240wSvJApzTP4V+6xmgxUMFbNOXe7a6sIKlGGEY/
-        CoPd/GmxIiPEBV2xoojuHeBnVg==
-X-Google-Smtp-Source: AGHT+IEcj6XcTZ0mNvYbPmKaVsfiFpIwuHA7OmpjgBlO36wsG12GpSde51/jSBEJuULlMiocskZovg==
-X-Received: by 2002:a05:6214:1706:b0:66d:6a92:16c2 with SMTP id db6-20020a056214170600b0066d6a9216c2mr10015972qvb.8.1700064306362;
-        Wed, 15 Nov 2023 08:05:06 -0800 (PST)
-Received: from x1 ([12.186.190.1])
-        by smtp.gmail.com with ESMTPSA id k9-20020a05621414e900b00671ab3da5d0sm617138qvw.105.2023.11.15.08.05.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 08:05:06 -0800 (PST)
-Date:   Wed, 15 Nov 2023 11:05:04 -0500
-From:   Drew Fustini <dfustini@baylibre.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>, Guo Ren <guoren@kernel.org>,
-        Fu Wei <wefu@redhat.com>, Conor Dooley <conor@kernel.org>,
-        linux-mmc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: Re: [PATCH v6 0/7] RISC-V: Add MMC support for TH1520 boards
-Message-ID: <ZVTsMIHc50hkQ2fe@x1>
-References: <20231114-th1520-mmc-v6-0-3273c661a571@baylibre.com>
- <CAPDyKFooGiv6fj+X9c4KXaBjvsTTRaHSrxinQYirTWXmX1Ht5Q@mail.gmail.com>
+        Wed, 15 Nov 2023 11:15:23 -0500
+X-Greylist: delayed 121098 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Nov 2023 08:15:18 PST
+Received: from 3.mo584.mail-out.ovh.net (3.mo584.mail-out.ovh.net [46.105.57.129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B371125
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:15:18 -0800 (PST)
+Received: from director5.ghost.mail-out.ovh.net (unknown [10.109.156.29])
+        by mo584.mail-out.ovh.net (Postfix) with ESMTP id AB9D325D78
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 16:05:32 +0000 (UTC)
+Received: from ghost-submission-6684bf9d7b-k8mr2 (unknown [10.108.4.159])
+        by director5.ghost.mail-out.ovh.net (Postfix) with ESMTPS id D06841FE53;
+        Wed, 15 Nov 2023 16:05:31 +0000 (UTC)
+Received: from RCM-web2.webmail.mail.ovh.net ([176.31.232.109])
+        by ghost-submission-6684bf9d7b-k8mr2 with ESMTPSA
+        id ayhHFUvsVGXUOSsAdDy9bg
+        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 15 Nov 2023 16:05:31 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAPDyKFooGiv6fj+X9c4KXaBjvsTTRaHSrxinQYirTWXmX1Ht5Q@mail.gmail.com>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Date:   Wed, 15 Nov 2023 18:05:30 +0200
+From:   =?UTF-8?Q?Jos=C3=A9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, skhan@linuxfoundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linux.dev,
+        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH] mm/pgtable: return null if no ptl in
+ __pte_offset_map_lock
+In-Reply-To: <ZVTTbuviH9/RWYyI@casper.infradead.org>
+References: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi>
+ <ZVTTbuviH9/RWYyI@casper.infradead.org>
+User-Agent: Roundcube Webmail/1.4.15
+Message-ID: <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi>
+X-Sender: jose.pekkarinen@foxhound.fi
+Organization: Foxhound Ltd.
+X-Originating-IP: 185.220.100.249
+X-Webmail-UserID: jose.pekkarinen@foxhound.fi
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+X-Ovh-Tracer-Id: 17026984294489761383
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudefiedgjeelucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepggffhffvvefujghffgfkgihoihgtgfesthekjhdttderjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeekhfeguddufeegvdelgedtvdffgeehvddtkeevkeejvedvgeeitdefleehtdeitdenucfkphepuddvjedrtddrtddruddpudekhedrvddvtddruddttddrvdegledpudejiedrfedurddvfedvrddutdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehinhgvthepuddvjedrtddrtddruddpmhgrihhlfhhrohhmpeeojhhoshgvrdhpvghkkhgrrhhinhgvnhesfhhogihhohhunhgurdhfiheqpdhnsggprhgtphhtthhopedupdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdfovfetjfhoshhtpehmohehkeegpdhmohguvgepshhmthhpohhuth
+X-Spam-Status: No, score=2.8 required=5.0 tests=BAYES_00,
+        RCVD_IN_BL_SPAMCOP_NET,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 04:51:30PM +0100, Ulf Hansson wrote:
-> On Tue, 14 Nov 2023 at 22:08, Drew Fustini <dfustini@baylibre.com> wrote:
-> >
-> > This series adds support for the MMC controller in the T-Head TH1520
-> > SoC, and it enables the eMMC and microSD slot on both the BeagleV
-> > Ahead and the Sipeed LicheePi 4A.
-> >
-> > I tested on top of v6.6 with riscv defconfig. I was able to boot the
-> > Ahead [1] and LPi4a [2] from eMMC. This patch series also exists as a
-> > git branch [3].
-> >
-> > Note: I have only tested eMMC and microSD. I have not yet configured
-> > or tested the mmc controller used for SDIO WiFi yet.
-> >
-> > References:
-> > [1] https://gist.github.com/pdp7/881342620ec1509685f23a387e2fc8d7
-> > [2] https://gist.github.com/pdp7/97017ad88d83fccac18eba69bff817b7
-> > [3] https://github.com/pdp7/linux/tree/b4/th1520-mmc
-> >
-> > Changes in PATCH v6:
-> > - set the mmc nodes to disabled in the th1520.dtsi
+On 2023-11-15 16:19, Matthew Wilcox wrote:
+> On Wed, Nov 15, 2023 at 08:55:05AM +0200, José Pekkarinen wrote:
+>> Documentation of __pte_offset_map_lock suggest there is situations 
+>> where
 > 
-> Patch 1 -> 3 , applied for next, thanks!
+> You should have cc'd Hugh who changed all this code recently.
+
+     Hi,
+
+     Sorry, he seems to be missing if I run get_maintainer.pl:
+
+$ ./scripts/get_maintainer.pl include/linux/mm.h
+Andrew Morton <akpm@linux-foundation.org> (maintainer:MEMORY MANAGEMENT)
+linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+linux-kernel@vger.kernel.org (open list)
+
+>> a pmd may not have a corresponding page table, in which case it should
+>> return NULL without changing ptlp. Syzbot found its ways to produce a
+>> NULL dereference in the function showing this case. This patch will
+>> provide the exit path suggested if this unlikely situation turns up. 
+>> The
+>> output of the kasan null-ptr-report follows:
 > 
-> Kind regards
-> Uffe
+> There's no need to include all this nonsense in the changelog.
 
-Thank you!
+     No problem, we can clean the patch if we find there is something
+worth upstreaming.
 
-Drew
+>>  spin_lock include/linux/spinlock.h:351 [inline]
+>>  __pte_offset_map_lock+0x154/0x360 mm/pgtable-generic.c:373
+>>  pte_offset_map_lock include/linux/mm.h:2939 [inline]
+>>  filemap_map_pages+0x698/0x11f0 mm/filemap.c:3582
+> 
+> This was the only interesting part.
+> 
+>> +++ b/include/linux/mm.h
+>> @@ -2854,7 +2854,7 @@ void ptlock_free(struct ptdesc *ptdesc);
+>> 
+>>  static inline spinlock_t *ptlock_ptr(struct ptdesc *ptdesc)
+>>  {
+>> -	return ptdesc->ptl;
+>> +	return (likely(ptdesc)) ? ptdesc->ptl : NULL;
+>>  }
+> 
+> I don't think we should be changing ptlock_ptr().
+
+     This is where the null ptr dereference originates, so the only
+alternative I can think of is to protect the life cycle of the ptdesc
+to prevent it to die between the pte check and the spin_unlock of
+__pte_offset_map_lock. Would that work for you?
+
+>> +++ b/mm/pgtable-generic.c
+>> @@ -370,6 +370,8 @@ pte_t *__pte_offset_map_lock(struct mm_struct *mm, 
+>> pmd_t *pmd,
+>>  	if (unlikely(!pte))
+>>  		return pte;
+>>  	ptl = pte_lockptr(mm, &pmdval);
+>> +	if (unlikely(!ptl))
+>> +		return NULL;
+>>  	spin_lock(ptl);
+> 
+> I don't understand how this could possibly solve the problem.  If 
+> there's
+> no PTE level, then __pte_offset_map() should return NULL and we'd 
+> already
+> return due to the check for !pte.
+
+     I tested the syzbot reproducer in x86 and it doesn't produce this 
+kasan
+report anymore.
+
+     José.
