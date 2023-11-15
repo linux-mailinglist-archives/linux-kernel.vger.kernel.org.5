@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0307EC89C
+	by mail.lfdr.de (Postfix) with ESMTP id E0D467EC89E
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:31:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232619AbjKOQbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:31:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
+        id S232681AbjKOQbK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:31:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232414AbjKOQay (ORCPT
+        with ESMTP id S232449AbjKOQbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:30:54 -0500
+        Wed, 15 Nov 2023 11:31:04 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 82B611A4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:30:49 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C5B0DFA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:30:52 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD98E1595;
-        Wed, 15 Nov 2023 08:31:34 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D04FDA7;
+        Wed, 15 Nov 2023 08:31:38 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F7823F641;
-        Wed, 15 Nov 2023 08:30:46 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 72D2D3F641;
+        Wed, 15 Nov 2023 08:30:49 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -46,9 +46,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
 Cc:     Ryan Roberts <ryan.roberts@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 05/14] arm64/mm: ptep_get_and_clear(): New layer to manage contig bit
-Date:   Wed, 15 Nov 2023 16:30:09 +0000
-Message-Id: <20231115163018.1303287-6-ryan.roberts@arm.com>
+Subject: [PATCH v2 06/14] arm64/mm: ptep_test_and_clear_young(): New layer to manage contig bit
+Date:   Wed, 15 Nov 2023 16:30:10 +0000
+Message-Id: <20231115163018.1303287-7-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231115163018.1303287-1-ryan.roberts@arm.com>
 References: <20231115163018.1303287-1-ryan.roberts@arm.com>
@@ -77,63 +77,62 @@ existing uses.
 
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 5 +++--
- arch/arm64/mm/hugetlbpage.c      | 6 +++---
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 1464e990580a..994597a0bb0f 100644
+index 994597a0bb0f..9b4a9909fd5b 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -941,8 +941,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+@@ -887,8 +887,9 @@ static inline bool pud_user_accessible_page(pud_t pud)
+ /*
+  * Atomic pte/pmd modifications.
+  */
+-#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
+-static inline int __ptep_test_and_clear_young(pte_t *ptep)
++static inline int __ptep_test_and_clear_young(struct vm_area_struct *vma,
++					      unsigned long address,
++					      pte_t *ptep)
+ {
+ 	pte_t old_pte, pte;
+ 
+@@ -903,18 +904,11 @@ static inline int __ptep_test_and_clear_young(pte_t *ptep)
+ 	return pte_young(pte);
+ }
+ 
+-static inline int ptep_test_and_clear_young(struct vm_area_struct *vma,
+-					    unsigned long address,
+-					    pte_t *ptep)
+-{
+-	return __ptep_test_and_clear_young(ptep);
+-}
+-
+ #define __HAVE_ARCH_PTEP_CLEAR_YOUNG_FLUSH
+ static inline int ptep_clear_flush_young(struct vm_area_struct *vma,
+ 					 unsigned long address, pte_t *ptep)
+ {
+-	int young = ptep_test_and_clear_young(vma, address, ptep);
++	int young = __ptep_test_and_clear_young(vma, address, ptep);
+ 
+ 	if (young) {
+ 		/*
+@@ -937,7 +931,7 @@ static inline int pmdp_test_and_clear_young(struct vm_area_struct *vma,
+ 					    unsigned long address,
+ 					    pmd_t *pmdp)
+ {
+-	return ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
++	return __ptep_test_and_clear_young(vma, address, (pte_t *)pmdp);
  }
  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  
--#define __HAVE_ARCH_PTEP_GET_AND_CLEAR
--static inline pte_t ptep_get_and_clear(struct mm_struct *mm,
-+static inline pte_t __ptep_get_and_clear(struct mm_struct *mm,
- 				       unsigned long address, pte_t *ptep)
- {
- 	pte_t pte = __pte(xchg_relaxed(&pte_val(*ptep), 0));
-@@ -1122,6 +1121,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- #define set_pte					__set_pte
- #define set_ptes				__set_ptes
+@@ -1123,6 +1117,8 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  #define pte_clear				__pte_clear
-+#define __HAVE_ARCH_PTEP_GET_AND_CLEAR
-+#define ptep_get_and_clear			__ptep_get_and_clear
+ #define __HAVE_ARCH_PTEP_GET_AND_CLEAR
+ #define ptep_get_and_clear			__ptep_get_and_clear
++#define __HAVE_ARCH_PTEP_TEST_AND_CLEAR_YOUNG
++#define ptep_test_and_clear_young		__ptep_test_and_clear_young
  
  #endif /* !__ASSEMBLY__ */
- 
-diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index 510b2d4b89a9..c2a753541d13 100644
---- a/arch/arm64/mm/hugetlbpage.c
-+++ b/arch/arm64/mm/hugetlbpage.c
-@@ -188,7 +188,7 @@ static pte_t get_clear_contig(struct mm_struct *mm,
- 	unsigned long i;
- 
- 	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++) {
--		pte_t pte = ptep_get_and_clear(mm, addr, ptep);
-+		pte_t pte = __ptep_get_and_clear(mm, addr, ptep);
- 
- 		/*
- 		 * If HW_AFDBM is enabled, then the HW could turn on
-@@ -236,7 +236,7 @@ static void clear_flush(struct mm_struct *mm,
- 	unsigned long i, saddr = addr;
- 
- 	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
--		ptep_clear(mm, addr, ptep);
-+		__ptep_get_and_clear(mm, addr, ptep);
- 
- 	flush_tlb_range(&vma, saddr, addr);
- }
-@@ -411,7 +411,7 @@ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
- 	pte_t orig_pte = ptep_get(ptep);
- 
- 	if (!pte_cont(orig_pte))
--		return ptep_get_and_clear(mm, addr, ptep);
-+		return __ptep_get_and_clear(mm, addr, ptep);
- 
- 	ncontig = find_num_contig(mm, addr, ptep, &pgsize);
  
 -- 
 2.25.1
