@@ -2,53 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0F67EBC19
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5186E7EBC1D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:37:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234369AbjKODhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54942 "EHLO
+        id S234478AbjKODhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:37:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234283AbjKODhS (ORCPT
+        with ESMTP id S234462AbjKODht (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:37:18 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9832E4
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:37:14 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc316ccc38so50096305ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:37:14 -0800 (PST)
+        Tue, 14 Nov 2023 22:37:49 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9C39E9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:37:21 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc53d0030fso3748025ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:37:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700019434; x=1700624234; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k1w3MQA5hdsK9l0KyxSKj5sO0FY/dE+JlgnB21F6L3s=;
-        b=QjFEzJ1CXP09G0m+QTi8HN2flj6uohQa84r9+HpXXIigwiBKC06ZZwiynHr2n6HFES
-         z7Thmej+kV3jBcuDfPd0mhzK2nS8WpliRzSt0r2HXJ/Q1+PSMQD+1i45t1K4Yy5kfkyM
-         HATr3+pAcSQvxYYSKJRtj9NEeJXYuM7IjbjAxP4EqeIh9pFtRFTc9sdEenX7rs3WVcS/
-         z5F+DblA+BsZxxipr7hUnxVcRBxPd5qvvA0eWk3HOOSWaaqjcxOfYgFqdjk+YsoMPdlr
-         3PK1EQUin7iQLmS//CCZiSjhj8CxjMe9FyBdViaKbh2dxZkvR+mt38D+dDOZp5Xs3PMx
-         8kvw==
+        d=bytedance.com; s=google; t=1700019441; x=1700624241; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=NMEAhqnib6Cx5fXTMT63a6eUDp64lMLN0QbaBCMwWy8=;
+        b=ltB4FYSDCn3reQo3M0rR/nvY9EeGr5UxJiiohxA9VhLXj7WipdROHSDjNKdzHOZDD9
+         BDvvsYVZYPe+5N7t3ke3q5vceVz3BF0H8jukQD22JjJEw/6lXVFDOFasvnCouHzhWYg6
+         OpEwegEFIVVYyGktbvVVKzaQGDcZrBPzvwMwmgcdq5jA0RBqrVXlnuPXDOrwCl/gFPHy
+         1V4JIv6Wr0+YUyt1k403jCqyc+5+Cp988ieadgrp7rn/SWLq6wfRrx+21SHb/MxB7XU9
+         ld+HqvFtC1yQWtOaPsEzGIwMC5d3/q/3WYb4D+wKS6W9AKlP/9E96/f46T4l9R6hf2NV
+         iPew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700019434; x=1700624234;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k1w3MQA5hdsK9l0KyxSKj5sO0FY/dE+JlgnB21F6L3s=;
-        b=IXDFLb4lK2M4E9gXl3LR69kVNfINlI81Xz0Ehy7X3CD3KioLDaQakerxjD2bhEcXB8
-         BCbGz1QOtkll1uCtxU/XzRHANLAJTmXFw/W5tNeTnUMxvDsGth42J73XVRoQ72epuqUv
-         5aWHkihHwwQwa2u/rL4ZbsObAtLJUYK+V0EpP4mTYTmE13lfGO4HtlUw/6SYLanPeVLc
-         Y2Ykj99uUQWtb8dxP3nsKskjHLtsuBGbHWqkupdWT96QrCg3WDj+JbkJcagI9PqfN90q
-         noEwfkvtBxyC1U3/7UDxFrSyH1hkEkTDBVcH3d2sHIuW1v3i8Aa161xy86J2i4yr0JVr
-         6PTg==
-X-Gm-Message-State: AOJu0YyH0uZAnwTla9bi2eBC0uiGw+DN//QBLFHZTO5btEMSglrzUURb
-        qEfBkj1jeBPZV2gvHgD5gQHBSw==
-X-Google-Smtp-Source: AGHT+IE0sVP6TLd2E2skJbwoe50KPiWhKHScdSQEsVDNrHL7Z7t6OnzvRE/RMrmNh2PqUAKO536Huw==
-X-Received: by 2002:a17:902:b407:b0:1cc:665d:f818 with SMTP id x7-20020a170902b40700b001cc665df818mr3302275plr.68.1700019434150;
-        Tue, 14 Nov 2023 19:37:14 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700019441; x=1700624241;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NMEAhqnib6Cx5fXTMT63a6eUDp64lMLN0QbaBCMwWy8=;
+        b=C1FJD15KZTH9TNdv02Pg+1t+SsX0DbWIRXTpzZJixZ2anACzMIbNuJWcDNlRr5RrGM
+         YFhpuYxh3Wsyf1ksmjHoIGzZxfrYKk5zOoIz+aHd+PO94ozoW/8zRirvrg0vOg3NCkfy
+         oAhfBOlgOGqqdaMuQNlRMOQ5b1JBiUdH2O5DCcjz3TO2XV+Sx/jJDQvrhE3KcBZorhle
+         M5BkcTIqsqNqR7XCM+n0Fu1gMDbNsVukUmIbvHhg2JRnNrCzWof5pEJEe1LeG06SNLkB
+         C4OgndC3FvjGENFngawyLT/iHl83FKwot2B9jnEQdLPjBQDCwNGLeSsY5auKOx+apwsK
+         akGQ==
+X-Gm-Message-State: AOJu0YzK6AO2yJRkDAQ+x2pVHOgRbO5C7yCameSdvTyoFxl7zVLJojnb
+        2sqbJdAa+rhjZmGHJdrp+L3Hnw==
+X-Google-Smtp-Source: AGHT+IF1o3A8Q26Q6/Ia30dEfyGjFfcZTfMDGF8BZ5bloFwjrGZzNkr09GffOL8JHhYdd0V15HIncw==
+X-Received: by 2002:a17:902:c401:b0:1cc:31c4:3426 with SMTP id k1-20020a170902c40100b001cc31c43426mr5883356plk.11.1700019441312;
+        Tue, 14 Nov 2023 19:37:21 -0800 (PST)
 Received: from C02DV8HUMD6R.bytedance.net ([139.177.225.251])
-        by smtp.gmail.com with ESMTPSA id l19-20020a170902d35300b001b9da42cd7dsm6419529plk.279.2023.11.14.19.37.07
+        by smtp.gmail.com with ESMTPSA id l19-20020a170902d35300b001b9da42cd7dsm6419529plk.279.2023.11.14.19.37.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Nov 2023 19:37:13 -0800 (PST)
+        Tue, 14 Nov 2023 19:37:20 -0800 (PST)
 From:   Abel Wu <wuyun.abel@bytedance.com>
 To:     Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
@@ -68,10 +69,12 @@ Cc:     Barry Song <21cnbao@gmail.com>,
         Yicong Yang <yangyicong@huawei.com>,
         Youssef Esmat <youssefesmat@chromium.org>,
         linux-kernel@vger.kernel.org, Abel Wu <wuyun.abel@bytedance.com>
-Subject: [PATCH v2 0/4] sched/eevdf: Optimize reweight and pick
-Date:   Wed, 15 Nov 2023 11:36:43 +0800
-Message-Id: <20231115033647.80785-1-wuyun.abel@bytedance.com>
+Subject: [PATCH v2 1/4] sched/eevdf: Fix vruntime adjustment on reweight
+Date:   Wed, 15 Nov 2023 11:36:44 +0800
+Message-Id: <20231115033647.80785-2-wuyun.abel@bytedance.com>
 X-Mailer: git-send-email 2.37.3
+In-Reply-To: <20231115033647.80785-1-wuyun.abel@bytedance.com>
+References: <20231115033647.80785-1-wuyun.abel@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -84,109 +87,221 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v1 -> v2:
-  - Removed unrelated hunks in 2nd patch.
+vruntime of the (on_rq && !0-lag) entity needs to be adjusted when
+it gets re-weighted, and the calculations can be simplified based
+on the fact that re-weight won't change the w-average of all the
+entities. Please check the proofs in comments.
 
----------
+But adjusting vruntime can also cause position change in RB-tree
+hence require re-queue to fix up which might be costly. This might
+be avoided by deferring adjustment to the time the entity actually
+leaves tree (dequeue/pick), but that will negatively affect task
+selection and probably not good enough either.
 
-This patchset makes these contributions:
+Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
+Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+---
+ kernel/sched/fair.c | 151 +++++++++++++++++++++++++++++++++++++-------
+ 1 file changed, 128 insertions(+), 23 deletions(-)
 
-  [1/4] Fixes the problem that vruntime doesn't get adjusted
-        when reweight at !0-lag point.
-
-  [2/4] Optimize out the fallback search on @best_left which
-        doubles the cost in worst case.
-
-  [3/4] Enable O(1) fastpath picking based on deadline-sorted
-        leftmost-cached rbtree.
-
-  [4/4] Statistics for patch 3, not intended to upstream.
-
-All the benchmarks are done inside a normal cpu cgroup in a clean
-environment with cpu turbo disabled, on a Dual-CPU Intel Xeon(R)
-Platinum 8260 with 2 NUMA nodes each of which has 24C/48T.
-
-	p0: baseline, tip/master 1187c0b3a6c2
-	p1: p0 + patch(1)
-	p3: p0 + patch(1~3)
-
-hackbench
-=========
-case            load    	  p0% (std%)	   p1% ( std%)	   p3% ( std%)
-process-pipe    group-1 	 1.00 (  2.49)	 -1.73 (  2.64)	 -3.77 (  0.91)
-process-pipe    group-2 	 1.00 (  5.23)	 +5.51 (  2.32)	 -3.41 (  4.28)
-process-pipe    group-4 	 1.00 (  5.30)	 +3.53 (  5.46)	 +6.51 (  1.44)
-process-pipe    group-8 	 1.00 (  1.36)	 -1.85 (  2.22)	 -3.57 (  1.06)
-process-sockets group-1 	 1.00 (  2.29)	 -2.39 (  2.66)	 -2.39 (  1.86)
-process-sockets group-2 	 1.00 (  3.46)	 +0.46 (  1.85)	 +1.19 (  2.08)
-process-sockets group-4 	 1.00 (  1.43)	 -1.98 (  2.78)	 +4.52 (  8.68)
-process-sockets group-8 	 1.00 (  0.95)	 -1.60 (  0.94)	 +2.78 (  2.14)
-threads-pipe    group-1 	 1.00 (  1.92)	 +5.33 (  1.54)	 +3.47 (  1.09)
-threads-pipe    group-2 	 1.00 (  0.64)	 +0.51 (  2.31)	 +2.91 (  0.43)
-threads-pipe    group-4 	 1.00 (  3.03)	 -2.91 (  2.31)	 +1.83 (  1.65)
-threads-pipe    group-8 	 1.00 (  2.55)	 +1.89 (  3.04)	 -1.29 (  2.32)
-threads-sockets group-1 	 1.00 (  0.71)	 +0.83 (  0.52)	 -0.42 (  0.52)
-threads-sockets group-2 	 1.00 (  2.48)	 -2.52 (  1.20)	 -3.27 (  0.59)
-threads-sockets group-4 	 1.00 (  1.96)	 +2.67 (  2.34)	 +3.74 (  1.18)
-threads-sockets group-8 	 1.00 (  1.09)	 -2.30 (  0.51)	 +3.07 (  0.62)
-
-netperf
-=======
-case            load    	  p0% (std%)	   p1% ( std%)	   p3% ( std%)
-TCP_RR          thread-24	 1.00 (  2.48)	 -2.15 (  2.38)	 +0.17 (  1.95)
-TCP_RR          thread-48	 1.00 (  0.73)	 -1.59 (  0.51)	 +0.47 (  0.93)
-TCP_RR          thread-72	 1.00 (  1.04)	 -1.26 (  1.03)	 -0.09 (  1.13)
-TCP_RR          thread-96	 1.00 ( 29.36)	+70.41 ( 14.86)	+17.88 ( 37.24)
-TCP_RR          thread-192	 1.00 ( 28.29)	 -1.30 ( 34.03)	 -2.00 ( 30.63)
-TCP_STREAM      thread-24	 1.00 (  1.57)	 +0.38 (  1.90)	 +0.20 (  1.72)
-TCP_STREAM      thread-48	 1.00 (  0.08)	 -0.29 (  0.07)	 +0.15 (  0.12)
-TCP_STREAM      thread-72	 1.00 (  0.01)	 -0.00 (  0.00)	 +0.00 (  0.00)
-TCP_STREAM      thread-96	 1.00 (  0.76)	 +0.16 (  0.65)	 +0.30 (  0.47)
-TCP_STREAM      thread-192	 1.00 (  0.65)	 +0.23 (  0.46)	 +0.25 (  0.49)
-UDP_RR          thread-24	 1.00 (  1.74)	 -1.26 (  2.41)	 +0.81 (  3.02)
-UDP_RR          thread-48	 1.00 (  0.56)	 -0.40 ( 16.72)	 -0.98 (  0.36)
-UDP_RR          thread-72	 1.00 (  0.84)	 -0.70 (  0.66)	 -0.27 (  0.88)
-UDP_RR          thread-96	 1.00 (  1.24)	 -0.44 (  1.01)	 -0.99 (  8.99)
-UDP_RR          thread-192	 1.00 ( 28.02)	 -0.42 ( 31.59)	 -1.80 ( 26.23)
-UDP_STREAM      thread-24	 1.00 (100.05)	 +0.31 (100.04)	 +0.32 (100.06)
-UDP_STREAM      thread-48	 1.00 (104.35)	 +1.22 (105.14)	 +1.65 (104.10)
-UDP_STREAM      thread-72	 1.00 (100.69)	 +1.28 (100.63)	 -0.17 (100.49)
-UDP_STREAM      thread-96	 1.00 ( 99.63)	 +0.33 ( 99.51)	 -0.25 ( 99.53)
-UDP_STREAM      thread-192	 1.00 (100.57)	 +2.00 (107.01)	 -1.21 ( 99.51)
-
-tbench
-======
-case            load    	  p0% (std%)	   p1% ( std%)	   p3% ( std%)
-loopback        thread-24	 1.00 (  0.49)	 -1.47 (  0.94)	 +0.08 (  0.75)
-loopback        thread-48	 1.00 (  0.42)	 -0.04 (  0.53)	 -0.06 (  0.34)
-loopback        thread-72	 1.00 (  7.10)	 -3.33 (  2.98)	 -5.06 (  0.31)
-loopback        thread-96	 1.00 (  0.80)	 +2.65 (  0.80)	 -0.68 (  1.30)
-loopback        thread-192	 1.00 (  1.24)	 +1.21 (  0.73)	 -1.78 (  0.22)
-
-schbench
-========
-case            load    	  p0% (std%)	   p1% ( std%)	   p3% ( std%)
-normal          mthread-1	 1.00 (  5.83)	 -2.83 (  1.46)	 +1.24 (  2.51)
-normal          mthread-2	 1.00 (  4.45)	 +8.94 (  7.81)	+14.24 (  7.44)
-normal          mthread-4	 1.00 (  2.73)	 +2.53 (  4.31)	+12.44 (  5.99)
-normal          mthread-8	 1.00 (  0.15)	 +0.21 (  0.13)	 -0.34 (  0.11)
-
-Seems no obvious complain from these benchmarks.
-Comments are appreciated! Thanks!
-
-Abel Wu (4):
-  sched/eevdf: Fix vruntime adjustment on reweight
-  sched/eevdf: Sort the rbtree by virtual deadline
-  sched/eevdf: O(1) fastpath for task selection
-  sched/stats: Add statistics for pick_eevdf()
-
- include/linux/sched.h |   2 +-
- kernel/sched/debug.c  |  11 +-
- kernel/sched/fair.c   | 341 ++++++++++++++++++++++++++----------------
- kernel/sched/sched.h  |   6 +
- kernel/sched/stats.c  |   6 +-
- 5 files changed, 233 insertions(+), 133 deletions(-)
-
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2048138ce54b..025d90925bf6 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3666,41 +3666,140 @@ static inline void
+ dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se) { }
+ #endif
+ 
++static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
++			   unsigned long weight)
++{
++	unsigned long old_weight = se->load.weight;
++	u64 avruntime = avg_vruntime(cfs_rq);
++	s64 vlag, vslice;
++
++	/*
++	 * VRUNTIME
++	 * ========
++	 *
++	 * COROLLARY #1: The virtual runtime of the entity needs to be
++	 * adjusted if re-weight at !0-lag point.
++	 *
++	 * Proof: For contradiction assume this is not true, so we can
++	 * re-weight without changing vruntime at !0-lag point.
++	 *
++	 *             Weight	VRuntime   Avg-VRuntime
++	 *     before    w          v            V
++	 *      after    w'         v'           V'
++	 *
++	 * Since lag needs to be preserved through re-weight:
++	 *
++	 *	lag = (V - v)*w = (V'- v')*w', where v = v'
++	 *	==>	V' = (V - v)*w/w' + v		(1)
++	 *
++	 * Let W be the total weight of the entities before reweight,
++	 * since V' is the new weighted average of entities:
++	 *
++	 *	V' = (WV + w'v - wv) / (W + w' - w)	(2)
++	 *
++	 * by using (1) & (2) we obtain:
++	 *
++	 *	(WV + w'v - wv) / (W + w' - w) = (V - v)*w/w' + v
++	 *	==> (WV-Wv+Wv+w'v-wv)/(W+w'-w) = (V - v)*w/w' + v
++	 *	==> (WV - Wv)/(W + w' - w) + v = (V - v)*w/w' + v
++	 *	==>	(V - v)*W/(W + w' - w) = (V - v)*w/w' (3)
++	 *
++	 * Since we are doing at !0-lag point which means V != v, we
++	 * can simplify (3):
++	 *
++	 *	==>	W / (W + w' - w) = w / w'
++	 *	==>	Ww' = Ww + ww' - ww
++	 *	==>	W * (w' - w) = w * (w' - w)
++	 *	==>	W = w	(re-weight indicates w' != w)
++	 *
++	 * So the cfs_rq contains only one entity, hence vruntime of
++	 * the entity @v should always equal to the cfs_rq's weighted
++	 * average vruntime @V, which means we will always re-weight
++	 * at 0-lag point, thus breach assumption. Proof completed.
++	 *
++	 *
++	 * COROLLARY #2: Re-weight does NOT affect weighted average
++	 * vruntime of all the entities.
++	 *
++	 * Proof: According to corollary #1, Eq. (1) should be:
++	 *
++	 *	(V - v)*w = (V' - v')*w'
++	 *	==>    v' = V' - (V - v)*w/w'		(4)
++	 *
++	 * According to the weighted average formula, we have:
++	 *
++	 *	V' = (WV - wv + w'v') / (W - w + w')
++	 *	   = (WV - wv + w'(V' - (V - v)w/w')) / (W - w + w')
++	 *	   = (WV - wv + w'V' - Vw + wv) / (W - w + w')
++	 *	   = (WV + w'V' - Vw) / (W - w + w')
++	 *
++	 *	==>  V'*(W - w + w') = WV + w'V' - Vw
++	 *	==>	V' * (W - w) = (W - w) * V	(5)
++	 *
++	 * If the entity is the only one in the cfs_rq, then reweight
++	 * always occurs at 0-lag point, so V won't change. Or else
++	 * there are other entities, hence W != w, then Eq. (5) turns
++	 * into V' = V. So V won't change in either case, proof done.
++	 *
++	 *
++	 * So according to corollary #1 & #2, the effect of re-weight
++	 * on vruntime should be:
++	 *
++	 *	v' = V' - (V - v) * w / w'		(4)
++	 *	   = V  - (V - v) * w / w'
++	 *	   = V  - vl * w / w'
++	 *	   = V  - vl'
++	 */
++	if (avruntime != se->vruntime) {
++		vlag = (s64)(avruntime - se->vruntime);
++		vlag = div_s64(vlag * old_weight, weight);
++		se->vruntime = avruntime - vlag;
++	}
++
++	/*
++	 * DEADLINE
++	 * ========
++	 *
++	 * When the weight changes, the virtual time slope changes and
++	 * we should adjust the relative virtual deadline accordingly.
++	 *
++	 *	d' = v' + (d - v)*w/w'
++	 *	   = V' - (V - v)*w/w' + (d - v)*w/w'
++	 *	   = V  - (V - v)*w/w' + (d - v)*w/w'
++	 *	   = V  + (d - V)*w/w'
++	 */
++	vslice = (s64)(se->deadline - avruntime);
++	vslice = div_s64(vslice * old_weight, weight);
++	se->deadline = avruntime + vslice;
++}
++
+ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 			    unsigned long weight)
+ {
+-	unsigned long old_weight = se->load.weight;
++	bool curr = cfs_rq->curr == se;
+ 
+ 	if (se->on_rq) {
+ 		/* commit outstanding execution time */
+-		if (cfs_rq->curr == se)
++		if (curr)
+ 			update_curr(cfs_rq);
+ 		else
+-			avg_vruntime_sub(cfs_rq, se);
++			__dequeue_entity(cfs_rq, se);
+ 		update_load_sub(&cfs_rq->load, se->load.weight);
+ 	}
+ 	dequeue_load_avg(cfs_rq, se);
+ 
+-	update_load_set(&se->load, weight);
+-
+ 	if (!se->on_rq) {
+ 		/*
+ 		 * Because we keep se->vlag = V - v_i, while: lag_i = w_i*(V - v_i),
+ 		 * we need to scale se->vlag when w_i changes.
+ 		 */
+-		se->vlag = div_s64(se->vlag * old_weight, weight);
++		se->vlag = div_s64(se->vlag * se->load.weight, weight);
+ 	} else {
+-		s64 deadline = se->deadline - se->vruntime;
+-		/*
+-		 * When the weight changes, the virtual time slope changes and
+-		 * we should adjust the relative virtual deadline accordingly.
+-		 */
+-		deadline = div_s64(deadline * old_weight, weight);
+-		se->deadline = se->vruntime + deadline;
+-		if (se != cfs_rq->curr)
+-			min_deadline_cb_propagate(&se->run_node, NULL);
++		reweight_eevdf(cfs_rq, se, weight);
+ 	}
+ 
++	update_load_set(&se->load, weight);
++
+ #ifdef CONFIG_SMP
+ 	do {
+ 		u32 divider = get_pelt_divider(&se->avg);
+@@ -3712,8 +3811,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 	enqueue_load_avg(cfs_rq, se);
+ 	if (se->on_rq) {
+ 		update_load_add(&cfs_rq->load, se->load.weight);
+-		if (cfs_rq->curr != se)
+-			avg_vruntime_add(cfs_rq, se);
++		if (!curr) {
++			/*
++			 * The entity's vruntime has been adjusted, so let's check
++			 * whether the rq-wide min_vruntime needs updated too. Since
++			 * the calculations above require stable min_vruntime rather
++			 * than up-to-date one, we do the update at the end of the
++			 * reweight process.
++			 */
++			__enqueue_entity(cfs_rq, se);
++			update_min_vruntime(cfs_rq);
++		}
+ 	}
+ }
+ 
+@@ -3857,14 +3965,11 @@ static void update_cfs_group(struct sched_entity *se)
+ 
+ #ifndef CONFIG_SMP
+ 	shares = READ_ONCE(gcfs_rq->tg->shares);
+-
+-	if (likely(se->load.weight == shares))
+-		return;
+ #else
+-	shares   = calc_group_shares(gcfs_rq);
++	shares = calc_group_shares(gcfs_rq);
+ #endif
+-
+-	reweight_entity(cfs_rq_of(se), se, shares);
++	if (unlikely(se->load.weight != shares))
++		reweight_entity(cfs_rq_of(se), se, shares);
+ }
+ 
+ #else /* CONFIG_FAIR_GROUP_SCHED */
 -- 
 2.37.3
 
