@@ -2,61 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 973107EC1DC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:11:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6DBC7EC1E0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:11:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343608AbjKOML2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:11:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52768 "EHLO
+        id S1343615AbjKOMLn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:11:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234111AbjKOML1 (ORCPT
+        with ESMTP id S234111AbjKOMLl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:11:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3119B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:11:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700050283; x=1731586283;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=oVQprlmxqKR+44uPorntLBHlx2c75fM9PHkgCNxKdvY=;
-  b=gWlPYbIIwRjwOcp2ZL1oKI/dOU9Xv3dLOqpClQCJrrCRxHiZ0wPK/yzF
-   T5+4CQ3RB7/Fos5GsrSFuwVoJyzYNCSVQPTrt3aMGM9KDFO2XqfimR56B
-   oaRjEsS73sLsaaOXLvFN/6jYNQVfAZYoGWgpW82NjXISIbDb3QFqNEBwD
-   tCjnB/YjEfTOJA6P7PREjsi52KaPwJ6xuh67E3p0vqj9EEypf6psWTku0
-   Qto3wQ7wLxNZ4Wdu1Yrm/dnEzzUNm1DGaJ5XHYDOTeeEBKpXuKm9M3ZBz
-   RTefaAGpbXiTUFKXqOsLFg4AdzPov0nc0Wu2fiLyu8r+ucHCQRqCadHcm
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="370210215"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="370210215"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:11:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="835382527"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="835382527"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 15 Nov 2023 04:11:21 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3Ejl-0000Js-1D;
-        Wed, 15 Nov 2023 12:11:17 +0000
-Date:   Wed, 15 Nov 2023 20:10:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Will Deacon <will@kernel.org>,
-        Ilkka Koskinen <ilkka@os.amperecomputing.com>
-Subject: drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect
- type in argument 1 (different address spaces)
-Message-ID: <202311151948.RANfH9T9-lkp@intel.com>
+        Wed, 15 Nov 2023 07:11:41 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE5A122
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:11:33 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id af79cd13be357-77bb668d941so407822785a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:11:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700050293; x=1700655093; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=h1c3yW1iRaf+ne7MmtvWLEB1RHgOkaZ2lQHdp2l3FC8=;
+        b=RM/BHTUb7pYN8fheKBq8q4IWeOGuWHr9lFflIm/iTNMYcUysfANkYr4QQtfAk/RwqO
+         Qn2XRMYYyaobqGtSWpC3A5otX+mgkIDV6y8JmdHpHyR5N7zkXCpvSWrLZXY3bREYVUgx
+         tWwvpUrL7DO5m1mlFebeBjfMEFh4Irl678ZI2rpbA5laJAup/+kA4bRLb3lfbGly00+D
+         iKt2b04M4EDiNHBExM9Zc0zAg5zMdG/5J60m0MB7X/neAboXRSSo/YhYewWxp8Vz19tE
+         nNXHUCSiuYbFf5rbamz/qMp3Q3mnoPFgXe0jeWYO7ShpzRr8eDHTjrxlSjEFMMEaIPvq
+         iFPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700050293; x=1700655093;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=h1c3yW1iRaf+ne7MmtvWLEB1RHgOkaZ2lQHdp2l3FC8=;
+        b=Yl0k/hdW3pm0EX5/rzt1anOMvyV+Qjil5a30oDd0AvmIJBdbVLOauguvQMYQvIgAjV
+         YG1S7thb5hcrW1jaMPbIwVXFh2FkVQl2YBwzRj76Y1ORshXE/RDI/F1fcQnCptOy+oqv
+         Y3o/Z3r6ye4dfVNG8Vb0uuTqqZTyTqdjzEqe0uXqTTaBYoa8pJh7/qxUjK2ErhfDQiRt
+         8ifHKDgBZAkQWfs+35VkfYvJARIyDmiL1iI7aVCUaXuDPYtZv4m9tIeI/l2aRp9huKMO
+         lfapKlH/z3roszqDRyQR8fA02GFeuxqyvpO2VC/0pWVOxn4KBs6BL3vTAopyEO7AYV9S
+         9NRg==
+X-Gm-Message-State: AOJu0YzYLgVnhUlCAY27SiGxPxx0iae+S6gCuQYCxh9v2p0dmNMW+tx7
+        eaYDYZIP8JdTIugiWCDHWIlxjA==
+X-Google-Smtp-Source: AGHT+IFDsnRi7n+puPII6vLIkn8CeLHgODgriEQAbJ3HG/8f/LtrkMqqKM1WfYRJNXu/QB/suczmUw==
+X-Received: by 2002:a05:620a:228f:b0:76e:f62e:45cc with SMTP id o15-20020a05620a228f00b0076ef62e45ccmr4513042qkh.32.1700050292855;
+        Wed, 15 Nov 2023 04:11:32 -0800 (PST)
+Received: from [192.168.212.13] ([12.191.197.195])
+        by smtp.gmail.com with ESMTPSA id g24-20020a05620a109800b007757f6558b3sm3408398qkk.95.2023.11.15.04.11.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 04:11:31 -0800 (PST)
+Message-ID: <e0f28ec5-b980-490b-a857-5218fe521381@linaro.org>
+Date:   Wed, 15 Nov 2023 13:11:28 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LINUX PATCH v2 1/3] clocksource: timer-cadence-ttc: Do not probe
+ TTC device configured as PWM
+To:     "Sayyed, Mubin" <mubin.sayyed@amd.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-pwm@vger.kernel.org" <linux-pwm@vger.kernel.org>,
+        "git (AMD-Xilinx)" <git@amd.com>,
+        "mubin10@gmail.com" <mubin10@gmail.com>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "u.kleine-koenig@pengutronix.de" <u.kleine-koenig@pengutronix.de>,
+        "thierry.reding@gmail.com" <thierry.reding@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "daniel.lezcano@linaro.org" <daniel.lezcano@linaro.org>,
+        "Simek, Michal" <michal.simek@amd.com>
+References: <20231114124748.581850-1-mubin.sayyed@amd.com>
+ <20231114124748.581850-2-mubin.sayyed@amd.com>
+ <d37db10b-f9fa-49b0-8b1e-36e20acbcfd6@linaro.org>
+ <DM4PR12MB593888B73B65D25E42490EF29DB1A@DM4PR12MB5938.namprd12.prod.outlook.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <DM4PR12MB593888B73B65D25E42490EF29DB1A@DM4PR12MB5938.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,85 +137,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robin,
+On 15/11/2023 06:55, Sayyed, Mubin wrote:
+>>> +	/*
+>>> +	 * If pwm-cells property is present in TTC node,
+>>> +	 * it would be treated as PWM device.
+>>> +	 */
+>>> +	if (of_property_read_bool(timer, "#pwm-cells"))
+>>> +		return -ENODEV;
+>>
+>> You will introduce dmesg errors, so regressions.
+>>
+> [Mubin]: I will change it to "return 0" to avoid dmesg errors.
 
-First bad commit (maybe != root cause):
+No, because solution is wrong.
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: f9bd34e3753ea8f1433a3ba70f03a165a1416f98 perf/arm_cspmu: Clean up ACPI dependency
-date:   5 months ago
-config: loongarch-randconfig-r133-20231107 (https://download.01.org/0day-ci/archive/20231115/202311151948.RANfH9T9-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231115/202311151948.RANfH9T9-lkp@intel.com/reproduce)
+> 
+>> This does not look right. What you want is to bind one device driver and
+>> choose different functionality based on properties.
+> [Mubin]:  I am doing it based on earlier discussion related to AXI Timer PWM driver.  It was suggested to use #pwm-cells property for identifying role of device(PWM/clocksource) https://lore.kernel.org/linux-devicetree/20210513021631.GA878860@robh.at.kernel.org/. 
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311151948.RANfH9T9-lkp@intel.com/
+You are mixing bindings with driver. I said here about driver and yes -
+you must use pwm-cells to differentiate that. It's obvious.
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got unsigned int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got unsigned int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
->> drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *ptr @@     got int [noderef] __percpu * @@
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     expected void *ptr
-   drivers/perf/arm_cspmu/arm_cspmu.c:627:9: sparse:     got int [noderef] __percpu *
+So again, one driver binding.
 
-vim +627 drivers/perf/arm_cspmu/arm_cspmu.c
+Wrap your emails to mailing list discussion style.
 
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  609  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  610  /*
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  611   * Make sure the group of events can be scheduled at once
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  612   * on the PMU.
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  613   */
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  614  static bool arm_cspmu_validate_group(struct perf_event *event)
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  615  {
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  616  	struct perf_event *sibling, *leader = event->group_leader;
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  617  	struct arm_cspmu_hw_events fake_hw_events;
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  618  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  619  	if (event->group_leader == event)
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  620  		return true;
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  621  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  622  	memset(&fake_hw_events, 0, sizeof(fake_hw_events));
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  623  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  624  	if (!arm_cspmu_validate_event(event->pmu, &fake_hw_events, leader))
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  625  		return false;
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  626  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11 @627  	for_each_sibling_event(sibling, leader) {
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  628  		if (!arm_cspmu_validate_event(event->pmu, &fake_hw_events,
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  629  						  sibling))
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  630  			return false;
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  631  	}
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  632  
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  633  	return arm_cspmu_validate_event(event->pmu, &fake_hw_events, event);
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  634  }
-e37dfd65731dc4 Besar Wicaksono 2022-11-11  635  
+Best regards,
+Krzysztof
 
-:::::: The code at line 627 was first introduced by commit
-:::::: e37dfd65731dc4f001fa7dfa7f705e6840017d5a perf: arm_cspmu: Add support for ARM CoreSight PMU driver
-
-:::::: TO: Besar Wicaksono <bwicaksono@nvidia.com>
-:::::: CC: Will Deacon <will@kernel.org>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
