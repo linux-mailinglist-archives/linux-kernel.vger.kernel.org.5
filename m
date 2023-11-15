@@ -2,158 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A70677EBEE1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF267EBEE5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:54:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343568AbjKOIwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 03:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48300 "EHLO
+        id S1343549AbjKOIyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 03:54:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343548AbjKOIw0 (ORCPT
+        with ESMTP id S234679AbjKOIyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 03:52:26 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56471110;
-        Wed, 15 Nov 2023 00:52:23 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AF8qFjO009177;
-        Wed, 15 Nov 2023 02:52:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700038335;
-        bh=PW3PV1wn4GBDjVel/F4ryc0WkxOD6yoE9DDmxFzVSNc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=yoeUsgoZGQCA8bOOMQ8eqXPSDiaj44gpsVV6rWe6IFkQ40kXgkDocKTzrvoFCjDMZ
-         uK7FAdbt+wJV14nlRijr/Ar1tMBRkTNO/Z9WxcQUzWrmv9CpKIDsWFNMqxgnPgdk0p
-         gUqLQijKwtKmgpyDAPqGtZw1lfDdxusdlwLtjjjs=
-Received: from DFLE109.ent.ti.com (dfle109.ent.ti.com [10.64.6.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AF8qFEF029280
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 15 Nov 2023 02:52:15 -0600
-Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Wed, 15
- Nov 2023 02:52:15 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Wed, 15 Nov 2023 02:52:15 -0600
-Received: from uda0492258.dhcp.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AF8q4lw005114;
-        Wed, 15 Nov 2023 02:52:12 -0600
-From:   Siddharth Vadapalli <s-vadapalli@ti.com>
-To:     <nm@ti.com>, <vigneshr@ti.com>, <kristo@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <r-gunasekaran@ti.com>,
-        <srk@ti.com>, <s-vadapalli@ti.com>
-Subject: [PATCH v2 2/2] arm64: dts: ti: k3-j721s2-evm: Add overlay for PCIE1 Endpoint Mode
-Date:   Wed, 15 Nov 2023 14:22:04 +0530
-Message-ID: <20231115085204.3578616-3-s-vadapalli@ti.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115085204.3578616-1-s-vadapalli@ti.com>
-References: <20231115085204.3578616-1-s-vadapalli@ti.com>
+        Wed, 15 Nov 2023 03:54:14 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56C6B10D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:54:11 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7c08b7744so76092467b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:54:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700038450; x=1700643250; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Pbjo3TAguD6KXTLjuIu3/cGWUkxEw1wpK/hlHSFO3xI=;
+        b=RdVhUjtjWAOIWhbILGuRKTqsjSOsDyDly2j97hOA5sKakHY2FTVpkaGPiRyv67wdXu
+         XxhkI582JxhCTo4N2zLuPOvXRj5HMgslTbSq9pffZlz8sZ3g9mrfWH7IUS1mgAAUbT+v
+         TpBaw7QIvJM45kGR3KfHKSvvb3x+2kaGTdaou40ShIpRFA3Msh5M/DajwzhdUOLSROZ/
+         Wr9Fr8AFiNB4hXDml7DM3h8AbE3qAlf/BrNaUPYlw9y3p48EoadDL4AUstDwp/jTo6cZ
+         Q+s+Br7le+1cgnw7qmkW3YR/ZuKpf4G4I8LO+rD9N90QOdhNKsPpdqKUvlRRN//fejam
+         u4Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700038450; x=1700643250;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Pbjo3TAguD6KXTLjuIu3/cGWUkxEw1wpK/hlHSFO3xI=;
+        b=Ip/6WR5aI8M0HHOF8CNHiqNuJKUyN1IkQDB2RK9GMJneOM2u+9V637vL8gbbVJA6iu
+         z1QImTdnlgfi0WfY/dnuhx/v8oNGh2iaEakFRmo4Qvob6fvv7uBqiL9vrEEcj/zoY3f/
+         Ey1saYofDxh9VdWKM3JxeCKogmM0ncSsJSfVk3A06YIyiXzOx9s7aEe6xl1TnuiPrJeP
+         b9OjUWrm6y8dRJp7GSaVjqz3ZJmIBwZIZb9S0DSGfMMsZKofPe5VRK9bDaeJgdhrjfJu
+         eMa3f7n9Emih6svRiCI5T8h9E7E/g/FkEqBWVghqY7ukVtpz9rKPRqVjwLiqEWZZogMy
+         i9mg==
+X-Gm-Message-State: AOJu0Ywftv1kswOLzZJlWeDtTD7FA2gkOb2mV6J92JGc8RjBVVzOlHfu
+        v3yd3uiy14MuFT9wOfNZVa6bBaQ350QkIFhrvHZ8Eg==
+X-Google-Smtp-Source: AGHT+IEDMvHcwrOwIhCANMLXvIPUaFUum2/1YHpZwaESZfy2I2Os/5+HMHREWDFFhrgyeOeFEN55Ab6h3bYKn0zn45o=
+X-Received: by 2002:a0d:f9c6:0:b0:5be:9a1e:5864 with SMTP id
+ j189-20020a0df9c6000000b005be9a1e5864mr10921663ywf.10.1700038450409; Wed, 15
+ Nov 2023 00:54:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231114225857.19702-1-jonathan@marek.ca> <20231114225857.19702-2-jonathan@marek.ca>
+In-Reply-To: <20231114225857.19702-2-jonathan@marek.ca>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 15 Nov 2023 10:53:59 +0200
+Message-ID: <CAA8EJpp0OGkgf0P6LcwE-H6BVN9kbtF_eRCsef+7NgDFmJOZfA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/6] drm/msm/dpu: fix video mode DSC for DSI
+To:     Jonathan Marek <jonathan@marek.ca>
+Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
+        Abhinav Kumar <quic_abhinavk@quicinc.com>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh <quic_khsieh@quicinc.com>,
+        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Vinod Polimera <quic_vpolimer@quicinc.com>,
+        Kalyan Thota <quic_kalyant@quicinc.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Arnaud Vrac <rawoul@gmail.com>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add overlay to enable the PCIE1 instance of PCIe on J721S2-EVM in
-Endpoint mode of operation.
+On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
+>
+> Add necessary DPU changes for DSC to work with DSI video mode.
+>
+> Note this changes the logic to enable HCTL to match downstream, it will
+> now be enabled for the no-DSC no-widebus case.
+>
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c         |  2 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h    |  2 +-
+>  .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c    | 11 +++++++++++
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c         | 13 ++++++++++++-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h         |  1 +
+>  5 files changed, 26 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> index 1cf7ff6caff4..d745c8678b9d 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
+> @@ -2477,7 +2477,7 @@ enum dpu_intf_mode dpu_encoder_get_intf_mode(struct drm_encoder *encoder)
+>         return INTF_MODE_NONE;
+>  }
+>
+> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
+> +unsigned int dpu_encoder_helper_get_dsc(const struct dpu_encoder_phys *phys_enc)
 
-Signed-off-by: Siddharth Vadapalli <s-vadapalli@ti.com>
----
- arch/arm64/boot/dts/ti/Makefile               |  3 ++
- .../boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso   | 53 +++++++++++++++++++
- 2 files changed, 56 insertions(+)
- create mode 100644 arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
+Why?
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index 5620db44d4dc..70baf88964fb 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -77,6 +77,8 @@ dtb-$(CONFIG_ARCH_K3) += k3-j721s2-common-proc-board.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-gesi-exp-board.dtbo
- k3-j721s2-evm-dtbs := k3-j721s2-common-proc-board.dtb k3-j721s2-evm-gesi-exp-board.dtbo
- dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm.dtb
-+k3-j721s2-evm-pcie1-ep-dtbs := k3-j721s2-evm.dtb k3-j721s2-evm-pcie1-ep.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-j721s2-evm-pcie1-ep.dtb
- 
- # Boards with J784s4 SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
-@@ -89,3 +91,4 @@ DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721e-evm += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-+DTC_FLAGS_k3-j721s2-evm += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso b/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
-new file mode 100644
-index 000000000000..43568eb67d93
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-j721s2-evm-pcie1-ep.dtso
-@@ -0,0 +1,53 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/**
-+ * DT Overlay for enabling PCIE1 instance in Endpoint Configuration with the
-+ * J7 common processor board.
-+ *
-+ * J7 Common Processor Board Product Link: https://www.ti.com/tool/J721EXCPXEVM
-+ *
-+ * Copyright (C) 2023 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+#include <dt-bindings/soc/ti,sci_pm_domain.h>
-+
-+#include "k3-pinctrl.h"
-+
-+/*
-+ * Since Root Complex and Endpoint modes are mutually exclusive
-+ * disable Root Complex mode.
-+ */
-+&pcie1_rc {
-+	status = "disabled";
-+};
-+
-+&cbass_main {
-+	#address-cells = <2>;
-+	#size-cells = <2>;
-+	interrupt-parent = <&gic500>;
-+
-+	pcie1_ep: pcie-ep@2910000 {
-+		compatible = "ti,j7200-pcie-ep", "ti,j721e-pcie-ep";
-+		reg = <0x00 0x02910000 0x00 0x1000>,
-+		      <0x00 0x02917000 0x00 0x400>,
-+		      <0x00 0x0d800000 0x00 0x00800000>,
-+		      <0x00 0x18000000 0x00 0x08000000>;
-+		reg-names = "intd_cfg", "user_cfg", "reg", "mem";
-+		interrupt-names = "link_state";
-+		interrupts = <GIC_SPI 330 IRQ_TYPE_EDGE_RISING>;
-+		ti,syscon-pcie-ctrl = <&scm_conf 0x074>;
-+		max-link-speed = <3>;
-+		num-lanes = <1>;
-+		power-domains = <&k3_pds 276 TI_SCI_PD_EXCLUSIVE>;
-+		clocks = <&k3_clks 276 41>;
-+		clock-names = "fck";
-+		max-functions = /bits/ 8 <6>;
-+		max-virtual-functions = /bits/ 8 <4 4 4 4 0 0>;
-+		dma-coherent;
-+		phys = <&serdes0_pcie_link>;
-+		phy-names = "pcie-phy";
-+	};
-+};
+>  {
+>         struct drm_encoder *encoder = phys_enc->parent;
+>         struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(encoder);
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> index 6f04c3d56e77..7e27a7da0887 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
+> @@ -332,7 +332,7 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
+>   *   used for this encoder.
+>   * @phys_enc: Pointer to physical encoder structure
+>   */
+> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc);
+> +unsigned int dpu_encoder_helper_get_dsc(const struct dpu_encoder_phys *phys_enc);
+>
+>  /**
+>   * dpu_encoder_helper_split_config - split display configuration helper function
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> index a01fda711883..df10800a9615 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
+> @@ -100,6 +100,8 @@ static void drm_mode_to_intf_timing_params(
+>         }
+>
+>         timing->wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
+> +       if (dpu_encoder_helper_get_dsc(phys_enc))
+> +               timing->compression_en = true;
+>
+>         /*
+>          * for DP, divide the horizonal parameters by 2 when
+> @@ -112,6 +114,15 @@ static void drm_mode_to_intf_timing_params(
+>                 timing->h_front_porch = timing->h_front_porch >> 1;
+>                 timing->hsync_pulse_width = timing->hsync_pulse_width >> 1;
+>         }
+> +
+> +       /*
+> +        * for DSI, if compression is enabled, then divide the horizonal active
+> +        * timing parameters by compression ratio.
+> +        */
+> +       if (phys_enc->hw_intf->cap->type != INTF_DP && timing->compression_en) {
+> +               timing->width = timing->width / 3; /* XXX: don't assume 3:1 compression ratio */
+
+Is this /3 from bpp / compressed_bpp?
+
+> +               timing->xres = timing->width;
+> +       }
+>  }
+>
+>  static u32 get_horizontal_total(const struct dpu_hw_intf_timing_params *timing)
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> index e8b8908d3e12..d6fe45a6da2d 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
+> @@ -166,10 +166,21 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
+>          * video timing. It is recommended to enable it for all cases, except
+>          * if compression is enabled in 1 pixel per clock mode
+>          */
+> +       if (!p->compression_en || p->wide_bus_en)
+> +               intf_cfg2 |= INTF_CFG2_DATA_HCTL_EN;
+> +
+>         if (p->wide_bus_en)
+> -               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN | INTF_CFG2_DATA_HCTL_EN;
+> +               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
+>
+>         data_width = p->width;
+> +       if (p->wide_bus_en && !dp_intf)
+> +               data_width = p->width >> 1;
+> +
+> +       if (p->compression_en)
+> +               intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
+> +
+> +       if (p->compression_en && dp_intf)
+> +               DPU_ERROR("missing adjustments for DSC+DP\n");
+>
+>         hsync_data_start_x = hsync_start_x;
+>         hsync_data_end_x =  hsync_start_x + data_width - 1;
+
+This should go into a separate commit with the proper justification.
+
+> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> index c539025c418b..15a5fdadd0a0 100644
+> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
+> @@ -33,6 +33,7 @@ struct dpu_hw_intf_timing_params {
+>         u32 hsync_skew;
+>
+>         bool wide_bus_en;
+> +       bool compression_en;
+>  };
+>
+>  struct dpu_hw_intf_prog_fetch {
+> --
+> 2.26.1
+>
+
+
 -- 
-2.34.1
-
+With best wishes
+Dmitry
