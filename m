@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E13B7ED119
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:59:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 399F27ED149
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:00:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344017AbjKOT70 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:59:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36944 "EHLO
+        id S1344097AbjKOUAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:00:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343996AbjKOT7Y (ORCPT
+        with ESMTP id S1344087AbjKOUA2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:59:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD6AF;
-        Wed, 15 Nov 2023 11:59:21 -0800 (PST)
+        Wed, 15 Nov 2023 15:00:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D2DB8;
+        Wed, 15 Nov 2023 12:00:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700078361; x=1731614361;
+  t=1700078425; x=1731614425;
   h=date:from:to:cc:subject:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=nrWkTvCzWNuE40twGKi0g9x8mI/HOylHkbIgQH6YMTw=;
-  b=ju/wWnCIo1vMui4X1niumgsVsi6O2yJz7ZdSUwrPTOzgNc8GQ0HpWOm8
-   xLaZVllvoRfHWbrIfiA3UqRN35vk+4/G5K3TApor77t5jSG7O+vAs/bmN
-   NrVPKMlm/nBsGdfZmnv+voItFucz9uonTV0ofJgKmvcJ9jlwj95KTH6K2
-   hIsF1HhP+zhjYrU+XJOjY3Bp58DP8v6bEoupyeLrDUTXhs7aEZ6NQTLd/
-   sAslhXFgKlEIDxc9BEi9ZSJQvJwtl0k/pknKglTeKvvu2ZWKNZ5BqeE4u
-   LxxEE1SzGjcNnIMk1UMemLjgV5Y+OWjftCIGLNbh7jyINVwaNg0YoLUra
+  bh=xSL9O7OKfhn47lCIAHNJi6bJYd3MBeV1ItF7Yks3P7s=;
+  b=nHnN7qk+AZottYhB1OsBP7OEiaY3e3oG09ypuRyrQjjJFZz1OKPJJItX
+   GLc72J8zEi9atLVKOJk8L1J1PCdrxvv5lcPqejWl/Mr/0rgbo0OTpo7JQ
+   IQuwVVn8oYhPi0HXWuV2rqPhxghJe5Vz22kLfPylSiAi+CV31eUy/w1cs
+   CJenHEioY3mk6jS+yL0yErpxD43aBdPPrfr3thHHanTO3R6XImV/W8192
+   YYmNZv5qv2FBqS4uVy2cw2VY095GHYvGqWdu1xCfdJh+D7pBYVTLFVTkr
+   pGbsCI1zzkwbvl6O3g1NWdmw2E76Nu+ysMZTLHVI4Mv5wwYPQzSy/fPjs
    A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="390743032"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="455235706"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="390743032"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:59:20 -0800
+   d="scan'208";a="455235706"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 12:00:25 -0800
 X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="758596162"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="12880278"
+   d="scan'208";a="758596162"
 Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.24.100.114])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:59:21 -0800
-Date:   Wed, 15 Nov 2023 12:04:01 -0800
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 12:00:24 -0800
+Date:   Wed, 15 Nov 2023 12:05:06 -0800
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
@@ -54,20 +55,20 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, X86 Kernel <x86@kernel.org>,
         jacob.jun.pan@linux.intel.com
 Subject: Re: [PATCH RFC 09/13] x86/irq: Install posted MSI notification
  handler
-Message-ID: <20231115120401.3e02d977@jacob-builder>
-In-Reply-To: <20231115125624.GF3818@noisy.programming.kicks-ass.net>
+Message-ID: <20231115120506.0571103d@jacob-builder>
+In-Reply-To: <20231115124221.GE3818@noisy.programming.kicks-ass.net>
 References: <20231112041643.2868316-1-jacob.jun.pan@linux.intel.com>
         <20231112041643.2868316-10-jacob.jun.pan@linux.intel.com>
-        <20231115125624.GF3818@noisy.programming.kicks-ass.net>
+        <20231115124221.GE3818@noisy.programming.kicks-ass.net>
 Organization: OTC
 X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -76,16 +77,13 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi Peter,
 
-On Wed, 15 Nov 2023 13:56:24 +0100, Peter Zijlstra <peterz@infradead.org>
+On Wed, 15 Nov 2023 13:42:21 +0100, Peter Zijlstra <peterz@infradead.org>
 wrote:
 
 > On Sat, Nov 11, 2023 at 08:16:39PM -0800, Jacob Pan wrote:
 > 
 > > +static __always_inline inline void handle_pending_pir(struct pi_desc
-> > *pid, struct pt_regs *regs) +{  
-> 
-> __always_inline means that... (A)
-> 
+> > *pid, struct pt_regs *regs) +{
 > > +	int i, vec = FIRST_EXTERNAL_VECTOR;
 > > +	u64 pir_copy[4];
 > > +
@@ -102,170 +100,13 @@ wrote:
 > > +	 */
 > > +	for (i = 0; i < 4; i++)
 > > +		pir_copy[i] = raw_atomic64_xchg((atomic64_t
-> > *)&pid->pir_l[i], 0); +
-> > +	/*
-> > +	 * Ideally, we should start from the high order bits set in
-> > the PIR
-> > +	 * since each bit represents a vector. Higher order bit
-> > position means
-> > +	 * the vector has higher priority. But external vectors are
-> > allocated
-> > +	 * based on availability not priority.
-> > +	 *
-> > +	 * EOI is included in the IRQ handlers call to apic_ack_irq,
-> > which
-> > +	 * allows higher priority system interrupt to get in between.
-> > +	 */
-> > +	for_each_set_bit_from(vec, (unsigned long *)&pir_copy[0], 256)
-> > +		call_irq_handler(vec, regs);
-> > +
-> > +}
-> > +
-> > +/*
-> > + * Performance data shows that 3 is good enough to harvest 90+% of the
-> > benefit
-> > + * on high IRQ rate workload.
-> > + * Alternatively, could make this tunable, use 3 as default.
-> > + */
-> > +#define MAX_POSTED_MSI_COALESCING_LOOP 3
-> > +
-> > +/*
-> > + * For MSIs that are delivered as posted interrupts, the CPU
-> > notifications
-> > + * can be coalesced if the MSIs arrive in high frequency bursts.
-> > + */
-> > +DEFINE_IDTENTRY_SYSVEC(sysvec_posted_msi_notification)
-> > +{
-> > +	struct pt_regs *old_regs = set_irq_regs(regs);
-> > +	struct pi_desc *pid;
-> > +	int i = 0;
-> > +
-> > +	pid = this_cpu_ptr(&posted_interrupt_desc);
-> > +
-> > +	inc_irq_stat(posted_msi_notification_count);
-> > +	irq_enter();
-> > +
-> > +	while (i++ < MAX_POSTED_MSI_COALESCING_LOOP) {
-> > +		handle_pending_pir(pid, regs);
-> > +
-> > +		/*
-> > +		 * If there are new interrupts posted in PIR, do
-> > again. If
-> > +		 * nothing pending, no need to wait for more
-> > interrupts.
-> > +		 */
-> > +		if (is_pir_pending(pid))  
+> > *)&pid->pir_l[i], 0);  
 > 
-> So this reads those same 4 words we xchg in handle_pending_pir(), right?
-> 
-> > +			continue;
-> > +		else
-> > +			break;
-> > +	}
-> > +
-> > +	/*
-> > +	 * Clear outstanding notification bit to allow new IRQ
-> > notifications,
-> > +	 * do this last to maximize the window of interrupt coalescing.
-> > +	 */
-> > +	pi_clear_on(pid);
-> > +
-> > +	/*
-> > +	 * There could be a race of PI notification and the clearing
-> > of ON bit,
-> > +	 * process PIR bits one last time such that handling the new
-> > interrupts
-> > +	 * are not delayed until the next IRQ.
-> > +	 */
-> > +	if (unlikely(is_pir_pending(pid)))
-> > +		handle_pending_pir(pid, regs);  
-> 
-> (A) ... we get _two_ copies of that thing in this function. Does that
-> make sense ?
-> 
-> > +
-> > +	apic_eoi();
-> > +	irq_exit();
-> > +	set_irq_regs(old_regs);
-> > +}
-> >  #endif /* X86_POSTED_MSI */  
-> 
-> Would it not make more sense to write things something like:
-> 
-it is a great idea, we can save expensive xchg if pir[i] is 0. But I have
-to tweak a little to let it perform better.
-
-> bool handle_pending_pir()
-> {
-> 	bool handled = false;
-> 	u64 pir_copy[4];
-> 
-> 	for (i = 0; i < 4; i++) {
-> 		if (!pid-pir_l[i]) {
-> 			pir_copy[i] = 0;
-> 			continue;
-> 		}
-> 
-> 		pir_copy[i] = arch_xchg(&pir->pir_l[i], 0);
-we are interleaving cacheline read and xchg. So made it to
-
-	for (i = 0; i < 4; i++) {
-		pir_copy[i] = pid->pir_l[i];
-	}
-
-	for (i = 0; i < 4; i++) {
-		if (pir_copy[i]) {
-			pir_copy[i] = arch_xchg(&pid->pir_l[i], 0);
-			handled = true;
-		}
-	}
-
-With DSA MEMFILL test just one queue one MSI, we are saving 3 xchg per loop.
-Here is the performance comparison in IRQ rate:
-
-Original RFC 9.29 m/sec, 
-Optimized in your email 8.82m/sec,
-Tweaked above: 9.54m/s
-
-I need to test with more MSI vectors spreading out to all 4 u64. I suspect
-the benefit will decrease since we need to do both read and xchg for
-non-zero entries.
-
-> 		handled |= true;
-> 	}
-
+> Might as well use arch_xchg() and save the atomic64_t casting.
+will do
 
 > 
-> 	if (!handled)
-> 		return handled;
-> 
-> 	for_each_set_bit()
-> 		....
-> 
-> 	return handled.
-> }
-> 
-> sysvec_posted_blah_blah()
-> {
-> 	bool done = false;
-> 	bool handled;
-> 
-> 	for (;;) {
-> 		handled = handle_pending_pir();
-> 		if (done)
-> 			break;
-> 		if (!handled || ++loops > MAX_LOOPS) {
-> 			pi_clear_on(pid);
-> 			/* once more after clear_on */
-> 			done = true;
-> 		}
-> 	}
-> }
-> 
-> 
-> Hmm?
-
-
+>  [...]  
 
 
 Thanks,
