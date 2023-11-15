@@ -2,109 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB5457EC3B6
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2EEE7EC3B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:31:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343923AbjKONbo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:31:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41138 "EHLO
+        id S1343944AbjKONb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:31:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343722AbjKONbn (ORCPT
+        with ESMTP id S1343919AbjKONby (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:31:43 -0500
-Received: from smtp-relay-canonical-1.canonical.com (smtp-relay-canonical-1.canonical.com [185.125.188.121])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2928AA1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:31:40 -0800 (PST)
-Received: from LT2ubnt.fritz.box (ip-178-202-040-247.um47.pools.vodafone-ip.de [178.202.40.247])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-canonical-1.canonical.com (Postfix) with ESMTPSA id 28D2141931;
-        Wed, 15 Nov 2023 13:31:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1700055098;
-        bh=XwKM1F4f+w/q5mNwykREvbpkU3Yv+IFVmQo+ZNBoOAM=;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version;
-        b=HvmmC4WVKC7O3shLJjN5g8UvEDDBuDvWnEKZcKmLF3lJmf5bT1yQ1odFlv8bKnFZk
-         um1GAljq/pK1B/oYV0G19jOW0ZP4jr5hIdmc7iifGVY/3THEiZDztDR8x+pwe6oN35
-         H1Pw2OLrUKbbjDDw8Sl+hdTwBVIz9NvkwUnPKra9ILtGx15w2iQq8cYxl7aYBpuGVi
-         sSz5CNKE16cTtPxSPyNFxDtCRSEiFgNb3lGjTod4mTOpmhRCnX5RoyjjQNz2D0LD4K
-         Z0YnyZ+TKnTjTn/M2cu1mdNtGp0qWAYDzEC14NtYEIkGrdKhtDkKbKSllWUaL8jkWl
-         xpVTYZSdzpCrQ==
-From:   Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-To:     Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Albert Ou <aou@eecs.berkeley.edu>,
-        Anup Patel <apatel@ventanamicro.com>,
-        Andrew Jones <ajones@ventanamicro.com>,
-        Mayuresh Chitale <mchitale@ventanamicro.com>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        Alexandre Ghiti <alexghiti@rivosinc.com>,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
-Subject: [PATCH 1/1] tty/serial: RISC-V SBI earlycon via DBCN extension
-Date:   Wed, 15 Nov 2023 14:31:27 +0100
-Message-Id: <20231115133127.107575-1-heinrich.schuchardt@canonical.com>
-X-Mailer: git-send-email 2.40.1
+        Wed, 15 Nov 2023 08:31:54 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED5D11D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:31:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700055110; x=1731591110;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Wq9K0biAJd+uWugvhnpqHht2TiqKoqsRdn7Q5piWNtY=;
+  b=Cipxx5DfsRUYlgC99PORDKwrccvq1mXIipuIkosPNcaPNlHQlPECrryS
+   Y3ezvhcTIfNwzJW5myOpik0snKptMwdYR64O1swel5Esbe+D0QIzA82eP
+   XrpScf6xVwaxapyzZbHxv6K6OF12cm7NcmjRZEHxp1xlSdgt960LPL0Bt
+   nCZVOu5juejWPkGhxlxlY3NZ0nYP4yjRMyw4uHUuXlpL476j6aQ0WEL/c
+   aC4OoBXKRnTSK+XonaS4m/1G9zHCVCEzLzuZTmZcquBcSpNZxKaVhEJSM
+   uPNHpbGe4sb3cjvoIRjBRcK4fV866y5sF6Nt+fzqnvWabb818ret7YmLx
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393731656"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="393731656"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:31:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="764977866"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="764977866"
+Received: from jcornall-mobl3.ger.corp.intel.com (HELO [10.213.211.209]) ([10.213.211.209])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:31:48 -0800
+Message-ID: <02377290-cb5f-48ca-afe3-0e59b70a43de@linux.intel.com>
+Date:   Wed, 15 Nov 2023 13:31:46 +0000
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [Intel-gfx] [char-misc-next 3/4] mei: pxp: re-enable client on
+ errors
+Content-Language: en-US
+To:     "Teres Alexis, Alan Previn" <alan.previn.teres.alexis@intel.com>,
+        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
+        "Winkler, Tomas" <tomas.winkler@intel.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
+        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Lubart, Vitaly" <vitaly.lubart@intel.com>
+References: <20231011110157.247552-1-tomas.winkler@intel.com>
+ <20231011110157.247552-4-tomas.winkler@intel.com>
+ <ZVN9e3BczixJy_1H@intel.com>
+ <ade96d9edd8bce1bc63dba4e2f1a92517180d774.camel@intel.com>
+From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
+Organization: Intel Corporation UK Plc
+In-Reply-To: <ade96d9edd8bce1bc63dba4e2f1a92517180d774.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
+        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Up to now an SBI based early console was limited to SBI version 0.1.
-With the DBCN SBI extension we can provide an early console on systems that
-have a recent SBI implementation.
 
-Signed-off-by: Heinrich Schuchardt <heinrich.schuchardt@canonical.com>
----
- arch/riscv/kernel/sbi.c    | 14 ++++++++++++++
- drivers/tty/serial/Kconfig |  1 -
- 2 files changed, 14 insertions(+), 1 deletion(-)
+On 14/11/2023 15:31, Teres Alexis, Alan Previn wrote:
+> On Tue, 2023-11-14 at 16:00 +0200, Ville Syrjälä wrote:
+>> On Wed, Oct 11, 2023 at 02:01:56PM +0300, Tomas Winkler wrote:
+>>> From: Alexander Usyskin <alexander.usyskin@intel.com>
+>>>
+>>> Disable and enable mei-pxp client on errors to clean the internal state.
+>>
+>> This broke i915 on my Alderlake-P laptop.
+>>
+> 
+> 
+> Hi Alex, i just relooked at the series that got merged, and i noticed
+> that in patch #3 of the series, you had changed mei_pxp_send_message
+> to return bytes sent instead of zero on success. IIRC, we had
+> agreed to not effect the behavior of this component interface (other
+> than adding the timeout) - this was the intention of Patch #4 that i
+> was pushing for in order to spec the interface (which continues
+> to say zero on success). We should fix this to stay with the original
+> behavior - where mei-pxp should NOT send partial packets and
+> will only return zero in success case where success is sending of
+> the complete packets - so we don't need to get back the "bytes sent"
+> from mei_pxp_send_message. So i think this might be causing the problem.
+> 
+> 
+> Side note  to Ville:, are you enabling PXP kernel config by default in
+> all MESA contexts? I recall that MESA folks were running some CI testing
+> with enable pxp contexts, but didn't realize this is being enabled by
+> default in all contexts. Please be aware that enabling pxp-contexts
+> would temporarily disabled runtime-pm during that contexts lifetime.
+> Also pxp contexts will be forced to be irrecoverable if it ever hangs.
+> The former is a hardware architecture requirement but doesn't do anything
+> if you're enabling display (which I beleive also blocks in ADL). The
+> latter was a requirement to comply with Vulkan.
 
-diff --git a/arch/riscv/kernel/sbi.c b/arch/riscv/kernel/sbi.c
-index 5a62ed1da453..6e1644a95bb7 100644
---- a/arch/riscv/kernel/sbi.c
-+++ b/arch/riscv/kernel/sbi.c
-@@ -195,6 +195,20 @@ static void sbi_set_power_off(void)
- 	pm_power_off = sbi_shutdown;
- }
- #else
-+
-+/**
-+ * sbi_console_putchar() - Writes given character to the console device.
-+ * @ch: The data to be written to the console.
-+ *
-+ * Return: None
-+ */
-+void sbi_console_putchar(int ch)
-+{
-+	sbi_ecall(SBI_EXT_DBCN, SBI_EXT_DBCN_CONSOLE_WRITE_BYTE,
-+		  ch, 0, 0, 0, 0, 0);
-+}
-+EXPORT_SYMBOL(sbi_console_putchar);
-+
- static void __sbi_set_timer_v01(uint64_t stime_value)
- {
- 	pr_warn("Timer extension is not available in SBI v%lu.%lu\n",
-diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
-index 732c893c8d16..454c2a612389 100644
---- a/drivers/tty/serial/Kconfig
-+++ b/drivers/tty/serial/Kconfig
-@@ -87,7 +87,6 @@ config SERIAL_EARLYCON_SEMIHOST
- 
- config SERIAL_EARLYCON_RISCV_SBI
- 	bool "Early console using RISC-V SBI"
--	depends on RISCV_SBI_V01
- 	select SERIAL_CORE
- 	select SERIAL_CORE_CONSOLE
- 	select SERIAL_EARLYCON
--- 
-2.40.1
+Regardless of the mei_pxp_send_message being temporarily broken, doesn't 
+Ville's logs suggest the PXP detection is altogether messed up? AFAIR 
+the plan was exactly to avoid stalls during Mesa init and new uapi was 
+added to achieve that. But it doesn't seem to be working?!
 
+commit 3b918f4f0c8b5344af4058f1a12e2023363d0097
+Author: Alan Previn <alan.previn.teres.alexis@intel.com>
+Date:   Wed Aug 2 11:25:50 2023 -0700
+
+     drm/i915/pxp: Optimize GET_PARAM:PXP_STATUS
+
+     After recent discussions with Mesa folks, it was requested
+     that we optimize i915's GET_PARAM for the PXP_STATUS without
+     changing the UAPI spec.
+
+     Add these additional optimizations:
+        - If any PXP initializatoin flow failed, then ensure that
+          we catch it so that we can change the returned PXP_STATUS
+          from "2" (i.e. 'PXP is supported but not yet ready')
+          to "-ENODEV". This typically should not happen and if it
+          does, we have a platform configuration issue.
+        - If a PXP arbitration session creation event failed
+          due to incorrect firmware version or blocking SOC fusing
+          or blocking BIOS configuration (platform reasons that won't
+          change if we retry), then reflect that blockage by also
+          returning -ENODEV in the GET_PARAM:PXP_STATUS.
+        - GET_PARAM:PXP_STATUS should not wait at all if PXP is
+          supported but non-i915 dependencies (component-driver /
+          firmware) we are still pending to complete the init flows.
+          In this case, just return "2" immediately (i.e. 'PXP is
+          supported but not yet ready').
+
+AFAIU is things failed there shouldn't be long waits, repeated/constant 
+ones even less so.
+
+Regards,
+
+Tvrtko
