@@ -2,54 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5DE07EC63F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 408C67EC644
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:49:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344118AbjKOOtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:49:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39120 "EHLO
+        id S1344254AbjKOOtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:49:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjKOOtH (ORCPT
+        with ESMTP id S1344226AbjKOOtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:49:07 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF2A68E;
-        Wed, 15 Nov 2023 06:49:02 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 06AEA66020EE;
-        Wed, 15 Nov 2023 14:49:00 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700059741;
-        bh=qGGXsGoucU2E2JHTW5vyO3tG29TOu7dArGxQ01yOOAw=;
-        h=From:To:Cc:Subject:Date:From;
-        b=g1YN6ixT+qcit0USKdVVlZGcEszUJbamE1pqJJPRTZn5LcNU18XwmIZAGRn/vCii3
-         2h0nFgqTlUNYszBGDvLDgPOWyEZdrGKGJL/MYGMBruT5o0HGvtj5cyRzfg0T9ZNMka
-         PdjS7AgfuAVqKdB1kKVQyLFZQ64cRb4k2bboeTXkeJMMtNIwFQkSjshk8pG1KemEza
-         H6PE6ByMrzgH2qleyWsh2pZ4iws8v9dFQGTTKwRCZZ+rIX+8K6EVk+wXWyHqiRLvDN
-         O2aBD3NTQHP3XUYgYrXVSvwk0h010DaTuqCpCZJugAdtD+sRLFYsMMaHDW2nHMK/3Z
-         tDmk7xG6FnzHQ==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     rafael@kernel.org
-Cc:     daniel.lezcano@linaro.org, rui.zhang@intel.com,
-        lukasz.luba@arm.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel@collabora.com,
-        wenst@chromium.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Subject: [PATCH v2] thermal: Add support for device tree thermal zones consumers
-Date:   Wed, 15 Nov 2023 15:48:57 +0100
-Message-ID: <20231115144857.424005-1-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
+        Wed, 15 Nov 2023 09:49:11 -0500
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3CE8E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:49:07 -0800 (PST)
+Received: by mail-ej1-x62e.google.com with SMTP id a640c23a62f3a-9d242846194so1008626866b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:49:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700059745; x=1700664545; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=2OAEGyarM/hUZBw174UpvceChqj/S103XaaXVFnIlZM=;
+        b=SZ24r3XXnFGpdHPWJrK6xbhH9Ntm64S6szjGlVYf/5szD8rS3m8d5WVRljVW1My5iB
+         R4n1ZvOTTTlJOMwxjIQHSJwS6qsp/Stz8IaaHTc28B87AkE/8nIETytn5rwZOun/iumA
+         c7f5m1AusvW2Yk5kx5lyqglmPE4A8S8GIfTUK+CX2Xw0F0mnClnzHdf4MPSdq1NG6L3x
+         fomDwf4PpOn0ZjCH0QO5YGa2JDyHFC3/nxyLq9x1ezggt4Jto1a6dOr3ZmFQqqQbFSBD
+         30cTOGJczvpoPI5sU1Xo/iwLMFAccVgH04P+syb97LfA0Nl2DzKhRBvGpqrKRwkeVbQe
+         lFuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700059745; x=1700664545;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2OAEGyarM/hUZBw174UpvceChqj/S103XaaXVFnIlZM=;
+        b=A+7Ei5vrC98XovuA/7QAgPjkzuryHJab9XKDqBGoopzAh7EJjona612vITq/X/eS9s
+         0K1l0nAo0JNIuNnPsgsxuLDGW7s4TI5kKCLgzCYGM3IWS+yslpFs/4yUPcYyQTLCEkO8
+         Am5IC/pi3GMj4iRq5wkikVdn4c6O536ZjKe/Ak3FNW/TTAZphmawLE/YdWOlSeev6cWZ
+         gjo8t5lvHAVs2qBSGggBbzWr0iA/2aE7+oBgTtNrve1V6Fhm1eRUCcNWTIWYAZleMJgH
+         VxC7NjZBeLqMMRPra997RHwovliAplW+sTHA+sGRZg72mbhdGBWc3cMeMFDz0YYvaNKi
+         n1Xw==
+X-Gm-Message-State: AOJu0YyeOdOO23TFwYzdeGlx9Zgz/etREn5XIsJN1IrL45IKlY7vD4I2
+        cCMe+qqxIZEvZFG1Y4NH1+GMiw==
+X-Google-Smtp-Source: AGHT+IE2f2PU9DaDjONXySx6FQe9BN0WZ4klk13CTjt7DjmnzLIwOG+L132BHH7WWbo2SRDHntXiYQ==
+X-Received: by 2002:a17:906:d217:b0:9be:3c7e:7f38 with SMTP id w23-20020a170906d21700b009be3c7e7f38mr9188689ejz.10.1700059745432;
+        Wed, 15 Nov 2023 06:49:05 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.119])
+        by smtp.gmail.com with ESMTPSA id c26-20020a17090603da00b009adce1c97ccsm7118328eja.53.2023.11.15.06.49.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 06:49:05 -0800 (PST)
+Message-ID: <58b2905a-afa1-4991-9d67-8952eaf4b9ea@tuxon.dev>
+Date:   Wed, 15 Nov 2023 16:49:03 +0200
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 8/9] irqchip/renesas-rzg2l: Add support for suspend to
+ RAM
+Content-Language: en-US
+To:     Biju Das <biju.das.jz@bp.renesas.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "krzysztof.kozlowski+dt@linaro.org" 
+        <krzysztof.kozlowski+dt@linaro.org>,
+        "conor+dt@kernel.org" <conor+dt@kernel.org>,
+        "geert+renesas@glider.be" <geert+renesas@glider.be>,
+        "magnus.damm@gmail.com" <magnus.damm@gmail.com>,
+        "mturquette@baylibre.com" <mturquette@baylibre.com>,
+        "sboyd@kernel.org" <sboyd@kernel.org>,
+        Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-renesas-soc@vger.kernel.org" 
+        <linux-renesas-soc@vger.kernel.org>,
+        "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20231115142749.853106-1-claudiu.beznea.uj@bp.renesas.com>
+ <20231115142749.853106-9-claudiu.beznea.uj@bp.renesas.com>
+ <TYCPR01MB11269C1937A0086A53D51D90486B1A@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+From:   claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <TYCPR01MB11269C1937A0086A53D51D90486B1A@TYCPR01MB11269.jpnprd01.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,199 +91,232 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add helpers to support retrieving thermal zones from device tree nodes:
-this will allow a device tree consumer to specify phandles to specific
-thermal zone(s), including support for specifying thermal-zone-names.
-This is useful, for example, for smart voltage scaling drivers that
-need to adjust CPU/GPU/other voltages based on temperature, and for
-battery charging drivers that need to scale current based on various
-aggregated temperature sensor readings which are board-dependant.
+Hi, Biju,
 
-Example:
-smart-scaling-driver@10000000 {
-	[...]
+On 15.11.2023 16:45, Biju Das wrote:
+> Hi Claudiu,
+> 
+> Thanks for the patch.
+> 
+>> Subject: [PATCH v2 8/9] irqchip/renesas-rzg2l: Add support for suspend to
+>> RAM
+>>
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> irqchip-renesas-rzg2l driver is used on RZ/G3S SoC. RZ/G3S could go to
+>> deep sleep states where power to different SoC's parts are cut off and RAM
+>> is switched to self-refresh. The resume from these states is done with the
+>> help of bootloader.
+>>
+>> IA55 IRQ controller needs to be reconfigured when resuming from deep sleep
+>> state. For this the IA55 registers are cached in suspend and restored in
+>> resume.
+>>
+>> The IA55 IRQ controller is connected to GPIO controller and GIC as
+>> follows:
+>>
+>>                                       ┌──────────┐          ┌──────────┐
+>>                                       │          │ SPIX     │          │
+>>                                       │          ├─────────►│          │
+>>                                       │          │          │          │
+>>                                       │          │          │          │
+>>               ┌────────┐IRQ0-7        │  IA55    │          │  GIC     │
+>>  Pin0 ───────►│        ├─────────────►│          │          │          │
+>>               │        │              │          │ PPIY     │          │
+>>  ...          │  GPIO  │              │          ├─────────►│          │
+>>               │        │GPIOINT0-127  │          │          │          │
+>>  PinN ───────►│        ├─────────────►│          │          │          │
+>>               └────────┘              └──────────┘          └──────────┘
+>>
+>> where:
+>> - Pin0 is the first GPIO controller pin
+>> - PinN is the last GPIO controller pin
+>> - SPIX is the SPI interrupt with identifier X
+>> - PPIY is the PPI interrupt with identifier Y
+>>
+>> Suspend/resume functionality was implemented with syscore_ops to be able
+>> to cache/restore the registers after/before GPIO controller suspend/resume
+>> was called. As suspend/resume function members of syscore_ops doesn't take
+>> any argument, to be able to access the cache data structure and
+>> controller's base address from within suspend/resume functions, the driver
+>> private data structure was declared as static in file, named
+>> rzg2l_irqc_data and driver has been adjusted accordingly for this.
+>>
+>> Because IA55 IRQC is resumed before GPIO controller and different GPIO
+>> pins could be in unwanted state for IA55 IRQC (e.g. HiZ) when IA55
+>> reconfiguration is done on resume path, to avoid spurious interrupts the
+>> IA55 resume configures only interrupt type on resume. The interrupt enable
+>> operation will be done at the end of GPIO controller resume.
+>> The interrupt type reconfiguration was kept in IA55 driver to minimize the
+>> number of subsystems interactions on suspend/resume b/w GPIO and
+>> IA55 drivers (as the IRQ reconfiguration from GPIO driver is done with IRQ
+>> specific APIs).
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> ---
+>>
+>> Changes in v2:
+>> - improved commit description
+>> - use uppercase letter after ":" in patch title
+>> - implemented review comments: used tabs to align initialized structures
+>>   members, use proper naming for driver's private data structure
+>> - use local variable for controller's base address in suspend/resume
+>>   functions
+>>
+>>  drivers/irqchip/irq-renesas-rzg2l.c | 68 +++++++++++++++++++++++------
+>>  1 file changed, 55 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/drivers/irqchip/irq-renesas-rzg2l.c b/drivers/irqchip/irq-
+>> renesas-rzg2l.c
+>> index 45b696db220f..bd0dd9fcd68a 100644
+>> --- a/drivers/irqchip/irq-renesas-rzg2l.c
+>> +++ b/drivers/irqchip/irq-renesas-rzg2l.c
+>> @@ -18,6 +18,7 @@
+>>  #include <linux/pm_runtime.h>
+>>  #include <linux/reset.h>
+>>  #include <linux/spinlock.h>
+>> +#include <linux/syscore_ops.h>
+>>
+>>  #define IRQC_IRQ_START			1
+>>  #define IRQC_IRQ_COUNT			8
+>> @@ -55,17 +56,29 @@
+>>  #define TINT_EXTRACT_HWIRQ(x)		FIELD_GET(GENMASK(15, 0), (x))
+>>  #define TINT_EXTRACT_GPIOINT(x)		FIELD_GET(GENMASK(31, 16), (x))
+>>
+>> +/**
+>> + * struct rzg2l_irqc_reg_cache - registers cache (necessary for
+>> +suspend/resume)
+>> + * @iitsr: IITSR register
+>> + * @titsr: TITSR registers
+>> + */
+>> +struct rzg2l_irqc_reg_cache {
+>> +	u32	iitsr;
+>> +	u32	titsr[2];
+>> +};
+>> +
+>>  /**
+>>   * struct rzg2l_irqc_priv - IRQ controller private data structure
+>>   * @base: controller's base address
+>>   * @fwspec: IRQ firmware specific data
+>>   * @lock: lock to protect concurrent access to hardware registers
+>> + * @cache: registers cache (necessary for suspend/resume)
+>>   */
+>> -struct rzg2l_irqc_priv {
+>> +static struct rzg2l_irqc_priv {
+>>  	void __iomem			*base;
+>>  	struct irq_fwspec		fwspec[IRQC_NUM_IRQ];
+>>  	raw_spinlock_t			lock;
+>> -};
+>> +	struct rzg2l_irqc_reg_cache	cache;
+>> +} rzg2l_irqc_data;
+> 
+> Why can't you use a static pointer here and fill it in probe()
+> and use this pointer in suspend()/resume()?
 
-	thermal-zones = <&cluster_big_tz>, <&gpu_tz>, <&vpu_tz>;
-	thermal-zone-names = "cpu", "gpu", "vpu";
+I can do that. I think I wrongly understood previous review comment on
+this. I'll update and resend.
 
-	[...]
-}
-
-battery-charger@20000000 {
-	[...]
-
-	thermal-zones = <&battery_temp>, <&device_skin_temp>;
-	thermal-zone-names = "batt-ext-sensor", "skin";
-
-	[...]
-}
-
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
-
-Changes in v2:
- - Added missing static inline for !CONFIG_OF fallback functions
-
-Background story: while I was cleaning up the MediaTek Smart Voltage Scaling
-(SVS) driver, I've found out that there's a lot of commonization to be done.
-After a rewrite of "this and that" in that driver, I came across a barrier
-that didn't allow me to remove another ~100 lines of code, and that was also
-anyway breaking the driver, because the thermal zone names are different
-from what was originally intended.
-
-I've been looking for thermal zone handle retrieval around the kernel and
-found that there currently are at least four other drivers that could make
-use this as a cleanup: charger-manager, which is retrieving a thermal zone
-to look for with a "cm-thermal-zone" string property, gpu/drm/tiny/repaper.c
-that does the same by checking a "pervasive,thermal-zone" string property,
-and ab8500_temp and sdhci-omap which are simply hardcoding a "cpu_thermal"
-and "battery-thermal" thermal zone names respectively.
-
-There are a number of other devices (mostly embedded, mostly smartphones)
-that don't have an upstream driver and that could make use of this as well.
-
-Cheers!
+Thank you,
+Claudiu Beznea
 
 
- drivers/thermal/thermal_of.c | 91 ++++++++++++++++++++++++++++++++++++
- include/linux/thermal.h      | 15 ++++++
- 2 files changed, 106 insertions(+)
-
-diff --git a/drivers/thermal/thermal_of.c b/drivers/thermal/thermal_of.c
-index 1e0655b63259..d8ead456993e 100644
---- a/drivers/thermal/thermal_of.c
-+++ b/drivers/thermal/thermal_of.c
-@@ -538,6 +538,97 @@ static struct thermal_zone_device *thermal_of_zone_register(struct device_node *
- 	return ERR_PTR(ret);
- }
- 
-+/**
-+ * __thermal_of_get_zone_by_index() - Get thermal zone handle from the DT
-+ *				      thermal-zones index
-+ * @dev:   Pointer to the consumer device
-+ * @index: Index of thermal-zones
-+ *
-+ * This function will search for a thermal zone in the thermal-zones phandle
-+ * array corresponding to the specified index, then will search for its name
-+ * into the registered thermal zones through thermal_zone_get_zone_by_name()
-+ *
-+ * Please note that this function is for internal use only and expects that
-+ * all of the sanity checks are performed by its caller.
-+ *
-+ * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-+ * when the API is disabled or the "thermal-zones" DT property is missing.
-+ */
-+static struct thermal_zone_device
-+*__thermal_of_get_zone_by_index(struct device *dev, int index)
-+{
-+	struct thermal_zone_device *tzd;
-+	struct device_node *np;
-+
-+	np = of_parse_phandle(dev->of_node, "thermal-zones", index);
-+	if (!np)
-+		return NULL;
-+
-+	tzd = thermal_zone_get_zone_by_name(np->name);
-+	of_node_put(np);
-+
-+	return tzd;
-+}
-+
-+/**
-+ * thermal_of_get_zone_by_index() - Get thermal zone handle from a DT node
-+ *				    based on index
-+ * @dev:   Pointer to the consumer device
-+ * @index: Index of thermal-zones
-+ *
-+ * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-+ * when the API is disabled or the "thermal-zones" DT property is missing.
-+ */
-+struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-+{
-+	if (!dev || !dev->of_node)
-+		return ERR_PTR(-ENODEV);
-+
-+	if (!of_property_present(dev->of_node, "thermal-zones"))
-+		return NULL;
-+
-+	return __thermal_of_get_zone_by_index(dev, index);
-+}
-+
-+/**
-+ * thermal_of_get_zone() - Get thermal zone handle from a DT node based
-+ *			   on name, or the first handle in list
-+ * @dev:   Pointer to the consumer device
-+ * @name:  Name as found in thermal-zone-names or NULL
-+ *
-+ * This function will search for a thermal zone in the thermal-zones phandle
-+ * array corresponding to the index of that in the thermal-zone-names array.
-+ * If the name is not specified (NULL), it will return the first thermal zone
-+ * in the thermal-zones phandle array.
-+ *
-+ * Return: thermal_zone_device pointer on success, ERR_PTR() on error or NULL
-+ * when the API is disabled or the "thermal-zones" DT property is missing.
-+ */
-+struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-+{
-+	int index;
-+
-+	if (!dev || !dev->of_node)
-+		return ERR_PTR(-ENODEV);
-+
-+	if (!of_property_present(dev->of_node, "thermal-zones")) {
-+		pr_err("thermal zones property not present\n");
-+		return NULL;
-+	}
-+
-+	if (name) {
-+		index = of_property_match_string(dev->of_node, "thermal-zone-names", name);
-+		if (index < 0) {
-+			pr_err("thermal zone names property not present\n");
-+			return ERR_PTR(index);
-+		}
-+	} else {
-+		index = 0;
-+	}
-+
-+	return __thermal_of_get_zone_by_index(dev, index);
-+}
-+
- static void devm_thermal_of_zone_release(struct device *dev, void *res)
- {
- 	thermal_of_zone_unregister(*(struct thermal_zone_device **)res);
-diff --git a/include/linux/thermal.h b/include/linux/thermal.h
-index cee814d5d1ac..0fceeb7ed08a 100644
---- a/include/linux/thermal.h
-+++ b/include/linux/thermal.h
-@@ -261,6 +261,9 @@ struct thermal_zone_device *devm_thermal_of_zone_register(struct device *dev, in
- 
- void devm_thermal_of_zone_unregister(struct device *dev, struct thermal_zone_device *tz);
- 
-+struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index);
-+struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name);
-+
- #else
- 
- static inline
-@@ -274,6 +277,18 @@ static inline void devm_thermal_of_zone_unregister(struct device *dev,
- 						   struct thermal_zone_device *tz)
- {
- }
-+
-+static inline
-+struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
-+{
-+	return ERR_PTR(-ENOTSUPP);
-+}
-+
-+static inline
-+struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
-+{
-+	return ERR_PTR(-ENOTSUPP);
-+}
- #endif
- 
- int __thermal_zone_get_trip(struct thermal_zone_device *tz, int trip_id,
--- 
-2.42.0
-
+> 
+> Cheers,
+> Biju
+> 
+>>
+>>  static struct rzg2l_irqc_priv *irq_data_to_priv(struct irq_data *data)
+>> { @@ -246,6 +259,38 @@ static int rzg2l_irqc_set_type(struct irq_data *d,
+>> unsigned int type)
+>>  	return irq_chip_set_type_parent(d, IRQ_TYPE_LEVEL_HIGH);  }
+>>
+>> +static int rzg2l_irqc_irq_suspend(void) {
+>> +	struct rzg2l_irqc_reg_cache *cache = &rzg2l_irqc_data.cache;
+>> +	void __iomem *base = rzg2l_irqc_data.base;
+>> +
+>> +	cache->iitsr = readl_relaxed(base + IITSR);
+>> +	for (u8 i = 0; i < 2; i++)
+>> +		cache->titsr[i] = readl_relaxed(base + TITSR(i));
+>> +
+>> +	return 0;
+>> +}
+>> +
+>> +static void rzg2l_irqc_irq_resume(void) {
+>> +	struct rzg2l_irqc_reg_cache *cache = &rzg2l_irqc_data.cache;
+>> +	void __iomem *base = rzg2l_irqc_data.base;
+>> +
+>> +	/*
+>> +	 * Restore only interrupt type. TSSRx will be restored at the
+>> +	 * request of pin controller to avoid spurious interrupts due
+>> +	 * to invalid PIN states.
+>> +	 */
+>> +	for (u8 i = 0; i < 2; i++)
+>> +		writel_relaxed(cache->titsr[i], base + TITSR(i));
+>> +	writel_relaxed(cache->iitsr, base + IITSR); }
+>> +
+>> +static struct syscore_ops rzg2l_irqc_syscore_ops = {
+>> +	.suspend	= rzg2l_irqc_irq_suspend,
+>> +	.resume		= rzg2l_irqc_irq_resume,
+>> +};
+>> +
+>>  static const struct irq_chip irqc_chip = {
+>>  	.name			= "rzg2l-irqc",
+>>  	.irq_eoi		= rzg2l_irqc_eoi,
+>> @@ -331,7 +376,6 @@ static int rzg2l_irqc_init(struct device_node *node,
+>> struct device_node *parent)
+>>  	struct irq_domain *irq_domain, *parent_domain;
+>>  	struct platform_device *pdev;
+>>  	struct reset_control *resetn;
+>> -	struct rzg2l_irqc_priv *priv;
+>>  	int ret;
+>>
+>>  	pdev = of_find_device_by_node(node);
+>> @@ -344,15 +388,11 @@ static int rzg2l_irqc_init(struct device_node *node,
+>> struct device_node *parent)
+>>  		return -ENODEV;
+>>  	}
+>>
+>> -	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
+>> -	if (!priv)
+>> -		return -ENOMEM;
+>> +	rzg2l_irqc_data.base = devm_of_iomap(&pdev->dev, pdev->dev.of_node,
+>> 0, NULL);
+>> +	if (IS_ERR(rzg2l_irqc_data.base))
+>> +		return PTR_ERR(rzg2l_irqc_data.base);
+>>
+>> -	priv->base = devm_of_iomap(&pdev->dev, pdev->dev.of_node, 0, NULL);
+>> -	if (IS_ERR(priv->base))
+>> -		return PTR_ERR(priv->base);
+>> -
+>> -	ret = rzg2l_irqc_parse_interrupts(priv, node);
+>> +	ret = rzg2l_irqc_parse_interrupts(&rzg2l_irqc_data, node);
+>>  	if (ret) {
+>>  		dev_err(&pdev->dev, "cannot parse interrupts: %d\n", ret);
+>>  		return ret;
+>> @@ -375,17 +415,19 @@ static int rzg2l_irqc_init(struct device_node *node,
+>> struct device_node *parent)
+>>  		goto pm_disable;
+>>  	}
+>>
+>> -	raw_spin_lock_init(&priv->lock);
+>> +	raw_spin_lock_init(&rzg2l_irqc_data.lock);
+>>
+>>  	irq_domain = irq_domain_add_hierarchy(parent_domain, 0,
+>> IRQC_NUM_IRQ,
+>>  					      node, &rzg2l_irqc_domain_ops,
+>> -					      priv);
+>> +					      &rzg2l_irqc_data);
+>>  	if (!irq_domain) {
+>>  		dev_err(&pdev->dev, "failed to add irq domain\n");
+>>  		ret = -ENOMEM;
+>>  		goto pm_put;
+>>  	}
+>>
+>> +	register_syscore_ops(&rzg2l_irqc_syscore_ops);
+>> +
+>>  	return 0;
+>>
+>>  pm_put:
+>> --
+>> 2.39.2
+> 
