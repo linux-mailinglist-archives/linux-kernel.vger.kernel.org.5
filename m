@@ -2,65 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 49E6D7EBCE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:01:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708027EBCEF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234534AbjKOGBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 01:01:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43644 "EHLO
+        id S234517AbjKOGIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:08:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOGA6 (ORCPT
+        with ESMTP id S229551AbjKOGIv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:00:58 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 140D9D8;
-        Tue, 14 Nov 2023 22:00:55 -0800 (PST)
-Received: from [10.3.2.161] (zone.collabora.co.uk [167.235.23.81])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: dmitry.osipenko)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 03AF1660576C;
-        Wed, 15 Nov 2023 06:00:51 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700028053;
-        bh=yfayPrn571VzLj0DChlXExCPpGyqXY7FpICvXV2pcfQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=afCwFUPafWW5njQKIYmarOcHMEB+Zm9AQPBETDM+WtNSwDMblTGzBiRS4xdVLjJFR
-         Md1s0N75+L56ITHR+pcaw+TL70hdTQ39p4BevgqfPyN5yZ/PS3JJeZ37wuGa1Tp/T3
-         iTQgegNWL4MvJ0em+8S/+hHVhavte82cFbG/0m79OB0Namc1gvBLl9VZgy4nMfIfrb
-         SH0J44w9a9Mypr4noThhyOY2kDbEjQPNdwUT2sRHR+UhYKxZkrfAXtxTE8TughICaF
-         1/T8g8F4Uff35fotBNm+Pc50xnc8xEahwv6vs8AD5E3/l9bIJwrVO9hxrIHJkhg8OO
-         0bvucSIiuiMlg==
-Message-ID: <de40e307-2f97-dda0-e697-19c382a506d7@collabora.com>
-Date:   Wed, 15 Nov 2023 09:00:47 +0300
+        Wed, 15 Nov 2023 01:08:51 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D39AE7
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:08:47 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-507cee17b00so8556554e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700028526; x=1700633326; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vrRtND/YRUzURuoQwjKJk/HonLng3kvTj/8TZ3Odh2Y=;
+        b=S5tBlUMYSc8tCkMz+qNoAyoyCed8ciKJuLDunru4IFPcL9XnYZuxEBjVlmeUnzKl7d
+         N75cxkPn3PMp7CnxAG1NGOY1IWj+JnKyjuFVv0uzsZiYpl6LzRe6WA2EeUHEy4JTNFPf
+         6nJLfidy3e2wz8M8fpvRV7jIHmFesUbRHYk7k=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700028526; x=1700633326;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vrRtND/YRUzURuoQwjKJk/HonLng3kvTj/8TZ3Odh2Y=;
+        b=Mxux+sCBrg+q2EVpTkVu5KCEjDChmc5fc2a0XhnSPaLKh6abruJ0WitTAvpgP/bRck
+         Qa4yfFr19icnMRCiJgY6oJHv1babJFFbuw9uR8G+/eQ+/PBKtgpQrz0I0EpZsciELNYJ
+         8wqarXEZBouI2O7F1y/mA558iFXYeJRvbFzBnal9rNqD/qWbRBodNnFpdQkQkxuIqY63
+         Rjmo8xbBrVEq5sKGEqA46iHI02fbL7L3CxtcQdsU2rRrYll1tTj9wBd4BcE+PLskcv/a
+         oLOncxZyP4pPyaVsz2aOFdoODqZpbqX1E4u1aBq+uKigPjSlHm56kMcQuQZCpW1lvvBd
+         UrKA==
+X-Gm-Message-State: AOJu0YwjQWfEIXYBSaJXIEPB2W17uiluMpdlt0YFTbsrR4JekKR3o9Yh
+        1rAdfJmqypmU7+rLC15EH6q8/pWLdHLWumGa5uVoPA==
+X-Google-Smtp-Source: AGHT+IEElVyq/Wfz+fZN9g5gHhgB0rYPl8JRXgccOm8OavEsvJYgG8EGZ+VI+3AA2iv3HFdt3nFxSDC3zZjP6Wt+9vg=
+X-Received: by 2002:a05:6512:b14:b0:509:8e3d:7cb0 with SMTP id
+ w20-20020a0565120b1400b005098e3d7cb0mr11292990lfu.41.1700028525615; Tue, 14
+ Nov 2023 22:08:45 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v7 2/5] i2c: core: run atomic i2c xfer when !preemptible
-Content-Language: en-US
-To:     Chris Morgan <macroalpha82@gmail.com>
-Cc:     Benjamin Bara <bbara93@gmail.com>, Wolfram Sang <wsa@kernel.org>,
-        Lee Jones <lee@kernel.org>, rafael.j.wysocki@intel.com,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        peterz@infradead.org, jonathanh@nvidia.com,
-        richard.leitner@linux.dev, treding@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-tegra@vger.kernel.org,
-        Benjamin Bara <benjamin.bara@skidata.com>,
-        stable@vger.kernel.org, Nishanth Menon <nm@ti.com>,
-        heiko@sntech.de, max.schwarz@online.de
-References: <20230327-tegra-pmic-reboot-v7-0-18699d5dcd76@skidata.com>
- <20230327-tegra-pmic-reboot-v7-2-18699d5dcd76@skidata.com>
- <655177f4.050a0220.d85c9.3ba0@mx.google.com>
- <69941f8e-de1f-0319-6729-58625b362b8e@collabora.com>
- <655238b2.050a0220.209e.4ad5@mx.google.com>
-From:   Dmitry Osipenko <dmitry.osipenko@collabora.com>
-In-Reply-To: <655238b2.050a0220.209e.4ad5@mx.google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+References: <20231115043511.2670477-1-treapking@chromium.org>
+In-Reply-To: <20231115043511.2670477-1-treapking@chromium.org>
+From:   Chen-Yu Tsai <wenst@chromium.org>
+Date:   Wed, 15 Nov 2023 14:08:34 +0800
+Message-ID: <CAGXv+5FnzLgnNfvK-KEd4OUysUXqCuCp7AJ3iuzEGn=fry0B1g@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: dts: mt8173: Add G2Touch touchscreen node
+To:     Pin-yen Lin <treapking@chromium.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -69,17 +72,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/13/23 17:54, Chris Morgan wrote:
-..
-> I can confirm I no longer get any of the errors with this patch. Tested
-> on both an Anbernic RG353P (RK3566 with an RK817 PMIC) and an Odroid
-> Go Advance (RK3326 with an RK817 PMIC). The device appears to shut
-> down consistently again and I no longer see these messages in my dmesg
-> log when I shut down.
+On Wed, Nov 15, 2023 at 12:35=E2=80=AFPM Pin-yen Lin <treapking@chromium.or=
+g> wrote:
+>
+> Lenovo Ideapad C330 Chromebook (MTK) uses G2Touch touchscreen as a
+> second source component.
+>
+> Signed-off-by: Pin-yen Lin <treapking@chromium.org>
+> Reviewed-by: Chen-Yu Tsai <wenst@chromium.org>
 
-I'll prepare the proper patch, thanks.
+I assume this patch will get merged relatively soon. I can base my DT
+probing work on top of it, instead of having roughly the same patch
+in my series.
 
--- 
-Best regards,
-Dmitry
+> ---
+>
+> Changes in v2:
+> - Remove the label for the node
+>
+>  arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi | 8 ++++++++
+>  1 file changed, 8 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi b/arch/arm=
+64/boot/dts/mediatek/mt8173-elm-hana.dtsi
+> index bdcd35cecad9..8836ac3c4233 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8173-elm-hana.dtsi
+> @@ -29,6 +29,14 @@ touchscreen3: touchscreen@20 {
+>                 interrupt-parent =3D <&pio>;
+>                 interrupts =3D <88 IRQ_TYPE_LEVEL_LOW>;
+>         };
+> +
+> +       touchscreen@40 {
+> +               compatible =3D "hid-over-i2c";
+> +               reg =3D <0x40>;
+> +               hid-descr-addr =3D <0x0001>;
+> +               interrupt-parent =3D <&pio>;
+> +               interrupts =3D <88 IRQ_TYPE_LEVEL_LOW>;
 
+I assume Angelo might ask you to use interrupts-extended instead, but
+I'd argue it's better to be consistent throughout the file.
+
+> +       };
+>  };
+>
+>  &i2c4 {
+> --
+> 2.43.0.rc0.421.g78406f8d94-goog
+>
