@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ED09C7ED549
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:03:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D1477ED550
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:03:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344910AbjKOVDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:03:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39476 "EHLO
+        id S1344798AbjKOVDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235624AbjKOVC7 (ORCPT
+        with ESMTP id S1344738AbjKOVDJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:02:59 -0500
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59FE11A7;
-        Wed, 15 Nov 2023 13:02:44 -0800 (PST)
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-6d33298f8fdso49178a34.1;
-        Wed, 15 Nov 2023 13:02:44 -0800 (PST)
+        Wed, 15 Nov 2023 16:03:09 -0500
+Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AADDEAB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:02:56 -0800 (PST)
+Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-1e9c42fc0c9so27126fac.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:02:56 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700082163; x=1700686963;
+        d=1e100.net; s=20230601; t=1700082176; x=1700686976;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=xTi1+MQ4t5FTtGD8dbognkLQKmg8VuTrouDfFHJxxvg=;
-        b=mjoZqnDe8MUnwwGlpMZ99z59jIWVvqJ3k/eqr9rq7GXs8PB11z4PcmLsqN0NvzIsne
-         yK2r1tDRWJ6Xs8He5UNVtEkPCd9zxah1u82aZaM2OYRfhKm9nQZttPXwIBxuKxmSxNhF
-         3f+Sb/RIb8JoY+P4Gvgscoac8YTB41OhKWFpSzWemIENByBkRlfjALCKNEFj01or8iFe
-         NOZrEPGR86tN64mf8KzZbvGENwmW7sL8/AZguJTSQjIVRYmMzKh4daLTCM8g3je5BWYH
-         JQ9RuwiG/+nye72CCQmZdxCNhuKnsPQyLrgbNBX+nPF1Ip06bwgQfgNxQsg0I70U1WAT
-         71MQ==
-X-Gm-Message-State: AOJu0Yxn69PJ57CkJdZG2lIScUgKVs7lZx+TVqLHZSeS4GzkYVSuUD//
-        1EoVqxAEuEhrCqKOF9A0POXiHO01gA==
-X-Google-Smtp-Source: AGHT+IEitGC+5jlDZ7EaZ0678OAJ949TtdOz5HBhiVZghOLkf7I0tD27/xf5oMCnotNNPXveWv/0NA==
-X-Received: by 2002:a05:6830:4414:b0:6ce:2789:7195 with SMTP id q20-20020a056830441400b006ce27897195mr7902852otv.31.1700082163575;
-        Wed, 15 Nov 2023 13:02:43 -0800 (PST)
+        bh=pqS2umDahExgvUp9vYjVtRrP0HXmO16NeUGqzSCCh8k=;
+        b=G0xULteVwLcZRCu+qHpibkXEQLcCiwVFREWyero8Zgp+/mgjqiXkL/Wuu25FGz+oGd
+         7+FWTMjGjgBJE2e91oL5mvFTas6mSt6/klJdSXjUsSGG9BCwVxzWrlzxQbHSzBtQDuuB
+         /591K5ohABLUuzh9ZgUiTlu+cNPhZGayp2+UQgnggmjgR6jeKhOCuwZbXu7tTRMpIxQP
+         2n83Ecr6oOyaRslsobwRgNUTYQ3M4V9PDQHlr6DSr9NYb9gVQY2Rr5WkdEKscQNMXkws
+         OnBqkKu+uzBlyYmQWscIoZwH6Z9rTfwtdBU4AwxpgBhPfNjvKG/q+wzAUzZJiY5bKw+N
+         CiUw==
+X-Gm-Message-State: AOJu0YwvjlXal4EQ4UeKkVvcPxBnH1Cs3du372gQ0SqxIV5YnmzsBr12
+        19w7I+Cj39/DCl+pX5h4Q6vD5FV7kg==
+X-Google-Smtp-Source: AGHT+IGjXydHagjHksyzJF7HiwPBQUknb8zDIfsjVC6BwxVRyhA5W9oi3Ts6H4fnJqfs3BK2JqTaAw==
+X-Received: by 2002:a05:6870:8895:b0:1ef:b16f:d29d with SMTP id m21-20020a056870889500b001efb16fd29dmr15609299oam.18.1700082175882;
+        Wed, 15 Nov 2023 13:02:55 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s30-20020a056830439e00b006ce2e464a45sm693017otv.29.2023.11.15.13.02.42
+        by smtp.gmail.com with ESMTPSA id g6-20020a0568300a4600b006ce28044207sm690053otu.58.2023.11.15.13.02.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:02:42 -0800 (PST)
-Received: (nullmailer pid 3744532 invoked by uid 1000);
-        Wed, 15 Nov 2023 21:02:42 -0000
+        Wed, 15 Nov 2023 13:02:54 -0800 (PST)
+Received: (nullmailer pid 3744821 invoked by uid 1000);
+        Wed, 15 Nov 2023 21:02:53 -0000
 From:   Rob Herring <robh@kernel.org>
-To:     Olivia Mackall <olivia@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH] hwrng: ingenic: Replace of_device.h with explicit of.h include
-Date:   Wed, 15 Nov 2023 15:02:37 -0600
-Message-ID: <20231115210238.3744406-1-robh@kernel.org>
+To:     Paul Burton <paulburton@kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH] auxdisplay: img-ascii-lcd: Use device_get_match_data()
+Date:   Wed, 15 Nov 2023 15:02:44 -0600
+Message-ID: <20231115210245.3744589-1-robh@kernel.org>
 X-Mailer: git-send-email 2.42.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -61,32 +61,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DT of_device.h and of_platform.h date back to the separate
-of_platform_bus_type before it as merged into the regular platform bus.
-As part of that merge prepping Arm DT support 13 years ago, they
-"temporarily" include each other and pull in various other headers. In
-preparation to fix this, adjust the includes for what is actually needed.
-
-of_device.h isn't needed, but of.h is and was implicitly included by it.
+Use preferred device_get_match_data() instead of of_match_device() to
+get the driver match data. With this, adjust the includes to explicitly
+include the correct headers.
 
 Signed-off-by: Rob Herring <robh@kernel.org>
 ---
- drivers/char/hw_random/ingenic-rng.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/auxdisplay/img-ascii-lcd.c | 11 +++--------
+ 1 file changed, 3 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/char/hw_random/ingenic-rng.c b/drivers/char/hw_random/ingenic-rng.c
-index 4f18c3fa5427..c74ded64fbe3 100644
---- a/drivers/char/hw_random/ingenic-rng.c
-+++ b/drivers/char/hw_random/ingenic-rng.c
-@@ -11,7 +11,7 @@
+diff --git a/drivers/auxdisplay/img-ascii-lcd.c b/drivers/auxdisplay/img-ascii-lcd.c
+index fa23e415f260..c16a14becdfc 100644
+--- a/drivers/auxdisplay/img-ascii-lcd.c
++++ b/drivers/auxdisplay/img-ascii-lcd.c
+@@ -8,9 +8,9 @@
  #include <linux/io.h>
- #include <linux/iopoll.h>
+ #include <linux/mfd/syscon.h>
  #include <linux/module.h>
--#include <linux/of_device.h>
+-#include <linux/of_address.h>
+-#include <linux/of_platform.h>
 +#include <linux/of.h>
  #include <linux/platform_device.h>
++#include <linux/property.h>
+ #include <linux/regmap.h>
  #include <linux/slab.h>
  
+@@ -225,17 +225,12 @@ MODULE_DEVICE_TABLE(of, img_ascii_lcd_matches);
+  */
+ static int img_ascii_lcd_probe(struct platform_device *pdev)
+ {
+-	const struct of_device_id *match;
+ 	const struct img_ascii_lcd_config *cfg;
+ 	struct device *dev = &pdev->dev;
+ 	struct img_ascii_lcd_ctx *ctx;
+ 	int err;
+ 
+-	match = of_match_device(img_ascii_lcd_matches, dev);
+-	if (!match)
+-		return -ENODEV;
+-
+-	cfg = match->data;
++	cfg = device_get_match_data(&pdev->dev);
+ 	ctx = devm_kzalloc(dev, sizeof(*ctx) + cfg->num_chars, GFP_KERNEL);
+ 	if (!ctx)
+ 		return -ENOMEM;
 -- 
 2.42.0
 
