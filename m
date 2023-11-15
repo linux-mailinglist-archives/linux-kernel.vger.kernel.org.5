@@ -2,86 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E7A7ED814
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:23:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD457ED822
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343756AbjKOXXX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 18:23:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48670 "EHLO
+        id S1343857AbjKOX0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 18:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229766AbjKOXXW (ORCPT
+        with ESMTP id S229614AbjKOX0J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 18:23:22 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B775189
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:23:19 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id d9443c01a7336-1cc30de471dso61795ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:23:19 -0800 (PST)
+        Wed, 15 Nov 2023 18:26:09 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D90F18B;
+        Wed, 15 Nov 2023 15:26:06 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce2c5b2154so108271a34.3;
+        Wed, 15 Nov 2023 15:26:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700090598; x=1700695398; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ovisp4W0+ERVnEpLBxErrb/LVokI42Qjeftj4bEI+VQ=;
-        b=S74D+7FfJ7XTBUp6ye76T2ArSqbsR1v5Xz00Ad+m3RkkcquFwYPhSknMHnvqBWugG8
-         UDbWSKFaqQ7qDgc+Fy1ecc6shaJskeGdANAdyueTR/w7/vgc10h0iudWn/lmWmPWLo0E
-         1DpPosVgGLP89qMbX88m/uB26wsRx5liI4iM+9mL38/3P6dJiOUKM0cmUmX+1pS4a94j
-         ohGsF2+aTyKrBLN6FcARJxx/OT5ULuB8Nc8I9KSZZ6JZ8ODxje1dQ94JZYdpilCOgMNK
-         2EjxJ/3B3MQPd1bvX5KWfUxs4bWNNPMvKBuUnAFGkZXNnmd8hUJH6D1nt+Lyl0S6vmF7
-         gBvA==
+        d=gmail.com; s=20230601; t=1700090765; x=1700695565; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=axWDgASU5kx8BQUPImQQJLs6vIRAi23g3L1V87kq5xY=;
+        b=LA9eqL1zdbDtuljahRvcLh6LV3iH4+rT6+rRp05Dfx+gDJSYhsAJ0BFshIFcrWBpSg
+         dBI2LfdxkZnBsapMPbXRD6IhSNVSCboGIzaHBWq3bD0+aQRAg6c2EdqLbvcz+dci/0y8
+         a20pNwiZkIHd9IeP1vzKrW+07C5TqsfWgVRsfjm5+XpwEc/eJeaiSbj5WJv1HdV3LvfS
+         0BAK+Lyix3+l996ESevKbOKxbdCmyu2nMme1sT+09P9UxEQcTo0sbS/oUtcEloFztNM7
+         hDciLjCiZsgyprmh6NH3t0R+qjGOiTsTxjj7ttCmntDc01cg3ps+vG9/gA8lwy9dGCXy
+         6VYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700090598; x=1700695398;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ovisp4W0+ERVnEpLBxErrb/LVokI42Qjeftj4bEI+VQ=;
-        b=IvUQ+tfknN1GEIAKeTmtTcQ3PPfuTEfMCD8tduQJUX+r+5p7vbpkJVS280txvDS/dU
-         1O1Cr3YyX/wH3DSIlWH06v1Jo+abisn51QeU4eN9Axo1IobD3OLbO5RqoFQPwHNXVVee
-         kMuZQxmYcHEbypeQ9T/5Jdtq+1gjFZ5gh+alo0rjhfsl8Q+fAIz+qZDq8YB3hFuT8AMV
-         78NWNWW9OkxzLzOMfsX5Fc4ppd0+LorHiepKkZAjYQfacgasHz1WuaO+4CCUyt3d2qFF
-         XB0zz8Cup6DBxL66KOlk1+FFUZOJEjo8WTt+sEcjeVPPPD/H8MRpJ4wez9KtTMOioqOv
-         tKWw==
-X-Gm-Message-State: AOJu0Ywqv/vu5+oloQST6aNV2b7EFZ29pPTrWShCVISUmqo61vnuAy7g
-        egdyZq+hkFx8OKrWmjqEkehhHwt61ZSbXW6gkCWS
-X-Google-Smtp-Source: AGHT+IErsHMGbRATNNKpz2Dt8JZ8b5ED9aDbgRj3Xs2d6cY3G6zsC74jYP7/fSZp+oEGV6/LrmKC5ZGMy/uRFCzoFYI=
-X-Received: by 2002:a17:902:e74f:b0:1bd:9c78:8031 with SMTP id
- p15-20020a170902e74f00b001bd9c788031mr69374plf.9.1700090598298; Wed, 15 Nov
- 2023 15:23:18 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700090765; x=1700695565;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=axWDgASU5kx8BQUPImQQJLs6vIRAi23g3L1V87kq5xY=;
+        b=ZyScYlJddyNmx7Aa0xdJ9VkrSNXuTXwENT7dUxai/oWVaxhvcQeur9KGSY7alnwHmb
+         qoUeM4u4P27PrRAs38DiXjPCg6hEc8w3lLNlGbLVu6hPEBGu8e+HcwXtRM4XaxzpmyOY
+         ChS22+U9gtqBOgKNp366DOEoSH3eaIvTP6KOaBh2v+IbEljg1FHP0fx3L7spnPZEXGFH
+         ufgVmqiWuEbxLjRifvqFI2YDTj3QYDAxu55/8vR5faApbUarBCw9lOkXYZmffYxc6waN
+         JKC1Ymab9oN6cqDQ1DdO/oHkKCFfsQLSFX3wMyLxNoq6wHmMDipr7IXQkJL7pVluS1pB
+         KVVQ==
+X-Gm-Message-State: AOJu0YxADD4PcyDMW/WAG70nBdP1pbaRnYT5pcjqip5jdFdFGVDMNKv5
+        20BwS8NrcmC5y0ppl4V8Y0XbjIrHo8E=
+X-Google-Smtp-Source: AGHT+IHCpHTQOm2E+/WA5JSn/AVuL9HHYRjwTZkx0CxsodNCQQRz3ZAcGcEGXuLeXtUXaaSuNKt/jQ==
+X-Received: by 2002:a05:6871:53c6:b0:1ef:c082:ec98 with SMTP id hz6-20020a05687153c600b001efc082ec98mr18826139oac.59.1700090765265;
+        Wed, 15 Nov 2023 15:26:05 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i126-20020a639d84000000b005897bfc2ed3sm1663081pgd.93.2023.11.15.15.26.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 15:26:04 -0800 (PST)
+Message-ID: <5c9d34e3-ad31-410a-a46d-ac585a4d4e58@gmail.com>
+Date:   Wed, 15 Nov 2023 15:26:02 -0800
 MIME-Version: 1.0
-References: <20231111111559.8218-1-yong.wu@mediatek.com> <20231111111559.8218-4-yong.wu@mediatek.com>
-In-Reply-To: <20231111111559.8218-4-yong.wu@mediatek.com>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Wed, 15 Nov 2023 15:23:06 -0800
-Message-ID: <CA+ddPcON2gBOsFk4KZS-tEFLKWxg6jH8Kf_xDObXMKbR=N+gzg@mail.gmail.com>
-Subject: Re: [PATCH v2 3/8] dma-buf: heaps: secure_heap: Initialize tee session
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>, tjmercier@google.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
-        kuohong.wang@mediatek.com,
-        Vijayanand Jitta <quic_vjitta@quicinc.com>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        ckoenig.leichtzumerken@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.1 000/379] 6.1.63-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231115192645.143643130@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231115192645.143643130@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -89,166 +79,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Everything in this patch set should move into the MTK specific
-implementation I suggested in patch 1 (secure_heap_mtk.c)
+On 11/15/23 11:21, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.1.63 release.
+> There are 379 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 17 Nov 2023 19:25:27 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.63-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-On Sat, Nov 11, 2023 at 3:17=E2=80=AFAM Yong Wu <yong.wu@mediatek.com> wrot=
-e:
->
-> The TEE probe later than dma-buf heap, and PROBE_DEDER doesn't work
-> here since this is not a platform driver, therefore initialize the TEE
-> context/session while we allocate the first secure buffer.
->
-> Add our special UUID and tee type in the private data.
->
-> If the uuid is zero, it means that it doesn't enter TEE to protect the
-> buffer, there may be other ways to protect the buffer.
->
-> All the MTK chrome projects use this UUID. The UUID is only used in the
-> kernelspace while userspace never use it. The userspace could allocate th=
-e
-> secure memory via the existing dma-buf ioctl.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
->  drivers/dma-buf/heaps/secure_heap.c | 75 +++++++++++++++++++++++++++++
->  1 file changed, 75 insertions(+)
->
-> diff --git a/drivers/dma-buf/heaps/secure_heap.c b/drivers/dma-buf/heaps/=
-secure_heap.c
-> index 87ac23072e9e..2a037fc54004 100644
-> --- a/drivers/dma-buf/heaps/secure_heap.c
-> +++ b/drivers/dma-buf/heaps/secure_heap.c
-> @@ -10,6 +10,12 @@
->  #include <linux/err.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
-> +#include <linux/tee_drv.h>
-> +#include <linux/uuid.h>
-> +
-> +#define TZ_TA_MEM_UUID_MTK             "4477588a-8476-11e2-ad15-e41f1390=
-d676"
-> +
-> +#define TEE_PARAM_NUM                  4
->
->  enum secure_memory_type {
->         /*
-> @@ -27,6 +33,9 @@ struct secure_buffer {
->  struct secure_heap;
->
->  struct secure_heap_prv_data {
-> +       const char                      *uuid;
-> +       const int                       tee_impl_id;
-> +
->         int     (*memory_alloc)(struct secure_heap *sec_heap, struct secu=
-re_buffer *sec_buf);
->         void    (*memory_free)(struct secure_heap *sec_heap, struct secur=
-e_buffer *sec_buf);
->
-> @@ -39,9 +48,62 @@ struct secure_heap {
->         const char                      *name;
->         const enum secure_memory_type   mem_type;
->
-> +       struct tee_context              *tee_ctx;
-> +       u32                             tee_session;
-> +
->         const struct secure_heap_prv_data *data;
->  };
->
-> +static int tee_ctx_match(struct tee_ioctl_version_data *ver, const void =
-*data)
-> +{
-> +       const struct secure_heap_prv_data *d =3D data;
-> +
-> +       return ver->impl_id =3D=3D d->tee_impl_id;
-> +}
-> +
-> +static int secure_heap_tee_session_init(struct secure_heap *sec_heap)
-> +{
-> +       struct tee_param t_param[TEE_PARAM_NUM] =3D {0};
-> +       struct tee_ioctl_open_session_arg arg =3D {0};
-> +       const struct secure_heap_prv_data *data =3D sec_heap->data;
-> +       uuid_t ta_mem_uuid;
-> +       int ret;
-> +
-> +       sec_heap->tee_ctx =3D tee_client_open_context(NULL, tee_ctx_match=
-, data, NULL);
-> +       if (IS_ERR(sec_heap->tee_ctx)) {
-> +               pr_err_once("%s: open context failed, ret=3D%ld\n", sec_h=
-eap->name,
-> +                           PTR_ERR(sec_heap->tee_ctx));
-> +               return -ENODEV;
-> +       }
-> +
-> +       arg.num_params =3D TEE_PARAM_NUM;
-> +       arg.clnt_login =3D TEE_IOCTL_LOGIN_PUBLIC;
-> +       ret =3D uuid_parse(data->uuid, &ta_mem_uuid);
-> +       if (ret)
-> +               goto close_context;
-> +       memcpy(&arg.uuid, &ta_mem_uuid.b, sizeof(ta_mem_uuid));
-> +
-> +       ret =3D tee_client_open_session(sec_heap->tee_ctx, &arg, t_param)=
-;
-> +       if (ret < 0 || arg.ret) {
-> +               pr_err_once("%s: open session failed, ret=3D%d:%d\n",
-> +                           sec_heap->name, ret, arg.ret);
-> +               ret =3D -EINVAL;
-> +               goto close_context;
-> +       }
-> +       sec_heap->tee_session =3D arg.session;
-> +       return 0;
-> +
-> +close_context:
-> +       tee_client_close_context(sec_heap->tee_ctx);
-> +       return ret;
-> +}
-> +
-> +/* The memory allocating is within the TEE. */
-> +const struct secure_heap_prv_data mtk_sec_mem_data =3D {
-> +       .uuid                   =3D TZ_TA_MEM_UUID_MTK,
-> +       .tee_impl_id            =3D TEE_IMPL_ID_OPTEE,
-> +};
-> +
->  static int secure_heap_secure_memory_allocate(struct secure_heap *sec_he=
-ap,
->                                               struct secure_buffer *sec_b=
-uf)
->  {
-> @@ -84,11 +146,23 @@ secure_heap_allocate(struct dma_heap *heap, unsigned=
- long size,
->                      unsigned long fd_flags, unsigned long heap_flags)
->  {
->         struct secure_heap *sec_heap =3D dma_heap_get_drvdata(heap);
-> +       const struct secure_heap_prv_data *data =3D sec_heap->data;
->         struct secure_buffer *sec_buf;
->         DEFINE_DMA_BUF_EXPORT_INFO(exp_info);
->         struct dma_buf *dmabuf;
->         int ret;
->
-> +       /*
-> +        * If uuid is valid, It requires enter TEE to protect buffers. Ho=
-wever
-> +        * TEE probe may be late. Initialize the secure session the first=
- time
-> +        * we request the secure buffer.
-> +        */
-> +       if (data->uuid && !sec_heap->tee_session) {
-> +               ret =3D secure_heap_tee_session_init(sec_heap);
-> +               if (ret)
-> +                       return ERR_PTR(ret);
-> +       }
-> +
->         sec_buf =3D kzalloc(sizeof(*sec_buf), GFP_KERNEL);
->         if (!sec_buf)
->                 return ERR_PTR(-ENOMEM);
-> @@ -127,6 +201,7 @@ static struct secure_heap secure_heaps[] =3D {
->         {
->                 .name           =3D "secure_mtk_cm",
->                 .mem_type       =3D SECURE_MEMORY_TYPE_MTK_CM_TZ,
-> +               .data           =3D &mtk_sec_mem_data,
->         },
->  };
->
-> --
-> 2.25.1
->
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels build tested on 
+BMIPS_GENERIC:
+
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+-- 
+Florian
+
