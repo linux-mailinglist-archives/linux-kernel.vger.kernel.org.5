@@ -2,108 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EDBE7EC98B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:19:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB0967EC988
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232528AbjKORTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:19:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45126 "EHLO
+        id S231856AbjKORTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58780 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKORTR (ORCPT
+        with ESMTP id S229504AbjKORTK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:19:17 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F60BB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:19:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700068754; x=1731604754;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=wx2SPvBGnpmVTAWmi/aj6F1855YCm7c7ct3xuZhFHrU=;
-  b=GFFO4WzbwL4gGSdBiW7KtJOedV1UHtatR70wzolQ8Yp2I61WcgaNSRkX
-   LvZ8BhWVGTZPdFGoskv0VETqbuVdLSLA+Miztzy/Sdi8INY+sYg4QKEQ/
-   qf/mihgWaZsAK2zFwXtFCEyXIQaWK5BDclMthaYexyOotxUoPlQqHkGRw
-   EVxZhypykPIisdHaWTiRh08PeVVR/X4Px0iC9fG7OuQ33fimBVXUZlZDM
-   SDLXNVazweXm51u4+Qwp1VJDpLQ4MP5xiLpqR/D1bv37T/FrWBszSoxEO
-   nCWQEp+5Y3JVuBlHcWrzVUiI4gVGuzp/mfMSs3GCnDkm9TjE/C1ZTzmVz
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="393768721"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="393768721"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 09:19:13 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="794213200"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="794213200"
-Received: from lapeders-mobl1.ger.corp.intel.com (HELO [10.249.254.116]) ([10.249.254.116])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 09:19:08 -0800
-Message-ID: <3c4b2eea-6292-a82e-d862-98cf1a3e22bc@linux.intel.com>
-Date:   Wed, 15 Nov 2023 18:18:27 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v4] Documentation/gpu: VM_BIND locking document
+        Wed, 15 Nov 2023 12:19:10 -0500
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04olkn2027.outbound.protection.outlook.com [40.92.47.27])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD284127;
+        Wed, 15 Nov 2023 09:19:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=STfGdAa8/GNC35B0ua8ifkCKqRmursLlQ6DgUsMRIiPZ1mTPHSkxWB2keNUfXy3ypVyTxuNblCD0D/MEq0gmLmaYFH7pYSez7mSYdByCtEPLVMkgJVrtRCSwKtpXTQi8Jt/gLDj7jHpiKPruEeqayqTYkkVz6fPBZ6i9EskplCSWAzMBtUhOe1lbAKoLuKVRIkSvuJ/pLWhI01kWAPbsMEd5mAgKz/UntE0CmmCsbn5ayQ0rIihl1Dxbbg6OVBYGNsovRuiCI1bgHiLhK9jhwZbh54KA7y8hESanqIqBQ3Dc9ppSBOO5csrxhSO9+6sEhgPME5Z52+Jlj4+5ywqXoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=R2oooVuK9YUa7fIlkeQbkrfqJKLga6LCD+pg6msVTv4=;
+ b=l9Gf/ZRHzDfQmyk7qeBlZ2HAaaN//awXQE/j6gsfdVoWvd+AGsjeRFx3Qw2tDVArdlzK3YopCOkJg7cty2z+/Vs7zq9CB1ioV2reymwlWCoeXxWVT2QyvoZbab++xcDnJ/I647/p74yrPxwlEmtvsqhrz4MbuQqdPxqwDof1abaR3Tkl6dqfg49uzsZkJUWp8iczPk/6XPLcVI1KcGjM8EQ/fBaWVXgMg4ZFwa7WwtpzXL26v9geoR8F35PfFlDxS1wAlpX7HTZrhZHDTgGXva6N0kfpwXH2I3I6o3kHbpE/crM7OI2WTQZhmuUBGkfU6XpXkSQSwFOPDE+z7tW76g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=R2oooVuK9YUa7fIlkeQbkrfqJKLga6LCD+pg6msVTv4=;
+ b=HGnbFEl32HAfI7MfqCqDaSjOM4NEPJ2VEyVdrI9crixvaATDGzqq0doKa6zy4m51WLXXVV+6Yr7Vum0lzFmhzrPgCNHqg+zwMUKRIfSs7H1NVlcVt6WFaBpmn8MIYJFsFQDNZ1SFOFWCLJB8XPXGZWHbgWo2DJjqZsMugoWgm4wd1C8mnOO56VSvOgmTRlw7RzTDwljK06BgCRyOUPSK97Md+hVuSVKq91ay+qd+bdOOv92CzzJyav6CA8neoU/wgMpTSC+EtYh3JZ9+CZnJVdZJrrS05sTxG9Yl2YgXj1aAe2dfUO4rfuTZSdlf6zEzpX+WonOsrjD3ziD3z+hM0Q==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by CH3PR02MB9209.namprd02.prod.outlook.com (2603:10b6:610:150::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Wed, 15 Nov
+ 2023 17:19:04 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::54e5:928f:135c:6190%6]) with mapi id 15.20.6977.029; Wed, 15 Nov 2023
+ 17:19:04 +0000
+From:   Michael Kelley <mhklinux@outlook.com>
+To:     Uros Bizjak <ubizjak@gmail.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: RE: [PATCH] x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize
+ hv_nmi_unknown()
+Thread-Topic: [PATCH] x86/hyperv: Use atomic_try_cmpxchg() to micro-optimize
+ hv_nmi_unknown()
+Thread-Index: AQHaFxwmvIq1AgDxz0+8P8PcuNcfxbB7nX2A
+Date:   Wed, 15 Nov 2023 17:19:04 +0000
+Message-ID: <SN6PR02MB41570168279C428D385ADCB0D4B1A@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20231114170038.381634-1-ubizjak@gmail.com>
+In-Reply-To: <20231114170038.381634-1-ubizjak@gmail.com>
+Accept-Language: en-US
 Content-Language: en-US
-To:     Danilo Krummrich <dakr@redhat.com>
-Cc:     intel-xe@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20231115124937.6740-1-thomas.hellstrom@linux.intel.com>
- <ZVTfmbDz1HGqt4Ef@pollux>
- <62cdf31f6dbbb3a114755affc89d22fde875c3ff.camel@linux.intel.com>
- <05cf6199-3884-4e46-90ac-0b8df7420af7@redhat.com>
-From:   =?UTF-8?Q?Thomas_Hellstr=c3=b6m?= 
-        <thomas.hellstrom@linux.intel.com>
-In-Reply-To: <05cf6199-3884-4e46-90ac-0b8df7420af7@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-tmn:  [VNS/wgPS4ChRS3eQx9q+T3h7cMt00jMy]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|CH3PR02MB9209:EE_
+x-ms-office365-filtering-correlation-id: 86165ba8-f85a-4917-f8a6-08dbe5fef793
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: MChRegLD8IICQiNXit7dab8wS5EWNNBPt2eNVK1YlPKxM+u6G6r2Aq7H/0agN5sKhIWOuulEYnB6EYVS8TGn2ctFvXQgiaWH0jjJcu3ynhcOQfLL8kR+34KA2UE1aCOhNW2XHowPIGPb2LqV9MGklxVVsBXhDimg4kLaxfjJQd5SZ/dauxzGU8I/1+gR/JBXtn6i02NFfjBMGDMh8kwYvpnCxiTxW7/Jbzhd6LeguvztYFr6E6t1y80Q1Edh4xRQP3dPIV2V5wYPRpCItB85Su2vsStdhx8EZobhifSu7Y7h6x8cIUWyTpAizgpdaBbFfcX7hpm9KYG0R4GLr9SFbwILhqnszrGtbg/4EWWfSSUeI2ksQCsa4QdLlC0/X1MIDn1lbZisDsEUd5ChmFdDFdv8c0sEt6C1U/MVa7yQXEpbTGm3wIN42eHUARWPtq0VFNuZEqWKhiej5S79cPcsWM25tQxAzOUJy3GiUr9MCQwzoq6Qewususk4PMvjrw1uSUN+JzC1klP3SYN8PcS+WcbDdJMGb3473Je/97kwpJGd79BJIb0DCou/zgm+KRT6
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?3+LfY6zz6VB0puxRKAX69GQs8yhYnUVtm4NrO4lsXauMnRKGStESncJtuL0z?=
+ =?us-ascii?Q?jip31zZy1yKYHCA23G5bESfzXMb/Ostk2LrXBJQgEpPoZ/P8UyI0IGVDvDAB?=
+ =?us-ascii?Q?uiWOgnke91zJFbNMs+XykA8zO/loGtlklL/NM9ADtDs294Zn0NojCT0oyd5m?=
+ =?us-ascii?Q?V7sBs6Go3kMPJIAPbXCTisV9J5pA0EI3MhlwyAwKS9PYV3h9ZuS6Za80stvV?=
+ =?us-ascii?Q?if4/GATy/RKGysm27N6idxQufISyJADwF+mcuLX5X+JGFhDJhzEUP8Ryqq3y?=
+ =?us-ascii?Q?vSaZIoLtYyJUbSoz9yQx6CWfTyyWT6jqUoV0GH/1G/nfpwQBtxElJg6ER5H5?=
+ =?us-ascii?Q?P/Z9uOjbOuMOEm4fPsq7U29ZjnQFaLvS5reZt7AOY4krgdy9AZqwFv6Rmmf8?=
+ =?us-ascii?Q?+uH6TRuUnnHr8qlrzqIJj0KFynsug4RGIiMB9+Lrx3Gjq7QghGaYcJxxgI3i?=
+ =?us-ascii?Q?jBb4fshPRsFWzLittblhGDXKWAGKb+CQGxx5+ytSQ420VH3SdMXFuoVRKxPr?=
+ =?us-ascii?Q?4Bv7AKGYmfzNjgL992+A6iae/If/oEytw9Q7DAfNs7mOpoO76oz0TJGn5qk8?=
+ =?us-ascii?Q?9avXtVRFW+pFmgIKzvqIkV6WiLaO8PYKga/xcpdjntbX8l3FJ1qtWlYrFEhD?=
+ =?us-ascii?Q?SPUSOdE6OLXIzJlRKToYoY93Nkga6jyFcl2KQsr27qS5WM8E9OK0MWt4XLyu?=
+ =?us-ascii?Q?e23RpB4jCvBEjFhHiPKZfpEfKo1uSk1AOXA+XV7UoRvaDw5COOnvCDD8YFwr?=
+ =?us-ascii?Q?TNCufbzLXuUX8m7vWD2Td6XBjFGnIeGlp3GtFJW8XQDLYZnpU58QQkVsGFgT?=
+ =?us-ascii?Q?R/OcKmLR2RK86jEGlTwQg2O3DO3mz7KVnHt8KRXiRh50e7rHR2Xr3F+UJKGL?=
+ =?us-ascii?Q?ryndMwMzeuF1M6QhWCjz7VpHtjbafUmDCND9UfJEvgShNM9un50Ndlvo0/SZ?=
+ =?us-ascii?Q?eMLf0344a/ShvYctAoJ2UMSIbMttEbmIUiTypto+fJm6IkPMRFg5LZznDsty?=
+ =?us-ascii?Q?w8zrLN5cz3whQj7RqazudV20TefUzErAbUYkxW5Oud3j2W+0z9OatJkuLm8o?=
+ =?us-ascii?Q?6Txcq3/DxweDclZS2S/UFZ4xG3hUSfHL3QXfCW7g2A5zR7XPrzQMfjxzqsvJ?=
+ =?us-ascii?Q?JUGsuo0vuGQqeSuGRnNtZzZo+btG0go2178QBYsujoQlTNLLU/EG7lP/IO9g?=
+ =?us-ascii?Q?5ZG6z60U5CmZ4cqB/oYMDeJrR/zCC7lI5elsqg=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86165ba8-f85a-4917-f8a6-08dbe5fef793
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Nov 2023 17:19:04.0693
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR02MB9209
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Uros Bizjak <ubizjak@gmail.com> Sent: Tuesday, November 14, 2023 8:59=
+ AM
+>=20
+> Use atomic_try_cmpxchg() instead of atomic_cmpxchg(*ptr, old, new) =3D=3D=
+ old
+> in hv_nmi_unknown(). On x86 the CMPXCHG instruction returns success in
+> the ZF flag, so this change saves a compare after CMPXCHG. The generated
+> asm code improves from:
+>=20
+>   3e:	65 8b 15 00 00 00 00 	mov    %gs:0x0(%rip),%edx
+>   45:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+>   4a:	f0 0f b1 15 00 00 00 	lock cmpxchg %edx,0x0(%rip)
+>   51:	00
+>   52:	83 f8 ff             	cmp    $0xffffffff,%eax
+>   55:	0f 95 c0             	setne  %al
+>=20
+> to:
+>=20
+>   3e:	65 8b 15 00 00 00 00 	mov    %gs:0x0(%rip),%edx
+>   45:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+>   4a:	f0 0f b1 15 00 00 00 	lock cmpxchg %edx,0x0(%rip)
+>   51:	00
+>   52:	0f 95 c0             	setne  %al
+>=20
+> No functional change intended.
+>=20
+> Cc: "K. Y. Srinivasan" <kys@microsoft.com>
+> Cc: Haiyang Zhang <haiyangz@microsoft.com>
+> Cc: Wei Liu <wei.liu@kernel.org>
+> Cc: Dexuan Cui <decui@microsoft.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@kernel.org>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Dave Hansen <dave.hansen@linux.intel.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> ---
+>  arch/x86/kernel/cpu/mshyperv.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/arch/x86/kernel/cpu/mshyperv.c
+> b/arch/x86/kernel/cpu/mshyperv.c index e6bba12c759c..01fa06dd06b6
+> 100644
+> --- a/arch/x86/kernel/cpu/mshyperv.c
+> +++ b/arch/x86/kernel/cpu/mshyperv.c
+> @@ -262,11 +262,14 @@ static uint32_t  __init ms_hyperv_platform(void)
+> static int hv_nmi_unknown(unsigned int val, struct pt_regs *regs)  {
+>  	static atomic_t nmi_cpu =3D ATOMIC_INIT(-1);
+> +	unsigned int old_cpu, this_cpu;
+>=20
+>  	if (!unknown_nmi_panic)
+>  		return NMI_DONE;
+>=20
+> -	if (atomic_cmpxchg(&nmi_cpu, -1, raw_smp_processor_id()) !=3D -1)
+> +	old_cpu =3D -1;
+> +	this_cpu =3D raw_smp_processor_id();
+> +	if (!atomic_try_cmpxchg(&nmi_cpu, &old_cpu, this_cpu))
+>  		return NMI_HANDLED;
+>=20
+>  	return NMI_DONE;
+> --
+> 2.41.0
 
-On 11/15/23 18:02, Danilo Krummrich wrote:
-> On 11/15/23 17:04, Thomas Hellström wrote:
->> Hi, Danilo,
->>
->> On Wed, 2023-11-15 at 16:11 +0100, Danilo Krummrich wrote:
->>> On Wed, Nov 15, 2023 at 01:49:37PM +0100, Thomas Hellström wrote:
->>>> Add the first version of the VM_BIND locking document which is
->>>> intended to be part of the xe driver upstreaming agreement.
->>>>
->>>> The document describes and discuss the locking used during exec-
->>>> functions, evicton and for userptr gpu-vmas. Intention is to be
->>>> using the
->>>> same nomenclature as the drm-vm-bind-async.rst.
->>>>
->>
->> Thanks for reviewing. I'll update the document accordingly except for
->> the s/an rwsem/a rwsem/g, I think it's "an rwsem" similarly to "an r".
->
-> I read it as "read-write-sem". Would you read it as "ar-double-u-sem"
-> then I guess?
->
-Yes. :)
+The change looks correct to me.  But is there any motivation other
+than saving 3 bytes of generated code?  This is not a performance
+sensitive path.  And the change adds 3 lines of source code.  So
+I wonder if the change is worth the churn.
 
-/Thomas
+In any case,
 
-
->>
->> /Thomas
->>
->
+Reviewed-by: Michael Kelley <mhklinux@outlook.com>
