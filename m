@@ -2,100 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 473B07EC35B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:12:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AC2E7EC368
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:16:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343886AbjKONMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:12:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
+        id S1343889AbjKONQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:16:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343879AbjKONMS (ORCPT
+        with ESMTP id S1343852AbjKONQA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:12:18 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E18121;
-        Wed, 15 Nov 2023 05:12:15 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-778940531dbso411959785a.0;
-        Wed, 15 Nov 2023 05:12:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700053935; x=1700658735; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=FYJiido5hWzDKtuGReYk+NTentFWgMjd8DEBxS+St7Y=;
-        b=YfCBoDa02I7uM0DcWWKqOBYX0ruVpHC2+AJwVkrgqMEwzpXMfvWwYqzfv5TKTBMIyA
-         PexfmTmBdUqD3cSIELR8w7auq0HZbs+IDgboSzyDWSswPOvvS8+pa4jprspz3Ub1kKpl
-         /n6bAuB29kmE4UT+o35Vsq3Ad/psZCEFfX229mLzxR4JBI98fpDLTb0Q8vESzBT56Rjx
-         zpCsPknkYcIWj5FuL0iNTK9CTKPS1sl52UiXX0v2iqaElw/L5+/ZiqpD8TX7zU4XYw/0
-         4UBc2sGi5voOgTQIsHy5FEER1Y7XMFEHECN8M4SHNJULfSSPwCMlxjzrcnAGnjcpeL0z
-         OW7A==
+        Wed, 15 Nov 2023 08:16:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 717FA11D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:15:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700054156;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=4lF7aMHaWE0StDFmSjkvXf9QppPYg6hsJ7Fo37wmlDE=;
+        b=SBFJzhWNiZV7zMkfG2Fw00fjpD21P0bvqq+MRpluhQNpk236w0IP0kYmjhwUPubsPudiIm
+        MnPASHVrqR+yAXSSqLmeOkxzC1wBaJzfa9OXhQ46JOwIwuD1REscOJDbwiGJAQ6jjQ8Rqz
+        Hy0zdaz8zBauDKrIj/MQkl/FKRrn6fU=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-199-8dHQHRuwNaeqz4aXsf2O8Q-1; Wed, 15 Nov 2023 08:15:55 -0500
+X-MC-Unique: 8dHQHRuwNaeqz4aXsf2O8Q-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-32fd8da34fbso3090604f8f.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:15:55 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700053935; x=1700658735;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=FYJiido5hWzDKtuGReYk+NTentFWgMjd8DEBxS+St7Y=;
-        b=fr+pcY+0zkYamVWly5QNuhFrKHG3vfOdKVKBrzexyxFJDYMeER8bAMtHQosc/W3q/w
-         pspGHsK82v8+UaWJ+b+LphGqmHsKA3dgUQnKiQroJp37iRGeTrNnEjeLQIjB6Jmk4hXB
-         1lchXOZZAsTqNGLPVS8I3hge2alWOyOZzV9nDW2kXBekvunU95IEOPFn9vGASHEd1Jw+
-         SaspZ5qffKxmDUEMXazpKbbyPPng/Bl0bYxN1XTj73OZEI1QeG/W4ivragK84zy3NX5q
-         cWCnxEIIZlRl9B9Q9MfeBewcw4OgUmb6DfSy9SND7HLLmIQtCXRavTSuaEF66OwUzSmo
-         SqHA==
-X-Gm-Message-State: AOJu0Yz3i0Av8/YhFKhaL5PsWM9qFfk3ZrzkfbDm6sEOfYGd8BlA5ExM
-        sdTELObpBJsY+gKy+eHGdHzFsFWP2WA=
-X-Google-Smtp-Source: AGHT+IGhIxWgPMm8wqUw4hMJ5kHDs/Trl+Fudc3+UErv6dl9+e9FP4PNtTnJqgtywEwuz9/B7UU77w==
-X-Received: by 2002:a05:620a:4552:b0:773:bf62:b274 with SMTP id u18-20020a05620a455200b00773bf62b274mr6163539qkp.61.1700053934734;
-        Wed, 15 Nov 2023 05:12:14 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id m11-20020a05620a290b00b007743382121esm3445056qkp.84.2023.11.15.05.12.13
+        d=1e100.net; s=20230601; t=1700054153; x=1700658953;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4lF7aMHaWE0StDFmSjkvXf9QppPYg6hsJ7Fo37wmlDE=;
+        b=p2mcRmi1uoK212BakDc8UqX2aKHBKoWOfy1msa34BWXnTK5UvLmYLNUx8sRUE//NEk
+         lYMy+tzP+YM+gW/qaNlBZwg/VJq2e7Aa5yXhY6I5HBUroiZ4mi47G+J87jhr1mme0j/I
+         R7+bVos8i30F8Yl3kKxDt7+BfladNb0JTXPsC1PB0O2eqRIak6Ond2Nba1KqW4PbjJ3a
+         6adSxuSPH8emoGfeN7RtAH+tp/p1pR41Fqb3E8JPedrUjMYIQdCT7t75rWelPHcAomeu
+         rOEMljEj+JmGHeS6q48Qf6UAM0E0jMYZK+g2HQi7M8UC3iH4NtBDidDODLJGKqx4W+oA
+         oNbw==
+X-Gm-Message-State: AOJu0YwE7VNb3Uw0y28za2cCPA6FQ6L6zMBgpSqilf1M1dLMBtje1E0i
+        dRBNsZHcbBgiKqHYPMNJiravkhASDccxuDwa10W+PiLQgblOx0H2m/rfeYNUoh79D3B4yGwIhAN
+        XOpBUXTonakBTHgXbKKf02B5qOjfDxjHzG8W2c5BMQILhLBl+OsC4MwbijHCXVuXJSNiiF1RYer
+        Djex3NnwI=
+X-Received: by 2002:a5d:64ef:0:b0:31c:8880:5d0f with SMTP id g15-20020a5d64ef000000b0031c88805d0fmr8815350wri.11.1700054153514;
+        Wed, 15 Nov 2023 05:15:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG8Akj/DP0M6gaPcJ9iKzQAqtuUVukMuYMObXNcXMXbVoCf04jCr7iPlpSq+gDQSE1T7tfrhg==
+X-Received: by 2002:a5d:64ef:0:b0:31c:8880:5d0f with SMTP id g15-20020a5d64ef000000b0031c88805d0fmr8815312wri.11.1700054153053;
+        Wed, 15 Nov 2023 05:15:53 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id q12-20020a05600000cc00b0032db4e660d9sm10551595wrx.56.2023.11.15.05.15.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 05:12:14 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Nov 2023 05:12:12 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: Re: [PATCH v2][next] hwmon: (aspeed-pwm-tacho) Fix
- -Wstringop-overflow warning in aspeed_create_fan_tach_channel()
-Message-ID: <9ed5116f-cf36-49f6-833e-75eeab4570b4@roeck-us.net>
-References: <ZVPQJIP26dIzRAr6@work>
+        Wed, 15 Nov 2023 05:15:52 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Maxime Ripard <mripard@kernel.org>,
+        Bilal Elmoussaoui <belmouss@redhat.com>,
+        Simon Ser <contact@emersion.fr>,
+        Erico Nunes <nunes.erico@gmail.com>,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@gmail.com>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        VMware Graphics Reviewers 
+        <linux-graphics-maintainer@vmware.com>,
+        Zack Rusin <zackr@vmware.com>, dri-devel@lists.freedesktop.org,
+        linux-doc@vger.kernel.org, virtualization@lists.linux.dev
+Subject: [PATCH v2 0/5] drm: Allow the damage helpers to handle buffer damage
+Date:   Wed, 15 Nov 2023 14:15:39 +0100
+Message-ID: <20231115131549.2191589-1-javierm@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVPQJIP26dIzRAr6@work>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 01:53:08PM -0600, Gustavo A. R. Silva wrote:
-> Based on the documentation below, the maximum number of Fan tach
-> channels is 16:
-> 
-> Documentation/devicetree/bindings/hwmon/aspeed-pwm-tacho.txt:45:
->  45 - aspeed,fan-tach-ch : should specify the Fan tach input channel.
->  46                 integer value in the range 0 through 15, with 0 indicating
->  47                 Fan tach channel 0 and 15 indicating Fan tach channel 15.
->  48                 At least one Fan tach input channel is required.
-> 
-> However, the compiler doesn't know that, and legitimaly warns about a potential
-> overwrite in array `u8 fan_tach_ch_source[16]` in `struct aspeed_pwm_tacho_data`,
-> in case `index` takes a value outside the boundaries of the array:
-> 
+Hello,
 
-Still messes the point. This isn't about "the compiler doesn't know that",
-it is a real bug which may result in out-of-bounds accesses.
+This series is to fix an issue that surfaced after damage clipping was
+enabled for the virtio-gpu by commit 01f05940a9a7 ("drm/virtio: Enable
+fb damage clips property for the primary plane").
 
-Oh, never mind, I'll just apply it.
+After that change, flickering artifacts was reported to be present with
+both weston and wlroots wayland compositors when running in a virtual
+machine. The cause was identified by Sima Vetter, who pointed out that
+virtio-gpu does per-buffer uploads and for this reason it needs to do
+a buffer damage handling, instead of frame damage handling.
 
-Guenter
+Their suggestion was to extend the damage helpers to cover that case
+and given that there's isn't a buffer damage accumulation algorithm
+(e.g: buffer age), just do a full plane update if the framebuffer that
+is attached to a plane changed since the last plane update (page-flip).
+
+It is a v2 that addresses issues pointed out by Thomas Zimmermann in v1:
+https://lists.freedesktop.org/archives/dri-devel/2023-November/430138.html
+
+Patch #1 adds a ignore_damage_clips field to struct drm_plane_state to be
+set by drivers that want the damage helpers to ignore the damage clips.
+
+Patch #2 fixes the virtio-gpu damage handling logic by asking the damage
+helper to ignore the damage clips if the framebuffer attached to a plane
+has changed since the last page-flip.
+
+Patch #3 does the same but for the vmwgfx driver that also needs to handle
+buffer damage and should have the same issue (although I haven't tested it
+due not having a VMWare setup).
+
+Patch #4 adds to the KMS damage tracking kernel-doc some paragraphs about
+damage tracking types and references to links that explain frame damage vs
+buffer damage.
+
+Finally patch #5 adds an item to the DRM todo, about the need to implement
+some buffer damage accumulation algorithm instead of just doing full plane
+updates in this case.
+
+Because commit 01f05940a9a7 landed in v6.4, the first 2 patches are marked
+as Fixes and Cc stable.
+
+I've tested this on a VM with weston, was able to reproduce the issue
+reported and the patches did fix the problem.
+
+Best regards,
+Javier
+
+Changes in v2:
+- Add a struct drm_plane_state .ignore_damage_clips to set in the plane's
+  .atomic_check, instead of having different helpers (Thomas Zimmermann).
+- Set struct drm_plane_state .ignore_damage_clips in virtio-gpu plane's
+  .atomic_check instead of using a different helpers (Thomas Zimmermann).
+- Set struct drm_plane_state .ignore_damage_clips in vmwgfx plane's
+  .atomic_check instead of using a different helpers (Thomas Zimmermann).
+
+Javier Martinez Canillas (5):
+  drm: Allow drivers to indicate the damage helpers to ignore damage
+    clips
+  drm/virtio: Disable damage clipping if FB changed since last page-flip
+  drm/vmwgfx: Disable damage clipping if FB changed since last page-flip
+  drm/plane: Extend damage tracking kernel-doc
+  drm/todo: Add entry about implementing buffer age for damage tracking
+
+ Documentation/gpu/todo.rst             | 20 ++++++++++++++++++++
+ drivers/gpu/drm/drm_damage_helper.c    |  3 ++-
+ drivers/gpu/drm/drm_plane.c            | 20 ++++++++++++++++++++
+ drivers/gpu/drm/virtio/virtgpu_plane.c | 10 ++++++++++
+ drivers/gpu/drm/vmwgfx/vmwgfx_kms.c    | 11 +++++++++++
+ include/drm/drm_plane.h                |  8 ++++++++
+ 6 files changed, 71 insertions(+), 1 deletion(-)
+
+-- 
+2.41.0
+
