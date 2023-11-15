@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6047EC925
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:01:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 186957EC929
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231745AbjKORB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:01:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37842 "EHLO
+        id S231938AbjKORCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:02:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjKORBy (ORCPT
+        with ESMTP id S230106AbjKORCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:01:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 845FE198
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:01:51 -0800 (PST)
+        Wed, 15 Nov 2023 12:02:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AF9FA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:02:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700067710;
+        s=mimecast20190719; t=1700067749;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L79P9mU6uMtA5BVIKvZRb2x0oslwt8sbrqaeDExdV6s=;
-        b=VaorL32DMWqqWdxveQmnzCm7dwpA81jr46KngHwJvFDCKdAXTi51XE827njugjqXtJMYp3
-        duXYftmy9wR1JTjmvz2dWvU9YpXUv+mHFDtBvNhnqdKrovElmjkb3S9AniLwAHs6ISLkQk
-        eSfvh1kUSQlT2VfumOcw6PJdgg1aw34=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=8+K02y8E63N7Hl8bfWpAm+o723A4RMPADnx/bCpWAh0=;
+        b=eJJYIpfC9rLmzkiyJ7vPuEwLgg4AdoI2LTluEY3QRACSgsvCh4zc9IoUHIqRpKWdK8m1H/
+        YGMHPE39b6TqbXzXgH13g0N8grMmd0o599RvN0oqKiSMsF837DrxnoJYz4FCqVb1MfprhA
+        kf1fQ7rOQAv+/XeexlY9NXueTmcAJlc=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-369-PYBy6ho4NKS4WAf1KUKUZw-1; Wed, 15 Nov 2023 12:01:48 -0500
-X-MC-Unique: PYBy6ho4NKS4WAf1KUKUZw-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 1CDFD810FCA;
-        Wed, 15 Nov 2023 17:01:47 +0000 (UTC)
-Received: from [10.45.225.144] (unknown [10.45.225.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4EBFC492BFD;
-        Wed, 15 Nov 2023 17:01:45 +0000 (UTC)
-Message-ID: <36889885-71c7-46f7-8c21-e5791986ad5a@redhat.com>
-Date:   Wed, 15 Nov 2023 18:01:44 +0100
+ us-mta-220-JWJfMkMXM96Xe4JT2XPBTg-1; Wed, 15 Nov 2023 12:02:21 -0500
+X-MC-Unique: JWJfMkMXM96Xe4JT2XPBTg-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9e644d94d85so139479466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:02:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700067740; x=1700672540;
+        h=content-transfer-encoding:in-reply-to:organization:from:references
+         :cc:to:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8+K02y8E63N7Hl8bfWpAm+o723A4RMPADnx/bCpWAh0=;
+        b=ALpqZBlbdrVOaApI1RjPJ8XJPX+rhNvcvGpb0QZcndr+IXorIc+OOi0UL3wUT8alD/
+         xJlQvFY0Q1tuo1Vu+3pZxD5hOPGWvva5emd2HsaIkNVZ09N/sSRl+lfYQOm5dERL3nrq
+         rg9l5/TnkfKq9kPgOO+QJH8pV3uC+9h+Fzzib7d+c0AmKJ9t5wTkQ4mURpbtN1KMlim7
+         SLohCvo+BdMDtdUDx/hzjExVvQTtjktIma+YcIRROt5VGQ5leFZslVsKW7GHTL54s9VX
+         YgkNnmOYbdT3QYoZthGtvFnVhymFpAmP9wI3Jik9dl5cQtODGK+AYmCZg33ZvDmDB78c
+         rfvw==
+X-Gm-Message-State: AOJu0YyKtGhMmGrgAg5U2y0p69zXdMwrWa7gAGmtijmrQgavL78PIfL4
+        7eNedJh1BeRB2+DXQ99xrExXiQVSz3Se811yDU553Ht/KWLw1qyZ5lnvmvb1P/m4IOJOj6tnx04
+        +bNYmbscQQza1OqACKBTdT5gA
+X-Received: by 2002:a17:906:7693:b0:9e5:2b00:506f with SMTP id o19-20020a170906769300b009e52b00506fmr5192454ejm.15.1700067740246;
+        Wed, 15 Nov 2023 09:02:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEmyLGRL3GwYsNwyV1gH7JktmROiYMN6I3Eellr851VhdnrwoZiNzuZ1mX4o6IaWOpV/CLtUA==
+X-Received: by 2002:a17:906:7693:b0:9e5:2b00:506f with SMTP id o19-20020a170906769300b009e52b00506fmr5192406ejm.15.1700067739689;
+        Wed, 15 Nov 2023 09:02:19 -0800 (PST)
+Received: from ?IPV6:2a02:810d:4b3f:de9c:abf:b8ff:feee:998b? ([2a02:810d:4b3f:de9c:abf:b8ff:feee:998b])
+        by smtp.gmail.com with ESMTPSA id o9-20020a1709061b0900b0099bcf9c2ec6sm7283726ejg.75.2023.11.15.09.02.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 09:02:19 -0800 (PST)
+Message-ID: <05cf6199-3884-4e46-90ac-0b8df7420af7@redhat.com>
+Date:   Wed, 15 Nov 2023 18:02:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH iwl-next 3/5] i40e: Add helpers to find VSI and VEB by
- SEID and use them
-To:     Wojciech Drewek <wojciech.drewek@intel.com>, netdev@vger.kernel.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Simon Horman <horms@kernel.org>, mschmidt@redhat.com
-References: <20231113125856.346047-1-ivecera@redhat.com>
- <20231113125856.346047-4-ivecera@redhat.com>
- <3c640be7-8f1e-4f9e-8556-3aac92644dec@intel.com>
+Subject: Re: [PATCH v4] Documentation/gpu: VM_BIND locking document
 Content-Language: en-US
-From:   Ivan Vecera <ivecera@redhat.com>
-In-Reply-To: <3c640be7-8f1e-4f9e-8556-3aac92644dec@intel.com>
+To:     =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     intel-xe@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20231115124937.6740-1-thomas.hellstrom@linux.intel.com>
+ <ZVTfmbDz1HGqt4Ef@pollux>
+ <62cdf31f6dbbb3a114755affc89d22fde875c3ff.camel@linux.intel.com>
+From:   Danilo Krummrich <dakr@redhat.com>
+Organization: RedHat
+In-Reply-To: <62cdf31f6dbbb3a114755affc89d22fde875c3ff.camel@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 13. 11. 23 14:27, Wojciech Drewek wrote:
+On 11/15/23 17:04, Thomas Hellström wrote:
+> Hi, Danilo,
 > 
-> On 13.11.2023 13:58, Ivan Vecera wrote:
->> Add two helpers i40e_(veb|vsi)_get_by_seid() to find corresponding
->> VEB or VSI by their SEID value and use these helpers to replace
->> existing open-coded loops.
->>
->> Signed-off-by: Ivan Vecera<ivecera@redhat.com>
->> ---
-> Only one nit
-> Reviewed-by: Wojciech Drewek<wojciech.drewek@intel.com>
+> On Wed, 2023-11-15 at 16:11 +0100, Danilo Krummrich wrote:
+>> On Wed, Nov 15, 2023 at 01:49:37PM +0100, Thomas Hellström wrote:
+>>> Add the first version of the VM_BIND locking document which is
+>>> intended to be part of the xe driver upstreaming agreement.
+>>>
+>>> The document describes and discuss the locking used during exec-
+>>> functions, evicton and for userptr gpu-vmas. Intention is to be
+>>> using the
+>>> same nomenclature as the drm-vm-bind-async.rst.
+>>>
 > 
->>   drivers/net/ethernet/intel/i40e/i40e.h        | 34 +++++++++
->>   .../net/ethernet/intel/i40e/i40e_debugfs.c    | 38 ++--------
->>   drivers/net/ethernet/intel/i40e/i40e_main.c   | 76 ++++++-------------
->>   3 files changed, 64 insertions(+), 84 deletions(-)
->>
->> diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
->> index 1e9266de270b..220b5ce31519 100644
->> --- a/drivers/net/ethernet/intel/i40e/i40e.h
->> +++ b/drivers/net/ethernet/intel/i40e/i40e.h
->> @@ -1360,4 +1360,38 @@ static inline struct i40e_pf *i40e_hw_to_pf(struct i40e_hw *hw)
->>   
->>   struct device *i40e_hw_to_dev(struct i40e_hw *hw);
->>   
->> +/**
->> + * i40e_vsi_get_by_seid - find VSI by SEID
->> + * @pf: pointer to a PF
->> + **/
->> +static inline struct i40e_vsi *
->> +i40e_vsi_get_by_seid(struct i40e_pf *pf, u16 seid)
->> +{
->> +	struct i40e_vsi *vsi;
->> +	int i;
->> +
->> +	i40e_pf_for_each_vsi(pf, i, vsi)
->> +		if (vsi->seid == seid)
->> +			return vsi;
->> +
->> +	return NULL;
->> +}
->> +
->> +/**
->> + * i40e_veb_get_by_seid - find VEB by SEID
->> + * @pf: pointer to a PF
->> + **/
->> +static inline struct i40e_veb *
->> +i40e_veb_get_by_seid(struct i40e_pf *pf, u16 seid)
->> +{
->> +	struct i40e_veb *veb;
->> +	int i;
->> +
->> +	i40e_pf_for_each_veb(pf, i, veb)
->> +		if (veb->seid == seid)
->> +			return veb;
->> +
->> +	return NULL;
->> +}
-> I would prefer i40e_get_{veb|vsi}_by_seid but it's my opinion.
+> Thanks for reviewing. I'll update the document accordingly except for
+> the s/an rwsem/a rwsem/g, I think it's "an rwsem" similarly to "an r".
 
-I'd rather use i40e_pf_ prefix...
+I read it as "read-write-sem". Would you read it as "ar-double-u-sem"
+then I guess?
 
-What about i40e_pf_get_vsi_by_seid() and i40e_pf_get_veb_by_seid() ?
-
-Ivan
+> 
+> /Thomas
+> 
 
