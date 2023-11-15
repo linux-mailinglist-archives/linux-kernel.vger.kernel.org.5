@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB1F97EBC06
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:35:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B59C97EBC09
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234451AbjKODfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:35:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60060 "EHLO
+        id S232446AbjKODft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:35:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234442AbjKODfW (ORCPT
+        with ESMTP id S234483AbjKODfe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:35:22 -0500
+        Tue, 14 Nov 2023 22:35:34 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC5CFC;
-        Tue, 14 Nov 2023 19:35:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A931C433C9;
-        Wed, 15 Nov 2023 03:35:16 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5912C114;
+        Tue, 14 Nov 2023 19:35:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6163BC433C7;
+        Wed, 15 Nov 2023 03:35:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019319;
-        bh=BPXcmbIHJIlBqHjEjTXsb/rxW6/LFGR3qAUvhVYpjtQ=;
+        s=k20201202; t=1700019331;
+        bh=HhzkQt73VBzuy/O8xvSbdBIFPmyGIMSt+uwy1sehaCo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=biKCh8gMahT5jWRoy1sdaTeudzg3ldSbohqGdGcArd/w+CX65gQAkMeKk7SZWI4Lj
-         3nipCFMksJEhqLWxmEhRzFVt86tGqbtTDNpE6Pl1xwEaQRtA47LNs1A+kbgPLxnmWz
-         Kajel7/E8bslKSFjedW3ssld6IsImWpaurADmhVOG+CZ6PY9LZ8pvUOvFrbRaustdD
-         I35Cz+l8OTbvLGBI1bs9X7RzGhyNisiv9Sm31Ngn1LtGV7N8/4U1JiACICiWAfDGwL
-         JfzpyaB+4GBv4xTIVmpfAxhcbU7riYlggilp53ObIkDk5Y19GupjTHaBuueMiHrxwi
-         eMd5eh7/bxt/A==
+        b=Yx2JWcuqM6mDAeN2HWszlLJyB+cIcUDtSLtsDMnIwNiIPDG869SNA94UhUB67MStL
+         G1cQdyukTyOLFSikXlUd1tSivG7glEFb/d+Ob7BmrS0bsLxJgxLuKsEjK/RBeBrRSi
+         zOg3827vRlwV0h33KfSFyyNXC+e/p/etCBRj51G3WW/MTX07LhlKWQu11AvvfC/4d0
+         kcpxczgPcw+moYK+NAfDO7K4WYSZQ1xyZjCCgopwxFAh6VW2QsRaNuJ2JVnpz4/I9M
+         +GZH/uDwNhAyeyRWqcztBfzaG+k2XSoqqv3KjYXTsUY/HhIK7/00gT/BHpVnsb64f7
+         TBUVCLY2zdL7Q==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zongmin Zhou <zhouzongmin@kylinos.cn>,
-        Dave Airlie <airlied@redhat.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, kraxel@redhat.com,
-        maarten.lankhorst@linux.intel.com, tzimmermann@suse.de,
-        airlied@gmail.com, daniel@ffwll.ch, virtualization@lists.linux.dev,
-        spice-devel@lists.freedesktop.org, dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 6.5 2/6] drm/qxl: prevent memory leak
-Date:   Tue, 14 Nov 2023 22:34:46 -0500
-Message-ID: <20231115033459.1228900-2-sashal@kernel.org>
+Cc:     Alex Spataru <alex_spataru@outlook.com>,
+        Takashi Iwai <tiwai@suse.de>, Sasha Levin <sashal@kernel.org>,
+        perex@perex.cz, tiwai@suse.com, kailang@realtek.com,
+        luke@ljones.dev, sbinding@opensource.cirrus.com,
+        andy.chi@canonical.com, shenghao-ding@ti.com, l.guzenko@web.de,
+        ruinairas1992@gmail.com, yangyuchi66@gmail.com,
+        vitalyr@opensource.cirrus.com, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.5 3/6] ALSA: hda/realtek: Add quirk for ASUS UX7602ZM
+Date:   Tue, 14 Nov 2023 22:34:47 -0500
+Message-ID: <20231115033459.1228900-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231115033459.1228900-1-sashal@kernel.org>
 References: <20231115033459.1228900-1-sashal@kernel.org>
@@ -57,39 +57,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zongmin Zhou <zhouzongmin@kylinos.cn>
+From: Alex Spataru <alex_spataru@outlook.com>
 
-[ Upstream commit 0e8b9f258baed25f1c5672613699247c76b007b5 ]
+[ Upstream commit 26fd31ef9c02a5e91cdb8eea127b056bd7cf0b3b ]
 
-The allocated memory for qdev->dumb_heads should be released
-in qxl_destroy_monitors_object before qxl suspend.
-otherwise,qxl_create_monitors_object will be called to
-reallocate memory for qdev->dumb_heads after qxl resume,
-it will cause memory leak.
+Enables the SPI-connected CSC35L41 audio amplifier for this
+laptop model.
 
-Signed-off-by: Zongmin Zhou <zhouzongmin@kylinos.cn>
-Link: https://lore.kernel.org/r/20230801025309.4049813-1-zhouzongmin@kylinos.cn
-Reviewed-by: Dave Airlie <airlied@redhat.com>
-Signed-off-by: Maxime Ripard <mripard@kernel.org>
+As of BIOS version 303 it's still necessary to
+modify the ACPI table to add the related _DSD properties:
+https://github.com/alex-spataru/asus_zenbook_ux7602zm_sound/
+
+Signed-off-by: Alex Spataru <alex_spataru@outlook.com>
+Link: https://lore.kernel.org/r/DS7PR07MB7621BB5BB14F5473D181624CE3A4A@DS7PR07MB7621.namprd07.prod.outlook.com
+Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/qxl/qxl_display.c | 3 +++
- 1 file changed, 3 insertions(+)
+ sound/pci/hda/patch_realtek.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/qxl/qxl_display.c b/drivers/gpu/drm/qxl/qxl_display.c
-index 6492a70e3c396..404b0483bb7cb 100644
---- a/drivers/gpu/drm/qxl/qxl_display.c
-+++ b/drivers/gpu/drm/qxl/qxl_display.c
-@@ -1229,6 +1229,9 @@ int qxl_destroy_monitors_object(struct qxl_device *qdev)
- 	if (!qdev->monitors_config_bo)
- 		return 0;
- 
-+	kfree(qdev->dumb_heads);
-+	qdev->dumb_heads = NULL;
-+
- 	qdev->monitors_config = NULL;
- 	qdev->ram_header->monitors_config = 0;
- 
+diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
+index c2fbf484b1104..26ef0bc8190fb 100644
+--- a/sound/pci/hda/patch_realtek.c
++++ b/sound/pci/hda/patch_realtek.c
+@@ -9772,6 +9772,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
+ 	SND_PCI_QUIRK(0x1043, 0x1d4e, "ASUS TM420", ALC256_FIXUP_ASUS_HPE),
+ 	SND_PCI_QUIRK(0x1043, 0x1e02, "ASUS UX3402ZA", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x16a3, "ASUS UX3402VA", ALC245_FIXUP_CS35L41_SPI_2),
++	SND_PCI_QUIRK(0x1043, 0x1f62, "ASUS UX7602ZM", ALC245_FIXUP_CS35L41_SPI_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e11, "ASUS Zephyrus G15", ALC289_FIXUP_ASUS_GA502),
+ 	SND_PCI_QUIRK(0x1043, 0x1e12, "ASUS UM3402", ALC287_FIXUP_CS35L41_I2C_2),
+ 	SND_PCI_QUIRK(0x1043, 0x1e51, "ASUS Zephyrus M15", ALC294_FIXUP_ASUS_GU502_PINS),
 -- 
 2.42.0
 
