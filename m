@@ -2,270 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 28D5F7EBE22
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:33:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B09C7EBD2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:44:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234673AbjKOHd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 02:33:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59408 "EHLO
+        id S234549AbjKOGnY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:43:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOHdX (ORCPT
+        with ESMTP id S229600AbjKOGnX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 02:33:23 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E17169E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:33:19 -0800 (PST)
-Received: from epcas5p1.samsung.com (unknown [182.195.41.39])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231115073318epoutp015254837969351092b2ee218882d1e6f4~Xu4zi4WXh0477104771epoutp01Y
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:33:18 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231115073318epoutp015254837969351092b2ee218882d1e6f4~Xu4zi4WXh0477104771epoutp01Y
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700033598;
-        bh=jFCwICpuT3AUEmOuUJhZvLiJFkBLd7PkunhtjvgKb7s=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=SAWNjKreOMbtuz9M1lwlppUhkfp6BvVo9lXgcWcXSfGkGzGcNy7kYqpPhDs6oP0sJ
-         jrIiX0W9s0si7QwtyrpfcYzAKlxCerjsHky8qqLng+O7pbugrk7gcM+3DSGOpYyKfJ
-         qQwivQ+qD989dEoBYkKkhPpSVsskWUDEDf7bqeco=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231115073317epcas5p1a8d4252301e27eff2a6542864d19a9b0~Xu4y3YJVC2573025730epcas5p1c;
-        Wed, 15 Nov 2023 07:33:17 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.174]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SVZdl6W1nz4x9Q2; Wed, 15 Nov
-        2023 07:33:15 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        61.79.19369.B3474556; Wed, 15 Nov 2023 16:33:15 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231115064037epcas5p47d6ba6b04cabe15dfadbb4a6f980ac0e~XuK0KQRre1154211542epcas5p48;
-        Wed, 15 Nov 2023 06:40:37 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231115064037epsmtrp2d31dd3fc5e54b397277339a539354f5c~XuK0IrSUa1145411454epsmtrp2f;
-        Wed, 15 Nov 2023 06:40:37 +0000 (GMT)
-X-AuditID: b6c32a50-c99ff70000004ba9-69-6554743b1963
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        49.58.08755.5E764556; Wed, 15 Nov 2023 15:40:37 +0900 (KST)
-Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231115064035epsmtip1a5b8bbb05dd8b71991b12c1ffe7ed671~XuKyIbS7C1869818698epsmtip15;
-        Wed, 15 Nov 2023 06:40:35 +0000 (GMT)
-From:   "Shradha Todi" <shradha.t@samsung.com>
-To:     "'Manivannan Sadhasivam'" <manivannan.sadhasivam@linaro.org>
-Cc:     <jingoohan1@gmail.com>, <lpieralisi@kernel.org>, <kw@linux.com>,
-        <robh@kernel.org>, <bhelgaas@google.com>,
-        <krzysztof.kozlowski@linaro.org>, <alim.akhtar@samsung.com>,
-        <linux-pci@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-samsung-soc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <pankaj.dubey@samsung.com>
-In-Reply-To: <20231027134849.GA23716@thinkpad>
-Subject: RE: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
-Date:   Wed, 15 Nov 2023 12:10:33 +0530
-Message-ID: <000b01da178e$a43088d0$ec919a70$@samsung.com>
+        Wed, 15 Nov 2023 01:43:23 -0500
+Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 1AC74B3
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:43:17 -0800 (PST)
+X-AuditID: a67dfc5b-d6dff70000001748-52-65546885ec9d
+Date:   Wed, 15 Nov 2023 15:43:11 +0900
+From:   Byungchul Park <byungchul@sk.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel_team@skhynix.com, akpm@linux-foundation.org,
+        ying.huang@intel.com, namit@vmware.com, xhao@linux.alibaba.com,
+        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
+        david@redhat.com, peterz@infradead.org, luto@kernel.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com
+Subject: Re: [v4 0/3] Reduce TLB flushes under some specific conditions
+Message-ID: <20231115064311.GA41022@system.software.com>
+References: <20231109045908.54996-1-byungchul@sk.com>
+ <64cb078b-d2e7-417f-8125-b38d423163ce@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQFlrvPEaqAl+ZjspMpXVx4MiN0lSgK7wbyrAib+JfWxPKji4A==
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrGJsWRmVeSWpSXmKPExsWy7bCmpq51SUiqwerdBhYP5m1js1jSlGGx
-        4stMdou9r7eyWzT0/Ga12PT4GqvF5V1z2CzOzjvOZjHj/D4mi5Y/LSwWd1s6WS0Wbf3CbvF/
-        zw52B16PnbPusnss2FTqsWlVJ5vHnWt72DyeXJnO5LF5Sb1H35ZVjB6fN8kFcERl22SkJqak
-        Fimk5iXnp2TmpdsqeQfHO8ebmhkY6hpaWpgrKeQl5qbaKrn4BOi6ZeYAHaykUJaYUwoUCkgs
-        LlbSt7Mpyi8tSVXIyC8usVVKLUjJKTAp0CtOzC0uzUvXy0stsTI0MDAyBSpMyM5Y/msyc0Gn
-        asWSgz1sDYzNcl2MnBwSAiYScxfeZQSxhQT2MErcXBHbxcgFZH9ilHjwcyIrhPMNyDnUzwbT
-        8f7KPmaIxF5GiXNvL0E5LxglZrReZwapYhPQkXhy5Q+YLSLgINH+9hMLSBGzwA0miWv3V4It
-        5BTQk3g2dyE7iC0sYCXxfekEoH0cHCwCqhKbtsaChHkFLCUmTD7NBmELSpyc+YQFxGYW0JZY
-        tvA1M8RFChI/ny5jhdjlJPF0+wtGiBpxiaM/e8COkxC4wSGx790xdogGF4mFx56wQtjCEq+O
-        b4GKS0l8frcX6s10iZWbZ0AtyJH4tnkJE4RtL3HgyhwWkDuZBTQl1u/ShwjLSkw9tY4JYi+f
-        RO/vJ1DlvBI75sHYyhJf/u5hgbAlJeYdu8w6gVFpFpLXZiF5bRaSF2YhbFvAyLKKUSq1oDg3
-        PTXZtMBQNy+1HB7jyfm5mxjBCVorYAfj6g1/9Q4xMnEwHmKU4GBWEuE1lwtJFeJNSaysSi3K
-        jy8qzUktPsRoCgzvicxSosn5wByRVxJvaGJpYGJmZmZiaWxmqCTO+7p1boqQQHpiSWp2ampB
-        ahFMHxMHp1QDk8D55sJNq5iWNFiI58wN/eiSrlfAvczv8BLz8gWKLWyHVxTaPJL4l+F37Kz+
-        xHkb6mu0Zj64MPVUmey3N1ued8+Yv1yprfVpcGcaT+709T+q2VKOV92M+PD8wbqdTqH2YVVB
-        i795N3DMqWo4Wn7SbFrOq/9KPPkaG/JNrqt/+WFzovaY9KUN+q8t3jD73i8UM7rFbMPWrqK1
-        sFq4mfmH10Tuc9eaFPee0Zy9l2VttdWUqcFLHm7OzhBoapXS3p4Y26e/bAbbsvVeMs+e3eBN
-        Y3R/FcZ5YPdkBo7bK89N11/OrHlB+FRzUG745sxKP4dVftnBBfWHco57nXng3PLkS2Hh7NSG
-        ZvYpCTz2TdKmSizFGYmGWsxFxYkACe7aGVkEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHIsWRmVeSWpSXmKPExsWy7bCSnO7T9JBUg8ULlC0ezNvGZrGkKcNi
-        xZeZ7BZ7X29lt2jo+c1qsenxNVaLy7vmsFmcnXeczWLG+X1MFi1/Wlgs7rZ0slos2vqF3eL/
-        nh3sDrweO2fdZfdYsKnUY9OqTjaPO9f2sHk8uTKdyWPzknqPvi2rGD0+b5IL4IjisklJzcks
-        Sy3St0vgyrj5fR9bwQ3lihnnLzA2MF6U6WLk5JAQMJF4f2UfcxcjF4eQwG5GiQn931kgEpIS
-        ny+uY4KwhSVW/nvODlH0jFFi7f31YAk2AR2JJ1f+MIPYIgIOEu1vP7GAFDELPGOS6OmZzQLR
-        sZZRYvbWd2wgVZwCehLP5i5kB7GFBawkvi+dwNrFyMHBIqAqsWlrLEiYV8BSYsLk02wQtqDE
-        yZlPwC5iFtCW6H3YyghjL1v4mhniOgWJn0+XsUIc4STxdPsLqBpxiaM/e5gnMArPQjJqFpJR
-        s5CMmoWkZQEjyypGydSC4tz03GLDAsO81HK94sTc4tK8dL3k/NxNjOAo1dLcwbh91Qe9Q4xM
-        HIyHGCU4mJVEeM3lQlKFeFMSK6tSi/Lji0pzUosPMUpzsCiJ84q/6E0REkhPLEnNTk0tSC2C
-        yTJxcEo1ME2dq+t8Jc6+Ptw///fRy01KU9bqMWf8FNmyxvj8H2/ViPo2I/awpG37DV/NXsf9
-        X2mFR1m0Ds9Ri3cu69f2FLsrtCvVioWdmeXT/zL8049pFofmuqzdy9pz/map58msbStuTOWo
-        iqr49qd2rsUcrocmn0zuv3TM/Lbj6vT1i8z9p3BPLukOajkXZ3Ly78qUpM1fJWt/njmkuzv5
-        8bX/75iv9Wrs8M592HNi6Re26gUqu+N5LzSpRIXUBf7+ID9Jdc8j8aSQOfULM1fk28Q9e3hg
-        yqUP55/NfWB1YIvwibZ8yzenI9U0OqWTr0efNs66o61/++qc3quuR3/b7zTliGFcGq3D6CGx
-        izmq2Gvj3vlKLMUZiYZazEXFiQD2JsneQQMAAA==
-X-CMS-MailID: 20231115064037epcas5p47d6ba6b04cabe15dfadbb4a6f980ac0e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <64cb078b-d2e7-417f-8125-b38d423163ce@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrLIsWRmVeSWpSXmKPExsXC9ZZnkW5rRkiqwcaFIhZz1q9hs/i84R+b
+        xaeXDxgtXmxoZ7T4uv4Xs8XTT30sFpd3zWGzuLfmP6vF+V1rWS12LN3HZHHpwAImi+u7HjJa
+        HO89wGSxedNUZovfP4Dq5kyxsjg5azKLg6DH99Y+Fo8Fm0o9Nq/Q8li85yWTx6ZVnWwemz5N
+        Yvd4d+4cu8eJGb9ZPHY+tPSYdzLQ4/2+q2weW3/ZeXzeJOfxbv5btgC+KC6blNSczLLUIn27
+        BK6MjdeCC5r4Kl5MPs/cwNjP3cXIySEhYCLx+HAjUxcjB5g9Z6IwiMkioCpx6JkiSAWbgLrE
+        jRs/mUFsESD71Mrl7F2MXBzMAk3MEtfWb2YFSQgLuEvsOnUHrIhXwEKi9VsnE4gtJJAhcfz1
+        HHaIuKDEyZlPWEBsZgEtiRv/XoKtZRaQllj+jwMkzClgK7G/4RkbiC0qoCxxYNtxJpBdEgKb
+        2CVWTLjIBHGypMTBFTdYJjAKzEIydhaSsbMQxi5gZF7FKJSZV5abmJljopdRmZdZoZecn7uJ
+        ERiJy2r/RO9g/HQh+BCjAAejEg9vw8zgVCHWxLLiytxDjBIczEoivOZyIalCvCmJlVWpRfnx
+        RaU5qcWHGKU5WJTEeY2+lacICaQnlqRmp6YWpBbBZJk4OKUaGHnNvSceYXvpabTD3WTfemVF
+        v8/bC+pqJQUezq4OUVBb82pmVM07a/391yIdD/z1utcZolB+dZ/166QLn2zanx7iWdOXJzph
+        9aRYowuTyo0LWzgS5jl+/7QwMFSi8NW3xrzqJB8l5xDOl/cyHn3fG7/pxpHUt7c8YgSnXgqe
+        /l/Y2Wa5cucvNyWW4oxEQy3mouJEAL5nD2zAAgAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprCIsWRmVeSWpSXmKPExsXC5WfdrNuSEZJqsHyjlcWc9WvYLD5v+Mdm
+        8enlA0aLFxvaGS2+rv/FbPH0Ux+LxeG5J1ktLu+aw2Zxb81/Vovzu9ayWuxYuo/J4tKBBUwW
+        13c9ZLQ43nuAyWLzpqnMFr9/ANXNmWJlcXLWZBYHIY/vrX0sHgs2lXpsXqHlsXjPSyaPTas6
+        2Tw2fZrE7vHu3Dl2jxMzfrN47Hxo6THvZKDH+31X2TwWv/jA5LH1l53H501yHu/mv2UL4I/i
+        sklJzcksSy3St0vgyth4Lbigia/ixeTzzA2M/dxdjBwcEgImEnMmCoOYLAKqEoeeKXYxcnKw
+        CahL3LjxkxnEFgGyT61czt7FyMXBLNDELHFt/WZWkISwgLvErlN3wIp4BSwkWr91MoHYQgIZ
+        Esdfz2GHiAtKnJz5hAXEZhbQkrjx7yUTyC5mAWmJ5f84QMKcArYS+xuesYHYogLKEge2HWea
+        wMg7C0n3LCTdsxC6FzAyr2IUycwry03MzDHVK87OqMzLrNBLzs/dxAiMq2W1fybuYPxy2f0Q
+        owAHoxIPb8PM4FQh1sSy4srcQ4wSHMxKIrzmciGpQrwpiZVVqUX58UWlOanFhxilOViUxHm9
+        wlMThATSE0tSs1NTC1KLYLJMHJxSDYwh8ZqOhb1X+eabrPsx5Zj8Mcu3+UKzUvbNvuTtnrZ9
+        dcy+pdMuFJ+tnrdrq7Uq646VnSw3/Fdy8r7ImNzGu8RGIni61aRyV+/L29+5HzRkW691pt+c
+        NV8j2PLcuoMOG2xO6Pr2/Pzozvy96gQTi/O/FPGPGlNv7u9YJDQxRHTKw82PO7kEF05WYinO
+        SDTUYi4qTgQA1c1wOacCAAA=
 X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231009062222epcas5p36768b75c13c7c79965b5863521361a64
-References: <CGME20231009062222epcas5p36768b75c13c7c79965b5863521361a64@epcas5p3.samsung.com>
-        <20231009062216.6729-1-shradha.t@samsung.com>
-        <20231027134849.GA23716@thinkpad>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 09, 2023 at 06:26:08AM -0800, Dave Hansen wrote:
+> On 11/8/23 20:59, Byungchul Park wrote:
+> > Can you believe it? I saw the number of TLB full flush reduced about
+> > 80% and iTLB miss reduced about 50%, and the time wise performance
+> > always shows at least 1% stable improvement with the workload I tested
+> > with, XSBench. However, I believe that it would help more with other
+> > ones or any real ones. It'd be appreciated to let me know if I'm missing
+> > something.
+> 
+> I see that you've moved a substantial amount of code out of arch/x86.
+> That's great.
+> 
+> But there doesn't appear to be any improvement in the justification or
+> performance data.  The page flag is also here, which is horribly frowned
+> upon.  It's an absolute no-go with this level of justification.
+> 
+> I'd really suggest not sending any more of these out until those issues
+> are rectified.  I know I definitely won't be reviewing them in this state.
 
+As I expected, I got a fair better result when I tested migrc with a
+system with a slower DRAM to make TLB miss overhead stand out.
 
-> -----Original Message-----
-> From: Manivannan Sadhasivam =5Bmailto:manivannan.sadhasivam=40linaro.org=
-=5D
-> Sent: 27 October 2023 19:19
-> To: Shradha Todi <shradha.t=40samsung.com>
-> Cc: jingoohan1=40gmail.com; lpieralisi=40kernel.org; kw=40linux.com;
-> robh=40kernel.org; bhelgaas=40google.com; krzysztof.kozlowski=40linaro.or=
-g;
-> alim.akhtar=40samsung.com; linux-pci=40vger.kernel.org; linux-arm-
-> kernel=40lists.infradead.org; linux-samsung-soc=40vger.kernel.org; linux-
-> kernel=40vger.kernel.org; pankaj.dubey=40samsung.com
-> Subject: Re: =5BPATCH=5D PCI: exynos: Adapt to clk_bulk_* APIs
->=20
-> On Mon, Oct 09, 2023 at 11:52:16AM +0530, Shradha Todi wrote:
-> > There is no need to hardcode the clock info in the driver as driver
-> > can rely on the devicetree to supply the clocks required for the
-> > functioning of the peripheral. Get rid of the static clock info and
-> > obtain the platform supplied clocks. The total number of clocks
-> > supplied is obtained using the devm_clk_bulk_get_all() API and used
-> > for the rest of the clk_bulk_* APIs.
-> >
-> > Signed-off-by: Shradha Todi <shradha.t=40samsung.com>
-> > ---
-> >  drivers/pci/controller/dwc/pci-exynos.c =7C 46
-> > ++++++-------------------
-> >  1 file changed, 11 insertions(+), 35 deletions(-)
-> >
-> > diff --git a/drivers/pci/controller/dwc/pci-exynos.c
-> > b/drivers/pci/controller/dwc/pci-exynos.c
-> > index 9e42cfcd99cc..023cf41fccd7 100644
-> > --- a/drivers/pci/controller/dwc/pci-exynos.c
-> > +++ b/drivers/pci/controller/dwc/pci-exynos.c
-> > =40=40 -54,8 +54,8 =40=40
-> >  struct exynos_pcie =7B
-> >  	struct dw_pcie			pci;
-> >  	void __iomem			*elbi_base;
-> > -	struct clk			*clk;
-> > -	struct clk			*bus_clk;
-> > +	struct clk_bulk_data		*clks;
-> > +	int				clk_cnt;
-> >  	struct phy			*phy;
-> >  	struct regulator_bulk_data	supplies=5B2=5D;
-> >  =7D;
-> > =40=40 -65,30 +65,18 =40=40 static int exynos_pcie_init_clk_resources(s=
-truct
-> exynos_pcie *ep)
-> >  	struct device *dev =3D ep->pci.dev;
-> >  	int ret;
-> >
-> > -	ret =3D clk_prepare_enable(ep->clk);
-> > -	if (ret) =7B
-> > -		dev_err(dev, =22cannot enable pcie rc clock=22);
-> > +	ret =3D devm_clk_bulk_get_all(dev, &ep->clks);
-> > +	if (ret < 0)
->=20
-> Please use =21(ret) here and below to be consistent with the driver.
->=20
+   1. XSBench execution time was reduced about 7%.
+   2. iTLB flush # was reduced stably about 90% while running XSBench.
+   3. iTLB miss # was reduced stably about 50% while running XSBench.
 
-In this case, only negative values indicate failure. Hence we cannot use (=
-=21ret) here.
+https://lore.kernel.org/lkml/20231115025755.GA29979@system.software.com/
 
-> >  		return ret;
-> > -	=7D
-> >
-> > -	ret =3D clk_prepare_enable(ep->bus_clk);
-> > -	if (ret) =7B
-> > -		dev_err(dev, =22cannot enable pcie bus clock=22);
-> > -		goto err_bus_clk;
-> > -	=7D
-> > +	ep->clk_cnt =3D ret;
->=20
-> Since clk_cnt is =22int=22, you can just use it directly instead of =22re=
-t=22.
->=20
+Of course, I can reimplement migrc to replace PG_migrc with another
+thing like hash table but, IMHO, it's worth having the page flag if it
+gives such a good performance. Lemme know if not so that I'll change the
+way to implement.
 
-Thanks for this suggestion=21 Will take care in v2.
+I'd like to note that no doubt migrc significantly reduces TLB miss and
+the impact depends on TLB miss overhead that varies according to the
+system configuration.
 
-> >
-> > -	return 0;
-> > -
-> > -err_bus_clk:
-> > -	clk_disable_unprepare(ep->clk);
-> > -
-> > -	return ret;
-> > +	return clk_bulk_prepare_enable(ep->clk_cnt, ep->clks);
-> >  =7D
-> >
-> >  static void exynos_pcie_deinit_clk_resources(struct exynos_pcie *ep)
-> > =7B
-> > -	clk_disable_unprepare(ep->bus_clk);
-> > -	clk_disable_unprepare(ep->clk);
-> > +	clk_bulk_disable_unprepare(ep->clk_cnt, ep->clks);
-> >  =7D
-> >
-> >  static void exynos_pcie_writel(void __iomem *base, u32 val, u32 reg)
-> > =40=40 -332,17 +320,9 =40=40 static int exynos_pcie_probe(struct
-> platform_device *pdev)
-> >  	if (IS_ERR(ep->elbi_base))
-> >  		return PTR_ERR(ep->elbi_base);
-> >
-> > -	ep->clk =3D devm_clk_get(dev, =22pcie=22);
-> > -	if (IS_ERR(ep->clk)) =7B
-> > -		dev_err(dev, =22Failed to get pcie rc clock=5Cn=22);
-> > -		return PTR_ERR(ep->clk);
-> > -	=7D
-> > -
-> > -	ep->bus_clk =3D devm_clk_get(dev, =22pcie_bus=22);
-> > -	if (IS_ERR(ep->bus_clk)) =7B
-> > -		dev_err(dev, =22Failed to get pcie bus clock=5Cn=22);
-> > -		return PTR_ERR(ep->bus_clk);
-> > -	=7D
-> > +	ret =3D exynos_pcie_init_clk_resources(ep);
-> > +	if (ret < 0)
-> > +		return ret;
-> >
-> >  	ep->supplies=5B0=5D.supply =3D =22vdd18=22;
-> >  	ep->supplies=5B1=5D.supply =3D =22vdd10=22;
-> > =40=40 -351,10 +331,6 =40=40 static int exynos_pcie_probe(struct
-> platform_device *pdev)
-> >  	if (ret)
-> >  		return ret;
-> >
-> > -	ret =3D exynos_pcie_init_clk_resources(ep);
-> > -	if (ret)
-> > -		return ret;
-> > -
-> >  	ret =3D regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep-
-> >supplies);
-> >  	if (ret)
->=20
-> You need to disable_unprepare() clocks in error path here and above.
->=20
-
-Thanks for pointing out=21 Will take care in v2.
-
-> - Mani
->=20
-> --
-> =E0=AE=AE=E0=AE=A3=E0=AE=BF=E0=AE=B5=E0=AE=A3=E0=AF=8D=E0=AE=A3=E0=AE=A9=
-=E0=AF=8D=20=E0=AE=9A=E0=AE=A4=E0=AE=BE=E0=AE=9A=E0=AE=BF=E0=AE=B5=E0=AE=AE=
-=E0=AF=8D=0D=0A=0D=0A
+	Byungchul
