@@ -2,76 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F17807EC0CF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D130C7EC0D2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234864AbjKOKgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 05:36:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
+        id S234862AbjKOKhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 05:37:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjKOKf5 (ORCPT
+        with ESMTP id S234098AbjKOKhg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 05:35:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916BF5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:35:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700044551;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Xp9UARNaNPlyIdSssZLj0kaySqIS1RLPGJplNZMoPJI=;
-        b=eM6STUDMrPAzGZ79RHZEP7bSOxZeDSxBYBIXmJIlsQ24/xBbo7gNNVaAnIM/VclrJjtIKO
-        2ilkKZm14S1HUNMouqZopUQCBvxgMVRb29bUobJEmsp87st0z6XihhyReZEQuJvXeE0ssl
-        e+Urs/YL+v78crsZvev3S6xEtO0dHbI=
-Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
- [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-19-i9jKdrBfNyunIqs2oCPaMQ-1; Wed, 15 Nov 2023 05:35:48 -0500
-X-MC-Unique: i9jKdrBfNyunIqs2oCPaMQ-1
-Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7d261a84bso94440947b3.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:35:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700044548; x=1700649348;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Xp9UARNaNPlyIdSssZLj0kaySqIS1RLPGJplNZMoPJI=;
-        b=UgTmeE5PXQ6jjqWa8df3jg2EOXH6JsYuDS47v+5OnYO9KzTwC0qyEBGUJOGSCnW2FM
-         Mxu3YEX3/3Lioo0WeysJHzDIo7OEgDtfNDcoj/FQns8W9SzflG7NITwT8ZpYVAdJUhJV
-         7ghT7rsXAvXJJbtJ+NOLv8wxJdJ6HO6WsVT1mLcWFXPFMRjR++rDfg0YkN19Co4qg5I9
-         gcho/CLNNdrgIl4Raj/pHtA4OXXBn4ucj95l3+wC0o0oDr+rPnqj6H+xC3KldWV5CDBf
-         3RCx5xpbwpsCBTJ0tptAmW/feC1AimESSg8cPbmeCUfCn+V/75Y4pLKtV/Y6ntDMHdo2
-         A3Ng==
-X-Gm-Message-State: AOJu0YxCspV+JLUZWDAH6ghmYqZ4/frZJ+aXtQwrbx9EwuWNBuApFFaI
-        4uHbIKxX/TQUzELBVduAsd3cf3Y4jxiTbBOopWo2s7thKskQ/dHyoLUNrVgtrfsKIg/5L2VMaUN
-        KAKJSxYyrqULswbNAe8c6pEc=
-X-Received: by 2002:a0d:cb8b:0:b0:5a7:ab55:b9af with SMTP id n133-20020a0dcb8b000000b005a7ab55b9afmr12166713ywd.35.1700044548001;
-        Wed, 15 Nov 2023 02:35:48 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE1kcYhFvm+awVN8EG3QhLKaWIkC0dBHxZ6wSdcnkopOF0pSjVhSr9LCAUmzhdoryV7+qfkyg==
-X-Received: by 2002:a0d:cb8b:0:b0:5a7:ab55:b9af with SMTP id n133-20020a0dcb8b000000b005a7ab55b9afmr12166708ywd.35.1700044547785;
-        Wed, 15 Nov 2023 02:35:47 -0800 (PST)
-Received: from klayman.redhat.com (net-2-34-24-178.cust.vodafonedsl.it. [2.34.24.178])
-        by smtp.gmail.com with ESMTPSA id s20-20020a05621412d400b00647386a3234sm433267qvv.85.2023.11.15.02.35.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 02:35:47 -0800 (PST)
-From:   Marco Pagani <marpagan@redhat.com>
-To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Marco Pagani <marpagan@redhat.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/test: rearrange test entries in Kconfig and Makefile
-Date:   Wed, 15 Nov 2023 11:35:36 +0100
-Message-ID: <20231115103537.220760-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.41.0
+        Wed, 15 Nov 2023 05:37:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D594A10F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:37:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700044653; x=1731580653;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=pASj3ynWAqrCC1Zge9+9eZpkrLPAlWqt+3s/Z4yMYFw=;
+  b=mh15Om+K1yJc3c1lSkkQ1z3Wbj0/tC3407wyWJXTFw5ursPEEH92CBYO
+   PbAo3xY+KTEjdZfsOK+c7luNb0WhWfJC2FGV8qtkCGmtxrgN/uKPCscim
+   iydlV56cm2X8YqbcfN7HVjlpCIw4YqUXPvE9MygOkl4uP8WkNYISZOTTF
+   Rm0bPti8c0rpDp4TmxwZvnYJmBuDb9vT1GNqyWzztZHlmz39BKibSKQyX
+   FcySk/+Nx9eY4+fPlScJoHVPT1QqjH6sT0hXRqTwAkRIm2jmGBN/WkUE1
+   WpBJib+86gaxVBg+pibKgWmu6QopQ5j8yC0VzZnbcFwne2MIhSGOJHbW2
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="477074235"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="477074235"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 02:37:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="830915908"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="830915908"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 15 Nov 2023 02:37:32 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3DGv-0000Fc-0R;
+        Wed, 15 Nov 2023 10:37:26 +0000
+Date:   Wed, 15 Nov 2023 18:36:52 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Nicholas Piggin <npiggin@gmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+Subject: /tmp/ccDME0uz.s:1274: Error: unrecognized opcode: `ldbrx'
+Message-ID: <202311151805.cYO3x9wy-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -80,63 +62,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rearrange entries in Kconfig and Makefile alphabetically to make room
-for additional KUnit test suites.
+Hi Nicholas,
 
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
----
- drivers/gpu/drm/Kconfig        | 10 +++++-----
- drivers/gpu/drm/tests/Makefile |  4 ++--
- 2 files changed, 7 insertions(+), 7 deletions(-)
+FYI, the error/warning still remains.
 
-diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
-index 3eee8636f847..cdbc56e07649 100644
---- a/drivers/gpu/drm/Kconfig
-+++ b/drivers/gpu/drm/Kconfig
-@@ -75,15 +75,15 @@ config DRM_KUNIT_TEST_HELPERS
- config DRM_KUNIT_TEST
- 	tristate "KUnit tests for DRM" if !KUNIT_ALL_TESTS
- 	depends on DRM && KUNIT
--	select PRIME_NUMBERS
-+	select DRM_BUDDY
- 	select DRM_DISPLAY_DP_HELPER
- 	select DRM_DISPLAY_HELPER
--	select DRM_LIB_RANDOM
--	select DRM_KMS_HELPER
--	select DRM_BUDDY
-+	select DRM_EXEC
- 	select DRM_EXPORT_FOR_TESTS if m
-+	select DRM_KMS_HELPER
- 	select DRM_KUNIT_TEST_HELPERS
--	select DRM_EXEC
-+	select DRM_LIB_RANDOM
-+	select PRIME_NUMBERS
- 	default KUNIT_ALL_TESTS
- 	help
- 	  This builds unit tests for DRM. This option is not useful for
-diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makefile
-index ba7baa622675..2645af241ff0 100644
---- a/drivers/gpu/drm/tests/Makefile
-+++ b/drivers/gpu/drm/tests/Makefile
-@@ -9,6 +9,7 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
- 	drm_connector_test.o \
- 	drm_damage_helper_test.o \
- 	drm_dp_mst_helper_test.o \
-+	drm_exec_test.o \
- 	drm_format_helper_test.o \
- 	drm_format_test.o \
- 	drm_framebuffer_test.o \
-@@ -17,7 +18,6 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
- 	drm_modes_test.o \
- 	drm_plane_helper_test.o \
- 	drm_probe_helper_test.o \
--	drm_rect_test.o	\
--	drm_exec_test.o
-+	drm_rect_test.o
- 
- CFLAGS_drm_mm_test.o := $(DISABLE_STRUCTLEAK_PLUGIN)
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+commit: f5df87b855fd835ff0f4928575adbf4f5302bb40 powerpc/build: Remove -pipe from compilation flags
+date:   5 months ago
+config: powerpc-cell_defconfig (https://download.01.org/0day-ci/archive/20231115/202311151805.cYO3x9wy-lkp@intel.com/config)
+compiler: powerpc64-linux-gcc (GCC) 11.3.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311151805.cYO3x9wy-lkp@intel.com/reproduce)
 
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311151805.cYO3x9wy-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   /tmp/ccDME0uz.s: Assembler messages:
+>> /tmp/ccDME0uz.s:1274: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:1276: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:1278: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:1279: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:2033: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:2039: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:2040: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:7758: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:8366: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:8493: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:8495: Error: unrecognized opcode: `ldbrx'
+   /tmp/ccDME0uz.s:8502: Error: unrecognized opcode: `ldbrx'
+
 -- 
-2.41.0
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
