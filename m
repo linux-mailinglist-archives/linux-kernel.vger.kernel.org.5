@@ -2,63 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4F07EC2D8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14AB07EC2DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:49:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343795AbjKOMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:49:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
+        id S1343818AbjKOMtj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:49:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343723AbjKOMtD (ORCPT
+        with ESMTP id S1343723AbjKOMti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:49:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2299411F;
-        Wed, 15 Nov 2023 04:49:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700052540; x=1731588540;
-  h=from:to:cc:in-reply-to:references:subject:message-id:
-   date:mime-version:content-transfer-encoding;
-  bh=SF+1geNN0bIT4JrgyKR8RRkZ5elaJ520dBZaV+2ASAI=;
-  b=kdty0HuSUeuFkLhcuzZGs44v6Mcz4+QrA3eFXVqo1vzbBwhlVezj/b5m
-   VQmc+pb0hG2g+Htr5ccL6OFPqz7daUc6a3qr+gxByB6TVAMHmfbbPIbKy
-   h/rAAX2vWj575MIV4OVq7BUb2OLt8MW86vleId7fwa04YJQbSBymOZvM9
-   7dFXYl/5R25gAm5s4eEWDz4rwarlnNCuCeMzJoq6qMBB5Ia1QJN7WI0W6
-   79NvrHVk/PcVYJDI95jQgVulyl/3V5L/mDTiGClmHKkPMvKb5WuZpfcnU
-   cyorIyCaw7nQi4XmSX/Rnu+C21dOLDsvtARJS7S++unrbjGD3bp3tZQ4B
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393726212"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="393726212"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:48:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1012250245"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="1012250245"
-Received: from rkhristx-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.217])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:48:56 -0800
-From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     platform-driver-x86@vger.kernel.org,
-        Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, Mark Gross <markgross@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Ike Panhc <ike.pan@canonical.com>, stable@vger.kernel.org
-In-Reply-To: <20231114114055.6220-2-stuart.a.hayhurst@gmail.com>
-References: <9f46c613-63c2-4bc7-b938-7c9ea862a55e@linux.intel.com>
- <20231114114055.6220-2-stuart.a.hayhurst@gmail.com>
-Subject: Re: [PATCH v2] platform/x86: ideapad-laptop: Set max_brightness
- before using it
-Message-Id: <170005252425.3220.12662660184359784558.b4-ty@linux.intel.com>
-Date:   Wed, 15 Nov 2023 14:48:44 +0200
+        Wed, 15 Nov 2023 07:49:38 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFC82E6;
+        Wed, 15 Nov 2023 04:49:33 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFCa9Rc007672;
+        Wed, 15 Nov 2023 12:49:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=oVgUC78lGNhnz5wLW6XxVR+72j5BCUeIKsqTdGyWhKs=;
+ b=fXosxlIrgk+O64OWaY372x7KCnfpbjPtSYrfGt6Dn1QkswkVQAw9KCvxtaDY+62GfxeF
+ gGWqexgFkWgla1eokCJpaS25I7OFsBmTFJQRUrB1O9AKqH3CuYmkbml1KdxIpV5/lY5r
+ /IHf5/eEidu5RsvstZX+unuxMJo04EzSeJxqLTt8gP6fAMUUaCS4sn1VyHnkkeAz62aQ
+ s3cBpub3nFsjzno1she0Q/J9hOzFpkNaKlfmBXKlL2ZfbnHpZrFMTK0LPe/r2Cz2acMf
+ QL1+WDtepC+dk4DFjSItN1iz8QqoTKxFX/Tc9prufow64sEcPwF7BXbLOYFDhbhtWu9X VQ== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucu27rh8x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:49:17 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFCnGPL010748
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:49:16 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
+ 2023 04:49:11 -0800
+Message-ID: <aebdf7f6-48b7-43d3-95af-83859ddc593f@quicinc.com>
+Date:   Wed, 15 Nov 2023 18:19:08 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/3] iommu/arm-smmu: add ACTLR data and support for
+ SM8550
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <will@kernel.org>, <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <a39.skl@gmail.com>, <konrad.dybcio@linaro.org>,
+        <quic_pkondeti@quicinc.com>, <quic_molvera@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-3-quic_bibekkum@quicinc.com>
+ <CAA8EJpr1NzqiuNVZ0YcLpJ=yeOYFbLouAFgN9VMOiKpmoGVdtQ@mail.gmail.com>
+ <7edad996-f148-42d5-8e72-0334d3b9101f@quicinc.com>
+ <CAA8EJpqzEvC-LEjJrOk6Ed8utFNnqgP=qkb0mq-dOfMZd5ij4Q@mail.gmail.com>
+ <dba223a1-0456-40b8-b295-ea960867dcf9@quicinc.com>
+ <CAA8EJpqvXb_Zdmq0O0KEA8mn5UkSriCZ02w16dts7Gd84R30oQ@mail.gmail.com>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <CAA8EJpqvXb_Zdmq0O0KEA8mn5UkSriCZ02w16dts7Gd84R30oQ@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.3
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: SJDJ3cVncTNe_IK_Hci-gviojGwZX3cW
+X-Proofpoint-ORIG-GUID: SJDJ3cVncTNe_IK_Hci-gviojGwZX3cW
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_11,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150098
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,23 +88,216 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023 11:38:08 +0000, Stuart Hayhurst wrote:
 
-> max_brightness is used in ideapad_kbd_bl_brightness_get() before it's set,
-> causing ideapad_kbd_bl_brightness_get() to return -EINVAL sometimes
+
+On 11/15/2023 4:15 PM, Dmitry Baryshkov wrote:
+> On Wed, 15 Nov 2023 at 11:51, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 11/15/2023 3:08 PM, Dmitry Baryshkov wrote:
+>>> On Wed, 15 Nov 2023 at 11:22, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>>
+>>>>
+>>>> On 11/14/2023 7:42 PM, Dmitry Baryshkov wrote:
+>>>>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
+>>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>>
+>>>>>> Add ACTLR data table for SM8550 along with support for
+>>>>>> same including SM8550 specific implementation operations.
+>>>>>>
+>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>>>> ---
+>>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 92 +++++++++++++++++++++-
+>>>>>>     1 file changed, 88 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> index 578c662c7c30..0eaf6f2a2e49 100644
+>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> @@ -25,6 +25,70 @@ struct actlr_data {
+>>>>>>            u32 actlr;
+>>>>>>     };
+>>>>>>
+>>>>>> +#define PRE_FETCH_1    0
+>>>>>> +#define PRE_FETCH_2    BIT(8)
+>>>>>> +#define PRE_FETCH_3    (BIT(9) | BIT(8))
+>>>>>
+>>>>> What is the difference between PRE_FETCH_3 and PRE_FETCH_2? And
+>>>>> PRE_FETCH_1? Are these real numbers that refer to some amount / count
+>>>>> or just dummy names?
+>>>>>
+>>>>
+>>>> No,these are not real numbers, but prefetch settings for a particular
+>>>> perfect configuration.
+>>>
+>>> Then I'd ask for some better names or descriptions.
+>>>
+>>
+>> Noted, PREFETCH_SETTING_n / PREFETCH_OPTION_n sounds like a better name
+>> in the following case. Would it be okay to use this name instead?
+> 
+> Not really.
+> 
+
+Any suggestion you have in mind, if not this nomenclature?
+
+>>
+>>>>
+>>>>>> +#define CPRE           BIT(1)          /* Enable context caching in the prefetch buffer */
+>>>>>> +#define CMTLB          BIT(0)          /* Enable context caching in the macro TLB */
+>>>>>> +
+>>>>>> +static const struct actlr_data sm8550_apps_actlr_data[] = {
+>>>>>> +       { 0x18a0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x18e0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x0800, 0x0020, PRE_FETCH_1 | CMTLB },
+>>>>>> +       { 0x1800, 0x00c0, PRE_FETCH_1 | CMTLB },
+>>>>>> +       { 0x1820, 0x0000, PRE_FETCH_1 | CMTLB },
+>>>>>> +       { 0x1860, 0x0000, PRE_FETCH_1 | CMTLB },
+>>>>>> +       { 0x0c01, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c02, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c03, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c04, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c05, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c06, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c07, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c08, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c09, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c0c, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c0d, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c0e, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x0c0f, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1961, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1962, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1963, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1964, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1965, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1966, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1967, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1968, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1969, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x196c, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x196d, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x196e, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x196f, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c1, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c2, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c3, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c4, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c5, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c6, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c7, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c8, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19c9, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19cc, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19cd, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19ce, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x19cf, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+>>>>>> +       { 0x1c00, 0x0002, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1c01, 0x0000, PRE_FETCH_1 | CMTLB },
+>>>>>> +       { 0x1920, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1923, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1924, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1940, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1941, 0x0004, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1943, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1944, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +       { 0x1947, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+>>>>>> +};
+>>>>>> +
+>>>>>>     static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+>>>>>>     {
+>>>>>>            return container_of(smmu, struct qcom_smmu, smmu);
+>>>>>> @@ -459,6 +523,16 @@ static const struct arm_smmu_impl sdm845_smmu_500_impl = {
+>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>     };
+>>>>>>
+>>>>>> +
+>>>>>> +static const struct arm_smmu_impl sm8550_smmu_500_impl = {
+>>>>>> +       .init_context = qcom_smmu_init_context,
+>>>>>> +       .cfg_probe = qcom_smmu_cfg_probe,
+>>>>>> +       .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>> +       .reset = arm_mmu500_reset,
+>>>>>> +       .write_s2cr = qcom_smmu_write_s2cr,
+>>>>>> +       .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>
+>>>>> What is the difference between this one and qcom_smmu_500_impl ?
+>>>>>
+>>>>
+>>>> Noted, will remove this and use qcom_smmu_500_impl instead.
+>>>> Thanks for pointing this out.
+>>>> Since inititally the reset ops was different to reset CPRE bit only for
+>>>> sm8550 SoC hence sm8550_smmu_500_impl is defined, but now default reset
+>>>> ops is modified to set CPRE bit for all SoCs ([PATCH v2 3/3]) so it
+>>>> should be fine to use qcom_smmu_500_impl as there's no difference now.
+>>>>
+>>>>>> +};
+>>>>>> +
+>>>>>>     static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+>>>>>>            .init_context = qcom_adreno_smmu_init_context,
+>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>> @@ -522,6 +596,11 @@ static const struct qcom_smmu_config qcom_smmu_impl0_cfg = {
+>>>>>>            .reg_offset = qcom_smmu_impl0_reg_offset,
+>>>>>>     };
+>>>>>>
+>>>>>> +static const struct actlr_config sm8550_actlrcfg = {
+>>>>>> +       .adata = sm8550_apps_actlr_data,
+>>>>>> +       .size = ARRAY_SIZE(sm8550_apps_actlr_data),
+>>>>>> +};
+>>>>>> +
+>>>>>>     /*
+>>>>>>      * It is not yet possible to use MDP SMMU with the bypass quirk on the msm8996,
+>>>>>>      * there are not enough context banks.
+>>>>>> @@ -545,16 +624,20 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
+>>>>>>            /* Also no debug configuration. */
+>>>>>>     };
+>>>>>>
+>>>>>> +
+>>>>>> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
+>>>>>> +       .impl = &sm8550_smmu_500_impl,
+>>>>>> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>>>> +       .cfg = &qcom_smmu_impl0_cfg,
+>>>>>> +       .actlrcfg = &sm8550_actlrcfg,
+>>>>>> +};
+>>>>>> +
+>>>>>>     static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
+>>>>>>            .impl = &qcom_smmu_500_impl,
+>>>>>>            .adreno_impl = &qcom_adreno_smmu_500_impl,
+>>>>>>            .cfg = &qcom_smmu_impl0_cfg,
+>>>>>>     };
+>>>>>>
+>>>>>> -/*
+>>>>>> - * Do not add any more qcom,SOC-smmu-500 entries to this list, unless they need
+>>>>>> - * special handling and can not be covered by the qcom,smmu-500 entry.
+>>>>>> - */
+>>>>>
+>>>>> NAK, leave this in place.
+>>>>>
+>>>>
+>>>> Ack, will address this in next version.
+>>>>
+>>>>>>     static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+>>>>>>            { .compatible = "qcom,msm8996-smmu-v2", .data = &msm8996_smmu_data },
+>>>>>>            { .compatible = "qcom,msm8998-smmu-v2", .data = &qcom_smmu_v2_data },
+>>>>>> @@ -579,6 +662,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+>>>>>>            { .compatible = "qcom,sm8250-smmu-500", .data = &qcom_smmu_500_impl0_data },
+>>>>>>            { .compatible = "qcom,sm8350-smmu-500", .data = &qcom_smmu_500_impl0_data },
+>>>>>>            { .compatible = "qcom,sm8450-smmu-500", .data = &qcom_smmu_500_impl0_data },
+>>>>>> +       { .compatible = "qcom,sm8550-smmu-500", .data = &sm8550_smmu_500_impl0_data },
+>>>>>>            { .compatible = "qcom,smmu-500", .data = &qcom_smmu_500_impl0_data },
+>>>>>>            { }
+>>>>>>     };
+>>>>>> --
+>>>>>> 2.17.1
+>>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+>>>
 > 
 > 
-
-
-Thank you for your contribution, it has been applied to my local
-review-ilpo branch. Note it will show up in the public
-platform-drivers-x86/review-ilpo branch only once I've pushed my
-local branch there, which might take a while.
-
-The list of commits applied:
-[1/1] platform/x86: ideapad-laptop: Set max_brightness before using it
-      commit: 7a3c36eef9a5d13b16aa954da54224c9c6bed339
-
---
- i.
-
+> 
