@@ -2,107 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 708F57ECAC0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:46:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3327ECADD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:59:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbjKOSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:46:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
+        id S229539AbjKOS7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:59:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229589AbjKOSqQ (ORCPT
+        with ESMTP id S229484AbjKOS7i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:46:16 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0CDFA
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:13 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e62f903e88so822705066b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:13 -0800 (PST)
+        Wed, 15 Nov 2023 13:59:38 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3398DC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:59:35 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da04776a869so8303369276.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:59:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700073972; x=1700678772; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=G+xxF8an19N64H/pRk8mbK+sEYYkdEuOsGzAOFfR0W0=;
-        b=XHVnmuDuxFhle5ZL2Opso8SQeXdxAe1zy5BpFZJrBttytyN+vzLpDytehGTGA856cY
-         9My50a+lDgbi3On8jpDyiXQeWt0YPGpZvDsaOWyNdg5sZW7Y6uPGnMbuc1Nwyy1jliZc
-         Ta0WqRz3JRrcrL8evNnGDhnX0rWy4SDWRo+XY=
+        d=google.com; s=20230601; t=1700074775; x=1700679575; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ua0IE78OI3V4iuwp2QSoKWUWADgF+ZXc9DJoA62znV8=;
+        b=HrwQrn8i6dDUjmKum1vuBdPBQaYWlguTAXN3RxpHfzbQUWsd3mwTNYJNMwnx58MYVR
+         a2UwHaB/M+uadfbJkmwrDU1nYRT+OaeOG4NyZvRzkDkrFUi8fPIIVX/EMjJl4ZBxjHQT
+         U2k0RUEFeQgn8EzG/52Wd0VqEVtz1he9Vd7FIch7+ql8Z/Ep4WjMvnFhiU80RgMQ4DN+
+         z1ze2ck7CZNYDqUv0uDWzFg8hv7khfbZ8qUqFGvmqlmHRpG2eJyxhCvYeCcueBuhy1Y5
+         UH7YYuB8ZofaJm2bAKgT/l0w6FCrL+biEA8GTPy6ibsJ4TDIVIZrGBh6ot+bvjIqcOL+
+         TaRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700073972; x=1700678772;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=G+xxF8an19N64H/pRk8mbK+sEYYkdEuOsGzAOFfR0W0=;
-        b=PrwvYtwNNCUZpDdH7kj8BmB1aE8aT49qZiW3gMPimLQrho/qZtqQYZlieOzMGthAZv
-         vNZ4Ge7NdAelu2tLznzWfitoAWbuBpjjga0imvWVpOFgys9n7s3AAY65OyopvuJuHkm7
-         cQzBuxjn/dDXX3l7mcpWMk0DUXQmjKT72EAKUtDbWBP5vZtacHRGQ2UyqFK6hIHXPmbv
-         yQlBG+AIPQ0QVacKdI3M8zJjtZdNEmRUtn2svxaSf3OpBaE8EWDkufmuK9Ko003kc3ld
-         ZRL8UxCyqdXSLqBMA3bjrNPxfvF1n3LcFh4aVjRBRIvglL6IVxy/T2LXxvlVBjNqvs2t
-         NiGg==
-X-Gm-Message-State: AOJu0YxM4C5IqP16TtkCFmWG7CAPHjSlQh8AhgO7XefqW+CcRvTdBoEk
-        C9Hz/WojcMelltb08H0pZ2FPHROVJvfrN1RlTrOSlVv9
-X-Google-Smtp-Source: AGHT+IHYi3eLE+4+4nHhzk++hkmn6JYSlZptNq1pA00D0K9zqKVYmMrxlwnEHRoeTn0mwT4/bE4KIg==
-X-Received: by 2002:a17:906:f84a:b0:9bd:a75a:5644 with SMTP id ks10-20020a170906f84a00b009bda75a5644mr10245988ejb.16.1700073972210;
-        Wed, 15 Nov 2023 10:46:12 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id ko14-20020a170907986e00b009dd701bb916sm7375201ejc.213.2023.11.15.10.46.11
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 10:46:11 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso11063347a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:11 -0800 (PST)
-X-Received: by 2002:a05:6402:1111:b0:53d:bc68:633a with SMTP id
- u17-20020a056402111100b0053dbc68633amr10573131edv.5.1700073971308; Wed, 15
- Nov 2023 10:46:11 -0800 (PST)
-MIME-Version: 1.0
-References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com> <4007890.1700073334@warthog.procyon.org.uk>
-In-Reply-To: <4007890.1700073334@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Nov 2023 13:45:54 -0500
-X-Gmail-Original-Message-ID: <CAHk-=whFGA6YPJp3zazUwBG6ort8i34vGv9utYdOgYpekyt++Q@mail.gmail.com>
-Message-ID: <CAHk-=whFGA6YPJp3zazUwBG6ort8i34vGv9utYdOgYpekyt++Q@mail.gmail.com>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-To:     David Howells <dhowells@redhat.com>
-Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
-        lkp@intel.com, linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
+        d=1e100.net; s=20230601; t=1700074775; x=1700679575;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ua0IE78OI3V4iuwp2QSoKWUWADgF+ZXc9DJoA62znV8=;
+        b=mvymVG6W1/+uy18+vUupk9epNi1ZNqr+CaSfCKk+zW/q8TmLorRE/rWre9z7L6UDgw
+         j0DQr8ttLA4nORXpptDXOHJIV7FfQQuKMWWyG8z8AxDKgSW2eS9LDbRg84nNz+9ZS6hx
+         a+kawIqMpH+FCmRCWEUe+z/EAUDWbPSKjk59E5mxuvjOfCpV+6EjEurW6kODdK6anU2n
+         hhc5TmNa0agBk0ALFH7mL3y6TcodnrvJA6fmbjvOCMz75wZMHObt4Q0lp69r7EGB4E/i
+         NUan4jUQkih2cyeFMFY5oJCRGLtA08QQF+qP/ZoRQbNoro3+Xdpyh2nQdJblqaZeaj6G
+         G6Kg==
+X-Gm-Message-State: AOJu0YzhCYFgkItUZYFuSNcD7V6lz/QGhujLcai25tjFgoo+AaE/SBYr
+        lWN9Hsl7k6XieuxYdr8EH744q4U9OeZR
+X-Google-Smtp-Source: AGHT+IG4WTHgqONtffzlqF6zScXN91i8USvwLBDkxy3oKiW24KlItT0ymbvPzefkJqrXnqbgEVkRxRRI9mn0
+X-Received: from anyblade.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:1791])
+ (user=mmaurer job=sendgmr) by 2002:a25:3441:0:b0:da0:c49a:5feb with SMTP id
+ b62-20020a253441000000b00da0c49a5febmr310470yba.4.1700074775178; Wed, 15 Nov
+ 2023 10:59:35 -0800 (PST)
+Date:   Wed, 15 Nov 2023 18:50:09 +0000
+In-Reply-To: <20231115185858.2110875-1-mmaurer@google.com>
+Mime-Version: 1.0
+References: <20231115185858.2110875-1-mmaurer@google.com>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+Message-ID: <20231115185858.2110875-2-mmaurer@google.com>
+Subject: [PATCH 1/3] export_report: Rehabilitate script
+From:   Matthew Maurer <mmaurer@google.com>
+To:     gary@garyguo.net, masahiroy@kernel.org,
+        Matthew Maurer <mmaurer@google.com>
+Cc:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 13:35, David Howells <dhowells@redhat.com> wrote:
->
-> That's not what I see.  See attached for a dump of _copy_from_iter from my
-> kernel.  It's just using REP MOVSB.
+* modules.order has .o files when in a build dir, support this
+* .mod.c source layout has changed, update regexes to match
+* Add a stage 3, to be more robust against additional .mod.c content
 
-Yeah, an unconditional REP MOVSB is not right either. That just means
-that it performs truly horrendously badly on some machines.
+Signed-off-by: Matthew Maurer <mmaurer@google.com>
+---
+ scripts/export_report.pl | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-Do you perhaps have CONFIG_CC_OPTIMIZE_FOR_SIZE set? That makes gcc
-use "rep movsb" - even for small copies that most definitely should
-*not* use "rep movsb".
+diff --git a/scripts/export_report.pl b/scripts/export_report.pl
+index feb3d5542a62..dcef915405f3 100755
+--- a/scripts/export_report.pl
++++ b/scripts/export_report.pl
+@@ -55,6 +55,7 @@ sub collectcfiles {
+     open my $fh, '< modules.order' or die "cannot open modules.order: $!\n";
+     while (<$fh>) {
+ 	s/\.ko$/.mod.c/;
++	s/\.o$/.mod.c/;
+ 	push (@file, $_)
+     }
+     close($fh);
+@@ -120,10 +121,14 @@ foreach my $thismod (@allcfiles) {
+ 			next;
+ 		}
+ 		if ($state == 1) {
+-			$state = 2 if ($_ =~ /__attribute__\(\(section\("__versions"\)\)\)/);
++			$state = 2 if ($_ =~ /__used __section\("__versions"\)/);
+ 			next;
+ 		}
+ 		if ($state == 2) {
++			if ( $_ =~ /};/ ) {
++				$state = 3;
++				next;
++			}
+ 			if ( $_ !~ /0x[0-9a-f]+,/ ) {
+ 				next;
+ 			}
+@@ -133,7 +138,7 @@ foreach my $thismod (@allcfiles) {
+ 			push(@{$MODULE{$thismod}} , $sym);
+ 		}
+ 	}
+-	if ($state != 2) {
++	if ($state != 3) {
+ 		warn "WARNING:$thismod is not built with CONFIG_MODVERSIONS enabled\n";
+ 		$modversion_warnings++;
+ 	}
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
 
-Anyway, you should never use CC_OPTIMIZE_FOR_SIZE as any kind of
-baseline. I'd actually love to use it in general, but it really makes
-gcc do silly things when it goes for size optimizations that make no
-sense at all (because it will go for size over anything else).
-
-It turns out that on FSRM machines (ie anything really new), it's ok,
-because even small constant-sized copies do work ok with "rep movsb",
-but there are cases where it's absolutely horrendously bad.
-
-                 Linus
