@@ -2,77 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A737EBE0E
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8027EBE16
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234640AbjKOH1I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 02:27:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
+        id S234655AbjKOH13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 02:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOH1H (ORCPT
+        with ESMTP id S234648AbjKOH12 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 02:27:07 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E829C8E
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:27:03 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id 3f1490d57ef6-da819902678so6623015276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:27:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700033223; x=1700638023; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=LI+hHZDGsrVLiENiIy3H+HbnGc5/Pj6x1urZCnZBE0A=;
-        b=spmse6T7H4y/R88xcfBAML8JUIp4Q1ZF4yUW97y88txZduH/1j/Q+QDFgTsLA/Ofdh
-         kzxCG6GRgEsDT+NGL/iDWikV4LPbp2fzcw7ezgKtTLWC5SsYqkbGAdroF9nDsXEuMH+u
-         WswlXBmWQYY8kSKZaZMMQWNtY1nMMOObiX/jRrpVlVisguvLkgBIEQJ+2iSQM2Ef7MKC
-         1amTeCZsYsIkIWsj2PyIUrXcaUP+u2OAWuuDC1Q4fS1FX6lcu2gqghibeQxmGSP8A0ro
-         hr6gXq1N9LlaX43KZ7FJRL7GUn4vLfF1gqd/glQynmB2sgxNHmgByIx2KeCTHU7yQa2P
-         97tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700033223; x=1700638023;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LI+hHZDGsrVLiENiIy3H+HbnGc5/Pj6x1urZCnZBE0A=;
-        b=sXlSRsHwDHZ2pDMIu+pemAp/Tb0Ss2tPiPSDslpYweBJIjs968lc5BqtTB64jclRjr
-         U2H/JAl7jO98UXvZP/2Y30fwTFcZwMxEO8b5IFk0g7jvlKXN5EYgkfcLiurdLyPdbBBD
-         pWMx4Hk68i/Io2VVHGyw9RnFr95RT7OHSgCnKyAWRXLEtEv9QUCR4pA2Wjv9ap/M3Di+
-         lUyiBX4rg+UBUUhrTY/Db9yqRAtkMwIqF0AWNtjYRLLlqfoJrzfIsuDPWSvgo5zVkT3W
-         87GxwVSiFDeEwkl0wCmxop67Y7lBzIzrAcQwTpEcpPW7dqpbCQUvxMmsaau2Fo4bk6Mi
-         +Hkg==
-X-Gm-Message-State: AOJu0Ywu4EeXdbJLjCm23XbJRwt/lymR+M9lvygKsiYxaLuCkK82d68l
-        KNNVQinR3+ApSPZoj6stYfqORTZUxqL4G0Xmp7dybQ==
-X-Google-Smtp-Source: AGHT+IFg14cjgoXzSIT4pD+JIPGzFocy5oWeTNMHBVe/p8YI7kp1xT3oW6AV6W2ZE8rVTAhJZNFOUYyiR/qUPm+7sR0=
-X-Received: by 2002:a25:25d6:0:b0:da0:6876:a8eb with SMTP id
- l205-20020a2525d6000000b00da06876a8ebmr11431431ybl.46.1700033223136; Tue, 14
- Nov 2023 23:27:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20231114225857.19702-1-jonathan@marek.ca> <20231114225857.19702-3-jonathan@marek.ca>
-In-Reply-To: <20231114225857.19702-3-jonathan@marek.ca>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Wed, 15 Nov 2023 09:26:52 +0200
-Message-ID: <CAA8EJpq-bdb_ue1LAXjM+TH97os4eeHyUeNy+51wh44M_J2TKQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/6] drm/msm/dsi: set video mode widebus enable bit
- when widebus is enabled
-To:     Jonathan Marek <jonathan@marek.ca>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
+        Wed, 15 Nov 2023 02:27:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67F418E;
+        Tue, 14 Nov 2023 23:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700033243; x=1731569243;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CVjv4ZrpGDJbz1IrUPzrrK9YuYaL0aZL0iiRA1BpOhQ=;
+  b=MC/G7xp5dXyn/r1I/bX8hWEJMe8OCrmnf8fCf44PqgNoRwBwTx/45u7r
+   39au94ODFUdIVHvofCB55hMEaiuve9rb5XlPJTnxkP1AvjIV3JqQCboDf
+   UQ3h2ZkQ52O2gVUlhC9vq+RkPxNAM+8nPcZTLbpgx4V0yMxohu/9KOvIC
+   xrZFx5WGLeO3CdQXS3BOdyiyHXFM1qFc1Yn2OW65AlNBv782/GP9ITh/T
+   4u8uOf6qMzphbI3u+z2wtZnZ20Cq2iEsYF9o33BaG5ExXOUzv1NrIKig0
+   r3IGtVy7k/Sg4qPzWAHCXgqWmPzfyiMUm5jFxnOChVplrEF1PkSSp9tHs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="390624057"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="390624057"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 23:27:22 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="714800758"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="714800758"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by orsmga003.jf.intel.com with SMTP; 14 Nov 2023 23:27:17 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 15 Nov 2023 09:27:16 +0200
+Date:   Wed, 15 Nov 2023 09:27:16 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Hans de Goede <hdegoede@redhat.com>,
+        Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] usb: typec: change altmode SVID to u16 entry
+Message-ID: <ZVRy1L5JEN3Nda81@kuha.fi.intel.com>
+References: <20231113221528.749481-1-dmitry.baryshkov@linaro.org>
+ <20231113221528.749481-3-dmitry.baryshkov@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113221528.749481-3-dmitry.baryshkov@linaro.org>
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,35 +74,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
->
-> The value returned by msm_dsi_wide_bus_enabled() doesn't match what the
-> driver is doing in video mode. Fix that by actually enabling widebus for
-> video mode.
->
-> Fixes: efcbd6f9cdeb ("drm/msm/dsi: Enable widebus for DSI")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+On Tue, Nov 14, 2023 at 12:13:28AM +0200, Dmitry Baryshkov wrote:
+> As stated in the changelog for the commit 7b458a4c5d73 ("usb: typec: Add
+> typec_port_register_altmodes()"), the code should be adjusted according
+> to the AltMode bindings. As the SVID is 16 bits wide (according to the
+> USB PD Spec), use fwnode_property_read_u16() to read it.
+> 
+> Acked-by: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
 > ---
->  drivers/gpu/drm/msm/dsi/dsi.xml.h  | 1 +
->  drivers/gpu/drm/msm/dsi/dsi_host.c | 2 ++
->  2 files changed, 3 insertions(+)
->
-> diff --git a/drivers/gpu/drm/msm/dsi/dsi.xml.h b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> index 2a7d980e12c3..f0b3cdc020a1 100644
-> --- a/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> +++ b/drivers/gpu/drm/msm/dsi/dsi.xml.h
-> @@ -231,6 +231,7 @@ static inline uint32_t DSI_VID_CFG0_TRAFFIC_MODE(enum dsi_traffic_mode val)
->  #define DSI_VID_CFG0_HSA_POWER_STOP                            0x00010000
->  #define DSI_VID_CFG0_HBP_POWER_STOP                            0x00100000
->  #define DSI_VID_CFG0_HFP_POWER_STOP                            0x01000000
-> +#define DSI_VID_CFG0_DATABUS_WIDEN                             0x02000000
-
-BTW, could you please push this register to mesa?
-
->  #define DSI_VID_CFG0_PULSE_MODE_HSA_HE                         0x10000000
->
->  #define REG_DSI_VID_CFG1                                       0x0000001c
+>  drivers/platform/x86/intel/chtwc_int33fe.c | 2 +-
+>  drivers/usb/typec/class.c                  | 5 +++--
+>  2 files changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/platform/x86/intel/chtwc_int33fe.c b/drivers/platform/x86/intel/chtwc_int33fe.c
+> index 848baecc1bb0..93f75ba1dafd 100644
+> --- a/drivers/platform/x86/intel/chtwc_int33fe.c
+> +++ b/drivers/platform/x86/intel/chtwc_int33fe.c
+> @@ -136,7 +136,7 @@ static const struct software_node altmodes_node = {
+>  };
+>  
+>  static const struct property_entry dp_altmode_properties[] = {
+> -	PROPERTY_ENTRY_U32("svid", 0xff01),
+> +	PROPERTY_ENTRY_U16("svid", 0xff01),
+>  	PROPERTY_ENTRY_U32("vdo", 0x0c0086),
+>  	{ }
+>  };
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 6ec2a94e6fad..4251d44137b6 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -2238,7 +2238,8 @@ void typec_port_register_altmodes(struct typec_port *port,
+>  	struct typec_altmode_desc desc;
+>  	struct typec_altmode *alt;
+>  	size_t index = 0;
+> -	u32 svid, vdo;
+> +	u16 svid;
+> +	u32 vdo;
+>  	int ret;
+>  
+>  	altmodes_node = device_get_named_child_node(&port->dev, "altmodes");
+> @@ -2246,7 +2247,7 @@ void typec_port_register_altmodes(struct typec_port *port,
+>  		return; /* No altmodes specified */
+>  
+>  	fwnode_for_each_child_node(altmodes_node, child) {
+> -		ret = fwnode_property_read_u32(child, "svid", &svid);
+> +		ret = fwnode_property_read_u16(child, "svid", &svid);
+>  		if (ret) {
+>  			dev_err(&port->dev, "Error reading svid for altmode %s\n",
+>  				fwnode_get_name(child));
+> -- 
+> 2.42.0
 
 -- 
-With best wishes
-Dmitry
+heikki
