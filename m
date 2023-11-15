@@ -2,95 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA737ED741
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 112697ED74C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229680AbjKOWb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:31:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52430 "EHLO
+        id S235054AbjKOWcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:32:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235593AbjKOWbX (ORCPT
+        with ESMTP id S229698AbjKOWcy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:31:23 -0500
-Received: from gandalf.ozlabs.org (mail.ozlabs.org [IPv6:2404:9400:2221:ea00::3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF7A1A1;
-        Wed, 15 Nov 2023 14:31:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-        s=201702; t=1700087475;
-        bh=1zXDjYGnN7LZWDoh5L3z7YvK5tDr4zX5nA46mugKako=;
-        h=Date:From:To:Cc:Subject:From;
-        b=j5xCb2XF7S32O1vvBdrwbhe6OwYTpZs5pHvV/xwgNbNN3My+J78rao2eMMAbDgwOk
-         IyHSvXXdkOra0AqY+d7HBKF72wGEQM7TY6SpD7BkIeWdgtWJ6CO+viZJeog6x+opa6
-         TlHPBAEnkuazBB5jAnuYPJV7u+1Wo6qbxgI2iyOLOK8kFUryDPSb12tcjmiYOhBIPa
-         iSeCnrw87mID16D0XlDyTQkwyyksSpwA2WKgU3x1a9ygDFGJJmHO9VeLPv7GWtu1V0
-         stIZoVx95rJVv6SYyM+SzlDQt7w53ADW2vGXC6VrgPRvIpvOKRDAOwT495xa4ljUrZ
-         ALuYPdd86SbDw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SVyYv2R4Qz4wd0;
-        Thu, 16 Nov 2023 09:31:15 +1100 (AEDT)
-Date:   Thu, 16 Nov 2023 09:31:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     David Sterba <dsterba@suse.cz>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patches in the btrfs tree
-Message-ID: <20231116093113.3b643de3@canb.auug.org.au>
+        Wed, 15 Nov 2023 17:32:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3F99B;
+        Wed, 15 Nov 2023 14:32:50 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 479A9C433C7;
+        Wed, 15 Nov 2023 22:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700087570;
+        bh=hksVNrlXt9N+LqHnnGZPEV9FVDh36tWEtgkc01i10Xk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=XOJDhFqZ2M2jnDeXyirqMX3FG0sGWTdRaeK/W8rQnJjd6PXip5L2yMKWf9nNSWok1
+         d3kDVluvZ4bsaOSErf32SdcuYwnAq2bQfzS25ovrd5CQqG+Zy80+m5nmyc6w7PxZWo
+         WDhrwQlB1hbs0bXb0XWNy1ytwQXnIrfIj4NEoHzhZrjKWx99IODDUn9qcq+3ZIqTVO
+         p1zg5Meymw6Cs/oLq0VgTdDdmXpq0g5VdLvigGvZCDd9srgok5Tb+aKsbcwkShTILu
+         Ri+gJarPiFGDYg1e/w7E00f2QPJVbfTUa5iIz8QxPgJVIK/GKNgxeUQJSJRN8bEYxD
+         TXwt/IunI6HsQ==
+From:   SeongJae Park <sj@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org, damon@lists.linux.dev,
+        SeongJae Park <sj@kernel.org>
+Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
+Date:   Wed, 15 Nov 2023 22:32:47 +0000
+Message-Id: <20231115223247.46435-1-sj@kernel.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
+References: 
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/ccW5VGvm4zWXZi_Ay5ZHTgl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_MED,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/ccW5VGvm4zWXZi_Ay5ZHTgl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+On Wed, 15 Nov 2023 14:09:44 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-The following commits are also in the btrfs-fixes tree as different
-commits (but the same patches):
+> This is the start of the stable review cycle for the 6.5.12 release.
+> There are 550 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
 
-  6bd83f99448a ("btrfs: do not abort transaction if there is already an exi=
-sting qgroup")
-  c229bca90cc2 ("btrfs: tree-checker: add type and sequence check for inlin=
-e backrefs")
+This rc kernel passes DAMON functionality test[1] on my test machine.
+Attaching the test results summary below.  Please note that I retrieved the
+kernel from linux-stable-rc tree[2].
 
-These are commits
+Tested-by: SeongJae Park <sj@kernel.org>
 
-  8049ba5d0a28 ("btrfs: do not abort transaction if there is already an exi=
-sting qgroup")
-  1645c283a87c ("btrfs: tree-checker: add type and sequence check for inlin=
-e backrefs")
+[1] https://github.com/awslabs/damon-tests/tree/next/corr
+[2] 06e3a5988baa ("Linux 6.5.12-rc1")
 
-in the btrfs-fixes tree.
+Thanks,
+SJ
 
---=20
-Cheers,
-Stephen Rothwell
+[...]
 
---Sig_/ccW5VGvm4zWXZi_Ay5ZHTgl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+---
 
------BEGIN PGP SIGNATURE-----
+ok 1 selftests: damon: debugfs_attrs.sh
+ok 2 selftests: damon: debugfs_schemes.sh
+ok 3 selftests: damon: debugfs_target_ids.sh
+ok 4 selftests: damon: debugfs_empty_targets.sh
+ok 5 selftests: damon: debugfs_huge_count_read_write.sh
+ok 6 selftests: damon: debugfs_duplicate_context_creation.sh
+ok 7 selftests: damon: debugfs_rm_non_contexts.sh
+ok 8 selftests: damon: sysfs.sh
+ok 9 selftests: damon: sysfs_update_removed_scheme_dir.sh
+ok 10 selftests: damon: reclaim.sh
+ok 11 selftests: damon: lru_sort.sh
+ok 1 selftests: damon-tests: kunit.sh
+ok 2 selftests: damon-tests: huge_count_read_write.sh
+ok 3 selftests: damon-tests: buffer_overflow.sh
+ok 4 selftests: damon-tests: rm_contexts.sh
+ok 5 selftests: damon-tests: record_null_deref.sh
+ok 6 selftests: damon-tests: dbgfs_target_ids_read_before_terminate_race.sh
+ok 7 selftests: damon-tests: dbgfs_target_ids_pid_leak.sh
+ok 8 selftests: damon-tests: damo_tests.sh
+ok 9 selftests: damon-tests: masim-record.sh
+ok 10 selftests: damon-tests: build_i386.sh
+ok 11 selftests: damon-tests: build_arm64.sh
+ok 12 selftests: damon-tests: build_i386_idle_flag.sh
+ok 13 selftests: damon-tests: build_i386_highpte.sh
+ok 14 selftests: damon-tests: build_nomemcg.sh
+ [33m
+ [92mPASS [39m
+_remote_run_corr.sh SUCCESS
 
-iQEyBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVVRrEACgkQAVBC80lX
-0GymHAf1FLpzdtMwGiDOSlZNVYwZZMUSqxda0Mkh/D8o5QH4zhVn5u96HDaIwUXS
-qhUE9/x0VRtawBRpJ2zejCNjtW+dNrKVcISGouQ6g18CfvenCoKtA4kOFeolnF0A
-3ikPNL6ZCDneHv4+sCVe9uIt0pxmW5Ren6PT2uKool+4x/PHHRjjWDcLNBSwpXZX
-GuF/99ymh0EGReoilP3jIyclJuiro3nP9j38xyd9U+h+C+pUMFk7hIYRhOSk1Xbm
-WJXizhCjcdToCbaUgG3EbTnxcqHrmHRB3hzD/XXQUO/DcFeRWK4YDJurQuD7+Ziw
-zNhXHPwDy1nrbtnLSBqgHbjWsYFI
-=hhMj
------END PGP SIGNATURE-----
-
---Sig_/ccW5VGvm4zWXZi_Ay5ZHTgl--
