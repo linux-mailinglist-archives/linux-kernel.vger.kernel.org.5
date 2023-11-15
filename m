@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB3677ED28A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86E227ECC12
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233438AbjKOTZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:25:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58690 "EHLO
+        id S233640AbjKOT0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:26:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjKOTZd (ORCPT
+        with ESMTP id S233951AbjKOT0b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:25:33 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E13C130;
-        Wed, 15 Nov 2023 11:25:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700076329; x=1731612329;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=McKOscbZvZRsoTCCO+6I+3OL4SrPfiFuJ0fDjAUvUJk=;
-  b=VRbCJ7KzxwC89S2jriUS+RHbikJXtmrptri8YN6LJyE3oU9H6yQ026PU
-   H0e48evWNDdI6SXnXwDMQIoNvF8VQgIbJOS4TrekGR3zAQLHB5ccJ8XUA
-   PXYjuguIcOjJOlnK8tU8yyDxLbgC8HfS3IBam9xPtt+dyTZ8XezG0ViY4
-   fntXuGwdlHA/GN1AglTux3sJ/N1H3yBAwxNCjgtFfX0NrJcvB2rSOOwpX
-   jISqzNw+jUqlODCbgtZ/+sJYWikjXXsXcJJnslLF+rEH9ezztgq+r3+Bw
-   zocMGXj8vxGfR4kTSBT7OYgW3dB2Uk2B069PdsopQLI37W42x8StwrvVD
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457434772"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="457434772"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:24:56 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="831028204"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="831028204"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 15 Nov 2023 11:24:53 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3LVK-0000kk-2d;
-        Wed, 15 Nov 2023 19:24:50 +0000
-Date:   Thu, 16 Nov 2023 03:23:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-edac@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        James Morse <james.morse@arm.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, Robert Richter <rric@kernel.org>
-Subject: Re: [PATCH v1 2/3] EDAC, pnd2: Apply bit macros and helpers where it
- makes sense
-Message-ID: <202311160352.PfYDQfkU-lkp@intel.com>
-References: <20231115154940.664664-2-andriy.shevchenko@linux.intel.com>
+        Wed, 15 Nov 2023 14:26:31 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBD491AB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:24 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id a640c23a62f3a-9e62f903e88so4328766b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700076383; x=1700681183; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=shjpDJFgEA7bY447zVelsVqtgQ9wtQbPGXjY7wm8MLo=;
+        b=TfcjMdv8W3ShLC3M03Es+pC07ZaE2B/imbUN0QLCywJpyz/MMWpAxAX6Z0M/V4ZSO4
+         Yg/Ol2gY0NcRh51IPAkRjKK6TvJJ1iWKLSS8WL1qvrtR6cE6xYaxCALuuQAVs9RchL8C
+         nYJM1GxM2pX+XuJeethkfIu1QNxhABUVr7ivI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700076383; x=1700681183;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=shjpDJFgEA7bY447zVelsVqtgQ9wtQbPGXjY7wm8MLo=;
+        b=b9a8yq7FdmlMWyIKU6Pp5FL91Vii5Y9Rg8iIm1OdndHmxw7oWSkq5WIUZcpPJmNhFm
+         fv4Co0qR+kaA6cnGVMXLP7mOjKCTwjVRJui6eCMlvbIylJ3rQkGOVjlom1SmIBQb7xfZ
+         a4woX5EagdUe5yedTV+/mIOPoQCIBGx/6f947goKc3dQGNKnUvu5j2G1rFTLVXJFph4z
+         9sr2FgzLkJR5kzcgWhRfvey07aoMvHG6oj5Mb+qBZjR99wj1Uy6CMlCQvdN15YOzEyvS
+         zuT+QhUzP9sH3KJWflX8tuv8Yf3phAAPhKS0YKxHA4YNJBy2BcwOwFEkxCrf3to9QXjU
+         BMDg==
+X-Gm-Message-State: AOJu0Yw2yEWOWett2zgspvRZOFawI0pwKw3Yyk4JivkXtdAYkqBkZBmU
+        fTaUUHG8RvMZ6PalndE2WkWoYk5T7MPtisHzMPZiqL7a
+X-Google-Smtp-Source: AGHT+IEN8vgyj+8G5RcwteFz19O/6DHahY+1Bm/LEjookeDkVTXn28IBmPdSlT9qayTAaBpT99A0og==
+X-Received: by 2002:a17:906:855:b0:9ae:82b4:e309 with SMTP id f21-20020a170906085500b009ae82b4e309mr10044761ejd.0.1700076383315;
+        Wed, 15 Nov 2023 11:26:23 -0800 (PST)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id c7-20020a170906340700b009a9fbeb15f2sm7392726ejb.62.2023.11.15.11.26.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 11:26:20 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-5435336ab0bso68438a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:26:19 -0800 (PST)
+X-Received: by 2002:aa7:d545:0:b0:543:6f8e:58ee with SMTP id
+ u5-20020aa7d545000000b005436f8e58eemr8359172edr.41.1700076379472; Wed, 15 Nov
+ 2023 11:26:19 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115154940.664664-2-andriy.shevchenko@linux.intel.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
+ <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+ <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
+ <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com> <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
+In-Reply-To: <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 14:26:02 -0500
+X-Gmail-Original-Message-ID: <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
+Message-ID: <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
+Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Wed, 15 Nov 2023 at 14:10, Borislav Petkov <bp@alien8.de> wrote:
+>
+> > Borislav, see
+> >
+> >     https://lore.kernel.org/all/CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com/
+> >
+> > for some truly crazy code generation by gcc.
+>
+> Yeah, lemme show that to gcc folks. That asm is with your compiler,
+> right? Version?
 
-kernel test robot noticed the following build warnings:
+That was with gcc version 13.2.1.
 
-[auto build test WARNING on ras/edac-for-next]
-[also build test WARNING on linus/master v6.7-rc1 next-20231115]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Note that I only see that crazy thing in lib/iov_iter.s, so I really
+do think it has something to do with inlining __builtin_memcpy()
+behind a conditional function pointer.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Andy-Shevchenko/EDAC-pnd2-Apply-bit-macros-and-helpers-where-it-makes-sense/20231115-235225
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/ras/ras.git edac-for-next
-patch link:    https://lore.kernel.org/r/20231115154940.664664-2-andriy.shevchenko%40linux.intel.com
-patch subject: [PATCH v1 2/3] EDAC, pnd2: Apply bit macros and helpers where it makes sense
-config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231116/202311160352.PfYDQfkU-lkp@intel.com/config)
-compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160352.PfYDQfkU-lkp@intel.com/reproduce)
+In normal cases, gcc seems to just do the obvious thing (ie expand a
+small constant-sized memcpy inline, or just call the external 'memcpy'
+function.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311160352.PfYDQfkU-lkp@intel.com/
+So it's some odd pattern that triggers that "expand non-constant
+memcpy inline". And once that happens, the odd code generation is
+still a bit odd but is at least explicable.
 
-All warnings (new ones prefixed by >>):
+That "do first word by hand, then do aligned 'rep movsq' on top of it"
+pattern is weird, but we've seen some similar strange patterns in
+hand-written memcpy (eg "use two overlapping 8-byte writes to handle
+the 8-15 byte case").
 
->> drivers/edac/pnd2_edac.c:1069:3: warning: variable 'ret' is uninitialized when used here [-Wuninitialized]
-                   ret += check_channel(i);
-                   ^~~
-   drivers/edac/pnd2_edac.c:1065:9: note: initialize the variable 'ret' to silence this warning
-           int ret;
-                  ^
-                   = 0
-   1 warning generated.
+So the real issue is that we don't want an inlined memcpy at all,
+unless it's the simple constant-sized case that has been turned into
+individual moves with no loop.
 
+Or it's a "rep movsb" with FSRM as a CPUID-based alternative, of course.
 
-vim +/ret +1069 drivers/edac/pnd2_edac.c
-
-5c71ad17f97e84d Tony Luck       2017-03-09  1061  
-5c71ad17f97e84d Tony Luck       2017-03-09  1062  static int apl_check_ecc_active(void)
-5c71ad17f97e84d Tony Luck       2017-03-09  1063  {
-f29c26c5b4c5b02 Andy Shevchenko 2023-11-15  1064  	unsigned int i;
-f29c26c5b4c5b02 Andy Shevchenko 2023-11-15  1065  	int ret;
-5c71ad17f97e84d Tony Luck       2017-03-09  1066  
-5c71ad17f97e84d Tony Luck       2017-03-09  1067  	/* Check dramtype and ECC mode for each present DIMM */
-f29c26c5b4c5b02 Andy Shevchenko 2023-11-15  1068  	for_each_set_bit(i, &chan_mask, APL_NUM_CHANNELS)
-5c71ad17f97e84d Tony Luck       2017-03-09 @1069  		ret += check_channel(i);
-f29c26c5b4c5b02 Andy Shevchenko 2023-11-15  1070  
-5c71ad17f97e84d Tony Luck       2017-03-09  1071  	return ret ? -EINVAL : 0;
-5c71ad17f97e84d Tony Luck       2017-03-09  1072  }
-5c71ad17f97e84d Tony Luck       2017-03-09  1073  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+                 Linus
