@@ -2,175 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A42EE7EC425
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 694097EC429
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:55:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344015AbjKONyy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:54:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45784 "EHLO
+        id S1344017AbjKONzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:55:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230336AbjKONyw (ORCPT
+        with ESMTP id S234971AbjKONzB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:54:52 -0500
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B3C0AC;
-        Wed, 15 Nov 2023 05:54:49 -0800 (PST)
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDlTT1013001;
-        Wed, 15 Nov 2023 13:54:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2023-03-30;
- bh=6k1tQ/bvf0ow7Db/rQvw1SGSKK3H02M3rtPex+43VPQ=;
- b=Eh1uXwszE+sur1lD/7Evce1wIJ5bVzAHAHfb2esMrl/zV+5YHVUoynyBI7qrVT1h4PbX
- nqY1gp9VztrOFpXlaP5cRA02eoHrvszKVb0qLF8UUI2upgvlITdpQRh/3C8GRZpMwhHN
- c5eDXkM8Rmwir9R1fqEMuvzJvAA74l9bQgBzO/K2HPQs+SOY9yurUbWe8KZ1Ta2ZSyVg
- eNlhkK0PUrCHdj/GooQPm0ZBMXzX5pjbdHsFz/yoEHT1DhTnbJcrn6hgxiUXaJCPAeIi
- 0DBnY3alFonMS4Aoe8I/aULK6k3e1Hxo5Yx0qHl6PMIpFLeJcCZuPWGZoH4ywcPW4Raz jA== 
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2qd8g49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 13:54:26 +0000
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDFPnS013049;
-        Wed, 15 Nov 2023 13:54:26 GMT
-Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
-        by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxq1368v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 13:54:25 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nyHFtQAunuiJxh5oBa5dVXmBKuOQDZABGh0CFHYuRHPOaC/9A+x8pKFm07pUgQx59pHnbxRAOX6Uyk3jzZ4cDOpGYgi9JCJU+S1RAy+jYcouKzDKVEoo7wQytrmWlWOTh6YygKG7xDCwRKr0CCwsDr+6s25oRg/HfoZgc2WFavvf9chT3QRhZWd+LUBE5jazINv1+7C73BPhEcXpDINUFmrN9TljeU3eyQOSU95XDV7kN5z+km4nG/Z6+rtA36HCJf44trK6QgnLcO1hoEU0eqKYjJVZ3lyfF2bhJTMEW5W21Q3e2eAdYCGDRwWs1yk8xzbIHehkzdc0uH4rKXnrJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6k1tQ/bvf0ow7Db/rQvw1SGSKK3H02M3rtPex+43VPQ=;
- b=PnouUnK9mafDb1xxz7fYVnYrk97uAUZ12p5NH3tSbsh/2NjaAjhMYzF0zAXIqvQoFtClCsS1/zivUoGScMVu+2147bTZEmeTn9ry6mGFomkfc8weHfvzDLj2WoD0I8soND0UhmN+Riw8vlCXI0xFHE2tKN40xviTuGWLDgU3THiS0JV8ke/W4/HMER6r4hIhaSVSocu6Pde/ALxlfwlik93SuVUEqp3HADkPgoTTapFZYJ8oo03PjpSA9q4DpccV8WO/tzOUyqjCKmj4+P/hTWli/nBEWv0hLyXKIWXIBNdIDZ7TMz+KqFjTMd6JM7JuawvSMta+eOaU7iRS8Kj+VQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6k1tQ/bvf0ow7Db/rQvw1SGSKK3H02M3rtPex+43VPQ=;
- b=i2uyZ5nrvp+e8M22RlUMoe5dGq97vGA1Lw4oC6+aCmM+3UP/VIVjI3LIBt8LVNbhOfUw57Mwvji5KlJVnHfn/lN9h/RqXHX5paP3v5csVZAE39MZqvPb+m+bIdM8yvU7omwzeCMwdGb77u5gk6hzr7+H4CTz9qbMYn439OaY+2I=
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by CH0PR10MB5372.namprd10.prod.outlook.com (2603:10b6:610:c2::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Wed, 15 Nov
- 2023 13:54:23 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::abe0:e274:435c:5660%4]) with mapi id 15.20.6977.018; Wed, 15 Nov 2023
- 13:54:23 +0000
-To:     Kees Cook <keescook@chromium.org>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Niklas Cassel <Niklas.Cassel@wdc.com>,
-        James Seo <james@equiv.tech>,
-        Sathya Prakash <sathya.prakash@broadcom.com>,
-        Sreekanth Reddy <sreekanth.reddy@broadcom.com>,
-        Suganath Prabu Subramani 
-        <suganath-prabu.subramani@broadcom.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        MPT-FusionLinux.pdl@broadcom.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] scsi: mpt3sas: Use flexible arrays and do a
- few cleanups
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1o7fv2kcx.fsf@ca-mkp.ca.oracle.com>
-References: <20230806170604.16143-1-james@equiv.tech>
-        <202310230929.494FD6E14E@keescook>
-        <yq1il6vfoiu.fsf@ca-mkp.ca.oracle.com>
-        <202310251533.1A27F79450@keescook>
-Date:   Wed, 15 Nov 2023 08:54:22 -0500
-In-Reply-To: <202310251533.1A27F79450@keescook> (Kees Cook's message of "Wed,
-        25 Oct 2023 15:33:43 -0700")
-Content-Type: text/plain
-X-ClientProxiedBy: BL1PR13CA0313.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::18) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        Wed, 15 Nov 2023 08:55:01 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F2DE187
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:54:56 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFBnNUg030950;
+        Wed, 15 Nov 2023 13:54:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=dka66wUauTg6oFS+tZQnvbXhJ6hWL+82fFo2lu0kdvM=;
+ b=fbeI1fjzhjr9r6no0GVFqqwmzYYXOmh8Kb/hPnPx79KisncWf5vvjdzXKdVFCbjKLCaI
+ hgg0SmmSMZzi8Du/MTrcfcU6a7MFoDg1EsoJqWpVPctSlhZ+7/SiikxRFZ8U0X3/KYlH
+ VM99PWRg++2Raa5obgBIBu6c85L/JGOHE/RV9zlwkNBo0E2x3JwYfgodj7faHgxfMmQ7
+ pEug853ZKzc2MWICssVwvfrI1wN9ER6D4vZz68AmhjpRttjSb+aVRHJWVa/RTJLUatmj
+ 6ymLc35LrGnRiEIeZEDoHTEE7EF+egcT3MTVQrdwr7EKLQ4OAIaMZ2LAoBlNTkP8x22L MQ== 
+Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucg2ua0jy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 13:54:45 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFDsjTI008314
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 13:54:45 GMT
+Received: from [10.214.66.81] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
+ 2023 05:54:43 -0800
+Message-ID: <5ee9b7a2-d10f-791e-8880-2c0e2389529e@quicinc.com>
+Date:   Wed, 15 Nov 2023 19:24:39 +0530
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|CH0PR10MB5372:EE_
-X-MS-Office365-Filtering-Correlation-Id: eb4a0c0c-174f-4e3e-4b91-08dbe5e25fbd
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: UVr2rqPF5/0TLHI+vfzI7CbmVN53NPCNhl/0HgB9/b3Txiu1aApTdyfu9XevgnnL5GZrFNcdF7JBVqP2p7F3hlBwWQQq9T99T+jwfaa0LaAmGI63913+yOWHZPTY5qRIRTxeSv60FO2MqqUZNGzBBz1PzcCfC57xKOlEaj5Zipqhqe03wMwobUYJuHUAI2YxHxGAGiF4x4eEXrcT4U7ubuODit6YAFe8c4OPpeVW7qJzsK4Z4mkvDuoEoYpoA9Aw9mk9aGvH608P59g7eg2vkqrzPJl3UZeV1hMdeMXgvN272JbRtkZQ3wptQ7I4QVoLBDIBKTjFynSWt4Milqg5sxRg1t1u9vOPGFULWWbAEXRlgr4iXvTi6rH3ctMJPX+qKQ0NXOslCaWA054xiqGp8g3J58v6+1Y/TCmMGMLay0XlqJYmPPjAa3g8ctQ9XsGoEnI8JlHGHFrrgRY5HbsPikcg7xYFUViuS0HDwybrlqmDaLlXcq/3D5Q6gtKFML1uOx4Be2GBm7YDYppuQa0Bu95b6tqZCQs4p4Pdpj8odEtHmj1aL/Ggez4410QXesA97M0ZvPvEMTdj1seOwkk6gFVMOLWQJg3VFhlKovZG6Yk=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(396003)(39860400002)(376002)(136003)(366004)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(4326008)(2906002)(7416002)(8676002)(8936002)(26005)(478600001)(6916009)(6486002)(558084003)(86362001)(66946007)(5660300002)(316002)(54906003)(66556008)(66476007)(38100700002)(36916002)(41300700001)(6512007)(6506007)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/MKgVVsrtnynpVazH8ob6eH5NkGSp7TuGaJKAGlLKDpYXpYsHHiwXjWbFBTv?=
- =?us-ascii?Q?gq1a4uHLdzZSj9/gIzfZq1uKheAwc3vWrNaoojrHyZhv+M7wuKjVvejHFLjG?=
- =?us-ascii?Q?WMqDWlPIvv7gsJB8XnEjGxeIspn/sUIvvicCqtQlgVCi1Qft4bQOI/b2kK3J?=
- =?us-ascii?Q?sdGFg4wDvLYd/W2KtbSwzN7KTzhmG4FfZKGBXgcvrejcG6oVO7muLwkNXgmQ?=
- =?us-ascii?Q?cR76mz/Trc1H2LvthOD6Qy6Hap/bZTAJBQVnzojG2djNOCeQZFzgcOxQZDis?=
- =?us-ascii?Q?C9kncHOkjWn+U8NHZLBDVayVFlXTpYotnTf1dX3OAygu50oLIsTQT2xgi+Se?=
- =?us-ascii?Q?SnpuOtaqSaIZYM1oiRA7mQHmxakV0EDJqJFEKMT6xnhqzDoskyoCpd6xbG4Y?=
- =?us-ascii?Q?7LSb34ymSJyUYU+I+rQv/mFqUvY/bW6TcG7wQIyKXHyUBybhz2j7WlxghaBJ?=
- =?us-ascii?Q?mHeWCQakeOmg4Uth7/EoUqlI2dEMbPeMoN2PBNRVV5iGKY3CEltQN4upzHP3?=
- =?us-ascii?Q?S5gWXauQGez5DulKNZ7mBbFTFVHK33IaKG07koPwSsIIBDaUl48Fe9D0F3/3?=
- =?us-ascii?Q?4sIzofa8jA6vWiODnyMjx4Mtzw9BdUJmVO2W7gZQCMCSFFIdGIEaS9g4bTeu?=
- =?us-ascii?Q?wzJKDsBTE0ia7ZDs6rKcqIzI4jFBLjM7MT1/x+VZvPmH4mqMIEab9Egeb39K?=
- =?us-ascii?Q?T1bX6BTdpb11UqFyGILQdrTGlMYHHV7sZo1d89CbVfjPYjXDD8NzZItCoVs+?=
- =?us-ascii?Q?r7+lhI3l0yTh4ftYrmCStoSWqSIdNJi8F2FyUTqWgCAR1JGYRGBVGMAhL9Qi?=
- =?us-ascii?Q?iM/6TXFlxInK/U7/fkgz8f3pAwnTaBPUg7K1xo8FoUjniBM8syp/Z81kvYia?=
- =?us-ascii?Q?OslGBYcAJQih9BxvF3k+1+1t+tndKSHcx2oQ/Pnz4tpWlZhW+ZPQaFZ7KuoZ?=
- =?us-ascii?Q?2oFdxXk78rpu3rFIeJggTTGTfMO0NbrNBdXlwe7lXSY+8PO8tcKrM0b+YZ79?=
- =?us-ascii?Q?dQnNqgApZS6n4pZe07jaH6naWOlktGT27OHtYSUjoWimY8efoyeyD6Kzfzyx?=
- =?us-ascii?Q?K/TfhzcdcqFCDgBka8asjhlMYjsno1mp2rK+9gVRbz7lIp3gesUNXLFgizR3?=
- =?us-ascii?Q?rWy5G1cknUfHkzOrZnii1p1iufQifrxPy0MHRziXdGZtazeT/Ru8ILWgR+zN?=
- =?us-ascii?Q?E7ibtdfld2cmUJrivUP6vVaTYHlOIywN7MNECjLRXlj7gqPqiBLP3HqfFM2M?=
- =?us-ascii?Q?+WS76p4MZGzItVju1iwVt6BfYitBhxuNSHbIpWcNci2WvEoGAvzaBvJi1wZN?=
- =?us-ascii?Q?XfqEajPSB5Yb4VngWyMqSdfgco3/5pgfnSPjX+EIwasz0ZINMo1DWBYHlP5c?=
- =?us-ascii?Q?zZ2sao0A/B/sOQSxEzSR8vtTqveEMZ2H0i6m2ERx0Nq0M3hruXLIZ+aYkJYB?=
- =?us-ascii?Q?qX4xJtFlWNhH2HrATF0C9pOHeHuid6bIxfHlA4iwj1A4+BUCZs5b4+PjLIzK?=
- =?us-ascii?Q?N0QmH50qXsDOcx7EULXDqjojGsK7BSQc3vaASvReSyNInVtVwGUXv1mM8rg8?=
- =?us-ascii?Q?E9sK97l1siNbRUN0xKdWTWITC/GBccQYzJPKZetFsBrMI/vDShH27bKiHLDH?=
- =?us-ascii?Q?Gw=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: =?us-ascii?Q?vBx9sMzn9+WIe4vkOOv87AD/cGXg4q/gDERywqvMbgQU6RWy8ExrCkmq8LzK?=
- =?us-ascii?Q?cnoFDAZrI02aqnEcXqdaN9gQbjSdCuX0ysNo5iijTsinPTy4fTwKJ3aEZZBS?=
- =?us-ascii?Q?p06uHUbUxVyDGt4jcOgvAMs1YzESMvge5hMFWdlqkpOym6AJSHxg07piW/z7?=
- =?us-ascii?Q?PGGTRh1SDytp3ZaniOjnW/xr76Cur4gfz6WEnHpwwae2vKMCJPf9my4fPL/L?=
- =?us-ascii?Q?lQp0/9ozbfvwzPmSx/Kco1Oj7sWlRSORbkiodXxDpjKRpjOmqjNBAo9XZGoC?=
- =?us-ascii?Q?NETdKSMXWliqHwCA6bHW8UluT9utU0/59FJl14kdbuX5KuHL1k9LQnhnLi4V?=
- =?us-ascii?Q?IYb/XmfYgk9nCVDx5FEyGRA6GC1asY027ERRHB+eaJffMg3UAXG02oa36PBm?=
- =?us-ascii?Q?emXP5e4D3OZeSKWce4UOaereWUW0edHQuAjeMGjB/RkIQKHU4+PMP610gBlt?=
- =?us-ascii?Q?ZtSIuB3XppGUBbHvNl0Glrjb6B4ry7yic+60afhXYWsNoJdCSHIUfJX+uleU?=
- =?us-ascii?Q?EV58c/HVBI65qR1Exf+gOX7hO6wttP3ui47pa5Wd1v+/VOekxXEHv4EliLAy?=
- =?us-ascii?Q?iYV72ivKIGUqtge8MrONfDjr7THaEueuVwJ0yRxlezl5Ilv4gJjqwo2lWwlD?=
- =?us-ascii?Q?H4Tm8pr0VXwfpRALv7zJMgKIXQp8PPuyjl3f+d6Cy9fPURDPQW2EStGDR1kT?=
- =?us-ascii?Q?lZxOtDEG0XoIIsLsKbhgGPLhtOsljd+xMz8+8TiqRsEoTVYeejxLzbzmuDTB?=
- =?us-ascii?Q?slZGcDa7YCd4OVu/3mpE9s9rwV6MzoEQbfP1by2vZt5IAMJjkV8bAhKyog5B?=
- =?us-ascii?Q?YyK2Osi84kZOmqI7+VngnOTbAB/CS8fejGu3SvyBMVywaut6i7VZjjOqQW33?=
- =?us-ascii?Q?1o2guEvwl6RVJaKq3Z/hZe5Pqruen87Pi+K4If3xtUF21X69+h1UEX+iDPIv?=
- =?us-ascii?Q?Ou/PH6XgmlCVkBoklGFGNzjghSfohy+kkZrlYRaGjcg=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eb4a0c0c-174f-4e3e-4b91-08dbe5e25fbd
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 13:54:23.5875
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: z2GO8HQNO112N9Sz30IUMWrIoHw3/MV3VEw3WA8IHtU3PwdJ6I0sD75Uo/Nzn2b4LR5nl7R9MZl6bTVhsfjs7PaZxK6IwBkhMRnHK96adNI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR10MB5372
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] workqueue: Make a warning when a pending delay work being
+ re-init
+Content-Language: en-US
+To:     huangzaiyang <huangzaiyang@oppo.com>, <tj@kernel.org>,
+        <jiangshanlai@gmail.com>
+CC:     <linux-kernel@vger.kernel.org>, ZaiYang Huang <hzy0719@163.com>
+References: <20231115113427.1420-1-huangzaiyang@oppo.com>
+From:   Mukesh Ojha <quic_mojha@quicinc.com>
+In-Reply-To: <20231115113427.1420-1-huangzaiyang@oppo.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Zz-3gVOQW8cu8qDwym19yV2jUGf8vpoc
+X-Proofpoint-GUID: Zz-3gVOQW8cu8qDwym19yV2jUGf8vpoc
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-15_13,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 bulkscore=0
- phishscore=0 suspectscore=0 mlxlogscore=936 spamscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311150108
-X-Proofpoint-ORIG-GUID: Kejr-HfJy-4JLPb6ZwMdGmE7f7JQB_9g
-X-Proofpoint-GUID: Kejr-HfJy-4JLPb6ZwMdGmE7f7JQB_9g
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311150108
+X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -178,12 +81,118 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Kees,
 
->> I'm a bit concerned bringing this in just before the merge window.
->> Please ping me if I forget to merge once -rc1 is out.
+On 11/15/2023 5:04 PM, huangzaiyang wrote:
+> There is a timer_list race condition if a delay work is queued twice,
+> this usually won't happen unless someone reinitializes the task before performing the enqueue operation,likeï¼?
+> https://github.com/torvalds/linux/blob/master/drivers/devfreq/devfreq.c#L487
+> A warning message will help developers identify this irregular usage.
+> 
+> Signed-off-by: ZaiYang Huang <hzy0719@163.com>
 
-Applied to 6.8/scsi-staging, thanks!
+I like the idea to have this for developers.
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
+Acked-by: Mukesh Ojha <quic_mojha@quicinc.com>
+
+> ---
+>   include/linux/workqueue.h | 33 ++++++++++++++++++---------------
+>   1 file changed, 18 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
+> index 24b1e5070f4d..54102ed794e5 100644
+> --- a/include/linux/workqueue.h
+> +++ b/include/linux/workqueue.h
+> @@ -266,6 +266,22 @@ static inline void destroy_delayed_work_on_stack(struct delayed_work *work) { }
+>   static inline unsigned int work_static(struct work_struct *work) { return 0; }
+>   #endif
+> 
+> +/**
+> + * work_pending - Find out whether a work item is currently pending
+> + * @work: The work item in question
+> + */
+> +#define work_pending(work) \
+> +       test_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))
+> +
+> +/**
+> + * delayed_work_pending - Find out whether a delayable work item is currently
+> + * pending
+> + * @w: The work item in question
+> + */
+> +#define delayed_work_pending(w) \
+> +       work_pending(&(w)->work)
+> +
+> +
+>   /*
+>    * initialize all of a work item in one go
+>    *
+> @@ -310,6 +326,7 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+> 
+>   #define __INIT_DELAYED_WORK(_work, _func, _tflags)                     \
+>          do {                                                            \
+> +               WARN_ON(delayed_work_pending(_work));                   \
+>                  INIT_WORK(&(_work)->work, (_func));                     \
+>                  __init_timer(&(_work)->timer,                           \
+>                               delayed_work_timer_fn,                     \
+> @@ -318,6 +335,7 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+> 
+>   #define __INIT_DELAYED_WORK_ONSTACK(_work, _func, _tflags)             \
+>          do {                                                            \
+> +               WARN_ON(delayed_work_pending(_work));
+
+However, I don't think it will be applicable for _ONSTACK variable as it
+is on stack.
+                    \
+>                  INIT_WORK_ONSTACK(&(_work)->work, (_func));             \
+>                  __init_timer_on_stack(&(_work)->timer,                  \
+>                                        delayed_work_timer_fn,            \
+> @@ -342,21 +360,6 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+>   #define INIT_RCU_WORK_ONSTACK(_work, _func)                            \
+>          INIT_WORK_ONSTACK(&(_work)->work, (_func))
+> 
+> -/**
+> - * work_pending - Find out whether a work item is currently pending
+> - * @work: The work item in question
+> - */
+> -#define work_pending(work) \
+> -       test_bit(WORK_STRUCT_PENDING_BIT, work_data_bits(work))
+> -
+> -/**
+> - * delayed_work_pending - Find out whether a delayable work item is currently
+> - * pending
+> - * @w: The work item in question
+> - */
+> -#define delayed_work_pending(w) \
+> -       work_pending(&(w)->work)
+> -
+>   /*
+>    * Workqueue flags and constants.  For details, please refer to
+>    * Documentation/core-api/workqueue.rst.
+> --
+> 2.17.1
+
+Please remove this ..
+
+-Mukesh
+> 
+> ________________________________
+> OPPO
+> 
+> ±¾µç×ÓÓÊ¼þ¼°Æä¸½¼þº¬ÓÐOPPO¹«Ë¾µÄ±£ÃÜÐÅÏ¢£¬½öÏÞÓÚÓÊ¼þÖ¸Ã÷µÄÊÕ¼þÈË£¨°üº¬¸öÈË¼°Èº×é£©Ê¹ÓÃ¡£½ûÖ¹ÈÎºÎÈËÔÚÎ´¾­ÊÚÈ¨µÄÇé¿öÏÂÒÔÈÎºÎÐÎÊ½Ê¹ÓÃ¡£Èç¹ûÄú´íÊÕÁË±¾ÓÊ¼þ£¬ÇÐÎð´«²¥¡¢·Ö·¢¡¢¸´ÖÆ¡¢Ó¡Ë¢»òÊ¹ÓÃ±¾ÓÊ¼þÖ®ÈÎºÎ²¿·Ö»òÆäËùÔØÖ®ÈÎºÎÄÚÈÝ£¬²¢ÇëÁ¢¼´ÒÔµç×ÓÓÊ¼þÍ¨Öª·¢¼þÈË²¢É¾³ý±¾ÓÊ¼þ¼°Æä¸½¼þ¡£
+> ÍøÂçÍ¨Ñ¶¹ÌÓÐÈ±ÏÝ¿ÉÄÜµ¼ÖÂÓÊ¼þ±»½ØÁô¡¢ÐÞ¸Ä¡¢¶ªÊ§¡¢ÆÆ»µ»ò°üº¬¼ÆËã»ú²¡¶¾µÈ²»°²È«Çé¿ö£¬OPPO¶Ô´ËÀà´íÎó»òÒÅÂ©¶øÒýÖÂÖ®ÈÎºÎËðÊ§¸Å²»³Ðµ£ÔðÈÎ²¢±£ÁôÓë±¾ÓÊ¼þÏà¹ØÖ®Ò»ÇÐÈ¨Àû¡£
+> ³ý·ÇÃ÷È·ËµÃ÷£¬±¾ÓÊ¼þ¼°Æä¸½¼þÎÞÒâ×÷ÎªÔÚÈÎºÎ¹ú¼Ò»òµØÇøÖ®ÒªÔ¼¡¢ÕÐÀ¿»ò³ÐÅµ£¬ÒàÎÞÒâ×÷ÎªÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ¡£ ·¢¼þÈË¡¢ÆäËùÊô»ú¹¹»òËùÊô»ú¹¹Ö®¹ØÁª»ú¹¹»òÈÎºÎÉÏÊö»ú¹¹Ö®¹É¶«¡¢¶­ÊÂ¡¢¸ß¼¶¹ÜÀíÈËÔ±¡¢Ô±¹¤»òÆäËûÈÎºÎÈË£¨ÒÔÏÂ³Æ¡°·¢¼þÈË¡±»ò¡°OPPO¡±£©²»Òò±¾ÓÊ¼þÖ®ÎóËÍ¶ø·ÅÆúÆäËùÏíÖ®ÈÎºÎÈ¨Àû£¬Òà²»¶ÔÒò¹ÊÒâ»ò¹ýÊ§Ê¹ÓÃ¸ÃµÈÐÅÏ¢¶øÒý·¢»ò¿ÉÄÜÒý·¢µÄËðÊ§³Ðµ£ÈÎºÎÔðÈÎ¡£
+> ÎÄ»¯²îÒìÅûÂ¶£ºÒòÈ«ÇòÎÄ»¯²îÒìÓ°Ïì£¬µ¥´¿ÒÔYES\OK»òÆäËû¼òµ¥´Ê»ãµÄ»Ø¸´²¢²»¹¹³É·¢¼þÈË¶ÔÈÎºÎ½»Ò×»òºÏÍ¬Ö®ÕýÊ½È·ÈÏ»ò½ÓÊÜ£¬ÇëÓë·¢¼þÈËÔÙ´ÎÈ·ÈÏÒÔ»ñµÃÃ÷È·ÊéÃæÒâ¼û¡£·¢¼þÈË²»¶ÔÈÎºÎÊÜÎÄ»¯²îÒìÓ°Ïì¶øµ¼ÖÂ¹ÊÒâ»ò´íÎóÊ¹ÓÃ¸ÃµÈÐÅÏ¢ËùÔì³ÉµÄÈÎºÎÖ±½Ó»ò¼ä½ÓËðº¦³Ðµ£ÔðÈÎ¡£
+> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
+> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
+> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
+> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
+> ________________________________
+> OPPO
+> 
+> 本电子邮件及其附件含有OPPO公司的保密信息，仅限于邮件指明的收件人（包含个人及群组）使用。禁止任何人在未经授权的情况下以任何形式使用。如果您错收了本邮件，切勿传播、分发、复制、印刷或使用本邮件之任何部分或其所载之任何内容，并请立即以电子邮件通知发件人并删除本邮件及其附件。
+> 网络通讯固有缺陷可能导致邮件被截留、修改、丢失、破坏或包含计算机病毒等不安全情况，OPPO对此类错误或遗漏而引致之任何损失概不承担责任并保留与本邮件相关之一切权利。
+> 除非明确说明，本邮件及其附件无意作为在任何国家或地区之要约、招揽或承诺，亦无意作为任何交易或合同之正式确认。 发件人、其所属机构或所属机构之关联机构或任何上述机构之股东、董事、高级管理人员、员工或其他任何人（以下称“发件人”或“OPPO”）不因本邮件之误送而放弃其所享之任何权利，亦不对因故意或过失使用该等信息而引发或可能引发的损失承担任何责任。
+> 文化差异披露：因全球文化差异影响，单纯以YES\OK或其他简单词汇的回复并不构成发件人对任何交易或合同之正式确认或接受，请与发件人再次确认以获得明确书面意见。发件人不对任何受文化差异影响而导致故意或错误使用该等信息所造成的任何直接或间接损害承担责任。
+> This e-mail and its attachments contain confidential information from OPPO, which is intended only for the person or entity whose address is listed above. Any use of the information contained herein in any way (including, but not limited to, total or partial disclosure, reproduction, or dissemination) by persons other than the intended recipient(s) is prohibited. If you are not the intended recipient, please do not read, copy, distribute, or use this information. If you have received this transmission in error, please notify the sender immediately by reply e-mail and then delete this message.
+> Electronic communications may contain computer viruses or other defects inherently, may not be accurately and/or timely transmitted to other systems, or may be intercepted, modified ,delayed, deleted or interfered. OPPO shall not be liable for any damages that arise or may arise from such matter and reserves all rights in connection with the email.
+> Unless expressly stated, this e-mail and its attachments are provided without any warranty, acceptance or promise of any kind in any country or region, nor constitute a formal confirmation or acceptance of any transaction or contract. The sender, together with its affiliates or any shareholder, director, officer, employee or any other person of any such institution (hereinafter referred to as "sender" or "OPPO") does not waive any rights and shall not be liable for any damages that arise or may arise from the intentional or negligent use of such information.
+> Cultural Differences Disclosure: Due to global cultural differences, any reply with only YES\OK or other simple words does not constitute any confirmation or acceptance of any transaction or contract, please confirm with the sender again to ensure clear opinion in written form. The sender shall not be responsible for any direct or indirect damages resulting from the intentional or misuse of such information.
