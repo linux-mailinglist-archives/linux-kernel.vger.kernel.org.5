@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 453A77EC4C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E42A57EC4C0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:09:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344134AbjKOOJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:09:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        id S1344148AbjKOOJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:09:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344122AbjKOOJC (ORCPT
+        with ESMTP id S1344129AbjKOOJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:09:02 -0500
+        Wed, 15 Nov 2023 09:09:05 -0500
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 267AEAC;
-        Wed, 15 Nov 2023 06:08:59 -0800 (PST)
-Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDrhGU015437;
-        Wed, 15 Nov 2023 14:08:48 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7A6CC5;
+        Wed, 15 Nov 2023 06:09:01 -0800 (PST)
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFBgddB013617;
+        Wed, 15 Nov 2023 14:08:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding : content-type; s=qcppdkim1;
- bh=ACeIv0gd2tHOeUGVi71LfYiWOVkoF4WrCPcf1rDwtuk=;
- b=ZTSOYblDPA5SkhcFPxLH56PogfO/UuP+egXq4bkl5qqC7EGUBdxKdeWR0yjeRj9pU89F
- jTMbP89Ma33pm89zGL0pjbfUNRbVjjAkMeVFVfxog0KkECciaR2Zg8ax/ASLA86Yvodf
- xVqk4/Erc4LiQv0CPpvTRYii9H+tDBfjFtjiyS0sBEqkIS2b1HRIekBOJIvDKOwBJNgU
- qktbOM6YTdnxUhPAYV3HBDcr/U0HAKFuvttVh6ooJwXU2HdzDbexYigHR14D+efNJZo1
- MlWMLYIVKC324mnyIFgWFTV8hm8DJih/UtWtk3TW2PpWU3sbfq+ng1+AW0JOJsICnb/d CA== 
+ bh=lbd+Zrs6s/evKvo0xLI+MWTKrpEWpt+Gp3cYTw1rZk8=;
+ b=k1AInPWwN1jJqJHWuKv0hhktbJzmttH9HDAGmV7FS6MwYspYqogiSyWJj9HeSl+J8ZPh
+ 2CxQGVyI2u/qJyKOxPS6nwaiASbf8oBBw06NUEEeI8mWASX/p58nyYriOwF+1XA90rvY
+ nrPm3O62uJomXb/ACiEBYkWu2F92ikS7gzopKEV54aCeevAejAF5a07N6gcbsB07NHPx
+ p7CBsjz2AhqvCsnIOJ+zk9bEHQoEbxy6DzF52jKaI2QYsYO3OgOFa0f8MPRrW7IbCbqj
+ JXZwEswN786etcBEmCga7gmMjzTUB+J8vRafb9DlNLJn24NS00SZvgnHBogKXn9ZyqwP xw== 
 Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3uck901m9h-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucmbahfhf-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 14:08:47 +0000
+        Wed, 15 Nov 2023 14:08:50 +0000
 Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFE8ke7015987
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFE8nR0016010
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 14:08:46 GMT
+        Wed, 15 Nov 2023 14:08:49 GMT
 Received: from akronite-sh-dev02.qualcomm.com (10.80.80.8) by
  nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 15 Nov 2023 06:08:43 -0800
+ 15.2.1118.39; Wed, 15 Nov 2023 06:08:46 -0800
 From:   Luo Jie <quic_luoj@quicinc.com>
 To:     <andrew@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
         <kuba@kernel.org>, <pabeni@redhat.com>, <robh+dt@kernel.org>,
@@ -46,9 +46,9 @@ To:     <andrew@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
         <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <corbet@lwn.net>
 CC:     <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
-Subject: [PATCH v3 2/6] net: phy: introduce core support for phy-mode = "10g-qxgmii"
-Date:   Wed, 15 Nov 2023 22:06:26 +0800
-Message-ID: <20231115140630.10858-3-quic_luoj@quicinc.com>
+Subject: [PATCH v3 3/6] net: phy: at803x: add QCA8084 ethernet phy support
+Date:   Wed, 15 Nov 2023 22:06:27 +0800
+Message-ID: <20231115140630.10858-4-quic_luoj@quicinc.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231115140630.10858-1-quic_luoj@quicinc.com>
 References: <20231115140630.10858-1-quic_luoj@quicinc.com>
@@ -60,15 +60,15 @@ X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
  nasanex01c.na.qualcomm.com (10.45.79.139)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: aAi4rUSm8-zhoJVbyLcwMYkvYJOM742r
-X-Proofpoint-ORIG-GUID: aAi4rUSm8-zhoJVbyLcwMYkvYJOM742r
+X-Proofpoint-GUID: J9fOIuum4qdXexKl-JpkHhRM-gVN_oVU
+X-Proofpoint-ORIG-GUID: J9fOIuum4qdXexKl-JpkHhRM-gVN_oVU
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_13,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=999
- clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
- impostorscore=0 adultscore=0 lowpriorityscore=0 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ definitions=2023-11-15_12,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxlogscore=920 impostorscore=0 spamscore=0
+ lowpriorityscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2311060000 definitions=main-2311150109
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
@@ -79,161 +79,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vladimir Oltean <vladimir.oltean@nxp.com>
+Add qca8084 PHY support, which is four-port PHY with maximum
+link capability 2.5G, the features of each port is almost same
+as QCA8081 and slave seed config is not needed.
 
-10G-QXGMII is a MAC-to-PHY interface defined by the USXGMII multiport
-specification. It uses the same signaling as USXGMII, but it multiplexes
-4 ports over the link, resulting in a maximum speed of 2.5G per port.
+Three kind of interface modes supported by qca8084.
+PHY_INTERFACE_MODE_10G_QXGMII, PHY_INTERFACE_MODE_2500BASEX and
+PHY_INTERFACE_MODE_SGMII.
 
-Some in-tree SoCs like the NXP LS1028A use "usxgmii" when they mean
-either the single-port USXGMII or the quad-port 10G-QXGMII variant, and
-they could get away just fine with that thus far. But there is a need to
-distinguish between the 2 as far as SerDes drivers are concerned.
+The PCS(serdes) and clock are also needed to be configured to
+bringup qca8084 PHY, which will be added in the pcs driver.
 
-Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+The additional CDT configurations used for qca8084.
+
 Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
 ---
- .../devicetree/bindings/net/ethernet-controller.yaml |  1 +
- Documentation/networking/phy.rst                     |  6 ++++++
- drivers/net/phy/phy-core.c                           |  1 +
- drivers/net/phy/phylink.c                            | 12 ++++++++++--
- include/linux/phy.h                                  |  4 ++++
- include/linux/phylink.h                              |  1 +
- 6 files changed, 23 insertions(+), 2 deletions(-)
+ drivers/net/phy/at803x.c | 48 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.yaml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-index 9f6a5ccbcefe..044880d804db 100644
---- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-+++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-@@ -104,6 +104,7 @@ properties:
-       - usxgmii
-       - 10gbase-r
-       - 25gbase-r
-+      - 10g-qxgmii
+diff --git a/drivers/net/phy/at803x.c b/drivers/net/phy/at803x.c
+index 37fb033e1c29..471d5c13d76d 100644
+--- a/drivers/net/phy/at803x.c
++++ b/drivers/net/phy/at803x.c
+@@ -176,6 +176,7 @@
+ #define AT8030_PHY_ID_MASK			0xffffffef
  
-   phy-mode:
-     $ref: "#/properties/phy-connection-type"
-diff --git a/Documentation/networking/phy.rst b/Documentation/networking/phy.rst
-index 1283240d7620..f64641417c54 100644
---- a/Documentation/networking/phy.rst
-+++ b/Documentation/networking/phy.rst
-@@ -327,6 +327,12 @@ Some of the interface modes are described below:
-     This is the Penta SGMII mode, it is similar to QSGMII but it combines 5
-     SGMII lines into a single link compared to 4 on QSGMII.
+ #define QCA8081_PHY_ID				0x004dd101
++#define QCA8084_PHY_ID				0x004dd180
  
-+``PHY_INTERFACE_MODE_10G_QXGMII``
-+    Represents the 10G-QXGMII PHY-MAC interface as defined by the Cisco USXGMII
-+    Multiport Copper Interface document. It supports 4 ports over a 10.3125 GHz
-+    SerDes lane, each port having speeds of 2.5G / 1G / 100M / 10M achieved
-+    through symbol replication. The PCS expects the standard USXGMII code word.
+ #define QCA8327_A_PHY_ID			0x004dd033
+ #define QCA8327_B_PHY_ID			0x004dd034
+@@ -1760,6 +1761,9 @@ static bool qca808x_is_prefer_master(struct phy_device *phydev)
+ 
+ static bool qca808x_has_fast_retrain_or_slave_seed(struct phy_device *phydev)
+ {
++	if (phydev_id_compare(phydev, QCA8084_PHY_ID))
++		return false;
 +
- Pause frames / flow control
- ===========================
+ 	return linkmode_test_bit(ETHTOOL_LINK_MODE_2500baseT_Full_BIT, phydev->supported);
+ }
  
-diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
-index 966c93cbe616..1cd58723d6d0 100644
---- a/drivers/net/phy/phy-core.c
-+++ b/drivers/net/phy/phy-core.c
-@@ -141,6 +141,7 @@ int phy_interface_num_ports(phy_interface_t interface)
- 		return 1;
- 	case PHY_INTERFACE_MODE_QSGMII:
- 	case PHY_INTERFACE_MODE_QUSGMII:
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
- 		return 4;
- 	case PHY_INTERFACE_MODE_PSGMII:
- 		return 5;
-diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
-index 162f51b0986a..e9ab20bd6984 100644
---- a/drivers/net/phy/phylink.c
-+++ b/drivers/net/phy/phylink.c
-@@ -191,6 +191,7 @@ static unsigned int phylink_pcs_neg_mode(unsigned int mode, phy_interface_t inte
- 	case PHY_INTERFACE_MODE_QSGMII:
- 	case PHY_INTERFACE_MODE_QUSGMII:
- 	case PHY_INTERFACE_MODE_USXGMII:
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
- 		/* These protocols are designed for use with a PHY which
- 		 * communicates its negotiation result back to the MAC via
- 		 * inband communication. Note: there exist PHYs that run
-@@ -283,6 +284,7 @@ static int phylink_interface_max_speed(phy_interface_t interface)
- 		return SPEED_1000;
+@@ -1824,6 +1828,21 @@ static int qca808x_read_status(struct phy_device *phydev)
+ 		return ret;
  
- 	case PHY_INTERFACE_MODE_2500BASEX:
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
- 		return SPEED_2500;
- 
- 	case PHY_INTERFACE_MODE_5GBASER:
-@@ -552,7 +554,11 @@ static unsigned long phylink_get_capabilities(phy_interface_t interface,
- 
- 	switch (interface) {
- 	case PHY_INTERFACE_MODE_USXGMII:
--		caps |= MAC_10000FD | MAC_5000FD | MAC_2500FD;
-+		caps |= MAC_10000FD | MAC_5000FD;
-+		fallthrough;
+ 	if (phydev->link) {
++		/* There are two PCSs available for QCA8084, which support the following
++		 * interface modes.
++		 *
++		 * 1. PHY_INTERFACE_MODE_10G_QXGMII utilizes PCS1 for all available 4 ports,
++		 * which is for all link speeds.
++		 *
++		 * 2. PHY_INTERFACE_MODE_2500BASEX utilizes PCS0 for the fourth port,
++		 * which is only for the link speed 2500M same as QCA8081.
++		 *
++		 * 3. PHY_INTERFACE_MODE_SGMII utilizes PCS0 for the fourth port,
++		 * which is for the link speed 10M, 100M and 1000M same as QCA8081.
++		 */
++		if (phydev->interface == PHY_INTERFACE_MODE_10G_QXGMII)
++			return 0;
 +
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
-+		caps |= MAC_2500FD;
- 		fallthrough;
+ 		if (phydev->speed == SPEED_2500)
+ 			phydev->interface = PHY_INTERFACE_MODE_2500BASEX;
+ 		else
+@@ -1958,6 +1977,14 @@ static int qca808x_cable_test_start(struct phy_device *phydev)
+ 	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807a, 0xc060);
+ 	phy_write_mmd(phydev, MDIO_MMD_PCS, 0x807e, 0xb060);
  
- 	case PHY_INTERFACE_MODE_RGMII_TXID:
-@@ -972,6 +978,7 @@ static int phylink_parse_mode(struct phylink *pl,
- 			phylink_set(pl->supported, 25000baseSR_Full);
- 			fallthrough;
- 		case PHY_INTERFACE_MODE_USXGMII:
-+		case PHY_INTERFACE_MODE_10G_QXGMII:
- 		case PHY_INTERFACE_MODE_10GKR:
- 		case PHY_INTERFACE_MODE_10GBASER:
- 			phylink_set(pl->supported, 10baseT_Half);
-@@ -1844,7 +1851,8 @@ static int phylink_bringup_phy(struct phylink *pl, struct phy_device *phy,
- 	if (phy->is_c45 && config.rate_matching == RATE_MATCH_NONE &&
- 	    interface != PHY_INTERFACE_MODE_RXAUI &&
- 	    interface != PHY_INTERFACE_MODE_XAUI &&
--	    interface != PHY_INTERFACE_MODE_USXGMII)
-+	    interface != PHY_INTERFACE_MODE_USXGMII &&
-+	    interface != PHY_INTERFACE_MODE_10G_QXGMII)
- 		config.interface = PHY_INTERFACE_MODE_NA;
- 	else
- 		config.interface = interface;
-diff --git a/include/linux/phy.h b/include/linux/phy.h
-index 3cc52826f18e..e0af0378e2a1 100644
---- a/include/linux/phy.h
-+++ b/include/linux/phy.h
-@@ -125,6 +125,7 @@ extern const int phy_10gbit_features_array[1];
-  * @PHY_INTERFACE_MODE_10GKR: 10GBASE-KR - with Clause 73 AN
-  * @PHY_INTERFACE_MODE_QUSGMII: Quad Universal SGMII
-  * @PHY_INTERFACE_MODE_1000BASEKX: 1000Base-KX - with Clause 73 AN
-+ * @PHY_INTERFACE_MODE_10G_QXGMII: 10G-QXGMII - 4 ports over 10G USXGMII
-  * @PHY_INTERFACE_MODE_MAX: Book keeping
-  *
-  * Describes the interface between the MAC and PHY.
-@@ -165,6 +166,7 @@ typedef enum {
- 	PHY_INTERFACE_MODE_10GKR,
- 	PHY_INTERFACE_MODE_QUSGMII,
- 	PHY_INTERFACE_MODE_1000BASEKX,
-+	PHY_INTERFACE_MODE_10G_QXGMII,
- 	PHY_INTERFACE_MODE_MAX,
- } phy_interface_t;
++	if (phydev_id_compare(phydev, QCA8084_PHY_ID)) {
++		/* Adjust the positive and negative pulse thereshold of CDT */
++		phy_write_mmd(phydev, MDIO_MMD_PCS, 0x8075, 0xa060);
++
++		/* Disable the near echo bypass */
++		phy_modify_mmd(phydev, MDIO_MMD_PCS, 0x807f, BIT(15), 0);
++	}
++
+ 	return 0;
+ }
  
-@@ -286,6 +288,8 @@ static inline const char *phy_modes(phy_interface_t interface)
- 		return "100base-x";
- 	case PHY_INTERFACE_MODE_QUSGMII:
- 		return "qusgmii";
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
-+		return "10g-qxgmii";
- 	default:
- 		return "unknown";
- 	}
-diff --git a/include/linux/phylink.h b/include/linux/phylink.h
-index d589f89c612c..d7e32c9f3ae1 100644
---- a/include/linux/phylink.h
-+++ b/include/linux/phylink.h
-@@ -614,6 +614,7 @@ static inline int phylink_get_link_timer_ns(phy_interface_t interface)
- 	case PHY_INTERFACE_MODE_SGMII:
- 	case PHY_INTERFACE_MODE_QSGMII:
- 	case PHY_INTERFACE_MODE_USXGMII:
-+	case PHY_INTERFACE_MODE_10G_QXGMII:
- 		return 1600000;
+@@ -2227,6 +2254,26 @@ static struct phy_driver at803x_driver[] = {
+ 	.cable_test_start	= qca808x_cable_test_start,
+ 	.cable_test_get_status	= qca808x_cable_test_get_status,
+ 	.link_change_notify	= qca808x_link_change_notify,
++}, {
++	/* Qualcomm QCA8084 */
++	PHY_ID_MATCH_MODEL(QCA8084_PHY_ID),
++	.name			= "Qualcomm QCA8084",
++	.flags			= PHY_POLL_CABLE_TEST,
++	.probe			= at803x_probe,
++	.config_intr		= at803x_config_intr,
++	.handle_interrupt	= at803x_handle_interrupt,
++	.get_tunable		= at803x_get_tunable,
++	.set_tunable		= at803x_set_tunable,
++	.set_wol		= at803x_set_wol,
++	.get_wol		= at803x_get_wol,
++	.get_features		= qca808x_get_features,
++	.config_aneg		= at803x_config_aneg,
++	.suspend		= genphy_suspend,
++	.resume			= genphy_resume,
++	.read_status		= qca808x_read_status,
++	.soft_reset		= qca808x_soft_reset,
++	.cable_test_start	= qca808x_cable_test_start,
++	.cable_test_get_status	= qca808x_cable_test_get_status,
+ }, };
  
- 	case PHY_INTERFACE_MODE_1000BASEX:
+ module_phy_driver(at803x_driver);
+@@ -2242,6 +2289,7 @@ static struct mdio_device_id __maybe_unused atheros_tbl[] = {
+ 	{ PHY_ID_MATCH_EXACT(QCA8327_B_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(QCA9561_PHY_ID) },
+ 	{ PHY_ID_MATCH_EXACT(QCA8081_PHY_ID) },
++	{ PHY_ID_MATCH_MODEL(QCA8084_PHY_ID) },
+ 	{ }
+ };
+ 
 -- 
 2.42.0
 
