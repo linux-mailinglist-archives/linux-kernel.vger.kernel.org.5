@@ -2,100 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F5367EC063
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D14B47EC066
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:27:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234177AbjKOKZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 05:25:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
+        id S234133AbjKOK15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 05:27:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjKOKZv (ORCPT
+        with ESMTP id S230336AbjKOK1z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 05:25:51 -0500
-Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D6C12A
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:25:47 -0800 (PST)
-Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
-        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AF8RKgq026572;
-        Wed, 15 Nov 2023 04:25:39 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=
-        PODMain02222019; bh=WU5nZyJTrXQvRiyk3lOymBc4LYlI1sgiF28uWIkTirM=; b=
-        fcJoEjzLBcQMRe4moUkamR7m0tXtlYT0/Wil5LaBXNxAfIYnJFDSjRw/O0EerTxt
-        0W3t9sIobZh/L8mujHuIZ5wSD0uoPOFA14kILnjnflOTtjbDGJgVhkz5TrVQWk7z
-        Eb50s4oNtdIbdPHeZryazf2J7pq4glW7g8ooOlI0aNEQndzo1MSCTpVLraaOzgtO
-        XqwBM/UOZ6E6IYjsbnHWrIO+EE89VGhpBhdoou6JMfqUbbEgoIW8fj/bbJLcGmY8
-        zplycEsQWLJSHVEEgI1aiemSy76fZKLlMphtxpilno5QeU+S6IfBW4e+4KtRlTGr
-        x51Phbq/UPhg5T++YZ4GeA==
-Received: from ediex02.ad.cirrus.com ([84.19.233.68])
-        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ua6wpch3u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 04:25:39 -0600 (CST)
-Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex02.ad.cirrus.com
- (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
- 2023 10:25:37 +0000
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
- anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
- 15.2.1118.39 via Frontend Transport; Wed, 15 Nov 2023 10:25:37 +0000
-Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 7851915A1;
-        Wed, 15 Nov 2023 10:25:37 +0000 (UTC)
-Date:   Wed, 15 Nov 2023 10:25:37 +0000
-From:   Charles Keepax <ckeepax@opensource.cirrus.com>
-To:     Linus Walleij <linus.walleij@linaro.org>
-CC:     kernel test robot <lkp@intel.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: Re: drivers/pinctrl/cirrus/pinctrl-lochnagar.c:52:53: error: pasting
- "LOCHNAGAR1_" and "(" does not give a valid preprocessing token
-Message-ID: <20231115102537.GB32655@ediswmail.ad.cirrus.com>
-References: <202311071303.JJMAOjy4-lkp@intel.com>
- <CACRpkdb4d9pfstqDTZoBSqOSS4d4vLOUCnS6AKcMjLZ8TTQ2Wg@mail.gmail.com>
- <20231115093742.GA32655@ediswmail.ad.cirrus.com>
- <CACRpkdYHJcx8gDsa5P2eLBh6iaVQzZY+-4eMJPKtnQTq3uR6oQ@mail.gmail.com>
+        Wed, 15 Nov 2023 05:27:55 -0500
+Received: from harvie.cz (harvie.cz [77.87.242.242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 34105C2;
+        Wed, 15 Nov 2023 02:27:52 -0800 (PST)
+Received: from anemophobia.amit.cz (unknown [31.30.84.130])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by harvie.cz (Postfix) with ESMTPSA id B42BF1802A6;
+        Wed, 15 Nov 2023 11:27:49 +0100 (CET)
+From:   Tomas Mudrunka <tomas.mudrunka@gmail.com>
+To:     jirislaby@kernel.org
+Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, rdunlap@infradead.org,
+        tomas.mudrunka@gmail.com
+Subject: [PATCH v7] /proc/sysrq-trigger: accept multiple keys at once
+Date:   Wed, 15 Nov 2023 11:27:44 +0100
+Message-ID: <20231115102744.192576-1-tomas.mudrunka@gmail.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <670993bf-a8ef-4561-8213-6a37d0598d83@kernel.org>
+References: <670993bf-a8ef-4561-8213-6a37d0598d83@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACRpkdYHJcx8gDsa5P2eLBh6iaVQzZY+-4eMJPKtnQTq3uR6oQ@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Proofpoint-GUID: rOqXo6meEJM6lTSU5Tw9mjRheaugKhQM
-X-Proofpoint-ORIG-GUID: rOqXo6meEJM6lTSU5Tw9mjRheaugKhQM
-X-Proofpoint-Spam-Reason: safe
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
+        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,SPF_HELO_PASS,
+        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:57:29AM +0100, Linus Walleij wrote:
-> On Wed, Nov 15, 2023 at 10:37 AM Charles Keepax
-> <ckeepax@opensource.cirrus.com> wrote:
-> > On Tue, Nov 14, 2023 at 02:40:38PM +0100, Linus Walleij wrote:
-> > > On Tue, Nov 7, 2023 at 6:19 AM kernel test robot <lkp@intel.com> wrote:
-> > It has somewhat been on my radar to fix at some point, but I have
-> > in general been a little unsure how to proceed. RST feels like
-> > a mega over generic macro name to be exporting, so in some ways
-> > feels like fixing that would be nice. On the other side, renaming
-> > the register on the Lochnagar side would be very easy, although it
-> > would mean the register naming no longer matches all the hardware
-> > documentation which would be kinda lame.
-> 
-> If MIPS breaks things like this because of weird defines I would say
-> it is actually fair to just quirk it in Kconfig with a comment:
-> 
->   # MIPS occupy very generic defines
->   depends on !MIPS
-> 
+Just for convenience.
+This way we can do:
+`echo _reisub > /proc/sysrq-trigger`
+Instead of:
+`for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
 
-Hm... hadn't considered that. The driver is pretty unlikely to be
-needed on MIPS anytime soon, so might be a reasonable work around
-for now. Would you like me to fire in a patch, or you want to?
+This can be very useful when trying to execute sysrq combo remotely
+or from userspace. When sending keys in multiple separate writes,
+userspace can be killed before whole combo is completed.
+Therefore putting all keys in single write is more robust approach.
 
-Thanks,
-Charles
+Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
+---
+ Documentation/admin-guide/sysrq.rst | 11 ++++++++++-
+ drivers/tty/sysrq.c                 | 18 +++++++++++++++---
+ 2 files changed, 25 insertions(+), 4 deletions(-)
+
+diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
+index 51906e473..fbe79d314 100644
+--- a/Documentation/admin-guide/sysrq.rst
++++ b/Documentation/admin-guide/sysrq.rst
+@@ -75,10 +75,19 @@ On other
+ 	submit a patch to be included in this section.
+ 
+ On all
+-	Write a character to /proc/sysrq-trigger.  e.g.::
++	Write single character to /proc/sysrq-trigger.
++	Only the first character is processed, the rest of string is ignored.
++	However, it is not recommended to write any extra characters
++	as the behavior is undefined and might change in the future versions.
++	E.g.::
+ 
+ 		echo t > /proc/sysrq-trigger
+ 
++	Alternatively, write multiple characters prepended by underscore.
++	This way, all characters will be processed. E.g.::
++
++		echo _reisub > /proc/sysrq-trigger
++
+ The :kbd:`<command key>` is case sensitive.
+ 
+ What are the 'command' keys?
+diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
+index 6b4a28bcf..5411351e4 100644
+--- a/drivers/tty/sysrq.c
++++ b/drivers/tty/sysrq.c
+@@ -1150,16 +1150,28 @@ EXPORT_SYMBOL(unregister_sysrq_key);
+ #ifdef CONFIG_PROC_FS
+ /*
+  * writing 'C' to /proc/sysrq-trigger is like sysrq-C
++ * Normally only the first character written is processed.
++ * If first character is underscore, all characters are processed.
+  */
+ static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
+ 				   size_t count, loff_t *ppos)
+ {
+-	if (count) {
++	bool bulk = false;
++	size_t i;
++
++	for (i = 0; i < count; i++) {
+ 		char c;
+ 
+-		if (get_user(c, buf))
++		if (get_user(c, buf + i))
+ 			return -EFAULT;
+-		__handle_sysrq(c, false);
++
++		if (c == '_')
++			bulk = true;
++		else
++			__handle_sysrq(c, false);
++
++		if (!bulk)
++			break;
+ 	}
+ 
+ 	return count;
+-- 
+2.42.1
+
