@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 25F587ED624
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4067ED628
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:38:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344907AbjKOViC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:38:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51788 "EHLO
+        id S1344560AbjKOViv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:38:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjKOViB (ORCPT
+        with ESMTP id S235076AbjKOViu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:38:01 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE21130
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:37:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CD8EC433C7;
-        Wed, 15 Nov 2023 21:37:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700084278;
-        bh=AmCgzmB7jjz+T45RrytzAofEx2AMRRYYB6hhglefLRg=;
-        h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-        b=vAYHeNK+27nLlK6csqDqimKGiMbHfw6gqr5RfG1F+2FyF2QETyLVwaii0D83vzB42
-         PtVQOhRSWwe1LhVH7u07nXv9W8GW4TF9LiqzLCIMSpupPxvJuKJCTG7MtdFaU2w0bH
-         CiTfFjX08v5IMmdM59s8dNC91keCn04H8Dj82yZNVDUuxAHKayzrhCkTdRQUvg7j7n
-         pZDkQxAugC/D4TZ8O77V/MRcvxLZTPVhILsYWZlmt/YwqZsmsprA4HaMGac1GulYKs
-         HDG6vPoCuSrsZm4gG3m7gXB7dW7Ow11Ck1iPLUoB0OYeu+WltkuYahWhTyX/EdfkBB
-         aOiCAPDdZM6tw==
-Mime-Version: 1.0
+        Wed, 15 Nov 2023 16:38:50 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B0A1A7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:38:47 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id d2e1a72fcca58-6c34e87b571so92894b3a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:38:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700084327; x=1700689127; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=viq9qvmJ3LM7HHbpPLpRFQxdnfMhe+VmNzi8uiGAz9o=;
+        b=PSimt4LY1wWQIX3H7isGsOIl/SesLfbXmqLnUhZ3SO5LzLNxSvSS89xmfOZhEwShY+
+         +/IY0lHA7cxuLl1WeFFuKMviMvHVxd63NSOaZ8HgHsa5WUAiSC6PLrwt2i7ZFKhN+ja5
+         nZE+brp2Lb+eFqHlixNbPwNh9X3BQ+5/DP1gnJ6CB4N7GC6cte4Gab4hbsyATWEOryfI
+         PNaKd5Jg92Z0hyiINvtArPapXVw6LGb0+S5He076fKu4au1hkQroeRrB1A2Rp1denqoJ
+         tAVEdgRw1cwM2rP/Y8aXQl7XvsRlo6isq6xilXZDHyzk6bdUW5IdRLM7rg80eFiB4cRU
+         G1pA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700084327; x=1700689127;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=viq9qvmJ3LM7HHbpPLpRFQxdnfMhe+VmNzi8uiGAz9o=;
+        b=Fp5drfZxYRxcgy32sEvUmuZXw882QNhWYh4MUXcP0U+gNgnvowfzP3UeCiWAItwTvM
+         a6KhI1Q2p2h4IfFUXOuc7gKeXB7LijRL/J8fVOMRpyaVMY8/tEWh+BbUyO6oO5ivn9R9
+         mulxst+q366Hq3thr8euw2Ev0mZzquB0gS+Ywe+RAh48UZDzievcEKHSmxzw3f/J7cpZ
+         rkVdYv7Im26VrU6JiSZq8xjbXJhFDZhHbnfYj3XtShNr2qHkKX2+ikia+yqdYVp4EbW7
+         A2yt5O0cY94E+zCqeDMyQ9KczV18ljpOnoeE8mzT1Iz5ryGjS4WyTqXJViE5IHbVTzEh
+         ErMg==
+X-Gm-Message-State: AOJu0YywQrwUrtxdsZ0Bh+iyqhWkGupyEkZ1w8jajJ1agdptv2/3egti
+        xpBgRZ3ZekvBg6bIBaWB0kOtH8YEMW9a4WnHKZTZyg==
+X-Google-Smtp-Source: AGHT+IGsT1CibUn6Ia99KLaPjPtxI5AQqKcH5XAZwaf3OwLZ4vdydJ8RnA0NKLZ+rMU0rAcfhpGprFwG1SHgmX5tAe4=
+X-Received: by 2002:a05:6a00:1394:b0:6c6:1648:5ac6 with SMTP id
+ t20-20020a056a00139400b006c616485ac6mr14670509pfg.5.1700084326699; Wed, 15
+ Nov 2023 13:38:46 -0800 (PST)
+MIME-Version: 1.0
+References: <20231115191600.708733204@linuxfoundation.org>
+In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Wed, 15 Nov 2023 15:38:35 -0600
+Message-ID: <CAEUSe7_KQ_-Q2ADLVcuKjb9vGOpkgAEgzgq5o-Hf=7a7c9NLXw@mail.gmail.com>
+Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 15 Nov 2023 23:37:55 +0200
-Message-Id: <CWZPKU58PWLS.1B1N297O1D9CY@kernel.org>
-Cc:     <linux-integrity@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RESEND PATCH] tpm: nuvoton: Use i2c_get_match_data()
-From:   "Jarkko Sakkinen" <jarkko@kernel.org>
-To:     "Rob Herring" <robh@kernel.org>, "Peter Huewe" <peterhuewe@gmx.de>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-X-Mailer: aerc 0.15.2
-References: <20231115210215.3743873-1-robh@kernel.org>
-In-Reply-To: <20231115210215.3743873-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed Nov 15, 2023 at 11:02 PM EET, Rob Herring wrote:
-> Use preferred i2c_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+Hello!
+
+On Wed, 15 Nov 2023 at 13:20, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 6.5.12 release.
+> There are 550 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/char/tpm/tpm_i2c_nuvoton.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
 >
-> diff --git a/drivers/char/tpm/tpm_i2c_nuvoton.c b/drivers/char/tpm/tpm_i2=
-c_nuvoton.c
-> index d7be03c41098..5490f7e0fa43 100644
-> --- a/drivers/char/tpm/tpm_i2c_nuvoton.c
-> +++ b/drivers/char/tpm/tpm_i2c_nuvoton.c
-> @@ -19,7 +19,8 @@
->  #include <linux/interrupt.h>
->  #include <linux/wait.h>
->  #include <linux/i2c.h>
-> -#include <linux/of_device.h>
-> +#include <linux/of.h>
-> +#include <linux/property.h>
->  #include "tpm.h"
-> =20
->  /* I2C interface offsets */
-> @@ -524,7 +525,6 @@ static int get_vid(struct i2c_client *client, u32 *re=
-s)
-> =20
->  static int i2c_nuvoton_probe(struct i2c_client *client)
->  {
-> -	const struct i2c_device_id *id =3D i2c_client_get_device_id(client);
->  	int rc;
->  	struct tpm_chip *chip;
->  	struct device *dev =3D &client->dev;
-> @@ -546,15 +546,8 @@ static int i2c_nuvoton_probe(struct i2c_client *clie=
-nt)
->  	if (!priv)
->  		return -ENOMEM;
-> =20
-> -	if (dev->of_node) {
-> -		const struct of_device_id *of_id;
-> -
-> -		of_id =3D of_match_device(dev->driver->of_match_table, dev);
-> -		if (of_id && of_id->data =3D=3D OF_IS_TPM2)
-> -			chip->flags |=3D TPM_CHIP_FLAG_TPM2;
-> -	} else
-> -		if (id->driver_data =3D=3D I2C_IS_TPM2)
-> -			chip->flags |=3D TPM_CHIP_FLAG_TPM2;
-> +	if (i2c_get_match_data(client))
-> +		chip->flags |=3D TPM_CHIP_FLAG_TPM2;
-> =20
->  	init_waitqueue_head(&priv->read_queue);
-> =20
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.5.12-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.5.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-OK, apologies for having to do a resend. I'll pick this, thanks!
+We're seeing build regressions on Arm, Arm64, i386, x86, with KUnit
+defconfigs (and multi_v5_defconfig on Arm32):
+-----8<-----
+  In file included from /builds/linux/lib/kunit/executor.c:225:
+  /builds/linux/lib/kunit/executor_test.c: In function 'free_suite_set':
+  /builds/linux/lib/kunit/executor_test.c:130:30: error: invalid use
+of undefined type 'struct kunit_suite_set'
+    130 |         kunit_free_suite_set(*(struct kunit_suite_set *)suite_set=
+);
+        |                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  /builds/linux/lib/kunit/executor_test.c: In function 'free_suite_set_at_e=
+nd':
+  /builds/linux/lib/kunit/executor_test.c:141:49: error: invalid use
+of undefined type 'struct kunit_suite_set'
+    141 |         if (!((struct kunit_suite_set *)to_free)->start)
+        |                                                 ^~
+  /builds/linux/lib/kunit/executor_test.c:144:31: error: invalid
+application of 'sizeof' to incomplete type 'struct kunit_suite_set'
+    144 |         free =3D kzalloc(sizeof(struct kunit_suite_set), GFP_KERN=
+EL);
+        |                               ^~~~~~
+  /builds/linux/lib/kunit/executor_test.c:145:17: error: invalid use
+of undefined type 'struct kunit_suite_set'
+    145 |         *free =3D *(struct kunit_suite_set *)to_free;
+        |                 ^
+  /builds/linux/lib/kunit/executor_test.c:145:15: error: invalid use
+of undefined type 'struct kunit_suite_set'
+    145 |         *free =3D *(struct kunit_suite_set *)to_free;
+        |               ^
+  make[5]: *** [/builds/linux/scripts/Makefile.build:243:
+lib/kunit/executor.o] Error 1
+----->8-----
 
-Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+This is with defconfig, CONFIG_KASAN=3Dy, CONFIG_KUNIT=3Dy, and
+CONFIG_KUNIT_ALL_TESTS=3Dy. To reproduce,
 
-BR, Jarkko
+tuxmake \
+  --runtime podman \
+  --target-arch arm64 \
+  --toolchain gcc-13 \
+  --kconfig defconfig \
+  --kconfig-add CONFIG_KASAN=3Dy \
+  --kconfig-add CONFIG_KUNIT=3Dy \
+  --kconfig-add CONFIG_KUNIT_ALL_TESTS=3Dy
+
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+Bisection is on-going.
+
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
