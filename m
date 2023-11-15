@@ -2,144 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CF807EC750
+	by mail.lfdr.de (Postfix) with ESMTP id 72EEE7EC751
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbjKOPbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
+        id S230400AbjKOPbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:31:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKOPbp (ORCPT
+        with ESMTP id S229886AbjKOPbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:31:45 -0500
-Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0778C2;
-        Wed, 15 Nov 2023 07:31:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
-        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
-        :Date:subject:date:message-id:reply-to;
-        bh=2JP/fgzIVxfO2zzv2oQfW76T+hCNiYXTGd4FbEmgusE=; b=wJ3Bt2cnTcCZ0FwF9cKzwezrFf
-        H5oBzenz20/XYAFdqMNtd96MyshZUR3ZKfPjG3oUBlPthdiGxGzJEjZmUw1WrfoSZF9mqqIQomdhs
-        /EZKwf/3cva/uyl3BQZX0lR7rZEVfkzicvz/NGFGio/LirdBg+A4qbebqXW5Bt+1m8TY=;
-Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:49394 helo=pettiford)
-        by mail.hugovil.com with esmtpa (Exim 4.92)
-        (envelope-from <hugo@hugovil.com>)
-        id 1r3HrT-0001sn-3V; Wed, 15 Nov 2023 10:31:27 -0500
-Date:   Wed, 15 Nov 2023 10:31:26 -0500
-From:   Hugo Villeneuve <hugo@hugovil.com>
-To:     Daniel Mack <daniel@zonque.org>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
-Message-Id: <20231115103126.d1cb1168c32c264fe443347b@hugovil.com>
-In-Reply-To: <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
-References: <20231114074904.239458-1-daniel@zonque.org>
-        <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
-        <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
-        <20231115094717.7541b01ec0c8a7f4006fcae6@hugovil.com>
-        <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        Wed, 15 Nov 2023 10:31:46 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96F2EC2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:31:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700062302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=D/U++RP8J87fTpffNLluzx5XIExdTU9ynmak8Mre+P4=;
+        b=Qt27BkML2PP1cPd/8aCgLA5uH6LBroIvaAaul0bsKeiH0E27NYXWy6Sfyuz/QqYxVr7l5w
+        tcoVV1skG7SEh4AFL8bxGjcKcIOPGZiu+bkZmekvxbYZcTBItlatYzGxWCxFq9PsAHlOHi
+        FGxT5r+bWKw9Jw5Ef71daNlxJX+juko=
+Received: from mail-pf1-f199.google.com (mail-pf1-f199.google.com
+ [209.85.210.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-49-IB_CvwHtO5eKr723_VPx4w-1; Wed, 15 Nov 2023 10:31:41 -0500
+X-MC-Unique: IB_CvwHtO5eKr723_VPx4w-1
+Received: by mail-pf1-f199.google.com with SMTP id d2e1a72fcca58-6bdc140103bso1690483b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:31:40 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700062300; x=1700667100;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=D/U++RP8J87fTpffNLluzx5XIExdTU9ynmak8Mre+P4=;
+        b=XZzU2DIGZ12DEJHtKkEXAX8PB1f2mATWOW+zrOdWtmIyygzIzYaEtme7AtkgY4jego
+         UD3p26ehB9HR7LtNttNMG8esZ2zJe7NYXj2QoUdmM5nxcFcnhms62imLS10wxVShEUl9
+         wn1cJlhdNnZasF5rXzUaD7aWGGJgurC9GMJXhzsQRVNdVYOlE8xBdONj8f+7SJYQireV
+         JY1hbo0mjeVU8UuOjS5VA9HgSFHHeAbig8Co4ItkNI0+amj3A/PHY0KaLyhOjK0pYAgV
+         LsbNCdIcz9JGyapz2zn0WKebzNhKELYolmZTNUsIWHFfqeGmUAubTJkV9WV604EGLGuq
+         pqNw==
+X-Gm-Message-State: AOJu0YwR/PcCgHBaQuQGfxcm4mdoPwP1DJO1JJz0sFlEFszR1casHvWm
+        oQrDX2BAO6oRwH9zGDsCAMNRKRpgQRBlVDxa4XPQj+Lf5tNfHAugzF4UF6LuP3TE7mYX7dkxNMY
+        WVVpdnFg8VJlD/p137V4rJHTG
+X-Received: by 2002:a05:6a00:6894:b0:6c0:81a3:fe4c with SMTP id hr20-20020a056a00689400b006c081a3fe4cmr2631600pfb.3.1700062299857;
+        Wed, 15 Nov 2023 07:31:39 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG6wTglBWhG4nljh27JjPWJF2LXSzDl20T4s5YweTj0uHIb6TdJ4bD03xIAZOHx+3l4vNETfQ==
+X-Received: by 2002:a05:6a00:6894:b0:6c0:81a3:fe4c with SMTP id hr20-20020a056a00689400b006c081a3fe4cmr2631564pfb.3.1700062299414;
+        Wed, 15 Nov 2023 07:31:39 -0800 (PST)
+Received: from [10.72.112.25] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id e12-20020a6558cc000000b0058ee60f8e4dsm1174195pgu.34.2023.11.15.07.31.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 07:31:39 -0800 (PST)
+Message-ID: <f3f467bf-40d7-dd4d-7ee1-eef95eeed36d@redhat.com>
+Date:   Wed, 15 Nov 2023 23:31:35 +0800
+MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH] KVM: arm64: selftests: Clean up the GIC[D,R]_BASE_GPA
+Content-Language: en-US
+To:     kvm@vger.kernel.org, kvmarm@lists.linux.dev
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231115104757.15710-1-shahuang@redhat.com>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <20231115104757.15710-1-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 70.80.174.168
-X-SA-Exim-Mail-From: hugo@hugovil.com
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
-Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 15:57:38 +0100
-Daniel Mack <daniel@zonque.org> wrote:
 
-> On 11/15/23 15:47, Hugo Villeneuve wrote:
-> > On Tue, 14 Nov 2023 16:55:33 +0100
-> > Daniel Mack <daniel@zonque.org> wrote:
-> > 
-> >> Hi Hugo,
-> >>
-> >> On 11/14/23 16:20, Hugo Villeneuve wrote:
-> >>> On Tue, 14 Nov 2023 08:49:04 +0100
-> >>> Daniel Mack <daniel@zonque.org> wrote:
-> >>>> This devices has a silicon bug that makes it report a timeout interrupt
-> >>>> but no data in FIFO.
-> >>>>
-> >>>> The datasheet states the following in the errata section 18.1.4:
-> >>>>
-> >>>>   "If the host reads the receive FIFO at the at the same time as a
-> >>>>   time-out interrupt condition happens, the host might read 0xCC
-> >>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
-> >>>>   of the Line Status Register (LSR) is not set (means there is not
-> >>>>   data in the receive FIFO)."
-> >>>>
-> >>>> When this happens, the loop in sc16is7xx_irq() will run forever,
-> >>>> which effectively blocks the i2c bus and breaks the functionality
-> >>>> of the UART.
-> >>>>
-> >>>> From the information above, it is assumed that when the bug is
-> >>>> triggered, the FIFO does in fact have payload in its buffer, but the
-> >>>> fill level reporting is off-by-one. Hence this patch fixes the issue
-> >>>> by reading one byte from the FIFO when that condition is detected.
-> >>>
-> >>> From what I understand from the errata, when the problem occurs, it
-> >>> affects bit 0 of the LSR register. I see no mention that it
-> >>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
-> >>
-> >> True, the errata doesn't explicitly mention that, but tests have shown
-> >> that the RXLVL register is equally affected.
-> > 
-> > Hi Daniel,
-> > ok, now it makes more sense if RXLVL is affected.
-> > 
-> > Have you contacted NXP about this? If not, I suggest you do open a
-> > support case and let them know about your findings, because it is very
-> > strange that it is not mentioned in the errata. And doing so may led to
-> > an updated and better documentation on their side about this errata.
+
+On 11/15/23 18:47, Shaoqin Huang wrote:
+> The GIC[D,R]_BASE_GPA has been defined in multiple files with the same
+> value, define it in one place to make the code clean.
 > 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>   tools/testing/selftests/kvm/aarch64/arch_timer.c   | 3 ---
+>   tools/testing/selftests/kvm/aarch64/vgic_irq.c     | 3 ---
+>   tools/testing/selftests/kvm/dirty_log_perf_test.c  | 3 ---
+>   tools/testing/selftests/kvm/include/aarch64/vgic.h | 3 +++
 
-Hi Daniel,
+Oops. Forget the kvm/aarch64/vpmu_counter_access.c. I will update a new one.
 
-> The errata is also wrong in other regards - the IIR register cannot
-> yield 0xcc according to their own documentation. It also makes no
-> suggestion on how to recover from that situation, which is common
-> practice usually.
-
-0xcc is valid according to the datasheet. Bits 7:6 are a mirror copy of
-FCR[0], so bits 5:0 are 0x0c, which is documented in table 14?
-
-But you are right about the recovery procedure, it should be documented
-in the errata.
-
-
-> We'll let them know through our FAE channels, but the latest datasheet
-> for this chip was released over a decade ago, and I don't expect any
-> update to the errata wording.
-
-You cannot assume they would not update the datasheet, especially with
-your findings about RXLVL which add a whole new dimension to this
-errata. The fact that the latest release was long ago is irrelevant.
-
-
-> > And incorporate this new info into your commit log for an eventual
-> > patch V2.
+>   4 files changed, 3 insertions(+), 9 deletions(-)
 > 
-> It makes no sense IMO to have all users of this chip suffer from an
-> issue that was clearly identified to be present and which has an evident
-> fix. Why would we do that?
+> diff --git a/tools/testing/selftests/kvm/aarch64/arch_timer.c b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> index 274b8465b42a..818854007bfd 100644
+> --- a/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> +++ b/tools/testing/selftests/kvm/aarch64/arch_timer.c
+> @@ -59,9 +59,6 @@ static struct test_args test_args = {
+>   
+>   #define msecs_to_usecs(msec)		((msec) * 1000LL)
+>   
+> -#define GICD_BASE_GPA			0x8000000ULL
+> -#define GICR_BASE_GPA			0x80A0000ULL
+> -
+>   enum guest_stage {
+>   	GUEST_STAGE_VTIMER_CVAL = 1,
+>   	GUEST_STAGE_VTIMER_TVAL,
+> diff --git a/tools/testing/selftests/kvm/aarch64/vgic_irq.c b/tools/testing/selftests/kvm/aarch64/vgic_irq.c
+> index 2e64b4856e38..a48aff110fb6 100644
+> --- a/tools/testing/selftests/kvm/aarch64/vgic_irq.c
+> +++ b/tools/testing/selftests/kvm/aarch64/vgic_irq.c
+> @@ -19,9 +19,6 @@
+>   #include "gic_v3.h"
+>   #include "vgic.h"
+>   
+> -#define GICD_BASE_GPA		0x08000000ULL
+> -#define GICR_BASE_GPA		0x080A0000ULL
+> -
+>   /*
+>    * Stores the user specified args; it's passed to the guest and to every test
+>    * function.
+> diff --git a/tools/testing/selftests/kvm/dirty_log_perf_test.c b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> index d374dbcf9a53..4971e8f77a0a 100644
+> --- a/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> +++ b/tools/testing/selftests/kvm/dirty_log_perf_test.c
+> @@ -22,9 +22,6 @@
+>   #ifdef __aarch64__
+>   #include "aarch64/vgic.h"
+>   
+> -#define GICD_BASE_GPA			0x8000000ULL
+> -#define GICR_BASE_GPA			0x80A0000ULL
+> -
+>   static int gic_fd;
+>   
+>   static void arch_setup_vm(struct kvm_vm *vm, unsigned int nr_vcpus)
+> diff --git a/tools/testing/selftests/kvm/include/aarch64/vgic.h b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> index 0ac6f05c63f9..9dbb342fd808 100644
+> --- a/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> +++ b/tools/testing/selftests/kvm/include/aarch64/vgic.h
+> @@ -33,4 +33,7 @@ void kvm_irq_write_isactiver(int gic_fd, uint32_t intid, struct kvm_vcpu *vcpu);
+>   
+>   #define KVM_IRQCHIP_NUM_PINS	(1020 - 32)
+>   
+> +#define GICD_BASE_GPA		0x08000000ULL
+> +#define GICR_BASE_GPA		0x080A0000ULL
+> +
+>   #endif // SELFTEST_KVM_VGIC_H
 
-I don't know what you mean by that...
+-- 
+Shaoqin
 
-My suggestion was simply to incorporate your findings about RXLVL
-register into your commit log for patch V2...
-
-Hugo.
