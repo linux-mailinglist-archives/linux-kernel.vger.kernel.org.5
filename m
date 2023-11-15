@@ -2,47 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE887ECA79
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439DF7ECA7C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:25:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232633AbjKOSW2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:22:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43776 "EHLO
+        id S229804AbjKOSZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:25:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232620AbjKOSW1 (ORCPT
+        with ESMTP id S229630AbjKOSZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:22:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC5EE1B8;
-        Wed, 15 Nov 2023 10:22:22 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B270C433C7;
-        Wed, 15 Nov 2023 18:22:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700072542;
-        bh=ngoCt74/fsP8pS/ee3EIPN/IBdECAl6jorYcfguYxbg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WZyJJSSmwHY1Y4g7cygzvfBg1/Ia5H9twSL9W3BxttcE6i3R6+Y/NkikTVSK8aEVZ
-         L9c61dxyM0mSoCzwIyoKY+oXFtL2wWQEPLRabEJFcUr5Wlxf7eiEZ/m0M+k/vywWYP
-         vClpnNejFLP4Qs6q6LtRlKoAyx9rhNG9+XE7gkGI=
-Date:   Wed, 15 Nov 2023 13:22:21 -0500
-From:   Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Kees Cook <keescook@chromium.org>, Borislav Petkov <bp@alien8.de>,
-        Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] docs: submitting-patches: improve the base commit
- explanation
-Message-ID: <20231115-resourceful-dashing-collie-63b8ff@nitro>
-References: <20231115170330.16626-1-bp@alien8.de>
- <202311150948.F6E39AD@keescook>
- <20231115175632.GA29486@pendragon.ideasonboard.com>
+        Wed, 15 Nov 2023 13:25:28 -0500
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2120.outbound.protection.outlook.com [40.107.244.120])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB55C1A4;
+        Wed, 15 Nov 2023 10:25:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fjfXVw1pd1jyqFH4STp8uv0pYgjJgPdhqNf06WsRgvS2yPfC6aUIDJTySfFTcEdWlGwcWteFcwmBP/tTm/YZ2LR1n7jjWZdzKlxkz6aHNNHgk96AIoReZu42aI/dhAIEiI6l1U37wYdBo2Clp3mDNqtFIyQHNCjm2otsM7O9Hn8yaCO77pMoITkK8Ewu0f42T80SP36M9juNw0GI5V4df20RkTqtZKhUUi+9kiUyMBS7eVz/flboRx9Q+HSVMLkYp4ZoSQewmEaaNO6CpR2WfOahS3mP2RTY8V1nUOwQlwh5hRtaO2r6ldVqOvNrGEbtfLviOwKdlQIoMOcF7OsanQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ULZb1lKT2kHO5FaPc/IX4YHIpR2TY46uw6pWS3Q4gvY=;
+ b=HNo3IzUkJ/7bz3zT90HZsEPAy56Qg3eicnMQPNL0rLaqwYaji3/GuAF9uAFWYEj7IqRAmuhE4A9uRBbEk2dsW2HwHJUck1XBgfvezJ58QzbP/H08dIq08neKY2DUWkowxbI1U88E/v7Lx/x0aS6JA2rcILSGqDV7FvDxzlvlS0/aj3oydaPsFAyQDU3GbdfxpuaxljzcHDGJ/CqE4DAbEiIlmWhBEgxyH63SJF+/8lUFiwa2yxIc01UKE9QQDMaOnOAkG1S1qkzs8y0N4GWGTtuPNEWuy3oBVnTB0IuQvLGu1kS95OZIxglOKavM9lebMF+b0hxXECgT2WlMNlJLGQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ULZb1lKT2kHO5FaPc/IX4YHIpR2TY46uw6pWS3Q4gvY=;
+ b=Acaoj9ZA6sGJgqAyQBjqTxyUtWY+/6HDB86BZ4YKMFRgMN77oP7wj0XbI/ktZcYDEBcG1gw4Oj2RKsrX0Z8+lJhWPLgixQbxYnmrER1hgr57wDp2iC0UION6bTOIiM5WjmXX02MeP0XV83afOSRbD7emOrlSmPsE73qiEjZL1t8=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from PH0PR01MB7475.prod.exchangelabs.com (2603:10b6:510:f2::9) by
+ LV8PR01MB8431.prod.exchangelabs.com (2603:10b6:408:18a::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7002.18; Wed, 15 Nov 2023 18:25:19 +0000
+Received: from PH0PR01MB7475.prod.exchangelabs.com
+ ([fe80::3313:3ab6:572d:58d3]) by PH0PR01MB7475.prod.exchangelabs.com
+ ([fe80::3313:3ab6:572d:58d3%6]) with mapi id 15.20.6977.019; Wed, 15 Nov 2023
+ 18:25:19 +0000
+Message-ID: <16668165-adcd-4cd6-8c50-83b992f8e880@os.amperecomputing.com>
+Date:   Wed, 15 Nov 2023 10:25:14 -0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] i2c: designware: Fix corrupted memory seen in the ISR
+To:     Serge Semin <fancer.lancer@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>,
+        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231109031927.1990570-1-janb@os.amperecomputing.com>
+ <yuperxjytpcwz25fofjut2edzjc4i6jgymcraxp4q6mfe27taf@b33ym5iuubji>
+ <ZVHxhN+dxJSUkEOg@shikoro>
+ <tupjmogut45oh2t2cth7o5wpqc6u6qkwfwddqrfnozlpplavlz@vram3ul3t4zj>
+Content-Language: en-US
+From:   Jan Bottorff <janb@os.amperecomputing.com>
+In-Reply-To: <tupjmogut45oh2t2cth7o5wpqc6u6qkwfwddqrfnozlpplavlz@vram3ul3t4zj>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH5PR04CA0022.namprd04.prod.outlook.com
+ (2603:10b6:610:1f4::19) To PH0PR01MB7475.prod.exchangelabs.com
+ (2603:10b6:510:f2::9)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20231115175632.GA29486@pendragon.ideasonboard.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR01MB7475:EE_|LV8PR01MB8431:EE_
+X-MS-Office365-Filtering-Correlation-Id: dd25ada4-5805-4cc1-0d23-08dbe60838b9
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: F7cGLsRHWEtxqFbiMGa/VPos0qnKj+ambkP7AizORfu6YLHRvMqwJlngF6ffgHn8XhaWWbwl0XK0+v/1AVi64ReskM+2YE4VseakJlqJL0M7/V1ZViwXPfnrAZxqgVt5A8GuWpDSrXl69NhYg9bp/Mpehid8E8jH+FDKOnAGSCOKIKSiIFazvquOVC0PqVFFmTepUPyh2MXvW3Pxm1S4HEDGuQyqhL9Bf69HA8kdr14ZOLeZigQvBxxfwOf4WUEJyVUw1IAAof7Cq7vzbkt3uCHEWr49Vfos2rC1JjvHbm0T9iPhrnNZVufOvRqMJv+EPeGwsFyd55aRr/wSt+Zf5FVRzYPbCC+Bfr/k5htXbvLe63K2lV8XWEAy5mRV9MOGprApn0ynheLyzneNIAmq/QKrijR9lb8BRcMDthnEm+rJoOEWvhDcVCzCipEDGxSC75LDhZc6zLA9Sv2w9Tq74qi99md1xvt5G0VWfjxLqB+XECvr2qSTRi7lzepAzJzCaXrE5kNsuPymlJ7XdqY778O1QhSAesQq45gnuzLhhktJP5ybjySYfN1rZYtLrb6e+QjVWBJakG8fxO42W2LBQFLGn/307R7Nk3O1KB9yjplBl0oihGh5/8uIsfrEoaYB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7475.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39850400004)(396003)(136003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(478600001)(2906002)(6486002)(6512007)(6506007)(2616005)(6666004)(86362001)(5660300002)(31696002)(66476007)(66946007)(110136005)(66556008)(4744005)(8676002)(316002)(8936002)(41300700001)(31686004)(38100700002)(26005)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L0M0YmExWm1LK0ZOZVlGMU4zbGRjQUxRYTdvUkZOY1dYT3RuaEJzbWRwSjJi?=
+ =?utf-8?B?WHh5UnRrRS81UzlWbWt6N0kxWi90bWFDWmQyVHhqYVdRaE9mRXYvWHlsTEov?=
+ =?utf-8?B?TDdaZnJNZ294V00xMzMwcnczS3VNR0xrZ0pLNDlYKzh3UjBVR0VhTnlZSjJB?=
+ =?utf-8?B?aFJ5RWVKK0lHK0NXczkyM2ZDMUZxSzBhUWpCUkZVbE5HalpMMVVTMEVKcmJr?=
+ =?utf-8?B?c2VnUVdoc3dYeHp3aTVrZCtwbVV0N1I3dWVrVkNQV3FCejdEZFdIQkNBRDZp?=
+ =?utf-8?B?K2RNcXY0RzNIeStqSUxDenVpNnc4cFQ4am55R01Cazl5eEhJRWJDbXVGTks2?=
+ =?utf-8?B?cVBjbXBiRElkYlhGaEszSlIyK2ZyTWRiRmQxaUhxcGI1L09oLzRKWmlZay84?=
+ =?utf-8?B?S0o0N3JaZXZIYmRIU0VFQjJGRm9sUC9zVERXOVJWZ1QzdzVuL3VVemFQais2?=
+ =?utf-8?B?Nk9XSXRPN3NSeGJIMXZQWVlKbTE0MVlyV2swdnA5VTNYT1pPSWwyWXl5S0Jh?=
+ =?utf-8?B?aS81NmJXQWxPL1RRRUJKc25mN2txYm5aMnB5Yk1VVkVDdnZOUlVZM056NEN0?=
+ =?utf-8?B?U3pQRnBkK0RRaVdVcnV5dklZSWtYM05ob0R3SWZEcStsNm1TQWUwdkplZEln?=
+ =?utf-8?B?ZlBZVmFJT2NtSHJuRVFqWkg1Yzdnc0M0U1hFYk5SQmh2U1pLK0YwOHVHTHMr?=
+ =?utf-8?B?dXZDSzQ2d2IxYTBoL1hkYjUxOWh0YXJsMWYraFh4MWEwODZZdnN0VDNJcTFF?=
+ =?utf-8?B?djR0SkFkRmhQalVqMTJrWkNKQmkzQi83ZVM5OW91SXdJTlQvZ0tZMFdxU1lW?=
+ =?utf-8?B?Q3cvS2hJcUo0MHBPOGMvM0VnRitxOExTd3BtWnQ1aGhkK0c2Q1NrUjRIVVFP?=
+ =?utf-8?B?OUp0N2UyUHIrQk03c2xRS2VRc2VOU0xmZHgyU3VGcWhmN1RkNVdrWnF6RVdD?=
+ =?utf-8?B?MHFUVTBqTkNhUkc1QXpDd1h2d2xKUVFqUUZFcWlaNGdFcEhFUVVoV25WU2kz?=
+ =?utf-8?B?OTBsMVA0R3ExMHp0dmJUeDN0N1VuTmNhQ2lRdzc1UldkOHVENzZqSmdOK2ZP?=
+ =?utf-8?B?TzZmTEIvVGVlK3RjQ0ZYZVpKZUsrdGRJSUxXbVdNLzNQQmJLVXBzQjArU3h2?=
+ =?utf-8?B?dVFBTnpMVXI1TmZmNGZISWxiYjlpM3dXd0lHaXp0bTBJd0FMQkt2WWJ3c3k3?=
+ =?utf-8?B?c3hoVFRMbVVwVGF3cE1LUkZNK2hBRUI2cFoybW52TmdiQXhGdTNuOFI3WUJE?=
+ =?utf-8?B?anJzTTlSNzlkdTBobXpwajdLVS9NYzYyZFNRRE5Tcm9TM1pBalorU2JjMDda?=
+ =?utf-8?B?ZkxRVXZVVVV3VjFRQSsrQUZxckhaOHJ0bkYvS3JORUN0Qjd4cWpMWmx1ekg4?=
+ =?utf-8?B?cGFmbkFGNnBMZmxENFE5cW5XbC9yQlZyQjk3bFd6Wk93clZyWGQ0THVyLzRy?=
+ =?utf-8?B?TDBrOXdLRSt2blh2cVJCZWtJUURLRUhDVit0VU5UVTBGZ1RqN25NQTlVSml6?=
+ =?utf-8?B?ODIzVzQ1ZE9SOWt3L3RXY0tBOFUrcE5rMjZDcXhwbTNPZWFSTVkyV21tMmJZ?=
+ =?utf-8?B?ZmN0Z3lGTlNWV0wyMk0xTjJzYTJjbkVRaVJ3bSsxeWliYy9hYTFTREF6WlFM?=
+ =?utf-8?B?Rnp5L0NxbVVVMk5taU1NRWtGdkYzcGo3RkdYRHlwaittWS9lN3lHRW84QWdj?=
+ =?utf-8?B?Ry83YVlUVjhDb1IrVE8rMVlBVHBic1ZNTVVJYXhwQmx0VkFqTERFalYyR3Zi?=
+ =?utf-8?B?cmkxVHpvVXRyck9hT3M5S2E0RUV6RWQrdGJHQllvcTNCVTRyUks5ZzRrUHdQ?=
+ =?utf-8?B?a2pUY1NRQ0ZCQW1iUGYvWFBtK004TUJDa0FyclRCYTRVT2QxbVZsdmtkQ3dE?=
+ =?utf-8?B?L2F1UEVYMFBRZGhPa3FiNXBFckVGRnZQUXV2bmVGR1pVMDVFeXJ1UjBNeEU3?=
+ =?utf-8?B?bGt5ckcxRElKVG1LUW0yL0YrSVJmeTZvTVBXcFpPdXN2c0JlSjlhVCt2RkFv?=
+ =?utf-8?B?cHNWZkVxRE1nRkI4Uk1aNGlDZmhjdEJqOFF3Wjd3OTdzMGJVeDhYd280VmVo?=
+ =?utf-8?B?S0FsRzIxWTdBV2pJWHVvRWREODd1VGVSbFdUWWt4ZS9xNUQ5RTRzVEZnMGdS?=
+ =?utf-8?B?WjlIL3dIcytHenRDc0dLeXVkYkhzUlRLdWxUYVU4RTlOcDBJWThoVk0weENl?=
+ =?utf-8?Q?byiD5RY9SCAhhZLkyKai3tc=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd25ada4-5805-4cc1-0d23-08dbe60838b9
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7475.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 18:25:19.0397
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xk2vkoTuuJsVoyVvkMHipJ1zdssTrAqkrFwSZJ1hOUNuzAPsPML3QmM/Sa/5hDK8uLR4IyK74lxnCf7R1eQTcKrt3uEmQbdQERgbwXzVLDI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR01MB8431
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -50,30 +133,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 07:56:32PM +0200, Laurent Pinchart wrote:
-> When the base of a series is in Linus' tree, or in the corresponding
-> subsystem maintainer's tree, things are easy, but there are many
-> situations where the base is a merge of multiple branches (perhaps a
-> for-next and a fixes branch for instance), or where prerequisites have
-> been applied manually for one reason or another. This can and should of
-> course be described in the cover letter, and the submitter should push
-> and provide a link to a branch that contains the series on top of the
-> appropriate base (or just a link to the base). This won't help the bots
-> much though, if they just look at the base tag. Is there a way, or can
-> we standardize on a way, to indicate where the base can be found ?
+> On Mon, Nov 13, 2023 at 04:51:00AM -0500, Wolfram Sang wrote:
+>>
+>> Thanks to a restrictive hotel network, I haven't pushed out yet, and
+>> could still add your tags. Thanks!
 
-Yes, I suggest we use:
+Hi Wolfram,
 
-base-repository: <some-canonical-repo-url>
+Any chance we could get the "Cc: stable@vger.kernel.org" tag added to 
+this patch? More than one large cloud company would like to see this in 
+the stable kernel, as it significantly improves the reliability of IPMI 
+transactions on platforms that use i2c for this communication.
 
-So, a b4-submitted series will have these footers:
+Sorry for not including this tag in the submission.
 
-change-id: <unique-series-id>
-base-commit: <commit-id-or-tag>
-base-repository: <canonical-repo-url>
+Jan
 
-(And then, eventually, there will be series dependency info in the format:
 
-requires: <unique-series-id>:<version>
-
--K
