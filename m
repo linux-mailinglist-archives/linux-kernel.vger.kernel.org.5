@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBA457EC04F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:11:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D4C17EC061
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234833AbjKOKLw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 05:11:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47428 "EHLO
+        id S234057AbjKOKZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 05:25:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbjKOKLu (ORCPT
+        with ESMTP id S229456AbjKOKZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 05:11:50 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252539C;
-        Wed, 15 Nov 2023 02:11:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=J+m5Wux4gCeZ5VbKE22zSD3h2vqCToIPoOglMpcMB98=; b=WMk7AaLVtN5GRy7VHSplvABKOr
-        OXRc47CE5LjYfVL1I4G9BmL9nkSst8Vh0ERKHmS8MJxRSPLKDFvaYbEeA1sMiDIYtcRhNQa/pnlI8
-        PkqOB9knMX2YL+uvuraKATTscnDpMYKl3cLLR36pzK4yKmNHGHEjAw7PZ395B53vvUhyuWvtelDyB
-        r5XhCGNIJB9iBgYQiuOIDQBOPCIGnr+az2tu1OpmA6+1stGbOEb7mZfrcCgopQw9ZYDmB/DHKIyAH
-        MGihds8I0ekCwC2YQuqoXNHvkOJ31Wt+yTJ713pnOPmQLGMyMGfLqHWpB6tvMEThA4WWseIPd1uBc
-        ry+LnBrA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:56952)
-        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.96)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1r3Crx-0000WK-1q;
-        Wed, 15 Nov 2023 10:11:37 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1r3Crw-0006Uz-QI; Wed, 15 Nov 2023 10:11:36 +0000
-Date:   Wed, 15 Nov 2023 10:11:36 +0000
-From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     linux-pm@vger.kernel.org, loongarch@lists.linux.dev,
-        linux-acpi@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-riscv@lists.infradead.org, kvmarm@lists.linux.dev,
-        x86@kernel.org, linux-csky@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-ia64@vger.kernel.org,
-        linux-parisc@vger.kernel.org, Salil Mehta <salil.mehta@huawei.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        jianyong.wu@arm.com, justin.he@arm.com,
-        James Morse <james.morse@arm.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: Re: [PATCH RFC 11/22] drivers: base: remove unnecessary call to
- register_cpu_under_node()
-Message-ID: <ZVSZWK+OmZWEce33@shell.armlinux.org.uk>
-References: <ZUoRY33AAHMc5ThW@shell.armlinux.org.uk>
- <E1r0JLa-00CTxY-Uv@rmk-PC.armlinux.org.uk>
- <955f2b95-76e4-4e68-830b-e6dd9f122dc1@redhat.com>
+        Wed, 15 Nov 2023 05:25:32 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0EDFF5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:25:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700043929; x=1731579929;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=W32g1ljBXpttbCwPvsIRYVi8eHr+YWboLSVaJBJJWe4=;
+  b=aeAxEubV6abJlDUxicuAhE1MhGgZ55J1mZxA2GM19tCARPidOMcDKRrM
+   mXdv2isOHGQscL+vZAujiELTjlhDbrpUPz9PBdmx0ke7/DAOzRYhD20ZY
+   TGxDPmPCtR1rv3j1L8IEjMtW8206GkWThb7+xjrtQpVK7yOtiicoU1fk/
+   73p2ymX4b1fhvk54XuF+3lcEr9uQxiBUJXrPYOvBw06/0z5SSXX7TP8DW
+   Tm0LW9UV1bQ+KYWSefsSQXlByRpuSGas5sAuI9nEG3BQ0dvOko28Hi7G8
+   YnpljiVJi6jl+gOBDr8Ot7yeen5tv24WUFKgRVXYPha69ISl2FTDzuPi9
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="375890322"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="375890322"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 02:25:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908727325"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="908727325"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2023 02:25:27 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3D5G-0000FW-36;
+        Wed, 15 Nov 2023 10:25:24 +0000
+Date:   Wed, 15 Nov 2023 18:18:54 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Huacai Chen <chenhuacai@loongson.cn>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jun Yi <yijun@loongson.cn>
+Subject: drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect
+ type in argument 1 (different address spaces)
+Message-ID: <202311151820.kqckMHmB-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <955f2b95-76e4-4e68-830b-e6dd9f122dc1@redhat.com>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 02:04:32PM +1000, Gavin Shan wrote:
-> On 11/7/23 20:30, Russell King (Oracle) wrote:
-> > Since "drivers: base: Move cpu_dev_init() after node_dev_init()", we
-> > can remove some redundant code.
-> > 
-> > node_dev_init() will walk through the nodes calling register_one_node()
-> > on each. This will trickle down to __register_one_node() which walks
-> > all present CPUs, calling register_cpu_under_node() on each.
-> > 
-> > register_cpu_under_node() will call get_cpu_device(cpu) for each, which
-> > will return NULL until the CPU is registered using register_cpu(). This
-> > now happens _after_ node_dev_init().
-> > 
-> > Therefore, calling register_cpu_under_node() from __register_one_node()
-> > becomes a no-op, and can be removed.
-> > 
-> > Signed-off-by: Russell King (Oracle) <rmk+kernel@armlinux.org.uk>
-> > ---
-> >   drivers/base/node.c | 7 -------
-> >   1 file changed, 7 deletions(-)
-> > 
-> 
-> __register_one_node() can be called in memory hot add path either. In that path,
-> a new NUMA node can be presented and becomes online. Does this become a problem
-> after the logic of associating CPU with newly added NUMA node?
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+commit: a275a82dcd4024c75337db15d59ed039c31e21da LoongArch: Use alternative to optimize libraries
+date:   11 months ago
+config: loongarch-randconfig-r133-20231107 (https://download.01.org/0day-ci/archive/20231115/202311151820.kqckMHmB-lkp@intel.com/config)
+compiler: loongarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231115/202311151820.kqckMHmB-lkp@intel.com/reproduce)
 
-I guess this is where ordering matters.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311151820.kqckMHmB-lkp@intel.com/
 
-As mentioned in the commit message, register_cpu_under_node() does
-this:
+sparse warnings: (new ones prefixed by >>)
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected char [noderef] __iomem *screen_base @@     got void * @@
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     expected char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:354:27: sparse:     got void *
+>> drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *__s @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     expected void *__s
+   drivers/video/fbdev/atmel_lcdfb.c:362:20: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected void *cpu_addr @@     got char [noderef] __iomem *screen_base @@
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     expected void *cpu_addr
+   drivers/video/fbdev/atmel_lcdfb.c:333:59: sparse:     got char [noderef] __iomem *screen_base
 
-        if (!node_online(nid))
-                return 0;
+vim +362 drivers/video/fbdev/atmel_lcdfb.c
 
-        obj = get_cpu_device(cpu);
-        if (!obj)
-                return 0;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  336  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  337  /**
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  338   *	atmel_lcdfb_alloc_video_memory - Allocate framebuffer memory
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  339   *	@sinfo: the frame buffer to allocate memory for
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  340   * 	
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  341   * 	This function is called only from the atmel_lcdfb_probe()
+1d01e83557105e drivers/video/atmel_lcdfb.c       Krzysztof Helt     2009-07-08  342   * 	so no locking by fb_info->mm_lock around smem_len setting is needed.
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  343   */
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  344  static int atmel_lcdfb_alloc_video_memory(struct atmel_lcdfb_info *sinfo)
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  345  {
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  346  	struct fb_info *info = sinfo->info;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  347  	struct fb_var_screeninfo *var = &info->var;
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  348  	unsigned int smem_len;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  349  
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  350  	smem_len = (var->xres_virtual * var->yres_virtual
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  351  		    * ((var->bits_per_pixel + 7) / 8));
+ea757acad5a518 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-08-12  352  	info->fix.smem_len = max(smem_len, sinfo->smem_len);
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  353  
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  354  	info->screen_base = dma_alloc_wc(info->device, info->fix.smem_len,
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  355  					 (dma_addr_t *)&info->fix.smem_start,
+f6e45661f9be54 drivers/video/fbdev/atmel_lcdfb.c Luis R. Rodriguez  2016-01-22  356  					 GFP_KERNEL);
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  357  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  358  	if (!info->screen_base) {
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  359  		return -ENOMEM;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  360  	}
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  361  
+01d3a5e7fab773 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28 @362  	memset(info->screen_base, 0, info->fix.smem_len);
+01d3a5e7fab773 drivers/video/atmel_lcdfb.c       Haavard Skinnemoen 2008-04-28  363  
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  364  	return 0;
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  365  }
+14340586148e7c drivers/video/atmel_lcdfb.c       Nicolas Ferre      2007-05-10  366  
 
-get_cpu_device() will return NULL if the CPU is not possible or is out
-of range, or register_cpu() has not yet been called for this CPU, and
-register_cpu() will call register_cpu_under_node().
+:::::: The code at line 362 was first introduced by commit
+:::::: 01d3a5e7fab7732cfc5d5d4533e9378ea435295a atmel_lcdfb: don't initialize a pre-allocated framebuffer
 
-I guess it is possible for a CPU it be present, but the node its
-associated with would not be online, which means we end up with
-register_cpu_under_node() returning on !node_online(nid) but we've
-populated the CPU devices (thus get_cpu_device(cpu) would return
-non-NULL).
-
-Then when the numa node comes online, we do still need to call this
-path, so this change is incorrect.
-
-It came about trying to address Jonathan's comment for this patch:
-
-https://lore.kernel.org/r/20230913163823.7880-7-james.morse@arm.com
-
-I think my response to Jonathan is still correct - but didn't need
-a code change. I'm dropping this patch.
+:::::: TO: Haavard Skinnemoen <hskinnemoen@atmel.com>
+:::::: CC: Linus Torvalds <torvalds@linux-foundation.org>
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
