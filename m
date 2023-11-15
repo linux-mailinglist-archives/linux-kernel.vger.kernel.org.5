@@ -2,122 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A4327EC357
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:11:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473B07EC35B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:12:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343890AbjKONLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:11:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52992 "EHLO
+        id S1343886AbjKONMV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:12:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343871AbjKONLM (ORCPT
+        with ESMTP id S1343879AbjKONMS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:11:12 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B36311F;
-        Wed, 15 Nov 2023 05:11:08 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id 41be03b00d2f7-5b9a456798eso4266334a12.3;
-        Wed, 15 Nov 2023 05:11:08 -0800 (PST)
+        Wed, 15 Nov 2023 08:12:18 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9E18121;
+        Wed, 15 Nov 2023 05:12:15 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id af79cd13be357-778940531dbso411959785a.0;
+        Wed, 15 Nov 2023 05:12:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700053868; x=1700658668; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700053935; x=1700658735; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EhfVaGER9sTAd2B+qVaDfxqJSQ9hYyt4DuktjBuV3bs=;
-        b=lDPxzKBioboqkoosHxSvQhzSIdgzhOKvDgY7jpy3NRdxG8bzHnZjoSdTnJvHRFw0P+
-         mGCYk+9vtiGxoRMH/jPQWEbT/EQa11j3ykjn3LgdH9kKclu/ZA0lERC2ughjNva1AJJz
-         9N+441W+pc+x30q2f5+wuMHZ4mJKK3UXYSaliiJxg909YyIXyrcwIoB1kpfSrn0vfEk8
-         lQ2Rx3l1sCk90XEVAAZNzbvvGaK11rbDr8+uSdIzgVylKBFnfIAk/4ToKwiPF/d19dUc
-         uAZCUG5v42SWlqjGVOzkNuBzBbh+VelEX8EH1I102pQwCBG0JFcj+GHPoXWPnbBrJ2nX
-         4XZQ==
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FYJiido5hWzDKtuGReYk+NTentFWgMjd8DEBxS+St7Y=;
+        b=YfCBoDa02I7uM0DcWWKqOBYX0ruVpHC2+AJwVkrgqMEwzpXMfvWwYqzfv5TKTBMIyA
+         PexfmTmBdUqD3cSIELR8w7auq0HZbs+IDgboSzyDWSswPOvvS8+pa4jprspz3Ub1kKpl
+         /n6bAuB29kmE4UT+o35Vsq3Ad/psZCEFfX229mLzxR4JBI98fpDLTb0Q8vESzBT56Rjx
+         zpCsPknkYcIWj5FuL0iNTK9CTKPS1sl52UiXX0v2iqaElw/L5+/ZiqpD8TX7zU4XYw/0
+         4UBc2sGi5voOgTQIsHy5FEER1Y7XMFEHECN8M4SHNJULfSSPwCMlxjzrcnAGnjcpeL0z
+         OW7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700053868; x=1700658668;
+        d=1e100.net; s=20230601; t=1700053935; x=1700658735;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EhfVaGER9sTAd2B+qVaDfxqJSQ9hYyt4DuktjBuV3bs=;
-        b=LpQCMY1skXmSbFgIu7Tz+Ko4W9671W0dfDCvahg46msDdRGfyobrzFHzLcqtVG1G7M
-         8tEltmeAB4yst8tcPpCkrsJd9I1PfVTXLgLMS2WhROi+XDBeTXWho9trBBmH72gDi/11
-         qqRlJWV98FK7Q6HzFRGZeGUk4Q0HX+l+9Tz61DL5YroWhEYL0LK89fO0e/FBu5DF6e+s
-         tc0AUGTR9IPa60LrNSYABHu7df7J4xpVJ7YVKRJPrKt/SYpBjjqh6jjPP29xi2KR6XMj
-         tqD1PKsHJJLvVbpRpWIJ2DbJVoUlJ3oqHrc2sdXRYqGgBtNlJiOgxEskAoUblyGZumCS
-         h4Cw==
-X-Gm-Message-State: AOJu0Ywui/3cugu6JmiX0YTk1KArU4inbXplYQjaflUUJzfUAVJHjZ3F
-        HGQWEkNSvEMC52aXK0WGNPo=
-X-Google-Smtp-Source: AGHT+IF+Tp/0plK9/VgBp5NpeKL0shngz+o/5+5GbHwpQgFqtAF/n2vwDB9t8Qvx+i5meirX7aUHMw==
-X-Received: by 2002:a17:90b:3149:b0:27d:4901:b0b7 with SMTP id ip9-20020a17090b314900b0027d4901b0b7mr11047462pjb.30.1700053867647;
-        Wed, 15 Nov 2023 05:11:07 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id f6-20020a17090a8e8600b0027df6ff00eesm6757051pjo.19.2023.11.15.05.11.06
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FYJiido5hWzDKtuGReYk+NTentFWgMjd8DEBxS+St7Y=;
+        b=fr+pcY+0zkYamVWly5QNuhFrKHG3vfOdKVKBrzexyxFJDYMeER8bAMtHQosc/W3q/w
+         pspGHsK82v8+UaWJ+b+LphGqmHsKA3dgUQnKiQroJp37iRGeTrNnEjeLQIjB6Jmk4hXB
+         1lchXOZZAsTqNGLPVS8I3hge2alWOyOZzV9nDW2kXBekvunU95IEOPFn9vGASHEd1Jw+
+         SaspZ5qffKxmDUEMXazpKbbyPPng/Bl0bYxN1XTj73OZEI1QeG/W4ivragK84zy3NX5q
+         cWCnxEIIZlRl9B9Q9MfeBewcw4OgUmb6DfSy9SND7HLLmIQtCXRavTSuaEF66OwUzSmo
+         SqHA==
+X-Gm-Message-State: AOJu0Yz3i0Av8/YhFKhaL5PsWM9qFfk3ZrzkfbDm6sEOfYGd8BlA5ExM
+        sdTELObpBJsY+gKy+eHGdHzFsFWP2WA=
+X-Google-Smtp-Source: AGHT+IGhIxWgPMm8wqUw4hMJ5kHDs/Trl+Fudc3+UErv6dl9+e9FP4PNtTnJqgtywEwuz9/B7UU77w==
+X-Received: by 2002:a05:620a:4552:b0:773:bf62:b274 with SMTP id u18-20020a05620a455200b00773bf62b274mr6163539qkp.61.1700053934734;
+        Wed, 15 Nov 2023 05:12:14 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id m11-20020a05620a290b00b007743382121esm3445056qkp.84.2023.11.15.05.12.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 05:11:07 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id CA40910D2CF4C; Wed, 15 Nov 2023 20:11:04 +0700 (WIB)
-Date:   Wed, 15 Nov 2023 20:11:04 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Anil Choudhary <anilchabba@gmail.com>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: Re: sr-iov related bonding regression (two regressions in one report)
-Message-ID: <ZVTDaJOtjxEOPbNq@archie.me>
-References: <986716ed-f898-4a02-a8f6-94f85b355a05@gmail.com>
- <32716.1700009673@famine>
- <0f97acf9-012d-4bb2-a766-0c2737e32b2c@leemhuis.info>
- <CC024511-980A-4508-8ABF-659A04367C2B@gmail.com>
+        Wed, 15 Nov 2023 05:12:14 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 15 Nov 2023 05:12:12 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Jean Delvare <jdelvare@suse.com>, Joel Stanley <joel@jms.id.au>,
+        Andrew Jeffery <andrew@codeconstruct.com.au>,
+        linux-hwmon@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH v2][next] hwmon: (aspeed-pwm-tacho) Fix
+ -Wstringop-overflow warning in aspeed_create_fan_tach_channel()
+Message-ID: <9ed5116f-cf36-49f6-833e-75eeab4570b4@roeck-us.net>
+References: <ZVPQJIP26dIzRAr6@work>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="5OAjmnZvSGI+Kva2"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CC024511-980A-4508-8ABF-659A04367C2B@gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <ZVPQJIP26dIzRAr6@work>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 14, 2023 at 01:53:08PM -0600, Gustavo A. R. Silva wrote:
+> Based on the documentation below, the maximum number of Fan tach
+> channels is 16:
+> 
+> Documentation/devicetree/bindings/hwmon/aspeed-pwm-tacho.txt:45:
+>  45 - aspeed,fan-tach-ch : should specify the Fan tach input channel.
+>  46                 integer value in the range 0 through 15, with 0 indicating
+>  47                 Fan tach channel 0 and 15 indicating Fan tach channel 15.
+>  48                 At least one Fan tach input channel is required.
+> 
+> However, the compiler doesn't know that, and legitimaly warns about a potential
+> overwrite in array `u8 fan_tach_ch_source[16]` in `struct aspeed_pwm_tacho_data`,
+> in case `index` takes a value outside the boundaries of the array:
+> 
 
---5OAjmnZvSGI+Kva2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Still messes the point. This isn't about "the compiler doesn't know that",
+it is a real bug which may result in out-of-bounds accesses.
 
-On Tue, Nov 14, 2023 at 10:19:25PM -0800, Anil Choudhary wrote:
+Oh, never mind, I'll just apply it.
 
->=20
->=20
->=20
-> Following error error scribing to said is also new
->=20
-
-Please don't top-post; reply inline with appropriate context instead.
-
-What error? Can you reply with logs pasted (with error you mentioned)?
-
-Confused...
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---5OAjmnZvSGI+Kva2
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVTDaAAKCRD2uYlJVVFO
-o+HWAQCGEf3FzxnS66Tm5OsffefCiiLmkMPkFzFUGydECWnqQgEAuTWunm1ReBNR
-PWiCRjKLt7pQpv6KX8OQt1zipha9ngI=
-=PeMO
------END PGP SIGNATURE-----
-
---5OAjmnZvSGI+Kva2--
+Guenter
