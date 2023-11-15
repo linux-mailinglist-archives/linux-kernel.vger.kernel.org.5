@@ -2,79 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2624E7EBA9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 01:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EF67EBAA5
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 01:41:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234236AbjKOAgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 19:36:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
+        id S234237AbjKOAlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 19:41:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234231AbjKOAgC (ORCPT
+        with ESMTP id S234221AbjKOAlF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 19:36:02 -0500
+        Tue, 14 Nov 2023 19:41:05 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D83E7
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:35:58 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA9BDC
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:41:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700008558;
+        s=mimecast20190719; t=1700008860;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=L+qBxi2zv75rbxCrPxryNoF5AVHcLiK4v1bHRUG29OY=;
-        b=YDDYLNLvVTIaP8O6SA7irJ8iU0BXOZu/NFF9oV5mM9BK1p2zwvwmSkhJk7C62pMetN1Ohy
-        z6RREb3ejJJXQDt5uauk05UfDtRQD6k3Vp6gzzEhrDgazIBjnrRuYwHp3Fq+E7kot1Kb8p
-        zYhMYKSV6kKR0PI/Vba8uJdl0VdACMo=
-Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
- [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=STT+ATW57rth6ZYo472RqzwfiLTSlBKOqun91LfAKSQ=;
+        b=Meu3KzsBWv4UAB5vFCvO5/XTIFW+WL+gEqRRZAeNP/Ty9eZkHC9ev1ZvCsLu0j5EH1nIyb
+        hUGAyUmsNh/6MqCbg9q4NpLUhIGnna6t+XELC/RIpZSc0ra/EuD1zGpwKR9G5gUrXxqovE
+        z/CkrJSCBpA9lLVoJBR6AyCfpsirxWM=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-636-7wexyUibNI-bikQ1W-HDeQ-1; Tue, 14 Nov 2023 19:35:57 -0500
-X-MC-Unique: 7wexyUibNI-bikQ1W-HDeQ-1
-Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6c4d0b51c7fso5738200b3a.2
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 16:35:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700008556; x=1700613356;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L+qBxi2zv75rbxCrPxryNoF5AVHcLiK4v1bHRUG29OY=;
-        b=XygCClvbmjtZl+YPyj0CxoU+ZWXSd1HoQLe4ugXiSsUUwFLVnTLz41RvMnOaUy/4Je
-         xR0mLQzeEPhguNXo8Dg5Vt3l3IceaUD5bEljmik+6g4b0i95U4sfRjCFjDXSuh5xBQqg
-         0o0H8Rvv2BLEDZoD1LueGXn795tedoPXrgJGI++HeXn4OcVT05cG723K0zpPQKIt7INO
-         cniGV3r0FwIkvslXgtgXqEXFwdWMdJ9cjrtEhsyUC+J6ecedSGTVUo8uGBddMS1OvQTz
-         1b0P8VAkvLxtWiZ6uVkqkcLMjJSt06bY8TtfJwNvMBkB27Q7Vt1zFBirsSwf2q2+EUCN
-         sIdQ==
-X-Gm-Message-State: AOJu0YyPR6oRnCyq1/CqCKMRdQS9HquD5mn2FRTnzhbJbjsr+0dI+dq8
-        7lC+TIt3ZgDGWpvQIRDSCIZN3nNaKNLK4/mnBz/KF+Csill5nX9Alei0x9KeIxhR8h3EhbfkP95
-        pcPk2k6I79TBc8C2p1kQbJQfgIZiHp0SeHaY=
-X-Received: by 2002:a05:6a00:b4e:b0:6b7:b42f:e438 with SMTP id p14-20020a056a000b4e00b006b7b42fe438mr10351054pfo.8.1700008555673;
-        Tue, 14 Nov 2023 16:35:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFZlHALYAfVi6+dTLG0CQtCK2CG0LfW1MNn2kFBFV7ENAXN52ZqeUNfXq0J256Xu5xoSs2Dxw==
-X-Received: by 2002:a05:6a00:b4e:b0:6b7:b42f:e438 with SMTP id p14-20020a056a000b4e00b006b7b42fe438mr10351028pfo.8.1700008555111;
-        Tue, 14 Nov 2023 16:35:55 -0800 (PST)
-Received: from [10.72.112.63] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id y19-20020a62b513000000b006c4eb4e7f98sm1755436pfe.169.2023.11.14.16.35.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 14 Nov 2023 16:35:54 -0800 (PST)
-Message-ID: <af8549c8-a468-6505-6dd1-3589fc76be8e@redhat.com>
-Date:   Wed, 15 Nov 2023 08:35:50 +0800
+ us-mta-154-77tfofzDNhCK4KwggBC1CQ-1; Tue, 14 Nov 2023 19:40:55 -0500
+X-MC-Unique: 77tfofzDNhCK4KwggBC1CQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 04645185A780;
+        Wed, 15 Nov 2023 00:40:55 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.9])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D0446112130B;
+        Wed, 15 Nov 2023 00:40:53 +0000 (UTC)
+Date:   Wed, 15 Nov 2023 08:40:50 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, kexec@lists.infradead.org,
+        x86@kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
+        linux-s390@vger.kernel.org, ebiederm@xmission.com,
+        takahiro.akashi@linaro.org
+Subject: Re: [PATCH 1/2] resource: add walk_system_ram_res_rev()
+Message-ID: <ZVQTkqSa4FA6b6iH@MiWiFi-R3L-srv>
+References: <20231114091658.228030-1-bhe@redhat.com>
+ <20231114091658.228030-2-bhe@redhat.com>
+ <20231114151745.e77ed504b3fce325f54ec08e@linux-foundation.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
-Content-Language: en-US
-To:     Wenchao Hao <haowenchao2@huawei.com>,
-        Ilya Dryomov <idryomov@gmail.com>,
-        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     louhongxiang@huawei.com
-References: <20231114153108.1932884-1-haowenchao2@huawei.com>
-From:   Xiubo Li <xiubli@redhat.com>
-In-Reply-To: <20231114153108.1932884-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-5.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114151745.e77ed504b3fce325f54ec08e@linux-foundation.org>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
@@ -84,38 +67,88 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/14/23 at 03:17pm, Andrew Morton wrote:
+> On Tue, 14 Nov 2023 17:16:57 +0800 Baoquan He <bhe@redhat.com> wrote:
+> 
+> > This function, being a variant of walk_system_ram_res() introduced in
+> > commit 8c86e70acead ("resource: provide new functions to walk through
+> > resources"), walks through a list of all the resources of System RAM
+> > in reversed order, i.e., from higher to lower.
+> > 
+> > It will be used in kexec_file code to load kernel, initrd etc when
+> > preparing kexec reboot.
+> >
+> > ...
+> >
+> > +/*
+> > + * This function, being a variant of walk_system_ram_res(), calls the @func
+> > + * callback against all memory ranges of type System RAM which are marked as
+> > + * IORESOURCE_SYSTEM_RAM and IORESOUCE_BUSY in reversed order, i.e., from
+> > + * higher to lower.
+> > + */
+> > +int walk_system_ram_res_rev(u64 start, u64 end, void *arg,
+> > +				int (*func)(struct resource *, void *))
+> > +{
+> > +	struct resource res, *rams;
+> > +	int rams_size = 16, i;
+> > +	unsigned long flags;
+> > +	int ret = -1;
+> > +
+> > +	/* create a list */
+> > +	rams = kvcalloc(rams_size, sizeof(struct resource), GFP_KERNEL);
+> > +	if (!rams)
+> > +		return ret;
+> > +
+> > +	flags = IORESOURCE_SYSTEM_RAM | IORESOURCE_BUSY;
+> > +	i = 0;
+> > +	while ((start < end) &&
+> > +		(!find_next_iomem_res(start, end, flags, IORES_DESC_NONE, &res))) {
+> > +		if (i >= rams_size) {
+> > +			/* re-alloc */
+> > +			struct resource *rams_new;
+> > +			int rams_new_size;
+> > +
+> > +			rams_new_size = rams_size + 16;
+> > +			rams_new = kvcalloc(rams_new_size, sizeof(struct resource),
+> > +					    GFP_KERNEL);
+> 
+> kvrealloc()?
 
-On 11/14/23 23:31, Wenchao Hao wrote:
-> This issue is reported by smatch, get_quota_realm() might return
-> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the return
-> value.
->
-> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
-> ---
->   fs/ceph/quota.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
-> index 9d36c3532de1..c4b2929c6a83 100644
-> --- a/fs/ceph/quota.c
-> +++ b/fs/ceph/quota.c
-> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
->   	realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
->   				QUOTA_GET_MAX_BYTES, true);
->   	up_read(&mdsc->snap_rwsem);
-> -	if (!realm)
-> +	if (IS_ERR_OR_NULL(realm))
->   		return false;
->   
->   	spin_lock(&realm->inodes_with_caps_lock);
+Exactly. Will udpate. Thanks for the great suggestion.
 
-Good catch.
-
-Reviewed-by: Xiubo Li <xiubli@redhat.com>
-
-We should CC the stable mail list.
-
-Thanks
-
-- Xiubo
+> 
+> > +			if (!rams_new)
+> > +				goto out;
+> > +
+> > +			memcpy(rams_new, rams,
+> > +					sizeof(struct resource) * rams_size);
+> > +			kvfree(rams);
+> > +			rams = rams_new;
+> > +			rams_size = rams_new_size;
+> > +		}
+> > +
+> > +		rams[i].start = res.start;
+> > +		rams[i++].end = res.end;
+> > +
+> > +		start = res.end + 1;
+> > +	}
+> > +
+> > +	/* go reverse */
+> > +	for (i--; i >= 0; i--) {
+> > +		ret = (*func)(&rams[i], arg);
+> > +		if (ret)
+> > +			break;
+> > +	}
+> > +
+> > +out:
+> > +	kvfree(rams);
+> > +	return ret;
+> > +}
+> > +
+> >  /*
+> >   * This function calls the @func callback against all memory ranges, which
+> >   * are ranges marked as IORESOURCE_MEM and IORESOUCE_BUSY.
+> > -- 
+> > 2.41.0
+> 
 
