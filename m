@@ -2,147 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9ECA7EC976
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:15:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5FDE7EC97A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:17:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229937AbjKORPv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:15:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48012 "EHLO
+        id S230402AbjKORQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKORPt (ORCPT
+        with ESMTP id S229570AbjKORQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:15:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B6EFA
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:15:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700068545;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=l0183wfb6QQa7Dify3mlCQ9wLvW15z5Q/GXKekFiQGQ=;
-        b=DRQrYT71KL2udeptzx5bNi3MiWtEcbfqU9wCxrhOQqc42Xqzu1i8iu8CyitbF39Z4+IABN
-        S3frCR+SfWxr+xNOoiwSTBTAVlyjgUdQrdcmNz4YytkYkuQk2Ltao2Y3PPC7M24HUoxuLp
-        olAF0U3I2v/dF7VNKCqE7ooLV0yq0n8=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-186-NuvpSifpOSqIylCwNS7D0A-1; Wed,
- 15 Nov 2023 12:15:42 -0500
-X-MC-Unique: NuvpSifpOSqIylCwNS7D0A-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 02E2F3C000AA;
-        Wed, 15 Nov 2023 17:15:42 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D4BBA1121306;
-        Wed, 15 Nov 2023 17:15:40 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-To:     netdev@vger.kernel.org
-cc:     dhowells@redhat.com, Marc Dionne <marc.dionne@auristor.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net] rxrpc: Fix some minor issues with bundle tracing
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3939792.1700068540.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 15 Nov 2023 17:15:40 +0000
-Message-ID: <3939793.1700068540@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Wed, 15 Nov 2023 12:16:58 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DA318E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:16:54 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 3f1490d57ef6-da0ccfc4fc8so8898668276.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700068613; x=1700673413; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jvaWmO0FnVQSvQa+hPtEgtYlB7ewMwZZNTNrDNriGoM=;
+        b=Id+NKevkOHduDfuz18MeJCn/gclNpmmDIniqFm9SVVYGzj8Gpg7h2enFmk3VUAzXTI
+         94W/sfGNaMciXnjxPAcdqgHIk8pjj2DA6jqsgILU3bhRvQVWBULiTzGEkoXqun70DeXB
+         6tqFUs9+wFlaUoaB881Kgs3iZkAJTBecK6WCyFP8pgaDgRtAoeVt9vw2aMGzzuKA2Ony
+         BfJkzTC5Kzh9+T2I6MYXXG2vUVNV4UHaoEjp+c/mJbMdF24XV9T8Nw9FQlIxuMGEP25R
+         9RXGCUUOyXqaMqwK7XzDJT/cR2LkO+Nd1GeE7xP0I64caiPPUi2688CYIyl8Uw0FCNtE
+         8KPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700068613; x=1700673413;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jvaWmO0FnVQSvQa+hPtEgtYlB7ewMwZZNTNrDNriGoM=;
+        b=asnR6TNTJnZ1NDsXtATyzkN8Vht1nKGI3FoFFPODQ11aAV8dFWZrhZyYPcuum3aUEj
+         UHgW6Y8WBL1kqCGMmHd1Fy76WHF+0FMPwdZ3t8R50DqPd5X+lgKDr9p9qAP6eI6UVGC2
+         wERuQ3AdKKXcXSX8Mq0wnNWworowAbbsefpep7+Lu7XWSv2cvDzb4AGkj+CbBVnqIncR
+         UTAZqCsJKN25Nwic7HTU30Ae6q6greyTh/YACAwDXDQiGqjyhSK9tGtuoK3UD28rc/8k
+         g7T7NfucRSmUVKI8qwF7VhtlkTS3tx5emPon22MaDdqrf2SdYGrcC7AHE6k/4wmjXRVR
+         dsbQ==
+X-Gm-Message-State: AOJu0YyW/I8I5RzqP9vW0sHD33MWodxLn/nRisawSZe+Tg2iOhjt2SMc
+        F3fo8TjZG3navJzcvwL6I5MYNJUbGeOitKqUb5Q=
+X-Google-Smtp-Source: AGHT+IGpTPHEt6mqVGX4OcHH3rw9Bhky+H2JiZ2u6YBAqgXzSwAP/9U1Wj0MXTkRRyqmx1wx/ooeavPE5/IIuxO7qck=
+X-Received: from sebkvm.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:cd5])
+ (user=sebastianene job=sendgmr) by 2002:a25:24c7:0:b0:daf:660e:9bdb with SMTP
+ id k190-20020a2524c7000000b00daf660e9bdbmr176609ybk.6.1700068613223; Wed, 15
+ Nov 2023 09:16:53 -0800 (PST)
+Date:   Wed, 15 Nov 2023 17:16:30 +0000
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+Message-ID: <20231115171639.2852644-2-sebastianene@google.com>
+Subject: [PATCH v3 00/10] arm64: ptdump: View the second stage page-tables
+From:   Sebastian Ene <sebastianene@google.com>
+To:     will@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>, catalin.marinas@arm.com,
+        mark.rutland@arm.com, akpm@linux-foundation.org, maz@kernel.org
+Cc:     kvmarm@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com,
+        vdonnefort@google.com, qperret@google.com, smostafa@google.com,
+        Sebastian Ene <sebastianene@google.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-    =
+Hi,
 
-Fix some superficial issues with the tracing of rxrpc_bundle structs,
-including:
+This can be used as a debugging tool for dumping the second stage
+page-tables.
 
- (1) Set the debug_id when the bundle is allocated rather than when it is
-     set up so that the "NEW" trace line displays the correct bundle ID.
+When CONFIG_PTDUMP_STAGE2_DEBUGFS is enabled, ptdump registers 
+'/sys/debug/kvm/<guest_id>/stage2_page_tables' entry with debugfs
+upon guest creation. This allows userspace tools (eg. cat) to dump the
+stage-2 pagetables by reading the registered file.
 
- (2) Show the refcount when emitting the "FREE" traceline.
+Reading the debugfs file shows stage-2 memory ranges in following format:
+<IPA range> <size> <descriptor type> <access permissions> <mem_attributes>
 
-Signed-off-by: David Howells <dhowells@redhat.com>
-cc: Marc Dionne <marc.dionne@auristor.com>
-cc: "David S. Miller" <davem@davemloft.net>
-cc: Eric Dumazet <edumazet@google.com>
-cc: Jakub Kicinski <kuba@kernel.org>
-cc: Paolo Abeni <pabeni@redhat.com>
-cc: linux-afs@lists.infradead.org
-cc: netdev@vger.kernel.org
----
- net/rxrpc/conn_client.c |    7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+Under pKVM configuration(kvm-arm.mode=protected) ptdump registers an entry
+for the host stage-2 pagetables in the following path:
+/sys/debug/kvm/host_stage2_page_tables/
 
-diff --git a/net/rxrpc/conn_client.c b/net/rxrpc/conn_client.c
-index 981ca5b98bcb..1d95f8bc769f 100644
---- a/net/rxrpc/conn_client.c
-+++ b/net/rxrpc/conn_client.c
-@@ -73,6 +73,7 @@ static void rxrpc_destroy_client_conn_ids(struct rxrpc_l=
-ocal *local)
- static struct rxrpc_bundle *rxrpc_alloc_bundle(struct rxrpc_call *call,
- 					       gfp_t gfp)
- {
-+	static atomic_t rxrpc_bundle_id;
- 	struct rxrpc_bundle *bundle;
- =
+The tool interprets the pKVM ownership annotation stored in the invalid
+entries and dumps to the console the ownership information. To be able
+to access the host stage-2 page-tables from the kernel, a new hypervisor
+call was introduced which allows us to snapshot the page-tables in a host
+provided buffer. The hypervisor call is hidden behind CONFIG_NVHE_EL2_DEBUG
+as this should be used under debugging environment.
 
- 	bundle =3D kzalloc(sizeof(*bundle), gfp);
-@@ -85,6 +86,7 @@ static struct rxrpc_bundle *rxrpc_alloc_bundle(struct rx=
-rpc_call *call,
- 		bundle->upgrade		=3D test_bit(RXRPC_CALL_UPGRADE, &call->flags);
- 		bundle->service_id	=3D call->dest_srx.srx_service;
- 		bundle->security_level	=3D call->security_level;
-+		bundle->debug_id	=3D atomic_inc_return(&rxrpc_bundle_id);
- 		refcount_set(&bundle->ref, 1);
- 		atomic_set(&bundle->active, 1);
- 		INIT_LIST_HEAD(&bundle->waiting_calls);
-@@ -105,7 +107,8 @@ struct rxrpc_bundle *rxrpc_get_bundle(struct rxrpc_bun=
-dle *bundle,
- =
+Link to the second version:
+https://lore.kernel.org/all/20231019144032.2943044-1-sebastianene@google.com/#r
 
- static void rxrpc_free_bundle(struct rxrpc_bundle *bundle)
- {
--	trace_rxrpc_bundle(bundle->debug_id, 1, rxrpc_bundle_free);
-+	trace_rxrpc_bundle(bundle->debug_id, refcount_read(&bundle->ref),
-+			   rxrpc_bundle_free);
- 	rxrpc_put_peer(bundle->peer, rxrpc_peer_put_bundle);
- 	key_put(bundle->key);
- 	kfree(bundle);
-@@ -239,7 +242,6 @@ static bool rxrpc_may_reuse_conn(struct rxrpc_connecti=
-on *conn)
-  */
- int rxrpc_look_up_bundle(struct rxrpc_call *call, gfp_t gfp)
- {
--	static atomic_t rxrpc_bundle_id;
- 	struct rxrpc_bundle *bundle, *candidate;
- 	struct rxrpc_local *local =3D call->local;
- 	struct rb_node *p, **pp, *parent;
-@@ -306,7 +308,6 @@ int rxrpc_look_up_bundle(struct rxrpc_call *call, gfp_=
-t gfp)
- 	}
- =
+Link to the first version:
+https://lore.kernel.org/all/20230927112517.2631674-1-sebastianene@google.com/
 
- 	_debug("new bundle");
--	candidate->debug_id =3D atomic_inc_return(&rxrpc_bundle_id);
- 	rb_link_node(&candidate->local_node, parent, pp);
- 	rb_insert_color(&candidate->local_node, &local->client_bundles);
- 	call->bundle =3D rxrpc_get_bundle(candidate, rxrpc_bundle_get_client_cal=
-l);
+Changelog:
+
+  v2 -> v3:
+  * register the stage-2 debugfs entry for the host under
+    /sys/debug/kvm/host_stage2_page_tables and in
+    /sys/debug/kvm/<guest_id>/stage2_page_tables for guests.
+
+  * don't use a static array for parsing the attributes description,
+    generate it dynamically based on the number of pagetable levels
+
+  * remove the lock that was guarding the seq_file private inode data,
+    and keep the data private to the open file session.
+
+  * minor fixes & renaming of CONFIG_NVHE_EL2_PTDUMP_DEBUGFS to
+    CONFIG_PTDUMP_STAGE2_DEBUGFS
+
+  v1 -> v2:
+  * use the stage-2 pagetable walker for dumping descriptors instead of
+    the one provided by ptdump.
+
+  * support for guests pagetables dumping under VHE/nVHE non-protected
+
+Thanks,
+
+Sebastian Ene (10):
+  KVM: arm64: Add snap shooting the host stage-2 pagetables
+  arm64: ptdump: Use the mask from the state structure
+  arm64: ptdump: Add the walker function to the ptdump info structure
+  KVM: arm64: Move pagetable definitions to common header
+  arm64: ptdump: Add hooks on debugfs file operations
+  arm64: ptdump: Register a debugfs entry for the host stage-2 tables
+  arm64: ptdump: Parse the host stage-2 page-tables from the snapshot
+  arm64: ptdump: Interpret memory attributes based on runtime
+    configuration
+  arm64: ptdump: Interpret pKVM ownership annotations
+  arm64: ptdump: Add support for guest stage-2 pagetables dumping
+
+ arch/arm64/include/asm/kvm_asm.h              |   1 +
+ arch/arm64/include/asm/kvm_pgtable.h          |  85 +++
+ arch/arm64/include/asm/ptdump.h               |  27 +
+ arch/arm64/kvm/Kconfig                        |  13 +
+ arch/arm64/kvm/arm.c                          |   2 +
+ arch/arm64/kvm/debug.c                        |   6 +
+ arch/arm64/kvm/hyp/include/nvhe/mem_protect.h |   8 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c            |  20 +
+ arch/arm64/kvm/hyp/nvhe/mem_protect.c         | 102 ++++
+ arch/arm64/kvm/hyp/pgtable.c                  |  98 ++--
+ arch/arm64/kvm/mmu.c                          |   2 +
+ arch/arm64/mm/ptdump.c                        | 483 +++++++++++++++++-
+ arch/arm64/mm/ptdump_debugfs.c                |  64 ++-
+ 13 files changed, 852 insertions(+), 59 deletions(-)
+
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
 
