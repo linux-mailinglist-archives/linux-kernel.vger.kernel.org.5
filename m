@@ -2,151 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 439DF7ECA7C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:25:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F254D7ECA7D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:26:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbjKOSZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:25:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59164 "EHLO
+        id S232572AbjKOS0A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:26:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229630AbjKOSZ2 (ORCPT
+        with ESMTP id S229630AbjKOSZ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:25:28 -0500
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2120.outbound.protection.outlook.com [40.107.244.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB55C1A4;
-        Wed, 15 Nov 2023 10:25:23 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fjfXVw1pd1jyqFH4STp8uv0pYgjJgPdhqNf06WsRgvS2yPfC6aUIDJTySfFTcEdWlGwcWteFcwmBP/tTm/YZ2LR1n7jjWZdzKlxkz6aHNNHgk96AIoReZu42aI/dhAIEiI6l1U37wYdBo2Clp3mDNqtFIyQHNCjm2otsM7O9Hn8yaCO77pMoITkK8Ewu0f42T80SP36M9juNw0GI5V4df20RkTqtZKhUUi+9kiUyMBS7eVz/flboRx9Q+HSVMLkYp4ZoSQewmEaaNO6CpR2WfOahS3mP2RTY8V1nUOwQlwh5hRtaO2r6ldVqOvNrGEbtfLviOwKdlQIoMOcF7OsanQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ULZb1lKT2kHO5FaPc/IX4YHIpR2TY46uw6pWS3Q4gvY=;
- b=HNo3IzUkJ/7bz3zT90HZsEPAy56Qg3eicnMQPNL0rLaqwYaji3/GuAF9uAFWYEj7IqRAmuhE4A9uRBbEk2dsW2HwHJUck1XBgfvezJ58QzbP/H08dIq08neKY2DUWkowxbI1U88E/v7Lx/x0aS6JA2rcILSGqDV7FvDxzlvlS0/aj3oydaPsFAyQDU3GbdfxpuaxljzcHDGJ/CqE4DAbEiIlmWhBEgxyH63SJF+/8lUFiwa2yxIc01UKE9QQDMaOnOAkG1S1qkzs8y0N4GWGTtuPNEWuy3oBVnTB0IuQvLGu1kS95OZIxglOKavM9lebMF+b0hxXECgT2WlMNlJLGQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ULZb1lKT2kHO5FaPc/IX4YHIpR2TY46uw6pWS3Q4gvY=;
- b=Acaoj9ZA6sGJgqAyQBjqTxyUtWY+/6HDB86BZ4YKMFRgMN77oP7wj0XbI/ktZcYDEBcG1gw4Oj2RKsrX0Z8+lJhWPLgixQbxYnmrER1hgr57wDp2iC0UION6bTOIiM5WjmXX02MeP0XV83afOSRbD7emOrlSmPsE73qiEjZL1t8=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from PH0PR01MB7475.prod.exchangelabs.com (2603:10b6:510:f2::9) by
- LV8PR01MB8431.prod.exchangelabs.com (2603:10b6:408:18a::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7002.18; Wed, 15 Nov 2023 18:25:19 +0000
-Received: from PH0PR01MB7475.prod.exchangelabs.com
- ([fe80::3313:3ab6:572d:58d3]) by PH0PR01MB7475.prod.exchangelabs.com
- ([fe80::3313:3ab6:572d:58d3%6]) with mapi id 15.20.6977.019; Wed, 15 Nov 2023
- 18:25:19 +0000
-Message-ID: <16668165-adcd-4cd6-8c50-83b992f8e880@os.amperecomputing.com>
-Date:   Wed, 15 Nov 2023 10:25:14 -0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] i2c: designware: Fix corrupted memory seen in the ISR
-To:     Serge Semin <fancer.lancer@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Jan Dabros <jsd@semihalf.com>,
-        Andi Shyti <andi.shyti@kernel.org>, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231109031927.1990570-1-janb@os.amperecomputing.com>
- <yuperxjytpcwz25fofjut2edzjc4i6jgymcraxp4q6mfe27taf@b33ym5iuubji>
- <ZVHxhN+dxJSUkEOg@shikoro>
- <tupjmogut45oh2t2cth7o5wpqc6u6qkwfwddqrfnozlpplavlz@vram3ul3t4zj>
-Content-Language: en-US
-From:   Jan Bottorff <janb@os.amperecomputing.com>
-In-Reply-To: <tupjmogut45oh2t2cth7o5wpqc6u6qkwfwddqrfnozlpplavlz@vram3ul3t4zj>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH5PR04CA0022.namprd04.prod.outlook.com
- (2603:10b6:610:1f4::19) To PH0PR01MB7475.prod.exchangelabs.com
- (2603:10b6:510:f2::9)
+        Wed, 15 Nov 2023 13:25:58 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 900EC1B8;
+        Wed, 15 Nov 2023 10:25:54 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E4D47DA7;
+        Wed, 15 Nov 2023 10:26:39 -0800 (PST)
+Received: from e121345-lin.cambridge.arm.com (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CC0653F641;
+        Wed, 15 Nov 2023 10:25:52 -0800 (PST)
+From:   Robin Murphy <robin.murphy@arm.com>
+To:     joro@8bytes.org, will@kernel.org
+Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
+        lpieralisi@kernel.org, andre.draszik@linaro.org,
+        quic_zhenhuah@quicinc.com, jgg@nvidia.com
+Subject: [PATCH] iommu: Avoid more races around device probe
+Date:   Wed, 15 Nov 2023 18:25:44 +0000
+Message-Id: <16f433658661d7cadfea51e7c65da95826112a2b.1700071477.git.robin.murphy@arm.com>
+X-Mailer: git-send-email 2.39.2.101.g768bb238c484.dirty
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR01MB7475:EE_|LV8PR01MB8431:EE_
-X-MS-Office365-Filtering-Correlation-Id: dd25ada4-5805-4cc1-0d23-08dbe60838b9
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: F7cGLsRHWEtxqFbiMGa/VPos0qnKj+ambkP7AizORfu6YLHRvMqwJlngF6ffgHn8XhaWWbwl0XK0+v/1AVi64ReskM+2YE4VseakJlqJL0M7/V1ZViwXPfnrAZxqgVt5A8GuWpDSrXl69NhYg9bp/Mpehid8E8jH+FDKOnAGSCOKIKSiIFazvquOVC0PqVFFmTepUPyh2MXvW3Pxm1S4HEDGuQyqhL9Bf69HA8kdr14ZOLeZigQvBxxfwOf4WUEJyVUw1IAAof7Cq7vzbkt3uCHEWr49Vfos2rC1JjvHbm0T9iPhrnNZVufOvRqMJv+EPeGwsFyd55aRr/wSt+Zf5FVRzYPbCC+Bfr/k5htXbvLe63K2lV8XWEAy5mRV9MOGprApn0ynheLyzneNIAmq/QKrijR9lb8BRcMDthnEm+rJoOEWvhDcVCzCipEDGxSC75LDhZc6zLA9Sv2w9Tq74qi99md1xvt5G0VWfjxLqB+XECvr2qSTRi7lzepAzJzCaXrE5kNsuPymlJ7XdqY778O1QhSAesQq45gnuzLhhktJP5ybjySYfN1rZYtLrb6e+QjVWBJakG8fxO42W2LBQFLGn/307R7Nk3O1KB9yjplBl0oihGh5/8uIsfrEoaYB
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR01MB7475.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39850400004)(396003)(136003)(230922051799003)(451199024)(1800799009)(186009)(64100799003)(478600001)(2906002)(6486002)(6512007)(6506007)(2616005)(6666004)(86362001)(5660300002)(31696002)(66476007)(66946007)(110136005)(66556008)(4744005)(8676002)(316002)(8936002)(41300700001)(31686004)(38100700002)(26005)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?L0M0YmExWm1LK0ZOZVlGMU4zbGRjQUxRYTdvUkZOY1dYT3RuaEJzbWRwSjJi?=
- =?utf-8?B?WHh5UnRrRS81UzlWbWt6N0kxWi90bWFDWmQyVHhqYVdRaE9mRXYvWHlsTEov?=
- =?utf-8?B?TDdaZnJNZ294V00xMzMwcnczS3VNR0xrZ0pLNDlYKzh3UjBVR0VhTnlZSjJB?=
- =?utf-8?B?aFJ5RWVKK0lHK0NXczkyM2ZDMUZxSzBhUWpCUkZVbE5HalpMMVVTMEVKcmJr?=
- =?utf-8?B?c2VnUVdoc3dYeHp3aTVrZCtwbVV0N1I3dWVrVkNQV3FCejdEZFdIQkNBRDZp?=
- =?utf-8?B?K2RNcXY0RzNIeStqSUxDenVpNnc4cFQ4am55R01Cazl5eEhJRWJDbXVGTks2?=
- =?utf-8?B?cVBjbXBiRElkYlhGaEszSlIyK2ZyTWRiRmQxaUhxcGI1L09oLzRKWmlZay84?=
- =?utf-8?B?S0o0N3JaZXZIYmRIU0VFQjJGRm9sUC9zVERXOVJWZ1QzdzVuL3VVemFQais2?=
- =?utf-8?B?Nk9XSXRPN3NSeGJIMXZQWVlKbTE0MVlyV2swdnA5VTNYT1pPSWwyWXl5S0Jh?=
- =?utf-8?B?aS81NmJXQWxPL1RRRUJKc25mN2txYm5aMnB5Yk1VVkVDdnZOUlVZM056NEN0?=
- =?utf-8?B?U3pQRnBkK0RRaVdVcnV5dklZSWtYM05ob0R3SWZEcStsNm1TQWUwdkplZEln?=
- =?utf-8?B?ZlBZVmFJT2NtSHJuRVFqWkg1Yzdnc0M0U1hFYk5SQmh2U1pLK0YwOHVHTHMr?=
- =?utf-8?B?dXZDSzQ2d2IxYTBoL1hkYjUxOWh0YXJsMWYraFh4MWEwODZZdnN0VDNJcTFF?=
- =?utf-8?B?djR0SkFkRmhQalVqMTJrWkNKQmkzQi83ZVM5OW91SXdJTlQvZ0tZMFdxU1lW?=
- =?utf-8?B?Q3cvS2hJcUo0MHBPOGMvM0VnRitxOExTd3BtWnQ1aGhkK0c2Q1NrUjRIVVFP?=
- =?utf-8?B?OUp0N2UyUHIrQk03c2xRS2VRc2VOU0xmZHgyU3VGcWhmN1RkNVdrWnF6RVdD?=
- =?utf-8?B?MHFUVTBqTkNhUkc1QXpDd1h2d2xKUVFqUUZFcWlaNGdFcEhFUVVoV25WU2kz?=
- =?utf-8?B?OTBsMVA0R3ExMHp0dmJUeDN0N1VuTmNhQ2lRdzc1UldkOHVENzZqSmdOK2ZP?=
- =?utf-8?B?TzZmTEIvVGVlK3RjQ0ZYZVpKZUsrdGRJSUxXbVdNLzNQQmJLVXBzQjArU3h2?=
- =?utf-8?B?dVFBTnpMVXI1TmZmNGZISWxiYjlpM3dXd0lHaXp0bTBJd0FMQkt2WWJ3c3k3?=
- =?utf-8?B?c3hoVFRMbVVwVGF3cE1LUkZNK2hBRUI2cFoybW52TmdiQXhGdTNuOFI3WUJE?=
- =?utf-8?B?anJzTTlSNzlkdTBobXpwajdLVS9NYzYyZFNRRE5Tcm9TM1pBalorU2JjMDda?=
- =?utf-8?B?ZkxRVXZVVVV3VjFRQSsrQUZxckhaOHJ0bkYvS3JORUN0Qjd4cWpMWmx1ekg4?=
- =?utf-8?B?cGFmbkFGNnBMZmxENFE5cW5XbC9yQlZyQjk3bFd6Wk93clZyWGQ0THVyLzRy?=
- =?utf-8?B?TDBrOXdLRSt2blh2cVJCZWtJUURLRUhDVit0VU5UVTBGZ1RqN25NQTlVSml6?=
- =?utf-8?B?ODIzVzQ1ZE9SOWt3L3RXY0tBOFUrcE5rMjZDcXhwbTNPZWFSTVkyV21tMmJZ?=
- =?utf-8?B?ZmN0Z3lGTlNWV0wyMk0xTjJzYTJjbkVRaVJ3bSsxeWliYy9hYTFTREF6WlFM?=
- =?utf-8?B?Rnp5L0NxbVVVMk5taU1NRWtGdkYzcGo3RkdYRHlwaittWS9lN3lHRW84QWdj?=
- =?utf-8?B?Ry83YVlUVjhDb1IrVE8rMVlBVHBic1ZNTVVJYXhwQmx0VkFqTERFalYyR3Zi?=
- =?utf-8?B?cmkxVHpvVXRyck9hT3M5S2E0RUV6RWQrdGJHQllvcTNCVTRyUks5ZzRrUHdQ?=
- =?utf-8?B?a2pUY1NRQ0ZCQW1iUGYvWFBtK004TUJDa0FyclRCYTRVT2QxbVZsdmtkQ3dE?=
- =?utf-8?B?L2F1UEVYMFBRZGhPa3FiNXBFckVGRnZQUXV2bmVGR1pVMDVFeXJ1UjBNeEU3?=
- =?utf-8?B?bGt5ckcxRElKVG1LUW0yL0YrSVJmeTZvTVBXcFpPdXN2c0JlSjlhVCt2RkFv?=
- =?utf-8?B?cHNWZkVxRE1nRkI4Uk1aNGlDZmhjdEJqOFF3Wjd3OTdzMGJVeDhYd280VmVo?=
- =?utf-8?B?S0FsRzIxWTdBV2pJWHVvRWREODd1VGVSbFdUWWt4ZS9xNUQ5RTRzVEZnMGdS?=
- =?utf-8?B?WjlIL3dIcytHenRDc0dLeXVkYkhzUlRLdWxUYVU4RTlOcDBJWThoVk0weENl?=
- =?utf-8?Q?byiD5RY9SCAhhZLkyKai3tc=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dd25ada4-5805-4cc1-0d23-08dbe60838b9
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR01MB7475.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 18:25:19.0397
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xk2vkoTuuJsVoyVvkMHipJ1zdssTrAqkrFwSZJ1hOUNuzAPsPML3QmM/Sa/5hDK8uLR4IyK74lxnCf7R1eQTcKrt3uEmQbdQERgbwXzVLDI=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR01MB8431
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> On Mon, Nov 13, 2023 at 04:51:00AM -0500, Wolfram Sang wrote:
->>
->> Thanks to a restrictive hotel network, I haven't pushed out yet, and
->> could still add your tags. Thanks!
+It turns out there are more subtle races beyond just the main part of
+__iommu_probe_device() itself running in parallel - the dev_iommu_free()
+on the way out of an unsuccessful probe can still manage to trip up
+concurrent accesses to a device's fwspec. Thus, extend the scope of
+iommu_probe_device_lock() to also serialise fwspec creation and initial
+retrieval.
 
-Hi Wolfram,
+Reported-by: Zhenhua Huang <quic_zhenhuah@quicinc.com>
+Link: https://lore.kernel.org/linux-iommu/e2e20e1c-6450-4ac5-9804-b0000acdf7de@quicinc.com/
+Fixes: 01657bc14a39 ("iommu: Avoid races around device probe")
+Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+---
 
-Any chance we could get the "Cc: stable@vger.kernel.org" tag added to 
-this patch? More than one large cloud company would like to see this in 
-the stable kernel, as it significantly improves the reliability of IPMI 
-transactions on platforms that use i2c for this communication.
+This is my idea of a viable fix, since it does not need a 700-line
+diffstat to make the code do what it was already *trying* to do anyway.
+This stuff should fundamentally not be hanging off driver probe in the
+first place, so I'd rather get on with removing the underlying
+brokenness than waste time and effort polishing it any further.
 
-Sorry for not including this tag in the submission.
+ drivers/acpi/scan.c      |  7 ++++++-
+ drivers/iommu/iommu.c    | 20 ++++++++++----------
+ drivers/iommu/of_iommu.c | 12 +++++++++---
+ include/linux/iommu.h    |  1 +
+ 4 files changed, 26 insertions(+), 14 deletions(-)
 
-Jan
-
+diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+index fa5dd71a80fa..02bb2cce423f 100644
+--- a/drivers/acpi/scan.c
++++ b/drivers/acpi/scan.c
+@@ -1568,17 +1568,22 @@ static const struct iommu_ops *acpi_iommu_configure_id(struct device *dev,
+ 	int err;
+ 	const struct iommu_ops *ops;
+ 
++	/* Serialise to make dev->iommu stable under our potential fwspec */
++	mutex_lock(&iommu_probe_device_lock);
+ 	/*
+ 	 * If we already translated the fwspec there is nothing left to do,
+ 	 * return the iommu_ops.
+ 	 */
+ 	ops = acpi_iommu_fwspec_ops(dev);
+-	if (ops)
++	if (ops) {
++		mutex_unlock(&iommu_probe_device_lock);
+ 		return ops;
++	}
+ 
+ 	err = iort_iommu_configure_id(dev, id_in);
+ 	if (err && err != -EPROBE_DEFER)
+ 		err = viot_iommu_configure(dev);
++	mutex_unlock(&iommu_probe_device_lock);
+ 
+ 	/*
+ 	 * If we have reason to believe the IOMMU driver missed the initial
+diff --git a/drivers/iommu/iommu.c b/drivers/iommu/iommu.c
+index f17a1113f3d6..e0c962648dde 100644
+--- a/drivers/iommu/iommu.c
++++ b/drivers/iommu/iommu.c
+@@ -485,11 +485,12 @@ static void iommu_deinit_device(struct device *dev)
+ 	dev_iommu_free(dev);
+ }
+ 
++DEFINE_MUTEX(iommu_probe_device_lock);
++
+ static int __iommu_probe_device(struct device *dev, struct list_head *group_list)
+ {
+ 	const struct iommu_ops *ops = dev->bus->iommu_ops;
+ 	struct iommu_group *group;
+-	static DEFINE_MUTEX(iommu_probe_device_lock);
+ 	struct group_device *gdev;
+ 	int ret;
+ 
+@@ -502,17 +503,15 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+ 	 * probably be able to use device_lock() here to minimise the scope,
+ 	 * but for now enforcing a simple global ordering is fine.
+ 	 */
+-	mutex_lock(&iommu_probe_device_lock);
++	lockdep_assert_held(&iommu_probe_device_lock);
+ 
+ 	/* Device is probed already if in a group */
+-	if (dev->iommu_group) {
+-		ret = 0;
+-		goto out_unlock;
+-	}
++	if (dev->iommu_group)
++		return 0;
+ 
+ 	ret = iommu_init_device(dev, ops);
+ 	if (ret)
+-		goto out_unlock;
++		return ret;
+ 
+ 	group = dev->iommu_group;
+ 	gdev = iommu_group_alloc_device(group, dev);
+@@ -548,7 +547,6 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+ 			list_add_tail(&group->entry, group_list);
+ 	}
+ 	mutex_unlock(&group->mutex);
+-	mutex_unlock(&iommu_probe_device_lock);
+ 
+ 	if (dev_is_pci(dev))
+ 		iommu_dma_set_pci_32bit_workaround(dev);
+@@ -562,8 +560,6 @@ static int __iommu_probe_device(struct device *dev, struct list_head *group_list
+ 	iommu_deinit_device(dev);
+ 	mutex_unlock(&group->mutex);
+ 	iommu_group_put(group);
+-out_unlock:
+-	mutex_unlock(&iommu_probe_device_lock);
+ 
+ 	return ret;
+ }
+@@ -573,7 +569,9 @@ int iommu_probe_device(struct device *dev)
+ 	const struct iommu_ops *ops;
+ 	int ret;
+ 
++	mutex_lock(&iommu_probe_device_lock);
+ 	ret = __iommu_probe_device(dev, NULL);
++	mutex_unlock(&iommu_probe_device_lock);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -1822,7 +1820,9 @@ static int probe_iommu_group(struct device *dev, void *data)
+ 	struct list_head *group_list = data;
+ 	int ret;
+ 
++	mutex_lock(&iommu_probe_device_lock);
+ 	ret = __iommu_probe_device(dev, group_list);
++	mutex_unlock(&iommu_probe_device_lock);
+ 	if (ret == -ENODEV)
+ 		ret = 0;
+ 
+diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+index 157b286e36bf..c25b4ae6aeee 100644
+--- a/drivers/iommu/of_iommu.c
++++ b/drivers/iommu/of_iommu.c
+@@ -112,16 +112,20 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+ 					   const u32 *id)
+ {
+ 	const struct iommu_ops *ops = NULL;
+-	struct iommu_fwspec *fwspec = dev_iommu_fwspec_get(dev);
++	struct iommu_fwspec *fwspec;
+ 	int err = NO_IOMMU;
+ 
+ 	if (!master_np)
+ 		return NULL;
+ 
++	/* Serialise to make dev->iommu stable under our potential fwspec */
++	mutex_lock(&iommu_probe_device_lock);
++	fwspec = dev_iommu_fwspec_get(dev);
+ 	if (fwspec) {
+-		if (fwspec->ops)
++		if (fwspec->ops) {
++			mutex_unlock(&iommu_probe_device_lock);
+ 			return fwspec->ops;
+-
++		}
+ 		/* In the deferred case, start again from scratch */
+ 		iommu_fwspec_free(dev);
+ 	}
+@@ -155,6 +159,8 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+ 		fwspec = dev_iommu_fwspec_get(dev);
+ 		ops    = fwspec->ops;
+ 	}
++	mutex_unlock(&iommu_probe_device_lock);
++
+ 	/*
+ 	 * If we have reason to believe the IOMMU driver missed the initial
+ 	 * probe for dev, replay it to get things in order.
+diff --git a/include/linux/iommu.h b/include/linux/iommu.h
+index ec289c1016f5..6291aa7b079b 100644
+--- a/include/linux/iommu.h
++++ b/include/linux/iommu.h
+@@ -845,6 +845,7 @@ static inline void dev_iommu_priv_set(struct device *dev, void *priv)
+ 	dev->iommu->priv = priv;
+ }
+ 
++extern struct mutex iommu_probe_device_lock;
+ int iommu_probe_device(struct device *dev);
+ 
+ int iommu_dev_enable_feature(struct device *dev, enum iommu_dev_features f);
+-- 
+2.39.2.101.g768bb238c484.dirty
 
