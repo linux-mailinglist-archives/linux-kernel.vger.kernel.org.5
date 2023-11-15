@@ -2,206 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC907EC150
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:34:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47FD27EC152
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:34:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbjKOLeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:34:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41224 "EHLO
+        id S234961AbjKOLeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:34:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234922AbjKOLd6 (ORCPT
+        with ESMTP id S234934AbjKOLd7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:33:58 -0500
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F7CD11C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:33:54 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VwSxxNu_1700048032;
-Received: from localhost.localdomain(mailfrom:CruzZhao@linux.alibaba.com fp:SMTPD_---0VwSxxNu_1700048032)
+        Wed, 15 Nov 2023 06:33:59 -0500
+Received: from out30-113.freemail.mail.aliyun.com (out30-113.freemail.mail.aliyun.com [115.124.30.113])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED369CC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:33:55 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R841e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VwSxxO8_1700048033;
+Received: from localhost.localdomain(mailfrom:CruzZhao@linux.alibaba.com fp:SMTPD_---0VwSxxO8_1700048033)
           by smtp.aliyun-inc.com;
-          Wed, 15 Nov 2023 19:33:52 +0800
+          Wed, 15 Nov 2023 19:33:53 +0800
 From:   Cruz Zhao <CruzZhao@linux.alibaba.com>
 To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
         vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vschneid@redhat.com, joel@joelfernandes.org
 Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH 3/4] sched/fair: introduce core_vruntime and core_min_vruntime
-Date:   Wed, 15 Nov 2023 19:33:40 +0800
-Message-Id: <20231115113341.13261-4-CruzZhao@linux.alibaba.com>
+Subject: [PATCH 4/4] sched/core: fix cfs_prio_less
+Date:   Wed, 15 Nov 2023 19:33:41 +0800
+Message-Id: <20231115113341.13261-5-CruzZhao@linux.alibaba.com>
 X-Mailer: git-send-email 2.39.3
 In-Reply-To: <20231115113341.13261-1-CruzZhao@linux.alibaba.com>
 References: <20231115113341.13261-1-CruzZhao@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To compare the priority of sched_entity from different cpus of a core,
-we introduce core_vruntime to struct sched_entity and core_min_vruntime
-to struct cfs_rq.
+The update of vruntime snapshot will cause unfair sched, especially when
+tasks enqueue/dequeue frequently.
 
-cfs_rq->core->core_min_vruntime records the min vruntime of the cfs_rqs
-of the same task_group among the core, and se->core_vruntime is the
-vruntime relative to se->cfs_rq->core->core_min_vruntime.
+Consider the following case:
+ - Task A1 and A2 share a cookie, and task B has another cookie.
+ - A1 is a short task, waking up frequently but running short everytime.
+ - A2 and B are long tasks.
+ - A1 and B runs on ht0 and A2 runs on ht1.
 
+ht0			ht1		fi_before	fi	update
+switch to A1		switch to A2	0		0	1
+A1 sleeps
+switch to B		A2 force idle	0		1	1
+A1 wakes up
+switch to A1		switch to A1	1		0	1
+A1 sleeps
+switch to B		A2 force idle	0		1	1
+
+In this case, cfs_rq->min_vruntime_fi will update every schedule, and
+prio of B and A2 will be pulled to the same level, no matter how long A2
+and B have run before, which is not fair enough. Extramely, we observed
+that the latency of a task became several minutes due to this reason,
+which should be 100ms.
+
+To fix this problem, we compare the priority of ses using core_vruntime
+directly, instead of vruntime snapshot.
+
+Fixes: c6047c2e3af6 ("sched/fair: Snapshot the min_vruntime of CPUs on force idle")
 Signed-off-by: Cruz Zhao <CruzZhao@linux.alibaba.com>
 ---
- include/linux/sched.h |  3 +++
- kernel/sched/fair.c   | 52 ++++++++++++++++++++++++++++++++++++++-----
- kernel/sched/sched.h  |  1 +
- 3 files changed, 51 insertions(+), 5 deletions(-)
+ kernel/sched/core.c  | 17 -----------------
+ kernel/sched/fair.c  | 35 +----------------------------------
+ kernel/sched/sched.h |  2 --
+ 3 files changed, 1 insertion(+), 53 deletions(-)
 
-diff --git a/include/linux/sched.h b/include/linux/sched.h
-index 292c31697248..df481a8ebc07 100644
---- a/include/linux/sched.h
-+++ b/include/linux/sched.h
-@@ -562,6 +562,9 @@ struct sched_entity {
- 	u64				sum_exec_runtime;
- 	u64				prev_sum_exec_runtime;
- 	u64				vruntime;
-+#ifdef CONFIG_SCHED_CORE
-+	u64				core_vruntime;
-+#endif
- 	s64				vlag;
- 	u64				slice;
- 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 61cbaa3cc385..60b2fd437474 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -750,30 +750,58 @@ static u64 __update_min_vruntime(struct cfs_rq *cfs_rq, u64 vruntime)
- 	return min_vruntime;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 647a12af9172..22edf4bcc7e8 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6052,8 +6052,6 @@ static inline struct task_struct *pick_task(struct rq *rq)
+ 	BUG(); /* The idle class should always have a runnable task. */
  }
  
-+#ifdef CONFIG_SCHED_CORE
-+static u64 __update_core_min_vruntime(struct cfs_rq *cfs_rq, u64 vruntime)
-+{
-+	u64 min_vruntime = cfs_rq->core_min_vruntime;
-+	s64 delta = (s64)(vruntime - min_vruntime);
-+
-+	return delta > 0 ? vruntime : min_vruntime;
-+}
-+#endif
-+
- static void update_min_vruntime(struct cfs_rq *cfs_rq)
- {
- 	struct sched_entity *se = __pick_first_entity(cfs_rq);
- 	struct sched_entity *curr = cfs_rq->curr;
+-extern void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi);
+-
+ static void queue_core_balance(struct rq *rq);
  
- 	u64 vruntime = cfs_rq->min_vruntime;
-+#ifdef CONFIG_SCHED_CORE
-+	u64 core_vruntime = cfs_rq->core->min_vruntime;
-+#endif
- 
- 	if (curr) {
--		if (curr->on_rq)
-+		if (curr->on_rq) {
- 			vruntime = curr->vruntime;
--		else
-+#ifdef CONFIG_SCHED_CORE
-+			core_vruntime = curr->core_vruntime;
-+#endif
-+		} else {
- 			curr = NULL;
-+		}
+ static struct task_struct *
+@@ -6154,7 +6152,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 			 * unconstrained picks as well.
+ 			 */
+ 			WARN_ON_ONCE(fi_before);
+-			task_vruntime_update(rq, next, false);
+ 			goto out_set_next;
+ 		}
  	}
+@@ -6204,8 +6201,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		if (p == rq_i->idle) {
+ 			if (rq_i->nr_running) {
+ 				rq->core->core_forceidle_count++;
+-				if (!fi_before)
+-					rq->core->core_forceidle_seq++;
+ 			}
+ 		} else {
+ 			occ++;
+@@ -6245,17 +6240,6 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ 		if (!rq_i->core_pick)
+ 			continue;
  
- 	if (se) {
--		if (!curr)
-+		if (!curr) {
- 			vruntime = se->vruntime;
--		else
-+#ifdef CONFIG_SCHED_CORE
-+			core_vruntime = se->core_vruntime;
-+#endif
-+		} else {
- 			vruntime = min_vruntime(vruntime, se->vruntime);
-+#ifdef CONFIG_SCHED_CORE
-+			core_vruntime = min_vruntime(core_vruntime, se->core_vruntime);
-+#endif
-+		}
- 	}
+-		/*
+-		 * Update for new !FI->FI transitions, or if continuing to be in !FI:
+-		 * fi_before     fi      update?
+-		 *  0            0       1
+-		 *  0            1       1
+-		 *  1            0       1
+-		 *  1            1       0
+-		 */
+-		if (!(fi_before && rq->core->core_forceidle_count))
+-			task_vruntime_update(rq_i, rq_i->core_pick, !!rq->core->core_forceidle_count);
+-
+ 		rq_i->core_pick->core_occupation = occ;
  
- 	/* ensure we never gain time by being placed backwards. */
- 	u64_u32_store(cfs_rq->min_vruntime,
- 		      __update_min_vruntime(cfs_rq, vruntime));
-+#ifdef CONFIG_SCHED_CORE
-+	u64_u32_store(cfs_rq->core->core_min_vruntime,
-+		     __update_core_min_vruntime(cfs_rq->core, vruntime));
-+#endif
- }
- 
- static inline bool __entity_less(struct rb_node *a, const struct rb_node *b)
-@@ -1137,6 +1165,7 @@ static void update_curr(struct cfs_rq *cfs_rq)
- 	struct sched_entity *curr = cfs_rq->curr;
- 	u64 now = rq_clock_task(rq_of(cfs_rq));
- 	u64 delta_exec;
-+	u64 delta_exec_fair;
- 
- 	if (unlikely(!curr))
- 		return;
-@@ -1158,7 +1187,11 @@ static void update_curr(struct cfs_rq *cfs_rq)
- 	curr->sum_exec_runtime += delta_exec;
- 	schedstat_add(cfs_rq->exec_clock, delta_exec);
- 
--	curr->vruntime += calc_delta_fair(delta_exec, curr);
-+	delta_exec_fair = calc_delta_fair(delta_exec, curr);
-+	curr->vruntime += delta_exec_fair;
-+#ifdef CONFIG_SCHED_CORE
-+	curr->core_vruntime += delta_exec_fair;
-+#endif
- 	update_deadline(cfs_rq, curr);
- 	update_min_vruntime(cfs_rq);
- 
-@@ -5009,6 +5042,9 @@ static void
- place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- {
- 	u64 vslice, vruntime = avg_vruntime(cfs_rq);
-+#ifdef CONFIG_SCHED_CORE
-+	u64 core_vruntime = cfs_rq->core->core_min_vruntime + vruntime - cfs_rq->min_vruntime;
-+#endif
- 	s64 lag = 0;
- 
- 	se->slice = sysctl_sched_base_slice;
-@@ -5091,6 +5127,9 @@ place_entity(struct cfs_rq *cfs_rq, struct sched_entity *se, int flags)
- 	}
- 
- 	se->vruntime = vruntime - lag;
-+#ifdef CONFIG_SCHED_CORE
-+	se->core_vruntime = core_vruntime - lag;
-+#endif
+ 		if (i == cpu) {
+@@ -6474,7 +6458,6 @@ static void sched_core_cpu_deactivate(unsigned int cpu)
+ 	core_rq->core_pick_seq             = rq->core_pick_seq;
+ 	core_rq->core_cookie               = rq->core_cookie;
+ 	core_rq->core_forceidle_count      = rq->core_forceidle_count;
+-	core_rq->core_forceidle_seq        = rq->core_forceidle_seq;
+ 	core_rq->core_forceidle_occupation = rq->core_forceidle_occupation;
  
  	/*
- 	 * When joining the competition; the exisiting tasks will be,
-@@ -12655,6 +12694,9 @@ void init_cfs_rq(struct cfs_rq *cfs_rq)
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 60b2fd437474..15c350b7c34a 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -12382,35 +12382,6 @@ static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
+ 		resched_curr(rq);
+ }
+ 
+-/*
+- * se_fi_update - Update the cfs_rq->min_vruntime_fi in a CFS hierarchy if needed.
+- */
+-static void se_fi_update(const struct sched_entity *se, unsigned int fi_seq,
+-			 bool forceidle)
+-{
+-	for_each_sched_entity(se) {
+-		struct cfs_rq *cfs_rq = cfs_rq_of(se);
+-
+-		if (forceidle) {
+-			if (cfs_rq->forceidle_seq == fi_seq)
+-				break;
+-			cfs_rq->forceidle_seq = fi_seq;
+-		}
+-
+-		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
+-	}
+-}
+-
+-void task_vruntime_update(struct rq *rq, struct task_struct *p, bool in_fi)
+-{
+-	struct sched_entity *se = &p->se;
+-
+-	if (p->sched_class != &fair_sched_class)
+-		return;
+-
+-	se_fi_update(se, rq->core->core_forceidle_seq, in_fi);
+-}
+-
+ bool cfs_prio_less(const struct task_struct *a, const struct task_struct *b,
+ 			bool in_fi)
  {
- 	cfs_rq->tasks_timeline = RB_ROOT_CACHED;
- 	u64_u32_store(cfs_rq->min_vruntime, (u64)(-(1LL << 20)));
-+#ifdef CONFIG_SCHED_CORE
-+	u64_u32_store(cfs_rq->core_min_vruntime, (u64)(-(1LL << 20)));
-+#endif
- #ifdef CONFIG_SMP
- 	raw_spin_lock_init(&cfs_rq->removed.lock);
- #endif
+@@ -12438,9 +12409,6 @@ bool cfs_prio_less(const struct task_struct *a, const struct task_struct *b,
+ 			seb = parent_entity(seb);
+ 	}
+ 
+-	se_fi_update(sea, rq->core->core_forceidle_seq, in_fi);
+-	se_fi_update(seb, rq->core->core_forceidle_seq, in_fi);
+-
+ 	cfs_rqa = sea->cfs_rq;
+ 	cfs_rqb = seb->cfs_rq;
+ #else
+@@ -12453,8 +12421,7 @@ bool cfs_prio_less(const struct task_struct *a, const struct task_struct *b,
+ 	 * min_vruntime_fi, which would have been updated in prior calls
+ 	 * to se_fi_update().
+ 	 */
+-	delta = (s64)(sea->vruntime - seb->vruntime) +
+-		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
++	delta = (s64)(sea->core_vruntime - seb->core_vruntime);
+ 
+ 	return delta > 0;
+ }
 diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index 62fca54223a1..f9d3701481f1 100644
+index f9d3701481f1..2ac89eb20973 100644
 --- a/kernel/sched/sched.h
 +++ b/kernel/sched/sched.h
-@@ -545,6 +545,7 @@ struct cfs_rq {
- 	u64			exec_clock;
+@@ -546,7 +546,6 @@ struct cfs_rq {
  	u64			min_vruntime;
  #ifdef CONFIG_SCHED_CORE
-+	u64			core_min_vruntime;
- 	unsigned int		forceidle_seq;
+ 	u64			core_min_vruntime;
+-	unsigned int		forceidle_seq;
  	u64			min_vruntime_fi;
  	struct cfs_rq		*core;
+ #endif
+@@ -1134,7 +1133,6 @@ struct rq {
+ 	unsigned int		core_pick_seq;
+ 	unsigned long		core_cookie;
+ 	unsigned int		core_forceidle_count;
+-	unsigned int		core_forceidle_seq;
+ 	unsigned int		core_forceidle_occupation;
+ 	u64			core_forceidle_start;
+ #endif
 -- 
 2.39.3
 
