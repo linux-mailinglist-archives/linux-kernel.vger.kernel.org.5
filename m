@@ -2,86 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91EE47ECAAB
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:41:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5745F7ECAB0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:44:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229685AbjKOSld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:41:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34990 "EHLO
+        id S229492AbjKOSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:44:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229522AbjKOSlc (ORCPT
+        with ESMTP id S229500AbjKOSoA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:41:32 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBB5F9B;
-        Wed, 15 Nov 2023 10:41:28 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDxWMc014687;
-        Wed, 15 Nov 2023 18:41:18 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=PuFShW91pLCSKKRSr5TB0Kzh1Ye2y9QdBmcBG1d4LLo=;
- b=A45+UnlBOrODk8jEkvyk9I3LDsY5Yj34tyqSYs4Fsc54r5tpfGUq5BGoqxgtyij3WciF
- 8c1VNHJPbtE/BbJI0y3h0AVGjE5Jzmm5LFQgX0obFRRZ1KI1iqyaoMrIYNYzDxs5n9bp
- NxOXe68evw/3gmVcowyGaF8dqHe7YStnSxh0SxdJUOaYdoTmeQFJkcDlFITVL8U1ziWy
- CnEJw6q1e9qs7HudziLVsxLwe8+MlTihn7bOM1A+0Km4PdlEMe5E8mz0W3cL8sqrVmqb
- W+0R+EDBsVky/aJMhGSTTTa4cnJorN4KVEsWLDyjVu+saW5bZ0lxxLfL+WUqFUMWoxyj FA== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucmbaj3uf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 18:41:18 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFIfHeW009144
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 18:41:17 GMT
-Received: from [10.110.71.50] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
- 2023 10:41:16 -0800
-Message-ID: <ad9f92d8-9aa6-14d1-7444-bb64131044b5@quicinc.com>
-Date:   Wed, 15 Nov 2023 10:41:15 -0800
+        Wed, 15 Nov 2023 13:44:00 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66C9FA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:43:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B93FC433C8;
+        Wed, 15 Nov 2023 18:43:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700073836;
+        bh=Jf1pHHRRqyFoJrFcKBLJXZi9kYmA9sn0zKRsvTYeN9U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XsmEj/L6owfl4Q4us64Fe207eympvsyfuTyF2EFkC5fMypx8x7hX+Nu+WtmRy6P7o
+         vL+ErFVnalcapwhsCuboN+UbPQg/Q1YJ0wjdl9326hv62K1B4Dz44nEDUe9d4Sc8I+
+         ttk8gVz8Av+XgvRLBGLryPFxAO/2+wI9MEF77VjBWxB0TBXLSDNAGhBKXu2gRLk62n
+         7CsjxKZG8FolkApx0gMQSqtOts/0dxvlIFp/FtsDSOrx6lhGM2MvmW3AsHRfI4WbhB
+         eWuHir/SH9qYR3lDkRv64kmeL0aCF9NX9+gJQorcgnyipZGYFTIpCcFizBpPuRC4Q3
+         WcI5drfP9Qbqw==
+Date:   Wed, 15 Nov 2023 18:43:47 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
+Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <d90884a0-c4d3-41e9-8f23-68aa87bbe269@sirena.org.uk>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+ <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
+ <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
+ <ZVTvvJTOV777UGsP@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH] drm/msm/dpu: Add missing safe_lut_tbl in sc8280xp catalog
-Content-Language: en-US
-To:     Bjorn Andersson <quic_bjorande@quicinc.com>,
-        Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        "Sean Paul" <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        "David Airlie" <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>
-CC:     Johan Hovold <johan@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <dri-devel@lists.freedesktop.org>,
-        <freedreno@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>,
-        <stable@vger.kernel.org>, Doug Anderson <dianders@chromium.org>,
-        Rob Clark <robdclark@chromium.org>
-References: <20231030-sc8280xp-dpu-safe-lut-v1-1-6d485d7b428f@quicinc.com>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20231030-sc8280xp-dpu-safe-lut-v1-1-6d485d7b428f@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: AclYIrKBsC7tOZwgZDgYgqZm0qk-nLBA
-X-Proofpoint-ORIG-GUID: AclYIrKBsC7tOZwgZDgYgqZm0qk-nLBA
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_18,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 phishscore=0
- adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
- lowpriorityscore=0 priorityscore=1501 clxscore=1011 malwarescore=0
- bulkscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150146
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jREq/r+U2+vimSwN"
+Content-Disposition: inline
+In-Reply-To: <ZVTvvJTOV777UGsP@arm.com>
+X-Cookie: For internal use only.
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -91,47 +83,75 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--jREq/r+U2+vimSwN
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/30/2023 4:23 PM, Bjorn Andersson wrote:
-> During USB transfers on the SC8280XP __arm_smmu_tlb_sync() is seen to
-> typically take 1-2ms to complete. As expected this results in poor
-> performance, something that has been mitigated by proposing running the
-> iommu in non-strict mode (boot with iommu.strict=0).
-> 
-> This turns out to be related to the SAFE logic, and programming the QOS
-> SAFE values in the DPU (per suggestion from Rob and Doug) reduces the
-> TLB sync time to below 10us, which means significant less time spent
-> with interrupts disabled and a significant boost in throughput.
-> 
-> Fixes: 4a352c2fc15a ("drm/msm/dpu: Introduce SC8280XP")
-> Cc: stable@vger.kernel.org
-> Suggested-by: Doug Anderson <dianders@chromium.org>
-> Suggested-by: Rob Clark <robdclark@chromium.org>
-> Signed-off-by: Bjorn Andersson <quic_bjorande@quicinc.com>
-> ---
+On Wed, Nov 15, 2023 at 04:20:12PM +0000, Szabolcs.Nagy@arm.com wrote:
+> The 11/15/2023 12:36, Mark Brown wrote:
+> > On Wed, Nov 15, 2023 at 12:45:45AM +0000, Edgecombe, Rick P wrote:
+> > > On Tue, 2023-11-14 at 20:05 +0000, Mark Brown wrote:
 
-Matches what we have in downstream DT, hence
+> > > > +               if (size < 8)
+> > > > +                       return (unsigned long)ERR_PTR(-EINVAL);
 
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> > > What is the intention here? The check in map_shadow_stack is to leave
+> > > space for the token, but here there is no token.
 
->   drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h
-> index 1ccd1edd693c..4c0528794e7a 100644
-> --- a/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h
-> +++ b/drivers/gpu/drm/msm/disp/dpu1/catalog/dpu_8_0_sc8280xp.h
-> @@ -406,6 +406,7 @@ static const struct dpu_perf_cfg sc8280xp_perf_data = {
->   	.min_llcc_ib = 0,
->   	.min_dram_ib = 800000,
->   	.danger_lut_tbl = {0xf, 0xffff, 0x0},
-> +	.safe_lut_tbl = {0xfe00, 0xfe00, 0xffff},
->   	.qos_lut_tbl = {
->   		{.nentry = ARRAY_SIZE(sc8180x_qos_linear),
->   		.entries = sc8180x_qos_linear
-> 
-> ---
-> base-commit: c503e3eec382ac708ee7adf874add37b77c5d312
-> change-id: 20231030-sc8280xp-dpu-safe-lut-9769027b8452
-> 
-> Best regards,
+> > It was to ensure that there is sufficient space for at least one entry
+> > on the stack.
+
+> end marker token (0) needs it i guess.
+
+x86 doesn't currently have end markers.  Actually, that's a point -
+should we add a flag for specifying the use of end markers here?
+There's code in my map_shadow_stack() implementation for arm64 which
+does that.
+
+> otherwise 0 size would be fine: the child may not execute
+> a call instruction at all.
+
+Well, a size of specifically zero will result in a fallback to implicit
+allocation/sizing of the stack as things stand so this is specifically
+the case where a size has been specified but is smaller than a single
+entry.
+
+> > > I think for CLONE_VM we should not require a non-zero size. Speaking of
+> > > CLONE_VM we should probably be clear on what the expected behavior is
+> > > for situations when a new shadow stack is not usually allocated.
+> > > !CLONE_VM || CLONE_VFORK will use the existing shadow stack. Should we
+> > > require shadow_stack_size be zero in this case, or just ignore it? I'd
+> > > lean towards requiring it to be zero so userspace doesn't pass garbage
+> > > in that we have to accommodate later. What we could possibly need to do
+> > > around that though, I'm not sure. What do you think?
+
+> > Yes, requiring it to be zero in that case makes sense I think.
+
+> i think the condition is "no specified separate stack for
+> the child (stack==0 || stack==sp)".
+
+> CLONE_VFORK does not imply that the existing stack will be
+> used (a stack for the child can be specified, i think both
+> glibc and musl do this in posix_spawn).
+
+That also works as a check I think, though it requires the arch to check
+for the stack==sp case - I hadn't been aware of the posix_spawn() usage,
+the above checks Rick suggested just follow the handling for implicit
+allocation we have currently.
+
+--jREq/r+U2+vimSwN
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVVEWIACgkQJNaLcl1U
+h9AoYwf/cojm+qZcxUY7dfJP7DC47qY+/XzUzkkr087SF7m5CJpUJMr7YDw+IqHs
+rSmaGhkeV2BLjb3e4P0UV4bD2pEgfheDGAqNGa5n9fDoQ6O1METyrDUPXco6PZVG
+lOcLQ/YWO5m8CddEWltolbnnkBasA3UDTXCkkiOtYs+B8d1N7m1XfpA4RGaul3uI
+L5IcslIwekmr1A5mfqcjeRvw3sh9qesVzDLOkWiTrbfLnPFzzU3aCYej18HttKJ3
+4DbBiTpvPnO0bgIMTGT5CL9CXEolecng5cEoZV3CtorIcycMj7hzaftvqC5ezkXB
+bkm9dunYL/0h1w7pJZ2wxk3h2Tg/ww==
+=p7qF
+-----END PGP SIGNATURE-----
+
+--jREq/r+U2+vimSwN--
