@@ -2,112 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E4C277ED727
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:24:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C9F7ED72A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:27:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343756AbjKOWYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:24:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53802 "EHLO
+        id S1343568AbjKOW11 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:27:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjKOWYw (ORCPT
+        with ESMTP id S229680AbjKOW10 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:24:52 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13921B5;
-        Wed, 15 Nov 2023 14:24:48 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19FF3C433C8;
-        Wed, 15 Nov 2023 22:24:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1700087088;
-        bh=o7doXvqwltwUV8V68TqR52d0LmoD4TiQv6gTiuIzICY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lAzQTfPii7YyO9EJiuGq1lHzs2XKAOSZgAeoBL5XTTjDKDEdZM8Qx3cYI0APH5+GB
-         807YMWx8T3U4GrvZtnzBWAvr6gU9kr4bBYBsJvAOETdgkcSHUIWFu61z6VLCCV5UeZ
-         6csz4zTm8y9LQfGEzi4MbBcHnmwIZQNjedBJFq6M=
-Date:   Wed, 15 Nov 2023 14:24:47 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     casey@schaufler-ca.com, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Roberto Sassu <roberto.sassu@huawei.com>,
-        Hugh Dickins <hughd@google.com>
-Subject: Re: [PATCH v2 5/5] ramfs: Initialize security of in-memory inodes
-Message-Id: <20231115142447.91e59671ad26f7671bbf7467@linux-foundation.org>
-In-Reply-To: <379f6a45a3102e8cd1ed992c1895ac9f69ae0595.camel@huaweicloud.com>
-References: <20230724151341.538889-1-roberto.sassu@huaweicloud.com>
-        <20230724151341.538889-6-roberto.sassu@huaweicloud.com>
-        <379f6a45a3102e8cd1ed992c1895ac9f69ae0595.camel@huaweicloud.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        Wed, 15 Nov 2023 17:27:26 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6983C192;
+        Wed, 15 Nov 2023 14:27:23 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b5ff072fc4so97633b6e.3;
+        Wed, 15 Nov 2023 14:27:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700087242; x=1700692042; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=e17v8Sw4wSJJjTaEGlOWNvLKDpho2BpFrgN/WZm5exE=;
+        b=BqH4lBvIPcYOdW4R/viS7Pf1SEDUjq7gDMi+Fg77bGQglQLclZC76lG9yzFIkvTTXY
+         29rceaBs/OX5ENNv40axfywDZlAdJroZ6JmIzz9b+GoRDeW37fHGFxK+ZAWWbHPJhwp/
+         r9niKHaw6CwelYW4yql7jMp2C5ZcWxp6mMPGYXWxXsNVuCSus0UG3n2BDKbTVHIUSAiQ
+         FnvZtd8xc9aC221/3ITNgzh58KNzZkmUdFE/R9HJd0+PyYcZUlkKlMz4uxbqKAyTGPay
+         4HV5/QNAXs6M7uhO2vUwJf1sBf/F1JmdNq086MSo8/3J4AvYmhKOq4fWkVksw16GIXAX
+         4dFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700087242; x=1700692042;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=e17v8Sw4wSJJjTaEGlOWNvLKDpho2BpFrgN/WZm5exE=;
+        b=IRuAiFDFUu/OX5VktPTLlWhnUqFuOqj1SdKWwNpzegmoYjzZejz9D+JMNITN42zqCo
+         SQu24sJrg8TNHXoaV6IFRee9ql9uX/ReQ2dMeeqbA9xjtxNdanPFOmSNlmxD9/EshbvS
+         H6cBzyeqrs4Qzzq7/JiTrBlSk1W0Bw6q4cybIZ1ZPeUPB/KenSS8lWOofG4FG7iY1tab
+         wbVn8+lW8vISrye4xB3gDD4zXMCPN7pccoGj4GjVy2RX9BM/O33dtexy/E/QxwBAyzqx
+         UBzE9V+iMlGGyAkSYEt/dSusqrUk6PCV4izvckYdRAJi6GQVvIN6vTZNFgeVK7Sp72X1
+         SE4g==
+X-Gm-Message-State: AOJu0YyItwjHx16EfQpMidNWEPu377/4CW9Hy5F7SykDh2x5xlk4iLi8
+        NcNotke8eAhgrd5183YFjRw=
+X-Google-Smtp-Source: AGHT+IFzAmvQX76tphpqTzSfTrMQ1xJxEJB6K6SOEfqb0t5crcNxzmM10NYre9nmdBE6apikiF5LZA==
+X-Received: by 2002:a05:6808:6541:b0:3b6:dc6f:2741 with SMTP id fn1-20020a056808654100b003b6dc6f2741mr16185463oib.19.1700087242730;
+        Wed, 15 Nov 2023 14:27:22 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id dq8-20020a056808428800b003a9ba396d62sm1633251oib.36.2023.11.15.14.27.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 14:27:22 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 15 Nov 2023 14:27:21 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Peter Yin <peteryin.openbmc@gmail.com>
+Cc:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Joel Stanley <joel@jms.id.au>,
+        Chanh Nguyen <chanh@os.amperecomputing.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
+Message-ID: <a3445201-58f2-42c6-bef7-ca6968fd80d6@roeck-us.net>
+References: <20231113155008.2147090-1-peteryin.openbmc@gmail.com>
+ <20231113155008.2147090-2-peteryin.openbmc@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231113155008.2147090-2-peteryin.openbmc@gmail.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 09:01:52 +0100 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-
-> On Mon, 2023-07-24 at 17:13 +0200, Roberto Sassu wrote:
-> > From: Roberto Sassu <roberto.sassu@huawei.com>
-> > 
-> > Add a call security_inode_init_security() after ramfs_get_inode(), to let
-> > LSMs initialize the inode security field. Skip ramfs_fill_super(), as the
-> > initialization is done through the sb_set_mnt_opts hook.
-> > 
-> > Calling security_inode_init_security() call inside ramfs_get_inode() is
-> > not possible since, for CONFIG_SHMEM=n, tmpfs also calls the former after
-> > the latter.
-> > 
-> > Pass NULL as initxattrs() callback to security_inode_init_security(), since
-> > the purpose of the call is only to initialize the in-memory inodes.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+On Mon, Nov 13, 2023 at 11:50:07PM +0800, Peter Yin wrote:
+> Add a device tree bindings for mp5990 device.
 > 
-> + Andrew
-> 
-> Hi Andrew
-> 
-> I'm proposing an extension to initialize the inode security field at
-> inode creation time for filesystems that don't support xattrs (ramfs in
-> this case).
-> 
-> The LSM infrastructure already supports setting the inode security
-> field, but only at run-time, with the inode_setsecurity hook.
-> 
-> I developed this to do some testing on the Smack LSM, and I thought it
-> could be useful anyway.
-> 
-> Casey would need your acked-by, to carry this patch in his repository.
-> I'm not completely sure if you are the maintainer, but in the past you
-> accepted a patch for ramfs.
-> 
-> If you have time and you could have a look, that would be great!
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+> Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Patch looks OK to me.  Please cc Hugh and myself on a resend.
+What branch is this patch based on ? git fails to apply it.
 
-One little thing:
-
-> > +++ b/fs/ramfs/inode.c
-> > @@ -102,6 +102,14 @@ ramfs_mknod(struct mnt_idmap *idmap, struct inode *dir,
-> >  	int error = -ENOSPC;
-> >  
-> >  	if (inode) {
-> > +		error = security_inode_init_security(inode, dir,
-> > +						     &dentry->d_name, NULL,
-> > +						     NULL);
-> > +		if (error) {
-> > +			iput(inode);
-> > +			return error;
-
-A `break' here would be better.  To avoid having multiple return
-points, which are often a maintenance hassle.  Same treatment at
-the other sites.
-
-
+Guenter
