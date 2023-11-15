@@ -2,129 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FB9E7ECB0B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A462A7ECB0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:16:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230310AbjKOTNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37506 "EHLO
+        id S229778AbjKOTQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:16:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48880 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbjKOTNe (ORCPT
+        with ESMTP id S229575AbjKOTQJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:13:34 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A20FA;
-        Wed, 15 Nov 2023 11:13:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700075610; x=1731611610;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gXRiJ5Lucq8DXuhZwt0/bXTGhj/qXhHAst2jYHjGW3k=;
-  b=YbfEmrrAfGMLTsgprIdwWiI2ugx0JoYfIPr1JgWXdUhKRyKbO8QkSP9q
-   saLPWZwQflOYtFp2VbBohWfau5BvHJdAVfNH+HyFJQtMm++cdNXSX85WL
-   6RonKup+8Z5KI1fo4V3ar2F8UuZLjEWlI1XzdtpPrWbJyv3D5eV+j/I2y
-   KGEaANB3Jlg5d8A6gq9r2kZHw9h4UBnKx+JVqlrKxmjg6fBb8qiHB1fHm
-   cDbA+QySSmfrU79qhdnrTWfQOhyIBqc0vvvxbrrXvwxuCdX2ZqWyd/EJS
-   RYcZlJl43HBTmgHL7JESO/PM9uJqIUuooOJYV6KmYMaFggfXQB19FChXU
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="370288071"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="370288071"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 11:13:29 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="741519658"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="741519658"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga006.jf.intel.com with ESMTP; 15 Nov 2023 11:13:25 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3LKF-0000jt-01;
-        Wed, 15 Nov 2023 19:13:23 +0000
-Date:   Thu, 16 Nov 2023 03:12:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, Peter Hunt <pehunt@redhat.com>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v3 1/5] workqueue: Make workqueue_set_unbound_cpumask()
- static
-Message-ID: <202311160353.FAdfQwO3-lkp@intel.com>
-References: <20231115170359.163299-2-longman@redhat.com>
+        Wed, 15 Nov 2023 14:16:09 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0575719E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:16:06 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53ed4688b9fso67116a12.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:16:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700075764; x=1700680564; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6ASZLC/ODVoT1N8Pjpom0HFAzc3MgwAYR1S4lEQGUD4=;
+        b=QV/S2q+otJeftflGUe656F5D89Cd2cGH1AvFgnenpatSk6TadPHAbEgiV/pdB1X4v/
+         NUEOywr4xSMgs05WmS/MLgNKd7Svt2rwfzs7ek1xjOMwzV4xak+1WvjiPSx0BvF/1yOQ
+         Ec136mZPYjXx49dPZpZv9sct+rCej1MifkfcI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700075764; x=1700680564;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6ASZLC/ODVoT1N8Pjpom0HFAzc3MgwAYR1S4lEQGUD4=;
+        b=mku2M+arIQVFS83iUJt5Ujr/o+ci15Gv3dioGjZuv6QA5wj9dACeb7Q48SOa3pxedd
+         7/qEVLq/o0nddD3S6wsrcStORlm4Z+SaiuDliaAOTM6CY+YrgDT4qc2wQEOSZ9aT+x1Y
+         o3pchiQG5K719stNSTxt7lSqblmKgLGC2d8EafTQKgZQftjPWDx5AmN96hCXUDNjT2GZ
+         8bzJafIYQ+r4RvQ17J+ZPggMHJuoIFjwwD2PKGPMBVEBaGxv5UKpMoevKPPQaaRjNEXN
+         N/01SgWrU8SUa04TS8b+bddxEkYNTxtIe5aIVT9wd7wTAnmGpTKcY13WOSjX/kzWDAYq
+         TXtw==
+X-Gm-Message-State: AOJu0YwFmx8V33grzX4wBVUflIUFPaR093LSdGPKxs69yVkmnvFsI+cJ
+        xtsSrZxQinkxQhegjsGWAM2cIBBkcz0CBpKtB7jJkv9O
+X-Google-Smtp-Source: AGHT+IE04FF5zSGInYSXw61bIFfrkkByzmzr2+ow1NXxEdQMalnlcopzimZ5fqotvnlDRoETBlFv3A==
+X-Received: by 2002:aa7:d059:0:b0:540:b0ec:bcc7 with SMTP id n25-20020aa7d059000000b00540b0ecbcc7mr217477edo.5.1700075764144;
+        Wed, 15 Nov 2023 11:16:04 -0800 (PST)
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com. [209.85.208.54])
+        by smtp.gmail.com with ESMTPSA id z9-20020a50cd09000000b00543b2d6f88asm6941321edi.15.2023.11.15.11.16.03
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 11:16:03 -0800 (PST)
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5441ba3e53cso54078a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:16:03 -0800 (PST)
+X-Received: by 2002:a05:6402:5193:b0:543:5789:4d6c with SMTP id
+ q19-20020a056402519300b0054357894d6cmr292256edd.2.1700075763431; Wed, 15 Nov
+ 2023 11:16:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115170359.163299-2-longman@redhat.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
+ <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+ <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
+ <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com> <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
+In-Reply-To: <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 14:15:46 -0500
+X-Gmail-Original-Message-ID: <CAHk-=whFW+uWOmOtRNh0What_fu8Xo8KF2+EeUH1kn4qFxGAhA@mail.gmail.com>
+Message-ID: <CAHk-=whFW+uWOmOtRNh0What_fu8Xo8KF2+EeUH1kn4qFxGAhA@mail.gmail.com>
+Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     David Howells <dhowells@redhat.com>,
+        kernel test robot <oliver.sang@intel.com>,
+        oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Waiman,
+On Wed, 15 Nov 2023 at 14:10, Borislav Petkov <bp@alien8.de> wrote:
+>
+> Should we define an alternative_memcpy() which is used *only* during
+> rewriting so that this becomes a non-issue?
 
-kernel test robot noticed the following build warnings:
+Yeah, I think the instruction rewriting should use something that
+explicitly cannot possibility itself need rewriting, and a plain
+'memcpy()' is obviously that.
 
-[auto build test WARNING on shuah-kselftest/next]
-[also build test WARNING on shuah-kselftest/fixes linus/master v6.7-rc1]
-[cannot apply to tj-cgroup/for-next tj-wq/for-next next-20231115]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+The good news is that at least things like structure copies would
+*not* trigger that alternative, so it's only explicit memcpy() calls
+that my patch changes. But I would not be surprised if instruction
+rewriting does that. I didn't actually check.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Waiman-Long/workqueue-Make-workqueue_set_unbound_cpumask-static/20231116-010940
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest.git next
-patch link:    https://lore.kernel.org/r/20231115170359.163299-2-longman%40redhat.com
-patch subject: [PATCH v3 1/5] workqueue: Make workqueue_set_unbound_cpumask() static
-config: i386-tinyconfig (https://download.01.org/0day-ci/archive/20231116/202311160353.FAdfQwO3-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160353.FAdfQwO3-lkp@intel.com/reproduce)
+> Yours looks simple enough and makes sense. Lemme poke at it a bit in the
+> coming days and see what happens.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311160353.FAdfQwO3-lkp@intel.com/
+Note that it has a nasty interaction with fortify-source, which is why
+it has that hacky "#undef memcpy" in that unrelated header.
 
-All warnings (new ones prefixed by >>):
+Also note that I was being very very lazy in how I re-used the
+"rep_movs_alternative" function that we already have. And it's
+actually a bad laziness, because our existing rep_movs_alternative
+does the exception handling for user mode faults.
 
->> kernel/workqueue.c:4421:13: warning: 'apply_wqattrs_unlock' defined but not used [-Wunused-function]
-    4421 | static void apply_wqattrs_unlock(void)
-         |             ^~~~~~~~~~~~~~~~~~~~
->> kernel/workqueue.c:4414:13: warning: 'apply_wqattrs_lock' defined but not used [-Wunused-function]
-    4414 | static void apply_wqattrs_lock(void)
-         |             ^~~~~~~~~~~~~~~~~~
+We don't actually want exception handling for 'memcpy()', because it
+could hide bugs. If a memcpy() gets a bad pointer, we want the oops,
+not a partial copy.
 
+So my patch really is broken. It might happen to work when everything
+else goes right, and it's small, but it is very much a "proof of
+concept" rather than something that is actually acceptable.
 
-vim +/apply_wqattrs_unlock +4421 kernel/workqueue.c
-
-8864b4e59f7945 Tejun Heo                 2013-03-12  4413  
-a0111cf6710bd1 Lai Jiangshan             2015-05-19 @4414  static void apply_wqattrs_lock(void)
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4415  {
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4416  	/* CPUs should stay stable across pwq creations and installations */
-ffd8bea81fbb5a Sebastian Andrzej Siewior 2021-08-03  4417  	cpus_read_lock();
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4418  	mutex_lock(&wq_pool_mutex);
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4419  }
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4420  
-a0111cf6710bd1 Lai Jiangshan             2015-05-19 @4421  static void apply_wqattrs_unlock(void)
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4422  {
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4423  	mutex_unlock(&wq_pool_mutex);
-ffd8bea81fbb5a Sebastian Andrzej Siewior 2021-08-03  4424  	cpus_read_unlock();
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4425  }
-a0111cf6710bd1 Lai Jiangshan             2015-05-19  4426  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+               Linus
