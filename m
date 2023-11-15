@@ -2,145 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E7117EC404
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:46:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C087EC407
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344008AbjKONpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:45:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52968 "EHLO
+        id S1343979AbjKONsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:48:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343698AbjKONpq (ORCPT
+        with ESMTP id S1343698AbjKONsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:45:46 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDDAF9B;
-        Wed, 15 Nov 2023 05:45:43 -0800 (PST)
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDWMmc008780;
-        Wed, 15 Nov 2023 13:45:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=RSS3oeqeS/CiWB6NMhIbg0WsBhrLrZytHWzGCO6Y3wo=;
- b=sW+hooDwL5v5ywyUDjZdEht0MNktRiimGTSk7FVlhyxYg4QDGYw5Sw03xbKgsyWGtg6i
- +zIvE3DY4xAnX5RDJQTzztTKK4x6c/vT0pOXC/DmP2NbnO/UrrJqw4xMN5Pj0jzj4VFt
- y1fgL28AfFamJXbEvqMO5ZBOQo1G+4nuPQYuVKaR5wq1F9iFKsBAog81UZvhpOnxpP84
- nqPgMkus6KNnLHfFwcjWCHb+cXEJ415cFz8U9iKSMMPSwBijnN+8QQUciZ+VsSbm4q7a
- mfkUq/wj7+koMnCw3qE65IstBe0Nim10XBVi0zlZ9mk0gsYOn+e6HdLe3fmDznMI+o4I gA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucxy3racv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 13:45:30 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFDixir019140;
-        Wed, 15 Nov 2023 13:45:29 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucxy3rabt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 13:45:29 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDY4jD032564;
-        Wed, 15 Nov 2023 13:45:28 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uakxsyuj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 13:45:28 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFDjQiW18612744
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 13:45:26 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E3F422004B;
-        Wed, 15 Nov 2023 13:45:25 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1357920040;
-        Wed, 15 Nov 2023 13:45:25 +0000 (GMT)
-Received: from li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com (unknown [9.171.69.220])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Wed, 15 Nov 2023 13:45:24 +0000 (GMT)
-Date:   Wed, 15 Nov 2023 14:45:23 +0100
-From:   Sumanth Korikkar <sumanthk@linux.ibm.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vishal Verma <vishal.l.verma@intel.com>
-Subject: Re: [PATCH 2/8] mm/memory_hotplug: fix error handling in
- add_memory_resource()
-Message-ID: <ZVTLc+rcMVt17AKL@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
-References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
- <20231114180238.1522782-3-sumanthk@linux.ibm.com>
- <6c545504-e1a7-435b-aad9-b045247d6945@redhat.com>
+        Wed, 15 Nov 2023 08:48:30 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D29E2AC;
+        Wed, 15 Nov 2023 05:48:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700056108; x=1731592108;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=1u10bwHQDzE5uIfqyJfipjClovLVgHJkX794aOUElLk=;
+  b=kSBZrxjY+BjaysKGLAusng1H1iWFkiGMGd4birl4DXOUlFtz9rT79izs
+   hpednhOAU67uzqk1ftoKKb126aM1wm1pAo45Fbld7lrKDcqLZY9zC3arZ
+   l/1W5HpztcIsVLEwnpS4X2p4q3GCXEIkh2pFsnpXJ9L3zYKnAgVDD4ria
+   OrGTFkfFf3quZC4v6g9q2/7UtUR0U6jmZUYbPzs/l/uJ6tNs0mrhpcb1X
+   6OQ0qX7bB/FZXoiVq/GS1lFSjXrcB2XRETIe4VUysaf+9xfIbx1Nm6LfV
+   yOVA8huXbI8oO9zuztL+5x8ggoGs7N00IW5xxi2gdowcrUZ7z/MJNs287
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="12426388"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="12426388"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:48:28 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="888597743"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="888597743"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by orsmga004.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:48:24 -0800
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1r3GFg-0000000EKO7-3NGU;
+        Wed, 15 Nov 2023 15:48:20 +0200
+Date:   Wed, 15 Nov 2023 15:48:20 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Wolfram Sang <wsa@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Jan Dabros <jsd@semihalf.com>,
+        Andi Shyti <andi.shyti@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v3 02/25] i2c: designware: Fix PM calls order in
+ dw_i2c_plat_probe()
+Message-ID: <ZVTMJA5JsQI13dhz@smile.fi.intel.com>
+References: <20231110182304.3894319-1-andriy.shevchenko@linux.intel.com>
+ <20231110182304.3894319-3-andriy.shevchenko@linux.intel.com>
+ <e299ee44-7de1-4542-828d-a0c86b217fb4@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6c545504-e1a7-435b-aad9-b045247d6945@redhat.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: dJVnrod4qTpVw3t4wCNh1TAkyvCTIqzK
-X-Proofpoint-GUID: rGx_9bQQcJXlDzFlXlD6dgQwQdzf0Nwy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_13,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- phishscore=0 clxscore=1011 bulkscore=0 mlxscore=0 priorityscore=1501
- impostorscore=0 suspectscore=0 spamscore=0 mlxlogscore=421
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150106
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <e299ee44-7de1-4542-828d-a0c86b217fb4@linux.intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 07:36:20PM +0100, David Hildenbrand wrote:
-> On 14.11.23 19:02, Sumanth Korikkar wrote:
-> > In add_memory_resource(), creation of memory block devices occurs after
-> > successful call to arch_add_memory(). However, creation of memory block
-> > devices could fail.  In that case, arch_remove_memory() is called to
-> > perform necessary cleanup.
+On Wed, Nov 15, 2023 at 01:14:36PM +0200, Jarkko Nikula wrote:
+> On 11/10/23 20:11, Andy Shevchenko wrote:
+> > We should not mix managed calls with non-managed. This will break
+> > the calls order at the error path and ->remove() stages. Fix this
+> > by wrapping PM ops to become managed one.
 > > 
-> > Currently with or without altmap support, arch_remove_memory() is always
-> > passed with altmap set to NULL during error handling. This leads to
-> > freeing of struct pages using free_pages(), eventhough the allocation
-> > might have been performed with altmap support via
-> > altmap_alloc_block_buf().
-> > 
-> > Fix the error handling by passing altmap in arch_remove_memory(). This
-> > ensures the following:
-> > * When altmap is disabled, deallocation of the struct pages array occurs
-> >    via free_pages().
-> > * When altmap is enabled, deallocation occurs via vmem_altmap_free().
-> > 
-> > Fixes: db051a0dac13 ("mm/memory_hotplug: create memory block devices after arch_add_memory()")
+> > Fixes: 36d48fb5766a ("i2c: designware-platdrv: enable RuntimePM before registering to the core")
+> > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 > 
-> That's the wrong commit. We didn't support memmap-on-memory back then.
-> 
-> Likely it should be:
-> 
-> Fixes: a08a2ae34613 ("mm,memory_hotplug: allocate memmap from the added
-> memory range")
->
-Ok, I will change it accordingly
+> I fail to see what was broken in above commit and how this patch fixes it?
 
-Thanks
+The order of the unwiding probed flow is broken now as devm_*() mixed with
+non-devm_*() calls. This makes all non-devm_*() calls that interleave devm_*()
+ones to be also devm_*()-wrapped.
+
 ...
-> 
-> Indeed; this will conflict with Vishals patches, ccing him.
-> 
-> -- 
-> Cheers,
-> 
-> David / dhildenb
-> 
+
+> Is it intended change the reset isn't asserted after this patch in case
+> i2c_dw_probe() fails?
+
+Did you miss that this is become managed with this patch and hence the above
+is false scenario?
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
