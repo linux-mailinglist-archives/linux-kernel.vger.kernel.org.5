@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 112697ED74C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 958697ED751
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235054AbjKOWcz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:32:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33762 "EHLO
+        id S1343676AbjKOWeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:34:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbjKOWcy (ORCPT
+        with ESMTP id S229698AbjKOWd6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:32:54 -0500
+        Wed, 15 Nov 2023 17:33:58 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3F99B;
-        Wed, 15 Nov 2023 14:32:50 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 479A9C433C7;
-        Wed, 15 Nov 2023 22:32:49 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C6D9B;
+        Wed, 15 Nov 2023 14:33:55 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07F09C433C8;
+        Wed, 15 Nov 2023 22:33:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700087570;
-        bh=hksVNrlXt9N+LqHnnGZPEV9FVDh36tWEtgkc01i10Xk=;
+        s=k20201202; t=1700087635;
+        bh=RTr4fWU6Tt3Im0fO1nO9h6Mw8Oa66xoA0Jf/b37HYR8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XOJDhFqZ2M2jnDeXyirqMX3FG0sGWTdRaeK/W8rQnJjd6PXip5L2yMKWf9nNSWok1
-         d3kDVluvZ4bsaOSErf32SdcuYwnAq2bQfzS25ovrd5CQqG+Zy80+m5nmyc6w7PxZWo
-         WDhrwQlB1hbs0bXb0XWNy1ytwQXnIrfIj4NEoHzhZrjKWx99IODDUn9qcq+3ZIqTVO
-         p1zg5Meymw6Cs/oLq0VgTdDdmXpq0g5VdLvigGvZCDd9srgok5Tb+aKsbcwkShTILu
-         Ri+gJarPiFGDYg1e/w7E00f2QPJVbfTUa5iIz8QxPgJVIK/GKNgxeUQJSJRN8bEYxD
-         TXwt/IunI6HsQ==
+        b=ExO911IR4Z5lD9yd3ebsGMecX8zutOq/Mwr3DrGoPFnzDBaUbbEg2KBq0K/dM6VFc
+         TLmt4fYkfJrZCFbsOnAbWaJfqXqmHa8P3t+q5hlfSNIxe3ZIHI9m3oKPAh0QLYaA4m
+         SL8FICW9IXNan/07i9daSsZEqeddgQpBJpee11Doisdf+TKGfJ2jPRVjk1p4m1VQKh
+         abxDkZFemfyLCOpQ2pJeXx5/yCjc3QAzpgsa+Kc671jWC/+R3MjmvfYmgNDlVP5Mgd
+         RXA3V2f2xsov3bkgvb8/gcttWejNHLUqby46aflNfqvQwx9yUKzAXlzwaBiX1cpFGX
+         egszGAV1Y7pyw==
 From:   SeongJae Park <sj@kernel.org>
 To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
@@ -37,11 +37,11 @@ Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
         sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
         conor@kernel.org, damon@lists.linux.dev,
         SeongJae Park <sj@kernel.org>
-Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
-Date:   Wed, 15 Nov 2023 22:32:47 +0000
-Message-Id: <20231115223247.46435-1-sj@kernel.org>
+Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
+Date:   Wed, 15 Nov 2023 22:33:52 +0000
+Message-Id: <20231115223352.46459-1-sj@kernel.org>
 X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
+In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
 References: 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -57,10 +57,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hello,
 
-On Wed, 15 Nov 2023 14:09:44 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+On Wed, 15 Nov 2023 14:09:05 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 
-> This is the start of the stable review cycle for the 6.5.12 release.
-> There are 550 patches in this series, all will be posted as a response
+> This is the start of the stable review cycle for the 6.6.2 release.
+> There are 603 patches in this series, all will be posted as a response
 > to this one.  If anyone has any issues with these being applied, please
 > let me know.
 > 
@@ -68,9 +68,9 @@ On Wed, 15 Nov 2023 14:09:44 -0500 Greg Kroah-Hartman <gregkh@linuxfoundation.or
 > Anything received after that time might be too late.
 > 
 > The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.12-rc1.gz
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.2-rc1.gz
 > or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
 > and the diffstat can be found below.
 
 This rc kernel passes DAMON functionality test[1] on my test machine.
@@ -80,7 +80,7 @@ kernel from linux-stable-rc tree[2].
 Tested-by: SeongJae Park <sj@kernel.org>
 
 [1] https://github.com/awslabs/damon-tests/tree/next/corr
-[2] 06e3a5988baa ("Linux 6.5.12-rc1")
+[2] df34d612fd4e ("Linux 6.6.2-rc1")
 
 Thanks,
 SJ
