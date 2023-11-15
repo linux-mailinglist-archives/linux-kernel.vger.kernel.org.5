@@ -2,183 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E579E7EBD4F
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:01:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F8A7EBE2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:33:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234605AbjKOHBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 02:01:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36032 "EHLO
+        id S234677AbjKOHdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 02:33:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43192 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOHBp (ORCPT
+        with ESMTP id S234679AbjKOHdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 02:01:45 -0500
-Received: from 2.mo576.mail-out.ovh.net (2.mo576.mail-out.ovh.net [178.33.251.80])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62F1CEB
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:01:40 -0800 (PST)
-Received: from director1.ghost.mail-out.ovh.net (unknown [10.109.138.183])
-        by mo576.mail-out.ovh.net (Postfix) with ESMTP id B3B9B2B899
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:55:17 +0000 (UTC)
-Received: from ghost-submission-6684bf9d7b-kk79p (unknown [10.110.103.209])
-        by director1.ghost.mail-out.ovh.net (Postfix) with ESMTPS id CCDBC1FE63;
-        Wed, 15 Nov 2023 06:55:14 +0000 (UTC)
-Received: from foxhound.fi ([37.59.142.109])
-        by ghost-submission-6684bf9d7b-kk79p with ESMTPSA
-        id dYJtK1JrVGU8rBAAqzq3ag
-        (envelope-from <jose.pekkarinen@foxhound.fi>); Wed, 15 Nov 2023 06:55:14 +0000
-Authentication-Results: garm.ovh; auth=pass (GARM-109S0036636ec59-b412-492a-b5ae-5815ec344a16,
-                    1B5EDD6806DE6C3B4F01E8E4F83C0687A6DCEFC3) smtp.auth=jose.pekkarinen@foxhound.fi
-X-OVh-ClientIp: 87.94.111.222
-From:   =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-To:     akpm@linux-foundation.org, skhan@linuxfoundation.org
-Cc:     =?UTF-8?q?Jos=C3=A9=20Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev,
-        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com
-Subject: [PATCH] mm/pgtable: return null if no ptl in __pte_offset_map_lock
-Date:   Wed, 15 Nov 2023 08:55:05 +0200
-Message-Id: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Ovh-Tracer-Id: 7734087937806738971
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: 0
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgedvkedrudefhedgfeegucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucenucfjughrpefhvfevufffkffogggtgfesthekredtredtjeenucfhrhhomheplfhoshorucfrvghkkhgrrhhinhgvnhcuoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqeenucggtffrrghtthgvrhhnpeevveeileeukeefjeevkeffudehhedtvdeuhffgteelvdejieefheffveelhfekheenucffohhmrghinhepshihiihkrghllhgvrhdrrghpphhsphhothdrtghomhenucfkphepuddvjedrtddrtddruddpkeejrdelgedrudduuddrvddvvddpfeejrdehledrudegvddruddtleenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepihhnvghtpeduvdejrddtrddtrddupdhmrghilhhfrhhomhepoehjohhsvgdrphgvkhhkrghrihhnvghnsehfohighhhouhhnugdrfhhiqedpnhgspghrtghpthhtohepuddprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdpoffvtefjohhsthepmhhoheejiedpmhhouggvpehsmhhtphhouhht
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 15 Nov 2023 02:33:50 -0500
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A03B11C
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:33:38 -0800 (PST)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231115073336epoutp02fd7c7a9e10b8c008a573c62a68cf12a1~Xu5ETVxn-3038930389epoutp021
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:33:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231115073336epoutp02fd7c7a9e10b8c008a573c62a68cf12a1~Xu5ETVxn-3038930389epoutp021
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700033616;
+        bh=Ot6XbuGN6lt84Ly2hIjmWxtX0IZaFtitereS1H+e7eo=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Iagev1axznxAxbgCNHjJ34IPOQwY8WzHydwiqdXM9UYEEgKfatyX4cye5ZRA+k5za
+         +o8RFtjfroSGtvNfS9KUxOxrR5jTxa6Eye1KbsY3jT5qwXjaQR1p3w5P8PxK0f2qlI
+         2PdELMplNlnqZiQRLjR8dC2ObLTcujO48O6OmONs=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
+        20231115073335epcas5p4f13663a20b7421ae108e2a07e58a86c1~Xu5D428Qp1769117691epcas5p4r;
+        Wed, 15 Nov 2023 07:33:35 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.176]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4SVZf56S3Mz4x9Q6; Wed, 15 Nov
+        2023 07:33:33 +0000 (GMT)
+Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.86.08567.D4474556; Wed, 15 Nov 2023 16:33:33 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20231115065633epcas5p12b5d49ea13598aaee9d37fd787a6333d~XuYuUWeZV1634716347epcas5p1Z;
+        Wed, 15 Nov 2023 06:56:33 +0000 (GMT)
+Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20231115065633epsmtrp2f634156ccd9406c74f48fbecc079cd11~XuYuSk4HC2001120011epsmtrp2V;
+        Wed, 15 Nov 2023 06:56:33 +0000 (GMT)
+X-AuditID: b6c32a44-3abff70000002177-61-6554744d9bbc
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        41.D5.07368.1AB64556; Wed, 15 Nov 2023 15:56:33 +0900 (KST)
+Received: from cheetah.sa.corp.samsungelectronics.net (unknown
+        [107.109.115.53]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231115065631epsmtip15ec21edb22ce60ce803851732649f84d~XuYsf4aSZ3097530975epsmtip11;
+        Wed, 15 Nov 2023 06:56:31 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     manivannan.sadhasivam@linaro.org, lpieralisi@kernel.org,
+        kw@linux.com, robh@kernel.org, bhelgaas@google.com,
+        krzysztof.kozlowski@linaro.org, alim.akhtar@samsung.com,
+        jingoohan1@gmail.com
+Cc:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shradha Todi <shradha.t@samsung.com>
+Subject: [PATCH v2] PCI: exynos: Adapt to clk_bulk_* APIs
+Date:   Wed, 15 Nov 2023 12:26:21 +0530
+Message-Id: <20231115065621.27014-1-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.17.1
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNKsWRmVeSWpSXmKPExsWy7bCmpq5vSUiqwcZ7+hYP5m1js1jSlGGx
+        4stMdou9r7eyWzT0/Ga12PT4GqvF5V1z2CzOzjvOZjHj/D4mi5Y/LSwWd1s6WS3+79nBbtF7
+        uNaB12PnrLvsHgs2lXpsWtXJ5nHn2h42jydXpjN5bF5S79G3ZRWjx+dNcgEcUdk2GamJKalF
+        Cql5yfkpmXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUD3KimUJeaUAoUCEouL
+        lfTtbIryS0tSFTLyi0tslVILUnIKTAr0ihNzi0vz0vXyUkusDA0MjEyBChOyMxY+WctUsES6
+        oq33AEsD406xLkZODgkBE4n5Ex+xdjFycQgJ7GaUuDR3MROE84lRYsHXqYwQzjdGibVPb7J0
+        MXKAtfR26UDE9zJKtO0+yQ7htDJJPF+7lQlkLpuAlkTj1y5mEFtE4BCjxO8HYEXMAusYJT5P
+        62IDSQgLWErMbX7DDDKVRUBVYtnkTJAwr4CVxKfuH4wQ98lLrN5wgBmkV0LgI7tE3/RbrBAJ
+        F4nzVxawQNjCEq+Ob2GHsKUkPr/bywZhp0us3DyDGcLOkfi2eQkThG0vceDKHLBvmAU0Jdbv
+        0ocIy0pMPbUOrIRZgE+i9/cTqHJeiR3zYGxliS9/90CtlZSYd+wy1DkeEts+PmIEGSkkECtx
+        7nDdBEbZWQgLFjAyrmKUTC0ozk1PTTYtMMxLLYfHU3J+7iZGcCrUctnBeGP+P71DjEwcjMBQ
+        42BWEuE1lwtJFeJNSaysSi3Kjy8qzUktPsRoCgyxicxSosn5wGScVxJvaGJpYGJmZmZiaWxm
+        qCTO+7p1boqQQHpiSWp2ampBahFMHxMHp1QDE8OKpXbKZ2d6zAmNbag9o1HC4/P14L+pcbu/
+        OLQeu3llI4NR9YRozl/PPqUIJMy6ckbjwf1fWzZE/HrZx+x+kO/ulhTxkyGbsl+m3zT9vCJS
+        fFpy/EG+yGbui4tTNsVO2RUQ3Xrxl7jnSaau7JSPM79ELJMIdffucQzUn567L1hokVNFcJvd
+        C49XXwvmXS45Uz5DQzJ65TL2m8cu7S1Pi/v/O8xjPdND668N9yYtrg9V5P72tnJKUqlRG+v2
+        NSZMBfcX1LSe3HB8K9+GwnVnepfNT/GuL3v56YWZieGdS+Kv6ltbg65cTJ3/dEJOfOTtNSzN
+        MXoGMd02l0JrPq/s1dh6r0usUtJq68bgfZwTzimxFGckGmoxFxUnAgAXScpTDgQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBLMWRmVeSWpSXmKPExsWy7bCSnO7C7JBUg8VvRS0ezNvGZrGkKcNi
+        xZeZ7BZ7X29lt2jo+c1qsenxNVaLy7vmsFmcnXeczWLG+X1MFi1/Wlgs7rZ0slr837OD3aL3
+        cK0Dr8fOWXfZPRZsKvXYtKqTzePOtT1sHk+uTGfy2Lyk3qNvyypGj8+b5AI4orhsUlJzMstS
+        i/TtErgyFj5Zy1SwRLqirfcASwPjTrEuRg4OCQETid4unS5GLg4hgd2MErvuX2HvYuQEiktK
+        fL64jgnCFpZY+e85O0RRM5NEy8NDzCAJNgEticavXcwgCRGBM4wSZzuWsII4zAKbGCWmnv/J
+        ClIlLGApMbf5DTPIOhYBVYllkzNBwrwCVhKfun8wQmyQl1i94QDzBEaeBYwMqxglUwuKc9Nz
+        kw0LDPNSy/WKE3OLS/PS9ZLzczcxggNTS2MH4735//QOMTJxMB5ilOBgVhLhNZcLSRXiTUms
+        rEotyo8vKs1JLT7EKM3BoiTOazhjdoqQQHpiSWp2ampBahFMlomDU6qB6V5j29f0ycGWM94x
+        1C/Z//yQgwXnGpM+HxmBwod9503CZwecXmP74cO7pBaPE3oh2jGWRr/udoeKedhHnP325lV8
+        Zsg3wxe7f3smXSt7KsPj2HQoR/ZJ1BGWyKvP0+q5Tk7zdN7y4fVn5aLvG+tF1/3+EHN+6bZY
+        pnMKdcaWggUyee1qH8zeP0xLcDP+8MGnpGFC2NYLu9hcJ+sXP/o7tTe8Ofl+9JLit+W/z3sy
+        GJ08/dl2ociCgytyv3Sx24ZtUohfxi5YYrwgYdYE5qY9fRfipq47mnT8YfSrDykvK3pt2001
+        ZypuW9PU7rsy1ITL/zNXeFTD0++JETJPlrPKeh9KObxh8rEtvN+ExI/OUmIpzkg01GIuKk4E
+        AABqtcu7AgAA
+X-CMS-MailID: 20231115065633epcas5p12b5d49ea13598aaee9d37fd787a6333d
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231115065633epcas5p12b5d49ea13598aaee9d37fd787a6333d
+References: <CGME20231115065633epcas5p12b5d49ea13598aaee9d37fd787a6333d@epcas5p1.samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,LOTS_OF_MONEY,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Documentation of __pte_offset_map_lock suggest there is situations where
-a pmd may not have a corresponding page table, in which case it should
-return NULL without changing ptlp. Syzbot found its ways to produce a
-NULL dereference in the function showing this case. This patch will
-provide the exit path suggested if this unlikely situation turns up. The
-output of the kasan null-ptr-report follows:
+There is no need to hardcode the clock info in the driver as driver can
+rely on the devicetree to supply the clocks required for the functioning
+of the peripheral. Get rid of the static clock info and obtain the
+platform supplied clocks. The total number of clocks supplied is
+obtained using the devm_clk_bulk_get_all() API and used for the rest of
+the clk_bulk_* APIs.
 
-Unable to handle kernel paging request at virtual address dfff800000000004
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000004] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 0 PID: 7952 Comm: syz-executor682 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
-lr : lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
-sp : ffff800098f26d40
-x29: ffff800098f27000 x28: ffff8000808df4bc x27: ffff7000131e4e18
-x26: 1ffff00011c340b9 x25: 0000000000000000 x24: 0000000000000000
-x23: ffff7000131e4dd0 x22: 0000000000000000 x21: 0000000000000000
-x20: 0000000000000000 x19: 0000000000000022 x18: ffff800098f27750
-x17: 0000ffff833dafff x16: ffff80008a632120 x15: 0000000000000001
-x14: ffff80008e1a05d0 x13: ffff800098f26e80 x12: dfff800000000000
-x11: ffff800080319468 x10: ffff80008e1a05cc x9 : 00000000000000f3
-x8 : 0000000000000004 x7 : ffff8000808df4bc x6 : 0000000000000000
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000022
-Call trace:
- __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
- __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
- _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
- spin_lock include/linux/spinlock.h:351 [inline]
- __pte_offset_map_lock+0x154/0x360 mm/pgtable-generic.c:373
- pte_offset_map_lock include/linux/mm.h:2939 [inline]
- filemap_map_pages+0x698/0x11f0 mm/filemap.c:3582
- do_fault_around mm/memory.c:4525 [inline]
- do_read_fault mm/memory.c:4558 [inline]
- do_fault mm/memory.c:4705 [inline]
- do_pte_missing mm/memory.c:3669 [inline]
- handle_pte_fault mm/memory.c:4978 [inline]
- __handle_mm_fault mm/memory.c:5119 [inline]
- handle_mm_fault+0x326c/0x49fc mm/memory.c:5284
- faultin_page mm/gup.c:956 [inline]
- __get_user_pages+0x3e0/0xa24 mm/gup.c:1239
- populate_vma_page_range+0x254/0x328 mm/gup.c:1666
- __mm_populate+0x240/0x3d8 mm/gup.c:1775
- mm_populate include/linux/mm.h:3305 [inline]
- vm_mmap_pgoff+0x2bc/0x3d4 mm/util.c:551
- ksys_mmap_pgoff+0xd0/0x5b0 mm/mmap.c:1400
- __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
- __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
- __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-Code: b006f948 b943a108 34000208 d343fe68 (386c6908)
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:   b006f948        adrp    x8, 0xdf29000
-   4:   b943a108        ldr     w8, [x8, #928]
-   8:   34000208        cbz     w8, 0x48
-   c:   d343fe68        lsr     x8, x19, #3
-* 10:   386c6908        ldrb    w8, [x8, x12] <-- trapping instruction
-
-Reported-by: syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com
-Fixes: 0d940a9b270b9 ("mm/pgtable: allow pte_offset_map[_lock]() to fail")
-Closes: https://syzkaller.appspot.com/bug?id=7494636a5865150aecc6e480e0e7e17f2980ad8d
-Signed-off-by: José Pekkarinen <jose.pekkarinen@foxhound.fi>
+Signed-off-by: Shradha Todi <shradha.t@samsung.com>
 ---
- include/linux/mm.h   | 4 ++--
- mm/pgtable-generic.c | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+v1: https://lore.kernel.org/lkml/029a01da1334$dc1016c0$94304440$@samsung.com/T/
+v2: Addressed Manivannan's comments to improve patch
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 418d26608ece..38d876529e1f 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -2854,7 +2854,7 @@ void ptlock_free(struct ptdesc *ptdesc);
- 
- static inline spinlock_t *ptlock_ptr(struct ptdesc *ptdesc)
+ drivers/pci/controller/dwc/pci-exynos.c | 54 +++++++------------------
+ 1 file changed, 14 insertions(+), 40 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/controller/dwc/pci-exynos.c
+index 9e42cfcd99cc..520f744bb691 100644
+--- a/drivers/pci/controller/dwc/pci-exynos.c
++++ b/drivers/pci/controller/dwc/pci-exynos.c
+@@ -54,8 +54,8 @@
+ struct exynos_pcie {
+ 	struct dw_pcie			pci;
+ 	void __iomem			*elbi_base;
+-	struct clk			*clk;
+-	struct clk			*bus_clk;
++	struct clk_bulk_data		*clks;
++	int				clk_cnt;
+ 	struct phy			*phy;
+ 	struct regulator_bulk_data	supplies[2];
+ };
+@@ -63,32 +63,17 @@ struct exynos_pcie {
+ static int exynos_pcie_init_clk_resources(struct exynos_pcie *ep)
  {
--	return ptdesc->ptl;
-+	return (likely(ptdesc)) ? ptdesc->ptl : NULL;
- }
- #else /* ALLOC_SPLIT_PTLOCKS */
- static inline void ptlock_cache_init(void)
-@@ -2872,7 +2872,7 @@ static inline void ptlock_free(struct ptdesc *ptdesc)
+ 	struct device *dev = ep->pci.dev;
+-	int ret;
  
- static inline spinlock_t *ptlock_ptr(struct ptdesc *ptdesc)
+-	ret = clk_prepare_enable(ep->clk);
+-	if (ret) {
+-		dev_err(dev, "cannot enable pcie rc clock");
+-		return ret;
+-	}
+-
+-	ret = clk_prepare_enable(ep->bus_clk);
+-	if (ret) {
+-		dev_err(dev, "cannot enable pcie bus clock");
+-		goto err_bus_clk;
+-	}
++	ep->clk_cnt = devm_clk_bulk_get_all(dev, &ep->clks);
++	if (ep->clk_cnt < 0)
++		return ep->clk_cnt;
+ 
+-	return 0;
+-
+-err_bus_clk:
+-	clk_disable_unprepare(ep->clk);
+-
+-	return ret;
++	return clk_bulk_prepare_enable(ep->clk_cnt, ep->clks);
+ }
+ 
+ static void exynos_pcie_deinit_clk_resources(struct exynos_pcie *ep)
  {
--	return &ptdesc->ptl;
-+	return (likely(ptdesc)) ? &ptdesc->ptl : NULL;
+-	clk_disable_unprepare(ep->bus_clk);
+-	clk_disable_unprepare(ep->clk);
++	clk_bulk_disable_unprepare(ep->clk_cnt, ep->clks);
  }
- #endif /* ALLOC_SPLIT_PTLOCKS */
  
-diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-index 4fcd959dcc4d..7796339d7ef2 100644
---- a/mm/pgtable-generic.c
-+++ b/mm/pgtable-generic.c
-@@ -370,6 +370,8 @@ pte_t *__pte_offset_map_lock(struct mm_struct *mm, pmd_t *pmd,
- 	if (unlikely(!pte))
- 		return pte;
- 	ptl = pte_lockptr(mm, &pmdval);
-+	if (unlikely(!ptl))
-+		return NULL;
- 	spin_lock(ptl);
- 	if (likely(pmd_same(pmdval, pmdp_get_lockless(pmd)))) {
- 		*ptlp = ptl;
+ static void exynos_pcie_writel(void __iomem *base, u32 val, u32 reg)
+@@ -332,32 +317,20 @@ static int exynos_pcie_probe(struct platform_device *pdev)
+ 	if (IS_ERR(ep->elbi_base))
+ 		return PTR_ERR(ep->elbi_base);
+ 
+-	ep->clk = devm_clk_get(dev, "pcie");
+-	if (IS_ERR(ep->clk)) {
+-		dev_err(dev, "Failed to get pcie rc clock\n");
+-		return PTR_ERR(ep->clk);
+-	}
+-
+-	ep->bus_clk = devm_clk_get(dev, "pcie_bus");
+-	if (IS_ERR(ep->bus_clk)) {
+-		dev_err(dev, "Failed to get pcie bus clock\n");
+-		return PTR_ERR(ep->bus_clk);
+-	}
++	ret = exynos_pcie_init_clk_resources(ep);
++	if (ret)
++		return ret;
+ 
+ 	ep->supplies[0].supply = "vdd18";
+ 	ep->supplies[1].supply = "vdd10";
+ 	ret = devm_regulator_bulk_get(dev, ARRAY_SIZE(ep->supplies),
+ 				      ep->supplies);
+ 	if (ret)
+-		return ret;
+-
+-	ret = exynos_pcie_init_clk_resources(ep);
+-	if (ret)
+-		return ret;
++		goto fail_regulator;
+ 
+ 	ret = regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep->supplies);
+ 	if (ret)
+-		return ret;
++		goto fail_regulator;
+ 
+ 	platform_set_drvdata(pdev, ep);
+ 
+@@ -369,8 +342,9 @@ static int exynos_pcie_probe(struct platform_device *pdev)
+ 
+ fail_probe:
+ 	phy_exit(ep->phy);
+-	exynos_pcie_deinit_clk_resources(ep);
+ 	regulator_bulk_disable(ARRAY_SIZE(ep->supplies), ep->supplies);
++fail_regulator:
++	exynos_pcie_deinit_clk_resources(ep);
+ 
+ 	return ret;
+ }
 -- 
-2.39.2
+2.17.1
 
