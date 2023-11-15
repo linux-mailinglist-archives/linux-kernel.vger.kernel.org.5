@@ -2,135 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C113C7EC9D9
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:43:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA027EC9DD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231439AbjKORnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:43:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36928 "EHLO
+        id S230402AbjKORo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKORnI (ORCPT
+        with ESMTP id S229504AbjKORoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:43:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9D02E0;
-        Wed, 15 Nov 2023 09:43:05 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFFvdph011122;
-        Wed, 15 Nov 2023 17:42:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=UOYPIh1LCyb4tgGeTSqamCZ1AYWTX2DwLwuQtmS3xnM=;
- b=Di5VZkLOiNUNShnK0+kkio45XMtR+l6mKWIB+GPlkMV7aTP5D7rdYFraL/qEvTvRcTx6
- EJ9p8yq6PpF+AJFaVmQoS4SW1ixX4WIuza4b5lLoNkehShvf9u7gKN9GZv8tQe4I8M0Y
- uSwdsLxUJ/k7NgK0CI+rc4MIwJ7JCAslTjGb2XzvcIQI+zi/kaQZopUhRxMXKWvZfKCy
- SRrKWyy+TzkHAZYpVmKUXifISRQuBl+5Ymdw1k3fn6/s0IK60i7Mw9e6d/XggMiMkOaq
- LvMBbtYamfQhAxjGZsngc7aiB1ioMrOUbRSKRl3W/jVXhEBqrnY9BUsyMN3LqKj2bjuX KA== 
-Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucfkaakv2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 17:42:37 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFHgaT9000825
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 17:42:36 GMT
-Received: from [10.216.42.195] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
- 2023 09:42:30 -0800
-Message-ID: <6d4d959c-b155-471b-b13d-f6fda557cfe0@quicinc.com>
-Date:   Wed, 15 Nov 2023 23:12:16 +0530
+        Wed, 15 Nov 2023 12:44:55 -0500
+Received: from mail-ua1-x92f.google.com (mail-ua1-x92f.google.com [IPv6:2607:f8b0:4864:20::92f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CD1C83
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:44:52 -0800 (PST)
+Received: by mail-ua1-x92f.google.com with SMTP id a1e0cc1a2514c-7ba45fc8619so2776079241.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:44:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700070291; x=1700675091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yA0mSDgxgLYHALoqWknT9J7D4wZ2ecpGCOc3KqqrcZQ=;
+        b=SwhCU04BPZ9EP8tQWeVlrXnomNWBQTJLe4hTlLdwyFmJFWlfGTS+3/zZTXJBEhH8VE
+         Nc/UVDhLDpLC/Lu4a6fmgiUVgWKKjH1wq0ipjlHsleiEnJORdw3Nwgj7j+ubCPVV0wwh
+         2qGmfoScdW5A2Q2zJwmFhe+s4uJYOHM+CUUZRUPWQB/FDjLSLOoANFAeSUk6Z8TKl6pP
+         3ufDsMIOLxtG5a6aHgAxRNLLI2mCdgKa614ZZjo5geUtStfOoO+7YiLqo5Az4u3xI23A
+         AU4PPvG1KSmQueLkjhwncmlNXafL0PZ/Ee4VpsJ5tyv564vCujoFg1HlzjSQBFlGCs4E
+         ElDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700070291; x=1700675091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yA0mSDgxgLYHALoqWknT9J7D4wZ2ecpGCOc3KqqrcZQ=;
+        b=MBQo7QqbKpHuj5iJAbKVf0UkyG+X5Ap6OLK5O4fy1rPc39IuJc3LTdf/X5pnB0JWIh
+         WhEo2NCMp6h3lomX/wP5lDjGDCsfAqX+IZrVF3IPJc9uqT7VFpV4W3R/VdU90H2GXE7/
+         gZh2nxkZRLAUsjofLqK1Z4gGeob3/9wfLA1W4jQ+32iBUf5r4nHvuqcTWlJ3epWoYd7z
+         Vlmbv/DFI+vzOrkYia38mdHbyhLYLGz+obI/L2vlG40CfEiManTXPcl7XC73o17HC8JT
+         5an/uM7lUQibgkN+5ZMn/SL5Mi6jlTq8KIA21eQwKCSuh5ZseP/8o8eXcEWzGZzUfyyn
+         Jilg==
+X-Gm-Message-State: AOJu0YyQ3j3b2qr6OdPQcgVGFQ4ilAZsS3vu0eDSk35Zy9+yfjzZbmEw
+        8cu+VrKmXbYxvdHl5fz3KOerN00xWkLOE58FPIzLaDB04jfMgKK+YZI=
+X-Google-Smtp-Source: AGHT+IGCeekYmgCpDMKNfje7s/UUbIYwx3KAkOWA4nSYbX+koWgmhlu9SKjkYgbwCqGGk4LNHymbvB4ZbInN8ydoQiM=
+X-Received: by 2002:a05:6122:922:b0:4ac:462b:7417 with SMTP id
+ j34-20020a056122092200b004ac462b7417mr14917004vka.8.1700070290777; Wed, 15
+ Nov 2023 09:44:50 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 05/10] usb: dwc3: qcom: Refactor IRQ handling in QCOM
- Glue driver
-To:     Johan Hovold <johan@kernel.org>
-CC:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Andy Gross" <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        "Konrad Dybcio" <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Felipe Balbi <balbi@kernel.org>,
-        Wesley Cheng <quic_wcheng@quicinc.com>,
-        <linux-usb@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <quic_pkondeti@quicinc.com>, <quic_ppratap@quicinc.com>,
-        <quic_jackp@quicinc.com>, <ahalaney@redhat.com>,
-        <quic_shazhuss@quicinc.com>
-References: <20231007154806.605-1-quic_kriskura@quicinc.com>
- <20231007154806.605-6-quic_kriskura@quicinc.com>
- <ZTJ_T1UL8-s2cgNz@hovoldconsulting.com>
- <14fc724c-bc99-4b5d-9893-3e5eff8895f7@quicinc.com>
- <ZTY7Lwjd3_8NlfEi@hovoldconsulting.com>
- <cabf24d0-8eea-4eb5-8205-bf7fe6017ec2@quicinc.com>
- <ZTZ-EvvbuA6HpycT@hovoldconsulting.com>
- <fb5e5e1d-520c-4cbc-adde-f30e853421a1@quicinc.com>
- <ZTdqnSHq_Jo8AuPW@hovoldconsulting.com>
- <04615205-e380-4719-aff1-f32c26004b14@quicinc.com>
- <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
-Content-Language: en-US
-From:   Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>
-In-Reply-To: <ZUz4RD3MjnLlPn6V@hovoldconsulting.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: cdzl9_JGs7djGz1RV66vjjiOiNGOwtwV
-X-Proofpoint-GUID: cdzl9_JGs7djGz1RV66vjjiOiNGOwtwV
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_17,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 spamscore=0 bulkscore=0
- phishscore=0 mlxscore=0 mlxlogscore=365 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150137
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com> <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org> <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+ <ZVNzS2EA4zQRwIQ7@nvidia.com> <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
+In-Reply-To: <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 15 Nov 2023 09:44:37 -0800
+Message-ID: <CAHS8izMR-FrTtCty8v29atAMor5FmzV_Ogk85H=gqGaJNvJnuA@mail.gmail.com>
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Yunsheng Lin <linyunsheng@huawei.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        davem@davemloft.net, pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 15, 2023 at 1:21=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
+m> wrote:
+>
+> On 2023/11/14 21:16, Jason Gunthorpe wrote:
+> > On Tue, Nov 14, 2023 at 04:21:26AM -0800, Mina Almasry wrote:
+> >
+> >> Actually because you put the 'strtuct page for devmem' in
+> >> skb->bv_frag, the net stack will grab the 'struct page' for devmem
+> >> using skb_frag_page() then call things like page_address(), kmap,
+> >> get_page, put_page, etc, etc, etc.
+> >
+> > Yikes, please no. If net has its own struct page look alike it has to
+> > stay entirely inside net. A non-mm owned struct page should not be
+> > passed into mm calls. It is just way too hacky to be seriously
+> > considered :(
+>
+> Yes, that is something this patchset is trying to do, defining its own
+> struct page look alike for page pool to support devmem.
+>
+> struct page for devmem will not be called into the mm subsystem, so most
+> of the mm calls is avoided by calling into the devmem memory provider'
+> ops instead of calling mm calls.
+>
+> As far as I see for now, only page_ref_count(), page_is_pfmemalloc() and
+> PageTail() is called for devmem page, which should be easy to ensure that
+> those call for devmem page is consistent with the struct page owned by mm=
+.
 
-Hi Johan,
+I'm not sure this is true. These 3 calls are just the calls you're
+aware of. In your proposal you're casting mirror pages into page* and
+releasing them into the net stack. You need to scrub the entire net
+stack for mm calls, i.e. all driver code and all skb_frag_page() call
+sites. Of the top of my head, the driver is probably calling
+page_address() and illegal_highdma() is calling PageHighMem(). TCP
+zerocopy receive is calling vm_insert_pages().
 
-> Are you sure there's no support for hs_phy_irq also in the "femto" PHYs
-> and that it's just that there is currently no driver support for using
-> them?
-> 
-> And why is it defined if there is truly no use for it?
-> 
+> I am not sure if we can use some kind of compile/runtime checking to ensu=
+re
+> those kinds of consistency?
+>
+> >
+> >>> I would expect net stack, page pool, driver still see the 'struct pag=
+e',
+> >>> only memory provider see the specific struct for itself, for the abov=
+e,
+> >>> devmem memory provider sees the 'struct page_pool_iov'.
+> >>>
+> >>> The reason I still expect driver to see the 'struct page' is that dri=
+ver
+> >>> will still need to support normal memory besides devmem.
+> >
+> > I wouldn't say this approach is unreasonable, but it does have to be
+> > done carefully to isolate the mm. Keeping the struct page in the API
+> > is going to make this very hard.
+>
+> I would expect that most of the isolation is done in page pool, as far as
+> I can see:
+>
+> 1. For control part: the driver may need to tell the page pool which memo=
+ry
+>                      provider it want to use. Or the administrator specif=
+ies
+>                      which memory provider to use by some netlink-based c=
+md.
+>
+> 2. For data part: I am thinking that driver should only call page_pool_al=
+loc(),
+>                   page_pool_free() and page_pool_get_dma_addr related fun=
+ction.
+>
+> Of course the driver may need to be aware of that if it can call kmap() o=
+r
+> page_address() on the page returned from page_pool_alloc(), and maybe tel=
+l
+> net stack that those pages is not kmap()'able and page_address()'able.
+>
+> >
+> > Jason
+> > .
+> >
 
-We had an internal sync up with HW folks and here is some baseline 
-suggestions we received:
 
-If DP/DM interrupts are defined, then that is the preferred path to 
-used, irrespective if HS Phy irq is defined or not / or whether it is 
-Femto / QUSB2 target. There is no target that has femto phy but misses 
-DP/DM today.
 
-For cases like sdm660/msm8998/msm8953/msm8956, these targets use 
-hs_phy_irq only and don't rely on DP/DM. So we cannot remove the binding 
-in entirety.
-
-> Also, if hs_phy_irq and dp/dm_phy_irq were mutually exclusive, why does
-> the following Qualcomm SoCs define all three?
-> 
-
-HS Phy Irq is redundant or functionality is mutually exclusive in this 
-case. If there are targets that define all three, then we need to update 
-those to only utilize DP/DM interrupts.
-
-Regards,
-Krishna,
+--=20
+Thanks,
+Mina
