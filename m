@@ -2,45 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B2AF7EC114
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:04:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B0CD7EC115
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343566AbjKOLEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:04:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59832 "EHLO
+        id S1343563AbjKOLIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:08:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229796AbjKOLEy (ORCPT
+        with ESMTP id S229796AbjKOLIg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:04:54 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57FA495;
-        Wed, 15 Nov 2023 03:04:51 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADAEDC433C7;
-        Wed, 15 Nov 2023 11:04:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1700046290;
-        bh=i4cAD/OCLl0SeCe8b2JD1J5zNEzd+LtYHbZCyyoXmg4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=LPIhhLmF9Ed6qhVkzQf+3BE90Qf5Q0m9k/rTYlVPfndyrpLxV54d6nj4/nbJiIXnn
-         WcSUbag9h2A1mzM01HV1GcxaheXIJ7bRu7GTfat3WGmi5gjlOePg2xyyDuNzLA/iUY
-         e5+KL5WghNI7iNqIuZyAJARDOjj+IO7pMn0cuyPg=
-Date:   Wed, 15 Nov 2023 06:04:48 -0500
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Stefan Berger <stefanb@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, zohar@linux.ibm.com,
-        initramfs@vger.kernel.org, stable@vger.kernel.org,
-        Rob Landley <rob@landley.net>
-Subject: Re: [PATCH v2] rootfs: Fix support for rootfstype= when root= is
- given
-Message-ID: <2023111514-tiring-outlying-521f@gregkh>
-References: <20231114141030.219729-1-stefanb@linux.ibm.com>
+        Wed, 15 Nov 2023 06:08:36 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A9CC5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:08:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700046511;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=30YlxcbouoHUqbszSietM15X2VzsRmxEM5Z6VzVk+yg=;
+        b=hu/bNW6/3vyAHjwBIUmADTmarsYKaL0BcL/g/tetEtgEq6YwSgME7EzDbJ9zBO4sGpwqcg
+        BHxgJl1WVpLW0EoDCqkgZ/O9b2MfEQwFArs49k8R6q3YBTDZPibsSOShjNRDlcCb5KuSfE
+        EsJ3DLxvFHTG/h5okMMHZ4veEfoGtlM=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-QgSuCw9jMySqH4vBzF6a-A-1; Wed, 15 Nov 2023 06:08:30 -0500
+X-MC-Unique: QgSuCw9jMySqH4vBzF6a-A-1
+Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-9bea60bd1adso93167766b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:08:30 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700046509; x=1700651309;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=30YlxcbouoHUqbszSietM15X2VzsRmxEM5Z6VzVk+yg=;
+        b=dc9s66TNWcTO3vk7C2hrYT+fmAJWRYhnf4iloPp03CdLs/IvkB1Nwyv3mBznxgTF2E
+         Psx5zEGk1CWoSFAaS7PERnpYntq4wrPlSjo8DOAxeGVHJ7xrGR+SSvdcYT5YWBMZjCYt
+         zEsc3UGWZTOEo39pORC6NsXszBh+wqBEJKphFfGkVFXgbwQskgMJVMS3cQOf+o8i2Ct4
+         kKBVUu8uLEpoPoJDD3yHibTTdpHb8nASYx2H4tSDITmaus6Vf2qwMBsAEORe1cm1VDG2
+         mCR4bCwL3jH9B94PDLdN/VC2Sk3P3govBgxxAY8H4ATrQEKcvqr1g2/MoH+FcE/Dhovp
+         AdMA==
+X-Gm-Message-State: AOJu0Yz5NoYYL+FhxELUhzMfUltNMArxIXkJPWi2CKapMXXRnrWZ3xJ2
+        hf9FJMTImJLNmJtErYxdrdxX7cbH3zRvlFfulhiw58IB2I0Yu27eNhsYcWkXc6AdIqJ0/O6HQ8x
+        EgUn6jaP0G2smAQjTeTmMP2hY
+X-Received: by 2002:a17:906:66d9:b0:9e6:2c5a:450a with SMTP id k25-20020a17090666d900b009e62c5a450amr4490051ejp.26.1700046509098;
+        Wed, 15 Nov 2023 03:08:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHve6gIrQ6JWmFSezcPN9+P/sMdMQNqa9BHvI8TeelpKxEVC6UBoL04CyyICjC7dN059GHFfA==
+X-Received: by 2002:a17:906:66d9:b0:9e6:2c5a:450a with SMTP id k25-20020a17090666d900b009e62c5a450amr4490025ejp.26.1700046508757;
+        Wed, 15 Nov 2023 03:08:28 -0800 (PST)
+Received: from sgarzare-redhat (host-79-46-200-199.retail.telecomitalia.it. [79.46.200.199])
+        by smtp.gmail.com with ESMTPSA id v6-20020a056402174600b00530a9488623sm6410463edx.46.2023.11.15.03.08.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 03:08:28 -0800 (PST)
+Date:   Wed, 15 Nov 2023 12:08:23 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v1 0/2] send credit update during setting SO_RCVLOWAT
+Message-ID: <fqhgsbepjwftqmpv6xn7oqizdgmp25ri66seiewiikreglmmsd@uyouhusmjtby>
+References: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20231114141030.219729-1-stefanb@linux.ibm.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+In-Reply-To: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -48,95 +87,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 09:10:30AM -0500, Stefan Berger wrote:
-> Documentation/filesystems/ramfs-rootfs-initramfs.rst states:
-> 
->   If CONFIG_TMPFS is enabled, rootfs will use tmpfs instead of ramfs by
->   default.  To force ramfs, add "rootfstype=ramfs" to the kernel command
->   line.
-> 
-> This currently does not work when root= is provided since then
-> saved_root_name contains a string and initfstype= is ignored. Therefore,
-> ramfs is currently always chosen when root= is provided.
-> 
-> The current behavior for rootfs's filesystem is:
-> 
->    root=       | initfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs
->    unspecified | tmpfs       | tmpfs
->    unspecified | ramfs       | ramfs
->     provided   | ignored     | ramfs
-> 
-> initfstype= should be respected regardless whether root= is given,
-> as shown below:
-> 
->    root=       | initfstype= | chosen rootfs filesystem
->    ------------+-------------+--------------------------
->    unspecified | unspecified | tmpfs  (as before)
->    unspecified | tmpfs       | tmpfs  (as before)
->    unspecified | ramfs       | ramfs  (as before)
->     provided   | unspecified | ramfs  (compatibility with before)
->     provided   | tmpfs       | tmpfs  (new)
->     provided   | ramfs       | ramfs  (new)
-> 
-> This table represents the new behavior.
-> 
-> Fixes: 6e19eded3684 ("initmpfs: use initramfs if rootfstype= or root=  specified")
-> Cc: <stable@vger.kernel.org>
-> Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> Signed-off-by: Rob Landley <rob@landley.net>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> ---
->  init/do_mounts.c | 9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/init/do_mounts.c b/init/do_mounts.c
-> index 5fdef94f0864..279ad28bf4fb 100644
-> --- a/init/do_mounts.c
-> +++ b/init/do_mounts.c
-> @@ -510,7 +510,10 @@ struct file_system_type rootfs_fs_type = {
->  
->  void __init init_rootfs(void)
->  {
-> -	if (IS_ENABLED(CONFIG_TMPFS) && !saved_root_name[0] &&
-> -		(!root_fs_names || strstr(root_fs_names, "tmpfs")))
-> -		is_tmpfs = true;
-> +	if (IS_ENABLED(CONFIG_TMPFS)) {
-> +		if (!saved_root_name[0] && !root_fs_names)
-> +			is_tmpfs = true;
-> +		else if (root_fs_names && !!strstr(root_fs_names, "tmpfs"))
-> +			is_tmpfs = true;
-> +	}
->  }
-> -- 
-> 2.41.0
-> 
+On Wed, Nov 08, 2023 at 10:20:02AM +0300, Arseniy Krasnov wrote:
+>Hello,
+>
+>                               DESCRIPTION
+>
+>This patchset fixes old problem with hungup of both rx/tx sides and adds
+>test for it. This happens due to non-default SO_RCVLOWAT value and
+>deferred credit update in virtio/vsock. Link to previous old patchset:
+>https://lore.kernel.org/netdev/39b2e9fd-601b-189d-39a9-914e5574524c@sberdevices.ru/
+>
+>Here is what happens step by step:
+>
+>                                  TEST
+>
+>                            INITIAL CONDITIONS
+>
+>1) Vsock buffer size is 128KB.
+>2) Maximum packet size is also 64KB as defined in header (yes it is
+>   hardcoded, just to remind about that value).
+>3) SO_RCVLOWAT is default, e.g. 1 byte.
+>
+>
+>                                 STEPS
+>
+>            SENDER                              RECEIVER
+>1) sends 128KB + 1 byte in a
+>   single buffer. 128KB will
+>   be sent, but for 1 byte
+>   sender will wait for free
+>   space at peer. Sender goes
+>   to sleep.
+>
+>
+>2)                                     reads 64KB, credit update not sent
+>3)                                     sets SO_RCVLOWAT to 64KB + 1
+>4)                                     poll() -> wait forever, there is
+>                                       only 64KB available to read.
+>
+>So in step 4) receiver also goes to sleep, waiting for enough data or
+>connection shutdown message from the sender. Idea to fix it is that rx
+>kicks tx side to continue transmission (and may be close connection)
+>when rx changes number of bytes to be woken up (e.g. SO_RCVLOWAT) and
+>this value is bigger than number of available bytes to read.
+>
+>I've added small test for this, but not sure as it uses hardcoded value
 
-Hi,
+Thanks for adding the test!
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+>for maximum packet length, this value is defined in kernel header and
+>used to control deferred credit update. And as this is not available to
+>userspace, I can't control test parameters correctly (if one day this
+>define will be changed - test may become useless).
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+I see, I'll leave a comment in the patch!
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/process/submitting-patches.rst for what
-  needs to be done here to properly describe this.
+Thanks,
+Stefano
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
+>
+>Head for this patchset is:
+>https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net-next.git/commit/?id=ff269e2cd5adce4ae14f883fc9c8803bc43ee1e9
+>
+>Arseniy Krasnov (2):
+>  virtio/vsock: send credit update during setting SO_RCVLOWAT
+>  vsock/test: SO_RCVLOWAT + deferred credit update test
+>
+> drivers/vhost/vsock.c                   |   2 +
+> include/linux/virtio_vsock.h            |   1 +
+> net/vmw_vsock/virtio_transport.c        |   2 +
+> net/vmw_vsock/virtio_transport_common.c |  31 ++++++
+> net/vmw_vsock/vsock_loopback.c          |   2 +
+> tools/testing/vsock/vsock_test.c        | 131 ++++++++++++++++++++++++
+> 6 files changed, 169 insertions(+)
+>
+>-- 
+>2.25.1
+>
 
-thanks,
-
-greg k-h's patch email bot
