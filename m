@@ -2,80 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B417EC907
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 072CD7EC90F
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:59:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232262AbjKOQvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:51:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60450 "EHLO
+        id S232406AbjKOQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230400AbjKOQvU (ORCPT
+        with ESMTP id S231938AbjKOQvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:51:20 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8781012F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:51:17 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id 38308e7fff4ca-2c5039d4e88so97675071fa.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:51:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700067076; x=1700671876; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=E1i4q+KeQwsIi0Qm6oURv67PVM/qypPfRLYO5kbNQm4=;
-        b=gPkbMXjPTUTqH23ETdUmkfCOrhTb16/l3EuJuPTyNqwiUoaewGfjxyI5miEjfXHcQI
-         +lhSsGUkR81ah4OEtFtrL6qOLO0erPQsJm3sOvA2qY+nmfzcWYLrm54H4ktpOAdBwpL/
-         blfz36M6dpZgVYMS++HU3z8ppAugAevyiYAVPhUfHq6jmCkE1Qg+8L8sWYZG7QbLUnVA
-         Xrns6gBQCaKtoAwIvxHoGul6v9rqbjxq5F7e7i3CB9/zL+tedLz/a2JUtK3ODjiLd0RM
-         LDj/sbCAGTcFKfc0vyYu3rGQPZEH7p79DnVsgDBsvkSBbTzAc7f6F5uOliTTgKRYzmux
-         0DTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700067076; x=1700671876;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=E1i4q+KeQwsIi0Qm6oURv67PVM/qypPfRLYO5kbNQm4=;
-        b=dOoGx85rtFdNUEcSdSGPLyDA66PLIpbHrpj3BVD5Hf9GQukguXK/IYkKtQhorOho8H
-         4yMKTXHsusO7n8E9ah9K37OO+Zsh5MPgjoP6Ym9vnYhmmJKSHaYtRzzm4rrODtOe0FiB
-         6h6G+CKeR+s2iAncK494LOIirGgrH0XN6j+iYkLKN97HRM1inOU5OUu3sof9jx7SEE5C
-         rko4WBVsz1NwHIR96D9PD8YgtCfL+eTT8ET2k/eGnsIsuE5787d8pnkBSqiLpaF3SI/9
-         Xuqw/mfeI/0ZWSVKGPfGckc51CEmCiPvle3GC+gZoNFYbf0ZF3P/tYYFKyF2kvxxiVoJ
-         yP6A==
-X-Gm-Message-State: AOJu0YwE/SA/Rc3o7tg6qL6wF37kLUgtZHggpCiiFUVJ9PzS/YmbJXup
-        Vhg8J/LgbIS/RQJksCogOJ0qqZa8b65iccVigZ4uuw==
-X-Google-Smtp-Source: AGHT+IE4JiixN7a3K++e1hfkKsL/80lUrULgomKmtJuUWg3Kmvjn04eARLlsLi6SfALUNEIRcD7KqA==
-X-Received: by 2002:a2e:8758:0:b0:2c7:fa6:7183 with SMTP id q24-20020a2e8758000000b002c70fa67183mr4832341ljj.47.1700067075770;
-        Wed, 15 Nov 2023 08:51:15 -0800 (PST)
-Received: from [172.30.204.150] (UNUSED.212-182-62-129.lubman.net.pl. [212.182.62.129])
-        by smtp.gmail.com with ESMTPSA id a13-20020a2ebe8d000000b002c12c2094e4sm1705775ljr.74.2023.11.15.08.51.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 08:51:15 -0800 (PST)
-Message-ID: <a4e60c81-da6a-447f-a986-e23224602ae4@linaro.org>
-Date:   Wed, 15 Nov 2023 17:51:14 +0100
+        Wed, 15 Nov 2023 11:51:35 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 95880196
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:51:32 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6F2ADA7;
+        Wed, 15 Nov 2023 08:52:17 -0800 (PST)
+Received: from [192.168.1.3] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E91BF3F641;
+        Wed, 15 Nov 2023 08:51:30 -0800 (PST)
+Message-ID: <bac9a753-b1fb-5cd2-404b-832c80a94f89@arm.com>
+Date:   Wed, 15 Nov 2023 16:51:29 +0000
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] ARM: dts: qcom: sdx65: correct clock order in DWC3
- node
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v3 4/4] coresight: ultrasoc-smb: Use guards to cleanup
 Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231112080136.12518-1-krzysztof.kozlowski@linaro.org>
- <20231112080136.12518-2-krzysztof.kozlowski@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-In-Reply-To: <20231112080136.12518-2-krzysztof.kozlowski@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To:     Junhao He <hejunhao3@huawei.com>, suzuki.poulose@arm.com
+Cc:     coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
+        jonathan.cameron@huawei.com, yangyicong@huawei.com,
+        prime.zeng@hisilicon.com, u.kleine-koenig@pengutronix.de
+References: <20231114133346.30489-1-hejunhao3@huawei.com>
+ <20231114133346.30489-5-hejunhao3@huawei.com>
+From:   James Clark <james.clark@arm.com>
+In-Reply-To: <20231114133346.30489-5-hejunhao3@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
-X-Spam-Level: *
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -84,16 +50,174 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 11/12/23 09:01, Krzysztof Kozlowski wrote:
-> Align the order of clocks in Qualcomm DWC3 USB controller to match
-> bindings.  Linux driver does not care about the order.  This fixes
-> dtbs_check warning:
+On 14/11/2023 13:33, Junhao He wrote:
+> Use guards to reduce gotos and simplify control flow.
 > 
->    qcom-sdx65-mtp.dtb: usb@a6f8800: clock-names:3: 'sleep' was expected
->    qcom-sdx65-mtp.dtb: usb@a6f8800: clock-names:4: 'mock_utmi' was expected
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> ---
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+> Signed-off-by: Junhao He <hejunhao3@huawei.com>
 
-Konrad
+Nice cleanup!
+
+Reviewed-by: James Clark <james.clark@arm.com>
+
+> ---
+>  drivers/hwtracing/coresight/ultrasoc-smb.c | 70 +++++++---------------
+>  1 file changed, 22 insertions(+), 48 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/ultrasoc-smb.c b/drivers/hwtracing/coresight/ultrasoc-smb.c
+> index 6e32d31a95fe..cd14b2eded4e 100644
+> --- a/drivers/hwtracing/coresight/ultrasoc-smb.c
+> +++ b/drivers/hwtracing/coresight/ultrasoc-smb.c
+> @@ -97,27 +97,19 @@ static int smb_open(struct inode *inode, struct file *file)
+>  {
+>  	struct smb_drv_data *drvdata = container_of(file->private_data,
+>  					struct smb_drv_data, miscdev);
+> -	int ret = 0;
+>  
+> -	spin_lock(&drvdata->spinlock);
+> +	guard(spinlock)(&drvdata->spinlock);
+>  
+> -	if (drvdata->reading) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (drvdata->reading)
+> +		return -EBUSY;
+>  
+> -	if (atomic_read(&drvdata->csdev->refcnt)) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (atomic_read(&drvdata->csdev->refcnt))
+> +		return -EBUSY;
+>  
+>  	smb_update_data_size(drvdata);
+> -
+>  	drvdata->reading = true;
+> -out:
+> -	spin_unlock(&drvdata->spinlock);
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static ssize_t smb_read(struct file *file, char __user *data, size_t len,
+> @@ -160,9 +152,8 @@ static int smb_release(struct inode *inode, struct file *file)
+>  	struct smb_drv_data *drvdata = container_of(file->private_data,
+>  					struct smb_drv_data, miscdev);
+>  
+> -	spin_lock(&drvdata->spinlock);
+> +	guard(spinlock)(&drvdata->spinlock);
+>  	drvdata->reading = false;
+> -	spin_unlock(&drvdata->spinlock);
+>  
+>  	return 0;
+>  }
+> @@ -255,19 +246,15 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
+>  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+>  	int ret = 0;
+>  
+> -	spin_lock(&drvdata->spinlock);
+> +	guard(spinlock)(&drvdata->spinlock);
+>  
+>  	/* Do nothing, the trace data is reading by other interface now */
+> -	if (drvdata->reading) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (drvdata->reading)
+> +		return -EBUSY;
+>  
+>  	/* Do nothing, the SMB is already enabled as other mode */
+> -	if (drvdata->mode != CS_MODE_DISABLED && drvdata->mode != mode) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (drvdata->mode != CS_MODE_DISABLED && drvdata->mode != mode)
+> +		return -EBUSY;
+>  
+>  	switch (mode) {
+>  	case CS_MODE_SYSFS:
+> @@ -281,13 +268,10 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
+>  	}
+>  
+>  	if (ret)
+> -		goto out;
+> +		return ret;
+>  
+>  	atomic_inc(&csdev->refcnt);
+> -
+>  	dev_dbg(&csdev->dev, "Ultrasoc SMB enabled\n");
+> -out:
+> -	spin_unlock(&drvdata->spinlock);
+>  
+>  	return ret;
+>  }
+> @@ -295,19 +279,14 @@ static int smb_enable(struct coresight_device *csdev, enum cs_mode mode,
+>  static int smb_disable(struct coresight_device *csdev)
+>  {
+>  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+> -	int ret = 0;
+>  
+> -	spin_lock(&drvdata->spinlock);
+> +	guard(spinlock)(&drvdata->spinlock);
+>  
+> -	if (drvdata->reading) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (drvdata->reading)
+> +		return -EBUSY;
+>  
+> -	if (atomic_dec_return(&csdev->refcnt)) {
+> -		ret = -EBUSY;
+> -		goto out;
+> -	}
+> +	if (atomic_dec_return(&csdev->refcnt))
+> +		return -EBUSY;
+>  
+>  	/* Complain if we (somehow) got out of sync */
+>  	WARN_ON_ONCE(drvdata->mode == CS_MODE_DISABLED);
+> @@ -317,12 +296,9 @@ static int smb_disable(struct coresight_device *csdev)
+>  	/* Dissociate from the target process. */
+>  	drvdata->pid = -1;
+>  	drvdata->mode = CS_MODE_DISABLED;
+> -
+>  	dev_dbg(&csdev->dev, "Ultrasoc SMB disabled\n");
+> -out:
+> -	spin_unlock(&drvdata->spinlock);
+>  
+> -	return ret;
+> +	return 0;
+>  }
+>  
+>  static void *smb_alloc_buffer(struct coresight_device *csdev,
+> @@ -395,17 +371,17 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
+>  	struct smb_drv_data *drvdata = dev_get_drvdata(csdev->dev.parent);
+>  	struct smb_data_buffer *sdb = &drvdata->sdb;
+>  	struct cs_buffers *buf = sink_config;
+> -	unsigned long data_size = 0;
+> +	unsigned long data_size;
+>  	bool lost = false;
+>  
+>  	if (!buf)
+>  		return 0;
+>  
+> -	spin_lock(&drvdata->spinlock);
+> +	guard(spinlock)(&drvdata->spinlock);
+>  
+>  	/* Don't do anything if another tracer is using this sink. */
+>  	if (atomic_read(&csdev->refcnt) != 1)
+> -		goto out;
+> +		return 0;
+>  
+>  	smb_disable_hw(drvdata);
+>  	smb_update_data_size(drvdata);
+> @@ -424,8 +400,6 @@ static unsigned long smb_update_buffer(struct coresight_device *csdev,
+>  	smb_sync_perf_buffer(drvdata, buf, handle->head);
+>  	if (!buf->snapshot && lost)
+>  		perf_aux_output_flag(handle, PERF_AUX_FLAG_TRUNCATED);
+> -out:
+> -	spin_unlock(&drvdata->spinlock);
+>  
+>  	return data_size;
+>  }
