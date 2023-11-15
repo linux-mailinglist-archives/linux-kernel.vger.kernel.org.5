@@ -2,134 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 824B97EC6BF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:09:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06A67EC6BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:08:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344375AbjKOPJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:09:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38944 "EHLO
+        id S1344352AbjKOPIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:08:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343952AbjKOPJV (ORCPT
+        with ESMTP id S1343952AbjKOPIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:09:21 -0500
-Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C92FAB8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:09:18 -0800 (PST)
-Received: by mail-pl1-x649.google.com with SMTP id d9443c01a7336-1cc56cc8139so11196505ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:09:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700060958; x=1700665758; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=r39GnHM5bN5YuWeX4taddVxZqZSztKdXAkWyIoY43Wo=;
-        b=2Y16O+5x6Jbce4BxgT6Z+vMDFfRVva3mDQMtTO8/W8t1P7qw1vD94TYr+BBFGmIKih
-         DyDpJtVwhFkXNRfI//1ZLFHNljMLI+4bdT3KT4P2AjPsKdt3qPIADeVNkRyEkY2lhT6W
-         UMju58oifU4eAzkVzDciUHmUJbDVe042sVpmV/ngmjOZgT3DAJ0u9c8O8qgVTBp+J+km
-         Gio6YnCprERGaujNjkVN106T0QmBsuaaBlWCRYzzymbBUoSF1R7SyhH5xUCY6rKtiqdL
-         +g5vixlaY2uocmpuDaGNFcLh/aawLjRgJCz9H3IeNQBBaUPPavGedswcUErYK+Rr4vfa
-         sMRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700060958; x=1700665758;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r39GnHM5bN5YuWeX4taddVxZqZSztKdXAkWyIoY43Wo=;
-        b=jPm4OnBPzDGaINxYij/WMMdQTxtMfSw4kWt0bssR+CS/YuzJNyerSrytw23jHImCU6
-         LSZQDMcobGslJIzQGK4k3caIrEN8Pc5fhf2LFQru+Y38GWmf+ChcOpj+JRqNcqHu3few
-         wPohV4dfkPAkluKcoxU8JDpYcEOsjVyjgFGDgkV/ILP5AxJRGxg4AS2IGKxQe2UWbApg
-         ph1jgXsI9QpXE0JjkZQoZTfjyIpkI+aQ552iSGM39Bmpdo81zdybNEsS5GBN6yFJn/+N
-         JJ/f/QV5ZgvLpJlM5jbKgqgjXNe9mrcrmUOkqo7YLn2gmj2cwtg5FRDuO1FJncHgrWyd
-         yGqw==
-X-Gm-Message-State: AOJu0YwNE+Dxl1m+RKy6/uaCnEe1QxU+5WdBNpR0xwlcQdvc4/PJ8mby
-        s6Dc6mypNOdgCGA1tbtK46KG7W9qBeQ=
-X-Google-Smtp-Source: AGHT+IG3qu3lFpMuQCfcgeEIlbULEmHkvJwhR5/zE7upNlxp4Rd+jCAiKWz5+AvxCJXFT41oeQkNPes24J4=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:4292:b0:1cc:166f:91c8 with SMTP id
- ju18-20020a170903429200b001cc166f91c8mr1456351plb.1.1700060958209; Wed, 15
- Nov 2023 07:09:18 -0800 (PST)
-Date:   Wed, 15 Nov 2023 07:09:15 -0800
-In-Reply-To: <9395d416-cc5c-536d-641e-ffd971b682d1@gmail.com>
-Mime-Version: 1.0
-References: <20231110235528.1561679-1-seanjc@google.com> <20231110235528.1561679-7-seanjc@google.com>
- <ffec2e93-cdb1-25e2-06ec-deccf8727ce4@gmail.com> <ZVN6w2Kc2AUmIiJO@google.com>
- <9395d416-cc5c-536d-641e-ffd971b682d1@gmail.com>
-Message-ID: <ZVTfG6mARiyttuKj@google.com>
-Subject: Re: [PATCH 6/9] KVM: x86: Update guest cpu_caps at runtime for
- dynamic CPUID-based features
-From:   Sean Christopherson <seanjc@google.com>
-To:     Robert Hoo <robert.hoo.linux@gmail.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 15 Nov 2023 10:08:52 -0500
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56EB0101
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:08:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+        s=smtpout1; t=1700060925;
+        bh=nQkiZfSShLRcObhQIvmnOb1jXWqfzmOANMc2r8jtDMo=;
+        h=Date:To:Cc:From:Subject:From;
+        b=Jgta6n9dwEH7u4TYXxOt0OzJJdlQxj0EEpZxxiGrGHWQnds3R/fcgM/dmbjcMNzG+
+         g0w/jFadoCRWuGFP5RMb+tVNvAatvnUnLkAHZxZGs4Yzq2GwufrJlo3jSBYT7SLMG1
+         KMku2un+T41Vn8/SvVqKcI4JHdIcXmUI++pX7V5JosO7gpxxuZClIa7SIHaajo+sCo
+         +RFLN7ner60FzKKviFUAKAd7KIzuP1RhHTGFPUOT0XR3k7RQ2nn5mXx5ONOogLxxNP
+         fINPdKcjIlsjZjN6ER8gTBXHfWu+zu2GFkIyy+LDJtG01BSnYUw9Uy5DcLXiHQe+MP
+         c3Phazpp2oPnw==
+Received: from [172.25.85.137] (unknown [12.186.190.1])
+        by smtpout.efficios.com (Postfix) with ESMTPSA id 4SVmlJ4pc9z1cf5;
+        Wed, 15 Nov 2023 10:08:44 -0500 (EST)
+Message-ID: <a79d1bc3-1aca-4169-a963-b7c9279aa7fd@efficios.com>
+Date:   Wed, 15 Nov 2023 10:09:16 -0500
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To:     rostedt <rostedt@goodmis.org>,
+        "Masami Hiramatsu (Google)" <mhiramat@kernel.org>,
+        Indu Bhagat <indu.bhagat@oracle.com>
+Cc:     "carlos@redhat.com" <carlos@redhat.com>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        "Jose E. Marchesi" <jose.marchesi@oracle.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Brian Robbins <brianrob@microsoft.com>,
+        Diamon discuss <diamon-discuss@lists.linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Subject: Summary of discussion following LPC2023 sframe talk
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023, Robert Hoo wrote:
-> On 11/14/2023 9:48 PM, Sean Christopherson wrote:
-> > On Mon, Nov 13, 2023, Robert Hoo wrote:
-> ...
-> > > u32 *caps  = vcpu->arch.cpu_caps;
-> > > and update guest_cpu_cap_set(), guest_cpu_cap_clear(),
-> > > guest_cpu_cap_change() and guest_cpu_cap_restrict() to pass in
-> > > vcpu->arch.cpu_caps instead of vcpu, since all of them merely refer to vcpu
-> > > cap, rather than whole vcpu info.
-> > 
-> > No, because then every caller would need extra code to pass
-> > vcpu->cpu_caps,
-> 
-> Emm, I don't understand this. I tried to modified and compiled, all need to
-> do is simply substitute "vcpu" with "vcpu->arch.cpu_caps" in calling. (at
-> the end is my diff based on this patch set)
+Hi,
 
-Yes, and I'm saying that
+[ With lkml and diamon-discuss in CC ]
 
-	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PAUSEFILTER);
-	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PFTHRESHOLD);
-	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VGIF);
-	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VNMI);
+I'm adding the following notes of the hallway track discussion we had
+immediately after the sframe slot within the tracing MC [1]. I suspect it
+is relevant (please correct me if I'm wrong or if there are conclusions
+that are too early to tell):
 
-is harder to read and write than this
+- Handling of shared libraries:
+   - the libc dynamic loader should register/unregister sframe sections
+     explicitly with new prctl(2) options,
+   - The prctl() for registration of the sframe sections can take the
+     section address and size as arguments,
+   - The prctl for unregistration could take the section address as argument,
+     but this would require additional data in the linker map (within libc),
+     which is unwanted.
+   - One alternative would be to provide an additional information to
+     sframe registration/unregistration: a key which is decided by the libc
+     to match registration/unregistration. That key could be either the
+     address of the text section associated with the sframe section, or it
+     could be the address of the linker map entry (at the choice of userspace).
+   - Overall, the prctl(3) sframe register could have the following parameters:
+     { key, sframe address, sframe section length }
+   - The prctl(3) sframe unregister would then take a { key } as parameter.
 
-	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PAUSEFILTER);
-	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PFTHRESHOLD);
-	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VGIF);
-	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VNMI);
+- The kernel backtrace code using the sframe information should consider
+   it hostile:
+   - can be corrupted by the application (by accident or maliciously),
+   - can be corrupted on disk by modification of the ELF binary, either
+     before registration or after (either by accident or maliciously),
+   - can be malformed to contain loops (need to find a way to have upper
+     bounds, sanity checks about the direction of the stack traversal),
 
-a one-time search-replace is easy, but the extra boilerplate has a non-zero cost
-for every future developer/reader.
+- It was discussed that the kernel could possibly validate checksums on
+   registration and write-protect the sframe pages. Considering that the
+   kernel still needs to consider the content hostile even with those
+   mechanisms in place, it is unclear whether they are relevant.
 
-> > and passing 'u32 *' provides less type safety than 'struct kvm_vcpu *'.
-> > That tradeoff isn't worth making this one path slightly easier to read.
-> 
-> My point is also from vulnerability, long term, since as a principle, we'd
-> better pass in param/info to a function of its necessity.
+- Mark Rutland told me that for aarch64 the current sframe content is
+   not sufficient to express how to walk the stack over code area at
+   the beginning of functions before the stack pointer is updated.
+   He plans to discuss this with Indu as a follow up.
 
-Attempting to apply the principle of least privilege to low level C helpers is
-nonsensical.  E.g. the helper can trivially get at the owning vcpu via container_of()
-(well, if not for typeof assertions not playing nice with arrays, but open coding
-container_of() is also trivial and illustrates the point).
+- Interpreters:
 
-	struct kvm_vcpu_arch *arch = (void *)caps -  offsetof(struct kvm_vcpu_arch, cpu_caps);
-	struct kvm_vcpu *vcpu = container_of(arch, struct kvm_vcpu, arch);
+   - Walking over an interpreter's own stack can be as simple as skipping
+     over the interpreter's runtime functions. This is a first step to
+     allow skipping over interpreters without detailed information about
+     their own stack layout.
 
-	if (!kvm_cpu_cap_has(x86_feature))
-		guest_cpu_cap_clear(vcpu, x86_feature);
+- JITs:
 
-And the intent behind that principle is to improve security/robustness; what I'm
-saying is that passing in a 'u32 *" makes the overall implementation _less_ robust,
-as it opens up the possibilities of passing in an unsafe/incorrect pointer.  E.g.
-a well-intentioned, not _that_ obviously broken example is:
+   - There are two approaches to skip over JITted code stacks:
 
-	guest_cpu_cap_restrict(&vcpu->arch.cpu_caps[CPUID_1_ECX], X86_FEATURE_XSAVE);
+     - If the jitted code has frame pointers, then use this.
 
-> e.g. cpuid_entry2_find().
+     - If we figure out that some JITs do not have frame pointers, then
+       we would need to design a new kernel ABI that would allow JITs
+       to express sframe-alike information. This will need to be designed
+       with the input of JIT communities because some of them are likely
+       not psABI compliant (e.g. lua has a separate stack).
 
-The main reason cpuid_entry2_find() exists is because KVM checks the incoming
-array provided by KVM_SET_CPUID2, which is also the reason why
-__kvm_update_cpuid_runtime() takes an @entries array instead of just @vcpu.
+   - When we have a good understanding of the JIT requirements in terms
+     of frame description content, the other element that would need to
+     be solved is how to allow JITs to emit frame data in a data structure
+     that can expand. We may need something like a reserved memory area, with
+     a counter of the number of elements which is used to synchronize communication
+     between the JITs (producer) and kernel (consumer).
+
+   - We would need to figure out if JITs expect to have a single producer per
+     frame description area, or multiple producers.
+
+   - We would need to figure out if JITs expect to append frame descriptions in
+     sorted function address order (append only for frame description, append only
+     for functions text section as well), or if there needs to be support for unsorted
+     function entries.
+
+   - We would need information about how JITs reclaim functions, and how it impacts
+     the frame description ABI. For instance, we may want to have a tombstone bit to
+     state that a frame was deleted.
+
+   - We may have to create frame description areas which content are specific to given
+     JITs. For instance, the frame descriptions for a lua JIT on x86-64 may not follow
+     the x86-64 regular psABI.
+
+   - As an initial stage, we can focus on handling the sframe section for executable
+     and shared objects, and use frame pointers to skip over JITted code if available.
+     The goal here is to show the usefulness of this kind of information so we get
+     the interest/collaboration needed to get the relevant input from JIT communities
+     as we design the proper ABI for handling JIT frames.
+
+Thanks,
+
+Mathieu
+
+[1] https://lpc.events/event/17/contributions/1467/ (for abstract/slides)
+
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+https://www.efficios.com
