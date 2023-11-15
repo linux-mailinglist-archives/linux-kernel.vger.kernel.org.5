@@ -2,109 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A989F7ED5EA
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:18:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8772B7ED5ED
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:20:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235617AbjKOVSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:18:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60288 "EHLO
+        id S235602AbjKOVUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:20:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjKOVSp (ORCPT
+        with ESMTP id S229912AbjKOVUq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:18:45 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11EAC1;
-        Wed, 15 Nov 2023 13:18:41 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 38308e7fff4ca-2c501bd6ff1so1032781fa.3;
-        Wed, 15 Nov 2023 13:18:41 -0800 (PST)
+        Wed, 15 Nov 2023 16:20:46 -0500
+Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF46E9B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:20:42 -0800 (PST)
+Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1f4a9dd83d6so44423fac.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:20:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700083120; x=1700687920; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ig4LRrmPOfrn/JSeDbvG3vZIgD2UhFkj1Wn3HjDdh+A=;
-        b=GYHjSUsD/ZmicPFwYS+yaJoO4lsIHoYmZRWpQ4Rl/Uk2IGVhpKhRQgvyiXqyEqiSjz
-         RnWVQFIO6bKCnw+pTkvYDPFYfW1rLVuz5Ur0Tmq35xuNbMEeUFsSQjWpstKFl94jBA2b
-         +6IWwvqzQtsB/UZukccPfnSbqrjLFxArvbADNOOmon6F5nwzefGPFZtSCVmEjeVSTegb
-         2Pgsx6Z/YvzuggN7y5BmDjxWZiZ9FTdFUN89KFwUJ/f6CZm5k47rfwetLn8uZ8o9Pbnp
-         dH5bX2XRM/Nc8AxVFH1crSs1nkuRBE7HR03Pm0eRA7mgpvd7fCHuDVMjBNcdKQ83D+0F
-         VJ5A==
+        d=gmail.com; s=20230601; t=1700083242; x=1700688042; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7JG4fql6FN6eLKMP7zbsfChcI3MiqU8LxZjWGPH8plw=;
+        b=BZz2CaD20o1eWIl/KpUV6UiFxn2tDXVw9v9LKh6FofF9VxjLEIaasFDINXk9Jlb33V
+         ZIOWlijKjZX+GFZZ/G5u5Y5Y6mFtfHJ6kHEZHZ0JY/ahke8343AQFlZUj0M13sPwJMag
+         cjKhQe/MyEQ16TtvOsF2XexzjpY7KwSHC/o73yTV7eGDJ69k0pPVlobepunfFN2kP/iK
+         riyXoQb6SoFsKrsxzDfC+YkWQpt4N69f+0iYUTtau3BnnumcddTJ7cmgzwFX6koEISGe
+         cJK0zm8OVs3zXh+Ei5Iaa2yxLQBbAv2UHIIEnX1+fubbMbqXw9UjTMvCb4m6zsi+uxqN
+         btHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700083120; x=1700687920;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Ig4LRrmPOfrn/JSeDbvG3vZIgD2UhFkj1Wn3HjDdh+A=;
-        b=HEiQ6fPw3CjX+E0ZHwaJeuV9e9grx8iZg5EGmkEHbnag07HKgj8Qhj7+XzdKgXwzBN
-         uf+6BGnueCrZjtO/mqiPikx0a04i93ajX2fZ6oNDKtTQsOqQNFDskf71sVqZp3/thEox
-         cmSYJx6rEr2R7YAWVw5n+AN0VxRNIDBczNzIF9CF4zOB4lspcgb3c1IskrVf5md7VtRv
-         nYT/33nl90U8eLqkY7DtxbH1ZC8ewHt3zBHbLrq7ZqwMdnxeAtzhnFNSiIGsF2GMb7fA
-         a1e1a/zyOoBEMG4FW/rIqGeMVa55LcZ0eSVweRL+SLiCjdwGPvxfhHyxCik6VXZoaBUE
-         +ZFA==
-X-Gm-Message-State: AOJu0Yx8eRXxdrCVMsAZCjHN37OqzCIw+hz0UxbTGbD9fCfMjO0Svx/F
-        LKxxToHDa2ZCJ84qx6+jULY=
-X-Google-Smtp-Source: AGHT+IHTScj9ysDRsY7wFK7xItgqWuQEN+ChknevPY+a5J9RpOc9/TQg/lX1D78M7plkN0kvgag0cQ==
-X-Received: by 2002:a2e:7a14:0:b0:2c5:f54:2477 with SMTP id v20-20020a2e7a14000000b002c50f542477mr4946967ljc.40.1700083119722;
-        Wed, 15 Nov 2023 13:18:39 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:e8e:4851:e049:93fd])
-        by smtp.gmail.com with ESMTPSA id p3-20020a05600c204300b00406408dc788sm882079wmg.44.2023.11.15.13.18.38
+        d=1e100.net; s=20230601; t=1700083242; x=1700688042;
+        h=in-reply-to:content-disposition:mime-version:references:reply-to
+         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=7JG4fql6FN6eLKMP7zbsfChcI3MiqU8LxZjWGPH8plw=;
+        b=M22B9/Uo2DGq/iYjjEDLXmjVec1p5hzirB8G1WWxVu/aezHKjpG2Jap05rXJ8pG81f
+         8kR6gu3yroCkeG9BGIkaaEtTJJ93LHj7oQMEawMYqKBLo8dtHJXFZC+o9btxj3/z6Rim
+         7sf/+JCa3eMTThWOVdOObv9HJTOHGotfz2YB1RBhcwlj6pwe4nmBJVrB0kZ10K3X4k5y
+         NPuoa5ZgRcIcn1ArN5D2oOSuIvmFpitw2Ar9sRYKCnG5XOg1bO+12D639BcLbBQVAGwA
+         kGE5GK6AZ7DSpUXJ9TE0ngrc7D9YM02r0c1t4Z0HqaDEs0rPSYU8XpflNczUh/WG5Id7
+         9WSQ==
+X-Gm-Message-State: AOJu0YxN7SKl8zeDcvs/XDim8N6pItsqAGH7onsOHKAQD50hBqi9u8eT
+        P1xtVwG2SfPlwm5Kv1K5HnJgnfQB4g==
+X-Google-Smtp-Source: AGHT+IHeeeKhPKvWxCmpe9ba3/cnSmX0znCVUVUwl7rKYPhI8PSBSCTVzgkf2GvJM1Jxa94VEXipGg==
+X-Received: by 2002:a05:6870:c49:b0:1ef:9f6c:3df1 with SMTP id lf9-20020a0568700c4900b001ef9f6c3df1mr17357684oab.14.1700083241954;
+        Wed, 15 Nov 2023 13:20:41 -0800 (PST)
+Received: from serve.minyard.net ([47.189.89.62])
+        by smtp.gmail.com with ESMTPSA id wh6-20020a056871a68600b001e12bb81363sm1949489oab.35.2023.11.15.13.20.41
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:18:39 -0800 (PST)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Magnus Damm <magnus.damm@gmail.com>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] dt-bindings: reset: renesas,rzg2l-usbphy-ctrl: Document RZ/Five SoC
-Date:   Wed, 15 Nov 2023 21:18:29 +0000
-Message-Id: <20231115211829.32542-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 15 Nov 2023 13:20:41 -0800 (PST)
+Sender: Corey Minyard <tcminyard@gmail.com>
+Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8a7b:e73c:ae8:33e4])
+        by serve.minyard.net (Postfix) with ESMTPSA id E885B1800BD;
+        Wed, 15 Nov 2023 21:20:40 +0000 (UTC)
+Date:   Wed, 15 Nov 2023 15:20:39 -0600
+From:   Corey Minyard <minyard@acm.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     openipmi-developer@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] ipmi: si: Use device_get_match_data()
+Message-ID: <ZVU2J7phOPuTPe21@mail.minyard.net>
+Reply-To: minyard@acm.org
+References: <20231115210230.3744198-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115210230.3744198-1-robh@kernel.org>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On Wed, Nov 15, 2023 at 03:02:29PM -0600, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
 
-The USBPHY Control Device on the RZ/Five SoC is identical to one found on
-the RZ/G2UL SoC. "renesas,r9a07g043-usbphy-ctrl" compatible string will be
-used on the RZ/Five SoC so to make this clear and to keep this file
-consistent, update the comment to include RZ/Five SoC.
+Sorry, this is now queue for 6.8.
 
-No driver changes are required as generic compatible string
-"renesas,rzg2l-usbphy-ctrl" will be used as a fallback on RZ/Five SoC.
+-corey
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- .../devicetree/bindings/reset/renesas,rzg2l-usbphy-ctrl.yaml    | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/Documentation/devicetree/bindings/reset/renesas,rzg2l-usbphy-ctrl.yaml b/Documentation/devicetree/bindings/reset/renesas,rzg2l-usbphy-ctrl.yaml
-index 731b8ce01525..03c18611e42d 100644
---- a/Documentation/devicetree/bindings/reset/renesas,rzg2l-usbphy-ctrl.yaml
-+++ b/Documentation/devicetree/bindings/reset/renesas,rzg2l-usbphy-ctrl.yaml
-@@ -17,7 +17,7 @@ properties:
-   compatible:
-     items:
-       - enum:
--          - renesas,r9a07g043-usbphy-ctrl # RZ/G2UL
-+          - renesas,r9a07g043-usbphy-ctrl # RZ/G2UL and RZ/Five
-           - renesas,r9a07g044-usbphy-ctrl # RZ/G2{L,LC}
-           - renesas,r9a07g054-usbphy-ctrl # RZ/V2L
-       - const: renesas,rzg2l-usbphy-ctrl
--- 
-2.34.1
-
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/char/ipmi/ipmi_si_platform.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
+> index c3d8ac7873ba..cd2edd8f8a03 100644
+> --- a/drivers/char/ipmi/ipmi_si_platform.c
+> +++ b/drivers/char/ipmi/ipmi_si_platform.c
+> @@ -11,10 +11,11 @@
+>  
+>  #include <linux/types.h>
+>  #include <linux/module.h>
+> -#include <linux/of_device.h>
+> -#include <linux/of_platform.h>
+> +#include <linux/of.h>
+>  #include <linux/of_address.h>
+>  #include <linux/of_irq.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/acpi.h>
+>  #include "ipmi_si.h"
+>  #include "ipmi_dmi.h"
+> @@ -224,7 +225,6 @@ MODULE_DEVICE_TABLE(of, of_ipmi_match);
+>  
+>  static int of_ipmi_probe(struct platform_device *pdev)
+>  {
+> -	const struct of_device_id *match;
+>  	struct si_sm_io io;
+>  	struct resource resource;
+>  	const __be32 *regsize, *regspacing, *regshift;
+> @@ -237,10 +237,6 @@ static int of_ipmi_probe(struct platform_device *pdev)
+>  
+>  	dev_info(&pdev->dev, "probing via device tree\n");
+>  
+> -	match = of_match_device(of_ipmi_match, &pdev->dev);
+> -	if (!match)
+> -		return -ENODEV;
+> -
+>  	if (!of_device_is_available(np))
+>  		return -EINVAL;
+>  
+> @@ -269,7 +265,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
+>  	}
+>  
+>  	memset(&io, 0, sizeof(io));
+> -	io.si_type	= (unsigned long) match->data;
+> +	io.si_type	= (enum si_type)device_get_match_data(&pdev->dev);
+>  	io.addr_source	= SI_DEVICETREE;
+>  	io.irq_setup	= ipmi_std_irq_setup;
+>  
+> -- 
+> 2.42.0
+> 
