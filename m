@@ -2,82 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5915F7EBCF2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:13:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 563AF7EBCF4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:16:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234550AbjKOGNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 01:13:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51836 "EHLO
+        id S234527AbjKOGQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229551AbjKOGNg (ORCPT
+        with ESMTP id S229551AbjKOGQo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:13:36 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2592F91;
-        Tue, 14 Nov 2023 22:13:33 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id 98e67ed59e1d1-2802b744e52so142673a91.0;
-        Tue, 14 Nov 2023 22:13:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700028812; x=1700633612; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=aIPV+gDq2yOCjdPc3jrCxYdVWVXe1Hxr5GLMCAXMCvI=;
-        b=Ghb6OW5rrJRR5YI6yPdqhgnS7RhX3Wam3OTmcSBKwmUEQk1ORhQOFD75O6IbTTkc/L
-         /PPSbdJabgMbh0z0QUQjS928CcLbG7uJ+XNI16N9B4laHrRGEe6qqBb/zEjaV7OlyxiZ
-         0mJeBJ5vz83KjypAywgChCBartIRK3Q2SnzaACPu1H1hXe/MlMZH9zynasK9jRBDmWrr
-         ZyoiRyNXWpLjX9OqABYOtU8mUAeZpwNixgUVoIvz181lI/2gz33MbeEcvA9RMlXrct1h
-         310AxWXDqqrITJFok/0gLi5Nf+ejcem95RgBzOJvIQ348S2+xkphBgFI5qJAPf8atwdv
-         GSSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700028812; x=1700633612;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=aIPV+gDq2yOCjdPc3jrCxYdVWVXe1Hxr5GLMCAXMCvI=;
-        b=w+jgSILl2u0diQiSjXUwE4WTsGOr35Wbu9FpFej+DRkZD4U1bJJMApy7pVVhZ0j4Ej
-         famAzfU0D75sS0l3Jc0RXVLUOYc8zeG87XYk9sJdorwfrsIkVAFlAxadO95dw+tRgYqO
-         kEq6SiAV8jaPfthbaK99gohZCR95BB1J4NkGNgzRleqTTIWR1iPov+ICudPAHCgdGAqS
-         jQPU0ye4cOHcV2/iKAf4NhjPmm/ev8PngdAfxNe2ag0rFcPIw+SrpcoyyDSZnj6f0aFY
-         sPG5ZdfZsSLGp0ohOVI2vKISH7OdrjASRkQEIvVFY+v4YQBS+sYui1zSJorCwvJau/9e
-         EXfA==
-X-Gm-Message-State: AOJu0YzJ6ttQN+WZfChDFbwWFwxzRfsgZqeRxUexp6n/ZtgABLKL6KLd
-        ByhRequUkJwYWof/tyW4xDo=
-X-Google-Smtp-Source: AGHT+IHNRxh6ip9wuilteMswJq0OHDd/alKbzQRFE5QrXCJMqgoditaW9gS47pvvjb9JP1aiDp/2OQ==
-X-Received: by 2002:a17:90b:38c7:b0:27d:433e:e69c with SMTP id nn7-20020a17090b38c700b0027d433ee69cmr6648625pjb.18.1700028812378;
-        Tue, 14 Nov 2023 22:13:32 -0800 (PST)
-Received: from smtpclient.apple ([2601:600:967f:6b00:1ce2:9961:5f20:7dc5])
-        by smtp.gmail.com with ESMTPSA id 2-20020a17090a0d4200b002801ca4fad2sm8983020pju.10.2023.11.14.22.13.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 14 Nov 2023 22:13:32 -0800 (PST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: sr-iov related bonding regression (two regressions in one report)
-From:   Anil Choudhary <anilchabba@gmail.com>
-In-Reply-To: <0f97acf9-012d-4bb2-a766-0c2737e32b2c@leemhuis.info>
-Date:   Tue, 14 Nov 2023 22:13:20 -0800
-Cc:     Jay Vosburgh <jay.vosburgh@canonical.com>,
-        Bagas Sanjaya <bagasdotme@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Networking <netdev@vger.kernel.org>,
-        Linux Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        Ivan Vecera <ivecera@redhat.com>,
-        Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <EFC5ADF4-1EE4-4900-B250-AC35656DC68B@gmail.com>
-References: <986716ed-f898-4a02-a8f6-94f85b355a05@gmail.com>
- <32716.1700009673@famine>
- <0f97acf9-012d-4bb2-a766-0c2737e32b2c@leemhuis.info>
-To:     Linux regressions mailing list <regressions@lists.linux.dev>
-X-Mailer: Apple Mail (2.3731.700.6)
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        Wed, 15 Nov 2023 01:16:44 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EC7291
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:16:41 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF5u5M2029714;
+        Wed, 15 Nov 2023 06:16:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=xFVnnJMTMBmVSpnPgUmA2cq4J7my1IiGxMtUahWzQjA=;
+ b=q973J3jAC/FlW0IHRY9FPaESMMaj8QfkvWXO/2W4CqWzN25dUEKS/9Bfev484Yv0xC60
+ YlKjrqiG8VaWHakLrw1mSr1Er6EmA4DRiKJq84k8WZoB65unIIMQhl6oiHK4o8amUS0Z
+ qd4dTY7ccp8lOQZVUmwdI1PRZB5VoNU6/MbgGRkFCC3Otv5ZtHE5ToDVbo0SYxcrF1pi
+ Z7FBPFCyJupdBlNDsiWesNt2mC5cqpCLKSBMKI9CfmBUTeFhHJRl2kCalBFqDfzjZsA+
+ H1jCwziNlLaFAXknfLwEPzl2RoJlFBadwXnBk6QqH30V+0TA0bS3sIlQsqRh/u6bPxDA hg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucr0hgsw1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 06:16:23 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AF5u9jx030159;
+        Wed, 15 Nov 2023 06:16:23 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucr0hgsvt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 06:16:22 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF4Yu5K015498;
+        Wed, 15 Nov 2023 06:16:21 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uakxswnhc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 06:16:21 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+        by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AF6GIIE66584852
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 06:16:19 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id D9D3F2004D;
+        Wed, 15 Nov 2023 06:16:18 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AE6BF20043;
+        Wed, 15 Nov 2023 06:16:16 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by smtpav04.fra02v.mail.ibm.com (Postfix) with SMTP;
+        Wed, 15 Nov 2023 06:16:16 +0000 (GMT)
+Date:   Wed, 15 Nov 2023 11:46:16 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, Rohan McLure <rmclure@linux.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH v4 0/5] powerpc/smp: Topology and shared processor
+ optimizations
+Message-ID: <20231115061616.dp5id27xip5j3ovl@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
+ <87v8a3zhl8.fsf@linux.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <87v8a3zhl8.fsf@linux.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DSSAV-iQ-3SVHXm6L-w9TZNu66cVgEyZ
+X-Proofpoint-ORIG-GUID: z_IZwuVAVLgHDS3lQOTvEUUGU-0vSFZX
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_04,2023-11-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 suspectscore=0 phishscore=0 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 mlxlogscore=968 mlxscore=0 adultscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150046
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -85,72 +101,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Its not hardware issue when I do rmmod iavf ping started working .
-So issue is certainly in this kernel and with sriov only
-Iavf id Nic driver for VF(sriovnic)
+* Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com> [2023-11-15 11:24:59]:
 
+> Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
+> 
+> > PowerVM systems configured in shared processors mode have some unique
+> > challenges. Some device-tree properties will be missing on a shared
+> > processor. Hence some sched domains may not make sense for shared processor
+> > systems.
+> >
+> > Most shared processor systems are over-provisioned. Underlying PowerVM
+> > Hypervisor would schedule at a Big Core granularity. The most recent power
+> > processors support two almost independent cores. In a lightly loaded
+> > condition, it helps the overall system performance if we pack to lesser
+> > number of Big Cores.
+> >
+> 
+> Is this good to do if the systems are not over-provisioned? What will be
+> the performance impact in that case with and without the change?
+> 
 
-Thanks,
-Anil
+We are consolidating 1 thread per thread group (aka SMT domain).
+Since each thread-group is suppose to be independent including having a
+private L1/L2/L3 cache, we expect minimal impact in non over provisioned
+scenario.
 
-> On Nov 14, 2023, at 9:50 PM, Linux regression tracking (Thorsten =
-Leemhuis) <regressions@leemhuis.info> wrote:
->=20
-> On 15.11.23 01:54, Jay Vosburgh wrote:
->> Bagas Sanjaya <bagasdotme@gmail.com> wrote:
->>=20
->>> I come across LACP bonding regression on Bugzilla [1].
->=20
-> Side note: Stephen forwards some (all?) network regressions to the =
-right
-> people:
-> https://lore.kernel.org/all/20231113083746.5e02f8b0@hermes.local/
->=20
-> Would be best to check for that, no need to forward things twice, that
-> just results in a mess.
->=20
->>> The reporter
->>> (Cc'ed) has two regressions. The first is actual LACP bonding
->>> regression (but terse):
->>>=20
->>>> Till linkx kernel 6.5.7 it is working fine, but after upgrading to =
-6.6.1 ping stop working with LACP bonding.
->>>> When we disable SR-IOV from bios , everything working fine
->=20
-> Makes me wonder if things have been working with or without the OOT
-> module on 6.5.7, as strictly speaking it's only considered a kernel
-> regression if thing worked with a vanilla kernel (e.g. without OOT
-> modules) beforehand and broke when switching to a newer vanilla =
-kernel.
-> If that's the case it would be okay to add to regzbot.
->=20
->>> And the second is out-of-tree module FTBFS:
->> [... skip OOT stuff ...]
->>=20
->>> Should I add the first regression to regzbot (since the second one
->>> is obviously out-of-tree problem), or should I asked detailed =
-regression
->>> info to the reporter?
->>=20
->> 	My vote is to get additional information.  Given the nature of
->> the workaround ("When we disable SR-IOV from bios , everything =
-working
->> fine"), it's plausible that the underlying cause is something
->> platform-specific.
->=20
-> Maybe, but when it comes to the "no regressions" rule that likely =
-makes
-> no difference from Linus perspective.
->=20
-> But I guess unless the intel folks or someone else has an idea what
-> might be wrong here we likely need a bisection (with vanilla kernels =
-of
-> course) to get anywhere.
->=20
-> Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' =
-hat)
-> --
-> Everything you wanna know about Linux kernel regression tracking:
-> https://linux-regtracking.leemhuis.info/about/#tldr
-> If I did something stupid, please tell me, as explained on that page.
+In Over utilization scenario, the changes in this patchset will not even kick in.
 
+-- 
+Thanks and Regards
+Srikar Dronamraju
