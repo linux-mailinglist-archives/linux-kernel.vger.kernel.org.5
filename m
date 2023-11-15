@@ -2,181 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B9C7ED716
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AA67ED715
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233640AbjKOWOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:14:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
+        id S235630AbjKOWSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 17:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOWOh (ORCPT
+        with ESMTP id S230107AbjKOWSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:14:37 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38569192
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:14:31 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so266396a12.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:14:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700086468; x=1700691268; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7j0UAYPIEyb2tedNA0XGfDwr790N1opj1Plxr5EQ2oo=;
-        b=YvTmRIqjfGYKKFRIZVsPI+NU3niiyeboFbWz9jDBBUPXp7kTsO1FF6+ZMnrBF+UztG
-         3g0WCNVhLDKULc1cSodHGdv0wcgE/kihT7WuKuLxPGH7kgSCt6BCDIK9CBDh4eV3eU+B
-         /cSSQ4nCl6aZsHNSR6baJcmxVvNJ9VBZ5oMMM=
+        Wed, 15 Nov 2023 17:18:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE8991A1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700086698;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=A0/rh1GWMWqNOAuzi+E/D5JJGdyRKtEN1IIz+9EJyJc=;
+        b=cX4N4tpD053mtMhWD4SbdgdIY//gyI6pEdZqxBx0VGEFc1vpk9r9NY74T7PGCdwWdGejtr
+        etgis2Q5CpLcgbnJ8AWw0kM59LEyomknAX0WhyxPzLVl+JSzrzIcf/XZI+R4V8OP+KQTGy
+        R6CLtJG0LjVKZkfqdmnfRITfVe9VETo=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-577-zeY_1MkUPGWSvPG4sGZEyQ-1; Wed, 15 Nov 2023 17:18:16 -0500
+X-MC-Unique: zeY_1MkUPGWSvPG4sGZEyQ-1
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-1cc3130ba31so2330205ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:18:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700086468; x=1700691268;
+        d=1e100.net; s=20230601; t=1700086696; x=1700691496;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7j0UAYPIEyb2tedNA0XGfDwr790N1opj1Plxr5EQ2oo=;
-        b=ZV4ksu36UV9JuopEPT6EknKHK3oAWTb33C7Hq/fGSK9mxoYJpk8Bf3aYBRq+mQ05yF
-         XI3i9+Kx3spyn3b7e7/nGXiWWXMJxS6vvZYZo7F2leR7kj0p0D0KtGTYAi6DChQbI1y/
-         E1P7T3bdQKnnvYM4LEjzopLtnsvyz8UzkiZKJfCIgKiLNhxK5Hx4G0WshSGKjkXKch7i
-         +rZiJABptuN+/0GdV/qGN5AsRH0UkeD7Mq2t86DPPY1ZgLol5agdsgtg+/Rz8H+iRXmo
-         KAI2x1IAN7vZLTRLX3bQAN4Ft52b9sWEcArJ6uaGXZpp1PyY0FWZfYFxG89soqVBj6qk
-         LX1A==
-X-Gm-Message-State: AOJu0YyvtkdE14d4HhU4CM39zWd+07OeSYAm2OBtOjrInZquE5vmVa3Q
-        s7bpB9ZwgkSb1u7t1tfTbm5K2wDaLYOtZCsZ6k7xHR2a
-X-Google-Smtp-Source: AGHT+IEbJEoQhwv6lt1uxxayksZ9CD6sodf41/9lGOlYe3HZweuWFiE/54EAgkQOGDThmwF8KuMrSA==
-X-Received: by 2002:aa7:de09:0:b0:543:5cfa:ba41 with SMTP id h9-20020aa7de09000000b005435cfaba41mr11034590edv.25.1700086468591;
-        Wed, 15 Nov 2023 14:14:28 -0800 (PST)
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com. [209.85.208.44])
-        by smtp.gmail.com with ESMTPSA id k21-20020aa7c395000000b0053f10da1105sm6955832edq.87.2023.11.15.14.14.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 14:14:28 -0800 (PST)
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so963a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:14:28 -0800 (PST)
-X-Received: by 2002:a05:600c:260c:b0:404:7462:1f87 with SMTP id
- h12-20020a05600c260c00b0040474621f87mr21266wma.6.1700086447481; Wed, 15 Nov
- 2023 14:14:07 -0800 (PST)
+        bh=A0/rh1GWMWqNOAuzi+E/D5JJGdyRKtEN1IIz+9EJyJc=;
+        b=Rshulrd0Yt6ov3GJhGXvpykVypXwrUqAB29f4oI4x/z5vCESr+VacIw6FsKIjgrLbA
+         mbvlGBoKgT/Z06LiuuPk0E5xyuyFvptSNpPEAt8Xppfe8SThz80pQ07eKA3s0g6fOGqE
+         F27pG3hUrIPpLzGWRczUs5dz6+JNKFJnVkUz7cS2oBJbkLtkVv54SLhHtDjl9wYl1geZ
+         WfICm8cTjsS9rClyAoFUwij4eaVrQifdYemaf40vIQtrqV5qZc7DrGmUszZBvgl/N9Kj
+         Juaxh6P6Y0xsoxJx+6TYhbZ5TCcCslUf4SA2KDPfu+GSD2+FnEmdUfFMxwZL6E4Lu81m
+         cq0Q==
+X-Gm-Message-State: AOJu0Yw7K8OBP8BjLdzKC99w4NqYK3eI5AQ5qUurXbz5uLHHND5KhJ88
+        dnlum7JGf8j8C7AYY6uWwlDhl081Dr76MDuJyScForWE2hKta8+86L7vWIE/4HDvKBrEVVbkapP
+        c8tp3XnSTDbIEHGveOjHAgrOeI5u2tOFNA6/KCeuh
+X-Received: by 2002:a17:902:d2cf:b0:1cc:41e1:ba38 with SMTP id n15-20020a170902d2cf00b001cc41e1ba38mr7943523plc.66.1700086695796;
+        Wed, 15 Nov 2023 14:18:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFG1mh7ByOW2vMg8PJsNJgWpyGvG6kR0o2/0CQ9wNsnIup4FnKH5m/Qnxi9gYyv9HJaS+LfeBtQQrMrVgPzRX4=
+X-Received: by 2002:a17:902:d2cf:b0:1cc:41e1:ba38 with SMTP id
+ n15-20020a170902d2cf00b001cc41e1ba38mr7943498plc.66.1700086695397; Wed, 15
+ Nov 2023 14:18:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20231109100606.1245545-1-wenst@chromium.org> <859ac058-c50a-4eb8-99b6-3011ef4e7529@collabora.com>
- <CAL_JsqK64w3+r_LJZoh50PzAUcsvH6ahSDCqgSiKrD3LBAXE9g@mail.gmail.com>
- <CAD=FV=VUZy9DaZgKafSpXXopD5k8ExGSR97BjAqC5tupPoxNfQ@mail.gmail.com>
- <CAL_Jsq+puq20EWkQg1RTs2zfmh4DGbqz1krp+19c=wPXnLT5dA@mail.gmail.com>
- <CAD=FV=X-17COQ2-tycV1bSuCrGy7MJ88Un8nA-a-ODexvgi9TQ@mail.gmail.com> <CAL_JsqKR_YD6hm4Lv+OuCKms8Ha61BZRKUuiLYPgSkz3_3NCFA@mail.gmail.com>
-In-Reply-To: <CAL_JsqKR_YD6hm4Lv+OuCKms8Ha61BZRKUuiLYPgSkz3_3NCFA@mail.gmail.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 15 Nov 2023 17:13:50 -0500
-X-Gmail-Original-Message-ID: <CAD=FV=XO5VNuaVKwBHLQC1ukdpHQO0-XTaKnRM=rigbcdOytgQ@mail.gmail.com>
-Message-ID: <CAD=FV=XO5VNuaVKwBHLQC1ukdpHQO0-XTaKnRM=rigbcdOytgQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/7] of: Introduce hardware prober driver
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Chen-Yu Tsai <wenst@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        andriy.shevchenko@linux.intel.com, Jiri Kosina <jikos@kernel.org>,
-        linus.walleij@linaro.org, broonie@kernel.org,
-        gregkh@linuxfoundation.org, hdegoede@redhat.com,
-        james.clark@arm.com, james@equiv.tech, keescook@chromium.org,
-        petr.tesarik.ext@huawei.com, rafael@kernel.org, tglx@linutronix.de,
-        Jeff LaBundy <jeff@labundy.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Johan Hovold <johan@kernel.org>
+References: <20231116073950.02c0610f@canb.auug.org.au>
+In-Reply-To: <20231116073950.02c0610f@canb.auug.org.au>
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+Date:   Wed, 15 Nov 2023 23:18:03 +0100
+Message-ID: <CAHc6FU5qLYLw=EVodktQbEuBVZmV-tT1FpTvvaoPD1ezvRso1A@mail.gmail.com>
+Subject: Re: linux-next: contacts for the gfs2 tree
+To:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Steven Whitehouse <swhiteho@redhat.com>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Stephen,
 
-On Wed, Nov 15, 2023 at 4:35=E2=80=AFPM Rob Herring <robh+dt@kernel.org> wr=
-ote:
+On Wed, Nov 15, 2023 at 9:40=E2=80=AFPM Stephen Rothwell <sfr@canb.auug.org=
+.au> wrote:
+> Hi all,
 >
-> On Wed, Nov 15, 2023 at 2:45=E2=80=AFPM Doug Anderson <dianders@chromium.=
-org> wrote:
-> >
-> > Hi,
-> >
-> > On Wed, Nov 15, 2023 at 2:28=E2=80=AFPM Rob Herring <robh+dt@kernel.org=
-> wrote:
-> > >
-> > > > So if we're searching the whole device tree for "failed-needs-probe=
-"
-> > > > then we need to figure out which devices are related to each other.=
- If
-> > > > a given board has second sources for MIPI panels, touchscreens, and
-> > > > trackpads then we need to know which of the "failed-needs-probe"
-> > > > devices are trackpads, which are touchscreens, and which are MIPI
-> > > > panels. Do you have any suggestions for how we should do that? Mayb=
-e
-> > > > it was in some other thread that I missed? I guess we could have a
-> > > > board-specific table mapping (compatible + node name + reg) to a
-> > > > class, but that feels awkward.
-> > >
-> > > Node name is supposed to correspond to device class, so why not use
-> > > that (no path or unit-address.) and nothing else (well, besides
-> > > "status")?
-> >
-> > One problem is that I could imagine having two second source trackpads
-> > that both have the same i2c address. That would give them the same
-> > name, right? I guess you could maybe come up with some sort of suffix
-> > rule? Like
-> >
-> > trackpad-1@10 {
-> >   compatible =3D "elan,blah";
-> >   ret =3D <0x10>;
-> >   status =3D "failed-needs-probe";
-> >   ...
-> > }
-> > trackpad-2@10 {
-> >   compatible =3D "goodix,gt7375p";
-> >   ret =3D <0x10>;
-> >   status =3D "failed-needs-probe";
-> >   ...
-> > }
-> >
-> > Then I guess the class would be "trackpad"?
+> I noticed commit
 >
-> That issue is somewhat orthogonal because it is not following the spec.
-
-I'm not sure why you say it's orthogonal. The whole reason why we get
-into the situation above is that we could have two devices, only one
-of which is present (hence the status of "failed-needs-probe"), that
-are the same type and have the same "reg" address.
-
-Essentially the whole "failed-needs-probe" is extending the spec,
-right? While extending the spec, we also need to talk about what to do
-if some of the devices that we need to probe have the same class and
-the same "reg".
-
-
-> I'm not sure mixing the 2 styles of node names is a good idea. While
-> not used too much, matching by node name does ignore the unit-address,
-> but I'm not sure we could ignore a '-N'.
+>   2e6ef8aaba6b ("Remove myself as maintainer of GFS2")
 >
-> I think our options are either add something to the unit-address or
-> use i2c-mux binding. Adding to the unit-address is not unprecedented.
-> I did that for some of the register bit level bindings where you have
-> a node for different bits at the same address. The downside is
-> unit-address is bus specific, so we'd have to add that for multiple
-> buses. For the i2c-mux, it's perhaps a bit complex and I'm not sure
-> what if anything you'd have to do to manage the mux that's not really
-> there.
+> Currently I have
+>
+> Steven Whitehouse <swhiteho@redhat.com>
+> Bob Peterson <rpeterso@redhat.com>
+>
+> listed as the only contacts for the gfs2 tree.
+>
+> Should I change that to
+>
+> Andreas Gruenbacher <agruenba@redhat.com>
+>
+> or keep Steven (even though he is not listed in MAINTAINERS)?  And should
+> I add the mailing list as well?
 
-Somehow it feels weird to use an i2c-mux because there's no real mux
-present, right? ...so this would be a virtual (bogus) device that
-doesn't really exist in hardware.
+I think it would make sense to put me in instead of Bob. Steve hasn't
+been working on the actual code for a while -- even though he remains
+a valuable source of information for GFS2 -- so I don't think he will
+object to being removed here.
 
-...though I guess if the "mux" type binding is OK then maybe we just
-use that as the HW prober, at least for i2c devices...
+For the time being, I will be the only person screwing up the upstream
+gfs2 repository, so I'll also be the person to fix things up again. In
+that context, would it make sense to add the gfs2 list? Is this what
+you would commonly do?
 
--Doug
+Thanks,
+Andreas
+
