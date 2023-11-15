@@ -2,205 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BFD157ED84F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324C27ED855
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343696AbjKOXpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 18:45:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32898 "EHLO
+        id S229692AbjKOXxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 18:53:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233734AbjKOXpr (ORCPT
+        with ESMTP id S229614AbjKOXxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 18:45:47 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA9161B8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:45:42 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id d9443c01a7336-1cc411be7e5so25695ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:45:42 -0800 (PST)
+        Wed, 15 Nov 2023 18:53:04 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252A8E6
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:53:01 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id d9443c01a7336-1cc921a4632so2383815ad.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:53:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700091942; x=1700696742; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=networkplumber-org.20230601.gappssmtp.com; s=20230601; t=1700092380; x=1700697180; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kIH2dT5rBnZFjhKTkiDOQvxWWMxsCvDK0b0vzyQ0+X8=;
-        b=NKxxqgsiQH2IDHPVm0sTRwOKQMSN8I8yMg1G1hPQ1fFBDYD1GLq/eM7om3nW+FMBKD
-         m5RiE8HRh2LJKrfsyiUxlpfEGGuFXK/JDxtcyO9Hd8+DkPufNmwqBiHmhRo23ExmgSjA
-         4pmwiDUHNOfWUgj3LXe3m7ZLOqcdKo1HQyWivMlxW/a+mF8qH70CRUxd7AXk/BmjeslX
-         7mJsrObmsJ6LxADzpfpnNyP7IiSCI9aoJUYMnvWQX8BJJLyb2LPOp7hmv+2edKiQJ+T3
-         DlGwX9rlajocDTIPfhbKC0Ch4svzdDl+WCR+xTUVr7JNdlhmtmB9J8GEKy917MJxyWYc
-         r5Cw==
+        bh=DNz1LZLWLqztNC1mkWelul3LmT7uMEIxjhxqq8dOWJk=;
+        b=E3Am9kHrzGiKvuQ7Wd3p1RtKWgvVBsR+Hwym+gYpCIu1YzMG6e2EEDY7D97fEWMe09
+         xieMnX9zRJuZ5cfKNmtKGSjJRQjVeDwjntPuBLtHAsxeucEELoD57FBXzD5QXgq02q+5
+         FxdQ99Ik8qW7DtUz3WqOsHOOS0kOka5F+vBXD392JG+jYsC+FLMfZZylaH99OLbw4Odu
+         L4TcFcqH/JF/GXMfaapgLL8e4+1C2y9dnXvc1G8+ydcIP6b2UXT5qfOYS48fy3RwUdRR
+         8ue7LgHqswrHw+e9Kj8VPLFhxrWIOtj/tP6qFh+7jNFBKGHUN2p0wHUIHaN7oHqsj21H
+         0hHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700091942; x=1700696742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700092380; x=1700697180;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kIH2dT5rBnZFjhKTkiDOQvxWWMxsCvDK0b0vzyQ0+X8=;
-        b=Ylr1nIWyXleyFqjhgATwejAOMkJ6Erxi5rP1pGb6juS03nLmUfJ9GDwF5nHe/KDZ5h
-         2wZ5YY1+2VoBFyhI8DkM24W9L8mUZw8IDlH6CIjQJuhslkpqkYSHMmgxt3MnVH7W8i7f
-         19ktyebysFAtRSUaf0VLRRUoSsLb+bOnc/15aKNTo1dh3rdSMRs3fi76hPrBWVQxQWlm
-         jCFdfDoJg9dCtTQDSDy8Sct5Magn5vtvGAUqsqLYmQFFzBIVelLW/4LOgN6vDVTN8p7t
-         XHBlgH+LEM0TBF4yBUf2lnAymaHu1ZVVhHNlzGKstQOW/bzwARzsK9NTvKH06nNmQ7v5
-         81TQ==
-X-Gm-Message-State: AOJu0Yzyyum01JdLmD39EoRAw87I1cCB//+2Nf3crypoPSII1njm+xwi
-        +Pr5d1MdpHYiNSo4ISq53KrQDbK8ZfX+UT8/8k88
-X-Google-Smtp-Source: AGHT+IFvaq+a3HVgNlcWB8G0UvgbXEFSxTfLrN/9hWim6vKKnIqWcSHLeWYNY3t7rR2xLuNg/XZcLVowUmtLGfVqu6Q=
-X-Received: by 2002:a17:902:db0b:b0:1c2:446:5259 with SMTP id
- m11-20020a170902db0b00b001c204465259mr67088plx.19.1700091941779; Wed, 15 Nov
- 2023 15:45:41 -0800 (PST)
+        bh=DNz1LZLWLqztNC1mkWelul3LmT7uMEIxjhxqq8dOWJk=;
+        b=Gz/3xxJ1zA7PaRbHRh7NqxO1SeVvQhqFr1bJcM+D41IjfX4MoBy+CVDogCRgLyc1kP
+         5qMx8exkREl5fIuJZFOj0A8QrVrAvC+nxHfzxQ9TSzACwpJk9cLgsKPzaoUiwRHbIrH7
+         B7kYOvf5tiy/07eKFc3HLAuKSoK0gOdmIX8sHx+ePpFua44IxcQDwwvhz8Q2bxXu+lnx
+         NIU12gSBwYVL1S/jG15HrlOT3orzDXqtrCdQxpXR1Go8/Usf1NY75Zgof/ql3wwoll/z
+         w5LbWubeTX4uPG8vE2wKgefpontDGL/18omY73BYX5RxlxkMPZ0Gb18U18VV3/NakHl3
+         jVOw==
+X-Gm-Message-State: AOJu0Yy3Pe/oJ89J0tDmAE0kOLZx/1lslRxUzWdmUoMeusCU4MdlnSoD
+        7DBfIUsa5I7Oa2bS6jGKSZclyg==
+X-Google-Smtp-Source: AGHT+IFXwoOe3aV75o7N/RNqxVPQxI4r3UiEus4sBc1W5lL/WagI4kLVy6eVv3qf/8n+XUliy6+PZg==
+X-Received: by 2002:a17:903:2341:b0:1c7:5f03:8562 with SMTP id c1-20020a170903234100b001c75f038562mr9891201plh.30.1700092380545;
+        Wed, 15 Nov 2023 15:53:00 -0800 (PST)
+Received: from hermes.local (204-195-123-141.wavecable.com. [204.195.123.141])
+        by smtp.gmail.com with ESMTPSA id y12-20020a170902ed4c00b001c9ba6c7287sm7923702plb.143.2023.11.15.15.52.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 15:53:00 -0800 (PST)
+Date:   Wed, 15 Nov 2023 15:52:58 -0800
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Haiyang Zhang <haiyangz@microsoft.com>
+Cc:     linux-hyperv@vger.kernel.org, netdev@vger.kernel.org,
+        kys@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        Long Li <longli@microsoft.com>, stable@vger.kernel.org
+Subject: Re: [PATCH net,v4, 3/3] hv_netvsc: Mark VF as slave before exposing
+ it to user-mode
+Message-ID: <20231115155258.5b3f360b@hermes.local>
+In-Reply-To: <1699627140-28003-4-git-send-email-haiyangz@microsoft.com>
+References: <1699627140-28003-1-git-send-email-haiyangz@microsoft.com>
+        <1699627140-28003-4-git-send-email-haiyangz@microsoft.com>
 MIME-Version: 1.0
-References: <20231111111559.8218-1-yong.wu@mediatek.com> <20231111111559.8218-9-yong.wu@mediatek.com>
-In-Reply-To: <20231111111559.8218-9-yong.wu@mediatek.com>
-From:   Jeffrey Kardatzke <jkardatzke@google.com>
-Date:   Wed, 15 Nov 2023 15:45:30 -0800
-Message-ID: <CA+ddPcNLbyS1WRANo7fm13pYyibD_DS3uAxc6ouULWS+kBxNHQ@mail.gmail.com>
-Subject: Re: [PATCH v2 8/8] dma-buf: heaps: secure_heap: Add normal CMA heap
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        christian.koenig@amd.com,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Brian Starkey <Brian.Starkey@arm.com>,
-        John Stultz <jstultz@google.com>, tjmercier@google.com,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linaro-mm-sig@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
-        kuohong.wang@mediatek.com,
-        Vijayanand Jitta <quic_vjitta@quicinc.com>,
-        Joakim Bech <joakim.bech@linaro.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        ckoenig.leichtzumerken@gmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-You should drop this patch completely.
+On Fri, 10 Nov 2023 06:39:00 -0800
+Haiyang Zhang <haiyangz@microsoft.com> wrote:
 
-On Sat, Nov 11, 2023 at 3:18=E2=80=AFAM Yong Wu <yong.wu@mediatek.com> wrot=
-e:
->
-> Add a normal CMA heap which use the standard cma allocate.
->
-> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
-> ---
-> Hi Vijay and Jaskaran,
->
-> For this heap,
-> 1) It uses sec_heap_buf_ops currently. I guess we cann't use the
-> cma_heap_buf_ops. since if it is secure buffer, some operations such
-> as mmap should not be allowed.
-> 2) I didn't add how to protect/secure the buffer.
->
-> Please feel free to change to meet your requirements.
-> Thanks.
-> ---
->  drivers/dma-buf/heaps/secure_heap.c | 38 ++++++++++++++++++++++++++++-
->  1 file changed, 37 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/dma-buf/heaps/secure_heap.c b/drivers/dma-buf/heaps/=
-secure_heap.c
-> index f8b84fd16288..8989ad5d03e9 100644
-> --- a/drivers/dma-buf/heaps/secure_heap.c
-> +++ b/drivers/dma-buf/heaps/secure_heap.c
-> @@ -43,6 +43,8 @@ enum secure_buffer_tee_cmd { /* PARAM NUM always is 4. =
-*/
->  };
->
->  enum secure_memory_type {
-> +       /* CMA for the secure memory, Use the normal cma ops to alloc/fre=
-e. */
-> +       SECURE_MEMORY_TYPE_CMA          =3D 0,
->         /*
->          * MediaTek static chunk memory carved out for TrustZone. The mem=
-ory
->          * management is inside the TEE.
-> @@ -65,6 +67,7 @@ struct secure_buffer {
->          * a value got from TEE.
->          */
->         u32                             sec_handle;
-> +       struct page                     *cma_page;
->  };
->
->  #define TEE_MEM_COMMAND_ID_BASE_MTK    0x10000
-> @@ -287,6 +290,33 @@ const struct secure_heap_prv_data mtk_sec_mem_data =
-=3D {
->         .unsecure_the_memory    =3D secure_heap_tee_unsecure_memory,
->  };
->
-> +static int cma_secure_memory_allocate(struct secure_heap *sec_heap,
-> +                                     struct secure_buffer *sec_buf)
-> +{
-> +       if (!sec_heap->cma)
-> +               return -EINVAL;
-> +
-> +       sec_buf->cma_page =3D cma_alloc(sec_heap->cma, sec_buf->size >> P=
-AGE_SHIFT,
-> +                                     get_order(PAGE_SIZE), false);
-> +       if (!sec_buf->cma_page)
-> +               return -ENOMEM;
-> +
-> +       memset(page_address(sec_buf->cma_page), 0, sec_buf->size);
-> +       return 0;
-> +}
-> +
-> +static void cma_secure_memory_free(struct secure_heap *sec_heap,
-> +                                  struct secure_buffer *sec_buf)
-> +{
-> +       cma_release(sec_heap->cma, sec_buf->cma_page, sec_buf->size >> PA=
-GE_SHIFT);
-> +}
-> +
-> +const struct secure_heap_prv_data cma_sec_mem_data =3D {
-> +       .memory_alloc   =3D cma_secure_memory_allocate,
-> +       .memory_free    =3D cma_secure_memory_free,
-> +       /* TODO : secure the buffer. */
-> +};
-> +
->  static int secure_heap_secure_memory_allocate(struct secure_heap *sec_he=
-ap,
->                                               struct secure_buffer *sec_b=
-uf)
->  {
-> @@ -496,6 +526,11 @@ static const struct dma_heap_ops sec_heap_ops =3D {
->  };
->
->  static struct secure_heap secure_heaps[] =3D {
-> +       {
-> +               .name           =3D "secure_cma",
-> +               .mem_type       =3D SECURE_MEMORY_TYPE_CMA,
-> +               .data           =3D &cma_sec_mem_data,
-> +       },
->         {
->                 .name           =3D "secure_mtk_cm",
->                 .mem_type       =3D SECURE_MEMORY_TYPE_MTK_CM_TZ,
-> @@ -522,7 +557,8 @@ static int __init secure_cma_init(struct reserved_mem=
- *rmem)
->         }
->
->         for (i =3D 0; i < ARRAY_SIZE(secure_heaps); i++, sec_heap++) {
-> -               if (sec_heap->mem_type !=3D SECURE_MEMORY_TYPE_MTK_CM_CMA=
-)
-> +               if (sec_heap->mem_type !=3D SECURE_MEMORY_TYPE_MTK_CM_CMA=
- &&
-> +                   sec_heap->mem_type !=3D SECURE_MEMORY_TYPE_CMA)
->                         continue;
->
->                 sec_heap->cma =3D sec_cma;
-> --
-> 2.25.1
->
+> +static int netvsc_prepare_slave(struct net_device *vf_netdev)
+
+It would be good to not introduce another instance of non-inclusive naming in network code.
+Please think of a better term. Can't change IFF_SLAVE but the rest could change.
