@@ -2,136 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A9097EC0C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:34:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F17807EC0CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:35:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234849AbjKOKeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 05:34:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36820 "EHLO
+        id S234864AbjKOKgA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 05:36:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjKOKeS (ORCPT
+        with ESMTP id S234098AbjKOKf5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 05:34:18 -0500
-Received: from harvie.cz (harvie.cz [77.87.242.242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 833F310F;
-        Wed, 15 Nov 2023 02:34:14 -0800 (PST)
-Received: from anemophobia.amit.cz (unknown [31.30.84.130])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by harvie.cz (Postfix) with ESMTPSA id 901211801BF;
-        Wed, 15 Nov 2023 11:34:13 +0100 (CET)
-From:   Tomas Mudrunka <tomas.mudrunka@gmail.com>
-To:     jirislaby@kernel.org
-Cc:     corbet@lwn.net, gregkh@linuxfoundation.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-serial@vger.kernel.org, rdunlap@infradead.org,
-        tomas.mudrunka@gmail.com
-Subject: [PATCH v9] /proc/sysrq-trigger: accept multiple keys at once
-Date:   Wed, 15 Nov 2023 11:34:08 +0100
-Message-ID: <20231115103408.193561-1-tomas.mudrunka@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <670993bf-a8ef-4561-8213-6a37d0598d83@kernel.org>
-References: <670993bf-a8ef-4561-8213-6a37d0598d83@kernel.org>
+        Wed, 15 Nov 2023 05:35:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2916BF5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:35:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700044551;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Xp9UARNaNPlyIdSssZLj0kaySqIS1RLPGJplNZMoPJI=;
+        b=eM6STUDMrPAzGZ79RHZEP7bSOxZeDSxBYBIXmJIlsQ24/xBbo7gNNVaAnIM/VclrJjtIKO
+        2ilkKZm14S1HUNMouqZopUQCBvxgMVRb29bUobJEmsp87st0z6XihhyReZEQuJvXeE0ssl
+        e+Urs/YL+v78crsZvev3S6xEtO0dHbI=
+Received: from mail-yw1-f198.google.com (mail-yw1-f198.google.com
+ [209.85.128.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-19-i9jKdrBfNyunIqs2oCPaMQ-1; Wed, 15 Nov 2023 05:35:48 -0500
+X-MC-Unique: i9jKdrBfNyunIqs2oCPaMQ-1
+Received: by mail-yw1-f198.google.com with SMTP id 00721157ae682-5a7d261a84bso94440947b3.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:35:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700044548; x=1700649348;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Xp9UARNaNPlyIdSssZLj0kaySqIS1RLPGJplNZMoPJI=;
+        b=UgTmeE5PXQ6jjqWa8df3jg2EOXH6JsYuDS47v+5OnYO9KzTwC0qyEBGUJOGSCnW2FM
+         Mxu3YEX3/3Lioo0WeysJHzDIo7OEgDtfNDcoj/FQns8W9SzflG7NITwT8ZpYVAdJUhJV
+         7ghT7rsXAvXJJbtJ+NOLv8wxJdJ6HO6WsVT1mLcWFXPFMRjR++rDfg0YkN19Co4qg5I9
+         gcho/CLNNdrgIl4Raj/pHtA4OXXBn4ucj95l3+wC0o0oDr+rPnqj6H+xC3KldWV5CDBf
+         3RCx5xpbwpsCBTJ0tptAmW/feC1AimESSg8cPbmeCUfCn+V/75Y4pLKtV/Y6ntDMHdo2
+         A3Ng==
+X-Gm-Message-State: AOJu0YxCspV+JLUZWDAH6ghmYqZ4/frZJ+aXtQwrbx9EwuWNBuApFFaI
+        4uHbIKxX/TQUzELBVduAsd3cf3Y4jxiTbBOopWo2s7thKskQ/dHyoLUNrVgtrfsKIg/5L2VMaUN
+        KAKJSxYyrqULswbNAe8c6pEc=
+X-Received: by 2002:a0d:cb8b:0:b0:5a7:ab55:b9af with SMTP id n133-20020a0dcb8b000000b005a7ab55b9afmr12166713ywd.35.1700044548001;
+        Wed, 15 Nov 2023 02:35:48 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IE1kcYhFvm+awVN8EG3QhLKaWIkC0dBHxZ6wSdcnkopOF0pSjVhSr9LCAUmzhdoryV7+qfkyg==
+X-Received: by 2002:a0d:cb8b:0:b0:5a7:ab55:b9af with SMTP id n133-20020a0dcb8b000000b005a7ab55b9afmr12166708ywd.35.1700044547785;
+        Wed, 15 Nov 2023 02:35:47 -0800 (PST)
+Received: from klayman.redhat.com (net-2-34-24-178.cust.vodafonedsl.it. [2.34.24.178])
+        by smtp.gmail.com with ESMTPSA id s20-20020a05621412d400b00647386a3234sm433267qvv.85.2023.11.15.02.35.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 02:35:47 -0800 (PST)
+From:   Marco Pagani <marpagan@redhat.com>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Marco Pagani <marpagan@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/test: rearrange test entries in Kconfig and Makefile
+Date:   Wed, 15 Nov 2023 11:35:36 +0100
+Message-ID: <20231115103537.220760-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=0.7 required=5.0 tests=BAYES_00,DKIM_ADSP_CUSTOM_MED,
-        FORGED_GMAIL_RCVD,FREEMAIL_FROM,NML_ADSP_CUSTOM_MED,SPF_HELO_PASS,
-        SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Just for convenience.
-This way we can do:
-`echo _reisub > /proc/sysrq-trigger`
-Instead of:
-`for i in r e i s u b; do echo "$i" > /proc/sysrq-trigger; done;`
+Rearrange entries in Kconfig and Makefile alphabetically to make room
+for additional KUnit test suites.
 
-This can be very useful when trying to execute sysrq combo remotely
-or from userspace. When sending keys in multiple separate writes,
-userspace can be killed before whole combo is completed.
-Therefore putting all keys in single write is more robust approach.
-
-Signed-off-by: Tomas Mudrunka <tomas.mudrunka@gmail.com>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
 ---
-V8 -> V9: Fixed english bit more
-V7 -> V8: Added this list of changes
-V6 -> V7: Fixed english in documentation
-V5 -> V6: Documentation now has notice about undefined behavior
-V4 -> V5: Added this list of changes
-V3 -> V4: Bulk is now bool instead of char (and fixed typo)
-V2 -> V3: Fixed code styling (and introduced typo)
-V1 -> V2: Bulk mode only activated by underscore now, added docs
+ drivers/gpu/drm/Kconfig        | 10 +++++-----
+ drivers/gpu/drm/tests/Makefile |  4 ++--
+ 2 files changed, 7 insertions(+), 7 deletions(-)
 
- Documentation/admin-guide/sysrq.rst | 11 ++++++++++-
- drivers/tty/sysrq.c                 | 18 +++++++++++++++---
- 2 files changed, 25 insertions(+), 4 deletions(-)
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index 3eee8636f847..cdbc56e07649 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -75,15 +75,15 @@ config DRM_KUNIT_TEST_HELPERS
+ config DRM_KUNIT_TEST
+ 	tristate "KUnit tests for DRM" if !KUNIT_ALL_TESTS
+ 	depends on DRM && KUNIT
+-	select PRIME_NUMBERS
++	select DRM_BUDDY
+ 	select DRM_DISPLAY_DP_HELPER
+ 	select DRM_DISPLAY_HELPER
+-	select DRM_LIB_RANDOM
+-	select DRM_KMS_HELPER
+-	select DRM_BUDDY
++	select DRM_EXEC
+ 	select DRM_EXPORT_FOR_TESTS if m
++	select DRM_KMS_HELPER
+ 	select DRM_KUNIT_TEST_HELPERS
+-	select DRM_EXEC
++	select DRM_LIB_RANDOM
++	select PRIME_NUMBERS
+ 	default KUNIT_ALL_TESTS
+ 	help
+ 	  This builds unit tests for DRM. This option is not useful for
+diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Makefile
+index ba7baa622675..2645af241ff0 100644
+--- a/drivers/gpu/drm/tests/Makefile
++++ b/drivers/gpu/drm/tests/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
+ 	drm_connector_test.o \
+ 	drm_damage_helper_test.o \
+ 	drm_dp_mst_helper_test.o \
++	drm_exec_test.o \
+ 	drm_format_helper_test.o \
+ 	drm_format_test.o \
+ 	drm_framebuffer_test.o \
+@@ -17,7 +18,6 @@ obj-$(CONFIG_DRM_KUNIT_TEST) += \
+ 	drm_modes_test.o \
+ 	drm_plane_helper_test.o \
+ 	drm_probe_helper_test.o \
+-	drm_rect_test.o	\
+-	drm_exec_test.o
++	drm_rect_test.o
+ 
+ CFLAGS_drm_mm_test.o := $(DISABLE_STRUCTLEAK_PLUGIN)
 
-diff --git a/Documentation/admin-guide/sysrq.rst b/Documentation/admin-guide/sysrq.rst
-index 51906e473..0042fa26b 100644
---- a/Documentation/admin-guide/sysrq.rst
-+++ b/Documentation/admin-guide/sysrq.rst
-@@ -75,10 +75,19 @@ On other
- 	submit a patch to be included in this section.
- 
- On all
--	Write a character to /proc/sysrq-trigger.  e.g.::
-+	Write a single character to /proc/sysrq-trigger.
-+	Only the first character is processed, the rest of string is ignored.
-+	However, it is not recommended to write any extra characters
-+	as the behavior is undefined and might change in the future versions.
-+	E.g.::
- 
- 		echo t > /proc/sysrq-trigger
- 
-+	Alternatively, write multiple characters prepended by underscore.
-+	This way, all characters will be processed. E.g.::
-+
-+		echo _reisub > /proc/sysrq-trigger
-+
- The :kbd:`<command key>` is case sensitive.
- 
- What are the 'command' keys?
-diff --git a/drivers/tty/sysrq.c b/drivers/tty/sysrq.c
-index 6b4a28bcf..5411351e4 100644
---- a/drivers/tty/sysrq.c
-+++ b/drivers/tty/sysrq.c
-@@ -1150,16 +1150,28 @@ EXPORT_SYMBOL(unregister_sysrq_key);
- #ifdef CONFIG_PROC_FS
- /*
-  * writing 'C' to /proc/sysrq-trigger is like sysrq-C
-+ * Normally only the first character written is processed.
-+ * If first character is underscore, all characters are processed.
-  */
- static ssize_t write_sysrq_trigger(struct file *file, const char __user *buf,
- 				   size_t count, loff_t *ppos)
- {
--	if (count) {
-+	bool bulk = false;
-+	size_t i;
-+
-+	for (i = 0; i < count; i++) {
- 		char c;
- 
--		if (get_user(c, buf))
-+		if (get_user(c, buf + i))
- 			return -EFAULT;
--		__handle_sysrq(c, false);
-+
-+		if (c == '_')
-+			bulk = true;
-+		else
-+			__handle_sysrq(c, false);
-+
-+		if (!bulk)
-+			break;
- 	}
- 
- 	return count;
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
 -- 
-2.42.1
+2.41.0
 
