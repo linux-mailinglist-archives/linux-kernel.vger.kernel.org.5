@@ -2,92 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 275D27EC2D6
+	by mail.lfdr.de (Postfix) with ESMTP id CF4F07EC2D8
 	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343811AbjKOMsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:48:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
+        id S1343795AbjKOMtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:49:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343723AbjKOMsw (ORCPT
+        with ESMTP id S1343723AbjKOMtD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:48:52 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482B6E6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:48:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700052528;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=zFEdAC3yS3fukStfiQ/KxalSWdJSJaS6HL2miwuT1M8=;
-        b=Vq/7f1jCxHQCXiYPNvMe7ITNfdho7IpSwcSj3RVYt+XOwZFzO+kXsH/3t1guXTkPkTeofo
-        lP9RuaMkex3HtXIf5f7OM3B6ekGRGsB+0Et5laubFHZLUK9K6eXWU6G3XRsrAqIFtfTYtj
-        szOL56PIVIVaXy5XAO/NT30TH1mxDgw=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-663-SjmSY5dlMEGHutWxNc2ztQ-1; Wed,
- 15 Nov 2023 07:48:45 -0500
-X-MC-Unique: SjmSY5dlMEGHutWxNc2ztQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id A2A7C2808FC3;
-        Wed, 15 Nov 2023 12:48:44 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.16])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CF78C492BFD;
-        Wed, 15 Nov 2023 12:48:40 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <202311061616.cd495695-oliver.sang@intel.com>
-References: <202311061616.cd495695-oliver.sang@intel.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     dhowells@redhat.com, oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        "David Laight" <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput -16.9% regression
+        Wed, 15 Nov 2023 07:49:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2299411F;
+        Wed, 15 Nov 2023 04:49:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700052540; x=1731588540;
+  h=from:to:cc:in-reply-to:references:subject:message-id:
+   date:mime-version:content-transfer-encoding;
+  bh=SF+1geNN0bIT4JrgyKR8RRkZ5elaJ520dBZaV+2ASAI=;
+  b=kdty0HuSUeuFkLhcuzZGs44v6Mcz4+QrA3eFXVqo1vzbBwhlVezj/b5m
+   VQmc+pb0hG2g+Htr5ccL6OFPqz7daUc6a3qr+gxByB6TVAMHmfbbPIbKy
+   h/rAAX2vWj575MIV4OVq7BUb2OLt8MW86vleId7fwa04YJQbSBymOZvM9
+   7dFXYl/5R25gAm5s4eEWDz4rwarlnNCuCeMzJoq6qMBB5Ia1QJN7WI0W6
+   79NvrHVk/PcVYJDI95jQgVulyl/3V5L/mDTiGClmHKkPMvKb5WuZpfcnU
+   cyorIyCaw7nQi4XmSX/Rnu+C21dOLDsvtARJS7S++unrbjGD3bp3tZQ4B
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393726212"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="393726212"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:48:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1012250245"
+X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
+   d="scan'208";a="1012250245"
+Received: from rkhristx-mobl.ger.corp.intel.com (HELO localhost) ([10.252.38.217])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:48:56 -0800
+From:   =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     platform-driver-x86@vger.kernel.org,
+        Stuart Hayhurst <stuart.a.hayhurst@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, Mark Gross <markgross@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Ike Panhc <ike.pan@canonical.com>, stable@vger.kernel.org
+In-Reply-To: <20231114114055.6220-2-stuart.a.hayhurst@gmail.com>
+References: <9f46c613-63c2-4bc7-b938-7c9ea862a55e@linux.intel.com>
+ <20231114114055.6220-2-stuart.a.hayhurst@gmail.com>
+Subject: Re: [PATCH v2] platform/x86: ideapad-laptop: Set max_brightness
+ before using it
+Message-Id: <170005252425.3220.12662660184359784558.b4-ty@linux.intel.com>
+Date:   Wed, 15 Nov 2023 14:48:44 +0200
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <3851105.1700052520.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 15 Nov 2023 12:48:40 +0000
-Message-ID: <3851106.1700052520@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I can't run the test program:
+On Tue, 14 Nov 2023 11:38:08 +0000, Stuart Hayhurst wrote:
 
-andromeda1# bin/lkp run ./job-300s-256G-msync.yaml
-grep: /root/lkp-tests/hosts/andromeda.procyon.org.uk: No such file or dire=
-ctory
-/root/lkp-tests/bin/run-local:121:in `<main>': undefined method `chomp' fo=
-r nil:NilClass (NoMethodError)
+> max_brightness is used in ideapad_kbd_bl_brightness_get() before it's set,
+> causing ideapad_kbd_bl_brightness_get() to return -EINVAL sometimes
+> 
+> 
 
-job['memory'] ||=3D `grep -w '^memory:' #{LKP_SRC}/hosts/#{HOSTNAME}`.spli=
-t(' ')[1].chomp
-                                                                          =
-       ^^^^^^
 
-David
+Thank you for your contribution, it has been applied to my local
+review-ilpo branch. Note it will show up in the public
+platform-drivers-x86/review-ilpo branch only once I've pushed my
+local branch there, which might take a while.
+
+The list of commits applied:
+[1/1] platform/x86: ideapad-laptop: Set max_brightness before using it
+      commit: 7a3c36eef9a5d13b16aa954da54224c9c6bed339
+
+--
+ i.
 
