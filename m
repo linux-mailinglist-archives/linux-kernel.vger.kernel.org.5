@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDBB27ED267
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:36:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 655FB7ED279
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:39:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344668AbjKOUg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:36:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36816 "EHLO
+        id S1344473AbjKOUjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:39:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344577AbjKOUgX (ORCPT
+        with ESMTP id S235814AbjKOUje (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:36:23 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACE9D2137;
-        Wed, 15 Nov 2023 12:35:18 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKFbK8016175;
-        Wed, 15 Nov 2023 20:35:05 GMT
+        Wed, 15 Nov 2023 15:39:34 -0500
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A204F26AB;
+        Wed, 15 Nov 2023 12:35:23 -0800 (PST)
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKGBg7020350;
+        Wed, 15 Nov 2023 20:35:07 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
  : date : message-id : in-reply-to : references : mime-version :
  content-transfer-encoding; s=pp1;
- bh=hT5UecKAWHuvfdgWzoNOlmnaeKK0+U2DmyJXTmInAXM=;
- b=Cdrh1ziV/An604xeerh6X0d4CuAtVyp+uXxyXeMQPoUzr2D8vsDpvFn7hEH9MtscBOhK
- nMFmOu43T3U+GmTN5QWFZFPySUQww7sPMQ0VZG4yXVeLpkQYro+9bYePU5jbl8O/L++5
- PAOoPlLeDMhYwL5hwibM5skvW+UcGfacvD9o1kntnA3oFWakcEnL6ggRPsyV5l4Kt2ZG
- pFr16whcppKe0xZfXVK57KijCRXEDMxmtLJibIoTLWpb0bFAHs5giaiHNkW+c8fbvFEk
- g6rqk2bBVvztqSBji5HKI0dquyD/od+HjREvpGdE/3ZSC5y/24/sJSg2O3gTqJkReToj OA== 
+ bh=Z9QhvajxwNq5SYGaSMflClifwELAA5o+VrikMt43NLQ=;
+ b=Cm7X8/vxvTtxaJWoFkF9jnWecr0V6l8l2xTJG6o7VdsEsU84lWrX/cWSA/PlQPp4PQ2D
+ X9b77e9wnTajqjR6TYS7npJ3ADymLNwW2C5SmJjm8hYNyDRNHnSnxY0Be1vNtLUSQF06
+ h9whX9frOjQXZxlDkt+JDJDmcdVozDYOHEm6hPXgoS7l+Eh9Re02y6JbkHWk2YDUQOMS
+ sutit7Hror9wtMS/nVkO5ajro1E7OX/hdZ1u4e5usYdND84i5ZH93tIfYqtqil6cDNhY
+ z8QKRZ3pZ53n7yLXybIsWVSf5WdBtAzBeBTJlm5pVxPgxVzveUbvBi07sIJTdygcJatO 3A== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4v2rbf1-1
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4ch9c3f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:35:07 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKGQp8021574;
+        Wed, 15 Nov 2023 20:35:06 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4ch9c2w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 20:35:06 +0000
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKJ079014625;
+        Wed, 15 Nov 2023 20:35:05 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uaneksvyw-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
         Wed, 15 Nov 2023 20:35:04 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFKYHPq004462;
-        Wed, 15 Nov 2023 20:35:04 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ud4v2rbet-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 20:35:04 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFKJ36m017548;
-        Wed, 15 Nov 2023 20:35:03 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-        by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamayj7fc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 20:35:03 +0000
 Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-        by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKZ0rK16581344
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AFKZ20918350786
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 20:35:00 GMT
+        Wed, 15 Nov 2023 20:35:02 GMT
 Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C05B20043;
+        by IMSVA (Postfix) with ESMTP id DDD232004D;
+        Wed, 15 Nov 2023 20:35:01 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9051C20043;
         Wed, 15 Nov 2023 20:35:00 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C41A720040;
-        Wed, 15 Nov 2023 20:34:58 +0000 (GMT)
 Received: from heavy.boeblingen.de.ibm.com (unknown [9.179.9.51])
         by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Nov 2023 20:34:58 +0000 (GMT)
+        Wed, 15 Nov 2023 20:35:00 +0000 (GMT)
 From:   Ilya Leoshkevich <iii@linux.ibm.com>
 To:     Alexander Gordeev <agordeev@linux.ibm.com>,
         Alexander Potapenko <glider@google.com>,
@@ -81,64 +81,82 @@ Cc:     Christian Borntraeger <borntraeger@linux.ibm.com>,
         Roman Gushchin <roman.gushchin@linux.dev>,
         Sven Schnelle <svens@linux.ibm.com>,
         Ilya Leoshkevich <iii@linux.ibm.com>
-Subject: [PATCH 30/32] s390/unwind: Disable KMSAN checks
-Date:   Wed, 15 Nov 2023 21:31:02 +0100
-Message-ID: <20231115203401.2495875-31-iii@linux.ibm.com>
+Subject: [PATCH 31/32] s390: Implement the architecture-specific kmsan functions
+Date:   Wed, 15 Nov 2023 21:31:03 +0100
+Message-ID: <20231115203401.2495875-32-iii@linux.ibm.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231115203401.2495875-1-iii@linux.ibm.com>
 References: <20231115203401.2495875-1-iii@linux.ibm.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: b1P77HZr7B8FJcQWaHk2afHxOWLhT2Yq
-X-Proofpoint-GUID: o4JJc2oTUm0AoYvcRNRv2r_nas_qMHcx
+X-Proofpoint-GUID: UhAhQFn0oBvTc1Pv6N3SdNg7x4kktrNk
+X-Proofpoint-ORIG-GUID: LEZ4uk_CRb6VScTTWyecjTAHWTBHOoS1
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-15_20,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 mlxscore=0 clxscore=1015 adultscore=0 spamscore=0
- lowpriorityscore=0 bulkscore=0 priorityscore=1501 phishscore=0
- mlxlogscore=769 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311150163
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
-X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
-        lindbergh.monkeyblade.net
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ mlxscore=0 bulkscore=0 mlxlogscore=783 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 phishscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311150163
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The unwind code can read uninitialized frames. Furthermore, even in
-the good case, KMSAN does not emit shadow for backchains. Therefore
-disable it for the unwinding functions.
+arch_kmsan_get_meta_or_null() finds the lowcore shadow by querying the
+prefix and calling kmsan_get_metadata() again.
+
+kmsan_virt_addr_valid() delegates to virt_addr_valid().
 
 Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
 ---
- arch/s390/kernel/unwind_bc.c | 2 ++
- 1 file changed, 2 insertions(+)
+ arch/s390/include/asm/kmsan.h | 36 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 36 insertions(+)
+ create mode 100644 arch/s390/include/asm/kmsan.h
 
-diff --git a/arch/s390/kernel/unwind_bc.c b/arch/s390/kernel/unwind_bc.c
-index 0ece156fdd7c..7ecaab24783f 100644
---- a/arch/s390/kernel/unwind_bc.c
-+++ b/arch/s390/kernel/unwind_bc.c
-@@ -49,6 +49,7 @@ static inline bool is_final_pt_regs(struct unwind_state *state,
- 	       READ_ONCE_NOCHECK(regs->psw.mask) & PSW_MASK_PSTATE;
- }
- 
-+__no_kmsan_checks
- bool unwind_next_frame(struct unwind_state *state)
- {
- 	struct stack_info *info = &state->stack_info;
-@@ -118,6 +119,7 @@ bool unwind_next_frame(struct unwind_state *state)
- }
- EXPORT_SYMBOL_GPL(unwind_next_frame);
- 
-+__no_kmsan_checks
- void __unwind_start(struct unwind_state *state, struct task_struct *task,
- 		    struct pt_regs *regs, unsigned long first_frame)
- {
+diff --git a/arch/s390/include/asm/kmsan.h b/arch/s390/include/asm/kmsan.h
+new file mode 100644
+index 000000000000..afec71e9e9ac
+--- /dev/null
++++ b/arch/s390/include/asm/kmsan.h
+@@ -0,0 +1,36 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _ASM_S390_KMSAN_H
++#define _ASM_S390_KMSAN_H
++
++#include <asm/lowcore.h>
++#include <asm/page.h>
++#include <linux/kmsan.h>
++#include <linux/mmzone.h>
++#include <linux/stddef.h>
++
++#ifndef MODULE
++
++static inline void *arch_kmsan_get_meta_or_null(void *addr, bool is_origin)
++{
++	if (addr >= (void *)&S390_lowcore &&
++	    addr < (void *)(&S390_lowcore + 1)) {
++		/*
++		 * Different lowcores accessed via S390_lowcore are described
++		 * by the same struct page. Resolve the prefix manually in
++		 * order to get a distinct struct page.
++		 */
++		addr += (void *)lowcore_ptr[raw_smp_processor_id()] -
++			(void *)&S390_lowcore;
++		return kmsan_get_metadata(addr, is_origin);
++	}
++	return NULL;
++}
++
++static inline bool kmsan_virt_addr_valid(void *addr)
++{
++	return virt_addr_valid(addr);
++}
++
++#endif /* !MODULE */
++
++#endif /* _ASM_S390_KMSAN_H */
 -- 
 2.41.0
 
