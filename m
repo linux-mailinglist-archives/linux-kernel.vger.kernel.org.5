@@ -2,125 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B9D737EBACC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 02:06:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF5917EBAD9
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 02:13:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234273AbjKOBG7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 20:06:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34642 "EHLO
+        id S234211AbjKOBNg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 20:13:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229937AbjKOBG6 (ORCPT
+        with ESMTP id S229600AbjKOBNf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 20:06:58 -0500
-Received: from out2-smtp.messagingengine.com (out2-smtp.messagingengine.com [66.111.4.26])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85CD7DC;
-        Tue, 14 Nov 2023 17:06:55 -0800 (PST)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id E39E55C0150;
-        Tue, 14 Nov 2023 20:06:54 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Tue, 14 Nov 2023 20:06:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=themaw.net; h=cc
-        :cc:content-transfer-encoding:content-type:content-type:date
-        :date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to; s=fm3; t=
-        1700010414; x=1700096814; bh=ZfFaIHFWUpEiFsmXQhLKQzZFRlFi+XgkIGO
-        E31T1wx4=; b=s6iUKWriyYhRjPG6hlTrcyQ2zmFGlLVIxhnbH+RXJOt95U30Z06
-        MaftuwLQeDHVtJ4L4260JQ7VLYCOTYBEfpXJ3kqDVCffGvemH0tInLKETcL3plXK
-        M/lmhX+UDPrq+BNr9PYNJz4deeq1QIk+7mC83g/LfJ0TYNbG1W+4sUG1d5DsB7Wh
-        LKakKi7k9twvivdZkeFKA1sZaXdg5pQh16qd2yTmPDes6binJ5GPYSatoC/r1TlQ
-        S1DVBStxpQ1mGX8/42GY2z5jZukWstwkON5XJkZShP3ID82ekg0OsPjMFAYjlnLB
-        BMHRq0vjhkRwpi5ahM0pxEfblMf6cvEK4WQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1700010414; x=1700096814; bh=ZfFaIHFWUpEiFsmXQhLKQzZFRlFi+XgkIGO
-        E31T1wx4=; b=nxD4uJdHGXMW/Kby432f/6dASClN6oJyvSlCNNtKCfnzw2OeJac
-        Bat8zLNEza4Jt1DwAAShyGMaouuQd/UtqtyFNc3HhTRtArrBrIDRYa6s6l1A9S2c
-        /CVb6oGmsX1dkIAXkXCA10gLom8pG0SjusLaNbae8FekRSVTXSl72xlB3QUG9Ufv
-        3tkWOCWm/LzY2ZA3+xgXJSUsHRC6cH3+qsdsJUwCQiWd8WxEnt56CjN+shT3t2Jm
-        0fjc+xjMpokAAvcSl1yuoGDN0BLRIaNuhLOf1i/aCKlL52MnB3EEapiLWrgEmTwx
-        FMDTxLRAxFxczSRUmZQjnWNmgXW7bkB19Ng==
-X-ME-Sender: <xms:rhlUZaIAMel4ZwwHqMNlqvf-wQjtYVuW329ZY2NIJZ_N-vCxbV6bYA>
-    <xme:rhlUZSLtvKk0gekYXNHubtDFcM6eG6F4vxKFK-8oZS3efH0t-omFNVXU3mMi1Kr9z
-    rpxLYfRNQSM>
-X-ME-Received: <xmr:rhlUZavbNRFUoBKqrDB9uAfXDRqypv1A8T-PzlsVATQ7PKqn1m5pEJ3-45zbGsdWOVw-bCknmkMN2PXPC0FzsuZOuuzbA1PxjfagRNNVCRTlkoFCt1PiXFF1>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefgedgvdelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepkfffgggfuffvvehfhfgjtgfgsehtjeertddtfeejnecuhfhrohhmpefkrghn
-    ucfmvghnthcuoehrrghvvghnsehthhgvmhgrfidrnhgvtheqnecuggftrfgrthhtvghrnh
-    epuefhueeiieejueevkefgiedtteehgfdutdelfffhleeflefhudeuvdefhfeghfehnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprhgrvhgvnh
-    esthhhvghmrgifrdhnvght
-X-ME-Proxy: <xmx:rhlUZfaV0ccWdWFHb_DA_8C6ImJrMUO3hzZ85CSx7ji_YJ1AArq9Tg>
-    <xmx:rhlUZRaiAzBT7VvaUkVEAT1yPH1ONBwtPPD_iBH1PClYg4aXjE-D5A>
-    <xmx:rhlUZbBjWrbsjm2J98QkfLVVcjiuRW-r8XGXtAbaYJQmDqL8JczkUQ>
-    <xmx:rhlUZQVrNFsf1bhd2FcOQxFXz8uiCcFJyr3nklFhXwabuDlErW70sA>
-Feedback-ID: i31e841b0:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 14 Nov 2023 20:06:51 -0500 (EST)
-Message-ID: <dcd50f92-e0e3-9a24-daf1-f2402f06518f@themaw.net>
-Date:   Wed, 15 Nov 2023 09:06:48 +0800
+        Tue, 14 Nov 2023 20:13:35 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3622DF;
+        Tue, 14 Nov 2023 17:13:31 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF09e3r000665;
+        Wed, 15 Nov 2023 01:13:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=AowzbN4k84kjgnAWkb0BNG94pTVtrn7XDqhFfqU38dM=;
+ b=jxo7RIcTyF+0iIhzBA+42A1IyL7c53I1+eLYKnE6z/tRap2UrX6GucJto9+5K1h0kubX
+ USG/s4ohi0Xs18btV+IX+uPrUwRHeqcSS1PYRTsR6uH2hSzib6zs2lE9FC7kehoxaHP8
+ DVO3sBdQB79IaZV56Z6aw3cYLfjZT21vvDE9Q+8zXcYyqrCUqO7/a/hwdybCivvvmlXD
+ JcnIfDnUlxW4Pwk2B3s8cawp1C48X1i+TZPaeEmQj7ValeIR2mELZ+1gMwSHMALAMYy/
+ C+AI+mMJwtCgUICYwE45SIL2UnAY7vhrcUPuW3n7ZgDOIldvVj2RlzUd8BnPxRy9vWpH 1A== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucg2u8gee-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 01:13:30 +0000
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AF1DUuO016213
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 01:13:30 GMT
+Received: from aiquny2-gv.qualcomm.com (10.80.80.8) by
+ nasanex01a.na.qualcomm.com (10.52.223.231) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Tue, 14 Nov 2023 17:13:24 -0800
+From:   Maria Yu <quic_aiquny@quicinc.com>
+To:     <linus.walleij@linaro.org>
+CC:     Maria Yu <quic_aiquny@quicinc.com>, <linux-gpio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <kernel@quicinc.com>,
+        <stable@vger.kernel.org>
+Subject: [PATCH v2] pinctrl: avoid reload of p state in list iteration
+Date:   Wed, 15 Nov 2023 09:09:06 +0800
+Message-ID: <20231115010906.35357-1-quic_aiquny@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] autofs: fix null deref in autofs_fill_super
-Content-Language: en-US
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+662f87a8ef490f45fa64@syzkaller.appspotmail.com,
-        autofs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <000000000000ae5995060a125650@google.com>
- <tencent_3744B76B9760E6DA33798369C96563B2C405@qq.com>
- <4fcf49456c32087f5306e84c4a8df5b2bd9f4146.camel@themaw.net>
- <20231114044110.GR1957730@ZenIV>
- <e2654c2c-947a-60e5-7b86-9a13590f6211@themaw.net>
- <20231114152601.GS1957730@ZenIV>
- <7b982b5e-ecad-1b55-7388-faf759b65cfe@themaw.net>
- <20231115003527.GW1957730@ZenIV>
-From:   Ian Kent <raven@themaw.net>
-In-Reply-To: <20231115003527.GW1957730@ZenIV>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-6.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: FWA5dxI_F70IJlhyrogIC-NzrNe4HSWG
+X-Proofpoint-GUID: FWA5dxI_F70IJlhyrogIC-NzrNe4HSWG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_01,2023-11-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=943
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311150008
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15/11/23 08:35, Al Viro wrote:
-> On Wed, Nov 15, 2023 at 08:18:33AM +0800, Ian Kent wrote:
->
->> I guess that including the locking is not going to make much difference.
->>
->> I don't remember now but it was probably done because there may be many
->>
->> mounts (potentially several thousand) being done and I wanted to get rid
->>
->> of anything that wasn't needed.
-> Seeing that lock in question is not going to be contended... ;-)
->
-> Seriously, though - the fewer complications we have in the locking rules,
-> the better.
+When in the list_for_each_entry iteration, reload of p->state->settings
+with a local setting from old_state will makes the list iteration in a
+infinite loop.
+The typical issue happened, it will frequently have printk message like:
+  "not freeing pin xx (xxx) as part of deactivating group xxx - it is
+already used for some other setting".
+This is a compiler-dependent problem, one instance was got using Clang
+version 10.0 plus arm64 architecture.
 
-Sure, no problem, I'll make that change.
+Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+Cc: stable@vger.kernel.org
+---
+ drivers/pinctrl/core.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-I do need to do a compile and test it actually ok works so it's
+diff --git a/drivers/pinctrl/core.c b/drivers/pinctrl/core.c
+index 1fa89be29b8f..f2977eb65522 100644
+--- a/drivers/pinctrl/core.c
++++ b/drivers/pinctrl/core.c
+@@ -1262,17 +1262,17 @@ static void pinctrl_link_add(struct pinctrl_dev *pctldev,
+ static int pinctrl_commit_state(struct pinctrl *p, struct pinctrl_state *state)
+ {
+ 	struct pinctrl_setting *setting, *setting2;
+-	struct pinctrl_state *old_state = p->state;
++	struct pinctrl_state *old_state = READ_ONCE(p->state);
+ 	int ret;
+ 
+-	if (p->state) {
++	if (old_state) {
+ 		/*
+ 		 * For each pinmux setting in the old state, forget SW's record
+ 		 * of mux owner for that pingroup. Any pingroups which are
+ 		 * still owned by the new state will be re-acquired by the call
+ 		 * to pinmux_enable_setting() in the loop below.
+ 		 */
+-		list_for_each_entry(setting, &p->state->settings, node) {
++		list_for_each_entry(setting, &old_state->settings, node) {
+ 			if (setting->type != PIN_MAP_TYPE_MUX_GROUP)
+ 				continue;
+ 			pinmux_disable_setting(setting);
 
-taking a little while.
+base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+-- 
+2.17.1
 
-
-Ian
-
->
-> Al, currently going through audit of ->d_name/->d_parent uses and cursing
-> at the 600-odd places left to look through...
