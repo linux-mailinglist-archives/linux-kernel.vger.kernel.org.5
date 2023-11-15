@@ -2,75 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 252FC7ED1CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:09:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6017ED1D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344315AbjKOUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:09:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
+        id S1344324AbjKOUNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:13:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344093AbjKOUJA (ORCPT
+        with ESMTP id S230107AbjKOUNV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:09:00 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338BFAF
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:08:57 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5af15c3f734so5434587b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:08:57 -0800 (PST)
+        Wed, 15 Nov 2023 15:13:21 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EEE519E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:13:17 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id a640c23a62f3a-9c3aec5f326so251789466b.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:13:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700078936; x=1700683736; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700079195; x=1700683995; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dudJu8bqmoA0uQm5mbpxz9Q3fjggrbI693boctNIlwg=;
-        b=C9P0Osyqjw2MahNSc6AVyHVGIhJOQJe71JwTbyFHzBL+790bo5Y0z5+72A8Htzfcic
-         r2uquAL+Opc+D5H0Aln67KdvUQEsAup738ir6HNzSkvNxo+vzYA1Zy2Ug6XOh2ZtTYmw
-         z2IqkH/pATleEfVbPM+5GNC5FlGdxmgx6J06LZKbhsWYDqbUF+/v3IvKJP+ECsrbHqcN
-         Z6nrfC/lbcfOjFBRLuIGFXEUDwBbUl9edDvYPyTmtAxxIet7hDG7WOWGoPTCwvf7/B6H
-         x+EsRQisWfU7ghopbtdzTaY0dEcVEMM9oXRqTXj1YRJ5polBviNLd4pdlqRqKayXL0No
-         w28Q==
+        bh=l44iogGkycFObP7ldrLRFPDR8OL/5GpOZwnm3btFsOA=;
+        b=GOcgKw+Nc0l9Gz+kN8hpw7Vc3VmMDHuLSXXNqFEIQpOSLvWHUfqDtcgPB05sCFEckq
+         7SDWF7yPW+TIKOMeai9G59YE+jAJy/JiAQIdPKPxr+nuDua7iYvun+YIog4GN0w50OQ/
+         fdYsCG59j7NekeWDEf+9XUypRCSEwTbh+HRmBkzHxW4g/QbHrkHiwH56HbDTt8BK4ZHl
+         b/Xq5P/pi3K715r3mxNy2tq9QICz0Y15Cg4b3aQJu74Af7tfTi8cxFtqKcYeuiKhp+EV
+         6kZNqxayx6WtQLh0A0OQgAq/et+chwZvDRIqauOTp+UlARFFe0bMh+FspICNUXLtonGT
+         nmDw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700078936; x=1700683736;
+        d=1e100.net; s=20230601; t=1700079195; x=1700683995;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dudJu8bqmoA0uQm5mbpxz9Q3fjggrbI693boctNIlwg=;
-        b=IOILeY6i0Vb0XUMTHFDR8nJbn/uDkcv55vRBq9Dcg1PLVCJridwntFSh7f+xTvYeAX
-         GowIX096nB8QUXIxHIvj04bfFraO96376ELxJNjDTgQRP1ntVdl/USpjdmGa6L3NuaeF
-         QbALqiA/llThjkN7fUu0DJbWX+gonb9UU+jml3Unplg0nRLuCt4Dt94aPvMTsRDQyM/z
-         /zTT7Tkc7BWBNi9GW2K6Kg3vJHyhDJnxXFoUifWJZeroyjEHKLUodyloKwaFMnRxC2+J
-         ZNTGd0Mg9oNLj46noFOM4+wIq7FBIGott+29pAn2KS3NjrmAm+woQ4ULHC4bcHR1LVe+
-         VNDw==
-X-Gm-Message-State: AOJu0YxMXxMgqOMHlc0tkd0DwDQrx4ORbzaWBP9qWPT0ytlEagHqr+7u
-        CotudqPTwNRYf8O9fnSbBGZwaGQ5Qjz1ErkMlP8=
-X-Google-Smtp-Source: AGHT+IHRkkHlie4UQ1NReHZ8gGxmxQucffqCVtYpZbaibyoZxtH1P8lpv4HNZVkT5YfCpALDmktBsBV2BTTL3WdoRvk=
-X-Received: by 2002:a05:690c:4887:b0:5a8:9e9:e661 with SMTP id
- hd7-20020a05690c488700b005a809e9e661mr4614841ywb.1.1700078936216; Wed, 15 Nov
- 2023 12:08:56 -0800 (PST)
+        bh=l44iogGkycFObP7ldrLRFPDR8OL/5GpOZwnm3btFsOA=;
+        b=LSwY9jSZkh/mt16agcCnoAXcf1HhTVOYbRaVasPxLKdT4zWfD4JDRna9ESHFFS3fvg
+         UORtOP/cWaYVSVC6tv0YJmE6aBLEc7P0wf7az84jrR4hc6NWq/d9o6K8d4J69wMfJ4hQ
+         O7ASzw7ezyQwhdLHw7Aaj3cPN4OGxukV8AEA+XOLqhFewrMs0J9o8GyUD8rU4qfRH92o
+         Rq4jFXzFu5ak9OdWyhHXU6azaA/XCfhRnrNPtXgRHrR9Rbsltsm4NOL9wFiMoVddK28z
+         nclR1lvPcY1PmFxwfZkCqg3iNCV+p76YGtDs8JeY/fEk73yPB3l2PopXXlqqMytzakzL
+         VzVw==
+X-Gm-Message-State: AOJu0Yz3/EmBuAFn1RQzLgv2ZPiblrYhvRTgaYLgDAwC3j0cKmK4lF/U
+        1hCRy8eJnSPSwu0jB8FBOnnPf9qPiQr1cegcfsKL1g==
+X-Google-Smtp-Source: AGHT+IFiuslHc5GoYPVTg55zJ6Hp9XqFP3VtNmMulCWUAvsjgsNcTOeJSsiXri+rcjv2D49T/xj/VqlOLdtl0G8jS3o=
+X-Received: by 2002:a17:906:3c04:b0:9ae:614e:4560 with SMTP id
+ h4-20020a1709063c0400b009ae614e4560mr6301269ejg.29.1700079195532; Wed, 15 Nov
+ 2023 12:13:15 -0800 (PST)
 MIME-Version: 1.0
-References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
- <CABXGCsOqbLRHSkiz79NkVQ-wUtR7y-ZFHvhMw0+JJ_cY2AZmSw@mail.gmail.com>
- <CABXGCsPE9=Qp3Jg5hkRsTQoNgODnS_cXFU1d+hg3Baob40AaAA@mail.gmail.com>
- <edc5b75b-c08d-4c62-ae5e-089ffac27772@amd.com> <CABXGCsO=pdxorK9pO7qBPJM-xvgPPtpZqxLvQO4t2AK5qW3vcA@mail.gmail.com>
- <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
-In-Reply-To: <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Thu, 16 Nov 2023 01:08:44 +0500
-Message-ID: <CABXGCsNpEh7GjFPvx=rz6ZeB7Kx4iqV-e8HyFKyhNau2S5gENw@mail.gmail.com>
-Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
- flashing bar with a picture of the desktop background on white screen
-To:     "Lee, Alvin" <Alvin.Lee2@amd.com>
-Cc:     "Mahfooz, Hamza" <Hamza.Mahfooz@amd.com>,
-        "Wu, Hersen" <hersenxs.wu@amd.com>,
-        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com> <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com>
+In-Reply-To: <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 15 Nov 2023 12:12:36 -0800
+Message-ID: <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
+ failure in two scenarios
+To:     =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ying <ying.huang@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -78,21 +74,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 11:39=E2=80=AFPM Lee, Alvin <Alvin.Lee2@amd.com> wr=
-ote:
+On Wed, Nov 15, 2023 at 4:53=E2=80=AFAM =E8=B4=BA=E4=B8=AD=E5=9D=A4 <hezhon=
+gkun.hzk@bytedance.com> wrote:
 >
-> This change has a DMCUB dependency - are you able to update your DMCUB ve=
-rsion as well?
+> > For case (1), I think a cleaner solution would be to move the
+> > zswap_invalidate() call from swap_range_free() (which is called after
+> > the cached slots are freed) to __swap_entry_free_locked() if the usage
+> > goes to 0. I actually think conceptually this makes not just for
+> > zswap_invalidate(), but also for the arch call, memcg uncharging, etc.
+> > Slots caching is a swapfile optimization that should be internal to
+> > swapfile code. Once a swap entry is freed (i.e. swap count is 0 AND
+> > not in the swap cache), all the hooks should be called (memcg, zswap,
+> > arch, ..) as the swap entry is effectively freed. The fact that
+> > swapfile code internally batches and caches slots should be
+> > transparent to other parts of MM. I am not sure if the calls can just
+> > be moved or if there are underlying assumptions in the implementation
+> > that would be broken, but it feels like the right thing to do.
 >
+> Good idea,  This is indeed a clear solution.  I'll try it in another
+> patch later.
+>
+> >
+> > For case (2), I don't think zswap can just decide to free the entry.
+> >
+> > In that case, the page is in the swap cache pointing to a swp_entry
+> > which has a corresponding zswap entry, and the page is clean because
+> > it is already in swap/zswap, so we don't need to write it out again
+> > unless it is redirtied. If zswap just drops the entry, and reclaim
+> > tries to reclaim the page in the swap cache, it will drop the page
+> > assuming that there is a copy in swap/zswap (because it is clean). Now
+> > we lost all copies of the page.
+> >
+> > Am I missing something?
+> >
+>
+> Ah, my bad.  Missed the step of marking the page as dirty.
+> Please have a look,  just like zswap_exclusive_loads_enabled,
+> set page dity so that it can be pageout again.
+>        if (!page_was_allocated) {
+>               if (!count) {
+>                        set_page_dirty(page);
+>                        ret =3D 0;
+>                } else
+>                        ret =3D -EEXIST;
+>                put_page(page);
+> }
 
-I can confirm this issue was gone after updating firmware.
+I think we may need to try to lock the folio. Otherwise we may race
+with reclaim reading the dirty bit before we set it.
 
-=E2=9D=AF dmesg | grep DMUB
-[   11.496679] [drm] Loading DMUB firmware via PSP: version=3D0x07002300
-[   12.000314] [drm] DMUB hardware initialized: version=3D0x07002300
+Taking a step back, this seems like we are going behind exclusive
+loads. We "should" keep the page in zswap as exclusive loads are
+disabled and the page is not yet invalidated from zswap (the swap
+entry is still in use). What you are trying to do here is sneakily
+drop the page from zswap as if we wrote it back, but we didn't. We
+just know that it was already loaded from zswap. We are essentially
+making the previous load exclusive retroactively.
 
+Is there a reason why exclusive loads cannot be enabled to achieve the
+same result in the (arguably) correct way?
 
-
---=20
-Best Regards,
-Mike Gavrilov.
+> Thanks  for your feedback, Yosry.
