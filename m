@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B8A97EC67B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:57:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B5267EC67E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:59:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344251AbjKOO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:57:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35864 "EHLO
+        id S1344272AbjKOO7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:59:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344066AbjKOO5p (ORCPT
+        with ESMTP id S234954AbjKOO7J (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:57:45 -0500
-Received: from mail.bugwerft.de (mail.bugwerft.de [IPv6:2a03:6000:1011::59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A55DCA6;
-        Wed, 15 Nov 2023 06:57:40 -0800 (PST)
-Received: from [192.168.178.97] (pd95ef485.dip0.t-ipconnect.de [217.94.244.133])
-        by mail.bugwerft.de (Postfix) with ESMTPSA id A9C40281578;
-        Wed, 15 Nov 2023 14:57:38 +0000 (UTC)
-Message-ID: <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
-Date:   Wed, 15 Nov 2023 15:57:38 +0100
+        Wed, 15 Nov 2023 09:59:09 -0500
+Received: from mail-ua1-x92e.google.com (mail-ua1-x92e.google.com [IPv6:2607:f8b0:4864:20::92e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21C9C8E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:59:06 -0800 (PST)
+Received: by mail-ua1-x92e.google.com with SMTP id a1e0cc1a2514c-7b6cd2afaf2so2738551241.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:59:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20230601.gappssmtp.com; s=20230601; t=1700060345; x=1700665145; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D3OrBniBax6aBFZKFMUfvMbREKJHYn5D4TcXhxSLl7M=;
+        b=DdTd3LI+Yn65C+0h4rKSKCDaFeW8m7PPrmz1QPKfI3PEAZUKENGq+zi3oQJhGboMnd
+         q2Auljshyc8h1RxhcDkSdFPxfFDB9hoN+GKTKrULuNnxjQ8qG9vHRFiglK+rklRjUa/k
+         YvbARqaWQfNYxJKP3mOqcap/C1a22F6j6wehIMAAh1J209JMG1aOIrhtUx8d+26VDW1I
+         9GYkNYWqTA3Er+bTOjYXGf86eIN6sWjycZFf7mbQI+x657s+phhzzwDMmVa/YTgNxd3d
+         Wy5V3S6GEqu2vMIA5iaTxtnEw78ZE8Ni2AIrlcPO36Zec1SBLp6feJRAzlUpd9N2gzWM
+         4esg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700060345; x=1700665145;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=D3OrBniBax6aBFZKFMUfvMbREKJHYn5D4TcXhxSLl7M=;
+        b=VUCCvxAU8e9SwnpJ/jXaKV1ofxmDo1Go+HCQJEwlXKqMsfjHXOellCT7/EZlLC0pWG
+         Y2lBkOHFTSQMfzWs3fvXrQCid8QeFZc1ZEM59g0L6FwHzNCmBMCizsAh2N4xScyQ8mcN
+         Pyr8kFFx4jf4MA1vRLocA0gv8fzzNp+2E8QTf0AIVBp0PswCy44hBaJiSgKW44v6f+qf
+         Yx41HjmqGwUEOezVDt8i0AyGds9EFZTq/aialzUBST/kzB1BvtWgTKt37ZsDSChyPwPP
+         ZBkS1g/e+DTK3AN/nXfvBYCg965UlHU+hMxEY4KJFJX4bBarKYGIqgPzvnl9IRC1rE5r
+         HVLw==
+X-Gm-Message-State: AOJu0Yxo5JlmkK/S4nbWFnIhVemF8uJ1yUOwT0C7y5a8p7kZB0qnD9bv
+        MJIbkFLLJawqRppXp9VSBD8+LTBsXq3aJvfrV+ZRrw==
+X-Google-Smtp-Source: AGHT+IHtSbrAOce7kh6Al+4OKo3Q8n54AV6TLGvDzbUXO/PGYI9Ce7LXQovvwPec+z3aHpZOCddDdLn/i88HYPXTykc=
+X-Received: by 2002:ac5:c978:0:b0:4ab:fbff:a811 with SMTP id
+ t24-20020ac5c978000000b004abfbffa811mr11781567vkm.14.1700060345256; Wed, 15
+ Nov 2023 06:59:05 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
-Content-Language: en-US
-To:     Hugo Villeneuve <hugo@hugovil.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
-References: <20231114074904.239458-1-daniel@zonque.org>
- <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
- <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
- <20231115094717.7541b01ec0c8a7f4006fcae6@hugovil.com>
-From:   Daniel Mack <daniel@zonque.org>
-In-Reply-To: <20231115094717.7541b01ec0c8a7f4006fcae6@hugovil.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231025184259.250588-1-andriy.shevchenko@linux.intel.com>
+ <20231025184259.250588-2-andriy.shevchenko@linux.intel.com>
+ <2023102624-moonshine-duller-3043@gregkh> <ZTpbMVSdKlOgLbwv@smile.fi.intel.com>
+ <ZUPBVMdi3hcTyW2n@smile.fi.intel.com> <CAMRc=MeV9ZyOzuQFEE_duPTHYgfmr6UZU6bpjDPhrczZX4PHpg@mail.gmail.com>
+In-Reply-To: <CAMRc=MeV9ZyOzuQFEE_duPTHYgfmr6UZU6bpjDPhrczZX4PHpg@mail.gmail.com>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 15 Nov 2023 15:58:54 +0100
+Message-ID: <CAMRc=MdSpk_OszeDCyA5_Sp-w=sL9DHB2gGCOFP+FCiobm2cbA@mail.gmail.com>
+Subject: Re: [PATCH v1 1/3] device property: Implement device_is_big_endian()
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Scally <djrscally@gmail.com>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 15:47, Hugo Villeneuve wrote:
-> On Tue, 14 Nov 2023 16:55:33 +0100
-> Daniel Mack <daniel@zonque.org> wrote:
-> 
->> Hi Hugo,
->>
->> On 11/14/23 16:20, Hugo Villeneuve wrote:
->>> On Tue, 14 Nov 2023 08:49:04 +0100
->>> Daniel Mack <daniel@zonque.org> wrote:
->>>> This devices has a silicon bug that makes it report a timeout interrupt
->>>> but no data in FIFO.
->>>>
->>>> The datasheet states the following in the errata section 18.1.4:
->>>>
->>>>   "If the host reads the receive FIFO at the at the same time as a
->>>>   time-out interrupt condition happens, the host might read 0xCC
->>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
->>>>   of the Line Status Register (LSR) is not set (means there is not
->>>>   data in the receive FIFO)."
->>>>
->>>> When this happens, the loop in sc16is7xx_irq() will run forever,
->>>> which effectively blocks the i2c bus and breaks the functionality
->>>> of the UART.
->>>>
->>>> From the information above, it is assumed that when the bug is
->>>> triggered, the FIFO does in fact have payload in its buffer, but the
->>>> fill level reporting is off-by-one. Hence this patch fixes the issue
->>>> by reading one byte from the FIFO when that condition is detected.
->>>
->>> From what I understand from the errata, when the problem occurs, it
->>> affects bit 0 of the LSR register. I see no mention that it
->>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
->>
->> True, the errata doesn't explicitly mention that, but tests have shown
->> that the RXLVL register is equally affected.
-> 
-> Hi Daniel,
-> ok, now it makes more sense if RXLVL is affected.
-> 
-> Have you contacted NXP about this? If not, I suggest you do open a
-> support case and let them know about your findings, because it is very
-> strange that it is not mentioned in the errata. And doing so may led to
-> an updated and better documentation on their side about this errata.
+On Fri, Nov 3, 2023 at 10:08=E2=80=AFAM Bartosz Golaszewski <brgl@bgdev.pl>=
+ wrote:
+>
+> On Thu, Nov 2, 2023 at 4:33=E2=80=AFPM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Thu, Oct 26, 2023 at 03:27:30PM +0300, Andy Shevchenko wrote:
+> > > On Thu, Oct 26, 2023 at 07:25:35AM +0200, Greg Kroah-Hartman wrote:
+> > > > On Wed, Oct 25, 2023 at 09:42:57PM +0300, Andy Shevchenko wrote:
+> > > > > Some users want to use the struct device pointer to see if the
+> > > > > device is big endian in terms of Open Firmware specifications,
+> > > > > i.e. if it has a "big-endian" property, or if the kernel was
+> > > > > compiled for BE *and* the device has a "native-endian" property.
+> > > > >
+> > > > > Provide inline helper for the users.
+> > > >
+> > > > Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > >
+> > > Thank you, Greg.
+> > >
+> > > Bart, would it be still possible to take this into next?
+> > > I would like to have at least this patch applied (with the first user=
+)
+> > > to allow conversion of others (I have some more users of new API).
+> >
+> > Okay, seems we missed v6.7 with this, can you then prepare an immutable
+> > branch / tag with this, so other maintainers can pull in case it's need=
+ed?
+> > (I have something against tty already and perhaps something else, let's
+> >  see.)
+> >
+>
+> It arrived too late in the cycle, I needed to send my PR earlier this
+> time as I was OoO this week.
+>
+> Bart
 
-The errata is also wrong in other regards - the IIR register cannot
-yield 0xcc according to their own documentation. It also makes no
-suggestion on how to recover from that situation, which is common
-practice usually.
+Greg, will you take this patch through your tree and provide me with
+an immutable tag for this cycle?
 
-We'll let them know through our FAE channels, but the latest datasheet
-for this chip was released over a decade ago, and I don't expect any
-update to the errata wording.
-
-> And incorporate this new info into your commit log for an eventual
-> patch V2.
-
-It makes no sense IMO to have all users of this chip suffer from an
-issue that was clearly identified to be present and which has an evident
-fix. Why would we do that?
-
-
-Thanks,
-Daniel
-
-
+Bart
