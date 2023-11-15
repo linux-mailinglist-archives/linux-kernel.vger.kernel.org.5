@@ -2,91 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 77E2D7EC772
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:36:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B28127EC776
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:37:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230162AbjKOPgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:36:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53606 "EHLO
+        id S230402AbjKOPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:37:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKOPgc (ORCPT
+        with ESMTP id S229457AbjKOPhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:36:32 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47E86195
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:36:26 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id BC442228BD;
-        Wed, 15 Nov 2023 15:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700062584; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3DXW2C3GNEVWBnq6hYRcSZ/Y+xEDNUpXyZ4rIaBwuvw=;
-        b=np/etrMeI8W8tOAQxH2AbdsTB/O38Yvryklly1VrkkLhqkflwCqDqgG6N5x7gDn6i8orZe
-        oYjf9ueY+IeQY/NTk4LTRGlNzpyPMqtluKXs2EvMPxPcQeZS49UAWPRSiVIFxf13a6WzL+
-        uJlaQ5JJWdwVQVjlOd9tIkFiVOs5j/Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700062584;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3DXW2C3GNEVWBnq6hYRcSZ/Y+xEDNUpXyZ4rIaBwuvw=;
-        b=62OkW6aQ8Rqjk8+U9KIjzlrGSucY/PFCgpO7zSesLdTs/Ptc+ALf4VtwMdquE4mzobPdwl
-        h7JcrwqPDBeWciDQ==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id A1E9213587;
-        Wed, 15 Nov 2023 15:36:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id oxmpJXjlVGVDCwAAMHmgww
-        (envelope-from <aporta@suse.de>); Wed, 15 Nov 2023 15:36:24 +0000
-Date:   Wed, 15 Nov 2023 16:36:24 +0100
-From:   Andrea della Porta <aporta@suse.de>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        mark.rutland@arm.com
-Subject: Re: [PATCH v2 1/4] arm64: Introduce aarch32_enabled()
-Message-ID: <ZVTleETzfFUchs77@apocalypse>
-Mail-Followup-To: Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, mark.rutland@arm.com
-References: <cover.1698069331.git.andrea.porta@suse.com>
- <1dec05cc8f54d0b85acffce69d929f13e6d81313.1698069331.git.andrea.porta@suse.com>
- <e13d8d85-67d7-4a5e-893c-69dacb3a6d24@arm.com>
+        Wed, 15 Nov 2023 10:37:48 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B633612C
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:37:44 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6cf65093780so4020005a34.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:37:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700062664; x=1700667464; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nxWKE0RnE67ZCac+DE3wf0+WlhQHwaxB8ToZtgmVZwY=;
+        b=pBDRktK76id6NpKj3jlCs/xMSpWkPsLSPwkT+oitTZfn0ctMgfSu3Cj3lbVGNtzSVl
+         JnDunYOnaj8kozNVwM9OxPo9AtRtqJaOpXbPsaly16Z9gUGxtgJZ/LivykVi5zgTeVYE
+         Eg6okvKXfe4AYLB2Rw391JlzhG2NXJF+xfe+pEVblOydZOfQSlxZsPao3Nz0VK2Lo/zS
+         lfBb1NMozCh+QRcsMT0lexpxwe4Zll4na8lEHLIftatwZPm27lE5Ih9xehsv8azYIvoT
+         4bD42ibE65tdd/f8ddjIyaGGjAql5tAf81PGYn2KetJnvcDj21wpf0zQANRTSKH6hiZe
+         QXuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700062664; x=1700667464;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nxWKE0RnE67ZCac+DE3wf0+WlhQHwaxB8ToZtgmVZwY=;
+        b=hdo4ay+ADbEVK7sG5S4MxyM9Ew++QdMUvPM9Tw32p8UQxkx1wN6SpT9gihexYt+aE7
+         ojkzphIJKfrfb+NKwOZumGA5H4pjG7VAfEmRRm7tJON4HFBAE8/lDDR7pMUolZltMns2
+         rd+cxGZr3+le9NALEspKwKKmmBIo3jMRaRCMsVaBoc8LyaDs177iU33SOCr2I9uMvVGn
+         68ag4nWlA+XhzVifGb0jcefmPwwZ9YNaVpIjUaSsfiD8JA2Ze/cpX1Uhe29KQ+0gd8DO
+         wxRMqy8q+0szpy6v2lSUxvTfS452G+zCuB1XompDCosCNMIpRni1EQWTwNJnE9FVlhng
+         w/vA==
+X-Gm-Message-State: AOJu0Yz6e0SYoDp6FZGiwgRrlvTCSp9kS2/duEplm13PtQwfu9l3pLPJ
+        jdmou9ixgZfeNqEX2/rMHFIPt0S9yVDk5LDnl3VrHw==
+X-Google-Smtp-Source: AGHT+IGO8zAnm0zIxz1rZhEvNk250XK6A18NgKyait+fesnXkzrYw4HG90ngI8KHEvMDRK2dAwrF7to4ErqNn8RuSQ0=
+X-Received: by 2002:a05:6358:590c:b0:168:e69b:538c with SMTP id
+ g12-20020a056358590c00b00168e69b538cmr6106636rwf.3.1700062663887; Wed, 15 Nov
+ 2023 07:37:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e13d8d85-67d7-4a5e-893c-69dacb3a6d24@arm.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.46
-X-Spamd-Result: default: False [-5.46 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[5];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-1.86)[94.20%]
+References: <CA+G9fYv94gx8+-JMzbmQaue3q3y6QdBmsGUCdD-26X5XavL3Ag@mail.gmail.com>
+ <ZAocZRZh4FQRH3lc@smile.fi.intel.com> <CA+G9fYsOttth+k3Ki8LK_ZiayvXa0bAg-DmQAaFHZeEyR=6Lrw@mail.gmail.com>
+ <CACRpkdbUYWcFiRh+Y=MOekv2RjSP4sB2t5tVrSsz54Eez6wmVg@mail.gmail.com>
+ <ZJHWdcP+PDaNrw07@smile.fi.intel.com> <CA+G9fYvReHr+ofJAW4yfA5EWT6-MRpR2+fOQG24hROjSd+dY0g@mail.gmail.com>
+ <ZVQh_nvgqMkd3tN6@surfacebook.localdomain>
+In-Reply-To: <ZVQh_nvgqMkd3tN6@surfacebook.localdomain>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 15 Nov 2023 21:07:32 +0530
+Message-ID: <CA+G9fYujHuwn_AFDeFHbt0DMx7A63fjLR25aX7pkoMcVmmxbog@mail.gmail.com>
+Subject: Re: selftests: gpio: crash on arm64
+To:     andy.shevchenko@gmail.com
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <brgl@bgdev.pl>,
+        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Pengfei Xu <pengfei.xu@intel.com>, yi1.lai@intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
@@ -97,29 +86,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 12:56 Tue 24 Oct     , Robin Murphy wrote:
-> On 23/10/2023 3:42 pm, Andrea della Porta wrote:
-> > Aarch32 bit support on 64bit kernels depends on whether CONFIG_COMPAT
-> > is selected or not. As it is a compile time option it doesn't
-> > provide the flexibility to have distributions set their own policy for
-> > Aarch32 support and give the user the flexibility to override it.
-> > 
-> > As a first step introduce aarch32_enabled() which abstracts whether 32
-> > bit compat is turned on or off. Upcoming patches will implement
-> > the ability to set Aarch32 compat state at boot time.
-> 
-> Other than patch #3, which as previously mentioned should be unnecessary if
-> the kernel correctly never starts an "unsupported" AArch32 process to begin
-> with, what does this do that simply overriding ID_AA64PFR0_EL1.EL0 via the
-> existing idreg-override mechanism wouldn't?
-> 
-> Thanks,
-> Robin
+On Wed, 15 Nov 2023 at 07:12, <andy.shevchenko@gmail.com> wrote:
+>
+> Tue, Nov 07, 2023 at 07:21:32PM +0530, Naresh Kamboju kirjoitti:
+> > On Tue, 20 Jun 2023 at 22:11, Andy Shevchenko
+> > <andriy.shevchenko@linux.intel.com> wrote:
+> > > On Tue, Apr 11, 2023 at 10:57:28AM +0200, Linus Walleij wrote:
+> > > > On Mon, Apr 10, 2023 at 11:16=E2=80=AFAM Naresh Kamboju
+> > > > <naresh.kamboju@linaro.org> wrote:
+>
+> ...
+>
+> > > > Add a pr_info() devm_gpio_chip_release() in drivers/gpio/gpiolib-de=
+vres.c
+> > > > and see if the callback is even called. I think this could be the
+> > > > problem: if that isn't cleaned up, there will be dangling reference=
+s.
+> > >
+> > > Side note: Since we have devres tracepoints, your patch seems an over=
+kill :-)
+> > > Just enable devres tracepoints and filter out by the function name. I=
+ believe
+> > > that should work.
+> >
+> > Since I have been tracking open issues on the stable-rc kernel,
+> > The reported problem on stable-rc linux.6.3.y has been solved
+> > on the stable-rc linux.6.6.y branch.
+> >
+> > Thanks for fixing this reported issue.
+> >
+> > Upstream links about this fix and discussion,
+>
+> I'm a bit lost. Is the [3] fixed? Is the fix the below mentioned commit?
 
-You're right, I guess we can simpluy leverage system_supports_32bit_el0()
-calling id_aa64pfr0_32bit_el0() and override the el0 nibble from command line,
-instead of inventing a new kernel parameter. For the sake of simplicity,
-maybe we can add a new alias in idreg-override, something like 'arm64.no32bit-el0'.
+As per my understanding on this,
+The reported issue has been fixed with the below commit.
 
-Thanks,
-Andrea
+>
+> > Commit daecca4b8433
+> > gpiolib: Do not alter GPIO chip fwnode member
+> >
+> > [1] https://lore.kernel.org/linux-gpio/20230703142308.5772-4-andriy.she=
+vchenko@linux.intel.com/
+> > [2] https://lore.kernel.org/linux-gpio/CAMRc=3DMfFEBSeJ78NO7XeuzAMJ0Kez=
+EPAYWsWnFXXaRyQPAf3dA@mail.gmail.com/
+> > [3] https://lore.kernel.org/linux-gpio/CA+G9fYv94gx8+-JMzbmQaue3q3y6QdB=
+msGUCdD-26X5XavL3Ag@mail.gmail.com/
+>
+> --
+> With Best Regards,
+> Andy Shevchenko
+
+- Naresh
