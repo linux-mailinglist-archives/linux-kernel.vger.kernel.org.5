@@ -2,134 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F9097EC522
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:27:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BDB7EC52A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:28:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344074AbjKOO10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:27:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54606 "EHLO
+        id S1344112AbjKOO2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:28:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKOO1Z (ORCPT
+        with ESMTP id S234924AbjKOO2l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:27:25 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB61C8;
-        Wed, 15 Nov 2023 06:27:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700058441; x=1731594441;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=bYhYhApETD3WaI4adC9XBOsh3iVZc0Tijeg2BL85FTo=;
-  b=ASgSpeI/3ja6DmV8GPY0Nluk2a/eq1pAPz1ImfRo+epMb8AIoPz2WKq+
-   6ckviktzHOAwW7zvvHCuoKsAzVeVD3OT1/RhsRCgZkd0lGsI5e8z8h6xF
-   PljxyIrbrnsGKty7v9iwc7DiVUHZ20mD09pFfIjjZ8/URmwoKSGtWZGdE
-   jhfSfo47AxNNXiVtKZLIKKumDmdSB/aHaGmNg5fyHD+W8wqfyRrWeCauu
-   t7iFj+T5D9nilVulck4d09C+ZTp2mls/Zu3FzKM2guUhLMz5HpcTwsliD
-   t/pd9O7fqcgOaA2aHj0bt81X9zXFPLrig6uUDJHe3uSWzRHT5h+jRndPQ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9519395"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="9519395"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 06:27:21 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="768595544"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="768595544"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 15 Nov 2023 06:27:16 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3GrK-0000Oy-0y;
-        Wed, 15 Nov 2023 14:27:14 +0000
-Date:   Wed, 15 Nov 2023 22:26:40 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     oe-kbuild-all@lists.linux.dev, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Johan Hovold <johan+linaro@kernel.org>, stable@vger.kernel.org,
-        Michael Bottini <michael.a.bottini@linux.intel.com>,
-        "David E . Box" <david.e.box@linux.intel.com>
-Subject: Re: [PATCH 1/6] PCI/ASPM: Add locked helper for enabling link state
-Message-ID: <202311152225.ZdVv0ufT-lkp@intel.com>
-References: <20231114135553.32301-2-johan+linaro@kernel.org>
+        Wed, 15 Nov 2023 09:28:41 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01686E7
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:28:38 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9db6cf8309cso998147466b.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:28:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1700058516; x=1700663316; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=D1bYEl09IoLqZ4ey+eADiyqvL5SUtiEl1aW7JJS482k=;
+        b=os8cyFDNBB2SLocU2l3XP9mO+eKkeEtTmr6pM7D4Mlrh+xVuXzA6GeMEOq2Sd4OfQ+
+         KfGcvfOWkZZmSqGXlCCoawZxv6XY25yalS/O/u4y8W6wNyZuyzJLr43D7iBwvEp6SPc1
+         RDz2ahDNjLv4xn66kpnLIvbs0UxzyzdGhhxYYbDf7BeEmJYg7iabiFK3TNqE/t/tWnSR
+         zuKbOL390S3hL2TzHIM0BaWuajFaWLy+fymao0tdUlAZqXzULy/F2DRQFrr8Pn5F0Nft
+         UWSootp/IrgOLotOHWQTIG3KzDTAowtxzaSGiZo1caymqCTEMGjoOTo4elq2yP1w2KMd
+         o/RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700058516; x=1700663316;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D1bYEl09IoLqZ4ey+eADiyqvL5SUtiEl1aW7JJS482k=;
+        b=hnzbAzUSQy8prpohLpi4PR2r/swNhkC91GWqFLEyG0wKTDjskv+8cGCoJUHGuTn5ds
+         BlvsuCk66nNQW4/akcgLrPuoSgrsrfP8s+bR7eG2xmPh+Lt5b5FeumrAnpOmZhJmBMZi
+         GVLJczEp+xqjSiMpqxSkcJzxoDf7hEQokuMPIbXItkoxvCyrubQWT2uhmv9sgc4q/7Bo
+         g+CZVtPjezFaR8xEz/GvrPqVQrFhTgN+jXRQBxuEBNPDtJo15CY1W9b1pGtjw8VSLfqp
+         z34P3bpi/bCimP76R4VFO1tbXL9hlG5lsSxyNf++OCqeXSFTopZWaNmS3SZw2R95SsH0
+         /XyQ==
+X-Gm-Message-State: AOJu0YztB1tCJKsIZMdQO0EL2zgpYM7uL1tn/odaQv0+TNts6tyCz6QS
+        mdF3rwA+EbNn9ixmkmuXsmkwmQ==
+X-Google-Smtp-Source: AGHT+IGr51Xp9J2M/QL2HgUJoT05UgyIsuf5IK5LOC5/gt3gQmAyfU3KI/4Vncq8iuWLEctadZ1uLg==
+X-Received: by 2002:a17:906:4b47:b0:9be:e278:4d45 with SMTP id j7-20020a1709064b4700b009bee2784d45mr9348004ejv.15.1700058516380;
+        Wed, 15 Nov 2023 06:28:36 -0800 (PST)
+Received: from claudiu-X670E-Pro-RS.. ([82.78.167.119])
+        by smtp.gmail.com with ESMTPSA id i11-20020a170906264b00b0099bd5d28dc4sm7186394ejc.195.2023.11.15.06.28.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 06:28:35 -0800 (PST)
+From:   Claudiu <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu <claudiu.beznea.uj@bp.renesas.com>
+To:     tglx@linutronix.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        geert+renesas@glider.be, magnus.damm@gmail.com,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        prabhakar.mahadev-lad.rj@bp.renesas.com
+Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: [PATCH v2 0/9] irqchip/renesas-rzg2l: add support for RZ/G3S SoC
+Date:   Wed, 15 Nov 2023 16:27:40 +0200
+Message-Id: <20231115142749.853106-1-claudiu.beznea.uj@bp.renesas.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114135553.32301-2-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-kernel test robot noticed the following build warnings:
+Hi,
 
-[auto build test WARNING on pci/next]
-[also build test WARNING on pci/for-linus linus/master v6.7-rc1 next-20231115]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+Series adds support for IA55 available on RZ/G3S SoC.
+Patches are split as follows:
+- 1/9 updates documentation
+- 2/9 adds IA55 clock
+- 3-5/9 minor cleanups to align with the suggestions at [1] and
+  coding style recommendations
+- 6/9 implement restriction described in HW manual for ISCR register
+- 7/9 add a macro to retrieve TITSR base address based on it's index
+- 8/9 add suspend to RAM support
+- 9/9 adds IA55 device tree node
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Johan-Hovold/PCI-ASPM-Add-locked-helper-for-enabling-link-state/20231114-220117
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/pci/pci.git next
-patch link:    https://lore.kernel.org/r/20231114135553.32301-2-johan%2Blinaro%40kernel.org
-patch subject: [PATCH 1/6] PCI/ASPM: Add locked helper for enabling link state
-config: x86_64-randconfig-002-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152225.ZdVv0ufT-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152225.ZdVv0ufT-lkp@intel.com/reproduce)
+Thank you,
+Claudiu Beznea
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311152225.ZdVv0ufT-lkp@intel.com/
+[1] https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#struct-declarations-and-initializers
 
-All warnings (new ones prefixed by >>):
+Changes in v2:
+- collected Conor's tag
+- updated commit description according to code review comments
+- added patches 4, 5 according to review recommendations
+- updated patch 7/9 to retrieve only TITSR base address; dropped the rest
+  of the changes for the moment
+- in patch 8/9 use local variable in suspend/resume functions for controller's
+  base address, indent initialized structures members to tabs, updated
+  private driver data structure name
+- patch 3/7 from v1 was replaced by patch 7/9 in v2
+- patch 5/7 from v1 was renamed "Add support for suspend to RAM"
+- cleanup patches were kept at the beginning of the series and features at the end
 
->> drivers/pci/pcie/aspm.c:1186: warning: expecting prototype for pci_enable_link_state(). Prototype was for pci_enable_link_state_locked() instead
+Claudiu Beznea (9):
+  dt-bindings: interrupt-controller: renesas,rzg2l-irqc: Document RZ/G3S
+  clk: renesas: r9a08g045: Add IA55 pclk and its reset
+  irqchip/renesas-rzg2l: Use tabs instead of spaces
+  irqchip/renesas-rzg2l: Align struct member names to tabs
+  irqchip/renesas-rzg2l: Document structure members
+  irqchip/renesas-rzg2l: Implement restriction when writing ISCR
+    register
+  irqchip/renesas-rzg2l: Add macro to retrieve TITSR register offset
+    based on register index
+  irqchip/renesas-rzg2l: Add support for suspend to RAM
+  arm64: dts: renesas: r9108g045: Add IA55 interrupt controller node
 
-
-vim +1186 drivers/pci/pcie/aspm.c
-
-  1172	
-  1173	/**
-  1174	 * pci_enable_link_state - Clear and set the default device link state so that
-  1175	 * the link may be allowed to enter the specified states. Note that if the
-  1176	 * BIOS didn't grant ASPM control to the OS, this does nothing because we can't
-  1177	 * touch the LNKCTL register. Also note that this does not enable states
-  1178	 * disabled by pci_disable_link_state(). Return 0 or a negative errno.
-  1179	 *
-  1180	 * @pdev: PCI device
-  1181	 * @state: Mask of ASPM link states to enable
-  1182	 *
-  1183	 * Context: Caller holds pci_bus_sem read lock.
-  1184	 */
-  1185	int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
-> 1186	{
-  1187		lockdep_assert_held_read(&pci_bus_sem);
-  1188	
-  1189		return __pci_enable_link_state(pdev, state, true);
-  1190	}
-  1191	EXPORT_SYMBOL(pci_enable_link_state_locked);
-  1192	
+ .../renesas,rzg2l-irqc.yaml                   |   5 +-
+ arch/arm64/boot/dts/renesas/r9a08g045.dtsi    |  68 +++++++++++
+ drivers/clk/renesas/r9a08g045-cpg.c           |   3 +
+ drivers/irqchip/irq-renesas-rzg2l.c           | 110 +++++++++++++-----
+ 4 files changed, 156 insertions(+), 30 deletions(-)
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.39.2
+
