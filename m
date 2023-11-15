@@ -2,156 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5745F7ECAB0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 708F57ECAC0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229492AbjKOSoB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:44:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59228 "EHLO
+        id S229726AbjKOSqT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:46:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjKOSoA (ORCPT
+        with ESMTP id S229589AbjKOSqQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:44:00 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A66C9FA
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:43:56 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B93FC433C8;
-        Wed, 15 Nov 2023 18:43:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700073836;
-        bh=Jf1pHHRRqyFoJrFcKBLJXZi9kYmA9sn0zKRsvTYeN9U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XsmEj/L6owfl4Q4us64Fe207eympvsyfuTyF2EFkC5fMypx8x7hX+Nu+WtmRy6P7o
-         vL+ErFVnalcapwhsCuboN+UbPQg/Q1YJ0wjdl9326hv62K1B4Dz44nEDUe9d4Sc8I+
-         ttk8gVz8Av+XgvRLBGLryPFxAO/2+wI9MEF77VjBWxB0TBXLSDNAGhBKXu2gRLk62n
-         7CsjxKZG8FolkApx0gMQSqtOts/0dxvlIFp/FtsDSOrx6lhGM2MvmW3AsHRfI4WbhB
-         eWuHir/SH9qYR3lDkRv64kmeL0aCF9NX9+gJQorcgnyipZGYFTIpCcFizBpPuRC4Q3
-         WcI5drfP9Qbqw==
-Date:   Wed, 15 Nov 2023 18:43:47 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
-Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <d90884a0-c4d3-41e9-8f23-68aa87bbe269@sirena.org.uk>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
- <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
- <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
- <ZVTvvJTOV777UGsP@arm.com>
+        Wed, 15 Nov 2023 13:46:16 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0CDFA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:13 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id a640c23a62f3a-9e62f903e88so822705066b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1700073972; x=1700678772; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=G+xxF8an19N64H/pRk8mbK+sEYYkdEuOsGzAOFfR0W0=;
+        b=XHVnmuDuxFhle5ZL2Opso8SQeXdxAe1zy5BpFZJrBttytyN+vzLpDytehGTGA856cY
+         9My50a+lDgbi3On8jpDyiXQeWt0YPGpZvDsaOWyNdg5sZW7Y6uPGnMbuc1Nwyy1jliZc
+         Ta0WqRz3JRrcrL8evNnGDhnX0rWy4SDWRo+XY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700073972; x=1700678772;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G+xxF8an19N64H/pRk8mbK+sEYYkdEuOsGzAOFfR0W0=;
+        b=PrwvYtwNNCUZpDdH7kj8BmB1aE8aT49qZiW3gMPimLQrho/qZtqQYZlieOzMGthAZv
+         vNZ4Ge7NdAelu2tLznzWfitoAWbuBpjjga0imvWVpOFgys9n7s3AAY65OyopvuJuHkm7
+         cQzBuxjn/dDXX3l7mcpWMk0DUXQmjKT72EAKUtDbWBP5vZtacHRGQ2UyqFK6hIHXPmbv
+         yQlBG+AIPQ0QVacKdI3M8zJjtZdNEmRUtn2svxaSf3OpBaE8EWDkufmuK9Ko003kc3ld
+         ZRL8UxCyqdXSLqBMA3bjrNPxfvF1n3LcFh4aVjRBRIvglL6IVxy/T2LXxvlVBjNqvs2t
+         NiGg==
+X-Gm-Message-State: AOJu0YxM4C5IqP16TtkCFmWG7CAPHjSlQh8AhgO7XefqW+CcRvTdBoEk
+        C9Hz/WojcMelltb08H0pZ2FPHROVJvfrN1RlTrOSlVv9
+X-Google-Smtp-Source: AGHT+IHYi3eLE+4+4nHhzk++hkmn6JYSlZptNq1pA00D0K9zqKVYmMrxlwnEHRoeTn0mwT4/bE4KIg==
+X-Received: by 2002:a17:906:f84a:b0:9bd:a75a:5644 with SMTP id ks10-20020a170906f84a00b009bda75a5644mr10245988ejb.16.1700073972210;
+        Wed, 15 Nov 2023 10:46:12 -0800 (PST)
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
+        by smtp.gmail.com with ESMTPSA id ko14-20020a170907986e00b009dd701bb916sm7375201ejc.213.2023.11.15.10.46.11
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 10:46:11 -0800 (PST)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso11063347a12.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:46:11 -0800 (PST)
+X-Received: by 2002:a05:6402:1111:b0:53d:bc68:633a with SMTP id
+ u17-20020a056402111100b0053dbc68633amr10573131edv.5.1700073971308; Wed, 15
+ Nov 2023 10:46:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="jREq/r+U2+vimSwN"
-Content-Disposition: inline
-In-Reply-To: <ZVTvvJTOV777UGsP@arm.com>
-X-Cookie: For internal use only.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
+ <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+ <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com> <4007890.1700073334@warthog.procyon.org.uk>
+In-Reply-To: <4007890.1700073334@warthog.procyon.org.uk>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 15 Nov 2023 13:45:54 -0500
+X-Gmail-Original-Message-ID: <CAHk-=whFGA6YPJp3zazUwBG6ort8i34vGv9utYdOgYpekyt++Q@mail.gmail.com>
+Message-ID: <CAHk-=whFGA6YPJp3zazUwBG6ort8i34vGv9utYdOgYpekyt++Q@mail.gmail.com>
+Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+To:     David Howells <dhowells@redhat.com>
+Cc:     kernel test robot <oliver.sang@intel.com>, oe-lkp@lists.linux.dev,
+        lkp@intel.com, linux-kernel@vger.kernel.org,
+        Christian Brauner <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
+        feng.tang@intel.com, fengwei.yin@intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 15 Nov 2023 at 13:35, David Howells <dhowells@redhat.com> wrote:
+>
+> That's not what I see.  See attached for a dump of _copy_from_iter from my
+> kernel.  It's just using REP MOVSB.
 
---jREq/r+U2+vimSwN
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Yeah, an unconditional REP MOVSB is not right either. That just means
+that it performs truly horrendously badly on some machines.
 
-On Wed, Nov 15, 2023 at 04:20:12PM +0000, Szabolcs.Nagy@arm.com wrote:
-> The 11/15/2023 12:36, Mark Brown wrote:
-> > On Wed, Nov 15, 2023 at 12:45:45AM +0000, Edgecombe, Rick P wrote:
-> > > On Tue, 2023-11-14 at 20:05 +0000, Mark Brown wrote:
+Do you perhaps have CONFIG_CC_OPTIMIZE_FOR_SIZE set? That makes gcc
+use "rep movsb" - even for small copies that most definitely should
+*not* use "rep movsb".
 
-> > > > +               if (size < 8)
-> > > > +                       return (unsigned long)ERR_PTR(-EINVAL);
+Anyway, you should never use CC_OPTIMIZE_FOR_SIZE as any kind of
+baseline. I'd actually love to use it in general, but it really makes
+gcc do silly things when it goes for size optimizations that make no
+sense at all (because it will go for size over anything else).
 
-> > > What is the intention here? The check in map_shadow_stack is to leave
-> > > space for the token, but here there is no token.
+It turns out that on FSRM machines (ie anything really new), it's ok,
+because even small constant-sized copies do work ok with "rep movsb",
+but there are cases where it's absolutely horrendously bad.
 
-> > It was to ensure that there is sufficient space for at least one entry
-> > on the stack.
-
-> end marker token (0) needs it i guess.
-
-x86 doesn't currently have end markers.  Actually, that's a point -
-should we add a flag for specifying the use of end markers here?
-There's code in my map_shadow_stack() implementation for arm64 which
-does that.
-
-> otherwise 0 size would be fine: the child may not execute
-> a call instruction at all.
-
-Well, a size of specifically zero will result in a fallback to implicit
-allocation/sizing of the stack as things stand so this is specifically
-the case where a size has been specified but is smaller than a single
-entry.
-
-> > > I think for CLONE_VM we should not require a non-zero size. Speaking of
-> > > CLONE_VM we should probably be clear on what the expected behavior is
-> > > for situations when a new shadow stack is not usually allocated.
-> > > !CLONE_VM || CLONE_VFORK will use the existing shadow stack. Should we
-> > > require shadow_stack_size be zero in this case, or just ignore it? I'd
-> > > lean towards requiring it to be zero so userspace doesn't pass garbage
-> > > in that we have to accommodate later. What we could possibly need to do
-> > > around that though, I'm not sure. What do you think?
-
-> > Yes, requiring it to be zero in that case makes sense I think.
-
-> i think the condition is "no specified separate stack for
-> the child (stack==0 || stack==sp)".
-
-> CLONE_VFORK does not imply that the existing stack will be
-> used (a stack for the child can be specified, i think both
-> glibc and musl do this in posix_spawn).
-
-That also works as a check I think, though it requires the arch to check
-for the stack==sp case - I hadn't been aware of the posix_spawn() usage,
-the above checks Rick suggested just follow the handling for implicit
-allocation we have currently.
-
---jREq/r+U2+vimSwN
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVVEWIACgkQJNaLcl1U
-h9AoYwf/cojm+qZcxUY7dfJP7DC47qY+/XzUzkkr087SF7m5CJpUJMr7YDw+IqHs
-rSmaGhkeV2BLjb3e4P0UV4bD2pEgfheDGAqNGa5n9fDoQ6O1METyrDUPXco6PZVG
-lOcLQ/YWO5m8CddEWltolbnnkBasA3UDTXCkkiOtYs+B8d1N7m1XfpA4RGaul3uI
-L5IcslIwekmr1A5mfqcjeRvw3sh9qesVzDLOkWiTrbfLnPFzzU3aCYej18HttKJ3
-4DbBiTpvPnO0bgIMTGT5CL9CXEolecng5cEoZV3CtorIcycMj7hzaftvqC5ezkXB
-bkm9dunYL/0h1w7pJZ2wxk3h2Tg/ww==
-=p7qF
------END PGP SIGNATURE-----
-
---jREq/r+U2+vimSwN--
+                 Linus
