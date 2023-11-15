@@ -2,53 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82CC17EBF81
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:31:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B23BA7EBF88
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:33:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234758AbjKOJbt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 04:31:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48922 "EHLO
+        id S234799AbjKOJdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 04:33:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234680AbjKOJbr (ORCPT
+        with ESMTP id S234730AbjKOJdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 04:31:47 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7801D9F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 01:31:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=sJa3cuAFB3nxTpzcfZbSmQTYSFzKNLTZRZTj6CnRm9M=; b=BtktUW4LeB6M46Kf3juW4vIyzy
-        BQficf+JvtQu8LnIN6VhhAs2aeVaZyZZmAcR5BQdpk5JRzfLM6Cu4nXzTuL88/YAcNSYALtxazSNs
-        aDO2h38EzBkqdtB0iAnfPZ/DwXlMBtEJIQzDo/FDbyqzG8t3gQswDvdEF7+HuppPDWZwt8HRTHIZZ
-        1/GOibtLiui7ZqE7uElbLM9M9uwJKlthmkQIrdy8PcU884M/BZ60aNuhmMumbuLpvEC7Wu2zcBzLW
-        nmsXuU+ZHYNSZJm4tSqZ2MaeEytQTVBydMde8h5nRw5fU4g+VaFpuPJmfTSCrIllMvEIhW8PyMzKK
-        JBSHTaEQ==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r3CEn-003tNL-07;
-        Wed, 15 Nov 2023 09:31:34 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B18453002BE; Wed, 15 Nov 2023 10:31:08 +0100 (CET)
-Date:   Wed, 15 Nov 2023 10:31:08 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Jiri Olsa <olsajiri@gmail.com>
-Cc:     mingo@kernel.org, linux-kernel@vger.kernel.org, acme@kernel.org,
-        mark.rutland@arm.com, alexander.shishkin@linux.intel.com,
-        namhyung@kernel.org, irogers@google.com, adrian.hunter@intel.com
-Subject: Re: [PATCH 01/13] perf: Simplify perf_event_alloc() error path
-Message-ID: <20231115093108.GA3818@noisy.programming.kicks-ass.net>
-References: <20231102150919.719936610@infradead.org>
- <20231102152017.847792675@infradead.org>
- <ZUTprUojg7eHoxQI@krava>
+        Wed, 15 Nov 2023 04:33:19 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 279849B;
+        Wed, 15 Nov 2023 01:33:16 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SVdHl2pfNzWh7S;
+        Wed, 15 Nov 2023 17:32:51 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 15 Nov
+ 2023 17:33:14 +0800
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Jakub Kicinski <kuba@kernel.org>
+CC:     Mina Almasry <almasrymina@google.com>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com>
+ <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org>
+ <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <20231114172534.124f544c@kernel.org>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <56314b48-5273-6885-f3eb-5d60535faba0@huawei.com>
+Date:   Wed, 15 Nov 2023 17:33:13 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZUTprUojg7eHoxQI@krava>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+In-Reply-To: <20231114172534.124f544c@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,69 +66,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 03, 2023 at 01:38:05PM +0100, Jiri Olsa wrote:
-
-> > -err_callchain_buffer:
-> > -	if (!event->parent) {
-> > -		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
-> > -			put_callchain_buffers();
-> > -	}
+On 2023/11/15 6:25, Jakub Kicinski wrote:
+> On Tue, 14 Nov 2023 16:23:29 +0800 Yunsheng Lin wrote:
+>> I would expect net stack, page pool, driver still see the 'struct page',
+>> only memory provider see the specific struct for itself, for the above,
+>> devmem memory provider sees the 'struct page_pool_iov'.
 > 
-> hum, so this is now called all the time via __free_event, but it should
-> be called only if we passed get_callchain_buffers call.. this could screw
-> up nr_callchain_events number eventually no?
+> You can't lie to the driver that an _iov is a page either.
 
-Yes, good catch, thanks!
+Yes, agreed about that.
 
-Something like the below should handle that, no?
+As a matter of fact, the driver should be awared of what kind of
+memory provider is using when it calls page_pool_create() during
+init process.
 
----
---- a/include/linux/perf_event.h
-+++ b/include/linux/perf_event.h
-@@ -628,14 +628,15 @@ struct swevent_hlist {
- 	struct rcu_head			rcu_head;
- };
- 
--#define PERF_ATTACH_CONTEXT	0x01
--#define PERF_ATTACH_GROUP	0x02
--#define PERF_ATTACH_TASK	0x04
--#define PERF_ATTACH_TASK_DATA	0x08
--#define PERF_ATTACH_ITRACE	0x10
--#define PERF_ATTACH_SCHED_CB	0x20
--#define PERF_ATTACH_CHILD	0x40
--#define PERF_ATTACH_EXCLUSIVE	0x80
-+#define PERF_ATTACH_CONTEXT	0x0001
-+#define PERF_ATTACH_GROUP	0x0002
-+#define PERF_ATTACH_TASK	0x0004
-+#define PERF_ATTACH_TASK_DATA	0x0008
-+#define PERF_ATTACH_ITRACE	0x0010
-+#define PERF_ATTACH_SCHED_CB	0x0020
-+#define PERF_ATTACH_CHILD	0x0040
-+#define PERF_ATTACH_EXCLUSIVE	0x0080
-+#define PERF_ATTACH_CALLCHAIN	0x0100
- 
- struct bpf_prog;
- struct perf_cgroup;
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -5166,10 +5166,8 @@ static void perf_addr_filters_splice(str
- /* vs perf_event_alloc() error */
- static void __free_event(struct perf_event *event)
- {
--	if (!event->parent) {
--		if (event->attr.sample_type & PERF_SAMPLE_CALLCHAIN)
--			put_callchain_buffers();
--	}
-+	if (event->attach_state & PERF_ATTACH_CALLCHAIN)
-+		put_callchain_buffers();
- 
- 	kfree(event->addr_filter_ranges);
- 
-@@ -12065,6 +12063,7 @@ perf_event_alloc(struct perf_event_attr
- 			err = get_callchain_buffers(attr->sample_max_stack);
- 			if (err)
- 				goto err;
-+			event->attach_state |= PERF_ATTACH_CALLCHAIN;
- 		}
- 	}
- 
+> The driver must explicitly "opt-in" to using the _iov variant,
+> by calling the _iov set of APIs.
+> 
+> Only drivers which can support header-data split can reasonably
+> use the _iov API, for data pages.
+
+But those drivers can still allow allocating normal memory, right?
+sometimes for data and header part, and sometimes for the header part.
+
+Do those drivers need to support two sets of APIs? the one with _iov
+for devmem, and the one without _iov for normal memory. It seems somewhat
+unnecessary from driver' point of veiw to support two sets of APIs?
+The driver seems to know which type of page it is expecting when calling
+page_pool_alloc() with a specific page_pool instance.
+
+Or do we use the API with _iov to allocate both devmem and normal memory
+in the new driver supporting devmem page?  If that is the case, does it
+really matter if the API is with _iov or not?
+
+> .
+> 
