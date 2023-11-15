@@ -2,77 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C5997EC269
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:37:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12C9D7EC277
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:37:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343764AbjKOMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:37:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
+        id S1343801AbjKOMh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:37:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234948AbjKOMhE (ORCPT
+        with ESMTP id S1343800AbjKOMhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:37:04 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BAF11D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:37:01 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1EA7C433C8;
-        Wed, 15 Nov 2023 12:36:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700051820;
-        bh=MeaNwT9drnv7V7gmXshtmN5Q7mXUr90qsX5EUyFZ1HE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UiUY5PwpMDNuSSFMYA+7Qf0jNtFakPirp9veX1A6Oz8YB8sKCwVD/zQ2mngevlA0g
-         y1hlQ+C4joF6LpLy2RxmOJkUQDemBowqYlXDBZbOkUgtpiA0WaxT9Q1TaNL6Dn0qLG
-         hlu6krVcVEEABACBQDxVJekfiBJ+tiRhLR7fwyr8vDdc1S7+tuMRa2B2B6mOv+DEkJ
-         pMNn6ApItO69NBIBnBhoZg9E18+NC2MAL3mM8/cMUNxjJ4f2zMUQMX1I0yXxD1M+tp
-         LizFsHpZW6V2cCRAU16UQ2e1Rx00ClB5Cqp3uxrQQ4OQfCoT7f7UxRVb5p9BvhMDuf
-         SsuRUUXDYxs0w==
-Date:   Wed, 15 Nov 2023 12:36:51 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
-Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
- <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
+        Wed, 15 Nov 2023 07:37:21 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47FB213D;
+        Wed, 15 Nov 2023 04:37:15 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF9N762007341;
+        Wed, 15 Nov 2023 12:37:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=qcppdkim1;
+ bh=KvodZO9eoqV32uKWQ61uQ7iwGxYX5CUztBy+4JB5HDw=;
+ b=pr+fbBY41dywegmYLMfDyVpbOwRYpxPfT19lyRXPfuzqgVh1/EERlbUoO9uW7xraTK9L
+ gGIyDtul4HfTJgK+W+Ocb/2hrKjzdAjAPcyiUxdf0itoMV86KMjZemR87fyqOHx4AupU
+ AerV2WHpNvwfBvDeL83dRsfB8jbay2CCMMnZ4g1YWM2jUZ2DFjRiQM6QPXNbUlurcxEU
+ n2hmmleCjV/NaDJYnBBq9N4l/vgVD9CLTx/0e2qzbhayBgUN5ey5t9pUkeGmExlCrdk5
+ sgcLlzyRFjWlnR/sJHSeYiA1Uj2VPNwIEjs/BG5oMdwVVJ+UQFzjDJf9u/d0nLjDGrd1 cQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucba6tqq5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 12:37:08 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AFCb5v6022061;
+        Wed, 15 Nov 2023 12:37:05 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3ua2pmatv1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Wed, 15 Nov 2023 12:37:05 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AFCb4w1022050;
+        Wed, 15 Nov 2023 12:37:04 GMT
+Received: from hu-sgudaval-hyd.qualcomm.com (hu-msarkar-hyd.qualcomm.com [10.213.111.194])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTP id 3AFCb45I022047;
+        Wed, 15 Nov 2023 12:37:04 +0000
+Received: by hu-sgudaval-hyd.qualcomm.com (Postfix, from userid 3891782)
+        id 0FAA84BD5; Wed, 15 Nov 2023 18:07:03 +0530 (+0530)
+From:   Mrinmay Sarkar <quic_msarkar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org
+Cc:     quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com,
+        Mrinmay Sarkar <quic_msarkar@quicinc.com>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        =?UTF-8?q?Krzysztof=20Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: [PATCH v3 0/3] arm64: qcom: sa8775p: add cache coherency support for SA8775P
+Date:   Wed, 15 Nov 2023 18:06:58 +0530
+Message-Id: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="KriTiAZt4WP/aqiG"
-Content-Disposition: inline
-In-Reply-To: <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
-X-Cookie: For internal use only.
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wJlz0OUE_wLnzPJFFoeEOdiU36uWdJW4
+X-Proofpoint-ORIG-GUID: wJlz0OUE_wLnzPJFFoeEOdiU36uWdJW4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_11,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
+ suspectscore=0 clxscore=1015 bulkscore=0 mlxlogscore=288 phishscore=0
+ adultscore=0 priorityscore=1501 malwarescore=0 impostorscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150097
+X-Spam-Status: No, score=-2.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,61 +93,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In a multiprocessor system cache snooping maintains the consistency
+of caches. Snooping logic is disabled from HW on this platform.
+Cache coherency doesn’t work without enabling this logic.
 
---KriTiAZt4WP/aqiG
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This series is to enable cache snooping logic in both RC and EP
+driver and add the "dma-coherent" property in dtsi to support
+cache coherency in 8775 platform.
 
-On Wed, Nov 15, 2023 at 12:45:45AM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2023-11-14 at 20:05 +0000, Mark Brown wrote:
+To verify this series we required [1]
 
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0if (size < 8)
-> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0r=
-eturn (unsigned long)ERR_PTR(-EINVAL);
+[1] https://lore.kernel.org/all/1699669982-7691-1-git-send-email-quic_msarkar@quicinc.com/
 
-> What is the intention here? The check in map_shadow_stack is to leave
-> space for the token, but here there is no token.
+v2 -> v3:
+- update commit message(8755 -> 8775).
 
-It was to ensure that there is sufficient space for at least one entry
-on the stack.
+v1 -> v2:
+- update cover letter with explanation.
+- define each of these bits and ORing at usage time rather than
+  directly writing value in register.
 
-> I think for CLONE_VM we should not require a non-zero size. Speaking of
-> CLONE_VM we should probably be clear on what the expected behavior is
-> for situations when a new shadow stack is not usually allocated.
-> !CLONE_VM || CLONE_VFORK will use the existing shadow stack. Should we
-> require shadow_stack_size be zero in this case, or just ignore it? I'd
-> lean towards requiring it to be zero so userspace doesn't pass garbage
-> in that we have to accommodate later. What we could possibly need to do
-> around that though, I'm not sure. What do you think?
+Mrinmay Sarkar (3):
+  PCI: qcom: Enable cache coherency for SA8775P RC
+  PCI: qcom-ep: Enable cache coherency for SA8775P EP
+  arm64: dts: qcom: sa8775p: Mark PCIe controller as cache coherent
 
-Yes, requiring it to be zero in that case makes sense I think.
+ arch/arm64/boot/dts/qcom/sa8775p.dtsi     |  1 +
+ drivers/pci/controller/dwc/pcie-qcom-ep.c | 10 ++++++++++
+ drivers/pci/controller/dwc/pcie-qcom.c    | 13 +++++++++++++
+ 3 files changed, 24 insertions(+)
 
-> > +++ b/include/linux/sched/task.h
-> > @@ -41,6 +41,8 @@ struct kernel_clone_args {
-> > =A0=A0=A0=A0=A0=A0=A0=A0void *fn_arg;
-> > =A0=A0=A0=A0=A0=A0=A0=A0struct cgroup *cgrp;
-> > =A0=A0=A0=A0=A0=A0=A0=A0struct css_set *cset;
-> > +=A0=A0=A0=A0=A0=A0=A0unsigned long shadow_stack;
->=20
-> Was this ^ left in accidentally? Elsewhere in this patch it is getting
-> checked too.
+-- 
+2.7.4
 
-Yes, it's just bitrot from removing the pointer.
-
---KriTiAZt4WP/aqiG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVUu2IACgkQJNaLcl1U
-h9BiVwf/c7wQhfKl4vMlx0SwxxKe7cZTyIJp3wxjL4gqHL9ZK62MyNiijoT390ky
-VkeRCd7A8hLr/xRIcsxy9aqwiP1yR/68feC6SgQ+t48WHUKyalsV4t69rhrkrBgw
-+5jJZmMHb0J2rTdHR5/OXPAAUXVrlSyuOGUi82GB0UCr2mjdrpL+Wj2GLMPyHBB4
-h7QFNJ2KUVzsRG0WZPd0BwagqT8CYccMWYTksoEe38C2xz5z2TUvEQ5YvIQhx4/S
-4UlBMR256vO/0CGnl1C6U1n6OUi7z5Fg5vFDvSX5Wv1DkoZnOmeHJu0ZImxLvA0S
-7KN9aJ9/3aZkVvjOBc6vWOY9Kl7vqw==
-=XEEC
------END PGP SIGNATURE-----
-
---KriTiAZt4WP/aqiG--
