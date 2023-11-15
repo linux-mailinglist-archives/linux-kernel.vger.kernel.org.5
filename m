@@ -2,88 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C71D7EC4CC
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:10:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C006E7EC4D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:10:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344150AbjKOOJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:09:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33702 "EHLO
+        id S1344114AbjKOOKz convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 09:10:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjKOOJv (ORCPT
+        with ESMTP id S234969AbjKOOKy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:09:51 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.220.28])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBDB7188
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:09:47 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 0C395218B2;
-        Wed, 15 Nov 2023 14:09:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1700057386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ziC0owFfoL33apf8R/x/Rrhz8VjbOAJrdvgUnGBfRxk=;
-        b=rjdJ/xwYpj17GNAvoaf1I7+UTjDrp7xW5/P0GpOIXXSJBpZcqsKcbvRushWCo+rQmA9FBP
-        hqxWZG5qLNaeKPC8PGkWC08FzxWtd4EPPaOccGLuowqfRZqRVd1tvwk6XESEpoRTEaOb4T
-        CnfYdxfY5m3Iym86FkSiLgbDB0F60R8=
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id D68F313587;
-        Wed, 15 Nov 2023 14:09:45 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6t+6LSnRVGXgVAAAMHmgww
-        (envelope-from <mhocko@suse.com>); Wed, 15 Nov 2023 14:09:45 +0000
-Date:   Wed, 15 Nov 2023 15:09:45 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Charan Teja Kalla <quic_charante@quicinc.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        david@redhat.com, vbabka@suse.cz, hannes@cmpxchg.org,
-        quic_pkondeti@quicinc.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/3] mm: page_alloc: drain pcp lists before oom kill
-Message-ID: <ZVTRKTi2QCoMiv50@tiehlicka>
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <a8e16f7eb295e1843f8edaa1ae1c68325c54c896.1699104759.git.quic_charante@quicinc.com>
- <ZUy1dNvbvHc6gquo@tiehlicka>
- <5c7f25f9-f86b-8e15-8603-e212b9911cac@quicinc.com>
- <ZVNQdQKQAMjgOK9y@tiehlicka>
- <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
+        Wed, 15 Nov 2023 09:10:54 -0500
+Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C280E7;
+        Wed, 15 Nov 2023 06:10:50 -0800 (PST)
+Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-58a7b55bef5so84495eaf.1;
+        Wed, 15 Nov 2023 06:10:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700057450; x=1700662250;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=NnQnsLiccnW9oWaH+nGhHyzzFKh12H3eFHXv5bXQ0dU=;
+        b=OOWfjYohLco9I/81zq+J35erA9u9ICfFDGHDfbN0tZYNJoz4EglCB0iHBhSf+6IlVp
+         4TfjYAKpltcn3L4SX4g9rWqGJ5Dz/4iD6ybiRFED4lCUTaJy4UTDUP9hK6UPwrIF0eer
+         SeveTXHB/O9T+WVt378cCsleD5e8/i8VZibeNFMn44b89Dc1YLPJ/xuUX2nQP/m6WPAw
+         CyizprGwZMkZP7R27jQdjbDkYoWf9+92H/5R1wsld9tBMvB2Rzl/1Wa+pZCZjAdXMEQl
+         qpjGDvDXvyzgVlGqTZ6MV4RQ3+JnRhQ0PWFFdCzgLelTqFb0Sv6rkvTY4g2OOtrr/GHN
+         QZ0A==
+X-Gm-Message-State: AOJu0YxZVuJtOw71uZXCKgd8+x3xUmpXoLXKkmhdd56FA8rfQcX+VwrK
+        whZbGHib+k7NEHEvNX6GwnlDSpwB6eghmmXDY/8=
+X-Google-Smtp-Source: AGHT+IEV2hJUQ0Q0IMesFEjpBvRxNym9oMpYx9EjqaPy31RIcCLcmrO/3ZlltYyJ3UmJH5lRxfNvEe0xCG0hK8MXwKQ=
+X-Received: by 2002:a05:6820:2783:b0:58a:7c36:9f7b with SMTP id
+ dc3-20020a056820278300b0058a7c369f7bmr3705851oob.1.1700057449633; Wed, 15 Nov
+ 2023 06:10:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <342a8854-eef5-f68a-15e5-275de70e3f01@quicinc.com>
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.98
-X-Spamd-Result: default: False [-8.98 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-3.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.com:s=susede1];
-         NEURAL_HAM_SHORT(-1.00)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[9];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         MID_RHS_NOT_FQDN(0.50)[];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-1.38)[90.73%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
+ <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com>
+ <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu> <CAOuDEK3UuVGgP63NG9HtuJ0D2ERZsFGBwF5+GNynk=P7zSVUhg@mail.gmail.com>
+In-Reply-To: <CAOuDEK3UuVGgP63NG9HtuJ0D2ERZsFGBwF5+GNynk=P7zSVUhg@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Wed, 15 Nov 2023 15:10:38 +0100
+Message-ID: <CAJZ5v0j-JdoGADG6rYNOEY1ePtDz0vsV4T1wX2TO1t+5kPyJ8Q@mail.gmail.com>
+Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
+To:     Guan-Yu Lin <guanyulin@google.com>
+Cc:     Alan Stern <stern@rowland.harvard.edu>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        gregkh@linuxfoundation.org, len.brown@intel.com, pavel@ucw.cz,
+        heikki.krogerus@linux.intel.com, mkl@pengutronix.de,
+        hadess@hadess.net, mailhol.vincent@wanadoo.fr,
+        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pumahsu@google.com, raychi@google.com, albertccwang@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -91,30 +66,85 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 14-11-23 22:06:45, Charan Teja Kalla wrote:
-> Thanks Michal!!
-> 
-> On 11/14/2023 4:18 PM, Michal Hocko wrote:
-> >> At least in my particular stress test case it just delayed the OOM as i
-> >> can see that at the time of OOM kill, there are no free pcp pages. My
-> >> understanding of the OOM is that it should be the last resort and only
-> >> after doing the enough reclaim retries. CMIW here.
-> > Yes it is a last resort but it is a heuristic as well. So the real
-> > questoin is whether this makes any practical difference outside of
-> > artificial workloads. I do not see anything particularly worrying to
-> > drain the pcp cache but it should be noted that this won't be 100%
-> > either as racing freeing of memory will end up on pcp lists first.
-> 
-> Okay, I don't have any practical scenario where this helped me in
-> avoiding the OOM.  Will comeback If I ever encounter this issue in
-> practical scenario.
-> 
-> Also If you have any comments on [PATCH V2 2/3] mm: page_alloc: correct
-> high atomic reserve calculations will help me.
+On Wed, Nov 15, 2023 at 8:08 AM Guan-Yu Lin <guanyulin@google.com> wrote:
+>
+> On Wed, Nov 8, 2023 at 11:56 PM Alan Stern <stern@rowland.harvard.edu> wrote:
+> >
+> > On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
+> > > Thanks for the questions. Let me first introduce my motivation for
+> > > proposing this feature. We can discuss the implementation details later.
+> > >
+> > > Motivation:
+> > > Currently, system PM operations always override runtime PM operations.
+> > > As runtime PM reflects the power status of devices, there is a
+> > > possibility that runtime PM states that a device is in use, but system
+> > > PM decides to suspend it. Up to now, we have assumed that a device can't
+> > > function without resources from the system, so the device should acquire
+> > > a wakelock to prevent this from happening. However, what if the device
+> >
+> > [From the fact that you mention wakelocks, I assume that you're trying
+> > to implement something for Android systems rather than Linux systems
+> > in general.]
+> >
+> > > does not need the system's support to function? Or only needs limited
+> > > resources (e.g., only limited power source or clock) to function? In this
+> > > situation, we would like to keep the device on but allow the system to
+> > > suspend. This is an example where we would like devices to follow runtime
+> > > PM rather than system PM.
+> >
+> > To put it more simply, you want a way to leave some devices in an active
+> > state while the rest of the system is suspended.  It's not clear why you
+> > have dragged runtime PM into the discussion (apart from the obvious fact
+> > that you won't want to keep a device active if it isn't active already).
+> >
+>
+> The determination of which device should remain active when the system
+> suspends can be based on various factors. One straightforward approach
+> is to consider the device's runtime pm state.
 
-I do not have a strong opinion on that one to be honest. I am not even
-sure that reserving a full page block (4MB) on small systems as
-presented is really a good use of memory.
--- 
-Michal Hocko
-SUSE Labs
+Not really.  The runtime PM status has no bearing on whether or not
+the device should remain active over a system suspend/resume cycle.
+
+> Alternatively, we could
+> explore more elaborate techniques that consider additional criteria.
+
+In fact, the device's driver decides what is going to happen to it
+during the system suspend transition.  It very well may decide to
+leave the device in the operational state, but it needs to take
+dependencies between into account.
+
+> > This sounds like a major change, not something to be done with a simple
+> > override.  You should discuss it with Rafael Wysocki and the linux-pm
+> > mailing list before trying to implement anything.
+> >
+> > > Feature Supported:
+> > > 1. Devices could control the priority of system PM and runtime PM during
+> > >    runtime.
+> >
+> > This seems like a totally unnecessary side issue.  Forget about runtime
+> > PM for the time being and concentrate instead on which devices you want
+> > to keep active.
+> >
+> > > 2. The control should be at the device level, meaning that different
+> > >    devices should control their own priorities.
+> > >
+> > > Goal of This Patch:
+> > > 1. Design a framework to support features above.
+> > > 2. Apply it into usb for demonstration.
+> >
+> > You may find that it is easier (and less work in the long run) to design
+> > the general framework and get it working than to concentrate on one
+> > particular subsystem.
+> >
+> > Alan Stern
+>
+> The big picture is "a way to leave some devices in an active state
+> while the rest of the system is suspended", I think it could be
+> separated into:
+> (1) Each system should be able to choose which device(s) is included
+>     in this feature.
+> (2) For devices chosen in (1), each of them should have the flexibility
+>     to determine when it will not suspend with the system, not just
+>     always being active when the system suspends.
+
+A specific use case, please.
