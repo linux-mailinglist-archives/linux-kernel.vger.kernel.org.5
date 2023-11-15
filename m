@@ -2,73 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 729A47EC1F3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:14:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C91B57EC205
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343760AbjKOMOF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:14:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59716 "EHLO
+        id S1343638AbjKOMRp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:17:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343739AbjKOMOD (ORCPT
+        with ESMTP id S234916AbjKOMRn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:14:03 -0500
-Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BD0C13D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:13:59 -0800 (PST)
-Received: by mail-qt1-x830.google.com with SMTP id d75a77b69052e-41cc0e9d92aso40130331cf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:13:59 -0800 (PST)
+        Wed, 15 Nov 2023 07:17:43 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8565EDA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:17:39 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id d75a77b69052e-41cd6e1d4fbso39249021cf.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:17:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700050438; x=1700655238; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700050658; x=1700655458; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=kmMe6mt3RGlOrnesndmJtE1+4ADDaTN4JGWXI5ass9o=;
-        b=YkNKh+8ns/OYidq4KH1Aj66zmXU+ncqeWlygQHf9JuDeYQbZgAx+S2G8g+3GhNpi+x
-         67i33TYty7n3gdY9cGPrYpOlBlNT0nm1M0s8kOqeVDSXYXatxuH+uyyzorY1KNVIpAxO
-         frONtC6oi2t5Zlt5V2eBdSpMk7Ar6taF1T4JPSW5SwmA3XXpJJaQ7vhr7w0FobFPb4SM
-         MhpQgNyd1tFgmnPuaPQ6NdBleFwVf1hhhBgvab1VfBrOqPUR5jbE85Qsr/ZeOq9faAVS
-         1P1qqVbxt1SPH3Fic0CF8uEMkqfQ60yPs/6nWkh8OdEcY3r9AhRamwMZtcendtMuM/T9
-         mA8Q==
+        bh=NwOU1eQ+YKTD4yQGGCQJLYddK4he3i15lU45I5FAEyE=;
+        b=buWUoiNIHEcHc4hdkPKviopRlpqwqXMdi4/rOmI7glVANV78fd8AKhd+frtlY5Vwnh
+         tgMhAy0MjmOfK4I8IsMukHyVe75T2QeswNxOew9XrPzgxWXjkVAFTg4g9GJmq/uILwgv
+         MkV3zyE4lkI7pVa4Sg6aM+vx2Axk66p+sxRHQJTrqYHtKdpX8orkwjCN8pkbGEhPTvgK
+         hFZ5tO2xF0mxnQF9wHVZb/cwM8cIJu20sH4Y0rtFgLLAr9RELhpXjVToUBqQSkEXXmpW
+         MOjrCfeNr+iXROMyFe7FT88B66YhKqFTsXLyO9F9AiAKOMl0l0zN93nfhtrAz4oJFIyT
+         24xg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700050438; x=1700655238;
+        d=1e100.net; s=20230601; t=1700050658; x=1700655458;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kmMe6mt3RGlOrnesndmJtE1+4ADDaTN4JGWXI5ass9o=;
-        b=qHck6qlyPIdTSmMJiAOZNOLBTGJ+JnOPQaOgyRJ5N5pTkw5PB7BNfRKXX/o20Pabag
-         fqhGLtRYxC40TEf7oIXvcVulYKHEHc6HP1P5J1amVBXg5T3c7EEzuW0pv7nocU91/TI2
-         x6ABgxc/IpTm0L7qd38faVFNhFQfjDmUka3iuA7Q0FxSTsSjtoLOp1HK/SZVL+ggXJv3
-         KP2zf2EOwc2HhlXWYIEVuXgrSIIHs+tXQSU9K80Pn5/5PV1fkGdKSIhTC1aXY4n6dIJn
-         wWZ7e/bZMH8XcYePbwQWe1JlCbSn0OFylQR2sXt8PGayMiGxP51atlMpuFlKIVr7aUQt
-         /dQg==
-X-Gm-Message-State: AOJu0YzcQ/yXDDXrVGKuaXg2s6As5lTXLec/vw1nVMlVzLAAwu4YBim/
-        74j/nrTUkBXsyZtob0k0e//a7A==
-X-Google-Smtp-Source: AGHT+IGXdBv2umz2SKKDPi9VRr9rnp/RAh8t9uIrpRWBH455CBCDTZj/CBfNrNDHd2iHpTW6QUpvZw==
-X-Received: by 2002:ac8:5885:0:b0:41c:dc85:1c17 with SMTP id t5-20020ac85885000000b0041cdc851c17mr5228652qta.66.1700050438642;
-        Wed, 15 Nov 2023 04:13:58 -0800 (PST)
+        bh=NwOU1eQ+YKTD4yQGGCQJLYddK4he3i15lU45I5FAEyE=;
+        b=e05uLpwa9qLgtFZTyfPBWjKGbJNDOp+tSANuKIr8pIOw2mX5ad4Jmh1tsFXuo+Mv3p
+         lEuhQ+qA4+TcTUZ7I2Mp8vmeRF9yCW9fwJOmZJhxjre9GwXD7qPcHgx/C24cbg7jnSKN
+         7SsgPoEbZ+q9UDZaM1tU9QqAoEWpZIHUOeqrQ+ph+x0mrULUL7jw19jyrZLVejYWp//b
+         gFHLKBTvceCbDBH6JCGq/uk10XFTcwsSa/ZUnkadbzSd0HkzKXx9GVw+kr05ULgDhZ4v
+         fLpM32aafr0XhYsf2CqE7FV0BxcfUU4hHotPSarwDZO46pVGda9JpzXsACYSfjoR/hBR
+         J5TQ==
+X-Gm-Message-State: AOJu0YyDy4SKstl1SuG7a61DptGU8pmRyWtgrn7x6x1A8z1RnjHuU0pO
+        SwQySx9XPupkFMW2vEzT1HEleA==
+X-Google-Smtp-Source: AGHT+IFQ37CO8FSGToXU4RQ6qFrxhCQbUJbC0uTbVgxOKU5Xh/kEVwqQpAIIcBT7RUj7XUpbd3TdGw==
+X-Received: by 2002:a05:622a:1aaa:b0:416:5dca:3c9d with SMTP id s42-20020a05622a1aaa00b004165dca3c9dmr5820552qtc.16.1700050658671;
+        Wed, 15 Nov 2023 04:17:38 -0800 (PST)
 Received: from [192.168.212.13] ([12.191.197.195])
-        by smtp.gmail.com with ESMTPSA id n25-20020ac86759000000b0041cb8947ed2sm3463497qtp.26.2023.11.15.04.13.56
+        by smtp.gmail.com with ESMTPSA id 3-20020ac85643000000b0041b9b6eb309sm3497310qtt.93.2023.11.15.04.17.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 04:13:58 -0800 (PST)
-Message-ID: <6bb81878-2b68-4721-86c0-5f6eaec59434@linaro.org>
-Date:   Wed, 15 Nov 2023 13:13:56 +0100
+        Wed, 15 Nov 2023 04:17:38 -0800 (PST)
+Message-ID: <4f431cc6-4f13-47bb-ba35-44bddf047e02@linaro.org>
+Date:   Wed, 15 Nov 2023 13:17:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] ARM: dts: aspeed: Add ASRock E3C256D4I BMC
+Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+ bindings
 Content-Language: en-US
-To:     Zev Weiss <zev@bewilderbeest.net>
-Cc:     Rob Herring <robh+dt@kernel.org>,
+To:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>,
+        Conor Dooley <conor@kernel.org>
+Cc:     "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
         Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
         Conor Dooley <conor+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@codeconstruct.com.au>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org
-References: <20231114112722.28506-4-zev@bewilderbeest.net>
- <20231114112722.28506-6-zev@bewilderbeest.net>
- <cde26249-1d47-496f-b198-a0c4c02bed5c@linaro.org>
- <b06b2b9e-8185-41e8-89b5-e6bc8d09d948@hatter.bewilderbeest.net>
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
+References: <20231109014948.2334465-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231109014948.2334465-2-Delphine_CC_Chiu@Wiwynn.com>
+ <20231109-obscurity-dress-4d1d3370ea56@spud>
+ <SG2PR04MB5543AB6AB419CA76DBD5E023A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -114,7 +120,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <b06b2b9e-8185-41e8-89b5-e6bc8d09d948@hatter.bewilderbeest.net>
+In-Reply-To: <SG2PR04MB5543AB6AB419CA76DBD5E023A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -127,21 +133,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14/11/2023 23:21, Zev Weiss wrote:
-
->> It does not look like you tested the DTS against bindings. Please run
->> `make dtbs_check W=1` (see
->> Documentation/devicetree/bindings/writing-schema.rst or
->> https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
->> for instructions).
+On 15/11/2023 09:38, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
+>> -----Original Message-----
+>> From: Conor Dooley <conor@kernel.org>
+>> Sent: Friday, November 10, 2023 1:10 AM
+>> To: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
+>> Cc: patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Guenter Roeck
+>> <linux@roeck-us.net>; Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
+>> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
+>> Jonathan Corbet <corbet@lwn.net>; linux-i2c@vger.kernel.org;
+>> linux-hwmon@vger.kernel.org; devicetree@vger.kernel.org;
+>> linux-kernel@vger.kernel.org; linux-doc@vger.kernel.org
+>> Subject: Re: [PATCH v4 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
+>> bindings
 >>
+>> On Thu, Nov 09, 2023 at 09:49:45AM +0800, Delphine CC Chiu wrote:
+>>> Add a device tree bindings for ltc4286 device.
+>>>
+>>> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+>>>
+>>> Changelog:
+>>>   v4 - Revise some inappropriate writing in yaml file
+>>>   v3 - Revise adi,vrange-select-25p6 to adi,vrange-low-enable
+>>>   v2 - Revise vrange_select_25p6 to adi,vrange-select-25p6
+>>>      - Add type for adi,vrange-select-25p6
+>>>      - Revise rsense-micro-ohms to shunt-resistor-micro-ohms
+>>
+>> Your changelog should be below the --- line.
 > 
-> Au contraire -- I did, and it exited 0 with no output, which I 
-> interpreted as a clean pass.  Are there particular shortcomings beside 
-> what you've already pointed out that you would have expected it to flag?
+> We will add --- line on our changelog.
+> 
+>> You also omitted the tag I left on the previous version.
+> 
+> Could you point out the exact places that we omit?
 
-Then paste entire command result here, including the command you used.
+Open the previous email and read it fully. Did you or did you not get a tag?
 
+> Thanks.
+> 
+>> With the changelog fixed:
+>> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
 Best regards,
 Krzysztof
 
