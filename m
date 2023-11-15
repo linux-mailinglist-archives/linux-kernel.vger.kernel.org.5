@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 10BC27EBC11
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:36:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 987C87EBC14
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234488AbjKODgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:36:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54796 "EHLO
+        id S234442AbjKODga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:36:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234457AbjKODgC (ORCPT
+        with ESMTP id S234404AbjKODg2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:36:02 -0500
+        Tue, 14 Nov 2023 22:36:28 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8E3FA;
-        Tue, 14 Nov 2023 19:35:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51A35C433C7;
-        Wed, 15 Nov 2023 03:35:52 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEA5AF0;
+        Tue, 14 Nov 2023 19:36:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25DAAC433C7;
+        Wed, 15 Nov 2023 03:36:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019358;
-        bh=dYViN4OUK+wSLzWaaS6X3u0p8LN0AZ3u0CQVH6CC28s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=eS0zJO/g4rwu0S4xzK4OSoot8QOLclzozc0NbnNqnLhMGLj6AXNkplXBtglHlaP4n
-         b/9hToWPiUYg0CWQpJeMC3ymPNMRjfhySHxH8m3LY5cmqk5zOBNKf/NljZekk4wN/h
-         VJ13q+GwBt+eQLAffCKcYKlaNV/kVMSzMzxeoLe0SdGETVIsmVZMawdNgPZuMjQ7mR
-         7h3Hf3Z7+Ab0KtzmiWDVAf4OYOhIhHFKVoPT9RKbXGpmdB/TypD7Nd+Z+CEXvTZoFL
-         K0aj/sM9hJKK/MfO/nBMg3KvFab/qSjgEqWWEtzJr9NAwteXFDn+EcXYyFaWrUA8z3
-         +pRL5tz0yfysw==
+        s=k20201202; t=1700019384;
+        bh=0+NfibdCD4VeZDLIRZHoC1Mv9PlzLQwXwbu//MhvxdQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UctmX1ybctCzhs0y9pgMddcneMzf3H3WfdRTC1UytY96/nT2i9joK4+uTyzFis5CD
+         g+eNU1wAFleh+ToVwmsh85dbqka+cqLp19oDP4f88JBQUDxPq8G2tn8Ie5A1BMRE5m
+         xypLeZ4U4r3Ct21vXc2N9ZgszW48ht18d5h4qv3Jp22KVzNP3eJ4DF0BtF0a7gIh81
+         LXgrUie1OoT05fU6AEH45/WFi5Y0IGqDpjfRC8WsU2sBimoY2ww99d+jAWL0nTcuQI
+         gg9IGlTyoyVMeoS8Oi1Ab5abkm5kMl9QwcGHRMU3/JmCszk7eBRnT/PleFUJRUWsSY
+         iinBXupGnpkmw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.5 6/6] pwm: Fix double shift bug
-Date:   Tue, 14 Nov 2023 22:34:50 -0500
-Message-ID: <20231115033459.1228900-6-sashal@kernel.org>
+Cc:     Tony Lindgren <tony@atomide.com>,
+        Andreas Kemnade <andreas@kemnade.info>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, peter.ujfalusi@gmail.com,
+        jarkko.nikula@bitmer.com, lgirdwood@gmail.com, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linux-omap@vger.kernel.org, linux-sound@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.1 1/6] ASoC: ti: omap-mcbsp: Fix runtime PM underflow warnings
+Date:   Tue, 14 Nov 2023 22:35:55 -0500
+Message-ID: <20231115033608.1229058-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231115033459.1228900-1-sashal@kernel.org>
-References: <20231115033459.1228900-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.5.11
+X-stable-base: Linux 6.1.62
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
@@ -57,40 +55,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+From: Tony Lindgren <tony@atomide.com>
 
-[ Upstream commit d27abbfd4888d79dd24baf50e774631046ac4732 ]
+[ Upstream commit fbb74e56378d8306f214658e3d525a8b3f000c5a ]
 
-These enums are passed to set/test_bit().  The set/test_bit() functions
-take a bit number instead of a shifted value.  Passing a shifted value
-is a double shift bug like doing BIT(BIT(1)).  The double shift bug
-doesn't cause a problem here because we are only checking 0 and 1 but
-if the value was 5 or above then it can lead to a buffer overflow.
+We need to check for an active device as otherwise we get warnings
+for some mcbsp instances for "Runtime PM usage count underflow!".
 
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
+Reported-by: Andreas Kemnade <andreas@kemnade.info>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+Link: https://lore.kernel.org/r/20231030052340.13415-1-tony@atomide.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pwm.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ sound/soc/ti/omap-mcbsp.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-index 04ae1d9073a74..0755ba9938f74 100644
---- a/include/linux/pwm.h
-+++ b/include/linux/pwm.h
-@@ -41,8 +41,8 @@ struct pwm_args {
- };
+diff --git a/sound/soc/ti/omap-mcbsp.c b/sound/soc/ti/omap-mcbsp.c
+index 7c539a41a6a34..4b8aac1a36fa2 100644
+--- a/sound/soc/ti/omap-mcbsp.c
++++ b/sound/soc/ti/omap-mcbsp.c
+@@ -74,14 +74,16 @@ static int omap2_mcbsp_set_clks_src(struct omap_mcbsp *mcbsp, u8 fck_src_id)
+ 		return -EINVAL;
+ 	}
  
- enum {
--	PWMF_REQUESTED = 1 << 0,
--	PWMF_EXPORTED = 1 << 1,
-+	PWMF_REQUESTED = 0,
-+	PWMF_EXPORTED = 1,
- };
+-	pm_runtime_put_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_put_sync(mcbsp->dev);
  
- /*
+ 	r = clk_set_parent(mcbsp->fclk, fck_src);
+ 	if (r)
+ 		dev_err(mcbsp->dev, "CLKS: could not clk_set_parent() to %s\n",
+ 			src);
+ 
+-	pm_runtime_get_sync(mcbsp->dev);
++	if (mcbsp->active)
++		pm_runtime_get_sync(mcbsp->dev);
+ 
+ 	clk_put(fck_src);
+ 
 -- 
 2.42.0
 
