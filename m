@@ -2,148 +2,348 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D1CB7EC5A7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:41:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C14497EC653
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 15:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344349AbjKOOlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 09:41:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49982 "EHLO
+        id S1344124AbjKOOv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 09:51:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344276AbjKOOkn (ORCPT
+        with ESMTP id S234954AbjKOOvy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 09:40:43 -0500
-Received: from mail-pl1-f205.google.com (mail-pl1-f205.google.com [209.85.214.205])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CF4D173B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:40:30 -0800 (PST)
-Received: by mail-pl1-f205.google.com with SMTP id d9443c01a7336-1cc2efd22ccso81617015ad.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:40:30 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700059229; x=1700664029;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oEFvRgy5pAtuhdPFXYj4A7+HkV4kDjQBHjX1AjUkCXM=;
-        b=xN0Gi7eDhys+62xRBwzvWHqZtn/vplCQDEQh9h5w5wgTwwbzGqaHXt5U6hnYp7T3dM
-         E8s88zyiLSLgJn0Xnotmhx3ETGmvs/4tnwJ/VbPcOgGiiZmaSUh9l7PbSQR/ZJ8CAaJ5
-         7gc4Aiux3bKYnandgZZMFUrmQBw59D01v5l3nsgcR/LWooQvRLKVM52QZxrymcWZrsg+
-         hi1CADEBJh0/d6ViY3zrGDzR030C57+2GfofHgN1WW4mHwGd3RVldUlazXLxgfUXe3J5
-         VSFIZOe0D7qBcrU6e6Oc0RJmbWCdqprVpjfOm5GiRER/LVt7+ztHs663q/zfpScBWFe/
-         I/4Q==
-X-Gm-Message-State: AOJu0YwEvneNe7gyq0wqZUUFs/U1sjygGD3fPbLAAeF35L2gT4i7pqR5
-        QYEgx7gY8Wib2gx1VxicgYxDWDKXkyFIHXB/MHvcjnc3cnos
-X-Google-Smtp-Source: AGHT+IGLc7m1yEbfAUEMCdLKgxDm3tiT5Un2/hM0ApLc3Nza/jXXEq9SIN7ymbNR/0S9++JoxuzDrY6/RE4XvCGQkpgVLKwff0W+
+        Wed, 15 Nov 2023 09:51:54 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C91FF9E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 06:51:48 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F615C433C8;
+        Wed, 15 Nov 2023 14:51:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700059908;
+        bh=G3egpy2nf+//PHzb7uY6/R8g/C2NnsGvbBaPizHeq6E=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ZMMoAMhMRpDjzyDC+lzjNGV+PwdjqmzbMG16wu3PXK2EMXfXo2BICwvB7rGWuLdrw
+         oEfNfUOe8ddHtUc30tLZSd8D8uB3SXmkFb3K/kHU7hEA8yPts8ua5jcvPHE5G7rkVB
+         sZVsln0EOHonnjrZPMU1szTGBaTeDZ+dJTg3lQB6ruxvVn4oIRpdZQk7oXZQmrlk5K
+         QY9hWnPcpBptj/D0BlDHX6lhTBxGdLmVC4lhvVt8zu38TapGO3JzEJ1oHs09SPtY6C
+         JN/1XOmzx2c8znh4jTX3KFhoft+xz/yPCr7nEpLwcj+uWf6mL/K/ZRvV+2IP+Eu7Ld
+         YZUaccjZUrICA==
+From:   Mark Brown <broonie@kernel.org>
+Date:   Wed, 15 Nov 2023 14:43:02 +0000
+Subject: [PATCH] kselftest/clone3: Make test names for set_tid test stable
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:d4cd:b0:1cc:3c52:1b0e with SMTP id
- o13-20020a170902d4cd00b001cc3c521b0emr1753855plg.1.1700059229403; Wed, 15 Nov
- 2023 06:40:29 -0800 (PST)
-Date:   Wed, 15 Nov 2023 06:40:29 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000773fa7060a31e2cc@google.com>
-Subject: [syzbot] [fs?] WARNING in pagemap_scan_pmd_entry
-From:   syzbot <syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20231115-kselftest-clone3-set-tid-v1-1-c1932591c480@kernel.org>
+X-B4-Tracking: v=1; b=H4sIAPXYVGUC/x2MwQqDMBAFf0X23IWsqVD6K+KhxJd2UaJkgwjBf
+ zf0ODAzlQxZYfTuKmUcarqlBvLoKPw+6QvWuTH1rvci8uTFsMYCKxzWLcGzoXDRmYMLfmhKlFe
+ klu8ZUc//epyu6wZYdIxKagAAAA==
+To:     Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+X-Mailer: b4 0.13-dev-0438c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10772; i=broonie@kernel.org;
+ h=from:subject:message-id; bh=G3egpy2nf+//PHzb7uY6/R8g/C2NnsGvbBaPizHeq6E=;
+ b=owEBbQGS/pANAwAKASTWi3JdVIfQAcsmYgBlVNsCwB6v+BvXhFinTCkt3AM89CRrhr0oVrTwmAsO
+ eGJd6eSJATMEAAEKAB0WIQSt5miqZ1cYtZ/in+ok1otyXVSH0AUCZVTbAgAKCRAk1otyXVSH0E5gB/
+ 4mkK4IYc0YgH6wT48Om4vAR8SreBbwYZzaU3AweeHR5ESvDO+pi5Neg1jHVA9VJtlRnfymEB2ui49W
+ 72d3MfNovQfYH1wF420U4wlMz+SDvkJVpMwYnxUjy4vx+7Ra1kwkQsud0f/BbEF6qZZeMsbC2+i7np
+ R6ps/sZx2TGVH13GanEZGTsitt+h2rRG0F1djXT/kKHVDOuUlKlzaGZC3+eJbP19Dp+kYj88rY+tQ6
+ 7ROTRy+v55e4//SoKiS2+tU+yknP6U4iV2dndiqkplQx2/9uO32MaNP4geDs2iXxALTZfs9RzMD3IK
+ G8HK/6MgFKzMNKt82Izt7dxZ5+q2Wh
+X-Developer-Key: i=broonie@kernel.org; a=openpgp;
+ fpr=3F2568AAC26998F9E813A1C5C3F436CA30F5D8EB
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The test results reported for the clone3_set_tid tests interact poorly with
+automation for running kselftest since the reported test names include TIDs
+dynamically allocated at runtime. A lot of automation for running kselftest
+will compare runs by looking at the test name to identify if the same test
+is being run so changing names make it look like the testsuite has been
+updated to include new tests. This makes the results display less clearly
+and breaks cases like bisection.
 
-syzbot found the following issue on:
+Address this by providing a brief description of the tests and logging that
+along with the stable parameters for the test currently logged. The TIDs
+are already logged separately in existing logging except for the final test
+which has a new log message added. We also tweak the formatting of the
+logging of expected/actual values for clarity.
 
-HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=13626650e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=84217b7fc4acdc59
-dashboard link: https://syzkaller.appspot.com/bug?extid=e94c5aaf7890901ebf9b
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d73be0e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13670da8e80000
+There are still issues with the logging of skipped tests (many are simply
+not logged at all when skipped and all are logged with different names) but
+these are less disruptive since the skips are all based on not being run as
+root, a condition likely to be stable for a given test system.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a595d90eb9af/disk-c42d9eee.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/c1e726fedb94/vmlinux-c42d9eee.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/cb43ae262d09/bzImage-c42d9eee.xz
+Signed-off-by: Mark Brown <broonie@kernel.org>
+---
+ tools/testing/selftests/clone3/clone3_set_tid.c | 117 ++++++++++++++----------
+ 1 file changed, 69 insertions(+), 48 deletions(-)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pagemap_scan_pmd_entry+0x1d27/0x23f0 fs/proc/task_mmu.c:2146
-Modules linked in:
-CPU: 1 PID: 5071 Comm: syz-executor182 Not tainted 6.7.0-rc1-syzkaller-00019-gc42d9eeef8e5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
-RIP: 0010:pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-RIP: 0010:pagemap_scan_pmd_entry+0x1d27/0x23f0 fs/proc/task_mmu.c:2146
-Code: ff ff e8 5c 23 76 ff 48 89 e8 31 ff 83 e0 02 48 89 c6 48 89 04 24 e8 d8 1e 76 ff 48 8b 04 24 48 85 c0 74 25 e8 3a 23 76 ff 90 <0f> 0b 90 e9 71 ff ff ff 4c 89 74 24 68 4c 8b 74 24 10 c7 44 24 28
-RSP: 0018:ffffc9000392f870 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000020001000 RCX: ffffffff82116da8
-RDX: ffff88801aae8000 RSI: ffffffff82116db6 RDI: 0000000000000007
-RBP: 0000000012c7ac67 R08: 0000000000000007 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000002 R12: dffffc0000000000
-R13: 0000000000000400 R14: 0000000000000000 R15: ffff8880745f4000
-FS:  00005555557a8380(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000d60 CR3: 0000000074627000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- walk_pmd_range mm/pagewalk.c:143 [inline]
- walk_pud_range mm/pagewalk.c:221 [inline]
- walk_p4d_range mm/pagewalk.c:256 [inline]
- walk_pgd_range+0xa48/0x1870 mm/pagewalk.c:293
- __walk_page_range+0x630/0x770 mm/pagewalk.c:395
- walk_page_range+0x626/0xa80 mm/pagewalk.c:521
- do_pagemap_scan+0x40d/0xcd0 fs/proc/task_mmu.c:2437
- do_pagemap_cmd+0x5e/0x80 fs/proc/task_mmu.c:2478
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:871 [inline]
- __se_sys_ioctl fs/ioctl.c:857 [inline]
- __x64_sys_ioctl+0x18f/0x210 fs/ioctl.c:857
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7f9c3ea93669
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe1d95e918 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffe1d95e920 RCX: 00007f9c3ea93669
-RDX: 0000000020000d40 RSI: 00000000c0606610 RDI: 0000000000000003
-RBP: 00007f9c3eb06610 R08: 65732f636f72702f R09: 65732f636f72702f
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe1d95eb58 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
+diff --git a/tools/testing/selftests/clone3/clone3_set_tid.c b/tools/testing/selftests/clone3/clone3_set_tid.c
+index ed785afb6077..9ae38733cb6e 100644
+--- a/tools/testing/selftests/clone3/clone3_set_tid.c
++++ b/tools/testing/selftests/clone3/clone3_set_tid.c
+@@ -114,7 +114,8 @@ static int call_clone3_set_tid(pid_t *set_tid,
+ 	return WEXITSTATUS(status);
+ }
+ 
+-static void test_clone3_set_tid(pid_t *set_tid,
++static void test_clone3_set_tid(const char *desc,
++				pid_t *set_tid,
+ 				size_t set_tid_size,
+ 				int flags,
+ 				int expected,
+@@ -129,17 +130,13 @@ static void test_clone3_set_tid(pid_t *set_tid,
+ 	ret = call_clone3_set_tid(set_tid, set_tid_size, flags, expected_pid,
+ 				  wait_for_it);
+ 	ksft_print_msg(
+-		"[%d] clone3() with CLONE_SET_TID %d says :%d - expected %d\n",
++		"[%d] clone3() with CLONE_SET_TID %d says: %d - expected %d\n",
+ 		getpid(), set_tid[0], ret, expected);
+-	if (ret != expected)
+-		ksft_test_result_fail(
+-			"[%d] Result (%d) is different than expected (%d)\n",
+-			getpid(), ret, expected);
+-	else
+-		ksft_test_result_pass(
+-			"[%d] Result (%d) matches expectation (%d)\n",
+-			getpid(), ret, expected);
++
++	ksft_test_result(ret == expected, "%s with %d TIDs and flags 0x%x\n",
++			 desc, set_tid_size, flags);
+ }
++
+ int main(int argc, char *argv[])
+ {
+ 	FILE *f;
+@@ -172,73 +169,91 @@ int main(int argc, char *argv[])
+ 
+ 	/* Try invalid settings */
+ 	memset(&set_tid, 0, sizeof(set_tid));
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL + 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, 0 TID",
++			    set_tid, MAX_PID_NS_LEVEL + 1, 0, -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 2, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, 0 TID",
++			    set_tid, MAX_PID_NS_LEVEL * 2, 0, -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 2 + 1, 0,
+-			-EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, 0 TID",
++			    set_tid, MAX_PID_NS_LEVEL * 2 + 1, 0,
++			    -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 42, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, 0 TID",
++			    set_tid, MAX_PID_NS_LEVEL * 42, 0, -EINVAL, 0, 0);
+ 
+ 	/*
+ 	 * This can actually work if this test running in a MAX_PID_NS_LEVEL - 1
+ 	 * nested PID namespace.
+ 	 */
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL - 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, 0 TID",
++			    set_tid, MAX_PID_NS_LEVEL - 1, 0, -EINVAL, 0, 0);
+ 
+ 	memset(&set_tid, 0xff, sizeof(set_tid));
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL + 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, TID all 1s",
++			    set_tid, MAX_PID_NS_LEVEL + 1, 0, -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 2, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, TID all 1s",
++			    set_tid, MAX_PID_NS_LEVEL * 2, 0, -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 2 + 1, 0,
+-			-EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, TID all 1s",
++			    set_tid, MAX_PID_NS_LEVEL * 2 + 1, 0,
++			    -EINVAL, 0, 0);
+ 
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL * 42, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, TID all 1s",
++			    set_tid, MAX_PID_NS_LEVEL * 42, 0, -EINVAL, 0, 0);
+ 
+ 	/*
+ 	 * This can actually work if this test running in a MAX_PID_NS_LEVEL - 1
+ 	 * nested PID namespace.
+ 	 */
+-	test_clone3_set_tid(set_tid, MAX_PID_NS_LEVEL - 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("invalid size, TID all 1s",
++			    set_tid, MAX_PID_NS_LEVEL - 1, 0, -EINVAL, 0, 0);
+ 
+ 	memset(&set_tid, 0, sizeof(set_tid));
+ 	/* Try with an invalid PID */
+ 	set_tid[0] = 0;
+-	test_clone3_set_tid(set_tid, 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("valid size, 0 TID",
++			    set_tid, 1, 0, -EINVAL, 0, 0);
+ 
+ 	set_tid[0] = -1;
+-	test_clone3_set_tid(set_tid, 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("valid size, -1 TID",
++			    set_tid, 1, 0, -EINVAL, 0, 0);
+ 
+ 	/* Claim that the set_tid array actually contains 2 elements. */
+-	test_clone3_set_tid(set_tid, 2, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("2 TIDs, -1 and 0",
++			    set_tid, 2, 0, -EINVAL, 0, 0);
+ 
+ 	/* Try it in a new PID namespace */
+ 	if (uid == 0)
+-		test_clone3_set_tid(set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
++		test_clone3_set_tid("valid size, -1 TID",
++				    set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
+ 	else
+ 		ksft_test_result_skip("Clone3() with set_tid requires root\n");
+ 
+ 	/* Try with a valid PID (1) this should return -EEXIST. */
+ 	set_tid[0] = 1;
+ 	if (uid == 0)
+-		test_clone3_set_tid(set_tid, 1, 0, -EEXIST, 0, 0);
++		test_clone3_set_tid("duplicate PID 1",
++				    set_tid, 1, 0, -EEXIST, 0, 0);
+ 	else
+ 		ksft_test_result_skip("Clone3() with set_tid requires root\n");
+ 
+ 	/* Try it in a new PID namespace */
+ 	if (uid == 0)
+-		test_clone3_set_tid(set_tid, 1, CLONE_NEWPID, 0, 0, 0);
++		test_clone3_set_tid("duplicate PID 1",
++				    set_tid, 1, CLONE_NEWPID, 0, 0, 0);
+ 	else
+ 		ksft_test_result_skip("Clone3() with set_tid requires root\n");
+ 
+ 	/* pid_max should fail everywhere */
+ 	set_tid[0] = pid_max;
+-	test_clone3_set_tid(set_tid, 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("set TID to maximum",
++			    set_tid, 1, 0, -EINVAL, 0, 0);
+ 
+ 	if (uid == 0)
+-		test_clone3_set_tid(set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
++		test_clone3_set_tid("set TID to maximum",
++				    set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
+ 	else
+ 		ksft_test_result_skip("Clone3() with set_tid requires root\n");
+ 
+@@ -262,10 +277,12 @@ int main(int argc, char *argv[])
+ 
+ 	/* After the child has finished, its PID should be free. */
+ 	set_tid[0] = pid;
+-	test_clone3_set_tid(set_tid, 1, 0, 0, 0, 0);
++	test_clone3_set_tid("reallocate child TID",
++			    set_tid, 1, 0, 0, 0, 0);
+ 
+ 	/* This should fail as there is no PID 1 in that namespace */
+-	test_clone3_set_tid(set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
++	test_clone3_set_tid("duplicate child TID",
++			    set_tid, 1, CLONE_NEWPID, -EINVAL, 0, 0);
+ 
+ 	/*
+ 	 * Creating a process with PID 1 in the newly created most nested
+@@ -274,7 +291,8 @@ int main(int argc, char *argv[])
+ 	 */
+ 	set_tid[0] = 1;
+ 	set_tid[1] = pid;
+-	test_clone3_set_tid(set_tid, 2, CLONE_NEWPID, 0, pid, 0);
++	test_clone3_set_tid("create PID 1 in new NS",
++			    set_tid, 2, CLONE_NEWPID, 0, pid, 0);
+ 
+ 	ksft_print_msg("unshare PID namespace\n");
+ 	if (unshare(CLONE_NEWPID) == -1)
+@@ -284,7 +302,8 @@ int main(int argc, char *argv[])
+ 	set_tid[0] = pid;
+ 
+ 	/* This should fail as there is no PID 1 in that namespace */
+-	test_clone3_set_tid(set_tid, 1, 0, -EINVAL, 0, 0);
++	test_clone3_set_tid("duplicate PID 1",
++			    set_tid, 1, 0, -EINVAL, 0, 0);
+ 
+ 	/* Let's create a PID 1 */
+ 	ns_pid = fork();
+@@ -295,21 +314,25 @@ int main(int argc, char *argv[])
+ 		 */
+ 		set_tid[0] = 43;
+ 		set_tid[1] = -1;
+-		test_clone3_set_tid(set_tid, 2, 0, -EINVAL, 0, 0);
++		test_clone3_set_tid("check leak on invalid TID -1",
++				    set_tid, 2, 0, -EINVAL, 0, 0);
+ 
+ 		set_tid[0] = 43;
+ 		set_tid[1] = pid;
+-		test_clone3_set_tid(set_tid, 2, 0, 0, 43, 0);
++		test_clone3_set_tid("check leak on invalid specific TID",
++				    set_tid, 2, 0, 0, 43, 0);
+ 
+ 		ksft_print_msg("Child in PID namespace has PID %d\n", getpid());
+ 		set_tid[0] = 2;
+-		test_clone3_set_tid(set_tid, 1, 0, 0, 2, 0);
++		test_clone3_set_tid("create PID 2 in child NS",
++				    set_tid, 1, 0, 0, 2, 0);
+ 
+ 		set_tid[0] = 1;
+ 		set_tid[1] = -1;
+ 		set_tid[2] = pid;
+ 		/* This should fail as there is invalid PID at level '1'. */
+-		test_clone3_set_tid(set_tid, 3, CLONE_NEWPID, -EINVAL, 0, 0);
++		test_clone3_set_tid("fail due to invalid TID at level 1",
++				    set_tid, 3, CLONE_NEWPID, -EINVAL, 0, 0);
+ 
+ 		set_tid[0] = 1;
+ 		set_tid[1] = 42;
+@@ -319,13 +342,15 @@ int main(int argc, char *argv[])
+ 		 * namespaces. Again assuming this is running in the host's
+ 		 * PID namespace. Not yet nested.
+ 		 */
+-		test_clone3_set_tid(set_tid, 4, CLONE_NEWPID, -EINVAL, 0, 0);
++		test_clone3_set_tid("fail due to too few active PID NSs",
++				    set_tid, 4, CLONE_NEWPID, -EINVAL, 0, 0);
+ 
+ 		/*
+ 		 * This should work and from the parent we should see
+ 		 * something like 'NSpid:	pid	42	1'.
+ 		 */
+-		test_clone3_set_tid(set_tid, 3, CLONE_NEWPID, 0, 42, true);
++		test_clone3_set_tid("verify that we have 3 PID NSs",
++				    set_tid, 3, CLONE_NEWPID, 0, 42, true);
+ 
+ 		child_exit(ksft_cnt.ksft_fail);
+ 	}
+@@ -380,14 +405,10 @@ int main(int argc, char *argv[])
+ 	ksft_cnt.ksft_pass += 6 - (ksft_cnt.ksft_fail - WEXITSTATUS(status));
+ 	ksft_cnt.ksft_fail = WEXITSTATUS(status);
+ 
+-	if (ns3 == pid && ns2 == 42 && ns1 == 1)
+-		ksft_test_result_pass(
+-			"PIDs in all namespaces as expected (%d,%d,%d)\n",
+-			ns3, ns2, ns1);
+-	else
+-		ksft_test_result_fail(
+-			"PIDs in all namespaces not as expected (%d,%d,%d)\n",
+-			ns3, ns2, ns1);
++	ksft_print_msg("Expecting PIDs %d, 42, 1\n", pid);
++	ksft_print_msg("Have PIDs in namespaces: %d, %d, %d\n", ns3, ns2, ns1);
++	ksft_test_result(ns3 == pid && ns2 == 42 && ns1 == 1,
++			 "PIDs in all namespaces as expected\n");
+ out:
+ 	ret = 0;
+ 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
+change-id: 20231114-kselftest-clone3-set-tid-c0c35111f18f
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Best regards,
+-- 
+Mark Brown <broonie@kernel.org>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
