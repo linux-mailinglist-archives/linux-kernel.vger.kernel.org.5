@@ -2,143 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8772B7ED5ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:20:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D25887ED5F1
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:21:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235602AbjKOVUs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:20:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        id S235051AbjKOVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:22:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38546 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229912AbjKOVUq (ORCPT
+        with ESMTP id S229912AbjKOVV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:20:46 -0500
-Received: from mail-oa1-x31.google.com (mail-oa1-x31.google.com [IPv6:2001:4860:4864:20::31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF46E9B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:20:42 -0800 (PST)
-Received: by mail-oa1-x31.google.com with SMTP id 586e51a60fabf-1f4a9dd83d6so44423fac.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:20:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700083242; x=1700688042; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7JG4fql6FN6eLKMP7zbsfChcI3MiqU8LxZjWGPH8plw=;
-        b=BZz2CaD20o1eWIl/KpUV6UiFxn2tDXVw9v9LKh6FofF9VxjLEIaasFDINXk9Jlb33V
-         ZIOWlijKjZX+GFZZ/G5u5Y5Y6mFtfHJ6kHEZHZ0JY/ahke8343AQFlZUj0M13sPwJMag
-         cjKhQe/MyEQ16TtvOsF2XexzjpY7KwSHC/o73yTV7eGDJ69k0pPVlobepunfFN2kP/iK
-         riyXoQb6SoFsKrsxzDfC+YkWQpt4N69f+0iYUTtau3BnnumcddTJ7cmgzwFX6koEISGe
-         cJK0zm8OVs3zXh+Ei5Iaa2yxLQBbAv2UHIIEnX1+fubbMbqXw9UjTMvCb4m6zsi+uxqN
-         btHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700083242; x=1700688042;
-        h=in-reply-to:content-disposition:mime-version:references:reply-to
-         :message-id:subject:cc:to:from:date:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=7JG4fql6FN6eLKMP7zbsfChcI3MiqU8LxZjWGPH8plw=;
-        b=M22B9/Uo2DGq/iYjjEDLXmjVec1p5hzirB8G1WWxVu/aezHKjpG2Jap05rXJ8pG81f
-         8kR6gu3yroCkeG9BGIkaaEtTJJ93LHj7oQMEawMYqKBLo8dtHJXFZC+o9btxj3/z6Rim
-         7sf/+JCa3eMTThWOVdOObv9HJTOHGotfz2YB1RBhcwlj6pwe4nmBJVrB0kZ10K3X4k5y
-         NPuoa5ZgRcIcn1ArN5D2oOSuIvmFpitw2Ar9sRYKCnG5XOg1bO+12D639BcLbBQVAGwA
-         kGE5GK6AZ7DSpUXJ9TE0ngrc7D9YM02r0c1t4Z0HqaDEs0rPSYU8XpflNczUh/WG5Id7
-         9WSQ==
-X-Gm-Message-State: AOJu0YxN7SKl8zeDcvs/XDim8N6pItsqAGH7onsOHKAQD50hBqi9u8eT
-        P1xtVwG2SfPlwm5Kv1K5HnJgnfQB4g==
-X-Google-Smtp-Source: AGHT+IHeeeKhPKvWxCmpe9ba3/cnSmX0znCVUVUwl7rKYPhI8PSBSCTVzgkf2GvJM1Jxa94VEXipGg==
-X-Received: by 2002:a05:6870:c49:b0:1ef:9f6c:3df1 with SMTP id lf9-20020a0568700c4900b001ef9f6c3df1mr17357684oab.14.1700083241954;
-        Wed, 15 Nov 2023 13:20:41 -0800 (PST)
-Received: from serve.minyard.net ([47.189.89.62])
-        by smtp.gmail.com with ESMTPSA id wh6-20020a056871a68600b001e12bb81363sm1949489oab.35.2023.11.15.13.20.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:20:41 -0800 (PST)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from mail.minyard.net (unknown [IPv6:2001:470:b8f6:1b:8a7b:e73c:ae8:33e4])
-        by serve.minyard.net (Postfix) with ESMTPSA id E885B1800BD;
-        Wed, 15 Nov 2023 21:20:40 +0000 (UTC)
-Date:   Wed, 15 Nov 2023 15:20:39 -0600
-From:   Corey Minyard <minyard@acm.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     openipmi-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] ipmi: si: Use device_get_match_data()
-Message-ID: <ZVU2J7phOPuTPe21@mail.minyard.net>
-Reply-To: minyard@acm.org
-References: <20231115210230.3744198-1-robh@kernel.org>
+        Wed, 15 Nov 2023 16:21:58 -0500
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77CED92;
+        Wed, 15 Nov 2023 13:21:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
+        t=1700083312; x=1700688112; i=rwarsow@gmx.de;
+        bh=99Alm4btTapJyIk2kAvPcyVCjpKTkJABGOaRccLIHog=;
+        h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+        b=egy/EoJJtcs4rusrrR/p4UUnHESbeRl93xUXpSJF5FyWax/Ri2gOzAnz+PEH3wGX
+         df85xqsAAPriC+oHbmK1sZwRN5yIBitWnO2qFGIUWSFL+UgeFj961FY4YcFvGA0Ef
+         uHmh7y7Dj5expJI5CQs/yu4QjFzELszmIOq7d1N8vr+c/FN5+TL8C9LGzl0y5/t3B
+         EkOi+dhcj8NADZqjKhoNzRCKP4IJrY55QmbD+u9Lx0lp2sjpjVxpOY640jdiVd+MG
+         1h+tjHEK3HIelChcdlgb5wkmDb2wUHwqq7RK3IqmubwgxQDDM1I2dSOBFT5boZmsn
+         5RN5sk5QTYSEQec/lA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.100.20] ([92.116.253.47]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MBm1U-1rDFDo0jUq-00C9jL; Wed, 15
+ Nov 2023 22:21:52 +0100
+Message-ID: <7aca5d3c-a66a-4594-a958-fd0b8a8280db@gmx.de>
+Date:   Wed, 15 Nov 2023 22:21:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115210230.3744198-1-robh@kernel.org>
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+From:   Ronald Warsow <rwarsow@gmx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org
+Content-Language: de-DE, en-US
+Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:K0YQYCMnrStGjOdkIoHUZJ6U8uaeHsxYQtvyPc/81zyvq/EPNWa
+ mtgOgGSPVn2Qh5PkDTZuXP2HKxEtdfchRZksdUL7VfXuF2AJ6sLM5wo3aH/Pw9Ad61KQUBP
+ QOHjAxJICIDwCRPFiWqdIz4STru/AZ+N+e12p8+++Yk5uSVhQ8emRCRRbJ5ThbOGbLzt1Lr
+ 7mHPQiyt8gb6LBQqHePeQ==
+UI-OutboundReport: notjunk:1;M01:P0:KZkr6LsblHc=;+wPb7oEMlK6626HJ5a51zsGMQ3d
+ RGWXChUIiq1gWanHrKZps4WL6JmdmopGpUO/ZHJOVX8Vuq8DrfLwctOsoBvlrMYnme7z/Tb2O
+ WUDI8u6sCbJH1FnTGbUvHzSpoZfU8nShZ4iCzA1pr3j/yd66yfO5o7Bjp/bj4IZ5Pu05r6ZIr
+ zrYkw3X83S1UXuwYeNuWFVAJ5XigO8CLXQBV2KvJKdzUWhIehqXeq5fpjibrCKxtGNUbfn8CT
+ paE99EqO3QUQtQbK9mtMAytEbEmaXqJla74oDEKx3NrxfhgSlna8Co0Psa9OaDSnS0lvhpYTS
+ V9EW+4dcVfirZ1coJ43SMiFJbCMirsheTHlj/oGkXbhCLGwiyxdhflZguJLwLSV17DXBd+pa/
+ ACfnYB/EJZH5XSfmZd2CSlGlbcwNC2Nu29VI2HTP9BCLUz3vFtb+UFdA9DLmJQH4i3cnk14+B
+ pD3kagna/JIoUURS6g+BrCc5Pqo73WjF5wwt9LudWYd+5DV6dH4gV58sj1ufZFAHKOy3uoK1/
+ 3Xj22ctny4eqHACiRqh3tueiDCpr2PY1qF8k+BX3dQPtO/lQ8y4DQYNZjo7cAQNIPDJQVVW7C
+ qWkdMHnXPvIi0APNm4HzF0PAR+LLn/3h5vLOXSPYMfBBZOPYRVHSPwD2RRaO0Avh1CPl0Ah6H
+ z5Exhl6iyUxu+mJ9fVnIdlbbmmio8+tWeIk/ODKnw2eTOzXHZjh0D5B+HnZgiWImBzR2SYnAB
+ MtzEUagb78kYAa/QIhRq3ChLH66B5aQ4O6wk1BfllQEO+UuQERm7pis+0I3k2TZPWEnGj/q9C
+ Din7E4RQDGEUc91yaX7uPh9ly/qXL8koyUoRXBG0zd2o762qtjhukUGzGgZ5aWxoi/kSiDs+C
+ k0ZWx68uFsQ2qR8yUasuQOLTHbbOcD+W3IDX4ifgz9ZkfcRpM1uxeLDzFb+HsVdbYzUxNSjSt
+ 3iEh+Q==
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 03:02:29PM -0600, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
+Hi Greg
 
-Sorry, this is now queue for 6.8.
+6.6.2-rc1
 
--corey
+compiles, boots and runs here on x86_64
+(Intel Rocket Lake: i5-11400)
 
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
->  drivers/char/ipmi/ipmi_si_platform.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
-> 
-> diff --git a/drivers/char/ipmi/ipmi_si_platform.c b/drivers/char/ipmi/ipmi_si_platform.c
-> index c3d8ac7873ba..cd2edd8f8a03 100644
-> --- a/drivers/char/ipmi/ipmi_si_platform.c
-> +++ b/drivers/char/ipmi/ipmi_si_platform.c
-> @@ -11,10 +11,11 @@
->  
->  #include <linux/types.h>
->  #include <linux/module.h>
-> -#include <linux/of_device.h>
-> -#include <linux/of_platform.h>
-> +#include <linux/of.h>
->  #include <linux/of_address.h>
->  #include <linux/of_irq.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/acpi.h>
->  #include "ipmi_si.h"
->  #include "ipmi_dmi.h"
-> @@ -224,7 +225,6 @@ MODULE_DEVICE_TABLE(of, of_ipmi_match);
->  
->  static int of_ipmi_probe(struct platform_device *pdev)
->  {
-> -	const struct of_device_id *match;
->  	struct si_sm_io io;
->  	struct resource resource;
->  	const __be32 *regsize, *regspacing, *regshift;
-> @@ -237,10 +237,6 @@ static int of_ipmi_probe(struct platform_device *pdev)
->  
->  	dev_info(&pdev->dev, "probing via device tree\n");
->  
-> -	match = of_match_device(of_ipmi_match, &pdev->dev);
-> -	if (!match)
-> -		return -ENODEV;
-> -
->  	if (!of_device_is_available(np))
->  		return -EINVAL;
->  
-> @@ -269,7 +265,7 @@ static int of_ipmi_probe(struct platform_device *pdev)
->  	}
->  
->  	memset(&io, 0, sizeof(io));
-> -	io.si_type	= (unsigned long) match->data;
-> +	io.si_type	= (enum si_type)device_get_match_data(&pdev->dev);
->  	io.addr_source	= SI_DEVICETREE;
->  	io.irq_setup	= ipmi_std_irq_setup;
->  
-> -- 
-> 2.42.0
-> 
+Thanks
+
+Tested-by: Ronald Warsow <rwarsow@gmx.de>
+
