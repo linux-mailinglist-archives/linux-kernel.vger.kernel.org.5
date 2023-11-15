@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7388B7EC8D1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB1AD7EC8CF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229768AbjKOQjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43734 "EHLO
+        id S231132AbjKOQj1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:39:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229508AbjKOQjV (ORCPT
+        with ESMTP id S229508AbjKOQjY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:39:21 -0500
+        Wed, 15 Nov 2023 11:39:24 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 135838E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:19 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78672C433C7;
-        Wed, 15 Nov 2023 16:39:17 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 893A8AB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1ED0CC433C8;
+        Wed, 15 Nov 2023 16:39:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700066358;
-        bh=CeqcgqbPmKuc6ujFnqT9hCYTQXV2xrXzIPAKrvqD3A8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=FKGTa0ne/R38V0DiQupeeWYJNf6oPa+bN6URqC6pwh2/K2mCGtfVLQTNrxNXaRUrp
-         729EnLgDLA1DOhh5+/+hyqUotvOgn/Fih3rk5ZeO2znvbrSKV1qtZ/m8AZ7pIVRgoI
-         62byx0R6AbopsK13tD4OaaJAgIn/taFmabWLklii9mxM7tOuiEmTuVp/4mWzf+NH7w
-         dBKyUZveGnvUudEcmaAstcAgHtDb/FxaQaKpwkfTXeFPXaCyFiz2fgtMHDamu7pF+K
-         OkbGe9MpySfbk+uVKrpnn/N1pXqK8Ad/gWTMOH4C29VrMipWhSP3LEtgQytYZR4PZl
-         NX4OC9+9HgxjQ==
+        s=k20201202; t=1700066360;
+        bh=diI9h96MMsr8an2MYVnN2Z42kQPggaGEHH/n5mgX6Q4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=UXvWV165zKWxS9koxbLHt6+oJBIVlM3FymNxwckh4dFcNysCimVu71/Fx20C2PfSX
+         fHOImhDq2KujxGRmu2e9gXy9KgARgcBzu8pwjjaO+LnuXHhGHbydN0AlEvVTR8kV3P
+         ggi5OpbbNy3Qd9VrY4cA69gqOlcuakaOlPtBbVbqYo9kEVhjM4M9W+pcG0ouMYnssi
+         z2MuCO2aJNtpVCA9mjUg6R+0q86XNx8NznJT1uNyjd8KeV4dyFVMciYxotvwlaoskk
+         SxQfwzrx5H8il70GeeWjxzwHSif6FxzUT5Vc14se6CO5o2WhYwZE9UkS1iXs0SLov5
+         75PkEOmzQ2fkA==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Tomer Tayar <ttayar@habana.ai>
-Subject: [PATCH 01/10] accel/habanalabs/gaudi2: assume hard-reset by FW upon PCIe AXI drain
-Date:   Wed, 15 Nov 2023 18:39:03 +0200
-Message-Id: <20231115163912.1243175-1-ogabbay@kernel.org>
+Cc:     Farah Kassabri <fkassabri@habana.ai>
+Subject: [PATCH 02/10] accel/habanalabs: add log when eq event is not received
+Date:   Wed, 15 Nov 2023 18:39:04 +0200
+Message-Id: <20231115163912.1243175-2-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231115163912.1243175-1-ogabbay@kernel.org>
+References: <20231115163912.1243175-1-ogabbay@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -46,54 +48,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tomer Tayar <ttayar@habana.ai>
+From: Farah Kassabri <fkassabri@habana.ai>
 
-When a PCIe AXI drain event happens, it is possible that the driver
-cannot access the device through PCIe, and therefore cannot send a
-hard-reset request to FW.
-Starting from FW version 1.13, FW will initiate a hard-reset in such
-a case without waiting for a reset request from the driver.
+Add error log when no eq event is received from FW,
+to cover a scenario when FW is stuck for some reason.
+In such case driver will not receive neither the eq error interrupt
+or the eq heartbeat event, and will just initiate a reset without
+indication in the dmesg about the reason.
 
-Signed-off-by: Tomer Tayar <ttayar@habana.ai>
+Signed-off-by: Farah Kassabri <fkassabri@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/accel/habanalabs/common/habanalabs.h | 8 ++++++++
- drivers/accel/habanalabs/gaudi2/gaudi2.c     | 2 ++
- 2 files changed, 10 insertions(+)
+ drivers/accel/habanalabs/common/device.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/accel/habanalabs/common/habanalabs.h b/drivers/accel/habanalabs/common/habanalabs.h
-index 1655c101c705..5c69a482b8de 100644
---- a/drivers/accel/habanalabs/common/habanalabs.h
-+++ b/drivers/accel/habanalabs/common/habanalabs.h
-@@ -3594,6 +3594,14 @@ static inline bool hl_is_fw_sw_ver_below(struct hl_device *hdev, u32 fw_sw_major
- 	return false;
+diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
+index 9711e8fc979d..d95a981b2906 100644
+--- a/drivers/accel/habanalabs/common/device.c
++++ b/drivers/accel/habanalabs/common/device.c
+@@ -1049,10 +1049,12 @@ static void hl_device_eq_heartbeat(struct hl_device *hdev)
+ 	if (!prop->cpucp_info.eq_health_check_supported)
+ 		return;
+ 
+-	if (hdev->eq_heartbeat_received)
++	if (hdev->eq_heartbeat_received) {
+ 		hdev->eq_heartbeat_received = false;
+-	else
++	} else {
++		dev_err(hdev->dev, "EQ heartbeat event was not received!\n");
+ 		hl_device_cond_reset(hdev, HL_DRV_RESET_HARD, event_mask);
++	}
  }
  
-+static inline bool hl_is_fw_sw_ver_equal_or_greater(struct hl_device *hdev, u32 fw_sw_major,
-+							u32 fw_sw_minor)
-+{
-+	return (hdev->fw_sw_major_ver > fw_sw_major ||
-+			(hdev->fw_sw_major_ver == fw_sw_major &&
-+					hdev->fw_sw_minor_ver >= fw_sw_minor));
-+}
-+
- /*
-  * Kernel module functions that can be accessed by entire module
-  */
-diff --git a/drivers/accel/habanalabs/gaudi2/gaudi2.c b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-index 819660c684cf..b739078c2d87 100644
---- a/drivers/accel/habanalabs/gaudi2/gaudi2.c
-+++ b/drivers/accel/habanalabs/gaudi2/gaudi2.c
-@@ -10007,6 +10007,8 @@ static void gaudi2_handle_eqe(struct hl_device *hdev, struct hl_eq_entry *eq_ent
- 		error_count = gaudi2_handle_pcie_drain(hdev, &eq_entry->pcie_drain_ind_data);
- 		reset_flags |= HL_DRV_RESET_FW_FATAL_ERR;
- 		event_mask |= HL_NOTIFIER_EVENT_GENERAL_HW_ERR;
-+		if (hl_is_fw_sw_ver_equal_or_greater(hdev, 1, 13))
-+			is_critical = true;
- 		break;
- 
- 	case GAUDI2_EVENT_PSOC59_RPM_ERROR_OR_DRAIN:
+ static void hl_device_heartbeat(struct work_struct *work)
 -- 
 2.34.1
 
