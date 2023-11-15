@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56ADB7EBF97
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4CED7EBF98
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:38:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234797AbjKOJho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 04:37:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37200 "EHLO
+        id S234809AbjKOJiG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 04:38:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbjKOJhn (ORCPT
+        with ESMTP id S234688AbjKOJiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 04:37:43 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 60AD4E5;
-        Wed, 15 Nov 2023 01:37:39 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A4A97DA7;
-        Wed, 15 Nov 2023 01:38:24 -0800 (PST)
-Received: from [192.168.1.3] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A7653F7B4;
-        Wed, 15 Nov 2023 01:37:37 -0800 (PST)
-Message-ID: <4fa8ca52-b40c-65ec-59a0-7ad14c4e93b7@arm.com>
-Date:   Wed, 15 Nov 2023 09:37:36 +0000
+        Wed, 15 Nov 2023 04:38:05 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7281CE5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 01:38:01 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AF6u5ua002185;
+        Wed, 15 Nov 2023 03:37:44 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=
+        PODMain02222019; bh=wA83epg46IZxAyewUV28Kirt+0qSsu7iAQen/Bkb5aY=; b=
+        dXLcemkpsj1/UAK2CyrriXw6ZgBELDmsR9lGpAAMoccixZjRyqc1gnjO+XST9tGw
+        mYEx8hjBz/dHDeYKtqflSo3nXORfeO0clhxvgQizGsVQVCJHLOu1I0NyFg3edovJ
+        9xVGSasZVKOXqkAkUK2XAmSPYIQFZflXGNOykqvLD99EX6AO7qC7v61QkbAbNMll
+        t5KJNinb2h4b86R3y3RJDlNzXm3NvNDBXVFo6b71RwXZFgWfGSEbAZu+R7mBF27r
+        C6Zep1pWw2+dRoOBRgZqo7+M6edaaghDB6He5iHKta0Kshq+iVxjrlf0O+ZUThKE
+        d/1BhiMzh47wxlpYdb88fg==
+Received: from ediex01.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ua6wpcfp2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 03:37:43 -0600 (CST)
+Received: from ediex02.ad.cirrus.com (198.61.84.81) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
+ 2023 09:37:42 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by
+ anon-ediex02.ad.cirrus.com (198.61.84.81) with Microsoft SMTP Server id
+ 15.2.1118.39 via Frontend Transport; Wed, 15 Nov 2023 09:37:42 +0000
+Received: from ediswmail.ad.cirrus.com (ediswmail.ad.cirrus.com [198.61.86.93])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 16FB915A1;
+        Wed, 15 Nov 2023 09:37:42 +0000 (UTC)
+Date:   Wed, 15 Nov 2023 09:37:42 +0000
+From:   Charles Keepax <ckeepax@opensource.cirrus.com>
+To:     Linus Walleij <linus.walleij@linaro.org>
+CC:     kernel test robot <lkp@intel.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
+Subject: Re: drivers/pinctrl/cirrus/pinctrl-lochnagar.c:52:53: error: pasting
+ "LOCHNAGAR1_" and "(" does not give a valid preprocessing token
+Message-ID: <20231115093742.GA32655@ediswmail.ad.cirrus.com>
+References: <202311071303.JJMAOjy4-lkp@intel.com>
+ <CACRpkdb4d9pfstqDTZoBSqOSS4d4vLOUCnS6AKcMjLZ8TTQ2Wg@mail.gmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [V14 3/8] drivers: perf: arm_pmuv3: Enable branch stack sampling
- framework
-Content-Language: en-US
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     Mark Brown <broonie@kernel.org>, Rob Herring <robh@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Suzuki Poulose <suzuki.poulose@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        linux-perf-users@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        will@kernel.org, catalin.marinas@arm.com, mark.rutland@arm.com
-References: <20231114051329.327572-1-anshuman.khandual@arm.com>
- <20231114051329.327572-4-anshuman.khandual@arm.com>
- <0020aa0d-e9a5-aef6-f33d-817da56411a3@arm.com>
- <5bf73672-4094-490b-b0a9-b983d512c904@arm.com>
-From:   James Clark <james.clark@arm.com>
-In-Reply-To: <5bf73672-4094-490b-b0a9-b983d512c904@arm.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-5.6 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <CACRpkdb4d9pfstqDTZoBSqOSS4d4vLOUCnS6AKcMjLZ8TTQ2Wg@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Proofpoint-GUID: ib5uJw7pb3N9TXitRPyqY-5-0thUbsl9
+X-Proofpoint-ORIG-GUID: ib5uJw7pb3N9TXitRPyqY-5-0thUbsl9
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Nov 14, 2023 at 02:40:38PM +0100, Linus Walleij wrote:
+> On Tue, Nov 7, 2023 at 6:19 AM kernel test robot <lkp@intel.com> wrote:
+> 
+> > >> drivers/pinctrl/cirrus/pinctrl-lochnagar.c:52:53: error: pasting "LOCHNAGAR1_" and "(" does not give a valid preprocessing token
+> >       52 |         .name = NAME, .type = LN_PTYPE_GPIO, .reg = LOCHNAGAR##REV##_##REG, \
+> >          |                                                     ^~~~~~~~~
+> >    drivers/pinctrl/cirrus/pinctrl-lochnagar.c:67:9: note: in expansion of macro 'LN_PIN_GPIO'
+> >       67 |         LN_PIN_GPIO(1, ID, NAME, REG, SHIFT, INVERT)
+> >          |         ^~~~~~~~~~~
+> 
+> I looked a bit at this, can this be due to the fact that the macros use defines
+> from include/dt-bindings/...* and that MIPS does not use these includes
+> somehow, such as not using the same dtc compiler?
+> 
+> Rob, do you know the story of how MIPS interoperates with <dt-bindings/*>?
+> 
 
+Is that what is going on here? I though this was the long standing
+problem that MIPS has some global define for RST so the macro that
+string pastes that in, no longer pastes in the letters RST but some
+value instead.
 
-On 15/11/2023 05:44, Anshuman Khandual wrote:
-> On 11/14/23 15:28, James Clark wrote:
->>
->>
->> On 14/11/2023 05:13, Anshuman Khandual wrote:
->>> Branch stack sampling support i.e capturing branch records during execution
->>> in core perf, rides along with normal HW events being scheduled on the PMU.
->>> This prepares ARMV8 PMU framework for branch stack support on relevant PMUs
->>> with required HW implementation.
->>>
->>
->> [...]
->>
->>> - All armv8pmu_branch_xxxx() stub definitions have been moved inside
->>>   include/linux/perf/arm_pmuv3.h for easy access from both arm32 and
->>>   arm64 platforms
->>>
->>
->> This causes lots of W=1 build errors because the prototypes are in
->> arm_pmuv3.h, but arm_brbe.c doesn't include it.
-> 
-> I guess these are the W=1 warnings you mentioned above.
-> 
-> drivers/perf/arm_brbe.c:11:6: warning: no previous prototype for ‘armv8pmu_branch_reset’ [-Wmissing-prototypes]
->    11 | void armv8pmu_branch_reset(void)                                                                                                                                                                   
->       |      ^~~~~~~~~~~~~~~~~~~~~                                                                                                                                                                         
-> drivers/perf/arm_brbe.c:190:6: warning: no previous prototype for ‘armv8pmu_branch_save’ [-Wmissing-prototypes]      
->   190 | void armv8pmu_branch_save(struct arm_pmu *arm_pmu, void *ctx)                      
->       |      ^~~~~~~~~~~~~~~~~~~~                                                                                                                                                                          
-> drivers/perf/arm_brbe.c:236:6: warning: no previous prototype for ‘armv8pmu_branch_attr_valid’ [-Wmissing-prototypes]
->   236 | bool armv8pmu_branch_attr_valid(struct perf_event *event)                                                                                                                                          
->       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~                                                                                                                                                                    
-> drivers/perf/arm_brbe.c:269:5: warning: no previous prototype for ‘armv8pmu_task_ctx_cache_alloc’ [-Wmissing-prototypes]
->   269 | int armv8pmu_task_ctx_cache_alloc(struct arm_pmu *arm_pmu)                            
->       |     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                            
-> drivers/perf/arm_brbe.c:279:6: warning: no previous prototype for ‘armv8pmu_task_ctx_cache_free’ [-Wmissing-prototypes]
->   279 | void armv8pmu_task_ctx_cache_free(struct arm_pmu *arm_pmu)                       
->       |      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~                                                            
-> drivers/perf/arm_brbe.c:303:6: warning: no previous prototype for ‘armv8pmu_branch_probe’ [-Wmissing-prototypes]
->   303 | void armv8pmu_branch_probe(struct arm_pmu *armpmu)                                
->       |      ^~~~~~~~~~~~~~~~~~~~~                                                                   
-> drivers/perf/arm_brbe.c:449:6: warning: no previous prototype for ‘armv8pmu_branch_enable’ [-Wmissing-prototypes]
->   449 | void armv8pmu_branch_enable(struct arm_pmu *arm_pmu)                             
->       |      ^~~~~~~~~~~~~~~~~~~~~~                                                                  
-> drivers/perf/arm_brbe.c:474:6: warning: no previous prototype for ‘armv8pmu_branch_disable’ [-Wmissing-prototypes]
->   474 | void armv8pmu_branch_disable(void)                                                           
->       |      ^~~~~~~~~~~~~~~~~~~~~~~                                                                 
-> drivers/perf/arm_brbe.c:717:6: warning: no previous prototype for ‘armv8pmu_branch_read’ [-Wmissing-prototypes]
->   717 | void armv8pmu_branch_read(struct pmu_hw_events *cpuc, struct perf_event *event)
-> 
-> Branch helpers are used in ARM PMU V3 driver i.e drivers/perf/arm_pmuv3.c.
-> Whether the actual BRBE helper definitions, or their fallback stubs (when
-> CONFIG_ARM64_BRBE is not enabled), need to be accessible from arm_pmuv3.c
-> driver not from brbe.c implementations itself.
-> 
->>
->> It seems like the main reason you can't include arm_brbe.h in arm32 code
->> is because there are a load of inline functions and references to
->> registers in there. But these are only used in arm_brbe.c, so they don't
-> 
-> Right, arm32 should not be exposed to BRBE internals via arm_brbe.h header.
-> 
->> need to be in the header anyway.
-> 
-> Right, these are only used in arm_brbe.c
-> 
->>
->> If you removed the code from the header and moved it to the source file
->> you could move the brbe prototypes to the brbe header and it would be a
->> bit cleaner and more idiomatic.
-> 
-> Alight, how about the following changes - build tested on arm32 and arm64.
-> 
-> - Move BRBE helpers from arm_brbe.h into arm_brbe.c
-> - Move armv8_pmu_xxx() declaration inside arm_brbe.h for arm64 (CONFIG_ARM64_BRBE)
-> - Move armv8_pmu_xxx() stub definitions inside arm_pmuv3.c for arm32 (!CONFIG_ARM64_BRBE)
-> - Include arm_brbe.h header both in arm_pmuv3.c and arm_brbe.c
+It has somewhat been on my radar to fix at some point, but I have
+in general been a little unsure how to proceed. RST feels like
+a mega over generic macro name to be exporting, so in some ways
+feels like fixing that would be nice. On the other side, renaming
+the register on the Lochnagar side would be very easy, although it
+would mean the register naming no longer matches all the hardware
+documentation which would be kinda lame.
 
-Agree to them all except:
-
-  - Move armv8_pmu_xxx() stub definitions inside arm_pmuv3.c for arm32
-(!CONFIG_ARM64_BRBE)
-
-Normally you put the stubs right next to the prototypes with #else, so
-in this case both would be in arm_brbe.h. Not sure what the reason for
-splitting them here is? You already said "include arm_brbe.h in
-arm_pmuv3.c", so that covers arm32 too.
-
+Thanks,
+Charles
