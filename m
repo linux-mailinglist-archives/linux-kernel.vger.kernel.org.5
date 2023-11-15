@@ -2,261 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 231F77EBE7D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7BA7EBE84
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:24:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343512AbjKOIWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 03:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43384 "EHLO
+        id S1343515AbjKOIYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 03:24:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjKOIWo (ORCPT
+        with ESMTP id S229600AbjKOIYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 03:22:44 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5916E5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:22:40 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2830CC433C8;
-        Wed, 15 Nov 2023 08:22:36 +0000 (UTC)
-Message-ID: <cf2dacde-dbf6-455a-988a-afb6a6cf0254@xs4all.nl>
-Date:   Wed, 15 Nov 2023 09:22:35 +0100
-MIME-Version: 1.0
+        Wed, 15 Nov 2023 03:24:08 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00ECCDF;
+        Wed, 15 Nov 2023 00:24:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700036645; x=1731572645;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=PgygN/KTsYVrp4YsOmXt+qsGvxlvwfzMxoDu3Y0F5Wk=;
+  b=lai+BLV9dt/fs1etCGP8aISrXQ/I0IX9rX8vNM0w6Jo2EtKGvWOpHPFk
+   nndeQjfnEAPxJor3cMZuoEdoaJLnmQ++7PHp8ZNs9YOyYFgtA4KI3LuCV
+   VmnxcctZeCpkbekTBEeDV5XhYAIYGETr1b6AYSUAnqWHYQFr7BVpbg5tJ
+   vozqI4xRWVnnp0KQ13rqgU4oqn8wWIwhBcN9yCOcvneS09vDPJvhuCSTm
+   a5imizZBpH3/UVHhnxGM+8D1RQ5FCD+gvCTFQzHcaX6UNt2dOWlNrFAQo
+   k59ME+7npt4cPstxCkBhk7BqE/7wpbQ5VWs8yD0wLfhYT8Yf1BjqlSApA
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="375872849"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="375872849"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 00:24:04 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="6334745"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by fmviesa002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 00:24:04 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 15 Nov 2023 00:24:03 -0800
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 00:24:03 -0800
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 15 Nov 2023 00:24:03 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mTtV9XqKL8ZI3+X9U0mReomfSB8FX2HgjVF1XVCa4O1hQbCzXS4wLUDeB59MPeXdsrv+OPl/DBiStf+wCZFtuPnz1FGqSKbvFgmlLDICurYtCat8aelLroL9zfFe3kIdUR8zkEBWESKD+XPGrME8/z8qa9xfRaJDanK5ZDeaa504ez6cbWOMJAhsSzsuue7NyNgFSEGMu8HpGCN+1LsT9z2Cp8hl/tKLugtuZVEjkRG1+2jqq7OWfvPOCyS7zYg0Na+UuKbEYQRBXAelekdp/pJIzwPULtTGL34DLD7ts07Ks2ghG4C1xd6sUI+boFlI+821fg3sWoxKeywhlXhIgg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=hJeVucC5zztoGKTOqdtrxoxQ0H3JeQjpf8JHEULn6rU=;
+ b=Zd9++3SFDJKEjR+Y2+Izm/dLvTAwge2c6rK9+X3tTpVjI2T/1xB+DA2t/enTGWfyMPk6fZd0jsS8kUOc3P1MRx90h1/Aeuci8yvXe3+9YCFCgYPMVk199YCOi4H4rJLohrhF+heYmzMkuyxnZlFEVrDCHijrwoL3UMoQG+sARqBqMlmRl6Hw0fKB7L+KSHxE1WZG/jPsXVkDZfc7yKw7AFikS5b/IGLMhdTbpFtsBc8BuXnKm3pajjnh72lEi8U9lrUHso4dwdPICTxua/2A8TQcFUhngIogJGEZNuA0FRoJYb5kh2YzINGBjd5BRNLk+VDo91DrOyxKM8HGwa9jRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
+ by CH3PR11MB7771.namprd11.prod.outlook.com (2603:10b6:610:125::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Wed, 15 Nov
+ 2023 08:23:59 +0000
+Received: from PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
+ ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7002.015; Wed, 15 Nov 2023
+ 08:23:59 +0000
+Message-ID: <33b452ec-c377-481f-b621-e1410ed28ff5@intel.com>
+Date:   Wed, 15 Nov 2023 16:23:47 +0800
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Content-Language: en-US, nl
-To:     Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi,
-        tfiga@chromium.org, m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
-From:   Hans Verkuil <hverkuil@xs4all.nl>
-Autocrypt: addr=hverkuil@xs4all.nl; keydata=
- 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
-In-Reply-To: <1699595289-25773-11-git-send-email-shengjiu.wang@nxp.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v6 25/25] KVM: nVMX: Enable CET support for nested guest
+To:     Chao Gao <chao.gao@intel.com>
+CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <dave.hansen@intel.com>,
+        <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
+        <john.allen@amd.com>
+References: <20230914063325.85503-1-weijiang.yang@intel.com>
+ <20230914063325.85503-26-weijiang.yang@intel.com>
+ <ZUGzZiF0Jn8GVcr+@chao-email>
+Content-Language: en-US
+From:   "Yang, Weijiang" <weijiang.yang@intel.com>
+In-Reply-To: <ZUGzZiF0Jn8GVcr+@chao-email>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-ClientProxiedBy: SI2PR02CA0041.apcprd02.prod.outlook.com
+ (2603:1096:4:196::20) To PH0PR11MB4965.namprd11.prod.outlook.com
+ (2603:10b6:510:34::7)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|CH3PR11MB7771:EE_
+X-MS-Office365-Filtering-Correlation-Id: e69965ac-d78a-4fa6-adb1-08dbe5b4365e
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RoCG8EezIPqq6liH6eweqGCcQNGfZcSy81E+58MzWq2CffxpYog27tQk1WaTBB8OHjb03LDxRRAHVvp8inpBAMghAkXWCuzPqICfIJ6NUJkmP7VB1Id8uI9oRqq+qdMjDdwSiX4SwFfQM/7a9DOSqR1P8mY6Zht4DS/DKhEkPri1qnp0AMJlWIyZ2+4nzzBk0MB1VJW43ll26qiRYHwk9HyJ+6hbmZIAcafl4epKaGZkVb03BcdznqXuCpHkMrSxpdp0GfXOU78Yf29aSf6DkesLyAcEy0Lo+e01cztp6TMndL7+40Ap+FjwGdbJuPrIIiH1k+7wY2A3z71+QUcc94dN2eHS8pM7ittHkhktiXrt7ntG4EN44/A5/Kzl4bjEbx/Z2boYmblJEz2yrstTvCEKrirXVFDRyDPWA+XUVRyiL2XGBdRocEx1r2UfXqZSPvF7zBG3mTz21sZ73WfatnfglB3UNcb/gOjQuW/P1WI/yZ4otEX1LEdQNj+KXzg4K53kVz0Vei6k9/k+3jus3NhEoLTdaj6o22BWp5l7gK0yOhNiSTGgdolVIVd4McrGpCByAPWECRQ0IhPYNdQCSIzvfvgsk7RrfyoaVx8F08KPIjJztSzutVPl50+LE0J1jRLXL0jcZoWr0y7WKtzjsQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(39860400002)(136003)(376002)(396003)(366004)(230922051799003)(186009)(451199024)(1800799009)(64100799003)(31686004)(36756003)(86362001)(31696002)(82960400001)(83380400001)(38100700002)(37006003)(26005)(6512007)(2616005)(478600001)(6666004)(6506007)(6486002)(53546011)(6636002)(8936002)(6862004)(66946007)(5660300002)(66476007)(4326008)(66556008)(316002)(41300700001)(8676002)(2906002)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?djRUSmN5R0lMZkVhWDhBRnMrZWF1UE5WQ2MySEJhMC9wRVZWUlU0NUYwQzlp?=
+ =?utf-8?B?Q2RlWTVseVg0bDBUWnF4S21IaERqR3NEOEtQczhqNElTV0JaemJCRVNmZ28r?=
+ =?utf-8?B?Ris2WUJrM3c0N01MOTFRSG5XWVN2UmthT2gzTktCRmpUWE5sN0xwQXdaWmh5?=
+ =?utf-8?B?amsvNUhaamFDSEdRT05TbkRieHNnRzJNbnNxd3o1bmp0VFd2RFBpMUYvYjhw?=
+ =?utf-8?B?bDVTVTZjWUE5YndoYlJEbHhSbDBlbHBIT1VieVNra2pNVlFHL2JYbGxqK1hX?=
+ =?utf-8?B?eklzOXViYnJzajVUWFBQeUM4elFiTmVKV1RQM2w1eVhvcXdQbm9RWTRMVWUw?=
+ =?utf-8?B?U0c3SURUbU4ybXdoOVk3VFZZNWZLdm12MkNlUzF6c2dlUkhxV2JMQzJHeUph?=
+ =?utf-8?B?ZXdIejIyMGFxMVZsaE9adjloS3kxdUtydjBpbG1ZUzdKMVVSanNrenZDSFBH?=
+ =?utf-8?B?SHd1OFdSRUN6bytwaEpQSFBsVml3c3VqNE5pYXV5WFo4SUVHNHdqZ0ZRRzd0?=
+ =?utf-8?B?VDBaaHVJSTBsbGF2UXdiRHBLOVEwMHNSaWRjUlhEM0RHbFJDWU84TWU4dnl3?=
+ =?utf-8?B?WmYyWmYxdjhjNDV2a3kxb1hwMGJQak1ldFYyZmNORkxLSXEzWEt1a1pmUkRa?=
+ =?utf-8?B?TXFiN0wzVE16bTJpSngyblpQTkx2QnJJQUJEVWs3clV5allPdWZHUElyRndC?=
+ =?utf-8?B?SnRyZXNMUzJwMWV1YVJrOXZ4QW5zSVFHQTgxbTVqMWl0Q0E1UjhGMEx4YXBY?=
+ =?utf-8?B?elpQWUNkZXZubXZ5ODZxT2FmS2RrVUc5QXhZQWYzNzdUUVI1ZXlybmExV3NU?=
+ =?utf-8?B?TS9QNE5SUG9TRGN5ais5aFppenM4VEZGMGdkOWdwMGxubVprdVRBVEtvdHFN?=
+ =?utf-8?B?T3NwRDU1Y2dleGxONHQ1c1ZzbDkyQkNPVDlMMnJ0UXI2MVNZa0xLQ0Z3aStW?=
+ =?utf-8?B?c3YzM3haQkQ0dmdmYWVBWEFyaThjQXI1Q0FaQVFodzE5aDR0THcreTZnNXBl?=
+ =?utf-8?B?b1JTRmZpZENTWWxNRFZ3VjJKZzNQK2JZeW5rZ2JnS2JqY291elZ6TVVWSHFh?=
+ =?utf-8?B?WWZMV2lQeVhpSmRzZE5hdjN6bGwxZGJXWmpQRGg2dGZyRytjYlF4MG5vU0ZX?=
+ =?utf-8?B?cGoweFI2YWtYeHJLcHJzMmt4UXNBY01zbnU3YmczelFqR2tmbEhlVW9BTnhE?=
+ =?utf-8?B?Ly9uOG9mUVc5RkR1RTdjeUFxcHZRM082ejYzbVdGNThVRlg0QTNXcjQ1dzdj?=
+ =?utf-8?B?R0hyamlLeVFKMm44cC9KeHJEQWZIdk9tSENyUXpHZUwyTUxKS0l4S1hXTVNv?=
+ =?utf-8?B?S3ZodmJVVndTVkpBMzhQclRiaGJtb3MwMU9Ra3lVU1dFN09SR1NmRHc5MGxW?=
+ =?utf-8?B?cXY1QkgzOFdIYjFmdmRseGcrcE1OdmhJTXE2aFg2RGJGcGhYald1R210Snhz?=
+ =?utf-8?B?TjBiTld6cjhVWE5GdGljV0NFa2tuVEJzYmZVb3dKcGRvZU12TEY3a2ptWjFF?=
+ =?utf-8?B?Z2JoNW5vOG1FQ054SmtEOU5XUHNxYlJEdWY4bXBqSnJKQmZFTE0raEswcFor?=
+ =?utf-8?B?azdEcVZiOE43d09uSVpINk05K2wrVXBFclZmMnVUUVBvU3FVMkh0NjNTZ01B?=
+ =?utf-8?B?aTVObTJVdllxUHRVdjVZVzV6QkRhN3dPa25xOFRQQTdnbjFvMFJBbU5ES0U3?=
+ =?utf-8?B?V1hzMjFzZ0lLR0IwYzhQWU1FbWljaEg1WVBVNWRQQTduajF2QUpLT2hSZ0pW?=
+ =?utf-8?B?WEVhR2xMNUlYSGVJUG1vMTZMNzN0TDNTWC9mWDkvc2JlN0VselhNWUJobllE?=
+ =?utf-8?B?cnpNZEdveFBoSmE5R0Q5ZkNlQlp3Nmd0UnZvS0VXZURFVHZDdkpHVGU0d1dy?=
+ =?utf-8?B?QS9uSGM3QUdEUlpaNFBkZDNBbG9idXZ5YmJ6R2FTNnF2RURYQjVLZE40TGc4?=
+ =?utf-8?B?NEJ6WTl6ei9xSUJLWEVKejQ1UUJhY0V0TVl1ZVRIVnRtY1p0NnlkNVZDR1E1?=
+ =?utf-8?B?bklCUDRZK1lMZ1I3K29aN0NHajFhRnF3OEFBZjZ1cDgvMXE4Uk1WUHl5Q205?=
+ =?utf-8?B?MitCVVJOUXk5Q1RmRWtuQ1NXNllhdEpObUUwbGZMU051aHhZbExveEVscU1Z?=
+ =?utf-8?B?dUlWQ3BLZ0UwalN4UXRxbi8wSnM0ZGJUZTRkM2lXMHFrOTAwcnVYU3FoNkIx?=
+ =?utf-8?B?MFE9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: e69965ac-d78a-4fa6-adb1-08dbe5b4365e
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 08:23:57.7070
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: G2FC7S5VrvLnlCDIRJxtkEhMHrdNI+8D7m/4q/Lc46njdiT6H9WFw9ty8Pz8pSYHjOnNN/hbmOX0x1PEFFLYlA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB7771
+X-OriginatorOrg: intel.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/11/2023 06:48, Shengjiu Wang wrote:
-> Fixed point controls are used by the user to configure
-> a fixed point value in 64bits, which Q31.32 format.
-> 
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> ---
->  .../userspace-api/media/v4l/vidioc-g-ext-ctrls.rst  | 13 +++++++------
->  .../userspace-api/media/v4l/vidioc-queryctrl.rst    |  9 ++++++++-
->  .../userspace-api/media/videodev2.h.rst.exceptions  |  1 +
->  drivers/media/v4l2-core/v4l2-ctrls-api.c            |  5 ++++-
->  drivers/media/v4l2-core/v4l2-ctrls-core.c           |  2 ++
->  include/uapi/linux/videodev2.h                      |  1 +
->  6 files changed, 23 insertions(+), 8 deletions(-)
-> 
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> index e8475f9fd2cf..e7e5d78dc11e 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-g-ext-ctrls.rst
-> @@ -162,13 +162,13 @@ still cause this situation.
->      * - __s32
->        - ``value``
->        - New value or current value. Valid if this control is not of type
-> -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
-> -	not set.
-> +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
-> +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
->      * - __s64
->        - ``value64``
->        - New value or current value. Valid if this control is of type
-> -	``V4L2_CTRL_TYPE_INTEGER64`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is
-> -	not set.
-> +	``V4L2_CTRL_TYPE_INTEGER64``, ``V4L2_CTRL_TYPE_FIXED_POINT`` and
-> +	``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is not set.
->      * - char *
->        - ``string``
->        - A pointer to a string. Valid if this control is of type
-> @@ -193,8 +193,9 @@ still cause this situation.
->      * - __s64 *
->        - ``p_s64``
->        - A pointer to a matrix control of signed 64-bit values. Valid if
-> -        this control is of type ``V4L2_CTRL_TYPE_INTEGER64`` and
-> -        ``V4L2_CTRL_FLAG_HAS_PAYLOAD`` is set.
-> +        this control is of type ``V4L2_CTRL_TYPE_INTEGER64``,
-> +        ``V4L2_CTRL_TYPE_FIXED_POINT`` and ``V4L2_CTRL_FLAG_HAS_PAYLOAD``
-> +        is set.
->      * - struct :c:type:`v4l2_area` *
->        - ``p_area``
->        - A pointer to a struct :c:type:`v4l2_area`. Valid if this control is
-> diff --git a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> index 4d38acafe8e1..f3995ec57044 100644
-> --- a/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> +++ b/Documentation/userspace-api/media/v4l/vidioc-queryctrl.rst
-> @@ -235,7 +235,8 @@ See also the examples in :ref:`control`.
->        - ``default_value``
->        - The default value of a ``V4L2_CTRL_TYPE_INTEGER``, ``_INTEGER64``,
->  	``_BOOLEAN``, ``_BITMASK``, ``_MENU``, ``_INTEGER_MENU``, ``_U8``
-> -	or ``_U16`` control. Not valid for other types of controls.
-> +	``_FIXED_POINT`` or ``_U16`` control. Not valid for other types of
-> +	controls.
->  
->  	.. note::
->  
-> @@ -549,6 +550,12 @@ See also the examples in :ref:`control`.
->        - n/a
->        - A struct :c:type:`v4l2_ctrl_av1_film_grain`, containing AV1 Film Grain
->          parameters for stateless video decoders.
-> +    * - ``V4L2_CTRL_TYPE_FIXED_POINT``
-> +      - any
-> +      - any
-> +      - any
-> +      - A 64-bit integer valued control, containing parameter which is
-> +        Q31.32 format.
->  
->  .. raw:: latex
->  
-> diff --git a/Documentation/userspace-api/media/videodev2.h.rst.exceptions b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> index e61152bb80d1..2faa5a2015eb 100644
-> --- a/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> +++ b/Documentation/userspace-api/media/videodev2.h.rst.exceptions
-> @@ -167,6 +167,7 @@ replace symbol V4L2_CTRL_TYPE_AV1_SEQUENCE :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_AV1_TILE_GROUP_ENTRY :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_AV1_FRAME :c:type:`v4l2_ctrl_type`
->  replace symbol V4L2_CTRL_TYPE_AV1_FILM_GRAIN :c:type:`v4l2_ctrl_type`
-> +replace symbol V4L2_CTRL_TYPE_FIXED_POINT :c:type:`v4l2_ctrl_type`
->  
->  # V4L2 capability defines
->  replace define V4L2_CAP_VIDEO_CAPTURE device-capabilities
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> index 002ea6588edf..e6a0fb8d6791 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
-> @@ -57,6 +57,7 @@ static int ptr_to_user(struct v4l2_ext_control *c,
->  		return copy_to_user(c->string, ptr.p_char, len + 1) ?
->  		       -EFAULT : 0;
->  	case V4L2_CTRL_TYPE_INTEGER64:
-> +	case V4L2_CTRL_TYPE_FIXED_POINT:n
->  		c->value64 = *ptr.p_s64;
->  		break;
->  	default:
-> @@ -132,6 +133,7 @@ static int user_to_new(struct v4l2_ext_control *c, struct v4l2_ctrl *ctrl)
->  
->  	switch (ctrl->type) {
->  	case V4L2_CTRL_TYPE_INTEGER64:
-> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->  		*ctrl->p_new.p_s64 = c->value64;
->  		break;
->  	case V4L2_CTRL_TYPE_STRING:
-> @@ -540,7 +542,8 @@ static int validate_ctrls(struct v4l2_ext_controls *cs,
->  		 */
->  		if (ctrl->is_ptr)
->  			continue;
-> -		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64)
-> +		if (ctrl->type == V4L2_CTRL_TYPE_INTEGER64 ||
-> +		    ctrl->type == V4L2_CTRL_TYPE_FIXED_POINT)
->  			p_new.p_s64 = &cs->controls[i].value64;
->  		else
->  			p_new.p_s32 = &cs->controls[i].value;
+On 11/1/2023 10:09 AM, Chao Gao wrote:
+> On Thu, Sep 14, 2023 at 02:33:25AM -0400, Yang Weijiang wrote:
+>> Set up CET MSRs, related VM_ENTRY/EXIT control bits and fixed CR4 setting
+>> to enable CET for nested VM.
+>>
+>> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
+>> ---
+>> arch/x86/kvm/vmx/nested.c | 27 +++++++++++++++++++++++++--
+>> arch/x86/kvm/vmx/vmcs12.c |  6 ++++++
+>> arch/x86/kvm/vmx/vmcs12.h | 14 +++++++++++++-
+>> arch/x86/kvm/vmx/vmx.c    |  2 ++
+>> 4 files changed, 46 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index 78a3be394d00..2c4ff13fddb0 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -660,6 +660,28 @@ static inline bool nested_vmx_prepare_msr_bitmap(struct kvm_vcpu *vcpu,
+>> 	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> 					 MSR_IA32_FLUSH_CMD, MSR_TYPE_W);
+>>
+>> +	/* Pass CET MSRs to nested VM if L0 and L1 are set to pass-through. */
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_U_CET, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_S_CET, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_PL0_SSP, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_PL1_SSP, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_PL2_SSP, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_PL3_SSP, MSR_TYPE_RW);
+>> +
+>> +	nested_vmx_set_intercept_for_msr(vmx, msr_bitmap_l1, msr_bitmap_l0,
+>> +					 MSR_IA32_INT_SSP_TAB, MSR_TYPE_RW);
+>> +
+>> 	kvm_vcpu_unmap(vcpu, &vmx->nested.msr_bitmap_map, false);
+>>
+>> 	vmx->nested.force_msr_bitmap_recalc = false;
+>> @@ -6794,7 +6816,7 @@ static void nested_vmx_setup_exit_ctls(struct vmcs_config *vmcs_conf,
+>> 		VM_EXIT_HOST_ADDR_SPACE_SIZE |
+>> #endif
+>> 		VM_EXIT_LOAD_IA32_PAT | VM_EXIT_SAVE_IA32_PAT |
+>> -		VM_EXIT_CLEAR_BNDCFGS;
+>> +		VM_EXIT_CLEAR_BNDCFGS | VM_EXIT_LOAD_CET_STATE;
+>> 	msrs->exit_ctls_high |=
+>> 		VM_EXIT_ALWAYSON_WITHOUT_TRUE_MSR |
+>> 		VM_EXIT_LOAD_IA32_EFER | VM_EXIT_SAVE_IA32_EFER |
+>> @@ -6816,7 +6838,8 @@ static void nested_vmx_setup_entry_ctls(struct vmcs_config *vmcs_conf,
+>> #ifdef CONFIG_X86_64
+>> 		VM_ENTRY_IA32E_MODE |
+>> #endif
+>> -		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS;
+>> +		VM_ENTRY_LOAD_IA32_PAT | VM_ENTRY_LOAD_BNDCFGS |
+>> +		VM_ENTRY_LOAD_CET_STATE;
+>> 	msrs->entry_ctls_high |=
+>> 		(VM_ENTRY_ALWAYSON_WITHOUT_TRUE_MSR | VM_ENTRY_LOAD_IA32_EFER |
+>> 		 VM_ENTRY_LOAD_IA32_PERF_GLOBAL_CTRL);
+>> diff --git a/arch/x86/kvm/vmx/vmcs12.c b/arch/x86/kvm/vmx/vmcs12.c
+>> index 106a72c923ca..4233b5ca9461 100644
+>> --- a/arch/x86/kvm/vmx/vmcs12.c
+>> +++ b/arch/x86/kvm/vmx/vmcs12.c
+>> @@ -139,6 +139,9 @@ const unsigned short vmcs12_field_offsets[] = {
+>> 	FIELD(GUEST_PENDING_DBG_EXCEPTIONS, guest_pending_dbg_exceptions),
+>> 	FIELD(GUEST_SYSENTER_ESP, guest_sysenter_esp),
+>> 	FIELD(GUEST_SYSENTER_EIP, guest_sysenter_eip),
+>> +	FIELD(GUEST_S_CET, guest_s_cet),
+>> +	FIELD(GUEST_SSP, guest_ssp),
+>> +	FIELD(GUEST_INTR_SSP_TABLE, guest_ssp_tbl),
+> I think we need to sync guest states, e.g., guest_s_cet/guest_ssp/guest_ssp_tbl,
+> between vmcs02 and vmcs12 on nested VM entry/exit, probably in
+> sync_vmcs02_to_vmcs12() and prepare_vmcs12() or "_rare" variants of them.
 
-You missed a few more: everywhere in this source where V4L2_CTRL_TYPE_INTEGER64
-is used you need to add a check for FIXED_POINT as well.
-
-> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> index a662fb60f73f..9d50df0d9874 100644
-> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
-> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
-
-Same here for this source.
-
-Note that v4l2_ctrl_type_op_log() needs a separate case for FIXED_POINT so that it
-can be logged properly.
-
-> @@ -1187,6 +1187,7 @@ static int std_validate_elem(const struct v4l2_ctrl *ctrl, u32 idx,
->  	case V4L2_CTRL_TYPE_INTEGER:
->  		return ROUND_TO_RANGE(ptr.p_s32[idx], u32, ctrl);
->  	case V4L2_CTRL_TYPE_INTEGER64:
-> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->  		/*
->  		 * We can't use the ROUND_TO_RANGE define here due to
->  		 * the u64 divide that needs special care.
-> @@ -1779,6 +1780,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
->  	/* Prefill elem_size for all types handled by std_type_ops */
->  	switch ((u32)type) {
->  	case V4L2_CTRL_TYPE_INTEGER64:
-> +	case V4L2_CTRL_TYPE_FIXED_POINT:
->  		elem_size = sizeof(s64);
->  		break;
->  	case V4L2_CTRL_TYPE_STRING:
-
-There is one more place where V4L2_CTRL_TYPE_INTEGER64 is used:
-drivers/media/v4l2-core/v4l2-ioctl.c. That should report a fixed point
-value in the same way as v4l2_ctrl_type_op_log().
-
-> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-> index cf8c44595a1d..9482ac66a675 100644
-> --- a/include/uapi/linux/videodev2.h
-> +++ b/include/uapi/linux/videodev2.h
-> @@ -1903,6 +1903,7 @@ enum v4l2_ctrl_type {
->  	V4L2_CTRL_TYPE_STRING        = 7,
->  	V4L2_CTRL_TYPE_BITMASK       = 8,
->  	V4L2_CTRL_TYPE_INTEGER_MENU  = 9,
-> +	V4L2_CTRL_TYPE_FIXED_POINT   = 10,
->  
->  	/* Compound types are >= 0x0100 */
->  	V4L2_CTRL_COMPOUND_TYPES     = 0x0100,
-
-We will probably need a helper to create a fixed point value from the integer
-and fractional part, and one to extract them.
-
-Regards,
-
-	Hans
+After checked around the code, it's necessary to sync related fields from vmcs02 to vmcs12
+at nested VM exit so that L1 or userspace can access correct values.
+I'll add this part, thanks!
