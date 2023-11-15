@@ -2,242 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5374F7EBE93
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BC307EBE9C
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:34:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343508AbjKOIbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 03:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33554 "EHLO
+        id S1343523AbjKOIeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 03:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjKOIbl (ORCPT
+        with ESMTP id S234651AbjKOIet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 03:31:41 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF339DF;
-        Wed, 15 Nov 2023 00:31:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700037098; x=1731573098;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=+7gQqGdK4ccBi5iG49UehUNCK/4aEKRAUlOU3Hj+V3g=;
-  b=FNkabxS+2ryIkwoiIY1xO6cUC1Zl+FW7WmMagjHRYnFgTwyTbaO7m14a
-   YZYfXMnrNGmMCLJukSZYv72LYWKI+9HeBGvi8gAuQ74OP1w6R4JOJySSh
-   4JI8kp5dd9tr5fIVT0Fn3htI1etd9Dt5ePA5Pd9i9bU08mIAt2JVnRBa5
-   HYQ1N/Qp6yLwQe0XUmSKhtH7/UVA7GsYvANpuzJjBqGxVozlM5u9Z7Rdk
-   P+YQqQz899YzSDQN7Y0KCqRgxm1KvE92M3m5ZQrpgI9ITghAEw7gnSFln
-   wLJpdYCz3/sLr1kIVbOVJM9aMvtpWsoPszXg55CAsL7/TQ5aoVZbPBWxk
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="381231137"
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="381231137"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 00:31:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="6087914"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 00:31:38 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 00:31:37 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 00:31:37 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 00:31:37 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 00:31:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HxOVKb0QexL10V92Nv41LgZCSdDgL5jSPehyr0G7viNhfe1yGbrp2OctQuqW2aFa199Ygwy42FgJadKmion6/tqft0ek/562S7XDc+yZKA3vrqeD+1Bkupp3ZE8myLopattQeFAsWIPiyzeaUgSx7sOKeIPpkM4tij/o2AxY0u2jOoLgIagZDC3J4GGYY7av7IJMiALJW7Dbe8T3rzEJzM05L+pHaR1ld5OvEEsxZDAryojL/fgo/fJ1zfFUsMbPl0J0ZISfgwvdMPKMf/cr/szgWHIgIPUFTj51cmbXcQS71PEJyusvMaSEio0RVulpBzPUMkKlmVTAtb56Lsb4Hw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wEpZXNMaUCVc2kG0q8T/K9jG2wr11xklNgXamEDT5zY=;
- b=W37bSWuFY5YnnEBkMCVH6PbTTpqNFSi4ej5Bk6nx024qgrVGVxG9/vboMEoQSW3M3WmJVVIuqV1fGD6PSWJwD4NTZmSMdekh8DIuNvl1m24z3NAkaRrmvl/707qtOOYyhV48m/q3AoOucGJ57I3Ap2cHP/bzWFYa5h2r9iS12S+3MUeKFGBjw7jiNB6kIj5Dih++2oXtEVzbxZv+GmkbfgZ3sywXxY1ew89Hl+txqmTuTdTusFSYN5GZEYVWunI9mpTvBco9wt8FcVZFT2GpaY1brdeUGbSDQeqAsBdjsPATBLW8KHdxWu5E8+uzaO5eQiQdjew5luCTWN7+ljEB3Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com (2603:10b6:510:34::7)
- by DS0PR11MB7309.namprd11.prod.outlook.com (2603:10b6:8:13e::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Wed, 15 Nov
- 2023 08:31:35 +0000
-Received: from PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8]) by PH0PR11MB4965.namprd11.prod.outlook.com
- ([fe80::ea04:122f:f20c:94e8%2]) with mapi id 15.20.7002.015; Wed, 15 Nov 2023
- 08:31:35 +0000
-Message-ID: <d377806e-43af-4ac7-8e7a-291fb19a2091@intel.com>
-Date:   Wed, 15 Nov 2023 16:31:25 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 24/25] KVM: nVMX: Introduce new VMX_BASIC bit for event
- error_code delivery to L1
-Content-Language: en-US
-To:     Chao Gao <chao.gao@intel.com>
-CC:     <seanjc@google.com>, <pbonzini@redhat.com>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dave.hansen@intel.com>,
-        <peterz@infradead.org>, <rick.p.edgecombe@intel.com>,
-        <john.allen@amd.com>
-References: <20230914063325.85503-1-weijiang.yang@intel.com>
- <20230914063325.85503-25-weijiang.yang@intel.com>
- <ZUHSTEGpdWGjL93M@chao-email>
-From:   "Yang, Weijiang" <weijiang.yang@intel.com>
-In-Reply-To: <ZUHSTEGpdWGjL93M@chao-email>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR04CA0016.apcprd04.prod.outlook.com
- (2603:1096:4:197::7) To PH0PR11MB4965.namprd11.prod.outlook.com
- (2603:10b6:510:34::7)
+        Wed, 15 Nov 2023 03:34:49 -0500
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBB80F1;
+        Wed, 15 Nov 2023 00:34:44 -0800 (PST)
+Received: from dlp.unisoc.com ([10.29.3.86])
+        by SHSQR01.spreadtrum.com with ESMTP id 3AF8YECt071583;
+        Wed, 15 Nov 2023 16:34:14 +0800 (+08)
+        (envelope-from Wenchao.Chen@unisoc.com)
+Received: from SHDLP.spreadtrum.com (shmbx05.spreadtrum.com [10.29.1.56])
+        by dlp.unisoc.com (SkyGuard) with ESMTPS id 4SVbtC2D7lz2N1Kdv;
+        Wed, 15 Nov 2023 16:29:07 +0800 (CST)
+Received: from xm9614pcu.spreadtrum.com (10.13.2.29) by shmbx05.spreadtrum.com
+ (10.29.1.56) with Microsoft SMTP Server (TLS) id 15.0.1497.23; Wed, 15 Nov
+ 2023 16:34:13 +0800
+From:   Wenchao Chen <wenchao.chen@unisoc.com>
+To:     <ulf.hansson@linaro.org>, <zhang.lyra@gmail.com>,
+        <orsonzhai@gmail.com>, <baolin.wang@linux.alibaba.com>
+CC:     <linux-mmc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wenchao.chen666@gmail.com>, <zhenxiong.lai@unisoc.com>,
+        <yuelin.tang@unisoc.com>, Wenchao Chen <wenchao.chen@unisoc.com>
+Subject: [PATCH V2] mmc: sprd: Fix vqmmc not shutting down after the card was pulled
+Date:   Wed, 15 Nov 2023 16:34:06 +0800
+Message-ID: <20231115083406.7368-1-wenchao.chen@unisoc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB4965:EE_|DS0PR11MB7309:EE_
-X-MS-Office365-Filtering-Correlation-Id: a00d6314-20f9-456f-1b3f-08dbe5b5470b
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KRC5ZZUgY1BPlI1X0v5B3BYAcpTOtyHGJCmsV8TKUVj/tMoVSU5Z6jOxWwuqCoZUdXwv+MBifwvDOM1UWsubC4b2Y3R1aDTA3L5eaNZFr4tXsH0VRczWqgZOAkssRSJq96ESd/gKUR8qQGBgvp0Tab2PxqQcWGtWpthMAuBac/Z4qlTIdiKNPiMxwEgrHkpMNDecmraSKK4GEALXw/30AX3iAB9txUcVH+gZ/lMOgNbL3Kvz0axqstdXalO+7XOJ+bQFYeFHlDSYLCsHVM08QorC44aZf2Qcrr36HGdo5Sziy5gMDZOr+7JMHfJSMSV12tzTTLITphBwlSpCZ9+zhsRo6sAUGFwyRcvLP2F0iH746Es4x5IpfO0qLejpUMMIhvOK/77KBiavP21vEZlerqodrEMT6H93Fefax9MXAW6gDNtsO2zDrTwH5LCfqPU0pzwBLWXGHOMer0PoiALy8NBU5cav/qS7KWAKqlZ+/THVCOxMngargCD227z+Z8qecZvc0F2elV9zzy7aLz7y86sPyGPNna2FHfjMphJc1aK4Izm9FcvGy7lnz8CQB0OSLcpU1JdyRa5JhQkox+OKmzioRzr9PGR+CmMFIJVgX/qHe7KhI6lN/lfqqlNNXq8/vzC3T9nywob8WxRQw/AV7w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4965.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(376002)(346002)(39860400002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(4326008)(6506007)(53546011)(2616005)(31696002)(86362001)(5660300002)(8676002)(8936002)(38100700002)(6666004)(2906002)(478600001)(31686004)(66946007)(37006003)(316002)(66556008)(6512007)(66476007)(6636002)(26005)(6486002)(6862004)(82960400001)(41300700001)(36756003)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?dWVuRzh3ZERDMm9yajRBejhIVDdDaWE5dU5QamtmalVOaXRiWmhWRkQrVGRa?=
- =?utf-8?B?cFJFbXNKRkc5Zzl2ajNGSVg0L0NjVzVFczZvZCswMEpwSVdJL2lyV1JmQ2VQ?=
- =?utf-8?B?dGZJRUY3elZHdXdjK0ZzaGpDZFNrQ0dGZ3JwUEIzS3pRTkFXckdBWkVPU1lr?=
- =?utf-8?B?YzhYazF5ckplbGN1Wm44N1BDeXN5TGJOOGlQUGVtdVJILzFqeW5CanVzVXRZ?=
- =?utf-8?B?Wi9sbFhOcFZSUnBFeEVzVk16a05Xd0w1c0lOQ1FBdENCVk5adVppYW11R1hZ?=
- =?utf-8?B?WTNDTnNGaFlMeUgzQWtkR0F6RnFBQk5HRkxJWTNVWnJ1TkxoZTJoZVBwakY0?=
- =?utf-8?B?ZUgyNm03THo3d2o1Y2Q2d05HWHBxbWNrY20zVlBMa0hvMlhnUkFuUncyUXMv?=
- =?utf-8?B?UDV0MzJrb2o2QktqOW1vc0RPak5YS1VsMVVIZVpTemhkR0YxQSs3bFI5OGw5?=
- =?utf-8?B?R01BbDJsblAxckNMWXpBakZQaHI3aE5XM0RLSkUxV0JZTHRRVmxkZjFjUW5v?=
- =?utf-8?B?N0llTnVGeTRHK1FqekNFWnlVU1JqU3VKQzVBNzBtaDR5VDB6OWEranZwKzlq?=
- =?utf-8?B?RjlDR1BNSG1kUXEyOW9HRnNVTXFhUGRhZW9HMjFwZ2hSTmtqbVBObEljUTh2?=
- =?utf-8?B?NkNiSmRad1lhcnlqTzdmdUt2eW4yTzQvaUlkL2E1dFBOc1FjK2x3V0tHM1JB?=
- =?utf-8?B?VU84OHFEZUFUNGl3Y0FuWTM0ZVU5T3N6Q3c0OCtOMWZ6QXF2RURRbDRPSkFB?=
- =?utf-8?B?ZWNPa2RuMnZiZGZJMWs2WmcyYTVnOHJqRjlXLzE5YVF4SlZHeVRSSTI4ZXpv?=
- =?utf-8?B?ZE5OcWVMWGpuTDI5VG14dlZTV1c4ZGdBUVpBcUVnKzM2N203aXhCYUk2SXUw?=
- =?utf-8?B?WUZ3SlRHSFQ1Z0ZxMm9zdnJNNWlSMXN1NU9EYytPOExSQ3o1TjN0NUVkZWNQ?=
- =?utf-8?B?d0hsY1BDb2szaE42cnFQR2JVa21xcnIrSkgvUVFvNE95U3YyREZzMENSaWZZ?=
- =?utf-8?B?cC9tMDJhc3k3U0ZNQ2tvU3VaR2RkczNsYitoekd2dC91eHZYOWMvNVgxSXZX?=
- =?utf-8?B?ZzJjUy9WUjFEY1V2cXFOcmhIMC9IcWZBOW5mZzJxb1ZnVU9ubjhPdGR6M0N5?=
- =?utf-8?B?MnNOTGUwMXB0UzZFY2xWSThoRng0WmZUK0tjSWp3OEkxeVpZRnQwWEd1SWo2?=
- =?utf-8?B?ZUMxOXZMbUVSTFY5R3FTc2M5UEVVckxJTkVlR2JzQUljcURCY0RnU3FuTVlS?=
- =?utf-8?B?TmtPWk9CYWFMdWNWUm96dzh4VXU0NFhUdjV2MTV5aU16NXR6QmNCc3lXSTYw?=
- =?utf-8?B?UlZ0TSs2SnBreVoyd1lTYkNFaFJRb25tT09vSFhFRTdGOURNbUpXeWh5dGJP?=
- =?utf-8?B?YkVBWFpETEVKUlR3Q3dFT3BYdHdtTmMwcXdlYzRwd0dDa292ZWNiVSs3Vllu?=
- =?utf-8?B?MWVOSG52YUVZM1ZyNkoyZyt1ZDU3WmtnNlBJeHdjbGdxeGN4T1V0NnFJRFBm?=
- =?utf-8?B?cTlUWERGcFdLdU5BQ3R2TTdRUkhzZnl1cHdYQ2FUbGIyQ2ZKUWxobzl5WjdH?=
- =?utf-8?B?VHByTzJmRmNyMGIyQzBZclJnSGpORWR0NWFpK2swN3M0NzB2Yjh3RkQ4eGVQ?=
- =?utf-8?B?L2Q2UU5oY2NLeSs2aXNRR3BRYVBDMEpVRWFpUjl4T2VjNzdqT0R1KzJSYnZR?=
- =?utf-8?B?bzZOYzRqSkFUNVM0aXFtUFh1MkZuOUdBWGhaVmVVTnJiQ3VsSDFuVTZmdG9G?=
- =?utf-8?B?eUhSOGUrQStKZmFtSmRuNTJBZ09zdHZqQ0h1bkNvS0txRGFIdjV5eG5Hemt1?=
- =?utf-8?B?MExEcDFudjRWTXo0enFSZzRFdFV5VzV5MjZYRXRac3NLUjU4YnMxSzkvTjVr?=
- =?utf-8?B?V1NDR2FxeEFkbTFScjN1RnB2QU5XQU1rVWpuam9uSFlydHRkNENBb2VJV0xP?=
- =?utf-8?B?V29JNEc4dy9DaGJ4cTZNUnl3T1NIUEd4M1R6N2ZkNndvanNEMzAydWtiL2JK?=
- =?utf-8?B?dm9lTFBHYllndWVXS1RJZzY5M092bXNCdjR2NDZudy9OUkRiakZxZ3hSOXQ4?=
- =?utf-8?B?akNaRTFaY0FjdEtOZTJPUlZSeFcrczE0VUtKU29YL3VtY1RHTXRNeWJjM3E2?=
- =?utf-8?B?Q1llaER1QURVSVhjZ3pwTUhaUVEvdEE2cDBSS3BrSEpGcmxWMXRiZVMydUQ4?=
- =?utf-8?B?Z3c9PQ==?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a00d6314-20f9-456f-1b3f-08dbe5b5470b
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4965.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 08:31:35.1560
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: jvYLFHZu+Xk2SoMcO9mXtwswn8eOGtuoSYdWGhXXd4qOdtCcWvDqkmAf4WDINoA61w9Y/2IsOkObL49qdRp5Bg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7309
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.13.2.29]
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ shmbx05.spreadtrum.com (10.29.1.56)
+X-MAIL: SHSQR01.spreadtrum.com 3AF8YECt071583
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/1/2023 12:21 PM, Chao Gao wrote:
-> On Thu, Sep 14, 2023 at 02:33:24AM -0400, Yang Weijiang wrote:
->> Per SDM description(Vol.3D, Appendix A.1):
->> "If bit 56 is read as 1, software can use VM entry to deliver a hardware
->> exception with or without an error code, regardless of vector"
->>
->> Modify has_error_code check before inject events to nested guest. Only
->> enforce the check when guest is in real mode, the exception is not hard
->> exception and the platform doesn't enumerate bit56 in VMX_BASIC, in all
->> other case ignore the check to make the logic consistent with SDM.
->>
->> Signed-off-by: Yang Weijiang <weijiang.yang@intel.com>
->> ---
->> arch/x86/kvm/vmx/nested.c | 22 ++++++++++++++--------
->> arch/x86/kvm/vmx/nested.h |  5 +++++
->> 2 files changed, 19 insertions(+), 8 deletions(-)
->>
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index c5ec0ef51ff7..78a3be394d00 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -1205,9 +1205,9 @@ static int vmx_restore_vmx_basic(struct vcpu_vmx *vmx, u64 data)
->> {
->> 	const u64 feature_and_reserved =
->> 		/* feature (except bit 48; see below) */
->> -		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) |
->> +		BIT_ULL(49) | BIT_ULL(54) | BIT_ULL(55) | BIT_ULL(56) |
->> 		/* reserved */
->> -		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 56);
->> +		BIT_ULL(31) | GENMASK_ULL(47, 45) | GENMASK_ULL(63, 57);
->> 	u64 vmx_basic = vmcs_config.nested.basic;
->>
->> 	if (!is_bitwise_subset(vmx_basic, data, feature_and_reserved))
->> @@ -2846,12 +2846,16 @@ static int nested_check_vm_entry_controls(struct kvm_vcpu *vcpu,
->> 		    CC(intr_type == INTR_TYPE_OTHER_EVENT && vector != 0))
->> 			return -EINVAL;
->>
->> -		/* VM-entry interruption-info field: deliver error code */
->> -		should_have_error_code =
->> -			intr_type == INTR_TYPE_HARD_EXCEPTION && prot_mode &&
->> -			x86_exception_has_error_code(vector);
->> -		if (CC(has_error_code != should_have_error_code))
->> -			return -EINVAL;
->> +		if (!prot_mode || intr_type != INTR_TYPE_HARD_EXCEPTION ||
->> +		    !nested_cpu_has_no_hw_errcode_cc(vcpu)) {
->> +			/* VM-entry interruption-info field: deliver error code */
->> +			should_have_error_code =
->> +				intr_type == INTR_TYPE_HARD_EXCEPTION &&
->> +				prot_mode &&
->> +				x86_exception_has_error_code(vector);
->> +			if (CC(has_error_code != should_have_error_code))
->> +				return -EINVAL;
->> +		}
-> prot_mode and intr_type are used twice, making the code a little hard to read.
->
-> how about:
-> 		/*
-> 		 * Cannot deliver error code in real mode or if the
-> 		 * interruption type is not hardware exception. For other
-> 		 * cases, do the consistency check only if the vCPU doesn't
-> 		 * enumerate VMX_BASIC_NO_HW_ERROR_CODE_CC.
-> 		 */
-> 		if (!prot_mode || intr_type != INTR_TYPE_HARD_EXCEPTION) {
-> 			if (CC(has_error_code))
-> 				return -EINVAL;
-> 		} else if (!nested_cpu_has_no_hw_errcode_cc(vcpu)) {
-> 			if (CC(has_error_code != x86_exception_has_error_code(vector)))
-> 				return -EINVAL;
-> 		}
->
-> and drop should_have_error_code.
+With cat regulator_summary, we found that vqmmc was not shutting
+down after the card was pulled.
 
-The change looks clearer, I'll take it, thanks!
+cat /sys/kernel/debug/regulator/regulator_summary
+1.before fix
+1)Insert SD card
+ vddsdio		1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
 
+2)Pull out the SD card
+ vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
+
+2.after fix
+1)Insert SD cardt
+ vddsdio                1    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  1                         0mA  3500mV  3600mV
+
+2)Pull out the SD card
+ vddsdio		0    1  0 unknown  3500mV 0mA  1200mV  3750mV
+    71100000.mmc-vqmmc  0                         0mA  3500mV  3600mV
+
+Fixes: fb8bd90f83c4 ("mmc: sdhci-sprd: Add Spreadtrum's initial host controller")
+Signed-off-by: Wenchao Chen <wenchao.chen@unisoc.com>
+
+Change in v2:
+- Remove useless sdhci_sprd_signal_voltage_switch and power_mode.
+- Use mmc_regulator_get_supply in probe to prevent sdhci_setup_host
+  from powering up vqmmc.
+---
+ drivers/mmc/host/sdhci-sprd.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/mmc/host/sdhci-sprd.c b/drivers/mmc/host/sdhci-sprd.c
+index 6b84ba27e6ab..6b8a57e2d20f 100644
+--- a/drivers/mmc/host/sdhci-sprd.c
++++ b/drivers/mmc/host/sdhci-sprd.c
+@@ -416,12 +416,33 @@ static void sdhci_sprd_request_done(struct sdhci_host *host,
+ 	mmc_request_done(host->mmc, mrq);
+ }
+ 
++static void sdhci_sprd_set_power(struct sdhci_host *host, unsigned char mode,
++				 unsigned short vdd)
++{
++	struct mmc_host *mmc = host->mmc;
++
++	switch (mode) {
++	case MMC_POWER_OFF:
++		mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, 0);
++
++		mmc_regulator_disable_vqmmc(mmc);
++		break;
++	case MMC_POWER_ON:
++		mmc_regulator_enable_vqmmc(mmc);
++		break;
++	case MMC_POWER_UP:
++		mmc_regulator_set_ocr(host->mmc, mmc->supply.vmmc, vdd);
++		break;
++	}
++}
++
+ static struct sdhci_ops sdhci_sprd_ops = {
+ 	.read_l = sdhci_sprd_readl,
+ 	.write_l = sdhci_sprd_writel,
+ 	.write_w = sdhci_sprd_writew,
+ 	.write_b = sdhci_sprd_writeb,
+ 	.set_clock = sdhci_sprd_set_clock,
++	.set_power = sdhci_sprd_set_power,
+ 	.get_max_clock = sdhci_sprd_get_max_clock,
+ 	.get_min_clock = sdhci_sprd_get_min_clock,
+ 	.set_bus_width = sdhci_set_bus_width,
+@@ -823,6 +844,10 @@ static int sdhci_sprd_probe(struct platform_device *pdev)
+ 	host->caps1 &= ~(SDHCI_SUPPORT_SDR50 | SDHCI_SUPPORT_SDR104 |
+ 			 SDHCI_SUPPORT_DDR50);
+ 
++	ret = mmc_regulator_get_supply(host->mmc);
++	if (ret)
++		goto pm_runtime_disable;
++
+ 	ret = sdhci_setup_host(host);
+ 	if (ret)
+ 		goto pm_runtime_disable;
+-- 
+2.17.1
 
