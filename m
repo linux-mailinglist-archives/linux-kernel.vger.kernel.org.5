@@ -2,247 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D657EC0FD
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B217EC102
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 11:57:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234894AbjKOKzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 05:55:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45172 "EHLO
+        id S234893AbjKOK5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 05:57:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234098AbjKOKzV (ORCPT
+        with ESMTP id S234098AbjKOK5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 05:55:21 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DC0FE5;
-        Wed, 15 Nov 2023 02:55:16 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E23A2289;
-        Wed, 15 Nov 2023 11:54:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700045687;
-        bh=IZtjyVsZ1d9d581wTzs5WKXC+tkpF3wEZGnNGW7c2HA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=A2m2qwqK9RZ3Vi/Za8vAs5g2smL1q5yxsqqM6/pkbCOwPUGIvj0j1g2Ir6IY16kb4
-         gOn1EO8usecidwYIo/gE+fVxST9c6x0wgsNZvhuboR+3iNkqj72Ug79DMGG1xdnQgb
-         GxFGeKizYo/meaNOXup2BI74fmlZudB34gm2IiOs=
-Date:   Wed, 15 Nov 2023 12:55:18 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Hans Verkuil <hverkuil@xs4all.nl>
-Cc:     Sakari Ailus <sakari.ailus@iki.fi>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>, tfiga@chromium.org,
-        m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Message-ID: <20231115105518.GD13826@pendragon.ideasonboard.com>
-References: <4cd6b593-2376-4cbc-a7c8-d3eb36a2f7a0@xs4all.nl>
- <20231113104238.GA13981@pendragon.ideasonboard.com>
- <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
- <20231113110754.GB24338@pendragon.ideasonboard.com>
- <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
- <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
- <20231113114357.GD24338@pendragon.ideasonboard.com>
- <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
- <20231113124412.GA18974@pendragon.ideasonboard.com>
- <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
+        Wed, 15 Nov 2023 05:57:11 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05CF5DA
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 02:57:05 -0800 (PST)
+Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SVg4338DpzNmJ3;
+        Wed, 15 Nov 2023 18:52:51 +0800 (CST)
+Received: from huawei.com (10.90.53.73) by kwepemi500008.china.huawei.com
+ (7.221.188.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 15 Nov
+ 2023 18:57:03 +0800
+From:   Jinjie Ruan <ruanjinjie@huawei.com>
+To:     <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>
+CC:     <ruanjinjie@huawei.com>
+Subject: [PATCH] x86: Fix 32-bit compatible userspace write size overflow error
+Date:   Wed, 15 Nov 2023 18:56:26 +0800
+Message-ID: <20231115105626.953273-1-ruanjinjie@huawei.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.90.53.73]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemi500008.china.huawei.com (7.221.188.139)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Hans,
+For 32-bit compatible userspace program, write with size = -1 return not
+-1 but unexpected other values, which is due to the __access_ok() check is
+insufficient. The specified "ptr + size" is greater than 32-bit limit and
+should return -EFAULT, but it is not checked and can not catch the overflow
+error.
 
-On Wed, Nov 15, 2023 at 09:09:42AM +0100, Hans Verkuil wrote:
-> On 13/11/2023 13:44, Laurent Pinchart wrote:
-> > On Mon, Nov 13, 2023 at 01:05:12PM +0100, Hans Verkuil wrote:
-> >> On 13/11/2023 12:43, Laurent Pinchart wrote:
-> >>> On Mon, Nov 13, 2023 at 11:28:51AM +0000, Sakari Ailus wrote:
-> >>>> On Mon, Nov 13, 2023 at 12:24:14PM +0100, Hans Verkuil wrote:
-> >>>>> On 13/11/2023 12:07, Laurent Pinchart wrote:
-> >>>>>> On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
-> >>>>>>> On 13/11/2023 11:42, Laurent Pinchart wrote:
-> >>>>>>>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
-> >>>>>>>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
-> >>>>>>>>>> Fixed point controls are used by the user to configure
-> >>>>>>>>>> a fixed point value in 64bits, which Q31.32 format.
-> >>>>>>>>>>
-> >>>>>>>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> >>>>>>>>>
-> >>>>>>>>> This patch adds a new control type. This is something that also needs to be
-> >>>>>>>>> tested by v4l2-compliance, and for that we need to add support for this to
-> >>>>>>>>> one of the media test-drivers. The best place for that is the vivid driver,
-> >>>>>>>>> since that has already a bunch of test controls for other control types.
-> >>>>>>>>>
-> >>>>>>>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
-> >>>>>>>>>
-> >>>>>>>>> Can you add a patch adding a fixed point test control to vivid?
-> >>>>>>>>
-> >>>>>>>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
-> >>>>>>>> relate more to units than control types. We have lots of fixed-point
-> >>>>>>>> values in controls already, using the 32-bit and 64-bit integer control
-> >>>>>>>> types. They use various locations for the decimal point, depending on
-> >>>>>>>> the control. If we want to make this more explicit to users, we should
-> >>>>>>>> work on adding unit support to the V4L2 controls.
-> >>>>>>>
-> >>>>>>> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
-> >>>>>>
-> >>>>>> It's not a unit, but I think it's related to units. My point is that,
-> >>>>>> without units support, I don't see why we need a formal definition of
-> >>>>>> fixed-point types, and why this series couldn't just use
-> >>>>>> VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEGER64
-> >>>>>> values as they see fit.
-> >>>>>
-> >>>>> They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTEGER64
-> >>>>> (I assume you meant that rather than VIVID_CID_INTEGER64) shows that it
-> >>>
-> >>> Yes, I meant V4L2_CTRL_TYPE_INTEGER64. Too hasty copy & paste :-)
-> >>>
-> >>>>> is always interpreted as a 64 bit integer and nothing else. As it should.
-> >>>
-> >>> The most common case for control handling in drivers is taking the
-> >>> integer value and converting it to a register value, using
-> >>> device-specific encoding of the register value. It can be a fixed-point
-> >>> format or something else, depending on the device. My point is that
-> >>> drivers routinely convert a "plain" integer to something else, and that
-> >>> has never been considered as a cause of concern. I don't see why it
-> >>> would be different in this series.
-> >>>
-> >>>>> And while we do not have support for units (other than the documentation),
-> >>>>> we do have type support in the form of V4L2_CTRL_TYPE_*.
-> >>>>>
-> >>>>>>> A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
-> >>>>>>> only shows a single driver specific control (dw100.rst).
-> >>>>>>>
-> >>>>>>> I'm not aware of other controls in mainline that use fixed point.
-> >>>>>>
-> >>>>>> The analog gain control for sensors for instance.
-> >>>>>
-> >>>>> Not really. The documentation is super vague:
-> >>>>>
-> >>>>> V4L2_CID_ANALOGUE_GAIN (integer)
-> >>>>>
-> >>>>> 	Analogue gain is gain affecting all colour components in the pixel matrix. The
-> >>>>> 	gain operation is performed in the analogue domain before A/D conversion.
-> >>>>>
-> >>>>> And the integer is just a range. Internally it might map to some fixed
-> >>>>> point value, but userspace won't see that, it's hidden in the driver AFAICT.
-> >>>
-> >>> It's hidden so well that libcamera has a database of the sensor it
-> >>> supports, with formulas to map a real gain value to the
-> >>> V4L2_CID_ANALOGUE_GAIN control. The encoding of the integer value does
-> >>> matter, and the kernel doesn't expose it. We may or may not consider
-> >>> that as a shortcoming of the V4L2 control API, but in any case it's the
-> >>> situation we have today.
-> >>>
-> >>>> I wonder if Laurent meant digital gain.
-> >>>
-> >>> No, I meant analog. It applies to digital gain too though.
-> >>>
-> >>>> Those are often Q numbers. The practice there has been that the default
-> >>>> value yields gain of 1.
-> >>>>
-> >>>> There are probably many other examples in controls where something being
-> >>>> controlled isn't actually an integer while integer controls are still being
-> >>>> used for the purpose.
-> >>>
-> >>> A good summary of my opinion :-)
-> >>
-> >> And that works fine as long as userspace doesn't need to know what the value
-> >> actually means.
-> >>
-> >> That's not the case here. The control is really a fractional Hz value:
-> >>
-> >> +``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET (fixed point)``
-> >> +    Sets the offset from the audio source sample rate, unit is Hz.
-> >> +    The offset compensates for any clock drift. The actual source audio sample
-> >> +    rate is the ideal source audio sample rate from
-> >> +    ``V4L2_CID_M2M_AUDIO_SOURCE_RATE`` plus this fixed point offset.
-> > 
-> > I don't see why this would require a new type, you can use
-> > V4L2_CTRL_TYPE_INTEGER64, and document the control as containing
-> > fixed-point values in Q31.32 format.
-> 
-> Why would you want to do this? I can store a double in a long long int,
-> and just document that the variable is really a double, but why would you?
+Fix above error by checking 32-bit limit if it is 32-bit compatible
+userspace program.
 
-I'm happy we have no floating point control types ;-)
+How to reproduce:
 
-> The cost of adding a FIXED_POINT type is minimal, and having this type
-> makes it easy to work with fixed point controls (think about proper reporting
-> and setting of the value in v4l2-ctl and user applications in general that
-> deal with controls).
+The test program is as below:
 
-The next thing you know is that someone will want a FIXED_POINT_Q15_16
-type as 64-bit would be too large to store in a large array. And then
-Q7.8. And Q3.12. And a bunch of other type. I really don't see what
-added value they bring compared to using the 32-bit and 64-bit integer
-types we already have. Every new type that is added adds complexity to
-userspace that will need to deal with the type.
+root@syzkaller:~# cat test.c
+	#include <unistd.h>
+	#include <fcntl.h>
+	#include <stdio.h>
+	#include <stdint.h>
+	#include <stdlib.h>
+	#include <assert.h>
 
-> If this would add a thousand lines of complex code, then this would be a
-> consideration, but this is just a few lines.
-> 
-> Just to give an example, if you use 'v4l2-ctl -l' to list a int64 control
-> and it reports the value 13958643712, would you be able to see that that is
-> really 3.25 in fixed point format? With the right type it would be printed
-> like that. Much easier to work work.
+	#define pinfo(fmt, args...) \
+	    fprintf(stderr, "[INFO][%s][%d][%s]:"fmt, \
+	    __FILE__,__LINE__,__func__,##args)
 
-The same is true for analog gains, where x1.23 or +12dB is nicer to read
-than raw values. If we care about printing values in command line tools
-(which is nice to have, but certainly not the majority of use cases),
-then I would recommand working on units support for V4L2 controls, to
-convey how values are encoded, and in what unit they are expressed.
+	#undef SIZE_MAX
+	#define SIZE_MAX -1
 
-> >>>> Instead of this patch, I'd prefer to have a way to express the meaning of
-> >>>> the control value, be it a Q number or something else, and do that
-> >>>> independently of the type of the control.
-> >>
-> >> Huh? How is that different from the type of the control? You have integers
-> >> (one type) and fixed point (another type).
-> >>
-> >> Or do you want a more general V4L2_CTRL_TYPE_ that specifies the N.M values
-> >> explicitly?
-> >>
-> >> I think the main reason why we use integer controls for gain is that we
-> >> never had a fixed point control type and you could get away with that in
-> >> user space for that particular use-case.
-> >>
-> >> Based on the V4L2_CID_NOTIFY_GAINS documentation the gain value can typically
-> >> be calculated as (value / default_value),
-> > 
-> > Typically, but not always. Some sensor have an exponential gain model,
-> > and some have weird gain representation, such as 1/x. That's getting out
-> > of scope though.
-> > 
-> >> but that won't work for a rate offset
-> >> control as above, or for e.g. CSC matrices for color converters.
-> >>
-> >>> Agreed.
-> >>>
-> >>>>> In the case of this particular series the control type is really a fixed point
-> >>>>> value with a documented unit (Hz). It really is not something you want to
-> >>>>> use type INTEGER64 for.
-> >>>>>
-> >>>>>>> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
-> >>>>>>> min/max/step you can easily map that to just about any QN.M format where
-> >>>>>>> N <= 31 and M <= 32.
-> >>>>>>>
-> >>>>>>> In the case of dw100 it is a bit different in that it is quite specialized
-> >>>>>>> and it had to fit in 16 bits.
+	int main()
+	{
+	    char wbuf[3] = { 'x', 'y', 'z' };
+	    char *path = "write.tmp";
+	    int ret;
 
+	    int fd = open(path, O_RDWR | O_CREAT);
+	    if (fd<0)
+	    {
+	        pinfo("fd=%d\n", fd);
+	        exit(-1);
+	    }
+
+	    assert(write(fd, wbuf, 3) == 3);
+
+	    ret = write (fd, wbuf, SIZE_MAX);
+	    pinfo("ret=%d\n", ret);
+	    pinfo("size_max=%d\n",SIZE_MAX);
+	    assert(ret==-1);
+	    close(fd);
+	    pinfo("INFO: end\n");
+
+	    return 0;
+	}
+
+Before applying this patch, userspace 32-bit program return 3799 if the
+write size = -1 as below:
+	root@syzkaller:~# gcc test.c -o test
+	root@syzkaller:~# gcc -m32 test.c -o test32
+	root@syzkaller:~# ./test
+	[INFO][test.c][32][main]:ret=-1
+	[INFO][test.c][33][main]:size_max=-1
+	[INFO][test.c][36][main]:INFO: end
+	root@syzkaller:~# ./test32
+	[INFO][test.c][32][main]:ret=3799
+	[INFO][test.c][33][main]:size_max=-1
+	test32: test.c:34: main: Assertion `ret==-1' failed.
+	Aborted
+
+After applying this patch, userspace 32-bit program return -1 if the write
+size = -1 as expected as below:
+	root@syzkaller:~# gcc test.c -o test
+	root@syzkaller:~# gcc -m32 test.c -o test32
+	root@syzkaller:~# ./test
+	[INFO][test.c][32][main]:ret=-1
+	[INFO][test.c][33][main]:size_max=-1
+	[INFO][test.c][36][main]:INFO: end
+	root@syzkaller:~# ./test32
+	[INFO][test.c][32][main]:ret=-1
+	[INFO][test.c][33][main]:size_max=-1
+	[INFO][test.c][36][main]:INFO: end
+
+Fixes: b9bd9f605c4a ("x86: uaccess: move 32-bit and 64-bit parts into proper <asm/uaccess_N.h> header")
+Signed-off-by: Jinjie Ruan <ruanjinjie@huawei.com>
+---
+ arch/x86/include/asm/uaccess_64.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
+index f2c02e4469cc..9febfbca3a88 100644
+--- a/arch/x86/include/asm/uaccess_64.h
++++ b/arch/x86/include/asm/uaccess_64.h
+@@ -88,6 +88,12 @@ static inline bool __access_ok(const void __user *ptr, unsigned long size)
+ 		return valid_user_address(ptr);
+ 	} else {
+ 		unsigned long sum = size + (unsigned long)ptr;
++
++#ifdef CONFIG_COMPAT
++		if (in_ia32_syscall())
++			return valid_user_address(sum) &&
++			sum >= (unsigned long)ptr && sum < UL(0x100000000);
++#endif
+ 		return valid_user_address(sum) && sum >= (unsigned long)ptr;
+ 	}
+ }
 -- 
-Regards,
+2.34.1
 
-Laurent Pinchart
