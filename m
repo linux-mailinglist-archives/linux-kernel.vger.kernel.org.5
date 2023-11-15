@@ -2,178 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FC97EBCC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 06:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D227EBCC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 06:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234508AbjKOF1N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 00:27:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41534 "EHLO
+        id S234507AbjKOFcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 00:32:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234497AbjKOF1L (ORCPT
+        with ESMTP id S229600AbjKOFcO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 00:27:11 -0500
-Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB547C3
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 21:27:06 -0800 (PST)
-Received: from epcas2p2.samsung.com (unknown [182.195.41.54])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231115052703epoutp013ed35639ae69fc01ad0af984be81d0bb~XtKlYjAuy0913309133epoutp01k
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:27:03 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231115052703epoutp013ed35639ae69fc01ad0af984be81d0bb~XtKlYjAuy0913309133epoutp01k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700026023;
-        bh=D0EqNZ4QvmTiqp+zm9gUip9+1CE4m/Mr3OtYi4fnK84=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=Ald55MmamXookYk9bNvZJYivhK6D9WzjrqF/Z4MKvUqNi6AE/65g4USPq+VbR7Nnc
-         5Y6aXNAV1Vv0ZMrip9tc2vzuFJ/P61d+xpLiocOVcWiOU+Wp2dRhi0ovFlj8CJxMp9
-         gFDUpyQwU7fIlzvkpdE9BnL+lS3ggXexOngAppnw=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTP id
-        20231115052702epcas2p4bf1ed0b3b92810f0966e742e4553af6f~XtKkn6zhR0725207252epcas2p43;
-        Wed, 15 Nov 2023 05:27:02 +0000 (GMT)
-Received: from epsmgec2p1.samsung.com (unknown [182.195.36.92]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SVWr61JVLz4x9Q9; Wed, 15 Nov
-        2023 05:27:02 +0000 (GMT)
-Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
-        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        90.81.08648.5A654556; Wed, 15 Nov 2023 14:27:02 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231115052701epcas2p4d1106372cfc6e274fbf51ce14d5c4924~XtKjItrl-1897718977epcas2p4Q;
-        Wed, 15 Nov 2023 05:27:01 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20231115052701epsmtrp1474112faf7522eb10d691ca34ae2e501~XtKjH3mQz0354103541epsmtrp1i;
-        Wed, 15 Nov 2023 05:27:01 +0000 (GMT)
-X-AuditID: b6c32a43-4b3ff700000021c8-05-655456a5efc7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        3F.7E.08817.5A654556; Wed, 15 Nov 2023 14:27:01 +0900 (KST)
-Received: from KORCO118546 (unknown [10.229.38.108]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231115052701epsmtip18ad6a5c866000d16411b218042404755~XtKi6RgAz1106911069epsmtip1D;
-        Wed, 15 Nov 2023 05:27:01 +0000 (GMT)
-From:   "hoyoung seo" <hy50.seo@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <kwangwon.min@samsung.com>,
-        <kwmad.kim@samsung.com>, <sh425.lee@samsung.com>,
-        <sc.suh@samsung.com>, <quic_nguyenb@quicinc.com>,
-        <cpgs@samsung.com>, <grant.jung@samsung.com>,
-        <junwoo80.lee@samsung.com>
-In-Reply-To: <dca06fd3-d4ad-4e41-a0a3-61d52c85ef9c@acm.org>
-Subject: RE: [PATCH v2] scsi: ufs: core: fix racing issue during
- ufshcd_mcq_abort
-Date:   Wed, 15 Nov 2023 14:27:00 +0900
-Message-ID: <000001da1784$5c2520f0$146f62d0$@samsung.com>
+        Wed, 15 Nov 2023 00:32:14 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02B01BC
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 21:32:08 -0800 (PST)
+Received: from pps.filterd (m0353723.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF5OfXI005999;
+        Wed, 15 Nov 2023 05:31:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=pp1; bh=GJ+xyw9eti00D2f4thO4SOwJTmfGeFzimTog69Oh4DE=;
+ b=oImSohtO3WpXb+BCViAf1PLYNv/+NGgucymKFS7Z2T55zK9SC+leLdB1+SdXZR2NI1cm
+ Rp8irn3nyrqLf6JHruhE/QjSiDofbyTfK90DqjKZwBycuiErBGQDdkvyKC4RMw2DAH2G
+ Kk2oecEjlccEQV/pQG6ttVOpZOvCNIsdG63LU2uOY9hpimtb9htof4dBl0YGn/BvnKSZ
+ jcNhwtl6GqRFo/KGuzLP2ySASMTw3bDGWlOk2BjX1LyZT42pTrDDked8STr2VmmXZ7K0
+ lpvaB89iksRJ7NQACxqAMV07BPS+za5yaolmuHrapq/H03pLhByyIDP6ePJtLcQ9JNz7 xg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucqtfr4ew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 05:31:33 +0000
+Received: from m0353723.ppops.net (m0353723.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AF5P4gA006549;
+        Wed, 15 Nov 2023 05:31:32 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucqtfr4dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 05:31:32 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+        by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF4aT2x024387;
+        Wed, 15 Nov 2023 05:27:16 GMT
+Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
+        by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uamxnd1nm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 05:27:16 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+        by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AF5RGZK8979098
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 05:27:16 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3D3A658055;
+        Wed, 15 Nov 2023 05:27:16 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 310EE5804B;
+        Wed, 15 Nov 2023 05:27:11 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.43.109.250])
+        by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+        Wed, 15 Nov 2023 05:27:10 +0000 (GMT)
+X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "ndesaulniers@google.com" <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, Rohan McLure <rmclure@linux.ibm.com>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Josh Poimboeuf <jpoimboe@kernel.org>
+Subject: Re: [PATCH v4 1/5] powerpc/smp: Enable Asym packing for cores on
+ shared processor
+In-Reply-To: <20231109054938.26589-2-srikar@linux.vnet.ibm.com>
+References: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
+ <20231109054938.26589-2-srikar@linux.vnet.ibm.com>
+Date:   Wed, 15 Nov 2023 10:57:08 +0530
+Message-ID: <87y1ezzivn.fsf@linux.ibm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLYbO3h/Z18bVSq8KBPFnY/ewa5qgDl2w4PAbQq5PquaVzhQA==
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrLJsWRmVeSWpSXmKPExsWy7bCmqe6ysJBUg8mvmC0ezNvGZvHy51U2
-        i4MPO1kspn34yWzx8pCmxa+/69ktFt3YxmSx628zk8XWGztZLG5uOcpicXnXHDaL7us72CyW
-        H//HZDH1xXF2i667Nxgtlv57y+Ig4HH5irfHhEUHGD2+r+9g8/j49BaLx8Q9dR59W1Yxenze
-        JOfRfqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA
-        1y0zB+h+JYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWleul5eaomV
-        oYGBkSlQYUJ2xruvsxgL7vNUHOx6zNbAeIiri5GDQ0LARGL3FJ8uRi4OIYEdjBK39jSxQzif
-        GCV6Fv5lhHC+MUq8u7yPpYuRE6zj0+QTbCC2kMBeRonZlzwgil4ySnTP3MMOkmAT0JLof7uF
-        DSQhIrCLWWLjveVg3ZwC1hL3u2aCdQsLBEvc2XKGDeQOFgFViYbz0SBhXgFLiZuXzzBB2IIS
-        J2c+AWtlFpCX2P52DjPEEQoSP58uYwWxRQScJBZ3nGKHqBGRmN3ZxgyyV0LgAYfE9Z0P2CAa
-        XCTO33zNBGELS7w6voUdwpaSeNnfBmVnSzTuWQtlV0jM3TyZEcI2lpj1rJ0R5E5mAU2J9bv0
-        IUGnLHHkFtRpfBIdh/9CdfJKNGz8zQ5RwivR0SYEEVaSODP3NlRYQuLg7JwJjEqzkPw4C8mP
-        s5D8Mgth7QJGllWMYqkFxbnpqclGBYbwmE7Oz93ECE7XWs47GK/M/6d3iJGJg/EQowQHs5II
-        r7lcSKoQb0piZVVqUX58UWlOavEhRlNgoE9klhJNzgdmjLySeEMTSwMTMzNDcyNTA3Mlcd57
-        rXNThATSE0tSs1NTC1KLYPqYODilGpi2dc4yZHZn6e+VWKB/aIay7r3mBctk80MXzgud2X5k
-        CffHcp1wzsY/92zdV+UyNM6cuvnZjE8nZk00SJGbz7XoYNBEntiZ4o7FtTs09vtOffdeUKRI
-        MSNX+3/UU7F+75Uqi6Z/buX4MFni6M+YiWYBwveWXzdeyL93iae0uEYB97dOh9LNOW3TeV6L
-        r5gab93maLMt1qpbPb77xPFjj5XvfKg6ecPS8NFdtzlR2zyPO7P+1ogW3a55cmtHb8baEzuX
-        RaQdXfbLdEIee+sHoUTDf5zn5K6eEvVvUU0Wam7jnOU1115Tg+EKT09YWsmuLZbJ2k/fxEeX
-        2HVYOU8332mV2swx8ZpI3dGby86vW6PEUpyRaKjFXFScCACS6dTlYAQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrAIsWRmVeSWpSXmKPExsWy7bCSnO7SsJBUg/23BCwezNvGZvHy51U2
-        i4MPO1kspn34yWzx8pCmxa+/69ktFt3YxmSx628zk8XWGztZLG5uOcpicXnXHDaL7us72CyW
-        H//HZDH1xXF2i667Nxgtlv57y+Ig4HH5irfHhEUHGD2+r+9g8/j49BaLx8Q9dR59W1Yxenze
-        JOfRfqCbKYAjissmJTUnsyy1SN8ugSvj3ddZjAX3eSoOdj1ma2A8xNXFyMkhIWAi8WnyCTYQ
-        W0hgN6NE0wUniLiExP/FTUwQtrDE/ZYjrF2MXEA1zxkl5i7YAdbAJqAl0f92CxtIQkTgHLPE
-        yY0vWCCqdjFKfGv7CVbFKWAtcb9rJpgtLBAosebMdMYuRg4OFgFViYbz0SBhXgFLiZuXzzBB
-        2IISJ2c+YQGxmQW0JZ7efAply0tsfzuHGeIiBYmfT5exgtgiAk4SiztOsUPUiEjM7mxjnsAo
-        NAvJqFlIRs1CMmoWkpYFjCyrGCVTC4pz03OLDQuM8lLL9YoTc4tL89L1kvNzNzGCI1VLawfj
-        nlUf9A4xMnEwHmKU4GBWEuE1lwtJFeJNSaysSi3Kjy8qzUktPsQozcGiJM777XVvipBAemJJ
-        anZqakFqEUyWiYNTqoEprMnw+E3bWqNLy/muKnKWleh6PrukWuMypyxMIoOXaYprxiyeaBW5
-        HX63Dl0+O501SOKPptiGE23maVcVT05dteDP/AT1j8K6C/0Xx954kWwX1n3CZ43ZNzWV4oN/
-        MmyiT39VuC++h5/dZXduodpT12/TVzxfOPdFqo/o1jdrfx36/7J6vbTBv2n2LhK6HLOvRpZq
-        Nv969+7IbtED06f0BkjbrjJ8+fSW70rZJZ3Wr1qdjv+epvdaevNkmZ22j0RNHty8JWlsvXPR
-        9s6tsW8juVwvngxM2r1x5hPr4+cThC7wbH4smrdedULZ9llpK9OVls5pCDxYYCLvWvXnjJzE
-        D9OLF1Z8+BjMJdf/WN/jhhJLcUaioRZzUXEiAPxfK/xDAwAA
-X-CMS-MailID: 20231115052701epcas2p4d1106372cfc6e274fbf51ce14d5c4924
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231114043431epcas2p4a8d452e18fff192c03fb6066e81514ea
-References: <CGME20231114043431epcas2p4a8d452e18fff192c03fb6066e81514ea@epcas2p4.samsung.com>
-        <20231114043704.52525-1-hy50.seo@samsung.com>
-        <dca06fd3-d4ad-4e41-a0a3-61d52c85ef9c@acm.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: P9S993U8EmsbsdPVPDifF6fIIErNdZdN
+X-Proofpoint-ORIG-GUID: 4iz3V3JE1RwOAw2t7jShDz8OuzhJVCYj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_03,2023-11-14_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=865 priorityscore=1501 bulkscore=0
+ clxscore=1011 phishscore=0 malwarescore=0 impostorscore=0 mlxscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150040
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Bart Van Assche <bvanassche@acm.org>
-> Sent: Wednesday, November 15, 2023 2:55 AM
-> To: SEO HOYOUNG <hy50.seo@samsung.com>; linux-scsi@vger.kernel.org; linux-
-> kernel@vger.kernel.org; alim.akhtar@samsung.com; avri.altman@wdc.com;
-> jejb@linux.ibm.com; martin.petersen@oracle.com; beanhuo@micron.com;
-> kwangwon.min@samsung.com; kwmad.kim@samsung.com; sh425.lee@samsung.com;
-> sc.suh@samsung.com; quic_nguyenb@quicinc.com; cpgs@samsung.com;
-> grant.jung@samsung.com; junwoo80.lee@samsung.com
-> Subject: Re: [PATCH v2] scsi: ufs: core: fix racing issue during
-> ufshcd_mcq_abort
-> 
-> On 11/13/23 20:37, SEO HOYOUNG wrote:
-> > diff --git a/drivers/ufs/core/ufshcd.c b/drivers/ufs/core/ufshcd.c
-> > index 9a730a794b66..55f4c0eeda7b 100644
-> > --- a/drivers/ufs/core/ufshcd.c
-> > +++ b/drivers/ufs/core/ufshcd.c
-> > @@ -7574,6 +7574,10 @@ int ufshcd_try_to_abort_task(struct ufs_hba *hba,
-> int tag)
-> >   		goto out;
-> >   	}
-> >
-> > +	if (!ufshcd_cmd_inflight(lrbp->cmd) ||
-> > +	    test_bit(SCMD_STATE_COMPLETE, &lrbp->cmd->state))
-> > +		goto out;
-> > +
-> >   	err = ufshcd_clear_cmd(hba, tag);
-> >   	if (err)
-> >   		dev_err(hba->dev, "%s: Failed clearing cmd at tag %d,
-> err %d\n",
-> 
-> The UFS driver must not set SCMD_STATE_COMPLETE itself. Only the SCSI core
-> is allowed to set that bit.
-> 
-> Thanks,
-> 
-> Bart.
+Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
 
-Hi,
+> If there are shared processor LPARs, underlying Hypervisor can have more
+> virtual cores to handle than actual physical cores.
+>
+> Starting with Power 9, a big core (aka SMT8 core) has 2 nearly
+> independent thread groups. On a shared processors LPARs, it helps to
+> pack threads to lesser number of cores so that the overall system
+> performance and utilization improves. PowerVM schedules at a big core
+> level. Hence packing to fewer cores helps.
+>
+> For example: Lets says there are two 8-core Shared LPARs that are
+> actually sharing a 8 Core shared physical pool, each running 8 threads
+> each. Then Consolidating 8 threads to 4 cores on each LPAR would help
+> them to perform better. This is because each of the LPAR will get
+> 100% time to run applications and there will no switching required by
+> the Hypervisor.
+>
 
-The test_bit() function just check SCMD_STATE_COMPLETE bit state.
-Do not set SCMD_STATE_COMPLETE field. 
-This function is also used in ufshcd_mcq_compl_pending_transfer() 
-to check the status of cmd.
+Will this patch consolidate things to first 8 threads or just the one
+Big core? /me continues to look at other patches and wonder whether 4/5
+should come before this? 
 
-Thanks.
-BRs SEO.
 
+>
+> To achieve this, enable SD_ASYM_PACKING flag at CACHE, MC and DIE level
+> when the system is running in shared processor mode and has big cores.
+>
+> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+
+
+-aneesh
