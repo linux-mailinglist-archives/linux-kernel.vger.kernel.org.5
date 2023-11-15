@@ -2,25 +2,25 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 841677EC89D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:31:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD73B7EC89B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:31:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbjKOQaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:30:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32966 "EHLO
+        id S232492AbjKOQa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:30:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232267AbjKOQar (ORCPT
+        with ESMTP id S232255AbjKOQat (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:30:47 -0500
+        Wed, 15 Nov 2023 11:30:49 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id E965BE6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:30:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 3E9C4AB
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:30:46 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 573671650;
-        Wed, 15 Nov 2023 08:31:28 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9A75DDA7;
+        Wed, 15 Nov 2023 08:31:31 -0800 (PST)
 Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.26])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9D64E3F73F;
-        Wed, 15 Nov 2023 08:30:39 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E084A3F641;
+        Wed, 15 Nov 2023 08:30:42 -0800 (PST)
 From:   Ryan Roberts <ryan.roberts@arm.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
@@ -46,9 +46,9 @@ To:     Catalin Marinas <catalin.marinas@arm.com>,
 Cc:     Ryan Roberts <ryan.roberts@arm.com>,
         linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 03/14] arm64/mm: set_ptes()/set_pte_at(): New layer to manage contig bit
-Date:   Wed, 15 Nov 2023 16:30:07 +0000
-Message-Id: <20231115163018.1303287-4-ryan.roberts@arm.com>
+Subject: [PATCH v2 04/14] arm64/mm: pte_clear(): New layer to manage contig bit
+Date:   Wed, 15 Nov 2023 16:30:08 +0000
+Message-Id: <20231115163018.1303287-5-ryan.roberts@arm.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231115163018.1303287-1-ryan.roberts@arm.com>
 References: <20231115163018.1303287-1-ryan.roberts@arm.com>
@@ -75,149 +75,74 @@ first ensure those users use the private API directly so that the future
 contig-bit manipulations in the public API do not interfere with those
 existing uses.
 
-set_pte_at() is a core macro that forwards to set_ptes() (with nr=1).
-Instead of creating a __set_pte_at() internal macro, convert all arch
-users to use set_ptes()/__set_ptes() directly, as appropriate. Callers
-in hugetlb may benefit from calling __set_ptes() once for their whole
-range rather than managing their own loop. This is left for future
-improvement.
-
 Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
 ---
- arch/arm64/include/asm/pgtable.h | 10 +++++-----
- arch/arm64/kernel/mte.c          |  2 +-
- arch/arm64/kvm/guest.c           |  2 +-
- arch/arm64/mm/fault.c            |  2 +-
- arch/arm64/mm/hugetlbpage.c      | 10 +++++-----
- 5 files changed, 13 insertions(+), 13 deletions(-)
+ arch/arm64/include/asm/pgtable.h | 3 ++-
+ arch/arm64/mm/fixmap.c           | 2 +-
+ arch/arm64/mm/hugetlbpage.c      | 2 +-
+ arch/arm64/mm/mmu.c              | 2 +-
+ 4 files changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index 650d4f4bb6dc..323ec91add60 100644
+index 323ec91add60..1464e990580a 100644
 --- a/arch/arm64/include/asm/pgtable.h
 +++ b/arch/arm64/include/asm/pgtable.h
-@@ -342,9 +342,9 @@ static inline void __sync_cache_and_tags(pte_t pte, unsigned int nr_pages)
- 		mte_sync_tags(pte, nr_pages);
- }
+@@ -93,7 +93,7 @@ static inline pteval_t __phys_to_pte_val(phys_addr_t phys)
+ 	__pte(__phys_to_pte_val((phys_addr_t)(pfn) << PAGE_SHIFT) | pgprot_val(prot))
  
--static inline void set_ptes(struct mm_struct *mm,
--			    unsigned long __always_unused addr,
--			    pte_t *ptep, pte_t pte, unsigned int nr)
-+static inline void __set_ptes(struct mm_struct *mm,
-+			      unsigned long __always_unused addr,
-+			      pte_t *ptep, pte_t pte, unsigned int nr)
- {
- 	page_table_check_ptes_set(mm, ptep, pte, nr);
- 	__sync_cache_and_tags(pte, nr);
-@@ -358,7 +358,6 @@ static inline void set_ptes(struct mm_struct *mm,
- 		pte_val(pte) += PAGE_SIZE;
- 	}
- }
--#define set_ptes set_ptes
+ #define pte_none(pte)		(!pte_val(pte))
+-#define pte_clear(mm, addr, ptep) \
++#define __pte_clear(mm, addr, ptep) \
+ 				__set_pte(ptep, __pte(0))
+ #define pte_page(pte)		(pfn_to_page(pte_pfn(pte)))
  
- /*
-  * Huge pte definitions.
-@@ -1067,7 +1066,7 @@ static inline void arch_swap_restore(swp_entry_t entry, struct folio *folio)
- #endif /* CONFIG_ARM64_MTE */
- 
- /*
-- * On AArch64, the cache coherency is handled via the set_pte_at() function.
-+ * On AArch64, the cache coherency is handled via the __set_ptes() function.
-  */
- static inline void update_mmu_cache_range(struct vm_fault *vmf,
- 		struct vm_area_struct *vma, unsigned long addr, pte_t *ptep,
-@@ -1121,6 +1120,7 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
- 				    pte_t old_pte, pte_t new_pte);
+@@ -1121,6 +1121,7 @@ extern void ptep_modify_prot_commit(struct vm_area_struct *vma,
  
  #define set_pte					__set_pte
-+#define set_ptes				__set_ptes
+ #define set_ptes				__set_ptes
++#define pte_clear				__pte_clear
  
  #endif /* !__ASSEMBLY__ */
  
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index a41ef3213e1e..dcdcccd40891 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -67,7 +67,7 @@ int memcmp_pages(struct page *page1, struct page *page2)
- 	/*
- 	 * If the page content is identical but at least one of the pages is
- 	 * tagged, return non-zero to avoid KSM merging. If only one of the
--	 * pages is tagged, set_pte_at() may zero or change the tags of the
-+	 * pages is tagged, __set_ptes() may zero or change the tags of the
- 	 * other page via mte_sync_tags().
- 	 */
- 	if (page_mte_tagged(page1) || page_mte_tagged(page2))
-diff --git a/arch/arm64/kvm/guest.c b/arch/arm64/kvm/guest.c
-index aaf1d4939739..629145fd3161 100644
---- a/arch/arm64/kvm/guest.c
-+++ b/arch/arm64/kvm/guest.c
-@@ -1072,7 +1072,7 @@ int kvm_vm_ioctl_mte_copy_tags(struct kvm *kvm,
- 		} else {
- 			/*
- 			 * Only locking to serialise with a concurrent
--			 * set_pte_at() in the VMM but still overriding the
-+			 * __set_ptes() in the VMM but still overriding the
- 			 * tags, hence ignoring the return value.
- 			 */
- 			try_page_mte_tagging(page);
-diff --git a/arch/arm64/mm/fault.c b/arch/arm64/mm/fault.c
-index 460d799e1296..a287c1dea871 100644
---- a/arch/arm64/mm/fault.c
-+++ b/arch/arm64/mm/fault.c
-@@ -205,7 +205,7 @@ static void show_pte(unsigned long addr)
-  *
-  * It needs to cope with hardware update of the accessed/dirty state by other
-  * agents in the system and can safely skip the __sync_icache_dcache() call as,
-- * like set_pte_at(), the PTE is never changed from no-exec to exec here.
-+ * like __set_ptes(), the PTE is never changed from no-exec to exec here.
-  *
-  * Returns whether or not the PTE actually changed.
-  */
+diff --git a/arch/arm64/mm/fixmap.c b/arch/arm64/mm/fixmap.c
+index 51cd4501816d..bfc02568805a 100644
+--- a/arch/arm64/mm/fixmap.c
++++ b/arch/arm64/mm/fixmap.c
+@@ -123,7 +123,7 @@ void __set_fixmap(enum fixed_addresses idx,
+ 	if (pgprot_val(flags)) {
+ 		__set_pte(ptep, pfn_pte(phys >> PAGE_SHIFT, flags));
+ 	} else {
+-		pte_clear(&init_mm, addr, ptep);
++		__pte_clear(&init_mm, addr, ptep);
+ 		flush_tlb_kernel_range(addr, addr+PAGE_SIZE);
+ 	}
+ }
 diff --git a/arch/arm64/mm/hugetlbpage.c b/arch/arm64/mm/hugetlbpage.c
-index f5aae342632c..741cb53672fd 100644
+index 741cb53672fd..510b2d4b89a9 100644
 --- a/arch/arm64/mm/hugetlbpage.c
 +++ b/arch/arm64/mm/hugetlbpage.c
-@@ -254,12 +254,12 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
+@@ -400,7 +400,7 @@ void huge_pte_clear(struct mm_struct *mm, unsigned long addr,
+ 	ncontig = num_contig_ptes(sz, &pgsize);
  
- 	if (!pte_present(pte)) {
- 		for (i = 0; i < ncontig; i++, ptep++, addr += pgsize)
--			set_pte_at(mm, addr, ptep, pte);
-+			__set_ptes(mm, addr, ptep, pte, 1);
- 		return;
- 	}
- 
- 	if (!pte_cont(pte)) {
--		set_pte_at(mm, addr, ptep, pte);
-+		__set_ptes(mm, addr, ptep, pte, 1);
- 		return;
- 	}
- 
-@@ -270,7 +270,7 @@ void set_huge_pte_at(struct mm_struct *mm, unsigned long addr,
- 	clear_flush(mm, addr, ptep, pgsize, ncontig);
- 
- 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
--		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
-+		__set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
+ 	for (i = 0; i < ncontig; i++, addr += pgsize, ptep++)
+-		pte_clear(mm, addr, ptep);
++		__pte_clear(mm, addr, ptep);
  }
  
- pte_t *huge_pte_alloc(struct mm_struct *mm, struct vm_area_struct *vma,
-@@ -478,7 +478,7 @@ int huge_ptep_set_access_flags(struct vm_area_struct *vma,
+ pte_t huge_ptep_get_and_clear(struct mm_struct *mm,
+diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
+index e884279b268e..080e9b50f595 100644
+--- a/arch/arm64/mm/mmu.c
++++ b/arch/arm64/mm/mmu.c
+@@ -859,7 +859,7 @@ static void unmap_hotplug_pte_range(pmd_t *pmdp, unsigned long addr,
+ 			continue;
  
- 	hugeprot = pte_pgprot(pte);
- 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
--		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
-+		__set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
- 
- 	return 1;
- }
-@@ -507,7 +507,7 @@ void huge_ptep_set_wrprotect(struct mm_struct *mm,
- 	pfn = pte_pfn(pte);
- 
- 	for (i = 0; i < ncontig; i++, ptep++, addr += pgsize, pfn += dpfn)
--		set_pte_at(mm, addr, ptep, pfn_pte(pfn, hugeprot));
-+		__set_ptes(mm, addr, ptep, pfn_pte(pfn, hugeprot), 1);
- }
- 
- pte_t huge_ptep_clear_flush(struct vm_area_struct *vma,
+ 		WARN_ON(!pte_present(pte));
+-		pte_clear(&init_mm, addr, ptep);
++		__pte_clear(&init_mm, addr, ptep);
+ 		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
+ 		if (free_mapped)
+ 			free_hotplug_page_range(pte_page(pte),
 -- 
 2.25.1
 
