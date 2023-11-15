@@ -2,62 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2A07EC7EF
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0B337EC7F2
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbjKOPxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:53:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37412 "EHLO
+        id S232210AbjKOPxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:53:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232263AbjKOPwn (ORCPT
+        with ESMTP id S231605AbjKOPxN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:52:43 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D621FFB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:51:55 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC229C433C7;
-        Wed, 15 Nov 2023 15:51:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700063515;
-        bh=UtU8CmcT9tpGHDF8mWEF6lFxjr7HU9BJf79DrVfL3XU=;
-        h=Date:From:To:Subject:In-Reply-To:References:Cc:From;
-        b=iuMFnn6BH+6Tq7rWCf8rAh96nJnt5f3Kk8u85KM1oUuAshrXF5yfT2ZxUIemM4hEp
-         svANmekp8cG29Hx+ZsTFl4Sy3nO8hxZWNCmAqg3vP/F597iyH+1SG89CVP/unwZM3N
-         D0BJqSdywTPPoTUkN4Q/wPI9mR2iQNkTJwcKJ1BJvuMC3GEPMWf+UfZZ3K1SJSxQul
-         j/hoNezC0BYXRb9BPl8R74v+Sj0JuMeGvn9JTaayNeQE6nJDaZxiDUUZK6vGnfBV29
-         j0B9/cZthBdiWHKlV3NZjxvM9ddaiqlE47Ve3Maa8mJZ4XxDOupKXebfSdpQb4Ax/k
-         QtYwIwHUO7mAA==
-Message-ID: <4e0c8bb796a67af5fb901f831c5f87fe.mripard@kernel.org>
-Date:   Wed, 15 Nov 2023 15:51:52 +0000
-From:   "Maxime Ripard" <mripard@kernel.org>
-To:     "David Gow" <davidgow@google.com>
-Subject: Re: [PATCH 1/3] kunit: Add a macro to wrap a deferred action
- function
-In-Reply-To: <20231110200830.1832556-1-davidgow@google.com>
-References: <20231110200830.1832556-1-davidgow@google.com>
-Cc:     dlatypov@google.com, dri-devel@lists.freedesktop.org,
-        kunit-dev@googlegroups.com, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        llvm@lists.linux.dev, "Arthur Grillo" <arthurgrillo@riseup.net>,
-        "Benjamin Berg" <benjamin.berg@intel.com>,
-        "Brendan Higgins" <brendan.higgins@linux.dev>,
-        "Daniel Vetter" <daniel@ffwll.ch>,
-        "David Airlie" <airlied@gmail.com>,
-        "Emma Anholt" <emma@anholt.net>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Maarten Lankhorst" <maarten.lankhorst@linux.intel.com>,
-        "Maxime Ripard" <mripard@kernel.org>,
-        =?utf-8?b?TWHDrXJhIENhbmFs?= <mairacanal@riseup.net>,
-        "Nathan Chancellor" <nathan@kernel.org>,
-        "Rae Moar" <rmoar@google.com>,
-        "Richard Fitzgerald" <rf@opensource.cirrus.com>,
-        "Sami Tolvanen" <samitolvanen@google.com>,
-        "Shuah Khan" <skhan@linuxfoundation.org>,
-        "Thomas Zimmermann" <tzimmermann@suse.de>
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        Wed, 15 Nov 2023 10:53:13 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2746C1984
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:52:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ohw8B+zfYq83PiKh9y615T9FB+14QEtb0yQj55L35vo=; b=kbDZgjCN23Mf9HFPPOewICpcar
+        nLURtKdc1k6B7eeBATeTKp9Y+LOA7fC3C9voX6MdqlD+W9VPemJ64b9hP8uP8Wa/3j7PRiXDwIxRK
+        yoKrVsk8QtAWkSGGi/+kL1C+Pgd/OQ/sZXiI7z2UoMcP3q+pMMOlRVN1me7w2yIoLnOepceCcSqip
+        yitP+LxYnYpPKgA/MyxeC/88Mqx9N30WuTXOxY/ukZYqKEbkdquXlHFh2AP6pC2mLYiwCcY2AiiLC
+        YpEG8nBj6zQ8Mh5EVIYtvSWZMx/IWAWULNWIkny1IMirGPrK3g2ervG7ZDvdOrKDvWg5Zfkp4MQZt
+        Dhb9TSCA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r3IBs-0047qU-2V;
+        Wed, 15 Nov 2023 15:52:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 709B1300427; Wed, 15 Nov 2023 16:52:32 +0100 (CET)
+Date:   Wed, 15 Nov 2023 16:52:32 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 2/4] x86: Fix CPUIDLE_FLAG_IRQ_ENABLE leaking timer
+ reprogram
+Message-ID: <20231115155232.GD8262@noisy.programming.kicks-ass.net>
+References: <20231115151325.6262-1-frederic@kernel.org>
+ <20231115151325.6262-3-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115151325.6262-3-frederic@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -65,16 +58,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 11 Nov 2023 04:08:26 +0800, David Gow wrote:
-> KUnit's deferred action API accepts a void(*)(void *) function pointer
-> which is called when the test is exited. However, we very frequently
-> want to use existing functions which accept a single pointer, but which
-> may not be of type void*. While this is probably dodgy enough to be on
-> the wrong side of the C standard, it's been often used for similar
+On Wed, Nov 15, 2023 at 10:13:23AM -0500, Frederic Weisbecker wrote:
+> From: Peter Zijlstra <peterz@infradead.org>
 > 
-> [ ... ]
+> intel_idle_irq() re-enables IRQs very early. As a result, an interrupt
+> may fire before mwait() is eventually called. If such an interrupt queues
+> a timer, it may go unnoticed until mwait returns and the idle loop
+> handles the tick re-evaluation. And monitoring TIF_NEED_RESCHED doesn't
+> help because a local timer enqueue doesn't set that flag.
+> 
+> The issue is mitigated by the fact that this idle handler is only invoked
+> for shallow C-states when, presumably, the next tick is supposed to be
+> close enough. There may still be rare cases though when the next tick
+> is far away and the selected C-state is shallow, resulting in a timer
+> getting ignored for a while.
+> 
+> Fix this with using sti_mwait() whose IRQ-reenablement only triggers
+> upon calling mwait(), dealing with the race while keeping the interrupt
+> latency within acceptable bounds.
+> 
+> Fixes: c227233ad64c (intel_idle: enable interrupts before C1 on Xeons)
+> Not-yet-signed-off-by: Peter Zijlstra <peterz@infradead.org>
 
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Feel free to change to normal SOB, I'm assuming it actually compiles and
+works by now :-)
 
-Thanks!
-Maxime
+> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  arch/x86/include/asm/mwait.h | 11 +++++++++--
+>  drivers/idle/intel_idle.c    | 19 +++++++------------
+>  2 files changed, 16 insertions(+), 14 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/mwait.h b/arch/x86/include/asm/mwait.h
+> index 341ee4f1d91e..920426d691ce 100644
+> --- a/arch/x86/include/asm/mwait.h
+> +++ b/arch/x86/include/asm/mwait.h
+> @@ -124,8 +124,15 @@ static __always_inline void mwait_idle_with_hints(unsigned long eax, unsigned lo
+>  		}
+>  
+>  		__monitor((void *)&current_thread_info()->flags, 0, 0);
+> -		if (!need_resched())
+> -			__mwait(eax, ecx);
+> +
+> +		if (!need_resched()) {
+> +			if (ecx & 1) {
+> +				__mwait(eax, ecx);
+> +			} else {
+> +				__sti_mwait(eax, ecx);
+> +				raw_local_irq_disable();
+> +			}
+> +		}
+>  	}
+>  	current_clr_polling();
+>  }
+> diff --git a/drivers/idle/intel_idle.c b/drivers/idle/intel_idle.c
+> index dcda0afecfc5..3e01a6b23e75 100644
+> --- a/drivers/idle/intel_idle.c
+> +++ b/drivers/idle/intel_idle.c
+> @@ -131,11 +131,12 @@ static unsigned int mwait_substates __initdata;
+>  #define MWAIT2flg(eax) ((eax & 0xFF) << 24)
+>  
+>  static __always_inline int __intel_idle(struct cpuidle_device *dev,
+> -					struct cpuidle_driver *drv, int index)
+> +					struct cpuidle_driver *drv,
+> +					int index, bool irqoff)
+>  {
+>  	struct cpuidle_state *state = &drv->states[index];
+>  	unsigned long eax = flg2MWAIT(state->flags);
+> -	unsigned long ecx = 1; /* break on interrupt flag */
+> +	unsigned long ecx = 1*irqoff; /* break on interrupt flag */
+>  
+>  	mwait_idle_with_hints(eax, ecx);
+>  
+> @@ -159,19 +160,13 @@ static __always_inline int __intel_idle(struct cpuidle_device *dev,
+>  static __cpuidle int intel_idle(struct cpuidle_device *dev,
+>  				struct cpuidle_driver *drv, int index)
+>  {
+> -	return __intel_idle(dev, drv, index);
+> +	return __intel_idle(dev, drv, index, true);
+>  }
+>  
+>  static __cpuidle int intel_idle_irq(struct cpuidle_device *dev,
+>  				    struct cpuidle_driver *drv, int index)
+>  {
+> -	int ret;
+> -
+> -	raw_local_irq_enable();
+> -	ret = __intel_idle(dev, drv, index);
+> -	raw_local_irq_disable();
+> -
+> -	return ret;
+> +	return __intel_idle(dev, drv, index, false);
+>  }
+>  
+>  static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
+> @@ -184,7 +179,7 @@ static __cpuidle int intel_idle_ibrs(struct cpuidle_device *dev,
+>  	if (smt_active)
+>  		__update_spec_ctrl(0);
+>  
+> -	ret = __intel_idle(dev, drv, index);
+> +	ret = __intel_idle(dev, drv, index, true);
+>  
+>  	if (smt_active)
+>  		__update_spec_ctrl(spec_ctrl);
+> @@ -196,7 +191,7 @@ static __cpuidle int intel_idle_xstate(struct cpuidle_device *dev,
+>  				       struct cpuidle_driver *drv, int index)
+>  {
+>  	fpu_idle_fpregs();
+> -	return __intel_idle(dev, drv, index);
+> +	return __intel_idle(dev, drv, index, true);
+>  }
+>  
+>  /**
+> -- 
+> 2.42.1
+> 
