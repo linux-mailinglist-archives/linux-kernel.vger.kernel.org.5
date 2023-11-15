@@ -2,53 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C85A37EC352
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 025E97EC358
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:11:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343873AbjKONKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:10:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50406 "EHLO
+        id S1343894AbjKONLR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:11:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343723AbjKONKX (ORCPT
+        with ESMTP id S1343889AbjKONLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:10:23 -0500
-Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3444311D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:10:20 -0800 (PST)
-Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-280051630e5so792524a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:10:20 -0800 (PST)
+        Wed, 15 Nov 2023 08:11:14 -0500
+Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A91B412E
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:11:09 -0800 (PST)
+Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-5af6c445e9eso78831717b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:11:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700053869; x=1700658669; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=nUQCAFuaxTyoLD7UNNjsKWWroEqjiHXlZ64gbEbsUu4=;
+        b=cGUHsfFQPjDmVBE9UCW+TvfNyGl3fMLzZmUaGfYP4QYefxaUUhSOHLoTuGxnVmHORA
+         bli2Qosi7Bg3s+8o2F2o1C457YGtLkJwOvn8u3h6PbILr6dbr/xVNCPL+gi+CN8ud1Ue
+         7cYFj/Hxy/Xstd2AmQu1THkgcxy40i/5XQsAxrvyp5Wz7M400ncN8JQIU+PmNKxie+ty
+         d/qBJhB8ZRuhhuFiKsaoOeda2Zl8rd4wAu7WlrpgVluOVxPaFlmSOHbaquxpW9UG3/Vr
+         kBUzWWUvhjfLADddfInZtgpe89ylqRPNKtIGw15HXvVon6tGTqBitPcp51yhaJ/gF8UV
+         ZgHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700053819; x=1700658619;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GGFOD+SswvszkCd9NdrJ4tCTHqRxa0bbMEMtPHBloQw=;
-        b=jEBWhM7ifTaJnEdV2OraeTOJ65geK0Z0AoNRvdmxLkNEKgB73g/chxY1I13NZpYVJ5
-         rQeBNEtMNIblUrz4jVpKLo1X81Yus9Yd8idSSD51mhskyo/OsIWZahYrGl+kDGgiE0c/
-         wn29iTNnC8ZerFbXLoDSIPF6CrLrcnbtk9YPQj9Jh0E37jzJ/DsoYErxf9pwGFcgtCvv
-         c+/idAehF7zSDXBDuWi9YPt2M6KOoA4K9Mv3Av+H59d6pl3kfbULa4/gHZZ0KkFwhUEK
-         8UGf8bvN8QpmMFJ69tC2U4YzVl+tJinUAoIzxHBksUuPypiQUCnLkDk+5lRCQwW6wPe7
-         qvJg==
-X-Gm-Message-State: AOJu0Yx0Hh6WRQQab7Za9CoDC/lfinopoDYLBnKEwLOCaYxUEhTdGuOh
-        65aRvGrCtHfzRjAp/rS79b/YgyMZg1f/co7XeGykde47jwpC
-X-Google-Smtp-Source: AGHT+IHgmAzP2ljyYih+VgCgRxouP/AWnFtK4XziDV6ioyFOGmSQOQcPcVI+Mp6K9HvwIn6yI6HWxrVm6L5REW+ZLDq38QZUYYL7
+        d=1e100.net; s=20230601; t=1700053869; x=1700658669;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nUQCAFuaxTyoLD7UNNjsKWWroEqjiHXlZ64gbEbsUu4=;
+        b=F7fgE54RMQ/xTyKK31e87UO7ty4F6InFE72smZ+8rSgbFyrCssONP+kJf703kjn9Yc
+         c5x3LNObgptlRuPnObE1h6at1Af1Kuz7iy21f+5+RAUIePBh9UrKW7xUH6sxOzyu8DZb
+         Yt6jDr67xCgMaBMUGMKrR60E7kYfasU5cnvsQ/m/Do8IUK+1XV3XwN8wbQ4Iw0xB2HoA
+         nBAWX4I5sFRpA3kLPSPPysbyvp6unZHEEBUr2/UPxJBHTpPoAcsxMsl9yurhzqOfthG4
+         vwfbQ/Ah5PDtg6pAFoEx4f3/zWs4aM0+OrRyLawawbCDR+zeEzfFbPvSR2/CchzJvPe4
+         E+IQ==
+X-Gm-Message-State: AOJu0YxPum1vwNKZJ6Mghs1YhPaPRx7HEn5s6ItVEd3mHjhI1QrMjT5d
+        9aLZARZVcvTuY0pHmWolKA1uUPbTxH2Rt1gwy49p9Q==
+X-Google-Smtp-Source: AGHT+IE27QoHAd9yPBCePxIWbaxkxONJy9FLcjaOoJ9YA8XjjrnCyqh9x8JdYwE8Cvx7AQpmB+AOGFCj1489G09wQjk=
+X-Received: by 2002:a81:a504:0:b0:5a8:204c:5c9b with SMTP id
+ u4-20020a81a504000000b005a8204c5c9bmr13301987ywg.18.1700053868675; Wed, 15
+ Nov 2023 05:11:08 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:38d1:b0:280:37ee:d2ab with SMTP id
- nn17-20020a17090b38d100b0028037eed2abmr3787626pjb.1.1700053819662; Wed, 15
- Nov 2023 05:10:19 -0800 (PST)
-Date:   Wed, 15 Nov 2023 05:10:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000526f2060a30a085@google.com>
-Subject: [syzbot] [squashfs?] WARNING in squashfs_read_data
-From:   syzbot <syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        phillip@squashfs.org.uk, squashfs-devel@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-3-quic_bibekkum@quicinc.com> <CAA8EJpr1NzqiuNVZ0YcLpJ=yeOYFbLouAFgN9VMOiKpmoGVdtQ@mail.gmail.com>
+ <7edad996-f148-42d5-8e72-0334d3b9101f@quicinc.com> <CAA8EJpqzEvC-LEjJrOk6Ed8utFNnqgP=qkb0mq-dOfMZd5ij4Q@mail.gmail.com>
+ <dba223a1-0456-40b8-b295-ea960867dcf9@quicinc.com> <CAA8EJpqvXb_Zdmq0O0KEA8mn5UkSriCZ02w16dts7Gd84R30oQ@mail.gmail.com>
+ <aebdf7f6-48b7-43d3-95af-83859ddc593f@quicinc.com>
+In-Reply-To: <aebdf7f6-48b7-43d3-95af-83859ddc593f@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 15 Nov 2023 15:10:57 +0200
+Message-ID: <CAA8EJpp6=EGd4j7w+P5v0_PCzUdtty4p30q0bAD2rc2oCWnwfQ@mail.gmail.com>
+Subject: Re: [PATCH v2 2/3] iommu/arm-smmu: add ACTLR data and support for SM8550
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        a39.skl@gmail.com, konrad.dybcio@linaro.org,
+        quic_pkondeti@quicinc.com, quic_molvera@quicinc.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-0.3 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_BL_SPAMCOP_NET,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,112 +75,228 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, 15 Nov 2023 at 14:49, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+>
+>
+> On 11/15/2023 4:15 PM, Dmitry Baryshkov wrote:
+> > On Wed, 15 Nov 2023 at 11:51, Bibek Kumar Patro
+> > <quic_bibekkum@quicinc.com> wrote:
+> >>
+> >>
+> >>
+> >> On 11/15/2023 3:08 PM, Dmitry Baryshkov wrote:
+> >>> On Wed, 15 Nov 2023 at 11:22, Bibek Kumar Patro
+> >>> <quic_bibekkum@quicinc.com> wrote:
+> >>>>
+> >>>>
+> >>>>
+> >>>> On 11/14/2023 7:42 PM, Dmitry Baryshkov wrote:
+> >>>>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
+> >>>>> <quic_bibekkum@quicinc.com> wrote:
+> >>>>>>
+> >>>>>> Add ACTLR data table for SM8550 along with support for
+> >>>>>> same including SM8550 specific implementation operations.
+> >>>>>>
+> >>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> >>>>>> ---
+> >>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 92 +++++++++++++++++++++-
+> >>>>>>     1 file changed, 88 insertions(+), 4 deletions(-)
+> >>>>>>
+> >>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>>>> index 578c662c7c30..0eaf6f2a2e49 100644
+> >>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>>>> @@ -25,6 +25,70 @@ struct actlr_data {
+> >>>>>>            u32 actlr;
+> >>>>>>     };
+> >>>>>>
+> >>>>>> +#define PRE_FETCH_1    0
+> >>>>>> +#define PRE_FETCH_2    BIT(8)
+> >>>>>> +#define PRE_FETCH_3    (BIT(9) | BIT(8))
+> >>>>>
+> >>>>> What is the difference between PRE_FETCH_3 and PRE_FETCH_2? And
+> >>>>> PRE_FETCH_1? Are these real numbers that refer to some amount / count
+> >>>>> or just dummy names?
+> >>>>>
+> >>>>
+> >>>> No,these are not real numbers, but prefetch settings for a particular
+> >>>> perfect configuration.
+> >>>
+> >>> Then I'd ask for some better names or descriptions.
+> >>>
+> >>
+> >> Noted, PREFETCH_SETTING_n / PREFETCH_OPTION_n sounds like a better name
+> >> in the following case. Would it be okay to use this name instead?
+> >
+> > Not really.
+> >
+>
+> Any suggestion you have in mind, if not this nomenclature?
 
-syzbot found the following issue on:
+PREFETCH_something, PREFETCH_do_other_thing and PREFETCH_something_else
 
-HEAD commit:    ac347a0655db Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=145669a7680000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
-dashboard link: https://syzkaller.appspot.com/bug?extid=32d3767580a1ea339a81
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=159441ff680000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d2822f680000
+>
+> >>
+> >>>>
+> >>>>>> +#define CPRE           BIT(1)          /* Enable context caching in the prefetch buffer */
+> >>>>>> +#define CMTLB          BIT(0)          /* Enable context caching in the macro TLB */
+> >>>>>> +
+> >>>>>> +static const struct actlr_data sm8550_apps_actlr_data[] = {
+> >>>>>> +       { 0x18a0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x18e0, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x0800, 0x0020, PRE_FETCH_1 | CMTLB },
+> >>>>>> +       { 0x1800, 0x00c0, PRE_FETCH_1 | CMTLB },
+> >>>>>> +       { 0x1820, 0x0000, PRE_FETCH_1 | CMTLB },
+> >>>>>> +       { 0x1860, 0x0000, PRE_FETCH_1 | CMTLB },
+> >>>>>> +       { 0x0c01, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c02, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c03, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c04, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c05, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c06, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c07, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c08, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c09, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c0c, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c0d, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c0e, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x0c0f, 0x0020, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1961, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1962, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1963, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1964, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1965, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1966, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1967, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1968, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1969, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x196c, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x196d, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x196e, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x196f, 0x0000, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c1, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c2, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c3, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c4, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c5, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c6, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c7, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c8, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19c9, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19cc, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19cd, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19ce, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x19cf, 0x0010, PRE_FETCH_3 | CPRE | CMTLB },
+> >>>>>> +       { 0x1c00, 0x0002, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1c01, 0x0000, PRE_FETCH_1 | CMTLB },
+> >>>>>> +       { 0x1920, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1923, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1924, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1940, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1941, 0x0004, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1943, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1944, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +       { 0x1947, 0x0000, PRE_FETCH_2 | CPRE | CMTLB },
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>     static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
+> >>>>>>     {
+> >>>>>>            return container_of(smmu, struct qcom_smmu, smmu);
+> >>>>>> @@ -459,6 +523,16 @@ static const struct arm_smmu_impl sdm845_smmu_500_impl = {
+> >>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+> >>>>>>     };
+> >>>>>>
+> >>>>>> +
+> >>>>>> +static const struct arm_smmu_impl sm8550_smmu_500_impl = {
+> >>>>>> +       .init_context = qcom_smmu_init_context,
+> >>>>>> +       .cfg_probe = qcom_smmu_cfg_probe,
+> >>>>>> +       .def_domain_type = qcom_smmu_def_domain_type,
+> >>>>>> +       .reset = arm_mmu500_reset,
+> >>>>>> +       .write_s2cr = qcom_smmu_write_s2cr,
+> >>>>>> +       .tlb_sync = qcom_smmu_tlb_sync,
+> >>>>>
+> >>>>> What is the difference between this one and qcom_smmu_500_impl ?
+> >>>>>
+> >>>>
+> >>>> Noted, will remove this and use qcom_smmu_500_impl instead.
+> >>>> Thanks for pointing this out.
+> >>>> Since inititally the reset ops was different to reset CPRE bit only for
+> >>>> sm8550 SoC hence sm8550_smmu_500_impl is defined, but now default reset
+> >>>> ops is modified to set CPRE bit for all SoCs ([PATCH v2 3/3]) so it
+> >>>> should be fine to use qcom_smmu_500_impl as there's no difference now.
+> >>>>
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>     static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+> >>>>>>            .init_context = qcom_adreno_smmu_init_context,
+> >>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+> >>>>>> @@ -522,6 +596,11 @@ static const struct qcom_smmu_config qcom_smmu_impl0_cfg = {
+> >>>>>>            .reg_offset = qcom_smmu_impl0_reg_offset,
+> >>>>>>     };
+> >>>>>>
+> >>>>>> +static const struct actlr_config sm8550_actlrcfg = {
+> >>>>>> +       .adata = sm8550_apps_actlr_data,
+> >>>>>> +       .size = ARRAY_SIZE(sm8550_apps_actlr_data),
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>     /*
+> >>>>>>      * It is not yet possible to use MDP SMMU with the bypass quirk on the msm8996,
+> >>>>>>      * there are not enough context banks.
+> >>>>>> @@ -545,16 +624,20 @@ static const struct qcom_smmu_match_data sdm845_smmu_500_data = {
+> >>>>>>            /* Also no debug configuration. */
+> >>>>>>     };
+> >>>>>>
+> >>>>>> +
+> >>>>>> +static const struct qcom_smmu_match_data sm8550_smmu_500_impl0_data = {
+> >>>>>> +       .impl = &sm8550_smmu_500_impl,
+> >>>>>> +       .adreno_impl = &qcom_adreno_smmu_500_impl,
+> >>>>>> +       .cfg = &qcom_smmu_impl0_cfg,
+> >>>>>> +       .actlrcfg = &sm8550_actlrcfg,
+> >>>>>> +};
+> >>>>>> +
+> >>>>>>     static const struct qcom_smmu_match_data qcom_smmu_500_impl0_data = {
+> >>>>>>            .impl = &qcom_smmu_500_impl,
+> >>>>>>            .adreno_impl = &qcom_adreno_smmu_500_impl,
+> >>>>>>            .cfg = &qcom_smmu_impl0_cfg,
+> >>>>>>     };
+> >>>>>>
+> >>>>>> -/*
+> >>>>>> - * Do not add any more qcom,SOC-smmu-500 entries to this list, unless they need
+> >>>>>> - * special handling and can not be covered by the qcom,smmu-500 entry.
+> >>>>>> - */
+> >>>>>
+> >>>>> NAK, leave this in place.
+> >>>>>
+> >>>>
+> >>>> Ack, will address this in next version.
+> >>>>
+> >>>>>>     static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+> >>>>>>            { .compatible = "qcom,msm8996-smmu-v2", .data = &msm8996_smmu_data },
+> >>>>>>            { .compatible = "qcom,msm8998-smmu-v2", .data = &qcom_smmu_v2_data },
+> >>>>>> @@ -579,6 +662,7 @@ static const struct of_device_id __maybe_unused qcom_smmu_impl_of_match[] = {
+> >>>>>>            { .compatible = "qcom,sm8250-smmu-500", .data = &qcom_smmu_500_impl0_data },
+> >>>>>>            { .compatible = "qcom,sm8350-smmu-500", .data = &qcom_smmu_500_impl0_data },
+> >>>>>>            { .compatible = "qcom,sm8450-smmu-500", .data = &qcom_smmu_500_impl0_data },
+> >>>>>> +       { .compatible = "qcom,sm8550-smmu-500", .data = &sm8550_smmu_500_impl0_data },
+> >>>>>>            { .compatible = "qcom,smmu-500", .data = &qcom_smmu_500_impl0_data },
+> >>>>>>            { }
+> >>>>>>     };
+> >>>>>> --
+> >>>>>> 2.17.1
+> >>>>>>
+> >>>>>
+> >>>>>
+> >>>
+> >>>
+> >>>
+> >
+> >
+> >
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/00e30e1a5133/disk-ac347a06.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/07c43bc37935/vmlinux-ac347a06.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c6690c715398/bzImage-ac347a06.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/296bbea0ae0a/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5071 at fs/squashfs/block.c:46 copy_bio_to_actor fs/squashfs/block.c:46 [inline]
-WARNING: CPU: 0 PID: 5071 at fs/squashfs/block.c:46 squashfs_read_data+0xda4/0xf80 fs/squashfs/block.c:344
-Modules linked in:
-CPU: 0 PID: 5071 Comm: syz-executor362 Not tainted 6.6.0-syzkaller-16039-gac347a0655db #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:copy_bio_to_actor fs/squashfs/block.c:46 [inline]
-RIP: 0010:squashfs_read_data+0xda4/0xf80 fs/squashfs/block.c:344
-Code: 04 02 48 89 da 83 e2 07 38 d0 0f 8f 9b f9 ff ff 84 c0 0f 84 93 f9 ff ff 48 89 df e8 06 89 90 ff e9 86 f9 ff ff e8 9c 57 3a ff <0f> 0b 31 ed e9 51 f5 ff ff e8 8e 57 3a ff 0f 0b e9 df f9 ff ff e8
-RSP: 0018:ffffc900033de780 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff824d3e77
-RDX: ffff8880211001c0 RSI: ffffffff824d4354 RDI: 0000000000000003
-RBP: 0000000000000000 R08: 0000000000000003 R09: 0000000000000000
-R10: 0000000000000000 R11: ffffffff8a83d81f R12: 0000000000000000
-R13: ffff888061b26000 R14: 0000000000000000 R15: ffff88801f0d6e00
-FS:  00005555567dd380(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000005fdeb8 CR3: 0000000014ee9000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- squashfs_readahead+0x16fd/0x24b0 fs/squashfs/file.c:599
- read_pages+0x1d1/0xdb0 mm/readahead.c:160
- page_cache_ra_unbounded+0x457/0x5e0 mm/readahead.c:269
- do_page_cache_ra mm/readahead.c:299 [inline]
- page_cache_ra_order+0x72b/0xa80 mm/readahead.c:546
- ondemand_readahead+0x493/0x1130 mm/readahead.c:668
- page_cache_sync_ra+0x174/0x1d0 mm/readahead.c:695
- page_cache_sync_readahead include/linux/pagemap.h:1266 [inline]
- filemap_get_pages+0xc06/0x1830 mm/filemap.c:2497
- filemap_read+0x39b/0xcf0 mm/filemap.c:2593
- generic_file_read_iter+0x346/0x450 mm/filemap.c:2772
- __kernel_read+0x301/0x870 fs/read_write.c:428
- integrity_kernel_read+0x7f/0xb0 security/integrity/iint.c:221
- ima_calc_file_hash_tfm+0x2c5/0x3d0 security/integrity/ima/ima_crypto.c:485
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
- ima_calc_file_hash+0x1c6/0x4a0 security/integrity/ima/ima_crypto.c:573
- ima_collect_measurement+0x85e/0xa20 security/integrity/ima/ima_api.c:290
- process_measurement+0xe92/0x2260 security/integrity/ima/ima_main.c:359
- ima_file_check+0xc2/0x110 security/integrity/ima/ima_main.c:557
- do_open fs/namei.c:3624 [inline]
- path_openat+0x77b/0x2c40 fs/namei.c:3779
- do_filp_open+0x1de/0x430 fs/namei.c:3809
- do_sys_openat2+0x176/0x1e0 fs/open.c:1440
- do_sys_open fs/open.c:1455 [inline]
- __do_sys_openat fs/open.c:1471 [inline]
- __se_sys_openat fs/open.c:1466 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1466
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fb1acea25f9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffe1b0ce9b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fb1acea25f9
-RDX: 0000000000000000 RSI: 0000000020000000 RDI: ffffffffffffff9c
-RBP: 00007fb1acf15610 R08: 00000000000001e0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffe1b0ceb88 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+-- 
+With best wishes
+Dmitry
