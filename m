@@ -2,197 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C58987EC435
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:58:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DA37EC439
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:59:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343935AbjKON6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:58:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59870 "EHLO
+        id S1344041AbjKON67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:58:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234924AbjKON6b (ORCPT
+        with ESMTP id S234971AbjKON64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:58:31 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41AC6C8;
-        Wed, 15 Nov 2023 05:58:27 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-4abf86c5ae1so2837540e0c.3;
-        Wed, 15 Nov 2023 05:58:27 -0800 (PST)
+        Wed, 15 Nov 2023 08:58:56 -0500
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18D54125;
+        Wed, 15 Nov 2023 05:58:53 -0800 (PST)
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+        by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDsvet014816;
+        Wed, 15 Nov 2023 13:58:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2023-03-30;
+ bh=Yv2ln5eiDA5qUdEVtCQjLwSezGYjsJspiaAOeq8XIPU=;
+ b=b1gX6KKLQrdNp/bQxUtnNp/jNLdGAHUtvT0y4WFNWkb9Pq5Xe+V3WYKEsGYrn0c0ANRR
+ qtvrrnq9/4jul539xsG0syf84fqrF+ogllIv9n2ypi4Nuc8hiVXQPI3yYlJpN/vdBxYN
+ 63KBR7rB11pEiO9zfFlQwPU5/oe3xtw31cxa8RCTRqf6ulN+m9wwTsv3oR+GbK5tNzCc
+ Jhp82Tbuv/WPsmQYPDjtQQO9iAk0ee+7QZG+dqrO11ppr0rAnNvp+JXVhcO3mgyo7+de
+ bPQieQBKQPkEYXpSboLgpFycSHDF94IWvZQipAxT//Qm+gw8I10CxdZPIlcsE/b68LxN fw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+        by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ua2na0khq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 13:58:48 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFDiEDT003911;
+        Wed, 15 Nov 2023 13:58:47 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2168.outbound.protection.outlook.com [104.47.57.168])
+        by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3uaxj3v72m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 15 Nov 2023 13:58:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=K5LyqfbyIqZ6hsylCYDKzYL80FmDp+ikaOwDwNDgPW5yQnyIGDZie9Y54L8Jd1WFck7nq9KXnKQrw5M1wDuccf5BptJ6NZGASz/M3CRoZ9BU2z74cRhxNSOetTU+fJTzqm2XI+igJBPVCfkRPuJPDCTsUyJ28EB5HPzZbGjqLZDZKWkF5Em0cn9NzLHWPDLGlbKoGoTbigRSjnw+VwTmq2dFOpV7z7IgOZtDZ0lRYrwCu0CF+BqKwJ9YS+1kGgAb9qfulEP/jeq+IONgzoEzcZ976exVR5imb3WZ4jOADiK3yIWftFoRnW19hSZHjHvO90SU4ncf8GSMh/WYhSg+2w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Yv2ln5eiDA5qUdEVtCQjLwSezGYjsJspiaAOeq8XIPU=;
+ b=QndTy3DtxRXZWlVUXqziVV7lg5QXIYetFGgW9aan4t0NwOAj/O4r8b0RiCKqB2+n5cmkaJy5376+BRZYcj4U7hI9kqy3KONGhKikQij4FTz9gJYjkaWC8owW7bzK1Y8jn7puQvLkW+tavmMEMardiSsuAyGvC9sZKAzvh44+yZ5oHGigh3WK9nf5jjmTr0P8ETjUex03kCzuBENHj4k6zj014+GbnPhJs4JxwzSWNBkK4SoK3EVfqUQEod2FYSshv2UeGRY+rUgfHx6xpyDw657oVLxHaDz4tpaN0SToqHHOEWxQmXWA40n3rGDGRmytXVCN7uep5Inu1NNetQ4YgQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700056706; x=1700661506; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wbdCxcW1bM04wm/L/s8Y2gRMdaMFjHOvymiH7hppgtY=;
-        b=V9j2CsHIAvAH/q92nHBJkNQKuQRIToHS5k2JP0PyDl+NZidkS5NR9HYVKt2Dr3bYnj
-         0u4Pj+nOBNq/wjSFYNdZqzf0FRepo0n6n6SUSu3r2FjxKjyFd9whncmwExVqtAGG14Yz
-         xsQRuAPYbv6BG2L5YFxf35MWPjJI512SmZBb8QIZ9z8a68YY8LeCffqarC/uJ3NEdLbF
-         2QQAg6bLaUB0PKLJd+S5tfeI1G9pdDFpxqgQh6glliDubL83MQLTnmNw2fh/7fQMsOpK
-         kxvAaE91C74bUATkh30v1Tc1HCd6YTKqTkTUj3N+8dACf3Fcrb+a3kUZ/OjAOygfb4yr
-         ohbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700056706; x=1700661506;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wbdCxcW1bM04wm/L/s8Y2gRMdaMFjHOvymiH7hppgtY=;
-        b=sqNvLFkwY281FtZ4wD0cgLk9f4Tv4bbV/OXF1xqXefpEYWKJzRsLom0QLP4Hl7Kfae
-         HIUEDcKg6JwiYWtgKvSr8jt16rbKVPyitEBvDuj3kdBwEEGp8E/WilxQ7EvMWY18D81i
-         P1n/UzwgcO3A7e8naa9tgIKM0UBtbaRj/iMeOgH0xLmfELJVQN8HfVmOOsHbUE3p3MnF
-         BkEtk0LYuhTOHotaZvWQIIR4Dg0JoIZ7n+AEhAb/IzNXCXiINNW1lSVQGdcTQU5lVz2N
-         3wrOdAh656pIGpaIhjUD5sMwsJgrzMJUn8m0Qe3THy7iI03/RoP8As05sMPUJJiwW2ds
-         dynQ==
-X-Gm-Message-State: AOJu0YytGr0Nyc5G2wDD82QZxoA0NRTmPdlNVnQufUx+l9JQeAbzcu/g
-        3FbmUpP9fVaHazPzNqpxAqLbsz8g+CdDG8DO12e/z5AEJJLqEd7h8go=
-X-Google-Smtp-Source: AGHT+IG45llVTSM7aCPzbHEMcmkhcPZSZqYorahRKlAy4i7Fc7oXeo0hcYVQiy+3tUKeSk0gbpGXkwD643QbuSi0JeM=
-X-Received: by 2002:a05:6122:788:b0:4ac:6a9d:a51e with SMTP id
- k8-20020a056122078800b004ac6a9da51emr14199862vkr.9.1700056706261; Wed, 15 Nov
- 2023 05:58:26 -0800 (PST)
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Yv2ln5eiDA5qUdEVtCQjLwSezGYjsJspiaAOeq8XIPU=;
+ b=vy7XYSv7o67nG1baIIBGbo47u6PKLZY52lgnZvLUK8mob/dxAvivviUgNluKseJE6SO9UWLoAfk0b6Ypn6SIP04cInDCmZ8Chn3KfggE6mSvtw3JjI8QFDoF7Ta2wHG7NB09G0528fkmzJ2zJP/buf+cqJ6CsCHvJeCp5U0iXnU=
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH8PR10MB6480.namprd10.prod.outlook.com (2603:10b6:510:22c::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6954.29; Wed, 15 Nov
+ 2023 13:58:45 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::abe0:e274:435c:5660]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::abe0:e274:435c:5660%4]) with mapi id 15.20.6977.018; Wed, 15 Nov 2023
+ 13:58:45 +0000
+To:     Justin Stitt <justinstitt@google.com>
+Cc:     Adam Radford <aradford@gmail.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] scsi: 3w-sas: replace deprecated strncpy with strscpy
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1il632k51.fsf@ca-mkp.ca.oracle.com>
+References: <20231023-strncpy-drivers-scsi-3w-sas-c-v1-1-4c40a1e99dfc@google.com>
+Date:   Wed, 15 Nov 2023 08:58:43 -0500
+In-Reply-To: <20231023-strncpy-drivers-scsi-3w-sas-c-v1-1-4c40a1e99dfc@google.com>
+        (Justin Stitt's message of "Mon, 23 Oct 2023 19:50:57 +0000")
+Content-Type: text/plain
+X-ClientProxiedBy: BYAPR06CA0059.namprd06.prod.outlook.com
+ (2603:10b6:a03:14b::36) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-References: <CACDmYyf4hxbuw+cpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com>
- <a3e35d3b-906a-4540-924c-0103cf32efa4@linaro.org>
-In-Reply-To: <a3e35d3b-906a-4540-924c-0103cf32efa4@linaro.org>
-From:   Legale Legale <legale.legale@gmail.com>
-Date:   Wed, 15 Nov 2023 16:58:13 +0300
-Message-ID: <CACDmYydnLQd0n9ACnTQ6P4wYf38eMzokyHrF7r6LisG4oTFtyg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: ipq6018: add QUP5 I2C node
-To:     "Bryan O'Donoghue" <bryan.odonoghue@linaro.org>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4759:EE_|PH8PR10MB6480:EE_
+X-MS-Office365-Filtering-Correlation-Id: 1cd2b2b0-110d-40db-c8d1-08dbe5e2fba4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: R13r5lXx7aEgNblRFFDVAPlX6kDRWjpzXFNiNR1w+5eUjtsQJdu2fyG5PfjHyx4RljdUMb70zmqBRtjX0ms0ZSQ8Hj8STh4f47SXeAVVc6xaqm4owJwXTNPp1tCsr/oz+JC0/SfQKK6z05A1irN0Z3hUUkXHGXJvWRzq1BgvzZgOjZnGXi0V/ubSKfzBiOXibHb9ze+sZDRTSmWVupkAtJAfDIlkSQongkx/vV5oZfZWw2fe4MmMsIkv1JQfdov0Vu1XRVLdwiluQGJgwLBFySXB+Ark6EpQYrU/XK6GVtuWWVb4L8F/MB5S8bYCqOZqsY//9jI+x9345P9qiOpv+dvYhGF26SCEvkpb5tH6wQ21C7VR35JK0gmLhv8FnDAriidAYa7Efv/PF0+kg89XVKEPiPPQ6Q/iS40N+iCV56/hNM+R4QumgqpsB/Qr94pIuEjIJfXVlBHpVt/bOEqbXrDanO6qCYVpdB/iHDe56O/TIlcu02ZJj4bA3eN2df0+icmACpFJGXvQSiE5APWwrPf6zSJeLhsHIuKUCX3udeaI9POk+pdc1tMulyxpeis/V+D2w7MssY2y5ptXXb82UZA2/9iLf9c4FPG3cDmRcUXWMK+HBiM73RFu3hbUGGM0
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(366004)(39860400002)(376002)(396003)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(26005)(41300700001)(38100700002)(8936002)(478600001)(558084003)(8676002)(4326008)(6486002)(86362001)(2906002)(36916002)(6506007)(66946007)(54906003)(66556008)(6916009)(66476007)(5660300002)(316002)(6512007)(156123004);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?aM6fSGXdhiNCw2+Tv65QpV7LHjA7+/s2zlGETyl01NHSfgncPDnpD7eQb0Pn?=
+ =?us-ascii?Q?ji63REg+3JD5Lir3Ph34AGIG9sjkly4gJIeY3udoN3eccUHbmVHRjm13kLEX?=
+ =?us-ascii?Q?A3G8f6SvHz9alGwfCYM8xw4C5pQwjt8ympP51hydw0tEwyPce8nsCidQwdVs?=
+ =?us-ascii?Q?g6OTvK20cHpBz6CQ7eEj2aLICF8rirLtp66OtB2k+CLesLYDsYHMcfbfp23r?=
+ =?us-ascii?Q?ApKHHN5brVE+TALL2zrgDWnKd3GitASlY/aTYEKN8Z2JyuG1eqx70CDpuPt3?=
+ =?us-ascii?Q?EoQA+LfMMRvwqTL0B9W2yIdmkUnwaCjfg7q2BtRudGjyHTAL2bdGimdL7XJC?=
+ =?us-ascii?Q?1VQeUowxo04BUzjhtLx+bHiX/SSIJSVKK2NuzxEymA41zUUpMM5gKRcTjvER?=
+ =?us-ascii?Q?T0ncNzog+uJDEHs5LAs6iLIXZ6LG7D7jPNpYYkQu4JZF2X6mLz5C+HwNNBtE?=
+ =?us-ascii?Q?EufVkL4YlbXrMOA/vz4Sav3CjBmcrWIKd6eKRkcbCBgtzjacb1edvVMWnOHH?=
+ =?us-ascii?Q?JJXCpBkMc2rJ6F6gzZK+d25xCzkbwT0mzdMeOEYKWCic6J/Hv0Jzb10kjmUW?=
+ =?us-ascii?Q?NOdTL5BRkB3NRejJl6h/LC8kpOf1Nw+C9vSzt8ROPmDN+gGpLM+ldFkd3Ym8?=
+ =?us-ascii?Q?LTPUSjENoNWnY71LdHHbW6yOlpwXVeG+VB5quYJHj6eq+OOrKHtNGHBwMhmR?=
+ =?us-ascii?Q?rRQFV2Sg+hVQnmYcm7CZHKXQA8SfJAgO9WmlG3N5py6y5TRrUKFlTtGHtmNZ?=
+ =?us-ascii?Q?GTEdgDXp3LargS8xlXTIagHTqgeWktt+6ulaNWwmHVsqFmmfMuCO8DLWMjXm?=
+ =?us-ascii?Q?cjsK0Ny+urPQyVHsRzP8FSJ1wRUodUG70wALtjG8fgBpx3n619QJRJuJ9LzJ?=
+ =?us-ascii?Q?viBFmvo3Ug7sjDo2wBTaXca0sMsgPB26ml8L/O/vmgmLImB2d+jH3Fn7NlnI?=
+ =?us-ascii?Q?R2OrdTrO70/5zF6mm8oRz3H3fM4lNEGtgr3I6xVZYPah6XqAPuUSjg2xIK61?=
+ =?us-ascii?Q?IsDMyxeWyTVR5rheAe9wZ/LSeq5Mg4+BngSWN0IWn0QEEPn0w6PI29iGO8/v?=
+ =?us-ascii?Q?T/ZHexXFKnodzepaDhw4PnOSi4+SWUpW33jt8mO+uL25e20PI7Wd0pSpxUZ/?=
+ =?us-ascii?Q?6oxHeeKoVUU3tBU6f/mbQm8Y8fyySaDDoF8EgxVtapJKjEwtll09rEp/A2xg?=
+ =?us-ascii?Q?2sZ9L2it2LwuTkDhykR/uqMKokd86lFyvFRFUhq0fkA1L8mqSwUqiv7oklKf?=
+ =?us-ascii?Q?nE8qXxK9PAJ37ldRq1/0J3P4viNmC/8xuMd5PdJOqgX0ar4tx36OduImptHF?=
+ =?us-ascii?Q?LaP5sYm4DjAvW4y7ARhiKuRy5t9T3jf+IK1rHH7CPZahJAe3sk3biL7kLbaB?=
+ =?us-ascii?Q?ejI0br9cmvbae5IcwZqnSRNYblqRvdMcysQmyw2pqs4pkrZ0iMOJoLzaG8HD?=
+ =?us-ascii?Q?W8teD6o+DT3e+rcDrkI3CxVtuki6TvYryYdka2B+2fpiutjw5o+Tx0eYVOqc?=
+ =?us-ascii?Q?wcpBMg7KFbYUGpugiLOocQVFlFSPJ0gdShqYIFIku6fCWGjgkS38noKvJksV?=
+ =?us-ascii?Q?VGm4sfLaHUsNDYs1HIn+jdcM1K4UUHvtXjLDC/+RToBYlr81TXOijMVGjV1q?=
+ =?us-ascii?Q?6g=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: ie9Cni/xLbtDHl1BstFp1ylIIIwILscJoYeY1HDRaUjE4SOVUgYLjWIG4iHNPmWrcIoYGf1EOuwKAmWdxVUCZm85wEpkSDuamNyK9Dz/dW62jqELLj4JjKbvrxmv9AyyhujZwmpRjHxLiP+k/zd8uKIkGkWAOY8PJXgNv9zELh7pcNCiLnnvAJv4i5BOVtH0yuKfZSy7+61oHF1ERgSeX+IzSpLn4b2/+iRCK8ZFTHbc9bcYIf1Eov8pUdDNpfdappCsiccyIagIApHNdQKCdRvAurLfjW3/P6Ia6C9FyHtJPyWUOrZdxcbmmGu7+f3CQjfDc/JfdQ95x/1L7hnS2+C8MICwKF2cA/s23plyl14y/HRubv2CIlur2ISA2xj5+uFp2ylP0DQoXUT/vtB6GhczM8M03kQGvzHwRKP2Odr08jmA2F3GH9eTQXHBLNNGqeijHjYjRAkI6lzIUR9erZzezn1KIXNOmtNWAkYM/UJzXkiFtUKJ6KUuy27t2amIRetELi28NHs/bb3NGxS6tXlqfXOam6PNyoZ/Dvnskenb9LKTGSm2PML/mMdotryB8T+jf2bvsX6U3Q+gVh/aZCUuktzZyVcvP1hTr6YiRBr6Wqdv0o+NF8n8wzMTr5vfMU+LUE/ovQkVERZgYbC2KHN2FRWlLXr3scuVbZrRvoH9YE4FIQyRNXggNYU1QcjMQev6/hJ/DDO64X3SNWBrdwLbCcGgdNIreVDszy7jb3WLDN5ZOHVMGARBE0xV3Je7/g1n3pQ+iCZo4+obPZYqh2k1sNQBTqQbRp7BAquk1N18NhxM6Al+QFzmsa2HS91AKvn4ZUtWIf9tD9cZfeeiuqR4VZIgntpM61RlFm6xP7I=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1cd2b2b0-110d-40db-c8d1-08dbe5e2fba4
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Nov 2023 13:58:45.1537
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Zkf24Bj4FdXFV95pzlZfbVVvmprJRsVEYwn8jTzqs1u0pqp1Hz8PGjlniU7GzLXBi/OmAjOzbrgPd3grfxN+vd12bYG2OXnl29v7GQJbjtk=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6480
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_13,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 adultscore=0
+ mlxlogscore=773 mlxscore=0 malwarescore=0 phishscore=0 suspectscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311150108
+X-Proofpoint-GUID: SXV5KO12XEmP90VKCxyY1EM8LOse5Wa8
+X-Proofpoint-ORIG-GUID: SXV5KO12XEmP90VKCxyY1EM8LOse5Wa8
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-update:
 
----
- arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+Justin,
 
-diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-index e59b9df96..822ac51a0 100644
---- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-+++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-@@ -506,6 +506,21 @@ blsp1_i2c3: i2c@78b7000 {
-                        dma-names = "tx", "rx";
-                        status = "disabled";
-                };
-+
-+               blsp1_i2c6: i2c@78ba000 {
-+                       compatible = "qcom,i2c-qup-v2.2.1";
-+                       #address-cells = <1>;
-+                       #size-cells = <0>;
-+                       reg = <0x078ba000 0x600>;
-+                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-+                       clocks = <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>,
-+                                <&gcc GCC_BLSP1_AHB_CLK>;
-+                       clock-names = "core", "iface";
-+                       clock-frequency = <400000>;
-+                       dmas = <&blsp_dma 22>, <&blsp_dma 23>;
-+                       dma-names = "tx", "rx";
-+                       status = "disabled";
-+               };
+> strncpy() is deprecated for use on NUL-terminated destination strings
+> [1] and as such we should prefer more robust and less ambiguous string
+> interfaces.
 
-                qpic_bam: dma-controller@7984000 {
-                        compatible = "qcom,bam-v1.7.0";
---
-2.42.0
+Applied to 6.8/scsi-staging, thanks!
 
-
-
-On Wed, 15 Nov 2023 at 14:32, Bryan O'Donoghue
-<bryan.odonoghue@linaro.org> wrote:
->
-> On 15/11/2023 09:55, Legale Legale wrote:
-> > Add node to support this bus inside of IPQ6018.
-> > For example, this bus is used to work with the
-> > voltage regulator (mp5496) on the Yuncore AX840 wireless AP.
-> >
-> > Signed-off-by: Isaev Ruslan <legale.legale@gmail.com>
-> > ---
-> >   arch/arm64/boot/dts/qcom/ipq6018.dtsi | 15 +++++++++++++++
-> >   1 file changed, 15 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > index e59b9df96c7e..745bfc6e2907 100644
-> > --- a/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > +++ b/arch/arm64/boot/dts/qcom/ipq6018.dtsi
-> > @@ -507,6 +507,21 @@ blsp1_i2c3: i2c@78b7000 {
-> >                          status = "disabled";
-> >                  };
-> >
-> > +               blsp1_i2c6: i2c@78ba000 {
-> > +                       compatible = "qcom,i2c-qup-v2.2.1";
-> > +                       #address-cells = <1>;
-> > +                       #size-cells = <0>;
-> > +                       reg = <0x078ba000 0x600>;
->
-> reg = <0x0 0x078ba000 0x0 0x600>;
-> like the other regs here
->
-> > +                       interrupts = <GIC_SPI 300 IRQ_TYPE_LEVEL_HIGH>;
-> > +                       clocks = <&gcc GCC_BLSP1_QUP6_I2C_APPS_CLK>,
-> > +                                <&gcc GCC_BLSP1_AHB_CLK>;
-> > +                       clock-names = "core", "iface";
-> > +                       clock-frequency = <100000>;
->
-> Why not <400000>; as with other nodes ?
-This is typo.
-
->
-> > +                       dmas = <&blsp_dma 22>, <&blsp_dma 23>;
-> > +                       dma-names = "tx", "rx";
-> > +                       status = "disabled";
-> > +               };
-> > +
-> >                  qpic_bam: dma-controller@7984000 {
-> >                          compatible = "qcom,bam-v1.7.0";
-> >                          reg = <0x0 0x07984000 0x0 0x1a000>;
-> > --
-> > 2.42.0
-> >
->
-> What tree does this apply to ?
-this is master branch
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/snapshot/linux-6.7-rc1.tar.gz
---branch master --depth=1 ./kernel
->
-> git checkout -b linux-next-6.7-rc1 v6.7-rc1
-> Switched to a new branch 'linux-next-6.7-rc1'
->
-> deckard@sagittarius-a:~/Development/qualcomm/qlt-kernel$ b4 shazam
-> CACDmYyf4hxbuw+cpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com
->
-> Grabbing thread from
-> lore.kernel.org/all/CACDmYyf4hxbuw%2BcpKqEDnqmHpS9yPXuE5MPD5_XZ3hjmYuViUQ@mail.gmail.com/t.mbox.gz
-> Checking for newer revisions
-> Grabbing search results from lore.kernel.org
-> Analyzing 1 messages in the thread
-> Checking attestation on all messages, may take a moment...
-> ---
->    [PATCH] arm64: dts: qcom: ipq6018: add QUP5 I2C node
->    ---
->    NOTE: install dkimpy for DKIM signature verification
-> ---
-> Total patches: 1
-> ---
-> Applying: arm64: dts: qcom: ipq6018: add QUP5 I2C node
-> Patch failed at 0001 arm64: dts: qcom: ipq6018: add QUP5 I2C node
-> When you have resolved this problem, run "git am --continue".
-> If you prefer to skip this patch, run "git am --skip" instead.
-> To restore the original branch and stop patching, run "git am --abort".
-> error: git diff header lacks filename information when removing 1
-> leading pathname component (line 6)
-> hint: Use 'git am --show-current-patch=diff' to see the failed patch
->
-> ---
-> bod
+-- 
+Martin K. Petersen	Oracle Linux Engineering
