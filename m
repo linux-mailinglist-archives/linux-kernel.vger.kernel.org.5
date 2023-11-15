@@ -2,86 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C737EBCB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 06:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1A6C7EBCBF
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 06:18:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234446AbjKOFCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 00:02:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50276 "EHLO
+        id S234421AbjKOFSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 00:18:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbjKOFCI (ORCPT
+        with ESMTP id S229572AbjKOFSx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 00:02:08 -0500
-Received: from mail.nfschina.com (unknown [42.101.60.195])
-        by lindbergh.monkeyblade.net (Postfix) with SMTP id AECA4D9;
-        Tue, 14 Nov 2023 21:02:04 -0800 (PST)
-Received: from localhost.localdomain (unknown [180.167.10.98])
-        by mail.nfschina.com (Maildata Gateway V2.8.8) with ESMTPA id 0765760A15476;
-        Wed, 15 Nov 2023 13:02:00 +0800 (CST)
-X-MD-Sfrom: suhui@nfschina.com
-X-MD-SrcIP: 180.167.10.98
-From:   Su Hui <suhui@nfschina.com>
-To:     pkshih@realtek.com, Jes.Sorensen@gmail.com
-Cc:     Su Hui <suhui@nfschina.com>, kvalo@kernel.org,
-        linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
-Date:   Wed, 15 Nov 2023 13:01:24 +0800
-Message-Id: <20231115050123.951862-1-suhui@nfschina.com>
-X-Mailer: git-send-email 2.30.2
+        Wed, 15 Nov 2023 00:18:53 -0500
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com [209.85.215.197])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7E60CA
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 21:18:50 -0800 (PST)
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-5b99999614bso6350949a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 21:18:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700025530; x=1700630330;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=2gSgvHkpNZoStCqmX+VQdASx5vteb05HTtSupMCw7Js=;
+        b=aacFakkYyA7XhaybiftgNUkRbMvm42M/azFbS8PqL+xOM08MT8xtmGDHt7zM0nnIKq
+         j2rpM77xKjiKJqZEe/Y0lf+/DVAuUuHLNF/45UZFgbm5WIsjO3c2KBQBUCvshApen1KC
+         SiT/Y2/uFnyDPl2WByVuR+2xj2bW9L3Ems2nrciU+8oNbMOGe67n1vHMrWtTLOeYNlAf
+         q18mxEFwNopRIbQK+vNu3tpDPILel5IVbMtFu3Dj5Rt44Wqjmgu1gs0v+mS99ojUZN62
+         tiKDTRSG3ZBZWsbYXJUlSQ2t2tKypH9c0qVHLBoAHCAnLiWChmhRR4mJqIYxlJnsg4zW
+         0xHA==
+X-Gm-Message-State: AOJu0Yx6djmZhG8eOlBhxM9CQb79dQWImSJ03Bt73L8ar+7QFIgcYyxr
+        0CWmBVNaa51oahnAGeoQ7vGAZDBVAZjsEFlP2X4M8YnkZG2AYWg=
+X-Google-Smtp-Source: AGHT+IFjnl/9Zi4Q5+ufJm6AWfLVYBUBQxYDLFGui2Xkf38y+qBv8nD31vLAd8l43UozmtQ1wE1QvQOrsYehLAuB8jP/fRLzf763
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,RDNS_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:4606:0:b0:5bd:d60f:231d with SMTP id
+ t6-20020a634606000000b005bdd60f231dmr1013436pga.3.1700025530310; Tue, 14 Nov
+ 2023 21:18:50 -0800 (PST)
+Date:   Tue, 14 Nov 2023 21:18:50 -0800
+In-Reply-To: <000000000000936c2d0606280cb2@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d7e9fd060a2a09fb@google.com>
+Subject: Re: [syzbot] test
+From:   syzbot <syzbot+4e3a76c5c505a3f49083@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When 'rtl8xxxu_dma_agg_pages <= page_thresh', 'timeout' should equal to
-'page_thresh' rather than '4'. Change the code order to fix this problem.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Fixes: fd83f1227826 ("rtl8xxxu: gen1: Add module parameters to adjust DMA aggregation parameters")
-Signed-off-by: Su Hui <suhui@nfschina.com>
----
-v2:
- -  correct the problem about Fixes tag.
+***
 
- .../net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c    | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Subject: test
+Author: mukattreyee@gmail.com
 
-diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-index 43ee7592bc6e..9cab8b1dc486 100644
---- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-+++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
-@@ -4757,6 +4757,12 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
- 	 *   RxAggPageTimeout = 4 or 6 (absolute time 34ms/(2^6))
- 	 */
- 
-+	/* REG_RXDMA_AGG_PG_TH + 1 seems to be the timeout register on
-+	 * gen2 chips and rtl8188eu. The rtl8723au seems unhappy if we
-+	 * don't set it, so better set both.
-+	 */
-+	timeout = 4;
-+
- 	page_thresh = (priv->fops->rx_agg_buf_size / 512);
- 	if (rtl8xxxu_dma_agg_pages >= 0) {
- 		if (rtl8xxxu_dma_agg_pages <= page_thresh)
-@@ -4771,12 +4777,6 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
- 				__func__, rtl8xxxu_dma_agg_pages, page_thresh);
- 	}
- 	rtl8xxxu_write8(priv, REG_RXDMA_AGG_PG_TH, page_thresh);
--	/*
--	 * REG_RXDMA_AGG_PG_TH + 1 seems to be the timeout register on
--	 * gen2 chips and rtl8188eu. The rtl8723au seems unhappy if we
--	 * don't set it, so better set both.
--	 */
--	timeout = 4;
- 
- 	if (rtl8xxxu_dma_agg_timeout >= 0) {
- 		if (rtl8xxxu_dma_agg_timeout <= 127)
--- 
-2.30.2
-
+#syz test:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
