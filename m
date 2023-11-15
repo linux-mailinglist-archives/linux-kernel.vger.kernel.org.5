@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CBA7EC747
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:31:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CF807EC750
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:31:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229689AbjKOPa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40622 "EHLO
+        id S229989AbjKOPbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:31:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229511AbjKOPa6 (ORCPT
+        with ESMTP id S229504AbjKOPbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:30:58 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E65A1A1;
-        Wed, 15 Nov 2023 07:30:54 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id BF8501BF20A;
-        Wed, 15 Nov 2023 15:30:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700062253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yGGXh/tPnXL+P4n+7AuLV8zTk3Fq7KZAHBE5VIThsu4=;
-        b=iPaW/d66IhN5NdRncx4yPDUzHnm6FBhB21+9vMHQSjywf2E1BZPiadZ6h+3dmxYLEhEdrQ
-        lNQSFomaZnyg5YQfiRSskdqpQfsDzBjI0G1e23n26s0rANrPDWKF/b0yLRo7psbtaiXb8a
-        5rQmpiR6bMKlmnr0oAI4n11sI9ApabAVJjh9lqRE7b8Gh0NEFAPt4Tx3ofMPwJN33rsbYm
-        bEoJ6LHX3WNotP0dpOGQHqgCez8ZAsYllAIjSveVRY1e2yhjWjqHV9ujHVp/YcLJYyH7QN
-        ANSZnl6zlT7adNC2QhVry7sHf42+Jk4H//CV8pFhFYORkJcZhMgjgMWdQ6mCRg==
-Date:   Wed, 15 Nov 2023 16:31:07 +0100 (CET)
-From:   Romain Gantois <romain.gantois@bootlin.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-cc:     Romain Gantois <romain.gantois@bootlin.com>, davem@davemloft.net,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        thomas.petazzoni@bootlin.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-arm-kernel@lists.infradead.org,
-        Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>
-Subject: Re: [PATCH net-next v3 6/8] net: phy: add calibration callbacks to
- phy_driver
-In-Reply-To: <a4dd8cb4-f662-4dc7-8311-712c64de6f21@lunn.ch>
-Message-ID: <2d4c7054-1aa8-1531-ffa3-7be342ed9a07@bootlin.com>
-References: <20231114105600.1012056-1-romain.gantois@bootlin.com> <20231114105600.1012056-7-romain.gantois@bootlin.com> <a4dd8cb4-f662-4dc7-8311-712c64de6f21@lunn.ch>
-MIME-Version: 1.0
+        Wed, 15 Nov 2023 10:31:45 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0778C2;
+        Wed, 15 Nov 2023 07:31:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=2JP/fgzIVxfO2zzv2oQfW76T+hCNiYXTGd4FbEmgusE=; b=wJ3Bt2cnTcCZ0FwF9cKzwezrFf
+        H5oBzenz20/XYAFdqMNtd96MyshZUR3ZKfPjG3oUBlPthdiGxGzJEjZmUw1WrfoSZF9mqqIQomdhs
+        /EZKwf/3cva/uyl3BQZX0lR7rZEVfkzicvz/NGFGio/LirdBg+A4qbebqXW5Bt+1m8TY=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:49394 helo=pettiford)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r3HrT-0001sn-3V; Wed, 15 Nov 2023 10:31:27 -0500
+Date:   Wed, 15 Nov 2023 10:31:26 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Daniel Mack <daniel@zonque.org>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
+Message-Id: <20231115103126.d1cb1168c32c264fe443347b@hugovil.com>
+In-Reply-To: <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
+References: <20231114074904.239458-1-daniel@zonque.org>
+        <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
+        <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
+        <20231115094717.7541b01ec0c8a7f4006fcae6@hugovil.com>
+        <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
-X-GND-Sasl: romain.gantois@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 14 Nov 2023, Andrew Lunn wrote:
+On Wed, 15 Nov 2023 15:57:38 +0100
+Daniel Mack <daniel@zonque.org> wrote:
 
-> > +static inline
-> > +int phy_start_calibration(struct phy_device *phydev)
-> > +{
-> > +	if (!(phydev->drv &&
-> > +	      phydev->drv->calibration_start &&
-> > +	      phydev->drv->calibration_stop))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	return phydev->drv->calibration_start(phydev);
-> > +}
-> > +
-> > +static inline
-> > +int phy_stop_calibration(struct phy_device *phydev)
-> > +{
-> > +	if (!(phydev->drv &&
-> > +	      phydev->drv->calibration_stop))
-> > +		return -EOPNOTSUPP;
-> > +
-> > +	return phydev->drv->calibration_stop(phydev);
-> > +}
-> > +
+> On 11/15/23 15:47, Hugo Villeneuve wrote:
+> > On Tue, 14 Nov 2023 16:55:33 +0100
+> > Daniel Mack <daniel@zonque.org> wrote:
+> > 
+> >> Hi Hugo,
+> >>
+> >> On 11/14/23 16:20, Hugo Villeneuve wrote:
+> >>> On Tue, 14 Nov 2023 08:49:04 +0100
+> >>> Daniel Mack <daniel@zonque.org> wrote:
+> >>>> This devices has a silicon bug that makes it report a timeout interrupt
+> >>>> but no data in FIFO.
+> >>>>
+> >>>> The datasheet states the following in the errata section 18.1.4:
+> >>>>
+> >>>>   "If the host reads the receive FIFO at the at the same time as a
+> >>>>   time-out interrupt condition happens, the host might read 0xCC
+> >>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
+> >>>>   of the Line Status Register (LSR) is not set (means there is not
+> >>>>   data in the receive FIFO)."
+> >>>>
+> >>>> When this happens, the loop in sc16is7xx_irq() will run forever,
+> >>>> which effectively blocks the i2c bus and breaks the functionality
+> >>>> of the UART.
+> >>>>
+> >>>> From the information above, it is assumed that when the bug is
+> >>>> triggered, the FIFO does in fact have payload in its buffer, but the
+> >>>> fill level reporting is off-by-one. Hence this patch fixes the issue
+> >>>> by reading one byte from the FIFO when that condition is detected.
+> >>>
+> >>> From what I understand from the errata, when the problem occurs, it
+> >>> affects bit 0 of the LSR register. I see no mention that it
+> >>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
+> >>
+> >> True, the errata doesn't explicitly mention that, but tests have shown
+> >> that the RXLVL register is equally affected.
+> > 
+> > Hi Daniel,
+> > ok, now it makes more sense if RXLVL is affected.
+> > 
+> > Have you contacted NXP about this? If not, I suggest you do open a
+> > support case and let them know about your findings, because it is very
+> > strange that it is not mentioned in the errata. And doing so may led to
+> > an updated and better documentation on their side about this errata.
 > 
-> What is the locking model?
+
+Hi Daniel,
+
+> The errata is also wrong in other regards - the IIR register cannot
+> yield 0xcc according to their own documentation. It also makes no
+> suggestion on how to recover from that situation, which is common
+> practice usually.
+
+0xcc is valid according to the datasheet. Bits 7:6 are a mirror copy of
+FCR[0], so bits 5:0 are 0x0c, which is documented in table 14?
+
+But you are right about the recovery procedure, it should be documented
+in the errata.
+
+
+> We'll let them know through our FAE channels, but the latest datasheet
+> for this chip was released over a decade ago, and I don't expect any
+> update to the errata wording.
+
+You cannot assume they would not update the datasheet, especially with
+your findings about RXLVL which add a whole new dimension to this
+errata. The fact that the latest release was long ago is irrelevant.
+
+
+> > And incorporate this new info into your commit log for an eventual
+> > patch V2.
 > 
->      Andrew
-> 
-This driver currently uses an atomic flag to make sure that the calibration 
-doesn't run twice. It doesn't acquire any locks before calling 
-phy_start_calibration(), which is a mistake.
+> It makes no sense IMO to have all users of this chip suffer from an
+> issue that was clearly identified to be present and which has an evident
+> fix. Why would we do that?
 
-I think a good locking model for this would be similar to the one used for 
-phy_cable_test. The phy_start_calibration() and phy_stop_calibration() wrappers 
-would acquire a lock on the PHY device and then test phydev->state, to check for 
-an ongoing calibration. A new enum member such as PHY_CALIB could be defined for 
-this purpose. The lock would be released by the phylib wrapper once the 
-phy_driver callback returns.
+I don't know what you mean by that...
 
-The problem with this is that one calibration run can access multiple 
-phy_device instances at the same time, e.g. if a switch is linked to a multiport 
-PHY via a PSGMII link.
+My suggestion was simply to incorporate your findings about RXLVL
+register into your commit log for patch V2...
 
-So acquiring a lock on a single phy device isn't enough. Ideally, these 
-calls could somehow acquire one lock on all the hardware resources of a 
-multiport PHY simultaneously. From what I've seen, there is no standard kernel 
-interface that allows MAC drivers to know about link-sharing between phy 
-devices. I'll have to do more research on this but if you know of an existing 
-interface that I can use for this, please tell me.
-
-Best,
-
--- 
-Romain Gantois, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Hugo.
