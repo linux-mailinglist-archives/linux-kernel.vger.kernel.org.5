@@ -2,175 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A05C7EC780
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:38:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54A177EC77E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230177AbjKOPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:38:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
+        id S231219AbjKOPiH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:38:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229689AbjKOPie (ORCPT
+        with ESMTP id S229457AbjKOPiG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:38:34 -0500
-Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FBA1AC
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:38:29 -0800 (PST)
-Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59b5484fbe6so78929987b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:38:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700062709; x=1700667509; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=DrqmeQ1b3jWvPwiKhEDKttHMvlM+GcVpLzujKePYQsk=;
-        b=CuxKxtnH4kzYw+M0xHyaxgP5+GGYXJ70eWVH8/FRkTEnTsxVm22mn6BbJP9uUi03lY
-         0tAwykSybKQkXS90Wv/4gw0D4VBWZ/e9Ka9Wc9cG9q7jF7d/q79P4Y2gZ2nl/m2dZpbi
-         VK+ROHI9Za+s/gCknoD7RxhFNCR957NT1tlARx9LTG8Y9ROPFo0NXLggv++9mTpPg/1i
-         jlkWFnlgKKWCFFjjGmxu6z79kJpvOkEWm2Rc31aB5VyCe0E6M+ThHd+muRI5k+j4ThYG
-         zOd7zCSNhrHCMIielG9tp4KAMxKWW3z3z7aO+t6wPig1gOFM4cZsVrccaTidEy3jpI42
-         LbnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700062709; x=1700667509;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DrqmeQ1b3jWvPwiKhEDKttHMvlM+GcVpLzujKePYQsk=;
-        b=TrGCNonKGIXWiM+Ffu7OesHe6gNusa0HoXVunwkydRr8nlBL5U7WYEjDKyiUTWd8xe
-         YlO8wKSqCzy7o8JJ+kYKudL2++XwH4GSnhjivG7hSN5yZ80QEuGK2fYf/8RhrMHHXf3E
-         iLNcUiXlLPM3RiKQuGRLwSFuhu7x8k4ZtUwD2dZ7DLwGWOQXaOPoioJ4b9pmhJSBrs9g
-         OEbPCw2oMoPKlkSed7pF1XxhnYs9yJNIMSIvXdqyg3uRTD2Fbq0FT5ZCccPwHKzJkrJS
-         yLGCSxwgRi5GAkDCK7bw5T+7c7egzMhqZqiwLl4g5+OzmpgnMFtFIRIqmAlg+FdgtPVA
-         86oA==
-X-Gm-Message-State: AOJu0YyY5hdHtHY3wjZTSJoQmYPtUWWPLIT4yuOx0re7E3L2x0VwVb3f
-        5GsoK2OLBbbrTEg1VXehf1BdmfNO9G/Z6KaSqMRRaA==
-X-Google-Smtp-Source: AGHT+IHle69HGMM73axSbTrxTEchdRM11aGWeB2nuHgAcv5unqlb5d7O8Uri7BhbV0Cqu/PwgfL+Pytmev0WUwA2OgM=
-X-Received: by 2002:a0d:e855:0:b0:5a7:f002:4fe4 with SMTP id
- r82-20020a0de855000000b005a7f0024fe4mr14385322ywe.23.1700062709022; Wed, 15
- Nov 2023 07:38:29 -0800 (PST)
+        Wed, 15 Nov 2023 10:38:06 -0500
+Received: from mail.bugwerft.de (mail.bugwerft.de [IPv6:2a03:6000:1011::59])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 34639109;
+        Wed, 15 Nov 2023 07:38:03 -0800 (PST)
+Received: from [192.168.178.97] (pd95ef485.dip0.t-ipconnect.de [217.94.244.133])
+        by mail.bugwerft.de (Postfix) with ESMTPSA id 15C9A28157A;
+        Wed, 15 Nov 2023 15:38:02 +0000 (UTC)
+Message-ID: <938c06e4-ce48-49af-ac3a-61f524796e26@zonque.org>
+Date:   Wed, 15 Nov 2023 16:38:01 +0100
 MIME-Version: 1.0
-References: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
-In-Reply-To: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Wed, 15 Nov 2023 16:37:52 +0100
-Message-ID: <CAPDyKFrZdHseZ6udjNSdOG7hwK82G1wT30j39A1KwKBAaY_cMg@mail.gmail.com>
-Subject: Re: [PATCH v1 1/1] treewide, spi: Get rid of SPI_MASTER_HALF_DUPLEX
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Yang Yingliang <yangyingliang@huawei.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
-        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-spi@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
+Content-Language: en-US
+To:     Hugo Villeneuve <hugo@hugovil.com>
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        lech.perczak@camlingroup.com, u.kleine-koenig@pengutronix.de,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Maxim Popov <maxim.snafu@gmail.com>, stable@vger.kernel.org
+References: <20231114074904.239458-1-daniel@zonque.org>
+ <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
+ <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
+ <20231115094717.7541b01ec0c8a7f4006fcae6@hugovil.com>
+ <549319d4-5da9-4eb0-abeb-6e63b3e26e3f@zonque.org>
+ <20231115103126.d1cb1168c32c264fe443347b@hugovil.com>
+From:   Daniel Mack <daniel@zonque.org>
+In-Reply-To: <20231115103126.d1cb1168c32c264fe443347b@hugovil.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 13 Nov 2023 at 12:15, Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> The SPI_MASTER_HALF_DUPLEX is the legacy name of a definition
-> for a half duplex flag. Since all others had been replaced with
-> the respective SPI_CONTROLLER prefix get rid of the last one
-> as well. There is no functional change intended.
->
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Hi Hugo,
 
-Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # For MMC
+On 11/15/23 16:31, Hugo Villeneuve wrote:
+> On Wed, 15 Nov 2023 15:57:38 +0100
+> Daniel Mack <daniel@zonque.org> wrote:
+> 
+>> On 11/15/23 15:47, Hugo Villeneuve wrote:
+>>> On Tue, 14 Nov 2023 16:55:33 +0100
+>>> Daniel Mack <daniel@zonque.org> wrote:
+>>>
+>>>> Hi Hugo,
+>>>>
+>>>> On 11/14/23 16:20, Hugo Villeneuve wrote:
+>>>>> On Tue, 14 Nov 2023 08:49:04 +0100
+>>>>> Daniel Mack <daniel@zonque.org> wrote:
+>>>>>> This devices has a silicon bug that makes it report a timeout interrupt
+>>>>>> but no data in FIFO.
+>>>>>>
+>>>>>> The datasheet states the following in the errata section 18.1.4:
+>>>>>>
+>>>>>>   "If the host reads the receive FIFO at the at the same time as a
+>>>>>>   time-out interrupt condition happens, the host might read 0xCC
+>>>>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
+>>>>>>   of the Line Status Register (LSR) is not set (means there is not
+>>>>>>   data in the receive FIFO)."
+>>>>>>
+>>>>>> When this happens, the loop in sc16is7xx_irq() will run forever,
+>>>>>> which effectively blocks the i2c bus and breaks the functionality
+>>>>>> of the UART.
+>>>>>>
+>>>>>> From the information above, it is assumed that when the bug is
+>>>>>> triggered, the FIFO does in fact have payload in its buffer, but the
+>>>>>> fill level reporting is off-by-one. Hence this patch fixes the issue
+>>>>>> by reading one byte from the FIFO when that condition is detected.
+>>>>>
+>>>>> From what I understand from the errata, when the problem occurs, it
+>>>>> affects bit 0 of the LSR register. I see no mention that it
+>>>>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
+>>>>
+>>>> True, the errata doesn't explicitly mention that, but tests have shown
+>>>> that the RXLVL register is equally affected.
+>>>
+>>> Hi Daniel,
+>>> ok, now it makes more sense if RXLVL is affected.
+>>>
+>>> Have you contacted NXP about this? If not, I suggest you do open a
+>>> support case and let them know about your findings, because it is very
+>>> strange that it is not mentioned in the errata. And doing so may led to
+>>> an updated and better documentation on their side about this errata.
+>>
+> 
+> Hi Daniel,
+> 
+>> The errata is also wrong in other regards - the IIR register cannot
+>> yield 0xcc according to their own documentation. It also makes no
+>> suggestion on how to recover from that situation, which is common
+>> practice usually.
+> 
+> 0xcc is valid according to the datasheet. Bits 7:6 are a mirror copy of
+> FCR[0], so bits 5:0 are 0x0c, which is documented in table 14?
 
-> ---
->  drivers/input/rmi4/rmi_spi.c             | 2 +-
->  drivers/mmc/host/mmc_spi.c               | 2 +-
->  drivers/net/ethernet/micrel/ks8851_spi.c | 4 ++--
->  drivers/usb/gadget/udc/max3420_udc.c     | 2 +-
->  include/linux/spi/spi.h                  | 2 --
->  5 files changed, 5 insertions(+), 7 deletions(-)
->
-> diff --git a/drivers/input/rmi4/rmi_spi.c b/drivers/input/rmi4/rmi_spi.c
-> index 852aeb0b2c07..07c866f42296 100644
-> --- a/drivers/input/rmi4/rmi_spi.c
-> +++ b/drivers/input/rmi4/rmi_spi.c
-> @@ -375,7 +375,7 @@ static int rmi_spi_probe(struct spi_device *spi)
->         struct rmi_device_platform_data *spi_pdata = spi->dev.platform_data;
->         int error;
->
-> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX)
-> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
->                 return -EINVAL;
->
->         rmi_spi = devm_kzalloc(&spi->dev, sizeof(struct rmi_spi_xport),
-> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
-> index cc333ad67cac..b0cccef4cfbf 100644
-> --- a/drivers/mmc/host/mmc_spi.c
-> +++ b/drivers/mmc/host/mmc_spi.c
-> @@ -1322,7 +1322,7 @@ static int mmc_spi_probe(struct spi_device *spi)
->         /* We rely on full duplex transfers, mostly to reduce
->          * per-transfer overheads (by making fewer transfers).
->          */
-> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX)
-> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
->                 return -EINVAL;
->
->         /* MMC and SD specs only seem to care that sampling is on the
-> diff --git a/drivers/net/ethernet/micrel/ks8851_spi.c b/drivers/net/ethernet/micrel/ks8851_spi.c
-> index 70bc7253454f..7c41623dac90 100644
-> --- a/drivers/net/ethernet/micrel/ks8851_spi.c
-> +++ b/drivers/net/ethernet/micrel/ks8851_spi.c
-> @@ -156,7 +156,7 @@ static void ks8851_rdreg(struct ks8851_net *ks, unsigned int op,
->
->         txb[0] = cpu_to_le16(op | KS_SPIOP_RD);
->
-> -       if (kss->spidev->master->flags & SPI_MASTER_HALF_DUPLEX) {
-> +       if (kss->spidev->master->flags & SPI_CONTROLLER_HALF_DUPLEX) {
->                 msg = &kss->spi_msg2;
->                 xfer = kss->spi_xfer2;
->
-> @@ -180,7 +180,7 @@ static void ks8851_rdreg(struct ks8851_net *ks, unsigned int op,
->         ret = spi_sync(kss->spidev, msg);
->         if (ret < 0)
->                 netdev_err(ks->netdev, "read: spi_sync() failed\n");
-> -       else if (kss->spidev->master->flags & SPI_MASTER_HALF_DUPLEX)
-> +       else if (kss->spidev->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
->                 memcpy(rxb, trx, rxl);
->         else
->                 memcpy(rxb, trx + 2, rxl);
-> diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
-> index 2d57786d3db7..89e8cf2a2a7d 100644
-> --- a/drivers/usb/gadget/udc/max3420_udc.c
-> +++ b/drivers/usb/gadget/udc/max3420_udc.c
-> @@ -1201,7 +1201,7 @@ static int max3420_probe(struct spi_device *spi)
->         int err, irq;
->         u8 reg[8];
->
-> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX) {
-> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX) {
->                 dev_err(&spi->dev, "UDC needs full duplex to work\n");
->                 return -EINVAL;
->         }
-> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
-> index 255a0562aea5..7b4baff63c5c 100644
-> --- a/include/linux/spi/spi.h
-> +++ b/include/linux/spi/spi.h
-> @@ -1638,8 +1638,6 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
->  /* Compatibility layer */
->  #define spi_master                     spi_controller
->
-> -#define SPI_MASTER_HALF_DUPLEX         SPI_CONTROLLER_HALF_DUPLEX
-> -
->  #define spi_master_get_devdata(_ctlr)  spi_controller_get_devdata(_ctlr)
->  #define spi_master_set_devdata(_ctlr, _data)   \
->         spi_controller_set_devdata(_ctlr, _data)
-> --
-> 2.43.0.rc1.1.gbec44491f096
->
+Ah, right. I was looking at the masked value.
+
+> But you are right about the recovery procedure, it should be documented
+> in the errata.
+> 
+> 
+>> We'll let them know through our FAE channels, but the latest datasheet
+>> for this chip was released over a decade ago, and I don't expect any
+>> update to the errata wording.
+> 
+> You cannot assume they would not update the datasheet, especially with
+> your findings about RXLVL which add a whole new dimension to this
+> errata. The fact that the latest release was long ago is irrelevant.
+
+Yes, we will give them a note. Let's see what happens.
+
+>>> And incorporate this new info into your commit log for an eventual
+>>> patch V2.
+>>
+>> It makes no sense IMO to have all users of this chip suffer from an
+>> issue that was clearly identified to be present and which has an evident
+>> fix. Why would we do that?
+> 
+> I don't know what you mean by that...
+> 
+> My suggestion was simply to incorporate your findings about RXLVL
+> register into your commit log for patch V2...
+
+My apologies, I misread your message then. I thought you suggested to
+wait for a new errata statement from NXP so we can quote from that in
+the commit.
+
+The RXLVL detail is part of the the commit log in the v2 submission.
+
+
+Thanks,
+Daniel
