@@ -2,84 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 80CE07ED608
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B138D7ED607
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:27:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343515AbjKOV2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:28:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42504 "EHLO
+        id S235635AbjKOV1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:27:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229577AbjKOV2O (ORCPT
+        with ESMTP id S229912AbjKOV1P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:28:14 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C880E8F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:28:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700083690; x=1731619690;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=aVQ+ADMhrDZ4kk2S38tTkqmpGbaKt4CUfHleSmAFCiY=;
-  b=c3DtsHY04O0pCrXqhESXVsmf0Eqhnqdxow9KV1ebZAogQ2miiPUwjt/O
-   L82HXEKgjWaaFNuAPKJk2tiO0aTZH5E+RcGtoG8oKxx/W7MZGwk3hdCQX
-   kv0J29+cDEVEUpurK/32b/7kZJu18KDDcGIpiKKtopxEhL5evpzEckXes
-   9VJQLBbfliYPNMujgQQ+cMEbPOezMa6qpbgj5KQmYtoGJPN4qgj+uXyWD
-   FWnxDS42+A/xY1ZiYsBtiTIomVkFBNJdgROT3/t9BlVNg5EPLInzdw1FN
-   31LS+pwSfhE9wRNH6qdBlUsrF/uxGBzqOF0FbVKuhWtuSU/zOFU1YgCVs
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="388124671"
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="388124671"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 13:28:10 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="6298239"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 15 Nov 2023 13:28:04 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3NQX-0000ql-1m;
-        Wed, 15 Nov 2023 21:28:01 +0000
-Date:   Thu, 16 Nov 2023 05:26:49 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Ryan Roberts <ryan.roberts@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Message-ID: <202311160516.kHhfmjvl-lkp@intel.com>
-References: <20231115163018.1303287-2-ryan.roberts@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115163018.1303287-2-ryan.roberts@arm.com>
+        Wed, 15 Nov 2023 16:27:15 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3121E127;
+        Wed, 15 Nov 2023 13:27:12 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8AC37C433C7;
+        Wed, 15 Nov 2023 21:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700083631;
+        bh=Jt1L1aPAah1jOyoVMf4tYtUHoQebBZuGPlZfdj8gZNk=;
+        h=Date:From:To:Subject:References:In-Reply-To:From;
+        b=lmUYwucwDYjCWJh4fp5Zyn8GaxpDDah3MxtpIDt7EoMqZZw+0f5drxETILL2PMD+U
+         W4Ju5wknmTZ0T46AvHNrj41zcnr1mLh123dzcnTLz6IEiNr/A4axU2BA+kVPFiMyS7
+         T4z55U+smK6AsNG2SuPDGTxPwSa2Ne7v/Av1kV3/dabFztQiIUnmLQh34fkYVa6s5O
+         5Rv0G30ys718VrVImy8Vj9XU+oa1CJ2FE4jMgGo/H1xm6ttgeO74fzHzLeWNUcqR3T
+         Jq9PfWDuXtOjH4VyTQMEYL/ZgBEsTlYwdt8VTGMu0UGcY9P01scw1EZRyKZQxhg0nH
+         9jyjvO+xH+80Q==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Wed, 15 Nov 2023 23:27:08 +0200
+Message-Id: <CWZPCL3WPNIC.DUVAB7WXWHFL@kernel.org>
+From:   "Jarkko Sakkinen" <jarkko@kernel.org>
+To:     "Dave Hansen" <dave.hansen@intel.com>,
+        "Jo Van Bulck" <jo.vanbulck@kuleuven.be>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "Huang, Kai" <kai.huang@intel.com>,
+        "linux-sgx@vger.kernel.org" <linux-sgx@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 00/13] selftests/sgx: Fix compilation errors
+X-Mailer: aerc 0.15.2
+References: <20231005153854.25566-1-jo.vanbulck@cs.kuleuven.be>
+ <119aaa2820be5dc58144e74574cfaa7777f79604.camel@intel.com>
+ <f2726c67-87f7-409a-9ac2-e845249348cc@cs.kuleuven.be>
+ <7e729488e2f841f384b719d0509a4f78f491d477.camel@kernel.org>
+ <be63771f-080e-4832-955e-13f5b06b2010@kuleuven.be>
+ <CWG522A78YHD.37CO0T9F3FVXB@suppilovahvero>
+ <55d6aa33-4ffd-4a0c-a449-63b136f5a1a9@kuleuven.be>
+ <4163a276-895b-418d-aab3-5f4d8da69230@intel.com>
+In-Reply-To: <4163a276-895b-418d-aab3-5f4d8da69230@intel.com>
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,87 +60,34 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ryan,
+On Wed Nov 8, 2023 at 10:46 PM EET, Dave Hansen wrote:
+> On 11/8/23 12:31, Jo Van Bulck wrote:
+> > Just a kind follow-up: from what I can see, this series has not been
+> > merged into the x86/sgx branch of tip yet (assuming that's where it
+> > should go next)?
+> >=20
+> > Apologies if I've overlooked anything, and please let me know if there'=
+s
+> > something on my end that can help!
+>
+> Yes, you've missed something.  For your reading pleasure:
+>
+> https://www.kernel.org/doc/html/latest/process/2.Process.html?highlight=
+=3Dmerge%20window
+> https://www.kernel.org/doc/html/latest/process/maintainer-tip.html
+>
+> I honestly didn't even think about applying this until Jarkko said
+> something on 23rd.  By that point, it was far too late for it to get
+> sorted out for 6.7.  So, that puts it in the next merge window.
+> Specifically:
+>
+> 	The release candidate -rc1 is the starting point for new
+> 	patches to be applied which are targeted for the next merge
+> 	window.
+>
+> So wait for the next -rc1, and you'll hopefully see your series get merge=
+d.
 
-kernel test robot noticed the following build errors:
+OK, great, thank you Dave.
 
-[auto build test ERROR on akpm-mm/mm-everything]
-[also build test ERROR on linus/master v6.7-rc1 next-20231115]
-[cannot apply to arm64/for-next/core efi/next]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/mm-Batch-copy-PTE-ranges-during-fork/20231116-010123
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20231115163018.1303287-2-ryan.roberts%40arm.com
-patch subject: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-config: arm-randconfig-002-20231116 (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311160516.kHhfmjvl-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/memory.c: In function 'folio_nr_pages_cont_mapped':
->> mm/memory.c:969:16: error: implicit declaration of function 'pte_pgprot'; did you mean 'ptep_get'? [-Werror=implicit-function-declaration]
-     969 |         prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
-         |                ^~~~~~~~~~
-         |                ptep_get
-   cc1: some warnings being treated as errors
-
-
-vim +969 mm/memory.c
-
-   950	
-   951	static int folio_nr_pages_cont_mapped(struct folio *folio,
-   952					      struct page *page, pte_t *pte,
-   953					      unsigned long addr, unsigned long end,
-   954					      pte_t ptent, bool *any_dirty)
-   955	{
-   956		int floops;
-   957		int i;
-   958		unsigned long pfn;
-   959		pgprot_t prot;
-   960		struct page *folio_end;
-   961	
-   962		if (!folio_test_large(folio))
-   963			return 1;
-   964	
-   965		folio_end = &folio->page + folio_nr_pages(folio);
-   966		end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
-   967		floops = (end - addr) >> PAGE_SHIFT;
-   968		pfn = page_to_pfn(page);
- > 969		prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
-   970	
-   971		*any_dirty = pte_dirty(ptent);
-   972	
-   973		pfn++;
-   974		pte++;
-   975	
-   976		for (i = 1; i < floops; i++) {
-   977			ptent = ptep_get(pte);
-   978			ptent = pte_mkold(pte_mkclean(ptent));
-   979	
-   980			if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
-   981			    pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
-   982				break;
-   983	
-   984			if (pte_dirty(ptent))
-   985				*any_dirty = true;
-   986	
-   987			pfn++;
-   988			pte++;
-   989		}
-   990	
-   991		return i;
-   992	}
-   993	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+BR, Jarkko
