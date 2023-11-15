@@ -2,148 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B2EEE7EC3B8
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFF37EC3BA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 14:32:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343944AbjKONb4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 08:31:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43244 "EHLO
+        id S1343951AbjKONc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 08:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343919AbjKONby (ORCPT
+        with ESMTP id S1343722AbjKONcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 08:31:54 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DED5D11D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:31:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700055110; x=1731591110;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=Wq9K0biAJd+uWugvhnpqHht2TiqKoqsRdn7Q5piWNtY=;
-  b=Cipxx5DfsRUYlgC99PORDKwrccvq1mXIipuIkosPNcaPNlHQlPECrryS
-   Y3ezvhcTIfNwzJW5myOpik0snKptMwdYR64O1swel5Esbe+D0QIzA82eP
-   XrpScf6xVwaxapyzZbHxv6K6OF12cm7NcmjRZEHxp1xlSdgt960LPL0Bt
-   nCZVOu5juejWPkGhxlxlY3NZ0nYP4yjRMyw4uHUuXlpL476j6aQ0WEL/c
-   aC4OoBXKRnTSK+XonaS4m/1G9zHCVCEzLzuZTmZcquBcSpNZxKaVhEJSM
-   uPNHpbGe4sb3cjvoIRjBRcK4fV866y5sF6Nt+fzqnvWabb818ret7YmLx
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393731656"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="393731656"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:31:50 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="764977866"
-X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="764977866"
-Received: from jcornall-mobl3.ger.corp.intel.com (HELO [10.213.211.209]) ([10.213.211.209])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 05:31:48 -0800
-Message-ID: <02377290-cb5f-48ca-afe3-0e59b70a43de@linux.intel.com>
-Date:   Wed, 15 Nov 2023 13:31:46 +0000
+        Wed, 15 Nov 2023 08:32:23 -0500
+Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 028BF9B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:32:20 -0800 (PST)
+Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-2802c0b610dso712372a91.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 05:32:19 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700055139; x=1700659939;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=eiUWWAK8hFsU91ktuG0aBOn9mRyPVX1KZ66LKphaOsM=;
+        b=ZRT33YUNT3ZPOCJh1ijk6LhEtHuOC/gH8dKRISLnfTZDAACVINQDoey21f328OZvic
+         xA0hPsh+v1VBgsTumDk5VPJZAr/Ns+Lz7xYEV8YRjR83f0Az+jMznE27o40kvE7Gl+a3
+         vjStYISKauzmMgEhoj3GCB1R4sHqJtTYaN65vbd8Jgv/R2PiuaM5Qk7cMKOz7svp/NzM
+         iMKXVWsRPsxYVr2YdgTbNZvB4gnHU3kJevctrcQO0zHBUDGJQH7rHugziq4aKzHik2Hc
+         5Rb+zr6e65iY1Lr+dz82w7QCV5NSzXV2Dyz11rFFsMdNSmIiiMc4aOjf8UxwntIuDK/V
+         bEUw==
+X-Gm-Message-State: AOJu0YwlYq8TzvbkfCm7fmKmrWBQok02XnZli/4wLynztn74mUvzbqGq
+        5XOfvEY5Qm8SocbT0AeKFvPRJ+wM75/F9OVAkQJazLsgmei7
+X-Google-Smtp-Source: AGHT+IHQciS6h1jPmUiLqvMgAMIin4uULzptWzeI8+RwCVMuG/H/DumfPZBvBZ5xxMRXeNAd/yLL+NJDHS1H3OMM9tIJene435AS
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [Intel-gfx] [char-misc-next 3/4] mei: pxp: re-enable client on
- errors
-Content-Language: en-US
-To:     "Teres Alexis, Alan Previn" <alan.previn.teres.alexis@intel.com>,
-        "ville.syrjala@linux.intel.com" <ville.syrjala@linux.intel.com>,
-        "Winkler, Tomas" <tomas.winkler@intel.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "intel-gfx@lists.freedesktop.org" <intel-gfx@lists.freedesktop.org>,
-        "Usyskin, Alexander" <alexander.usyskin@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Lubart, Vitaly" <vitaly.lubart@intel.com>
-References: <20231011110157.247552-1-tomas.winkler@intel.com>
- <20231011110157.247552-4-tomas.winkler@intel.com>
- <ZVN9e3BczixJy_1H@intel.com>
- <ade96d9edd8bce1bc63dba4e2f1a92517180d774.camel@intel.com>
-From:   Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>
-Organization: Intel Corporation UK Plc
-In-Reply-To: <ade96d9edd8bce1bc63dba4e2f1a92517180d774.camel@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,HK_RANDOM_ENVFROM,HK_RANDOM_FROM,
-        RCVD_IN_DNSWL_LOW,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
+X-Received: by 2002:a17:90a:d803:b0:27d:a0b:bff with SMTP id
+ a3-20020a17090ad80300b0027d0a0b0bffmr3748368pjv.2.1700055139538; Wed, 15 Nov
+ 2023 05:32:19 -0800 (PST)
+Date:   Wed, 15 Nov 2023 05:32:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b0e576060a30ee3b@google.com>
+Subject: [syzbot] [mm?] WARNING in unmap_page_range (2)
+From:   syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, david@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        usama.anjum@collabora.com, wangkefeng.wang@huawei.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=2.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_BL_SPAMCOP_NET,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: **
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
-On 14/11/2023 15:31, Teres Alexis, Alan Previn wrote:
-> On Tue, 2023-11-14 at 16:00 +0200, Ville Syrjälä wrote:
->> On Wed, Oct 11, 2023 at 02:01:56PM +0300, Tomas Winkler wrote:
->>> From: Alexander Usyskin <alexander.usyskin@intel.com>
->>>
->>> Disable and enable mei-pxp client on errors to clean the internal state.
->>
->> This broke i915 on my Alderlake-P laptop.
->>
-> 
-> 
-> Hi Alex, i just relooked at the series that got merged, and i noticed
-> that in patch #3 of the series, you had changed mei_pxp_send_message
-> to return bytes sent instead of zero on success. IIRC, we had
-> agreed to not effect the behavior of this component interface (other
-> than adding the timeout) - this was the intention of Patch #4 that i
-> was pushing for in order to spec the interface (which continues
-> to say zero on success). We should fix this to stay with the original
-> behavior - where mei-pxp should NOT send partial packets and
-> will only return zero in success case where success is sending of
-> the complete packets - so we don't need to get back the "bytes sent"
-> from mei_pxp_send_message. So i think this might be causing the problem.
-> 
-> 
-> Side note  to Ville:, are you enabling PXP kernel config by default in
-> all MESA contexts? I recall that MESA folks were running some CI testing
-> with enable pxp contexts, but didn't realize this is being enabled by
-> default in all contexts. Please be aware that enabling pxp-contexts
-> would temporarily disabled runtime-pm during that contexts lifetime.
-> Also pxp contexts will be forced to be irrecoverable if it ever hangs.
-> The former is a hardware architecture requirement but doesn't do anything
-> if you're enabling display (which I beleive also blocks in ADL). The
-> latter was a requirement to comply with Vulkan.
+syzbot found the following issue on:
 
-Regardless of the mei_pxp_send_message being temporarily broken, doesn't 
-Ville's logs suggest the PXP detection is altogether messed up? AFAIR 
-the plan was exactly to avoid stalls during Mesa init and new uapi was 
-added to achieve that. But it doesn't seem to be working?!
+HEAD commit:    ac347a0655db Merge tag 'arm64-fixes' of git://git.kernel.o..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=15ff3057680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
+dashboard link: https://syzkaller.appspot.com/bug?extid=7ca4b2719dc742b8d0a4
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162a25ff680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d62338e80000
 
-commit 3b918f4f0c8b5344af4058f1a12e2023363d0097
-Author: Alan Previn <alan.previn.teres.alexis@intel.com>
-Date:   Wed Aug 2 11:25:50 2023 -0700
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/00e30e1a5133/disk-ac347a06.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/07c43bc37935/vmlinux-ac347a06.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/c6690c715398/bzImage-ac347a06.xz
 
-     drm/i915/pxp: Optimize GET_PARAM:PXP_STATUS
+The issue was bisected to:
 
-     After recent discussions with Mesa folks, it was requested
-     that we optimize i915's GET_PARAM for the PXP_STATUS without
-     changing the UAPI spec.
+commit 12f6b01a0bcbeeab8cc9305673314adb3adf80f7
+Author: Muhammad Usama Anjum <usama.anjum@collabora.com>
+Date:   Mon Aug 21 14:15:15 2023 +0000
 
-     Add these additional optimizations:
-        - If any PXP initializatoin flow failed, then ensure that
-          we catch it so that we can change the returned PXP_STATUS
-          from "2" (i.e. 'PXP is supported but not yet ready')
-          to "-ENODEV". This typically should not happen and if it
-          does, we have a platform configuration issue.
-        - If a PXP arbitration session creation event failed
-          due to incorrect firmware version or blocking SOC fusing
-          or blocking BIOS configuration (platform reasons that won't
-          change if we retry), then reflect that blockage by also
-          returning -ENODEV in the GET_PARAM:PXP_STATUS.
-        - GET_PARAM:PXP_STATUS should not wait at all if PXP is
-          supported but non-i915 dependencies (component-driver /
-          firmware) we are still pending to complete the init flows.
-          In this case, just return "2" immediately (i.e. 'PXP is
-          supported but not yet ready').
+    fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag
 
-AFAIU is things failed there shouldn't be long waits, repeated/constant 
-ones even less so.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14e5591f680000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16e5591f680000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12e5591f680000
 
-Regards,
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
+Fixes: 12f6b01a0bcb ("fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag")
 
-Tvrtko
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pte_range mm/memory.c:1520 [inline]
+WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pmd_range mm/memory.c:1582 [inline]
+WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pud_range mm/memory.c:1611 [inline]
+WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_p4d_range mm/memory.c:1632 [inline]
+WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 unmap_page_range+0x1711/0x2c00 mm/memory.c:1653
+Modules linked in:
+CPU: 0 PID: 5059 Comm: syz-executor416 Not tainted 6.6.0-syzkaller-16039-gac347a0655db #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+RIP: 0010:zap_pte_range mm/memory.c:1520 [inline]
+RIP: 0010:zap_pmd_range mm/memory.c:1582 [inline]
+RIP: 0010:zap_pud_range mm/memory.c:1611 [inline]
+RIP: 0010:zap_p4d_range mm/memory.c:1632 [inline]
+RIP: 0010:unmap_page_range+0x1711/0x2c00 mm/memory.c:1653
+Code: 0f 8e 4a 12 00 00 48 8b 44 24 30 31 ff 0f b6 58 08 89 de e8 d1 00 bf ff 84 db 0f 85 88 f3 ff ff e9 0a f4 ff ff e8 8f 05 bf ff <0f> 0b e9 77 f3 ff ff e8 83 05 bf ff 48 83 44 24 10 08 e9 9d f6 ff
+RSP: 0018:ffffc900034bf8f8 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000007 RCX: ffffffff81c894fd
+RDX: ffff88801ff66040 RSI: ffffffff81c89561 RDI: 0000000000000007
+RBP: 0000000000000000 R08: 0000000000000007 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+R13: ffff888074017008 R14: dffffc0000000000 R15: 0000000000000004
+FS:  0000000000000000(0000) GS:ffff8880b9800000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f70d28ca0d0 CR3: 000000001d5be000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ unmap_single_vma+0x194/0x2b0 mm/memory.c:1699
+ unmap_vmas+0x229/0x470 mm/memory.c:1743
+ exit_mmap+0x1ad/0xa60 mm/mmap.c:3308
+ __mmput+0x12a/0x4d0 kernel/fork.c:1349
+ mmput+0x62/0x70 kernel/fork.c:1371
+ exit_mm kernel/exit.c:567 [inline]
+ do_exit+0x9ad/0x2ae0 kernel/exit.c:858
+ do_group_exit+0xd4/0x2a0 kernel/exit.c:1021
+ __do_sys_exit_group kernel/exit.c:1032 [inline]
+ __se_sys_exit_group kernel/exit.c:1030 [inline]
+ __x64_sys_exit_group+0x3e/0x50 kernel/exit.c:1030
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x3f/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7f70d284ef39
+Code: Unable to access opcode bytes at 0x7f70d284ef0f.
+RSP: 002b:00007ffc9cfa2fb8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f70d284ef39
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000000
+RBP: 00007f70d28c9270 R08: ffffffffffffffb8 R09: 65732f636f72702f
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f70d28c9270
+R13: 0000000000000000 R14: 00007f70d28c9cc0 R15: 00007f70d2820ae0
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
