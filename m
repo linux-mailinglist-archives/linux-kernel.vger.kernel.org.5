@@ -2,67 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BF717ECAD7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 19:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D35E7ECAFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229778AbjKOSyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 13:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58232 "EHLO
+        id S229663AbjKOS5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 13:57:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjKOSyy (ORCPT
+        with ESMTP id S233380AbjKOS41 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 13:54:54 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 906E2CC
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:54:49 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6bf03b98b9bso881606b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:54:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=purestorage.com; s=google2022; t=1700074489; x=1700679289; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iiqeEd+SqdqCRIn1p4O2vFaLNnvzT4PHHcDNR7I1Uik=;
-        b=TGzGmEvOg+fgFhQpFOPuDcaky5D4KXiWqT2Dpx/OXnDjwnt26bzKyE2p8fiaAp5ViD
-         fybG0Sm3gKAvKoutcVTxr+YqIqvW2XkkKUt9GNlnEGPXyM1U2yOuH0CovgEO84CusHXJ
-         XCupppJ3s2xeBpqzERiXYdFkb/u1nslEExagQTH2KA9KcTbhoCyrYa0xx9iY2O9gOwJm
-         dJE7V7pgB2zd8jIsOdnrV8WMBJ2ajvztuZmnd+popyGp26GHQ4pZcziESNeNxpB69gsb
-         q+HQLUsB/5t065pH/gAvXY+kMKlLk5eTMYfPARYr3jdxupbMcSSfH9mmgZiuCJh2a9hR
-         3qmw==
+        Wed, 15 Nov 2023 13:56:27 -0500
+Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BDD0CC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:56:23 -0800 (PST)
+Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-5b8d4a559ddso8648138a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 10:56:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700074489; x=1700679289;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iiqeEd+SqdqCRIn1p4O2vFaLNnvzT4PHHcDNR7I1Uik=;
-        b=ayZnPM00Nsv1//qvIPBqpF0pT7UHg57JQzuQqmbSv68bXETUJ1Y94z6ZigyLgtdnOi
-         B+Pm8VnN1438ZfrX/1bCTRgLLRP1yOd1LmEL6V8EEldSAwN0PPl8hrZv+kTDuQbqD+fX
-         3g5VkNw9qRnxkMJLvuZ8EY9TJcB4vhzMrAwCLZwBTxCgiqKzb52lU8WLuRAvaqU0atWA
-         FnSIT9CTN2XuHzMKH/rfmM1o7zwM7ivuTXsk+SGupIonOYVp6NjXjesrLLVoqwdwPL+/
-         u/DdgCZlHiH9gac0c3NIvSr6e9JumUxy28YVwYLot8ck3BuFRRHP082x1MOd91YYVWvw
-         enug==
-X-Gm-Message-State: AOJu0YxcdSanD+JTSruQtDIHqxdUFVLCZmuRuCSpCDZY39i/tKyeTvSI
-        ocJ5fHZw3k8Gy4BxpXqhOB8NXQ==
-X-Google-Smtp-Source: AGHT+IFrsJNWu2MFPbDjYv0LhdHK4l5b2SYr5UhYuqVcCzDEwqaElgEDRvuUN1Pjw2T0f7b/VS3Hrw==
-X-Received: by 2002:a05:6a00:1f1a:b0:68c:44ed:fb6 with SMTP id be26-20020a056a001f1a00b0068c44ed0fb6mr9560276pfb.16.1700074488956;
-        Wed, 15 Nov 2023 10:54:48 -0800 (PST)
-Received: from dev-yzhong.dev.purestorage.com ([208.88.159.129])
-        by smtp.googlemail.com with ESMTPSA id e17-20020a056a001a9100b006c39efc97b3sm3099012pfv.113.2023.11.15.10.54.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 10:54:48 -0800 (PST)
-From:   Yuanyuan Zhong <yzhong@purestorage.com>
-To:     kbusch@kernel.org, axboe@kernel.dk, hch@lst.de, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        randyj@purestorage.com, hcoutinho@purestorage.com,
-        Yuanyuan Zhong <yzhong@purestorage.com>
-Subject: [PATCH] nvme-core: remove head->effects to fix use-after-free
-Date:   Wed, 15 Nov 2023 11:54:39 -0700
-Message-Id: <20231115185439.2616073-1-yzhong@purestorage.com>
-X-Mailer: git-send-email 2.34.1
+        d=1e100.net; s=20230601; t=1700074583; x=1700679383;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EMg6hRCirJOmba9CH8qrsXceC0Z0WgJjEmrr79m3KxA=;
+        b=GTDCRNfG/35pN2JR6Qu+BuGI+syWMv7wiXchII7M+MFj6fY9Kl2QP174GzyVJ3FjCJ
+         nU5Gq1dtlnIOGz+DGc7SxYTG5yfsqaWZwAq9R7FwUGsNrJhUChu3N0zj4FzgyeIj3PY7
+         lTvzRetWJW3MWPaR+wCQFhHQPni478BokCwA75l4J0FIPODIMn0m/rRWNWwRKwu8osNk
+         SVFOD2c4MPY1tXCfjXTz/R+867RhFfKiQKqzqBdVjHxW4+kcnje+EsE0u6CLkoTAaabj
+         EIvIJ8fHneMGIa0B31941hb26890HAInKEOl5xyfW31oHvP/Mdf17OkG0ZqLydMAUtf2
+         g8hA==
+X-Gm-Message-State: AOJu0YzcZegk5meQHWPUZ16hEXGkfkuwQOnMQvkSDj0I2cnOzlg05rfO
+        7G3FMJN91YwzLEFGWsuwC7++7UI7NtiJIHhRWgprX0UTdrKM
+X-Google-Smtp-Source: AGHT+IHYmZ+z8yUSNbrT6h00zNrQvSIysCGOKR2Gx06Rhdag/e+DorVJ2tDHMcGAuu2hGJH/U7/FjCU+1m9rohi2Q3NJoIJzwJEQ
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+X-Received: by 2002:a63:1d53:0:b0:5be:1908:8f61 with SMTP id
+ d19-20020a631d53000000b005be19088f61mr1542055pgm.0.1700074583045; Wed, 15 Nov
+ 2023 10:56:23 -0800 (PST)
+Date:   Wed, 15 Nov 2023 10:56:22 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d3fa2060a3575ad@google.com>
+Subject: [syzbot] [bluetooth?] possible deadlock in hci_error_reset
+From:   syzbot <syzbot+47d22a47f6bd21399c93@syzkaller.appspotmail.com>
+To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
+        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,125 +55,192 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The head->effects stores a pointer to the controller's Command Sets
-Supported and Effects log. When the namespace head is shared by multiple
-controllers, if the particular controller is removed, dereferencing
-head->effects causes use-after-free:
+Hello,
 
-[  227.820066] ==================================================================
-[  227.820069] BUG: KFENCE: use-after-free read in nvme_command_effects+0x1f/0x90 [nvme_core]
+syzbot found the following issue on:
 
-[  227.820091] Use-after-free read at 0x00000000c02dadcf (in kfence-#0):
-[  227.820094]  nvme_command_effects+0x1f/0x90 [nvme_core]
-[  227.820107]  nvme_passthru_start+0x19/0x80 [nvme_core]
-[  227.820121]  nvme_submit_user_cmd+0xc7/0x170 [nvme_core]
-[  227.820136]  nvme_user_cmd.constprop.16+0x152/0x1d0 [nvme_core]
-[  227.820149]  nvme_ns_head_ioctl+0x92/0x140 [nvme_core]
-[  227.820162]  blkdev_ioctl+0x1c5/0x280
-[  227.820169]  __x64_sys_ioctl+0x93/0xd0
-[  227.820174]  do_syscall_64+0x45/0xf0
-[  227.820177]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1753c55b680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
+dashboard link: https://syzkaller.appspot.com/bug?extid=47d22a47f6bd21399c93
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
 
-[  227.820182] kfence-#0: 0x000000000fac1d5d-0x00000000a28a73c3, size=4096, cache=kmalloc-4k
+Unfortunately, I don't have any reproducer for this issue yet.
 
-[  227.820185] allocated by task 2559 on cpu 3 at 188.703118s:
-[  227.820233]  __kmem_cache_alloc_node+0x3c9/0x410
-[  227.820236]  kmalloc_trace+0x2a/0xa0
-[  227.820238]  nvme_get_effects_log+0x68/0xd0 [nvme_core]
-[  227.820251]  nvme_init_identify+0x5ef/0x640 [nvme_core]
-[  227.820263]  nvme_init_ctrl_finish+0x8d/0x250 [nvme_core]
-[  227.820275]  nvme_tcp_setup_ctrl+0x1ce/0x710 [nvme_tcp]
-[  227.820281]  nvme_tcp_create_ctrl+0x359/0x450 [nvme_tcp]
-[  227.820286]  nvmf_dev_write+0x203/0x3b0 [nvme_fabrics]
-[  227.820292]  vfs_write+0xd2/0x3d0
-[  227.820294]  ksys_write+0x5d/0xd0
-[  227.820297]  do_syscall_64+0x45/0xf0
-[  227.820298]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
 
-[  227.820302] freed by task 2521 on cpu 28 at 220.115945s:
-[  227.820329]  nvme_free_ctrl+0xa6/0x260 [nvme_core]
-[  227.820342]  device_release+0x37/0x90
-[  227.820345]  kobject_release+0x57/0x120
-[  227.820347]  nvme_sysfs_delete+0x39/0x50 [nvme_core]
-[  227.820360]  kernfs_fop_write_iter+0x144/0x1e0
-[  227.820362]  vfs_write+0x25f/0x3d0
-[  227.820364]  ksys_write+0x5d/0xd0
-[  227.820366]  do_syscall_64+0x45/0xf0
-[  227.820368]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+47d22a47f6bd21399c93@syzkaller.appspotmail.com
 
-Fix this by removing head->effects. Use the Commands Supported and Effects log
-in ctrl->cels directly.
+Bluetooth: hci5: hardware error 0x00
+======================================================
+WARNING: possible circular locking dependency detected
+6.6.0-rc7-syzkaller-g8de1e7afcc1c #0 Not tainted
+------------------------------------------------------
+kworker/u5:3/6132 is trying to acquire lock:
+ffff0000d5a40dc0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}, at: __flush_work+0xd0/0x1c0 kernel/workqueue.c:3403
 
-Fixes: be93e87e7802 ("nvme: support for multiple Command Sets Supported and Effects log pages")
-Signed-off-by: Yuanyuan Zhong <yzhong@purestorage.com>
-Reviewed-by: Randy Jennings <randyj@purestorage.com>
-Reviewed-by: Hamilton Coutinho <hcoutinho@purestorage.com>
+but task is already holding lock:
+ffff0000d5a410b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
+ffff0000d5a410b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_error_reset+0xec/0x248 net/bluetooth/hci_core.c:1059
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&hdev->req_lock){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
+       hci_rfkill_set_block+0xe8/0x20c net/bluetooth/hci_core.c:956
+       rfkill_set_block+0x18c/0x37c net/rfkill/core.c:346
+       rfkill_fop_write+0x578/0x734 net/rfkill/core.c:1305
+       vfs_write+0x2a0/0x93c fs/read_write.c:582
+       ksys_write+0x15c/0x26c fs/read_write.c:637
+       __do_sys_write fs/read_write.c:649 [inline]
+       __se_sys_write fs/read_write.c:646 [inline]
+       __arm64_sys_write+0x7c/0x90 fs/read_write.c:646
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #2 (rfkill_global_mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       rfkill_register+0x44/0x7d4 net/rfkill/core.c:1075
+       hci_register_dev+0x3e0/0x954 net/bluetooth/hci_core.c:2656
+       __vhci_create_device drivers/bluetooth/hci_vhci.c:437 [inline]
+       vhci_create_device+0x358/0x6c4 drivers/bluetooth/hci_vhci.c:478
+       vhci_get_user drivers/bluetooth/hci_vhci.c:535 [inline]
+       vhci_write+0x318/0x3b8 drivers/bluetooth/hci_vhci.c:615
+       call_write_iter include/linux/fs.h:1956 [inline]
+       new_sync_write fs/read_write.c:491 [inline]
+       vfs_write+0x628/0x93c fs/read_write.c:584
+       ksys_write+0x15c/0x26c fs/read_write.c:637
+       __do_sys_write fs/read_write.c:649 [inline]
+       __se_sys_write fs/read_write.c:646 [inline]
+       __arm64_sys_write+0x7c/0x90 fs/read_write.c:646
+       __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+       invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+       el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+       do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+       el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+       el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+       el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+
+-> #1 (&data->open_mutex){+.+.}-{3:3}:
+       __mutex_lock_common+0x190/0x21a0 kernel/locking/mutex.c:603
+       __mutex_lock kernel/locking/mutex.c:747 [inline]
+       mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:799
+       vhci_send_frame+0x8c/0x10c drivers/bluetooth/hci_vhci.c:78
+       hci_send_frame+0x1c4/0x35c net/bluetooth/hci_core.c:3039
+       hci_sched_acl_pkt net/bluetooth/hci_core.c:3651 [inline]
+       hci_sched_acl net/bluetooth/hci_core.c:3736 [inline]
+       hci_tx_work+0xba0/0x18e4 net/bluetooth/hci_core.c:3835
+       process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+       process_scheduled_works kernel/workqueue.c:2703 [inline]
+       worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+       kthread+0x288/0x310 kernel/kthread.c:388
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+
+-> #0 ((work_completion)(&hdev->tx_work)){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3868 [inline]
+       __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
+       lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+       __flush_work+0xf8/0x1c0 kernel/workqueue.c:3403
+       flush_work+0x24/0x38 kernel/workqueue.c:3428
+       hci_dev_close_sync+0x1c8/0xf2c net/bluetooth/hci_sync.c:4982
+       hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
+       hci_error_reset+0xf4/0x248 net/bluetooth/hci_core.c:1059
+       process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+       process_scheduled_works kernel/workqueue.c:2703 [inline]
+       worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+       kthread+0x288/0x310 kernel/kthread.c:388
+       ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+
+other info that might help us debug this:
+
+Chain exists of:
+  (work_completion)(&hdev->tx_work) --> rfkill_global_mutex --> &hdev->req_lock
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&hdev->req_lock);
+                               lock(rfkill_global_mutex);
+                               lock(&hdev->req_lock);
+  lock((work_completion)(&hdev->tx_work));
+
+ *** DEADLOCK ***
+
+3 locks held by kworker/u5:3/6132:
+ #0: ffff0000d425d938 ((wq_completion)hci5){+.+.}-{0:0}, at: process_one_work+0x560/0x1204 kernel/workqueue.c:2603
+ #1: ffff800096f07c20 ((work_completion)(&hdev->error_reset)){+.+.}-{0:0}, at: process_one_work+0x5a0/0x1204 kernel/workqueue.c:2605
+ #2: ffff0000d5a410b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_dev_do_close net/bluetooth/hci_core.c:552 [inline]
+ #2: ffff0000d5a410b8 (&hdev->req_lock){+.+.}-{3:3}, at: hci_error_reset+0xec/0x248 net/bluetooth/hci_core.c:1059
+
+stack backtrace:
+CPU: 1 PID: 6132 Comm: kworker/u5:3 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
+Workqueue: hci5 hci_error_reset
+Call trace:
+ dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
+ show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
+ dump_stack+0x1c/0x28 lib/dump_stack.c:113
+ print_circular_bug+0x150/0x1b8 kernel/locking/lockdep.c:2060
+ check_noncircular+0x310/0x404 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x3370/0x75e8 kernel/locking/lockdep.c:5136
+ lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+ __flush_work+0xf8/0x1c0 kernel/workqueue.c:3403
+ flush_work+0x24/0x38 kernel/workqueue.c:3428
+ hci_dev_close_sync+0x1c8/0xf2c net/bluetooth/hci_sync.c:4982
+ hci_dev_do_close net/bluetooth/hci_core.c:554 [inline]
+ hci_error_reset+0xf4/0x248 net/bluetooth/hci_core.c:1059
+ process_one_work+0x694/0x1204 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x938/0xef4 kernel/workqueue.c:2784
+ kthread+0x288/0x310 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+Bluetooth: hci5: Opcode 0x c03 failed: -110
+
+
 ---
- drivers/nvme/host/core.c | 17 ++++++++---------
- drivers/nvme/host/nvme.h |  1 -
- 2 files changed, 8 insertions(+), 10 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
-index 88b54cdcbd68..14fdc2de3a75 100644
---- a/drivers/nvme/host/core.c
-+++ b/drivers/nvme/host/core.c
-@@ -1085,7 +1085,9 @@ u32 nvme_command_effects(struct nvme_ctrl *ctrl, struct nvme_ns *ns, u8 opcode)
- 	u32 effects = 0;
- 
- 	if (ns) {
--		effects = le32_to_cpu(ns->head->effects->iocs[opcode]);
-+		struct nvme_effects_log	*cel = xa_load(&ctrl->cels, ns->head->ids.csi);
-+
-+		effects = le32_to_cpu(cel->iocs[opcode]);
- 		if (effects & ~(NVME_CMD_EFFECTS_CSUPP | NVME_CMD_EFFECTS_LBCC))
- 			dev_warn_once(ctrl->device,
- 				"IO command:%02x has unusual effects:%08x\n",
-@@ -2872,7 +2874,8 @@ static int nvme_get_effects_log(struct nvme_ctrl *ctrl, u8 csi,
- 
- 	xa_store(&ctrl->cels, csi, cel, GFP_KERNEL);
- out:
--	*log = cel;
-+	if (log)
-+		*log = cel;
- 	return 0;
- }
- 
-@@ -3388,13 +3391,6 @@ static struct nvme_ns_head *nvme_alloc_ns_head(struct nvme_ctrl *ctrl,
- 	head->shared = info->is_shared;
- 	kref_init(&head->ref);
- 
--	if (head->ids.csi) {
--		ret = nvme_get_effects_log(ctrl, head->ids.csi, &head->effects);
--		if (ret)
--			goto out_cleanup_srcu;
--	} else
--		head->effects = ctrl->effects;
--
- 	ret = nvme_mpath_alloc_disk(ctrl, head);
- 	if (ret)
- 		goto out_cleanup_srcu;
-@@ -3779,6 +3775,9 @@ static void nvme_scan_ns(struct nvme_ctrl *ctrl, unsigned nsid)
- 	if (ret || !info.is_ready)
- 		return;
- 
-+	if (info.ids.csi && nvme_get_effects_log(ctrl, info.ids.csi, NULL))
-+		return;
-+
- 	ns = nvme_find_get_ns(ctrl, nsid);
- 	if (ns) {
- 		nvme_validate_ns(ns, &info);
-diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
-index 39a90b7cb125..38298c072ec3 100644
---- a/drivers/nvme/host/nvme.h
-+++ b/drivers/nvme/host/nvme.h
-@@ -445,7 +445,6 @@ struct nvme_ns_head {
- 	struct kref		ref;
- 	bool			shared;
- 	int			instance;
--	struct nvme_effects_log *effects;
- 
- 	struct cdev		cdev;
- 	struct device		cdev_device;
--- 
-2.34.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
