@@ -2,115 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDBD47ED56A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:05:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F84C7ED570
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 22:05:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344707AbjKOVFj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 16:05:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39054 "EHLO
+        id S1345011AbjKOVF6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 16:05:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38984 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235645AbjKOVFS (ORCPT
+        with ESMTP id S235597AbjKOVFd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 16:05:18 -0500
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B6C19BD;
-        Wed, 15 Nov 2023 13:05:00 -0800 (PST)
-Received: by mail-lj1-x232.google.com with SMTP id 38308e7fff4ca-2c504a5e1deso905001fa.2;
-        Wed, 15 Nov 2023 13:04:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700082298; x=1700687098; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LuzKSdvR1du8T/9eWZvj/7thMH6CYFOCmDm+RmP0jR8=;
-        b=axelKK0sCK7Ot2Yo2YxwJoTkrN6kZn7ZzozKCMyTMxToqLpgPdgE60MIyxXqpC5BpL
-         jAd5T4ULuRKwy37psk0dLsGwjQ3MMrx2P/MrgUYXADPib6D7FQxf4+PKW1C05kkW4dil
-         hNkSnJwnZW4VhBFEyEmRxtf9PRSaQDsaBRAZoKAyeeE4LPOSEHAmpSunJYCT2vbrd5Cu
-         RGmjsC2ZmI282i4MouErT6i7A//Y2wc6w4FvACKUqCd3elGwSanj30VCu9RQ40BC4q0F
-         kWuGNfud1xHqA4sThGexuwy2rYDx2RUbmhPujB3IdgliG9Qms+uW6hJPFV5hkNcZAtGw
-         ijIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700082298; x=1700687098;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LuzKSdvR1du8T/9eWZvj/7thMH6CYFOCmDm+RmP0jR8=;
-        b=FlpOZ4kvw3vyG6TJixCiIWGUylaiKlRzoTrucFjgnoRH+4P2NLMNIoiE/Twv8l1a93
-         YWsvC9nCXtd3ancgZ3GLVgIRzdSViIxqgMYboZ50aS5FaoT7dCyapDN+rvMRSzWJzV3s
-         pnZ6NOhqX0Ec9+2Z5BvLeVektQxTF20nSxCH7UhcjVdq/Dghz4WzX0xZVZa3W6GjhZmB
-         y2P6At0oCz5YMrVeFaRmgcf0XsxU4RzjHTtOaWHD34hLmObVYczHR2eN2sXk/4EYl69q
-         u2zzlwQgSiJb0Aag5IIA5v0TaJboYY0PSrFsVcREhIulvCsBTTGK/O6Ivqzk4oMQNVR7
-         uZLg==
-X-Gm-Message-State: AOJu0YxX5YYxvaIVSX0DkRUgKhvvi8ZarCPLAvAf6kZBjzNJ56SRKb8Z
-        yXPXjFIX3Mtta9RrjhdQeqVPTQWnTqk=
-X-Google-Smtp-Source: AGHT+IFlYTBjGqhKEE5ak9EXGj1yavpZnydYl0Gaw2fiSKDF+4KFkGqGr7TmKt0+hjqqzZpQZhcmlQ==
-X-Received: by 2002:a05:651c:4d1:b0:2c5:17c0:cd53 with SMTP id e17-20020a05651c04d100b002c517c0cd53mr5905903lji.42.1700082297892;
-        Wed, 15 Nov 2023 13:04:57 -0800 (PST)
-Received: from prasmi.home ([2a00:23c8:2500:a01:e8e:4851:e049:93fd])
-        by smtp.gmail.com with ESMTPSA id l15-20020a05600c4f0f00b00405959469afsm909249wmq.3.2023.11.15.13.04.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 13:04:57 -0800 (PST)
-From:   Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S. Miller" <davem@davemloft.net>,
+        Wed, 15 Nov 2023 16:05:33 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E5E91BFF
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 13:05:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700082323;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TILtTIeu3gXnUdrdAENWa1V+qtf2djaxseto/GpIGiU=;
+        b=LJzD51DFRJEUxMRRx0Ed/letfIyQuyDy/MFmupEIRIAlvbN7xX2K2SX+usOlq52yFa7LWw
+        Hox4D0GFwc4uOT4if01DCuSbV5zv7hUMOLUSPT27IV/wYWMk17iahmNosWH2ysP9cVtIwR
+        P9qdiF/1CPS2Rr/lUPAl+qJDAgCBpLQ=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-584-F0EMJrXzPk-lvIhyom_TEw-1; Wed, 15 Nov 2023 16:05:19 -0500
+X-MC-Unique: F0EMJrXzPk-lvIhyom_TEw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0074382A62C;
+        Wed, 15 Nov 2023 21:05:19 +0000 (UTC)
+Received: from vschneid-thinkpadt14sgen2i.remote.csb (unknown [10.22.34.128])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 232ED3D6;
+        Wed, 15 Nov 2023 21:05:18 +0000 (UTC)
+From:   Valentin Schneider <vschneid@redhat.com>
+To:     dccp@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org
+Cc:     "David S. Miller" <davem@davemloft.net>,
         Eric Dumazet <edumazet@google.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Cc:     Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] dt-bindings: net: renesas,etheravb: Document RZ/Five SoC
-Date:   Wed, 15 Nov 2023 21:04:48 +0000
-Message-Id: <20231115210448.31575-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
+        David Ahern <dsahern@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Tomas Glozar <tglozar@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: [PATCH v2 0/2] tcp/dcpp: tw_timer tweaks for nohz_full and PREEMPT_RT
+Date:   Wed, 15 Nov 2023 16:05:07 -0500
+Message-ID: <20231115210509.481514-1-vschneid@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Hi,
 
-The Gigabit Ethernet IP block on the RZ/Five SoC is identical to one
-found on the RZ/G2UL SoC. "renesas,r9a07g043-gbeth" compatible string
-will be used on the RZ/Five SoC so to make this clear and to keep this
-file consistent, update the comment to include RZ/Five SoC.
+This is v2 of [1] where the tw_timer is un-pinned to get rid of interferences in
+isolated CPUs setups.
 
-No driver changes are required as generic compatible string
-"renesas,rzg2l-gbeth" will be used as a fallback on RZ/Five SoC.
+Patch 1 is pretty much the same as v1, just got an extra comment in
+inet_twsk_deschedule_put() to highlight the race.
 
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- Documentation/devicetree/bindings/net/renesas,etheravb.yaml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Patch 2 was added as AFAICT the bh_disable is no longer needed after patch 1,
+and Sebastian mentioned during LPC the he had been looking at getting rid of it
+for removing softirq_ctrl.lock in PREEMPT_RT.
 
-diff --git a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-index 3f41294f5997..8125e9023e8b 100644
---- a/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-+++ b/Documentation/devicetree/bindings/net/renesas,etheravb.yaml
-@@ -55,7 +55,7 @@ properties:
- 
-       - items:
-           - enum:
--              - renesas,r9a07g043-gbeth # RZ/G2UL
-+              - renesas,r9a07g043-gbeth # RZ/G2UL and RZ/Five
-               - renesas,r9a07g044-gbeth # RZ/G2{L,LC}
-               - renesas,r9a07g054-gbeth # RZ/V2L
-           - const: renesas,rzg2l-gbeth  # RZ/{G2L,G2UL,V2L} family
--- 
-2.34.1
+Eric mentionned rsk_timer needs looking into, but I haven't had the time to do
+that. It doesn't show up in our testing, which might be due to its relatively
+low timeout (IIUC 3s).
+
+[1]: https://lore.kernel.org/all/20231016125934.1970789-1-vschneid@redhat.com/
+
+Valentin Schneider (2):
+  tcp/dcpp: Un-pin tw_timer
+  tcp/dcpp: Don't disable bh around timewait_sock initialization
+
+ net/dccp/minisocks.c          | 14 ++++----------
+ net/ipv4/inet_timewait_sock.c | 20 +++++++++++++++-----
+ net/ipv4/tcp_minisocks.c      | 14 ++++----------
+ 3 files changed, 23 insertions(+), 25 deletions(-)
+
+--
+2.41.0
 
