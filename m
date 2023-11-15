@@ -2,93 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 32ECF7EBC60
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:43:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB0AD7EBC62
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234353AbjKODnZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:43:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60608 "EHLO
+        id S234430AbjKODnn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:43:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234529AbjKODnN (ORCPT
+        with ESMTP id S234296AbjKODnl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:43:13 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E686110;
-        Tue, 14 Nov 2023 19:43:10 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8A836C433C8;
-        Wed, 15 Nov 2023 03:43:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019790;
-        bh=yN8yC7Ian6+pDeHYcYG2ppXHfWI5M/c+8L5DzjrbU54=;
-        h=From:To:Cc:Subject:Date:From;
-        b=ZXSgseGFAHfcIYEJw9+OoJvWCuThEJlNJWAURgfnN5CW6uTLIoQYvyhOb0dfmH7a/
-         7DiklAIBw6KKD8XmRkE28G8j2SSDYZZmWpStEIoCctuMBW/fOVbQEcXqrZAdaAYRS8
-         IHGhNQ35rwppJp1k42p04/PIKzOpqVINpBhg+CkFO/1tzaZ6uXh3g2zu7wo+QIbIN0
-         N0W6D/VYn2mspLq+OLmftYUNuzL02A+ERmjN8rX0WZz3CzPbg3O6I6ZLNpI+3rbMGn
-         hycTNOnOj8mEyMiKAwOQcZGX6Oi+9cJ7E41iiVh1afXCBKX5M8xAt1sbC9EGBFRpd4
-         8CE1Utt4Wzffw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dan Carpenter <dan.carpenter@linaro.org>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Sam Protsenko <semen.protsenko@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pwm@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14] pwm: Fix double shift bug
-Date:   Tue, 14 Nov 2023 22:42:54 -0500
-Message-ID: <20231115034255.1244454-1-sashal@kernel.org>
-X-Mailer: git-send-email 2.42.0
+        Tue, 14 Nov 2023 22:43:41 -0500
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4778CF9
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:43:37 -0800 (PST)
+Date:   Tue, 14 Nov 2023 22:43:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700019815;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oE/CSWurLiicfPY7jNcreLfS0lMiBahzo5OXWBs5BIY=;
+        b=Mq49kvTsVZ0V53IicaOp2HFyphi71N9wKj5rj30kNo0qviqaqblrRsz9P5S+qJ/crR1dTE
+        FzAvrf9AUZp2VpKO9wO+SCeg/qGaYSnRGsFGSCu7sPsIdTRfYPTLSgZM43R8VnH+v3UuWY
+        MGOBwfZCFeJIIHtSutGt+iV4SQbyM0M=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     bfoster@redhat.com, linux-bcachefs@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Abaci Robot <abaci@linux.alibaba.com>
+Subject: Re: [PATCH] bcachefs: Remove the unused variable journal_flags
+Message-ID: <20231115034332.ccbluu73bx4ejn5c@moria.home.lan>
+References: <20231115031329.31138-1-jiapeng.chong@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 4.14.329
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115031329.31138-1-jiapeng.chong@linux.alibaba.com>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dan Carpenter <dan.carpenter@linaro.org>
+On Wed, Nov 15, 2023 at 11:13:29AM +0800, Jiapeng Chong wrote:
+> Variable journal_flags is not effectively used, so delete it.
+> 
+> fs/bcachefs/btree_update_interior.c:1057:11: warning: variable 'journal_flags' set but not used.
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Closes: https://bugzilla.openanolis.cn/show_bug.cgi?id=7559
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  fs/bcachefs/btree_update_interior.c | 5 -----
+>  1 file changed, 5 deletions(-)
+> 
+> diff --git a/fs/bcachefs/btree_update_interior.c b/fs/bcachefs/btree_update_interior.c
+> index 9affcb22d9cb..18e5a75142e9 100644
+> --- a/fs/bcachefs/btree_update_interior.c
+> +++ b/fs/bcachefs/btree_update_interior.c
+> @@ -1054,7 +1054,6 @@ bch2_btree_update_start(struct btree_trans *trans, struct btree_path *path,
+>  	unsigned nr_nodes[2] = { 0, 0 };
+>  	unsigned update_level = level;
+>  	enum bch_watermark watermark = flags & BCH_WATERMARK_MASK;
+> -	unsigned journal_flags = 0;
+>  	int ret = 0;
+>  	u32 restart_count = trans->restart_count;
+>  
+> @@ -1068,10 +1067,6 @@ bch2_btree_update_start(struct btree_trans *trans, struct btree_path *path,
+>  	flags &= ~BCH_WATERMARK_MASK;
+>  	flags |= watermark;
+>  
+> -	if (flags & BCH_TRANS_COMMIT_journal_reclaim)
+> -		journal_flags |= JOURNAL_RES_GET_NONBLOCK;
+> -	journal_flags |= watermark;
+> -
+>  	while (1) {
+>  		nr_nodes[!!update_level] += 1 + split;
+>  		update_level++;
+> -- 
+> 2.20.1.7.g153144c
+> 
 
-[ Upstream commit d27abbfd4888d79dd24baf50e774631046ac4732 ]
-
-These enums are passed to set/test_bit().  The set/test_bit() functions
-take a bit number instead of a shifted value.  Passing a shifted value
-is a double shift bug like doing BIT(BIT(1)).  The double shift bug
-doesn't cause a problem here because we are only checking 0 and 1 but
-if the value was 5 or above then it can lead to a buffer overflow.
-
-Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
-Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-Reviewed-by: Sam Protsenko <semen.protsenko@linaro.org>
-Signed-off-by: Thierry Reding <thierry.reding@gmail.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- include/linux/pwm.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-index bd7d611d63e91..c6e981035c3fd 100644
---- a/include/linux/pwm.h
-+++ b/include/linux/pwm.h
-@@ -44,8 +44,8 @@ struct pwm_args {
- };
- 
- enum {
--	PWMF_REQUESTED = 1 << 0,
--	PWMF_EXPORTED = 1 << 1,
-+	PWMF_REQUESTED = 0,
-+	PWMF_EXPORTED = 1,
- };
- 
- /*
--- 
-2.42.0
-
+Yup, this is a leftover from deleting journal pre-reservations.
