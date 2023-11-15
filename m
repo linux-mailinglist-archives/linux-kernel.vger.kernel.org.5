@@ -2,83 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B28127EC776
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A05C7EC780
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjKOPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:37:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43402 "EHLO
+        id S230177AbjKOPif (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:38:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48024 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjKOPhs (ORCPT
+        with ESMTP id S229689AbjKOPie (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:37:48 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B633612C
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:37:44 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 46e09a7af769-6cf65093780so4020005a34.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:37:44 -0800 (PST)
+        Wed, 15 Nov 2023 10:38:34 -0500
+Received: from mail-yw1-x112d.google.com (mail-yw1-x112d.google.com [IPv6:2607:f8b0:4864:20::112d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4FBA1AC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:38:29 -0800 (PST)
+Received: by mail-yw1-x112d.google.com with SMTP id 00721157ae682-59b5484fbe6so78929987b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:38:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700062664; x=1700667464; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nxWKE0RnE67ZCac+DE3wf0+WlhQHwaxB8ToZtgmVZwY=;
-        b=pBDRktK76id6NpKj3jlCs/xMSpWkPsLSPwkT+oitTZfn0ctMgfSu3Cj3lbVGNtzSVl
-         JnDunYOnaj8kozNVwM9OxPo9AtRtqJaOpXbPsaly16Z9gUGxtgJZ/LivykVi5zgTeVYE
-         Eg6okvKXfe4AYLB2Rw391JlzhG2NXJF+xfe+pEVblOydZOfQSlxZsPao3Nz0VK2Lo/zS
-         lfBb1NMozCh+QRcsMT0lexpxwe4Zll4na8lEHLIftatwZPm27lE5Ih9xehsv8azYIvoT
-         4bD42ibE65tdd/f8ddjIyaGGjAql5tAf81PGYn2KetJnvcDj21wpf0zQANRTSKH6hiZe
-         QXuw==
+        d=linaro.org; s=google; t=1700062709; x=1700667509; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=DrqmeQ1b3jWvPwiKhEDKttHMvlM+GcVpLzujKePYQsk=;
+        b=CuxKxtnH4kzYw+M0xHyaxgP5+GGYXJ70eWVH8/FRkTEnTsxVm22mn6BbJP9uUi03lY
+         0tAwykSybKQkXS90Wv/4gw0D4VBWZ/e9Ka9Wc9cG9q7jF7d/q79P4Y2gZ2nl/m2dZpbi
+         VK+ROHI9Za+s/gCknoD7RxhFNCR957NT1tlARx9LTG8Y9ROPFo0NXLggv++9mTpPg/1i
+         jlkWFnlgKKWCFFjjGmxu6z79kJpvOkEWm2Rc31aB5VyCe0E6M+ThHd+muRI5k+j4ThYG
+         zOd7zCSNhrHCMIielG9tp4KAMxKWW3z3z7aO+t6wPig1gOFM4cZsVrccaTidEy3jpI42
+         LbnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700062664; x=1700667464;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nxWKE0RnE67ZCac+DE3wf0+WlhQHwaxB8ToZtgmVZwY=;
-        b=hdo4ay+ADbEVK7sG5S4MxyM9Ew++QdMUvPM9Tw32p8UQxkx1wN6SpT9gihexYt+aE7
-         ojkzphIJKfrfb+NKwOZumGA5H4pjG7VAfEmRRm7tJON4HFBAE8/lDDR7pMUolZltMns2
-         rd+cxGZr3+le9NALEspKwKKmmBIo3jMRaRCMsVaBoc8LyaDs177iU33SOCr2I9uMvVGn
-         68ag4nWlA+XhzVifGb0jcefmPwwZ9YNaVpIjUaSsfiD8JA2Ze/cpX1Uhe29KQ+0gd8DO
-         wxRMqy8q+0szpy6v2lSUxvTfS452G+zCuB1XompDCosCNMIpRni1EQWTwNJnE9FVlhng
-         w/vA==
-X-Gm-Message-State: AOJu0Yz6e0SYoDp6FZGiwgRrlvTCSp9kS2/duEplm13PtQwfu9l3pLPJ
-        jdmou9ixgZfeNqEX2/rMHFIPt0S9yVDk5LDnl3VrHw==
-X-Google-Smtp-Source: AGHT+IGO8zAnm0zIxz1rZhEvNk250XK6A18NgKyait+fesnXkzrYw4HG90ngI8KHEvMDRK2dAwrF7to4ErqNn8RuSQ0=
-X-Received: by 2002:a05:6358:590c:b0:168:e69b:538c with SMTP id
- g12-20020a056358590c00b00168e69b538cmr6106636rwf.3.1700062663887; Wed, 15 Nov
- 2023 07:37:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700062709; x=1700667509;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=DrqmeQ1b3jWvPwiKhEDKttHMvlM+GcVpLzujKePYQsk=;
+        b=TrGCNonKGIXWiM+Ffu7OesHe6gNusa0HoXVunwkydRr8nlBL5U7WYEjDKyiUTWd8xe
+         YlO8wKSqCzy7o8JJ+kYKudL2++XwH4GSnhjivG7hSN5yZ80QEuGK2fYf/8RhrMHHXf3E
+         iLNcUiXlLPM3RiKQuGRLwSFuhu7x8k4ZtUwD2dZ7DLwGWOQXaOPoioJ4b9pmhJSBrs9g
+         OEbPCw2oMoPKlkSed7pF1XxhnYs9yJNIMSIvXdqyg3uRTD2Fbq0FT5ZCccPwHKzJkrJS
+         yLGCSxwgRi5GAkDCK7bw5T+7c7egzMhqZqiwLl4g5+OzmpgnMFtFIRIqmAlg+FdgtPVA
+         86oA==
+X-Gm-Message-State: AOJu0YyY5hdHtHY3wjZTSJoQmYPtUWWPLIT4yuOx0re7E3L2x0VwVb3f
+        5GsoK2OLBbbrTEg1VXehf1BdmfNO9G/Z6KaSqMRRaA==
+X-Google-Smtp-Source: AGHT+IHle69HGMM73axSbTrxTEchdRM11aGWeB2nuHgAcv5unqlb5d7O8Uri7BhbV0Cqu/PwgfL+Pytmev0WUwA2OgM=
+X-Received: by 2002:a0d:e855:0:b0:5a7:f002:4fe4 with SMTP id
+ r82-20020a0de855000000b005a7f0024fe4mr14385322ywe.23.1700062709022; Wed, 15
+ Nov 2023 07:38:29 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+G9fYv94gx8+-JMzbmQaue3q3y6QdBmsGUCdD-26X5XavL3Ag@mail.gmail.com>
- <ZAocZRZh4FQRH3lc@smile.fi.intel.com> <CA+G9fYsOttth+k3Ki8LK_ZiayvXa0bAg-DmQAaFHZeEyR=6Lrw@mail.gmail.com>
- <CACRpkdbUYWcFiRh+Y=MOekv2RjSP4sB2t5tVrSsz54Eez6wmVg@mail.gmail.com>
- <ZJHWdcP+PDaNrw07@smile.fi.intel.com> <CA+G9fYvReHr+ofJAW4yfA5EWT6-MRpR2+fOQG24hROjSd+dY0g@mail.gmail.com>
- <ZVQh_nvgqMkd3tN6@surfacebook.localdomain>
-In-Reply-To: <ZVQh_nvgqMkd3tN6@surfacebook.localdomain>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 15 Nov 2023 21:07:32 +0530
-Message-ID: <CA+G9fYujHuwn_AFDeFHbt0DMx7A63fjLR25aX7pkoMcVmmxbog@mail.gmail.com>
-Subject: Re: selftests: gpio: crash on arm64
-To:     andy.shevchenko@gmail.com
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Arnd Bergmann <arnd@arndb.de>, Shuah Khan <shuah@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Pengfei Xu <pengfei.xu@intel.com>, yi1.lai@intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dan Carpenter <dan.carpenter@linaro.org>
+References: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
+In-Reply-To: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 15 Nov 2023 16:37:52 +0100
+Message-ID: <CAPDyKFrZdHseZ6udjNSdOG7hwK82G1wT30j39A1KwKBAaY_cMg@mail.gmail.com>
+Subject: Re: [PATCH v1 1/1] treewide, spi: Get rid of SPI_MASTER_HALF_DUPLEX
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
+        netdev@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-spi@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -86,55 +77,100 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 07:12, <andy.shevchenko@gmail.com> wrote:
+On Mon, 13 Nov 2023 at 12:15, Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
 >
-> Tue, Nov 07, 2023 at 07:21:32PM +0530, Naresh Kamboju kirjoitti:
-> > On Tue, 20 Jun 2023 at 22:11, Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Tue, Apr 11, 2023 at 10:57:28AM +0200, Linus Walleij wrote:
-> > > > On Mon, Apr 10, 2023 at 11:16=E2=80=AFAM Naresh Kamboju
-> > > > <naresh.kamboju@linaro.org> wrote:
+> The SPI_MASTER_HALF_DUPLEX is the legacy name of a definition
+> for a half duplex flag. Since all others had been replaced with
+> the respective SPI_CONTROLLER prefix get rid of the last one
+> as well. There is no functional change intended.
 >
-> ...
->
-> > > > Add a pr_info() devm_gpio_chip_release() in drivers/gpio/gpiolib-de=
-vres.c
-> > > > and see if the callback is even called. I think this could be the
-> > > > problem: if that isn't cleaned up, there will be dangling reference=
-s.
-> > >
-> > > Side note: Since we have devres tracepoints, your patch seems an over=
-kill :-)
-> > > Just enable devres tracepoints and filter out by the function name. I=
- believe
-> > > that should work.
-> >
-> > Since I have been tracking open issues on the stable-rc kernel,
-> > The reported problem on stable-rc linux.6.3.y has been solved
-> > on the stable-rc linux.6.6.y branch.
-> >
-> > Thanks for fixing this reported issue.
-> >
-> > Upstream links about this fix and discussion,
->
-> I'm a bit lost. Is the [3] fixed? Is the fix the below mentioned commit?
+> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
 
-As per my understanding on this,
-The reported issue has been fixed with the below commit.
+Acked-by: Ulf Hansson <ulf.hansson@linaro.org> # For MMC
 
+> ---
+>  drivers/input/rmi4/rmi_spi.c             | 2 +-
+>  drivers/mmc/host/mmc_spi.c               | 2 +-
+>  drivers/net/ethernet/micrel/ks8851_spi.c | 4 ++--
+>  drivers/usb/gadget/udc/max3420_udc.c     | 2 +-
+>  include/linux/spi/spi.h                  | 2 --
+>  5 files changed, 5 insertions(+), 7 deletions(-)
 >
-> > Commit daecca4b8433
-> > gpiolib: Do not alter GPIO chip fwnode member
-> >
-> > [1] https://lore.kernel.org/linux-gpio/20230703142308.5772-4-andriy.she=
-vchenko@linux.intel.com/
-> > [2] https://lore.kernel.org/linux-gpio/CAMRc=3DMfFEBSeJ78NO7XeuzAMJ0Kez=
-EPAYWsWnFXXaRyQPAf3dA@mail.gmail.com/
-> > [3] https://lore.kernel.org/linux-gpio/CA+G9fYv94gx8+-JMzbmQaue3q3y6QdB=
-msGUCdD-26X5XavL3Ag@mail.gmail.com/
+> diff --git a/drivers/input/rmi4/rmi_spi.c b/drivers/input/rmi4/rmi_spi.c
+> index 852aeb0b2c07..07c866f42296 100644
+> --- a/drivers/input/rmi4/rmi_spi.c
+> +++ b/drivers/input/rmi4/rmi_spi.c
+> @@ -375,7 +375,7 @@ static int rmi_spi_probe(struct spi_device *spi)
+>         struct rmi_device_platform_data *spi_pdata = spi->dev.platform_data;
+>         int error;
 >
+> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX)
+> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
+>                 return -EINVAL;
+>
+>         rmi_spi = devm_kzalloc(&spi->dev, sizeof(struct rmi_spi_xport),
+> diff --git a/drivers/mmc/host/mmc_spi.c b/drivers/mmc/host/mmc_spi.c
+> index cc333ad67cac..b0cccef4cfbf 100644
+> --- a/drivers/mmc/host/mmc_spi.c
+> +++ b/drivers/mmc/host/mmc_spi.c
+> @@ -1322,7 +1322,7 @@ static int mmc_spi_probe(struct spi_device *spi)
+>         /* We rely on full duplex transfers, mostly to reduce
+>          * per-transfer overheads (by making fewer transfers).
+>          */
+> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX)
+> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
+>                 return -EINVAL;
+>
+>         /* MMC and SD specs only seem to care that sampling is on the
+> diff --git a/drivers/net/ethernet/micrel/ks8851_spi.c b/drivers/net/ethernet/micrel/ks8851_spi.c
+> index 70bc7253454f..7c41623dac90 100644
+> --- a/drivers/net/ethernet/micrel/ks8851_spi.c
+> +++ b/drivers/net/ethernet/micrel/ks8851_spi.c
+> @@ -156,7 +156,7 @@ static void ks8851_rdreg(struct ks8851_net *ks, unsigned int op,
+>
+>         txb[0] = cpu_to_le16(op | KS_SPIOP_RD);
+>
+> -       if (kss->spidev->master->flags & SPI_MASTER_HALF_DUPLEX) {
+> +       if (kss->spidev->master->flags & SPI_CONTROLLER_HALF_DUPLEX) {
+>                 msg = &kss->spi_msg2;
+>                 xfer = kss->spi_xfer2;
+>
+> @@ -180,7 +180,7 @@ static void ks8851_rdreg(struct ks8851_net *ks, unsigned int op,
+>         ret = spi_sync(kss->spidev, msg);
+>         if (ret < 0)
+>                 netdev_err(ks->netdev, "read: spi_sync() failed\n");
+> -       else if (kss->spidev->master->flags & SPI_MASTER_HALF_DUPLEX)
+> +       else if (kss->spidev->master->flags & SPI_CONTROLLER_HALF_DUPLEX)
+>                 memcpy(rxb, trx, rxl);
+>         else
+>                 memcpy(rxb, trx + 2, rxl);
+> diff --git a/drivers/usb/gadget/udc/max3420_udc.c b/drivers/usb/gadget/udc/max3420_udc.c
+> index 2d57786d3db7..89e8cf2a2a7d 100644
+> --- a/drivers/usb/gadget/udc/max3420_udc.c
+> +++ b/drivers/usb/gadget/udc/max3420_udc.c
+> @@ -1201,7 +1201,7 @@ static int max3420_probe(struct spi_device *spi)
+>         int err, irq;
+>         u8 reg[8];
+>
+> -       if (spi->master->flags & SPI_MASTER_HALF_DUPLEX) {
+> +       if (spi->master->flags & SPI_CONTROLLER_HALF_DUPLEX) {
+>                 dev_err(&spi->dev, "UDC needs full duplex to work\n");
+>                 return -EINVAL;
+>         }
+> diff --git a/include/linux/spi/spi.h b/include/linux/spi/spi.h
+> index 255a0562aea5..7b4baff63c5c 100644
+> --- a/include/linux/spi/spi.h
+> +++ b/include/linux/spi/spi.h
+> @@ -1638,8 +1638,6 @@ spi_transfer_is_last(struct spi_controller *ctlr, struct spi_transfer *xfer)
+>  /* Compatibility layer */
+>  #define spi_master                     spi_controller
+>
+> -#define SPI_MASTER_HALF_DUPLEX         SPI_CONTROLLER_HALF_DUPLEX
+> -
+>  #define spi_master_get_devdata(_ctlr)  spi_controller_get_devdata(_ctlr)
+>  #define spi_master_set_devdata(_ctlr, _data)   \
+>         spi_controller_set_devdata(_ctlr, _data)
 > --
-> With Best Regards,
-> Andy Shevchenko
-
-- Naresh
+> 2.43.0.rc1.1.gbec44491f096
+>
