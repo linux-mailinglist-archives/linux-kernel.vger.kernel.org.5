@@ -2,117 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E78977EC259
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:34:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5997EC269
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:37:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343773AbjKOMeV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:34:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38886 "EHLO
+        id S1343764AbjKOMhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:37:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343585AbjKOMeT (ORCPT
+        with ESMTP id S234948AbjKOMhE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:34:19 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC5BC7;
-        Wed, 15 Nov 2023 04:34:16 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 00CDF40E0030;
-        Wed, 15 Nov 2023 12:34:14 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-        header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id JAL49dTD3Lvc; Wed, 15 Nov 2023 12:34:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700051651; bh=KifOVDlMp/2ycw5mH0oTXzCLORPNzCMwO+1bbYkzOw0=;
+        Wed, 15 Nov 2023 07:37:04 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26BAF11D
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:37:01 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1EA7C433C8;
+        Wed, 15 Nov 2023 12:36:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700051820;
+        bh=MeaNwT9drnv7V7gmXshtmN5Q7mXUr90qsX5EUyFZ1HE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COo4qct5KW0h1D+oINnaVz0DL8zmHPebfPPBxZnUP8cJkXf+aI6O6eBk+RXi1bcR8
-         ZdLJHxKAJHQbzr70NhHkXe7dleR8epuhN7JUzA0s1xfBrNlga8ETET4qiSg+ONHDEC
-         zCdnB99unmXHLxSydJoE8kROe7B05Sv2yL9cFrD5MV9N3hHLkgk7+tZYw/CtClepRy
-         y4FQ/5ryU/7dsrAa2V2a6OKtkEpDkR08TPeCLHfC3pjkqFFtlqumroytPWKRebPkH5
-         wBDv0JjoRXfGgHzJHveMc4lb5DD8v0kpbouuPWzh1mpmQencCGhBr/MldZDofX8D2i
-         4YCCUH9zfgl5iqyfH53SLYLJeb9S63KRqKhfCLMHemNUlNl3b9caXqahvn2DaTgcYv
-         Jhnooza2EpX07rCqCWwQaRtnvcZiIpPCiYhcBjAYuFM4uSCx+M7B+8sRVtzlDhPjR8
-         r46NlZGyL+bpMtmEscKRQkz7JRFnM6DH4jSQE6bMJpB1bnpI3bSEEAnD7yJ3d6O3vf
-         mHLOaBKASztaJnxFYTVkJjGf7d/H4uwcB+rUNVFgyQhhfsw5KjH/88VqXUgj7tejnj
-         C2Q2LXt9Of0BO8lY8XiAUlrzR+MLjc1XH0GoRnAD8Nt72bI0Wx3c56ICCywKvvTsnJ
-         cTbaK/x/EqjIiQdeBhOFOYNE=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CF20140E0032;
-        Wed, 15 Nov 2023 12:33:58 +0000 (UTC)
-Date:   Wed, 15 Nov 2023 13:33:54 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Avadhut Naik <avadhut.naik@amd.com>
-Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com,
-        gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexey.kardashevskiy@amd.com,
-        yazen.ghannam@amd.com, avadnaik@amd.com
-Subject: Re: [RESEND v5 4/4] ACPI: APEI: EINJ: Add support for vendor defined
- error types
-Message-ID: <20231115123354.GDZVS6suUf0ZIVqlh6@fat_crate.local>
-References: <20231107213647.1405493-1-avadhut.naik@amd.com>
- <20231107213647.1405493-5-avadhut.naik@amd.com>
+        b=UiUY5PwpMDNuSSFMYA+7Qf0jNtFakPirp9veX1A6Oz8YB8sKCwVD/zQ2mngevlA0g
+         y1hlQ+C4joF6LpLy2RxmOJkUQDemBowqYlXDBZbOkUgtpiA0WaxT9Q1TaNL6Dn0qLG
+         hlu6krVcVEEABACBQDxVJekfiBJ+tiRhLR7fwyr8vDdc1S7+tuMRa2B2B6mOv+DEkJ
+         pMNn6ApItO69NBIBnBhoZg9E18+NC2MAL3mM8/cMUNxjJ4f2zMUQMX1I0yXxD1M+tp
+         LizFsHpZW6V2cCRAU16UQ2e1Rx00ClB5Cqp3uxrQQ4OQfCoT7f7UxRVb5p9BvhMDuf
+         SsuRUUXDYxs0w==
+Date:   Wed, 15 Nov 2023 12:36:51 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
+Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+ <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="KriTiAZt4WP/aqiG"
 Content-Disposition: inline
-In-Reply-To: <20231107213647.1405493-5-avadhut.naik@amd.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+In-Reply-To: <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
+X-Cookie: For internal use only.
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 03:36:47PM -0600, Avadhut Naik wrote:
-> From: Avadhut Naik <Avadhut.Naik@amd.com>
-> 
-> Vendor-Defined Error types are supported by the platform apart from
-> standard error types if bit 31 is set in the output of GET_ERROR_TYPE
-> Error Injection Action.[1] While the errors themselves and the length
-> of their associated "OEM Defined data structure" might vary between
-> vendors, the physical address of this structure can be computed through
-> vendor_extension and length fields of "SET_ERROR_TYPE_WITH_ADDRESS" and
-> "Vendor Error Type Extension" Structures respectively.[2][3]
-> 
-> Currently, however, the einj module only computes the physical address of
-> Vendor Error Type Extension Structure. Neither does it compute the physical
-> address of OEM Defined structure nor does it establish the memory mapping
-> required for injecting Vendor-defined errors. Consequently, userspace
-> tools have to establish the very mapping through /dev/mem, nopat kernel
-> parameter and system calls like mmap/munmap initially before injecting
-> Vendor-defined errors.
-> 
-> Circumvent the issue by computing the physical address of OEM Defined data
-> structure and establishing the required mapping with the structure. Create
-> a new file "oem_error", if the system supports Vendor-defined errors, to
-> export this mapping, through debugfs_create_blob(). Userspace tools can
-> then populate their respective OEM Defined structure instances and just
-> write to the file as part of injecting Vendor-defined Errors. Similarly,
-> the tools can also read from the file if the system firmware provides some
-> information through the OEM defined structure after error injection.
-> 
-> [1] ACPI specification 6.5, section 18.6.4
-> [2] ACPI specification 6.5, Table 18.31
-> [3] ACPI specification 6.5, Table 18.32
-> 
-> Suggested-by: Yazen Ghannam <yazen.ghannam@amd.com>
-> Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
-> ---
->  drivers/acpi/apei/einj.c | 24 ++++++++++++++++++++++++
->  1 file changed, 24 insertions(+)
 
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
+--KriTiAZt4WP/aqiG
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Regards/Gruss,
-    Boris.
+On Wed, Nov 15, 2023 at 12:45:45AM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-11-14 at 20:05 +0000, Mark Brown wrote:
 
-https://people.kernel.org/tglx/notes-about-netiquette
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0if (size < 8)
+> > +=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0r=
+eturn (unsigned long)ERR_PTR(-EINVAL);
+
+> What is the intention here? The check in map_shadow_stack is to leave
+> space for the token, but here there is no token.
+
+It was to ensure that there is sufficient space for at least one entry
+on the stack.
+
+> I think for CLONE_VM we should not require a non-zero size. Speaking of
+> CLONE_VM we should probably be clear on what the expected behavior is
+> for situations when a new shadow stack is not usually allocated.
+> !CLONE_VM || CLONE_VFORK will use the existing shadow stack. Should we
+> require shadow_stack_size be zero in this case, or just ignore it? I'd
+> lean towards requiring it to be zero so userspace doesn't pass garbage
+> in that we have to accommodate later. What we could possibly need to do
+> around that though, I'm not sure. What do you think?
+
+Yes, requiring it to be zero in that case makes sense I think.
+
+> > +++ b/include/linux/sched/task.h
+> > @@ -41,6 +41,8 @@ struct kernel_clone_args {
+> > =A0=A0=A0=A0=A0=A0=A0=A0void *fn_arg;
+> > =A0=A0=A0=A0=A0=A0=A0=A0struct cgroup *cgrp;
+> > =A0=A0=A0=A0=A0=A0=A0=A0struct css_set *cset;
+> > +=A0=A0=A0=A0=A0=A0=A0unsigned long shadow_stack;
+>=20
+> Was this ^ left in accidentally? Elsewhere in this patch it is getting
+> checked too.
+
+Yes, it's just bitrot from removing the pointer.
+
+--KriTiAZt4WP/aqiG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVUu2IACgkQJNaLcl1U
+h9BiVwf/c7wQhfKl4vMlx0SwxxKe7cZTyIJp3wxjL4gqHL9ZK62MyNiijoT390ky
+VkeRCd7A8hLr/xRIcsxy9aqwiP1yR/68feC6SgQ+t48WHUKyalsV4t69rhrkrBgw
++5jJZmMHb0J2rTdHR5/OXPAAUXVrlSyuOGUi82GB0UCr2mjdrpL+Wj2GLMPyHBB4
+h7QFNJ2KUVzsRG0WZPd0BwagqT8CYccMWYTksoEe38C2xz5z2TUvEQ5YvIQhx4/S
+4UlBMR256vO/0CGnl1C6U1n6OUi7z5Fg5vFDvSX5Wv1DkoZnOmeHJu0ZImxLvA0S
+7KN9aJ9/3aZkVvjOBc6vWOY9Kl7vqw==
+=XEEC
+-----END PGP SIGNATURE-----
+
+--KriTiAZt4WP/aqiG--
