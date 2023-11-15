@@ -2,285 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4417EC253
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:33:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18DF57EC251
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343783AbjKOMd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:33:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        id S1343779AbjKOMd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:33:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343773AbjKOMdZ (ORCPT
+        with ESMTP id S1343723AbjKOMdZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Nov 2023 07:33:25 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B9BA120;
-        Wed, 15 Nov 2023 04:33:22 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFC8jwi003356;
-        Wed, 15 Nov 2023 12:33:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=+bQBLNYBHmMmudPkza+zGHnV3erCE+9fpiGeOg9TFG0=;
- b=GhKB2nU1LoTqsR2eV7ZPPHf15awBcusmt/pFoseDlSF/RUKwSiHmFirXu06L1T5a6pqM
- NAEV03dIF5qpVwzaoEbfiBKImZiCVZCeNogKURfOIY9xHLahM7r99B2v/pagnx3Ok32t
- 4lC8Gfz3DAnn9AAqU9hSCmDIIg9ywxIaAoXz1XRExJ5tKANUzqv4q+7qVaHyvPf8UjPA
- urxnvsUPgt0Uh4q2ui+9/KFs+pz5KVtK+NhvGn4OzIQQxh/3D8nNVtM6C4JD1HzIXiaV
- 2mWU/l0dDeewDIpAv/qb/ywY/cM51+uYqZgrvM+uFWeOxDYyfsW7KRS787LFq8mAdmg9 UQ== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucfka9xcy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 12:33:01 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFCX0JO011172
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 12:33:00 GMT
-Received: from [10.214.227.50] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
- 2023 04:32:55 -0800
-Message-ID: <2a65a498-6a0f-445c-9c00-9e9e4fbc3a98@quicinc.com>
-Date:   Wed, 15 Nov 2023 18:02:52 +0530
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FACF11F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:33:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700051601; x=1731587601;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=t1dW6o2nTHz2o6AFCdNOcaRMy7d6+pwh7NWq+AsApkY=;
+  b=iOpV+Foy70E4ZRSgqwc0MG/wNA3SZhycCyRTfquW02vE7cFqHUaaWJSQ
+   K9NMTWo7MXjlZmjQ+lOMc89FjVFUdupLNh3yJZjrmJrvJhiueGK9dZ6hU
+   /HgQr+zsdONgnWhunWJSOzYBXk7wJCoPNIrDSOsw5zIjCnDFo/WaRGM2N
+   1T57HffwjBc6xkc3Sk24A0l4uZ5rHGOJ67fC0wvb60YVwvMuk/uZSHad/
+   1l/QiEAWDuN7VYwo8TcQXYlSC52ljz9UrqSaBz91awCRp+37GAOeML2dY
+   1U1tkVz4P9t0ST9QZQfcYjiQ4V3lYHWT9ZeGRuxgfThiR9hixek7S6Euw
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="390664924"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="390664924"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:33:21 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1096429926"
+X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
+   d="scan'208";a="1096429926"
+Received: from ahajda-mobl.ger.corp.intel.com (HELO [10.213.26.106]) ([10.213.26.106])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 04:33:19 -0800
+Message-ID: <2f72313b-2fb4-4f62-a9d7-3fe05f1051c4@intel.com>
+Date:   Wed, 15 Nov 2023 13:33:17 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] iommu/arm-smmu: introduction of ACTLR for custom
- prefetcher settings
+Subject: Re: [Intel-gfx] [PATCH v3] debugobjects: stop accessing objects after
+ releasing spinlock
 Content-Language: en-US
-To:     Robin Murphy <robin.murphy@arm.com>, <will@kernel.org>,
-        <joro@8bytes.org>, <dmitry.baryshkov@linaro.org>,
-        <a39.skl@gmail.com>, <konrad.dybcio@linaro.org>,
-        <quic_pkondeti@quicinc.com>, <quic_molvera@quicinc.com>
-CC:     <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
-References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
- <20231114135654.30475-2-quic_bibekkum@quicinc.com>
- <372885ab-b24d-44ae-afb8-76755bcd6e21@arm.com>
-From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <372885ab-b24d-44ae-afb8-76755bcd6e21@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: v84a0kpEEPTvhyA8EjhmdlwiqJbvOBWe
-X-Proofpoint-GUID: v84a0kpEEPTvhyA8EjhmdlwiqJbvOBWe
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_11,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 spamscore=0 bulkscore=0
- phishscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150096
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+To:     linux-kernel@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+        linux-mm@kvack.org, Thomas Gleixner <tglx@linutronix.de>
+Cc:     Nirmoy Das <nirmoy.das@intel.com>
+References: <20231025-debugobjects_fix-v3-1-2bc3bf7084c2@intel.com>
+From:   Andrzej Hajda <andrzej.hajda@intel.com>
+Organization: Intel Technology Poland sp. z o.o. - ul. Slowackiego 173, 80-298
+ Gdansk - KRS 101882 - NIP 957-07-52-316
+In-Reply-To: <20231025-debugobjects_fix-v3-1-2bc3bf7084c2@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 25.10.2023 23:39, Andrzej Hajda wrote:
+> After spinlock release object can be modified/freed by concurrent thread.
+> Using it in such case is error prone, even for printing object state.
+> To avoid such situation local copy of the object is created if necessary.
+> 
+> Sample buggy scenario:
+> 1. Thread tries to deactivate destroyed object, debugobjects detects it,
+>     spin lock is released, thread is preempted.
+> 2. Other thread frees debugobject, then allocates new one on the same memory
+>     location, ie 'obj' variable from 1st thread point to it - it is possible
+>     because there is no locking.
+> 3. Then preemption occurs, and 1st thread reports error for wrong object.
+> 
+> Signed-off-by: Andrzej Hajda <andrzej.hajda@intel.com>
+> ---
+> v2: add missing switch breaks
+> v3: abandon single-point-of-unlock approach
+
+Gently ping.
+
+Regards
+Andrzej
 
 
-On 11/14/2023 10:25 PM, Robin Murphy wrote:
-> On 14/11/2023 1:56 pm, Bibek Kumar Patro wrote:
->> Currently in Qualcomm  SoCs the default prefetch is set to 1 which allows
->> the TLB to fetch just the next page table. MMU-500 features ACTLR
->> register which is implementation defined and is used for Qualcomm SoCs
->> to have a prefetch setting of 1/3/7/15 enabling TLB to prefetch
->> the next set of page tables accordingly allowing for faster translations.
->>
->> ACTLR value is unique for each SMR (Stream matching register) and stored
->> in a pre-populated table. This value is set to the register during
->> context bank initialisation.
->>
->> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
->> ---
->>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 41 ++++++++++++++++++++++
->>   drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h |  2 ++
->>   drivers/iommu/arm/arm-smmu/arm-smmu.c      |  5 +--
->>   drivers/iommu/arm/arm-smmu/arm-smmu.h      |  5 +++
->>   4 files changed, 51 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> index 549ae4dba3a6..578c662c7c30 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->> @@ -14,6 +14,17 @@
->>
->>   #define QCOM_DUMMY_VAL    -1
->>
->> +struct actlr_config {
->> +    const struct actlr_data *adata;
->> +    size_t size;
->> +};
->> +
->> +struct actlr_data {
->> +    u16 sid;
->> +    u16 mask;
+> ---
+>   lib/debugobjects.c | 196 +++++++++++++++++++++--------------------------------
+>   1 file changed, 77 insertions(+), 119 deletions(-)
 > 
-> Do we need to worry about masks? If you're already assuming that any SMR 
-> will be programmed to match a superset of the data here, surely a single 
-> unique ID per device would suffice?
+> diff --git a/lib/debugobjects.c b/lib/debugobjects.c
+> index a517256a270b71..c074dbbec084a6 100644
+> --- a/lib/debugobjects.c
+> +++ b/lib/debugobjects.c
+> @@ -620,9 +620,8 @@ static void debug_objects_fill_pool(void)
+>   static void
+>   __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+>   
+>   	debug_objects_fill_pool();
+> @@ -643,24 +642,18 @@ __debug_object_init(void *addr, const struct debug_obj_descr *descr, int onstack
+>   	case ODEBUG_STATE_INIT:
+>   	case ODEBUG_STATE_INACTIVE:
+>   		obj->state = ODEBUG_STATE_INIT;
+> -		break;
+> -
+> -	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+>   		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "init");
+> -		debug_object_fixup(descr->fixup_init, addr, state);
+> -		return;
+> -
+> -	case ODEBUG_STATE_DESTROYED:
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "init");
+>   		return;
+>   	default:
+>   		break;
+>   	}
+>   
+> +	o = *obj;
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +	debug_print_object(&o, "init");
+> +
+> +	if (o.state == ODEBUG_STATE_ACTIVE)
+> +		debug_object_fixup(descr->fixup_init, addr, o.state);
+>   }
+>   
+>   /**
+> @@ -701,11 +694,9 @@ EXPORT_SYMBOL_GPL(debug_object_init_on_stack);
+>   int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
+>   {
+>   	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+>   	struct debug_obj *obj;
+>   	unsigned long flags;
+> -	int ret;
+>   
+>   	if (!debug_objects_enabled)
+>   		return 0;
+> @@ -717,49 +708,38 @@ int debug_object_activate(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object_or_alloc(addr, db, descr, false, true);
+> -	if (likely(!IS_ERR_OR_NULL(obj))) {
+> -		bool print_object = false;
+> -
+> +	if (unlikely(!obj)) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		debug_objects_oom();
+> +		return 0;
+> +	} else if (likely(!IS_ERR(obj))) {
+>   		switch (obj->state) {
+> -		case ODEBUG_STATE_INIT:
+> -		case ODEBUG_STATE_INACTIVE:
+> -			obj->state = ODEBUG_STATE_ACTIVE;
+> -			ret = 0;
+> -			break;
+> -
+>   		case ODEBUG_STATE_ACTIVE:
+> -			state = obj->state;
+> -			raw_spin_unlock_irqrestore(&db->lock, flags);
+> -			debug_print_object(obj, "activate");
+> -			ret = debug_object_fixup(descr->fixup_activate, addr, state);
+> -			return ret ? 0 : -EINVAL;
+> -
+>   		case ODEBUG_STATE_DESTROYED:
+> -			print_object = true;
+> -			ret = -EINVAL;
+>   			break;
+> +		case ODEBUG_STATE_INIT:
+> +		case ODEBUG_STATE_INACTIVE:
+> +			obj->state = ODEBUG_STATE_ACTIVE;
+> +			fallthrough;
+>   		default:
+> -			ret = 0;
+> -			break;
+> +			raw_spin_unlock_irqrestore(&db->lock, flags);
+> +			return 0;
+>   		}
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		if (print_object)
+> -			debug_print_object(obj, "activate");
+> -		return ret;
+>   	}
+>   
+> +	o = *obj;
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +	debug_print_object(&o, "activate");
+>   
+> -	/* If NULL the allocation has hit OOM */
+> -	if (!obj) {
+> -		debug_objects_oom();
+> -		return 0;
+> +	switch (o.state) {
+> +	case ODEBUG_STATE_ACTIVE:
+> +	case ODEBUG_STATE_NOTAVAILABLE:
+> +		if (debug_object_fixup(descr->fixup_activate, addr, o.state))
+> +			return 0;
+> +		fallthrough;
+> +	default:
+> +		return -EINVAL;
+>   	}
+> -
+> -	/* Object is neither static nor tracked. It's not initialized */
+> -	debug_print_object(&o, "activate");
+> -	ret = debug_object_fixup(descr->fixup_activate, addr, ODEBUG_STATE_NOTAVAILABLE);
+> -	return ret ? 0 : -EINVAL;
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_activate);
+>   
+> @@ -770,10 +750,10 @@ EXPORT_SYMBOL_GPL(debug_object_activate);
+>    */
+>   void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
+>   {
+> +	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
+>   	struct debug_bucket *db;
+>   	struct debug_obj *obj;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -785,33 +765,24 @@ void debug_object_deactivate(void *addr, const struct debug_obj_descr *descr)
+>   	obj = lookup_object(addr, db);
+>   	if (obj) {
+>   		switch (obj->state) {
+> +		case ODEBUG_STATE_DESTROYED:
+> +			break;
+>   		case ODEBUG_STATE_INIT:
+>   		case ODEBUG_STATE_INACTIVE:
+>   		case ODEBUG_STATE_ACTIVE:
+> -			if (!obj->astate)
+> -				obj->state = ODEBUG_STATE_INACTIVE;
+> -			else
+> -				print_object = true;
+> -			break;
+> -
+> -		case ODEBUG_STATE_DESTROYED:
+> -			print_object = true;
+> -			break;
+> +			if (obj->astate)
+> +				break;
+> +			obj->state = ODEBUG_STATE_INACTIVE;
+> +			fallthrough;
+>   		default:
+> -			break;
+> +			raw_spin_unlock_irqrestore(&db->lock, flags);
+> +			return;
+>   		}
+> +		o = *obj;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (!obj) {
+> -		struct debug_obj o = { .object = addr,
+> -				       .state = ODEBUG_STATE_NOTAVAILABLE,
+> -				       .descr = descr };
+> -
+> -		debug_print_object(&o, "deactivate");
+> -	} else if (print_object) {
+> -		debug_print_object(obj, "deactivate");
+> -	}
+> +	debug_print_object(&o, "deactivate");
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_deactivate);
+>   
+> @@ -822,11 +793,9 @@ EXPORT_SYMBOL_GPL(debug_object_deactivate);
+>    */
+>   void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -836,32 +805,31 @@ void debug_object_destroy(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object(addr, db);
+> -	if (!obj)
+> -		goto out_unlock;
+> +	if (!obj) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		return;
+> +	}
+>   
+>   	switch (obj->state) {
+> +	case ODEBUG_STATE_ACTIVE:
+> +	case ODEBUG_STATE_DESTROYED:
+> +		break;
+>   	case ODEBUG_STATE_NONE:
+>   	case ODEBUG_STATE_INIT:
+>   	case ODEBUG_STATE_INACTIVE:
+>   		obj->state = ODEBUG_STATE_DESTROYED;
+> -		break;
+> -	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+> +		fallthrough;
+> +	default:
+>   		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "destroy");
+> -		debug_object_fixup(descr->fixup_destroy, addr, state);
+>   		return;
+> -
+> -	case ODEBUG_STATE_DESTROYED:
+> -		print_object = true;
+> -		break;
+> -	default:
+> -		break;
+>   	}
+> -out_unlock:
+> +
+> +	o = *obj;
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (print_object)
+> -		debug_print_object(obj, "destroy");
+> +	debug_print_object(&o, "destroy");
+> +
+> +	if (o.state == ODEBUG_STATE_ACTIVE)
+> +		debug_object_fixup(descr->fixup_destroy, addr, o.state);
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_destroy);
+>   
+> @@ -872,9 +840,8 @@ EXPORT_SYMBOL_GPL(debug_object_destroy);
+>    */
+>   void debug_object_free(void *addr, const struct debug_obj_descr *descr)
+>   {
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	unsigned long flags;
+>   
+>   	if (!debug_objects_enabled)
+> @@ -885,24 +852,26 @@ void debug_object_free(void *addr, const struct debug_obj_descr *descr)
+>   	raw_spin_lock_irqsave(&db->lock, flags);
+>   
+>   	obj = lookup_object(addr, db);
+> -	if (!obj)
+> -		goto out_unlock;
+> +	if (!obj) {
+> +		raw_spin_unlock_irqrestore(&db->lock, flags);
+> +		return;
+> +	}
+>   
+>   	switch (obj->state) {
+>   	case ODEBUG_STATE_ACTIVE:
+> -		state = obj->state;
+> -		raw_spin_unlock_irqrestore(&db->lock, flags);
+> -		debug_print_object(obj, "free");
+> -		debug_object_fixup(descr->fixup_free, addr, state);
+> -		return;
+> +		break;
+>   	default:
+>   		hlist_del(&obj->node);
+>   		raw_spin_unlock_irqrestore(&db->lock, flags);
+>   		free_object(obj);
+>   		return;
+>   	}
+> -out_unlock:
+> +
+> +	o = *obj;
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> +	debug_print_object(&o, "free");
+> +
+> +	debug_object_fixup(descr->fixup_free, addr, o.state);
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_free);
+>   
+> @@ -954,10 +923,10 @@ void
+>   debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
+>   			  unsigned int expect, unsigned int next)
+>   {
+> +	struct debug_obj o = { .object = addr, .state = ODEBUG_STATE_NOTAVAILABLE, .descr = descr };
+>   	struct debug_bucket *db;
+>   	struct debug_obj *obj;
+>   	unsigned long flags;
+> -	bool print_object = false;
+>   
+>   	if (!debug_objects_enabled)
+>   		return;
+> @@ -970,28 +939,20 @@ debug_object_active_state(void *addr, const struct debug_obj_descr *descr,
+>   	if (obj) {
+>   		switch (obj->state) {
+>   		case ODEBUG_STATE_ACTIVE:
+> -			if (obj->astate == expect)
+> +			if (obj->astate == expect) {
+>   				obj->astate = next;
+> -			else
+> -				print_object = true;
+> +				raw_spin_unlock_irqrestore(&db->lock, flags);
+> +				return;
+> +			}
+>   			break;
+> -
+>   		default:
+> -			print_object = true;
+>   			break;
+>   		}
+> +		o = *obj;
+>   	}
+>   
+>   	raw_spin_unlock_irqrestore(&db->lock, flags);
+> -	if (!obj) {
+> -		struct debug_obj o = { .object = addr,
+> -				       .state = ODEBUG_STATE_NOTAVAILABLE,
+> -				       .descr = descr };
+> -
+> -		debug_print_object(&o, "active_state");
+> -	} else if (print_object) {
+> -		debug_print_object(obj, "active_state");
+> -	}
+> +	debug_print_object(&o, "active_state");
+>   }
+>   EXPORT_SYMBOL_GPL(debug_object_active_state);
+>   
+> @@ -999,11 +960,9 @@ EXPORT_SYMBOL_GPL(debug_object_active_state);
+>   static void __debug_check_no_obj_freed(const void *address, unsigned long size)
+>   {
+>   	unsigned long flags, oaddr, saddr, eaddr, paddr, chunks;
+> -	const struct debug_obj_descr *descr;
+> -	enum debug_obj_state state;
+>   	struct debug_bucket *db;
+>   	struct hlist_node *tmp;
+> -	struct debug_obj *obj;
+> +	struct debug_obj *obj, o;
+>   	int cnt, objs_checked = 0;
+>   
+>   	saddr = (unsigned long) address;
+> @@ -1026,12 +985,11 @@ static void __debug_check_no_obj_freed(const void *address, unsigned long size)
+>   
+>   			switch (obj->state) {
+>   			case ODEBUG_STATE_ACTIVE:
+> -				descr = obj->descr;
+> -				state = obj->state;
+> +				o = *obj;
+>   				raw_spin_unlock_irqrestore(&db->lock, flags);
+> -				debug_print_object(obj, "free");
+> -				debug_object_fixup(descr->fixup_free,
+> -						   (void *) oaddr, state);
+> +				debug_print_object(&o, "free");
+> +				debug_object_fixup(o.descr->fixup_free,
+> +						   (void *) oaddr, o.state);
+>   				goto repeat;
+>   			default:
+>   				hlist_del(&obj->node);
 > 
+> ---
+> base-commit: 201c8a7bd1f3f415920a2df4b8a8817e973f42fe
+> change-id: 20231025-debugobjects_fix-66e5292557c4
+> 
+> Best regards,
 
-If you refer to the arm_smmu_set_actlr below, mask would be needed as we 
-would check for mask along with sid as well while assigning actlr 
-configuration. Also with mask no of actlr entries can be reduces as
-with out mask we have to have entry for each sid.
-
->> +    u32 actlr;
->> +};
->> +
->>   static struct qcom_smmu *to_qcom_smmu(struct arm_smmu_device *smmu)
->>   {
->>       return container_of(smmu, struct qcom_smmu, smmu);
->> @@ -261,9 +272,36 @@ static const struct of_device_id 
->> qcom_smmu_client_of_match[] __maybe_unused = {
->>       { }
->>   };
->>
->> +static void arm_smmu_set_actlr(struct arm_smmu_device *smmu, int idx,
->> +        const struct actlr_config *actlrcfg)
->> +{
->> +    struct arm_smmu_smr *smr = smmu->smrs;
->> +    int i;
->> +    u16 id;
->> +    u16 mask;
->> +
->> +    for (i = 0; i < actlrcfg->size; ++i) {
->> +        id = actlrcfg->adata[i].sid;
->> +        mask = actlrcfg->adata[i].mask;
->> +        if (!smr_is_subset(*smr, id, mask))
-> 
-> How well have you tested this? ;)
-> 
-
-Well, this logic has worked pretty good for us till now in our
-downstream implementation. :) (During testing as well this logic helped 
-to better match the SMRs instead of manually mathcing the mask and SID 
-which missed some SIDs)
-Also this is already being used to arm_smmu_find_sme hence packaged this
-logic in a wrapper to be used in other places as well(including ACTLR
-register setting case here.)
-
->> +            arm_smmu_cb_write(smmu, idx, ARM_SMMU_CB_ACTLR,
->> +                    actlrcfg->adata[i].actlr);
->> +    }
->> +}
->> +
->>   static int qcom_smmu_init_context(struct arm_smmu_domain *smmu_domain,
->>           struct io_pgtable_cfg *pgtbl_cfg, struct device *dev)
->>   {
->> +    struct arm_smmu_device *smmu = smmu_domain->smmu;
->> +    struct qcom_smmu *qsmmu = to_qcom_smmu(smmu);
->> +    const struct actlr_config *actlrcfg;
->> +    int idx = smmu_domain->cfg.cbndx;
->> +
->> +    if (qsmmu->actlrcfg) {
->> +        actlrcfg = qsmmu->actlrcfg;
->> +        arm_smmu_set_actlr(smmu, idx, actlrcfg);
->> +    }
->> +
->>       smmu_domain->cfg.flush_walk_prefer_tlbiasid = true;
->>
->>       return 0;
->> @@ -467,6 +505,9 @@ static struct arm_smmu_device 
->> *qcom_smmu_create(struct arm_smmu_device *smmu,
->>       qsmmu->smmu.impl = impl;
->>       qsmmu->cfg = data->cfg;
->>
->> +    if (data->actlrcfg && (data->actlrcfg->size))
->> +        qsmmu->actlrcfg = data->actlrcfg;
-> 
-> Do we really need to replicate multiple parts of the data, or would it 
-> be sensible to just replace qsmmu->cfg with qsmmu->data and handle the 
-> further dereferences in the places that want them?
-> 
->> +
->>       return &qsmmu->smmu;
->>   }
->>
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> index 593910567b88..4b6862715070 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.h
->> @@ -9,6 +9,7 @@
->>   struct qcom_smmu {
->>       struct arm_smmu_device smmu;
->>       const struct qcom_smmu_config *cfg;
->> +    const struct actlr_config *actlrcfg;
->>       bool bypass_quirk;
->>       u8 bypass_cbndx;
->>       u32 stall_enabled;
->> @@ -25,6 +26,7 @@ struct qcom_smmu_config {
->>   };
->>
->>   struct qcom_smmu_match_data {
->> +    const struct actlr_config *actlrcfg;
->>       const struct qcom_smmu_config *cfg;
->>       const struct arm_smmu_impl *impl;
->>       const struct arm_smmu_impl *adreno_impl;
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.c 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> index d6d1a2a55cc0..8e4faf015286 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.c
->> @@ -990,9 +990,10 @@ static int arm_smmu_find_sme(struct 
->> arm_smmu_device *smmu, u16 id, u16 mask)
->>            * expect simply identical entries for this case, but there's
->>            * no harm in accommodating the generalisation.
->>            */
->> -        if ((mask & smrs[i].mask) == mask &&
->> -            !((id ^ smrs[i].id) & ~smrs[i].mask))
->> +
->> +        if (smr_is_subset(smrs[i], id, mask))
->>               return i;
->> +
->>           /*
->>            * If the new entry has any other overlap with an existing one,
->>            * though, then there always exists at least one stream ID
->> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu.h 
->> b/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> index 703fd5817ec1..b1638bbc41d4 100644
->> --- a/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu.h
->> @@ -501,6 +501,11 @@ static inline void arm_smmu_writeq(struct 
->> arm_smmu_device *smmu, int page,
->>           writeq_relaxed(val, arm_smmu_page(smmu, page) + offset);
->>   }
->>
->> +static inline bool smr_is_subset(struct arm_smmu_smr smrs, u16 id, 
->> u16 mask)
-> 
-> Hmm, that name reads as implying the opposite of what it actually tests, 
-> not to mention that passing structs by value is a bit horrid as well :(
-> 
-
-It might be okay to name it as subset_of_smr() though. You have any 
-other naming suggestion in mind which could correctly describe the
-logic?
-
-Thanks & regards,
-Bibek
-
-> Thanks,
-> Robin.
-> 
->> +{
->> +    return (mask & smrs.mask) == mask && !((id ^ smrs.id) & ~smrs.mask);
->> +}
->> +
->>   #define ARM_SMMU_GR0        0
->>   #define ARM_SMMU_GR1        1
->>   #define ARM_SMMU_CB(s, n)    ((s)->numpage + (n))
->> -- 
->> 2.17.1
->>
