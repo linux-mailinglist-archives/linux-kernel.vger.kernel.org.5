@@ -2,106 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD457ED822
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:26:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C39AE7ED824
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 00:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343857AbjKOX0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 18:26:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60948 "EHLO
+        id S1344097AbjKOX03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 18:26:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229614AbjKOX0J (ORCPT
+        with ESMTP id S229945AbjKOX01 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 18:26:09 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D90F18B;
-        Wed, 15 Nov 2023 15:26:06 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce2c5b2154so108271a34.3;
-        Wed, 15 Nov 2023 15:26:06 -0800 (PST)
+        Wed, 15 Nov 2023 18:26:27 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83BB51AC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:26:23 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id d9443c01a7336-1cc209561c3so63865ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 15:26:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700090765; x=1700695565; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=axWDgASU5kx8BQUPImQQJLs6vIRAi23g3L1V87kq5xY=;
-        b=LA9eqL1zdbDtuljahRvcLh6LV3iH4+rT6+rRp05Dfx+gDJSYhsAJ0BFshIFcrWBpSg
-         dBI2LfdxkZnBsapMPbXRD6IhSNVSCboGIzaHBWq3bD0+aQRAg6c2EdqLbvcz+dci/0y8
-         a20pNwiZkIHd9IeP1vzKrW+07C5TqsfWgVRsfjm5+XpwEc/eJeaiSbj5WJv1HdV3LvfS
-         0BAK+Lyix3+l996ESevKbOKxbdCmyu2nMme1sT+09P9UxEQcTo0sbS/oUtcEloFztNM7
-         hDciLjCiZsgyprmh6NH3t0R+qjGOiTsTxjj7ttCmntDc01cg3ps+vG9/gA8lwy9dGCXy
-         6VYw==
+        d=google.com; s=20230601; t=1700090783; x=1700695583; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KAFs8HHoQNrVkpTk2Xb6uh3p9ALW4pkggBRLwqVuKp8=;
+        b=EmVeC9oAvT3p2qIq7Phb92qEdYMlmljWd3pAniWc/MnzbfYZB6/Xc5Kbdzy/BvVf2J
+         wNqxq8eccQTMf5e+J4mB/UBzsbMQmbbmdwfgcZKxtHWD0NhvENHiYM7YxC5uDYr6y5W9
+         AzJgcBBKsuCNfjVmXMhiA/TW7bf3JbfUR1gyYcMwDOkAWrX1GVpphUrNfFWeel94MUUB
+         LwxL3pHeWAVf9h8HBdhdwB2rtthCYAs3S93bgZw8OTOqnMjVU/ebe4gb+hGh4xTVmgXd
+         pUEvBfu/PL/tGEi5ZbC4+sinFSaLoPZ680Ac+UHwtiO3AOg3OpT3FvkIKdrZWX4vyPie
+         fYDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700090765; x=1700695565;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=axWDgASU5kx8BQUPImQQJLs6vIRAi23g3L1V87kq5xY=;
-        b=ZyScYlJddyNmx7Aa0xdJ9VkrSNXuTXwENT7dUxai/oWVaxhvcQeur9KGSY7alnwHmb
-         qoUeM4u4P27PrRAs38DiXjPCg6hEc8w3lLNlGbLVu6hPEBGu8e+HcwXtRM4XaxzpmyOY
-         ChS22+U9gtqBOgKNp366DOEoSH3eaIvTP6KOaBh2v+IbEljg1FHP0fx3L7spnPZEXGFH
-         ufgVmqiWuEbxLjRifvqFI2YDTj3QYDAxu55/8vR5faApbUarBCw9lOkXYZmffYxc6waN
-         JKC1Ymab9oN6cqDQ1DdO/oHkKCFfsQLSFX3wMyLxNoq6wHmMDipr7IXQkJL7pVluS1pB
-         KVVQ==
-X-Gm-Message-State: AOJu0YxADD4PcyDMW/WAG70nBdP1pbaRnYT5pcjqip5jdFdFGVDMNKv5
-        20BwS8NrcmC5y0ppl4V8Y0XbjIrHo8E=
-X-Google-Smtp-Source: AGHT+IHCpHTQOm2E+/WA5JSn/AVuL9HHYRjwTZkx0CxsodNCQQRz3ZAcGcEGXuLeXtUXaaSuNKt/jQ==
-X-Received: by 2002:a05:6871:53c6:b0:1ef:c082:ec98 with SMTP id hz6-20020a05687153c600b001efc082ec98mr18826139oac.59.1700090765265;
-        Wed, 15 Nov 2023 15:26:05 -0800 (PST)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id i126-20020a639d84000000b005897bfc2ed3sm1663081pgd.93.2023.11.15.15.26.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 15:26:04 -0800 (PST)
-Message-ID: <5c9d34e3-ad31-410a-a46d-ac585a4d4e58@gmail.com>
-Date:   Wed, 15 Nov 2023 15:26:02 -0800
+        d=1e100.net; s=20230601; t=1700090783; x=1700695583;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KAFs8HHoQNrVkpTk2Xb6uh3p9ALW4pkggBRLwqVuKp8=;
+        b=k298B0wtwR25bARcsyw1CELC9w6EhlNm+7uYJakj2eSRkGTRHUC8JvfJSMO7RpLJ1o
+         WPO00Z+TZMiU9+JWLAqy7P4k0P1jCcRNUkN9t5iJ/Fhomufy8UzNSxEL9svQRX30dfvy
+         Bz4o1BDmJ1fatlgz2AdAtsUAVBYkgX0n8PVxfvS7gyO/t7M1loeImrVauX1OqEDq0Xa0
+         3czfQZRJhzFaYbASlg6hmMEOeTsMEdPTQb8o6m51CC32f/zIudAjCy3UYDmgf7Qp5qIU
+         Rr8RaeCwA/1pcVjqXwqbWyI62cNl3JsUI0ywU/qnd9RhtJCHDcZc1/1VAbqxRAiQzvlU
+         YVYw==
+X-Gm-Message-State: AOJu0YzXpyEyV6Ld6/mDoWiG/ahykgdpPCTeGqjP2RAwuZra/H3DtXwo
+        md8y8hRbZXIatDdgf6jlMsJ0U+oFIkt7MMICzzzp
+X-Google-Smtp-Source: AGHT+IGj+hC5mU9kET+8w2o2R4u5BSQRJN1vIsWLj2aFby+giajWEP2YT1Jlfo5UOZkuWR/w/W7j5Z6KHyHw0pRmcMA=
+X-Received: by 2002:a17:902:c40d:b0:1cc:51d6:fb04 with SMTP id
+ k13-20020a170902c40d00b001cc51d6fb04mr61228plk.26.1700090782696; Wed, 15 Nov
+ 2023 15:26:22 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/379] 6.1.63-rc1 review
-Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-References: <20231115192645.143643130@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <20231115192645.143643130@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231111111559.8218-1-yong.wu@mediatek.com> <20231111111559.8218-5-yong.wu@mediatek.com>
+In-Reply-To: <20231111111559.8218-5-yong.wu@mediatek.com>
+From:   Jeffrey Kardatzke <jkardatzke@google.com>
+Date:   Wed, 15 Nov 2023 15:26:11 -0800
+Message-ID: <CA+ddPcNDBSESjJSKiTwEpf_GydThrdh+KGnnXmTnYVmmnwZ83w@mail.gmail.com>
+Subject: Re: [PATCH v2 4/8] dma-buf: heaps: secure_heap: Add tee memory
+ service call
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        christian.koenig@amd.com,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Brian Starkey <Brian.Starkey@arm.com>,
+        John Stultz <jstultz@google.com>, tjmercier@google.com,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, jianjiao.zeng@mediatek.com,
+        kuohong.wang@mediatek.com,
+        Vijayanand Jitta <quic_vjitta@quicinc.com>,
+        Joakim Bech <joakim.bech@linaro.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        ckoenig.leichtzumerken@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 11:21, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.1.63 release.
-> There are 379 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 17 Nov 2023 19:25:27 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.63-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+On Sat, Nov 11, 2023 at 3:17=E2=80=AFAM Yong Wu <yong.wu@mediatek.com> wrot=
+e:
+>
+> Add TEE service call. In the case of MediaTek, secure memory management i=
+s
+> located within the TEE. The kernel just needs to tell TEE what size it
+> needs and the TEE will return a "security handle" to kernel.
+>
+> To be consistent with the cma heap later, we put the tee ops into the ops
+> of secure_the_memory.
+>
+> It seems that secure_heap_tee_service_call could be a more general
+> interface, but it could be a new topic.
+>
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  drivers/dma-buf/heaps/secure_heap.c | 97 +++++++++++++++++++++++++++++
+>  1 file changed, 97 insertions(+)
+>
+> diff --git a/drivers/dma-buf/heaps/secure_heap.c b/drivers/dma-buf/heaps/=
+secure_heap.c
+> index 2a037fc54004..05062c14e7c7 100644
+> --- a/drivers/dma-buf/heaps/secure_heap.c
+> +++ b/drivers/dma-buf/heaps/secure_heap.c
+> @@ -17,6 +17,27 @@
+>
+>  #define TEE_PARAM_NUM                  4
+>
+> +enum secure_buffer_tee_cmd { /* PARAM NUM always is 4. */
+> +       /*
+> +        * TZCMD_SECMEM_ZALLOC: Allocate the zeroed secure memory from TE=
+E.
+> +        *
+> +        * [in]  value[0].a: The buffer size.
+> +        *       value[0].b: alignment.
+> +        * [in]  value[1].a: enum secure_memory_type.
+> +        * [out] value[3].a: The secure handle.
+> +        */
+> +       TZCMD_SECMEM_ZALLOC =3D 0,
+> +
+> +       /*
+> +        * TZCMD_SECMEM_FREE: Free secure memory.
+> +        *
+> +        * [in]  value[0].a: The secure handle of this buffer, It's value=
+[3].a of
+> +        *                   TZCMD_SECMEM_ZALLOC.
+> +        * [out] value[1].a: return value, 0 means successful, otherwise =
+fail.
+> +        */
+> +       TZCMD_SECMEM_FREE =3D 1,
+> +};
+> +
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels build tested on 
-BMIPS_GENERIC:
+This should go in the MTK specific implementation.
 
-Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
--- 
-Florian
+>  enum secure_memory_type {
+>         /*
+>          * MediaTek static chunk memory carved out for TrustZone. The mem=
+ory
+> @@ -28,13 +49,25 @@ enum secure_memory_type {
+>  struct secure_buffer {
+>         struct dma_heap                 *heap;
+>         size_t                          size;
+> +       /*
+> +        * The secure handle is a reference to a buffer within the TEE, t=
+his is
+> +        * a value got from TEE.
+> +        */
+> +       u32                             sec_handle;
+>  };
 
+Change this to a u64 and rename it to 'secure_address', it's up to the
+specific implementation what that would actually mean.
+
+>
+> +#define TEE_MEM_COMMAND_ID_BASE_MTK    0x10000
+> +
+Move this into the MTK specific implementation.
+
+>  struct secure_heap;
+>
+>  struct secure_heap_prv_data {
+>         const char                      *uuid;
+>         const int                       tee_impl_id;
+> +       /*
+> +        * Different TEEs may implement different commands, and this prov=
+ides an opportunity
+> +        * for TEEs to use the same enum secure_buffer_tee_cmd.
+> +        */
+> +       const int                       tee_command_id_base;
+Remove this, it can be handled in the MTK specific implementation.
+>
+>         int     (*memory_alloc)(struct secure_heap *sec_heap, struct secu=
+re_buffer *sec_buf);
+>         void    (*memory_free)(struct secure_heap *sec_heap, struct secur=
+e_buffer *sec_buf);
+> @@ -98,10 +131,74 @@ static int secure_heap_tee_session_init(struct secur=
+e_heap *sec_heap)
+>         return ret;
+>  }
+>
+> +static int
+> +secure_heap_tee_service_call(struct tee_context *tee_ctx, u32 session,
+> +                            unsigned int command, struct tee_param *para=
+ms)
+> +{
+> +       struct tee_ioctl_invoke_arg arg =3D {0};
+> +       int ret;
+> +
+> +       arg.num_params =3D TEE_PARAM_NUM;
+> +       arg.session =3D session;
+> +       arg.func =3D command;
+> +
+> +       ret =3D tee_client_invoke_func(tee_ctx, &arg, params);
+> +       if (ret < 0 || arg.ret) {
+> +               pr_err("%s: cmd %d ret %d:%x.\n", __func__, command, ret,=
+ arg.ret);
+> +               ret =3D -EOPNOTSUPP;
+> +       }
+> +       return ret;
+> +}
+> +
+> +static int secure_heap_tee_secure_memory(struct secure_heap *sec_heap,
+> +                                        struct secure_buffer *sec_buf)
+> +{
+> +       const struct secure_heap_prv_data *data =3D sec_heap->data;
+> +       struct tee_param params[TEE_PARAM_NUM] =3D {0};
+> +       int ret;
+> +
+> +       params[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> +       params[0].u.value.a =3D sec_buf->size;
+> +       params[0].u.value.b =3D PAGE_SIZE;
+> +       params[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> +       params[1].u.value.a =3D sec_heap->mem_type;
+> +       params[2].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> +
+> +       params[3].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
+> +       ret =3D secure_heap_tee_service_call(sec_heap->tee_ctx, sec_heap-=
+>tee_session,
+> +                                          data->tee_command_id_base + TZ=
+CMD_SECMEM_ZALLOC,
+> +                                          params);
+> +       if (ret)
+> +               return -ENOMEM;
+> +
+> +       sec_buf->sec_handle =3D params[3].u.value.a;
+> +       return 0;
+> +}
+> +
+> +static void secure_heap_tee_unsecure_memory(struct secure_heap *sec_heap=
+,
+> +                                           struct secure_buffer *sec_buf=
+)
+> +{
+> +       struct tee_param params[TEE_PARAM_NUM] =3D {0};
+> +
+> +       params[0].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_INPUT;
+> +       params[0].u.value.a =3D sec_buf->sec_handle;
+> +       params[1].attr =3D TEE_IOCTL_PARAM_ATTR_TYPE_VALUE_OUTPUT;
+> +
+> +       secure_heap_tee_service_call(sec_heap->tee_ctx, sec_heap->tee_ses=
+sion,
+> +                                    sec_heap->data->tee_command_id_base =
++ TZCMD_SECMEM_FREE,
+> +                                    params);
+> +       if (params[1].u.value.a)
+> +               pr_err("%s, free buffer(0x%x) return fail(%lld) from TEE.=
+\n",
+> +                      sec_heap->name, sec_buf->sec_handle, params[1].u.v=
+alue.a);
+> +}
+> +
+
+These are entirely MTK specific, so move them into the MTK specific
+implementation.
+
+>  /* The memory allocating is within the TEE. */
+>  const struct secure_heap_prv_data mtk_sec_mem_data =3D {
+>         .uuid                   =3D TZ_TA_MEM_UUID_MTK,
+>         .tee_impl_id            =3D TEE_IMPL_ID_OPTEE,
+> +       .tee_command_id_base    =3D TEE_MEM_COMMAND_ID_BASE_MTK,
+> +       .secure_the_memory      =3D secure_heap_tee_secure_memory,
+> +       .unsecure_the_memory    =3D secure_heap_tee_unsecure_memory,
+>  };
+
+This should also go into the MTK specific implementation, and to be
+clear, that's where module_init should be as well.
+
+>
+>  static int secure_heap_secure_memory_allocate(struct secure_heap *sec_he=
+ap,
+> --
+> 2.25.1
+>
