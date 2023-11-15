@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A6A7EC22C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:23:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C15647EC22E
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343741AbjKOMXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:23:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33294 "EHLO
+        id S1343711AbjKOMXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:23:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40372 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234970AbjKOMX2 (ORCPT
+        with ESMTP id S234948AbjKOMXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:23:28 -0500
+        Wed, 15 Nov 2023 07:23:41 -0500
 Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28971182;
-        Wed, 15 Nov 2023 04:23:22 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF79tLw032279;
-        Wed, 15 Nov 2023 12:23:09 GMT
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6680218F;
+        Wed, 15 Nov 2023 04:23:31 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AFBrZ3l006843;
+        Wed, 15 Nov 2023 12:23:18 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type; s=qcppdkim1;
- bh=cy1eFwgWHogY7eRQBXpb9GJmvWVutFjeNRP9FmVTkhE=;
- b=LhzS3r8gA+rx4VTYzLBzE6nRTIBOSiUm+XWKl+UPMbZ9w9tKyNepXevHS8Z51mYla1TX
- NN637bheXmt+ldmGbNXGiKsKbrKbn9nrhgq6eeEOoh5OsIvYwa69TBwGk9GW2W57lc3m
- TzDl+HOZYL1SGonsJSGI5ER/wmWkg/DH7bVaK+ZdyyBcGvT0jrlV1oZMo12xMQ/xN8Af
- C2R4vx8UzsENbg4OWNPRCWay+piYWEulmntKgtOd1/YlGO1qVFxpv4UQQ0HV77GrKjT9
- V1NRs6Ymce+ekZObuEqcbYhw0F1cJTD1bS9aft7cSYtvX7XWu1wEEMwPo6Toi5qnEydn zg== 
+ bh=MdDOxfoamF7FbqiioG0OxZdP/+FkMOE0n2Vvwt8/5Ho=;
+ b=GTB1EVd9GTDGPtO8nDEDECfoLB/DyhINfw7nHpH9AAcvzIL/vo8xaQSXGKHPVpjs+rgG
+ 4OGMzscBxVMd1FPluutTlPyAm9OA5wWzhhQB67XjKfvktt1tfftXUbEaJtsmsVHonkrQ
+ y2vmdyhNHArPeU/0MkjclKLHTotLK99q/icZEf46Y3fkBSA+eEOmFbyHcwjs/wPHenPr
+ SmSkg/IQB6zEiwk8GxGcH37ZxS4mVs69+wBDJhRUvRI2xfiyMtVPsiv3P+NBj0U6cXWP
+ 3iBKxR1H3GbiDZYRrlVnJxXRSiLo0LevAQCuVCWVFwt9v4kXlwfOp8mP2ivkQ0ZBeaoV Sg== 
 Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucfka9wwy-1
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucg2u9use-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 12:23:08 +0000
+        Wed, 15 Nov 2023 12:23:18 +0000
 Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFCN7r0016863
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AFCNHUL017024
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 12:23:07 GMT
+        Wed, 15 Nov 2023 12:23:17 GMT
 Received: from hu-nprakash-blr.qualcomm.com (10.80.80.8) by
  nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Wed, 15 Nov 2023 04:23:01 -0800
+ 15.2.1118.39; Wed, 15 Nov 2023 04:23:11 -0800
 From:   Nikhil V <quic_nprakash@quicinc.com>
 To:     Len Brown <len.brown@intel.com>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
@@ -56,9 +56,9 @@ CC:     Nikhil V <quic_nprakash@quicinc.com>,
         <quic_kprasan@quicinc.com>, <quic_mpilaniy@quicinc.com>,
         <quic_shrekk@quicinc.com>, <mpleshivenkov@google.com>,
         <ericyin@google.com>
-Subject: [PATCH RESEND v2 2/4] PM: hibernate: Move to crypto APIs for LZO compression
-Date:   Wed, 15 Nov 2023 17:52:08 +0530
-Message-ID: <56fb6b19a4de86d7f1ee6e56a8f8edac177754a8.1700048610.git.quic_nprakash@quicinc.com>
+Subject: [PATCH RESEND v2 3/4] PM: hibernate: Add support for LZ4 compression for hibernation
+Date:   Wed, 15 Nov 2023 17:52:09 +0530
+Message-ID: <e5de96f23d2027c3e37240362afd6f6e6202dbc0.1700048610.git.quic_nprakash@quicinc.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <cover.1700048610.git.quic_nprakash@quicinc.com>
 References: <cover.1700048610.git.quic_nprakash@quicinc.com>
@@ -69,16 +69,16 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: PDZAiYf5P3JhRcD8PzNnpynGLnBlVpeB
-X-Proofpoint-GUID: PDZAiYf5P3JhRcD8PzNnpynGLnBlVpeB
+X-Proofpoint-ORIG-GUID: 41H_E2KT1tERGqsZJW2-1Ix3Luol5TXL
+X-Proofpoint-GUID: 41H_E2KT1tERGqsZJW2-1Ix3Luol5TXL
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-15_11,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- lowpriorityscore=0 adultscore=0 clxscore=1015 spamscore=0 bulkscore=0
- phishscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150095
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 spamscore=0 impostorscore=0 mlxscore=0
+ phishscore=0 malwarescore=0 lowpriorityscore=0 mlxlogscore=999
+ adultscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311150095
 X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
         SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
@@ -89,468 +89,137 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently for hibernation, LZO is the only compression algorithm
-available and uses the existing LZO library calls. However, there
-is no flexibility to switch to other algorithms which provides better
-results. The main idea is that different compression algorithms have
-different characteristics and hibernation may benefit when it uses
-alternate algorithms.
+Extend the support for LZ4 compression to be used with hibernation.
+The main idea is that different compression algorithms
+have different characteristics and hibernation may benefit when it uses
+any of these algorithms: a default algorithm, having higher
+compression rate but is slower(compression/decompression) and a
+secondary algorithm, that is faster(compression/decompression) but has
+lower compression rate.
 
-By moving to crypto based APIs, it lays a foundation to use other
-compression algorithms for hibernation. There are no functional changes
-introduced by this approach.
+LZ4 algorithm has better decompression speeds over LZO. This reduces
+the hibernation image restore time.
+As per test results:
+                                    LZO             LZ4
+Size before Compression(bytes)   682696704       682393600
+Size after Compression(bytes)    146502402       155993547
+Decompression Rate               335.02 MB/s     501.05 MB/s
+Restore time                       4.4s             3.8s
+
+LZO is the default compression algorithm used for hibernation. Enable
+CONFIG_HIBERNATION_COMP_LZ4 to set the default compressor as LZ4.
 
 Signed-off-by: Nikhil V <quic_nprakash@quicinc.com>
 ---
- kernel/power/Kconfig     |  21 +++++++-
- kernel/power/hibernate.c |  33 +++++++++++++
- kernel/power/power.h     |   5 ++
- kernel/power/swap.c      | 101 +++++++++++++++++++++++++++++----------
- 4 files changed, 132 insertions(+), 28 deletions(-)
+ kernel/power/Kconfig     |  5 +++++
+ kernel/power/hibernate.c | 25 ++++++++++++++++++++++---
+ kernel/power/power.h     | 14 ++++++++++++++
+ 3 files changed, 41 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
-index 4b31629c5be4..d4167159bae8 100644
+index d4167159bae8..afce8130d8b9 100644
 --- a/kernel/power/Kconfig
 +++ b/kernel/power/Kconfig
-@@ -39,9 +39,9 @@ config HIBERNATION
- 	bool "Hibernation (aka 'suspend to disk')"
- 	depends on SWAP && ARCH_HIBERNATION_POSSIBLE
- 	select HIBERNATE_CALLBACKS
--	select LZO_COMPRESS
--	select LZO_DECOMPRESS
- 	select CRC32
-+	select CRYPTO
-+	select CRYPTO_LZO
+@@ -101,11 +101,16 @@ config HIBERNATION_COMP_LZO
+ 	bool "lzo"
+ 	depends on CRYPTO_LZO
+ 
++config HIBERNATION_COMP_LZ4
++	bool "lz4"
++	depends on CRYPTO_LZ4
++
+ endchoice
+ 
+ config HIBERNATION_DEF_COMP
+ 	string
+ 	default "lzo" if HIBERNATION_COMP_LZO
++	default "lz4" if HIBERNATION_COMP_LZ4
  	help
- 	  Enable the suspend to disk (STD) functionality, which is usually
- 	  called "hibernation" in user interfaces.  STD checkpoints the
-@@ -92,6 +92,23 @@ config HIBERNATION_SNAPSHOT_DEV
+ 	  Default compressor to be used for hibernation.
  
- 	  If in doubt, say Y.
- 
-+choice
-+	prompt "Default compressor"
-+	default HIBERNATION_COMP_LZO
-+	depends on HIBERNATION
-+
-+config HIBERNATION_COMP_LZO
-+	bool "lzo"
-+	depends on CRYPTO_LZO
-+
-+endchoice
-+
-+config HIBERNATION_DEF_COMP
-+	string
-+	default "lzo" if HIBERNATION_COMP_LZO
-+	help
-+	  Default compressor to be used for hibernation.
-+
- config PM_STD_PARTITION
- 	string "Default resume partition"
- 	depends on HIBERNATION
 diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index dee341ae4ace..fe0a3c5b8cfe 100644
+index fe0a3c5b8cfe..274327232dab 100644
 --- a/kernel/power/hibernate.c
 +++ b/kernel/power/hibernate.c
-@@ -47,6 +47,15 @@ dev_t swsusp_resume_device;
- sector_t swsusp_resume_block;
- __visible int in_suspend __nosavedata;
+@@ -721,6 +721,9 @@ static int load_image_and_restore(void)
+ 	return error;
+ }
  
-+static const char *default_compressor = CONFIG_HIBERNATION_DEF_COMP;
++#define COMPRESSION_ALGO_LZO "lzo"
++#define COMPRESSION_ALGO_LZ4 "lz4"
 +
-+/*
-+ * Compression/decompression algorithm to be used while saving/loading
-+ * image to/from disk. This would later be used in 'kernel/power/swap.c'
-+ * to allocate comp streams.
-+ */
-+char hib_comp_algo[CRYPTO_MAX_ALG_NAME];
-+
- enum {
- 	HIBERNATION_INVALID,
- 	HIBERNATION_PLATFORM,
-@@ -726,6 +735,17 @@ int hibernate(void)
- 		return -EPERM;
- 	}
+ /**
+  * hibernate - Carry out system hibernation, including saving the image.
+  */
+@@ -780,11 +783,24 @@ int hibernate(void)
  
-+	/*
-+	 * Query for the compression algorithm support if compression is enabled.
-+	 */
-+	if (!nocompress) {
-+		strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
-+		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
-+			pr_err("%s compression is not available\n", hib_comp_algo);
-+			return -EOPNOTSUPP;
+ 		if (hibernation_mode == HIBERNATION_PLATFORM)
+ 			flags |= SF_PLATFORM_MODE;
+-		if (nocompress)
++		if (nocompress) {
+ 			flags |= SF_NOCOMPRESS_MODE;
+-		else
++		} else {
+ 		        flags |= SF_CRC32_MODE;
+ 
++			/*
++			 * By default, LZO compression is enabled. Use SF_COMPRESSION_ALG_LZ4
++			 * to override this behaviour and use LZ4.
++			 *
++			 * Refer kernel/power/power.h for more details
++			 */
++
++			if (!strcmp(hib_comp_algo, COMPRESSION_ALGO_LZ4))
++				flags |= SF_COMPRESSION_ALG_LZ4;
++			else
++				flags |= SF_COMPRESSION_ALG_LZO;
 +		}
-+	}
 +
- 	sleep_flags = lock_system_sleep();
- 	/* The snapshot device should not be opened while we're running */
- 	if (!hibernate_acquire()) {
-@@ -949,6 +969,19 @@ static int software_resume(void)
- 	if (error)
- 		goto Unlock;
- 
-+	/*
-+	 * Check if the hibernation image is compressed. If so, query for
-+	 * the algorithm support.
-+	 */
-+	if (!(swsusp_header_flags & SF_NOCOMPRESS_MODE)) {
-+		strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
-+		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
-+			pr_err("%s compression is not available\n", hib_comp_algo);
-+			error = -EOPNOTSUPP;
-+			goto Unlock;
-+		}
-+	}
-+
- 	/* The snapshot device should not be opened while we're running */
- 	if (!hibernate_acquire()) {
- 		error = -EBUSY;
+ 		pm_pr_dbg("Writing hibernation image.\n");
+ 		error = swsusp_write(flags);
+ 		swsusp_free();
+@@ -974,7 +990,10 @@ static int software_resume(void)
+ 	 * the algorithm support.
+ 	 */
+ 	if (!(swsusp_header_flags & SF_NOCOMPRESS_MODE)) {
+-		strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
++		if (swsusp_header_flags & SF_COMPRESSION_ALG_LZ4)
++			strscpy(hib_comp_algo, COMPRESSION_ALGO_LZ4, sizeof(hib_comp_algo));
++		else
++			strscpy(hib_comp_algo, default_compressor, sizeof(hib_comp_algo));
+ 		if (crypto_has_comp(hib_comp_algo, 0, 0) != 1) {
+ 			pr_err("%s compression is not available\n", hib_comp_algo);
+ 			error = -EOPNOTSUPP;
 diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 17fd9aaaf084..88836e627512 100644
+index 88836e627512..7baeba100da5 100644
 --- a/kernel/power/power.h
 +++ b/kernel/power/power.h
-@@ -6,6 +6,7 @@
- #include <linux/compiler.h>
- #include <linux/cpu.h>
- #include <linux/cpuidle.h>
-+#include <linux/crypto.h>
+@@ -167,11 +167,25 @@ extern int swsusp_swap_in_use(void);
+  * Flags that can be passed from the hibernatig hernel to the "boot" kernel in
+  * the image header.
+  */
++#define SF_COMPRESSION_ALG_LZO	0 /* dummy, details given  below */
+ #define SF_PLATFORM_MODE	1
+ #define SF_NOCOMPRESS_MODE	2
+ #define SF_CRC32_MODE	        4
+ #define SF_HW_SIG		8
  
- struct swsusp_info {
- 	struct new_utsname	uts;
-@@ -54,6 +55,10 @@ asmlinkage int swsusp_save(void);
- 
++/*
++ * Bit to indicate the compression algorithm to be used(for LZ4). The same
++ * could be checked while saving/loading image to/from disk to use the
++ * corresponding algorithms.
++ *
++ * By default, LZO compression is enabled if SF_CRC32_MODE is set. Use
++ * SF_COMPRESSION_ALG_LZ4 to override this behaviour and use LZ4.
++ *
++ * SF_CRC32_MODE, SF_COMPRESSION_ALG_LZO(dummy) -> Compression, LZO
++ * SF_CRC32_MODE, SF_COMPRESSION_ALG_LZ4 -> Compression, LZ4
++ */
++#define SF_COMPRESSION_ALG_LZ4	16
++
  /* kernel/power/hibernate.c */
- extern bool freezer_test_done;
-+extern char hib_comp_algo[CRYPTO_MAX_ALG_NAME];
-+
-+/* kernel/power/swap.c */
-+extern unsigned int swsusp_header_flags;
- 
- extern int hibernation_snapshot(int platform_mode);
- extern int hibernation_restore(int platform_mode);
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index 765700f52978..5d2c155d97cc 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -23,7 +23,6 @@
- #include <linux/swapops.h>
- #include <linux/pm.h>
- #include <linux/slab.h>
--#include <linux/lzo.h>
- #include <linux/vmalloc.h>
- #include <linux/cpumask.h>
- #include <linux/atomic.h>
-@@ -339,6 +338,13 @@ static int mark_swapfiles(struct swap_map_handle *handle, unsigned int flags)
- 	return error;
- }
- 
-+/*
-+ * Hold the swsusp_header flag. This is used in software_resume() in
-+ * 'kernel/power/hibernate' to check if the image is compressed and query
-+ * for the compression algorithm support(if so).
-+ */
-+unsigned int swsusp_header_flags;
-+
- /**
-  *	swsusp_swap_check - check if the resume device is a swap device
-  *	and get its index (if so)
-@@ -514,6 +520,12 @@ static int swap_writer_finish(struct swap_map_handle *handle,
- 	return error;
- }
- 
-+/*
-+ * Bytes we need for compressed data in worst case. We assume(limitation)
-+ * this is the worst of all the compression algorithms.
-+ */
-+#define bytes_worst_compress(x) ((x) + ((x) / 16) + 64 + 3 + 2)
-+
- /* We need to remember how much compressed data we need to read. */
- #define CMP_HEADER	sizeof(size_t)
- 
-@@ -522,7 +534,7 @@ static int swap_writer_finish(struct swap_map_handle *handle,
- #define UNC_SIZE	(UNC_PAGES * PAGE_SIZE)
- 
- /* Number of pages we need for compressed data (worst case). */
--#define CMP_PAGES	DIV_ROUND_UP(lzo1x_worst_compress(UNC_SIZE) + \
-+#define CMP_PAGES	DIV_ROUND_UP(bytes_worst_compress(UNC_SIZE) + \
- 				CMP_HEADER, PAGE_SIZE)
- #define CMP_SIZE	(CMP_PAGES * PAGE_SIZE)
- 
-@@ -533,7 +545,6 @@ static int swap_writer_finish(struct swap_map_handle *handle,
- #define CMP_MIN_RD_PAGES	1024
- #define CMP_MAX_RD_PAGES	8192
- 
--
- /**
-  *	save_image - save the suspend image data
-  */
-@@ -629,6 +640,7 @@ static int crc32_threadfn(void *data)
-  */
- struct cmp_data {
- 	struct task_struct *thr;                  /* thread */
-+	struct crypto_comp *cc;                   /* crypto compressor stream */
- 	atomic_t ready;                           /* ready to start flag */
- 	atomic_t stop;                            /* ready to stop flag */
- 	int ret;                                  /* return code */
-@@ -638,15 +650,18 @@ struct cmp_data {
- 	size_t cmp_len;                           /* compressed length */
- 	unsigned char unc[UNC_SIZE];              /* uncompressed buffer */
- 	unsigned char cmp[CMP_SIZE];              /* compressed buffer */
--	unsigned char wrk[LZO1X_1_MEM_COMPRESS];  /* compression workspace */
- };
- 
-+/* Indicates the image size after compression */
-+static atomic_t compressed_size = ATOMIC_INIT(0);
-+
- /*
-  * Compression function that runs in its own thread.
-  */
- static int compress_threadfn(void *data)
- {
- 	struct cmp_data *d = data;
-+	unsigned int cmp_len = 0;
- 
- 	while (1) {
- 		wait_event(d->go, atomic_read(&d->ready) ||
-@@ -660,9 +675,13 @@ static int compress_threadfn(void *data)
- 		}
- 		atomic_set(&d->ready, 0);
- 
--		d->ret = lzo1x_1_compress(d->unc, d->unc_len,
--					  d->cmp + CMP_HEADER, &d->cmp_len,
--					  d->wrk);
-+		cmp_len = CMP_SIZE - CMP_HEADER;
-+		d->ret = crypto_comp_compress(d->cc, d->unc, d->unc_len,
-+					      d->cmp + CMP_HEADER,
-+					      &cmp_len);
-+		d->cmp_len = cmp_len;
-+
-+		atomic_set(&compressed_size, atomic_read(&compressed_size) + d->cmp_len);
- 		atomic_set(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
-@@ -694,6 +713,8 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 
- 	hib_init_batch(&hb);
- 
-+	atomic_set(&compressed_size, 0);
-+
- 	/*
- 	 * We'll limit the number of threads for compression to limit memory
- 	 * footprint.
-@@ -703,14 +724,14 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 
- 	page = (void *)__get_free_page(GFP_NOIO | __GFP_HIGH);
- 	if (!page) {
--		pr_err("Failed to allocate compression page\n");
-+		pr_err("Failed to allocate %s page\n", hib_comp_algo);
- 		ret = -ENOMEM;
- 		goto out_clean;
- 	}
- 
- 	data = vzalloc(array_size(nr_threads, sizeof(*data)));
- 	if (!data) {
--		pr_err("Failed to allocate compression data\n");
-+		pr_err("Failed to allocate %s data\n", hib_comp_algo);
- 		ret = -ENOMEM;
- 		goto out_clean;
- 	}
-@@ -729,6 +750,13 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 		init_waitqueue_head(&data[thr].go);
- 		init_waitqueue_head(&data[thr].done);
- 
-+		data[thr].cc = crypto_alloc_comp(hib_comp_algo, 0, 0);
-+		if (IS_ERR_OR_NULL(data[thr].cc)) {
-+			pr_err("Could not allocate comp stream %ld\n", PTR_ERR(data[thr].cc));
-+			ret = -EFAULT;
-+			goto out_clean;
-+		}
-+
- 		data[thr].thr = kthread_run(compress_threadfn,
- 		                            &data[thr],
- 		                            "image_compress/%u", thr);
-@@ -767,7 +795,7 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 	 */
- 	handle->reqd_free_pages = reqd_free_pages();
- 
--	pr_info("Using %u thread(s) for compression\n", nr_threads);
-+	pr_info("Using %u thread(s) for %s compression\n", nr_threads, hib_comp_algo);
- 	pr_info("Compressing and saving image data (%u pages)...\n",
- 		nr_to_write);
- 	m = nr_to_write / 10;
-@@ -817,14 +845,14 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 			ret = data[thr].ret;
- 
- 			if (ret < 0) {
--				pr_err("compression failed\n");
-+				pr_err("%s compression failed\n", hib_comp_algo);
- 				goto out_finish;
- 			}
- 
- 			if (unlikely(!data[thr].cmp_len ||
- 			             data[thr].cmp_len >
--			             lzo1x_worst_compress(data[thr].unc_len))) {
--				pr_err("Invalid compressed length\n");
-+				     bytes_worst_compress(data[thr].unc_len))) {
-+				pr_err("Invalid %s compressed length\n", hib_comp_algo);
- 				ret = -1;
- 				goto out_finish;
- 			}
-@@ -862,6 +890,9 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 	if (!ret)
- 		pr_info("Image saving done\n");
- 	swsusp_show_speed(start, stop, nr_to_write, "Wrote");
-+	pr_info("Image size after compression: %d kbytes\n",
-+		(atomic_read(&compressed_size) / 1024));
-+
- out_clean:
- 	hib_finish_batch(&hb);
- 	if (crc) {
-@@ -870,9 +901,12 @@ static int save_compressed_image(struct swap_map_handle *handle,
- 		kfree(crc);
- 	}
- 	if (data) {
--		for (thr = 0; thr < nr_threads; thr++)
-+		for (thr = 0; thr < nr_threads; thr++) {
- 			if (data[thr].thr)
- 				kthread_stop(data[thr].thr);
-+			if (data[thr].cc)
-+				crypto_free_comp(data[thr].cc);
-+		}
- 		vfree(data);
- 	}
- 	if (page) free_page((unsigned long)page);
-@@ -1113,6 +1147,7 @@ static int load_image(struct swap_map_handle *handle,
-  */
- struct dec_data {
- 	struct task_struct *thr;                  /* thread */
-+	struct crypto_comp *cc;                   /* crypto compressor stream */
- 	atomic_t ready;                           /* ready to start flag */
- 	atomic_t stop;                            /* ready to stop flag */
- 	int ret;                                  /* return code */
-@@ -1130,6 +1165,7 @@ struct dec_data {
- static int decompress_threadfn(void *data)
- {
- 	struct dec_data *d = data;
-+	unsigned int unc_len = 0;
- 
- 	while (1) {
- 		wait_event(d->go, atomic_read(&d->ready) ||
-@@ -1143,9 +1179,11 @@ static int decompress_threadfn(void *data)
- 		}
- 		atomic_set(&d->ready, 0);
- 
--		d->unc_len = UNC_SIZE;
--		d->ret = lzo1x_decompress_safe(d->cmp + CMP_HEADER, d->cmp_len,
--					       d->unc, &d->unc_len);
-+		unc_len = UNC_SIZE;
-+		d->ret = crypto_comp_decompress(d->cc, d->cmp + CMP_HEADER, d->cmp_len,
-+						d->unc, &unc_len);
-+		d->unc_len = unc_len;
-+
- 		if (clean_pages_on_decompress)
- 			flush_icache_range((unsigned long)d->unc,
- 					   (unsigned long)d->unc + d->unc_len);
-@@ -1193,14 +1231,14 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 
- 	page = vmalloc(array_size(CMP_MAX_RD_PAGES, sizeof(*page)));
- 	if (!page) {
--		pr_err("Failed to allocate compression page\n");
-+		pr_err("Failed to allocate %s page\n", hib_comp_algo);
- 		ret = -ENOMEM;
- 		goto out_clean;
- 	}
- 
- 	data = vzalloc(array_size(nr_threads, sizeof(*data)));
- 	if (!data) {
--		pr_err("Failed to allocate compression data\n");
-+		pr_err("Failed to allocate %s data\n", hib_comp_algo);
- 		ret = -ENOMEM;
- 		goto out_clean;
- 	}
-@@ -1221,6 +1259,13 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 		init_waitqueue_head(&data[thr].go);
- 		init_waitqueue_head(&data[thr].done);
- 
-+		data[thr].cc = crypto_alloc_comp(hib_comp_algo, 0, 0);
-+		if (IS_ERR_OR_NULL(data[thr].cc)) {
-+			pr_err("Could not allocate comp stream %ld\n", PTR_ERR(data[thr].cc));
-+			ret = -EFAULT;
-+			goto out_clean;
-+		}
-+
- 		data[thr].thr = kthread_run(decompress_threadfn,
- 		                            &data[thr],
- 		                            "image_decompress/%u", thr);
-@@ -1273,7 +1318,7 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 		if (!page[i]) {
- 			if (i < CMP_PAGES) {
- 				ring_size = i;
--				pr_err("Failed to allocate compression pages\n");
-+				pr_err("Failed to allocate %s pages\n", hib_comp_algo);
- 				ret = -ENOMEM;
- 				goto out_clean;
- 			} else {
-@@ -1283,7 +1328,7 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 	}
- 	want = ring_size = i;
- 
--	pr_info("Using %u thread(s) for decompression\n", nr_threads);
-+	pr_info("Using %u thread(s) for %s decompression\n", nr_threads, hib_comp_algo);
- 	pr_info("Loading and decompressing image data (%u pages)...\n",
- 		nr_to_read);
- 	m = nr_to_read / 10;
-@@ -1344,8 +1389,8 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 			data[thr].cmp_len = *(size_t *)page[pg];
- 			if (unlikely(!data[thr].cmp_len ||
- 			             data[thr].cmp_len >
--					lzo1x_worst_compress(UNC_SIZE))) {
--				pr_err("Invalid compressed length\n");
-+					bytes_worst_compress(UNC_SIZE))) {
-+				pr_err("Invalid %s compressed length\n", hib_comp_algo);
- 				ret = -1;
- 				goto out_finish;
- 			}
-@@ -1396,14 +1441,14 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 			ret = data[thr].ret;
- 
- 			if (ret < 0) {
--				pr_err("decompression failed\n");
-+				pr_err("%s decompression failed\n", hib_comp_algo);
- 				goto out_finish;
- 			}
- 
- 			if (unlikely(!data[thr].unc_len ||
- 				data[thr].unc_len > UNC_SIZE ||
- 				data[thr].unc_len & (PAGE_SIZE - 1))) {
--				pr_err("Invalid uncompressed length\n");
-+				pr_err("Invalid %s uncompressed length\n", hib_comp_algo);
- 				ret = -1;
- 				goto out_finish;
- 			}
-@@ -1464,9 +1509,12 @@ static int load_compressed_image(struct swap_map_handle *handle,
- 		kfree(crc);
- 	}
- 	if (data) {
--		for (thr = 0; thr < nr_threads; thr++)
-+		for (thr = 0; thr < nr_threads; thr++) {
- 			if (data[thr].thr)
- 				kthread_stop(data[thr].thr);
-+			if (data[thr].cc)
-+				crypto_free_comp(data[thr].cc);
-+		}
- 		vfree(data);
- 	}
- 	vfree(page);
-@@ -1535,6 +1583,7 @@ int swsusp_check(bool exclusive)
- 
- 		if (!memcmp(HIBERNATE_SIG, swsusp_header->sig, 10)) {
- 			memcpy(swsusp_header->sig, swsusp_header->orig_sig, 10);
-+			swsusp_header_flags = swsusp_header->flags;
- 			/* Reset swap signature now */
- 			error = hib_submit_io(REQ_OP_WRITE | REQ_SYNC,
- 						swsusp_resume_block,
+ int swsusp_check(bool exclusive);
+ extern void swsusp_free(void);
 -- 
 2.17.1
 
