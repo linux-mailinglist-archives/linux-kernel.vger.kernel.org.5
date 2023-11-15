@@ -2,88 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 991E87EBED3
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C407EBED7
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 09:51:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343532AbjKOIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 03:50:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38080 "EHLO
+        id S1343550AbjKOIv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 03:51:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234651AbjKOIuS (ORCPT
+        with ESMTP id S234675AbjKOIvY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 03:50:18 -0500
-Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com [209.85.215.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F0E710F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:50:15 -0800 (PST)
-Received: by mail-pg1-f200.google.com with SMTP id 41be03b00d2f7-5c19a2f606dso3378825a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 00:50:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700038214; x=1700643014;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=aePu8F+wvRaeV/RNI6UcFMufqZUiipAVD3u38JjdqGycn8bjNFNmCiF3RzCt8xwO8n
-         p0UMg7Q4YKQEAXc6+kAiLJXCNjmobOz6scGLnMIr809ySMCGngMsATDLaBPdEFIPJAfn
-         QiZcsXInJCHoWOtGshym64vny0hP/t/8rUT/Zym5YSPwW4gjhGh28267EP6SCO09scST
-         vWgrKdg5ZRsTl2DsGtcJdQEve5FB78mj56fWBdlAQW92XX+XAomSDOlAyAdZ8fECoTvZ
-         x2b25PpyeRzbbEkxGCEbz2SJ9mbaKpvg3WlqZqrW4g8JJyZFzfX+9mR4pCL+HRnFJY8w
-         D5Hw==
-X-Gm-Message-State: AOJu0Yys5pwsHk8eS+/GgjHADNP1ls6u9CVaBul3gzugo1GDcrwRlUIv
-        bcCc0U1SAkzf2i2h8SMPJ6Q54s0SEDTfGUBg5Xr2mGXkbGas
-X-Google-Smtp-Source: AGHT+IFUJ+Vym4OCXmONbmxagAntdPkW/KmU7Wvov6LOO01+7a6hUu2vKKARqr9sXhI//jw8FapxCsgSNNL1ljrINCH0MWGV4VRs
+        Wed, 15 Nov 2023 03:51:24 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687C210D;
+        Wed, 15 Nov 2023 00:51:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=qSmi0veZCxUyGsLIdDPUXJ4vVHzrPiXaYm87kEuEwtw=; b=H7M1Wp9m2EXKmNVfz1TjHl0Sfm
+        3sgLP+KLvxQSv8VrApa0Ha95zjbV4jksXoU+aoNTtWHabtjPRj/jAHfxLFyuKeXmQV+Kin7xPSH+e
+        V5P6tPpgx2f80QmPyXXrs3Gr0YhXN/qMlpJJT50c98eC7NyHoAqxAarnnQ6xF+fD5SY/ROM4SJtQ5
+        71iC7sMV7x2bo+JpGW5+2g17CsCK0SAN4OZ5P0K/6k0zSlNgDh2zwXvrTz8FeJ0R1yZRdtvSrh7QA
+        +VcXPdzfkJR5o9AOC3bm2vgVygwJByx6x1OEYX7sQ+5K5Tv4tjnDXLYGxGJ9NMk6YK799S/emBPrn
+        UswzkVuA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r3Bbz-003rZz-1O;
+        Wed, 15 Nov 2023 08:51:03 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1C7903002BE; Wed, 15 Nov 2023 09:51:03 +0100 (CET)
+Date:   Wed, 15 Nov 2023 09:51:02 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "fweimer@redhat.com" <fweimer@redhat.com>,
+        "xry111@xry111.site" <xry111@xry111.site>,
+        "andrealmeid@igalia.com" <andrealmeid@igalia.com>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+Subject: Re: Several tst-robust* tests time out with recent Linux kernel
+Message-ID: <20231115085102.GY3818@noisy.programming.kicks-ass.net>
+References: <4bda9f2e06512e375e045f9e72edb205104af19c.camel@xry111.site>
+ <d69d50445284a5e0d98a64862877c1e6ec22a9a8.camel@xry111.site>
+ <20231114153100.GY8262@noisy.programming.kicks-ass.net>
+ <20231114154017.GI4779@noisy.programming.kicks-ass.net>
+ <87ttpowajb.fsf@oldenburg.str.redhat.com>
+ <20231114201402.GA25315@noisy.programming.kicks-ass.net>
+ <822f3a867e5661ce61cea075a00ce04a4e4733f3.camel@intel.com>
 MIME-Version: 1.0
-X-Received: by 2002:a63:2022:0:b0:5bd:9cac:f993 with SMTP id
- g34-20020a632022000000b005bd9cacf993mr1135510pgg.5.1700038214642; Wed, 15 Nov
- 2023 00:50:14 -0800 (PST)
-Date:   Wed, 15 Nov 2023 00:50:14 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e375e0060a2cfd2b@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From:   syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To:     adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <822f3a867e5661ce61cea075a00ce04a4e4733f3.camel@intel.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Wed, Nov 15, 2023 at 01:11:20AM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2023-11-14 at 21:14 +0100, Peter Zijlstra wrote:
+> > Urgh, thanks!
+> > 
+> > Confirmed, the below cures things. Although I should probably make
+> > that
+> > FLAGS_SIZE_32 | FLAGS_SHARED against Linus' tree.
+> > 
+> > Let me go do a proper patch.
+> 
+> I saw these fail on the glibc shadow stack branch today, and I also saw
+> this one failing:
+> FAIL: nptl/tst-robustpi8
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+tip/locking/urgent (branch with the fix on) gets me:
 
-#syz fix: exact-commit-title
+root@ivb-ep:/usr/local/src/glibc# ./build/nptl/tst-robustpi8 
+running child
+verifying locks
+running child
+verifying locks
+running child
+verifying locks
+running child
+verifying locks
+running child
+verifying locks
+root@ivb-ep:/usr/local/src/glibc#
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+Which, to my untrained eye, looks like a pass to me.
