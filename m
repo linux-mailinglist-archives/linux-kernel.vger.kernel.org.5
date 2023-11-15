@@ -2,316 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC1857EC24C
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:32:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF657EC20D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 13:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343756AbjKOMc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 07:32:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38222 "EHLO
+        id S1343605AbjKOMTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 07:19:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234680AbjKOMcy (ORCPT
+        with ESMTP id S234916AbjKOMTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 07:32:54 -0500
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A445CE
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:32:49 -0800 (PST)
-Received: from epcas5p3.samsung.com (unknown [182.195.41.41])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231115123247epoutp03403d05777a128df49a720be2f8851288~Xy_Sg3LCT0475504755epoutp03Q
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:32:47 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231115123247epoutp03403d05777a128df49a720be2f8851288~Xy_Sg3LCT0475504755epoutp03Q
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700051567;
-        bh=dyApKvSFUgocVGjSlpND2ufFMIE3/xGQDXNQ1MeXyyY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=pim1CvP01EJdhSD9bizN4pl18PL/E4WPz2tZXDfwDjG8/URmqbaD9tKC7ZChF6gKC
-         tihOcGJMcWKPRt7n2fnjejSB0ouR1VII2qds4k0oGOS50htInUnd+tAMKBArWcq4Ne
-         PdreMp7+a4CXQroPmkZmiD0LpHFFhsWy5HwJjmYs=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20231115123246epcas5p11d1934f4b14e2840ac0151a2e18becc9~Xy_SJpwVj3143231432epcas5p1x;
-        Wed, 15 Nov 2023 12:32:46 +0000 (GMT)
-Received: from epsmges5p1new.samsung.com (unknown [182.195.38.181]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SVjHK1Gj0z4x9Pw; Wed, 15 Nov
-        2023 12:32:45 +0000 (GMT)
-Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
-        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        C3.C0.09634.C6AB4556; Wed, 15 Nov 2023 21:32:45 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
-        20231115122627epcas5p37263cadafd5af20043fbb74e57fe5a4c~Xy4xJF6Od1338613386epcas5p3J;
-        Wed, 15 Nov 2023 12:26:27 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231115122627epsmtrp238bc636ff376e3d830657aca5255c12e~Xy4xIVCPk1027510275epsmtrp2C;
-        Wed, 15 Nov 2023 12:26:27 +0000 (GMT)
-X-AuditID: b6c32a49-159fd700000025a2-5b-6554ba6c2bdc
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        89.28.07368.3F8B4556; Wed, 15 Nov 2023 21:26:27 +0900 (KST)
-Received: from AHRE124.. (unknown [109.105.118.124]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231115122626epsmtip2dead156a71ac95e0b720a62e6de210f3~Xy4vud8Xq0811008110epsmtip2a;
-        Wed, 15 Nov 2023 12:26:26 +0000 (GMT)
-From:   Xiaobing Li <xiaobing.li@samsung.com>
-To:     axboe@kernel.dk, asml.silence@gmail.com
-Cc:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
-        kun.dou@samsung.com, peiwei.li@samsung.com, joshi.k@samsung.com,
-        kundan.kumar@samsung.com, wenwen.chen@samsung.com,
-        ruyi.zhang@samsung.com, cliang01.li@samsung.com,
-        xue01.he@samsung.com, Xiaobing Li <xiaobing.li@samsung.com>
-Subject: [PATCH v3] io_uring: Statistics of the true utilization of sq
- threads.
-Date:   Wed, 15 Nov 2023 20:18:39 +0800
-Message-Id: <20231115121839.12556-1-xiaobing.li@samsung.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 15 Nov 2023 07:19:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7764C9B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 04:19:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93B3AC433C7;
+        Wed, 15 Nov 2023 12:19:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700050778;
+        bh=poAYkK4mnhrVQ3flBhD3AQ8sCwUy7YwbiQba2YhU01o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=BGFk9yDDHNtFs1qJzQ2TgsrLUsTcXpFClT9B5nfp2fQ6WOw+rXBbhVWTGfNktUr5e
+         StKgITcfMF8NlBHG6hjbqRMjymMPZmNLn2d5NopdZT1nRdZkxs3NETTfVKRt3wwnUm
+         Nu/TyVGUo1Lj47rQpvgqS6+ipqHzQ/EPgfpjVQsbZEpiftKBqvvUDmpX4Yu/qVhotp
+         hluG6dNDbs+7UdeKb1fixJ0iCiVG6pSD5FS5H3hcACyzuFncrJlWzoU/S5qROqm9h2
+         zgdxTF+zQ0iD1xKim1Oi5e+ckVEvBhRYNTpDmWN02fUoZclRfPNJKNCuJA4odk5T+N
+         8agOx/iMTK8Ew==
+Date:   Wed, 15 Nov 2023 13:19:34 +0100
+From:   Maxime Ripard <mripard@kernel.org>
+To:     Marco Pagani <marpagan@redhat.com>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linaro-mm-sig@lists.linaro.org
+Subject: Re: [RFC PATCH v2] drm/test: add a test suite for GEM objects backed
+ by shmem
+Message-ID: <2w7ewdzi2igf2yvw6xp4dnommjhs7sji2zvzj2r5npdgxuear4@fs3rje42jbnf>
+References: <20231108134205.111478-1-marpagan@redhat.com>
+ <dqpsjdpedvpbooffrn2nwg6hxr2bhdizwx27icwz2dx5bgsho4@id5drrg66e7h>
+ <e2c3e589-880c-4b24-8aa3-5084d1d40e21@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmhm7urpBUgzuNTBZzVm1jtFh9t5/N
-        4vTfxywW71rPsVgc/f+WzeJX911Gi61fvrJaXN41h83i2V5Oiy+Hv7NbTN2yg8mio+Uyo0XX
-        hVNsDrweO2fdZfe4fLbUo2/LKkaPz5vkAliism0yUhNTUosUUvOS81My89JtlbyD453jTc0M
-        DHUNLS3MlRTyEnNTbZVcfAJ03TJzgK5TUihLzCkFCgUkFhcr6dvZFOWXlqQqZOQXl9gqpRak
-        5BSYFOgVJ+YWl+al6+WlllgZGhgYmQIVJmRnrPoYUrDHqGLV/yb2BsbVGl2MnBwSAiYSq871
-        sXYxcnEICexmlDj/8wIjhPOJUWL2tw9QmW+MEps2PmCDaVm07RobRGIvo0Tjw24WCOclo8Sc
-        LcfBqtgEtCWur+tiBbFFgOzXj6eCFTELLGGS2PrtMBNIQlggUGLtlU1ARRwcLAKqEn+/54OE
-        eQVsJF6v+skCsU1eYv/Bs8wQcUGJkzOfgMWZgeLNW2czg8yUEPjKLtE04RM7RIOLxLf9fVCn
-        Cku8Or4FKi4l8fndXqh4scSRnu+sEM0NjBLTb1+FKrKW+HdlDwvIQcwCmhLrd+lDhGUlpp5a
-        xwSxmE+i9/cTJog4r8SOeTC2qsTqSw+hjpaWeN3wmwlkjISAh8SOaVkgYSGBWIlruw+xTmCU
-        n4XknVlI3pmFsHgBI/MqRsnUguLc9NRi0wLDvNRyeMQm5+duYgQnUi3PHYx3H3zQO8TIxMF4
-        iFGCg1lJhNdcLiRViDclsbIqtSg/vqg0J7X4EKMpMIgnMkuJJucDU3leSbyhiaWBiZmZmYml
-        sZmhkjjv69a5KUIC6YklqdmpqQWpRTB9TBycUg1M6clvyk/dq4p3vjbp0iktxq41fRN7JNLm
-        nfN8vbPR6/ftLcYeh590pv3J64os+zdxevezv/vE4zzqDfcw7dmczFBhu/3Sugy+E8f3aN3S
-        Vuuct8DLKkTaVM2ifuXfk0+TGldNUMvZtNtvw+ND1+t1D7rOXl4nuLG7X+eeaA/jt8Sdv7bJ
-        1v5hOxg9g52r5HZUC5Nf/pnDHDKdUff+u0vnOR1SMix+qhXMsjfkkIevi/1rtXnz3TVWpfRp
-        lD3Lu7/L1cHuMfO3FIXYcwm6hlcMNHVvlfudkOQWOLtEPsX78kch7lTP2TWO24VYjQ5eP3ro
-        UFv8SdbPFgd2Pc5Zy7mLj1clzrRC7Kj7Bes37wWUWIozEg21mIuKEwHVLqOWLQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrMLMWRmVeSWpSXmKPExsWy7bCSvO7nHSGpBmva1C3mrNrGaLH6bj+b
-        xem/j1ks3rWeY7E4+v8tm8Wv7ruMFlu/fGW1uLxrDpvFs72cFl8Of2e3mLplB5NFR8tlRouu
-        C6fYHHg9ds66y+5x+WypR9+WVYwenzfJBbBEcdmkpOZklqUW6dslcGWs+hhSsMeoYtX/JvYG
-        xtUaXYycHBICJhKLtl1j62Lk4hAS2M0o8bH1F2MXIwdQQlriz59yiBphiZX/nrND1DxnlNj+
-        5C0jSIJNQFvi+rouVpB6EQFdica7CiA1zAIbmCT2P53HClIjLOAvMWHSIyaQGhYBVYm/3/NB
-        wrwCNhKvV/1kgZgvL7H/4FlmiLigxMmZT8DizEDx5q2zmScw8s1CkpqFJLWAkWkVo2RqQXFu
-        em6yYYFhXmq5XnFibnFpXrpecn7uJkZwOGtp7GC8N/+f3iFGJg7GQ4wSHMxKIrzmciGpQrwp
-        iZVVqUX58UWlOanFhxilOViUxHkNZ8xOERJITyxJzU5NLUgtgskycXBKNTAdLimb6q5teKFs
-        A9O9nBNZZ5fNPBeyVdxn2nMZQdm+K6yCc+N65gSee/HmrJF96Zy1+wKfvF++yEFji8CGZIbq
-        pdom0itZolK+5c6e3Ni4kGfKB/42uWrtsyszv/+2ZvTWnn7qzzyJ+33Ly7k9I83DF/LaqQTd
-        z5juKrLz5H3PRU+sH+1TcrqY7LuILd2xbOEXt6tKu6WrU9+zxGR2ZB89/KRH/+My68QzLeVN
-        D0XMM1cKTrqnkOPS9NX9A8eJObUBSz/qXl639Fvm4R9R6QdPNf5c/ez3Wm7zu9wB/2NfX5/5
-        qU0xTfERU7dJtreCzvJgyUMX1XqcHLQ6P/74NpHDb7/75+RbefP+uF/LXy2ixFKckWioxVxU
-        nAgAbSfh39YCAAA=
-X-CMS-MailID: 20231115122627epcas5p37263cadafd5af20043fbb74e57fe5a4c
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231115122627epcas5p37263cadafd5af20043fbb74e57fe5a4c
-References: <CGME20231115122627epcas5p37263cadafd5af20043fbb74e57fe5a4c@epcas5p3.samsung.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="3qk6gcllhntcokbi"
+Content-Disposition: inline
+In-Reply-To: <e2c3e589-880c-4b24-8aa3-5084d1d40e21@redhat.com>
 X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-v3:
-1.Since the sq thread has a while(1) structure, during this process,
-  there may be a lot of time that is not processing IO but does not
-exceed the timeout period, therefore, the sqpoll thread will keep
-running and will keep occupying the CPU. Obviously, the CPU is wasted at
-this time;Our goal is to count the part of the time that the sqpoll
-thread actually processes IO, so as to reflect the part of the CPU it
-uses to process IO, which can be used to help improve the actual
-utilization of the CPU in the future.
 
-2."work_time" in the code represents the sum of the jiffies count of the
-  sq thread actually processing IO, that is, how many milliseconds it
-actually takes to process IO. "total_time" represents the total time
-that the sq thread has elapsed from the beginning of the loop to the
-current time point, that is, how many milliseconds it has spent in
-total.
-The output "SqBusy" represents the percentage of time utilization that
-the sq thread actually uses to process IO.
+--3qk6gcllhntcokbi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-3.The task_pid value in the io_sq_data structure should be assigned
-  after the sq thread is created, otherwise the pid of its parent
-process will be recorded.
+Hi,
 
-4.After many tests, we do not need to obtain ctx->uring_lock in advance
-  when obtaining ctx->sq_data. We can avoid null pointer references by
-judging that ctx is not null.
+On Tue, Nov 14, 2023 at 05:18:08PM +0100, Marco Pagani wrote:
+> On 2023-11-10 15:41, Maxime Ripard wrote:
+> > On Wed, Nov 08, 2023 at 02:42:03PM +0100, Marco Pagani wrote:
+> >> This patch introduces an initial KUnit test suite for GEM objects
+> >> backed by shmem buffers.
+> >>
+> >> Suggested-by: Javier Martinez Canillas <javierm@redhat.com>
+> >> Signed-off-by: Marco Pagani <marpagan@redhat.com>
+> >>
+> >> v2:
+> >> - Improved description of test cases
+> >> - Cleaner error handling using KUnit actions
+> >> - Alphabetical order in Kconfig and Makefile
+> >> ---
+> >>  drivers/gpu/drm/Kconfig                    |   9 +-
+> >>  drivers/gpu/drm/tests/Makefile             |   5 +-
+> >>  drivers/gpu/drm/tests/drm_gem_shmem_test.c | 381 +++++++++++++++++++++
+> >>  3 files changed, 389 insertions(+), 6 deletions(-)
+> >>  create mode 100644 drivers/gpu/drm/tests/drm_gem_shmem_test.c
+> >>
+> >> diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> >> index 3eee8636f847..a2551c8c393a 100644
+> >> --- a/drivers/gpu/drm/Kconfig
+> >> +++ b/drivers/gpu/drm/Kconfig
+> >> @@ -76,14 +76,15 @@ config DRM_KUNIT_TEST
+> >>  	tristate "KUnit tests for DRM" if !KUNIT_ALL_TESTS
+> >>  	depends on DRM && KUNIT
+> >>  	select PRIME_NUMBERS
+> >> +	select DRM_BUDDY
+> >>  	select DRM_DISPLAY_DP_HELPER
+> >>  	select DRM_DISPLAY_HELPER
+> >> -	select DRM_LIB_RANDOM
+> >> -	select DRM_KMS_HELPER
+> >> -	select DRM_BUDDY
+> >> +	select DRM_EXEC
+> >>  	select DRM_EXPORT_FOR_TESTS if m
+> >> +	select DRM_GEM_SHMEM_HELPER
+> >> +	select DRM_KMS_HELPER
+> >>  	select DRM_KUNIT_TEST_HELPERS
+> >> -	select DRM_EXEC
+> >> +	select DRM_LIB_RANDOM
+> >>  	default KUNIT_ALL_TESTS
+> >>  	help
+> >>  	  This builds unit tests for DRM. This option is not useful for
+> >> diff --git a/drivers/gpu/drm/tests/Makefile b/drivers/gpu/drm/tests/Ma=
+kefile
+> >> index ba7baa622675..d6183b3d7688 100644
+> >> --- a/drivers/gpu/drm/tests/Makefile
+> >> +++ b/drivers/gpu/drm/tests/Makefile
+> >> @@ -9,15 +9,16 @@ obj-$(CONFIG_DRM_KUNIT_TEST) +=3D \
+> >>  	drm_connector_test.o \
+> >>  	drm_damage_helper_test.o \
+> >>  	drm_dp_mst_helper_test.o \
+> >> +	drm_exec_test.o \
+> >>  	drm_format_helper_test.o \
+> >>  	drm_format_test.o \
+> >>  	drm_framebuffer_test.o \
+> >> +	drm_gem_shmem_test.o \
+> >>  	drm_managed_test.o \
+> >>  	drm_mm_test.o \
+> >>  	drm_modes_test.o \
+> >>  	drm_plane_helper_test.o \
+> >>  	drm_probe_helper_test.o \
+> >> -	drm_rect_test.o	\
+> >> -	drm_exec_test.o
+> >> +	drm_rect_test.o
+> >=20
+> > Thanks for reordering the tests and symbols, but they should part of a
+> > preliminary patch.
+> >=20
+>=20
+> Okay, I'll send it as a separate patch before v3.
 
-Signed-off-by: Xiaobing Li <xiaobing.li@samsung.com>
+Thanks for taking care of this.
 
-The test results are as follows:
-Every 0.5s: cat /proc/281126/fdinfo/6 | grep Sq
-SqMask: 0x3
-SqHead: 1168417
-SqTail: 1168418
-CachedSqHead:   1168418
-SqThread:       281126
-SqThreadCpu:    55
-SqBusy: 96%
----
- io_uring/fdinfo.c | 31 ++++++++++++++++---------------
- io_uring/sqpoll.c | 20 ++++++++++++++++----
- io_uring/sqpoll.h |  2 ++
- 3 files changed, 34 insertions(+), 19 deletions(-)
+[...]
 
-diff --git a/io_uring/fdinfo.c b/io_uring/fdinfo.c
-index f04a43044d91..b9e2e339140d 100644
---- a/io_uring/fdinfo.c
-+++ b/io_uring/fdinfo.c
-@@ -64,6 +64,7 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 	unsigned int sq_shift = 0;
- 	unsigned int sq_entries, cq_entries;
- 	int sq_pid = -1, sq_cpu = -1;
-+	int sq_busy = 0;
- 	bool has_lock;
- 	unsigned int i;
- 
-@@ -134,6 +135,21 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 		seq_printf(m, "\n");
- 	}
- 
-+	if (ctx && (ctx->flags & IORING_SETUP_SQPOLL)) {
-+		struct io_sq_data *sq = ctx->sq_data;
-+
-+		if (sq && sq->total_time != 0)
-+			sq_busy = (int)(sq->work_time * 100 / sq->total_time);
-+
-+		sq_pid = sq->task_pid;
-+		sq_cpu = sq->sq_cpu;
-+	}
-+
-+	seq_printf(m, "SqThread:\t%d\n", sq_pid);
-+	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
-+	seq_printf(m, "SqBusy:\t%d%%\n", sq_busy);
-+	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
-+
- 	/*
- 	 * Avoid ABBA deadlock between the seq lock and the io_uring mutex,
- 	 * since fdinfo case grabs it in the opposite direction of normal use
-@@ -142,21 +158,6 @@ __cold void io_uring_show_fdinfo(struct seq_file *m, struct file *f)
- 	 */
- 	has_lock = mutex_trylock(&ctx->uring_lock);
- 
--	if (has_lock && (ctx->flags & IORING_SETUP_SQPOLL)) {
--		struct io_sq_data *sq = ctx->sq_data;
--
--		if (mutex_trylock(&sq->lock)) {
--			if (sq->thread) {
--				sq_pid = task_pid_nr(sq->thread);
--				sq_cpu = task_cpu(sq->thread);
--			}
--			mutex_unlock(&sq->lock);
--		}
--	}
--
--	seq_printf(m, "SqThread:\t%d\n", sq_pid);
--	seq_printf(m, "SqThreadCpu:\t%d\n", sq_cpu);
--	seq_printf(m, "UserFiles:\t%u\n", ctx->nr_user_files);
- 	for (i = 0; has_lock && i < ctx->nr_user_files; i++) {
- 		struct file *f = io_file_from_index(&ctx->file_table, i);
- 
-diff --git a/io_uring/sqpoll.c b/io_uring/sqpoll.c
-index bd6c2c7959a5..dc093adc1ce5 100644
---- a/io_uring/sqpoll.c
-+++ b/io_uring/sqpoll.c
-@@ -224,17 +224,21 @@ static int io_sq_thread(void *data)
- 	struct io_ring_ctx *ctx;
- 	unsigned long timeout = 0;
- 	char buf[TASK_COMM_LEN];
-+	unsigned long sq_start, sq_work_begin, sq_work_end;
- 	DEFINE_WAIT(wait);
- 
- 	snprintf(buf, sizeof(buf), "iou-sqp-%d", sqd->task_pid);
- 	set_task_comm(current, buf);
- 
--	if (sqd->sq_cpu != -1)
-+	if (sqd->sq_cpu != -1) {
- 		set_cpus_allowed_ptr(current, cpumask_of(sqd->sq_cpu));
--	else
-+	} else {
- 		set_cpus_allowed_ptr(current, cpu_online_mask);
-+		sqd->sq_cpu = raw_smp_processor_id();
-+	}
- 
- 	mutex_lock(&sqd->lock);
-+	sq_start = jiffies;
- 	while (1) {
- 		bool cap_entries, sqt_spin = false;
- 
-@@ -245,6 +249,7 @@ static int io_sq_thread(void *data)
- 		}
- 
- 		cap_entries = !list_is_singular(&sqd->ctx_list);
-+		sq_work_begin = jiffies;
- 		list_for_each_entry(ctx, &sqd->ctx_list, sqd_list) {
- 			int ret = __io_sq_thread(ctx, cap_entries);
- 
-@@ -254,6 +259,11 @@ static int io_sq_thread(void *data)
- 		if (io_run_task_work())
- 			sqt_spin = true;
- 
-+		sq_work_end = jiffies;
-+		sqd->total_time = sq_work_end - sq_start;
-+		if (sqt_spin == true)
-+			sqd->work_time += sq_work_end - sq_work_begin;
-+
- 		if (sqt_spin || !time_after(jiffies, timeout)) {
- 			if (sqt_spin)
- 				timeout = jiffies + sqd->sq_thread_idle;
-@@ -261,6 +271,7 @@ static int io_sq_thread(void *data)
- 				mutex_unlock(&sqd->lock);
- 				cond_resched();
- 				mutex_lock(&sqd->lock);
-+				sqd->sq_cpu = raw_smp_processor_id();
- 			}
- 			continue;
- 		}
-@@ -294,6 +305,7 @@ static int io_sq_thread(void *data)
- 				mutex_unlock(&sqd->lock);
- 				schedule();
- 				mutex_lock(&sqd->lock);
-+				sqd->sq_cpu = raw_smp_processor_id();
- 			}
- 			list_for_each_entry(ctx, &sqd->ctx_list, sqd_list)
- 				atomic_andnot(IORING_SQ_NEED_WAKEUP,
-@@ -395,14 +407,14 @@ __cold int io_sq_offload_create(struct io_ring_ctx *ctx,
- 			sqd->sq_cpu = -1;
- 		}
- 
--		sqd->task_pid = current->pid;
--		sqd->task_tgid = current->tgid;
-+		sqd->task_tgid = current->pid;
- 		tsk = create_io_thread(io_sq_thread, sqd, NUMA_NO_NODE);
- 		if (IS_ERR(tsk)) {
- 			ret = PTR_ERR(tsk);
- 			goto err_sqpoll;
- 		}
- 
-+		sqd->task_pid = task_pid_nr(tsk);
- 		sqd->thread = tsk;
- 		ret = io_uring_alloc_task_context(tsk, ctx);
- 		wake_up_new_task(tsk);
-diff --git a/io_uring/sqpoll.h b/io_uring/sqpoll.h
-index 8df37e8c9149..fd6fa9587843 100644
---- a/io_uring/sqpoll.h
-+++ b/io_uring/sqpoll.h
-@@ -16,6 +16,8 @@ struct io_sq_data {
- 	pid_t			task_pid;
- 	pid_t			task_tgid;
- 
-+	unsigned long       work_time;
-+	unsigned long       total_time;
- 	unsigned long		state;
- 	struct completion	exited;
- };
--- 
-2.34.1
+> >> +/*
+> >> + * Wrappers to avoid an explicit type casting when passing action
+> >> + * functions to kunit_add_action().
+> >> + */
+> >> +static void kfree_wrapper(void *p)
+> >> +{
+> >> +	kfree(p);
+> >> +}
+> >> +
+> >> +static void sg_free_table_wrapper(void *sgt)
+> >> +{
+> >> +	sg_free_table(sgt);
+> >> +}
+> >> +
+> >> +static void drm_gem_shmem_free_wrapper(void *shmem)
+> >> +{
+> >> +	drm_gem_shmem_free(shmem);
+> >> +}
+> >=20
+> > I think you need to explicitly cast the pointer (or do a temporary
+> > assignment to the proper type) to avoid a compiler warning.
+> >=20
+>=20
+> Do you mean like:
+>=20
+> static void drm_gem_shmem_free_wrapper(void *shmem)
+> {
+> 	drm_gem_shmem_free((struct drm_gem_shmem_object *)shmem);
+> }
 
+yeah, or
+
+static void drm_gem_shmem_free_wrapper(void *ptr)
+{
+	struct drm_gem_shmem_object *shmem =3D ptr;
+
+	drm_gem_shmem_free(shmem);
+}
+
+> I built the current version with clang 16.0.6 and gcc 13.2.1 but got
+> no cast warnings. Clang spotted an uninitialized variable, though.
+
+The same thing happened to me, gcc didn't spot those issues but Intel's
+build bot did. They might run with extra warnings.
+
+Maxime
+
+--3qk6gcllhntcokbi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZVS3VgAKCRDj7w1vZxhR
+xa4aAQCAVyhWZiU+OniP4UNu1OLe7cKdZnHLG6DzxYjmbnf5pQEAiRgK42cmj+Ne
+VDlM4EvcxZ19p0Bx76sBbF1hXYqX2wU=
+=9mwm
+-----END PGP SIGNATURE-----
+
+--3qk6gcllhntcokbi--
