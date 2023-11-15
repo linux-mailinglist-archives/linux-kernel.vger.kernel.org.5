@@ -2,87 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C67D7EC833
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:12:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884577EC831
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:12:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232378AbjKOQM0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:12:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43662 "EHLO
+        id S232103AbjKOQMQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:12:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43520 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232227AbjKOQMY (ORCPT
+        with ESMTP id S230402AbjKOQMO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:12:24 -0500
-Received: from m13115.mail.163.com (m13115.mail.163.com [220.181.13.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 229E683;
-        Wed, 15 Nov 2023 08:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=GXGVKdwy5DsAX8pLOcKCWbltln5EH7eBs7UasJPfv18=; b=m
-        S1G6Fs9C7e8Ly++5BikQ+zBNBR86m6MI/S/kymnkBpVL5BTS7lWpJCFy5VPS5UHv
-        Nt3JmGR30OIbQFOdXFEdnIYnLL4P4UefpYGGVljjRroFITbt8tXTxQp7nL185jyd
-        ydV3VsNEDnsvCP0uUW846+a6Nb79VwENATdHU5ii6k=
-Received: from 00107082$163.com ( [111.35.186.243] ) by
- ajax-webmail-wmsvr115 (Coremail) ; Thu, 16 Nov 2023 00:11:34 +0800 (CST)
-X-Originating-IP: [111.35.186.243]
-Date:   Thu, 16 Nov 2023 00:11:34 +0800 (CST)
-From:   "David Wang" <00107082@163.com>
-To:     "Namhyung Kim" <namhyung@kernel.org>
-Cc:     "Peter Zijlstra" <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Regression or Fix]perf: profiling stats sigificantly changed
- for aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com>
- <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com>
- <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
-X-NTES-SC: AL_Qu2bAvydu04i4iOdYOkZnEYQheY4XMKyuPkg1YJXOp80qSvR3Ac+Qm1GJF3b/P+fAQWUogqGWwBf7vl6YbVUVpzNPh8ERBbpPFgUzWYcPEHd
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 15 Nov 2023 11:12:14 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26347AD;
+        Wed, 15 Nov 2023 08:12:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=3agsLpsSM2d58FHz7b5hDOIxhzFLmj2e63YxikopHhQ=; b=zH/neAjbIjs/dCVDLjp/tyn0Hm
+        D46MRYuvFBN3YS+CfmEu+uK3mDflXyPxOyXoNQW3mjIacteJRwkCOCyLYic8chi3Qi9GLwmvjJiyi
+        PsgLEgOeTJuTy17cCqCzDgZ77KbhmsCTO7yA3RbjXrN9HwBLTNcQIRNFDBpJSgceQu4U=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r3IUl-000GHP-EA; Wed, 15 Nov 2023 17:12:03 +0100
+Date:   Wed, 15 Nov 2023 17:12:03 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Romain Gantois <romain.gantois@bootlin.com>
+Cc:     davem@davemloft.net, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        thomas.petazzoni@bootlin.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-arm-kernel@lists.infradead.org,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>
+Subject: Re: [PATCH net-next v3 6/8] net: phy: add calibration callbacks to
+ phy_driver
+Message-ID: <8bd7abff-9b6d-42ac-b98f-fbfe5f0d7c00@lunn.ch>
+References: <20231114105600.1012056-1-romain.gantois@bootlin.com>
+ <20231114105600.1012056-7-romain.gantois@bootlin.com>
+ <a4dd8cb4-f662-4dc7-8311-712c64de6f21@lunn.ch>
+ <2d4c7054-1aa8-1531-ffa3-7be342ed9a07@bootlin.com>
 MIME-Version: 1.0
-Message-ID: <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: c8GowADnD4m37VRlRMQHAA--.64135W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/xtbBnAEpqlghlW-3-AAFsT
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2d4c7054-1aa8-1531-ffa3-7be342ed9a07@bootlin.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CuWcqCAyMDIzLTExLTE1IDIzOjQ4OjMz77yMIk5hbWh5dW5nIEtpbSIgPG5hbWh5dW5nQGtlcm5l
-bC5vcmc+IOWGmemBk++8mgo+T24gV2VkLCBOb3YgMTUsIDIwMjMgYXQgMzowMOKAr0FNIERhdmlk
-IFdhbmcgPDAwMTA3MDgyQDE2My5jb20+IHdyb3RlOgo+Pgo+Pgo+Pgo+PiBBdCAyMDIzLTExLTE1
-IDE4OjMyOjQxLCAiUGV0ZXIgWmlqbHN0cmEiIDxwZXRlcnpAaW5mcmFkZWFkLm9yZz4gd3JvdGU6
-Cj4+ID4KPj4gPk5hbWh5dW5nLCBjb3VsZCB5b3UgcGxlYXNlIHRha2UgYSBsb29rLCB5b3Uga25v
-dyBob3cgdG8gb3BlcmF0ZSB0aGlzCj4+ID5jZ3JvdXAgc3R1ZmYuCj4+ID4KPj4KPj4gTW9yZSBp
-bmZvcm1hdGlvbiwgIEkgcnVuIHRoZSBwcm9maWxpbmcgd2l0aCA4Y3B1IG1hY2hpbmUgb24gYSBT
-U0Qgd2l0aCBleHQ0IGZpbGVzeXN0ZW0gOgo+Pgo+PiAjIG1rZGlyIC9zeXMvZnMvY2dyb3VwL215
-dGVzdAo+PiAjIGVjaG8gJCQgPiAvc3lzL2ZzL2Nncm91cC9teXRlc3QvY2dyb3VwLnByb2NzCj4+
-ICMjIFN0YXJ0IHByb2ZpbGluZyB0YXJnZXRpbmcgY2dyb3VwIC9zeXMvZnMvY2dyb3VwL215dGVz
-dCAgIG9uIGFub3RoZXIgdGVybWluYWwKPj4gIyBmaW8gLS1yYW5kcmVwZWF0PTEgLS1pb2VuZ2lu
-ZT1saWJhaW8gLS1kaXJlY3Q9MSAtLW5hbWU9dGVzdCAgLS1icz00ayAtLWlvZGVwdGg9NjQgLS1z
-aXplPTFHIC0tcmVhZHdyaXRlPXJhbmRydyAgLS1ydW50aW1lPTYwMCAtLW51bWpvYnM9NCAtLXRp
-bWVfYmFzZWQ9MQo+Pgo+PiBJIGdvdCBhIGZlZWxpbmcgdGhhdCBmMDZjYzY2N2Y3OTkwIHdvdWxk
-IGRlY3JlYXNlIHRvdGFsIHNhbXBsZXMgYnkgMTAlfjIwJSB3aGVuIHByb2ZpbGluZyBJTyBiZW5j
-aG1hcmsgd2l0aGluIGNncm91cC4KPgo+T2ggc29ycnksIEkgbWlzc2VkIHRoaXMgbWVzc2FnZS4g
-IENhbiB5b3UgcGxlYXNlIHNoYXJlIHRoZQo+Y29tbWFuZCBsaW5lIGFuZCB0aGUgb3V0cHV0Pwo+
-CkkgZGlkIG5vdCB1c2UgcGVyZi4uLi4uIFRoaXMgaXMgdGhlIHBhcnQgd2hlcmUgIGl0IGlzIG5v
-dCBxdWl0ZSBjb252aW5jaW5nIHRvIHJlcG9ydCB0aGUgY2hhbmdlLCBJIGFtIHVzaW5nIGEgcHJv
-ZmlsaW5nIHRvb2wgb2YgbXkgb3duIGFzIEkgbWVudGlvbmVkIGluIHRoZSBmaXJzdCBtYWlsLi4u
-Li4KQnV0IEkgYmVsaWV2ZSBteSBwcm9maWxpbmcgdG9vbHMgZGlkIGRldGVjdCBzb21lIGNoYW5n
-ZXMuCgpJIGFtIG5vdCBleHBlcmllbmNlZCB3aXRoIHRoZSBwZXJmLXRvb2wgYXQgYWxsLCAgIHRv
-byBjb21wbGljYXRlZCBhIHRvb2wgZm9yIG1lLi4uLiBCdXQgSSB0aGluayBJIGNhbiB0cnkgaXQu
-CgpEYXZpZCBXYW5nLgo=
+On Wed, Nov 15, 2023 at 04:31:07PM +0100, Romain Gantois wrote:
+> On Tue, 14 Nov 2023, Andrew Lunn wrote:
+> 
+> > > +static inline
+> > > +int phy_start_calibration(struct phy_device *phydev)
+> > > +{
+> > > +	if (!(phydev->drv &&
+> > > +	      phydev->drv->calibration_start &&
+> > > +	      phydev->drv->calibration_stop))
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > > +	return phydev->drv->calibration_start(phydev);
+> > > +}
+> > > +
+> > > +static inline
+> > > +int phy_stop_calibration(struct phy_device *phydev)
+> > > +{
+> > > +	if (!(phydev->drv &&
+> > > +	      phydev->drv->calibration_stop))
+> > > +		return -EOPNOTSUPP;
+> > > +
+> > > +	return phydev->drv->calibration_stop(phydev);
+> > > +}
+> > > +
+> > 
+> > What is the locking model?
+> > 
+> >      Andrew
+> > 
+> This driver currently uses an atomic flag to make sure that the calibration 
+> doesn't run twice. It doesn't acquire any locks before calling 
+> phy_start_calibration(), which is a mistake.
+> 
+> I think a good locking model for this would be similar to the one used for 
+> phy_cable_test. The phy_start_calibration() and phy_stop_calibration() wrappers 
+> would acquire a lock on the PHY device and then test phydev->state, to check for 
+> an ongoing calibration. A new enum member such as PHY_CALIB could be defined for 
+> this purpose. The lock would be released by the phylib wrapper once the 
+> phy_driver callback returns.
+> 
+> The problem with this is that one calibration run can access multiple 
+> phy_device instances at the same time, e.g. if a switch is linked to a multiport 
+> PHY via a PSGMII link.
+> 
+> So acquiring a lock on a single phy device isn't enough. Ideally, these 
+> calls could somehow acquire one lock on all the hardware resources of a 
+> multiport PHY simultaneously. From what I've seen, there is no standard kernel 
+> interface that allows MAC drivers to know about link-sharing between phy 
+> devices. I'll have to do more research on this but if you know of an existing 
+> interface that I can use for this, please tell me.
+
+Lets get the switch parts merged first, then we can think about this
+calibration problem. I need a better understanding of the requirements
+before i can suggest something.
+
+       Andrew
+
