@@ -2,138 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 535DB7EC9E0
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:48:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87DEA7EC9E4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 18:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230402AbjKORsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 12:48:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48902 "EHLO
+        id S231745AbjKORti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 12:49:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229504AbjKORsj (ORCPT
+        with ESMTP id S229796AbjKORth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 12:48:39 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56BC418E;
-        Wed, 15 Nov 2023 09:48:36 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id F1CBC1F8BA;
-        Wed, 15 Nov 2023 17:48:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700070515; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dVirFhaoEoAX1LEzb5mRTEwNjUcyu3xWdfuMee0UoV8=;
-        b=lfPWiR9Atyz7OYGBbcWnddpsjMxEIsMt7yvvR42DgCwhHU87lj5wxD+Y/b3fDEhXpGzr3f
-        /HwtCDqYciAHIIjoBtY5k2/ou+/RbpfBcm8QSgWrR/uJyejRJU2n2Ci2jvgqAYPICvpt+6
-        1T7OCddHZL7liBBtsPAqY2vRO+4Z3kY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700070515;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=dVirFhaoEoAX1LEzb5mRTEwNjUcyu3xWdfuMee0UoV8=;
-        b=tD38coEFHSEmEaDCjSnTkj9DKJrzJCISkjbbAXifYGSgZqY4Gztn4feNszGD5NqnQbHmqS
-        qJKrGhfGyWPfzNBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 9A21013587;
-        Wed, 15 Nov 2023 17:48:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id 6rL2InIEVWWzVQAAMHmgww
-        (envelope-from <clopez@suse.de>); Wed, 15 Nov 2023 17:48:34 +0000
-From:   =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH] KVM: X86: improve documentation for KVM_CAP_X86_BUS_LOCK_EXIT
-Date:   Wed, 15 Nov 2023 18:47:04 +0100
-Message-Id: <20231115174703.1996-1-clopez@suse.de>
-X-Mailer: git-send-email 2.35.3
+        Wed, 15 Nov 2023 12:49:37 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 867361A3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:49:33 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5a9bf4fbd3fso5657737a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 09:49:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700070573; x=1700675373; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rD3WiIjcHVWht+bRoyz5WPCyUUboXlGuOAtDZ7BuR4Y=;
+        b=HL7teC/dFsL6nhWGP8XRvC3I1hAH1404skG3QW+KqliDXcK3kiO6YDQ3JnutiTzpNa
+         MDUFtqnMl8mS5Rb0XdsPJ9uXJ6X1zmQqu/hCDJRYK7C0Nb9UVzBj2YADferoK9nr1MZ6
+         DtnJ93aBiqq8q24OHqy/JNRcz6FbegsdyNd44=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700070573; x=1700675373;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rD3WiIjcHVWht+bRoyz5WPCyUUboXlGuOAtDZ7BuR4Y=;
+        b=E7t0XIZsHp1n+bQYV+yvwSbgS+JF9iKfXIodGRdPy71fH6kzYlox0ljHGotiSrEKD/
+         DlRwrvJUDPI7VSRPfZ3XiffyESxKqH6yCEi2AJ0wYTONIxuWIi0bXaZQJKjqbthgoN2d
+         bLfhIbrx3EqZ8iPn4cZlzroBvWkPsU+N6NGYzsgoeXBnh7IotWl9SMRB8/UDDk7nqWZ2
+         a2hO77aB91Aq7WDtP/woo5HpwBPWZNBfxstKnoAKIYkiDGLNadrSkezhLxN0pj4Tb1p9
+         2/nejUfRaKfA2hOmlbaBn4X63uD/OrjSHNCvUT051SAXDzgA5mwJ8IaZHxaB//u8GFtm
+         BU3g==
+X-Gm-Message-State: AOJu0YyvkPOiP/rwtkFl3UtPIohyijLO2FzaCoLjTVjPvkQx0XcVmbeo
+        dLjuW2A8tHIDmfHf74uxeb/ni6i6kfmAWJuzcmBeMjMK
+X-Google-Smtp-Source: AGHT+IGpmlqewDarAywsnMa7n04xYqUuCS4rlMCE2QKXA46apMCUxu5GyilgrdJ+vePrD+IEy8Q6pg==
+X-Received: by 2002:a05:6a20:7487:b0:148:f952:552b with SMTP id p7-20020a056a20748700b00148f952552bmr15559858pzd.51.1700070573014;
+        Wed, 15 Nov 2023 09:49:33 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id j16-20020a62e910000000b0068e49cb1692sm3068013pfh.1.2023.11.15.09.49.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 09:49:32 -0800 (PST)
+Date:   Wed, 15 Nov 2023 09:49:31 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jonathan Corbet <corbet@lwn.net>, workflows@vger.kernel.org,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] docs: submitting-patches: improve the base commit
+ explanation
+Message-ID: <202311150948.F6E39AD@keescook>
+References: <20231115170330.16626-1-bp@alien8.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Score: 1.46
-X-Spamd-Result: default: False [1.46 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         R_MIXED_CHARSET(0.56)[subject];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115170330.16626-1-bp@alien8.de>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve the description for the KVM_CAP_X86_BUS_LOCK_EXIT capability,
-fixing a few typos and improving grammar for overall clarity.
+On Wed, Nov 15, 2023 at 06:03:30PM +0100, Borislav Petkov wrote:
+> From: "Borislav Petkov (AMD)" <bp@alien8.de>
+> 
+> After receiving a second patchset this week without knowing which tree
+> it applies on and trying to apply it on the obvious ones and failing,
+> make sure the base tree information which needs to be supplied in the
+> 0th message of the patchset is spelled out more explicitly.
+> 
+> Also, make the formulations stronger as this really is a requirement and
+> not only a useful thing anymore.
+> 
+> Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
 
-Signed-off-by: Carlos López <clopez@suse.de>
----
- Documentation/virt/kvm/api.rst | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+Yup, I wonder if making "--base=auto" a default in git might be a good
+idea too?
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 7025b3751027..4be0a53d82a7 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -7582,20 +7582,20 @@ KVM_BUS_LOCK_DETECTION_OFF and KVM_BUS_LOCK_DETECTION_EXIT are supported
- currently and mutually exclusive with each other. More bits can be added in
- the future.
- 
--With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause vm exits
-+With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause VM exits
- so that no additional actions are needed. This is the default mode.
- 
--With KVM_BUS_LOCK_DETECTION_EXIT set, vm exits happen when bus lock detected
--in VM. KVM just exits to userspace when handling them. Userspace can enforce
--its own throttling or other policy based mitigations.
--
--This capability is aimed to address the thread that VM can exploit bus locks to
--degree the performance of the whole system. Once the userspace enable this
--capability and select the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
--KVM_RUN_BUS_LOCK flag in vcpu-run->flags field and exit to userspace. Concerning
--the bus lock vm exit can be preempted by a higher priority VM exit, the exit
--notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
--KVM_RUN_BUS_LOCK flag is used to distinguish between them.
-+With KVM_BUS_LOCK_DETECTION_EXIT set, VM exits happen when a bus lock is
-+detected in VM. KVM just exits to userspace when handling them. Userspace can
-+enforce its own throttling or other policy based mitigations.
-+
-+This capability is aimed to address the fact that a VM can exploit bus locks to
-+impact the performance of the whole system. Once userspace enables this
-+capability and selects the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
-+KVM_RUN_BUS_LOCK flag in the vcpu->run->flags field and exit to userspace.
-+Concerning the bus lock, a VM exit can be preempted by a higher priority VM
-+exit, so the exit notification to userspace can be KVM_EXIT_BUS_LOCK or another
-+reason. KVM_RUN_BUS_LOCK flag is used to distinguish between them.
- 
- 7.23 KVM_CAP_PPC_DAWR1
- ----------------------
+Reviewed-by: Kees Cook <keescook@chromium.org>
+
 -- 
-2.35.3
-
+Kees Cook
