@@ -2,41 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4B57EBBF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:34:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3589B7EBBFA
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:34:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234438AbjKODeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 22:34:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38410 "EHLO
+        id S234409AbjKODew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:34:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53738 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234360AbjKODek (ORCPT
+        with ESMTP id S234439AbjKODet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 22:34:40 -0500
+        Tue, 14 Nov 2023 22:34:49 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8ACED;
-        Tue, 14 Nov 2023 19:34:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7286AC433C7;
-        Wed, 15 Nov 2023 03:34:31 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39499101;
+        Tue, 14 Nov 2023 19:34:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C741DC433C8;
+        Wed, 15 Nov 2023 03:34:39 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700019276;
-        bh=K9lq4b4xli/0qrsq9veIqfV5CRENhYQ+seLOfRxbm48=;
+        s=k20201202; t=1700019284;
+        bh=C6HCwSXxJtpmFP0FhdYFaUMGz+/Iq1Gnc5YszMk/b+E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=IQtnLEWjmyTPWuRuI2Hh7N7+zf/UXMs6/bQtCNq0x2XTmq9OLEH1g5K5zMjMizamo
-         TeAWfJN91IFdClnaNls0cUA4mUTWzWhUfls6T/y2uhrgZLJW3+sq0/tnvQK7O5yPxp
-         NtVHMj8vmc/4YWucO44yv2YD5stgsaESluHd3TfcXgUEn75p5/auI4nKSeIfD8ymAV
-         hsDt3ud9RkYEZKpggoZUuwq4taogRqoEGw4Sn3hUOTrdU77TgY/niDqyBGlMTqPdx2
-         iOZcuqPTGkjCEU4Jr7xzhCEYtDST/E1euuC4DbtIMYiarfWqAbR8o3mJaWFF+aT3yA
-         kycYQyFuHvgCQ==
+        b=fjGhgz/DCvNXp88QQnuUbI3ZU+mvMbOqkmjcdEzS0LD3xVKFC9q3EzHjZMMMNjhoc
+         IiMKsfoPcccGwESIXppg64AkXK9Er+8LdFFYmy2a9xHcM7dH/+DxXCMqhqGlGdex9n
+         +Y9j4MAmIulRiaiuMuFFjk9ZuiPn5XokB7jT8Ana5MYNAwSV/VJO/9DOId2zTxSDlc
+         ws6VOeYZ3IqZX2T+QRIzswj5X0j207x65YaWz+HjH/gN1COl8JUF7yRsJxk/u/TWnI
+         AeZsMshBlqrp8wxaj4/sANd6PlPh6SVwh+nhtpOBKrnXOQFt2Aot+UfhciCZqELUFf
+         QSnCVW2BCdYkg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Huacai Chen <chenhuacai@loongson.cn>,
-        Sasha Levin <sashal@kernel.org>, chenhuacai@kernel.org,
-        maobibo@loongson.cn, palmer@rivosinc.com, yangtiezhu@loongson.cn,
-        wangliupu@loongson.cn, jpoimboe@kernel.org, zhoubinbin@loongson.cn,
-        loongarch@lists.linux.dev
-Subject: [PATCH AUTOSEL 6.6 4/6] LoongArch/smp: Call rcutree_report_cpu_starting() earlier
-Date:   Tue, 14 Nov 2023 22:33:38 -0500
-Message-ID: <20231115033350.1228588-4-sashal@kernel.org>
+Cc:     Vitaly Prosyak <vitaly.prosyak@amd.com>,
+        Hawking Zhang <hawking.zhang@amd.com>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Sasha Levin <sashal@kernel.org>, Xinhui.Pan@amd.com,
+        airlied@gmail.com, daniel@ffwll.ch, Hawking.Zhang@amd.com,
+        tao.zhou1@amd.com, Stanley.Yang@amd.com, kevinyang.wang@amd.com,
+        YiPeng.Chai@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 6.6 5/6] drm/amdgpu: fix software pci_unplug on some chips
+Date:   Tue, 14 Nov 2023 22:33:39 -0500
+Message-ID: <20231115033350.1228588-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231115033350.1228588-1-sashal@kernel.org>
 References: <20231115033350.1228588-1-sashal@kernel.org>
@@ -55,80 +60,101 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Huacai Chen <chenhuacai@loongson.cn>
+From: Vitaly Prosyak <vitaly.prosyak@amd.com>
 
-[ Upstream commit a2ccf46333d7b2cf9658f0d82ac74097c1542fae ]
+[ Upstream commit 4638e0c29a3f2294d5de0d052a4b8c9f33ccb957 ]
 
-rcutree_report_cpu_starting() must be called before cpu_probe() to avoid
-the following lockdep splat that triggered by calling __alloc_pages() when
-CONFIG_PROVE_RCU_LIST=y:
+When software 'pci unplug' using IGT is executed we got a sysfs directory
+entry is NULL for differant ras blocks like hdp, umc, etc.
+Before call 'sysfs_remove_file_from_group' and 'sysfs_remove_group'
+check that 'sd' is  not NULL.
 
- =============================
- WARNING: suspicious RCU usage
- 6.6.0+ #980 Not tainted
- -----------------------------
- kernel/locking/lockdep.c:3761 RCU-list traversed in non-reader section!!
- other info that might help us debug this:
- RCU used illegally from offline CPU!
- rcu_scheduler_active = 1, debug_locks = 1
- 1 lock held by swapper/1/0:
-  #0: 900000000c82ef98 (&pcp->lock){+.+.}-{2:2}, at: get_page_from_freelist+0x894/0x1790
- CPU: 1 PID: 0 Comm: swapper/1 Not tainted 6.6.0+ #980
- Stack : 0000000000000001 9000000004f79508 9000000004893670 9000000100310000
-         90000001003137d0 0000000000000000 90000001003137d8 9000000004f79508
-         0000000000000000 0000000000000001 0000000000000000 90000000048a3384
-         203a656d616e2065 ca43677b3687e616 90000001002c3480 0000000000000008
-         000000000000009d 0000000000000000 0000000000000001 80000000ffffe0b8
-         000000000000000d 0000000000000033 0000000007ec0000 13bbf50562dad831
-         9000000005140748 0000000000000000 9000000004f79508 0000000000000004
-         0000000000000000 9000000005140748 90000001002bad40 0000000000000000
-         90000001002ba400 0000000000000000 9000000003573ec8 0000000000000000
-         00000000000000b0 0000000000000004 0000000000000000 0000000000070000
-         ...
- Call Trace:
- [<9000000003573ec8>] show_stack+0x38/0x150
- [<9000000004893670>] dump_stack_lvl+0x74/0xa8
- [<900000000360d2bc>] lockdep_rcu_suspicious+0x14c/0x190
- [<900000000361235c>] __lock_acquire+0xd0c/0x2740
- [<90000000036146f4>] lock_acquire+0x104/0x2c0
- [<90000000048a955c>] _raw_spin_lock_irqsave+0x5c/0x90
- [<900000000381cd5c>] rmqueue_bulk+0x6c/0x950
- [<900000000381fc0c>] get_page_from_freelist+0xd4c/0x1790
- [<9000000003821c6c>] __alloc_pages+0x1bc/0x3e0
- [<9000000003583b40>] tlb_init+0x150/0x2a0
- [<90000000035742a0>] per_cpu_trap_init+0xf0/0x110
- [<90000000035712fc>] cpu_probe+0x3dc/0x7a0
- [<900000000357ed20>] start_secondary+0x40/0xb0
- [<9000000004897138>] smpboot_entry+0x54/0x58
+[  +0.000001] RIP: 0010:sysfs_remove_group+0x83/0x90
+[  +0.000002] Code: 31 c0 31 d2 31 f6 31 ff e9 9a a8 b4 00 4c 89 e7 e8 f2 a2 ff ff eb c2 49 8b 55 00 48 8b 33 48 c7 c7 80 65 94 82 e8 cd 82 bb ff <0f> 0b eb cc 66 0f 1f 84 00 00 00 00 00 90 90 90 90 90 90 90 90 90
+[  +0.000001] RSP: 0018:ffffc90002067c90 EFLAGS: 00010246
+[  +0.000002] RAX: 0000000000000000 RBX: ffffffff824ea180 RCX: 0000000000000000
+[  +0.000001] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+[  +0.000001] RBP: ffffc90002067ca8 R08: 0000000000000000 R09: 0000000000000000
+[  +0.000001] R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+[  +0.000001] R13: ffff88810a395f48 R14: ffff888101aab0d0 R15: 0000000000000000
+[  +0.000001] FS:  00007f5ddaa43a00(0000) GS:ffff88841e800000(0000) knlGS:0000000000000000
+[  +0.000002] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  +0.000001] CR2: 00007f8ffa61ba50 CR3: 0000000106432000 CR4: 0000000000350ef0
+[  +0.000001] Call Trace:
+[  +0.000001]  <TASK>
+[  +0.000001]  ? show_regs+0x72/0x90
+[  +0.000002]  ? sysfs_remove_group+0x83/0x90
+[  +0.000002]  ? __warn+0x8d/0x160
+[  +0.000001]  ? sysfs_remove_group+0x83/0x90
+[  +0.000001]  ? report_bug+0x1bb/0x1d0
+[  +0.000003]  ? handle_bug+0x46/0x90
+[  +0.000001]  ? exc_invalid_op+0x19/0x80
+[  +0.000002]  ? asm_exc_invalid_op+0x1b/0x20
+[  +0.000003]  ? sysfs_remove_group+0x83/0x90
+[  +0.000001]  dpm_sysfs_remove+0x61/0x70
+[  +0.000002]  device_del+0xa3/0x3d0
+[  +0.000002]  ? ktime_get_mono_fast_ns+0x46/0xb0
+[  +0.000002]  device_unregister+0x18/0x70
+[  +0.000001]  i2c_del_adapter+0x26d/0x330
+[  +0.000002]  arcturus_i2c_control_fini+0x25/0x50 [amdgpu]
+[  +0.000236]  smu_sw_fini+0x38/0x260 [amdgpu]
+[  +0.000241]  amdgpu_device_fini_sw+0x116/0x670 [amdgpu]
+[  +0.000186]  ? mutex_lock+0x13/0x50
+[  +0.000003]  amdgpu_driver_release_kms+0x16/0x40 [amdgpu]
+[  +0.000192]  drm_minor_release+0x4f/0x80 [drm]
+[  +0.000025]  drm_release+0xfe/0x150 [drm]
+[  +0.000027]  __fput+0x9f/0x290
+[  +0.000002]  ____fput+0xe/0x20
+[  +0.000002]  task_work_run+0x61/0xa0
+[  +0.000002]  exit_to_user_mode_prepare+0x150/0x170
+[  +0.000002]  syscall_exit_to_user_mode+0x2a/0x50
 
-raw_smp_processor_id() is required in order to avoid calling into lockdep
-before RCU has declared the CPU to be watched for readers.
-
-See also commit 29368e093921 ("x86/smpboot: Move rcu_cpu_starting() earlier"),
-commit de5d9dae150c ("s390/smp: move rcu_cpu_starting() earlier") and commit
-99f070b62322 ("powerpc/smp: Call rcu_cpu_starting() earlier").
-
-Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Cc: Hawking Zhang <hawking.zhang@amd.com>
+Cc: Luben Tuikov <luben.tuikov@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: Christian Koenig <christian.koenig@amd.com>
+Signed-off-by: Vitaly Prosyak <vitaly.prosyak@amd.com>
+Reviewed-by: Luben Tuikov <luben.tuikov@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/loongarch/kernel/smp.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/arch/loongarch/kernel/smp.c b/arch/loongarch/kernel/smp.c
-index ef35c871244f0..5bca12d16e069 100644
---- a/arch/loongarch/kernel/smp.c
-+++ b/arch/loongarch/kernel/smp.c
-@@ -504,8 +504,9 @@ asmlinkage void start_secondary(void)
- 	unsigned int cpu;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+index 163445baa4fc8..6f6341f702789 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c
+@@ -1373,7 +1373,8 @@ static void amdgpu_ras_sysfs_remove_bad_page_node(struct amdgpu_device *adev)
+ {
+ 	struct amdgpu_ras *con = amdgpu_ras_get_context(adev);
  
- 	sync_counter();
--	cpu = smp_processor_id();
-+	cpu = raw_smp_processor_id();
- 	set_my_cpu_offset(per_cpu_offset(cpu));
-+	rcutree_report_cpu_starting(cpu);
+-	sysfs_remove_file_from_group(&adev->dev->kobj,
++	if (adev->dev->kobj.sd)
++		sysfs_remove_file_from_group(&adev->dev->kobj,
+ 				&con->badpages_attr.attr,
+ 				RAS_FS_NAME);
+ }
+@@ -1390,7 +1391,8 @@ static int amdgpu_ras_sysfs_remove_feature_node(struct amdgpu_device *adev)
+ 		.attrs = attrs,
+ 	};
  
- 	cpu_probe();
- 	constant_clockevent_init();
+-	sysfs_remove_group(&adev->dev->kobj, &group);
++	if (adev->dev->kobj.sd)
++		sysfs_remove_group(&adev->dev->kobj, &group);
+ 
+ 	return 0;
+ }
+@@ -1437,7 +1439,8 @@ int amdgpu_ras_sysfs_remove(struct amdgpu_device *adev,
+ 	if (!obj || !obj->attr_inuse)
+ 		return -EINVAL;
+ 
+-	sysfs_remove_file_from_group(&adev->dev->kobj,
++	if (adev->dev->kobj.sd)
++		sysfs_remove_file_from_group(&adev->dev->kobj,
+ 				&obj->sysfs_attr.attr,
+ 				RAS_FS_NAME);
+ 	obj->attr_inuse = 0;
 -- 
 2.42.0
 
