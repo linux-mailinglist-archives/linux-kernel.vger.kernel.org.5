@@ -2,180 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EE07ED789
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D937E7ED797
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 23:48:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343741AbjKOWqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 17:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54182 "EHLO
+        id S229950AbjKOWss convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 17:48:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229592AbjKOWqJ (ORCPT
+        with ESMTP id S229592AbjKOWsr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 17:46:09 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BC571AC;
-        Wed, 15 Nov 2023 14:46:06 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id 5614622812f47-3b6d88dbaa3so112319b6e.1;
-        Wed, 15 Nov 2023 14:46:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700088365; x=1700693165; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8GRR5+TtT69P//O5Q8RWJy3CDQOAIoE5wweaPetEfz0=;
-        b=mHyjgMg6IcYpAyRsjaTqNK9TCLsL6h4DV133+xiuitD7tMXeDbhRs2Lb/G/REwGeaI
-         y236aeXyENdDf9hUe2jehkUPRsmhcSFYKgh6g+8KLWEYBQXBuoQWc9Wf7O1HOqSw0Nu+
-         xIUd4PCmsWawPI8yOjZzF/llfTHmt1+vAtABBDKWF/3K7PocYLmzZIPNvkEF8evw8kf1
-         ipsGP7d51iAq2dFoU4ZvN9ceshOd3vzCo5r0nDCXvHRZrEMVN97K3MSeEamBPocNXWto
-         YUojP1Y328nmvPoa0Hr2JM0pqWSPsKc9I5puKm1nQyio+GN4hx41ovYv4QMOtZwYNqnH
-         j25w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700088365; x=1700693165;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:sender
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8GRR5+TtT69P//O5Q8RWJy3CDQOAIoE5wweaPetEfz0=;
-        b=D7prfZFQTZ6bbDmU0wNamF9LTrUicfQd/EdNusNEsE72s63byRxifxVu8trV6YIQPE
-         wRAKSxoIFYERKowrD9AGdDbUScHnyuA1R+LCIxjfFFM2yV9kU3BeeQ102gALDD/p+067
-         ru/qr67ZBgPWsfSWUIxZLkSCRxMuY0TkiHdpOk37JoZ34O+aOQAxfXDQXZMcW1kmkA+k
-         CaeKbZDlZs1xOjm6XLCcv/AIcnrF2KzwTYTa1R0RWK2HknA5LxSo43ruFOwYhsi5oaDx
-         MmeM7SaW6dmsSpSDqRKEdP1CS8tk3haInzZTavTaT9XVIdPvdkffDFtWo6LgsRmdM1BJ
-         Ii3g==
-X-Gm-Message-State: AOJu0YwrhY4CtRbSwFWieebmNUJC1yGgrjpp1ZmQ7SV6VRE29UsejrVG
-        EzD1FqcuYD2Py5kqN3tt+7Tt+qz5WdY=
-X-Google-Smtp-Source: AGHT+IEbaMZLZppucpqDyccqgHp3E4itdOMwPQDI8ude5VDnReEr7rQm62RVYEEJSUegcE1B5kUZvA==
-X-Received: by 2002:a54:4389:0:b0:3b5:9541:cb43 with SMTP id u9-20020a544389000000b003b59541cb43mr15234608oiv.14.1700088365661;
-        Wed, 15 Nov 2023 14:46:05 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id h1-20020a056808014100b003ae0e57874fsm1626254oie.21.2023.11.15.14.46.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 14:46:05 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 15 Nov 2023 14:46:03 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>
-Cc:     "patrick@stwcx.xyz" <patrick@stwcx.xyz>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        "linux-i2c@vger.kernel.org" <linux-i2c@vger.kernel.org>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>
-Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
-Message-ID: <e2d17ee5-f09a-4c29-b719-9ac6178af1e4@roeck-us.net>
-References: <20231026081514.3610343-1-Delphine_CC_Chiu@Wiwynn.com>
- <20231026081514.3610343-3-Delphine_CC_Chiu@Wiwynn.com>
- <2ef2e804-d498-a2ae-9717-dd03bfd26853@roeck-us.net>
- <SG2PR04MB5543FEAFC1777ADE29239AC9A1A0A@SG2PR04MB5543.apcprd04.prod.outlook.com>
- <e223764a-c081-4634-810b-56886a29804a@roeck-us.net>
- <SG2PR04MB55436CFA902895FD5472838AA1A9A@SG2PR04MB5543.apcprd04.prod.outlook.com>
- <4b73a239-c90e-4515-b89d-65de15a1e9a9@roeck-us.net>
- <SG2PR04MB55430E53CC7229B5BB5592E7A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
+        Wed, 15 Nov 2023 17:48:47 -0500
+Received: from relay.hostedemail.com (smtprelay0012.hostedemail.com [216.40.44.12])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC30F98
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 14:48:43 -0800 (PST)
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay06.hostedemail.com (Postfix) with ESMTP id F0908B5E55;
+        Wed, 15 Nov 2023 22:48:41 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 199816000A;
+        Wed, 15 Nov 2023 22:48:38 +0000 (UTC)
+Message-ID: <f9f628a0685b948898a83e7946833b2f5c5a1e7f.camel@perches.com>
+Subject: Re: [PATCH] kasan: default to inline instrumentation
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Paul =?ISO-8859-1?Q?Heidekr=FCger?= <paul.heidekrueger@tum.de>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+Date:   Wed, 15 Nov 2023 14:48:38 -0800
+In-Reply-To: <20231115143410.e2c1ea567221d591b58ada1f@linux-foundation.org>
+References: <20231109155101.186028-1-paul.heidekrueger@tum.de>
+         <CA+fCnZcMY_z6nOVBR73cgB6P9Kd3VHn8Xwi8m9W4dV-Y4UR-Yw@mail.gmail.com>
+         <CANpmjNNQP5A0Yzv-pSCZyJ3cqEXGRc3x7uzFOxdsVREkHmRjWQ@mail.gmail.com>
+         <20231114151128.929a688ad48cd06781beb6e5@linux-foundation.org>
+         <918c3ff64f352427731104c5275786c815b860d9.camel@perches.com>
+         <20231115143410.e2c1ea567221d591b58ada1f@linux-foundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SG2PR04MB55430E53CC7229B5BB5592E7A1B1A@SG2PR04MB5543.apcprd04.prod.outlook.com>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Stat-Signature: uk7k935cawkyafek398e3iyqfsf9k3cc
+X-Rspamd-Server: rspamout04
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Rspamd-Queue-Id: 199816000A
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX1+wDg5LdrfCcCLT+4LxH/Apx6oxYFicFXE=
+X-HE-Tag: 1700088518-469990
+X-HE-Meta: U2FsdGVkX18jeUuZkdM7rLgGPSe35YepDf/rquiQwKBiZjeBo3pOlOCuf2+xr2OIPXgnAaoK7MqPE7i7NoAI9G1rhd62Bi0x2F6kbsPu8r4dVEk9Wxo4yZhJGv6JSirpJJousQFawUAjDAts/hROOV3pqzJi4Ab1HHiKHuxvBuQ+WVfupOOXMXadvTiHh3z2R6nGZZ93XSH84ic9nTqA5ypmzYEg4yi9UiVOCR2eX3WUZzdt7GsGrBPqXn3MV7NJXAcz+HPgHbYTV3bmLmLki+JIXxbv8OoKI33zEWaMuxOyd5vpQpBG5uJ6B1NYndKMRVwQSteUzf/U90sK7G2A8uSyXCqPepH/nLyfbXPQ6FnI7ENMd8QH8bo3GFkYZk+EmD1vd9Fvv4dzmQcGZsTMmh/5gCSQzn197jGyQyME0tsHAAsbJ/bY8mDHpgxVOW27mgxdMEgw1nPpuzhMNvzPMYXAfXhPhngR1PSaIho0eqUPRYgSzvOSIwtAoWEHWsShF+SW1U3/IV0r27UbrWCX2vPsw2j8tejyFt40w0Yv1jFZW+x4zWmEkA+fXgHALYs4
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 08:42:22AM +0000, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
-> > -----Original Message-----
-> > From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-> > Sent: Tuesday, November 7, 2023 11:30 AM
-> > To: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
-> > patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Jonathan Corbet
-> > <corbet@lwn.net>
-> > Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley <conor+dt@kernel.org>;
-> > linux-i2c@vger.kernel.org; linux-hwmon@vger.kernel.org;
-> > devicetree@vger.kernel.org; linux-kernel@vger.kernel.org;
-> > linux-doc@vger.kernel.org
-> > Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
-> > 
-> >   Security Reminder: Please be aware that this email is sent by an external
-> > sender.
-> > 
-> > On 11/6/23 19:08, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
-> > >> -----Original Message-----
-> > >> From: Guenter Roeck <groeck7@gmail.com> On Behalf Of Guenter Roeck
-> > >> Sent: Tuesday, October 31, 2023 9:47 PM
-> > >> To: Delphine_CC_Chiu/WYHQ/Wiwynn <Delphine_CC_Chiu@wiwynn.com>;
-> > >> patrick@stwcx.xyz; Jean Delvare <jdelvare@suse.com>; Jonathan Corbet
-> > >> <corbet@lwn.net>
-> > >> Cc: Rob Herring <robh+dt@kernel.org>; Krzysztof Kozlowski
-> > >> <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-> > >> <conor+dt@kernel.org>; linux-i2c@vger.kernel.org;
-> > >> linux-hwmon@vger.kernel.org; devicetree@vger.kernel.org;
-> > >> linux-kernel@vger.kernel.org; linux-doc@vger.kernel.org
-> > >> Subject: Re: [PATCH v2 2/2] hwmon: pmbus: Add ltc4286 driver
-> > >>
-> > >>    Security Reminder: Please be aware that this email is sent by an
-> > >> external sender.
-> > >>
-> > >> On 10/30/23 23:46, Delphine_CC_Chiu/WYHQ/Wiwynn wrote:
-> > >> [ ... ]
-> > >>>>
-> > >>>>> +
-> > >>>>> +     ret = of_property_read_u32(client->dev.of_node,
-> > >>>>> +                                "shunt-resistor-micro-ohms",
-> > >>>> &rsense);
-> > >>>>> +     if (ret < 0)
-> > >>>>> +             return ret;
-> > >>>>> +
-> > >>>>> +     if (rsense == 0)
-> > >>>>> +             return -EINVAL;
-> > >>>>> +
-> > >>>>> +     info = &ltc4286_info;
-> > >>>>> +
-> > >>>>> +     /* Default of VRANGE_SELECT = 1, 102.4V */
-> > >>>>> +     if (device_property_read_bool(&client->dev,
-> > >>>> "adi,vrange-select-25p6")) {
-> > >>>>
-> > >>>> What if the adi,vrange-select-25p6 property is not provided, but
-> > >>>> the chip is programmed for this range ?
-> > >>> The binding document tells programmers how to fill the dts.
-> > >>> Thus, programmers must fill this property if their system is 25.6
-> > >>> volts voltage
-> > >> range.
-> > >>>
-> > >>
-> > >> Sure, but there is no else case, meaning VRANGE_SELECT is unmodified
-> > >> in that case. There is no guarantee that the chip is in its power-on state.
-> > >
-> > > The else case is in v2 ltc4286.c line 133 It means that the voltage
-> > > range for programmer is 102.4 volts which is default value, so driver
-> > > doesn't need to do any change for VRANGE_SELECT bit.
-> > 
-> > There is no guarantee that the value wasn't changed before the driver was
-> > loaded.
+On Wed, 2023-11-15 at 14:34 -0800, Andrew Morton wrote:
+> On Tue, 14 Nov 2023 21:38:50 -0800 Joe Perches <joe@perches.com> wrote:
 > 
-> We still can’t get your point.
-> Could you tell us about your concern here?
+> > > +LIBRARY CODE
+> > > +M:	Andrew Morton <akpm@linux-foundation.org>
+> > > +L:	linux-kernel@vger.kernel.org
+> > > +S:	Supported
+> > 
+> > Dunno.
+> > 
+> > There are a lot of already specifically maintained or
+> > supported files in lib/
+> 
+> That's OK.  I'll get printed out along with the existing list of
+> maintainers, if any.
+> 
+> > Maybe be a reviewer?
+> 
+> Would that alter the get_maintainer output in any way?
 
-I have repeated it several times. You are making assumptions about
-register values when the driver is loaded. Those asumptions
-are wrong since the state of the chip is unknown when the driver
-is loaded. Any entty (BIOS, ROMMON, i2cset, some operating system
-loaded earlier, or even some other driver or platform code) may
-have changed those values.
+Not really.  It would allow someone to avoid cc'ing reviewers
+and not maintainers though.
 
-On top of that, as I also have pointed out, LTC4287 supports
-saving its configuration data in eeprom. That means that any chip
-configuration set during production or anytime later will be
-retained, meaning any assumption about chip configuration
-when the driver is loaded is even more wrong.
+Perhaps change the
+	S:	Supported
+to something like
+	S:	Supported for the files otherwise not supported
 
-Guenter
+> I suppose I could list each file individually, but I'm not sure what
+> that would gain.
+> 
+> btw, I see MAINTAINERS lists non-existent file[s] (lib/fw_table.c). 
+> Maybe someone has a script to check...
+
+--self-test works
+
+$ ./scripts/get_maintainer.pl --self-test=patterns
+./MAINTAINERS:3653: warning: no file matches	F:	Documentation/devicetree/bindings/iio/imu/bosch,bma400.yaml
+./MAINTAINERS:6126: warning: no file matches	F:	Documentation/devicetree/bindings/watchdog/da90??-wdt.txt
+./MAINTAINERS:10342: warning: no file matches	F:	drivers/iio/light/gain-time-scale-helper.c
+./MAINTAINERS:10343: warning: no file matches	F:	drivers/iio/light/gain-time-scale-helper.h
+./MAINTAINERS:22062: warning: no file matches	F:	arch/arm/boot/dts/imx*mba*.dts*
+./MAINTAINERS:22063: warning: no file matches	F:	arch/arm/boot/dts/imx*tqma*.dts*
+./MAINTAINERS:22064: warning: no file matches	F:	arch/arm/boot/dts/mba*.dtsi
+
+and: see commit a103f46633fdcddc2aaca506420f177e8803a2bd
+
+$ git log --stat -1 a103f46633fdcddc2aaca506420f177e8803a2bd
+commit a103f46633fdcddc2aaca506420f177e8803a2bd
+Author: Dave Jiang <dave.jiang@intel.com>
+Date:   Thu Oct 12 11:53:54 2023 -0700
+
+    acpi: Move common tables helper functions to common lib
+    
+    Some of the routines in ACPI driver/acpi/tables.c can be shared with
+    parsing CDAT. CDAT is a device-provided data structure that is formatted
+    similar to a platform provided ACPI table. CDAT is used by CXL and can
+    exist on platforms that do not use ACPI. Split out the common routine
+    from ACPI to accommodate platforms that do not support ACPI and move that
+    to /lib. The common routines can be built outside of ACPI if
+    FIRMWARE_TABLES is selected.
+    
+    Link: https://lore.kernel.org/linux-cxl/CAJZ5v0jipbtTNnsA0-o5ozOk8ZgWnOg34m34a9pPenTyRLj=6A@mail.gmail.com/
+    Suggested-by: "Rafael J. Wysocki" <rafael@kernel.org>
+    Reviewed-by: Hanjun Guo <guohanjun@huawei.com>
+    Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+    Acked-by: "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+    Link: https://lore.kernel.org/r/169713683430.2205276.17899451119920103445.stgit@djiang5-mobl3
+    Signed-off-by: Dan Williams <dan.j.williams@intel.com>
+
+ MAINTAINERS              |   2 ++
+ drivers/acpi/Kconfig     |   1 +
+ drivers/acpi/tables.c    | 173 -------------------------------------------------------------------------------------------------------
+ include/linux/acpi.h     |  42 +++++++------------------
+ include/linux/fw_table.h |  43 ++++++++++++++++++++++++++
+ lib/Kconfig              |   3 ++
+ lib/Makefile             |   2 ++
+ lib/fw_table.c           | 189 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 8 files changed, 251 insertions(+), 204 deletions(-)
