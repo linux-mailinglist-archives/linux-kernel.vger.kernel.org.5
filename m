@@ -2,166 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B608A7EBD1D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:35:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F5DD7EBE23
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 08:33:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234571AbjKOGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 01:35:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        id S234656AbjKOHdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 02:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230364AbjKOGfx (ORCPT
+        with ESMTP id S229551AbjKOHdT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:35:53 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67721D9
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:35:50 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF67Gll003267;
-        Wed, 15 Nov 2023 06:35:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=ut7fifdv33BYvwHtYbVTvqP5YI7gnOZ6t4YXoSMkfGI=;
- b=J9SaU2JpwMgCY/5dsRzWMbkol7KCRf9wdd7xLUiIWX/YUyBYLofwS0xOcMdAnvBREfra
- lFjbXlcFhKQopKtaGTGuZu91oSx//nhH+fNKjc+nLRKpFH2zpBzG2ACVOV7pzgImfOqA
- HtM3XDz0Fk9gmHEQTRxDV+GyftyhkhSS73f7ZnSdX2WeG+r1WfMoLR5vwhb6PQqKKuy8
- cHCF27UGA65OcdXBaS83rPyS4EZbPhYObCoh3uVjDnlZ/xNMH5GnhPfLlHHgcGn04PQp
- VuiimpweNZCBU0w8qBCq8LLWvlspdXSa0XTfdRQWDaRZF3EO5zQhOImaNRhSvQVOFpYn LQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucrej0t1r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 06:35:30 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AF67WWO004918;
-        Wed, 15 Nov 2023 06:35:30 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ucrej0t16-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 06:35:30 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AF4oQ5q026532;
-        Wed, 15 Nov 2023 06:35:29 GMT
-Received: from smtprelay03.wdc07v.mail.ibm.com ([172.16.1.70])
-        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uap5k4xr4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 15 Nov 2023 06:35:29 +0000
-Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-        by smtprelay03.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AF6ZSIX16188122
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 06:35:28 GMT
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1C23B58060;
-        Wed, 15 Nov 2023 06:35:28 +0000 (GMT)
-Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2E2015803F;
-        Wed, 15 Nov 2023 06:35:24 +0000 (GMT)
-Received: from skywalker.linux.ibm.com (unknown [9.43.109.250])
-        by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-        Wed, 15 Nov 2023 06:35:23 +0000 (GMT)
-X-Mailer: emacs 29.1 (via feedmail 11-beta-1 I)
-From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-To:     Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, Rohan McLure <rmclure@linux.ibm.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Josh Poimboeuf <jpoimboe@kernel.org>
-Subject: Re: [PATCH v4 1/5] powerpc/smp: Enable Asym packing for cores on
- shared processor
-In-Reply-To: <20231109054938.26589-2-srikar@linux.vnet.ibm.com>
-References: <20231109054938.26589-1-srikar@linux.vnet.ibm.com>
- <20231109054938.26589-2-srikar@linux.vnet.ibm.com>
-Date:   Wed, 15 Nov 2023 12:05:22 +0530
-Message-ID: <87zfzf8qxh.fsf@linux.ibm.com>
+        Wed, 15 Nov 2023 02:33:19 -0500
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05673C1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 23:33:12 -0800 (PST)
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231115073311epoutp0196c31a7aa6e15526c32020360496c871~Xu4s_cwIT0462904629epoutp01s
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 07:33:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231115073311epoutp0196c31a7aa6e15526c32020360496c871~Xu4s_cwIT0462904629epoutp01s
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700033591;
+        bh=WaeOfoNTbfhSobyw3fHef25B5qOSM0ie2Tlm8/7W3FA=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=qWVzVo2fq5JeNWTYMDRT7qFQ3g3J8xsuo5UCcIkFbuj0HzBVmNFPX3t3hZwB+AAJt
+         kllr4igbyZim6+mXjMPZ14jKIeJnHqcsYN42Ydww/sQU7UbY/TSoZIYvUFiMGYux0m
+         K9N/7vuK4OayQmP8B5pYdFf5szJbTiwOFIldHgVs=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20231115073310epcas5p3c4fe7c3d699636bc9624c0dc62c695d5~Xu4sioTCH2420624206epcas5p3U;
+        Wed, 15 Nov 2023 07:33:10 +0000 (GMT)
+Received: from epsmgec5p1new.samsung.com (unknown [182.195.38.179]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4SVZdc5jQKz4x9Q7; Wed, 15 Nov
+        2023 07:33:08 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmgec5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        03.36.08567.43474556; Wed, 15 Nov 2023 16:33:08 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
+        20231115063748epcas5p4fe34caf919fc11d8f22e4cf8cd34f543~XuIWiCYsX0656906569epcas5p4A;
+        Wed, 15 Nov 2023 06:37:48 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231115063748epsmtrp116632c61935100634a84817343149e82~XuIWhRhmg1243112431epsmtrp1T;
+        Wed, 15 Nov 2023 06:37:48 +0000 (GMT)
+X-AuditID: b6c32a44-617fd70000002177-14-65547434c348
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F1.28.08755.C3764556; Wed, 15 Nov 2023 15:37:48 +0900 (KST)
+Received: from FDSFTE462 (unknown [107.122.81.248]) by epsmtip2.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20231115063746epsmtip25dc2e9b186050cabb5c13a51eabd0048~XuIUmmknM0739707397epsmtip2Q;
+        Wed, 15 Nov 2023 06:37:46 +0000 (GMT)
+From:   "Shradha Todi" <shradha.t@samsung.com>
+To:     "'Alim Akhtar'" <alim.akhtar@samsung.com>, <jingoohan1@gmail.com>,
+        <lpieralisi@kernel.org>, <kw@linux.com>, <robh@kernel.org>,
+        <bhelgaas@google.com>, <krzysztof.kozlowski@linaro.org>
+Cc:     <linux-pci@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <pankaj.dubey@samsung.com>
+In-Reply-To: <029a01da1334$dc1016c0$94304440$@samsung.com>
+Subject: RE: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
+Date:   Wed, 15 Nov 2023 12:07:44 +0530
+Message-ID: <000a01da178e$3f3e18c0$bdba4a40$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: QAZM2NYRk9by9piyiZQly4B8ZaTZku5C
-X-Proofpoint-GUID: XYYMQwFesiGHGZnDMijCfZBK3cm8Xvkm
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-15_04,2023-11-14_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
- lowpriorityscore=0 suspectscore=0 impostorscore=0 adultscore=0
- phishscore=0 bulkscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311150048
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFlrvPEaqAl+ZjspMpXVx4MiN0lSgK7wbyrAgqzZeuxPYqDUA==
+Content-Language: en-in
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrAJsWRmVeSWpSXmKPExsWy7bCmhq5JSUiqwbcOHYsH87axWSxpyrBY
+        8WUmu8Xe11vZLRp6frNabHp8jdXi8q45bBZn5x1ns5hxfh+TRcufFhaLRVu/sFv837OD3YHH
+        Y+esu+weCzaVemxa1cnmcefaHjaPJ1emM3lsXlLv0bdlFaPH501yARxR2TYZqYkpqUUKqXnJ
+        +SmZeem2St7B8c7xpmYGhrqGlhbmSgp5ibmptkouPgG6bpk5QLcqKZQl5pQChQISi4uV9O1s
+        ivJLS1IVMvKLS2yVUgtScgpMCvSKE3OLS/PS9fJSS6wMDQyMTIEKE7IzFhyeylhwXqti3e64
+        Bsb9Sl2MnBwSAiYSi/sWs3QxcnEICexmlDi36RwbhPOJUWLuvb9QzjdGiVUfXzDCtNxeeQGq
+        ZS+jxKT+NijnBaNER3c3M0gVm4COxJMrf5hBEiIC+xglTi19xwSSYBZYwygxuTuqi5GDg1PA
+        SuL4ayOQsDCQ+X3pBFYQm0VAVeLa9sMsIDavgKXE+5t/mSBsQYmTM5+wQIzRlli28DUzxEUK
+        Ej+fLgPrFRFwknj1dD0bRI24xNGfPWA3SAic4JBYcvIXE0SDi8SHpkVQzcISr45vYYewpSRe
+        9rdB2ekSKzfPgKrJkfi2eQlUr73EgStzWEDuZxbQlFi/Sx8iLCsx9dQ6qBf5JHp/P4Eq55XY
+        MQ/GVpb48ncPC4QtKTHv2GXWCYxKs5C8NgvJa7OQvDALYdsCRpZVjJKpBcW56anJpgWGeanl
+        8AhPzs/dxAhOylouOxhvzP+nd4iRiYPxEKMEB7OSCK+5XEiqEG9KYmVValF+fFFpTmrxIUZT
+        YHhPZJYSTc4H5oW8knhDE0sDEzMzMxNLYzNDJXHe161zU4QE0hNLUrNTUwtSi2D6mDg4pRqY
+        Xs77tXRrqfT0STOfC5yd5+dZ46snuOaKrfZkxr6AJz4hLxxzGyos5JhLY110tnO5rMxv8NK3
+        XGN2U2qqn42u7EI/b1evKRxTexaEVGxP/ZF6t6J3b4w3q8rWG72mW18s/HdBZ8HhhBdJB0R6
+        Mp99mNL+ILwpkeXEBNeZF6dc3NwY8DvBQsOg1Mb8boGgyetZMQ94MtaIOq8Wdt/s4fK6eVEL
+        p0qqokWLtNiDc67m9/95TVCIEH1vsFhL76najQ37tN571Ppt5BXW5nwy88WlMwZKc2IP3qq2
+        C/vhMofv0mtHO54KW9VN4us/8ikc/L/0jPmJivTwBcs+m/OFftSU2iZj2LpG/Un8DXmp3bZK
+        LMUZiYZazEXFiQA9ILKZUwQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBIsWRmVeSWpSXmKPExsWy7bCSvK5NekiqwZaHQhYP5m1js1jSlGGx
+        4stMdou9r7eyWzT0/Ga12PT4GqvF5V1z2CzOzjvOZjHj/D4mi5Y/LSwWi7Z+Ybf4v2cHuwOP
+        x85Zd9k9Fmwq9di0qpPN4861PWweT65MZ/LYvKTeo2/LKkaPz5vkAjiiuGxSUnMyy1KL9O0S
+        uDLOHkwq6NSsePSyjaWB8a9CFyMnh4SAicTtlRdYuhi5OIQEdjNKTPy2mB0iISnx+eI6Jghb
+        WGLlv+fsEEXPGCU2vf/LCJJgE9CReHLlDzNIQkTgGKPE1vsLWEASzAIbGCW2HciD6NjJKLFl
+        aRNQBwcHp4CVxPHXRiA1wkDm96UTWEFsFgFViWvbD4P18gpYSry/+ZcJwhaUODnzCdRMbYne
+        h62MMPayha+ZIa5TkPj5dBnYHBEBJ4lXT9ezQdSISxz92cM8gVF4FpJRs5CMmoVk1CwkLQsY
+        WVYxSqYWFOem5xYbFhjmpZbrFSfmFpfmpesl5+duYgRHppbmDsbtqz7oHWJk4mA8xCjBwawk
+        wmsuF5IqxJuSWFmVWpQfX1Sak1p8iFGag0VJnFf8RW+KkEB6YklqdmpqQWoRTJaJg1OqgelA
+        S/uxS+2HLzTOWh7Et46jSfSnqcitZD8RNgVjWQFbKafTfbdrGdffaEwsOGXz3Ur5/Z22+p99
+        1v27uxrTumTv/QxUCP+9JPdizQH9dewf7B+3+b2M6buidYD91Y2+Lzp2Sb6le5Y+eP6PKXmB
+        +sq/lyMPsEXMcbURYDjG/uRI2qnM6Wypf3z0z2170Z2uuspKsMJAxmaDlRN/RbWR2bdNu7i6
+        t0m0dU3cWLsho1vlyVmDoyVXjS5OEjBY2MC457rdXbsvQiZxj56xsKtwpASmXIh5IzTbuWzO
+        hJpHzpINd/xzrXd8OXSswvTSRyXvuXbFDXF3NydPMfsntnG9hZfm2iaV+wXMK5rrvTazKbEU
+        ZyQaajEXFScCAGdMFJk7AwAA
+X-CMS-MailID: 20231115063748epcas5p4fe34caf919fc11d8f22e4cf8cd34f543
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231009062222epcas5p36768b75c13c7c79965b5863521361a64
+References: <CGME20231009062222epcas5p36768b75c13c7c79965b5863521361a64@epcas5p3.samsung.com>
+        <20231009062216.6729-1-shradha.t@samsung.com>
+        <029a01da1334$dc1016c0$94304440$@samsung.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Srikar Dronamraju <srikar@linux.vnet.ibm.com> writes:
 
-> If there are shared processor LPARs, underlying Hypervisor can have more
-> virtual cores to handle than actual physical cores.
->
-> Starting with Power 9, a big core (aka SMT8 core) has 2 nearly
-> independent thread groups. On a shared processors LPARs, it helps to
-> pack threads to lesser number of cores so that the overall system
-> performance and utilization improves. PowerVM schedules at a big core
-> level. Hence packing to fewer cores helps.
->
-> For example: Lets says there are two 8-core Shared LPARs that are
-> actually sharing a 8 Core shared physical pool, each running 8 threads
-> each. Then Consolidating 8 threads to 4 cores on each LPAR would help
-> them to perform better. This is because each of the LPAR will get
-> 100% time to run applications and there will no switching required by
-> the Hypervisor.
->
-> To achieve this, enable SD_ASYM_PACKING flag at CACHE, MC and DIE level
-> when the system is running in shared processor mode and has big cores.
->
-> Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> ---
-> Changelog:
-> v3 -> v4:
-> - Dont use splpar_asym_pack with SMT
-> - Conflict resolution due to rebase
-> 	(DIE changed to PKG)
-> v2 -> v3:
-> - Handle comments from Michael Ellerman.
-> - Rework using existing cpu_has_features static key
-> v1->v2: Using Jump label instead of a variable.
->
->  arch/powerpc/kernel/smp.c | 37 +++++++++++++++++++++++++++++--------
->  1 file changed, 29 insertions(+), 8 deletions(-)
->
-> diff --git a/arch/powerpc/kernel/smp.c b/arch/powerpc/kernel/smp.c
-> index ab691c89d787..69a3262024f1 100644
-> --- a/arch/powerpc/kernel/smp.c
-> +++ b/arch/powerpc/kernel/smp.c
-> @@ -993,16 +993,20 @@ static bool shared_caches;
->  /* cpumask of CPUs with asymmetric SMT dependency */
->  static int powerpc_smt_flags(void)
->  {
-> -	int flags = SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
-> +	if (!cpu_has_feature(CPU_FTR_ASYM_SMT))
-> +		return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES;
->  
-> -	if (cpu_has_feature(CPU_FTR_ASYM_SMT)) {
-> -		printk_once(KERN_INFO "Enabling Asymmetric SMT scheduling\n");
-> -		flags |= SD_ASYM_PACKING;
-> -	}
-> -	return flags;
-> +	return SD_SHARE_CPUCAPACITY | SD_SHARE_PKG_RESOURCES | SD_ASYM_PACKING;
->  }
->  #endif
->
 
-Only relevant change there is dropping printk_once(). Rest of the
-changes are not needed?
+> -----Original Message-----
+> From: Alim Akhtar =5Bmailto:alim.akhtar=40samsung.com=5D
+> Sent: 09 November 2023 23:18
+> To: 'Shradha Todi' <shradha.t=40samsung.com>; jingoohan1=40gmail.com;
+> lpieralisi=40kernel.org; kw=40linux.com; robh=40kernel.org;
+> bhelgaas=40google.com; krzysztof.kozlowski=40linaro.org
+> Cc: linux-pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org; =
+linux-
+> samsung-soc=40vger.kernel.org; linux-kernel=40vger.kernel.org;
+> pankaj.dubey=40samsung.com
+> Subject: RE: =5BPATCH=5D PCI: exynos: Adapt to clk_bulk_* APIs
+>=20
+> Hi Shradha
+>=20
+> > -----Original Message-----
+> > From: Shradha Todi <shradha.t=40samsung.com>
+> > Sent: Monday, October 9, 2023 11:52 AM
+> > To: jingoohan1=40gmail.com; lpieralisi=40kernel.org; kw=40linux.com;
+> > robh=40kernel.org; bhelgaas=40google.com; krzysztof.kozlowski=40linaro.=
+org;
+> > alim.akhtar=40samsung.com
+> > Cc: linux-pci=40vger.kernel.org; linux-arm-kernel=40lists.infradead.org=
+;
+> > linux- samsung-soc=40vger.kernel.org; linux-kernel=40vger.kernel.org;
+> > pankaj.dubey=40samsung.com; Shradha Todi <shradha.t=40samsung.com>
+> > Subject: =5BPATCH=5D PCI: exynos: Adapt to clk_bulk_* APIs
+> >
+> > There is no need to hardcode the clock info in the driver as driver
+> > can rely on the devicetree to supply the clocks required for the
+> > functioning of the peripheral. Get rid of the static clock info and
+> > obtain the platform supplied clocks. The total number of clocks
+> > supplied is obtained using the
+> > devm_clk_bulk_get_all() API and used for the rest of the clk_bulk_* API=
+s.
+> >
+> > Signed-off-by: Shradha Todi <shradha.t=40samsung.com>
+> > ---
+> >  drivers/pci/controller/dwc/pci-exynos.c =7C 46
+> > ++++++-------------------
+> >  1 file changed, 11 insertions(+), 35 deletions(-)
+> >
+> > diff --git a/drivers/pci/controller/dwc/pci-exynos.c
+> > b/drivers/pci/controller/dwc/pci-exynos.c
+> > index 9e42cfcd99cc..023cf41fccd7 100644
+> > --- a/drivers/pci/controller/dwc/pci-exynos.c
+> > +++ b/drivers/pci/controller/dwc/pci-exynos.c
+> > =40=40 -54,8 +54,8 =40=40
+> >  struct exynos_pcie =7B
+> >  	struct dw_pcie			pci;
+> >  	void __iomem			*elbi_base;
+> > -	struct clk			*clk;
+> > -	struct clk			*bus_clk;
+> > +	struct clk_bulk_data		*clks;
+> > +	int				clk_cnt;
+> >  	struct phy			*phy;
+> >  	struct regulator_bulk_data	supplies=5B2=5D;
+> >  =7D;
+> > =40=40 -65,30 +65,18 =40=40 static int exynos_pcie_init_clk_resources(s=
+truct
+> > exynos_pcie *ep)
+> >  	struct device *dev =3D ep->pci.dev;
+> >  	int ret;
+> >
+> > -	ret =3D clk_prepare_enable(ep->clk);
+> > -	if (ret) =7B
+> > -		dev_err(dev, =22cannot enable pcie rc clock=22);
+> > +	ret =3D devm_clk_bulk_get_all(dev, &ep->clks);
+> > +	if (ret < 0)
+> You can checking only for -ve value, what if  devm_clk_bulk_get_all() ret=
+urn
+> 0?
+>=20
 
--aneesh
+Thanks for the review=21
+Return value of 0 means there were no clocks to get but it does not indicat=
+e failure. It can mean
+that the device does not need any clock handling in the driver. =22 clk_bul=
+k_prepare_enable=22 takes
+care of num_clks being 0 and returns success anyway. I have seen other driv=
+ers handling in a similar way.
+
+> >  		return ret;
+> > -	=7D
+> >
+> > -	ret =3D clk_prepare_enable(ep->bus_clk);
+> > -	if (ret) =7B
+> > -		dev_err(dev, =22cannot enable pcie bus clock=22);
+> > -		goto err_bus_clk;
+> > -	=7D
+> > +	ep->clk_cnt =3D ret;
+> >
+> > -	return 0;
+> > -
+> > -err_bus_clk:
+> > -	clk_disable_unprepare(ep->clk);
+> > -
+> > -	return ret;
+> > +	return clk_bulk_prepare_enable(ep->clk_cnt, ep->clks);
+> >  =7D
+> >
+> >  static void exynos_pcie_deinit_clk_resources(struct exynos_pcie *ep)  =
+=7B
+> > -	clk_disable_unprepare(ep->bus_clk);
+> > -	clk_disable_unprepare(ep->clk);
+> > +	clk_bulk_disable_unprepare(ep->clk_cnt, ep->clks);
+> >  =7D
+> >
+> >  static void exynos_pcie_writel(void __iomem *base, u32 val, u32 reg)
+> > =40=40 -
+> > 332,17 +320,9 =40=40 static int exynos_pcie_probe(struct platform_devic=
+e
+> > *pdev)
+> >  	if (IS_ERR(ep->elbi_base))
+> >  		return PTR_ERR(ep->elbi_base);
+> >
+> > -	ep->clk =3D devm_clk_get(dev, =22pcie=22);
+> > -	if (IS_ERR(ep->clk)) =7B
+> > -		dev_err(dev, =22Failed to get pcie rc clock=5Cn=22);
+> > -		return PTR_ERR(ep->clk);
+> > -	=7D
+> > -
+> > -	ep->bus_clk =3D devm_clk_get(dev, =22pcie_bus=22);
+> > -	if (IS_ERR(ep->bus_clk)) =7B
+> > -		dev_err(dev, =22Failed to get pcie bus clock=5Cn=22);
+> > -		return PTR_ERR(ep->bus_clk);
+> > -	=7D
+> > +	ret =3D exynos_pcie_init_clk_resources(ep);
+> > +	if (ret < 0)
+> > +		return ret;
+> >
+> >  	ep->supplies=5B0=5D.supply =3D =22vdd18=22;
+> >  	ep->supplies=5B1=5D.supply =3D =22vdd10=22;
+> > =40=40 -351,10 +331,6 =40=40 static int exynos_pcie_probe(struct
+> > platform_device
+> > *pdev)
+> >  	if (ret)
+> >  		return ret;
+> >
+> > -	ret =3D exynos_pcie_init_clk_resources(ep);
+> > -	if (ret)
+> > -		return ret;
+> > -
+> >  	ret =3D regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep-
+> > >supplies);
+> >  	if (ret)
+> >  		return ret;
+> > =40=40 -369,8 +345,8 =40=40 static int exynos_pcie_probe(struct
+> > platform_device
+> > *pdev)
+> >
+> >  fail_probe:
+> >  	phy_exit(ep->phy);
+> > -	exynos_pcie_deinit_clk_resources(ep);
+> >  	regulator_bulk_disable(ARRAY_SIZE(ep->supplies), ep->supplies);
+> > +	exynos_pcie_deinit_clk_resources(ep);
+> >
+> >  	return ret;
+> >  =7D
+> > --
+> > 2.17.1
+>=20
+
+
