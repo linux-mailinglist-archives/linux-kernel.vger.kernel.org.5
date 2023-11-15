@@ -2,113 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 738AC7EBD0A
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAAD27EBD0D
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 07:27:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234557AbjKOG0D convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 01:26:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44348 "EHLO
+        id S234573AbjKOG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 01:27:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234549AbjKOG0B (ORCPT
+        with ESMTP id S234465AbjKOG1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 01:26:01 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0AEEE9;
-        Tue, 14 Nov 2023 22:25:54 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AF6PZwgC1502500, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AF6PZwgC1502500
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 15 Nov 2023 14:25:35 +0800
-Received: from RTEXMBS05.realtek.com.tw (172.21.6.98) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Wed, 15 Nov 2023 14:25:35 +0800
-Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
- RTEXMBS05.realtek.com.tw (172.21.6.98) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Wed, 15 Nov 2023 14:25:35 +0800
-Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
- RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
- 15.01.2375.007; Wed, 15 Nov 2023 14:25:35 +0800
-From:   Justin Lai <justinlai0215@realtek.com>
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     "kuba@kernel.org" <kuba@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Ping-Ke Shih <pkshih@realtek.com>,
-        Larry Chiu <larry.chiu@realtek.com>
-Subject: RE: [PATCH net-next v10 10/13] net:ethernet:realtek:rtase: Implement ethtool function
-Thread-Topic: [PATCH net-next v10 10/13] net:ethernet:realtek:rtase: Implement
- ethtool function
-Thread-Index: AQHaDaOWhhjxNTqG0kiC4Rl5u77TuLBqDmkAgBDus0A=
-Date:   Wed, 15 Nov 2023 06:25:34 +0000
-Message-ID: <3d5775e1163845698e0b911f6a591eb6@realtek.com>
-References: <20231102154505.940783-1-justinlai0215@realtek.com>
- <20231102154505.940783-11-justinlai0215@realtek.com>
- <726ce350-b2df-4dfb-8401-dc9c70dd8cd6@lunn.ch>
-In-Reply-To: <726ce350-b2df-4dfb-8401-dc9c70dd8cd6@lunn.ch>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [172.21.210.185]
-x-kse-serverinfo: RTEXMBS05.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Wed, 15 Nov 2023 01:27:48 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F5F4CD
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:27:44 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id 98e67ed59e1d1-2809fb0027cso153824a91.2
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 22:27:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700029664; x=1700634464; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=AKSOBVjj+YjOcXAU8cJCuporBoTYiy5nHyba5GnlAqQ=;
+        b=agaLieDSj7L8eCTTz775oRhZLMFY0SzOJ7NAh1P1ga0w8nx2UIh3SY3BBeZ4Es35aE
+         Hek8wiRKc+DazloKR1aW1NQNcTG2x5LSZhKpiJElFlryujlvZ2GUcrIWLoQ2EmbyHsaB
+         2XHstflom80TWlZSJbT710fih6XDJNyKIQPAf628p74zaGE6zW/v+234mp0hOaEwMp8o
+         +KLALvnP4txEw4OyoRrpsRqqGPhQkTi9q4rFZQOtFzAQufJ6QXdrbmK7m388W6HBltno
+         AawqUFSQ0CaflKFE5/AAaJF9uHrVsmfebP2DNRsFRWCtleu7joCImd+hT0CqF4FAWU6S
+         G+Jw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700029664; x=1700634464;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AKSOBVjj+YjOcXAU8cJCuporBoTYiy5nHyba5GnlAqQ=;
+        b=klBjzfSZHy3wiE5Io/YFFBNtBVq4TXi/nYAOgvmTMltKiVz6uF8/LTbmUbGoFyzzib
+         eCGE7dgPK4oFk1HuyjbHcN724rCef5/Qb++Pd50rK3SIge2x5Snmqr96ocbDt70OqWQy
+         UYmyjMKJmgh1f++lV0Ppf9+m0P/qlPx4JldOI40xkVGEGkNSnile85kHMp5FtxgSP9fP
+         L3rutFtCQ1rxHkC8G7tnluM70K7mkkgPcBdpb5rhcP8X0xXnSes4DlKYdIQiGyG4tUYz
+         VkMKgJjelVd/8QYlcE2WfRgpar00a3XR8H0vzIo7E7KTvqQ1IvLhDNxScTXcIUWx2jvB
+         cy5A==
+X-Gm-Message-State: AOJu0Yy+6tEucc+zZXo4eDllFdg8ejMvWDBOlSY4i/cxahk9FJZN+6Uy
+        9nxXHi9PoKhVo7F8E2v4ATgkDw==
+X-Google-Smtp-Source: AGHT+IHLjecUpYnZT1aX8sOnGe785XxMzOTpOQh8BD10EBM3cElVJkFW7QBKAP+68Bxnn0Wv3wq58w==
+X-Received: by 2002:a17:90b:3a8c:b0:280:2652:d41 with SMTP id om12-20020a17090b3a8c00b0028026520d41mr9717051pjb.4.1700029663650;
+        Tue, 14 Nov 2023 22:27:43 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id 23-20020a17090a1a1700b0027ced921e80sm8998415pjk.38.2023.11.14.22.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Nov 2023 22:27:43 -0800 (PST)
+Date:   Wed, 15 Nov 2023 11:57:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     David Dai <davidai@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Saravana Kannan <saravanak@google.com>,
+        Quentin Perret <qperret@google.com>,
+        Masami Hiramatsu <mhiramat@google.com>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Pavan Kondeti <quic_pkondeti@quicinc.com>,
+        Gupta Pankaj <pankaj.gupta@amd.com>,
+        Mel Gorman <mgorman@suse.de>, kernel-team@android.com,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: cpufreq: add virtual cpufreq device
+Message-ID: <20231115062741.v3tpm337c2lidxzr@vireshk-i7>
+References: <20231111014933.1934562-1-davidai@google.com>
+ <20231111014933.1934562-2-davidai@google.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231111014933.1934562-2-davidai@google.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +static int rtase_get_settings(struct net_device *dev,
-> > +                           struct ethtool_link_ksettings *cmd) {
-> > +     u32 supported = SUPPORTED_MII | SUPPORTED_Pause;
-> > +
-> > +
-> ethtool_convert_legacy_u32_to_link_mode(cmd->link_modes.supported,
-> > +                                             supported);
-> > +     cmd->base.speed = SPEED_5000;
-> > +     cmd->base.duplex = DUPLEX_FULL;
-> > +     cmd->base.port = PORT_MII;
-> > +     cmd->base.autoneg = AUTONEG_DISABLE;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> 
-> > +static int rtase_set_pauseparam(struct net_device *dev,
-> > +                             struct ethtool_pauseparam *pause) {
-> > +     const struct rtase_private *tp = netdev_priv(dev);
-> > +     u16 value = rtase_r16(tp, RTASE_CPLUS_CMD);
-> > +
-> > +     if (pause->autoneg)
-> > +             return -EOPNOTSUPP;
-> > +
-> > +     value &= ~(FORCE_TXFLOW_EN | FORCE_RXFLOW_EN);
-> > +
-> > +     if (pause->tx_pause)
-> > +             value |= FORCE_TXFLOW_EN;
-> > +
-> > +     if (pause->rx_pause)
-> > +             value |= FORCE_RXFLOW_EN;
-> 
-> It appears the hardware supports asymmetric pause? So i think your
-> rtase_get_settings() is wrong.
-> 
->         Andrew
+On 10-11-23, 17:49, David Dai wrote:
+> diff --git a/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml b/Documentation/devicetree/bindings/cpufreq/qemu,cpufreq-virtual.yaml
+> +$id: http://devicetree.org/schemas/cpufreq/qemu,cpufreq-virtual.yaml#
+> +properties:
+> +  compatible:
+> +    const: qemu,virtual-cpufreq
 
-Thank you for your review, I will confirm this part again and make corresponding corrections.
+Not sure why we need to mention QEMU here.. Why limit this to just QEMU ?
+
+-- 
+viresh
