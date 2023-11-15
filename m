@@ -2,59 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 37BEB7EC69B
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:03:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D66027EC69A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 16:03:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344346AbjKOPCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 10:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58130 "EHLO
+        id S1344337AbjKOPCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 10:02:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344328AbjKOPCq (ORCPT
+        with ESMTP id S1344314AbjKOPCp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 10:02:46 -0500
+        Wed, 15 Nov 2023 10:02:45 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 558AD125;
-        Wed, 15 Nov 2023 07:02:43 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32348121;
+        Wed, 15 Nov 2023 07:02:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700060564; x=1731596564;
+  t=1700060562; x=1731596562;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=QEUjGSpL6orxUQ+6h440g1bWRxTgIYCOricGGKyI/i0=;
-  b=mRf2JVv/6lKjkrUMprUb+9QbhI2c+dcpQdy6EV+xXturYQThoGfgx14Z
-   x3Dqc3WuXtvRata1z6DU9nFOyRUBvx2ukIzYlhc29IfNqFIK5IL9xYN+Y
-   g6VK/f71BQtaCWQUf3qgZnb/WMV7Y/THKQ6qvonLJvklcW2ij7MaBc7BC
-   u3hOP/tP5bOMSrJ4KxKAqPi2M8ek3Ik4FUsdrbgdDCbkXWDqi9e4m0JtN
-   pjdymC2JodghFwZ8QxLMWtsujfXOM7zvbxR7SUEGc4nl9o8P7l8HeYYRE
-   RhZAl1hTDg4n8BRllWIUbbtLcjBhkVDlTAtRyncihAKi1mniOcLVGlYxG
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="3970790"
+  bh=1HqVu++Or5MPt2IsrGXLkZwksVda8ElGJ+dTFliEGaA=;
+  b=eBQ9QIVNTUxKSzyuAOTkphku7Kd7j1/jqTk+rPsT3U5wU4h3B57QpduV
+   6C8Ao7dizPlpE6a7kSNDnGINBWTVR9q8OeQ8j5DchDJpEi7mH25ktLx2H
+   ApAitKQU2I1k01xlQdtW0M/vKWTzatntXyjrBhCvdnCI/ykzXMSrjNFhG
+   y1kWJKLEFPe8WdYl2oTtpVSXbGGBFRmziguQAlc5zCdGhNPLSKQgXW01z
+   rcpR3tUXQRzHEeLwkkWk8Q7aM+/NTU0qct1+Kc45TOVhNeiBmjqjFfSO8
+   3/IyY7sFCY9NmNXUxSoQJSzgOfjk8UKT02MQ+CY+VvBG07ut22dJ2kPVv
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="3970782"
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="3970790"
+   d="scan'208";a="3970782"
 Received: from orviesa002.jf.intel.com ([10.64.159.142])
   by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 07:02:26 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,305,1694761200"; 
-   d="scan'208";a="6195338"
+   d="scan'208";a="6195334"
 Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 15 Nov 2023 07:02:23 -0800
+  by orviesa002.jf.intel.com with ESMTP; 15 Nov 2023 07:02:22 -0800
 Received: from kbuild by b8de5498638e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r3HPI-0000Qr-0D;
-        Wed, 15 Nov 2023 15:02:20 +0000
-Date:   Wed, 15 Nov 2023 23:01:56 +0800
+        id 1r3HPG-0000Qo-38;
+        Wed, 15 Nov 2023 15:02:19 +0000
+Date:   Wed, 15 Nov 2023 23:01:59 +0800
 From:   kernel test robot <lkp@intel.com>
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>, rafael@kernel.org
-Cc:     oe-kbuild-all@lists.linux.dev, daniel.lezcano@linaro.org,
-        rui.zhang@intel.com, lukasz.luba@arm.com, linux-pm@vger.kernel.org,
+Cc:     llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+        daniel.lezcano@linaro.org, rui.zhang@intel.com,
+        lukasz.luba@arm.com, linux-pm@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel@collabora.com,
         wenst@chromium.org,
         AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@collabora.com>
 Subject: Re: [PATCH] thermal: Add support for device tree thermal zones
  consumers
-Message-ID: <202311152213.NNF5X5wd-lkp@intel.com>
+Message-ID: <202311152242.dch1tAh5-lkp@intel.com>
 References: <20231114131514.89031-1-angelogioacchino.delregno@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,10 +73,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi AngeloGioacchino,
 
-kernel test robot noticed the following build errors:
+kernel test robot noticed the following build warnings:
 
-[auto build test ERROR on rafael-pm/thermal]
-[also build test ERROR on linus/master v6.7-rc1 next-20231115]
+[auto build test WARNING on rafael-pm/thermal]
+[also build test WARNING on linus/master v6.7-rc1 next-20231115]
 [If your patch is applied to the wrong git tree, kindly drop us a note.
 And when submitting patch, we suggest to use '--base' as documented in
 https://git-scm.com/docs/git-format-patch#_base_tree_information]
@@ -84,41 +85,50 @@ url:    https://github.com/intel-lab-lkp/linux/commits/AngeloGioacchino-Del-Regn
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git thermal
 patch link:    https://lore.kernel.org/r/20231114131514.89031-1-angelogioacchino.delregno%40collabora.com
 patch subject: [PATCH] thermal: Add support for device tree thermal zones consumers
-config: arm-randconfig-004-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152213.NNF5X5wd-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152213.NNF5X5wd-lkp@intel.com/reproduce)
+config: x86_64-rhel-8.3-rust (https://download.01.org/0day-ci/archive/20231115/202311152242.dch1tAh5-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311152242.dch1tAh5-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311152213.NNF5X5wd-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311152242.dch1tAh5-lkp@intel.com/
 
-All errors (new ones prefixed by >>):
+All warnings (new ones prefixed by >>):
 
-   arm-linux-gnueabi-ld: drivers/power/supply/power_supply_core.o: in function `thermal_of_get_zone_by_index':
->> power_supply_core.c:(.text+0x167c): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/power/supply/power_supply_core.o: in function `thermal_of_get_zone':
->> power_supply_core.c:(.text+0x1684): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/hwmon.o: in function `thermal_of_get_zone_by_index':
-   hwmon.c:(.text+0x9cc): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/hwmon.o: in function `thermal_of_get_zone':
-   hwmon.c:(.text+0x9d4): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/tc654.o: in function `thermal_of_get_zone_by_index':
-   tc654.c:(.text+0x5c8): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/tc654.o: in function `thermal_of_get_zone':
-   tc654.c:(.text+0x5d0): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/mlxreg-fan.o: in function `thermal_of_get_zone_by_index':
-   mlxreg-fan.c:(.text+0x3f0): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/mlxreg-fan.o: in function `thermal_of_get_zone':
-   mlxreg-fan.c:(.text+0x3f8): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/pwm-fan.o: in function `thermal_of_get_zone_by_index':
-   pwm-fan.c:(.text+0x9c): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/hwmon/pwm-fan.o: in function `thermal_of_get_zone':
-   pwm-fan.c:(.text+0xa4): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
-   arm-linux-gnueabi-ld: drivers/cpufreq/cpufreq.o: in function `thermal_of_get_zone_by_index':
-   cpufreq.c:(.text+0x1a7c): multiple definition of `thermal_of_get_zone_by_index'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5a4): first defined here
-   arm-linux-gnueabi-ld: drivers/cpufreq/cpufreq.o: in function `thermal_of_get_zone':
-   cpufreq.c:(.text+0x1a84): multiple definition of `thermal_of_get_zone'; drivers/soc/qcom/qcom_aoss.o:qcom_aoss.c:(.text+0x5ac): first defined here
+   In file included from drivers/cpufreq/cpufreq.c:19:
+   In file included from include/linux/cpu_cooling.h:17:
+>> include/linux/thermal.h:281:29: warning: no previous prototype for function 'thermal_of_get_zone_by_index' [-Wmissing-prototypes]
+   struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
+                               ^
+   include/linux/thermal.h:281:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
+   ^
+   static 
+>> include/linux/thermal.h:286:29: warning: no previous prototype for function 'thermal_of_get_zone' [-Wmissing-prototypes]
+   struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
+                               ^
+   include/linux/thermal.h:286:1: note: declare 'static' if the function is not intended to be used outside of this translation unit
+   struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
+   ^
+   static 
+   2 warnings generated.
+
+
+vim +/thermal_of_get_zone_by_index +281 include/linux/thermal.h
+
+   280	
+ > 281	struct thermal_zone_device *thermal_of_get_zone_by_index(struct device *dev, int index)
+   282	{
+   283		return ERR_PTR(-EOPNOTSUPP);
+   284	}
+   285	
+ > 286	struct thermal_zone_device *thermal_of_get_zone(struct device *dev, const char *name)
+   287	{
+   288		return ERR_PTR(-EOPNOTSUPP);
+   289	}
+   290	#endif
+   291	
 
 -- 
 0-DAY CI Kernel Test Service
