@@ -2,68 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 917697EBB5D
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 03:58:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CEBF7EBB61
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 04:00:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbjKOC6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 14 Nov 2023 21:58:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50688 "EHLO
+        id S234290AbjKODAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 14 Nov 2023 22:00:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50468 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229457AbjKOC6I (ORCPT
+        with ESMTP id S234288AbjKODAo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 14 Nov 2023 21:58:08 -0500
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A445ACF
-        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 18:58:03 -0800 (PST)
-X-AuditID: a67dfc5b-d6dff70000001748-6f-655433b81be6
-Date:   Wed, 15 Nov 2023 11:57:55 +0900
-From:   Byungchul Park <byungchul@sk.com>
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kernel_team@skhynix.com, akpm@linux-foundation.org,
-        namit@vmware.com, xhao@linux.alibaba.com,
-        mgorman@techsingularity.net, hughd@google.com, willy@infradead.org,
-        david@redhat.com, peterz@infradead.org, luto@kernel.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
-        dave.hansen@linux.intel.com
-Subject: Re: [v4 0/3] Reduce TLB flushes under some specific conditions
-Message-ID: <20231115025755.GA29979@system.software.com>
-References: <20231109045908.54996-1-byungchul@sk.com>
- <87il6bijtu.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        Tue, 14 Nov 2023 22:00:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64C08E1
+        for <linux-kernel@vger.kernel.org>; Tue, 14 Nov 2023 19:00:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700017240; x=1731553240;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=0ABMAvlua1+dMNScNiJgwLMEsJzQQD0nYg82pujlRYY=;
+  b=ISnSwe6l9eSX2n0szcUMw/6qwE29FiW83LltCXxWMfPa+K4uHFMxIV89
+   /jJfOVAC4dRv+5hhWNq65lifrIdutahtZxLhSQHyxNiwvnCU6ZkgqCgB0
+   8TbJePnxfsgdZjgfqYPgGca1Nl4nmiM4zcHqtjMKIiNyjXkrCjXNorHHe
+   E2XHrLjcC4ncUP9Cw4BWlXQkcvi1ejpB7jeBWUkZ2NYSxC73jgpqFA1yX
+   m3GQMhvb45prxVvVOhV7/kzZeCowWoz5oaanDCZGahWhPPjyGsA57BN/A
+   RgC3N4Dkh57fqYM/1QB0CsDwoBhpDzFR4+i4qYdWHnKEiNM1/PhDygxTC
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="394714510"
+X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
+   d="scan'208";a="394714510"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 19:00:39 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="1012127430"
+X-IronPort-AV: E=Sophos;i="6.03,303,1694761200"; 
+   d="scan'208";a="1012127430"
+Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Nov 2023 19:00:35 -0800
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc:     David Hildenbrand <david@redhat.com>, <akpm@linux-foundation.org>,
+        <wangkefeng.wang@huawei.com>, <willy@infradead.org>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [RFC PATCH] mm: support large folio numa balancing
+In-Reply-To: <f22001bb-e474-4ddb-8440-2668e6cec000@linux.alibaba.com> (Baolin
+        Wang's message of "Tue, 14 Nov 2023 19:11:56 +0800")
+References: <a71a478ce404e93683023dbb7248dd95f11554f4.1699872019.git.baolin.wang@linux.alibaba.com>
+        <606d2d7a-d937-4ffe-a6f2-dfe3ae5a0c91@redhat.com>
+        <871qctf89m.fsf@yhuang6-desk2.ccr.corp.intel.com>
+        <f22001bb-e474-4ddb-8440-2668e6cec000@linux.alibaba.com>
+Date:   Wed, 15 Nov 2023 10:58:32 +0800
+Message-ID: <87sf57en8n.fsf@yhuang6-desk2.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87il6bijtu.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsXC9ZZnoe4O45BUg2kf9C3mrF/DZvF5wz82
-        ixcb2hktvq7/xWzx9FMfi8XlXXPYLO6t+c9qcX7XWlaLHUv3MVlcOrCAyeL6roeMFsd7DzBZ
-        bN40ldni9w+gujlTrCxOzprM4iDg8b21j8VjwaZSj80rtDwW73nJ5LFpVSebx6ZPk9g93p07
-        x+5xYsZvFo+dDy095p0M9Hi/7yqbx9Zfdh6fN8l5vJv/li2AL4rLJiU1J7MstUjfLoEr40jL
-        ZNaCl/oV186+YGxgPKzYxcjBISFgItG2LqyLkRPM7Hv2lgXEZhFQldj78y0ziM0moC5x48ZP
-        MFtEQEPi08Ll7F2MXBzMAm+YJE43b2MFSQgLuEvsOnUHrIhXwELiwrc/7CC2kECmxI3OrawQ
-        cUGJkzOfgC1gFtCSuPHvJRPIDcwC0hLL/3GAhDkF7CSed34DGyMqoCxxYNtxJpBdEgKr2CU2
-        rnvFDHGopMTBFTdYJjAKzEIydhaSsbMQxi5gZF7FKJSZV5abmJljopdRmZdZoZecn7uJERiD
-        y2r/RO9g/HQh+BCjAAejEg9vw8zgVCHWxLLiytxDjBIczEoivOZyIalCvCmJlVWpRfnxRaU5
-        qcWHGKU5WJTEeY2+lacICaQnlqRmp6YWpBbBZJk4OKUaGFnu+U44WbK8se5mzCaL397ry5dk
-        ej8zX7uxeP2KxROPipyUaXJl3mq4SH/HhimZ+ZsrjnI7iW7+zf6Ub4Ks4E7OO4UrrTY46T4K
-        v1C85PXNspVxN9b7heSYSNpaev19kux77BhPQK3JvYTnaz/kBm66sYWXk5uh/POGA1c0nNnd
-        fs14/vf38RIlluKMREMt5qLiRABrauzpvQIAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprEIsWRmVeSWpSXmKPExsXC5WfdrLvDOCTV4MELdYs569ewWXze8I/N
-        4sWGdkaLr+t/MVs8/dTHYnF47klWi8u75rBZ3Fvzn9Xi/K61rBY7lu5jsrh0YAGTxfVdDxkt
-        jvceYLLYvGkqs8XvH0B1c6ZYWZycNZnFQdDje2sfi8eCTaUem1doeSze85LJY9OqTjaPTZ8m
-        sXu8O3eO3ePEjN8sHjsfWnrMOxno8X7fVTaPxS8+MHls/WXn8XmTnMe7+W/ZAvijuGxSUnMy
-        y1KL9O0SuDKOtExmLXipX3Ht7AvGBsbDil2MnBwSAiYSfc/esoDYLAKqEnt/vmUGsdkE1CVu
-        3PgJZosIaEh8WricvYuRi4NZ4A2TxOnmbawgCWEBd4ldp+6AFfEKWEhc+PaHHcQWEsiUuNG5
-        lRUiLihxcuYTsAXMAloSN/69ZOpi5ACypSWW/+MACXMK2Ek87/wGNkZUQFniwLbjTBMYeWch
-        6Z6FpHsWQvcCRuZVjCKZeWW5iZk5pnrF2RmVeZkVesn5uZsYgTG1rPbPxB2MXy67H2IU4GBU
-        4uFtmBmcKsSaWFZcmXuIUYKDWUmE11wuJFWINyWxsiq1KD++qDQntfgQozQHi5I4r1d4aoKQ
-        QHpiSWp2ampBahFMlomDU6qB8bpZwsvmGRFbzwU+fF7uveXzsefmNnFtBmr3Pd4pM/wTPbtX
-        yMrlhcVH9R0fO7K2VU/W9X1v877cM0M+Y1OAXcS5Gd17TIyXTJsxUd/95vFPH36+2y7Tsmu9
-        w77qLQKrU6NiHr59lSl5pu9dx6G76RuyN04TK7Ryv8MutUWKV+aR7Cp2l3JBSSWW4oxEQy3m
-        ouJEAKSl6GqlAgAA
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=ascii
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,164 +69,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 09, 2023 at 01:20:29PM +0800, Huang, Ying wrote:
-> Byungchul Park <byungchul@sk.com> writes:
-> 
-> > Hi everyone,
-> >
-> > While I'm working with CXL memory, I have been facing migration overhead
-> > esp. TLB shootdown on promotion or demotion between different tiers.
-> > Yeah.. most TLB shootdowns on migration through hinting fault can be
-> > avoided thanks to Huang Ying's work, commit 4d4b6d66db ("mm,unmap: avoid
-> > flushing TLB in batch if PTE is inaccessible").
-> >
-> > However, it's only for ones using hinting fault. I thought it'd be much
-> > better if we have a general mechanism to reduce # of TLB flushes and
-> > TLB misses, that we can apply to any type of migration. I tried it only
-> > for tiering migration for now tho.
-> >
-> > I'm suggesting a mechanism to reduce TLB flushes by keeping source and
-> > destination of folios participated in the migrations until all TLB
-> > flushes required are done, only if those folios are not mapped with
-> > write permission PTE entries at all. I worked Based on v6.6-rc5.
-> >
-> > Can you believe it? I saw the number of TLB full flush reduced about
-> > 80% and iTLB miss reduced about 50%, and the time wise performance
-> > always shows at least 1% stable improvement with the workload I tested
-> > with, XSBench. However, I believe that it would help more with other
-> > ones or any real ones. It'd be appreciated to let me know if I'm missing
-> > something.
-> 
-> Can you help to test the effect of commit 7e12beb8ca2a ("migrate_pages:
-> batch flushing TLB") for your test case?  To test it, you can revert it
-> and compare the performance before and after the reverting.
-> 
-> And, how do you trigger migration when testing XSBench?  Use a tiered
-> memory system, and migrate pages between DRAM and CXL memory back and
-> forth?  If so, how many pages will you migrate for each migration
+Baolin Wang <baolin.wang@linux.alibaba.com> writes:
 
-It was not an actual CXL memory but a cpuless remote numa node's DRAM
-recognized as a slow tier (node_is_toptier() == false) by the kernel.
-It's been okay to me because I've been focusing on TLB # and migration #
-while working with numa tiering mechanism and, I think, the time wise
-performance will be followed, big or little depending on the system
-configuration.
+> On 11/14/2023 9:12 AM, Huang, Ying wrote:
+>> David Hildenbrand <david@redhat.com> writes:
+>> 
+>>> On 13.11.23 11:45, Baolin Wang wrote:
+>>>> Currently, the file pages already support large folio, and supporting for
+>>>> anonymous pages is also under discussion[1]. Moreover, the numa balancing
+>>>> code are converted to use a folio by previous thread[2], and the migrate_pages
+>>>> function also already supports the large folio migration.
+>>>> So now I did not see any reason to continue restricting NUMA
+>>>> balancing for
+>>>> large folio.
+>>>
+>>> I recall John wanted to look into that. CCing him.
+>>>
+>>> I'll note that the "head page mapcount" heuristic to detect sharers will
+>>> now strike on the PTE path and make us believe that a large folios is
+>>> exclusive, although it isn't.
+>> Even 4k folio may be shared by multiple processes/threads.  So, numa
+>> balancing uses a multi-stage node selection algorithm (mostly
+>> implemented in should_numa_migrate_memory()) to identify shared folios.
+>> I think that the algorithm needs to be adjusted for PTE mapped large
+>> folio for shared folios.
+>
+> Not sure I get you here. In should_numa_migrate_memory(), it will use
+> last CPU id, last PID and group numa faults to determine if this page
+> can be migrated to the target node. So for large folio, a precise
+> folio sharers check can make the numa faults of a group more accurate,
+> which is enough for should_numa_migrate_memory() to make a decision?
 
-So it migrates pages between the two DRAMs back and forth - promotion by
-hinting fault and demotion by page reclaim. I tested what you asked me
-with another slower system to make TLB miss overhead stand out.
+A large folio that is mapped by multiple process may be accessed by one
+remote NUMA node, so we still want to migrate it.  A large folio that is
+mapped by one process but accessed by multiple threads on multiple NUMA
+node may be not migrated.
 
-Unfortunately I got even worse result with vanilla v6.6-rc5 than
-v6.6-rc5 with 7e12beb8ca2a reverted, while the 'v6.6-rc5 + migrc'
-definitely shows far better result.
+> Could you provide a more detailed description of the algorithm you
+> would like to change for large folio? Thanks.
 
-Thoughts?
+I haven't thought about that thoroughly.  So, please evaluate the
+algorithm by yourself.
 
-	Byungchul
+For example, the 2 sub-pages of a shared PTE-mapped large folio may be
+accessed together by a task.  This may cause the folio be migrated
+wrongly.  One possible solution is to restore all other PTE mappings of
+the large folio in do_numa_page() as the first step.  This resembles the
+PMD-mapped THP behavior.
 
----
+>> And, as a performance improvement patch, some performance data needs to
+>
+> Do you have some benchmark recommendation? I know the the autonuma can
+> not support large folio now.
 
-   Architecture - x86_64                                               
-   QEMU - kvm enabled, host cpu                                        
-   Numa - 2 nodes (16 CPUs 1GB, no CPUs 8GB)                           
-   Kernel - v6.6-rc5, NUMA_BALANCING_MEMORY_TIERING, demotion enabled
-   Benchmark - XSBench -p 50000000 (-p option makes the runtime longer)
+There are autonuma-benchmark, and specjbb is used by someone before.
 
-   CASE1 - mainline v6.6-rc5 + 7e12beb8ca2a reverted
-   -------------------------------------------------
-   $ perf stat -a \
-	   -e itlb.itlb_flush \
-	   -e tlb_flush.dtlb_thread \
-	   -e tlb_flush.stlb_any \
-	   -e dTLB-load-misses \
-	   -e dTLB-store-misses \
-	   -e iTLB-load-misses \
-	   ./XSBench -p 50000000
+>> be provided.  And, the effect of shared folio detection needs to be
+>> tested too
 
-   Performance counter stats for 'system wide':
-   
-      190247118     itlb.itlb_flush      
-      716182438     tlb_flush.dtlb_thread
-      327051673     tlb_flush.stlb_any   
-      119542331968  dTLB-load-misses     
-      724072795     dTLB-store-misses    
-      3054343419    iTLB-load-misses     
-   
-   1172.580552728 seconds time elapsed      
-   
-   $ cat /proc/vmstat
-   
-   ...
-   numa_pages_migrated 5968431                  
-   pgmigrate_success 12484773                   
-   nr_tlb_remote_flush 6614459                  
-   nr_tlb_remote_flush_received 96022799        
-   nr_tlb_local_flush_all 50869                 
-   nr_tlb_local_flush_one 785597          
-   ...
-
-   CASE2 - mainline v6.6-rc5 (vanilla)
-   -------------------------------------------------
-   $ perf stat -a \
-	   -e itlb.itlb_flush \
-	   -e tlb_flush.dtlb_thread \
-	   -e tlb_flush.stlb_any \
-	   -e dTLB-load-misses \
-	   -e dTLB-store-misses \
-	   -e iTLB-load-misses \
-	   ./XSBench -p 50000000
-   
-   Performance counter stats for 'system wide':
-   
-      55139061      itlb.itlb_flush      
-      286725687     tlb_flush.dtlb_thread
-      199687660     tlb_flush.stlb_any   
-      119497951269  dTLB-load-misses     
-      358434759     dTLB-store-misses    
-      1867135967    iTLB-load-misses     
-   
-   1181.311084373 seconds time elapsed      
-   
-   $ cat /proc/vmstat
-   
-   ...
-   numa_pages_migrated 8190027                  
-   pgmigrate_success 17098994                   
-   nr_tlb_remote_flush 1955114                  
-   nr_tlb_remote_flush_received 29028093        
-   nr_tlb_local_flush_all 140921                
-   nr_tlb_local_flush_one 740767                
-   ...
-
-   CASE3 - mainline v6.6-rc5 + migrc
-   -------------------------------------------------
-   $ perf stat -a \
-	   -e itlb.itlb_flush \
-	   -e tlb_flush.dtlb_thread \
-	   -e tlb_flush.stlb_any \
-	   -e dTLB-load-misses \
-	   -e dTLB-store-misses \
-	   -e iTLB-load-misses \
-	   ./XSBench -p 50000000
-
-   Performance counter stats for 'system wide':
-
-      6337091       itlb.itlb_flush      
-      157229778     tlb_flush.dtlb_thread
-      148240163     tlb_flush.stlb_any   
-      117701381319  dTLB-load-misses     
-      231212468     dTLB-store-misses    
-      973083466     iTLB-load-misses     
-
-   1105.756705157 seconds time elapsed      
-   
-   $ cat /proc/vmstat
-   
-   ...
-   numa_pages_migrated 8791934                  
-   pgmigrate_success 18276174                   
-   nr_tlb_remote_flush 311146                   
-   nr_tlb_remote_flush_received 4387708         
-   nr_tlb_local_flush_all 143883                
-   nr_tlb_local_flush_one 740953    
-   ...
+--
+Best Regards,
+Huang, Ying
