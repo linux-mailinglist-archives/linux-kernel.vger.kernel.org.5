@@ -2,146 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 583EA7EBF78
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:29:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394337EBF7B
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 10:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234785AbjKOJ3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 04:29:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54936 "EHLO
+        id S234780AbjKOJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 04:29:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234688AbjKOJ3E (ORCPT
+        with ESMTP id S234750AbjKOJ3X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 04:29:04 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5525D9B;
-        Wed, 15 Nov 2023 01:29:01 -0800 (PST)
-Date:   Wed, 15 Nov 2023 09:28:59 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1700040540;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ccZL0j9gRjBhtc4FakVMy7I3+YuzgGEEyPPs3z/zxSQ=;
-        b=SDBJhFyQm79dD0Szf2J/AGpGnNP80al77IEYdjWAZ3Q1e+CJ0XGSsS9fX9s0DoY7TZJwZq
-        KGqjsKr1Q5NIAnMFdwo4KTkqxZtUPHukoiF65d6AXSUwOgAiKFFrj79BuYAZ7BJmajIk5F
-        ELA0fAJhgUcpgXi8HX6NJXg2AqvWvmQ9FImzN3ZkZpKI0SraZvNTG7G8OUQleg0xXcn6LJ
-        yz/4JBhGA3apRM9V4zoSWnWdrgcOtJaDEwpi157GMPgd8PM+zabKoj8ZouOBIEvspCgbr0
-        kV99pB8u3zWX2W6sEdXSmYv7DyOPHOrEGGSJNSewKn9Io1yubfPUjmAoSI/HSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1700040540;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=ccZL0j9gRjBhtc4FakVMy7I3+YuzgGEEyPPs3z/zxSQ=;
-        b=winUrXOua56iinRnHDOn7h3Votrwo90OaOoi18mI6Fs0CoeQKxYU2pCSP5q7ivdW7XBWz4
-        WjHDG/RWHADVAFDw==
-From:   "tip-bot2 for Greg KH" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/core] perf/core: Fix narrow startup race when creating the
- perf nr_addr_filters sysfs file
-Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <2023061204-decal-flyable-6090@gregkh>
-References: <2023061204-decal-flyable-6090@gregkh>
+        Wed, 15 Nov 2023 04:29:23 -0500
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C67769B;
+        Wed, 15 Nov 2023 01:29:19 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SVd6n2G6vzNm6J;
+        Wed, 15 Nov 2023 17:25:05 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Wed, 15 Nov
+ 2023 17:29:17 +0800
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+        Mina Almasry <almasrymina@google.com>
+CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
+        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com>
+ <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org>
+ <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+ <fa5d2f4c-5ccc-e23e-1926-2d7625b66b91@huawei.com>
+ <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
+ <3ff54a20-7e5f-562a-ca2e-b078cc4b4120@huawei.com>
+ <6553954141762_1245c529423@willemb.c.googlers.com.notmuch>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <8b7d25eb-1f10-3e37-8753-92b42da3fb34@huawei.com>
+Date:   Wed, 15 Nov 2023 17:29:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-Message-ID: <170004053915.391.15537018323305525367.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+In-Reply-To: <6553954141762_1245c529423@willemb.c.googlers.com.notmuch>
 Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-7.9 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/core branch of tip:
+On 2023/11/14 23:41, Willem de Bruijn wrote:
+>>
+>> I am not sure dma-buf maintainer's concern is still there with this patchset.
+>>
+>> Whatever name you calling it for the struct, however you arrange each field
+>> in the struct, some metadata is always needed for dmabuf to intergrate into
+>> page pool.
+>>
+>> If the above is true, why not utilize the 'struct page' to have more unified
+>> handling?
+> 
+> My understanding is that there is a general preference to simplify struct
+> page, and at the least not move in the other direction by overloading the
+> struct in new ways.
 
-Commit-ID:     652ffc2104ec1f69dd4a46313888c33527145ccf
-Gitweb:        https://git.kernel.org/tip/652ffc2104ec1f69dd4a46313888c33527145ccf
-Author:        Greg KH <gregkh@linuxfoundation.org>
-AuthorDate:    Mon, 12 Jun 2023 15:09:09 +02:00
-Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Wed, 15 Nov 2023 10:15:50 +01:00
+As my understanding, the new struct is just mirroring the struct page pool
+is already using, see:
+https://elixir.free-electrons.com/linux/v6.7-rc1/source/include/linux/mm_types.h#L119
 
-perf/core: Fix narrow startup race when creating the perf nr_addr_filters sysfs file
+If there is simplifying to the struct page_pool is using, I think the new
+stuct the devmem memory provider is using can adjust accordingly.
 
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lkml.kernel.org/r/2023061204-decal-flyable-6090@gregkh
----
- kernel/events/core.c | 40 ++++++++++++++++++++++++++++------------
- 1 file changed, 28 insertions(+), 12 deletions(-)
+As a matter of fact, I think the way 'struct page' for devmem is decoupled
+from mm subsystem may provide a way to simplify or decoupled the already
+existing 'struct page' used in netstack from mm subsystem, before this
+patchset, it seems we have the below types of 'struct page':
+1. page allocated in the netstack using page pool.
+2. page allocated in the netstack using buddy allocator.
+3. page allocated in other subsystem and passed to the netstack, such as
+   zcopy or spliced page?
 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 0825098..4f0c45a 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11408,9 +11408,32 @@ static DEVICE_ATTR_RW(perf_event_mux_interval_ms);
- static struct attribute *pmu_dev_attrs[] = {
- 	&dev_attr_type.attr,
- 	&dev_attr_perf_event_mux_interval_ms.attr,
-+	&dev_attr_nr_addr_filters.attr,
-+	NULL,
-+};
-+
-+static umode_t pmu_dev_is_visible(struct kobject *kobj, struct attribute *a, int n)
-+{
-+	struct device *dev = kobj_to_dev(kobj);
-+	struct pmu *pmu = dev_get_drvdata(dev);
-+
-+	if (!pmu->nr_addr_filters)
-+		return 0;
-+
-+	return a->mode;
-+
-+	return 0;
-+}
-+
-+static struct attribute_group pmu_dev_attr_group = {
-+	.is_visible = pmu_dev_is_visible,
-+	.attrs = pmu_dev_attrs,
-+};
-+
-+static const struct attribute_group *pmu_dev_groups[] = {
-+	&pmu_dev_attr_group,
- 	NULL,
- };
--ATTRIBUTE_GROUPS(pmu_dev);
- 
- static int pmu_bus_running;
- static struct bus_type pmu_bus = {
-@@ -11447,18 +11470,11 @@ static int pmu_dev_alloc(struct pmu *pmu)
- 	if (ret)
- 		goto free_dev;
- 
--	/* For PMUs with address filters, throw in an extra attribute: */
--	if (pmu->nr_addr_filters)
--		ret = device_create_file(pmu->dev, &dev_attr_nr_addr_filters);
--
--	if (ret)
--		goto del_dev;
--
--	if (pmu->attr_update)
-+	if (pmu->attr_update) {
- 		ret = sysfs_update_groups(&pmu->dev->kobj, pmu->attr_update);
--
--	if (ret)
--		goto del_dev;
-+		if (ret)
-+			goto del_dev;
-+	}
- 
- out:
- 	return ret;
+If we can decouple 'struct page' for devmem from mm subsystem, we may be able
+to decouple the above 'struct page' from mm subsystem one by one.
+
+> 
+> If using struct page for something that is not memory, there is ZONE_DEVICE.
+> But using that correctly is non-trivial:
+> 
+> https://lore.kernel.org/all/ZKyZBbKEpmkFkpWV@ziepe.ca/ 
+> 
+> Since all we need is a handle that does not leave the network stack,
+> a network specific struct like page_pool_iov entirely avoids this issue.
+
+Yes, I am agree about the network specific struct.
+I am wondering if we can make the struct more generic if we want to
+intergrate it into page_pool and use it in net stack.
+
+> RFC v3 seems like a good simplification over RFC v1 in that regard to me.
+> I was also pleasantly surprised how minimal the change to the users of
+> skb_frag_t actually proved to be.
+
+Yes, I am agreed about that too. Maybe we can make it simpler by using
+a more abstract struct as page_pool, and utilize some features of
+page_pool too.
+
+For example, from the page_pool doc, page_pool have fast cache and
+ptr-ring cache as below, but if napi_frag_unref() call
+page_pool_page_put_many() and return the dmabuf chunk directly to
+gen_pool in the memory provider, then it seems we are bypassing the
+below caches in the page_pool.
+
+    +------------------+
+    |       Driver     |
+    +------------------+
+            ^
+            |
+            |
+            |
+            v
+    +--------------------------------------------+
+    |                request memory              |
+    +--------------------------------------------+
+        ^                                  ^
+        |                                  |
+        | Pool empty                       | Pool has entries
+        |                                  |
+        v                                  v
+    +-----------------------+     +------------------------+
+    | alloc (and map) pages |     |  get page from cache   |
+    +-----------------------+     +------------------------+
+                                    ^                    ^
+                                    |                    |
+                                    | cache available    | No entries, refill
+                                    |                    | from ptr-ring
+                                    |                    |
+                                    v                    v
+                          +-----------------+     +------------------+
+                          |   Fast cache    |     |  ptr-ring cache  |
+                          +-----------------+     +------------------+
+
+
+> 
+> .
+> 
