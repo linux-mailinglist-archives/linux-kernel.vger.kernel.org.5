@@ -2,122 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F2E97EC136
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:22:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE4BB7EC13A
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:25:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343590AbjKOLWR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:22:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45404 "EHLO
+        id S1343597AbjKOLZP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:25:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343564AbjKOLWP (ORCPT
+        with ESMTP id S1343564AbjKOLZO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:22:15 -0500
-Received: from mail.bugwerft.de (mail.bugwerft.de [46.23.86.59])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id F3522F5;
-        Wed, 15 Nov 2023 03:22:11 -0800 (PST)
-Received: from [10.10.0.76] (unknown [62.214.9.170])
-        by mail.bugwerft.de (Postfix) with ESMTPSA id 8B8E228154F;
-        Wed, 15 Nov 2023 11:22:10 +0000 (UTC)
-Message-ID: <ecc90a62-7cfa-45c9-9f6c-188e2c8ac50f@zonque.org>
-Date:   Wed, 15 Nov 2023 12:22:10 +0100
+        Wed, 15 Nov 2023 06:25:14 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA73F5
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:25:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700047508;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=wqbAxW2GAT8nJitK9StpM8khtVuzEK0iC8oZKl6SFWw=;
+        b=FlwLYe6kdXCkOkGNAF56/7dHi/aHRYR7QmOK8np7Uf8phjYgnKIYaJW5hCrFB1KSbRG6O/
+        8Dsc9/UpD/QtOgc9sbFHwJaYrEsPr+QEDWGa5P9r7I5crJ6Y9Xtg8pix3oP/6qfyPUggHg
+        nKpprKlFGq+mq4FAjD83IejYgMFuYFY=
+Received: from mail-ot1-f70.google.com (mail-ot1-f70.google.com
+ [209.85.210.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-448--eed9CG_P--lIlBKDJgnOQ-1; Wed, 15 Nov 2023 06:25:07 -0500
+X-MC-Unique: -eed9CG_P--lIlBKDJgnOQ-1
+Received: by mail-ot1-f70.google.com with SMTP id 46e09a7af769-6d3251109ebso7034366a34.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 03:25:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700047506; x=1700652306;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=wqbAxW2GAT8nJitK9StpM8khtVuzEK0iC8oZKl6SFWw=;
+        b=KPaUfAFQmfeAwy6Fxw1WQSGCjYf+XRlGDN/wLZFI0xOD+H099DpbxJTZrAe1JCiaRT
+         F54Os28eL6ehGc72ssyROLXBhA5/O0YSdqDMpFVRLqGJUY1wX80/PlysPMGE4/A/wqkx
+         H2WvUVlmPDnsOPdbbfi3TaKbccDTsdpy6i5UKlEBzUociHdess+ng/Mp5FV49cW7qb6N
+         MKYf9Mhp82c1QJLNtSsX8FIvoS70V1v73CGne0UAy75Gk3bNoPI5e2qtUpbLXFCC/oks
+         VnyESijauXHgAkodx6AryaaigmxQN3zSZZTL7vIMPKWXvbNWOwDLsPVp5XY29ep1Y5WB
+         M6cQ==
+X-Gm-Message-State: AOJu0Yxx+4A7KgKGd8gOFJb4enuFYL47v7LHG04phokZP4irT/QaE9ha
+        unS18jf7xxQ4+vtEkRbJalrl7B1fJcebmzCndHYBIZ4gnMZWUNFNOXNHxCh366hR1rzVnfOYiJm
+        SZw6Ia+GzgZYxLBLKW2GQAbwgODWenebOExQ=
+X-Received: by 2002:a05:6870:7f0e:b0:1e9:e063:ca6b with SMTP id xa14-20020a0568707f0e00b001e9e063ca6bmr14402550oab.32.1700047506525;
+        Wed, 15 Nov 2023 03:25:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFY82T2RMO59Te4c7OF3TdHRYkC0Lhptd39Gk4hWYviUMnyR0+TL9x/XCnEtJ/DZqFORMiVdg==
+X-Received: by 2002:a05:6870:7f0e:b0:1e9:e063:ca6b with SMTP id xa14-20020a0568707f0e00b001e9e063ca6bmr14402537oab.32.1700047506288;
+        Wed, 15 Nov 2023 03:25:06 -0800 (PST)
+Received: from [10.72.112.63] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id j16-20020a056a00131000b006c4d2479bf8sm2636454pfu.51.2023.11.15.03.25.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 03:25:05 -0800 (PST)
+Message-ID: <93f049f1-f409-0759-f2a9-0c32d88130fd@redhat.com>
+Date:   Wed, 15 Nov 2023 19:25:01 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] serial: sc16is7xx: address RX timeout interrupt errata
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
 Content-Language: en-US
-To:     Lech Perczak <lech.perczak@camlingroup.com>,
-        Hugo Villeneuve <hugo@hugovil.com>
-Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
-        u.kleine-koenig@pengutronix.de, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Popov <maxim.snafu@gmail.com>,
-        stable@vger.kernel.org
-References: <20231114074904.239458-1-daniel@zonque.org>
- <20231114102025.d48c0a6ec6c413f274b7680b@hugovil.com>
- <140280a6-1948-4630-b10c-8e6a2afec2de@zonque.org>
- <3fac7d72-0a1b-4d93-9245-a0f8af1240a6@camlingroup.com>
-From:   Daniel Mack <daniel@zonque.org>
-In-Reply-To: <3fac7d72-0a1b-4d93-9245-a0f8af1240a6@camlingroup.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+To:     Luis Henriques <lhenriques@suse.de>,
+        Wenchao Hao <haowenchao2@huawei.com>
+Cc:     Ilya Dryomov <idryomov@gmail.com>,
+        Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, louhongxiang@huawei.com
+References: <20231114153108.1932884-1-haowenchao2@huawei.com>
+ <875y238drx.fsf@suse.de>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <875y238drx.fsf@suse.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lech,
 
-On 11/15/23 11:51, Lech Perczak wrote:
-> W dniu 14.11.2023 o 16:55, Daniel Mack pisze:
->> Hi Hugo,
+On 11/15/23 19:19, Luis Henriques wrote:
+> Wenchao Hao <haowenchao2@huawei.com> writes:
+>
+>> This issue is reported by smatch, get_quota_realm() might return
+>> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the return
+>> value.
 >>
->> On 11/14/23 16:20, Hugo Villeneuve wrote:
->>> On Tue, 14 Nov 2023 08:49:04 +0100
->>> Daniel Mack <daniel@zonque.org> wrote:
->>>> This devices has a silicon bug that makes it report a timeout interrupt
->>>> but no data in FIFO.
->>>>
->>>> The datasheet states the following in the errata section 18.1.4:
->>>>
->>>>   "If the host reads the receive FIFO at the at the same time as a
->>>>   time-out interrupt condition happens, the host might read 0xCC
->>>>   (time-out) in the Interrupt Indication Register (IIR), but bit 0
->>>>   of the Line Status Register (LSR) is not set (means there is not
->>>>   data in the receive FIFO)."
->>>>
->>>> When this happens, the loop in sc16is7xx_irq() will run forever,
->>>> which effectively blocks the i2c bus and breaks the functionality
->>>> of the UART.
->>>>
->>>> From the information above, it is assumed that when the bug is
->>>> triggered, the FIFO does in fact have payload in its buffer, but the
->>>> fill level reporting is off-by-one. Hence this patch fixes the issue
->>>> by reading one byte from the FIFO when that condition is detected.
->>> From what I understand from the errata, when the problem occurs, it
->>> affects bit 0 of the LSR register. I see no mention that it
->>> also affects the RX FIFO level register (SC16IS7XX_RXLVL_REG)?
->> True, the errata doesn't explicitly mention that, but tests have shown
->> that the RXLVL register is equally affected.
+>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+>> ---
+>>   fs/ceph/quota.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
 >>
->>> LSR[0] would be checked only if we were using polled mode of
->>> operation, but we always use the interrupt mode (IRQ), and therefore I
->>> would say that this errata doesn't apply to this driver, and the
->>> patch is not necessary...
->> Well, it is. We have seen this bug in the wild and extensively
->> stress-tested the patch on dozens of boards for many days. Without this
->> patch, kernels on affected systems would consume a lot of CPU cycles in
->> the interrupt threads and effectively render the I2C bus unusable due to
->> the busy polling.
+>> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+>> index 9d36c3532de1..c4b2929c6a83 100644
+>> --- a/fs/ceph/quota.c
+>> +++ b/fs/ceph/quota.c
+>> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
+>>   	realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
+>>   				QUOTA_GET_MAX_BYTES, true);
+>>   	up_read(&mdsc->snap_rwsem);
+>> -	if (!realm)
+>> +	if (IS_ERR_OR_NULL(realm))
+>>   		return false;
+>>   
+>>   	spin_lock(&realm->inodes_with_caps_lock);
+>> -- 
 >>
->> With this patch applied, we were no longer able to reproduce the issue.
-> Could you share some more details on the setup you use to reproduce this? I'd like to try out as well.
+>> 2.32.0
+>>
+> This looks right to me, the issue was introduced by commit 0c44a8e0fc55
+> ("ceph: quota: fix quota subdir mounts").  FWIW:
+>
+> Reviewed-by: Luis Henriques <lhenriques@suse.de>
 
-We have boards with 2 I2C busses with an SC16IS752IBS on both. The UARTs
-are configured in infrared mode, and they send receive IR signals
-constantly. I guess the same would happen with other electrical
-interfaces, but the important bit is that the UARTs see a steady stream
-of inbound data.
+Thanks Luis. I have updated the testing branch.
 
-The bug has hit us on production units and when it does, sc16is7xx_irq()
-would spin forever because sc16is7xx_port_irq() keeps seeing an
-interrupt in the IIR register that is not cleared because the driver
-does not call into sc16is7xx_handle_rx() unless the RXLVL register
-reports at least one byte in the FIFO.
-
-Note that this issue might only occur in revision E of the silicon. And
-there seems to be now way to read the revision code through I2C, so I
-guess you won't be able to figure out easily whether your chip is affected.
-
-Let me know if I can provide more information.
+- Xiubo
 
 
-Thanks,
-Daniel
-
-
-
-
-
+> Cheers,
 
