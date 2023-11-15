@@ -2,116 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7017ED1CE
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 252FC7ED1CC
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 21:09:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344326AbjKOUJ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 15:09:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36834 "EHLO
+        id S1344315AbjKOUJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 15:09:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344318AbjKOUJ1 (ORCPT
+        with ESMTP id S1344093AbjKOUJA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 15:09:27 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64880B8
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:09:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700078963; x=1731614963;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=9ZFlts/+vUZYgxhJ1dfBTq8f0q062xi2NCn+RuYvQoE=;
-  b=Ze3ks1v6g9+jt48kuqVJJc0SVDIWYygCryn4gQRabm9COUw6Beq8P2XP
-   Cx9Wjqjcfh3dtboXtn0eJdejg+Pl7FOD4/TQQn095ol/KBGiNReHU29ny
-   OU2G7LdiOdqfiJpH3yWRqP2LHW7cHfP+wq5q4LUxuIPsugeklmpkZKOeD
-   VXQPv21AdchpW6pMJiLBUTy2GJkNRk5fEEZCwM+R00v/rTHysqnMA9eXT
-   GOFgJ28CHYX5WprnqRVmne0uuehrN9ohLkqVY8nhLBZx2zPFBeLr0wxOv
-   WKFZu9xqmtbbK7cMHXidWdgUffBXdKPPYhxxm92MdEvrblOG9x/R8RGJa
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="388110075"
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="388110075"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 12:09:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="6499930"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 15 Nov 2023 12:09:20 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3MCL-0000mS-1u;
-        Wed, 15 Nov 2023 20:09:17 +0000
-Date:   Thu, 16 Nov 2023 04:08:37 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Cruz Zhao <CruzZhao@linux.alibaba.com>, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        joel@joelfernandes.org
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] sched/core: introduce core to struct cfs_rq
-Message-ID: <202311160433.4Jcpw1My-lkp@intel.com>
-References: <20231115113341.13261-3-CruzZhao@linux.alibaba.com>
+        Wed, 15 Nov 2023 15:09:00 -0500
+Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 338BFAF
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:08:57 -0800 (PST)
+Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5af15c3f734so5434587b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 12:08:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700078936; x=1700683736; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=dudJu8bqmoA0uQm5mbpxz9Q3fjggrbI693boctNIlwg=;
+        b=C9P0Osyqjw2MahNSc6AVyHVGIhJOQJe71JwTbyFHzBL+790bo5Y0z5+72A8Htzfcic
+         r2uquAL+Opc+D5H0Aln67KdvUQEsAup738ir6HNzSkvNxo+vzYA1Zy2Ug6XOh2ZtTYmw
+         z2IqkH/pATleEfVbPM+5GNC5FlGdxmgx6J06LZKbhsWYDqbUF+/v3IvKJP+ECsrbHqcN
+         Z6nrfC/lbcfOjFBRLuIGFXEUDwBbUl9edDvYPyTmtAxxIet7hDG7WOWGoPTCwvf7/B6H
+         x+EsRQisWfU7ghopbtdzTaY0dEcVEMM9oXRqTXj1YRJ5polBviNLd4pdlqRqKayXL0No
+         w28Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700078936; x=1700683736;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=dudJu8bqmoA0uQm5mbpxz9Q3fjggrbI693boctNIlwg=;
+        b=IOILeY6i0Vb0XUMTHFDR8nJbn/uDkcv55vRBq9Dcg1PLVCJridwntFSh7f+xTvYeAX
+         GowIX096nB8QUXIxHIvj04bfFraO96376ELxJNjDTgQRP1ntVdl/USpjdmGa6L3NuaeF
+         QbALqiA/llThjkN7fUu0DJbWX+gonb9UU+jml3Unplg0nRLuCt4Dt94aPvMTsRDQyM/z
+         /zTT7Tkc7BWBNi9GW2K6Kg3vJHyhDJnxXFoUifWJZeroyjEHKLUodyloKwaFMnRxC2+J
+         ZNTGd0Mg9oNLj46noFOM4+wIq7FBIGott+29pAn2KS3NjrmAm+woQ4ULHC4bcHR1LVe+
+         VNDw==
+X-Gm-Message-State: AOJu0YxMXxMgqOMHlc0tkd0DwDQrx4ORbzaWBP9qWPT0ytlEagHqr+7u
+        CotudqPTwNRYf8O9fnSbBGZwaGQ5Qjz1ErkMlP8=
+X-Google-Smtp-Source: AGHT+IHRkkHlie4UQ1NReHZ8gGxmxQucffqCVtYpZbaibyoZxtH1P8lpv4HNZVkT5YfCpALDmktBsBV2BTTL3WdoRvk=
+X-Received: by 2002:a05:690c:4887:b0:5a8:9e9:e661 with SMTP id
+ hd7-20020a05690c488700b005a809e9e661mr4614841ywb.1.1700078936216; Wed, 15 Nov
+ 2023 12:08:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115113341.13261-3-CruzZhao@linux.alibaba.com>
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
+ <CABXGCsOqbLRHSkiz79NkVQ-wUtR7y-ZFHvhMw0+JJ_cY2AZmSw@mail.gmail.com>
+ <CABXGCsPE9=Qp3Jg5hkRsTQoNgODnS_cXFU1d+hg3Baob40AaAA@mail.gmail.com>
+ <edc5b75b-c08d-4c62-ae5e-089ffac27772@amd.com> <CABXGCsO=pdxorK9pO7qBPJM-xvgPPtpZqxLvQO4t2AK5qW3vcA@mail.gmail.com>
+ <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
+In-Reply-To: <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
+From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
+Date:   Thu, 16 Nov 2023 01:08:44 +0500
+Message-ID: <CABXGCsNpEh7GjFPvx=rz6ZeB7Kx4iqV-e8HyFKyhNau2S5gENw@mail.gmail.com>
+Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
+ flashing bar with a picture of the desktop background on white screen
+To:     "Lee, Alvin" <Alvin.Lee2@amd.com>
+Cc:     "Mahfooz, Hamza" <Hamza.Mahfooz@amd.com>,
+        "Wu, Hersen" <hersenxs.wu@amd.com>,
+        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Cruz,
+On Wed, Nov 15, 2023 at 11:39=E2=80=AFPM Lee, Alvin <Alvin.Lee2@amd.com> wr=
+ote:
+>
+> This change has a DMCUB dependency - are you able to update your DMCUB ve=
+rsion as well?
+>
 
-kernel test robot noticed the following build warnings:
+I can confirm this issue was gone after updating firmware.
 
-[auto build test WARNING on linus/master]
-[also build test WARNING on v6.7-rc1 next-20231115]
-[cannot apply to tip/sched/core]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Cruz-Zhao/sched-core-introduce-core_id-to-struct-rq/20231115-193559
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20231115113341.13261-3-CruzZhao%40linux.alibaba.com
-patch subject: [PATCH 2/4] sched/core: introduce core to struct cfs_rq
-config: x86_64-buildonly-randconfig-003-20231116 (https://download.01.org/0day-ci/archive/20231116/202311160433.4Jcpw1My-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160433.4Jcpw1My-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311160433.4Jcpw1My-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> kernel/sched/fair.c:12423:6: warning: no previous prototype for 'sched_core_init_cfs_rq' [-Wmissing-prototypes]
-   12423 | void sched_core_init_cfs_rq(struct task_group *tg, struct cfs_rq *cfs_rq)
-         |      ^~~~~~~~~~~~~~~~~~~~~~
+=E2=9D=AF dmesg | grep DMUB
+[   11.496679] [drm] Loading DMUB firmware via PSP: version=3D0x07002300
+[   12.000314] [drm] DMUB hardware initialized: version=3D0x07002300
 
 
-vim +/sched_core_init_cfs_rq +12423 kernel/sched/fair.c
 
- 12422	
- 12423	void sched_core_init_cfs_rq(struct task_group *tg, struct cfs_rq *cfs_rq)
- 12424	{
- 12425	#ifdef CONFIG_FAIR_GROUP_SCHED
- 12426		struct rq *rq = rq_of(cfs_rq);
- 12427		int core_id = rq->core_id;
- 12428	
- 12429		cfs_rq->core = tg->cfs_rq[core_id];
- 12430	#endif
- 12431	}
- 12432	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+--=20
+Best Regards,
+Mike Gavrilov.
