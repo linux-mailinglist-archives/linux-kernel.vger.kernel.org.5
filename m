@@ -2,65 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBEA97ECAF7
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E8517ECAF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 20:04:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232252AbjKOTEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 14:04:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49084 "EHLO
+        id S232807AbjKOTE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 14:04:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229490AbjKOTEW (ORCPT
+        with ESMTP id S232665AbjKOTE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 14:04:22 -0500
-Received: from mout.kundenserver.de (mout.kundenserver.de [217.72.192.73])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D3B1DC;
-        Wed, 15 Nov 2023 11:04:17 -0800 (PST)
-Received: from [192.168.1.129] ([37.4.248.43]) by mrelayeu.kundenserver.de
- (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
- 1MMWcT-1qkyqR1Jzz-00JbZM; Wed, 15 Nov 2023 20:03:48 +0100
-Message-ID: <3b9ec650-8a99-4bac-9ac9-d2cd87efced5@i2se.com>
-Date:   Wed, 15 Nov 2023 20:03:47 +0100
+        Wed, 15 Nov 2023 14:04:26 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8357DC
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 11:04:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=xR5jXjalkv+3xl2hvJEA3on0YsUVjM36wGHO7zEA1+8=; b=coxdz/uMBpP2qrs6VvFvIrmOjB
+        Rp0v2QygwbJhYQWMx0TaTg9q/pykgcpXK/n9As9QDhViNROUy2oaxm5e2SDDcN0hWeO+BhrO+AbIW
+        owXkpwcxPFF5XAlpvXCZo4319GlmY18ZbJY//s2Kz9Z3oZ4P7XzZmmjCj6SSllxrEhgYrtAYVRVyC
+        aaFDnxEp4rD+wb8o/nwrxGlsgSI6gmX37eumZP8QksJcILTlcrpDHTGCqNTY/VKwWRTig2V2TY0xG
+        fK/xHNr7gDi6CwtjqwstXmKfQDuCddOg/1qcOM9pANa2sFaHWFEFSLnqnMHpcrYM1orcpXNlWoI/r
+        GgEB84fQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r3LBO-00Fruc-5G; Wed, 15 Nov 2023 19:04:14 +0000
+Date:   Wed, 15 Nov 2023 19:04:14 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     =?iso-8859-1?Q?Jos=E9?= Pekkarinen <jose.pekkarinen@foxhound.fi>
+Cc:     akpm@linux-foundation.org, skhan@linuxfoundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linux.dev,
+        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH] mm/pgtable: return null if no ptl in
+ __pte_offset_map_lock
+Message-ID: <ZVUWLgFgu+jE3QmW@casper.infradead.org>
+References: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi>
+ <ZVTTbuviH9/RWYyI@casper.infradead.org>
+ <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 05/15] staging: mmal-vchiq: Use vc-sm-cma to support
- zero copy
-Content-Language: en-US
-To:     Umang Jain <umang.jain@ideasonboard.com>,
-        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-staging@lists.linux.dev
-Cc:     Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        "Ricardo B . Marliere" <ricardo@marliere.net>,
-        Dan Carpenter <error27@gmail.com>
-References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
- <20231109210309.638594-6-umang.jain@ideasonboard.com>
-From:   Stefan Wahren <stefan.wahren@i2se.com>
-In-Reply-To: <20231109210309.638594-6-umang.jain@ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:hRUgUPLJ7rFTcdE7NnVcI/4HzsqA4QYhQf3aFo9afPhySVvhACg
- ///NpGH8Kc41l0Xucn7dDL/L68PirBZ42PrNbUYgYG7D3G2W3tYshi8mtRw3lfS+XnAmCM0
- rQo082W3D2O9M9Nl8qzao9eoEA9zyeQKotc0xhQmXhA4zIyxpFBCw0WAreIMUPosdf23Y9l
- 9ZXAY34760qzi05XY8MZQ==
-UI-OutboundReport: notjunk:1;M01:P0:xlxB7dXYVbM=;ZzonCn7mXukF7za8R8WhfIBem8b
- 7Y+9VSl8Tcrq8BKgZ/qdjJa092opnS/WGchGNB4vD6z/z0co4MooUwc6hKWDTSOFqmKyF6RmH
- tHMDIcfftwNr7OGnPsGp9dF/m7GK2N1xoZHjbyJOMcIqHSFuBScs5lW7YkzhX7HqSj11teeJD
- madIE93cDzmtvv8NW/eQqmkUfvWgIe5D+wRsXSMqSpQsdAzCvMea1B1i3gtYFsbC9YTYXKGYR
- LcW2sue9WGkd9aUG5GtuDsqZP+LQYf0D7uAMYD5TOHnAmvj4ALnQPdBAGcJcj+0P4II4Tlgt9
- Z7cAh2JSGQNIJ4LaiYh9nZ2MjCv5NoN0a1Y1/5ZYlT9e1BvTEnh7iGFWrOGOMD23P5GbNvaSP
- F4K1wxOB+S8cjrPXJZfsORyCzBeg8Ct+yfUUKBS7LKfkM2cTJao6bU+htyqSeBpbkTrcPHPqi
- G/BwZTn2UR1CIWitUnIXf4yBDsKDcM98tl8BC/NXTlLxESoxPzhMhwZRpOcvKSkqmCmefxLhK
- 6+lFEmy+r1TpBcOhmz+QgZ5oxxZTIdHLX3zTU5rEo4PrDc5tOIdER3ays+WMPTFPDti1XHN69
- zv2C0GFnpjuMmN0w7Goi31uUPkY/WkOYiunN1SVGOPhf7PebD24l/7RRzw6eQklTWliwzODF8
- QcMgFKp+r9NMw7Ooti/bzBDg7o835td7ZpadUSkka0A8eJfkm+ulZjsR6L982lccHvqy0YpOp
- 9vFguXT7+uTdMVllqp8sJdXvkl0i2duPtjG2EUjn7TgW+AR0tuxiJTMwh3X7Y/I5PALa2JO1x
- 3boMM0fPaeZvXhWGFLHGkvGZPUkodRg0Yn5SgGvVNb28EE+G4VMgqceHUb5iq71/72EMIz7dG
- JMx4H6eWoWYghCg==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -68,40 +56,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Umang,
-
-Am 09.11.23 um 22:02 schrieb Umang Jain:
-> From: Dave Stevenson <dave.stevenson@raspberrypi.com>
+On Wed, Nov 15, 2023 at 06:05:30PM +0200, José Pekkarinen wrote:
+> On 2023-11-15 16:19, Matthew Wilcox wrote:
+> > On Wed, Nov 15, 2023 at 08:55:05AM +0200, José Pekkarinen wrote:
+> > > Documentation of __pte_offset_map_lock suggest there is situations
+> > > where
+> > 
+> > You should have cc'd Hugh who changed all this code recently.
 > 
-> With the vc-sm-cma driver we can support zero copy of buffers between
-> the kernel and VPU. Add this support to mmal-vchiq.
+>     Hi,
 > 
-> Signed-off-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
-> Signed-off-by: Umang Jain <umang.jain@ideasonboard.com>
-> ---
->   .../staging/vc04_services/vchiq-mmal/Kconfig  |  1 +
->   .../vc04_services/vchiq-mmal/mmal-common.h    |  4 +
->   .../vc04_services/vchiq-mmal/mmal-vchiq.c     | 84 +++++++++++++++++--
->   .../vc04_services/vchiq-mmal/mmal-vchiq.h     |  1 +
->   4 files changed, 83 insertions(+), 7 deletions(-)
+>     Sorry, he seems to be missing if I run get_maintainer.pl:
 > 
-> diff --git a/drivers/staging/vc04_services/vchiq-mmal/Kconfig b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-> index c99525a0bb45..a7c1a7bf516e 100644
-> --- a/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-> +++ b/drivers/staging/vc04_services/vchiq-mmal/Kconfig
-> @@ -1,6 +1,7 @@
->   config BCM2835_VCHIQ_MMAL
->   	tristate "BCM2835 MMAL VCHIQ service"
->   	depends on BCM2835_VCHIQ
-> +	select BCM_VC_SM_CMA
+> $ ./scripts/get_maintainer.pl include/linux/mm.h
+> Andrew Morton <akpm@linux-foundation.org> (maintainer:MEMORY MANAGEMENT)
+> linux-mm@kvack.org (open list:MEMORY MANAGEMENT)
+> linux-kernel@vger.kernel.org (open list)
 
-i think we need more explanation in the commit message of the relation 
-between these both modules.
+That's a good example of why get_maintainer.pl is not great.  It's
+just a stupid perl program.  Ideally, you should research what changes
+have been made to that code recently and see who else might be
+implicated.  Who introduced the exact code that you're fixing?
 
-On the one side BCM_VC_SM_CMA should be a driver, but it's not a driver 
-for a specific hardware. It looks like more an extension of VCHIQ MMAL 
-or does other (maybe not yet imported) vc04 driver make also use of this.
+In this specific instance, you can see Hugh already responded to it:
 
-My question is: is BCM_VC_SM_CMA a real member on the VCHIQ bus and why?
+https://lore.kernel.org/all/0000000000005e44550608a0806c@google.com/T/
 
-Best regards
+Now, part of Hugh's response turns out to be incorrect; syzbot can
+reproduce this on a current mainline kernel.  But, for some reason,
+syzbot has not done a bisect to track it down to a particular commit.
+I don't understand why it hasn't; maybe someone who knows syzbot better
+can explain why.
+
+> > > +++ b/include/linux/mm.h
+> > > @@ -2854,7 +2854,7 @@ void ptlock_free(struct ptdesc *ptdesc);
+> > > 
+> > >  static inline spinlock_t *ptlock_ptr(struct ptdesc *ptdesc)
+> > >  {
+> > > -	return ptdesc->ptl;
+> > > +	return (likely(ptdesc)) ? ptdesc->ptl : NULL;
+> > >  }
+> > 
+> > I don't think we should be changing ptlock_ptr().
+> 
+>     This is where the null ptr dereference originates, so the only
+> alternative I can think of is to protect the life cycle of the ptdesc
+> to prevent it to die between the pte check and the spin_unlock of
+> __pte_offset_map_lock. Would that work for you?
+
+Ah!  I think I found the problem.
+
+If ALLOC_SPLIT_PTLOCKS is not set, there is no problem as ->ptl
+is embedded in the struct page.  But if ALLOC_SPLIT_PTLOCKS is set
+(eg you have LOCKDEP enabled), we can _return_ a NULL pointer from
+ptlock_ptr.  The NULL pointer dereference isn't in ptlock_ptr(), it's
+in __pte_offset_map_lock().
+
+So, how to solve this?  We can't just check the ptl against NULL; the
+memory that ptl points to may have been freed.  We could grab a reference
+to the pmd_page, possibly conditionally on ALLOC_SPLIT_LOCK being set,
+but that will slow down everything.  We could make page_ptl_cachep
+SLAB_TYPESAFE_BY_RCU, preventing the memory from being freed (even if
+the lock might not be associated with this page any more).
+
+Other ideas?
