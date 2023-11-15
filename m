@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AAD17EC1B1
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:54:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 923147EC1B4
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 12:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343646AbjKOLy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 06:54:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60992 "EHLO
+        id S1343650AbjKOLzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 06:55:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343634AbjKOLy0 (ORCPT
+        with ESMTP id S1343625AbjKOLzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 06:54:26 -0500
+        Wed, 15 Nov 2023 06:55:15 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E762C11F;
-        Wed, 15 Nov 2023 03:54:22 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 629B8CC;
+        Wed, 15 Nov 2023 03:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700049263; x=1731585263;
+  t=1700049311; x=1731585311;
   h=message-id:date:mime-version:subject:to:cc:references:
    from:in-reply-to:content-transfer-encoding;
-  bh=CClELL9LLuLCO+dtt7JeMTwmCFDzy2RDUpcpu7ziq0U=;
-  b=V/0AoeKfW4HvVdVUpiOosSJsYzdnUv5z6eDe+wGo+BsVnIDYTHA08qJu
-   5HxbNGOrvsXHrkzPDrdAPhy4wb4n7EXmR5WX7mzq/C9F7jK3WH9F4Z64X
-   68qBLIzfAz9moI5XjaHWS0/t2pbRX6aqMe9BqENubsHDBm5srxB7oYEfu
-   pm19/RlIEot9iWiSFSvSuDvxmKioXmug83CtdgBvZHQG1goqlGWzy6nZv
-   W3b9x5EjOZk2mZvwWgYBbCovvhGC57LOLe971UzEjMNvDq74en84FrPWG
-   fJ1eAPUOuS0R3zaqJEYotUugtaEzGXaLw4qAvjBZnkbtuwhtADqU/s/S2
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393719915"
+  bh=5d7wdOlrdZD9uZZJ/q32HHZkqEvQWjCC2nVfcDplrmQ=;
+  b=blnQAWAqQEg+NWf+GMVYqnOSiJTl39QdKkIYjpZyuIfvLHKPTdq20rz6
+   qpAOy/0Zz8Jtq4BjvLPdFnXhRTqR/T8CUCK2AwB91GYTn73UKgqKyeBCh
+   mgNay9MqaLabhhE58eSg039CgnCWB+IdpR2D4c8CC7q8XjfZa9L3Vc0MD
+   MRGA7GP7p1KnnBNncovPV348H8J9RZK2ngzpmxQyCr9duOpkWgK0ahn74
+   fCZMI2BuKZQPr9VjHb9TE4bHli41pGc4i5WpIfUwTDwb3gfcHzquHVZ6U
+   JPYleN2kCmGlsO/wlxuPcMIT1uG4EGxDGo94Grwr4ROE1tGWaJsdRbupl
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="393719987"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="393719915"
+   d="scan'208";a="393719987"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:54:21 -0800
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:10 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753243"
+X-IronPort-AV: E=McAfee;i="6600,9927,10894"; a="908753381"
 X-IronPort-AV: E=Sophos;i="6.03,304,1694761200"; 
-   d="scan'208";a="908753243"
+   d="scan'208";a="908753381"
 Received: from mohdfai2-mobl.gar.corp.intel.com (HELO [10.214.157.166]) ([10.214.157.166])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:54:18 -0800
-Message-ID: <227b82b5-7e05-4eaf-acc2-a979d53e893f@linux.intel.com>
-Date:   Wed, 15 Nov 2023 19:54:15 +0800
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 03:55:07 -0800
+Message-ID: <27189622-372b-41d9-96ff-710f3a24d1b2@linux.intel.com>
+Date:   Wed, 15 Nov 2023 19:55:07 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 net 1/7] net/sched: taprio: fix too early schedules
- switching
+Subject: Re: [PATCH v2 net 2/7] net/sched: taprio: fix cycle time adjustment
+ for next entry
 Content-Language: en-US
 To:     Vladimir Oltean <vladimir.oltean@nxp.com>
 Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
@@ -57,10 +57,12 @@ Cc:     Vinicius Costa Gomes <vinicius.gomes@intel.com>,
         Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
 References: <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
- <20231107112023.676016-2-faizal.abdul.rahim@linux.intel.com>
- <20231108222756.l3u6h6gllxnbypyn@skbuf>
+ <20231107112023.676016-1-faizal.abdul.rahim@linux.intel.com>
+ <20231107112023.676016-3-faizal.abdul.rahim@linux.intel.com>
+ <20231107112023.676016-3-faizal.abdul.rahim@linux.intel.com>
+ <20231108232038.dhk64dtsxrw2p6h7@skbuf>
 From:   "Abdul Rahim, Faizal" <faizal.abdul.rahim@linux.intel.com>
-In-Reply-To: <20231108222756.l3u6h6gllxnbypyn@skbuf>
+In-Reply-To: <20231108232038.dhk64dtsxrw2p6h7@skbuf>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -75,136 +77,373 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 9/11/2023 6:27 am, Vladimir Oltean wrote:
-> On Tue, Nov 07, 2023 at 06:20:17AM -0500, Faizal Rahim wrote:
->> In the current taprio code for dynamic schedule change,
->> admin/oper schedule switching happens immediately when
->> should_change_schedules() is true. Then the last entry of
->> the old admin schedule stops being valid anymore from
->> taprio_dequeue_from_txq’s perspective.
+On 9/11/2023 7:20 am, Vladimir Oltean wrote:
+> On Tue, Nov 07, 2023 at 06:20:18AM -0500, Faizal Rahim wrote:
+>> According to IEEE Std. 802.1Q-2018 section Q.5 CycleTimeExtension:
+>> "the Cycle Time Extension variable allows this extension of the last old
+>> cycle to be done in a defined way. If the last complete old cycle would
+>> normally end less than OperCycleTimeExtension nanoseconds before the new
+>> base time, then the last complete cycle before AdminBaseTime is reached
+>> is extended so that it ends at AdminBaseTime."
 > 
-> Admittedly, I may have become a bit detached from this code base in the
-> past months, but I don't understand the reasoning here.
+> So far, so good.
 > 
-> Could you please explain what makes the last entry of the old admin
-> schedule be invalid from taprio_dequeue_from_txq()'s perspective?
+>> The current taprio implementation does not extend the last old cycle in
+>> the defined manner specified in the Qbv Spec. This is part of the fix
+>> covered in this patch.
 > 
-> What I see is that when should_change_schedules() is true, we change
-> q->oper_sched and q->admin_sched through the switch_schedules() call,
-> but we don't change q->current_entry, so I fail to understand the
-> connection you are implying.
+> In the discussion on v1, I said that prior to commit a1e6ad30fa19
+> ("net/sched: taprio: calculate guard band against actual TC gate close
+> time"), the last entry's next->close_time actually used to include the
+> oper schedule's correction, but it no longer does. This points to a
+> regression, and not to something that was never there. Am I wrong?
 
-My bad – I used part of the explanation from the original author without 
-thoroughly checking it. I have some guesses about 
-taprio_dequeue_from_txq(), but they're not solid without more testing.
+That is correct, that patch you mentioned is a regression to some of the 
+extension correction logic.
 
-So, I'll swap it with your suggestion below, which highlights the obvious 
-issue.
+The regression caused by the patch you mentioned is resolved by 
+("net/sched: taprio: update impacted fields during cycle time adjustment").
+Here's a snippet:
+		if (cycle_corr_active(oper->cycle_time_correction) &&
+		    (next->gate_mask & BIT(tc)))
+			next->gate_close_time[tc] = end_time;
 
-> On the other hand (and I see I did mention this in the other thread),
-> it seems that taprio_skb_exceeds_queue_max_sdu() - called from the
-> enqueue() path - looks at q->oper_sched, and that's a valid reason why
-> we'd want to delay the schedule switch until admin's actual base time,
-> rather than the current oper's cycle_end_time.
-
-Agree, observed this too.
+The `end_time` here is already corrected. The corrected `gate_close_time` 
+is then used by taprio_dequeue_from_txq() -> taprio_entry_allows_tx(), 
+which now takes dynamic scheduling into account.
 
 
-> But please, let's spare no expense in providing a proper problem
-> description, justification for the change and Fixes: tag. This is not
-> optional.
+However, the extension logic had other issues even before that patch. 
+Example, in should_change_schedules(), it didn't consider if the next entry 
+is the last one in the oper cycle before extending the schedule.
+Although this comes as no surprise as there was already a FIXME tag in 
+should_change_schedules().
+
+
+This patch primarily addresses the should_change_schedules() logic using 
+the new get_cycle_time_correction().
+
+
+>> Here are the changes made:
+>>
+>> 1. A new API, get_cycle_time_correction(), has been added to return the
 > 
->> To solve this, we have to delay the switch_schedules() call via
->> the new cycle_time_correction variable. The variable serves 2
->> purposes:
->> 1. Upon entering advance_sched(), if the value is set to a
->> non-initialized value, it indicates that we need to change
+> I would call an "API" an interface between two distinct software layers,
+> based on an agreed-upon contract. Not a function in sch_taprio.c which
+> is called by another function in sch_taprio.c.
+
+Alright, my use of the term "API" was a bit casual without much 
+consideration – my mistake.
+
+>> correction value. If it returns a non-initialize value, it indicates
+>> changes required for the next entry schedule, and upon the completion
+>> of the next entry's duration, entries will be loaded from the new admin
 >> schedule.
->> 2. Store the cycle time correction value which will be used for
->> negative or positive correction.
 > 
-> It needs to be stated much more clearly that only purpose 1 is relevant
-> here (I would even go as far as to omit its secondary purpose here).
-> The only reason we are using the correction variable is because it
-> happens that we'll need that in later changes.
+> This paragraph doesn't really help. It gets the reader lost in
+> irrelevant details which are actually not that hard to deduce from the
+> code with some good naming. Actually I find it poor naming to say
+> "non-initialize value" when what you mean is "!= INIT_CYCLE_TIME_CORRECTION".
+> I think I would name this a "specific" or "valid" cycle correction, when
+> it takes a value different from CYCLE_TIME_CORRECTION_UNSPEC.
 
-Got it.
+Will rename
 
+>>
+>> 2. Store correction values in cycle_time_correction:
+>> a) Positive correction value/extension
+>> We calculate the correction between the last operational cycle and the
+>> new admin base time. Note that for positive correction to take place,
+>> the next entry should be the last entry from oper and the new admin base
+>> time falls within the next cycle time of old oper.
+>>
+>> b) Negative correction value
+>> The new admin base time starts earlier than the next entry's end time.
+>>
+>> c) Zero correction value
+>> The new admin base time aligns exactly with the old cycle.
+>>
+>> 3. When cycle_time_correction is set to a non-initialized value, it is
+>> used to:
+>> a) Indicate that cycle correction is active to trigger adjustments in
+>> affected fields like interval and cycle_time. A new API,
+>> cycle_corr_active(), has been created to help with this purpose.
+> 
+> Again, it's exaggerated to call this an "API".
+> Although, what you can do is provide a kerneldoc-style comment above the
+> functions which you wish to describe, and remove this explanation from
+> the commit message.
+
+okay
+
+>>
+>> b) Transition to the new admin schedule at the beginning of
+>> advance_sched(). A new API, should_change_sched(), has been introduced
+>> for this purpose.
+> 
+> This should have been done since patch 1, not here.
+
+Understood. My bad - that would have been a better choice.
+
+>> 4. Remove the previous definition of should_change_scheds() API. A new
+>> should_change_sched() API has been introduced, but it serves a
+>> completely different purpose than the one that was removed.
+> 
+> So don't name it the same!
 > 
 >>
 >> Fixes: a3d43c0d56f1 ("taprio: Add support adding an admin schedule")
-> 
-> I believe that since the only observable problem has to do with
-> taprio_skb_exceeds_queue_max_sdu(), the Fixes: tag should be the commit
-> which added that logic. Which is:
-> 
-> Fixes: a878fd46fe43 ("net/sched: keep the max_frm_len information inside struct sched_gate_list")
-
-Will replace the patch explanation with this. Thanks.
-
 >> Signed-off-by: Faizal Rahim <faizal.abdul.rahim@linux.intel.com>
 >> ---
->>   net/sched/sch_taprio.c | 9 +++++++--
->>   1 file changed, 7 insertions(+), 2 deletions(-)
+>>   net/sched/sch_taprio.c | 105 +++++++++++++++++++++++++++--------------
+>>   1 file changed, 70 insertions(+), 35 deletions(-)
 >>
 >> diff --git a/net/sched/sch_taprio.c b/net/sched/sch_taprio.c
->> index 2e1949de4171..dee103647823 100644
+>> index dee103647823..ed32654b46f5 100644
 >> --- a/net/sched/sch_taprio.c
 >> +++ b/net/sched/sch_taprio.c
->> @@ -41,6 +41,7 @@ static struct static_key_false taprio_have_working_mqprio;
->>   #define TXTIME_ASSIST_IS_ENABLED(flags) ((flags) & TCA_TAPRIO_ATTR_FLAG_TXTIME_ASSIST)
->>   #define FULL_OFFLOAD_IS_ENABLED(flags) ((flags) & TCA_TAPRIO_ATTR_FLAG_FULL_OFFLOAD)
->>   #define TAPRIO_FLAGS_INVALID U32_MAX
->> +#define INIT_CYCLE_TIME_CORRECTION S64_MIN
-> 
-> I would prefer naming it CYCLE_TIME_CORRECTION_INVALID or _UNSPEC.
-> It is not just used as the "initial" value.
-> 
+>> @@ -259,6 +259,14 @@ static int duration_to_length(struct taprio_sched *q, u64 duration)
+>>   	return div_u64(duration * PSEC_PER_NSEC, atomic64_read(&q->picos_per_byte));
+>>   }
 >>   
->>   struct sched_entry {
->>   	/* Durations between this GCL entry and the GCL entry where the
->> @@ -75,6 +76,7 @@ struct sched_gate_list {
->>   	ktime_t cycle_end_time;
->>   	s64 cycle_time;
->>   	s64 cycle_time_extension;
->> +	s64 cycle_time_correction;
->>   	s64 base_time;
->>   };
+>> +static bool cycle_corr_active(s64 cycle_time_correction)
+>> +{
+>> +	if (cycle_time_correction == INIT_CYCLE_TIME_CORRECTION)
+>> +		return false;
+>> +	else
+>> +		return true;
+>> +}
+>> +
+> 
+> Could look like this:
+> 
+> static bool cycle_corr_active(struct sched_gate_list *oper)
+> {
+> 	return oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION;
+> }
+> 
+>>   /* Sets sched->max_sdu[] and sched->max_frm_len[] to the minimum between the
+>>    * q->max_sdu[] requested by the user and the max_sdu dynamically determined by
+>>    * the maximum open gate durations at the given link speed.
+>> @@ -888,38 +896,59 @@ static bool should_restart_cycle(const struct sched_gate_list *oper,
+>>   	return false;
+>>   }
 >>   
->> @@ -940,8 +942,10 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+>> -static bool should_change_schedules(const struct sched_gate_list *admin,
+>> -				    const struct sched_gate_list *oper,
+>> -				    ktime_t end_time)
+>> +static bool should_change_sched(struct sched_gate_list *oper)
+>>   {
+>> -	ktime_t next_base_time, extension_time;
+>> +	bool change_to_admin_sched = false;
+>>   
+>> -	if (!admin)
+>> -		return false;
+>> +	if (oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
+>> +		/* The recent entry ran is the last one from oper */
+>> +		change_to_admin_sched = true;
+>> +		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
+> 
+> Don't make a function called should_change_sched() stateful. Don't make
+> this function reset the value of oper->cycle_time_correction, since that
+> practically equates with actually starting the schedule change.
+> 
+> The oper->cycle_time_correction assignment actually belongs to
+> switch_schedules(), in my opinion.
+> 
+> And if you make should_change_sched() stateless, then surprise-surprise,
+> it will contain the exact same logic, and return the exact same thing,
+> as cycle_corr_active(). I think that naming this single function
+> sched_change_pending() and providing a kerneldoc comment as to why it is
+> implemented the way it is should be sufficient.
+> 
+
+I intentionally made should_change_schedule() slightly different from 
+cycle_corr_active() and, unfortunately, stateful by resetting 
+oper->cycle_time_correction. My aim was to have two functions with clear 
+names reflecting their intentions based on usage.
+
+For instance, this:
+	if (should_change_schedule(oper)) {
+    		oper->cycle_end_time = new_base_time;
+    		end_time = new_base_time;
+
+is less intuitive than this:
+	if (cycle_corr_active(oper->cycle_time_correction)) {
+    		oper->cycle_end_time = new_base_time;
+    		end_time = new_base_time;
+
+And this:
+	if (!oper || should_change_sched(oper))
+	   	switch_schedules(q, &admin, &oper);
+
+reads clearer than:
+	if (!oper || cycle_corr_active(oper->cycle_time_correction))
+		switch_schedules(q, &admin, &oper);
+
+
+Normally I prefer clear function names that don't need comments for 
+explanation. But I probably overthink it, seems to have more cons than 
+pros. Will replace with a single sched_change_pending() as suggested, thanks.
+
+
+>> +	}
+>>   
+>> -	next_base_time = sched_base_time(admin);
+>> +	return change_to_admin_sched;
+>> +}
+>>   
+>> -	/* This is the simple case, the end_time would fall after
+>> -	 * the next schedule base_time.
+>> -	 */
+>> -	if (ktime_compare(next_base_time, end_time) <= 0)
+>> +static bool should_extend_cycle(const struct sched_gate_list *oper,
+>> +				ktime_t new_base_time,
+>> +				ktime_t entry_end_time,
+>> +				const struct sched_entry *entry)
+>> +{
+>> +	ktime_t next_cycle_end_time = ktime_add_ns(oper->cycle_end_time,
+>> +						   oper->cycle_time);
+>> +	bool extension_supported = oper->cycle_time_extension > 0 ? true : false;
+> 
+> "? true : false" is redundant. Just "extension_supported = oper->cycle_time_extension > 0"
+> is enough.
+
+Ooops sorry for this blunder. Will change.
+
+>> +	s64 extension_limit = oper->cycle_time_extension;
+>> +
+>> +	if (extension_supported &&
+>> +	    list_is_last(&entry->list, &oper->entries) &&
+>> +	    ktime_before(new_base_time, next_cycle_end_time) &&
+>> +	    ktime_sub(new_base_time, entry_end_time) < extension_limit)
+>>   		return true;
+>> +	else
+>> +		return false;
+> 
+> Style nitpick:
+> 
+> 	return extension_supported &&
+> 	       list_is_last(&entry->list, &oper->entries) &&
+> 	       ktime_before(new_base_time, next_cycle_end_time) &&
+> 	       ktime_sub(new_base_time, entry_end_time) < extension_limit;
+> 
+>> +}
+>>   
+>> -	/* This is the cycle_time_extension case, if the end_time
+>> -	 * plus the amount that can be extended would fall after the
+>> -	 * next schedule base_time, we can extend the current schedule
+>> -	 * for that amount.
+>> -	 */
+>> -	extension_time = ktime_add_ns(end_time, oper->cycle_time_extension);
+>> +static s64 get_cycle_time_correction(const struct sched_gate_list *oper,
+>> +				     ktime_t new_base_time,
+>> +				     ktime_t entry_end_time,
+>> +				     const struct sched_entry *entry)
+>> +{
+>> +	s64 correction = INIT_CYCLE_TIME_CORRECTION;
+>>   
+>> -	/* FIXME: the IEEE 802.1Q-2018 Specification isn't clear about
+>> -	 * how precisely the extension should be made. So after
+>> -	 * conformance testing, this logic may change.
+>> -	 */
+>> -	if (ktime_compare(next_base_time, extension_time) <= 0)
+>> -		return true;
+>> +	if (!entry || !oper)
+>> +		return correction;
+> 
+> This function is called as follows:
+> 
+> 	oper->cycle_time_correction = get_cycle_time_correction(oper, ...);
+> 
+> So, "oper" cannot be NULL if we dereference "oper" in the left hand side
+> of the assignment and expect the kernel not to crash, no?
+> 
+> "entry" - assigned from the "next" variable in advance_sched() - should
+> not be NULL either, from the way in which it is assigned.
+
+My bad on the oper null check.
+Will remove both.
+
+>>   
+>> -	return false;
+>> +	if (ktime_compare(new_base_time, entry_end_time) <= 0) {
+>> +		/* negative or zero correction */
+> 
+> At least for me, it would be helpful if you could transplant the
+> explanation from the commit message ("The new admin base time starts
+> earlier than the next entry's end time") into an expanded comment here.
+> I am easily confused about the "ktime_compare(a, b) <= 0" construction.
+> 
+>> +		correction = ktime_sub(new_base_time, entry_end_time);
+>> +	} else if (ktime_after(new_base_time, entry_end_time) &&
+>> +		   should_extend_cycle(oper, new_base_time,
+>> +				       entry_end_time, entry)) {
+>> +		/* positive correction */
+> 
+> Same here - move the explanation from the commit message to the comment,
+> please.
+
+Will do.
+
+> 
+>> +		correction = ktime_sub(new_base_time, entry_end_time);
+>> +	}
+>> +
+>> +	return correction;
+>>   }
+>>   
+>>   static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+>> @@ -942,10 +971,8 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
 >>   	admin = rcu_dereference_protected(q->admin_sched,
 >>   					  lockdep_is_held(&q->current_entry_lock));
 >>   
->> -	if (!oper)
->> +	if (!oper || oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
-> 
-> You could introduce even as early as this change a "static bool
-> sched_switch_pending(struct sched_gate_list *oper)" function, which
-> incorporates the entire body of this "if" expression.
-> 
->> +		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
+>> -	if (!oper || oper->cycle_time_correction != INIT_CYCLE_TIME_CORRECTION) {
+>> -		oper->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
+>> +	if (!oper || should_change_sched(oper))
 >>   		switch_schedules(q, &admin, &oper);
->> +	}
+>> -	}
 >>   
 >>   	/* This can happen in two cases: 1. this is the very first run
 >>   	 * of this function (i.e. we weren't running any schedule
->> @@ -981,7 +985,7 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
->>   		 * schedule runs.
->>   		 */
->>   		end_time = sched_base_time(admin);
->> -		switch_schedules(q, &admin, &oper);
->> +		oper->cycle_time_correction = 0;
+>> @@ -972,6 +999,22 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+>>   	end_time = ktime_add_ns(entry->end_time, next->interval);
+>>   	end_time = min_t(ktime_t, end_time, oper->cycle_end_time);
+>>   
+>> +	if (admin) {
+>> +		ktime_t new_base_time = sched_base_time(admin);
+>> +
+>> +		oper->cycle_time_correction =
+>> +			get_cycle_time_correction(oper, new_base_time,
+>> +						  end_time, next);
+>> +
+>> +		if (cycle_corr_active(oper->cycle_time_correction)) {
+>> +			/* The next entry is the last entry we will run from
+>> +			 * oper, subsequent ones will take from the new admin
+>> +			 */
+>> +			oper->cycle_end_time = new_base_time;
+>> +			end_time = new_base_time;
+>> +		}
+>> +	}
+>> +
+>>   	for (tc = 0; tc < num_tc; tc++) {
+>>   		if (next->gate_duration[tc] == oper->cycle_time)
+>>   			next->gate_close_time[tc] = KTIME_MAX;
+>> @@ -980,14 +1023,6 @@ static enum hrtimer_restart advance_sched(struct hrtimer *timer)
+>>   								 next->gate_duration[tc]);
 >>   	}
 >>   
+>> -	if (should_change_schedules(admin, oper, end_time)) {
+>> -		/* Set things so the next time this runs, the new
+>> -		 * schedule runs.
+>> -		 */
+>> -		end_time = sched_base_time(admin);
+>> -		oper->cycle_time_correction = 0;
+>> -	}
+>> -
 >>   	next->end_time = end_time;
->> @@ -1174,6 +1178,7 @@ static int parse_taprio_schedule(struct taprio_sched *q, struct nlattr **tb,
->>   	}
+>>   	taprio_set_budgets(q, oper, next);
 >>   
->>   	taprio_calculate_gate_durations(q, new);
->> +	new->cycle_time_correction = INIT_CYCLE_TIME_CORRECTION;
->>   
->>   	return 0;
->>   }
 >> -- 
 >> 2.25.1
 >>
