@@ -2,37 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C93A87EC8D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D639C7EC8D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 15 Nov 2023 17:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232486AbjKOQjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 11:39:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
+        id S232638AbjKOQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 11:39:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57570 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230129AbjKOQj3 (ORCPT
+        with ESMTP id S232470AbjKOQjd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 11:39:29 -0500
+        Wed, 15 Nov 2023 11:39:33 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9B44AB
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B26EC433C9;
-        Wed, 15 Nov 2023 16:39:25 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9412C181
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 08:39:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28D4CC433C8;
+        Wed, 15 Nov 2023 16:39:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700066366;
-        bh=O/lr4P1EsL7YBuHracXPErJjSaguLam5N+lR2mNBaRQ=;
+        s=k20201202; t=1700066368;
+        bh=exKYJcOqE7PAuCguPkuv8mAJu56vWsUJCYEBl4ctl6U=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HloXa8yfi2b8+zalpwQqL7zMe2cDWjk3K16Qu3i1dSW5lnc3nTXjYE+Jeco7gTwPF
-         QFdW9p28kq86x5Kf/alAeyE4tW5CzZ5g0XJ4+eDT0wP9whbbzvfw7P6S3oeMpTNOSR
-         qnVmmB+ZhRgR7quZL+8hkHs3XAx7EWRmv4cuiuvZfQbhi00Ksw2966oNpDIbGSJT/C
-         ndxjkOJZNv0CG0ai5a+kuDri42Gv0KvbyrVmFup51ZvPkKW3dBn17zaViLe4e4X05P
-         wvpsBQf3MUThIlbMtFVLIoa6JhkLd/U87bdhY7hvNcvoSiwQnOSSCC6RSV6S7tjzeg
-         lFCtprQEDNgww==
+        b=e3HR+gVGFqu0vVmFFLsLi6cHtZ8Jb2lvPyuWJmDx9KCYdiSnWppVoyrZdcX/xOoio
+         xhK1BicgbAqrEjdyI8x95IuviXOVX8ZeRGn5eBjumWTtXODIuNpZkEKg17Bkr7t41Z
+         mrX7Bf5mPU+j/ZbD715h7vd0Bi5lYFWNNiKSSbPSxww6r/K6+5TrcuonS8zyUmMQm8
+         zMJgongjUWJsXNCMYaunSPZEUSLQKQEN3riWs111z1cFYCE0Y70TEvrLCOl1DErBaj
+         Aj80uJgu2mBoCXNztCZa4TgMyls1nu2cVD4ZGZl/CQOJhp0GNEg4h6LQL7TtMDj1C8
+         yDuBVdDL7I1HA==
 From:   Oded Gabbay <ogabbay@kernel.org>
 To:     dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     Ofir Bitton <obitton@habana.ai>
-Subject: [PATCH 06/10] accel/habanalabs: remove 'get temperature' debug print
-Date:   Wed, 15 Nov 2023 18:39:08 +0200
-Message-Id: <20231115163912.1243175-6-ogabbay@kernel.org>
+Cc:     Tomer Tayar <ttayar@habana.ai>
+Subject: [PATCH 07/10] accel/habanalabs: set hard reset flag if graceful reset is skipped
+Date:   Wed, 15 Nov 2023 18:39:09 +0200
+Message-Id: <20231115163912.1243175-7-ogabbay@kernel.org>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231115163912.1243175-1-ogabbay@kernel.org>
 References: <20231115163912.1243175-1-ogabbay@kernel.org>
@@ -48,33 +48,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ofir Bitton <obitton@habana.ai>
+From: Tomer Tayar <ttayar@habana.ai>
 
-The print was added long back for a specific debug and can
-now be removed.
+hl_device_cond_reset() might be called with the hard reset flag unset,
+because a compute reset upon device release as part of a graceful reset
+is valid.
+If the conditions for graceful reset are not met, hl_device_reset() will
+be called for an immediate reset. In this case a compute reset is not
+valid, so it will be replaced with a hard reset together with a debug
+message about it.
+This message might be confusing, as it implies that a compute reset was
+requested when it shouldn't. To prevent this confusion, set the hard
+reset flag in hl_device_cond_reset() if going to an immediate reset.
 
-Signed-off-by: Ofir Bitton <obitton@habana.ai>
+Signed-off-by: Tomer Tayar <ttayar@habana.ai>
 Reviewed-by: Oded Gabbay <ogabbay@kernel.org>
 Signed-off-by: Oded Gabbay <ogabbay@kernel.org>
 ---
- drivers/accel/habanalabs/common/hwmon.c | 4 ----
- 1 file changed, 4 deletions(-)
+ drivers/accel/habanalabs/common/device.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/accel/habanalabs/common/hwmon.c b/drivers/accel/habanalabs/common/hwmon.c
-index 8598056216e7..1ee2ee07e9ed 100644
---- a/drivers/accel/habanalabs/common/hwmon.c
-+++ b/drivers/accel/habanalabs/common/hwmon.c
-@@ -578,10 +578,6 @@ int hl_get_temperature(struct hl_device *hdev,
- 				CPUCP_PKT_CTL_OPCODE_SHIFT);
- 	pkt.sensor_index = __cpu_to_le16(sensor_index);
- 	pkt.type = __cpu_to_le16(attr);
--
--	dev_dbg(hdev->dev, "get temp, ctl 0x%x, sensor %d, type %d\n",
--		pkt.ctl, pkt.sensor_index, pkt.type);
--
- 	rc = hdev->asic_funcs->send_cpu_message(hdev, (u32 *) &pkt, sizeof(pkt),
- 						0, &result);
+diff --git a/drivers/accel/habanalabs/common/device.c b/drivers/accel/habanalabs/common/device.c
+index 6bf5f1d0d005..a365791a9f5c 100644
+--- a/drivers/accel/habanalabs/common/device.c
++++ b/drivers/accel/habanalabs/common/device.c
+@@ -2040,7 +2040,7 @@ int hl_device_cond_reset(struct hl_device *hdev, u32 flags, u64 event_mask)
+ 	if (ctx)
+ 		hl_ctx_put(ctx);
  
+-	return hl_device_reset(hdev, flags);
++	return hl_device_reset(hdev, flags | HL_DRV_RESET_HARD);
+ }
+ 
+ static void hl_notifier_event_send(struct hl_notifier_event *notifier_event, u64 event_mask)
 -- 
 2.34.1
 
