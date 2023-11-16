@@ -2,104 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2E27EE333
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:46:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E633F7EE334
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:46:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343893AbjKPOqH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:46:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40544 "EHLO
+        id S1345239AbjKPOqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:46:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43256 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234138AbjKPOqF (ORCPT
+        with ESMTP id S1344290AbjKPOqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:46:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6CB182
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:46:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700145961; x=1731681961;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=L9XNHSq+30j3A4kCvAzbsmtTtelpSi06Z0nMD8C/X78=;
-  b=PG3JETZqVsXVDJVfd/16luCXnG8Nq3kBGxZ+35nlPzm2tFMwPEAJ80Md
-   Mk316eM4vZZDeR+ShSZ+1x3RiEeH5wLJdw0BWjdlrHJ7IFJHRgyvc7rUp
-   Ys0xSlsQRTYNSE/yYImnKwuJQjk6Jg+3RFbrx8rFExFYF/gotrA7JoOWh
-   L4VuAal4Ic7yhsolntkTz550BezB6m/Sp/UAsMjqPRlGn1rjMzJJncyzC
-   XzJeP8cfR4+AQhtsY+m3aMMCWGYC51dziSlM5Xf07xxkMECGDsRIRT0A8
-   Y4wfkE0n0H0n4IRimolCt89dOwbViwpUtDcvhzR7CaN1iAqOTGId3/3KK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="455392770"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="455392770"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 06:46:00 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="794513454"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="794513454"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2023 06:45:59 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3dcz-0001nH-22;
-        Thu, 16 Nov 2023 14:45:57 +0000
-Date:   Thu, 16 Nov 2023 22:45:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chris Morgan <macromorgan@hotmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: include/asm-generic/unaligned.h:119:16: sparse: sparse: cast
- truncates bits from constant value (aa01a0 becomes a0)
-Message-ID: <202311162214.kJuTyMck-lkp@intel.com>
+        Thu, 16 Nov 2023 09:46:20 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6350ED4D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:46:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700145976;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rTqorEhdT7DMAGJHmu4VBxw/55IAIeOOpj+g7xYY/4M=;
+        b=KYsQLL0gLErIukqGFtWdjITckMilUnvKWq4cRw45yApgrBBt/wy2Wt55H5NtVOKxRXQcLy
+        y3P4PVKZm/uIrEhzgDnpVheJBuIsnXlV+hwSraql7R0U+/AnXXxoZyq9zu3jP8AkmIRD76
+        YpvX22Halkdwy8gcs1xbzU54/jE1Vrg=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-98-yg6dT8FlPhCvECEC6khXCA-1; Thu, 16 Nov 2023 09:46:11 -0500
+X-MC-Unique: yg6dT8FlPhCvECEC6khXCA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 34E38185A784;
+        Thu, 16 Nov 2023 14:46:10 +0000 (UTC)
+Received: from [10.45.225.144] (unknown [10.45.225.144])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 899882166B28;
+        Thu, 16 Nov 2023 14:46:08 +0000 (UTC)
+Message-ID: <2332ea8b-16d9-402f-8be6-683e52c6758e@redhat.com>
+Date:   Thu, 16 Nov 2023 15:46:07 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH iwl-next 3/5] i40e: Add helpers to find VSI and VEB by
+ SEID and use them
+Content-Language: en-US
+To:     Wojciech Drewek <wojciech.drewek@intel.com>, netdev@vger.kernel.org
+Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        intel-wired-lan@lists.osuosl.org, linux-kernel@vger.kernel.org,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Simon Horman <horms@kernel.org>, mschmidt@redhat.com
+References: <20231113125856.346047-1-ivecera@redhat.com>
+ <20231113125856.346047-4-ivecera@redhat.com>
+ <3c640be7-8f1e-4f9e-8556-3aac92644dec@intel.com>
+ <36889885-71c7-46f7-8c21-e5791986ad5a@redhat.com>
+ <72250942-17af-4f8d-b11f-ba902fbe2b58@intel.com>
+ <483acf53-fe96-4ef3-933a-c5fd446042f6@redhat.com>
+ <f307b4f1-4dff-4925-829f-20459d25bdcf@intel.com>
+From:   Ivan Vecera <ivecera@redhat.com>
+In-Reply-To: <f307b4f1-4dff-4925-829f-20459d25bdcf@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7475e51b87969e01a6812eac713a1c8310372e8a
-commit: 66603243f5283f7f28c795f09e7c2167233df0bd Input: add driver for Hynitron cstxxx touchscreens
-date:   1 year, 1 month ago
-config: x86_64-randconfig-x001-20230717 (https://download.01.org/0day-ci/archive/20231116/202311162214.kJuTyMck-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311162214.kJuTyMck-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311162214.kJuTyMck-lkp@intel.com/
+On 16. 11. 23 15:21, Wojciech Drewek wrote:
+>>> Sounds good, my point was that I prefer to have "get" before "{veb|vsi}"
+>> OK, got it... Will repost v2 with this change + "too many also..." issue 😉
+> Thanks
+> 
+>> Btw. what about the last patch?
+> Reviewed 🙂
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through arch/x86/include/generated/asm/unaligned.h):
->> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (aa01a0 becomes a0)
-   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (aa01 becomes 1)
->> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (ab00d0 becomes d0)
-   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (ab00 becomes 0)
+Thanks, Wojciech! But I already submitted v2 of the series...but without 
+your 'Reviewed-by:' tag in patch 5. Could you please "review" the v2 of 
+patch 5 again?
 
-vim +119 include/asm-generic/unaligned.h
+Thanks,
+Ivan
 
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  116  
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  117  static inline void __put_unaligned_le24(const u32 val, u8 *p)
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  118  {
-803f4e1eab7a89 Arnd Bergmann 2021-05-08 @119  	*p++ = val;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  120  	*p++ = val >> 8;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  121  	*p++ = val >> 16;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  122  }
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  123  
-
-:::::: The code at line 119 was first introduced by commit
-:::::: 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63 asm-generic: simplify asm/unaligned.h
-
-:::::: TO: Arnd Bergmann <arnd@arndb.de>
-:::::: CC: Arnd Bergmann <arnd@arndb.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
