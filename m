@@ -2,137 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528AA7EDD9F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:32:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BADE7EDDAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:35:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235691AbjKPJcP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:32:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39870 "EHLO
+        id S235702AbjKPJfo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:35:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjKPJcO (ORCPT
+        with ESMTP id S229806AbjKPJfn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:32:14 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34B361A3;
-        Thu, 16 Nov 2023 01:32:11 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG96aDp007732;
-        Thu, 16 Nov 2023 09:32:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=dUkYPespAQaJg5xtS6/bbkbiwvOohnbVFTSW2JL3fU0=;
- b=YclG/s+0KZsF7nwanuVTT/4FMfvSuo+If08jc5rbKwhyVQrcd0lC8Tkrexx+/KEMJX3K
- Cr+eRRC7/igfkxaoyUXUa2m+6BogYliQvFfjR7KOTWfkLDML508V+1xFDnlDaKdaMWNB
- 61vbpvq5huZVRoVRRcoVgrA3edo4XMwR4GCMZcMZ48ftwXev1hbd9Alqb4a6TlwyBv5q
- OD84AeMc4+BoYcbpOld1C2o3j2wju1Htp9MtqTXES8JWcPyxVQZ8shbgP7In1JvW0Byw
- ciOC4j1SmGM8ZmajLoGsXrLUV1Dpav6y7Q7HLlFqwIqHOYGoxG0mP/HIm1N2y8HXHZql kQ== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud5fhhb65-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 09:32:07 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AG9W5aO003619
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 09:32:05 GMT
-Received: from [10.218.19.46] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 01:32:01 -0800
-Message-ID: <91261b98-6bbd-b1d8-4fc8-96387bbcaba4@quicinc.com>
-Date:   Thu, 16 Nov 2023 15:01:58 +0530
+        Thu, 16 Nov 2023 04:35:43 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6793C1AD
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:35:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700127339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=oT3FKeKOYFdxsNmBZiHx2Wl1tcSnqa0OXvMm3OIn0us=;
+        b=Mh/Dh1ExJX2JAmTc5ugAaG0EFQf3Ld9m/TpiTkOG9FHVPmKEv5VffoDk2FU/4/jzkWnmZX
+        nMd6oMrhEvhQo9q51xyxBhMa/s1E3cAZjuLdlcm3iGuMTpPB+L+GWLG3CsNOKSV7oitWVS
+        P1+xLb4Dx/qzBMD8ZTHI8qPX0W66yAA=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-531-UTKNFgOMMlq5-jI4bGryqQ-1; Thu,
+ 16 Nov 2023 04:35:35 -0500
+X-MC-Unique: UTKNFgOMMlq5-jI4bGryqQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 55A863811F38;
+        Thu, 16 Nov 2023 09:35:35 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.23])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 452A82166B27;
+        Thu, 16 Nov 2023 09:35:33 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 16 Nov 2023 10:34:31 +0100 (CET)
+Date:   Thu, 16 Nov 2023 10:34:28 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Yonghong Song <yonghong.song@linux.dev>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: Re: [PATCH 1/3] bpf: task_group_seq_get_next: use __next_thread()
+ rather than next_thread()
+Message-ID: <20231116093428.GA18748@redhat.com>
+References: <20231114163234.GA890@redhat.com>
+ <34440ea4-3780-45e4-9e7c-1b36b535171b@linux.dev>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.9.0
-Subject: Re: [PATCH 3/4] clk: qcom: videocc-sm8150: Update the
- video_pll0_config
-Content-Language: en-US
-To:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     Bjorn Andersson <andersson@kernel.org>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
-References: <20231110065029.2117212-1-quic_skakitap@quicinc.com>
- <20231110065029.2117212-4-quic_skakitap@quicinc.com>
- <8457b113-bef2-47e4-a138-0f92a4f5798a@linaro.org>
-From:   "Satya Priya Kakitapalli (Temp)" <quic_skakitap@quicinc.com>
-In-Reply-To: <8457b113-bef2-47e4-a138-0f92a4f5798a@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: tgnYhZD5NZI0_OnC_ScqY51i_j5nejGy
-X-Proofpoint-ORIG-GUID: tgnYhZD5NZI0_OnC_ScqY51i_j5nejGy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_07,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=999
- suspectscore=0 phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311160076
-X-Spam-Status: No, score=-4.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <34440ea4-3780-45e4-9e7c-1b36b535171b@linux.dev>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 11/10/2023 4:46 PM, Bryan O'Donoghue wrote:
-> On 10/11/2023 06:50, Satya Priya Kakitapalli wrote:
->> Update the video_pll0_config to configure the test_ctl_hi and
->> test_ctl_hi1 values.
->>
->> Fixes: 5658e8cf1a8a ("clk: qcom: add video clock controller driver 
->> for SM8150")
->> Signed-off-by: Satya Priya Kakitapalli <quic_skakitap@quicinc.com>
->> ---
->>   drivers/clk/qcom/videocc-sm8150.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/clk/qcom/videocc-sm8150.c 
->> b/drivers/clk/qcom/videocc-sm8150.c
->> index 6a5f89f53da8..ddfe784fb9e1 100644
->> --- a/drivers/clk/qcom/videocc-sm8150.c
->> +++ b/drivers/clk/qcom/videocc-sm8150.c
->> @@ -33,6 +33,8 @@ static struct alpha_pll_config video_pll0_config = {
->>       .config_ctl_val = 0x20485699,
->>       .config_ctl_hi_val = 0x00002267,
->>       .config_ctl_hi1_val = 0x00000024,
->> +    .test_ctl_hi_val = 0x00000002,
->> +    .test_ctl_hi1_val = 0x00000020,
->>       .user_ctl_val = 0x00000000,
->>       .user_ctl_hi_val = 0x00000805,
->>       .user_ctl_hi1_val = 0x000000D0,
+On 11/15, Yonghong Song wrote:
 >
-> It would be nice to get a better description of this change.
+> On 11/14/23 11:32 AM, Oleg Nesterov wrote:
+> >@@ -70,15 +70,13 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+> >  		return NULL;
+> >  retry:
+> >-	task = next_thread(task);
+> >+	task = __next_thread(task);
+> >+	if (!task)
+> >+		return NULL;
+> >  	next_tid = __task_pid_nr_ns(task, PIDTYPE_PID, common->ns);
+> >-	if (!next_tid || next_tid == common->pid) {
+> >-		/* Run out of tasks of a process.  The tasks of a
+> >-		 * thread_group are linked as circular linked list.
+> >-		 */
+> >-		return NULL;
+> >-	}
+> >+	if (!next_tid)
+> >+		goto retry;
 >
-> Reading this - I can see it does an update but, the commit log should 
-> contain what it is updating and why plus what effect the update will 
-> have.
+> Look at the code. Looks like next_tid should never be 0
+
+...
+
+> pid_t __task_pid_nr_ns(struct task_struct *task, enum pid_type type,
+>                         struct pid_namespace *ns)
+> {
+>         pid_t nr = 0;
 >
-> Please update the commit log to capture that data and +cc me on the V2.
->
+>         rcu_read_lock();
+>         if (!ns)
+>                 ns = task_active_pid_ns(current);
+>         nr = pid_nr_ns(rcu_dereference(*task_pid_ptr(task, type)), ns);
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sure will check and update.
+Please note that task_pid_ptr(task, type)) can return NULL if this
+task has already exited and called detach_pid().
+
+detach_pid() does __change_pid(task, type, NULL), please note the
+
+	*pid_ptr = new; // NULL in this case
+
+assignment in __change_pid().
+
+IOW. The problem is not that ns can change, the problem is that
+task->thread_pid (and other pid links) can be NULL, and in this
+case pid_nr_ns() returns zero.
 
 
-Thanks,
+This code should be rewritten from the very beginning, it should
+not rely on pid_nr. If nothing else common->pid and/or pid_visiting
+can be reused. But currently my only concern is next_thread().
 
-Satya Priya
+> Other than above, the change looks good to me.
 
-> ---
-> bod
+Thanks for review!
+
+Oleg.
+
