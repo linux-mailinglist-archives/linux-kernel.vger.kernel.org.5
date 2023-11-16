@@ -2,199 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C277E7EDBC7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:09:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F9657EDBCC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:11:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjKPHJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 02:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46616 "EHLO
+        id S234553AbjKPHLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 02:11:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjKPHJg (ORCPT
+        with ESMTP id S230075AbjKPHLY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 02:09:36 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DD8182;
-        Wed, 15 Nov 2023 23:09:32 -0800 (PST)
-Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.54])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SWB0021jSzsR5m;
-        Thu, 16 Nov 2023 15:06:08 +0800 (CST)
-Received: from [10.174.178.220] (10.174.178.220) by
- kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Thu, 16 Nov 2023 15:09:29 +0800
-Message-ID: <3a0b72e0-0784-0882-c18b-6178ed597670@huawei.com>
-Date:   Thu, 16 Nov 2023 15:09:28 +0800
+        Thu, 16 Nov 2023 02:11:24 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11E0D192
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:11:16 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-2806cbd43b8so335179a91.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:11:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance.com; s=google; t=1700118675; x=1700723475; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mA9iboiAyXV3dWlM8+BWCGvRgom1QhuQa9XC12KZvSU=;
+        b=Jwp7lkP0CQFnndyaSvNYJ4BgqjBXkmQPTYYSAsy7E86wA1XUO7OCZWUeL2OU0+CbrD
+         LngKyKKBMAAD8jsUNuOoO/Sdy8kP7tv+/JtNf8aWiNMxMdy/mwkP8D7kKYVlOtnDaniy
+         9gNWvnUkbYLl8jKqu6QBN7tH1awP+Oz/U7RfohBLya63mYAKxxrnQrS3vJPos4Kt1/j8
+         tXEWj+Eba7zjU8FMWqwFiLmZWSCmvOV1dHHM50HXvrSDe/d7cc+PAuUmXE4J4XedOTwL
+         EB0FDhQ4th2i7cYMoLXy3y2Cyd/Y4p0FvhMaDairo4ECGCimOBg5bKU8rbA6zZq7A2gA
+         W+lA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700118675; x=1700723475;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=mA9iboiAyXV3dWlM8+BWCGvRgom1QhuQa9XC12KZvSU=;
+        b=WKe3rcQxIfuzjh6cRFS9zioJ7SaY3oRCjcvnsntko4MjqC6txzOfpH8mb4G8rHz+3a
+         S3WCvk5MIqyBRxh2ZUAUOTWX/wUEldPeucDB9K/dYT1tXirbbrP48XX95bZN1EpTsbTi
+         ypGBQBrlwiTpWNBey/GldJ7chX2nAmxS7spaJMgKDSvJbHGCG7unolPpoD4pjaeVQuz6
+         MCRtI7Tm4BGl/c+TYQeV+Tstahcb8EZ3ZgDahXQpx+NXkKjun7e18S08vckA7vdcT8c9
+         o4sCHOAZE3BZRCj6TOYby4SqAWyF1SDQOo+zeplzs83Q9sPyVKNK5nvqSwfXJtv6ADX1
+         dBXg==
+X-Gm-Message-State: AOJu0YxgYyA956Wugx/Lr63ogfzaWhqSbCY2yDoUeOM+ZBNF4O+LBp8Q
+        CScYLu7xxFQYJ7QGXzF40IvaBQ==
+X-Google-Smtp-Source: AGHT+IFg0n9FXTnhKUEGX2h2DnL4okaS/BS57C5yRPRgdCKpm4sgFPYH33SbggcN8rDD7mv4HjG5cg==
+X-Received: by 2002:a17:90b:1646:b0:25e:a8ab:9157 with SMTP id il6-20020a17090b164600b0025ea8ab9157mr16165716pjb.22.1700118675452;
+        Wed, 15 Nov 2023 23:11:15 -0800 (PST)
+Received: from [10.254.46.51] ([139.177.225.228])
+        by smtp.gmail.com with ESMTPSA id lm14-20020a17090b334e00b002630c9d78aasm934271pjb.5.2023.11.15.23.11.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 23:11:14 -0800 (PST)
+Message-ID: <7f179261-72a7-41d9-aa79-6ba8cc3c4286@bytedance.com>
+Date:   Thu, 16 Nov 2023 15:11:04 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.8.0
-Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
+User-Agent: Mozilla Thunderbird
+Subject: Re: Re: [PATCH 1/4] sched/eevdf: Fix vruntime adjustment on reweight
 Content-Language: en-US
-To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
-CC:     Jeff Layton <jlayton@kernel.org>, <ceph-devel@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
-References: <20231114153108.1932884-1-haowenchao2@huawei.com>
- <af8549c8-a468-6505-6dd1-3589fc76be8e@redhat.com>
- <CAOi1vP9TnF+BWiEauddskmTO_+V2uvHiqpEg5EoxzZPKb0oEAQ@mail.gmail.com>
- <aeb8b9e7-c2ce-e758-1b45-67572e686e2c@redhat.com>
- <CAOi1vP-H9zHJEthzocxv7D7m6XX67sE2Dy1Aq=hP9GQRN+qj_g@mail.gmail.com>
- <5a1766c6-d923-a4e5-c5be-15b953372ef5@redhat.com>
- <5eb54f3e-3438-ba47-3d43-baf6b27aad0e@huawei.com>
- <6824ece2-33ee-63f4-2c7a-7033556325cb@redhat.com>
-From:   Wenchao Hao <haowenchao2@huawei.com>
-In-Reply-To: <6824ece2-33ee-63f4-2c7a-7033556325cb@redhat.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+To:     Yiwei Lin <s921975628@gmail.com>
+Cc:     Barry Song <21cnbao@gmail.com>,
+        Benjamin Segall <bsegall@google.com>,
+        Chen Yu <yu.c.chen@intel.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        "Gautham R . Shenoy" <gautham.shenoy@amd.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        K Prateek Nayak <kprateek.nayak@amd.com>,
+        Mike Galbraith <efault@gmx.de>,
+        Qais Yousef <qyousef@layalina.io>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Yicong Yang <yangyicong@huawei.com>,
+        Youssef Esmat <youssefesmat@chromium.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+References: <20231107090510.71322-1-wuyun.abel@bytedance.com>
+ <20231107090510.71322-2-wuyun.abel@bytedance.com>
+ <da42f1d7-adfe-485e-987e-3e8dae78b4c2@gmail.com>
+ <23cebdf8-1a51-481e-a8c2-e17021099e05@bytedance.com>
+ <19c6accf-1cc0-489d-9c82-e0ddf982b098@bytedance.com>
+ <446aeb22-55c4-4ef6-81cc-1d1d994d5268@gmail.com>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+In-Reply-To: <446aeb22-55c4-4ef6-81cc-1d1d994d5268@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.178.220]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm000012.china.huawei.com (7.193.23.142)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/16 11:06, Xiubo Li wrote:
+On 11/16/23 2:51 PM, Yiwei Lin Wrote:
 > 
-> On 11/16/23 10:54, Wenchao Hao wrote:
->> On 2023/11/15 21:34, Xiubo Li wrote:
->>>
->>> On 11/15/23 21:25, Ilya Dryomov wrote:
->>>> On Wed, Nov 15, 2023 at 2:17 PM Xiubo Li <xiubli@redhat.com> wrote:
->>>>>
->>>>> On 11/15/23 20:32, Ilya Dryomov wrote:
->>>>>> On Wed, Nov 15, 2023 at 1:35 AM Xiubo Li <xiubli@redhat.com> wrote:
->>>>>>> On 11/14/23 23:31, Wenchao Hao wrote:
->>>>>>>> This issue is reported by smatch, get_quota_realm() might return
->>>>>>>> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the return
->>>>>>>> value.
->>>>>>>>
->>>>>>>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
->>>>>>>> ---
->>>>>>>>     fs/ceph/quota.c | 2 +-
->>>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
->>>>>>>> index 9d36c3532de1..c4b2929c6a83 100644
->>>>>>>> --- a/fs/ceph/quota.c
->>>>>>>> +++ b/fs/ceph/quota.c
->>>>>>>> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
->>>>>>>>         realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
->>>>>>>>                                 QUOTA_GET_MAX_BYTES, true);
->>>>>>>>         up_read(&mdsc->snap_rwsem);
->>>>>>>> -     if (!realm)
->>>>>>>> +     if (IS_ERR_OR_NULL(realm))
->>>>>>>>                 return false;
->>>>>>>>
->>>>>>>> spin_lock(&realm->inodes_with_caps_lock);
->>>>>>> Good catch.
->>>>>>>
->>>>>>> Reviewed-by: Xiubo Li <xiubli@redhat.com>
->>>>>>>
->>>>>>> We should CC the stable mail list.
->>>>>> Hi Xiubo,
->>>>>>
->>>>>> What exactly is being fixed here?  get_quota_realm() is called with
->>>>>> retry=true, which means that no errors can be returned -- EAGAIN, the
->>>>>> only error that get_quota_realm() can otherwise generate, would be
->>>>>> handled internally by retrying.
->>>>> Yeah, that's true.
->>>>>
->>>>>> Am I missing something that makes this qualify for stable?
->>>>> Actually it's just for the smatch check for now.
->>>>>
->>>>> IMO we shouldn't depend on the 'retry', just potentially for new changes
->>>>> in future could return a ERR_PTR and cause potential bugs.
->>>> At present, ceph_quota_is_same_realm() also depends on it -- note how
->>>> old_realm isn't checked for errors at all and new_realm is only checked
->>>> for EAGAIN there.
+> On 11/16/23 13:07, Abel Wu wrote:
+>> On 11/16/23 12:48 PM, Abel Wu Wrote:
+>>> On 11/15/23 11:36 PM, Yiwei Lin Wrote:
 >>>>
->>>>> If that's not worth to make it for stable, let's remove it.
->>>> Yes, let's remove it.  Please update the commit message as well, so
->>>> that it's clear that this is squashing a static checker warning and
->>>> doesn't actually fix any immediate bug.
+>>>>> @@ -3712,8 +3811,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+>>>>>       enqueue_load_avg(cfs_rq, se);
+>>>>>       if (se->on_rq) {
+>>>>>           update_load_add(&cfs_rq->load, se->load.weight);
+>>>>> -        if (cfs_rq->curr != se)
+>>>>> -            avg_vruntime_add(cfs_rq, se);
+>>>>> +        if (!curr) {
+>>>>> +            /*
+>>>>> +             * The entity's vruntime has been adjusted, so let's check
+>>>>> +             * whether the rq-wide min_vruntime needs updated too. Since
+>>>>> +             * the calculations above require stable min_vruntime rather
+>>>>> +             * than up-to-date one, we do the update at the end of the
+>>>>> +             * reweight process.
+>>>>> +             */
+>>>>> +            __enqueue_entity(cfs_rq, se);
+>>>>> +            update_min_vruntime(cfs_rq);
+>>>>> +        }
+>>>>>       }
+>>>>>   }
+>>>> Sorry if I am asking stupid question...... It looks like reweight_entity() may have chance to change the weight of cfs_rq->curr entity, but we'll never update_min_vruntime() when reweighting it. Is there any reason that we can skip the update_min_vruntime() for this case?
 >>>
->>> WenChao,
->>>
->>> Could update the commit comment and send the V2 ?
->>>
+>>> No, you are right!
 >>
->> OK, I would update the commit comment as following:
->>
->> This issue is reported by smatch, get_quota_realm() might return
->> ERR_PTR. It's not a immediate bug because get_quota_realm() is called
->> with 'retry=true', no errors can be returned.
->>
->> While we still should check the return value of get_quota_realm() with
->> IS_ERR_OR_NULL to avoid potential bugs if get_quota_realm() is changed
->> to return other ERR_PTR in future.
->>
->> What's more, should I change the ceph_quota_is_same_realm() too?
->>
-> Yeah, please. Let's fix them all.
+>> I was intended to update_min_vruntime() if se->on_rq and no matter
+>> it is curr or not, just as you suggested. But after a second thought
+>> I wonder if it is necessary to update *NOW*, since we will always
+>> update_curr() before making any change to cfs_rq. Thoughts?
+> I lost the fact that we'll update_min_vruntime() every time we update_curr(). Because of this fact, we can indeed wait until we need the correct min_vruntime and update_min_vruntime() then. The only consideration that I came up with is that the sched_debug may not be able to reflect the accurate min_vruntime in time. But this may not be a big problem.
 > 
+> Further, I have another advanced thought we can remove the update_min_vruntime() here in the reweight_entity() directly to save more time. The reason that I think this is because min_vruntime is not for normalization of vruntime as before which is required on CFS, so we will always update_curr() for the latest min_vruntime before using it. Also, the update_min_vruntime() in dequeue_entity() may also be removed as the reason, i.e. just do update_min_vruntime() in update_curr() to simplify. What do you think?
 
-is_same is return as true if both old_realm and new_realm are NULL, I do not
-want to change the origin logic except add check for ERR_PTR, so following
-is my change:
+Yes, this is also exactly what I am thinking about. As task placement
+now adopts lag-based solution which is irrespective of min_vruntime,
+and also based on the fact that it is only used as a base offset for
+calculating avg_vruntime (in order to avoid overflow), we probably
+can update it in a more relaxed way e.g. in ticks. If relaxed update
+works, there seems still work to be done first:
 
-1. make sure xxx_realm is valid before calling ceph_put_snap_realm.
-2. return false if new_realm or old_realm is ERR_PTR, this is newly added
-    and now we would always run with the else branch.
+   1) the priority of core pick when core scheduling needs to change
+      to deadline-based solution;
+   2) need to make sure not overflow in NOHZ_FULL mode
 
-diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
-index c4b2929c6a83..8da9ffb05395 100644
---- a/fs/ceph/quota.c
-+++ b/fs/ceph/quota.c
-@@ -290,16 +290,20 @@ bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
-         new_realm = get_quota_realm(mdsc, new, QUOTA_GET_ANY, false);
-         if (PTR_ERR(new_realm) == -EAGAIN) {
-                 up_read(&mdsc->snap_rwsem);
--               if (old_realm)
-+               if (!IS_ERR_OR_NULL(old_realm))
-                         ceph_put_snap_realm(mdsc, old_realm);
-                 goto restart;
-         }
--       is_same = (old_realm == new_realm);
-         up_read(&mdsc->snap_rwsem);
-  
--       if (old_realm)
-+       if (IS_ERR(new_realm))
-+               is_same = false;
-+       else
-+               is_same = (old_realm == new_realm);
-+
-+       if (!IS_ERR_OR_NULL(old_realm))
-                 ceph_put_snap_realm(mdsc, old_realm);
--       if (new_realm)
-+       if (!IS_ERR_OR_NULL(new_realm))
-                 ceph_put_snap_realm(mdsc, new_realm);
-  
-         return is_same;
+Just some first thoughts come into my mind :)
 
-
-> Thanks
-> 
-> - Xiubo
-> 
-> 
->> Thanks
->>
->>> Thanks
->>>
->>> - Xiubo
->>>
->>>
->>>> Thanks,
->>>>
->>>>                  Ilya
->>>>
->>>
->>
-> 
-> 
-
+Thanks,
+	Abel
