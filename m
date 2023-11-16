@@ -2,93 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C9E97EE6AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC5C57EE6AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345470AbjKPSZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:25:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58148 "EHLO
+        id S1345461AbjKPSZR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:25:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231387AbjKPSZf (ORCPT
+        with ESMTP id S229488AbjKPSZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:25:35 -0500
-Received: from mout.kundenserver.de (mout.kundenserver.de [212.227.17.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74A4D4E;
-        Thu, 16 Nov 2023 10:25:31 -0800 (PST)
-Received: from localhost.localdomain ([46.183.103.8]) by
- mrelayeu.kundenserver.de (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1MRTEp-1qgmUB0B0f-00NVDe; Thu, 16 Nov 2023 19:25:15 +0100
-From:   Andreas Klinger <ak@it-klinger.de>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Petre Rodan <petre.rodan@subdimension.ro>,
-        Andreas Klinger <ak@it-klinger.de>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] iio: honeywell,mprls0025pa.yaml: fix function numbering
-Date:   Thu, 16 Nov 2023 19:24:43 +0100
-Message-Id: <20231116182443.7290-1-ak@it-klinger.de>
-X-Mailer: git-send-email 2.39.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:jpI3HRtq1qrPEfvCSYZnREA78HrIVFvSWaWp/K9JH6x5XqCpToM
- ZWds6VPXrqCK0QLHzR8LtNzq6jUPGJ3Dp0ltedT6ehxC+W4pSPDpAu7XhdWXZSrXHzqDrWv
- reBU9xa6LAmLYH9UhofWb+vqpkneKz3yocy4onlPmAMhcmjSBxE6QadNuFWP/OHLx3LEefO
- 7TAnxofAHezJyo+cgu8Dw==
-UI-OutboundReport: notjunk:1;M01:P0:qNpRdEEawM8=;DC0ckfU5aHXfCWvWfnggXc20720
- zU25oKtBekvw3crMhVi5Y9pvR1vzm8vzQeBAUqOvl+sgjfMke0V9Xi+WzmWpJum1nSOKQPLrj
- QQhl7cdy2HEfREY+KGifdOBWxYREK9kxENBxVGBAUpX6yDeH0ekpvqedIECQ63H/QZoqCyoht
- +OBltXpcoqNLYm89pVIgsGZWQBnvJ+6Mnck/0GYXfbRVJtkBLDf+Z+XyRuPo7dTgt1uKI4vJX
- 2zQUxz51Ay4YPD0ezJalU0m/M9DIhBCk9ywE8pR9DPCydYkEzgB2gQyRWGk0j24oCDEUJymSY
- SMDGpKO10VHtF8wRKgHmBL4/dXy72DmV1KQfXnAXcw+raBtS81xCvNyQsbaTWIokvt/iLlTD8
- 5ZmWsVg9DHgtqqZ/EaU5EDvvgSYPi9bphaGpBtCa8ug/QDXEi1CrZTMta1LN6fc+S0mH3okgS
- SKOM8ImQ8S76aL947eOiNn5Y3EDroVhT9DkGT/PJxsYA2LRuwOSrR5/+sQouGRj+vB6BgmQvo
- Lb/DeUaPBAAj8NyajTN3GSF/4lujJM1wTWEttmzfYSDOuGdNNX2v8clSmKzCGYQlPsSSMbSL3
- Y/0f7VkatwVtBZwqyrBXLPUzHtOUBlsAgwM1vNNrjLV9+lBtHrCxD8ueFqnRInZvSHjsMF4Jh
- egsH5FI1IOp5c7OMnI8rMWWnoynqkOXI0pVh4rEy9TyVlvxuP5Z8wSSNnF5RXaHewCr66rGu2
- H8AWUf/WdxWtLLLtk84zv6uODByVqor2RRX46xJgjfLz3cmQ0Sm6ivi7k3NR90HiDVFJJa0ki
- 4IYpg04DADHiJhSUjj6XHZaidXoZ2eeDfAH868mfw6TM5kgAVm0SubOc6dcdZGprJXR//6+mf
- Qqs3nPKqR/Fz+hjg0jZz6W2lLQkCi2eu2gMw=
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,LOTS_OF_MONEY,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        T_SCC_BODY_TEXT_LINE,T_SPF_PERMERROR autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+        Thu, 16 Nov 2023 13:25:16 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC938195;
+        Thu, 16 Nov 2023 10:25:12 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 591D720507;
+        Thu, 16 Nov 2023 18:25:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700159111; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=82GRraZBW1WqfOlAqC5Ida9GyIWCqY+2MmQaziurGdw=;
+        b=D52pd84C8LYLp8mrmLl5+1EzXV2lujZv0cTb1aHy45wSCP3qgSyC7BJFcophdS734lDwTM
+        dQc1KqGEXjSla9QwsFt8F4gR8zQk4cs8fbgo5vzLPpGY7RJNYh/MQAaUKng/JXCd7vhC2I
+        D/zoLRC+MrgqU8t4umcTGGCuWNY/OUI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700159111;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=82GRraZBW1WqfOlAqC5Ida9GyIWCqY+2MmQaziurGdw=;
+        b=FAR0N3ivyNbuus6yKNWFK4lDUs0NI7RcjC+8nLmNWA+tHHMUycBOqRqyY8efWCIbcxOtWl
+        3yD1/OZl1FMsVWBQ==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id F3AB7139C4;
+        Thu, 16 Nov 2023 18:25:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id paWNOoZeVmU/NgAAMHmgww
+        (envelope-from <tiwai@suse.de>); Thu, 16 Nov 2023 18:25:10 +0000
+Date:   Thu, 16 Nov 2023 19:25:10 +0100
+Message-ID: <87h6llmu7t.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Arend Van Spriel <arend.vanspriel@broadcom.com>
+Cc:     Zheng Hacker <hackerzheng666@gmail.com>,
+        Kalle Valo <kvalo@kernel.org>, Zheng Wang <zyytlz.wz@163.com>,
+        <aspriel@gmail.com>, <franky.lin@broadcom.com>,
+        <hante.meuleman@broadcom.com>, <johannes.berg@intel.com>,
+        <marcan@marcan.st>, <linus.walleij@linaro.org>,
+        <jisoo.jang@yonsei.ac.kr>, <linuxlovemin@yonsei.ac.kr>,
+        <wataru.gohda@cypress.com>, <linux-wireless@vger.kernel.org>,
+        <brcm80211-dev-list.pdl@broadcom.com>,
+        <SHA-cyfmac-dev-list@infineon.com>, <linux-kernel@vger.kernel.org>,
+        <security@kernel.org>, <stable@vger.kernel.org>
+Subject: Re: [PATCH v5] wifi: brcmfmac: Fix use-after-free bug in brcmf_cfg80211_detach
+In-Reply-To: <18bd95c97f0.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+References: <20231106141704.866455-1-zyytlz.wz@163.com>
+        <87o7g7ueom.fsf@kernel.org>
+        <CAJedcCytuGmvubqbSZgsU3Db=rg=xM+kSuLZn8BSvA18Yn+9Jw@mail.gmail.com>
+        <18ba5520da0.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+        <CAJedcCxoL+L1QPaZty27k6kqR2JRjxPVY=BV5xn7BSPojbxe=A@mail.gmail.com>
+        <fa0e7536-9b05-42fb-9fff-acd2ffad9af9@broadcom.com>
+        <CAJedcCzj9SFbx-=xDymqJyV2fu0xjmz2RH4+gT+Gxsqubg35ZA@mail.gmail.com>
+        <18bd95c97f0.279b.9b12b7fc0a3841636cfb5e919b41b954@broadcom.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=ISO-2022-JP
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: 0.80
+X-Spamd-Result: default: False [0.80 / 50.00];
+         ARC_NA(0.00)[];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         BAYES_SPAM(5.10)[100.00%];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[163.com,gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         REPLY(-4.00)[];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         RCPT_COUNT_TWELVE(0.00)[19];
+         MID_CONTAINS_FROM(1.00)[];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         FREEMAIL_CC(0.00)[gmail.com,kernel.org,163.com,broadcom.com,intel.com,marcan.st,linaro.org,yonsei.ac.kr,cypress.com,vger.kernel.org,infineon.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix wrongly documented numbering of transfer functions.
+On Thu, 16 Nov 2023 19:20:06 +0100,
+Arend Van Spriel wrote:
+> 
+> On November 15, 2023 4:00:46 PM Zheng Hacker <hackerzheng666@gmail.com> wrote:
+> 
+> > Arend van Spriel <arend.vanspriel@broadcom.com> 于2023年11月13日周一 17:18写道：
+> >> 
+> >> On November 8, 2023 4:03:26 AM Zheng Hacker <hackerzheng666@gmail.com>
+> >> wrote:
+> >> 
+> >>> Arend Van Spriel <arend.vanspriel@broadcom.com> 于2023年11月6日周一 23:48写道：
+> >>>> 
+> >>>> On November 6, 2023 3:44:53 PM Zheng Hacker <hackerzheng666@gmail.com> wrote:
+> >>>> 
+> >>>>> Thanks! I didn't test it for I don't have a device. Very appreciated
+> >>>>> if anyone could help with that.
+> >>>> 
+> >>>> I would volunteer, but it made me dig deep and not sure if there is a
+> >>>> problem to solve here.
+> >>>> 
+> >>>> brcmf_cfg80211_detach() calls wl_deinit_priv() -> brcmf_abort_scanning() ->
+> >>>> brcmf_notify_escan_complete() which does delete the timer.
+> >>>> 
+> >>>> What am I missing here?
+> >>> 
+> >>> Thanks four your detailed review. I did see the code and not sure if
+> >>> brcmf_notify_escan_complete
+> >>> would be triggered for sure. So in the first version I want to delete
+> >>> the pending timer ahead of time.
+> >> 
+> >> Why requesting a CVE when you are not sure? Seems a bit hasty to put it
+> >> mildly.
+> > 
+> > I'm sure the issue exists because there's only cancler of timer but not woker.
+> > As there's similar CVEs before like : https://github.com/V4bel/CVE-2022-41218,
+> > I submit it as soon as I found it.
+> 
+> Ah, yes. The cancel_work_sync() can also be done in
+> brcmf_notify_escan_complete().
 
-Fixes: a765c985e696 ("dt-bindings: iio: pressure: Support Honeywell mprls0025pa sensor")
+AFAIUC, brcmf_notify_scan_complete() is called from the work itself,
+too, hence you can't issue cancel_work_sync() there (unless you make
+it conditional).
 
-Suggested-by: Petre Rodan <petre.rodan@subdimension.ro>
-Signed-off-by: Andreas Klinger <ak@it-klinger.de>
----
- .../bindings/iio/pressure/honeywell,mprls0025pa.yaml        | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-index b31f8120f14e..61775eff1128 100644
---- a/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-+++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,mprls0025pa.yaml
-@@ -64,9 +64,9 @@ properties:
-     description: |
-       Transfer function which defines the range of valid values delivered by the
-       sensor.
--      1 - A, 10% to 90% of 2^24 (1677722 .. 15099494)
--      2 - B, 2.5% to 22.5% of 2^24 (419430 .. 3774874)
--      3 - C, 20% to 80% of 2^24 (3355443 .. 13421773)
-+      0 - A, 10% to 90% of 2^24 (1677722 .. 15099494)
-+      1 - B, 2.5% to 22.5% of 2^24 (419430 .. 3774874)
-+      2 - C, 20% to 80% of 2^24 (3355443 .. 13421773)
-     $ref: /schemas/types.yaml#/definitions/uint32
- 
-   vdd-supply:
--- 
-2.39.2
-
+Takashi
