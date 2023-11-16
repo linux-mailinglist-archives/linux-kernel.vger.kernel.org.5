@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DEB597ED8E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:29:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26F5F7ED8E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344543AbjKPB3p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:29:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50658 "EHLO
+        id S1344636AbjKPB36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:29:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344487AbjKPB3f (ORCPT
+        with ESMTP id S1344331AbjKPB3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:29:35 -0500
+        Wed, 15 Nov 2023 20:29:44 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A70101BF
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:25 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2524AD4B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700098164;
+        s=mimecast20190719; t=1700098168;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=/m4Nmkq0cr3qM8eU/2c8RM1XZmbD+yMVfcEDigP2nYM=;
-        b=MqOjT7Fci5yrpWa33B2q5gKSg1vCmiVYiKxFz5mY56b/A3vh18DQRUnsJ3ZOA6Ppv34ngf
-        SdtNNqi1wVt7JMBgHWV2fY/TX7MTBfYJAWMdeuS65/M/BkEoLjNB8lWBQpo907QZKdwokz
-        RK8KXwvkkeq/f4Vggm/dtwXytIv5S9k=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=hxqjSAwi8aTfo4zdaLYLd0e+DlQCcl09BvXUJR2cui0=;
+        b=hIEgXfZbAOrqX4z98mch3jAAm23q23QDu+Aq8lyd13NZEJ1Q/SibbZQC3gXtWRm/FQbSMB
+        xqmAClvuvk3/eymMzQ0fxsWnX8gZvPi54cKIiivOGHf+8M/beQQ9/vefR/Y23u9DdtsgKy
+        X2J5mvgDswmKAX3LEEuKra+DpbDCeLM=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-175-WEUvw7azPfWEV7Xuhjq34Q-1; Wed, 15 Nov 2023 20:29:23 -0500
-X-MC-Unique: WEUvw7azPfWEV7Xuhjq34Q-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-420c7034fddso915891cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:23 -0800 (PST)
+ us-mta-271-c5saubBzPJWJI-o4qu_cBQ-1; Wed, 15 Nov 2023 20:29:26 -0500
+X-MC-Unique: c5saubBzPJWJI-o4qu_cBQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77a02ceef95so2904185a.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:26 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700098163; x=1700702963;
+        d=1e100.net; s=20230601; t=1700098165; x=1700702965;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/m4Nmkq0cr3qM8eU/2c8RM1XZmbD+yMVfcEDigP2nYM=;
-        b=DV0nlCQpnC2ux22Ay1mhabMQ5MnA5ZlP6AMDXiqLB9O4LG3tVmpAWcV7CU+v+kp4WS
-         JXOCNUIBolIEOhtPTuFUsXgDo26ZH1aUwMg2+Xb3V6hIhD7+PrvO35Q7uVewUEYXKfhS
-         xxqgRCJBT/Z3+p1NaSw3I+nadYR0/XQOnSS27dnUnhASmeEZOEZXQZPBTukLlPefjALc
-         E4Ud/4Kg+ImdvXJYUinFjyiLEtjbDlrB9tLnaR2jZ766FjmTOuz0tlSYPOglyXj+eicp
-         AmvWzy0WlPdKk68s8pbwQpvV36GOB8ACljJ6aQzPl3b9cHPtInUce6LucpeBpsS0c+0J
-         P2eg==
-X-Gm-Message-State: AOJu0YygplLJBAkFgFsQPSr046zRK//umVntqA7h0xxk12sSxC/E8PJZ
-        eWDdJsuqBhB1PRmWLQ7uJDSFt1dhZ0ya+BwAQh6kSJ3+lGvq2NoO5Wq36KI2P0Hj1KLwltPJQnL
-        EisMjOgxCsWzkXYdT6VCx7BboG1QwGIfDfk9H1CDUAceKCEvIAu2/pSJxOfClNRP76jczcG8N7p
-        1RFZX8Rg==
-X-Received: by 2002:ac8:1496:0:b0:421:9fe5:6dc1 with SMTP id l22-20020ac81496000000b004219fe56dc1mr6484684qtj.3.1700098163039;
-        Wed, 15 Nov 2023 17:29:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFEPgMVSzfIxtQlfIF+wS0OHZ+NUQWxFmPrijPw2JerykvyjqCin/P2xZqUrm2jMmgcDcZfrw==
-X-Received: by 2002:ac8:1496:0:b0:421:9fe5:6dc1 with SMTP id l22-20020ac81496000000b004219fe56dc1mr6484654qtj.3.1700098162561;
-        Wed, 15 Nov 2023 17:29:22 -0800 (PST)
+        bh=hxqjSAwi8aTfo4zdaLYLd0e+DlQCcl09BvXUJR2cui0=;
+        b=ANwI1CkwDUj98nrauz5703pYnACz6tz/f14E7bzSKJJUkOI+Xlkqs37rZGcaGlg1nu
+         9yfToxOmMgDqjyEAsUELKbwT71XENoYOX63zoiSRrePmL//irgZmGrTQcmBdTa//qwTG
+         zll3ly+5uTcbpNYRSTvoyQf6v8itw19kUw/zNra6x/wGBm30ceF+ZPee017oMFwXhN5m
+         8Fh1XkG6R0d7o3uc3yJL0+kdm+C/CrkeST8FR3GRARpZGO1DYfFumjge/adBmXwQkLKw
+         rJBue0H7yyneT2wyoDb/n1b1hIurNaQGTMmSoxgAT9CB9SGUQcsJMGWEqIryPKJclOJ2
+         zDHA==
+X-Gm-Message-State: AOJu0Yxu16moxEGh2N3tVTzc0Fpydzdo6RdQVkZkMQJ2WMIvtkteNn+2
+        r13KyY+KSO5wEeJNPsy3cHtIQaTIICs6hlJ6JzWvFjSXjS/2YQE179CttWUx1KiVeBQKc1SDkAC
+        IkW0Lz0QMaoJ6pzt0dYcgcdu7ThFznbIeicQApy40h7V9kdxFnxHks0CGreg0sE0iz1s4GqeUNz
+        LdEXnrUg==
+X-Received: by 2002:a05:622a:4291:b0:41c:d528:6589 with SMTP id cr17-20020a05622a429100b0041cd5286589mr8639226qtb.4.1700098164758;
+        Wed, 15 Nov 2023 17:29:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHJwc+nHfVii0rwj2VF/0wkfwbvSOBYLSzNseCq1M0oxHWvF5z7fbEvQHxGk1DiYrhq4t4KkQ==
+X-Received: by 2002:a05:622a:4291:b0:41c:d528:6589 with SMTP id cr17-20020a05622a429100b0041cd5286589mr8639189qtb.4.1700098164258;
+        Wed, 15 Nov 2023 17:29:24 -0800 (PST)
 Received: from x1n.redhat.com (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.20
+        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 17:29:22 -0800 (PST)
+        Wed, 15 Nov 2023 17:29:23 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
@@ -75,9 +75,9 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH RFC 07/12] mm/gup: Refactor record_subpages() to find 1st small page
-Date:   Wed, 15 Nov 2023 20:29:03 -0500
-Message-ID: <20231116012908.392077-8-peterx@redhat.com>
+Subject: [PATCH RFC 08/12] mm/gup: Handle hugetlb for no_page_table()
+Date:   Wed, 15 Nov 2023 20:29:04 -0500
+Message-ID: <20231116012908.392077-9-peterx@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231116012908.392077-1-peterx@redhat.com>
 References: <20231116012908.392077-1-peterx@redhat.com>
@@ -94,82 +94,140 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the fast-gup functions take a tail page to operate, always need to do
-page mask calculations before feeding that into record_subpages().
+no_page_table() is not yet used for hugetlb code paths. Make it prepared.
 
-Merge that logic into record_subpages(), so that we always take a head
-page, and leave the rest calculation to record_subpages().
+The major difference here is hugetlb will return -EFAULT as long as page
+cache does not exist, even if VM_SHARED.  See hugetlb_follow_page_mask().
+
+Pass "address" into no_page_table() too, as hugetlb will need it.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- mm/gup.c | 23 +++++++++++++----------
- 1 file changed, 13 insertions(+), 10 deletions(-)
+ mm/gup.c | 40 ++++++++++++++++++++++++----------------
+ 1 file changed, 24 insertions(+), 16 deletions(-)
 
 diff --git a/mm/gup.c b/mm/gup.c
-index 424d45e1afb3..69dae51f3eb1 100644
+index 69dae51f3eb1..89c1584d68f0 100644
 --- a/mm/gup.c
 +++ b/mm/gup.c
-@@ -2763,11 +2763,14 @@ static int __gup_device_huge_pud(pud_t pud, pud_t *pudp, unsigned long addr,
- }
- #endif
+@@ -501,19 +501,27 @@ static inline void mm_set_has_pinned_flag(unsigned long *mm_flags)
  
--static int record_subpages(struct page *page, unsigned long addr,
--			   unsigned long end, struct page **pages)
-+static int record_subpages(struct page *head, unsigned long sz,
-+			   unsigned long addr, unsigned long end,
-+			   struct page **pages)
+ #ifdef CONFIG_MMU
+ static struct page *no_page_table(struct vm_area_struct *vma,
+-		unsigned int flags)
++				  unsigned int flags, unsigned long address)
  {
-+	struct page *page;
- 	int nr;
++	if (!(flags & FOLL_DUMP))
++		return NULL;
++
+ 	/*
+-	 * When core dumping an enormous anonymous area that nobody
+-	 * has touched so far, we don't want to allocate unnecessary pages or
++	 * When core dumping, we don't want to allocate unnecessary pages or
+ 	 * page tables.  Return error instead of NULL to skip handle_mm_fault,
+ 	 * then get_dump_page() will return NULL to leave a hole in the dump.
+ 	 * But we can only make this optimization where a hole would surely
+ 	 * be zero-filled if handle_mm_fault() actually did handle it.
+ 	 */
+-	if ((flags & FOLL_DUMP) &&
+-			(vma_is_anonymous(vma) || !vma->vm_ops->fault))
++	if (is_vm_hugetlb_page(vma)) {
++		struct hstate *h = hstate_vma(vma);
++
++		if (!hugetlbfs_pagecache_present(h, vma, address))
++			return ERR_PTR(-EFAULT);
++	} else if ((vma_is_anonymous(vma) || !vma->vm_ops->fault)) {
+ 		return ERR_PTR(-EFAULT);
++	}
++
+ 	return NULL;
+ }
  
-+	page = nth_page(head, (addr & (sz - 1)) >> PAGE_SHIFT);
- 	for (nr = 0; addr != end; nr++, addr += PAGE_SIZE)
- 		pages[nr] = nth_page(page, nr);
+@@ -593,7 +601,7 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
  
-@@ -2804,8 +2807,8 @@ static int gup_hugepte(pte_t *ptep, unsigned long sz, unsigned long addr,
- 	/* hugepages are never "special" */
- 	VM_BUG_ON(!pfn_valid(pte_pfn(pte)));
+ 	ptep = pte_offset_map_lock(mm, pmd, address, &ptl);
+ 	if (!ptep)
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 	pte = ptep_get(ptep);
+ 	if (!pte_present(pte))
+ 		goto no_page;
+@@ -685,7 +693,7 @@ static struct page *follow_page_pte(struct vm_area_struct *vma,
+ 	pte_unmap_unlock(ptep, ptl);
+ 	if (!pte_none(pte))
+ 		return NULL;
+-	return no_page_table(vma, flags);
++	return no_page_table(vma, flags, address);
+ }
  
--	page = nth_page(pte_page(pte), (addr & (sz - 1)) >> PAGE_SHIFT);
--	refs = record_subpages(page, addr, end, pages + *nr);
-+	page = pte_page(pte);
-+	refs = record_subpages(page, sz, addr, end, pages + *nr);
+ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+@@ -701,9 +709,9 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 	pmd = pmd_offset(pudp, address);
+ 	pmdval = pmdp_get_lockless(pmd);
+ 	if (pmd_none(pmdval))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 	if (!pmd_present(pmdval))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 	if (pmd_devmap(pmdval)) {
+ 		ptl = pmd_lock(mm, pmd);
+ 		page = follow_devmap_pmd(vma, address, pmd, flags, &ctx->pgmap);
+@@ -714,12 +722,12 @@ static struct page *follow_pmd_mask(struct vm_area_struct *vma,
+ 		return follow_page_pte(vma, address, pmd, flags, &ctx->pgmap);
  
- 	folio = try_grab_folio(page, refs, flags);
- 	if (!folio)
-@@ -2870,8 +2873,8 @@ static int gup_huge_pmd(pmd_t orig, pmd_t *pmdp, unsigned long addr,
- 					     pages, nr);
+ 	if (pmd_protnone(pmdval) && !gup_can_follow_protnone(vma, flags))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 
+ 	ptl = pmd_lock(mm, pmd);
+ 	if (unlikely(!pmd_present(*pmd))) {
+ 		spin_unlock(ptl);
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
  	}
+ 	if (unlikely(!pmd_trans_huge(*pmd))) {
+ 		spin_unlock(ptl);
+@@ -750,7 +758,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
  
--	page = nth_page(pmd_page(orig), (addr & ~PMD_MASK) >> PAGE_SHIFT);
--	refs = record_subpages(page, addr, end, pages + *nr);
-+	page = pmd_page(orig);
-+	refs = record_subpages(page, PMD_SIZE, addr, end, pages + *nr);
- 
- 	folio = try_grab_folio(page, refs, flags);
- 	if (!folio)
-@@ -2914,8 +2917,8 @@ static int gup_huge_pud(pud_t orig, pud_t *pudp, unsigned long addr,
- 					     pages, nr);
+ 	pud = pud_offset(p4dp, address);
+ 	if (pud_none(*pud))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 	if (pud_devmap(*pud)) {
+ 		ptl = pud_lock(mm, pud);
+ 		page = follow_devmap_pud(vma, address, pud, flags, &ctx->pgmap);
+@@ -758,7 +766,7 @@ static struct page *follow_pud_mask(struct vm_area_struct *vma,
+ 		return page;
  	}
+ 	if (unlikely(pud_bad(*pud)))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
  
--	page = nth_page(pud_page(orig), (addr & ~PUD_MASK) >> PAGE_SHIFT);
--	refs = record_subpages(page, addr, end, pages + *nr);
-+	page = pud_page(orig);
-+	refs = record_subpages(page, PUD_SIZE, addr, end, pages + *nr);
+ 	return follow_pmd_mask(vma, address, pud, flags, ctx);
+ }
+@@ -772,10 +780,10 @@ static struct page *follow_p4d_mask(struct vm_area_struct *vma,
  
- 	folio = try_grab_folio(page, refs, flags);
- 	if (!folio)
-@@ -2954,8 +2957,8 @@ static int gup_huge_pgd(pgd_t orig, pgd_t *pgdp, unsigned long addr,
+ 	p4d = p4d_offset(pgdp, address);
+ 	if (p4d_none(*p4d))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
+ 	BUILD_BUG_ON(p4d_huge(*p4d));
+ 	if (unlikely(p4d_bad(*p4d)))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
  
- 	BUILD_BUG_ON(pgd_devmap(orig));
+ 	return follow_pud_mask(vma, address, p4d, flags, ctx);
+ }
+@@ -825,7 +833,7 @@ static struct page *follow_page_mask(struct vm_area_struct *vma,
+ 	pgd = pgd_offset(mm, address);
  
--	page = nth_page(pgd_page(orig), (addr & ~PGDIR_MASK) >> PAGE_SHIFT);
--	refs = record_subpages(page, addr, end, pages + *nr);
-+	page = pgd_page(orig);
-+	refs = record_subpages(page, PGDIR_SIZE, addr, end, pages + *nr);
+ 	if (pgd_none(*pgd) || unlikely(pgd_bad(*pgd)))
+-		return no_page_table(vma, flags);
++		return no_page_table(vma, flags, address);
  
- 	folio = try_grab_folio(page, refs, flags);
- 	if (!folio)
+ 	return follow_p4d_mask(vma, address, pgd, flags, ctx);
+ }
 -- 
 2.41.0
 
