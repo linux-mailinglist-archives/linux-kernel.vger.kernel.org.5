@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0546B7EDD55
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:05:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E16017EDD61
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:09:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbjKPJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33428 "EHLO
+        id S235559AbjKPJJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:09:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjKPJFa (ORCPT
+        with ESMTP id S230274AbjKPJJD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:05:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F17071AE
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:05:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700125526;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=HW09tjosuLlc9IkvvasWeHjFLCSejIF+D/lcOlPe2PY=;
-        b=T3IwFE3R5jlitHrH4h8E6uJay4d9Y6S9UDCBQS+mb1NYqNO3znN7pqLB6AGAsvlBwMC9NI
-        +YSuJCLi346Xq5isCgPOxb3yx6cB+m4jvExb6GHsYtT69A/7x6NVP6NIpSCjDwo45+1Cdo
-        ft4XbZFw93A6xQZ1h/p3l6za3zHg1NE=
-Received: from mail-pl1-f197.google.com (mail-pl1-f197.google.com
- [209.85.214.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-lnap-8-nPTSYFTTbVUvFtg-1; Thu, 16 Nov 2023 04:05:24 -0500
-X-MC-Unique: lnap-8-nPTSYFTTbVUvFtg-1
-Received: by mail-pl1-f197.google.com with SMTP id d9443c01a7336-1cc3619a245so1581035ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:05:24 -0800 (PST)
+        Thu, 16 Nov 2023 04:09:03 -0500
+Received: from mail-yw1-x1136.google.com (mail-yw1-x1136.google.com [IPv6:2607:f8b0:4864:20::1136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78042E5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:08:59 -0800 (PST)
+Received: by mail-yw1-x1136.google.com with SMTP id 00721157ae682-5afa5dbc378so5998357b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:08:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700125738; x=1700730538; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WiMYfZ+A2iUQf2KOkcm1PZ8y14NGTAvuJT5UyKjiI+k=;
+        b=V4nztDxL/TIIeGz5teRGcDNkB8gdv2o5er9FL3RSWHZdn1Adpb5Fjlo7vZpyNeZdva
+         TBCpkb7/z7LG5ZVAjp0Ho7dXNn1fHXPwnOm9X13Eyb85t5vF6k1oghpvFAVVsZ04VNMO
+         KQg6jkG5eWUz5Qqu+xppxDrU+T7t58NFl5cneNOqiYbxdu8nel3SxHzXQ3YdWV5QWXza
+         U9n93gos9garvYxNgK3qZv199rxcUytURUj6QZpnGexn2SL5BBL7l8IRA2JcK+WYqf04
+         zh1I51i+ed/xOi2Q642M8jQEBK4YwJEdjJt0tWDMtzZbaWH4B9k4TiyBHHamkhTwsiYo
+         TgjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700125523; x=1700730323;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HW09tjosuLlc9IkvvasWeHjFLCSejIF+D/lcOlPe2PY=;
-        b=atQoa7DF0t8iZGm5arWH5PXQ56vmtjDbdkWHg1GHmJwjvkZoJL4lktN8P1/lgG9V3S
-         HWXBVRVsV0Y5/CPTvEdyCyoTiI+m5r6hidB15KY/Qus5TeyA2IBlsldKc6qpCPY20e67
-         t78fhJLmEvbjjdEvmMb+UVUkU40rQavKKfJryTFqIPunlO5MGMb5cLmiMcorXNix8lMD
-         +H6F9WcFMXd5nkCwiEUDigf4C9jsD5zzZdKpByNNlBGU4EbTbcQnZHGSPEbhsz5r4NpH
-         tbVWBdIstaHhFk5kgH42CRY5K13rFPfaAs7AIAfm2URFIcrQucjxdHHg14Y3Orx38RuR
-         aXaQ==
-X-Gm-Message-State: AOJu0YyYl7UvNOPaE/hvNuX7X2kc5CcK3u69eyF0fYdzpkBB0srI47WU
-        6aQ2rzRwaqH7zrDMUm0H7Wgz5fBvhIx+hThbRUOYD8IuA29g40KF7gy0uz8/Bdb0ohUxVqboq+o
-        BkiTQ/hA2bm27EKruKqA+u30M
-X-Received: by 2002:a05:6a20:da85:b0:185:ffb1:2776 with SMTP id iy5-20020a056a20da8500b00185ffb12776mr5777475pzb.4.1700125523606;
-        Thu, 16 Nov 2023 01:05:23 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEpzJ8NCXgCdrgY9veZ9iNfzdjqjrlFzdYTsmckCamkB75PNTPATHoLb/gCB8hW7r3u59OTaQ==
-X-Received: by 2002:a05:6a20:da85:b0:185:ffb1:2776 with SMTP id iy5-20020a056a20da8500b00185ffb12776mr5777452pzb.4.1700125523306;
-        Thu, 16 Nov 2023 01:05:23 -0800 (PST)
-Received: from [10.72.112.142] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id g16-20020a056a00079000b006bd9422b279sm4067107pfu.54.2023.11.16.01.05.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 01:05:22 -0800 (PST)
-Message-ID: <ffb47630-44eb-5b6c-5fc5-c8b007c391c5@redhat.com>
-Date:   Thu, 16 Nov 2023 17:05:18 +0800
+        d=1e100.net; s=20230601; t=1700125738; x=1700730538;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WiMYfZ+A2iUQf2KOkcm1PZ8y14NGTAvuJT5UyKjiI+k=;
+        b=JApS/LuBXEFAJdvVfgUXRryVq7jtcqmoO0gVGFcgUuG2ADqUu4rAYO7/GHTLN1ew6W
+         bdgsNJLRys0noA1hztxa4dqVJmkRA57Zuibfcrx30peXmJsd8WOJ/wetxv6vgu/t+x9V
+         aooVHtd6+odC65gmB44QXJohatAUxbUxG5Tr3qu1iglDoVuw+tgle7Zbm5xP10GQFqo8
+         A2gsDLT5rHWQnDsmilvWM3aBOFJ3FPOVGaSh7Zm0ZQZasYRuD0bWzRgjK8oLQdcjhgrh
+         Died59nrDFd+nB+aC9Ab/YCxKzK5UsYGa6gY/lgh2GsiAlRJbF82ZdganQpUqHtamV8f
+         onEw==
+X-Gm-Message-State: AOJu0YyJdSenU50DnirsSJKiIpDLdN/b5r0AIgmzu6YgIyj3aeS5tw4Z
+        RYmrTnI/fF/UbwNM9Nq5XCJ/JvNXItKzLktaNS0EUw==
+X-Google-Smtp-Source: AGHT+IF6BBUkRdHTNI4kLc4++AIpEBe+uTcg0DjjGG/Wn2eQ+g10P4WlTdNo3niQqqPA2ZwbBUy7TUyzoVG6AbyLKEg=
+X-Received: by 2002:a81:6d14:0:b0:592:1bab:52bd with SMTP id
+ i20-20020a816d14000000b005921bab52bdmr13791072ywc.39.1700125738621; Thu, 16
+ Nov 2023 01:08:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v2] KVM: arm64: selftests: Clean up the GIC[D,R]_BASE_GPA
-Content-Language: en-US
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     kvm@vger.kernel.org, kvmarm@lists.linux.dev,
-        Marc Zyngier <maz@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231115153449.17815-1-shahuang@redhat.com>
- <ZVTmk-u-zUKC4Nrw@linux.dev>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <ZVTmk-u-zUKC4Nrw@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231116051401.4112494-1-quic_rohiagar@quicinc.com>
+ <20231116051401.4112494-2-quic_rohiagar@quicinc.com> <CAA8EJprzSFrb1qC-khPmTTac5o2ZX8azYBNPmT8DjyeNo3SAZA@mail.gmail.com>
+ <6ba4d0a9-c370-4851-8631-4c8f952b44d9@quicinc.com>
+In-Reply-To: <6ba4d0a9-c370-4851-8631-4c8f952b44d9@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 16 Nov 2023 11:08:47 +0200
+Message-ID: <CAA8EJprB=Jsiwb_K_9n3ypwDzns_2QBeBYO-o7PX-QPmhSHKBA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] arm64: defconfig: Enable GCC for SDX75
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org,
+        quic_bjorande@quicinc.com, geert+renesas@glider.be,
+        konrad.dybcio@linaro.org, arnd@arndb.de,
+        krzysztof.kozlowski@linaro.org, neil.armstrong@linaro.org,
+        nfraprado@collabora.com, m.szyprowski@samsung.com, u-kumar1@ti.com,
+        peng.fan@nxp.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        kernel@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 16 Nov 2023 at 10:42, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+>
+>
+> On 11/16/2023 10:56 AM, Dmitry Baryshkov wrote:
+> > On Thu, 16 Nov 2023 at 07:14, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+> >> Enable Global Clock controller framework support for
+> >> Qualcomm's SDX75 SoC.
+> > Please add:
+> >
+> > ... which is used for this and that board and/or device.
+> Sure will add something like this
+> "Enable Global Clock controller framework support for
+> Qualcomm's SDX75 SoC which is required to boot to console
+> on sdx75-idp platform."
+> Let me know if this doesnt look good.
+
+Sounds good to me.
+
+>
+> Thanks,
+> Rohit.
+> >> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+> >> ---
+> >>   arch/arm64/configs/defconfig | 1 +
+> >>   1 file changed, 1 insertion(+)
+> >>
+> >> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> >> index b60aa1f89343..d1be1efa8a23 100644
+> >> --- a/arch/arm64/configs/defconfig
+> >> +++ b/arch/arm64/configs/defconfig
+> >> @@ -1252,6 +1252,7 @@ CONFIG_SDM_GPUCC_845=y
+> >>   CONFIG_SDM_VIDEOCC_845=y
+> >>   CONFIG_SDM_DISPCC_845=y
+> >>   CONFIG_SDM_LPASSCC_845=m
+> >> +CONFIG_SDX_GCC_75=y
+> >>   CONFIG_SM_CAMCC_8250=m
+> >>   CONFIG_SM_DISPCC_6115=m
+> >>   CONFIG_SM_DISPCC_8250=y
+> >> --
+> >> 2.25.1
+> >>
+> >
 
 
-On 11/15/23 23:41, Oliver Upton wrote:
-> On Wed, Nov 15, 2023 at 10:34:48AM -0500, Shaoqin Huang wrote:
->> The GIC[D,R]_BASE_GPA has been defined in multiple files with the same
->> value, define it in one place to make the code clean.
->>
->> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
-> 
-> Colton already posted a fix for this as part of his selftests series
-> 
-> https://lore.kernel.org/kvmarm/20231103192915.2209393-2-coltonlewis@google.com/
-> 
-
-I see. Thanks for notification.
 
 -- 
-Shaoqin
-
+With best wishes
+Dmitry
