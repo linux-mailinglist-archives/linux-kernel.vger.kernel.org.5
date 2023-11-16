@@ -2,70 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E34307ED9BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:47:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCF5F7ED9C3
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:50:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344517AbjKPCrz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 21:47:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40840 "EHLO
+        id S1344497AbjKPCuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjKPCry (ORCPT
+        with ESMTP id S1344286AbjKPCuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 21:47:54 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5EBB197;
-        Wed, 15 Nov 2023 18:47:51 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id 41be03b00d2f7-5bdc185c449so274938a12.0;
-        Wed, 15 Nov 2023 18:47:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700102870; x=1700707670; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=svtH6nB/hE04ntCGkIVPHKITT9cDPQUxSxeC2R+EmoI=;
-        b=kIh1xXnJbWix4RGbQVRKwwq2iz02fC6SEvodv8Hx/ymwzOOGI/ggR2n8V+xJelmJjK
-         jl1XptWF0iilqntedC+5IjBsFUIUcNgDuulBe1n+k5XBwqgI/0pebEroQP53vLkx8Q97
-         +YDO4MWUOiSsTOyUbjE6UPypDvnnUjVFsjw2N9EniQfwRjqhTWDuDbOmmxUweonkxcjO
-         PZg4cITk5xyb/lNLA7D8eMXsRPLsdYlc0mQV8x3+62jTdtJdpc3PU1iOqkEZlHShv+S6
-         MFvLy0J0mwnGatZU0TPgBEJEYXCdeOkmWchM3wuM9qO2F3nZlAuOew2wPGsAPLHXLdch
-         INcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700102870; x=1700707670;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=svtH6nB/hE04ntCGkIVPHKITT9cDPQUxSxeC2R+EmoI=;
-        b=m1qcJMgzVR5YZwMWzU7WjSZO7Hd08PRwxSuXE+Yp01xzv76CGH7wwdpKtaS1fVeina
-         dUzhJXsNFjE41WzfwBPCsr1lUrIYYWO47AMc3jKP7kZjamQ224rLSvZhnVewZYryxGM2
-         rjdTGgEqvfqvdY2zxkgH2dhURW2uE6IYsg/mUTKFh+jbbhzIe/CQvwozsbJ1yaCz50w4
-         RXW/KjlZW6NLTBx2UipFP8sbcZ7/N94d6tBJX7yqplx8Mo/zSlyiV5hwey00BMgk4v4m
-         3nzUnRgdeaUdUX6GcV/oJOH1OnOaG52/MX/04iW4eskAxq1ozN/5eeWP3FRjnZ6uAQoN
-         iwoA==
-X-Gm-Message-State: AOJu0YzAzBaOh3e1A1T3ZRS5XWnbbbFUhMsHKxUyTC11TCSg9V4f1eDb
-        0IRRGkaSfLyYeijqKvVe9O4O+qtVPSLJ
-X-Google-Smtp-Source: AGHT+IEssF56ALfrxIW+LldFPLXmzOUjVkBq6g/rv6UutDoRD7Ok3nF5TdlACFBBJkX1ZxxnUmzhUg==
-X-Received: by 2002:a05:6a20:160d:b0:15d:624c:6e43 with SMTP id l13-20020a056a20160d00b0015d624c6e43mr15017621pzj.3.1700102870009;
-        Wed, 15 Nov 2023 18:47:50 -0800 (PST)
-Received: from localhost.localdomain (111-243-26-65.dynamic-ip.hinet.net. [111.243.26.65])
-        by smtp.gmail.com with ESMTPSA id x16-20020a170902ec9000b001cc2bc10510sm7962604plg.128.2023.11.15.18.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 18:47:49 -0800 (PST)
-From:   Stanley Jhu <chu.stanley@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-scsi@vger.kernel.org,
-        jejb@linux.ibm.com, martin.petersen@oracle.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org,
-        peter.wang@gmail.com
-Cc:     matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
-        chu.stanley@gmail.com
-Subject: [PATCH v2] scsi: ufs: mediatek: Change the maintainer for MediaTek UFS hooks
-Date:   Thu, 16 Nov 2023 10:47:44 +0800
-Message-Id: <20231116024744.10795-1-chu.stanley@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Wed, 15 Nov 2023 21:50:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB2A197
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:50:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09C17C433C7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:50:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700103016;
+        bh=el9qUyLvNgMrjxL1FD9aYdkmO4QTjO2ht03NK0ZAD+I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ThCBkhLKtmT1QDaTzAnEy9gUrGCituZ3SeotGg6TxeTK1OYY9RIBzWfSwZmBBdQ6T
+         tq6t0inYR84wbgz67lX9eGx7Vu3ogl+/T/bGI+5C5grDBExqvYmR7Dc7IcHHFaeMGi
+         dZtO/KGqYY66dEN9jKe5NZKnsCgKPhRTJ9hUo0sOKhixZHftwG8eLBOC20e1skpFOe
+         z4q+JFsSxAGDr+mXBB6GvqbMMGuUKErJd+oDQ8EVNNlPZn0bjvIW+t2I0VuLv+cD9i
+         rGmFdiu1MEiKwsDxnTmfettC9R+ONVj13Guiy4APjT4VPAKTq90bkSa++nHI4UOQf/
+         tnc1qb0flnv+w==
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5441305cbd1so464597a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:50:15 -0800 (PST)
+X-Gm-Message-State: AOJu0YznArY2MQrKA27OCs+CfxhekoKH7lep5J9didVkcSIDKnWW5r67
+        Gnq4G6foniQXjUDxGtq7KpkDeaBwZeHcpb/ISO4=
+X-Google-Smtp-Source: AGHT+IE0L0nkdubfrY3a5/CyCpKh6zLSuuUdt3LDC0Frc4Djc704aGkEGiqFpXcExvs4JcwLxznC/KWQMiJUngsC3dk=
+X-Received: by 2002:aa7:d413:0:b0:53d:b1ca:293c with SMTP id
+ z19-20020aa7d413000000b0053db1ca293cmr9136824edq.22.1700103014506; Wed, 15
+ Nov 2023 18:50:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231114114656.1003841-1-maobibo@loongson.cn>
+In-Reply-To: <20231114114656.1003841-1-maobibo@loongson.cn>
+From:   Huacai Chen <chenhuacai@kernel.org>
+Date:   Thu, 16 Nov 2023 10:50:04 +0800
+X-Gmail-Original-Message-ID: <CAAhV-H46vueDp0ffTuD6sO=xWVsbcwVDBzFU7QirE9JwOWd4dg@mail.gmail.com>
+Message-ID: <CAAhV-H46vueDp0ffTuD6sO=xWVsbcwVDBzFU7QirE9JwOWd4dg@mail.gmail.com>
+Subject: Re: [PATCH] LoongArch: Implement stable timer shutdown interface
+To:     Bibo Mao <maobibo@loongson.cn>
+Cc:     WANG Xuerui <kernel@xen0n.name>,
+        Peter Zijlstra <peterz@infradead.org>,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -73,32 +59,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change the maintainer of MediaTek UFS hooks to Peter Wang.
-In the meantime, Stanley has been assigned as the reviewer.
+Hi, Bibo,
 
-The original maintainer, Stanley Chu, who can be reached at
-stanley.chu@mediatek.com, has left MediaTek,
-so please update the email address accordingly.
+"stable timer" is Chinglish, use "constant timer" here.
 
-Signed-off-by: Stanley Jhu <chu.stanley@gmail.com>
----
- MAINTAINERS | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+On Tue, Nov 14, 2023 at 7:49=E2=80=AFPM Bibo Mao <maobibo@loongson.cn> wrot=
+e:
+>
+> When cpu is hotplug out, cpu is in idle state and function
+> arch_cpu_idle_dead is called. Timer interrupt for this processor should
+> be disabled, else there will be timer interrupt for the dead cpu. Also
+> this prevents vcpu to schedule out during halt-polling flow when system
+> is running in vm mode, since there is pending timer interrupt.
+>
+> This patch adds detailed implementation for timer shutdown interface, so
+> that timer will be disabled when cpu is plug-out.
+>
+> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+> ---
+>  arch/loongarch/kernel/time.c | 9 ++-------
+>  1 file changed, 2 insertions(+), 7 deletions(-)
+>
+> diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
+> index 3064af94db9c..2920770e30a9 100644
+> --- a/arch/loongarch/kernel/time.c
+> +++ b/arch/loongarch/kernel/time.c
+> @@ -58,7 +58,7 @@ static int constant_set_state_oneshot(struct clock_even=
+t_device *evt)
+>         return 0;
+>  }
+>
+> -static int constant_set_state_oneshot_stopped(struct clock_event_device =
+*evt)
+> +static int constant_set_state_shutdown(struct clock_event_device *evt)
+>  {
+>         unsigned long timer_config;
+>
+Please remove the whole constant_set_state_oneshot_stopped() and move
+its logic to the below constant_set_state_shutdown().
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index be1cbc6c2059..4f6fb3357947 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -22102,7 +22102,8 @@ S:	Maintained
- F:	drivers/ufs/host/ufs-exynos*
- 
- UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER MEDIATEK HOOKS
--M:	Stanley Chu <stanley.chu@mediatek.com>
-+M:	Peter Wang <peter.wang@mediatek.com>
-+R:	Stanley Jhu <chu.stanley@gmail.com>
- L:	linux-scsi@vger.kernel.org
- L:	linux-mediatek@lists.infradead.org (moderated for non-subscribers)
- S:	Maintained
--- 
-2.34.1
+And it is very strange that this "bug" hasn't caused any problems until now=
+.
 
+Huacai
+
+> @@ -90,11 +90,6 @@ static int constant_set_state_periodic(struct clock_ev=
+ent_device *evt)
+>         return 0;
+>  }
+>
+> -static int constant_set_state_shutdown(struct clock_event_device *evt)
+> -{
+> -       return 0;
+> -}
+> -
+>  static int constant_timer_next_event(unsigned long delta, struct clock_e=
+vent_device *evt)
+>  {
+>         unsigned long timer_config;
+> @@ -161,7 +156,7 @@ int constant_clockevent_init(void)
+>         cd->rating =3D 320;
+>         cd->cpumask =3D cpumask_of(cpu);
+>         cd->set_state_oneshot =3D constant_set_state_oneshot;
+> -       cd->set_state_oneshot_stopped =3D constant_set_state_oneshot_stop=
+ped;
+> +       cd->set_state_oneshot_stopped =3D constant_set_state_shutdown;
+>         cd->set_state_periodic =3D constant_set_state_periodic;
+>         cd->set_state_shutdown =3D constant_set_state_shutdown;
+>         cd->set_next_event =3D constant_timer_next_event;
+>
+> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+> --
+> 2.39.3
+>
