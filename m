@@ -2,207 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F7367EDB1F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3715A7EDB23
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:22:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230239AbjKPFUF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 00:20:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51198 "EHLO
+        id S1344759AbjKPFWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 00:22:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjKPFUC (ORCPT
+        with ESMTP id S229786AbjKPFWa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 00:20:02 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 428D119D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:19:59 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so4260a12.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:19:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700111997; x=1700716797; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sGYprdScTqWADbZjmkaUNZP95viu5EuGZmBuv/KDyEs=;
-        b=xHj/ry9quiFe7fFr7/dcD75iH42lyO22uCdiMwK7cJc4K4eYTyNdgSo66xyf7lB4u/
-         ukGQSUvVNki35wS8gH+P2SwTYjyPxAsnm8YbBgFIo2sfeIPlozbLM+IwR2/r82saYhme
-         nYRaGvFg9Xm9aLI1nIxRzk3LBf7Fnoc1j1+X+qiHZ6YLn9bNfJ+v4QlDA3Ic+AiGH/XU
-         bq4BsWTMLZe0xrtPCpbULcKmoJ5pDqP9pZ75br2pA+0ukXGRPqt6CiY64hwAfEtVoos9
-         AGSW1LfkpwARMLIYQIRNJnH9rL20I7X66jQhXC/kfaFP/B99da4hrLWB4RFgjcHSYP/C
-         STTQ==
+        Thu, 16 Nov 2023 00:22:30 -0500
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2671A4
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:25 -0800 (PST)
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E57EE40CB1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:22:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+        s=20210705; t=1700112143;
+        bh=fr9ynEVsHoa7ae6x3+SEy8aQYynppv18RGOoPksmpuo=;
+        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+         To:Cc:Content-Type;
+        b=Jigh+lt6nqu0MfHUj6Eo1P/awKTb6ax8FLbo2YVCGhF0YQvTKoKowee0S+e/8xwTg
+         Geu5ge9ziMtB8Oq6nCEDUo/QD0xoSeQW7dhIRIVwox6qr5y4efq5ycobjafNZt3NDz
+         Kh6zVzfnrUOTMmCldwP0GXqBZf+rrQcyaTkZm5yNK9/SlE0pD8H7Zb6hE/2x8oGnII
+         6tS0JQq/K8wkYOivZu7p7RFXgZ9DuF9Hz46b5IZWg12hKJn4w+QcYPiDqFDbDRhAaS
+         iXov1X2V4oCCHqXN0EBX8njNWwXH0bOJY4XnrMM6v2xUBCuxtCS9BLqeLPPE5z9QH7
+         coYUFSS5ThlPA==
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-280184b2741so457338a91.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700111997; x=1700716797;
+        d=1e100.net; s=20230601; t=1700112142; x=1700716942;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=sGYprdScTqWADbZjmkaUNZP95viu5EuGZmBuv/KDyEs=;
-        b=mAcXAhA3yHehZfyoSA6C9eRJlS1wWWtKJf1KEzziDZYuNK6Ilv2HZDVSFSRk9c+53G
-         73RKWCaLmA2zmipvV942txtcMBQHwdRQwS8kdnVkzZAdBkqyf843WMFuvZfRC0Mst6fk
-         xlnadXssD8H/P90Rd9KpJoAk08m5LClRJMEOPS3BU/5Mo2owQ7d6BZn7QPiQF533se7I
-         ayBRnySGLPVYZUdBIglh5FBOcWUOi7sc3U6hkix4grU5CJLklNeW1P2ycNVaGxntJ8K5
-         pAlz7b1jt7XV4bMhfWL1vJxIb/+xpNADnBZL6daEK1BhB9CkIFEtx6qyStMtUM6AvQBw
-         Gbrw==
-X-Gm-Message-State: AOJu0YywEUbNZnSLV9W3g/G8pWQ82345Alkho96NIWg+52+YT34AoBvR
-        FIyD0heffug68DWL2VhBs+NoPyUkfxnpACkhwFUHEw==
-X-Google-Smtp-Source: AGHT+IE0jGwich417SoKNosePdtNllvU6BPMZJ2AvjLtmwsojkI2cUVJSxChDYvpfOsmQdGRjaRt0sjFc65ofzF6pdU=
-X-Received: by 2002:aa7:c592:0:b0:545:2921:d217 with SMTP id
- g18-20020aa7c592000000b005452921d217mr68226edq.6.1700111997441; Wed, 15 Nov
- 2023 21:19:57 -0800 (PST)
+        bh=fr9ynEVsHoa7ae6x3+SEy8aQYynppv18RGOoPksmpuo=;
+        b=r0+KwLBAnxe2GROkZOQpIYmEHrFN4qk6DQl0Z9ZoSU9pOkyt1QemG/fwaUNhS4OoHO
+         byr9SttL8NQzUo5w6qZbVnnBecWTvq+RekPb7JPI3A0XkAZHYwlIzbBFpU/C35sxKCKS
+         d28NgoZYFAwVDOm1ne9r7d9Aax7roAd4UmcRxS0oeY5cxSAQJOucNwduavwoSiNrhGxa
+         HF5MYVoJj6lRO/kVaX70VMpWHVs2iwMvtM5WjGbSeCTAFh8K2IkRhgGeNacjQzWrfYF5
+         V0KyTovcY+5NGy6AysbffuTCTHXnVrK9OqR7kngblsZFTDI5yqscwldI+viUKEM1LxJo
+         O4Ww==
+X-Gm-Message-State: AOJu0Yxx4qD5xGpgKwmDN4g0zJoUYYBRLGwEEnj7fpjmbihmTNnJJzFD
+        TiXARTWhp5dkv4ardTQI8ZZzfIE8kimOnsTq0bunPwL5W8BydQR6nZFnnLgp7sPFgG82Ss/5OpQ
+        0bw9/mugg7C+q6DMDCwt3sYEVwCnaQ0kRhcYh/3HX69o9qTkfkFYWlKx5CQ==
+X-Received: by 2002:a17:90b:38c8:b0:280:15a3:89c3 with SMTP id nn8-20020a17090b38c800b0028015a389c3mr12951094pjb.27.1700112142228;
+        Wed, 15 Nov 2023 21:22:22 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHLC/4acj0McErWz60wZejZap8B3iqii7Bt//IL+u/LsPxNLf+dbpSHr4r38hr46JezIPdNZztQhciZUIS2ZCc=
+X-Received: by 2002:a17:90b:38c8:b0:280:15a3:89c3 with SMTP id
+ nn8-20020a17090b38c800b0028015a389c3mr12951075pjb.27.1700112141806; Wed, 15
+ Nov 2023 21:22:21 -0800 (PST)
 MIME-Version: 1.0
-References: <20231102073840.1579540-1-maurora@google.com> <20231110230837.b5q5dsvsqlxfz5xu@synopsys.com>
-In-Reply-To: <20231110230837.b5q5dsvsqlxfz5xu@synopsys.com>
-From:   Manan Aurora <maurora@google.com>
-Date:   Thu, 16 Nov 2023 10:49:44 +0530
-Message-ID: <CAJnM4-wew9b=Ge8QHLRiReNJAqgA0ngOW8WTVk4frta+y+9jYw@mail.gmail.com>
-Subject: Re: [PATCH] usb: dwc3: Support EBC feature of DWC_usb31
-To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "manugautam@google.com" <manugautam@google.com>,
-        "badhri@google.com" <badhri@google.com>
+References: <20231016040132.23824-1-kai.heng.feng@canonical.com>
+ <20231016093210.GA22952@wunner.de> <263982e90fc046cf977ecb8727003690@realtek.com>
+ <20231018094435.GA21090@wunner.de> <02ee7e47166a463d8d4e491b61cdd33f@realtek.com>
+ <20231019143504.GA25140@wunner.de> <CAAd53p7jx=_Yh8sPwdsu-6Bc-hNgiExscMNGhgcbH=rzOBMOXQ@mail.gmail.com>
+ <d7cc9e658b114da7a9c32b383f06adc9@realtek.com>
+In-Reply-To: <d7cc9e658b114da7a9c32b383f06adc9@realtek.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 16 Nov 2023 13:22:09 +0800
+Message-ID: <CAAd53p6bRnhGOfLHBz4WyTQVKocZPK0d5m4oRdeLhWxkx-5tLw@mail.gmail.com>
+Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe
+ Link Down
+To:     Ricky WU <ricky_wu@realtek.com>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 4:39=E2=80=AFAM Thinh Nguyen <Thinh.Nguyen@synopsys=
-.com> wrote:
+Hi Ricky,
+
+On Fri, Nov 10, 2023 at 10:41=E2=80=AFAM Ricky WU <ricky_wu@realtek.com> wr=
+ote:
 >
-> On Thu, Nov 02, 2023, Manan Aurora wrote:
-> > Support configuration and use of bulk endpoints in the so-called EBC
-> > mode described in the DBC_usb31 databook (appendix E)
+> > Hi Lukas and Ricky,
 > >
-> > Added a bit fifo_mode to usb_ep to indicate to the UDC driver that a
-> > specific endpoint is to operate in the EBC (or equivalent) mode when
-> > enabled
+> > I think the following approach should cover all the cases?
+> > Ricky, can you please give it a try?
+> >
 >
-> This should be unique to dwc3, and it's only for bulk. I don't think
-> usb_ep or the user of usb_ep should know this.
+> This patch is invalid for this issue,
+> Problem reappears after plugging and unplugging twice
+> Dmesg as below,
 
-In our use case we have a function driver that configures an allocated bulk
-endpoint to operate as an EBC EP. So the function driver already depends on=
- the
-feature.
+My bad. The pm_runtime_barrier() should be called earlier.
+Can you please give the following a try:
 
-dwc3_ep seems like the correct place to put this field but a function
-driver that allocates
-EPs and configures them for this use case would need to include dwc3 header=
-s.
-If other vendors offer an equivalent feature this dependency would
-become an issue.
+diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
+index d749ea8250d6..c69b4ce5dbfd 100644
+--- a/drivers/pci/remove.c
++++ b/drivers/pci/remove.c
+@@ -1,6 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <linux/pci.h>
+ #include <linux/module.h>
++#include <linux/pm_runtime.h>
+ #include "pci.h"
 
-Exporting a symbol from dwc3 is an easy option but dwc3 doesn't
-currently export symbols
-hence I tried to avoid that
+ static void pci_free_resources(struct pci_dev *dev)
+@@ -18,6 +19,7 @@ static void pci_stop_dev(struct pci_dev *dev)
+  pci_pme_active(dev, false);
 
-> Also since DWC3_DEPCFG_EBC_HWO_NOWB must be set, the controller does not
-> write back to the TRB. Did you handle how the driver would update the
-> usb request on completion? (e.g. how much was transferred).
+  if (pci_dev_is_added(dev)) {
++ pm_runtime_barrier(&dev->dev);
 
-In our use case, we intend to have a link TRB and issue a startXfer
-command. Completion
-handling and continuing the transfer will be offloaded to dedicated
-FIFO hardware.
-But we can definitely rework this to disable no-writeback mode by
-default and allow this to
-be separately enabled
+  device_release_driver(&dev->dev);
+  pci_proc_detach_device(dev);
 
+
+> [...]
+> [  360.771161] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> [  360.771165] pcieport 0000:00:1c.0: pciehp: Slot(8): Card not present
+> [  361.986932] pcieport 0000:00:1c.0: pciehp: Slot(8): Card present
+> [  361.986937] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Up
+> [  362.120635] pci 0000:01:00.0: [15b7:5007] type 00 class 0x010802
+> [  362.120691] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64b=
+it]
+> [  362.120747] pci 0000:01:00.0: reg 0x20: [mem 0x00000000-0x000000ff 64b=
+it]
+> [  362.121606] pci 0000:01:00.0: BAR 0: assigned [mem 0xa3b00000-0xa3b03f=
+ff 64bit]
+> [  362.121646] pci 0000:01:00.0: BAR 4: assigned [mem 0xa3b04000-0xa3b040=
+ff 64bit]
+> [  362.121686] pcieport 0000:00:1c.0: PCI bridge to [bus 01]
+> [  362.121702] pcieport 0000:00:1c.0:   bridge window [io  0x4000-0x4fff]
+> [  362.121743] pcieport 0000:00:1c.0:   bridge window [mem 0xa3b00000-0xa=
+44fffff]
+> [  362.121761] pcieport 0000:00:1c.0:   bridge window [mem 0xa0a00000-0xa=
+13fffff 64bit pref]
+> [  362.171709] nvme nvme0: pci function 0000:01:00.0
+> [  362.171726] nvme 0000:01:00.0: enabling device (0000 -> 0002)
+> [  362.256724] nvme nvme0: 4/0/0 default/read/poll queues
+> [  362.261656]  nvme0n1: p1 p2
+> [  369.343246] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> [  369.457450] pcieport 0000:00:1c.0: pciehp: Slot(8): Card present
+> [  369.457462] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Up
+> [  369.592600] pci 0000:01:00.0: [10ec:5261] type 00 class 0xff0000
+> [  369.592654] pci 0000:01:00.0: reg 0x10: [mem 0xa3b00000-0xa3b00fff]
+> [  369.592776] pci 0000:01:00.0: Upstream bridge's Max Payload Size set t=
+o 128 (was 256, max 256)
+> [  369.592797] pci 0000:01:00.0: Max Payload Size set to 128 (was 128, ma=
+x 128)
+> [  369.592964] pci 0000:01:00.0: supports D1 D2
+> [  369.592970] pci 0000:01:00.0: PME# supported from D1 D2 D3hot D3cold
+> [  369.593642] pci 0000:01:00.0: BAR 0: assigned [mem 0xa3b00000-0xa3b00f=
+ff]
+> [  369.593662] pcieport 0000:00:1c.0: PCI bridge to [bus 01]
+> [  369.593679] pcieport 0000:00:1c.0:   bridge window [io  0x4000-0x4fff]
+> [  369.593692] pcieport 0000:00:1c.0:   bridge window [mem 0xa3b00000-0xa=
+44fffff]
+> [  369.593703] pcieport 0000:00:1c.0:   bridge window [mem 0xa0a00000-0xa=
+13fffff 64bit pref]
+> [  372.573757] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
+> [  372.586620] BUG: unable to handle page fault for address: ffffc9000008=
+9010
+> [  372.586624] #PF: supervisor read access in kernel mode
+> [  372.586626] #PF: error_code(0x0000) - not-present page
+> [  372.586627] PGD 100000067 P4D 100000067 PUD 10020a067 PMD 10020b067 PT=
+E 0
+> [  372.586632] Oops: 0000 [#1] PREEMPT SMP PTI
+> [  372.586634] CPU: 2 PID: 157 Comm: kworker/2:2 Not tainted 6.6.0-rc4 #1=
+2
+> [  372.586637] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.=
+M./H370M Pro4, BIOS P3.40 10/25/2018
+> [  372.586639] Workqueue: pm pm_runtime_work
+> [  372.586644] RIP: 0010:ioread32+0x2e/0x70
+> [  372.586647] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 98 a=
+c 52 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <=
+8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 f8 97 57 86 48
+> [  372.586649] RSP: 0018:ffffc90000543d50 EFLAGS: 00010296
+> [  372.586652] RAX: ffffc90000089000 RBX: 000000000000032f RCX: 000000000=
+000007f
+> [  372.586653] RDX: 000000000000ff00 RSI: ffffc90000089010 RDI: ffffc9000=
+0089010
+> [  372.586655] RBP: ffffc90000543d70 R08: ffffc90000089010 R09: ffff88816=
+a132368
+> [  372.586656] R10: 0000000000000000 R11: 0000000000000003 R12: 000000000=
+000007f
+> [  372.586657] R13: ffff8881060ed000 R14: ffff8881060ed100 R15: 000000000=
+0009003
+> [  372.586659] FS:  0000000000000000(0000) GS:ffff88816a100000(0000) knlG=
+S:0000000000000000
+> [  372.586661] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  372.586662] CR2: ffffc90000089010 CR3: 0000000043032006 CR4: 000000000=
+03706e0
+> [  372.586664] Call Trace:
+> [  372.586665]  <TASK>
+> [  372.586667]  ? show_regs+0x68/0x70
+> [  372.586671]  ? __die_body+0x20/0x70
+> [  372.586674]  ? __die+0x2b/0x40
+> [  372.586677]  ? page_fault_oops+0x160/0x480
+> [  372.586680]  ? search_bpf_extables+0x63/0x90
+> [  372.586684]  ? ioread32+0x2e/0x70
+> [  372.586686]  ? search_exception_tables+0x5f/0x70
+> [  372.586689]  ? kernelmode_fixup_or_oops+0xa2/0x120
+> [  372.586692]  ? __bad_area_nosemaphore+0x179/0x230
+> [  372.586696]  ? bad_area_nosemaphore+0x16/0x20
+> [  372.586698]  ? do_kern_addr_fault+0x8b/0xa0
+> [  372.586701]  ? exc_page_fault+0xe5/0x180
+> [  372.586705]  ? asm_exc_page_fault+0x27/0x30
+> [  372.586710]  ? ioread32+0x2e/0x70
+> [  372.586714]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
+> [  372.586723]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
+> [  372.586731]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
+> [  372.586740]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
+> [  372.586748]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
+> [  372.586751]  pci_pm_runtime_idle+0x34/0x70
+> [  372.586753]  rpm_idle+0xc4/0x2b0
+> [  372.586756]  pm_runtime_work+0x93/0xc0
+> [  372.586759]  process_scheduled_works+0x9a/0x390
+> [  372.586762]  ? __pfx_worker_thread+0x10/0x10
+> [  372.586764]  worker_thread+0x15b/0x2d0
+> [  372.586767]  ? __pfx_worker_thread+0x10/0x10
+> [  372.586769]  kthread+0x106/0x140
+> [  372.586771]  ? __pfx_kthread+0x10/0x10
+> [  372.586774]  ret_from_fork+0x39/0x60
+> [  372.586776]  ? __pfx_kthread+0x10/0x10
+> [  372.586778]  ret_from_fork_asm+0x1b/0x30
+> [  372.586783]  </TASK>
+> [  372.586784] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_h=
+da_codec_realtek snd_hda_codec_generic ledtrig_audio nls_iso8859_1 snd_sof_=
+pci_intel_cnl snd_sof_intel_hda_common snd_soc_hdac_hda soundwire_intel sou=
+ndwire_generic_allocation snd_sof_intel_hda_mlink soundwire_cadence snd_sof=
+_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext=
+_core snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus intel_rapl_msr in=
+tel_rapl_common snd_soc_core x86_pkg_temp_thermal intel_powerclamp coretemp=
+ snd_compress ac97_bus kvm_intel snd_pcm_dmaengine i915 snd_hda_intel snd_i=
+ntel_dspcfg snd_intel_sdw_acpi kvm snd_hda_codec snd_hda_core mei_hdcp crct=
+10dif_pclmul ghash_clmulni_intel snd_hwdep snd_pcm sha512_ssse3 aesni_intel=
+ snd_seq_midi crypto_simd snd_seq_midi_event cryptd rapl snd_rawmidi intel_=
+cstate drm_buddy binfmt_misc ttm snd_seq drm_display_helper joydev input_le=
+ds cec snd_seq_device wmi_bmof snd_timer ee1004 mei_me rc_core snd drm_kms_=
+helper mei intel_pch_thermal i2c_algo_bit soundcore mac_hid
+> [  372.586834]  acpi_tad acpi_pad sch_fq_codel msr parport_pc ppdev lp pa=
+rport drm ramoops reed_solomon efi_pstore ip_tables x_tables autofs4 hid_ge=
+neric usbhid hid rtsx_pci_sdmmc ahci i2c_i801 e1000e crc32_pclmul rtsx_pci =
+i2c_smbus xhci_pci libahci xhci_pci_renesas video wmi
+> [  372.586856] CR2: ffffc90000089010
+> [  372.586858] ---[ end trace 0000000000000000 ]---
+> [  372.746808] RIP: 0010:ioread32+0x2e/0x70
+> [  372.746816] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 98 a=
+c 52 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <=
+8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 f8 97 57 86 48
+> [  372.746818] RSP: 0018:ffffc90000543d50 EFLAGS: 00010296
+> [  372.746821] RAX: ffffc90000089000 RBX: 000000000000032f RCX: 000000000=
+000007f
+> [  372.746823] RDX: 000000000000ff00 RSI: ffffc90000089010 RDI: ffffc9000=
+0089010
+> [  372.746825] RBP: ffffc90000543d70 R08: ffffc90000089010 R09: ffff88816=
+a132368
+> [  372.746826] R10: 0000000000000000 R11: 0000000000000003 R12: 000000000=
+000007f
+> [  372.746828] R13: ffff8881060ed000 R14: ffff8881060ed100 R15: 000000000=
+0009003
+> [  372.746830] FS:  0000000000000000(0000) GS:ffff88816a100000(0000) knlG=
+S:0000000000000000
+> [  372.746832] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [  372.746833] CR2: ffffc90000089010 CR3: 000000010a564004 CR4: 000000000=
+03706e0
+> [  372.746835] note: kworker/2:2[157] exited with irqs disabled
 >
-> BR,
-> Thinh
->
+> > diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c index
+> > d749ea8250d6..907d60587227 100644
+> > --- a/drivers/pci/remove.c
+> > +++ b/drivers/pci/remove.c
+> > @@ -1,6 +1,7 @@
+> >  // SPDX-License-Identifier: GPL-2.0
+> >  #include <linux/pci.h>
+> >  #include <linux/module.h>
+> > +#include <linux/pm_runtime.h>
+> >  #include "pci.h"
 > >
-> > Added macros for bits 15 and 14 of DEPCFG parameter 1 to indicate EBC
-> > mode and write back behaviour. These bits will be set to 1 when
-> > configuring an EBC endpoint as described in the programming guide
+> >  static void pci_free_resources(struct pci_dev *dev) @@ -89,6 +90,8 @@
+> > static void pci_remove_bus_device(struct pci_dev *dev)
+> >         struct pci_bus *bus =3D dev->subordinate;
+> >         struct pci_dev *child, *tmp;
 > >
-> > Signed-off-by: Manan Aurora <maurora@google.com>
-> > ---
-> >  drivers/usb/dwc3/core.h    | 1 +
-> >  drivers/usb/dwc3/gadget.c  | 6 ++++++
-> >  drivers/usb/dwc3/gadget.h  | 2 ++
-> >  include/linux/usb/gadget.h | 4 ++++
-> >  4 files changed, 13 insertions(+)
-> >
-> > diff --git a/drivers/usb/dwc3/core.h b/drivers/usb/dwc3/core.h
-> > index efe6caf4d0e8..c5b578188cd3 100644
-> > --- a/drivers/usb/dwc3/core.h
-> > +++ b/drivers/usb/dwc3/core.h
-> > @@ -374,6 +374,7 @@
-> >  /* Global HWPARAMS4 Register */
-> >  #define DWC3_GHWPARAMS4_HIBER_SCRATCHBUFS(n) (((n) & (0x0f << 13)) >> =
-13)
-> >  #define DWC3_MAX_HIBER_SCRATCHBUFS           15
-> > +#define DWC3_EXT_BUFF_CONTROL                BIT(21)
-> >
-> >  /* Global HWPARAMS6 Register */
-> >  #define DWC3_GHWPARAMS6_BCSUPPORT            BIT(14)
-> > diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-> > index 858fe4c299b7..47d2737d528b 100644
-> > --- a/drivers/usb/dwc3/gadget.c
-> > +++ b/drivers/usb/dwc3/gadget.c
-> > @@ -673,6 +673,12 @@ static int dwc3_gadget_set_ep_config(struct dwc3_e=
-p *dep, unsigned int action)
-> >               params.param1 |=3D DWC3_DEPCFG_BINTERVAL_M1(bInterval_m1)=
-;
-> >       }
-> >
-> > +     if (dep->endpoint.fifo_mode) {
-> > +             if (!(dwc->hwparams.hwparams4 & DWC3_EXT_BUFF_CONTROL))
-> > +                     return -EINVAL;
-> > +             params.param1 |=3D DWC3_DEPCFG_EBC_HWO_NOWB | DWC3_DEPCFG=
-_USE_EBC;
-> > +     }
+> > +       pm_runtime_barrier(&dev->dev);
 > > +
-> >       return dwc3_send_gadget_ep_cmd(dep, DWC3_DEPCMD_SETEPCONFIG, &par=
-ams);
-> >  }
+> >         if (bus) {
+> >                 list_for_each_entry_safe(child, tmp,
+> >                                          &bus->devices, bus_list)
 > >
-> > diff --git a/drivers/usb/dwc3/gadget.h b/drivers/usb/dwc3/gadget.h
-> > index 55a56cf67d73..fd7a4e94397e 100644
-> > --- a/drivers/usb/dwc3/gadget.h
-> > +++ b/drivers/usb/dwc3/gadget.h
-> > @@ -26,6 +26,8 @@ struct dwc3;
-> >  #define DWC3_DEPCFG_XFER_NOT_READY_EN        BIT(10)
-> >  #define DWC3_DEPCFG_FIFO_ERROR_EN    BIT(11)
-> >  #define DWC3_DEPCFG_STREAM_EVENT_EN  BIT(13)
-> > +#define DWC3_DEPCFG_EBC_HWO_NOWB     BIT(14)
-> > +#define DWC3_DEPCFG_USE_EBC          BIT(15)
-> >  #define DWC3_DEPCFG_BINTERVAL_M1(n)  (((n) & 0xff) << 16)
-> >  #define DWC3_DEPCFG_STREAM_CAPABLE   BIT(24)
-> >  #define DWC3_DEPCFG_EP_NUMBER(n)     (((n) & 0x1f) << 25)
-> > diff --git a/include/linux/usb/gadget.h b/include/linux/usb/gadget.h
-> > index 6532beb587b1..c526ae09bcee 100644
-> > --- a/include/linux/usb/gadget.h
-> > +++ b/include/linux/usb/gadget.h
-> > @@ -209,6 +209,9 @@ struct usb_ep_caps {
-> >   *   by this EP (0 - 16, actual number is 2^n)
-> >   * @mult: multiplier, 'mult' value for SS Isoc EPs
-> >   * @maxburst: the maximum number of bursts supported by this EP (for u=
-sb3)
-> > + * @fifo_mode: indicates that the control of this EP is handed off to =
-an
-> > + *   hardware fifo device. Depends on hardware support eg. EBC feature
-> > + *   of DWC usb3.1 device or equivalent. Set before enabling the EP
-> >   * @driver_data:for use by the gadget driver.
-> >   * @address: used to identify the endpoint when finding descriptor tha=
-t
-> >   *   matches connection speed
-> > @@ -236,6 +239,7 @@ struct usb_ep {
-> >       unsigned                max_streams:16;
-> >       unsigned                mult:2;
-> >       unsigned                maxburst:5;
-> > +     unsigned                fifo_mode:1;
-> >       u8                      address;
-> >       const struct usb_endpoint_descriptor    *desc;
-> >       const struct usb_ss_ep_comp_descriptor  *comp_desc;
-> > --
-> > 2.42.0.820.g83a721a137-goog
 > >
+>
