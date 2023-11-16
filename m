@@ -2,212 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA5DC7EE263
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:09:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E507EE25C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345273AbjKPOJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:09:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
+        id S1343496AbjKPOJW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:09:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55166 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345270AbjKPOJh (ORCPT
+        with ESMTP id S230307AbjKPOJV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:09:37 -0500
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872C4D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:09:32 -0800 (PST)
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9dd3f4a0f5aso120135666b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:09:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700143771; x=1700748571;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=o5kzymm4w15fT9h/X6FV1rQ8roz2ERsjL4xXI9ZSR/o=;
-        b=SiS2vXZXKn8oRFKd/ajqZN/mIya+gTCbSdw2KB5Ygu+8YC5Pi8kqGTQ9O6+LLFqlvN
-         4+58XVfqA4c7ofbCxsw7+7Kpc+lXTgTG61CnUWnrjk/2UeCGO1nw+vJKu5Q1VzYW8TcX
-         nHpvxpynG/19SFcpbKA234gTPADbB9SG4e9bvHPj5/VvLv404l3ub/rCdaZJKChlxk1G
-         /nRQ8aw+gHxT8MSpNNFvHKq1kTcpLJ2DafFolO+0F0oTPLQcinPo9mCY3LSSA3LLLkx/
-         mHbSq+N9aUoiwGud7hkl00MY/NHuB4YopsMDESFdrPjZyo6rUyP7lnIKimCyi+JUomj7
-         U9Gg==
-X-Gm-Message-State: AOJu0YwElGtT6V0JsXeVU5QrWjMoVtrFDTGFojrnr0c7pR2hggWOPBdJ
-        XwHjHl6yl6HZWvRGEb+qzgs=
-X-Google-Smtp-Source: AGHT+IGRWoFnBFUiWPYA9FbvARFcOKys4+ta9wagYCFe7EhBbKQSmcyNKTgtPPdyw/t26xJZFnLa7A==
-X-Received: by 2002:a17:906:f190:b0:9c7:59d1:b2c2 with SMTP id gs16-20020a170906f19000b009c759d1b2c2mr12339402ejb.27.1700143770734;
-        Thu, 16 Nov 2023 06:09:30 -0800 (PST)
-Received: from ramallet.home (cst-prg-38-127.cust.vodafone.cz. [46.135.38.127])
-        by smtp.gmail.com with ESMTPSA id a11-20020a170906190b00b0098d2d219649sm8603682eje.174.2023.11.16.06.09.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 06:09:30 -0800 (PST)
-From:   Tomeu Vizoso <tomeu@tomeuvizoso.net>
-To:     Lucas Stach <l.stach@pengutronix.de>,
-        Russell King <linux+etnaviv@armlinux.org.uk>,
-        Christian Gmeiner <christian.gmeiner@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>
-Cc:     Tomeu Vizoso <tomeu@tomeuvizoso.net>,
-        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] drm/etnaviv: Expose a few more chipspecs to userspace
-Date:   Thu, 16 Nov 2023 15:09:09 +0100
-Message-ID: <20231116140910.1613508-1-tomeu@tomeuvizoso.net>
-X-Mailer: git-send-email 2.41.0
+        Thu, 16 Nov 2023 09:09:21 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FB6AA7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:09:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700143758; x=1731679758;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=spRh+yF57jjoBWHvWpo/Tq4zxr8/j2rt/0b9L5ABdn0=;
+  b=DXA8MTAd8QB+6AOFyjYVoPvCtpP/3GlI8as7lgFyKAszoXsc2IZSiyI5
+   rh4FNaSuZnp6WAJ9ElAFYRP2kYw/YbjF5jFQkZco3C+6gs6qFnWi8BnyF
+   odp7zm7fulxZn61xMVw7ifWn9gCjyrE5ZZC6Ytn1WRLyTFlKTQ0p8ERFI
+   8+iEwWCXUCtgXHdu1WHmhmmVTzhhtUxK+eVKRzfJWjes4rVaUDNuqFi/D
+   OSU/eLciW6vbJPiFuAFkpton4fwpKgpo7OP5b1YrSlQ09GKl/FAO8uiIp
+   nA8vhy2inuW1oBx6UngJiNWb1nuE3QPJOgYlZUUFR23ComCDiW2ZCXf9v
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="12641895"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="12641895"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 06:09:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="6536734"
+Received: from mcaspar-mobl1.ger.corp.intel.com (HELO [10.249.254.12]) ([10.249.254.12])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 06:09:14 -0800
+Message-ID: <a0ba3f8c70ec939842f06127486e1e99795f7e6a.camel@linux.intel.com>
+Subject: Re: [PATCH v4] Documentation/gpu: VM_BIND locking document
+From:   Thomas =?ISO-8859-1?Q?Hellstr=F6m?= 
+        <thomas.hellstrom@linux.intel.com>
+To:     Danilo Krummrich <dakr@redhat.com>,
+        Boris Brezillon <boris.brezillon@collabora.com>
+Cc:     intel-xe@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Date:   Thu, 16 Nov 2023 15:09:11 +0100
+In-Reply-To: <c129fa94-6456-4746-9477-737a0fb61f96@redhat.com>
+References: <20231115124937.6740-1-thomas.hellstrom@linux.intel.com>
+         <20231116104851.114bdb08@collabora.com>
+         <0850281b667c4b88163dab60737dbc945ad742fd.camel@linux.intel.com>
+         <c129fa94-6456-4746-9477-737a0fb61f96@redhat.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These ones will be needed to make use fo the NN and TP units in the NPUs
-based on Vivante IP.
+On Thu, 2023-11-16 at 15:02 +0100, Danilo Krummrich wrote:
+> On 11/16/23 12:48, Thomas Hellstr=C3=B6m wrote:
+>=20
+> <snip>
+>=20
+> > > > +Locks used and locking orders
+> > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D
+> > > > +
+> > > > +One of the benefits of VM_BIND is that local GEM objects share
+> > > > the
+> > > > gpu_vm's
+> > > > +dma_resv object and hence the dma_resv lock. So even with a
+> > > > huge
+> > > > +number of local GEM objects, only one lock is needed to make
+> > > > the
+> > > > exec
+> > > > +sequence atomic.
+> > > > +
+> > > > +The following locks and locking orders are used:
+> > > > +
+> > > > +* The ``gpu_vm->lock`` (optionally an rwsem). Protects how the
+> > > > gpu_vm is
+> > > > +=C2=A0 partitioned into gpu_vmas. It can also protect the gpu_vm's
+> > > > list
+> > > > of
+> > > > +=C2=A0 userptr gpu_vmas. With a CPU mm analogy this would
+> > > > correspond to
+> > > > the
+> > > > +=C2=A0 mmap_lock.
+> > >=20
+> > > I don't see any drm_gpuvm::lock field in Danilo's latest
+> > > patchset,
+> > > so,
+> > > unless I missed one version, and this lock is actually provided
+> > > by
+> > > drm_gpuvm, I would mention this is a driver-specific lock. This
+> > > comment
+> > > applies to all the locks you describe here actually (mention
+> > > which
+> > > ones
+> > > are provided by drm_gpuvm, and which ones are driver-specific).
+> >=20
+> > These will be needed also by gpuvm when implementing userptr vmas,
+> > so I
+> > can mention that drm_gpuvm is currently lacking a userptr
+> > implementation, so "the locks described below are to be considered
+> > driver-specific for now"
+>=20
+> Since Xe already implements userptr support, are you guys maybe
+> interested
+> in extending drm_gpuvm accordingly? :-)
+>=20
 
-Also fix the number of NN cores in the VIPNano-qi.
+I've been thinking of that but in that case that needs to happen after
+the xe merge. Also we ofc need to clear it with the people who do
+resource allocation on our side :)
 
-Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
----
- drivers/gpu/drm/etnaviv/etnaviv_gpu.c  | 20 ++++++++++++++++++++
- drivers/gpu/drm/etnaviv/etnaviv_gpu.h  | 12 ++++++++++++
- drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 22 +++++++++++++++++++++-
- include/uapi/drm/etnaviv_drm.h         |  5 +++++
- 4 files changed, 58 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-index 5f96e7b1a9ec..9a18b5431975 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
-@@ -164,6 +164,26 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
- 		*value = gpu->identity.eco_id;
- 		break;
- 
-+	case ETNAVIV_PARAM_GPU_NN_CORE_COUNT:
-+		*value = gpu->identity.nn_core_count;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE:
-+		*value = gpu->identity.nn_mad_per_core;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_TP_CORE_COUNT:
-+		*value = gpu->identity.tp_core_count;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE:
-+		*value = gpu->identity.on_chip_sram_size;
-+		break;
-+
-+	case ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE:
-+		*value = gpu->identity.axi_sram_size;
-+		break;
-+
- 	default:
- 		DBG("%s: invalid param: %u", dev_name(gpu->dev), param);
- 		return -EINVAL;
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-index c8f3ad2031ce..83ef3c06da5d 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
-@@ -53,6 +53,18 @@ struct etnaviv_chip_identity {
- 	/* Number of Neural Network cores. */
- 	u32 nn_core_count;
- 
-+	/* Number of MAD units per Neural Network core. */
-+	u32 nn_mad_per_core;
-+
-+	/* Number of Tensor Processing cores. */
-+	u32 tp_core_count;
-+
-+	/* Size in bytes of the SRAM inside the NPU. */
-+	u32 on_chip_sram_size;
-+
-+	/* Size in bytes of the SRAM across the AXI bus. */
-+	u32 axi_sram_size;
-+
- 	/* Size of the vertex cache. */
- 	u32 vertex_cache_size;
- 
-diff --git a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-index 0cb5aacaf384..93f15cce6d22 100644
---- a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-+++ b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
-@@ -17,6 +17,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 128,
- 		.shader_core_count = 1,
- 		.nn_core_count = 0,
-+		.nn_mad_per_core = 0,
-+		.tp_core_count = 0,
-+		.on_chip_sram_size = 0,
-+		.axi_sram_size = 0,
- 		.vertex_cache_size = 8,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -49,6 +53,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 512,
- 		.shader_core_count = 2,
- 		.nn_core_count = 0,
-+		.nn_mad_per_core = 0,
-+		.tp_core_count = 0,
-+		.on_chip_sram_size = 0,
-+		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -81,6 +89,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 512,
- 		.shader_core_count = 2,
- 		.nn_core_count = 0,
-+		.nn_mad_per_core = 0,
-+		.tp_core_count = 0,
-+		.on_chip_sram_size = 0,
-+		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-@@ -113,6 +125,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.thread_count = 1024,
- 		.shader_core_count = 4,
- 		.nn_core_count = 0,
-+		.nn_mad_per_core = 0,
-+		.tp_core_count = 0,
-+		.on_chip_sram_size = 0,
-+		.axi_sram_size = 0,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 2,
-@@ -144,7 +160,11 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
- 		.register_max = 64,
- 		.thread_count = 256,
- 		.shader_core_count = 1,
--		.nn_core_count = 1,
-+		.nn_core_count = 8,
-+		.nn_mad_per_core = 64,
-+		.tp_core_count = 4,
-+		.on_chip_sram_size = 524288,
-+		.axi_sram_size = 1048576,
- 		.vertex_cache_size = 16,
- 		.vertex_output_buffer_size = 1024,
- 		.pixel_pipes = 1,
-diff --git a/include/uapi/drm/etnaviv_drm.h b/include/uapi/drm/etnaviv_drm.h
-index af024d90453d..d87410a8443a 100644
---- a/include/uapi/drm/etnaviv_drm.h
-+++ b/include/uapi/drm/etnaviv_drm.h
-@@ -77,6 +77,11 @@ struct drm_etnaviv_timespec {
- #define ETNAVIV_PARAM_GPU_PRODUCT_ID                0x1c
- #define ETNAVIV_PARAM_GPU_CUSTOMER_ID               0x1d
- #define ETNAVIV_PARAM_GPU_ECO_ID                    0x1e
-+#define ETNAVIV_PARAM_GPU_NN_CORE_COUNT             0x1f
-+#define ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE           0x20
-+#define ETNAVIV_PARAM_GPU_TP_CORE_COUNT             0x21
-+#define ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE         0x22
-+#define ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE             0x23
- 
- #define ETNA_MAX_PIPES 4
- 
--- 
-2.41.0
+Thanks,
+Thomas
 
