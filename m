@@ -2,76 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2067EE9E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F4B7EE9E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229794AbjKPXKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
+        id S229379AbjKPXLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:11:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPXKn (ORCPT
+        with ESMTP id S229576AbjKPXLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:10:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B09EA
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:36 -0800 (PST)
+        Thu, 16 Nov 2023 18:11:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ECED53
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700176236;
+        s=mimecast20190719; t=1700176259;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=vsRuG6AZDvK4gWcMyoVnW7/GiXUT/qiRajyImbex+2A=;
-        b=IYEaS4wWCj5h0u+E6Rh4PKRb32mj0/JFiXCPLb//taSMi9fTmDJY1Z0x//J0/W836ad+fL
-        7Ow/qfNNJkSSdo+oLNkQrZ0aiAcovsr7dpnSG3zxLmC2u76gLYlOIT+zXqD8YVOae+yTIO
-        4vo/OtVhN2dv+Ees3TpJDIHLHaonOHs=
+        bh=CgEX29Pt1JmGCTcHMQ0I2eQh29hYElt25FeFUIb2i0w=;
+        b=aLx81FzERPpO/o7HoZDUSmvw+Y0RIOxbFFgN2IOyCpoKJiTqOxJvrjLCtiP5qH1Fsk5JAg
+        0jLKYFUqmfQSI1LXNXkqxAfIPAbPx2gtHUhajhCSY7xNArSDNcRljRidVJRFq7ArnSKvhK
+        TTQN2NMZ/nge59fIYnILxnIGg3jiswo=
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
  [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-296-6tDoJmpjMOqgWyZ20GjYiA-1; Thu, 16 Nov 2023 18:10:34 -0500
-X-MC-Unique: 6tDoJmpjMOqgWyZ20GjYiA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32d879cac50so702721f8f.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:34 -0800 (PST)
+ us-mta-157-qcprEz7rO6ee1DuIrP_GDA-1; Thu, 16 Nov 2023 18:10:57 -0500
+X-MC-Unique: qcprEz7rO6ee1DuIrP_GDA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32da8de4833so646747f8f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:57 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700176233; x=1700781033;
+        d=1e100.net; s=20230601; t=1700176256; x=1700781056;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=vsRuG6AZDvK4gWcMyoVnW7/GiXUT/qiRajyImbex+2A=;
-        b=BQFgztC1u+daqwrghzW2ZPOikYplpSdheUKEXnfBB1dopgGLiY8HQabuZkRLQ/AI9R
-         UzOHu0FzdKtAa8zCOjluo2xWNGY5rBv0jGY/g16uZiP59Jwoj30obqMV2JzQhkck9W3/
-         WNl4S7qxn/6/khb3JdAv4fBu4d6V9F+p+qUPw83ctSWVp2bnwjSnMGKOE6W/z/xyPoPf
-         NzRwXcCzNcsQqftS8U/Byvd5VaSBb7lWcdclJfhSueZGvN7+pC7s+UUgT+GXHZ6Wus/R
-         a/f3LPyQ6eJ4Ok0Gdoxv5qfiTQ153WKrbacopalHSX/SQT+g+lma0ZEfn5x9XpMqyich
-         he9g==
-X-Gm-Message-State: AOJu0YwcTWqVG4pSIxuKRO5cQ9dHqvZYRgzmuhdT37Ifx83VNslfgnyI
-        Zwa9W11CWqKPTipcovVZFPHQnKIrVjnR45SZlCGqN/F88DEUb9s1cNuVQyrd29gsN7JhxROqFxi
-        a5IUapH8KQc5HF7VNp53ZnN2J
-X-Received: by 2002:a05:6000:1884:b0:32d:9755:44f1 with SMTP id a4-20020a056000188400b0032d975544f1mr14474789wri.32.1700176233654;
-        Thu, 16 Nov 2023 15:10:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IELl3t8eiBv9s3Q7oGal+cSI9uZA3D9LbBDlaqJ+zo8ZHJCN8ByWB28vEeghB6VnL6KlDdYNA==
-X-Received: by 2002:a05:6000:1884:b0:32d:9755:44f1 with SMTP id a4-20020a056000188400b0032d975544f1mr14474770wri.32.1700176233281;
-        Thu, 16 Nov 2023 15:10:33 -0800 (PST)
+        bh=CgEX29Pt1JmGCTcHMQ0I2eQh29hYElt25FeFUIb2i0w=;
+        b=Qz/oLpvCV3rBtt48ayVWKZGP/RtVsHa97HgsDk0+zczt7nO8F1d06eAR9UqHZOk6RX
+         bBfmw1viP/JTBhze9szpp1mriM9Pke4LNUvIUOIS4AeKU8ux5VDOGFnrwlZTiddDZQVe
+         BCY8PxrxFGZirAI2FHsq8e5QEoOvxgxY7vfmQ48vrY+ht5Pq+XRXuE7PtzfUil4u3q3s
+         oLC5/Jke+sSRetQIV1d+vDT5jS2LSRS04NMAkGHPCZFLZn/MTtZlMiP4tF+eB+XLN3+S
+         fAnng8TQiVc0eDh1ikiGY6jouJkl/wYF7WbHjJu7W4skQcfdMVOIsFRmzpDWxZ5/jN+0
+         6yPA==
+X-Gm-Message-State: AOJu0YyOIn3uBFw0ilYsK2+LdHLjTDuJK97nSlhFZudAJc1eV4PFSUNf
+        Pm6S+i+OD9fV4TJKXFrD/mAKBOQNVGr2r2v31FpjYIG4Qg9GgPHMPfzqogldhqaXgaE+9TYb5et
+        +VrtqX9smaVFE7eN+i7JfM5JIIvP7QE0C
+X-Received: by 2002:adf:e90a:0:b0:31f:db1b:7296 with SMTP id f10-20020adfe90a000000b0031fdb1b7296mr11979344wrm.21.1700176256588;
+        Thu, 16 Nov 2023 15:10:56 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IG5jEbwrcA73XAM/14JHCdI8QNFP+LmTBo3lEJ4Dl79qKSu3tJRixSwerp696usy1cCbedmZg==
+X-Received: by 2002:adf:e90a:0:b0:31f:db1b:7296 with SMTP id f10-20020adfe90a000000b0031fdb1b7296mr11979337wrm.21.1700176256295;
+        Thu, 16 Nov 2023 15:10:56 -0800 (PST)
 Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.32
+        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 15:10:32 -0800 (PST)
-Message-ID: <8287fb3a-11e7-44fa-b0d9-72ab5eee1fd9@redhat.com>
-Date:   Fri, 17 Nov 2023 00:10:32 +0100
+        Thu, 16 Nov 2023 15:10:55 -0800 (PST)
+Message-ID: <146fee4b-fbd3-4571-9c81-8ae8393cb391@redhat.com>
+Date:   Fri, 17 Nov 2023 00:10:55 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] mm/pagemap: Fix wr-protect even if
- PM_SCAN_WP_MATCHING not set
+Subject: Re: [PATCH 3/3] mm/selftests: Fix pagemap_ioctl memory map test
 Content-Language: en-US
 To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>,
-        syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
+        Andrei Vagin <avagin@gmail.com>
 References: <20231116201547.536857-1-peterx@redhat.com>
- <20231116201547.536857-3-peterx@redhat.com>
+ <20231116201547.536857-4-peterx@redhat.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -118,12 +116,12 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231116201547.536857-3-peterx@redhat.com>
+In-Reply-To: <20231116201547.536857-4-peterx@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -133,33 +131,57 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16.11.23 21:15, Peter Xu wrote:
-> The new pagemap ioctl contains a fast path for wr-protections without
-> looking into category masks.  It forgets to check PM_SCAN_WP_MATCHING
-> before applying the wr-protections.  It can cause, e.g., pte markers
-> installed on archs that do not even support uffd wr-protect.
+> __FILE__ is not guaranteed to exist in current dir.  Replace that with
+> argv[0] for memory map test.
 > 
-> WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pte_range mm/memory.c:1520 [inline]
-> 
-> Fixes: 12f6b01a0bcb ("fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag")
-> Reported-by: syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
+> Fixes: 46fd75d4a3c9 ("selftests: mm: add pagemap ioctl tests")
 > Signed-off-by: Peter Xu <peterx@redhat.com>
 > ---
->   fs/proc/task_mmu.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+>   tools/testing/selftests/mm/pagemap_ioctl.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index e91085d79926..d19924bf0a39 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -2171,7 +2171,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
->   		return 0;
->   	}
+> diff --git a/tools/testing/selftests/mm/pagemap_ioctl.c b/tools/testing/selftests/mm/pagemap_ioctl.c
+> index befab43719ba..d59517ed3d48 100644
+> --- a/tools/testing/selftests/mm/pagemap_ioctl.c
+> +++ b/tools/testing/selftests/mm/pagemap_ioctl.c
+> @@ -36,6 +36,7 @@ int pagemap_fd;
+>   int uffd;
+>   int page_size;
+>   int hpage_size;
+> +const char *progname;
 >   
-> -	if (!p->vec_out) {
-> +	if ((p->arg.flags & PM_SCAN_WP_MATCHING) && !p->vec_out) {
->   		/* Fast path for performing exclusive WP */
->   		for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
->   			if (pte_uffd_wp(ptep_get(pte)))
+>   #define LEN(region)	((region.end - region.start)/page_size)
+>   
+> @@ -1149,11 +1150,11 @@ int sanity_tests(void)
+>   	munmap(mem, mem_size);
+>   
+>   	/* 9. Memory mapped file */
+> -	fd = open(__FILE__, O_RDONLY);
+> +	fd = open(progname, O_RDONLY);
+>   	if (fd < 0)
+>   		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
+>   
+> -	ret = stat(__FILE__, &sbuf);
+> +	ret = stat(progname, &sbuf);
+>   	if (ret < 0)
+>   		ksft_exit_fail_msg("error %d %d %s\n", ret, errno, strerror(errno));
+>   
+> @@ -1472,12 +1473,14 @@ static void transact_test(int page_size)
+>   			      extra_thread_faults);
+>   }
+>   
+> -int main(void)
+> +int main(int argc, char *argv[])
+>   {
+>   	int mem_size, shmid, buf_size, fd, i, ret;
+>   	char *mem, *map, *fmem;
+>   	struct stat sbuf;
+>   
+> +	progname = argv[0];
+> +
+>   	ksft_print_header();
+>   
+>   	if (init_uffd())
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
