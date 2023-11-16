@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D1907EDAAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:24:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB037EDAAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:23:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344578AbjKPEXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 23:23:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51848 "EHLO
+        id S1344719AbjKPEXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 23:23:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344782AbjKPEXr (ORCPT
+        with ESMTP id S1344578AbjKPEXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 23:23:47 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05F281A1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:23:44 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1cc5b705769so3806295ad.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:23:44 -0800 (PST)
+        Wed, 15 Nov 2023 23:23:34 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60AF3197
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:23:30 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id 2adb3069b0e04-5094727fa67so519475e87.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:23:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google; t=1700108623; x=1700713423; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=bytedance.com; s=google; t=1700108608; x=1700713408; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9tfi6NRQOM22knNhjOgbQ1iXjVU1a+hCH4TP0Rz3zjE=;
-        b=c3N7i0zp1dxSzP5rQ2XdsiXDL0ryiMfW7/LMA2mTqo2nCDoEl5z4Khlu+eCnVe8ZWk
-         UD9O/NWMCDOnolOA+GpNVD07cftfYHwNk5NeGenVk7ycJ05aIV96HMw30VB7+K8ilB+G
-         npKjdbNkoIC4/q3MP/kHAc64sReh9f7yyYxQEA7B7RIQitSRLlJ6rfJNLqxsaSYjS7ae
-         4gL5DmfLGk/9WMPbHWIpP8cgadhNOfC/uvrR60dEHM+Nt8lJCCgyf25wdtpRcuQNZ1d9
-         jdDgkb7clNOttbHjDG5l3RurTtzgPPlpl66bwGTFqlhV5ze/ZXnUz6NbNTBDJsPNEJen
-         DyPw==
+        bh=g0aRwczQ6tXJ0ICX2vno9uyodkFr2+icyRVyCD2VH6Q=;
+        b=Cx9hTOzUrb/TT36UChtkk1oqdDIjH0nTmjY+T4kQpryzH0iRIjhYlvfGX0s0WmJYZ4
+         H078TxywQycWvioIuAo61OtXOAGTwQnWX6XYgvqspT394guFcluLL7s5SlXkExOzRKa7
+         v68rqVYBPHdgZN4nTXs5EfxdnIPDMZlTXQNImQWy9AkfGIyOXePaTT0fSoBJdgbybfnD
+         qHyD9z4QqbfMsO+0/sT9t6stHGyFaMOWWw9Qt3zNxRjJAKHYLIdypgld9chza3DAVz5J
+         8sKMGEACO4GDLI+F6HU0eabUctYhEkas4bV8Yj6wRMvH8aMvU4Jqp9lgqSWrM8DCDUXK
+         aAzw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700108623; x=1700713423;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700108608; x=1700713408;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9tfi6NRQOM22knNhjOgbQ1iXjVU1a+hCH4TP0Rz3zjE=;
-        b=n5SSyzVWR8i3ciSKuNJ8/cRvdiiHptQTRGBLfTmXf9gQPfBxwjRIy6MoEdCJTDCA17
-         o7Vo+D3dZWtUGw5DN5WDr9EAjQMdeybmOM59oByXxgqEyTSxbmoTnsQC44rtkGh4bcNc
-         kIKPj996JeD7DY4zO64zV5+C102lKspLEhMmTqfcIdPBCQTkfUApUtHLNhgs63tmx2YJ
-         c4wA+jRCJbk98BROSRpTX+C5DeQ0J/ZRTDtKnsw9tpvzAiXRIRrGw8gismrXcZJ/3Oe5
-         lMvhNpzb86x6UOWcEPZ4M4+poVTSaQpGChRVr4yV4pASyDS9NB/5T5ChFrRnQWh0wtbp
-         AZ9Q==
-X-Gm-Message-State: AOJu0YwOZDCY4KvAcKk9DQOmsgXGJR8+PpLA0BKowFx+Vn0RV4XEhgtp
-        jAA5KMtDeRfCm7LHXK/9A2OqSQ==
-X-Google-Smtp-Source: AGHT+IHzBxlw3azAPv1GM8+3LinnNSc5RziOndfLf0G5tD2p3Ail72qhsqwEa4/GVaSlSDddzDUkDA==
-X-Received: by 2002:a17:902:e5c3:b0:1cc:8cf4:d8a7 with SMTP id u3-20020a170902e5c300b001cc8cf4d8a7mr9683277plf.16.1700108623434;
-        Wed, 15 Nov 2023 20:23:43 -0800 (PST)
-Received: from localhost.localdomain ([123.51.167.56])
-        by smtp.googlemail.com with ESMTPSA id w13-20020a170902d3cd00b001c9bca1d705sm8190069plb.242.2023.11.15.20.23.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 20:23:42 -0800 (PST)
-From:   Jian-Hong Pan <jhp@endlessos.org>
-To:     Jonathan Bither <jonbither@gmail.com>,
-        Larry Finger <Larry.Finger@lwfinger.net>,
-        Ping-Ke Shih <pkshih@realtek.com>
-Cc:     Kalle Valo <kvalo@kernel.org>, linux-wireless@vger.kernel.org,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Jian-Hong Pan <jhp@endlessos.org>
-Subject: [PATCH v3] rtlwifi: rtl8723be: Disable ASPM if RTL8723BE connects to Intel PCI bridge
-Date:   Thu, 16 Nov 2023 12:18:35 +0800
-Message-ID: <20231116041834.8310-2-jhp@endlessos.org>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <ea1d2505-7396-92c0-4687-facad575d299@gmail.com>
-References: <ea1d2505-7396-92c0-4687-facad575d299@gmail.com>
+        bh=g0aRwczQ6tXJ0ICX2vno9uyodkFr2+icyRVyCD2VH6Q=;
+        b=NrsQ4l769bagtyvsHoZt5F88FD5+MF5N8FZZ6DenuUhg2Ph+UY3kHOXcmliMuKqf58
+         yPmw8M8ssSMFoC4JNFc4lL+0wIsD6jiCU6Q63vAaBUAkpBySzk5iEOJ+6PGe+R6RJ3RX
+         ZJ115rWaQR9JCKV/dmiMFyEvE1V5ocXaKUdoABkCAldJXIcRR6SbUrRuJoayYtCR3jNu
+         9BOumEnOf1aukHmd3hQhqdUEPEKuXauo6prfJgHouOTP4MVsOB51JQH4SYoGB1ANN+YO
+         QSQlmKaWa3sbZQaw3kJ2I/tp/bozcz7sVnCpgi2wi27tWkAthVkG7Yq5eyXKjYIYAhAa
+         wSgA==
+X-Gm-Message-State: AOJu0Yz1SyU4EXc+ngnDvfD68WVjV0mfbqqUBPF0YyKC1+AEt/f7Eypx
+        9/aujSWxkIGAlldROOTtiB9J84ZSTKT8vJw3Zw4PRg==
+X-Google-Smtp-Source: AGHT+IFV9dF39WtBwrc6I+AKNmbZNIWJVcMdtcfciM5wJckqUfPts+vsDyQehbBFStQ2v0COe4qgTLSGhLtzadfnKrg=
+X-Received: by 2002:ac2:4e10:0:b0:503:905:c5a3 with SMTP id
+ e16-20020ac24e10000000b005030905c5a3mr1029096lfr.35.1700108608561; Wed, 15
+ Nov 2023 20:23:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+ <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com>
+ <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com>
+ <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com> <CAJD7tkZHwg_u7UhzugVmmH6-FNORb+D+5SyMX6cGefp93uZr_Q@mail.gmail.com>
+In-Reply-To: <CAJD7tkZHwg_u7UhzugVmmH6-FNORb+D+5SyMX6cGefp93uZr_Q@mail.gmail.com>
+From:   =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
+Date:   Thu, 16 Nov 2023 12:23:17 +0800
+Message-ID: <CACSyD1MKWj9t=q7aWfiqZUT96sVO=9bHJ5SR2kvBGO6t88jgNA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
+ failure in two scenarios
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,101 +76,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Disable RTL8723BE's ASPM in a PCI quirk and rtl8723be module if the
-Realtek RTL8723BE PCIe Wireless adapter connects to some Intel PCI
-bridges, such as Skylake and Kabylake. Otherwise, the PCI AER flood
-hangs system:
+On Thu, Nov 16, 2023 at 12:10=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
+>
+> It can be enabled at runtime, or enabled by default by using
+> CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON.
+>
 
-pcieport 0000:00:1c.5: PCIe Bus Error: severity=Corrected, type=Physical Layer, (Receiver ID)
-pcieport 0000:00:1c.5:   device [8086:9d15] error status/mask=00000001/00002000
-pcieport 0000:00:1c.5:    [ 0] RxErr                  (First)
-pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-pcieport 0000:00:1c.5: AER: Corrected error received: 0000:00:1c.5
-pcieport 0000:00:1c.5: AER: can't find device of ID00e5
-pcieport 0000:00:1c.5: AER: Multiple Corrected error received: 0000:00:1c.5
-pcieport 0000:00:1c.5: AER: can't find device of ID00e5
+Yes, I see it in the doc. Thanks.
 
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=218127
-Signed-off-by: Jian-Hong Pan <jhp@endlessos.org>
----
-v2: Add the switch case's default condition with comment:
-    "The ASPM has already been enabled by initializing
-    rtl8723be_mod_params' aspm_support as 1."
+>
+>
+> The reason I added it behind runtime and config knobs is to preserve
+> the existing behavior in case someone depends on it. At Google, we
+> have been using exclusive loads for a long time. If other users of
+> zswap agree to make this the default behavior or make it the only way
+> to do zswap loads I don't have a problem with it.
+>
 
-v3: Rework with a PCI qurik which disables RTL8723BE PCIE's ASPM, if it
-    connects to some Intel bridges, such as Skylake and Kabylake. Then,
-    rtl8723be checks the PCIE ASPM is enabled, or not. If it is not,
-    disables rtl8723be's aspm_support parameter.
-
- .../wireless/realtek/rtlwifi/rtl8723be/sw.c   |  6 ++++
- drivers/pci/quirks.c                          | 36 +++++++++++++++++++
- 2 files changed, 42 insertions(+)
-
-diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
-index 43b611d5288d..fe9acbaa879b 100644
---- a/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
-+++ b/drivers/net/wireless/realtek/rtlwifi/rtl8723be/sw.c
-@@ -26,6 +26,12 @@ static void rtl8723be_init_aspm_vars(struct ieee80211_hw *hw)
- 	struct rtl_priv *rtlpriv = rtl_priv(hw);
- 	struct rtl_pci *rtlpci = rtl_pcidev(rtl_pcipriv(hw));
- 
-+	/* Disable ASPM if the link control disables it */
-+	if (!pcie_aspm_enabled(rtlpci->pdev)) {
-+		pci_info(rtlpci->pdev, "PCIE ASPM is disabled\n");
-+		rtlpriv->cfg->mod_params->aspm_support = 0;
-+	}
-+
- 	/*close ASPM for AMD defaultly */
- 	rtlpci->const_amdpci_aspm = 0;
- 
-diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-index eeec1d6f9023..170321f4b23b 100644
---- a/drivers/pci/quirks.c
-+++ b/drivers/pci/quirks.c
-@@ -3606,6 +3606,42 @@ DECLARE_PCI_FIXUP_FINAL(0x1b7c, 0x0004, /* Ceton InfiniTV4 */
- DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_REALTEK, 0x8169,
- 			quirk_broken_intx_masking);
- 
-+
-+static void quirk_disable_int_bridge_sub_pci_aspm(struct pci_dev *dev)
-+{
-+	struct pci_dev *pdev;
-+	u16 val;
-+
-+	if (dev->bus && dev->bus->self)
-+		pdev = dev->bus->self;
-+	else
-+		return;
-+
-+	if (pdev->vendor == PCI_VENDOR_ID_INTEL) {
-+		switch (pdev->device) {
-+		case 0x9d15:
-+		/* PCI bridges on Skylake */
-+		case 0xa110 ... 0xa11f:
-+		case 0xa167 ... 0xa16a:
-+		/* PCI bridges on Kabylake */
-+		case 0xa290 ... 0xa29f:
-+		case 0xa2e7 ... 0xa2ee:
-+			pci_info(dev, "quirk: disable the device's ASPM\n");
-+			pcie_capability_read_word(pdev, PCI_EXP_LNKCTL, &val);
-+			val &= ~PCI_EXP_LNKCTL_ASPMC;
-+			pcie_capability_write_word(dev, PCI_EXP_LNKCTL, val);
-+			break;
-+		}
-+	}
-+}
-+
-+/*
-+ * Disable Realtek RTL8723BE PCIE's ASPM, if it connects to some Intel bridges,
-+ * such as Skylake and Kabylake. Otherwise, the PCI AER flood hangs system.
-+ */
-+DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_REALTEK, 0xb723,
-+			quirk_disable_int_bridge_sub_pci_aspm);
-+
- /*
-  * Intel i40e (XL710/X710) 10/20/40GbE NICs all have broken INTx masking,
-  * DisINTx can be set but the interrupt status bit is non-functional.
--- 
-2.42.1
-
+Got it.  Thanks for your feedback.
