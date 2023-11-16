@@ -2,309 +2,305 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B84D7EDF88
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:20:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5B9E7EDF8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:21:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345164AbjKPLUp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:20:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47364 "EHLO
+        id S1345117AbjKPLVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:21:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345083AbjKPLUi (ORCPT
+        with ESMTP id S1345083AbjKPLVU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:20:38 -0500
-Received: from mail-pj1-f77.google.com (mail-pj1-f77.google.com [209.85.216.77])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C71AA8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:20:34 -0800 (PST)
-Received: by mail-pj1-f77.google.com with SMTP id 98e67ed59e1d1-27ff9e2ffdfso870599a91.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:20:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700133634; x=1700738434;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=STJBfb6y8nAQxIFtKPRb+3ytrs70YYgpQWXZM8NzfFY=;
-        b=SXVPyQ83b7UOHlxfVxYtzq63bUviTaR4AueQUbzN54qQjjrbrqaAC5gd/6/+AIABwn
-         cmb+bUKTdKv9TqjgpD8KqWsDCnPmb/uLuSpUKwF5dXYrRYNtOuXIUUlW5JyRYI+PNGTY
-         5Yrz7z8/s4FvPhYyi81YMJ66ywxRrjLyxn1e2WM6sn/+d8dJM64XOAWzsN1oc76zbmwE
-         v/S/UmoLwF1s/yvhdzzKb+d+VXIRuQ0CSrajQjl+eOTzNDex8PRHVgga7Y24uyNuq4vC
-         h/HVz1evVGydiLFIVO3NRaWzuokomJFV37eax49uONv2tXPQExJadbGjqCt9P/IjxGYK
-         mDEw==
-X-Gm-Message-State: AOJu0YwVrWyxX1AMFzADmid8R08Gv2KTpp+FYK+5PzKrfmU2Q/NkWYmO
-        tjHi/dDIHV/IQqAfE4xwFxQDZ3XzGlyGWWB8zsgh8NlsIS2o
-X-Google-Smtp-Source: AGHT+IEMuFYDUcBxa10y514IqIUL2hY0Of6Qb8PSu4cHfa4LUsUYxDTKWa10ZxrueJk8+sHyW+OgTktoytEKEj5U4YxsaP0Zywf2
+        Thu, 16 Nov 2023 06:21:20 -0500
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2098.outbound.protection.outlook.com [40.107.215.98])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EEA85;
+        Thu, 16 Nov 2023 03:21:15 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nVnV5xTJfHW2USzTeyc9HTMy382OX35/Q78GgwQ35ABZg9ib86Gbke6afWRMrfbNjdNfgtEtFPKLwdvKYE0uQ/xN4ZoBEwvu57VpgychdceUvDwzClHeycrwRGMmj63u4+ya26yGE3vVPj2qgpLJzAUbkhTRYe/Wg9SC/DyXvYWA86aIZ8Vlf0iPx73dtQ4zPMwfmwjEuP3iWbTTuKlBnY9Sqy4qc4j10cm7puOzl4leHg3DhYN/K9NU+sJqDuVPm+fyCcjTm0dd7r1pyytCZtk4AHpCeoqje9b0N5cHzZYIN4h8BpvQYonLDQJFbGgAxIkf54E/gWkpvN7g8FB39g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=C7o7nQJLsbrxtgh1QNpQbEXM72QU8jpDTM8GdtkiHdw=;
+ b=bVFHNXLqDKAJz91WbNIDiXmA0iO3wjCJArZYYdx97KqUiK10739wls6Y93thobcH2V8Jvw+rVMUVd2D4igP57ugK8HtNXP0zvhMaU92FTc4NPPSxrPpoNFJQWLuvYrdCL1WvIjGR9JXQtgHJVrOdjc6VYL4x9K7iMUxtdk2SrS/zFg6nC4nnsBHxs/WXs2TdWdHUb0795qk5aJ00aPYmF2M1p7JILxrJJeEsPSxUCFNkRy8MuzEJHY+rBeziHEdds2Nyoyfkdp/npybEPdVYmkX0c8tUYhtZzvjFPd6hnwzIuxZtUKsbdBn2dnkfViNeCk3eqIrKWvy+AObW1aL2Tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=C7o7nQJLsbrxtgh1QNpQbEXM72QU8jpDTM8GdtkiHdw=;
+ b=QHxUvUqSfBcLdanCK8WxQM5Pk1smAh4HzoeAvZBSusqA/FDT4GjsAnzaX8Xzqr8f1QBf3j46ou3w9uMcVHgppRBXEe+6j7ZZGLrLgwP45b/51Ssa0QwfFEqVY6EF3CaMvIMWJ5SQ6fVS8ho2UZ9aa6LXB1lrsZTBUREEtPdTHt0=
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
+ by TYSP153MB1016.APCP153.PROD.OUTLOOK.COM (2603:1096:400:46c::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.9; Thu, 16 Nov
+ 2023 11:21:10 +0000
+Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+ ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7025.009; Thu, 16 Nov 2023
+ 11:21:10 +0000
+From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
+To:     Haiyang Zhang <haiyangz@microsoft.com>,
+        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Dexuan Cui <decui@microsoft.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "edumazet@google.com" <edumazet@google.com>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "pabeni@redhat.com" <pabeni@redhat.com>,
+        Long Li <longli@microsoft.com>,
+        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+        "leon@kernel.org" <leon@kernel.org>,
+        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
+        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+CC:     Paul Rosswurm <paulros@microsoft.com>
+Subject: RE: [PATCH net-next] net: mana: Assigning IRQ affinity on HT cores
+Thread-Topic: [PATCH net-next] net: mana: Assigning IRQ affinity on HT cores
+Thread-Index: AQHaF8qGIm6eugOJi0KcyMy20QXRcrB7/d0AgADQPQA=
+Date:   Thu, 16 Nov 2023 11:21:08 +0000
+Message-ID: <PUZP153MB0788BF5F18973922F03C2CA4CCB0A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
+References: <1700056125-29358-1-git-send-email-schakrabarti@linux.microsoft.com>
+ <PH7PR21MB311687F4F37C55D6B332D7F0CAB1A@PH7PR21MB3116.namprd21.prod.outlook.com>
+In-Reply-To: <PH7PR21MB311687F4F37C55D6B332D7F0CAB1A@PH7PR21MB3116.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a89832be-4a0a-4c6b-aea1-8812e4a22e64;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-15T22:38:20Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=microsoft.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PUZP153MB0788:EE_|TYSP153MB1016:EE_
+x-ms-office365-filtering-correlation-id: 59425e8e-4201-4567-9075-08dbe69621c8
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: g4YZbTNvk9+GsE17OWBkI30xN4Xt9vSA33rtZQwEXJ85xOPLWAhS6irs8tiI4WcRDth4z+CgbeHysX41kd27ZZIamzMUks1Jh4EGYFnndIfSwIVryWrkWVpgePpq1QTZ/cHpiaT3//p8f8iA1SC1SDuj+uH75mYlL4ZehG99PqAPQEbyOr5k+0YA7o/MnmaD2nLVCmwwEOaxv+/hA3SE/YSxqGDhlebCK7X7cb+YEyuHIvgCPrBoveyEsTShgGpZZnodkNkq5ZxxnTpVd9ML+WLiwFi7/udVi+IUECEKVpsubHZ9Wm6BDiaqeHlX9TI57b5a/7acFwuq3LNB+DV63k1Qn+G/cPT0oL7ChbvVRcL21q9FPflvGC7UeZd42NvdI0yuzZmKMZHD4CENY6T3VxRwSftZwXThxDCPF+TzYtaOXOIkdStzq/GXp2QcCGiQiPiYZXC9EqhTyCdZQFEUyknyCIM+HbdGYTOuBXNWAFshzmIWPO4UVj1klSA6pGTyFR0+eFRO+dhFbZLUXD4K4BG+ygELzow7/1FVxf073fwF5xqviLtoYLfBqVtx98KpFjGL/T6YkU0m5t420rUTioLGkNki3DZReTRptRvn4Yi7VGRV1gzLKCWwElDuOpxHYFe+kB91RE71a0J+dIUeYaEbn1g3tmkrI9tYZ1D26Mg2+7rFcgDM0ocQOJzO8oSw
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(82960400001)(82950400001)(921008)(122000001)(38070700009)(86362001)(33656002)(7416002)(5660300002)(53546011)(9686003)(6506007)(7696005)(55016003)(107886003)(2906002)(10290500003)(478600001)(71200400001)(52536014)(8936002)(4326008)(8676002)(76116006)(66946007)(110136005)(316002)(66476007)(66446008)(64756008)(66556008)(38100700002)(83380400001)(26005)(41300700001)(8990500004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TWTpAznkSTSqrK7RhWe322rkSbTbysEUkCclSZrptARaqVceSx21AtfBzH36?=
+ =?us-ascii?Q?SqSuwNuuMXgrfyPdyafc48AFWFC0Ht7O873xMY/AUobt+IyF6K6WIsBpA8DV?=
+ =?us-ascii?Q?L/hsjXxapiGIzneMjdCnKYX5tDFcc9AZJIU4QhgQjXrkc8dLiZk288gQ6wIy?=
+ =?us-ascii?Q?0DHVuxTx/2Yl1/gy+kn2oUxT0ki1Xn7rUTnEYEJsa+uk4y9YZV6CozuFztUP?=
+ =?us-ascii?Q?wea+Fb/DNfIwrPyuDiUXPgUfsl5R675WDIzeQXgAcAFscMCu+V4H8EfPSka7?=
+ =?us-ascii?Q?PrZqaDuL/GCWczkZpPVBc5Eq6Bq+2NSvGmd/m1oyA401PAB0QbEPXG6EjM/0?=
+ =?us-ascii?Q?YL3zeg8c2U7s2qGyEgf8DDYv/LAciZq1hDe82G04OrbGPneQv/cGcIUpd2VY?=
+ =?us-ascii?Q?+eencuRduWy3XSPMhpPv7EcIly6wt05GNErEMVUDcKG1yD9ZhaWfFM9Y3txJ?=
+ =?us-ascii?Q?bEw5oGtiIU/tqDrRFZlEcnl8skp4VK9zpKv8ORg/RiZ2YYDXCdKQEaP6j2aw?=
+ =?us-ascii?Q?ScAIOZBjuLodu4LR30fS+C4BO3CEqGfmPkXageIaaKdc5d8gxhvwC5UOneol?=
+ =?us-ascii?Q?91ZXKrVSBI6pe77cJIxDlPcG4x+i7u5e9Ei7FlvGfNaxO8hQj9CR5qMRisUA?=
+ =?us-ascii?Q?tgkHiniVriK/Z82kReog6KKWfRQNCA1ZOCvjbHwqvqkvTmpKU9o7L0pwE6Am?=
+ =?us-ascii?Q?xZw6aBmLwkeQvU8wgQGXZnTmIwpJ03bNLMPKRZrsej4L1IwesL/MRE6qbSAG?=
+ =?us-ascii?Q?cCrzvQDD+yEtZ3Oahy9yeyjy+L2Mfe70ZR6Lm2/izSmKJJ3hEpIpuimfsA3e?=
+ =?us-ascii?Q?cRnl/We0V5is3ASjPdfBRPd3rKlOU+TeZ9c1yPw58r90kUmL3eRAlhF+C5gY?=
+ =?us-ascii?Q?vcim6q3Pw+9SIUVg/HFZkpjLl2hO0qY4Xx/Xl8ikaD1qN4cL1Idi2DY/CuW9?=
+ =?us-ascii?Q?3/POjvcLU1lQ5bwEnKDje5RXFA8gf3BzfbEjHvBMhsQ9bE7Gl3IfIMLkqfw+?=
+ =?us-ascii?Q?YIsLW4t9XRnTVmNvBZfH7eUZy/WTD8qyfdQ/PO5An3DDW0mPpLXKx6eTOQ7H?=
+ =?us-ascii?Q?I10C0N4NvQgDZO9xglnm87CI2MKccHrCF67kYL8BVtp85+hR1C9jIYYsSUKE?=
+ =?us-ascii?Q?RMvey6wxz2Avjxrsj+kkQyNxI4hikzlwNJWdsuDjNgehGpoKPLyPZRoW1V7A?=
+ =?us-ascii?Q?KnW4HK3K8Pwo4C5RlrP3ZzrjpzfLO+QNpM3AO5YgXMzjI3owMxa5shTpkWb/?=
+ =?us-ascii?Q?CkuYd3l47P7DiWkR85E8zZUxRvYPq1dl80m2LYrneQXcA9F6Ug+7l/2ec1cu?=
+ =?us-ascii?Q?kxNMXXsSsOHNh3PTBQJpibXle7VDjm5dWljFGKU2aJGxE0PD1T86yz3gtF/J?=
+ =?us-ascii?Q?uJj4WCVdLLZWRbLdN7tzwXGhzqP8XNZB7GOh3tFpwCXwJloTWdGlC1h6TYVl?=
+ =?us-ascii?Q?7ng749Lx2g7QOtgn1eE5H5UG8LAGHf0toJsTx2HRa3vCGcbU0cpw8VmeyQEu?=
+ =?us-ascii?Q?OQJV6cTx6MLWOs3p4An0Ps9xu2yYM8nwOIyj?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-Received: by 2002:a17:90a:8995:b0:27d:c90:1718 with SMTP id
- v21-20020a17090a899500b0027d0c901718mr4513778pjn.7.1700133633851; Thu, 16 Nov
- 2023 03:20:33 -0800 (PST)
-Date:   Thu, 16 Nov 2023 03:20:33 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000051098c060a4335da@google.com>
-Subject: [syzbot] [bluetooth?] KASAN: slab-use-after-free Write in sco_sock_timeout
-From:   syzbot <syzbot+4c0d0c4cde787116d465@syzkaller.appspotmail.com>
-To:     johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luiz.dentz@gmail.com,
-        marcel@holtmann.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 59425e8e-4201-4567-9075-08dbe69621c8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 11:21:08.8791
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dX8Q2/iWBWPADFTjSktvAB5zYwjaMbd4LivtJuGI/dSqTiQwLPuxn2hkrauEGUhn/azvC2C3JL7BtZC6u4O9uGUwx3dyO1seT4cK0Yli8RE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSP153MB1016
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    8de1e7afcc1c Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1126f190e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3e6feaeda5dcbc27
-dashboard link: https://syzkaller.appspot.com/bug?extid=4c0d0c4cde787116d465
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=122a2560e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=136e08df680000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0f00907f9764/disk-8de1e7af.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0502fe78c60d/vmlinux-8de1e7af.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/192135168cc0/Image-8de1e7af.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4c0d0c4cde787116d465@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-use-after-free in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: slab-use-after-free in atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
-BUG: KASAN: slab-use-after-free in __refcount_add include/linux/refcount.h:193 [inline]
-BUG: KASAN: slab-use-after-free in __refcount_inc include/linux/refcount.h:250 [inline]
-BUG: KASAN: slab-use-after-free in refcount_inc include/linux/refcount.h:267 [inline]
-BUG: KASAN: slab-use-after-free in sock_hold include/net/sock.h:777 [inline]
-BUG: KASAN: slab-use-after-free in sco_sock_timeout+0x64/0x25c net/bluetooth/sco.c:88
-Write of size 4 at addr ffff0000dba59080 by task kworker/0:1/10
-
-CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: events sco_sock_timeout
-Call trace:
- dump_backtrace+0x1b8/0x1e4 arch/arm64/kernel/stacktrace.c:233
- show_stack+0x2c/0x44 arch/arm64/kernel/stacktrace.c:240
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd0/0x124 lib/dump_stack.c:106
- print_address_description mm/kasan/report.c:364 [inline]
- print_report+0x174/0x514 mm/kasan/report.c:475
- kasan_report+0xd8/0x138 mm/kasan/report.c:588
- kasan_check_range+0x254/0x294 mm/kasan/generic.c:187
- __kasan_check_write+0x20/0x30 mm/kasan/shadow.c:37
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- atomic_fetch_add_relaxed include/linux/atomic/atomic-instrumented.h:252 [inline]
- __refcount_add include/linux/refcount.h:193 [inline]
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- sock_hold include/net/sock.h:777 [inline]
- sco_sock_timeout+0x64/0x25c net/bluetooth/sco.c:88
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-
-Allocated by task 6180:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_alloc_info+0x24/0x30 mm/kasan/generic.c:511
- ____kasan_kmalloc mm/kasan/common.c:374 [inline]
- __kasan_kmalloc+0xac/0xc4 mm/kasan/common.c:383
- kasan_kmalloc include/linux/kasan.h:198 [inline]
- __do_kmalloc_node mm/slab_common.c:1026 [inline]
- __kmalloc+0xcc/0x1b8 mm/slab_common.c:1039
- kmalloc include/linux/slab.h:603 [inline]
- sk_prot_alloc+0xc4/0x1f0 net/core/sock.c:2090
- sk_alloc+0x44/0x3f4 net/core/sock.c:2143
- bt_sock_alloc+0x4c/0x32c net/bluetooth/af_bluetooth.c:148
- sco_sock_alloc net/bluetooth/sco.c:495 [inline]
- sco_sock_create+0xbc/0x31c net/bluetooth/sco.c:526
- bt_sock_create+0x14c/0x248 net/bluetooth/af_bluetooth.c:132
- __sock_create+0x43c/0x884 net/socket.c:1569
- sock_create net/socket.c:1620 [inline]
- __sys_socket_create net/socket.c:1657 [inline]
- __sys_socket+0x134/0x340 net/socket.c:1708
- __do_sys_socket net/socket.c:1722 [inline]
- __se_sys_socket net/socket.c:1720 [inline]
- __arm64_sys_socket+0x7c/0x94 net/socket.c:1720
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-Freed by task 6179:
- kasan_save_stack mm/kasan/common.c:45 [inline]
- kasan_set_track+0x4c/0x7c mm/kasan/common.c:52
- kasan_save_free_info+0x38/0x5c mm/kasan/generic.c:522
- ____kasan_slab_free+0x144/0x1c0 mm/kasan/common.c:236
- __kasan_slab_free+0x18/0x28 mm/kasan/common.c:244
- kasan_slab_free include/linux/kasan.h:164 [inline]
- slab_free_hook mm/slub.c:1800 [inline]
- slab_free_freelist_hook mm/slub.c:1826 [inline]
- slab_free mm/slub.c:3809 [inline]
- __kmem_cache_free+0x2ac/0x480 mm/slub.c:3822
- kfree+0xb8/0x19c mm/slab_common.c:1075
- sk_prot_free net/core/sock.c:2126 [inline]
- __sk_destruct+0x4c0/0x770 net/core/sock.c:2218
- sk_destruct net/core/sock.c:2233 [inline]
- __sk_free+0x37c/0x4e8 net/core/sock.c:2244
- sk_free+0x60/0xc8 net/core/sock.c:2255
- sock_put include/net/sock.h:1989 [inline]
- sco_sock_kill+0xfc/0x1b4 net/bluetooth/sco.c:426
- sco_sock_release+0x1fc/0x2c0 net/bluetooth/sco.c:1256
- __sock_release net/socket.c:659 [inline]
- sock_close+0xa4/0x1e8 net/socket.c:1419
- __fput+0x324/0x7f8 fs/file_table.c:384
- __fput_sync+0x60/0x9c fs/file_table.c:465
- __do_sys_close fs/open.c:1572 [inline]
- __se_sys_close fs/open.c:1557 [inline]
- __arm64_sys_close+0x150/0x1e0 fs/open.c:1557
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-
-The buggy address belongs to the object at ffff0000dba59000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 128 bytes inside of
- freed 2048-byte region [ffff0000dba59000, ffff0000dba59800)
-
-The buggy address belongs to the physical page:
-page:00000000f24a79df refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x11ba58
-head:00000000f24a79df order:3 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x5ffc00000000840(slab|head|node=0|zone=2|lastcpupid=0x7ff)
-page_type: 0xffffffff()
-raw: 05ffc00000000840 ffff0000c0002000 dead000000000122 0000000000000000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff0000dba58f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff0000dba59000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff0000dba59080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff0000dba59100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff0000dba59180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-------------[ cut here ]------------
-refcount_t: addition on 0; use-after-free.
-WARNING: CPU: 0 PID: 10 at lib/refcount.c:25 refcount_warn_saturate+0x1a8/0x20c lib/refcount.c:25
-Modules linked in:
-CPU: 0 PID: 10 Comm: kworker/0:1 Tainted: G    B              6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: events sco_sock_timeout
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : refcount_warn_saturate+0x1a8/0x20c lib/refcount.c:25
-lr : refcount_warn_saturate+0x1a8/0x20c lib/refcount.c:25
-sp : ffff800092d57af0
-x29: ffff800092d57af0 x28: 1fffe0001a9b5a4a x27: dfff800000000000
-x26: ffff0000c1084008 x25: ffff0000d4dad250 x24: ffff0001b418b500
-x23: dfff800000000000 x22: 0000000000000000 x21: 0000000000000002
-x20: ffff0000dba59080 x19: ffff8000910a2000 x18: ffff800092d57800
-x17: 0000000000000000 x16: ffff80008a71b23c x15: 0000000000000001
-x14: 1ffff000125aaeb0 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000001 x10: 0000000000000000 x9 : c0b0806111008b00
-x8 : c0b0806111008b00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800092d573d8 x4 : ffff80008e4210a0 x3 : ffff800082b180c4
-x2 : 0000000000000001 x1 : 0000000000000001 x0 : 0000000000000000
-Call trace:
- refcount_warn_saturate+0x1a8/0x20c lib/refcount.c:25
- __refcount_inc include/linux/refcount.h:250 [inline]
- refcount_inc include/linux/refcount.h:267 [inline]
- sock_hold include/net/sock.h:777 [inline]
- sco_sock_timeout+0x19c/0x25c net/bluetooth/sco.c:88
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-irq event stamp: 29659
-hardirqs last  enabled at (29659): [<ffff80008a719090>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (29659): [<ffff80008a719090>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (29658): [<ffff800080021724>] __do_softirq+0x950/0xd54 kernel/softirq.c:569
-softirqs last  enabled at (19646): [<ffff800080021894>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (19646): [<ffff800080021894>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (19597): [<ffff80008002aadc>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
-------------[ cut here ]------------
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 10 at lib/refcount.c:28 refcount_warn_saturate+0x1c8/0x20c lib/refcount.c:28
-Modules linked in:
-CPU: 0 PID: 10 Comm: kworker/0:1 Tainted: G    B   W          6.6.0-rc7-syzkaller-g8de1e7afcc1c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
-Workqueue: events sco_sock_timeout
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : refcount_warn_saturate+0x1c8/0x20c lib/refcount.c:28
-lr : refcount_warn_saturate+0x1c8/0x20c lib/refcount.c:28
-sp : ffff800092d57af0
-x29: ffff800092d57af0 x28: 1fffe0001a9b5a4a x27: dfff800000000000
-x26: ffff0000c1084008 x25: ffff0000d4dad250 x24: ffff0001b418b500
-x23: dfff800000000000 x22: 0000000000000000 x21: 0000000000000003
-x20: ffff0000dba59080 x19: ffff8000910a2000 x18: ffff800092d57800
-x17: 0000000000000000 x16: ffff80008a71b23c x15: 0000000000000001
-x14: 1fffe0003682f032 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000000 x10: 0000000000000000 x9 : c0b0806111008b00
-x8 : c0b0806111008b00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff800092d573d8 x4 : ffff80008e4210a0 x3 : ffff8000805a359c
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- refcount_warn_saturate+0x1c8/0x20c lib/refcount.c:28
- __refcount_sub_and_test include/linux/refcount.h:283 [inline]
- __refcount_dec_and_test include/linux/refcount.h:315 [inline]
- refcount_dec_and_test include/linux/refcount.h:333 [inline]
- sock_put include/net/sock.h:1988 [inline]
- sco_sock_timeout+0x1b0/0x25c net/bluetooth/sco.c:100
- process_one_work+0x694/0x1204 kernel/workqueue.c:2630
- process_scheduled_works kernel/workqueue.c:2703 [inline]
- worker_thread+0x938/0xef4 kernel/workqueue.c:2784
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-irq event stamp: 29659
-hardirqs last  enabled at (29659): [<ffff80008a719090>] __exit_to_kernel_mode arch/arm64/kernel/entry-common.c:84 [inline]
-hardirqs last  enabled at (29659): [<ffff80008a719090>] exit_to_kernel_mode+0xdc/0x10c arch/arm64/kernel/entry-common.c:94
-hardirqs last disabled at (29658): [<ffff800080021724>] __do_softirq+0x950/0xd54 kernel/softirq.c:569
-softirqs last  enabled at (19646): [<ffff800080021894>] softirq_handle_end kernel/softirq.c:399 [inline]
-softirqs last  enabled at (19646): [<ffff800080021894>] __do_softirq+0xac0/0xd54 kernel/softirq.c:582
-softirqs last disabled at (19597): [<ffff80008002aadc>] ____do_softirq+0x14/0x20 arch/arm64/kernel/irq.c:80
----[ end trace 0000000000000000 ]---
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+>-----Original Message-----
+>From: Haiyang Zhang <haiyangz@microsoft.com>
+>Sent: Thursday, November 16, 2023 4:25 AM
+>To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasa=
+n
+><kys@microsoft.com>; wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
+>davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
+>pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+>ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linu=
+x-
+>hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.o=
+rg;
+>linux-rdma@vger.kernel.org
+>Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
+><paulros@microsoft.com>
+>Subject: RE: [PATCH net-next] net: mana: Assigning IRQ affinity on HT core=
+s
+>
+>
+>
+>> -----Original Message-----
+>> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
+>> Sent: Wednesday, November 15, 2023 8:49 AM
+>> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+>> <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
+>> <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
+>> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
+>> sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
+>> ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
+>> linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+>> kernel@vger.kernel.org; linux-rdma@vger.kernel.org
+>> Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
+>> <paulros@microsoft.com>; Souradeep Chakrabarti
+>> <schakrabarti@linux.microsoft.com>
+>> Subject: [PATCH net-next] net: mana: Assigning IRQ affinity on HT
+>> cores
+>>
+>> Existing MANA design assigns IRQ affinity to every sibling CPUs, which
+>> causes IRQ coalescing and may reduce the network performance with RSS.
+>>
+>> Improve the performance by adhering the configuration for RSS, which
+>> prioritise IRQ affinity on HT cores.
+>>
+>> Signed-off-by: Souradeep Chakrabarti
+>> <schakrabarti@linux.microsoft.com>
+>> ---
+>>  .../net/ethernet/microsoft/mana/gdma_main.c   | 126 ++++++++++++++++-
+>> -
+>>  1 file changed, 117 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>> index 6367de0c2c2e..839be819d46e 100644
+>> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
+>> @@ -1243,13 +1243,115 @@ void mana_gd_free_res_map(struct
+>> gdma_resource *r)
+>>  	r->size =3D 0;
+>>  }
+>>
+>> +static void cpu_mask_set(cpumask_var_t *filter_mask, cpumask_var_t
+>> **filter_mask_list)
+>> +{
+>> +	unsigned int core_count =3D 0, cpu;
+>> +	cpumask_var_t *filter_mask_list_tmp;
+>> +
+>> +	BUG_ON(!filter_mask || !filter_mask_list);
+>> +	filter_mask_list_tmp =3D *filter_mask_list;
+>> +	cpumask_copy(*filter_mask, cpu_online_mask);
+>> +	/* for each core create a cpumask lookup table,
+>> +	 * which stores all the corresponding siblings
+>> +	 */
+>> +	for_each_cpu(cpu, *filter_mask) {
+>> +
+>> 	BUG_ON(!alloc_cpumask_var(&filter_mask_list_tmp[core_count],
+>> GFP_KERNEL));
+>> +		cpumask_or(filter_mask_list_tmp[core_count],
+>> filter_mask_list_tmp[core_count],
+>> +			   topology_sibling_cpumask(cpu));
+>> +		cpumask_andnot(*filter_mask, *filter_mask,
+>> topology_sibling_cpumask(cpu));
+>> +		core_count++;
+>> +	}
+>> +}
+>> +
+>> +static int irq_setup(int *irqs, int nvec) {
+>> +	cpumask_var_t filter_mask;
+>> +	cpumask_var_t *filter_mask_list;
+>> +	unsigned int cpu_first, cpu, irq_start, cores =3D 0;
+>> +	int i, core_count =3D 0, numa_node, cpu_count =3D 0, err =3D 0;
+>> +
+>> +	BUG_ON(!alloc_cpumask_var(&filter_mask, GFP_KERNEL));
+>> +	cpus_read_lock();
+>> +	cpumask_copy(filter_mask, cpu_online_mask);
+>> +	/* count the number of cores
+>> +	 */
+>> +	for_each_cpu(cpu, filter_mask) {
+>> +		cpumask_andnot(filter_mask, filter_mask,
+>> topology_sibling_cpumask(cpu));
+>> +		cores++;
+>> +	}
+>> +	filter_mask_list =3D kcalloc(cores, sizeof(cpumask_var_t), GFP_KERNEL)=
+;
+>> +	if (!filter_mask_list) {
+>> +		err =3D -ENOMEM;
+>> +		goto free_irq;
+>> +	}
+>> +	/* if number of cpus are equal to max_queues per port, then
+>> +	 * one extra interrupt for the hardware channel communication.
+>> +	 */
+>> +	if (nvec - 1 =3D=3D num_online_cpus()) {
+>> +		irq_start =3D 1;
+>> +		cpu_first =3D cpumask_first(cpu_online_mask);
+>> +		irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
+>> +	} else {
+>> +		irq_start =3D 0;
+>> +	}
+>> +	/* reset the core_count and num_node to 0.
+>> +	 */
+>> +	core_count =3D 0;
+>> +	numa_node =3D 0;
+>
+>Please start with gc->numa_node here. I know it's 0 for now. But the host =
+will
+>provide real numa node# close to the device in the future.
+Thank you. Will take care of it in next version.
+>
+>Also, as we discussed, consider using the NUMA distance to select the next=
+ numa
+>node (in a separate patch).
+>
+>> +	cpu_mask_set(&filter_mask, &filter_mask_list);
+>> +	/* for each interrupt find the cpu of a particular
+>> +	 * sibling set and if it belongs to the specific numa
+>> +	 * then assign irq to it and clear the cpu bit from
+>> +	 * the corresponding sibling list from filter_mask_list.
+>> +	 * Increase the cpu_count for that node.
+>> +	 * Once all cpus for a numa node is assigned, then
+>> +	 * move to different numa node and continue the same.
+>> +	 */
+>> +	for (i =3D irq_start; i < nvec; ) {
+>> +		cpu_first =3D cpumask_first(filter_mask_list[core_count]);
+>> +		if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) =3D=3D
+>> numa_node) {
+>> +			irq_set_affinity_and_hint(irqs[i],
+>> cpumask_of(cpu_first));
+>> +			cpumask_clear_cpu(cpu_first,
+>> filter_mask_list[core_count]);
+>> +			cpu_count =3D cpu_count + 1;
+>> +			i =3D i + 1;
+>> +			/* checking if all the cpus are used from the
+>> +			 * particular node.
+>> +			 */
+>> +			if (cpu_count =3D=3D nr_cpus_node(numa_node)) {
+>> +				numa_node =3D numa_node + 1;
+>> +				if (numa_node =3D=3D num_online_nodes()) {
+>> +					cpu_mask_set(&filter_mask,
+>> &filter_mask_list);
+>> +					numa_node =3D 0;
+>Ditto.
+>
+>Other things look good to me.
+>
+>Thanks,
+>- Haiyang
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
