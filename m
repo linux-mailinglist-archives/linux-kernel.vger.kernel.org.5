@@ -2,123 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BDB497EDF5D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E99737EDF5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345121AbjKPLPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:15:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
+        id S1345117AbjKPLQD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:16:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345155AbjKPLPl (ORCPT
+        with ESMTP id S235730AbjKPLP4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:15:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B93B2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:15:30 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A6D8C433C7;
-        Thu, 16 Nov 2023 11:15:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700133330;
-        bh=PYuLWqWIvuzoTh9zLT3pDQjY0fceUqdyLBejuAD2FK4=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=NURLVtFgFJIc4O32AKjINLEyPmXpbOm5VoIoTocP6FVkvw7UyoBnZTT/mJE07X9Yv
-         TPoeK0s9WKGinXgkHWFLsAbxwxUWxDYykWgj8unq854qtBAxvTv0bJkFP9/CceN3s2
-         t49DCPOGtPFbdT+1WjppKc2UGgEpJAHCAv8urdiXOQpH/Pf9rJX0+JvsgmqudV2vzX
-         skfCmSulOrOT+cftBvSVL659PU+UHie3OK8i/FqS5PAOL3rCl9VUtjYW3OUlpBW43i
-         IjOMcH0mQwZ5K5gHyt8Ot1wdUeGD3J9IVaefl11Frb5dnRBQNJ+CLTyOFlD3A2y2ad
-         guoGpF/DnTCpA==
-Message-ID: <a6e39566-f872-4bae-83e4-212e75e705dc@kernel.org>
-Date:   Thu, 16 Nov 2023 12:15:21 +0100
+        Thu, 16 Nov 2023 06:15:56 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ABF0D6A
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:15:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700133353; x=1731669353;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=dFk9C6P6EDoLQ/MU1IPFOE63iJQgYNoIm59o9kn9VFk=;
+  b=Ywg6p4YRf602rjvGXhN2x1sPyJdbAbjiY+rNgoW6fcwt0jHvhQb9jdK2
+   lxKLKFI9TpwWdSvIALXBqoFIBw9nTmDwiqJk/3y+mIH02x+61dnnh8MiI
+   YqxGCIcZjWpOvgHblOFEKOR/mp4NyhIkwUwZovo5+Q1s2wMwdlXqKo2DF
+   72vVIEEHz1edasAg+sXwZ00dxA/zo7eowbCqtPWvl4zRdBdMncJNXlhy/
+   0kFsCEiKG677y2Wm0rYxEHLQ9nQ4Guju/TJCmSthVcf9QIVFo4272E1WQ
+   hvYMfFkL8iYqtWIcIBb+tQNorFEai06tISrIKdGWOPt5dsaTK75eUirpe
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="4195243"
+X-IronPort-AV: E=Sophos;i="6.03,308,1694761200"; 
+   d="scan'208";a="4195243"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 03:15:53 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="1012582924"
+X-IronPort-AV: E=Sophos;i="6.03,308,1694761200"; 
+   d="scan'208";a="1012582924"
+Received: from oroos-mobl1.ger.corp.intel.com (HELO localhost) ([10.252.41.17])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 03:15:48 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Neil Armstrong <neil.armstrong@linaro.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Phong LE <ple@baylibre.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+In-Reply-To: <CAA8EJpokxcO2qXgZ=+f=J+6EhAS_7KkrNJ_oZgk=RMHfv8riog@mail.gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev>
+ <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <50006160-f82b-4ec1-91a4-2ebbd7752e1d@linux.dev>
+ <CAA8EJpokxcO2qXgZ=+f=J+6EhAS_7KkrNJ_oZgk=RMHfv8riog@mail.gmail.com>
+Date:   Thu, 16 Nov 2023 13:15:46 +0200
+Message-ID: <87y1eyosnx.fsf@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v9 14/15] media: imx-asrc: Add memory to memory driver
-To:     Shengjiu Wang <shengjiu.wang@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
-        sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
-        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
-        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
-References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
- <1699595289-25773-15-git-send-email-shengjiu.wang@nxp.com>
- <70821f4c-d0f8-4a35-b664-0823bf430816@kernel.org>
- <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
-Content-Language: en-US
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Autocrypt: addr=krzk@kernel.org; keydata=
- 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 fv0=
-In-Reply-To: <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 09:32, Shengjiu Wang wrote:
-
->>> +MODULE_DESCRIPTION("Freescale ASRC M2M driver");
->>> +MODULE_ALIAS("platform:" M2M_DRV_NAME);
+On Thu, 16 Nov 2023, Dmitry Baryshkov <dmitry.baryshkov@linaro.org> wrote:
+> On Thu, 16 Nov 2023 at 12:29, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
 >>
->> You should not need MODULE_ALIAS() in normal cases. If you need it,
->> usually it means your device ID table is wrong (e.g. misses either
->> entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
->> for incomplete ID table.
-> 
-> 
-> This driver don't have MODULE_DEVICE_TABLE.  it is only registered
-> by platform_device_register_data().
+>> Hi,
+>>
+>>
+>> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
+>> >> @@ -703,14 +704,32 @@ static int it66121_bridge_attach(struct drm_bridge *bridge,
+>> >>                                   enum drm_bridge_attach_flags flags)
+>> >>   {
+>> >>          struct it66121_ctx *ctx = bridge_to_it66121(bridge);
+>> >> +       struct drm_bridge *next_bridge = ctx->next_bridge;
+>> >> +       struct drm_encoder *encoder = bridge->encoder;
+>> >>          int ret;
+>> >>
+>> >> -       if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
+>> >> -               return -EINVAL;
+>> >> +       if (next_bridge) {
+>> >> +               if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
+>> >> +                       WARN_ON(1);
+>> > Why? At least use WARN() instead
+>>
+>> If (next_bridge) is true, it says that the driver *already* known that
+>> it66121 have a next bridges attached. Then it66121 driver should certainly
+>> attach it, no matter what it is. Either a connector or another display bridge.
+>> It also says that this is a DT-based system on such a case. CallingWARN_ON(1) here helps to see(print) which DC driver is doing the wired
+>> things. Ok, I will remove the WARN_ON(1)  on the next version.
+>
+> That's why I pointed you to WARN(). WARN_ON(1) gives no information to
+> the user. WARN() allows you to add a message.
 
-Which is the problem. I thought I made myself clear but if it is not the
-case: drop MODULE_ALIAS.
+Please use drm_WARN* while at it.
 
-Best regards,
-Krzysztof
+BR,
+Jani.
 
+
+-- 
+Jani Nikula, Intel
