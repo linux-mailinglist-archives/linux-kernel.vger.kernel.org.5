@@ -2,148 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AB567ED9EF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 628CB7ED9F1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:19:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344770AbjKPDRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:17:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55092 "EHLO
+        id S1344547AbjKPDTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:19:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235471AbjKPDRv (ORCPT
+        with ESMTP id S235471AbjKPDTa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:17:51 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id A2CBA19E
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:17:46 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.173])
-        by gateway (Coremail) with SMTP id _____8Dxl+jYiVVlW3I6AA--.13712S3;
-        Thu, 16 Nov 2023 11:17:44 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8DxzdzViVVlMqlDAA--.17404S3;
-        Thu, 16 Nov 2023 11:17:43 +0800 (CST)
-Subject: Re: [PATCH] LoongArch: Implement stable timer shutdown interface
-To:     Huacai Chen <chenhuacai@kernel.org>
-Cc:     WANG Xuerui <kernel@xen0n.name>,
-        Peter Zijlstra <peterz@infradead.org>,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-References: <20231114114656.1003841-1-maobibo@loongson.cn>
- <CAAhV-H46vueDp0ffTuD6sO=xWVsbcwVDBzFU7QirE9JwOWd4dg@mail.gmail.com>
-From:   maobibo <maobibo@loongson.cn>
-Message-ID: <aebb1335-6398-07ba-089b-ec74899de6b0@loongson.cn>
-Date:   Thu, 16 Nov 2023 11:17:42 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAAhV-H46vueDp0ffTuD6sO=xWVsbcwVDBzFU7QirE9JwOWd4dg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Wed, 15 Nov 2023 22:19:30 -0500
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05olkn2042.outbound.protection.outlook.com [40.92.91.42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC2C199;
+        Wed, 15 Nov 2023 19:19:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Z9W+jeQbkHyVsB2lgGfYAdO+1fqcEGAqZep5Db8FdtcQDNS8qZYnxYFIo1SpcjT8xTuzB7FgVCtAbyoXdS7xqjQKdEcKDr7pLqkpGnafuq/6IWsTbca3NgeoFNXkqjq1kfzdXsl8Z+sx0DG2mnduCs6f84Lyi9zUScjMPqw28Mis8i2H/wKrAUt1qQaeMUsEWkt5TFsm/LwWHwhmQJTgDYvGsHeEHVBKv1OlWQo6Fy4UfByt9bCnDdV2oW8lFjyCCDtiuHYqPrYTfGJDseVCX3jv/FFijVdjfJUMEc/By7CSoVaTJwUC5iUYcIB/1q8tUQlk0RnfRTSRvInxemWYuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=mpgZioiHFXVOmVOt3m5Jvrrc9VUKdE04J+X25ImEGOc=;
+ b=QTlUvxyoMtl1yM2dm0mESKckDqxYuRKWKsDLMvPFgYf28zXeHoSMyRCYB2bUoutvkAtGWIPktV2FQU3CY8asqIRTlT4zuPIETwQv9KlqKh+QeQGL56ZkbtM3Mi65lAfy8c/8aea1Zzqw35ohkyT/nQk7XInMUvXE+AyKQr8zwtjkhtddZZv0WfjpfHOerIxkwvu966N37kJziA1i6N77kxe0lmwna/KPPI+8+vWJU8SKxuxRPNLrs3VFXBg+ZkZTvcNjc8LCiCE+3pQA3NoRsDYXwUTi2g1re9udwIQY2Ek7tSQNjBw3kIolW3JYlmCTaM2DKshItvwRwW/Nmhn0aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=mpgZioiHFXVOmVOt3m5Jvrrc9VUKdE04J+X25ImEGOc=;
+ b=SkxewIy1rpxNIbm/zhZQOWzBhG1tL7wOcoS5ZVWhMEbvJ3ys+ytIStNR+ofeGxErMNew+ij8VOFXrK1jR3C0L0Vt7kzSGEaV+neWavLpZvlgJUROIms6cI3szKJ5X40I+tp3S78GX3nF7KAYZq3jKUhAyVbb/bd4i+PBl01R/Tpxb/hcFUelADSjVpWEfH6Q7LRmjaSCedvNWerP0pzdx6Mqr3aPzUsvL+/88bb3S6qIxvYeIVBS2gFJaMVcTRBW/vKnXIQ+dBGQZvi4oVcXWo8YOJ0VRgTlagL2VqOsks7aiVw2IJ8teNWiWDrp3kpk1z18sAVK2fB37uM27MiKHw==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS2PR10MB7227.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:609::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Thu, 16 Nov
+ 2023 03:19:25 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
+ 03:19:25 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
+        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH bpf-next 2/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in bind_perm
+Date:   Thu, 16 Nov 2023 08:49:00 +0530
+Message-ID: <GV1PR10MB6563BC7E775BD36D088AC37CE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8DxzdzViVVlMqlDAA--.17404S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxXw4UKw17KF1rZFWrWFWxuFX_yoW5Ar1xpa
-        1DCFnxKr45KwnagFn7tr4kZr90k34jvw43t3srKa48Cr9Iqr1ftF4xtrWqvF45uryFgFWx
-        A3WY9w1DZay7XagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
-        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
-        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE
-        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
-        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
-        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
-        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x02
-        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-        0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1Ek
-        sDUUUUU==
-X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-TMN:  [QXnX9bdXqmjE9YvU8a0s2RgB13x7S5CL]
+X-ClientProxiedBy: JN3P275CA0013.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:70::18)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231116031900.70828-1-yuran.pereira@hotmail.com>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB7227:EE_
+X-MS-Office365-Filtering-Correlation-Id: 13bd8b72-677d-417a-0370-08dbe652d59a
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GvWOd1ojObUSt+UMOWva8cW0SATQ+da7iAIlGKD9I/6f+rPCilT0hRoXyFrofjJVbnKoyfeB031dgC06+jJSDPMBS0xsPeFlvvcvOGaoupz8d4EEjzwEPBYDaED0R3x6FQl70hufJTFgXaTJgox2XgdTWAHGMCRl2NpKYBLb7ulM/dqOrRrC+XtDVheEbp6fjRgYpPewROJr5EAffoLm3oyPHpDq3gPGXqAvB8jPVzjxDNiOmK7mMRkki0GRaEUJPduPHaMLiCR6GSUt4+otgetnL5e79/WFrzCGxu8aR54jazy2ZHB4jDtLviYg8pidF4cJOnLXBBrVtZ5HcTjWUOIsC55LIK2V4YJJ5692JxDu2jnahuEGlBdTEyVFCanTob6SPpOYkShWtWszsGHc9bUf6qweA1j/SkOz9fYtQyHubTqGyTRmuojoepx8KgJmvlDHPkb7QDcUB5cGrxja507xUd2ETLfTvLdZZTUtAhFu1V8aE5NeCiYH1RqvjpDAIYa+NrczwcapCDRKJ89xpRis/Syqi71lArDi8mNudpNlQ0x4P16c2Ip3iymvAhQIAF94FkLeIwhgCQDMQXFKSeJI4ibk4rWYumTzT80FKXwl9SQb2SmO4qopxcsOaTuw
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?EIzjeBLJY60kBntQMvhxCDq1HdrstkKA0KcPo1q7ec79hb9xZtVOnYlf6zJe?=
+ =?us-ascii?Q?71liaoxNNzqGGNoDZi5eJYvWVnEIlgdZkeH4uVeiKnXYE/KqtA10Y/bjtyC/?=
+ =?us-ascii?Q?/ZRyTvFeUiqNh5H9PprGsV6hnFwel5ywuSrmRsA6Gwf1xnCFP4YHTs73lgtL?=
+ =?us-ascii?Q?vILBPlBxdjCPD11eaf9NPvZPRQ8imO4bhXw94IXy2zu2eThdhTBLeBZ1Fy2S?=
+ =?us-ascii?Q?dcHV85U1NgvfsGPQyi8B24MeM+TyDvcRrusutD+/VrOAvCyLww/F7LfpfooY?=
+ =?us-ascii?Q?I1hVt5Dp2V41PCoqfuqBUpZvHw9RaUFlQdJwG/5xJ8SiY1SPz5p9/d3gmimC?=
+ =?us-ascii?Q?MCOkQybxrtRzjGw8osDJMeXn0fveH1Jss2mZN6COog6PizfKWrSDzVbAGOWg?=
+ =?us-ascii?Q?cWJAFMHoPiaC/6ROS3DI3x4wN9X496uM21M/S9IQ2KKZ60ZNWJroypNrUKJU?=
+ =?us-ascii?Q?CEkN2WtM1QC4h+PM1QzKGVGbiXwYPYyyQEEAfAAls/E6y9bdFT60MfhAZEBC?=
+ =?us-ascii?Q?+AL0QCgv18x2iB74rJfvlo+ucUlPn5+IGP3jxM+GhdguggslGRqcYKqwEgp5?=
+ =?us-ascii?Q?h9P4SHS+AhySwHIPAhsmHAYyljfXWjevs4q87JPXYO2SOPcNaA1l/ovDcs/r?=
+ =?us-ascii?Q?o4S3rqtRso2XDjxlyxSzvy8L+GeneEzS6pgmNDk01l0qX3n9dgvFgPsAEI1f?=
+ =?us-ascii?Q?k1998Rpp6SZFWXm/ebIENJijRBpWFVHhoZ8M4Kp9POB9o/Nvg93j7o8KhEvm?=
+ =?us-ascii?Q?BcLoEFM8+jq/CkURCqJwnjRWa83s5QLDVY4GOUHLn0K3AP130x8gbzcysfK7?=
+ =?us-ascii?Q?DVfUVjH4u1ekeybKKoTQvxbJtFclcdARDwacxc+e8CnClbesZJuxIC6gAIlT?=
+ =?us-ascii?Q?GVG3VpNo7ZNcQ6/zVsHEUAElek7MreXNF/1LKd6xdHNWsBMuxNZ68iMZ4ArP?=
+ =?us-ascii?Q?/LB25Z6RInjPtGZsc+kqmu3WO8IMmw7UKZljO8r+bUD2vVmjbXVvBhHNYfva?=
+ =?us-ascii?Q?A8WmbWypCNvmi6PifM9kkKoXUM6azlMemWf17v819DzbmPhgl5MFgJReOtrr?=
+ =?us-ascii?Q?BOqD0/OpQ1vcm27fOcea+lnfDm9c5lE6S3wbGt9FNIXCFba+LUOTxrii6jNi?=
+ =?us-ascii?Q?nICvVqFT69nD2uPIEOOgIjSqsP9Okw17TwHlK6FttO9ICMjMWy8ALY/OESXw?=
+ =?us-ascii?Q?vCCEdNXCBy3AcziR9s2D7A9onctQmf4hqKs5xFU+/7PXUpDeSWWhxOi6hAQ?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 13bd8b72-677d-417a-0370-08dbe652d59a
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 03:19:25.2110
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB7227
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+bind_perm uses the `CHECK` calls even though the use of
+ASSERT_ series of macros is preferred in the bpf selftests.
 
+This patch replaces all `CHECK` calls for equivalent `ASSERT_`
+macro calls.
 
-On 2023/11/16 上午10:50, Huacai Chen wrote:
-> Hi, Bibo,
-> 
-> "stable timer" is Chinglish, use "constant timer" here.
-will do if you insist on, the name is not created by me :(
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/bind_perm.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-> 
-> On Tue, Nov 14, 2023 at 7:49 PM Bibo Mao <maobibo@loongson.cn> wrote:
->>
->> When cpu is hotplug out, cpu is in idle state and function
->> arch_cpu_idle_dead is called. Timer interrupt for this processor should
->> be disabled, else there will be timer interrupt for the dead cpu. Also
->> this prevents vcpu to schedule out during halt-polling flow when system
->> is running in vm mode, since there is pending timer interrupt.
->>
->> This patch adds detailed implementation for timer shutdown interface, so
->> that timer will be disabled when cpu is plug-out.
->>
->> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
->> ---
->>   arch/loongarch/kernel/time.c | 9 ++-------
->>   1 file changed, 2 insertions(+), 7 deletions(-)
->>
->> diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
->> index 3064af94db9c..2920770e30a9 100644
->> --- a/arch/loongarch/kernel/time.c
->> +++ b/arch/loongarch/kernel/time.c
->> @@ -58,7 +58,7 @@ static int constant_set_state_oneshot(struct clock_event_device *evt)
->>          return 0;
->>   }
->>
->> -static int constant_set_state_oneshot_stopped(struct clock_event_device *evt)
->> +static int constant_set_state_shutdown(struct clock_event_device *evt)
->>   {
->>          unsigned long timer_config;
->>
-> Please remove the whole constant_set_state_oneshot_stopped() and move
-> its logic to the below constant_set_state_shutdown().
-will do.
-> 
-> And it is very strange that this "bug" hasn't caused any problems until now.
-Since there is no other hw timer except percpu timer, there will be 
-problem if hw timer is switched, also nobody watches hw behaviors when 
-cpu is plug-out. LTP cpu hotplug test cases just report passed on 
-physical machine.
-
-Regards
-Bibo Mao
-
-> 
-> Huacai
-> 
->> @@ -90,11 +90,6 @@ static int constant_set_state_periodic(struct clock_event_device *evt)
->>          return 0;
->>   }
->>
->> -static int constant_set_state_shutdown(struct clock_event_device *evt)
->> -{
->> -       return 0;
->> -}
->> -
->>   static int constant_timer_next_event(unsigned long delta, struct clock_event_device *evt)
->>   {
->>          unsigned long timer_config;
->> @@ -161,7 +156,7 @@ int constant_clockevent_init(void)
->>          cd->rating = 320;
->>          cd->cpumask = cpumask_of(cpu);
->>          cd->set_state_oneshot = constant_set_state_oneshot;
->> -       cd->set_state_oneshot_stopped = constant_set_state_oneshot_stopped;
->> +       cd->set_state_oneshot_stopped = constant_set_state_shutdown;
->>          cd->set_state_periodic = constant_set_state_periodic;
->>          cd->set_state_shutdown = constant_set_state_shutdown;
->>          cd->set_next_event = constant_timer_next_event;
->>
->> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
->> --
->> 2.39.3
->>
+diff --git a/tools/testing/selftests/bpf/prog_tests/bind_perm.c b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+index a1766a298bb7..f7cd129cb82b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/bind_perm.c
++++ b/tools/testing/selftests/bpf/prog_tests/bind_perm.c
+@@ -9,8 +9,6 @@
+ #include "cap_helpers.h"
+ #include "bind_perm.skel.h"
+ 
+-static int duration;
+-
+ static int create_netns(void)
+ {
+ 	if (!ASSERT_OK(unshare(CLONE_NEWNET), "create netns"))
+@@ -27,7 +25,7 @@ void try_bind(int family, int port, int expected_errno)
+ 	int fd = -1;
+ 
+ 	fd = socket(family, SOCK_STREAM, 0);
+-	if (CHECK(fd < 0, "fd", "errno %d", errno))
++	if (!ASSERT_GE(fd, 0, "socket"))
+ 		goto close_socket;
+ 
+ 	if (family == AF_INET) {
+@@ -60,7 +58,7 @@ void test_bind_perm(void)
+ 		return;
+ 
+ 	cgroup_fd = test__join_cgroup("/bind_perm");
+-	if (CHECK(cgroup_fd < 0, "cg-join", "errno %d", errno))
++	if (!ASSERT_GE(cgroup_fd, 0, "test__join_cgroup"))
+ 		return;
+ 
+ 	skel = bind_perm__open_and_load();
+-- 
+2.25.1
 
