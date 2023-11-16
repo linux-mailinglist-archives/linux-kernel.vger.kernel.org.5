@@ -2,93 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 91ADA7EE600
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:35:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32E97EE606
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:36:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345314AbjKPRfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:35:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50524 "EHLO
+        id S1345324AbjKPRgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:36:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKPRfd (ORCPT
+        with ESMTP id S229464AbjKPRgf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:35:33 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66453181;
-        Thu, 16 Nov 2023 09:35:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EGB0vGjW+NZmH1KV7ZusM44EJIy7WocoQO8gjJ04laQ=; b=hmM7Xeaa9/7wgUcUiyV0v0TOOr
-        q11CzoIpaSMRn3jbe5Ik3K2TqwgoIH54hHbgK3ZwBEnNXgnfs2i3gs1SZ88ub4PKjZY5HdA1RSPbK
-        nOpMy0eEiglW7sOx8q8LKM0oKmRaIG4I5RFWs9hHmddY9/mDh1o0JPDDIZJTe5UMkxwEEdd/rMiRa
-        fqoaTQn3rZUbRhNm4g1yq8ZwFjYovjI5yE7gl4aXI2kLYKQxgSoz5k/UU6Vba1eBr+TnBgoOvc7oF
-        1D9bxFrjyDMA9tsR3PzgEd+gFbrRDqM+PTOPII+lMN5bfl1wzJ8cmQdD7iGuJGw48Kiq4OZ/fvklq
-        6XySaSTw==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r3gH4-0049tr-0z;
-        Thu, 16 Nov 2023 17:35:30 +0000
-Date:   Thu, 16 Nov 2023 09:35:30 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     "Alessandro Carminati (Red Hat)" <alessandro.carminati@gmail.com>
-Cc:     linux-modules@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [RFC PATCH 1/2] Modules: Introduce boot-time module signature
- flexibility
-Message-ID: <ZVZS4hw5dGB4aPz3@bombadil.infradead.org>
-References: <20230914112739.112729-1-alessandro.carminati@gmail.com>
- <20230914112739.112729-2-alessandro.carminati@gmail.com>
+        Thu, 16 Nov 2023 12:36:35 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2357181;
+        Thu, 16 Nov 2023 09:36:31 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D666C433CA;
+        Thu, 16 Nov 2023 17:36:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700156191;
+        bh=f1MamAR5SJ3kDTjLLdjTFc1hoxE9qI+fWDwWO5NMT60=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qi+VGp9KMuy53sSyo9JaYaStSahW4hFHR/Suwj+5r4y4WvPvgyrZInEteXBZcAoJs
+         f/rwFVrvf5FolsF2Hu9V1sUhCzA+Rg9M6AB9UGrsH6D69tVfsgM3uYFuqrmfQD0/B7
+         SEOTQpToXnIpqKBKKAzXOvaNGp3tZR2Poy1ajpotdPx7KXa0u4hmeriCrfiFhQ55TF
+         Pttk1+KPYB56y9H219EQFJFwjDrqGPn7AVC4UzYV6tiPFWc0ytcbf5F46iehDZTyjM
+         7xV3T/EWu/UXvhkyIsc/My0BtSIuagc1/3IpxkAA1Rsj03yFJVJlhi7920zJEEG+AC
+         fb2+zqpfbVp0A==
+Received: by mail-lj1-f181.google.com with SMTP id 38308e7fff4ca-2c5210a1515so14917731fa.0;
+        Thu, 16 Nov 2023 09:36:31 -0800 (PST)
+X-Gm-Message-State: AOJu0YystFm6zEjxmvJs6CRAdRfvWuYBzOUvzfQXFRLbuT5FCPnCx3/P
+        j3xos+2hhZV+LN4fNSSyAjlFHrR8meygV6s7bhE=
+X-Google-Smtp-Source: AGHT+IEGEYSC/DbWsT7Lwa1v58UFG92epJFXYtXet3tbtNwSzwgsxrNS1YZeQy4iAakQ8ia/3Yzb98ViUUY9IRlCU28=
+X-Received: by 2002:a2e:9bd7:0:b0:2c7:4220:56fc with SMTP id
+ w23-20020a2e9bd7000000b002c7422056fcmr7417802ljj.11.1700156189690; Thu, 16
+ Nov 2023 09:36:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230914112739.112729-2-alessandro.carminati@gmail.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20231115095830.20607-1-quic_aiquny@quicinc.com> <20231116172418.GA174808@dev-arch.thelio-3990X>
+In-Reply-To: <20231116172418.GA174808@dev-arch.thelio-3990X>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 17 Nov 2023 03:36:17 +1000
+X-Gmail-Original-Message-ID: <CAMj1kXE4stcFikmxBMY19CR4J0+EpaNW8J=xVyFVY3A7F7BpRQ@mail.gmail.com>
+Message-ID: <CAMj1kXE4stcFikmxBMY19CR4J0+EpaNW8J=xVyFVY3A7F7BpRQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ARM: kprobes: Explicitly reserve r7 for local variables
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Maria Yu <quic_aiquny@quicinc.com>, linux@armlinux.org.uk,
+        mhiramat@kernel.org, kernel@quicinc.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_lijuang@quicinc.com, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Sep 14, 2023 at 11:27:38AM +0000, Alessandro Carminati (Red Hat) wrote:
-> This commit introduces a novel boot argument parameter that provides an
-> advanced level of control over the verification of module signatures
-> during the initial stages of booting. With this enhancement, we gain the
-> capability to postpone the verification of module signatures to after
-> intrd stage is finished.
-> 
-> Given that bootloader-provided artifacts are commonly employed
-> post-verification,
+On Fri, 17 Nov 2023 at 03:24, Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> On Wed, Nov 15, 2023 at 05:58:30PM +0800, Maria Yu wrote:
+> > Registers r7 is removed in clobber list, so compiler may choose r7 for
+> > local variables usage, while r7 will be actually updated by the inline asm
+> > code. This caused the runtime behavior wrong.
+> > While those kind of reserved registers cannot be set to clobber list
+> > because of error like "inline asm clobber list contains reserved
+> > registers".
+> > Explicitly reserve r7 by adding attribute no-omit-frame-pointer for needed
+> > function, then in T32 asm code r7 is used as a frame pointer and is not
+> > available for use as a general-purpose register.
+> > Note that "no-omit-frame-pointer" will make the code size a little bigger
+> > to store the stack frame pointer. So limited to needed functions can have
+> > the less impact than the full source file.
+> >
+> > Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
+> > Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+> > Cc: stable@vger.kernel.org
+>
+> This causes warnings with clang:
+>
+>   arch/arm/probes/kprobes/actions-thumb.c:441:47: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>     441 | static unsigned long __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>         |                                               ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   arch/arm/probes/kprobes/actions-thumb.c:524:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>     524 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   arch/arm/probes/kprobes/actions-thumb.c:560:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>     560 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   arch/arm/probes/kprobes/actions-thumb.c:579:38: warning: unknown attribute 'optimize' ignored [-Wunknown-attributes]
+>     579 | static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>         |                                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>   4 warnings generated.
+>
+> Furthermore, as far as I am aware, the optimize attribute has other issues so
+> its use is discouraged, see commits 080b6f407635 ("bpf: Don't rely on GCC
+> __attribute__((optimize)) to disable GCSE") and a7223f5bfcae ("powerpc: Avoid
+> broken GCC __attribute__((optimize))").
+>
 
-Is such a thing expressed with a kernel config? If so then shouldn't
-this be default for those uses cases?
+Ah yes, apalogies for missing that. I did a test build with Clang but
+I did not spot the errors. So
 
-> Signed-off-by: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
-> ---
->  include/linux/module.h  |  4 +++
->  kernel/module/main.c    | 14 ++++++-----
->  kernel/module/signing.c | 56 +++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 68 insertions(+), 6 deletions(-)
-> 
-> diff --git a/include/linux/module.h b/include/linux/module.h
-> index a98e188cf37b..9899aeac43b0 100644
-> --- a/include/linux/module.h
-> +++ b/include/linux/module.h
-> @@ -34,6 +34,10 @@
->  
->  #define MODULE_NAME_LEN MAX_PARAM_PREFIX_LEN
->  
-> +#ifdef CONFIG_MODULE_SIG
-> +extern int module_sig_check_wait;
-> +#endif
+Unreviewed-by: ....
 
-Please add under is_module_sig_enforced. That's one new line Vs 3 new ones.
-
-I see the code which skips module signature verification and the knobs
-but I don't see the code which complete the promise to do the actual
-signature verification post initrd / initramfs state. What gives?
-
-  Luis
+Maria, please use the Makefile based per-file CFLAGS override that I
+suggested before. There is really no reason to make this per-function.
