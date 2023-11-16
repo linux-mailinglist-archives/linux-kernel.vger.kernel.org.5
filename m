@@ -2,158 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8DAD7EE5E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:25:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9297EE5E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:27:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345297AbjKPRZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:25:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
+        id S229502AbjKPR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:27:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229468AbjKPRZX (ORCPT
+        with ESMTP id S229468AbjKPR1Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:25:23 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D30FD52
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:25:19 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9d10972e63eso158444366b.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:25:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700155517; x=1700760317; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U1iPlcZ3/XGhU6rtBc5tXppbT+kLnQ6bw9pSEmXipB0=;
-        b=PQ9PsVnUZJLJecwswG0j3ImmVGuDiQhL23IkvIByC933XF35kvYMPOps84uSw0i81A
-         ZiW5phGiL+jaYK/eGOPZVWP9MCe72T8WY27sVa+OWm8uxCfM1WGcY5i7ibEoDMtP65hW
-         3PUESA8eTCwbLiUchzeuWnkviX8wNepxZNy88=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700155517; x=1700760317;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U1iPlcZ3/XGhU6rtBc5tXppbT+kLnQ6bw9pSEmXipB0=;
-        b=cogwH1h7f3GQcQhj/jAfE2KRy1Xqc8zU8WivURE94xNWeXGNj3cV9/KoNXQBQEPEuP
-         e9+U78u5uml04ZSfXuvAhTHK1DPHMlfK2v3YLDoHFBBpEXKfEzjTZbzF9bYeIJ5wg0ej
-         b5jbuta/rOM4c2JZ5l7lWNtnmBhxib9r6KUCf27mQkHtJePMceD+hm3irRHPFJ1jm35k
-         uTjnxKtX1cc/iXkr/0PmrDIkvhtkZbXcioFD3QLjrnhQT5ZqgWS6PF+Mq8la18LkkGQx
-         uHI4mG2me19atP4oRhwOuFrl6xIsB4TNmBhqjKcO43N8wISWqhTSdywqbaG1Vevb7Lyc
-         /rcw==
-X-Gm-Message-State: AOJu0YwuyF40nqRgV8MWeXaHH0NmM4/ZJQw37LUPq/A1J9ef57eLH+2R
-        FnjOU515XFvz2DmrsAraLvrwlg1nRbqEEZt8K2xb/MbK
-X-Google-Smtp-Source: AGHT+IGtlasRXQ19yP32HPG02a04YIhaHUgLS9Tq8twXaL6eKhmXYXsdsfEsg0Tcih3/4+R4An4l2w==
-X-Received: by 2002:a17:906:6a1f:b0:9bd:d1e8:57f1 with SMTP id qw31-20020a1709066a1f00b009bdd1e857f1mr16389089ejc.50.1700155517623;
-        Thu, 16 Nov 2023 09:25:17 -0800 (PST)
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com. [209.85.208.47])
-        by smtp.gmail.com with ESMTPSA id b22-20020a170906d11600b009929ab17be0sm8668600ejz.162.2023.11.16.09.25.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 09:25:16 -0800 (PST)
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-52bd9ddb741so1557453a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:25:16 -0800 (PST)
-X-Received: by 2002:aa7:c993:0:b0:53d:a17a:7576 with SMTP id
- c19-20020aa7c993000000b0053da17a7576mr13094274edt.8.1700155516281; Thu, 16
- Nov 2023 09:25:16 -0800 (PST)
+        Thu, 16 Nov 2023 12:27:24 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A08D31A5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:27:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 28866C433C7;
+        Thu, 16 Nov 2023 17:27:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700155641;
+        bh=6xJVl3tG8xQiDfF9Mn97Ju4vyrnOY0j6sMIa/iZ/d+E=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pONu6yLm5qdaZO8+GU4png8O5H36f4+NhH5nz04l21e13PgcQTFnlQlvKTiWx1hOF
+         qiNhPVjA8KYroUkBopaakSavdkjh32xMPmVHYQyWUyQ3MbBz4V8OnqwbBioXZ6Qs6H
+         Xrr5mVHI5oxpQmrV6dHDTRyFQ41Sa3XpyBVT1we1kZSnuJLxUsM+0Y+WnOsOcwdpX7
+         ZQpDKGWCdIvxskkYRlkVvhEbggbLTWs3aZE01M9ZGmluWZPNVOQViZ/QzJpIbtUC8d
+         KmcOzMMVlUbMDnlccLjFSXJt+HvnrttVR+3tSsHkAE61REv5V8qtBdMHa3CId5qwsn
+         z6EWmp09HDw8g==
+Date:   Thu, 16 Nov 2023 17:27:17 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+Cc:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ley Foon Tan <leyfoon.tan@starfivetech.com>,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] dt-bindings: perf: starfive: Add JH8100 StarLink
+ PMU
+Message-ID: <20231116-paycheck-upstairs-8147b6137f7a@squawk>
+References: <20231116162330.1144983-1-jisheng.teoh@starfivetech.com>
+ <20231116162330.1144983-3-jisheng.teoh@starfivetech.com>
 MIME-Version: 1.0
-References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <4097023.1700084620@warthog.procyon.org.uk> <CAHk-=wgR3Mw2-8k2O3S10T-f4oz8FNfg7aziLU_6pbx0qowxew@mail.gmail.com>
- <42895.1700089191@warthog.procyon.org.uk> <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
- <4cfd4808cc694f169aa8b83547ebc74d@AcuMS.aculab.com>
-In-Reply-To: <4cfd4808cc694f169aa8b83547ebc74d@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 16 Nov 2023 12:24:58 -0500
-X-Gmail-Original-Message-ID: <CAHk-=whuKOMn73oinrTQCcNwhXNOw5eksSBiCSzxycZ--asp4Q@mail.gmail.com>
-Message-ID: <CAHk-=whuKOMn73oinrTQCcNwhXNOw5eksSBiCSzxycZ--asp4Q@mail.gmail.com>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-To:     David Laight <David.Laight@aculab.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "fengwei.yin@intel.com" <fengwei.yin@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="1k9In4pZgZpTLh97"
+Content-Disposition: inline
+In-Reply-To: <20231116162330.1144983-3-jisheng.teoh@starfivetech.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 at 11:55, David Laight <David.Laight@aculab.com> wrote:
->
-> I presume lack of coffee is responsible for the s/movs/stos/ :-)
 
-Yes.
+--1k9In4pZgZpTLh97
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> How much difference does FSRM actually make?
-> Especially when compared to the cost of a function call (even
-> without the horrid return thunk).
+On Fri, Nov 17, 2023 at 12:23:30AM +0800, Ji Sheng Teoh wrote:
+> Add device tree binding for StarFive's JH8100 StarLink PMU (Performance
+> Monitor Unit).
+>=20
+> Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
 
-It can be a big deal.  The subject line here is an example. On that
-machine, using the call to 'memcpy_orig' clearly performs *noticeably*
-better. So that 16% regression was"fast  apparently at least partly
-because of
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Generally, there's no need to submit new versions so quickly - you can
+wait for feedback on multiple patches before resubmitting the entire
+series.
 
-  -11.0  perf-profile.self.cycles-pp.memcpy_orig
-  +14.7  perf-profile.self.cycles-pp.copy_page_from_iter_atomic
+Cheers,
+Conor.
 
-where that inlined copy (that used 'rep movsq' and other things around
-it) was noticeably worse than just calling memcpy_orig that does a
-basic unrolled loop.
+> ---
+>  .../perf/starfive,jh8100-starlink-pmu.yaml    | 46 +++++++++++++++++++
+>  1 file changed, 46 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/perf/starfive,jh810=
+0-starlink-pmu.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/perf/starfive,jh8100-starl=
+ink-pmu.yaml b/Documentation/devicetree/bindings/perf/starfive,jh8100-starl=
+ink-pmu.yaml
+> new file mode 100644
+> index 000000000000..915c6b814026
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/perf/starfive,jh8100-starlink-pmu=
+=2Eyaml
+> @@ -0,0 +1,46 @@
+> +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/perf/starfive,jh8100-starlink-pmu.yam=
+l#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: StarFive JH8100 StarLink PMU
+> +
+> +maintainers:
+> +  - Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> +
+> +description:
+> +  StarFive's JH8100 StarLink PMU integrates one or more CPU cores with a
+> +  shared L3 memory system. The PMU support overflow interrupt, up to
+> +  16 programmable 64bit event counters, and an independent 64bit cycle
+> +  counter. StarFive's JH8100 StarLink PMU is accessed via MMIO.
+> +
+> +properties:
+> +  compatible:
+> +    const: starfive,jh8100-starlink-pmu
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    soc {
+> +        #address-cells =3D <2>;
+> +        #size-cells =3D <2>;
+> +
+> +        pmu@12900000 {
+> +            compatible =3D "starfive,jh8100-starlink-pmu";
+> +            reg =3D <0x0 0x12900000 0x0 0x10000>;
+> +            interrupts =3D <34>;
+> +        };
+> +    };
+> --=20
+> 2.25.1
+>=20
 
-Now, *why* it matters a lot is unclear. Some machines literally have
-the "fast rep string" code disabled, and then "rep movsb" is just
-horrendous. That's arguably a machine setup issue, but people have
-been known to do those things because of problems (most recently
-"reptar").
+--1k9In4pZgZpTLh97
+Content-Type: application/pgp-signature; name="signature.asc"
 
-And in most older microarchitectures it's not just the cycles in the
-repat thing, it is also a pipeline stall and I think it's also a
-(partial? full?) barrier for OoO execution. That pipeline stall was
-most noticeable on P4, but it's most definitely there on other cores
-too.
+-----BEGIN PGP SIGNATURE-----
 
-And the OoO execution batter can mean that it *benchmarks* fairly well
-when you just do "rep movs" in a loop to test, but then if you have
-code *around* it, it causes problems for the instructions around it.
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVZQ8AAKCRB4tDGHoIJi
+0sE1AQDvEwsxkZxMkpery+sEwRS4z7zuzauGuq2WZ91p2BfANAEAjMPUNitE5iR8
+jkrlUg9xEeQy0zoLnvqBgq/cncFHVgY=
+=Td7w
+-----END PGP SIGNATURE-----
 
-I have this memory from my "push for -Os" (which is from over a decade
-ago, to take my memory with a pinch of salt) of seeing "rep movsb"
-followed by a load of the result causing a horrid stall on the load.
-
-A regular load-store loop will have the store data forwarded to any
-subsequent load, but "rep movs" might not do that and if it works on a
-cacheline level you might lose out on those kinds of things.
-
-Don't get me wrong - I really like the rep string instructions, and
-while they have issues I'd *love* for CPU's to basically do "memcpy"
-and "memset" without any library call overhead. The security
-mitigations have made indirect calls much worse, but they have made
-regular function call overhead worse too (and there's the I$ footprint
-thing etc etc).
-
-So I like "rep movs" a lot when it works well, but it most definitely
-does not work well everywhere.
-
-Of course, while the kernel test robot doesn't seem to like the
-inlined "rep movsq", clearly the machine David is on absolutely
-*hates* the call to memcpy_orig. Possibly due to mitigation overhead.
-
-The problem with code generation at this level is that you win some,
-you lose some. You can seldom make everybody happy.
-
-                 Linus
+--1k9In4pZgZpTLh97--
