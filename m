@@ -2,97 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E42117EE52B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8F97EE52E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:30:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230508AbjKPQ3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:29:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54984 "EHLO
+        id S231163AbjKPQaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:30:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjKPQ3D (ORCPT
+        with ESMTP id S229841AbjKPQaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:29:03 -0500
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A5F3AD;
-        Thu, 16 Nov 2023 08:28:58 -0800 (PST)
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1ea82246069so482665fac.3;
-        Thu, 16 Nov 2023 08:28:58 -0800 (PST)
+        Thu, 16 Nov 2023 11:30:08 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7B6E189
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:30:04 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id 5b1f17b1804b1-408c6ec1fd1so71565e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:30:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700152203; x=1700757003; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=F38ipVUNvi48KLUDF7UtMFc73Zu13fPzsb7BsE5kJSc=;
+        b=e//oMVnhugdxZVRTiLqPYA3eLopxTxbjUr9MetKr0aqj4vesYAxgpODZf5PWm/2gtl
+         eb0ZN1YTDM1/2/DnwYayPSn+qiLJTSAB+JYEGBy5IZ67940Ohb+lG1bkusSs+SzUi826
+         jbZFxK/atYbzkLP4yAsHUUJB1fBoLIyxYD4urkUbZt8X4my6ZE72b9qCQEqwVZUhe+h7
+         Afx0zlQcAoWwvHpcvXtIOld/nuEJySji/8oUBE3k5mpEWfymBT3eIByofGgddzXJ/xz8
+         Nd9MGpP4p5T+0cbwXQ/DPIslB1obr7TeRd9ehk+g062m9jVlwUfWe79u6i9CIpp4EZt5
+         jNTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700152138; x=1700756938;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=SHpsolomr1O8IoNZNmWuKJghrcMhtNlGZuOKvxu4Hyg=;
-        b=rAPReS48rdOynBf8fZhqE/qyTywjD1L+pbSHRe0OssTTniIOmVafVxA5uvW+6qUFqv
-         aGnNH3afUMy3hfRnpcqgkCRZk8VMaHpmDmb1v1whtA3pp9adiv3HmRfSTYhUzRDn/NrB
-         +No9dhTTbtXmr3moQWOUiVS54B+omnb+Dfy9vdrIkE3bbksL+UyCW3R4nS/LbAO2lZWr
-         jhj/XpvMALMqgqbfQwr1y/wUtElRaLSYNxlA+HG2pcn31qZ3VvCpA8xqeZFu9INzDJU8
-         Ii/HCBPN0rP+vwJ8rqTFo8VpWlMT7jZGbLHaA7aDyECvHmCbFdMIYwjP1ks+iVbSmdzV
-         2yFQ==
-X-Gm-Message-State: AOJu0Yx7QbGIFAIelyRvsLgwdpOE+2tAve+Ycpj3JABysEJSUBaAcpkR
-        FeJ8v+Ierj3ulNv/8FALLw==
-X-Google-Smtp-Source: AGHT+IEN7OCfu+AaT2L23F6tUrWC+9ztcQ5rH5Mxyh/0SpCy8jBoSr8cd13j15tMtuSmOolw2nIBzQ==
-X-Received: by 2002:a05:6870:6c05:b0:1f0:6931:e301 with SMTP id na5-20020a0568706c0500b001f06931e301mr21055183oab.0.1700152137858;
-        Thu, 16 Nov 2023 08:28:57 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id bp9-20020a056871280900b001eb79fedbb1sm2156514oac.17.2023.11.16.08.28.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 08:28:57 -0800 (PST)
-Received: (nullmailer pid 2438161 invoked by uid 1000);
-        Thu, 16 Nov 2023 16:28:55 -0000
-Date:   Thu, 16 Nov 2023 10:28:55 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Inki Dae <inki.dae@samsung.com>,
-        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] dt-bindings: gpu: samsung: constrain clocks in
- top-level properties
-Message-ID: <20231116162855.GA2435337-robh@kernel.org>
-References: <20231112184403.3449-1-krzysztof.kozlowski@linaro.org>
- <20231112184403.3449-3-krzysztof.kozlowski@linaro.org>
- <20231113-sultry-cold-d63dd9f015d9@squawk>
+        d=1e100.net; s=20230601; t=1700152203; x=1700757003;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F38ipVUNvi48KLUDF7UtMFc73Zu13fPzsb7BsE5kJSc=;
+        b=Fq6C6HgozfiE6Pg6FDngVUbdAR3fRm1RfZS+n/dOeB6c76dbnTiOmm79yXJasf3fkY
+         WWOLaNqMi//xBDT4jzniX2MXam2231fIp7pEDhRouwNSh+pP9ndNzNtQqv40izc79nj9
+         YnBbDpXdW4aHT5/dKXVunzFgh7tQL9eoR5Y0oR8Zj26E45PilSQ9Xpl4gJLGOaIQHJTs
+         Me57vWaykvDpl/IEIErL7LX6xOjNEGuLr6zvH1gzVNpewKx+HxQg4uuApCvqnm09R+xU
+         W+1eJFqsOtHJPTK339D9vhT/vzgiS9D6xE5nDlxwvHfmwa3xxWOzl222Eakw3mAcKUwb
+         eqaw==
+X-Gm-Message-State: AOJu0YyAh29+mrhSUGPBRENgcVT4nGjo/JfPxRxZM2/RXEusf6XxMwy5
+        XPtZU+1MwI+7Joj/u5wLx+kMSQHTmudgyjEgTt72nA==
+X-Google-Smtp-Source: AGHT+IHTSAO3ZZWQEDfwlIxcr2RQHkWHxU1lY0UMFAqrwEicgTwTY4mkmAJXdjESEXa6UsOxY2NYQCZ4aKF8v3hJKeM=
+X-Received: by 2002:a05:600c:3f8b:b0:3f4:fb7:48d4 with SMTP id
+ fs11-20020a05600c3f8b00b003f40fb748d4mr142802wmb.3.1700152203066; Thu, 16 Nov
+ 2023 08:30:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231113-sultry-cold-d63dd9f015d9@squawk>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+References: <20231115162054.2896748-1-timvp@chromium.org>
+In-Reply-To: <20231115162054.2896748-1-timvp@chromium.org>
+From:   Mark Hasemeyer <markhas@google.com>
+Date:   Thu, 16 Nov 2023 09:29:51 -0700
+Message-ID: <CAP0ea-s2QwQhKpu81b+n5Fcq7dscbwTxoFf2tpV926RXw3ca1g@mail.gmail.com>
+Subject: Re: [PATCH] cgroup_freezer: cgroup_freezing: Check if not frozen
+To:     Tim Van Patten <timvp@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Tim Van Patten <timvp@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 01:51:30PM +0000, Conor Dooley wrote:
-> On Sun, Nov 12, 2023 at 07:44:01PM +0100, Krzysztof Kozlowski wrote:
-> > When number of clock varies between variants, the Devicetree bindings
-> > coding convention expects to have widest constraints in top-level
-> > definition of the properties and narrow them in allOf:if:then block.
-> > 
-> > This is more readable and sometimes allows to spot some errors in the
-> > bindings.
-> > 
-> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> 
-> Åcked-by: Conor Dooley <conor.dooley@microchip.com>
-
-  ^
-
-Not an 'A'. I only caught this because I go thru everything 
-Acked/Reviewed-by first and this one was missed.
-
-Rob
+>
+> From: Tim Van Patten <timvp@google.com>
+>
+> __thaw_task() was recently updated to warn if the task being thawed was
+> part of a freezer cgroup that is still currently freezing:
+>
+>         void __thaw_task(struct task_struct *p)
+>         {
+>         ...
+>                 if (WARN_ON_ONCE(freezing(p)))
+>                         goto unlock;
+>
+> This has exposed a bug in cgroup1 freezing where when CGROUP_FROZEN is
+> asserted, the CGROUP_FREEZING bits are not also cleared at the same
+> time. Meaning, when a cgroup is marked FROZEN it continues to be marked
+> FREEZING as well. This causes the WARNING to trigger, because
+> cgroup_freezing() thinks the cgroup is still freezing.
+>
+> There are two ways to fix this:
+>
+> 1. Whenever FROZEN is set, clear FREEZING for the cgroup and all
+> children cgroups.
+> 2. Update cgroup_freezing() to also verify that FROZEN is not set.
+>
+> This patch implements option (2), since it's smaller and more
+> straightforward.
+>
+> Signed-off-by: Tim Van Patten <timvp@google.com>
+> ---
+>
+>  kernel/cgroup/legacy_freezer.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
+> index 122dacb3a443..66d1708042a7 100644
+> --- a/kernel/cgroup/legacy_freezer.c
+> +++ b/kernel/cgroup/legacy_freezer.c
+> @@ -66,9 +66,15 @@ static struct freezer *parent_freezer(struct freezer *freezer)
+>  bool cgroup_freezing(struct task_struct *task)
+>  {
+>         bool ret;
+> +       unsigned int state;
+>
+>         rcu_read_lock();
+> -       ret = task_freezer(task)->state & CGROUP_FREEZING;
+> +       /* Check if the cgroup is still FREEZING, but not FROZEN. The extra
+> +        * !FROZEN check is required, because the FREEZING bit is not cleared
+> +        * when the state FROZEN is reached.
+> +        */
+> +       state = task_freezer(task)->state;
+> +       ret = (state & CGROUP_FREEZING) && !(state & CGROUP_FROZEN);
+>         rcu_read_unlock();
+>
+>         return ret;
+> --
+Tested-by: Mark Hasemeyer <markhas@chromium.org>
