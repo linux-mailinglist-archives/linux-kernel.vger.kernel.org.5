@@ -2,127 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A12F7EE703
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DEB97EE6FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345464AbjKPSqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55008 "EHLO
+        id S1345467AbjKPSqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:46:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229448AbjKPSqt (ORCPT
+        with ESMTP id S229841AbjKPSqW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:46:49 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD874D4B
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:45 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id d75a77b69052e-4219f89ee21so6355011cf.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:45 -0800 (PST)
+        Thu, 16 Nov 2023 13:46:22 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03663D4E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:18 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e44c7941so665180b6e.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek.ca; s=google; t=1700160405; x=1700765205; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=If/44f1KPyVE2d2iqlt11gTcl1EXO2kaaJZBfwh5YxI=;
-        b=YKnoJTwWuoErDwGyNtj03dwhKkhdBux3KS6L8wRcNoDxWyMYs7u/4uOC2SkaFliGVB
-         9azwrgMmXVc6DnUfOVYn1nUuM2HiB5B0f7ioZloLqc5f9hLPrhZ8EbULvoou5bE9UCvQ
-         c3M3d5gBZL72swIsGsEUxfsyQhmIKQY6yJKjCdkN8a/Ziss2Nkfe3Hg7e+zuUGjwMZEM
-         yZhRGFE1Cxex8vvYi0+l23UcyC4R/NtObdKkKtjH3NmC9Loj7ILIQj7OjagCvkqSZcRc
-         OHdS10Of/jcECJGmzQpazM4bHDPERKgCfsYj5+hEHoziVgJcscSel598xwSWF+qkqXVa
-         7Bjw==
+        d=paul-moore.com; s=google; t=1700160377; x=1700765177; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=H+G3Thi9QyaCj6G+9c//7y8tpV11xzrqy7tArsUAiXA=;
+        b=Zw1VCBY1r+zGu9M6JFNK6NZm9cwJTPF306Ly0oXrhXW8WotYpjix2J7T/hfgR5Ogt5
+         V9ofn7co3oYRzpIqPTSfQouAdMhKSCGwa8uR/BIQtNCvlbNQdZtqHDOy6erM839pHSfI
+         7NumeX0z1vC8zMSIWr00Jgf06SgzWx4g3vuWhdqhRZQ//tQCHIWuJKmvwQCsOe7LYE3G
+         yWYGekCQJDMUf8b0hkAPiHOH8h+ue6197JJqnagxlZpx2pzv09hx2tDW7agQV5R8olAg
+         viAVvXuuyqmbbG2rY1NDaTlW7P1lqtUo+mmWVKMQNitNFBj2JHyd3A4mtAYgkSXbs79E
+         8d/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700160405; x=1700765205;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:from:references:cc:to:subject
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=If/44f1KPyVE2d2iqlt11gTcl1EXO2kaaJZBfwh5YxI=;
-        b=IZzZ5abchMfm0r/MbZFf8ZLnWGEwLi5ji597H1DsW+MTA1kWv0856atoVKyHKpP+Qx
-         Yg+yQeoELkdCIIeB2JbuAIC5ptyT5dPSQrczJiumwZ9lsKD6syzoyPbQcL2k9q4D9Bnj
-         IpHUj0+5j+wfsxmqf3ZrNW+J6W5wxZ6GrDPxD9B2d43W1qePLRiKaOs/+uJ1X0S0ylFR
-         t3EpQZ1R2af8WXRhqGs1ieJBCV0suGqU550rS2IS1hPrsexGmyLr7nj4xjDPBauu380V
-         ZRI8AEPT/YPyh9JhfBBfbf9NY6OcD5kq4aS940Swd9VP9GIl+QEcGSqRuP9fnUJxmFRQ
-         mEXQ==
-X-Gm-Message-State: AOJu0YwduhE87WwoyTo3t38Jz+dt93Q6WRFHTSmzEelREp+fyOxVUy+W
-        lZWYjjBM0uR0GW9M0L8I8+R64yE0wiQZeOfGVm8=
-X-Google-Smtp-Source: AGHT+IFQlwjNqtRd3lxS5p0T5Vg8UQ+JyMTZejmIFz8gVnKZabprGWmddPa0pf0JYS0omO1Kk+ALrQ==
-X-Received: by 2002:ac8:7f14:0:b0:419:6954:3ba2 with SMTP id f20-20020ac87f14000000b0041969543ba2mr11124161qtk.43.1700160404914;
-        Thu, 16 Nov 2023 10:46:44 -0800 (PST)
-Received: from [192.168.0.189] (modemcable125.110-19-135.mc.videotron.ca. [135.19.110.125])
-        by smtp.gmail.com with ESMTPSA id w19-20020ac843d3000000b0041991642c62sm4493571qtn.73.2023.11.16.10.46.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 10:46:44 -0800 (PST)
-Subject: Re: [PATCH v2 4/6] drm/msm/dsi: add a comment to explain pkt_per_line
- encoding
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Jiasheng Jiang <jiasheng@iscas.ac.cn>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231114225857.19702-1-jonathan@marek.ca>
- <20231114225857.19702-5-jonathan@marek.ca>
- <CAA8EJppg=pYh73ncHBCO6Ddv9gG7+WNnpwLYGEv6xEu_3MRNWw@mail.gmail.com>
-From:   Jonathan Marek <jonathan@marek.ca>
-Message-ID: <ebec534a-4c72-7d33-4c18-4e0b43338568@marek.ca>
-Date:   Thu, 16 Nov 2023 13:45:47 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        d=1e100.net; s=20230601; t=1700160377; x=1700765177;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=H+G3Thi9QyaCj6G+9c//7y8tpV11xzrqy7tArsUAiXA=;
+        b=f/HntmWGhbHGGviGSwqDhhzzwCvK9RY7C4jhBLXMLvv0soiov12znwy3DDDF6kMZA6
+         rmOUuPGOfVK7uxBHBlSxhDCZx7E/hu2ILno12exTM/xF6FKXM34fz/ljtIi7RYu2DI/R
+         aD21E9dgAUG3KQw8f1Udij0QvM2nmUskR894q+Uk9PIWFS8xm6imDkttokC+yvcIb9E/
+         XoKpmQiz2/micjf3A1DZxHA+pSkvoau47Hm2g8Q3s6uys1URcTyPdPSOOBZ3KVqnMyRU
+         Us/EyFr1e3/e74ehhWmluk97O7oXu254lGr9zwo5mNtG4p0VTKHg9gzETusa8ViNJcF6
+         b8JQ==
+X-Gm-Message-State: AOJu0YwELQDKCdkldzld8jcXPJWnpOS+JwU6iDIRO/rZp0a0yLgICrvO
+        Ehq0kdrHomc7tXzPsTNbtsMK6Ig/eRVydPh6Wl+d
+X-Google-Smtp-Source: AGHT+IGAfgdZtmxubZhWLgb4REHHB7a+iMS46HjHd0YyX0scqg/dVHmKFiBP9iP4hjqFVyXuUq7chZhRosvMyhNi/Qo=
+X-Received: by 2002:a05:6358:52ce:b0:16b:c486:c315 with SMTP id
+ z14-20020a05635852ce00b0016bc486c315mr12386060rwz.3.1700160377054; Thu, 16
+ Nov 2023 10:46:17 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAA8EJppg=pYh73ncHBCO6Ddv9gG7+WNnpwLYGEv6xEu_3MRNWw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231107134012.682009-11-roberto.sassu@huaweicloud.com>
+ <231ff26ec85f437261753faf03b384e6.paul@paul-moore.com> <b0f6ece6579a5016243cca5c313d1a58cae6eff2.camel@huaweicloud.com>
+In-Reply-To: <b0f6ece6579a5016243cca5c313d1a58cae6eff2.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 16 Nov 2023 13:46:06 -0500
+Message-ID: <CAHC9VhSkomRmz9OQGaQ=4Ni=B+UEO=SLUtDtv7X_kbTSam=h=w@mail.gmail.com>
+Subject: Re: [PATCH v5 10/23] security: Introduce inode_post_setattr hook
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 2:38 AM, Dmitry Baryshkov wrote:
-> On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
->>
->> Make it clear why the pkt_per_line value is being "divided by 2".
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/gpu/drm/msm/dsi/dsi_host.c | 2 ++
->>   1 file changed, 2 insertions(+)
->>
->> diff --git a/drivers/gpu/drm/msm/dsi/dsi_host.c b/drivers/gpu/drm/msm/dsi/dsi_host.c
->> index 66f198e21a7e..842765063b1b 100644
->> --- a/drivers/gpu/drm/msm/dsi/dsi_host.c
->> +++ b/drivers/gpu/drm/msm/dsi/dsi_host.c
->> @@ -877,6 +877,8 @@ static void dsi_update_dsc_timing(struct msm_dsi_host *msm_host, bool is_cmd_mod
->>          /* DSI_VIDEO_COMPRESSION_MODE & DSI_COMMAND_COMPRESSION_MODE
->>           * registers have similar offsets, so for below common code use
->>           * DSI_VIDEO_COMPRESSION_MODE_XXXX for setting bits
->> +        *
->> +        * pkt_per_line is log2 encoded, >>1 works for supported values (1,2,4)
->>           */
->>          reg |= DSI_VIDEO_COMPRESSION_MODE_CTRL_PKT_PER_LINE(pkt_per_line >> 1);
-> 
-> Should we switch to ffs() or fls() instead?
-> 
+On Thu, Nov 16, 2023 at 4:44=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
+> > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > >
+> > > In preparation for moving IMA and EVM to the LSM infrastructure, intr=
+oduce
+> > > the inode_post_setattr hook.
+> > >
+> > > At inode_setattr hook, EVM verifies the file's existing HMAC value. A=
+t
+> > > inode_post_setattr, EVM re-calculates the file's HMAC based on the mo=
+dified
+> > > file attributes and other file metadata.
+> > >
+> > > Other LSMs could similarly take some action after successful file att=
+ribute
+> > > change.
+> > >
+> > > The new hook cannot return an error and cannot cause the operation to=
+ be
+> > > reverted.
+> > >
+> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > > ---
+> > >  fs/attr.c                     |  1 +
+> > >  include/linux/lsm_hook_defs.h |  2 ++
+> > >  include/linux/security.h      |  7 +++++++
+> > >  security/security.c           | 16 ++++++++++++++++
+> > >  4 files changed, 26 insertions(+)
+> >
+> > ...
+> >
+> > > diff --git a/security/security.c b/security/security.c
+> > > index 7935d11d58b5..ce3bc7642e18 100644
+> > > --- a/security/security.c
+> > > +++ b/security/security.c
+> > > @@ -2222,6 +2222,22 @@ int security_inode_setattr(struct mnt_idmap *i=
+dmap,
+> > >  }
+> > >  EXPORT_SYMBOL_GPL(security_inode_setattr);
+> > >
+> > > +/**
+> > > + * security_inode_post_setattr() - Update the inode after a setattr =
+operation
+> > > + * @idmap: idmap of the mount
+> > > + * @dentry: file
+> > > + * @ia_valid: file attributes set
+> > > + *
+> > > + * Update inode security field after successful setting file attribu=
+tes.
+> > > + */
+> > > +void security_inode_post_setattr(struct mnt_idmap *idmap, struct den=
+try *dentry,
+> > > +                            int ia_valid)
+> > > +{
+> > > +   if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> > > +           return;
+> >
+> > I may be missing it, but I don't see the S_PRIVATE flag check in the
+> > existing IMA or EVM hooks so I'm curious as to why it is added here?
+> > Please don't misunderstand me, I think it makes sense to return early
+> > on private dentrys/inodes, but why aren't we doing that now?
+>
+> My first motivation was that it is in the pre hooks, so it should be in
+> the post hook as well.
+>
+> Thinking more about it, suppose that the post don't have the check,
+> private inodes would gain an HMAC without checking the validity of the
+> current HMAC first (done in the pre hooks), which would be even worse.
+>
+> So, my idea about this is that at least we are consistent.
+>
+> If IMA and EVM should look at private inodes is a different question,
+> which would require a discussion.
 
-Just a ffs() on its own can be confusing as well (without the 
-information that only powers of two are possible), I think like this is 
-better.
+As I said above, I can understand why having the IS_PRIVATE() macro
+check might be a good idea, I am just concerned that the current
+IMA/EVM hooks don't check for S_PRIVATE and thus moving to this new
+LSM hook would potentially be a change in behavior (like I said, I
+could be missing a subtle detail).  I'd just like a quick confirmation
+from Mimi that either there is no difference because of X, or she is
+aware of the difference and is okay with it.  It's very possible she
+is fine with it, she did provide her 'Reviewed-by', but I worry this
+is the sort of thing that might have gone unnoticed during review.
 
->>          reg |= DSI_VIDEO_COMPRESSION_MODE_CTRL_EOL_BYTE_NUM(eol_byte_num);
->> --
->> 2.26.1
->>
-> 
-> 
+--=20
+paul-moore.com
