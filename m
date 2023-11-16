@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BCC5A7EDDE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:46:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A1AB7EDDF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:47:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344985AbjKPJqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:46:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
+        id S1344992AbjKPJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:47:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344978AbjKPJqk (ORCPT
+        with ESMTP id S1344971AbjKPJrt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:46:40 -0500
+        Thu, 16 Nov 2023 04:47:49 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE53187
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10D7419B
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:47:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700127995;
+        s=mimecast20190719; t=1700128065;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GruoM/5/32+k91gDkX5IlRzhNe9lOGFcfel6ZoBid20=;
-        b=hFrwg86SQuS4knRIeOwLid/MJV3SBJHCp0Vt1cLPTsH5cJyrFcnJarxh5xUyS099xwTN7e
-        VIJsT72C4HKnPeXhWUQNEHgWyK3MvoVOasiBpJ28q9owKybYwN++NVi0fVfODOyezGZNSh
-        k8htFwXou3M1vxvRYGXaYpHXAL4VHtg=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=/uiFBR3JQf5JhHqleJ4f4NPiEeGpPS9MKZ9jUPGR8g8=;
+        b=Kk7XBt7tWhN0cPvhoGWROA3ZVPw7lfRDplnyflShe1OsW9GOlSdWOJx2dQx5nVFdfoAOua
+        qKGZfnFaT/N4IYcYFzM/b7CKI5b2gv73gCXquNcuEfUNLqC5NXgiIvYxD56//SzEYQ0Ph+
+        gR124MPJ3VJX21+zwJ5QV5lZehlLvzw=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-595-4sKcQmIKOmWZa3Zb-LbTQQ-1; Thu, 16 Nov 2023 04:46:33 -0500
-X-MC-Unique: 4sKcQmIKOmWZa3Zb-LbTQQ-1
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5401de6ce9eso99353a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:33 -0800 (PST)
+ us-mta-581-fZCpevcmPXSKB-d9Huy8EQ-1; Thu, 16 Nov 2023 04:47:39 -0500
+X-MC-Unique: fZCpevcmPXSKB-d9Huy8EQ-1
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-77891f36133so65723885a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:47:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700127993; x=1700732793;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GruoM/5/32+k91gDkX5IlRzhNe9lOGFcfel6ZoBid20=;
-        b=MC0qoFt8TB/kVSD+khr/0bnF7XmReCjyB3kKi2Iwwha9CsQc4pdEh9qTdm+rw995Uc
-         Hm5xMTLinhXWMaoKeHdw4jxvXHAM9vA33AxEhspoxE8TqqSoBC42ZzpeFGtjT4lZZM/L
-         EVxGbT1PFdGauKVNTa+30ia+Mr5lctObKt7gnuX8CQvI2FuhdbrP6pfCOOkMbi0/LGtr
-         4VMsWX08GPrA459LmbmgysTCacmvx6u5uuFVDmQ6TjfIhA5m3WeyyyVkd8NCHZrT4zkF
-         6o3OX8TQRQZNq0rRRLK3xdkxiMDcrnBVFfkwPMjBWs1ZpjBAjiBk3z2m6v97150KLNta
-         SZIA==
-X-Gm-Message-State: AOJu0YxYHzcKuCn9drO6XU3h/JN4h1qNXZKW77SfInp0JfTl01/tVQnE
-        sA72uIxXG/N5T9fTbozp3kbi04Bj5jbqGIMRL/R/RnjVzJEw0MR/b+r22KreV9KueERkIwy5f4b
-        C9qXgbI1IMxJpjskT9KppSKMA
-X-Received: by 2002:a05:6402:5518:b0:548:15e1:3b26 with SMTP id fi24-20020a056402551800b0054815e13b26mr456424edb.3.1700127992893;
-        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF6FMEPXWLzaTbwCpFj/1CLV+LAdXnP2IviLRo7oPmaJQCqz4fjhooDueXV1KR2Y44bOlBZPA==
-X-Received: by 2002:a05:6402:5518:b0:548:15e1:3b26 with SMTP id fi24-20020a056402551800b0054815e13b26mr456412edb.3.1700127992587;
-        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-98-67.dyn.eolo.it. [146.241.98.67])
-        by smtp.gmail.com with ESMTPSA id v23-20020aa7cd57000000b005402a0c9784sm7495481edw.40.2023.11.16.01.46.31
+        d=1e100.net; s=20230601; t=1700128058; x=1700732858;
+        h=mime-version:user-agent:content-transfer-encoding:organization
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/uiFBR3JQf5JhHqleJ4f4NPiEeGpPS9MKZ9jUPGR8g8=;
+        b=LGTB1K+MUY70sT6c0k0e9ghTYZZ/ADTWgpp4x/+gcEb1ygy5bk73O1raP4sd2NG2fn
+         i0S5P5sAIf9HKraBODtT7Q1aNHtjNB2IwxN7N1y16Z+2YERoL0PqbSBUSxFWPaHaMG5g
+         XhwoGhiHtP8s1p6E1iOLNDyLeow26Uv5ms+rgPPZrhPYFNYpVTh/ZLDmFA4SPvXcoLmB
+         EaYkOhoYijHyt7OY/eQ9zcgg+jpcsKYOWSF32ImyLkWlQy1G4oC4LrlognIpZ54awKta
+         z7ZZ7mi002vpmgRsUh96J7v9RkxiJHfQqfkeh+r5XGyAaa90KNQETwaBrIuRp6qUSinH
+         mXTg==
+X-Gm-Message-State: AOJu0YxuEzu6zOK01M+HH5YQK/H4Y3QsWIq99mflBqav4QYu6WvVSPs4
+        mF/nmzd1umEqY9dOlB1tJkacsQkSXRLbcPhTEGvrcWa0FHrQl09ITyQc6e2b/tBjOuz8rYGFyAL
+        Gedv8vI5qnoqe7r+X5OGYTJWBENiHy6DB
+X-Received: by 2002:a05:620a:450f:b0:77b:a837:f6c3 with SMTP id t15-20020a05620a450f00b0077ba837f6c3mr8981895qkp.15.1700128058667;
+        Thu, 16 Nov 2023 01:47:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEE2Yk8BDxgOdgM8zDkfkQslAKDFXqLXANjPOfZ0tsgrPsXXVo1kMfuDnEUn8oqPPyH5MsqWQ==
+X-Received: by 2002:a05:620a:450f:b0:77b:a837:f6c3 with SMTP id t15-20020a05620a450f00b0077ba837f6c3mr8981878qkp.15.1700128058316;
+        Thu, 16 Nov 2023 01:47:38 -0800 (PST)
+Received: from 117.195.187.81.in-addr.arpa (1.0.1.7.7.8.6.b.6.c.4.1.e.c.9.d.0.0.0.0.a.d.f.f.0.b.8.0.1.0.0.2.ip6.arpa. [2001:8b0:ffda:0:d9ce:14c6:b687:7101])
+        by smtp.gmail.com with ESMTPSA id bq41-20020a05620a46a900b007758ffab58asm4153503qkb.8.2023.11.16.01.47.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
-Message-ID: <59083303fc79497b2658ff15ac3c18b985e270ab.camel@redhat.com>
-Subject: Re: [PATCH net] tipc: Remove redundant call to TLV_SPACE()
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Shigeru Yoshida <syoshida@redhat.com>, jmaloy@redhat.com,
-        ying.xue@windriver.com, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 16 Nov 2023 10:46:30 +0100
-In-Reply-To: <20231114144336.1714364-1-syoshida@redhat.com>
-References: <20231114144336.1714364-1-syoshida@redhat.com>
+        Thu, 16 Nov 2023 01:47:37 -0800 (PST)
+Message-ID: <491b0e5d86798242ff0ff2cdea44588c50ae9a77.camel@redhat.com>
+Subject: Re: linux-next: contacts for the gfs2 tree
+From:   Steven Whitehouse <swhiteho@redhat.com>
+To:     Andreas Gruenbacher <agruenba@redhat.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Cc:     Bob Peterson <rpeterso@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Date:   Thu, 16 Nov 2023 09:47:33 +0000
+In-Reply-To: <CAHc6FU5qLYLw=EVodktQbEuBVZmV-tT1FpTvvaoPD1ezvRso1A@mail.gmail.com>
+References: <20231116073950.02c0610f@canb.auug.org.au>
+         <CAHc6FU5qLYLw=EVodktQbEuBVZmV-tT1FpTvvaoPD1ezvRso1A@mail.gmail.com>
+Organization: Red Hat UK Ltd
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+User-Agent: Evolution 3.50.1 (3.50.1-1.fc39) 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -84,42 +86,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi,
 
-On Tue, 2023-11-14 at 23:43 +0900, Shigeru Yoshida wrote:
-> The purpose of TLV_SPACE() is to add the TLV descriptor size to the size =
-of
-> the TLV value passed as argument and align the resulting size to
-> TLV_ALIGNTO.
+On Wed, 2023-11-15 at 23:18 +0100, Andreas Gruenbacher wrote:
+> Hi Stephen,
 >=20
-> tipc_tlv_alloc() calls TLV_SPACE() on its argument. In other words,
-> tipc_tlv_alloc() takes its argument as the size of the TLV value. So the
-> call to TLV_SPACE() in tipc_get_err_tlv() is redundant. Let's remove this
-> redundancy.
+> On Wed, Nov 15, 2023 at 9:40=E2=80=AFPM Stephen Rothwell
+> <sfr@canb.auug.org.au> wrote:
+> > Hi all,
+> >=20
+> > I noticed commit
+> >=20
+> > =C2=A0 2e6ef8aaba6b ("Remove myself as maintainer of GFS2")
+> >=20
+> > Currently I have
+> >=20
+> > Steven Whitehouse <swhiteho@redhat.com>
+> > Bob Peterson <rpeterso@redhat.com>
+> >=20
+> > listed as the only contacts for the gfs2 tree.
+> >=20
+> > Should I change that to
+> >=20
+> > Andreas Gruenbacher <agruenba@redhat.com>
+> >=20
+> > or keep Steven (even though he is not listed in MAINTAINERS)?=C2=A0 And
+> > should
+> > I add the mailing list as well?
 >=20
-> Fixes: d0796d1ef63d ("tipc: convert legacy nl bearer dump to nl compat")
-> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
-
-The patch LGTM, but I think this is more a cleanup then a fix, please
-re-submit it for net-next, dropping the Fixes tag (so it will not land
-in stable tree).
-
-With the above you can add:
-
-Acked-by: Paolo Abeni <pabeni@redhat.com>
-> ---
->  net/tipc/netlink_compat.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I think it would make sense to put me in instead of Bob. Steve hasn't
+> been working on the actual code for a while -- even though he remains
+> a valuable source of information for GFS2 -- so I don't think he will
+> object to being removed here.
 >=20
-> diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
-> index 5bc076f2fa74..db0365c9b8bd 100644
-> --- a/net/tipc/netlink_compat.c
-> +++ b/net/tipc/netlink_compat.c
-> @@ -167,7 +167,7 @@ static struct sk_buff *tipc_get_err_tlv(char *str)
->  	int str_len =3D strlen(str) + 1;
->  	struct sk_buff *buf;
-> =20
-> -	buf =3D tipc_tlv_alloc(TLV_SPACE(str_len));
-> +	buf =3D tipc_tlv_alloc(str_len);
->  	if (buf)
->  		tipc_add_tlv(buf, TIPC_TLV_ERROR_STRING, str, str_len);
-> =20
+> For the time being, I will be the only person screwing up the
+> upstream
+> gfs2 repository, so I'll also be the person to fix things up again.
+> In
+> that context, would it make sense to add the gfs2 list? Is this what
+> you would commonly do?
+>=20
+> Thanks,
+> Andreas
+>=20
+
+Yes, I'm not likely to be working on the code again, so it definitely
+makes sense to remove me from that list,
+
+Steve.
 
