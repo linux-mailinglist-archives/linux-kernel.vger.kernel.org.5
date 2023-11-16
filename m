@@ -2,133 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0BC47EDCE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:29:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F0D47EDD4F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:03:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344962AbjKPI3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:29:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39404 "EHLO
+        id S234970AbjKPJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:03:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjKPI3J (ORCPT
+        with ESMTP id S229984AbjKPJD4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:29:09 -0500
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB6411A3;
-        Thu, 16 Nov 2023 00:29:05 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-        by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4SWCqc4wYNz4f3kpD;
-        Thu, 16 Nov 2023 16:29:00 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-        by mail.maildlp.com (Postfix) with ESMTP id 1B01D1A0177;
-        Thu, 16 Nov 2023 16:29:03 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-        by APP1 (Coremail) with SMTP id cCh0CgCnqxHL0lVlgbRFBA--.19869S7;
-        Thu, 16 Nov 2023 16:29:02 +0800 (CST)
-From:   linan666@huaweicloud.com
-To:     josef@toxicpanda.com, axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, nbd@other.debian.org,
-        linux-kernel@vger.kernel.org, linan122@huawei.com,
-        yukuai3@huawei.com, yi.zhang@huawei.com, houtao1@huawei.com,
-        yangerkun@huawei.com
-Subject: [PATCH 3/3] nbd: fix null-ptr-dereference while accessing 'nbd->config'
-Date:   Fri, 17 Nov 2023 00:23:16 +0800
-Message-Id: <20231116162316.1740402-4-linan666@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231116162316.1740402-1-linan666@huaweicloud.com>
-References: <20231116162316.1740402-1-linan666@huaweicloud.com>
+        Thu, 16 Nov 2023 04:03:56 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F966A1;
+        Thu, 16 Nov 2023 01:03:53 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 41be03b00d2f7-5ab94fc098cso404509a12.1;
+        Thu, 16 Nov 2023 01:03:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700125433; x=1700730233; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=El/JfzGdZ4cMju9ybKXdrUj42W3161BOT77MsxODMx8=;
+        b=SJfy8Dk2PNOzId9DBNElQjRhRrrvFXp2Hz652mR8k+QC2ThKaUUrrU07tqTU/ZBK7s
+         sqy+pJawSnfUVRnNji8pK7Opi1jE6ynFbX5veXfB1ox1P8ISRhVcuNzWOfCgLUoNQshk
+         T4b6K+6mRNbt6GYxTZ2P/UJ7GLqjM+z6gVHJONfB+oa79mQF4h3yAHKLk8Xa6jxtpKAw
+         rNXOGCHhcawFzanD3dSJrOCQri1WqYYh1vfRgTXFm10vkRr3hBzttbwLmIvt1X+Dtb2L
+         HSPSwYVRXLiv5uRr10hFI/fbWgyC9x15Vh8TgpjXqoWulrfz1XtXSQW/01NMMmx1TjYO
+         O+eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700125433; x=1700730233;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=El/JfzGdZ4cMju9ybKXdrUj42W3161BOT77MsxODMx8=;
+        b=kJ3mF3V1IznO2M2F3m4yRAFX8CZRiimh6QFaGCN5s4Tf+4s6rGYId4YTPjIIOzEUxP
+         ivZfVjS61MGKWVfb58UY7O/HEo12LWVXXMeEaxV24dA3/PVHHnHpFbhwnmX+c0vtcEg4
+         URGCwBHPt2SPOsB8Kc8d2vQk9ok8g4f1o8SPE5okRcDftND25kSn1ETYUeeSaejUA26h
+         1HesAumn6DuezdFPu8L6apCgOUtAZWGP1wdru4Tce0+Gd5UMGCFVmIvyxoYPvzyoiPqo
+         bYvQHPwCEi0Bfi0y0f20S8yADu3aDTdPJWiIW2d/8THSgWkrzIAcJYS/cljeqQ8cBWhJ
+         vtAg==
+X-Gm-Message-State: AOJu0YwCTfu6cb2qCekQ16V9cpeALFHB8d6yMO6EoRhm251XUOHCzgJS
+        qKYCIbovc5EzmJYuQK5kEIaFPOprj/A=
+X-Google-Smtp-Source: AGHT+IE+XnVtHVDDLImPTdv+2cnMqX8bIVDLZFUPG6yE3ukBY7Txy26hFOCQSLLo5BZbUnIOQ8uFLA==
+X-Received: by 2002:a17:902:dad1:b0:1cc:70e4:28c7 with SMTP id q17-20020a170902dad100b001cc70e428c7mr8844794plx.18.1700125432659;
+        Thu, 16 Nov 2023 01:03:52 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id j8-20020a17090276c800b001cc52ca2dfbsm8650307plt.120.2023.11.16.01.03.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 01:03:52 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 16 Nov 2023 01:03:51 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Xing Tong Wu <xingtong_wu@163.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xingtong.wu@siemens.com,
+        tobias.schaffner@siemens.com, gerd.haeussler.ext@siemens.com
+Subject: Re: [PATCH 1/3] hwmon: (nct6775) Fix incomplete register array
+Message-ID: <0ae18abe-121e-4a1c-a9aa-6b10db0c68d1@roeck-us.net>
+References: <20231116022330.2696-1-xingtong_wu@163.com>
+ <20231116022330.2696-2-xingtong_wu@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: cCh0CgCnqxHL0lVlgbRFBA--.19869S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxJry3Ww1UurWDAF1kuryDJrb_yoW8ZF47pr
-        45CF98G3yUJF43JFWDA348Wr15A3Z7AryxGryxG3s8Zr9rCryayr1kK343XFyUArnxJFW5
-        JFWrGa4Ika4xG3JanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUQIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-        8IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK
-        0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
-        x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
-        84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcx
-        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v2
-        6r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-        Ij64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAK
-        I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-        xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-        jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-        0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-        67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0gJ57UUUUU==
-X-CM-SenderInfo: polqt0awwwqx5xdzvxpfor3voofrz/
-X-Spam-Status: No, score=0.0 required=5.0 tests=BAYES_00,DATE_IN_FUTURE_06_12,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116022330.2696-2-xingtong_wu@163.com>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Li Nan <linan122@huawei.com>
+On Thu, Nov 16, 2023 at 10:23:28AM +0800, Xing Tong Wu wrote:
+> From: Xing Tong Wu <xingtong.wu@siemens.com>
+> 
+> The nct6116 specification actually includes 5 PWMs, but only 3
+> PWMs are present in the array. To address this, the missing 2
+> PWMs have been added to the array.
+> 
+> Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+> ---
+>  drivers/hwmon/nct6775-core.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
+> index d928eb8ae5a3..2111f0cd9787 100644
+> --- a/drivers/hwmon/nct6775-core.c
+> +++ b/drivers/hwmon/nct6775-core.c
+> @@ -769,7 +769,7 @@ static const u16 NCT6106_FAN_PULSE_SHIFT[] = { 0, 2, 4 };
+>  
+>  static const u8 NCT6106_REG_PWM_MODE[] = { 0xf3, 0xf3, 0xf3 };
+>  static const u8 NCT6106_PWM_MODE_MASK[] = { 0x01, 0x02, 0x04 };
+> -static const u16 NCT6106_REG_PWM_READ[] = { 0x4a, 0x4b, 0x4c };
+> +static const u16 NCT6106_REG_PWM_READ[] = { 0x4a, 0x4b, 0x4c, 0xd8, 0xd9 };
 
-Memory reordering may occur in nbd_genl_connect(), causing config_refs
-to be set to 1 while nbd->config is still empty. Opening nbd at this
-time will cause null-ptr-dereference.
+I'll have to check the datasheet if this is generic, but at the very least
+it is incomplete and REG_PWM_MODE as well as REG_PWM_MODE_MASK would
+have to be updated as well. Also, I don't see an update to has_pwm,
+meaning the two additional pwm controls won't ever be used/enabled.
 
-   T1                      T2
-   nbd_open
-    nbd_get_config_unlocked
-                 	   nbd_genl_connect
-                 	    nbd_alloc_and_init_config
-                 	     //memory reordered
-                  	     refcount_set(&nbd->config_refs, 1)  // 2
-     nbd->config
-      ->null point
-			     nbd->config = config  // 1
-
-Fix it by adding smp barrier to guarantee the execution sequence.
-
-Signed-off-by: Li Nan <linan122@huawei.com>
----
- drivers/block/nbd.c | 18 +++++++++++++++++-
- 1 file changed, 17 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/block/nbd.c b/drivers/block/nbd.c
-index 1b9ee96d3b8a..03f387f1abb5 100644
---- a/drivers/block/nbd.c
-+++ b/drivers/block/nbd.c
-@@ -398,8 +398,16 @@ static u32 req_to_nbd_cmd_type(struct request *req)
- 
- static struct nbd_config *nbd_get_config_unlocked(struct nbd_device *nbd)
- {
--	if (refcount_inc_not_zero(&nbd->config_refs))
-+	if (refcount_inc_not_zero(&nbd->config_refs)) {
-+		/*
-+		 * Add smp_mb__after_atomic to ensure that reading nbd->config_refs
-+		 * and reading nbd->config is ordered. The pair is the barrier in
-+		 * nbd_alloc_and_init_config(), avoid nbd->config_refs is set
-+		 * before nbd->config.
-+		 */
-+		smp_mb__after_atomic();
- 		return nbd->config;
-+	}
- 
- 	return NULL;
- }
-@@ -1559,7 +1567,15 @@ static int nbd_alloc_and_init_config(struct nbd_device *nbd)
- 	init_waitqueue_head(&config->conn_wait);
- 	config->blksize_bits = NBD_DEF_BLKSIZE_BITS;
- 	atomic_set(&config->live_connections, 0);
-+
- 	nbd->config = config;
-+	/*
-+	 * Order refcount_set(&nbd->config_refs, 1) and nbd->config assignment,
-+	 * its pair is the barrier in nbd_get_config_unlocked().
-+	 * So nbd_get_config_unlocked() won't see nbd->config as null after
-+	 * refcount_inc_not_zero() succeed.
-+	 */
-+	smp_mb__before_atomic();
- 	refcount_set(&nbd->config_refs, 1);
- 
- 	return 0;
--- 
-2.39.2
-
+Guenter
