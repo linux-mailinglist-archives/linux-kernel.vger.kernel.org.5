@@ -2,163 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDB1F7EDEFE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:54:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4E87EDEFF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:54:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345048AbjKPKyb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:54:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42440 "EHLO
+        id S1345060AbjKPKyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41432 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345088AbjKPKy1 (ORCPT
+        with ESMTP id S1345040AbjKPKyx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:54:27 -0500
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2001:67c:2178:6::1c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F271B6;
-        Thu, 16 Nov 2023 02:54:13 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out1.suse.de (Postfix) with ESMTPS id 35BF522937;
-        Thu, 16 Nov 2023 10:54:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700132051; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UM81hjiA/5PsIR9F0SaCot2R2mHkt+tK3uVE8YjyK4c=;
-        b=V/RNr1QO/+SUIOycRPtcR5edmZ50pAafqg3DTWXfMAA4sI7BqrW9BQ/p3uKURRFOcL96Ew
-        oZPUgaMOU5BXPi9ejVN00mAy7SmuoXm4u3CiWo+ATjAd9Sfi5rR9TUbtAUeLQt2K9/k1RO
-        miYp2d/ogAVZVGS3kVgWnJgE3KnJcy0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700132051;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UM81hjiA/5PsIR9F0SaCot2R2mHkt+tK3uVE8YjyK4c=;
-        b=AbFHRE+g9SgKaqkkFR5dnwG8jLhBnQ5a4qfCXQkNBo+MrxyJvGFvB7GVNW5rYzhN7PuvY8
-        elKIOyh6e0cnHbAA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1A94F139C4;
-        Thu, 16 Nov 2023 10:54:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id UopNBtP0VWUaNwAAMHmgww
-        (envelope-from <iivanov@suse.de>); Thu, 16 Nov 2023 10:54:11 +0000
+        Thu, 16 Nov 2023 05:54:53 -0500
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D4C2D41
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:54:49 -0800 (PST)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-5bd6ac9833fso478083a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:54:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700132088; x=1700736888; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nPw4dJsdNVea4Mwao+FPddUZ3ILoF14eyx6XTqNoJZY=;
+        b=OSBLb1ZUBVTGQgUiyx0BrBwboNi8SdjQ5fy0Z31DB4Ya7i8a7K56Mmm+g20RzPbQWr
+         PqFZGTc7xAdgmCpdGO4j55YdeIj/JeHLO4G1ZXq+VTxaV8/OT7f7E2EHi1n5x5wIkrmf
+         uQAo2wbNYpj4t8qSETwKP7mTdDMWiLaQWx7GtR6ATQ+SfFHuFgMpZ91Eo8gnudqoC6MF
+         MZQ8NzrDQe82cUFWsVxm+Ivr8coW95DSFDgj25bC7RPqvxIg8kGZByA5stqrTpW3DEZi
+         lexOOkbwKrVTu2KVprVqiwFaJW1TyFGheENfzUzaJNohNZqfVD/FSO1voMowjWy6LWYz
+         5eMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700132088; x=1700736888;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=nPw4dJsdNVea4Mwao+FPddUZ3ILoF14eyx6XTqNoJZY=;
+        b=bVB+xODDxYpBf0wjof7Ng3ioYRbr0L1+hVZVHoltFFxO9IZ7xJfgk3katMdQlBWDTW
+         MECV0xMj0JKQa1cWO0i8Yak4Jl+jaxWktw6SOQxeK8qpyuYSx7wmjDq4OaCZMehfGbqQ
+         tff5TmwRA8QcD2njgb8SUDwNhCrlhsTPmKbpIo45MSSRZkv/9J+zAGI2D739bRR7TUWD
+         0qWhORczhwcAwQW3YU79wwyzoxwP8B9lVUwSw+8MLp2cP6i0GMurSNG5BMa89oOAv8Er
+         cQ62eJlSPeo1BXwAJTkN0Q4eScOcjku4VkUhcLMlNW3tX/zAnrwfGNlSnsFq+51cwI2I
+         MHfA==
+X-Gm-Message-State: AOJu0Yzr+2idXubde2q+tUDk7lsn6SSmmsNfSnj5HuABzoAL+xhNw2KR
+        fLbDpp9deWa3m73bJ+G2mlA=
+X-Google-Smtp-Source: AGHT+IEeZkiBWFrtj1Uu2IlgczoEeuXUZZbXGUjmtJqBYTeH//XKo1Tddms39G3fX8q/+jywP8uBzg==
+X-Received: by 2002:a05:6a21:32a9:b0:186:e4c2:4937 with SMTP id yt41-20020a056a2132a900b00186e4c24937mr10166208pzb.23.1700132088372;
+        Thu, 16 Nov 2023 02:54:48 -0800 (PST)
+Received: from rin-ROG-STRIX-G10CES-G10CES.. (111-255-239-171.dynamic-ip.hinet.net. [111.255.239.171])
+        by smtp.gmail.com with ESMTPSA id mf11-20020a17090b184b00b002802a080d1dsm1325064pjb.16.2023.11.16.02.54.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 02:54:48 -0800 (PST)
+From:   Yiwei Lin <s921975628@gmail.com>
+To:     mingo@redhat.com, peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        wuyun.abel@bytedance.com, linux-kernel@vger.kernel.org,
+        s921975628@gmail.com
+Subject: [PATCH 0/1] sched/fair: Update min_vruntime in more relaxed way
+Date:   Thu, 16 Nov 2023 18:54:24 +0800
+Message-Id: <20231116105425.84773-1-s921975628@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Date:   Thu, 16 Nov 2023 12:54:10 +0200
-From:   "Ivan T. Ivanov" <iivanov@suse.de>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     Stefan Wahren <wahrenst@gmx.net>,
-        Umang Jain <umang.jain@ideasonboard.com>,
-        Peter Robinson <pbrobinson@gmail.com>,
-        linux-media@vger.kernel.org, kernel-list@raspberrypi.com,
-        linux-kernel@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-staging@lists.linux.dev,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Kieran Bingham <kieran.bingham@ideasonboard.com>,
-        "Ricardo B . Marliere" <ricardo@marliere.net>,
-        Dan Carpenter <error27@gmail.com>,
-        Guillaume GARDET <guillaume.gardet@opensuse.org>
-Subject: Re: [PATCH v2 00/15] staging: vc04_services: bcm2835-isp support
-In-Reply-To: <20231116005030.GA21041@pendragon.ideasonboard.com>
-References: <20231109210309.638594-1-umang.jain@ideasonboard.com>
- <20231115195947.GD29486@pendragon.ideasonboard.com>
- <58fe01b9-5fb6-451c-a759-c6a5afd695e3@gmx.net>
- <20231116005030.GA21041@pendragon.ideasonboard.com>
-User-Agent: Roundcube Webmail
-Message-ID: <45c0e7bbb2ed91ec559cdbf2d19ad80e@suse.de>
-X-Sender: iivanov@suse.de
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out1.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -5.30
-X-Spamd-Result: default: False [-5.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         XM_UA_NO_VERSION(0.01)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.net];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         MID_RHS_MATCH_FROM(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         BAYES_HAM(-0.01)[50.46%];
-         RCPT_COUNT_TWELVE(0.00)[15];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[gmx.net,ideasonboard.com,gmail.com,vger.kernel.org,raspberrypi.com,lists.infradead.org,lists.linux.dev,marliere.net,opensuse.org];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Because we only use min_vruntime as an offset to avoid
+overflow, and we will always update_curr() before making
+change to csf_rq. Unlike the requirement on CFS, I
+think it is possible to just update_min_vruntime() when
+update_curr(), which reduces the cost to evaluate the statistic.
 
-Hi,
+It is worth metioning that maybe we can update_min_vruntime() in
+a more relaxed form according to this fact, but we may need more
+works to optimize in the future.
 
-On 2023-11-16 02:50, Laurent Pinchart wrote:
-> On Wed, Nov 15, 2023 at 09:57:52PM +0100, Stefan Wahren wrote:
->> Hi Laurent,
->> 
->> [add Ivan & Peter]
->> 
->> Am 15.11.23 um 20:59 schrieb Laurent Pinchart:
->> > Hello,
->> >
->> > On Thu, Nov 09, 2023 at 04:02:52PM -0500, Umang Jain wrote:
->> >> This series aims to upport bcm2835-isp from the RPi kernel.
->> >> It is developed on top of staging-next which comprises many
->> >> VC04 changes for it's de-staging. Hence, the merge of this
->> >> driver is targeted when VC04 is de-staged completely (which I
->> >> have been pushing), but it can be helped getting reviewed meanwhile.
->> >> Hence, the reason for posting the series.
->> >
->> > Related question, what do people think about dropping the legacy
->> > firmware-based bcm2385-camera driver once this gets merged ?
->> > firmware-based camera operation is deprecated by Raspberry Pi, and
->> > doesn't work on the Pi 5
->> 
->> i don't remember exactly, but wasn't the bcm2835-camera required for 
->> Pi
->> Camera V1.3?
-> 
-> If I'm not mistaken (Dave can correct me), the legacy camera stack 
-> works
-> only with the Raspberry Pi official camera v1, v2 and HQ modules.
-> Raspberry Pi has switched to a new camera stack based on libcamera,
-> which works on the Pi Zero 2, Pi 3, Pi 4 and Pi 5. This new stack
-> supports the same camera modules as the legacy stack, and many more. 
-> The
-> legacy stack doesn't work on Pi 5 at all.
-> 
->> At the end cannot speak for the users. AFAIK OpenSuSE and Fedora use 
->> the
->> driver.
+The following link shows some discussion which relates to this patch:
+https://lore.kernel.org/lkml/20231107090510.71322-1-wuyun.abel@bytedance.com/T/#mc277f045367f4186b34c83e636907ce2f5eb481e
 
-Guillaume (in CC) is more authoritative about this topic, but as long we 
-have
-smooth migration plan I am more than happy to switch to proper camera 
-driver.
+Yiwei Lin (1):
+  sched/fair: Update min_vruntime in more relaxed way
 
-Regards,
-Ivan
+ kernel/sched/fair.c | 20 +-------------------
+ 1 file changed, 1 insertion(+), 19 deletions(-)
+
+-- 
+2.34.1
+
