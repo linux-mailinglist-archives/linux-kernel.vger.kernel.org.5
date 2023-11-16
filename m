@@ -2,197 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BA607EE027
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D07FD7EE02E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:55:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345140AbjKPLx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:53:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
+        id S1345147AbjKPLze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:55:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344985AbjKPLxZ (ORCPT
+        with ESMTP id S230160AbjKPLzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:53:25 -0500
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [IPv6:2001:41d0:203:375::ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86CEC4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:53:20 -0800 (PST)
-Message-ID: <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700135599;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7Xl6aJx0SHekVlEjDxe6eGi8u/KrzGs66x4YWxgVZtU=;
-        b=QSXw0jhtDLFevMZsd8w9rmmT1z/O5XbhcFpo0gmhnUhUVkrAvp7RR28EnDKPaOhmfy7CAy
-        HaTOr6zQXt6F6N4YLg2dckFKFbr4IxJnOEl+0TOQNsJqbwD1DdJpJ1FZZC/L3rWHBTxc9g
-        nYO1XdcCRqkMsK09jATuJz7/r+s6FDM=
-Date:   Thu, 16 Nov 2023 19:53:12 +0800
+        Thu, 16 Nov 2023 06:55:31 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.88])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38829B0;
+        Thu, 16 Nov 2023 03:55:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700135727; x=1731671727;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version:content-id;
+  bh=idgzep+H+rCXGm/O2ITkrOwgiB1VoNxL3UyIBXGeatg=;
+  b=c75nyKulhKKXE+8gX1FUh5/peDI7Vps0x6Ao1uwZZjBWLk87dGXSkSBl
+   pDEkM7EXBD2dzqL7TYN9Nv1e4nVmByyOSUyvW2QSniFad645bVM/oYC4m
+   90Gsmmfn1I0cey8otSBCoZohbNWtDEm+EGvG+XDm/yD89G0P5Fr5borEt
+   KoMhb92Uwvt0uSrb6+4ej3eg4ZQw6X/VpYg1Jj20FKiqEHcyVORlYIDtn
+   Hopu2ZOlsNbPEa1WEQU5eDkXi928KkNJIyt9M6nsFihkt32eE4Y4ZfzWt
+   RIlW8lmOMOmbVio3+ZCOfJ2XYWQal3Q4m7tTCuXoMiwhpxMUjK9/CvyFk
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="422162705"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="422162705"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 03:55:26 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="715205764"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="715205764"
+Received: from jhsteyn-mobl1.ger.corp.intel.com ([10.252.40.9])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 03:55:23 -0800
+Date:   Thu, 16 Nov 2023 13:55:20 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Th=E9o_Lebrun?= <theo.lebrun@bootlin.com>
+cc:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?ISO-8859-15?Q?Gr=E9gory_Clement?= <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 2/5] tty: serial: amba: Use BIT() macro for constant
+ declarations
+In-Reply-To: <20231116-mbly-uart-v2-2-863f665ce520@bootlin.com>
+Message-ID: <94d698d-f0a4-fe43-fbe4-4d4d62a8ee2c@linux.intel.com>
+References: <20231116-mbly-uart-v2-0-863f665ce520@bootlin.com> <20231116-mbly-uart-v2-2-863f665ce520@bootlin.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev>
- <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
- <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; BOUNDARY="8323329-312832558-1700135472=:1886"
+Content-ID: <d1f22071-d360-5a9-6992-9ad91dd875@linux.intel.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-312832558-1700135472=:1886
+Content-Type: text/plain; CHARSET=ISO-8859-15
+Content-Transfer-Encoding: 8BIT
+Content-ID: <2b55d7d3-433-8e8a-99bc-326bff513ad0@linux.intel.com>
+
+On Thu, 16 Nov 2023, Théo Lebrun wrote:
+
+> The driver uses bit shifts and hexadecimal expressions to declare
+> constants. Replace that with the BIT() macro that clarifies intent.
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+> ---
+>  include/linux/amba/serial.h | 183 ++++++++++++++++++++++----------------------
+>  1 file changed, 92 insertions(+), 91 deletions(-)
+> 
+> diff --git a/include/linux/amba/serial.h b/include/linux/amba/serial.h
+> index 27003ec52114..a1f966fcb9c5 100644
+> --- a/include/linux/amba/serial.h
+> +++ b/include/linux/amba/serial.h
+> @@ -10,6 +10,7 @@
+
+>  #define ST_UART011_DMAWM_RX_1	(0 << 3)
+>  #define ST_UART011_DMAWM_RX_2	(1 << 3)
+
+Just noting a potential futurework item, these (and alike) could be 
+changed to:
+
+#define ST_UART011_DMAWM_RX	GENMASK(5, 3)
+#define ST_UART011_DMAWM_TX	GENMASK(2, 0)
+
+#define ST_UART011_DMAWM_RX_1	FIELD_PREP(ST_UART011_DMAWM_RX, 0)
+#define ST_UART011_DMAWM_RX_2	FIELD_PREP(ST_UART011_DMAWM_RX, 1)
+...
 
 
-On 2023/11/16 19:29, Dmitry Baryshkov wrote:
-> On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->> Hi,
->>
->>
->> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
->>>> +
->>>> +               ctx->connector = connector;
->>>> +       }
->>>>
->>>>           if (ctx->info->id == ID_IT66121) {
->>>>                   ret = regmap_write_bits(ctx->regmap, IT66121_CLK_BANK_REG,
->>>> @@ -1632,16 +1651,13 @@ static const char * const it66121_supplies[] = {
->>>>           "vcn33", "vcn18", "vrf12"
->>>>    };
->>>>
->>>> -static int it66121_probe(struct i2c_client *client)
->>>> +int it66121_create_bridge(struct i2c_client *client, bool of_support,
->>>> +                         bool hpd_support, bool audio_support,
->>>> +                         struct drm_bridge **bridge)
->>>>    {
->>>> +       struct device *dev = &client->dev;
->>>>           int ret;
->>>>           struct it66121_ctx *ctx;
->>>> -       struct device *dev = &client->dev;
->>>> -
->>>> -       if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
->>>> -               dev_err(dev, "I2C check functionality failed.\n");
->>>> -               return -ENXIO;
->>>> -       }
->>>>
->>>>           ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
->>>>           if (!ctx)
->>>> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client *client)
->>>>
->>>>           ctx->dev = dev;
->>>>           ctx->client = client;
->>>> -       ctx->info = i2c_get_match_data(client);
->>>> -
->>>> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
->>>> -       if (ret)
->>>> -               return ret;
->>>> -
->>>> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
->>>> -       if (ret)
->>>> -               return ret;
->>>> -
->>>> -       i2c_set_clientdata(client, ctx);
->>>>           mutex_init(&ctx->lock);
->>>>
->>>> -       ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
->>>> -                                            it66121_supplies);
->>>> -       if (ret) {
->>>> -               dev_err(dev, "Failed to enable power supplies\n");
->>>> -               return ret;
->>>> +       if (of_support) {
->>>> +               ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
->>>> +               if (ret)
->>>> +                       return ret;
->>>> +
->>>> +               ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
->>>> +               if (ret)
->>>> +                       return ret;
->>>> +       } else {
->>>> +               ctx->bus_width = 24;
->>>> +               ctx->next_bridge = NULL;
->>>>           }
->>> A better alternative would be to turn OF calls into fwnode calls and
->>> to populate the fwnode properties. See
->>> drivers/platform/x86/intel/chtwc_int33fe.c for example.
->>
->> Honestly, I don't want to leave any scratch(breadcrumbs).
->> I'm worries about that turn OF calls into fwnode calls will leave something unwanted.
->>
->> Because I am not sure if fwnode calls will make sense in the DT world, while my patch
->> *still* be useful in the DT world.
-> fwnode calls work for both DT and non-DT cases. In the DT case they
-> work with DT nodes and properties. In the non-DT case, they work with
-> manually populated properties.
->
->> Because the newly introduced it66121_create_bridge()
->> function is a core. I think It's better leave this task to a more advance programmer.
->> if there have use case. It can be introduced at a latter time, probably parallel with
->> the DT.
->>
->> I think DT and/or ACPI is best for integrated devices, but it66121 display bridges is
->> a i2c slave device. Personally, I think slave device shouldn't be standalone. I'm more
->> prefer to turn this driver to support hot-plug, even remove the device on the run time
->> freely when detach and allow reattach. Like the I2C EEPROM device in the monitor (which
->> contains the EDID, with I2C slave address 0x50). The I2C EEPROM device *also* don't has
->> a corresponding struct device representation in linux kernel.
-> It has. See i2c_client::dev.
-
-No, what I mean is that there don't have a device driver for monitor(display) hardware entity.
-And the drm_do_probe_ddc_edid() is the static linked driver, which is similar with the idea
-this series want to express.
-
-
->> so I still think It is best to make this drivers functional as a static lib, but I want
->> to hear you to say more. Why it would be a *better* alternative to turn OF calls into
->> fwnode calls? what are the potential benefits?
-> Because then you can populate device properties from your root device.
-> Because it allows the platform to specify the bus width instead of
-> hardcoding 24 bits (which might work in your case, but might not be
-> applicable to another user next week).
-
-
-No, this problem can be easily solved. Simply add another argument.
-
-```
-
-int it66121_create_bridge(struct i2c_client *client, bool of_support,
-                           bool hpd_support, bool audio_support, u32 bus_width,
-                           struct drm_bridge **bridge);
-```
-
-
-> Anyway, even without fwnode, I'd strongly suggest you to drop the
-> it66121_create_bridge() as it is now and start by populating the i2c
-> bus from your root device.
-
-This will force all non-DT users to add the similar code patter at the display controller side,
-which is another kind of duplication. The monitor is also as I2C slave device, can be abstract
-as a identify drm bridges in theory, I guess.
-
-
-> Then you will need some way (fwnode?) to
-> discover the bridge chain. And at the last point you will get into the
-> device data and/or properties business.
->
-No, leave that chance to a more better programmerÂ and forgive me please,
-too difficult, I'm afraid of not able to solve. Thanks a lot for the trust!
-
-
+-- 
+ i.
+--8323329-312832558-1700135472=:1886--
