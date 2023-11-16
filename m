@@ -2,112 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE617EDF77
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8182F7EDF79
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:18:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345109AbjKPLSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:18:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58952 "EHLO
+        id S1345108AbjKPLSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:18:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58954 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345118AbjKPLSQ (ORCPT
+        with ESMTP id S230401AbjKPLSd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:18:16 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30F6EB5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:18:13 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-27ff7fe7fbcso522736a91.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:18:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=futuring-girl-com.20230601.gappssmtp.com; s=20230601; t=1700133492; x=1700738292; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xit1Esx4idoFgZhfPLc9TTvkzWtJT71XEeJRKrsKB7E=;
-        b=Lxbs0ePaZxpHrj95Vwsk4n+4z8NHtD62TBr85oJWpLQzxYYZhTY2Asghim2rUI3FUU
-         pj8jBuRZ9Rsdq0MD8zh/zG5EyMzf/hcahnxc521nAWYS7yxi8uXvvTJjW1GlB+naQQUS
-         WLh3VMrtg6ihVrL3Jdi0YA5okKKfdB1Ah6Fndu621KVO2I5LFn8S1oy3DQeixdub6sHn
-         6dEC3XyDbP6tWBiueef/kYpVCkj3wuOTLvvorSim6n1TAUaKNHuLqGUs7eX2xWMrI+dC
-         +zrVylswBltjIEE06+tXsWCLJpTBozkQIH7pez5XivlsjvC3kqjxEwk4HzEF2E3Mxg88
-         fSoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700133492; x=1700738292;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xit1Esx4idoFgZhfPLc9TTvkzWtJT71XEeJRKrsKB7E=;
-        b=ITM89A+lW6RsqdU8KJwNiLBIz0RC38Ux8/+JorI7kFDmgzSExbzIPkV4gYf0LVcn81
-         kA7yUv13JtSx8qE+EI15vPPPT3u2wXvmCSC3eMzrqgnQWDZSfl4XswXLffzMXF8xtx6J
-         petvU35yHNYtbDlIJIPMOxjGBpcsJOsvCDBv2VutKh9slG9PXymazwvRCghwlFZetmFh
-         7uLq7cH0sMKidQebz8Zq5aOkkxQtxtECrdlCQHBHKBuBNPjzijryvEUEKaB9ry6tEzS4
-         Tn7y6McnWsruQrhXwz31fTP8e1WnkjgjWo9xpfrWVWDMvSWtxhfUjHoLNfaGxij+BF3i
-         YkCg==
-X-Gm-Message-State: AOJu0Yzch/gYjqhhczRGltreLHoUcgzwZ9Xfm5jDfXsyMoQc+2ojb0Af
-        OJ85NF5oLRfvNc1CqC2kClgPofLf6fGGHIHObrV7Ow==
-X-Google-Smtp-Source: AGHT+IFd2C83fKKWAojxeTf534pIRJKEp0E9M6JGoAbow9IEjqCGzjTiSIlV/+gwzJLw/BrtQ/YgfwkBF5TnJcOR6GM=
-X-Received: by 2002:a17:90b:4c44:b0:280:3a0e:d34f with SMTP id
- np4-20020a17090b4c4400b002803a0ed34fmr15750920pjb.10.1700133492428; Thu, 16
- Nov 2023 03:18:12 -0800 (PST)
+        Thu, 16 Nov 2023 06:18:33 -0500
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [IPv6:2001:41d0:1004:224b::ae])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E649AA
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:18:29 -0800 (PST)
+Message-ID: <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700133505;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=v3ky3IGmo059i8LI1Q9gFHB3PczZNsekFc8ype32aes=;
+        b=ezvDvGaKms6UgbUFpQmlbuvdMdUzp45i41zsw5O9HfSyJGV4UMBDg6zyNYu3EsRLSwbG2o
+        k4e+Affx2Sfqf3pA06ntjqVEDRIwfKEot2KYZC15r0Du2dZAb8lgoQ/etG0aEye1YplH/u
+        TC41cbtffix+gvgv2yWgFUBgqOHmZ4s=
+Date:   Thu, 16 Nov 2023 19:18:18 +0800
 MIME-Version: 1.0
-References: <20231115191613.097702445@linuxfoundation.org>
-In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
-From:   Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
-Date:   Thu, 16 Nov 2023 20:18:01 +0900
-Message-ID: <CAKL4bV4fE2_79yd633QUZy3c7NsHZCSgUD0JxsjsM8KF1zfj+Q@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev>
+ <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg
+Hi,
 
-On Thu, Nov 16, 2023 at 4:32=E2=80=AFAM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.2 release.
-> There are 603 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
 
-6.6.2-rc1 tested.
+On 2023/11/15 00:30, Dmitry Baryshkov wrote:
+>> +
+>> +               ctx->connector = connector;
+>> +       }
+>>
+>>          if (ctx->info->id == ID_IT66121) {
+>>                  ret = regmap_write_bits(ctx->regmap, IT66121_CLK_BANK_REG,
+>> @@ -1632,16 +1651,13 @@ static const char * const it66121_supplies[] = {
+>>          "vcn33", "vcn18", "vrf12"
+>>   };
+>>
+>> -static int it66121_probe(struct i2c_client *client)
+>> +int it66121_create_bridge(struct i2c_client *client, bool of_support,
+>> +                         bool hpd_support, bool audio_support,
+>> +                         struct drm_bridge **bridge)
+>>   {
+>> +       struct device *dev = &client->dev;
+>>          int ret;
+>>          struct it66121_ctx *ctx;
+>> -       struct device *dev = &client->dev;
+>> -
+>> -       if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+>> -               dev_err(dev, "I2C check functionality failed.\n");
+>> -               return -ENXIO;
+>> -       }
+>>
+>>          ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+>>          if (!ctx)
+>> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client *client)
+>>
+>>          ctx->dev = dev;
+>>          ctx->client = client;
+>> -       ctx->info = i2c_get_match_data(client);
+>> -
+>> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+>> -       if (ret)
+>> -               return ret;
+>> -
+>> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+>> -       if (ret)
+>> -               return ret;
+>> -
+>> -       i2c_set_clientdata(client, ctx);
+>>          mutex_init(&ctx->lock);
+>>
+>> -       ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
+>> -                                            it66121_supplies);
+>> -       if (ret) {
+>> -               dev_err(dev, "Failed to enable power supplies\n");
+>> -               return ret;
+>> +       if (of_support) {
+>> +               ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+>> +               if (ret)
+>> +                       return ret;
+>> +
+>> +               ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+>> +               if (ret)
+>> +                       return ret;
+>> +       } else {
+>> +               ctx->bus_width = 24;
+>> +               ctx->next_bridge = NULL;
+>>          }
+> A better alternative would be to turn OF calls into fwnode calls and
+> to populate the fwnode properties. See
+> drivers/platform/x86/intel/chtwc_int33fe.c for example.
 
-Build successfully completed.
-Boot successfully completed.
-No dmesg regressions.
-Video output normal.
-Sound output normal.
 
-Lenovo ThinkPad X1 Carbon Gen10(Intel i7-1260P(x86_64) arch linux)
+Honestly, I don't want to leave any scratch(breadcrumbs).
+I'm worries about that turn OF calls into fwnode calls will leave something unwanted.
 
-Thanks
+Because I am not sure if fwnode calls will make sense in the DT world, while my patch
+*still* be useful in the DT world. Because the newly introduced it66121_create_bridge()
+function is a core. I think It's better leave this task to a more advance programmer.
+if there have use case. It can be introduced at a latter time, probably parallel with
+the DT.
 
-Tested-by: Takeshi Ogasawara <takeshi.ogasawara@futuring-girl.com>
+I think DT and/or ACPI is best for integrated devices, but it66121 display bridges is
+a i2c slave device. Personally, I think slave device shouldn't be standalone. I'm more
+prefer to turn this driver to support hot-plug, even remove the device on the run time
+freely when detach and allow reattach. Like the I2C EEPROM device in the monitor (which
+contains the EDID, with I2C slave address 0x50). The I2C EEPROM device *also* don't has
+a corresponding struct device representation in linux kernel.
+
+so I still think It is best to make this drivers functional as a static lib, but I want
+to hear you to say more. Why it would be a *better* alternative to turn OF calls into
+fwnode calls? what are the potential benefits?
+
+
+
