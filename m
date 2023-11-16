@@ -2,95 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E4017EE115
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60FFF7EE12D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:13:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345057AbjKPNJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:09:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39604 "EHLO
+        id S1345181AbjKPNN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKPNJG (ORCPT
+        with ESMTP id S1345210AbjKPNNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:09:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE721181
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:09:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700140143;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=MonhjC3WXqcY3h7WdCFO745+80UlcrRmMeuYZtAtOeE=;
-        b=L7zukpE//aWia7CVJrBb6W/LTdCocR7Ztj4wPDYdE+lHUPNuXt619qjPsEEwqQwRYLJXA7
-        3ySFYOpU3sXT613w6Soo476+dy6I75q+/fFPhWMda70iUVGj/zFEUqcVqKy7Q/it4IVBQx
-        FTMTtjW88Q1oIhPzJ1TfjON2zcMF/1E=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-139-Xo8IBKGHMtuhjaOTJw4t7w-1; Thu,
- 16 Nov 2023 08:09:01 -0500
-X-MC-Unique: Xo8IBKGHMtuhjaOTJw4t7w-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D054F3C11A0C;
-        Thu, 16 Nov 2023 13:09:00 +0000 (UTC)
-Received: from localhost (unknown [10.39.193.127])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2758640C6EB9;
-        Thu, 16 Nov 2023 13:08:59 +0000 (UTC)
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Jianyong Wu <jianyong.wu@arm.com>, maz@kernel.org,
-        james.morse@arm.com, will@kernel.org
-Cc:     rmk@armlinux.org.uk, salil.mehta@huawei.com,
-        suzuki.poulose@arm.com, oliver.upton@linux.dev,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        linux-kernel@vger.kernel.org, justin.he@arm.com,
-        jianyong.wu@arm.com
-Subject: Re: [PATCH] arm64/kvm: Introduce feature extension for SMCCC filter
-In-Reply-To: <20231116114152.912344-1-jianyong.wu@arm.com>
-Organization: "Red Hat GmbH, Sitz: Werner-von-Siemens-Ring 12, D-85630
- Grasbrunn, Handelsregister: Amtsgericht =?utf-8?Q?M=C3=BCnchen=2C?= HRB
- 153243,
- =?utf-8?Q?Gesch=C3=A4ftsf=C3=BChrer=3A?= Ryan Barnhart, Charles Cachera,
- Michael O'Neill, Amy
- Ross"
-References: <20231116114152.912344-1-jianyong.wu@arm.com>
-User-Agent: Notmuch/0.37 (https://notmuchmail.org)
-Date:   Thu, 16 Nov 2023 14:08:58 +0100
-Message-ID: <877cmhq1zp.fsf@redhat.com>
+        Thu, 16 Nov 2023 08:13:46 -0500
+Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FFDFD6C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:13:39 -0800 (PST)
+Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:1f07:ca72:c5f4:4244])
+        by albert.telenet-ops.be with bizsmtp
+        id B1DW2B00N4CbZ7h061DWyA; Thu, 16 Nov 2023 14:13:36 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtp (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1r3cBI-009QEp-HK;
+        Thu, 16 Nov 2023 14:13:27 +0100
+Received: from geert by rox.of.borg with local (Exim 4.95)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1r3c8e-007XJZ-UG;
+        Thu, 16 Nov 2023 14:10:32 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Christian Zigotzky <chzigotzky@xenosoft.de>,
+        David Airlie <airlied@redhat.com>,
+        Gerd Hoffmann <kraxel@redhat.com>,
+        Gurchetan Singh <gurchetansingh@chromium.org>,
+        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Laurent Vivier <lvivier@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        Hamza Mahfooz <hamza.mahfooz@amd.com>,
+        linux-m68k@lists.linux-m68k.org
+Cc:     dri-devel@lists.freedesktop.org,
+        virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Subject: [PATCH] drm/virtio: Add suppport for non-native
+Date:   Thu, 16 Nov 2023 14:10:30 +0100
+Message-Id: <282a31154172a78165912c832a09f6502515d139.1700140178.git.geert@linux-m68k.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16 2023, Jianyong Wu <jianyong.wu@arm.com> wrote:
+When using virtgpu on a big-endian machine, e.g. powerpc QEMU:
 
-> 821d935c87b introduces support for userspace SMCCC filtering, but lack
-> of a way to tell userspace if we have this feature. Add a corresponding
-> feature extension can resolve this issue.
->
-> For example, the incoming feature Vcpu Hotplug needs the SMCCC filter.
-> As there is no way to check this feature, VMM will run into error when
-> it calls this feature on an old kernel. It's bad for backward compatible.
+    virtio-pci 0000:00:02.0: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
 
-Can't you simply query via KVM_HAS_DEVICE_ATTR whether the SMCCC
-filtering controls exist?
+or m68k/virt:
 
->
-> Signed-off-by: Jianyong Wu <jianyong.wu@arm.com>
-> ---
->  Documentation/virt/kvm/api.rst | 3 ++-
->  arch/arm64/kvm/arm.c           | 1 +
->  include/uapi/linux/kvm.h       | 1 +
->  3 files changed, 4 insertions(+), 1 deletion(-)
->
+    virtio-mmio virtio-mmio.125: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
+
+and the graphical display fails to come up.
+
+Before, the call to drm_mode_addfb() caused a translation from a fourcc
+format (XR24) to a bpp/depth pair (32/24) to a potentially different fourcc
+format (BX24 on big-endian), due to the quirk processing in
+drm_driver_legacy_fb_format().  After, the original fourcc format (XR24)
+is passed unmodified.
+
+However, the virtgpu DRM driver supports only a single format for its
+main plane: DRM_FORMAT_HOST_XRGB8888, which is XR24 on little-endian,
+and BX24 on big-endian.  I.e. on big-endian, virtgpu does not support
+XR24, which is the default DRM format, and must be supported by all
+drivers.  Before, this was reported, but didn't lead to a failure:
+
+    virtio-mmio virtio-mmio.125: [drm] bpp/depth value of 32/24 not supported
+    virtio-mmio virtio-mmio.125: [drm] No compatible format found
+
+As the core virtgpu driver and device support both XR24 and BX24 on both
+little-endian and big-endian just fine, fix this extending the list of
+supported formats for main plane and cursor plane to XR24/BX24 resp.
+AR24/BA24.
+
+Fixes: 6ae2ff23aa43a0c4 ("drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()")
+Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
+Closes: https://lore.kernel.org/r/c47fba21-3ae9-4021-9f4a-09c2670ebdbc@xenosoft.de
+Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+ drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
+ drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
+ 2 files changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/gpu/drm/virtio/virtgpu_display.c b/drivers/gpu/drm/virtio/virtgpu_display.c
+index ad924a8502e9025c..49c89000aec33f23 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_display.c
++++ b/drivers/gpu/drm/virtio/virtgpu_display.c
+@@ -301,9 +301,16 @@ virtio_gpu_user_framebuffer_create(struct drm_device *dev,
+ 	struct virtio_gpu_framebuffer *virtio_gpu_fb;
+ 	int ret;
+ 
+-	if (mode_cmd->pixel_format != DRM_FORMAT_HOST_XRGB8888 &&
+-	    mode_cmd->pixel_format != DRM_FORMAT_HOST_ARGB8888)
++	switch (mode_cmd->pixel_format) {
++	case DRM_FORMAT_XRGB8888:
++	case DRM_FORMAT_ARGB8888:
++	case DRM_FORMAT_BGRX8888:
++	case DRM_FORMAT_BGRA8888:
++		break;
++
++	default:
+ 		return ERR_PTR(-ENOENT);
++	}
+ 
+ 	/* lookup object associated with res handle */
+ 	obj = drm_gem_object_lookup(file_priv, mode_cmd->handles[0]);
+diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
+index a2e045f3a0004a1b..a547d76b8fb0a77d 100644
+--- a/drivers/gpu/drm/virtio/virtgpu_plane.c
++++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
+@@ -30,11 +30,13 @@
+ #include "virtgpu_drv.h"
+ 
+ static const uint32_t virtio_gpu_formats[] = {
+-	DRM_FORMAT_HOST_XRGB8888,
++	DRM_FORMAT_XRGB8888,
++	DRM_FORMAT_BGRX8888,
+ };
+ 
+ static const uint32_t virtio_gpu_cursor_formats[] = {
+-	DRM_FORMAT_HOST_ARGB8888,
++	DRM_FORMAT_ARGB8888,
++	DRM_FORMAT_BGRA8888,
+ };
+ 
+ uint32_t virtio_gpu_translate_format(uint32_t drm_fourcc)
+-- 
+2.34.1
 
