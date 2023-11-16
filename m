@@ -2,99 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF8377EDDE6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5280F7EDDEF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:47:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344973AbjKPJqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36158 "EHLO
+        id S1344983AbjKPJrO convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 04:47:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbjKPJqh (ORCPT
+        with ESMTP id S235291AbjKPJrM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:46:37 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51B31196
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:34 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-d9beb865a40so536671276.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700127993; x=1700732793; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y2IE4TMhLsEPKM/hSail2p58dx/qbJfsgHuokbxSXhI=;
-        b=fwNN4VsEBk8G0CE69ZjqDJd2/Nfxczd10kYiYELxzMtFKhgZQ1dHCQSbu7413a5E8C
-         HZUFtKem9agXLZzG7VI100keMvojDs/du3tcI+IyVdGjOt0HpFnNljo8aJ1GR3kU47aW
-         BTxjMsddMRyB9lUmVBSQDmFFUopBgAoDTL7sw0YcbmQ8Pymp15i579D9L8Q4tJI5PlRw
-         Ld90NpzN2Q5QzCT+yh9Z8TgikFzdgtQ7xEMDyQwTgGzBmqp8BKDaTyeUWwB/SCDt/Qu+
-         fZ8d7lsLjcZ08g4nRZRt6WgLvUHFf87fAkyshcSTONhEpFjssjERBWafNbmypHvkZg76
-         G0dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700127993; x=1700732793;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y2IE4TMhLsEPKM/hSail2p58dx/qbJfsgHuokbxSXhI=;
-        b=ZuJ/KoBlpNO7kP0h509k6DUgzsHZw2A+gdBkOsYF6wCjHaua7FJqME1CtDZ0qmYE2o
-         H8/SooUamihd8RV5sxqHzN7HkxJeln0McDzLZdnpQKWcLRaSnNF2t/tPOGvDXm0YQ6Hk
-         y3jsNWiLw+la5/jvCApnoACgXT9Bvxn+vp+m05SAi9kAbZUe3Br7hEmDKgO3ZKGFqcgJ
-         Z9gC20hfJ23Fx81AZKs4NUj7DIT+KUsaP6NZv61SAtltKiu3S103lNTptbpzvDGMIrYt
-         L66CJxkd3/PjOkacQkGD2TNqkbOOgNgEmX47jDXLT8u+NJcs/YzbxEwhlFlhLmf3CHq3
-         wu7g==
-X-Gm-Message-State: AOJu0YxLZjMLPjah2jVCaC3Mv3H1bcjFME0dIWnCcQhCYlTOIU1RXeY/
-        pZiDIbquQaV+Pn1vS/RqKl7HXsRATgKtDYHYrb2HjQ==
-X-Google-Smtp-Source: AGHT+IEaGLOE138vjmqsqGe39mSoH/QW0BpxK1QQmicQZENCOk0z+Iv7+fnx4jrisMz1JiuwrRl9i2WhI1MB38wOZNM=
-X-Received: by 2002:a25:ad27:0:b0:d9a:5ff4:cfde with SMTP id
- y39-20020a25ad27000000b00d9a5ff4cfdemr15547906ybi.13.1700127993266; Thu, 16
- Nov 2023 01:46:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-22-iii@linux.ibm.com>
-In-Reply-To: <20231115203401.2495875-22-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 16 Nov 2023 10:45:57 +0100
-Message-ID: <CAG_fn=UyvxneFvXPyWhsiKQLrRh0aPpPKORh6J5HJ0t2ZHo4jw@mail.gmail.com>
-Subject: Re: [PATCH 21/32] s390: Use a larger stack for KMSAN
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
+        Thu, 16 Nov 2023 04:47:12 -0500
+Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B7196;
+        Thu, 16 Nov 2023 01:47:09 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.229])
+        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SWFBf6RNHz9v7cG;
+        Thu, 16 Nov 2023 17:30:34 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP2 (Coremail) with SMTP id GxC2BwAHuGHy5FVlZM3CAA--.37379S2;
+        Thu, 16 Nov 2023 10:46:39 +0100 (CET)
+Message-ID: <5a7a675238c2e29d02ae23f0ec0e1569415eb89e.camel@huaweicloud.com>
+Subject: Re: [PATCH v5 13/23] security: Introduce file_pre_free_security hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Date:   Thu, 16 Nov 2023 10:46:24 +0100
+In-Reply-To: <4f8c441e02222f063242adfbf4d733e1.paul@paul-moore.com>
+References: <20231107134012.682009-14-roberto.sassu@huaweicloud.com>
+         <4f8c441e02222f063242adfbf4d733e1.paul@paul-moore.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
+MIME-Version: 1.0
+X-CM-TRANSID: GxC2BwAHuGHy5FVlZM3CAA--.37379S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1DtryfZw48JrWfKF13twb_yoW8Ar15pF
+        Z8t3W5KFWUtF17Grn3AFsF9a4rKrZ3Kr17ZFZagr10qrnxZr95KF42kFWY9r4DJrs7Ary0
+        ga12gry3WryDZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
+        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
+        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
+        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
+        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
+        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQZ2-UUUUU=
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgADBF1jj5KGKgABsL
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> Adjust the stack size for the KMSAN-enabled kernel like it was done
-> for the KASAN-enabled one in commit 7fef92ccadd7 ("s390/kasan: double
-> the stack size"). Both tools have similar requirements.
->
-> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
+> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > 
+> > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> > the file_pre_free_security hook.
+> > 
+> > IMA calculates at file close the new digest of the file content and writes
+> > it to security.ima, so that appraisal at next file access succeeds.
+> > 
+> > LSMs could also take some action before the last reference of a file is
+> > released.
+> > 
+> > The new hook cannot return an error and cannot cause the operation to be
+> > reverted.
+> > 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > ---
+> >  fs/file_table.c               |  1 +
+> >  include/linux/lsm_hook_defs.h |  1 +
+> >  include/linux/security.h      |  4 ++++
+> >  security/security.c           | 11 +++++++++++
+> >  4 files changed, 17 insertions(+)
+> > 
+> > diff --git a/fs/file_table.c b/fs/file_table.c
+> > index de4a2915bfd4..64ed74555e64 100644
+> > --- a/fs/file_table.c
+> > +++ b/fs/file_table.c
+> > @@ -385,6 +385,7 @@ static void __fput(struct file *file)
+> >  	eventpoll_release(file);
+> >  	locks_remove_file(file);
+> >  
+> > +	security_file_pre_free(file);
+> 
+> I worry that security_file_pre_free() is a misleading name as "free"
+> tends to imply memory management tasks, which isn't the main focus of
+> this hook.  What do you think of security_file_release() or
+> security_file_put() instead?
+
+security_file_release() would be fine for me.
+
+Thanks
+
+Roberto
+
+> >  	ima_file_free(file);
+> >  	if (unlikely(file->f_flags & FASYNC)) {
+> >  		if (file->f_op->fasync)
+> 
+> --
+> paul-moore.com
+
