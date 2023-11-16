@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C5CC7EE596
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:56:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9072A7EE598
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:56:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345332AbjKPQ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:56:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S1345189AbjKPQ4h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:56:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36034 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbjKPQ4B (ORCPT
+        with ESMTP id S231135AbjKPQ4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:56:01 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29C0C19D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:55:58 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-83-dfelu8lQMMeuj6lgW5XekA-1; Thu, 16 Nov 2023 16:55:49 +0000
-X-MC-Unique: dfelu8lQMMeuj6lgW5XekA-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 16 Nov
- 2023 16:55:33 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 16 Nov 2023 16:55:33 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>
-CC:     Borislav Petkov <bp@alien8.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "fengwei.yin@intel.com" <fengwei.yin@intel.com>
-Subject: RE: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Thread-Topic: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Thread-Index: AQHaGDzAFfqMOen5JUCwmbDFX2u0nbB9JNQQ
-Date:   Thu, 16 Nov 2023 16:55:33 +0000
-Message-ID: <4cfd4808cc694f169aa8b83547ebc74d@AcuMS.aculab.com>
-References: <202311061616.cd495695-oliver.sang@intel.com>
- <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <4097023.1700084620@warthog.procyon.org.uk>
- <CAHk-=wgR3Mw2-8k2O3S10T-f4oz8FNfg7aziLU_6pbx0qowxew@mail.gmail.com>
- <42895.1700089191@warthog.procyon.org.uk>
- <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
-In-Reply-To: <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 16 Nov 2023 11:56:33 -0500
+Received: from sender-of-o51.zoho.in (sender-of-o51.zoho.in [103.117.158.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E260B7;
+        Thu, 16 Nov 2023 08:56:27 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1700153758; cv=none; 
+        d=zohomail.in; s=zohoarc; 
+        b=EBFhDQIZ/ojh3iwmVoYLmu7j2lhkfgvGQv9g8VbQOyDP8pjX3ABO3FIHvg6AU30KenHhm408h83yuPNpred96gJF6b1/h7SD/V5IxR13eqQ8WJPhuRiLoM/e05HKFWFXRn9GCUt/e4eRHayqlEQrjnHTZ6WW+fWCzqG+Obhf2fc=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.in; s=zohoarc; 
+        t=1700153758; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+        bh=jF/VM6Ul6I5Q3qO6v36yzMs2LjPy0A7+pMrSCdzjPQY=; 
+        b=AB3UXrOjOulybkeopPnvgv3loT6r3KVqRSVaR3zKKzn81GlY47m9WfREfwcSrexzlR7GUgkFRTBAdrJg7H0CP1a+jeXK+UmOIbbMgbk5LMHteH7u6anTb7tH8b7n9nHs4tp2mZzpvTO1pue+JbB2d823l3fI4367i9o+hesqcXQ=
+ARC-Authentication-Results: i=1; mx.zohomail.in;
+        dkim=pass  header.i=siddh.me;
+        spf=pass  smtp.mailfrom=code@siddh.me;
+        dmarc=pass header.from=<code@siddh.me>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1700153758;
+        s=zmail; d=siddh.me; i=code@siddh.me;
+        h=Message-ID:Date:Date:MIME-Version:To:To:Cc:Cc:References:Subject:Subject:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+        bh=jF/VM6Ul6I5Q3qO6v36yzMs2LjPy0A7+pMrSCdzjPQY=;
+        b=nLGtAtR+WeGYnQeiqkfbAOojEyOxm/e/JnJYKgiTDy41u2VEIe7A5mof6QZAYnJz
+        oewTIoT+OPoeJiJx5MaoXMP79eOh8nautjXS+TIt0Coir96wAIgiZd2EbzBJK/vAKDI
+        x0NADcOS1IAzj1yyI4/m/c55+PKlTyN73/Rc3mxA=
+Received: from [192.168.1.11] (106.201.112.144 [106.201.112.144]) by mx.zoho.in
+        with SMTPS id 170015375587354.15308217634913; Thu, 16 Nov 2023 22:25:55 +0530 (IST)
+Message-ID: <7824cf85-178f-4fca-8058-b9a1f49d3113@siddh.me>
+Date:   Thu, 16 Nov 2023 22:25:53 +0530
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
+User-Agent: Mozilla Thunderbird
+To:     davem@davemloft.net, edumazet@google.com,
+        krzysztof.kozlowski@linaro.org, kuba@kernel.org, pabeni@redhat.com
+Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com,
+        syzbot+bbe84a4010eeea00982d@syzkaller.appspotmail.com
+References: <000000000000cb112e0609b419d3@google.com>
+Subject: Re: [syzbot] [net?] [nfc?] KASAN: slab-use-after-free Read in
+ nfc_alloc_send_skb
+Content-Language: en-US, en-GB, hi-IN
+From:   Siddh Raman Pant <code@siddh.me>
+In-Reply-To: <000000000000cb112e0609b419d3@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTYgTm92ZW1iZXIgMjAyMyAwMzoyNw0KPiAN
-Cj4gT24gV2VkLCAxNSBOb3YgMjAyMyBhdCAxODowMCwgRGF2aWQgSG93ZWxscyA8ZGhvd2VsbHNA
-cmVkaGF0LmNvbT4gd3JvdGU6DQouLi4NCj4gPiBBIGRpc2Fzc2VtYmx5IG9mIF9jb3B5X2Zyb21f
-aXRlcigpIGZvciB0aGUgbGF0dGVyIGlzIGF0dGFjaGVkLiAgTm90ZSB0aGF0IHRoZQ0KPiA+IFVC
-VUYvSU9WRUMgc3RpbGwgdXNlcyAicmVwIG1vdnNiIg0KPiANCj4gV2VsbCwgeWVzIGFuZCBuby4N
-Cj4gDQo+IFVzZXIgY29waWVzIGRvIHRoYXQgWDg2X0ZFQVRVUkVfRlNSTSBhbHRlcm5hdGl2ZXMg
-ZGFuY2UsIHNvIHRoZSBjb2RlDQo+IGdldHMgZ2VuZXJhdGVkIHdpdGggInJlcCBtb3ZzIiwgYnV0
-IHlvdSdsbCBub3RlIHRoYXQgdGhlcmUgYXJlIHNldmVyYWwNCj4gJ25vcHMnIGFmdGVyIGl0Lg0K
-PiANCj4gU29tZSBvZiB0aGUgbm9wcyBhcmUgYmVjYXVzZSB3ZSdsbCBiZSBpbnNlcnRpbmcgU1RB
-Qy9DTEFDICh0aHJlZSBieXRlcw0KPiBlYWNoLCBJIHRoaW5rKSBpbnN0cnVjdGlvbnMgYXJvdW5k
-IHVzZXIgYWNjZXNzZXMgZm9yIFNNQVAtY2FwYWJsZQ0KPiBDUFUncy4NCj4gDQo+IEJ1dCBzb21l
-IG9mIHRoZSBub3BzIGFyZSBiZWNhdXNlIHdlJ2xsIGJlIHJld3JpdGluZyB0aGF0ICJyZXAgc3Rv
-c2IiDQo+ICh0d28gYnl0ZXMsIGlpcmMpIGFzICJjYWxsIHJlcF9zdG9zX2FsdGVybmF0aXZlIiAo
-NSBieXRlcykgb24gQ1BVJ3MNCj4gdGhhdCBkb24ndCBkbyBGU1JNIGxpa2UgeW91cnMuIFNvIHlv
-dXIgQ1BVIHdvbid0IGFjdHVhbGx5IGJlIGV4ZWN1dGluZw0KPiB0aGF0ICdyZXAgc3Rvc2InIHNl
-cXVlbmNlLg0KDQpJIHByZXN1bWUgbGFjayBvZiBjb2ZmZWUgaXMgcmVzcG9uc2libGUgZm9yIHRo
-ZSBzL21vdnMvc3Rvcy8gOi0pDQoNCkhvdyBtdWNoIGRpZmZlcmVuY2UgZG9lcyBGU1JNIGFjdHVh
-bGx5IG1ha2U/DQpFc3BlY2lhbGx5IHdoZW4gY29tcGFyZWQgdG8gdGhlIGNvc3Qgb2YgYSBmdW5j
-dGlvbiBjYWxsIChldmVuDQp3aXRob3V0IHRoZSBob3JyaWQgcmV0dXJuIHRodW5rKS4NCg0KRm9y
-IHNtYWxsICVjeCBJIHRoaW5rIG5vbi1GU1JNIG1vZGVybiBjcHUgYXJlIH4yIGNsb2Nrcy9ieXRl
-DQoobm8gZml4ZWQgb3ZlcmhlYWQpLg0KV2hpY2ggbWVhbnMgJ3JlcCBtb3ZzYicgd2lucyBmb3Ig
-Ym90aCBzaG9ydCBhbmQgbG9uZyBjb3BpZXMuDQpJIHdvbmRlciB3aGF0IHNpemVzIHRoZSBmdW5j
-dGlvbiBjYWxsICh3aXRoIGFsbCBpdHMgc2l6ZQ0KYmFzZWQgY29tcGFyZXMgYXQgdGhlIHRvcCkg
-aXMgYWN0dWFsbHkgYSB3aW4uDQoNClRoZXJlIGhhcyB0byBiZSBzb21lIG1pbGVhZ2UgaW4gZ2V0
-dGluZyB0aGUgY29tcGxpZXIgdG8gZ2VuZXJhdGUNCidjYWxsIG1lbWNweScgKGZvciBub24tY29u
-c3RhbnQgc2l6ZXMpIGFuZCB0aGVuIHJ1bi10aW1lIHBhdGNoaW5nDQp0aGUgNSBieXRlICdjYWxs
-IG9mZnNldCcgaW50byAnbW92ICVlZHgsJWVjeDsgcmVwIG1vdnNiJy4NCg0KCURhdmlkDQoNCi0N
-ClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBN
-aWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxl
-cykNCg==
+TLDR: Different stages of 1 and 2 can race with each other causing UAF.
 
+1. llcp_sock_sendmsg -> nfc_llcp_send_ui_frame -> loop call (nfc_alloc_send_skb(nfc_dev))
+
+2. virtual_ncidev_close -> [... -> nfc_llcp_socket_release -> ...] -> [... -> nfc_free_device]
+
+---
+
+Hi,
+
+I've been trying to fix this bug for some time but ending up getting
+stuck every now and then. If someone could give more inputs or fix it,
+it will be really helpful.
+
+This bug is due to racing between sendmsg and freeing of nfc_dev.
+
+For connectionless transmission, llcp_sock_sendmsg() codepath will
+eventually call nfc_alloc_send_skb() which takes in an nfc_dev as
+an argument for calculating the total size for skb allocation.
+
+virtual_ncidev_close() codepath eventually releases socket by calling
+nfc_llcp_socket_release() (which sets the sk->sk_state to LLCP_CLOSED)
+and afterwards the nfc_dev will be eventually freed.
+
+When an ndev gets freed, llcp_sock_sendmsg() will result in an
+use-after-free as it
+
+(1) doesn't have any checks in place for avoiding the datagram sending.
+	(1.1) Checking for LLCP_CLOSED in llcp_sock_sendmsg() does make
+	      the racing less likely. For -smp 6 it did not trigger on
+	      my PC, leading me to naively think that was the solution
+	      until syzbot told me quite some time later that it isn't.
+
+(2) calls nfc_llcp_send_ui_frame(), which also has a do-while loop which
+    can race with freeing (a msg with size of 4096 is sent in chunks of
+    128 in this repro).
+	(2.1) By this I mean just moving the nfc_dev access from
+	      nfc_alloc_send_skb to inside this function, be it
+	      inside or outside the loop, naturally doesn't work.
+
+When an nfc_dev is freed and we happened to get headroom and tailroom,
+PDU skb seems to be not allocated and ENXIO is returned.
+
+I tried to look at other code in net subsystem to get an idea how other
+places handle it, but accessing device later in the codepath does not
+seem to not be a norm. So I am starting to think some refactoring of the
+locking logic may be needed (or maybe RCU protect headroom and tailroom?).
+
+I don't know if I'm correct, but anyways where does one start?
+
+Thanks,
+Siddh
