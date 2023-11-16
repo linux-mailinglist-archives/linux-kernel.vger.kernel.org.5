@@ -2,189 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CA947EE02B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:53:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BA607EE027
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:53:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345154AbjKPLx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:53:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
+        id S1345140AbjKPLx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:53:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345132AbjKPLxz (ORCPT
+        with ESMTP id S1344985AbjKPLxZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:53:55 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BA0187
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:53:51 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3avq-0003lL-PZ; Thu, 16 Nov 2023 12:53:14 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3avk-009RKv-1F; Thu, 16 Nov 2023 12:53:08 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3avj-002aey-NF; Thu, 16 Nov 2023 12:53:07 +0100
-Date:   Thu, 16 Nov 2023 12:53:07 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
-Cc:     Jay Fang <f.fangjian@huawei.com>, Rob Herring <robh@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Tony Lindgren <tony@atomide.com>,
-        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Liu Ying <victor.liu@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Nick Alcock <nick.alcock@oracle.com>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Samuel Holland <samuel@sholland.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Yangtao Li <frank.li@vivo.com>, Yuan Can <yuancan@huawei.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jon Hunter <jonathanh@nvidia.com>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        linux-tegra@vger.kernel.org,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
-Subject: [PULL] bus: Convert to platform remove callback returning void
-Message-ID: <20231116115307.32rovgcej2s5pe4r@pengutronix.de>
-References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
- <1e5e1008-707b-449a-9dbf-48324eb2b248@app.fastmail.com>
+        Thu, 16 Nov 2023 06:53:25 -0500
+Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [IPv6:2001:41d0:203:375::ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E86CEC4
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:53:20 -0800 (PST)
+Message-ID: <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700135599;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=7Xl6aJx0SHekVlEjDxe6eGi8u/KrzGs66x4YWxgVZtU=;
+        b=QSXw0jhtDLFevMZsd8w9rmmT1z/O5XbhcFpo0gmhnUhUVkrAvp7RR28EnDKPaOhmfy7CAy
+        HaTOr6zQXt6F6N4YLg2dckFKFbr4IxJnOEl+0TOQNsJqbwD1DdJpJ1FZZC/L3rWHBTxc9g
+        nYO1XdcCRqkMsK09jATuJz7/r+s6FDM=
+Date:   Thu, 16 Nov 2023 19:53:12 +0800
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uz4ywpyf2v5xtmw3"
-Content-Disposition: inline
-In-Reply-To: <1e5e1008-707b-449a-9dbf-48324eb2b248@app.fastmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev>
+ <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
+ <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---uz4ywpyf2v5xtmw3
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hello Arnd,
+On 2023/11/16 19:29, Dmitry Baryshkov wrote:
+> On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>> Hi,
+>>
+>>
+>> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
+>>>> +
+>>>> +               ctx->connector = connector;
+>>>> +       }
+>>>>
+>>>>           if (ctx->info->id == ID_IT66121) {
+>>>>                   ret = regmap_write_bits(ctx->regmap, IT66121_CLK_BANK_REG,
+>>>> @@ -1632,16 +1651,13 @@ static const char * const it66121_supplies[] = {
+>>>>           "vcn33", "vcn18", "vrf12"
+>>>>    };
+>>>>
+>>>> -static int it66121_probe(struct i2c_client *client)
+>>>> +int it66121_create_bridge(struct i2c_client *client, bool of_support,
+>>>> +                         bool hpd_support, bool audio_support,
+>>>> +                         struct drm_bridge **bridge)
+>>>>    {
+>>>> +       struct device *dev = &client->dev;
+>>>>           int ret;
+>>>>           struct it66121_ctx *ctx;
+>>>> -       struct device *dev = &client->dev;
+>>>> -
+>>>> -       if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
+>>>> -               dev_err(dev, "I2C check functionality failed.\n");
+>>>> -               return -ENXIO;
+>>>> -       }
+>>>>
+>>>>           ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+>>>>           if (!ctx)
+>>>> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client *client)
+>>>>
+>>>>           ctx->dev = dev;
+>>>>           ctx->client = client;
+>>>> -       ctx->info = i2c_get_match_data(client);
+>>>> -
+>>>> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+>>>> -       if (ret)
+>>>> -               return ret;
+>>>> -
+>>>> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+>>>> -       if (ret)
+>>>> -               return ret;
+>>>> -
+>>>> -       i2c_set_clientdata(client, ctx);
+>>>>           mutex_init(&ctx->lock);
+>>>>
+>>>> -       ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
+>>>> -                                            it66121_supplies);
+>>>> -       if (ret) {
+>>>> -               dev_err(dev, "Failed to enable power supplies\n");
+>>>> -               return ret;
+>>>> +       if (of_support) {
+>>>> +               ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+>>>> +               if (ret)
+>>>> +                       return ret;
+>>>> +
+>>>> +               ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+>>>> +               if (ret)
+>>>> +                       return ret;
+>>>> +       } else {
+>>>> +               ctx->bus_width = 24;
+>>>> +               ctx->next_bridge = NULL;
+>>>>           }
+>>> A better alternative would be to turn OF calls into fwnode calls and
+>>> to populate the fwnode properties. See
+>>> drivers/platform/x86/intel/chtwc_int33fe.c for example.
+>>
+>> Honestly, I don't want to leave any scratch(breadcrumbs).
+>> I'm worries about that turn OF calls into fwnode calls will leave something unwanted.
+>>
+>> Because I am not sure if fwnode calls will make sense in the DT world, while my patch
+>> *still* be useful in the DT world.
+> fwnode calls work for both DT and non-DT cases. In the DT case they
+> work with DT nodes and properties. In the non-DT case, they work with
+> manually populated properties.
+>
+>> Because the newly introduced it66121_create_bridge()
+>> function is a core. I think It's better leave this task to a more advance programmer.
+>> if there have use case. It can be introduced at a latter time, probably parallel with
+>> the DT.
+>>
+>> I think DT and/or ACPI is best for integrated devices, but it66121 display bridges is
+>> a i2c slave device. Personally, I think slave device shouldn't be standalone. I'm more
+>> prefer to turn this driver to support hot-plug, even remove the device on the run time
+>> freely when detach and allow reattach. Like the I2C EEPROM device in the monitor (which
+>> contains the EDID, with I2C slave address 0x50). The I2C EEPROM device *also* don't has
+>> a corresponding struct device representation in linux kernel.
+> It has. See i2c_client::dev.
 
-On Fri, Nov 10, 2023 at 07:32:01AM +0100, Arnd Bergmann wrote:
-> On Thu, Nov 9, 2023, at 21:28, Uwe Kleine-K=F6nig wrote:
-> > this series converts all drivers below drivers/bus to struct
-> > platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
-> > Provide a remove callback that returns no value") for an extended
-> > explanation and the eventual goal.
-> >
-> > drivers/bus/fsl-mc was already addressed earlier with a separate
-> > series[1].
-> >
-> > All conversations are trivial, because all .remove() callbacks returned
-> > zero unconditionally.
-> >
-> > Some of the drivers touched here don't have a maintainer and there is no
-> > maintainer for all of drivers/bus. It would be great if someone could p=
-ick up
-> > the whole series, maybe Arnd might do that?
->=20
-> Sure, please send a pull request to soc@kernel.org if there
-> are no further comments.
+No, what I mean is that there don't have a device driver for monitor(display) hardware entity.
+And the drm_do_probe_ddc_edid() is the static linked driver, which is similar with the idea
+this series want to express.
 
-here it comes:
 
-The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+>> so I still think It is best to make this drivers functional as a static lib, but I want
+>> to hear you to say more. Why it would be a *better* alternative to turn OF calls into
+>> fwnode calls? what are the potential benefits?
+> Because then you can populate device properties from your root device.
+> Because it allows the platform to specify the bus width instead of
+> hardcoding 24 bits (which might work in your case, but might not be
+> applicable to another user next week).
 
-  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-are available in the Git repository at:
+No, this problem can be easily solved. Simply add another argument.
 
-  https://git.pengutronix.de/git/ukl/linux tags/bus-platform-remove-void
+```
 
-for you to fetch changes up to 7d6da8800a35d2257ff8b4b7d7c4551978f0a71a:
+int it66121_create_bridge(struct i2c_client *client, bool of_support,
+                           bool hpd_support, bool audio_support, u32 bus_width,
+                           struct drm_bridge **bridge);
+```
 
-  bus: ts-nbus: Convert to platform remove callback returning void (2023-11=
--16 12:43:57 +0100)
 
-----------------------------------------------------------------
-This series converts all drivers below drivers/bus to struct
-platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
-Provide a remove callback that returns no value") for an extended
-explanation and the eventual goal.
+> Anyway, even without fwnode, I'd strongly suggest you to drop the
+> it66121_create_bridge() as it is now and start by populating the i2c
+> bus from your root device.
 
-After the initial simplification in commit 864acca58000 ("bus: fsl-mc:
-Drop if block with always false condition") all conversations are
-trivial because the remove callbacks all return zero unconditionally.
+This will force all non-DT users to add the similar code patter at the display controller side,
+which is another kind of duplication. The monitor is also as I2C slave device, can be abstract
+as a identify drm bridges in theory, I guess.
 
-----------------------------------------------------------------
-Uwe Kleine-K=F6nig (14):
-      bus: fsl-mc: Drop if block with always false condition
-      bus: fsl-mc: Convert to platform remove callback returning void
-      bus: hisi_lpc: Convert to platform remove callback returning void
-      bus: omap-ocp2scp: Convert to platform remove callback returning void
-      bus: omap_l3_smx: Convert to platform remove callback returning void
-      bus: qcom-ssc-block-bus: Convert to platform remove callback returnin=
-g void
-      bus: simple-pm-bus: Convert to platform remove callback returning void
-      bus: sun50i-de2: Convert to platform remove callback returning void
-      bus: sunxi-rsb: Convert to platform remove callback returning void
-      bus: tegra-aconnect: Convert to platform remove callback returning vo=
-id
-      bus: tegra-gmi: Convert to platform remove callback returning void
-      bus: ti-pwmss: Convert to platform remove callback returning void
-      bus: ti-sysc: Convert to platform remove callback returning void
-      bus: ts-nbus: Convert to platform remove callback returning void
 
- drivers/bus/fsl-mc/fsl-mc-bus.c  | 16 +++-------------
- drivers/bus/hisi_lpc.c           |  6 ++----
- drivers/bus/omap-ocp2scp.c       |  6 ++----
- drivers/bus/omap_l3_smx.c        |  6 ++----
- drivers/bus/qcom-ssc-block-bus.c |  6 ++----
- drivers/bus/simple-pm-bus.c      |  7 +++----
- drivers/bus/sun50i-de2.c         |  5 ++---
- drivers/bus/sunxi-rsb.c          |  6 ++----
- drivers/bus/tegra-aconnect.c     |  6 ++----
- drivers/bus/tegra-gmi.c          |  6 ++----
- drivers/bus/ti-pwmss.c           |  5 ++---
- drivers/bus/ti-sysc.c            |  6 ++----
- drivers/bus/ts-nbus.c            |  6 ++----
- 13 files changed, 28 insertions(+), 59 deletions(-)
+> Then you will need some way (fwnode?) to
+> discover the bridge chain. And at the last point you will get into the
+> device data and/or properties business.
+>
+No, leave that chance to a more better programmer and forgive me please,
+too difficult, I'm afraid of not able to solve. Thanks a lot for the trust!
 
-Thanks for considering these changes,
-Uwe
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---uz4ywpyf2v5xtmw3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVWAqIACgkQj4D7WH0S
-/k4d1gf/TpLJMgm0K7phGR6IWiPk7QZqX2jnAbl6qyTi+9xjRHbuz/D4C7zAO46l
-ZHY9vIM/qpv5F+ym/qOFKjh1byHDqtIdhJiICka50uHZfsH7LhgPtrf6O3sUWzeu
-iA2Rv+ntUK7EabnEka/zzepJYvXPUiulla0N7to+syQffGo24ialHAubU9e2BztQ
-q78IWAu/LKAgcMT6uxHCELNmTMuORFiN+DI2T4wVwbzLGh8IinScezVi1pmRREDI
-gZTzC0dqmgDbLT57PFwpRRDWUrzj+B2HIzBd6BcZiG3eR6JQID4Z2ahfCDQTMM0o
-9HDdblXjmhubXbN71G1MA0Mi7knPWQ==
-=u4Db
------END PGP SIGNATURE-----
-
---uz4ywpyf2v5xtmw3--
