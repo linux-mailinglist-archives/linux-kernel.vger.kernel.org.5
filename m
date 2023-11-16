@@ -2,149 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5C897EDE02
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 939807EDE06
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:54:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345004AbjKPJxc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:53:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S1345007AbjKPJyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:54:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344956AbjKPJxa (ORCPT
+        with ESMTP id S230182AbjKPJyS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:53:30 -0500
-Received: from mail-pg1-f207.google.com (mail-pg1-f207.google.com [209.85.215.207])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59028E0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:53:26 -0800 (PST)
-Received: by mail-pg1-f207.google.com with SMTP id 41be03b00d2f7-5c1b986082dso652929a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:53:26 -0800 (PST)
+        Thu, 16 Nov 2023 04:54:18 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF34C5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:54:14 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-545557de8e6so9943a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:54:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700128453; x=1700733253; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MLQdK0PLkPgbZpmnpIM+hlNxS7X74nHsOVnDPoi/MMI=;
+        b=gqakr0mJyyix209cnpqdAKE8rlVzuMRWwon8dFQIz4K5Dgl2AAnNlgEyqx9dBDylkw
+         J6+bOyFRXm9maQEhmEQBBqeUHZXPK/Ghs86XWFh3HjtI2gD17xgSvfZm2eaBeB9+PGBm
+         XebzVvN7hx03bLVl7RDFIkU9x2heqQmD21lRmy4XPcgs++6ikkQY1osuyBkapwJZ3Kbh
+         KAAB59qdnI2rUzEVM5IzWu4mLN+0mZ24PWO7MFmfsHlrFQSg8RWVxDK9xntTimCC54/q
+         pVhlxU21ahyLXxM8B5Y2gYR63uoU34M+p13K+dIgLZXmEuSI1UiUxCK/veTT11nWxI29
+         JNqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700128406; x=1700733206;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TGFeETijn5gpNnYM4nN6xlKFUYFfT5fG57XpqChy2YI=;
-        b=akYBnsJy9OyfHg1ZQeJEt4ExQlnnlvn9vos6jDjayCFxsm3wMtgstAR3L9fNlZcKnp
-         Zz/Psy+IMYEz8lBcb/qBrkQSBrCU1T9mB7U3WI4XZlIQIybMJv2Nh3t+PTrieHqzCdcs
-         Cw/Z7V7OF33qBjyADvl7SQrHtDCFVflwrQlbc+lMdg5WTp7X1le1UjInN9eXHIhtD/o0
-         w+cW/Y9GtTtcaQVy3uVygpZri12D7ZoT2n3WCp+RvyBxqyPBQ9zrAgyaJ1AZIFvZKnKm
-         W4h+vN4Fm9QTUBXB9o8GUf/EvRqwu61sJ44rFshDloNctjYgrTAwYRNExXn6KoIvnr0R
-         ulmg==
-X-Gm-Message-State: AOJu0YxhVPlJO+lwkLjk+Nrt/6jDNtEMVMR6SBXFgVCSJUapGolqccO6
-        KZFdSnXNzthIdGhKEUozgeA/fiLkLEpyLQopo4Ir5Js0W0DE
-X-Google-Smtp-Source: AGHT+IFogAZ4bvp2CXiUK3PU66MvCM4xJEc50QAjeA1rM2PjVZbIdOiEfChDQOJEzK8Koa8dun6hKvKBJEXoxbjN5QrEwSfcVe6q
+        d=1e100.net; s=20230601; t=1700128453; x=1700733253;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MLQdK0PLkPgbZpmnpIM+hlNxS7X74nHsOVnDPoi/MMI=;
+        b=iHWbYGSIe1JztdgOPeXCe22YHmEjaqznDQRdOjzu8lsslmidwLcjTBkWBlFJGCEj20
+         EUCr9UnhSFJb2vPPFbLAoakcx350WZ8ZCmRAcR8EjbxQYlh2E0leyj/JbGeuW0HqBgGf
+         MqaKaTyUf+1FqM6bh7M6feRti+WwWyOqrRanGG2cNOFeROh5uW/TYC/DX6BzIrjSp0+4
+         eQfHsLYTOBhmlUuwAnquqfu/GPkIkNzTINWhalldzcE32mJN85YjFEhvCBFN9KJMDOLQ
+         YLAHq220PnrQ2VVRPj1jh/ZVSVIUv0BiwIjANF6CBqrQ6SvZOsjoVPz4FKRJysiySrmj
+         7MGQ==
+X-Gm-Message-State: AOJu0Yz3fdnFyru0rPG02bw6kERLL0TdQUg3C7nK/YjQ58Pa7J9lky5H
+        rHeDHn4cJLkEp1LhSnFdEMvAdbq6Mzo1FmZ2CkXwNXjVqadd3MdxXHUx9Q==
+X-Google-Smtp-Source: AGHT+IEDR1q7Da+YvzRz4+svEYmFMPz1ROgkRbBFp+eFx4Jjr4wnvOnJi+lx8lSCvPW9fwl+a4axtp4udoCrAfJpjWM=
+X-Received: by 2002:aa7:c78c:0:b0:545:94d:7b with SMTP id n12-20020aa7c78c000000b00545094d007bmr91808eds.4.1700128452617;
+ Thu, 16 Nov 2023 01:54:12 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a63:1017:0:b0:589:5235:b3cb with SMTP id
- f23-20020a631017000000b005895235b3cbmr204427pgl.3.1700128405845; Thu, 16 Nov
- 2023 01:53:25 -0800 (PST)
-Date:   Thu, 16 Nov 2023 01:53:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b3fe4d060a41fdeb@google.com>
-Subject: [syzbot] [udf?] WARNING in udf_prealloc_blocks (2)
-From:   syzbot <syzbot+cc2b732891efbf755b78@syzkaller.appspotmail.com>
-To:     jack@suse.com, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
+ <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com>
+ <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
+ <CAOuDEK3UuVGgP63NG9HtuJ0D2ERZsFGBwF5+GNynk=P7zSVUhg@mail.gmail.com> <CAJZ5v0j-JdoGADG6rYNOEY1ePtDz0vsV4T1wX2TO1t+5kPyJ8Q@mail.gmail.com>
+In-Reply-To: <CAJZ5v0j-JdoGADG6rYNOEY1ePtDz0vsV4T1wX2TO1t+5kPyJ8Q@mail.gmail.com>
+From:   Guan-Yu Lin <guanyulin@google.com>
+Date:   Thu, 16 Nov 2023 17:54:01 +0800
+Message-ID: <CAOuDEK1hiVyFuZ__YFnOhfWV_JqMw83wCtPnX2a1xj6pb4Q5QA@mail.gmail.com>
+Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Alan Stern <stern@rowland.harvard.edu>, gregkh@linuxfoundation.org,
+        len.brown@intel.com, pavel@ucw.cz, heikki.krogerus@linux.intel.com,
+        mkl@pengutronix.de, hadess@hadess.net, mailhol.vincent@wanadoo.fr,
+        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        pumahsu@google.com, raychi@google.com, albertccwang@google.com
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Nov 15, 2023 at 10:10=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.o=
+rg> wrote:
+>
+> On Wed, Nov 15, 2023 at 8:08=E2=80=AFAM Guan-Yu Lin <guanyulin@google.com=
+> wrote:
+> >
+> > On Wed, Nov 8, 2023 at 11:56=E2=80=AFPM Alan Stern <stern@rowland.harva=
+rd.edu> wrote:
+> > >
+> > > On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
+> > > > Thanks for the questions. Let me first introduce my motivation for
+> > > > proposing this feature. We can discuss the implementation details l=
+ater.
+> > > >
+> > > > Motivation:
+> > > > Currently, system PM operations always override runtime PM operatio=
+ns.
+> > > > As runtime PM reflects the power status of devices, there is a
+> > > > possibility that runtime PM states that a device is in use, but sys=
+tem
+> > > > PM decides to suspend it. Up to now, we have assumed that a device =
+can't
+> > > > function without resources from the system, so the device should ac=
+quire
+> > > > a wakelock to prevent this from happening. However, what if the dev=
+ice
+> > >
+> > > [From the fact that you mention wakelocks, I assume that you're tryin=
+g
+> > > to implement something for Android systems rather than Linux systems
+> > > in general.]
+> > >
+> > > > does not need the system's support to function? Or only needs limit=
+ed
+> > > > resources (e.g., only limited power source or clock) to function? I=
+n this
+> > > > situation, we would like to keep the device on but allow the system=
+ to
+> > > > suspend. This is an example where we would like devices to follow r=
+untime
+> > > > PM rather than system PM.
+> > >
+> > > To put it more simply, you want a way to leave some devices in an act=
+ive
+> > > state while the rest of the system is suspended.  It's not clear why =
+you
+> > > have dragged runtime PM into the discussion (apart from the obvious f=
+act
+> > > that you won't want to keep a device active if it isn't active alread=
+y).
+> > >
+> >
+> > The determination of which device should remain active when the system
+> > suspends can be based on various factors. One straightforward approach
+> > is to consider the device's runtime pm state.
+>
+> Not really.  The runtime PM status has no bearing on whether or not
+> the device should remain active over a system suspend/resume cycle.
+>
 
-syzbot found the following issue on:
+Thanks for the information.
 
-HEAD commit:    1b907d050735 Merge tag '6.7-rc-smb3-client-fixes-part2' of..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10d7f898e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=88e7ba51eecd9cd6
-dashboard link: https://syzkaller.appspot.com/bug?extid=cc2b732891efbf755b78
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> > Alternatively, we could
+> > explore more elaborate techniques that consider additional criteria.
+>
+> In fact, the device's driver decides what is going to happen to it
+> during the system suspend transition.  It very well may decide to
+> leave the device in the operational state, but it needs to take
+> dependencies between into account.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+Seems like it would be better for each device to modify its suspend/
+resume code rather than designing a generic framework. As the specific
+use cases of each component are not yet fully understood, the device
+driver provides ample flexibility for customization at this stage.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/567b9cb02431/disk-1b907d05.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/7d18e697c356/vmlinux-1b907d05.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b0d7c3147ec4/bzImage-1b907d05.xz
+>
+> > > This sounds like a major change, not something to be done with a simp=
+le
+> > > override.  You should discuss it with Rafael Wysocki and the linux-pm
+> > > mailing list before trying to implement anything.
+> > >
+> > > > Feature Supported:
+> > > > 1. Devices could control the priority of system PM and runtime PM d=
+uring
+> > > >    runtime.
+> > >
+> > > This seems like a totally unnecessary side issue.  Forget about runti=
+me
+> > > PM for the time being and concentrate instead on which devices you wa=
+nt
+> > > to keep active.
+> > >
+> > > > 2. The control should be at the device level, meaning that differen=
+t
+> > > >    devices should control their own priorities.
+> > > >
+> > > > Goal of This Patch:
+> > > > 1. Design a framework to support features above.
+> > > > 2. Apply it into usb for demonstration.
+> > >
+> > > You may find that it is easier (and less work in the long run) to des=
+ign
+> > > the general framework and get it working than to concentrate on one
+> > > particular subsystem.
+> > >
+> > > Alan Stern
+> >
+> > The big picture is "a way to leave some devices in an active state
+> > while the rest of the system is suspended", I think it could be
+> > separated into:
+> > (1) Each system should be able to choose which device(s) is included
+> >     in this feature.
+> > (2) For devices chosen in (1), each of them should have the flexibility
+> >     to determine when it will not suspend with the system, not just
+> >     always being active when the system suspends.
+>
+> A specific use case, please.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+cc2b732891efbf755b78@syzkaller.appspotmail.com
+We have a sub-system sharing some devices (e.g., usb controller, host
+controller) with the main system. In the current system power
+management framework, when the main system suspends, the devices will
+suspend, too. However, sometimes these devices are still used by the
+sub-system, so we don't want the main system to always suspend the
+devices.
 
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 26000 at fs/udf/udfdecl.h:123 udf_add_free_space fs/udf/balloc.c:121 [inline]
-WARNING: CPU: 1 PID: 26000 at fs/udf/udfdecl.h:123 udf_table_prealloc_blocks fs/udf/balloc.c:572 [inline]
-WARNING: CPU: 1 PID: 26000 at fs/udf/udfdecl.h:123 udf_prealloc_blocks+0xf13/0x1310 fs/udf/balloc.c:705
-Modules linked in:
-CPU: 1 PID: 26000 Comm: syz-executor.1 Not tainted 6.6.0-syzkaller-16176-g1b907d050735 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-RIP: 0010:udf_updated_lvid fs/udf/udfdecl.h:121 [inline]
-RIP: 0010:udf_add_free_space fs/udf/balloc.c:121 [inline]
-RIP: 0010:udf_table_prealloc_blocks fs/udf/balloc.c:572 [inline]
-RIP: 0010:udf_prealloc_blocks+0xf13/0x1310 fs/udf/balloc.c:705
-Code: 48 8d 65 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 e8 43 a2 84 fe e9 4b f7 ff ff e8 39 a2 84 fe 0f 0b e9 67 f8 ff ff e8 2d a2 84 fe <0f> 0b e9 c9 fe ff ff 89 d9 80 e1 07 fe c1 38 c1 0f 8c 08 f2 ff ff
-RSP: 0018:ffffc90015907180 EFLAGS: 00010287
-RAX: ffffffff830a2023 RBX: 0000000030303d6b RCX: 0000000000040000
-RDX: ffffc9000b843000 RSI: 00000000000376bd RDI: 00000000000376be
-RBP: ffffc900159072f0 R08: ffffffff830a1ee6 R09: 1ffffffff1e01a45
-R10: dffffc0000000000 R11: fffffbfff1e01a46 R12: ffff88801fd724c0
-R13: dffffc0000000000 R14: ffff88803d3c901c R15: ffff88802220c630
-FS:  00007fbe5ec496c0(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f3093398000 CR3: 000000007b4ef000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- udf_prealloc_extents fs/udf/inode.c:1032 [inline]
- inode_getblk fs/udf/inode.c:890 [inline]
- udf_map_block+0x285d/0x5560 fs/udf/inode.c:444
- __udf_get_block+0x126/0x410 fs/udf/inode.c:458
- __block_write_begin_int+0x54d/0x1ac0 fs/buffer.c:2119
- __block_write_begin fs/buffer.c:2168 [inline]
- block_write_begin+0x9b/0x1e0 fs/buffer.c:2227
- udf_write_begin+0x10d/0x1a0 fs/udf/inode.c:261
- generic_perform_write+0x31b/0x630 mm/filemap.c:3918
- udf_file_write_iter+0x2fd/0x660 fs/udf/file.c:111
- call_write_iter include/linux/fs.h:2020 [inline]
- new_sync_write fs/read_write.c:491 [inline]
- vfs_write+0x792/0xb20 fs/read_write.c:584
- ksys_write+0x1a0/0x2c0 fs/read_write.c:637
- do_syscall_x64 arch/x86/entry/common.c:51 [inline]
- do_syscall_64+0x44/0x110 arch/x86/entry/common.c:82
- entry_SYSCALL_64_after_hwframe+0x63/0x6b
-RIP: 0033:0x7fbe5de7cae9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fbe5ec490c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007fbe5df9c050 RCX: 00007fbe5de7cae9
-RDX: 000000006db6e559 RSI: 0000000020000080 RDI: 0000000000000007
-RBP: 00007fbe5dec847a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007fbe5df9c050 R15: 00007ffe85dd4218
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+Regards,
+Guan-Yu
