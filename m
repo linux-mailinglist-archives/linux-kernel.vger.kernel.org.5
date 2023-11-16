@@ -2,148 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 59FEA7EE5D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:24:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F9977EE5DB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:24:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345281AbjKPRYM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:24:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37784 "EHLO
+        id S231362AbjKPRYR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:24:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229634AbjKPRYL (ORCPT
+        with ESMTP id S229634AbjKPRYO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:24:11 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972381A5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:24:07 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id d9443c01a7336-1ce5b72e743so8895ad.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:24:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700155447; x=1700760247; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=fxrwYPS2UXkYH5vJnr9A5YVDipfIzNaz0lzuX0Xmv0I=;
-        b=irctMJkuQHl395qk1zZSnnb1uRrxAh1I2QfTBzgJHJRnlELvi545Jsv3n46PDJAvLN
-         H6q1zJJfkQ/82FSzmMS+x9avgRyvoDDNL+ryPh03d7SpXvHrbtMttCMyPY6k2AlFoviK
-         09XVrxHO0vX1QL5+tpehlJLb+mSYpWX1P4UuM56z7XhLbnTxtW0UZ9PLmQe8/Re130Vf
-         n9rvaWjpOOw+TACvenRoh5B0FGSjw6L4acXbTUoV+rKPhhtij0N5KmYfzUaM2wpmkY+F
-         c2Ersp2t1jD3GlAlR4FFMNtiAeF+NZchC4F1tpm2POWX4SFD1/Pbgic72Aw9lbXhgo+g
-         KB2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700155447; x=1700760247;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fxrwYPS2UXkYH5vJnr9A5YVDipfIzNaz0lzuX0Xmv0I=;
-        b=c8PQQQQ0xrnErRYyCOXm2h73YNm3nQHBOdCuwlAAELnGXJVrrnyNW5nHEWmi85YejK
-         +qThnQoXo/lwT3UoywMMkjwxBIKWhiKJAs5TEr0xKN70DkdwoIs+k372BkNOpAety7wb
-         IE+zzXsUWNnSsvSX6mRhUpZ2cGKQpIO1EmepkPpgLNIUD1tGoAizM723PT6UWm74N28O
-         mqblV8vqSvzQTvvJTqfS8KVrlTFwyCRUxZvTOx99HTmludQO7wogLQ8cRXru5rRwF86h
-         tXeQesECLxkTsxQ7TQrb9po16lxQf2zLPOJm+CZn5bJfojewyWrTwOwCt9/lC0RPaV8Z
-         tFRg==
-X-Gm-Message-State: AOJu0YxWByb4rSdX5+z0iQlquTSxtr1GkDI7CCA2lPwG4o6J9q3FioGV
-        qFJR8YCUaLyiB0fQz4CC9w97BSvu8i/RB+iGW5XFMQ==
-X-Google-Smtp-Source: AGHT+IFr8rUGSROBx+KthnbMWFjb114D0XucdKv2i+7CAsyNBKWK/XLKLVYkxswJRzGDWuZeAfXfu5JQ88fyMqoyh6M=
-X-Received: by 2002:a17:902:dace:b0:1cc:38c4:5448 with SMTP id
- q14-20020a170902dace00b001cc38c45448mr318339plx.22.1700155446770; Thu, 16 Nov
- 2023 09:24:06 -0800 (PST)
+        Thu, 16 Nov 2023 12:24:14 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520E4B7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:24:11 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6940C433C8;
+        Thu, 16 Nov 2023 17:24:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700155451;
+        bh=6Uez4j1D+PV94+gqoUCDXgF4YMEOJqot79M3jVUUXcE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tL5bXgoYqER57kKf3S27zY1UmSnSytsgx9QMRh0kUUc/HRJ65MQtxQs/l0oGayDrW
+         Za0jzcrRlQtnLZ8QqiNBeF0RHj5D3klQ12XcWwVW+hr9e0wTLwcQ2EP10E0bbFnH5y
+         Pent9uuB/VMnqvp+m3syefqXBX2nk4WV6PL1CYKnpDQVyom+IsgGn6CnoyzfrBDBmS
+         +p12aQuhp0WricDi1IuBYGwhW4unEjgFPYjpi4i4/hVTVZDkXkFaAFR8ABCjsr6uKb
+         9kyh1Y1X/k4IZWt07tUl8Enu3mfHzBEtsRSqrl3Et9TT0R874EbP9R2bDBwQxh2QmW
+         kF+iFhop8mh3A==
+Date:   Thu, 16 Nov 2023 17:24:07 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] dt-bindings: gpu: samsung: constrain clocks in
+ top-level properties
+Message-ID: <20231116-fit-secluding-58541c26d484@squawk>
+References: <20231112184403.3449-1-krzysztof.kozlowski@linaro.org>
+ <20231112184403.3449-3-krzysztof.kozlowski@linaro.org>
+ <20231113-sultry-cold-d63dd9f015d9@squawk>
+ <20231116162855.GA2435337-robh@kernel.org>
+ <e9daa8cc-9cdd-4b76-96b9-b9a6b1ef6f5e@linaro.org>
 MIME-Version: 1.0
-References: <20231116025109.3775055-1-roman.gushchin@linux.dev> <4bd106d5-c3e3-6731-9a74-cff81e2392de@suse.cz>
-In-Reply-To: <4bd106d5-c3e3-6731-9a74-cff81e2392de@suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 16 Nov 2023 09:23:55 -0800
-Message-ID: <CALvZod6_SWk8CUCW+9CToxEozfQZiCqW26anTQS7CdpRrPwzUA@mail.gmail.com>
-Subject: Re: [PATCH] mm: kmem: properly initialize local objcg variable in current_obj_cgroup()
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        Erhard Furtner <erhard_f@mailbox.org>,
-        David Rientjes <rientjes@google.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="fFmKGqJ6SO8LH1UG"
+Content-Disposition: inline
+In-Reply-To: <e9daa8cc-9cdd-4b76-96b9-b9a6b1ef6f5e@linaro.org>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 11:04=E2=80=AFPM Vlastimil Babka <vbabka@suse.cz> w=
-rote:
->
-> On 11/16/23 03:51, Roman Gushchin wrote:
-> > Actually the problem is caused by uninitialized local variable in
-> > current_obj_cgroup(). If the root memory cgroup is set as an active
-> > memory cgroup for a charging scope (as in the trace, where systemd
-> > tries to create the first non-root cgroup, so the parent cgroup is
-> > the root cgroup), the "for" loop is skipped and uninitialized objcg is
-> > returned, causing a panic down the accounting stack.
-> >
-> > The fix is trivial: initialize the objcg variable to NULL
-> > unconditionally before the "for" loop.
-> >
-> > Fixes: e86828e5446d ("mm: kmem: scoped objcg protection")
-> > Reported-by: Erhard Furtner <erhard_f@mailbox.org>
-> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1959
-> > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-> > Cc: Shakeel Butt <shakeelb@google.com>
-> > Cc: Vlastimil Babka <vbabka@suse.cz>
-> > Cc: David Rientjes <rientjes@google.com>
-> > Cc: Dennis Zhou <dennis@kernel.org>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: Michal Hocko <mhocko@kernel.org>
-> > Cc: Muchun Song <muchun.song@linux.dev>
-> > Cc: stable@vger.kernel.org
->
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->
-> We could also do this to make it less confusing?
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 774bd6e21e27..a08bcec661b6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3175,7 +3175,6 @@ __always_inline struct obj_cgroup *current_obj_cgro=
-up(void)
->                 objcg =3D rcu_dereference_check(memcg->objcg, 1);
->                 if (likely(objcg))
->                         break;
-> -               objcg =3D NULL;
->         }
->
->         return objcg;
->
->
-> > ---
-> >  mm/memcontrol.c | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 774bd6e21e27..b138501e6489 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -3165,6 +3165,7 @@ __always_inline struct obj_cgroup *current_obj_cg=
-roup(void)
-> >       return NULL;
-> >
-> >  from_memcg:
-> > +     objcg =3D NULL;
-> >       for (; !mem_cgroup_is_root(memcg); memcg =3D parent_mem_cgroup(me=
-mcg)) {
-> >               /*
-> >                * Memcg pointer is protected by scope (see set_active_me=
-mcg())
->
 
-For Roman's change and Vlastimil's cleanup:
+--fFmKGqJ6SO8LH1UG
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Acked-by: Shakeel Butt <shakeelb@google.com>
+On Thu, Nov 16, 2023 at 06:17:31PM +0100, Krzysztof Kozlowski wrote:
+> On 16/11/2023 17:28, Rob Herring wrote:
+> > On Mon, Nov 13, 2023 at 01:51:30PM +0000, Conor Dooley wrote:
+> >> On Sun, Nov 12, 2023 at 07:44:01PM +0100, Krzysztof Kozlowski wrote:
+> >>> When number of clock varies between variants, the Devicetree bindings
+> >>> coding convention expects to have widest constraints in top-level
+> >>> definition of the properties and narrow them in allOf:if:then block.
+> >>>
+> >>> This is more readable and sometimes allows to spot some errors in the
+> >>> bindings.
+> >>>
+> >>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>
+> >>
+> >> =C5cked-by: Conor Dooley <conor.dooley@microchip.com>
+> >=20
+> >   ^
+> >=20
+> > Not an 'A'. I only caught this because I go thru everything=20
+> > Acked/Reviewed-by first and this one was missed.
+>=20
+> And in Norwegian it is pronounced as "o", so this would be ocked-by :)
+
+What on earth! The fedora install on this macbook I've been travelling
+with does some odd things (clearly there's some setting I need to
+disable) if I type something incorrectly and hit a backspace, but I use
+a vim keybind to "type" my acks etc, so I am not sure that could have
+been affected. FWIW,
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+
+--fFmKGqJ6SO8LH1UG
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVZQNAAKCRB4tDGHoIJi
+0gWAAP9W+XCybNMkVo8bMN5r4PJjQJGNCRNikfpBlS1m6dw74gEAltKpe/BflVoJ
+60jjmtdd8w8JJuweFkYGUVs9o1/8rQQ=
+=Y/mO
+-----END PGP SIGNATURE-----
+
+--fFmKGqJ6SO8LH1UG--
