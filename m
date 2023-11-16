@@ -2,104 +2,323 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 666F97EE1E4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:49:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B8A77EE1E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:49:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345247AbjKPNtP convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 08:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
+        id S1345274AbjKPNtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:49:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231163AbjKPNtO (ORCPT
+        with ESMTP id S1345255AbjKPNtW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:49:14 -0500
-Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3E8F;
-        Thu, 16 Nov 2023 05:49:10 -0800 (PST)
-Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5a7d9d357faso8785587b3.0;
-        Thu, 16 Nov 2023 05:49:10 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700142550; x=1700747350;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P1Ku/zmxTW3EJ14ZGSPwQJRq9NOGMsjfK91kYUMoPFQ=;
-        b=EArBMav3NNfnQsEE7Rm7zM5LulRbQJW9YY/v5CqmaKCfsNZLdEi/rsPc4NfaYOa+mM
-         lyH1rQgWdlvG7g40erf7L0ZDbKBw9e7PbbegiDAlnrrSRzxjq0lQzvuGYzOy0G00O2h2
-         ifYwKjWiwPqiRfL+sDaHTISinTgWkHoguPUfg0vGCOcj0mUyb+hCMObUDS5rpCbUN96g
-         47JZveHWXnkXzT9i+P2e8LACSJhEbkeqDXIQpkAJsMjw2YdeEMv7KvWSvtWgGU1jS1G7
-         TZV6oxcCJ4Jb0AjkNcMiwYfdH87p443wWodOiyvlaC3WH3tK22I+D0N3EpFBunkwsCtg
-         Q08g==
-X-Gm-Message-State: AOJu0YytzgA0WMNZ9JRfcGmKMU0tQG1oKC8d0t/cVtRNgUr68abt93L+
-        /BlVJXl71YWnSieM9Jm74QzTCcVINowUtQ==
-X-Google-Smtp-Source: AGHT+IGedtCarwUlNElo+fJvZ0sj0Vn47f/spUE+TLoZ4cRZ16Peq2gT+WF7kn41BejCCtZXTzWRrg==
-X-Received: by 2002:a0d:c346:0:b0:592:a65d:387c with SMTP id f67-20020a0dc346000000b00592a65d387cmr14037531ywd.52.1700142549749;
-        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
-        by smtp.gmail.com with ESMTPSA id g184-20020a0dc4c1000000b005a2521fb26csm993508ywd.99.2023.11.16.05.49.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso822831276.3;
-        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
-X-Received: by 2002:a25:b120:0:b0:d9a:c7af:bb4d with SMTP id
- g32-20020a25b120000000b00d9ac7afbb4dmr15046211ybj.37.1700142549098; Thu, 16
- Nov 2023 05:49:09 -0800 (PST)
+        Thu, 16 Nov 2023 08:49:22 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4F0CBD51
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:49:18 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 074411595;
+        Thu, 16 Nov 2023 05:50:04 -0800 (PST)
+Received: from [10.1.35.163] (XHFQ2J9959.cambridge.arm.com [10.1.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB1303F73F;
+        Thu, 16 Nov 2023 05:49:14 -0800 (PST)
+Message-ID: <2d027a8d-adfb-481d-89ea-c99139e669aa@arm.com>
+Date:   Thu, 16 Nov 2023 13:49:13 +0000
 MIME-Version: 1.0
-References: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Nov 2023 14:48:58 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUCVTRu3JGrsZ4YjLJmzq7W1fRQ2+KkSvecGDnff=yinQ@mail.gmail.com>
-Message-ID: <CAMuHMdUCVTRu3JGrsZ4YjLJmzq7W1fRQ2+KkSvecGDnff=yinQ@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: timer: renesas: ostm: Document RZ/Five SoC
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Chris Brandt <chris.brandt@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <89a9fe07-a5c5-4a99-b588-e6145053c58f@redhat.com>
+ <1459f78b-e80c-4f21-bc65-f0ab259d348a@arm.com>
+ <08ef2c36-2b9c-4b96-9d1d-68cca0f68ba5@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <08ef2c36-2b9c-4b96-9d1d-68cca0f68ba5@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:29 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The OSTM block on the RZ/Five SoC is identical to one found on the RZ/G2UL
-> SoC. "renesas,r9a07g043-ostm" compatible string will be used on the RZ/Five
-> SoC so to make this clear and to keep this file consistent, update the
-> comment to include RZ/Five SoC.
->
-> No driver changes are required as generic compatible string "renesas,ostm"
-> will be used as a fallback on RZ/Five SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 16/11/2023 13:20, David Hildenbrand wrote:
+> On 16.11.23 12:20, Ryan Roberts wrote:
+>> On 16/11/2023 11:03, David Hildenbrand wrote:
+>>> On 15.11.23 17:30, Ryan Roberts wrote:
+>>>> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
+>>>> maps a physically contiguous block of memory, all belonging to the same
+>>>> folio, with the same permissions, and for shared mappings, the same
+>>>> dirty state. This will likely improve performance by a tiny amount due
+>>>> to batching the folio reference count management and calling set_ptes()
+>>>> rather than making individual calls to set_pte_at().
+>>>>
+>>>> However, the primary motivation for this change is to reduce the number
+>>>> of tlb maintenance operations that the arm64 backend has to perform
+>>>> during fork, as it is about to add transparent support for the
+>>>> "contiguous bit" in its ptes. By write-protecting the parent using the
+>>>> new ptep_set_wrprotects() (note the 's' at the end) function, the
+>>>> backend can avoid having to unfold contig ranges of PTEs, which is
+>>>> expensive, when all ptes in the range are being write-protected.
+>>>> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
+>>>> in the child, the backend does not need to fold a contiguous range once
+>>>> they are all populated - they can be initially populated as a contiguous
+>>>> range in the first place.
+>>>>
+>>>> This change addresses the core-mm refactoring only, and introduces
+>>>> ptep_set_wrprotects() with a default implementation that calls
+>>>> ptep_set_wrprotect() for each pte in the range. A separate change will
+>>>> implement ptep_set_wrprotects() in the arm64 backend to realize the
+>>>> performance improvement as part of the work to enable contpte mappings.
+>>>>
+>>>> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+>>>> ---
+>>>>    include/linux/pgtable.h |  13 +++
+>>>>    mm/memory.c             | 175 +++++++++++++++++++++++++++++++---------
+>>>>    2 files changed, 150 insertions(+), 38 deletions(-)
+>>>>
+>>>> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+>>>> index af7639c3b0a3..1c50f8a0fdde 100644
+>>>> --- a/include/linux/pgtable.h
+>>>> +++ b/include/linux/pgtable.h
+>>>> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct mm_struct
+>>>> *mm, unsigned long addres
+>>>>    }
+>>>>    #endif
+>>>>    +#ifndef ptep_set_wrprotects
+>>>> +struct mm_struct;
+>>>> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
+>>>> +                unsigned long address, pte_t *ptep,
+>>>> +                unsigned int nr)
+>>>> +{
+>>>> +    unsigned int i;
+>>>> +
+>>>> +    for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+>>>> +        ptep_set_wrprotect(mm, address, ptep);
+>>>> +}
+>>>> +#endif
+>>>> +
+>>>>    /*
+>>>>     * On some architectures hardware does not set page access bit when
+>>>> accessing
+>>>>     * memory page, it is responsibility of software setting this bit. It brings
+>>>> diff --git a/mm/memory.c b/mm/memory.c
+>>>> index 1f18ed4a5497..b7c8228883cf 100644
+>>>> --- a/mm/memory.c
+>>>> +++ b/mm/memory.c
+>>>> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma,
+>>>> struct vm_area_struct *src_vma
+>>>>            /* Uffd-wp needs to be delivered to dest pte as well */
+>>>>            pte = pte_mkuffd_wp(pte);
+>>>>        set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+>>>> -    return 0;
+>>>> +    return 1;
+>>>> +}
+>>>> +
+>>>> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
+>>>> +                struct page *anchor, unsigned long anchor_vaddr)
+>>>> +{
+>>>> +    unsigned long offset;
+>>>> +    unsigned long vaddr;
+>>>> +
+>>>> +    offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
+>>>> +    vaddr = anchor_vaddr + offset;
+>>>> +
+>>>> +    if (anchor > page) {
+>>>> +        if (vaddr > anchor_vaddr)
+>>>> +            return 0;
+>>>> +    } else {
+>>>> +        if (vaddr < anchor_vaddr)
+>>>> +            return ULONG_MAX;
+>>>> +    }
+>>>> +
+>>>> +    return vaddr;
+>>>> +}
+>>>> +
+>>>> +static int folio_nr_pages_cont_mapped(struct folio *folio,
+>>>> +                      struct page *page, pte_t *pte,
+>>>> +                      unsigned long addr, unsigned long end,
+>>>> +                      pte_t ptent, bool *any_dirty)
+>>>> +{
+>>>> +    int floops;
+>>>> +    int i;
+>>>> +    unsigned long pfn;
+>>>> +    pgprot_t prot;
+>>>> +    struct page *folio_end;
+>>>> +
+>>>> +    if (!folio_test_large(folio))
+>>>> +        return 1;
+>>>> +
+>>>> +    folio_end = &folio->page + folio_nr_pages(folio);
+>>>> +    end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
+>>>> +    floops = (end - addr) >> PAGE_SHIFT;
+>>>> +    pfn = page_to_pfn(page);
+>>>> +    prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
+>>>> +
+>>>> +    *any_dirty = pte_dirty(ptent);
+>>>> +
+>>>> +    pfn++;
+>>>> +    pte++;
+>>>> +
+>>>> +    for (i = 1; i < floops; i++) {
+>>>> +        ptent = ptep_get(pte);
+>>>> +        ptent = pte_mkold(pte_mkclean(ptent));
+>>>> +
+>>>> +        if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
+>>>> +            pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
+>>>> +            break;
+>>>> +
+>>>> +        if (pte_dirty(ptent))
+>>>> +            *any_dirty = true;
+>>>> +
+>>>> +        pfn++;
+>>>> +        pte++;
+>>>> +    }
+>>>> +
+>>>> +    return i;
+>>>>    }
+>>>>      /*
+>>>> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+>>>> - * is required to copy this pte.
+>>>> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
+>>>> + * (always gte 1), or -EAGAIN if one preallocated page is required to copy the
+>>>> + * first pte.
+>>>>     */
+>>>>    static inline int
+>>>> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct
+>>>> *src_vma,
+>>>> -         pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+>>>> -         struct folio **prealloc)
+>>>> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct
+>>>> *src_vma,
+>>>> +          pte_t *dst_pte, pte_t *src_pte,
+>>>> +          unsigned long addr, unsigned long end,
+>>>> +          int *rss, struct folio **prealloc)
+>>>>    {
+>>>>        struct mm_struct *src_mm = src_vma->vm_mm;
+>>>>        unsigned long vm_flags = src_vma->vm_flags;
+>>>>        pte_t pte = ptep_get(src_pte);
+>>>>        struct page *page;
+>>>>        struct folio *folio;
+>>>> +    int nr = 1;
+>>>> +    bool anon;
+>>>> +    bool any_dirty = pte_dirty(pte);
+>>>> +    int i;
+>>>>          page = vm_normal_page(src_vma, addr, pte);
+>>>> -    if (page)
+>>>> +    if (page) {
+>>>>            folio = page_folio(page);
+>>>> -    if (page && folio_test_anon(folio)) {
+>>>> -        /*
+>>>> -         * If this page may have been pinned by the parent process,
+>>>> -         * copy the page immediately for the child so that we'll always
+>>>> -         * guarantee the pinned page won't be randomly replaced in the
+>>>> -         * future.
+>>>> -         */
+>>>> -        folio_get(folio);
+>>>> -        if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+>>>> -            /* Page may be pinned, we have to copy. */
+>>>> -            folio_put(folio);
+>>>> -            return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+>>>> -                         addr, rss, prealloc, page);
+>>>> +        anon = folio_test_anon(folio);
+>>>> +        nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+>>>> +                        end, pte, &any_dirty);
+>>>> +
+>>>> +        for (i = 0; i < nr; i++, page++) {
+>>>> +            if (anon) {
+>>>> +                /*
+>>>> +                 * If this page may have been pinned by the
+>>>> +                 * parent process, copy the page immediately for
+>>>> +                 * the child so that we'll always guarantee the
+>>>> +                 * pinned page won't be randomly replaced in the
+>>>> +                 * future.
+>>>> +                 */
+>>>> +                if (unlikely(page_try_dup_anon_rmap(
+>>>> +                        page, false, src_vma))) {
+>>>> +                    if (i != 0)
+>>>> +                        break;
+>>>> +                    /* Page may be pinned, we have to copy. */
+>>>> +                    return copy_present_page(
+>>>> +                        dst_vma, src_vma, dst_pte,
+>>>> +                        src_pte, addr, rss, prealloc,
+>>>> +                        page);
+>>>> +                }
+>>>> +                rss[MM_ANONPAGES]++;
+>>>> +                VM_BUG_ON(PageAnonExclusive(page));
+>>>> +            } else {
+>>>> +                page_dup_file_rmap(page, false);
+>>>> +                rss[mm_counter_file(page)]++;
+>>>> +            }
+>>>>            }
+>>>> -        rss[MM_ANONPAGES]++;
+>>>> -    } else if (page) {
+>>>> -        folio_get(folio);
+>>>> -        page_dup_file_rmap(page, false);
+>>>> -        rss[mm_counter_file(page)]++;
+>>>> +
+>>>> +        nr = i;
+>>>> +        folio_ref_add(folio, nr);
+>>>>        }
+>>>>          /*
+>>>> @@ -968,24 +1051,28 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct
+>>>> vm_area_struct *src_vma,
+>>>>         * in the parent and the child
+>>>>         */
+>>>>        if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+>>>> -        ptep_set_wrprotect(src_mm, addr, src_pte);
+>>>> +        ptep_set_wrprotects(src_mm, addr, src_pte, nr);
+>>>>            pte = pte_wrprotect(pte);
+>>>
+>>> You likely want an "any_pte_writable" check here instead, no?
+>>>
+>>> Any operations that target a single indiividual PTE while multiple PTEs are
+>>> adjusted are suspicious :)
+>>
+>> The idea is that I've already constrained the batch of pages such that the
+>> permissions are all the same (see folio_nr_pages_cont_mapped()). So if the first
+>> pte is writable, then they all are - something has gone badly wrong if some are
+>> writable and others are not.
+> 
+> I wonder if it would be cleaner and easier to not do that, though.
+> 
+> Simply record if any pte is writable. Afterwards they will *all* be R/O and you
+> can set the cont bit, correct?
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Oh I see what you mean - that only works for cow mappings though. If you have a
+shared mapping, you won't be making it read-only at fork. So if we ignore
+pte_write() state when demarking the batches, we will end up with a batch of
+pages with a mix of RO and RW in the parent, but then we set_ptes() for the
+child and those pages will all have the permissions of the first page of the batch.
 
-Gr{oetje,eeting}s,
+I guess we could special case and do it the way you suggested for cow mappings;
+it might be faster, but certainly not cleaner and easier IMHO.
 
-                        Geert
+> 
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
