@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B747B7EDA9A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:10:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B627EDA9C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344691AbjKPEKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 23:10:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
+        id S1344719AbjKPEL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 23:11:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjKPEKd (ORCPT
+        with ESMTP id S230207AbjKPEL0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 23:10:33 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEB4194
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:10:28 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c2a0725825so51794466b.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:10:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700107827; x=1700712627; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DMzCj5P9fSwcVXlU8EVUh+tUUR0usCMZQ9ylB0bPUZA=;
-        b=d3D+e3ChqnUGtmInsc+rNIkmB/0k1xnEnUWVpOu9+ZlIg4yE0aeRoFbe/Wkr78xud0
-         Dk0GD8NaPfcXpcI0LK/crIKpx64j2L3qqXDv5Rx5PupRRilfcoMxz23lCjWBGSkalPvR
-         qD0fR8Kun3G+d13o9wDnMBkb9ry5vPYVdcKitOB46iYmrRSI6xyEx2LfDX5mQp9te344
-         WMicVSeB5PLdZLNy7QJB0NooqEBmgTKl9ypyZjj5/sxCpcEv7Uc3VmgMHQ/WDIEQrjwJ
-         t69bJvMBKCOvRAq7z0+hUGerelD1E8EALMfZS2KEmhB8o+ygtSOdnRbq8UfnnrGMcsAs
-         on9Q==
+        Wed, 15 Nov 2023 23:11:26 -0500
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6F8D194
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:11:23 -0800 (PST)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6c337818f4cso503936b3a.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:11:23 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700107827; x=1700712627;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DMzCj5P9fSwcVXlU8EVUh+tUUR0usCMZQ9ylB0bPUZA=;
-        b=N3TwwbzYDSqR17qHJOH96sEr4D+dMqdpU6ens/HejrYgRA1nJB1RO7R6ZiWJ0broiF
-         b42H/BieuGCwSDWCz7ezZxZN1Jozw63kLGCCMWm8urwCeLSovvbW6bJmyUsjubQsKq4b
-         bC4HNpZQxOrjQAvy3B3INzIu9XHJ2D7lUV91lmJZA8I/zyK8n8za/8ngLOqA7vPS/tH6
-         l6hG6ocO5s4/p0sxYP0NPyGUnMecdrD1qqO8dbuZ3nGmBe+srwV3gAWIkwFEWhmnvUik
-         C4PnUB74qRUGRoP6mHKhQTAF/d4J6ce4jcx4KvAJjIF7FY+/F5zt7ll/1xPUmGPNHy/v
-         uRhQ==
-X-Gm-Message-State: AOJu0YwcaTvj8ThTNOI1Pg8XJLg+tuRxjsOtRmgdFijHXLmlVndRwhf2
-        FGdrkaHzaJZ12iwt3yIhYuycsTCnkFGj9hzaZfckzw==
-X-Google-Smtp-Source: AGHT+IGJFFso6GmC8lJdP1PBOxHgcqZtboEIbXbEOVelXERWcSrUeCiqT/9/q2VHeLGt1Dc9I5cx0u8N1C1qsSLTwoo=
-X-Received: by 2002:a17:906:b10b:b0:9b2:d554:da0e with SMTP id
- u11-20020a170906b10b00b009b2d554da0emr871908ejy.69.1700107826785; Wed, 15 Nov
- 2023 20:10:26 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700107883; x=1700712683;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=i8IXLXeNcaAAR8ZGk9y+7PnIgpB7vu6o0n5/j1w4vYc=;
+        b=kOQ2Vt3Oczw2NRWW19p+KEEe54ruuU7qgCfsxjOqoYI0V4Taaxwn+NLdEzQAxtNYQX
+         INK5tSA3XzKBucRMtkv/la5YiORna0MXoh9BaNN1ZoEyYf3CR5tMSSn4BbUoEnQ2dCTU
+         o+W6/UUH2U5DSCcYYESfG53ms0zFNRndV4oQjzkXY/mo7O6e3hUGK8fqdkdwPpxSUFIu
+         HyeAAKgQiySPdUwVR+d026ctw8k+kt72BNeL6ufbK7gX+PRcHRQoyT8y6m9T9id4YivS
+         p6f2rMCbq3BT9gMpm4BI8XcPy27o1ZrYEbwQzlw8+eqjP9yc5dN+wyueNDCJKWVjqJHQ
+         ORbA==
+X-Gm-Message-State: AOJu0Yz0yuDkOP3vyUwgmTYPyKXBLd/Qatl1VFAw+nP9rMJZZmrNOtbt
+        8LhufSlZwj6XMNU832oz8GdmBT4dti+IljHWHSlyooPsNu0T
+X-Google-Smtp-Source: AGHT+IGoKsZpryOdawCz6/jD3MqrWQV4nW47DCdc42I/JdweDoWbAYYpKK41TO7HPLkgYn5bq0eMLybta1yiBKd6kVRpjKSNdsl7
 MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
- <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com>
- <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com> <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com>
-In-Reply-To: <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com>
-From:   Yosry Ahmed <yosryahmed@google.com>
-Date:   Wed, 15 Nov 2023 20:09:49 -0800
-Message-ID: <CAJD7tkZHwg_u7UhzugVmmH6-FNORb+D+5SyMX6cGefp93uZr_Q@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
- failure in two scenarios
-To:     =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ying <ying.huang@intel.com>
+X-Received: by 2002:a05:6a00:880c:b0:6be:393:2f66 with SMTP id
+ ho12-20020a056a00880c00b006be03932f66mr3747620pfb.4.1700107883260; Wed, 15
+ Nov 2023 20:11:23 -0800 (PST)
+Date:   Wed, 15 Nov 2023 20:11:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000763d1c060a3d36eb@google.com>
+Subject: [syzbot] Monthly input report (Nov 2023)
+From:   syzbot <syzbot+list7e880ff6acb0d13abeec@syzkaller.appspotmail.com>
+To:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 7:33=E2=80=AFPM =E8=B4=BA=E4=B8=AD=E5=9D=A4 <hezhon=
-gkun.hzk@bytedance.com> wrote:
->
-> On Thu, Nov 16, 2023 at 4:13=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
-m> wrote:
-> >
-> > I think we may need to try to lock the folio. Otherwise we may race
-> > with reclaim reading the dirty bit before we set it.
-> >
-> > Taking a step back, this seems like we are going behind exclusive
-> > loads. We "should" keep the page in zswap as exclusive loads are
-> > disabled and the page is not yet invalidated from zswap (the swap
-> > entry is still in use). What you are trying to do here is sneakily
-> > drop the page from zswap as if we wrote it back, but we didn't.
->
-> If  we want to reclaim the cached zswap_entry, Writing back might
-> be the easy way.
->
-> > We just know that it was already loaded from zswap. We are essentially
-> > making the previous load exclusive retroactively.
-> >
-> > Is there a reason why exclusive loads cannot be enabled to achieve the
-> > same result in the (arguably) correct way?
-> >
->
-> zswap_exclusive_loads is not enabled by default, so the shrink_worker
-> may fail if there are many cached zswap_entries on the zswap_pool->lru.
+Hello input maintainers/developers,
 
+This is a 31-day syzbot report for the input subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/input
 
-It can be enabled at runtime, or enabled by default by using
-CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 13 issues are still open and 51 have been fixed so far.
 
->
->
-> Is it possible to make zswap_exclusive_loads the only way in zswap_load?
-> It only makes sense when the page is read and no longer dirty.
-> If the page is read frequently, it should stay in cache rather than zswap=
-.
-> The benefit of doing this is very small, two copies of the same page
-> in memory.
+Some of the still happening issues:
 
+Ref Crashes Repro Title
+<1> 3671    Yes   WARNING in input_mt_init_slots
+                  https://syzkaller.appspot.com/bug?extid=0122fa359a69694395d5
+<2> 281     No    possible deadlock in evdev_pass_values (2)
+                  https://syzkaller.appspot.com/bug?extid=13d3cb2a3dc61e6092f5
+<3> 121     Yes   WARNING in cm109_urb_irq_callback/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=2d6d691af5ab4b7e66df
+<4> 57      Yes   INFO: task hung in uhid_char_release
+                  https://syzkaller.appspot.com/bug?extid=8fe2d362af0e1cba8735
+<5> 38      Yes   WARNING in bcm5974_start_traffic/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=348331f63b034f89b622
 
-The reason I added it behind runtime and config knobs is to preserve
-the existing behavior in case someone depends on it. At Google, we
-have been using exclusive loads for a long time. If other users of
-zswap agree to make this the default behavior or make it the only way
-to do zswap loads I don't have a problem with it.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
->
->
-> Thanks.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
