@@ -2,107 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F34B7EDDCC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8257EDDCD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:42:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235291AbjKPJmT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:42:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56660 "EHLO
+        id S230196AbjKPJm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44142 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230196AbjKPJmR (ORCPT
+        with ESMTP id S234849AbjKPJmX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:42:17 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50B9019E
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:14 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-db057de2b77so507528276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700127733; x=1700732533; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HbQBUq6zMPZ7ORs1zmLeLhmCeGDS7R7Qw733eYdaWDY=;
-        b=Gx5PhsvmMsmSQy3ihT4tpPP7j6KuTZToX9EDbr4inLdKRMGz52HovUOZHRAPOP1YHi
-         2ipifisV8I057MGg0156wIzWDSOMSKyNWlVNIy7H5l0WV+YA1gWwNjgJRm4lzJ0g/Zig
-         e3Fq1d9RuFDN/NI5SHzRvYiyRzXfaf2MtyDOuSTIERdpWy4ZH7es6Rdn2nMqM8DDSDOS
-         jm6U3umaLZ8fmfQOyK/Tb5+5tyN4NSc8miBvTTart/pYg2AeDL/o7YwlQxkxXlKEYHjf
-         N2ZLOYF+gK0GMQ7IxMY6QqKEfFos2iFwPNb2o2x3+nYh7CNO9V+whWwNf+mIC34AvU2d
-         rHRw==
+        Thu, 16 Nov 2023 04:42:23 -0500
+Received: from mail-pg1-f206.google.com (mail-pg1-f206.google.com [209.85.215.206])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 992F519E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:19 -0800 (PST)
+Received: by mail-pg1-f206.google.com with SMTP id 41be03b00d2f7-5c1b986082dso646752a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700127733; x=1700732533;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=HbQBUq6zMPZ7ORs1zmLeLhmCeGDS7R7Qw733eYdaWDY=;
-        b=IJIO/PQ4xOOFFpUhkHEzJKRC+/jLPrMCM9FLcGtM7dtC2PlVly/kXnEITti+GiZngL
-         8JffVPaOweAqDe3A72uF36prLqOoy+3J9+Qs2ekNchywOxNmME/2IDYMbHz+rTEc4T6t
-         tmcUGZWfHlqwj9NU191N2y7ATgPKsZ6yKd/rUOYqY3GkScNGc8d4wYfONZsd0+rC+Pif
-         JDh5kYcimIWO5M0hLFq+4M0cC3Ud6IQesnhwSYniKMwtBuhFS9YC3Ilb7jPr1rqhx0MZ
-         wBYW0xBMz+f5JmwORwzAX+65cd3GajOslgSzoahE68fb2X8Zh6Il/OX3GtXwDABKmUur
-         RpkA==
-X-Gm-Message-State: AOJu0Yxxy0e55O0dqn7WBrD2eR19hdEDXuj238M91aZNhjIdcrlsx+KL
-        UUVMiyvSK8Ymq2K9qjapldFBdAJeeZuauMV3k8rejg==
-X-Google-Smtp-Source: AGHT+IFonAyLHLBLw3FFUBVfouzs0zLwD6TTo4Qrxnr7Ueo57CVLxGNAvxlYkAgnfWpgWjxTtGnDhXKHUgixd6B4yVA=
-X-Received: by 2002:a25:c70e:0:b0:da0:411b:ef19 with SMTP id
- w14-20020a25c70e000000b00da0411bef19mr14634881ybe.1.1700127733310; Thu, 16
- Nov 2023 01:42:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700127739; x=1700732539;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3RnzHBbhjkhazRCLz60AVFolh9Rj4jRAESAh5FIgDJs=;
+        b=Sd0T9oK8eE7SBFRlKFPVxyQ8lH+74+ZYH4CTcCAqFHl63hVMvNIvT7V64y5CzObMla
+         MTwwgNpSMP5H6avv6meZh5EAMEYSFcD7BoYE/AW9Ju53KzzngSCEAZkelT/bSGhaAyFh
+         Ojtkkh2bsqyTWz7xr1TZ8Pqi5h3VwOJDlmNiwmpz9fyAiaGmrs0oDlARP/hy5V5y5vhi
+         btVUk52u0Cu9tiE3FjxjQwe87a/KMZYn6/tKhRZJGot0MJvYgQaFA4Pw2IZSKacuzg1R
+         gsFzLSpE8NO3bbZCoY46Md4Y4OyYuRj+hHsjv5tNfpCmr/kpJjnQkcznhoqBEegArUJC
+         8Crg==
+X-Gm-Message-State: AOJu0YxhIIJO5Yuu37SLBS4lLccKOqfbpG/oOJaJ7i7kAy6OKngpUXBt
+        lt72RaYTePEqE7duZK9y4ljzIYqKrrTpGny06u4kXwEbWsG6UvpKZA==
+X-Google-Smtp-Source: AGHT+IECmai3n7tnTdd1QXRpY6EyKcyhRLEl+Kv1NGEzCv07o5Flb86GjvMvKyDwXeh9kHjg4578UkN3tjuoKVw+J++eRq9nM3xh
 MIME-Version: 1.0
-References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-4-iii@linux.ibm.com>
-In-Reply-To: <20231115203401.2495875-4-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 16 Nov 2023 10:41:33 +0100
-Message-ID: <CAG_fn=Vw-kR4QM8jwJYQjv8ma+mh8uyGyP2SP7PhoMvn7UqYwQ@mail.gmail.com>
-Subject: Re: [PATCH 03/32] kmsan: Disable KMSAN when DEFERRED_STRUCT_PAGE_INIT
- is enabled
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
+X-Received: by 2002:a63:4a60:0:b0:5aa:ea99:9eca with SMTP id
+ j32-20020a634a60000000b005aaea999ecamr259977pgl.2.1700127739168; Thu, 16 Nov
+ 2023 01:42:19 -0800 (PST)
+Date:   Thu, 16 Nov 2023 01:42:19 -0800
+In-Reply-To: <000000000000f5ce160602f29dd6@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f74ea5060a41d5f4@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
+From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> KMSAN relies on memblock returning all available pages to it
-> (see kmsan_memblock_free_pages()). It partitions these pages into 3
-> categories: pages available to the buddy allocator, shadow pages and
-> origin pages. This partitioning is static.
->
-> If new pages appear after kmsan_init_runtime(), it is considered
-> an error. DEFERRED_STRUCT_PAGE_INIT causes this, so mark it as
-> incompatible with KMSAN.
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-In the future we could probably collect the deferred pages as well,
-but it's okay to disable KMSAN for now.
+***
 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
+Author: bragathemanick0908@gmail.com
+
+#syz test: 
+git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git 
+25aa0bebba72b318e71fe205bfd1236550cc9534
+
+On 15/08/23 14:45, syzbot wrote:
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    25aa0bebba72 Merge tag 'net-6.5-rc6' of git://git.kernel.o..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=169577fda80000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
+> dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
+> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=148191c3a80000
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/76b0857d2814/disk-25aa0beb.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/a01574755257/vmlinux-25aa0beb.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/262002db770e/bzImage-25aa0beb.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/b93cffaa6717/mount_0.gz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com
+>
+> BUG: memory leak
+> unreferenced object 0xffff888129851240 (size 64):
+>    comm "syz-executor.0", pid 5069, jiffies 4294977377 (age 16.480s)
+>    hex dump (first 32 bytes):
+>      01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>      00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+>    backtrace:
+>      [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
+>      [<ffffffff821731b1>] kmalloc include/linux/slab.h:582 [inline]
+>      [<ffffffff821731b1>] btrfs_ref_tree_mod+0x211/0xb80 fs/btrfs/ref-verify.c:768
+>      [<ffffffff820444f6>] btrfs_free_tree_block+0x116/0x450 fs/btrfs/extent-tree.c:3250
+>      [<ffffffff8202d775>] __btrfs_cow_block+0x6a5/0xa30 fs/btrfs/ctree.c:601
+>      [<ffffffff8202dc54>] btrfs_cow_block+0x154/0x2b0 fs/btrfs/ctree.c:712
+>      [<ffffffff8206013c>] commit_cowonly_roots+0x8c/0x3f0 fs/btrfs/transaction.c:1276
+>      [<ffffffff820647c9>] btrfs_commit_transaction+0x999/0x15c0 fs/btrfs/transaction.c:2410
+>      [<ffffffff8205a516>] btrfs_commit_super+0x86/0xb0 fs/btrfs/disk-io.c:4195
+>      [<ffffffff8205c743>] close_ctree+0x543/0x730 fs/btrfs/disk-io.c:4349
+>      [<ffffffff8166b44e>] generic_shutdown_super+0x9e/0x1c0 fs/super.c:499
+>      [<ffffffff8166b769>] kill_anon_super+0x19/0x30 fs/super.c:1110
+>      [<ffffffff8202357d>] btrfs_kill_super+0x1d/0x30 fs/btrfs/super.c:2138
+>      [<ffffffff8166ca46>] deactivate_locked_super+0x46/0xd0 fs/super.c:330
+>      [<ffffffff8166cb6c>] deactivate_super fs/super.c:361 [inline]
+>      [<ffffffff8166cb6c>] deactivate_super+0x9c/0xb0 fs/super.c:357
+>      [<ffffffff816a8931>] cleanup_mnt+0x121/0x210 fs/namespace.c:1254
+>      [<ffffffff812becaf>] task_work_run+0x8f/0xe0 kernel/task_work.c:179
+>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to change bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
+>
