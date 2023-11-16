@@ -2,101 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2FC7EE4FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:14:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CBC17EE502
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:15:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjKPQOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:14:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56638 "EHLO
+        id S231126AbjKPQO6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:14:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33670 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKPQOa (ORCPT
+        with ESMTP id S230136AbjKPQO5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:14:30 -0500
-Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9586193;
-        Thu, 16 Nov 2023 08:14:26 -0800 (PST)
-Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-6ce29d1db6eso1002218a34.1;
-        Thu, 16 Nov 2023 08:14:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700151266; x=1700756066;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uPOuAU8vMYFh38SnQyp7EHt1Qwf+rn56I3qW71141fs=;
-        b=PXRaeHWz8/nJo78qDYd+5PAM+a+QX9zTS9NXbwjVZTb11S1YXxxDO4a72uYzjqO9/+
-         ldXSYNJqgyVeHDYgveY9+OTj2wYTquZuu1cUkgbZzyh42pxgj1cr0/uXtslTe4Fh6M7f
-         2HHh6Js/LQJcvhQWJG5FxGhXPUkQ8xqcTi2zNwsMSiXhG4qV9Yzg7mIgKDJjUY5dhEi9
-         ymw4X5wUXxh/UbHN1YG/iGNIXAQfKfPk/OG5FAn7gIL2LkUsyJcmtDW1Pc1ncKWZvXJ/
-         WTO/zfJ+WYEb9Z3jZiPt2nMFFY9sJbGVsHUSI00TIra+XLd21THnLweHEFVculRFYBAd
-         ZhdQ==
-X-Gm-Message-State: AOJu0Yz0hgGXYwYSY1Vm87ezXfH3f+f8TPNcVG2lYNa+aWHmRnjMcze0
-        iGirf3lwUfS3OVIbCTFeJA==
-X-Google-Smtp-Source: AGHT+IHagwFA/Ipg+5SXMbyxN/5DDa33QMtCNElCnTRYpdPtJEU3ZSt1nVnaxpEMdf9BOCBTXSJDYw==
-X-Received: by 2002:a05:6830:2b20:b0:6c2:1ff0:b2e1 with SMTP id l32-20020a0568302b2000b006c21ff0b2e1mr1062290otv.4.1700151266031;
-        Thu, 16 Nov 2023 08:14:26 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id s30-20020a056830439e00b006ce2e464a45sm952501otv.29.2023.11.16.08.14.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 08:14:25 -0800 (PST)
-Received: (nullmailer pid 2422343 invoked by uid 1000);
-        Thu, 16 Nov 2023 16:14:24 -0000
-Date:   Thu, 16 Nov 2023 10:14:24 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Linu Cherian <lcherian@marvell.com>
-Cc:     devicetree@vger.kernel.org, conor+dt@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sgoutham@marvell.com, mike.leach@linaro.org,
-        coresight@lists.linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, suzuki.poulose@arm.com,
-        james.clark@arm.com, gcherian@marvell.com, leo.yan@linaro.org
-Subject: Re: [PATCH v5 1/7] dt-bindings: arm: coresight-tmc: Add
- "memory-region" property
-Message-ID: <170015126381.2422288.18051157836489485044.robh@kernel.org>
-References: <20231110112533.2499437-1-lcherian@marvell.com>
- <20231110112533.2499437-2-lcherian@marvell.com>
+        Thu, 16 Nov 2023 11:14:57 -0500
+X-Greylist: delayed 48188 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Nov 2023 08:14:53 PST
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [IPv6:2001:41d0:203:375::aa])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58230D52;
+        Thu, 16 Nov 2023 08:14:53 -0800 (PST)
+Date:   Thu, 16 Nov 2023 08:14:47 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700151291;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5hCdpp6WuZChEageao1OSIKSoEG+NAbC7V6anMmbVTw=;
+        b=TVdt2kLp10lwI+ILX1XByT8I+aaSEG8dC0FNt5MlTwdFHJronmgM3TnX8Qb4qst1QSx8Cz
+        f0yIoOMyhXs6F7sB0f6AKux87PkRWi9SaL5Ps7gX/Gww/JVvs+GjPGXhsH5w+sDRuuRPvb
+        LLFrWkw8YLZo+KywKweZogBeAG62lAg=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Roman Gushchin <roman.gushchin@linux.dev>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        Erhard Furtner <erhard_f@mailbox.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Dennis Zhou <dennis@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <muchun.song@linux.dev>, stable@vger.kernel.org
+Subject: Re: [PATCH] mm: kmem: properly initialize local objcg variable in
+ current_obj_cgroup()
+Message-ID: <ZVY_9-NqTzDj5yFR@P9FQF9L96D.corp.robot.car>
+References: <20231116025109.3775055-1-roman.gushchin@linux.dev>
+ <4bd106d5-c3e3-6731-9a74-cff81e2392de@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231110112533.2499437-2-lcherian@marvell.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <4bd106d5-c3e3-6731-9a74-cff81e2392de@suse.cz>
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 16, 2023 at 08:04:18AM +0100, Vlastimil Babka wrote:
+> On 11/16/23 03:51, Roman Gushchin wrote:
+> > Actually the problem is caused by uninitialized local variable in
+> > current_obj_cgroup(). If the root memory cgroup is set as an active
+> > memory cgroup for a charging scope (as in the trace, where systemd
+> > tries to create the first non-root cgroup, so the parent cgroup is
+> > the root cgroup), the "for" loop is skipped and uninitialized objcg is
+> > returned, causing a panic down the accounting stack.
+> > 
+> > The fix is trivial: initialize the objcg variable to NULL
+> > unconditionally before the "for" loop.
+> > 
+> > Fixes: e86828e5446d ("mm: kmem: scoped objcg protection")
+> > Reported-by: Erhard Furtner <erhard_f@mailbox.org>
+> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1959
+> > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
+> > Cc: Shakeel Butt <shakeelb@google.com>
+> > Cc: Vlastimil Babka <vbabka@suse.cz>
+> > Cc: David Rientjes <rientjes@google.com>
+> > Cc: Dennis Zhou <dennis@kernel.org>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: Michal Hocko <mhocko@kernel.org>
+> > Cc: Muchun Song <muchun.song@linux.dev>
+> > Cc: stable@vger.kernel.org
+> 
+> Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
-On Fri, 10 Nov 2023 16:55:27 +0530, Linu Cherian wrote:
-> memory-region 0: Reserved trace buffer memory
+Thanks!
 > 
->   TMC ETR: When available, use this reserved memory region for
->   trace data capture. Same region is used for trace data
->   retention after a panic or watchdog reset.
+> We could also do this to make it less confusing?
 > 
->   TMC ETF: When available, use this reserved memory region for
->   trace data retention synced from internal SRAM after a panic or
->   watchdog reset.
-> 
-> memory-region 1: Reserved meta data memory
-> 
->   TMC ETR, ETF: When available, use this memory for register
->   snapshot retention synced from hardware registers after a panic
->   or watchdog reset.
-> 
-> Signed-off-by: Linu Cherian <lcherian@marvell.com>
-> ---
-> Changelog from v4:
-> * Description is more explicit on the usage of reserved trace buffer
->   regions
-> * Removed "mem" suffix from the memory region names
-> 
->  .../bindings/arm/arm,coresight-tmc.yaml       | 25 +++++++++++++++++++
->  1 file changed, 25 insertions(+)
-> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 774bd6e21e27..a08bcec661b6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3175,7 +3175,6 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  		objcg = rcu_dereference_check(memcg->objcg, 1);
+>  		if (likely(objcg))
+>  			break;
+> -		objcg = NULL;
+>  	}
+>  
+>  	return objcg;
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Yeah, good catch, it's a remaining of the code with try_get() inside
+the loop.
 
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Thank you!
