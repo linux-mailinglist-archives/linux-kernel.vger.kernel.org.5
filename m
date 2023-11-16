@@ -2,105 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7687EE251
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:06:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA5DC7EE263
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:09:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345253AbjKPOG2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 09:06:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58510 "EHLO
+        id S1345273AbjKPOJi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:09:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231193AbjKPOG0 (ORCPT
+        with ESMTP id S1345270AbjKPOJh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:06:26 -0500
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F60812F;
-        Thu, 16 Nov 2023 06:06:23 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5bf58204b7aso8754877b3.3;
-        Thu, 16 Nov 2023 06:06:23 -0800 (PST)
+        Thu, 16 Nov 2023 09:09:37 -0500
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 872C4D4B
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:09:32 -0800 (PST)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-9dd3f4a0f5aso120135666b.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:09:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700143582; x=1700748382;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pEPUom4+S9HspVdedIGhs90OWgXiSLz4bkpRQsQLtVY=;
-        b=wDh2W52UAmJq+OUeg+wgykBKBLCJ6TFf8qd9xkhwdZY9z/mQwWuDJ2x6ZHVlYNDnNs
-         eT/b0Hr2M5G88EHfFu90hhnexRQFATpv6yfoTJB4L7jqe4oR4bGR8vAKmtXCO6rMzEUL
-         r3bVXjJUTaGr1Qgc/tr0443X4PAV+la4P0rLM47VWgaFBse8c4rGM7Resyh2rGmTDVBd
-         G+b9Ihjxv4v0fx1YNihjtSfm46bb/ZQe23bFnNShYdkEFzqsysLwM5NFzBD3apqfd+Rg
-         Dd3o8ZxhMn3HxLLLO5GX9FVDgAb43jtfSxCO3S1qPDYY5Ga2jHBAJQ1/yIyfFqXLrq74
-         C+Hw==
-X-Gm-Message-State: AOJu0Yw6B5ZYgRZOxo58U13j+7nIGM1JilOaiS0kQkWSoq+rO22drzds
-        hE6WxjqP45Akz8YaGxxCiN7a3AlQhl+BCg==
-X-Google-Smtp-Source: AGHT+IF8wudKwS97Tv3Klxmzo1yEYk5N+m59Gv7vf8mWO/WQc/WreLLot09iHG/ZwbggQDA2Ut6K6A==
-X-Received: by 2002:a05:690c:368f:b0:5a7:a817:be43 with SMTP id fu15-20020a05690c368f00b005a7a817be43mr4875432ywb.6.1700143581817;
-        Thu, 16 Nov 2023 06:06:21 -0800 (PST)
-Received: from mail-yw1-f175.google.com (mail-yw1-f175.google.com. [209.85.128.175])
-        by smtp.gmail.com with ESMTPSA id i12-20020a81d50c000000b005af5bb5e840sm1005405ywj.34.2023.11.16.06.06.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 06:06:21 -0800 (PST)
-Received: by mail-yw1-f175.google.com with SMTP id 00721157ae682-5c516f92759so8768687b3.2;
-        Thu, 16 Nov 2023 06:06:21 -0800 (PST)
-X-Received: by 2002:a81:6c41:0:b0:5af:a73f:53d3 with SMTP id
- h62-20020a816c41000000b005afa73f53d3mr16703732ywc.13.1700143581293; Thu, 16
- Nov 2023 06:06:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700143771; x=1700748571;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o5kzymm4w15fT9h/X6FV1rQ8roz2ERsjL4xXI9ZSR/o=;
+        b=SiS2vXZXKn8oRFKd/ajqZN/mIya+gTCbSdw2KB5Ygu+8YC5Pi8kqGTQ9O6+LLFqlvN
+         4+58XVfqA4c7ofbCxsw7+7Kpc+lXTgTG61CnUWnrjk/2UeCGO1nw+vJKu5Q1VzYW8TcX
+         nHpvxpynG/19SFcpbKA234gTPADbB9SG4e9bvHPj5/VvLv404l3ub/rCdaZJKChlxk1G
+         /nRQ8aw+gHxT8MSpNNFvHKq1kTcpLJ2DafFolO+0F0oTPLQcinPo9mCY3LSSA3LLLkx/
+         mHbSq+N9aUoiwGud7hkl00MY/NHuB4YopsMDESFdrPjZyo6rUyP7lnIKimCyi+JUomj7
+         U9Gg==
+X-Gm-Message-State: AOJu0YwElGtT6V0JsXeVU5QrWjMoVtrFDTGFojrnr0c7pR2hggWOPBdJ
+        XwHjHl6yl6HZWvRGEb+qzgs=
+X-Google-Smtp-Source: AGHT+IGRWoFnBFUiWPYA9FbvARFcOKys4+ta9wagYCFe7EhBbKQSmcyNKTgtPPdyw/t26xJZFnLa7A==
+X-Received: by 2002:a17:906:f190:b0:9c7:59d1:b2c2 with SMTP id gs16-20020a170906f19000b009c759d1b2c2mr12339402ejb.27.1700143770734;
+        Thu, 16 Nov 2023 06:09:30 -0800 (PST)
+Received: from ramallet.home (cst-prg-38-127.cust.vodafone.cz. [46.135.38.127])
+        by smtp.gmail.com with ESMTPSA id a11-20020a170906190b00b0098d2d219649sm8603682eje.174.2023.11.16.06.09.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 06:09:30 -0800 (PST)
+From:   Tomeu Vizoso <tomeu@tomeuvizoso.net>
+To:     Lucas Stach <l.stach@pengutronix.de>,
+        Russell King <linux+etnaviv@armlinux.org.uk>,
+        Christian Gmeiner <christian.gmeiner@gmail.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Tomeu Vizoso <tomeu@tomeuvizoso.net>,
+        etnaviv@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/etnaviv: Expose a few more chipspecs to userspace
+Date:   Thu, 16 Nov 2023 15:09:09 +0100
+Message-ID: <20231116140910.1613508-1-tomeu@tomeuvizoso.net>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-References: <20231115210448.31575-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20231115210448.31575-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 16 Nov 2023 15:06:10 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXRyvQ+z7O7wZ5U5y+1OcPWwzL0f1EYu1vuC67p=mBwWg@mail.gmail.com>
-Message-ID: <CAMuHMdXRyvQ+z7O7wZ5U5y+1OcPWwzL0f1EYu1vuC67p=mBwWg@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: net: renesas,etheravb: Document RZ/Five SoC
-To:     Prabhakar <prabhakar.csengg@gmail.com>
-Cc:     Sergey Shtylyov <s.shtylyov@omp.ru>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        Magnus Damm <magnus.damm@gmail.com>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
         FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:05 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
-> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
->
-> The Gigabit Ethernet IP block on the RZ/Five SoC is identical to one
-> found on the RZ/G2UL SoC. "renesas,r9a07g043-gbeth" compatible string
-> will be used on the RZ/Five SoC so to make this clear and to keep this
-> file consistent, update the comment to include RZ/Five SoC.
->
-> No driver changes are required as generic compatible string
-> "renesas,rzg2l-gbeth" will be used as a fallback on RZ/Five SoC.
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+These ones will be needed to make use fo the NN and TP units in the NPUs
+based on Vivante IP.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Also fix the number of NN cores in the VIPNano-qi.
 
-Gr{oetje,eeting}s,
+Signed-off-by: Tomeu Vizoso <tomeu@tomeuvizoso.net>
+---
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.c  | 20 ++++++++++++++++++++
+ drivers/gpu/drm/etnaviv/etnaviv_gpu.h  | 12 ++++++++++++
+ drivers/gpu/drm/etnaviv/etnaviv_hwdb.c | 22 +++++++++++++++++++++-
+ include/uapi/drm/etnaviv_drm.h         |  5 +++++
+ 4 files changed, 58 insertions(+), 1 deletion(-)
 
-                        Geert
-
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+index 5f96e7b1a9ec..9a18b5431975 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.c
+@@ -164,6 +164,26 @@ int etnaviv_gpu_get_param(struct etnaviv_gpu *gpu, u32 param, u64 *value)
+ 		*value = gpu->identity.eco_id;
+ 		break;
+ 
++	case ETNAVIV_PARAM_GPU_NN_CORE_COUNT:
++		*value = gpu->identity.nn_core_count;
++		break;
++
++	case ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE:
++		*value = gpu->identity.nn_mad_per_core;
++		break;
++
++	case ETNAVIV_PARAM_GPU_TP_CORE_COUNT:
++		*value = gpu->identity.tp_core_count;
++		break;
++
++	case ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE:
++		*value = gpu->identity.on_chip_sram_size;
++		break;
++
++	case ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE:
++		*value = gpu->identity.axi_sram_size;
++		break;
++
+ 	default:
+ 		DBG("%s: invalid param: %u", dev_name(gpu->dev), param);
+ 		return -EINVAL;
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
+index c8f3ad2031ce..83ef3c06da5d 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
++++ b/drivers/gpu/drm/etnaviv/etnaviv_gpu.h
+@@ -53,6 +53,18 @@ struct etnaviv_chip_identity {
+ 	/* Number of Neural Network cores. */
+ 	u32 nn_core_count;
+ 
++	/* Number of MAD units per Neural Network core. */
++	u32 nn_mad_per_core;
++
++	/* Number of Tensor Processing cores. */
++	u32 tp_core_count;
++
++	/* Size in bytes of the SRAM inside the NPU. */
++	u32 on_chip_sram_size;
++
++	/* Size in bytes of the SRAM across the AXI bus. */
++	u32 axi_sram_size;
++
+ 	/* Size of the vertex cache. */
+ 	u32 vertex_cache_size;
+ 
+diff --git a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+index 0cb5aacaf384..93f15cce6d22 100644
+--- a/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
++++ b/drivers/gpu/drm/etnaviv/etnaviv_hwdb.c
+@@ -17,6 +17,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ 		.thread_count = 128,
+ 		.shader_core_count = 1,
+ 		.nn_core_count = 0,
++		.nn_mad_per_core = 0,
++		.tp_core_count = 0,
++		.on_chip_sram_size = 0,
++		.axi_sram_size = 0,
+ 		.vertex_cache_size = 8,
+ 		.vertex_output_buffer_size = 1024,
+ 		.pixel_pipes = 1,
+@@ -49,6 +53,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ 		.thread_count = 512,
+ 		.shader_core_count = 2,
+ 		.nn_core_count = 0,
++		.nn_mad_per_core = 0,
++		.tp_core_count = 0,
++		.on_chip_sram_size = 0,
++		.axi_sram_size = 0,
+ 		.vertex_cache_size = 16,
+ 		.vertex_output_buffer_size = 1024,
+ 		.pixel_pipes = 1,
+@@ -81,6 +89,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ 		.thread_count = 512,
+ 		.shader_core_count = 2,
+ 		.nn_core_count = 0,
++		.nn_mad_per_core = 0,
++		.tp_core_count = 0,
++		.on_chip_sram_size = 0,
++		.axi_sram_size = 0,
+ 		.vertex_cache_size = 16,
+ 		.vertex_output_buffer_size = 1024,
+ 		.pixel_pipes = 1,
+@@ -113,6 +125,10 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ 		.thread_count = 1024,
+ 		.shader_core_count = 4,
+ 		.nn_core_count = 0,
++		.nn_mad_per_core = 0,
++		.tp_core_count = 0,
++		.on_chip_sram_size = 0,
++		.axi_sram_size = 0,
+ 		.vertex_cache_size = 16,
+ 		.vertex_output_buffer_size = 1024,
+ 		.pixel_pipes = 2,
+@@ -144,7 +160,11 @@ static const struct etnaviv_chip_identity etnaviv_chip_identities[] = {
+ 		.register_max = 64,
+ 		.thread_count = 256,
+ 		.shader_core_count = 1,
+-		.nn_core_count = 1,
++		.nn_core_count = 8,
++		.nn_mad_per_core = 64,
++		.tp_core_count = 4,
++		.on_chip_sram_size = 524288,
++		.axi_sram_size = 1048576,
+ 		.vertex_cache_size = 16,
+ 		.vertex_output_buffer_size = 1024,
+ 		.pixel_pipes = 1,
+diff --git a/include/uapi/drm/etnaviv_drm.h b/include/uapi/drm/etnaviv_drm.h
+index af024d90453d..d87410a8443a 100644
+--- a/include/uapi/drm/etnaviv_drm.h
++++ b/include/uapi/drm/etnaviv_drm.h
+@@ -77,6 +77,11 @@ struct drm_etnaviv_timespec {
+ #define ETNAVIV_PARAM_GPU_PRODUCT_ID                0x1c
+ #define ETNAVIV_PARAM_GPU_CUSTOMER_ID               0x1d
+ #define ETNAVIV_PARAM_GPU_ECO_ID                    0x1e
++#define ETNAVIV_PARAM_GPU_NN_CORE_COUNT             0x1f
++#define ETNAVIV_PARAM_GPU_NN_MAD_PER_CORE           0x20
++#define ETNAVIV_PARAM_GPU_TP_CORE_COUNT             0x21
++#define ETNAVIV_PARAM_GPU_ON_CHIP_SRAM_SIZE         0x22
++#define ETNAVIV_PARAM_GPU_AXI_SRAM_SIZE             0x23
+ 
+ #define ETNA_MAX_PIPES 4
+ 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.41.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
