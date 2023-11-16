@@ -2,128 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 566917EDD2D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:57:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A99507EDD30
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:58:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344525AbjKPI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:57:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
+        id S230304AbjKPI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:58:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKPI5g (ORCPT
+        with ESMTP id S229806AbjKPI6P (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:57:36 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD4EA1;
-        Thu, 16 Nov 2023 00:57:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700125054; x=1731661054;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=6hF/KOy4geEzMKDye/KnnEK2zzobLNIQdCZGvFvFx7o=;
-  b=HNe5gzl8rRw3i7yMvw7P0d7YAv8/iO5RuqzW1q3r70wBr8No8yvrZJL8
-   WuGUilodLGmHGC7m5z9Ifpg0hiyxATSsjfsobYNNONri/1SHVeSrdR/Ar
-   q9DUJMc7gd/8MSe8bJwObtLVstBWQxTqQMGbcUnOY9nibmMFAdowKCit7
-   tVJ3KJwWZKRfCrEYLj03TsUI97/HFuPZhhUfKXvfD6Y/TDTb4zRXaaaez
-   TMLXQ58DBMbEEyLAflsSrPVM/vUy9uxbdVxkNYd1BUn4x8LnLI3dGhu2+
-   Ejsy/4Sl14DiRixdEryNMdrZuHUvgpk5hp2pWnaM/xRRunojDyUATEpry
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9687822"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="9687822"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:57:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="794437255"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="794437255"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:57:28 -0800
-Message-ID: <00b167fa-6635-47a4-a219-1f4117fe6c97@linux.intel.com>
-Date:   Thu, 16 Nov 2023 16:57:26 +0800
+        Thu, 16 Nov 2023 03:58:15 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0740CA1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:58:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700125091;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=lzR95smyeeh/FiV11pRQQl93svK/jp4ut938ur2cfQs=;
+        b=E7VX5Y16lWuy9+OZjcjepIinHnPyIAgtLkpUnhwqydD0ciKehLoDh1rQjOSrHbpunfYzOt
+        c7TWcBqVno9/nTwBtL2Wd3R5wnz72ktdBiUTVw7De1sFURw/h+M8oJAmfl5iQhzpG/hIwj
+        pdd1FN2bs8eMfe3mjNx/n+HinggweVc=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-218-mktYOBE6O8SM0vqJ2zonUA-1; Thu, 16 Nov 2023 03:58:09 -0500
+X-MC-Unique: mktYOBE6O8SM0vqJ2zonUA-1
+Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53dfe3af1b9so400676a12.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:58:09 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700125088; x=1700729888;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=lzR95smyeeh/FiV11pRQQl93svK/jp4ut938ur2cfQs=;
+        b=ZBdykD6fpNMnz6plV+kRjk9+yhwp8nQqgVz0jRPn6ZF+IUrQToQ93MUfe6i3pK6T5d
+         V3J1tSTITF7sqtBJ9EszD30mMgNSf2cm8zEgTuqn+6UNIZ6OjhsInYDEArjyW4jdoDDN
+         ks02Fooi2Ga0v2m0cDiYfda+2nR6YnsPaMIqPQbinlWIf2XePVLdhQhBSNQPptdGHXCv
+         uotrNbriCcGs8/YqZyOMXYZ9gJCYCuL7aqMzu8zxW3VZuyVDoOZv4N1a+Lt0WYOreJwX
+         kVzz4puqYopMCe2BNJ2xijvskRR+4BgfgjNBCzwm1upCTlSQwVc96KTA2GCVMjM+cCCO
+         xwXw==
+X-Gm-Message-State: AOJu0YyaBkv9oQKOQmlq94kwvrV0FPnbqFxVH8ZQwDrXp2H7+TsHZoYi
+        +K6uuxKsO83sLmm7CgnBPCaod17MyhSlsmkyvZA1h+Kk8RjprSDloC+g8SIwiCvdUXg9Zx3kehn
+        iaPzaLPrIeX7uYfLkDOZGYE2u
+X-Received: by 2002:aa7:d4c2:0:b0:543:9670:7ee8 with SMTP id t2-20020aa7d4c2000000b0054396707ee8mr11227124edr.14.1700125088222;
+        Thu, 16 Nov 2023 00:58:08 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFeO8Z4VQxOJHWlez75/PPOrqNzsKmQn04wP1vApaXiXcOExOZBZFeAqXryegrjIC2O0lA3eA==
+X-Received: by 2002:aa7:d4c2:0:b0:543:9670:7ee8 with SMTP id t2-20020aa7d4c2000000b0054396707ee8mr11227112edr.14.1700125087921;
+        Thu, 16 Nov 2023 00:58:07 -0800 (PST)
+Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
+        by smtp.gmail.com with ESMTPSA id v6-20020a056402174600b00530a9488623sm7474432edx.46.2023.11.16.00.58.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 00:58:07 -0800 (PST)
+Message-ID: <e66638b0-bbad-4ac7-ad93-6fb0c6147005@redhat.com>
+Date:   Thu, 16 Nov 2023 09:58:06 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 04/16] KVM: TDX: Pass size to tdx_measure_page()
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <7b024367db5909ffc22e6762acd0569c3a82ccd3.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <7b024367db5909ffc22e6762acd0569c3a82ccd3.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [rft, PATCH v4 00/16] drm/i915/dsi: 4th attempt to get rid of
+ IOSF GPIO
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Jani Nikula <jani.nikula@intel.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>
+References: <20231103201831.1037416-1-andriy.shevchenko@linux.intel.com>
+Content-Language: en-US, nl
+From:   Hans de Goede <hdegoede@redhat.com>
+In-Reply-To: <20231103201831.1037416-1-andriy.shevchenko@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
+
+On 11/3/23 21:18, Andy Shevchenko wrote:
+> DSI code for VBT has a set of ugly GPIO hacks, one of which is direct
+> talking to GPIO IP behind the actual driver's back. A second attempt
+> to fix that is here.
+> 
+> If I understood correctly, my approach should work in the similar way as
+> the current IOSF GPIO.
+> 
+> Hans, I believe you have some devices that use this piece of code,
+> is it possible to give a test run on (one of) them?
+
+Ok, this now has been testen on both a BYT and a CHT device which
+actually use GPIO controls in their MIPI sequences so this
+series is:
+
+Tested-by: Hans de Goede <hdegoede@redhat.com>
+
+And the code of the entire series also looks good to me:
+
+Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+
+for the series.
+
+Regards,
+
+Hans
 
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> Extend tdx_measure_page() to pass size info so that it can measure
-> large page as well.
->
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/tdx.c | 8 +++++---
->   1 file changed, 5 insertions(+), 3 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 2d5c86e06c5f..a728175c4a6d 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1434,13 +1434,15 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
->   	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE_MASK);
->   }
->   
-> -static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa)
-> +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa, int size)
-IMHO, it's better to pass kvm page level instead of size here to align with
-other APIs.
 
->   {
->   	struct tdx_module_args out;
->   	u64 err;
->   	int i;
->   
-> -	for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
-> +	WARN_ON_ONCE(size % TDX_EXTENDMR_CHUNKSIZE);
 
-If passed level instead of size, then no need to check KVM_HPAGE_SIZE(level)
-against TDX_EXTENDMR_CHUNKSIZE
-
-But same qeustion, tdx_measure_page() is only for tdh_mem_page_add(), is 
-this
-change necessary?
-
-> +
-> +	for (i = 0; i < size; i += TDX_EXTENDMR_CHUNKSIZE) {
->   		err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
->   		if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
->   			pr_tdx_error(TDH_MR_EXTEND, err, &out);
-> @@ -1544,7 +1546,7 @@ static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
->   		tdx_unpin(kvm, pfn);
->   		return -EIO;
->   	} else if (measure)
-> -		tdx_measure_page(kvm_tdx, gpa);
-> +		tdx_measure_page(kvm_tdx, gpa, KVM_HPAGE_SIZE(level));
->   
->   	return 0;
->   
+> In v4:
+> - fixed compile time errors in patch 14 (Hans, LKP)
+> - fixed cover letter Subject
+> - added patch 15 (as suggested by Ville)
+> - added Ack tag (Jani)
+> 
+> In v3:
+> - incorporated series by Jani
+> - incorporated couple of precursor patches by Hans
+> - added Rb tag for used to be first three patches (Andi)
+> - rebased on top of the above changes
+> - fixed indexing for multi-community devices, such as Cherry View
+> 
+> In v2:
+> - added a few cleanup patches
+> - reworked to use dynamic GPIO lookup tables
+> - converted CHV as well
+> 
+> Andy Shevchenko (9):
+>   drm/i915/dsi: Replace while(1) with one with clear exit condition
+>   drm/i915/dsi: Get rid of redundant 'else'
+>   drm/i915/dsi: Replace check with a (missing) MIPI sequence name
+>   drm/i915/dsi: Extract common soc_gpio_set_value() helper
+>   drm/i915/dsi: Replace poking of VLV GPIOs behind the driver's back
+>   drm/i915/dsi: Prepare soc_gpio_set_value() to distinguish GPIO
+>     communities
+>   drm/i915/dsi: Replace poking of CHV GPIOs behind the driver's back
+>   drm/i915/dsi: Combine checks in mipi_exec_gpio()
+>   drm/i915/iosf: Drop unused APIs
+> 
+> Hans de Goede (2):
+>   drm/i915/dsi: Remove GPIO lookup table at the end of
+>     intel_dsi_vbt_gpio_init()
+>   drm/i915/dsi: Fix wrong initial value for GPIOs in
+>     bxt_gpio_set_value()
+> 
+> Jani Nikula (5):
+>   drm/i915/dsi: assume BXT gpio works for non-native GPIO
+>   drm/i915/dsi: switch mipi_exec_gpio() from dev_priv to i915
+>   drm/i915/dsi: clarify GPIO exec sequence
+>   drm/i915/dsi: rename platform specific *_exec_gpio() to
+>     *_gpio_set_value()
+>   drm/i915/dsi: bxt/icl GPIO set value do not need gpio source
+> 
+>  drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 355 +++++++------------
+>  drivers/gpu/drm/i915/vlv_sideband.c          |  17 -
+>  drivers/gpu/drm/i915/vlv_sideband.h          |   3 -
+>  3 files changed, 136 insertions(+), 239 deletions(-)
+> 
 
