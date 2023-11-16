@@ -2,268 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EE067EDE52
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:16:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B164B7EDE5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345029AbjKPKQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60290 "EHLO
+        id S1345018AbjKPKWL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:22:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345018AbjKPKQi (ORCPT
+        with ESMTP id S230352AbjKPKWJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:16:38 -0500
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1BBB1B6;
-        Thu, 16 Nov 2023 02:16:34 -0800 (PST)
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG9aZot004530;
-        Thu, 16 Nov 2023 02:16:23 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pfpt0220;
- bh=RAMaouxCNJj4JYxvNqb1B9tHavh8qlbcHk8v8xuzJ+U=;
- b=AOZAeKKLwlVpg7LG86wDyR3NFZnpNC9CPj/nAXX7ZKJPrItITdtpEqW+zjPnCJwHzAjl
- emlZ+X3xAU8HMFq4IJBGog/bu9ZEAoYXyhHMy9UuzZ9bTZALGHmM9rQcKEsLE1eha/Eh
- 6viXJm0GbH/GjIjW7rtTWwDMT86g+pN/iBqJZTpR2KcATZ0+c/zfmqBPQvIk4eOqituz
- C/5olf75jK9H+3Ninxp7q90Fu34pHjTVNGpcICDFVzT5ILcZuJDPMnMsJqkafs4h3nWT
- Djodh5o2eX8iLswot4FBQQGB2cI5joExu2Qz3up1Jz8B9kb/PJdgV6YuDo4ZxcmdIoDN 3g== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3udgkag3fp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 02:16:23 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 16 Nov
- 2023 02:16:21 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.48 via Frontend
- Transport; Thu, 16 Nov 2023 02:16:21 -0800
-Received: from localhost.localdomain (unknown [10.28.36.166])
-        by maili.marvell.com (Postfix) with ESMTP id DCA4B3F7086;
-        Thu, 16 Nov 2023 02:16:17 -0800 (PST)
-From:   Suman Ghosh <sumang@marvell.com>
-To:     <sgoutham@marvell.com>, <gakula@marvell.com>,
-        <sbhatta@marvell.com>, <hkelam@marvell.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lcherian@marvell.com>, <jerinj@marvell.com>
-CC:     Suman Ghosh <sumang@marvell.com>
-Subject: [net-next PATCH 2/2] octeontx2-pf: TC flower offload support for mirror
-Date:   Thu, 16 Nov 2023 15:46:01 +0530
-Message-ID: <20231116101601.3188711-3-sumang@marvell.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231116101601.3188711-1-sumang@marvell.com>
-References: <20231116101601.3188711-1-sumang@marvell.com>
+        Thu, 16 Nov 2023 05:22:09 -0500
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com [209.85.210.200])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B50E519E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:22:05 -0800 (PST)
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-6c334d2fd4cso775960b3a.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:22:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700130125; x=1700734925;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YKsco8Z2/A+IeZqsn85TvB1vB1q4DzD7UChREXpP29M=;
+        b=kJy0UFjwh/+d1LBmekTqES3dX3zNTfZ8diKbtP3s2KsdHsRrc4x6S0QJhd1jBTm5xk
+         DejCpvFz2vwmzMGCUpYNeyrA15bzn2xYk/p4UzFB5l/lz0Ld89Kn5mNDiE18TjpBgjh1
+         +6WnP3qh8Kg/MCFQYvn/FXowa2dUEwhCoosaFvxQlk+jBBGmpEOdEmw4Sd6bI85UewEj
+         YQVafEXyNigUeO22Pw01IApWqv7sADF4cSn2Zl63imgCNDYvN8XTdDZ6UXXW6zz8zpw+
+         UkmkP9ImY+kENR9u3Qwmr/SN6ZGA8wRo2zW+3RH2l2NbJ7Q/IrRYQrF9Dym09YZhVt2u
+         f22w==
+X-Gm-Message-State: AOJu0YxhHiEkiieJ+C85bcgQ4f/dea5P97wJ+3TGDERVYe5icd0UzgN6
+        LUxz/F4VpHuSxkAKog6fE0NE4Vzcfe9IwoFo2tF0H5+851+a
+X-Google-Smtp-Source: AGHT+IH6bYZLQh20TcXEywrOfK8UMbINU3BVMN+Wli1ochiJd1PBxFYQz+5cfwOtmU7X9Kr3gIab8KVBHpyOv8SnrAnPnquK0Uri
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: NTRhqrKHMJ3-0V4cFw58eDjboIq2uRDy
-X-Proofpoint-GUID: NTRhqrKHMJ3-0V4cFw58eDjboIq2uRDy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_09,2023-11-15_01,2023-05-22_02
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:aa7:8f8b:0:b0:6c3:38e5:e59 with SMTP id
+ t11-20020aa78f8b000000b006c338e50e59mr3678017pfs.6.1700130125266; Thu, 16 Nov
+ 2023 02:22:05 -0800 (PST)
+Date:   Thu, 16 Nov 2023 02:22:05 -0800
+In-Reply-To: <ceaf0f0d-d943-4c1a-a531-5193ea64dd29@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003048a9060a42649f@google.com>
+Subject: Re: [syzbot] [btrfs?] memory leak in btrfs_ref_tree_mod
+From:   syzbot <syzbot+d66de4cbf532749df35f@syzkaller.appspotmail.com>
+To:     bragathemanick0908@gmail.com, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch extends TC flower offload support for mirroring ingress/egress
-traffic to a different PF/VF. Below is an example command,
+Hello,
 
-'tc filter add dev eth1 ingress protocol ip flower src_ip <ip-addr>
-skip_sw action mirred ingress mirror dev eth2'
+syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+memory leak in add_tree_block
 
-Signed-off-by: Suman Ghosh <sumang@marvell.com>
----
- .../ethernet/marvell/octeontx2/nic/otx2_tc.c  | 110 +++++++++++++++++-
- 1 file changed, 108 insertions(+), 2 deletions(-)
+BUG: memory leak
+unreferenced object 0xffff88812611f380 (size 64):
+  comm "syz-executor.5", pid 7474, jiffies 4294960257 (age 171.960s)
+  hex dump (first 32 bytes):
+    03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
+    [<ffffffff82172d99>] kmalloc include/linux/slab.h:582 [inline]
+    [<ffffffff82172d99>] add_tree_block+0x39/0x240 fs/btrfs/ref-verify.c:319
+    [<ffffffff821743f9>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
+    [<ffffffff821743f9>] process_leaf fs/btrfs/ref-verify.c:521 [inline]
+    [<ffffffff821743f9>] walk_down_tree fs/btrfs/ref-verify.c:573 [inline]
+    [<ffffffff821743f9>] btrfs_build_ref_tree+0x589/0x850 fs/btrfs/ref-verify.c:1008
+    [<ffffffff8205ec90>] open_ctree+0x1890/0x2270 fs/btrfs/disk-io.c:3471
+    [<ffffffff8202582f>] btrfs_fill_super fs/btrfs/super.c:1154 [inline]
+    [<ffffffff8202582f>] btrfs_mount_root+0x5af/0x750 fs/btrfs/super.c:1519
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816a776b>] fc_mount fs/namespace.c:1112 [inline]
+    [<ffffffff816a776b>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1142
+    [<ffffffff816a77ef>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+    [<ffffffff820298b2>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1579
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816afcff>] do_new_mount fs/namespace.c:3335 [inline]
+    [<ffffffff816afcff>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
+    [<ffffffff816b08f1>] do_mount fs/namespace.c:3675 [inline]
+    [<ffffffff816b08f1>] __do_sys_mount fs/namespace.c:3884 [inline]
+    [<ffffffff816b08f1>] __se_sys_mount fs/namespace.c:3861 [inline]
+    [<ffffffff816b08f1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+    [<ffffffff84c0008b>] entry_SYSCALL_64_after_hwframe+0x63/0xcd
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-index 8a5e3987a482..cfcf935b1003 100644
---- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_tc.c
-@@ -29,6 +29,8 @@
- 
- #define OTX2_UNSUPP_LSE_DEPTH		GENMASK(6, 4)
- 
-+#define MCAST_INVALID_GRP		(-1U)
-+
- struct otx2_tc_flow_stats {
- 	u64 bytes;
- 	u64 pkts;
-@@ -47,6 +49,7 @@ struct otx2_tc_flow {
- 	bool				is_act_police;
- 	u32				prio;
- 	struct npc_install_flow_req	req;
-+	u32				mcast_grp_idx;
- };
- 
- static void otx2_get_egress_burst_cfg(struct otx2_nic *nic, u32 burst,
-@@ -336,22 +339,95 @@ static int otx2_tc_act_set_police(struct otx2_nic *nic,
- 	return rc;
- }
- 
-+static int otx2_tc_update_mcast(struct otx2_nic *nic,
-+				struct npc_install_flow_req *req,
-+				struct netlink_ext_ack *extack,
-+				struct otx2_tc_flow *node,
-+				struct nix_mcast_grp_update_req *ureq,
-+				u8 num_intf)
-+{
-+	struct nix_mcast_grp_update_req *grp_update_req;
-+	struct nix_mcast_grp_create_req *creq;
-+	struct nix_mcast_grp_create_rsp *crsp;
-+	u32 grp_index;
-+	int rc;
-+
-+	mutex_lock(&nic->mbox.lock);
-+	creq = otx2_mbox_alloc_msg_nix_mcast_grp_create(&nic->mbox);
-+	if (!creq) {
-+		mutex_unlock(&nic->mbox.lock);
-+		return -ENOMEM;
-+	}
-+
-+	creq->dir = NIX_MCAST_INGRESS;
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to create multicast group");
-+		mutex_unlock(&nic->mbox.lock);
-+		return rc;
-+	}
-+
-+	crsp = (struct nix_mcast_grp_create_rsp *)otx2_mbox_get_rsp(&nic->mbox.mbox,
-+			0,
-+			&creq->hdr);
-+	if (IS_ERR(crsp)) {
-+		mutex_unlock(&nic->mbox.lock);
-+		return PTR_ERR(crsp);
-+	}
-+
-+	grp_index = crsp->mcast_grp_idx;
-+	grp_update_req = otx2_mbox_alloc_msg_nix_mcast_grp_update(&nic->mbox);
-+	if (!grp_update_req) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		mutex_unlock(&nic->mbox.lock);
-+		return -ENOMEM;
-+	}
-+
-+	ureq->op = NIX_MCAST_OP_ADD_ENTRY;
-+	ureq->mcast_grp_idx = grp_index;
-+	ureq->num_mce_entry = num_intf;
-+	ureq->pcifunc[0] = nic->pcifunc;
-+	ureq->channel[0] = nic->hw.tx_chan_base;
-+
-+	ureq->dest_type[0] = NIX_RX_RSS;
-+	ureq->rq_rss_index[0] = 0;
-+	memcpy(&ureq->hdr, &grp_update_req->hdr, sizeof(struct mbox_msghdr));
-+	memcpy(grp_update_req, ureq, sizeof(struct nix_mcast_grp_update_req));
-+
-+	/* Send message to AF */
-+	rc = otx2_sync_mbox_msg(&nic->mbox);
-+	if (rc) {
-+		NL_SET_ERR_MSG_MOD(extack, "Failed to update multicast group");
-+		mutex_unlock(&nic->mbox.lock);
-+		return rc;
-+	}
-+
-+	mutex_unlock(&nic->mbox.lock);
-+	req->op = NIX_RX_ACTIONOP_MCAST;
-+	req->index = grp_index;
-+	node->mcast_grp_idx = grp_index;
-+	return 0;
-+}
-+
- static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 				 struct flow_action *flow_action,
- 				 struct npc_install_flow_req *req,
- 				 struct flow_cls_offload *f,
- 				 struct otx2_tc_flow *node)
- {
-+	struct nix_mcast_grp_update_req dummy_grp_update_req = { 0 };
- 	struct netlink_ext_ack *extack = f->common.extack;
-+	bool pps = false, mcast = false;
- 	struct flow_action_entry *act;
- 	struct net_device *target;
- 	struct otx2_nic *priv;
- 	u32 burst, mark = 0;
- 	u8 nr_police = 0;
--	bool pps = false;
-+	u8 num_intf = 1;
-+	int rc, i;
- 	u64 rate;
- 	int err;
--	int i;
- 
- 	if (!flow_action_has_entries(flow_action)) {
- 		NL_SET_ERR_MSG_MOD(extack, "no tc actions specified");
-@@ -423,11 +499,30 @@ static int otx2_tc_parse_actions(struct otx2_nic *nic,
- 			req->index = act->rx_queue;
- 			break;
- 
-+		case FLOW_ACTION_MIRRED_INGRESS:
-+			target = act->dev;
-+			priv = netdev_priv(target);
-+			dummy_grp_update_req.pcifunc[num_intf] = priv->pcifunc;
-+			dummy_grp_update_req.channel[num_intf] = priv->hw.tx_chan_base;
-+			dummy_grp_update_req.dest_type[num_intf] = NIX_RX_RSS;
-+			dummy_grp_update_req.rq_rss_index[num_intf] = 0;
-+			mcast = true;
-+			num_intf++;
-+			break;
-+
- 		default:
- 			return -EOPNOTSUPP;
- 		}
- 	}
- 
-+	if (mcast) {
-+		rc = otx2_tc_update_mcast(nic, req, extack, node,
-+					  &dummy_grp_update_req,
-+					  num_intf);
-+		if (rc)
-+			return rc;
-+	}
-+
- 	if (nr_police > 1) {
- 		NL_SET_ERR_MSG_MOD(extack,
- 				   "rate limit police offload requires a single action");
-@@ -1033,6 +1128,7 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 			    struct flow_cls_offload *tc_flow_cmd)
- {
- 	struct otx2_flow_config *flow_cfg = nic->flow_cfg;
-+	struct nix_mcast_grp_destroy_req *grp_destroy_req;
- 	struct otx2_tc_flow *flow_node;
- 	int err;
- 
-@@ -1064,6 +1160,15 @@ static int otx2_tc_del_flow(struct otx2_nic *nic,
- 		mutex_unlock(&nic->mbox.lock);
- 	}
- 
-+	/* Remove the multicast/mirror related nodes */
-+	if (flow_node->mcast_grp_idx != MCAST_INVALID_GRP) {
-+		mutex_lock(&nic->mbox.lock);
-+		grp_destroy_req = otx2_mbox_alloc_msg_nix_mcast_grp_destroy(&nic->mbox);
-+		grp_destroy_req->mcast_grp_idx = flow_node->mcast_grp_idx;
-+		otx2_sync_mbox_msg(&nic->mbox);
-+		mutex_unlock(&nic->mbox.lock);
-+	}
-+
- 	otx2_del_mcam_flow_entry(nic, flow_node->entry, NULL);
- 	otx2_tc_update_mcam_table(nic, flow_cfg, flow_node, false);
- 	kfree_rcu(flow_node, rcu);
-@@ -1096,6 +1201,7 @@ static int otx2_tc_add_flow(struct otx2_nic *nic,
- 	spin_lock_init(&new_node->lock);
- 	new_node->cookie = tc_flow_cmd->cookie;
- 	new_node->prio = tc_flow_cmd->common.prio;
-+	new_node->mcast_grp_idx = MCAST_INVALID_GRP;
- 
- 	memset(&dummy, 0, sizeof(struct npc_install_flow_req));
- 
--- 
-2.25.1
+BUG: memory leak
+unreferenced object 0xffff88812611f500 (size 64):
+  comm "syz-executor.5", pid 7474, jiffies 4294960257 (age 171.960s)
+  hex dump (first 32 bytes):
+    03 00 00 00 00 00 00 00 01 00 00 00 00 00 00 00  ................
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
+    [<ffffffff82172755>] kmalloc include/linux/slab.h:582 [inline]
+    [<ffffffff82172755>] kzalloc include/linux/slab.h:703 [inline]
+    [<ffffffff82172755>] add_block_entry+0x35/0x320 fs/btrfs/ref-verify.c:270
+    [<ffffffff82172df6>] add_tree_block+0x96/0x240 fs/btrfs/ref-verify.c:332
+    [<ffffffff821743f9>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
+    [<ffffffff821743f9>] process_leaf fs/btrfs/ref-verify.c:521 [inline]
+    [<ffffffff821743f9>] walk_down_tree fs/btrfs/ref-verify.c:573 [inline]
+    [<ffffffff821743f9>] btrfs_build_ref_tree+0x589/0x850 fs/btrfs/ref-verify.c:1008
+    [<ffffffff8205ec90>] open_ctree+0x1890/0x2270 fs/btrfs/disk-io.c:3471
+    [<ffffffff8202582f>] btrfs_fill_super fs/btrfs/super.c:1154 [inline]
+    [<ffffffff8202582f>] btrfs_mount_root+0x5af/0x750 fs/btrfs/super.c:1519
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816a776b>] fc_mount fs/namespace.c:1112 [inline]
+    [<ffffffff816a776b>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1142
+    [<ffffffff816a77ef>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+    [<ffffffff820298b2>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1579
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816afcff>] do_new_mount fs/namespace.c:3335 [inline]
+    [<ffffffff816afcff>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
+    [<ffffffff816b08f1>] do_mount fs/namespace.c:3675 [inline]
+    [<ffffffff816b08f1>] __do_sys_mount fs/namespace.c:3884 [inline]
+    [<ffffffff816b08f1>] __se_sys_mount fs/namespace.c:3861 [inline]
+    [<ffffffff816b08f1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+
+BUG: memory leak
+unreferenced object 0xffff8881260d4300 (size 96):
+  comm "syz-executor.5", pid 7474, jiffies 4294960257 (age 171.960s)
+  hex dump (first 32 bytes):
+    00 10 10 00 00 00 00 00 00 10 00 00 00 00 00 00  ................
+    01 00 00 00 00 00 00 00 01 00 00 00 01 00 00 00  ................
+  backtrace:
+    [<ffffffff815545e5>] kmalloc_trace+0x25/0x90 mm/slab_common.c:1076
+    [<ffffffff8217276e>] kmalloc include/linux/slab.h:582 [inline]
+    [<ffffffff8217276e>] kzalloc include/linux/slab.h:703 [inline]
+    [<ffffffff8217276e>] add_block_entry+0x4e/0x320 fs/btrfs/ref-verify.c:271
+    [<ffffffff82172df6>] add_tree_block+0x96/0x240 fs/btrfs/ref-verify.c:332
+    [<ffffffff821743f9>] process_extent_item fs/btrfs/ref-verify.c:474 [inline]
+    [<ffffffff821743f9>] process_leaf fs/btrfs/ref-verify.c:521 [inline]
+    [<ffffffff821743f9>] walk_down_tree fs/btrfs/ref-verify.c:573 [inline]
+    [<ffffffff821743f9>] btrfs_build_ref_tree+0x589/0x850 fs/btrfs/ref-verify.c:1008
+    [<ffffffff8205ec90>] open_ctree+0x1890/0x2270 fs/btrfs/disk-io.c:3471
+    [<ffffffff8202582f>] btrfs_fill_super fs/btrfs/super.c:1154 [inline]
+    [<ffffffff8202582f>] btrfs_mount_root+0x5af/0x750 fs/btrfs/super.c:1519
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816a776b>] fc_mount fs/namespace.c:1112 [inline]
+    [<ffffffff816a776b>] vfs_kern_mount.part.0+0xcb/0x110 fs/namespace.c:1142
+    [<ffffffff816a77ef>] vfs_kern_mount+0x3f/0x60 fs/namespace.c:1129
+    [<ffffffff820298b2>] btrfs_mount+0x1e2/0x660 fs/btrfs/super.c:1579
+    [<ffffffff816d3e39>] legacy_get_tree+0x29/0x80 fs/fs_context.c:611
+    [<ffffffff8166b7ea>] vfs_get_tree+0x2a/0x110 fs/super.c:1519
+    [<ffffffff816afcff>] do_new_mount fs/namespace.c:3335 [inline]
+    [<ffffffff816afcff>] path_mount+0xc8f/0x10d0 fs/namespace.c:3662
+    [<ffffffff816b08f1>] do_mount fs/namespace.c:3675 [inline]
+    [<ffffffff816b08f1>] __do_sys_mount fs/namespace.c:3884 [inline]
+    [<ffffffff816b08f1>] __se_sys_mount fs/namespace.c:3861 [inline]
+    [<ffffffff816b08f1>] __x64_sys_mount+0x1a1/0x1f0 fs/namespace.c:3861
+    [<ffffffff84ad2bb8>] do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+    [<ffffffff84ad2bb8>] do_syscall_64+0x38/0xb0 arch/x86/entry/common.c:80
+
+
+
+Tested on:
+
+commit:         25aa0beb Merge tag 'net-6.5-rc6' of git://git.kernel.o..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a0c5b7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2bf8962e4f7984f4
+dashboard link: https://syzkaller.appspot.com/bug?extid=d66de4cbf532749df35f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=1799b938e80000
 
