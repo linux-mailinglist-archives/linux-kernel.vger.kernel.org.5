@@ -2,216 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF10E7EE981
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8621C7EE985
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345572AbjKPWsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 17:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56778 "EHLO
+        id S1345553AbjKPWxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 17:53:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234605AbjKPWsf (ORCPT
+        with ESMTP id S229745AbjKPWxr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 17:48:35 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2040.outbound.protection.outlook.com [40.107.236.40])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB90DD67;
-        Thu, 16 Nov 2023 14:48:30 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YtaehLBqPOiwavEvCkKEn1b1lLY6MG9j0tjTtUZqFsA65x5pB4pzywbX4q4I10H2rwUzLu+E7+LiDS8Ew0eMn49x/34sE0eRaLtOaWf9ulNfkUaWAq43Hra637CulHP+Rg2uAyy2KQshSN8C0oWYsc13ZqFmXkylFsXb1usr25rTh2sJxkJZGiCxBpXdqQuptZWWKpZ5jtsYvlVI46LUiA9p0XEA9PYkf2dzptcyums6cHG+6AkITBnFBSNKDWmH7p/+F36ZtGbeDaP0XEH0PAKUFWAtlOT+uASS6w7eJxZ0QE2PBdbw9JmMdLXVZuXuVg5NycwDMJfvyJ79lkc+9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=omJlRKVfpieNt846Bar2DR6ki/tbXKN+YptVuZleYX0=;
- b=iDt02Fl4RYmdgj6NH6F1mzYLc9KNKRkjoeQaG10mHuxK3b69HoiECETvYz9I2cEPShNKNzgquBCgt/AeQStVICtTP1T/bg31XEDkGwa2TJB8ydW1uQQCIXZcBQQ+jKQtW9MckwcComjKfE8JCMgB9GOKDXHykoUluvNQJxnisq/1w4C/5mi4F3JhH6eX81TTDB959Y31rG5pGq6GK+kNY8AGQxk+I3pmTl9VcrSKxnfRlGPyNmYtnoCLhYYwSjuEhCwzgJ0k453CG9L6FJ5+vFWhAqEgDgwGjkboqdUshOdss8NO1WlwE2IX/8J+jpiIzQqmQuogN8a9fKVP7yMHDw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=omJlRKVfpieNt846Bar2DR6ki/tbXKN+YptVuZleYX0=;
- b=r1Ga0GcJOspXEh7PVcA3SEL6VXOJfrqK0BFbZMZYNyMWDJ30XkwTUjXKxIVSSckuGxw8f9jVeoOcpq38Ml+sAirX5Uc1nFgY62tbVEVuo0sKQ9WraSRFzYGXbIFI0/TlyVftOA+PqtqwoM9m+2EfhrLdpJw165IFrVp9z6qAq3Q=
-Received: from SN7PR04CA0016.namprd04.prod.outlook.com (2603:10b6:806:f2::21)
- by PH0PR12MB8097.namprd12.prod.outlook.com (2603:10b6:510:295::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Thu, 16 Nov
- 2023 22:48:28 +0000
-Received: from SA2PEPF00001505.namprd04.prod.outlook.com
- (2603:10b6:806:f2:cafe::66) by SN7PR04CA0016.outlook.office365.com
- (2603:10b6:806:f2::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21 via Frontend
- Transport; Thu, 16 Nov 2023 22:48:28 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001505.mail.protection.outlook.com (10.167.242.37) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7002.20 via Frontend Transport; Thu, 16 Nov 2023 22:48:28 +0000
-Received: from titanite-d354host.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.32; Thu, 16 Nov 2023 16:48:26 -0600
-From:   Avadhut Naik <avadhut.naik@amd.com>
-To:     <linux-acpi@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
-        <lenb@kernel.org>, <james.morse@arm.com>, <tony.luck@intel.com>,
-        <bp@alien8.de>, <linux-kernel@vger.kernel.org>,
-        <alexey.kardashevskiy@amd.com>, <yazen.ghannam@amd.com>,
-        <avadnaik@amd.com>
-Subject: [PATCH v6 4/4] ACPI: APEI: EINJ: Add support for vendor defined error types
-Date:   Thu, 16 Nov 2023 16:47:25 -0600
-Message-ID: <20231116224725.3695952-5-avadhut.naik@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231116224725.3695952-1-avadhut.naik@amd.com>
-References: <20231116224725.3695952-1-avadhut.naik@amd.com>
+        Thu, 16 Nov 2023 17:53:47 -0500
+Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E65A120
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:53:43 -0800 (PST)
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
+ relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ uk-mta-65-mtqKR3EKMBK8ro9nsESItw-1; Thu, 16 Nov 2023 22:53:39 +0000
+X-MC-Unique: mtqKR3EKMBK8ro9nsESItw-1
+Received: from AcuMS.Aculab.com (10.202.163.4) by AcuMS.aculab.com
+ (10.202.163.4) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 16 Nov
+ 2023 22:53:47 +0000
+Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
+ id 15.00.1497.048; Thu, 16 Nov 2023 22:53:47 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>
+CC:     David Howells <dhowells@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        kernel test robot <oliver.sang@intel.com>,
+        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
+        "lkp@intel.com" <lkp@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Christian Brauner" <brauner@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "Jens Axboe" <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+        Christian Brauner <christian@brauner.io>,
+        Matthew Wilcox <willy@infradead.org>,
+        "ying.huang@intel.com" <ying.huang@intel.com>,
+        "feng.tang@intel.com" <feng.tang@intel.com>,
+        "fengwei.yin@intel.com" <fengwei.yin@intel.com>
+Subject: RE: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+Thread-Topic: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
+ -16.9% regression
+Thread-Index: AQHaGDzAFfqMOen5JUCwmbDFX2u0nbB9JNQQgAAOVwCAAEjLIA==
+Date:   Thu, 16 Nov 2023 22:53:47 +0000
+Message-ID: <a35af815280f4dd0b5db7f4920ab6a13@AcuMS.aculab.com>
+References: <202311061616.cd495695-oliver.sang@intel.com>
+ <3865842.1700061614@warthog.procyon.org.uk>
+ <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
+ <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
+ <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
+ <4097023.1700084620@warthog.procyon.org.uk>
+ <CAHk-=wgR3Mw2-8k2O3S10T-f4oz8FNfg7aziLU_6pbx0qowxew@mail.gmail.com>
+ <42895.1700089191@warthog.procyon.org.uk>
+ <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
+ <4cfd4808cc694f169aa8b83547ebc74d@AcuMS.aculab.com>
+ <CAHk-=whuKOMn73oinrTQCcNwhXNOw5eksSBiCSzxycZ--asp4Q@mail.gmail.com>
+In-Reply-To: <CAHk-=whuKOMn73oinrTQCcNwhXNOw5eksSBiCSzxycZ--asp4Q@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001505:EE_|PH0PR12MB8097:EE_
-X-MS-Office365-Filtering-Correlation-Id: 35063208-6ac0-4c8e-ede7-08dbe6f62659
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YiPJzN9+0S3RT6wKR17wkIlzkVv54xebIoAVbb7AG7ySJdvGIzd6LShWJXJLh1DwMzc6zgZmn1HMWtelTRJ1c93G2Pb0GPK49AhfVijC+CfHneUQ0L7IJoCsagafpo4Z3Mrwxk+pqEjDWBmTd9u7y33Xg0u+jO3qT5Admf6JOFhmfKVEXtZgBK6sXozuQFhN3bmGJGYEvoUs3sMHz6C3iLKSMsDX5aAYiLZHAzvwaaXz1Z2INsSmebOCY5n/YyqlC/1cVCwhAfdDy50MLayIM7dO7HDsTtVtRfE/AibQRM1H35PDXUByBByMudo4550hjPsl/6/EEfwihPtR3unrcrmosj6Kq+NE1erOTVX8iN/pwPerQJDt/q2BTrteEMcJKV1pzamvqhkddVzA30eH9tpoGdzkpaMvMl9ytu3gOwhFxfJj0z+6D4Lkdu5AuaXGVM13mX8i+3C9WJMiRUNBJNjPBaCol3yO9PEKbyaDPkI6/5GH+IkxhQ8oHNaEfFTEM7BoJrAIqtzrFjynqLYuaBNWhCcY389K5kbQ9B01XinjYiv1i/h9Yoxrf2XyhctHbrgvez/2j/ICk72L7C1wD6L9FIGWVfSpR3sQ7Wq0DLBXqIT0wlGf4bSnmxjplfr8PRUcIMFh+b6YHlqbzmzeEgmN/zX5EYbOXBZZxICD6ctE5KS9aiOav2ZhtqMtNoR/01t7NneaN+RmE9WE628+aI+BRNFdg5tBLNi/p5TmRD0X4C4lXFdcXNDb6ORT2wDKcVvWmpgL1j3KD5qDI7K13w==
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(136003)(376002)(39860400002)(346002)(230922051799003)(1800799009)(186009)(64100799003)(82310400011)(451199024)(40470700004)(36840700001)(46966006)(2616005)(426003)(336012)(40460700003)(1076003)(82740400003)(8936002)(26005)(16526019)(478600001)(4326008)(36756003)(44832011)(8676002)(86362001)(41300700001)(5660300002)(110136005)(70586007)(70206006)(54906003)(316002)(2906002)(36860700001)(7696005)(47076005)(40480700001)(356005)(81166007)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 22:48:28.2203
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 35063208-6ac0-4c8e-ede7-08dbe6f62659
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001505.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8097
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Avadhut Naik <Avadhut.Naik@amd.com>
-
-Vendor-Defined Error types are supported by the platform apart from
-standard error types if bit 31 is set in the output of GET_ERROR_TYPE
-Error Injection Action.[1] While the errors themselves and the length
-of their associated "OEM Defined data structure" might vary between
-vendors, the physical address of this structure can be computed through
-vendor_extension and length fields of "SET_ERROR_TYPE_WITH_ADDRESS" and
-"Vendor Error Type Extension" Structures respectively.[2][3]
-
-Currently, however, the einj module only computes the physical address of
-Vendor Error Type Extension Structure. Neither does it compute the physical
-address of OEM Defined structure nor does it establish the memory mapping
-required for injecting Vendor-defined errors. Consequently, userspace
-tools have to establish the very mapping through /dev/mem, nopat kernel
-parameter and system calls like mmap/munmap initially before injecting
-Vendor-defined errors.
-
-Circumvent the issue by computing the physical address of OEM Defined data
-structure and establishing the required mapping with the structure. Create
-a new file "oem_error", if the system supports Vendor-defined errors, to
-export this mapping, through debugfs_create_blob(). Userspace tools can
-then populate their respective OEM Defined structure instances and just
-write to the file as part of injecting Vendor-defined Errors. Similarly,
-the tools can also read from the file if the system firmware provides some
-information through the OEM defined structure after error injection.
-
-[1] ACPI specification 6.5, section 18.6.4
-[2] ACPI specification 6.5, Table 18.31
-[3] ACPI specification 6.5, Table 18.32
-
-Suggested-by: Yazen Ghannam <yazen.ghannam@amd.com>
-Signed-off-by: Avadhut Naik <Avadhut.Naik@amd.com>
-Reviewed-by: Tony Luck <tony.luck@intel.com>
-Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
----
- drivers/acpi/apei/einj.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
-
-diff --git a/drivers/acpi/apei/einj.c b/drivers/acpi/apei/einj.c
-index 506fe319379f..89fb9331c611 100644
---- a/drivers/acpi/apei/einj.c
-+++ b/drivers/acpi/apei/einj.c
-@@ -73,6 +73,7 @@ static u32 notrigger;
- 
- static u32 vendor_flags;
- static struct debugfs_blob_wrapper vendor_blob;
-+static struct debugfs_blob_wrapper vendor_errors;
- static char vendor_dev[64];
- 
- /*
-@@ -182,6 +183,21 @@ static int einj_timedout(u64 *t)
- 	return 0;
- }
- 
-+static void get_oem_vendor_struct(u64 paddr, int offset,
-+				  struct vendor_error_type_extension *v)
-+{
-+	unsigned long vendor_size;
-+	u64 target_pa = paddr + offset + sizeof(struct vendor_error_type_extension);
-+
-+	vendor_size = v->length - sizeof(struct vendor_error_type_extension);
-+
-+	if (vendor_size)
-+		vendor_errors.data = acpi_os_map_memory(target_pa, vendor_size);
-+
-+	if (vendor_errors.data)
-+		vendor_errors.size = vendor_size;
-+}
-+
- static void check_vendor_extension(u64 paddr,
- 				   struct set_error_type_with_address *v5param)
- {
-@@ -194,6 +210,7 @@ static void check_vendor_extension(u64 paddr,
- 	v = acpi_os_map_iomem(paddr + offset, sizeof(*v));
- 	if (!v)
- 		return;
-+	get_oem_vendor_struct(paddr, offset, v);
- 	sbdf = v->pcie_sbdf;
- 	sprintf(vendor_dev, "%x:%x:%x.%x vendor_id=%x device_id=%x rev_id=%x\n",
- 		sbdf >> 24, (sbdf >> 16) & 0xff,
-@@ -596,6 +613,7 @@ static struct { u32 mask; const char *str; } const einj_error_type_string[] = {
- 	{ BIT(15), "CXL.mem Protocol Correctable" },
- 	{ BIT(16), "CXL.mem Protocol Uncorrectable non-fatal" },
- 	{ BIT(17), "CXL.mem Protocol Uncorrectable fatal" },
-+	{ BIT(31), "Vendor Defined Error Types" },
- };
- 
- static int available_error_type_show(struct seq_file *m, void *v)
-@@ -768,6 +786,10 @@ static int __init einj_init(void)
- 				   einj_debug_dir, &vendor_flags);
- 	}
- 
-+	if (vendor_errors.size)
-+		debugfs_create_blob("oem_error", 0600, einj_debug_dir,
-+				    &vendor_errors);
-+
- 	pr_info("Error INJection is initialized.\n");
- 
- 	return 0;
-@@ -793,6 +815,8 @@ static void __exit einj_exit(void)
- 			sizeof(struct einj_parameter);
- 
- 		acpi_os_unmap_iomem(einj_param, size);
-+		if (vendor_errors.size)
-+			acpi_os_unmap_memory(vendor_errors.data, vendor_errors.size);
- 	}
- 	einj_exec_ctx_init(&ctx);
- 	apei_exec_post_unmap_gars(&ctx);
--- 
-2.34.1
+RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMTYgTm92ZW1iZXIgMjAyMyAxNzoyNQ0KLi4u
+DQo+ID4gSG93IG11Y2ggZGlmZmVyZW5jZSBkb2VzIEZTUk0gYWN0dWFsbHkgbWFrZT8NCj4gPiBF
+c3BlY2lhbGx5IHdoZW4gY29tcGFyZWQgdG8gdGhlIGNvc3Qgb2YgYSBmdW5jdGlvbiBjYWxsIChl
+dmVuDQo+ID4gd2l0aG91dCB0aGUgaG9ycmlkIHJldHVybiB0aHVuaykuDQo+IA0KPiBJdCBjYW4g
+YmUgYSBiaWcgZGVhbC4gIFRoZSBzdWJqZWN0IGxpbmUgaGVyZSBpcyBhbiBleGFtcGxlLiBPbiB0
+aGF0DQo+IG1hY2hpbmUsIHVzaW5nIHRoZSBjYWxsIHRvICdtZW1jcHlfb3JpZycgY2xlYXJseSBw
+ZXJmb3JtcyAqbm90aWNlYWJseSoNCj4gYmV0dGVyLiBTbyB0aGF0IDE2JSByZWdyZXNzaW9uIHdh
+cyJmYXN0ICBhcHBhcmVudGx5IGF0IGxlYXN0IHBhcnRseQ0KPiBiZWNhdXNlIG9mDQo+IA0KPiAg
+IC0xMS4wICBwZXJmLXByb2ZpbGUuc2VsZi5jeWNsZXMtcHAubWVtY3B5X29yaWcNCj4gICArMTQu
+NyAgcGVyZi1wcm9maWxlLnNlbGYuY3ljbGVzLXBwLmNvcHlfcGFnZV9mcm9tX2l0ZXJfYXRvbWlj
+DQo+IA0KPiB3aGVyZSB0aGF0IGlubGluZWQgY29weSAodGhhdCB1c2VkICdyZXAgbW92c3EnIGFu
+ZCBvdGhlciB0aGluZ3MgYXJvdW5kDQo+IGl0KSB3YXMgbm90aWNlYWJseSB3b3JzZSB0aGFuIGp1
+c3QgY2FsbGluZyBtZW1jcHlfb3JpZyB0aGF0IGRvZXMgYQ0KPiBiYXNpYyB1bnJvbGxlZCBsb29w
+Lg0KDQpXYXNuJ3QgdGhhdCB0aGUgc3R1cGlkIFBvUyBpbmxpbmVkIG1lbWNweSB0aGF0IHdhcyBh
+YnNvbHV0ZWx5DQpob3JyZW5kb3VzPw0KSSd2ZSBhbHNvIG5vdCBzZWVuIGFueSBvYnZpb3VzIHN0
+YXRlbWVudCBhYm91dCB0aGUgbGVuZ3RocyBvZiB0aGUNCmNvcGllcy4NCg0KPiBOb3csICp3aHkq
+IGl0IG1hdHRlcnMgYSBsb3QgaXMgdW5jbGVhci4gU29tZSBtYWNoaW5lcyBsaXRlcmFsbHkgaGF2
+ZQ0KPiB0aGUgImZhc3QgcmVwIHN0cmluZyIgY29kZSBkaXNhYmxlZCwgYW5kIHRoZW4gInJlcCBt
+b3ZzYiIgaXMganVzdA0KPiBob3JyZW5kb3VzLiBUaGF0J3MgYXJndWFibHkgYSBtYWNoaW5lIHNl
+dHVwIGlzc3VlLCBidXQgcGVvcGxlIGhhdmUNCj4gYmVlbiBrbm93biB0byBkbyB0aG9zZSB0aGlu
+Z3MgYmVjYXVzZSBvZiBwcm9ibGVtcyAobW9zdCByZWNlbnRseQ0KPiAicmVwdGFyIikuDQoNClRo
+ZXkgZ2V0IHdoYXQgdGhleSBkZXNlcnZlIDotKQ0KDQpJJ3ZlIGp1c3QgZG9uZSBzb21lIG1lYXN1
+cmVtZW50cyBvbiBhbiBpNy03NzAwLg0KY3B1aW5mbzpmbGFncyBoYXMgZXJtcyBidXQgbm90IGZy
+bXMgKGFzIEknZCBleHBlY3QpLg0KDQpUaGUgdGVzdCBjb2RlIHBhdGggaXM6DQoJcmRwbWMNCgls
+ZmVuY2UNCnRoZW4gMTAgY29waWVzIG9mOg0KCW1vdgklcjEzLCVyZGkNCgltb3YJJXIxNCwlcnNp
+DQoJbW92CSVyMTUsJXJjeA0KCXJlcCBtb3ZzYg0KZm9sbG93ZWQgYnk6DQoJbGZlbmNlDQoJcmRw
+bWMNCg0Kd2hpY2ggSSBydW4gdGhyb3VnaCA1IHRpbWVzLg0KVGhlIGZpcnN0IHBhc3MgaXMgY29s
+ZC1jYWNoZSBhbmQgZXhwZWN0ZWQgdG8gYmUgc2xvdy4NClRoZSBvdGhlciA0IHByZXR0eSBtdWNo
+IHRha2UgdGhlIHNhbWUgbnVtYmVyIG9mIGNsb2Nrcy4NCihXaGljaCBpcyB3aGF0IEkndmUgc2Vl
+biBiZWZvcmUgdXNpbmcgdGhlIHNhbWUgYmFzaWMgcHJvZ3JhbQ0KdG8gdGltZSB0aGUgaXAtY2hl
+Y2tzdW0gY29kZS4pDQoNCkF0IGZpcnN0IHNpZ2h0IGl0IGFwcGVhcnMgdGhhdCBlYWNoICdyZXAg
+bW92c2InIHRha2VzIGFib3V0DQozMiBjbG9ja3MgZm9yIHNob3J0IGNvcGllcyBhbmQgb25seSBz
+dGFydHMgaW5jcmVhc2luZyBhYm92ZQ0KKGFib3V0KSAzMiBieXRlcyAtIGFuZCB0aGVuIGluY3Jl
+YXNlcyB2ZXJ5IHNsb3dseS4NCg0KQnV0IHNvbWV0aGluZyB2ZXJ5IG9kZCBpcyBnb2luZyBvbi4N
+CkZvciBsZW5ndGggMSAodG8gfjMyKSB0aGUgZmlyc3QgcGFzcyBpcyB+NDUwMCBjbG9ja3MgYW5k
+IHRoZSBvdGhlcnMgfjMyMC4NCkZvciBsb25nZXIgbGVuZ3RoIHRoZSBjbG9jayBjb3VudCBpbmNy
+ZWFzZXMgc2xvd2x5Lg0KQnV0IGxlbmd0aCAwIHJlcG9ydHMgfjYwMCBmb3IgYWxsIDUgcGFzc2Vz
+Lg0KDQpUaGUgY2FjaGUgc2hvdWxkIGJlIHRoZSBzYW1lIGluIGJvdGggY2FzZXMuDQpTbyB0aGUg
+ZWZmZWN0IG11c3QgYmUgYW4gYXJ0aWZhY3Qgb2YgdGhlIGluc3RydWN0aW9uIGRlY29kZXIuDQpU
+aGUgbG9vcCBpc24ndCBsb25nIGVub3VnaCB0byBub3QgZml0IGluIHRoZSBjcHUgbG9vcCBidWZm
+ZXINCihvZiBkZWNvZGVkIHUtb3BzKSAtIGNvdWxkIHRyeSBwYWRkaW5nIGl0IHdpdGggbG90cyBv
+ZiBub3BzLg0KDQpUaGlzIHJhdGhlciBpbXBsaWVzIHRoYXQgdGhlIGRlY29kZSBvZiAncmVwIG1v
+dnMnIGlzIHRha2luZw0Kc29tZXRoaW5nIGhvcnJpZCBsaWtlIDQ1MCBjbG9ja3MsIGJ1dCBpdCBn
+ZXRzIHNhdmVkIHNvbWV3aGVyZS4NCk9UT0ggaWYgdGhlIGNvdW50IGlzIHplcm8gdGhlIGRlY29k
+ZStleGVjdXRlIGlzIG9ubHkgfjYwIGNsb2Nrcw0KYnV0IGl0IGlzbid0IHNhdmVkLg0KDQpJZiB0
+aGF0IGlzIHRydWUgKGFuZCBJIGRvdWJ0IEludGVsIHdvdWxkIGFkbWl0IGl0KSB5b3UgcHJldHR5
+DQptdWNoIG5ldmVyIHdhbnQgdG8gdXNlICdyZXAgbW92cycgaW4gYW55IGZvcm0gdW5sZXNzIHlv
+dSBhcmUNCmdvaW5nIHRvIGV4ZWN1dGUgdGhlIGluc3RydWN0aW9uIG11bHRpcGxlIHRpbWVzIG9y
+IHRoZQ0KbGVuZ3RoIGlzIHNpZ25pZmljYW50Lg0KDQpUaGlzIHdhc24ndCB0aGUgY29uY2x1c2lv
+biBJIGV4cGVjdGVkIHRvIGNvbWUgdG8uLi4NCg0KSXQgYWxzbyBtZWFucyB0aGF0IHdoaWxlICdy
+ZXAgbW92cycgd2lsbCBjb3B5IGF0IDE2IGJ5dGVzL2Nsb2NrDQoob3IgMzIgaWYgdGhlIGRlc3Rp
+bmF0aW9uIGlzIGFsaWduZWQpIGl0IGlzIHBvc3NpYmxlIHRoYXQgaXQNCndpbGwgYWx3YXlzIGJl
+IHNsb3dlciB0aGFuIGEgcmVnaXN0ZXIgY29weSBsb29wICg4IGJ5dGVzL2Nsb2NrKQ0KdW5sZXNz
+IHRoZSBjb3B5IGlzIHNpZ25pZmljYW50bHkgbG9uZ2VyIHRoYW4gbW9zdCBvZiB0aGUga2VybmVs
+DQptZW1jcHkoKSBjYW4gZXZlciBiZS4NCg0KLi4uDQo+IEkgaGF2ZSB0aGlzIG1lbW9yeSBmcm9t
+IG15ICJwdXNoIGZvciAtT3MiICh3aGljaCBpcyBmcm9tIG92ZXIgYSBkZWNhZGUNCj4gYWdvLCB0
+byB0YWtlIG15IG1lbW9yeSB3aXRoIGEgcGluY2ggb2Ygc2FsdCkgb2Ygc2VlaW5nICJyZXAgbW92
+c2IiDQo+IGZvbGxvd2VkIGJ5IGEgbG9hZCBvZiB0aGUgcmVzdWx0IGNhdXNpbmcgYSBob3JyaWQg
+c3RhbGwgb24gdGhlIGxvYWQuDQoNCkkgYWRkZWQgc29tZSAodW5yZWxhdGVkKSBtZW1vcnkgYWNj
+ZXNzZXMgYmV0d2VlbiB0aGUgJ3JlcCBtb3ZzYicuDQpEaWRuJ3Qgc2VlIGFueSBzaWduaWZpY2Fu
+dCBkZWxheXMuDQoNClRoZSBzeXN0ZW1zIHlvdSB3ZXJlIHVzaW5nIGEgZGVjYWRlIGFnbyB3ZXJl
+IGxpa2VseSB2ZXJ5IGRpZmZlcmVudA0KdG8gdGhlIGN1cnJlbnQgb25lcyAtIGVzcGVjaWFsbHkg
+aWYgdGhleSB3ZXJlIEludGVsIGFuZCBwcmUtZGF0ZWQNCnNhbmR5IGJyaWRnZS4NCg0KPiBBIHJl
+Z3VsYXIgbG9hZC1zdG9yZSBsb29wIHdpbGwgaGF2ZSB0aGUgc3RvcmUgZGF0YSBmb3J3YXJkZWQg
+dG8gYW55DQo+IHN1YnNlcXVlbnQgbG9hZCwgYnV0ICJyZXAgbW92cyIgbWlnaHQgbm90IGRvIHRo
+YXQgYW5kIGlmIGl0IHdvcmtzIG9uIGENCj4gY2FjaGVsaW5lIGxldmVsIHlvdSBtaWdodCBsb3Nl
+IG91dCBvbiB0aG9zZSBraW5kcyBvZiB0aGluZ3MuDQoNClRoYXQgcHJvYmFibHkgZG9lc24ndCBt
+YXR0ZXIgZm9yIGRhdGEgYnVmZmVyIGNvcGllcy4NCllvdSBhcmUgdW5saWtlbHkgdG8gYWNjZXNz
+IHRoZW0gYWdhaW4gdGhhdCBxdWlja2x5Lg0KDQo+IERvbid0IGdldCBtZSB3cm9uZyAtIEkgcmVh
+bGx5IGxpa2UgdGhlIHJlcCBzdHJpbmcgaW5zdHJ1Y3Rpb25zLCBhbmQNCj4gd2hpbGUgdGhleSBo
+YXZlIGlzc3VlcyBJJ2QgKmxvdmUqIGZvciBDUFUncyB0byBiYXNpY2FsbHkgZG8gIm1lbWNweSIN
+Cj4gYW5kICJtZW1zZXQiIHdpdGhvdXQgYW55IGxpYnJhcnkgY2FsbCBvdmVyaGVhZC4gVGhlIHNl
+Y3VyaXR5DQo+IG1pdGlnYXRpb25zIGhhdmUgbWFkZSBpbmRpcmVjdCBjYWxscyBtdWNoIHdvcnNl
+LCBidXQgdGhleSBoYXZlIG1hZGUNCj4gcmVndWxhciBmdW5jdGlvbiBjYWxsIG92ZXJoZWFkIHdv
+cnNlIHRvbyAoYW5kIHRoZXJlJ3MgdGhlIEkkIGZvb3RwcmludA0KPiB0aGluZyBldGMgZXRjKS4N
+Cj4gDQo+IFNvIEkgbGlrZSAicmVwIG1vdnMiIGEgbG90IHdoZW4gaXQgd29ya3Mgd2VsbCwgYnV0
+IGl0IG1vc3QgZGVmaW5pdGVseQ0KPiBkb2VzIG5vdCB3b3JrIHdlbGwgZXZlcnl3aGVyZS4NCg0K
+WWVzLCBpdCBpcyBhIHJlYWwgc2hhbWUgdGhhdCBldmVyeXRoaW5nIHNpbmNlIChwcm9iYWJseSkg
+dGhlIDQ4Ng0KaGFzIGV4ZWN1dGUgJ3JlcCBhbnl0aGluZycgcmF0aGVyIHNsb3dlciB0aGFuIHlv
+dSBtaWdodCBleHBlY3QuDQoNCkludGVsIGFsc28gZipja2VkIHVwIHRoZSAnbG9vcCcgKGRlYyAl
+Y3gsIGpueikgaW5zdHJ1Y3Rpb24uDQpFdmVuIG9uIGNwdSB3aXRoIGFkY3ggYW5kIGFkb3ggeW91
+IGNhbid0IHVzZSAnbG9vcCcuDQoNCi4uLg0KPiBUaGUgcHJvYmxlbSB3aXRoIGNvZGUgZ2VuZXJh
+dGlvbiBhdCB0aGlzIGxldmVsIGlzIHRoYXQgeW91IHdpbiBzb21lLA0KPiB5b3UgbG9zZSBzb21l
+LiBZb3UgY2FuIHNlbGRvbSBtYWtlIGV2ZXJ5Ym9keSBoYXBweS4NCg0KVHJ5aW5nIHRvIHNlY29u
+ZCBndWVzcyBhIHdvcmthYmxlIG1vZGVsIGZvciB0aGUgeDg2IGNwdSBpcyBoYXJkLg0KRm9yIGFy
+aXRobWV0aWMgaW5zdHJ1Y3Rpb25zIHRoZSByZWdpc3RlciBkZXBlbmRlbmN5IGNoYWlucyBzZWVt
+DQp0byBnaXZlIGEgcmVhc29uYWJsZSBtb2RlbC4NCklmIHRoZSBjb2RlIGZsb3cgZG9lc24ndCBk
+ZXBlbmQgb24gdGhlIGRhdGEgdGhlbiB0aGUgJ291dCBvZiBvcmRlcicNCmV4ZWN1dGUgd2lsbCBw
+cm9jZXNzIGRhdGEgKGZyb20gY2FjaGUpIHdoZW4gdGhlIHJlbGV2YW50IG1lbW9yeQ0KaW5zdHJ1
+Y3Rpb25zIGZpbmFsbHkgY29tcGxldGUuDQpTbyBJIGFjdHVhbGx5IGdvdCBwcmV0dHkgbXVjaCB0
+aGUgZXhwZWN0ZWQgdGltaW5ncyBmb3IgbXkgaXAtY3N1bQ0KY29kZSBsb29wcyAoc29tZXdoYXQg
+YmV0dGVyIHRoYW4gdGhlIGN1cnJlbnQgdmVyc2lvbikuDQoNCkJ1dCBnaXZlIG1lIGEgbmljZSBz
+aW1wbGUgY3B1IGxpa2UgdGhlIE5pb3NJSSBzb2Z0IGNwdS4NClRoZSBpbnN0cnVjdGlvbiBhbmQg
+bG9jYWwgbWVtb3J5IHRpbWluZ3MgYXJlIGFic29sdXRlbHkNCndlbGwgZGVmaW5lZCAtIGFuZCB5
+b3UgY2FuIGxvb2sgYXQgdGhlIGZwZ2EgaW50ZXJuYWxzIGFuZA0KY2hlY2shDQoNCglEYXZpZA0K
+DQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFy
+bSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAo
+V2FsZXMpDQo=
 
