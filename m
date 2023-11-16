@@ -2,362 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A7727EDB01
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:00:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B76937EDB02
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235697AbjKPFAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 00:00:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34886 "EHLO
+        id S1344788AbjKPFFH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 00:05:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36648 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235142AbjKPFAS (ORCPT
+        with ESMTP id S229446AbjKPFFE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 00:00:18 -0500
-Received: from mailout3.samsung.com (mailout3.samsung.com [203.254.224.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B2F319F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:00:11 -0800 (PST)
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20231116050009epoutp034a978771edf43689d9c5413192aec60c~YAcX2XdZA3011230112epoutp03Z
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:00:09 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20231116050009epoutp034a978771edf43689d9c5413192aec60c~YAcX2XdZA3011230112epoutp03Z
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700110809;
-        bh=NAkytrCe5aM1b6jLPcoQx9e9hWt3OPZ5KoHNxK743cU=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=AIQTZWu14HZFwO07+tQcycuk/NmrqQV1L8mwSjv0FO8ctQvkqxfAdGJuNuhWuWAOE
-         HgfRBUmF8OZVY2vUFcEMXwZQTLjyyFWPCV2HCBoOVnmBUDs3zphu5EpY6sYH2/e//Y
-         bID8Y8dYaRSKEdiejFxbciN0fLmBoqpSwpzr+ZDM=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTP id
-        20231116050008epcas5p4f1adfabd64607c9a5721eea5b981cbd7~YAcXUjcu_2922529225epcas5p4q;
-        Thu, 16 Nov 2023 05:00:08 +0000 (GMT)
-Received: from epsmgec5p1-new.samsung.com (unknown [182.195.38.178]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4SW7BZ08b3z4x9QF; Thu, 16 Nov
-        2023 05:00:06 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmgec5p1-new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A9.9E.19369.5D1A5556; Thu, 16 Nov 2023 14:00:05 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p4.samsung.com (KnoxPortal) with ESMTPA id
-        20231116050005epcas5p4f71e3d7d21802c738d331e69310656fd~YAcUbkGzV0330003300epcas5p4h;
-        Thu, 16 Nov 2023 05:00:05 +0000 (GMT)
-Received: from epsmgms1p2new.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231116050005epsmtrp2939be81164f51581702e0368b5b0da98~YAcUYYgXM2381423814epsmtrp2f;
-        Thu, 16 Nov 2023 05:00:05 +0000 (GMT)
-X-AuditID: b6c32a50-9e1ff70000004ba9-f5-6555a1d590a7
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5A.66.08817.5D1A5556; Thu, 16 Nov 2023 14:00:05 +0900 (KST)
-Received: from INBRO000447 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231116050002epsmtip13b38cf6e78094bb8f50b82e2d921876c~YAcRYNYOQ2191521915epsmtip1W;
-        Thu, 16 Nov 2023 05:00:02 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Aakarsh Jain'" <aakarsh.jain@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Cc:     <m.szyprowski@samsung.com>, <andrzej.hajda@intel.com>,
-        <mchehab@kernel.org>, <hverkuil-cisco@xs4all.nl>,
-        <krzysztof.kozlowski+dt@linaro.org>, <dillon.minfei@gmail.com>,
-        <david.plowman@raspberrypi.com>, <mark.rutland@arm.com>,
-        <robh+dt@kernel.org>, <conor+dt@kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>, <andi@etezian.org>,
-        <gost.dev@samsung.com>, <aswani.reddy@samsung.com>,
-        <pankaj.dubey@samsung.com>, <ajaykumar.rs@samsung.com>,
-        <linux-fsd@tesla.com>,
-        "'Smitha T Murthy'" <smithatmurthy@gmail.com>
-In-Reply-To: <20231025102216.50480-3-aakarsh.jain@samsung.com>
-Subject: RE: [Patch v4 02/11] media: s5p-mfc: Rename IS_MFCV10 macro
-Date:   Thu, 16 Nov 2023 10:30:00 +0530
-Message-ID: <0d2801da1849$c34ddc70$49e99550$@samsung.com>
+        Thu, 16 Nov 2023 00:05:04 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EDB5F189
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:05:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700111100; x=1731647100;
+  h=date:from:to:cc:subject:message-id:in-reply-to:
+   mime-version;
+  bh=7NldozFnq19wM23n2QCweGBOEeJqtO09t+Ph7O7FlRw=;
+  b=lV8LmDHpNpiwNTRivwxjqkU3lVg2F4z6dQuNHwnjV/m43JCMIinjRb3x
+   QJEZHCqIFxPl798ICrxBb8bJHMS/gk9OfYzrETbZsl+1oUJU5D91gImce
+   vZrpSkxptAECfUx64lwSOO3x0SbKi5ClFBCGib5pBO+ljk/GKPZnQLKRo
+   04nVYKOu1KkMkOrcmMv7pqxfIJN3clT4Mnycktoz48ilRjpi/sDvAYUB9
+   kPWI27KnSdjwHHtUEe5vfsyxc6H2z/fUIhgV+7f3a29CR7h2HQ6rfpKb2
+   LM052RCO0VtocwixZmiphVhuq4PYwjLWiYW7E5NX8paXZ4zjfk+VboIWW
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="370372242"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="370372242"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 21:04:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="800066212"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="800066212"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga001.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 21:04:36 -0800
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 15 Nov 2023 21:04:36 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34; Wed, 15 Nov 2023 21:04:35 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 21:04:35 -0800
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.34; Wed, 15 Nov 2023 21:04:35 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=f2k1m5Gq7g2A3TNbhsjYrfjlw/W+d0+eLMttCkiFPsiwKS1EnGKKa8w9HMmiJ9Y/5s/lpNdav8NoJkehke40/DsYJNuwC7wxZfsiUndiv5bbF55GMOc5LcfrAOamGQIIdLoAKTm1uBoC9pFj84vIKNnXhlIWtkR2Bi0CmcnE+fccRA1kChgKKn/aeL5fyNoYxtStjoUkpAUAh/+lzslE6LL8TVUTWWXctK5BOav5nkGiuNUV4PT5rk1Zvhu9M1Gsn6d4kmPBREfzj+yM82fjEwHXb+PgctRW/gUaGz1sKDikGUzwHEwkkt49US6aUYt+02vyT47qwhH9XGjDaltilg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3hA32ZfT0tHpKVkWMc+zS8ojFdohXQjYEpwWtAFd7bI=;
+ b=jvainZWiIzfvea8AGzrFyCdpVHFlBCtc4VZdYCZ2et/mQhvkTj1ZWItGzBm1pzbaa1I+y2EXDKeCxlmrXd4x2fvDt0U9Oq4B5Hf795aAaM7aML9S9FKZFWErgXO5S1aA7Jz5HdGk4jss4695DvzAJxLlw3g7c7Tpuiuf6qURcFWt5TMyqhS1QJvas50HDRJmA5wO2C/1K1AMwJK818E1Q1dfbjgjWSY/rQptqwN77MyK5OImH6s6J9tan8dAudjSKWlNhae2/JtzyWzQQRBrqNxeJYNASZF9TNyEM6K24/hbKKQuYAh+6RERaa3rUJ5ibHHYzJBELW34jdZa/rN+DQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
+ by CY8PR11MB7730.namprd11.prod.outlook.com (2603:10b6:930:74::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Thu, 16 Nov
+ 2023 05:04:34 +0000
+Received: from CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86]) by CY5PR11MB6392.namprd11.prod.outlook.com
+ ([fe80::15d3:7425:a09e:1c86%4]) with mapi id 15.20.7002.019; Thu, 16 Nov 2023
+ 05:04:34 +0000
+Date:   Thu, 16 Nov 2023 12:59:50 +0800
+From:   kernel test robot <yujie.liu@intel.com>
+To:     Yicong Yang <yangyicong@huawei.com>, <catalin.marinas@arm.com>,
+        <will@kernel.org>, <sudeep.holla@arm.com>,
+        <linux-arm-kernel@lists.infradead.org>
+CC:     <oe-kbuild-all@lists.linux.dev>, <dietmar.eggemann@arm.com>,
+        <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <jonathan.cameron@huawei.com>, <prime.zeng@hisilicon.com>,
+        <linuxarm@huawei.com>, <yangyicong@hisilicon.com>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 4/4] arm64: Kconfig: Enable HOTPLUG_SMT
+Message-ID: <202311151900.K9xc6Xqz-lkp@intel.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20231114040110.54590-5-yangyicong@huawei.com>
+X-ClientProxiedBy: SGXP274CA0003.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b8::15)
+ To CY5PR11MB6392.namprd11.prod.outlook.com (2603:10b6:930:37::15)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLm4twfZx4yvmLB3iF6RxvUJv+HzQGjI0AwA0f6tMSuO3P5oA==
-Content-Language: en-us
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xbVRzHvb23ve1i9cpQTmoya2XJYCm0G4/TBRgKG3duGpK5uCzG2rV3
-        LYM+7GOO6RxuA3EwIkGIIOhoERi0A8sqZcJgpQPZDAuTMSsvQaC8io6yhzqnfYDuv8/vnO83
-        v9/3d3KYaEgRzmFmqPSUViXJ4jHWYd92R0Twb1XvowSl1yGctpfTYddvVzBoeuCmwXGTF4OO
-        FhsOzR39NFjX20WHXzn76bD1yiQGXV1tNDhQPorBotkJFFp/HaLDifk34Y+XKhmwsNlGh5/f
-        uEyDFucoDr++PUCDtdaHNGi0reAwt8OJw9Mf1dCTw0jzl2aEvF2zjJJtFaM4aWqfo5HWhk8Y
-        5MhQO4NsqTlB5l79EyOLLjYg5KOTVTjptW4gr9314ulPHshMUFASGaXlUiqpWpahkifydu8V
-        p4hj4wRCvlAE43lclURJJfJS96Tzd2Zk+XLzuEckWQbfUbpEp+NFJyVo1QY9xVWodfpEHqWR
-        ZWliNFE6iVJnUMmjVJR+m1Ag2BLrE76TqZi2NzI0VTuODnrasBykR3QGYTEBEQM8BQ7aGWQd
-        M4RoR0C5+QIjWCwj4Of6j1eLewiYXiigr1lyh39AgxcdCMixDKz6ZxGQb1nA/CoGwQd2U17A
-        HkrYETBoNmH+AiUKMeCtvxlQsYgk4C5pwv28nkgFj2YsqJ8xYiM4NfdLgNmECCzOzK3yM6Cv
-        fCrgRYkXQKunEg3OxAV/TNcG5gslXgH/1NvQoCYMzF114v7GgGhlgQs/1a0aUsFifx8e5PVg
-        vvfiKnOAd6nDNzbTxyQwPuQEjxXAU9eEBHk76BqsxPwSlIgATZeig62eAmf/mqIFnWyQnxcS
-        VPuSLN3Cgvw8KC5Y2yIJJhpn6Z8iL1Y8FqzisWAVjwWo+L/ZOQRrQDiURqeUU9JYjZCvot77
-        78mlaqUVCXyMyHQ70tj8d5QDoTERBwKYKC+UHb/hDSqELZNkH6O0arHWkEXpHEisb93FKOdZ
-        qdr3s1R6sTBGJIiJi4uLEW2NE/LC2Au5VbIQQi7RU5kUpaG0az4ak8XJoYW9djrctXKZKP3M
-        W8a1zty9PpAmnX29R79JnvLBHQ8QKHfqXGVDuzM7w+bTdi2P5S3zcz6UNSXuT9pecvz+ee+B
-        TnG4jNXYf+ObSHYx1mdKG+sbcSMu12b9qalrHumegfBCTf6OLXkm8b6Tguye0vbpcmWa8fvv
-        jqwc9ha8/ETKzWP7Z8ZPxCbjrvB33fFim93i9owkGO8dnP396bcmlzYbDi/umiK7zxqUe0ty
-        y2zGBxuHew8djKxlVSldNZNvD2fDl46LE+ViwKBXF2Ykd246h7mVsi+qD+U7S486I8Jbxuge
-        x7ZxkdrWYO6Ovq/QoefJV+8kW57bmuyVvY81G3mYTiERRqJaneRfAm9c+6EEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0xSYRiA951z4CBJndDyMxs5MmcWWq7LZ2utddnOWrnmurjWMsozMwUJ
-        tOwqmbZ1sbVZFkwtQbFMZiIUKpSSll3NLInSygqJzMzoYq2sCbX579me9332/ng5OP8bMYmT
-        Is1g5FJxmpDNJa7cEApET0rXMrMGCscip1nFQo0DTQTSDrkw9FLrIZCt1kSiKusDDFXcamSh
-        c80PWOhq02sCORrrMNSu6ibQiXc9ODK86WShnvfrUUd9ERsdv2xiobNt1zCkb+4mUbm9HUM6
-        wy8MaUxfSJRnbSZR7sEy1uIguqqkCtD2ss84XafuJmmtxY3RhsojbLqr08Kma8uy6byWnwR9
-        wlgJ6OGcYpL2GAT0na8ecrX/Bu7CJCYtZScjj160mbvNab7ElhUvz3rcX0cowc3Yo8CPA6k5
-        MO/5Pfwo4HL4VAOAmsMWwidCoL3mJOnjAHhx2EX6hnoBzK/XsUYEmxJBs/Ywe0QEUhYAj51u
-        9wqcKiGg7VmEb6MJQJde5035UYugq6DaywHUMjjcq8dHmKCmwUPuV17mUbHwQ6/7H4+Ht1Vv
-        CV90BnQ6nP94CrzaX4T7zguFP5y+iwKpJfDPBRPumwmC7pZm8iQIUI9KqUel1KNS6lEr5wFR
-        CYIZmUKSLFHMlsVImV1RCrFEkSlNjtqaLjEA72tERpqBpfJTlA1gHGADkIMLA3nzBWsYPi9J
-        vHsPI09PlGemMQobCOEQwiDet778JD6VLM5gUhlGxsj/W4zjN0mJRYgmBjZEfx+0phjVc5Wi
-        mb+ib2+5HN9pLJSskCTekoFruvS7NTpHl1TJ7bME3xi0jRNdN7TGecZgxoQ1/a19esuQVRCf
-        G5AubBmekbgiY8P9mu0ux6PwyW8moJhGwZhBZ5pJk18Qs6nPWL5K41lcEZ8ZlLdpx5RQLOF7
-        Tpy2NP/M4P7kKGtw6/3aeV1PQy50OEOLKtoG2qwuc5gjvKvAnz89u1RTviBsvqN/4bvxKvep
-        AxE5saI5ZRkdvHUbNU3nX8x0VssblKmqnoc1S43P6L0l++yFWfrs8uKSRwUPT0H91Mm/669/
-        fP5hy/SwpNy71UMLUrNwe4p/B8Fa+fPJeyGh2CaeHYnLFeK/9bl4PYkDAAA=
-X-CMS-MailID: 20231116050005epcas5p4f71e3d7d21802c738d331e69310656fd
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231025102237epcas5p28a5ad9db8d7dea072a6986d530810dde
-References: <20231025102216.50480-1-aakarsh.jain@samsung.com>
-        <CGME20231025102237epcas5p28a5ad9db8d7dea072a6986d530810dde@epcas5p2.samsung.com>
-        <20231025102216.50480-3-aakarsh.jain@samsung.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6392:EE_|CY8PR11MB7730:EE_
+X-MS-Office365-Filtering-Correlation-Id: d417bc37-3647-40c6-8810-08dbe66185af
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: oqa1qIoGYHwVnkTqiHthl8bYeKKQdFnGS03RgETqPuEeBMRRKbnESQ+fomHZ8brH3xGplQ+kZay2pMSG7ewbilMuDP5tZXk3C7UELktRIAy87O3RLhcbIHSmYhg5bl/bOx7j+yqiecP+lK64h9qIO/qSVxy1U5CEJbciPM1fy+9LubFvMUEExdwtWYM0mhlMWD5ssCoYAHB0s8wOJ8AiwuLekOcyOavSKb1QFi5o1J79+Zb7nsxsD7GI9Mq1eMYIkBXo6WyuiGtMmshfHXYlrSSCGF+eSEdVnJa8DQ0+EvMCkXufPJCR4nR75ht9jRUeqw5ob5Hw9w9j2+AYr2O15hBxDRjiCoVIgv5npUUC7Wuy+c+qdw4m31DA03AqylGQ5gXPSu5YsA4AfwQHLQrKhNryZsRQyZOdtfKh9PN5TG1fs40FhkKrptRrfz5jIVgJEH6cvKs4iJNQiILZoskjavhyOyJn0ch6f+XCMF3gcengbnw4DG4G8qYUPHMV4c1V2IGRxq70UdSolI9iAVuajD8JAd8wxeLCOszXQ7dNf9q4VLPkuwC4+454jLIBQFVbTssfaNIntGurL2jeh1iw2d5eB+fit5956Qk8pBdXSiwgB3sZUHH8U6eCRxoYyNMe6MN5N42HSOi6L5PA3mA1xQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6392.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(396003)(136003)(376002)(366004)(230273577357003)(230173577357003)(230922051799003)(1800799009)(186009)(64100799003)(451199024)(41300700001)(38100700002)(966005)(6486002)(478600001)(66946007)(36756003)(86362001)(316002)(66476007)(66556008)(1076003)(7416002)(82960400001)(2616005)(5660300002)(2906002)(6512007)(6666004)(6506007)(4326008)(4001150100001)(26005)(8936002)(8676002)(83380400001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?F+H5dzDmaEaL4XzRooZljKKp+ROCxTsx7FV8/my8w2fw4zbquJ+8ECUqh893?=
+ =?us-ascii?Q?qTLXxb9mrhE3fU2JtQHfP76x6dvoSfCJGI2YhjP3AYyU5WlT/gLfo2PDDFRQ?=
+ =?us-ascii?Q?zrVTDQ5uqVdNkvMUMnLWA508awp9hcYKpXc/CVBekzjuBCrx2TJDFYtVI8X9?=
+ =?us-ascii?Q?kcG3Xeifr5mY9d4dNMxW8NtDtD6T6t20krurSwg8l2AMziJtMQI4yUA04XB3?=
+ =?us-ascii?Q?pjcJNEqLtzDbLczE9Pg5yJzCi5x0ptMlchIulGkldpqdEBoWS97FGJZ/AJRG?=
+ =?us-ascii?Q?kurqcomi/oS3ehqjAZxZp4MGAiyHctf2ks5JAqLI2G+NFo/hGFOyyajRkoK3?=
+ =?us-ascii?Q?f58HDXPvtbWH07n2MaBZAQbIqXy34kHklEtPmD7HEjz913wG9cmaoFylU19E?=
+ =?us-ascii?Q?RTZzjWNw2p/gMtN5BGPQUW3tqEBkNrSuCO50Yn+Y/GwuURxop1YxwRjCq2O3?=
+ =?us-ascii?Q?H2mi615mk41jR9YR0147b7ngxbEK8wu7xocqB9uZRFZaAMYnB11Lc7EH/FbJ?=
+ =?us-ascii?Q?JBrSn2y6p3hvuv3eVAPF65m5P5TWY3474fyESLeYJySpZYcQtKMAAXaHha9e?=
+ =?us-ascii?Q?OmEPZWE+rAdZnH8LPs3GyHR8nLO8pjckYLlpgeGrdaEjlE9huPtlvBPfhkCY?=
+ =?us-ascii?Q?gx7NkpM5r9YmCdDm1LBkcWpZepALS2jH6xb23T4xXVBAEzXtH00iO8MaoipQ?=
+ =?us-ascii?Q?khjs0eQ31XCauiyVoA6mGmbKYbKxZfn+0/bYoHP54z/Y+FagtHQ96TlBx3i1?=
+ =?us-ascii?Q?08WuQJ69usaXzcVDTZ0iA4eS7g+iXFtvb/9GWN5Vq/wD2KX87TwzBQ0j2BTf?=
+ =?us-ascii?Q?JCBeWO7pKYsvNpqTgz9RzW0yRQOvZ6cMCFdZQQ06f/aPQabFYlYJOmXI7JjP?=
+ =?us-ascii?Q?v7QEBLV5T2F77jVHAhHqa1r5EcknO2tnPb0BUM8EkvBvWo3ZUJWwU7QJNtHI?=
+ =?us-ascii?Q?Vlaiig3ZJ3SCB77XpQ7OTxiGWxzKNAYd/3hFDYmAM8nDI0QhSIr1njLZOr2b?=
+ =?us-ascii?Q?yQi0/W2bOsgDacv600l/llIYfxUYmahn79jvqX8SLADevfzpXZQtR1JR6j5V?=
+ =?us-ascii?Q?9L20PGYFamZ8P4I4I02WrQG+3QmLX8Z4ryLMKzadFzxB1++IXFr1eyh7/bp+?=
+ =?us-ascii?Q?9HNCWJ98dMp31WyaICKAWJcGOKnEzfyyYO+eWIL2slGdZ14Go8DFsn9MVOJQ?=
+ =?us-ascii?Q?TxLaE1cSWqgja9yzPalDrL1JKcuaiuUiLmtomBRRxqxOkXslPKu4k80Bh1Sz?=
+ =?us-ascii?Q?nBKhlz3GsSp64bAwR+bQ9Au3q4EYTLfeIQHeHnr69Ls7IphCUUfpeJmNNUxz?=
+ =?us-ascii?Q?f9NgyjlnthPXtjySuV5I3GV9c37aKbvvV95mxqWum9bEDmmwh57InB34d1y/?=
+ =?us-ascii?Q?4nTmzTH2et05HsWjC9hUw18O5NXiGlvpNEUrAIDyhx6GPYd5Rq6l+vxNiiWH?=
+ =?us-ascii?Q?mLsWnmm4vj10SzqSvdVbvfGcOKP1oW9sWW+7zUoS1cVwI+WN1uCtFgWCfwoL?=
+ =?us-ascii?Q?mklrNHQupmWcifnKJAZgd9DEiYbnSw1T89LN8z8XEnmxuma+rPWCv4VfI8cL?=
+ =?us-ascii?Q?ioV9yM6t9ZXKBZPIVWjJUF85LSQ3m9Ue4w8Yq9ie?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d417bc37-3647-40c6-8810-08dbe66185af
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6392.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 05:04:33.6595
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YJeOvTuhACLWPh8ljHBciPBE7KqPJ99qG9IKWNzPbef1UZJtTSQlYC2303+YiFfo6g14YkNVfdnU7stHHtMEbA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7730
+X-OriginatorOrg: intel.com
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aakarsh
+Hi Yicong,
 
-> -----Original Message-----
-> From: Aakarsh Jain <aakarsh.jain@samsung.com>
-> Sent: Wednesday, October 25, 2023 3:52 PM
-> To: linux-arm-kernel@lists.infradead.org; linux-media@vger.kernel.org;
-> linux-kernel@vger.kernel.org; devicetree@vger.kernel.org
-> Cc: m.szyprowski@samsung.com; andrzej.hajda@intel.com;
-> mchehab@kernel.org; hverkuil-cisco@xs4all.nl;
-> krzysztof.kozlowski+dt@linaro.org; dillon.minfei@gmail.com;
-> david.plowman@raspberrypi.com; mark.rutland@arm.com;
-> robh+dt@kernel.org; conor+dt@kernel.org; linux-samsung-
-> soc@vger.kernel.org; andi@etezian.org; gost.dev@samsung.com;
-> alim.akhtar@samsung.com; aswani.reddy@samsung.com;
-> pankaj.dubey@samsung.com; ajaykumar.rs@samsung.com;
-> aakarsh.jain@samsung.com; linux-fsd@tesla.com; Smitha T Murthy
-> <smithatmurthy@gmail.com>
-> Subject: [Patch v4 02/11] media: s5p-mfc: Rename IS_MFCV10 macro
-> 
-> Renames macro IS_MFCV10 to IS_MFCV10_PLUS so that the MFCv10 code
-> can be resued for MFCv12 support. Since some part of MFCv10 specific code
-> holds good for MFCv12 also.
-> 
-> Cc: linux-fsd@tesla.com
-> Signed-off-by: Smitha T Murthy <smithatmurthy@gmail.com>
-> Signed-off-by: Aakarsh Jain <aakarsh.jain@samsung.com>
-> ---
+kernel test robot noticed the following build errors:
 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+[auto build test ERROR on arm64/for-next/core]
+[also build test ERROR on driver-core/driver-core-testing driver-core/driver-core-next driver-core/driver-core-linus arm/for-next kvmarm/next soc/for-next linus/master arm/fixes v6.7-rc1 next-20231115]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
->  .../platform/samsung/s5p-mfc/s5p_mfc_common.h | 10 +++----
->  .../platform/samsung/s5p-mfc/s5p_mfc_ctrl.c   |  2 +-
->  .../platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c | 28 +++++++++----------
->  3 files changed, 20 insertions(+), 20 deletions(-)
-> 
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> index 5304f42c8c72..e6ec4a43b290 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_common.h
-> @@ -771,11 +771,11 @@ void s5p_mfc_cleanup_queue(struct list_head *lh,
-> struct vb2_queue *vq);
->  #define HAS_PORTNUM(dev)	(dev ? (dev->variant ? \
->  				(dev->variant->port_num ? 1 : 0) : 0) : 0)
->  #define IS_TWOPORT(dev)		(dev->variant->port_num == 2 ? 1 : 0)
-> -#define IS_MFCV6_PLUS(dev)	(dev->variant->version >= 0x60 ? 1 :
-> 0)
-> -#define IS_MFCV7_PLUS(dev)	(dev->variant->version >= 0x70 ? 1 :
-> 0)
-> -#define IS_MFCV8_PLUS(dev)	(dev->variant->version >= 0x80 ? 1 :
-> 0)
-> -#define IS_MFCV10(dev)		(dev->variant->version >= 0xA0 ? 1 :
-> 0)
-> -#define FW_HAS_E_MIN_SCRATCH_BUF(dev) (IS_MFCV10(dev))
-> +#define IS_MFCV6_PLUS(dev)	(dev->variant->version >= 0x60)
-> +#define IS_MFCV7_PLUS(dev)	(dev->variant->version >= 0x70)
-> +#define IS_MFCV8_PLUS(dev)	(dev->variant->version >= 0x80)
-> +#define IS_MFCV10_PLUS(dev)	(dev->variant->version >= 0xA0)
-> +#define FW_HAS_E_MIN_SCRATCH_BUF(dev) (IS_MFCV10_PLUS(dev))
-> 
->  #define MFC_V5_BIT	BIT(0)
->  #define MFC_V6_BIT	BIT(1)
-> diff --git a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_ctrl.c
-> b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_ctrl.c
-> index 6d3c92045c05..54b54b2fa9b1 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_ctrl.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_ctrl.c
-> @@ -236,7 +236,7 @@ int s5p_mfc_init_hw(struct s5p_mfc_dev *dev)
->  	else
->  		mfc_write(dev, 0x3ff, S5P_FIMV_SW_RESET);
-> 
-> -	if (IS_MFCV10(dev))
-> +	if (IS_MFCV10_PLUS(dev))
->  		mfc_write(dev, 0x0, S5P_FIMV_MFC_CLOCK_OFF_V10);
-> 
->  	mfc_debug(2, "Will now wait for completion of firmware
-> transfer\n"); diff --git a/drivers/media/platform/samsung/s5p-
-> mfc/s5p_mfc_opr_v6.c b/drivers/media/platform/samsung/s5p-
-> mfc/s5p_mfc_opr_v6.c
-> index c0df5ac9fcff..882166e4ac50 100644
-> --- a/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> +++ b/drivers/media/platform/samsung/s5p-mfc/s5p_mfc_opr_v6.c
-> @@ -72,9 +72,9 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  			  ctx->luma_size, ctx->chroma_size, ctx->mv_size);
->  		mfc_debug(2, "Totals bufs: %d\n", ctx->total_dpb_count);
->  	} else if (ctx->type == MFCINST_ENCODER) {
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev))
->  			ctx->tmv_buffer_size = 0;
-> -		} else if (IS_MFCV8_PLUS(dev))
-> +		else if (IS_MFCV8_PLUS(dev))
->  			ctx->tmv_buffer_size =
-> S5P_FIMV_NUM_TMV_BUFFERS_V6 *
-> 
-> 	ALIGN(S5P_FIMV_TMV_BUFFER_SIZE_V8(mb_width, mb_height),
->  			S5P_FIMV_TMV_BUFFER_ALIGN_V6);
-> @@ -82,7 +82,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  			ctx->tmv_buffer_size =
-> S5P_FIMV_NUM_TMV_BUFFERS_V6 *
-> 
-> 	ALIGN(S5P_FIMV_TMV_BUFFER_SIZE_V6(mb_width, mb_height),
->  			S5P_FIMV_TMV_BUFFER_ALIGN_V6);
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev)) {
->  			lcu_width = S5P_MFC_LCU_WIDTH(ctx->img_width);
->  			lcu_height = S5P_MFC_LCU_HEIGHT(ctx-
-> >img_height);
->  			if (ctx->codec_mode !=
-> S5P_FIMV_CODEC_HEVC_ENC) { @@ -133,7 +133,7 @@ static int
-> s5p_mfc_alloc_codec_buffers_v6(struct s5p_mfc_ctx *ctx)
->  	switch (ctx->codec_mode) {
->  	case S5P_MFC_CODEC_H264_DEC:
->  	case S5P_MFC_CODEC_H264_MVC_DEC:
-> -		if (IS_MFCV10(dev))
-> +		if (IS_MFCV10_PLUS(dev))
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  		else if (IS_MFCV8_PLUS(dev))
->  			ctx->scratch_buf_size =
-> @@ -152,7 +152,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  			(ctx->mv_count * ctx->mv_size);
->  		break;
->  	case S5P_MFC_CODEC_MPEG4_DEC:
-> -		if (IS_MFCV10(dev))
-> +		if (IS_MFCV10_PLUS(dev))
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  		else if (IS_MFCV7_PLUS(dev)) {
->  			ctx->scratch_buf_size =
-> @@ -172,7 +172,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  		break;
->  	case S5P_MFC_CODEC_VC1RCV_DEC:
->  	case S5P_MFC_CODEC_VC1_DEC:
-> -		if (IS_MFCV10(dev))
-> +		if (IS_MFCV10_PLUS(dev))
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  		else
->  			ctx->scratch_buf_size =
-> @@ -189,7 +189,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  		ctx->bank2.size = 0;
->  		break;
->  	case S5P_MFC_CODEC_H263_DEC:
-> -		if (IS_MFCV10(dev))
-> +		if (IS_MFCV10_PLUS(dev))
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  		else
->  			ctx->scratch_buf_size =
-> @@ -201,7 +201,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  		ctx->bank1.size = ctx->scratch_buf_size;
->  		break;
->  	case S5P_MFC_CODEC_VP8_DEC:
-> -		if (IS_MFCV10(dev))
-> +		if (IS_MFCV10_PLUS(dev))
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  		else if (IS_MFCV8_PLUS(dev))
->  			ctx->scratch_buf_size =
-> @@ -230,7 +230,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  			DEC_VP9_STATIC_BUFFER_SIZE;
->  		break;
->  	case S5P_MFC_CODEC_H264_ENC:
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev)) {
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  			ctx->me_buffer_size =
->  			ALIGN(ENC_V100_H264_ME_SIZE(mb_width,
-> mb_height), 16); @@ -254,7 +254,7 @@ static int
-> s5p_mfc_alloc_codec_buffers_v6(struct s5p_mfc_ctx *ctx)
->  		break;
->  	case S5P_MFC_CODEC_MPEG4_ENC:
->  	case S5P_MFC_CODEC_H263_ENC:
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev)) {
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  			ctx->me_buffer_size =
-> 
-> 	ALIGN(ENC_V100_MPEG4_ME_SIZE(mb_width,
-> @@ -273,7 +273,7 @@ static int s5p_mfc_alloc_codec_buffers_v6(struct
-> s5p_mfc_ctx *ctx)
->  		ctx->bank2.size = 0;
->  		break;
->  	case S5P_MFC_CODEC_VP8_ENC:
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev)) {
->  			mfc_debug(2, "Use min scratch buffer size\n");
->  			ctx->me_buffer_size =
->  				ALIGN(ENC_V100_VP8_ME_SIZE(mb_width,
-> mb_height), @@ -452,7 +452,7 @@ static void
-> s5p_mfc_dec_calc_dpb_size_v6(struct s5p_mfc_ctx *ctx)
-> 
->  	if (ctx->codec_mode == S5P_MFC_CODEC_H264_DEC ||
->  			ctx->codec_mode ==
-> S5P_MFC_CODEC_H264_MVC_DEC) {
-> -		if (IS_MFCV10(dev)) {
-> +		if (IS_MFCV10_PLUS(dev)) {
->  			ctx->mv_size = S5P_MFC_DEC_MV_SIZE_V10(ctx-
-> >img_width,
->  					ctx->img_height);
->  		} else {
-> @@ -668,7 +668,7 @@ static int s5p_mfc_set_enc_ref_buffer_v6(struct
-> s5p_mfc_ctx *ctx)
-> 
->  	mfc_debug(2, "Buf1: %p (%d)\n", (void *)buf_addr1, buf_size1);
-> 
-> -	if (IS_MFCV10(dev)) {
-> +	if (IS_MFCV10_PLUS(dev)) {
->  		/* start address of per buffer is aligned */
->  		for (i = 0; i < ctx->pb_count; i++) {
->  			writel(buf_addr1, mfc_regs->e_luma_dpb + (4 * i));
-> @@ -2455,7 +2455,7 @@ const struct s5p_mfc_regs
-> *s5p_mfc_init_regs_v6_plus(struct s5p_mfc_dev *dev)
->  	R(e_h264_options, S5P_FIMV_E_H264_OPTIONS_V8);
->  	R(e_min_scratch_buffer_size,
-> S5P_FIMV_E_MIN_SCRATCH_BUFFER_SIZE_V8);
-> 
-> -	if (!IS_MFCV10(dev))
-> +	if (!IS_MFCV10_PLUS(dev))
->  		goto done;
-> 
->  	/* Initialize registers used in MFC v10 only.
-> --
-> 2.17.1
+url:    https://github.com/intel-lab-lkp/linux/commits/Yicong-Yang/arch_topology-Support-basic-SMT-control-for-the-driver/20231114-120544
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
+patch link:    https://lore.kernel.org/r/20231114040110.54590-5-yangyicong%40huawei.com
+patch subject: [PATCH v3 4/4] arm64: Kconfig: Enable HOTPLUG_SMT
+config: arm64-randconfig-002-20231115 (https://download.01.org/0day-ci/archive/20231115/202311151900.K9xc6Xqz-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231115/202311151900.K9xc6Xqz-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <yujie.liu@intel.com>
+| Closes: https://lore.kernel.org/r/202311151900.K9xc6Xqz-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   kernel/cpu.c: In function 'cpuhp_smt_disable':
+>> kernel/cpu.c:2687:23: error: implicit declaration of function 'cpu_down_maps_locked' [-Werror=implicit-function-declaration]
+    2687 |                 ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+         |                       ^~~~~~~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
+
+
+vim +/cpu_down_maps_locked +2687 kernel/cpu.c
+
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2672  
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2673  int cpuhp_smt_disable(enum cpuhp_smt_control ctrlval)
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2674  {
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2675  	int cpu, ret = 0;
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2676  
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2677  	cpu_maps_update_begin();
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2678  	for_each_online_cpu(cpu) {
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2679  		if (topology_is_primary_thread(cpu))
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2680  			continue;
+38253464bc821d Michael Ellerman 2023-07-05  2681  		/*
+38253464bc821d Michael Ellerman 2023-07-05  2682  		 * Disable can be called with CPU_SMT_ENABLED when changing
+38253464bc821d Michael Ellerman 2023-07-05  2683  		 * from a higher to lower number of SMT threads per core.
+38253464bc821d Michael Ellerman 2023-07-05  2684  		 */
+38253464bc821d Michael Ellerman 2023-07-05  2685  		if (ctrlval == CPU_SMT_ENABLED && cpu_smt_thread_allowed(cpu))
+38253464bc821d Michael Ellerman 2023-07-05  2686  			continue;
+dc8d37ed304eee Arnd Bergmann    2019-12-10 @2687  		ret = cpu_down_maps_locked(cpu, CPUHP_OFFLINE);
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2688  		if (ret)
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2689  			break;
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2690  		/*
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2691  		 * As this needs to hold the cpu maps lock it's impossible
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2692  		 * to call device_offline() because that ends up calling
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2693  		 * cpu_down() which takes cpu maps lock. cpu maps lock
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2694  		 * needs to be held as this might race against in kernel
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2695  		 * abusers of the hotplug machinery (thermal management).
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2696  		 *
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2697  		 * So nothing would update device:offline state. That would
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2698  		 * leave the sysfs entry stale and prevent onlining after
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2699  		 * smt control has been changed to 'off' again. This is
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2700  		 * called under the sysfs hotplug lock, so it is properly
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2701  		 * serialized against the regular offline usage.
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2702  		 */
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2703  		cpuhp_offline_cpu_device(cpu);
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2704  	}
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2705  	if (!ret)
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2706  		cpu_smt_control = ctrlval;
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2707  	cpu_maps_update_done();
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2708  	return ret;
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2709  }
+dc8d37ed304eee Arnd Bergmann    2019-12-10  2710  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
