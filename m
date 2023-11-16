@@ -2,185 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB9217EE8E8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 22:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5304F7EE8FC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 22:53:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjKPVqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 16:46:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51696 "EHLO
+        id S232401AbjKPVxI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 16:53:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229487AbjKPVqw (ORCPT
+        with ESMTP id S229379AbjKPVxG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 16:46:52 -0500
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2064.outbound.protection.outlook.com [40.107.237.64])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46403181;
-        Thu, 16 Nov 2023 13:46:48 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DhsnDlMxNF2Qo6qEaAxoeu3x0Ieb7GdbKIC/36w8lZQAHlHdozMGgVUbg/PCaAzSdUwXOlmjtVkMqKJz3GdbrCRYfrgXiGxuPDVQyqbcMJAXxDlXfw/J6x9nZ83Wk+dTm85h/3vU9p4e6NxxIDnOlytzQ8z3rz4SfItH0GPGGwbUJBbAB0hvX2zbO+MU6ulzbrfwVh3W/vKHoMCPt2hS+ykHQG19use7lGR5FgEVLiOA8BDCUDgb5jn53OgI/UhsampV9XnczUP/enWHhqfO/pYi9YMWlQsbNBKpxvWzbBzKosUVcKYbQAntuIORe1IJJRuJbi9B99R/FWbUb8Sf7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=OkC3m0veB7xXlky/uZ1uL88zNrOLKeqBg5W/LkOWpXo=;
- b=MvA80oq5XPktv+oL27V+yfoApitcG0VJf6qBEkhikLFfqLgVMBAzl3nt77unCBkfKRJqtPM+CKbL9V7ltjN3ZnNR/L6u6uGHnNWS4n0qBI6H3FU3bAYH4xKLQ+iOiKORyEDADNLFY1DkJ42Pvn9CfmeWcdASvVdyEYFfqo65VoVioYBoSmLo97kNPBJMy271Dt4A/ncGtqoE459/5MM/lVUAfi0Xtb5ggJd8JkSj5qm11VibYjvUN/ZqejrqP+0WexS9kNXm13o8tjeZWvrvmzoHk9cnL7h709KhmEI6vXaHupsQKTy3dI9pkQh9bG7+3cgtCBm8lCDwgILlMvGR4A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=OkC3m0veB7xXlky/uZ1uL88zNrOLKeqBg5W/LkOWpXo=;
- b=hSA7gZRv73vJuiJEVRedV0zKkjAXUqLoETBGN1wTVSVXbuoomxCbcsjZMUJo0O637wmoDAKXjhu+X9TxkyWv7Y58jZblS5VYjtRaa/oudezPqzb0ebghcGwZ9/n9s3Q9X2tTFtbjEOmNTS0//hQAIOquYykg7QGSkr2tTNfCruA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
- by SJ2PR12MB8875.namprd12.prod.outlook.com (2603:10b6:a03:543::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17; Thu, 16 Nov
- 2023 21:46:46 +0000
-Received: from CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::e2:9f06:b82e:9a0f]) by CH3PR12MB8403.namprd12.prod.outlook.com
- ([fe80::e2:9f06:b82e:9a0f%3]) with mapi id 15.20.7002.019; Thu, 16 Nov 2023
- 21:46:46 +0000
-Message-ID: <97a875be-3ebc-4d73-a4f1-2633b28b1111@amd.com>
-Date:   Thu, 16 Nov 2023 15:46:45 -0600
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND v5 1/4] ACPI: APEI: EINJ: Refactor
- available_error_type_show()
-Content-Language: en-US
-To:     Borislav Petkov <bp@alien8.de>, Avadhut Naik <avadhut.naik@amd.com>
-Cc:     linux-acpi@vger.kernel.org, rafael@kernel.org, lenb@kernel.org,
-        james.morse@arm.com, tony.luck@intel.com,
-        gregkh@linuxfoundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alexey.kardashevskiy@amd.com,
-        yazen.ghannam@amd.com
-References: <20231107213647.1405493-1-avadhut.naik@amd.com>
- <20231107213647.1405493-2-avadhut.naik@amd.com>
- <20231108201905.GCZUvtOSDkVqFPBmfk@fat_crate.local>
-From:   Avadhut Naik <avadnaik@amd.com>
-In-Reply-To: <20231108201905.GCZUvtOSDkVqFPBmfk@fat_crate.local>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN6PR01CA0019.prod.exchangelabs.com (2603:10b6:805:b6::32)
- To CH3PR12MB8403.namprd12.prod.outlook.com (2603:10b6:610:133::14)
+        Thu, 16 Nov 2023 16:53:06 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8A5C11F;
+        Thu, 16 Nov 2023 13:53:03 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id 41be03b00d2f7-5c1f8b0c149so499046a12.3;
+        Thu, 16 Nov 2023 13:53:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700171583; x=1700776383; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=6C9AZL6xuvaw9TUCVtQuHjnxGIMH+zJ13tnQH5dBkZE=;
+        b=gtRkkNwfJGoShFNZF04TeLD2uD63PsUXm6TORBHJ/0nKNVCCi9R+FWUpGZ6APmZAzG
+         39z4KgwqOF0SOrRaPHJqfijW2K4Xzkb9oiAYL4/G01imExMfKr0Vivd8F12vvrI8yw0H
+         Um5rryh/FD2mdWEhG9y8GuYhT89nFH2IUJcKSGuoGnTrIuoZvuXneIxzUgMfNuXJCZTH
+         KgxkisMiCUsDRMZGjlDLvsrgufDdPOFpAQF+E02NgEmmKlBK95MmWRw2d0FhirBp1PZU
+         YIOsSeyfqGsPs93YQkax2m04F7qxTT81Z9TFj2CRbMxw82wc3aG0CsKVx2ZxKQk6ydhr
+         f4hQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700171583; x=1700776383;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6C9AZL6xuvaw9TUCVtQuHjnxGIMH+zJ13tnQH5dBkZE=;
+        b=BeGmdAgcA9rtAXH/Rrp1cf54OIhHofczb6HBuc64gtkPlW+/f0Paiy91OXhHeBEuAQ
+         LElfwZMfo4X4xYzQuxegIt16SLkRDIQAyLjy4dgxohP4xeSc/uD96mvUwaNgQtS7MpKO
+         O3FYOKW/QfTZ3lQp3ctp4HNK7/nDicqaNKfZ7C8Z5x9GQVhiPb32QiUfqfrQkgFMl5Hw
+         u833wTKp5Sw5MHHj+gNKrrdBHD6rYHCb76fx8HBMeyarCwmiWMwjZoKcBGA/gkGfQRjk
+         nx8/EKbiNsUu41evoqGCTk7ujn7k1g9hqFVEoQweB96Q8iqytlU1UNNPnqV7DBLkyhDx
+         TrbA==
+X-Gm-Message-State: AOJu0YzHJiLjvAOXksL1zFy9IsOEAU+yJYbQ8068clDtb7gbXy6p10Hj
+        AFKiqa95y98YsQHMKU5MmlM=
+X-Google-Smtp-Source: AGHT+IFmlZ7+0Z1cztjaS5xXqOKocmLLq6Xgy++RtEF26Fl5qnKdIu1mkWfw/y6y3FCTA8TeAs1qFw==
+X-Received: by 2002:a05:6a20:a112:b0:14c:c393:6af with SMTP id q18-20020a056a20a11200b0014cc39306afmr16401691pzk.0.1700171582658;
+        Thu, 16 Nov 2023 13:53:02 -0800 (PST)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id cm7-20020a056a020a0700b005b92ba3938dsm137240pgb.77.2023.11.16.13.53.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 13:53:01 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <780fd479-a3c0-49d0-b632-4bff171fe067@roeck-us.net>
+Date:   Thu, 16 Nov 2023 13:53:00 -0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR12MB8403:EE_|SJ2PR12MB8875:EE_
-X-MS-Office365-Filtering-Correlation-Id: 989cef03-980a-4d5d-5391-08dbe6ed8790
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YxuFEb2ojnMbsjT9yBLMV9MR34FKqG3+NGtc7mBzBrP7RJYheW9zDmx2yUrKLT1wlxRBIsQdwNCulHJt1GTI5ZB+qRPYp3bih57yDkigOOtqYCegcNO6IEFzey47ddhZiwt3Jt90hgfxelIYfRmm9U/boYNG82R1/L5LUcqfjVmsb8WQiTNY58nJE/Qo4/QjDG4f/gNqheimkLbHWQYdiU1IYcCkZP3il8/CnlFd79MLFzAhmkJZB9mVMA+/gGrgWZqjRbdBhZdaznD02wdZD12wl5AE6Vtf6QIPnWF1bCSUVYgpWLI/Zzm8S6yzKSu+n00a1x72RkUPWpXa91NcxMHHqqJZ2q2ang4xNRarpDGc3+o5pG3Qpx4T/b9YMCYashnp4X79UVRIJlfMRAkD8lo6u15YJgTDUp1hf1aM4w4oyKj044dzeVNrPQFmhdunAp8NwOYMQBZfzsYbiHegB2jHW6izMJ5PE5VSXq+29y0a3Acak4Sz2lmOZdoDS12CL2HYiFn48MVoB50w+6AGEfgHjvPDz5PX5w++O9H+RdkqY1feTvaMSdq3Ons5XMl+siMPAtA4DPFd3nwXQ4FF7COF63eAuTXa5hhWE0R16XjD5m4gAXq96U+VKZvjAIJtGJ6AiWlII2wrDLLV6y0D5Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR12MB8403.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(396003)(376002)(366004)(346002)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(316002)(110136005)(31696002)(66556008)(66946007)(66476007)(6636002)(36756003)(8676002)(4326008)(8936002)(2906002)(26005)(41300700001)(53546011)(6512007)(2616005)(6506007)(31686004)(5660300002)(478600001)(6486002)(38100700002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?d0tlR1dmRnFTYVFRcFhTZmVJMkVKeGg4bHQrRGtldGMyOUxkcFowR2g0MHAw?=
- =?utf-8?B?NUdKV3M3ZlVuNUVldlUwYVZSaXVvNjQxeXlRSHdGb2lScUx5RWlCb2MrYW1o?=
- =?utf-8?B?c0tqWXBBTU4yWi94L0xGeWtBWDlHMHRrSnpMWG9pVkU2c0dIQktWZ1E2YTZv?=
- =?utf-8?B?MTlSTy92bVVQNFJwRm5wYnRBWGhqdVREMFlyeGlWTWRZdmV3dTB5ZnNHd0Q2?=
- =?utf-8?B?aFRhc1o4SWl2Nkcrd1VWQXRhVGJGdkphaDkwajREVDVQeFBaSUg5TVdyc3h0?=
- =?utf-8?B?N0JpWStIOC9YODAyUDNNb25ZT1lrdEY2ZzdxaXByanA3Y3hUSkVtZWRMSUxr?=
- =?utf-8?B?NFNwTjBGb3lvSDFkd0xhbzRwSEFyY2NvclJTU3dUTFZJNjdBNkwwOXhlV3N2?=
- =?utf-8?B?T3hJZytUNm92WFg3U0Z6L3NRZkxvdHlVcTVSK0hKd0RIUDhNMXdNc2owNkc1?=
- =?utf-8?B?Sm1wMVRTeWlCK0p2eEU5RGJHM0NvcUtlbHdyWjhTTURtR2g3MjJwQ3VJWjBL?=
- =?utf-8?B?cDRXakRRNk9nc05DWDhUbmVrQitBdlV6M2ZSVlRjL0FVZkFVeTJMbG5IOXVL?=
- =?utf-8?B?OEkyYldRUWRNWDdFRWphdWsveUQySDkwMk9zZGlyYTFTVzA2WTJCc3lPNGNZ?=
- =?utf-8?B?bjdzN2ExalpIeHNnTmluNUFZVU5UTXpOc0kzMHJFL01rNGp0VURBMnNDQzdx?=
- =?utf-8?B?SVY4amFJQjFKdG9tZStWVVJGdVFOTlNDeUVhMnVYRkdUdGNMKzdFMzVldmZ5?=
- =?utf-8?B?elFsNVdvSnl2M3ZJUVNYRC9DeGgxTU1NajV1NTZsUVBEaWhwaHpPS29DOTA3?=
- =?utf-8?B?UTdyUVMrTFk2dERhTmNPelRHS3NSNTRqWXpjQkRCUlRKc3YwdUlOYVFoODFR?=
- =?utf-8?B?aHV3SjVOanY1SVN6YldRWUV0VzdtUC9jbTgxenNUZ0hIS1ZNTlJFMTU4QXBq?=
- =?utf-8?B?Wm82N1RNZG9yMENpN0tObGtHQmRWWW9lcitwcFpzd29tS3NGMHBRNE1yTGNj?=
- =?utf-8?B?OGd5dVpyU1k1SVpTQ2dGM0FQWnVDRWRhdEY3SnZBcllTQk1iU2xMNDlPRWZn?=
- =?utf-8?B?MGZZYkdGMnI4VWl0WlQvTS8vRzBESE5KazJ1RS95Snlac1d1dURjTmNPTzNK?=
- =?utf-8?B?YXhNMzUrSDRkeVJOeGR6SFJUREY3c1BpK1l3M1NCU2tETHdlTFlGdGt3YzBn?=
- =?utf-8?B?YythK2k5OHI1Qk5RYi9rOFRKYjhtWnd6WURvUjEyd1h6VWdmWk9Nb1hUNWVX?=
- =?utf-8?B?NE5hT3JIeHFmdlpkbUgzbFh6VFpDdEl6c2R6NVFqQmhhYmJvNkJnN3JlOVFz?=
- =?utf-8?B?QlJnT3hnemNWT3V1djMzV3dmdXMwMllhdlVjZ0sxb2FFVGFHQ1dYdS9ETDhN?=
- =?utf-8?B?ZTBYTGhhS2ZMOXlRNm4wa09sSHZmNnVOWC9xaTNyZ0htWmFQM1o0TFIrRUZw?=
- =?utf-8?B?R1BqYnNDemxyelNFQkdld0VyeWtSTnFyUjRRaDhqYk8vdDJhM0p5UWdVeDd3?=
- =?utf-8?B?a0Z1WVo0MSs2WDRkNDRrb0RRNlptRXpkUmI4M0MxdDZkenBxbVIxSlEzNnl6?=
- =?utf-8?B?Vlo3R0xkR3BUSUhFOVoxalhWZ04wQnU4NVg4SWR3MHZwYW9TNUxJVTdvL21t?=
- =?utf-8?B?aDdEVEJ6Rkdnd1dXUUZFdmtQU3pma2VmUWgzSmVkb1EvSTA3U1Njek8wNWw0?=
- =?utf-8?B?cEZlaVdoZERuUmZnRFFZYys0cG1KbmRjS3Vwa2lmN1JFR0lRcm12RUpaTnA4?=
- =?utf-8?B?TUVuWks2aEF6bUo2bC9ucjl4aDRXK0IydktPcjRSWWp4S1Y5TEc5NGdqSWhJ?=
- =?utf-8?B?SHJLNWpDR240TDdrQ1RpWHplTU1LYmViUGZJZ3hlckZydW9lUHJYaVdMMkdl?=
- =?utf-8?B?K1owd1NqK0laMjNXT0RhVWJ5WmZqQ2o4WDRLbWlKWUhNcVlqSDVUbXZNQmlH?=
- =?utf-8?B?aUdEOHJORzJJUnZJazhpNjM3SFlsWDFBaFhNWXhmcktTdGY4QVJHVlhWajVx?=
- =?utf-8?B?am5rRHk5VTgxbGFUTjNZQS9WOFl1NkZnNTczMDdqOEJDR2VlVERJQXhOdmRD?=
- =?utf-8?B?UlpKV3lFa0wzeGRXVnkzaWdHdmM4Q2lvK1llNGZWNWNNVW5mbE1VdE56U0cw?=
- =?utf-8?Q?DqPjtzGDu2ls8jh6dizYZqP3N?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 989cef03-980a-4d5d-5391-08dbe6ed8790
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR12MB8403.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 21:46:46.0289
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 97laQPo8gtpqkGsfg90X1LaHorDh6Lpuc1UW88u67BzuWqG227la2v52w8f5Ouk0gVutoVeGxPZiWcP0Tv4ktw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8875
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/2] hwmon: pmbus: Add ltc4286 driver
+Content-Language: en-US
+To:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, patrick@stwcx.xyz,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+References: <20231116023027.24855-1-Delphine_CC_Chiu@Wiwynn.com>
+ <20231116023027.24855-3-Delphine_CC_Chiu@Wiwynn.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20231116023027.24855-3-Delphine_CC_Chiu@Wiwynn.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 11/15/23 18:30, Delphine CC Chiu wrote:
+> Add a driver to support ltc4286 chip
+> 
+> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+> 
+> -------------------------------------------------------------
+[ ... ]
 
-On 11/8/2023 14:19, Borislav Petkov wrote:
-> On Tue, Nov 07, 2023 at 03:36:44PM -0600, Avadhut Naik wrote:
->> +static struct { u32 mask; const char *str; } const einj_error_type_string[] = {
->> +	{BIT(0), "Processor Correctable"},
->> +	{BIT(1), "Processor Uncorrectable non-fatal"},
->> +	{BIT(2), "Processor Uncorrectable fatal"},
->> +	{BIT(3), "Memory Correctable"},
->> +	{BIT(4), "Memory Uncorrectable non-fatal"},
->> +	{BIT(5), "Memory Uncorrectable fatal"},
->> +	{BIT(6), "PCI Express Correctable"},
->> +	{BIT(7), "PCI Express Uncorrectable non-fatal"},
->> +	{BIT(8), "PCI Express Uncorrectable fatal"},
->> +	{BIT(9), "Platform Correctable"},
->> +	{BIT(10), "Platform Uncorrectable non-fatal"},
->> +	{BIT(11), "Platform Uncorrectable fatal"},
->> +	{BIT(12), "CXL.cache Protocol Correctable"},
->> +	{BIT(13), "CXL.cache Protocol Uncorrectable non-fatal"},
->> +	{BIT(14), "CXL.cache Protocol Uncorrectable fatal"},
->> +	{BIT(15), "CXL.mem Protocol Correctable"},
->> +	{BIT(16), "CXL.mem Protocol Uncorrectable non-fatal"},
->> +	{BIT(17), "CXL.mem Protocol Uncorrectable fatal"},
-> 
-> Might as well put spaces between the '{' and '}' brackets for better
-> readability.
-> 
->>  static int available_error_type_show(struct seq_file *m, void *v)
->> @@ -607,8 +607,9 @@ static int available_error_type_show(struct seq_file *m, void *v)
->>  	if (rc)
->>  		return rc;
->>  	for (int pos = 0; pos < ARRAY_SIZE(einj_error_type_string); pos++)
->> -		if (available_error_type & BIT(pos))
->> -			seq_puts(m, einj_error_type_string[pos]);
->> +		if (available_error_type & einj_error_type_string[pos].mask)
-> 
-> Call that variable simply "error_type". Those are simple functions, one
-> can see that it is the available error type.
-> 
->> +			seq_printf(m, "0x%08x\t%s\n", einj_error_type_string[pos].mask,
->> +				   einj_error_type_string[pos].str);
->>  
->>  	return 0;
-> 
-> But those are just nitpicks.
-> 
-> Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de>
-> 
-Thanks for reviewing. Will address this in v6.
-> Thx.
-> 
+> +	/* Default of VRANGE_SELECT = 1, 102.4V */
+> +	if (device_property_read_bool(&client->dev, "adi,vrange-low-enable")) {
+> +		/* Setup MFR1 CONFIG register bit 1 VRANGE_SELECT */
+> +		ret = i2c_smbus_read_word_data(client, LTC4286_MFR_CONFIG1);
+> +		if (ret < 0)
+> +			return dev_err_probe(
+> +				&client->dev, ret,
+> +				"Failed to read manufacturer configuration one\n");
+> +
+> +		ret &= ~VRANGE_SELECT_BIT; /* VRANGE_SELECT = 0, 25.6V */
+> +		ret = i2c_smbus_write_word_data(client, LTC4286_MFR_CONFIG1,
+> +						ret);
+> +		if (ret < 0)
+> +			return dev_err_probe(&client->dev, ret,
+> +					     "Failed to set vrange\n");
+> +
+> +		info->m[PSC_VOLTAGE_IN] = 128;
+> +		info->m[PSC_VOLTAGE_OUT] = 128;
+> +		info->m[PSC_POWER] = 4 * rsense;
+> +	} else {
+> +		info->m[PSC_POWER] = rsense;
+> +	}
 
--- 
-Thanks,
-Avadhut Naik
+My feedback has not been addressed.
+
+Guenter
+
