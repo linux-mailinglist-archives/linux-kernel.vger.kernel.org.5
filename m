@@ -2,306 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3715A7EDB23
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BBD7EDB27
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 06:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344759AbjKPFWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 00:22:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44612 "EHLO
+        id S234622AbjKPFW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 00:22:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjKPFWa (ORCPT
+        with ESMTP id S229786AbjKPFW4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 00:22:30 -0500
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2671A4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:25 -0800 (PST)
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id E57EE40CB1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:22:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-        s=20210705; t=1700112143;
-        bh=fr9ynEVsHoa7ae6x3+SEy8aQYynppv18RGOoPksmpuo=;
-        h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-         To:Cc:Content-Type;
-        b=Jigh+lt6nqu0MfHUj6Eo1P/awKTb6ax8FLbo2YVCGhF0YQvTKoKowee0S+e/8xwTg
-         Geu5ge9ziMtB8Oq6nCEDUo/QD0xoSeQW7dhIRIVwox6qr5y4efq5ycobjafNZt3NDz
-         Kh6zVzfnrUOTMmCldwP0GXqBZf+rrQcyaTkZm5yNK9/SlE0pD8H7Zb6hE/2x8oGnII
-         6tS0JQq/K8wkYOivZu7p7RFXgZ9DuF9Hz46b5IZWg12hKJn4w+QcYPiDqFDbDRhAaS
-         iXov1X2V4oCCHqXN0EBX8njNWwXH0bOJY4XnrMM6v2xUBCuxtCS9BLqeLPPE5z9QH7
-         coYUFSS5ThlPA==
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-280184b2741so457338a91.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:23 -0800 (PST)
+        Thu, 16 Nov 2023 00:22:56 -0500
+Received: from mail-yw1-x112e.google.com (mail-yw1-x112e.google.com [IPv6:2607:f8b0:4864:20::112e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4712CD49
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:50 -0800 (PST)
+Received: by mail-yw1-x112e.google.com with SMTP id 00721157ae682-5a7af20c488so4513667b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 21:22:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700112169; x=1700716969; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=LGsBAN5f4HBD1+0b849nw4eGgZQCAWEgA8RzzOxSqRw=;
+        b=JhIwLMaw0M1imVxrf1UhxrMGCD5PbCZi6hZ6sP88QYhpJCSAXkJhn1ekLlj/AWm91L
+         5j78EPXcc3dmOu5DZFEqocpLkMITSwC0yPF20AgfWStkPAZcmpgNSZuveWYewufHm2jv
+         YFOTbbbzvgC9GXhsUocrlX3zuFRZGrLVOS6FFKa+B/ni0HqR4koRgF9x98KECcuwBxHr
+         G54yJ30FSdlTzhrusFB7OhvDvwT82mHYIEvmg83iAMS97tbQyibOlF27PG2eFoH9WN9N
+         dZ4Wx3N2HkdEL+i9sqDhcK6ZrXURoOTONpITr5hM7RTptCghCAQGUf/ceTpCRiEEbnU8
+         ry0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700112142; x=1700716942;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fr9ynEVsHoa7ae6x3+SEy8aQYynppv18RGOoPksmpuo=;
-        b=r0+KwLBAnxe2GROkZOQpIYmEHrFN4qk6DQl0Z9ZoSU9pOkyt1QemG/fwaUNhS4OoHO
-         byr9SttL8NQzUo5w6qZbVnnBecWTvq+RekPb7JPI3A0XkAZHYwlIzbBFpU/C35sxKCKS
-         d28NgoZYFAwVDOm1ne9r7d9Aax7roAd4UmcRxS0oeY5cxSAQJOucNwduavwoSiNrhGxa
-         HF5MYVoJj6lRO/kVaX70VMpWHVs2iwMvtM5WjGbSeCTAFh8K2IkRhgGeNacjQzWrfYF5
-         V0KyTovcY+5NGy6AysbffuTCTHXnVrK9OqR7kngblsZFTDI5yqscwldI+viUKEM1LxJo
-         O4Ww==
-X-Gm-Message-State: AOJu0Yxx4qD5xGpgKwmDN4g0zJoUYYBRLGwEEnj7fpjmbihmTNnJJzFD
-        TiXARTWhp5dkv4ardTQI8ZZzfIE8kimOnsTq0bunPwL5W8BydQR6nZFnnLgp7sPFgG82Ss/5OpQ
-        0bw9/mugg7C+q6DMDCwt3sYEVwCnaQ0kRhcYh/3HX69o9qTkfkFYWlKx5CQ==
-X-Received: by 2002:a17:90b:38c8:b0:280:15a3:89c3 with SMTP id nn8-20020a17090b38c800b0028015a389c3mr12951094pjb.27.1700112142228;
-        Wed, 15 Nov 2023 21:22:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHLC/4acj0McErWz60wZejZap8B3iqii7Bt//IL+u/LsPxNLf+dbpSHr4r38hr46JezIPdNZztQhciZUIS2ZCc=
-X-Received: by 2002:a17:90b:38c8:b0:280:15a3:89c3 with SMTP id
- nn8-20020a17090b38c800b0028015a389c3mr12951075pjb.27.1700112141806; Wed, 15
- Nov 2023 21:22:21 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700112169; x=1700716969;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=LGsBAN5f4HBD1+0b849nw4eGgZQCAWEgA8RzzOxSqRw=;
+        b=r4a35y+DaCGTeQByqzm8ZkAiCkhGkTT9gNgVmOxel77A6YvEB4jJL+/bghfuy8ynOA
+         lXu/Rz19r5a4/BPkPobL3gToupaJQ0yq629//DrXbfKMEcPKiNK6I/fuJEJH5Jt8HfwB
+         yod5jUMILQTYlx1GfW48a/p8IRyN1O8mtvXgN4+fkynHS+I+xWv9iPiULshR5J4EcKxe
+         C7j8hcbx9W6tELFGiE8qTYR3mBeGtvIImgCF+0o1L2lm0LzsRpmUlKBBFGIAbuCuYlxG
+         fj3m5lKl0NvFMjwOwyYx1VlL6Nyq219tbrEHcmTg3CwmHBSf2brxSF6P79Kqh04eu93k
+         5i/A==
+X-Gm-Message-State: AOJu0YxfuTWQT3eQFZMYQdsslsfeVIQ69JLQhlabLRlUhDwJCQtk8QXh
+        J6gt9tI39pV+tVBZSYmYqirsp6uzPSpG0TaW+vP5bA==
+X-Google-Smtp-Source: AGHT+IHOEGWz3HtHd55pmB8Pv/nh+WGNRTsulQJPMzCPy94SaZI4yFMTydBgtiZ2E7PmosNQDdKzcq7XzPXgnedovC0=
+X-Received: by 2002:a0d:d502:0:b0:5b3:f5f8:c5c7 with SMTP id
+ x2-20020a0dd502000000b005b3f5f8c5c7mr16117676ywd.18.1700112169345; Wed, 15
+ Nov 2023 21:22:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20231016040132.23824-1-kai.heng.feng@canonical.com>
- <20231016093210.GA22952@wunner.de> <263982e90fc046cf977ecb8727003690@realtek.com>
- <20231018094435.GA21090@wunner.de> <02ee7e47166a463d8d4e491b61cdd33f@realtek.com>
- <20231019143504.GA25140@wunner.de> <CAAd53p7jx=_Yh8sPwdsu-6Bc-hNgiExscMNGhgcbH=rzOBMOXQ@mail.gmail.com>
- <d7cc9e658b114da7a9c32b383f06adc9@realtek.com>
-In-Reply-To: <d7cc9e658b114da7a9c32b383f06adc9@realtek.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 16 Nov 2023 13:22:09 +0800
-Message-ID: <CAAd53p6bRnhGOfLHBz4WyTQVKocZPK0d5m4oRdeLhWxkx-5tLw@mail.gmail.com>
-Subject: Re: [PATCH] PCI: pciehp: Prevent child devices from doing RPM on PCIe
- Link Down
-To:     Ricky WU <ricky_wu@realtek.com>
-Cc:     Lukas Wunner <lukas@wunner.de>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Tony Luck <tony.luck@intel.com>,
-        "Guilherme G. Piccoli" <gpiccoli@igalia.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20231116032530.753192-1-quic_jprakash@quicinc.com>
+In-Reply-To: <20231116032530.753192-1-quic_jprakash@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 16 Nov 2023 07:22:38 +0200
+Message-ID: <CAA8EJprJuiFq5UXc9weNr1hy2vW_10TaQweN_ZW5XW=3LKrgtA@mail.gmail.com>
+Subject: Re: [PATCH V2 0/3] iio: adc: Add support for QCOM SPMI PMIC5 Gen3 ADC
+To:     Jishnu Prakash <quic_jprakash@quicinc.com>
+Cc:     jic23@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        daniel.lezcano@linaro.org, linus.walleij@linaro.org,
+        linux-arm-msm@vger.kernel.org, andriy.shevchenko@linux.intel.com,
+        quic_subbaram@quicinc.com, quic_collinsd@quicinc.com,
+        quic_amelende@quicinc.com, quic_kamalw@quicinc.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marijn.suijten@somainline.org, lars@metafoo.de, luca@z3ntu.xyz,
+        linux-iio@vger.kernel.org, lee@kernel.org, rafael@kernel.org,
+        rui.zhang@intel.com, lukasz.luba@arm.com,
+        cros-qcom-dts-watchers@chromium.org, sboyd@kernel.org,
+        linux-pm@vger.kernel.org, linux-arm-msm-owner@vger.kernel.org,
+        kernel@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ricky,
-
-On Fri, Nov 10, 2023 at 10:41=E2=80=AFAM Ricky WU <ricky_wu@realtek.com> wr=
-ote:
+On Thu, 16 Nov 2023 at 05:26, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
 >
-> > Hi Lukas and Ricky,
-> >
-> > I think the following approach should cover all the cases?
-> > Ricky, can you please give it a try?
-> >
+> PMIC5 Gen3 has a similar ADC architecture to that on PMIC5 Gen2,
+> with all SW communication to ADC going through PMK8550 which
+> communicates with other PMICs through PBS. The major difference is
+> that the register interface used here is that of an SDAM present on
+> PMK8550, rather than a dedicated ADC peripheral. There may be more than one
+> SDAM used for ADC5 Gen3. Each ADC SDAM has eight channels, each of which may
+> be used for either immediate reads (same functionality as previous PMIC5 and
+> PMIC5 Gen2 ADC peripherals) or recurring measurements (same as PMIC5 and PMIC5
+> Gen2 ADC_TM functionality). In this case, we have VADC and ADC_TM functionality
+> combined into the same driver.
 >
-> This patch is invalid for this issue,
-> Problem reappears after plugging and unplugging twice
-> Dmesg as below,
-
-My bad. The pm_runtime_barrier() should be called earlier.
-Can you please give the following a try:
-
-diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c
-index d749ea8250d6..c69b4ce5dbfd 100644
---- a/drivers/pci/remove.c
-+++ b/drivers/pci/remove.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/pci.h>
- #include <linux/module.h>
-+#include <linux/pm_runtime.h>
- #include "pci.h"
-
- static void pci_free_resources(struct pci_dev *dev)
-@@ -18,6 +19,7 @@ static void pci_stop_dev(struct pci_dev *dev)
-  pci_pme_active(dev, false);
-
-  if (pci_dev_is_added(dev)) {
-+ pm_runtime_barrier(&dev->dev);
-
-  device_release_driver(&dev->dev);
-  pci_proc_detach_device(dev);
-
-
-> [...]
-> [  360.771161] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> [  360.771165] pcieport 0000:00:1c.0: pciehp: Slot(8): Card not present
-> [  361.986932] pcieport 0000:00:1c.0: pciehp: Slot(8): Card present
-> [  361.986937] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Up
-> [  362.120635] pci 0000:01:00.0: [15b7:5007] type 00 class 0x010802
-> [  362.120691] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x00003fff 64b=
-it]
-> [  362.120747] pci 0000:01:00.0: reg 0x20: [mem 0x00000000-0x000000ff 64b=
-it]
-> [  362.121606] pci 0000:01:00.0: BAR 0: assigned [mem 0xa3b00000-0xa3b03f=
-ff 64bit]
-> [  362.121646] pci 0000:01:00.0: BAR 4: assigned [mem 0xa3b04000-0xa3b040=
-ff 64bit]
-> [  362.121686] pcieport 0000:00:1c.0: PCI bridge to [bus 01]
-> [  362.121702] pcieport 0000:00:1c.0:   bridge window [io  0x4000-0x4fff]
-> [  362.121743] pcieport 0000:00:1c.0:   bridge window [mem 0xa3b00000-0xa=
-44fffff]
-> [  362.121761] pcieport 0000:00:1c.0:   bridge window [mem 0xa0a00000-0xa=
-13fffff 64bit pref]
-> [  362.171709] nvme nvme0: pci function 0000:01:00.0
-> [  362.171726] nvme 0000:01:00.0: enabling device (0000 -> 0002)
-> [  362.256724] nvme nvme0: 4/0/0 default/read/poll queues
-> [  362.261656]  nvme0n1: p1 p2
-> [  369.343246] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> [  369.457450] pcieport 0000:00:1c.0: pciehp: Slot(8): Card present
-> [  369.457462] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Up
-> [  369.592600] pci 0000:01:00.0: [10ec:5261] type 00 class 0xff0000
-> [  369.592654] pci 0000:01:00.0: reg 0x10: [mem 0xa3b00000-0xa3b00fff]
-> [  369.592776] pci 0000:01:00.0: Upstream bridge's Max Payload Size set t=
-o 128 (was 256, max 256)
-> [  369.592797] pci 0000:01:00.0: Max Payload Size set to 128 (was 128, ma=
-x 128)
-> [  369.592964] pci 0000:01:00.0: supports D1 D2
-> [  369.592970] pci 0000:01:00.0: PME# supported from D1 D2 D3hot D3cold
-> [  369.593642] pci 0000:01:00.0: BAR 0: assigned [mem 0xa3b00000-0xa3b00f=
-ff]
-> [  369.593662] pcieport 0000:00:1c.0: PCI bridge to [bus 01]
-> [  369.593679] pcieport 0000:00:1c.0:   bridge window [io  0x4000-0x4fff]
-> [  369.593692] pcieport 0000:00:1c.0:   bridge window [mem 0xa3b00000-0xa=
-44fffff]
-> [  369.593703] pcieport 0000:00:1c.0:   bridge window [mem 0xa0a00000-0xa=
-13fffff 64bit pref]
-> [  372.573757] pcieport 0000:00:1c.0: pciehp: Slot(8): Link Down
-> [  372.586620] BUG: unable to handle page fault for address: ffffc9000008=
-9010
-> [  372.586624] #PF: supervisor read access in kernel mode
-> [  372.586626] #PF: error_code(0x0000) - not-present page
-> [  372.586627] PGD 100000067 P4D 100000067 PUD 10020a067 PMD 10020b067 PT=
-E 0
-> [  372.586632] Oops: 0000 [#1] PREEMPT SMP PTI
-> [  372.586634] CPU: 2 PID: 157 Comm: kworker/2:2 Not tainted 6.6.0-rc4 #1=
-2
-> [  372.586637] Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.=
-M./H370M Pro4, BIOS P3.40 10/25/2018
-> [  372.586639] Workqueue: pm pm_runtime_work
-> [  372.586644] RIP: 0010:ioread32+0x2e/0x70
-> [  372.586647] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 98 a=
-c 52 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <=
-8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 f8 97 57 86 48
-> [  372.586649] RSP: 0018:ffffc90000543d50 EFLAGS: 00010296
-> [  372.586652] RAX: ffffc90000089000 RBX: 000000000000032f RCX: 000000000=
-000007f
-> [  372.586653] RDX: 000000000000ff00 RSI: ffffc90000089010 RDI: ffffc9000=
-0089010
-> [  372.586655] RBP: ffffc90000543d70 R08: ffffc90000089010 R09: ffff88816=
-a132368
-> [  372.586656] R10: 0000000000000000 R11: 0000000000000003 R12: 000000000=
-000007f
-> [  372.586657] R13: ffff8881060ed000 R14: ffff8881060ed100 R15: 000000000=
-0009003
-> [  372.586659] FS:  0000000000000000(0000) GS:ffff88816a100000(0000) knlG=
-S:0000000000000000
-> [  372.586661] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  372.586662] CR2: ffffc90000089010 CR3: 0000000043032006 CR4: 000000000=
-03706e0
-> [  372.586664] Call Trace:
-> [  372.586665]  <TASK>
-> [  372.586667]  ? show_regs+0x68/0x70
-> [  372.586671]  ? __die_body+0x20/0x70
-> [  372.586674]  ? __die+0x2b/0x40
-> [  372.586677]  ? page_fault_oops+0x160/0x480
-> [  372.586680]  ? search_bpf_extables+0x63/0x90
-> [  372.586684]  ? ioread32+0x2e/0x70
-> [  372.586686]  ? search_exception_tables+0x5f/0x70
-> [  372.586689]  ? kernelmode_fixup_or_oops+0xa2/0x120
-> [  372.586692]  ? __bad_area_nosemaphore+0x179/0x230
-> [  372.586696]  ? bad_area_nosemaphore+0x16/0x20
-> [  372.586698]  ? do_kern_addr_fault+0x8b/0xa0
-> [  372.586701]  ? exc_page_fault+0xe5/0x180
-> [  372.586705]  ? asm_exc_page_fault+0x27/0x30
-> [  372.586710]  ? ioread32+0x2e/0x70
-> [  372.586714]  ? rtsx_pci_write_register+0x5b/0x90 [rtsx_pci]
-> [  372.586723]  rtsx_set_l1off_sub+0x1c/0x30 [rtsx_pci]
-> [  372.586731]  rts5261_set_l1off_cfg_sub_d0+0x36/0x40 [rtsx_pci]
-> [  372.586740]  rtsx_pci_runtime_idle+0xc7/0x160 [rtsx_pci]
-> [  372.586748]  ? __pfx_pci_pm_runtime_idle+0x10/0x10
-> [  372.586751]  pci_pm_runtime_idle+0x34/0x70
-> [  372.586753]  rpm_idle+0xc4/0x2b0
-> [  372.586756]  pm_runtime_work+0x93/0xc0
-> [  372.586759]  process_scheduled_works+0x9a/0x390
-> [  372.586762]  ? __pfx_worker_thread+0x10/0x10
-> [  372.586764]  worker_thread+0x15b/0x2d0
-> [  372.586767]  ? __pfx_worker_thread+0x10/0x10
-> [  372.586769]  kthread+0x106/0x140
-> [  372.586771]  ? __pfx_kthread+0x10/0x10
-> [  372.586774]  ret_from_fork+0x39/0x60
-> [  372.586776]  ? __pfx_kthread+0x10/0x10
-> [  372.586778]  ret_from_fork_asm+0x1b/0x30
-> [  372.586783]  </TASK>
-> [  372.586784] Modules linked in: nvme nvme_core snd_hda_codec_hdmi snd_h=
-da_codec_realtek snd_hda_codec_generic ledtrig_audio nls_iso8859_1 snd_sof_=
-pci_intel_cnl snd_sof_intel_hda_common snd_soc_hdac_hda soundwire_intel sou=
-ndwire_generic_allocation snd_sof_intel_hda_mlink soundwire_cadence snd_sof=
-_intel_hda snd_sof_pci snd_sof_xtensa_dsp snd_sof snd_sof_utils snd_hda_ext=
-_core snd_soc_acpi_intel_match snd_soc_acpi soundwire_bus intel_rapl_msr in=
-tel_rapl_common snd_soc_core x86_pkg_temp_thermal intel_powerclamp coretemp=
- snd_compress ac97_bus kvm_intel snd_pcm_dmaengine i915 snd_hda_intel snd_i=
-ntel_dspcfg snd_intel_sdw_acpi kvm snd_hda_codec snd_hda_core mei_hdcp crct=
-10dif_pclmul ghash_clmulni_intel snd_hwdep snd_pcm sha512_ssse3 aesni_intel=
- snd_seq_midi crypto_simd snd_seq_midi_event cryptd rapl snd_rawmidi intel_=
-cstate drm_buddy binfmt_misc ttm snd_seq drm_display_helper joydev input_le=
-ds cec snd_seq_device wmi_bmof snd_timer ee1004 mei_me rc_core snd drm_kms_=
-helper mei intel_pch_thermal i2c_algo_bit soundcore mac_hid
-> [  372.586834]  acpi_tad acpi_pad sch_fq_codel msr parport_pc ppdev lp pa=
-rport drm ramoops reed_solomon efi_pstore ip_tables x_tables autofs4 hid_ge=
-neric usbhid hid rtsx_pci_sdmmc ahci i2c_i801 e1000e crc32_pclmul rtsx_pci =
-i2c_smbus xhci_pci libahci xhci_pci_renesas video wmi
-> [  372.586856] CR2: ffffc90000089010
-> [  372.586858] ---[ end trace 0000000000000000 ]---
-> [  372.746808] RIP: 0010:ioread32+0x2e/0x70
-> [  372.746816] Code: ff 03 00 77 25 48 81 ff 00 00 01 00 77 14 8b 15 98 a=
-c 52 01 b8 ff ff ff ff 85 d2 75 14 c3 cc cc cc cc 89 fa ed c3 cc cc cc cc <=
-8b> 07 c3 cc cc cc cc 55 83 ea 01 48 89 fe 48 c7 c7 f8 97 57 86 48
-> [  372.746818] RSP: 0018:ffffc90000543d50 EFLAGS: 00010296
-> [  372.746821] RAX: ffffc90000089000 RBX: 000000000000032f RCX: 000000000=
-000007f
-> [  372.746823] RDX: 000000000000ff00 RSI: ffffc90000089010 RDI: ffffc9000=
-0089010
-> [  372.746825] RBP: ffffc90000543d70 R08: ffffc90000089010 R09: ffff88816=
-a132368
-> [  372.746826] R10: 0000000000000000 R11: 0000000000000003 R12: 000000000=
-000007f
-> [  372.746828] R13: ffff8881060ed000 R14: ffff8881060ed100 R15: 000000000=
-0009003
-> [  372.746830] FS:  0000000000000000(0000) GS:ffff88816a100000(0000) knlG=
-S:0000000000000000
-> [  372.746832] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  372.746833] CR2: ffffc90000089010 CR3: 000000010a564004 CR4: 000000000=
-03706e0
-> [  372.746835] note: kworker/2:2[157] exited with irqs disabled
+> Patches 1 adds bindings for ADC5 Gen3 peripheral.
 >
-> > diff --git a/drivers/pci/remove.c b/drivers/pci/remove.c index
-> > d749ea8250d6..907d60587227 100644
-> > --- a/drivers/pci/remove.c
-> > +++ b/drivers/pci/remove.c
-> > @@ -1,6 +1,7 @@
-> >  // SPDX-License-Identifier: GPL-2.0
-> >  #include <linux/pci.h>
-> >  #include <linux/module.h>
-> > +#include <linux/pm_runtime.h>
-> >  #include "pci.h"
-> >
-> >  static void pci_free_resources(struct pci_dev *dev) @@ -89,6 +90,8 @@
-> > static void pci_remove_bus_device(struct pci_dev *dev)
-> >         struct pci_bus *bus =3D dev->subordinate;
-> >         struct pci_dev *child, *tmp;
-> >
-> > +       pm_runtime_barrier(&dev->dev);
-> > +
-> >         if (bus) {
-> >                 list_for_each_entry_safe(child, tmp,
-> >                                          &bus->devices, bus_list)
-> >
-> >
+> Patches 2 adds driver support for ADC5 Gen3.
+
+For some reason I don't see this patch in my inbox. Maybe it will
+arrive later. Immediate response: please add
+devm_thermal_add_hwmon_sysfs().
+
 >
+> Patch 3 is a cleanup, to move the QCOM ADC dt-bindings files from
+> dt-bindings/iio to dt-bindings/iio/adc folder, as they are
+> specifically for ADC devices. It also fixes all compilation errors
+> with this change in driver and devicetree files and similar errors
+> in documentation for dtbinding check.
+
+NAK. The kernel is expected to build and work after each commit.
+Otherwise git-bisecting the kernel becomes impossible.
+So, please rework your series in a way that there are no compilation
+errors after any of the patches. The easiest way would be to rearrange
+your patches in 3-1-2 order.
+
+
+>
+> Changes since v1:
+> - Dropped patches 1-5 for changing 'ADC7' peripheral name to 'ADC5 Gen2'.
+> - Addressed reviewer comments for binding and driver patches for ADC5 Gen3.
+> - Combined patches 8-11 into a single patch as requested by reviewers to make
+>   the change clearer and made all fixes required in same patch.
+>
+> Jishnu Prakash (3):
+>   dt-bindings: iio: adc: Add QCOM PMIC5 Gen3 ADC bindings
+>   iio: adc: Add support for QCOM PMIC5 Gen3 ADC
+>   dt-bindings: iio/adc: Move QCOM ADC bindings to iio/adc folder
+>
+>  .../bindings/iio/adc/qcom,spmi-vadc.yaml      |  185 ++-
+>  .../bindings/mfd/qcom,spmi-pmic.yaml          |    2 +-
+>  .../bindings/thermal/qcom-spmi-adc-tm-hc.yaml |    2 +-
+>  .../bindings/thermal/qcom-spmi-adc-tm5.yaml   |    6 +-
+>  arch/arm64/boot/dts/qcom/pm2250.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm6125.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm6150.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm6150l.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pm660.dtsi           |    2 +-
+>  arch/arm64/boot/dts/qcom/pm660l.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm7250b.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8150.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8150b.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8150l.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8916.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8950.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8953.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8994.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pm8998.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pmi632.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/pmi8950.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pmm8155au_1.dtsi     |    2 +-
+>  arch/arm64/boot/dts/qcom/pmp8074.dtsi         |    2 +-
+>  arch/arm64/boot/dts/qcom/pms405.dtsi          |    2 +-
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dts       |    2 +-
+>  arch/arm64/boot/dts/qcom/sc7280-idp.dtsi      |    2 +-
+>  arch/arm64/boot/dts/qcom/sc7280-qcard.dtsi    |    4 +-
+>  arch/arm64/boot/dts/qcom/sc8180x-pmics.dtsi   |    2 +-
+>  .../qcom/sc8280xp-lenovo-thinkpad-x13s.dts    |    6 +-
+>  .../boot/dts/qcom/sm7225-fairphone-fp4.dts    |    2 +-
+>  arch/arm64/boot/dts/qcom/sm8450-hdk.dts       |    8 +-
+>  drivers/iio/adc/Kconfig                       |   25 +
+>  drivers/iio/adc/Makefile                      |    1 +
+>  drivers/iio/adc/qcom-spmi-adc5-gen3.c         | 1189 +++++++++++++++++
+>  drivers/iio/adc/qcom-spmi-adc5.c              |    2 +-
+>  drivers/iio/adc/qcom-spmi-vadc.c              |    2 +-
+>  .../iio/adc/qcom,spmi-adc5-gen3-pm8550.h      |   50 +
+>  .../iio/adc/qcom,spmi-adc5-gen3-pm8550b.h     |   89 ++
+>  .../iio/adc/qcom,spmi-adc5-gen3-pm8550vx.h    |   22 +
+>  .../iio/adc/qcom,spmi-adc5-gen3-pmk8550.h     |   56 +
+>  .../iio/{ => adc}/qcom,spmi-adc7-pm8350.h     |    2 +-
+>  .../iio/{ => adc}/qcom,spmi-adc7-pm8350b.h    |    2 +-
+>  .../iio/{ => adc}/qcom,spmi-adc7-pmk8350.h    |    2 +-
+>  .../iio/{ => adc}/qcom,spmi-adc7-pmr735a.h    |    2 +-
+>  .../iio/{ => adc}/qcom,spmi-adc7-pmr735b.h    |    0
+>  .../iio/{ => adc}/qcom,spmi-vadc.h            |   81 ++
+>  46 files changed, 1725 insertions(+), 61 deletions(-)
+>  create mode 100644 drivers/iio/adc/qcom-spmi-adc5-gen3.c
+>  create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550.h
+>  create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550b.h
+>  create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550vx.h
+>  create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pmk8550.h
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350.h (98%)
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350b.h (99%)
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmk8350.h (97%)
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735a.h (95%)
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735b.h (100%)
+>  rename include/dt-bindings/iio/{ => adc}/qcom,spmi-vadc.h (77%)
+>
+> --
+> 2.25.1
+>
+
+
+--
+With best wishes
+Dmitry
