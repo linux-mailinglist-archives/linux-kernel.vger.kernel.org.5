@@ -2,441 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5307EE186
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:27:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB79F7EE184
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:27:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345205AbjKPN1T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:27:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48634 "EHLO
+        id S1345181AbjKPN1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:27:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230348AbjKPN1R (ORCPT
+        with ESMTP id S230348AbjKPN1N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:27:17 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA4A51A5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:27:12 -0800 (PST)
-Received: from localhost (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: bbrezillon)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id EED876607346;
-        Thu, 16 Nov 2023 13:27:10 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700141231;
-        bh=pIxs4XAKMLoD9l+7yF9sdKD56z79VwuM2yGEc8OYUcA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=S6lc9BRJKKYaEXLvj6lOE9pbQasbq+n0CnaSG69iMkCBylHCvbzqoyUw7Dd6Pg9dw
-         SSkjEIzqrC4LhFwHIiNJtwlChB6YVSBdtWiBtoMLWx0rMRCqVd5UTNUYq9J85KveuN
-         GHTixf62gyHraWLtuokM3grZkqbX2nfToq64xdLv9NaPgHM+kDFigrBMbHmjmxKBvM
-         7wfe1y4AnPgJkh8jfBrCAdObUkxEGqx0avrmM2RadqPN8IxZBCfqBnWwUzjcVYR4Ta
-         bI5bqYNbw6qyAS2KI3zFeeHisHCiW8Mr1MMIHPnH5lsdIoZVLJel/0npBbPt1QLNqs
-         HVBSOrUuhHGwg==
-Date:   Thu, 16 Nov 2023 14:27:07 +0100
-From:   Boris Brezillon <boris.brezillon@collabora.com>
-To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
-        <thomas.hellstrom@linux.intel.com>
-Cc:     intel-xe@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Matthew Brost <matthew.brost@intel.com>,
-        Danilo Krummrich <dakr@redhat.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Francois Dugast <francois.dugast@intel.com>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] Documentation/gpu: VM_BIND locking document
-Message-ID: <20231116142707.044aeec2@collabora.com>
-In-Reply-To: <0850281b667c4b88163dab60737dbc945ad742fd.camel@linux.intel.com>
-References: <20231115124937.6740-1-thomas.hellstrom@linux.intel.com>
-        <20231116104851.114bdb08@collabora.com>
-        <0850281b667c4b88163dab60737dbc945ad742fd.camel@linux.intel.com>
-Organization: Collabora
-X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
+        Thu, 16 Nov 2023 08:27:13 -0500
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67182CE;
+        Thu, 16 Nov 2023 05:27:10 -0800 (PST)
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b2f507c03cso442282b6e.2;
+        Thu, 16 Nov 2023 05:27:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700141229; x=1700746029;
+        h=date:subject:message-id:references:in-reply-to:cc:to:from
+         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=EiATJ9Ae1Pi7ofcD6bHPkPAkJ7RwAhGEYTi2JIxus3w=;
+        b=B4SLrCgTk6nIgbKK0kl+IQ0T6+l/8IYa7IaYbO/EKpbQcO8dS9XekWCp0FIlXLWEJm
+         +5MNAjzZBBN6SsMBJiCizI5z9uJGBhLiL46v4nPEh8yVJQHi/fnMqCnraUx3VCbxUopd
+         OdGgAuOl7FRt/eqheMrptkavD7xhEPuSMfHTTCclW/LFGg6W5nZTt258gOQ/nSxC2Mt2
+         5g8t+BPXOeWhFZoz/3YHNtaTs2Jl8Y/nSbWk2TrzgI3YUhgh2oy/KroCdI7xXeDtHTmr
+         Ts3ioIxFVhHPm+50br8siN4d1lpxsKvOnP+jAvOcCbKE4zGHr//vwyoSFKLnECtKLSty
+         EQbw==
+X-Gm-Message-State: AOJu0YyHge4v8DvhbY0bFFmnfqPPvDIHLzeJIEPgRMq74MBsjGvso0gF
+        F4x01nl6VmJiCAAjtP4eIw==
+X-Google-Smtp-Source: AGHT+IHNttpWJHud5egHX7x35FHNuN5x7ZpDa2udGMDZU3OfKdGWUGV4Qavil1YBq7dDUwm1Psyq/g==
+X-Received: by 2002:a05:6808:290d:b0:3b5:64c9:5146 with SMTP id ev13-20020a056808290d00b003b564c95146mr14830718oib.42.1700141229661;
+        Thu, 16 Nov 2023 05:27:09 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id b24-20020a9d4798000000b006c4edf462d7sm906748otf.43.2023.11.16.05.27.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 05:27:09 -0800 (PST)
+Received: (nullmailer pid 1870084 invoked by uid 1000);
+        Thu, 16 Nov 2023 13:27:07 -0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+From:   Rob Herring <robh@kernel.org>
+To:     =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <zajec5@gmail.com>
+Cc:     =?utf-8?q?Rafa=C5=82_Mi=C5=82ecki?= <rafal@milecki.pl>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-mediatek@lists.infradead.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+In-Reply-To: <20231116120225.29999-1-zajec5@gmail.com>
+References: <20231116120225.29999-1-zajec5@gmail.com>
+Message-Id: <170014122769.1870053.16125262341176189916.robh@kernel.org>
+Subject: Re: [PATCH] dt-bindings: thermal: convert Mediatek Thermal to the
+ json-schema
+Date:   Thu, 16 Nov 2023 07:27:07 -0600
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_FILL_THIS_FORM_SHORT,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 12:48:45 +0100
-Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
 
-> Hi, Boris,
->=20
-> Thanks for reviewing. Some comments below:
->=20
-> On Thu, 2023-11-16 at 10:48 +0100, Boris Brezillon wrote:
-> > Hi Thomas,
-> >=20
-> > On Wed, 15 Nov 2023 13:49:37 +0100
-> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
-> >  =20
-> > > Add the first version of the VM_BIND locking document which is
-> > > intended to be part of the xe driver upstreaming agreement.
-> > >=20
-> > > The document describes and discuss the locking used during exec-
-> > > functions, evicton and for userptr gpu-vmas. Intention is to be
-> > > using the
-> > > same nomenclature as the drm-vm-bind-async.rst.
-> > >=20
-> > > v2:
-> > > - s/gvm/gpu_vm/g (Rodrigo Vivi)
-> > > - Clarify the userptr seqlock with a pointer to mm/mmu_notifier.c
-> > > =C2=A0 (Rodrigo Vivi)
-> > > - Adjust commit message accordingly.
-> > > - Add SPDX license header.
-> > >=20
-> > > v3:
-> > > - Large update to align with the drm_gpuvm manager locking
-> > > - Add "Efficient userptr gpu_vma exec function iteration" section
-> > > - Add "Locking at bind- and unbind time" section.
-> > >=20
-> > > v4:
-> > > - Fix tabs vs space errors by untabifying (Rodrigo Vivi)
-> > > - Minor style fixes and typos (Rodrigo Vivi)
-> > > - Clarify situations where stale GPU mappings are occurring and how
-> > > =C2=A0 access through these mappings are blocked. (Rodrigo Vivi)
-> > > - Insert into the toctree in implementation_guidelines.rst
-> > >=20
-> > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
-> > > Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.co=
-m>
-> > > ---
-> > > =C2=A0Documentation/gpu/drm-vm-bind-locking.rst=C2=A0=C2=A0=C2=A0=C2=
-=A0 | 503
-> > > ++++++++++++++++++
-> > > =C2=A0.../gpu/implementation_guidelines.rst=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
-> > > =C2=A02 files changed, 504 insertions(+)
-> > > =C2=A0create mode 100644 Documentation/gpu/drm-vm-bind-locking.rst
-> > >=20
-> > > diff --git a/Documentation/gpu/drm-vm-bind-locking.rst
-> > > b/Documentation/gpu/drm-vm-bind-locking.rst
-> > > new file mode 100644
-> > > index 000000000000..bc701157cb34
-> > > --- /dev/null
-> > > +++ b/Documentation/gpu/drm-vm-bind-locking.rst
-> > > @@ -0,0 +1,503 @@
-> > > +.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> > > +
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +VM_BIND locking
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +This document attempts to describe what's needed to get VM_BIND
-> > > locking right,
-> > > +including the userptr mmu_notifier locking and it will also
-> > > discuss some
-> > > +optimizations to get rid of the looping through of all userptr
-> > > mappings and
-> > > +external / shared object mappings that is needed in the simplest
-> > > +implementation. It will also discuss some implications for
-> > > faulting gpu_vms.
-> > > +
-> > > +Nomenclature
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +* ``Context``: GPU execution context.
-> > > +* ``gpu_vm``: Abstraction of a virtual GPU address space with
-> > > +=C2=A0 meta-data. Typically one per client (DRM file-private), or one
-> > > per
-> > > +=C2=A0 context. =20
-> >=20
-> > Should we mention that it's a driver object, likely inheriting from
-> > drm_gpuvm? =20
->=20
-> Yes, I can try to be a bit more drm_gpuvm-centric throughout the
-> document, although I want to avoid being too specific due to the
-> current rapid drm_gpuvm rate of change, which might also affect this
-> document. I guess I will have to commit for now to update the document
-> on each gpuvm series we land...
+On Thu, 16 Nov 2023 13:02:25 +0100, Rafał Miłecki wrote:
+> From: Rafał Miłecki <rafal@milecki.pl>
+> 
+> This helps validating DTS files.
+> 
+> Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
+> ---
+>  .../bindings/thermal/mediatek-thermal.txt     | 52 ----------
+>  .../bindings/thermal/mediatek-thermal.yaml    | 98 +++++++++++++++++++
+>  2 files changed, 98 insertions(+), 52 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
+>  create mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal.yaml
+> 
 
-Well, I'd suggest that the one doing changes to drm_gpuvm gets to
-update this document along the way, or even better, make this
-documentation part of the drm_gpuvm doc, so there's no excuse to not
-update it when drm_gpuvm is extended.
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-> >  =20
-> > > +* ``exec function``: An exec function is a function that
-> > > revalidates all
-> > > +=C2=A0 affected gpu_vmas, submits a GPU command batch and registers =
-the
-> > > +=C2=A0 dma_fence representing the GPU command's activity with all
-> > > affected
-> > > +=C2=A0 dma_resvs. For completeness, although not covered by this
-> > > document,
-> > > +=C2=A0 it's worth mentioning that an exec function may also be the
-> > > +=C2=A0 revalidation worker that is used by some drivers in compute /
-> > > +=C2=A0 long-running mode.
-> > > +* ``local object``: A GEM object which is local to a gpu_vm.
-> > > Shared gem
-> > > +=C2=A0 objects also share the gpu_vm's dma_resv.
-> > > +* ``shared object``: a.k.a external object: A GEM object which may
-> > > be shared
-> > > +=C2=A0 by multiple gpu_vms and whose backing storage may be shared w=
-ith
-> > > +=C2=A0 other drivers. =20
-> >=20
-> > Should we name that one external object and mentions it's sometimes
-> > also called external object. This way it matches the name used in
-> > gpuvm
-> > implementation (extobj). =20
->=20
-> You mean "... also called shared object"?
+yamllint warnings/errors:
 
-Yeah, sorry.
+dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/thermal/mediatek-thermal.yaml: properties:resets: 'Reference to the reset controller controlling the thermal controller.' is not of type 'object', 'boolean'
+	from schema $id: http://json-schema.org/draft-07/schema#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/thermal/mediatek-thermal.yaml: properties:resets: 'Reference to the reset controller controlling the thermal controller.' is not of type 'object', 'boolean'
+	from schema $id: http://devicetree.org/meta-schemas/keywords.yaml#
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/thermal/mediatek-thermal.yaml: 'maintainers' is a required property
+	hint: Metaschema for devicetree binding documentation
+	from schema $id: http://devicetree.org/meta-schemas/base.yaml#
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-validate", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 144, in main
+    sg.check_dtb(filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 89, in check_dtb
+    self.check_subtree(dt, subtree, False, "/", "/", filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
+    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 82, in check_subtree
+    self.check_subtree(tree, value, disabled, name, fullname + name, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 77, in check_subtree
+    self.check_node(tree, subtree, disabled, nodename, fullname, filename)
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/dtb_validate.py", line 33, in check_node
+    for error in self.validator.iter_errors(node, filter=match_schema_file):
+  File "/usr/local/lib/python3.11/dist-packages/dtschema/validator.py", line 393, in iter_errors
+    for error in self.DtValidator(sch,
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
+    for error in errors:
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 414, in if_
+    yield from validator.descend(instance, then, schema_path="then")
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 305, in descend
+    for error in self.evolve(schema=schema).iter_errors(instance):
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 288, in iter_errors
+    for error in errors:
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/_validators.py", line 332, in properties
+    yield from validator.descend(
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 305, in descend
+    for error in self.evolve(schema=schema).iter_errors(instance):
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 278, in iter_errors
+    scope = id_of(_schema)
+            ^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/dist-packages/jsonschema/validators.py", line 101, in _id_of
+    return schema.get("$id", "")
+           ^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
 
-> Shure, can do that.
-> >  =20
-> > > +
-> > > +
-> > > +Locks used and locking orders
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
-> > > +
-> > > +One of the benefits of VM_BIND is that local GEM objects share the
-> > > gpu_vm's
-> > > +dma_resv object and hence the dma_resv lock. So even with a huge
-> > > +number of local GEM objects, only one lock is needed to make the
-> > > exec
-> > > +sequence atomic.
-> > > +
-> > > +The following locks and locking orders are used:
-> > > +
-> > > +* The ``gpu_vm->lock`` (optionally an rwsem). Protects how the
-> > > gpu_vm is
-> > > +=C2=A0 partitioned into gpu_vmas. It can also protect the gpu_vm's l=
-ist
-> > > of
-> > > +=C2=A0 userptr gpu_vmas. With a CPU mm analogy this would correspond=
- to
-> > > the
-> > > +=C2=A0 mmap_lock. =20
-> >=20
-> > I don't see any drm_gpuvm::lock field in Danilo's latest patchset,
-> > so,
-> > unless I missed one version, and this lock is actually provided by
-> > drm_gpuvm, I would mention this is a driver-specific lock. This
-> > comment
-> > applies to all the locks you describe here actually (mention which
-> > ones
-> > are provided by drm_gpuvm, and which ones are driver-specific). =20
->=20
-> These will be needed also by gpuvm when implementing userptr vmas, so I
-> can mention that drm_gpuvm is currently lacking a userptr
-> implementation, so "the locks described below are to be considered
-> driver-specific for now"
+doc reference errors (make refcheckdocs):
 
-Sounds good.
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20231116120225.29999-1-zajec5@gmail.com
 
-> > > +
-> > > +The reason for having a separate gpu_vm rebind list is that there
-> > > +might be userptr gpu_vmas that are not mapping a buffer object
-> > > that
-> > > +also need rebinding.
-> > > +
-> > > +Eviction
-> > > +________
-> > > +
-> > > +Eviction of one of these local objects will then look similar to
-> > > the
-> > > +following:
-> > > +
-> > > +.. code-block:: C
-> > > +
-> > > +=C2=A0=C2=A0 obj =3D get_object_from_lru();
-> > > +
-> > > +=C2=A0=C2=A0 dma_resv_lock(obj->resv);
-> > > +=C2=A0=C2=A0 for_each_gpu_vm_bo_of_obj(obj, &gpu_vm_bo);
-> > > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 add_gpu=
-_vm_bo_to_evict_list(&gpu_vm_bo, &gpu_vm- =20
-> > > >evict_list); =20
-> > > +
-> > > +=C2=A0=C2=A0 add_dependencies(&eviction_job, &obj->resv);
-> > > +=C2=A0=C2=A0 job_dma_fence =3D gpu_submit(&eviction_job); =20
-> >=20
-> > Could you expend a bit on what the eviction job does? On embedded
-> > GPUs,
-> > where there's no VRAM, we typically don't have a GPU job to teardown
-> > GPU mappings. We do have an asynchronous VM_BIND queue though, so I
-> > suspect the job here is an async VM_BIND job.
-> >=20
-> > Not asking you to add that to the doc, I'm just trying to figure out
-> > how
-> > this would map to the mem-reclaim logic in panthor... =20
->=20
-> This would typically be the blit of data from VRAM to system,
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
 
-Okay, not needed in my case then.
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-> but async
-> jobs here may also include zapping page-tables and TLB flush in case of
-> recoverable page-faults.
+pip3 install dtschema --upgrade
 
-And that part is synchronous in panthor. Maybe the locking will force
-me to make it an asynchronous VM_BIND job. I guess I'll only know when
-I get to hook up the shrinker...
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
 
->=20
-> >  =20
-> > > +=C2=A0=C2=A0 add_dma_fence(&obj->resv, job_dma_fence);
-> > > +
-> > > +=C2=A0=C2=A0 dma_resv_unlock(&obj->resv);
-> > > +=C2=A0=C2=A0 put_object(obj);
-> > > +
-> > > +Note that since the object is local to the gpu_vm, it will share
-> > > the gpu_vm's
-> > > +dma_resv lock so that ``obj->resv =3D=3D gpu_vm->resv``.
-> > > +The gpu_vm_bos marked for eviction are put on the gpu_vm's evict
-> > > list,
-> > > +which is protected by ``gpu_vm->resv``, that is always locked
-> > > while
-> > > +evicting, due to the above equality.
-> > > +
-> > > +For VM_BIND gpu_vms, gpu_vmas don't need to be unbound before
-> > > eviction,
-> > > +Since the driver must ensure that the eviction blit or copy will
-> > > wait
-> > > +for GPU idle or depend on all previous GPU activity. Furthermore,
-> > > any
-> > > +subsequent attempt by the GPU to access freed memory through the
-> > > +gpu_vma will be preceded by a new exec function, with a
-> > > revalidation
-> > > +section which will make sure all gpu_vmas are rebound. The
-> > > eviction
-> > > +code holding the object's dma_resv while revalidating will ensure
-> > > a
-> > > +new exec function may not race with the eviction. Note that this
-> > > will
-> > > +not hold true, however, if only a subsets of vmas are, due to the
-> > > +driver implementation, selected for rebinding the next exec
-> > > +function. =20
-> >=20
-> > This last sentence is hard to follow.
-> >=20
-> > "
-> > Note that this will not hold true if only a subset of vmas
-> > are selected for rebinding during the next exec call (for instance,
-> > due
-> > to some driver decision to only partially restore VMAs).
-> > "
-> >  =20
-> > > Then all vmas *not* selected for rebinding needs to be
-> > > +properly unbound before re-enabling GPU access to the VM. =20
-> >=20
-> > I think I get the problem, but can we have a use case where partial
-> > VMA restoration is useful? I mean, if some VMAs are not needed, we
-> > might be able to save MMU page table allocation/setup-time, but given
-> > the mess it then is to track those non-live VMAs, I'm wondering if
-> > it's
-> > leaving the door open for that, unless there's a good reason to do
-> > it. =20
->=20
-> This is the use-case Christian has been flagging for for OpenGL and
-> Media where he warns that the single-vm-memory-overcommit case would
-> otherwise make the app crawl.
-
-IIUC, the partial VMA restore is about not restoring all VMAs attached
-to a vm_bo, but as soon as you restore one, this makes the BO resident,
-so all you're saving here is the extra page table for non-restored VMAs.
-I don't think that would significantly help the overcommit use case,
-unless you have so many VMAs attached to a single vm_bo that the
-amount of extra page tables becomes non-negligible compared to the BO
-size itself.
-
-What would really help the overcommit use case is not restoring all
-evicted BOs, if some of them are known to be in a range that's not
-accessed by a GPU job. In that situation, you can decide to leave
-vm_bos in the evicted list if none of their VMAs overlap any of the VM
-ranges used by a job.
-
->=20
-> Generalized one might want to think of these as groups of (or perhaps
-> virtual ranges of) vmas that need to be resident for a single job
-> submission. Currently we assume the residency-group <-> vm mapping is
-> 1:1, allowing for the unbind-before-eviction to be ignored, but I
-> figure moving forward and addressing performance problems of real-world
-> applications that may not always be true.
-
-Maybe I don't understand what unbind-before-eviction means. To me it's
-the operation of tearing down all VM mappings (unbind) before returning
-BO pages to the system (evict). I don't see a situation where the
-eviction of a BO doesn't imply killing all VM mapping pointing to this
-BO.
-
->=20
-> >  =20
-> > > +
-> > > +
-> > > +Locking with external (or shared) buffer objects
-> > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> > > +
-> > > +Since shared buffer objects may be shared by multiple gpu_vm's
-> > > they
-> > > +can't share their reservation object with a single gpu_vm, but
-> > > will rather
-> > > +have a reservation object of their own. The shared objects bound
-> > > to a
-> > > +gpu_vm using one or many gpu_vmas are therefore typically put on a
-> > > +per-gpu_vm list which is protected by the gpu_vm's dma_resv lock.
-> > > Once
-> > > +the gpu_vm's reservation object=C2=A0 is locked, it is safe to trave=
-rse
-> > > the =20
-> >=20
-> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^ extra space
-> >  =20
-> > > +external object list and lock the dma_resvs of all external
-> > > objects.
-> > > +
-> > > +At eviction time we now need to put the gpu_vm_bos of *all*
-> > > gpu_vms a
-> > > +shared object is bound to on the gpu_vm's evict list, but we can
-> > > no longer
-> > > +be certain that we hold the gpu_vm's dma_resv of all the gpu_vms
-> > > the
-> > > +object is bound to, since at eviction time we only hold the
-> > > object's
-> > > +private dma_resv. If we have a ww_acquire context at hand at
-> > > eviction
-> > > +time we could grab the those dma_resvs but that could cause
-> > > +expensive ww_mutex rollbacks. A simple option is to just mark the
-> > > +gpu_vm_bos of the evicted gem object with an ``evicted`` bool that
-> > > +is inspected the next time the corresponding gpu_vm evicted list
-> > > needs
-> > > +to be traversed. =20
-> >=20
-> > IIUC, the vm_bo is not added to the evicted list immediately in that
-> > case, so I suspect you meant the next time the corresponding gpu_vm
-> > *extobj* list needs to be traversed. =20
->=20
-> I like to think of the concept as "lock and validate the list before
-> traversing it" and you're right in this case, the validation occurs
-> slightly before we actually start looking at the evicted list. But I
-> could perhaps rephrase to "...bool that is inspected *before* the next
-> time..."
-
-My point was, you detect such evicted vm_bos when iterating the
-extobj list, not the evicted list, because the vm_bo won't be in the
-evicted list until you've walked extobj and inserted evicted vm_bos the
-the evicted list. Even with your rephrasing, it sounds like those are
-detected by iterating the evicted list. How about
-
-"
-A simple option is to just mark the gpu_vm_bos of the evicted gem
-object with an ``evicted`` bool. Those gpu_vm_bos will be moved to
-the evicted list next time the extobj list is inspected for vm_bo
-revalidation.
-"
