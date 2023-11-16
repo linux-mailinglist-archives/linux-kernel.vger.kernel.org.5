@@ -2,129 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C08FC7EDD7E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4B57EDD86
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235611AbjKPJTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:19:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
+        id S235701AbjKPJVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:21:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbjKPJTW (ORCPT
+        with ESMTP id S235210AbjKPJVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:19:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914721A3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:19:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700126357;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=d0zllxIvEXWI41Y5eiP5HtOd5DP7XlwuzLUNFB7vaqM=;
-        b=QloifhWbYTk0VdgM8RtG7KokonzFu7Czr6rwgAk/pP4k+CkrNgtJICqdgJuQ4QQ3FVjpgc
-        66qmQdqT2YYrcRUedR6g4MEnTvwVVgc2UOQQc7vEPWMdLhTWo4JX8qif50USbFfoA7BLhd
-        eWhhHbcvY5qJeXA7LV7W0K2SorR0cY0=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-135-1oS8p95oNwOZ_xWOCSXq7g-1; Thu, 16 Nov 2023 04:19:16 -0500
-X-MC-Unique: 1oS8p95oNwOZ_xWOCSXq7g-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4083717431eso3468865e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:19:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700126355; x=1700731155;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        Thu, 16 Nov 2023 04:21:12 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C00FE1AB
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:21:08 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-67089696545so3084366d6.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:21:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700126468; x=1700731268; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=d0zllxIvEXWI41Y5eiP5HtOd5DP7XlwuzLUNFB7vaqM=;
-        b=kXK1pU7cRVrtR5TPYptxrzzlRAs/IAYFR0P1thC5j08DDpcj8z1krjvIEYorQLVxGY
-         s6u7gwEWWkBYWl8mxTzwbOy7ziCePkVCoP8bztUavyjNjjXF8EZqb6erI3vxgFfLCUai
-         bSiyU9kaZXL+Y4mv0RqMR/IIXlJ94fNwaLw7UHTNgdz21d3zeNlrxPPWsY9JugU3FVQV
-         0UzUI+UICLllLepJYe1mBGoPmlZEEUSXIFk80rCtWVm0XfTBS+1v6U2VAPBLNtxu9HuM
-         3OnIaZFax5kzgjW0xoMna6pD7IeXVISo1CfucTC9JMAcDL/jxdmyVi6A/zq4w0xK11vg
-         1zXQ==
-X-Gm-Message-State: AOJu0YwrkDz6Q43FISlpVB3/Xiq5dVHq7VXR34TjtjnPyZxMfIg/n0Lr
-        FkNVIzvFn2q0AXtQ4FuPphFnzphCLLWOrcJFVDyYIehwcaARWx5wNfqNtIQfTFWCG9WM9dHbtwf
-        dI0YpUNm4zUNTvZUGr1nHc+Fe
-X-Received: by 2002:a05:600c:1ca5:b0:408:5919:5f97 with SMTP id k37-20020a05600c1ca500b0040859195f97mr12107684wms.25.1700126355004;
-        Thu, 16 Nov 2023 01:19:15 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHnRMdoDEaNut4IYZM6wXVGU9C68398acx31v4mDjswqx1vAYX1OJnHQseIuj6H+xz4eY0tjA==
-X-Received: by 2002:a05:600c:1ca5:b0:408:5919:5f97 with SMTP id k37-20020a05600c1ca500b0040859195f97mr12107665wms.25.1700126354543;
-        Thu, 16 Nov 2023 01:19:14 -0800 (PST)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id az23-20020a05600c601700b004054dcbf92asm2805042wmb.20.2023.11.16.01.19.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 01:19:14 -0800 (PST)
-Message-ID: <a8349273-c512-4d23-bf85-5812d2a007d1@redhat.com>
-Date:   Thu, 16 Nov 2023 10:19:13 +0100
+        bh=hL39H6t6bxsTD+ztOctS1932vRb+QRkl89FhLK7eO2w=;
+        b=JNMw6s5rSK6aDd8SMSh4RhDcGyigZuz9BGcs5euMtWaKZYpBFWJD9J0ev1egp29pKe
+         SGQF5rg70UdOFExlx88rrV7MABEQ3bFyUCPIhHFKgQGkNL07/jlovj4Px5uPZQK0Ju7m
+         eNg3uxTFz7+N/FblKvu9aosTHZYKPhbPmq4hFlqNJaEwXpAwHmkuu1qCWV3U0KVsz+cx
+         7TdMAa7e0gQRsSynqYYqmu44P0RpwxqDJBfh1lLb6HPRD9a7olrhNg8XYy1ap7JFnRjf
+         GB5FIL0RiQMtZ+cZqBnerjQHNWQOkZGAcP25SZbHD6RF3nkI6RG/FtSyTBQ9EqP1f1S0
+         gK7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700126468; x=1700731268;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hL39H6t6bxsTD+ztOctS1932vRb+QRkl89FhLK7eO2w=;
+        b=saeGNaDjCyJTWGL65/DpNu0N+ONbu4Ty3yCkmcikLGg7XlIvg2eMQBOohaXMkQ4qp6
+         3xv0N8ZTCgizIelMC4PW9sql8ko2ZnQI3KCkt3/nKS0L+zdLjFkCrTObbDmEJwFZ01ct
+         HDgUxa2P+W7RFOLbQk8oe75bTUTApK5N2eqQ86W9el3nQAdjRzJZTKS8Yf6BrwR2VPSe
+         Bi/NOQyDAR61XTwmGlYZR3PXh8d/QWZb4S8Uyi/1MDAayhu5A73cnt/J/YxRtQWXFpPI
+         rjrw3HE4uG+ellm2i3uQy80HZQz63q/el4cjVtNj/t11/IkJQxlyzu+TqWtlzKJkGPcZ
+         65dw==
+X-Gm-Message-State: AOJu0YyGCiYGq9pOvEXQbRJWwJeaPy5rXspEYrIvCEDyKkBoov4RVKYL
+        vJo+UVzqAOARhtzML5OoN73ab2qu2ilXSOuabDzHfQ==
+X-Google-Smtp-Source: AGHT+IHC6nwGkpF/PSyV/svhCqIi/GYkWrnJGNLPzykP9GcOVpjYZIb5GpU44Ibf43ZB0BLs7Gg4kVobl5xh6hb3jWM=
+X-Received: by 2002:ad4:5cc6:0:b0:66d:15de:329c with SMTP id
+ iu6-20020ad45cc6000000b0066d15de329cmr11619912qvb.43.1700126467765; Thu, 16
+ Nov 2023 01:21:07 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [mm?] WARNING in unmap_page_range (2)
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        usama.anjum@collabora.com, wangkefeng.wang@huawei.com,
-        Peter Xu <peterx@redhat.com>
-References: <000000000000b0e576060a30ee3b@google.com>
- <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
-Content-Language: en-US
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
- dBrn+lhhOYjjNefFQou6478faXE6o2AhmebqT4KiQoUQFV4R7y1KMEKoSyy8hQaK1umALTdL
- QZLQMzNE74ap+GDK0wnacPQFpcG1AE9RMq3aeErY5tujekBS32jfC/7AnH7I0v1v1TbbK3Gp
- XNeiN4QroO+5qaSr0ID2sz5jtBLRb15RMre27E1ImpaIv2Jw8NJgW0k/D1RyKCwaTsgRdwuK
- Kx/Y91XuSBdz0uOyU/S8kM1+ag0wvsGlpBVxRR/xw/E8M7TEwuCZQArqqTCmkG6HGcXFT0V9
- PXFNNgV5jXMQRwU0O/ztJIQqsE5LsUomE//bLwzj9IVsaQpKDqW6TAPjcdBDPLHvriq7kGjt
- WhVhdl0qEYB8lkBEU7V2Yb+SYhmhpDrti9Fq1EsmhiHSkxJcGREoMK/63r9WLZYI3+4W2rAc
- UucZa4OT27U5ZISjNg3Ev0rxU5UH2/pT4wJCfxwocmqaRr6UYmrtZmND89X0KigoFD/XSeVv
- jwBRNjPAubK9/k5NoRrYqztM9W6sJqrH8+UWZ1Idd/DdmogJh0gNC0+N42Za9yBRURfIdKSb
- B3JfpUqcWwE7vUaYrHG1nw54pLUoPG6sAA7Mehl3nd4pZUALHwARAQABzSREYXZpZCBIaWxk
- ZW5icmFuZCA8ZGF2aWRAcmVkaGF0LmNvbT7CwZgEEwEIAEICGwMGCwkIBwMCBhUIAgkKCwQW
- AgMBAh4BAheAAhkBFiEEG9nKrXNcTDpGDfzKTd4Q9wD/g1oFAl8Ox4kFCRKpKXgACgkQTd4Q
- 9wD/g1oHcA//a6Tj7SBNjFNM1iNhWUo1lxAja0lpSodSnB2g4FCZ4R61SBR4l/psBL73xktp
- rDHrx4aSpwkRP6Epu6mLvhlfjmkRG4OynJ5HG1gfv7RJJfnUdUM1z5kdS8JBrOhMJS2c/gPf
- wv1TGRq2XdMPnfY2o0CxRqpcLkx4vBODvJGl2mQyJF/gPepdDfcT8/PY9BJ7FL6Hrq1gnAo4
- 3Iv9qV0JiT2wmZciNyYQhmA1V6dyTRiQ4YAc31zOo2IM+xisPzeSHgw3ONY/XhYvfZ9r7W1l
- pNQdc2G+o4Di9NPFHQQhDw3YTRR1opJaTlRDzxYxzU6ZnUUBghxt9cwUWTpfCktkMZiPSDGd
- KgQBjnweV2jw9UOTxjb4LXqDjmSNkjDdQUOU69jGMUXgihvo4zhYcMX8F5gWdRtMR7DzW/YE
- BgVcyxNkMIXoY1aYj6npHYiNQesQlqjU6azjbH70/SXKM5tNRplgW8TNprMDuntdvV9wNkFs
- 9TyM02V5aWxFfI42+aivc4KEw69SE9KXwC7FSf5wXzuTot97N9Phj/Z3+jx443jo2NR34XgF
- 89cct7wJMjOF7bBefo0fPPZQuIma0Zym71cP61OP/i11ahNye6HGKfxGCOcs5wW9kRQEk8P9
- M/k2wt3mt/fCQnuP/mWutNPt95w9wSsUyATLmtNrwccz63XOwU0EVcufkQEQAOfX3n0g0fZz
- Bgm/S2zF/kxQKCEKP8ID+Vz8sy2GpDvveBq4H2Y34XWsT1zLJdvqPI4af4ZSMxuerWjXbVWb
- T6d4odQIG0fKx4F8NccDqbgHeZRNajXeeJ3R7gAzvWvQNLz4piHrO/B4tf8svmRBL0ZB5P5A
- 2uhdwLU3NZuK22zpNn4is87BPWF8HhY0L5fafgDMOqnf4guJVJPYNPhUFzXUbPqOKOkL8ojk
- CXxkOFHAbjstSK5Ca3fKquY3rdX3DNo+EL7FvAiw1mUtS+5GeYE+RMnDCsVFm/C7kY8c2d0G
- NWkB9pJM5+mnIoFNxy7YBcldYATVeOHoY4LyaUWNnAvFYWp08dHWfZo9WCiJMuTfgtH9tc75
- 7QanMVdPt6fDK8UUXIBLQ2TWr/sQKE9xtFuEmoQGlE1l6bGaDnnMLcYu+Asp3kDT0w4zYGsx
- 5r6XQVRH4+5N6eHZiaeYtFOujp5n+pjBaQK7wUUjDilPQ5QMzIuCL4YjVoylWiBNknvQWBXS
- lQCWmavOT9sttGQXdPCC5ynI+1ymZC1ORZKANLnRAb0NH/UCzcsstw2TAkFnMEbo9Zu9w7Kv
- AxBQXWeXhJI9XQssfrf4Gusdqx8nPEpfOqCtbbwJMATbHyqLt7/oz/5deGuwxgb65pWIzufa
- N7eop7uh+6bezi+rugUI+w6DABEBAAHCwXwEGAEIACYCGwwWIQQb2cqtc1xMOkYN/MpN3hD3
- AP+DWgUCXw7HsgUJEqkpoQAKCRBN3hD3AP+DWrrpD/4qS3dyVRxDcDHIlmguXjC1Q5tZTwNB
- boaBTPHSy/Nksu0eY7x6HfQJ3xajVH32Ms6t1trDQmPx2iP5+7iDsb7OKAb5eOS8h+BEBDeq
- 3ecsQDv0fFJOA9ag5O3LLNk+3x3q7e0uo06XMaY7UHS341ozXUUI7wC7iKfoUTv03iO9El5f
- XpNMx/YrIMduZ2+nd9Di7o5+KIwlb2mAB9sTNHdMrXesX8eBL6T9b+MZJk+mZuPxKNVfEQMQ
- a5SxUEADIPQTPNvBewdeI80yeOCrN+Zzwy/Mrx9EPeu59Y5vSJOx/z6OUImD/GhX7Xvkt3kq
- Er5KTrJz3++B6SH9pum9PuoE/k+nntJkNMmQpR4MCBaV/J9gIOPGodDKnjdng+mXliF3Ptu6
- 3oxc2RCyGzTlxyMwuc2U5Q7KtUNTdDe8T0uE+9b8BLMVQDDfJjqY0VVqSUwImzTDLX9S4g/8
- kC4HRcclk8hpyhY2jKGluZO0awwTIMgVEzmTyBphDg/Gx7dZU1Xf8HFuE+UZ5UDHDTnwgv7E
- th6RC9+WrhDNspZ9fJjKWRbveQgUFCpe1sa77LAw+XFrKmBHXp9ZVIe90RMe2tRL06BGiRZr
- jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-21-iii@linux.ibm.com>
+In-Reply-To: <20231115203401.2495875-21-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 16 Nov 2023 10:20:31 +0100
+Message-ID: <CAG_fn=UhFURUGqFXCrWym98PLzSR9oYfVDFvLpoaRO91_CMenw@mail.gmail.com>
+Subject: Re: [PATCH 20/32] s390: Turn off KMSAN for boot, vdso and purgatory
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -132,117 +89,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.11.23 23:00, Andrew Morton wrote:
-> On Wed, 15 Nov 2023 05:32:19 -0800 syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com> wrote:
-> 
->> Hello,
->>
->> syzbot found the following issue on:
->>
->> HEAD commit:    ac347a0655db Merge tag 'arm64-fixes' of git://git.kernel.o..
->> git tree:       upstream
->> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15ff3057680000
->> kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
->> dashboard link: https://syzkaller.appspot.com/bug?extid=7ca4b2719dc742b8d0a4
->> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
->> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162a25ff680000
->> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d62338e80000
->>
->> Downloadable assets:
->> disk image: https://storage.googleapis.com/syzbot-assets/00e30e1a5133/disk-ac347a06.raw.xz
->> vmlinux: https://storage.googleapis.com/syzbot-assets/07c43bc37935/vmlinux-ac347a06.xz
->> kernel image: https://storage.googleapis.com/syzbot-assets/c6690c715398/bzImage-ac347a06.xz
->>
->> The issue was bisected to:
->>
->> commit 12f6b01a0bcbeeab8cc9305673314adb3adf80f7
->> Author: Muhammad Usama Anjum <usama.anjum@collabora.com>
->> Date:   Mon Aug 21 14:15:15 2023 +0000
->>
->>      fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag
-> 
-> Thanks.  The bisection is surprising, but the mentioned patch does
-> mess with pagemap.
-> 
-> How about we add this?
-> 
-> From: Andrew Morton <akpm@linux-foundation.org>
-> Subject: mm/memory.c:zap_pte_range() print bad swap entry
-> Date: Wed Nov 15 01:54:18 PM PST 2023
-> 
-> We have a report of this WARN() triggering.  Let's print the offending
-> swp_entry_t to help diagnosis.
-> 
-> Link: https://lkml.kernel.org/r/000000000000b0e576060a30ee3b@google.com
-> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
-> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
+> wrote:
+>
+> All other sanitizers are disabled for these components as well.
+>
+> Reviewed-by: Alexander Gordeev <agordeev@linux.ibm.com>
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
+(see a nit below)
+
 > ---
-> 
->   mm/memory.c |    1 +
->   1 file changed, 1 insertion(+)
-> 
-> --- a/mm/memory.c~a
-> +++ a/mm/memory.c
-> @@ -1521,6 +1521,7 @@ static unsigned long zap_pte_range(struc
->   				continue;
->   		} else {
->   			/* We should have covered all the swap entry types */
-> +			pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
->   			WARN_ON_ONCE(1);
->   		}
->   		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
-> _
-> 
+>  arch/s390/boot/Makefile          | 1 +
+>  arch/s390/kernel/vdso32/Makefile | 1 +
+>  arch/s390/kernel/vdso64/Makefile | 1 +
+>  arch/s390/purgatory/Makefile     | 1 +
+>  4 files changed, 4 insertions(+)
+>
+> diff --git a/arch/s390/boot/Makefile b/arch/s390/boot/Makefile
+> index c7c81e5f9218..5a05c927f703 100644
+> --- a/arch/s390/boot/Makefile
+> +++ b/arch/s390/boot/Makefile
+> @@ -8,6 +8,7 @@ GCOV_PROFILE :=3D n
+>  UBSAN_SANITIZE :=3D n
+>  KASAN_SANITIZE :=3D n
+>  KCSAN_SANITIZE :=3D n
+> +KMSAN_SANITIZE :=3D n
 
-I'm curious if
+Nit: I think having even a one-line comment before this block
+(something similar to
+https://elixir.bootlin.com/linux/latest/source/arch/x86/boot/Makefile#L12)
+will make it more clear.
 
-1) make_uffd_wp_pte() won't end up overwriting existing pte markers, for
-    example, if PTE_MARKER_POISONED is set. [unrelated to this bug]
-
-2) We get the error on arm64, which does *not* support uffd-wp. Do we
-    maybe end up calling make_uffd_wp_pte() and place a pte marker, even
-    though we don't have CONFIG_PTE_MARKER_UFFD_WP?
-
-
-static inline bool pte_marker_entry_uffd_wp(swp_entry_t entry)
-{
-#ifdef CONFIG_PTE_MARKER_UFFD_WP
-	return is_pte_marker_entry(entry) &&
-	    (pte_marker_get(entry) & PTE_MARKER_UFFD_WP);
-#else
-	return false;
-#endif
-}
-
-Will always return false without CONFIG_PTE_MARKER_UFFD_WP.
-
-But make_uffd_wp_pte() might just happily place an entry. Hm.
-
-
-The following might fix the problem:
-
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 51e0ec658457..ae1cf19918d3 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1830,8 +1830,10 @@ static void make_uffd_wp_pte(struct 
-vm_area_struct *vma,
-                 ptent = pte_swp_mkuffd_wp(ptent);
-                 set_pte_at(vma->vm_mm, addr, pte, ptent);
-         } else {
-+#ifdef CONFIG_PTE_MARKER_UFFD_WP
-                 set_pte_at(vma->vm_mm, addr, pte,
-                            make_pte_marker(PTE_MARKER_UFFD_WP));
-+#endif
-         }
-  }
-
-
-But I am *pretty* sure that that whole machinery should be fenced off. 
-It does make 0 sense to mess with uffd-wp if there is no uffd-wp support.
-
--- 
-Cheers,
-
-David / dhildenb
-
+But given that the comment wasn't there before, leaving this up to you.
