@@ -2,317 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 998D37EE760
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC1247EE770
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:23:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345509AbjKPTVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:21:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42484 "EHLO
+        id S1345491AbjKPTXq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:23:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKPTVg (ORCPT
+        with ESMTP id S229437AbjKPTXo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:21:36 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C465D50
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:21:29 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso10566825ad.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:21:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700162488; x=1700767288; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3lQXUPDHwSb3W7AzEHeGiPOMrGqRC++G0/30oWFYpys=;
-        b=RpEODg+XwhY1Acp+PJDOELMbmRUAu+D/Xoo/xYstpBTnWmMA8vGKzxqZiGQWUkc90K
-         0lqw7UTGl1A4RJrJOIx7tbByfWwplwdStr18BLcAl7oZvcT51JQEfcCWKRKf2BwzlQEe
-         Ab3h0t1Gqb5zCp26IZefLYGUCK02m7kkihq8k=
+        Thu, 16 Nov 2023 14:23:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD98218B
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:23:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700162620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=JGaaonn2PlS/Bf+1agE3/lohv/E1v+K4KZ0xTLwaQWA=;
+        b=RmKFbsRwrVexahM49ac5uCfoMfQmvLZV53Apx0b1zW4VevSSLZi757FRHjL04nS0deO6XE
+        ESkI/y5O4AB14A2UAOdNUR3mIVvnDX24otyoSxtMCPbk5RtZhrsDs6TPj9SKUcKh7FG07O
+        IiqlT3ddy79NCGDs4Gld08FkdRNtGPk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-96-GGD1OZw5MNO2tWuqN3bVQg-1; Thu, 16 Nov 2023 14:23:38 -0500
+X-MC-Unique: GGD1OZw5MNO2tWuqN3bVQg-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4090181eec2so6876105e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:23:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700162488; x=1700767288;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3lQXUPDHwSb3W7AzEHeGiPOMrGqRC++G0/30oWFYpys=;
-        b=CFPMMVT6J4vbeyes0UCM8RSs3u6jpJ7ogj9VHA0/4IlYEl3Ibkqb4GPEwhxQ029vho
-         FdXELbt+9SEHK/MLV8UC0k0+25Qg4LUPm0czA4a5hC1cydTJGDzg1eYr1x+P0TV8+LDn
-         zGQzbgwZZ6hiREXWBFwKw9D5oOzJmo0cz/jlajAQJqNe++bU+l4v1kJ7zS1Uy832p1dR
-         WVsuCtyYNWf7qYdHgXNqkTbLQEswVjlRFrSdY8ZKPKDuRtxW98nyvldCXc5nGT0pOvXw
-         M7iE+xPg77nspKUGYq96IuaufsbdS+C8fBEwWN0Gdqs/QNnavHmXiHKrhAHDhua7rrzL
-         86JQ==
-X-Gm-Message-State: AOJu0YxAOHM34fbIuYsm/Bbq6JEcWQv/UZtYRfJ0oZRiHtGto604IAtu
-        KEbOTFsqHOpatfBGE0nw48qSFQ==
-X-Google-Smtp-Source: AGHT+IFm4YG/oaCFmEfgYf5uoVxckTreZ/Bctw5PNDreTVWHEYt0BKCZHpmtNgXlkwhnO8LZx1T2bQ==
-X-Received: by 2002:a17:903:18e:b0:1ce:1674:fd15 with SMTP id z14-20020a170903018e00b001ce1674fd15mr11527634plg.65.1700162488598;
-        Thu, 16 Nov 2023 11:21:28 -0800 (PST)
-Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id b4-20020a170902d50400b001c72c07c9d9sm5592plg.308.2023.11.16.11.21.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 11:21:28 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Kees Cook <keescook@chromium.org>, Tejun Heo <tj@kernel.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Waiman Long <longman@redhat.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-        Azeem Shaikh <azeemshaikh38@gmail.com>,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH 3/3] kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to strscpy()
-Date:   Thu, 16 Nov 2023 11:21:25 -0800
-Message-Id: <20231116192127.1558276-3-keescook@chromium.org>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231116191718.work.246-kees@kernel.org>
-References: <20231116191718.work.246-kees@kernel.org>
+        d=1e100.net; s=20230601; t=1700162617; x=1700767417;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:from:content-language:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JGaaonn2PlS/Bf+1agE3/lohv/E1v+K4KZ0xTLwaQWA=;
+        b=q2a7TcTqWTm8TtAnt58KUqThpyUe+bgXQvh/yBGSquIJhRjz4G6aYxZifMtXfPWh4W
+         e62hSYyEVCmQjKJa6gu3SPy2xFRevB2PeFhRSGTiO2JTsg0iaFUeawmIJDOf0lY96lVL
+         +FqEDF7CwOcIeXZn1tgw78B8LpdYhrTZ2h9SdyCg+fIs95ncl63VO7qpH+sva3lvZnct
+         ayYwZsKem3Rb8UhfGAAVMgLlQjoGZBUpoQb9vvY/G6Q/tteZLyi+PZiHMpkrERUOlSn1
+         gUWujqGsgOlLt5FyFtxt8pGYhUA+piOhdLKGTubDeeVxAV1WbHt9hO87yeO5XgAY3O0n
+         vMtg==
+X-Gm-Message-State: AOJu0YxdJumFUKapETMBlGTyTgy/4q7Zqp10guiI9wf1285xgwFybMKY
+        B6JSzL46icGFpTRy1oMTWqQSZ+pzwa+dlKC09iQ9C1LRqdCntpH8ykRyI+N07HAeTJVtZAcetMW
+        2Q73oNkUkQ5KQ3kYOfGSeWL6y
+X-Received: by 2002:a05:6000:1a89:b0:32f:7bee:f300 with SMTP id f9-20020a0560001a8900b0032f7beef300mr13588853wry.4.1700162617365;
+        Thu, 16 Nov 2023 11:23:37 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFqzRdudRp5HRIcihjZfxFtR1oTJNGSDyIV83/QesXbsvLV2zANxxqjuybAlwaxJDVeUztSEg==
+X-Received: by 2002:a05:6000:1a89:b0:32f:7bee:f300 with SMTP id f9-20020a0560001a8900b0032f7beef300mr13588828wry.4.1700162616972;
+        Thu, 16 Nov 2023 11:23:36 -0800 (PST)
+Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
+        by smtp.gmail.com with ESMTPSA id u30-20020adfa19e000000b0032da022855fsm169709wru.111.2023.11.16.11.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 11:23:36 -0800 (PST)
+Message-ID: <a9ca9b75-1410-445f-9e73-2db02acff1ed@redhat.com>
+Date:   Thu, 16 Nov 2023 20:23:35 +0100
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8689; i=keescook@chromium.org;
- h=from:subject; bh=sje9v6D9QIFWWAiLZIxMhxCeRGV4qg03i4fKPc7SIN8=;
- b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlVmu1NoUIjydK+VgXZJN4O+Ab2Ex2hdoHKlPJH
- FjXVvdTYYGJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZVZrtQAKCRCJcvTf3G3A
- Jp/ZD/9/pX2tZ6bCcNKw/mYnC600HioBD2eNF1Vpf+wZoqJfvliJ824E7lu7kXMWB6xkrFuSDRQ
- HO7NELU2wWMz7ebzzgo2cM4inj0pnKRoqVGy0KKwvqZraO+yEElTI8tP5Upv4sSFPswbAE0hbw8
- SH2AAbx1+7DuvTJYHheHSkZQvxl9Vts+ZEt8v/VljlGtf9vgcHJLc6Ps0pBzsvLWwJibBuW0ixs
- l7UjIy3+Rqe1HUYOlIqJU2pfDyiA8qyI2oUPvKERjwyBEhG1lyoSCfomFFXHbRyip1lGJbQzVuG
- lxIBcKENShb9BFVjDZ75DeZUmCpzZ3hTH2tCmbkLow+30wZb0rkTzqDUU+cS9TFK/JwySY6FEOU
- QGHoMFWSmhHbOf3WfIS1Xl4tsI2FuvqZy3L3L+HiVK9Ig4DOLEqCc8rbLn6oyVhb2GIAENUZt/r
- 2UD1BGAVkUAgu5Q9qcOR8q5PPNP1wJeE9rY+l8DY1Os2TijocUPtYzM36KaqEg8LWqqMoZ7iF5u
- 3Q4XeYxLv1dk1bCOX9pBnd7zuUTekZx+/RUQ/i/WhlQrpCYLnzMtI1m43jfoeTbOWPB3yVmxy33
- 4JWoKITXKwIpGGLlwlig9otmxMoQ9xG3Nz8oZRw6CWvBxnGPEIMXCDVim7aIKnMs2jZZTETIToD APj6swjaf4Y7M5A==
-X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6/8] s390/mm: implement MEM_PHYS_ONLINE MEM_PHYS_OFFLINE
+ memory notifiers
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc:     linux-mm <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Alexander Gordeev <agordeev@linux.ibm.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
+ <20231114180238.1522782-7-sumanthk@linux.ibm.com>
+ <458da84d-3838-4c5d-abda-1aebba676186@redhat.com>
+ <ZVTTs2H6DgNGFPkF@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
+ <dfa5eb84-270e-4c6b-b9a1-3bb66beed6a4@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <dfa5eb84-270e-4c6b-b9a1-3bb66beed6a4@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-One of the last remaining users of strlcpy() in the kernel is
-kernfs_path_from_node_locked(), which passes back the problematic "length
-we _would_ have copied" return value to indicate truncation.  Convert the
-chain of all callers to use the negative return value (some of which
-already doing this explicitly). All callers were already also checking
-for negative return values, so the risk to missed checks looks very low.
+>>>
+>>> Maybe s390x should just provide a dedicate interface to add these memory
+>>> blocks instead of adding them during boot and then relying on the old way of
+>>> using online/offline set them online/offline.
+>>
+>> Existing behavior:
+>> The current 'lsmem -a' command displays both online and standby memory.
+>>
+>> interface changes:
+>> If a new interface is introduced and standby memory is no longer listed,
+>> the following consequences might occur:
+>>
+>> 1. Running 'lsmem -a' would only show online memory, potentially leading
+>>      to user complaints.
+> 
+> That's why the new, clean way of doing it will require a world switch.
+> If the admin wants the benefits of altmap/memmap allocation, it can be
+> enabled.
 
-In this analysis, it was found that cgroup1_release_agent() actually
-didn't handle the "too large" condition, so this is technically also a
-bug fix. :)
+BTW, thinking about it, I guess one could teach lsmem (and maybe chmem) 
+to consult additional interfaces on s390x to show standby memory that's 
+not added to the system yet.
 
-Here's the chain of callers, and resolution identifying each one as now
-handling the correct return value:
-
-kernfs_path_from_node_locked()
-        kernfs_path_from_node()
-                pr_cont_kernfs_path()
-                        returns void
-                kernfs_path()
-                        sysfs_warn_dup()
-                                return value ignored
-                        cgroup_path()
-                                blkg_path()
-                                        bfq_bic_update_cgroup()
-                                                return value ignored
-                                TRACE_IOCG_PATH()
-                                        return value ignored
-                                TRACE_CGROUP_PATH()
-                                        return value ignored
-                                perf_event_cgroup()
-                                        return value ignored
-                                task_group_path()
-                                        return value ignored
-                                damon_sysfs_memcg_path_eq()
-                                        return value ignored
-                                get_mm_memcg_path()
-                                        return value ignored
-                                lru_gen_seq_show()
-                                        return value ignored
-                        cgroup_path_from_kernfs_id()
-                                return value ignored
-                cgroup_show_path()
-                        already converted "too large" error to negative value
-                cgroup_path_ns_locked()
-                        cgroup_path_ns()
-                                bpf_iter_cgroup_show_fdinfo()
-                                        return value ignored
-                                cgroup1_release_agent()
-                                        wasn't checking "too large" error
-                        proc_cgroup_show()
-                                already converted "too large" to negative value
-
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan.x@bytedance.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-trace-kernel@vger.kernel.org
-Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-Signed-off-by: Kees Cook <keescook@chromium.org>
----
- fs/kernfs/dir.c             | 37 ++++++++++++++++++++-----------------
- kernel/cgroup/cgroup-v1.c   |  2 +-
- kernel/cgroup/cgroup.c      |  4 ++--
- kernel/cgroup/cpuset.c      |  2 +-
- kernel/trace/trace_uprobe.c |  2 +-
- 5 files changed, 25 insertions(+), 22 deletions(-)
-
-diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-index 8c0e5442597e..183f353b3852 100644
---- a/fs/kernfs/dir.c
-+++ b/fs/kernfs/dir.c
-@@ -127,7 +127,7 @@ static struct kernfs_node *kernfs_common_ancestor(struct kernfs_node *a,
-  *
-  * [3] when @kn_to is %NULL result will be "(null)"
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -138,16 +138,17 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 	struct kernfs_node *kn, *common;
- 	const char parent_str[] = "/..";
- 	size_t depth_from, depth_to, len = 0;
-+	ssize_t copied;
- 	int i, j;
- 
- 	if (!kn_to)
--		return strlcpy(buf, "(null)", buflen);
-+		return strscpy(buf, "(null)", buflen);
- 
- 	if (!kn_from)
- 		kn_from = kernfs_root(kn_to)->kn;
- 
- 	if (kn_from == kn_to)
--		return strlcpy(buf, "/", buflen);
-+		return strscpy(buf, "/", buflen);
- 
- 	common = kernfs_common_ancestor(kn_from, kn_to);
- 	if (WARN_ON(!common))
-@@ -158,18 +159,22 @@ static int kernfs_path_from_node_locked(struct kernfs_node *kn_to,
- 
- 	buf[0] = '\0';
- 
--	for (i = 0; i < depth_from; i++)
--		len += strlcpy(buf + len, parent_str,
--			       len < buflen ? buflen - len : 0);
-+	for (i = 0; i < depth_from; i++) {
-+		copied = strscpy(buf + len, parent_str, buflen - len);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
-+	}
- 
- 	/* Calculate how many bytes we need for the rest */
- 	for (i = depth_to - 1; i >= 0; i--) {
- 		for (kn = kn_to, j = 0; j < i; j++)
- 			kn = kn->parent;
--		len += strlcpy(buf + len, "/",
--			       len < buflen ? buflen - len : 0);
--		len += strlcpy(buf + len, kn->name,
--			       len < buflen ? buflen - len : 0);
-+
-+		copied = scnprintf(buf + len, buflen - len, "/%s", kn->name);
-+		if (copied < 0)
-+			return copied;
-+		len += copied;
- 	}
- 
- 	return len;
-@@ -214,7 +219,7 @@ int kernfs_name(struct kernfs_node *kn, char *buf, size_t buflen)
-  * path (which includes '..'s) as needed to reach from @from to @to is
-  * returned.
-  *
-- * Return: the length of the full path.  If the full length is equal to or
-+ * Return: the length of the constructed path.  If the path would have been
-  * greater than @buflen, @buf contains the truncated path with the trailing
-  * '\0'.  On error, -errno is returned.
-  */
-@@ -265,12 +270,10 @@ void pr_cont_kernfs_path(struct kernfs_node *kn)
- 	sz = kernfs_path_from_node(kn, NULL, kernfs_pr_cont_buf,
- 				   sizeof(kernfs_pr_cont_buf));
- 	if (sz < 0) {
--		pr_cont("(error)");
--		goto out;
--	}
--
--	if (sz >= sizeof(kernfs_pr_cont_buf)) {
--		pr_cont("(name too long)");
-+		if (sz == -E2BIG)
-+			pr_cont("(name too long)");
-+		else
-+			pr_cont("(error)");
- 		goto out;
- 	}
- 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 76db6c67e39a..9cb00ebe9ac6 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -802,7 +802,7 @@ void cgroup1_release_agent(struct work_struct *work)
- 		goto out_free;
- 
- 	ret = cgroup_path_ns(cgrp, pathbuf, PATH_MAX, &init_cgroup_ns);
--	if (ret < 0 || ret >= PATH_MAX)
-+	if (ret < 0)
- 		goto out_free;
- 
- 	argv[0] = agentbuf;
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 1d5b9de3b1b9..3a04db0d1fe6 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1893,7 +1893,7 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	len = kernfs_path_from_node(kf_node, ns_cgroup->kn, buf, PATH_MAX);
- 	spin_unlock_irq(&css_set_lock);
- 
--	if (len >= PATH_MAX)
-+	if (len == -E2BIG)
- 		len = -ERANGE;
- 	else if (len > 0) {
- 		seq_escape(sf, buf, " \t\n\\");
-@@ -6313,7 +6313,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 		if (cgroup_on_dfl(cgrp) || !(tsk->flags & PF_EXITING)) {
- 			retval = cgroup_path_ns_locked(cgrp, buf, PATH_MAX,
- 						current->nsproxy->cgroup_ns);
--			if (retval >= PATH_MAX)
-+			if (retval == -E2BIG)
- 				retval = -ENAMETOOLONG;
- 			if (retval < 0)
- 				goto out_unlock;
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 615daaf87f1f..fb29158ae825 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4941,7 +4941,7 @@ int proc_cpuset_show(struct seq_file *m, struct pid_namespace *ns,
- 	retval = cgroup_path_ns(css->cgroup, buf, PATH_MAX,
- 				current->nsproxy->cgroup_ns);
- 	css_put(css);
--	if (retval >= PATH_MAX)
-+	if (retval == -E2BIG)
- 		retval = -ENAMETOOLONG;
- 	if (retval < 0)
- 		goto out_free;
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index 99c051de412a..a84b85d8aac1 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -151,7 +151,7 @@ fetch_store_string(unsigned long addr, void *dest, void *base)
- 		return -ENOMEM;
- 
- 	if (addr == FETCH_TOKEN_COMM)
--		ret = strlcpy(dst, current->comm, maxlen);
-+		ret = strscpy(dst, current->comm, maxlen);
- 	else
- 		ret = strncpy_from_user(dst, src, maxlen);
- 	if (ret >= 0) {
 -- 
-2.34.1
+Cheers,
+
+David / dhildenb
 
