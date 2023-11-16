@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A47237ED8DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:29:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F18A7ED8DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344319AbjKPB3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:29:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
+        id S1344425AbjKPB3Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:29:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPB3U (ORCPT
+        with ESMTP id S232310AbjKPB3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 15 Nov 2023 20:29:20 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40EF182
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:16 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 630A8198
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
         s=mimecast20190719; t=1700098156;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=j75oQuDXytIzx0fg9CVxcXlN+sYlHIe4GGC/3d4Gln4=;
-        b=Ie72S6VoYRKq1jIqB5k4Cg7EijAhC5kiEVGJJq6CW4edXDyTiofF9d7IVo7iaAL0p8csTV
-        iCHLVk9yV4uFgp47JVd1Xk2fR1OtABnHnIhjQKjNP22ZkJQJc2kT+26RztJulSsk9rcwZ5
-        fvZYm5J7Zji6kKHgW1auw3r3X0Gnclg=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=Rr9/qVNLgFGWDGzcAqjV00T9t0NzgxXDD6w387jcEYI=;
+        b=NpAcFyZ/9LB3zx3oT/POa/0V2bySj9fzQ3llny5quZ0hpVWWU8UQvR7KYlxunEAezmlwtO
+        I0S+oxN/XNvDnuzVJo5ZGx7xLRfFsohMFmNM8S1KFlAK2u7FAHL8pSBTv2l901oxbFj1CD
+        B3qNCRouZ7dNzcuTKcW5l9ramCiuagk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-644-vkNfz2qmMNeOn9C8UIiorA-1; Wed, 15 Nov 2023 20:29:13 -0500
-X-MC-Unique: vkNfz2qmMNeOn9C8UIiorA-1
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-421ac2bad66so928371cf.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:13 -0800 (PST)
+ us-mta-648-k_u7GC7_NJ-Y33KqFAf5PA-1; Wed, 15 Nov 2023 20:29:15 -0500
+X-MC-Unique: k_u7GC7_NJ-Y33KqFAf5PA-1
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-66d7b75c854so807456d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:15 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700098153; x=1700702953;
+        d=1e100.net; s=20230601; t=1700098154; x=1700702954;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=j75oQuDXytIzx0fg9CVxcXlN+sYlHIe4GGC/3d4Gln4=;
-        b=PVzn/HDuUtlLokOzRb3Y8cG9XAgFaD7I8VXmxOtHjdyg2LzV7y8KHIlieYq+uTf/As
-         GeioEoN+0GVkdIjzJCPH+/ldPqG+6SWDGDST8qYiFNoviggtdW2NpyfdOnHSTZ0V6AS3
-         Jy+E+Top5Ih+s02E6E2KDCp/WTFRqZIY0uznzu4UzH0NhaXSIJLMF4LVITzWDpT63rdI
-         ZlcJ9IbnOYQRA81/OSKTsLynvqv4jCmp+dynlf3vqyKrgU7ukfgNw248YhwXt2UPq+k/
-         kfFV9K53XhXH2ZuMixVtlnrYQ6CVS8WBklVvmdd+1h7zcYC9F+r/sv90gsRy2mQZJ1jd
-         JGEw==
-X-Gm-Message-State: AOJu0Yw4tHR5e3n7TBF4zkfoCW+8qqr3yaQALyxaIkoPAwGMYytZRhQO
-        KYAwJhIV/1lJPb/W0GGiUDzwdhG1Mh6FAoPp2PJxEp4ZxVfx/emRYgATX8v7wmrHPyfHmSaolVR
-        juMhA2N9G5oH27NgeA4YCcr8khYMUmUpK3lfRyHSJ0dnRiuicyaDJbHJ4Ox4U9D1RTElNKslFCo
-        4wwjd/2A==
-X-Received: by 2002:ac8:7d13:0:b0:41e:4be2:d3eb with SMTP id g19-20020ac87d13000000b0041e4be2d3ebmr10348628qtb.1.1700098153180;
-        Wed, 15 Nov 2023 17:29:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGyA/ppnbzE3SBmMhc1vSGcpOQYT5DWDMM4yQxJwgB1XG6+271v4ghGsJVWP9HBrNNkwutL1g==
-X-Received: by 2002:ac8:7d13:0:b0:41e:4be2:d3eb with SMTP id g19-20020ac87d13000000b0041e4be2d3ebmr10348586qtb.1.1700098152747;
-        Wed, 15 Nov 2023 17:29:12 -0800 (PST)
+        bh=Rr9/qVNLgFGWDGzcAqjV00T9t0NzgxXDD6w387jcEYI=;
+        b=BdPGsJeQu0Z0N2pfLtaUMJWeIHJtmzwICZki8zMTcpwuBZoZXBOWCCJkLuMExhbViZ
+         BBN+fUb/AV2MkeUrvwZb1AYh3ur/+JMnevRCKD6E39QiGjX3PLhKKaqfmeKsHKZg2nd7
+         QwNFJw5lgTLcnsqDMVON9wJnd0Toc6r/4ulN1PkMnuPBKT3YpgVVVZtYychmM8vCxFFL
+         Q0i0u6cKsOT2agxYmbLfQXWIcVLoSZEvQ3sQ0+0cRdDPlsjbAUn2DZUwhTARqmTniLJw
+         ED72deEFFc92CSnKvfCbWWrekosI3d7nyYLh9Q4bHep9XLBh000m3Escdh1d7joeflic
+         YMOw==
+X-Gm-Message-State: AOJu0YxCiidt9RGVCXI7Oa82aMBQjZsg/EVR0t0E1nsC4w7rQg5gM97k
+        zXZ27y2OQSwMsg3vE8VniVHMMQckjRzhWYuvhlxnGgsxFZS7xhX/DB7kLPOLOfrYc9GRuGuxQpy
+        zWjt6y8dOswCRi2Uy/hMjGsj+cYOcFDr6KJlGSC6eWQfZA0SY/m1zLjNMVtvv8CyWs+IqDSEhZO
+        +qd+sHmg==
+X-Received: by 2002:ac8:5189:0:b0:421:c275:f917 with SMTP id c9-20020ac85189000000b00421c275f917mr7201803qtn.6.1700098154738;
+        Wed, 15 Nov 2023 17:29:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFImkFHmltxmevzx1fu9EK+pMFz+bfHbyIeYa7FxbalfbUu9NzmbSIrMhaQwUJeT0EwTIDDnQ==
+X-Received: by 2002:ac8:5189:0:b0:421:c275:f917 with SMTP id c9-20020ac85189000000b00421c275f917mr7201781qtn.6.1700098154444;
+        Wed, 15 Nov 2023 17:29:14 -0800 (PST)
 Received: from x1n.redhat.com (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.11
+        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 17:29:12 -0800 (PST)
+        Wed, 15 Nov 2023 17:29:14 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
@@ -75,9 +75,9 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH RFC 01/12] mm/hugetlb: Export hugetlbfs_pagecache_present()
-Date:   Wed, 15 Nov 2023 20:28:57 -0500
-Message-ID: <20231116012908.392077-2-peterx@redhat.com>
+Subject: [PATCH RFC 02/12] mm: Provide generic pmd_thp_or_huge()
+Date:   Wed, 15 Nov 2023 20:28:58 -0500
+Message-ID: <20231116012908.392077-3-peterx@redhat.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231116012908.392077-1-peterx@redhat.com>
 References: <20231116012908.392077-1-peterx@redhat.com>
@@ -94,43 +94,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It will be used outside hugetlb.c soon.
+ARM defines pmd_thp_or_huge(), detecting either a THP or a huge PMD.  It
+can be a helpful helper if we want to merge more THP and hugetlb code
+paths.  Make it a generic default implementation, only exist when
+CONFIG_MMU.  Arch can overwrite it by defining its own version.
+
+For example, ARM's pgtable-2level.h defines it to always return false.
 
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- include/linux/hugetlb.h | 3 +++
- mm/hugetlb.c            | 4 ++--
+ include/linux/pgtable.h | 4 ++++
+ mm/gup.c                | 3 +--
  2 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index 236ec7b63c54..bb07279b8991 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -174,6 +174,9 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index af7639c3b0a3..6f2fa1977b8a 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1355,6 +1355,10 @@ static inline int pmd_write(pmd_t pmd)
+ #endif /* pmd_write */
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
  
- pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
- 		      unsigned long addr, pud_t *pud);
-+bool hugetlbfs_pagecache_present(struct hstate *h,
-+				 struct vm_area_struct *vma,
-+				 unsigned long address);
- 
- struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
- 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 6feb3e0630d1..29705e5c6f40 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -6018,8 +6018,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
- /*
-  * Return whether there is a pagecache page to back given address within VMA.
-  */
--static bool hugetlbfs_pagecache_present(struct hstate *h,
--			struct vm_area_struct *vma, unsigned long address)
-+bool hugetlbfs_pagecache_present(struct hstate *h,
-+				 struct vm_area_struct *vma, unsigned long address)
++#ifndef pmd_thp_or_huge
++#define pmd_thp_or_huge(pmd)	(pmd_huge(pmd) || pmd_trans_huge(pmd))
++#endif
++
+ #ifndef pud_write
+ static inline int pud_write(pud_t pud)
  {
- 	struct address_space *mapping = vma->vm_file->f_mapping;
- 	pgoff_t idx = linear_page_index(vma, address);
+diff --git a/mm/gup.c b/mm/gup.c
+index 231711efa390..a8b73a8289ad 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -3002,8 +3002,7 @@ static int gup_pmd_range(pud_t *pudp, pud_t pud, unsigned long addr, unsigned lo
+ 		if (!pmd_present(pmd))
+ 			return 0;
+ 
+-		if (unlikely(pmd_trans_huge(pmd) || pmd_huge(pmd) ||
+-			     pmd_devmap(pmd))) {
++		if (unlikely(pmd_thp_or_huge(pmd) || pmd_devmap(pmd))) {
+ 			/* See gup_pte_range() */
+ 			if (pmd_protnone(pmd))
+ 				return 0;
 -- 
 2.41.0
 
