@@ -2,126 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 713E17EE75B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:18:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F4357EE764
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:21:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345473AbjKPTSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:18:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
+        id S1345524AbjKPTVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:21:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233181AbjKPTSi (ORCPT
+        with ESMTP id S231307AbjKPTVh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:18:38 -0500
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7587D4B;
-        Thu, 16 Nov 2023 11:18:34 -0800 (PST)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1f4a9dd83d6so637780fac.0;
-        Thu, 16 Nov 2023 11:18:34 -0800 (PST)
+        Thu, 16 Nov 2023 14:21:37 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82C8DD63
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id d9443c01a7336-1cc3bb4c307so10978075ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:21:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700162314; x=1700767114; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=STPFJgJTmWckMd9fvN+D7up8AUbhHF9YB+XgQB9vdw4=;
-        b=Z37LPrxru/exN/dkbMPtlXMvs7FGglc+OY2J+O7rmINn6cu6kvVmNQA1Tv2qC3qhKn
-         ibT/2JKfh68Nff48B9pthxuYp3nVP7Coe2UD92guTvWeNU5/5TynoT3VEA9/ELN36UWF
-         FWN1faWIq6eU4prLN3R2Py/R35PxKCaeM6y3z7loKZfCaPbr7YapdgG37XAOcYtHXjiY
-         H1y2OjVyCQt0KdgofUPsF4/X5URpwodqiLL+PQS1UrgR1ImQ8AQOZrkfDh/Bm+K7DhUk
-         TMS1SqpQWuja2nJtlmv3C+g/Yb+cQRUlzRvNlt4yKPX7J52rr8TByM6RLrpCXHVLxbFU
-         Q4ZA==
+        d=chromium.org; s=google; t=1700162490; x=1700767290; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=k+gERTjO6F93q1lS3m32rhR1J28d3mpm2fohBNlGcICYiGp+WYLpMxD8T7g/NwYvkq
+         TnISjy6v2HHl9uLVBPS8As3+3N6VKqEA9rJCcxc1hfXLgupG0st4Nw0XKCMTajq+7gAC
+         fZ1sQBFKSupkE3fCKaYxdMbwZ3O33arR2wFwM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700162314; x=1700767114;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=STPFJgJTmWckMd9fvN+D7up8AUbhHF9YB+XgQB9vdw4=;
-        b=ZV6LWUjnGQaV0LZ4m4+oMDwkLpAisl3sEFxa+KLYzgoCMcrOoDqOQY4Uu6NCGhFxBl
-         7lXb8A84F/Hv4VwTuFuvckwo4Ljt40DQq2GR+8wvuNz8jEvtMxV4BFWpO0uDSM7I9EAU
-         lSdM8Ty8HXYq+sV0sknFpAM/5eKBnM+WBSHl8E+hxi4ZzA4ySXBE/A2SQFYoEDVvSyBI
-         hxJ0GEJoCg9RKsKUoCdJQEyf6MiaR8BsKEORvaJJOkyD7qdEhw+39q967X2i6P7ADVMH
-         gNkfJws00LzBmf3SJ1/RtzpKHLF8qBXNKIA6BxtsQNfmS8hwG82s/DR63RWqsq1UiQol
-         4rlg==
-X-Gm-Message-State: AOJu0YygPMfXiEnCc4z5g1vsuGbzpw3ZntQB70xY2Zc3hTIbvL2RtkJh
-        G7ZcJ9xMUBdRytZAFi29pG3MCCnVGZAZU9hLYos=
-X-Google-Smtp-Source: AGHT+IH3DRdTfKoOMyMOzkQDCigyhHbNJcoUpI6PmnvC7T6AkuKRO4z5Oxn0dWHKqFPRDwgDEBJUuRuS8SdMX1s4iaI=
-X-Received: by 2002:a05:6870:169b:b0:1ef:bfd8:90d1 with SMTP id
- j27-20020a056870169b00b001efbfd890d1mr20538538oae.22.1700162314073; Thu, 16
- Nov 2023 11:18:34 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700162490; x=1700767290;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=YzF2ALYUXgtOOWHICjx/9sp3ZlXGizxmY7whZwnkVqs=;
+        b=fcW7TzRHsYp2NRss9MfBFavzyDyDtK/lZIam+3Pc5/K5IyulGK6ww8kbmInnL/uny6
+         Wt9V+9QEidLSsPuJIl1pwgiYbfwIHU0uwEIK5lEn/dyLc1AhVZwRmYX4Uh/6K7DoAEvi
+         39ZCkgyqHStJOZINVScNRm9+5CEG9Ti3KXUaaWe8LOpO5yGeBmgxmer64FStU2fWQ6rX
+         GuPABpLcH8NGbqKUwdk0rdAp2HhM+ehYaixSiYqo0eqTj6nXLUFUB7l94QDzQxbQ0rcz
+         c52fBs6YwWwP7NzdlhpLhCwICFhfE6tI4bcq0YflGZiUqDZ4qTUiJzA1Ebdd7FMFXgv5
+         CJZQ==
+X-Gm-Message-State: AOJu0Ywnn2PvihIqex4Qke41WiYYmV+u1pp8hnBqQKaiWSBrdy6kxgFM
+        s5v3Ic6ma1tItCUWbZURTjRvjw==
+X-Google-Smtp-Source: AGHT+IFOsmNi6M20q2mMZfgvvs7Ny35X8FWHOzyId2w5LMV8GyUNADT9qbMocFM5IvDg5rKoPH1waA==
+X-Received: by 2002:a17:902:f54f:b0:1cc:4eb1:edaa with SMTP id h15-20020a170902f54f00b001cc4eb1edaamr11388254plf.51.1700162489866;
+        Thu, 16 Nov 2023 11:21:29 -0800 (PST)
+Received: from www.outflux.net (198-0-35-241-static.hfc.comcastbusiness.net. [198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id t24-20020a1709028c9800b001c9bfd20d0csm17388plo.124.2023.11.16.11.21.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 11:21:28 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>, Tejun Heo <tj@kernel.org>,
+        Azeem Shaikh <azeemshaikh38@gmail.com>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Waiman Long <longman@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org, bpf@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Subject: [PATCH 0/3] kernfs: Convert from strlcpy() to strscpy()
+Date:   Thu, 16 Nov 2023 11:21:22 -0800
+Message-Id: <20231116191718.work.246-kees@kernel.org>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-References: <20231113112344.719-1-hkallweit1@gmail.com> <20231113112344.719-4-hkallweit1@gmail.com>
- <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
-In-Reply-To: <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 16 Nov 2023 14:18:23 -0500
-Message-ID: <CADnq5_NjZkGLz-J39h_6djdgaD8zT3_pEq4iy5FfcYTz646SFg@mail.gmail.com>
-Subject: Re: [PATCH 03/20] drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:
- remove I2C_CLASS_DDC support
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>, Leo Li <sunpeng.li@amd.com>,
-        dri-devel@lists.freedesktop.org,
-        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
-        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-i2c@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        David Airlie <airlied@gmail.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Developer-Signature: v=1; a=openpgp-sha256; l=805; i=keescook@chromium.org;
+ h=from:subject:message-id; bh=w0GAtTzgRNL9znjaphz3FN4VQ24pFDHc0eBL30sFkpg=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlVmu11zVyAR1N094pTJIYi2lpml53vIr/7Zkfb
+ zgMf4lRuPCJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZVZrtQAKCRCJcvTf3G3A
+ JqcUEACow96whY2PXsoj9tPefpjj3UIwlfJ3ut/35CSfyT8UK7/zYhv7KEZrBeHK/qxMRJ9+xBe
+ Pc7j5tIqc68ExBPJVWjYfDJ37dsg28n4AbifgDfF4Tfr+XD/B/7zBYlbqa+YfKIoqNsie3TuEmb
+ Jo5TNLzmJ+iHwLZQBg52HuTJ8IypsNdhdPUDt+GSVayHbFP8sOaZMzSgNzkWGE0EZPJVbhJkBhG
+ dgaf1he3KcoFhM6lOXcJzNfLL4wP3gW0wQvCa7n53dwozdUYLAN8vAo99ju0ONbxHC5gaRy2hV1
+ m8LYlDrVzBTldqKUPCwLlfworllGmywSzRyIvViY2SKCuLTEJMhrfrRT7eIc9F/TyhwKXjfWGox
+ Q4MGthWvVnHSVXW26aJPBCdBexdQe0UNHIe1e9GtdPVv6/DSkPteLizTSuVXO/m6gY1q3uCYF9G
+ RsrfA76ykmz8PiMZ1HwiSOUivMyMCZYd9dgBIcnKAxJdRmYQm6zmTcEY6iUR4P/ay56A0T7/tW+
+ SIqHoC9vLAMJk2kagkrDUu4Q7FIjW4MKeI+Ul2jrc9WW0ggDCMFFYhz9oXzEcrakU5x04mo7l07
+ mIs0IZlQmu6Y6/xTB1XcYB+9kCsQ0kxxgVUzqWsljvkctWg0ATuQ6HYRvZxRPR3AoAIvMha9INk
+ Mb18F4pb gdKumXw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 12:50=E2=80=AFPM Harry Wentland <harry.wentland@amd=
-.com> wrote:
->
-> Please just use "drm/amd/display:" as tag in the commit subject.
->
-> With that fixed, this is
-> Acked-by: Harry Wentland <harry.wentland@amd.com>
->
+Hi,
 
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-Feel free to take this via the i2c tree if you prefer.
+One of the last users of strlcpy() is kernfs, which has some complex
+calling hierarchies that needed to be carefully examined. This series
+refactors the strlcpy() calls into strscpy() calls, and bubbles up all
+changes in return value checking for callers.
 
-Alex
+-Kees
 
-> Harry
->
-> On 2023-11-13 06:23, Heiner Kallweit wrote:
-> > After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
-> > olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
-> > Class-based device auto-detection is a legacy mechanism and shouldn't
-> > be used in new code. So we can remove this class completely now.
-> >
-> > Preferably this series should be applied via the i2c tree.
-> >
-> > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
-> >
-> > ---
-> >  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
-> >  1 file changed, 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/driver=
-s/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > index 6f99f6754..ae1edc6ab 100644
-> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-> > @@ -7529,7 +7529,6 @@ create_i2c(struct ddc_service *ddc_service,
-> >       if (!i2c)
-> >               return NULL;
-> >       i2c->base.owner =3D THIS_MODULE;
-> > -     i2c->base.class =3D I2C_CLASS_DDC;
-> >       i2c->base.dev.parent =3D &adev->pdev->dev;
-> >       i2c->base.algo =3D &amdgpu_dm_i2c_algo;
-> >       snprintf(i2c->base.name, sizeof(i2c->base.name), "AMDGPU DM i2c h=
-w bus %d", link_index);
-> >
->
+Kees Cook (3):
+  kernfs: Convert kernfs_walk_ns() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_name_locked() from strlcpy() to strscpy()
+  kernfs: Convert kernfs_path_from_node_locked() from strlcpy() to
+    strscpy()
+
+ fs/kernfs/dir.c             | 53 ++++++++++++++++++++-----------------
+ kernel/cgroup/cgroup-v1.c   |  2 +-
+ kernel/cgroup/cgroup.c      |  4 +--
+ kernel/cgroup/cpuset.c      |  2 +-
+ kernel/trace/trace_uprobe.c |  2 +-
+ 5 files changed, 33 insertions(+), 30 deletions(-)
+
+-- 
+2.34.1
+
