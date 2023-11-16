@@ -2,260 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D4177ED8BD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 01:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 096337ED8C0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 01:57:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343577AbjKPA43 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 19:56:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        id S1344246AbjKPA5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 19:57:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPA40 (ORCPT
+        with ESMTP id S229692AbjKPA53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 19:56:26 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D38ADAF;
-        Wed, 15 Nov 2023 16:56:21 -0800 (PST)
-Received: from loongson.cn (unknown [10.180.129.93])
-        by gateway (Coremail) with SMTP id _____8Dx_7uzaFVlU2Y6AA--.56070S3;
-        Thu, 16 Nov 2023 08:56:19 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.180.129.93])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8Cxri+waFVlAIZDAA--.15990S2;
-        Thu, 16 Nov 2023 08:56:16 +0800 (CST)
-From:   Hongchen Zhang <zhanghongchen@loongson.cn>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Bojan Smojver <bojan@rexursive.com>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        loongson-kernel@lists.loongnix.cn,
-        Hongchen Zhang <zhanghongchen@loongson.cn>,
-        stable@vger.kernel.org, Weihao Li <liweihao@loongson.cn>
-Subject: [PATCH v2] PM: hibernate: use acquire/release ordering when compress/decompress image
-Date:   Thu, 16 Nov 2023 08:56:09 +0800
-Message-Id: <20231116005609.1583858-1-zhanghongchen@loongson.cn>
-X-Mailer: git-send-email 2.33.0
+        Wed, 15 Nov 2023 19:57:29 -0500
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAC6194;
+        Wed, 15 Nov 2023 16:57:25 -0800 (PST)
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AG0uiMi006003;
+        Wed, 15 Nov 2023 19:57:05 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3uaqmk0xre-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 15 Nov 2023 19:57:04 -0500 (EST)
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 3AG0v31H031913
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 15 Nov 2023 19:57:03 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX8.ad.analog.com (10.64.17.5) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Wed, 15 Nov 2023 19:57:02 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.986.14; Wed, 15 Nov 2023 19:57:02 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Wed, 15 Nov 2023 19:57:02 -0500
+Received: from KPALLER2-L02.ad.analog.com (KPALLER2-L02.ad.analog.com [10.117.220.22])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 3AG0un02012837;
+        Wed, 15 Nov 2023 19:56:51 -0500
+From:   Kim Seer Paller <kimseer.paller@analog.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "Kim Seer Paller" <kimseer.paller@analog.com>,
+        <linux-iio@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 1/2] dt-bindings: iio: frequency: add admfm2000
+Date:   Thu, 16 Nov 2023 08:56:42 +0800
+Message-ID: <20231116005643.245314-1-kimseer.paller@analog.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8Cxri+waFVlAIZDAA--.15990S2
-X-CM-SenderInfo: x2kd0w5krqwupkhqwqxorr0wxvrqhubq/1tbiAQAQB2VUKqkG2gABs5
-X-Coremail-Antispam: 1Uk129KBj93XoW3Gw47uFWkJrW7ZFyrXFWkGrX_yoW7KFy5pF
-        W8Xan0kr4UXrs8Z39rAay8Z345A3ZYyFZrGrsxG34fuasIgrsYya40gF9Yvr1YyFy8t34v
-        9a17K34qgryqqFXCm3ZEXasCq-sJn29KB7ZKAUJUUUUx529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-        Gr0_Gr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07AIYI
-        kI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
-        twAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
-        8JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j
-        6r4UMxCIbckI1I0E14v26r126r1DMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwV
-        AFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv2
-        0xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4
-        v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AK
-        xVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcbAwUUUUU
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: MXEbBJLSvpRIMrRLAFdEeS146aq_852f
+X-Proofpoint-ORIG-GUID: MXEbBJLSvpRIMrRLAFdEeS146aq_852f
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-15_20,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011 spamscore=0
+ priorityscore=1501 mlxlogscore=999 mlxscore=0 impostorscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2311060001 definitions=main-2311160006
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When we test S4(suspend to disk) on LoongArch 3A6000 platform, the
-test case sometimes fails. The dmesg log shows the following error:
-	Invalid LZO compressed length
-After we dig into the code, we find out that:
-When compress/decompress the image, the synchronization operation
-between the control thread and the compress/decompress/crc thread
-uses relaxed ordering interface, which is unreliable, and the
-following situation may occur:
-CPU 0					CPU 1
-save_image_lzo				lzo_compress_threadfn
-					  atomic_set(&d->stop, 1);
-  atomic_read(&data[thr].stop)
-  data[thr].cmp = data[thr].cmp_len;
-	  				  WRITE data[thr].cmp_len
-Then CPU0 get a old cmp_len and write to disk. When cpu resume from S4,
-wrong cmp_len is loaded.
+Dual microwave down converter module with input RF and LO frequency
+ranges from 0.5 to 32 GHz and an output IF frequency range from 0.1 to
+8 GHz. It consists of a LNA, mixer, IF filter, DSA, and IF amplifier
+for each down conversion path.
 
-To maintain data consistency between two threads, we should use the
-acquire/release ordering interface. So we change atomic_read/atomic_set
-to atomic_read_acquire/atomic_set_release.
-
-Fixes: 081a9d043c98 ("PM / Hibernate: Improve performance of LZO/plain hibernation, checksum image")
-Cc: stable@vger.kernel.org
-Signed-off-by: Hongchen Zhang <zhanghongchen@loongson.cn>
-Signed-off-by: Weihao Li <liweihao@loongson.cn>
+Signed-off-by: Kim Seer Paller <kimseer.paller@analog.com>
 ---
-v1 -> v2:
-	1. add Cc: stable@vger.kernel.org in commit log
-	2. add Fixes: line in commit log
----
- kernel/power/swap.c | 38 +++++++++++++++++++-------------------
- 1 file changed, 19 insertions(+), 19 deletions(-)
+ .../bindings/iio/frequency/adi,admfm2000.yaml | 128 ++++++++++++++++++
+ MAINTAINERS                                   |   7 +
+ 2 files changed, 135 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
 
-diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-index a2cb0babb5ec..d44f5937f1e5 100644
---- a/kernel/power/swap.c
-+++ b/kernel/power/swap.c
-@@ -606,11 +606,11 @@ static int crc32_threadfn(void *data)
- 	unsigned i;
+diff --git a/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+new file mode 100644
+index 000000000..7ea5ede7b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
+@@ -0,0 +1,128 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++# Copyright 2023 Analog Devices Inc.
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/frequency/adi,admfm2000.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: ADMFM2000 Dual Microwave Down Converter
++
++maintainers:
++  - Kim Seer Paller <kimseer.paller@analog.com>
++
++description: |
++    Dual microwave down converter module with input RF and LO frequency ranges
++    from 0.5 to 32 GHz and an output IF frequency range from 0.1 to 8 GHz.
++    It consists of a LNA, mixer, IF filter, DSA, and IF amplifier for each down
++    conversion path.
++
++properties:
++  compatible:
++    enum:
++      - adi,admfm2000
++
++  switch1-gpios:
++    description:
++      Must contain an array of 2 GPIO specifiers, referring to the GPIO pins
++      connected to the channel 1 switch controls.
++    minItems: 2
++    maxItems: 2
++
++  switch2-gpios:
++    description:
++      Must contain an array of 2 GPIO specifiers, referring to the GPIO pins
++      connected to the channel 2 switch controls.
++    minItems: 2
++    maxItems: 2
++
++  attenuation1-gpios:
++    description:
++      Must contain an array of 5 GPIO specifiers, referring to the GPIO pins
++      connected to the channel 1 DSA attenuation controls.
++    minItems: 5
++    maxItems: 5
++
++  attenuation2-gpios:
++    description:
++      Must contain an array of 5 GPIO specifiers, referring to the GPIO pins
++      connected to the channel 2 DSA attenuation controls.
++    minItems: 5
++    maxItems: 5
++
++  '#address-cells':
++    const: 1
++
++  '#size-cells':
++    const: 0
++
++patternProperties:
++  "^channel@[0-1]$":
++    type: object
++    description: Represents a channel of the device.
++
++    properties:
++      reg:
++        description:
++          The channel number.
++        minimum: 0
++        maximum: 1
++
++      adi,mode:
++        description:
++          RF path selected for the channel.
++            0 - Direct IF mode
++            1 - Mixer mode
++        $ref: /schemas/types.yaml#/definitions/uint32
++        enum: [0, 1]
++
++    required:
++      - reg
++      - adi,mode
++
++required:
++  - compatible
++  - switch1-gpios
++  - switch2-gpios
++  - attenuation1-gpios
++  - attenuation2-gpios
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    admfm2000 {
++      compatible = "adi,admfm2000";
++
++      switch1-gpios = <&gpio 1 GPIO_ACTIVE_LOW>,
++        <&gpio 2 GPIO_ACTIVE_HIGH>;
++
++      switch2-gpios = <&gpio 3 GPIO_ACTIVE_LOW>,
++        <&gpio 4 GPIO_ACTIVE_HIGH>;
++
++      attenuation1-gpios = <&gpio 17 GPIO_ACTIVE_LOW>,
++        <&gpio 22 GPIO_ACTIVE_LOW>,
++        <&gpio 23 GPIO_ACTIVE_LOW>,
++        <&gpio 24 GPIO_ACTIVE_LOW>,
++        <&gpio 25 GPIO_ACTIVE_LOW>;
++
++      attenuation2-gpios = <&gpio 0 GPIO_ACTIVE_LOW>,
++        <&gpio 5 GPIO_ACTIVE_LOW>,
++        <&gpio 6 GPIO_ACTIVE_LOW>,
++        <&gpio 16 GPIO_ACTIVE_LOW>,
++        <&gpio 26 GPIO_ACTIVE_LOW>;
++
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      channel@0 {
++        reg = <0>;
++        adi,mode = <1>;
++      };
++
++      channel@1 {
++        reg = <1>;
++        adi,mode = <1>;
++      };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 5c9f868e1..505eb57eb 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -1247,6 +1247,13 @@ W:	https://ez.analog.com/linux-software-drivers
+ F:	Documentation/devicetree/bindings/hwmon/adi,adm1177.yaml
+ F:	drivers/hwmon/adm1177.c
  
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -619,7 +619,7 @@ static int crc32_threadfn(void *data)
- 		for (i = 0; i < d->run_threads; i++)
- 			*d->crc32 = crc32_le(*d->crc32,
- 			                     d->unc[i], *d->unc_len[i]);
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -649,12 +649,12 @@ static int lzo_compress_threadfn(void *data)
- 	struct cmp_data *d = data;
- 
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
- 			d->ret = -1;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -663,7 +663,7 @@ static int lzo_compress_threadfn(void *data)
- 		d->ret = lzo1x_1_compress(d->unc, d->unc_len,
- 		                          d->cmp + LZO_HEADER, &d->cmp_len,
- 		                          d->wrk);
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -798,7 +798,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 
- 			data[thr].unc_len = off;
- 
--			atomic_set(&data[thr].ready, 1);
-+			atomic_set_release(&data[thr].ready, 1);
- 			wake_up(&data[thr].go);
- 		}
- 
-@@ -806,12 +806,12 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 			break;
- 
- 		crc->run_threads = thr;
--		atomic_set(&crc->ready, 1);
-+		atomic_set_release(&crc->ready, 1);
- 		wake_up(&crc->go);
- 
- 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
- 			wait_event(data[thr].done,
--			           atomic_read(&data[thr].stop));
-+				atomic_read_acquire(&data[thr].stop));
- 			atomic_set(&data[thr].stop, 0);
- 
- 			ret = data[thr].ret;
-@@ -850,7 +850,7 @@ static int save_image_lzo(struct swap_map_handle *handle,
- 			}
- 		}
- 
--		wait_event(crc->done, atomic_read(&crc->stop));
-+		wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 		atomic_set(&crc->stop, 0);
- 	}
- 
-@@ -1132,12 +1132,12 @@ static int lzo_decompress_threadfn(void *data)
- 	struct dec_data *d = data;
- 
- 	while (1) {
--		wait_event(d->go, atomic_read(&d->ready) ||
-+		wait_event(d->go, atomic_read_acquire(&d->ready) ||
- 		                  kthread_should_stop());
- 		if (kthread_should_stop()) {
- 			d->thr = NULL;
- 			d->ret = -1;
--			atomic_set(&d->stop, 1);
-+			atomic_set_release(&d->stop, 1);
- 			wake_up(&d->done);
- 			break;
- 		}
-@@ -1150,7 +1150,7 @@ static int lzo_decompress_threadfn(void *data)
- 			flush_icache_range((unsigned long)d->unc,
- 					   (unsigned long)d->unc + d->unc_len);
- 
--		atomic_set(&d->stop, 1);
-+		atomic_set_release(&d->stop, 1);
- 		wake_up(&d->done);
- 	}
- 	return 0;
-@@ -1335,7 +1335,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 		}
- 
- 		if (crc->run_threads) {
--			wait_event(crc->done, atomic_read(&crc->stop));
-+			wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 			atomic_set(&crc->stop, 0);
- 			crc->run_threads = 0;
- 		}
-@@ -1371,7 +1371,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 					pg = 0;
- 			}
- 
--			atomic_set(&data[thr].ready, 1);
-+			atomic_set_release(&data[thr].ready, 1);
- 			wake_up(&data[thr].go);
- 		}
- 
-@@ -1390,7 +1390,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 
- 		for (run_threads = thr, thr = 0; thr < run_threads; thr++) {
- 			wait_event(data[thr].done,
--			           atomic_read(&data[thr].stop));
-+				atomic_read_acquire(&data[thr].stop));
- 			atomic_set(&data[thr].stop, 0);
- 
- 			ret = data[thr].ret;
-@@ -1421,7 +1421,7 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 				ret = snapshot_write_next(snapshot);
- 				if (ret <= 0) {
- 					crc->run_threads = thr + 1;
--					atomic_set(&crc->ready, 1);
-+					atomic_set_release(&crc->ready, 1);
- 					wake_up(&crc->go);
- 					goto out_finish;
- 				}
-@@ -1429,13 +1429,13 @@ static int load_image_lzo(struct swap_map_handle *handle,
- 		}
- 
- 		crc->run_threads = thr;
--		atomic_set(&crc->ready, 1);
-+		atomic_set_release(&crc->ready, 1);
- 		wake_up(&crc->go);
- 	}
- 
- out_finish:
- 	if (crc->run_threads) {
--		wait_event(crc->done, atomic_read(&crc->stop));
-+		wait_event(crc->done, atomic_read_acquire(&crc->stop));
- 		atomic_set(&crc->stop, 0);
- 	}
- 	stop = ktime_get();
++ANALOG DEVICES INC ADMFM2000 DRIVER
++M:	Kim Seer Paller <kimseer.paller@analog.com>
++L:	linux-iio@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Documentation/devicetree/bindings/iio/frequency/adi,admfm2000.yaml
++
+ ANALOG DEVICES INC ADMV1013 DRIVER
+ M:	Antoniu Miclaus <antoniu.miclaus@analog.com>
+ L:	linux-iio@vger.kernel.org
+
+base-commit: c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
 -- 
-2.33.0
+2.34.1
 
