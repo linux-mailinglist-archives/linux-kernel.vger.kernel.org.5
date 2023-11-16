@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EF67EE868
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:36:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BFC7EE86A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:39:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjKPUgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:36:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S231281AbjKPUjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:39:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKPUgx (ORCPT
+        with ESMTP id S229437AbjKPUjf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:36:53 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA0698;
-        Thu, 16 Nov 2023 12:36:50 -0800 (PST)
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGJiiiQ015832;
-        Thu, 16 Nov 2023 20:36:40 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=7nW4uUKOinMyfyACNCwFVXeHg4pie7w+X0CsEfRCaag=;
- b=U0z6WFwZrdlQon9j+EyB36vMbirx1VDCFC6vZYe7aetIRdH6JGJq/mWMZcaDV0iBEHNP
- Qb/U5vqksoRsEVNutk5s4/iWIVEYLLh8CaTyw8QEf82RTHliS8fmwFZuogh/F03DRldV
- VjnNWOkADqvCqgurK+9AN+xDVFdVsujouLUOzlZj2q0cd1ZLrCatBmBK4Vcfy3MnNsT/
- SaVafDzbkQQU0X1M2qU7yv0wMa3AhMdrX2EnxagdQzfJyHeLFVOjg/XCOqlOX3OI0h2g
- bq8F0pjCsH1jbzbvoIZfnve/SHZtvKTVivKKJnxnAAWhnTzJolGXGQ9Z9YmLfYcqL5ZM pw== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud1k53b3t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 20:36:40 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGKadlO031701
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 20:36:39 GMT
-Received: from [10.110.71.50] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 12:36:38 -0800
-Message-ID: <01b9bc3f-2afb-bd33-1212-d1dc7999b2bc@quicinc.com>
-Date:   Thu, 16 Nov 2023 12:36:38 -0800
+        Thu, 16 Nov 2023 15:39:35 -0500
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D21B98
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:39:31 -0800 (PST)
+Received: by mail-yb1-xb36.google.com with SMTP id 3f1490d57ef6-d9cbba16084so1214088276.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:39:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700167170; x=1700771970; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ie4bIp+/8X3baaFx5LodBCI7zgnvFrvMzLlKJ9qcML4=;
+        b=mTZBx4IkQ79AMp8rx/4siUqlA3amnJIxLXVvYGCGBhm4C+dzYByVlDRUJnPVfQuTyu
+         Q39eqSd6au/Shk+YfRyFtwf4a4MRz0DzpHVncTHSpA3pSSqC5OzUNiSennMgYET9/biq
+         gu4Nr0oHsyWUXu7adNoyRrYu3/0w8vO0p+Qquq6ao4/2M74SS0kZ2pIyeE2N7qTW8KLF
+         Zka1PQpGGTl7B1XaP8vD1qrY0DoqMOFoHxLYzXk80aVQ4UHkiW7Nv6FAcLZD9RCmXJW/
+         Zej9UZsiS0new5umN3cu46MERDXOrcGuhUJOU+rFn7LWCZowI2ihl89nzbCRhKLFpTur
+         1QXQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700167170; x=1700771970;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ie4bIp+/8X3baaFx5LodBCI7zgnvFrvMzLlKJ9qcML4=;
+        b=fj+ctT90I5ZnRyMBCZOi/+MT4W1IjOiNAp+xKU4J6rFruuD8MIvVBhD9Pbz6gwUpRf
+         TXVGKH7yIQ1GJoJhrPx56QlYUxxKFN6w5aukos6qriXXHy6CElUmjCFb2aUOxYFE/CjS
+         wylSZ+qUObif04r6F8xIjmXkNV7spgbt5x1jVK8eHGv3FcZsKA+IDkcMEjBWPFYlutNy
+         KMzDh8GVx1853bscvaxdm66JwvLW5fEOsZpXmBEEniUK7JlzzN86+2UwiH/O0whhlfME
+         4cRPIfMfXS038YJPXOWBDbkAJajysri/sspSMh9ks67ISUzlemo8tLtfQUaIs9LZYniG
+         uW+g==
+X-Gm-Message-State: AOJu0YzzZDC/lZDYIJjaUxvPLm0QGNhG4aKmlPOGpOnUNox4alm/DV27
+        V3ygWcvBelbvLS4M0ibhnokD4jO3bBZEX4SY1baXkw==
+X-Google-Smtp-Source: AGHT+IEl05nrGsWTPLgWubxHE+fCn4FbX2jQkSHiv84o+RQr7HDu/P2diCHWO/l3K96sMozK9YE7r3a4UuHHpB6baak=
+X-Received: by 2002:a25:400f:0:b0:da0:c49a:5fed with SMTP id
+ n15-20020a25400f000000b00da0c49a5fedmr13754181yba.50.1700167170644; Thu, 16
+ Nov 2023 12:39:30 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [PATCH v2] drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm
- cphy
-Content-Language: en-US
-To:     Jonathan Marek <jonathan@marek.ca>,
-        <freedreno@lists.freedesktop.org>
-CC:     Rob Clark <robdclark@gmail.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Vinod Koul <vkoul@kernel.org>, Robert Foss <rfoss@kernel.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231110000216.29979-1-jonathan@marek.ca>
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-In-Reply-To: <20231110000216.29979-1-jonathan@marek.ca>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: wEyKtP6vR8TjxeD1gO1F4ALFTNrsMgXc
-X-Proofpoint-ORIG-GUID: wEyKtP6vR8TjxeD1gO1F4ALFTNrsMgXc
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_21,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=720 bulkscore=0
- spamscore=0 suspectscore=0 clxscore=1011 malwarescore=0 priorityscore=1501
- impostorscore=0 phishscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311160159
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231113221528.749481-1-dmitry.baryshkov@linaro.org> <20231116183609.GA2742530-robh@kernel.org>
+In-Reply-To: <20231116183609.GA2742530-robh@kernel.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 16 Nov 2023 22:39:19 +0200
+Message-ID: <CAA8EJppW3v7Ozr+KnoYYF6GXE5DqqMjEiETpaqfC_sE3ufNhfA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] dt-bindings: connector: usb: provide bindings for altmodes
+To:     Rob Herring <robh@kernel.org>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+        Mark Gross <markgross@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 16 Nov 2023 at 20:36, Rob Herring <robh@kernel.org> wrote:
+>
+> On Tue, Nov 14, 2023 at 12:13:26AM +0200, Dmitry Baryshkov wrote:
+> > In some cases we need a way to specify USB-C AltModes that can be
+> > supportd on the particular USB-C connector. For example, x86 INT33FE
+> > driver does this by populating fwnode properties internally. For the
+> > Qualcomm Robotics RB5 platform (and several similar devices which use
+> > Qualcomm PMIC TCPM) we have to put this information to the DT.
+> >
+> > Provide the DT bindings for this kind of information and while we are at
+> > it, change svid property to be 16-bit unsigned integer instead of a
+> > simple u32.
+> >
+> > NOTE: usage of u16 is not compatible with the recenty extended
+> > qcom/qrb5165-rb5.dts DT file. I'm looking for the guidance from DT and
+> > USB maintainers whether to retain u32 usage or it's better to switch to
+> > u16.
+>
+> Depends if you are fine with the ABI break on this platform...
 
+As much as I hate it, yes, we are.
 
-On 11/9/2023 4:02 PM, Jonathan Marek wrote:
-> Use the same value as the downstream driver. This change is needed for CPHY
-> mode to work correctly.
-> 
-> Fixes: 8b034e6771113 ("drm/msm/dsi: add support for DSI-PHY on SM8550")
-> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
-> ---
-> v2: fixed the Fixes: line
-> 
->   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-
-Good catch !
-
-LGTM
-
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-
-> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> index 3b1ed02f644d..89a6344bc865 100644
-> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
-> @@ -918,7 +918,7 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
->   	if ((phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V5_2)) {
->   		if (phy->cphy_mode) {
->   			vreg_ctrl_0 = 0x45;
-> -			vreg_ctrl_1 = 0x45;
-> +			vreg_ctrl_1 = 0x41;
->   			glbl_rescode_top_ctrl = 0x00;
->   			glbl_rescode_bot_ctrl = 0x00;
->   		} else {
+-- 
+With best wishes
+Dmitry
