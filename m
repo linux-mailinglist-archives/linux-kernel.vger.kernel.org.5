@@ -2,112 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3817EDEBC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59EC97EDEB8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345044AbjKPKo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:44:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47692 "EHLO
+        id S1345030AbjKPKoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:44:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345042AbjKPKot (ORCPT
+        with ESMTP id S1345024AbjKPKok (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:44:49 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6119118B;
-        Thu, 16 Nov 2023 02:44:45 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG8Vakx004901;
-        Thu, 16 Nov 2023 10:44:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=D1svzL+K4mX38CebFwfuvfAb54VtCzK1NOI55/OaP1w=;
- b=EJrx+9CctyeAF0U2Sq28VpTjQIduRpRZHsS9oEBP6M8lURbSpsR88+ZlwvkZRzyMkTIm
- Bck56GTPURRmDZz2KICOsce6FtRnOLOqJIiyXR2pSI4uMwj8lwbqOAbEo82epofV+vO+
- Rg80ms/wFz918EnctIvik+mtQezNX8Mo4pTiqz3DJKt+1EhLzjq08VF4AK17eie5WqCO
- LkJ2GpQCq/y0lRoLvucPqjgvOZKbwfP8eWW0KzUUlt+dG9YJh5M7yJ/9F/+DFd9XFNdy
- lvqh2b+k5HHuYpOIaH6jNmFwNaOt+KTiGHLtCWFW5en6rdvwrCpXyLFqyfCoFUehhv1R hg== 
-Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucuac32ct-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 10:44:28 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGAiLm2023401
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 10:44:21 GMT
-Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 02:44:17 -0800
-Message-ID: <8608e88e-e379-4e08-b376-86d9f25d2270@quicinc.com>
-Date:   Thu, 16 Nov 2023 18:44:14 +0800
+        Thu, 16 Nov 2023 05:44:40 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C47C91B6
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:44:37 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5c194b111d6so500732a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:44:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700131477; x=1700736277; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KiLOh24j4eoUK7LZ6otpZgVebzeyiIBGFFVrKcQ+fSQ=;
+        b=Cg5toAWsiNoShmDQK7j1zFF5dYKcdcYiDRj+SyIKBtCXZsrvWPgJE4NfASNkBFEB6+
+         1UyPnffpqeojjNZWLhk2KXBp1ZamUBo3a2m0nb278rFdYklcMUI0D+yUyXOem/5gDqTQ
+         CxNgWorvbS4Q5E6YFCPc0bn4+PyZ9hwrPXwK6xKoSLHepEZFXQ4zybcr4kM2YBnLikLA
+         b87ppkKkc9AinLE5SsTI0uLB/jx9vlXuU1l7Cgqf0AhY0jP8bmEaeIWsde3KuyMGvmks
+         fMh5p4U9IY3c/DYAf7FhUcD4pif8y/PG9vngO8qn6dFqBhV/CmUHf9j/nx1kqpuxuAJh
+         UNeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700131477; x=1700736277;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KiLOh24j4eoUK7LZ6otpZgVebzeyiIBGFFVrKcQ+fSQ=;
+        b=SHt2EZDCCyZsjwKGjnkWw3stg5/loSIzYL+VSlVxB8GAKSSta/W1KzUBBpUnq6cmnM
+         BUCoWkD5HRzWF9VBdV2+EREH5yAL5lfl5prJW/2LIDJrOTxiKDQzr2mT/WXe7NjUKG7y
+         Z46Ul0CbYqSKJmj/PpEGRF1v+vpbVBS4ZXF/ySrGNshzAWqwPuVr8U+bcfhq7kvR7xjf
+         CCQ/hNx6VXZ5VU+1DNCnRZYO9Vr4sLdib3+JKCjsYDfXHQqHUARsjZ+49D97pcrtFJxn
+         oK+aMh0kYOAwaBFD5P45G+WoyuYEeXtXGYdmrTTjoUAx4GgCvSCcaaAhhu019sOmHP26
+         Mnug==
+X-Gm-Message-State: AOJu0YyCBTylY0it245B5MYvSMuge4HUOaOcVNNuBn03IUb1QBtycFhI
+        4b4lASwfLVHnt7tl2xSqZv1SoA==
+X-Google-Smtp-Source: AGHT+IG+6AE8DfPONTWqgJ8xui34M+vOQoM5NFd4mTORi/CJ9o8XSR7KB9tKL+/BqTnD7rzqYxG+ig==
+X-Received: by 2002:a05:6a20:244e:b0:15e:d84:1c5e with SMTP id t14-20020a056a20244e00b0015e0d841c5emr19322604pzc.38.1700131476904;
+        Thu, 16 Nov 2023 02:44:36 -0800 (PST)
+Received: from localhost ([122.172.82.6])
+        by smtp.gmail.com with ESMTPSA id u17-20020a056a00159100b006c4d2479c1asm4215318pfk.219.2023.11.16.02.44.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 02:44:36 -0800 (PST)
+Date:   Thu, 16 Nov 2023 16:14:34 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     Stephan Gerhold <stephan@gerhold.net>,
+        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-pm@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Stephan Gerhold <stephan.gerhold@kernkonzept.com>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] OPP: Use _set_opp_level() for single genpd case
+Message-ID: <20231116104434.fnukzusznc3kifbn@vireshk-i7>
+References: <CAPDyKFqbnsdT0nqKwQhai875CwwpW_vepr816fL+i8yLh=YQhw@mail.gmail.com>
+ <20231025065458.z3klmhahrcqh6qyw@vireshk-i7>
+ <CAPDyKFr4vdsKVYEx0aF5k_a1bTjp3NzMpNgaXDJOJrvujT7iRg@mail.gmail.com>
+ <ZTkciw5AwufxQYnB@gerhold.net>
+ <CAPDyKFq+zsoeF-4h5TfT4Z+S46a501_pUq8y2c1x==Tt6EKBGA@mail.gmail.com>
+ <20231030102944.nrw4bta467zxes5c@vireshk-i7>
+ <CAPDyKFrn97POKuNc3cMM9TOaw-f-ufLwYtUY8_L2w8+hzECWOA@mail.gmail.com>
+ <20231106070830.7sd3ux3nvywpb54z@vireshk-i7>
+ <CAPDyKFpgPdMLR12ajYFasCjm-Y-ZyVVtQz3j1CZVWfN9T3Gg0w@mail.gmail.com>
+ <20231115053246.i5x4bdgtrjvoui2e@vireshk-i7>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/9] net: mdio: ipq4019: add qca8084 configurations
-Content-Language: en-US
-To:     Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Andrew Lunn <andrew@lunn.ch>
-CC:     <agross@kernel.org>, <andersson@kernel.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-9-quic_luoj@quicinc.com>
- <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
- <cb4131d1-534d-4412-a562-fb26edfea0d1@linaro.org>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <cb4131d1-534d-4412-a562-fb26edfea0d1@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: aO_XPBb_fBjY-CpFbSBD2d8e64uf5W3x
-X-Proofpoint-GUID: aO_XPBb_fBjY-CpFbSBD2d8e64uf5W3x
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_09,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxlogscore=450
- spamscore=0 malwarescore=0 mlxscore=0 bulkscore=0 clxscore=1015
- adultscore=0 lowpriorityscore=0 impostorscore=0 priorityscore=1501
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311160086
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115053246.i5x4bdgtrjvoui2e@vireshk-i7>
+X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_SBL_CSS,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Level: *
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/16/2023 1:01 AM, Konrad Dybcio wrote:
+On 15-11-23, 11:02, Viresh Kumar wrote:
+> On 10-11-23, 14:50, Ulf Hansson wrote:
+> > If this is only for required-opps and devices being hooked up to a PM
+> > domain (genpd), my suggestion would be to keep avoiding doing the
+> > propagation to required-opps-parents. For the similar reasons to why
+> > we don't do it for clock/regulators, the propagation and aggregation,
+> > seems to me, to belong better in genpd.
+> > 
+> > Did that make sense?
 > 
-> 
-> On 11/15/23 17:20, Andrew Lunn wrote:
->> On Wed, Nov 15, 2023 at 11:25:14AM +0800, Luo Jie wrote:
->>> The PHY & PCS clocks need to be enabled and the reset
->>> sequence needs to be completed to make qca8084 PHY
->>> probeable by MDIO bus.
->>
->> Is all this guaranteed to be the same between different boards?
-> No, this looks like a total subsystem overreach, these should be
-> taken care of from within clk framework and consumed with the clk
-> APIs.
-> 
-> Konrad
+> Hmm, it does. Let me see what I can do on this..
 
-Hi Konrad,
-As Robert shared the link of the clock provider driver, which is
-registered as MDIO device and not available until to the qca8084
-initializations completed done here, so i need to do raw read/write
-the clock registers in this patch.
+Hi Ulf,
+
+I have sent V3 with a new commit at the end to take care of this.
+
+-- 
+viresh
