@@ -2,516 +2,254 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AB43A7EE420
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00DD97EE425
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:23:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbjKPPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:21:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38780 "EHLO
+        id S231131AbjKPPX2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:23:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345125AbjKPPVr (ORCPT
+        with ESMTP id S229919AbjKPPX0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:21:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F123FD63
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:21:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700148092;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2ZTScLppJWVGKPHQqR8DqdFOGy0PitC5NYiBrS/u1A0=;
-        b=NdGm4Og9HH5Jwl6LlgwEB/C9ntyK7/1fG9xE53ntFavD3WEVhdQrAFSH2wXoPa0lYVK8x7
-        BBVYwTeH/K1eRiyerHFYLBDh5stI4JTQyhiOwi7U6W+v6BFgBXxE9pRzxpPsA5Im0BejEj
-        w7fCKXEshI09LHdlG/UbjjwV1/IykXM=
-Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
- by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-564-Xr5BfC3tNlGbK_H2VYpiaQ-1; Thu,
- 16 Nov 2023 10:21:28 -0500
-X-MC-Unique: Xr5BfC3tNlGbK_H2VYpiaQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D3EAD3C0274E;
-        Thu, 16 Nov 2023 15:21:27 +0000 (UTC)
-Received: from p1.luc.cera.cz (unknown [10.45.225.144])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0571D40C6EBB;
-        Thu, 16 Nov 2023 15:21:25 +0000 (UTC)
-From:   Ivan Vecera <ivecera@redhat.com>
-To:     intel-wired-lan@lists.osuosl.org
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
-        Jacob Keller <jacob.e.keller@intel.com>,
-        Wojciech Drewek <wojciech.drewek@intel.com>,
-        Simon Horman <horms@kernel.org>, mschmidt@redhat.com,
-        netdev@vger.kernel.org
-Subject: [PATCH iwl-next v3 5/5] i40e: Remove VEB recursion
-Date:   Thu, 16 Nov 2023 16:21:14 +0100
-Message-ID: <20231116152114.88515-6-ivecera@redhat.com>
-In-Reply-To: <20231116152114.88515-1-ivecera@redhat.com>
-References: <20231116152114.88515-1-ivecera@redhat.com>
+        Thu, 16 Nov 2023 10:23:26 -0500
+Received: from mail-yb1-xb2d.google.com (mail-yb1-xb2d.google.com [IPv6:2607:f8b0:4864:20::b2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66D4D126
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:23:22 -0800 (PST)
+Received: by mail-yb1-xb2d.google.com with SMTP id 3f1490d57ef6-d9fe0a598d8so865928276.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:23:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700148201; x=1700753001; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=jSgupIeANP5tueuGjabzmCgxHpd7wjSVIIaOyj586g8=;
+        b=C6VVoZL3OWgeErug8AwuxL9UDuqDvihZKZSFEukscobEg+Jy7z9qHAIMnGHEKsMOhi
+         /l687KOFpoU5g/nTN3KrUoivHflhzZ/xTW/KemdUSb4YRmUUcoi0vHB3hZLMx0dEU486
+         EOBMeNng9Ox8ppMC98cTmuHA7eodcpyGDMsndxK9qDqGUUdaCWaoXMbwWXfkKHxmP/ME
+         MWn1+M144VXf3Coe8rdrwkL5+TGrEEfyvkbM8nTAYSkC0EMmOc2vL1cG/hIaCIHLeRsI
+         Xt6OUo4XlCq6pn2ne/r+COX9QGSZEdmu/jlKsewnaOw16WbkmU/RxdtHYT34hEY+WLBv
+         pe1w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700148201; x=1700753001;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jSgupIeANP5tueuGjabzmCgxHpd7wjSVIIaOyj586g8=;
+        b=TONn5aTb7dxy1jNmj2Al/oif/wzWz6lkULq1D/qyjr/c9nGfpEL0aB6lpzyPrlcmNa
+         maoN7OFGLSRylWVP+SwqS+lXxEYUXH2DLY7Q5Sp2w9jmjIawm15pmtSmyL0brTvkh09Q
+         YnBwGspUFMzBm8hvu+4a/i9T06jSjURw6u2Vm0BSUp1ac/6i6SxVqlrMsYyJL82I27V3
+         8moYvWF4bzBEf+zqHL78Nhl1YNWdrJDcJZN0RBwptczCJOLGmezNJyto+z9n0q7BC680
+         ork1MHylJ0Lobr1J+YxMEYtvfNZwXmmGu6zzerQcj/BkcjxwksaMbcWtnpP1XNQlyv0a
+         jn5A==
+X-Gm-Message-State: AOJu0YxPUg5WuXRLk8fW5gg7FjbvQ1JHtr2dh/UJ/ZjTIpHHsZjhp8DW
+        Qod3V6I+Kdzl/GHBdDsL6Nck2HdwcaBkTAL4C63jEA==
+X-Google-Smtp-Source: AGHT+IEIVa1NI6XgtzOUgIl2iL6jHoUviE3ArBPvKGR5eaRoUTXtbiZhuEKkizVPrrGfKMTq8p/Vw7/vzby5tkqKXs8=
+X-Received: by 2002:a05:6902:188d:b0:d9a:49bb:3d1d with SMTP id
+ cj13-20020a056902188d00b00d9a49bb3d1dmr18422215ybb.3.1700148201540; Thu, 16
+ Nov 2023 07:23:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev> <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
+ <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev> <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
+In-Reply-To: <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 16 Nov 2023 17:23:09 +0200
+Message-ID: <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The VEB (virtual embedded switch) as a switch element can be
-connected according datasheet though its uplink to:
-- Physical port
-- Port Virtualizer (not used directly by i40e driver but can
-  be present in MFP mode where the physical port is shared
-  between PFs)
-- No uplink (aka floating VEB)
+On Thu, 16 Nov 2023 at 14:08, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
+>
+> On 2023/11/16 19:53, Sui Jingfeng wrote:
+> > Hi,
+> >
+> >
+> > On 2023/11/16 19:29, Dmitry Baryshkov wrote:
+> >> On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.dev>
+> >> wrote:
+> >>> Hi,
+> >>>
+> >>>
+> >>> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
+> >>>>> +
+> >>>>> +               ctx->connector = connector;
+> >>>>> +       }
+> >>>>>
+> >>>>>           if (ctx->info->id == ID_IT66121) {
+> >>>>>                   ret = regmap_write_bits(ctx->regmap,
+> >>>>> IT66121_CLK_BANK_REG,
+> >>>>> @@ -1632,16 +1651,13 @@ static const char * const
+> >>>>> it66121_supplies[] = {
+> >>>>>           "vcn33", "vcn18", "vrf12"
+> >>>>>    };
+> >>>>>
+> >>>>> -static int it66121_probe(struct i2c_client *client)
+> >>>>> +int it66121_create_bridge(struct i2c_client *client, bool
+> >>>>> of_support,
+> >>>>> +                         bool hpd_support, bool audio_support,
+> >>>>> +                         struct drm_bridge **bridge)
+> >>>>>    {
+> >>>>> +       struct device *dev = &client->dev;
+> >>>>>           int ret;
+> >>>>>           struct it66121_ctx *ctx;
+> >>>>> -       struct device *dev = &client->dev;
+> >>>>> -
+> >>>>> -       if (!i2c_check_functionality(client->adapter,
+> >>>>> I2C_FUNC_I2C)) {
+> >>>>> -               dev_err(dev, "I2C check functionality failed.\n");
+> >>>>> -               return -ENXIO;
+> >>>>> -       }
+> >>>>>
+> >>>>>           ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
+> >>>>>           if (!ctx)
+> >>>>> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client
+> >>>>> *client)
+> >>>>>
+> >>>>>           ctx->dev = dev;
+> >>>>>           ctx->client = client;
+> >>>>> -       ctx->info = i2c_get_match_data(client);
+> >>>>> -
+> >>>>> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
+> >>>>> -       if (ret)
+> >>>>> -               return ret;
+> >>>>> -
+> >>>>> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
+> >>>>> -       if (ret)
+> >>>>> -               return ret;
+> >>>>> -
+> >>>>> -       i2c_set_clientdata(client, ctx);
+> >>>>>           mutex_init(&ctx->lock);
+> >>>>>
+> >>>>> -       ret = devm_regulator_bulk_get_enable(dev,
+> >>>>> ARRAY_SIZE(it66121_supplies),
+> >>>>> - it66121_supplies);
+> >>>>> -       if (ret) {
+> >>>>> -               dev_err(dev, "Failed to enable power supplies\n");
+> >>>>> -               return ret;
+> >>>>> +       if (of_support) {
+> >>>>> +               ret = it66121_of_read_bus_width(dev,
+> >>>>> &ctx->bus_width);
+> >>>>> +               if (ret)
+> >>>>> +                       return ret;
+> >>>>> +
+> >>>>> +               ret = it66121_of_get_next_bridge(dev,
+> >>>>> &ctx->next_bridge);
+> >>>>> +               if (ret)
+> >>>>> +                       return ret;
+> >>>>> +       } else {
+> >>>>> +               ctx->bus_width = 24;
+> >>>>> +               ctx->next_bridge = NULL;
+> >>>>>           }
+> >>>> A better alternative would be to turn OF calls into fwnode calls and
+> >>>> to populate the fwnode properties. See
+> >>>> drivers/platform/x86/intel/chtwc_int33fe.c for example.
+> >>>
+> >>> Honestly, I don't want to leave any scratch(breadcrumbs).
+> >>> I'm worries about that turn OF calls into fwnode calls will leave
+> >>> something unwanted.
+> >>>
+> >>> Because I am not sure if fwnode calls will make sense in the DT
+> >>> world, while my patch
+> >>> *still* be useful in the DT world.
+> >> fwnode calls work for both DT and non-DT cases. In the DT case they
+> >> work with DT nodes and properties. In the non-DT case, they work with
+> >> manually populated properties.
+> >>
+> >>> Because the newly introduced it66121_create_bridge()
+> >>> function is a core. I think It's better leave this task to a more
+> >>> advance programmer.
+> >>> if there have use case. It can be introduced at a latter time,
+> >>> probably parallel with
+> >>> the DT.
+> >>>
+> >>> I think DT and/or ACPI is best for integrated devices, but it66121
+> >>> display bridges is
+> >>> a i2c slave device. Personally, I think slave device shouldn't be
+> >>> standalone. I'm more
+> >>> prefer to turn this driver to support hot-plug, even remove the
+> >>> device on the run time
+> >>> freely when detach and allow reattach. Like the I2C EEPROM device in
+> >>> the monitor (which
+> >>> contains the EDID, with I2C slave address 0x50). The I2C EEPROM
+> >>> device *also* don't has
+> >>> a corresponding struct device representation in linux kernel.
+> >> It has. See i2c_client::dev.
+> >
+> > No, what I mean is that there don't have a device driver for
+> > monitor(display) hardware entity.
+> > And the drm_do_probe_ddc_edid() is the static linked driver, which is
+> > similar with the idea
+> > this series want to express.
 
-But VEB uplink cannot be connected to another VEB and any attempt
-to do so results in:
+Because the monitor is not a part of the display pipeline.
 
-"i40e 0000:02:00.0: couldn't add VEB, err -EIO aq_err I40E_AQ_RC_ENOENT"
+> >
+> >
+> >>> so I still think It is best to make this drivers functional as a
+> >>> static lib, but I want
+> >>> to hear you to say more. Why it would be a *better* alternative to
+> >>> turn OF calls into
+> >>> fwnode calls? what are the potential benefits?
+> >> Because then you can populate device properties from your root device.
+> >> Because it allows the platform to specify the bus width instead of
+> >> hardcoding 24 bits (which might work in your case, but might not be
+> >> applicable to another user next week).
+> >
+> >
+> > No, this problem can be easily solved. Simply add another argument.
+> >
+> > ```
+> >
+> > int it66121_create_bridge(struct i2c_client *client, bool of_support,
+> >                           bool hpd_support, bool audio_support, u32
+> > bus_width,
+> >                           struct drm_bridge **bridge);
+> > ```
+> >
+> >
+> >> Anyway, even without fwnode, I'd strongly suggest you to drop the
+> >> it66121_create_bridge() as it is now and start by populating the i2c
+> >> bus from your root device.
+> >
+> > This will force all non-DT users to add the similar code patter at the
+> > display controller side,
+> > which is another kind of duplication. The monitor is also as I2C slave
+> > device, can be abstract
+> > as a identify drm bridges in theory, I guess.
+> >
+>
+> 'identify' -> 'identity'
+>
+>
+> >
+> >> Then you will need some way (fwnode?) to
+> >> discover the bridge chain. And at the last point you will get into the
+> >> device data and/or properties business.
+> >>
+> > No, leave that chance to a more better programmer and forgive me please,
+> > too difficult, I'm afraid of not able to solve. Thanks a lot for the
+> > trust!
 
-that indicates "the uplink SEID does not point to valid element".
+From my point of view: no.
 
-Remove this logic from the driver code this way:
-
-1) For debugfs only allow to build floating VEB (uplink_seid == 0)
-   or main VEB (uplink_seid == mac_seid)
-2) Do not recurse in i40e_veb_link_event() as no VEB cannot have
-   sub-VEBs
-3) Ditto for i40e_veb_rebuild() + simplify the function as we know
-   that the VEB for rebuild can be only the main LAN VEB or some
-   of the floating VEBs
-4) In i40e_rebuild() there is no need to check veb->uplink_seid
-   as the possible ones are 0 and MAC SEID
-5) In i40e_vsi_release() do not take into account VEBs whose
-   uplink is another VEB as this is not possible
-6) Remove veb_idx field from i40e_veb as a VEB cannot have
-   sub-VEBs
-
-Tested using i40e debugfs interface:
-1) Initial state
-[root@cnb-03 net-next]# CMD="/sys/kernel/debug/i40e/0000:02:00.0/command"
-[root@cnb-03 net-next]# echo dump switch > $CMD
-[root@cnb-03 net-next]# dmesg -c
-[   98.440641] i40e 0000:02:00.0: header: 3 reported 3 total
-[   98.446053] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-[   98.452593] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-[   98.458856] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-
-2) Add floating VEB
-[root@cnb-03 net-next]# echo add relay > $CMD
-[root@cnb-03 net-next]# dmesg -c
-[  122.745630] i40e 0000:02:00.0: added relay 162
-[root@cnb-03 net-next]# echo dump switch > $CMD
-[root@cnb-03 net-next]# dmesg -c
-[  136.650049] i40e 0000:02:00.0: header: 4 reported 4 total
-[  136.655466] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-[  136.661994] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-[  136.668264] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-[  136.674787] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-
-3) Add VMDQ2 VSI to this new VEB
-[root@cnb-03 net-next]# dmesg -c
-[  168.351763] i40e 0000:02:00.0: added VSI 394 to relay 162
-[  168.374652] enp2s0f0np0v0: NIC Link is Up, 40 Gbps Full Duplex, Flow Control: None
-[root@cnb-03 net-next]# echo dump switch > $CMD
-[root@cnb-03 net-next]# dmesg -c
-[  195.683204] i40e 0000:02:00.0: header: 5 reported 5 total
-[  195.688611] i40e 0000:02:00.0: type=19 seid=394 uplink=162 downlink=16
-[  195.695143] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-[  195.701410] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-[  195.707935] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-[  195.714201] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-
-4) Try to delete the VEB
-[root@cnb-03 net-next]# echo del relay 162 > $CMD
-[root@cnb-03 net-next]# dmesg -c
-[  239.260901] i40e 0000:02:00.0: deleting relay 162
-[  239.265621] i40e 0000:02:00.0: can't remove VEB 162 with 1 VSIs left
-
-5) Do PF reset and check switch status after rebuild
-[root@cnb-03 net-next]# echo pfr > $CMD
-[root@cnb-03 net-next]# echo dump switch > $CMD
-[root@cnb-03 net-next]# dmesg -c
-...
-[  272.333655] i40e 0000:02:00.0: header: 5 reported 5 total
-[  272.339066] i40e 0000:02:00.0: type=19 seid=394 uplink=162 downlink=16
-[  272.345599] i40e 0000:02:00.0: type=17 seid=162 uplink=0 downlink=0
-[  272.351862] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-[  272.358387] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-[  272.364654] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-
-6) Delete VSI and delete VEB
-[  297.199116] i40e 0000:02:00.0: deleting VSI 394
-[  299.807580] i40e 0000:02:00.0: deleting relay 162
-[  309.767905] i40e 0000:02:00.0: header: 3 reported 3 total
-[  309.773318] i40e 0000:02:00.0: type=19 seid=392 uplink=160 downlink=16
-[  309.779845] i40e 0000:02:00.0: type=17 seid=160 uplink=2 downlink=0
-[  309.786111] i40e 0000:02:00.0: type=19 seid=390 uplink=160 downlink=16
-
-Reviewed-by: Wojciech Drewek <wojciech.drewek@intel.com>
-Signed-off-by: Ivan Vecera <ivecera@redhat.com>
----
- drivers/net/ethernet/intel/i40e/i40e.h        |   1 -
- .../net/ethernet/intel/i40e/i40e_debugfs.c    |   8 +-
- drivers/net/ethernet/intel/i40e/i40e_main.c   | 176 ++++++++----------
- 3 files changed, 76 insertions(+), 109 deletions(-)
-
-diff --git a/drivers/net/ethernet/intel/i40e/i40e.h b/drivers/net/ethernet/intel/i40e/i40e.h
-index ca8997d29c02..0fd38fb4dd1f 100644
---- a/drivers/net/ethernet/intel/i40e/i40e.h
-+++ b/drivers/net/ethernet/intel/i40e/i40e.h
-@@ -783,7 +783,6 @@ struct i40e_new_mac_filter {
- struct i40e_veb {
- 	struct i40e_pf *pf;
- 	u16 idx;
--	u16 veb_idx;		/* index of VEB parent */
- 	u16 seid;
- 	u16 uplink_seid;
- 	u16 stats_idx;		/* index of VEB parent */
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-index 921a97d5479e..f9ba45f596c9 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_debugfs.c
-@@ -683,9 +683,8 @@ static void i40e_dbg_dump_veb_seid(struct i40e_pf *pf, int seid)
- 		return;
- 	}
- 	dev_info(&pf->pdev->dev,
--		 "veb idx=%d,%d stats_ic=%d  seid=%d uplink=%d mode=%s\n",
--		 veb->idx, veb->veb_idx, veb->stats_idx, veb->seid,
--		 veb->uplink_seid,
-+		 "veb idx=%d stats_ic=%d  seid=%d uplink=%d mode=%s\n",
-+		 veb->idx, veb->stats_idx, veb->seid, veb->uplink_seid,
- 		 veb->bridge_mode == BRIDGE_MODE_VEPA ? "VEPA" : "VEB");
- 	i40e_dbg_dump_eth_stats(pf, &veb->stats);
- }
-@@ -848,8 +847,7 @@ static ssize_t i40e_dbg_command_write(struct file *filp,
- 			goto command_write_done;
- 		}
- 
--		veb = i40e_pf_get_veb_by_seid(pf, uplink_seid);
--		if (!veb && uplink_seid != 0 && uplink_seid != pf->mac_seid) {
-+		if (uplink_seid != 0 && uplink_seid != pf->mac_seid) {
- 			dev_info(&pf->pdev->dev,
- 				 "add relay: relay uplink %d not found\n",
- 				 uplink_seid);
-diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
-index 7af5cb056786..7d8aabee3869 100644
---- a/drivers/net/ethernet/intel/i40e/i40e_main.c
-+++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
-@@ -9871,7 +9871,6 @@ static void i40e_vsi_link_event(struct i40e_vsi *vsi, bool link_up)
-  **/
- static void i40e_veb_link_event(struct i40e_veb *veb, bool link_up)
- {
--	struct i40e_veb *veb_it;
- 	struct i40e_vsi *vsi;
- 	struct i40e_pf *pf;
- 	int i;
-@@ -9880,12 +9879,7 @@ static void i40e_veb_link_event(struct i40e_veb *veb, bool link_up)
- 		return;
- 	pf = veb->pf;
- 
--	/* depth first... */
--	i40e_pf_for_each_veb(pf, i, veb_it)
--		if (veb_it->uplink_seid == veb->seid)
--			i40e_veb_link_event(veb_it, link_up);
--
--	/* ... now the local VSIs */
-+	/* Send link event to contained VSIs */
- 	i40e_pf_for_each_vsi(pf, i, vsi)
- 		if (vsi->uplink_seid == veb->seid)
- 			i40e_vsi_link_event(vsi, link_up);
-@@ -10363,56 +10357,57 @@ static void i40e_config_bridge_mode(struct i40e_veb *veb)
- }
- 
- /**
-- * i40e_reconstitute_veb - rebuild the VEB and anything connected to it
-+ * i40e_reconstitute_veb - rebuild the VEB and VSIs connected to it
-  * @veb: pointer to the VEB instance
-  *
-- * This is a recursive function that first builds the attached VSIs then
-- * recurses in to build the next layer of VEB.  We track the connections
-- * through our own index numbers because the seid's from the HW could
-- * change across the reset.
-+ * This is a function that builds the attached VSIs. We track the connections
-+ * through our own index numbers because the seid's from the HW could change
-+ * across the reset.
-  **/
- static int i40e_reconstitute_veb(struct i40e_veb *veb)
- {
- 	struct i40e_vsi *ctl_vsi = NULL;
- 	struct i40e_pf *pf = veb->pf;
--	struct i40e_veb *veb_it;
- 	struct i40e_vsi *vsi;
- 	int v, ret;
- 
--	if (veb->uplink_seid) {
--		/* Look for VSI that owns this VEB, temporarily attached to base VEB */
--		i40e_pf_for_each_vsi(pf, v, vsi)
--			if (vsi->veb_idx == veb->idx &&
--			    vsi->flags & I40E_VSI_FLAG_VEB_OWNER) {
--				ctl_vsi = vsi;
--				break;
--			}
-+	/* As we do not maintain PV (port virtualizer) switch element then
-+	 * there can be only one non-floating VEB that have uplink to MAC SEID
-+	 * and its control VSI is the main one.
-+	 */
-+	if (WARN_ON(veb->uplink_seid && veb->uplink_seid != pf->mac_seid)) {
-+		dev_err(&pf->pdev->dev,
-+			"Invalid uplink SEID for VEB %d\n", veb->idx);
-+		return -ENOENT;
-+	}
- 
--		if (!ctl_vsi) {
--			dev_info(&pf->pdev->dev,
--				 "missing owner VSI for veb_idx %d\n",
--				 veb->idx);
--			ret = -ENOENT;
--			goto end_reconstitute;
-+	if (veb->uplink_seid == pf->mac_seid) {
-+		/* Check that the LAN VSI has VEB owning flag set */
-+		ctl_vsi = pf->vsi[pf->lan_vsi];
-+
-+		if (WARN_ON(ctl_vsi->veb_idx != veb->idx ||
-+			    !(ctl_vsi->flags & I40E_VSI_FLAG_VEB_OWNER))) {
-+			dev_err(&pf->pdev->dev,
-+				"Invalid control VSI for VEB %d\n", veb->idx);
-+			return -ENOENT;
- 		}
--		if (ctl_vsi != pf->vsi[pf->lan_vsi])
--			ctl_vsi->uplink_seid =
--				pf->vsi[pf->lan_vsi]->uplink_seid;
- 
-+		/* Add the control VSI to switch */
- 		ret = i40e_add_vsi(ctl_vsi);
- 		if (ret) {
--			dev_info(&pf->pdev->dev,
--				 "rebuild of veb_idx %d owner VSI failed: %d\n",
--				 veb->idx, ret);
--			goto end_reconstitute;
-+			dev_err(&pf->pdev->dev,
-+				"Rebuild of owner VSI for VEB %d failed: %d\n",
-+				veb->idx, ret);
-+			return ret;
- 		}
-+
- 		i40e_vsi_reset_stats(ctl_vsi);
- 	}
- 
- 	/* create the VEB in the switch and move the VSI onto the VEB */
- 	ret = i40e_add_veb(veb, ctl_vsi);
- 	if (ret)
--		goto end_reconstitute;
-+		return ret;
- 
- 	if (veb->uplink_seid) {
- 		if (test_bit(I40E_FLAG_VEB_MODE_ENA, pf->flags))
-@@ -10434,23 +10429,12 @@ static int i40e_reconstitute_veb(struct i40e_veb *veb)
- 				dev_info(&pf->pdev->dev,
- 					 "rebuild of vsi_idx %d failed: %d\n",
- 					 v, ret);
--				goto end_reconstitute;
-+				return ret;
- 			}
- 			i40e_vsi_reset_stats(vsi);
- 		}
- 	}
- 
--	/* create any VEBs attached to this VEB - RECURSION */
--	i40e_pf_for_each_veb(pf, v, veb_it) {
--		if (veb_it->veb_idx == veb->idx) {
--			veb_it->uplink_seid = veb->seid;
--			ret = i40e_reconstitute_veb(veb_it);
--			if (ret)
--				break;
--		}
--	}
--
--end_reconstitute:
- 	return ret;
- }
- 
-@@ -10990,31 +10974,29 @@ static void i40e_rebuild(struct i40e_pf *pf, bool reinit, bool lock_acquired)
- 	 */
- 	if (vsi->uplink_seid != pf->mac_seid) {
- 		dev_dbg(&pf->pdev->dev, "attempting to rebuild switch\n");
--		/* find the one VEB connected to the MAC, and find orphans */
-+
-+		/* Rebuild VEBs */
- 		i40e_pf_for_each_veb(pf, v, veb) {
--			if (veb->uplink_seid == pf->mac_seid ||
--			    veb->uplink_seid == 0) {
--				ret = i40e_reconstitute_veb(veb);
--				if (!ret)
--					continue;
--
--				/* If Main VEB failed, we're in deep doodoo,
--				 * so give up rebuilding the switch and set up
--				 * for minimal rebuild of PF VSI.
--				 * If orphan failed, we'll report the error
--				 * but try to keep going.
--				 */
--				if (veb->uplink_seid == pf->mac_seid) {
--					dev_info(&pf->pdev->dev,
--						 "rebuild of switch failed: %d, will try to set up simple PF connection\n",
--						 ret);
--					vsi->uplink_seid = pf->mac_seid;
--					break;
--				} else if (veb->uplink_seid == 0) {
--					dev_info(&pf->pdev->dev,
--						 "rebuild of orphan VEB failed: %d\n",
--						 ret);
--				}
-+			ret = i40e_reconstitute_veb(veb);
-+			if (!ret)
-+				continue;
-+
-+			/* If Main VEB failed, we're in deep doodoo,
-+			 * so give up rebuilding the switch and set up
-+			 * for minimal rebuild of PF VSI.
-+			 * If orphan failed, we'll report the error
-+			 * but try to keep going.
-+			 */
-+			if (veb->uplink_seid == pf->mac_seid) {
-+				dev_info(&pf->pdev->dev,
-+					 "rebuild of switch failed: %d, will try to set up simple PF connection\n",
-+					 ret);
-+				vsi->uplink_seid = pf->mac_seid;
-+				break;
-+			} else if (veb->uplink_seid == 0) {
-+				dev_info(&pf->pdev->dev,
-+					 "rebuild of orphan VEB failed: %d\n",
-+					 ret);
- 			}
- 		}
- 	}
-@@ -14138,9 +14120,9 @@ static int i40e_add_vsi(struct i40e_vsi *vsi)
-  **/
- int i40e_vsi_release(struct i40e_vsi *vsi)
- {
--	struct i40e_veb *veb, *veb_it;
- 	struct i40e_mac_filter *f;
- 	struct hlist_node *h;
-+	struct i40e_veb *veb;
- 	struct i40e_pf *pf;
- 	u16 uplink_seid;
- 	int i, n, bkt;
-@@ -14204,27 +14186,28 @@ int i40e_vsi_release(struct i40e_vsi *vsi)
- 
- 	/* If this was the last thing on the VEB, except for the
- 	 * controlling VSI, remove the VEB, which puts the controlling
--	 * VSI onto the next level down in the switch.
-+	 * VSI onto the uplink port.
- 	 *
- 	 * Well, okay, there's one more exception here: don't remove
--	 * the orphan VEBs yet.  We'll wait for an explicit remove request
-+	 * the floating VEBs yet.  We'll wait for an explicit remove request
- 	 * from up the network stack.
- 	 */
--	n = 0;
--	i40e_pf_for_each_vsi(pf, i, vsi)
--		if (vsi->uplink_seid == uplink_seid &&
--		    (vsi->flags & I40E_VSI_FLAG_VEB_OWNER) == 0)
--			n++;      /* count the VSIs */
-+	veb = i40e_pf_get_veb_by_seid(pf, uplink_seid);
-+	if (veb && veb->uplink_seid) {
-+		n = 0;
-+
-+		/* Count non-controlling VSIs present on  the VEB */
-+		i40e_pf_for_each_vsi(pf, i, vsi)
-+			if (vsi->uplink_seid == uplink_seid &&
-+			    (vsi->flags & I40E_VSI_FLAG_VEB_OWNER) == 0)
-+				n++;
- 
--	veb = NULL;
--	i40e_pf_for_each_veb(pf, i, veb_it) {
--		if (veb_it->uplink_seid == uplink_seid)
--			n++;     /* count the VEBs */
--		if (veb_it->seid == uplink_seid)
--			veb = veb_it;
-+		/* If there is no VSI except the control one then release
-+		 * the VEB and put the control VSI onto VEB uplink.
-+		 */
-+		if (!n)
-+			i40e_veb_release(veb);
- 	}
--	if (n == 0 && veb && veb->uplink_seid != 0)
--		i40e_veb_release(veb);
- 
- 	return 0;
- }
-@@ -14738,14 +14721,11 @@ void i40e_veb_release(struct i40e_veb *veb)
- 		return;
- 	}
- 
--	/* For regular VEB move the owner VSI to uplink VEB */
-+	/* For regular VEB move the owner VSI to uplink port */
- 	if (veb->uplink_seid) {
- 		vsi->flags &= ~I40E_VSI_FLAG_VEB_OWNER;
- 		vsi->uplink_seid = veb->uplink_seid;
--		if (veb->uplink_seid == pf->mac_seid)
--			vsi->veb_idx = I40E_NO_VEB;
--		else
--			vsi->veb_idx = veb->veb_idx;
-+		vsi->veb_idx = I40E_NO_VEB;
- 	}
- 
- 	i40e_aq_delete_element(&pf->hw, veb->seid, NULL);
-@@ -14825,8 +14805,8 @@ struct i40e_veb *i40e_veb_setup(struct i40e_pf *pf, u16 flags,
- 				u16 uplink_seid, u16 vsi_seid,
- 				u8 enabled_tc)
- {
--	struct i40e_veb *veb, *uplink_veb = NULL;
- 	struct i40e_vsi *vsi = NULL;
-+	struct i40e_veb *veb;
- 	int veb_idx;
- 	int ret;
- 
-@@ -14848,14 +14828,6 @@ struct i40e_veb *i40e_veb_setup(struct i40e_pf *pf, u16 flags,
- 			return NULL;
- 		}
- 	}
--	if (uplink_seid && uplink_seid != pf->mac_seid) {
--		uplink_veb = i40e_pf_get_veb_by_seid(pf, uplink_seid);
--		if (!uplink_veb) {
--			dev_info(&pf->pdev->dev,
--				 "uplink seid %d not found\n", uplink_seid);
--			return NULL;
--		}
--	}
- 
- 	/* get veb sw struct */
- 	veb_idx = i40e_veb_mem_alloc(pf);
-@@ -14864,7 +14836,6 @@ struct i40e_veb *i40e_veb_setup(struct i40e_pf *pf, u16 flags,
- 	veb = pf->veb[veb_idx];
- 	veb->flags = flags;
- 	veb->uplink_seid = uplink_seid;
--	veb->veb_idx = (uplink_veb ? uplink_veb->idx : I40E_NO_VEB);
- 	veb->enabled_tc = (enabled_tc ? enabled_tc : 0x1);
- 
- 	/* create the VEB in the switch */
-@@ -14935,7 +14906,6 @@ static void i40e_setup_pf_switch_element(struct i40e_pf *pf,
- 		pf->veb[pf->lan_veb]->seid = seid;
- 		pf->veb[pf->lan_veb]->uplink_seid = pf->mac_seid;
- 		pf->veb[pf->lan_veb]->pf = pf;
--		pf->veb[pf->lan_veb]->veb_idx = I40E_NO_VEB;
- 		break;
- 	case I40E_SWITCH_ELEMENT_TYPE_VSI:
- 		if (num_reported != 1)
 -- 
-2.41.0
-
+With best wishes
+Dmitry
