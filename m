@@ -2,149 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0724A7EE544
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:36:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D0C7EE548
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:37:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231238AbjKPQgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:36:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56192 "EHLO
+        id S1344652AbjKPQhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42496 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230235AbjKPQgJ (ORCPT
+        with ESMTP id S230235AbjKPQhV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:36:09 -0500
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EB1AD;
-        Thu, 16 Nov 2023 08:36:06 -0800 (PST)
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-1efabc436e4so502313fac.1;
-        Thu, 16 Nov 2023 08:36:06 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700152566; x=1700757366;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=a5Wjrv89VUF6VK+5eLlsl+F92OjgJxoSWW7Pt0LnUc0=;
-        b=dO8sBO59oReb/MZJL5O/aEY2LxHyoLFIddVXYHfRZA+PxA1FB+djQ630frEkwGFjTW
-         pK/Bi+ga92m18OyH3GSww4uSe8j50sIpY2iNwfeD32V1IZtxtmU0M/sPFqzanoYLOnjx
-         2JW06Jy6OoACmW3B6yYOdu0NfYZTT1B2g+ux5R2nbPRIsF73FqaIVrfzRc9yk74053ei
-         qawk+G8CLI+Z1lElIM65uY++rqs8I74RsVKqYr+bUzuFu8xRwu68ZG37R52J/CHjDJtc
-         FRRcEpiipRC3Kd27ox7MqyvqS0QAzyf5uWk3CPvTeXgWEf3+YOBLOKBzbKs/qrH+sYll
-         KHrA==
-X-Gm-Message-State: AOJu0Yyf6CiIAe3bGj+WZYjI3JyYVYt4dqJIeRAKBHlO+hkVhX0xcN+N
-        SOH4qt8l2ba1mdUEgl4png==
-X-Google-Smtp-Source: AGHT+IF3gy4IUmEGMCjjYmdSclHOPslU2XoqVhRBKPtIzVctlJ4JUPqPVYgJKXB/qDqsNymCUQ1jaQ==
-X-Received: by 2002:a05:6871:a302:b0:1f4:a122:6b02 with SMTP id vx2-20020a056871a30200b001f4a1226b02mr17782043oab.45.1700152563863;
-        Thu, 16 Nov 2023 08:36:03 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id ec21-20020a0568708c1500b001e5ad4b2f65sm2216550oab.19.2023.11.16.08.36.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 08:36:03 -0800 (PST)
-Received: (nullmailer pid 2446073 invoked by uid 1000);
-        Thu, 16 Nov 2023 16:36:02 -0000
-Date:   Thu, 16 Nov 2023 10:36:02 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Jisheng Zhang <jszhang@kernel.org>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chao Wei <chao.wei@sophgo.com>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH 1/2] riscv: dts: cv1800b: add pinctrl node for cv1800b
-Message-ID: <20231116163602.GA2440245-robh@kernel.org>
-References: <20231113005702.2467-1-jszhang@kernel.org>
- <20231113005702.2467-2-jszhang@kernel.org>
+        Thu, 16 Nov 2023 11:37:21 -0500
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2123.outbound.protection.outlook.com [40.107.21.123])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F7B0189;
+        Thu, 16 Nov 2023 08:37:17 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PkFyMlt8Q7s/CX22FHR/NuygD9qmPtor0gmWmHkFYzK5ylr7K2ypkvxP9lCzyyR/1a8Da7CsQeA7r4qeK1Qy9p8DDAiuvbl3nWccoarN9/bOym6OAur+ghlP/OnSakq0+VZZQTshNqBzU3j283xcJwvXrnPUwRgFS/mtsm7B0xRZ+T72BzPttuTTbCUhv8hd8hLdZeTZZlnRY6iZdcOXZ7qDS8xtsA6OM8Cvv4KXwYJjmK2JbgaFa0AmMGkCAEXpbbNRSAi66c8QZK7lUJkilx2ndnUelEZJtESwPH0HJhDCktt5Bod6nIbqe7XkwPZNEnO2GQIC8GtvMzx2hqtm3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TYlxoc5sjwTw/qpNqUe3KFFnEMekPKC/VGFLIhaaF9w=;
+ b=NW/4NL+y+hYRLRNmZ8JKyvdUq5cMjnIkUYpToBnQ9lNyOeXNS4vZ3c2oytsr/qjFGerBxXfHAEumw9ulEL1bozyGFFu7NPN+l77UUeYVlUywUJB4GkS1o7zgjsBfBiBu6l37sdDLJvBIgpHiRXV2++d62yxtpnkXBv717wuGXg/Yp1w//1wCe0dQcWDkvjnB3HCv11saTfqehTjlObxX2YnZV7DiTPjpcJdgnraCtBKFP8AYud9PzAU/m7/0lSanZN/rB9LiPahGR55744UTYT/g288HNF45qVIw/CIzsr2OpThZ4+qVfgqlC3ldNg1orU0EWzH99xvo1tunhCDNCA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TYlxoc5sjwTw/qpNqUe3KFFnEMekPKC/VGFLIhaaF9w=;
+ b=VleW4NZrvsepLZKc/jLfiuHG877xFGDtuEXf1llCjpo8excO5vs1DonXUA0jWLV5EyP8bKTSZkXjoGTaeD3IEB+G6C+nor9j71ngFEMPoPrH9B+skLu9XdtbJI7+28Ino1BvTDNty7EWac+0gjgAsC25/toQnesoJi1T9m0UlEWEO1I2mjjLDe0y8LKFKqx8tEXbTxn/nHESJwr/RH6sLJhhquLYcyQ6rKuKNeuXLqO01Sc5GB1H37Wu3yqX/vANcvwerT+Vx+wVMIrxdYF3JogHHmwH4RblvGsNJ4colki1GyYhy+51ztImXNx73GCIMNQ52qloj7QiWP2TRXmkrA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=virtuozzo.com;
+Received: from DBAPR08MB5830.eurprd08.prod.outlook.com (2603:10a6:10:1a7::12)
+ by DU5PR08MB10465.eurprd08.prod.outlook.com (2603:10a6:10:518::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
+ 2023 16:37:14 +0000
+Received: from DBAPR08MB5830.eurprd08.prod.outlook.com
+ ([fe80::d736:69e1:b7da:62e6]) by DBAPR08MB5830.eurprd08.prod.outlook.com
+ ([fe80::d736:69e1:b7da:62e6%5]) with mapi id 15.20.7002.018; Thu, 16 Nov 2023
+ 16:37:14 +0000
+Message-ID: <c10bd6c4-9701-4888-8277-851c5ac76beb@virtuozzo.com>
+Date:   Thu, 16 Nov 2023 17:37:11 +0100
+User-Agent: Mozilla Thunderbird
+From:   Konstantin Khorenko <khorenko@virtuozzo.com>
+Subject: Re: [PATCH 00/10] KVM: x86/pmu: Optimize triggering of emulated
+ events
+To:     Sean Christopherson <seanjc@google.com>,
+        Dongli Zhang <dongli.zhang@oracle.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jim Mattson <jmattson@google.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+References: <20231110022857.1273836-1-seanjc@google.com>
+ <6e101707-f652-73f8-5052-b4c6c351e308@oracle.com>
+ <ZU5Euc29B_UjiUot@google.com>
+Content-Language: en-US
+In-Reply-To: <ZU5Euc29B_UjiUot@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: VI1P191CA0002.EURP191.PROD.OUTLOOK.COM
+ (2603:10a6:800:1ba::20) To DBAPR08MB5830.eurprd08.prod.outlook.com
+ (2603:10a6:10:1a7::12)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231113005702.2467-2-jszhang@kernel.org>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DBAPR08MB5830:EE_|DU5PR08MB10465:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb53cbe2-59c3-4cc1-0a0a-08dbe6c249ec
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 7qdi29K4dxuGcfgFYls0BGa7VerE1Q8dBIqNjpg6pBzmLv8yP9hj2fvtj3sHdukbVk+PQ0PDt1BUMPEJk+ZfyqVz7PabLgpHaaZNl/+ciAYC6ZveIRwecw4EtAbayYcnH9zVjDkN1Zp3QIn+U+gjPc+O+bErsnKVvQKmNNMXFd56oQnjTLCNYwiKqQKhZxf7c+xWJbmYwepzQ8dRtegB2TwqvT5Ud5p7cmSeaoJb8A+rooGIOgaNpPFt6Rav2KagXchzN8QXToO3x7e1af9wfWnWnvEow8ECWsNYXSWqnXxfumc0c+tr0ST3A5XB3drHyRfDmPtDJywHwYidwWwhi4IEetrf6bmMu/Vll80L9wgDJicYFhcWmy5l3PRDg2hNx4hhGTzXetajy29EutoRKLHiKFRRN4UmeWorQ6V5ei4osH4DXEcbk3BrNQnHVo8y1dH4PureYoVC8Q5QXvqWTj4ns93676AJ9RNBR3ZapIwHpsXD9aCQSRey/xqcE5vvexoe3++sX3lbh+62+PUs6cfIJQ/cD+GmfNN+LCrRF+pX/7k+lLECf7x8hcKljpC8YuPyCnd4+Bvhnkv5WudZSq+DLKiVyhMSHCFaMLzZeGc2IS/8/5W14IqH+YGJEJXX/VG/ltFJwTJIOFawSvv0WwRDwpoHx3cUBKDWe7mpq7Gae95eZ689VJBQAgKRtP4u
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DBAPR08MB5830.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(376002)(39850400004)(396003)(366004)(346002)(230922051799003)(451199024)(186009)(64100799003)(1800799009)(66946007)(66476007)(110136005)(66556008)(41300700001)(54906003)(316002)(86362001)(5660300002)(31696002)(2906002)(8676002)(4326008)(8936002)(83380400001)(38100700002)(31686004)(6666004)(6486002)(966005)(478600001)(36756003)(26005)(2616005)(6506007)(53546011)(6512007)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?NzJSalJtajU1bDZFQXEyYWh2VFd4SWFldnZSeE5pNGI0UU1US0trVlVJS21W?=
+ =?utf-8?B?U3Y0OGp1ZlplTDNTWTBCTVhIQmg3cmFVM0tTdXdaYzByeXZWUENDNFNsMm85?=
+ =?utf-8?B?cGY2NDlPdlBUSTJmWFFRWDhwZEE1NTZybk1oMEM2cjZNb21CY2xYUjUyZ1VD?=
+ =?utf-8?B?WUlCOUowbEhzcisvdkhXVG55aG9rNnJGN1B2RXZVQ2xSYjNTZFNPc3hEVDZl?=
+ =?utf-8?B?RlkwcnBZOG95U3h1UFg4VG1CSEpnTlNkYkZORmczRmdhTmtxd0ozWU80WmxH?=
+ =?utf-8?B?S3ROQlRIQ1J3S1pSU0piV3dxakxDUlBLMVh5dExnbS9qR1lRdWFoeXFZdlJC?=
+ =?utf-8?B?NnZmYm16dGlveEpRSjU5Y0lDd0htRU05RjB2UlBlRmNQaWZZRTgrSjJJRmE1?=
+ =?utf-8?B?cDI2VGRZWTV0cHQxeDEzY3J3bko5UmJoelBmb1krbXVWUzJhWUFSYTBWc1JF?=
+ =?utf-8?B?QW4vYzk2MDd0WWQ3ckdQQ2pRUnRvNlRZenVFVlhQQkt0cjVCdTU3bExKUUd1?=
+ =?utf-8?B?SjlwYlVUYm81LzYrL1l5ZmVrUGd4NnVNMG1aOXpsYzFENmh4VE9XMjBhZDJY?=
+ =?utf-8?B?WlZZNlJ3eUt0UTNUMVZoQVdJVFUzVkZ6d1VaVGVuQk9YRVlUVjl6MWVtTS9H?=
+ =?utf-8?B?aWViaW9XSW10d2J2UkVEb0IvMGE5QWdMYTJ6TXZaeEozL2puZ2VBMmhlVVQv?=
+ =?utf-8?B?Y29Xd0VhdG95Z2I4T2JVWjZkYkxpbVBxM3hBYXNyQUlpWlNqMnhzSCtrV2NK?=
+ =?utf-8?B?OW1rYXduTmF4VFF3Tlh4c1BCZkczWWpUZ20yVFpqNk5iYnNMYnZjeHV4RUVX?=
+ =?utf-8?B?WUJwTDB0OVZZKzlxVUcyZFM0SGxUNW9SR3ZFbGozSWwzSVIySElieWRtM2RQ?=
+ =?utf-8?B?QXpyTlFYelVYYlRMd0hkM2VKb0g4MTlSbFN1WnVEVGEyM2lJeUtqN3FaalZN?=
+ =?utf-8?B?UzlUM3ZQL3c2YWtZRjlzY1Y3Nnl3RGRsZEg4NFFIUUZOM1pURWNDZ0Npcy9D?=
+ =?utf-8?B?WGtlZGs3d0ozbzI1MUNtaHROYU1VS2NZdHFvVGJwdjVLbUl0TnNwczFrRUJU?=
+ =?utf-8?B?aVkxQ2pzL05HOVNwcGhYRDRodElacHArcW5MdHFPWHBFelJhcTREeVFoRlRS?=
+ =?utf-8?B?U3RDSnFDOEh4TmVYQThJT1VkbFVvYUZ6RERrNklLWGJwWEx0QlNVenU1NGht?=
+ =?utf-8?B?RU53d0cwWmFTZ0tzZmFuUGxGTEtGNkcwQUp2VEg3aDFVWlVVUTB3SGNMd0M4?=
+ =?utf-8?B?cTkxVUZXQ0hXUng5bE5QRXNjQ0JaN1hFTTB0VWhLWmlySlUranBBdTdnU0tv?=
+ =?utf-8?B?cjJFS244Qm1wS3M0eWtBQkFnclFiVDhsbWdEWW1XeWNlQVRKS1VQQ04zRUVu?=
+ =?utf-8?B?aG40dXBocTRCR3AvN2pSLytWWVBYRkxjRlkyUUd0OGRrL0oyYWpBeFdkYmJO?=
+ =?utf-8?B?cFR6eFpvTTdsclFZNXduUHBYWFN4Ny9DdlZ0VktLV2NsM3dNNUdVMy8vaVZj?=
+ =?utf-8?B?ay80MWpLR3RxaFNQd2czQUE0d201UHJzdVBjSjVtVHY5dVNEZS9UdFo1Mk9s?=
+ =?utf-8?B?TnR6am8xN3NxYnVtOWl1bG9rN2tCZ1N1bkVLWm9uelBBbXVzN0dsZFVEcGtW?=
+ =?utf-8?B?NkhTMzE3eUk4ZWxZRnY2Nm1razZSaW1nandvdzVDL01WSkxiQ3ljN2pwZEdY?=
+ =?utf-8?B?NTBvYW13UkY1eVVyRXRPTmNDblRNa3NTdFlsSDluWVJzTDBocXNWU2V1Qkl5?=
+ =?utf-8?B?ZjRMMk95VGp4dXNBMVhvZmNjQ09iQWNlcjVIYlB4NzU1VkRUVGtGQktNUnJ0?=
+ =?utf-8?B?aWlwRFNvbTZMWWh3NVZwNnFCT2w4SDJrOVlUVTVzUDdtOHlQYzNVVGtQbElN?=
+ =?utf-8?B?eGhSQXdlZTk3RUVFZFJvMFhHZTQ1OXJxZDVYN0FwVUR1NHFMbExjREttdXh3?=
+ =?utf-8?B?cnlVMDBLcWtYVkhtV21MdC9OampOWXAzODVvMlR2Q3Z2MnBZKzBLUEJWWGZ3?=
+ =?utf-8?B?VU81UENyOFlydTRNQTVOYVlDcmYxalVRSFdlSGdMckdzelVyNjh0eDJMWUhz?=
+ =?utf-8?B?NkVXeTFBdmtaMXRkQUJuelNuWWh0RHhmY0FtcDZrcy9xemxTZVFiVExXeGE2?=
+ =?utf-8?B?aGR3M3JyRnFtWHAvU2RtMlF3Zisxano3czg1NzIyZnM4bkt1OE8zWmwxbnhs?=
+ =?utf-8?B?ekE9PQ==?=
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb53cbe2-59c3-4cc1-0a0a-08dbe6c249ec
+X-MS-Exchange-CrossTenant-AuthSource: DBAPR08MB5830.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 16:37:14.3834
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8tmTDGT873eLJ4CFAYm56AoLq1/Xx6TJEqkqh6l3L3F/NGn6YDIO+ft9ugoMoLMg0zlarleZ7OS1o2v8gK0fEg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU5PR08MB10465
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 08:57:01AM +0800, Jisheng Zhang wrote:
-> Add the reset device tree node to cv1800b SoC reusing the
-> pinctrl-single driver.
-> 
-> Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
-> ---
->  arch/riscv/boot/dts/sophgo/cv-pinctrl.h | 19 +++++++++++++++++++
->  arch/riscv/boot/dts/sophgo/cv1800b.dtsi | 10 ++++++++++
->  2 files changed, 29 insertions(+)
->  create mode 100644 arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> 
-> diff --git a/arch/riscv/boot/dts/sophgo/cv-pinctrl.h b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> new file mode 100644
-> index 000000000000..ed78b6fb3142
-> --- /dev/null
-> +++ b/arch/riscv/boot/dts/sophgo/cv-pinctrl.h
-> @@ -0,0 +1,19 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
+On 10.11.2023 15:56, Sean Christopherson wrote:
+> On Thu, Nov 09, 2023, Dongli Zhang wrote:
+>> Hi Sean,
+>>
+>> On 11/9/23 18:28, Sean Christopherson wrote:
+>>> base-commit: ef1883475d4a24d8eaebb84175ed46206a688103
+>> May I have a silly question?
+>>
+>> May I have the tree that the commit is the base? I do not find it in kvm-x86.
+>>
+>> https://github.com/kvm-x86/linux/commit/ef1883475d4a24d8eaebb84175ed46206a688103
+> It's kvm-x86/next (which I failed to explicitly call out), plus two PMU series
+> as mentioned in the cover letter.
+>
+>    https://lore.kernel.org/all/20231103230541.352265-1-seanjc@google.com
+>    https://lore.kernel.org/all/20231110021306.1269082-1-seanjc@google.com
 
-Please match the licensing of the file(s) that include this. Not that 
-there really anything 
+Hi Sean,
 
-> +/*
-> + * This header provides constants for pinctrl bindings for Sophgo CV* SoC.
-> + *
-> + * Copyright (C) 2023 Jisheng Zhang <jszhang@kernel.org>
-> + */
-> +#ifndef _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> +#define _DTS_RISCV_SOPHGO_CV_PINCTRL_H
-> +
-> +#define MUX_M0		0
-> +#define MUX_M1		1
-> +#define MUX_M2		2
-> +#define MUX_M3		3
-> +#define MUX_M4		4
-> +#define MUX_M5		5
-> +#define MUX_M6		6
-> +#define MUX_M7		7
+i have tested my testcase on your patchset, results look impressive, thank you for your work!
+Note, for AMD node PMU totally disabled case gave a bit worse results on kvm-next kernel vs stock 
+latest mainstream.
 
-I find defines with the number in the name to be somewhat pointless.
+The difference is tiny though.
 
-> +
-> +#endif
-> diff --git a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> index e04df04a91c0..7a44d8e8672b 100644
-> --- a/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> +++ b/arch/riscv/boot/dts/sophgo/cv1800b.dtsi
-> @@ -6,6 +6,8 @@
->  #include <dt-bindings/interrupt-controller/irq.h>
->  #include <dt-bindings/reset/sophgo,cv1800b-reset.h>
->  
-> +#include "cv-pinctrl.h"
-> +
->  / {
->  	compatible = "sophgo,cv1800b";
->  	#address-cells = <1>;
-> @@ -55,6 +57,14 @@ soc {
->  		dma-noncoherent;
->  		ranges;
->  
-> +		pinctrl0: pinctrl@3001000 {
-> +			compatible = "pinctrl-single";
-> +			reg = <0x3001000 0x130>;
-> +			#pinctrl-cells = <1>;
-> +			pinctrl-single,register-width = <32>;
-> +			pinctrl-single,function-mask = <0x00000007>;
-> +		};
+*AMD node*: CPU: AMD Zen 3 (three!): AMD EPYC 7443P 24-Core Processor
+-----------------------------------------------------------------------------------------
+| Kernel							| CPUID rate		|
+-----------------------------------------------------------------------------------------
+| stock ms 6.6.0+ (commit 305230142ae0) 			| 1360250		|
+| stock ms 6.6.0+ + kvm.enable_pmu=0				| 1542894 (+13.4%)	|
+| kvm-next ms 6.6.0+ + patches from Sean + kvm.enable_pmu=1	| 1498864		|
+| kvm-next ms 6.6.0+ + patches from Sean + kvm.enable_pmu=0	| 1526396 (+1.84%)	|
+-----------------------------------------------------------------------------------------
 
-Even more pointless is the defines are not even used.
 
-> +
->  		rst: reset-controller@3003000 {
->  			compatible = "sophgo,cv1800b-reset";
->  			reg = <0x03003000 0x1000>;
-> -- 
-> 2.42.0
-> 
+*Intel node*: CPU: Intel(R) Xeon(R) E-2136 CPU @ 3.30GHz
+-----------------------------------------------------------------------------------------
+| Kernel							| CPUID rate		|
+-----------------------------------------------------------------------------------------
+| stock ms 6.6.0+						| 1431608		|
+| stock ms 6.6.0+ + kvm.enable_pmu=0				| 1553839 (+8.5%)	|
+| kvm-next ms 6.6.0+ + patches from Sean + kvm.enable_pmu=1	| 1559365		|
+| kvm-next ms 6.6.0+ + patches from Sean + kvm.enable_pmu=0	| 1582281 (+1.5%)	|
+-----------------------------------------------------------------------------------------
+
+
+Note: in order to disable PMU completely i used "kvm" module "enable_pmu=0" option
+(not used KVM_PMU_CAP_DISABLEthis time).
+
+Hope that helps.
+
+--
+Best regards,
+
+Konstantin Khorenko,
+Virtuozzo Linux Kernel Team
+
