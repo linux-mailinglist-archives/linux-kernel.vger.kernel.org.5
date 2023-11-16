@@ -2,179 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AF8E67ED915
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:56:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DBE7ED923
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:11:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344476AbjKPB4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:56:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38758 "EHLO
+        id S1344286AbjKPCLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPB4b (ORCPT
+        with ESMTP id S229692AbjKPCLD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:56:31 -0500
-Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 507E1182
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:56:25 -0800 (PST)
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20231116015620epoutp02b397f8e773ba4b3ce499b99a53fe53c8~X974zDYZ02159021590epoutp021
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:56:20 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20231116015620epoutp02b397f8e773ba4b3ce499b99a53fe53c8~X974zDYZ02159021590epoutp021
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700099780;
-        bh=NjHAXY+npESZSHKM54SAmh+Z2EcBgtlB9s/fZyVIdII=;
-        h=From:To:In-Reply-To:Subject:Date:References:From;
-        b=paKoW9xyuNUqO97lBxPvDzCOda3pO3geruL3C80IqHX+Y1fwfZLrAcemi/BLzvKSL
-         MNhaax0entOPJBWQkBRW8/YMFJrP3FGlb+vftmDJYWGuoIurrtmQFRAo9mFLEmL32e
-         cY2GpzasjnGGI4b7WhM9MFrkfZ9yn5qIGuXWxego=
-Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
-        20231116015620epcas2p23b7fe74778dfc2a1d0316aa87f235295~X974WDLbn2813728137epcas2p2D;
-        Thu, 16 Nov 2023 01:56:20 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.36.91]) by
-        epsnrtp4.localdomain (Postfix) with ESMTP id 4SW36W2Zxgz4x9QH; Thu, 16 Nov
-        2023 01:56:19 +0000 (GMT)
-Received: from epcas2p2.samsung.com ( [182.195.41.54]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        77.D9.10022.3C675556; Thu, 16 Nov 2023 10:56:19 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
-        20231116015618epcas2p2a80374aad80c6bbb7f3328d053fc457e~X973KnIRg3014830148epcas2p2h;
-        Thu, 16 Nov 2023 01:56:18 +0000 (GMT)
-Received: from epsmgmc1p1new.samsung.com (unknown [182.195.42.40]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231116015618epsmtrp26518cede86e1297626df595b3f9546e0~X973IgGM31715617156epsmtrp2M;
-        Thu, 16 Nov 2023 01:56:18 +0000 (GMT)
-X-AuditID: b6c32a47-bfdfa70000002726-f0-655576c38a48
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgmc1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        4A.BC.07368.2C675556; Thu, 16 Nov 2023 10:56:18 +0900 (KST)
-Received: from KORCO118546 (unknown [10.229.38.108]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20231116015618epsmtip2b91d84e4bba45f4a987e7cda3c11a4c6~X9727xHuG3047830478epsmtip2W;
-        Thu, 16 Nov 2023 01:56:18 +0000 (GMT)
-From:   "hoyoung seo" <hy50.seo@samsung.com>
-To:     "'Bart Van Assche'" <bvanassche@acm.org>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <beanhuo@micron.com>, <kwangwon.min@samsung.com>,
-        <kwmad.kim@samsung.com>, <sh425.lee@samsung.com>,
-        <sc.suh@samsung.com>, <quic_nguyenb@quicinc.com>,
-        <cpgs@samsung.com>, <grant.jung@samsung.com>,
-        <junwoo80.lee@samsung.com>
-In-Reply-To: <e9745815-afc0-46c6-828b-c969a2d352eb@acm.org>
-Subject: RE: [PATCH v2] scsi: ufs: core: fix racing issue during
- ufshcd_mcq_abort
-Date:   Thu, 16 Nov 2023 10:56:18 +0900
-Message-ID: <00a901da1830$16ff2e10$44fd8a30$@samsung.com>
+        Wed, 15 Nov 2023 21:11:03 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 757D1187
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700100659; x=1731636659;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=CWO4AeBjwZNTRB7MBw429hImhHBEO6jTqwx+UsfJImE=;
+  b=UWAwknFGTFRAy2gwvDXZ0yqtbPNrcE/6Keti1WNrTKzWGWpDc3MXjlgi
+   NMRzBtn8EVSBEvL2TpomeNqKu0UIF/HC65CAPE74MGCV8tD7d85FgwWMR
+   cVQrJSXwLGfx5uSN4/sbVcC9Qr1T9L6Ghvfj4GsLaoxd5iAge5y0INZdf
+   H2jybMqSLUjsEzWnGiDx2T5ttrHWmwFQ5c0GSmAY2DDnq7xlgQpSQkQqR
+   dmUom36TWPos/+HmZXvT7q8hcYheBD9Rv6slJQR6UiiDrDQXBqqTQnRj3
+   8kfZbJDFVcTb7YcDF46xEMJ+JuEgEMAPqVVmekWvgL8gK3e8zPfdATRkN
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="390787958"
+X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
+   d="scan'208";a="390787958"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 18:10:59 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="768776043"
+X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
+   d="scan'208";a="768776043"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 15 Nov 2023 18:10:57 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3Rq1-00017S-1T;
+        Thu, 16 Nov 2023 02:10:43 +0000
+Date:   Thu, 16 Nov 2023 10:08:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Marco Elver <elver@google.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Andrey Konovalov <andreyknvl@gmail.com>
+Subject: kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 2
+ (different address spaces)
+Message-ID: <202311161044.YTQKDdiw-lkp@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQLYbO3h/Z18bVSq8KBPFnY/ewa5qgDl2w4PAbQq5PoB4bZfOgGN9AJOrk8xZ4A=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrPJsWRmVeSWpSXmKPExsWy7bCmme7hstBUg1Oz+C0ezNvGZvHy51U2
-        i4MPO1kspn34yWzx8pCmxa+/69ktFt3YxmSx628zk8XWGztZLG5uOcpicXnXHDaL7us72CyW
-        H//HZDH1xXF2i667Nxgtlv57y+Ig4HH5irfHhEUHGD2+r+9g8/j49BaLx8Q9dR59W1Yxenze
-        JOfRfqCbKYAjKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJxSdA
-        1y0zB+h+JYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BeYFecWJucWleul5eaomV
-        oYGBkSlQYUJ2xrdd31gL7vBU/JlxjbmB8RZXFyMnh4SAicT9zdeZuhi5OIQEdjBKNG04xArh
-        fGKUmD13GQuE841RYubyBqAyDrCWqyd9IeJ7GSX6jt1mhnBeMkp8/3uXBWQum4CWRP/bLWwg
-        CRGBXcwSG+8tB0twClhLPLs4nQnEFhYIlriz5QwbiM0ioCpxblYPWA2vgKXE3eMXGSFsQYmT
-        M5+AxZkFtCWWLXzNDHG4gsTPp8tYQWwRAT+J79MOM0HUiEjM7mwDu0hC4AmHxL3Jx6EaXCTe
-        9fxmhbCFJV4d38IOYUtJfH63lw3CzpZo3LMWKl4hMXfzZEYI21hi1rN2RpD3mQU0Jdbv0oeE
-        hLLEkVtQp/FJdBz+C9XJK9Gw8Tc7RAmvREebEERYSeLM3NtQYQmJg7NzJjAqzULy4ywkP85C
-        8ssshLULGFlWMYqlFhTnpqcWGxUYw+M6OT93EyM4ZWu572Cc8faD3iFGJg7GQ4wSHMxKIrzm
-        ciGpQrwpiZVVqUX58UWlOanFhxhNgaE+kVlKNDkfmDXySuINTSwNTMzMDM2NTA3MlcR577XO
-        TRESSE8sSc1OTS1ILYLpY+LglGpg0l+Q/+MEm8GO7yukmxgWTeNX7Vs609aIL2nOr2QHZlOf
-        QJnKC7Lq2QoXl5XURns4qnXP4GDmD2ZQ3DN1S/ZGlZM9q+aUhBcsCHDkf7jqFJfDyvWBDybE
-        nZc3s9/3akb81V1MevfS5DLX8BgZSzVezMuItGrzjgqLZP3GxPVYXG5BGO+vX/xOj5lTd4ne
-        OHKYw3+i6xXzfoblJ9SF+mrKQ15OKHm09EP6M94Ni8sfrn/utDNhif9e07cl/HMOt0W6t6oF
-        5EcVGx9cW+aVcjVyt82KdRvvVr0+3bbwws/rMa+neq/zf/rcWG5dWdktUVdZZdelSUvnPFid
-        WM7G6LbCQWT27A1xOud8eYLbPpopsRRnJBpqMRcVJwIAzSEZjWIEAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrIIsWRmVeSWpSXmKPExsWy7bCSvO6hstBUgzlX9SwezNvGZvHy51U2
-        i4MPO1kspn34yWzx8pCmxa+/69ktFt3YxmSx628zk8XWGztZLG5uOcpicXnXHDaL7us72CyW
-        H//HZDH1xXF2i667Nxgtlv57y+Ig4HH5irfHhEUHGD2+r+9g8/j49BaLx8Q9dR59W1Yxenze
-        JOfRfqCbKYAjissmJTUnsyy1SN8ugStja+NV9oItPBXLTk9mbGDcxNXFyMEhIWAicfWkbxcj
-        F4eQwG5GiSPnN7F3MXICxSUk/i9uYoKwhSXutxxhhSh6zijx7lYDI0iCTUBLov/tFjaQhIjA
-        OWaJkxtfsEBUTWeS2HXzETNIFaeAtcSzi9PBRgkLBEqsOTMdrJtFQFXi3KweFhCbV8BS4u7x
-        i4wQtqDEyZlPwOLMAtoST28+hbOXLXzNDHGSgsTPp8tYQWwRAT+J79MOM0HUiEjM7mxjnsAo
-        NAvJqFlIRs1CMmoWkpYFjCyrGCVTC4pz03OTDQsM81LL9YoTc4tL89L1kvNzNzGCY1VLYwfj
-        vfn/9A4xMnEwHmKU4GBWEuE1lwtJFeJNSaysSi3Kjy8qzUktPsQozcGiJM5rOGN2ipBAemJJ
-        anZqakFqEUyWiYNTqoGpqDXrnVz53PezTn2VvyCrI9tlKx92SSHwSPmXsOWHG2dcbo3oSlv3
-        ouXiccXlE5Z48C5SZFXoaJvrm/3q1+ZNTLq3T/ucvbfG5Fn1p1+zXM7MblkWUaWiaft/7i/5
-        Q9wzLlicu7rr2vdcGb3uHOPUI1tZ3Necn1DQW/PDkvl4opt08oy5CzMDD9+wnSC8ROPq4jYX
-        2X4P/38nr0Zq72Nyikx6fPTYx8NCGhFnXymnvt9+v+f0scLijutHrnyrf/klpEdsX+1Tn+iQ
-        H5MO72OcPPtsp+BLUeF0RWGdS1YLFfW57l25WjvhR+/kVTLxM+s1Wmf8r/nCE/hA6+qaB3xz
-        /zK4n340ddsuZWOGCf/OOSuxFGckGmoxFxUnAgBV9k9XRAMAAA==
-X-CMS-MailID: 20231116015618epcas2p2a80374aad80c6bbb7f3328d053fc457e
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-CPGSPASS: Y
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20231114043431epcas2p4a8d452e18fff192c03fb6066e81514ea
-References: <CGME20231114043431epcas2p4a8d452e18fff192c03fb6066e81514ea@epcas2p4.samsung.com>
-        <20231114043704.52525-1-hy50.seo@samsung.com>
-        <dca06fd3-d4ad-4e41-a0a3-61d52c85ef9c@acm.org>
-        <000001da1784$5c2520f0$146f62d0$@samsung.com>
-        <e9745815-afc0-46c6-828b-c969a2d352eb@acm.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        PDS_BAD_THREAD_QP_64,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> -----Original Message-----
-> From: Bart Van Assche <bvanassche=40acm.org>
-> Sent: Thursday, November 16, 2023 3:22 AM
-> To: hoyoung seo <hy50.seo=40samsung.com>; linux-scsi=40vger.kernel.org; l=
-inux-
-> kernel=40vger.kernel.org; alim.akhtar=40samsung.com; avri.altman=40wdc.co=
-m;
-> jejb=40linux.ibm.com; martin.petersen=40oracle.com; beanhuo=40micron.com;
-> kwangwon.min=40samsung.com; kwmad.kim=40samsung.com; sh425.lee=40samsung.=
-com;
-> sc.suh=40samsung.com; quic_nguyenb=40quicinc.com; cpgs=40samsung.com;
-> grant.jung=40samsung.com; junwoo80.lee=40samsung.com
-> Subject: Re: =5BPATCH v2=5D scsi: ufs: core: fix racing issue during
-> ufshcd_mcq_abort
->=20
-> On 11/14/23 21:27, hoyoung seo wrote:
-> > The test_bit() function just check SCMD_STATE_COMPLETE bit state.
-> > Do not set SCMD_STATE_COMPLETE field.
-> > This function is also used in ufshcd_mcq_compl_pending_transfer()
-> > to check the status of cmd.
->=20
-> Right, I misread your patch. Can you please take a look at the following
-> patch and verify whether it perhaps addresses the same issue that you wan=
-t
-> to address: https://lore.kernel.org/linux-scsi/20231115131024.15829-1-
-> peter.wang=40mediatek.com/
->=20
-> Thanks,
->=20
-> Bart.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+commit: 4ec4190be4cf9cc3e0ccaf5f155a5f9066d18950 kasan, x86: don't rename memintrinsics in uninstrumented files
+date:   9 months ago
+config: x86_64-randconfig-a012-20230530 (https://download.01.org/0day-ci/archive/20231116/202311161044.YTQKDdiw-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311161044.YTQKDdiw-lkp@intel.com/reproduce)
 
-Hi, Bart.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311161044.YTQKDdiw-lkp@intel.com/
 
-It seem that not same issue.
-That problem is that the try_to_abort_task() function has already been=20
-processed.
-So clear_cmd() has been processed.
+sparse warnings: (new ones prefixed by >>)
+   kernel/fork.c:1110:19: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *owner @@     got struct task_struct *p @@
+   kernel/fork.c:1110:19: sparse:     expected struct task_struct [noderef] __rcu *owner
+   kernel/fork.c:1110:19: sparse:     got struct task_struct *p
+   kernel/fork.c:1334:24: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct file [noderef] __rcu *__ret @@     got struct file *new_exe_file @@
+   kernel/fork.c:1334:24: sparse:     expected struct file [noderef] __rcu *__ret
+   kernel/fork.c:1334:24: sparse:     got struct file *new_exe_file
+   kernel/fork.c:1334:22: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct file *[assigned] old_exe_file @@     got struct file [noderef] __rcu *[assigned] __ret @@
+   kernel/fork.c:1334:22: sparse:     expected struct file *[assigned] old_exe_file
+   kernel/fork.c:1334:22: sparse:     got struct file [noderef] __rcu *[assigned] __ret
+   kernel/fork.c:1662:38: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:1662:38: sparse:     expected struct refcount_struct [usertype] *r
+   kernel/fork.c:1662:38: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1671:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1671:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1671:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void const * @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+>> kernel/fork.c:1672:9: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected void const *q @@     got struct k_sigaction [noderef] __rcu * @@
+   kernel/fork.c:1672:9: sparse:     expected void const *q
+   kernel/fork.c:1672:9: sparse:     got struct k_sigaction [noderef] __rcu *
+   kernel/fork.c:1673:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:1673:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:1673:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2090:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2090:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2090:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2094:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2094:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2094:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2414:32: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct [noderef] __rcu *real_parent @@     got struct task_struct * @@
+   kernel/fork.c:2414:32: sparse:     expected struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:2414:32: sparse:     got struct task_struct *
+   kernel/fork.c:2423:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2423:27: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2423:27: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2472:54: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct list_head *head @@     got struct list_head [noderef] __rcu * @@
+   kernel/fork.c:2472:54: sparse:     expected struct list_head *head
+   kernel/fork.c:2472:54: sparse:     got struct list_head [noderef] __rcu *
+   kernel/fork.c:2494:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2494:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2494:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2515:29: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2515:29: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2515:29: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2542:28: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct sighand_struct *sighand @@     got struct sighand_struct [noderef] __rcu *sighand @@
+   kernel/fork.c:2542:28: sparse:     expected struct sighand_struct *sighand
+   kernel/fork.c:2542:28: sparse:     got struct sighand_struct [noderef] __rcu *sighand
+   kernel/fork.c:2571:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2571:31: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2571:31: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:2573:33: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct spinlock [usertype] *lock @@     got struct spinlock [noderef] __rcu * @@
+   kernel/fork.c:2573:33: sparse:     expected struct spinlock [usertype] *lock
+   kernel/fork.c:2573:33: sparse:     got struct spinlock [noderef] __rcu *
+   kernel/fork.c:3011:24: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected struct task_struct *[assigned] parent @@     got struct task_struct [noderef] __rcu *real_parent @@
+   kernel/fork.c:3011:24: sparse:     expected struct task_struct *[assigned] parent
+   kernel/fork.c:3011:24: sparse:     got struct task_struct [noderef] __rcu *real_parent
+   kernel/fork.c:3096:43: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected struct refcount_struct const [usertype] *r @@     got struct refcount_struct [noderef] __rcu * @@
+   kernel/fork.c:3096:43: sparse:     expected struct refcount_struct const [usertype] *r
+   kernel/fork.c:3096:43: sparse:     got struct refcount_struct [noderef] __rcu *
+   kernel/fork.c:1767:9: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2135:22: sparse: sparse: dereference of noderef expression
+   kernel/fork.c: note: in included file (through include/uapi/asm-generic/bpf_perf_event.h, arch/x86/include/generated/uapi/asm/bpf_perf_event.h, ...):
+   include/linux/ptrace.h:210:45: sparse: sparse: incorrect type in argument 2 (different address spaces) @@     expected struct task_struct *new_parent @@     got struct task_struct [noderef] __rcu *parent @@
+   include/linux/ptrace.h:210:45: sparse:     expected struct task_struct *new_parent
+   include/linux/ptrace.h:210:45: sparse:     got struct task_struct [noderef] __rcu *parent
+   include/linux/ptrace.h:210:62: sparse: sparse: incorrect type in argument 3 (different address spaces) @@     expected struct cred const *ptracer_cred @@     got struct cred const [noderef] __rcu *ptracer_cred @@
+   include/linux/ptrace.h:210:62: sparse:     expected struct cred const *ptracer_cred
+   include/linux/ptrace.h:210:62: sparse:     got struct cred const [noderef] __rcu *ptracer_cred
+   kernel/fork.c:2470:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:2471:59: sparse: sparse: dereference of noderef expression
+   kernel/fork.c:1102:23: sparse: sparse: incompatible types in comparison expression (different address spaces):
+   kernel/fork.c:1102:23: sparse:    struct task_struct [noderef] __rcu *
+   kernel/fork.c:1102:23: sparse:    struct task_struct *
 
-However, this issue was already completed IO request before executing clear=
-_cmd().
-So can't get utag to clean up sq.
-This patch to prevent access to utag for cmd that has already been complete=
-d.
+vim +1672 kernel/fork.c
 
-Thanks
-Seo.
+a016f3389c0660 JANAK DESAI        2006-02-07  1656  
+a39bc51691a0c8 Alexey Dobriyan    2007-10-18  1657  static int copy_sighand(unsigned long clone_flags, struct task_struct *tsk)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1658  {
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1659  	struct sighand_struct *sig;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1660  
+60348802e9cb13 Zhaolei            2009-01-06  1661  	if (clone_flags & CLONE_SIGHAND) {
+d036bda7d0e726 Elena Reshetova    2019-01-18  1662  		refcount_inc(&current->sighand->count);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1663  		return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1664  	}
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1665  	sig = kmem_cache_alloc(sighand_cachep, GFP_KERNEL);
+0c282b068eb26d Madhuparna Bhowmik 2020-01-27  1666  	RCU_INIT_POINTER(tsk->sighand, sig);
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1667  	if (!sig)
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1668  		return -ENOMEM;
+9d7fb04276481c Peter Zijlstra     2015-06-30  1669  
+d036bda7d0e726 Elena Reshetova    2019-01-18  1670  	refcount_set(&sig->count, 1);
+06e62a46bbba20 Jann Horn          2018-08-21 @1671  	spin_lock_irq(&current->sighand->siglock);
+^1da177e4c3f41 Linus Torvalds     2005-04-16 @1672  	memcpy(sig->action, current->sighand->action, sizeof(sig->action));
+06e62a46bbba20 Jann Horn          2018-08-21  1673  	spin_unlock_irq(&current->sighand->siglock);
+b612e5df4587c9 Christian Brauner  2019-10-14  1674  
+b612e5df4587c9 Christian Brauner  2019-10-14  1675  	/* Reset all signal handler not set to SIG_IGN to SIG_DFL. */
+b612e5df4587c9 Christian Brauner  2019-10-14  1676  	if (clone_flags & CLONE_CLEAR_SIGHAND)
+b612e5df4587c9 Christian Brauner  2019-10-14  1677  		flush_signal_handlers(tsk, 0);
+b612e5df4587c9 Christian Brauner  2019-10-14  1678  
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1679  	return 0;
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1680  }
+^1da177e4c3f41 Linus Torvalds     2005-04-16  1681  
 
+:::::: The code at line 1672 was first introduced by commit
+:::::: 1da177e4c3f41524e886b7f1b8a0c1fc7321cac2 Linux-2.6.12-rc2
+
+:::::: TO: Linus Torvalds <torvalds@ppc970.osdl.org>
+:::::: CC: Linus Torvalds <torvalds@ppc970.osdl.org>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
