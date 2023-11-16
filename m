@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D53477EE21A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E11D7EE21E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345319AbjKPOCM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:02:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59026 "EHLO
+        id S1345325AbjKPOCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:02:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345295AbjKPOCD (ORCPT
+        with ESMTP id S1345297AbjKPOCE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:02:03 -0500
+        Thu, 16 Nov 2023 09:02:04 -0500
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64D9A130;
-        Thu, 16 Nov 2023 06:01:59 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 3758020005;
-        Thu, 16 Nov 2023 14:01:57 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CBA6135;
+        Thu, 16 Nov 2023 06:02:00 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 1B4C920010;
+        Thu, 16 Nov 2023 14:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
         t=1700143318;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=eB+GGbS/hOUMve+DoI9/NdA/F1GZ6dfXdqXYjtsj/c4=;
-        b=Uk7yCNlrUalzKwDM9t7v3RP/8lTgkdaiiNkcfy10Aa1dkWWPM+tQ7wFl9Ond9F8c4TF7pw
-        dkmVzujlkYhDI3XZs7istgviz4SeEAtZt9XsUnUt9wKK/MqDW7oZbjSWVhHmNKRS7vHot+
-        s3cMz6bcUlkGZj9Q6EEuYo1bZzXjwTBLZ2ROHJ1gxPTKCU4opVvvOa/N8HI7qMBFHJJbgF
-        5iJaRzs2ONvcBL0nZ/UBEH4JPZYwqSkUhzJR+SWnZzmt2M7crEsyy4PDtXZ7LCNHyygvG+
-        DvNW3vtBsLLzK7omWHGLrSCpJWRd7wHu91vzXgQrG/JCM9lNjQxIh7OIJkI/XA==
+        bh=19uS5MsNCGK8Sqz35QAF1nCoCA1F75jO4Byem6JeTyY=;
+        b=eHDWxrIkgnNyyN1JZp7UYJxdIs5vuMgx3Z8BMjtesuHwC/z6thjQ1zclugaSNPNc8J/QGu
+        sI1k1znd81fezTFKKW1LL/x5RzC5M5/TGL6jKt3Spqr0XAYPnHu4llfH4SfpSmsISy+Pl5
+        QGx2N5GgC9j3I6HaeKiiAUx54dSdrxeE4MeGZHKgDcs2crKicASQKOMcESIvVHcccstMvT
+        I2escKDNjfdDLJM6IJANG0IF4pChRzEczUWrTP/1pP4mIEAn8DrqWmTDN9H1v+DRyQKwXQ
+        2GqeM2tKW2abc6wNiisrzjnXKoD6WwzxnFPTbd3pCeJvbiK1Xgz/DExIUv1ZSw==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 16 Nov 2023 15:01:35 +0100
-Subject: [PATCH net-next 3/9] net: pse-pd: Introduce PSE types enumeration
+Date:   Thu, 16 Nov 2023 15:01:36 +0100
+Subject: [PATCH net-next 4/9] net: ethtool: pse-pd: Expand pse commands
+ with the PSE PoE interface
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231116-feature_poe-v1-3-be48044bf249@bootlin.com>
+Message-Id: <20231116-feature_poe-v1-4-be48044bf249@bootlin.com>
 References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 In-Reply-To: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -67,107 +68,178 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce an enumeration to define PSE types (PoE or PoDL),
-utilizing a bitfield for potential future support of both types.
-Include 'pse_get_types' helper for external access to PSE type info
+Add PSE PoE interface support in the ethtool pse command.
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- drivers/net/pse-pd/pse_core.c      |  9 +++++++++
- drivers/net/pse-pd/pse_regulator.c |  1 +
- include/linux/pse-pd/pse.h         | 22 ++++++++++++++++++++++
- 3 files changed, 32 insertions(+)
+ Documentation/networking/ethtool-netlink.rst | 20 +++++++++
+ net/ethtool/pse-pd.c                         | 64 +++++++++++++++++++++++-----
+ 2 files changed, 74 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/pse-pd/pse_core.c b/drivers/net/pse-pd/pse_core.c
-index 146b81f08a89..2959c94f7798 100644
---- a/drivers/net/pse-pd/pse_core.c
-+++ b/drivers/net/pse-pd/pse_core.c
-@@ -312,3 +312,12 @@ int pse_ethtool_set_config(struct pse_control *psec,
- 	return err;
- }
- EXPORT_SYMBOL_GPL(pse_ethtool_set_config);
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index 2540c70952ff..a0b6437e1497 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -1711,6 +1711,10 @@ Kernel response contents:
+                                                   PSE functions
+   ``ETHTOOL_A_PODL_PSE_PW_D_STATUS``         u32  power detection status of the
+                                                   PoDL PSE.
++  ``ETHTOOL_A_PSE_ADMIN_STATE``              u32  Operational state of the PoE
++                                                  PSE functions.
++  ``ETHTOOL_A_PSE_PW_D_STATUS``              u32  power detection status of the
++                                                  PoE PSE.
+   ======================================  ======  =============================
+ 
+ When set, the optional ``ETHTOOL_A_PODL_PSE_ADMIN_STATE`` attribute identifies
+@@ -1722,6 +1726,12 @@ aPoDLPSEAdminState. Possible values are:
+ .. kernel-doc:: include/uapi/linux/ethtool.h
+     :identifiers: ethtool_podl_pse_admin_state
+ 
++The same goes for ``ETHTOOL_A_PSE_ADMIN_STATE`` implementing
++``IEEE 802.3-2022`` 30.9.1.1.2 aPSEAdminState.
 +
-+u32 pse_get_types(struct pse_control *psec)
-+{
-+	if (!psec->pcdev)
-+		return PSE_UNKNOWN;
-+	else
-+		return psec->pcdev->types;
-+}
-+EXPORT_SYMBOL_GPL(pse_get_types);
-diff --git a/drivers/net/pse-pd/pse_regulator.c b/drivers/net/pse-pd/pse_regulator.c
-index 1dedf4de296e..e34ab8526067 100644
---- a/drivers/net/pse-pd/pse_regulator.c
-+++ b/drivers/net/pse-pd/pse_regulator.c
-@@ -116,6 +116,7 @@ pse_reg_probe(struct platform_device *pdev)
- 	priv->pcdev.owner = THIS_MODULE;
- 	priv->pcdev.ops = &pse_reg_ops;
- 	priv->pcdev.dev = dev;
-+	priv->pcdev.types = PSE_PODL;
- 	ret = devm_pse_controller_register(dev, &priv->pcdev);
- 	if (ret) {
- 		dev_err(dev, "failed to register PSE controller (%pe)\n",
-diff --git a/include/linux/pse-pd/pse.h b/include/linux/pse-pd/pse.h
-index 25490d0c682d..67a0ff5e480c 100644
---- a/include/linux/pse-pd/pse.h
-+++ b/include/linux/pse-pd/pse.h
-@@ -44,6 +44,19 @@ struct pse_control_status {
- 	enum ethtool_pse_pw_d_status pw_status;
++.. kernel-doc:: include/uapi/linux/ethtool.h
++    :identifiers: ethtool_pse_admin_state
++
+ When set, the optional ``ETHTOOL_A_PODL_PSE_PW_D_STATUS`` attribute identifies
+ the power detection status of the PoDL PSE.  The status depend on internal PSE
+ state machine and automatic PD classification support. This option is
+@@ -1731,6 +1741,12 @@ Possible values are:
+ .. kernel-doc:: include/uapi/linux/ethtool.h
+     :identifiers: ethtool_podl_pse_pw_d_status
+ 
++The same goes for ``ETHTOOL_A_PSE_ADMIN_PW_D_STATUS`` implementing
++``IEEE 802.3-2022`` 30.9.1.1.5 aPSEPowerDetectionStatus.
++
++.. kernel-doc:: include/uapi/linux/ethtool.h
++    :identifiers: ethtool_pse_pw_d_status
++
+ PSE_SET
+ =======
+ 
+@@ -1741,6 +1757,7 @@ Request contents:
+   ======================================  ======  =============================
+   ``ETHTOOL_A_PSE_HEADER``                nested  request header
+   ``ETHTOOL_A_PODL_PSE_ADMIN_CONTROL``       u32  Control PoDL PSE Admin state
++  ``ETHTOOL_A_PSE_ADMIN_CONTROL``            u32  Control PSE Admin state
+   ======================================  ======  =============================
+ 
+ When set, the optional ``ETHTOOL_A_PODL_PSE_ADMIN_CONTROL`` attribute is used
+@@ -1748,6 +1765,9 @@ to control PoDL PSE Admin functions. This option is implementing
+ ``IEEE 802.3-2018`` 30.15.1.2.1 acPoDLPSEAdminControl. See
+ ``ETHTOOL_A_PODL_PSE_ADMIN_STATE`` for supported values.
+ 
++The same goes for ``ETHTOOL_A_PSE_ADMIN_CONTROL`` implementing
++``IEEE 802.3-2022`` 30.9.1.2.1 acPSEAdminControl.
++
+ RSS_GET
+ =======
+ 
+diff --git a/net/ethtool/pse-pd.c b/net/ethtool/pse-pd.c
+index aef57a058f0d..88ab5e3576bc 100644
+--- a/net/ethtool/pse-pd.c
++++ b/net/ethtool/pse-pd.c
+@@ -82,6 +82,10 @@ static int pse_reply_size(const struct ethnl_req_info *req_base,
+ 		len += nla_total_size(sizeof(u32)); /* _PODL_PSE_ADMIN_STATE */
+ 	if (st->podl_pw_status > 0)
+ 		len += nla_total_size(sizeof(u32)); /* _PODL_PSE_PW_D_STATUS */
++	if (st->admin_state > 0)
++		len += nla_total_size(sizeof(u32)); /* _PSE_ADMIN_STATE */
++	if (st->pw_status > 0)
++		len += nla_total_size(sizeof(u32)); /* _PSE_PW_D_STATUS */
+ 
+ 	return len;
+ }
+@@ -103,6 +107,16 @@ static int pse_fill_reply(struct sk_buff *skb,
+ 			st->podl_pw_status))
+ 		return -EMSGSIZE;
+ 
++	if (st->admin_state > 0 &&
++	    nla_put_u32(skb, ETHTOOL_A_PSE_ADMIN_STATE,
++			st->admin_state))
++		return -EMSGSIZE;
++
++	if (st->pw_status > 0 &&
++	    nla_put_u32(skb, ETHTOOL_A_PSE_PW_D_STATUS,
++			st->pw_status))
++		return -EMSGSIZE;
++
+ 	return 0;
+ }
+ 
+@@ -113,25 +127,18 @@ const struct nla_policy ethnl_pse_set_policy[ETHTOOL_A_PSE_MAX + 1] = {
+ 	[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL] =
+ 		NLA_POLICY_RANGE(NLA_U32, ETHTOOL_PODL_PSE_ADMIN_STATE_DISABLED,
+ 				 ETHTOOL_PODL_PSE_ADMIN_STATE_ENABLED),
++	[ETHTOOL_A_PSE_ADMIN_CONTROL] =
++		NLA_POLICY_RANGE(NLA_U32, ETHTOOL_PSE_ADMIN_STATE_DISABLED,
++				 ETHTOOL_PSE_ADMIN_STATE_ENABLED),
  };
  
-+/**
-+ * enum - Types of PSE controller.
-+ *
-+ * @PSE_UNKNOWN: Type of PSE controller is unknown
-+ * @PSE_PODL: PSE controller which support PoDL
-+ * @PSE_POE: PSE controller which support PoE
-+ */
-+enum {
-+	PSE_UNKNOWN = BIT(0),
-+	PSE_PODL = BIT(1),
-+	PSE_POE = BIT(2),
-+};
+ static int
+ ethnl_set_pse_validate(struct ethnl_req_info *req_info, struct genl_info *info)
+-{
+-	return !!info->attrs[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL];
+-}
+-
+-static int
+-ethnl_set_pse(struct ethnl_req_info *req_info, struct genl_info *info)
+ {
+ 	struct net_device *dev = req_info->dev;
+-	struct pse_control_config config = {};
+ 	struct nlattr **tb = info->attrs;
+ 	struct phy_device *phydev;
+ 
+-	/* this values are already validated by the ethnl_pse_set_policy */
+-	config.podl_admin_control = nla_get_u32(tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL]);
+-
+ 	phydev = dev->phydev;
+ 	if (!phydev) {
+ 		NL_SET_ERR_MSG(info->extack, "No PHY is attached");
+@@ -143,6 +150,43 @@ ethnl_set_pse(struct ethnl_req_info *req_info, struct genl_info *info)
+ 		return -EOPNOTSUPP;
+ 	}
+ 
++	if (!tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL] &&
++	    !tb[ETHTOOL_A_PSE_ADMIN_CONTROL])
++		return 0;
 +
- /**
-  * struct pse_controller_ops - PSE controller driver callbacks
-  *
-@@ -77,6 +90,7 @@ struct pse_control;
-  *            device tree to id as given to the PSE control ops
-  * @nr_lines: number of PSE controls in this controller device
-  * @lock: Mutex for serialization access to the PSE controller
-+ * @types: types of the PSE controller
-  */
- struct pse_controller_dev {
- 	const struct pse_controller_ops *ops;
-@@ -89,6 +103,7 @@ struct pse_controller_dev {
- 			const struct of_phandle_args *pse_spec);
- 	unsigned int nr_lines;
- 	struct mutex lock;
-+	u32 types;
- };
- 
- #if IS_ENABLED(CONFIG_PSE_CONTROLLER)
-@@ -108,6 +123,8 @@ int pse_ethtool_set_config(struct pse_control *psec,
- 			   struct netlink_ext_ack *extack,
- 			   const struct pse_control_config *config);
- 
-+u32 pse_get_types(struct pse_control *psec);
++	if (tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL] &&
++	    !(pse_get_types(phydev->psec) & PSE_PODL)) {
++		NL_SET_ERR_MSG_ATTR(info->extack,
++				    tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL],
++				    "setting PSE PoDL admin control not supported");
++		return -EOPNOTSUPP;
++	}
++	if (tb[ETHTOOL_A_PSE_ADMIN_CONTROL] &&
++	    !(pse_get_types(phydev->psec) & PSE_POE)) {
++		NL_SET_ERR_MSG_ATTR(info->extack,
++				    tb[ETHTOOL_A_PSE_ADMIN_CONTROL],
++				    "setting PSE admin control not supported");
++		return -EOPNOTSUPP;
++	}
 +
- #else
- 
- static inline struct pse_control *of_pse_control_get(struct device_node *node)
-@@ -133,6 +150,11 @@ static inline int pse_ethtool_set_config(struct pse_control *psec,
- 	return -ENOTSUPP;
- }
- 
-+static u32 pse_get_types(struct pse_control *psec)
-+{
-+	return PSE_UNKNOWN;
++	return 1;
 +}
 +
- #endif
- 
- #endif
++static int
++ethnl_set_pse(struct ethnl_req_info *req_info, struct genl_info *info)
++{
++	struct net_device *dev = req_info->dev;
++	struct pse_control_config config = {};
++	struct nlattr **tb = info->attrs;
++	struct phy_device *phydev;
++
++	phydev = dev->phydev;
++	/* These values are already validated by the ethnl_pse_set_policy */
++	if (pse_get_types(phydev->psec) & PSE_PODL)
++		config.podl_admin_control = nla_get_u32(tb[ETHTOOL_A_PODL_PSE_ADMIN_CONTROL]);
++	if (pse_get_types(phydev->psec) & PSE_POE)
++		config.admin_control = nla_get_u32(tb[ETHTOOL_A_PSE_ADMIN_CONTROL]);
++
+ 	/* Return errno directly - PSE has no notification */
+ 	return pse_ethtool_set_config(phydev->psec, info->extack, &config);
+ }
 
 -- 
 2.25.1
