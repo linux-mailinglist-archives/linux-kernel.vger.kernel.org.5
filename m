@@ -2,92 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 480B17EE87E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68A857EE880
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229841AbjKPUuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45906 "EHLO
+        id S1345529AbjKPUun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:50:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKPUuM (ORCPT
+        with ESMTP id S229437AbjKPUul (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:50:12 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 520BDD4A;
-        Thu, 16 Nov 2023 12:50:09 -0800 (PST)
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGFwFI9012491;
-        Thu, 16 Nov 2023 20:49:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : from : to : cc : references : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=yas7iHHEDuHCRMzzPg2KEmibRFAd4NpCF4nIuDlDRnI=;
- b=OgVTdxBWDAkCAnTprrKYfmEmNZdkbkRVHYBFw+iGA0C1LHerOcoJA6EMy7+wtoKUBs7K
- Kgod9Rr3tUAe3cSYOLolb2SnjWHZhqYdjNixclj1Ly1nutQXDx0OvZO9tAh2zAsT+nBK
- fG8RLkdRRSdKSMOlrDMPTQiyvVxQrLoDg5IzqLKJPq7FliHG/xn3UJqyFoIoKFc+xLqZ
- qA5FZdd3Gki1KN+qR/f7xVg4U8FkWudVTiwlqzCQ+hvXzFVLMFnSY0BLkHhCfp4Vc3st
- /Qd/Ln+KwOOZ/QX/7Yc1N3SUGrXwEtmG8KHOHafH055s+WeqC7Fj1cYGTMjPeNTRbsuk 3Q== 
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udeww9s3q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 20:49:57 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGKnuep005382
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 20:49:56 GMT
-Received: from [10.110.71.50] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 12:49:55 -0800
-Message-ID: <14cc8193-25cb-668b-f778-beea95e7ccf7@quicinc.com>
-Date:   Thu, 16 Nov 2023 12:49:55 -0800
+        Thu, 16 Nov 2023 15:50:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EBF98
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:50:38 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06BFC433C7;
+        Thu, 16 Nov 2023 20:50:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700167838;
+        bh=aBAhIG5ZZv+6q7MeBajGvorrQFRVmO/bABxuFh3GO44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TZcxY6QbAH78bN+7VcTqkHc1XCQNNWeC0D4zmCFxss1cVqWIfbAYTTenUSqtdONTO
+         w0gTd93a3t1knEVwmdTmSszjpDrWYCYAmvnFKtqf7AX5R0fdYDE82bUAPoGIBFBMy9
+         173ZNkAwAAB67WysA+JQrNUNKIpJXpdLQB9yJxynHKXYHNUM5kmTU56bvTEB8Sg1oq
+         pzK64BiyyheRcg1xFlfjtauLx4+qv0zTjsSP/8O+YYuRYDLWy9nN/KR1c7gZn6M3sl
+         vwHkZmldvJjtbT2kcG74T+FT8uDnPTEW3AzdNw+D4ggyxgpBHgT4i/pjyElVWJxn1l
+         rj59ZMXjLwUMA==
+Date:   Thu, 16 Nov 2023 20:50:33 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Suman Ghosh <sumang@marvell.com>
+Cc:     sgoutham@marvell.com, gakula@marvell.com, sbhatta@marvell.com,
+        hkelam@marvell.com, lcherian@marvell.com, jerinj@marvell.com,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [net PATCH] octeontx2-pf: Fix memory leak during interface down
+Message-ID: <20231116205033.GI109951@vergenet.net>
+References: <20231116155334.3277905-1-sumang@marvell.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.11.0
-Subject: Re: [Freedreno] [PATCH v2] drm/msm/dsi: use the correct VREG_CTRL_1
- value for 4nm cphy
-Content-Language: en-US
-From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
-To:     Jonathan Marek <jonathan@marek.ca>,
-        <freedreno@lists.freedesktop.org>
-CC:     Neil Armstrong <neil.armstrong@linaro.org>,
-        Robert Foss <rfoss@kernel.org>,
-        David Airlie <airlied@gmail.com>,
-        Konrad Dybcio <konrad.dybcio@somainline.org>,
-        Vinod Koul <vkoul@kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        Sean Paul <sean@poorly.run>
-References: <20231110000216.29979-1-jonathan@marek.ca>
- <01b9bc3f-2afb-bd33-1212-d1dc7999b2bc@quicinc.com>
-In-Reply-To: <01b9bc3f-2afb-bd33-1212-d1dc7999b2bc@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: M_p3D44TFCtBNFGUR99xPok0HlNGrhjO
-X-Proofpoint-GUID: M_p3D44TFCtBNFGUR99xPok0HlNGrhjO
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_23,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 mlxscore=0 adultscore=0 mlxlogscore=919 phishscore=0
- clxscore=1015 impostorscore=0 bulkscore=0 malwarescore=0 suspectscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311160162
-X-Spam-Status: No, score=-5.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116155334.3277905-1-sumang@marvell.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -95,51 +52,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 11/16/2023 12:36 PM, Abhinav Kumar wrote:
+On Thu, Nov 16, 2023 at 09:23:34PM +0530, Suman Ghosh wrote:
+> During 'ifconfig <netdev> down' one RSS memory was not getting freed.
+> This patch fixes the same.
 > 
-> 
-> On 11/9/2023 4:02 PM, Jonathan Marek wrote:
->> Use the same value as the downstream driver. This change is needed for 
->> CPHY
->> mode to work correctly.
->>
->> Fixes: 8b034e6771113 ("drm/msm/dsi: add support for DSI-PHY on SM8550")
+> Fixes: f12098ce9b43 ("octeontx2-pf: Clear RSS enable flag on interace down")
+> Signed-off-by: Suman Ghosh <sumang@marvell.com>
 
-One error here. We need 12 chars of SHA but you have 13 otherwise 
-checkpatch cries
+Hi Suman,
 
-Fixes: 8b034e677111 ("drm/msm/dsi: add support for DSI-PHY on SM8550")
+I'm wondering if the fixes tag should refer to the commit
+that introduced the allocation that your patch is freeing.
 
-Will fix this up while applying.
+Fixes: 81a4362016e7 ("octeontx2-pf: Add RSS multi group support")
 
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->> v2: fixed the Fixes: line
->>
->>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
+> ---
+>  drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Good catch !
+> diff --git a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> index 91b99fd70361..ba95ac913274 100644
+> --- a/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> +++ b/drivers/net/ethernet/marvell/octeontx2/nic/otx2_pf.c
+> @@ -1934,6 +1934,8 @@ int otx2_stop(struct net_device *netdev)
+>  	/* Clear RSS enable flag */
+>  	rss = &pf->hw.rss_info;
+>  	rss->enable = false;
+> +	if (!netif_is_rxfh_configured(netdev))
+> +		kfree(rss->rss_ctx[DEFAULT_RSS_CONTEXT_GROUP]);
+>  
+>  	/* Cleanup Queue IRQ */
+>  	vec = pci_irq_vector(pf->pdev,
+> -- 
+> 2.25.1
 > 
-> LGTM
-> 
-> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-> 
->> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c 
->> b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> index 3b1ed02f644d..89a6344bc865 100644
->> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
->> @@ -918,7 +918,7 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy 
->> *phy,
->>       if ((phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V5_2)) {
->>           if (phy->cphy_mode) {
->>               vreg_ctrl_0 = 0x45;
->> -            vreg_ctrl_1 = 0x45;
->> +            vreg_ctrl_1 = 0x41;
->>               glbl_rescode_top_ctrl = 0x00;
->>               glbl_rescode_bot_ctrl = 0x00;
->>           } else {
