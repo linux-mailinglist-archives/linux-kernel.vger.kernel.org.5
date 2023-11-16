@@ -2,1027 +2,255 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DE97ED913
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 082FC7ED90D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344522AbjKPBzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:55:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33822 "EHLO
+        id S1344386AbjKPBxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:53:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344485AbjKPBzU (ORCPT
+        with ESMTP id S229692AbjKPBxi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:55:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1D91B2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:55:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700099714; x=1731635714;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=WgVtv7MTwYx8m0E1NnJ+dfaE02F186oqEQGEehVhm98=;
-  b=GT1xqMFM/Fn4jvaZamS8tXRyTyg0IGThhPah5gCQ325GFXt6zc8YObVu
-   bGqbF5bBrWYsUJ7qUmbhUBUhb3zrcFjNtuhogW2Ioz1JKpCBP4mIN1BI/
-   r7hGyX+GyMayUKUzkj/WVHpk9qsqZDFIrF9y3GHH8DasCJeN7aWlcYtkx
-   F87H/HMiGkfsmQlfbXQXT93X+cAUY5HgPOZX/Bjo2zckpCgDR4lAXsaLH
-   uctSfYQMkHcgdIPexfSRpGgybQ7jHx8j7KFa8dSC2Dgdcq+EIvgIbfYuC
-   LRTrkD2UKNGanFt3xEqYNZ365hDjTRzs05Yqkovf80Dy7LDNYgi+irZ4Y
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="381387738"
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="381387738"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 17:55:14 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="13395432"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmviesa001.fm.intel.com with ESMTP; 15 Nov 2023 17:55:12 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 4/4] iommu/vt-d: Move inline helpers to header files
-Date:   Thu, 16 Nov 2023 09:50:48 +0800
-Message-Id: <20231116015048.29675-5-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231116015048.29675-1-baolu.lu@linux.intel.com>
-References: <20231116015048.29675-1-baolu.lu@linux.intel.com>
+        Wed, 15 Nov 2023 20:53:38 -0500
+Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2060.outbound.protection.outlook.com [40.107.117.60])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C6CE182
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:53:34 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lyOb1Rni3D4wiQrHNa5JSDoGjrL9rE8FOwmij6fntD0CpvYp2q+dzGVpBmeWAQ6dStazAICyZcxdSRw56WJEFXuhvBLWl2JTMzLsfPr5CSPuc/ukXBANDV9+sqgxtkhz3wBLCV7Ij77vBSA8IZa1CQTXsVNQxFWU9PMAYjVE8ITj7kDISrJ6Qu86DmH7hrv3WTlpjJHFsRQfdWy5xjRvFqDpasrDuyblEafdUJ2qrOvdw27ZAmPJ5oP6YeelVTZVMBGx15j/tB7inrgKVDvvA1P092hsRSI/nxg6N+MhiilAqB31tvtituzlkm5hw7UC+lTljtpUwKwQ978MyvoYDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=THwhUqLmNkpI/JVLVBd97c+p2xh95ofCUL0w0Tr4bKQ=;
+ b=Wx2KTVF/rn59LmVBfvm+CF/V0NrUn7B9Osu7Ga7Ss5G9wfD2MlAfzR+8vT2NaAfvm2VqR3GxvNtNfQJm4wmi5HZYDCm/d3xpLBEfV59f8sCsg7LYNmcf9OD7SoaRS0UwhWjPOg0YtdzThTEIxzUjZvnwMRusE6u+DeMr3bUxBtkM0SFUV+UFavUsI/Kq4wO3fXG3kJfJUdKr5bVSLerepbutZLX+HhJzLz4C3vBYFAKetyUJpsnf5zcr49CezG4vDtymq53U5UoqFMt5WS6jZhfIRTnGswafVAHilH0m4Ce5HezMvscBgJUQc/x5ES74VXGgQcClnFUJTrnIisYq2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
+ dkim=pass header.d=oppo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=THwhUqLmNkpI/JVLVBd97c+p2xh95ofCUL0w0Tr4bKQ=;
+ b=DoC/GbPqcZWIg4dsr+jk9QvuDKHGl8rhbtFKmWKUPlmlL4xQ7DbeFw175ItCPokx8N6TWiesyQecLrjigcdRHTmB59xRVdJg3b4NhoQX9yAyD3Wo30/yzgphKbNBVMuVAuUB+XQXqV9ECCMeVEK4oKbgk0x8KfocdpTlrowVArE=
+Received: from SEYPR02MB5653.apcprd02.prod.outlook.com (2603:1096:101:56::11)
+ by TYZPR02MB6655.apcprd02.prod.outlook.com (2603:1096:405:2a::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Thu, 16 Nov
+ 2023 01:53:31 +0000
+Received: from SEYPR02MB5653.apcprd02.prod.outlook.com
+ ([fe80::164b:4e8c:754e:f133]) by SEYPR02MB5653.apcprd02.prod.outlook.com
+ ([fe80::164b:4e8c:754e:f133%4]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
+ 01:53:30 +0000
+From:   =?utf-8?B?6buE5YaN5ry+KEpveXlvdW5nIEh1YW5nKQ==?= 
+        <huangzaiyang@oppo.com>
+To:     =?utf-8?B?VGhvbWFzIFdlacOfc2NodWg=?= <thomas@t-8ch.de>
+CC:     "tj@kernel.org" <tj@kernel.org>,
+        "jiangshanlai@gmail.com" <jiangshanlai@gmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        ZaiYang Huang <hzy0719@163.com>,
+        Mukesh Ojha <quic_mojha@quicinc.com>
+Subject: =?utf-8?B?5Zue5aSNOiBbUEFUQ0hdIHdvcmtxdWV1ZTogTWFrZSBhIHdhcm5pbmcgd2hl?=
+ =?utf-8?Q?n_a_pending_delay_work_being_re-init?=
+Thread-Topic: [PATCH] workqueue: Make a warning when a pending delay work
+ being re-init
+Thread-Index: AQHaF7e485deNRHlL02AO2lniLj2nrB74eSAgAAz2kCAABoeoA==
+Date:   Thu, 16 Nov 2023 01:53:30 +0000
+Message-ID: <SEYPR02MB5653F5518381E1802834BD39A3B0A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+References: <20231115113427.1420-1-huangzaiyang@oppo.com>
+ <54af48a0-2d3c-4888-953b-28760f129d33@t-8ch.de>
+ <SEYPR02MB5653CCC06C7EBBD806019A46A3B0A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+In-Reply-To: <SEYPR02MB5653CCC06C7EBBD806019A46A3B0A@SEYPR02MB5653.apcprd02.prod.outlook.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oppo.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEYPR02MB5653:EE_|TYZPR02MB6655:EE_
+x-ms-office365-filtering-correlation-id: 1050bccf-8ef3-4c48-7dac-08dbe646d583
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: M1mMJylVOHsD61o7CIrytQUkg4KwkcOzDtWnYdm6ScmgaxDts4ghhAF/NuqMyMDwY1nJWeEPsIurnfcrVqcCREbgIXSH0EN/YqjS7n+tyyKp3kfUCtXZ55e7+Kc05ZxdSxuaYR80Pn04HSnMAC77BUCXt8Vi9fADvtBSu/mPdeWWEGwnPC82RdET2cioHhjXg0j/TLoZbbbpPzWfoNZfgg3nSMrX7LxfErjZrOMr7gsQQxKpiYpeHBezy+glRH9a5xloCRKvtxFwOMi/sNarqbEy+PLPRGz7AvPl4ib45WkoCLSXSqXitnfpPQWt4CYiKMPfYuedYYOrsEr2594Yz2vFy0AO9DNJtXDrzz0QVGe2SaGCU5YPskXDRx8GYAf7drlDJCDu0UxXOKkXNoFlwN36RLZWzMISdlWjDZaaV8kkzxm+ahIqD79MLdzCcRTR0seQ8bxrYghNf4Z6jbP7yibt//t1Mq5U45n3IdHFjxA49lqIXCYbKk+lBQoVmAGedpKYMRhecT850WC2OdMwFC4l3Mai5VlNx8c1wb/A6w5J2vYmyCa+wHIaNsoerpMolacGHPWL3/fUvaT/wzTo2Pl5c5kHQky0A3K0gzVEXcjLt8j7t5zsFYDa7do2Em1ugJY/WFQVTyqwKfYHWx+4JQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEYPR02MB5653.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(39860400002)(396003)(136003)(346002)(366004)(230922051799003)(230273577357003)(230173577357003)(64100799003)(1800799009)(186009)(451199024)(71200400001)(26005)(66946007)(6506007)(2940100002)(7696005)(83380400001)(224303003)(9686003)(478600001)(41300700001)(52536014)(4001150100001)(567974003)(966005)(5660300002)(4326008)(316002)(8936002)(76116006)(66446008)(66556008)(66476007)(38100700002)(122000001)(6916009)(85182001)(64756008)(86362001)(54906003)(33656002)(38070700009)(55016003)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?OUFvMU5XSGlHWHR2T05WQUZuNlpORWVLTWptbHhDMDVuOVUvNk8zdFJMZ1pJ?=
+ =?utf-8?B?QzcwcnViUll0WitlMnJzQ28wSHRvT3NvNFZSdzRFRjRpMzVBd3czL1dwbmVr?=
+ =?utf-8?B?K2N0UWxGSEw0M204TWV4ZDhJbXBENkZoejBWQms1RktWK2srQzRGTFVqUXNT?=
+ =?utf-8?B?VTBmVlpBUytEOUJaeGNwRC9WNGorR21VSi9DaFFYM3F4TUxyMWhYbEpUc05B?=
+ =?utf-8?B?Ykd3elYvMGQxdVgrNkJoTmFIcWZ6OGdxTEJaK0FjTFpENVhUdnpCU3dDVVJv?=
+ =?utf-8?B?aWpVQ21Sa2t4OEMrQ3ZBVlpTaHBHemRXekNGTkRKQms1dG13RkdOWTFRUVEx?=
+ =?utf-8?B?cklkeWVvSEhLK0wrTVA4Q2NMS2ZKbnZTdUtHYTl3YlBvb2ErZm85RkhSUkdO?=
+ =?utf-8?B?clphaVc1U2pOS3dMMlBCZTBaR2twWGpBWDZSQVR1Y2I3SGFtN0dRbW1NMENE?=
+ =?utf-8?B?MUo5K0xqSzRnQXNVK0pEUFlIVG5XdGVSK3lCQWdPTFNFZHlFeUlObG9JVGJO?=
+ =?utf-8?B?c1grbFZMTVZ3WlMyZjA1azA2WVhCSGpFcHIxb1hFU29mWFBNblh0cGlPNjFD?=
+ =?utf-8?B?RlNTSDFiSGF4N2dmNDU4S3NWQUEwalhobVdRNnI1eVI1SkMrOVZsM0xZbVg1?=
+ =?utf-8?B?NW9tK2wzRm9xeTFkNmJsTko5K29XYnJRWDhJY0ErcW80WDlZVVZTd0hKeXY5?=
+ =?utf-8?B?NzJuRnRWRkNNSHhoalBycUFHY3B5RGV5Q2tkd2pCR3JjNFg2c01ZODdtOEZ6?=
+ =?utf-8?B?cytZNUVFOUJnQmJNVzllWTBReGpKQStvVUhaYTFvcVgzSkZqcnhxUGNsWjE2?=
+ =?utf-8?B?T29xb2dGVG5oOWF0VU1MdjJVSndjRmNjVmIyOWd2ZCt2U1FZeHhPY0xQSDE3?=
+ =?utf-8?B?WFZNbDdmV3YxMkE5UDFKdS9sU2xORnZMQmFZM3hLNVBVcFhqVVIrTHF1ck1F?=
+ =?utf-8?B?RWlJTTdoZG9vMVV3S3RsSjlVU2pMejdOT3NUQXhiemxVaHovR1JyemplbUFU?=
+ =?utf-8?B?Mk5xUWxJcGJhbHhEcFFxcVlZMzNjTXZ0TVFIVzFoSmJ5SVJmeFJDemY3b2Mr?=
+ =?utf-8?B?YTNrNDNzNDU0WnErMGJWcFVIa3ZzUk1zZXZna2dIbWJJS0pkZ0VmSjFmMElo?=
+ =?utf-8?B?T1NmVC9MbEQ5c1k1MzBXb1R1aFc0bkRYZlVhKzBGYTRlc3A0QlRpL3pjVFp1?=
+ =?utf-8?B?OWV1RmR4ZjlUZkttM0YrMGtCaDdxMjhIaFliUFRFd1VTQ1BZaUExN3pXL1p2?=
+ =?utf-8?B?YmdTci9BelhOTy82SnhLekNpWnVnQzlMMVhoQ0h1K0RYQkhPMmpaaDBpeGJL?=
+ =?utf-8?B?RkpIb1pvMklqdkRvaTlEanA3eUZ0SmF6REs0Ti83SFBMT0oxYVpRbTVIb2xu?=
+ =?utf-8?B?UFo4UXZXNHdIMVNQbWNtcDMxOVpaQWYxUTRtOThkTko3RzdtdmFKbENxU0Rm?=
+ =?utf-8?B?dmd6M1RJSW85SFN5NjltRzhpOWZBL0JGOEJvelB1Mm9iSnpuTU5aY2JhWSs0?=
+ =?utf-8?B?T01wQmdxLzlOSFlDZDJlVTdPM1dva29sbGE5QzV6T3ZpZ1B2OGp1NFlkM29H?=
+ =?utf-8?B?UTJoUGhOWnBoYWpXNDVaRVUxREVpanFqc2F0MHQ3Vks0Z1Q4WkxhRjFFYm1R?=
+ =?utf-8?B?eTUzbmVLdW55dXUyMnJHZEI3T3llNzIxUjBFUjBldGovZDhMRFZINjgvN29B?=
+ =?utf-8?B?WC9KcE9wVUpZOWNBVDNiL1Rsc21xakh2ZTJreTk4WitJeTVIMjZOQ05uOXRH?=
+ =?utf-8?B?NmdGZlp1dm5acXhEZllMbTVlQUJZU21XcERHRnpVNXRXQytHRzU0K3JRcXly?=
+ =?utf-8?B?Vi9iakQ4MUg4R3FiZFRhbEFSNVlDeWgrTWVVN0ZsY3FBSXRBMmtCSWEyS2RL?=
+ =?utf-8?B?RGsxZUd4bGxXTDczZ3FZanY4aTNYZXhxd3lmQjBlT3VhaDlucUtZSW5VTXFN?=
+ =?utf-8?B?VGNoRFc5dnlCSndaVnJZR2tTMkJWVFgxeVk5aTJQYzh3MkdFNjZUaDRwUnln?=
+ =?utf-8?B?ZkxuNWQwZnphK0pseEZsODFFaHZkZG94U0dYcSt6WHJrSmh4YUY1aUwyNHJr?=
+ =?utf-8?B?V09hR2R1b1hEMkk4SENRdVZvdFYwN2RjVTFtVXFUMisxRlRLT3hTN1JhZkov?=
+ =?utf-8?Q?acXrc7TZjSyFlCeg/c+HJKx67?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-OriginatorOrg: oppo.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEYPR02MB5653.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1050bccf-8ef3-4c48-7dac-08dbe646d583
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 01:53:30.6787
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: erRlpdOAUaozcqPFYVmbMOAZbUU66aY3b2MV/XigjTe22w/jPqoStXIs7rx2fmyg1rGSDsIxs2oVhIvpdQvTdQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR02MB6655
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move inline helpers to header files so that other files can use them
-without duplicating the code.
-
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.h | 173 +++++++++++++++++++++++++++++
- drivers/iommu/intel/pasid.h | 210 +++++++++++++++++++++++++++++++++++
- drivers/iommu/intel/iommu.c | 204 ++--------------------------------
- drivers/iommu/intel/pasid.c | 216 +-----------------------------------
- 4 files changed, 398 insertions(+), 405 deletions(-)
-
-diff --git a/drivers/iommu/intel/iommu.h b/drivers/iommu/intel/iommu.h
-index 049d6af6aae8..d747c33e4767 100644
---- a/drivers/iommu/intel/iommu.h
-+++ b/drivers/iommu/intel/iommu.h
-@@ -861,6 +861,179 @@ static inline struct intel_iommu *dev_to_iommu(struct device *dev)
- 	return ((struct device_domain_info *)dev_iommu_priv_get(dev))->iommu;
- }
- 
-+#define LEVEL_STRIDE		(9)
-+#define LEVEL_MASK		(((u64)1 << LEVEL_STRIDE) - 1)
-+#define MAX_AGAW_WIDTH		(64)
-+#define MAX_AGAW_PFN_WIDTH	(MAX_AGAW_WIDTH - VTD_PAGE_SHIFT)
-+
-+static inline int agaw_to_level(int agaw)
-+{
-+	return agaw + 2;
-+}
-+
-+static inline int agaw_to_width(int agaw)
-+{
-+	return min_t(int, 30 + agaw * LEVEL_STRIDE, MAX_AGAW_WIDTH);
-+}
-+
-+static inline int width_to_agaw(int width)
-+{
-+	return DIV_ROUND_UP(width - 30, LEVEL_STRIDE);
-+}
-+
-+static inline unsigned int level_to_offset_bits(int level)
-+{
-+	return (level - 1) * LEVEL_STRIDE;
-+}
-+
-+static inline int pfn_level_offset(u64 pfn, int level)
-+{
-+	return (pfn >> level_to_offset_bits(level)) & LEVEL_MASK;
-+}
-+
-+static inline u64 level_mask(int level)
-+{
-+	return -1ULL << level_to_offset_bits(level);
-+}
-+
-+static inline u64 level_size(int level)
-+{
-+	return 1ULL << level_to_offset_bits(level);
-+}
-+
-+static inline u64 align_to_level(u64 pfn, int level)
-+{
-+	return (pfn + level_size(level) - 1) & level_mask(level);
-+}
-+
-+static inline unsigned long lvl_to_nr_pages(unsigned int lvl)
-+{
-+	return 1UL << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
-+}
-+
-+/* VT-d pages must always be _smaller_ than MM pages. Otherwise things
-+   are never going to work. */
-+static inline unsigned long mm_to_dma_pfn_start(unsigned long mm_pfn)
-+{
-+	return mm_pfn << (PAGE_SHIFT - VTD_PAGE_SHIFT);
-+}
-+static inline unsigned long mm_to_dma_pfn_end(unsigned long mm_pfn)
-+{
-+	return ((mm_pfn + 1) << (PAGE_SHIFT - VTD_PAGE_SHIFT)) - 1;
-+}
-+static inline unsigned long page_to_dma_pfn(struct page *pg)
-+{
-+	return mm_to_dma_pfn_start(page_to_pfn(pg));
-+}
-+static inline unsigned long virt_to_dma_pfn(void *p)
-+{
-+	return page_to_dma_pfn(virt_to_page(p));
-+}
-+
-+static inline void context_set_present(struct context_entry *context)
-+{
-+	context->lo |= 1;
-+}
-+
-+static inline void context_set_fault_enable(struct context_entry *context)
-+{
-+	context->lo &= (((u64)-1) << 2) | 1;
-+}
-+
-+static inline void context_set_translation_type(struct context_entry *context,
-+						unsigned long value)
-+{
-+	context->lo &= (((u64)-1) << 4) | 3;
-+	context->lo |= (value & 3) << 2;
-+}
-+
-+static inline void context_set_address_root(struct context_entry *context,
-+					    unsigned long value)
-+{
-+	context->lo &= ~VTD_PAGE_MASK;
-+	context->lo |= value & VTD_PAGE_MASK;
-+}
-+
-+static inline void context_set_address_width(struct context_entry *context,
-+					     unsigned long value)
-+{
-+	context->hi |= value & 7;
-+}
-+
-+static inline void context_set_domain_id(struct context_entry *context,
-+					 unsigned long value)
-+{
-+	context->hi |= (value & ((1 << 16) - 1)) << 8;
-+}
-+
-+static inline void context_set_pasid(struct context_entry *context)
-+{
-+	context->lo |= CONTEXT_PASIDE;
-+}
-+
-+static inline int context_domain_id(struct context_entry *c)
-+{
-+	return((c->hi >> 8) & 0xffff);
-+}
-+
-+static inline void context_clear_entry(struct context_entry *context)
-+{
-+	context->lo = 0;
-+	context->hi = 0;
-+}
-+
-+static inline bool context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
-+{
-+	if (!iommu->copied_tables)
-+		return false;
-+
-+	return test_bit(((long)bus << 8) | devfn, iommu->copied_tables);
-+}
-+
-+static inline void
-+set_context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
-+{
-+	set_bit(((long)bus << 8) | devfn, iommu->copied_tables);
-+}
-+
-+static inline void
-+clear_context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
-+{
-+	clear_bit(((long)bus << 8) | devfn, iommu->copied_tables);
-+}
-+
-+/*
-+ * Set the RID_PASID field of a scalable mode context entry. The
-+ * IOMMU hardware will use the PASID value set in this field for
-+ * DMA translations of DMA requests without PASID.
-+ */
-+static inline void
-+context_set_sm_rid2pasid(struct context_entry *context, unsigned long pasid)
-+{
-+	context->hi |= pasid & ((1 << 20) - 1);
-+}
-+
-+/*
-+ * Set the DTE(Device-TLB Enable) field of a scalable mode context
-+ * entry.
-+ */
-+static inline void context_set_sm_dte(struct context_entry *context)
-+{
-+	context->lo |= BIT_ULL(2);
-+}
-+
-+/*
-+ * Set the PRE(Page Request Enable) field of a scalable mode context
-+ * entry.
-+ */
-+static inline void context_set_sm_pre(struct context_entry *context)
-+{
-+	context->lo |= BIT_ULL(4);
-+}
-+
-+/* Convert value to context PASID directory size field coding. */
-+#define context_pdts(pds)	(((pds) & 0x7) << 9)
-+
- struct dmar_drhd_unit *dmar_find_matched_drhd_unit(struct pci_dev *dev);
- 
- int dmar_enable_qi(struct intel_iommu *iommu);
-diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index 647723c650bf..3fc8ffc5048d 100644
---- a/drivers/iommu/intel/pasid.h
-+++ b/drivers/iommu/intel/pasid.h
-@@ -96,6 +96,216 @@ static inline u16 pasid_pte_get_pgtt(struct pasid_entry *pte)
- 	return (u16)((READ_ONCE(pte->val[0]) >> 6) & 0x7);
- }
- 
-+static inline void pasid_clear_entry(struct pasid_entry *pe)
-+{
-+	WRITE_ONCE(pe->val[0], 0);
-+	WRITE_ONCE(pe->val[1], 0);
-+	WRITE_ONCE(pe->val[2], 0);
-+	WRITE_ONCE(pe->val[3], 0);
-+	WRITE_ONCE(pe->val[4], 0);
-+	WRITE_ONCE(pe->val[5], 0);
-+	WRITE_ONCE(pe->val[6], 0);
-+	WRITE_ONCE(pe->val[7], 0);
-+}
-+
-+static inline void pasid_clear_entry_with_fpd(struct pasid_entry *pe)
-+{
-+	WRITE_ONCE(pe->val[0], PASID_PTE_FPD);
-+	WRITE_ONCE(pe->val[1], 0);
-+	WRITE_ONCE(pe->val[2], 0);
-+	WRITE_ONCE(pe->val[3], 0);
-+	WRITE_ONCE(pe->val[4], 0);
-+	WRITE_ONCE(pe->val[5], 0);
-+	WRITE_ONCE(pe->val[6], 0);
-+	WRITE_ONCE(pe->val[7], 0);
-+}
-+
-+static inline void pasid_set_bits(u64 *ptr, u64 mask, u64 bits)
-+{
-+	u64 old;
-+
-+	old = READ_ONCE(*ptr);
-+	WRITE_ONCE(*ptr, (old & ~mask) | bits);
-+}
-+
-+static inline u64 pasid_get_bits(u64 *ptr)
-+{
-+	return READ_ONCE(*ptr);
-+}
-+
-+/*
-+ * Setup the DID(Domain Identifier) field (Bit 64~79) of scalable mode
-+ * PASID entry.
-+ */
-+static inline void
-+pasid_set_domain_id(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[1], GENMASK_ULL(15, 0), value);
-+}
-+
-+/*
-+ * Get domain ID value of a scalable mode PASID entry.
-+ */
-+static inline u16
-+pasid_get_domain_id(struct pasid_entry *pe)
-+{
-+	return (u16)(READ_ONCE(pe->val[1]) & GENMASK_ULL(15, 0));
-+}
-+
-+/*
-+ * Setup the SLPTPTR(Second Level Page Table Pointer) field (Bit 12~63)
-+ * of a scalable mode PASID entry.
-+ */
-+static inline void
-+pasid_set_slptr(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[0], VTD_PAGE_MASK, value);
-+}
-+
-+/*
-+ * Setup the AW(Address Width) field (Bit 2~4) of a scalable mode PASID
-+ * entry.
-+ */
-+static inline void
-+pasid_set_address_width(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[0], GENMASK_ULL(4, 2), value << 2);
-+}
-+
-+/*
-+ * Setup the PGTT(PASID Granular Translation Type) field (Bit 6~8)
-+ * of a scalable mode PASID entry.
-+ */
-+static inline void
-+pasid_set_translation_type(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[0], GENMASK_ULL(8, 6), value << 6);
-+}
-+
-+/*
-+ * Enable fault processing by clearing the FPD(Fault Processing
-+ * Disable) field (Bit 1) of a scalable mode PASID entry.
-+ */
-+static inline void pasid_set_fault_enable(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[0], 1 << 1, 0);
-+}
-+
-+/*
-+ * Enable second level A/D bits by setting the SLADE (Second Level
-+ * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+ * entry.
-+ */
-+static inline void pasid_set_ssade(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[0], 1 << 9, 1 << 9);
-+}
-+
-+/*
-+ * Disable second level A/D bits by clearing the SLADE (Second Level
-+ * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+ * entry.
-+ */
-+static inline void pasid_clear_ssade(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[0], 1 << 9, 0);
-+}
-+
-+/*
-+ * Checks if second level A/D bits specifically the SLADE (Second Level
-+ * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-+ * entry is set.
-+ */
-+static inline bool pasid_get_ssade(struct pasid_entry *pe)
-+{
-+	return pasid_get_bits(&pe->val[0]) & (1 << 9);
-+}
-+
-+/*
-+ * Setup the SRE(Supervisor Request Enable) field (Bit 128) of a
-+ * scalable mode PASID entry.
-+ */
-+static inline void pasid_set_sre(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[2], 1 << 0, 1);
-+}
-+
-+/*
-+ * Setup the WPE(Write Protect Enable) field (Bit 132) of a
-+ * scalable mode PASID entry.
-+ */
-+static inline void pasid_set_wpe(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[2], 1 << 4, 1 << 4);
-+}
-+
-+/*
-+ * Setup the P(Present) field (Bit 0) of a scalable mode PASID
-+ * entry.
-+ */
-+static inline void pasid_set_present(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[0], 1 << 0, 1);
-+}
-+
-+/*
-+ * Setup Page Walk Snoop bit (Bit 87) of a scalable mode PASID
-+ * entry.
-+ */
-+static inline void pasid_set_page_snoop(struct pasid_entry *pe, bool value)
-+{
-+	pasid_set_bits(&pe->val[1], 1 << 23, value << 23);
-+}
-+
-+/*
-+ * Setup No Execute Enable bit (Bit 133) of a scalable mode PASID
-+ * entry. It is required when XD bit of the first level page table
-+ * entry is about to be set.
-+ */
-+static inline void pasid_set_nxe(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[2], 1 << 5, 1 << 5);
-+}
-+
-+/*
-+ * Setup the Page Snoop (PGSNP) field (Bit 88) of a scalable mode
-+ * PASID entry.
-+ */
-+static inline void
-+pasid_set_pgsnp(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[1], 1ULL << 24, 1ULL << 24);
-+}
-+
-+/*
-+ * Setup the First Level Page table Pointer field (Bit 140~191)
-+ * of a scalable mode PASID entry.
-+ */
-+static inline void
-+pasid_set_flptr(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[2], VTD_PAGE_MASK, value);
-+}
-+
-+/*
-+ * Setup the First Level Paging Mode field (Bit 130~131) of a
-+ * scalable mode PASID entry.
-+ */
-+static inline void
-+pasid_set_flpm(struct pasid_entry *pe, u64 value)
-+{
-+	pasid_set_bits(&pe->val[2], GENMASK_ULL(3, 2), value << 2);
-+}
-+
-+/*
-+ * Setup the Extended Access Flag Enable (EAFE) field (Bit 135)
-+ * of a scalable mode PASID entry.
-+ */
-+static inline void pasid_set_eafe(struct pasid_entry *pe)
-+{
-+	pasid_set_bits(&pe->val[2], 1 << 7, 1 << 7);
-+}
-+
- extern unsigned int intel_pasid_max_id;
- int intel_pasid_alloc_table(struct device *dev);
- void intel_pasid_free_table(struct device *dev);
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index 3ccc2739236b..efd8f49b1a85 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -46,9 +46,6 @@
- 
- #define DEFAULT_DOMAIN_ADDRESS_WIDTH 57
- 
--#define MAX_AGAW_WIDTH 64
--#define MAX_AGAW_PFN_WIDTH	(MAX_AGAW_WIDTH - VTD_PAGE_SHIFT)
--
- #define __DOMAIN_MAX_PFN(gaw)  ((((uint64_t)1) << ((gaw) - VTD_PAGE_SHIFT)) - 1)
- #define __DOMAIN_MAX_ADDR(gaw) ((((uint64_t)1) << (gaw)) - 1)
- 
-@@ -63,74 +60,6 @@
- 
- #define IOVA_PFN(addr)		((addr) >> PAGE_SHIFT)
- 
--/* page table handling */
--#define LEVEL_STRIDE		(9)
--#define LEVEL_MASK		(((u64)1 << LEVEL_STRIDE) - 1)
--
--static inline int agaw_to_level(int agaw)
--{
--	return agaw + 2;
--}
--
--static inline int agaw_to_width(int agaw)
--{
--	return min_t(int, 30 + agaw * LEVEL_STRIDE, MAX_AGAW_WIDTH);
--}
--
--static inline int width_to_agaw(int width)
--{
--	return DIV_ROUND_UP(width - 30, LEVEL_STRIDE);
--}
--
--static inline unsigned int level_to_offset_bits(int level)
--{
--	return (level - 1) * LEVEL_STRIDE;
--}
--
--static inline int pfn_level_offset(u64 pfn, int level)
--{
--	return (pfn >> level_to_offset_bits(level)) & LEVEL_MASK;
--}
--
--static inline u64 level_mask(int level)
--{
--	return -1ULL << level_to_offset_bits(level);
--}
--
--static inline u64 level_size(int level)
--{
--	return 1ULL << level_to_offset_bits(level);
--}
--
--static inline u64 align_to_level(u64 pfn, int level)
--{
--	return (pfn + level_size(level) - 1) & level_mask(level);
--}
--
--static inline unsigned long lvl_to_nr_pages(unsigned int lvl)
--{
--	return 1UL << min_t(int, (lvl - 1) * LEVEL_STRIDE, MAX_AGAW_PFN_WIDTH);
--}
--
--/* VT-d pages must always be _smaller_ than MM pages. Otherwise things
--   are never going to work. */
--static inline unsigned long mm_to_dma_pfn_start(unsigned long mm_pfn)
--{
--	return mm_pfn << (PAGE_SHIFT - VTD_PAGE_SHIFT);
--}
--static inline unsigned long mm_to_dma_pfn_end(unsigned long mm_pfn)
--{
--	return ((mm_pfn + 1) << (PAGE_SHIFT - VTD_PAGE_SHIFT)) - 1;
--}
--static inline unsigned long page_to_dma_pfn(struct page *pg)
--{
--	return mm_to_dma_pfn_start(page_to_pfn(pg));
--}
--static inline unsigned long virt_to_dma_pfn(void *p)
--{
--	return page_to_dma_pfn(virt_to_page(p));
--}
--
- static void __init check_tylersburg_isoch(void);
- static int rwbf_quirk;
- 
-@@ -168,78 +97,6 @@ static phys_addr_t root_entry_uctp(struct root_entry *re)
- 	return re->hi & VTD_PAGE_MASK;
- }
- 
--static inline void context_set_present(struct context_entry *context)
--{
--	context->lo |= 1;
--}
--
--static inline void context_set_fault_enable(struct context_entry *context)
--{
--	context->lo &= (((u64)-1) << 2) | 1;
--}
--
--static inline void context_set_translation_type(struct context_entry *context,
--						unsigned long value)
--{
--	context->lo &= (((u64)-1) << 4) | 3;
--	context->lo |= (value & 3) << 2;
--}
--
--static inline void context_set_address_root(struct context_entry *context,
--					    unsigned long value)
--{
--	context->lo &= ~VTD_PAGE_MASK;
--	context->lo |= value & VTD_PAGE_MASK;
--}
--
--static inline void context_set_address_width(struct context_entry *context,
--					     unsigned long value)
--{
--	context->hi |= value & 7;
--}
--
--static inline void context_set_domain_id(struct context_entry *context,
--					 unsigned long value)
--{
--	context->hi |= (value & ((1 << 16) - 1)) << 8;
--}
--
--static inline void context_set_pasid(struct context_entry *context)
--{
--	context->lo |= CONTEXT_PASIDE;
--}
--
--static inline int context_domain_id(struct context_entry *c)
--{
--	return((c->hi >> 8) & 0xffff);
--}
--
--static inline void context_clear_entry(struct context_entry *context)
--{
--	context->lo = 0;
--	context->hi = 0;
--}
--
--static inline bool context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
--{
--	if (!iommu->copied_tables)
--		return false;
--
--	return test_bit(((long)bus << 8) | devfn, iommu->copied_tables);
--}
--
--static inline void
--set_context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
--{
--	set_bit(((long)bus << 8) | devfn, iommu->copied_tables);
--}
--
--static inline void
--clear_context_copied(struct intel_iommu *iommu, u8 bus, u8 devfn)
--{
--	clear_bit(((long)bus << 8) | devfn, iommu->copied_tables);
--}
--
- /*
-  * This domain is a statically identity mapping domain.
-  *	1. This domain creats a static 1:1 mapping to all usable memory.
-@@ -383,13 +240,12 @@ void free_pgtable_page(void *vaddr)
- 	free_page((unsigned long)vaddr);
- }
- 
--static inline int domain_type_is_si(struct dmar_domain *domain)
-+static int domain_type_is_si(struct dmar_domain *domain)
- {
- 	return domain->domain.type == IOMMU_DOMAIN_IDENTITY;
- }
- 
--static inline int domain_pfn_supported(struct dmar_domain *domain,
--				       unsigned long pfn)
-+static int domain_pfn_supported(struct dmar_domain *domain, unsigned long pfn)
- {
- 	int addr_width = agaw_to_width(domain->agaw) - VTD_PAGE_SHIFT;
- 
-@@ -451,7 +307,7 @@ int iommu_calculate_agaw(struct intel_iommu *iommu)
- 	return __iommu_calculate_agaw(iommu, DEFAULT_DOMAIN_ADDRESS_WIDTH);
- }
- 
--static inline bool iommu_paging_structure_coherency(struct intel_iommu *iommu)
-+static bool iommu_paging_structure_coherency(struct intel_iommu *iommu)
- {
- 	return sm_supported(iommu) ?
- 			ecap_smpwc(iommu->ecap) : ecap_coherent(iommu->ecap);
-@@ -1574,9 +1430,8 @@ static void iommu_flush_iotlb_psi(struct intel_iommu *iommu,
- }
- 
- /* Notification for newly created mappings */
--static inline void __mapping_notify_one(struct intel_iommu *iommu,
--					struct dmar_domain *domain,
--					unsigned long pfn, unsigned int pages)
-+static void __mapping_notify_one(struct intel_iommu *iommu, struct dmar_domain *domain,
-+				 unsigned long pfn, unsigned int pages)
- {
- 	/*
- 	 * It's a non-present to present mapping. Only flush if caching mode
-@@ -1843,7 +1698,7 @@ void domain_detach_iommu(struct dmar_domain *domain, struct intel_iommu *iommu)
- 	spin_unlock(&iommu->lock);
- }
- 
--static inline int guestwidth_to_adjustwidth(int gaw)
-+static int guestwidth_to_adjustwidth(int gaw)
- {
- 	int agaw;
- 	int r = (gaw - 12) % 9;
-@@ -1877,7 +1732,7 @@ static void domain_exit(struct dmar_domain *domain)
-  * Value of X in the PDTS field of a scalable mode context entry
-  * indicates PASID directory with 2^(X + 7) entries.
-  */
--static inline unsigned long context_get_sm_pds(struct pasid_table *table)
-+static unsigned long context_get_sm_pds(struct pasid_table *table)
- {
- 	unsigned long pds, max_pde;
- 
-@@ -1889,38 +1744,6 @@ static inline unsigned long context_get_sm_pds(struct pasid_table *table)
- 	return pds - 7;
- }
- 
--/*
-- * Set the RID_PASID field of a scalable mode context entry. The
-- * IOMMU hardware will use the PASID value set in this field for
-- * DMA translations of DMA requests without PASID.
-- */
--static inline void
--context_set_sm_rid2pasid(struct context_entry *context, unsigned long pasid)
--{
--	context->hi |= pasid & ((1 << 20) - 1);
--}
--
--/*
-- * Set the DTE(Device-TLB Enable) field of a scalable mode context
-- * entry.
-- */
--static inline void context_set_sm_dte(struct context_entry *context)
--{
--	context->lo |= BIT_ULL(2);
--}
--
--/*
-- * Set the PRE(Page Request Enable) field of a scalable mode context
-- * entry.
-- */
--static inline void context_set_sm_pre(struct context_entry *context)
--{
--	context->lo |= BIT_ULL(4);
--}
--
--/* Convert value to context PASID directory size field coding. */
--#define context_pdts(pds)	(((pds) & 0x7) << 9)
--
- static int domain_context_mapping_one(struct dmar_domain *domain,
- 				      struct intel_iommu *iommu,
- 				      struct pasid_table *table,
-@@ -2102,18 +1925,15 @@ domain_context_mapping(struct dmar_domain *domain, struct device *dev)
- }
- 
- /* Returns a number of VTD pages, but aligned to MM page size */
--static inline unsigned long aligned_nrpages(unsigned long host_addr,
--					    size_t size)
-+static unsigned long aligned_nrpages(unsigned long host_addr, size_t size)
- {
- 	host_addr &= ~PAGE_MASK;
- 	return PAGE_ALIGN(host_addr + size) >> VTD_PAGE_SHIFT;
- }
- 
- /* Return largest possible superpage level for a given mapping */
--static inline int hardware_largepage_caps(struct dmar_domain *domain,
--					  unsigned long iov_pfn,
--					  unsigned long phy_pfn,
--					  unsigned long pages)
-+static int hardware_largepage_caps(struct dmar_domain *domain, unsigned long iov_pfn,
-+				   unsigned long phy_pfn, unsigned long pages)
- {
- 	int support, level = 1;
- 	unsigned long pfnmerge;
-@@ -3604,7 +3424,7 @@ void intel_iommu_shutdown(void)
- 	up_write(&dmar_global_lock);
- }
- 
--static inline struct intel_iommu *dev_to_intel_iommu(struct device *dev)
-+static struct intel_iommu *dev_to_intel_iommu(struct device *dev)
- {
- 	struct iommu_device *iommu_dev = dev_to_iommu_device(dev);
- 
-@@ -3683,7 +3503,7 @@ const struct attribute_group *intel_iommu_groups[] = {
- 	NULL,
- };
- 
--static inline bool has_external_pci(void)
-+static bool has_external_pci(void)
- {
- 	struct pci_dev *pdev = NULL;
- 
-diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 57ae716a2c70..3239cefa4c33 100644
---- a/drivers/iommu/intel/pasid.c
-+++ b/drivers/iommu/intel/pasid.c
-@@ -173,30 +173,6 @@ static struct pasid_entry *intel_pasid_get_entry(struct device *dev, u32 pasid)
- /*
-  * Interfaces for PASID table entry manipulation:
-  */
--static inline void pasid_clear_entry(struct pasid_entry *pe)
--{
--	WRITE_ONCE(pe->val[0], 0);
--	WRITE_ONCE(pe->val[1], 0);
--	WRITE_ONCE(pe->val[2], 0);
--	WRITE_ONCE(pe->val[3], 0);
--	WRITE_ONCE(pe->val[4], 0);
--	WRITE_ONCE(pe->val[5], 0);
--	WRITE_ONCE(pe->val[6], 0);
--	WRITE_ONCE(pe->val[7], 0);
--}
--
--static inline void pasid_clear_entry_with_fpd(struct pasid_entry *pe)
--{
--	WRITE_ONCE(pe->val[0], PASID_PTE_FPD);
--	WRITE_ONCE(pe->val[1], 0);
--	WRITE_ONCE(pe->val[2], 0);
--	WRITE_ONCE(pe->val[3], 0);
--	WRITE_ONCE(pe->val[4], 0);
--	WRITE_ONCE(pe->val[5], 0);
--	WRITE_ONCE(pe->val[6], 0);
--	WRITE_ONCE(pe->val[7], 0);
--}
--
- static void
- intel_pasid_clear_entry(struct device *dev, u32 pasid, bool fault_ignore)
- {
-@@ -212,192 +188,6 @@ intel_pasid_clear_entry(struct device *dev, u32 pasid, bool fault_ignore)
- 		pasid_clear_entry(pe);
- }
- 
--static inline void pasid_set_bits(u64 *ptr, u64 mask, u64 bits)
--{
--	u64 old;
--
--	old = READ_ONCE(*ptr);
--	WRITE_ONCE(*ptr, (old & ~mask) | bits);
--}
--
--static inline u64 pasid_get_bits(u64 *ptr)
--{
--	return READ_ONCE(*ptr);
--}
--
--/*
-- * Setup the DID(Domain Identifier) field (Bit 64~79) of scalable mode
-- * PASID entry.
-- */
--static inline void
--pasid_set_domain_id(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[1], GENMASK_ULL(15, 0), value);
--}
--
--/*
-- * Get domain ID value of a scalable mode PASID entry.
-- */
--static inline u16
--pasid_get_domain_id(struct pasid_entry *pe)
--{
--	return (u16)(READ_ONCE(pe->val[1]) & GENMASK_ULL(15, 0));
--}
--
--/*
-- * Setup the SLPTPTR(Second Level Page Table Pointer) field (Bit 12~63)
-- * of a scalable mode PASID entry.
-- */
--static inline void
--pasid_set_slptr(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[0], VTD_PAGE_MASK, value);
--}
--
--/*
-- * Setup the AW(Address Width) field (Bit 2~4) of a scalable mode PASID
-- * entry.
-- */
--static inline void
--pasid_set_address_width(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[0], GENMASK_ULL(4, 2), value << 2);
--}
--
--/*
-- * Setup the PGTT(PASID Granular Translation Type) field (Bit 6~8)
-- * of a scalable mode PASID entry.
-- */
--static inline void
--pasid_set_translation_type(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[0], GENMASK_ULL(8, 6), value << 6);
--}
--
--/*
-- * Enable fault processing by clearing the FPD(Fault Processing
-- * Disable) field (Bit 1) of a scalable mode PASID entry.
-- */
--static inline void pasid_set_fault_enable(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[0], 1 << 1, 0);
--}
--
--/*
-- * Enable second level A/D bits by setting the SLADE (Second Level
-- * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-- * entry.
-- */
--static inline void pasid_set_ssade(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[0], 1 << 9, 1 << 9);
--}
--
--/*
-- * Disable second level A/D bits by clearing the SLADE (Second Level
-- * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-- * entry.
-- */
--static inline void pasid_clear_ssade(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[0], 1 << 9, 0);
--}
--
--/*
-- * Checks if second level A/D bits specifically the SLADE (Second Level
-- * Access Dirty Enable) field (Bit 9) of a scalable mode PASID
-- * entry is set.
-- */
--static inline bool pasid_get_ssade(struct pasid_entry *pe)
--{
--	return pasid_get_bits(&pe->val[0]) & (1 << 9);
--}
--
--/*
-- * Setup the SRE(Supervisor Request Enable) field (Bit 128) of a
-- * scalable mode PASID entry.
-- */
--static inline void pasid_set_sre(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[2], 1 << 0, 1);
--}
--
--/*
-- * Setup the WPE(Write Protect Enable) field (Bit 132) of a
-- * scalable mode PASID entry.
-- */
--static inline void pasid_set_wpe(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[2], 1 << 4, 1 << 4);
--}
--
--/*
-- * Setup the P(Present) field (Bit 0) of a scalable mode PASID
-- * entry.
-- */
--static inline void pasid_set_present(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[0], 1 << 0, 1);
--}
--
--/*
-- * Setup Page Walk Snoop bit (Bit 87) of a scalable mode PASID
-- * entry.
-- */
--static inline void pasid_set_page_snoop(struct pasid_entry *pe, bool value)
--{
--	pasid_set_bits(&pe->val[1], 1 << 23, value << 23);
--}
--
--/*
-- * Setup No Execute Enable bit (Bit 133) of a scalable mode PASID
-- * entry. It is required when XD bit of the first level page table
-- * entry is about to be set.
-- */
--static inline void pasid_set_nxe(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[2], 1 << 5, 1 << 5);
--}
--
--/*
-- * Setup the Page Snoop (PGSNP) field (Bit 88) of a scalable mode
-- * PASID entry.
-- */
--static inline void
--pasid_set_pgsnp(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[1], 1ULL << 24, 1ULL << 24);
--}
--
--/*
-- * Setup the First Level Page table Pointer field (Bit 140~191)
-- * of a scalable mode PASID entry.
-- */
--static inline void
--pasid_set_flptr(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[2], VTD_PAGE_MASK, value);
--}
--
--/*
-- * Setup the First Level Paging Mode field (Bit 130~131) of a
-- * scalable mode PASID entry.
-- */
--static inline void
--pasid_set_flpm(struct pasid_entry *pe, u64 value)
--{
--	pasid_set_bits(&pe->val[2], GENMASK_ULL(3, 2), value << 2);
--}
--
--/*
-- * Setup the Extended Access Flag Enable (EAFE) field (Bit 135)
-- * of a scalable mode PASID entry.
-- */
--static inline void pasid_set_eafe(struct pasid_entry *pe)
--{
--	pasid_set_bits(&pe->val[2], 1 << 7, 1 << 7);
--}
--
- static void
- pasid_cache_invalidation_with_pasid(struct intel_iommu *iommu,
- 				    u16 did, u32 pasid)
-@@ -556,9 +346,9 @@ int intel_pasid_setup_first_level(struct intel_iommu *iommu,
-  * Skip top levels of page tables for iommu which has less agaw
-  * than default. Unnecessary for PT mode.
-  */
--static inline int iommu_skip_agaw(struct dmar_domain *domain,
--				  struct intel_iommu *iommu,
--				  struct dma_pte **pgd)
-+static int iommu_skip_agaw(struct dmar_domain *domain,
-+			   struct intel_iommu *iommu,
-+			   struct dma_pte **pgd)
- {
- 	int agaw;
- 
--- 
-2.34.1
-
+DQpPbiAyMDIzLTExLTE1IDE5OjM0OjI3KzA4MDAsIGh1YW5nemFpeWFuZyB3cm90ZToNCj4gVGhl
+cmUgaXMgYSB0aW1lcl9saXN0IHJhY2UgY29uZGl0aW9uIGlmIGEgZGVsYXkgd29yayBpcyBxdWV1
+ZWQgdHdpY2UsDQo+IHRoaXMgdXN1YWxseSB3b24ndCBoYXBwZW4gdW5sZXNzIHNvbWVvbmUgcmVp
+bml0aWFsaXplcyB0aGUgdGFzayBiZWZvcmUgcGVyZm9ybWluZyB0aGUgZW5xdWV1ZSBvcGVyYXRp
+b24sbGlrZcOvwrw/DQo+IGh0dHBzOi8vZ2l0aHViLmNvbS90b3J2YWxkcy9saW51eC9ibG9iL21h
+c3Rlci9kcml2ZXJzL2RldmZyZXEvZGV2ZnJlcS4NCj4gYyNMNDg3IEEgd2FybmluZyBtZXNzYWdl
+IHdpbGwgaGVscCBkZXZlbG9wZXJzIGlkZW50aWZ5IHRoaXMgaXJyZWd1bGFyDQo+IHVzYWdlLg0K
+Pg0KPiBTaWduZWQtb2ZmLWJ5OiBaYWlZYW5nIEh1YW5nIDxoenkwNzE5QDE2My5jb20+DQo+IC0t
+LQ0KPiAgaW5jbHVkZS9saW51eC93b3JrcXVldWUuaCB8IDMzICsrKysrKysrKysrKysrKysrKy0t
+LS0tLS0tLS0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDE1IGRl
+bGV0aW9ucygtKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9saW51eC93b3JrcXVldWUuaCBi
+L2luY2x1ZGUvbGludXgvd29ya3F1ZXVlLmgNCj4gaW5kZXggMjRiMWU1MDcwZjRkLi41NDEwMmVk
+Nzk0ZTUgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvd29ya3F1ZXVlLmgNCj4gKysrIGIv
+aW5jbHVkZS9saW51eC93b3JrcXVldWUuaA0KPiBAQCAtMjY2LDYgKzI2NiwyMiBAQCBzdGF0aWMg
+aW5saW5lIHZvaWQNCj4gZGVzdHJveV9kZWxheWVkX3dvcmtfb25fc3RhY2soc3RydWN0IGRlbGF5
+ZWRfd29yayAqd29yaykgeyB9ICBzdGF0aWMNCj4gaW5saW5lIHVuc2lnbmVkIGludCB3b3JrX3N0
+YXRpYyhzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmspIHsgcmV0dXJuIDA7DQo+IH0gICNlbmRpZg0K
+Pg0KPiArLyoqDQo+ICsgKiB3b3JrX3BlbmRpbmcgLSBGaW5kIG91dCB3aGV0aGVyIGEgd29yayBp
+dGVtIGlzIGN1cnJlbnRseSBwZW5kaW5nDQo+ICsgKiBAd29yazogVGhlIHdvcmsgaXRlbSBpbiBx
+dWVzdGlvbg0KPiArICovDQo+ICsjZGVmaW5lIHdvcmtfcGVuZGluZyh3b3JrKSBcDQo+ICsgICAg
+ICAgdGVzdF9iaXQoV09SS19TVFJVQ1RfUEVORElOR19CSVQsIHdvcmtfZGF0YV9iaXRzKHdvcmsp
+KQ0KPiArDQo+ICsvKioNCj4gKyAqIGRlbGF5ZWRfd29ya19wZW5kaW5nIC0gRmluZCBvdXQgd2hl
+dGhlciBhIGRlbGF5YWJsZSB3b3JrIGl0ZW0gaXMNCj4gK2N1cnJlbnRseQ0KPiArICogcGVuZGlu
+Zw0KPiArICogQHc6IFRoZSB3b3JrIGl0ZW0gaW4gcXVlc3Rpb24NCj4gKyAqLw0KPiArI2RlZmlu
+ZSBkZWxheWVkX3dvcmtfcGVuZGluZyh3KSBcDQo+ICsgICAgICAgd29ya19wZW5kaW5nKCYodykt
+PndvcmspDQo+ICsNCj4gKw0KPiAgLyoNCj4gICAqIGluaXRpYWxpemUgYWxsIG9mIGEgd29yayBp
+dGVtIGluIG9uZSBnbw0KPiAgICoNCj4gQEAgLTMxMCw2ICszMjYsNyBAQCBzdGF0aWMgaW5saW5l
+IHVuc2lnbmVkIGludCB3b3JrX3N0YXRpYyhzdHJ1Y3QNCj4gd29ya19zdHJ1Y3QgKndvcmspIHsg
+cmV0dXJuIDA7IH0NCj4NCj4gICNkZWZpbmUgX19JTklUX0RFTEFZRURfV09SSyhfd29yaywgX2Z1
+bmMsIF90ZmxhZ3MpICAgICAgICAgICAgICAgICAgICAgXA0KPiAgICAgICAgIGRvIHsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQo+
+ICsgICAgICAgICAgICAgICBXQVJOX09OKGRlbGF5ZWRfd29ya19wZW5kaW5nKF93b3JrKSk7ICAg
+ICAgICAgICAgICAgICAgIFwNCg0KSG93IGRvZXMgdGhpcyB3b3JrIHdoZW4gdGhlIGRhdGEgX3dv
+cmsgcG9pbnRzIHRvIGlzIG5vdCB5ZXQgaW5pdGlhbGl6ZWQ/DQpSZWFkaW5nIHVuaW5pdGlhbGl6
+ZWQgZGF0YSBpcyBVQiBhbmQgbWF5IHNwdXJpb3VzbHkgdHJpZ2dlciB0aGUgd2FybmluZy4NCg0K
+LS0+IFRoZSBkYXRhIG1lbWJlciBpbiB3b3JrX3N0cnVjdCBpcyBhIHZhcmlhYmxlIG9mIHR5cGUg
+YXRvbWljX2xvbmdfdCwgYW5kIDAgaXMgdGhlIGluaXRpYWwgdmFsdWUgb2YgdGhlIGF0b21pYyB2
+YXJpYWJsZSwgcmlnaHQ/DQotLT4gT24gdGhlIG90aGVyIGhhbmQsIGlmIGEgdmFyaWFibGUgb2Yg
+dHlwZSB3b3JrX3N0cnVjdCBpcyBkeW5hbWljYWxseSBhbGxvY2F0ZWQsIGFuIHVubmVjZXNzYXJ5
+IHdhcm5pbmcgbWF5IGJlIGdlbmVyYXRlZCByYW5kb21seTsgaG93ZXZlciwgaXQgc2hvdWxkIGJl
+IGEgZ29vZCBoYWJpdCB0byBpbml0aWFsaXplIGR5bmFtaWNhbGx5IGFsbG9jYXRlZCB2YXJpYWJs
+ZXMgdG8gMC4NCg0KPiAgICAgICAgICAgICAgICAgSU5JVF9XT1JLKCYoX3dvcmspLT53b3JrLCAo
+X2Z1bmMpKTsgICAgICAgICAgICAgICAgICAgICBcDQo+ICAgICAgICAgICAgICAgICBfX2luaXRf
+dGltZXIoJihfd29yayktPnRpbWVyLCAgICAgICAgICAgICAgICAgICAgICAgICAgIFwNCj4gICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBkZWxheWVkX3dvcmtfdGltZXJfZm4sICAgICAgICAg
+ICAgICAgICAgICAgXA0KPiBAQCAtMzE4LDYgKzMzNSw3IEBAIHN0YXRpYyBpbmxpbmUgdW5zaWdu
+ZWQgaW50IHdvcmtfc3RhdGljKHN0cnVjdA0KPiB3b3JrX3N0cnVjdCAqd29yaykgeyByZXR1cm4g
+MDsgfQ0KDQpbLi5dDQoNCj4gLS0NCj4gMi4xNy4xDQo+DQo+IF9fX19fX19fX19fX19fX19fX19f
+X19fX19fX19fX19fDQo+IE9QUE8NCg0KVGhlIGd1bmsgYXQgdGhlIGVuZCBvZiB0aGUgbWFpbCB3
+aWxsIHByZXZlbnQgeW91ciBwYXRjaCBmcm9tIGJlaW5nIGNvbnNpZGVyZWQgYXQgYWxsLg0KDQo+
+DQo+IMKxwr7CtcOnw5fDk8OTw4rCvMO+wrzCsMOGw6TCuMK9wrzDvsK6wqzDk8OQT1BQT8K5wqvD
+i8K+wrXDhMKxwqPDg8Ocw5DDhcOPwqLCo8Kswr3DtsOPw57Dk8Oaw5PDisK8w77DlsK4w4PDt8K1
+w4TDisOVwrzDvsOIw4vCo8KowrDDvMK6wqwNCj4gwrjDtsOIw4vCvMKww4jCusOXw6nCo8Kpw4rC
+ucOTw4PCocKjwr3Du8OWwrnDiMOOwrrDjsOIw4vDlMOaw47CtMK+wq3DisOaw4jCqMK1w4TDh8Op
+wr/DtsOPw4LDksOUw4jDjsK6w47DkMOOw4rCvcOKwrnDk8ODwqHCo8OIw6fCucO7w4TDusK0w60N
+Cj4gw4rDlcOBw4vCscK+w5PDisK8w77Co8Ksw4fDkMOOw7DCtMKrwrLCpcKhwqLCt8OWwrfCosKh
+wqLCuMK0w5bDhsKhwqLDk8Khw4vCosK7w7LDisK5w5PDg8Kxwr7Dk8OKwrzDvsOWwq7DiMOOwrrD
+jsKywr/Ct8OWwrvDssOGw6TDi8O5w5TDmMOWwq4NCj4gw4jDjsK6w47DhMOaw4jDncKjwqzCssKi
+w4fDq8OBwqLCvMK0w5LDlMK1w6fDl8OTw5PDisK8w77DjcKow5bCqsK3wqLCvMO+w4jDi8KywqLD
+icK+wrPDvcKxwr7Dk8OKwrzDvsK8wrDDhsOkwrjCvcK8w77CocKjDQoNClsuLl0NCl9fX19fX19f
+X19fX19fX19fX19fX19fX19fX19fX19fDQpPUFBPDQoNCuacrOeUteWtkOmCruS7tuWPiuWFtumZ
+hOS7tuWQq+aciU9QUE/lhazlj7jnmoTkv53lr4bkv6Hmga/vvIzku4XpmZDkuo7pgq7ku7bmjIfm
+mI7nmoTmlLbku7bkurrvvIjljIXlkKvkuKrkurrlj4rnvqTnu4TvvInkvb/nlKjjgILnpoHmraLk
+u7vkvZXkurrlnKjmnKrnu4/mjojmnYPnmoTmg4XlhrXkuIvku6Xku7vkvZXlvaLlvI/kvb/nlKjj
+gILlpoLmnpzmgqjplJnmlLbkuobmnKzpgq7ku7bvvIzliIfli7/kvKDmkq3jgIHliIblj5HjgIHl
+pI3liLbjgIHljbDliLfmiJbkvb/nlKjmnKzpgq7ku7bkuYvku7vkvZXpg6jliIbmiJblhbbmiYDo
+vb3kuYvku7vkvZXlhoXlrrnvvIzlubbor7fnq4vljbPku6XnlLXlrZDpgq7ku7bpgJrnn6Xlj5Hk
+u7bkurrlubbliKDpmaTmnKzpgq7ku7blj4rlhbbpmYTku7bjgIINCue9kee7nOmAmuiur+Wbuuac
+iee8uumZt+WPr+iDveWvvOiHtOmCruS7tuiiq+aIqueVmeOAgeS/ruaUueOAgeS4ouWkseOAgeeg
+tOWdj+aIluWMheWQq+iuoeeul+acuueXheavkuetieS4jeWuieWFqOaDheWGte+8jE9QUE/lr7nm
+raTnsbvplJnor6/miJbpgZfmvI/ogIzlvJXoh7TkuYvku7vkvZXmjZ/lpLHmpoLkuI3mib/mi4Xo
+tKPku7vlubbkv53nlZnkuI7mnKzpgq7ku7bnm7jlhbPkuYvkuIDliIfmnYPliKnjgIINCumZpOmd
+nuaYjuehruivtOaYju+8jOacrOmCruS7tuWPiuWFtumZhOS7tuaXoOaEj+S9nOS4uuWcqOS7u+S9
+leWbveWutuaIluWcsOWMuuS5i+imgee6puOAgeaLm+aPveaIluaJv+ivuu+8jOS6puaXoOaEj+S9
+nOS4uuS7u+S9leS6pOaYk+aIluWQiOWQjOS5i+ato+W8j+ehruiupOOAgiDlj5Hku7bkurrjgIHl
+hbbmiYDlsZ7mnLrmnoTmiJbmiYDlsZ7mnLrmnoTkuYvlhbPogZTmnLrmnoTmiJbku7vkvZXkuIro
+v7DmnLrmnoTkuYvogqHkuJzjgIHokaPkuovjgIHpq5jnuqfnrqHnkIbkurrlkZjjgIHlkZjlt6Xm
+iJblhbbku5bku7vkvZXkurrvvIjku6XkuIvnp7DigJzlj5Hku7bkurrigJ3miJbigJxPUFBP4oCd
+77yJ5LiN5Zug5pys6YKu5Lu25LmL6K+v6YCB6ICM5pS+5byD5YW25omA5Lqr5LmL5Lu75L2V5p2D
+5Yip77yM5Lqm5LiN5a+55Zug5pWF5oSP5oiW6L+H5aSx5L2/55So6K+l562J5L+h5oGv6ICM5byV
+5Y+R5oiW5Y+v6IO95byV5Y+R55qE5o2f5aSx5om/5ouF5Lu75L2V6LSj5Lu744CCDQrmlofljJbl
+t67lvILmiqvpnLLvvJrlm6DlhajnkIPmlofljJblt67lvILlvbHlk43vvIzljZXnuq/ku6VZRVNc
+T0vmiJblhbbku5bnroDljZXor43msYfnmoTlm57lpI3lubbkuI3mnoTmiJDlj5Hku7bkurrlr7nk
+u7vkvZXkuqTmmJPmiJblkIjlkIzkuYvmraPlvI/noa7orqTmiJbmjqXlj5fvvIzor7fkuI7lj5Hk
+u7bkurrlho3mrKHnoa7orqTku6XojrflvpfmmI7noa7kuabpnaLmhI/op4HjgILlj5Hku7bkurrk
+uI3lr7nku7vkvZXlj5fmlofljJblt67lvILlvbHlk43ogIzlr7zoh7TmlYXmhI/miJbplJnor6/k
+vb/nlKjor6XnrYnkv6Hmga/miYDpgKDmiJDnmoTku7vkvZXnm7TmjqXmiJbpl7TmjqXmjZ/lrrPm
+ib/mi4XotKPku7vjgIINClRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMgY29udGFpbiBj
+b25maWRlbnRpYWwgaW5mb3JtYXRpb24gZnJvbSBPUFBPLCB3aGljaCBpcyBpbnRlbmRlZCBvbmx5
+IGZvciB0aGUgcGVyc29uIG9yIGVudGl0eSB3aG9zZSBhZGRyZXNzIGlzIGxpc3RlZCBhYm92ZS4g
+QW55IHVzZSBvZiB0aGUgaW5mb3JtYXRpb24gY29udGFpbmVkIGhlcmVpbiBpbiBhbnkgd2F5IChp
+bmNsdWRpbmcsIGJ1dCBub3QgbGltaXRlZCB0bywgdG90YWwgb3IgcGFydGlhbCBkaXNjbG9zdXJl
+LCByZXByb2R1Y3Rpb24sIG9yIGRpc3NlbWluYXRpb24pIGJ5IHBlcnNvbnMgb3RoZXIgdGhhbiB0
+aGUgaW50ZW5kZWQgcmVjaXBpZW50KHMpIGlzIHByb2hpYml0ZWQuIElmIHlvdSBhcmUgbm90IHRo
+ZSBpbnRlbmRlZCByZWNpcGllbnQsIHBsZWFzZSBkbyBub3QgcmVhZCwgY29weSwgZGlzdHJpYnV0
+ZSwgb3IgdXNlIHRoaXMgaW5mb3JtYXRpb24uIElmIHlvdSBoYXZlIHJlY2VpdmVkIHRoaXMgdHJh
+bnNtaXNzaW9uIGluIGVycm9yLCBwbGVhc2Ugbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkg
+YnkgcmVwbHkgZS1tYWlsIGFuZCB0aGVuIGRlbGV0ZSB0aGlzIG1lc3NhZ2UuDQpFbGVjdHJvbmlj
+IGNvbW11bmljYXRpb25zIG1heSBjb250YWluIGNvbXB1dGVyIHZpcnVzZXMgb3Igb3RoZXIgZGVm
+ZWN0cyBpbmhlcmVudGx5LCBtYXkgbm90IGJlIGFjY3VyYXRlbHkgYW5kL29yIHRpbWVseSB0cmFu
+c21pdHRlZCB0byBvdGhlciBzeXN0ZW1zLCBvciBtYXkgYmUgaW50ZXJjZXB0ZWQsIG1vZGlmaWVk
+ICxkZWxheWVkLCBkZWxldGVkIG9yIGludGVyZmVyZWQuIE9QUE8gc2hhbGwgbm90IGJlIGxpYWJs
+ZSBmb3IgYW55IGRhbWFnZXMgdGhhdCBhcmlzZSBvciBtYXkgYXJpc2UgZnJvbSBzdWNoIG1hdHRl
+ciBhbmQgcmVzZXJ2ZXMgYWxsIHJpZ2h0cyBpbiBjb25uZWN0aW9uIHdpdGggdGhlIGVtYWlsLg0K
+VW5sZXNzIGV4cHJlc3NseSBzdGF0ZWQsIHRoaXMgZS1tYWlsIGFuZCBpdHMgYXR0YWNobWVudHMg
+YXJlIHByb3ZpZGVkIHdpdGhvdXQgYW55IHdhcnJhbnR5LCBhY2NlcHRhbmNlIG9yIHByb21pc2Ug
+b2YgYW55IGtpbmQgaW4gYW55IGNvdW50cnkgb3IgcmVnaW9uLCBub3IgY29uc3RpdHV0ZSBhIGZv
+cm1hbCBjb25maXJtYXRpb24gb3IgYWNjZXB0YW5jZSBvZiBhbnkgdHJhbnNhY3Rpb24gb3IgY29u
+dHJhY3QuIFRoZSBzZW5kZXIsIHRvZ2V0aGVyIHdpdGggaXRzIGFmZmlsaWF0ZXMgb3IgYW55IHNo
+YXJlaG9sZGVyLCBkaXJlY3Rvciwgb2ZmaWNlciwgZW1wbG95ZWUgb3IgYW55IG90aGVyIHBlcnNv
+biBvZiBhbnkgc3VjaCBpbnN0aXR1dGlvbiAoaGVyZWluYWZ0ZXIgcmVmZXJyZWQgdG8gYXMgInNl
+bmRlciIgb3IgIk9QUE8iKSBkb2VzIG5vdCB3YWl2ZSBhbnkgcmlnaHRzIGFuZCBzaGFsbCBub3Qg
+YmUgbGlhYmxlIGZvciBhbnkgZGFtYWdlcyB0aGF0IGFyaXNlIG9yIG1heSBhcmlzZSBmcm9tIHRo
+ZSBpbnRlbnRpb25hbCBvciBuZWdsaWdlbnQgdXNlIG9mIHN1Y2ggaW5mb3JtYXRpb24uDQpDdWx0
+dXJhbCBEaWZmZXJlbmNlcyBEaXNjbG9zdXJlOiBEdWUgdG8gZ2xvYmFsIGN1bHR1cmFsIGRpZmZl
+cmVuY2VzLCBhbnkgcmVwbHkgd2l0aCBvbmx5IFlFU1xPSyBvciBvdGhlciBzaW1wbGUgd29yZHMg
+ZG9lcyBub3QgY29uc3RpdHV0ZSBhbnkgY29uZmlybWF0aW9uIG9yIGFjY2VwdGFuY2Ugb2YgYW55
+IHRyYW5zYWN0aW9uIG9yIGNvbnRyYWN0LCBwbGVhc2UgY29uZmlybSB3aXRoIHRoZSBzZW5kZXIg
+YWdhaW4gdG8gZW5zdXJlIGNsZWFyIG9waW5pb24gaW4gd3JpdHRlbiBmb3JtLiBUaGUgc2VuZGVy
+IHNoYWxsIG5vdCBiZSByZXNwb25zaWJsZSBmb3IgYW55IGRpcmVjdCBvciBpbmRpcmVjdCBkYW1h
+Z2VzIHJlc3VsdGluZyBmcm9tIHRoZSBpbnRlbnRpb25hbCBvciBtaXN1c2Ugb2Ygc3VjaCBpbmZv
+cm1hdGlvbi4NCg==
