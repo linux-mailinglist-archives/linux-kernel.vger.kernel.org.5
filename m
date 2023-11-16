@@ -2,252 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D10B77EE570
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:48:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 339997EE57F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:49:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345268AbjKPQsb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:48:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60072 "EHLO
+        id S1345251AbjKPQt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjKPQs3 (ORCPT
+        with ESMTP id S229841AbjKPQtY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:48:29 -0500
-Received: from mail.alarsen.net (joe.alarsen.net [IPv6:2a01:4f8:191:10e8:1::fe])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B52A11A8;
-        Thu, 16 Nov 2023 08:48:23 -0800 (PST)
-Received: from oscar.alarsen.net (unknown [IPv6:fd8b:531:bccf:96:86d9:db0b:6743:3184])
-        by joe.alarsen.net (Postfix) with ESMTPS id 18C661801F6;
-        Thu, 16 Nov 2023 17:48:21 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alarsen.net; s=joe;
-        t=1700153301; bh=KpehnglDQfPh9u5cwpz2ZhgkchMBYc60fXNfC1A1zgE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Th1gqvIyxImNy5XpeD1LSc2vckGSqTuWzzFtWic4hiSwR4qgf/fbomjYAaGLLEHSK
-         eItFkDdDyVOR/FSJHp+nKJLuP3de0kpaJPKslU+OmeJ7D4FI8oOa3ZPsxZpBOFjCME
-         JhwjsW/ypayGSPrLsLmm61Su+5hPrA/nDSxT/thE=
-Received: from oscar.localnet (localhost [IPv6:::1])
-        by oscar.alarsen.net (Postfix) with ESMTPS id 02551EE5;
-        Thu, 16 Nov 2023 17:48:21 +0100 (CET)
-From:   Anders Larsen <al@alarsen.net>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ronald Monthero <debug.penguin32@gmail.com>, gustavoars@kernel.org,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] qnx4: fix to avoid panic due to buffer overflow
-Date:   Thu, 16 Nov 2023 17:48:20 +0100
-Message-ID: <2910678.e9J7NaK4W3@oscar>
-In-Reply-To: <202311160631.5ACFB84B7C@keescook>
-References: <20231112095353.579855-1-debug.penguin32@gmail.com> <202311160612.C38BF44@keescook> <202311160631.5ACFB84B7C@keescook>
+        Thu, 16 Nov 2023 11:49:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092B4D4D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:49:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700153360;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=L1s0WJ01gB5zhcFsx6lBCHGMIG0MB40ACPZy6Q7ECjY=;
+        b=NfBWzYXbZ4kHeoc/QG/FOcTW+VheWrIvQQcJSWhgBiwlnB4yFimDjbOGONO85tVrdsgWz/
+        j3oAjDxB17KbsihHObZ9Ra+TeJ38KYewLSWxbzSk5BMrWgCbP4VB1zdvPhIFTmbVWOJ22E
+        ddMwT3jh2GMpXzvc9K7rZn8XdNh10Tc=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-605-3-966y4FMV6o_ggnshke5w-1; Thu, 16 Nov 2023 11:49:17 -0500
+X-MC-Unique: 3-966y4FMV6o_ggnshke5w-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1f00b6ba9d6so224523fac.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:49:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700153356; x=1700758156;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=L1s0WJ01gB5zhcFsx6lBCHGMIG0MB40ACPZy6Q7ECjY=;
+        b=AaDPViD6KVxUcLbfnixYFwsjWjBWkrsn148yGbSiLg8QsusIN8p7TA3OnhrEE7ergC
+         6d5Ojf4DtNmqOJtHdkUHAPX+FXRIykPyxJvCvjZerXulKcI6oEsUz4oodk9nNCoFfpfO
+         ARpuggls6NZvfkEth6MoD3h13gn+c3z6lV3hpLEUSm5LVzemKP2rw11jGu2G15tmVLxN
+         OvlXlk0CAm8BEzA6UX4lXsEPnCi6/x1K8umoGxR70F1nHqY5KSalBNE9R06ZNaihND2t
+         V+rRyobiiMoNys+BsPQDeVmOE2aKtQUdRoJtyM3VV6ZFDGz/X5Oltld38U09Vnwh/Z/0
+         3VkA==
+X-Gm-Message-State: AOJu0YyYRfbCmZvc3FWZFbRalKO3eEEQwGKsVTgLQuVmbwpHPxZqc7g3
+        jG09CBkKtuyhahXZJxEi2/++kIG7rPa7n/EOoQ7uuCjssBps5qLktg/bM7K9HxZHsddUAaehJT+
+        TcbSieIQW/0Qqcw78rCH6ovit
+X-Received: by 2002:a05:6870:2301:b0:1ea:7463:1b8f with SMTP id w1-20020a056870230100b001ea74631b8fmr9795876oao.0.1700153356463;
+        Thu, 16 Nov 2023 08:49:16 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGLYjE0JU3/o+D+SOTaQIUYfk67pHPZl5NWX/n+45FCCvkq5nj1uuM7IZ+IB1wOmRN836CKJQ==
+X-Received: by 2002:a05:6870:2301:b0:1ea:7463:1b8f with SMTP id w1-20020a056870230100b001ea74631b8fmr9795855oao.0.1700153356030;
+        Thu, 16 Nov 2023 08:49:16 -0800 (PST)
+Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id ke21-20020a05622a289500b00417fa0cd77esm4449897qtb.80.2023.11.16.08.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 08:49:15 -0800 (PST)
+Date:   Thu, 16 Nov 2023 11:49:12 -0500
+From:   Peter Xu <peterx@redhat.com>
+To:     Andrei Vagin <avagin@gmail.com>
+Cc:     syzbot <syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com>,
+        Muhammad Usama Anjum <musamaanjum@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [fs?] WARNING in pagemap_scan_pmd_entry
+Message-ID: <ZVZICOmNRHWOV6g-@x1n>
+References: <000000000000773fa7060a31e2cc@google.com>
+ <CANaxB-yrvmv134dwTcMD9q5chXvm3YU1pDFhqvaRA8M1Gn7Guw@mail.gmail.com>
+ <ZVVoCT_gNvbZg93f@x1n>
+ <CANaxB-zLxs2=gNgWTqstLvyPK8mSwpEu2ob35TtaKWheMejZOQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANaxB-zLxs2=gNgWTqstLvyPK8mSwpEu2ob35TtaKWheMejZOQ@mail.gmail.com>
+X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-16 15:58 Kees Cook wrote:
-> On Thu, Nov 16, 2023 at 06:29:59AM -0800, Kees Cook wrote:
-> > On Sun, Nov 12, 2023 at 07:53:53PM +1000, Ronald Monthero wrote:
-> > > qnx4 dir name length can vary to be of maximum size
-> > > QNX4_NAME_MAX or QNX4_SHORT_NAME_MAX depending on whether
-> > > 'link info' entry is stored and the status byte is set.
-> > > So to avoid buffer overflow check di_fname length
-> > > fetched from (struct qnx4_inode_entry *)
-> > > before use in strlen to avoid buffer overflow.
-> > > 
-> > > panic context
-> > > [ 4849.636861] detected buffer overflow in strlen
-> > > [ 4849.636897] ------------[ cut here ]------------
-> > > [ 4849.636902] kernel BUG at lib/string.c:1165!
-> > > [ 4849.636917] invalid opcode: 0000 [#2] SMP PTI
-> > > ..
-> > > [ 4849.637047] Call Trace:
-> > > [ 4849.637053]  <TASK>
-> > > [ 4849.637059]  ? show_trace_log_lvl+0x1d6/0x2ea
-> > > [ 4849.637075]  ? show_trace_log_lvl+0x1d6/0x2ea
-> > > [ 4849.637095]  ? qnx4_find_entry.cold+0xc/0x18 [qnx4]
-> > > [ 4849.637111]  ? show_regs.part.0+0x23/0x29
-> > > [ 4849.637123]  ? __die_body.cold+0x8/0xd
-> > > [ 4849.637135]  ? __die+0x2b/0x37
-> > > [ 4849.637147]  ? die+0x30/0x60
-> > > [ 4849.637161]  ? do_trap+0xbe/0x100
-> > > [ 4849.637171]  ? do_error_trap+0x6f/0xb0
-> > > [ 4849.637180]  ? fortify_panic+0x13/0x15
-> > > [ 4849.637192]  ? exc_invalid_op+0x53/0x70
-> > > [ 4849.637203]  ? fortify_panic+0x13/0x15
-> > > [ 4849.637215]  ? asm_exc_invalid_op+0x1b/0x20
-> > > [ 4849.637228]  ? fortify_panic+0x13/0x15
-> > > [ 4849.637240]  ? fortify_panic+0x13/0x15
-> > > [ 4849.637251]  qnx4_find_entry.cold+0xc/0x18 [qnx4]
-> > > [ 4849.637264]  qnx4_lookup+0x3c/0xa0 [qnx4]
-> > > [ 4849.637275]  __lookup_slow+0x85/0x150
-> > > [ 4849.637291]  walk_component+0x145/0x1c0
-> > > [ 4849.637304]  ? path_init+0x2c0/0x3f0
-> > > [ 4849.637316]  path_lookupat+0x6e/0x1c0
-> > > [ 4849.637330]  filename_lookup+0xcf/0x1d0
-> > > [ 4849.637341]  ? __check_object_size+0x1d/0x30
-> > > [ 4849.637354]  ? strncpy_from_user+0x44/0x150
-> > > [ 4849.637365]  ? getname_flags.part.0+0x4c/0x1b0
-> > > [ 4849.637375]  user_path_at_empty+0x3f/0x60
-> > > [ 4849.637383]  vfs_statx+0x7a/0x130
-> > > [ 4849.637393]  do_statx+0x45/0x80
-> > > ..
-> > > 
-> > > Signed-off-by: Ronald Monthero <debug.penguin32@gmail.com>
-> > > ---
-> > > 
-> > >  fs/qnx4/namei.c | 7 +++++++
-> > >  1 file changed, 7 insertions(+)
-> > > 
-> > > diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
-> > > index 8d72221735d7..825b891a52b3 100644
-> > > --- a/fs/qnx4/namei.c
-> > > +++ b/fs/qnx4/namei.c
-> > > @@ -40,6 +40,13 @@ static int qnx4_match(int len, const char *name,
-> > > 
-> > >  	} else {
-> > >  	
-> > >  		namelen = QNX4_SHORT_NAME_MAX;
-> > >  	
-> > >  	}
-> > > 
-> > > +
-> > > +	/** qnx4 dir name length can vary, check the di_fname
-> > > +	 * fetched from (struct qnx4_inode_entry *) before use in
-> > > +	 * strlen to avoid panic due to buffer overflow"
-> > > +	 */
-> > 
-> > Style nit: this comment should start with just "/*" alone, like:
-> > 	/*
-> > 	
-> > 	 * qnx4 dir name ...
-> > 	 
-> > > +	if (strnlen(de->di_fname, namelen) >= sizeof(de->di_fname))
-> > > +		return -ENAMETOOLONG;
-> > > 
-> > >  	thislen = strlen( de->di_fname );
-> > 
-> > de->di_fname is:
-> > 
-> > struct qnx4_inode_entry {
-> > 
-> >         char            di_fname[QNX4_SHORT_NAME_MAX];
-> > 	
-> > 	...
-> > 
-> > #define QNX4_SHORT_NAME_MAX     16
-> > #define QNX4_NAME_MAX           48
-> > 
-> > It's always going to have a max of QNX4_SHORT_NAME_MAX. Is any of this
-> > code correct if namelen ends up being QNX4_NAME_MAX? It'll be reading
-> > past the end of di_fname.
-> > 
-> > Is bh->b_data actually struct qnx4_inode_entry ?
+On Thu, Nov 16, 2023 at 07:38:00AM -0800, Andrei Vagin wrote:
+> On Wed, Nov 15, 2023 at 4:53 PM Peter Xu <peterx@redhat.com> wrote:
+> >
+> > Hi, Andrei, Muhammad,
+> >
+> > I had a look (as it triggered the guard I added before..), and I think I
+> > know what happened.  So far I think it's a question to the new ioctl()
+> > interface, which I'd like to double check with you all.  See below.
+> >
+> > On Wed, Nov 15, 2023 at 01:07:18PM -0800, Andrei Vagin wrote:
+> > > Cc: Peter and Muhammad
+> > >
+> > > On Wed, Nov 15, 2023 at 6:41 AM syzbot
+> > > <syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
+> > > > git tree:       upstream
+> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=13626650e80000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=84217b7fc4acdc59
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=e94c5aaf7890901ebf9b
+> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d73be0e80000
+> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13670da8e80000
+> > > >
+> > > > Downloadable assets:
+> > > > disk image: https://storage.googleapis.com/syzbot-assets/a595d90eb9af/disk-c42d9eee.raw.xz
+> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/c1e726fedb94/vmlinux-c42d9eee.xz
+> > > > kernel image: https://storage.googleapis.com/syzbot-assets/cb43ae262d09/bzImage-c42d9eee.xz
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > > Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+> > > >
+> > > > ------------[ cut here ]------------
+> > > > WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
+> >
+> > This is the guard I added to detect writable bit set even if uffd-wp bit is
+> > not yet cleared.  It means something obviously wrong happened.
+> >
+> > Here afaict the wrong thing is ioctl(PAGEMAP_SCAN) allows applying uffd-wp
+> > bit to VMA that is not even registered with userfault.  Then what happened
+> > is when the page is written, do_wp_page() will try to reuse the anonymous
+> > page with the uffd-wp bit set, set W bit on top of it.
 > 
-> Ah-ha, it looks like it's _not_:
+> Thank you for looking at this.
 > 
->         if (!(bh = qnx4_find_entry(len, dir, name, &de, &ino)))
->                 goto out;
->         /* The entry is linked, let's get the real info */
->         if ((de->di_status & QNX4_FILE_LINK) == QNX4_FILE_LINK) {
->                 lnk = (struct qnx4_link_info *) de;
+> >
+> > Below change works for me:
+> >
+> > ===8<===
+> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> > index ef2eb12906da..8a2500fa4580 100644
+> > --- a/fs/proc/task_mmu.c
+> > +++ b/fs/proc/task_mmu.c
+> > @@ -1987,6 +1987,12 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
+> >                 vma_category |= PAGE_IS_WPALLOWED;
+> >         else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
+> >                 return -EPERM;
+> > +       else
+> > +               /*
+> > +                * Neither has the VMA enabled WP tracking, nor does the
+> > +                * user want to explicit fail the walk.  Skip the vma.
+> > +                */
+> > +               return 1;
 > 
-> It seems that entries may be either struct qnx4_inode_entry or struct
-> qnx4_link_info but it's not captured in a union.
+> In this case, I think we need to check the PM_SCAN_WP_MATCHING flag
+> and skip these vma-s only if it is set.
 > 
-> This needs to be fixed by not lying to the compiler about what is there.
+> If PM_SCAN_WP_MATCHING isn't set, this ioctl returns page flags and
+> can be used without the intention of tracking memory changes.
 > 
-> How about this?
+> >
+> >         if (vma->vm_flags & VM_PFNMAP)
+> >                 return 1;
+> > ===8<===
+> >
+> > This is based on my reading of the pagemap scan flags:
+> >
+> > - Write-protect the pages. The ``PM_SCAN_WP_MATCHING`` is used to write-protect
+> >   the pages of interest. The ``PM_SCAN_CHECK_WPASYNC`` aborts the operation if
+> >   non-Async Write Protected pages are found. The ``PM_SCAN_WP_MATCHING`` can be
+> >   used with or without ``PM_SCAN_CHECK_WPASYNC``.
+> >
+> > If PM_SCAN_CHECK_WPASYNC is used to enforce the check, we need to skip the
+> > vma that is not registered properly.  Does it look reasonable to you?
+> 
+> I think the idea here could be to report page flags but doesn't
+> write-protect such pages.
 
-The switch won't work since the _status field is a bit-field, so we should 
-rather reuse the similar union-logic already present in fs/qnx4/dir.c
+Ah, I think I understand slightly better now.  Below is my 2nd try..
 
-> diff --git a/fs/qnx4/namei.c b/fs/qnx4/namei.c
-> index 8d72221735d7..3cd20065bcfa 100644
-> --- a/fs/qnx4/namei.c
-> +++ b/fs/qnx4/namei.c
-> @@ -26,31 +26,39 @@
->  static int qnx4_match(int len, const char *name,
->  		      struct buffer_head *bh, unsigned long *offset)
->  {
-> -	struct qnx4_inode_entry *de;
-> -	int namelen, thislen;
-> +	union qnx4_dir_entry *de;
-> +	char *entry_fname;
-> +	int entry_len, entry_max_len;
-> 
->  	if (bh == NULL) {
->  		printk(KERN_WARNING "qnx4: matching unassigned buffer !
-\n");
->  		return 0;
->  	}
-> -	de = (struct qnx4_inode_entry *) (bh->b_data + *offset);
-> +	de = (union qnx4_dir_entry *) (bh->b_data + *offset);
->  	*offset += QNX4_DIR_ENTRY_SIZE;
-> -	if ((de->di_status & QNX4_FILE_LINK) != 0) {
-> -		namelen = QNX4_NAME_MAX;
-> -	} else {
-> -		namelen = QNX4_SHORT_NAME_MAX;
-> -	}
-> -	thislen = strlen( de->di_fname );
-> -	if ( thislen > namelen )
-> -		thislen = namelen;
-> -	if (len != thislen) {
-> +
-> +	switch (de->inode.di_status) {
-> +	case QNX4_FILE_LINK:
-> +		entry_fname = de->link.dl_fname;
-> +		entry_max_len = sizeof(de->link.dl_fname);
-> +		break;
-> +	case QNX4_FILE_USED:
-> +		entry_fname = de->inode.di_fname;
-> +		entry_max_len = sizeof(de->inode.di_fname);
-> +		break;
-> +	default:
->  		return 0;
->  	}
-> -	if (strncmp(name, de->di_fname, len) == 0) {
-> -		if ((de->di_status & (QNX4_FILE_USED|QNX4_FILE_LINK)) !
-= 0) {
-> -			return 1;
-> -		}
-> -	}
-> +
-> +	/* Directory entry may not be %NUL-terminated. */
-> +	entry_len = strnlen(entry_fname, entry_max_len);
-> +
-> +	if (len != entry_len)
-> +		return 0;
-> +
-> +	if (strncmp(name, entry_fname, len) == 0)
-> +		return 1;
-> +
->  	return 0;
->  }
-> 
-> diff --git a/include/uapi/linux/qnx4_fs.h b/include/uapi/linux/qnx4_fs.h
-> index 31487325d265..e033dbe1e009 100644
-> --- a/include/uapi/linux/qnx4_fs.h
-> +++ b/include/uapi/linux/qnx4_fs.h
-> @@ -68,6 +68,13 @@ struct qnx4_link_info {
->  	__u8		dl_status;
->  };
-> 
-> +union qnx4_dir_entry {
-> +	struct qnx4_inode_entry inode;
-> +	struct qnx4_link_info link;
-> +};
-> +_Static_assert(offsetof(struct qnx4_inode_entry, di_status) ==
-> +	       offsetof(struct qnx4_link_info, dl_status));
-> +
->  struct qnx4_xblk {
->  	__le32		xblk_next_xblk;
->  	__le32		xblk_prev_xblk;
+Meanwhile, I think this won't work:
+
+	/* 9. Memory mapped file */
+	fd = open(__FILE__, O_RDONLY);
+	if (fd < 0)
+		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
+
+We can't assume __FILE__ is there..  Attached one more patch for that.
+I'll repost formally if that looks good to you.
+
+===8<===
+
+From 47d54f3bbb709c54d6bed95fbf2045ea3a541a4b Mon Sep 17 00:00:00 2001
+From: Peter Xu <peterx@redhat.com>
+Date: Thu, 16 Nov 2023 11:05:12 -0500
+Subject: [PATCH] mm/pagemap: Fix ioctl(PAGEMAP_SCAN) on vma check
+
+The new ioctl(PAGEMAP_SCAN) relies on vma wr-protect capability provided by
+userfault, however in the vma test it didn't explicitly require the vma to
+have wr-protect function enabled, even if PM_SCAN_WP_MATCHING flag is set.
+
+It means the pagemap code can now apply uffd-wp bit to a page in the vma
+even if not registered to userfaultfd at all.
+
+Then in whatever way as long as the pte got written and page fault
+resolved, we'll apply the write bit even if uffd-wp bit is set.  We'll see
+a pte that has both UFFD_WP and WRITE bit set.  Anything later that looks
+up the pte for uffd-wp bit will trigger the warning:
+
+WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
+
+Fix it by doing proper check over the vma attributes when
+PM_SCAN_WP_MATCHING is specified.
+
+Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ fs/proc/task_mmu.c | 24 ++++++++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 51e0ec658457..e91085d79926 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1994,15 +1994,31 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
+ 	struct pagemap_scan_private *p = walk->private;
+ 	struct vm_area_struct *vma = walk->vma;
+ 	unsigned long vma_category = 0;
++	bool wp_allowed = userfaultfd_wp_async(vma) &&
++	    userfaultfd_wp_use_markers(vma);
+ 
+-	if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
+-		vma_category |= PAGE_IS_WPALLOWED;
+-	else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
+-		return -EPERM;
++	if (!wp_allowed) {
++		/* User requested explicit failure over wp-async capability */
++		if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
++			return -EPERM;
++		/*
++		 * User requires wr-protect, and allows silently skipping
++		 * unsupported vmas.
++		 */
++		if (p->arg.flags & PM_SCAN_WP_MATCHING)
++			return 1;
++		/*
++		 * Then the request doesn't involve wr-protects at all,
++		 * fall through to the rest checks, and allow vma walk.
++		 */
++	}
+ 
+ 	if (vma->vm_flags & VM_PFNMAP)
+ 		return 1;
+ 
++	if (wp_allowed)
++		vma_category |= PAGE_IS_WPALLOWED;
++
+ 	if (vma->vm_flags & VM_SOFTDIRTY)
+ 		vma_category |= PAGE_IS_SOFT_DIRTY;
+ 
+-- 
+2.41.0
+
+===8<===
+
+From f2be2816c30fd1016d597a219e5b42c4ae847796 Mon Sep 17 00:00:00 2001
+From: Peter Xu <peterx@redhat.com>
+Date: Thu, 16 Nov 2023 11:45:47 -0500
+Subject: [PATCH 2/2] mm/selftests: Fix pagemap_ioctl memory map test
+
+__FILE__ is not guaranteed to exist in current dir.  Replace that with
+argv[0] for memory map test.
+
+Fixes: 46fd75d4a3c9 ("selftests: mm: add pagemap ioctl tests")
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ tools/testing/selftests/mm/pagemap_ioctl.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/tools/testing/selftests/mm/pagemap_ioctl.c b/tools/testing/selftests/mm/pagemap_ioctl.c
+index befab43719ba..d59517ed3d48 100644
+--- a/tools/testing/selftests/mm/pagemap_ioctl.c
++++ b/tools/testing/selftests/mm/pagemap_ioctl.c
+@@ -36,6 +36,7 @@ int pagemap_fd;
+ int uffd;
+ int page_size;
+ int hpage_size;
++const char *progname;
+ 
+ #define LEN(region)	((region.end - region.start)/page_size)
+ 
+@@ -1149,11 +1150,11 @@ int sanity_tests(void)
+ 	munmap(mem, mem_size);
+ 
+ 	/* 9. Memory mapped file */
+-	fd = open(__FILE__, O_RDONLY);
++	fd = open(progname, O_RDONLY);
+ 	if (fd < 0)
+ 		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
+ 
+-	ret = stat(__FILE__, &sbuf);
++	ret = stat(progname, &sbuf);
+ 	if (ret < 0)
+ 		ksft_exit_fail_msg("error %d %d %s\n", ret, errno, strerror(errno));
+ 
+@@ -1472,12 +1473,14 @@ static void transact_test(int page_size)
+ 			      extra_thread_faults);
+ }
+ 
+-int main(void)
++int main(int argc, char *argv[])
+ {
+ 	int mem_size, shmid, buf_size, fd, i, ret;
+ 	char *mem, *map, *fmem;
+ 	struct stat sbuf;
+ 
++	progname = argv[0];
++
+ 	ksft_print_header();
+ 
+ 	if (init_uffd())
+-- 
+2.41.0
 
 
-
+-- 
+Peter Xu
 
