@@ -2,84 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B807EE753
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:18:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF727EE759
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:18:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345503AbjKPTSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:18:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35084 "EHLO
+        id S1345396AbjKPTS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:18:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345396AbjKPTSE (ORCPT
+        with ESMTP id S231362AbjKPTS0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:18:04 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917A31A8;
-        Thu, 16 Nov 2023 11:18:00 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id 46e09a7af769-6d67d32adc2so638838a34.2;
-        Thu, 16 Nov 2023 11:18:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700162280; x=1700767080; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NQvW2mlQLaPe9zQwh1aRBhkCYad5wvCc2L3vPohQIMU=;
-        b=PWzekTA/EMOnasKIkRbWSzZAKqRrhPMl+OcEVZmQhkJ18jzvYSU/OEHZFUuk4XKvOk
-         qI74oPZB17SAUURlLVqxq/Y8ed3j1Mdd83FmpLR1q9oSE7PhrQi+Xq8fAd8vrU532iLE
-         g5CHwDsHEQjmx5dcG9mya5TKGjhITcxalLoUKsl+SAjRrRYnEM0trCGeC42xl+JKmvTO
-         O82FXXDfpXTwUaoFqODaMyJvHciuL4crs68s7APCOaG5ytW/Z3sryt2IhVgoiHYN8Ku6
-         TNFr7AIYnV15QXdZDy3nfCFgT85bINY2QAQZnBKy7wbD+kfdGV1ONzvIXQ8zUycd5j0W
-         pcBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700162280; x=1700767080;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NQvW2mlQLaPe9zQwh1aRBhkCYad5wvCc2L3vPohQIMU=;
-        b=Hm4lxXOa/WhnRtVjaMuZ5t4ILF3jQf1CT1fNnGKNH+InVn36ySAlKTKyXHA+t2AUOs
-         iBRtVe+KY7qxDTIxBSZrHmMYa6cFkjdr7D2bahg+a8HonVvbAltPL6nxzunGxanjTOK9
-         Um4xylC+Qtu73dT8A/j5g+DhB1xlKWzA7X+AvrPOZvKXU6uwCL6kSSWX3pVlw0hBN5zQ
-         CcTAgzrHNqdUv192cBhP33VCL+dHBRmtAHnxu2edq6MAzhUDrFavlxpcL8gX0hJNFcVd
-         sotBdygYSJ8MNeoVJDjTTxiWkZ+7VxogL4SmG8kna6loflMDVVVULP4HM813jx0zWHiH
-         qujg==
-X-Gm-Message-State: AOJu0Yw9fyvtg9bwkU3Slh/6THOrMwl8Gx9Q/vK9D44pU0WxvEL0OTeS
-        HkVgtRlKt7S7uY39jjy1vQbTlCj2jdLDlS6eQn0=
-X-Google-Smtp-Source: AGHT+IFchzrhEbVbz5AEifNKluJrx6zIDMG5gc5BfPiF7RMJY6+/+9azNscfVMvB74Y03sWBedUaDVz9bS5Uf4oPXtE=
-X-Received: by 2002:a05:6871:2312:b0:1e9:cb7f:2287 with SMTP id
- sf18-20020a056871231200b001e9cb7f2287mr21389323oab.46.1700162279900; Thu, 16
- Nov 2023 11:17:59 -0800 (PST)
+        Thu, 16 Nov 2023 14:18:26 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DC18D;
+        Thu, 16 Nov 2023 11:18:20 -0800 (PST)
+Received: from mercury (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: sre)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3A7F2660734D;
+        Thu, 16 Nov 2023 19:18:19 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700162299;
+        bh=V7XuKmcHd8SUgcHpaXn+K9vIwqQimam3SlAKjUqfyTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jNUh5LNTeuk1dSPSBKxKpqWHDqRe5XaLZK0dDFW8fvXzyj4tHv2finAs4OBTasHi8
+         SpDsrzGe9DNv+kMG7TQWjZI78Z9IzgXa0ZNYfELIvAH9MGepNvjIIJvY7aBp27WpYM
+         0aP1g56dnyqSvjmh3oQiCiPSQwoXX6CeGhdqXJoNS1/dzbXL5yds6/fEY1GViigap4
+         WQAcD9pbGTRLH/0uj1safe5Xzru4DcrHYUrUBObOHhnuG49xbIQPUp1qprSXBVWIKL
+         X3DDFjYEQbz67jFfl3faIFdMdkUKE3cnlBNPB4choN8HzNdlnmpXMDyqk2Ngt4ffv+
+         c7Xb8drIt8JRQ==
+Received: by mercury (Postfix, from userid 1000)
+        id 4301B10613A1; Thu, 16 Nov 2023 20:18:15 +0100 (CET)
+Date:   Thu, 16 Nov 2023 20:18:15 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Hermes Zhang <Hermes.Zhang@axis.com>
+Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, kernel@axis.com,
+        Hermes Zhang <chenhuiz@axis.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] power: supply: bq24190_charger: Add support for
+ BQ24296
+Message-ID: <20231116191815.jrjwcw5nywtdpplk@mercury.elektranox.org>
+References: <20231030084302.593864-1-Hermes.Zhang@axis.com>
+ <20231030084302.593864-3-Hermes.Zhang@axis.com>
 MIME-Version: 1.0
-References: <20231113112344.719-1-hkallweit1@gmail.com> <ZVJhwSS16+/Zzt0f@shikoro>
- <887657ba-86ca-49bc-b6c3-8543610c3230@gmail.com> <ZVKNIn1eSlZ9yzco@shikoro>
-In-Reply-To: <ZVKNIn1eSlZ9yzco@shikoro>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 16 Nov 2023 14:17:48 -0500
-Message-ID: <CADnq5_NgzZ+1FTzZObivnjJbbuYcafY-fbvgiGA9ryqA9wYedg@mail.gmail.com>
-Subject: Re: [PATCH 00/20] remove I2C_CLASS_DDC support
-To:     Wolfram Sang <wsa@kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        intel-gfx@lists.freedesktop.org, linux-i2c@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@gmail.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        linux-fbdev@vger.kernel.org, amd-gfx@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Jocelyn Falempe <jfalempe@redhat.com>,
-        linux-sunxi@lists.linux.dev, linux-mediatek@lists.infradead.org,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
-        Xinwei Kong <kong.kongxinwei@hisilicon.com>,
-        Sumit Semwal <sumit.semwal@linaro.org>,
-        Yongqin Liu <yongqin.liu@linaro.org>,
-        John Stultz <jstultz@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="rcfuox7jrzun6lqu"
+Content-Disposition: inline
+In-Reply-To: <20231030084302.593864-3-Hermes.Zhang@axis.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -87,23 +60,163 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 3:55=E2=80=AFPM Wolfram Sang <wsa@kernel.org> wrote=
-:
->
->
-> > We're not in a hurry. It's just my experience with patch series' affect=
-ing
-> > multiple subsystems that typically the decision was to apply the full
-> > series via one tree. Also to avoid inquires from maintainers like:
-> > Shall I take it or are you going to take it?
-> > Of course there may be different opinions. Please advise.
->
-> Ok, then this turns out to be a negotation thing between the drm/fbdev
-> maintainers and me. I *can* take all the patches, of course. But since
-> the number of patches touching the non-i2c subsystems is high, I'd like
-> to hear their preference, too.
->
 
-I don't have a preference if you would prefer to take these via i2c.
+--rcfuox7jrzun6lqu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Alex
+Hi,
+
+On Mon, Oct 30, 2023 at 04:43:02PM +0800, Hermes Zhang wrote:
+> The BQ24296 is most similar to the BQ24196, but the:
+> 1. OTG config is split from CHG config (REG01)
+> 2. ICHG (Fast Charge Current limit) range is smaller (<=3D3008mA)
+> 3. NTC fault is simplified to 2 bits
+>=20
+> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
+> ---
+>=20
+> Notes:
+>     v2: restructured the code to support bq24296 and add Acked-by tag
+>         from Conor
+>  drivers/power/supply/bq24190_charger.c | 437 +++++++++++++++++++------
+>  1 file changed, 338 insertions(+), 99 deletions(-)
+>=20
+> diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/suppl=
+y/bq24190_charger.c
+> index 3f99cb9590ba..5b60d924cf9f 100644
+> --- a/drivers/power/supply/bq24190_charger.c
+> +++ b/drivers/power/supply/bq24190_charger.c
+
+[...]
+
+> +static const struct bq24190_chip_info bq24190_chip_info_tbl[] =3D {
+> +	[BQ24190] =3D {
+> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
+> +		.vbus_desc =3D bq24190_vbus_desc,
+> +		.check_chip =3D bq24190_check_chip,
+> +		.set_chg_config =3D bq24190_battery_set_chg_config,
+> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
+> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
+> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
+> +	},
+> +	[BQ24192] =3D {
+> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
+> +		.vbus_desc =3D bq24190_vbus_desc,
+> +		.check_chip =3D bq24190_check_chip,
+> +		.set_chg_config =3D bq24190_battery_set_chg_config,
+> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
+> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
+> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
+> +	},
+> +	[BQ24192i] =3D {
+> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
+> +		.vbus_desc =3D bq24190_vbus_desc,
+> +		.check_chip =3D bq24190_check_chip,
+> +		.set_chg_config =3D bq24190_battery_set_chg_config,
+> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
+> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
+> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
+> +	},
+> +	[BQ24196] =3D {
+> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
+> +		.vbus_desc =3D bq24190_vbus_desc,
+> +		.check_chip =3D bq24190_check_chip,
+> +		.set_chg_config =3D bq24190_battery_set_chg_config,
+> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
+> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
+> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
+> +	},
+> +	[BQ24296] =3D {
+> +		.ichg_array_size =3D BQ24296_CCC_ICHG_VALUES_LEN,
+> +		.vbus_desc =3D bq24296_vbus_desc,
+> +		.check_chip =3D bq24296_check_chip,
+> +		.set_chg_config =3D bq24296_battery_set_chg_config,
+> +		.ntc_fault_mask =3D BQ24296_REG_F_NTC_FAULT_MASK,
+> +		.get_ntc_status =3D bq24296_charger_get_ntc_status,
+> +		.set_otg_vbus =3D bq24296_set_otg_vbus,
+> +	},
+> +};
+> +
+>  static int bq24190_probe(struct i2c_client *client)
+>  {
+>  	const struct i2c_device_id *id =3D i2c_client_get_device_id(client);
+> @@ -1804,6 +2040,7 @@ static int bq24190_probe(struct i2c_client *client)
+>  	bdi->client =3D client;
+>  	bdi->dev =3D dev;
+>  	strncpy(bdi->model_name, id->name, I2C_NAME_SIZE);
+> +	bdi->info =3D &bq24190_chip_info_tbl[id->driver_data];
+>  	mutex_init(&bdi->f_reg_lock);
+>  	bdi->charge_type =3D POWER_SUPPLY_CHARGE_TYPE_FAST;
+>  	bdi->f_reg =3D 0;
+> @@ -1940,7 +2177,7 @@ static void bq24190_shutdown(struct i2c_client *cli=
+ent)
+>  	struct bq24190_dev_info *bdi =3D i2c_get_clientdata(client);
+> =20
+>  	/* Turn off 5V boost regulator on shutdown */
+> -	bq24190_set_otg_vbus(bdi, false);
+> +	bdi->info->set_otg_vbus(bdi, false);
+>  }
+> =20
+>  static __maybe_unused int bq24190_runtime_suspend(struct device *dev)
+> @@ -2029,10 +2266,11 @@ static const struct dev_pm_ops bq24190_pm_ops =3D=
+ {
+>  };
+> =20
+>  static const struct i2c_device_id bq24190_i2c_ids[] =3D {
+> -	{ "bq24190" },
+> -	{ "bq24192" },
+> -	{ "bq24192i" },
+> -	{ "bq24196" },
+> +	{ "bq24190", BQ24190 },
+> +	{ "bq24192", BQ24192 },
+> +	{ "bq24192i", BQ24192i },
+> +	{ "bq24196", BQ24196 },
+> +	{ "bq24296", BQ24296 },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(i2c, bq24190_i2c_ids);
+> @@ -2042,6 +2280,7 @@ static const struct of_device_id bq24190_of_match[]=
+ =3D {
+>  	{ .compatible =3D "ti,bq24192", },
+>  	{ .compatible =3D "ti,bq24192i", },
+>  	{ .compatible =3D "ti,bq24196", },
+> +	{ .compatible =3D "ti,bq24296", },
+>  	{ },
+>  };
+>  MODULE_DEVICE_TABLE(of, bq24190_of_match);
+
+This looks better, but please handle the match_info in the modern
+way, like e.g. bq256xx_charger.c, bq24257_charger.c, bq2515x_charger.c.
+So instead of using an ID and using that to lookup a device struct
+=66rom an array, just directly specify a pointer to the device struct.
+
+Also make sure you specify the pointer in all device tables and use
+i2c_get_match_data() in probe() to get the struct.
+
+Thanks,
+
+-- Sebastian
+
+--rcfuox7jrzun6lqu
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmVWausACgkQ2O7X88g7
++ppMcg//ffklRJuh3frxFd4QrfLMJojE0H4+jIekhtyvZBcPVV+AvWZS8aH9q0mU
+Rd7nw9KlrkejVBemO2tzWC+ZXjdzq4w8UAEeglZ/RhgyRXB9PlcZ47sEEEHCYczi
+ukDzxhGgZmfKuiHCvs7BvBot7qngy6A7wEfPv9+hWVHDz4Z9WfEULKn2XPaI9uOo
+V8osKaGMyZfUl4o4geJBrxVdTSFa16phlz1UtY9AeqjNoc4xtZy26Mzfpbp88F7c
+i00eayFAcO/MoHamNrzRUN9C1Mn9R/Vyz2jU2uho3AE87L2+hSrE8BIGbCMle+ux
+UbhhWbBgywW1UMRwW1xjCad2PkCh52ohmSf2gJJCzYnHPzGCclo+fBG/q659vIsu
+AhAi6xGCrINF1mdML66g2rv4hk9qPxKttx78EzlBXAhUNMKeqYb6UjmXnsKsmPAY
+HnU98W7MpRZPAejhueqIy+55l7dNnlkmUFZf/49J9hLzGI1VMHB24iwWAisV9aay
+64dvQCmovzBiGyjRH/YyAoLMtCILd52b2cXqlHKbsJkCz6pLKqcQQV0eWIVAwp/T
+CDMmPbApiJ8Knnyo4dEyQzugQgpgO8VNTvcgsm91hFIB+BtjNmB53GwnoziJh1yM
+j+7Hz3czCZBEIzU2wrioZYUpmpEwQBoHdrx3+YoBL7Wmdvgm6XM=
+=div5
+-----END PGP SIGNATURE-----
+
+--rcfuox7jrzun6lqu--
