@@ -2,141 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D72E7EE13C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66637EE13E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345110AbjKPNOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        id S1345123AbjKPNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:14:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbjKPNOb (ORCPT
+        with ESMTP id S230326AbjKPNOm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:14:31 -0500
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84415D4B;
-        Thu, 16 Nov 2023 05:14:28 -0800 (PST)
-Received: by mail-pf1-x441.google.com with SMTP id d2e1a72fcca58-6bee11456baso703116b3a.1;
-        Thu, 16 Nov 2023 05:14:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700140468; x=1700745268; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3EV2x8sNIePE4OMEQeslKV0/7KlyOI4zsqd0GErjPWY=;
-        b=h/+/7PBp6ovXQ5tb6UASbJJVWVmr0unisGsEYfIeYFXHeoegylepUDB4q4gvGm21y7
-         jISJ+ncFmvNJV3faF0S5UeTA/SW5TtpVlyOQvltDM6o/+qTfzbFrmV4SapK37dVoa5pm
-         3mkuJoRLzlIy/IQPrFtP5272WrA/wRi8/V3aN2E6Kjs8W28lLLCmkpuj61UK628n8HEG
-         U27QeXLUMQ7O3aPLZtHq9gJoMdej3kW3cNz2hXO5lbUNfo6WRstQVERtoo7Eki4UQ/M/
-         3Ompy2zDN9KEKau7wJKZl7vCaz8KlI1A+udr4E4lksRx0GWKGq380Hy9aAKHZOz+SfMC
-         jSyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700140468; x=1700745268;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3EV2x8sNIePE4OMEQeslKV0/7KlyOI4zsqd0GErjPWY=;
-        b=wK7SaBEd3IKovp1HfhDMg4yjmvWvI2dGEaDn7IzTaQOoJFqSO+m2Lp6S/YdZaEXlv2
-         8jyrXiO2Y9m1zqVIlQzLyA1gSRejtbjz+UkNpx/TFB+a79WAti+LNppxOCXr9LaD0dYo
-         0HBGVxq8l44o/p89aAHlp6UbmA+V4TEjn7kQE+sNH+LlVSFCa1DfcK5DaMO6ChpkMnm7
-         XMpNiW6fSXdtml0mZ2y7t3TSqvc1dIl/qK3BJq8jA5REn2uGGUiwPEiAmkj7vpMb1RBd
-         3hp8+H4RsKG1g1PHGMaPyS76TfXUofTvwY8je29eq+BpHhDy5uFJPI/co6XCwqvvuhz4
-         gAzg==
-X-Gm-Message-State: AOJu0YwEuza+BQYBC6SBoPUMCJT+2LlwTR8tqsfNTQO5cinUwBvp19s8
-        N+wOoiCSp53aO52UZH2kia4PNa16h8zyPCpO
-X-Google-Smtp-Source: AGHT+IEbi1zP354LWGJe1WQvgZ9VU2GyW4rh37etIuIodA171tXdE8H2BOsNzOLp93wY88/X2ybk5Q==
-X-Received: by 2002:a05:6a20:daa0:b0:186:bd68:fa95 with SMTP id iy32-20020a056a20daa000b00186bd68fa95mr12835516pzb.22.1700140465723;
-        Thu, 16 Nov 2023 05:14:25 -0800 (PST)
-Received: from dawn-virtual-machine.localdomain ([183.198.111.40])
-        by smtp.gmail.com with ESMTPSA id o18-20020a056a001b5200b006b2e07a6235sm4440540pfv.136.2023.11.16.05.14.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 05:14:25 -0800 (PST)
-From:   Li peiyu <579lpy@gmail.com>
-To:     jic23@kernel.org, lars@metafoo.de, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc:     linux-iio@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Li peiyu <579lpy@gmail.com>
-Subject: [PATCH [2/2]] dt-bindings: iio: humidity: Add TI HDC302x support
-Date:   Thu, 16 Nov 2023 21:14:07 +0800
-Message-Id: <20231116131407.13860-1-579lpy@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231116125433.13285-1-579lpy@gmail.com>
-References: <20231116125433.13285-1-579lpy@gmail.com>
+        Thu, 16 Nov 2023 08:14:42 -0500
+Received: from gofer.mess.org (gofer.mess.org [IPv6:2a02:8011:d000:212::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0AFD4F;
+        Thu, 16 Nov 2023 05:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mess.org; s=2020;
+        t=1700140475; bh=y2DhplH7I27Y0L2UWkQcKl1WHDTXBalYzLOWjRTlj8c=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=leGw3WNbo2KRqITmwNwKgZPplnr5hMIkay12M2b/Wl9w+/+2yjd4pReXQuTxdbRjF
+         yhdNm35PTw3RaSisMuXuGXCW/noR7gh5lLHIZJE5rgT3OU4GNKQs9j8hpKaE1HGk0M
+         tQeIq/xB8FHIgADALHWQfkNV5eRWd35fiUd7XYO1VXN3C1r6n4PVWBQC4Ioa+BEEpY
+         O4aB+FkTvdxNFsZhODq89y7O+PPpXaWJ8BANRQuHrbHAvX8xl0lNIB1/QiZ5Fv0KP2
+         VNpIlf/vzieRZpQaPmN1xHZnewatfhuuBePb4H16wYgRTYJHuGnJM6brvyNw5R5YZD
+         XIlkQNK686lCQ==
+Received: by gofer.mess.org (Postfix, from userid 1000)
+        id A311F1000AC; Thu, 16 Nov 2023 13:14:35 +0000 (GMT)
+Date:   Thu, 16 Nov 2023 13:14:35 +0000
+From:   Sean Young <sean@mess.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH] media: ir-hix5hd2: Use device_get_match_data()
+Message-ID: <ZVYVu-fiM6dETizU@gofer.mess.org>
+References: <20231115210113.3738233-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        FROM_STARTS_WITH_NUMS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115210113.3738233-1-robh@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree bindings for HDC3020/HDC3021/HDC3022 humidity and
-temperature sensors.
+On Wed, Nov 15, 2023 at 03:01:13PM -0600, Rob Herring wrote:
+> Use preferred device_get_match_data() instead of of_match_device() to
+> get the driver match data. With this, adjust the includes to explicitly
+> include the correct headers.
 
-Signed-off-by: Li peiyu <579lpy@gmail.com>
----
- .../bindings/iio/humidity/ti,hdc3020.yaml     | 48 +++++++++++++++++++
- 1 file changed, 48 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
+This is now applied. Sorry about the delay.
 
-diff --git a/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-new file mode 100644
-index 000000000000..8015c4bb5b2f
---- /dev/null
-+++ b/Documentation/devicetree/bindings/iio/humidity/ti,hdc3020.yaml
-@@ -0,0 +1,48 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/iio/humidity/ti,hdc3020.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: HDC3020/HDC3021/HDC3022 humidity and temperature iio sensors
-+
-+maintainers:
-+  - Jonathan Cameron <jic23@kernel.org>
-+
-+description: |
-+  The HDC302x is an integrated capacitive based relative humidity (RH)
-+  and temperature sensor.
-+
-+  datasheet is available:
-+    https://www.ti.com/lit/ds/symlink/hdc3020.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,hdc3020
-+      - ti,hdc3021
-+      - ti,hdc3022
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reg:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    i2c {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        humidity@47 {
-+            compatible = "ti,hdc3020";
-+            reg = <0x47>;
-+        };
-+    };
--- 
-2.34.1
+Thanks
+Sean
 
+> 
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+>  drivers/media/rc/ir-hix5hd2.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/media/rc/ir-hix5hd2.c b/drivers/media/rc/ir-hix5hd2.c
+> index 0034f615b466..de5bb9a08ea4 100644
+> --- a/drivers/media/rc/ir-hix5hd2.c
+> +++ b/drivers/media/rc/ir-hix5hd2.c
+> @@ -9,7 +9,9 @@
+>  #include <linux/interrupt.h>
+>  #include <linux/mfd/syscon.h>
+>  #include <linux/module.h>
+> -#include <linux/of_device.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/property.h>
+>  #include <linux/regmap.h>
+>  #include <media/rc-core.h>
+>  
+> @@ -251,7 +253,6 @@ static int hix5hd2_ir_probe(struct platform_device *pdev)
+>  	struct device *dev = &pdev->dev;
+>  	struct hix5hd2_ir_priv *priv;
+>  	struct device_node *node = pdev->dev.of_node;
+> -	const struct of_device_id *of_id;
+>  	const char *map_name;
+>  	int ret;
+>  
+> @@ -259,12 +260,11 @@ static int hix5hd2_ir_probe(struct platform_device *pdev)
+>  	if (!priv)
+>  		return -ENOMEM;
+>  
+> -	of_id = of_match_device(hix5hd2_ir_table, dev);
+> -	if (!of_id) {
+> +	priv->socdata = device_get_match_data(dev);
+> +	if (!priv->socdata) {
+>  		dev_err(dev, "Unable to initialize IR data\n");
+>  		return -ENODEV;
+>  	}
+> -	priv->socdata = of_id->data;
+>  
+>  	priv->regmap = syscon_regmap_lookup_by_phandle(node,
+>  						       "hisilicon,power-syscon");
+> -- 
+> 2.42.0
+> 
