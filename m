@@ -2,171 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 994B67EE699
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:20:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57B087EE69C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:20:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345448AbjKPSUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:20:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45758 "EHLO
+        id S1345439AbjKPSU4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:20:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345447AbjKPSU3 (ORCPT
+        with ESMTP id S231181AbjKPSUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:20:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609F019D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:20:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700158825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=W5mlpim9jcVUEdoHsiIKTmHBFlyP5301DOd2SWFWL9E=;
-        b=elHhcI2m4drah3wQpcjaAT+ql/SMcpSZbA1elFkewGklsw5Pdg8bovK1iOa8M6wVySgMTl
-        PHKouoK5OdKfuf6N6M8E/DUxnrAHMbttkGhNDtrTaH8qTYomskxzKxoJYyqTOVsWK6bElf
-        uYYyamQNKuetr307LKSEttW8C+q7oyE=
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
- [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-184-_aEeqnH0NH6MiDAlnm771w-1; Thu, 16 Nov 2023 13:20:24 -0500
-X-MC-Unique: _aEeqnH0NH6MiDAlnm771w-1
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-9c7f0a33afbso82274266b.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:20:24 -0800 (PST)
+        Thu, 16 Nov 2023 13:20:54 -0500
+Received: from mail-vk1-xa2d.google.com (mail-vk1-xa2d.google.com [IPv6:2607:f8b0:4864:20::a2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B2D6195
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:20:50 -0800 (PST)
+Received: by mail-vk1-xa2d.google.com with SMTP id 71dfb90a1353d-4afe5fc8ad7so238912e0c.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700158849; x=1700763649; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UEl2OjV0pgRuHXnpuYWusoP5rNXpr413oL62t3BAqVU=;
+        b=YI1a78FZTEQtKx55bfeeU1o7CwA7nwl9681d0wkMHkP4D7WLpBy2Vz8RTbLzg/zaue
+         zL3m0YSEdtkDgBb4XxmshtW0gamWp5eRd45KVMz79xKBs0i0bTD08XQ0XrJdZEjv0hjs
+         xMfj34hjhGflkwRuKTrKFgWeCPf0z5aTv8zW6ukzwUXwbedJvb423J1PZl3lJrYaTWHB
+         IybIyd48bsZlFhW7phymZ4Fay1JgA5WX9IfAWP4Y/uRuwnufMKGmtozxsIraGeBzZIHJ
+         1F7lzunm+/271CYGdS0WALcE+A1/G1cGQjHw6mib7RtKyzi1C/+hogBzGYENEs8qTKU0
+         Aecw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700158822; x=1700763622;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=W5mlpim9jcVUEdoHsiIKTmHBFlyP5301DOd2SWFWL9E=;
-        b=SMfLZbJzGAnVTrm43loEM9Hw+x4Bi2Ap4dT2g+0/+7ACRvozspfSbXz/w2Ue/9cLp8
-         WJnPEaHsJxk4zsTWQQdMn5tF8W3Lh0v7+YyBPY6ORYz8Rk4VFuwG6w/sM7QBGZKTfiJp
-         0WMU+yqFB0L5uc+XGwmUvnOZvsE8DP0PO8Nb8CGndBen3OT2804MYsvYc4ZcXxXOd+c4
-         rAZhAUJ0RwZg7EZpSzSYI1MZcZHzqSET0adqVYRRhykDdGB6aclszD/NwHFcIlmj8ikb
-         z07q0AF19U7fESV2IKvDhdct7IqFoU7TLKgWaDTQV9Wvcr87MysG6rVFrDDY9ha27wjT
-         Qwfg==
-X-Gm-Message-State: AOJu0YzfrJV4DN+O9bzAXf8dqxPa5acYMT337amZNzh5mgp4DOBB+f3d
-        3A7UG+JCLu1Gw1StB0+ZFsGCUvPlVOf9SF8/RIy5PIsG656SNyottIW6dHy7m+mWENPGtawPuob
-        R/bqScUC8Au4fjhWIfxHmEhNcWimQjStx
-X-Received: by 2002:a17:906:6815:b0:9d3:8d1e:ced with SMTP id k21-20020a170906681500b009d38d1e0cedmr12564232ejr.34.1700158822624;
-        Thu, 16 Nov 2023 10:20:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEqCJ6XD/Ix9osIh3OQgLECR/SM1Us/HvHhbnyPH71N30XXq9jdoU+52d28rjEZjRtcxiXtog==
-X-Received: by 2002:a17:906:6815:b0:9d3:8d1e:ced with SMTP id k21-20020a170906681500b009d38d1e0cedmr12564219ejr.34.1700158822301;
-        Thu, 16 Nov 2023 10:20:22 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id i23-20020a1709061cd700b009d23e00a90esm8703452ejh.24.2023.11.16.10.20.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 10:20:21 -0800 (PST)
-Message-ID: <87f753c8-924c-411b-93fe-b21525e76ae2@redhat.com>
-Date:   Thu, 16 Nov 2023 19:20:20 +0100
+        d=1e100.net; s=20230601; t=1700158849; x=1700763649;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=UEl2OjV0pgRuHXnpuYWusoP5rNXpr413oL62t3BAqVU=;
+        b=qM6AZftjhrLaF4c4zQgcrFSKGgHXBukll59/70mzaUbprMYtLN14AbOABbzU8EawC9
+         SvHxa1YxGjieSI3a0llRHdX7CvALvJ1JAPPcc4hQY8JZnSVjF48qOaeFDSvhhOVCdn1n
+         OBGg7fBCLMA8x/hXlOXJmw39vUYmynRoyou68Mq+pUEovr7L783tNGYL8HjVOvyEcurK
+         eyneI5f6yMrUnp7/5/lYxU5OVXliffyXgsVsYoTS3Q3rL/egqouq8752R/R8WK+VDNrz
+         1ghwanP+ik/d6fAga3OWANFz8Ycbj+QPInZg/Yni/ROvQZg7EV/4rBtqCrIeXLqe4s7H
+         wCoQ==
+X-Gm-Message-State: AOJu0YzrB4xHhJ9jF2S/RQFHmRappqfDLpzccWon2uq+PpWbV9din6Ag
+        TzdFOKnRhEcq+1UQGDRI86hT4aFbwSea5O2gOvXf3g==
+X-Google-Smtp-Source: AGHT+IGEyPY4IzC4f9/B04WjLL7alQQKnVu1MAPjV5f34N5SVhWjjVLKojtF/F1oGuZK6MIEY/VPS+UOk/LuJjn93tk=
+X-Received: by 2002:a05:6122:c8b:b0:49a:1dcf:21a8 with SMTP id
+ ba11-20020a0561220c8b00b0049a1dcf21a8mr12009240vkb.16.1700158849053; Thu, 16
+ Nov 2023 10:20:49 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Input: xpad - add Lenovo Legion Go controllers
-To:     Brenton Simpson <appsforartists@google.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Erica Taylor <rickytaylor26@gmail.com>,
-        Vicki Pfau <vi@endrift.com>, nate@yocom.org,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ismael Ferreras Morezuelas <swyterzone@gmail.com>,
-        Cameron Gutman <aicommander@gmail.com>
-References: <CAAL3-=88exVfuL1Y-kvPNbsU+d-UTfDLFViWVObFLtbC4xueeA@mail.gmail.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <CAAL3-=88exVfuL1Y-kvPNbsU+d-UTfDLFViWVObFLtbC4xueeA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+References: <20231115203548.387164783@linuxfoundation.org>
+In-Reply-To: <20231115203548.387164783@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 16 Nov 2023 23:50:35 +0530
+Message-ID: <CA+G9fYsFM-+M9D-_9fvmFKNj6Nwr+WUPhtvHOzFu+NZEKEDRRQ@mail.gmail.com>
+Subject: Re: [PATCH 5.15 000/244] 5.15.139-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Brenton,
-
-On 11/16/23 18:45, Brenton Simpson wrote:
-> When the controllers are both attached (or detached), they appear as
-> 0x17ef, 0x6182.  When only one is attached, they appear as
-> 0x17ef, 0x6184.
-> 
-> 84 (mixed attachment) is already recognized as a gamepad by Linux.  This
-> patch adds 82 (both attached/detached).
-> 
-> These controllers have many more buttons than is typical.  With this
-> patch, here's what's functional when it presents as 82:
-> 
-> Recognized:
-> 
-> - X, Y, A, B
-> - both analog sticks, including L3/R3
-> - D-pad
-> - menu and capture buttons
-> - rumble
-> 
-> Not yet recognized:
-> 
-> - start, select
-> - 4 rear paddle buttons (Y1, Y2, Y3, M3)
-> - gyroscope
-> 
-> (There are also non-functional buttons when reporting as 84 that are
-> out-of-scope for this patch.)
-> 
-> Signed-off-by: Brenton Simpson <appsforartists@google.com>
-> ---
->  drivers/input/joystick/xpad.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-> index f5c21565bb3cec..ecfcea8740a009 100644
-> --- a/drivers/input/joystick/xpad.c
-> +++ b/drivers/input/joystick/xpad.c
-> @@ -127,6 +127,7 @@ static const struct xpad_device {
->   u8 mapping;
->   u8 xtype;
->  } xpad_device[] = {
-
-It looks like your workflow of copy-pasting this into your
-email client has turned the tabs in the patch into a single space
-character.
-
-This and possibly other issues (line-wrapping, wrong end-of-line type)
-is why using git send-email is the preferred way to submit kernel
-patches.
-
-Maybe try using Brenton Simpson <appsforartists+kernel@google.com>
-
-for both the author and signed-off-by fields and then use
-git send-email ?
-
-Regards,
-
-Hans
-
-p.s.
-
-Might be best to send the next attempt just to me, until you've
-figured out a working email setup. And then once we have things
-working, re-submit to the right people ?
+On Thu, 16 Nov 2023 at 02:17, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.15.139 release.
+> There are 244 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 17 Nov 2023 20:34:45 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.15.139-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.15.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
+## Build
+* kernel: 5.15.139-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-5.15.y
+* git commit: 0d55b31d7e1db6eee3c65c0e64d373dd4269578c
+* git describe: v5.15.138-245-g0d55b31d7e1d
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.15.y/build/v5.15=
+.138-245-g0d55b31d7e1d
 
-> + { 0x17ef, 0x6182, "Lenovo Legion Go Controller (unified)", 0, XTYPE_XBOX360 },
->   { 0x0079, 0x18d4, "GPD Win 2 X-Box Controller", 0, XTYPE_XBOX360 },
->   { 0x03eb, 0xff01, "Wooting One (Legacy)", 0, XTYPE_XBOX360 },
->   { 0x03eb, 0xff02, "Wooting Two (Legacy)", 0, XTYPE_XBOX360 },
-> @@ -459,6 +460,7 @@ static const signed short xpad_btn_paddles[] = {
-> 
->  static const struct usb_device_id xpad_table[] = {
->   { USB_INTERFACE_INFO('X', 'B', 0) }, /* Xbox USB-IF not-approved class */
-> + XPAD_XBOX360_VENDOR(0x17ef), /* Lenovo */
->   XPAD_XBOX360_VENDOR(0x0079), /* GPD Win 2 controller */
->   XPAD_XBOX360_VENDOR(0x03eb), /* Wooting Keyboards (Legacy) */
->   XPAD_XBOXONE_VENDOR(0x03f0), /* HP HyperX Xbox One controllers */
-> 
+## Test Regressions (compared to v5.15.138)
 
+## Metric Regressions (compared to v5.15.138)
+
+## Test Fixes (compared to v5.15.138)
+
+## Metric Fixes (compared to v5.15.138)
+
+## Test result summary
+total: 85933, pass: 68466, fail: 2348, skip: 15070, xfail: 49
+
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 115 total, 115 passed, 0 failed
+* arm64: 43 total, 43 passed, 0 failed
+* i386: 34 total, 33 passed, 1 failed
+* mips: 24 total, 24 passed, 0 failed
+* parisc: 4 total, 4 passed, 0 failed
+* powerpc: 26 total, 26 passed, 0 failed
+* riscv: 10 total, 10 passed, 0 failed
+* s390: 11 total, 11 passed, 0 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 8 total, 8 passed, 0 failed
+* x86_64: 37 total, 37 passed, 0 failed
+
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* perf
+* rcutorture
+
+--
+Linaro LKFT
+https://lkft.linaro.org
