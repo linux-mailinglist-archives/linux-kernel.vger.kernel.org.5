@@ -2,78 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 073F37EE06B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:10:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A061F7EE070
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:11:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345248AbjKPMK2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:10:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58526 "EHLO
+        id S1345188AbjKPMLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:11:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345100AbjKPMK0 (ORCPT
+        with ESMTP id S1345183AbjKPMLF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:10:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFDF79C
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:10:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B59CC433C9;
-        Thu, 16 Nov 2023 12:10:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700136623;
-        bh=CB+Z9KhjNuxIpYBv3s7uWPXwG45KTeyo1+mDiNPYoKk=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=rzzR9sizziRCyySRurTHP/DzjfttVHGD5LoetKUw3YZe0HGhDKNURQE0r1bMh1HWN
-         BbU6Ydsw9rkwpTK6J4xNPV1CJPB/MAYf04Pp2YxiryFOnDq0XkDjZIQPdp46fTYdGm
-         LKrJRTzhv1zOvAWr/u/A2hEj+7IIi/6/dBsrLMqtrR4IsCkyJCDJRVNe2JsscT0y0S
-         4ofoXN0A+Bw+A0h7WY+VOfRxbCZHtVRAzdPQMaSWfcxZzc6+9c0IqVSv/+NtxNPZoz
-         6zUfAtAD/TxUwJDx1/XOX7yiwYeRNq8Uwf3LlwgFaxXEBhQo+E/R8TPZgneF93yLUk
-         kCa3G91qnjctA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 4A1F0E1F666;
-        Thu, 16 Nov 2023 12:10:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 16 Nov 2023 07:11:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26C0AD53
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:10:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700136658;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=2o8llrEy4J3tkRIyO6miHMlYGkEf09QZYyfJI1/fuJU=;
+        b=KJX8+aOWhbKwvl1I0lgeC6cH9Ktu9lMJjQO4Lc+MIITneR2HT63H07mqugzHyC+f8c+UCL
+        Esf7MMRrFGk5x1LoyZZmU5d5D+wkThj8LwG3XmbXOu5IB5W+SzFTeKLDBxOCvc2ZAE5/KZ
+        5AThwblssJBXLkZS1Fs2mUq4pCt67zY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-391-O4zObQUCNOqwSdecns0Nxg-1; Thu, 16 Nov 2023 07:10:52 -0500
+X-MC-Unique: O4zObQUCNOqwSdecns0Nxg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ADDF285A58C;
+        Thu, 16 Nov 2023 12:10:51 +0000 (UTC)
+Received: from localhost (unknown [10.72.112.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DFD311C060AE;
+        Thu, 16 Nov 2023 12:10:50 +0000 (UTC)
+Date:   Thu, 16 Nov 2023 20:10:47 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        Jun Nakajima <jun.nakajima@intel.com>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Kalra, Ashish" <ashish.kalra@amd.com>,
+        Sean Christopherson <seanjc@google.com>,
+        "Huang, Kai" <kai.huang@intel.com>, kexec@lists.infradead.org,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv3 00/14] x86/tdx: Add kexec support
+Message-ID: <ZVYGx1EwzjXbTEyX@MiWiFi-R3L-srv>
+References: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next] indirect_call_wrapper: Fix typo in INDIRECT_CALL_$NR
- kerneldoc
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170013662329.21544.14620842715409880928.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Nov 2023 12:10:23 +0000
-References: <20231114104202.4680-1-tklauser@distanz.ch>
-In-Reply-To: <20231114104202.4680-1-tklauser@distanz.ch>
-To:     Tobias Klauser <tklauser@distanz.ch>
-Cc:     pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115120044.8034-1-kirill.shutemov@linux.intel.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On 11/15/23 at 03:00pm, Kirill A. Shutemov wrote:
+> The patchset adds bits and pieces to get kexec (and crashkernel) work on
+> TDX guest.
 
-This patch was applied to netdev/net-next.git (main)
-by Paolo Abeni <pabeni@redhat.com>:
-
-On Tue, 14 Nov 2023 11:42:02 +0100 you wrote:
-> Fix a small typo in the kerneldoc comment of the INDIRECT_CALL_$NR
-> macro.
-> 
-> Signed-off-by: Tobias Klauser <tklauser@distanz.ch>
-> ---
->  include/linux/indirect_call_wrapper.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-
-Here is the summary with links:
-  - [net-next] indirect_call_wrapper: Fix typo in INDIRECT_CALL_$NR kerneldoc
-    https://git.kernel.org/netdev/net-next/c/3185d57cfcd3
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+I finally got a machine of intel-eaglestream-spr as host and built a
+tdx guest to give it a shot, the kexec reboot is working very well,
+while kdump kernel always failed to boot up. I only built kernel and
+installed it on tdx guest.
+------------------------------------------
+[    1.422500] Run /init as init process
+[    1.423073] Failed to execute /init (error -2)
+[    1.423759] Run /sbin/init as init process
+[    1.424370] Run /etc/init as init process
+[    1.424969] Run /bin/init as init process
+[    1.425588] Run /bin/sh as init process
+[    1.426150] Kernel panic - not syncing: No working init found.  Try passing init= option to kernel. See Linux Documentation/admin-guide/init.rst for guidance.
+[    1.428122] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.7.0-rc1-00014-gbdba31ba3cec #3
+[    1.429232] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
+[    1.430328] Call Trace:
+[    1.430717]  <TASK>
+[    1.431041]  dump_stack_lvl+0x33/0x50
+[    1.431581]  panic+0x324/0x340
+[    1.432037]  ? __pfx_kernel_init+0x10/0x10
+[    1.432629]  kernel_init+0x174/0x1c0
+[    1.433149]  ret_from_fork+0x2d/0x50
+[    1.433690]  ? __pfx_kernel_init+0x10/0x10
+[    1.434277]  ret_from_fork_asm+0x1b/0x30
+[    1.434850]  </TASK>
+[    1.435345] Kernel Offset: disabled
+[    1.439216] Rebooting in 10 seconds..
+qemu-kvm: cpus are not resettable, terminating
 
