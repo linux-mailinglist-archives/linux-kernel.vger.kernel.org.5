@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 85EC57EE59A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:58:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C76A37EE59E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:00:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1343972AbjKPQ6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:58:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37954 "EHLO
+        id S1345203AbjKPRAI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:00:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjKPQ6p (ORCPT
+        with ESMTP id S229472AbjKPRAH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:58:45 -0500
-Received: from eu-smtp-delivery-151.mimecast.com (eu-smtp-delivery-151.mimecast.com [185.58.86.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2D43D49
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:58:41 -0800 (PST)
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) by
- relay.mimecast.com with ESMTP with both STARTTLS and AUTH (version=TLSv1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- uk-mta-195-esXLCCycM-uD2bJcbv0YGQ-1; Thu, 16 Nov 2023 16:58:39 +0000
-X-MC-Unique: esXLCCycM-uD2bJcbv0YGQ-1
-Received: from AcuMS.Aculab.com (10.202.163.6) by AcuMS.aculab.com
- (10.202.163.6) with Microsoft SMTP Server (TLS) id 15.0.1497.48; Thu, 16 Nov
- 2023 16:58:44 +0000
-Received: from AcuMS.Aculab.com ([::1]) by AcuMS.aculab.com ([::1]) with mapi
- id 15.00.1497.048; Thu, 16 Nov 2023 16:58:44 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>
-CC:     David Howells <dhowells@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        "oe-lkp@lists.linux.dev" <oe-lkp@lists.linux.dev>,
-        "lkp@intel.com" <lkp@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "feng.tang@intel.com" <feng.tang@intel.com>,
-        "fengwei.yin@intel.com" <fengwei.yin@intel.com>
-Subject: RE: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Thread-Topic: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Thread-Index: AQHaGKyzFfqMOen5JUCwmbDFX2u0nbB9KiKw
-Date:   Thu, 16 Nov 2023 16:58:44 +0000
-Message-ID: <ef760f3b926747598051c848ba85c4a8@AcuMS.aculab.com>
-References: <202311061616.cd495695-oliver.sang@intel.com>
- <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
- <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
- <20231116154406.GDZVY4xmFvRQt0wGGE@fat_crate.local>
- <CAHk-=wjGQh3ucZFmFR0evbKu2OyEuue-bOjsrnCvxSQdj8x6aw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjGQh3ucZFmFR0evbKu2OyEuue-bOjsrnCvxSQdj8x6aw@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 16 Nov 2023 12:00:07 -0500
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3575B7;
+        Thu, 16 Nov 2023 09:00:03 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id B08EC60015;
+        Thu, 16 Nov 2023 17:00:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700154001; h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cCQ0/IarjDk2AeSz5GEPu6ZBFQqxgtxl4OGZFmQ1JMI=;
+        b=GusDHi9c1etlEU5WZ31CKGha3ApAmSNGxsRGG5w/l6YOITjb9+5n4XY34/4D1hSXIya7pA
+        v8hWUKeLhYphzOILobnv+JUHhtvMRmu/9mewnwI+nc6GHa+gN1j4hqDjA+9vV+hyqFnkFo
+        G+YNLrNm/9i6xKaHmpubxQiDZmMTwADkhrL2WYDplLj4GfDtc8qgQGIqD6XJuuBJiHR8wS
+        ls0kAq9BVde01GzQXuWnjsj0CCPBYAFQP+7fE9M0i4wgNjajx8u+b9X/oryNRy97osvbak
+        K0M0VU1ou+NfIHxJL9D6ZFPhEcfLkVk/q9WyAKLRH7UbPG3epOziMQ1hydgSoA==
+Date:   Thu, 16 Nov 2023 17:59:59 +0100
+From:   =?UTF-8?B?S8O2cnk=?= Maincent <kory.maincent@bootlin.com>
+To:     Jisheng Zhang <jszhang@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Lu jicong <jiconglu58@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: Re: [PATCH] usb: dwc3: don't reset device side if dwc3 was
+ configured as host-only
+Message-ID: <20231116175959.71f5d060@kmaincent-XPS-13-7390>
+In-Reply-To: <20231116174206.1a823aa3@kmaincent-XPS-13-7390>
+References: <20231116174206.1a823aa3@kmaincent-XPS-13-7390>
+Reply-To: <20231116174206.1a823aa3@kmaincent-XPS-13-7390>
+Organization: bootlin
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: kory.maincent@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Li4uDQo+IE9mIGNvdXJzZSwgaXQncyBhbHNvIHBvc3NpYmxlIHRoYXQgd2l0aCBhbGwgdGhlIGZ1
-bmN0aW9uIGNhbGwgb3ZlcmhlYWQNCj4gaW50cm9kdWNlZCBieSB0aGUgQ1BVIG1pdGlnYXRpb25z
-IG9uIG9sZGVyIENQVSdzLCB3ZSBzaG91bGQganVzdCBzYXkNCj4gInJlcCBtb3ZzYiIgaXMgYWx3
-YXlzIGNvcnJlY3QgLSBpZiB5b3UgaGF2ZSBhIG5ldyBDUFUgd2l0aCBGU1JNIGl0J3MNCj4gZ29v
-ZCwgYW5kIGlmIHlvdSBoYXZlIGFuIG9sZCBDUFUgaXQncyBubyB3b3JzZSB0aGFuIHRoZSBob3Jy
-ZW5kb3VzIENQVQ0KPiBtaXRpZ2F0aW9uIG92ZXJoZWFkIGZvciBmdW5jdGlvbiBjYWxsL3JldHVy
-bnMuDQoNClVubGVzcyB5b3UgYXJlIHN0dXBpZCBlbm91Z2ggdG8gdXNlIGEgUDQgOi0pDQoNCkkg
-YWN0dWFsbHkgZG91YnQgYW55b25lIGNhcmVzIChlc3AuIGZvciA2NGJpdCkgYWJvdXQgYW55DQpj
-cHUgdGhhdCBkb24ndCBvcHRpbWlzZSBsb25nICdyZXAgbW92c2InIChwcmUgc2FuZHkgYnJpZGdl
-KS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBS
-b2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9u
-IE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Thu, 16 Nov 2023 17:42:06 +0100
+K=C3=B6ry Maincent <kory.maincent@bootlin.com> wrote:
 
+> Hello,
+>=20
+> Similar issue with ZynqMP board related to that patch:
+>=20
+> xilinx-psgtr fd400000.phy: lane 3 (type 1, protocol 3): PLL lock timeout
+> phy phy-fd400000.phy.3: phy poweron failed --> -110
+> dwc3 fe300000.usb: error -ETIMEDOUT: failed to initialize core
+>=20
+> With CONFIG_USB_DWC3_DUAL_ROLE and dr_mode =3D "host";
+>=20
+> It may not be the correct fix.
+
+Just figured out there was a patch (357191036889 usb: dwc3: Soft reset phy =
+on
+probe for host) from Thinh aimed to fix it but the issue is still here on
+ZynqMP.
+
+Regards,
+
+--=20
+K=C3=B6ry Maincent, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
