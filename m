@@ -2,107 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A75CA7EDA43
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:33:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D61F7EDA4A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:34:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344846AbjKPDdX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:33:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53208 "EHLO
+        id S1344839AbjKPDen (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:34:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229447AbjKPDdV (ORCPT
+        with ESMTP id S235663AbjKPDem (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:33:21 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CCFBD5
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:33:17 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id 2adb3069b0e04-5079f9ec8d9so395465e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:33:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700105595; x=1700710395; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UpqwIukJN4pe5ng/7gTK1zs3f2lJ5+Nh8U6l7DMo/Ls=;
-        b=PfNuS8X9GvIHbI6c+MqurPcSzltGr+ljl+1NakTd6ccbbrdohyKfzpCrUBz3IZCjAV
-         3nZiEpHDi1mOGVhZnmmEmRCuN7ZeYnoaP3SjxtfS3M+zJP9O9pVMun5WQVS769fNLijT
-         tvqSI0cyl0QqArAjphhNQ2rqtj6914Sg1TxrMOjNU6fdZtHtNpGIG825l2QUlfQ5BpHQ
-         euUsLU4zry/n3ZJHJodaT3VA5S9omSG+ZbE+OcVUBNkSckXx5W+CbVC6Ru1JiQoiBJ3S
-         eCqGpAg1Epi5AGjsKQaxI9Y8DoqxGhY0UOKv4T7E/Bg3b2DscJeBBcl9jKIiLvi73FaC
-         wbZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700105595; x=1700710395;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UpqwIukJN4pe5ng/7gTK1zs3f2lJ5+Nh8U6l7DMo/Ls=;
-        b=io5zF8dGHTE9CZJuXsDnL2qX0otkWBIJ3OjF/3BWcSd6YNLRJD4UR6O5CRrkjqf78g
-         euxYLYwZeY2RSetrdENjfmSjCxXVipuffci8kmUWIr1wER5JIrrBxbjUc+Lf7COrWou+
-         5ZAFcfR7aOb7XXNfdx9FMzDr+RjO+L0JLkEw8QloRaEan+q2vbRRrqfdN5P37c4Dtrvr
-         n4pdhSQN+hGBlCNOUjYJEdCZiLkn77P+/+M421LdnJTv+ZsE8eVwDgqKc2rjmPdOT+WG
-         /NAsnpOAJ8IdaWuGImFW7VfkF29AbRuOnbxw+QJKi/EVoqi9xcKH9RUYcbQxf7tZWxSm
-         BfRQ==
-X-Gm-Message-State: AOJu0YwCTnAP4KwUDd1lRUQY+nI2GItlP7Ma+17eL18CDBYuLiiydwUj
-        AYpxlmq00Y2YJj4Mzit7xjfI+g5ibxYA9WIw5/7w+g==
-X-Google-Smtp-Source: AGHT+IGbUOhz2+BNaQkvb9Z18TKRjDf/Bxz4dE2NrTeLNsgDDqA6PVyBftHctxYwLqfPsb6qJXCg7uNMng1BpgSymkg=
-X-Received: by 2002:a05:6512:b0f:b0:506:8b41:7e31 with SMTP id
- w15-20020a0565120b0f00b005068b417e31mr193547lfu.6.1700105595568; Wed, 15 Nov
- 2023 19:33:15 -0800 (PST)
+        Wed, 15 Nov 2023 22:34:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5FA019B
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:34:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700105677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Fh6sr5djueJxvg69Qt1Q1YfFiPMkWzsCiD40QbSJilw=;
+        b=MlPaDj9t9Q3VpepCYrQEERlS/QrIwmwF80slh0jRG/fdWkjhuXs+Kqn43IfCXalWssLPgj
+        F6tZI0CCT+zhyt4RuVc5NWZ/iG2ywSrSm8PTf3wfKY9ZCEIt01KUZ8f2SewcTbZIARFVI7
+        8Gh9G61VAuuJazS1T/f4dQx3yM56C0U=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-508-LVbmSX7jPZ2g5WfQ6uex4g-1; Wed,
+ 15 Nov 2023 22:34:34 -0500
+X-MC-Unique: LVbmSX7jPZ2g5WfQ6uex4g-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 061C91C04344;
+        Thu, 16 Nov 2023 03:34:34 +0000 (UTC)
+Received: from llong.com (unknown [10.22.8.169])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 241AF492BFD;
+        Thu, 16 Nov 2023 03:34:33 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Shuah Khan <shuah@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        Peter Hunt <pehunt@redhat.com>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 0/5] cgroup/cpuset: Improve CPU isolation in isolated partitions
+Date:   Wed, 15 Nov 2023 22:34:00 -0500
+Message-Id: <20231116033405.185166-1-longman@redhat.com>
 MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
- <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com> <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com>
-In-Reply-To: <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com>
-From:   =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Date:   Thu, 16 Nov 2023 11:33:03 +0800
-Message-ID: <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
- failure in two scenarios
-To:     Yosry Ahmed <yosryahmed@google.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
-        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Ying <ying.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 4:13=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com>=
- wrote:
->
-> I think we may need to try to lock the folio. Otherwise we may race
-> with reclaim reading the dirty bit before we set it.
->
-> Taking a step back, this seems like we are going behind exclusive
-> loads. We "should" keep the page in zswap as exclusive loads are
-> disabled and the page is not yet invalidated from zswap (the swap
-> entry is still in use). What you are trying to do here is sneakily
-> drop the page from zswap as if we wrote it back, but we didn't.
+v4:
+ - Update patch 1 to move apply_wqattrs_lock() and apply_wqattrs_unlock()
+   down into CONFIG_SYSFS block to avoid compilation warnings.
 
-If  we want to reclaim the cached zswap_entry, Writing back might
-be the easy way.
+v3:
+ - Break out a separate patch to make workqueue_set_unbound_cpumask()
+   static and move it down to the CONFIG_SYSFS section.
+ - Remove the "__DEBUG__." prefix and the CFTYPE_DEBUG flag from the
+   new root only cpuset.cpus.isolated control files and update the
+   test accordingly.
 
-> We just know that it was already loaded from zswap. We are essentially
-> making the previous load exclusive retroactively.
->
-> Is there a reason why exclusive loads cannot be enabled to achieve the
-> same result in the (arguably) correct way?
->
+v2:
+ - Add 2 read-only workqueue sysfs files to expose the user requested
+   cpumask as well as the isolated CPUs to be excluded from
+   wq_unbound_cpumask.
+ - Ensure that caller of the new workqueue_unbound_exclude_cpumask()
+   hold cpus_read_lock.
+ - Update the cpuset code to make sure the cpus_read_lock is held
+   whenever workqueue_unbound_exclude_cpumask() may be called.
 
-zswap_exclusive_loads is not enabled by default, so the shrink_worker
-may fail if there are many cached zswap_entries on the zswap_pool->lru.
+Isolated cpuset partition can currently be created to contain an
+exclusive set of CPUs not used in other cgroups and with load balancing
+disabled to reduce interference from the scheduler.
 
-Is it possible to make zswap_exclusive_loads the only way in zswap_load?
-It only makes sense when the page is read and no longer dirty.
-If the page is read frequently, it should stay in cache rather than zswap.
-The benefit of doing this is very small, two copies of the same page
-in memory.
+The main purpose of this isolated partition type is to dynamically
+emulate what can be done via the "isolcpus" boot command line option,
+specifically the default domain flag. One effect of the "isolcpus" option
+is to remove the isolated CPUs from the cpumasks of unbound workqueues
+since running work functions in an isolated CPU can be a major source
+of interference. Changing the unbound workqueue cpumasks can be done at
+run time by writing an appropriate cpumask without the isolated CPUs to
+/sys/devices/virtual/workqueue/cpumask. So one can set up an isolated
+cpuset partition and then write to the cpumask sysfs file to achieve
+similar level of CPU isolation. However, this manual process can be
+error prone.
 
-Thanks.
+This patch series implements automatic exclusion of isolated CPUs from
+unbound workqueue cpumasks when an isolated cpuset partition is created
+and then adds those CPUs back when the isolated partition is destroyed.
+
+There are also other places in the kernel that look at the HK_FLAG_DOMAIN
+cpumask or other HK_FLAG_* cpumasks and exclude the isolated CPUs from
+certain actions to further reduce interference. CPUs in an isolated
+cpuset partition will not be able to avoid those interferences yet. That
+may change in the future as the need arises.
+
+Waiman Long (5):
+  workqueue: Make workqueue_set_unbound_cpumask() static
+  workqueue: Add workqueue_unbound_exclude_cpumask() to exclude CPUs
+    from wq_unbound_cpumask
+  selftests/cgroup: Minor code cleanup and reorganization of
+    test_cpuset_prs.sh
+  cgroup/cpuset: Keep track of CPUs in isolated partitions
+  cgroup/cpuset: Take isolated CPUs out of workqueue unbound cpumask
+
+ Documentation/admin-guide/cgroup-v2.rst       |  10 +-
+ include/linux/workqueue.h                     |   2 +-
+ kernel/cgroup/cpuset.c                        | 286 +++++++++++++-----
+ kernel/workqueue.c                            | 165 +++++++---
+ .../selftests/cgroup/test_cpuset_prs.sh       | 216 ++++++++-----
+ 5 files changed, 475 insertions(+), 204 deletions(-)
+
+-- 
+2.39.3
+
