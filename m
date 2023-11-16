@@ -2,193 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CE87EE0D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:41:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F28297EE0D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:42:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345125AbjKPMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        id S1345154AbjKPMm1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:42:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344966AbjKPMl5 (ORCPT
+        with ESMTP id S1345142AbjKPMm0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:41:57 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C30D8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:41:54 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47BD7C433C8;
-        Thu, 16 Nov 2023 12:41:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700138513;
-        bh=vLGyRyE7xZ4srKu6DV6MaEhKkGUc+EK7JixMRPPZLu8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=naPC5FlEcHUpIG7KPTqcFrWgDAQBrCPlZNLUlBMx+SgTqAoTsIt+Ie6lwGNcVw8HT
-         mO48U9xc+J7nkmTCu+PPbnnSdK4v98ieT4m16G1gEhQQw6F5YmbnNZ+JBznpqzLLh5
-         3NtPrgxClTTHbd0JbVdhToJwnyfv/KOO7bLAchKCNmcd+nUA0rDctkb0L3jkNvcRDJ
-         AfHz6Ps0lUxXCMpzwQ68hlSZcfnXOPM97yEuP/w8qXyaMfSn415m3amGbkANCNTEqp
-         vqn6KzXtjjj8gXOySCTcw/qFJEU2fc3Quu30FGy95JSgr/OSEcgW/TGCzu4rNhUML7
-         clsYg4Cr/Jf5w==
-Message-ID: <dad980f3-e032-41e4-a1e4-a16a7f45ff95@kernel.org>
-Date:   Thu, 16 Nov 2023 14:40:55 +0200
+        Thu, 16 Nov 2023 07:42:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE60F193
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:42:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700138540;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h0cgDtlCn3yVws2N/gdlQc9Ry1b50ay82U2VPVFHUd8=;
+        b=eTZ5IJOL0qAyuOJeSlxvzvw2IUHYPSwyYhHinJk+s3VcnNXOAPE9T+GmP29nI856npIAA2
+        Bfi99OYSwcPBXpq044zEiJdMwZkUMfh+J/h5l1TZvocDUnc0O82biZdPAZgSsnPeyzU9Mu
+        NeoRMN2rNn3q1X7RvrwhGm7/omg7Z8U=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-210-cunVPJq3M0ikTpkJFsMo_w-1; Thu, 16 Nov 2023 07:42:17 -0500
+X-MC-Unique: cunVPJq3M0ikTpkJFsMo_w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.rdu2.redhat.com [10.11.54.7])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15A2B8058ED;
+        Thu, 16 Nov 2023 12:42:17 +0000 (UTC)
+Received: from [10.22.16.205] (unknown [10.22.16.205])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C95041C060B5;
+        Thu, 16 Nov 2023 12:42:16 +0000 (UTC)
+Message-ID: <c1c23a29-17a4-43de-9967-f3bca079b860@redhat.com>
+Date:   Thu, 16 Nov 2023 07:42:16 -0500
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] usb: cdns3-ti: add suspend/resume procedures for
- J7200
+Subject: Re: [PATCH] lockdep: optimise "struct lock_class" layout
 Content-Language: en-US
-To:     =?UTF-8?Q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Peter Chen <peter.chen@kernel.org>,
-        Pawel Laszczak <pawell@cadence.com>,
-        Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>
-Cc:     linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
- <20231113-j7200-usb-suspend-v1-3-ad1ee714835c@bootlin.com>
- <5080372b-1f48-4cbc-a6c4-8689c28983cb@kernel.org>
- <CWZH66HQZNYM.T623ZOEEE0BK@tleb-bootlin-xps13-01>
-From:   Roger Quadros <rogerq@kernel.org>
-In-Reply-To: <CWZH66HQZNYM.T623ZOEEE0BK@tleb-bootlin-xps13-01>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+To:     Alexey Dobriyan <adobriyan@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+        Boqun Feng <boqun.feng@gmail.com>
+Cc:     linux-kernel@vger.kernel.org
+References: <e527403e-9be1-4aa2-98c0-a3ab1f02787f@p183>
+From:   Waiman Long <longman@redhat.com>
+In-Reply-To: <e527403e-9be1-4aa2-98c0-a3ab1f02787f@p183>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.7
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 11/16/23 06:25, Alexey Dobriyan wrote:
+> struct lock_class does
+>
+> 	const struct lock_trace *	usage_traces[];
+> 	int				name_version;
+> 	const char *			name;
+>
+> which wastes 4 bytes after "name_version".
+>
+> Put pointer after pointers shrinking sizeof from 208 bytes to 200 bytes.
+> Space savings are considerable for such a trivial patch:
+>
+> 	$ ./scripts/bloat-o-meter ../vmlinux-000 ../obj/vmlinux
+> 	add/remove: 0/0 grow/shrink: 1/11 up/down: 2/-65640 (-65638)
+> 	Function                       old     new   delta
+> 	check_irq_usage               2852    2854      +2
+> 	reacquire_held_locks           486     484      -2
+> 	lock_chain_get_class            41      39      -2
+> 	l_start                         34      32      -2
+> 	check_noncircular              276     274      -2
+> 	print_usage_bug.part           688     683      -5
+> 	print_circular_bug            1017    1011      -6
+> 	hlock_conflict                 141     135      -6
+> 	print_deadlock_bug             944     935      -9
+> 	mark_lock                     3791    3769     -22
+> 	__lock_acquire                9801    9753     -48
+> 	lock_classes               1703936 1638400  -65536
+> 	Total: Before=21163908, After=21098270, chg -0.31%
+>
+> Signed-off-by: Alexey Dobriyan <adobriyan@gmail.com>
+> ---
+>
+>   include/linux/lockdep_types.h |    2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> --- a/include/linux/lockdep_types.h
+> +++ b/include/linux/lockdep_types.h
+> @@ -127,12 +127,12 @@ struct lock_class {
+>   	unsigned long			usage_mask;
+>   	const struct lock_trace		*usage_traces[LOCK_TRACE_STATES];
+>   
+> +	const char			*name;
+>   	/*
+>   	 * Generation counter, when doing certain classes of graph walking,
+>   	 * to ensure that we check one node only once:
+>   	 */
+>   	int				name_version;
+> -	const char			*name;
+>   
+>   	u8				wait_type_inner;
+>   	u8				wait_type_outer;
+>
+LGTM.
 
+Acked-by: Waiman Long <longman@redhat.com>
 
-On 15/11/2023 17:02, Théo Lebrun wrote:
-> Hi Roger,
-> 
-> On Wed Nov 15, 2023 at 12:37 PM CET, Roger Quadros wrote:
->> On 13/11/2023 16:26, Théo Lebrun wrote:
->>> Hardware initialisation is only done at probe. The J7200 USB controller
->>> is reset at resume because of power-domains toggling off & on. We
->>> therefore (1) toggle PM runtime at suspend/resume & (2) reconfigure the
->>> hardware at resume.
->>
->> at probe we are doing a pm_runtime_get() and never doing a put thus
->> preventing any runtime PM.
-> 
-> Indeed. The get() from probe/resume are in symmetry with the put() from
-> suspend. Is this wrong in some manner?
-> 
->>> index c331bcd2faeb..50b38c4b9c87 100644
->>> --- a/drivers/usb/cdns3/cdns3-ti.c
->>> +++ b/drivers/usb/cdns3/cdns3-ti.c
->>> @@ -197,6 +197,50 @@ static int cdns_ti_probe(struct platform_device *pdev)
->>>  	return error;
->>>  }
->>>  
->>> +#ifdef CONFIG_PM
->>> +
->>> +static int cdns_ti_suspend(struct device *dev)
->>> +{
->>> +	struct cdns_ti *data = dev_get_drvdata(dev);
->>> +
->>> +	if (!of_device_is_compatible(dev_of_node(dev), "ti,j7200-usb"))
->>> +		return 0;
->>> +
->>> +	pm_runtime_put_sync(data->dev);
->>> +
->>> +	return 0;
->>
->> You might want to check suspend/resume ops in cdns3-plat and
->> do something similar here.
-> 
-> I'm unsure what you are referring to specifically in cdns3-plat?
-
-What I meant is, calling pm_runtime_get/put() from system suspend/resume
-hooks doesn't seem right.
-
-How about using something like pm_runtime_forbid(dev) on devices which
-loose USB context on runtime suspend e.g. J7200.
-So at probe we can get rid of the pm_runtime_get_sync() call.
-e.g.
-
-        pm_runtime_set_active(dev);
-        pm_runtime_enable(dev);
-        if (cnds_ti->can_loose_context)
-                pm_runtime_forbid(dev);
-
-        pm_runtime_set_autosuspend_delay(dev, CNDS_TI_AUTOSUSPEND_DELAY);	/* could be 20ms? */
-        pm_runtime_mark_last_busy(dev);
-        pm_runtime_use_autosuspend(dev);
-
-You will need to modify the suspend/resume handlers accordingly.
-https://docs.kernel.org/power/runtime_pm.html#runtime-pm-and-system-sleep
-
-What I'm not sure of is if there are any TI platforms that retain USB context
-on power domain off. Let me get back on this. Till then we can assume that
-all platforms loose USB context on power domain off.
-
-One comment below.
-
-> +	return ret;
-> +}
-
-
-> 
->  - Using pm_runtime_status_suspended() to get the current PM runtime
->    state & act on it? I don't see why because we know the pm_runtime
->    state is a single put() at probe.
-> 
->  - Having a `in_lpm` flag to track low-power mode state? I wouldn't see
->    why we'd want that as we don't register runtime_suspend &
->    runtime_resume callbacks and system syspend/resume can be assumed to
->    be called in the right order.
-> 
->  - Checking the `device_may_wakeup()`? That doesn't apply to this driver
->    which cannot be a wakeup source.
-> 
-> Thanks for your review!
-> Regards,
-> 
-> --> +static int cdns_ti_resume(struct device *dev)
-> +{
-> +	struct cdns_ti *data = dev_get_drvdata(dev);
-> +	int ret;
-> +
-> +	if (!of_device_is_compatible(dev_of_node(dev), "ti,j7200-usb"))
-> +		return 0;
-> +
-> +	ret = pm_runtime_get_sync(dev);
-> +	if (ret < 0) {
-> +		dev_err(dev, "pm_runtime_get_sync failed: %d\n", ret);
-> +		goto err;
-> +	}
-> +
-> +	cdns_ti_init_hw(data);
-> +
-> +	return 0;
-> +
-> +err:
-> +	pm_runtime_put_sync(data->dev);
-> +	pm_runtime_disable(data->dev);
-
-Why do you do a pm_runtime_disable() here?
-
-> +	return ret;
-> +}
-
-
-> Théo Lebrun, Bootlin
-> Embedded Linux and Kernel engineering
-> https://bootlin.com
-> 
-> ------------------------------------------------------------------------
-> 
-> 
-
--- 
-cheers,
--roger
