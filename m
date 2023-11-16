@@ -2,85 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 251CC7EE015
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 258F77EE017
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjKPLqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:46:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56328 "EHLO
+        id S1344966AbjKPLqi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:46:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjKPLqe (ORCPT
+        with ESMTP id S230160AbjKPLqh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:46:34 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B537B0;
-        Thu, 16 Nov 2023 03:46:31 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGBg9kM018730;
-        Thu, 16 Nov 2023 11:46:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=LdxD296FT6Gvt/TpfuJhIwbLudXw79+Wb1W39adnXMs=;
- b=ST724KIs3nVl2IPILTZLdo8ul1G0crRkhK7JZWJiob0h6YKf4vr/oo9Jcy5vGNAzq1d5
- PFJxF7QnCvTOLecGVzEJj4ef7bF+i5Si/gwFRg1IyO7uPhG+AJCwK9OEuCTZ0m9/33Kd
- 7NFyNsCM/SeGIw1y2mbZ3bMVcxsxM7+vSZ0alunpIwDtwc4XzNh+aVtaxIEX5/rxKDlk
- hEB6N9D0vpu+VgvjJE1m22fJ+7Fxvq4fR2CROw5/BpepHOVFDkYjHGRiuLdenRj1zbS4
- R1TmHVKUFqvpqG3F2EsuzuQ/blYzYrCaM2YUo0+ycuOXUgvLTFVGtUzoIgVgtQ5q1AUv hA== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udg6f09u0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 11:46:11 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGBjgZ9026289
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 11:45:42 GMT
-Received: from [10.216.58.70] (10.80.80.8) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 03:45:32 -0800
-Message-ID: <5ff90cc0-cb1d-4a5d-bf0d-fdff68cb4366@quicinc.com>
-Date:   Thu, 16 Nov 2023 17:15:27 +0530
+        Thu, 16 Nov 2023 06:46:37 -0500
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19D64181
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:46:34 -0800 (PST)
+Message-ID: <28e179e1-c371-4212-9402-9fe3236e7b66@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700135192;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ALy0ZOKzQLKlX8vKIj4p6bR47g5CJnR2bhwt15Sf1AE=;
+        b=kVEPDUOlIKylq+XJWN9RKqCW+BiLljp+SElDWhBvu1scHc7+U8k309JrV1CjHHz/0Lgx7o
+        BpCX/XGWUNPtEKGasEkoEqwEfzm0FFfYJXwp1mLYDPDspH3wQ/bxD2UI7FbaII7zUzcTcm
+        rOpHU77aJXl4t8CJ1hAQ0uiNmCKOb+I=
+Date:   Thu, 16 Nov 2023 06:46:24 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] arm64: defconfig: Enable GCC for SDX75
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <catalin.marinas@arm.com>, <will@kernel.org>,
-        <quic_bjorande@quicinc.com>, <geert+renesas@glider.be>,
-        <konrad.dybcio@linaro.org>, <arnd@arndb.de>,
-        <neil.armstrong@linaro.org>, <dmitry.baryshkov@linaro.org>,
-        <nfraprado@collabora.com>, <m.szyprowski@samsung.com>,
-        <u-kumar1@ti.com>, <peng.fan@nxp.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <kernel@quicinc.com>
-References: <20231116093513.14259-1-quic_rohiagar@quicinc.com>
- <20231116093513.14259-2-quic_rohiagar@quicinc.com>
- <4b8b486a-3bce-4b1d-b844-7d2dc499db0f@linaro.org>
-From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
-In-Reply-To: <4b8b486a-3bce-4b1d-b844-7d2dc499db0f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH 1/3] bpf: task_group_seq_get_next: use __next_thread()
+ rather than next_thread()
+Content-Language: en-GB
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>,
+        Chuyi Zhou <zhouchuyi@bytedance.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Kui-Feng Lee <kuifeng@fb.com>, linux-kernel@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20231114163234.GA890@redhat.com>
+ <34440ea4-3780-45e4-9e7c-1b36b535171b@linux.dev>
+ <20231116093428.GA18748@redhat.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Yonghong Song <yonghong.song@linux.dev>
+In-Reply-To: <20231116093428.GA18748@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: y5bDWwBgCfEzCMMRI4vE-qXK1YDDl3Rd
-X-Proofpoint-GUID: y5bDWwBgCfEzCMMRI4vE-qXK1YDDl3Rd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_09,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- bulkscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 clxscore=1015
- phishscore=0 mlxscore=0 mlxlogscore=288 priorityscore=1501 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311160094
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -88,18 +57,65 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On 11/16/2023 4:46 PM, Krzysztof Kozlowski wrote:
-> On 16/11/2023 10:35, Rohit Agarwal wrote:
->> Enable Global Clock controller framework support for
->> Qualcomm's SDX75 SoC which is required to boot to console
->> on sdx75-idp platform.
-> No, really, this is just one patch, not three. You do not enable a
-> platform with one-by-one config patches.
-Ok, Sure. Will combine it into a single patch.
-
-Thanks,
-Rohit.
+On 11/16/23 4:34 AM, Oleg Nesterov wrote:
+> On 11/15, Yonghong Song wrote:
+>> On 11/14/23 11:32 AM, Oleg Nesterov wrote:
+>>> @@ -70,15 +70,13 @@ static struct task_struct *task_group_seq_get_next(struct bpf_iter_seq_task_comm
+>>>   		return NULL;
+>>>   retry:
+>>> -	task = next_thread(task);
+>>> +	task = __next_thread(task);
+>>> +	if (!task)
+>>> +		return NULL;
+>>>   	next_tid = __task_pid_nr_ns(task, PIDTYPE_PID, common->ns);
+>>> -	if (!next_tid || next_tid == common->pid) {
+>>> -		/* Run out of tasks of a process.  The tasks of a
+>>> -		 * thread_group are linked as circular linked list.
+>>> -		 */
+>>> -		return NULL;
+>>> -	}
+>>> +	if (!next_tid)
+>>> +		goto retry;
+>> Look at the code. Looks like next_tid should never be 0
+> ...
 >
-> Best regards,
-> Krzysztof
+>> pid_t __task_pid_nr_ns(struct task_struct *task, enum pid_type type,
+>>                          struct pid_namespace *ns)
+>> {
+>>          pid_t nr = 0;
+>>
+>>          rcu_read_lock();
+>>          if (!ns)
+>>                  ns = task_active_pid_ns(current);
+>>          nr = pid_nr_ns(rcu_dereference(*task_pid_ptr(task, type)), ns);
+>                                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> Please note that task_pid_ptr(task, type)) can return NULL if this
+> task has already exited and called detach_pid().
+>
+> detach_pid() does __change_pid(task, type, NULL), please note the
+>
+> 	*pid_ptr = new; // NULL in this case
+>
+> assignment in __change_pid().
+>
+> IOW. The problem is not that ns can change, the problem is that
+> task->thread_pid (and other pid links) can be NULL, and in this
+> case pid_nr_ns() returns zero.
+
+Thanks for explanation. I certainly missed race between task
+iterator and __change_pid(). Then the patch looks good to me.
+
+Acked-by: Yonghong Song <yonghong.song@linux.dev>
+
+>
+>
+> This code should be rewritten from the very beginning, it should
+> not rely on pid_nr. If nothing else common->pid and/or pid_visiting
+> can be reused. But currently my only concern is next_thread().
+>
+>> Other than above, the change looks good to me.
+> Thanks for review!
+>
+> Oleg.
 >
