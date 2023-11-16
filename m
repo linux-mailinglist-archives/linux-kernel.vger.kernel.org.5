@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CEADC7EE4CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AED97EE4C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:54:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345448AbjKPPya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:54:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41772 "EHLO
+        id S1345441AbjKPPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:54:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345437AbjKPPyY (ORCPT
+        with ESMTP id S1345458AbjKPPyK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:54:24 -0500
-Received: from mx07-00178001.pphosted.com (mx08-00178001.pphosted.com [91.207.212.93])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D006D6A;
-        Thu, 16 Nov 2023 07:54:20 -0800 (PST)
-Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGARpgZ007319;
-        Thu, 16 Nov 2023 16:53:57 +0100
+        Thu, 16 Nov 2023 10:54:10 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E541D57;
+        Thu, 16 Nov 2023 07:54:05 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AGDSqEI003492;
+        Thu, 16 Nov 2023 16:53:49 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding:content-type; s=selector1; bh=FTuGpnC
-        esklKD7MATIa9GL+6MeJKxiNCBGNvyVSe6Nk=; b=TncYUhDOAaUV7Ccnr+jgp+L
-        iKMnNooTL8xJ7naQNIrFTLYbQqBpwLVg9y39pQybqxE4CAFnERE14fPnmupt/LVL
-        l/YG59TBOx8GtZViq9S9c4RyIqWeusCCMlxDryCGFvLTZvBstbpQOKbBxbGzUJT+
-        tn1Z2YvX+Ap4YsL/9CIC/ffOYh7FI1LTMEDn51cNglKiAGgZ+Esu14H6TlzTQBn2
-        SKENEMXIFhfq6q/yFMaDFvtIz2s3h0irwxW9svFdgrBmCk//di0qe5o6Ds8o6sQ1
-        pO/mLv8Hy335KQZw4iBvf/R1Xb61FPznRNMh0vaDxUu1SUtzJ9JL0CQ4DX3ERtA=
-        =
+        from:to:cc:subject:date:message-id:in-reply-to:references
+        :mime-version:content-transfer-encoding:content-type; s=
+        selector1; bh=1qGFaBcs+OGg0vqscD04cfo2vPPfTvTMkHJAI0v67YY=; b=ID
+        fC0E91vePt7tRJgt9ImCtVyMgky5pdlMvI2i5ivQcvxVqtQ8AlEjTwOXlyOaak/i
+        SB1ew09UfNDwr9KnHZZEJ8rgthSjXXxth9N2f4C6W1+GrO+xW0WiER/NYMynSZgk
+        mNdne/uweEnPXpwSU6cKh6UHAsEKKcOdAN8IiwEELCWaZNDkXSTAnNbli/leW7y6
+        mqHe9i1iXXNPD/9fH6Tzp1oWgnIXHepOWgsNrd7WGkzWyDWtGWLYvyhdGzQB+39+
+        e0H4BIC5GbyNBn3AKNTc1cCddQFqliyaGbB26B/8jHZMeqtX2v/uff7IyDXUQUur
+        Y1+0fqvP+Znpe8chcq7A==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3u9ym8ymf5-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ud8c5bq5p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 16:53:57 +0100 (CET)
+        Thu, 16 Nov 2023 16:53:49 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 3359A100056;
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id EFD1C10005A;
         Thu, 16 Nov 2023 16:53:48 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 1999023C69E;
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E60AC237D88;
         Thu, 16 Nov 2023 16:53:48 +0100 (CET)
 Received: from localhost (10.201.21.240) by SHFDAG1NODE1.st.com (10.75.129.69)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Thu, 16 Nov
- 2023 16:53:47 +0100
+ 2023 16:53:48 +0100
 From:   <gabriel.fernandez@foss.st.com>
 To:     Michael Turquette <mturquette@baylibre.com>,
         Stephen Boyd <sboyd@kernel.org>,
@@ -56,10 +56,12 @@ CC:     <linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
         <linux-stm32@st-md-mailman.stormreply.com>,
         <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 0/5] Introduce STM32MP257 clock driver
-Date:   Thu, 16 Nov 2023 16:49:47 +0100
-Message-ID: <20231116154952.1206705-1-gabriel.fernandez@foss.st.com>
+Subject: [PATCH v2 1/5] clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
+Date:   Thu, 16 Nov 2023 16:49:48 +0100
+Message-ID: <20231116154952.1206705-2-gabriel.fernandez@foss.st.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20231116154952.1206705-1-gabriel.fernandez@foss.st.com>
+References: <20231116154952.1206705-1-gabriel.fernandez@foss.st.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
@@ -69,8 +71,8 @@ X-ClientProxiedBy: EQNCAS1NODE4.st.com (10.75.129.82) To SHFDAG1NODE1.st.com
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-16_16,2023-11-16_01,2023-05-22_02
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,49 +83,106 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
 
-This patch-set introduces clock driver for STM32MP257 based on Arm Cortex-35.
-It creates also a menuconfig for all STM32MP clock drivers.
-The STM32MP1 and STM32MP13 are now in same stm32 directory
+Move all STM32MP clock drivers into same directory (stm32).
 
-v2:
-  - rework reset binding (use ID witch start from 0)
-  - rework reset driver to manage STM32MP13 / STM32MP15 / STM32MP25
-    new binding of STM32MP25.
-  - rework YAML documentation
-
-Gabriel Fernandez (5):
-  clk: stm32mp1: move stm32mp1 clock driver into stm32 directory
-  clk: stm32mp1: use stm32mp13 reset driver
-  dt-bindings: stm32: add clocks and reset binding for stm32mp25
-    platform
-  clk: stm32: introduce clocks for STM32MP257 platform
-  arm64: dts: st: add rcc support in stm32mp251
-
- .../bindings/clock/st,stm32mp25-rcc.yaml      |   72 +
- arch/arm64/boot/dts/st/stm32mp251.dtsi        |   59 +-
- drivers/clk/Kconfig                           |   11 +-
- drivers/clk/Makefile                          |    1 -
- drivers/clk/stm32/Kconfig                     |   36 +
- drivers/clk/stm32/Makefile                    |    2 +
- drivers/clk/stm32/clk-stm32-core.c            |    5 +-
- drivers/clk/stm32/clk-stm32-core.h            |    5 +-
- drivers/clk/{ => stm32}/clk-stm32mp1.c        |  127 +-
- drivers/clk/stm32/clk-stm32mp13.c             |    9 +-
- drivers/clk/stm32/clk-stm32mp25.c             | 1125 ++++
- drivers/clk/stm32/reset-stm32.c               |   76 +-
- drivers/clk/stm32/reset-stm32.h               |   15 +-
- drivers/clk/stm32/stm32mp25_rcc.h             | 4977 +++++++++++++++++
- include/dt-bindings/clock/st,stm32mp25-rcc.h  |  492 ++
- include/dt-bindings/reset/st,stm32mp25-rcc.h  |  165 +
- 16 files changed, 6996 insertions(+), 181 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/clock/st,stm32mp25-rcc.yaml
+Signed-off-by: Gabriel Fernandez <gabriel.fernandez@foss.st.com>
+---
+ drivers/clk/Kconfig                    | 11 +---------
+ drivers/clk/Makefile                   |  1 -
+ drivers/clk/stm32/Kconfig              | 29 ++++++++++++++++++++++++++
+ drivers/clk/stm32/Makefile             |  1 +
+ drivers/clk/{ => stm32}/clk-stm32mp1.c |  0
+ 5 files changed, 31 insertions(+), 11 deletions(-)
  create mode 100644 drivers/clk/stm32/Kconfig
- rename drivers/clk/{ => stm32}/clk-stm32mp1.c (95%)
- create mode 100644 drivers/clk/stm32/clk-stm32mp25.c
- create mode 100644 drivers/clk/stm32/stm32mp25_rcc.h
- create mode 100644 include/dt-bindings/clock/st,stm32mp25-rcc.h
- create mode 100644 include/dt-bindings/reset/st,stm32mp25-rcc.h
+ rename drivers/clk/{ => stm32}/clk-stm32mp1.c (100%)
 
+diff --git a/drivers/clk/Kconfig b/drivers/clk/Kconfig
+index c30d0d396f7a..50af5fc7f570 100644
+--- a/drivers/clk/Kconfig
++++ b/drivers/clk/Kconfig
+@@ -414,16 +414,6 @@ config COMMON_CLK_VC7
+ 	  Renesas Versaclock7 is a family of configurable clock generator
+ 	  and jitter attenuator ICs with fractional and integer dividers.
+ 
+-config COMMON_CLK_STM32MP135
+-	def_bool COMMON_CLK && MACH_STM32MP13
+-	help
+-	  Support for stm32mp135 SoC family clocks
+-
+-config COMMON_CLK_STM32MP157
+-	def_bool COMMON_CLK && MACH_STM32MP157
+-	help
+-	  Support for stm32mp157 SoC family clocks
+-
+ config COMMON_CLK_STM32F
+ 	def_bool COMMON_CLK && (MACH_STM32F429 || MACH_STM32F469 || MACH_STM32F746)
+ 	help
+@@ -504,6 +494,7 @@ source "drivers/clk/starfive/Kconfig"
+ source "drivers/clk/sunxi/Kconfig"
+ source "drivers/clk/sunxi-ng/Kconfig"
+ source "drivers/clk/tegra/Kconfig"
++source "drivers/clk/stm32/Kconfig"
+ source "drivers/clk/ti/Kconfig"
+ source "drivers/clk/uniphier/Kconfig"
+ source "drivers/clk/visconti/Kconfig"
+diff --git a/drivers/clk/Makefile b/drivers/clk/Makefile
+index ed71f2e0ee36..14fa8d4ecc1f 100644
+--- a/drivers/clk/Makefile
++++ b/drivers/clk/Makefile
+@@ -70,7 +70,6 @@ obj-$(CONFIG_COMMON_CLK_SI570)		+= clk-si570.o
+ obj-$(CONFIG_COMMON_CLK_SP7021)		+= clk-sp7021.o
+ obj-$(CONFIG_COMMON_CLK_STM32F)		+= clk-stm32f4.o
+ obj-$(CONFIG_COMMON_CLK_STM32H7)	+= clk-stm32h7.o
+-obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
+ obj-$(CONFIG_COMMON_CLK_TPS68470)      += clk-tps68470.o
+ obj-$(CONFIG_CLK_TWL6040)		+= clk-twl6040.o
+ obj-$(CONFIG_CLK_TWL)			+= clk-twl.o
+diff --git a/drivers/clk/stm32/Kconfig b/drivers/clk/stm32/Kconfig
+new file mode 100644
+index 000000000000..3c8493a94a11
+--- /dev/null
++++ b/drivers/clk/stm32/Kconfig
+@@ -0,0 +1,29 @@
++# SPDX-License-Identifier: GPL-2.0-only
++# common clock support for STMicroelectronics SoC family.
++
++menuconfig COMMON_CLK_STM32MP
++	bool "Clock support for common STM32MP clocks"
++	depends on ARCH_STM32 || COMPILE_TEST
++	default y
++	select RESET_CONTROLLER
++	help
++	  Support for STM32MP SoC family clocks.
++
++if COMMON_CLK_STM32MP
++
++config COMMON_CLK_STM32MP135
++	bool "Clock driver for stm32mp13x clocks"
++	depends on ARM || COMPILE_TEST
++	default y
++	help
++	  Support for stm32mp13x SoC family clocks.
++
++config COMMON_CLK_STM32MP157
++	bool "Clock driver for stm32mp15x clocks"
++	depends on ARM || COMPILE_TEST
++	default y
++	help
++	  Support for stm32mp15x SoC family clocks.
++
++endif
++
+diff --git a/drivers/clk/stm32/Makefile b/drivers/clk/stm32/Makefile
+index 95bd2230bba0..c154ef3e88f9 100644
+--- a/drivers/clk/stm32/Makefile
++++ b/drivers/clk/stm32/Makefile
+@@ -1 +1,2 @@
+ obj-$(CONFIG_COMMON_CLK_STM32MP135)	+= clk-stm32mp13.o clk-stm32-core.o reset-stm32.o
++obj-$(CONFIG_COMMON_CLK_STM32MP157)	+= clk-stm32mp1.o
+diff --git a/drivers/clk/clk-stm32mp1.c b/drivers/clk/stm32/clk-stm32mp1.c
+similarity index 100%
+rename from drivers/clk/clk-stm32mp1.c
+rename to drivers/clk/stm32/clk-stm32mp1.c
 -- 
 2.25.1
 
