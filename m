@@ -2,68 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0ED07EDCC2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:18:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979DA7EDCCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:23:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbjKPIS5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:18:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53676 "EHLO
+        id S234273AbjKPIXB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:23:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229795AbjKPISu (ORCPT
+        with ESMTP id S234849AbjKPIW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:18:50 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 511FA196;
-        Thu, 16 Nov 2023 00:18:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700122726; x=1731658726;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=FbushCVIFv+PY/6S/x2mvxLk/35CqPa8wajnY9+0vW4=;
-  b=kyaZ9NZFtCurrk4S7363ZlZlZU0rJgxG6Y3bk8e2V/SOoBdCPwY8zDZ2
-   KXVnAJty3Ipi2UyPMJhHFzl6WlixeAv4ZeOSLiR8+zz99n0VqxEHXIS/Y
-   7ATWbOqMJT5fD8IA698XwI5grXp5xDKvbxMkxYUmaTb1f5R2h8SJKNJh+
-   6Zoyiz0p5ldzRx+/+qOGTAMXWb1+IScMV2ixy35uen+SL6UesCFW5J/91
-   D4Gx9zD6wZl6yAG/dD1Ru0vTd52JjHaviENAcU03p/pp3GptHMBKDw07d
-   wsWTeg3OGsiYtBshd/FdIPhtPlijA6BFuhbDL0cYIBO3kFANwg6BkC0Jn
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="389899556"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="389899556"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:18:34 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="768846727"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="768846727"
-Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:18:30 -0800
-Message-ID: <ab5978fe-998f-4407-ae57-307606d5fb74@linux.intel.com>
-Date:   Thu, 16 Nov 2023 16:18:28 +0800
+        Thu, 16 Nov 2023 03:22:27 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5535F19D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:21:41 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8BxbOoR0VVlUn86AA--.22267S3;
+        Thu, 16 Nov 2023 16:21:37 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxG9wM0VVl6uhDAA--.17764S3;
+        Thu, 16 Nov 2023 16:21:34 +0800 (CST)
+Subject: Re: [PATCH] LoongArch: Implement stable timer shutdown interface
+To:     WANG Xuerui <kernel@xen0n.name>,
+        Huacai Chen <chenhuacai@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, loongarch@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+References: <20231114114656.1003841-1-maobibo@loongson.cn>
+ <21c772c3-b1ad-49c4-b6ca-204cb65042de@xen0n.name>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <762523c4-5452-bfad-e5dc-f3bca035fb69@loongson.cn>
+Date:   Thu, 16 Nov 2023 16:21:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 03/16] KVM: TDX: Pass KVM page level to
- tdh_mem_page_add() and tdh_mem_page_aug()
-To:     isaku.yamahata@intel.com
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
-        Sagi Shahar <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
-        hang.yuan@intel.com, tina.zhang@intel.com,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-References: <cover.1699368363.git.isaku.yamahata@intel.com>
- <d3b140b63e0dc9773475724d97d566917d444791.1699368363.git.isaku.yamahata@intel.com>
-From:   Binbin Wu <binbin.wu@linux.intel.com>
-In-Reply-To: <d3b140b63e0dc9773475724d97d566917d444791.1699368363.git.isaku.yamahata@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <21c772c3-b1ad-49c4-b6ca-204cb65042de@xen0n.name>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-CM-TRANSID: AQAAf8AxG9wM0VVl6uhDAA--.17764S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoWxZw18GrWxJr1xXFW5uw18tFc_yoWrGr4rpF
+        s7CF9rtrWYkwnagF97Jr4kZFy5J348twsIy34DKa48JFyYqr1SgFs2qrWqgF45urW8XF4x
+        A3WYvwnrZF47JagCm3ZEXasCq-sJn29KB7ZKAUJUUUUr529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
+        xVW8Jr0_Cr1UM2kKe7AKxVWUXVWUAwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
+        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
+        XVWUAwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
+        8JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
+        Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+        xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+        cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+        AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E
+        14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4s2-UUUUU
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,108 +66,106 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Xuerui,
 
+Thanks for reviewing my patch, and I reply inline.
 
-On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
-> From: Xiaoyao Li <xiaoyao.li@intel.com>
->
-> Level info is needed in tdh_clflush_page() to generate the correct page
-> size.
+On 2023/11/16 下午3:09, WANG Xuerui wrote:
+> Hi,
+> 
+> Sorry for the late review but here we go:
+> 
+> On 11/14/23 19:46, Bibo Mao wrote:
+>> When cpu is hotplug out, cpu is in idle state and function
+> "When a CPU is hot-unplugged, it is put into idle state and the function 
+> ... is called"
+Will do in next patch.
 
-tdh_clflush_page() -> tdx_clflush_page()
+>> arch_cpu_idle_dead is called. Timer interrupt for this processor should
+>> be disabled, else there will be timer interrupt for the dead cpu. Also
+>> this prevents vcpu to schedule out during halt-polling flow when system
+>> is running in vm mode, since there is pending timer interrupt.
+> 
+> The logical relationship is a bit unclear, is my paraphrasing correct in 
+> your opinion?
+> 
+> "Timer interrupt for this processor should be disabled, else a pending 
+> timer interrupt will prevent the vCPU from scheduling out during the 
+> halt-polling flow when system is running in VM mode"
+> 
+> (I don't immediately know what a "schedule out" is. Is that a 
+> translation artifact or some KVM jargon?)
+how about "prevent the vCPU from giving up scheduling"?
 
->
-> Besides, explicitly pass level info to SEAMCALL instead of assuming
-> it's zero. It works naturally when 2MB support lands.
->
-> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
-> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> ---
->   arch/x86/kvm/vmx/tdx.c     |  7 ++++---
->   arch/x86/kvm/vmx/tdx_ops.h | 19 ++++++++++++-------
->   2 files changed, 16 insertions(+), 10 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
-> index 8b58d91bda4e..2d5c86e06c5f 100644
-> --- a/arch/x86/kvm/vmx/tdx.c
-> +++ b/arch/x86/kvm/vmx/tdx.c
-> @@ -1468,7 +1468,7 @@ static int tdx_sept_page_aug(struct kvm *kvm, gfn_t gfn,
->   	union tdx_sept_entry entry;
->   	u64 err;
->   
-> -	err = tdh_mem_page_aug(kvm_tdx->tdr_pa, gpa, hpa, &out);
-> +	err = tdh_mem_page_aug(kvm_tdx->tdr_pa, gpa, tdx_level, hpa, &out);
->   	if (unlikely(err == TDX_ERROR_SEPT_BUSY)) {
->   		tdx_unpin(kvm, pfn);
->   		return -EAGAIN;
-> @@ -1497,6 +1497,7 @@ static int tdx_sept_page_aug(struct kvm *kvm, gfn_t gfn,
->   static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
->   			     enum pg_level level, kvm_pfn_t pfn)
->   {
-> +	int tdx_level = pg_level_to_tdx_sept_level(level);
->   	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
->   	hpa_t hpa = pfn_to_hpa(pfn);
->   	gpa_t gpa = gfn_to_gpa(gfn);
-> @@ -1531,8 +1532,8 @@ static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
->   	kvm_tdx->source_pa = INVALID_PAGE;
->   
->   	do {
-> -		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, source_pa,
-> -				       &out);
-> +		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, tdx_level, hpa,
-> +				       source_pa, &out);
->   		/*
->   		 * This path is executed during populating initial guest memory
->   		 * image. i.e. before running any vcpu.  Race is rare.
-> diff --git a/arch/x86/kvm/vmx/tdx_ops.h b/arch/x86/kvm/vmx/tdx_ops.h
-> index e726102d3523..0f2df7198bde 100644
-> --- a/arch/x86/kvm/vmx/tdx_ops.h
-> +++ b/arch/x86/kvm/vmx/tdx_ops.h
-> @@ -63,6 +63,11 @@ static inline u64 tdx_seamcall(u64 op, u64 rcx, u64 rdx, u64 r8, u64 r9,
->   void pr_tdx_error(u64 op, u64 error_code, const struct tdx_module_args *out);
->   #endif
->   
-> +static inline enum pg_level tdx_sept_level_to_pg_level(int tdx_level)
-> +{
-> +	return tdx_level + 1;
-> +}
-> +
->   static inline void tdx_clflush_page(hpa_t addr, enum pg_level level)
->   {
->   	clflush_cache_range(__va(addr), KVM_HPAGE_SIZE(level));
-> @@ -104,11 +109,11 @@ static inline u64 tdh_mng_addcx(hpa_t tdr, hpa_t addr)
->   	return tdx_seamcall(TDH_MNG_ADDCX, addr, tdr, 0, 0, NULL);
->   }
->   
-> -static inline u64 tdh_mem_page_add(hpa_t tdr, gpa_t gpa, hpa_t hpa, hpa_t source,
-> -				   struct tdx_module_args *out)
-> +static inline u64 tdh_mem_page_add(hpa_t tdr, gpa_t gpa, int level, hpa_t hpa,
-> +				   hpa_t source, struct tdx_module_args *out)
->   {
-> -	tdx_clflush_page(hpa, PG_LEVEL_4K);
-> -	return tdx_seamcall_sept(TDH_MEM_PAGE_ADD, gpa, tdr, hpa, source, out);
-> +	tdx_clflush_page(hpa, tdx_sept_level_to_pg_level(level));
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_ADD, gpa | level, tdr, hpa, source, out);
->   }
+> 
+>>
+>> This patch adds detailed implementation for timer shutdown interface, so
+>> that timer will be disabled when cpu is plug-out.
+> 
+> Missing some definite articles too.
+> 
+> "This patch implements the timer shutdown interface so that the timer 
+> will be properly disabled when a CPU is hot-unplugged"
+> 
+> Is this version better?
+sure, will do in next version.
 
-For TDH_MEM_PAGE_ADD, only 4K page is supported, is this change necessary?
-Or maybe huge page can be supported by TDH_MEM_PAGE_ADD in the future?
-
->   
->   static inline u64 tdh_mem_sept_add(hpa_t tdr, gpa_t gpa, int level, hpa_t page,
-> @@ -143,11 +148,11 @@ static inline u64 tdh_mem_page_relocate(hpa_t tdr, gpa_t gpa, hpa_t hpa,
->   	return tdx_seamcall_sept(TDH_MEM_PAGE_RELOCATE, gpa, tdr, hpa, 0, out);
->   }
->   
-> -static inline u64 tdh_mem_page_aug(hpa_t tdr, gpa_t gpa, hpa_t hpa,
-> +static inline u64 tdh_mem_page_aug(hpa_t tdr, gpa_t gpa, int level, hpa_t hpa,
->   				   struct tdx_module_args *out)
->   {
-> -	tdx_clflush_page(hpa, PG_LEVEL_4K);
-> -	return tdx_seamcall_sept(TDH_MEM_PAGE_AUG, gpa, tdr, hpa, 0, out);
-> +	tdx_clflush_page(hpa, tdx_sept_level_to_pg_level(level));
-> +	return tdx_seamcall_sept(TDH_MEM_PAGE_AUG, gpa | level, tdr, hpa, 0, out);
->   }
->   
->   static inline u64 tdh_mem_range_block(hpa_t tdr, gpa_t gpa, int level,
+Regards
+Bibo Mao
+> 
+>>
+>> Signed-off-by: Bibo Mao <maobibo@loongson.cn>
+>> ---
+>>   arch/loongarch/kernel/time.c | 9 ++-------
+>>   1 file changed, 2 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/arch/loongarch/kernel/time.c b/arch/loongarch/kernel/time.c
+>> index 3064af94db9c..2920770e30a9 100644
+>> --- a/arch/loongarch/kernel/time.c
+>> +++ b/arch/loongarch/kernel/time.c
+>> @@ -58,7 +58,7 @@ static int constant_set_state_oneshot(struct 
+>> clock_event_device *evt)
+>>       return 0;
+>>   }
+>> -static int constant_set_state_oneshot_stopped(struct 
+>> clock_event_device *evt)
+>> +static int constant_set_state_shutdown(struct clock_event_device *evt)
+>>   {
+>>       unsigned long timer_config;
+>> @@ -90,11 +90,6 @@ static int constant_set_state_periodic(struct 
+>> clock_event_device *evt)
+>>       return 0;
+>>   }
+>> -static int constant_set_state_shutdown(struct clock_event_device *evt)
+>> -{
+>> -    return 0;
+>> -}
+>> -
+>>   static int constant_timer_next_event(unsigned long delta, struct 
+>> clock_event_device *evt)
+>>   {
+>>       unsigned long timer_config;
+>> @@ -161,7 +156,7 @@ int constant_clockevent_init(void)
+>>       cd->rating = 320;
+>>       cd->cpumask = cpumask_of(cpu);
+>>       cd->set_state_oneshot = constant_set_state_oneshot;
+>> -    cd->set_state_oneshot_stopped = constant_set_state_oneshot_stopped;
+>> +    cd->set_state_oneshot_stopped = constant_set_state_shutdown;
+>>       cd->set_state_periodic = constant_set_state_periodic;
+>>       cd->set_state_shutdown = constant_set_state_shutdown;
+>>       cd->set_next_event = constant_timer_next_event;
+>>
+>> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+> 
+> Otherwise LGTM (regarding the renaming of 
+> constant_set_state_oneshot_stopped, both it and the removed 
+> constant_set_state_shutdown only has one usage respectively, and looking 
+> at the function body it's arguably more appropriate to let it take the 
+> "shutdown" name: it's just clearing the enable bit from the CSR.TCFG and 
+> nothing else).
+> 
+> With the nits addressed:
+> 
+> Reviewed-by: WANG Xuerui <git@xen0n.name>
+> 
 
