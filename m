@@ -2,162 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8303B7ED9FC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DB817ED9FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344493AbjKPDWM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:22:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41660 "EHLO
+        id S1344463AbjKPDXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:23:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230250AbjKPDWK (ORCPT
+        with ESMTP id S229447AbjKPDXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:22:10 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355F119F
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:22:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700104927; x=1731640927;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=8W/L8bIC92lVfyw9adC0921bgPZtq+uRrx43dQMym6Q=;
-  b=FZSb4OdFKlQNenVHz8nNoGLf+LAr+m0/MBeez0a5KnFdYtV2sy7dWTzb
-   NaKOGS5S0pENR+05dOy+13oknrtxSU1EgLlmKMV+ZP9mfdVQvL/vQ3ctZ
-   tdPQBt0NqR1hxrgYhkB2w48oLZpPethpDv4p3KunWWWZbTK5LVG8RITqx
-   pdqEDud4QdD+lqh6xiL+wbMR/Eq944NoEIXdtliHlkTCu3cr8wLcm6w1U
-   NuqjcJX/I9mrsPhipDr0RaGqgLoEuHG5ErW4jxo3573Vd7Hkv3xdaLfl/
-   eckVEwax3XTpY1JTtDFcltojoXjSnTgTWepGdcIZm72+3ieX6rw3GzDh2
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="455296748"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="455296748"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 19:21:45 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="882605556"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="882605556"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 19:21:44 -0800
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 19:21:43 -0800
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 19:21:43 -0800
-Received: from NAM02-BN1-obe.outbound.protection.outlook.com (104.47.51.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 19:21:42 -0800
+        Wed, 15 Nov 2023 22:23:12 -0500
+Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03olkn2078.outbound.protection.outlook.com [40.92.59.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4E57199;
+        Wed, 15 Nov 2023 19:23:08 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=np7/0uwxd3C7zTC+BGfmq1uh/FccqVCv89fV62xeUb6LrihD5qXybCp6Ri1bcszlfibruGRYIsGlKl8d5HDBe25REbA8UltrZODbhzEmZSJIFyp7Ej1AK8M++Yuuk6sTU/pFlWAwf21LAB9FvZNE6izk/7WoLJsGc2poum952kUuAInygNPn4oYmloGw7icQhdAilvco+hT9c122Z5vn4e8On+xm9o2l/ElJkk18YybTViLvn6YGEc0xfdVB+RxTUki2JuXgEH1Wm3q3dud2kmHanmV8gUE84R6WePntBsKxqp7xKX5r8WxnDV6YKjvihtIhmFg0BLspftNjk1q7Jg==
+ b=EwPrRS6O+siegdK2UwgZ7Xd7jYHivMKanZHUyEiUjwz1wNCtQQRF12EWLyy5AnwmjnbfsglSSeqG4nUyBwSJ/nXpygflqnPjPYLWDxZFi9GojVzmcheDPCzkrFbRN6qnsz/r7b1PqHwuVT+Gj+o4b+XkCzT2xNTJJ7MRL1sRnOgflY9V0VGPLwU2fozZMAeTPWPV5Fk//mLUsKybmvAAQv3CeC7ydSsOPwai3ME1xDvXX4EZYh6I6WMDXItczb6aGU1mc/LylKCskyVEBpOvj1vNqutMzm3hIsaoGz8ZzAkN2kqXEGRcB2yoRUVgZ/CJJGtlpVIAty5n6R+YKn7/bw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8W/L8bIC92lVfyw9adC0921bgPZtq+uRrx43dQMym6Q=;
- b=Ofykyw0Dc1s1vgk/kv7MLrPJqJuIgmMsMI45r8DRUT/8qzwxGaCXKXq/PGXwHh4WGrmHWsfP8SIyLYhucxacahCA/SplRqsf8I/PffNcvP2i70VgBUztOA27LRD+4edBsuP2GAlpvj6xBl74sgx+9DYNdx24KP1pT8/G1GvbUa+luMUm3TdbZXUIOIMSqeSFX5Z+rCIUidCznOKF5ObNAkH7XyT+E5pYVKQLDsuMFnyyUFYtPPuDVIHEKQFzRSxJavuWM+Mzdpbjn4CjCyLwtG069lY3+kfOZHAd0aSVnszJ5tPLtuPiL777Fi4KzMofQ/NCSe1wvYdtERbfYSxgIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by CY8PR11MB7193.namprd11.prod.outlook.com (2603:10b6:930:91::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.35; Thu, 16 Nov
- 2023 03:21:40 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
- 03:21:40 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 4/4] iommu/vt-d: Move inline helpers to header files
-Thread-Topic: [PATCH 4/4] iommu/vt-d: Move inline helpers to header files
-Thread-Index: AQHaGC/4jHtR3MXFHk2s4DtHm2hYHbB8R5Mg
-Date:   Thu, 16 Nov 2023 03:21:39 +0000
-Message-ID: <BN9PR11MB5276A67CCBD5483E2B4D02EC8CB0A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231116015048.29675-1-baolu.lu@linux.intel.com>
- <20231116015048.29675-5-baolu.lu@linux.intel.com>
-In-Reply-To: <20231116015048.29675-5-baolu.lu@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CY8PR11MB7193:EE_
-x-ms-office365-filtering-correlation-id: 7dbbab23-37d7-41a1-2b96-08dbe6532629
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: rhFChB4AV6VHN4t3u+qlQk7DFkTnnDieHksxyg/yPppmad50ezBD85TG2Wx2d4HBnulGy7LhBXyrAy09hX9m87ncJ+1g/S/pgd26yyBUnO9d03cLRXfvx10GrwA9BrUdp5HTWSLvM5ymmgHV6ktyc8YtCcD6Ss0SZl8IAOBGnhqAyFIWzMiRSWT/qIteC8eDosOroGEYnM4jNCDVWkMwj4bjsSI6Q6yOIs31gXe3hlgnl0ivi7MHvoDB3yjUQHm1QH5swMmroWVTkArOh5Y6cFh00sB6DSyxl5F85WbggY1FMB3qc6tJbERJ3P62ffT9OWH7F7dyTtRuGcfW0nHO34XXwxuNUZVZ/0sisHxl4ziC/0Ds8iApA502QCLjbJc1CyfPmSJGWXalXAZlges0oiaDLoIyA6khl2cLUqIwskcqPaFydvtjglGSJUTKQIR9NQGS8g/lzLJWpL3ur0qM6l/goSrtwLELV4Z5RRfjnyvxc8cYlD9lMOoAjNo9BCGO7Q86RM9dA1xhYoZ8RPvuKmkKB6Gv3NvNB8BuUIk8S0ayJjp+UJUEcQMyiJvm6mUR7LUOAQYoDz+YfqubALIR1dIc+iUwOt0PGHrUDdDxhC4O6Bpd1abXB9gvDbXOVn66
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(346002)(136003)(39860400002)(396003)(366004)(230922051799003)(64100799003)(186009)(451199024)(1800799009)(122000001)(5660300002)(26005)(9686003)(55016003)(76116006)(38100700002)(7696005)(6506007)(2906002)(86362001)(82960400001)(33656002)(110136005)(558084003)(71200400001)(66476007)(66556008)(8676002)(66946007)(316002)(66446008)(4326008)(64756008)(54906003)(478600001)(52536014)(8936002)(41300700001)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?cdHrDCRyHmvhahYkclF/LSPFZXyuMk3F6pVoIu1bMkUnbe4qdtxxG807JR01?=
- =?us-ascii?Q?2afltEwNVoy8dl2DP6qu+Zs3DuxVAP8PZJWcGIXJ/foVYnlYxsx26dqbvePl?=
- =?us-ascii?Q?XHBjJLkrG1C45EdoYTiEwaSMQ9wNo/8nvba0RjLnODQiByBuYSnxiyK2mY9N?=
- =?us-ascii?Q?YhPydzpFlRHZ5yUifMusFAxuClg7jd7YBXv8mkRlvlkblx+DHrVS583Gkja1?=
- =?us-ascii?Q?+5WTWy49x6XHhanuULTc7e3Mlt3z+HTEYREf7o2yEbvOkXoCx7Wlv77EzENt?=
- =?us-ascii?Q?XErb2RpIYeR6BrcK8Obgn+hp3SDdda7TxgzT5YM5MH7O4Q/rbUqXBpHdCxoc?=
- =?us-ascii?Q?JIn5+NvBlrI6+SxK/jT/YH1D/BXBBeON0z9D0pcCN6l7iaDpYejPaCR0U/VC?=
- =?us-ascii?Q?mv6HCNVYEVtSzzA1SJ+h4HYKDhH2M79to2KjUSvyMC/hqQV6zmqXqR7bpcng?=
- =?us-ascii?Q?2m4hjgDjkfEn417mPu3uDNZeiA3DiZPhHLAWwGiKZKDwFWI3CgEZKirnvlsC?=
- =?us-ascii?Q?TY/HMoFj63kpkah38UP/BAxzGQqdr4NpWzYpdfjj0AfI9PNbV0RgxM3Vvclk?=
- =?us-ascii?Q?5JROXjosfsgZjAiIQKxIFrATkZm/pGadgal50iG55aiUA4495JpHW+Evs4oi?=
- =?us-ascii?Q?ms7P/cKmpu3CyybgSKZwULigKx+ea+9R3Z4HPub5vaUVmIDbuuE/jhx1XMvp?=
- =?us-ascii?Q?ORrMb2EkW3Np3KVXmROirf+/zfsmVoQvDQweOoVGKyqLVDMiQxPhHVtEN3Vu?=
- =?us-ascii?Q?/SXf18eTfEbShrEmpay5TgB6b60f1/BoyUtieHUPhQa+/Wd0HKmC8xLcmwdt?=
- =?us-ascii?Q?IXIcfYAs4KgN1nsiNHCEkzQSvzgXl/kgpDwxKzUctWOmS+wLtl171HY80y5w?=
- =?us-ascii?Q?MNeQSxM4ZAmr8QIVx7KQyh/LOJzQyqXfOA1btDjOrurUS2H9BAjMs4gtUgUm?=
- =?us-ascii?Q?ueG2Zm+EkWNKkUDD2GUw3ZALnnndTMmdw7jC62SxAto/hXDdc6djet8nPL3v?=
- =?us-ascii?Q?PP6iCBbhxW8r/YQATKfbA8qA5PvsuYIrAkEGv6oay4tOnYbovbJFcM0RS7Iz?=
- =?us-ascii?Q?OspDxPNy0xrgmLJgNzblZLib8AE5JQ9V2AiZd0n8zlksIg/fdY/c8jLxA3/p?=
- =?us-ascii?Q?6nxrEaOOQD54H4kIZ5NoLQ/rtpVpg3/hEmK7Y713wlQ4nmuplQ0Ed2Cg2V6M?=
- =?us-ascii?Q?HOGuFeLAJc22W1cb4p7fF7byaS5mS5W2jlLnct9XgJ/TQYA6IzHzhxDhTmnm?=
- =?us-ascii?Q?r0Z8EOUnc+Qc3FKHI1bY3OwDru8uxG4gFmUsayZOGgYGuPGsTUfazABz6Dkz?=
- =?us-ascii?Q?E61FF5EDc9aMhyJpHknY6W3yQpdnl9fmzdct7zugb+WkjJcLe2cM8XGtjTLe?=
- =?us-ascii?Q?uC/4zi+b54q5N2WO9qW0MkQqzarZ2d08fgiulNu9fyQrSAfLggbt8372gANe?=
- =?us-ascii?Q?YaGbKlKEfNM7q4j2z285pyRiQfghBzk7M0OaHfxMa3x8RwexQlvzKdKn+/DK?=
- =?us-ascii?Q?z+l/wx2VW1hHBSXbaKKBsgIvUJwixoOAuVfYOAzV/KhGZMY/kn2WajVSjmzR?=
- =?us-ascii?Q?UW9UdwlX4RCmTMjMcFUvkEzxJ5lslylFFDjzTz1E?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+ bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
+ b=CXp4t9LFA8qizmseF/6DYraK6lwG6H9kvZh6zYxU2L75XN12RNcVmsGxG7Cpgbp9CrNozyOKdDTezWMcaTVOh/UY6rWky/PffoKK3nw0fXWsohrl/7sdBrUFh+huxu5ED2PpOCmpT33O8ty5lk3Y/eCvcNX1dc/oAjsW9Z8TeNBKwLQW6EyhSQh9qtsytYJF+r4Ox6SCQQaihjx5zXsfomGvbzGB9EyKT+gYRKMZKJX27/Su6pYfna6N3YKMQratqvy2Xq+C51m1lMQvLWT1cNQWx/OVuR3+JJ9hFCInaJXaxaK+3vk3mu8tLG20MdKgjENboKR0HDHVDptUaOnXVg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SEV6FSvKBUg1qgQLg6TT1AC2iHwQLooeot5R9UOQzCQ=;
+ b=Pd69ZkF58wbDXztHq/KKSSQMQRPk2wRNSa2/DVMJoXXJMTh0WR6CUaRps7gYbV4wAHvnQ8LqU6JaQvXEU6ccPsP2LjktWvdoCrVcDbXMtK0K82PVumOWMZ2Tan496ZdqO1XakmcfbteP00oa0uNY0Mi9SNeg8ZyRAoJeDlpnJjwzZR6CTDRfNmucgudMR62JJC6EStrWnyGWqMPRLAt0pKvxGcVFMrfYLwYxW0koAwF2CFxvJDi/LWfJu623MaWsqSHt9LL6MN1h0PGjr7AN7147FQPF8EwuzMwv/3/hB2cMspjtwqf1i1DWe/htFRSQavILp3+P0VVRK7l6yz+n4g==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by GVXPR10MB6006.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150::15) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.31; Thu, 16 Nov 2023 03:23:06 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
+ 03:23:06 +0000
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     bpf@vger.kernel.org
+Cc:     Yuran Pereira <yuran.pereira@hotmail.com>, andrii@kernel.org,
+        mykolal@fb.com, ast@kernel.org, martin.lau@linux.dev,
+        song@kernel.org, yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: [PATCH bpf-next 4/4] selftests/bpf: Replaces the usage of CHECK calls for ASSERTs in vmlinux
+Date:   Thu, 16 Nov 2023 08:52:43 +0530
+Message-ID: <GV1PR10MB656384C49CCCC553BEA0BD70E8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [iMtSmVnLqn/2ghnN2cAbiWv5/xBu1pCR]
+X-ClientProxiedBy: JNAP275CA0032.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:4d::9)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231116032243.71104-1-yuran.pereira@hotmail.com>
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|GVXPR10MB6006:EE_
+X-MS-Office365-Filtering-Correlation-Id: 777e759c-2e07-4ddd-0741-08dbe653596c
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dxEroqIItCupgcP7+UoT7Y8mfgqpx/aVbWB5m9OPjaX/+Tt2Ip+FQPKgZrX4to8Ex9oFoeftYwqkoJvwdmhQgEmmxHxZjigqB+KXzrGUzssm8DL3OcQzXKn6uy9+AsqIKuPy2DitQyJ20cbWmLFv/1ewWpkw2jsUN7Ki8QscHgrQ9aeiegNb4E3YHhHdK1aeOPw2EPLQ94+St8SBC582OSRS4juQoeEqqz0wwYjzdAOcrtwxBW7JxYr2dGtbspae6C88kWUZHwzChbrDihmxfUhjtlhpH0dnUy6INVFJIw1IrbqaZJ1+v8uzVJl04USE3k6ydiGfj/K+Y9BTfmnvNrPMo/Z5EPcBHxW38MbrmpaOnhPXbZhbZDUfV0A7WKpNJLDtIkrqSJetXBSEr29p0tXIl7Ds6a1BTaTUU+AanXbps1ujajoCNE5n2Lmio+VELjmkUgWuzLxIY27EXqC5/rCE0IPd1EkflT1VAQmr1veVjDxDKuhU2BqIMWYgsh/9i4iFBopB0YPnpzCo7due6IfivYBbmRrHMnpLVMn0Tlw7p7OfA1P0JDdLqPFRQVPxruK0czmrTgPwwjRVLBJ9LDGCkjdvoT9TeWXmgxtOc04=
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?NxeMUoE1m6pFTGnMmXhur84xft9QEpoRRTqawZh7guUqeK6ljwdT8NgGVk3+?=
+ =?us-ascii?Q?OEqvWiwoqMbfhn1DHElq2KOannlNSpbRa84f3Gh9SYhfhzR8rB7aGaQpi1zk?=
+ =?us-ascii?Q?3iTMHCrv1ctntl/m7iJjNlaMLvYGfXb33VjUO0Zx8RefgnVWdKThlR1lESZJ?=
+ =?us-ascii?Q?PDBWm3mt55EJnzm6pEAJlCZNKfIpy0WP5CmjjkferJdQfmQ4Oo1g7P4MZWBA?=
+ =?us-ascii?Q?7vpFE7C68ALxPros8M2tPDX8BWgtGgWG7OJeWebxF1CMw897R03SiJAjuBMV?=
+ =?us-ascii?Q?lQVrwew/+r3iPE7KcPZHJqVUNsoFPasHSlQzW1ChWjnixm1Uti3kdcLe/QFv?=
+ =?us-ascii?Q?d/gFqa/K02EJxvnwkFIdffAtYREO/kJrL1lE/Ue6Qm+dcYvNFZqZ+NONvsJj?=
+ =?us-ascii?Q?N1Bs8Pd0RL4yWBoffq+rYjjcIyaWUZ2LpP9XosxgylVWxcYKKhv4BFKN1pfW?=
+ =?us-ascii?Q?pZbjg8f4IuHMQdUgbdCfHEtqsqwGWY1Opbo5xuB75hlyJN1ctkMi3fjgpcBr?=
+ =?us-ascii?Q?v5P/NY8/3e59NrRZQ1HGGwYwE1ZZ53l/4M9hBLd1w4HqlkXmuKkMDKf/ZDLr?=
+ =?us-ascii?Q?i8lyeLKbdV4JLTKPoa7yUmBxy0orLQF+zWJ59HorXp6h9J/5LGnQtP5TrVku?=
+ =?us-ascii?Q?FUPv9752te4UGwRmvGU9JuAv5DntQoKR60+Z7Mb/opuAuBFtLFj//IE2Otq/?=
+ =?us-ascii?Q?lTL3sC1YoeygvQ3+r0uXRNmHjQdxsumvIwTMiLTSz36e257L8I8sfVh68QUr?=
+ =?us-ascii?Q?8HCetrAYKw6gkcnKi/ozFTH1/FUPIGmarstq6Kp9w5m4VIyL+aEAv/epYN4k?=
+ =?us-ascii?Q?nUVuddxwMhOZMZ/rdyQRGyMtbmah8o+UEolrAlDLDMF4wCQmdc8LSgf6VBYs?=
+ =?us-ascii?Q?4aVtPkurf01UyYHtR2EHvb11LeGiOAK+F65XZcNxV4V79SG/7dzeCXpz82nU?=
+ =?us-ascii?Q?O7ckhWcTDbqEN10szexLTQCHHpnXKYzQS+KVTCcMBlgiGOT4GSIilpOj3xF2?=
+ =?us-ascii?Q?1DO9ajsGgQc/4c0IxRi03RIKfBp+GnW2xncFGNDQ+QQUaY60qMt913/vXNIc?=
+ =?us-ascii?Q?wscymakyNji41VOD6jwdZ6e3ZsB2doWuitnIH/TTkP1xNN+2P0+0ysBJCzs9?=
+ =?us-ascii?Q?PZaDQ//saONJKCeDmQ+URy3/dvyAwHAPjhVDhI+UmVRuT7IcxmvC0RhI9Rik?=
+ =?us-ascii?Q?eSS94HCZCqL/mUu5/A7+b6zMrl9VJjjv1SD5DHswbydJfD+8RFdwK64IX5o?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 777e759c-2e07-4ddd-0741-08dbe653596c
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7dbbab23-37d7-41a1-2b96-08dbe6532629
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 03:21:39.9857
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 03:23:06.2889
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: T/A5+NzoBd/Lb4K52y5jrkYROx8XTKgCayywBMg5gjc2VHAuKQTRakXFR6GTDSBGvFWbj+YVzWM5ypCkj7DFyQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7193
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: GVXPR10MB6006
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Lu Baolu <baolu.lu@linux.intel.com>
-> Sent: Thursday, November 16, 2023 9:51 AM
->=20
-> Move inline helpers to header files so that other files can use them
-> without duplicating the code.
->=20
-> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+vmlinux.c uses the `CHECK` calls even though the use of ASSERT_ series
+of macros is preferred in the bpf selftests.
 
-Reviewed-by: Kevin Tian <kevin.tian@intel.com>
+This patch replaces all `CHECK` calls for equivalent `ASSERT_`
+macro calls.
+
+Signed-off-by: Yuran Pereira <yuran.pereira@hotmail.com>
+---
+ tools/testing/selftests/bpf/prog_tests/vmlinux.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/tools/testing/selftests/bpf/prog_tests/vmlinux.c b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
+index 72310cfc6474..6fb2217d940b 100644
+--- a/tools/testing/selftests/bpf/prog_tests/vmlinux.c
++++ b/tools/testing/selftests/bpf/prog_tests/vmlinux.c
+@@ -16,27 +16,27 @@ static void nsleep()
+ 
+ void test_vmlinux(void)
+ {
+-	int duration = 0, err;
++	int err;
+ 	struct test_vmlinux* skel;
+ 	struct test_vmlinux__bss *bss;
+ 
+ 	skel = test_vmlinux__open_and_load();
+-	if (CHECK(!skel, "skel_open", "failed to open skeleton\n"))
++	if (!ASSERT_OK_PTR(skel, "test_vmlinux__open_and_load"))
+ 		return;
+ 	bss = skel->bss;
+ 
+ 	err = test_vmlinux__attach(skel);
+-	if (CHECK(err, "skel_attach", "skeleton attach failed: %d\n", err))
++	if (!ASSERT_OK(err, "test_vmlinux__attach"))
+ 		goto cleanup;
+ 
+ 	/* trigger everything */
+ 	nsleep();
+ 
+-	CHECK(!bss->tp_called, "tp", "not called\n");
+-	CHECK(!bss->raw_tp_called, "raw_tp", "not called\n");
+-	CHECK(!bss->tp_btf_called, "tp_btf", "not called\n");
+-	CHECK(!bss->kprobe_called, "kprobe", "not called\n");
+-	CHECK(!bss->fentry_called, "fentry", "not called\n");
++	ASSERT_TRUE(bss->tp_called, "tp");
++	ASSERT_TRUE(bss->raw_tp_called, "raw_tp");
++	ASSERT_TRUE(bss->tp_btf_called, "tp_btf");
++	ASSERT_TRUE(bss->kprobe_called, "kprobe");
++	ASSERT_TRUE(bss->fentry_called, "fentry");
+ 
+ cleanup:
+ 	test_vmlinux__destroy(skel);
+-- 
+2.25.1
+
