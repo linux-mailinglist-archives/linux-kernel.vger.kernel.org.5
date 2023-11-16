@@ -2,169 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A42B7ED9C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:51:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 667207ED9C9
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344517AbjKPCvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 21:51:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42868 "EHLO
+        id S1344547AbjKPCyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344286AbjKPCvt (ORCPT
+        with ESMTP id S230259AbjKPCyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 21:51:49 -0500
-Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C219199
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:51:45 -0800 (PST)
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700103103;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Rm3MIRi4L3hl6jy/1gRTHrDOCrZWkofygygPBBT5WW4=;
-        b=cYvdubWIuXabFzddH3lM5zHTCjZtg7HxxHhoD1+vpDP9W5X0tKV0KQH0a8FB5m3GhcU1Gg
-        xZlwb5DaCZPFOfcqv1P9AE+R9rjP4OIjBCahjcm35Wv5/n3vcD4IM5wkZnEJ5qegRVJS2z
-        Za1OvHszi1Fnoz9ExSaxt6Umd1QL7B4=
-From:   Roman Gushchin <roman.gushchin@linux.dev>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Erhard Furtner <erhard_f@mailbox.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>, stable@vger.kernel.org
-Subject: [PATCH] mm: kmem: properly initialize local objcg variable in current_obj_cgroup()
-Date:   Wed, 15 Nov 2023 18:51:09 -0800
-Message-ID: <20231116025109.3775055-1-roman.gushchin@linux.dev>
+        Wed, 15 Nov 2023 21:54:38 -0500
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA2CB197;
+        Wed, 15 Nov 2023 18:54:33 -0800 (PST)
+Received: from kwepemm000012.china.huawei.com (unknown [172.30.72.55])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SW4PL0XcczvQjR;
+        Thu, 16 Nov 2023 10:54:14 +0800 (CST)
+Received: from [10.174.178.220] (10.174.178.220) by
+ kwepemm000012.china.huawei.com (7.193.23.142) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.31; Thu, 16 Nov 2023 10:54:30 +0800
+Message-ID: <5eb54f3e-3438-ba47-3d43-baf6b27aad0e@huawei.com>
+Date:   Thu, 16 Nov 2023 10:54:29 +0800
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.8.0
+Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
+To:     Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>
+CC:     Jeff Layton <jlayton@kernel.org>, <ceph-devel@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <louhongxiang@huawei.com>
+References: <20231114153108.1932884-1-haowenchao2@huawei.com>
+ <af8549c8-a468-6505-6dd1-3589fc76be8e@redhat.com>
+ <CAOi1vP9TnF+BWiEauddskmTO_+V2uvHiqpEg5EoxzZPKb0oEAQ@mail.gmail.com>
+ <aeb8b9e7-c2ce-e758-1b45-67572e686e2c@redhat.com>
+ <CAOi1vP-H9zHJEthzocxv7D7m6XX67sE2Dy1Aq=hP9GQRN+qj_g@mail.gmail.com>
+ <5a1766c6-d923-a4e5-c5be-15b953372ef5@redhat.com>
+Content-Language: en-US
+From:   Wenchao Hao <haowenchao2@huawei.com>
+In-Reply-To: <5a1766c6-d923-a4e5-c5be-15b953372ef5@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Originating-IP: [10.174.178.220]
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemm000012.china.huawei.com (7.193.23.142)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-6.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_MED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Erhard reported that the 6.7-rc1 kernel panics on boot if being
-built with clang-16. The problem was not reproducible with gcc.
+On 2023/11/15 21:34, Xiubo Li wrote:
+> 
+> On 11/15/23 21:25, Ilya Dryomov wrote:
+>> On Wed, Nov 15, 2023 at 2:17 PM Xiubo Li <xiubli@redhat.com> wrote:
+>>>
+>>> On 11/15/23 20:32, Ilya Dryomov wrote:
+>>>> On Wed, Nov 15, 2023 at 1:35 AM Xiubo Li <xiubli@redhat.com> wrote:
+>>>>> On 11/14/23 23:31, Wenchao Hao wrote:
+>>>>>> This issue is reported by smatch, get_quota_realm() might return
+>>>>>> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the return
+>>>>>> value.
+>>>>>>
+>>>>>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+>>>>>> ---
+>>>>>>     fs/ceph/quota.c | 2 +-
+>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>
+>>>>>> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+>>>>>> index 9d36c3532de1..c4b2929c6a83 100644
+>>>>>> --- a/fs/ceph/quota.c
+>>>>>> +++ b/fs/ceph/quota.c
+>>>>>> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct ceph_fs_client *fsc, struct kstatfs *buf)
+>>>>>>         realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
+>>>>>>                                 QUOTA_GET_MAX_BYTES, true);
+>>>>>>         up_read(&mdsc->snap_rwsem);
+>>>>>> -     if (!realm)
+>>>>>> +     if (IS_ERR_OR_NULL(realm))
+>>>>>>                 return false;
+>>>>>>
+>>>>>>         spin_lock(&realm->inodes_with_caps_lock);
+>>>>> Good catch.
+>>>>>
+>>>>> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+>>>>>
+>>>>> We should CC the stable mail list.
+>>>> Hi Xiubo,
+>>>>
+>>>> What exactly is being fixed here?  get_quota_realm() is called with
+>>>> retry=true, which means that no errors can be returned -- EAGAIN, the
+>>>> only error that get_quota_realm() can otherwise generate, would be
+>>>> handled internally by retrying.
+>>> Yeah, that's true.
+>>>
+>>>> Am I missing something that makes this qualify for stable?
+>>> Actually it's just for the smatch check for now.
+>>>
+>>> IMO we shouldn't depend on the 'retry', just potentially for new changes
+>>> in future could return a ERR_PTR and cause potential bugs.
+>> At present, ceph_quota_is_same_realm() also depends on it -- note how
+>> old_realm isn't checked for errors at all and new_realm is only checked
+>> for EAGAIN there.
+>>
+>>> If that's not worth to make it for stable, let's remove it.
+>> Yes, let's remove it.  Please update the commit message as well, so
+>> that it's clear that this is squashing a static checker warning and
+>> doesn't actually fix any immediate bug.
+> 
+> WenChao,
+> 
+> Could update the commit comment and send the V2 ?
+> 
 
-[    5.975049] general protection fault, probably for non-canonical address 0xf555515555555557: 0000 [#1] SMP KASAN PTI
-[    5.976422] KASAN: maybe wild-memory-access in range [0xaaaaaaaaaaaaaab8-0xaaaaaaaaaaaaaabf]
-[    5.977475] CPU: 3 PID: 1 Comm: systemd Not tainted 6.7.0-rc1-Zen3 #77
-[    5.977860] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.13.0-1ubuntu1.1 04/01/2014
-[    5.977860] RIP: 0010:obj_cgroup_charge_pages+0x27/0x2d5
-[    5.977860] Code: 90 90 90 55 41 57 41 56 41 55 41 54 53 89 d5 41 89 f6 49 89 ff 48 b8 00 00 00 00 00 fc ff df 49 83 c7 10 4d3
-[    5.977860] RSP: 0018:ffffc9000001fb18 EFLAGS: 00010a02
-[    5.977860] RAX: dffffc0000000000 RBX: aaaaaaaaaaaaaaaa RCX: ffff8883eb9a8b08
-[    5.977860] RDX: 0000000000000005 RSI: 0000000000400cc0 RDI: aaaaaaaaaaaaaaaa
-[    5.977860] RBP: 0000000000000005 R08: 3333333333333333 R09: 0000000000000000
-[    5.977860] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883eb9a8b18
-[    5.977860] R13: 1555555555555557 R14: 0000000000400cc0 R15: aaaaaaaaaaaaaaba
-[    5.977860] FS:  00007f2976438b40(0000) GS:ffff8883eb980000(0000) knlGS:0000000000000000
-[    5.977860] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    5.977860] CR2: 00007f29769e0060 CR3: 0000000107222003 CR4: 0000000000370eb0
-[    5.977860] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    5.977860] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    5.977860] Call Trace:
-[    5.977860]  <TASK>
-[    5.977860]  ? __die_body+0x16/0x75
-[    5.977860]  ? die_addr+0x4a/0x70
-[    5.977860]  ? exc_general_protection+0x1c9/0x2d0
-[    5.977860]  ? cgroup_mkdir+0x455/0x9fb
-[    5.977860]  ? __x64_sys_mkdir+0x69/0x80
-[    5.977860]  ? asm_exc_general_protection+0x26/0x30
-[    5.977860]  ? obj_cgroup_charge_pages+0x27/0x2d5
-[    5.977860]  obj_cgroup_charge+0x114/0x1ab
-[    5.977860]  pcpu_alloc+0x1a6/0xa65
-[    5.977860]  ? mem_cgroup_css_alloc+0x1eb/0x1140
-[    5.977860]  ? cgroup_apply_control_enable+0x26b/0x7c0
-[    5.977860]  mem_cgroup_css_alloc+0x23f/0x1140
-[    5.977860]  cgroup_apply_control_enable+0x26b/0x7c0
-[    5.977860]  ? cgroup_kn_set_ugid+0x2d/0x1a0
-[    5.977860]  cgroup_mkdir+0x455/0x9fb
-[    5.977860]  ? __cfi_cgroup_mkdir+0x10/0x10
-[    5.977860]  kernfs_iop_mkdir+0x130/0x170
-[    5.977860]  vfs_mkdir+0x405/0x530
-[    5.977860]  do_mkdirat+0x188/0x1f0
-[    5.977860]  __x64_sys_mkdir+0x69/0x80
-[    5.977860]  do_syscall_64+0x7d/0x100
-[    5.977860]  ? do_syscall_64+0x89/0x100
-[    5.977860]  ? do_syscall_64+0x89/0x100
-[    5.977860]  ? do_syscall_64+0x89/0x100
-[    5.977860]  ? do_syscall_64+0x89/0x100
-[    5.977860]  entry_SYSCALL_64_after_hwframe+0x4b/0x53
-[    5.977860] RIP: 0033:0x7f297671defb
-[    5.977860] Code: 8b 05 39 7f 0d 00 bb ff ff ff ff 64 c7 00 16 00 00 00 e9 61 ff ff ff e8 23 0c 02 00 0f 1f 00 f3 0f 1e fa b88
-[    5.977860] RSP: 002b:00007ffee6242bb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
-[    5.977860] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f297671defb
-[    5.977860] RDX: 0000000000000000 RSI: 00000000000001ed RDI: 000055c6b449f0e0
-[    5.977860] RBP: 00007ffee6242bf0 R08: 000000000000000e R09: 0000000000000000
-[    5.977860] R10: 0000000000000000 R11: 0000000000000246 R12: 000055c6b445db80
-[    5.977860] R13: 00000000000003a0 R14: 00007f2976a68651 R15: 00000000000003a0
-[    5.977860]  </TASK>
-[    5.977860] Modules linked in:
-[    6.014095] ---[ end trace 0000000000000000 ]---
-[    6.014701] RIP: 0010:obj_cgroup_charge_pages+0x27/0x2d5
-[    6.015348] Code: 90 90 90 55 41 57 41 56 41 55 41 54 53 89 d5 41 89 f6 49 89 ff 48 b8 00 00 00 00 00 fc ff df 49 83 c7 10 4d3
-[    6.017575] RSP: 0018:ffffc9000001fb18 EFLAGS: 00010a02
-[    6.018255] RAX: dffffc0000000000 RBX: aaaaaaaaaaaaaaaa RCX: ffff8883eb9a8b08
-[    6.019120] RDX: 0000000000000005 RSI: 0000000000400cc0 RDI: aaaaaaaaaaaaaaaa
-[    6.019983] RBP: 0000000000000005 R08: 3333333333333333 R09: 0000000000000000
-[    6.020849] R10: 0000000000000000 R11: 0000000000000000 R12: ffff8883eb9a8b18
-[    6.021747] R13: 1555555555555557 R14: 0000000000400cc0 R15: aaaaaaaaaaaaaaba
-[    6.022609] FS:  00007f2976438b40(0000) GS:ffff8883eb980000(0000) knlGS:0000000000000000
-[    6.023593] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    6.024296] CR2: 00007f29769e0060 CR3: 0000000107222003 CR4: 0000000000370eb0
-[    6.025279] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[    6.026139] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[    6.027000] Kernel panic - not syncing: Attempted to kill init! exitcode=0x0000000b
+OK, I would update the commit comment as following:
 
-Actually the problem is caused by uninitialized local variable in
-current_obj_cgroup(). If the root memory cgroup is set as an active
-memory cgroup for a charging scope (as in the trace, where systemd
-tries to create the first non-root cgroup, so the parent cgroup is
-the root cgroup), the "for" loop is skipped and uninitialized objcg is
-returned, causing a panic down the accounting stack.
+This issue is reported by smatch, get_quota_realm() might return
+ERR_PTR. It's not a immediate bug because get_quota_realm() is called
+with 'retry=true', no errors can be returned.
 
-The fix is trivial: initialize the objcg variable to NULL
-unconditionally before the "for" loop.
+While we still should check the return value of get_quota_realm() with
+IS_ERR_OR_NULL to avoid potential bugs if get_quota_realm() is changed
+to return other ERR_PTR in future.
 
-Fixes: e86828e5446d ("mm: kmem: scoped objcg protection")
-Reported-by: Erhard Furtner <erhard_f@mailbox.org>
-Closes: https://github.com/ClangBuiltLinux/linux/issues/1959
-Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: David Rientjes <rientjes@google.com>
-Cc: Dennis Zhou <dennis@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: stable@vger.kernel.org
----
- mm/memcontrol.c | 1 +
- 1 file changed, 1 insertion(+)
+What's more, should I change the ceph_quota_is_same_realm() too?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 774bd6e21e27..b138501e6489 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3165,6 +3165,7 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
- 	return NULL;
- 
- from_memcg:
-+	objcg = NULL;
- 	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
- 		/*
- 		 * Memcg pointer is protected by scope (see set_active_memcg())
--- 
-2.42.0
+Thanks
+
+> Thanks
+> 
+> - Xiubo
+> 
+> 
+>> Thanks,
+>>
+>>                  Ilya
+>>
+> 
 
