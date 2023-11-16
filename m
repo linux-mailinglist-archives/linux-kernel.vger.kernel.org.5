@@ -2,235 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E01B7EE6C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:31:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 547D57EE6C1
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:30:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345456AbjKPSbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:31:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54316 "EHLO
+        id S1345391AbjKPSaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbjKPSbe (ORCPT
+        with ESMTP id S229461AbjKPSau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:31:34 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6825FD49
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:31:30 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id 6a1803df08f44-66d122e0c85so5764216d6.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:31:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=marek.ca; s=google; t=1700159489; x=1700764289; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:references:cc:to:subject:from:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rU0Onv3SuE+K6mh1ouNAPCMkOiMWIv4TJL2AZdCOGUw=;
-        b=FEpgr13I4lf5olLZ6fPewqkKKewApFWUXmidHRFSApK5SQBzO58hT43u4K/MfGVF/F
-         hgDNYGnNU6sYFdzfF8fND16AOdgGhb2sxxAZGrwS9dBvcya8iEymlYDosnCUApLHwLa7
-         qXKnNRzD1uG3nEQHNKShh9EwU9Fxk1WLfcq7vcdWEWpuToYq2s0AvGO+vJ9SViP0reJl
-         u9Tz43US7oBw51RQJKw4iwsq2sIP7VugNbHbkhHketfBmAUxIr3MwuCggjA+lBoukrcH
-         sdv9KzuTozyeiIv5KLVoLL2RRLEvP61g85HxKymu0ITGR51teqRjytPcJ1GtgOx4+ddr
-         EF5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700159489; x=1700764289;
-        h=content-transfer-encoding:content-language:in-reply-to:mime-version
-         :user-agent:date:message-id:references:cc:to:subject:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rU0Onv3SuE+K6mh1ouNAPCMkOiMWIv4TJL2AZdCOGUw=;
-        b=uiCdUL6ZHhO7WyAGzpA8HaMlq12jFpF+C84xE90YxLRG3E91JMC9qNyBJ0vnkPwX9D
-         7h6+p0PEIIZmCDuGP2EZjsliKvwvU9r0LZKiDd4RipAoAH06J11iuxXpIg1GKSAOzGA0
-         i5cV8Ydf93d3XJ1sUqIy4clV6qixvaT33ouTZRMq34JKtc92x+BlHohLUe9AKkL3mhDC
-         lh7hZVLJ/TLFZaicaP9H5O0wC3Gieox8HKD7JiOBwZFvqTCSzvrv+cAxQ8IBLEFa41AQ
-         2v1SELvQ+8fovax1aZ5k0JZMUhZty1kprUG8+JVH8yBurz6SQVf2tURHgE7r3rrkG4kf
-         zYVQ==
-X-Gm-Message-State: AOJu0Yzory7k1bnm7/HuG64zdaypn4ussHPxJqPF+ziy/yo4gA/4/qMx
-        ijCauVvF9KaIFbaV+MFhvQuvXezaCZrNl6hROQk=
-X-Google-Smtp-Source: AGHT+IG1dtT861g2sp4EuKubGCs2MqPMYXbAKW0AsBqZnVTbe7Dwjir9T3SG6Z6PX3ZoTrHqa61+GQ==
-X-Received: by 2002:a05:6214:1255:b0:66d:42d9:fc83 with SMTP id r21-20020a056214125500b0066d42d9fc83mr13813746qvv.10.1700159489365;
-        Thu, 16 Nov 2023 10:31:29 -0800 (PST)
-Received: from [192.168.0.189] (modemcable125.110-19-135.mc.videotron.ca. [135.19.110.125])
-        by smtp.gmail.com with ESMTPSA id k13-20020a0cebcd000000b00670c15033aesm1528608qvq.144.2023.11.16.10.31.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 10:31:29 -0800 (PST)
-From:   Jonathan Marek <jonathan@marek.ca>
-Subject: Re: [PATCH v2 1/6] drm/msm/dpu: fix video mode DSC for DSI
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     freedreno@lists.freedesktop.org, Rob Clark <robdclark@gmail.com>,
-        Abhinav Kumar <quic_abhinavk@quicinc.com>,
-        Sean Paul <sean@poorly.run>,
-        Marijn Suijten <marijn.suijten@somainline.org>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Kuogee Hsieh <quic_khsieh@quicinc.com>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Vinod Polimera <quic_vpolimer@quicinc.com>,
-        Kalyan Thota <quic_kalyant@quicinc.com>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Arnaud Vrac <rawoul@gmail.com>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>
-References: <20231114225857.19702-1-jonathan@marek.ca>
- <20231114225857.19702-2-jonathan@marek.ca>
- <CAA8EJpp0OGkgf0P6LcwE-H6BVN9kbtF_eRCsef+7NgDFmJOZfA@mail.gmail.com>
-Message-ID: <d93a7c6f-a798-c9ec-6c10-08e4e5a70f4d@marek.ca>
-Date:   Thu, 16 Nov 2023 13:30:32 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        Thu, 16 Nov 2023 13:30:50 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97196D49;
+        Thu, 16 Nov 2023 10:30:46 -0800 (PST)
+Received: from [100.116.17.117] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 267BF6607355;
+        Thu, 16 Nov 2023 18:30:43 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700159444;
+        bh=SfQ0+hmvmWXxSEVa4mEfgSW3GKHJePtTDvpcPdZG1Uk=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=maVewsrbypH3b7HVwPhXhJEqUkk1FTC2a2CT/5Zdw8v0VmZeg8+49dqvgBb32xiWM
+         azbq7XlRF2ladTSFgbsOB5dpUdbNs+4FMDF5xcR9fdEVZB/F+ulE6j4ZBRq0aVF6gd
+         Ur0OkuPWF55GWXqbMfJmoU650l9DTsr8+skMC8Zswxs2w1tuaiRCRlz0AGOeQXVE52
+         UXsV2fK1XsZojC5adNNbRtAUfgqGVyQA6/j/Ap8+LUXOiljEPcAB6Cgbz+1VDKrfA6
+         xfLdKthrk/vZguFVZXiDOIWS6Ls/26NP4+ih04LWU6pskf7c8KzkOn65cYI6vWsUU/
+         P7wAhHza3KzGg==
+Message-ID: <dae6284f-b94f-45d6-a76c-20f173bf7978@collabora.com>
+Date:   Thu, 16 Nov 2023 20:30:40 +0200
 MIME-Version: 1.0
-In-Reply-To: <CAA8EJpp0OGkgf0P6LcwE-H6BVN9kbtF_eRCsef+7NgDFmJOZfA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
+ beaglev-starlight: Enable gmac
 Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com,
+        geert@linux-m68k.org
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
+ <f253b50a-a0ac-40c6-b13d-013de7bac407@lunn.ch>
+ <233a45e1-15ac-40da-badf-dee2d3d60777@collabora.com>
+ <cb6597be-2185-45ad-aa47-c6804ff68c85@collabora.com>
+ <20231116-stellar-anguished-7cf06eb5634a@squawk>
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+In-Reply-To: <20231116-stellar-anguished-7cf06eb5634a@squawk>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 3:53 AM, Dmitry Baryshkov wrote:
-> On Wed, 15 Nov 2023 at 01:00, Jonathan Marek <jonathan@marek.ca> wrote:
+On 11/16/23 19:55, Conor Dooley wrote:
+> On Thu, Nov 16, 2023 at 03:15:46PM +0200, Cristian Ciocaltea wrote:
+>> On 10/30/23 00:53, Cristian Ciocaltea wrote:
+>>> On 10/29/23 20:46, Andrew Lunn wrote:
+>>>> On Sun, Oct 29, 2023 at 06:27:12AM +0200, Cristian Ciocaltea wrote:
+>>>>> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
+>>>>> RGMII-ID.
+>>>>>
+>>>>> TODO: Verify if manual adjustment of the RX internal delay is needed. If
+>>>>> yes, add the mdio & phy sub-nodes.
+>>>>
+>>>> Please could you try to get this tested. It might shed some light on
+>>>> what is going on here, since it is a different PHY.
+>>>
+>>> Actually, this is the main reason I added the patch. I don't have access
+>>> to this board, so it would be great if we could get some help with testing.
 >>
->> Add necessary DPU changes for DSC to work with DSI video mode.
->>
->> Note this changes the logic to enable HCTL to match downstream, it will
->> now be enabled for the no-DSC no-widebus case.
->>
->> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
->> ---
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c         |  2 +-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h    |  2 +-
->>   .../gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c    | 11 +++++++++++
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c         | 13 ++++++++++++-
->>   drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h         |  1 +
->>   5 files changed, 26 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> index 1cf7ff6caff4..d745c8678b9d 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c
->> @@ -2477,7 +2477,7 @@ enum dpu_intf_mode dpu_encoder_get_intf_mode(struct drm_encoder *encoder)
->>          return INTF_MODE_NONE;
->>   }
->>
->> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc)
->> +unsigned int dpu_encoder_helper_get_dsc(const struct dpu_encoder_phys *phys_enc)
+>> @Emil, @Conor: Any idea who might help us with a quick test on the
+>> BeagleV Starlight board?
 > 
-> Why?
-> 
+> I don't have one & I am not sure if Emil does. Geert (CCed) should have
+> one though. Is there a specific test you need to have done?
 
-drm_mode_to_intf_timing_params has "phys_enc" pointer declared as const, 
-so one of them needs to change to call dpu_encoder_helper_get_dsc
+As Andrew already pointed out, we'd like to know if networking for this
+board works without any further adjustment of the RX internal delay.
 
->>   {
->>          struct drm_encoder *encoder = phys_enc->parent;
->>          struct dpu_encoder_virt *dpu_enc = to_dpu_encoder_virt(encoder);
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> index 6f04c3d56e77..7e27a7da0887 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys.h
->> @@ -332,7 +332,7 @@ static inline enum dpu_3d_blend_mode dpu_encoder_helper_get_3d_blend_mode(
->>    *   used for this encoder.
->>    * @phys_enc: Pointer to physical encoder structure
->>    */
->> -unsigned int dpu_encoder_helper_get_dsc(struct dpu_encoder_phys *phys_enc);
->> +unsigned int dpu_encoder_helper_get_dsc(const struct dpu_encoder_phys *phys_enc);
->>
->>   /**
->>    * dpu_encoder_helper_split_config - split display configuration helper function
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
->> index a01fda711883..df10800a9615 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_encoder_phys_vid.c
->> @@ -100,6 +100,8 @@ static void drm_mode_to_intf_timing_params(
->>          }
->>
->>          timing->wide_bus_en = dpu_encoder_is_widebus_enabled(phys_enc->parent);
->> +       if (dpu_encoder_helper_get_dsc(phys_enc))
->> +               timing->compression_en = true;
->>
->>          /*
->>           * for DP, divide the horizonal parameters by 2 when
->> @@ -112,6 +114,15 @@ static void drm_mode_to_intf_timing_params(
->>                  timing->h_front_porch = timing->h_front_porch >> 1;
->>                  timing->hsync_pulse_width = timing->hsync_pulse_width >> 1;
->>          }
->> +
->> +       /*
->> +        * for DSI, if compression is enabled, then divide the horizonal active
->> +        * timing parameters by compression ratio.
->> +        */
->> +       if (phys_enc->hw_intf->cap->type != INTF_DP && timing->compression_en) {
->> +               timing->width = timing->width / 3; /* XXX: don't assume 3:1 compression ratio */
-> 
-> Is this /3 from bpp / compressed_bpp?
-> 
+This was necessary for VisionFive (see previous PATCH v2 11/12), but the
+PHY is different (Motorcomm YT8521), hence this test might help us
+understand if there's a potential issue with the SoC or the PHY.
 
-It is the compression ratio of DSC for 8bpc (24bpp) compressed to 8bpp. 
-DSI driver doesn't support any other cases so this assumption should be 
-OK for now (the other common ratio is 3.75 for 10bpc compressed to 8bpp 
-- from downstream driver it appears this would mean a division by 3.75 
-here).
-
->> +               timing->xres = timing->width;
->> +       }
->>   }
->>
->>   static u32 get_horizontal_total(const struct dpu_hw_intf_timing_params *timing)
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> index e8b8908d3e12..d6fe45a6da2d 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.c
->> @@ -166,10 +166,21 @@ static void dpu_hw_intf_setup_timing_engine(struct dpu_hw_intf *ctx,
->>           * video timing. It is recommended to enable it for all cases, except
->>           * if compression is enabled in 1 pixel per clock mode
->>           */
->> +       if (!p->compression_en || p->wide_bus_en)
->> +               intf_cfg2 |= INTF_CFG2_DATA_HCTL_EN;
->> +
->>          if (p->wide_bus_en)
->> -               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN | INTF_CFG2_DATA_HCTL_EN;
->> +               intf_cfg2 |= INTF_CFG2_DATABUS_WIDEN;
->>
->>          data_width = p->width;
->> +       if (p->wide_bus_en && !dp_intf)
->> +               data_width = p->width >> 1;
->> +
->> +       if (p->compression_en)
->> +               intf_cfg2 |= INTF_CFG2_DCE_DATA_COMPRESS;
->> +
->> +       if (p->compression_en && dp_intf)
->> +               DPU_ERROR("missing adjustments for DSC+DP\n");
->>
->>          hsync_data_start_x = hsync_start_x;
->>          hsync_data_end_x =  hsync_start_x + data_width - 1;
-> 
-> This should go into a separate commit with the proper justification.
-> 
-
-All of it? setting the INTF_CFG2_DCE_DATA_COMPRESS flag at least doesn't 
-make sense to make a separate patch. And DSI widebus is only used with 
-DSC (and always used when available), so IMO also in the scope of this 
-commit.
-
->> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> index c539025c418b..15a5fdadd0a0 100644
->> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_hw_intf.h
->> @@ -33,6 +33,7 @@ struct dpu_hw_intf_timing_params {
->>          u32 hsync_skew;
->>
->>          bool wide_bus_en;
->> +       bool compression_en;
->>   };
->>
->>   struct dpu_hw_intf_prog_fetch {
->> --
->> 2.26.1
->>
-> 
-> 
+Thanks,
+Cristian
