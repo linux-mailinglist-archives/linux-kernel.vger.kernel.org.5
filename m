@@ -2,136 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8072E7EE82F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:16:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA5617EE835
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233278AbjKPUQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59282 "EHLO
+        id S229533AbjKPURf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231300AbjKPUP7 (ORCPT
+        with ESMTP id S229379AbjKPURd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:15:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3B361AD
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700165756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QIfhkJ5q+MuBUNqDP7+llj85JgVyRPSym9vvMGwkwM8=;
-        b=EMx+bDzk8Nr6qdAyyHWiJIBCZsczcUAeVyoyfOnK7j09Dx0o3tGzSJJCquD6Cz1ihDUGAf
-        JT0HHJwk4/AfoDhrwMAauPtQmzUsz8f5AgNWITHtHtSrFhFjXKJrugQ9C/1JawY77aYj1l
-        AAVX7Yom9diVSfpqjEI3NswuF9l+ZL4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-133-tfgHdjaBOQGR7f3JsXbUXQ-1; Thu, 16 Nov 2023 15:15:54 -0500
-X-MC-Unique: tfgHdjaBOQGR7f3JsXbUXQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-77a02ceef95so18076385a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:15:54 -0800 (PST)
+        Thu, 16 Nov 2023 15:17:33 -0500
+Received: from mail-qv1-xf2d.google.com (mail-qv1-xf2d.google.com [IPv6:2607:f8b0:4864:20::f2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CF00131;
+        Thu, 16 Nov 2023 12:17:30 -0800 (PST)
+Received: by mail-qv1-xf2d.google.com with SMTP id 6a1803df08f44-66d24ccc6f2so21332466d6.0;
+        Thu, 16 Nov 2023 12:17:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700165849; x=1700770649; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jA8Kf2xvnSFH4T2vRR6MMovJYoXzknMX/4kPrbr3RB4=;
+        b=RejgJtWM4Cc2EE3InVWa35rFL51Ljlq0zU4pb/mWxtnY0FIOj1vzI4TWSPfj9qAOW+
+         pkEa8zfK1YI4knwVuLxfVnBOVK1RBoMqgbsPH9cCFjbHK5HriQSuD8Bqporjo1zbaUjb
+         p/D/DM8vP171mIFgearOsAE/yQIsDzZR8OpMDRjNlX9ahSPKz4IFZP2UwZE1oaWwoEsy
+         lFaObI5g5oVpk/pmTsblYW2v5NcTu8vSMjK6rupe6ym6bdDyYMVDTAVi40N+OhhsJWV9
+         2zRKV/Jm6n+VxQWUokVO/7Qu6HUUxRhkqp2S5u2MQJLnIfiY+5ke05A1ThTz06RQqceK
+         lgUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700165754; x=1700770554;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QIfhkJ5q+MuBUNqDP7+llj85JgVyRPSym9vvMGwkwM8=;
-        b=njd9H8AZLVpERM9UglB7S0bIz6/cg74E57X9V/jQUdQnJ6k5UM/BtceOhsJG4NiADj
-         FXuKG04svL3kjY+hmneJ2uqCfxrfFpAECoTfhD4nubOi0CdtGyGn6dQnbXJH7B+TFlxB
-         93tXymbKZyZWGY082sJWfLR6XOjDjg5LVxN6SyG2LqLi7pO4CKVEZ94hp6EoTaCkxkhh
-         PHj7aPnBVZEwt0r7WOp3Y0pt60lmOwXi+RWcgd3vNSMFzDSzv2Io2vOEibt8IqXh9E+X
-         oetBNT+htpe/A1dDBTzh53/rgT82MmxGPkBsYmi79aqshNDARSFCbDDi3P7bdZ0Btbcp
-         9ZJg==
-X-Gm-Message-State: AOJu0Yy7Eci+Q4VuIpONnnc9mZT4ykYTUSaGJ/6Pndh5jeLszd49mUQS
-        lobd2RIzJ9P9dIv1kkXm50wKRUSvaP8WKK9jB/z5Ura81DeljrN2M+BZxpY/jlO8zuxK8kqg4n7
-        vlapXNR78kzUonyByvZnlpdB4
-X-Received: by 2002:a05:620a:460f:b0:777:7178:ebf0 with SMTP id br15-20020a05620a460f00b007777178ebf0mr10983525qkb.5.1700165754345;
-        Thu, 16 Nov 2023 12:15:54 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFn7WTMLEwrbmDqREYqOP32v0nHbLxAxhRbfg6zZ9i1WFQBXOXwxoGfistYIkGysffqZC/jBw==
-X-Received: by 2002:a05:620a:460f:b0:777:7178:ebf0 with SMTP id br15-20020a05620a460f00b007777178ebf0mr10983511qkb.5.1700165754044;
-        Thu, 16 Nov 2023 12:15:54 -0800 (PST)
-Received: from x1n.redhat.com (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id b19-20020a05620a271300b007659935ce64sm65524qkp.71.2023.11.16.12.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 12:15:53 -0800 (PST)
-From:   Peter Xu <peterx@redhat.com>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     peterx@redhat.com,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        Andrei Vagin <avagin@gmail.com>
-Subject: [PATCH 3/3] mm/selftests: Fix pagemap_ioctl memory map test
-Date:   Thu, 16 Nov 2023 15:15:47 -0500
-Message-ID: <20231116201547.536857-4-peterx@redhat.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231116201547.536857-1-peterx@redhat.com>
-References: <20231116201547.536857-1-peterx@redhat.com>
+        d=1e100.net; s=20230601; t=1700165849; x=1700770649;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jA8Kf2xvnSFH4T2vRR6MMovJYoXzknMX/4kPrbr3RB4=;
+        b=XN2owaH1eoauwkR2VVPjokkkRI+PrcEZpo+TUrTeEYL2RC7ztD3MJKuJiDF83Lf5ak
+         w3YlA9MGTn7kaB6IbFWhIs0HvL+cctfrY/YCUMkgmJoLVOMo97e4zNDSSZ3FLLjeBUr5
+         M3d3svrwezXdt8r7ce836VBulyh6lY5ZWQP/woGp9/pr5Y/oCesajP2+RIgF/0z+Y1oO
+         lalfNWhwyn3WugO0mXXfWm3oSR8W1zx7M07KKyz1vq+fGuWKjs2jIkhkMqkyHEhF9brb
+         aFm8h9e+AtI0XgaDLAAMFUqZzxnCfoo0huJSzNqj3aOE0J9UMfVlVzy+b3PDXnijaH1U
+         DXsQ==
+X-Gm-Message-State: AOJu0Yyv3v53IXjiRYtjU0UXPOCLlOx24wPVzqSPMXVUrc6tgONN9y4r
+        HILvqNjru/UJy6pUXlFU3dU=
+X-Google-Smtp-Source: AGHT+IEBR5eQSqIyrMm+k6Ud8Nw4s21ElqriwLQkbTlLqTJCI8hd1WMpEWFgPawnRXbHpEEbWmQ82g==
+X-Received: by 2002:a05:6214:161:b0:66d:2ec5:c1b9 with SMTP id y1-20020a056214016100b0066d2ec5c1b9mr3827300qvs.11.1700165849521;
+        Thu, 16 Nov 2023 12:17:29 -0800 (PST)
+Received: from [10.67.48.245] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id c10-20020a056214070a00b0065d1380dd17sm45796qvz.61.2023.11.16.12.17.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 12:17:28 -0800 (PST)
+Message-ID: <9e94d5ad-d682-4193-b965-edea91a9fbb4@gmail.com>
+Date:   Thu, 16 Nov 2023 12:17:25 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
+Content-Language: en-US
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+References: <20231115191613.097702445@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-__FILE__ is not guaranteed to exist in current dir.  Replace that with
-argv[0] for memory map test.
+On 11/15/23 11:09, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.6.2 release.
+> There are 603 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.6.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
 
-Fixes: 46fd75d4a3c9 ("selftests: mm: add pagemap ioctl tests")
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/mm/pagemap_ioctl.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels build tested on 
+BMIPS_GENERIC:
 
-diff --git a/tools/testing/selftests/mm/pagemap_ioctl.c b/tools/testing/selftests/mm/pagemap_ioctl.c
-index befab43719ba..d59517ed3d48 100644
---- a/tools/testing/selftests/mm/pagemap_ioctl.c
-+++ b/tools/testing/selftests/mm/pagemap_ioctl.c
-@@ -36,6 +36,7 @@ int pagemap_fd;
- int uffd;
- int page_size;
- int hpage_size;
-+const char *progname;
- 
- #define LEN(region)	((region.end - region.start)/page_size)
- 
-@@ -1149,11 +1150,11 @@ int sanity_tests(void)
- 	munmap(mem, mem_size);
- 
- 	/* 9. Memory mapped file */
--	fd = open(__FILE__, O_RDONLY);
-+	fd = open(progname, O_RDONLY);
- 	if (fd < 0)
- 		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
- 
--	ret = stat(__FILE__, &sbuf);
-+	ret = stat(progname, &sbuf);
- 	if (ret < 0)
- 		ksft_exit_fail_msg("error %d %d %s\n", ret, errno, strerror(errno));
- 
-@@ -1472,12 +1473,14 @@ static void transact_test(int page_size)
- 			      extra_thread_faults);
- }
- 
--int main(void)
-+int main(int argc, char *argv[])
- {
- 	int mem_size, shmid, buf_size, fd, i, ret;
- 	char *mem, *map, *fmem;
- 	struct stat sbuf;
- 
-+	progname = argv[0];
-+
- 	ksft_print_header();
- 
- 	if (init_uffd())
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
 -- 
-2.41.0
+Florian
 
