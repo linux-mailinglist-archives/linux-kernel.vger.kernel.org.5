@@ -2,175 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C617EDA84
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:55:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67D057EDA8A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:00:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344621AbjKPDzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48064 "EHLO
+        id S1344582AbjKPEAQ convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 15 Nov 2023 23:00:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbjKPDzb (ORCPT
+        with ESMTP id S229692AbjKPEAN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:55:31 -0500
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB4A6192;
-        Wed, 15 Nov 2023 19:55:27 -0800 (PST)
-Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.56])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SW5lT4C3lzWhNr;
-        Thu, 16 Nov 2023 11:55:01 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Thu, 16 Nov 2023 11:55:25 +0800
-From:   Xingui Yang <yangxingui@huawei.com>
-To:     <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <damien.lemoal@opensource.wdc.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <yangxingui@huawei.com>,
-        <prime.zeng@hisilicon.com>, <kangfenglong@huawei.com>,
-        <chenxiang66@hisilicon.com>
-Subject: [PATCH v3] scsi: libsas: Fix set zero-address when device-type != NO_DEVICE
-Date:   Thu, 16 Nov 2023 03:52:41 +0000
-Message-ID: <20231116035241.13730-1-yangxingui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Wed, 15 Nov 2023 23:00:13 -0500
+Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5BF3192;
+        Wed, 15 Nov 2023 20:00:10 -0800 (PST)
+Received: from omf03.hostedemail.com (a10.router.float.18 [10.200.18.1])
+        by unirelay07.hostedemail.com (Postfix) with ESMTP id 1BF32160B3E;
+        Thu, 16 Nov 2023 04:00:08 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf03.hostedemail.com (Postfix) with ESMTPA id 028B46000A;
+        Thu, 16 Nov 2023 04:00:00 +0000 (UTC)
+Message-ID: <2d5db599144596bdc12533a366d5d2d8f375014e.camel@perches.com>
+Subject: Re: [PATCH v3 01/10] iov_iter: Fix some checkpatch complaints in
+ kunit tests
+From:   Joe Perches <joe@perches.com>
+To:     David Howells <dhowells@redhat.com>,
+        Christian Brauner <christian@brauner.io>
+Cc:     Jens Axboe <axboe@kernel.dk>, Al Viro <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        David Laight <David.Laight@ACULAB.COM>,
+        Matthew Wilcox <willy@infradead.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>, linux-fsdevel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        kunit-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Christian Brauner <brauner@kernel.org>,
+        David Hildenbrand <david@redhat.com>,
+        John Hubbard <jhubbard@nvidia.com>
+Date:   Wed, 15 Nov 2023 20:00:00 -0800
+In-Reply-To: <20231115154946.3933808-2-dhowells@redhat.com>
+References: <20231115154946.3933808-1-dhowells@redhat.com>
+         <20231115154946.3933808-2-dhowells@redhat.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.50.165.33]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemd100001.china.huawei.com (7.185.36.94)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Stat-Signature: 351xofsuni5kanig7iiz4sjma1jzxkft
+X-Rspamd-Server: rspamout05
+X-Rspamd-Queue-Id: 028B46000A
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY
+        autolearn=ham autolearn_force=no version=3.4.6
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX18a7JS4BL8h7HLIdDXMm2YCe3xiJn/hEoo=
+X-HE-Tag: 1700107200-315216
+X-HE-Meta: U2FsdGVkX18LEi6bPNImGq+TG8DpnNDiieNtyzLyawftOGFa1xnL3e2LfgJJyTLmLwogrMHbv17rz+M/8vJb8yVNQ1eCzPPOqKmiLWnXkWH0Z4A9nMD1IG6Np+PP3yRiu6HzLDt5vFNdyg6DurWOPJlIDfPWoBPm7Ey6IGQrJB9nzzek/4SHhy/NFXArWdJKtMpL5kSDR4003ihhuhR+s+TvBzrKMZcNgv7yMLgzT5KBcOkBLwkUfhN4pz6HD8ADTd57MGw8Q0+siSvVmwP7pkzt/Zvq1GRUig7ERppizdBVNRIz92TiEZDE+AHJ9Ti8
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Firstly, when ex_phy is added to the parent port, ex_phy->port is not set.
-As a result, sas_port_delete_phy() won't be called in
-sas_unregister_devs_sas_addr(), and although ex_phy's sas_address is zero,
-it is not deleted from the parent port's phy_list.
+On Wed, 2023-11-15 at 15:49 +0000, David Howells wrote:
+> Fix some checkpatch complaints in the new iov_iter kunit tests:
+> 
+>  (1) Some lines had eight spaces instead of a tab at the start.
+> 
+>  (2) Checkpatch doesn't like (void*)(unsigned long)0xnnnnnULL, so switch to
+>      using POISON_POINTER_DELTA plus an offset instead.
 
-Secondly, phy->attached_sas_addr will be set to a zero-address when
-phy->linkrate < SAS_LINK_RATE_1_5_GBPS and device-type != NO_DEVICE during
-device registration, such as stp. It will create a new port and all other
-ex_phys whose addresses are zero will be added to the new port in
-sas_ex_get_linkrate(), and it may trigger BUG() as follows:
+That's because checkpatch is fundamentally stupid and
+that's a false positive.
 
-[562240.051046] sas: phy19 part of wide port with phy16
-[562240.051197] sas: ex 500e004aaaaaaa1f phy19:U:0 attached: 0000000000000000 (no device)
-[562240.051203] sas: done REVALIDATING DOMAIN on port 0, pid:435909, res 0x0
+> diff --git a/lib/kunit_iov_iter.c b/lib/kunit_iov_iter.c
+[]
+> @@ -548,7 +548,7 @@ static void __init iov_kunit_extract_pages_kvec(struct kunit *test)
+>  		size_t offset0 = LONG_MAX;
+>  
+>  		for (i = 0; i < ARRAY_SIZE(pagelist); i++)
+> -			pagelist[i] = (void *)(unsigned long)0xaa55aa55aa55aa55ULL;
+> +			pagelist[i] = (void *)POISON_POINTER_DELTA + 0x5a;
 
-[562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
-[562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 0000000000000000 (stp)
-[562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's already part of another port
-[562240.085064] ------------[ cut here ]------------
-[562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
-[562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
-[562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 0x0000000003bcbebf)
-[562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain [libsas]
-[562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
-[562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.479751] sp : ffff0000300cfa70
-[562240.674822] Call trace:
-[562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
-[562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
-[562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
-[562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
-[562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
-[562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
-[562240.756014]  process_one_work+0x1b4/0x448
-[562240.764548]  worker_thread+0x54/0x468
-[562240.772562]  kthread+0x134/0x138
-[562240.779989]  ret_from_fork+0x10/0x18
+I think the original is easier to understand
+or would best be replaced by a single #define
+without the addition.
 
-We've done the following to solve this problem:
-Firstly, set ex_phy->port when ex_phy is added to the parent port. And set
-ex_dev->parent_port to NULL when the number of PHYs of the parent port
-becomes 0.
+> @@ -626,7 +626,7 @@ static void __init iov_kunit_extract_pages_bvec(struct kunit *test)
+>  		size_t offset0 = LONG_MAX;
+>  
+>  		for (i = 0; i < ARRAY_SIZE(pagelist); i++)
+> -			pagelist[i] = (void *)(unsigned long)0xaa55aa55aa55aa55ULL;
+> +			pagelist[i] = (void *)POISON_POINTER_DELTA + 0x5a;
 
-Secondly, don't set a zero-address for phy->attached_sas_addr when
-phy->attached_dev_type != NO_DEVICE.
-
-Fixes: 7d1d86518118 ("[SCSI] libsas: fix false positive 'device attached' conditions")
-Signed-off-by: Xingui Yang <yangxingui@huawei.com>
----
-v2 -> v3:
-1. Set ex_dev->parent_port to NULL when the number of PHYs of the parent
-   port becomes 0
-2. Update the comments
-
-v1 -> v2:
-1. Set ex_phy->port with parent_port when ex_phy is added to the parent port
-2. Set ex_phy to NULL when free expander
-3. Update the comments
----
- drivers/scsi/libsas/sas_discover.c | 4 +++-
- drivers/scsi/libsas/sas_expander.c | 8 +++++---
- drivers/scsi/libsas/sas_internal.h | 1 +
- 3 files changed, 9 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index 8fb7c41c0962..8eb3888a9e57 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -296,8 +296,10 @@ void sas_free_device(struct kref *kref)
- 	dev->phy = NULL;
- 
- 	/* remove the phys and ports, everything else should be gone */
--	if (dev_is_expander(dev->dev_type))
-+	if (dev_is_expander(dev->dev_type)) {
- 		kfree(dev->ex_dev.ex_phy);
-+		dev->ex_dev.ex_phy = NULL;
-+	}
- 
- 	if (dev_is_sata(dev) && dev->sata_dev.ap) {
- 		ata_sas_tport_delete(dev->sata_dev.ap);
-diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-index a2204674b680..89d44a9dc4e3 100644
---- a/drivers/scsi/libsas/sas_expander.c
-+++ b/drivers/scsi/libsas/sas_expander.c
-@@ -239,8 +239,7 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id,
- 	/* help some expanders that fail to zero sas_address in the 'no
- 	 * device' case
- 	 */
--	if (phy->attached_dev_type == SAS_PHY_UNUSED ||
--	    phy->linkrate < SAS_LINK_RATE_1_5_GBPS)
-+	if (phy->attached_dev_type == SAS_PHY_UNUSED)
- 		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
- 	else
- 		memcpy(phy->attached_sas_addr, dr->attached_sas_addr, SAS_ADDR_SIZE);
-@@ -1844,9 +1843,12 @@ static void sas_unregister_devs_sas_addr(struct domain_device *parent,
- 	if (phy->port) {
- 		sas_port_delete_phy(phy->port, phy->phy);
- 		sas_device_set_phy(found, phy->port);
--		if (phy->port->num_phys == 0)
-+		if (phy->port->num_phys == 0) {
- 			list_add_tail(&phy->port->del_list,
- 				&parent->port->sas_port_del_list);
-+			if (ex_dev->parent_port == phy->port)
-+				ex_dev->parent_port = NULL;
-+		}
- 		phy->port = NULL;
- 	}
- }
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 3804aef165ad..e860d5b19880 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -202,6 +202,7 @@ static inline void sas_add_parent_port(struct domain_device *dev, int phy_id)
- 		sas_port_mark_backlink(ex->parent_port);
- 	}
- 	sas_port_add_phy(ex->parent_port, ex_phy->phy);
-+	ex_phy->port = ex->parent_port;
- }
- 
- static inline struct domain_device *sas_alloc_device(void)
--- 
-2.17.1
+etc...
 
