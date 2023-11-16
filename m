@@ -2,107 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1B67EE0A9
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8755C7EE0AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:29:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230448AbjKPM1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S1345207AbjKPM2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjKPM1A (ORCPT
+        with ESMTP id S1345194AbjKPM2u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:27:00 -0500
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E1FE9B;
-        Thu, 16 Nov 2023 04:26:56 -0800 (PST)
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3b2e44c7941so409733b6e.2;
-        Thu, 16 Nov 2023 04:26:56 -0800 (PST)
+        Thu, 16 Nov 2023 07:28:50 -0500
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86E7D187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:28:47 -0800 (PST)
+Received: by mail-vk1-xa33.google.com with SMTP id 71dfb90a1353d-4acf9dd3d35so327037e0c.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:28:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700137726; x=1700742526; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=IzQBXso3bqrccwF0VtaA0JDZLW259lYTZ8PxDTsTutk=;
+        b=zhKVF90zUXG1FvICnpwQNT3BIgxJte0Ceqo3fENNo7iPmpus4LQsJRQ5ohKIegVRyp
+         4eA08UW7zOePDD/5gNEOToo/ll4qUj2pf/todvDmMhE+tdag1EQMRjawDO4rN96JJK9F
+         FKuE6XIEu2IhzJVGj88ochUC5B2jWSsln4OGB6PAi2zkUyIcW3ETJZ3cyAfBvJbwZFCH
+         PyhyBcRE/y0B7S+vZ6fzfWe1sH4L3vpIx3c0DG0mAoC7TV6Y7uJxwCbLqynh414e505m
+         l80u61rodfMOxnJSXOLwv33QJ1KQfrwb0d7WTLqQyQWwWzrpIMki0sj4qLDC38yaRxaP
+         uiIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700137615; x=1700742415;
-        h=date:subject:message-id:references:in-reply-to:cc:to:from
-         :mime-version:content-transfer-encoding:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4D3EhViZgy6ZDKHYatir5D/iipC+xZSdlXmaGIE5i2I=;
-        b=mNabk2dwmDnxWL4toNKVKBLKirjGjssC2bG8Zd5S4lLG34aKYDXpVvmW86wLS/sBNj
-         8ReUE1HzNULDQQD0p6V1OZw/CbZyx2nsNcFAKdWyvy4vW+HdNhJafhY306xkXT/FQbyw
-         WXyoCZ72n95HFtQPQjZCQkurw7BzvsvzodF7sEEQokyykVe9Pv6hFWVQv2ESsLd08jDf
-         mHgGY58INQSMpB9vuynENMeaPt5hdnm2i/qsnkFXysTxV4/usMZtabzmMFNMZo5xxWch
-         8HO+hWtXhbupCWQygvNW7GOmKOBnepHtpAIwTUrEH4yQ2JjXFGht2PIOW/F/82nmjIyz
-         7YBw==
-X-Gm-Message-State: AOJu0YybJf50uEoH3+lCoebRrGA6rzZt/716aQ/ZBUzUsEVDK0A65eBW
-        Cfv9vQM6FRWxh3Anno1bPg==
-X-Google-Smtp-Source: AGHT+IHOYsqMO3aC7XEUi8s8+miDj9PKfWKLb6wc9g4BVUVlkWi0+FXb+ciN/kWxeiXhPvkJv/0Jww==
-X-Received: by 2002:a05:6808:2a0b:b0:3a7:b4e8:563e with SMTP id ez11-20020a0568082a0b00b003a7b4e8563emr17496277oib.38.1700137615489;
-        Thu, 16 Nov 2023 04:26:55 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id j7-20020aca1707000000b003af6eeed9b6sm1775573oii.27.2023.11.16.04.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 04:26:54 -0800 (PST)
-Received: (nullmailer pid 1791943 invoked by uid 1000);
-        Thu, 16 Nov 2023 12:26:53 -0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        d=1e100.net; s=20230601; t=1700137726; x=1700742526;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IzQBXso3bqrccwF0VtaA0JDZLW259lYTZ8PxDTsTutk=;
+        b=WXF0s8WhJcStbBg2iYYrg7JbINe1bIQCTl+N3xNiRDa74oK5wUTorqFKEl7b2GYQtT
+         gmznERN57/AElIixJm24zPkmdW/E0eAzQ8J7Bkh1ePQlhCJmzKpwrNW9tSG66r9xP9pg
+         xEVjsXIgQtb1d49+0YUQtIgVtsQMAoURrI3LkxYCLPeB/8/qZUi2nDU/z/P7kKZwrfY2
+         QUZtCdHM3SVHxyaUpMqp2GdWxNu6aUudFCzvIwbjBwNxPW9nDk8pP+Hxsf4yjRqFU/+2
+         DPSn3inWVR3hdIwkSuoC49I1YMohjwTDVMb3rf1lMnxihMhzmLY7Pg1NKyDmJHxvcvxO
+         PzyA==
+X-Gm-Message-State: AOJu0Yzu8jwGdS9LWjRYd7bbg5RcC8HaTAZywkzdvCQr6ecoTTZum9Gt
+        qdvK1Wj8UUXpFLIPWtra3l08aI+0SrPFPTyM/aZTfA==
+X-Google-Smtp-Source: AGHT+IH543TTj3PDoNs3KNT6Dx9KM215+s3wImnd4gcGciJ6TjasdcGeHtZjbvWgXEsbYdXknhhThS3ZF+C94Zm8Y50=
+X-Received: by 2002:a1f:9c8c:0:b0:49a:9146:ec02 with SMTP id
+ f134-20020a1f9c8c000000b0049a9146ec02mr14464019vke.1.1700137726522; Thu, 16
+ Nov 2023 04:28:46 -0800 (PST)
 MIME-Version: 1.0
-From:   Rob Herring <robh@kernel.org>
-To:     Mehdi Djait <mehdi.djait@bootlin.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, maxime.chevallier@bootlin.com,
-        paul.kocialkowski@bootlin.com, alexandre.belloni@bootlin.com,
-        linux-media@vger.kernel.org, hverkuil-cisco@xs4all.nl,
-        conor+dt@kernel.org, thomas.petazzoni@bootlin.com,
-        michael.riesch@wolfvision.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        mchehab@kernel.org, heiko@sntech.de
-In-Reply-To: <a0af1d30e79fb1f2567297c951781996836d6db6.1700132457.git.mehdi.djait@bootlin.com>
-References: <cover.1700132457.git.mehdi.djait@bootlin.com>
- <a0af1d30e79fb1f2567297c951781996836d6db6.1700132457.git.mehdi.djait@bootlin.com>
-Message-Id: <170013761383.1791927.3587552210147410978.robh@kernel.org>
-Subject: Re: [PATCH v11 1/3] media: dt-bindings: media: add bindings for
- Rockchip CIF
-Date:   Thu, 16 Nov 2023 06:26:53 -0600
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+References: <20231114095217.1142360-1-jens.wiklander@linaro.org> <20231114095217.1142360-2-jens.wiklander@linaro.org>
+In-Reply-To: <20231114095217.1142360-2-jens.wiklander@linaro.org>
+From:   Sumit Garg <sumit.garg@linaro.org>
+Date:   Thu, 16 Nov 2023 17:58:35 +0530
+Message-ID: <CAFA6WYOUZBLtkoy6fpsARYN==Eqr7JymskYDTxbvxxkUjEprfg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] optee: add page list to kernel private shared memory
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
+        Jerome Forissier <jerome.forissier@linaro.org>,
+        Shyam Saini <shyamsaini@linux.microsoft.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 14 Nov 2023 at 15:22, Jens Wiklander <jens.wiklander@linaro.org> wrote:
+>
+> Until now has kernel private shared memory allocated as dynamic shared
+> memory (not from the static shared memory pool) been returned without a
+> list of physical pages on allocations via RPC. To support allocations
+> larger than one page add a list of physical pages.
 
-On Thu, 16 Nov 2023 12:04:38 +0100, Mehdi Djait wrote:
-> Add a documentation for the Rockchip Camera Interface binding.
-> 
-> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+Although this patch looks like a good cleanup, I can't find an ABI
+change here. Wasn't a list of pages returned earlier too?
+
+-Sumit
+
+>
+> Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
 > ---
->  .../bindings/media/rockchip,px30-vip.yaml     | 173 ++++++++++++++++++
->  1 file changed, 173 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
-> 
-
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
-
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/media/rockchip,px30-vip.example.dtb: /example-0/parent/i2c/video-decoder@44: failed to match any schema with compatible: ['techwell,tw9900']
-
-doc reference errors (make refcheckdocs):
-
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/a0af1d30e79fb1f2567297c951781996836d6db6.1700132457.git.mehdi.djait@bootlin.com
-
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+>  drivers/tee/optee/core.c    | 28 +++++++++++++----------
+>  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
+>  2 files changed, 37 insertions(+), 36 deletions(-)
+>
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 2a258bd3b6b5..38ea2fecfc2e 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -27,7 +27,10 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                                                    unsigned long start))
+>  {
+>         unsigned int order = get_order(size);
+> +       unsigned int nr_pages = 1 << order;
+> +       struct page **pages;
+>         struct page *page;
+> +       unsigned int i;
+>         int rc = 0;
+>
+>         /*
+> @@ -42,30 +45,29 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>         shm->paddr = page_to_phys(page);
+>         shm->size = PAGE_SIZE << order;
+>
+> -       if (shm_register) {
+> -               unsigned int nr_pages = 1 << order, i;
+> -               struct page **pages;
+> +       pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+> +       if (!pages) {
+> +               rc = -ENOMEM;
+> +               goto err;
+> +       }
+>
+> -               pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
+> -               if (!pages) {
+> -                       rc = -ENOMEM;
+> -                       goto err;
+> -               }
+> +       for (i = 0; i < nr_pages; i++)
+> +               pages[i] = page + i;
+>
+> -               for (i = 0; i < nr_pages; i++)
+> -                       pages[i] = page + i;
+> +       shm->pages = pages;
+> +       shm->num_pages = nr_pages;
+>
+> +       if (shm_register) {
+>                 rc = shm_register(shm->ctx, shm, pages, nr_pages,
+>                                   (unsigned long)shm->kaddr);
+> -               kfree(pages);
+>                 if (rc)
+>                         goto err;
+>         }
+>
+>         return 0;
+> -
+>  err:
+>         free_pages((unsigned long)shm->kaddr, order);
+> +       shm->kaddr = NULL;
+>         return rc;
+>  }
+>
+> @@ -77,6 +79,8 @@ void optee_pool_op_free_helper(struct tee_shm_pool *pool, struct tee_shm *shm,
+>                 shm_unregister(shm->ctx, shm);
+>         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
+>         shm->kaddr = NULL;
+> +       kfree(shm->pages);
+> +       shm->pages = NULL;
+>  }
+>
+>  static void optee_bus_scan(struct work_struct *work)
+> diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
+> index d5b28fd35d66..b69410c7cc0a 100644
+> --- a/drivers/tee/optee/smc_abi.c
+> +++ b/drivers/tee/optee/smc_abi.c
+> @@ -678,10 +678,11 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                                           struct optee_msg_arg *arg,
+>                                           struct optee_call_ctx *call_ctx)
+>  {
+> -       phys_addr_t pa;
+>         struct tee_shm *shm;
+>         size_t sz;
+>         size_t n;
+> +       struct page **pages;
+> +       size_t page_count;
+>
+>         arg->ret_origin = TEEC_ORIGIN_COMMS;
+>
+> @@ -716,32 +717,23 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                 return;
+>         }
+>
+> -       if (tee_shm_get_pa(shm, 0, &pa)) {
+> -               arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> -               goto bad;
+> -       }
+> -
+> -       sz = tee_shm_get_size(shm);
+> -
+> -       if (tee_shm_is_dynamic(shm)) {
+> -               struct page **pages;
+> +       /*
+> +        * If there are pages it's dynamically allocated shared memory (not
+> +        * from the reserved shared memory pool) and needs to be
+> +        * registered.
+> +        */
+> +       pages = tee_shm_get_pages(shm, &page_count);
+> +       if (pages) {
+>                 u64 *pages_list;
+> -               size_t page_num;
+> -
+> -               pages = tee_shm_get_pages(shm, &page_num);
+> -               if (!pages || !page_num) {
+> -                       arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+> -                       goto bad;
+> -               }
+>
+> -               pages_list = optee_allocate_pages_list(page_num);
+> +               pages_list = optee_allocate_pages_list(page_count);
+>                 if (!pages_list) {
+>                         arg->ret = TEEC_ERROR_OUT_OF_MEMORY;
+>                         goto bad;
+>                 }
+>
+>                 call_ctx->pages_list = pages_list;
+> -               call_ctx->num_entries = page_num;
+> +               call_ctx->num_entries = page_count;
+>
+>                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT |
+>                                       OPTEE_MSG_ATTR_NONCONTIG;
+> @@ -752,17 +744,22 @@ static void handle_rpc_func_cmd_shm_alloc(struct tee_context *ctx,
+>                 arg->params[0].u.tmem.buf_ptr = virt_to_phys(pages_list) |
+>                         (tee_shm_get_page_offset(shm) &
+>                          (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
+> -               arg->params[0].u.tmem.size = tee_shm_get_size(shm);
+> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>
+> -               optee_fill_pages_list(pages_list, pages, page_num,
+> +               optee_fill_pages_list(pages_list, pages, page_count,
+>                                       tee_shm_get_page_offset(shm));
+>         } else {
+> +               phys_addr_t pa;
+> +
+> +               if (tee_shm_get_pa(shm, 0, &pa)) {
+> +                       arg->ret = TEEC_ERROR_BAD_PARAMETERS;
+> +                       goto bad;
+> +               }
+> +
+>                 arg->params[0].attr = OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT;
+>                 arg->params[0].u.tmem.buf_ptr = pa;
+> -               arg->params[0].u.tmem.size = sz;
+> -               arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>         }
+> +       arg->params[0].u.tmem.size = tee_shm_get_size(shm);
+> +       arg->params[0].u.tmem.shm_ref = (unsigned long)shm;
+>
+>         arg->ret = TEEC_SUCCESS;
+>         return;
+> --
+> 2.34.1
+>
