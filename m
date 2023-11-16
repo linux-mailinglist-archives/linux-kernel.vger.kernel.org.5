@@ -2,145 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 939B17EE85D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:34:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04EF67EE868
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjKPUeH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:34:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34680 "EHLO
+        id S229631AbjKPUgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:36:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKPUeG (ORCPT
+        with ESMTP id S229437AbjKPUgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:34:06 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 320C21A7;
-        Thu, 16 Nov 2023 12:34:01 -0800 (PST)
-Received: from [194.95.143.137] (helo=phil.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r3j3m-0005kq-K3; Thu, 16 Nov 2023 21:33:58 +0100
-From:   Heiko Stuebner <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
-Date:   Thu, 16 Nov 2023 21:33:57 +0100
-Message-ID: <7592981.EvYhyI6sBW@phil>
-In-Reply-To: <d8363bac-df41-416a-9043-f6212ad61e13@linaro.org>
-References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
- <3266223.44csPzL39Z@phil> <d8363bac-df41-416a-9043-f6212ad61e13@linaro.org>
+        Thu, 16 Nov 2023 15:36:53 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CA0698;
+        Thu, 16 Nov 2023 12:36:50 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGJiiiQ015832;
+        Thu, 16 Nov 2023 20:36:40 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=7nW4uUKOinMyfyACNCwFVXeHg4pie7w+X0CsEfRCaag=;
+ b=U0z6WFwZrdlQon9j+EyB36vMbirx1VDCFC6vZYe7aetIRdH6JGJq/mWMZcaDV0iBEHNP
+ Qb/U5vqksoRsEVNutk5s4/iWIVEYLLh8CaTyw8QEf82RTHliS8fmwFZuogh/F03DRldV
+ VjnNWOkADqvCqgurK+9AN+xDVFdVsujouLUOzlZj2q0cd1ZLrCatBmBK4Vcfy3MnNsT/
+ SaVafDzbkQQU0X1M2qU7yv0wMa3AhMdrX2EnxagdQzfJyHeLFVOjg/XCOqlOX3OI0h2g
+ bq8F0pjCsH1jbzbvoIZfnve/SHZtvKTVivKKJnxnAAWhnTzJolGXGQ9Z9YmLfYcqL5ZM pw== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud1k53b3t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 20:36:40 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGKadlO031701
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 20:36:39 GMT
+Received: from [10.110.71.50] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 12:36:38 -0800
+Message-ID: <01b9bc3f-2afb-bd33-1212-d1dc7999b2bc@quicinc.com>
+Date:   Thu, 16 Nov 2023 12:36:38 -0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH v2] drm/msm/dsi: use the correct VREG_CTRL_1 value for 4nm
+ cphy
+Content-Language: en-US
+To:     Jonathan Marek <jonathan@marek.ca>,
+        <freedreno@lists.freedesktop.org>
+CC:     Rob Clark <robdclark@gmail.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        Vinod Koul <vkoul@kernel.org>, Robert Foss <rfoss@kernel.org>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20231110000216.29979-1-jonathan@marek.ca>
+From:   Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <20231110000216.29979-1-jonathan@marek.ca>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: wEyKtP6vR8TjxeD1gO1F4ALFTNrsMgXc
+X-Proofpoint-ORIG-GUID: wEyKtP6vR8TjxeD1gO1F4ALFTNrsMgXc
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_21,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=720 bulkscore=0
+ spamscore=0 suspectscore=0 clxscore=1011 malwarescore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311160159
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Donnerstag, 16. November 2023, 21:23:20 CET schrieb Krzysztof Kozlowski:
-> On 16/11/2023 21:03, Heiko Stuebner wrote:
+
+
+On 11/9/2023 4:02 PM, Jonathan Marek wrote:
+> Use the same value as the downstream driver. This change is needed for CPHY
+> mode to work correctly.
 > 
-> >>> I guess the only thing I do have questions about is the part
-> >>>
-> >>>> +4. All properties with values
-> >>>> +5. Boolean properties
-> >>>
-> >>> Is there a rationale for it? Because with it things like regulator-*
-> >>> properties then end up in two different blocks.
-> >>
-> >> Good point. It is only a matter of style that this:
-> >>
-> >> foo {
-> >> 	compatible = "foo";
-> >> 	reg = <0x1>;
-> >> 	clocks = <&clk>;
-> >> 	wakeup-source;
-> >> 	key-autorepeat;
-> >> }
-> >>
-> >> looks better to me than:
-> >>
-> >>
-> >> foo {
-> >> 	compatible = "foo";
-> >> 	reg = <0x1>;
-> >> 	key-autorepeat;
-> >> 	wakeup-source;
-> >> 	clocks = <&clk>;
-> >> }
-> >>
-> >> But you have good point that similar properties should be usually
-> >> grouped together.
-> >>
-> >> About which regulator properties are you thinking now? You mean the
-> >> supplies or the provider?
-> > 
-> > I was thinking about the provider. There are 
-> > 	regulator-min-microvolt = <>;
-> > and friends, but also
-> > 	regulator-boot-on;
+> Fixes: 8b034e6771113 ("drm/msm/dsi: add support for DSI-PHY on SM8550")
+> Signed-off-by: Jonathan Marek <jonathan@marek.ca>
+> ---
+> v2: fixed the Fixes: line
 > 
-> These are in regulator provider nodes and above guideline would keep
-> logical order:
+>   drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> 	regulator-name = "vdd_kfc";
-> 	regulator-min-microvolt = <800000>;
-> 	regulator-max-microvolt = <1500000>;
-> 	regulator-always-on;
-> 	regulator-boot-on;
-> 
-> 	regulator-state-mem {
-> 		regulator-off-in-suspend;
-> 	};
-> 
-> What exactly would be here misordered?
 
-going with the vcc5v0_host regulator of the rk3588-quartzpro64 and
+Good catch !
 
-+1. compatible
-+2. reg
-+3. ranges
-+4. All properties with values
-+5. Boolean properties
-+6. status (if applicable)
-+7. Child nodes
+LGTM
 
-we'd end up with
+Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-        vcc5v0_host: vcc5v0-host-regulator {
-/* 1. */        compatible = "regulator-fixed";
-/* 4. */        gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
-                pinctrl-names = "default";
-                pinctrl-0 = <&vcc5v0_host_en>;
-                regulator-min-microvolt = <5000000>;
-                regulator-max-microvolt = <5000000>;
-                regulator-name = "vcc5v0_host";
-                vin-supply = <&vcc5v0_usb>;
-/* 5. */        enable-active-high;
-                regulator-always-on;
-                regulator-boot-on;
-        };      
-
-which I find somewhat counter-intuitive ;-) .
-
-
-Heiko
-
-
+> diff --git a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> index 3b1ed02f644d..89a6344bc865 100644
+> --- a/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> +++ b/drivers/gpu/drm/msm/dsi/phy/dsi_phy_7nm.c
+> @@ -918,7 +918,7 @@ static int dsi_7nm_phy_enable(struct msm_dsi_phy *phy,
+>   	if ((phy->cfg->quirks & DSI_PHY_7NM_QUIRK_V5_2)) {
+>   		if (phy->cphy_mode) {
+>   			vreg_ctrl_0 = 0x45;
+> -			vreg_ctrl_1 = 0x45;
+> +			vreg_ctrl_1 = 0x41;
+>   			glbl_rescode_top_ctrl = 0x00;
+>   			glbl_rescode_bot_ctrl = 0x00;
+>   		} else {
