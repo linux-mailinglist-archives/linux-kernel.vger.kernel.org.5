@@ -2,92 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C8F7EDD12
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:44:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8615B7EDD0E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:44:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344971AbjKPIo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:44:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        id S1344949AbjKPIoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbjKPIoW (ORCPT
+        with ESMTP id S230228AbjKPIoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:44:22 -0500
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B9D1A1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:44:19 -0800 (PST)
-Received: by mail-ed1-x52b.google.com with SMTP id 4fb4d7f45d1cf-54366bb1c02so5411a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:44:19 -0800 (PST)
+        Thu, 16 Nov 2023 03:44:19 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96E7ADA;
+        Thu, 16 Nov 2023 00:44:15 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6ba54c3ed97so553268b3a.2;
+        Thu, 16 Nov 2023 00:44:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700124257; x=1700729057; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=15Ckw1RtaRbBRvnRVWh1ML35SM8E8zgJILg29jp+Kk8=;
-        b=Ba1PJ5xST+5KadfEw0wJqatM9FQU51DTPhKxQiGpsd+JUsP3bAAkvIykt51SrqpHgw
-         mLyMv+vBW6hiFlhmXZUOuv10NPzKiz2OrTWdYHvlNOlrOB9pfxrfU//i0ysbxPLClaNy
-         8m8aVTK3SFXA/coHCmXKYpk0GVD1z5RrkeqspUjYDxyTl6TCjfmjuB0qRug22b90luVm
-         q2Hp6rDBPmUpUYUCEDBKR7XcrWWwYPoTqWWrfTe0BLl64RteN0VqDm4RoZ+toC7DeTYA
-         BPUf0wxU0U2EwAQXCulAnpXmpm3kjarTXPTkz/tAynHRbaZ6L/hUcFNZLo57PH0dhiFr
-         Qr6A==
+        d=gmail.com; s=20230601; t=1700124255; x=1700729055; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZDTg5+JnBZc/hxwjodL5B5OhTMTZhVs8VN7Y0FOjLDo=;
+        b=ktgyFnEz9NpZBVay9hA+7vwldvnKiY6cNnVMKbT2e8zLuqDQvxnuPDyK55x4W4Y4Z/
+         iFPhmbQpOiXC/YUurCw3Cal4szqUH+zlkFdzfs6MWnh3z5Cf6HAZPpT52FTf7X6lztYV
+         GP6RoRa8F4OFT+QYTNwPeLk2mw9ChQpJwUabo2jRCMDxfUJlNX12AG6U8ZG0cv/6XPWF
+         Ymk4Oxb4Oqabd7Yr8Ep3vj8uCUxiIo/zsJhW+7AgmQkH4+QHOVi6XFERHgkreBY99sof
+         6eU40BT0jQE8CDy0KCteaI3fQSd/+i8FeM3AOwVr7Z/zIryCKcFtUWaI0NJg6AUqRqoL
+         Wr8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700124257; x=1700729057;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700124255; x=1700729055;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=15Ckw1RtaRbBRvnRVWh1ML35SM8E8zgJILg29jp+Kk8=;
-        b=ZQfBCqfnXpDCka60Ci4WOYY+fNF65HeMYYXh3AijoBy6qWtrXiUAZlI/y/IahrvOO2
-         WeAeF3EFy88AJdtL7sx1OTPqaHPj9dANSBhvunAlgwp1MySwRf3zvfwn8B6wzVU3PARL
-         9Eor6uLghm93IF8R8IsCM+cC+D/hxobRYbvMnNbaZiJ3fr0gdC/iZF3IO0iNpvgMvEYZ
-         i01b/mdVFz0Ew/2R0x7ERdkCXOdGSUhtfuH+y6wiU4oM7npHrEzqjhx0Mxr8a8VnUAoD
-         fgLz7uYuMFvboQ4OunM5Xrrdf/FtsDe8iReNm6dPYWxfQTWs19OvhXVRT5rTpYNVO7PR
-         NXLw==
-X-Gm-Message-State: AOJu0Yw3M7m7mD2b8ehKOXfyKp8Rbs5DFMRBMJO6MV3b8oY6QRoAlSEY
-        XVA939BJr5gBsImg6OptDWynqPvkpsaNU1Y+Wuu+RA==
-X-Google-Smtp-Source: AGHT+IGVPb2NZqiKSwpNNjNi9eEikFGWD/JhfnBt7Ryi+ZjxJ3E2ljCxv4wI4vNKiW8ZBbdf1eIjFLQm7FM8SiR1Xc0=
-X-Received: by 2002:aa7:c592:0:b0:545:2921:d217 with SMTP id
- g18-20020aa7c592000000b005452921d217mr81119edq.6.1700124257443; Thu, 16 Nov
- 2023 00:44:17 -0800 (PST)
+        bh=ZDTg5+JnBZc/hxwjodL5B5OhTMTZhVs8VN7Y0FOjLDo=;
+        b=Q26SRCLxHXm8WRWMYtx6vlNwK8SV9Z/B4GFZwjShKFEVXs22P5CrHsXH3CQpYohevm
+         gMAztdwBitDIbMIY2TMZLb4RpB2h2fU6toqlJizxHUMZ/Fdr248BFifVv/6dD0l2h9yj
+         D/F3OMU9eko64ckKikXOuqEoc0NTADr33dYk/p1dP94+l/zVcbaUHbLAN56U7iQ2F2xB
+         Huw3feyaMMtIKgGIzkLznR2uni2A4jdv6j1+QWnr9LNZOx3EtReSWHspj7jhoOj92QrN
+         cvEL4sG4LgZqLbPI8JSqzeGmQ6ogztMvmjKme9kJwC6Z/IuNLrJdeMgpQPYkWG9M5YM/
+         m+Gg==
+X-Gm-Message-State: AOJu0YzxTnBFoVnN31pgdBOTvhKw5zyZBazjTTMQIFNkMaVLOu+mQVyf
+        XkKwSrcyX/invcjaG3kNA8Y=
+X-Google-Smtp-Source: AGHT+IGXgVyguBW1o7hbH4LvItXeUA9x3mWo6UDDL4OaC9i9qHGbfmg5gpM19XDq6I4qRu6/xrJpDg==
+X-Received: by 2002:aa7:8d0d:0:b0:6bd:4ab7:5f69 with SMTP id j13-20020aa78d0d000000b006bd4ab75f69mr14533894pfe.12.1700124254912;
+        Thu, 16 Nov 2023 00:44:14 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id fn2-20020a056a002fc200b00689f5940061sm4156077pfb.17.2023.11.16.00.44.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 00:44:13 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 16 Nov 2023 00:44:12 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Xing Tong Wu <xingtong_wu@163.com>
+Cc:     Jean Delvare <jdelvare@suse.com>, linux-hwmon@vger.kernel.org,
+        linux-kernel@vger.kernel.org, xingtong.wu@siemens.com,
+        tobias.schaffner@siemens.com, gerd.haeussler.ext@siemens.com
+Subject: Re: [PATCH 2/3] hwmon: (nct6775) Fix logic error for PWM enable
+Message-ID: <2691ceb6-b3d1-471c-b395-c08398a11b72@roeck-us.net>
+References: <20231116022330.2696-1-xingtong_wu@163.com>
+ <20231116022330.2696-3-xingtong_wu@163.com>
+ <4616f6a2-f81d-47cb-9574-2319d04d3f34@roeck-us.net>
 MIME-Version: 1.0
-References: <20231116022213.28795-1-duminjie@vivo.com>
-In-Reply-To: <20231116022213.28795-1-duminjie@vivo.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Thu, 16 Nov 2023 09:44:03 +0100
-Message-ID: <CANn89i+B2gNO7-Mnai59Tpn44tomfLN1m9NnSEMq-qkt7AyyRw@mail.gmail.com>
-Subject: Re: [PATCH v2] net/tcp: use kfree_sensitive() instend of kfree() in
- two functions
-To:     Minjie Du <duminjie@vivo.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "open list:NETWORKING [TCP]" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        opensource.kernel@vivo.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4616f6a2-f81d-47cb-9574-2319d04d3f34@roeck-us.net>
+X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 3:22=E2=80=AFAM Minjie Du <duminjie@vivo.com> wrote=
-:
->
-> key might contain private information, so use kfree_sensitive to free it.
-> In tcp_time_wait_init() and tcp_md5_twsk_free_rcu() use kfree_sensitive()=
-.
->
-> Signed-off-by: Minjie Du <duminjie@vivo.com>
-> ---
->
+On Thu, Nov 16, 2023 at 12:07:06AM -0800, Guenter Roeck wrote:
+> On Thu, Nov 16, 2023 at 10:23:29AM +0800, Xing Tong Wu wrote:
+> > From: Xing Tong Wu <xingtong.wu@siemens.com>
+> > 
+> > The determination of the "pwm_enable" should be based solely on the mode,
+> > regardless of the pwm value.
+> > According to the specification, the default values for pwm and pwm_enable
+> > are 255 and 0 respectively. However, there is a bug in the code where the
+> > fan control is actually enabled, but the file "pwm_enable" incorrectly
+> > displays "off", indicating that fan control is disabled. This contradiction
+> > needs to be addressed and resolved.
+> > Solution: Update the logic so that "pwm_enable" is determined by mode + 1,
+> > remove the "off" value for "pwm_enable" since it is not specified in the
+> > documentation.
+> 
+> The chip specification is irrelevant. What is relevant is the hwmon ABI,
+> which says
+> 
+> What:           /sys/class/hwmon/hwmonX/pwmY_enable
+> Description:
+>                 Fan speed control method:
+> 
+>                 - 0: no fan speed control (i.e. fan at full speed)
+> 		^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>                 - 1: manual fan speed control enabled (using `pwmY`)
+>                 - 2+: automatic fan speed control enabled
+> 
+> which is what the code currently implements or at least tries to
+> implement.
+> 
 
-You have not addressed my prior feedback.
+As a follow-up, the existing code also handles setting _enable to 0
+explicitly by selecting manual mode and setting the pwm value to the
+maximum. This does not match the chip specification, but is the best
+we can do to match ABI expectations.
 
-3) You forgot tcp_time_wait_init(), tcp_md5_do_del(), tcp_md5_key_copy(),
-    tcp_md5_do_add(), tcp_clear_md5_list().
+That also means that we can not reject setting pwm values if
+pwm control is disabled (off) since pwm==255 in manual mode
+is equivalent to disabling pwm. Yes, that means that setting pwm
+to 254 while pwm_enable==0 automatically enables manual mode,
+but that can not be helped. We _could_ possibly combine setting
+pwm_enable to manual mode with setting the pwm value to something
+other than 255 if it is currently set to 25, but that would be
+an optimization, not a bug fix.
+
+Guenter
+
+> Guenter
+> 
+> > 
+> > Signed-off-by: Xing Tong Wu <xingtong.wu@siemens.com>
+> > ---
+> >  drivers/hwmon/nct6775-core.c | 2 --
+> >  1 file changed, 2 deletions(-)
+> > 
+> > diff --git a/drivers/hwmon/nct6775-core.c b/drivers/hwmon/nct6775-core.c
+> > index 2111f0cd9787..575db6cb96e9 100644
+> > --- a/drivers/hwmon/nct6775-core.c
+> > +++ b/drivers/hwmon/nct6775-core.c
+> > @@ -900,8 +900,6 @@ static const u16 NCT6116_REG_TSI_TEMP[] = { 0x59, 0x5b };
+> >  
+> >  static enum pwm_enable reg_to_pwm_enable(int pwm, int mode)
+> >  {
+> > -	if (mode == 0 && pwm == 255)
+> > -		return off;
+> >  	return mode + 1;
+> >  }
+> >  
+> > -- 
+> > 2.25.1
+> > 
+> 
