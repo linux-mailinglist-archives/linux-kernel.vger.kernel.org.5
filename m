@@ -2,191 +2,317 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A8F4B7EE9E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:11:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E46337EE9E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:12:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229379AbjKPXLG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:11:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37376 "EHLO
+        id S1345561AbjKPXMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:12:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56336 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjKPXLD (ORCPT
+        with ESMTP id S229775AbjKPXMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:11:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19ECED53
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700176259;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=CgEX29Pt1JmGCTcHMQ0I2eQh29hYElt25FeFUIb2i0w=;
-        b=aLx81FzERPpO/o7HoZDUSmvw+Y0RIOxbFFgN2IOyCpoKJiTqOxJvrjLCtiP5qH1Fsk5JAg
-        0jLKYFUqmfQSI1LXNXkqxAfIPAbPx2gtHUhajhCSY7xNArSDNcRljRidVJRFq7ArnSKvhK
-        TTQN2NMZ/nge59fIYnILxnIGg3jiswo=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-157-qcprEz7rO6ee1DuIrP_GDA-1; Thu, 16 Nov 2023 18:10:57 -0500
-X-MC-Unique: qcprEz7rO6ee1DuIrP_GDA-1
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32da8de4833so646747f8f.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:57 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700176256; x=1700781056;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CgEX29Pt1JmGCTcHMQ0I2eQh29hYElt25FeFUIb2i0w=;
-        b=Qz/oLpvCV3rBtt48ayVWKZGP/RtVsHa97HgsDk0+zczt7nO8F1d06eAR9UqHZOk6RX
-         bBfmw1viP/JTBhze9szpp1mriM9Pke4LNUvIUOIS4AeKU8ux5VDOGFnrwlZTiddDZQVe
-         BCY8PxrxFGZirAI2FHsq8e5QEoOvxgxY7vfmQ48vrY+ht5Pq+XRXuE7PtzfUil4u3q3s
-         oLC5/Jke+sSRetQIV1d+vDT5jS2LSRS04NMAkGHPCZFLZn/MTtZlMiP4tF+eB+XLN3+S
-         fAnng8TQiVc0eDh1ikiGY6jouJkl/wYF7WbHjJu7W4skQcfdMVOIsFRmzpDWxZ5/jN+0
-         6yPA==
-X-Gm-Message-State: AOJu0YyOIn3uBFw0ilYsK2+LdHLjTDuJK97nSlhFZudAJc1eV4PFSUNf
-        Pm6S+i+OD9fV4TJKXFrD/mAKBOQNVGr2r2v31FpjYIG4Qg9GgPHMPfzqogldhqaXgaE+9TYb5et
-        +VrtqX9smaVFE7eN+i7JfM5JIIvP7QE0C
-X-Received: by 2002:adf:e90a:0:b0:31f:db1b:7296 with SMTP id f10-20020adfe90a000000b0031fdb1b7296mr11979344wrm.21.1700176256588;
-        Thu, 16 Nov 2023 15:10:56 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG5jEbwrcA73XAM/14JHCdI8QNFP+LmTBo3lEJ4Dl79qKSu3tJRixSwerp696usy1cCbedmZg==
-X-Received: by 2002:adf:e90a:0:b0:31f:db1b:7296 with SMTP id f10-20020adfe90a000000b0031fdb1b7296mr11979337wrm.21.1700176256295;
-        Thu, 16 Nov 2023 15:10:56 -0800 (PST)
-Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 15:10:55 -0800 (PST)
-Message-ID: <146fee4b-fbd3-4571-9c81-8ae8393cb391@redhat.com>
-Date:   Fri, 17 Nov 2023 00:10:55 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] mm/selftests: Fix pagemap_ioctl memory map test
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Thu, 16 Nov 2023 18:12:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2441181
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:12:42 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B94C7C433C8;
+        Thu, 16 Nov 2023 23:12:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700176362;
+        bh=Wxb3DtYTe23fEMHKUZEE6WZBpPDcJd4ks8nGwGN/WpU=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=pzUw+lBeYCIF4xTHByHz7GNB4IKjdeyk8i2h1SfHV99iBHt/XXUYe9iKyVmC9hiJL
+         JNu82ReEgREhFjG2+MQjThM5UN2LhbcsOe1zMMiIqm4zXpKKU8hWd7IrXoPiTaIDpu
+         HsIWrxpC2xYPYVUUQlTwUmkL/4EVS07tUcbmGvfDe2MwxehKwZ89AOdfCJxvmvWgil
+         lO+pJTSMFoZAPjXil/fkTcAgXxTwyp02ThPyoslYakDGCayL+wzg0ggSm3/2neB/9N
+         tZSlKL9OPGmUTF2oHNdHazfXmHHo7TntmHHgoCL85exiotnfTpM/XBXeIG4NCvAccB
+         fm0Ip8IgEwBfg==
+Date:   Thu, 16 Nov 2023 15:12:38 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     Mario Marietto <marietto2008@gmail.com>
+cc:     Chuck Zmudzinski <brchuckz@netscape.net>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Chuck Zmudzinski <brchuckz@aol.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Andrei Vagin <avagin@gmail.com>
-References: <20231116201547.536857-1-peterx@redhat.com>
- <20231116201547.536857-4-peterx@redhat.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231116201547.536857-4-peterx@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Julien Grall <julien@xen.org>,
+        Bertrand Marquis <bertrand.marquis@arm.com>
+Subject: Re: [PATCH] arm/mm: add option to prefer IOMMU ops for DMA on Xen
+In-Reply-To: <CA+1FSij82weDFfsfBQpnPjQJ9K6JVhHxF4JTOKPjwm-8SUrD=A@mail.gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2311161507400.773207@ubuntu-linux-20-04-desktop>
+References: <20231111184538.2371-1-brchuckz.ref@aol.com> <20231111184538.2371-1-brchuckz@aol.com> <e5ebfde9-7a74-4908-b0b9-db47c4e76315@arm.com> <alpine.DEB.2.22.394.2311141407140.160649@ubuntu-linux-20-04-desktop> <edefba96-0a17-4b3d-992c-6bfe9e62bf97@netscape.net>
+ <CA+1FSih45=vtpa+bfYGDFEXd6u=+V8wLsBoo8=2rmj7V0Lj_Ow@mail.gmail.com> <CA+1FSiiuFMvZAHHXFQHRF=gQSoZTxLEZSDYfCgw8j6HiGkkDXw@mail.gmail.com> <CA+1FSij82weDFfsfBQpnPjQJ9K6JVhHxF4JTOKPjwm-8SUrD=A@mail.gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="8323329-171887673-1700176362=:773207"
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.11.23 21:15, Peter Xu wrote:
-> __FILE__ is not guaranteed to exist in current dir.  Replace that with
-> argv[0] for memory map test.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-171887673-1700176362=:773207
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+
+My guess is that the issue is one of these two:
+
+1) version mismatch between Xen and Xen tools
+   E.g. Xen from staging and Xen Tools from 4.18
+
+2) missing Xen modules in Linux Dom0
+   Was /etc/init.d/xencommons run at boot?
+   Is /proc/xen mounted?
+   Are the privcmd, gntdev, xenfs, modules loaded?
+
+
+On Thu, 16 Nov 2023, Mario Marietto wrote:
+> I've found a similar error on this post,made on 2012 :
+> https://groups.google.com/g/qubes-devel/c/W1lM4ELuVVI
+> and according to what has been asked there,I want to post some further relevant informations to help you to help me to debug 
+> the problem :
+> root@devuan-bunsen:/Dati/xen# xl dmesg ---> https://pastebin.ubuntu.com/p/YvtdCPwMWW/
 > 
-> Fixes: 46fd75d4a3c9 ("selftests: mm: add pagemap ioctl tests")
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->   tools/testing/selftests/mm/pagemap_ioctl.c | 9 ++++++---
->   1 file changed, 6 insertions(+), 3 deletions(-)
+> root@devuan-bunsen:/Dati/xen# dmesg ---> https://pastebin.ubuntu.com/p/9cNxCTXVrd/
+> root@devuan-bunsen:/var/log/xen# mousepad xenstored-access.log ---> https://pastebin.ubuntu.com/p/RTPBG9nS8R/
+> root@devuan-bunsen:/var/log/xen# mousepad xenstored.log ---> https://pastebin.ubuntu.com/p/T354ts33nP/
 > 
-> diff --git a/tools/testing/selftests/mm/pagemap_ioctl.c b/tools/testing/selftests/mm/pagemap_ioctl.c
-> index befab43719ba..d59517ed3d48 100644
-> --- a/tools/testing/selftests/mm/pagemap_ioctl.c
-> +++ b/tools/testing/selftests/mm/pagemap_ioctl.c
-> @@ -36,6 +36,7 @@ int pagemap_fd;
->   int uffd;
->   int page_size;
->   int hpage_size;
-> +const char *progname;
->   
->   #define LEN(region)	((region.end - region.start)/page_size)
->   
-> @@ -1149,11 +1150,11 @@ int sanity_tests(void)
->   	munmap(mem, mem_size);
->   
->   	/* 9. Memory mapped file */
-> -	fd = open(__FILE__, O_RDONLY);
-> +	fd = open(progname, O_RDONLY);
->   	if (fd < 0)
->   		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
->   
-> -	ret = stat(__FILE__, &sbuf);
-> +	ret = stat(progname, &sbuf);
->   	if (ret < 0)
->   		ksft_exit_fail_msg("error %d %d %s\n", ret, errno, strerror(errno));
->   
-> @@ -1472,12 +1473,14 @@ static void transact_test(int page_size)
->   			      extra_thread_faults);
->   }
->   
-> -int main(void)
-> +int main(int argc, char *argv[])
->   {
->   	int mem_size, shmid, buf_size, fd, i, ret;
->   	char *mem, *map, *fmem;
->   	struct stat sbuf;
->   
-> +	progname = argv[0];
-> +
->   	ksft_print_header();
->   
->   	if (init_uffd())
-
-Reviewed-by: David Hildenbrand <david@redhat.com>
-
--- 
-Cheers,
-
-David / dhildenb
-
+> very thanks.
+> 
+> On Thu, Nov 16, 2023 at 10:51 AM Mario Marietto <marietto2008@gmail.com> wrote:
+>       Hello to everyone.
+> 
+> I'm trying to boot Linux 6.1.y as Xen dom0 on the Chromebook xe303c12, aka Snow and configure and start a very basic domU
+> guest,following the Chuck's tutorial,located here :
+> 
+> https://github.com/mobile-virt/u-boot-chromebook-xe303c12/tree/chromebook/xen#starting-a-domu-guest
+> 
+> What I did has been to carefully follow his instructions,but I haven't found a solution to fix this problem,yet :
+> 
+> # sudo xl create devuan.cfg -c
+> 
+> Parsing config from devuan.cfg
+> libxl: error: libxl_create.c:720:libxl__domain_make: domain creation fail: Permission denied
+> libxl: error: libxl_create.c:1309:initiate_domain_create: cannot make domain: -3
+> 
+> This is my devuan.cfg file :
+> 
+> kernel = '/Dati/xen/kernels/zImage-6.1.59-stb-xen-cbe+'
+> memory = '512'
+> name = 'Devuan'
+> vcpus = '1'
+> disk = [ '/Dati/xen/devuan.img,,xvda,w' ]
+> extra = 'console=hvc0 root=/dev/xvda rw init=/sbin/init xen-fbfront.video=24,1024,768'
+> 
+> (I have tried also with root=/dev/xvda1 and root=/dev/xvda2,but leaving disk = [ '/Dati/xen/devuan.img,,xvda,w' ] and not xvda1 or 2)
+> 
+> I have no  idea about the reason(s) I always get that error,but I don't think it is caused by a wrong creation of the devuan.img
+> file. Can someone point me in the right direction to understand what could be wrong ? I haven't found any useful information on the
+> internet.
+> 
+> This is bootxen.scr file where I have configured dom0_mem=768 :
+> 
+> mmc dev 1
+> ext2load mmc 1:3 0x42000000 zImage-6.6.0-xen-iommu-dma-on-xen
+> ext2load mmc 1:3 0x51000000 xen-4.17-armhf-armmp-0x51004000.ub
+> ext2load mmc 1:3 0x5ffec000 exynos5250-snow.dtb
+> fdt addr 0x5ffec000
+> fdt resize 1024
+> fdt set /chosen \#address-cells <0x2>
+> fdt set /chosen \#size-cells <0x2>
+> fdt set /chosen xen,xen-bootargs "console=dtuart dtuart=serial0 dom0_mem=768M dom0_max_vcpus=2 bootscrub=0 vwfi=native sched=null"
+> fdt mknod /chosen dom0
+> fdt set /chosen/dom0 compatible  "xen,linux-zimage" "xen,multiboot-module" "multiboot,module"
+> fdt set /chosen/dom0 reg <0x0 0x42000000 0x0 0x87C200 >
+> fdt set /chosen xen,dom0-bootargs "console=tty1 root=/dev/mmcblk1p4 rw rootwait clk_ignore_unused --no-log"
+> bootm 0x51000000 - 0x5ffec000
+> 
+> and I've rebooted the Chromebook using this command :
+> 
+> SMDK5250 # mmc dev 1
+> SMDK5250 # ext2load mmc 1:3 0x50000000 bootxen.scr; source 0x50000000
+> 
+> This is the memory available on the machine after having booted the machine ready for xen :
+> # free -m
+>               total        used        free      shared  buff/cache   available
+> Mem:             741         329         108           7         332         412
+> Swap:              0           0           0
+> 
+> Thanks in advance for any support.
+> 
+> On Wed, Nov 15, 2023 at 8:41 PM Mario Marietto <marietto2008@gmail.com> wrote:
+>       ---> So I plan to do some tests and see what DMA ops the other devices use if swiotlb-xen is disabled and also what DMA
+>       ops the other devices use when Linux runs on the Chromebook on bare metal without Xen. If these tests show the problem
+>       can be fixed by disabling swiotlb-xen with a Kconfig  or command line option, I will propose v2 to implement that as a
+>       solution.
+> 
+> and this could bring you to the next level of our project. Try to install xen on different devices. At least it is my next
+> project. I've already bought two arm64 phones where xen can be installed because there is a hack to overcome the bootloader /
+> hypervisor protection mechanism. For sure I hope that you also want to buy them to work on this together. And don't worry about
+> how much money they will cost you. I've bought them used and refurbished. Or you could buy only one,that I suggest could be the
+> SM-A600G (Samsung Galaxy A6) with Exynos7870. Please start looking for it at a good price. 
+> 
+> On Wed, Nov 15, 2023 at 6:57 PM Chuck Zmudzinski <brchuckz@netscape.net> wrote:
+>       On 11/14/2023 5:20 PM, Stefano Stabellini wrote:
+>       > On Tue, 14 Nov 2023, Robin Murphy wrote:
+>       >> On 11/11/2023 6:45 pm, Chuck Zmudzinski wrote:
+>       >> > Enabling the new option, ARM_DMA_USE_IOMMU_XEN, fixes this error when
+>       >> > attaching the Exynos mixer in Linux dom0 on Xen on the Chromebook Snow
+>       >> > (and probably on other devices that use the Exynos mixer):
+>       >> >
+>       >> > [drm] Exynos DRM: using 14400000.fimd device for DMA mapping operations
+>       >> > exynos-drm exynos-drm: bound 14400000.fimd (ops 0xc0d96354)
+>       >> > exynos-mixer 14450000.mixer: [drm:exynos_drm_register_dma] *ERROR* Device
+>       >> >                               14450000.mixer lacks support for IOMMU
+>       >> > exynos-drm exynos-drm: failed to bind 14450000.mixer (ops 0xc0d97554): -22
+>       >> > exynos-drm exynos-drm: adev bind failed: -22
+>       >> > exynos-dp: probe of 145b0000.dp-controller failed with error -22
+>       >> >
+>       >> > Linux normally uses xen_swiotlb_dma_ops for DMA for all devices when
+>       >> > xen_swiotlb is detected even when Xen exposes an IOMMU to Linux. Enabling
+>       >> > the new config option allows devices such as the Exynos mixer to use the
+>       >> > IOMMU instead of xen_swiotlb_dma_ops for DMA and this fixes the error.
+>       >> >
+>       >> > The new config option is not set by default because it is likely some
+>       >> > devices that use IOMMU for DMA on Xen will cause DMA errors and memory
+>       >> > corruption when Xen PV block and network drivers are in use on the system.
+>       >> >
+>       >> > Link:
+>       >> > https://lore.kernel.org/xen-devel/acfab1c5-eed1-4930-8c70-8681e256c820@netscape.net/
+>       >> >
+>       >> > Signed-off-by: Chuck Zmudzinski <brchuckz@aol.com>
+>       >> > ---
+>       >> > The reported error with the Exynos mixer is not fixed by default by adding
+>       >> > a second patch to select the new option in the Kconfig definition for the
+>       >> > Exynos mixer if EXYNOS_IOMMU and SWIOTLB_XEN are enabled because it is
+>       >> > not certain setting the config option is suitable for all cases. So it is
+>       >> > necessary to explicitly select the new config option during the config
+>       >> > stage of the Linux kernel build to fix the reported error or similar
+>       >> > errors that have the same cause of lack of support for IOMMU on Xen. This
+>       >> > is necessary to avoid any regressions that might be caused by enabling the
+>       >> > new option by default for the Exynos mixer.
+>       >> >   arch/arm/mm/dma-mapping.c |  6 ++++++
+>       >> >   drivers/xen/Kconfig       | 16 ++++++++++++++++
+>       >> >   2 files changed, 22 insertions(+)
+>       >> >
+>       >> > diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+>       >> > index 5409225b4abc..ca04fdf01be3 100644
+>       >> > --- a/arch/arm/mm/dma-mapping.c
+>       >> > +++ b/arch/arm/mm/dma-mapping.c
+>       >> > @@ -1779,6 +1779,12 @@ void arch_setup_dma_ops(struct device *dev, u64
+>       >> > dma_base, u64 size,
+>       >> >    if (iommu)
+>       >> >            arm_setup_iommu_dma_ops(dev, dma_base, size, iommu, coherent);
+>       >> >   +#ifdef CONFIG_ARM_DMA_USE_IOMMU_XEN
+>       >>
+>       >> FWIW I don't think this really needs a config option - if Xen *has* made an
+>       >> IOMMU available, then there isn't really much reason not to use it, and if for
+>       >> some reason someone really didn't want to then they could simply disable the
+>       >> IOMMU driver anyway.
+>       >
+>       > The fact that the Exynos IOMMU is exposed to Linux is a mistake. Xen
+>       > doesn't recognize the Exynos IOMMU (it is not one of the IOMMUs Xen has
+>       > a driver for) so it assigns the IOMMU to Dom0. It doesn't happen on
+>       > purpose, it happens by accident. Certain things are going to break,
+>       > specifically I am fairly certain PV drivers are going to break.
+>       >
+>       > If Xen recognized the Exynos IOMMU as an IOMMU it would probably hide it
+>       > from Dom0. (Today Xen doesn't have a list of IOMMUs Xen recognizes but
+>       > doesn't have a driver for.)
+>       >
+>       > I think it is OK for Chuck and others to play around with this
+>       > configuration but I wouldn't add a new kconfig option to Linux to
+>       > support it.
+>       >
+>       > If we do want a kconfig option, I would add a kconfig option or Linux
+>       > command line option to enable/disable swiotlb-xen. Basically a way to
+>       > force-enable or force-disable xen_swiotlb_detect(). That could be
+>       > generally useful for debugging and would also solve the problem here as
+>       > it could be used to force-disable swiotlb-xen. I would imagine that the
+>       > end result is the same: the default ops (iommu_ops) are used.
+> 
+>       I will try this. It isn't exactly what I have tested until now because
+>       in all my tests so far all the DMA capable devices on the Chromebook use
+>       swioltlb-xen except for the two devices that need to use the Exynos IOMMU
+>       to fix the error with the Exynos mixer.
+> 
+>       >
+>       >
+>       >
+>       >> > +  if (dev->dma_ops == &iommu_ops) {
+>       >> > +          dev->archdata.dma_ops_setup = true;
+>       >>
+>       >> The existing assignment is effectively unconditional by this point anyway, so
+>       >> could probably just be moved earlier to save duplicating it (or perhaps just
+>       >> make the xen_setup_dma_ops() call conditional instead to save the early return
+>       >> as well).
+>       >>
+>       >> However, are the IOMMU DMA ops really compatible with Xen? The comments about
+>       >> hypercalls and foreign memory in xen_arch_need_swiotlb() leave me concerned
+>       >> that assuming non-coherent DMA to any old Dom0 page is OK might not actually
+>       >> work in general :/
+>       >
+>       > Xen has (not yet upstreaming) support for nested IOMMU (Xen uses the
+>       > IOMMU while also it exposes a virtual IOMMU to guests.) In those cases
+>       > the iommu_ops should be compatible with Xen.
+>       >
+>       > swiotlb-xen is useful in cases where there is no IOMMU on the platform
+>       > (or the IOMMU doesn't cover all DMA-capable devices) and Dom0 is 1:1
+>       > mapped. See include/xen/arm/swiotlb-xen.h:xen_swiotlb_detect. If Dom0 is
+>       > not 1:1 mapped swiotlb-xen doesn't work. If an IOMMU is present and
+>       > covers all DMA-capable devices, then swiotlb-xen is superfluous.
+> 
+>       It seems that swiotlb-xen works on this Chromebook since all but two
+>       of the DMA capable devices use it when configured with the Kconfig option
+>       added here and it seems to work fine so I presume Dom0 is 1:1 mapped as
+>       expected. It is possible that on this device, the IOMMU is only covering
+>       the two devices that need to use the Exynos IOMMU in the tests I have done.
+>       There are many other DMA capable devices that use swiotlb-xen DMA ops
+>       on Xen, but I have not checked what DMA ops the other devices use when
+>       Linux runs on the Chromebook on bare metal without Xen.
+> 
+>       So I plan to do some tests and see what DMA ops the other devices use if
+>       swiotlb-xen is disabled and also what DMA ops the other devices use when
+>       Linux runs on the Chromebook on bare metal without Xen. If these tests
+>       show the problem can be fixed by disabling swiotlb-xen with a Kconfig  or
+>       command line option, I will propose v2 to implement that as a solution.
+> 
+>       > This last case is the interesting case for virtual IOMMU and Linux usage of
+>       > iommu_ops.
+> 
+> 
+> 
+> --
+> Mario.
+> 
+> 
+> 
+> --
+> Mario.
+> 
+> 
+> 
+> --
+> Mario.
+> 
+> 
+--8323329-171887673-1700176362=:773207--
