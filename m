@@ -2,179 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2630B7EDC0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 12BA27EDC0F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:35:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344907AbjKPHdi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 02:33:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58364 "EHLO
+        id S1344935AbjKPHfg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 02:35:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233782AbjKPHdg (ORCPT
+        with ESMTP id S1344926AbjKPHff (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 02:33:36 -0500
-Received: from 1wt.eu (ded1.1wt.eu [163.172.96.212])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8D572DD;
-        Wed, 15 Nov 2023 23:33:32 -0800 (PST)
-Received: (from willy@localhost)
-        by mail.home.local (8.17.1/8.17.1/Submit) id 3AG7XR8v007559;
-        Thu, 16 Nov 2023 08:33:27 +0100
-Date:   Thu, 16 Nov 2023 08:33:27 +0100
-From:   Willy Tarreau <w@1wt.eu>
-To:     Thomas =?iso-8859-1?Q?Wei=DFschuh?= <linux@weissschuh.net>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] selftests/nolibc: migrate startup tests to new
- harness
-Message-ID: <ZVXFxyK8xY4mVcrS@1wt.eu>
-References: <20231115-nolibc-harness-v1-0-4d61382d9bf3@weissschuh.net>
- <20231115-nolibc-harness-v1-2-4d61382d9bf3@weissschuh.net>
+        Thu, 16 Nov 2023 02:35:35 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF688120;
+        Wed, 15 Nov 2023 23:35:31 -0800 (PST)
+Received: from pps.filterd (m0279870.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG30TJN003603;
+        Thu, 16 Nov 2023 07:35:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=vvMnm4WhkueVlpEI/cCYzO1lCBkUqil1M9OZTa0l9Cw=;
+ b=PhjCwyCOkci33gIfguS+xGg0un3UJVXyWwEHJefgcF5YGmcpECi8UXBfRpMabZcCrJSt
+ bpiTIvXeWXarFrt4lF9IVgoyabSjK9uwpxyKeb3ZJZpb1y86ao97jtakUigxHzlkRYQJ
+ IhgzqX6sWBtMsDnUXNaUiC4HnpnnI1HwPYU1PnA1AvjC2rd2N3MtDWdzAyScI0Bfetdf
+ 4glIfBe/xu0rtm6uYV0VgXNFpxyyvKT3M6l8yc/JtSC4QUgXfwwhnAia625EAIXZU9cQ
+ Hnto++hC5momrCYXQOJBekoBXFETy/ZcvfHS8uw4725RLgMlic9jyNZN1pg5R8X41M4s 8w== 
+Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ucu27tp50-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 07:35:19 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AG7ZIp4028915
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 07:35:18 GMT
+Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
+ 2023 23:35:15 -0800
+Message-ID: <6a44ac62-50a8-4f31-9504-10a0d12791f4@quicinc.com>
+Date:   Thu, 16 Nov 2023 15:35:12 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231115-nolibc-harness-v1-2-4d61382d9bf3@weissschuh.net>
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/6] net: phy: introduce core support for phy-mode =
+ "10g-qxgmii"
+Content-Language: en-US
+To:     Conor Dooley <conor@kernel.org>
+CC:     <andrew@lunn.ch>, <davem@davemloft.net>, <edumazet@google.com>,
+        <kuba@kernel.org>, <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>, <corbet@lwn.net>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-doc@vger.kernel.org>
+References: <20231115140630.10858-1-quic_luoj@quicinc.com>
+ <20231115140630.10858-3-quic_luoj@quicinc.com>
+ <20231115-tightness-naturist-459776cff199@squawk>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <20231115-tightness-naturist-459776cff199@squawk>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: WivfknNt5PU1gvPggLGPuyqiAlvKbmrF
+X-Proofpoint-ORIG-GUID: WivfknNt5PU1gvPggLGPuyqiAlvKbmrF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_05,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 bulkscore=0 adultscore=0 priorityscore=1501
+ clxscore=1011 lowpriorityscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311160058
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:08:20PM +0100, Thomas Weiﬂschuh wrote:
-> Migrate part of nolibc-test.c to the new test harness.
+
+
+On 11/15/2023 10:31 PM, Conor Dooley wrote:
+> On Wed, Nov 15, 2023 at 10:06:26PM +0800, Luo Jie wrote:
+>> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+>>
+>> 10G-QXGMII is a MAC-to-PHY interface defined by the USXGMII multiport
+>> specification. It uses the same signaling as USXGMII, but it multiplexes
+>> 4 ports over the link, resulting in a maximum speed of 2.5G per port.
+>>
+>> Some in-tree SoCs like the NXP LS1028A use "usxgmii" when they mean
+>> either the single-port USXGMII or the quad-port 10G-QXGMII variant, and
+>> they could get away just fine with that thus far. But there is a need to
+>> distinguish between the 2 as far as SerDes drivers are concerned.
+>>
+>> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+>> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
+>> ---
+>>   .../devicetree/bindings/net/ethernet-controller.yaml |  1 +
 > 
-> Signed-off-by: Thomas Weiﬂschuh <linux@weissschuh.net>
+> I know it is one line, but bindings need to be in their own patches
+> please.
 
-A few points, mostly questions and food for thoughts.
-
-> -static void putcharn(char c, size_t n)
-> -{
-> -	char buf[64];
-> -
-> -	memset(buf, c, n);
-> -	buf[n] = '\0';
-> -	fputs(buf, stdout);
-> -}
-> -
-
-Ah now I see how the other one came from :-)  My comment about the size
-check still stands anyway, especially when placed in an include file.
-
-> +#if defined(NOLIBC)
-> +
-> +#define ASSUME_NOLIBC(stmt)
-> +
-> +#else /* defined(NOLIBC) */
-> +
-> +/* differ from nolibc, both glibc and musl have no global _auxv */
-> +unsigned long *_auxv = (void *)-1;
-> +#define ASSUME_NOLIBC(stmt) SKIP(stmt)
-> +
-> +#endif /* defined(NOLIBC) */
-> +
-
-I've seen below how it's used and don't find this very clear. In general,
-passing a statement as an argument to a macro, especially control statements
-such as "return" is a bit difficult to grasp. If the macro is only used for
-this, maybe it should integrate the return statement and be called something
-like "RETURN_UNLESS_NOLIBC()" which is quite explicit this time. If you really
-need to keep the statement adjustable, then most likely that calling the
-macro "UNLESS_NOLIBC()" would help, because I understand more naturally
-that the following will perform a return if we're not on nolibc:
-
-    UNLESS_NOLIBC(return);
-
-than:
-
-    ASSUME_NOLIBC(return);
-
-> -	for (test = min; test >= 0 && test <= max; test++) {
-> -		int llen = 0; /* line length */
-> +	if (brk)
-> +		return brk;
->  
-> -		/* avoid leaving empty lines below, this will insert holes into
-> -		 * test numbers.
-> -		 */
-> -		switch (test + __LINE__ + 1) {
-> -		CASE_TEST(argc);             EXPECT_GE(1, test_argc, 1); break;
-> -		CASE_TEST(argv_addr);        EXPECT_PTRGT(1, test_argv, brk); break;
-> -		CASE_TEST(argv_environ);     EXPECT_PTRLT(1, test_argv, environ); break;
-> -		CASE_TEST(argv_total);       EXPECT_EQ(1, environ - test_argv - 1, test_argc ?: 1); break;
-> -		CASE_TEST(argv0_addr);       EXPECT_PTRGT(1, argv0, brk); break;
-> -		CASE_TEST(argv0_str);        EXPECT_STRNZ(1, argv0 > brk ? argv0 : NULL); break;
-> -		CASE_TEST(argv0_len);        EXPECT_GE(1,  argv0 > brk ? strlen(argv0) : 0, 1); break;
-> -		CASE_TEST(environ_addr);     EXPECT_PTRGT(1, environ, brk); break;
-> -		CASE_TEST(environ_envp);     EXPECT_PTREQ(1, environ, test_envp); break;
-> -		CASE_TEST(environ_auxv);     EXPECT_PTRLT(test_auxv != (void *)-1, environ, test_auxv); break;
-> -		CASE_TEST(environ_total);    EXPECT_GE(test_auxv != (void *)-1, (void *)test_auxv - (void *)environ - 1, env_total); break;
-> -		CASE_TEST(environ_HOME);     EXPECT_PTRNZ(1, getenv("HOME")); break;
-> -		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
-> -		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
-> -		CASE_TEST(constructor);      EXPECT_EQ(1, constructor_test_value, 2); break;
-> -		CASE_TEST(linkage_errno);    EXPECT_PTREQ(1, linkage_test_errno_addr(), &errno); break;
-> -		CASE_TEST(linkage_constr);   EXPECT_EQ(1, linkage_test_constructor_test_value, 6); break;
-> -		case __LINE__:
-> -			return ret; /* must be last */
-> -		/* note: do not set any defaults so as to permit holes above */
-> -		}
-> -	}
-> -	return ret;
-> +	brk = sbrk(0);
-> +
-> +	if (brk == (void *)-1)
-> +		brk = &end;
-> +
-> +	return brk;
->  }
->  
-> +TEST(startup, argc)           { ASSERT_GE(test_argc, 1); }
-> +TEST(startup, argv_addr)      { ASSERT_GT((void *)test_argv, pbrk()); }
-> +TEST(startup, argv_environ)   { ASSERT_LT(test_argv, environ); }
-> +TEST(startup, argv_total)     { ASSERT_EQ(environ - test_argv - 1, test_argc ?: 1); }
-> +TEST(startup, argv0_addr)     { ASSERT_GT((void *)argv0, pbrk()); }
-> +TEST(startup, argv0_str)      { ASSERT_STRNZ((void *)argv0 > pbrk() ? argv0 : NULL); }
-> +TEST(startup, argv0_len)      { ASSERT_GE((void *)argv0 > pbrk() ? strlen(argv0) : 0U, 1U); }
-> +TEST(startup, environ_addr)   { ASSERT_GT((void *)environ, pbrk()); }
-> +TEST(startup, environ_envp)   { ASSERT_EQ(environ, test_envp); }
-> +TEST(startup, environ_auxv)   {
-> +	ASSUME_NOLIBC(return);
-> +	ASSERT_LT((void *)environ, (void *)_auxv);
-> +}
-> +TEST(startup, environ_total)  {
-> +	ASSUME_NOLIBC(return);
-> +	/* kernel at least passes HOME and TERM, shell passes more */
-> +	ASSERT_GE((void *)_auxv - (void *)environ - 1, 2);
-> +}
-> +TEST(startup, environ_HOME)   { ASSERT_NE(getenv("HOME"), NULL); }
-> +TEST(startup, auxv_addr)      {
-> +	ASSUME_NOLIBC(return);
-> +	ASSERT_GT((void *)_auxv, pbrk());
-> +}
-> +TEST(startup, auxv_AT_UID)    { ASSERT_EQ(getauxval(AT_UID), getuid()); }
-> +TEST(startup, constructor)    { ASSERT_EQ(constructor_test_value, 2); }
-> +TEST(startup, linkage_errno)  { ASSERT_EQ(linkage_test_errno_addr(), &errno); }
-> +TEST(startup, linkage_constr) { ASSERT_EQ(linkage_test_constructor_test_value, 6); }
-
-I do appreciate the much lower indent level that still manages to
-enumerate tests easily. But given that test suites are grouped, shouldn't
-we go a bit further and state that TEST() operates on the suite defined
-by the TEST_SUITE macro that must be defined before it ? This way you would
-have:
-
-  #define TEST_SUITE startup
-  TEST(argc)           { ASSERT_GE(test_argc, 1); }
-  TEST(argv_addr)      { ASSERT_GT((void *)test_argv, pbrk()); }
-  ...
-  #undef TEST_SUITE
-
-One thing that was not immediately obvious to me upon first read was
-if TEST() defines or executes a test (i.e. "test" is both a noun and a
-verb). Of course, spending 10 more seconds on the patch makes it obvious
-it's a definition, but maybe following the same logic we have with
-run_test_suite(), we should place the verb in front, for example
-"DEF_TEST()" which then makes it quite unambiguous. Any opinion ?
-
-Willy
+Ok, will split the binding change out as a separate patch.
+Thanks Conor for the suggestion.
