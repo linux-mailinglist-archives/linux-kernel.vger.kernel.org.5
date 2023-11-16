@@ -2,114 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AABE67ED9CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:55:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CBDB7ED9CF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:58:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344553AbjKPCzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 21:55:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34836 "EHLO
+        id S1344463AbjKPC6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjKPCzH (ORCPT
+        with ESMTP id S229692AbjKPC6k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 21:55:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D87DA4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:55:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED5F9C433C8;
-        Thu, 16 Nov 2023 02:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700103304;
-        bh=ZqesSgGnkVZM04RFsgA7wOog4cC0NwW8GeTDpVZM7eo=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=CvyfsMcf7sdo3j1uzQfaol/ZITI27NtDWoHNx/qNQKZpvFsfY/6KxpizWMtjEjrzT
-         UqGhkv1DYO428o1V7FLwOg6Yac70GG4dK5i9fvipUAHNLJldii5N/TV4uvNed/WCHu
-         /lClVFSG7gQBt30snqdSOmd4KxBTPt/twxpCIMJiBnCzmDKxtxaiRbSO1ndINKHQf/
-         89g1gfHkiwHdycnErF/bRmjdcUuAuo0+nyqMFXtqoIAv+y9NFwr72NE3wgNr+r9TK/
-         qcImN6EKfXlTzqHYm6tLemYHtWue0Co/SOAF5J9LU4OfAd0rOFRC5hfLK+aPqgK1eQ
-         o/UIsQ09s3WcA==
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-5440f25dcc7so519139a12.0;
-        Wed, 15 Nov 2023 18:55:03 -0800 (PST)
-X-Gm-Message-State: AOJu0YyjKP8zYF02m2si6RyRwVY3aZblylmxzBy0Cma6cIzCgxwv7Nys
-        IiXXzvxCY0XDWO2GtQ1EFNwrCmSpe0IkofNdgh8=
-X-Google-Smtp-Source: AGHT+IGoyHYHxifCTEl8SsnAL1yE8tDDpUcvj5Qt/DgQNFhXKJlIPTjK+Dm+HM5u0H1F+5copmj1N5nmRNBShvMzuxs=
-X-Received: by 2002:a05:6402:1042:b0:540:c989:fcdd with SMTP id
- e2-20020a056402104200b00540c989fcddmr11265637edu.11.1700103302368; Wed, 15
- Nov 2023 18:55:02 -0800 (PST)
+        Wed, 15 Nov 2023 21:58:40 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E8D98
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:58:36 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id af79cd13be357-77891c236fcso17317085a.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:58:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700103516; x=1700708316; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hs2hnvAued5HrvZ/cBnHlyuuCD0UE1wujBRKwJijC40=;
+        b=K3Sx0ycV7qcP0pgSpPX7nGu2KDJWnP8Nmltty7Mao58hRQ6OIexD1h/X+nA7RFHY7W
+         bL+Q+pBnVhkVxg0Ul9tzaKTCkvyczRKL0p7Inkq5Ugh8SZ67GjE7kiFQ4ASBr4b3TWxh
+         B32nwgHrcbecilFl3CxRv0Zvs8vwOr0CoMFSRRJjbS9r9GROwIOdpO4EHlgqqJney4pz
+         2ObnmQ1ngTcwfzjVrfK6hzgg9hKDUPDbLQC5NZIr0ax3hE6pr2weJrQhS8HtImosQcnu
+         R2Ji2eWPBN3i4EvRLokiooqYNtqaqPmiYXc2DsMuBovbjWprf0R1EJW2OJ60/dK7FRyd
+         8uNA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700103516; x=1700708316;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hs2hnvAued5HrvZ/cBnHlyuuCD0UE1wujBRKwJijC40=;
+        b=I1P1dYW48ezPP+93pjCXbS2vIv7W77SXPfYCG1IhRN/O1fnE9BTP2gQHqN9G5Qtu1w
+         yNu1Pyyq5jYIgo9ZAIl6r/ADwZd+hBTW2r6BJ32EndgJdFNvH1ajI0bjZi4Je775RDo8
+         y7tgvC9HIpdRIW4T252c8KaX2SKI653dV5xUtBDF2JnAOFk8K37LEKFSu1PJ2vkHxDph
+         PVViPzkDREZIm9zaR5fkO29nAhhlVES/u5n4SzxanMCN+1Ysi7W4wh2ECI2heuPUCQ3C
+         VRIMx59eth7Wq90pOrD/BDA10KpjVwVAOZiGs/c8QNPd6ECifTW7QQ68j0+t6unbVElq
+         noZg==
+X-Gm-Message-State: AOJu0YwLcKk/IC3a1+HcUwwvmnd1b50/RwtfqF34/MCPSAiaAjIEsSVC
+        l3vn+X0UW7VZi307UoBk8Wo=
+X-Google-Smtp-Source: AGHT+IEnH9sb1smgYLUwRFJoFBFVmga/mr17nwfNlk09I0AVigPp9XLtgjl671tOXJ6LJMRCh88FiQ==
+X-Received: by 2002:a05:620a:4627:b0:779:efb4:73bb with SMTP id br39-20020a05620a462700b00779efb473bbmr8205985qkb.41.1700103515793;
+        Wed, 15 Nov 2023 18:58:35 -0800 (PST)
+Received: from localhost (mobile-166-170-33-142.mycingular.net. [166.170.33.142])
+        by smtp.gmail.com with ESMTPSA id q26-20020ae9e41a000000b0076f12fcb0easm3945742qkc.2.2023.11.15.18.58.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 18:58:35 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 15 Nov 2023 16:58:34 -1000
+From:   Tejun Heo <tj@kernel.org>
+To:     huangzaiyang <huangzaiyang@oppo.com>
+Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org,
+        ZaiYang Huang <hzy0719@163.com>
+Subject: Re: [PATCH] workqueue: Make a warning when a pending delay work
+ being re-init
+Message-ID: <ZVWFWh_HL_wzYyd1@mtj.duckdns.org>
+References: <20231115113427.1420-1-huangzaiyang@oppo.com>
 MIME-Version: 1.0
-References: <20231116023036.2324371-1-maobibo@loongson.cn>
-In-Reply-To: <20231116023036.2324371-1-maobibo@loongson.cn>
-From:   Huacai Chen <chenhuacai@kernel.org>
-Date:   Thu, 16 Nov 2023 10:54:52 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H4Wyp-6_gFSfm8uWUMiEJnebk9n4JxQrx_nBdxkTF5wUA@mail.gmail.com>
-Message-ID: <CAAhV-H4Wyp-6_gFSfm8uWUMiEJnebk9n4JxQrx_nBdxkTF5wUA@mail.gmail.com>
-Subject: Re: [PATCH v4 0/3] LoongArch: KVM: Remove SW timer switch when vcpu
- is halt polling
-To:     Bibo Mao <maobibo@loongson.cn>
-Cc:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        WANG Xuerui <kernel@xen0n.name>, kvm@vger.kernel.org,
-        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231115113427.1420-1-huangzaiyang@oppo.com>
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Bibo,
+Hello,
 
-I suggest submitting this series to the internal repo, too. Because we
-don't have enough resources to test the stability for the upstream
-version, while this is a fundamental change. On the other hand, the
-patch "LoongArch:LSVZ: set timer offset at first time once" can be
-submitted first because it is already in the internal repo.
+On Wed, Nov 15, 2023 at 07:34:27PM +0800, huangzaiyang wrote:
+> @@ -310,6 +326,7 @@ static inline unsigned int work_static(struct work_struct *work) { return 0; }
+> 
+>  #define __INIT_DELAYED_WORK(_work, _func, _tflags)                     \
+>         do {                                                            \
+> +               WARN_ON(delayed_work_pending(_work));                   \
+>                 INIT_WORK(&(_work)->work, (_func));                     \
+>                 __init_timer(&(_work)->timer,                           \
+>                              delayed_work_timer_fn,                     \
 
-Huacai
+As pointed out by others, as we don't know what's in the memory, this
+wouldn't really work. This kind of bugs should be caught by
+DEBUG_OBJECTS_WORK / DEBUG_OBJECTS_TIMERS, I think. It's not perfect as
+those aren't usually turned on but catching this sort of errors does need
+tracking some information out of band.
 
-On Thu, Nov 16, 2023 at 10:33=E2=80=AFAM Bibo Mao <maobibo@loongson.cn> wro=
-te:
->
-> This patches removes SW timer switch during vcpu block stage. VM uses HW
-> timer rather than SW PV timer on LoongArch system, it can check pending
-> HW timer interrupt status directly, rather than switch to SW timer and
-> check injected SW timer interrupt.
->
-> When SW timer is not used in vcpu halt-polling mode, the relative
-> SW timer handling before entering guest can be removed also. Timer
-> emulation is simpler than before, SW timer emuation is only used in vcpu
-> thread context switch.
-> ---
-> Changes in v4:
->   If vcpu is scheduled out since there is no pending event, and timer is
-> fired during sched-out period. SW hrtimer is used to wake up vcpu thread
-> in time, rather than inject pending timer irq.
->
-> Changes in v3:
->   Add kvm_arch_vcpu_runnable checking before kvm_vcpu_halt.
->
-> Changes in v2:
->   Add halt polling support for idle instruction emulation, using api
-> kvm_vcpu_halt rather than kvm_vcpu_block in function kvm_emu_idle.
->
-> ---
-> Bibo Mao (3):
->   LoongArch: KVM: Remove SW timer switch when vcpu is halt polling
->   LoongArch: KVM: Allow to access HW timer CSR registers always
->   LoongArch: KVM: Remove kvm_acquire_timer before entering guest
->
->  arch/loongarch/include/asm/kvm_vcpu.h |  1 -
->  arch/loongarch/kvm/exit.c             | 13 +-----
->  arch/loongarch/kvm/main.c             |  1 -
->  arch/loongarch/kvm/timer.c            | 62 ++++++++++-----------------
->  arch/loongarch/kvm/vcpu.c             | 38 ++++------------
->  5 files changed, 32 insertions(+), 83 deletions(-)
->
->
-> base-commit: c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-> --
-> 2.39.3
->
+Thanks.
+
+-- 
+tejun
