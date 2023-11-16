@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 11EEA7EE226
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A17217EE228
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345352AbjKPOCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:02:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
+        id S1345366AbjKPOCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:02:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345302AbjKPOCG (ORCPT
+        with ESMTP id S1345305AbjKPOCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Nov 2023 09:02:06 -0500
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B91D187;
-        Thu, 16 Nov 2023 06:02:01 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id DE6E020013;
-        Thu, 16 Nov 2023 14:01:59 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F154719D;
+        Thu, 16 Nov 2023 06:02:02 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id C20DA2000C;
+        Thu, 16 Nov 2023 14:02:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700143320;
+        t=1700143321;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=cNPrazhu8AiNqY48Bl5toVocfkCGjTYHAVgU1zKd2NQ=;
-        b=ApW/cO8sBs9PX2rfQ++9vxKM/0pt5rQXi7fDlCheLbVxPk38H8K/GA6cULrALdiSysBfTL
-        w2eSnBPde+AWA0hf1CiuUCaFGi+MCBggavfbapSPTVpG8BnEqTrDAcZ+Y+AtV3wNpyxeQu
-        U71ecg2SRujnMtrf3d8+7+dJYOx5dw00/QCt+Ua44RZGjQ+aOVMbPoc5nJ7ZAnb3ZtAWM0
-        sirA3awc2GnIzbC09Yjspzvb0H8Y2wh0P36SNBf0jaz6or7qoe2cjqfggn4HS1Zrwngp/M
-        fAatE/79rIDRr+TqKGN2JkhWc9gaIDoWHwWzOar+bqBCR/IHYCCRYcJYl13DbQ==
+        bh=OI8MkD291CkzowE8oOm7BtXKSZyE48TtKxrx2423dGY=;
+        b=PqFyl7tHI5VwR2GOARvmf21vfQJHzN4P4RzOkxQxMv/UTvrX/e3gfY2i1BuwBYzgU2HXw2
+        lpEasKjgsNYMeifH1bMhFgS+ymFEBYOO0TDxk4SMS/LByS/HLdZVZD+4lfJ6Gm+Y62t7Qm
+        29AzrWMpxyePVxBNxcU2QdrL2i68FVQxyUABYG4R93h/VRz08kQvAqEGpEJhYQLWifTYUm
+        sWOjvTISFLqnLdrC+O3TsAkpDzwf+jlsSjYn+WM6IJsaKwzDfFTkTu+Ngb1M1Os34QhxHY
+        DIEejjoeiJAIVw+O67XZ/k5q4tztZ5ma6YaR+uNWnZocCJ74R8RRLycrre1aOw==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 16 Nov 2023 15:01:38 +0100
-Subject: [PATCH net-next 6/9] netlink: specs: Expand the pse netlink
- command with PoE interface
+Date:   Thu, 16 Nov 2023 15:01:39 +0100
+Subject: [PATCH net-next 7/9] firmware_loader: Expand Firmware upload error
+ codes
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231116-feature_poe-v1-6-be48044bf249@bootlin.com>
+Message-Id: <20231116-feature_poe-v1-7-be48044bf249@bootlin.com>
 References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 In-Reply-To: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -67,56 +67,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the PoE pse attributes prefix to be able to use PoE interface.
+No error code are available to signal an invalid firmware content.
+Drivers that can check the firmware content validity can not return this
+specific failure to the user-space
 
-Example usage:
-./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-get \
-             --json '{"header":{"dev-name":"eth0"}}'
-{'header': {'dev-index': 4, 'dev-name': 'eth0'},
- 'pse-admin-state': 3,
- 'pse-pw-d-status': 4}
-
-./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-set \
-             --json '{"header":{"dev-name":"eth0"}, "pse-admin-control":3}'
+Expand the firmware error code with an additional code:
+- "firmware invalid" code which can be used when the provided firmware
+  is invalid
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- Documentation/netlink/specs/ethtool.yaml | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/base/firmware_loader/sysfs_upload.c | 1 +
+ include/linux/firmware.h                    | 2 ++
+ 2 files changed, 3 insertions(+)
 
-diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index e1bf75099264..6e1525106a9e 100644
---- a/Documentation/netlink/specs/ethtool.yaml
-+++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -889,6 +889,18 @@ attribute-sets:
-         name: podl-pse-pw-d-status
-         type: u32
-         name-prefix: ethtool-a-
-+      -
-+        name: pse-admin-state
-+        type: u32
-+        name-prefix: ethtool-a-
-+      -
-+        name: pse-admin-control
-+        type: u32
-+        name-prefix: ethtool-a-
-+      -
-+        name: pse-pw-d-status
-+        type: u32
-+        name-prefix: ethtool-a-
-   -
-     name: rss
-     attributes:
-@@ -1571,6 +1583,9 @@ operations:
-             - podl-pse-admin-state
-             - podl-pse-admin-control
-             - podl-pse-pw-d-status
-+            - pse-admin-state
-+            - pse-admin-control
-+            - pse-pw-d-status
-       dump: *pse-get-op
-     -
-       name: pse-set
+diff --git a/drivers/base/firmware_loader/sysfs_upload.c b/drivers/base/firmware_loader/sysfs_upload.c
+index a0af8f5f13d8..829270067d16 100644
+--- a/drivers/base/firmware_loader/sysfs_upload.c
++++ b/drivers/base/firmware_loader/sysfs_upload.c
+@@ -27,6 +27,7 @@ static const char * const fw_upload_err_str[] = {
+ 	[FW_UPLOAD_ERR_INVALID_SIZE] = "invalid-file-size",
+ 	[FW_UPLOAD_ERR_RW_ERROR]     = "read-write-error",
+ 	[FW_UPLOAD_ERR_WEAROUT]	     = "flash-wearout",
++	[FW_UPLOAD_ERR_FW_INVALID]   = "firmware-invalid",
+ };
+ 
+ static const char *fw_upload_progress(struct device *dev,
+diff --git a/include/linux/firmware.h b/include/linux/firmware.h
+index de7fea3bca51..0311858b46ce 100644
+--- a/include/linux/firmware.h
++++ b/include/linux/firmware.h
+@@ -27,6 +27,7 @@ struct firmware {
+  * @FW_UPLOAD_ERR_INVALID_SIZE: invalid firmware image size
+  * @FW_UPLOAD_ERR_RW_ERROR: read or write to HW failed, see kernel log
+  * @FW_UPLOAD_ERR_WEAROUT: FLASH device is approaching wear-out, wait & retry
++ * @FW_UPLOAD_ERR_FW_INVALID: invalid firmware file
+  * @FW_UPLOAD_ERR_MAX: Maximum error code marker
+  */
+ enum fw_upload_err {
+@@ -38,6 +39,7 @@ enum fw_upload_err {
+ 	FW_UPLOAD_ERR_INVALID_SIZE,
+ 	FW_UPLOAD_ERR_RW_ERROR,
+ 	FW_UPLOAD_ERR_WEAROUT,
++	FW_UPLOAD_ERR_FW_INVALID,
+ 	FW_UPLOAD_ERR_MAX
+ };
+ 
 
 -- 
 2.25.1
