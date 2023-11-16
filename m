@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B5797EDF0B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:02:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABFBB7EDF12
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbjKPLCA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:02:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56198 "EHLO
+        id S230385AbjKPLDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:03:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjKPLB6 (ORCPT
+        with ESMTP id S230315AbjKPLDp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:01:58 -0500
+        Thu, 16 Nov 2023 06:03:45 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD7B784
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:01:54 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4779AA5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:03:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700132513;
+        s=mimecast20190719; t=1700132620;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=tG/qxV/5LF6QLG8P+GElyJmBVfmO6gfwlWGi3iluUvc=;
-        b=elo/AgAqrJYFiaMuy7hvlBfKxy80zEuLNoMvUx2DpqnBdZSFjjJwZpl12qvox4cWjTGGHN
-        C0KYdjBX5zxvJAzgQ7lvbqZjHueYu8wDrm3tS0mgMyTI5dR5n7P0eGNP3i2JaIfZWWsJbN
-        iMx6cn4nuAXtcl9gFfXqjgvAebfCsi4=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=mB/Fyo8pr04Hq0o4/TJo2eYeczqjDw+SZvwofcCj9wQ=;
+        b=EC+lcY8l8l0KyRYLkPEAwAcng+8wGW354ZuMoytP/fRFSAkPZS1zL2ZI9T/WL9/V2eCtnM
+        Y1MOniYZpuMa6LuD+avt9jJCGDU/JgjLBO9jiHhWsPRBi4ubZOlRBmjZk0rYl1Z9DWT3UK
+        nFX5cvx1BvB8AwKY+QTevE339PW2rBo=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-142-NxFaLoWcNOe_tZhxYa3q-g-1; Thu, 16 Nov 2023 06:01:52 -0500
-X-MC-Unique: NxFaLoWcNOe_tZhxYa3q-g-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2c50bebd8dfso5756871fa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:01:52 -0800 (PST)
+ us-mta-286-D3mnnztjNWqMdw_gmYMrKw-1; Thu, 16 Nov 2023 06:03:39 -0500
+X-MC-Unique: D3mnnztjNWqMdw_gmYMrKw-1
+Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32de9f93148so339261f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:03:39 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700132511; x=1700737311;
+        d=1e100.net; s=20230601; t=1700132618; x=1700737418;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=tG/qxV/5LF6QLG8P+GElyJmBVfmO6gfwlWGi3iluUvc=;
-        b=uynMxjQZQX1L1uca42VazeAbJHeydTpJybvo1/iVWnL7OKafDNd2x+pHOJ0n55+5ck
-         TUIRIufREWxtkQ94gWEIAMcMI49W3DEWqD8CbQLkyfSpXak83GnP1SrJKnwR/6mPGLBj
-         OejMOc5tkmqgiKCMSApuUye3exJODaNrzQTmUWurR5X7JHsJ6CemP04fDDfVNIsvnBfW
-         TA2y2w/aA0OE4e1Jm23rVnG7KIGXETj5sM4k707A7YHTB5h1O/24bA1m2eP10cqIN/vu
-         7SxUNaAG0gBpzLzKhfmplLB3zvZTzDbfWlc7xLB6En61NZVQ+QOiHYvg+zh7Xi560EDv
-         9McQ==
-X-Gm-Message-State: AOJu0YwYkYYenaTo+xH1gcuOfSTDj4nT87lZzo2LIpyzUHlN6U23H3hn
-        xzIMbxgl0AYi08hzJvGPrj/7uPE7b40OtcQ5avdbIEX51NsDejUPjibLMpkO23a1CI82lQmvnHh
-        gK87AaKRAr6LXmIlxC8eboGiF
-X-Received: by 2002:a2e:b614:0:b0:2c5:19ab:7270 with SMTP id r20-20020a2eb614000000b002c519ab7270mr5817548ljn.35.1700132510921;
-        Thu, 16 Nov 2023 03:01:50 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFvqf40qKivd5cdWSMTAuBPsxwhkl+/VG/CzL9Zy3QxNRhQ92IjLlg+N4q7QmM1XL/OjEMqBQ==
-X-Received: by 2002:a2e:b614:0:b0:2c5:19ab:7270 with SMTP id r20-20020a2eb614000000b002c519ab7270mr5817507ljn.35.1700132510434;
-        Thu, 16 Nov 2023 03:01:50 -0800 (PST)
+        bh=mB/Fyo8pr04Hq0o4/TJo2eYeczqjDw+SZvwofcCj9wQ=;
+        b=AO3r4UOuxmirczKrXV89pJPOIuSCbGtT7D8JCu81lRuP81ZrV+u+VjPynR+IjfmGfH
+         OsUKimCs5wCuBY7oZ5oBVEP7yHD8TgjnpBTeBA7B39sUgKAJPxHI1NY032MY/TBHYchD
+         2t+fvrrXZzxmHa5sUEqrnvcyOSqTOWCvtgd+EhUgBCyxlIsaRcFTfFO9sZluHEPKcMQq
+         DjBk7P05UxPGNtqVOU62BLG5Cqa2h79acli8zDJvuj+m2mhL5eCjboknfDllF+o6gIUf
+         kFxMLQTCGzQ29QtQCKnwUXSDc9ByQsE2r58zqasIk9OYBmhFSfAUrhLuUQGwl5ERubNn
+         KY7A==
+X-Gm-Message-State: AOJu0Yxe30WUgaYIedcPiPZI4gGLuvNJqbYeEUBDWeAQr4btE/VwXf16
+        +FtW8jVu4U4gakQZNKVOkeKqFYDL86foGcfSRM3JTIa2UhWBqAuz5Oy7GA7MvK3i4DJmcG35vlk
+        F7puMdroCog41FbaxAOG3mI6h
+X-Received: by 2002:a05:6000:2ac:b0:32d:aa11:221e with SMTP id l12-20020a05600002ac00b0032daa11221emr1906163wry.7.1700132618000;
+        Thu, 16 Nov 2023 03:03:38 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGgOcAgj6Od3Hw880f0ZcUflfR1p5VgY4pabv8rfsO2+ktO2g+w2YUmpCjq1hw9Set13/QHmw==
+X-Received: by 2002:a05:6000:2ac:b0:32d:aa11:221e with SMTP id l12-20020a05600002ac00b0032daa11221emr1906141wry.7.1700132617535;
+        Thu, 16 Nov 2023 03:03:37 -0800 (PST)
 Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id bg3-20020a05600c3c8300b004077219aed5sm3232262wmb.6.2023.11.16.03.01.49
+        by smtp.gmail.com with ESMTPSA id r2-20020a056000014200b00327b5ca093dsm13259314wrx.117.2023.11.16.03.03.36
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 03:01:49 -0800 (PST)
-Message-ID: <930b5f6a-27d9-43da-bf9f-1478c8de1af8@redhat.com>
-Date:   Thu, 16 Nov 2023 12:01:48 +0100
+        Thu, 16 Nov 2023 03:03:37 -0800 (PST)
+Message-ID: <89a9fe07-a5c5-4a99-b588-e6145053c58f@redhat.com>
+Date:   Thu, 16 Nov 2023 12:03:35 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
 Content-Language: en-US
 To:     Ryan Roberts <ryan.roberts@arm.com>,
-        kernel test robot <lkp@intel.com>,
         Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
         Ard Biesheuvel <ardb@kernel.org>,
@@ -85,14 +84,10 @@ To:     Ryan Roberts <ryan.roberts@arm.com>,
         Mark Rutland <mark.rutland@arm.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>,
         John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Cc:     oe-kbuild-all@lists.linux.dev,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231115163018.1303287-2-ryan.roberts@arm.com>
- <202311160516.kHhfmjvl-lkp@intel.com>
- <e6060ff2-ced0-42fd-b92a-c2e710c4e15a@arm.com>
- <4e8d329c-eda6-4ff8-bb56-8924bb4583b2@redhat.com>
- <a397d45b-6369-4a45-915e-cbebecd4556b@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-2-ryan.roberts@arm.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -139,96 +134,247 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <a397d45b-6369-4a45-915e-cbebecd4556b@arm.com>
+In-Reply-To: <20231115163018.1303287-2-ryan.roberts@arm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.11.23 11:36, Ryan Roberts wrote:
-> On 16/11/2023 10:12, David Hildenbrand wrote:
->> On 16.11.23 11:07, Ryan Roberts wrote:
->>> Hi All,
->>>
->>> Hoping for some guidance below!
->>>
->>>
->>> On 15/11/2023 21:26, kernel test robot wrote:
->>>> Hi Ryan,
->>>>
->>>> kernel test robot noticed the following build errors:
->>>>
->>>> [auto build test ERROR on akpm-mm/mm-everything]
->>>> [also build test ERROR on linus/master v6.7-rc1 next-20231115]
->>>> [cannot apply to arm64/for-next/core efi/next]
->>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
->>>> And when submitting patch, we suggest to use '--base' as documented in
->>>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
->>>>
->>>> url:
->>>> https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/mm-Batch-copy-PTE-ranges-during-fork/20231116-010123
->>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git
->>>> mm-everything
->>>> patch link:
->>>> https://lore.kernel.org/r/20231115163018.1303287-2-ryan.roberts%40arm.com
->>>> patch subject: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
->>>> config: arm-randconfig-002-20231116
->>>> (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/config)
->>>> compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
->>>> reproduce (this is a W=1 build):
->>>> (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/reproduce)
->>>>
->>>> If you fix the issue in a separate patch/commit (i.e. not just a new version of
->>>> the same patch/commit), kindly add following tags
->>>> | Reported-by: kernel test robot <lkp@intel.com>
->>>> | Closes:
->>>> https://lore.kernel.org/oe-kbuild-all/202311160516.kHhfmjvl-lkp@intel.com/
->>>>
->>>> All errors (new ones prefixed by >>):
->>>>
->>>>      mm/memory.c: In function 'folio_nr_pages_cont_mapped':
->>>>>> mm/memory.c:969:16: error: implicit declaration of function 'pte_pgprot';
->>>>>> did you mean 'ptep_get'? [-Werror=implicit-function-declaration]
->>>>        969 |         prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
->>>>            |                ^~~~~~~~~~
->>>>            |                ptep_get
->>>>      cc1: some warnings being treated as errors
->>>
->>> It turns out that pte_pgprot() is not universal; its only implemented by
->>> architectures that select CONFIG_HAVE_IOREMAP_PROT (currently arc, arm64,
->>> loongarch, mips, powerpc, s390, sh, x86).
->>>
->>> I'm using it in core-mm to help calculate the number of "contiguously mapped"
->>> pages within a folio (note that's not the same as arm64's notion of
->>> contpte-mapped. I just want to know that there are N physically contiguous pages
->>> mapped virtually contiguously with the same permissions). And I'm using
->>> pte_pgprot() to extract the permissions for each pte to compare. It's important
->>> that we compare the permissions because just because the pages belongs to the
->>> same folio doesn't imply they are mapped with the same permissions; think
->>> mprotect()ing a sub-range.
->>>
->>> I don't have a great idea for how to fix this - does anyone have any thoughts?
->>
->> KIS :) fork() operates on individual VMAs if I am not daydreaming.
->>
->> Just check for the obvious pte_write()/dirty/ and you'll be fine.
+On 15.11.23 17:30, Ryan Roberts wrote:
+> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
+> maps a physically contiguous block of memory, all belonging to the same
+> folio, with the same permissions, and for shared mappings, the same
+> dirty state. This will likely improve performance by a tiny amount due
+> to batching the folio reference count management and calling set_ptes()
+> rather than making individual calls to set_pte_at().
 > 
-> Yes, that seems much simpler! I think we might have to be careful about the uffd
-> wp bit too? I think that's it - are there any other exotic bits that might need
-> to be considered?
+> However, the primary motivation for this change is to reduce the number
+> of tlb maintenance operations that the arm64 backend has to perform
+> during fork, as it is about to add transparent support for the
+> "contiguous bit" in its ptes. By write-protecting the parent using the
+> new ptep_set_wrprotects() (note the 's' at the end) function, the
+> backend can avoid having to unfold contig ranges of PTEs, which is
+> expensive, when all ptes in the range are being write-protected.
+> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
+> in the child, the backend does not need to fold a contiguous range once
+> they are all populated - they can be initially populated as a contiguous
+> range in the first place.
+> 
+> This change addresses the core-mm refactoring only, and introduces
+> ptep_set_wrprotects() with a default implementation that calls
+> ptep_set_wrprotect() for each pte in the range. A separate change will
+> implement ptep_set_wrprotects() in the arm64 backend to realize the
+> performance improvement as part of the work to enable contpte mappings.
+> 
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   include/linux/pgtable.h |  13 +++
+>   mm/memory.c             | 175 +++++++++++++++++++++++++++++++---------
+>   2 files changed, 150 insertions(+), 38 deletions(-)
+> 
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index af7639c3b0a3..1c50f8a0fdde 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>   }
+>   #endif
+>   
+> +#ifndef ptep_set_wrprotects
+> +struct mm_struct;
+> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
+> +				unsigned long address, pte_t *ptep,
+> +				unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+> +		ptep_set_wrprotect(mm, address, ptep);
+> +}
+> +#endif
+> +
+>   /*
+>    * On some architectures hardware does not set page access bit when accessing
+>    * memory page, it is responsibility of software setting this bit. It brings
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1f18ed4a5497..b7c8228883cf 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>   		/* Uffd-wp needs to be delivered to dest pte as well */
+>   		pte = pte_mkuffd_wp(pte);
+>   	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> -	return 0;
+> +	return 1;
+> +}
+> +
+> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
+> +				struct page *anchor, unsigned long anchor_vaddr)
+> +{
+> +	unsigned long offset;
+> +	unsigned long vaddr;
+> +
+> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
+> +	vaddr = anchor_vaddr + offset;
+> +
+> +	if (anchor > page) {
+> +		if (vaddr > anchor_vaddr)
+> +			return 0;
+> +	} else {
+> +		if (vaddr < anchor_vaddr)
+> +			return ULONG_MAX;
+> +	}
+> +
+> +	return vaddr;
+> +}
+> +
+> +static int folio_nr_pages_cont_mapped(struct folio *folio,
+> +				      struct page *page, pte_t *pte,
+> +				      unsigned long addr, unsigned long end,
+> +				      pte_t ptent, bool *any_dirty)
+> +{
+> +	int floops;
+> +	int i;
+> +	unsigned long pfn;
+> +	pgprot_t prot;
+> +	struct page *folio_end;
+> +
+> +	if (!folio_test_large(folio))
+> +		return 1;
+> +
+> +	folio_end = &folio->page + folio_nr_pages(folio);
+> +	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
+> +	floops = (end - addr) >> PAGE_SHIFT;
+> +	pfn = page_to_pfn(page);
+> +	prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
+> +
+> +	*any_dirty = pte_dirty(ptent);
+> +
+> +	pfn++;
+> +	pte++;
+> +
+> +	for (i = 1; i < floops; i++) {
+> +		ptent = ptep_get(pte);
+> +		ptent = pte_mkold(pte_mkclean(ptent));
+> +
+> +		if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
+> +		    pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
+> +			break;
+> +
+> +		if (pte_dirty(ptent))
+> +			*any_dirty = true;
+> +
+> +		pfn++;
+> +		pte++;
+> +	}
+> +
+> +	return i;
+>   }
+>   
+>   /*
+> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+> - * is required to copy this pte.
+> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
+> + * (always gte 1), or -EAGAIN if one preallocated page is required to copy the
+> + * first pte.
+>    */
+>   static inline int
+> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> -		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+> -		 struct folio **prealloc)
+> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> +		  pte_t *dst_pte, pte_t *src_pte,
+> +		  unsigned long addr, unsigned long end,
+> +		  int *rss, struct folio **prealloc)
+>   {
+>   	struct mm_struct *src_mm = src_vma->vm_mm;
+>   	unsigned long vm_flags = src_vma->vm_flags;
+>   	pte_t pte = ptep_get(src_pte);
+>   	struct page *page;
+>   	struct folio *folio;
+> +	int nr = 1;
+> +	bool anon;
+> +	bool any_dirty = pte_dirty(pte);
+> +	int i;
+>   
+>   	page = vm_normal_page(src_vma, addr, pte);
+> -	if (page)
+> +	if (page) {
+>   		folio = page_folio(page);
+> -	if (page && folio_test_anon(folio)) {
+> -		/*
+> -		 * If this page may have been pinned by the parent process,
+> -		 * copy the page immediately for the child so that we'll always
+> -		 * guarantee the pinned page won't be randomly replaced in the
+> -		 * future.
+> -		 */
+> -		folio_get(folio);
+> -		if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+> -			/* Page may be pinned, we have to copy. */
+> -			folio_put(folio);
+> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+> -						 addr, rss, prealloc, page);
+> +		anon = folio_test_anon(folio);
+> +		nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+> +						end, pte, &any_dirty);
+> +
+> +		for (i = 0; i < nr; i++, page++) {
+> +			if (anon) {
+> +				/*
+> +				 * If this page may have been pinned by the
+> +				 * parent process, copy the page immediately for
+> +				 * the child so that we'll always guarantee the
+> +				 * pinned page won't be randomly replaced in the
+> +				 * future.
+> +				 */
+> +				if (unlikely(page_try_dup_anon_rmap(
+> +						page, false, src_vma))) {
+> +					if (i != 0)
+> +						break;
+> +					/* Page may be pinned, we have to copy. */
+> +					return copy_present_page(
+> +						dst_vma, src_vma, dst_pte,
+> +						src_pte, addr, rss, prealloc,
+> +						page);
+> +				}
+> +				rss[MM_ANONPAGES]++;
+> +				VM_BUG_ON(PageAnonExclusive(page));
+> +			} else {
+> +				page_dup_file_rmap(page, false);
+> +				rss[mm_counter_file(page)]++;
+> +			}
+>   		}
+> -		rss[MM_ANONPAGES]++;
+> -	} else if (page) {
+> -		folio_get(folio);
+> -		page_dup_file_rmap(page, false);
+> -		rss[mm_counter_file(page)]++;
+> +
+> +		nr = i;
+> +		folio_ref_add(folio, nr);
+>   	}
+>   
+>   	/*
+> @@ -968,24 +1051,28 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+>   	 * in the parent and the child
+>   	 */
+>   	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
+> -		ptep_set_wrprotect(src_mm, addr, src_pte);
+> +		ptep_set_wrprotects(src_mm, addr, src_pte, nr);
+>   		pte = pte_wrprotect(pte);
 
-Good question. Mimicing what the current code already does should be 
-sufficient. uffd-wp should have the PTE R/O. You can set the contpte bit 
-independent of any SW bit (uffd-wp, softdirty, ...) I guess, no need to 
-worry about that.
+You likely want an "any_pte_writable" check here instead, no?
+
+Any operations that target a single indiividual PTE while multiple PTEs 
+are adjusted are suspicious :)
 
 -- 
 Cheers,
