@@ -2,140 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DDC57EE80C
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F0FE7EE80D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229568AbjKPUBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35298 "EHLO
+        id S1345396AbjKPUDV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:03:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56718 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKPUBf (ORCPT
+        with ESMTP id S229533AbjKPUDU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:01:35 -0500
-Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A88B1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:01:32 -0800 (PST)
-Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1f066fc2a28so637310fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 12:01:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700164891; x=1700769691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5F/bRACSm+KB9HqCPptTC4wnPimDAu4Tx2OSkrkdoQs=;
-        b=Jm9oQWkY4Bt6SErZaI2O/D5YHn8wOOJE8VFKHqS0KUS9G/x9s3uPkF6H0VBRT6//lw
-         Bci7gm2GNmiK7YAtThzwjNjthwYxlIl9lb6Cw4hP0lPM0qa8YC9yKcTxDNM1l9L2tDyW
-         TF0yCwRvlfI2LCgfjvJK2CQKqC8ytqCIMK/wE8we0idjz+HqWQJ3+odhkN1CRU/TkW/p
-         QG821Fk4wgMMtyxWbOri6NXS+gex7tjOX5GzIbtbTcV8E50X4jxWrOREn8Chmm0bRtqF
-         eNKOgpZI70WkE9FtHMr9tgntJau8b7eCbOyc5rq48YK8Ahc3d1Ppgf5jvE8wkYXzBnT2
-         SEvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700164891; x=1700769691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5F/bRACSm+KB9HqCPptTC4wnPimDAu4Tx2OSkrkdoQs=;
-        b=I/o9ryp17uvOlUFka7FaL7NQa1uyIrmzYm1agHS+RciluUbN7D4D58tZJa0av+VPoN
-         yb697VvhJaNuWdQXdMfgVD7+oeg9Pzuw566eG7Cu+fDWfvabk9TEWDe2mkCJ2+6IE0KN
-         /HgHR0CjcoFiCqLrC6kFY4nBWIiz6mMQWYqjRv5N0iet8BXJVMw96gqd6KXSmChbzple
-         iy4WnKXoM5htnW+YzrGVYVU7XZ84n79FXphQwyzUWm8qCCf4T9IDlBiLUJDHwuRCr5JQ
-         NSNT7nlyDgqONMe4DZgOnjUddrz7xgBcMEDhrwmyE5trx55I4Rj3djxOA79tG3x0dGi3
-         9Uhw==
-X-Gm-Message-State: AOJu0YxCm+aaJ8pwncGxCC7acJIcjroABinp9LfdylUgLhcdnDupRPFM
-        ulK8HO7f8r6c9alLdlvKwaSDgaoCqIgaWysYohc=
-X-Google-Smtp-Source: AGHT+IFIN8bwGRrQxflEzWWxXE5Gr3CVLYY+pkoS2zfF+G1/FFhZzzoNEh8/iT12Y98vW/4ZjMSvtf3sxtGvLbdDprc=
-X-Received: by 2002:a05:6870:e85:b0:1e9:cdad:4903 with SMTP id
- mm5-20020a0568700e8500b001e9cdad4903mr20368203oab.50.1700164891382; Thu, 16
- Nov 2023 12:01:31 -0800 (PST)
+        Thu, 16 Nov 2023 15:03:20 -0500
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48FEE1A5;
+        Thu, 16 Nov 2023 12:03:15 -0800 (PST)
+Received: from [194.95.143.137] (helo=phil.localnet)
+        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <heiko@sntech.de>)
+        id 1r3ia0-0005T4-Vl; Thu, 16 Nov 2023 21:03:13 +0100
+From:   Heiko Stuebner <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Michal Simek <michal.simek@amd.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
+Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
+Date:   Thu, 16 Nov 2023 21:03:12 +0100
+Message-ID: <3266223.44csPzL39Z@phil>
+In-Reply-To: <a338048d-bdee-4be5-bd47-c744b301913a@linaro.org>
+References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
+ <5727404.DvuYhMxLoT@phil> <a338048d-bdee-4be5-bd47-c744b301913a@linaro.org>
 MIME-Version: 1.0
-References: <20231110172328.27451-1-andrealmeid@igalia.com>
-In-Reply-To: <20231110172328.27451-1-andrealmeid@igalia.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 16 Nov 2023 15:01:19 -0500
-Message-ID: <CADnq5_P9Kpw3_eVaEc_g8E3viTYT=JVvpqOVPV_CEYH8oaJEig@mail.gmail.com>
-Subject: Re: [PATCH v2] drm/amd: Document device reset methods
-To:     =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, alexander.deucher@amd.com,
-        ray.huang@amd.com, christian.koenig@amd.com, kernel-dev@igalia.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 10, 2023 at 12:23=E2=80=AFPM Andr=C3=A9 Almeida <andrealmeid@ig=
-alia.com> wrote:
->
-> Document what each amdgpu driver reset method does.
->
-> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
+Am Donnerstag, 16. November 2023, 20:51:24 CET schrieb Krzysztof Kozlowski:
+> On 16/11/2023 20:26, Heiko Stuebner wrote:
+> > Hi Krzysztof,
+> > Am Donnerstag, 16. November 2023, 19:12:18 CET schrieb Krzysztof Kozlowski:
+> >> Document preferred coding style for Devicetree sources (DTS and DTSI),
+> >> to bring consistency among all (sub)architectures and ease in reviews.
+> >>
+> >> Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+> >> Cc: Arnd Bergmann <arnd@arndb.de>
+> >> Cc: Bjorn Andersson <andersson@kernel.org>
+> >> Cc: Geert Uytterhoeven <geert+renesas@glider.be>
+> >> Cc: Heiko Stuebner <heiko@sntech.de>
+> >> Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+> >> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> >> Cc: Michal Simek <michal.simek@amd.com>
+> >> Cc: Neil Armstrong <neil.armstrong@linaro.org>
+> >> Cc: Nishanth Menon <nm@ti.com>
+> >> Cc: Olof Johansson <olof@lixom.net>
+> >> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> >>
+> > 
+> >> +Order of Properties in Device Node
+> >> +----------------------------------
+> >> +
+> >> +Following order of properties in device nodes is preferred:
+> >> +
+> >> +1. compatible
+> >> +2. reg
+> >> +3. ranges
+> >> +4. All properties with values
+> >> +5. Boolean properties
+> > 
+> > I guess the only thing I do have questions about is the part
+> > 
+> >> +4. All properties with values
+> >> +5. Boolean properties
+> > 
+> > Is there a rationale for it? Because with it things like regulator-*
+> > properties then end up in two different blocks.
+> 
+> Good point. It is only a matter of style that this:
+> 
+> foo {
+> 	compatible = "foo";
+> 	reg = <0x1>;
+> 	clocks = <&clk>;
+> 	wakeup-source;
+> 	key-autorepeat;
+> }
+> 
+> looks better to me than:
+> 
+> 
+> foo {
+> 	compatible = "foo";
+> 	reg = <0x1>;
+> 	key-autorepeat;
+> 	wakeup-source;
+> 	clocks = <&clk>;
+> }
+> 
+> But you have good point that similar properties should be usually
+> grouped together.
+> 
+> About which regulator properties are you thinking now? You mean the
+> supplies or the provider?
 
-Applied with Randy's suggestion.  Thanks!
+I was thinking about the provider. There are 
+	regulator-min-microvolt = <>;
+and friends, but also
+	regulator-boot-on;
 
-Alex
 
-> ---
-> v2: Add more details and small correction (Alex)
->
->  drivers/gpu/drm/amd/amdgpu/amdgpu.h | 25 +++++++++++++++++++++++++
->  1 file changed, 25 insertions(+)
->
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/am=
-dgpu/amdgpu.h
-> index a79d53bdbe13..c4675572f907 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-> @@ -504,6 +504,31 @@ struct amdgpu_allowed_register_entry {
->         bool grbm_indexed;
->  };
->
-> +/**
-> + * enum amd_reset_method - Methods for resetting AMD GPU devices
-> + *
-> + * @AMD_RESET_METHOD_NONE: The device will not be reset.
-> + * @AMD_RESET_LEGACY: Method reserved for SI, CIK and VI ASICs.
-> + * @AMD_RESET_MODE0: Reset the entire ASIC. Not currently available for =
-the
-> + *                   any device.
-> + * @AMD_RESET_MODE1: Resets all IP blocks on the ASIC (SDMA, GFX, VCN, e=
-tc.)
-> + *                   individually. Suitable only for some discrete GPU, =
-not
-> + *                   available for all ASICs.
-> + * @AMD_RESET_MODE2: Resets a lesser level of IPs compared to MODE1. Whi=
-ch IPs
-> + *                   are reset depends on the ASIC. Notably doesn't rese=
-t IPs
-> + *                   shared with the CPU on APUs or the memory controlle=
-rs (so
-> + *                   VRAM is not lost). Not available on all ASICs.
-> + * @AMD_RESET_BACO: BACO (Bus Alive, Chip Off) method powers off and on =
-the card
-> + *                  but without powering off the PCI bus. Suitable only =
-for
-> + *                  discrete GPUs.
-> + * @AMD_RESET_PCI: Does a full bus reset using core Linux subsystem PCI =
-reset
-> + *                 and does a secondary bus reset or FLR, depending on w=
-hat the
-> + *                 underlying hardware supports.
-> + *
-> + * Methods available for AMD GPU driver for resetting the device. Not al=
-l
-> + * methods are suitable for every device. User can overwrite the method =
-using
-> + * module parameter `reset_method`.
-> + */
->  enum amd_reset_method {
->         AMD_RESET_METHOD_NONE =3D -1,
->         AMD_RESET_METHOD_LEGACY =3D 0,
-> --
-> 2.42.1
->
+I guess I would just go with
+
+1. compatible
+2. reg
+3. ranges
+4. All other properties
+5. status (if applicable)
+6. Child nodes
+
+aka grouping the old 4+5 together. The difference is probably minimal
+but doesn't create corner cases and you don't need to know if a property
+has a value or is boolean when looking for it.
+
+
+Heiko
+
+
