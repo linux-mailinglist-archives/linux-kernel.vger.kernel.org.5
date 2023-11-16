@@ -2,250 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CF2777EE69F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 051A67EE6A4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345456AbjKPSVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:21:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48008 "EHLO
+        id S1345462AbjKPSXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:23:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjKPSVk (ORCPT
+        with ESMTP id S1345441AbjKPSXT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:21:40 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A17A192
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:21:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08B91C433C8;
-        Thu, 16 Nov 2023 18:21:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700158897;
-        bh=afcjSCTVmlV4p68dsI5fTXVa0bQhtpJng5oNuW2v4Os=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Vhf0ra+0c6tEw4RTVE8zXQFo821hMFV3IIi4ZHo4MACQm6Xg84Nesnspov8/oyY20
-         0nwWzipJ13BeDXrXcYEO/BIay6078ghGLkWB32pzXiKLr+g9/+ovKAUBqZHjOvuQN2
-         fdNdQQTjV7mKZLCHFnyGLW2z+TqGMiitKy5ABkyFfRQG0O2z4E19Mm4u1IuSk6r3/f
-         ffjuJG3uAtHVGH5Z5Luc9JV1IPKZCImNnCKPdaKRs6ruPB7AzJEuNBZ5p+thd4njqP
-         y3s+JAcjB30SNTSxu/bAHyqMe3i78zsRYYFIm/jEMxLbrR/0Hg2s4Y5V6Jg777aFAY
-         sO8sPfvN4vspw==
-Date:   Thu, 16 Nov 2023 18:21:33 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc:     marius.cristea@microchip.com, jic23@kernel.org, lars@metafoo.de,
-        robh+dt@kernel.org, jdelvare@suse.com, linux@roeck-us.net,
-        linux-hwmon@vger.kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: iio: adc: adding support for PAC193X
-Message-ID: <20231116-channel-variety-cc7c262924ad@squawk>
-References: <20231115134453.6656-1-marius.cristea@microchip.com>
- <20231115134453.6656-2-marius.cristea@microchip.com>
- <fedd4bcf-7892-4096-bcca-7ea72d39576f@linaro.org>
+        Thu, 16 Nov 2023 13:23:19 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9FF61A8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:23:15 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id ada2fe7eead31-460f623392fso390493137.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:23:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700158995; x=1700763795; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mJMcVGwV0ZhksPb/kb7ya6aQUsXCXgCzibgQas3bEBg=;
+        b=q3r2uGE7x3Gbyu5ucExvbmYZgZSp5XWiBIkrilqhS5GseXy+Ohe5+CKdgBwoiJilsU
+         MrL/OKxNwUAoCXv40C+tjZGR6st66EWn2fSu1rjdDNVr59uJgpUyPtudZjJ26iBIABcz
+         yeaTJg0Mm0BqaraWJNKN/29/UAvpTMOfd4TASAducNQ0PWaPa9G/Xj30W+4GICYrEzJb
+         PPQiPGHB+hVvcj5n5lSjsX61zOKfLCM0AafQC4wz8fd6ZondRXu+BnLd2cQO72jismQ5
+         bpXxggwClvqU97DJJcwtlft11gLQKiD/3AMUOld6vGfoAretDKeAD5NTukw+cldCi6qU
+         /yeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700158995; x=1700763795;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mJMcVGwV0ZhksPb/kb7ya6aQUsXCXgCzibgQas3bEBg=;
+        b=H4HHfGAeDB4gCbTgHQpIwgqMol7SqDXsmkYXIfEh5np5dsr9tqn1LcSFKE1OqkDxOZ
+         ibCrWCBZuPxjdNQEenkPBww4MQ6j1CGST9VpUDzcrd8sAadrS6Y9cIgV9YupPTSP+R1k
+         ij5TfVcmLkwSXZSu2Svoazlv4LVNrM5qAVoejJwooNd3f3wkfe0mvM6sEnGrIuF7Vj+K
+         PNmzrNjn3fiMignMoKdUU3qxW8ftlaeUSCsOr2jxDtcb4DCrGK+4H6+odFVRyUV9EdMF
+         fh6W0m32HH6CU/cc8yF6Kmwk/oIY430t23KFqwn+7iZTyHywDumuirND2q/J5QRDGfXJ
+         72MA==
+X-Gm-Message-State: AOJu0YwWnjGllphe0VltoJ/vK0nPVpGHL+C36IInGpsAup82E0SasNJj
+        jWd9mwUMqFPb1brvit+pUK5OLRGiC8MT99FIBp2L5g==
+X-Google-Smtp-Source: AGHT+IEcMaXkeuHVRU3ZX/vb++TMtypZamKx9CSfQP8ESngpYGE22btaobl4qjxySaHBxzo5pYhEzgxe3DEwurxJIeA=
+X-Received: by 2002:a67:c29a:0:b0:45f:9fd2:71e0 with SMTP id
+ k26-20020a67c29a000000b0045f9fd271e0mr17352673vsj.30.1700158994973; Thu, 16
+ Nov 2023 10:23:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="CqQpzGUiaD3Sqhz2"
-Content-Disposition: inline
-In-Reply-To: <fedd4bcf-7892-4096-bcca-7ea72d39576f@linaro.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+References: <20231115192645.143643130@linuxfoundation.org>
+In-Reply-To: <20231115192645.143643130@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 16 Nov 2023 23:53:03 +0530
+Message-ID: <CA+G9fYukdu+JryZd7yubwZYddrDNpDZyQXA772PisHiBvU77+A@mail.gmail.com>
+Subject: Re: [PATCH 6.1 000/379] 6.1.63-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com,
+        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
+        conor@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 16 Nov 2023 at 01:23, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 6.1.63 release.
+> There are 379 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 17 Nov 2023 19:25:27 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
+6.1.63-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-6.1.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
---CqQpzGUiaD3Sqhz2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 16, 2023 at 04:01:43PM +0100, Krzysztof Kozlowski wrote:
-> On 15/11/2023 14:44, marius.cristea@microchip.com wrote:
-> > From: Marius Cristea <marius.cristea@microchip.com>
-> >=20
-> > This is the device tree schema for iio driver for
-> > Microchip PAC193X series of Power Monitors with Accumulator.
-> >=20
-> > Signed-off-by: Marius Cristea <marius.cristea@microchip.com>
-> > ---
-> >  .../bindings/iio/adc/microchip,pac1934.yaml   | 137 ++++++++++++++++++
-> >  1 file changed, 137 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iio/adc/microchip=
-,pac1934.yaml
-> >=20
-> > diff --git a/Documentation/devicetree/bindings/iio/adc/microchip,pac193=
-4.yaml b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
-> > new file mode 100644
-> > index 000000000000..2609cb19c377
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iio/adc/microchip,pac1934.yaml
-> > @@ -0,0 +1,137 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iio/adc/microchip,pac1934.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Microchip PAC1934 Power Monitors with Accumulator
-> > +
-> > +maintainers:
-> > +  - Marius Cristea <marius.cristea@microchip.com>
-> > +
-> > +description: |
-> > +  This device is part of the Microchip family of Power Monitors with A=
-ccumulator.
-> > +  The datasheet for PAC1931, PAC1932, PAC1933 and PAC1934 can be found=
- here:
-> > +    https://ww1.microchip.com/downloads/aemDocuments/documents/OTH/Pro=
-ductDocuments/DataSheets/PAC1931-Family-Data-Sheet-DS20005850E.pdf
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - microchip,pac1931
-> > +      - microchip,pac1932
-> > +      - microchip,pac1933
-> > +      - microchip,pac1934
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#address-cells":
-> > +    const: 1
-> > +
-> > +  "#size-cells":
-> > +    const: 0
-> > +
-> > +  interrupts:
-> > +    maxItems: 1
-> > +
-> > +  microchip,slow-io:
-> > +    type: boolean
-> > +    description: |
-> > +      A GPIO used to trigger a change is sampling rate (lowering the c=
-hip power consumption).
->=20
-> Use Linux coding style wrapping (as described in Linux Coding style). I
-> am not going to tell you numbers because I want you to read the document
-> first.
->=20
-> This is boolean, not GPIO. I don't understand. "A GPIO", so any GPIO or
-> some specific? How is this property related to GPIO?
->=20
->=20
-> > +      If configured in SLOW mode, if this pin is forced high, sampling=
- rate is forced to eight
->=20
-> This pin? This is boolean, not a GPIO. GPIOs are phandles.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-I said it on the previous version, but this really seems like it should
-be something like "slow-io-gpios". I know Jonathan expressed some
-concerns about having to deal with it on the operating system side (as
-the pin is either an input & used for this slow-io control, or an output
-and used as an interrupt) but that is, in my opinion, a problem for the
-operating system & the binding should describe how the hardware works,
-even if that is not convenient. With this sort of property, a GPIO hog
-would be required to be set up (and the driver for that gpio controller
-bound etc before the pac driver loads) for correction functionality if
-this property was in the non-default state.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-> > +      samples/second. When it is forced low, the sampling rate is 1024=
- samples/second unless
-> > +      a different sample rate has been programmed.
-> > +
-> > +patternProperties:
-> > +  "^channel@[1-4]+$":
-> > +    type: object
-> > +    $ref: adc.yaml
-> > +    description: Represents the external channels which are connected =
-to the ADC.
-> > +
-> > +    properties:
-> > +      reg:
-> > +        items:
-> > +          minimum: 1
-> > +          maximum: 4
-> > +
-> > +      shunt-resistor-micro-ohms:
-> > +        description: |
-> > +          Value in micro Ohms of the shunt resistor connected between
-> > +          the SENSE+ and SENSE- inputs, across which the current is me=
-asured. Value
-> > +          is needed to compute the scaling of the measured current.
-> > +
-> > +    required:
-> > +      - reg
-> > +      - shunt-resistor-micro-ohms
-> > +
-> > +    unevaluatedProperties: false
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - "#address-cells"
-> > +  - "#size-cells"
-> > +
-> > +allOf:
-> > +  - if:
-> > +      properties:
-> > +        compatible:
-> > +          contains:
-> > +            const: interrupts
->=20
->=20
-> I don't understand what do you want to say here. I am also 100% sure you
-> did not test it on a real case (maybe example passes but nothing more).
+## Build
+* kernel: 6.1.63-rc1
+* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
+* git branch: linux-6.1.y
+* git commit: 505b91175bcfcf16c4adc437901109bee0ab649f
+* git describe: v6.1.62-380-g505b91175bcf
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.6=
+2-380-g505b91175bcf
 
-As far as I understand, the same pin on the device is used for both an
-output or an input depending on the configuration. As an input, it is
-the "slow-io" control, and as an output it is an interrupt.
-I think Marius is trying to convey that either this pin can be in
-exclusively one state or another.
+## Test Regressions (compared to v6.1.62)
 
-_However_ I am not sure that that is really the right thing to do - they
-might well be mutually exclusive modes, but I think the decision can be
-made at runtime, rather than at devicetree creation time. Say for
-example the GPIO controller this is connected to is capable of acting as
-an interrupt controller. Unless I am misunderstanding the runtime
-configurability of this hardware, I think it is possible to actually
-provide a "slow-io-gpios" and an interrupt property & let the operating
-system decide at runtime which mode it wants to work in.
+## Metric Regressions (compared to v6.1.62)
 
-I'm off travelling at the moment Marius, but I should be back in work on
-Monday if you want to have a chat about it & explain a bit more to me?
+## Test Fixes (compared to v6.1.62)
 
-Cheers,
-Conor.
+## Metric Fixes (compared to v6.1.62)
 
->=20
-> > +    then:
-> > +      properties:
-> > +        microchip,slow-io: false
-> > +    else:
-> > +      if:
-> > +        properties:
-> > +          compatible:
-> > +            contains:
-> > +              const: microchip,slow-io
-> > +      then:
-> > +        properties:
-> > +          interrupts: false
->=20
-> Best regards,
-> Krzysztof
->=20
+## Test result summary
+total: 126938, pass: 108065, fail: 2482, skip: 16277, xfail: 114
 
---CqQpzGUiaD3Sqhz2
-Content-Type: application/pgp-signature; name="signature.asc"
+## Build Summary
+* arc: 5 total, 5 passed, 0 failed
+* arm: 147 total, 147 passed, 0 failed
+* arm64: 52 total, 52 passed, 0 failed
+* i386: 37 total, 33 passed, 4 failed
+* mips: 26 total, 26 passed, 0 failed
+* parisc: 3 total, 3 passed, 0 failed
+* powerpc: 36 total, 32 passed, 4 failed
+* riscv: 14 total, 14 passed, 0 failed
+* s390: 16 total, 15 passed, 1 failed
+* sh: 10 total, 10 passed, 0 failed
+* sparc: 7 total, 7 passed, 0 failed
+* x86_64: 44 total, 44 passed, 0 failed
 
------BEGIN PGP SIGNATURE-----
+## Test suites summary
+* boot
+* kselftest-android
+* kselftest-arm64
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers-dma-buf
+* kselftest-efivarfs
+* kselftest-exec
+* kselftest-filesystems
+* kselftest-filesystems-binderfs
+* kselftest-filesystems-epoll
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-ftrace
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-net-forwarding
+* kselftest-net-mptcp
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-user_events
+* kselftest-vDSO
+* kselftest-vm
+* kselftest-watchdog
+* kselftest-x86
+* kselftest-zram
+* kunit
+* libgpiod
+* log-parser-boot
+* log-parser-test
+* ltp-cap_bounds
+* ltp-commands
+* ltp-containers
+* ltp-controllers
+* ltp-cpuhotplug
+* ltp-crypto
+* ltp-cve
+* ltp-dio
+* ltp-fcntl-locktests
+* ltp-filecaps
+* ltp-fs
+* ltp-fs_bind
+* ltp-fs_perms_simple
+* ltp-fsx
+* ltp-hugetlb
+* ltp-io
+* ltp-ipc
+* ltp-math
+* ltp-mm
+* ltp-nptl
+* ltp-pty
+* ltp-sched
+* ltp-securebits
+* ltp-smoke
+* ltp-syscalls
+* ltp-tracing
+* network-basic-tests
+* perf
+* rcutorture
+* v4l2-compliance
 
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVZdqwAKCRB4tDGHoIJi
-0ujbAQCjXBBuVPgyP4WT9ADe31P1IzbnBiEVymzdiv9hZVxnRAD/d9hSmWkAXypj
-w1fZogUDEFwlkt04d1QG4OsATZhxNQ8=
-=3oED
------END PGP SIGNATURE-----
-
---CqQpzGUiaD3Sqhz2--
+--
+Linaro LKFT
+https://lkft.linaro.org
