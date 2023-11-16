@@ -2,120 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E587EE977
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:43:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C29907EE979
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345592AbjKPWn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 17:43:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
+        id S1345566AbjKPWro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 17:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345575AbjKPWnx (ORCPT
+        with ESMTP id S229745AbjKPWrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 17:43:53 -0500
-Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C39D55
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:43:48 -0800 (PST)
-Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
-        by cmsmtp with ESMTPS
-        id 3hcJr4rWkjtZ33l5Tr0Qv0; Thu, 16 Nov 2023 22:43:51 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-        by cmsmtp with ESMTPS
-        id 3l5Orh7E2qmEo3l5OrGrpx; Thu, 16 Nov 2023 22:43:46 +0000
-X-Authority-Analysis: v=2.4 cv=P+8pOwMu c=1 sm=1 tr=0 ts=65569b22
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
- a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=F7X9mGda89njDp2BEcwA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=rVntcV568NsM8MUDU5i/X0W5LLzSw8KegMh5qNfTHQM=; b=xuBYHxRWYT5GIdwlB1mkYD2ekL
-        faO69R7g5KnqmUCVXoNWWHXAkJaGKUIlqEEj2fgnPgzBrxI/XaNAOnKvSWJnsl+gvkwnWldOWHZt1
-        xf7zACS9ihXrGUKSSagrne54rPAA5i2CrC46Wxe80VsbhWiGsP0+lC+X/EASE/F8Ri6SBjL7WDtZY
-        on2UqzIRUdOyzn8MOQ6G01JeRYYk1Hz9Vjsn5wOJqBPz1UhQiyLf/uM4emqkWjlYEdjOF0Rm+oIi1
-        f0nWSxtYlz3X5ypbyD3kNs+u+Mtv1vN5ElbwdbtG1xRvTU3g1O3nO61RTZOZlIlGqA8/0UFQdsSfG
-        Bj890bog==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:55476 helo=[10.0.1.47])
-        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <re@w6rz.net>)
-        id 1r3l5M-000UkD-0u;
-        Thu, 16 Nov 2023 15:43:44 -0700
-Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231115191600.708733204@linuxfoundation.org>
-In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
-From:   Ron Economos <re@w6rz.net>
-Message-ID: <442f04f0-adae-b3ec-e3bc-90650be5d24b@w6rz.net>
-Date:   Thu, 16 Nov 2023 14:43:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+        Thu, 16 Nov 2023 17:47:43 -0500
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2082.outbound.protection.outlook.com [40.107.96.82])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4C8130;
+        Thu, 16 Nov 2023 14:47:40 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OQF1N6iMUVJrZibZju5+wtmifwsxtsS7+0joK4o+hQlz7Ov0hxRQ8kNzJ2GSlhUdQqQ/2ZjS5pwKT+XG7xnlxRzu0WJG5LF0zgE1jltgDAwQCEhL7Ax1HYhMPLUSldybKacbHHoQ76Tl+Ejl9MhAB63INUhzrzuYxnePR+gK+s5zTTU1SUE37q8i6FlL9harVZnI4iHneeUgSQczChFhgo9nUCoCsPpGYkoOq/pooibinDvUiSN8K2zgWnXjcKnN7pn2H8A7Mu4tgcF0D9G+DfZ8OS4BYj7ZzeTY86hvHauSSi0AnxbEhW1CtTxQbjTKl85IpGQ40B0jeEk3xGPwTQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6hEhOdhCPIRt7wo/PNs5gKMU8+R95dCjgQm+4eo0Pvk=;
+ b=G/0RqGk4yKvx2zUyenu6vMv2dnqKACYd9gNm5kRN3MMs0DHVSodljJ/CJ1ux3tAtcKiDJQ+/QdIi8ZXPJSSmEnQozANq86l4Qpv6zu+7SW9SLHQ9SzgGCgw5IH3nr4TjGD5PuhN0OfmxD4PICmgi3+RXJe+AC/R/w24Fn0JWmh4IeZEVYOtJLAQFyD3jXmYxxsfOY6jLUVUDFVKu7GNu6TxCuWOyHFYJVtEXpO0xlRKs/X9+rHt/yyeChJEQpHXOmy7TNmzH+lm3/kNJxNERLke+1ocrPN/HADTMnbbGTjZwvXGQQFhL6fg3ahOIutupnXi98Z55x0OtF+y/ofWg8Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6hEhOdhCPIRt7wo/PNs5gKMU8+R95dCjgQm+4eo0Pvk=;
+ b=mzx3Exc2RbB2ECpa+LdZV81bi9q65bV22BCOBoWFA6xW+d5XxeJnskEfgfH7TAKPc89SveTQZa6RP8c1Bc3a3+AmTXp9EFOQVNEcZHx7cJBUFR4kdHjKWUtrtasi8nEIauBiq/jyMg5P3jx/BEIrLfKMiXrr9sr6PgaD1hA02tk=
+Received: from SN6PR08CA0031.namprd08.prod.outlook.com (2603:10b6:805:66::44)
+ by CH0PR12MB5155.namprd12.prod.outlook.com (2603:10b6:610:ba::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
+ 2023 22:47:37 +0000
+Received: from SA2PEPF00001507.namprd04.prod.outlook.com
+ (2603:10b6:805:66:cafe::57) by SN6PR08CA0031.outlook.office365.com
+ (2603:10b6:805:66::44) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21 via Frontend
+ Transport; Thu, 16 Nov 2023 22:47:37 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7002.19 via Frontend Transport; Thu, 16 Nov 2023 22:47:37 +0000
+Received: from titanite-d354host.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.32; Thu, 16 Nov 2023 16:47:36 -0600
+From:   Avadhut Naik <avadhut.naik@amd.com>
+To:     <linux-acpi@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
+CC:     <rafael@kernel.org>, <gregkh@linuxfoundation.org>,
+        <lenb@kernel.org>, <james.morse@arm.com>, <tony.luck@intel.com>,
+        <bp@alien8.de>, <linux-kernel@vger.kernel.org>,
+        <alexey.kardashevskiy@amd.com>, <yazen.ghannam@amd.com>,
+        <avadnaik@amd.com>
+Subject: [PATCH v6 0/4] Add support for Vendor Defined Error Types in Einj Module
+Date:   Thu, 16 Nov 2023 16:47:21 -0600
+Message-ID: <20231116224725.3695952-1-avadhut.naik@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1r3l5M-000UkD-0u
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:55476
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 4
-X-Org:  HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfKX8kMHnes3p7thDjPRzYpWq367gy+sW+/VOrBcirmMvpfoK6/mAsijtQWPKox/F/tNxANUnR1lyh6oBllFJJbHMdaTEVPBktRTlibIopv+eYMr8+idh
- FlTlCXtELQejoz0KM8mwGZ6NROKDuHBySowu/ulZwkoorIowf0NxPSQz/MQTWx0rFFdqmYcp6DuqcqVDEr6fwa/QHHEkycw/bpA=
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.180.168.240]
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|CH0PR12MB5155:EE_
+X-MS-Office365-Filtering-Correlation-Id: a9b173c2-f0f4-46d4-a239-08dbe6f6080a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: KlWgkhpwg5DwI8zZ7NdaZUvqITCGzKXyjj9iQNc4w1L6sD07CXA7E412S7yYEwhUuKhlHjIXVVF4YHMoVtskNfgm2RXAzW1ZNAVk+q7pQAEMdMKFFdGGYM75pxjLSm9AEgrKhvsX3CPjswsH6X7+MlkZXbrVK/+IvfGUeLu4UGIXxir/ynhdjHmVsO9ibBE6VdDjs7+zevT3qrAQjf4VL7LJ6uWvDhN7jXAS0JVYrUgggokxditU6hMTHvKMUnmkTKwEYQAQsckLdZb6YvNKhikNqwewLiv6ycux+pdqZvuBreNAspuArSYuD+ZItHykjtJsWpzSz7F3HLCCgIP96CdbYaUfP1KIyQ6hWVnu/fImQQs6yRFch3XVEvRj/tStZXn0W1rVslI7zFl2sqk+Wb63vqZA4nCiPP9NmmCQRW7hSGPQ23AdHwNhCquWgsdlZLk63pP9E24BTABRVAAgQlwmN3kFOte02GBDkJJcQBWCpveq3BiXo7pcVhJFBdt7MU3MyoECYPCqTFcdCuP5h4jdYZOUivGEU9dFBZcKvpxWmo8i++8hq1ergEIJZd44m1kV7+b4CZRsvsiaAOY/5QWTNrHoemxTz17m0dEbqvhxhxoi0eQqg5jSUc4l82mlu6t9pWjXQNAVzc83V1xyPIGklNFTYTRsnmSvDsXRLfmtY/1TNBA5uy4KXNM5aW0uTSR3HUw8lpGGNmDWqrFNr2r7JzHoyGSDsrI9suc1/5Nva9hWzzO3SLhjq2UQ57f+lpHjI365TOrwMDj2UEQyCgppVmqgF+3yDnhiuzMjyuJUQ3TjHQOp0L5BO4g4h4Kk
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(39860400002)(136003)(396003)(346002)(376002)(230173577357003)(230273577357003)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(82310400011)(46966006)(40470700004)(36840700001)(36860700001)(47076005)(356005)(83380400001)(81166007)(426003)(336012)(1076003)(16526019)(26005)(2616005)(6666004)(7696005)(86362001)(44832011)(110136005)(70586007)(4326008)(70206006)(478600001)(316002)(82740400003)(8676002)(8936002)(54906003)(2906002)(5660300002)(40480700001)(41300700001)(36756003)(40460700003)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 22:47:37.3690
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a9b173c2-f0f4-46d4-a239-08dbe6f6080a
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: SA2PEPF00001507.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR12MB5155
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 11:09 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.5.12 release.
-> There are 550 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.12-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+This patchset adds support for Vendor Defined Error types in the einj
+module by exporting a binary blob file in module's debugfs directory.
+Userspace tools can write OEM Defined Structures into the blob file as
+part of injecting Vendor defined errors. Similarly, the very tools can
+also read from the blob file for information, if any, provided by the
+firmware after error injection.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+The first patch refactors available_error_type_show() function to ensure
+all errors supported by the platform are output through einj module's
+available_error_type file in debugfs.
 
-Tested-by: Ron Economos <re@w6rz.net>
+The second patch adds a write callback for binary blobs created through
+debugfs_create_blob() API.
+
+The third patch fixes the permissions of panicinfo file in debugfs to
+ensure it remains read-only
+
+The fourth patch adds the required support i.e. establishing the memory
+mapping and exporting it through debugfs blob file for Vendor-defined
+Error types.
+
+Changes in v2:
+ - Split the v1 patch, as was recommended, to have a separate patch for
+changes in debugfs.
+ - Refactored available_error_type_show() function into a separate patch.
+ - Changed file permissions to octal format to remove checkpatch warnings.
+
+Changes in v3:
+ - Use BIT macro for generating error masks instead of hex values since
+ACPI spec uses bit numbers.
+ - Handle the corner case of acpi_os_map_iomem() returning NULL through
+a local variable to a store the size of OEM defined data structure.
+
+Changes in v4:
+ - Fix permissions for panicinfo file in debugfs.
+ - Replace acpi_os_map_iomem() and acpi_os_unmap_iomem() calls with
+   acpi_os_map_memory() and acpi_os_unmap_memory() respectively to avert
+   sparse warnings as suggested by Alexey.
+
+Changes in v5:
+ - Change permissions of the "oem_error" file, being created in einj
+   module's debugfs directory, from "w" to "rw" since system firmware
+   in some cases might provide some information through OEM-defined
+   structure for tools to consume.
+ - Remove Reviewed-by: Alexey Kardashevskiy <aik@amd.com> from the
+   fourth patch since permissions of the oem_error file have changed.
+ - Add Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org> for
+   second and third patch.
+ - Rebase on top of tip master.
+
+Changes in v6:
+ - Minor formatting undertaken in the first and fourth patch per v5
+   feedback by Boris.
+ - Added check in the second patch to ensure that only owners can write
+   into the binary blob files. Mentioned the same in commit description.
+ - Modified commit description of the third patch per recommendations
+   provided by Tony.
+ - Add Reviewed-by: Borislav Petkov (AMD) <bp@alien8.de> for first and
+   fourth patch.
+ - Add Reviewed-by: Tony Luck <tony.luck@intel.com> for second, third and
+   fourth patch.
+
+
+[NOTE:
+
+ - The second patch already had the below tags for v5:
+    Reviewed-by: Alexey Kardashevskiy <aik@amd.com>
+    Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+   Since the changes to the patch for v6 are very minimal i.e. addition of
+   a check to ensure that only owners write into the blobs, have retained
+   the tags for v6 as well.
+
+ - Similarly, the third patch already had the below tag for v5:
+    Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+   Since only the commit description was slightly changed for this patch
+   in v6, have retained the tag for v6 too.
+
+   Having said so, if advised, will attempt to reacquire the tags.]
+
+
+Avadhut Naik (4):
+  ACPI: APEI: EINJ: Refactor available_error_type_show()
+  fs: debugfs: Add write functionality to debugfs blobs
+  platform/chrome: cros_ec_debugfs: Fix permissions for panicinfo
+  ACPI: APEI: EINJ: Add support for vendor defined error types
+
+ drivers/acpi/apei/einj.c                  | 71 +++++++++++++++--------
+ drivers/platform/chrome/cros_ec_debugfs.c |  2 +-
+ fs/debugfs/file.c                         | 28 +++++++--
+ 3 files changed, 72 insertions(+), 29 deletions(-)
+
+
+base-commit: a1cc6ec03d1e56b795607fce8442222b37d1dd99
+-- 
+2.34.1
 
