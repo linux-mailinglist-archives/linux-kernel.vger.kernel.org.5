@@ -2,42 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DAD277EE33B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5F157EE33E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:47:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345282AbjKPOrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:47:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48346 "EHLO
+        id S1345324AbjKPOrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:47:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345317AbjKPOq7 (ORCPT
+        with ESMTP id S1345323AbjKPOrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:46:59 -0500
-Received: from todd.t-8ch.de (todd.t-8ch.de [IPv6:2a01:4f8:c010:41de::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93FE3193;
-        Thu, 16 Nov 2023 06:46:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-        s=mail; t=1700146014;
-        bh=JbWBECiAQCY4MXhVgY7RhNNqBPGkB2Zc4z1rLidUoxQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=COVB0B60ejVWjhUMlunPsI7O/6q83X6VDG1SAaJQWy0tyfy33duuE4kZMLEWZS2DO
-         8J/eORSl4LKHZjMxh+XZ8Q3+73cUWiRJk3FjTFnwh2BVEeUz6smHHTQ+XSITqKBf0m
-         ExEkBF98/W5D0IHr+Q831Iie40g0bAfx7UYQRFdA=
-Date:   Thu, 16 Nov 2023 15:46:54 +0100
-From:   Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-To:     Willy Tarreau <w@1wt.eu>
-Cc:     Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH RFC 2/3] selftests/nolibc: migrate startup tests to new
- harness
-Message-ID: <57215bf9-b063-4306-892d-56765e81413e@t-8ch.de>
-References: <20231115-nolibc-harness-v1-0-4d61382d9bf3@weissschuh.net>
- <20231115-nolibc-harness-v1-2-4d61382d9bf3@weissschuh.net>
- <ZVXFxyK8xY4mVcrS@1wt.eu>
+        Thu, 16 Nov 2023 09:47:18 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE1FED4D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:47:13 -0800 (PST)
+Received: from localhost (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: bbrezillon)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id C4EA2660734C;
+        Thu, 16 Nov 2023 14:47:11 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700146032;
+        bh=ANLNJfWhLmya72L/lYatmTv2SBWTBnT/H2OPpKUbXQY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=YjOYFEKfPK0ZrxtaGuBEK55kgHsjxZwJy8CJZCXuT7zTHrKHGRVLMNSf3slBAWh52
+         v07Pq53UOV7+0sTVu3b4AUzCoLt2eUgB9lG05p4AuRcNXlY/hIqI95Zdi5r7zTGXwm
+         JdQse41KSkeW02ZEVThhPltnXgYRZcykuQtT0hZD1tVSZW9yHiNssyYXhEFRgD4+ap
+         vFKvPbtFrYq/mvX0T55l4Gjws8EI1Wvhl8ctwSYYVjwKE99VEsK5uwOibpYHDdboc1
+         hxxEG7dnP865u3AlxKw4hCIMhFhyXiN5RuN3X1d32CfMEi9fWzTKYTFbUxH3eUVSbc
+         ygjmUpaP2r4RA==
+Date:   Thu, 16 Nov 2023 15:47:08 +0100
+From:   Boris Brezillon <boris.brezillon@collabora.com>
+To:     Thomas =?UTF-8?B?SGVsbHN0csO2bQ==?= 
+        <thomas.hellstrom@linux.intel.com>
+Cc:     intel-xe@lists.freedesktop.org,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Matthew Brost <matthew.brost@intel.com>,
+        Danilo Krummrich <dakr@redhat.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Oak Zeng <oak.zeng@intel.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Francois Dugast <francois.dugast@intel.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] Documentation/gpu: VM_BIND locking document
+Message-ID: <20231116154708.148ce241@collabora.com>
+In-Reply-To: <656d5f890de7ba3af05616122a9bd399badd35bc.camel@linux.intel.com>
+References: <20231115124937.6740-1-thomas.hellstrom@linux.intel.com>
+        <20231116104851.114bdb08@collabora.com>
+        <0850281b667c4b88163dab60737dbc945ad742fd.camel@linux.intel.com>
+        <20231116142707.044aeec2@collabora.com>
+        <656d5f890de7ba3af05616122a9bd399badd35bc.camel@linux.intel.com>
+Organization: Collabora
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZVXFxyK8xY4mVcrS@1wt.eu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -48,157 +68,255 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023-11-16 08:33:27+0100, Willy Tarreau wrote:
-> On Wed, Nov 15, 2023 at 10:08:20PM +0100, Thomas Weißschuh wrote:
-> > Migrate part of nolibc-test.c to the new test harness.
-> > 
-> > Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
-> 
-> A few points, mostly questions and food for thoughts.
-> 
-> > -static void putcharn(char c, size_t n)
-> > -{
-> > -	char buf[64];
-> > -
-> > -	memset(buf, c, n);
-> > -	buf[n] = '\0';
-> > -	fputs(buf, stdout);
-> > -}
-> > -
-> 
-> Ah now I see how the other one came from :-)  My comment about the size
-> check still stands anyway, especially when placed in an include file.
-> 
-> > +#if defined(NOLIBC)
-> > +
-> > +#define ASSUME_NOLIBC(stmt)
-> > +
-> > +#else /* defined(NOLIBC) */
-> > +
-> > +/* differ from nolibc, both glibc and musl have no global _auxv */
-> > +unsigned long *_auxv = (void *)-1;
-> > +#define ASSUME_NOLIBC(stmt) SKIP(stmt)
-> > +
-> > +#endif /* defined(NOLIBC) */
-> > +
-> 
-> I've seen below how it's used and don't find this very clear. In general,
-> passing a statement as an argument to a macro, especially control statements
-> such as "return" is a bit difficult to grasp. If the macro is only used for
-> this, maybe it should integrate the return statement and be called something
-> like "RETURN_UNLESS_NOLIBC()" which is quite explicit this time. If you really
-> need to keep the statement adjustable, then most likely that calling the
-> macro "UNLESS_NOLIBC()" would help, because I understand more naturally
-> that the following will perform a return if we're not on nolibc:
-> 
->     UNLESS_NOLIBC(return);
-> 
-> than:
-> 
->     ASSUME_NOLIBC(return);
+On Thu, 16 Nov 2023 14:53:50 +0100
+Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
 
-The statement arguments is modelled after SKIP() from
-kselftest_harness.h.
+> On Thu, 2023-11-16 at 14:27 +0100, Boris Brezillon wrote:
+> > On Thu, 16 Nov 2023 12:48:45 +0100
+> > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+> >  =20
+> > > Hi, Boris,
+> > >=20
+> > > Thanks for reviewing. Some comments below:
+> > >=20
+> > > On Thu, 2023-11-16 at 10:48 +0100, Boris Brezillon wrote: =20
+> > > > Hi Thomas,
+> > > >=20
+> > > > On Wed, 15 Nov 2023 13:49:37 +0100
+> > > > Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com> wrote:
+> > > > =C2=A0  =20
+> > > > > Add the first version of the VM_BIND locking document which is
+> > > > > intended to be part of the xe driver upstreaming agreement.
+> > > > >=20
+> > > > > The document describes and discuss the locking used during
+> > > > > exec-
+> > > > > functions, evicton and for userptr gpu-vmas. Intention is to be
+> > > > > using the
+> > > > > same nomenclature as the drm-vm-bind-async.rst.
+> > > > >=20
+> > > > > v2:
+> > > > > - s/gvm/gpu_vm/g (Rodrigo Vivi)
+> > > > > - Clarify the userptr seqlock with a pointer to
+> > > > > mm/mmu_notifier.c
+> > > > > =C2=A0 (Rodrigo Vivi)
+> > > > > - Adjust commit message accordingly.
+> > > > > - Add SPDX license header.
+> > > > >=20
+> > > > > v3:
+> > > > > - Large update to align with the drm_gpuvm manager locking
+> > > > > - Add "Efficient userptr gpu_vma exec function iteration"
+> > > > > section
+> > > > > - Add "Locking at bind- and unbind time" section.
+> > > > >=20
+> > > > > v4:
+> > > > > - Fix tabs vs space errors by untabifying (Rodrigo Vivi)
+> > > > > - Minor style fixes and typos (Rodrigo Vivi)
+> > > > > - Clarify situations where stale GPU mappings are occurring and
+> > > > > how
+> > > > > =C2=A0 access through these mappings are blocked. (Rodrigo Vivi)
+> > > > > - Insert into the toctree in implementation_guidelines.rst
+> > > > >=20
+> > > > > Cc: Rodrigo Vivi <rodrigo.vivi@intel.com>
+> > > > > Signed-off-by: Thomas Hellstr=C3=B6m
+> > > > > <thomas.hellstrom@linux.intel.com>
+> > > > > ---
+> > > > > =C2=A0Documentation/gpu/drm-vm-bind-locking.rst=C2=A0=C2=A0=C2=A0=
+=C2=A0 | 503
+> > > > > ++++++++++++++++++
+> > > > > =C2=A0.../gpu/implementation_guidelines.rst=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0 1 +
+> > > > > =C2=A02 files changed, 504 insertions(+)
+> > > > > =C2=A0create mode 100644 Documentation/gpu/drm-vm-bind-locking.rst
+> > > > >=20
+> > > > > diff --git a/Documentation/gpu/drm-vm-bind-locking.rst
+> > > > > b/Documentation/gpu/drm-vm-bind-locking.rst
+> > > > > new file mode 100644
+> > > > > index 000000000000..bc701157cb34
+> > > > > --- /dev/null
+> > > > > +++ b/Documentation/gpu/drm-vm-bind-locking.rst
+> > > > > @@ -0,0 +1,503 @@
+> > > > > +.. SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+> > > > > +
+> > > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > +VM_BIND locking
+> > > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > +
+> > > > > +This document attempts to describe what's needed to get
+> > > > > VM_BIND
+> > > > > locking right,
+> > > > > +including the userptr mmu_notifier locking and it will also
+> > > > > discuss some
+> > > > > +optimizations to get rid of the looping through of all userptr
+> > > > > mappings and
+> > > > > +external / shared object mappings that is needed in the
+> > > > > simplest
+> > > > > +implementation. It will also discuss some implications for
+> > > > > faulting gpu_vms.
+> > > > > +
+> > > > > +Nomenclature
+> > > > > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > > > +
+> > > > > +* ``Context``: GPU execution context.
+> > > > > +* ``gpu_vm``: Abstraction of a virtual GPU address space with
+> > > > > +=C2=A0 meta-data. Typically one per client (DRM file-private), or
+> > > > > one
+> > > > > per
+> > > > > +=C2=A0 context.=C2=A0  =20
+> > > >=20
+> > > > Should we mention that it's a driver object, likely inheriting
+> > > > from
+> > > > drm_gpuvm?=C2=A0  =20
+> > >=20
+> > > Yes, I can try to be a bit more drm_gpuvm-centric throughout the
+> > > document, although I want to avoid being too specific due to the
+> > > current rapid drm_gpuvm rate of change, which might also affect
+> > > this
+> > > document. I guess I will have to commit for now to update the
+> > > document
+> > > on each gpuvm series we land... =20
+> >=20
+> > Well, I'd suggest that the one doing changes to drm_gpuvm gets to
+> > update this document along the way, or even better, make this
+> > documentation part of the drm_gpuvm doc, so there's no excuse to not
+> > update it when drm_gpuvm is extended. =20
+>=20
+> Sure, Although I think initial merge will be as is, and then merging
+> with drm_gpuvm will come at a later point.
 
-But the wrapper you proposed is indeed much better,
-I'll switch to that.
+Sure, I have no problem with that.
 
-> 
-> > -	for (test = min; test >= 0 && test <= max; test++) {
-> > -		int llen = 0; /* line length */
-> > +	if (brk)
-> > +		return brk;
-> >  
-> > -		/* avoid leaving empty lines below, this will insert holes into
-> > -		 * test numbers.
-> > -		 */
-> > -		switch (test + __LINE__ + 1) {
-> > -		CASE_TEST(argc);             EXPECT_GE(1, test_argc, 1); break;
-> > -		CASE_TEST(argv_addr);        EXPECT_PTRGT(1, test_argv, brk); break;
-> > -		CASE_TEST(argv_environ);     EXPECT_PTRLT(1, test_argv, environ); break;
-> > -		CASE_TEST(argv_total);       EXPECT_EQ(1, environ - test_argv - 1, test_argc ?: 1); break;
-> > -		CASE_TEST(argv0_addr);       EXPECT_PTRGT(1, argv0, brk); break;
-> > -		CASE_TEST(argv0_str);        EXPECT_STRNZ(1, argv0 > brk ? argv0 : NULL); break;
-> > -		CASE_TEST(argv0_len);        EXPECT_GE(1,  argv0 > brk ? strlen(argv0) : 0, 1); break;
-> > -		CASE_TEST(environ_addr);     EXPECT_PTRGT(1, environ, brk); break;
-> > -		CASE_TEST(environ_envp);     EXPECT_PTREQ(1, environ, test_envp); break;
-> > -		CASE_TEST(environ_auxv);     EXPECT_PTRLT(test_auxv != (void *)-1, environ, test_auxv); break;
-> > -		CASE_TEST(environ_total);    EXPECT_GE(test_auxv != (void *)-1, (void *)test_auxv - (void *)environ - 1, env_total); break;
-> > -		CASE_TEST(environ_HOME);     EXPECT_PTRNZ(1, getenv("HOME")); break;
-> > -		CASE_TEST(auxv_addr);        EXPECT_PTRGT(test_auxv != (void *)-1, test_auxv, brk); break;
-> > -		CASE_TEST(auxv_AT_UID);      EXPECT_EQ(1, getauxval(AT_UID), getuid()); break;
-> > -		CASE_TEST(constructor);      EXPECT_EQ(1, constructor_test_value, 2); break;
-> > -		CASE_TEST(linkage_errno);    EXPECT_PTREQ(1, linkage_test_errno_addr(), &errno); break;
-> > -		CASE_TEST(linkage_constr);   EXPECT_EQ(1, linkage_test_constructor_test_value, 6); break;
-> > -		case __LINE__:
-> > -			return ret; /* must be last */
-> > -		/* note: do not set any defaults so as to permit holes above */
-> > -		}
-> > -	}
-> > -	return ret;
-> > +	brk = sbrk(0);
-> > +
-> > +	if (brk == (void *)-1)
-> > +		brk = &end;
-> > +
-> > +	return brk;
-> >  }
-> >  
-> > +TEST(startup, argc)           { ASSERT_GE(test_argc, 1); }
-> > +TEST(startup, argv_addr)      { ASSERT_GT((void *)test_argv, pbrk()); }
-> > +TEST(startup, argv_environ)   { ASSERT_LT(test_argv, environ); }
-> > +TEST(startup, argv_total)     { ASSERT_EQ(environ - test_argv - 1, test_argc ?: 1); }
-> > +TEST(startup, argv0_addr)     { ASSERT_GT((void *)argv0, pbrk()); }
-> > +TEST(startup, argv0_str)      { ASSERT_STRNZ((void *)argv0 > pbrk() ? argv0 : NULL); }
-> > +TEST(startup, argv0_len)      { ASSERT_GE((void *)argv0 > pbrk() ? strlen(argv0) : 0U, 1U); }
-> > +TEST(startup, environ_addr)   { ASSERT_GT((void *)environ, pbrk()); }
-> > +TEST(startup, environ_envp)   { ASSERT_EQ(environ, test_envp); }
-> > +TEST(startup, environ_auxv)   {
-> > +	ASSUME_NOLIBC(return);
-> > +	ASSERT_LT((void *)environ, (void *)_auxv);
-> > +}
-> > +TEST(startup, environ_total)  {
-> > +	ASSUME_NOLIBC(return);
-> > +	/* kernel at least passes HOME and TERM, shell passes more */
-> > +	ASSERT_GE((void *)_auxv - (void *)environ - 1, 2);
-> > +}
-> > +TEST(startup, environ_HOME)   { ASSERT_NE(getenv("HOME"), NULL); }
-> > +TEST(startup, auxv_addr)      {
-> > +	ASSUME_NOLIBC(return);
-> > +	ASSERT_GT((void *)_auxv, pbrk());
-> > +}
-> > +TEST(startup, auxv_AT_UID)    { ASSERT_EQ(getauxval(AT_UID), getuid()); }
-> > +TEST(startup, constructor)    { ASSERT_EQ(constructor_test_value, 2); }
-> > +TEST(startup, linkage_errno)  { ASSERT_EQ(linkage_test_errno_addr(), &errno); }
-> > +TEST(startup, linkage_constr) { ASSERT_EQ(linkage_test_constructor_test_value, 6); }
-> 
-> I do appreciate the much lower indent level that still manages to
-> enumerate tests easily. But given that test suites are grouped, shouldn't
-> we go a bit further and state that TEST() operates on the suite defined
-> by the TEST_SUITE macro that must be defined before it ? This way you would
-> have:
-> 
->   #define TEST_SUITE startup
->   TEST(argc)           { ASSERT_GE(test_argc, 1); }
->   TEST(argv_addr)      { ASSERT_GT((void *)test_argv, pbrk()); }
->   ...
->   #undef TEST_SUITE
-> 
-> One thing that was not immediately obvious to me upon first read was
-> if TEST() defines or executes a test (i.e. "test" is both a noun and a
-> verb). Of course, spending 10 more seconds on the patch makes it obvious
-> it's a definition, but maybe following the same logic we have with
-> run_test_suite(), we should place the verb in front, for example
-> "DEF_TEST()" which then makes it quite unambiguous. Any opinion ?
+> > >  =20
+> > > > =C2=A0  =20
+> > > > > +=C2=A0=C2=A0 add_dma_fence(&obj->resv, job_dma_fence);
+> > > > > +
+> > > > > +=C2=A0=C2=A0 dma_resv_unlock(&obj->resv);
+> > > > > +=C2=A0=C2=A0 put_object(obj);
+> > > > > +
+> > > > > +Note that since the object is local to the gpu_vm, it will
+> > > > > share
+> > > > > the gpu_vm's
+> > > > > +dma_resv lock so that ``obj->resv =3D=3D gpu_vm->resv``.
+> > > > > +The gpu_vm_bos marked for eviction are put on the gpu_vm's
+> > > > > evict
+> > > > > list,
+> > > > > +which is protected by ``gpu_vm->resv``, that is always locked
+> > > > > while
+> > > > > +evicting, due to the above equality.
+> > > > > +
+> > > > > +For VM_BIND gpu_vms, gpu_vmas don't need to be unbound before
+> > > > > eviction,
+> > > > > +Since the driver must ensure that the eviction blit or copy
+> > > > > will
+> > > > > wait
+> > > > > +for GPU idle or depend on all previous GPU activity.
+> > > > > Furthermore,
+> > > > > any
+> > > > > +subsequent attempt by the GPU to access freed memory through
+> > > > > the
+> > > > > +gpu_vma will be preceded by a new exec function, with a
+> > > > > revalidation
+> > > > > +section which will make sure all gpu_vmas are rebound. The
+> > > > > eviction
+> > > > > +code holding the object's dma_resv while revalidating will
+> > > > > ensure
+> > > > > a
+> > > > > +new exec function may not race with the eviction. Note that
+> > > > > this
+> > > > > will
+> > > > > +not hold true, however, if only a subsets of vmas are, due to
+> > > > > the
+> > > > > +driver implementation, selected for rebinding the next exec
+> > > > > +function.=C2=A0  =20
+> > > >=20
+> > > > This last sentence is hard to follow.
+> > > >=20
+> > > > "
+> > > > Note that this will not hold true if only a subset of vmas
+> > > > are selected for rebinding during the next exec call (for
+> > > > instance,
+> > > > due
+> > > > to some driver decision to only partially restore VMAs).
+> > > > "
+> > > > =C2=A0  =20
+> > > > > Then all vmas *not* selected for rebinding needs to be
+> > > > > +properly unbound before re-enabling GPU access to the VM.=C2=A0 =
+ =20
+> > > >=20
+> > > > I think I get the problem, but can we have a use case where
+> > > > partial
+> > > > VMA restoration is useful? I mean, if some VMAs are not needed,
+> > > > we
+> > > > might be able to save MMU page table allocation/setup-time, but
+> > > > given
+> > > > the mess it then is to track those non-live VMAs, I'm wondering
+> > > > if
+> > > > it's
+> > > > leaving the door open for that, unless there's a good reason to
+> > > > do
+> > > > it.=C2=A0  =20
+> > >=20
+> > > This is the use-case Christian has been flagging for for OpenGL and
+> > > Media where he warns that the single-vm-memory-overcommit case
+> > > would
+> > > otherwise make the app crawl. =20
+> >=20
+> > IIUC, the partial VMA restore is about not restoring all VMAs
+> > attached
+> > to a vm_bo, but as soon as you restore one, this makes the BO
+> > resident,
+> > so all you're saving here is the extra page table for non-restored
+> > VMAs.
+> > I don't think that would significantly help the overcommit use case,
+> > unless you have so many VMAs attached to a single vm_bo that the
+> > amount of extra page tables becomes non-negligible compared to the BO
+> > size itself.
+> >=20
+> > What would really help the overcommit use case is not restoring all
+> > evicted BOs, if some of them are known to be in a range that's not
+> > accessed by a GPU job. In that situation, you can decide to leave
+> > vm_bos in the evicted list if none of their VMAs overlap any of the
+> > VM
+> > ranges used by a job. =20
+>=20
+> Yes this section here is the key: The vmas belonging to evicted bos not
+> restored would be the ones not "selected for rebind".
 
-The TEST() macro is modelled after kselftest_harness
-(which only takes one argument, as it doesn't support suites)
-and google test which works the same as the new TEST().
+Okay, but then I don't see the problem if you leave such vm_bos in the
+evicted list. Those will still be considered for 'rebind' next time the
+evicted list is walked (basically on the next exec), right?
 
-So I would prefer to keep the name.
+>=20
+> >  =20
+> > >=20
+> > > Generalized one might want to think of these as groups of (or
+> > > perhaps
+> > > virtual ranges of) vmas that need to be resident for a single job
+> > > submission. Currently we assume the residency-group <-> vm mapping
+> > > is
+> > > 1:1, allowing for the unbind-before-eviction to be ignored, but I
+> > > figure moving forward and addressing performance problems of real-
+> > > world
+> > > applications that may not always be true. =20
+> >=20
+> > Maybe I don't understand what unbind-before-eviction means. To me
+> > it's
+> > the operation of tearing down all VM mappings (unbind) before
+> > returning
+> > BO pages to the system (evict). I don't see a situation where the
+> > eviction of a BO doesn't imply killing all VM mapping pointing to
+> > this
+> > BO. =20
+>=20
+> It's the point of teardown that matters here. You can return the pages
+> to system without tearing down the GPU mappings, as long as you tear
+> them down before there are any GPU activity on that vm again. In xe we
+> tear down the old mappings as part of the rebind process after we've
+> validated the evicted bo again, (but before submitting the GPU job).=C2=A0
+> The point is the stale mappings can be left as long as there is no gpu
+> job accessing them.
 
-As for specifying the suite via a macro:
-I like that it saves even more indentation but at the same time it feels
-a bit too implicit.
+I see. As long as you're sure the VM is completely inactive, and that
+such mappings are destroyed before the VM is used again, that's fine I
+guess. Might be worth a detailed explanation about the different
+scenarios though.
 
-I'm not sure...
