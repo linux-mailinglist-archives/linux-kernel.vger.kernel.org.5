@@ -2,860 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E6B07EDF5B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB497EDF5D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:15:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345090AbjKPLPS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:15:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38878 "EHLO
+        id S1345121AbjKPLPr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:15:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344987AbjKPLPP (ORCPT
+        with ESMTP id S1345155AbjKPLPl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:15:15 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24B8DD4B;
-        Thu, 16 Nov 2023 03:15:01 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AGBEncS62392432, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AGBEncS62392432
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Nov 2023 19:14:49 +0800
-Received: from RTEXDAG01.realtek.com.tw (172.21.6.100) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.17; Thu, 16 Nov 2023 19:14:48 +0800
-Received: from RTEXH36506.realtek.com.tw (172.21.6.27) by
- RTEXDAG01.realtek.com.tw (172.21.6.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.7; Thu, 16 Nov 2023 19:14:47 +0800
-Received: from localhost.localdomain (172.21.252.101) by
- RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server id
- 15.1.2507.17 via Frontend Transport; Thu, 16 Nov 2023 19:14:47 +0800
-From:   Tzuyi Chang <tychang@realtek.com>
-To:     Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <brgl@bgdev.pl>,
-        Andy Shevchenko <andy@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-gpio@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, TY Chang <tychang@realtek.com>
-Subject: [PATCH v2 2/2] Add GPIO support for Realtek DHC(Digital Home Center) RTD SoCs.
-Date:   Thu, 16 Nov 2023 19:14:40 +0800
-Message-ID: <20231116111441.2339-3-tychang@realtek.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231116111441.2339-1-tychang@realtek.com>
-References: <20231116111441.2339-1-tychang@realtek.com>
+        Thu, 16 Nov 2023 06:15:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08B93B2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:15:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A6D8C433C7;
+        Thu, 16 Nov 2023 11:15:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700133330;
+        bh=PYuLWqWIvuzoTh9zLT3pDQjY0fceUqdyLBejuAD2FK4=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=NURLVtFgFJIc4O32AKjINLEyPmXpbOm5VoIoTocP6FVkvw7UyoBnZTT/mJE07X9Yv
+         TPoeK0s9WKGinXgkHWFLsAbxwxUWxDYykWgj8unq854qtBAxvTv0bJkFP9/CceN3s2
+         t49DCPOGtPFbdT+1WjppKc2UGgEpJAHCAv8urdiXOQpH/Pf9rJX0+JvsgmqudV2vzX
+         skfCmSulOrOT+cftBvSVL659PU+UHie3OK8i/FqS5PAOL3rCl9VUtjYW3OUlpBW43i
+         IjOMcH0mQwZ5K5gHyt8Ot1wdUeGD3J9IVaefl11Frb5dnRBQNJ+CLTyOFlD3A2y2ad
+         guoGpF/DnTCpA==
+Message-ID: <a6e39566-f872-4bae-83e4-212e75e705dc@kernel.org>
+Date:   Thu, 16 Nov 2023 12:15:21 +0100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-KSE-ServerInfo: RTEXDAG01.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 14/15] media: imx-asrc: Add memory to memory driver
+To:     Shengjiu Wang <shengjiu.wang@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>, hverkuil@xs4all.nl,
+        sakari.ailus@iki.fi, tfiga@chromium.org, m.szyprowski@samsung.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com,
+        festevam@gmail.com, nicoleotsuka@gmail.com, lgirdwood@gmail.com,
+        broonie@kernel.org, perex@perex.cz, tiwai@suse.com,
+        alsa-devel@alsa-project.org, linuxppc-dev@lists.ozlabs.org
+References: <1699595289-25773-1-git-send-email-shengjiu.wang@nxp.com>
+ <1699595289-25773-15-git-send-email-shengjiu.wang@nxp.com>
+ <70821f4c-d0f8-4a35-b664-0823bf430816@kernel.org>
+ <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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 fv0=
+In-Reply-To: <CAA+D8ANiNr0DVNP4eiTGVzvYGxTJJBjJocW++x0A9GDEbNTqRA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver enables configuration of GPIO direction, GPIO values, GPIO
-debounce settings and handles GPIO interrupts.
+On 16/11/2023 09:32, Shengjiu Wang wrote:
 
-Signed-off-by: Tzuyi Chang <tychang@realtek.com>
----
-v1 to v2 change:
-    1. Remove legacy headers.
-    2. Transitioned from OF API to platform_device API.
-    3. Use u8 for the offset member within the rtd_gpio_info structure.
-    4. Record the size of each array within the rtd_gpio_info structure and
-       implement checks to prevent out-of-bounds access.
-    5. Use GPIOLIB_IRQCHIP helpers to register interrupts.
-    6. Use dynamic allocation for GPIO base.
----
- drivers/gpio/Kconfig    |   9 +
- drivers/gpio/Makefile   |   1 +
- drivers/gpio/gpio-rtd.c | 736 ++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 746 insertions(+)
- create mode 100644 drivers/gpio/gpio-rtd.c
+>>> +MODULE_DESCRIPTION("Freescale ASRC M2M driver");
+>>> +MODULE_ALIAS("platform:" M2M_DRV_NAME);
+>>
+>> You should not need MODULE_ALIAS() in normal cases. If you need it,
+>> usually it means your device ID table is wrong (e.g. misses either
+>> entries or MODULE_DEVICE_TABLE()). MODULE_ALIAS() is not a substitute
+>> for incomplete ID table.
+> 
+> 
+> This driver don't have MODULE_DEVICE_TABLE.  it is only registered
+> by platform_device_register_data().
 
-diff --git a/drivers/gpio/Kconfig b/drivers/gpio/Kconfig
-index b3a133ed31ee..f0bdf9dbdefc 100644
---- a/drivers/gpio/Kconfig
-+++ b/drivers/gpio/Kconfig
-@@ -553,6 +553,15 @@ config GPIO_ROCKCHIP
- 	help
- 	  Say yes here to support GPIO on Rockchip SoCs.
- 
-+config GPIO_RTD
-+	tristate "Realtek DHC GPIO support"
-+	depends on ARCH_REALTEK
-+	default y
-+	select GPIOLIB_IRQCHIP
-+	help
-+	  Say yes here to support GPIO on Realtek DHC(Digital Home Center)
-+	  SoCs.
-+
- config GPIO_SAMA5D2_PIOBU
- 	tristate "SAMA5D2 PIOBU GPIO support"
- 	depends on MFD_SYSCON
-diff --git a/drivers/gpio/Makefile b/drivers/gpio/Makefile
-index eb73b5d633eb..16bb40717e87 100644
---- a/drivers/gpio/Makefile
-+++ b/drivers/gpio/Makefile
-@@ -137,6 +137,7 @@ obj-$(CONFIG_GPIO_RDC321X)		+= gpio-rdc321x.o
- obj-$(CONFIG_GPIO_REALTEK_OTTO)		+= gpio-realtek-otto.o
- obj-$(CONFIG_GPIO_REG)			+= gpio-reg.o
- obj-$(CONFIG_GPIO_ROCKCHIP)	+= gpio-rockchip.o
-+obj-$(CONFIG_GPIO_RTD)			+= gpio-rtd.o
- obj-$(CONFIG_ARCH_SA1100)		+= gpio-sa1100.o
- obj-$(CONFIG_GPIO_SAMA5D2_PIOBU)	+= gpio-sama5d2-piobu.o
- obj-$(CONFIG_GPIO_SCH311X)		+= gpio-sch311x.o
-diff --git a/drivers/gpio/gpio-rtd.c b/drivers/gpio/gpio-rtd.c
-new file mode 100644
-index 000000000000..b0dee7b6177c
---- /dev/null
-+++ b/drivers/gpio/gpio-rtd.c
-@@ -0,0 +1,736 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * Realtek DHC gpio driver
-+ *
-+ * Copyright (c) 2023 Realtek Semiconductor Corp.
-+ */
-+
-+#include <linux/bitops.h>
-+#include <linux/gpio/driver.h>
-+#include <linux/interrupt.h>
-+#include <linux/irqchip.h>
-+#include <linux/irqchip/chained_irq.h>
-+#include <linux/irqdomain.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/property.h>
-+#include <linux/spinlock.h>
-+
-+#define RTD_GPIO_DEBOUNCE_1US 0
-+#define RTD_GPIO_DEBOUNCE_10US 1
-+#define RTD_GPIO_DEBOUNCE_100US 2
-+#define RTD_GPIO_DEBOUNCE_1MS 3
-+#define RTD_GPIO_DEBOUNCE_10MS 4
-+#define RTD_GPIO_DEBOUNCE_20MS 5
-+#define RTD_GPIO_DEBOUNCE_30MS 6
-+
-+enum rtd_gpio_type {
-+	RTD_ISO_GPIO = 0,
-+	RTD1295_ISO_GPIO,
-+	RTD1295_MISC_GPIO,
-+	RTD1395_ISO_GPIO,
-+	RTD1619_ISO_GPIO,
-+};
-+
-+/**
-+ * struct rtd_gpio_info - Specific GPIO register information
-+ * @name: GPIO device name
-+ * @type: RTD GPIO ID
-+ * @gpio_base: GPIO base number
-+ * @num_gpios: Number of GPIOs
-+ * @dir_offset: Offset for GPIO direction registers
-+ * @dato_offset: Offset for GPIO data output registers
-+ * @dati_offset: Offset for GPIO data input registers
-+ * @ie_offset: Offset for GPIO interrupt enable registers
-+ * @dp_offset: Offset for GPIO detection polarity registers
-+ * @gpa_offset: Offset for GPIO assert interrupt status registers
-+ * @gpda_offset: Offset for GPIO deassert interrupt status registers
-+ * @deb_offset: Offset for GPIO debounce registers
-+ */
-+struct rtd_gpio_info {
-+	const char		*name;
-+	enum rtd_gpio_type	type;
-+	unsigned int		gpio_base;
-+	unsigned int		num_gpios;
-+	u8			*dir_offset;
-+	u8			num_dir;
-+	u8			*dato_offset;
-+	u8			num_dato;
-+	u8			*dati_offset;
-+	u8			num_dati;
-+	u8			*ie_offset;
-+	u8			num_ie;
-+	u8			*dp_offset;
-+	u8			num_dp;
-+	u8			*gpa_offset;
-+	u8			num_gpa;
-+	u8			*gpda_offset;
-+	u8			num_gpda;
-+	u8			*deb_offset;
-+	u8			num_deb;
-+};
-+
-+struct rtd_gpio {
-+	struct platform_device		*pdev;
-+	const struct rtd_gpio_info	*info;
-+	void __iomem			*base;
-+	void __iomem			*irq_base;
-+	struct gpio_chip		gpio_chip;
-+	unsigned int			irqs[2];
-+	spinlock_t			lock;
-+};
-+
-+
-+static const struct rtd_gpio_info rtd_iso_gpio_info = {
-+	.name		= "rtd_iso_gpio",
-+	.type		= RTD_ISO_GPIO,
-+	.gpio_base	= 0,
-+	.num_gpios	= 82,
-+	.dir_offset	= (u8 []){ 0x0, 0x18, 0x2c },
-+	.num_dir	= 3,
-+	.dato_offset	= (u8 []){ 0x4, 0x1c, 0x30 },
-+	.num_dato	= 3,
-+	.dati_offset	= (u8 []){ 0x8, 0x20, 0x34 },
-+	.num_dati	= 3,
-+	.ie_offset	= (u8 []){ 0xc, 0x24, 0x38 },
-+	.num_ie		= 3,
-+	.dp_offset	= (u8 []){ 0x10, 0x28, 0x3c },
-+	.num_dp		= 3,
-+	.gpa_offset	= (u8 []){ 0x8, 0xe0, 0x90 },
-+	.num_gpa	= 3,
-+	.gpda_offset	= (u8 []){ 0xc, 0xe4, 0x94 },
-+	.num_gpda	= 3,
-+	.deb_offset	= (u8 []){ 0x44, 0x48, 0x4c, 0x50, 0x54, 0x58, 0x5c,
-+				   0x60, 0x64, 0x68, 0x6c },
-+	.num_deb	= 11,
-+};
-+
-+static const struct rtd_gpio_info rtd1619_iso_gpio_info = {
-+	.name		= "rtd1619_iso_gpio",
-+	.type		= RTD1619_ISO_GPIO,
-+	.gpio_base	= 0,
-+	.num_gpios	= 86,
-+	.dir_offset	= (u8 []){ 0x0, 0x18, 0x2c },
-+	.num_dir	= 3,
-+	.dato_offset	= (u8 []){ 0x4, 0x1c, 0x30 },
-+	.num_dato	= 3,
-+	.dati_offset	= (u8 []){ 0x8, 0x20, 0x34 },
-+	.num_dati	= 3,
-+	.ie_offset	= (u8 []){ 0xc, 0x24, 0x38 },
-+	.num_ie		= 3,
-+	.dp_offset	= (u8 []){ 0x10, 0x28, 0x3c },
-+	.num_dp		= 3,
-+	.gpa_offset	= (u8 []){ 0x8, 0xe0, 0x90 },
-+	.num_gpa	= 3,
-+	.gpda_offset	= (u8 []){ 0xc, 0xe4, 0x94 },
-+	.num_gpda	= 3,
-+	.deb_offset	= (u8 []){ 0x44, 0x48, 0x4c, 0x50, 0x54, 0x58, 0x5c,
-+				   0x60, 0x64, 0x68, 0x6c },
-+	.num_deb	= 11,
-+};
-+
-+static const struct rtd_gpio_info rtd1395_iso_gpio_info = {
-+	.name		= "rtd1395_iso_gpio",
-+	.type		= RTD1395_ISO_GPIO,
-+	.gpio_base	= 0,
-+	.num_gpios	= 57,
-+	.dir_offset	= (u8 []){ 0x0, 0x18 },
-+	.num_dir	= 2,
-+	.dato_offset	= (u8 []){ 0x4, 0x1c },
-+	.num_dato	= 2,
-+	.dati_offset	= (u8 []){ 0x8, 0x20 },
-+	.num_dati	= 2,
-+	.ie_offset	= (u8 []){ 0xc, 0x24 },
-+	.num_ie		= 2,
-+	.dp_offset	= (u8 []){ 0x10, 0x28 },
-+	.num_dp		= 2,
-+	.gpa_offset	= (u8 []){ 0x8, 0xe0 },
-+	.num_gpa	= 2,
-+	.gpda_offset	= (u8 []){ 0xc, 0xe4 },
-+	.num_gpda	= 2,
-+	.deb_offset	= (u8 []){ 0x30, 0x34, 0x38, 0x3c, 0x40, 0x44, 0x48, 0x4c },
-+	.num_deb	= 8,
-+};
-+
-+static const struct rtd_gpio_info rtd1295_misc_gpio_info = {
-+	.name		= "rtd1295_misc_gpio",
-+	.type		= RTD1295_ISO_GPIO,
-+	.gpio_base	= 0,
-+	.num_gpios	= 101,
-+	.dir_offset	= (u8 []){ 0x0, 0x4, 0x8, 0xc },
-+	.num_dir	= 4,
-+	.dato_offset	= (u8 []){ 0x10, 0x14, 0x18, 0x1c },
-+	.num_dato	= 4,
-+	.dati_offset	= (u8 []){ 0x20, 0x24, 0x28, 0x2c },
-+	.num_dati	= 4,
-+	.ie_offset	= (u8 []){ 0x30, 0x34, 0x38, 0x3c },
-+	.num_ie		= 4,
-+	.dp_offset	= (u8 []){ 0x40, 0x44, 0x48, 0x4c },
-+	.num_dp		= 4,
-+	.gpa_offset	= (u8 []){ 0x40, 0x44, 0xa4, 0xb8 },
-+	.num_gpa	= 4,
-+	.gpda_offset	= (u8 []){ 0x54, 0x58, 0xa8, 0xbc},
-+	.num_gpda	= 4,
-+	.deb_offset	= (u8 []){ 0x50 },
-+	.num_deb	= 1,
-+};
-+
-+static const struct rtd_gpio_info rtd1295_iso_gpio_info = {
-+	.name		= "rtd1295_iso_gpio",
-+	.type		= RTD1295_ISO_GPIO,
-+	.gpio_base	= 101,
-+	.num_gpios	= 35,
-+	.dir_offset	= (u8 []){ 0x0, 0x18 },
-+	.num_dir	= 2,
-+	.dato_offset	= (u8 []){ 0x4, 0x1c },
-+	.num_dato	= 2,
-+	.dati_offset	= (u8 []){ 0x8, 0x20 },
-+	.num_dati	= 2,
-+	.ie_offset	= (u8 []){ 0xc, 0x24 },
-+	.num_ie		= 2,
-+	.dp_offset	= (u8 []){ 0x10, 0x28 },
-+	.num_dp		= 2,
-+	.gpa_offset	= (u8 []){ 0x8, 0xe0 },
-+	.num_gpa	= 2,
-+	.gpda_offset	= (u8 []){ 0xc, 0xe4 },
-+	.num_gpda	= 2,
-+	.deb_offset	= (u8 []){ 0x14 },
-+	.num_deb	= 1,
-+};
-+
-+static int rtd_gpio_dir_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 32;
-+
-+	if (index > data->info->num_dir)
-+		return -EINVAL;
-+
-+	return data->info->dir_offset[index];
-+}
-+
-+static int rtd_gpio_dato_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 32;
-+
-+	if (index > data->info->num_dato)
-+		return -EINVAL;
-+
-+	return data->info->dato_offset[index];
-+}
-+
-+static int rtd_gpio_dati_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 32;
-+
-+	if (index > data->info->num_dati)
-+		return -EINVAL;
-+
-+	return data->info->dati_offset[index];
-+}
-+
-+static int rtd_gpio_ie_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 32;
-+
-+	if (index > data->info->num_ie)
-+		return -EINVAL;
-+
-+	return data->info->ie_offset[index];
-+}
-+
-+static int rtd_gpio_dp_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 32;
-+
-+	if (index > data->info->num_dp)
-+		return -EINVAL;
-+
-+	return data->info->dp_offset[index];
-+}
-+
-+static int rtd_gpio_gpa_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 31;
-+
-+	if (index > data->info->num_gpa)
-+		return -EINVAL;
-+
-+	return data->info->gpa_offset[index];
-+}
-+
-+static int rtd_gpio_gpda_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 31;
-+
-+	if (index > data->info->num_gpda)
-+		return -EINVAL;
-+
-+	return data->info->gpda_offset[index];
-+}
-+
-+static int rtd_gpio_deb_offset(struct rtd_gpio *data, unsigned int offset)
-+{
-+	int index = offset / 8;
-+
-+	if (index > data->info->num_deb)
-+		return -EINVAL;
-+
-+	return data->info->deb_offset[index];
-+}
-+
-+static int rtd_gpio_set_debounce(struct gpio_chip *chip, unsigned int offset,
-+				   unsigned int debounce)
-+{
-+	struct rtd_gpio *data = gpiochip_get_data(chip);
-+	unsigned int write_en;
-+	unsigned long flags;
-+	unsigned int shift;
-+	int reg_offset;
-+	u32 deb_val;
-+	u32 val;
-+
-+	switch (debounce) {
-+	case 1:
-+		deb_val = RTD_GPIO_DEBOUNCE_1US;
-+		break;
-+	case 10:
-+		deb_val = RTD_GPIO_DEBOUNCE_10US;
-+		break;
-+	case 100:
-+		deb_val = RTD_GPIO_DEBOUNCE_100US;
-+		break;
-+	case 1000:
-+		deb_val = RTD_GPIO_DEBOUNCE_1MS;
-+		break;
-+	case 10000:
-+		deb_val = RTD_GPIO_DEBOUNCE_10MS;
-+		break;
-+	case 20000:
-+		deb_val = RTD_GPIO_DEBOUNCE_20MS;
-+		break;
-+	case 30000:
-+		deb_val = RTD_GPIO_DEBOUNCE_30MS;
-+		break;
-+	default:
-+		return -ENOTSUPP;
-+	}
-+
-+	if (data->info->type == RTD1295_ISO_GPIO) {
-+		reg_offset = rtd_gpio_deb_offset(data, 0);
-+		if (reg_offset < 0)
-+			return reg_offset;
-+		shift = 0;
-+		deb_val += 1;
-+		write_en = BIT(shift + 3);
-+	} else if (data->info->type == RTD1295_MISC_GPIO) {
-+		reg_offset = rtd_gpio_deb_offset(data, 0);
-+		if (reg_offset < 0)
-+			return reg_offset;
-+		shift = (offset >> 4) * 4;
-+		deb_val += 1;
-+		write_en = BIT(shift + 3);
-+	} else {
-+		reg_offset = rtd_gpio_deb_offset(data, offset);
-+		if (reg_offset < 0)
-+			return reg_offset;
-+		shift = (offset % 8) * 4;
-+		write_en = BIT(shift + 3);
-+	}
-+	val = (deb_val << shift) | write_en;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+	writel_relaxed(val, data->base + reg_offset);
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int rtd_gpio_set_config(struct gpio_chip *chip, unsigned int offset,
-+				 unsigned long config)
-+{
-+	int debounce;
-+
-+	switch (pinconf_to_config_param(config)) {
-+	case PIN_CONFIG_BIAS_DISABLE:
-+	case PIN_CONFIG_BIAS_PULL_UP:
-+	case PIN_CONFIG_BIAS_PULL_DOWN:
-+		return gpiochip_generic_config(chip, offset, config);
-+	case PIN_CONFIG_INPUT_DEBOUNCE:
-+		debounce = pinconf_to_config_argument(config);
-+		return rtd_gpio_set_debounce(chip, offset, debounce);
-+	default:
-+		return -ENOTSUPP;
-+	}
-+}
-+
-+static int rtd_gpio_get_direction(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct rtd_gpio *data = gpiochip_get_data(chip);
-+	unsigned long flags;
-+	int reg_offset;
-+	u32 val;
-+
-+	reg_offset = rtd_gpio_dir_offset(data, offset);
-+	if (reg_offset < 0)
-+		return reg_offset;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + reg_offset);
-+	val &= BIT(offset % 32);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return val ? GPIO_LINE_DIRECTION_OUT : GPIO_LINE_DIRECTION_IN;
-+}
-+
-+static int rtd_gpio_set_direction(struct gpio_chip *chip, unsigned int offset, bool out)
-+{
-+	struct rtd_gpio *data = gpiochip_get_data(chip);
-+	u32 mask = BIT(offset % 32);
-+	unsigned long flags;
-+	int reg_offset;
-+	u32 val;
-+
-+	reg_offset = rtd_gpio_dir_offset(data, offset);
-+	if (reg_offset < 0)
-+		return reg_offset;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + reg_offset);
-+	if (out)
-+		val |= mask;
-+	else
-+		val &= ~mask;
-+	writel_relaxed(val, data->base + reg_offset);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return 0;
-+}
-+
-+static int rtd_gpio_direction_input(struct gpio_chip *chip, unsigned int offset)
-+{
-+	return rtd_gpio_set_direction(chip, offset, false);
-+}
-+
-+static int rtd_gpio_direction_output(struct gpio_chip *chip, unsigned int offset, int value)
-+{
-+	chip->set(chip, offset, value);
-+
-+	return rtd_gpio_set_direction(chip, offset, true);
-+}
-+
-+static void rtd_gpio_set(struct gpio_chip *chip, unsigned int offset, int value)
-+{
-+	struct rtd_gpio *data = gpiochip_get_data(chip);
-+	u32 mask = BIT(offset % 32);
-+	unsigned long flags;
-+	int dato_reg_offset;
-+	u32 val;
-+
-+	dato_reg_offset = rtd_gpio_dato_offset(data, offset);
-+	if (dato_reg_offset < 0)
-+		return;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + dato_reg_offset);
-+	if (value)
-+		val |= mask;
-+	else
-+		val &= ~mask;
-+	writel_relaxed(val, data->base + dato_reg_offset);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+}
-+
-+static int rtd_gpio_get(struct gpio_chip *chip, unsigned int offset)
-+{
-+	struct rtd_gpio *data = gpiochip_get_data(chip);
-+	int dir_reg_offset, dat_reg_offset;
-+	unsigned long flags;
-+	u32 val;
-+
-+	dir_reg_offset = rtd_gpio_dir_offset(data, offset);
-+	if (dir_reg_offset < 0)
-+		return dir_reg_offset;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + dir_reg_offset);
-+	val &= BIT(offset % 32);
-+	dat_reg_offset = val ?
-+			 rtd_gpio_dato_offset(data, offset) : rtd_gpio_dati_offset(data, offset);
-+
-+	val = readl_relaxed(data->base + dat_reg_offset);
-+	val >>= offset % 32;
-+	val &= 0x1;
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return val;
-+}
-+
-+static bool rtd_gpio_check_ie(struct rtd_gpio *data, int irq)
-+{
-+	int mask = BIT(irq % 32);
-+	int ie_reg_offset;
-+	u32 enable;
-+
-+	ie_reg_offset = rtd_gpio_ie_offset(data, irq);
-+	if (ie_reg_offset < 0)
-+		return ie_reg_offset;
-+	enable = readl_relaxed(data->base + ie_reg_offset);
-+
-+	return enable & mask;
-+}
-+
-+static void rtd_gpio_irq_handle(struct irq_desc *desc)
-+{
-+	int (*get_reg_offset)(struct rtd_gpio *gpio, unsigned int offset);
-+	struct rtd_gpio *data = irq_desc_get_handler_data(desc);
-+	struct irq_domain *domain = data->gpio_chip.irq.domain;
-+	struct irq_chip *chip = irq_desc_get_chip(desc);
-+	unsigned int irq = irq_desc_get_irq(desc);
-+	int reg_offset;
-+	u32 status;
-+	int hwirq;
-+	int i;
-+	int j;
-+
-+	chained_irq_enter(chip, desc);
-+
-+	if (irq == data->irqs[0])
-+		get_reg_offset = &rtd_gpio_gpa_offset;
-+	else if (irq == data->irqs[1])
-+		get_reg_offset = &rtd_gpio_gpda_offset;
-+
-+	for (i = 0; i < data->info->num_gpios; i = i + 31) {
-+		reg_offset = get_reg_offset(data, i);
-+		if (reg_offset < 0)
-+			return;
-+
-+		status = readl_relaxed(data->irq_base + reg_offset) >> 1;
-+		writel_relaxed(status << 1, data->irq_base + reg_offset);
-+
-+		while (status) {
-+			j = __ffs(status);
-+			status &= ~BIT(j);
-+			hwirq = i + j;
-+			if (rtd_gpio_check_ie(data, hwirq)) {
-+				int girq = irq_find_mapping(domain, hwirq);
-+				u32 irq_type = irq_get_trigger_type(girq);
-+
-+				if ((irq == data->irqs[1]) && ((irq_type & IRQ_TYPE_SENSE_MASK) !=
-+					IRQ_TYPE_EDGE_BOTH))
-+					break;
-+				generic_handle_irq(girq);
-+			}
-+		}
-+	}
-+
-+	chained_irq_exit(chip, desc);
-+}
-+
-+static void rtd_gpio_enable_irq(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct rtd_gpio *data = gpiochip_get_data(gc);
-+	u32 clr_mask = BIT(d->hwirq % 31) << 1;
-+	u32 ie_mask = BIT(d->hwirq % 32);
-+	unsigned long flags;
-+	int gpda_reg_offset;
-+	int gpa_reg_offset;
-+	int ie_reg_offset;
-+	u32 val;
-+
-+	ie_reg_offset = rtd_gpio_ie_offset(data, d->hwirq);
-+	if (ie_reg_offset < 0)
-+		return;
-+	gpa_reg_offset = rtd_gpio_gpa_offset(data, d->hwirq);
-+	if (gpa_reg_offset < 0)
-+		return;
-+	gpda_reg_offset = rtd_gpio_gpda_offset(data, d->hwirq);
-+	if (gpda_reg_offset < 0)
-+		return;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	writel_relaxed(clr_mask, data->irq_base + gpa_reg_offset);
-+	writel_relaxed(clr_mask, data->irq_base + gpda_reg_offset);
-+
-+	val = readl_relaxed(data->base + ie_reg_offset);
-+	val |= ie_mask;
-+	writel_relaxed(val, data->base + ie_reg_offset);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+}
-+
-+static void rtd_gpio_disable_irq(struct irq_data *d)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct rtd_gpio *data = gpiochip_get_data(gc);
-+	u32 ie_mask = BIT(d->hwirq % 32);
-+	unsigned long flags;
-+	int ie_reg_offset;
-+	u32 val;
-+
-+	ie_reg_offset = rtd_gpio_ie_offset(data, d->hwirq);
-+	if (ie_reg_offset < 0)
-+		return;
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + ie_reg_offset);
-+	val &= ~ie_mask;
-+	writel_relaxed(val, data->base + ie_reg_offset);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+}
-+
-+static int rtd_gpio_irq_set_type(struct irq_data *d, unsigned int type)
-+{
-+	struct gpio_chip *gc = irq_data_get_irq_chip_data(d);
-+	struct rtd_gpio *data = gpiochip_get_data(gc);
-+	u32 mask = BIT(d->hwirq % 32);
-+	unsigned long flags;
-+	int dp_reg_offset;
-+	bool polarity;
-+	u32 val;
-+
-+	dp_reg_offset = rtd_gpio_dp_offset(data, d->hwirq);
-+	if (dp_reg_offset < 0)
-+		return dp_reg_offset;
-+
-+	switch (type & IRQ_TYPE_SENSE_MASK) {
-+	case IRQ_TYPE_EDGE_RISING:
-+		polarity = 1;
-+		break;
-+
-+	case IRQ_TYPE_EDGE_FALLING:
-+		polarity = 0;
-+		break;
-+
-+	case IRQ_TYPE_EDGE_BOTH:
-+		polarity = 1;
-+		break;
-+
-+	default:
-+		return -EINVAL;
-+	}
-+
-+	spin_lock_irqsave(&data->lock, flags);
-+
-+	val = readl_relaxed(data->base + dp_reg_offset);
-+	if (polarity)
-+		val |= mask;
-+	else
-+		val &= ~mask;
-+	writel_relaxed(val, data->base + dp_reg_offset);
-+
-+	spin_unlock_irqrestore(&data->lock, flags);
-+
-+	return 0;
-+}
-+
-+static const struct irq_chip rtd_gpio_irq_chip = {
-+	.name = "rtd-gpio",
-+	.irq_enable = rtd_gpio_enable_irq,
-+	.irq_disable = rtd_gpio_disable_irq,
-+	.irq_set_type = rtd_gpio_irq_set_type,
-+	.flags = IRQCHIP_IMMUTABLE,
-+};
-+
-+static const struct of_device_id rtd_gpio_of_matches[] = {
-+	{ .compatible = "realtek,rtd-gpio", .data = &rtd_iso_gpio_info },
-+	{ .compatible = "realtek,rtd1295-misc-gpio", .data = &rtd1295_misc_gpio_info },
-+	{ .compatible = "realtek,rtd1295-iso-gpio", .data = &rtd1295_iso_gpio_info },
-+	{ .compatible = "realtek,rtd1395-iso-gpio", .data = &rtd1395_iso_gpio_info },
-+	{ .compatible = "realtek,rtd1619-iso-gpio", .data = &rtd1619_iso_gpio_info },
-+	{ }
-+};
-+MODULE_DEVICE_TABLE(of, rtd_gpio_of_matches);
-+
-+static int rtd_gpio_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct gpio_irq_chip *irq_chip;
-+	struct rtd_gpio *data;
-+
-+	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
-+	if (!data)
-+		return -ENOMEM;
-+
-+	data->irqs[0] = platform_get_irq(pdev, 0);
-+	if (data->irqs[0] < 0)
-+		return data->irqs[0];
-+
-+	data->irqs[1] = platform_get_irq(pdev, 1);
-+	if (data->irqs[1] < 0)
-+		return data->irqs[1];
-+
-+	data->info = device_get_match_data(dev);
-+	if (!data->info)
-+		return -EINVAL;
-+
-+	spin_lock_init(&data->lock);
-+
-+	data->base = devm_platform_ioremap_resource(pdev, 0);
-+	if (IS_ERR(data->base))
-+		return PTR_ERR(data->base);
-+
-+	data->irq_base = devm_platform_ioremap_resource(pdev, 1);
-+	if (IS_ERR(data->irq_base))
-+		return PTR_ERR(data->irq_base);
-+
-+	data->gpio_chip.label = dev_name(&pdev->dev);
-+	data->gpio_chip.base = -1;
-+	data->gpio_chip.ngpio = data->info->num_gpios;
-+	data->gpio_chip.request = gpiochip_generic_request;
-+	data->gpio_chip.free = gpiochip_generic_free;
-+	data->gpio_chip.get_direction = rtd_gpio_get_direction;
-+	data->gpio_chip.direction_input = rtd_gpio_direction_input;
-+	data->gpio_chip.direction_output = rtd_gpio_direction_output;
-+	data->gpio_chip.set = rtd_gpio_set;
-+	data->gpio_chip.get = rtd_gpio_get;
-+	data->gpio_chip.set_config = rtd_gpio_set_config;
-+
-+	irq_chip = &data->gpio_chip.irq;
-+	irq_chip->handler = handle_simple_irq;
-+	irq_chip->default_type = IRQ_TYPE_NONE;
-+	irq_chip->parent_handler = rtd_gpio_irq_handle;
-+	irq_chip->parent_handler_data = data;
-+	irq_chip->num_parents = 2;
-+	irq_chip->parents = data->irqs;
-+
-+	gpio_irq_chip_set_chip(irq_chip, &rtd_gpio_irq_chip);
-+
-+	return devm_gpiochip_add_data(&pdev->dev, &data->gpio_chip, data);
-+}
-+
-+static struct platform_driver rtd_gpio_platform_driver = {
-+	.driver = {
-+		.name = "gpio-rtd",
-+		.of_match_table = rtd_gpio_of_matches,
-+	},
-+	.probe = rtd_gpio_probe,
-+};
-+
-+static int rtd_gpio_init(void)
-+{
-+	return platform_driver_register(&rtd_gpio_platform_driver);
-+}
-+
-+subsys_initcall(rtd_gpio_init);
-+
-+static void __exit rtd_gpio_exit(void)
-+{
-+	platform_driver_unregister(&rtd_gpio_platform_driver);
-+}
-+module_exit(rtd_gpio_exit);
-+
-+MODULE_DESCRIPTION("Realtek DHC SoC gpio driver");
-+MODULE_LICENSE("GPL v2");
--- 
-2.42.0
+Which is the problem. I thought I made myself clear but if it is not the
+case: drop MODULE_ALIAS.
+
+Best regards,
+Krzysztof
 
