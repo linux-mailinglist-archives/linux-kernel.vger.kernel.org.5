@@ -2,54 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B7B7EE5B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:12:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3357EE5C8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:17:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231300AbjKPRM6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:12:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33166 "EHLO
+        id S231314AbjKPRRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:17:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKPRM5 (ORCPT
+        with ESMTP id S229464AbjKPRRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:12:57 -0500
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82600101;
-        Thu, 16 Nov 2023 09:12:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-        bh=AR8tidW07BWvnPd6hH5WrFB2sCe8sD6k6E4/XZ64rcg=; b=fcIY5YqmtbOWCIcw+n57lx5crF
-        6XlX4opbD49iBF3QArCUltjCMWZotExrqacZIC26KVjnJRkAJXI4y8TGhBP8/CRVrDq59kz4ABLCE
-        c8LKmNd48yccc+V2TM6lFtvTipCvgY4QB1agJya1v+TUvrZg5RGQTkDb5mAx8AKwn/B0=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1r3fv3-000NHs-Ky; Thu, 16 Nov 2023 18:12:45 +0100
-Date:   Thu, 16 Nov 2023 18:12:45 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Jie Luo <quic_luoj@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hkallweit1@gmail.com, linux@armlinux.org.uk,
-        robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
-Subject: Re: [PATCH 8/9] net: mdio: ipq4019: add qca8084 configurations
-Message-ID: <be36ecb8-8bd7-4756-927e-fa5f266510da@lunn.ch>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-9-quic_luoj@quicinc.com>
- <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
- <2ca3c6eb-93da-4e44-aa6b-c426b8baecb9@quicinc.com>
+        Thu, 16 Nov 2023 12:17:36 -0500
+Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C72D7B7
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:17:33 -0800 (PST)
+Received: by mail-qt1-x82a.google.com with SMTP id d75a77b69052e-41cd97d7272so6155821cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:17:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700155053; x=1700759853; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=GZ6Aqq6dKcIiz4KNqpcEndgtY5UWjx8EZWmrvIflcGg=;
+        b=uVatBlrY1SSVzsHzR+Cc04fVgM8m+PCJNRn74hdzxkegvvihWiiY/CExk3Dn6UmMbC
+         gZ/CNP8489LLdl9EraX1Mb4SLZBxwsmLIyQelQxS7Ds1g9pdmTT4c8F8DwvJtV2UQk8M
+         pr2ZUpq4P5REj4C/P2vDxo55gG04w6IMOX1sKtd/0N+WDcnbcQw/BCQ5i0yOARq0HiK3
+         S6f/qPm6zzmwtrGlpdCau9U6RRIZuKRAEuSb2JqGIgeZDkkEXSrlCUkRM+jgVOi+Y3IQ
+         gK8jKSnvqAENr4zJaOELI1PxubiGk2W1QJm7/d/ALEm5/dc6wl5BHjTW3mfmMG24wv94
+         Ue7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700155053; x=1700759853;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GZ6Aqq6dKcIiz4KNqpcEndgtY5UWjx8EZWmrvIflcGg=;
+        b=ANDtZqAmCsW0IvNMnmqPzSQf0+X19QPTXr8UVNMUm9zVRlnCr2E+RMbnanlRgYfUck
+         MAzW5f+otJFu++yiJxN6Si3jFESC9OpcJL1FlvyYbmH/H1h4Xgq+s34g8OGVF+RZrL7D
+         2EqhwoabL1BhOJCPdiF3w7HmiNEjSmu+JdAOlZJst2U7CKDS0bd7IRPZqcgdOVCK2vFa
+         Ku352Ws19ox6ZYvXlqg0krrDdq9oyEly4w7UWyINVJNnTPv1TRRXrqWKAAHMX+lvT9kS
+         JemsrRiNT1VoTrPwSobte1tK7RF4oMEf6qKlkuL1JKyf22GLA74AL4/hLXGZwSDRm2rt
+         yrVw==
+X-Gm-Message-State: AOJu0Ywq2jukd9eoGBmTkY+KnAXxoaNY91uzVEV6My3h/XMUuyALXlFQ
+        HIk9djJ1mIN+KueIXh10ibS5fg==
+X-Google-Smtp-Source: AGHT+IHnoW2Uul1untByd8zO5HJJcgaTiRH+PnAEGm4V2eGQxbX0K+D1eHNeSV/zsJKaYO2my0/Zyw==
+X-Received: by 2002:ac8:4e4c:0:b0:421:ab8f:9895 with SMTP id e12-20020ac84e4c000000b00421ab8f9895mr11823648qtw.24.1700155052958;
+        Thu, 16 Nov 2023 09:17:32 -0800 (PST)
+Received: from [10.44.189.251] ([12.161.6.169])
+        by smtp.gmail.com with ESMTPSA id kr25-20020ac861d9000000b00421a0b66bd2sm4471402qtb.4.2023.11.16.09.17.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 09:17:32 -0800 (PST)
+Message-ID: <e9daa8cc-9cdd-4b76-96b9-b9a6b1ef6f5e@linaro.org>
+Date:   Thu, 16 Nov 2023 18:17:31 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2ca3c6eb-93da-4e44-aa6b-c426b8baecb9@quicinc.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/5] dt-bindings: gpu: samsung: constrain clocks in
+ top-level properties
+To:     Rob Herring <robh@kernel.org>, Conor Dooley <conor@kernel.org>
+Cc:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Inki Dae <inki.dae@samsung.com>,
+        dri-devel@lists.freedesktop.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231112184403.3449-1-krzysztof.kozlowski@linaro.org>
+ <20231112184403.3449-3-krzysztof.kozlowski@linaro.org>
+ <20231113-sultry-cold-d63dd9f015d9@squawk>
+ <20231116162855.GA2435337-robh@kernel.org>
+Content-Language: en-US
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231116162855.GA2435337-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,34 +131,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 06:47:08PM +0800, Jie Luo wrote:
+On 16/11/2023 17:28, Rob Herring wrote:
+> On Mon, Nov 13, 2023 at 01:51:30PM +0000, Conor Dooley wrote:
+>> On Sun, Nov 12, 2023 at 07:44:01PM +0100, Krzysztof Kozlowski wrote:
+>>> When number of clock varies between variants, the Devicetree bindings
+>>> coding convention expects to have widest constraints in top-level
+>>> definition of the properties and narrow them in allOf:if:then block.
+>>>
+>>> This is more readable and sometimes allows to spot some errors in the
+>>> bindings.
+>>>
+>>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+>>
+>>
+>> Åcked-by: Conor Dooley <conor.dooley@microchip.com>
 > 
+>   ^
 > 
-> On 11/16/2023 12:20 AM, Andrew Lunn wrote:
-> > On Wed, Nov 15, 2023 at 11:25:14AM +0800, Luo Jie wrote:
-> > > The PHY & PCS clocks need to be enabled and the reset
-> > > sequence needs to be completed to make qca8084 PHY
-> > > probeable by MDIO bus.
-> > 
-> > Is all this guaranteed to be the same between different boards? Can
-> > the board be wired differently and need a different configuration?
-> > 
-> >      Andrew
-> 
-> Hi Andrew,
-> This configuration sequence is specified to the qca8084 chip,
-> not related with the platform(such as ipq5332).
-> 
-> All these configured registers are located in qca8084 chip, we need
-> to complete these configurations to make MDIO bus being able to
-> scan the qca8084 PHY(PHY registers can be accessed).
+> Not an 'A'. I only caught this because I go thru everything 
+> Acked/Reviewed-by first and this one was missed.
 
-So nothing here has anything to do with the actual PHYs on the bus?
-The only clock exposed here is MDC, and that runs at the standard
-2.5MHz? All the clock tree configuration is completely internal to the
-SOC?
+And in Norwegian it is pronounced as "o", so this would be ocked-by :)
 
-What we don't want is some hard coded configuration which only works
-for one specific reference design.
+Best regards,
+Krzysztof
 
-	Andrew
