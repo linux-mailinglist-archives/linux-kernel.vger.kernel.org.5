@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 53CB07EDA69
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 316037EDA76
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:50:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230250AbjKPDgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:36:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
+        id S230125AbjKPDuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234622AbjKPDgU (ORCPT
+        with ESMTP id S229692AbjKPDuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:36:20 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 102AA19B
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:36:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700105777; x=1731641777;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=xdM+BewN/4I7kVeLguKi8x48n9f6ZHrfJ+PjPDSR3cM=;
-  b=U4Hzloabjrz9ZLEJyBTLNYkABWqUfTXBAB6M8u4AiOCWK3oiqMOnCVAE
-   tKC8GLWKr0in2hI9kpQexk4EgUJo8RH7eMnsOXLUCXp7lPDrYzdK8fUy7
-   q/vJcsehkRwWR6edJDf3pA0gO4lpyW+eFjHbuXM2k8He8acVRJc4VIRKS
-   pEJ4p2gQV+5Nk9/xQhP/2YqhRsfntCrXBONw1eVHC+bFq14qk08Yr6iHZ
-   tYQ2Zs6wu/RsrWXttonZQCBsLZqyaspzIEOc4AU78IeyR+Q3lQWWZes3r
-   QsVZGiC1J7Op3LSwK5jUXQvXHyL58si7//fWRWJaZHgz3VdqINQ/D7fPV
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="389862319"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="389862319"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 19:36:09 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="13417805"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 19:36:09 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 19:36:08 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 19:36:08 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.168)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 19:36:08 -0800
+        Wed, 15 Nov 2023 22:50:19 -0500
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95A96189;
+        Wed, 15 Nov 2023 19:50:14 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kgArJZXU8J1Ssz7C9JFPWPjJg9zjT602F3G6jyHCGVhx2ql0pT97w+oqPv0grNwt1z1wgFadgRsdp6ji65PJ1YXFl7IfUQXhFYybNsdce5Z9VR3Y9Nrt6PQsNVJZNIa/R8QEVGFYBZ9lNEeXlI4PZRWXCFdEaxEvq9Cy4W4Fmo5hTSkpCbLHoQkTkBAWVRgEBF0QHc6hL6NaxlC5RODh8SMBxB5IZPiNgl/w5+au3RsPQ3oGpF3ObZUbqvTe7bOnBxWcJVey2jVYhIkKntZYUvcvYEBVn6714l78YDyIFzLYh8KmZPaNyUzMar8OF3XADUsp0X6Ybge+BPeYJM7LQw==
+ b=mybGHOTEp0DkLvoagcASWt0GY2PkceWpQpv/H+s7ZvgJ0fIruXJ9x74RPQsM1PskDozL1rgIuHtLgZu4ksHbb20HvvhsHLbSnbnAN/0Cb3mmR7IGOM7AbVAn3obWbpn2sqhxnpN0ZNAIb4S+O71CrfP1xUK5VjVBSnOhoKnOD53iqsEeReLlB+ve6/RhK+aoJhXHAphXptT1Asx8dQxH+h/daFLd1P6Yd2totZq/PhpbAQOQfx4vNsH3Fv/TJDdqSCqEyTFdk7Tb4HEyNATqWh9cYVuzKWLp2l80hu8iCWAH3Weln3YvtjJiY2vmN4R8Bt6S9Jhf69Og20ZVjtoR0w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=nT5U+3b+dpwfN4UMyU2eXhHIwTKm3aB9wWszTvuhjGk=;
- b=ciGnuEnXt2ya1HwHJv4Ao5zSR0b3ISJL3v6GM3qBpHWWMYM0tbRF3CRNXmpK4nLT/wn0REPeF3CCmVV7Sp3YAm5oPKO4XDBO6NpmQ3/TVkwJ5mTHvoJeE4VZri4vp+aN/3hlrXktbBSaXnUvLR4RBZHKL1kMW1uxJgGhk3D2nCgnvTGAhi0HemkmxnsKbFljntKzSSV+SStMt/MC6ugoBwxeSQQ3w0a35LXJiixuqK3njWT6OpnbpnK06ykRLhSTAi8RfQ7Ypqey0gRB5HUEGFk5VREPBEyJ5JUn9Mhx4wBArwgtaBJC1zeX7xZr34lJdClQY4XgWpO6DLDRlodszA==
+ bh=cd/6GRqOuLmcsm37ziA+eCuksC94oar8VCmwB2CzliQ=;
+ b=V1ZCuxYZzAc9vReHF6Q1JObmj6kqV6aEsadvyFlz/Xc1cvfE6Cq7eDsl4FUtJSREIbio1slLgiQO5gnH1H2AQIgZ9IqTspaZkBqJv2lPBWUr8/I4iyP5VPHsxVME9rbrlJpmJPvKJtgkXNvYtxs0gBDOaFFR2Xw90JxfWAtbq5I8SH7Ji4hbOfe4YMSvl4QOq9ziDI/Og6KYw8zGj325dx+whUdJZ+nB6rSeuBhU7IiAntbmmzoTKsV9kN6hvh/I+JWkQx7A3g5TyTmza3W4SX7tBfhEKzYotmWZUa80+f5Vk6EGQQ5CCjyh9WvdhCfq5f6azSYMbZ+hujyXCqFmvA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=cd/6GRqOuLmcsm37ziA+eCuksC94oar8VCmwB2CzliQ=;
+ b=VNEQ6nFqJ2r4ORzHz6RAICSR5rMxGQt+Z0blZ6ip1YqwxKN6ljoZV2iUzvWImXaQz4ndjYjZzgE5hWRv91ESBl7EJW++I/jbnUUoFY1JUVIhMKw7o43SyINJn0Y+qLAzaE++onKQ0zMCN+nRJM+JNUUicTo6wK0S/QFknuhaEq4=
 Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
- by BL3PR11MB5699.namprd11.prod.outlook.com (2603:10b6:208:33e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
- 2023 03:36:06 +0000
-Received: from BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::2f1a:e62e:9fff:ae67]) by BL0PR11MB2995.namprd11.prod.outlook.com
- ([fe80::2f1a:e62e:9fff:ae67%5]) with mapi id 15.20.7002.019; Thu, 16 Nov 2023
- 03:36:06 +0000
-Date:   Thu, 16 Nov 2023 11:35:58 +0800
-From:   kernel test robot <philip.li@intel.com>
-To:     Sui Jingfeng <suijingfeng@loongson.cn>
-CC:     <oe-kbuild-all@lists.linux.dev>, <linux-kernel@vger.kernel.org>
-Subject: drivers/gpu/drm/loongson/lsdc_plane.c:268:42: sparse: sparse:
- self-comparison always evaluates to false
-Message-ID: <ZVWOHqAqo5RVjbqn@rli9-mobl>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-X-ClientProxiedBy: SG2PR04CA0163.apcprd04.prod.outlook.com (2603:1096:4::25)
- To BL0PR11MB2995.namprd11.prod.outlook.com (2603:10b6:208:7a::28)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
+ SA1PR01MB6784.prod.exchangelabs.com (2603:10b6:806:1a1::24) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.6977.31; Thu, 16 Nov 2023 03:50:10 +0000
+Received: from DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6]) by DM5PR0102MB3590.prod.exchangelabs.com
+ ([fe80::49fa:8dc0:6fd1:72e6%4]) with mapi id 15.20.6977.018; Thu, 16 Nov 2023
+ 03:50:09 +0000
+Date:   Wed, 15 Nov 2023 19:50:04 -0800 (PST)
+From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
+To:     Shuai Xue <xueshuai@linux.alibaba.com>
+cc:     kaishen@linux.alibaba.com, helgaas@kernel.org,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+Subject: Re: [PATCH v10 4/5] drivers/perf: add DesignWare PCIe PMU driver
+In-Reply-To: <20231104133216.42056-5-xueshuai@linux.alibaba.com>
+Message-ID: <32626689-c8b1-9bd-b00-5285c633bfbc@os.amperecomputing.com>
+References: <20231104133216.42056-1-xueshuai@linux.alibaba.com> <20231104133216.42056-5-xueshuai@linux.alibaba.com>
+Content-Type: text/plain; charset=US-ASCII; format=flowed
+X-ClientProxiedBy: CH2PR03CA0027.namprd03.prod.outlook.com
+ (2603:10b6:610:59::37) To DM5PR0102MB3590.prod.exchangelabs.com
+ (2603:10b6:4:a4::25)
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR11MB2995:EE_|BL3PR11MB5699:EE_
-X-MS-Office365-Filtering-Correlation-Id: fab27954-3661-4ddf-689c-08dbe6552a61
+X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|SA1PR01MB6784:EE_
+X-MS-Office365-Filtering-Correlation-Id: 55653fde-c2b1-497e-6729-08dbe6572116
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: AW6waPGOFs8liaezcgzUqaPGf+nhWYbr1LiDaF3SI+j84mMyoEHRShdxiCyAhatlCx7CTokcBN25Q9hRYGDONVqe8wkypCBdGFghTbcWrWbXMwijJvGyIdTXaFBibArme4aRda6mAiV9lkTAHUgAhir9n9ynTK+apGVes/wyORcILb7jveY4u09vo8Ms/v9IWBiRDfAmePBhT32MVVVXkU2a0eX504y2RAlZtOjK6uYq20CL/lSjO8ejAoDiKM5vF7pXePj38A6iLUl2XGvg/yg7v968HzyVAULhPTGNHJRciKHtos1bDnpd6iRmj/qkwq3h0UrHC8e5trjt5WFXWLYwh6yURrIgXJAA+JQxQ8G5W4ZQsnmDar+eKAo4BJTngKEsczZEukqqP5mjdyCSrGfvQ1yaNxfd8ZuvAFowBDkuc9XhLlpXWbfFQKY8M0AgEemb4QQ0P9fzZgMQh8Hpx7txLQ3mcRg3A8TB1Nfn5QHqlwloznbIwGXnxNcRBntxu5rNz57ubFSwNXtjAf9freFPYnL/6FsGUnafEP+xyukLwoEd+xm50oa83unUz3ubjuYU5lGZe0XA33sozgqg0+uu+wsIZKJZYVPDczbHWjXBc1LQ78YVq5vOfQXIiQIGMbTbTE5S9ba0qnTLibhTWw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR11MB2995.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7916004)(136003)(366004)(376002)(396003)(346002)(39860400002)(230273577357003)(230173577357003)(230922051799003)(64100799003)(1800799009)(451199024)(186009)(38100700002)(41300700001)(8936002)(8676002)(4326008)(82960400001)(83380400001)(26005)(6506007)(2906002)(9686003)(6512007)(33716001)(6666004)(478600001)(6486002)(966005)(316002)(6916009)(86362001)(66476007)(66946007)(66556008)(5660300002);DIR:OUT;SFP:1102;
+X-Microsoft-Antispam-Message-Info: 3SRzOHaun3bvSom3wYSyTUxo/y0IJz3sen6TpHP/U9FU38eVncZIQ/fmeHn3OoIFb0VLa0C/784k64nfafWwjGn2kfofBvN/GubKGQEfhrUv6eE6F+qUONuhDpmTm0yCWGzjc/9n2DaueYOpKIbyLEvWGY+cAwgnGxfgP3ARfwm0aJiZJZOkFK0gTOSuYBHH9xJil2Xm4jz+cwK8Ms4PhVDEzGNy3GZsxgC92jyAmAWj6pgF84s+Qu6GS592WnLmBSbUr7EPplQzkZbsT38mDmb27Tpq5yklle0ImSDtFz3LtFk3GFG25KzMCshg8Nw24lrlZjvNPKmWGkc0sHAhsohx1sS5TQdDiUNd/aoO9n9kGi7NxEa38t+bkUDRnDsJ6hImA+YIoGSjBHEk58PI1l4xoVDDgMpv76ILNtwZci0cZnzQs50JpnStan9c8jWTNRFZsVDmsEB7PnYDDOXojUw1Zl2443DRWNmSAsIA4ZcELVHFlRYgiacEZj+Y4flRCZj4L936NC7brqReRjAvrxAJhLs8OE5ZR0vJ5mt2e8WA0LLTBkE/NRtQlSqm4Jk1MX4VZZyjJUwXMIIG+IkvYvNktfQN4t8C+rKpWYgSbk9B3SNCZ/382Zrr1IVdCHZo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(376002)(39850400004)(366004)(230922051799003)(64100799003)(186009)(1800799009)(451199024)(38350700005)(86362001)(2906002)(2616005)(7416002)(41300700001)(5660300002)(8936002)(19627235002)(8676002)(4326008)(83380400001)(6916009)(26005)(478600001)(6506007)(316002)(6512007)(66556008)(52116002)(6666004)(6486002)(66476007)(38100700002)(66946007);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?1LzYmjsMvOrEcTOlpP3OnNvP0fzTLIxXfWWEPqsuMpKlvkC8yNOYwfoIK3yN?=
- =?us-ascii?Q?0kZQcnl9PFHjMv+hfa3zaNUxTh04jIYFK/NxkDAQcTP25ASQfm+OXj+tUZS0?=
- =?us-ascii?Q?B0WUSBgrk0z6AwzNoh/6GV2EZMmjYWIAN1l/EBTxobiJaRcJmQ7ltyfPfdsq?=
- =?us-ascii?Q?Fygc9mCapwNYCKPsKqcBGqRT3O2z5Llv4N0PDO5Mw25AlNLZj4Wxx0J3T3d5?=
- =?us-ascii?Q?non8rEy56/TVcS+f8ib9IlWRFdnYhdU9LGGGX3AWrqso7pB3ALwqoLWkHOfV?=
- =?us-ascii?Q?sxJm28qGIfocttDZ+HCTh5PuumhT9jXAcqE60Ftcx4uO3Kw5ZuFBc6hNoclC?=
- =?us-ascii?Q?fmCfSeEhPpCwWkxbtRvS1nrUI60v2zNxG0yfPxLdJ7xfraU843J25nMv1zbL?=
- =?us-ascii?Q?2fiMGa37arNKentx6rF5UpHS3gHraiZj2Inxw8rUhasG5/GDidQHRUkvOmEz?=
- =?us-ascii?Q?fniwpgxDNRnMqcX0fcJGB27jA0qo1mYpTW6TnMd+dt70NoBnxqRvLtsSiNhT?=
- =?us-ascii?Q?s6cBrLxeGW+VuMr+2fFD2kW5jZIyw79kqCd0LcE+CgpoxUwyn0QmPRCe9YZq?=
- =?us-ascii?Q?TeyAXXbgzuXvjfoJywy87EPD8i7H7CEg7EI7fSvId3sopPy5iCrhs+S3L4ub?=
- =?us-ascii?Q?ltGRB+uXuycRziTyuzG3FyNE5pa0lplvcjj6YHI9oFHdpZeua+7pTVkHYkIT?=
- =?us-ascii?Q?4hPu44k/lWXUO5S6eSylgFzBmVkfYWIgMURsO1XvWPKZGBkmNNdm9yW8+K/1?=
- =?us-ascii?Q?3l0INWhrsFrF3+mOLlgkNPH7o+uMujB0Hv2WdNcrakxHnuLZLA6byWucQLLw?=
- =?us-ascii?Q?sNXLRtfd60lrNoP5jcid3CYSKTx7kKIC/ZkbLTyEE+WHgqblmwJ0/JQLdxnb?=
- =?us-ascii?Q?WpGzFnTh8unex5plqIOieVCcIuzShn5Vm3N21tk/RCAb0ANvRR6Gz2i+gN5r?=
- =?us-ascii?Q?AGvYkp+mctiuuBbKBab2DxlOObAGrhhLod2qwvCbkQ6zGIcUit7M2+8Mp1rI?=
- =?us-ascii?Q?CEjR+g0qyGzOpjl5aPFb4zTPr6sFilXVcvZT3v2XRB6X/Caa55aG3It05hKX?=
- =?us-ascii?Q?qo9pDDsTcfX+JBFOnniVEATnJW+rMOgEcI/VQwiDYOw7PgG/pXZQasxPtT6X?=
- =?us-ascii?Q?SBeuox84ZIPEazWkK/0mTPB80+C6htkuWNiYC27n20Kyv6uUKwCrgqOFono/?=
- =?us-ascii?Q?3spCcYSiFcNN8sNhFrOOKRqAeKEtd8e6rAu1FhhKCnAFKYDtDhq7GuNByefd?=
- =?us-ascii?Q?zokVwDek2+XsLyLdV3vtjwHAH2QP2V8LwMTxtTyVKSOyaLYMPfVHnESU80gH?=
- =?us-ascii?Q?CAnlgIgVWZZnd794R+mtMtp/iXXaf6sE0BjnH0aim8fPF1EHAbaNRtS624Xv?=
- =?us-ascii?Q?23HP2laJxvNQ8PFy96WyAxRwYfB+U8OsTIczOaz/+ZeLKHcvPpDlKlcgwDF3?=
- =?us-ascii?Q?8LNZ/pJopFl4sjeyJwgeJV3KLnmFb8iGJacGrk1OwJAUcAkwSaL2VZaxi0Vf?=
- =?us-ascii?Q?nmVDTZmW9ZOGtxypHxXoms0QFGfFiuP4xKBWPZ7gSPFPgn8NeTc/9YyT7FvF?=
- =?us-ascii?Q?yZsw3Jzhxg+RsYbHBjXZkSI61N03wMHFVtcOUxxm?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: fab27954-3661-4ddf-689c-08dbe6552a61
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR11MB2995.namprd11.prod.outlook.com
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WDbtf3XHAvw3RPsYNVoRruXn/W+k9hQHisR6ceqzYnx23OMesTbBKv1Lj1Y2?=
+ =?us-ascii?Q?wwtfSN/Vm9usEGAYNwRTIxMG3TrL6JxCEUb1Soa/rl5cUzoa1pOTNzcFelIl?=
+ =?us-ascii?Q?bCDnDFKOWpP3b+t0QA+XW/6Hbzqfl2lEpYBfYI3eF3b4q9LA5NknQtkI3NTG?=
+ =?us-ascii?Q?q2MVbZwS9Wa9P909vsMdKbKry0e1QxS7g38IshlSWeAl8mZEZnzv2OdwH9wR?=
+ =?us-ascii?Q?iMoAXG5jn50qcSDZRz+pGocG5R+urR78vANdL2+V48rDRznQ20eamxqyDj7j?=
+ =?us-ascii?Q?aL4J+b5ZcrV/cnnT70YDsJx4JeJRYgAqprwlOQIq7+UUUruxbSvwkU46w/Pr?=
+ =?us-ascii?Q?lZGEJaDfMZyh/91sHXqWf/OaRGRX5zFGhXfbovGcFaNlqmx9XHOKHwLYC1Q/?=
+ =?us-ascii?Q?h1/2snRWWiTSg27iTgla04zYs/LUQenhjO9jziLWvg8xa/W3ZljCMGA2iTi1?=
+ =?us-ascii?Q?i0DWWVp/ewK/USFhBrl4FhLHLVzfiamOgdgXIYDV8Rnqnc/7lQFVwH5jjhKV?=
+ =?us-ascii?Q?K7pLqcemtwVtFR/kMwnMojUHte2vtOB+9y1vU+JzvyI3xYWFAFfotmUKWSy2?=
+ =?us-ascii?Q?Jsuu0u1C4Lt8QJkixeNIesYuynCeEXjs4ii6Mrr80QabTBj4m8wcn4rZJVim?=
+ =?us-ascii?Q?TiGdaw4GCrPcvAk5mcUIeoY3YiUbUVf6VkM39HU3g8qHEItCMjhX3YD3IsHU?=
+ =?us-ascii?Q?v2EHbci4CdEHpbI+wiHKsxcMKQo+FdrDUkfC1tkzJFLX3zahQYmeBaIc18//?=
+ =?us-ascii?Q?FiroKn6yKDTrIRPSjLxM4HNB8Fdnu1uY2JK3EimgZafStrjdiRgFJ502lMlY?=
+ =?us-ascii?Q?67rTGzbv3dS8dHWzGVi1C2dhY7Gz+SJXQySc5vNdDVo4lpIfMEASfWQXyDhH?=
+ =?us-ascii?Q?z8GbaecinLESRUi2UWPmp6IDtElCZAOI8vFn9w1u6uwFvRB8myiDe0qEp7Mf?=
+ =?us-ascii?Q?MtujpjbxZ0LVCZUmh5j4NBBeMcsGtRMRuXsX1hIxybFmhT/ZL+6ddjv6lrzo?=
+ =?us-ascii?Q?xHuoOR7DA7dYhf1aPOqgXvVF/HeupwU8FTTkBPEgG21tF+uMb4XO6BSn9V6h?=
+ =?us-ascii?Q?eTxPBadbuwRHV6XlIfBgs0lBx04EG70WSPbjco6fprKccUkYB/rxpIAR6KV7?=
+ =?us-ascii?Q?z11xKW0PjrQSBUvPiXzFaU91b/UI9BiA8GK/QlYmO4QTPRHT/oZt0Jk8gN1W?=
+ =?us-ascii?Q?Z/YbTq7siXs7mJX3E+sGtvIv3YOdxG6mlcBLlQo2nhoFWUPtj4i+nh9AQdp9?=
+ =?us-ascii?Q?ZrM7bIQf85o9DeYPFiaFdjzqKL8EbyOdJNOd9swY1XDGCzW5XIEZqse3ey4z?=
+ =?us-ascii?Q?tose1UR8e3f8+Dd9L/n0ufqWbflHznUx8RPRVD7+lFHU3rSO0yZ9XdTmjmDE?=
+ =?us-ascii?Q?0oR15ETFjWIZKcu5xilosaGHIYyu9AbDpAM5W8Eu2gQY2YcwCfOdicjE0WjI?=
+ =?us-ascii?Q?ZzvB2CusU5d/NF95jb/cXS8/2559gD2cUtLK4CjHw1S0NIoE2g5vjH69g9xF?=
+ =?us-ascii?Q?nf8waJszhnTK3REdLuKeBD48rIc/SoZ5DG080ubpx45+M4aV6e19Ngo/b+3D?=
+ =?us-ascii?Q?sA9TI6sRpoltwCqY7sXHhYwQGWXVgb/wl4ucJXYotXublokhC0/BhXVYW03I?=
+ =?us-ascii?Q?7v5LkTfc7YmpBKJLae7wVes=3D?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 55653fde-c2b1-497e-6729-08dbe6572116
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 03:36:06.4108
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 03:50:09.7327
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k34lqxEqwHwZSjMgHIEihIxUpfHdgdW1exUpiBWroT/mCQyTjwX5NIvOcO/KmRZqJCBYA0eAtm39OUbnODM+0Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB5699
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hIncSNFS7YEUZFnxevscXoN+OaoGpYC64/cxwnrJTLBmv1lHnk5LijS4BLHtc3kTZk1hkYuH5N2K4zjKD8Ay9uuEKq4qBT0Y/hIkF2aCzKRQ8yvfwuRTWgSF4oZmC/QK
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB6784
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -139,76 +119,249 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: f39db26c54281da6a785259498ca74b5e470476f drm: Add kms driver for loongson display controller
-date:   4 months ago
-:::::: branch date: 11 hours ago
-:::::: commit date: 4 months ago
-config: loongarch-randconfig-r111-20231115 (https://download.01.org/0day-ci/archive/20231115/202311152357.4KFS0M8f-lkp@intel.com/config)
-compiler: loongarch64-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231115/202311152357.4KFS0M8f-lkp@intel.com/reproduce)
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/r/202311152357.4KFS0M8f-lkp@intel.com/
+Hi Shuai,
 
-sparse warnings: (new ones prefixed by >>)
->> drivers/gpu/drm/loongson/lsdc_plane.c:268:42: sparse: sparse: self-comparison always evaluates to false
+I have a few comments below
 
-vim +268 drivers/gpu/drm/loongson/lsdc_plane.c
 
-f39db26c54281d Sui Jingfeng 2023-06-15  225  
-f39db26c54281d Sui Jingfeng 2023-06-15  226  static void lsdc_cursor_plane_atomic_async_update(struct drm_plane *plane,
-f39db26c54281d Sui Jingfeng 2023-06-15  227  						  struct drm_atomic_state *state)
-f39db26c54281d Sui Jingfeng 2023-06-15  228  {
-f39db26c54281d Sui Jingfeng 2023-06-15  229  	struct lsdc_cursor *cursor = to_lsdc_cursor(plane);
-f39db26c54281d Sui Jingfeng 2023-06-15  230  	const struct lsdc_cursor_plane_ops *ops = cursor->ops;
-f39db26c54281d Sui Jingfeng 2023-06-15  231  	struct drm_framebuffer *old_fb = plane->state->fb;
-f39db26c54281d Sui Jingfeng 2023-06-15  232  	struct drm_framebuffer *new_fb;
-f39db26c54281d Sui Jingfeng 2023-06-15  233  	struct drm_plane_state *new_state;
-f39db26c54281d Sui Jingfeng 2023-06-15  234  
-f39db26c54281d Sui Jingfeng 2023-06-15  235  	new_state = drm_atomic_get_new_plane_state(state, plane);
-f39db26c54281d Sui Jingfeng 2023-06-15  236  
-f39db26c54281d Sui Jingfeng 2023-06-15  237  	new_fb = plane->state->fb;
-f39db26c54281d Sui Jingfeng 2023-06-15  238  
-f39db26c54281d Sui Jingfeng 2023-06-15  239  	plane->state->crtc_x = new_state->crtc_x;
-f39db26c54281d Sui Jingfeng 2023-06-15  240  	plane->state->crtc_y = new_state->crtc_y;
-f39db26c54281d Sui Jingfeng 2023-06-15  241  	plane->state->crtc_h = new_state->crtc_h;
-f39db26c54281d Sui Jingfeng 2023-06-15  242  	plane->state->crtc_w = new_state->crtc_w;
-f39db26c54281d Sui Jingfeng 2023-06-15  243  	plane->state->src_x = new_state->src_x;
-f39db26c54281d Sui Jingfeng 2023-06-15  244  	plane->state->src_y = new_state->src_y;
-f39db26c54281d Sui Jingfeng 2023-06-15  245  	plane->state->src_h = new_state->src_h;
-f39db26c54281d Sui Jingfeng 2023-06-15  246  	plane->state->src_w = new_state->src_w;
-f39db26c54281d Sui Jingfeng 2023-06-15  247  	swap(plane->state->fb, new_state->fb);
-f39db26c54281d Sui Jingfeng 2023-06-15  248  
-f39db26c54281d Sui Jingfeng 2023-06-15  249  	if (new_state->visible) {
-f39db26c54281d Sui Jingfeng 2023-06-15  250  		enum lsdc_cursor_size cursor_size;
-f39db26c54281d Sui Jingfeng 2023-06-15  251  
-f39db26c54281d Sui Jingfeng 2023-06-15  252  		switch (new_state->crtc_w) {
-f39db26c54281d Sui Jingfeng 2023-06-15  253  		case 64:
-f39db26c54281d Sui Jingfeng 2023-06-15  254  			cursor_size = CURSOR_SIZE_64X64;
-f39db26c54281d Sui Jingfeng 2023-06-15  255  			break;
-f39db26c54281d Sui Jingfeng 2023-06-15  256  		case 32:
-f39db26c54281d Sui Jingfeng 2023-06-15  257  			cursor_size = CURSOR_SIZE_32X32;
-f39db26c54281d Sui Jingfeng 2023-06-15  258  			break;
-f39db26c54281d Sui Jingfeng 2023-06-15  259  		default:
-f39db26c54281d Sui Jingfeng 2023-06-15  260  			cursor_size = CURSOR_SIZE_32X32;
-f39db26c54281d Sui Jingfeng 2023-06-15  261  			break;
-f39db26c54281d Sui Jingfeng 2023-06-15  262  		}
-f39db26c54281d Sui Jingfeng 2023-06-15  263  
-f39db26c54281d Sui Jingfeng 2023-06-15  264  		ops->update_position(cursor, new_state->crtc_x, new_state->crtc_y);
-f39db26c54281d Sui Jingfeng 2023-06-15  265  
-f39db26c54281d Sui Jingfeng 2023-06-15  266  		ops->update_cfg(cursor, cursor_size, CURSOR_FORMAT_ARGB8888);
-f39db26c54281d Sui Jingfeng 2023-06-15  267  
-f39db26c54281d Sui Jingfeng 2023-06-15 @268  		if (!old_fb || old_fb != new_fb)
-f39db26c54281d Sui Jingfeng 2023-06-15  269  			ops->update_bo_addr(cursor, lsdc_fb_base_addr(new_fb));
-f39db26c54281d Sui Jingfeng 2023-06-15  270  	}
-f39db26c54281d Sui Jingfeng 2023-06-15  271  }
-f39db26c54281d Sui Jingfeng 2023-06-15  272  
+On Sat, 4 Nov 2023, Shuai Xue wrote:
+> This commit adds the PCIe Performance Monitoring Unit (PMU) driver support
+> for T-Head Yitian SoC chip. Yitian is based on the Synopsys PCI Express
+> Core controller IP which provides statistics feature. The PMU is a PCIe
+> configuration space register block provided by each PCIe Root Port in a
+> Vendor-Specific Extended Capability named RAS D.E.S (Debug, Error
+> injection, and Statistics).
+>
+> To facilitate collection of statistics the controller provides the
+> following two features for each Root Port:
+>
+> - one 64-bit counter for Time Based Analysis (RX/TX data throughput and
+>  time spent in each low-power LTSSM state) and
+> - one 32-bit counter for Event Counting (error and non-error events for
+>  a specified lane)
+>
+> Note: There is no interrupt for counter overflow.
+>
+> This driver adds PMU devices for each PCIe Root Port. And the PMU device is
+> named based the BDF of Root Port. For example,
+>
+>    30:03.0 PCI bridge: Device 1ded:8000 (rev 01)
+>
+> the PMU device name for this Root Port is dwc_rootport_3018.
+>
+> Example usage of counting PCIe RX TLP data payload (Units of bytes)::
+>
+>    $# perf stat -a -e dwc_rootport_3018/Rx_PCIe_TLP_Data_Payload/
+>
+> average RX bandwidth can be calculated like this:
+>
+>    PCIe TX Bandwidth = Rx_PCIe_TLP_Data_Payload / Measure_Time_Window
+>
+> Signed-off-by: Shuai Xue <xueshuai@linux.alibaba.com>
+> Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Reviewed-by: Yicong Yang <yangyicong@hisilicon.com>
+> ---
+> drivers/perf/Kconfig        |   7 +
+> drivers/perf/Makefile       |   1 +
+> drivers/perf/dwc_pcie_pmu.c | 798 ++++++++++++++++++++++++++++++++++++
+> 3 files changed, 806 insertions(+)
+> create mode 100644 drivers/perf/dwc_pcie_pmu.c
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+...
+
+> diff --git a/drivers/perf/dwc_pcie_pmu.c b/drivers/perf/dwc_pcie_pmu.c
+> new file mode 100644
+> index 000000000000..9485c41de322
+> --- /dev/null
+> +++ b/drivers/perf/dwc_pcie_pmu.c
+> @@ -0,0 +1,798 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Synopsys DesignWare PCIe PMU driver
+> + *
+> + * Copyright (C) 2021-2023 Alibaba Inc.
+> + */
+> +
+
+...
+
+> +static void dwc_pcie_pmu_time_based_event_enable(struct dwc_pcie_pmu *pcie_pmu,
+> +					  bool enable)
+> +{
+> +	struct pci_dev *pdev = pcie_pmu->pdev;
+> +	u16 ras_des_offset = pcie_pmu->ras_des_offset;
+> +
+> +	if (enable)
+> +		pci_clear_and_set_dword(pdev,
+> +			ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_CTL,
+> +			DWC_PCIE_TIME_BASED_TIMER_START, 0x1);
+> +	else
+> +		pci_clear_and_set_dword(pdev,
+> +			ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_CTL,
+> +			DWC_PCIE_TIME_BASED_TIMER_START, 0x0);
+
+It's a matter of taste, but you could simply do:
+
+     pci_clear_and_set_dword(pdev,
+                  ras_des_offset + DWC_PCIE_TIME_BASED_ANAL_CTL,
+                  DWC_PCIE_TIME_BASED_TIMER_START, enable);
+
+
+However, I'm fine with either way.
+
+> +static u64 dwc_pcie_pmu_read_lane_event_counter(struct perf_event *event)
+> +{
+> +	struct dwc_pcie_pmu *pcie_pmu = to_dwc_pcie_pmu(event->pmu);
+> +	struct pci_dev *pdev = pcie_pmu->pdev;
+> +	u16 ras_des_offset = pcie_pmu->ras_des_offset;
+> +	u32 val;
+> +
+> +	pci_read_config_dword(pdev, ras_des_offset + DWC_PCIE_EVENT_CNT_DATA, &val);
+> +
+> +	return val;
+> +}
+
+...
+
+> +static int dwc_pcie_register_dev(struct pci_dev *pdev)
+> +{
+> +	struct platform_device *plat_dev;
+> +	struct dwc_pcie_dev_info *dev_info;
+> +	int ret;
+> +	u32 bdf;
+> +
+> +	bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
+> +	plat_dev = platform_device_register_data(NULL, "dwc_pcie_pmu", bdf,
+> +						 pdev, sizeof(*pdev));
+> +	ret = PTR_ERR_OR_ZERO(plat_dev);
+> +	if (ret)
+> +             return ret;
+
+platform_device_register_data() doesn't return a null pointer and you 
+don't really need 'ret'. You could do something like instead:
+
+    if (IS_ERR(plat_dev))
+           return PTR_ERR(plat_dev);
+
+> +	dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
+> +	if (!dev_info)
+> +		return -ENOMEM;
+> +
+> +	/* Cache platform device to handle pci device hotplug */
+> +	dev_info->plat_dev = plat_dev;
+> +	dev_info->pdev = pdev;
+> +	list_add(&dev_info->dev_node, &dwc_pcie_dev_info_head);
+> +
+> +	return 0;
+> +}
+> +
+> +static int dwc_pcie_pmu_notifier(struct notifier_block *nb,
+> +				     unsigned long action, void *data)
+> +{
+> +	struct device *dev = data;
+> +	struct pci_dev *pdev = to_pci_dev(dev);
+> +	struct dwc_pcie_dev_info *dev_info;
+> +
+> +	switch (action) {
+> +	case BUS_NOTIFY_ADD_DEVICE:
+> +		if (!dwc_pcie_match_des_cap(pdev))
+> +			return NOTIFY_DONE;
+> +		if (dwc_pcie_register_dev(pdev))
+> +			return NOTIFY_BAD;
+> +		break;
+> +	case BUS_NOTIFY_DEL_DEVICE:
+> +		dev_info = dwc_pcie_find_dev_info(pdev);
+> +		if (!dev_info)
+> +			return NOTIFY_DONE;
+> +		dwc_pcie_unregister_dev(dev_info);
+> +		break;
+> +	}
+> +
+> +	return NOTIFY_OK;
+> +}
+> +
+> +static struct notifier_block dwc_pcie_pmu_nb = {
+> +	.notifier_call = dwc_pcie_pmu_notifier,
+> +};
+> +
+> +static int dwc_pcie_pmu_probe(struct platform_device *plat_dev)
+> +{
+> +	struct pci_dev *pdev = plat_dev->dev.platform_data;
+> +	struct dwc_pcie_pmu *pcie_pmu;
+> +	char *name;
+> +	u32 bdf, val;
+> +	u16 vsec;
+> +	int ret;
+> +
+> +	vsec = pci_find_vsec_capability(pdev, PCI_VENDOR_ID_ALIBABA,
+> +					DWC_PCIE_VSEC_RAS_DES_ID);
+
+You nicely changed to use vendor list in this version but here the driver 
+still tries to find Alibaba specific capability. I guess, you could search 
+again using the vendor list. The other option would be to make 
+dwc_pcie_match_des_cap() to return the vendor id, pass it to 
+dwc_pcie_register_dev(), which would add it to device's platform data with
+the pointer to the pci device.
+
+Cheers, Ilkka
+
+
+> +	pci_read_config_dword(pdev, vsec + PCI_VNDR_HEADER, &val);
+> +	bdf = PCI_DEVID(pdev->bus->number, pdev->devfn);
+> +	name = devm_kasprintf(&plat_dev->dev, GFP_KERNEL, "dwc_rootport_%x", bdf);
+> +	if (!name)
+> +		return -ENOMEM;
+> +
+> +	pcie_pmu = devm_kzalloc(&plat_dev->dev, sizeof(*pcie_pmu), GFP_KERNEL);
+> +	if (!pcie_pmu)
+> +		return -ENOMEM;
+> +
+> +	pcie_pmu->pdev = pdev;
+> +	pcie_pmu->ras_des_offset = vsec;
+> +	pcie_pmu->nr_lanes = pcie_get_width_cap(pdev);
+> +	pcie_pmu->on_cpu = -1;
+> +	pcie_pmu->pmu = (struct pmu){
+> +		.name		= name,
+> +		.parent		= &pdev->dev,
+> +		.module		= THIS_MODULE,
+> +		.attr_groups	= dwc_pcie_attr_groups,
+> +		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+> +		.task_ctx_nr	= perf_invalid_context,
+> +		.event_init	= dwc_pcie_pmu_event_init,
+> +		.add		= dwc_pcie_pmu_event_add,
+> +		.del		= dwc_pcie_pmu_event_del,
+> +		.start		= dwc_pcie_pmu_event_start,
+> +		.stop		= dwc_pcie_pmu_event_stop,
+> +		.read		= dwc_pcie_pmu_event_update,
+> +	};
+> +
+> +	/* Add this instance to the list used by the offline callback */
+> +	ret = cpuhp_state_add_instance(dwc_pcie_pmu_hp_state,
+> +				       &pcie_pmu->cpuhp_node);
+> +	if (ret) {
+> +		pci_err(pdev, "Error %d registering hotplug @%x\n", ret, bdf);
+> +		return ret;
+> +	}
+> +
+> +	/* Unwind when platform driver removes */
+> +	ret = devm_add_action_or_reset(&plat_dev->dev,
+> +				       dwc_pcie_pmu_remove_cpuhp_instance,
+> +				       &pcie_pmu->cpuhp_node);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = perf_pmu_register(&pcie_pmu->pmu, name, -1);
+> +	if (ret) {
+> +		pci_err(pdev, "Error %d registering PMU @%x\n", ret, bdf);
+> +		return ret;
+> +	}
+> +	ret = devm_add_action_or_reset(&plat_dev->dev, dwc_pcie_unregister_pmu,
+> +				       pcie_pmu);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return 0;
+> +}
 
