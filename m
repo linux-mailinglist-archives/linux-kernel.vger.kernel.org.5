@@ -2,80 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C097EE9E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:08:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 545A27EE9E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:10:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229775AbjKPXIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:08:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44118 "EHLO
+        id S229783AbjKPXK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:10:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPXIl (ORCPT
+        with ESMTP id S229379AbjKPXKY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:08:41 -0500
+        Thu, 16 Nov 2023 18:10:24 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 944FFEA
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:08:36 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C60D4A
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700176115;
+        s=mimecast20190719; t=1700176220;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=Rk1XvrBGytixpa3Vi9kkQQNLQDVV+cUQfUIaz33yvuw=;
-        b=Ir8+HdgaVDGZF7Pmj+JIJIfh6H5A56OF58gRCiBRWqIr2WXsFZYSynzzQgvA4nKp6AdY4F
-        ozbKZwiNd4LmtRn1oZSFoetX98vWqGqQYDYlwKq87hMrraHhp5C8D+8OtW+GsYFbKGpMn5
-        a7nZTkuUbvC8tcNFbAeR3Detw9u85to=
+        bh=+MKeibb6KnKnaA+iE0iv1obj46zXM3TXwKHeMWH8DpE=;
+        b=FxRr1p9kBQD8SqJSQQtJ11OPPTF0QnHJhqJ9rPBpjNATk0PmUKiFO3CowVmFe9ZopQY4fH
+        7LhNfSwbd2WnJLaT4xgkUzOrBfgeogL6iaV6YKr5LoOaKFh7+RlESPpgkXlIgbwWQVmFyb
+        KJ4Ak1ZNYbwoGwdS/RP2y2d+Ukas5Mg=
 Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
  [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-460-a07V7I0gP36eBKaAOfTSKQ-1; Thu, 16 Nov 2023 18:08:34 -0500
-X-MC-Unique: a07V7I0gP36eBKaAOfTSKQ-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4090fa518bbso7798305e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:08:34 -0800 (PST)
+ us-mta-346-ng2OKuG0NnKrvZdyJ8yCAw-1; Thu, 16 Nov 2023 18:10:19 -0500
+X-MC-Unique: ng2OKuG0NnKrvZdyJ8yCAw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4084001846eso8814065e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:19 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700176113; x=1700780913;
+        d=1e100.net; s=20230601; t=1700176218; x=1700781018;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
+         :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Rk1XvrBGytixpa3Vi9kkQQNLQDVV+cUQfUIaz33yvuw=;
-        b=mQeyorpCgBGoAJ0fVFnQJnxunS7nuXNitfxxdxwA4tkeE4G9BoTRXoj/LnRgqOYnBU
-         B7JWeIjTKyBIxyyXO2Xwhhw3H9tWUNa/biv+5SNxjxijbMUbML+WJZL6Qx5PbLAlqWAe
-         mtKC/DtSh6OupkaScPnAThYQLX2wwC6kxtVpxHKlodFiYdqklCqQhEsZ1vOzzOczycmB
-         ITX4VVwziwjQRdgAhooPVp+6MZmJSD1xeWxsx2UK17krcJ09s60+FQFCmaJNfiH2sITd
-         dThpSDaBmrO+VzQ2pGUAqidMT2q5QsSCpDKx61e6t8GEKchuglyOMKaSmJdL1U3k2Zel
-         XsLQ==
-X-Gm-Message-State: AOJu0YyV8kVPWXoQITRFvimHIjUZATik8dZymw/H8/HiWlFW19P9780a
-        I9UdmXFFOmX/uBgsrqPsomPMUCOtLG4DO43Hj3SPMTBFny9BrXVCR+YHq6X/qLGqUfALSdYm/oV
-        8cRKJfj2X/T/coD/nQneT/j4o
-X-Received: by 2002:a05:600c:1d9b:b0:409:67bc:e1cc with SMTP id p27-20020a05600c1d9b00b0040967bce1ccmr14009689wms.36.1700176113390;
-        Thu, 16 Nov 2023 15:08:33 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGf7gqOC1iCqOj8ZxAPTIce917kdXd/Zg/xN294Ih2xkHUPKqJsBcfgmPqReLICglBlTde2Lw==
-X-Received: by 2002:a05:600c:1d9b:b0:409:67bc:e1cc with SMTP id p27-20020a05600c1d9b00b0040967bce1ccmr14009670wms.36.1700176112992;
-        Thu, 16 Nov 2023 15:08:32 -0800 (PST)
+        bh=+MKeibb6KnKnaA+iE0iv1obj46zXM3TXwKHeMWH8DpE=;
+        b=YU5OQSfc3r/xf9Pg8sgl0AwZfgdv5uHzESS1T05ObXlhg4nW0ER8bzBlk4Mw3K5NXP
+         6Sg9Bb0eYVuqRr8brlaQblKSTAaFhrCpfjZAx4X7iYre8nq9sPbbht7Q95b01Y2F6wNc
+         RFhhqGZ8n6OVr17PX1Svh26ebSo/wp4JkeZYJXXF3P2WZoxVyo1VJY6akgQBytFqpUr7
+         xsiB2weSH3N2lFZDrWj95pOQosChIazmbdJKfMjPGrR3UYk2FOUp1VF7dJETAY3dJQ7b
+         XJreYlP6d+rhdF51zdUCU9p8JmXrhHyYld1vRTXADOJhbDURovyNguV++t8cJd2CCNId
+         Kpnw==
+X-Gm-Message-State: AOJu0YyD+1daycy/+zLS3ma+sQqxDHMmp8V7+7tcdip7nLn65jiLhfGQ
+        sbX17LizjqLaEWiJgtytUnOn4IOttlcpIXAtF5sK0r9MWqGpJeKtT94TunF6FRd/g1taS5oL3iD
+        aNQaJ56yKrMf0GXaYGuqUG7Pb
+X-Received: by 2002:a5d:64cd:0:b0:32d:8830:ee2 with SMTP id f13-20020a5d64cd000000b0032d88300ee2mr16315194wri.43.1700176218356;
+        Thu, 16 Nov 2023 15:10:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHQ5ev20kMVvuY/jGfQ6WXoGS09jmwNDwDquYUYfg5EhOSnq0pu0DG+aLWEXCkaL3A/isVylQ==
+X-Received: by 2002:a5d:64cd:0:b0:32d:8830:ee2 with SMTP id f13-20020a5d64cd000000b0032d88300ee2mr16315180wri.43.1700176217987;
+        Thu, 16 Nov 2023 15:10:17 -0800 (PST)
 Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id r14-20020a05600c35ce00b004094d4292aesm676638wmq.18.2023.11.16.15.08.32
+        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 15:08:32 -0800 (PST)
-Message-ID: <ec3fcd7d-17a0-4901-9261-a204c2c50c52@redhat.com>
-Date:   Fri, 17 Nov 2023 00:08:31 +0100
+        Thu, 16 Nov 2023 15:10:17 -0800 (PST)
+Message-ID: <b930ef9c-8795-40f6-bcad-11d081f65e5e@redhat.com>
+Date:   Fri, 17 Nov 2023 00:10:16 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/8] implement "memmap on memory" feature on s390
-To:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Oscar Salvador <osalvador@suse.de>, Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
+Subject: Re: [PATCH 1/3] mm/pagemap: Fix ioctl(PAGEMAP_SCAN) on vma check
 Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrei Vagin <avagin@gmail.com>,
+        syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+References: <20231116201547.536857-1-peterx@redhat.com>
+ <20231116201547.536857-2-peterx@redhat.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -122,7 +117,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
+In-Reply-To: <20231116201547.536857-2-peterx@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -136,43 +131,30 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 14.11.23 19:02, Sumanth Korikkar wrote:
-> Hi All,
+On 16.11.23 21:15, Peter Xu wrote:
+> The new ioctl(PAGEMAP_SCAN) relies on vma wr-protect capability provided by
+> userfault, however in the vma test it didn't explicitly require the vma to
+> have wr-protect function enabled, even if PM_SCAN_WP_MATCHING flag is set.
 > 
-> The patch series implements "memmap on memory" feature on s390 and
-> provides the necessary fixes for it.
+> It means the pagemap code can now apply uffd-wp bit to a page in the vma
+> even if not registered to userfaultfd at all.
+> 
+> Then in whatever way as long as the pte got written and page fault
+> resolved, we'll apply the write bit even if uffd-wp bit is set.  We'll see
+> a pte that has both UFFD_WP and WRITE bit set.  Anything later that looks
+> up the pte for uffd-wp bit will trigger the warning:
+> 
+> WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
+> 
+> Fix it by doing proper check over the vma attributes when
+> PM_SCAN_WP_MATCHING is specified.
+> 
+> Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
+> Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+> Signed-off-by: Peter Xu <peterx@redhat.com>
+> ---
 
-Thinking about this, one thing that makes s390x different from all the 
-other architectures in this series is the altmap handling.
-
-I'm curious, why is that even required?
-
-A memmep that is not marked as online in the section should not be 
-touched by anybody (except memory onlining code :) ). And if we do, it's 
-usually a BUG because that memmap might contain garbage/be poisoned or 
-completely stale, so we might want to track that down and fix it in any 
-case.
-
-So what speaks against just leaving add_memory() populate the memmap 
-from the altmap? Then, also the page tables for the memmap are already 
-in place when onlining memory.
-
-
-Then, adding two new notifier calls on start of memory_block_online() 
-called something like MEM_PREPARE_ONLINE and end the end of 
-memory_block_offline() called something like MEM_FINISH_OFFLINE is still 
-suboptimal, but that's where standby memory could be 
-activated/deactivated, without messing with the altmap.
-
-That way, the only s390x specific thing is that the memmap that should 
-not be touched by anybody is actually inaccessible, and you'd 
-activate/deactivate simply from the new notifier calls just the way we 
-used to do.
-
-It's still all worse than just adding/removing memory properly, using a 
-proper interface -- where you could alloc/free an actual memmap when the 
-altmap is not desired. But I know that people don't want to spend time 
-just doing it cleanly from scratch.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
