@@ -2,102 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7397EDD91
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B07137EDD94
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:28:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235521AbjKPJ2M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:28:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52464 "EHLO
+        id S235663AbjKPJ2h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:28:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229919AbjKPJ2L (ORCPT
+        with ESMTP id S229919AbjKPJ2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:28:11 -0500
-Received: from mail-yw1-x112a.google.com (mail-yw1-x112a.google.com [IPv6:2607:f8b0:4864:20::112a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F36E1AD
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:28:07 -0800 (PST)
-Received: by mail-yw1-x112a.google.com with SMTP id 00721157ae682-5a7fb84f6ceso6094087b3.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:28:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700126886; x=1700731686; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KHxIHoAh95uWA47oz0tiRhia9t+geZSbB1hJPltpI8c=;
-        b=ch3RRNhBLIKaqi8d4YxOUKmkZ5zxpFPePDX6KtMB5Hz0S9SolhGqomXBh+NXOJIvP9
-         SbILxIzy8dFpSwoyUoKFIp8kDKYa4+jQPaROI1TBiDAoshOKO+LY3jyH80tfAiAcV/j/
-         y8OfkdexkgqUveusw1ZX1T9ohkszUG/BYyJQWoR+TSVg2WridYWJgg73k1b5RDmA5wb9
-         8+P8FRzLXyB9Ota6cbAixFRzov5CiqXhLDb2t4mpcPwKu4rFQjCKPy+JlaSHPt8nx1+n
-         jewPnjr2AEsKN+MxlY9QALFZQL0BGs9Y5tCeJs4F6yNo3jevA9+Q0Ennszh87utFrkBl
-         EOiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700126886; x=1700731686;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KHxIHoAh95uWA47oz0tiRhia9t+geZSbB1hJPltpI8c=;
-        b=LaVPIHK3/erbZDfYUOla4Es8fkWtdUVT8l4XEfyNRKW6pS48JHFK2PPU9Xp5vRg2NZ
-         tvDPLSRaw1RGLhMuzbeMPPf3IOHKTL4zbAFzSkO5iBrDvIOqz85Whkp66GSzK12yiRhN
-         MksRNUtHULnEV+rfqLKfOSi1Auqo8GhKAgEfwLcbDyMqoTWcyppusPTv29zIj3vRSXQh
-         equf8fBq9ikBgKMTIOQKl/L4OAdAdaONK4jv2yJzKgrJhK0gyc54czdqQu4zIreoz68X
-         5mpLKYzRwU5oM2Rq5jXLpjSbKo11cSJtWnQodoi8H1VD8adKxWx85GPtzzezUY+rZRoM
-         Xfug==
-X-Gm-Message-State: AOJu0YzJFUKjX2TR/oMQayW3v59YapVMHZ7q0AyKFV386EV/qxvywcUW
-        I6mkYU313hsyjdE1qmJfsD65BHqOHzG8/BWcDCppOg==
-X-Google-Smtp-Source: AGHT+IGR97YS05lsiSAJeEb41aiAbQ6qZIt7JBWSuXrTHq8koWoVZZ9M66uBhv2IyyKsBQgWAzIxwe5MzNYvs6e6U84=
-X-Received: by 2002:a25:2487:0:b0:d9c:cc27:cc4a with SMTP id
- k129-20020a252487000000b00d9ccc27cc4amr11964662ybk.32.1700126886326; Thu, 16
- Nov 2023 01:28:06 -0800 (PST)
+        Thu, 16 Nov 2023 04:28:36 -0500
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1273B1AB;
+        Thu, 16 Nov 2023 01:28:32 -0800 (PST)
+Received: from [192.168.0.43] (cpc141996-chfd3-2-0-cust928.12-3.cable.virginm.net [86.13.91.161])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A03F811B4;
+        Thu, 16 Nov 2023 10:28:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1700126883;
+        bh=mCYIJ/BMyVn0bCmBBwFFiD3zOjB9QuxVDetYZAVWQXM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+        b=cykSfecgqhVEdNodvsbl8x1/mtNkGoeNeSm7P/p9XU0wrsxt9dzq5OdCzGCOt/rKc
+         b/zOb6xO6MACUWu6q+5W+OIL/5Gc7Ka04Dau+0UUH4kwHQtWHQIZEFrs8jheU6is3J
+         3wJrZC3cJ5euVXSSJZ3Hv1gK60JyNOs+9XJJaxWA=
+Message-ID: <d040f84a-b55e-4b1d-85c1-b6cec6554198@ideasonboard.com>
+Date:   Thu, 16 Nov 2023 09:28:26 +0000
 MIME-Version: 1.0
-References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-3-iii@linux.ibm.com>
-In-Reply-To: <20231115203401.2495875-3-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 16 Nov 2023 10:27:26 +0100
-Message-ID: <CAG_fn=WYywAHC_KfZjk2Wqv6RmZQe1wiAAryN4BC6QZBA3FJDw@mail.gmail.com>
-Subject: Re: [PATCH 02/32] kmsan: Make the tests compatible with kmsan.panic=1
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] usb: gadget: uvc_video: unlock before submitting a
+ request to ep
+Content-Language: en-US
+To:     Kuen-Han Tsai <khtsai@google.com>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     gregkh@linuxfoundation.org, laurent.pinchart@ideasonboard.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        michal.simek@amd.com, piyush.mehta@amd.com,
+        radhey.shyam.pandey@amd.com, siva.durga.prasad.paladugu@amd.com
+References: <80a05f4a-eaae-4db1-9604-c5eed9ff594c@ideasonboard.com>
+ <20231108114848.794045-1-khtsai@google.com>
+From:   Dan Scally <dan.scally@ideasonboard.com>
+Autocrypt: addr=dan.scally@ideasonboard.com; keydata=
+ xsFNBGLydlEBEADa5O2s0AbUguprfvXOQun/0a8y2Vk6BqkQALgeD6KnXSWwaoCULp18etYW
+ B31bfgrdphXQ5kUQibB0ADK8DERB4wrzrUb5CMxLBFE7mQty+v5NsP0OFNK9XTaAOcmD+Ove
+ eIjYvqurAaro91jrRVrS1gBRxIFqyPgNvwwL+alMZhn3/2jU2uvBmuRrgnc/e9cHKiuT3Dtq
+ MHGPKL2m+plk+7tjMoQFfexoQ1JKugHAjxAhJfrkXh6uS6rc01bYCyo7ybzg53m1HLFJdNGX
+ sUKR+dQpBs3SY4s66tc1sREJqdYyTsSZf80HjIeJjU/hRunRo4NjRIJwhvnK1GyjOvvuCKVU
+ RWpY8dNjNu5OeAfdrlvFJOxIE9M8JuYCQTMULqd1NuzbpFMjc9524U3Cngs589T7qUMPb1H1
+ NTA81LmtJ6Y+IV5/kiTUANflpzBwhu18Ok7kGyCq2a2jsOcVmk8gZNs04gyjuj8JziYwwLbf
+ vzABwpFVcS8aR+nHIZV1HtOzyw8CsL8OySc3K9y+Y0NRpziMRvutrppzgyMb9V+N31mK9Mxl
+ 1YkgaTl4ciNWpdfUe0yxH03OCuHi3922qhPLF4XX5LN+NaVw5Xz2o3eeWklXdouxwV7QlN33
+ u4+u2FWzKxDqO6WLQGjxPE0mVB4Gh5Pa1Vb0ct9Ctg0qElvtGQARAQABzShEYW4gU2NhbGx5
+ IDxkYW4uc2NhbGx5QGlkZWFzb25ib2FyZC5jb20+wsGNBBMBCAA3FiEEsdtt8OWP7+8SNfQe
+ kiQuh/L+GMQFAmLydlIFCQWjmoACGwMECwkIBwUVCAkKCwUWAgMBAAAKCRCSJC6H8v4YxDI2
+ EAC2Gz0iyaXJkPInyshrREEWbo0CA6v5KKf3I/HlMPqkZ48bmGoYm4mEQGFWZJAT3K4ir8bg
+ cEfs9V54gpbrZvdwS4abXbUK4WjKwEs8HK3XJv1WXUN2bsz5oEJWZUImh9gD3naiLLI9QMMm
+ w/aZkT+NbN5/2KvChRWhdcha7+2Te4foOY66nIM+pw2FZM6zIkInLLUik2zXOhaZtqdeJZQi
+ HSPU9xu7TRYN4cvdZAnSpG7gQqmLm5/uGZN1/sB3kHTustQtSXKMaIcD/DMNI3JN/t+RJVS7
+ c0Jh/ThzTmhHyhxx3DRnDIy7kwMI4CFvmhkVC2uNs9kWsj1DuX5kt8513mvfw2OcX9UnNKmZ
+ nhNCuF6DxVrL8wjOPuIpiEj3V+K7DFF1Cxw1/yrLs8dYdYh8T8vCY2CHBMsqpESROnTazboh
+ AiQ2xMN1cyXtX11Qwqm5U3sykpLbx2BcmUUUEAKNsM//Zn81QXKG8vOx0ZdMfnzsCaCzt8f6
+ 9dcDBBI3tJ0BI9ByiocqUoL6759LM8qm18x3FYlxvuOs4wSGPfRVaA4yh0pgI+ModVC2Pu3y
+ ejE/IxeatGqJHh6Y+iJzskdi27uFkRixl7YJZvPJAbEn7kzSi98u/5ReEA8Qhc8KO/B7wprj
+ xjNMZNYd0Eth8+WkixHYj752NT5qshKJXcyUU87BTQRi8nZSARAAx0BJayh1Fhwbf4zoY56x
+ xHEpT6DwdTAYAetd3yiKClLVJadYxOpuqyWa1bdfQWPb+h4MeXbWw/53PBgn7gI2EA7ebIRC
+ PJJhAIkeym7hHZoxqDQTGDJjxFEL11qF+U3rhWiL2Zt0Pl+zFq0eWYYVNiXjsIS4FI2+4m16
+ tPbDWZFJnSZ828VGtRDQdhXfx3zyVX21lVx1bX4/OZvIET7sVUufkE4hrbqrrufre7wsjD1t
+ 8MQKSapVrr1RltpzPpScdoxknOSBRwOvpp57pJJe5A0L7+WxJ+vQoQXj0j+5tmIWOAV1qBQp
+ hyoyUk9JpPfntk2EKnZHWaApFp5TcL6c5LhUvV7F6XwOjGPuGlZQCWXee9dr7zym8iR3irWT
+ +49bIh5PMlqSLXJDYbuyFQHFxoiNdVvvf7etvGfqFYVMPVjipqfEQ38ST2nkzx+KBICz7uwj
+ JwLBdTXzGFKHQNckGMl7F5QdO/35An/QcxBnHVMXqaSd12tkJmoRVWduwuuoFfkTY5mUV3uX
+ xGj3iVCK4V+ezOYA7c2YolfRCNMTza6vcK/P4tDjjsyBBZrCCzhBvd4VVsnnlZhVaIxoky4K
+ aL+AP+zcQrUZmXmgZjXOLryGnsaeoVrIFyrU6ly90s1y3KLoPsDaTBMtnOdwxPmo1xisH8oL
+ a/VRgpFBfojLPxMAEQEAAcLBfAQYAQgAJhYhBLHbbfDlj+/vEjX0HpIkLofy/hjEBQJi8nZT
+ BQkFo5qAAhsMAAoJEJIkLofy/hjEXPcQAMIPNqiWiz/HKu9W4QIf1OMUpKn3YkVIj3p3gvfM
+ Res4fGX94Ji599uLNrPoxKyaytC4R6BTxVriTJjWK8mbo9jZIRM4vkwkZZ2bu98EweSucxbp
+ vjESsvMXGgxniqV/RQ/3T7LABYRoIUutARYq58p5HwSP0frF0fdFHYdTa2g7MYZl1ur2JzOC
+ FHRpGadlNzKDE3fEdoMobxHB3Lm6FDml5GyBAA8+dQYVI0oDwJ3gpZPZ0J5Vx9RbqXe8RDuR
+ du90hvCJkq7/tzSQ0GeD3BwXb9/R/A4dVXhaDd91Q1qQXidI+2jwhx8iqiYxbT+DoAUkQRQy
+ xBtoCM1CxH7u45URUgD//fxYr3D4B1SlonA6vdaEdHZOGwECnDpTxecENMbz/Bx7qfrmd901
+ D+N9SjIwrbVhhSyUXYnSUb8F+9g2RDY42Sk7GcYxIeON4VzKqWM7hpkXZ47pkK0YodO+dRKM
+ yMcoUWrTK0Uz6UzUGKoJVbxmSW/EJLEGoI5p3NWxWtScEVv8mO49gqQdrRIOheZycDmHnItt
+ 9Qjv00uFhEwv2YfiyGk6iGF2W40s2pH2t6oeuGgmiZ7g6d0MEK8Ql/4zPItvr1c1rpwpXUC1
+ u1kQWgtnNjFHX3KiYdqjcZeRBiry1X0zY+4Y24wUU0KsEewJwjhmCKAsju1RpdlPg2kC
+In-Reply-To: <20231108114848.794045-1-khtsai@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> It's useful to have both tests and kmsan.panic=3D1 during development,
-> but right now the warnings, that the tests cause, lead to kernel
-> panics.
->
-> Temporarily set kmsan.panic=3D0 for the duration of the KMSAN testing.
+CC Thinh - sorry to bother you, just want to make sure we fix this in the right place.
 
-Nice!
+On 08/11/2023 11:48, Kuen-Han Tsai wrote:
+> On 02/11/2023 07:11, Piyush Mehta wrote:
+>> There could be chances where the usb_ep_queue() could fail and trigger
+>> complete() handler with error status. In this case, if usb_ep_queue()
+>> is called with lock held and the triggered complete() handler is waiting
+>> for the same lock to be cleared could result in a deadlock situation and
+>> could result in system hang. To aviod this scenerio, call usb_ep_queue()
+>> with lock removed. This patch does the same.
+> I would like to provide more background information on this problem.
+>
+> We met a deadlock issue on Android devices and the followings are stack traces.
+>
+> [35845.978435][T18021] Core - Debugging Information for Hardlockup core(8) - locked CPUs mask (0x100)
+> [35845.978442][T18021] Call trace:
+> [*][T18021]  queued_spin_lock_slowpath+0x84/0x388
+> [35845.978451][T18021]  uvc_video_complete+0x180/0x24c
+> [35845.978458][T18021]  usb_gadget_giveback_request+0x38/0x14c
+> [35845.978464][T18021]  dwc3_gadget_giveback+0xe4/0x218
+> [35845.978469][T18021]  dwc3_gadget_ep_cleanup_cancelled_requests+0xc8/0x108
+> [35845.978474][T18021]  __dwc3_gadget_kick_transfer+0x34c/0x368
+> [35845.978479][T18021]  __dwc3_gadget_start_isoc+0x13c/0x3b8
+> [35845.978483][T18021]  dwc3_gadget_ep_queue+0x150/0x2f0
+> [35845.978488][T18021]  usb_ep_queue+0x58/0x16c
+> [35845.978493][T18021]  uvcg_video_pump+0x22c/0x518
 
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
+
+I note in the kerneldoc comment for usb_ep_queue() that calling .complete() from within itself is 
+specifically disallowed [1]:
+
+     Note that @req's ->complete() callback must never be called from
+
+     within usb_ep_queue() as that can create deadlock situations.
+
+
+And it looks like that's what's happening here - is this something that needs addressing in the dwc3 
+driver?
+
+
+Thanks
+
+Dan
+
+
+[1] https://elixir.bootlin.com/linux/v6.7-rc1/source/drivers/usb/gadget/udc/core.c#L275
+
+>
+> As mentioned by Piyush, the uvcg_video_pump function acquires a spinlock before submitting the USB
+> request to the endpoint, which will be processed by the dwc3 controller in our case.
+>
+> However, a deadlock can occur when the dwc3 controller fails to kick the transfer and decides to
+> cancel and clean up all requests. At this point, the dwc3 driver calls the giveback function asking
+> the corresponding driver to handle the cancellation. The uvcg_queue_cancel function then acquires
+> the same spinlock to cancel the request, which results in a double acquirement and a deadlock.
+>
+>> Signed-off-by: Piyush Mehta <piyush.mehta@amd.com>
+>> ---
+>>    drivers/usb/gadget/function/uvc_video.c | 5 +++--
+>>    1 file changed, 3 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/usb/gadget/function/uvc_video.c b/drivers/usb/gadget/function/uvc_video.c
+>> index 91af3b1ef0d4..0a5d9ac145e7 100644
+>> --- a/drivers/usb/gadget/function/uvc_video.c
+>> +++ b/drivers/usb/gadget/function/uvc_video.c
+>> @@ -460,11 +460,12 @@ static void uvcg_video_pump(struct work_struct *work)
+>>    			req->no_interrupt = 1;
+>>    		}
+>>
+>> -		/* Queue the USB request */
+>> -		ret = uvcg_video_ep_queue(video, req);
+>>    		spin_unlock_irqrestore(&queue->irqlock, flags);
+>>
+>> +		/* Queue the USB request */
+>> +		ret = uvcg_video_ep_queue(video, req);
+>>    		if (ret < 0) {
+>> +			usb_ep_set_halt(video->ep);
+>>    			uvcg_queue_cancel(queue, 0);
+>>    			break;
+>>    		}
