@@ -2,268 +2,487 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D057EE104
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C02937EE105
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:03:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbjKPNDe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:03:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46148 "EHLO
+        id S230509AbjKPNDp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:03:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230254AbjKPNDb (ORCPT
+        with ESMTP id S230371AbjKPNDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:03:31 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85D63AD;
-        Thu, 16 Nov 2023 05:03:23 -0800 (PST)
-X-UUID: 7fbfa1d4848011ee8051498923ad61e6-20231116
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=8XcCw7B4RQHjAb1HRPTzrEUMWtXY75bod7dq5UYLD2o=;
-        b=UupcILS6UymSpgGw/lG+ATMdVM3Pxo/rcqX5CiXK3TjJxrNpHOoqv1osOnUc9Y7YqIqAF5ajwsfxi6mpYd4TrdR7JnW6IQvvSv9bXHFwB9LYxXCbP4YC7nyhdsPz+ywO+YlbrS8Kkp3viui0oIMncYUTRoV3aB8aNYQeqJQiIkQ=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:ace46473-cdcb-4048-ab19-6c799af556eb,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:2ceeba72-1bd3-4f48-b671-ada88705968c,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
-        NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: 7fbfa1d4848011ee8051498923ad61e6-20231116
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <bo.ye@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 988318511; Thu, 16 Nov 2023 21:03:12 +0800
-Received: from mtkmbs10n1.mediatek.inc (172.21.101.34) by
- mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 16 Nov 2023 21:03:11 +0800
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n1.mediatek.inc (172.21.101.34) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 16 Nov 2023 21:03:11 +0800
+        Thu, 16 Nov 2023 08:03:41 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2084.outbound.protection.outlook.com [40.107.243.84])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64AEF1A3;
+        Thu, 16 Nov 2023 05:03:36 -0800 (PST)
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nl84nK6gz2+0QPsLcvIOGaUGWF+/TZuvRjFwkSQVQHxQ7hXbTrYMAUojWdq6xTSMVCDKiZfXYIf5uXaAuIK9a0afMWurYKAzRxg+7RrNW0i/2ES4D2ARzLoIulxoBl9EgiBMGeQkD1yHb6380mv0eGC5k9i3y+f/OfAL2GqBSMprmEJvBvYp1lnIohrgbJ9bYxZas8168DJ06cnuZKcG6NX0qaIsuYEdSBWSOaehkZphR5EKMIDyQVHaqok/ny7Aztg2hjUk2BTpWKSeQsoJ/nJhujQlyWDzRdJHguvPPMxD2xZ05XLgep89LZUbK4wUCthi9I43l+Uv/QOQutbmeA==
+ b=nrdZIPkME8tpdBVWz0drvLZvAkuzSMeoiiYVUJTsfMGN+RW/LQ7JajmEdah9/3QcozL1PfUzbXIzNiElrwPZF7AXpIwKHhH9nPe5dUF4VuXW/H7B4asf/KWccgxWle3vGrDhdRdcN2KajiD9ZDKRH5TbrrJkBvBoSDUX9VQ/7pcvw4Q1K9d8xf1Sn5BfnBZ8GXuLpHHSvhDZjbtbmdoEFT1uCaYayX+JS0esEHBV6t5ZDU3FLp0gt2odz+7o1q4cPfXH7+ej1QKp45nIz3xCfbtVhvlmrMh6J1DM3tK4Wxsy2SvaFQQMA7WzcZPAAO+cM29yWZnT9wm/1AdlB2hqcw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8XcCw7B4RQHjAb1HRPTzrEUMWtXY75bod7dq5UYLD2o=;
- b=lWBOuwszklw9hHETyvQMagc5IpbpIw8iVghQMg6MXd7BfLncy1SWQiapDS3uctCBb0KDRlF8D/1GbNdCRulenv3fdWIRIbMmQv0p1+3nyXV0NLzcnUKBX79GFCbofUAC+tmNXaqfRuaChqceA9MnG5pqL9TjIxGyu7IwhPgwb1Dufuz+A8Emw/+y2MefjYm+rWKdKd9La3vkuRmxBmaptcnj++lH6KR81VdWlaItosNE/v9p/sTq9jDWoMwpSH/jcRCvEoNtbq9IR4XWZIIHxLsTmPs5XNdqolZ3LuyL6fhBjIFSgePCfI3SzCDs3vCMRsOFnSCIBPk1767OCZKhjw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ bh=nsr2l/gOVLTwkfyzaq2zc3FZKe0ulpqyK0EhmAq0dmI=;
+ b=l4mOc+bKgTB64XVIgAYVuzlAQFEK2ZGj4VrVypAVYxurdEs0pA5M1nLI6mGlVBFwY8/ULVcp2JzqGS+aKVBUmApSy024YgcuDg1NysHVVyrPppS0EB7/H7AhMLi2n/1DWvyPNBbL9tfMHk5yCiqXJA5BJ6HfVH4kxgGH34WCwbNYss1kri7Xg7wHV4Xmk1B4Fp2Dm5I49av72Mi9FtOx951Fml3N0RVsIAtf7Yhp/J7vDUWqnlLQxT+ZbgDGn1aVK9BmzV9KaYziVlrgTN4vmG4ImikSgXQ2sWWC0ahinTV3ThEvs0H4pz+AouUGhkuecMF0J6EVLf+VBPloxaCUww==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8XcCw7B4RQHjAb1HRPTzrEUMWtXY75bod7dq5UYLD2o=;
- b=oU3PVcrlTNZbUia41w+7IHPG5BZPESt2N+S6mJpAW1/YQO2PFEpc4ks5oFQdDkowjwaT8n5yeLVg2b2oDdbeoNKH9SDhd4WR3VATUC6HnIObpZ+zQLYQ6O5oJvfYm1Ll/IzAjx7MBpIqMwHZQa67K6a374Y3Eqsd2sgunuaXZ+o=
-Received: from TYZPR03MB5199.apcprd03.prod.outlook.com (2603:1096:400:32::11)
- by PUZPR03MB7253.apcprd03.prod.outlook.com (2603:1096:301:103::7) with
+ bh=nsr2l/gOVLTwkfyzaq2zc3FZKe0ulpqyK0EhmAq0dmI=;
+ b=2KK5l3lBjdjiChOmW+qMZpudnBWJKCGJ79X99WdOOJOP+r8xU/KTDHVqA4JSGuoJyn0MGNIb0OpJUepUriKVNkd5i+oS9xT8T4kPA0VKhkeHzu0Y77kV9gn9jMWcvrjmlgkdaZUp+hzt1KTSwimZhzCjqH42rtYcP/4fVnTNz1M=
+Received: from BL1PR13CA0014.namprd13.prod.outlook.com (2603:10b6:208:256::19)
+ by PH8PR12MB7326.namprd12.prod.outlook.com (2603:10b6:510:216::7) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Thu, 16 Nov
- 2023 13:03:09 +0000
-Received: from TYZPR03MB5199.apcprd03.prod.outlook.com
- ([fe80::3439:9de9:ec9d:4e68]) by TYZPR03MB5199.apcprd03.prod.outlook.com
- ([fe80::3439:9de9:ec9d:4e68%4]) with mapi id 15.20.6977.029; Thu, 16 Nov 2023
- 13:03:09 +0000
-From:   =?utf-8?B?Qm8gWWUgKOWPtuazoik=?= <Bo.Ye@mediatek.com>
-To:     "ulf.hansson@linaro.org" <ulf.hansson@linaro.org>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-        "angelogioacchino.delregno@collabora.com" 
-        <angelogioacchino.delregno@collabora.com>
-CC:     "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        =?utf-8?B?QnJvd3NlIFpoYW5nICjlvKDno4op?= 
-        <Browse.Zhang@mediatek.com>,
-        =?utf-8?B?TGluIEd1aSAo5qGC5p6XKQ==?= <Lin.Gui@mediatek.com>,
-        =?utf-8?B?WW9uZ2RvbmcgWmhhbmcgKOW8oOawuOS4nCk=?= 
-        <Yongdong.Zhang@mediatek.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        =?utf-8?B?UWlsaW4gVGFuICjosK3pupLpup8p?= <Qilin.Tan@mediatek.com>
-Subject: Re: [PATCH] mmc: add wp_grp_size node
-Thread-Topic: [PATCH] mmc: add wp_grp_size node
-Thread-Index: AQHaDi+wQidU4h3SvUKcCc1y+C9ZzbB8/hyA
-Date:   Thu, 16 Nov 2023 13:03:08 +0000
-Message-ID: <d741713fe41f3995ac247a9958c9f7ac9508f685.camel@mediatek.com>
-References: <20231101154927.119312-1-bo.ye@mediatek.com>
-         <63fecefb-61bf-4232-ab91-db04e3212f14@collabora.com>
-In-Reply-To: <63fecefb-61bf-4232-ab91-db04e3212f14@collabora.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=mediatek.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB5199:EE_|PUZPR03MB7253:EE_
-x-ms-office365-filtering-correlation-id: 1b196385-ba9a-4092-28f2-08dbe6a461a6
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: fB6SjZ52H7+lrQxvtfhUOefdehjAG7fI2l1BACGKoCxEC20gd1+bQAmV/T+urC3n/v0QV08UZZDaC21wpj9VQP3qkjx7jSqYCElTUbOBxc96iMECGkfEbZZedgn0TqjcKf60i5cyxHzY2lb2rWbsdBz0CcFPp4yaAD4RCkJQGWejLaEiOYIlftUkmdZxAq/0r2StVIxm4tsyI1xZAMWuuLK9iCKcFhYP/HSmoJ8PVPPDlv3j/8dRXNc8nTF+2HZ2x/2ESH9aLXQOWeBpmBUL0+aRYl1N7mYRbU9zRau5hWsK/QP9QXkYChCmcTe1r2Go8NDHF/kR6egU+f2O6+A5XlDJKy89eNn5d1uyKeU/wPlVnWdoKKoQAvi/CKrt/EZyx1Z5CYJ7IWRIy5Lxw5EWxFJ6bTeLboMkofXbiaVB0y8e6P9MEmO5VRN5Gt/jH8apyDLvMJwiGhFID3eeTgaDc547yACPXORDgdCW31Yd8nmPAJ8F2TuRleT1eGoYGpUugGjxLgO6hoz6aEnSl/JN6a1U2Oi40SpSB+jininJk1pBwVY69pgXCx0pEq4X7FxmxQTfIHmfLgb4ujAUeUb7rj2YWk+mwsOzeyXxXS3IcreLTJGR6fRUtjGUg1JynlSU7QVWjXIX8D1pz5sk7q50huC7aVOFnMOln921iOGzd6c=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB5199.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(136003)(39860400002)(396003)(366004)(346002)(376002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(38070700009)(85182001)(36756003)(8936002)(6506007)(6512007)(316002)(66446008)(8676002)(83380400001)(4326008)(54906003)(110136005)(71200400001)(2616005)(6486002)(478600001)(26005)(107886003)(91956017)(76116006)(66946007)(66556008)(64756008)(66476007)(86362001)(122000001)(38100700002)(41300700001)(5660300002)(2906002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?eElDWmpIUGRmblNFWlV4d2l5NGZzdjNmK2tZV2pmRDJGWXNMbUhUa1ZVVzJi?=
- =?utf-8?B?bG1pSW1PZS9LVGRIKy9PVzNGc2lWQXQwN21VVDg3cE93aWl3cmt4S09ZbjR2?=
- =?utf-8?B?NkhaWXN5bnk5dVZqb0dUcEtIY3cxTzhZbDRvRlRjeEx0aW5TRGp1MVNGMXA2?=
- =?utf-8?B?bTE1ZmhSUncydzN2cGRMQW9HUkdLVlNKaEIxTTdVYjNwQVh2TXp2R085SVRY?=
- =?utf-8?B?cEh3bXFHYWxuL2dHYjBJYWh4N25oL1VuR1ViRml4YlIxaVhZaEFRd3BweU9a?=
- =?utf-8?B?bm0yUGc1ZkpTSlovcWxLV1QzTnluVmJSN3BHUHlVUW50ZloyclE1c2lJcGty?=
- =?utf-8?B?WkdmazZIVW5scUNFTXAzN3gvWkxQMWI3VGZZSkN5UlNVeW1YMC9JMUdaaEl4?=
- =?utf-8?B?MUZ5N1NiaVZ3TmRNblhmSFcreXZsRm5sUWw2c3pMcUxlLzZubUNFakFUdjFC?=
- =?utf-8?B?QnJjdWZDalVhaU4rc282ZmxGZ01tU1RZaTZDaXZOb1pITHhwMVpDek1BZkR3?=
- =?utf-8?B?MGJDMnhpYTRGV1hXbzQrU3JoZXJxS1dZL09CR0hsY2F4Skp5OEkzZDBnc3hJ?=
- =?utf-8?B?cGZqMWJhc1JmR2R0OTBxZGJJNm4xZjZwUm4vMmh3TjZOZjR0Q3JSU1JHcU1Z?=
- =?utf-8?B?V1BoeW9kNE9aS3R6cisyUzd0aE4xTkJkR1RWaVJBYWFTSDd1M0lIRlBIQ1I1?=
- =?utf-8?B?L0QzbVNWYkZaTXJvM1gxM01nVVVmZ3A4SC9lb0NuMjl6Q1NYUGJBMFVuRlpz?=
- =?utf-8?B?dW11NFMrR2xXRjdCc1FpazE5bGlpMm9DZm9FNmV5Rkw0K1MwVHQ3TjJWS0R5?=
- =?utf-8?B?REpjemF6SWVLTFJGRjZkbFhGR0pjdy95WlllSEVLMEJEVCtUWjJTOE82bW94?=
- =?utf-8?B?U2JpaU93MEdDb1YzODdqL01iU2hiMVgwUmdPc1FKYXdhdU5hVWlTTW9tTGJm?=
- =?utf-8?B?T1QrMnFCUmlJbStoZXkwakJKSzFVRkduR2ZGKy85OU1DQ0pzRGk3d2VhUERh?=
- =?utf-8?B?Y1FWUjBVOWZ5SzNUQXBVd3JxT2pRWnR0TWtBSitldjNPRGRESTJpK29WRnl5?=
- =?utf-8?B?UGt5amxhZ0pRM3dTd3BONG5mQ2NEZmcxQlRKRGZwem56blFWVjlpQk1FUDZq?=
- =?utf-8?B?bFBaL01sMXhyeDExL2tGMW42TEZxNFQrRDQvU0JTYVhYRmE2VnNiZEtENWQ3?=
- =?utf-8?B?aFFWNkphcDFCb3ZodzNmaFlnanl2enhRdjM0RlRsdDNmbDlUaFJ0cVlyT1hC?=
- =?utf-8?B?U2JjMTVLU1ZPK3hVWE1Zd1IxM0FDWXpjOU52ZWVPQ2E2TzZrTE1PV3RQNWRW?=
- =?utf-8?B?dFcvTnd4Z1ZzZW1vZTNzTzdNTUthTkhHTFdEZnRDVzhEWm1TQW9hOVgrcEl2?=
- =?utf-8?B?M2gvWkltNExORlRKcnpzcGxBMmErbCtadEtCWDRXRUo4VmJ0QWxUY2hQaTNF?=
- =?utf-8?B?VkNBSDRoeS9GYjVWWEx6RXd4NEpScXdCdUtIRSttdXA1WGxTWjJWRnFYczZG?=
- =?utf-8?B?RHRMS09XRFlNQmFWMHovbVBNa3djMVgxa2xyS1JFUUozcVZRZm4vY0lIM01k?=
- =?utf-8?B?WXp3VHU5Wnh6VFU3L2NhQi8ybXordzRyaWM2NDVFUWVWZWFHRGF0N2VXQ1lG?=
- =?utf-8?B?aTJrQ0pQMmpCVzc3a2tqN0tYbGJDZjBxNm00YnJ6VCtmbFJ4K1JYbjlyL0ZE?=
- =?utf-8?B?eFc5T3kycVE2MU9uYTA5NFR2ZW5tYmVxcitHZFRackZRZmhCWkM5WWFDTUE3?=
- =?utf-8?B?VGlnemNtY3lzSk80dytMampuTU9TUDNkanlPY3pJdUQ2MHQ2SVRpVGFDSUlP?=
- =?utf-8?B?bE9XUS8rVzdDZ0ZCSEdHSUJoNlRBSHpyb2hmbElMYXlaYk1wNjJPU0JJN2Vj?=
- =?utf-8?B?cm4zRmlXSG9tV3dybHRCTVc2aEx5QXYyREt6VzdVbVdxYWdFQmxKM1hWQXgz?=
- =?utf-8?B?amtCUHUxVXhweThVbEh3K2hpLzVoMjg0QXhsa0xjTS9zd0pTWTViRVhiZitJ?=
- =?utf-8?B?WkpENTNyQldOa2NMSFp2TXRURUlwMlFwRXp1SHZTa0pqclRKTGl4ekJ0YlJr?=
- =?utf-8?B?V25Qd2FHZjJvNU0zM1Y4d1VkUnJvU2JpL0NEMlVMTENSZ2xJaExhOVpEemZ0?=
- =?utf-8?Q?JAlmPYPuyaKDA6+8PqIxDNOMI?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3035AA20CF0CBC4D84A2DEA78C80991C@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
+ 2023 13:03:33 +0000
+Received: from BL02EPF0001A108.namprd05.prod.outlook.com
+ (2603:10b6:208:256:cafe::ac) by BL1PR13CA0014.outlook.office365.com
+ (2603:10b6:208:256::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17 via Frontend
+ Transport; Thu, 16 Nov 2023 13:03:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ BL02EPF0001A108.mail.protection.outlook.com (10.167.241.138) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7002.19 via Frontend Transport; Thu, 16 Nov 2023 13:03:33 +0000
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 16 Nov
+ 2023 07:03:32 -0600
+Received: from xhdipdslab41.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
+ Transport; Thu, 16 Nov 2023 07:03:28 -0600
+From:   Nipun Gupta <nipun.gupta@amd.com>
+To:     <alex.williamson@redhat.com>, <linux-kernel@vger.kernel.org>,
+        <kvm@vger.kernel.org>
+CC:     <gregkh@linuxfoundation.org>, <tglx@linutronix.de>,
+        <maz@kernel.org>, <git@amd.com>, <harpreet.anand@amd.com>,
+        <pieter.jansen-van-vuuren@amd.com>, <nikhil.agarwal@amd.com>,
+        <michal.simek@amd.com>, <abhijit.gangurde@amd.com>,
+        <srivatsa@csail.mit.edu>, Nipun Gupta <nipun.gupta@amd.com>
+Subject: [PATCH v2] vfio/cdx: add interrupt support
+Date:   Thu, 16 Nov 2023 18:33:19 +0530
+Message-ID: <20231116130319.245376-1-nipun.gupta@amd.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB5199.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1b196385-ba9a-4092-28f2-08dbe6a461a6
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 13:03:08.9741
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL02EPF0001A108:EE_|PH8PR12MB7326:EE_
+X-MS-Office365-Filtering-Correlation-Id: 84b46be2-377c-4435-4eb4-08dbe6a47032
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Tj7pC14Dsh/n5/sVA6jq9Wgb/u0yjlUvAsuKHP+fqIZAb/HGzGsE3gyMrgQp66Jt1upxKfWsAQlibPZnskBdw2+cJS61/yiwtvZvGeQrAVgXj4CvFth+Zrs7Ary8SDdHQL8T7DcdVtB80QXuvacEq93XXqmjBMFhQtSGkXByMrS3T8FpRAo2LIMR1BNjLmkBUmWwxdF9FapIu7DsTegM9KsxUrysJAO0iV9T9f25ok4ebUj2FFdrgOWzrffAqR+y6XHbavFhS5tEiOSwZzmN+O74cUXJqktJONMSovODMDwRATmfgc73IjZKtjNFZbxK/saxP+hAjQd4ImhXy/VByrOoxY1evfBO2zQ0DgHhaNnXMX00QiJmLYgPhlFwGtUXCFegO8Xzd4DgE3dXD/ZGIy4dWtZeNDe0tdIC87+zCKvXRmbDjT5FJYJIHChqOh6dHnpBquY4FvjVISmJpkhZrzRWWbPohwvLIE/fDc/1Z+H+GM54R4xCIIzTz3RTFhenELo1GhlpqqqEACmOznCk5JZDY3ErrUqjBnKzv8TgVNVtL1IjOib6spziAdPrAf215nK2222ZYKBwV2Xki/hRsUPKHCCUOHkjS2LVonhoisSvJZ3UWB4OIlmd2kPGVWAkXR9agNHB88YqNPcxgIeYUQYAFPQKJKkSFwitGDk13L+LrPzcenRRoY9nFWih7cHpqxJaaV6CpciPW0H2z8nUlnp7eSEjP4jwdF/PeqQqukRpMIKszZ7b+lKZqe69qjpD14YAMWvD/ece1KE0m+Idqg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(136003)(396003)(376002)(39860400002)(346002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(82310400011)(36840700001)(40470700004)(46966006)(316002)(54906003)(36756003)(110136005)(70206006)(70586007)(26005)(1076003)(336012)(426003)(2616005)(966005)(478600001)(40460700003)(6666004)(36860700001)(86362001)(5660300002)(47076005)(82740400003)(356005)(81166007)(2906002)(83380400001)(40480700001)(8936002)(41300700001)(44832011)(8676002)(4326008)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 13:03:33.4114
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Nau5lP5M+wm7IeIixvf9wpa/qre+9vPAahKdUfQcHPIwgj+HBOiBdXR9/YjV9U5jnLngAEj4x84l7C/0G5j1pw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR03MB7253
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--18.184600-8.000000
-X-TMASE-MatchedRID: rYpa/RC+czENtKv7cnNXnSa1MaKuob8PofZV/2Xa0cJauByPtDzndfeJ
-        lqUEMxA/bZ0UBL4L5a/u74Xv4GSF5o39U4x946BX4T0EFRcNxxQjkrgJ37Rqj0dmDSBYfnJRM+f
-        jINbnJ/exHSqlNpo6+I5KSdqj1OliRFuZfuhIqrV+7IhLVmN+uyaXATIpQghoowtRP8whCK+bZC
-        Q5AwsoRtrz71sogk/my3HscmUQ3XxCBQieSpAGz5mug812qIbzuOpqP7b2k9yN+IZcOLD8xNnoq
-        uRwHY3BcmQ2Pu47BxrIBtVTcxQLG+qi5ZHdbnMGH5YQyOg71ZZCX8V1FiRRkt9RlPzeVuQQS0ei
-        OsrXcTjWSkIp1XXQU9w9oY9Ibw2m39LwM21FJtumput5KKcJ0+e5JB2PHL7Euim6G3L+ZbhaapA
-        zRzPL/pxaj00r7AfJc0O9f5VVZtbyTBeqcpWTVtbVO5cqfV4RKD1FAxZRItXW9R0dU1eYdIKVs8
-        PI8OvcFD+pPLLM05PyMqp73qgJxGJ1mLiX15SGiguiJuCNURd9LQinZ4QefKU8D0b0qFy9mTDwp
-        0zM3zoqtq5d3cxkNQP90fJP9eHt
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--18.184600-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 66167609ABF3AADCC87FDBE2062DB9C699950B14B6FF45A33D78C4763DD2632C2000:8
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,
-        T_SCC_BODY_TEXT_LINE,T_SPF_TEMPERROR,UNPARSEABLE_RELAY,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+X-MS-Exchange-CrossTenant-Network-Message-Id: 84b46be2-377c-4435-4eb4-08dbe6a47032
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: BL02EPF0001A108.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB7326
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIzLTExLTAzIGF0IDA5OjI3ICswMTAwLCBBbmdlbG9HaW9hY2NoaW5vIERlbCBS
-ZWdubyB3cm90ZToNCj4gSWwgMDEvMTEvMjMgMTY6NDksIEJvIFllIGhhIHNjcml0dG86DQo+ID4g
-RnJvbTogImxpbi5ndWkiIDxsaW4uZ3VpQG1lZGlhdGVrLmNvbT4NCj4gPiANCj4gPiBEZXRhaWw6
-DQo+ID4gQWRkIG5vZGUgIndwX2dycF9zaXplIiwgY29ycmVzcG9uZGluZyB0byBXUF9HUlBfU0la
-RQ0KPiA+ICh3cml0ZSBwcm90ZWN0IGdyb3VwIHNpemUpIG9mIGVNTUMncyBDU0QgcmVnaXN0ZXIu
-DQo+ID4gDQo+ID4gU2NlbmFyaW86DQo+ID4gVGhlIGVNTUMgY2FyZCBjYW4gYmUgc2V0IGludG8g
-d3JpdGUtcHJvdGVjdGVkIG1vZGUgdG8NCj4gPiBwcmV2ZW50IGRhdGEgZnJvbSBiZWluZyBhY2Np
-ZGVudGFsbHkgbW9kaWZpZWQgb3IgZGVsZXRlZC4NCj4gPiBXcF9ncnBfc2l6ZSAoV3JpdGUgUHJv
-dGVjdCBHcm91cCBTaXplKSByZWZlcnMgdG8gYW4NCj4gPiBhdHRyaWJ1dGUgb2YgdGhlIGVNTUMg
-Y2FyZCwgdXNlZCB0byBtYW5hZ2Ugd3JpdGUgcHJvdGVjdGlvbiwNCj4gPiBhbmQgaXMgdGhlIENT
-RCByZWdpc3RlciAgWzM2OjMyXSBvZiB0aGUgZU1NQyBkZXZpY2UuDQo+ID4gV3BfZ3JwX3NpemUg
-KFdyaXRlIFByb3RlY3QgR3JvdXAgU2l6ZSkgaW5kaWNhdGVzIGhvdyBtYW55DQo+ID4gZU1NQyBi
-bG9ja3MgYXJlIGNvbnRhaW5lZCBpbiBlYWNoIHdyaXRlIHByb3RlY3Rpb24gZ3JvdXAgb24gdGhl
-DQo+ID4gZU1NQyBjYXJkLg0KPiA+IA0KPiA+IEZpbmFsIHJlbmRlcmVkIGZpbGU6DQo+ID4gIi9z
-eXMvY2xhc3MvbW1jX2hvc3QvbW1jMC9tbWMwOjAwMDEvd3BfZ3JwX3NpemUiDQo+ID4gDQo+ID4g
-U2lnbmVkLW9mZi1ieTogbGluLmd1aSA8bGluLmd1aUBtZWRpYXRlay5jb20+DQo+IA0KPiBUaGUg
-Y2hhbmdlLWlkIHRhZyBtZWFucyBub3RoaW5nIHVwc3RyZWFtLiBQbGVhc2UgcmVtb3ZlLg0KICBS
-ZW1vdmVkIGNoYW5nZS1pZCwgdGhhbmtzIGZvciB5b3VyIHBhdGllbmNlLiBJIHdpbGwgcnVuDQpz
-Y3JpcHRzL2NoZWNrLXBhdGNoLnBsIGJlZm9yZSB1cGxvYWRpbmcgcGF0Y2ggbmV4dCB0aW1lLg0K
-PiANCj4gQWxzbywgdGhlIHJlY2lwaWVudHMgbGlzdCBkb2Vzbid0IGxvb2sgcmlnaHQuIFBsZWFz
-ZSB1c2UNCj4gc2NyaXB0cy9nZXRfbWFpbnRhaW5lci5wbA0KPiB0byBnZXQgdGhlIHJpZ2h0IHJl
-Y2lwaWVudHMgbGlzdCwgb3IgeW91ciBwYXRjaCB3aWxsIGJlIGlnbm9yZWQuDQogIENvdWxkIHlv
-dSBoZWxwIHNoYXJlIHdobyBpcyB0aGUgbWFpbnRhaW5lcnMgb2YgbW1jLiBUaGUgcmVjaXBpZW50
-cw0KbGlzdCB3YXMgZ2VuZXJhdGVkIGJ5IHNjcmlwdHMvZ2V0X21haW50YWluZXIucGwuDQo+IA0K
-PiA+IC0tLQ0KPiA+ICAgZHJpdmVycy9tbWMvY29yZS9tbWMuYyAgIHwgMTYgKysrKysrKysrKysr
-KysrLQ0KPiA+ICAgaW5jbHVkZS9saW51eC9tbWMvY2FyZC5oIHwgIDIgKysNCj4gPiAgIDIgZmls
-ZXMgY2hhbmdlZCwgMTcgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiA+IA0KPiA+IGRp
-ZmYgLS1naXQgYS9kcml2ZXJzL21tYy9jb3JlL21tYy5jIGIvZHJpdmVycy9tbWMvY29yZS9tbWMu
-Yw0KPiA+IGluZGV4IDRhNGJhYjlhYTcyNi4uOWI2N2U0OWE5ZTYzIDEwMDY0NA0KPiA+IC0tLSBh
-L2RyaXZlcnMvbW1jL2NvcmUvbW1jLmMNCj4gPiArKysgYi9kcml2ZXJzL21tYy9jb3JlL21tYy5j
-DQo+ID4gQEAgLTEzNiw2ICsxMzYsMTcgQEAgc3RhdGljIHZvaWQgbW1jX3NldF9lcmFzZV9zaXpl
-KHN0cnVjdCBtbWNfY2FyZA0KPiA+ICpjYXJkKQ0KPiA+ICAgCW1tY19pbml0X2VyYXNlKGNhcmQp
-Ow0KPiA+ICAgfQ0KPiA+IA0KPiA+ICtzdGF0aWMgdm9pZCBtbWNfc2V0X3dwX2dycF9zaXplKHN0
-cnVjdCBtbWNfY2FyZCAqY2FyZCkNCj4gPiArew0KPiA+ICsJaWYgKGNhcmQtPmV4dF9jc2QuZXJh
-c2VfZ3JvdXBfZGVmICYgMSkNCj4gPiArCQljYXJkLT53cF9ncnBfc2l6ZSA9IGNhcmQtPmV4dF9j
-c2QuaGNfZXJhc2Vfc2l6ZSAqDQo+ID4gKwkJCWNhcmQtPmV4dF9jc2QucmF3X2hjX2VyYXNlX2dh
-cF9zaXplOw0KPiA+ICsJZWxzZQ0KPiA+ICsJCWNhcmQtPndwX2dycF9zaXplID0gY2FyZC0+Y3Nk
-LmVyYXNlX3NpemUgKg0KPiA+ICsJCQkoY2FyZC0+Y3NkLndwX2dycF9zaXplICsgMSk7DQo+ID4g
-K30NCj4gPiArDQo+ID4gICAvKg0KPiA+ICAgICogR2l2ZW4gYSAxMjgtYml0IHJlc3BvbnNlLCBk
-ZWNvZGUgdG8gb3VyIGNhcmQgQ1NEIHN0cnVjdHVyZS4NCj4gPiAgICAqLw0KPiA+IEBAIC0xODYs
-NiArMTk3LDcgQEAgc3RhdGljIGludCBtbWNfZGVjb2RlX2NzZChzdHJ1Y3QgbW1jX2NhcmQNCj4g
-PiAqY2FyZCkNCj4gPiAgIAkJYiA9IFVOU1RVRkZfQklUUyhyZXNwLCAzNywgNSk7DQo+ID4gICAJ
-CWNzZC0+ZXJhc2Vfc2l6ZSA9IChhICsgMSkgKiAoYiArIDEpOw0KPiA+ICAgCQljc2QtPmVyYXNl
-X3NpemUgPDw9IGNzZC0+d3JpdGVfYmxrYml0cyAtIDk7DQo+ID4gKwkJY3NkLT53cF9ncnBfc2l6
-ZSA9IFVOU1RVRkZfQklUUyhyZXNwLCAzMiwgNSk7DQo+ID4gICAJfQ0KPiA+ICAgDQo+ID4gICAJ
-cmV0dXJuIDA7DQo+ID4gQEAgLTc5MSw2ICs4MDMsNyBAQCBNTUNfREVWX0FUVFIoY3NkLCAiJTA4
-eCUwOHglMDh4JTA4eFxuIiwgY2FyZC0NCj4gPiA+cmF3X2NzZFswXSwgY2FyZC0+cmF3X2NzZFsx
-XSwNCj4gPiAgIE1NQ19ERVZfQVRUUihkYXRlLCAiJTAyZC8lMDRkXG4iLCBjYXJkLT5jaWQubW9u
-dGgsIGNhcmQtDQo+ID4gPmNpZC55ZWFyKTsNCj4gPiAgIE1NQ19ERVZfQVRUUihlcmFzZV9zaXpl
-LCAiJXVcbiIsIGNhcmQtPmVyYXNlX3NpemUgPDwgOSk7DQo+ID4gICBNTUNfREVWX0FUVFIocHJl
-ZmVycmVkX2VyYXNlX3NpemUsICIldVxuIiwgY2FyZC0+cHJlZl9lcmFzZSA8PA0KPiA+IDkpOw0K
-PiA+ICtNTUNfREVWX0FUVFIod3BfZ3JwX3NpemUsICIldVxuIiwgY2FyZC0+d3BfZ3JwX3NpemUg
-PDwgOSk7DQo+ID4gICBNTUNfREVWX0FUVFIoZmZ1X2NhcGFibGUsICIlZFxuIiwgY2FyZC0+ZXh0
-X2NzZC5mZnVfY2FwYWJsZSk7DQo+ID4gICBNTUNfREVWX0FUVFIoaHdyZXYsICIweCV4XG4iLCBj
-YXJkLT5jaWQuaHdyZXYpOw0KPiA+ICAgTU1DX0RFVl9BVFRSKG1hbmZpZCwgIjB4JTA2eFxuIiwg
-Y2FyZC0+Y2lkLm1hbmZpZCk7DQo+ID4gQEAgLTg1MSw2ICs4NjQsNyBAQCBzdGF0aWMgc3RydWN0
-IGF0dHJpYnV0ZSAqbW1jX3N0ZF9hdHRyc1tdID0gew0KPiA+ICAgCSZkZXZfYXR0cl9kYXRlLmF0
-dHIsDQo+ID4gICAJJmRldl9hdHRyX2VyYXNlX3NpemUuYXR0ciwNCj4gPiAgIAkmZGV2X2F0dHJf
-cHJlZmVycmVkX2VyYXNlX3NpemUuYXR0ciwNCj4gPiArCSZkZXZfYXR0cl93cF9ncnBfc2l6ZS5h
-dHRyLA0KPiA+ICAgCSZkZXZfYXR0cl9md3Jldi5hdHRyLA0KPiA+ICAgCSZkZXZfYXR0cl9mZnVf
-Y2FwYWJsZS5hdHRyLA0KPiA+ICAgCSZkZXZfYXR0cl9od3Jldi5hdHRyLA0KPiA+IEBAIC0xNzU5
-LDcgKzE3NzMsNyBAQCBzdGF0aWMgaW50IG1tY19pbml0X2NhcmQoc3RydWN0IG1tY19ob3N0DQo+
-ID4gKmhvc3QsIHUzMiBvY3IsDQo+ID4gICAJCQltbWNfc2V0X2VyYXNlX3NpemUoY2FyZCk7DQo+
-ID4gICAJCX0NCj4gPiAgIAl9DQo+ID4gLQ0KPiA+ICsJbW1jX3NldF93cF9ncnBfc2l6ZShjYXJk
-KTsNCj4gPiAgIAkvKg0KPiA+ICAgCSAqIEVuc3VyZSBlTU1DIHVzZXIgZGVmYXVsdCBwYXJ0aXRp
-b24gaXMgZW5hYmxlZA0KPiA+ICAgCSAqLw0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4
-L21tYy9jYXJkLmggYi9pbmNsdWRlL2xpbnV4L21tYy9jYXJkLmgNCj4gPiBpbmRleCBkYWEyZjQw
-ZDljZTYuLjYyODczZWNjNTJmMSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L21tYy9j
-YXJkLmgNCj4gPiArKysgYi9pbmNsdWRlL2xpbnV4L21tYy9jYXJkLmgNCj4gPiBAQCAtMzIsNiAr
-MzIsNyBAQCBzdHJ1Y3QgbW1jX2NzZCB7DQo+ID4gICAJdW5zaWduZWQgaW50CQlyMndfZmFjdG9y
-Ow0KPiA+ICAgCXVuc2lnbmVkIGludAkJbWF4X2R0cjsNCj4gPiAgIAl1bnNpZ25lZCBpbnQJCWVy
-YXNlX3NpemU7CQkvKiBJbg0KPiA+IHNlY3RvcnMgKi8NCj4gPiArCXVuc2lnbmVkIGludAkJd3Bf
-Z3JwX3NpemU7DQo+ID4gICAJdW5zaWduZWQgaW50CQlyZWFkX2Jsa2JpdHM7DQo+ID4gICAJdW5z
-aWduZWQgaW50CQl3cml0ZV9ibGtiaXRzOw0KPiA+ICAgCXVuc2lnbmVkIGludAkJY2FwYWNpdHk7
-DQo+ID4gQEAgLTMwNCw2ICszMDUsNyBAQCBzdHJ1Y3QgbW1jX2NhcmQgew0KPiA+ICAgCXVuc2ln
-bmVkIGludAkJZWdfYm91bmRhcnk7CS8qIGRvbid0IGNyb3NzDQo+ID4gZXJhc2UtZ3JvdXAgYm91
-bmRhcmllcyAqLw0KPiA+ICAgCXVuc2lnbmVkIGludAkJZXJhc2VfYXJnOwkvKiBlcmFzZSAvIHRy
-aW0gLw0KPiA+IGRpc2NhcmQgKi8NCj4gPiAgICAJdTgJCQllcmFzZWRfYnl0ZTsJLyogdmFsdWUg
-b2YgZXJhc2VkIGJ5dGVzICovDQo+ID4gKwl1bnNpZ25lZCBpbnQJCXdwX2dycF9zaXplOwkvKiB3
-cml0ZSBncm91cCBzaXplIGluDQo+ID4gc2VjdG9ycyAqLw0KPiANCj4gVGhlcmUgc2hvdWxkIGJl
-IGEgdGFidWxhdGlvbiBiZWZvcmUgdGhlIGNvbW1lbnQsIG5vdCBhIHNwYWNlLg0KICBEb25lOiBy
-ZXBsYWNlZCBzcGFjZSB3aXRoIHRhYnVsYXRpb24uIEkgd2lsbCBydW4gc2NyaXB0cy9jaGVjay0N
-CnBhdGNoLnBsIGJlZm9yZSB1cGxvYWRpbmcgcGF0Y2ggbmV4dCB0aW1lIHRvIGF2b2lkIGNvZGUg
-c3R5bGUNCnZpb2xhdGlvbi4NCj4gDQo+IFJlZ2FyZHMsDQo+IEFuZ2Vsbw0KPiANCg==
+Support the following ioctls for CDX devices:
+- VFIO_DEVICE_GET_IRQ_INFO
+- VFIO_DEVICE_SET_IRQS
+
+This allows user to set an eventfd for cdx device interrupts and
+trigger this interrupt eventfd from userspace.
+All CDX device interrupts are MSIs. The MSIs are allocated from the
+CDX-MSI domain.
+
+Signed-off-by: Nipun Gupta <nipun.gupta@amd.com>
+Reviewed-by: Pieter Jansen van Vuuren <pieter.jansen-van-vuuren@amd.com>
+---
+
+This patch depends on CDX MSI support patch:
+https://lore.kernel.org/lkml/20231116125609.245206-1-nipun.gupta@amd.com/
+
+Changes v1->v2:
+- Rebased on Linux 6.7-rc1
+
+ drivers/vfio/cdx/Makefile  |   2 +-
+ drivers/vfio/cdx/intr.c    | 211 +++++++++++++++++++++++++++++++++++++
+ drivers/vfio/cdx/main.c    |  60 ++++++++++-
+ drivers/vfio/cdx/private.h |  18 ++++
+ 4 files changed, 289 insertions(+), 2 deletions(-)
+ create mode 100644 drivers/vfio/cdx/intr.c
+
+diff --git a/drivers/vfio/cdx/Makefile b/drivers/vfio/cdx/Makefile
+index cd4a2e6fe609..df92b320122a 100644
+--- a/drivers/vfio/cdx/Makefile
++++ b/drivers/vfio/cdx/Makefile
+@@ -5,4 +5,4 @@
+ 
+ obj-$(CONFIG_VFIO_CDX) += vfio-cdx.o
+ 
+-vfio-cdx-objs := main.o
++vfio-cdx-objs := main.o intr.o
+diff --git a/drivers/vfio/cdx/intr.c b/drivers/vfio/cdx/intr.c
+new file mode 100644
+index 000000000000..2ee959fbca0c
+--- /dev/null
++++ b/drivers/vfio/cdx/intr.c
+@@ -0,0 +1,211 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Copyright (C) 2022-2023, Advanced Micro Devices, Inc.
++ */
++
++#include <linux/vfio.h>
++#include <linux/slab.h>
++#include <linux/types.h>
++#include <linux/eventfd.h>
++#include <linux/msi.h>
++#include <linux/interrupt.h>
++
++#include "linux/cdx/cdx_bus.h"
++#include "private.h"
++
++static irqreturn_t vfio_cdx_msihandler(int irq_no, void *arg)
++{
++	struct eventfd_ctx *trigger = arg;
++
++	eventfd_signal(trigger, 1);
++	return IRQ_HANDLED;
++}
++
++static int vfio_cdx_msi_enable(struct vfio_cdx_device *vdev, int nvec)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(vdev->vdev.dev);
++	struct device *dev = vdev->vdev.dev;
++	int msi_idx, ret;
++
++	vdev->cdx_irqs = kcalloc(nvec, sizeof(struct vfio_cdx_irq), GFP_KERNEL);
++	if (!vdev->cdx_irqs)
++		return -ENOMEM;
++
++	ret = cdx_enable_msi(cdx_dev);
++	if (ret) {
++		kfree(vdev->cdx_irqs);
++		return ret;
++	}
++
++	/* Allocate cdx MSIs */
++	ret = cdx_msi_domain_alloc_irqs(dev, nvec);
++	if (ret) {
++		cdx_disable_msi(cdx_dev);
++		kfree(vdev->cdx_irqs);
++		return ret;
++	}
++
++	for (msi_idx = 0; msi_idx < nvec; msi_idx++)
++		vdev->cdx_irqs[msi_idx].irq_no = msi_get_virq(dev, msi_idx);
++
++	vdev->irq_count = nvec;
++	vdev->config_msi = 1;
++
++	return 0;
++}
++
++static int vfio_cdx_msi_set_vector_signal(struct vfio_cdx_device *vdev,
++					  int vector, int fd)
++{
++	struct eventfd_ctx *trigger;
++	int irq_no, ret;
++
++	if (vector < 0 || vector >= vdev->irq_count)
++		return -EINVAL;
++
++	irq_no = vdev->cdx_irqs[vector].irq_no;
++
++	if (vdev->cdx_irqs[vector].trigger) {
++		free_irq(irq_no, vdev->cdx_irqs[vector].trigger);
++		kfree(vdev->cdx_irqs[vector].name);
++		eventfd_ctx_put(vdev->cdx_irqs[vector].trigger);
++		vdev->cdx_irqs[vector].trigger = NULL;
++	}
++
++	if (fd < 0)
++		return 0;
++
++	vdev->cdx_irqs[vector].name = kasprintf(GFP_KERNEL, "vfio-msi[%d](%s)",
++						vector, dev_name(vdev->vdev.dev));
++	if (!vdev->cdx_irqs[vector].name)
++		return -ENOMEM;
++
++	trigger = eventfd_ctx_fdget(fd);
++	if (IS_ERR(trigger)) {
++		kfree(vdev->cdx_irqs[vector].name);
++		return PTR_ERR(trigger);
++	}
++
++	ret = request_irq(irq_no, vfio_cdx_msihandler, 0,
++			  vdev->cdx_irqs[vector].name, trigger);
++	if (ret) {
++		kfree(vdev->cdx_irqs[vector].name);
++		eventfd_ctx_put(trigger);
++		return ret;
++	}
++
++	vdev->cdx_irqs[vector].trigger = trigger;
++
++	return 0;
++}
++
++static int vfio_cdx_msi_set_block(struct vfio_cdx_device *vdev,
++				  unsigned int start, unsigned int count,
++				  int32_t *fds)
++{
++	int i, j, ret = 0;
++
++	if (start >= vdev->irq_count || start + count > vdev->irq_count)
++		return -EINVAL;
++
++	for (i = 0, j = start; i < count && !ret; i++, j++) {
++		int fd = fds ? fds[i] : -1;
++
++		ret = vfio_cdx_msi_set_vector_signal(vdev, j, fd);
++	}
++
++	if (ret) {
++		for (--j; j >= (int)start; j--)
++			vfio_cdx_msi_set_vector_signal(vdev, j, -1);
++	}
++
++	return ret;
++}
++
++static void vfio_cdx_msi_disable(struct vfio_cdx_device *vdev)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(vdev->vdev.dev);
++	struct device *dev = vdev->vdev.dev;
++
++	vfio_cdx_msi_set_block(vdev, 0, vdev->irq_count, NULL);
++
++	if (!vdev->config_msi)
++		return;
++
++	cdx_msi_domain_free_irqs(dev, MSI_DEFAULT_DOMAIN);
++	cdx_disable_msi(cdx_dev);
++	kfree(vdev->cdx_irqs);
++
++	vdev->cdx_irqs = NULL;
++	vdev->irq_count = 0;
++	vdev->config_msi = 0;
++}
++
++static int vfio_cdx_set_msi_trigger(struct vfio_cdx_device *vdev,
++				    unsigned int index, unsigned int start,
++				    unsigned int count, u32 flags,
++				    void *data)
++{
++	struct cdx_device *cdx_dev = to_cdx_device(vdev->vdev.dev);
++	int i;
++
++	if (start + count > cdx_dev->num_msi)
++		return -EINVAL;
++
++	if (!count && (flags & VFIO_IRQ_SET_DATA_NONE)) {
++		vfio_cdx_msi_disable(vdev);
++		return 0;
++	}
++
++	if (flags & VFIO_IRQ_SET_DATA_EVENTFD) {
++		s32 *fds = data;
++		int ret;
++
++		if (vdev->config_msi)
++			return vfio_cdx_msi_set_block(vdev, start, count,
++						  fds);
++		ret = vfio_cdx_msi_enable(vdev, cdx_dev->num_msi);
++		if (ret)
++			return ret;
++
++		ret = vfio_cdx_msi_set_block(vdev, start, count, fds);
++		if (ret)
++			vfio_cdx_msi_disable(vdev);
++
++		return ret;
++	}
++
++	for (i = start; i < start + count; i++) {
++		if (!vdev->cdx_irqs[i].trigger)
++			continue;
++		if (flags & VFIO_IRQ_SET_DATA_NONE)
++			eventfd_signal(vdev->cdx_irqs[i].trigger, 1);
++	}
++
++	return 0;
++}
++
++int vfio_cdx_set_irqs_ioctl(struct vfio_cdx_device *vdev,
++			    u32 flags, unsigned int index,
++			    unsigned int start, unsigned int count,
++			    void *data)
++{
++	if (flags & VFIO_IRQ_SET_ACTION_TRIGGER)
++		return vfio_cdx_set_msi_trigger(vdev, index, start,
++			  count, flags, data);
++	else
++		return -EINVAL;
++}
++
++/* Free All IRQs for the given device */
++void vfio_cdx_irqs_cleanup(struct vfio_cdx_device *vdev)
++{
++	/*
++	 * Device does not support any interrupt or the interrupts
++	 * were not configured
++	 */
++	if (!vdev->cdx_irqs)
++		return;
++
++	vfio_cdx_set_msi_trigger(vdev, 1, 0, 0, VFIO_IRQ_SET_DATA_NONE, NULL);
++}
+diff --git a/drivers/vfio/cdx/main.c b/drivers/vfio/cdx/main.c
+index 9cff8d75789e..eb1c5879150b 100644
+--- a/drivers/vfio/cdx/main.c
++++ b/drivers/vfio/cdx/main.c
+@@ -61,6 +61,7 @@ static void vfio_cdx_close_device(struct vfio_device *core_vdev)
+ 
+ 	kfree(vdev->regions);
+ 	cdx_dev_reset(core_vdev->dev);
++	vfio_cdx_irqs_cleanup(vdev);
+ }
+ 
+ static int vfio_cdx_bm_ctrl(struct vfio_device *core_vdev, u32 flags,
+@@ -123,7 +124,7 @@ static int vfio_cdx_ioctl_get_info(struct vfio_cdx_device *vdev,
+ 	info.flags |= VFIO_DEVICE_FLAGS_RESET;
+ 
+ 	info.num_regions = cdx_dev->res_count;
+-	info.num_irqs = 0;
++	info.num_irqs = cdx_dev->num_msi ? 1 : 0;
+ 
+ 	return copy_to_user(arg, &info, minsz) ? -EFAULT : 0;
+ }
+@@ -152,6 +153,59 @@ static int vfio_cdx_ioctl_get_region_info(struct vfio_cdx_device *vdev,
+ 	return copy_to_user(arg, &info, minsz) ? -EFAULT : 0;
+ }
+ 
++static int vfio_cdx_ioctl_get_irq_info(struct vfio_cdx_device *vdev,
++				       struct vfio_irq_info __user *arg)
++{
++	unsigned long minsz = offsetofend(struct vfio_irq_info, count);
++	struct cdx_device *cdx_dev = to_cdx_device(vdev->vdev.dev);
++	struct vfio_irq_info info;
++
++	if (copy_from_user(&info, arg, minsz))
++		return -EFAULT;
++
++	if (info.argsz < minsz)
++		return -EINVAL;
++
++	if (info.index >= 1)
++		return -EINVAL;
++
++	info.flags = VFIO_IRQ_INFO_EVENTFD;
++	info.count = cdx_dev->num_msi;
++
++	return copy_to_user(arg, &info, minsz) ? -EFAULT : 0;
++}
++
++static int vfio_cdx_ioctl_set_irqs(struct vfio_cdx_device *vdev,
++				   struct vfio_irq_set __user *arg)
++{
++	unsigned long minsz = offsetofend(struct vfio_irq_set, count);
++	struct cdx_device *cdx_dev = to_cdx_device(vdev->vdev.dev);
++	struct vfio_irq_set hdr;
++	size_t data_size = 0;
++	u8 *data = NULL;
++	int ret = 0;
++
++	if (copy_from_user(&hdr, arg, minsz))
++		return -EFAULT;
++
++	ret = vfio_set_irqs_validate_and_prepare(&hdr, cdx_dev->num_msi,
++						 1, &data_size);
++	if (ret)
++		return ret;
++
++	if (data_size) {
++		data = memdup_user(arg->data, data_size);
++		if (IS_ERR(data))
++			return PTR_ERR(data);
++	}
++
++	ret = vfio_cdx_set_irqs_ioctl(vdev, hdr.flags, hdr.index,
++				      hdr.start, hdr.count, data);
++	kfree(data);
++
++	return ret;
++}
++
+ static long vfio_cdx_ioctl(struct vfio_device *core_vdev,
+ 			   unsigned int cmd, unsigned long arg)
+ {
+@@ -164,6 +218,10 @@ static long vfio_cdx_ioctl(struct vfio_device *core_vdev,
+ 		return vfio_cdx_ioctl_get_info(vdev, uarg);
+ 	case VFIO_DEVICE_GET_REGION_INFO:
+ 		return vfio_cdx_ioctl_get_region_info(vdev, uarg);
++	case VFIO_DEVICE_GET_IRQ_INFO:
++		return vfio_cdx_ioctl_get_irq_info(vdev, uarg);
++	case VFIO_DEVICE_SET_IRQS:
++		return vfio_cdx_ioctl_set_irqs(vdev, uarg);
+ 	case VFIO_DEVICE_RESET:
+ 		return cdx_dev_reset(core_vdev->dev);
+ 	default:
+diff --git a/drivers/vfio/cdx/private.h b/drivers/vfio/cdx/private.h
+index 8e9d25913728..7a8477ae4652 100644
+--- a/drivers/vfio/cdx/private.h
++++ b/drivers/vfio/cdx/private.h
+@@ -13,6 +13,14 @@ static inline u64 vfio_cdx_index_to_offset(u32 index)
+ 	return ((u64)(index) << VFIO_CDX_OFFSET_SHIFT);
+ }
+ 
++struct vfio_cdx_irq {
++	u32			flags;
++	u32			count;
++	int			irq_no;
++	struct eventfd_ctx	*trigger;
++	char			*name;
++};
++
+ struct vfio_cdx_region {
+ 	u32			flags;
+ 	u32			type;
+@@ -25,6 +33,16 @@ struct vfio_cdx_device {
+ 	struct vfio_cdx_region	*regions;
+ 	u32			flags;
+ #define BME_SUPPORT BIT(0)
++	struct vfio_cdx_irq	*cdx_irqs;
++	u32			irq_count;
++	u32			config_msi;
+ };
+ 
++int vfio_cdx_set_irqs_ioctl(struct vfio_cdx_device *vdev,
++			    u32 flags, unsigned int index,
++			    unsigned int start, unsigned int count,
++			    void *data);
++
++void vfio_cdx_irqs_cleanup(struct vfio_cdx_device *vdev);
++
+ #endif /* VFIO_CDX_PRIVATE_H */
+-- 
+2.34.1
+
