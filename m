@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 41C007EDE85
+	by mail.lfdr.de (Postfix) with ESMTP id 96D2C7EDE86
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:31:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345018AbjKPKbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:31:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36134 "EHLO
+        id S1345024AbjKPKbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:31:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbjKPKba (ORCPT
+        with ESMTP id S233066AbjKPKbb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:31:30 -0500
+        Thu, 16 Nov 2023 05:31:31 -0500
 Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::223])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DED2D1;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B846D1AE;
         Thu, 16 Nov 2023 02:31:26 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 635AF60010;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DEF996001C;
         Thu, 16 Nov 2023 10:31:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700130684;
+        t=1700130685;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=4lN48hLGgtpA2K973BPzgWFsxjYsrvJpsG7a0gWgGow=;
-        b=kW5JAA/3sAxvjEU8LiacB3LHGZ1xiT4vu56zT+KTrSd8Nui8pdSQL+OD0HcaH+CDvG++h4
-        tZY1M4iD/g3r/V/k+oEKiVwWiQyGDf6KVQqisqPSk79GQ98c6/Znad7W36Rfhkw2azIyK0
-        ROBu+2kbKYahO7DliybsDrzUe6xeb9RyXf+w72XC7XcmRKsksvBdbf22oms1115TfBtT2/
-        6ZjbupXxboGercs1muPCvhApQCC1GsHTAVSPp7NvL7w3L4WkLjdthfQowZSTy7K7goVCNK
-        8ePn2UIhBEd/ZJYOIXPuwsLPVssLyzvxj9S3ShbYzl8tuC1V/IhhQH+av7zaKg==
+        bh=8Gilx4H3RKP8/lZDTxCW04nyKKjKNCSF+csRLPdNS2A=;
+        b=JGs2E4Pm4ttEACnrdJLtXtseCSq4ZCZOGkeVwb0XK7HwE5wEyzJYbuUSED/lJJXzwU5+Jz
+        aydtnjt7I4CmF/JEs83zg0J0OL7YFkQCtUOpViTQP640eIQmc80KockT651UVFfChIaBEx
+        bWqZRjnMXbL4C6siWB88VN3om1jpFOnm16vCvWIuHcIWrLYzIydBY3eG5P1/4fgwTZ0rsU
+        YguJIdOi87LeLchXoAYe556YcEtxiu1cSItiTjOakmvbo2gOT1G6VEZ19sjGs6PDSDIOOy
+        S0F7f6gzyez5k2vVXdB8rMs+LPBa2XcIrsa40K0bdNc6PF8IaPR/kQvNFQyL8w==
 From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
-Date:   Thu, 16 Nov 2023 11:31:07 +0100
-Subject: [PATCH v2 4/5] tty: serial: amba-pl011: replace TIOCMBIT macros by
- static functions
+Date:   Thu, 16 Nov 2023 11:31:08 +0100
+Subject: [PATCH v2 5/5] tty: serial: amba-pl011: unindent
+ pl011_console_get_options function body
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231116-mbly-uart-v2-4-863f665ce520@bootlin.com>
+Message-Id: <20231116-mbly-uart-v2-5-863f665ce520@bootlin.com>
 References: <20231116-mbly-uart-v2-0-863f665ce520@bootlin.com>
 In-Reply-To: <20231116-mbly-uart-v2-0-863f665ce520@bootlin.com>
 To:     Russell King <linux@armlinux.org.uk>,
@@ -62,101 +62,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver uses two TIOCMBIT macros inside pl011_{get,set}_mctrl to
-simplify the logic. Those look scary to checkpatch because they contain
-ifs without do-while loops.
+The whole function body is encapsulated inside an if-condition. Reverse
+the if logic and early return to remove one indentation level.
 
-Avoid the macros by creating small equivalent static functions; that
-lets the compiler do its type checking & avoids checkpatch errors.
-
-For the second instance __assign_bit is not usable because it deals with
-unsigned long pointers whereas we have an unsigned int in
-pl011_set_mctrl.
+Also turn two nested ifs into a single one at the end of the function.
 
 Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
 ---
- drivers/tty/serial/amba-pl011.c | 45 ++++++++++++++++++++++-------------------
- 1 file changed, 24 insertions(+), 21 deletions(-)
+ drivers/tty/serial/amba-pl011.c | 42 ++++++++++++++++++++---------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
 diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
-index d56607957158..bb3082c4d35c 100644
+index bb3082c4d35c..5774d48c7f16 100644
 --- a/drivers/tty/serial/amba-pl011.c
 +++ b/drivers/tty/serial/amba-pl011.c
-@@ -1594,6 +1594,12 @@ static unsigned int pl011_tx_empty(struct uart_port *port)
- 							0 : TIOCSER_TEMT;
- }
- 
-+static void pl011_maybe_set_bit(bool cond, unsigned int *ptr, unsigned int mask)
-+{
-+	if (cond)
-+		*ptr |= mask;
-+}
-+
- static unsigned int pl011_get_mctrl(struct uart_port *port)
+@@ -2369,34 +2369,34 @@ pl011_console_write(struct console *co, const char *s, unsigned int count)
+ static void pl011_console_get_options(struct uart_amba_port *uap, int *baud,
+ 				      int *parity, int *bits)
  {
- 	struct uart_amba_port *uap =
-@@ -1601,18 +1607,22 @@ static unsigned int pl011_get_mctrl(struct uart_port *port)
- 	unsigned int result = 0;
- 	unsigned int status = pl011_read(uap, REG_FR);
+-	if (pl011_read(uap, REG_CR) & UART01x_CR_UARTEN) {
+-		unsigned int lcr_h, ibrd, fbrd;
++	unsigned int lcr_h, ibrd, fbrd;
  
--#define TIOCMBIT(uartbit, tiocmbit)	\
--	if (status & uartbit)		\
--		result |= tiocmbit
-+	pl011_maybe_set_bit(status & UART01x_FR_DCD, &result, TIOCM_CAR);
-+	pl011_maybe_set_bit(status & uap->vendor->fr_dsr, &result, TIOCM_DSR);
-+	pl011_maybe_set_bit(status & uap->vendor->fr_cts, &result, TIOCM_CTS);
-+	pl011_maybe_set_bit(status & uap->vendor->fr_ri, &result, TIOCM_RNG);
+-		lcr_h = pl011_read(uap, REG_LCRH_TX);
++	if (!(pl011_read(uap, REG_CR) & UART01x_CR_UARTEN))
++		return;
  
--	TIOCMBIT(UART01x_FR_DCD, TIOCM_CAR);
--	TIOCMBIT(uap->vendor->fr_dsr, TIOCM_DSR);
--	TIOCMBIT(uap->vendor->fr_cts, TIOCM_CTS);
--	TIOCMBIT(uap->vendor->fr_ri, TIOCM_RNG);
--#undef TIOCMBIT
- 	return result;
- }
+-		*parity = 'n';
+-		if (lcr_h & UART01x_LCRH_PEN) {
+-			if (lcr_h & UART01x_LCRH_EPS)
+-				*parity = 'e';
+-			else
+-				*parity = 'o';
+-		}
++	lcr_h = pl011_read(uap, REG_LCRH_TX);
  
-+static void pl011_assign_bit(bool cond, unsigned int *ptr, unsigned int mask)
-+{
-+	if (cond)
-+		*ptr |= mask;
+-		if ((lcr_h & 0x60) == UART01x_LCRH_WLEN_7)
+-			*bits = 7;
++	*parity = 'n';
++	if (lcr_h & UART01x_LCRH_PEN) {
++		if (lcr_h & UART01x_LCRH_EPS)
++			*parity = 'e';
+ 		else
+-			*bits = 8;
++			*parity = 'o';
++	}
++
++	if ((lcr_h & 0x60) == UART01x_LCRH_WLEN_7)
++		*bits = 7;
 +	else
-+		*ptr &= ~mask;
-+}
-+
- static void pl011_set_mctrl(struct uart_port *port, unsigned int mctrl)
- {
- 	struct uart_amba_port *uap =
-@@ -1621,23 +1631,16 @@ static void pl011_set_mctrl(struct uart_port *port, unsigned int mctrl)
++		*bits = 8;
  
- 	cr = pl011_read(uap, REG_CR);
+-		ibrd = pl011_read(uap, REG_IBRD);
+-		fbrd = pl011_read(uap, REG_FBRD);
++	ibrd = pl011_read(uap, REG_IBRD);
++	fbrd = pl011_read(uap, REG_FBRD);
  
--#define	TIOCMBIT(tiocmbit, uartbit)		\
--	if (mctrl & tiocmbit)		\
--		cr |= uartbit;		\
--	else				\
--		cr &= ~uartbit
--
--	TIOCMBIT(TIOCM_RTS, UART011_CR_RTS);
--	TIOCMBIT(TIOCM_DTR, UART011_CR_DTR);
--	TIOCMBIT(TIOCM_OUT1, UART011_CR_OUT1);
--	TIOCMBIT(TIOCM_OUT2, UART011_CR_OUT2);
--	TIOCMBIT(TIOCM_LOOP, UART011_CR_LBE);
-+	pl011_assign_bit(mctrl & TIOCM_RTS, &cr, UART011_CR_RTS);
-+	pl011_assign_bit(mctrl & TIOCM_DTR, &cr, UART011_CR_DTR);
-+	pl011_assign_bit(mctrl & TIOCM_OUT1, &cr, UART011_CR_OUT1);
-+	pl011_assign_bit(mctrl & TIOCM_OUT2, &cr, UART011_CR_OUT2);
-+	pl011_assign_bit(mctrl & TIOCM_LOOP, &cr, UART011_CR_LBE);
+-		*baud = uap->port.uartclk * 4 / (64 * ibrd + fbrd);
++	*baud = uap->port.uartclk * 4 / (64 * ibrd + fbrd);
  
- 	if (port->status & UPSTAT_AUTORTS) {
- 		/* We need to disable auto-RTS if we want to turn RTS off */
--		TIOCMBIT(TIOCM_RTS, UART011_CR_RTSEN);
-+		pl011_assign_bit(mctrl & TIOCM_RTS, &cr, UART011_CR_RTSEN);
+-		if (uap->vendor->oversampling) {
+-			if (pl011_read(uap, REG_CR)
+-				  & ST_UART011_CR_OVSFACT)
+-				*baud *= 2;
+-		}
++	if (uap->vendor->oversampling &&
++	    (pl011_read(uap, REG_CR) & ST_UART011_CR_OVSFACT)) {
++		*baud *= 2;
  	}
--#undef TIOCMBIT
- 
- 	pl011_write(cr, uap, REG_CR);
  }
+ 
 
 -- 
 2.41.0
