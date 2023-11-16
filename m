@@ -2,116 +2,366 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9F67EDF26
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C23C67EDF2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345097AbjKPLFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45070 "EHLO
+        id S1345003AbjKPLIc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:08:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53854 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231130AbjKPLFI (ORCPT
+        with ESMTP id S230340AbjKPLIb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:05:08 -0500
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E11E8D68;
-        Thu, 16 Nov 2023 03:04:58 -0800 (PST)
-X-UUID: f77b8122846f11ee8051498923ad61e6-20231116
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=0Ilth5/ml3BcwAlDzYOZhC1QcQ8Nl7amXfdm70cmsFs=;
-        b=fpZ3lmp0+bvgL892nZ5IGe1H2o+9Gu99Fptc6Jv145rRlqoErEHyVNCCrWS7X231Bm4jaIdZNWDh7B7ZB50vr3q+br9zs0szokOE/znbWJNL2f1PwHAQVfrS/WOuyWX8WoAyX3vtiQeOaMk8JejmXipwJSzMvSzafJI0Cm3Mgf8=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:edec14d6-afc7-4488-99f6-45cca4cfa66c,IP:0,U
-        RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-        release,TS:0
-X-CID-META: VersionHash:364b77b,CLOUDID:21b42260-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-        RL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,
-        DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: f77b8122846f11ee8051498923ad61e6-20231116
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw02.mediatek.com
-        (envelope-from <chun-jen.tseng@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 914367294; Thu, 16 Nov 2023 19:04:52 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- MTKMBS14N2.mediatek.inc (172.21.101.76) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Thu, 16 Nov 2023 19:04:50 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Thu, 16 Nov 2023 19:04:50 +0800
-From:   Mark Tseng <chun-jen.tseng@mediatek.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Roger Lu <roger.lu@mediatek.com>,
-        Kevin Hilman <khilman@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
-        <chun-jen.tseng@mediatek.com>
-Subject: [PATCH v2 3/3] dt-bindings: soc: mediatek: add mt8186 and mt8195 svs dt-bindings
-Date:   Thu, 16 Nov 2023 19:04:47 +0800
-Message-ID: <20231116110447.3598-4-chun-jen.tseng@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20231116110447.3598-1-chun-jen.tseng@mediatek.com>
-References: <20231116110447.3598-1-chun-jen.tseng@mediatek.com>
+        Thu, 16 Nov 2023 06:08:31 -0500
+Received: from mail-pj1-f78.google.com (mail-pj1-f78.google.com [209.85.216.78])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15DEEAA
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:08:27 -0800 (PST)
+Received: by mail-pj1-f78.google.com with SMTP id 98e67ed59e1d1-2800e025bc7so679625a91.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:08:27 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700132906; x=1700737706;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FUu0mxVAmb+assglELuUMPCwWUjJiBkQhf0gEKVZ2CU=;
+        b=X2atNPFbMeM8XCA9T1aFHTKki2YuMCpCE+I7JkNI+X3oNdsMkTI/PS2KCUwtAE75Ab
+         9hPM7orFS2ioCvP+Rl2ldOREcJFYzEeBgImCwvqC15a9m0iK+LxNoASjxuJjBnxbXGZQ
+         Iy7nn3ioOfb50/Zh6O1KlBZBwicgjepXqj1oY2zKyZt0y3o2++dqx5Snk6ySUIS0WPHJ
+         M+V3lksRAeacwFgpFuuI3xXMzAC07Ge1vpVO7VXcDzWspzksQ5KetS2vhmWe4q6k4MWc
+         GXK43P/gB1ymLEWKXGpd0P2v7/RjJHBdbEDxNgL3eTTkI/TtuCHtRKualizPcgBtd9LJ
+         ss7Q==
+X-Gm-Message-State: AOJu0YwXQ++v3LIXW+3RGBB+QUvnV/4bDHtn8Bb3lzGlbFAgwt6eAWhR
+        Mx3OHQm9HwaifPhdDKEefIu1EQw9/IEnsMtv7VbsRbUJZVeT
+X-Google-Smtp-Source: AGHT+IGMFnD9EWhd5PBIN37z20MKZ7T6A2PTp3nlFY29PBgUWUWcrk4ltzCDM3AhpDVXf6F5nHhUgcp+HL5MNyBQBlM1w0weWqRk
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--2.474800-8.000000
-X-TMASE-MatchedRID: qaEF7sysRdbHCChNBbZThQPZZctd3P4BfS0Ip2eEHnwj/1Rbkzl1E95/
-        HgWYxplM5MIx11wv+CPKayT/BQTiGijkRB+q9uV+zy8CehqGChcZFyQzNomHSPw3dlYD1EcdbIw
-        NL10fUKRHHh78pbcuPOJbiTiJZfShnIItpVenOepwSFus9SMLZKDE4wLr4uZ8dATQdtPksR+3/J
-        iWOe6GXXSWgQ2GpXdZhztLVWA1eE9DDKa3G4nrLQ==
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--2.474800-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 2900993E6A7A7315122D62FB8CF6B5365F34A2DCA102FD1D6EA2428A43DA99852000:8
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,RDNS_NONE,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,URIBL_BLOCKED autolearn=no
-        autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:2b4b:b0:280:a5e9:3b61 with SMTP id
+ rr11-20020a17090b2b4b00b00280a5e93b61mr4627369pjb.9.1700132906445; Thu, 16
+ Nov 2023 03:08:26 -0800 (PST)
+Date:   Thu, 16 Nov 2023 03:08:26 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f5b0d0060a430995@google.com>
+Subject: [syzbot] [cgroups?] possible deadlock in cgroup_free
+From:   syzbot <syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com>
+To:     cgroups@vger.kernel.org, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, lizefan.x@bytedance.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support more SoC svs compatible in dt-bindings.
-1. MT8186
-2. MT8195
+Hello,
 
-Signed-off-by: Mark Tseng <chun-jen.tseng@mediatek.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
+syzbot found the following issue on:
+
+HEAD commit:    f31817cbcf48 Add linux-next specific files for 20231116
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17d0aca7680000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f59345f1d0a928c
+dashboard link: https://syzkaller.appspot.com/bug?extid=cef555184e66963dabc2
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/987488cb251e/disk-f31817cb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/6d4a82d8bd4b/vmlinux-f31817cb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/fc43dee9cb86/bzImage-f31817cb.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cef555184e66963dabc2@syzkaller.appspotmail.com
+
+=====================================================
+WARNING: SOFTIRQ-safe -> SOFTIRQ-unsafe lock order detected
+6.7.0-rc1-next-20231116-syzkaller #0 Not tainted
+-----------------------------------------------------
+syz-executor.3/8188 [HC0[0]:SC0[0]:HE0:SE1] is trying to acquire:
+ffff88801f641298 (&sighand->siglock){+.+.}-{2:2}, at: __lock_task_sighand+0xc2/0x340 kernel/signal.c:1422
+
+and this task is already holding:
+ffffffff8cff86b8 (css_set_lock){..-.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
+ffffffff8cff86b8 (css_set_lock){..-.}-{2:2}, at: cgroup_migrate_execute+0xd8/0x1230 kernel/cgroup/cgroup.c:2566
+which would create a new lock dependency:
+ (css_set_lock){..-.}-{2:2} -> (&sighand->siglock){+.+.}-{2:2}
+
+but this new dependency connects a SOFTIRQ-irq-safe lock:
+ (css_set_lock){..-.}-{2:2}
+
+... which became SOFTIRQ-irq-safe at:
+  lock_acquire kernel/locking/lockdep.c:5753 [inline]
+  lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+  __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+  _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+  put_css_set kernel/cgroup/cgroup-internal.h:208 [inline]
+  put_css_set kernel/cgroup/cgroup-internal.h:196 [inline]
+  cgroup_free+0x7c/0x1d0 kernel/cgroup/cgroup.c:6748
+  __put_task_struct+0x10b/0x3d0 kernel/fork.c:992
+  put_task_struct include/linux/sched/task.h:136 [inline]
+  put_task_struct include/linux/sched/task.h:123 [inline]
+  delayed_put_task_struct+0x22c/0x2d0 kernel/exit.c:227
+  rcu_do_batch kernel/rcu/tree.c:2158 [inline]
+  rcu_core+0x828/0x16b0 kernel/rcu/tree.c:2431
+  __do_softirq+0x216/0x8d5 kernel/softirq.c:553
+  invoke_softirq kernel/softirq.c:427 [inline]
+  __irq_exit_rcu kernel/softirq.c:632 [inline]
+  irq_exit_rcu+0xb5/0x120 kernel/softirq.c:644
+  sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1076
+  asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+  lock_acquire+0x1f2/0x530 kernel/locking/lockdep.c:5721
+  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+  spin_lock include/linux/spinlock.h:351 [inline]
+  lockref_put_or_lock+0x18/0x80 lib/lockref.c:147
+  fast_dput fs/dcache.c:775 [inline]
+  fast_dput fs/dcache.c:765 [inline]
+  dput+0x4c4/0xd90 fs/dcache.c:900
+  shmem_unlink+0x1bc/0x310 mm/shmem.c:3373
+  shmem_rename2+0x1ff/0x3b0 mm/shmem.c:3451
+  vfs_rename+0xe20/0x1c30 fs/namei.c:4844
+  do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+  __do_sys_rename fs/namei.c:5042 [inline]
+  __se_sys_rename fs/namei.c:5040 [inline]
+  __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+  entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+to a SOFTIRQ-irq-unsafe lock:
+ (&sighand->siglock){+.+.}-{2:2}
+
+... which became SOFTIRQ-irq-unsafe at:
+...
+  lock_acquire kernel/locking/lockdep.c:5753 [inline]
+  lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+  spin_lock include/linux/spinlock.h:351 [inline]
+  class_spinlock_constructor include/linux/spinlock.h:530 [inline]
+  ptrace_set_stopped kernel/ptrace.c:391 [inline]
+  ptrace_attach+0x401/0x650 kernel/ptrace.c:478
+  __do_sys_ptrace+0x204/0x230 kernel/ptrace.c:1290
+  do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+  do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+  entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+other info that might help us debug this:
+
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&sighand->siglock);
+                               local_irq_disable();
+                               lock(css_set_lock);
+                               lock(&sighand->siglock);
+  <Interrupt>
+    lock(css_set_lock);
+
+ *** DEADLOCK ***
+
+8 locks held by syz-executor.3/8188:
+ #0: ffff88801d0e0d48 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe7/0x170 fs/file.c:1177
+ #1: ffff888014b44420 (sb_writers#10){.+.+}-{0:0}, at: ksys_write+0x12f/0x250 fs/read_write.c:637
+ #2: ffff88807ad7f088 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x27d/0x500 fs/kernfs/file.c:325
+ #3: ffffffff8cff8768 (cgroup_mutex){+.+.}-{3:3}, at: cgroup_lock include/linux/cgroup.h:368 [inline]
+ #3: ffffffff8cff8768 (cgroup_mutex){+.+.}-{3:3}, at: cgroup_lock_and_drain_offline+0xad/0x6d0 kernel/cgroup/cgroup.c:3092
+ #4: ffffffff8ce51f70 (cpu_hotplug_lock){++++}-{0:0}, at: cgroup_attach_lock kernel/cgroup/cgroup.c:2413 [inline]
+ #4: ffffffff8ce51f70 (cpu_hotplug_lock){++++}-{0:0}, at: cgroup_update_dfl_csses+0x2fb/0x640 kernel/cgroup/cgroup.c:3050
+ #5: ffffffff8cff8530 (cgroup_threadgroup_rwsem){++++}-{0:0}, at: cgroup_attach_lock kernel/cgroup/cgroup.c:2415 [inline]
+ #5: ffffffff8cff8530 (cgroup_threadgroup_rwsem){++++}-{0:0}, at: cgroup_attach_lock kernel/cgroup/cgroup.c:2411 [inline]
+ #5: ffffffff8cff8530 (cgroup_threadgroup_rwsem){++++}-{0:0}, at: cgroup_update_dfl_csses+0x3d1/0x640 kernel/cgroup/cgroup.c:3050
+ #6: ffffffff8cff86b8 (css_set_lock){..-.}-{2:2}, at: spin_lock_irq include/linux/spinlock.h:376 [inline]
+ #6: ffffffff8cff86b8 (css_set_lock){..-.}-{2:2}, at: cgroup_migrate_execute+0xd8/0x1230 kernel/cgroup/cgroup.c:2566
+ #7: ffffffff8cfad060 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #7: ffffffff8cfad060 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #7: ffffffff8cfad060 (rcu_read_lock){....}-{1:2}, at: __lock_task_sighand+0x3f/0x340 kernel/signal.c:1405
+
+the dependencies between SOFTIRQ-irq-safe lock and the holding lock:
+-> (css_set_lock){..-.}-{2:2} {
+   IN-SOFTIRQ-W at:
+                    lock_acquire kernel/locking/lockdep.c:5753 [inline]
+                    lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+                    __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                    _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+                    put_css_set kernel/cgroup/cgroup-internal.h:208 [inline]
+                    put_css_set kernel/cgroup/cgroup-internal.h:196 [inline]
+                    cgroup_free+0x7c/0x1d0 kernel/cgroup/cgroup.c:6748
+                    __put_task_struct+0x10b/0x3d0 kernel/fork.c:992
+                    put_task_struct include/linux/sched/task.h:136 [inline]
+                    put_task_struct include/linux/sched/task.h:123 [inline]
+                    delayed_put_task_struct+0x22c/0x2d0 kernel/exit.c:227
+                    rcu_do_batch kernel/rcu/tree.c:2158 [inline]
+                    rcu_core+0x828/0x16b0 kernel/rcu/tree.c:2431
+                    __do_softirq+0x216/0x8d5 kernel/softirq.c:553
+                    invoke_softirq kernel/softirq.c:427 [inline]
+                    __irq_exit_rcu kernel/softirq.c:632 [inline]
+                    irq_exit_rcu+0xb5/0x120 kernel/softirq.c:644
+                    sysvec_apic_timer_interrupt+0x95/0xb0 arch/x86/kernel/apic/apic.c:1076
+                    asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:645
+                    lock_acquire+0x1f2/0x530 kernel/locking/lockdep.c:5721
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+                    spin_lock include/linux/spinlock.h:351 [inline]
+                    lockref_put_or_lock+0x18/0x80 lib/lockref.c:147
+                    fast_dput fs/dcache.c:775 [inline]
+                    fast_dput fs/dcache.c:765 [inline]
+                    dput+0x4c4/0xd90 fs/dcache.c:900
+                    shmem_unlink+0x1bc/0x310 mm/shmem.c:3373
+                    shmem_rename2+0x1ff/0x3b0 mm/shmem.c:3451
+                    vfs_rename+0xe20/0x1c30 fs/namei.c:4844
+                    do_renameat2+0xc3c/0xdc0 fs/namei.c:4996
+                    __do_sys_rename fs/namei.c:5042 [inline]
+                    __se_sys_rename fs/namei.c:5040 [inline]
+                    __x64_sys_rename+0x81/0xa0 fs/namei.c:5040
+                    do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+                    do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+                    entry_SYSCALL_64_after_hwframe+0x62/0x6a
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5753 [inline]
+                   lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+                   __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+                   _raw_spin_lock_irq+0x36/0x50 kernel/locking/spinlock.c:170
+                   spin_lock_irq include/linux/spinlock.h:376 [inline]
+                   cgroup_setup_root+0x62c/0xa00 kernel/cgroup/cgroup.c:2138
+                   cgroup_init+0x23f/0x1100 kernel/cgroup/cgroup.c:6120
+                   start_kernel+0x385/0x480 init/main.c:1063
+                   x86_64_start_reservations+0x18/0x30 arch/x86/kernel/head64.c:555
+                   x86_64_start_kernel+0xb2/0xc0 arch/x86/kernel/head64.c:536
+                   secondary_startup_64_no_verify+0x166/0x16b
+ }
+ ... key      at: [<ffffffff8cff86b8>] css_set_lock+0x18/0x60
+
+the dependencies between the lock to be acquired
+ and SOFTIRQ-irq-unsafe lock:
+-> (&sighand->siglock){+.+.}-{2:2} {
+   HARDIRQ-ON-W at:
+                    lock_acquire kernel/locking/lockdep.c:5753 [inline]
+                    lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+                    spin_lock include/linux/spinlock.h:351 [inline]
+                    class_spinlock_constructor include/linux/spinlock.h:530 [inline]
+                    ptrace_set_stopped kernel/ptrace.c:391 [inline]
+                    ptrace_attach+0x401/0x650 kernel/ptrace.c:478
+                    __do_sys_ptrace+0x204/0x230 kernel/ptrace.c:1290
+                    do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+                    do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+                    entry_SYSCALL_64_after_hwframe+0x62/0x6a
+   SOFTIRQ-ON-W at:
+                    lock_acquire kernel/locking/lockdep.c:5753 [inline]
+                    lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+                    _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
+                    spin_lock include/linux/spinlock.h:351 [inline]
+                    class_spinlock_constructor include/linux/spinlock.h:530 [inline]
+                    ptrace_set_stopped kernel/ptrace.c:391 [inline]
+                    ptrace_attach+0x401/0x650 kernel/ptrace.c:478
+                    __do_sys_ptrace+0x204/0x230 kernel/ptrace.c:1290
+                    do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+                    do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+                    entry_SYSCALL_64_after_hwframe+0x62/0x6a
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5753 [inline]
+                   lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+                   __raw_spin_lock_irq include/linux/spinlock_api_smp.h:119 [inline]
+                   _raw_spin_lock_irq+0x36/0x50 kernel/locking/spinlock.c:170
+                   spin_lock_irq include/linux/spinlock.h:376 [inline]
+                   calculate_sigpending+0x44/0xa0 kernel/signal.c:197
+                   ret_from_fork+0x23/0x80 arch/x86/kernel/process.c:143
+                   ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ }
+ ... key      at: [<ffffffff90b49f80>] __key.341+0x0/0x40
+ ... acquired at:
+   lock_acquire kernel/locking/lockdep.c:5753 [inline]
+   lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+   __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+   _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+   __lock_task_sighand+0xc2/0x340 kernel/signal.c:1422
+   lock_task_sighand include/linux/sched/signal.h:748 [inline]
+   cgroup_freeze_task+0x80/0x190 kernel/cgroup/freezer.c:160
+   cgroup_freezer_migrate_task+0x1b7/0x3a0 kernel/cgroup/freezer.c:257
+   cgroup_migrate_execute+0x2d3/0x1230 kernel/cgroup/cgroup.c:2580
+   cgroup_update_dfl_csses+0x51b/0x640 kernel/cgroup/cgroup.c:3068
+   cgroup_apply_control kernel/cgroup/cgroup.c:3308 [inline]
+   cgroup_subtree_control_write+0xb94/0xed0 kernel/cgroup/cgroup.c:3453
+   cgroup_file_write+0x209/0x7c0 kernel/cgroup/cgroup.c:4092
+   kernfs_fop_write_iter+0x33f/0x500 fs/kernfs/file.c:334
+   call_write_iter include/linux/fs.h:2021 [inline]
+   new_sync_write fs/read_write.c:491 [inline]
+   vfs_write+0x64d/0xdf0 fs/read_write.c:584
+   ksys_write+0x12f/0x250 fs/read_write.c:637
+   do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+   do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+   entry_SYSCALL_64_after_hwframe+0x62/0x6a
+
+
+stack backtrace:
+CPU: 1 PID: 8188 Comm: syz-executor.3 Not tainted 6.7.0-rc1-next-20231116-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/10/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
+ print_bad_irq_dependency kernel/locking/lockdep.c:2626 [inline]
+ check_irq_usage+0xe18/0x1470 kernel/locking/lockdep.c:2865
+ check_prev_add kernel/locking/lockdep.c:3138 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3868 [inline]
+ __lock_acquire+0x247c/0x3b10 kernel/locking/lockdep.c:5136
+ lock_acquire kernel/locking/lockdep.c:5753 [inline]
+ lock_acquire+0x1b1/0x530 kernel/locking/lockdep.c:5718
+ __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+ _raw_spin_lock_irqsave+0x3a/0x50 kernel/locking/spinlock.c:162
+ __lock_task_sighand+0xc2/0x340 kernel/signal.c:1422
+ lock_task_sighand include/linux/sched/signal.h:748 [inline]
+ cgroup_freeze_task+0x80/0x190 kernel/cgroup/freezer.c:160
+ cgroup_freezer_migrate_task+0x1b7/0x3a0 kernel/cgroup/freezer.c:257
+ cgroup_migrate_execute+0x2d3/0x1230 kernel/cgroup/cgroup.c:2580
+ cgroup_update_dfl_csses+0x51b/0x640 kernel/cgroup/cgroup.c:3068
+ cgroup_apply_control kernel/cgroup/cgroup.c:3308 [inline]
+ cgroup_subtree_control_write+0xb94/0xed0 kernel/cgroup/cgroup.c:3453
+ cgroup_file_write+0x209/0x7c0 kernel/cgroup/cgroup.c:4092
+ kernfs_fop_write_iter+0x33f/0x500 fs/kernfs/file.c:334
+ call_write_iter include/linux/fs.h:2021 [inline]
+ new_sync_write fs/read_write.c:491 [inline]
+ vfs_write+0x64d/0xdf0 fs/read_write.c:584
+ ksys_write+0x12f/0x250 fs/read_write.c:637
+ do_syscall_x64 arch/x86/entry/common.c:51 [inline]
+ do_syscall_64+0x40/0x110 arch/x86/entry/common.c:82
+ entry_SYSCALL_64_after_hwframe+0x62/0x6a
+RIP: 0033:0x7f83f387cae9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f83f466d0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00007f83f399bf80 RCX: 00007f83f387cae9
+RDX: 0000000000000006 RSI: 0000000020000100 RDI: 0000000000000004
+RBP: 00007f83f38c847a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f83f399bf80 R15: 00007ffdda059fd8
+ </TASK>
+
+
 ---
- Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
-index 7eda63d5682f..742b91d1d28e 100644
---- a/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
-+++ b/Documentation/devicetree/bindings/soc/mediatek/mtk-svs.yaml
-@@ -22,8 +22,10 @@ properties:
-   compatible:
-     enum:
-       - mediatek,mt8183-svs
-+      - mediatek,mt8186-svs
-       - mediatek,mt8188-svs
-       - mediatek,mt8192-svs
-+      - mediatek,mt8195-svs
- 
-   reg:
-     maxItems: 1
--- 
-2.18.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
