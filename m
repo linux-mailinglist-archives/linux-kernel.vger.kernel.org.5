@@ -2,378 +2,387 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C0DA7EDC01
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:32:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAB87EDC02
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344864AbjKPHcH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 02:32:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48662 "EHLO
+        id S1344903AbjKPHcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 02:32:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233782AbjKPHcF (ORCPT
+        with ESMTP id S1344012AbjKPHcG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 02:32:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 725CADD
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:31:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700119918; x=1731655918;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-id:content-transfer-encoding:
-   mime-version;
-  bh=6BK04c7BtkhHJlazE5MVp5NA/kuo/drMCwFN9NIwpyM=;
-  b=cOb7pradW82AcLGyDkNihDcV2UK+dqR+6+hoLFOOblq6YGzyYyQkmrOC
-   SdCyn8HhwmmpTf0Yl4o1OKXa3o+MBbkx/jSVElgP/UJKKDbDDpwpy52Eu
-   ImUPYTwU29i5pObgPMiUH+GNdoiiAxrSdPap6s4ZrJZVq4tApHRXrA9k9
-   1KiCuebjTB2NTHeFmfStv94BTnzCyVFiTd1zXTBMqrnURjSBPSh9ND9V6
-   B/cc0DYf1oOxTwzLY375xkxlExCQvTMmh+2NlOVI2CY/zXOz0fUxmUPL/
-   30Rrsurruz9BsZulYyUDnZdTOyC4QxHOXlw3/anAN2GFuSYDGJEwJoNZv
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="371216190"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="371216190"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 23:31:48 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="835661466"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="835661466"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 23:31:46 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 23:31:45 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 23:31:45 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 23:31:45 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 23:31:44 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EaSlHeYuuJyF5S+Ad1mbAWLSmtjIxGfd4IzJ/DinJCsRcy7Gnq4O8TOFAt5zI1s/mMMUpOTskAjSSMxKR9Rxs37IJWXQDudV9Zi8YaGpo7iQZEAMVrR36zyk1KM+4Y/hAt1x8oIfyxrzb8gNUj4Cq11st3XZgIU7j5zhRZYDPAIu70NvChlpzlwLoY8vi653Z3f6ig5Y2pQsih4rP+Hju/blOimwDp+vkk+LaFzTX9Zt/thQy4hVYNFhB+tS9VRjvlrfJ61REvpKui3Dv8HsotlzzdwNLl7ytW7xhaAbru7cvZQ6vEq8pwWcGYRxyz2G4JUZLKrM5BOi9PyKBiGWMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6BK04c7BtkhHJlazE5MVp5NA/kuo/drMCwFN9NIwpyM=;
- b=RBiIZIi76ybjcrkDf8pdtGIRFkj5YULnSHY18VZNnzP9I7mBtCdpn8hQwH+50lAv8R2PLfJ7WCSg+lQ+lDfs8gI61CzEEvVBn6rgt+eoYaSgM/EyXp/8bLZOiNoTrbU9fsRg3Rhz3TljEuxuuRPfziiAJxLuWgZoIkup5adcqM4ZtkuClvMjXSNVSNCNGC3y/URDe3hKtsjINAhoe9YeW+Xby9Ljxtl0fCaeiA/wLWeF8M+23iU3aiTJH60g9jhMkxBXclhr6JJMWAa2n0/toRkIcoTStAK+86F+de6y0XW3/DJL+T3hyMzoA7mCoYw7hgqUgnaoBqu46KVceOcMdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com (2603:10b6:a03:478::6)
- by PH0PR11MB5644.namprd11.prod.outlook.com (2603:10b6:510:ef::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Thu, 16 Nov
- 2023 07:31:42 +0000
-Received: from SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::e10c:91d7:d34b:aa1d]) by SJ0PR11MB6622.namprd11.prod.outlook.com
- ([fe80::e10c:91d7:d34b:aa1d%6]) with mapi id 15.20.7002.015; Thu, 16 Nov 2023
- 07:31:42 +0000
-From:   "Zhang, Rui" <rui.zhang@intel.com>
-To:     "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>
-CC:     "pierre.gondois@arm.com" <pierre.gondois@arm.com>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "longman@redhat.com" <longman@redhat.com>,
-        "Lu, Aaron" <aaron.lu@intel.com>,
-        "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>,
-        "frederic@kernel.org" <frederic@kernel.org>
-Subject: Re: [PATCH] sched/fair: Skip cpus with no sched domain attached
- during NOHZ idle balance
-Thread-Topic: [PATCH] sched/fair: Skip cpus with no sched domain attached
- during NOHZ idle balance
-Thread-Index: AQHZxrPwkdv1IzdOfEyKSBa04QYHK6/pLXsAgABYUICAJ16+AIAE2BgAgABOrQCAAXNYgIACziKAgABcLQCACPCKAIBY1keAgADAigA=
-Date:   Thu, 16 Nov 2023 07:31:41 +0000
-Message-ID: <ee5213de2f1f8e5071201b7030b262163c15d095.camel@intel.com>
-References: <20230804090858.7605-1-rui.zhang@intel.com>
-         <20230814031432.GA574314@ziqianlu-dell>
-         <cb305abedea24980c93ce2b436e64039d3796812.camel@intel.com>
-         <b886a9af-6c90-c12a-f700-1a9141e25e7a@arm.com>
-         <20230911114218.GA334545@ziqianlu-dell>
-         <0d1c440becca151db3f3b05b3fb2c63fe69c2904.camel@intel.com>
-         <c8baa176-e4cd-41f6-35a9-c69f89b32e79@arm.com>
-         <a2a16c0e198a6d722b8923b0eec15dd2b32e4320.camel@intel.com>
-         <ea8da512-73df-59ed-6c47-912dd9ef9dba@arm.com>
-         <0a0ff05cd1ef629cfa0a4c9392f499459fe814e7.camel@intel.com>
-         <CAKfTPtAMd_KNKhXXGk5MEibzzQUX3BFkWgxtEW2o8FFTX99DKw@mail.gmail.com>
-In-Reply-To: <CAKfTPtAMd_KNKhXXGk5MEibzzQUX3BFkWgxtEW2o8FFTX99DKw@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.44.4-0ubuntu2 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB6622:EE_|PH0PR11MB5644:EE_
-x-ms-office365-filtering-correlation-id: 541909a5-126d-4507-8113-08dbe676140f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: W9W1Utwi2cTnrDHDuqtDxF69yISeNCO9+rdN4IZp3I3kiUN+ohsLPL3Gu7ULKw0kpqUoLRt0sDDG2aTsXCTGgtY3aXlv++aPUlk3iHhMqLcB++aH5ayleuB8kRlYyMVBR33vkEd5rEDemFBR4ZEtuV4VuvofwbLe+HrldnWBS5fhJGIK2ySrmE8oxP+4LedS+b78lPqGvRsYDZ3IHQzTdvbcKmJ/XGBnFI90h9XifIqUKzdg7rShlGFSerCiWbsJQyByEuJ1Nl++++aR7bFKjoitz7sU6NhCU946/TQOKTCOuxXl3Rr9lcWPLr1VJ8LAp70dsvQXhQe5JlO7xM2U7A3a68qHgARiO6z24rDHdxaefAozye1NLKxqVU8xfD3GdmFD7eaLo0ezutee/5lLYazeQG/OuqMRlBar9xXR1/ZBfDVPWpCG3Y2UrI5UZIiKVT9hHGNz48Yxl8xhQJjEFLv4WTJujPy6/li3NaCbVTUJcIKm/9dBbUQ4Nm2j2GA9+IzKt4Uw332Y1T0Me6Ujq94yr4MWksAUU+/BW2JBcLQPxj6kheuv4tvS5Oq0iAemk87DUEfrf+6s52DZemp52xfoLymmhw+6SrE02GaZJaKkmRnGvp6gmMozI30YbXtP
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB6622.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366004)(136003)(346002)(376002)(396003)(39860400002)(230922051799003)(64100799003)(1800799009)(186009)(451199024)(2616005)(66899024)(6512007)(82960400001)(76116006)(26005)(6486002)(478600001)(64756008)(36756003)(8936002)(86362001)(4326008)(5660300002)(8676002)(4001150100001)(2906002)(41300700001)(38070700009)(6916009)(54906003)(66946007)(66476007)(66556008)(66446008)(316002)(91956017)(6506007)(71200400001)(53546011)(38100700002)(122000001)(83380400001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?dlEwSk8zV0lWTGpzcWoydWo2d1NmSDUwYnM1UjVtSnVDZngxV2xOamt5NmxK?=
- =?utf-8?B?SXVvbkttNEw1Ry9sRVpiTVFkSFZSYnpjTVMxcmVBb1NzMENRdWlUQ0tDWERq?=
- =?utf-8?B?Slc0TUlETGZYT2RNTWszV3o4WnI1VXhZWVBVK3lzdlZTSFQ0K0lnNlcwdWJa?=
- =?utf-8?B?by9XakJyenlCdzJwWXJJcHJQbVdPSWdIN2FHWU1QTEczWlV5Z0dTYWlYM1Ni?=
- =?utf-8?B?N00zVUJOallXMSt5ajYzdFp4S2FySEJoNEJoZzkvMm1HMGN5TDA0UXdVYms5?=
- =?utf-8?B?N1l4eVdtWU5hd05kUXRXYnN0c0ZLMGhrQmFRN0dlTUpSQjRrQk5rRlZ1VmJr?=
- =?utf-8?B?WmhrZUk5ZCtKd2xtTWtmRUs5KzY2ek81dkp5VSt6b1k3b0FnOHNVRWsxK0pQ?=
- =?utf-8?B?ZDBnQStBM3JrNmRBYUNjRGJ6KzJDOUkwUkJSZVUvc0N6Z1pCa3V0dCtqeTZu?=
- =?utf-8?B?ZWRxS3RETlQ4V1BMdm1teEJzdVI5d0Z1dlRWeFlxNGo3QjNwbnpISjlSUzk0?=
- =?utf-8?B?S2VWVzA2YURGM3FIVmZwU2lQK1ZFSXB6a2R1OXZML0h0Zk5iR0d0cS9YT1hw?=
- =?utf-8?B?YUxsRTE4bWxDdzErTlJMQ3Y5cVRobHdYRjZpbzVCdjBIWW0yK0hXQ3IzaGRR?=
- =?utf-8?B?TG14UEorN003RFZ2ZmdLeVRBQ3BCRkNTY2lMVFRVemRSSy9tQmJzNlFvbHZs?=
- =?utf-8?B?M3lWTys3Vnd3UitmZU9aWjQ5RTVNayt0VVprK3EyaFFBRW9VVERGWktMMEU0?=
- =?utf-8?B?SEwyWTRkV1ZYeGdqY2djVGNVQ0ZtTkZNS0dZR2ZqZVN4ZndETGZFT0lUMlRH?=
- =?utf-8?B?eUxKanFHa2ttSmpYRW85b1NNYnVKUVBOQU9nckU1bkJkQ09TRFRrbVdlQ2pD?=
- =?utf-8?B?aDNmQktMa0N5eEIreTk1SmY3d0FXUjRiNFF6eXUxYmg2Sk9lOG9RdE5SSTlD?=
- =?utf-8?B?VWhTWS95cmZvd3Y2dFcraGhZTGhKc0JIemt3Ym9FenZLRUV5UzRpekVnTFZX?=
- =?utf-8?B?U1czMGpWZk16MlYxbjFJWnFpVm1mQWVSeCtwbUFjaTZNNTdwSmFjZjVPTEhj?=
- =?utf-8?B?TnROeExBSnVzdE1MSHJmT21sMnRRMEdhV1hYdXNNL3BQMSsxSm1MYW1SUndi?=
- =?utf-8?B?L3c1TVp2Q3VQMmtQRUxjRllGODVySHhmMGZ1bGdkVnFUa0NKQUJBc1JUZStC?=
- =?utf-8?B?WjFoU1hpTEhkNU5PUkJNWkR2OUdOaTJ6WXlLTXZLYVlRWkExSFY0dENPWGUw?=
- =?utf-8?B?dmJWdzYyUXIzSUlDd0R0OENsRXJEbE9BUlF0NUMrWlBlM0VzR0w4UXlqY2d6?=
- =?utf-8?B?aVBQQ1Z5ZjhwSDJHMFc4aXNkenJLWXNha1RYOXJydnBYVDZpM2NieitXOGhD?=
- =?utf-8?B?bzJZaE96L2tCaERGQUFsMVk2d2ZCRGx6M29xN1J6T3hOV0NQZXR3VUxsckln?=
- =?utf-8?B?UEVPcjQyNVM0UnkxMXFqUVJ6TVIxUWY3TXVoc2k4Q0QxQStGck1pMEVWbU15?=
- =?utf-8?B?OWloQUt5SVk0NTVUbk9uL0p0NDFGSkx6YkVsK1dkWVMxMDRqY2JQMjFsNUxj?=
- =?utf-8?B?NVNhenFSQ3orNEVjcGROc3NkNVNxS0lSSlFyYTJtWjRjaDJaZ3JjVjc2UURU?=
- =?utf-8?B?MjZzQ1g0N0dqSEtWVndkT25EQ04ydFVzTS9tTnQyNTJzbDVERmF3OGtBQWg2?=
- =?utf-8?B?NzY3SnRQN2tnVlh5TEtwdWJidkMzQUpHZU5sUEJkSktoaDhOOFUzWDVVZ1g1?=
- =?utf-8?B?aHhyTDJLU05tNGpjZmI4Rk1YdmJ4UnNQQktjc0RKbDgxYTErVXRhV0hLckdF?=
- =?utf-8?B?T1NoV2l4MnpSUXdSNWozWGExMlRJK2FiK1pMcjFvOFN6ckhiSGRVY0pseVY4?=
- =?utf-8?B?azMrY3lXUm0rbmRtOFdNcHJsZVdBck8rSm1wKzkxTHdHb1hXMzBER3JIWFE5?=
- =?utf-8?B?Zko0UVdRZHNiMnpYVE5raGxtOFlkcXpTMTI3cTdzNTlDRVNMM2ZkQVZoekdU?=
- =?utf-8?B?bXpGem5yN3FxZGgvR25jeDd1bUdzRmtXRWpQckFyUzBzRm1hTWFhRU9qQXN5?=
- =?utf-8?B?WWhBWHRjVStVU24rbm1WeGVDYUtvWWtsTkp3a3BqN3pVaWlVRW00bTZEWTNG?=
- =?utf-8?B?RGRhNzZMYlBMUDFVU3owYWhaVU1qR1crd2ZMQnBqWUdLK082dTFNZU1zaGc0?=
- =?utf-8?B?aVE9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <D9C44FC4404CD546A7730B01079F67A1@namprd11.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Thu, 16 Nov 2023 02:32:06 -0500
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D8A120
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:32:02 -0800 (PST)
+Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9de7a43bd1aso65421866b.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:32:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1700119921; x=1700724721; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QUoHqMa5bMDIiRHmyl9q7kYLp0heHW41yVITFKQdPkg=;
+        b=FNB7zZ31kpF/QFRy1wNaD8Qxi7WpNJIvmj1I9dVGpQgnqHjg3y1dWFd6U9J47eZQWq
+         9PeDCV3hIEIqJaw0Vd6Wvxf64Ljy/FA7YIsySaeOybVDIXvxKsBOIwBwdYcgFhem+s2F
+         PW9aiEBaquXCnJBYHjMoKDJr7hQnsNdJpmcOo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700119921; x=1700724721;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QUoHqMa5bMDIiRHmyl9q7kYLp0heHW41yVITFKQdPkg=;
+        b=pNuQPGhiAV7XPq2H2Mfx7Qzc9UbX2mXfFNj45aKxe5xfrHdz6RnmE3eksb/QzhJzMH
+         MtgETludsDbmVB+BaqsoTFwePEYFd/A8lHI6qmTT3xJyb+R4ie87yX6kSX4lYthyD31x
+         JuDDpqt8LSJ1XzTlyA2gS8SNJqTp7Ya4XgToej94SNhQhRKMiAc6Y0ICH0p4lQbsa+lL
+         sUhFzy+Ad5mC5JqD8eFC8T9efIiQeu83jHW9FfbcmIdF+1TvFLSuE8IxUc/f8JXvbXvZ
+         FXgNW2MdJk+1oaoCBVuMWVQkEiKZ6qg33/fS9gdP9DtxeXhoCxYbpoxXntu62lkIRbaM
+         NF1A==
+X-Gm-Message-State: AOJu0YxTPuqiTPTBvVm1R4XMRfA0AQ9h+1OgDKc1wFgjJFoCVOpBJaNH
+        Rd8h2KI4HTMzc2vngM+cWMoYgpwb8axILXWxjadjuMDC
+X-Google-Smtp-Source: AGHT+IFu4SVZabUTUCML7GLYFjsUPCTBBg+ekWaX+pjRqjYBUyHV0xu1iplt/1BwJin2xVV8faBRzg==
+X-Received: by 2002:a17:906:ce4b:b0:9c2:2d0a:3211 with SMTP id se11-20020a170906ce4b00b009c22d0a3211mr10518032ejb.38.1700119920706;
+        Wed, 15 Nov 2023 23:32:00 -0800 (PST)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id gb5-20020a170907960500b009f28db2b702sm2049959ejc.209.2023.11.15.23.32.00
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 15 Nov 2023 23:32:00 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso4079955e9.3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:32:00 -0800 (PST)
+X-Received: by 2002:adf:a19e:0:b0:32f:7bde:fa0 with SMTP id
+ u30-20020adfa19e000000b0032f7bde0fa0mr10265212wru.32.1700119920153; Wed, 15
+ Nov 2023 23:32:00 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB6622.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 541909a5-126d-4507-8113-08dbe676140f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 07:31:41.9717
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wHmKZ4gIoAau4CjCGFUchuyfhv1sGNAtm2FE03maRPWqCkkkIaoeN8AQlbGhJqUeVxPTH9CYIksoahy2+EAttA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB5644
-X-OriginatorOrg: intel.com
+References: <6a3e7eb9-505c-4cfb-8a86-a8947a2e44d5@xs4all.nl>
+ <20231113110754.GB24338@pendragon.ideasonboard.com> <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
+ <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu> <20231113114357.GD24338@pendragon.ideasonboard.com>
+ <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl> <20231113124412.GA18974@pendragon.ideasonboard.com>
+ <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl> <20231115105518.GD13826@pendragon.ideasonboard.com>
+ <a67491c0-4fdf-4472-852c-e75f5e1d67af@xs4all.nl> <20231115114931.GE13826@pendragon.ideasonboard.com>
+In-Reply-To: <20231115114931.GE13826@pendragon.ideasonboard.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Thu, 16 Nov 2023 16:31:41 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
+Message-ID: <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
+Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
+        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NO_DNS_FOR_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,T_SCC_BODY_TEXT_LINE,
-        T_SPF_TEMPERROR,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGksIFZpbmNlbnQsDQoNClJlYWxseSBhcHByZWNpYXRlIHlvdXIgY29tbWVudHMgb24gdGhpcy4N
-Cg0KT24gV2VkLCAyMDIzLTExLTE1IGF0IDIxOjAxICswMTAwLCBWaW5jZW50IEd1aXR0b3Qgd3Jv
-dGU6DQo+IEhpIFJ1aSwNCj4gDQo+IE9uIFdlZCwgMjAgU2VwdCAyMDIzIGF0IDA5OjI0LCBaaGFu
-ZywgUnVpIDxydWkuemhhbmdAaW50ZWwuY29tPg0KPiB3cm90ZToNCj4gPiANCj4gPiBIaSwgUGll
-cnJlLA0KPiA+IA0KPiA+IFNvcnJ5IGZvciB0aGUgbGF0ZSByZXNwb25zZS4gSSdtIHN0aWxsIHJh
-bXBpbmcgdXAgb24gdGhlIHJlbGF0ZWQNCj4gPiBjb2RlLg0KPiA+IA0KPiA+IE9uIFRodSwgMjAy
-My0wOS0xNCBhdCAxNjo1MyArMDIwMCwgUGllcnJlIEdvbmRvaXMgd3JvdGU6DQo+ID4gPiANCj4g
-PiA+IA0KPiA+ID4gT24gOS8xNC8yMyAxMToyMywgWmhhbmcsIFJ1aSB3cm90ZToNCj4gPiA+ID4g
-SGksIFBpZXJyZSwNCj4gPiA+ID4gDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gWWVzIHJpZ2h0IGlu
-ZGVlZCwNCj4gPiA+ID4gPiBUaGlzIGhhcHBlbnMgd2hlbiBwdXR0aW5nIGEgQ1BVIG9mZmxpbmUg
-KGFzIHlvdSBtZW50aW9uZWQNCj4gPiA+ID4gPiBlYXJsaWVyLA0KPiA+ID4gPiA+IHB1dHRpbmcg
-YSBDUFUgb2ZmbGluZSBjbGVhcnMgdGhlIENQVSBpbiB0aGUgaWRsZV9jcHVzX21hc2spLg0KPiA+
-ID4gPiA+IA0KPiA+ID4gPiA+IFRoZSBsb2FkIGJhbGFuY2luZyByZWxhdGVkIHZhcmlhYmxlcw0K
-PiA+ID4gPiANCj4gPiA+ID4gaW5jbHVkaW5nPw0KPiA+ID4gDQo+ID4gPiBJIG1lYW50IHRoZSBu
-b2h6IGlkbGUgdmFyaWFibGVzIGluIHRoZSBsb2FkIGJhbGFuY2luZywgc28gSSB3YXMNCj4gPiA+
-IHJlZmVycmluZyB0bzoNCj4gPiA+IChzdHJ1Y3Qgc2NoZWRfZG9tYWluX3NoYXJlZCkubnJfYnVz
-eV9jcHVzDQo+ID4gPiAoc3RydWN0IHNjaGVkX2RvbWFpbikubm9oel9pZGxlDQo+ID4gPiBub2h6
-LmlkbGVfY3B1c19tYXNrDQo+ID4gPiBub2h6Lm5yX2NwdXMNCj4gPiA+IChzdHJ1Y3QgcnEpLm5v
-aHpfdGlja19zdG9wcGVkDQo+ID4gDQo+ID4gSU1PLCB0aGUgcHJvYmxlbSBpcyB0aGF0LCBmb3Ig
-YW4gaXNvbGF0ZWQgQ1BVLA0KPiA+IDEuIGl0IGlzIG5vdCBhbiBpZGxlIGNwdSAobm9oei5pZGxl
-X2NwdXNfbWFzayBzaG91bGQgYmUgY2xlYXJlZCkNCj4gPiAyLiBpdCBpcyBub3QgYSBidXN5IGNw
-dSAoc2RzLT5ucl9idXN5X2NwdXMgc2hvdWxkIGJlIGRlY3JlYXNlZCkNCj4gPiANCj4gPiBCdXQg
-Y3VycmVudCBjb2RlIGRvZXMgbm90IGhhdmUgYSB0aGlyZCBzdGF0ZSB0byBkZXNjcmliZSB0aGlz
-LCBzbw0KPiA+IHdlDQo+ID4gbmVlZCB0byBlaXRoZXINCj4gPiAxLiBhZGQgZXh0cmEgbG9naWMs
-IGxpa2Ugb25fbnVsbF9kb21haW4oKSBjaGVja3MNCj4gPiBvcg0KPiA+IDIuIHJlbHkgb24gY3Vy
-cmVudCBsb2dpYywgYnV0IHVwZGF0ZSBhbGwgcmVsYXRlZCB2YXJpYWJsZXMNCj4gPiBjb3JyZWN0
-bHksDQo+ID4gbGlrZSB5b3UgcHJvcG9zZWQuDQo+IA0KPiBJc24ndCB0aGUgaG91c2VrZWVwaW5n
-IGNwdSBtYXNrIHRoZXJlIHRvIG1hbmFnZSBzdWNoIGEgY2FzZSA/DQoNClRoaXMgaXMgdHJ1ZSBm
-b3IgaXNvbGF0ZWQgQ1BVcyB1c2luZyBib290IG9wdGlvbiAibm9oel9mdWxsPSIuDQoNCkJ1dCBm
-b3IgQ1BVcyBpbiB0aGUgY2dyb3VwIGlzb2xhdGVkIHBhcnRpdGlvbiwgdGhlIGhvdXNla2VlcGlu
-ZyBjcHVtYXNrDQppcyBub3QgdXBkYXRlZC4NCg0KSSBkb24ndCBrbm93IGlmIHRoaXMgaXMgaW50
-ZW5kZWQgb3Igbm90Lg0KDQo+ICBJIHdhcw0KPiBleHBlY3RpbmcgdGhhdCB5b3VyIGlzb2xhdGVk
-IGNwdSBzaG91bGQgYmUgY2xlYXJlZCBmcm9tIHRoZQ0KPiBob3VzZWtlZXBpbmcgY3B1bWFzayB1
-c2VkIGJ5IHNjaGVkdWxlciBhbmQgSUxCDQoNClRoaXMgcGF0Y2ggaXMgYSBkaXJlY3QgZml4IHdo
-ZW4gSSBmb3VuZCB0aGUgaXNvbGF0ZWQgQ1BVcyBhcmUgd29rZSB1cA0KYnkgdGhpcyBwaWVjZSBv
-ZiBjb2RlLg0KDQo+IA0KPiBJIHRoaW5rIHRoYXQgeW91ciBzb2x1dGlvbiBpcyB0aGUgY29tbWVu
-dCBvZiB0aGUgZmZpbmRfbmV3X2lsYigpDQo+IHVuY3Rpb246DQo+ICINCj4gwqAqIC0gSEtfVFlQ
-RV9NSVNDIENQVXMgYXJlIHVzZWQgZm9yIHRoaXMgdGFzaywgYmVjYXVzZSBIS19UWVBFX1NDSEVE
-DQo+IGlzIG5vdCBzZXQNCj4gwqAqwqDCoCBhbnl3aGVyZSB5ZXQuDQo+ICINCj4gDQo+IElNTywg
-eW91IHNob3VsZCBsb29rIGF0IGVuYWJsaW5nIGFuZCB1c2luZyB0aGUgSEtfVFlQRV9TQ0hFRCBm
-b3INCj4gaXNvbGF0ZWQgQ1BVDQoNCnllYWgsIHRoaXMgc2VlbXMgcmVhc29uYWJsZS4NCg0KSSdt
-IG5ldyB0byBjZ3JvdXAgYW5kIEknbSBub3Qgc3VyZSB3aGF0IHNob3VsZCBiZSB0aGUgcHJvcGVy
-IGJlaGF2aW9yDQpmb3IgQ1BVcyBpbiBpc29sYXRlZCBwYXJ0aXRpb24uDQoNCj4gDQo+IENDZWQg
-RnJlZGVyaWMgdG8gZ2V0IGhpcyBvcGluaW9uDQoNClRoYW5rcy4NCg0KLXJ1aQ0KDQoNCj4gDQo+
-ID4gQnV0IGluIGFueSBjYXNlLCB3ZSBzaG91bGQgc3RpY2sgd2l0aCBvbmUgZGlyZWN0aW9uLg0K
-PiA+IA0KPiA+IElmIHdlIGZvbGxvdyB0aGUgZmlyc3Qgb25lLCB0aGUgb3JpZ2luYWwgcGF0Y2gg
-c2hvdWxkIGJlIHVzZWQsDQo+ID4gd2hpY2gNCj4gPiBJTU8gaXMgc2ltcGxlIGFuZCBzdHJhaWdo
-dCBmb3J3YXJkLg0KPiA+IElmIHdlIGZvbGxvdyB0aGUgbGF0ZXIgb25lLCB3ZSdkIGJldHRlciBh
-dWRpdCBhbmQgcmVtb3ZlIHRoZQ0KPiA+IGN1cnJlbnQNCj4gPiBvbl9udWxsX2RvbWFpbigpIHVz
-YWdlIGF0IHRoZSBzYW1lIHRpbWUuIFRCSCwgSSdtIG5vdCBjb25maWRlbnQNCj4gPiBlbm91Z2gN
-Cj4gPiB0byBtYWtlIHN1Y2ggYSBjaGFuZ2UuIEJ1dCBpZiB5b3Ugd2FudCB0byBwcm9wb3NlIHNv
-bWV0aGluZywgSSdkDQo+ID4gZ2xhZA0KPiA+IHRvIHRlc3QgaXQuDQo+ID4gDQo+ID4gdGhhbmtz
-LA0KPiA+IHJ1aQ0KPiA+IA0KPiA+ID4gDQo+ID4gPiA+IA0KPiA+ID4gPiA+IMKgIGFyZSB1bnVz
-ZWQgaWYgYSBDUFUgaGFzIGEgTlVMTA0KPiA+ID4gPiA+IHJxIGFzIGl0IGNhbm5vdCBwdWxsIGFu
-eSB0YXNrLiBJZGVhbGx5IHdlIHNob3VsZCBjbGVhciB0aGVtDQo+ID4gPiA+ID4gb25jZSwNCj4g
-PiA+ID4gPiB3aGVuIGF0dGFjaGluZyBhIE5VTEwgc2QgdG8gdGhlIENQVS4NCj4gPiA+ID4gDQo+
-ID4gPiA+IFRoaXMgc291bmRzIGdvb2QgdG8gbWUuIEJ1dCBUQkgsIEkgZG9uJ3QgaGF2ZSBlbm91
-Z2ggY29uZmlkZW5jZQ0KPiA+ID4gPiB0bw0KPiA+ID4gPiBkbw0KPiA+ID4gPiBzbyBiZWNhdXNl
-IEknbSBub3QgY3J5c3RhbCBjbGVhciBhYm91dCBob3cgdGhlc2UgdmFyaWFibGVzIGFyZQ0KPiA+
-ID4gPiB1c2VkLg0KPiA+ID4gPiANCj4gPiA+ID4gU29tZSBxdWVzdGlvbnMgYWJvdXQgdGhlIGNv
-ZGUgYmVsb3cuDQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gVGhlIGZvbGxvd2luZyBzbmlwcGVkIHNo
-b3VsZCBkbyB0aGF0IGFuZCBzb2x2ZSB0aGUgaXNzdWUgeW91DQo+ID4gPiA+ID4gbWVudGlvbmVk
-Og0KPiA+ID4gPiA+IC0tLSBzbmlwIC0tLQ0KPiA+ID4gPiA+IC0tLSBhL2luY2x1ZGUvbGludXgv
-c2NoZWQvbm9oei5oDQo+ID4gPiA+ID4gKysrIGIvaW5jbHVkZS9saW51eC9zY2hlZC9ub2h6LmgN
-Cj4gPiA+ID4gPiBAQCAtOSw4ICs5LDEwIEBADQo+ID4gPiA+ID4gwqDCoCAjaWYgZGVmaW5lZChD
-T05GSUdfU01QKSAmJiBkZWZpbmVkKENPTkZJR19OT19IWl9DT01NT04pDQo+ID4gPiA+ID4gwqDC
-oCBleHRlcm4gdm9pZCBub2h6X2JhbGFuY2VfZW50ZXJfaWRsZShpbnQgY3B1KTsNCj4gPiA+ID4g
-PiDCoMKgIGV4dGVybiBpbnQgZ2V0X25vaHpfdGltZXJfdGFyZ2V0KHZvaWQpOw0KPiA+ID4gPiA+
-ICtleHRlcm4gdm9pZCBub2h6X2NsZWFuX3NkX3N0YXRlKGludCBjcHUpOw0KPiA+ID4gPiA+IMKg
-wqAgI2Vsc2UNCj4gPiA+ID4gPiDCoMKgIHN0YXRpYyBpbmxpbmUgdm9pZCBub2h6X2JhbGFuY2Vf
-ZW50ZXJfaWRsZShpbnQgY3B1KSB7IH0NCj4gPiA+ID4gPiArc3RhdGljIGlubGluZSB2b2lkIG5v
-aHpfY2xlYW5fc2Rfc3RhdGUoaW50IGNwdSkgeyB9DQo+ID4gPiA+ID4gwqDCoCAjZW5kaWYNCj4g
-PiA+ID4gPiANCj4gPiA+ID4gPiDCoMKgICNpZmRlZiBDT05GSUdfTk9fSFpfQ09NTU9ODQo+ID4g
-PiA+ID4gZGlmZiAtLWdpdCBhL2tlcm5lbC9zY2hlZC9mYWlyLmMgYi9rZXJuZWwvc2NoZWQvZmFp
-ci5jDQo+ID4gPiA+ID4gaW5kZXggYjNlMjViZTU4ZTJiLi42ZmNhYmU1ZDA4ZjUgMTAwNjQ0DQo+
-ID4gPiA+ID4gLS0tIGEva2VybmVsL3NjaGVkL2ZhaXIuYw0KPiA+ID4gPiA+ICsrKyBiL2tlcm5l
-bC9zY2hlZC9mYWlyLmMNCj4gPiA+ID4gPiBAQCAtMTE1MjUsNiArMTE1MjUsOSBAQCB2b2lkIG5v
-aHpfYmFsYW5jZV9leGl0X2lkbGUoc3RydWN0IHJxDQo+ID4gPiA+ID4gKnJxKQ0KPiA+ID4gPiA+
-IMKgwqAgew0KPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoCBTQ0hFRF9XQVJOX09OKHJxICE9
-IHRoaXNfcnEoKSk7DQo+ID4gPiA+ID4gDQo+ID4gPiA+ID4gK8KgwqDCoMKgwqDCoCBpZiAob25f
-bnVsbF9kb21haW4ocnEpKQ0KPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IHJldHVybjsNCj4gPiA+ID4gPiArDQo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgIGlmIChs
-aWtlbHkoIXJxLT5ub2h6X3RpY2tfc3RvcHBlZCkpDQo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCByZXR1cm47DQo+ID4gPiA+ID4gDQo+ID4gPiA+IGlmIHdlIGZv
-cmNlIGNsZWFyaW5nIHJxLT5ub2h6X3RpY2tfc3RvcHBlZCB3aGVuIGRldGFjaGluZw0KPiA+ID4g
-PiBkb21haW4sDQo+ID4gPiA+IHdoeQ0KPiA+ID4gPiBib3RoZXIgYWRkaW5nIHRoZSBmaXJzdCBj
-aGVjaz8NCj4gPiA+IA0KPiA+ID4gWWVzIHlvdSdyZSByaWdodC4gSSBhZGRlZCB0aGlzIGNoZWNr
-IGZvciBzYWZldHksIGJ1dCB0aGlzIGlzIG5vdA0KPiA+ID4gbWFuZGF0b3J5Lg0KPiA+ID4gDQo+
-ID4gPiA+IA0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+IEBAIC0xMTU1MSw2ICsxMTU1NCwxNyBAQCBz
-dGF0aWMgdm9pZA0KPiA+ID4gPiA+IHNldF9jcHVfc2Rfc3RhdGVfaWRsZShpbnQNCj4gPiA+ID4g
-PiBjcHUpDQo+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgIHJjdV9yZWFkX3VubG9jaygpOw0K
-PiA+ID4gPiA+IMKgwqAgfQ0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+ICt2b2lkIG5vaHpfY2xlYW5f
-c2Rfc3RhdGUoaW50IGNwdSkgew0KPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqAgc3RydWN0IHJxICpy
-cSA9IGNwdV9ycShjcHUpOw0KPiA+ID4gPiA+ICsNCj4gPiA+ID4gPiArwqDCoMKgwqDCoMKgIHJx
-LT5ub2h6X3RpY2tfc3RvcHBlZCA9IDA7DQo+ID4gPiA+ID4gK8KgwqDCoMKgwqDCoCBpZiAoY3B1
-bWFza190ZXN0X2NwdShjcHUsIG5vaHouaWRsZV9jcHVzX21hc2spKSB7DQo+ID4gPiA+ID4gK8Kg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3B1bWFza19jbGVhcl9jcHUoY3B1LCBub2h6Lmlk
-bGVfY3B1c19tYXNrKTsNCj4gPiA+ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBh
-dG9taWNfZGVjKCZub2h6Lm5yX2NwdXMpOw0KPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqAgfQ0KPiA+
-ID4gPiA+ICvCoMKgwqDCoMKgwqAgc2V0X2NwdV9zZF9zdGF0ZV9pZGxlKGNwdSk7DQo+ID4gPiA+
-ID4gK30NCj4gPiA+ID4gPiArDQo+ID4gPiA+IA0KPiA+ID4gPiBkZXRhY2hfZGVzdHJveV9kb21h
-aW5zDQo+ID4gPiA+IMKgwqDCoMKgwqDCoMKgIGNwdV9hdHRhY2hfZG9tYWluDQo+ID4gPiA+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB1cGRhdGVfdG9wX2NhY2hlX2RvbWFpbg0KPiA+
-ID4gPiANCj4gPiA+ID4gYXMgd2UgY2xlYXJzIHBlcl9jcHUoc2RfbGxjLCBjcHUpIGZvciB0aGUg
-aXNvbGF0ZWQgY3B1IGluDQo+ID4gPiA+IGNwdV9hdHRhY2hfZG9tYWluKCksIHNldF9jcHVfc2Rf
-c3RhdGVfaWRsZSgpIHNlZW1zIHRvIGJlIGEgbm8tDQo+ID4gPiA+IG9wDQo+ID4gPiA+IGhlcmUs
-DQo+ID4gPiA+IG5vPw0KPiA+ID4gDQo+ID4gPiBZZXMgeW91J3JlIHJpZ2h0LCBjcHVfYXR0YWNo
-X2RvbWFpbigpIGFuZCBub2h6X2NsZWFuX3NkX3N0YXRlKCkNCj4gPiA+IGNhbGxzDQo+ID4gPiBo
-YXZlIHRvIGJlIGludmVydGVkIHRvIGF2b2lkIHdoYXQgeW91IGp1c3QgZGVzY3JpYmVkLg0KPiA+
-ID4gDQo+ID4gPiBJdCBhbHNvIHNlZW1zIHRoYXQgdGhlIGN1cnJlbnQga2VybmVsIGRvZXNuJ3Qg
-ZGVjcmVhc2UNCj4gPiA+IG5yX2J1c3lfY3B1cw0KPiA+ID4gd2hlbiBwdXR0aW5nIENQVXMgaW4g
-YW4gaXNvbGF0ZWQgcGFydGl0aW9uLiBJbmRlZWQgaWYgYSBDUFUgaXMNCj4gPiA+IGNvdW50ZWQN
-Cj4gPiA+IGluIG5yX2J1c3lfY3B1cywgcHV0dGluZyB0aGUgQ1BVIGluIGFuIGlzb2xhdGVkIHBh
-cnRpdGlvbiBkb2Vzbid0DQo+ID4gPiB0cmlnZ2VyDQo+ID4gPiBhbnkgY2FsbCB0byBzZXRfY3B1
-X3NkX3N0YXRlX2lkbGUoKS4NCj4gPiA+IFNvIGl0IG1pZ2h0IGFuIGFkZGl0aW9uYWwgYXJndW1l
-bnQuDQo+ID4gPiANCj4gPiA+IFRoYW5rcyBmb3IgcmVhZGluZyB0aGUgcGF0Y2gsDQo+ID4gPiBS
-ZWdhcmRzLA0KPiA+ID4gUGllcnJlDQo+ID4gPiANCj4gPiA+ID4gDQo+ID4gPiA+IHRoYW5rcywN
-Cj4gPiA+ID4gcnVpDQo+ID4gPiA+ID4gwqDCoCAvKg0KPiA+ID4gPiA+IMKgwqDCoCAqIFRoaXMg
-cm91dGluZSB3aWxsIHJlY29yZCB0aGF0IHRoZSBDUFUgaXMgZ29pbmcgaWRsZQ0KPiA+ID4gPiA+
-IHdpdGgNCj4gPiA+ID4gPiB0aWNrDQo+ID4gPiA+ID4gc3RvcHBlZC4NCj4gPiA+ID4gPiDCoMKg
-wqAgKiBUaGlzIGluZm8gd2lsbCBiZSB1c2VkIGluIHBlcmZvcm1pbmcgaWRsZSBsb2FkDQo+ID4g
-PiA+ID4gYmFsYW5jaW5nIGluDQo+ID4gPiA+ID4gdGhlDQo+ID4gPiA+ID4gZnV0dXJlLg0KPiA+
-ID4gPiA+IGRpZmYgLS1naXQgYS9rZXJuZWwvc2NoZWQvdG9wb2xvZ3kuYw0KPiA+ID4gPiA+IGIv
-a2VybmVsL3NjaGVkL3RvcG9sb2d5LmMNCj4gPiA+ID4gPiBpbmRleCBkM2EzYjI2NDZlYzQuLmQz
-MTEzN2I1ZjBjZSAxMDA2NDQNCj4gPiA+ID4gPiAtLS0gYS9rZXJuZWwvc2NoZWQvdG9wb2xvZ3ku
-Yw0KPiA+ID4gPiA+ICsrKyBiL2tlcm5lbC9zY2hlZC90b3BvbG9neS5jDQo+ID4gPiA+ID4gQEAg
-LTI1ODQsOCArMjU4NCwxMCBAQCBzdGF0aWMgdm9pZA0KPiA+ID4gPiA+IGRldGFjaF9kZXN0cm95
-X2RvbWFpbnMoY29uc3QNCj4gPiA+ID4gPiBzdHJ1Y3QgY3B1bWFzayAqY3B1X21hcCkNCj4gPiA+
-ID4gPiANCj4gPiA+ID4gPiBzdGF0aWNfYnJhbmNoX2RlY19jcHVzbG9ja2VkKCZzY2hlZF9hc3lt
-X2NwdWNhcGFjaXR5KTsNCj4gPiA+ID4gPiANCj4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqAg
-cmN1X3JlYWRfbG9jaygpOw0KPiA+ID4gPiA+IC3CoMKgwqDCoMKgwqAgZm9yX2VhY2hfY3B1KGks
-IGNwdV9tYXApDQo+ID4gPiA+ID4gK8KgwqDCoMKgwqDCoCBmb3JfZWFjaF9jcHUoaSwgY3B1X21h
-cCkgew0KPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3B1X2F0
-dGFjaF9kb21haW4oTlVMTCwgJmRlZl9yb290X2RvbWFpbiwNCj4gPiA+ID4gPiBpKTsNCj4gPiA+
-ID4gPiArwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBub2h6X2NsZWFuX3NkX3N0YXRlKGkp
-Ow0KPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqAgfQ0KPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oCByY3VfcmVhZF91bmxvY2soKTsNCj4gPiA+ID4gPiDCoMKgIH0NCj4gPiA+ID4gPiANCj4gPiA+
-ID4gPiAtLS0gc25pcCAtLS0NCj4gPiA+ID4gPiANCj4gPiA+ID4gPiBSZWdhcmRzLA0KPiA+ID4g
-PiA+IFBpZXJyZQ0KPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+IA0KPiA+
-ID4gPiA+ID4gPiA+ICvCoMKgwqDCoMKgwqAgfQ0KPiA+ID4gPiA+ID4gPiA+ICsNCj4gPiA+ID4g
-PiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoCAvKg0KPiA+ID4gPiA+ID4gPiA+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgKiBUaGUgdGljayBpcyBzdGlsbCBzdG9wcGVkIGJ1dCBsb2FkIGNvdWxk
-DQo+ID4gPiA+ID4gPiA+ID4gaGF2ZQ0KPiA+ID4gPiA+ID4gPiA+IGJlZW4NCj4gPiA+ID4gPiA+
-ID4gPiBhZGRlZCBpbiB0aGUNCj4gPiA+ID4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-ICogbWVhbnRpbWUuIFdlIHNldCB0aGUgbm9oei5oYXNfYmxvY2tlZA0KPiA+ID4gPiA+ID4gPiA+
-IGZsYWcgdG8NCj4gPiA+ID4gPiA+ID4gPiB0cmlnDQo+ID4gPiA+ID4gPiA+ID4gYQ0KPiA+ID4g
-PiA+ID4gPiA+IGNoZWNrIG9mIHRoZQ0KPiA+ID4gPiA+ID4gPiA+IEBAIC0xMTU4NSwxMCArMTE2
-MDksNiBAQCB2b2lkDQo+ID4gPiA+ID4gPiA+ID4gbm9oel9iYWxhbmNlX2VudGVyX2lkbGUoaW50
-DQo+ID4gPiA+ID4gPiA+ID4gY3B1KQ0KPiA+ID4gPiA+ID4gPiA+IMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGlmIChycS0+bm9oel90aWNrX3N0b3BwZWQpDQo+ID4gPiA+ID4gPiA+ID4gwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGdvdG8gb3V0Ow0KPiA+ID4gPiA+ID4gPiA+IC3C
-oMKgwqDCoMKgwqAgLyogSWYgd2UncmUgYSBjb21wbGV0ZWx5IGlzb2xhdGVkIENQVSwgd2UgZG9u
-J3QNCj4gPiA+ID4gPiA+ID4gPiBwbGF5Og0KPiA+ID4gPiA+ID4gPiA+ICovDQo+ID4gPiA+ID4g
-PiA+ID4gLcKgwqDCoMKgwqDCoCBpZiAob25fbnVsbF9kb21haW4ocnEpKQ0KPiA+ID4gPiA+ID4g
-PiA+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybjsNCj4gPiA+ID4gPiA+ID4g
-PiAtDQo+ID4gPiA+ID4gPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqAgcnEtPm5vaHpfdGlja19z
-dG9wcGVkID0gMTsNCj4gPiA+ID4gPiA+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjcHVtYXNr
-X3NldF9jcHUoY3B1LCBub2h6LmlkbGVfY3B1c19tYXNrKTsNCj4gPiA+ID4gPiA+ID4gPiANCj4g
-PiA+ID4gPiA+ID4gPiBPdGhlcndpc2UgSSBjb3VsZCByZXByb2R1Y2UgdGhlIGlzc3VlIGFuZCB0
-aGUgcGF0Y2ggd2FzDQo+ID4gPiA+ID4gPiA+ID4gc29sdmluZw0KPiA+ID4gPiA+ID4gPiA+IGl0
-LA0KPiA+ID4gPiA+ID4gPiA+IHNvOg0KPiA+ID4gPiA+ID4gPiA+IFRlc3RlZC1ieTogUGllcnJl
-IEdvbmRvaXMgPHBpZXJyZS5nb25kb2lzQGFybS5jb20+DQo+ID4gPiA+ID4gPiANCj4gPiA+ID4g
-PiA+IFRoYW5rcyBmb3IgdGVzdGluZywgcmVhbGx5IGFwcHJlY2lhdGVkIQ0KPiA+ID4gPiA+ID4g
-PiA+IA0KPiA+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+
-IA0KPiA+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gPiA+IEFsc28sIHlvdXIgcGF0Y2ggZG9l
-c24ndCBhaW0gdG8gc29sdmUgdGhhdCwgYnV0IEkgdGhpbmsNCj4gPiA+ID4gPiA+ID4gPiB0aGVy
-ZQ0KPiA+ID4gPiA+ID4gPiA+IGlzIGFuDQo+ID4gPiA+ID4gPiA+ID4gaXNzdWUNCj4gPiA+ID4g
-PiA+ID4gPiB3aGVuIHVwZGF0aW5nIGNwdXNldC5jcHVzIHdoZW4gYW4gaXNvbGF0ZWQgcGFydGl0
-aW9uDQo+ID4gPiA+ID4gPiA+ID4gd2FzDQo+ID4gPiA+ID4gPiA+ID4gYWxyZWFkeQ0KPiA+ID4g
-PiA+ID4gPiA+IGNyZWF0ZWQ6DQo+ID4gPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+ID4gLy8g
-Q3JlYXRlIGFuIGlzb2xhdGVkIHBhcnRpdGlvbiBjb250YWluaW5nIENQVTANCj4gPiA+ID4gPiA+
-ID4gPiAjIG1rZGlyIGNncm91cA0KPiA+ID4gPiA+ID4gPiA+ICMgbW91bnQgLXQgY2dyb3VwMiBu
-b25lIGNncm91cC8NCj4gPiA+ID4gPiA+ID4gPiAjIG1rZGlyIGNncm91cC9UZXN0aW5nDQo+ID4g
-PiA+ID4gPiA+ID4gIyBlY2hvICIrY3B1c2V0IiA+IGNncm91cC9jZ3JvdXAuc3VidHJlZV9jb250
-cm9sDQo+ID4gPiA+ID4gPiA+ID4gIyBlY2hvICIrY3B1c2V0IiA+DQo+ID4gPiA+ID4gPiA+ID4g
-Y2dyb3VwL1Rlc3RpbmcvY2dyb3VwLnN1YnRyZWVfY29udHJvbA0KPiA+ID4gPiA+ID4gPiA+ICMg
-ZWNobyAwID4gY2dyb3VwL1Rlc3RpbmcvY3B1c2V0LmNwdXMNCj4gPiA+ID4gPiA+ID4gPiAjIGVj
-aG8gaXNvbGF0ZWQgPiBjZ3JvdXAvVGVzdGluZy9jcHVzZXQuY3B1cy5wYXJ0aXRpb24NCj4gPiA+
-ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gPiAvLyBDUFUwJ3Mgc2NoZWQgZG9tYWluIGlzIGRl
-dGFjaGVkOg0KPiA+ID4gPiA+ID4gPiA+ICMgbHMgL3N5cy9rZXJuZWwvZGVidWcvc2NoZWQvZG9t
-YWlucy9jcHUwLw0KPiA+ID4gPiA+ID4gPiA+ICMgbHMgL3N5cy9rZXJuZWwvZGVidWcvc2NoZWQv
-ZG9tYWlucy9jcHUxLw0KPiA+ID4gPiA+ID4gPiA+IGRvbWFpbjDCoCBkb21haW4xDQo+ID4gPiA+
-ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiA+ID4gLy8gQ2hhbmdlIHRoZSBpc29sYXRlZCBwYXJ0aXRp
-b24gdG8gYmUgQ1BVMQ0KPiA+ID4gPiA+ID4gPiA+ICMgZWNobyAxID4gY2dyb3VwL1Rlc3Rpbmcv
-Y3B1c2V0LmNwdXMNCj4gPiA+ID4gPiA+ID4gPiANCj4gPiA+ID4gPiA+ID4gPiAvLyBDUFVbMC0x
-XSBzY2hlZCBkb21haW5zIGFyZSBub3QgdXBkYXRlZDoNCj4gPiA+ID4gPiA+ID4gPiAjIGxzIC9z
-eXMva2VybmVsL2RlYnVnL3NjaGVkL2RvbWFpbnMvY3B1MC8NCj4gPiA+ID4gPiA+ID4gPiAjIGxz
-IC9zeXMva2VybmVsL2RlYnVnL3NjaGVkL2RvbWFpbnMvY3B1MS8NCj4gPiA+ID4gPiA+ID4gPiBk
-b21haW4wwqAgZG9tYWluMQ0KPiA+ID4gPiA+ID4gPiA+IA0KPiA+ID4gPiA+ID4gSW50ZXJlc3Rp
-bmcuIExldCBtZSBjaGVjayBhbmQgZ2V0IGJhY2sgdG8geW91IGxhdGVyIG9uDQo+ID4gPiA+ID4g
-PiB0aGlzLiA6KQ0KPiA+ID4gPiA+ID4gDQo+ID4gPiA+ID4gPiB0aGFua3MsDQo+ID4gPiA+ID4g
-PiBydWkNCj4gPiA+ID4gDQo+ID4gDQoNCg==
+On Wed, Nov 15, 2023 at 8:49=E2=80=AFPM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Hans,
+>
+> On Wed, Nov 15, 2023 at 12:19:31PM +0100, Hans Verkuil wrote:
+> > On 11/15/23 11:55, Laurent Pinchart wrote:
+> > > On Wed, Nov 15, 2023 at 09:09:42AM +0100, Hans Verkuil wrote:
+> > >> On 13/11/2023 13:44, Laurent Pinchart wrote:
+> > >>> On Mon, Nov 13, 2023 at 01:05:12PM +0100, Hans Verkuil wrote:
+> > >>>> On 13/11/2023 12:43, Laurent Pinchart wrote:
+> > >>>>> On Mon, Nov 13, 2023 at 11:28:51AM +0000, Sakari Ailus wrote:
+> > >>>>>> On Mon, Nov 13, 2023 at 12:24:14PM +0100, Hans Verkuil wrote:
+> > >>>>>>> On 13/11/2023 12:07, Laurent Pinchart wrote:
+> > >>>>>>>> On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
+> > >>>>>>>>> On 13/11/2023 11:42, Laurent Pinchart wrote:
+> > >>>>>>>>>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote=
+:
+> > >>>>>>>>>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
+> > >>>>>>>>>>>> Fixed point controls are used by the user to configure
+> > >>>>>>>>>>>> a fixed point value in 64bits, which Q31.32 format.
+> > >>>>>>>>>>>>
+> > >>>>>>>>>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> This patch adds a new control type. This is something that =
+also needs to be
+> > >>>>>>>>>>> tested by v4l2-compliance, and for that we need to add supp=
+ort for this to
+> > >>>>>>>>>>> one of the media test-drivers. The best place for that is t=
+he vivid driver,
+> > >>>>>>>>>>> since that has already a bunch of test controls for other c=
+ontrol types.
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
+> > >>>>>>>>>>>
+> > >>>>>>>>>>> Can you add a patch adding a fixed point test control to vi=
+vid?
+> > >>>>>>>>>>
+> > >>>>>>>>>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. Thi=
+s seems to
+> > >>>>>>>>>> relate more to units than control types. We have lots of fix=
+ed-point
+> > >>>>>>>>>> values in controls already, using the 32-bit and 64-bit inte=
+ger control
+> > >>>>>>>>>> types. They use various locations for the decimal point, dep=
+ending on
+> > >>>>>>>>>> the control. If we want to make this more explicit to users,=
+ we should
+> > >>>>>>>>>> work on adding unit support to the V4L2 controls.
+> > >>>>>>>>>
+> > >>>>>>>>> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are=
+ units.
+> > >>>>>>>>
+> > >>>>>>>> It's not a unit, but I think it's related to units. My point i=
+s that,
+> > >>>>>>>> without units support, I don't see why we need a formal defini=
+tion of
+> > >>>>>>>> fixed-point types, and why this series couldn't just use
+> > >>>>>>>> VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEG=
+ER64
+> > >>>>>>>> values as they see fit.
+> > >>>>>>>
+> > >>>>>>> They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTE=
+GER64
+> > >>>>>>> (I assume you meant that rather than VIVID_CID_INTEGER64) shows=
+ that it
+> > >>>>>
+> > >>>>> Yes, I meant V4L2_CTRL_TYPE_INTEGER64. Too hasty copy & paste :-)
+> > >>>>>
+> > >>>>>>> is always interpreted as a 64 bit integer and nothing else. As =
+it should.
+> > >>>>>
+> > >>>>> The most common case for control handling in drivers is taking th=
+e
+> > >>>>> integer value and converting it to a register value, using
+> > >>>>> device-specific encoding of the register value. It can be a fixed=
+-point
+> > >>>>> format or something else, depending on the device. My point is th=
+at
+> > >>>>> drivers routinely convert a "plain" integer to something else, an=
+d that
+> > >>>>> has never been considered as a cause of concern. I don't see why =
+it
+> > >>>>> would be different in this series.
+> > >>>>>
+> > >>>>>>> And while we do not have support for units (other than the docu=
+mentation),
+> > >>>>>>> we do have type support in the form of V4L2_CTRL_TYPE_*.
+> > >>>>>>>
+> > >>>>>>>>> A quick "git grep -i "fixed point" Documentation/userspace-ap=
+i/media/'
+> > >>>>>>>>> only shows a single driver specific control (dw100.rst).
+> > >>>>>>>>>
+> > >>>>>>>>> I'm not aware of other controls in mainline that use fixed po=
+int.
+> > >>>>>>>>
+> > >>>>>>>> The analog gain control for sensors for instance.
+> > >>>>>>>
+> > >>>>>>> Not really. The documentation is super vague:
+> > >>>>>>>
+> > >>>>>>> V4L2_CID_ANALOGUE_GAIN (integer)
+> > >>>>>>>
+> > >>>>>>>       Analogue gain is gain affecting all colour components in =
+the pixel matrix. The
+> > >>>>>>>       gain operation is performed in the analogue domain before=
+ A/D conversion.
+> > >>>>>>>
+> > >>>>>>> And the integer is just a range. Internally it might map to som=
+e fixed
+> > >>>>>>> point value, but userspace won't see that, it's hidden in the d=
+river AFAICT.
+> > >>>>>
+> > >>>>> It's hidden so well that libcamera has a database of the sensor i=
+t
+> > >>>>> supports, with formulas to map a real gain value to the
+> > >>>>> V4L2_CID_ANALOGUE_GAIN control. The encoding of the integer value=
+ does
+> > >>>>> matter, and the kernel doesn't expose it. We may or may not consi=
+der
+> > >>>>> that as a shortcoming of the V4L2 control API, but in any case it=
+'s the
+> > >>>>> situation we have today.
+> > >>>>>
+> > >>>>>> I wonder if Laurent meant digital gain.
+> > >>>>>
+> > >>>>> No, I meant analog. It applies to digital gain too though.
+> > >>>>>
+> > >>>>>> Those are often Q numbers. The practice there has been that the =
+default
+> > >>>>>> value yields gain of 1.
+> > >>>>>>
+> > >>>>>> There are probably many other examples in controls where somethi=
+ng being
+> > >>>>>> controlled isn't actually an integer while integer controls are =
+still being
+> > >>>>>> used for the purpose.
+> > >>>>>
+> > >>>>> A good summary of my opinion :-)
+> > >>>>
+> > >>>> And that works fine as long as userspace doesn't need to know what=
+ the value
+> > >>>> actually means.
+> > >>>>
+> > >>>> That's not the case here. The control is really a fractional Hz va=
+lue:
+> > >>>>
+> > >>>> +``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET (fixed point)``
+> > >>>> +    Sets the offset from the audio source sample rate, unit is Hz=
+.
+> > >>>> +    The offset compensates for any clock drift. The actual source=
+ audio sample
+> > >>>> +    rate is the ideal source audio sample rate from
+> > >>>> +    ``V4L2_CID_M2M_AUDIO_SOURCE_RATE`` plus this fixed point offs=
+et.
+> > >>>
+> > >>> I don't see why this would require a new type, you can use
+> > >>> V4L2_CTRL_TYPE_INTEGER64, and document the control as containing
+> > >>> fixed-point values in Q31.32 format.
+> > >>
+> > >> Why would you want to do this? I can store a double in a long long i=
+nt,
+> > >> and just document that the variable is really a double, but why woul=
+d you?
+> > >
+> > > I'm happy we have no floating point control types ;-)
+> > >
+> > >> The cost of adding a FIXED_POINT type is minimal, and having this ty=
+pe
+> > >> makes it easy to work with fixed point controls (think about proper =
+reporting
+> > >> and setting of the value in v4l2-ctl and user applications in genera=
+l that
+> > >> deal with controls).
+> > >
+> > > The next thing you know is that someone will want a FIXED_POINT_Q15_1=
+6
+> > > type as 64-bit would be too large to store in a large array. And then
+> > > Q7.8. And Q3.12. And a bunch of other type. I really don't see what
+> > > added value they bring compared to using the 32-bit and 64-bit intege=
+r
+> > > types we already have. Every new type that is added adds complexity t=
+o
+> > > userspace that will need to deal with the type.
+> > >
+> > >> If this would add a thousand lines of complex code, then this would =
+be a
+> > >> consideration, but this is just a few lines.
+> > >>
+> > >> Just to give an example, if you use 'v4l2-ctl -l' to list a int64 co=
+ntrol
+> > >> and it reports the value 13958643712, would you be able to see that =
+that is
+> > >> really 3.25 in fixed point format? With the right type it would be p=
+rinted
+> > >> like that. Much easier to work work.
+> > >
+> > > The same is true for analog gains, where x1.23 or +12dB is nicer to r=
+ead
+> > > than raw values. If we care about printing values in command line too=
+ls
+> > > (which is nice to have, but certainly not the majority of use cases),
+> > > then I would recommand working on units support for V4L2 controls, to
+> > > convey how values are encoded, and in what unit they are expressed.
+> >
+> > So you prefer to have a way to specify the N value in QM.N as part
+> > of the control information?
+> >
+> > E.g. add a '__u8 fraction_bits' field to structs v4l2_query_ext_ctrl
+> > and v4l2_queryctrl. If 0, then it is an integer, otherwise it is the N
+> > in QM.N.
+> >
+> > I can go along with that. This would be valid for INTEGER, INTEGER64,
+> > U8, U16 and U32 controls (the last three are only used in control array=
+s).
+>
+> I think that would be nicer. Not only is it more flexible, but it also
+> allows applications to ignore that information, and still operate on
+> integer controls without any modification.
+>
+> > A better name for 'fraction_bits' is welcome, I took it from the wikipe=
+dia
+> > article: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
+> >
+
+I like the idea and the name sounds fine to me too.
+
+> > Reporting unit names is certainly possible, but should perhaps be done
+> > with a separate ioctl? E.g. VIDIOC_QUERY_CTRL_UNIT. It is not typically
+> > needed for applications, unless they need to report values. In theory
+> > it can also be reported through VIDIOC_QUERY_EXT_CTRL by using, say,
+> > 4 of the reserved fields for a 'char unit[16];' field. But I feel a
+> > bit uncomfortable taking reserved fields for something that is rarely
+> > needed.
+>
+> I would make the unit an enumerated integer value. If it's a string, it
+> gets more difficult to operate on. Having to standardize a unit means
+> that the unit will get reviewed.
+>
+
+What usage do we envision for units? Could one give some examples? My
+impression is that we already defined most of the controls with
+explicit units.
+
+> > >>>>>> Instead of this patch, I'd prefer to have a way to express the m=
+eaning of
+> > >>>>>> the control value, be it a Q number or something else, and do th=
+at
+> > >>>>>> independently of the type of the control.
+> > >>>>
+> > >>>> Huh? How is that different from the type of the control? You have =
+integers
+> > >>>> (one type) and fixed point (another type).
+> > >>>>
+> > >>>> Or do you want a more general V4L2_CTRL_TYPE_ that specifies the N=
+.M values
+> > >>>> explicitly?
+> > >>>>
+> > >>>> I think the main reason why we use integer controls for gain is th=
+at we
+> > >>>> never had a fixed point control type and you could get away with t=
+hat in
+> > >>>> user space for that particular use-case.
+> > >>>>
+> > >>>> Based on the V4L2_CID_NOTIFY_GAINS documentation the gain value ca=
+n typically
+> > >>>> be calculated as (value / default_value),
+> > >>>
+> > >>> Typically, but not always. Some sensor have an exponential gain mod=
+el,
+> > >>> and some have weird gain representation, such as 1/x. That's gettin=
+g out
+> > >>> of scope though.
+> > >>>
+> > >>>> but that won't work for a rate offset
+> > >>>> control as above, or for e.g. CSC matrices for color converters.
+> > >>>>
+> > >>>>> Agreed.
+> > >>>>>
+> > >>>>>>> In the case of this particular series the control type is reall=
+y a fixed point
+> > >>>>>>> value with a documented unit (Hz). It really is not something y=
+ou want to
+> > >>>>>>> use type INTEGER64 for.
+> > >>>>>>>
+> > >>>>>>>>> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By s=
+etting
+> > >>>>>>>>> min/max/step you can easily map that to just about any QN.M f=
+ormat where
+> > >>>>>>>>> N <=3D 31 and M <=3D 32.
+> > >>>>>>>>>
+> > >>>>>>>>> In the case of dw100 it is a bit different in that it is quit=
+e specialized
+> > >>>>>>>>> and it had to fit in 16 bits.
+>
+> --
+> Regards,
+>
+> Laurent Pinchart
