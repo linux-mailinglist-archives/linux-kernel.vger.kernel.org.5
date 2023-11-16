@@ -2,183 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30AE27EDAF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D56D7EDAF7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344454AbjKPEqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 23:46:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40026 "EHLO
+        id S230272AbjKPErb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 23:47:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230207AbjKPEqI (ORCPT
+        with ESMTP id S229786AbjKPEr3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 23:46:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E660219D
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:46:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700109965; x=1731645965;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=DWg8gmVjVRjLuRrzL5UgsXn3x3er6VzpA6Gex9Qjg48=;
-  b=gr4cMTTL+BK7f2dYi03aoY/sUkqS4KPKbAKJ6+FeMpZSkF/OWJXfLUxB
-   vimcdDcPE+W6yz1R6AbMPK15bf4HUzm1rxcu23GTo06e+Ltxyfso8e2RT
-   EAu+AwMGgAOEDMqqbW6m+T0hyV3Kzq0u75PIHoUCFxqJm2P0wsAU6G1yl
-   CgmbJhVuAdSpqoTbKrYjJ4w8qcIv/pDbC8Cp8jwx/UPHygy1+JCEaKDDq
-   16tDC4BjhEl8jUBwaxi+GgDyJgEBStDZtCoehoMpre6GkxfpF+QKOI45p
-   GR+4RC8JaaQWUjtq1oarLquZz1tczAn/3p6EJeYa1OITwj58vCoVUW2fT
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9654374"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="9654374"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 20:46:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="938714949"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="938714949"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 15 Nov 2023 20:46:02 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3UGO-0001Ig-1v;
-        Thu, 16 Nov 2023 04:46:00 +0000
-Date:   Thu, 16 Nov 2023 12:45:20 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Sandipan Das <sandipan.das@amd.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: arch/x86/events/amd/uncore.c:941:52: error: '%d' directive output
- may be truncated writing between 1 and 10 bytes into a region of size 8
-Message-ID: <202311161239.NeSj2wJT-lkp@intel.com>
+        Wed, 15 Nov 2023 23:47:29 -0500
+Received: from mail-pg1-f205.google.com (mail-pg1-f205.google.com [209.85.215.205])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14C648F
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:47:26 -0800 (PST)
+Received: by mail-pg1-f205.google.com with SMTP id 41be03b00d2f7-5bdfe231998so492299a12.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:47:26 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700110045; x=1700714845;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B60E/VSdBhhfKFYxTN6YDvuRBN0E3qm6OgTMvsAq+pU=;
+        b=o02z75NWh6OjgvdY7/5FvsC7M5dJA8AipmGpL9RZBI/87hCTzqQY7wMtUfl9owIq5Y
+         k2JjdvBWAeE3o3LuG3HRyzRJUL3Ed3i6+fKJZWhKnsRz8wxZ4jr/89v8Z5lBH+yL1rDF
+         +6ky3VcFbi1UVIR4W9HSBJgr60TreUT7bj9lNsgw19gz2FNPCEUk8XcnVITejpEfFcMl
+         2YnhboBsSynThZ3F/5JFo4sKT9sSaAhUT9JhVDDXEQIxrTcS8LCQm9FWSA8emwfWSJ6/
+         kBY/t8ZS6Mp3R+4QNWzeboGoDrX9OOhPE3xjBKTmZHEavY0/8/1vaW9Us37mIgqw8HFW
+         gnQQ==
+X-Gm-Message-State: AOJu0Yx4zkF1pZq0jVK/ffeIQE2QeamMqNrz4TUY3BN8tU0DhtIBMOc7
+        3ONzNDJP0L7SJ62aBt7GGOHEWCfLtcWhar3Ft9p6q2z0Hsdk
+X-Google-Smtp-Source: AGHT+IHPtyQjXNQZPaOSDXTVSo/+hmMbdHFhPf7MQsja0dDhW1Ykr1q//Kd4+tGp+xY4ldpBErXeZFx0yDI+amb/6KjaSarLSwIN
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a63:2603:0:b0:5bd:29ba:452a with SMTP id
+ m3-20020a632603000000b005bd29ba452amr143632pgm.6.1700110045561; Wed, 15 Nov
+ 2023 20:47:25 -0800 (PST)
+Date:   Wed, 15 Nov 2023 20:47:25 -0800
+In-Reply-To: <000000000000bc90a60607f41fc3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000584a26060a3db788@google.com>
+Subject: Re: [syzbot] [kasan?] [mm?] WARNING in __kfence_free (3)
+From:   syzbot <syzbot+59f37b0ab4c558a5357c@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andreyknvl@gmail.com,
+        dvyukov@google.com, elver@google.com, glider@google.com,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, muchun.song@linux.dev,
+        syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=0.8 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SORTED_RECIPS,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: 25e56847821f7375bdee7dae1027c7917d07ce4b perf/x86/amd/uncore: Add memory controller support
-date:   5 weeks ago
-config: x86_64-sof-customedconfig-avs-defconfig (https://download.01.org/0day-ci/archive/20231116/202311161239.NeSj2wJT-lkp@intel.com/config)
-compiler: gcc-7 (Ubuntu 7.5.0-6ubuntu2) 7.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311161239.NeSj2wJT-lkp@intel.com/reproduce)
+syzbot has found a reproducer for the following issue on:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311161239.NeSj2wJT-lkp@intel.com/
+HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13de8198e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=65a222833c8bc575
+dashboard link: https://syzkaller.appspot.com/bug?extid=59f37b0ab4c558a5357c
+compiler:       aarch64-linux-gnu-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15bd8f98e80000
 
-All errors (new ones prefixed by >>):
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/384ffdcca292/non_bootable_disk-c42d9eee.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/e62e8cdf4401/vmlinux-c42d9eee.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d4650ef9b454/Image-c42d9eee.gz.xz
 
-   arch/x86/events/amd/uncore.c: In function 'amd_uncore_umc_ctx_init':
->> arch/x86/events/amd/uncore.c:941:52: error: '%d' directive output may be truncated writing between 1 and 10 bytes into a region of size 8 [-Werror=format-truncation=]
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-                                                       ^~
-   arch/x86/events/amd/uncore.c:941:43: note: directive argument in the range [0, 2147483647]
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-                                              ^~~~~~~~~~~~
-   arch/x86/events/amd/uncore.c:941:4: note: 'snprintf' output between 10 and 19 bytes into a destination of size 16
-       snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   cc1: all warnings being treated as errors
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+59f37b0ab4c558a5357c@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 138 at mm/kfence/core.c:1147 __kfence_free+0x7c/0xb4 mm/kfence/core.c:1147
+Modules linked in:
+CPU: 0 PID: 138 Comm: kworker/u4:6 Not tainted 6.7.0-rc1-syzkaller-00019-gc42d9eeef8e5 #0
+Hardware name: linux,dummy-virt (DT)
+Workqueue: events_unbound bpf_map_free_deferred
+pstate: 81400009 (Nzcv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+pc : __kfence_free+0x7c/0xb4 mm/kfence/core.c:1147
+lr : kfence_free include/linux/kfence.h:187 [inline]
+lr : __slab_free+0x48c/0x508 mm/slub.c:3614
+sp : ffff800082c3bbb0
+x29: ffff800082c3bbb0 x28: faff000002c03e00 x27: 0000000000000000
+x26: f4ff000002c18028 x25: ffff00007ff8f138 x24: ffff00007ff8f000
+x23: 0000000000000001 x22: ffff00007ff8f000 x21: ffff00007ff8f000
+x20: ffff80008024297c x19: fffffc0001ffe3c0 x18: 0000000000000000
+x17: 0000000000000000 x16: 0000000000000000 x15: 00000000200122aa
+x14: 0000000000000273 x13: 0000000000000000 x12: 0000000000000001
+x11: 0000000000000001 x10: 40fbfcfeb3055ba3 x9 : 0000000000000000
+x8 : ffff800082c3bc90 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : ffff80008024297c x4 : ffff00007f868000 x3 : ffff8000824a02b8
+x2 : f0ff000008cd7140 x1 : ffff00007f8a1350 x0 : ffff00007ff8f000
+Call trace:
+ __kfence_free+0x7c/0xb4 mm/kfence/core.c:1147
+ kfence_free include/linux/kfence.h:187 [inline]
+ __slab_free+0x48c/0x508 mm/slub.c:3614
+ do_slab_free mm/slub.c:3757 [inline]
+ slab_free mm/slub.c:3810 [inline]
+ __kmem_cache_free+0x220/0x230 mm/slub.c:3822
+ kfree+0x5c/0x74 mm/slab_common.c:1056
+ kvfree+0x3c/0x4c mm/util.c:653
+ bpf_map_area_free+0x10/0x1c kernel/bpf/syscall.c:325
+ htab_map_free+0x134/0x298 kernel/bpf/hashtab.c:1556
+ bpf_map_free_deferred+0x44/0x60 kernel/bpf/syscall.c:701
+ process_one_work+0x148/0x258 kernel/workqueue.c:2630
+ process_scheduled_works kernel/workqueue.c:2703 [inline]
+ worker_thread+0x2b4/0x3cc kernel/workqueue.c:2784
+ kthread+0x114/0x118 kernel/kthread.c:388
+ ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+---[ end trace 0000000000000000 ]---
 
 
-vim +941 arch/x86/events/amd/uncore.c
-
-   900	
-   901	static
-   902	int amd_uncore_umc_ctx_init(struct amd_uncore *uncore, unsigned int cpu)
-   903	{
-   904		DECLARE_BITMAP(gmask, UNCORE_GROUP_MAX) = { 0 };
-   905		u8 group_num_pmus[UNCORE_GROUP_MAX] = { 0 };
-   906		u8 group_num_pmcs[UNCORE_GROUP_MAX] = { 0 };
-   907		union amd_uncore_info info;
-   908		struct amd_uncore_pmu *pmu;
-   909		int index = 0, gid, i;
-   910	
-   911		if (pmu_version < 2)
-   912			return 0;
-   913	
-   914		/* Run just once */
-   915		if (uncore->init_done)
-   916			return amd_uncore_ctx_init(uncore, cpu);
-   917	
-   918		/* Find unique groups */
-   919		for_each_online_cpu(i) {
-   920			info = *per_cpu_ptr(uncore->info, i);
-   921			gid = info.split.gid;
-   922			if (test_bit(gid, gmask))
-   923				continue;
-   924	
-   925			__set_bit(gid, gmask);
-   926			group_num_pmus[gid] = hweight32(info.split.aux_data);
-   927			group_num_pmcs[gid] = info.split.num_pmcs;
-   928			uncore->num_pmus += group_num_pmus[gid];
-   929		}
-   930	
-   931		uncore->pmus = kzalloc(sizeof(*uncore->pmus) * uncore->num_pmus,
-   932				       GFP_KERNEL);
-   933		if (!uncore->pmus) {
-   934			uncore->num_pmus = 0;
-   935			goto done;
-   936		}
-   937	
-   938		for_each_set_bit(gid, gmask, UNCORE_GROUP_MAX) {
-   939			for (i = 0; i < group_num_pmus[gid]; i++) {
-   940				pmu = &uncore->pmus[index];
- > 941				snprintf(pmu->name, sizeof(pmu->name), "amd_umc_%d", index);
-   942				pmu->num_counters = group_num_pmcs[gid] / group_num_pmus[gid];
-   943				pmu->msr_base = MSR_F19H_UMC_PERF_CTL + i * pmu->num_counters * 2;
-   944				pmu->rdpmc_base = -1;
-   945				pmu->group = gid;
-   946	
-   947				pmu->ctx = alloc_percpu(struct amd_uncore_ctx *);
-   948				if (!pmu->ctx)
-   949					goto done;
-   950	
-   951				pmu->pmu = (struct pmu) {
-   952					.task_ctx_nr	= perf_invalid_context,
-   953					.attr_groups	= amd_uncore_umc_attr_groups,
-   954					.name		= pmu->name,
-   955					.event_init	= amd_uncore_umc_event_init,
-   956					.add		= amd_uncore_add,
-   957					.del		= amd_uncore_del,
-   958					.start		= amd_uncore_umc_start,
-   959					.stop		= amd_uncore_stop,
-   960					.read		= amd_uncore_read,
-   961					.capabilities	= PERF_PMU_CAP_NO_EXCLUDE | PERF_PMU_CAP_NO_INTERRUPT,
-   962					.module		= THIS_MODULE,
-   963				};
-   964	
-   965				if (perf_pmu_register(&pmu->pmu, pmu->pmu.name, -1)) {
-   966					free_percpu(pmu->ctx);
-   967					pmu->ctx = NULL;
-   968					goto done;
-   969				}
-   970	
-   971				pr_info("%d %s counters detected\n", pmu->num_counters,
-   972					pmu->pmu.name);
-   973	
-   974				index++;
-   975			}
-   976		}
-   977	
-   978	done:
-   979		uncore->num_pmus = index;
-   980		uncore->init_done = true;
-   981	
-   982		return amd_uncore_ctx_init(uncore, cpu);
-   983	}
-   984	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
