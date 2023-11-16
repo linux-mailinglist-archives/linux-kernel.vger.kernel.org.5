@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A8517ED911
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEB787ED912
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344483AbjKPBzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:55:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33694 "EHLO
+        id S1344494AbjKPBzU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:55:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33716 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344473AbjKPBzN (ORCPT
+        with ESMTP id S1344493AbjKPBzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:55:13 -0500
+        Wed, 15 Nov 2023 20:55:15 -0500
 Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F5B5193
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:55:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49EBF198
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:55:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700099710; x=1731635710;
+  t=1700099712; x=1731635712;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=4e2WzVgnd3QufXnBgiy7uSbAqmY5jDHIAU+FTnse2sA=;
-  b=lR1ToGmS4YGZXv5D8GakpbzBQ3pyG9M01LvZrkjyao7DZn1C5bwy2YC+
-   mahltQZbMnrOffYf06GTym66M0DIYptpzNfClhYD73YRF34MI+Gd5ioGr
-   8rcmXxiW6GyoP6bgVaLnLQKFzyyQuxOh9ba69RKVLGzZJxRlvQjnN8h6V
-   tUsQOq5YzKrZi/eIW4mx3uBqSa4dUq7SVmVpcgoE+G9I/CBLEtg1inikp
-   qPOyWFEUBmc/cMkhYk7WdD4F5qMSRWTuIjtw6rp391LNuXA22UOaqWwF+
-   K4sQ+NmGGsAttESn/ZnE7BGQhaRafYmQaz8rKivBzYukabYzY+UQ5JnND
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="381387700"
+  bh=I8+jCn+VllpmwtFb6bxxIgTCdCKQIsTCc63leYdRI1g=;
+  b=lLmkl0Fh85PMztmea7fvkNEhq2b8pmqRhbs5ZPmEgevcSPOyoL/NGDcE
+   +B58YVhj0CrXK+2m2tU+In1AMl9sne+8NbUj83sf/lxf6TBXTMOZnmIGU
+   V7MODQTQcg/wFJtxlD3jcPmamylAny4+QCHyjAQDLDuOqiV8NAvV84K/k
+   /mJmGdn0ExVMk9wQWWbDjNItwy8Xt4mh46AFadZBKsbvzNvhM5r4kIbis
+   cvyD/JTK7W/Qjf9/pWvEMV29C3OnUZ36CFA/+tgYmKGb00cf3iTBm15AF
+   CkZqPdJlgaafuDCyTwo5VNozrmkumFOs37MUiLCNBmjAtY1pAaktB/iKm
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="381387718"
 X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="381387700"
+   d="scan'208";a="381387718"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 17:55:09 -0800
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 17:55:11 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.03,306,1694761200"; 
-   d="scan'208";a="13395423"
+   d="scan'208";a="13395428"
 Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by fmviesa001.fm.intel.com with ESMTP; 15 Nov 2023 17:55:07 -0800
+  by fmviesa001.fm.intel.com with ESMTP; 15 Nov 2023 17:55:10 -0800
 From:   Lu Baolu <baolu.lu@linux.intel.com>
 To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Robin Murphy <robin.murphy@arm.com>,
@@ -45,9 +45,9 @@ To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
         Kevin Tian <kevin.tian@intel.com>
 Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
         Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [PATCH 2/4] iommu/vt-d: Remove unused parameter of intel_pasid_setup_pass_through()
-Date:   Thu, 16 Nov 2023 09:50:46 +0800
-Message-Id: <20231116015048.29675-3-baolu.lu@linux.intel.com>
+Subject: [PATCH 3/4] iommu/vt-d: Remove unused vcmd interfaces
+Date:   Thu, 16 Nov 2023 09:50:47 +0800
+Message-Id: <20231116015048.29675-4-baolu.lu@linux.intel.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20231116015048.29675-1-baolu.lu@linux.intel.com>
 References: <20231116015048.29675-1-baolu.lu@linux.intel.com>
@@ -64,63 +64,97 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The domain parameter of this helper is unused and can be deleted to avoid
-dead code.
+Commit 99b5726b4423 ("iommu: Remove ioasid infrastructure") has removed
+ioasid allocation interfaces from the iommu subsystem. As a result, these
+vcmd interfaces have become obsolete. Remove them to avoid dead code.
 
 Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
 ---
- drivers/iommu/intel/pasid.h | 1 -
- drivers/iommu/intel/iommu.c | 5 ++---
- drivers/iommu/intel/pasid.c | 1 -
- 3 files changed, 2 insertions(+), 5 deletions(-)
+ drivers/iommu/intel/pasid.h |  2 --
+ drivers/iommu/intel/pasid.c | 57 -------------------------------------
+ 2 files changed, 59 deletions(-)
 
 diff --git a/drivers/iommu/intel/pasid.h b/drivers/iommu/intel/pasid.h
-index dd37611175cc..16265bc1f7ec 100644
+index 16265bc1f7ec..647723c650bf 100644
 --- a/drivers/iommu/intel/pasid.h
 +++ b/drivers/iommu/intel/pasid.h
-@@ -111,7 +111,6 @@ int intel_pasid_setup_dirty_tracking(struct intel_iommu *iommu,
- 				     struct device *dev, u32 pasid,
- 				     bool enabled);
- int intel_pasid_setup_pass_through(struct intel_iommu *iommu,
--				   struct dmar_domain *domain,
- 				   struct device *dev, u32 pasid);
- int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device *dev,
- 			     u32 pasid, struct dmar_domain *domain);
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index b50ade814e94..3ccc2739236b 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -2460,7 +2460,7 @@ static int dmar_domain_attach_device(struct dmar_domain *domain,
- 	if (sm_supported(iommu) && !dev_is_real_dma_subdevice(dev)) {
- 		/* Setup the PASID entry for requests without PASID: */
- 		if (hw_pass_through && domain_type_is_si(domain))
--			ret = intel_pasid_setup_pass_through(iommu, domain,
-+			ret = intel_pasid_setup_pass_through(iommu,
- 					dev, IOMMU_NO_PASID);
- 		else if (domain->use_first_level)
- 			ret = domain_setup_first_level(iommu, domain, dev,
-@@ -4795,8 +4795,7 @@ static int intel_iommu_set_dev_pasid(struct iommu_domain *domain,
- 		goto out_free;
- 
- 	if (domain_type_is_si(dmar_domain))
--		ret = intel_pasid_setup_pass_through(iommu, dmar_domain,
--						     dev, pasid);
-+		ret = intel_pasid_setup_pass_through(iommu, dev, pasid);
- 	else if (dmar_domain->use_first_level)
- 		ret = domain_setup_first_level(iommu, dmar_domain,
- 					       dev, pasid);
+@@ -117,8 +117,6 @@ int intel_pasid_setup_nested(struct intel_iommu *iommu, struct device *dev,
+ void intel_pasid_tear_down_entry(struct intel_iommu *iommu,
+ 				 struct device *dev, u32 pasid,
+ 				 bool fault_ignore);
+-int vcmd_alloc_pasid(struct intel_iommu *iommu, u32 *pasid);
+-void vcmd_free_pasid(struct intel_iommu *iommu, u32 pasid);
+ void intel_pasid_setup_page_snoop_control(struct intel_iommu *iommu,
+ 					  struct device *dev, u32 pasid);
+ #endif /* __INTEL_PASID_H */
 diff --git a/drivers/iommu/intel/pasid.c b/drivers/iommu/intel/pasid.c
-index 74e8e4c17e81..8a1bcabf71a9 100644
+index 8a1bcabf71a9..57ae716a2c70 100644
 --- a/drivers/iommu/intel/pasid.c
 +++ b/drivers/iommu/intel/pasid.c
-@@ -767,7 +767,6 @@ int intel_pasid_setup_dirty_tracking(struct intel_iommu *iommu,
-  * Set up the scalable mode pasid entry for passthrough translation type.
+@@ -26,63 +26,6 @@
   */
- int intel_pasid_setup_pass_through(struct intel_iommu *iommu,
--				   struct dmar_domain *domain,
- 				   struct device *dev, u32 pasid)
- {
- 	u16 did = FLPT_DEFAULT_DID;
+ u32 intel_pasid_max_id = PASID_MAX;
+ 
+-int vcmd_alloc_pasid(struct intel_iommu *iommu, u32 *pasid)
+-{
+-	unsigned long flags;
+-	u8 status_code;
+-	int ret = 0;
+-	u64 res;
+-
+-	raw_spin_lock_irqsave(&iommu->register_lock, flags);
+-	dmar_writeq(iommu->reg + DMAR_VCMD_REG, VCMD_CMD_ALLOC);
+-	IOMMU_WAIT_OP(iommu, DMAR_VCRSP_REG, dmar_readq,
+-		      !(res & VCMD_VRSP_IP), res);
+-	raw_spin_unlock_irqrestore(&iommu->register_lock, flags);
+-
+-	status_code = VCMD_VRSP_SC(res);
+-	switch (status_code) {
+-	case VCMD_VRSP_SC_SUCCESS:
+-		*pasid = VCMD_VRSP_RESULT_PASID(res);
+-		break;
+-	case VCMD_VRSP_SC_NO_PASID_AVAIL:
+-		pr_info("IOMMU: %s: No PASID available\n", iommu->name);
+-		ret = -ENOSPC;
+-		break;
+-	default:
+-		ret = -ENODEV;
+-		pr_warn("IOMMU: %s: Unexpected error code %d\n",
+-			iommu->name, status_code);
+-	}
+-
+-	return ret;
+-}
+-
+-void vcmd_free_pasid(struct intel_iommu *iommu, u32 pasid)
+-{
+-	unsigned long flags;
+-	u8 status_code;
+-	u64 res;
+-
+-	raw_spin_lock_irqsave(&iommu->register_lock, flags);
+-	dmar_writeq(iommu->reg + DMAR_VCMD_REG,
+-		    VCMD_CMD_OPERAND(pasid) | VCMD_CMD_FREE);
+-	IOMMU_WAIT_OP(iommu, DMAR_VCRSP_REG, dmar_readq,
+-		      !(res & VCMD_VRSP_IP), res);
+-	raw_spin_unlock_irqrestore(&iommu->register_lock, flags);
+-
+-	status_code = VCMD_VRSP_SC(res);
+-	switch (status_code) {
+-	case VCMD_VRSP_SC_SUCCESS:
+-		break;
+-	case VCMD_VRSP_SC_INVALID_PASID:
+-		pr_info("IOMMU: %s: Invalid PASID\n", iommu->name);
+-		break;
+-	default:
+-		pr_warn("IOMMU: %s: Unexpected error code %d\n",
+-			iommu->name, status_code);
+-	}
+-}
+-
+ /*
+  * Per device pasid table management:
+  */
 -- 
 2.34.1
 
