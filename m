@@ -2,147 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D55AB7EE778
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DE7E7EE77B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:27:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345396AbjKPT1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:27:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50242 "EHLO
+        id S1345473AbjKPT1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:27:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53314 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233278AbjKPT1R (ORCPT
+        with ESMTP id S229537AbjKPT1l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:27:17 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id C048FD4D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:27:13 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A3BDB1595;
-        Thu, 16 Nov 2023 11:27:59 -0800 (PST)
-Received: from [10.57.84.40] (unknown [10.57.84.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A82493F6C4;
-        Thu, 16 Nov 2023 11:27:10 -0800 (PST)
-Message-ID: <71007f96-da57-4554-b939-a862e97adb37@arm.com>
-Date:   Thu, 16 Nov 2023 19:27:10 +0000
+        Thu, 16 Nov 2023 14:27:41 -0500
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E860D4D;
+        Thu, 16 Nov 2023 11:27:38 -0800 (PST)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-58786e23d38so663639eaf.3;
+        Thu, 16 Nov 2023 11:27:38 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700162857; x=1700767657;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UdXxO76TxrHNOJ1hG2GWZ3FtG3o6//qcCrBEV7e6JF0=;
+        b=uSK7lCd44mDSPFaskFwNPiWAevRW8NVnXF+aqCq/CtZVS7GovCcL7al9y7Vng9DMiH
+         5Cx5EGFhTIPk6DJM9EyX9wGhi4i11/4G9IophZI2QOqat8ahj3pT/uRB5zxLWR2g6Rnc
+         ixYq2xExsJW7V1NcHcbfhl3vakPmyCOS8Oidzxdfmtxt/sK3AYZNA8pbGdPHpfHA3q7g
+         KdIuZ01CA+82IxTZZuHK1dDtASeLQ8dqDbK/zHoCTYyM9+hYCqGTe681xCUoYDOAMJ41
+         LD5g/8kuWwv5DzARY6pKAM0iqarDBSKMZUC0itmnVWEPCuMtaC9kAnFcM5oYpDOQrdYO
+         JQzQ==
+X-Gm-Message-State: AOJu0YzI6xOE8HJyLH6INeaXerbutEEGDe8p0OybDZYdREDYdeyljNzm
+        hq4y0YprOQYT8YH3I5E5DQ==
+X-Google-Smtp-Source: AGHT+IFX+Vh0cRgukREyljR+kjDwhtv9/esCRp99bcIH9IEMsr6X4lDgVj1LBbJa0EfNgm8RoL05IA==
+X-Received: by 2002:a4a:9187:0:b0:586:b062:f3d0 with SMTP id d7-20020a4a9187000000b00586b062f3d0mr15603964ooh.7.1700162857520;
+        Thu, 16 Nov 2023 11:27:37 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id w18-20020a4ae4d2000000b00581fc1af0a7sm11965oov.28.2023.11.16.11.27.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 11:27:36 -0800 (PST)
+Received: (nullmailer pid 3065895 invoked by uid 1000);
+        Thu, 16 Nov 2023 19:27:34 -0000
+Date:   Thu, 16 Nov 2023 13:27:34 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Andy Yan <andyshrk@163.com>
+Cc:     heiko@sntech.de, hjc@rock-chips.com,
+        dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, devicetree@vger.kernel.org,
+        sebastian.reichel@collabora.com, kever.yang@rock-chips.com,
+        chris.obbard@collabora.com, s.hauer@pengutronix.de,
+        Andy Yan <andy.yan@rock-chips.com>
+Subject: Re: [PATCH 09/11] drm/rockchip: vop2: Add support for rk3588
+Message-ID: <20231116192734.GA3050632-robh@kernel.org>
+References: <20231114112534.1770731-1-andyshrk@163.com>
+ <20231114112855.1771372-1-andyshrk@163.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/6] arm64: KVM: Add iflag for FEAT_TRF
-Content-Language: en-GB
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        maz@kernel.org
-Cc:     broonie@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Fuad Tabba <tabba@google.com>,
-        Kristina Martsenko <kristina.martsenko@arm.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-References: <20231019165510.1966367-1-james.clark@arm.com>
- <20231019165510.1966367-4-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231019165510.1966367-4-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114112855.1771372-1-andyshrk@163.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 17:55, James Clark wrote:
-> Add an extra iflag to signify if the TRFCR register is accessible.
-> Because TRBE requires FEAT_TRF, DEBUG_STATE_SAVE_TRBE still has the same
-> behavior even though it's only set when FEAT_TRF is present.
+On Tue, Nov 14, 2023 at 07:28:55PM +0800, Andy Yan wrote:
+> From: Andy Yan <andy.yan@rock-chips.com>
 > 
-> The following holes are left in struct kvm_vcpu_arch, but there aren't
-> enough other 8 bit fields to rearrange it to leave any hole smaller than
-> 7 bytes:
+> VOP2 on rk3588:
 > 
->    u8                         cflags;               /*  2292     1 */
->    /* XXX 1 byte hole, try to pack */
->    u16                        iflags;               /*  2294     2 */
->    u8                         sflags;               /*  2296     1 */
->    bool                       pause;                /*  2297     1 */
->    /* XXX 6 bytes hole, try to pack */
+> Four video ports:
+> VP0 Max 4096x2160
+> VP1 Max 4096x2160
+> VP2 Max 4096x2160
+> VP3 Max 2048x1080
 > 
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-
+> 4 4K Cluster windows with AFBC/line RGB and AFBC-only YUV support
+> 4 4K Esmart windows with line RGB/YUV support
+> 
+> Signed-off-by: Andy Yan <andy.yan@rock-chips.com>
 > ---
->   arch/arm64/include/asm/kvm_host.h |  4 +++-
->   arch/arm64/kvm/debug.c            | 22 ++++++++++++++++++----
->   2 files changed, 21 insertions(+), 5 deletions(-)
 > 
-> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-> index 7c82927ddaf2..0f0bf8e641bd 100644
-> --- a/arch/arm64/include/asm/kvm_host.h
-> +++ b/arch/arm64/include/asm/kvm_host.h
-> @@ -535,7 +535,7 @@ struct kvm_vcpu_arch {
->   	u8 cflags;
->   
->   	/* Input flags to the hypervisor code, potentially cleared after use */
-> -	u8 iflags;
-> +	u16 iflags;
->   
->   	/* State flags for kernel bookkeeping, unused by the hypervisor code */
->   	u8 sflags;
-> @@ -741,6 +741,8 @@ struct kvm_vcpu_arch {
->   #define DEBUG_STATE_SAVE_TRBE	__vcpu_single_flag(iflags, BIT(6))
->   /* vcpu running in HYP context */
->   #define VCPU_HYP_CONTEXT	__vcpu_single_flag(iflags, BIT(7))
-> +/* Save trace filter controls */
-> +#define DEBUG_STATE_SAVE_TRFCR	__vcpu_single_flag(iflags, BIT(8))
->   
->   /* SVE enabled for host EL0 */
->   #define HOST_SVE_ENABLED	__vcpu_single_flag(sflags, BIT(0))
-> diff --git a/arch/arm64/kvm/debug.c b/arch/arm64/kvm/debug.c
-> index 8725291cb00a..20cdd40b3c42 100644
-> --- a/arch/arm64/kvm/debug.c
-> +++ b/arch/arm64/kvm/debug.c
-> @@ -331,14 +331,28 @@ void kvm_arch_vcpu_load_debug_state_flags(struct kvm_vcpu *vcpu)
->   	    !(read_sysreg_s(SYS_PMBIDR_EL1) & BIT(PMBIDR_EL1_P_SHIFT)))
->   		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->   
-> -	/* Check if we have TRBE implemented and available at the host */
-> -	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
-> -	    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
-> -		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-> +	/*
-> +	 * Save TRFCR on nVHE if FEAT_TRF (TraceFilt) exists. This will be
-> +	 * done in cases where use of TRBE doesn't completely disable trace and
-> +	 * handles the exclude_host/exclude_guest rules of the trace session.
-> +	 */
-> +	if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceFilt_SHIFT)) {
-> +		vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
-> +		/*
-> +		 * Check if we have TRBE implemented and available at the host. If it's
-> +		 * in use at the time of guest switch it will need to be disabled and
-> +		 * then restored. The architecture mandates FEAT_TRF with TRBE, so we
-> +		 * only need to check for TRBE after TRF.
-> +		 */
-> +		if (cpuid_feature_extract_unsigned_field(dfr0, ID_AA64DFR0_EL1_TraceBuffer_SHIFT) &&
-> +		    !(read_sysreg_s(SYS_TRBIDR_EL1) & TRBIDR_EL1_P))
-> +			vcpu_set_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-> +	}
->   }
->   
->   void kvm_arch_vcpu_put_debug_state_flags(struct kvm_vcpu *vcpu)
->   {
->   	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_SPE);
->   	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRBE);
-> +	vcpu_clear_flag(vcpu, DEBUG_STATE_SAVE_TRFCR);
->   }
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.c | 324 ++++++++++++++++++-
+>  drivers/gpu/drm/rockchip/rockchip_drm_vop2.h |  57 ++++
+>  drivers/gpu/drm/rockchip/rockchip_vop2_reg.c | 215 ++++++++++++
+>  include/dt-bindings/soc/rockchip,vop2.h      |   4 +
 
+This is part of the binding and belongs in the binding patch.
