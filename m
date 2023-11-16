@@ -2,72 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A197EE0F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:01:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 653557EE0FA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbjKPNBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:01:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58714 "EHLO
+        id S230348AbjKPNCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:02:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjKPNBM (ORCPT
+        with ESMTP id S229749AbjKPNCX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:01:12 -0500
-Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7357AD
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:01:08 -0800 (PST)
-Received: by mail-yb1-xb29.google.com with SMTP id 3f1490d57ef6-daf26d84100so728894276.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:01:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700139668; x=1700744468; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=U/PXn3eeHS/wDgkaVCJ1lURblbDajIyUVP8u15N5ho8=;
-        b=VLKd1rzidkcUsMtXXbc6NGzD4ONpuL6C56G79STasElpsLMRvkAKwe9EUg3bjobfrB
-         03Gq7E3qjIR9qUQYupahdhVec9a5uP5svoXRpiFNUcx+pTFmw79IWKhSmFICtpnS86sQ
-         l1g+BW8sPinkgaXtSYGRW4Yyf8XaxgmtEwOGoJZOM/CKFsK7rzAfXDl10+SMfoqSo0NL
-         wGxsslT5yKLOwtT6aqzQuTeSeOcrbhw3UKSCT+6LcD87burBuRlhrLsXkGrU2LeeojtX
-         chT8RNfCcn7afwJOJJZordfsaxg/Ly35Z+YGWMXvPs3jE3SFH7JBOizd36OqHtRMLYXQ
-         V8CQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700139668; x=1700744468;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=U/PXn3eeHS/wDgkaVCJ1lURblbDajIyUVP8u15N5ho8=;
-        b=lHK4spd6KXtEPMD/YNeRg4OLHcPk5t8unUSnSVIYm6Io4YcGfrWkkkMdfhKO6yJkTo
-         HGAHfSFwZavoPJ9ejQXgm7b78cxWlkQph+5mW3AvdI9VRShDCnDIJpMAFGfk2zuku8hZ
-         4vUxHh3aElcVU0IzEobOJrmBwviodbHT1lgJCk0G6cILMQz9N7avZc7cSH4Mi0kb7O6U
-         eT6JeO4ty0nKUeghKHgAgD1LAaWO2qXDmyA39lpkUKaH5j7rVxm+rsfdGmLPXsiDX2uS
-         GSC8qIc2wTJKcWC+Aa5fFBxjveBvUdkvc5QyQmCpjTITdT//oc4sQUZORedITKHPAZD1
-         qNSw==
-X-Gm-Message-State: AOJu0YzuNz3H1DlVp4IdmidziKveX4fRcS2ixzYhFwyD4Bw4dEWIazN8
-        THZitMnzI1vzT9qmpfvEBsMk2XmS0+ghn0PEIh6vh/xuR8rGq5fF
-X-Google-Smtp-Source: AGHT+IHfONo0tC8bD8ROdTl4bdeTY7eubSMkJY9OUE5F5W9FT94g22MhsyrH9cOpie8KGuRuNWgGErCZzgmq+5B3w0E=
-X-Received: by 2002:a05:6902:1149:b0:da0:5346:f32b with SMTP id
- p9-20020a056902114900b00da05346f32bmr18485222ybu.53.1700139667560; Thu, 16
- Nov 2023 05:01:07 -0800 (PST)
+        Thu, 16 Nov 2023 08:02:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799C0AD;
+        Thu, 16 Nov 2023 05:02:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700139740; x=1731675740;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=qni4q+MCRq+nAUIb30fVBT62T2fPU22iNzyXzheWpdg=;
+  b=QolO64CJe2TCEWToxUrLxK29Vbq4OR1al+Dv5dFGWH1zo4lKZMfAcIfV
+   FuPwkYNSzt/or0oTtZMqjVYsIvREVP9VQ3gApCCT56in/lyVF4DDpNux7
+   l5aNIkJgRyVJb8w+YECRMTQMCa5o8HkyBLqhMhZb0kw1eopgACZWw/44q
+   icTe4i7d7AQIVLy4fwhWiGdxPcbg+x/CdJphtBnMnoEW6OqCHd3k7nXVk
+   u7gs8T1T1ZIG/GqaIb9UgYSRjQBP9FSzkoogSH/W48bHhrGYR2ljrusqe
+   B7TKniPK50hOeOEw5noyIc79JFR9VSgIhZvU7OIaMvlJBiULJFpOKnLjF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="388247928"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="388247928"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 05:02:19 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="13550045"
+Received: from jhsteyn-mobl1.ger.corp.intel.com ([10.252.40.9])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 05:02:14 -0800
+Date:   Thu, 16 Nov 2023 15:02:11 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Danilo Krummrich <dakr@redhat.com>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
+        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 6/7] PCI: Split up some logic in pcie_bandwidth_available()
+ to separate function
+In-Reply-To: <20231114200755.14911-7-mario.limonciello@amd.com>
+Message-ID: <671f5c3b-fd24-7d24-c848-1ae31cea82ff@linux.intel.com>
+References: <20231114200755.14911-1-mario.limonciello@amd.com> <20231114200755.14911-7-mario.limonciello@amd.com>
 MIME-Version: 1.0
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-6-sui.jingfeng@linux.dev> <CAA8EJprkDpjuHEi5R01p4XNvFBr94BvXhr7AZCLr6dC8Mk=yPw@mail.gmail.com>
- <7602cd83-0e05-4e11-9bd1-10eb1d48a507@linux.dev>
-In-Reply-To: <7602cd83-0e05-4e11-9bd1-10eb1d48a507@linux.dev>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 16 Nov 2023 15:00:55 +0200
-Message-ID: <CAA8EJprFjdrQtegJd5HyzGYQaMawwQOhvkE=SNqsdsBCrtfDTA@mail.gmail.com>
-Subject: Re: [PATCH 5/8] drm/bridge: it66121: Add a helper function to read
- chip id
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: multipart/mixed; boundary="8323329-761469376-1700139739=:1886"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -75,139 +82,125 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 at 14:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->
-> Hi,
->
->
-> On 2023/11/15 00:06, Dmitry Baryshkov wrote:
-> > On Tue, 14 Nov 2023 at 17:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
-> >> From: Sui Jingfeng <suijingfeng@loongson.cn>
-> >>
-> >> Read the required chip id data back by calling regmap_bulk_read() once,
-> >> reduce the number of local variables needed in it66121_probe() function.
-> >> And store its values into struct it66121_ctx, as it will be used latter.
-> >>
-> >> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
-> >> ---
-> >>   drivers/gpu/drm/bridge/ite-it66121.c | 47 ++++++++++++++++++++--------
-> >>   1 file changed, 34 insertions(+), 13 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
-> >> index 7e473beefc79..f36d05331f25 100644
-> >> --- a/drivers/gpu/drm/bridge/ite-it66121.c
-> >> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
-> >> @@ -313,6 +313,9 @@ struct it66121_ctx {
-> >>                  bool auto_cts;
-> >>          } audio;
-> >>          const struct it66121_chip_info *info;
-> >> +       u16 vender_id;
-> >> +       u16 device_id;
-> >> +       u8 revision;
-> > There is no need to store them, they are not used by the driver anywhere.
-> >
-> >>   };
-> >>
-> >>   static inline struct it66121_ctx *bridge_to_it66121(struct drm_bridge *bridge)
-> >> @@ -399,6 +402,30 @@ static void it66121_hw_reset(struct it66121_ctx *ctx)
-> >>          gpiod_set_value(ctx->gpio_reset, 0);
-> >>   }
-> >>
-> >> +static int it66121_read_chip_id(struct it66121_ctx *ctx, bool verbose)
-> >> +{
-> >> +       u8 id[4];
-> >> +       int ret;
-> >> +
-> >> +       ret = regmap_bulk_read(ctx->regmap, IT66121_VENDOR_ID0_REG, id, 4);
-> >> +       if (ret < 0) {
-> >> +               dev_err(ctx->dev, "Failed to read chip ID: %d\n", ret);
-> >> +               return ret;
-> >> +       }
-> >> +
-> >> +       ctx->vender_id = (u16)id[1] << 8 | id[0];
-> >> +       ctx->device_id = ((u16)(id[3] & IT66121_DEVICE_ID1_MASK) << 8 | id[2]);
-> >> +       /* Revision is shared with DEVICE_ID1 */
-> >> +       ctx->revision = FIELD_GET(IT66121_REVISION_MASK, id[3]);
-> >> +
-> >> +       if (verbose) {
-> >> +               dev_info(ctx->dev, "Found ITE66121: 0x%x%x, revision: %u\n",
-> >> +                        ctx->vender_id, ctx->device_id, ctx->revision);
-> >> +       }
-> >> +
-> >> +       return 0;
-> >> +}
-> >> +
-> >>   static inline int it66121_preamble_ddc(struct it66121_ctx *ctx)
-> >>   {
-> >>          return regmap_write(ctx->regmap, IT66121_MASTER_SEL_REG, IT66121_MASTER_SEL_HOST);
-> >> @@ -1561,7 +1588,6 @@ static const char * const it66121_supplies[] = {
-> >>
-> >>   static int it66121_probe(struct i2c_client *client)
-> >>   {
-> >> -       u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
-> >>          int ret;
-> >>          struct it66121_ctx *ctx;
-> >>          struct device *dev = &client->dev;
-> >> @@ -1603,19 +1629,13 @@ static int it66121_probe(struct i2c_client *client)
-> >>          if (IS_ERR(ctx->regmap))
-> >>                  return PTR_ERR(ctx->regmap);
-> >>
-> >> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
-> >> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID1_REG, &vendor_ids[1]);
-> >> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID0_REG, &device_ids[0]);
-> >> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID1_REG, &device_ids[1]);
-> >> -
-> >> -       /* Revision is shared with DEVICE_ID1 */
-> >> -       revision_id = FIELD_GET(IT66121_REVISION_MASK, device_ids[1]);
-> >> -       device_ids[1] &= IT66121_DEVICE_ID1_MASK;
-> >> +       ret = it66121_read_chip_id(ctx, false);
-> >> +       if (ret)
-> >> +               return ret;
-> >>
-> >> -       if ((vendor_ids[1] << 8 | vendor_ids[0]) != ctx->info->vid ||
-> >> -           (device_ids[1] << 8 | device_ids[0]) != ctx->info->pid) {
-> >> +       if (ctx->vender_id != ctx->info->vid ||
-> >> +           ctx->device_id != ctx->info->pid)
->
-> Q: There is no need to store them, they are not used by the driver anywhere.
->
-> A: Here it is used, it is also used by the 0007-patch to get the entity(instance)-specific data.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-And the patch 7 will be changed once you have proper i2c client struct
-registered.
+--8323329-761469376-1700139739=:1886
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 
->
->
-> Since it6610 was introduced, this is used for chip identifying.
-> It can also be used with in debugfs context, to show who I am.
+On Tue, 14 Nov 2023, Mario Limonciello wrote:
 
-I'd say, there is little point in whoami debugfs files. Debugfs is for
-the useful information.
+> The logic to calculate bandwidth limits may be used at multiple call sites
+> so split it up into its own static function instead.
+> 
+> No intended functional changes.
+> 
+> Suggested-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
+> ---
+> v2->v3:
+>  * Split from previous patch version
+> ---
+>  drivers/pci/pci.c | 60 +++++++++++++++++++++++++++--------------------
+>  1 file changed, 34 insertions(+), 26 deletions(-)
+> 
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index 55bc3576a985..0ff7883cc774 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -6224,6 +6224,38 @@ int pcie_set_mps(struct pci_dev *dev, int mps)
+>  }
+>  EXPORT_SYMBOL(pcie_set_mps);
+>  
+> +static u32 pcie_calc_bw_limits(struct pci_dev *dev, u32 bw,
+> +			       struct pci_dev **limiting_dev,
+> +			       enum pci_bus_speed *speed,
+> +			       enum pcie_link_width *width)
+> +{
+> +	enum pcie_link_width next_width;
+> +	enum pci_bus_speed next_speed;
+> +	u32 next_bw;
+> +	u16 lnksta;
+> +
+> +	pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> +
+> +	next_speed = pcie_link_speed[FIELD_GET(PCI_EXP_LNKSTA_CLS, lnksta)];
+> +	next_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, lnksta);
+> +
+> +	next_bw = next_width * PCIE_SPEED2MBS_ENC(next_speed);
+> +
+> +	/* Check if current device limits the total bandwidth */
 
->
->
-> >>                  return -ENODEV;
-> >> -       }
-> >>
-> >>          ctx->bridge.funcs = &it66121_bridge_funcs;
-> >>          ctx->bridge.of_node = dev->of_node;
-> >> @@ -1633,7 +1653,8 @@ static int it66121_probe(struct i2c_client *client)
-> >>
-> >>          drm_bridge_add(&ctx->bridge);
-> >>
-> >> -       dev_info(dev, "IT66121 revision %d probed\n", revision_id);
-> >> +       dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
-> >> +                ctx->vender_id, ctx->device_id, ctx->revision);
-> >>
-> >>          return 0;
-> >>   }
-> >> --
-> >> 2.34.1
-> >>
-> >
+I'd make this a function comment instead and say:
 
+/* Check if @dev limits the total bandwidth. */
 
+Other than that,
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
 
 -- 
-With best wishes
-Dmitry
+ i.
+
+> +	if (!bw || next_bw <= bw) {
+> +		bw = next_bw;
+> +
+> +		if (limiting_dev)
+> +			*limiting_dev = dev;
+> +		if (speed)
+> +			*speed = next_speed;
+> +		if (width)
+> +			*width = next_width;
+> +	}
+> +
+> +	return bw;
+> +}
+> +
+>  /**
+>   * pcie_bandwidth_available - determine minimum link settings of a PCIe
+>   *			      device and its bandwidth limitation
+> @@ -6242,39 +6274,15 @@ u32 pcie_bandwidth_available(struct pci_dev *dev, struct pci_dev **limiting_dev,
+>  			     enum pci_bus_speed *speed,
+>  			     enum pcie_link_width *width)
+>  {
+> -	u16 lnksta;
+> -	enum pci_bus_speed next_speed;
+> -	enum pcie_link_width next_width;
+> -	u32 bw, next_bw;
+> +	u32 bw = 0;
+>  
+>  	if (speed)
+>  		*speed = PCI_SPEED_UNKNOWN;
+>  	if (width)
+>  		*width = PCIE_LNK_WIDTH_UNKNOWN;
+>  
+> -	bw = 0;
+> -
+>  	while (dev) {
+> -		pcie_capability_read_word(dev, PCI_EXP_LNKSTA, &lnksta);
+> -
+> -		next_speed = pcie_link_speed[FIELD_GET(PCI_EXP_LNKSTA_CLS,
+> -						       lnksta)];
+> -		next_width = FIELD_GET(PCI_EXP_LNKSTA_NLW, lnksta);
+> -
+> -		next_bw = next_width * PCIE_SPEED2MBS_ENC(next_speed);
+> -
+> -		/* Check if current device limits the total bandwidth */
+> -		if (!bw || next_bw <= bw) {
+> -			bw = next_bw;
+> -
+> -			if (limiting_dev)
+> -				*limiting_dev = dev;
+> -			if (speed)
+> -				*speed = next_speed;
+> -			if (width)
+> -				*width = next_width;
+> -		}
+> -
+> +		bw = pcie_calc_bw_limits(dev, bw, limiting_dev, speed, width);
+>  		dev = pci_upstream_bridge(dev);
+>  	}
+>  
+> 
+--8323329-761469376-1700139739=:1886--
