@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F33D77EDDAD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1FCA7EDDBD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235714AbjKPJft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:35:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50884 "EHLO
+        id S235706AbjKPJgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:36:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57044 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235704AbjKPJfs (ORCPT
+        with ESMTP id S235728AbjKPJg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:35:48 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB6201B2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:35:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700127344;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=s14OcYbNsy58OOft6vgyTif8IMy6gRwapu3+F+eWkNg=;
-        b=ehhQ/B6FKHWG292AKpMVZMsJgkfdtL4W4wvZaOJetIKS23Zv1ea8cJ2GWKen+EOGkqRDAA
-        sw0a/ghggmqmYMoDoduMS7QVr5yPHYXiSTNHVNJFDKJUWGJpTkI0kTajxt/j0dmK34sRDu
-        darOguP50PPVrgXe2w74v7jOmQRhvtM=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-271-_SrAnAy-M1iDTKAzeIVejQ-1; Thu, 16 Nov 2023 04:35:40 -0500
-X-MC-Unique: _SrAnAy-M1iDTKAzeIVejQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3EAF7185A780;
-        Thu, 16 Nov 2023 09:35:40 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 34BF5492BFD;
-        Thu, 16 Nov 2023 09:35:40 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     kvm@vger.kernel.org, kvmarm@lists.linux.dev
-Cc:     Shaoqin Huang <shahuang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v1] KVM: selftests: Initalize sem_vcpu_[cont|stop] before each test in dirty_log_test
-Date:   Thu, 16 Nov 2023 04:35:36 -0500
-Message-Id: <20231116093536.22256-1-shahuang@redhat.com>
+        Thu, 16 Nov 2023 04:36:26 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 354C01BC0;
+        Thu, 16 Nov 2023 01:36:10 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG5AkBw032381;
+        Thu, 16 Nov 2023 09:35:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=GEuP6Rpji2X+1oMcUTO94Nar7xPCb3N4/EUxMMrf/9g=;
+ b=ePhMpjb+EHMZuVH+IIKJnXvKthI7OxRzandm8JFsCLlW7ZWEDuXik7els5LAUytggbkx
+ j8djCv7k4gTwFdD/U3yAjnyB+RmbD+EKpxvvi62YmvTmxynOwRMmHZ35OLLMecdMYB0K
+ isjUeDf8u2SdQCzILgzexB2hYz7ZQ4PGyMKTYMESGY0udqT/divkIbKV8buQmXAdBlFx
+ 8lVQxLT3SSw1nJ0Xd3loQYbCw1ok+AJF1JyDlVz8zLMthNj7zfL+WLjl0Npbp+w8LK4k
+ suxENXthknOakvv0sNewPJs8JYSf5BhrBwOULXP8OeJjTbCxYrrvQ8QRc1DmEifmUYG+ 6A== 
+Received: from nasanppmta03.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud1k51vg8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 09:35:57 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AG9Ztg8028243
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 09:35:55 GMT
+Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 01:35:52 -0800
+Message-ID: <ccb4bdbd-b7d7-49f0-b8f4-6ea13a4ab407@quicinc.com>
+Date:   Thu, 16 Nov 2023 17:35:49 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/9] net: mdio: ipq4019: increase eth_ldo_rdy for ipq5332
+ platform
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-2-quic_luoj@quicinc.com>
+ <c7ae6561-fbcc-40d9-a02c-61fc76e089d0@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <c7ae6561-fbcc-40d9-a02c-61fc76e089d0@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: TH3DcYruvcjW6eYr3stYd3ERefWUPhEi
+X-Proofpoint-ORIG-GUID: TH3DcYruvcjW6eYr3stYd3ERefWUPhEi
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_07,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=592 bulkscore=0
+ spamscore=0 suspectscore=0 clxscore=1015 malwarescore=0 priorityscore=1501
+ impostorscore=0 phishscore=0 mlxscore=0 adultscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311160076
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When execute the dirty_log_test on some aarch64 machine, it sometimes
-trigger the ASSERT:
 
-==== Test Assertion Failure ====
-  dirty_log_test.c:384: dirty_ring_vcpu_ring_full
-  pid=14854 tid=14854 errno=22 - Invalid argument
-     1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
-     2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
-     3   (inlined by) run_test at dirty_log_test.c:802
-     4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
-     5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
-     6  0x0000ffff9be173c7: ?? ??:0
-     7  0x0000ffff9be1749f: ?? ??:0
-     8  0x000000000040206f: _start at ??:?
-  Didn't continue vcpu even without ring full
 
-The dirty_log_test fails when execute the dirty-ring test, this is
-because the sem_vcpu_cont and the sem_vcpu_stop is non-zero value when
-execute the dirty_ring_collect_dirty_pages() function. When those two
-sem_t variables are non-zero, the dirty_ring_wait_vcpu() at the
-beginning of the dirty_ring_collect_dirty_pages() will not wait for the
-vcpu to stop, but continue to execute the following code. In this case,
-before vcpu stop, if the dirty_ring_vcpu_ring_full is true, and the
-dirty_ring_collect_dirty_pages() has passed the check for the
-dirty_ring_vcpu_ring_full but hasn't execute the check for the
-continued_vcpu, the vcpu stop, and set the dirty_ring_vcpu_ring_full to
-false. Then dirty_ring_collect_dirty_pages() will trigger the ASSERT.
+On 11/15/2023 9:44 PM, Andrew Lunn wrote:
+>> +	for (ret = 0; ret < ETH_LDO_RDY_CNT; ret++) {
+>> +		if (priv->eth_ldo_rdy[ret]) {
+>> +			val = readl(priv->eth_ldo_rdy[ret]);
+>> +			val |= BIT(0);
+>> +			writel(val, priv->eth_ldo_rdy[ret]);
+>> +			fsleep(IPQ_PHY_SET_DELAY_US);
+>> +		}
+> 
+> Please add a new variable, rather than use ret this way.
 
-Why sem_vcpu_cont and sem_vcpu_stop can be non-zero value? It's because
-the dirty_ring_before_vcpu_join() execute the sem_post(&sem_vcpu_cont)
-at the end of each dirty-ring test. It can cause two cases:
+OK, will add it in the next patch set.
 
-1. sem_vcpu_cont be non-zero. When we set the host_quit to be true,
-   the vcpu_worker directly see the host_quit to be true, it quit. So
-   the log_mode_before_vcpu_join() function will set the sem_vcpu_cont
-   to 1, since the vcpu_worker has quit, it won't consume it.
-2. sem_vcpu_stop be non-zero. When we set the host_quit to be true,
-   the vcpu_worker has entered the guest state, the next time it exit
-   from guest state, it will set the sem_vcpu_stop to 1, and then see
-   the host_quit, no one will consume the sem_vcpu_stop.
+> 
+>> +	for (ret = 0; ret < ETH_LDO_RDY_CNT; ret++) {
+>> +		res = platform_get_resource(pdev, IORESOURCE_MEM, ret + 1);
+>> +		if (res)
+>> +			priv->eth_ldo_rdy[ret] = devm_ioremap(&pdev->dev,
+> 
+> same here.
 
-When execute more and more dirty-ring tests, the sem_vcpu_cont and
-sem_vcpu_stop can be larger and larger, which makes many code paths
-don't wait for the sem_t. Thus finally cause the problem.
+Ok.
 
-Fix this problem is easy, simply initialize the sem_t before every test.
-Thus whatever the state previous test left, it won't interfere the next
-test.
-
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
----
- tools/testing/selftests/kvm/dirty_log_test.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 936f3a8d1b83..23b179534c0b 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -726,6 +726,9 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		return;
- 	}
- 
-+	sem_init(&sem_vcpu_stop, 0, 0);
-+	sem_init(&sem_vcpu_cont, 0, 0);
-+
- 	/*
- 	 * We reserve page table for 2 times of extra dirty mem which
- 	 * will definitely cover the original (1G+) test range.  Here
-@@ -871,9 +874,6 @@ int main(int argc, char *argv[])
- 	int opt, i;
- 	sigset_t sigset;
- 
--	sem_init(&sem_vcpu_stop, 0, 0);
--	sem_init(&sem_vcpu_cont, 0, 0);
--
- 	guest_modes_append_default();
- 
- 	while ((opt = getopt(argc, argv, "c:hi:I:p:m:M:")) != -1) {
--- 
-2.40.1
-
+> 
+>      Andrew
+> 
+> ---
+> pw-bot: cr
