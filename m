@@ -2,382 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFBB7EDF12
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BCF97EDF14
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230385AbjKPLDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33238 "EHLO
+        id S1345023AbjKPLEx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:04:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230315AbjKPLDp (ORCPT
+        with ESMTP id S230193AbjKPLEv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:03:45 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4779AA5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:03:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700132620;
+        Thu, 16 Nov 2023 06:04:51 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8137185;
+        Thu, 16 Nov 2023 03:04:45 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 41DAE240003;
+        Thu, 16 Nov 2023 11:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700132684;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=mB/Fyo8pr04Hq0o4/TJo2eYeczqjDw+SZvwofcCj9wQ=;
-        b=EC+lcY8l8l0KyRYLkPEAwAcng+8wGW354ZuMoytP/fRFSAkPZS1zL2ZI9T/WL9/V2eCtnM
-        Y1MOniYZpuMa6LuD+avt9jJCGDU/JgjLBO9jiHhWsPRBi4ubZOlRBmjZk0rYl1Z9DWT3UK
-        nFX5cvx1BvB8AwKY+QTevE339PW2rBo=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-286-D3mnnztjNWqMdw_gmYMrKw-1; Thu, 16 Nov 2023 06:03:39 -0500
-X-MC-Unique: D3mnnztjNWqMdw_gmYMrKw-1
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-32de9f93148so339261f8f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:03:39 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700132618; x=1700737418;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mB/Fyo8pr04Hq0o4/TJo2eYeczqjDw+SZvwofcCj9wQ=;
-        b=AO3r4UOuxmirczKrXV89pJPOIuSCbGtT7D8JCu81lRuP81ZrV+u+VjPynR+IjfmGfH
-         OsUKimCs5wCuBY7oZ5oBVEP7yHD8TgjnpBTeBA7B39sUgKAJPxHI1NY032MY/TBHYchD
-         2t+fvrrXZzxmHa5sUEqrnvcyOSqTOWCvtgd+EhUgBCyxlIsaRcFTfFO9sZluHEPKcMQq
-         DjBk7P05UxPGNtqVOU62BLG5Cqa2h79acli8zDJvuj+m2mhL5eCjboknfDllF+o6gIUf
-         kFxMLQTCGzQ29QtQCKnwUXSDc9ByQsE2r58zqasIk9OYBmhFSfAUrhLuUQGwl5ERubNn
-         KY7A==
-X-Gm-Message-State: AOJu0Yxe30WUgaYIedcPiPZI4gGLuvNJqbYeEUBDWeAQr4btE/VwXf16
-        +FtW8jVu4U4gakQZNKVOkeKqFYDL86foGcfSRM3JTIa2UhWBqAuz5Oy7GA7MvK3i4DJmcG35vlk
-        F7puMdroCog41FbaxAOG3mI6h
-X-Received: by 2002:a05:6000:2ac:b0:32d:aa11:221e with SMTP id l12-20020a05600002ac00b0032daa11221emr1906163wry.7.1700132618000;
-        Thu, 16 Nov 2023 03:03:38 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGgOcAgj6Od3Hw880f0ZcUflfR1p5VgY4pabv8rfsO2+ktO2g+w2YUmpCjq1hw9Set13/QHmw==
-X-Received: by 2002:a05:6000:2ac:b0:32d:aa11:221e with SMTP id l12-20020a05600002ac00b0032daa11221emr1906141wry.7.1700132617535;
-        Thu, 16 Nov 2023 03:03:37 -0800 (PST)
-Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
-        by smtp.gmail.com with ESMTPSA id r2-20020a056000014200b00327b5ca093dsm13259314wrx.117.2023.11.16.03.03.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 03:03:37 -0800 (PST)
-Message-ID: <89a9fe07-a5c5-4a99-b588-e6145053c58f@redhat.com>
-Date:   Thu, 16 Nov 2023 12:03:35 +0100
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=wRYDFN7LQPSgDuJub9iN8vSh9Owhba100B3Esv1HkRY=;
+        b=WP+Dwy7/01e6/1st6HlcpzS2jlUpo2z+Q1ikCC5iFBv2ISVtPt7I1Ia6w1N0xIWpeNaacg
+        u9nFmy3cQ6qee/EsJ5snVnRPA0Bys6absVyYJEM0TSQR/NPfkpoPE0YdYsfvxT6lbnJ91y
+        H+X/LMjQTwgvYs9ko6CVqwxFPMW04HRQP32kFDYz3P/8BwqMatGj4zbQ/p3d80mYqBUeNK
+        x8YPhGA7r9dhqVrBrYf3VDniAU5uqklTFP4nQR3LgX3wUQv1F3eAhlxDExMuy/V0BUN7Gu
+        XuRIsXMKVReBM++Mq13CxkBn0D1Or4qNg2c7GilsXBp1ka/vkmorX0juFBCGvQ==
+From:   Mehdi Djait <mehdi.djait@bootlin.com>
+To:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        alexandre.belloni@bootlin.com, maxime.chevallier@bootlin.com,
+        paul.kocialkowski@bootlin.com, michael.riesch@wolfvision.net,
+        Mehdi Djait <mehdi.djait@bootlin.com>
+Subject: [PATCH v11 0/3] media: rockchip: Add a driver for Rockchip's camera interface
+Date:   Thu, 16 Nov 2023 12:04:37 +0100
+Message-ID: <cover.1700132457.git.mehdi.djait@bootlin.com>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
-Content-Language: en-US
-To:     Ryan Roberts <ryan.roberts@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Yu Zhao <yuzhao@google.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20231115163018.1303287-1-ryan.roberts@arm.com>
- <20231115163018.1303287-2-ryan.roberts@arm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20231115163018.1303287-2-ryan.roberts@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-GND-Sasl: mehdi.djait@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.11.23 17:30, Ryan Roberts wrote:
-> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
-> maps a physically contiguous block of memory, all belonging to the same
-> folio, with the same permissions, and for shared mappings, the same
-> dirty state. This will likely improve performance by a tiny amount due
-> to batching the folio reference count management and calling set_ptes()
-> rather than making individual calls to set_pte_at().
-> 
-> However, the primary motivation for this change is to reduce the number
-> of tlb maintenance operations that the arm64 backend has to perform
-> during fork, as it is about to add transparent support for the
-> "contiguous bit" in its ptes. By write-protecting the parent using the
-> new ptep_set_wrprotects() (note the 's' at the end) function, the
-> backend can avoid having to unfold contig ranges of PTEs, which is
-> expensive, when all ptes in the range are being write-protected.
-> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
-> in the child, the backend does not need to fold a contiguous range once
-> they are all populated - they can be initially populated as a contiguous
-> range in the first place.
-> 
-> This change addresses the core-mm refactoring only, and introduces
-> ptep_set_wrprotects() with a default implementation that calls
-> ptep_set_wrprotect() for each pte in the range. A separate change will
-> implement ptep_set_wrprotects() in the arm64 backend to realize the
-> performance improvement as part of the work to enable contpte mappings.
-> 
-> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
-> ---
->   include/linux/pgtable.h |  13 +++
->   mm/memory.c             | 175 +++++++++++++++++++++++++++++++---------
->   2 files changed, 150 insertions(+), 38 deletions(-)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index af7639c3b0a3..1c50f8a0fdde 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
->   }
->   #endif
->   
-> +#ifndef ptep_set_wrprotects
-> +struct mm_struct;
-> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
-> +				unsigned long address, pte_t *ptep,
-> +				unsigned int nr)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
-> +		ptep_set_wrprotect(mm, address, ptep);
-> +}
-> +#endif
-> +
->   /*
->    * On some architectures hardware does not set page access bit when accessing
->    * memory page, it is responsibility of software setting this bit. It brings
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 1f18ed4a5497..b7c8228883cf 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
->   		/* Uffd-wp needs to be delivered to dest pte as well */
->   		pte = pte_mkuffd_wp(pte);
->   	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
-> -	return 0;
-> +	return 1;
-> +}
-> +
-> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
-> +				struct page *anchor, unsigned long anchor_vaddr)
-> +{
-> +	unsigned long offset;
-> +	unsigned long vaddr;
-> +
-> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
-> +	vaddr = anchor_vaddr + offset;
-> +
-> +	if (anchor > page) {
-> +		if (vaddr > anchor_vaddr)
-> +			return 0;
-> +	} else {
-> +		if (vaddr < anchor_vaddr)
-> +			return ULONG_MAX;
-> +	}
-> +
-> +	return vaddr;
-> +}
-> +
-> +static int folio_nr_pages_cont_mapped(struct folio *folio,
-> +				      struct page *page, pte_t *pte,
-> +				      unsigned long addr, unsigned long end,
-> +				      pte_t ptent, bool *any_dirty)
-> +{
-> +	int floops;
-> +	int i;
-> +	unsigned long pfn;
-> +	pgprot_t prot;
-> +	struct page *folio_end;
-> +
-> +	if (!folio_test_large(folio))
-> +		return 1;
-> +
-> +	folio_end = &folio->page + folio_nr_pages(folio);
-> +	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
-> +	floops = (end - addr) >> PAGE_SHIFT;
-> +	pfn = page_to_pfn(page);
-> +	prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
-> +
-> +	*any_dirty = pte_dirty(ptent);
-> +
-> +	pfn++;
-> +	pte++;
-> +
-> +	for (i = 1; i < floops; i++) {
-> +		ptent = ptep_get(pte);
-> +		ptent = pte_mkold(pte_mkclean(ptent));
-> +
-> +		if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
-> +		    pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
-> +			break;
-> +
-> +		if (pte_dirty(ptent))
-> +			*any_dirty = true;
-> +
-> +		pfn++;
-> +		pte++;
-> +	}
-> +
-> +	return i;
->   }
->   
->   /*
-> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
-> - * is required to copy this pte.
-> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
-> + * (always gte 1), or -EAGAIN if one preallocated page is required to copy the
-> + * first pte.
->    */
->   static inline int
-> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
-> -		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
-> -		 struct folio **prealloc)
-> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
-> +		  pte_t *dst_pte, pte_t *src_pte,
-> +		  unsigned long addr, unsigned long end,
-> +		  int *rss, struct folio **prealloc)
->   {
->   	struct mm_struct *src_mm = src_vma->vm_mm;
->   	unsigned long vm_flags = src_vma->vm_flags;
->   	pte_t pte = ptep_get(src_pte);
->   	struct page *page;
->   	struct folio *folio;
-> +	int nr = 1;
-> +	bool anon;
-> +	bool any_dirty = pte_dirty(pte);
-> +	int i;
->   
->   	page = vm_normal_page(src_vma, addr, pte);
-> -	if (page)
-> +	if (page) {
->   		folio = page_folio(page);
-> -	if (page && folio_test_anon(folio)) {
-> -		/*
-> -		 * If this page may have been pinned by the parent process,
-> -		 * copy the page immediately for the child so that we'll always
-> -		 * guarantee the pinned page won't be randomly replaced in the
-> -		 * future.
-> -		 */
-> -		folio_get(folio);
-> -		if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
-> -			/* Page may be pinned, we have to copy. */
-> -			folio_put(folio);
-> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
-> -						 addr, rss, prealloc, page);
-> +		anon = folio_test_anon(folio);
-> +		nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
-> +						end, pte, &any_dirty);
-> +
-> +		for (i = 0; i < nr; i++, page++) {
-> +			if (anon) {
-> +				/*
-> +				 * If this page may have been pinned by the
-> +				 * parent process, copy the page immediately for
-> +				 * the child so that we'll always guarantee the
-> +				 * pinned page won't be randomly replaced in the
-> +				 * future.
-> +				 */
-> +				if (unlikely(page_try_dup_anon_rmap(
-> +						page, false, src_vma))) {
-> +					if (i != 0)
-> +						break;
-> +					/* Page may be pinned, we have to copy. */
-> +					return copy_present_page(
-> +						dst_vma, src_vma, dst_pte,
-> +						src_pte, addr, rss, prealloc,
-> +						page);
-> +				}
-> +				rss[MM_ANONPAGES]++;
-> +				VM_BUG_ON(PageAnonExclusive(page));
-> +			} else {
-> +				page_dup_file_rmap(page, false);
-> +				rss[mm_counter_file(page)]++;
-> +			}
->   		}
-> -		rss[MM_ANONPAGES]++;
-> -	} else if (page) {
-> -		folio_get(folio);
-> -		page_dup_file_rmap(page, false);
-> -		rss[mm_counter_file(page)]++;
-> +
-> +		nr = i;
-> +		folio_ref_add(folio, nr);
->   	}
->   
->   	/*
-> @@ -968,24 +1051,28 @@ copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
->   	 * in the parent and the child
->   	 */
->   	if (is_cow_mapping(vm_flags) && pte_write(pte)) {
-> -		ptep_set_wrprotect(src_mm, addr, src_pte);
-> +		ptep_set_wrprotects(src_mm, addr, src_pte, nr);
->   		pte = pte_wrprotect(pte);
+Hello everyone,
 
-You likely want an "any_pte_writable" check here instead, no?
+V11 for basic support of the Camera Interface found on the Rockchip PX30 SoC
 
-Any operations that target a single indiividual PTE while multiple PTEs 
-are adjusted are suspicious :)
+Most of this driver was written following the BSP driver from rockchip,
+removing the parts that either didn't fit correctly the guidelines, or
+that couldn't be tested.
+
+In the BSP, this driver is known as the "cif" driver, but this
+controller was renamed to "vip" in the datasheet.
+
+This version of the driver supports ONLY the parallel interface BT656
+and was tested/implemented using an SDTV video decoder.
+
+media_tree, base-commit: 3e238417254bfdcc23fe207780b59cbb08656762
+
+V10 => V11:
+cif/capture.c cif/dev.c cif/common.h cif/capture.h:
+- removed the csi_fmt_val and all the CSI reg defines
+- removed the setting of buffer numbers in the queue_setup vb2_ops
+  callback
+- changed the v4l2_fwnode_endpoint declaration to V4L2_MBUS_UNKNOWN:
+  letting the device tree decide which bus is being used
+- split dev.h into common.h and capture.h
+
+rockchip,px30-vip.yaml:
+- renamed rockchip,rk3066-cif.yaml back to rockchip,px30-vip.yaml as
+  suggested by Conor
+- added the description of the port's endpoint bus-type property
+- extended the example to include the definition of the corresponding
+  video-decoder
+
+V9 => V10:
+cif/capture.c cif/dev.c cif/dev.h:
+as suggested by Paul:
+- ensured that the lock is still being held when accessing
+  stream->buffs[0,1]
+- adjusted the comment explaining why the spinlock is used
+
+as suggested by Michael:
+- made the IRQ requested SHARED: the cif shares the IRQ with the io_mmu
+
+rockchip,rk3066-cif.yaml:
+- dropped the rk3066-cif compatible but kept the name and added the
+  reason for this in the commit msg: the name of the file rk3066 is the first
+  Rockchip SoC generation that uses cif instead of the px30 which is just one
+  of the many iterations of the unit.
+
+V8 => V9:
+cif/capture.c cif/dev.c cif/dev.h:
+as suggested by Paul:
+- changed the name from "vip" back to "cif"
+- removed the scratch buffer and added frame dropping
+- removed mplane, only single plane formats are supported anyway
+- adjusted the Kconfig
+- added the match_data to the stream struct
+- some cosmetics, and error return codes changes
+
+as suggested by Michael:
+- changed the writel and readl helpers to be inline functions and
+  changed the name
+- fixed typos in the commit message
+- changed the cif_device struct element "sensor" to "remote"
+
+rockchip,rk3066-cif.yaml:
+- changed the compatible rockchip,px30-vip to rockchip,rk3066-cif:
+  rk3066 is the earliest Rockchip SoC that uses cif and it is the
+  first model starting the RK30 lineup.
+- changed the node name to video-capture
+- adjusted the description
+
+V7 => V8:
+vip/capture.c:
+- fixed a warning: unused variable reported by the kernel test robot
+
+V6 => V7:
+vip/capture.c vip/dev.c vip/dev.h
+- renamed all struct rk_vip_dev dev => struct rk_vip_dev vip_dev
+- added some error when rk_vip_get_buffer() returns NULL
+- removed a WARN_ON
+- made the irq NOT shared
+- dropped of_match_ptr
+- added the rk_vip_get_resource() function
+
+rockchip,px30-vip.yaml:
+- changed filename to match the compatible
+- dropped the mention of the other rockchip SoC in the dt-binding
+  description and added a more detailed description of VIP
+- removed unused labels in the example
+
+V5[1] => V6:
+vip/capture.c vip/dev.c vip/dev.h
+- added a video g_input_status subdev call, V4L2_IN_CAP_STD and the
+  supported stds in rk_vip_enum_input callback
+- added rk_vip_g_std, rk_vip_s_std and rk_vip_querystd callbacks
+- added the supported video_device->tvnorms
+- s_std will now update the format as this depends on the standard
+  NTSC/PAL (as suggested by Hans in [1])
+- removed STD_ATSC
+- moved the colorimetry information to come from the subdev
+- removed the core s_power subdev calls
+- dropped cropping in rk_vip_stream struct
+
+rockchip-vip.yaml:
+- fixed a mistake in the name of third clock plckin -> plck
+- changed the reg maxItems 2 -> 1
+
+[1] https://lore.kernel.org/linux-media/20201229161724.511102-1-maxime.chevallier@bootlin.com/
+
+I used v4l-utils with HEAD: commit 3d6682746de535d1f7aa71b43a30af40d52a539c
+
+# v4l2-compliance 
+v4l2-compliance 1.25.0, 64 bits, 64-bit time_t
+
+Compliance test for rockchip-cif device /dev/video0:
+
+Driver Info:
+        Driver name      : rockchip-cif
+        Card type        : rockchip-cif
+        Bus info         : platform:ff490000.video-capture
+        Driver version   : 6.6.0
+        Capabilities     : 0x84200001
+                Video Capture
+                Streaming
+                Extended Pix Format
+                Device Capabilities
+        Device Caps      : 0x04200001
+                Video Capture
+                Streaming
+                Extended Pix Format
+Media Driver Info:
+        Driver name      : rockchip-cif
+        Model            : cif
+        Serial           : 
+        Bus info         : platform:ff490000.video-capture
+        Media version    : 6.6.0
+        Hardware revision: 0x00000000 (0)
+        Driver version   : 6.6.0
+Interface Info:
+        ID               : 0x03000003
+        Type             : V4L Video
+Entity Info:
+        ID               : 0x00000001 (1)
+        Name             : rockchip_cif
+        Function         : V4L2 I/O
+        Pad 0x01000002   : 0: Sink
+          Link 0x02000009: from remote pad 0x1000006 of entity 'tw9900 2-0044' (Digital Video Decoder): Data, Enabled
+
+Required ioctls:
+        test MC information (see 'Media Driver Info' above): OK
+        test VIDIOC_QUERYCAP: OK
+        test invalid ioctls: OK
+
+Allow for multiple opens:
+        test second /dev/video0 open: OK
+        test VIDIOC_QUERYCAP: OK
+        test VIDIOC_G/S_PRIORITY: OK
+        test for unlimited opens: OK
+
+Debug ioctls:
+        test VIDIOC_DBG_G/S_REGISTER: OK (Not Supported)
+        test VIDIOC_LOG_STATUS: OK (Not Supported)
+
+Input ioctls:
+        test VIDIOC_G/S_TUNER/ENUM_FREQ_BANDS: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_S_HW_FREQ_SEEK: OK (Not Supported)
+        test VIDIOC_ENUMAUDIO: OK (Not Supported)
+        test VIDIOC_G/S/ENUMINPUT: OK
+        test VIDIOC_G/S_AUDIO: OK (Not Supported)
+        Inputs: 1 Audio Inputs: 0 Tuners: 0
+
+Output ioctls:
+        test VIDIOC_G/S_MODULATOR: OK (Not Supported)
+        test VIDIOC_G/S_FREQUENCY: OK (Not Supported)
+        test VIDIOC_ENUMAUDOUT: OK (Not Supported)
+        test VIDIOC_G/S/ENUMOUTPUT: OK (Not Supported)
+        test VIDIOC_G/S_AUDOUT: OK (Not Supported)
+        Outputs: 0 Audio Outputs: 0 Modulators: 0
+
+Input/Output configuration ioctls:
+        test VIDIOC_ENUM/G/S/QUERY_STD: OK
+        test VIDIOC_ENUM/G/S/QUERY_DV_TIMINGS: OK (Not Supported)
+        test VIDIOC_DV_TIMINGS_CAP: OK (Not Supported)
+        test VIDIOC_G/S_EDID: OK (Not Supported)
+
+Control ioctls (Input 0):
+        test VIDIOC_QUERY_EXT_CTRL/QUERYMENU: OK (Not Supported)
+        test VIDIOC_QUERYCTRL: OK (Not Supported)
+        test VIDIOC_G/S_CTRL: OK (Not Supported)
+        test VIDIOC_G/S/TRY_EXT_CTRLS: OK (Not Supported)
+        test VIDIOC_(UN)SUBSCRIBE_EVENT/DQEVENT: OK (Not Supported)
+        test VIDIOC_G/S_JPEGCOMP: OK (Not Supported)
+        Standard Controls: 0 Private Controls: 0
+
+Format ioctls (Input 0):
+        test VIDIOC_ENUM_FMT/FRAMESIZES/FRAMEINTERVALS: OK
+        test VIDIOC_G/S_PARM: OK (Not Supported)
+        test VIDIOC_G_FBUF: OK (Not Supported)
+        test VIDIOC_G_FMT: OK
+        test VIDIOC_TRY_FMT: OK
+        test VIDIOC_S_FMT: OK
+        test VIDIOC_G_SLICED_VBI_CAP: OK (Not Supported)
+        test Cropping: OK (Not Supported)
+        test Composing: OK (Not Supported)
+        test Scaling: OK (Not Supported)
+
+Codec ioctls (Input 0):
+        test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+        test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+        test VIDIOC_(TRY_)DECODER_CMD: OK (Not Supported)
+
+Buffer ioctls (Input 0):
+        test VIDIOC_REQBUFS/CREATE_BUFS/QUERYBUF: OK
+        test VIDIOC_EXPBUF: OK
+        test Requests: OK (Not Supported)
+
+Total for rockchip-cif device /dev/video0: 46, Succeeded: 46, Failed: 0, Warnings: 0
+
+Mehdi Djait (3):
+  media: dt-bindings: media: add bindings for Rockchip CIF
+  media: rockchip: Add a driver for Rockchip's camera interface
+  arm64: dts: rockchip: Add the camera interface
+
+ .../bindings/media/rockchip,px30-vip.yaml     |  173 +++
+ MAINTAINERS                                   |    7 +
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   12 +
+ drivers/media/platform/rockchip/Kconfig       |    1 +
+ drivers/media/platform/rockchip/Makefile      |    1 +
+ drivers/media/platform/rockchip/cif/Kconfig   |   13 +
+ drivers/media/platform/rockchip/cif/Makefile  |    3 +
+ drivers/media/platform/rockchip/cif/capture.c | 1120 +++++++++++++++++
+ drivers/media/platform/rockchip/cif/capture.h |   21 +
+ drivers/media/platform/rockchip/cif/common.h  |  129 ++
+ drivers/media/platform/rockchip/cif/dev.c     |  302 +++++
+ drivers/media/platform/rockchip/cif/regs.h    |  127 ++
+ 12 files changed, 1909 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/rockchip,px30-vip.yaml
+ create mode 100644 drivers/media/platform/rockchip/cif/Kconfig
+ create mode 100644 drivers/media/platform/rockchip/cif/Makefile
+ create mode 100644 drivers/media/platform/rockchip/cif/capture.c
+ create mode 100644 drivers/media/platform/rockchip/cif/capture.h
+ create mode 100644 drivers/media/platform/rockchip/cif/common.h
+ create mode 100644 drivers/media/platform/rockchip/cif/dev.c
+ create mode 100644 drivers/media/platform/rockchip/cif/regs.h
 
 -- 
-Cheers,
-
-David / dhildenb
+2.41.0
 
