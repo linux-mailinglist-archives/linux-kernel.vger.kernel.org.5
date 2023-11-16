@@ -2,53 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD177EE2AB
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:22:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A04F7EE2AF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345253AbjKPOWt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:22:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49274 "EHLO
+        id S1345305AbjKPOW5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:22:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjKPOWs (ORCPT
+        with ESMTP id S1345303AbjKPOWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:22:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42F34C4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:22:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7AF52C433C7;
-        Thu, 16 Nov 2023 14:22:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700144564;
-        bh=IS1DuP8+1kUE365TQJj5hRQ+HcxauE+Dzik9ZXeEijs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=tT7pAGH6H3r4emjRDPthCSKY7xssdmajLP+5/xeX438B0cVaprE19Rd+hqlsFDTnA
-         lbDytFbjZI0hjk0zl/Tqc/XBmgFoBsYxUZh3aGT5EQ2k49cOD6Y/VY23Zmw/R78wy1
-         adQYt0kMhCre5T9OBOZA5Tr4UduG3PTISDvLVwKT8XrHiMfoRfLVEpDOaqWDnvMLJN
-         D65c7S2NrUo6z6liQrbz4MPWSgE0lBuDxOn/VXFGyiPZ+zfDMcbuLlLjr3Df1InDIa
-         obQHutb1sRJQ36sT7hqMyhRDbxVqcW9hXm5bQAop8cVjHu66hztlz9TVItoS+IT62Y
-         +ch0tVomSEpIg==
-Date:   Thu, 16 Nov 2023 14:22:41 +0000
-From:   Conor Dooley <conor@kernel.org>
-To:     Luo Jie <quic_luoj@quicinc.com>
-Cc:     andrew@lunn.ch, davem@davemloft.net, edumazet@google.com,
-        kuba@kernel.org, pabeni@redhat.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        hkallweit1@gmail.com, linux@armlinux.org.uk, corbet@lwn.net,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v4 2/6] dt-bindings: net: ethernet-controller: add
- 10g-qxgmii mode
-Message-ID: <20231116-flier-washed-eb1a45481323@squawk>
-References: <20231116112437.10578-1-quic_luoj@quicinc.com>
- <20231116112437.10578-3-quic_luoj@quicinc.com>
+        Thu, 16 Nov 2023 09:22:55 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0358719D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:22:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700144572; x=1731680572;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=twF0yMuknuHU1zfCoxs5nE6Pr/iTI67oOU0Ux/+a/uk=;
+  b=SXiSDKuQvEe2Il3Zi84tpSM8l6PwlBHF7yALcOb0IID7hJ5YUkILhLf5
+   EO53zHh8ClTfsudLh1hDyDK5tzsyScJZrHE0vZTta6awgnEv8MEoKCCMz
+   +JqesnTA9W+A1cc36Bu8KKT5eZunSRzqVU6DYmKRpjBZISv0V7keeahLN
+   cLHW56yxnoUXyzi0fPjun62hFpqVtXMUDhlSNpOkzLU3mKHmx+w9T/7B8
+   pQuhdcmdYBn31YVyPZ/KbAHyoWwV5YNc3fY0m4ggJnnRH7xT49j1f5aB5
+   G9AtrGCMqfm0HmQtgudMlUXHyq24a5MP4xyzkVXUkJt79CmGhow12C5t/
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="12644424"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="12644424"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 06:22:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="800173365"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="800173365"
+Received: from kanliang-dev.jf.intel.com ([10.165.154.102])
+  by orsmga001.jf.intel.com with ESMTP; 16 Nov 2023 06:22:49 -0800
+From:   kan.liang@linux.intel.com
+To:     peterz@infradead.org, mingo@redhat.com,
+        linux-kernel@vger.kernel.org
+Cc:     artem.bityutskiy@linux.intel.com, rui.zhang@intel.com,
+        Kan Liang <kan.liang@linux.intel.com>
+Subject: [RESEND PATCH 1/4] perf/x86/intel/cstate: Cleanup duplicate attr_groups
+Date:   Thu, 16 Nov 2023 06:22:42 -0800
+Message-Id: <20231116142245.1233485-1-kan.liang@linux.intel.com>
+X-Mailer: git-send-email 2.35.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eeTAmJq3hbXLEdrA"
-Content-Disposition: inline
-In-Reply-To: <20231116112437.10578-3-quic_luoj@quicinc.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,66 +60,113 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kan Liang <kan.liang@linux.intel.com>
 
---eeTAmJq3hbXLEdrA
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+The events of the cstate_core and cstate_pkg PMU have the same format.
+They both need to create a "events" group (with empty attrs). The
+attr_groups can be shared.
 
-On Thu, Nov 16, 2023 at 07:24:33PM +0800, Luo Jie wrote:
-> Add the new interface mode 10g-qxgmii, which is similar to
-> usxgmii but extend to 4 channels to support maximum of 4
-> ports with the link speed 10M/100M/1G/2.5G.
->=20
+Remove the dedicated attr_groups for each cstate PMU. Use the shared
+cstate_attr_groups to replace.
 
-> This patch is separated from Vladimir Oltean's previous patch
-> <net: phy: introduce core support for phy-mode =3D "10g-qxgmii">.
+Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+---
+ arch/x86/events/intel/cstate.c | 44 +++++++++-------------------------
+ 1 file changed, 11 insertions(+), 33 deletions(-)
 
-This belongs in the changelog under the --- line.
+diff --git a/arch/x86/events/intel/cstate.c b/arch/x86/events/intel/cstate.c
+index cbeb6d2bf5b4..693bdcd92e8c 100644
+--- a/arch/x86/events/intel/cstate.c
++++ b/arch/x86/events/intel/cstate.c
+@@ -189,20 +189,20 @@ static struct attribute *attrs_empty[] = {
+  * "events" group (with empty attrs) before updating
+  * it with detected events.
+  */
+-static struct attribute_group core_events_attr_group = {
++static struct attribute_group cstate_events_attr_group = {
+ 	.name = "events",
+ 	.attrs = attrs_empty,
+ };
+ 
+-DEFINE_CSTATE_FORMAT_ATTR(core_event, event, "config:0-63");
+-static struct attribute *core_format_attrs[] = {
+-	&format_attr_core_event.attr,
++DEFINE_CSTATE_FORMAT_ATTR(cstate_event, event, "config:0-63");
++static struct attribute *cstate_format_attrs[] = {
++	&format_attr_cstate_event.attr,
+ 	NULL,
+ };
+ 
+-static struct attribute_group core_format_attr_group = {
++static struct attribute_group cstate_format_attr_group = {
+ 	.name = "format",
+-	.attrs = core_format_attrs,
++	.attrs = cstate_format_attrs,
+ };
+ 
+ static cpumask_t cstate_core_cpu_mask;
+@@ -217,9 +217,9 @@ static struct attribute_group cpumask_attr_group = {
+ 	.attrs = cstate_cpumask_attrs,
+ };
+ 
+-static const struct attribute_group *core_attr_groups[] = {
+-	&core_events_attr_group,
+-	&core_format_attr_group,
++static const struct attribute_group *cstate_attr_groups[] = {
++	&cstate_events_attr_group,
++	&cstate_format_attr_group,
+ 	&cpumask_attr_group,
+ 	NULL,
+ };
+@@ -268,30 +268,8 @@ static struct perf_msr pkg_msr[] = {
+ 	[PERF_CSTATE_PKG_C10_RES] = { MSR_PKG_C10_RESIDENCY,	&group_cstate_pkg_c10,	test_msr },
+ };
+ 
+-static struct attribute_group pkg_events_attr_group = {
+-	.name = "events",
+-	.attrs = attrs_empty,
+-};
+-
+-DEFINE_CSTATE_FORMAT_ATTR(pkg_event, event, "config:0-63");
+-static struct attribute *pkg_format_attrs[] = {
+-	&format_attr_pkg_event.attr,
+-	NULL,
+-};
+-static struct attribute_group pkg_format_attr_group = {
+-	.name = "format",
+-	.attrs = pkg_format_attrs,
+-};
+-
+ static cpumask_t cstate_pkg_cpu_mask;
+ 
+-static const struct attribute_group *pkg_attr_groups[] = {
+-	&pkg_events_attr_group,
+-	&pkg_format_attr_group,
+-	&cpumask_attr_group,
+-	NULL,
+-};
+-
+ static ssize_t cstate_get_attr_cpumask(struct device *dev,
+ 				       struct device_attribute *attr,
+ 				       char *buf)
+@@ -478,7 +456,7 @@ static const struct attribute_group *pkg_attr_update[] = {
+ };
+ 
+ static struct pmu cstate_core_pmu = {
+-	.attr_groups	= core_attr_groups,
++	.attr_groups	= cstate_attr_groups,
+ 	.attr_update	= core_attr_update,
+ 	.name		= "cstate_core",
+ 	.task_ctx_nr	= perf_invalid_context,
+@@ -493,7 +471,7 @@ static struct pmu cstate_core_pmu = {
+ };
+ 
+ static struct pmu cstate_pkg_pmu = {
+-	.attr_groups	= pkg_attr_groups,
++	.attr_groups	= cstate_attr_groups,
+ 	.attr_update	= pkg_attr_update,
+ 	.name		= "cstate_pkg",
+ 	.task_ctx_nr	= perf_invalid_context,
+-- 
+2.35.1
 
->=20
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-
-Are you missing a from: line in this patch?
-
-> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
-
-Otherwise,
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-
-Cheers,
-Conor.
-
-> ---
->  Documentation/devicetree/bindings/net/ethernet-controller.yaml | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/Documentation/devicetree/bindings/net/ethernet-controller.ya=
-ml b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> index d14d123ad7a0..0ef6103c5fd8 100644
-> --- a/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> +++ b/Documentation/devicetree/bindings/net/ethernet-controller.yaml
-> @@ -104,6 +104,7 @@ properties:
->        - usxgmii
->        - 10gbase-r
->        - 25gbase-r
-> +      - 10g-qxgmii
-> =20
->    phy-mode:
->      $ref: "#/properties/phy-connection-type"
-> --=20
-> 2.42.0
->=20
-
---eeTAmJq3hbXLEdrA
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVYlrgAKCRB4tDGHoIJi
-0stsAQC/xl95sWf1KDMyE1ytf/jBbf6R1duIc9zoYY4ivS9IhAD9FebNFMkbQsMM
-CW1kP66V0irHHz6eUXF+HF8sOB2uLAE=
-=JVOw
------END PGP SIGNATURE-----
-
---eeTAmJq3hbXLEdrA--
