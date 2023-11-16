@@ -2,125 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 904A57EE026
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CA947EE02B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:53:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345125AbjKPLxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:53:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55130 "EHLO
+        id S1345154AbjKPLx5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:53:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230160AbjKPLw6 (ORCPT
+        with ESMTP id S1345132AbjKPLxz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:52:58 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2290D187
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:52:32 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc2fc281cdso6001595ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:52:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700135551; x=1700740351; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HpXM7umLkp8ggmdEvermO/1ufULZGrPSR7DJdYQ70f0=;
-        b=JpUd2QSBLtkg6IgG/AcyhSlc90IAF2+J20ixpgOOIU0yJEjSA0cOVE0G3Z0mYwfVp4
-         aEc5SCO6b1sXnYs8S7/oO/CmAfwI3rJtVYTENIu0cVXPGQDVeMJBqyoriM6GG8yNm2h3
-         +Xm/M32MTsWnABlw/6vWF1CVB+WC6Iqmg1eaZDNqY00SEtR0SziG/M+U/OgW37Q22isE
-         XgZHYtCcIRPg8TGZVeQu/ckamWGXZ3iN+820aKy51mG8K/M3mmmv0JxF3m1WyQolr/13
-         kxyT+8TrMY2qZnQX86lrwcA6WKuLM7DTarLKjAJrBkDXJ1chihHP0y/4dXel3juEs+Bl
-         bRkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700135551; x=1700740351;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HpXM7umLkp8ggmdEvermO/1ufULZGrPSR7DJdYQ70f0=;
-        b=bDLBHtLrvLGNcbmCWkaOgXzyPd7Yf2mOWA6bcuvs6XrnSDgmPgJk2Nnc1aF4/8yIUi
-         al/vHcBVKUAh6WPzZ/rs78ylUgUTaRL8gG3qlksZ+IHh0IEseE7LzbfMjpNE0U1C9vWJ
-         A+LJ421vT9agGjQxGTrNfQiIt4wctM9HbGhewvHfU4zZj8fuWfgXrQ9XKcIvR72O6MU5
-         NqPMmLBDA73BQX/LU8Ug3p/+xnMZCnvWqzjEqPB2NtWeH7rnJG3RelmV34kmALE40lqN
-         oQrs6raEjwxvW01wOfae7eJFl0cH/dgLeGGboEqJCjwv87lyWEgvdUqBhHQIgmgFSujP
-         r97g==
-X-Gm-Message-State: AOJu0YySqWW72abpBOIEodTHvjr1ip2TngY7P2RLJm59rxetS6XQZIVO
-        zrFGLcyB96q2c7kzl04Q9efWgw==
-X-Google-Smtp-Source: AGHT+IEtpw0yNBDVJg9fCbsTN542ENyUqeMIPRcam0ytEcyM+RbOI8tN/+Z5g4efHJJAjhr5WP1mjg==
-X-Received: by 2002:a17:902:e84b:b0:1cc:787f:fd2 with SMTP id t11-20020a170902e84b00b001cc787f0fd2mr9340446plg.49.1700135551598;
-        Thu, 16 Nov 2023 03:52:31 -0800 (PST)
-Received: from [10.254.46.51] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id a17-20020a170902ecd100b001c9cb2fb8d8sm9051160plh.49.2023.11.16.03.52.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 03:52:31 -0800 (PST)
-Message-ID: <30fa2ed2-dfee-4dbf-bb44-1b0374877706@bytedance.com>
-Date:   Thu, 16 Nov 2023 19:52:26 +0800
+        Thu, 16 Nov 2023 06:53:55 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BA0187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:53:51 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3avq-0003lL-PZ; Thu, 16 Nov 2023 12:53:14 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3avk-009RKv-1F; Thu, 16 Nov 2023 12:53:08 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1r3avj-002aey-NF; Thu, 16 Nov 2023 12:53:07 +0100
+Date:   Thu, 16 Nov 2023 12:53:07 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Arnd Bergmann <arnd@arndb.de>, soc@kernel.org
+Cc:     Jay Fang <f.fangjian@huawei.com>, Rob Herring <robh@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@gmail.com>,
+        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
+        Tony Lindgren <tony@atomide.com>,
+        "Sicelo A. Mhlongo" <absicsz@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Liu Ying <victor.liu@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Nick Alcock <nick.alcock@oracle.com>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Samuel Holland <samuel@sholland.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Yangtao Li <frank.li@vivo.com>, Yuan Can <yuancan@huawei.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-tegra@vger.kernel.org,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        linux-sunxi@lists.linux.dev, linux-arm-kernel@lists.infradead.org
+Subject: [PULL] bus: Convert to platform remove callback returning void
+Message-ID: <20231116115307.32rovgcej2s5pe4r@pengutronix.de>
+References: <20231109202830.4124591-1-u.kleine-koenig@pengutronix.de>
+ <1e5e1008-707b-449a-9dbf-48324eb2b248@app.fastmail.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] sched/fair: Update min_vruntime for reweight_entity()
- correctly
-Content-Language: en-US
-To:     Yiwei Lin <s921975628@gmail.com>, mingo@redhat.com,
-        peterz@infradead.org
-Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        linux-kernel@vger.kernel.org
-References: <20231116114217.90553-1-s921975628@gmail.com>
-From:   Abel Wu <wuyun.abel@bytedance.com>
-In-Reply-To: <20231116114217.90553-1-s921975628@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uz4ywpyf2v5xtmw3"
+Content-Disposition: inline
+In-Reply-To: <1e5e1008-707b-449a-9dbf-48324eb2b248@app.fastmail.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please add a Fix tag like this:
 
-Fixes: eab03c23c2a1 ("sched/eevdf: Fix vruntime adjustment on reweight")
+--uz4ywpyf2v5xtmw3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On 11/16/23 7:42 PM, Yiwei Lin Wrote:
-> Since reweight_entity() may have chance to change the weight of
-> cfs_rq->curr entity, we should also update_min_vruntime() if
-> this is the case
-> 
-> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
-> ---
->   kernel/sched/fair.c | 20 ++++++++++----------
->   1 file changed, 10 insertions(+), 10 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 07f555857..6fb89f4a3 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -3815,17 +3815,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
->   	enqueue_load_avg(cfs_rq, se);
->   	if (se->on_rq) {
->   		update_load_add(&cfs_rq->load, se->load.weight);
-> -		if (!curr) {
-> -			/*
-> -			 * The entity's vruntime has been adjusted, so let's check
-> -			 * whether the rq-wide min_vruntime needs updated too. Since
-> -			 * the calculations above require stable min_vruntime rather
-> -			 * than up-to-date one, we do the update at the end of the
-> -			 * reweight process.
-> -			 */
-> +		if (!curr)
->   			__enqueue_entity(cfs_rq, se);
-> -			update_min_vruntime(cfs_rq);
-> -		}
-> +
-> +		/*
-> +		 * The entity's vruntime has been adjusted, so let's check
-> +		 * whether the rq-wide min_vruntime needs updated too. Since
-> +		 * the calculations above require stable min_vruntime rather
-> +		 * than up-to-date one, we do the update at the end of the
-> +		 * reweight process.
-> +		 */
-> +		update_min_vruntime(cfs_rq);
->   	}
->   }
->   
+Hello Arnd,
 
-LGTM, thanks!
+On Fri, Nov 10, 2023 at 07:32:01AM +0100, Arnd Bergmann wrote:
+> On Thu, Nov 9, 2023, at 21:28, Uwe Kleine-K=F6nig wrote:
+> > this series converts all drivers below drivers/bus to struct
+> > platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+> > Provide a remove callback that returns no value") for an extended
+> > explanation and the eventual goal.
+> >
+> > drivers/bus/fsl-mc was already addressed earlier with a separate
+> > series[1].
+> >
+> > All conversations are trivial, because all .remove() callbacks returned
+> > zero unconditionally.
+> >
+> > Some of the drivers touched here don't have a maintainer and there is no
+> > maintainer for all of drivers/bus. It would be great if someone could p=
+ick up
+> > the whole series, maybe Arnd might do that?
+>=20
+> Sure, please send a pull request to soc@kernel.org if there
+> are no further comments.
+
+here it comes:
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  https://git.pengutronix.de/git/ukl/linux tags/bus-platform-remove-void
+
+for you to fetch changes up to 7d6da8800a35d2257ff8b4b7d7c4551978f0a71a:
+
+  bus: ts-nbus: Convert to platform remove callback returning void (2023-11=
+-16 12:43:57 +0100)
+
+----------------------------------------------------------------
+This series converts all drivers below drivers/bus to struct
+platform_driver::remove_new(). See commit 5c5a7680e67b ("platform:
+Provide a remove callback that returns no value") for an extended
+explanation and the eventual goal.
+
+After the initial simplification in commit 864acca58000 ("bus: fsl-mc:
+Drop if block with always false condition") all conversations are
+trivial because the remove callbacks all return zero unconditionally.
+
+----------------------------------------------------------------
+Uwe Kleine-K=F6nig (14):
+      bus: fsl-mc: Drop if block with always false condition
+      bus: fsl-mc: Convert to platform remove callback returning void
+      bus: hisi_lpc: Convert to platform remove callback returning void
+      bus: omap-ocp2scp: Convert to platform remove callback returning void
+      bus: omap_l3_smx: Convert to platform remove callback returning void
+      bus: qcom-ssc-block-bus: Convert to platform remove callback returnin=
+g void
+      bus: simple-pm-bus: Convert to platform remove callback returning void
+      bus: sun50i-de2: Convert to platform remove callback returning void
+      bus: sunxi-rsb: Convert to platform remove callback returning void
+      bus: tegra-aconnect: Convert to platform remove callback returning vo=
+id
+      bus: tegra-gmi: Convert to platform remove callback returning void
+      bus: ti-pwmss: Convert to platform remove callback returning void
+      bus: ti-sysc: Convert to platform remove callback returning void
+      bus: ts-nbus: Convert to platform remove callback returning void
+
+ drivers/bus/fsl-mc/fsl-mc-bus.c  | 16 +++-------------
+ drivers/bus/hisi_lpc.c           |  6 ++----
+ drivers/bus/omap-ocp2scp.c       |  6 ++----
+ drivers/bus/omap_l3_smx.c        |  6 ++----
+ drivers/bus/qcom-ssc-block-bus.c |  6 ++----
+ drivers/bus/simple-pm-bus.c      |  7 +++----
+ drivers/bus/sun50i-de2.c         |  5 ++---
+ drivers/bus/sunxi-rsb.c          |  6 ++----
+ drivers/bus/tegra-aconnect.c     |  6 ++----
+ drivers/bus/tegra-gmi.c          |  6 ++----
+ drivers/bus/ti-pwmss.c           |  5 ++---
+ drivers/bus/ti-sysc.c            |  6 ++----
+ drivers/bus/ts-nbus.c            |  6 ++----
+ 13 files changed, 28 insertions(+), 59 deletions(-)
+
+Thanks for considering these changes,
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--uz4ywpyf2v5xtmw3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVWAqIACgkQj4D7WH0S
+/k4d1gf/TpLJMgm0K7phGR6IWiPk7QZqX2jnAbl6qyTi+9xjRHbuz/D4C7zAO46l
+ZHY9vIM/qpv5F+ym/qOFKjh1byHDqtIdhJiICka50uHZfsH7LhgPtrf6O3sUWzeu
+iA2Rv+ntUK7EabnEka/zzepJYvXPUiulla0N7to+syQffGo24ialHAubU9e2BztQ
+q78IWAu/LKAgcMT6uxHCELNmTMuORFiN+DI2T4wVwbzLGh8IinScezVi1pmRREDI
+gZTzC0dqmgDbLT57PFwpRRDWUrzj+B2HIzBd6BcZiG3eR6JQID4Z2ahfCDQTMM0o
+9HDdblXjmhubXbN71G1MA0Mi7knPWQ==
+=u4Db
+-----END PGP SIGNATURE-----
+
+--uz4ywpyf2v5xtmw3--
