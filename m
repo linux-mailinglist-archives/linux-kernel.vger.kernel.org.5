@@ -2,235 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C921E7EDB8D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 07:30:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54EBA7EDB8F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 07:30:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229984AbjKPGaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 01:30:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        id S233593AbjKPGat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 01:30:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229786AbjKPGaH (ORCPT
+        with ESMTP id S229749AbjKPGaq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 01:30:07 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67408130
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 22:30:03 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id af79cd13be357-77a277eb084so25146285a.2
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 22:30:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700116202; x=1700721002; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=PB/tb7x/wwBfMXKFlAwdEXt9fJqb2hzUXhb3693FMFI=;
-        b=pM70wgon19wcKb2jRCMBD6WKF4W4YezlxwnqWKgKbq36CTXgbzotfjlsyDcYK/tC6o
-         M8JSRRdCTO6W90KL4Rnpuh1Yb0ja6wLMr+dZjeo+k4EjLiE7K/fJyhGCfqq/A1JoD1nL
-         aG8beuDtlDLyEJBwbmd1q1hUzt67ALCkAt/XBpAGRJ39ft05utlZOEailKOH5CCg+A6l
-         SPLUIwhM58jX724aRkVMsdlUf0FPzZUvfMTto1OrGtgRIIDqjBTK5e6lp6kpXVOCym5D
-         fdPWv4Ot13PymrC/a/jjfyNn/D0IM6IUWbslGE/bBooJ1ADFNGVzDfWL0BJelY/SnKbT
-         +JAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700116202; x=1700721002;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PB/tb7x/wwBfMXKFlAwdEXt9fJqb2hzUXhb3693FMFI=;
-        b=VfC5bsbPmGi7pIbHMRbGoBKEmg518NLjXuBda4X4tt/STK7kAMp2EeZc5vjAbIqv1K
-         QKZx7N9M86tjrrApoFMBB7q1kbFZ0qCX4vv+lDHOa188s/MgQXW0xMwQalSi7a2W2s2U
-         hzHg+0G2G8BqQVprw/9d7vPScXoW7ex7nAILCatwYOBbbTMCvRlaVCMctUHsy71q7BMO
-         heXhbsDJEpWdapDwm1ItKhIvMGj0Y5TjKZdmomDEQPd0y389TBZU7vq2hekvzLdQa6bc
-         V2w4QNgkzZDY5UVd2Q6sdzO4p2CCvRczd/AExVHa2DN71TkuM7zF8M2cgeG5oYM5FPhf
-         ZpDw==
-X-Gm-Message-State: AOJu0YwPXCt6BxDpIY1XccCzeU3P/n/BgLXyUodFXH2e7Lq5PWM51hFM
-        jP19EORE93dyzAmABpMg9GQV
-X-Google-Smtp-Source: AGHT+IEt8cECYm2VNPS0pn16zEsLLLHhSV0cG4YvuKehpByAru6JTwlYnq7ZubFBquXWqDAvW7VJjA==
-X-Received: by 2002:a0c:ec50:0:b0:66d:544d:8e68 with SMTP id n16-20020a0cec50000000b0066d544d8e68mr8276026qvq.3.1700116202454;
-        Wed, 15 Nov 2023 22:30:02 -0800 (PST)
-Received: from thinkpad ([117.207.24.140])
-        by smtp.gmail.com with ESMTPSA id u3-20020ad44983000000b00677ad5a91e1sm1149979qvx.53.2023.11.15.22.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 22:30:01 -0800 (PST)
-Date:   Thu, 16 Nov 2023 11:59:51 +0530
-From:   'Manivannan Sadhasivam' <manivannan.sadhasivam@linaro.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     Shradha Todi <shradha.t@samsung.com>, jingoohan1@gmail.com,
-        lpieralisi@kernel.org, kw@linux.com, robh@kernel.org,
-        bhelgaas@google.com, krzysztof.kozlowski@linaro.org,
-        alim.akhtar@samsung.com, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        pankaj.dubey@samsung.com
-Subject: Re: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
-Message-ID: <20231116062951.GD3443@thinkpad>
-References: <CGME20231009062222epcas5p36768b75c13c7c79965b5863521361a64@epcas5p3.samsung.com>
- <20231009062216.6729-1-shradha.t@samsung.com>
- <20231027134849.GA23716@thinkpad>
- <000b01da178e$a43088d0$ec919a70$@samsung.com>
- <bbcee6bf-850b-43c0-a5d3-9d5a66b24dc5@samsung.com>
+        Thu, 16 Nov 2023 01:30:46 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BD78A4;
+        Wed, 15 Nov 2023 22:30:43 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG5fPto019356;
+        Thu, 16 Nov 2023 06:30:18 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=lJBWb0DFVaqBPn5WS2xIqEkp3Evqw9zDxdFgf67KCDo=;
+ b=P41VhJ4FWvC3R/tlx2/fjOppb0a7ygI7oPFOOnIq3PGdAUBFnQLz0KLwh5RDpJB+sOH2
+ /Hiop52rgGkF7KB5IMwl1Q9p18e1dlqqAsrE6SWoFTZU80N0NlgFK6PpKa78V2oRvW0k
+ njcJM+hKtKcKEaWsv5rMc22+B7OSvSfU2LyTccaXV2vWhEtxa9k65fRvdasTgT3im0bH
+ 8CfpUO9pJ3D+e0M8m1X+3dFcoasXryjHVc7kyiw+xOawV8rhXlNHAHaBFHbkiL9WOudY
+ iM5JRfL8rwLo/9DoSyPurWF50/j3Xioqi2dU23v3Jr5JbvFseUTv/fIkkp6wQOOZMh/N dg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud6ecgtwm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 06:30:17 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AG6UGH3014552
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 06:30:16 GMT
+Received: from [10.216.41.162] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Wed, 15 Nov
+ 2023 22:30:02 -0800
+Message-ID: <5a476b51-5916-74f8-0395-60d94f210aa0@quicinc.com>
+Date:   Thu, 16 Nov 2023 11:59:58 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <bbcee6bf-850b-43c0-a5d3-9d5a66b24dc5@samsung.com>
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH V2 0/3] iio: adc: Add support for QCOM SPMI PMIC5 Gen3 ADC
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <jic23@kernel.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <daniel.lezcano@linaro.org>,
+        <linus.walleij@linaro.org>, <linux-arm-msm@vger.kernel.org>,
+        <andriy.shevchenko@linux.intel.com>, <quic_subbaram@quicinc.com>,
+        <quic_collinsd@quicinc.com>, <quic_amelende@quicinc.com>,
+        <quic_kamalw@quicinc.com>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <marijn.suijten@somainline.org>,
+        <lars@metafoo.de>, <luca@z3ntu.xyz>, <linux-iio@vger.kernel.org>,
+        <lee@kernel.org>, <rafael@kernel.org>, <rui.zhang@intel.com>,
+        <lukasz.luba@arm.com>, <cros-qcom-dts-watchers@chromium.org>,
+        <sboyd@kernel.org>, <linux-pm@vger.kernel.org>,
+        <linux-arm-msm-owner@vger.kernel.org>, <kernel@quicinc.com>
+References: <20231116032530.753192-1-quic_jprakash@quicinc.com>
+ <CAA8EJprJuiFq5UXc9weNr1hy2vW_10TaQweN_ZW5XW=3LKrgtA@mail.gmail.com>
+Content-Language: en-US
+From:   Jishnu Prakash <quic_jprakash@quicinc.com>
+In-Reply-To: <CAA8EJprJuiFq5UXc9weNr1hy2vW_10TaQweN_ZW5XW=3LKrgtA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: DV90G0dLrhL99O234ZHLt0xsMNWcxz9J
+X-Proofpoint-ORIG-GUID: DV90G0dLrhL99O234ZHLt0xsMNWcxz9J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_03,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311160049
+X-Spam-Status: No, score=-4.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:06:19AM +0100, Marek Szyprowski wrote:
-> Hi!
-> 
-> On 15.11.2023 07:40, Shradha Todi wrote:
-> >> -----Original Message-----
-> >> From: Manivannan Sadhasivam [mailto:manivannan.sadhasivam@linaro.org]
-> >> Sent: 27 October 2023 19:19
-> >> To: Shradha Todi<shradha.t@samsung.com>
-> >> Cc:jingoohan1@gmail.com;lpieralisi@kernel.org;kw@linux.com;
-> >> robh@kernel.org;bhelgaas@google.com;krzysztof.kozlowski@linaro.org;
-> >> alim.akhtar@samsung.com;linux-pci@vger.kernel.org; linux-arm-
-> >> kernel@lists.infradead.org;linux-samsung-soc@vger.kernel.org; linux-
-> >> kernel@vger.kernel.org;pankaj.dubey@samsung.com
-> >> Subject: Re: [PATCH] PCI: exynos: Adapt to clk_bulk_* APIs
-> >>
-> >> On Mon, Oct 09, 2023 at 11:52:16AM +0530, Shradha Todi wrote:
-> >>> There is no need to hardcode the clock info in the driver as driver
-> >>> can rely on the devicetree to supply the clocks required for the
-> >>> functioning of the peripheral. Get rid of the static clock info and
-> >>> obtain the platform supplied clocks. The total number of clocks
-> >>> supplied is obtained using the devm_clk_bulk_get_all() API and used
-> >>> for the rest of the clk_bulk_* APIs.
-> >>>
-> >>> Signed-off-by: Shradha Todi<shradha.t@samsung.com>
-> >>> ---
-> >>>   drivers/pci/controller/dwc/pci-exynos.c | 46
-> >>> ++++++-------------------
-> >>>   1 file changed, 11 insertions(+), 35 deletions(-)
-> >>>
-> >>> diff --git a/drivers/pci/controller/dwc/pci-exynos.c
-> >>> b/drivers/pci/controller/dwc/pci-exynos.c
-> >>> index 9e42cfcd99cc..023cf41fccd7 100644
-> >>> --- a/drivers/pci/controller/dwc/pci-exynos.c
-> >>> +++ b/drivers/pci/controller/dwc/pci-exynos.c
-> >>> @@ -54,8 +54,8 @@
-> >>>   struct exynos_pcie {
-> >>>   	struct dw_pcie			pci;
-> >>>   	void __iomem			*elbi_base;
-> >>> -	struct clk			*clk;
-> >>> -	struct clk			*bus_clk;
-> >>> +	struct clk_bulk_data		*clks;
-> >>> +	int				clk_cnt;
-> >>>   	struct phy			*phy;
-> >>>   	struct regulator_bulk_data	supplies[2];
-> >>>   };
-> >>> @@ -65,30 +65,18 @@ static int exynos_pcie_init_clk_resources(struct
-> >> exynos_pcie *ep)
-> >>>   	struct device *dev = ep->pci.dev;
-> >>>   	int ret;
-> >>>
-> >>> -	ret = clk_prepare_enable(ep->clk);
-> >>> -	if (ret) {
-> >>> -		dev_err(dev, "cannot enable pcie rc clock");
-> >>> +	ret = devm_clk_bulk_get_all(dev, &ep->clks);
-> >>> +	if (ret < 0)
-> >> Please use !(ret) here and below to be consistent with the driver.
-> >>
-> > In this case, only negative values indicate failure. Hence we cannot use (!ret) here.
-> >
-> >>>   		return ret;
-> >>> -	}
-> >>>
-> >>> -	ret = clk_prepare_enable(ep->bus_clk);
-> >>> -	if (ret) {
-> >>> -		dev_err(dev, "cannot enable pcie bus clock");
-> >>> -		goto err_bus_clk;
-> >>> -	}
-> >>> +	ep->clk_cnt = ret;
-> >> Since clk_cnt is "int", you can just use it directly instead of "ret".
-> >>
-> > Thanks for this suggestion! Will take care in v2.
-> >
-> >>> -	return 0;
-> >>> -
-> >>> -err_bus_clk:
-> >>> -	clk_disable_unprepare(ep->clk);
-> >>> -
-> >>> -	return ret;
-> >>> +	return clk_bulk_prepare_enable(ep->clk_cnt, ep->clks);
-> >>>   }
-> >>>
-> >>>   static void exynos_pcie_deinit_clk_resources(struct exynos_pcie *ep)
-> >>> {
-> >>> -	clk_disable_unprepare(ep->bus_clk);
-> >>> -	clk_disable_unprepare(ep->clk);
-> >>> +	clk_bulk_disable_unprepare(ep->clk_cnt, ep->clks);
-> >>>   }
-> >>>
-> >>>   static void exynos_pcie_writel(void __iomem *base, u32 val, u32 reg)
-> >>> @@ -332,17 +320,9 @@ static int exynos_pcie_probe(struct
-> >> platform_device *pdev)
-> >>>   	if (IS_ERR(ep->elbi_base))
-> >>>   		return PTR_ERR(ep->elbi_base);
-> >>>
-> >>> -	ep->clk = devm_clk_get(dev, "pcie");
-> >>> -	if (IS_ERR(ep->clk)) {
-> >>> -		dev_err(dev, "Failed to get pcie rc clock\n");
-> >>> -		return PTR_ERR(ep->clk);
-> >>> -	}
-> >>> -
-> >>> -	ep->bus_clk = devm_clk_get(dev, "pcie_bus");
-> >>> -	if (IS_ERR(ep->bus_clk)) {
-> >>> -		dev_err(dev, "Failed to get pcie bus clock\n");
-> >>> -		return PTR_ERR(ep->bus_clk);
-> >>> -	}
-> >>> +	ret = exynos_pcie_init_clk_resources(ep);
-> >>> +	if (ret < 0)
-> >>> +		return ret;
-> >>>
-> >>>   	ep->supplies[0].supply = "vdd18";
-> >>>   	ep->supplies[1].supply = "vdd10";
-> >>> @@ -351,10 +331,6 @@ static int exynos_pcie_probe(struct
-> >> platform_device *pdev)
-> >>>   	if (ret)
-> >>>   		return ret;
-> >>>
-> >>> -	ret = exynos_pcie_init_clk_resources(ep);
-> >>> -	if (ret)
-> >>> -		return ret;
-> >>> -
-> >>>   	ret = regulator_bulk_enable(ARRAY_SIZE(ep->supplies), ep-
-> >>> supplies);
-> >>>   	if (ret)
-> >> You need to disable_unprepare() clocks in error path here and above.
-> >>
-> > Thanks for pointing out! Will take care in v2.
-> 
-> 
-> Maybe it would make sense to add devm_clk_bulk_get_all_enabled() to 
-> clock framework, similar to the existing devm_clk_get_enabled()?
-> 
-> It is really a common pattern to get all clocks and enable them for the 
-> time of driver operation.
-> 
+Hi Dmitry,
 
-Right. Someone may argue that the users would need to check the number of clocks
-returned by the devm_clk_bulk_get_all() API, before enabling them. But I don't
-think the drivers should check those values as they need to rely on the
-firmware (unless accessing the clocks manually later). Even for those cases, the
-individual APIs can be used.
+On 11/16/2023 10:52 AM, Dmitry Baryshkov wrote:
+> On Thu, 16 Nov 2023 at 05:26, Jishnu Prakash <quic_jprakash@quicinc.com> wrote:
+>> PMIC5 Gen3 has a similar ADC architecture to that on PMIC5 Gen2,
+>> with all SW communication to ADC going through PMK8550 which
+>> communicates with other PMICs through PBS. The major difference is
+>> that the register interface used here is that of an SDAM present on
+>> PMK8550, rather than a dedicated ADC peripheral. There may be more than one
+>> SDAM used for ADC5 Gen3. Each ADC SDAM has eight channels, each of which may
+>> be used for either immediate reads (same functionality as previous PMIC5 and
+>> PMIC5 Gen2 ADC peripherals) or recurring measurements (same as PMIC5 and PMIC5
+>> Gen2 ADC_TM functionality). In this case, we have VADC and ADC_TM functionality
+>> combined into the same driver.
+>>
+>> Patches 1 adds bindings for ADC5 Gen3 peripheral.
+>>
+>> Patches 2 adds driver support for ADC5 Gen3.
+> For some reason I don't see this patch in my inbox. Maybe it will
+> arrive later. Immediate response: please add
+> devm_thermal_add_hwmon_sysfs().
 
-So IMO it is worth to give it a shot.
 
-- Mani
+Yes, I'll check and add this in the next patch series, I'll wait for 
+some more comments on the existing patches for now.
 
-> Best regards
-> -- 
-> Marek Szyprowski, PhD
-> Samsung R&D Institute Poland
+I ran into some error after sending the first two mails (cover letter 
+and patch 1), so I sent patches 2 and 3 separately after it, I think you 
+may have received them separately.
 
--- 
-மணிவண்ணன் சதாசிவம்
+
+>
+>> Patch 3 is a cleanup, to move the QCOM ADC dt-bindings files from
+>> dt-bindings/iio to dt-bindings/iio/adc folder, as they are
+>> specifically for ADC devices. It also fixes all compilation errors
+>> with this change in driver and devicetree files and similar errors
+>> in documentation for dtbinding check.
+> NAK. The kernel is expected to build and work after each commit.
+> Otherwise git-bisecting the kernel becomes impossible.
+> So, please rework your series in a way that there are no compilation
+> errors after any of the patches. The easiest way would be to rearrange
+> your patches in 3-1-2 order.
+
+
+I think you may have misunderstood the meaning here, I had verified 
+compilation works each time after applying each of the three patches in 
+this series. It's not that this last patch fixes compilation errors 
+caused by the first two, this is a completely separate patch which 
+affects existing QCOM ADC code (driver and devicetree) including ADC5 Gen3.
+
+
+This patch does two things mainly:
+
+Move the ADC binding files from dt-bindings/iio folder to 
+dt-bindings/iio/adc folder (this would naturally cause some errors in 
+driver and devicetree code due to path update)
+
+Fix all compilation and dtbinding errors generated by the move
+
+
+I added this change at the end of the series as I was not completely 
+sure if it could get picked, just wanted to make it easier to drop if 
+that is the final decision.
+
+
+Thanks,
+
+Jishnu
+
+
+>
+>
+>> Changes since v1:
+>> - Dropped patches 1-5 for changing 'ADC7' peripheral name to 'ADC5 Gen2'.
+>> - Addressed reviewer comments for binding and driver patches for ADC5 Gen3.
+>> - Combined patches 8-11 into a single patch as requested by reviewers to make
+>>    the change clearer and made all fixes required in same patch.
+>>
+>>   .../iio/{ => adc}/qcom,spmi-adc7-pm8350b.h    |    2 +-
+>>   .../iio/{ => adc}/qcom,spmi-adc7-pmk8350.h    |    2 +-
+>>   .../iio/{ => adc}/qcom,spmi-adc7-pmr735a.h    |    2 +-
+>>   .../iio/{ => adc}/qcom,spmi-adc7-pmr735b.h    |    0
+>>   .../iio/{ => adc}/qcom,spmi-vadc.h            |   81 ++
+>>   46 files changed, 1725 insertions(+), 61 deletions(-)
+>>   create mode 100644 drivers/iio/adc/qcom-spmi-adc5-gen3.c
+>>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550.h
+>>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550b.h
+>>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pm8550vx.h
+>>   create mode 100644 include/dt-bindings/iio/adc/qcom,spmi-adc5-gen3-pmk8550.h
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350.h (98%)
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pm8350b.h (99%)
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmk8350.h (97%)
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735a.h (95%)
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-adc7-pmr735b.h (100%)
+>>   rename include/dt-bindings/iio/{ => adc}/qcom,spmi-vadc.h (77%)
+>>
+>> --
+>> 2.25.1
+>>
+>
+> --
+> With best wishes
+> Dmitry
