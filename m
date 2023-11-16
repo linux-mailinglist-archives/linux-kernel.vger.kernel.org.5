@@ -2,55 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A083C7EDF3E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:11:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2197EDF40
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbjKPLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:11:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
+        id S235710AbjKPLLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:11:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345083AbjKPLLT (ORCPT
+        with ESMTP id S1345158AbjKPLL1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:11:19 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54042AA;
-        Thu, 16 Nov 2023 03:11:16 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C03C433C7;
-        Thu, 16 Nov 2023 11:11:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700133076;
-        bh=S39I4q3Z2eyaTdKnVU0kVAHPshukGXcnGgf90hu5hNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=kFY3JkENtL0CxjTkP/J8DwUB+SNQglfyJDHH7+sTiuRn0h/RUE7p3oaQ9qmm2EqUz
-         lJ8fKPSOka5GNjCzNZHxSf7AG6Gxycoolw68U9X3zNLhbf+PorV19XXd+0AJ9dW/Xv
-         Rs1D2g3X/xGGTH1hLuNRHeoRpA6X+9eMtKXDG3WLqM4c7l+4a5VetChSvtL3/ZQrwI
-         U355iW85fbSl1wMHuMOjIACUU9o+H6yzVw3tyyJmpQB9iKCoTXzWcBj5tSPrEMsbRa
-         JotGEznqCUVHoaEh6BM6b7ygvXrc8KQcKlmNu5a3klH/eu9lvDm5WiyUxcJJGGmqV1
-         WVw+8Ya70CViw==
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c6b5841f61so7347201fa.0;
-        Thu, 16 Nov 2023 03:11:15 -0800 (PST)
-X-Gm-Message-State: AOJu0Ywscy8wiDPGFjgcafrbTxcYyYihQieq1sou7jrvNexEPYYivadF
-        zHsROOAexZil6XVizYMZPVhrmr2PpdWU8Lrqst4=
-X-Google-Smtp-Source: AGHT+IFuerTCkQll0+xraF3KBCWCtKLNVm468vnWCiWQYEjYBagDH99HbCteNccZAey1E04nPRwuluu4JS60wiQzko0=
-X-Received: by 2002:a05:651c:20b:b0:2c6:edf1:b05e with SMTP id
- y11-20020a05651c020b00b002c6edf1b05emr580932ljn.15.1700133074166; Thu, 16 Nov
- 2023 03:11:14 -0800 (PST)
+        Thu, 16 Nov 2023 06:11:27 -0500
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C737CC1;
+        Thu, 16 Nov 2023 03:11:21 -0800 (PST)
+Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.57])
+        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SWHKZ5v5XzMmsp;
+        Thu, 16 Nov 2023 19:06:42 +0800 (CST)
+Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
+ (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 16 Nov
+ 2023 19:11:19 +0800
+Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
+To:     Mina Almasry <almasrymina@google.com>
+CC:     Jason Gunthorpe <jgg@nvidia.com>, Jakub Kicinski <kuba@kernel.org>,
+        <davem@davemloft.net>, <pabeni@redhat.com>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Willem de Bruijn <willemb@google.com>,
+        Kaiyuan Zhang <kaiyuanz@google.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Eric Dumazet <edumazet@google.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Linux-MM <linux-mm@kvack.org>
+References: <20231113130041.58124-1-linyunsheng@huawei.com>
+ <20231113130041.58124-4-linyunsheng@huawei.com>
+ <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
+ <20231113180554.1d1c6b1a@kernel.org>
+ <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
+ <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
+ <ZVNzS2EA4zQRwIQ7@nvidia.com>
+ <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
+ <CAHS8izMR-FrTtCty8v29atAMor5FmzV_Ogk85H=gqGaJNvJnuA@mail.gmail.com>
+From:   Yunsheng Lin <linyunsheng@huawei.com>
+Message-ID: <28b65d3b-4df4-ce8b-00b6-abe565c0ab70@huawei.com>
+Date:   Thu, 16 Nov 2023 19:11:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.2.0
 MIME-Version: 1.0
-References: <20231115095830.20607-1-quic_aiquny@quicinc.com>
-In-Reply-To: <20231115095830.20607-1-quic_aiquny@quicinc.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 16 Nov 2023 21:11:03 +1000
-X-Gmail-Original-Message-ID: <CAMj1kXEHjY2NmEztvfQR34k903Jgx_4fqgHpkxq4YAiTc5szyA@mail.gmail.com>
-Message-ID: <CAMj1kXEHjY2NmEztvfQR34k903Jgx_4fqgHpkxq4YAiTc5szyA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] ARM: kprobes: Explicitly reserve r7 for local variables
-To:     Maria Yu <quic_aiquny@quicinc.com>
-Cc:     linux@armlinux.org.uk, mhiramat@kernel.org, kernel@quicinc.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        quic_lijuang@quicinc.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+In-Reply-To: <CAHS8izMR-FrTtCty8v29atAMor5FmzV_Ogk85H=gqGaJNvJnuA@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.69.30.204]
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpemm500005.china.huawei.com (7.185.36.74)
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -59,73 +68,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 19:58, Maria Yu <quic_aiquny@quicinc.com> wrote:
->
-> Registers r7 is removed in clobber list, so compiler may choose r7 for
-> local variables usage, while r7 will be actually updated by the inline asm
-> code. This caused the runtime behavior wrong.
-> While those kind of reserved registers cannot be set to clobber list
-> because of error like "inline asm clobber list contains reserved
-> registers".
-> Explicitly reserve r7 by adding attribute no-omit-frame-pointer for needed
-> function, then in T32 asm code r7 is used as a frame pointer and is not
-> available for use as a general-purpose register.
-> Note that "no-omit-frame-pointer" will make the code size a little bigger
-> to store the stack frame pointer. So limited to needed functions can have
-> the less impact than the full source file.
->
-> Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
-> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
-> Cc: stable@vger.kernel.org
+On 2023/11/16 1:44, Mina Almasry wrote:
+> On Wed, Nov 15, 2023 at 1:21 AM Yunsheng Lin <linyunsheng@huawei.com> wrote:
+>>
+>> On 2023/11/14 21:16, Jason Gunthorpe wrote:
+>>> On Tue, Nov 14, 2023 at 04:21:26AM -0800, Mina Almasry wrote:
+>>>
+>>>> Actually because you put the 'strtuct page for devmem' in
+>>>> skb->bv_frag, the net stack will grab the 'struct page' for devmem
+>>>> using skb_frag_page() then call things like page_address(), kmap,
+>>>> get_page, put_page, etc, etc, etc.
+>>>
+>>> Yikes, please no. If net has its own struct page look alike it has to
+>>> stay entirely inside net. A non-mm owned struct page should not be
+>>> passed into mm calls. It is just way too hacky to be seriously
+>>> considered :(
+>>
+>> Yes, that is something this patchset is trying to do, defining its own
+>> struct page look alike for page pool to support devmem.
+>>
+>> struct page for devmem will not be called into the mm subsystem, so most
+>> of the mm calls is avoided by calling into the devmem memory provider'
+>> ops instead of calling mm calls.
+>>
+>> As far as I see for now, only page_ref_count(), page_is_pfmemalloc() and
+>> PageTail() is called for devmem page, which should be easy to ensure that
+>> those call for devmem page is consistent with the struct page owned by mm.
+> 
+> I'm not sure this is true. These 3 calls are just the calls you're
+> aware of. In your proposal you're casting mirror pages into page* and
+> releasing them into the net stack. You need to scrub the entire net
+> stack for mm calls, i.e. all driver code and all skb_frag_page() call
+> sites. Of the top of my head, the driver is probably calling
+> page_address() and illegal_highdma() is calling PageHighMem(). TCP
+> zerocopy receive is calling vm_insert_pages().
 
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
+For net stack part, I believe your patch below is handling to aovid those
+mm calls? I don't include it in this patchset as I thought it is obvious
+that whatever the proposal is, we always need those checking.
+Maybe we should have included it to avoid this kind of confusion.
+https://lore.kernel.org/all/20231106024413.2801438-10-almasrymina@google.com/
 
-> ---
->  arch/arm/probes/kprobes/actions-thumb.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/arch/arm/probes/kprobes/actions-thumb.c b/arch/arm/probes/kprobes/actions-thumb.c
-> index 51624fc263fc..c2fdaf9f6dba 100644
-> --- a/arch/arm/probes/kprobes/actions-thumb.c
-> +++ b/arch/arm/probes/kprobes/actions-thumb.c
-> @@ -438,7 +438,7 @@ t16_simulate_branch(probes_opcode_t insn,
->         regs->ARM_pc = pc + (offset * 2);
->  }
->
-> -static unsigned long __kprobes
-> +static unsigned long __kprobes __attribute__((optimize("no-omit-frame-pointer")))
->  t16_emulate_loregs(probes_opcode_t insn,
->                    struct arch_probes_insn *asi, struct pt_regs *regs)
->  {
-> @@ -521,7 +521,7 @@ t16_decode_hiregs(probes_opcode_t insn, struct arch_probes_insn *asi,
->         return INSN_GOOD;
->  }
->
-> -static void __kprobes
-> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
->  t16_emulate_push(probes_opcode_t insn,
->                 struct arch_probes_insn *asi, struct pt_regs *regs)
->  {
-> @@ -557,7 +557,7 @@ t16_decode_push(probes_opcode_t insn, struct arch_probes_insn *asi,
->         return INSN_GOOD;
->  }
->
-> -static void __kprobes
-> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
->  t16_emulate_pop_nopc(probes_opcode_t insn,
->                 struct arch_probes_insn *asi, struct pt_regs *regs)
->  {
-> @@ -576,7 +576,7 @@ t16_emulate_pop_nopc(probes_opcode_t insn,
->                 );
->  }
->
-> -static void __kprobes
-> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
->  t16_emulate_pop_pc(probes_opcode_t insn,
->                 struct arch_probes_insn *asi, struct pt_regs *regs)
->  {
->
-> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
-> --
-> 2.17.1
->
+For driver part, I was thinking if the driver supports devmem, it should check
+that if it can call page_address() related call on a specific 'stuct page', or
+maybe we should introduce a new helper to make it obvious?
