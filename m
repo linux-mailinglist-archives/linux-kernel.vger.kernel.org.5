@@ -2,125 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 50D4E7EDF80
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:19:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 267A37EDF7D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:19:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345141AbjKPLTx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:19:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43968 "EHLO
+        id S1345074AbjKPLTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:19:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345115AbjKPLTu (ORCPT
+        with ESMTP id S230385AbjKPLTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:19:50 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7A24A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:19:47 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63285C433C8;
-        Thu, 16 Nov 2023 11:19:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700133587;
-        bh=sVE1ZhzgF+azIDjaftC09+KcqFN6b/NyebhVcP3716U=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=pIX94orK0kXxh1o6FUN7miEOMvbCikG2L6fD47MqChba1soczCS4jplycsG0sIWn5
-         wlxUJLoYG/LkBnX7yrwdGJIlbten+wPkUWGmKkVCxj6fyIaQBGyUNLRlIqEfiNENU9
-         s/tkAHNDhhboJWuPPJa/rl9mjLnwCQ9InX1WA8udM6LQPeBC15vdECGAuGVMh1SVs6
-         jR5B0xv2P9dP+So1iJUBCKZf8V/FlvWvS8v9zMnIZWENLOk96Df29YUGkNKIadYX5H
-         +e58XhFLNinm99TLcZpnUMyw3tHYUFydHafmDHbqlqTTEYKFeuTvOpDs7VOg9sVEG1
-         ISzA0zgGhWELw==
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3b2e73a17a0so378694b6e.3;
-        Thu, 16 Nov 2023 03:19:47 -0800 (PST)
-X-Gm-Message-State: AOJu0YyzudoRS9Sq97S+OYp/pBq0202oo2WN/oKdz9wvoXU0BC0yalP2
-        3mEh8HUVO7+UVQo0mZL2+r/T/HGdNw44jq7s3Fw=
-X-Google-Smtp-Source: AGHT+IG5EHn9aQcDgToPoaTjqqvcP1a1M4t+aOZpOsigb6MoTuHcsgwxABvfoX/iZim1ptpeZmWNZZ2Q2xY3URFCfWs=
-X-Received: by 2002:a05:6871:a508:b0:1e9:9989:33a5 with SMTP id
- wc8-20020a056871a50800b001e9998933a5mr18170787oab.5.1700133586781; Thu, 16
- Nov 2023 03:19:46 -0800 (PST)
+        Thu, 16 Nov 2023 06:19:46 -0500
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA3B85
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:19:42 -0800 (PST)
+Received: by mail-pj1-x1029.google.com with SMTP id 98e67ed59e1d1-28120aa1c24so498368a91.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:19:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sartura.hr; s=sartura; t=1700133582; x=1700738382; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FP061+Ljmcgn/I/ky1y60dNUaAgEa9xiG7meDpBf+38=;
+        b=Lw0jENns2otjbJ9ioCR3XOGmnIPyh67//DDG29PaU91k7AIYH0yRG74oT0de5uPUCe
+         cxAsleRY7xhtoF0HuhsTj/6UnTvshgevCc84ME53vcUMVK/dYO2/c+5gfKZf4y1yo+By
+         OhzRcEr4+/7+vsFwc/KUPqqVpnTxIwqW0ChnFqlFJQZ5GH6aq1AXgzTgGks2vffEaFBt
+         cXzrIvJGfhOGnJlaArPZUXY9MNJIEYdCbL1mAHi/Z/KovZz+fvxUCgXdQh7nMCEQNvJf
+         SW96dRj8HVCItftUW9A+K8QWFqyxJm89WrcH37lZxlJfmYnvKYQajwJpek1RDD+QT+XD
+         jkjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700133582; x=1700738382;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FP061+Ljmcgn/I/ky1y60dNUaAgEa9xiG7meDpBf+38=;
+        b=YLzUKZAhOHy9ggcpmEfC3/HkdQLZCaAn53YdU4NRPLiXNMPkR34aS3v4+iS/4rZQJI
+         ohF2IAqgopoQ22tA3cmi0cssTkLGspV9XlBg85GkNdcbvCuS81kXnw0RcdSDnR53KGZS
+         XNZUlnWI0SkRsVAtCVAiJyu0nu1VKrH2if950i1xj+1Emc3M+JDK1TVomuQY2vQ5fHZr
+         oV1raVyJw8PPaTWXDB0Jp9/JeXlMji92XWOuwfHCjeyiU/ccTbR/iRLvf2fbY9vBO3YE
+         ZSOEIkcGGNWqcpqxAoULNdHRlkEMUv5eh0rIlLmm67an1NIyhc2rZP0Weko/Uut0Shuq
+         8A+g==
+X-Gm-Message-State: AOJu0YyHVAWVKZ82QSBC0PpI1PCpDF44kNi0Xt0enA1lSQKPuh902bqW
+        DbLc43Av+YFwAZlXfZm/KSKIx7iGEUGbpgq1/UXXjw==
+X-Google-Smtp-Source: AGHT+IGuLhI1VCL9i2gZcvyFeH+Ud9ZO0oIByakW8zS/mhncDg7kJgPau8PTD8bfhRSPXaKrjIuebEKFf4OogrjOYic=
+X-Received: by 2002:a17:90b:3e8c:b0:27d:492e:137a with SMTP id
+ rj12-20020a17090b3e8c00b0027d492e137amr15373839pjb.45.1700133581976; Thu, 16
+ Nov 2023 03:19:41 -0800 (PST)
 MIME-Version: 1.0
-References: <20231111002851.1293891-1-sjg@chromium.org> <20231111002851.1293891-3-sjg@chromium.org>
-In-Reply-To: <20231111002851.1293891-3-sjg@chromium.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 16 Nov 2023 20:19:10 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQN_qGYztWGDmQyfg+eZ5P7RkM47mpgp0dQn_iuhvTSWg@mail.gmail.com>
-Message-ID: <CAK7LNAQN_qGYztWGDmQyfg+eZ5P7RkM47mpgp0dQn_iuhvTSWg@mail.gmail.com>
-Subject: Re: [PATCH v5 2/3] arm: boot: Move the single quotes for image name
-To:     Simon Glass <sjg@chromium.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        lkml <linux-kernel@vger.kernel.org>,
-        Tom Rini <trini@konsulko.com>,
-        U-Boot Mailing List <u-boot@lists.denx.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nicolas Schier <nicolas@fjasle.eu>,
-        linux-kbuild@vger.kernel.org
+References: <20231115032515.4249-1-quic_luoj@quicinc.com> <20231115032515.4249-4-quic_luoj@quicinc.com>
+ <e740a206-37af-49b1-a6b6-baa3c99165c0@lunn.ch> <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
+In-Reply-To: <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
+From:   Robert Marko <robert.marko@sartura.hr>
+Date:   Thu, 16 Nov 2023 12:19:30 +0100
+Message-ID: <CA+HBbNG2Zx36oFT=dN3y21Ms0Dsy4C+cObe-yhsCEXctt6Btkg@mail.gmail.com>
+Subject: Re: [PATCH 3/9] net: mdio: ipq4019: Enable GPIO reset for ipq5332 platform
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        linux-arm-msm@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_srichara@quicinc.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Nov 11, 2023 at 9:29=E2=80=AFAM Simon Glass <sjg@chromium.org> wrot=
-e:
+On Thu, Nov 16, 2023 at 12:14=E2=80=AFPM Jie Luo <quic_luoj@quicinc.com> wr=
+ote:
 >
-> Add quotes where UIMAGE_NAME is used, rather than where it is defined.
-> This allows the UIMAGE_NAME variable to be set by the user.
 >
-> Signed-off-by: Simon Glass <sjg@chromium.org>
-> ---
-
-
-I applied this to linux-kbuild/fixes.
-
-I changed the subject to
-"kbuild: Move the single quotes for image name"
-because it is unrelated to arm.
-
-
-Thanks.
-
-
-
-> (no changes since v4)
 >
-> Changes in v4:
-> - Add a patch to move the single quotes for image name
+> On 11/15/2023 11:11 PM, Andrew Lunn wrote:
+> > On Wed, Nov 15, 2023 at 11:25:09AM +0800, Luo Jie wrote:
+> >> Before doing GPIO reset on the MDIO slave devices, the common clock
+> >> output to MDIO slave device should be enabled, and the related GCC
+> >> clocks also need to be configured.
+> >>
+> >> Because of these extra configurations, the MDIO bus level GPIO and
+> >> PHY device level GPIO can't be leveraged.
+> >
+> > Its not clear to me why the normal reset cannot be used. The MBIO bus
+> > driver can probe, setup the clocks, and then register the MDIO bus to
+> > the core. The core can then use the GPIO resets.
+> >
+> > What am i missing?
+> >
+> >       Andrew
 >
->  scripts/Makefile.lib | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Hi Andrew,
+> Looks we can leverage the MDIO bus GPIO to reset qca8084 PHY, but the
+> mdio bus gpio only supports one GPIO number.
+
+But, you can specify a PHY specific reset-gpio under the PHY subnode.
+However, you must specify the PHY ID via compatible then, please look at:
+https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Do=
+cumentation/devicetree/bindings/net/ethernet-phy.yaml?h=3Dnext-20231116#n36
+
+I do this commonly when there are multiple reset GPIO-s for different ether=
+net
+PHY-s.
+
+Regards,
+Robert
 >
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 68d0134bdbf9..1a965fe68e01 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -487,14 +487,14 @@ UIMAGE_OPTS-y ?=3D
->  UIMAGE_TYPE ?=3D kernel
->  UIMAGE_LOADADDR ?=3D arch_must_set_this
->  UIMAGE_ENTRYADDR ?=3D $(UIMAGE_LOADADDR)
-> -UIMAGE_NAME ?=3D 'Linux-$(KERNELRELEASE)'
-> +UIMAGE_NAME ?=3D Linux-$(KERNELRELEASE)
+> Here are the reasons i put the GPIO reset here.
+> 1. Currently one MDIO bus instance only connects one qca8084 PHY as
+> MDIO slave device on IPQ5332 platform, since the MDIO address
+> occupied by qca8084. if the other type PHY also needs to use MDIO
+> bus GPIO reset, then we can't cover this case.
 >
->  quiet_cmd_uimage =3D UIMAGE  $@
->        cmd_uimage =3D $(BASH) $(MKIMAGE) -A $(UIMAGE_ARCH) -O linux \
->                         -C $(UIMAGE_COMPRESSION) $(UIMAGE_OPTS-y) \
->                         -T $(UIMAGE_TYPE) \
->                         -a $(UIMAGE_LOADADDR) -e $(UIMAGE_ENTRYADDR) \
-> -                       -n $(UIMAGE_NAME) -d $< $@
-> +                       -n '$(UIMAGE_NAME)' -d $< $@
+> 2. Before doing the GPIO reset on qca8084, we need to enable the clock
+> output to qca8084 by configuring eth_ldo_rdy register, and the mdio
+> bus->reset is called after the mdio bus level reset.
 >
->  # XZ
->  # ----------------------------------------------------------------------=
------
-> --
-> 2.42.0.869.gea05f2083d-goog
+> 3. program the mdio address of qca8084 PHY and the initialization
+> configurations needed before the registers of qca8084 can be accessed.
+> if we take the PHY level GPIO reset for qca8084, there is no call point
+> to do the initialization configurations and programing PHY address in
+> the MDIO driver code.
 >
+> i will check the feasibility of taking the PHY level GPIO reset and do
+> the initial configurations in the PHY probe function.
+>
+> FYI, here is the sequence to bring up qca8084.
+> a. enable clock output to qca8084.
+> b. do gpio reset of qca8084.
+> c. customize MDIO address and initialization configurations.
+> d. the PHY ID can be acquired.
+>
+>
+> Thanks,
+> Jie.
 
 
---
-Best Regards
 
-Masahiro Yamada
+--=20
+Robert Marko
+Staff Embedded Linux Engineer
+Sartura Ltd.
+Lendavska ulica 16a
+10000 Zagreb, Croatia
+Email: robert.marko@sartura.hr
+Web: www.sartura.hr
