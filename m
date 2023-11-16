@@ -2,53 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E727EE90F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:00:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B83907EE916
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344378AbjKPWA3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 17:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34220 "EHLO
+        id S1345548AbjKPWBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 17:01:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229576AbjKPWA1 (ORCPT
+        with ESMTP id S231300AbjKPWBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 17:00:27 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FFA6181
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:00:24 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id F081DC433C9;
-        Thu, 16 Nov 2023 22:00:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700172024;
-        bh=yQtv/XbeQj4ZiMdGFmNSnpGWxcBjcfX/juK7/JFBKlw=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=nKPAIER1c8hQuaYq4S687FCejIoc2s8Ev3RokPfqDQrNybJtrlJ+0ga2kxYr9xIGF
-         SCA5ZiXM6IXyfQvIMfbMYLnbhO/Q7bgoWfw2vd2KLBlJq0g7kxmILwwbk1pjW3zBLf
-         5BKRP5hNbggkUi+eO7jq/wbVZiZ7zebtGYLtGZS42iV1aatEe3p2i/7FVO/XL18CPM
-         boAXxN9bPUnvIXPbovdOF+hLjultY5sun+/+u5pDwy6EIK8PzQF5pRt813JCyVBb9w
-         sLIgLVLeSLoQVIl0yS8z5fI+FGRIu6j3vATImFVyG5fYwO3QRdJkvwPuP/5LMXXp9c
-         Q7pcjY+1ORl6g==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D4DF8C395F0;
-        Thu, 16 Nov 2023 22:00:23 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        Thu, 16 Nov 2023 17:01:07 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7888418D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:01:04 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5c5b9c142e8so5965027b3.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:01:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700172063; x=1700776863; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=XrDfTqC4kCNkXvqk06JZuMHZ8F1CQgx8Er0ge2sMlCI=;
+        b=c39vk3Ppa/Xp2qoue6gSrPT67//d/E4aLL6kB2wSCktzXrWuxTdvFJhV5MG/Cnc6Zb
+         Xdtuu9a4PfSQRmDS+EXhRV8iQ/XaY9J9xBcCVw4gLVuH5vjIMcgqWFaQOHrQb31JifOa
+         GUbdCGxulOkPTZL+0Aamq0OkBVMsdHb/E/AXlFnnCVH9SxYaxaEzp6mtDLjljzMC9VHS
+         MXrtjqIsYcBE050De9MCnZ7bpcBl1E05DhiQL/RZr/YMnz9TcI2zjQ8LTy4PtVV15AGp
+         kJkD67hvGxQHuG1dOf8Eh5h/F2fEaIOD8Md2i98+uMRdJMjT/SOWu6mnXjdvIe/AgUjU
+         TQLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700172063; x=1700776863;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XrDfTqC4kCNkXvqk06JZuMHZ8F1CQgx8Er0ge2sMlCI=;
+        b=QAMuYGDXMdnCcBBoPw0jmIyJUFohwNWQ4J7HGFLcOKEzWXhkOa9C1in2dV+vDkTyZ4
+         3EXDHOUnNKSW2VoZMi6hGes+58DCYfwed/dtZ7GLRdd3IylF34azA8+R6wbmeelLBCrV
+         lVTZ3CCM+LFrjfwamfL7pCckzQ7+sCG2JfE/Bepc5P9UHtrdgIyE9mzSYU/DVzQKfdYH
+         RuIeXlCL9YkUi9PkWf3L+o9farlo6MmqaNi0u08I8/qN8IEV+R2yt2uvIdScpv3HAhFh
+         IU7yihmh4kDpLkNSMIRlK/En8mmALNgp1GE38ZbYfP8bXeXgNHioHA2iWV2Gpv/yXq1t
+         EpfA==
+X-Gm-Message-State: AOJu0YxpG7ITs+WzY6vPhLCUN8UE3LXEDtdVXmANwQB/yafcBmiS+Wp5
+        7ex0FOhGlBUn+KawxKtfFjkwY5cyetud8t58UaWvcA==
+X-Google-Smtp-Source: AGHT+IFar8dbn8tWGRc5Du9nzxi2agmew03+it+BDi75j3YNagGC4edoDYvKPdFZlty1Nzek7YOPn3SS7ZFTZyvb9QY=
+X-Received: by 2002:a05:690c:a87:b0:5c1:8075:5a7d with SMTP id
+ ci7-20020a05690c0a8700b005c180755a7dmr18665864ywb.39.1700172063677; Thu, 16
+ Nov 2023 14:01:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3 RESEND 0/4] Cleanup and optimizations to transmit
- code
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <170017202386.32455.7477139166082285049.git-patchwork-notify@kernel.org>
-Date:   Thu, 16 Nov 2023 22:00:23 +0000
-References: <20231114134535.2455051-1-srasheed@marvell.com>
-In-Reply-To: <20231114134535.2455051-1-srasheed@marvell.com>
-To:     Shinas Rasheed <srasheed@marvell.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hgani@marvell.com, vimleshk@marvell.com, egallen@redhat.com,
-        mschmidt@redhat.com, pabeni@redhat.com, horms@kernel.org,
-        kuba@kernel.org, davem@davemloft.net, wizhao@redhat.com,
-        konguyen@redhat.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+References: <20231115224409.240935-1-robdclark@gmail.com> <6107757c-1217-1759-8bcf-7dbce6f2e730@quicinc.com>
+In-Reply-To: <6107757c-1217-1759-8bcf-7dbce6f2e730@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 17 Nov 2023 00:00:52 +0200
+Message-ID: <CAA8EJpqUBTMnkcR_dmvRCaBGNCn6x-mvnna4qVkzCVqQKBFyJQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm/gpu: Move gpu devcore's to gpu device
+To:     Abhinav Kumar <quic_abhinavk@quicinc.com>
+Cc:     Rob Clark <robdclark@gmail.com>, dri-devel@lists.freedesktop.org,
+        linux-arm-msm@vger.kernel.org, freedreno@lists.freedesktop.org,
+        Rob Clark <robdclark@chromium.org>,
+        Sean Paul <sean@poorly.run>,
+        Marijn Suijten <marijn.suijten@somainline.org>,
+        David Airlie <airlied@gmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -56,47 +73,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+On Thu, 16 Nov 2023 at 00:58, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
+>
+>
+>
+> On 11/15/2023 2:44 PM, Rob Clark wrote:
+> > From: Rob Clark <robdclark@chromium.org>
+> >
+> > The dpu devcore's are already associated with the dpu device.  So we
+> > should associate the gpu devcore's with the gpu device, for easier
+> > classification.
+> >
+> > Signed-off-by: Rob Clark <robdclark@chromium.org>
+>
+> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
 
-This series was applied to netdev/net-next.git (main)
-by David S. Miller <davem@davemloft.net>:
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-On Tue, 14 Nov 2023 05:45:31 -0800 you wrote:
-> Pad small packets to ETH_ZLEN before transmit, cleanup dma sync calls,
-> add xmit_more functionality and then further remove atomic
-> variable usage in the prior.
-> 
-> Changes:
-> V3:
->   - Stop returning NETDEV_TX_BUSY when ring is full in xmit_patch.
->     Change to inspect early if next packet can fit in ring instead of
->     current packet, and stop queue if not.
->   - Add smp_mb between stopping tx queue and checking if tx queue has
->     free entries again, in queue full check function to let reflect
->     IQ process completions that might have happened on other cpus.
->   - Update small packet padding patch changelog to give more info.
-> V2: https://lore.kernel.org/all/20231024145119.2366588-1-srasheed@marvell.com/
->   - Added patch for padding small packets to ETH_ZLEN, part of
->     optimization patches for transmit code missed out in V1
->   - Updated changelog to provide more details for dma_sync remove patch
->   - Updated changelog to use imperative tone in add xmit_more patch
-> V1: https://lore.kernel.org/all/20231023114449.2362147-1-srasheed@marvell.com/
-> 
-> [...]
-
-Here is the summary with links:
-  - [net-next,v3,RESEND,1/4] octeon_ep: add padding for small packets
-    https://git.kernel.org/netdev/net-next/c/5827fe2bc9c4
-  - [net-next,v3,RESEND,2/4] octeon_ep: remove dma sync in trasmit path
-    https://git.kernel.org/netdev/net-next/c/2fba5069959c
-  - [net-next,v3,RESEND,3/4] octeon_ep: implement xmit_more in transmit
-    https://git.kernel.org/netdev/net-next/c/373d9a55ba74
-  - [net-next,v3,RESEND,4/4] octeon_ep: remove atomic variable usage in Tx data path
-    https://git.kernel.org/netdev/net-next/c/dc9c02b7faa0
-
-You are awesome, thank you!
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+With best wishes
+Dmitry
