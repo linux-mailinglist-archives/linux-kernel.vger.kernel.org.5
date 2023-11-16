@@ -2,172 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A99507EDD30
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:58:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DB7B7EDD36
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:01:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230304AbjKPI6Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:58:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
+        id S1344525AbjKPJBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKPI6P (ORCPT
+        with ESMTP id S229806AbjKPJBO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:58:15 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0740CA1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:58:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700125091;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lzR95smyeeh/FiV11pRQQl93svK/jp4ut938ur2cfQs=;
-        b=E7VX5Y16lWuy9+OZjcjepIinHnPyIAgtLkpUnhwqydD0ciKehLoDh1rQjOSrHbpunfYzOt
-        c7TWcBqVno9/nTwBtL2Wd3R5wnz72ktdBiUTVw7De1sFURw/h+M8oJAmfl5iQhzpG/hIwj
-        pdd1FN2bs8eMfe3mjNx/n+HinggweVc=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-mktYOBE6O8SM0vqJ2zonUA-1; Thu, 16 Nov 2023 03:58:09 -0500
-X-MC-Unique: mktYOBE6O8SM0vqJ2zonUA-1
-Received: by mail-ed1-f70.google.com with SMTP id 4fb4d7f45d1cf-53dfe3af1b9so400676a12.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:58:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700125088; x=1700729888;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lzR95smyeeh/FiV11pRQQl93svK/jp4ut938ur2cfQs=;
-        b=ZBdykD6fpNMnz6plV+kRjk9+yhwp8nQqgVz0jRPn6ZF+IUrQToQ93MUfe6i3pK6T5d
-         V3J1tSTITF7sqtBJ9EszD30mMgNSf2cm8zEgTuqn+6UNIZ6OjhsInYDEArjyW4jdoDDN
-         ks02Fooi2Ga0v2m0cDiYfda+2nR6YnsPaMIqPQbinlWIf2XePVLdhQhBSNQPptdGHXCv
-         uotrNbriCcGs8/YqZyOMXYZ9gJCYCuL7aqMzu8zxW3VZuyVDoOZv4N1a+Lt0WYOreJwX
-         kVzz4puqYopMCe2BNJ2xijvskRR+4BgfgjNBCzwm1upCTlSQwVc96KTA2GCVMjM+cCCO
-         xwXw==
-X-Gm-Message-State: AOJu0YyaBkv9oQKOQmlq94kwvrV0FPnbqFxVH8ZQwDrXp2H7+TsHZoYi
-        +K6uuxKsO83sLmm7CgnBPCaod17MyhSlsmkyvZA1h+Kk8RjprSDloC+g8SIwiCvdUXg9Zx3kehn
-        iaPzaLPrIeX7uYfLkDOZGYE2u
-X-Received: by 2002:aa7:d4c2:0:b0:543:9670:7ee8 with SMTP id t2-20020aa7d4c2000000b0054396707ee8mr11227124edr.14.1700125088222;
-        Thu, 16 Nov 2023 00:58:08 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFeO8Z4VQxOJHWlez75/PPOrqNzsKmQn04wP1vApaXiXcOExOZBZFeAqXryegrjIC2O0lA3eA==
-X-Received: by 2002:aa7:d4c2:0:b0:543:9670:7ee8 with SMTP id t2-20020aa7d4c2000000b0054396707ee8mr11227112edr.14.1700125087921;
-        Thu, 16 Nov 2023 00:58:07 -0800 (PST)
-Received: from ?IPV6:2001:1c00:c32:7800:5bfa:a036:83f0:f9ec? (2001-1c00-0c32-7800-5bfa-a036-83f0-f9ec.cable.dynamic.v6.ziggo.nl. [2001:1c00:c32:7800:5bfa:a036:83f0:f9ec])
-        by smtp.gmail.com with ESMTPSA id v6-20020a056402174600b00530a9488623sm7474432edx.46.2023.11.16.00.58.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 00:58:07 -0800 (PST)
-Message-ID: <e66638b0-bbad-4ac7-ad93-6fb0c6147005@redhat.com>
-Date:   Thu, 16 Nov 2023 09:58:06 +0100
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [rft, PATCH v4 00/16] drm/i915/dsi: 4th attempt to get rid of
- IOSF GPIO
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Jani Nikula <jani.nikula@intel.com>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Thu, 16 Nov 2023 04:01:14 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D674A1A7;
+        Thu, 16 Nov 2023 01:01:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700125270; x=1731661270;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/STXsbosH6Rz9sQMt/crvGrrS9Z0X1RfO/fEtM3K5Z0=;
+  b=c4VjVSEp+FXbfcPUlMD4dOLzaf2czQG5e5BcvJAIqJ09QVP4TPJwHGVF
+   yx4C5RwvB2aeZJ+HbLJCkocyorQciAxNuwadWNZmJrCVrA7lth2cUaNWb
+   Ru4V/mu33t4t1ioMQIXCIRbdyqsw+BQR0+UK4hVB0Ao6H529p3LFEVQ7B
+   HJNcC4R47c3v7QKrEokzjLPtDbiERAV3VaYVyg6diHWEoPNvnmsQmlI2C
+   tcgoOygFG3uY+y1gteOUJrAvA1+6KErTEBXrtBOVB2CMTUdgQDaIVggIg
+   ugKd96b3KrGF1+phb24hscy2SFDRwsE1ttgD2fCvWtUUq7DS9K3j4mDmE
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="457542981"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="457542981"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 01:00:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="768851613"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="768851613"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 16 Nov 2023 01:00:43 -0800
+Received: by black.fi.intel.com (Postfix, from userid 1001)
+        id 9BFF0209; Thu, 16 Nov 2023 11:00:42 +0200 (EET)
+Date:   Thu, 16 Nov 2023 11:00:42 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Mario Limonciello <mario.limonciello@amd.com>
+Cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lukas Wunner <lukas@wunner.de>,
+        Danilo Krummrich <dakr@redhat.com>,
         David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>
-References: <20231103201831.1037416-1-andriy.shevchenko@linux.intel.com>
-Content-Language: en-US, nl
-From:   Hans de Goede <hdegoede@redhat.com>
-In-Reply-To: <20231103201831.1037416-1-andriy.shevchenko@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        Daniel Vetter <daniel@ffwll.ch>,
+        Xinhui Pan <Xinhui.Pan@amd.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Ilpo =?utf-8?B?SsOkcnZpbmVu?= <ilpo.jarvinen@linux.intel.com>,
+        Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        "Maciej W . Rozycki" <macro@orcam.me.uk>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
+        <nouveau@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:RADEON and AMDGPU DRM DRIVERS" 
+        <amd-gfx@lists.freedesktop.org>,
+        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
+        "open list:ACPI" <linux-acpi@vger.kernel.org>
+Subject: Re: [PATCH v3 5/7] PCI: ACPI: Detect PCIe root ports that are used
+ for tunneling
+Message-ID: <20231116090042.GF17433@black.fi.intel.com>
+References: <20231114200755.14911-1-mario.limonciello@amd.com>
+ <20231114200755.14911-6-mario.limonciello@amd.com>
+ <20231115104019.GY17433@black.fi.intel.com>
+ <70b35a0e-5ccd-4e19-a8ac-4cf095007a69@amd.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <70b35a0e-5ccd-4e19-a8ac-4cf095007a69@amd.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Mario,
 
-On 11/3/23 21:18, Andy Shevchenko wrote:
-> DSI code for VBT has a set of ugly GPIO hacks, one of which is direct
-> talking to GPIO IP behind the actual driver's back. A second attempt
-> to fix that is here.
+On Wed, Nov 15, 2023 at 11:08:43AM -0600, Mario Limonciello wrote:
+> On 11/15/2023 04:40, Mika Westerberg wrote:
+> > Hi Mario,
+> > 
+> > On Tue, Nov 14, 2023 at 02:07:53PM -0600, Mario Limonciello wrote:
+> > > USB4 routers support a feature called "PCIe tunneling". This
+> > > allows PCIe traffic to be transmitted over USB4 fabric.
+> > > 
+> > > PCIe root ports that are used in this fashion can be discovered
+> > > by device specific data that specifies the USB4 router they are
+> > > connected to. For the PCI core, the specific connection information
+> > > doesn't matter, but it's interesting to know that this root port is
+> > > used for tunneling traffic. This will allow other decisions to be
+> > > made based upon it.
+> > > 
+> > > Detect the `usb4-host-interface` _DSD and if it's found save it
+> > > into a new `is_virtual_link` bit in `struct pci_device`.
+> > 
+> > While this is fine for the "first" tunneled link, this does not take
+> > into account possible other "virtual" links that lead to the endpoint in
+> > question. Typically for eGPU it only makes sense to plug it directly to
+> > the host but say there is a USB4 hub (with PCIe tunneling capabilities)
+> > in the middle. Now the link from the hub to the eGPU that is also
+> > "virtual" is not marked as such and the bandwidth calculations may not
+> > get what is expected.
 > 
-> If I understood correctly, my approach should work in the similar way as
-> the current IOSF GPIO.
+> Right; you mentioned the DVSEC available for hubs in this case.  As I don't
+> have one of these to validate it works properly I was thinking that should
+> be a follow up.
 > 
-> Hans, I believe you have some devices that use this piece of code,
-> is it possible to give a test run on (one of) them?
+> If you think it should be part of the same series I'll add it, but I'd ask
+> if you can please check I did it right on one that reports the DVSEC?
 
-Ok, this now has been testen on both a BYT and a CHT device which
-actually use GPIO controls in their MIPI sequences so this
-series is:
+I don't think it should be part of this series. I just checked and DVSEC
+is only required for hosts so kind of hardware equivalent for the _DSD
+property you are using here. For hubs there is no such luxury
+unfortunately.
 
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-
-And the code of the entire series also looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-for the series.
-
-Regards,
-
-Hans
-
-
-
-
-> In v4:
-> - fixed compile time errors in patch 14 (Hans, LKP)
-> - fixed cover letter Subject
-> - added patch 15 (as suggested by Ville)
-> - added Ack tag (Jani)
-> 
-> In v3:
-> - incorporated series by Jani
-> - incorporated couple of precursor patches by Hans
-> - added Rb tag for used to be first three patches (Andi)
-> - rebased on top of the above changes
-> - fixed indexing for multi-community devices, such as Cherry View
-> 
-> In v2:
-> - added a few cleanup patches
-> - reworked to use dynamic GPIO lookup tables
-> - converted CHV as well
-> 
-> Andy Shevchenko (9):
->   drm/i915/dsi: Replace while(1) with one with clear exit condition
->   drm/i915/dsi: Get rid of redundant 'else'
->   drm/i915/dsi: Replace check with a (missing) MIPI sequence name
->   drm/i915/dsi: Extract common soc_gpio_set_value() helper
->   drm/i915/dsi: Replace poking of VLV GPIOs behind the driver's back
->   drm/i915/dsi: Prepare soc_gpio_set_value() to distinguish GPIO
->     communities
->   drm/i915/dsi: Replace poking of CHV GPIOs behind the driver's back
->   drm/i915/dsi: Combine checks in mipi_exec_gpio()
->   drm/i915/iosf: Drop unused APIs
-> 
-> Hans de Goede (2):
->   drm/i915/dsi: Remove GPIO lookup table at the end of
->     intel_dsi_vbt_gpio_init()
->   drm/i915/dsi: Fix wrong initial value for GPIOs in
->     bxt_gpio_set_value()
-> 
-> Jani Nikula (5):
->   drm/i915/dsi: assume BXT gpio works for non-native GPIO
->   drm/i915/dsi: switch mipi_exec_gpio() from dev_priv to i915
->   drm/i915/dsi: clarify GPIO exec sequence
->   drm/i915/dsi: rename platform specific *_exec_gpio() to
->     *_gpio_set_value()
->   drm/i915/dsi: bxt/icl GPIO set value do not need gpio source
-> 
->  drivers/gpu/drm/i915/display/intel_dsi_vbt.c | 355 +++++++------------
->  drivers/gpu/drm/i915/vlv_sideband.c          |  17 -
->  drivers/gpu/drm/i915/vlv_sideband.h          |   3 -
->  3 files changed, 136 insertions(+), 239 deletions(-)
-> 
-
+I think I do have hardware here with the DVSEC in place so if you
+decide to add it, I should be able to try it.
