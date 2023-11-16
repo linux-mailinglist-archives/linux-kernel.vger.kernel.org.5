@@ -2,215 +2,273 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FF6F7ED9B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:43:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0EAF7ED9B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:43:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344509AbjKPCnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 21:43:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37218 "EHLO
+        id S1344514AbjKPCns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:43:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230259AbjKPCnN (ORCPT
+        with ESMTP id S1344386AbjKPCnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 21:43:13 -0500
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11hn2200.outbound.protection.outlook.com [52.100.171.200])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C15BB19E;
-        Wed, 15 Nov 2023 18:43:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dN86uuFt4Jq71VPI9cYr4o3J1YDx/OjXH5w+6RbtvIP3mzRNj0A0pLkERITVqhqiY/uTYP/Ov8u+xdxwbJAl4D6F8fVV6oQhct+VyJEi9DXbofb7sGvvRdsZmtrgJv/q28arWIMRQd7bgvfm5UMLZXkFc7sYOZY6FZ3MHblL3xOVpvvxs5zOpVh0dZvDfVCAS3SxDJBDrxg+lXGhYYk1BaxGfPx5bqtCk4cpsqXTMEnMjANEKhIxaoC3q4i9XW6QpqO47hL3mf9uOy81saCNelnQ/ZTmxz/eF0bxgT+iC2ht3wiQpknZQsaI5II9/LogeJ9OSnvmwXkH5bk9Vwuw/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=23ARIXE32yuMYBmXkADKfm0y6KIeHsGeuDmxgeWPIQM=;
- b=PPYYCge1R/clYbVNV5+4LhD2ym55W5f8jjy+IG/dlY1m2I/YBSiMU0IWUtgO3IyVdh/NhmWO4efafs9uoj2Dgmb0XTg9G0UXVliE52bxKWf87+YtXlwlgSdWiXNeRbbsFzgY5fv+xGVxjIUrglFwe/O7E9nhsjObK6C2shwxgi5A8IJoDn5et+vz32xQ+NzsDPVxlT6rHnV+PFFkUVRvUyxmHxTLtcEbTxpblJfqB371hE73z8cPUBD6V58zln19Ix/ErBQk8S5Ls+eb73aAiTdu5JKFpVqJw/mQfuDxX4eJfErog9XR9kkQEgeKL+h7jN0PNAKtLFBmeTIXH+uVbg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+        Wed, 15 Nov 2023 21:43:45 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A92A199
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:43:42 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 41be03b00d2f7-5be30d543c4so248626a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:43:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=23ARIXE32yuMYBmXkADKfm0y6KIeHsGeuDmxgeWPIQM=;
- b=BAK1DunW/2AD2rY8Bim9BWnrV67J+UvlWII5jFjR/udNNuEDkURcGVNYoH1IZOOQHwVIYiMu9Wfz7yCupZ5qTtpWMwSnTZhfudl+V8GfdIX15Ij9KBt34Tf9hxI5a96PpZuBcj8nZsoIwhj1qGlI6pY0DJq+14F06ZwGLWHzB80=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from DM5PR0102MB3590.prod.exchangelabs.com (2603:10b6:4:a4::25) by
- LV8PR01MB8653.prod.exchangelabs.com (2603:10b6:408:1e7::13) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.6977.18; Thu, 16 Nov 2023 02:43:07 +0000
-Received: from DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::49fa:8dc0:6fd1:72e6]) by DM5PR0102MB3590.prod.exchangelabs.com
- ([fe80::49fa:8dc0:6fd1:72e6%4]) with mapi id 15.20.6977.018; Thu, 16 Nov 2023
- 02:43:07 +0000
-Date:   Wed, 15 Nov 2023 18:42:57 -0800 (PST)
-From:   Ilkka Koskinen <ilkka@os.amperecomputing.com>
-To:     Shuai Xue <xueshuai@linux.alibaba.com>
-cc:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
-        Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>, kaishen@linux.alibaba.com,
-        helgaas@kernel.org, yangyicong@huawei.com,
-        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
-        chengyou@linux.alibaba.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        rdunlap@infradead.org, mark.rutland@arm.com,
-        zhuo.song@linux.alibaba.com, renyu.zj@linux.alibaba.com
-Subject: Re: [PATCH v10 0/5] drivers/perf: add Synopsys DesignWare PCIe PMU
- driver support
-In-Reply-To: <2a4c5d33-a26a-40b6-bbf4-268393b6de74@linux.alibaba.com>
-Message-ID: <ff6544d5-c6e1-39f6-1f3b-6622e2484af@os.amperecomputing.com>
-References: <20231104133216.42056-1-xueshuai@linux.alibaba.com> <51c926a0-b4d7-aacf-12ce-30fad7c5cb@os.amperecomputing.com> <2a4c5d33-a26a-40b6-bbf4-268393b6de74@linux.alibaba.com>
-Content-Type: multipart/mixed; boundary="1372433909-652173811-1700102586=:2110"
-X-ClientProxiedBy: CY5PR13CA0063.namprd13.prod.outlook.com
- (2603:10b6:930:a::19) To DM5PR0102MB3590.prod.exchangelabs.com
- (2603:10b6:4:a4::25)
+        d=gmail.com; s=20230601; t=1700102621; x=1700707421; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=6I6p0aeJNi1NXX592dY0KZOyrxrobvZe6S5ERdhyfrw=;
+        b=m7bwxtD0lhcOGt0CIr0eT1ZOJhpU1kjc/YNn6q6wEWKX+sdXMMH1t/0NbGGREHHJ0F
+         efg2xEv6HMVkbG6Jh1soxNBlG5B5e+Y0aqzfdJBYHXmbwiU5QNQHRPFeiACr3tmDOtK/
+         qCHGVk9/lLzmB8s5zmqoZ4VB6dmTcWgKkq762oODJpxH0xoDKcO66JTp79AU30GMVSzi
+         9MkbObCkzzrizm/6Tw16UiO7M+QafvSyHuBho5G4jyY5KJcp+kf4lqnFqeHhtyxkJncb
+         J0+azfPJc5cMwEBkT+Lko43vnA9RKrXdkTXFPtt6IH2F4CjxlQ/eicQuIAeCSMQASNCd
+         deEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700102621; x=1700707421;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6I6p0aeJNi1NXX592dY0KZOyrxrobvZe6S5ERdhyfrw=;
+        b=kyEQl04rKj75NYk7BknAECnrUN8EY9gjWNYkDqHPwJ1IpI70vSR7Mjavdw5xxz83In
+         U3GOxcw7MUN0R0nQkcYOeb9TCFEQ2JM1dWtw0PSarqoPzmoHR31eIZiIVjiLGLpzqdkr
+         YY+fxiUq8F/+c8r9Smm8YiVzfr+KdoW9pKqRACploO2LKP+xKw2OgqBqpaeuZD9ZLlKk
+         YefbjnKyg4n7XAgg+h9VTHFF5SYXYOXlUkY782dj1B2IWCObXIJfSCq24+myrMymoKhe
+         qshp8z7PQsq7xOS+b9jFF4TxUUvKAszPt+Ymj5xI47qV1izNRU8lzizPUQQTqo+2sX9x
+         jakg==
+X-Gm-Message-State: AOJu0YwCnSnc4GdnCrqrYN7YhPJVlw2/BWu66BwmuxEZbeq1/nMqRtUP
+        OyfVeZcGvp4dLvfpcrM31qM=
+X-Google-Smtp-Source: AGHT+IEFg4/OzKLRaySUNn+N/jtE89IKSY9slt6MPiohinEJsTP7yHkFiCMu465EvDF0YFnhoGx6oQ==
+X-Received: by 2002:a05:6a20:6a06:b0:187:8eca:8dc6 with SMTP id p6-20020a056a206a0600b001878eca8dc6mr2412789pzk.34.1700102621396;
+        Wed, 15 Nov 2023 18:43:41 -0800 (PST)
+Received: from localhost (118-163-61-247.hinet-ip.hinet.net. [118.163.61.247])
+        by smtp.gmail.com with ESMTPSA id x10-20020a17090ab00a00b002801ca4fad2sm507930pjq.10.2023.11.15.18.43.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 18:43:40 -0800 (PST)
+Sender: AceLan Kao <acelan@gmail.com>
+From:   AceLan Kao <acelan.kao@canonical.com>
+To:     Tudor Ambarus <tudor.ambarus@linaro.org>,
+        Pratyush Yadav <pratyush@kernel.org>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Dhruva Gole <d-gole@ti.com>, linux-mtd@lists.infradead.org,
+        Mark Brown <broonie@kernel.org>,
+        Kamal Dasu <kamal.dasu@broadcom.com>,
+        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Mario Kicherer <dev@kicherer.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v6 1/2] spi: Replace -ENOTSUPP with -EOPNOTSUPP in op checking
+Date:   Thu, 16 Nov 2023 10:43:37 +0800
+Message-Id: <20231116024338.337304-1-acelan.kao@canonical.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM5PR0102MB3590:EE_|LV8PR01MB8653:EE_
-X-MS-Office365-Filtering-Correlation-Id: 32c7189e-ce0e-4979-1514-08dbe64dc379
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: =?utf-8?B?RXpPOWMrZmdiSi8zSVQvVURPZ3RrdEtHYllMa252YlYyME1KM2pJaTdzM2JT?=
- =?utf-8?B?OGJ6c0hOelpQOTlsdzYyWkwxWUNxaEU1NzZ5OEJDNUJZWVZlTzhaWWwxNTd1?=
- =?utf-8?B?a2NmN0JBMkZIT3lWdmo1cVliWVN5VXk2QnlsbU5POU1yRklyK2Y5ZzNsVmRi?=
- =?utf-8?B?aW91cDc4bE50bDRQZ3Z0TWtyZzBMSmV2M1V4Ump3V2NyK1NJdXNBbGJaWTdo?=
- =?utf-8?B?QUVSdUsrTllQSHJ1TmJLRk9mT1Jja0VEODBpblVNN3dCZTdqdTRsYVl2NG9I?=
- =?utf-8?B?OGxzejZyUUI5c1RoekYxZDM2NE9hM21RZ0MxMUdoU1RUSDBuVk5hWnMzMnM5?=
- =?utf-8?B?WjhSd0FUSmE5T2lTSjFGRjRSSDdBelh0d1R6RWxpdGtRK2JqN2lLcXh0dTky?=
- =?utf-8?B?RnlHUWZTdmdRZnNYU21mMjlWdDdwQmNuZlAxR2c5QTYxZ2lydVVReGNzNTJk?=
- =?utf-8?B?TldsTnIwdmtzOWV4djZVU0Q1UUJaTEpXNDNsckdxeUtsZEQ1cVFka3dybzli?=
- =?utf-8?B?RGE2SzljYmx3TWc4YStXQVp1MkhMMDFlM2trMythNUtIVWNiR2YramdIMjhW?=
- =?utf-8?B?YlFGMGRhTXR6QURpZjFmbUhia0d2Z0QzQlBSTzlTQWtKYXErK1JOeXJzb2Fj?=
- =?utf-8?B?UGpHQzVpMWE3N25NVm1vOUUyZUF5WnFhOThXaW5XN20wUkZaNmJYUXJNOGU2?=
- =?utf-8?B?U2lrdzR3NGF0L0Vnb0N6T0YvRXBpM0RHSHhnK1JLUWRGdnM4RWhVV2VXRERh?=
- =?utf-8?B?azlod09qVm40NWZ3R3pCdEFSNHNNWk9FY05WdEJBU3hkUWRJMHo5TmRYbWdH?=
- =?utf-8?B?SFh4L1VmcXVnaVYrb0VuNGMySGwvTjRUWTBJTEZESGg4engyMmxLWUZvSEht?=
- =?utf-8?B?Q3V4ckxZVzhadDdEVHJ5WXVvNHBwUlRLTEZyckNxV0dQc1lEM1ZpNTVzQnlP?=
- =?utf-8?B?cXFIYi9zVzNQZ3pEQ04yYzdlcjRjT0g4cXB2a0IxWWgweGE0N0hqWFZudFFu?=
- =?utf-8?B?TjB3R3ZrV1VXajJ6UTA2NHpxZHg2RTE4OU5rVmlsYXM2Qm1tTERhRGhDRm5C?=
- =?utf-8?B?a3c3Ym82STJZdWVJWi81YjlzSklCeGxid3BSOUR5WVNua3QwWHd0M21jZDYz?=
- =?utf-8?B?T2o2RDkzVFFiK2RsVEdHSmdxKzhsc1RWU0V5VTN2NmsxbHNFOHJGczNZeWs1?=
- =?utf-8?B?S1c3ZUY0aWYwNHZBWEZ1WkJFWmdwUEZKVTkzK3F3aXoya0hTenFEdytRZ2tR?=
- =?utf-8?B?eUZrMGRuTjg4VWNLUEM1WllvWHVxRStOOUIwbjliM2V0VGtzVkFPVW55UFB1?=
- =?utf-8?B?K2FaOUdYSFRnV2FlZ2NTd1h1Y2g5QWk3Qkc0ZmdLWjRDYVJENU1RVmN2elZS?=
- =?utf-8?Q?tppt6mxFzLSCEgF0A0BwNQrZGRhbKyxM=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:DM5PR0102MB3590.prod.exchangelabs.com;PTR:;CAT:OSPM;SFS:(13230031)(346002)(39850400004)(366004)(136003)(376002)(396003)(230922051799003)(64100799003)(451199024)(1800799009)(186009)(38350700005)(8676002)(8936002)(7416002)(52116002)(33964004)(6506007)(53546011)(4326008)(26005)(86362001)(2616005)(6666004)(316002)(5660300002)(54906003)(66476007)(6916009)(66946007)(66556008)(6512007)(41300700001)(6486002)(2906002)(83380400001)(478600001)(38100700002)(58440200007);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VXJobGlsS0xySkUxR2tTSStRSXdzbDg0TzZ3TVV0YnVleXo2Z0lRUEFlOHJ0?=
- =?utf-8?B?N3JrRHB0QUpwR2tFdUtRUzQzd3FBWHA2U1R4RnprdURISHltOGV3elJtczJv?=
- =?utf-8?B?ZElRMWtOeit3bk1CWXJRcGU2eTZ5R1Y3SXJsWmJXckJjY2ZZaUc2OU9PSzFB?=
- =?utf-8?B?eFhkbXgzRHRBN2hwbmpkQXFnNS9zaHNRM0IxdWNpc3ovWE9aN0lFMnB6SEg1?=
- =?utf-8?B?S0xlZkVsVXhVNUsvcE1SVnlqMXhKL0JjYzhodkpkVjQ2dDhyUCtUVUVJNXpw?=
- =?utf-8?B?cEZqZHhGbXFnMkc2cFRtSGVRRGYrN3ZNQUwxV2llRlFhejJFMDNXTTBqUjhi?=
- =?utf-8?B?NnpIM0sxWHRwdHp5NzlSU2ZKaURsWW5GRkpqSEZ5ZHhucmdVN2FYSHJ2WWZF?=
- =?utf-8?B?d1ZyRjJrcXdCei92Z2lpVXlGRXZqT3UvZzBDdXBleW5KMDdGVjRTVTI3Mjcx?=
- =?utf-8?B?MW8zZzVVbTZ2YjVKVENSY2tVdVVHS3pUK05wcjR0TWNaWmUyQm9OY2VMNWR2?=
- =?utf-8?B?Skp6M0tXOGE2d29hT3AwRzVBeG9QVHVvV0JsQUI1WElzTGVKcWZoRlhrTUUy?=
- =?utf-8?B?dUptVUY0SkpqRlRlQWVSdVBJZVpvZW0yakFBY01sMjFqRU00OTF2NjBsZHpm?=
- =?utf-8?B?SklzM0syWFhyanVCdjlFVy9kRy9DUVJtLzVtVGxEOHFDaHVsWVd4eTdhTVpF?=
- =?utf-8?B?enZ0Y0gxTzNTa3ZwNWVoaytYMzFSUFZVKzJpbS9vQnNodnJ3ZUlXM0VRS1dG?=
- =?utf-8?B?TTdFNkpURkpYSlZ2eCtQMkhXdENUMDZCYjMvbURmY0ZrbzNPUnRxQWFUcjhL?=
- =?utf-8?B?dVkxdVF3cXNOMzZkeVUxZnM2NUt5MkFpSGh2NHg4bTk5NURXU1NuSG5MR1li?=
- =?utf-8?B?K1lGVFFCLy9ISnlwQVY0SmsvakFyaWhqN01NdnVSamtzaHlWT20rd1hCSTQz?=
- =?utf-8?B?TUhmK1J0cGVRd1JXTkkwWDllQVc1RWRNNGdjR3E3Kys3UC8wcndEYTlRS05N?=
- =?utf-8?B?VGppWldpcjVaRG9MVml2MG1qTXpOdEpSL1Z3TDBGblBVVkppR0FBMkRqT1VU?=
- =?utf-8?B?ZEFUMUFUeGxPQ3FZR2V6aDZlZTRsRTBZS1Fpb0lvZTM4cjZteUtodVpHZGdP?=
- =?utf-8?B?c0swQ1IyampIVDFiWGcyNWFTOUFOV0tvMEEwaWlsY0d6OG9XYkxzQlNEelFv?=
- =?utf-8?B?dy83anlNMWVwK3FwVnYrZTVXQ1IzeFpWMGZkUzBVcHdNZUxKK1RFRWI4ZXBP?=
- =?utf-8?B?ZnYzK3BZNWFqQ29qcGk3NWdUWjhlWU9wUDBXTDloZ0tsdXFoT1lHYk9DNlRX?=
- =?utf-8?B?amt4NS96Q2UwWFgwb0tmamtxL0RQQjkxWFdtdmlNekRBWGxWZ0o0T05sT2Zx?=
- =?utf-8?B?Vnc4M0ZyZlprQS92NHBNYzN3bzdQUUEyM3N4dlMrYnI1RWJTanZZY3J0aXdo?=
- =?utf-8?B?RWpWUDBPbjZFb2FJbnFTMTkyTkVSbmxsWEF2aE4rODIrc3FoN1c3MGtINnN5?=
- =?utf-8?B?eG5LZGpvWGlWbS9IdEY5YWVERFBWTE9XZHVTUEFlcnNyeU9vb2NJZGZWQ2lW?=
- =?utf-8?B?aGNCa2hJaU02M0pybHd2NU0yWS9XZllKUGcraXlQdElBeGl4ZHVHQ0I4Y3F2?=
- =?utf-8?B?MlVRcVloUDBtMjdJV2E0alJFYVg4Q1Jlbk5INjRtcUtKcm5WQ25BNWlvUTdX?=
- =?utf-8?B?WEVMcStzZTlRWFBXRUhrbVVCZmN5MGpmZlUzYnp6c3JmSUh0OU5UNTRMMDhZ?=
- =?utf-8?B?dzBIZUdBUW5wTU1Ba09PTHZHQUZSUE92dlNOYS9tRDFwWEthbzltWVZERTJD?=
- =?utf-8?B?NUpCbHNPUTJkZWdGN2ZTNHp5c3piUGxUOFZ4Tkg2NEZJOXFEV1FXSXNGZ1Rp?=
- =?utf-8?B?Ymx5ZEJyR250UmtTanVWREFRMWs3a0NHM2hPSGlkT2UvQ3BDUzNzWGRqWDRQ?=
- =?utf-8?B?RTJXWG50UjVUNHRUd1ZIVFRUUGh6YmxhSWUzTkVUVnBXVlBUaTRIMFhleDRo?=
- =?utf-8?B?ZzJmK1lUL3pNU2p1TVc5QnhBSVZad1l1NllSY0ZxcmNQaFZMZDYxWldvTUhW?=
- =?utf-8?B?OHZpQS9ZUnNMUUJrdk5SaHQ3VFB4Nm9IbHFDN3FGc2FjN0diZGtpOC8vQ3Ny?=
- =?utf-8?B?dHV2MmdIQTB0Z2dMKzlQTytMSzVRQjVKSmdRTmI0QVQrZkUrYkVmdUlCRUZx?=
- =?utf-8?Q?oM09l9gFxKuOhULM6apbOeU=3D?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32c7189e-ce0e-4979-1514-08dbe64dc379
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR0102MB3590.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 02:43:07.1528
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Gl7sZIy1fQqc1sEu9ONh8UTtFDwynoWT6mtTC+TMbsUOLP28qq405ft4ZjhZS8tLTfbsGN7zCDgHb5BVwuoqNUxF/tzcDCKezW9ZH04tPrwf3BlHPNVNPIQ6mJotepEW
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR01MB8653
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---1372433909-652173811-1700102586=:2110
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8BIT
+From: "Chia-Lin Kao (AceLan)" <acelan.kao@canonical.com>
 
+The purpose of this patch is to distinguish the "operation not support"
+error from the generic "not support", so that drivers could better
+handle different errors.
 
-On Thu, 16 Nov 2023, Shuai Xue wrote:
-> On 2023/11/16 08:57, Ilkka Koskinen wrote:
->>
->> Hi Shuai,
->>
->> On Sat, 4 Nov 2023, Shuai Xue wrote:
->>> Change Log
->>> ==========
->>>
->>> - move the &plat_dev->dev to previous line to warp more beautiful (Per Jonathan)
->>> - rename error label with the same suffix 'err'  (Per Jonathan)
->>> - drop unnecessary else branch and return directly (Per Baolin)
->>> - warp out set prev_count from dwc_pcie_pmu_set_period (Per Baolin)
->>> - use PMU_FORMAT_ATTR to simplify format sysfs stuff (Per Will)
->>> - export pci_clear_and_set_dword() to simplify _enable() functions  (Per Will)
->>> - simplify _read() function by unconditionally calculate with unit in bytes plused if branch for group#1 event (Per Will and Robin)
->>> - simplify _update() function by unconditionally mask with 64-bit width plused if branch for lane event (Per Will)
->>> - add type sanity check in _init() (Per Will)
->>> - test with fuzzing tool before this new version (Per Will)
->>> - register a platform device for each PCI device to probe RAS_DES PMU cap (Per Robin)
->>> - add dwc_pcie_vendor_ids to extend vendor id for future added device (Per Krishna)
->>> - pickup review-by tag from Baolin, Yicong and Jonathan
->>
->> ...
->>
->>> Shuai Xue (5):
->>>  docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
->>>  PCI: Add Alibaba Vendor ID to linux/pci_ids.h
->>>  PCI: move pci_clear_and_set_dword helper to pci header
->>>  drivers/perf: add DesignWare PCIe PMU driver
->>>  MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
->>
->> As I mentioned earlier, I successfully tested your patchset with a few patches on top of it to enable DWC PCIe PMU on AmpereOne. Thus, feel free to add this tag to all the patches above:
->>
->>     Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
->>
->> Br, Ilkka
->
-> Hi, Ilkka,
->
-> Thank you.
->
-> I will add your tested-by tag in the upcoming version v11. However, I
-> kindly request some time to wait for feedback from esteemed maintainers such
-> as Will, and Robin.
+No functional changes are introduced by this patch; it's a code cleanup
+to use the correct error code and it affects only "SPI MEM" drivers and
+the core parts.
 
-Sounds good. Actually, I can give you a little feedback on the driver 
-patch meanwhile.
+Signed-off-by: Chia-Lin Kao (AceLan) <acelan.kao@canonical.com>
 
---Ilkka
+---
+v5. distinguish -EOPNOTSUPP from -ENOTSUPP
+v6. a. spi_nor_set_4byte_addr_mode() should check -EOPNOTSUPP, all
+       callbacks of set_4byte_addr_mode() will eventually return
+       -EOPNOTSUPP if the checking failed.
+    b. Update comment to describe the reason for the patch and the
+       affected parts.
+    c. Update the kernel-doc of exec_op() in struct spi_controller_mem_ops
+---
+ drivers/mtd/nand/spi/core.c | 2 +-
+ drivers/mtd/spi-nor/core.c  | 2 +-
+ drivers/spi/atmel-quadspi.c | 2 +-
+ drivers/spi/spi-ath79.c     | 2 +-
+ drivers/spi/spi-bcm-qspi.c  | 2 +-
+ drivers/spi/spi-mem.c       | 6 +++---
+ drivers/spi/spi-npcm-fiu.c  | 2 +-
+ drivers/spi/spi-ti-qspi.c   | 4 ++--
+ drivers/spi/spi-wpcm-fiu.c  | 2 +-
+ include/linux/spi/spi-mem.h | 2 ++
+ 10 files changed, 14 insertions(+), 12 deletions(-)
 
->
-> Cheers,
-> Shuai
->
---1372433909-652173811-1700102586=:2110--
+diff --git a/drivers/mtd/nand/spi/core.c b/drivers/mtd/nand/spi/core.c
+index 849ccfedbc72..e0b6715e5dfe 100644
+--- a/drivers/mtd/nand/spi/core.c
++++ b/drivers/mtd/nand/spi/core.c
+@@ -974,7 +974,7 @@ static int spinand_manufacturer_match(struct spinand_device *spinand,
+ 		spinand->manufacturer = manufacturer;
+ 		return 0;
+ 	}
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int spinand_id_detect(struct spinand_device *spinand)
+diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+index 1c443fe568cf..87cb2047df80 100644
+--- a/drivers/mtd/spi-nor/core.c
++++ b/drivers/mtd/spi-nor/core.c
+@@ -3146,7 +3146,7 @@ int spi_nor_set_4byte_addr_mode(struct spi_nor *nor, bool enable)
+ 	int ret;
+ 
+ 	ret = params->set_4byte_addr_mode(nor, enable);
+-	if (ret && ret != -ENOTSUPP)
++	if (ret && ret != -EOPNOTSUPP)
+ 		return ret;
+ 
+ 	if (enable) {
+diff --git a/drivers/spi/atmel-quadspi.c b/drivers/spi/atmel-quadspi.c
+index 3d1252566134..370c4d1572ed 100644
+--- a/drivers/spi/atmel-quadspi.c
++++ b/drivers/spi/atmel-quadspi.c
+@@ -272,7 +272,7 @@ static int atmel_qspi_find_mode(const struct spi_mem_op *op)
+ 		if (atmel_qspi_is_compatible(op, &atmel_qspi_modes[i]))
+ 			return i;
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static bool atmel_qspi_supports_op(struct spi_mem *mem,
+diff --git a/drivers/spi/spi-ath79.c b/drivers/spi/spi-ath79.c
+index c9f1d1e1dcf7..b7ada981464a 100644
+--- a/drivers/spi/spi-ath79.c
++++ b/drivers/spi/spi-ath79.c
+@@ -146,7 +146,7 @@ static int ath79_exec_mem_op(struct spi_mem *mem,
+ 	/* Only use for fast-read op. */
+ 	if (op->cmd.opcode != 0x0b || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    op->addr.nbytes != 3 || op->dummy.nbytes != 1)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* disable GPIO mode */
+ 	ath79_spi_wr(sp, AR71XX_SPI_REG_FS, 0);
+diff --git a/drivers/spi/spi-bcm-qspi.c b/drivers/spi/spi-bcm-qspi.c
+index ef08fcac2f6d..d96222e6d7d2 100644
+--- a/drivers/spi/spi-bcm-qspi.c
++++ b/drivers/spi/spi-bcm-qspi.c
+@@ -1199,7 +1199,7 @@ static int bcm_qspi_exec_mem_op(struct spi_mem *mem,
+ 
+ 	if (!op->data.nbytes || !op->addr.nbytes || op->addr.nbytes > 4 ||
+ 	    op->data.dir != SPI_MEM_DATA_IN)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	buf = op->data.buf.in;
+ 	addr = op->addr.val;
+diff --git a/drivers/spi/spi-mem.c b/drivers/spi/spi-mem.c
+index edd7430d4c05..2dc8ceb85374 100644
+--- a/drivers/spi/spi-mem.c
++++ b/drivers/spi/spi-mem.c
+@@ -323,7 +323,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		return ret;
+ 
+ 	if (!spi_mem_internal_supports_op(mem, op))
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (ctlr->mem_ops && ctlr->mem_ops->exec_op && !spi_get_csgpiod(mem->spi, 0)) {
+ 		ret = spi_mem_access_start(mem);
+@@ -339,7 +339,7 @@ int spi_mem_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		 * read path) and expect the core to use the regular SPI
+ 		 * interface in other cases.
+ 		 */
+-		if (!ret || ret != -ENOTSUPP)
++		if (!ret || ret != -ENOTSUPP || ret != -EOPNOTSUPP)
+ 			return ret;
+ 	}
+ 
+@@ -559,7 +559,7 @@ spi_mem_dirmap_create(struct spi_mem *mem,
+ 	if (ret) {
+ 		desc->nodirmap = true;
+ 		if (!spi_mem_supports_op(desc->mem, &desc->info.op_tmpl))
+-			ret = -ENOTSUPP;
++			ret = -EOPNOTSUPP;
+ 		else
+ 			ret = 0;
+ 	}
+diff --git a/drivers/spi/spi-npcm-fiu.c b/drivers/spi/spi-npcm-fiu.c
+index 03db9f016a11..f3bb8bbc192f 100644
+--- a/drivers/spi/spi-npcm-fiu.c
++++ b/drivers/spi/spi-npcm-fiu.c
+@@ -556,7 +556,7 @@ static int npcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 		op->data.nbytes);
+ 
+ 	if (fiu->spix_mode || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	if (fiu->clkrate != chip->clkrate) {
+ 		ret = clk_set_rate(fiu->clk, chip->clkrate);
+diff --git a/drivers/spi/spi-ti-qspi.c b/drivers/spi/spi-ti-qspi.c
+index 4c81516b67db..0877dc5058a1 100644
+--- a/drivers/spi/spi-ti-qspi.c
++++ b/drivers/spi/spi-ti-qspi.c
+@@ -613,12 +613,12 @@ static int ti_qspi_exec_mem_op(struct spi_mem *mem,
+ 	/* Only optimize read path. */
+ 	if (!op->data.nbytes || op->data.dir != SPI_MEM_DATA_IN ||
+ 	    !op->addr.nbytes || op->addr.nbytes > 4)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	/* Address exceeds MMIO window size, fall back to regular mode. */
+ 	from = op->addr.val;
+ 	if (from + op->data.nbytes > qspi->mmap_size)
+-		return -ENOTSUPP;
++		return -EOPNOTSUPP;
+ 
+ 	mutex_lock(&qspi->list_lock);
+ 
+diff --git a/drivers/spi/spi-wpcm-fiu.c b/drivers/spi/spi-wpcm-fiu.c
+index 852ffe013d32..d76f7b5a9b97 100644
+--- a/drivers/spi/spi-wpcm-fiu.c
++++ b/drivers/spi/spi-wpcm-fiu.c
+@@ -361,7 +361,7 @@ static int wpcm_fiu_exec_op(struct spi_mem *mem, const struct spi_mem_op *op)
+ 
+ 	wpcm_fiu_stall_host(fiu, false);
+ 
+-	return -ENOTSUPP;
++	return -EOPNOTSUPP;
+ }
+ 
+ static int wpcm_fiu_adjust_op_size(struct spi_mem *mem, struct spi_mem_op *op)
+diff --git a/include/linux/spi/spi-mem.h b/include/linux/spi/spi-mem.h
+index 6b0a7dc48a4b..f866d5c8ed32 100644
+--- a/include/linux/spi/spi-mem.h
++++ b/include/linux/spi/spi-mem.h
+@@ -233,6 +233,8 @@ static inline void *spi_mem_get_drvdata(struct spi_mem *mem)
+  *		    limitations)
+  * @supports_op: check if an operation is supported by the controller
+  * @exec_op: execute a SPI memory operation
++ *           not all driver provides supports_op(), so it can return -EOPNOTSUPP
++ *           if the op is not supported by the driver/controller
+  * @get_name: get a custom name for the SPI mem device from the controller.
+  *	      This might be needed if the controller driver has been ported
+  *	      to use the SPI mem layer and a custom name is used to keep
+-- 
+2.34.1
+
