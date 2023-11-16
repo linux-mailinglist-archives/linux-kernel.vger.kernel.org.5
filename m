@@ -2,107 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 17BB47EDB67
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 07:04:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79C0C7EDB69
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 07:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232964AbjKPGEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 01:04:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
+        id S233782AbjKPGEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 01:04:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229484AbjKPGEp (ORCPT
+        with ESMTP id S229484AbjKPGEs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 01:04:45 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E70B11A3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 22:04:39 -0800 (PST)
+        Thu, 16 Nov 2023 01:04:48 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEAE48F;
+        Wed, 15 Nov 2023 22:04:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700114679; x=1731650679;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=qzx0Uwl/XWwSseR1iZmncAHgqTTMi/MLGZmLBKaBFz8=;
-  b=ATZnp4x0GxUrrsNVfFJ//G+j2cAMeFjiw6zeoqeKtJ1V23KJyuF3eLDq
-   Si3j/yyfUb83dJohXPcDyQIuZ9Ew6EyQS+py0h2Vunl0YWVK/OSU8Rfkd
-   VbZqx+8Ci7HNe0I+jcvX9Y8N6HRjCrXKzvRrGG9jcS+E9ycFLabGWVLFU
-   V2ZvcpCzg5cbbx/N0HZiyZXf8/zF7j50ljD7bsaoDCMnJMM/q3X9L/fx3
-   ms5z4exO7F/CUUlUR8aAoW1dLWku72nuxEQSh6BaXfwGGyiR0kVXmjcdk
-   uDbVoqOebgSFIXv0Jl4fAjH8GE29ivRDxD0W4JXt4/pO/4VVRxNo6aFX4
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="389879855"
+  t=1700114684; x=1731650684;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=KABAEVgFZrxu2pEBhbPGDF1wNMsDX0OcmGmgAPEJroU=;
+  b=Y1PxAmYNAyiXJdPmfl1P6dHGFAFLk1ysaXswdammE2zLzleDaoLEj4t0
+   bI4NFJCw05swvxGQRoM63VqRlNNv2rvT/ZMnhICK/MHGO09U7swzLm87G
+   cP5GFbsMV2ELasdhM1ppq1tn/LsYKX/snvOXbsTDzXxg5U/cr2Xv6Gyqk
+   LD7PzGuo52wy7I5ORkRoiPaWMC/GMGIfh7DAak3y+h5Y/0VRzu5mFoqND
+   LYsRnbwc0+FcdAJ3nGDySuy12OpKFYJoAkXp3Ok6j6LyrVKuXpQjwNk6h
+   tBcpBiitdOOpGi8LOayTKgqOtMDhOciU432jBxmwnIZsnUGEfAyvYxUu9
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="12578878"
 X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="389879855"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 22:04:39 -0800
+   d="scan'208";a="12578878"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 22:04:44 -0800
 X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="909011145"
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="758722570"
 X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="909011145"
+   d="scan'208";a="758722570"
 Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga001.fm.intel.com with ESMTP; 15 Nov 2023 22:04:38 -0800
+  by orsmga007.jf.intel.com with ESMTP; 15 Nov 2023 22:04:38 -0800
 Received: from kbuild by b8de5498638e with local (Exim 4.96)
         (envelope-from <lkp@intel.com>)
-        id 1r3VUS-0001Mx-0g;
+        id 1r3VUS-0001Mv-0Y;
         Thu, 16 Nov 2023 06:04:36 +0000
-Date:   Thu, 16 Nov 2023 14:03:35 +0800
+Date:   Thu, 16 Nov 2023 14:03:36 +0800
 From:   kernel test robot <lkp@intel.com>
-To:     Aswath Govindraju <a-govindraju@ti.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>
-Subject: drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined
- but not used
-Message-ID: <202311161306.opyfcoCY-lkp@intel.com>
+To:     Henry Shi <henryshi2018@gmail.com>, hbshi69@hotmail.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de,
+        dave.hansen@linux.intel.com, x86@kernel.org, hpa@zytor.com,
+        hdegoede@redhat.com, markgross@kernel.org, jdelvare@suse.com,
+        linux@roeck-us.net, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, linux-hwmon@vger.kernel.org
+Cc:     Paul Gazzillo <paul@pgazz.com>,
+        Necip Fazil Yildiran <fazilyildiran@gmail.com>,
+        oe-kbuild-all@lists.linux.dev, hb_shi2003@yahoo.com,
+        henrys@silicom-usa.com, wenw@silicom-usa.com
+Subject: Re: [PATCH v12] platform/x86: Add Silicom Platform Driver
+Message-ID: <202311161352.CCZ1uNtB-lkp@intel.com>
+References: <20231113210216.30237-1-henryshi2018@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231113210216.30237-1-henryshi2018@gmail.com>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Aswath,
+Hi Henry,
 
-FYI, the error/warning still remains.
+kernel test robot noticed the following build warnings:
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
-commit: e4d4371253029528c02bfb43a46c252e1c3d035f phy: phy-can-transceiver: Add support for setting mux
-date:   1 year, 7 months ago
-config: x86_64-randconfig-x012-20230629 (https://download.01.org/0day-ci/archive/20231116/202311161306.opyfcoCY-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311161306.opyfcoCY-lkp@intel.com/reproduce)
+[auto build test WARNING on tip/master]
+[also build test WARNING on linus/master tip/auto-latest v6.7-rc1 next-20231116]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Henry-Shi/platform-x86-Add-Silicom-Platform-Driver/20231114-050431
+base:   tip/master
+patch link:    https://lore.kernel.org/r/20231113210216.30237-1-henryshi2018%40gmail.com
+patch subject: [PATCH v12] platform/x86: Add Silicom Platform Driver
+config: i386-kismet-CONFIG_LEDS_CLASS_MULTICOLOR-CONFIG_SILICOM_PLATFORM-0-0 (https://download.01.org/0day-ci/archive/20231116/202311161352.CCZ1uNtB-lkp@intel.com/config)
+reproduce: (https://download.01.org/0day-ci/archive/20231116/202311161352.CCZ1uNtB-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311161306.opyfcoCY-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311161352.CCZ1uNtB-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
-
->> drivers/mux/adg792a.c:134:34: warning: 'adg792a_of_match' defined but not used [-Wunused-const-variable=]
-     134 | static const struct of_device_id adg792a_of_match[] = {
-         |                                  ^~~~~~~~~~~~~~~~
-
-
-vim +/adg792a_of_match +134 drivers/mux/adg792a.c
-
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  133  
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14 @134  static const struct of_device_id adg792a_of_match[] = {
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  135  	{ .compatible = "adi,adg792a", },
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  136  	{ .compatible = "adi,adg792g", },
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  137  	{ }
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  138  };
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  139  MODULE_DEVICE_TABLE(of, adg792a_of_match);
-afda08c4caa94895 drivers/mux/mux-adg792a.c Peter Rosin 2017-05-14  140  
-
-:::::: The code at line 134 was first introduced by commit
-:::::: afda08c4caa9489511557def51e322a5f2142a2f mux: adg792a: add mux controller driver for ADG792A/G
-
-:::::: TO: Peter Rosin <peda@axentia.se>
-:::::: CC: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+kismet warnings: (new ones prefixed by >>)
+>> kismet: WARNING: unmet direct dependencies detected for LEDS_CLASS_MULTICOLOR when selected by SILICOM_PLATFORM
+   
+   WARNING: unmet direct dependencies detected for LEDS_CLASS_MULTICOLOR
+     Depends on [n]: NEW_LEDS [=n] && LEDS_CLASS [=n]
+     Selected by [y]:
+     - SILICOM_PLATFORM [=y] && X86_PLATFORM_DEVICES [=y] && HWMON [=y]
 
 -- 
 0-DAY CI Kernel Test Service
