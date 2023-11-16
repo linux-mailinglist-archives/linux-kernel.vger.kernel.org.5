@@ -2,103 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7607EDF46
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:12:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A033E7EDF48
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:13:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345083AbjKPLMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:12:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35336 "EHLO
+        id S1345111AbjKPLNY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:13:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345003AbjKPLMi (ORCPT
+        with ESMTP id S1344966AbjKPLNX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:12:38 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AD3DAA;
-        Thu, 16 Nov 2023 03:12:35 -0800 (PST)
-Received: from dggpemm500005.china.huawei.com (unknown [172.30.72.56])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SWHS01cx5zvQpM;
-        Thu, 16 Nov 2023 19:12:16 +0800 (CST)
-Received: from [10.69.30.204] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.31; Thu, 16 Nov
- 2023 19:12:33 +0800
-Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
-To:     David Ahern <dsahern@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>,
-        Mina Almasry <almasrymina@google.com>
-CC:     Jakub Kicinski <kuba@kernel.org>, <davem@davemloft.net>,
-        <pabeni@redhat.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
- <20231113130041.58124-4-linyunsheng@huawei.com>
- <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
- <20231113180554.1d1c6b1a@kernel.org>
- <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
- <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
- <ZVNzS2EA4zQRwIQ7@nvidia.com>
- <ed875644-95e8-629a-4c28-bf42329efa56@huawei.com>
- <ee10d050-ef24-49b2-8712-c9bc8a911c2a@kernel.org>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <15c404e4-8efa-cc1c-174f-0752005b6755@huawei.com>
-Date:   Thu, 16 Nov 2023 19:12:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        Thu, 16 Nov 2023 06:13:23 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 52E99A8
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:13:19 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0AD061595;
+        Thu, 16 Nov 2023 03:14:05 -0800 (PST)
+Received: from [10.1.35.163] (XHFQ2J9959.cambridge.arm.com [10.1.35.163])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D20143F6C4;
+        Thu, 16 Nov 2023 03:13:15 -0800 (PST)
+Message-ID: <75e721cb-18c2-4717-bdbe-af346b1deafa@arm.com>
+Date:   Thu, 16 Nov 2023 11:13:14 +0000
 MIME-Version: 1.0
-In-Reply-To: <ee10d050-ef24-49b2-8712-c9bc8a911c2a@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-GB
+To:     David Hildenbrand <david@redhat.com>,
+        kernel test robot <lkp@intel.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-2-ryan.roberts@arm.com>
+ <202311160516.kHhfmjvl-lkp@intel.com>
+ <e6060ff2-ced0-42fd-b92a-c2e710c4e15a@arm.com>
+ <4e8d329c-eda6-4ff8-bb56-8924bb4583b2@redhat.com>
+ <a397d45b-6369-4a45-915e-cbebecd4556b@arm.com>
+ <930b5f6a-27d9-43da-bf9f-1478c8de1af8@redhat.com>
+From:   Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <930b5f6a-27d9-43da-bf9f-1478c8de1af8@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2023/11/16 1:57, David Ahern wrote:
-> On 11/15/23 2:21 AM, Yunsheng Lin wrote:
->> On 2023/11/14 21:16, Jason Gunthorpe wrote:
->>> On Tue, Nov 14, 2023 at 04:21:26AM -0800, Mina Almasry wrote:
+On 16/11/2023 11:01, David Hildenbrand wrote:
+> On 16.11.23 11:36, Ryan Roberts wrote:
+>> On 16/11/2023 10:12, David Hildenbrand wrote:
+>>> On 16.11.23 11:07, Ryan Roberts wrote:
+>>>> Hi All,
+>>>>
+>>>> Hoping for some guidance below!
+>>>>
+>>>>
+>>>> On 15/11/2023 21:26, kernel test robot wrote:
+>>>>> Hi Ryan,
+>>>>>
+>>>>> kernel test robot noticed the following build errors:
+>>>>>
+>>>>> [auto build test ERROR on akpm-mm/mm-everything]
+>>>>> [also build test ERROR on linus/master v6.7-rc1 next-20231115]
+>>>>> [cannot apply to arm64/for-next/core efi/next]
+>>>>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>>>>> And when submitting patch, we suggest to use '--base' as documented in
+>>>>> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+>>>>>
+>>>>> url:
+>>>>> https://github.com/intel-lab-lkp/linux/commits/Ryan-Roberts/mm-Batch-copy-PTE-ranges-during-fork/20231116-010123
+>>>>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git
+>>>>> mm-everything
+>>>>> patch link:
+>>>>> https://lore.kernel.org/r/20231115163018.1303287-2-ryan.roberts%40arm.com
+>>>>> patch subject: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+>>>>> config: arm-randconfig-002-20231116
+>>>>> (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/config)
+>>>>> compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+>>>>> reproduce (this is a W=1 build):
+>>>>> (https://download.01.org/0day-ci/archive/20231116/202311160516.kHhfmjvl-lkp@intel.com/reproduce)
+>>>>>
+>>>>> If you fix the issue in a separate patch/commit (i.e. not just a new
+>>>>> version of
+>>>>> the same patch/commit), kindly add following tags
+>>>>> | Reported-by: kernel test robot <lkp@intel.com>
+>>>>> | Closes:
+>>>>> https://lore.kernel.org/oe-kbuild-all/202311160516.kHhfmjvl-lkp@intel.com/
+>>>>>
+>>>>> All errors (new ones prefixed by >>):
+>>>>>
+>>>>>      mm/memory.c: In function 'folio_nr_pages_cont_mapped':
+>>>>>>> mm/memory.c:969:16: error: implicit declaration of function 'pte_pgprot';
+>>>>>>> did you mean 'ptep_get'? [-Werror=implicit-function-declaration]
+>>>>>        969 |         prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
+>>>>>            |                ^~~~~~~~~~
+>>>>>            |                ptep_get
+>>>>>      cc1: some warnings being treated as errors
+>>>>
+>>>> It turns out that pte_pgprot() is not universal; its only implemented by
+>>>> architectures that select CONFIG_HAVE_IOREMAP_PROT (currently arc, arm64,
+>>>> loongarch, mips, powerpc, s390, sh, x86).
+>>>>
+>>>> I'm using it in core-mm to help calculate the number of "contiguously mapped"
+>>>> pages within a folio (note that's not the same as arm64's notion of
+>>>> contpte-mapped. I just want to know that there are N physically contiguous
+>>>> pages
+>>>> mapped virtually contiguously with the same permissions). And I'm using
+>>>> pte_pgprot() to extract the permissions for each pte to compare. It's important
+>>>> that we compare the permissions because just because the pages belongs to the
+>>>> same folio doesn't imply they are mapped with the same permissions; think
+>>>> mprotect()ing a sub-range.
+>>>>
+>>>> I don't have a great idea for how to fix this - does anyone have any thoughts?
 >>>
->>>> Actually because you put the 'strtuct page for devmem' in
->>>> skb->bv_frag, the net stack will grab the 'struct page' for devmem
->>>> using skb_frag_page() then call things like page_address(), kmap,
->>>> get_page, put_page, etc, etc, etc.
+>>> KIS :) fork() operates on individual VMAs if I am not daydreaming.
 >>>
->>> Yikes, please no. If net has its own struct page look alike it has to
->>> stay entirely inside net. A non-mm owned struct page should not be
->>> passed into mm calls. It is just way too hacky to be seriously
->>> considered :(
+>>> Just check for the obvious pte_write()/dirty/ and you'll be fine.
 >>
->> Yes, that is something this patchset is trying to do, defining its own
->> struct page look alike for page pool to support devmem.
->>
+>> Yes, that seems much simpler! I think we might have to be careful about the uffd
+>> wp bit too? I think that's it - are there any other exotic bits that might need
+>> to be considered?
 > 
-> Networking needs to be able to move away from struct page references.
-> The devmem and host memory for Rx use cases do not need to be page based.
+> Good question. Mimicing what the current code already does should be sufficient.
+> uffd-wp should have the PTE R/O. You can set the contpte bit independent of any
+> SW bit (uffd-wp, softdirty, ...) I guess, no need to worry about that.
+> 
 
-Yes, I am agreed the ultimate goal is to move away from struct page
-references. But I am not sure if we can do it right away as there
-still are different types of existing 'struct page' in the netstack,
-see:
-
-https://lore.kernel.org/all/8b7d25eb-1f10-3e37-8753-92b42da3fb34@huawei.com/
-
-> 
-> 
-> .
-> 
+OK thanks. I'll rework for this approach in v3.
