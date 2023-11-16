@@ -2,75 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 545A27EE9E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:10:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D2067EE9E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjKPXK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:10:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33722 "EHLO
+        id S229794AbjKPXKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPXKY (ORCPT
+        with ESMTP id S229379AbjKPXKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:10:24 -0500
+        Thu, 16 Nov 2023 18:10:43 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98C60D4A
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:21 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06B09EA
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700176220;
+        s=mimecast20190719; t=1700176236;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=+MKeibb6KnKnaA+iE0iv1obj46zXM3TXwKHeMWH8DpE=;
-        b=FxRr1p9kBQD8SqJSQQtJ11OPPTF0QnHJhqJ9rPBpjNATk0PmUKiFO3CowVmFe9ZopQY4fH
-        7LhNfSwbd2WnJLaT4xgkUzOrBfgeogL6iaV6YKr5LoOaKFh7+RlESPpgkXlIgbwWQVmFyb
-        KJ4Ak1ZNYbwoGwdS/RP2y2d+Ukas5Mg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=vsRuG6AZDvK4gWcMyoVnW7/GiXUT/qiRajyImbex+2A=;
+        b=IYEaS4wWCj5h0u+E6Rh4PKRb32mj0/JFiXCPLb//taSMi9fTmDJY1Z0x//J0/W836ad+fL
+        7Ow/qfNNJkSSdo+oLNkQrZ0aiAcovsr7dpnSG3zxLmC2u76gLYlOIT+zXqD8YVOae+yTIO
+        4vo/OtVhN2dv+Ees3TpJDIHLHaonOHs=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-346-ng2OKuG0NnKrvZdyJ8yCAw-1; Thu, 16 Nov 2023 18:10:19 -0500
-X-MC-Unique: ng2OKuG0NnKrvZdyJ8yCAw-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4084001846eso8814065e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:19 -0800 (PST)
+ us-mta-296-6tDoJmpjMOqgWyZ20GjYiA-1; Thu, 16 Nov 2023 18:10:34 -0500
+X-MC-Unique: 6tDoJmpjMOqgWyZ20GjYiA-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32d879cac50so702721f8f.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:10:34 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700176218; x=1700781018;
+        d=1e100.net; s=20230601; t=1700176233; x=1700781033;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+MKeibb6KnKnaA+iE0iv1obj46zXM3TXwKHeMWH8DpE=;
-        b=YU5OQSfc3r/xf9Pg8sgl0AwZfgdv5uHzESS1T05ObXlhg4nW0ER8bzBlk4Mw3K5NXP
-         6Sg9Bb0eYVuqRr8brlaQblKSTAaFhrCpfjZAx4X7iYre8nq9sPbbht7Q95b01Y2F6wNc
-         RFhhqGZ8n6OVr17PX1Svh26ebSo/wp4JkeZYJXXF3P2WZoxVyo1VJY6akgQBytFqpUr7
-         xsiB2weSH3N2lFZDrWj95pOQosChIazmbdJKfMjPGrR3UYk2FOUp1VF7dJETAY3dJQ7b
-         XJreYlP6d+rhdF51zdUCU9p8JmXrhHyYld1vRTXADOJhbDURovyNguV++t8cJd2CCNId
-         Kpnw==
-X-Gm-Message-State: AOJu0YyD+1daycy/+zLS3ma+sQqxDHMmp8V7+7tcdip7nLn65jiLhfGQ
-        sbX17LizjqLaEWiJgtytUnOn4IOttlcpIXAtF5sK0r9MWqGpJeKtT94TunF6FRd/g1taS5oL3iD
-        aNQaJ56yKrMf0GXaYGuqUG7Pb
-X-Received: by 2002:a5d:64cd:0:b0:32d:8830:ee2 with SMTP id f13-20020a5d64cd000000b0032d88300ee2mr16315194wri.43.1700176218356;
-        Thu, 16 Nov 2023 15:10:18 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHQ5ev20kMVvuY/jGfQ6WXoGS09jmwNDwDquYUYfg5EhOSnq0pu0DG+aLWEXCkaL3A/isVylQ==
-X-Received: by 2002:a5d:64cd:0:b0:32d:8830:ee2 with SMTP id f13-20020a5d64cd000000b0032d88300ee2mr16315180wri.43.1700176217987;
-        Thu, 16 Nov 2023 15:10:17 -0800 (PST)
+        bh=vsRuG6AZDvK4gWcMyoVnW7/GiXUT/qiRajyImbex+2A=;
+        b=BQFgztC1u+daqwrghzW2ZPOikYplpSdheUKEXnfBB1dopgGLiY8HQabuZkRLQ/AI9R
+         UzOHu0FzdKtAa8zCOjluo2xWNGY5rBv0jGY/g16uZiP59Jwoj30obqMV2JzQhkck9W3/
+         WNl4S7qxn/6/khb3JdAv4fBu4d6V9F+p+qUPw83ctSWVp2bnwjSnMGKOE6W/z/xyPoPf
+         NzRwXcCzNcsQqftS8U/Byvd5VaSBb7lWcdclJfhSueZGvN7+pC7s+UUgT+GXHZ6Wus/R
+         a/f3LPyQ6eJ4Ok0Gdoxv5qfiTQ153WKrbacopalHSX/SQT+g+lma0ZEfn5x9XpMqyich
+         he9g==
+X-Gm-Message-State: AOJu0YwcTWqVG4pSIxuKRO5cQ9dHqvZYRgzmuhdT37Ifx83VNslfgnyI
+        Zwa9W11CWqKPTipcovVZFPHQnKIrVjnR45SZlCGqN/F88DEUb9s1cNuVQyrd29gsN7JhxROqFxi
+        a5IUapH8KQc5HF7VNp53ZnN2J
+X-Received: by 2002:a05:6000:1884:b0:32d:9755:44f1 with SMTP id a4-20020a056000188400b0032d975544f1mr14474789wri.32.1700176233654;
+        Thu, 16 Nov 2023 15:10:33 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IELl3t8eiBv9s3Q7oGal+cSI9uZA3D9LbBDlaqJ+zo8ZHJCN8ByWB28vEeghB6VnL6KlDdYNA==
+X-Received: by 2002:a05:6000:1884:b0:32d:9755:44f1 with SMTP id a4-20020a056000188400b0032d975544f1mr14474770wri.32.1700176233281;
+        Thu, 16 Nov 2023 15:10:33 -0800 (PST)
 Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.17
+        by smtp.gmail.com with ESMTPSA id d5-20020adfef85000000b0032fb46812c2sm573718wro.12.2023.11.16.15.10.32
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 15:10:17 -0800 (PST)
-Message-ID: <b930ef9c-8795-40f6-bcad-11d081f65e5e@redhat.com>
-Date:   Fri, 17 Nov 2023 00:10:16 +0100
+        Thu, 16 Nov 2023 15:10:32 -0800 (PST)
+Message-ID: <8287fb3a-11e7-44fa-b0d9-72ab5eee1fd9@redhat.com>
+Date:   Fri, 17 Nov 2023 00:10:32 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] mm/pagemap: Fix ioctl(PAGEMAP_SCAN) on vma check
+Subject: Re: [PATCH 2/3] mm/pagemap: Fix wr-protect even if
+ PM_SCAN_WP_MATCHING not set
 Content-Language: en-US
 To:     Peter Xu <peterx@redhat.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org
 Cc:     Muhammad Usama Anjum <usama.anjum@collabora.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Andrei Vagin <avagin@gmail.com>,
-        syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+        syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
 References: <20231116201547.536857-1-peterx@redhat.com>
- <20231116201547.536857-2-peterx@redhat.com>
+ <20231116201547.536857-3-peterx@redhat.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -117,7 +118,7 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231116201547.536857-2-peterx@redhat.com>
+In-Reply-To: <20231116201547.536857-3-peterx@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -132,27 +133,33 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 16.11.23 21:15, Peter Xu wrote:
-> The new ioctl(PAGEMAP_SCAN) relies on vma wr-protect capability provided by
-> userfault, however in the vma test it didn't explicitly require the vma to
-> have wr-protect function enabled, even if PM_SCAN_WP_MATCHING flag is set.
+> The new pagemap ioctl contains a fast path for wr-protections without
+> looking into category masks.  It forgets to check PM_SCAN_WP_MATCHING
+> before applying the wr-protections.  It can cause, e.g., pte markers
+> installed on archs that do not even support uffd wr-protect.
 > 
-> It means the pagemap code can now apply uffd-wp bit to a page in the vma
-> even if not registered to userfaultfd at all.
+> WARNING: CPU: 0 PID: 5059 at mm/memory.c:1520 zap_pte_range mm/memory.c:1520 [inline]
 > 
-> Then in whatever way as long as the pte got written and page fault
-> resolved, we'll apply the write bit even if uffd-wp bit is set.  We'll see
-> a pte that has both UFFD_WP and WRITE bit set.  Anything later that looks
-> up the pte for uffd-wp bit will trigger the warning:
-> 
-> WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-> 
-> Fix it by doing proper check over the vma attributes when
-> PM_SCAN_WP_MATCHING is specified.
-> 
-> Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
-> Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
+> Fixes: 12f6b01a0bcb ("fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag")
+> Reported-by: syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com
 > Signed-off-by: Peter Xu <peterx@redhat.com>
 > ---
+>   fs/proc/task_mmu.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index e91085d79926..d19924bf0a39 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -2171,7 +2171,7 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>   		return 0;
+>   	}
+>   
+> -	if (!p->vec_out) {
+> +	if ((p->arg.flags & PM_SCAN_WP_MATCHING) && !p->vec_out) {
+>   		/* Fast path for performing exclusive WP */
+>   		for (addr = start; addr != end; pte++, addr += PAGE_SIZE) {
+>   			if (pte_uffd_wp(ptep_get(pte)))
 
 Reviewed-by: David Hildenbrand <david@redhat.com>
 
