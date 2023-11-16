@@ -2,89 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 19ABA7EE19F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:38:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 415867EE198
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:37:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345220AbjKPNi4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:38:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56460 "EHLO
+        id S231168AbjKPNhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:37:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46458 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344962AbjKPNiz (ORCPT
+        with ESMTP id S230371AbjKPNhU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:38:55 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A2C2A0;
-        Thu, 16 Nov 2023 05:38:51 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 3566F204FF;
-        Thu, 16 Nov 2023 13:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700141930; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qGlqJ91XgT6zatL0ncRqFs5WPTRXZ76PpGZv2Os9czw=;
-        b=hq7bqN7qAkMVa/iDOqLUpaM+RodtpQsEIXkhW46MJ1L/vJzABEr7fQm/j2SI1xgZ1fN3kS
-        QYWfF+IP1dp22stCfFdVlilyvx/wErZ+MckLhYy1mU1xnMhFROj6+vKb0AknLv2SJxoxH0
-        ZKVr4eJnAuQ076eo78Anb2VZy1+e9Vk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700141930;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=qGlqJ91XgT6zatL0ncRqFs5WPTRXZ76PpGZv2Os9czw=;
-        b=UC4DUtwUxpwUmPDeoE2Kwkgm0sjho0yy1TK7RzO5EZHy58JO53cexW7Cd5YdOX4X3ax2Iu
-        fVx2z4AlhQWg4+CA==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id BE626139C4;
-        Thu, 16 Nov 2023 13:38:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id Dx7VKmkbVmXgFgAAMHmgww
-        (envelope-from <clopez@suse.de>); Thu, 16 Nov 2023 13:38:49 +0000
-From:   =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Cc:     =?UTF-8?q?Carlos=20L=C3=B3pez?= <clopez@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2] KVM: X86: improve documentation for KVM_CAP_X86_BUS_LOCK_EXIT
-Date:   Thu, 16 Nov 2023 14:36:29 +0100
-Message-Id: <20231116133628.5976-1-clopez@suse.de>
-X-Mailer: git-send-email 2.35.3
+        Thu, 16 Nov 2023 08:37:20 -0500
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC11A0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:37:17 -0800 (PST)
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGDF6Bk032470;
+        Thu, 16 Nov 2023 13:36:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=2f/fmn8IsHKQlBOidJi3QH/ZHjLfdSu+1J0yUaa+0as=;
+ b=PbcPtrP/B3SFGkndgZLQozhQEY8xD6WE83sCwV+QtZJfQJ+1rb5ma+WQlZ1zFic9s24W
+ 6iBkmFowFzgZYt3+n3zMIoyYsybXlf8Ew6eYiUkNR4lMym6NC94IcDHHa+PYLjQmuDtO
+ Hb7GZ+BNyXOnnDAfMw0zGNu0jKonLFfhrU/RLLMrPVtxRvWS5ua5hhiP1pb0W5vaWGpk
+ uQkDYfWNaUolSStaSFB9BVfaciuM4yV0ZrZxYgQl6oFEqLpwF9uH0bj0H1zaI3TVr94K
+ YjAp8hLoFhUTsdoPsV+kKhqfrcfR4u0JJelfee0FKd/kyWE+kcOVZj2YyBbvdZCZzLHS OQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3udkt18mh0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 13:36:42 +0000
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AGDHMga009656;
+        Thu, 16 Nov 2023 13:36:41 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3udkt18mga-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 13:36:41 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+        by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AGBciwo004483;
+        Thu, 16 Nov 2023 13:36:40 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+        by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uap5keewf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 13:36:40 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AGDadOd66519404
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Nov 2023 13:36:39 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0549E20043;
+        Thu, 16 Nov 2023 13:36:39 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B7A7720040;
+        Thu, 16 Nov 2023 13:36:38 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+        by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+        Thu, 16 Nov 2023 13:36:38 +0000 (GMT)
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Ard Biesheuvel <ardb@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] Remove unused code after IA-64 removal
+Date:   Thu, 16 Nov 2023 14:36:35 +0100
+Message-Id: <20231116133638.1636277-1-hca@linux.ibm.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -3.30
-X-Spamd-Result: default: False [-3.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         RCPT_COUNT_FIVE(0.00)[6];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         MID_CONTAINS_FROM(1.00)[];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         BAYES_HAM(-3.00)[100.00%]
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 63Vc0xH7kiEbOTviNrIvez1XiV0TLpMg
+X-Proofpoint-ORIG-GUID: u2EpWi-BLgc814pOQDJNEL2L9D-YlmTO
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_13,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ adultscore=0 malwarescore=0 clxscore=1015 mlxlogscore=778 bulkscore=0
+ mlxscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311160105
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -92,65 +92,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Improve the description for the KVM_CAP_X86_BUS_LOCK_EXIT capability,
-fixing a few typos and improving grammar for overall clarity.
+While looking into something different I noticed that there are a couple of
+Kconfig options which were only selected by IA-64 and which are now unused.
 
-Signed-off-by: Carlos López <clopez@suse.de>
----
-v2: Corrected the name of the KVM_RUN_X86_BUS_LOCK flag
+So remove them and simplify the code a bit.
 
- Documentation/virt/kvm/api.rst | 28 ++++++++++++++--------------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+Heiko Carstens (3):
+  arch: remove ARCH_THREAD_STACK_ALLOCATOR
+  arch: remove ARCH_TASK_STRUCT_ALLOCATOR
+  arch: remove ARCH_TASK_STRUCT_ON_STACK
 
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 7025b3751027..4701370bf46f 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -6256,9 +6256,9 @@ More architecture-specific flags detailing state of the VCPU that may
- affect the device's behavior. Current defined flags::
- 
-   /* x86, set if the VCPU is in system management mode */
--  #define KVM_RUN_X86_SMM     (1 << 0)
-+  #define KVM_RUN_X86_SMM          (1 << 0)
-   /* x86, set if bus lock detected in VM */
--  #define KVM_RUN_BUS_LOCK    (1 << 1)
-+  #define KVM_RUN_X86_BUS_LOCK     (1 << 1)
-   /* arm64, set for KVM_EXIT_DEBUG */
-   #define KVM_DEBUG_ARCH_HSR_HIGH_VALID  (1 << 0)
- 
-@@ -7582,20 +7582,20 @@ KVM_BUS_LOCK_DETECTION_OFF and KVM_BUS_LOCK_DETECTION_EXIT are supported
- currently and mutually exclusive with each other. More bits can be added in
- the future.
- 
--With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause vm exits
-+With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause VM exits
- so that no additional actions are needed. This is the default mode.
- 
--With KVM_BUS_LOCK_DETECTION_EXIT set, vm exits happen when bus lock detected
--in VM. KVM just exits to userspace when handling them. Userspace can enforce
--its own throttling or other policy based mitigations.
--
--This capability is aimed to address the thread that VM can exploit bus locks to
--degree the performance of the whole system. Once the userspace enable this
--capability and select the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
--KVM_RUN_BUS_LOCK flag in vcpu-run->flags field and exit to userspace. Concerning
--the bus lock vm exit can be preempted by a higher priority VM exit, the exit
--notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
--KVM_RUN_BUS_LOCK flag is used to distinguish between them.
-+With KVM_BUS_LOCK_DETECTION_EXIT set, VM exits happen when a bus lock is
-+detected in VM. KVM just exits to userspace when handling them. Userspace can
-+enforce its own throttling or other policy based mitigations.
-+
-+This capability is aimed to address the fact that a VM can exploit bus locks to
-+impact the performance of the whole system. Once userspace enables this
-+capability and selects the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
-+KVM_RUN_X86_BUS_LOCK flag in the vcpu->run->flags field and exit to userspace.
-+Concerning the bus lock, a VM exit can be preempted by a higher priority VM
-+exit, so the exit notification to userspace can be KVM_EXIT_BUS_LOCK or another
-+reason. KVM_RUN_X86_BUS_LOCK flag is used to distinguish between them.
- 
- 7.23 KVM_CAP_PPC_DAWR1
- ----------------------
+ arch/Kconfig                 | 13 -------------
+ arch/powerpc/kexec/core_64.c |  3 +--
+ include/linux/init_task.h    |  7 -------
+ include/linux/sched.h        |  2 --
+ init/init_task.c             | 10 ++--------
+ kernel/fork.c                | 26 --------------------------
+ 6 files changed, 3 insertions(+), 58 deletions(-)
+
 -- 
-2.35.3
+2.39.2
 
