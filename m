@@ -2,254 +2,326 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E916D7EE2B6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3855D7EE2BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:27:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345299AbjKPOYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:24:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57844 "EHLO
+        id S231205AbjKPO1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:27:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231205AbjKPOYG (ORCPT
+        with ESMTP id S229562AbjKPO1H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:24:06 -0500
-Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D441C4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:24:02 -0800 (PST)
-Received: by mail-ua1-x92c.google.com with SMTP id a1e0cc1a2514c-7bae8dd095cso330421241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:24:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700144641; x=1700749441; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6KJkXeq1c0Mlv5gjaKW3vMtX+YJGSTJ76GSnkl3Srbw=;
-        b=ixVqA6Jy5M4i9cOdbqGjQrExnadQQhnP/jgjvn4dxKCQJAKjCIWqvVemzDSdZsYj6D
-         SRwhW4FlghP8UmxMUBtxSD9eLfc3JmLtCODtTme2VHdqZ5pyvl8EevvFOoHMkgXpSkTy
-         Zqccru9/HH1J8C+2BrWyO0fS74L9IwPlrjqnXrb4poWETa9W3tt/WvHAJ3qlZTJX5907
-         p4hirZZqkNmMAAjizxvYvO0RndMB8ZA7dBgm9/Bx91nTaJ18zxMV3D/bb5ra2jeKDRQq
-         PE0egO4MT0QPlGXja/5M181YwTFz5lCqm4gMl4DPH//8ofl/GiyA015/BtPmwKrMQLUM
-         2CqQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700144641; x=1700749441;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6KJkXeq1c0Mlv5gjaKW3vMtX+YJGSTJ76GSnkl3Srbw=;
-        b=eLfFNvr2jW2GlI9kEvhDwkzs8/09yYeZF1w0gblGAHc83GXdF+1yElxzRxT2OT1+dU
-         m/+lntqPv18FfovZLwo6KWrwEAkuiuKipn1Vo+lXYbIXzuL35JP6M3QZ7NmH//MoRrde
-         iAvH2pJ18U9w3IS1HcmMGMAMLEH+O0LpOnKO3QxBDw8o9XqirllhVxWaEy5QoO5aePA0
-         XSjBpIIiYZTq2QMo+k3Gc7ldPwN6/LbwR408biNMF5EXP6ftcGnNBiO0iJZpPCG0OHLw
-         rDBVgJAbGWD7L8KDD4Abrlhcubx+8+YAqDpZLHLWg+DwWcurilAidden9G+k09QQtenB
-         DZwA==
-X-Gm-Message-State: AOJu0YzrAgaA3AffTBTaWaJVHVhAUjo9KTLO+xO2mq3f215kMae1r/ok
-        hIPYj4Zwh+XH0nMJPK2XijoPub71ZXK8XcHwCXjF3w==
-X-Google-Smtp-Source: AGHT+IFZ+gmH9ee3C9+IKGOdCpJK4UhHwKPQ41ZEfQJqJ3vOizJMchMwJ+8sAu4LvbhUcv+nzBns2e4KA8t1gGTjGJs=
-X-Received: by 2002:a1f:a084:0:b0:49b:289a:cc3f with SMTP id
- j126-20020a1fa084000000b0049b289acc3fmr15034872vke.3.1700144641588; Thu, 16
- Nov 2023 06:24:01 -0800 (PST)
+        Thu, 16 Nov 2023 09:27:07 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09C29AD;
+        Thu, 16 Nov 2023 06:27:03 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AGEQgIl024720;
+        Thu, 16 Nov 2023 08:26:42 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700144802;
+        bh=xbhZckJg0LHMFVWujIIfrxDf2NjzRTaQ1shPZg1Xtt0=;
+        h=Date:Subject:To:CC:References:From:In-Reply-To;
+        b=Xr9A/b8RlHRMimPCAcaJgOMh6etlT/OrSKXChbouBS5nHS6nIcvgzOk+2I5oVlsrE
+         JrKThux23TzoED0zziDyPNffM7QN8PXebCUEHsSc6mwCUWfFKTQrpd26poCqJmiwO7
+         dz4azlejnV8yEC7vjmnhaKVLbtF70b+dsLwrEs+8=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AGEQgY8107693
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Nov 2023 08:26:42 -0600
+Received: from DFLE105.ent.ti.com (10.64.6.26) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 16
+ Nov 2023 08:26:41 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 16 Nov 2023 08:26:41 -0600
+Received: from [10.250.34.132] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AGEQebH060158;
+        Thu, 16 Nov 2023 08:26:41 -0600
+Message-ID: <0a74f40d-a175-4c1d-9e6f-63cabdebb587@ti.com>
+Date:   Thu, 16 Nov 2023 08:26:40 -0600
 MIME-Version: 1.0
-References: <20231115191613.097702445@linuxfoundation.org>
-In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 16 Nov 2023 19:53:49 +0530
-Message-ID: <CA+G9fYsS3r+mM1qQo4WHe4hp-xZBGhFsXyYWg2dLo-up_vzP8A@mail.gmail.com>
-Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/8] arm64: dts: ti: k3-am625-beagleplay: Add overlays for
+ OV5640
+Content-Language: en-US
+To:     Jai Luthra <j-luthra@ti.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Martyn Welch <martyn.welch@collabora.com>
+References: <20231115-csi_dts-v1-0-99fc535b2bde@ti.com>
+ <20231115-csi_dts-v1-4-99fc535b2bde@ti.com>
+From:   Andrew Davis <afd@ti.com>
+In-Reply-To: <20231115-csi_dts-v1-4-99fc535b2bde@ti.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 at 01:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 6.6.2 release.
-> There are 603 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-=
-6.6.2-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 11/15/23 3:51 AM, Jai Luthra wrote:
+> Three different OV5640 modules are supported using the FFC connector on
+> BeaglePlay:
+> - Digilent PCam 5C
+> - ALINX AN5641
+> - TEVI-OV5640-*-RPI
+> 
+> The Digilent and ALINX modules supply a 12Mhz XCLK to the sensor, while
+> the TEVI module supplies a 24Mhz XCLK, thus requiring a separate
+> overlay.
+> 
+> Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> ---
+>   arch/arm64/boot/dts/ti/Makefile                    |  7 ++
+>   .../dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso    | 77 ++++++++++++++++++++++
+>   .../ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso   | 77 ++++++++++++++++++++++
+>   3 files changed, 161 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
+> index 77a347f9f47d..e49e32414560 100644
+> --- a/arch/arm64/boot/dts/ti/Makefile
+> +++ b/arch/arm64/boot/dts/ti/Makefile
+> @@ -9,9 +9,15 @@
+>   # alphabetically.
+>   
+>   # Boards with AM62x SoC
+> +k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
+> +	k3-am625-beagleplay-csi2-ov5640.dtbo
+> +k3-am625-beagleplay-csi2-tevi-ov5640-dtbs := k3-am625-beagleplay.dtb \
+> +	k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
+>   k3-am625-sk-hdmi-audio-dtbs := k3-am625-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
+>   k3-am62-lp-sk-hdmi-audio-dtbs := k3-am62-lp-sk.dtb k3-am62x-sk-hdmi-audio.dtbo
+>   dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-ov5640.dtb
+> +dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-tevi-ov5640.dtb
 
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+We don't need .dtb files for each overlay combination, you should leave these
+as overlays only, and just apply them at boot time as needed.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+To test apply them at build time, you can use the CONFIG_OF_ALL_DTBS
+method that Rob suggested here[0].
 
-NOTE:
-Following kernel crash noticed while running selftests: ftrace on
-arm64 Juno-r2 device running stable-rc linux-6.6.y.
+# Build time test only, enabled by CONFIG_OF_ALL_DTBS
+dtb- += \
+	k3-am625-beagleplay-overlay-test1.dtb \
+	k3-am625-beagleplay-overlay-test2.dtb
+k3-am625-beagleplay-overlay-test1-dtbs := k3-am625-beagleplay.dtb \
+	k3-am625-beagleplay-csi2-ov5640.dtbo
+k3-am625-beagleplay-overlay-test1-dtbs := k3-am625-beagleplay.dtb \
+	k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
 
-Link:
- - https://lore.kernel.org/linux-trace-kernel/20231116123016.140576-1-nares=
-h.kamboju@linaro.org/T/#u
+dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-ov5640.dtbo
+dtb-$(CONFIG_ARCH_K3) += k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
 
-## Build
-* kernel: 6.6.2-rc1
-* git: https://gitlab.com/Linaro/lkft/mirrors/stable/linux-stable-rc
-* git branch: linux-6.6.y
-* git commit: df34d612fd4ef266814366c8101094b7f83b6a92
-* git describe: v6.6.1-604-gdf34d612fd4e
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.6.y/build/v6.6.1=
--604-gdf34d612fd4e
+[0] https://lore.kernel.org/all/CAL_Jsq+8jisrwEqzz7tZnsV9g2+LmThwpO7sHRFA-zh+6q8XuA@mail.gmail.com/
 
-## Test Regressions (compared to v6.6.1)
+>   dtb-$(CONFIG_ARCH_K3) += k3-am625-phyboard-lyra-rdk.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am625-sk.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-am625-verdin-nonwifi-dahlia.dtb
+> @@ -81,6 +87,7 @@ dtb-$(CONFIG_ARCH_K3) += k3-am69-sk.dtb
+>   dtb-$(CONFIG_ARCH_K3) += k3-j784s4-evm.dtb
+>   
+>   # Enable support for device-tree overlays
+> +DTC_FLAGS_k3-am625-beagleplay += -@
 
-## Metric Regressions (compared to v6.6.1)
+Having any DTBO applied to the base during build will add symbols to the
+base for you, no need to add this line.
+(Please check that this is true for the OF_ALL_DTBS case above, I've not
+checked yet, we should fix if not).
 
-## Test Fixes (compared to v6.6.1)
+I plan to remove the same below in later patches so folks will stop adding
+more of these lines.
 
-## Metric Fixes (compared to v6.6.1)
+Andrew
 
-## Test result summary
-total: 136854, pass: 118192, fail: 1765, skip: 16783, xfail: 114
-
-## Build Summary
-* arc: 5 total, 5 passed, 0 failed
-* arm: 142 total, 141 passed, 1 failed
-* arm64: 50 total, 47 passed, 3 failed
-* i386: 40 total, 35 passed, 5 failed
-* mips: 25 total, 25 passed, 0 failed
-* parisc: 4 total, 4 passed, 0 failed
-* powerpc: 36 total, 32 passed, 4 failed
-* riscv: 25 total, 24 passed, 1 failed
-* s390: 13 total, 13 passed, 0 failed
-* sh: 10 total, 10 passed, 0 failed
-* sparc: 8 total, 8 passed, 0 failed
-* x86_64: 44 total, 43 passed, 1 failed
-
-## Test suites summary
-* boot
-* kselftest-android
-* kselftest-arm64
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers-dma-buf
-* kselftest-efivarfs
-* kselftest-exec
-* kselftest-filesystems
-* kselftest-filesystems-binderfs
-* kselftest-filesystems-epoll
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-ftrace
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-net-forwarding
-* kselftest-net-mptcp
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-user_events
-* kselftest-vDSO
-* kselftest-vm
-* kselftest-watchdog
-* kselftest-x86
-* kselftest-zram
-* kunit
-* libgpiod
-* libhugetlbfs
-* log-parser-boot
-* log-parser-test
-* ltp-cap_bounds
-* ltp-commands
-* ltp-containers
-* ltp-controllers
-* ltp-cpuhotplug
-* ltp-crypto
-* ltp-cve
-* ltp-dio
-* ltp-fcntl-locktests
-* ltp-filecaps
-* ltp-fs
-* ltp-fs_bind
-* ltp-fs_perms_simple
-* ltp-fsx
-* ltp-hugetlb
-* ltp-io
-* ltp-ipc
-* ltp-math
-* ltp-mm
-* ltp-nptl
-* ltp-pty
-* ltp-sched
-* ltp-securebits
-* ltp-smoke
-* ltp-syscalls
-* ltp-tracing
-* network-basic-tests
-* perf
-* rcutorture
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+>   DTC_FLAGS_k3-am625-sk += -@
+>   DTC_FLAGS_k3-am62-lp-sk += -@
+>   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso
+> new file mode 100644
+> index 000000000000..5e80ca7033ba
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso
+> @@ -0,0 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * ALINX AN5641 & Digilent PCam 5C - OV5640 camera module
+> + * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +&{/} {
+> +	clk_ov5640_fixed: ov5640-xclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <12000000>;
+> +	};
+> +};
+> +
+> +&main_gpio0 {
+> +	p11-hog {
+> +		/* P11 - CSI2_CAMERA_GPIO1 */
+> +		gpio-hog;
+> +		gpios = <11 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +		line-name = "CSI2_CAMERA_GPIO1";
+> +	};
+> +};
+> +
+> +&wkup_i2c0 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	ov5640: camera@3c {
+> +		compatible = "ovti,ov5640";
+> +		reg = <0x3c>;
+> +
+> +		clocks = <&clk_ov5640_fixed>;
+> +		clock-names = "xclk";
+> +
+> +		port {
+> +			csi2_cam0: endpoint {
+> +				remote-endpoint = <&csi2rx0_in_sensor>;
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&cdns_csi2rx0 {
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		csi0_port0: port@0 {
+> +			reg = <0>;
+> +			status = "okay";
+> +
+> +			csi2rx0_in_sensor: endpoint {
+> +				remote-endpoint = <&csi2_cam0>;
+> +				bus-type = <4>; /* CSI2 DPHY. */
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&dphy0 {
+> +	status = "okay";
+> +};
+> +
+> +&ti_csi2rx0 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso
+> new file mode 100644
+> index 000000000000..5e1cbbc27c8f
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso
+> @@ -0,0 +1,77 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Technexion TEVI-OV5640-*-RPI - OV5640 camera module
+> + * Copyright (C) 2022-2023 Texas Instruments Incorporated - https://www.ti.com/
+> + */
+> +
+> +/dts-v1/;
+> +/plugin/;
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +
+> +&{/} {
+> +	clk_ov5640_fixed: ov5640-xclk {
+> +		compatible = "fixed-clock";
+> +		#clock-cells = <0>;
+> +		clock-frequency = <24000000>;
+> +	};
+> +};
+> +
+> +&main_gpio0 {
+> +	p11-hog {
+> +		/* P11 - CSI2_CAMERA_GPIO1 */
+> +		gpio-hog;
+> +		gpios = <11 GPIO_ACTIVE_HIGH>;
+> +		output-high;
+> +		line-name = "CSI2_CAMERA_GPIO1";
+> +	};
+> +};
+> +
+> +&wkup_i2c0 {
+> +	#address-cells = <1>;
+> +	#size-cells = <0>;
+> +	status = "okay";
+> +
+> +	ov5640: camera@3c {
+> +		compatible = "ovti,ov5640";
+> +		reg = <0x3c>;
+> +
+> +		clocks = <&clk_ov5640_fixed>;
+> +		clock-names = "xclk";
+> +
+> +		port {
+> +			csi2_cam0: endpoint {
+> +				remote-endpoint = <&csi2rx0_in_sensor>;
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&cdns_csi2rx0 {
+> +	ports {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		csi0_port0: port@0 {
+> +			reg = <0>;
+> +			status = "okay";
+> +
+> +			csi2rx0_in_sensor: endpoint {
+> +				remote-endpoint = <&csi2_cam0>;
+> +				bus-type = <4>; /* CSI2 DPHY. */
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&dphy0 {
+> +	status = "okay";
+> +};
+> +
+> +&ti_csi2rx0 {
+> +	status = "okay";
+> +};
+> 
