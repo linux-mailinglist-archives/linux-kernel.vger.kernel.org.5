@@ -2,158 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CDB97EE08F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:16:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2FA07EE092
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:17:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345180AbjKPMQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:16:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
+        id S1345174AbjKPMRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:17:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345179AbjKPMQ6 (ORCPT
+        with ESMTP id S1345138AbjKPMRX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:16:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F6E9C;
-        Thu, 16 Nov 2023 04:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700137014; x=1731673014;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=fG2kDFOySIVUpLkO0CBCrE4Itv+obpd1DzcFnAf/iq0=;
-  b=ej7MdeX/AK2XqdN+nyM1jIEEYQzPiDBB38QMnFbgX6SgzaK4udvaQ0CT
-   3V/5gIUp2kC6E+FWO+96LqvDrrUKGqlgl8npcl3Ng12NcT5DKqy1Ir9Ew
-   LLmh53uWKe/ZFRN5AFVl5ND7DtFBU9T1o5AEikZtyu8NZyMhIQECKKRQU
-   ltc4aWJiXTdL6j5NkmZnyRtffncwPOtKPwbAj17tQfg+UlcmYA3UUL8MF
-   CxqKYO9OOdBB2nt97j7NE45dACKvxbnNeuFqM5h7V/B0DoBrblD/dV2TD
-   wdY9HxQmuZrORMfZSrK/mVoR+rv5hxEYXXQBnwJ3rNpvOZusRsof48NN+
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="390865429"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="390865429"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:16:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="938825905"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="938825905"
-Received: from jhsteyn-mobl1.ger.corp.intel.com ([10.252.40.9])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:16:50 -0800
-Date:   Thu, 16 Nov 2023 14:16:47 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     =?ISO-8859-15?Q?Th=E9o_Lebrun?= <theo.lebrun@bootlin.com>
-cc:     Russell King <linux@armlinux.org.uk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        =?ISO-8859-15?Q?Gr=E9gory_Clement?= <gregory.clement@bootlin.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
-        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
-Subject: Re: [PATCH v2 3/5] tty: serial: amba-pl011: cleanup driver
-In-Reply-To: <20231116-mbly-uart-v2-3-863f665ce520@bootlin.com>
-Message-ID: <971f533-261a-3095-38a-586c74da543e@linux.intel.com>
-References: <20231116-mbly-uart-v2-0-863f665ce520@bootlin.com> <20231116-mbly-uart-v2-3-863f665ce520@bootlin.com>
+        Thu, 16 Nov 2023 07:17:23 -0500
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0E86187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:17:20 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id d9443c01a7336-1cc68c1fac2so6905355ad.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:17:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700137040; x=1700741840; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=0aq51udqPabDrhMIIqZFnTBT5LeHwsY7uMRmk0JI2FA=;
+        b=YwnHPyaVDJeqZJLEEKd5TeHCDA3W45rthHuq3CGwyPrKpEyQnwcOMVfVuGbJ0ImEwl
+         1QC6/vKPseLMKfdWbAdmkZ53wfhCj9lS7dzrZZRzzUQZpoQH4ZIacS3Scuhg88850xA9
+         2oDZMRRldJenqe300xJBW/bwAJfZGQqcDvk+Ede0Mq0b5ybIhMTy9/0nk0aOFzrdjCet
+         AI7ey0yLjWhE2Zob8UuTY5zyvhJQTohxC/job3MDDDmYej8qs0i2Yfw9cAdhBCOPz2e7
+         K3lgxlkH6ZlnZMsBDnFXA5K2RAV3fp0ynebbpaukPW5c9M9r50N/aZ4RB0jpvHCur9tH
+         1l/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700137040; x=1700741840;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0aq51udqPabDrhMIIqZFnTBT5LeHwsY7uMRmk0JI2FA=;
+        b=wYElfyrHOZ5s6H6xtOZid+tEq4Kk52b+ZJ8f3a8O7g/ek2zguXnVOg0tE4DGHbDetM
+         8jF2CFaydtwGx2du7GwOO2qlN3/mK5BI+XFCVyWyOu7jcyP5WhLowHtG6zgPBIDlnXi8
+         bTcKCwaYd+8D3J0X7P63ua51878XvOJdMsncPF0KDhrt9cBMCdaXD+3nLyYvqwiW/bCC
+         kNjMcxwngLgF/+cnJJZV37WrtcnHmkOABuD/VSEbasg6lks7hOYcXSixm/UCBl5WgU/N
+         t5qnSi6YG2VdXSUNZ+uvzpB4mFulf87sVAPAYPsZ4fT7sfzdu2lYc+0phVsVfL29x5jh
+         g50Q==
+X-Gm-Message-State: AOJu0YxG1eJKe4arhl2IEVnVo5paxcW+NMfPz/Gsa8jnK2dvjngtaCoI
+        TVYvR261nnOctyLALvTG9o/FQO9HJ9Ihig==
+X-Google-Smtp-Source: AGHT+IGccebkPsrncb2428ZzEoT212XQZ/yDquuab+aT+2dHdHsC7S/sg7r7nKcnYlGPujAmIRCKpw==
+X-Received: by 2002:a17:902:e803:b0:1cc:4985:fc15 with SMTP id u3-20020a170902e80300b001cc4985fc15mr9318166plg.27.1700137040000;
+        Thu, 16 Nov 2023 04:17:20 -0800 (PST)
+Received: from localhost.localdomain ([193.203.214.57])
+        by smtp.gmail.com with ESMTPSA id p18-20020a170902e75200b001b8b45b177esm9085780plf.274.2023.11.16.04.17.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 04:17:19 -0800 (PST)
+From:   xu <xu.xin.sc@gmail.com>
+X-Google-Original-From: xu <xu.xin16@zte.com.cn>
+To:     david@redhat.com
+Cc:     akpm@linux-foundation.org, imbrenda@linux.ibm.com,
+        jiang.xuexin@zte.com.cn, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, ran.xiaokai@zte.com.cn, wang.yong12@zte.com.cn,
+        xu.xin.sc@gmail.com, xu.xin16@zte.com.cn, yang.yang29@zte.com.cn
+Subject: Re: [PATCH] ksm: delay the check of splitting compound pages
+Date:   Thu, 16 Nov 2023 12:17:15 +0000
+Message-Id: <20231116121715.1974713-1-xu.xin16@zte.com.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <d87bfcdd-cbaa-4485-a63b-6a524681fa08@redhat.com>
+References: <d87bfcdd-cbaa-4485-a63b-6a524681fa08@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1437232929-1700137013=:1886"
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+>>>> @@ -2229,24 +2229,10 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+>>>>    	tree_rmap_item =
+>>>>    		unstable_tree_search_insert(rmap_item, page, &tree_page);
+>>>>    	if (tree_rmap_item) {
+>>>> -		bool split;
+>>>> -
+>>>>    		kpage = try_to_merge_two_pages(rmap_item, page,
+>>>>    						tree_rmap_item, tree_page);
+>>>> -		/*
+>>>> -		 * If both pages we tried to merge belong to the same compound
+>>>> -		 * page, then we actually ended up increasing the reference
+>>>> -		 * count of the same compound page twice, and split_huge_page
+>>>> -		 * failed.
+>>>> -		 * Here we set a flag if that happened, and we use it later to
+>>>> -		 * try split_huge_page again. Since we call put_page right
+>>>> -		 * afterwards, the reference count will be correct and
+>>>> -		 * split_huge_page should succeed.
+>>>> -		 */
+>>>
+>>> I'm curious, why can't we detect that ahead of time and keep only a
+>>> single reference? Why do we need the backup code? Anything I am missing?
 
---8323329-1437232929-1700137013=:1886
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Do you mean like this?
 
-On Thu, 16 Nov 2023, Théo Lebrun wrote:
-
-> Follow recommandations from:
-> 
->     $ ./scripts/checkpatch.pl --strict --file \
->             drivers/tty/serial/amba-pl011.c
-> 
-> It does NOT fix alerts relative to TIOCMBIT which will be dealt with in
-> another patch. Fixes following alerts:
-> 
->     CHECK: Alignment should match open parenthesis
->     CHECK: Blank lines aren't necessary after an open brace '{'
->     CHECK: Comparison to NULL could be written [...]
->     CHECK: Lines should not end with a '('
->     CHECK: Please don't use multiple blank lines
->     CHECK: Please use a blank line after function/struct/union/enum declarations
->     CHECK: Prefer using the BIT macro
->     CHECK: Unbalanced braces around else statement
->     CHECK: Unnecessary parentheses around [...]
->     CHECK: braces {} should be used on all arms of this statement
->     CHECK: spaces preferred around that '/' (ctx:VxV)
->     CHECK: spaces preferred around that '|' (ctx:VxV)
->     ERROR: do not initialise statics to false
->     WARNING: Comparisons should place the constant on the right side of the test
->     WARNING: Possible unnecessary 'out of memory' message
->     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
->     WARNING: Prefer [subsystem eg: netdev]_info([subsystem]dev, ... then dev_info(dev, ... then pr_info(...  to printk(KERN_INFO ...
->     WARNING: quoted string split across lines
-> 
-> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
-> ---
-
-> @@ -2916,9 +2911,12 @@ static int sbsa_uart_probe(struct platform_device *pdev)
->  	if (qdf2400_e44_present) {
->  		dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
->  		uap->vendor = &vendor_qdt_qdf2400_e44;
-> -	} else
-> -#endif
-> +	} else {
->  		uap->vendor = &vendor_sbsa;
-> +	}
-> +#else
-> +	uap->vendor = &vendor_sbsa;
-> +#endif
-
-IMO, this would look a lot nicer if you make a function out of it (but 
-perhaps it can be changed in a follow-up patch):
-
-#ifdef CONFIG_ACPI_SPCR_TABLE
-static void qpdf2400_erratum44_workaround(struct platform_device *pdev,
-					  struct uart_amba_port *uap)
-{
-	if (!qdf2400_e44_present)
-		return;
-
-	dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
-	uap->vendor = &vendor_qdt_qdf2400_e44;
-}
-#else
-static void qpdf2400_erratum44_workaround(struct platform_device *pdev,
-					  struct uart_amba_port *uap) { }	
-#endif
+--- a/mm/ksm.c
++++ b/mm/ksm.c
+@@ -2229,23 +2229,21 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+        tree_rmap_item =
+                unstable_tree_search_insert(rmap_item, page, &tree_page);
+        if (tree_rmap_item) {
+-               bool split;
++               bool SameCompound;
++               /*
++                * If they belongs to the same compound page, its' reference
++                * get twice, so need to put_page once to avoid that
++                * split_huge_page fails in try_to_merge_two_pages().
++                */
++               if (SameCompound = Is_SameCompound(page, tree_page))
++                       put_page(tree_page);
+ 
+                kpage = try_to_merge_two_pages(rmap_item, page,
+                                                tree_rmap_item, tree_page);
+-               /*
+-                * If both pages we tried to merge belong to the same compound
+-                * page, then we actually ended up increasing the reference
+-                * count of the same compound page twice, and split_huge_page
+-                * failed.
+-                * Here we set a flag if that happened, and we use it later to
+-                * try split_huge_page again. Since we call put_page right
+-                * afterwards, the reference count will be correct and
+-                * split_huge_page should succeed.
+-                */
+-               split = PageTransCompound(page)
+-                       && compound_head(page) == compound_head(tree_page);
+-               put_page(tree_page);
++
++               if (!SameCompound)
++                       put_page(tree_page);
++
+                if (kpage) {
+                        /*
+                         * The pages were successfully merged: insert new
+@@ -2271,20 +2269,6 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
+                                break_cow(tree_rmap_item);
+                                break_cow(rmap_item);
+                        }
+-               } else if (split) {
+-                       /*
+-                        * We are here if we tried to merge two pages and
+-                        * failed because they both belonged to the same
+-                        * compound page. We will split the page now, but no
+-                        * merging will take place.
+-                        * We do not want to add the cost of a full lock; if
+-                        * the page is locked, it is better to skip it and
+-                        * perhaps try again later.
+-                        */
+-                       if (!trylock_page(page))
+-                               return;
+-                       split_huge_page(page);
+-                       unlock_page(page);
+                }
+        }
+ }
 
 
-static int sbsa_uart_probe(struct platform_device *pdev)
-{
-	...
-	uap->vendor = &vendor_sbsa;
-	qpdf2400_erratum44_workaround(pdev, uap);
-	...
-}
+>> 
+>> I don't know the original reason, better ask Claudio Imbrenda <imbrenda@linux.vnet.ibm.com>.
+>> Maybe because doing detection that ahead of time will break several funtions' semantic,
+>> such as try_to_merge_two_pages(), try_to_merge_with_ksm_page() and try_to_merge_one_page()
+>> 
+>> Adding the backup code don't change the old code and fixing the old problem, it's good.
+>
+>It's absolutely counter-intuitive to check for something that cannot 
+>possibly work after the effects. This better has a good reason to make 
+>that code more complicated.
+>-- 
 
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
-
-
--- 
- i.
-
---8323329-1437232929-1700137013=:1886--
