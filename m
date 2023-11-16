@@ -2,55 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 633587EE6B7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC7C7EE6BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:29:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345425AbjKPS3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50404 "EHLO
+        id S1345448AbjKPS3n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:29:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKPS3c (ORCPT
+        with ESMTP id S229488AbjKPS3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:29:32 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 980FC195
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:29:29 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A5AAC433C9;
-        Thu, 16 Nov 2023 18:29:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700159369;
-        bh=CNm1AYvgH24i5zs7rXuhysROqKGaoDkC4TrTERZzmbk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IvrzIWe8wpTFrBo2kBoC3ir+8BuiR3x9ErONqHu5L3iLShOerbPK8QshrBqK5Ukyx
-         vlm93+L/ZIV5VqHX/+JyVZ6NgT+Ul9EbjTFFCgfE8BrWZLB1SMpn5ZeBKIpS0PMj65
-         rWi02IIdlaW/TmjIVmYD4iGEo3mznyxCPKzqLv3L42Kfl4OgIuDY7pQFcwHLXsjJfo
-         MKYDPwYmggEe+xKPCf31d/5+G7y6FnXO3Kz3hKjRYvc5/x4iVlHkwyJK9LOT8iSovv
-         busPkZWAl7t/h5t8qbv6eAxw4LJFJ8oI5dobE8RbeZ9+unbs3ONQC9ypaMkESTjXwP
-         BOXwyhwWFZUTQ==
-Date:   Thu, 16 Nov 2023 18:29:23 +0000
-From:   Simon Horman <horms@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Appana Durga Kedareswara rao <appana.durga.rao@xilinx.com>,
-        Naga Sureshkumar Relli <naga.sureshkumar.relli@xilinx.com>,
-        Michal Simek <michal.simek@amd.com>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [RESEND PATCH] net: can: Use device_get_match_data()
-Message-ID: <20231116182923.GH109951@vergenet.net>
-References: <20231115210129.3739377-1-robh@kernel.org>
+        Thu, 16 Nov 2023 13:29:41 -0500
+X-Greylist: delayed 25869 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Nov 2023 10:29:35 PST
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 853D6195
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:29:35 -0800 (PST)
+Message-ID: <cc1bee15-f69f-4467-873d-c85cc09d60a0@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700159373;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Edk6FLzHTRuYYpwZ3fxzpEOntgKfq8bYriPXqiotyZI=;
+        b=BbdP5LbJs917g+nVPVtTSfLgSHIgGpMCVOrjedB+PT0GgKJiSDIx0DGhDbT/Ah1BqC9wpM
+        ZD4bC24s5vEy0uF0/fkgAkyHsJWdqIQJPalBJWY4DSRUIxxg4M0MluE/FHjBS/c3OJm26G
+        6aAeBVSpaWnB12L7dQlA+6hK6pE7n0E=
+Date:   Fri, 17 Nov 2023 02:29:25 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115210129.3739377-1-robh@kernel.org>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Subject: Re: [PATCH 5/8] drm/bridge: it66121: Add a helper function to read
+ chip id
+Content-Language: en-US
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-6-sui.jingfeng@linux.dev>
+ <CAA8EJprkDpjuHEi5R01p4XNvFBr94BvXhr7AZCLr6dC8Mk=yPw@mail.gmail.com>
+ <7602cd83-0e05-4e11-9bd1-10eb1d48a507@linux.dev>
+ <CAA8EJprFjdrQtegJd5HyzGYQaMawwQOhvkE=SNqsdsBCrtfDTA@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Sui Jingfeng <sui.jingfeng@linux.dev>
+In-Reply-To: <CAA8EJprFjdrQtegJd5HyzGYQaMawwQOhvkE=SNqsdsBCrtfDTA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -58,63 +61,148 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 03:01:28PM -0600, Rob Herring wrote:
-> Use preferred device_get_match_data() instead of of_match_device() to
-> get the driver match data. With this, adjust the includes to explicitly
-> include the correct headers.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Hi,
 
-...
 
-> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-> index abe58f103043..f17fd43d03c0 100644
-> --- a/drivers/net/can/xilinx_can.c
-> +++ b/drivers/net/can/xilinx_can.c
-> @@ -20,8 +20,8 @@
->  #include <linux/module.h>
->  #include <linux/netdevice.h>
->  #include <linux/of.h>
-> -#include <linux/of_device.h>
->  #include <linux/platform_device.h>
-> +#include <linux/property.h>
->  #include <linux/skbuff.h>
->  #include <linux/spinlock.h>
->  #include <linux/string.h>
-> @@ -1726,7 +1726,6 @@ static int xcan_probe(struct platform_device *pdev)
->  	struct net_device *ndev;
->  	struct xcan_priv *priv;
->  	struct phy *transceiver;
-> -	const struct of_device_id *of_id;
->  	const struct xcan_devtype_data *devtype = &xcan_axi_data;
+On 2023/11/16 21:00, Dmitry Baryshkov wrote:
+> On Thu, 16 Nov 2023 at 14:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>> Hi,
+>>
+>>
+>> On 2023/11/15 00:06, Dmitry Baryshkov wrote:
+>>> On Tue, 14 Nov 2023 at 17:09, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>>>> From: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>>
+>>>> Read the required chip id data back by calling regmap_bulk_read() once,
+>>>> reduce the number of local variables needed in it66121_probe() function.
+>>>> And store its values into struct it66121_ctx, as it will be used latter.
+>>>>
+>>>> Signed-off-by: Sui Jingfeng <suijingfeng@loongson.cn>
+>>>> ---
+>>>>    drivers/gpu/drm/bridge/ite-it66121.c | 47 ++++++++++++++++++++--------
+>>>>    1 file changed, 34 insertions(+), 13 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+>>>> index 7e473beefc79..f36d05331f25 100644
+>>>> --- a/drivers/gpu/drm/bridge/ite-it66121.c
+>>>> +++ b/drivers/gpu/drm/bridge/ite-it66121.c
+>>>> @@ -313,6 +313,9 @@ struct it66121_ctx {
+>>>>                   bool auto_cts;
+>>>>           } audio;
+>>>>           const struct it66121_chip_info *info;
+>>>> +       u16 vender_id;
+>>>> +       u16 device_id;
+>>>> +       u8 revision;
+>>> There is no need to store them, they are not used by the driver anywhere.
+>>>
+>>>>    };
+>>>>
+>>>>    static inline struct it66121_ctx *bridge_to_it66121(struct drm_bridge *bridge)
+>>>> @@ -399,6 +402,30 @@ static void it66121_hw_reset(struct it66121_ctx *ctx)
+>>>>           gpiod_set_value(ctx->gpio_reset, 0);
+>>>>    }
+>>>>
+>>>> +static int it66121_read_chip_id(struct it66121_ctx *ctx, bool verbose)
+>>>> +{
+>>>> +       u8 id[4];
+>>>> +       int ret;
+>>>> +
+>>>> +       ret = regmap_bulk_read(ctx->regmap, IT66121_VENDOR_ID0_REG, id, 4);
+>>>> +       if (ret < 0) {
+>>>> +               dev_err(ctx->dev, "Failed to read chip ID: %d\n", ret);
+>>>> +               return ret;
+>>>> +       }
+>>>> +
+>>>> +       ctx->vender_id = (u16)id[1] << 8 | id[0];
+>>>> +       ctx->device_id = ((u16)(id[3] & IT66121_DEVICE_ID1_MASK) << 8 | id[2]);
+>>>> +       /* Revision is shared with DEVICE_ID1 */
+>>>> +       ctx->revision = FIELD_GET(IT66121_REVISION_MASK, id[3]);
+>>>> +
+>>>> +       if (verbose) {
+>>>> +               dev_info(ctx->dev, "Found ITE66121: 0x%x%x, revision: %u\n",
+>>>> +                        ctx->vender_id, ctx->device_id, ctx->revision);
+>>>> +       }
+>>>> +
+>>>> +       return 0;
+>>>> +}
+>>>> +
+>>>>    static inline int it66121_preamble_ddc(struct it66121_ctx *ctx)
+>>>>    {
+>>>>           return regmap_write(ctx->regmap, IT66121_MASTER_SEL_REG, IT66121_MASTER_SEL_HOST);
+>>>> @@ -1561,7 +1588,6 @@ static const char * const it66121_supplies[] = {
+>>>>
+>>>>    static int it66121_probe(struct i2c_client *client)
+>>>>    {
+>>>> -       u32 revision_id, vendor_ids[2] = { 0 }, device_ids[2] = { 0 };
+>>>>           int ret;
+>>>>           struct it66121_ctx *ctx;
+>>>>           struct device *dev = &client->dev;
+>>>> @@ -1603,19 +1629,13 @@ static int it66121_probe(struct i2c_client *client)
+>>>>           if (IS_ERR(ctx->regmap))
+>>>>                   return PTR_ERR(ctx->regmap);
+>>>>
+>>>> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID0_REG, &vendor_ids[0]);
+>>>> -       regmap_read(ctx->regmap, IT66121_VENDOR_ID1_REG, &vendor_ids[1]);
+>>>> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID0_REG, &device_ids[0]);
+>>>> -       regmap_read(ctx->regmap, IT66121_DEVICE_ID1_REG, &device_ids[1]);
+>>>> -
+>>>> -       /* Revision is shared with DEVICE_ID1 */
+>>>> -       revision_id = FIELD_GET(IT66121_REVISION_MASK, device_ids[1]);
+>>>> -       device_ids[1] &= IT66121_DEVICE_ID1_MASK;
+>>>> +       ret = it66121_read_chip_id(ctx, false);
+>>>> +       if (ret)
+>>>> +               return ret;
+>>>>
+>>>> -       if ((vendor_ids[1] << 8 | vendor_ids[0]) != ctx->info->vid ||
+>>>> -           (device_ids[1] << 8 | device_ids[0]) != ctx->info->pid) {
+>>>> +       if (ctx->vender_id != ctx->info->vid ||
+>>>> +           ctx->device_id != ctx->info->pid)
+>> Q: There is no need to store them, they are not used by the driver anywhere.
+>>
+>> A: Here it is used, it is also used by the 0007-patch to get the entity(instance)-specific data.
+> And the patch 7 will be changed once you have proper i2c client struct
+> registered.
+>
+We will create a "wrong"i2c client intentionally by calling i2c_new_client_device, the "wrong" 
+here means that 'board_info.type'  is not equal to "it66121" or "it6610".
 
-Hi Rob,
+I probably know what you means, but please note that we are not object you at here.
+The reason why we prefer theit66121_get_match_data() over the i2c_get_match_data() is that our 
+it66121_get_match_data()  works with *the least dependency*. Ourversion
+don't rely on the DT to provide compatible strings. Because the it66121 itself already
+provided constant hard-coded vender id and device id on-chip register. This is a bit
+similar with the PCIe devices. This chip id speak everything about chip identify.
+By re-arranging the variants into array, searching and matching against became
+straight-forward. We can also utilize the vender id and device id information to
+dynamic bind the instance specific functions *at the setup(probe) time*. Which helps
+to untangle the it66121 and it6610 cases with function object. Currently they are
+tangled. This is not a problem simply because the model supported is too small(less).
 
-Here devtype is initialised.
 
->  	void __iomem *addr;
->  	int ret;
-> @@ -1741,9 +1740,7 @@ static int xcan_probe(struct platform_device *pdev)
->  		goto err;
->  	}
->  
-> -	of_id = of_match_device(xcan_of_match, &pdev->dev);
-> -	if (of_id && of_id->data)
-> -		devtype = of_id->data;
-
-And in the old code devtype was conditionally re-initialised here,
-if a match with data was found.
-
-But in the new code devtype is re-initialised unconditionally.
-
-Possibly I am missing something obvious, but it seems that either this
-should somehow be made conditional, or the initialisation to &xcan_axi_data
-should be dropped.
-
-> +	devtype = device_get_match_data(&pdev->dev);
->  
->  	hw_tx_max_property = devtype->flags & XCAN_FLAG_TX_MAILBOXES ?
->  			     "tx-mailbox-count" : "tx-fifo-depth";
-> -- 
-> 2.42.0
-> 
+>>
+>> Since it6610 was introduced, this is used for chip identifying.
+>> It can also be used with in debugfs context, to show who I am.
+> I'd say, there is little point in whoami debugfs files. Debugfs is for
+> the useful information.
+>
+>>
+>>>>                   return -ENODEV;
+>>>> -       }
+>>>>
+>>>>           ctx->bridge.funcs = &it66121_bridge_funcs;
+>>>>           ctx->bridge.of_node = dev->of_node;
+>>>> @@ -1633,7 +1653,8 @@ static int it66121_probe(struct i2c_client *client)
+>>>>
+>>>>           drm_bridge_add(&ctx->bridge);
+>>>>
+>>>> -       dev_info(dev, "IT66121 revision %d probed\n", revision_id);
+>>>> +       dev_info(dev, "IT66121 probed, chip id: 0x%x:0x%x, revision: %u\n",
+>>>> +                ctx->vender_id, ctx->device_id, ctx->revision);
+>>>>
+>>>>           return 0;
+>>>>    }
+>>>> --
+>>>> 2.34.1
+>>>>
+>
+>
