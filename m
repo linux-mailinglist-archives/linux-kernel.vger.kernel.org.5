@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A4F97EE459
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:29:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4AB7EE453
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231178AbjKPP3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
+        id S235157AbjKPP3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:29:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231164AbjKPP3Z (ORCPT
+        with ESMTP id S231168AbjKPP3Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 16 Nov 2023 10:29:25 -0500
 Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB85D53;
-        Thu, 16 Nov 2023 07:29:20 -0800 (PST)
-X-UUID: e54c0448849411ee8051498923ad61e6-20231116
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73488D57;
+        Thu, 16 Nov 2023 07:29:21 -0800 (PST)
+X-UUID: e805cb10849411ee8051498923ad61e6-20231116
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=+AdCj3oPS4Yuvol06kpIMzdLo24kALWO/jdcfmFxzhY=;
-        b=UQQ6ylf78n7t4194M0yV0MCHil+sUeZL9kmPdK7NdI+8wOS8T1VjhupwiouzgJ/yLL50V52GiNr1/LfDU1pk1sIcYlYmF95DqaVJmWUjNR+jADAj9bJow5eOhvdmoFTp6Iz/jtZCiE17WdFDwH4odJ6ZSYRd+gCvvLqaVKn/2nc=;
+        h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=w26f3s/KpcdeNXHV8igVjOolC4EbxjxrFS+zzIrLW8A=;
+        b=m3RnSXoX9cMBgltnPn0nOm2sCYLAGuLZ1cmyDhaBLjNVFY+vgAXK2pw3+IjRuufJ7cLeTVDa2ailazdetJ3qDDpvrMLWn09LqZtL63XNKmML4E97hPCl8/FICXVKqCL38h4LxbHbn8DMAS6A56Keid/mCAT08az69TFz3O+0VVw=;
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.33,REQID:82eb677a-5fe1-4917-8b80-1855b8f1ab8f,IP:0,U
+X-CID-O-INFO: VERSION:1.1.33,REQID:1e4eb051-020b-486f-b332-b341a64beaa4,IP:0,U
         RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
         N:release,TS:-25
-X-CID-META: VersionHash:364b77b,CLOUDID:fabdbb72-1bd3-4f48-b671-ada88705968c,B
+X-CID-META: VersionHash:364b77b,CLOUDID:ff392460-c89d-4129-91cb-8ebfae4653fc,B
         ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
         RL:11|1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:
         NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
 X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: e54c0448849411ee8051498923ad61e6-20231116
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
+X-UUID: e805cb10849411ee8051498923ad61e6-20231116
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw02.mediatek.com
         (envelope-from <yi-de.wu@mediatek.com>)
         (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 342339200; Thu, 16 Nov 2023 23:29:13 +0800
+        with ESMTP id 1486241371; Thu, 16 Nov 2023 23:29:17 +0800
 Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
- MTKMBS14N1.mediatek.inc (172.21.101.75) with Microsoft SMTP Server
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
  15.2.1118.26; Thu, 16 Nov 2023 23:29:11 +0800
 Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
@@ -69,28 +69,27 @@ CC:     Arnd Bergmann <arnd@arndb.de>, <devicetree@vger.kernel.org>,
         Liju Chen <liju-clr.chen@mediatek.com>,
         Willix Yeh <chi-shen.yeh@mediatek.com>,
         "Kevenny Hsieh" <kevenny.hsieh@mediatek.com>
-Subject: [PATCH v7 15/16] virt: geniezone: Add memory pin/unpin support
-Date:   Thu, 16 Nov 2023 23:27:55 +0800
-Message-ID: <20231116152756.4250-16-yi-de.wu@mediatek.com>
+Subject: [PATCH v7 16/16] virt: geniezone: Add memory relinquish support
+Date:   Thu, 16 Nov 2023 23:27:56 +0800
+Message-ID: <20231116152756.4250-17-yi-de.wu@mediatek.com>
 X-Mailer: git-send-email 2.18.0
 In-Reply-To: <20231116152756.4250-1-yi-de.wu@mediatek.com>
 References: <20231116152756.4250-1-yi-de.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--6.116400-8.000000
-X-TMASE-MatchedRID: FEQi7wiS8RY/TqR73SoO885Scd0yVs+bbd6rGhWOAwQCSZrAnTS0Brps
-        GokK+C//AuwgUdYPZkXW0e5KCL9fbo0GdWKgGbBhMIiU395I8H3QeN4A2h64ncA5YKm8dwM6V78
-        paYC694DwDJaTY0Uw1tUvsMhDJV3vsEBAuoaUqK/il2r2x2PwtZyDP1rrUdvhXCmcAC8DBrOt0v
-        JcrVX4uGgMmeqXbMt1kkL+ENlH3trw/vD6Q64ggQwfhKwa9GwDcx5k3wffojMIbcbWxixcZI2n3
-        CVm0yC5585VzGMOFzA9wJeM2pSaRcK21zBg2KlfGM6W3U+Lnnf9UVTtcLrq40/ky5ZO+kjg5ClJ
-        FiBfD6zjywKvP1qavQ==
+X-TM-AS-Result: No-10--8.472700-8.000000
+X-TMASE-MatchedRID: JmyJSWSx2I8CsjHNBKjIykKcYi5Qw/RVQBnqdxuJ5SBGL0g1nVmkYXB4
+        4IkzjfYyR3nAM7y+sxF8f1Kw27wTO10U3RPW+iLPdXz3l78F3Ym2McZY43zJ47UV4VfJ6SB08bf
+        335SL+13q24xRTqfKLQ+BePuQCx01h9pkVp8w2GFXqJZaYM8sQDGZtPrBBPZryL0CMroLynXtAK
+        hUF11H++LSNL7FuDTOtKl9M/OCG8uioinUBRkHmov2/i8VNqeOCt59Uh3p/NVV84HrPxCfbDAvy
+        v3tuvkNhPe8q+IPhj6AMuqetGVetnyef22ep6XYymsk/wUE4hoBY3PH7cE6qqJhTXZzTgsl7Vb8
+        v9UWo78MNFxQO+kQB1Tn1tsvYMlo
 X-TM-AS-User-Approved-Sender: No
 X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--6.116400-8.000000
+X-TMASE-Result: 10--8.472700-8.000000
 X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: 337D8F43338640BF381649683B53DFACF1315DF158B48C331AD8BAC2FFB6C1042000:8
+X-TM-SNTS-SMTP: FB8CF74544F291F23B7D1232E86AC67E0D2B3077F48E0BD367879BBB273E89D12000:8
 X-MTK:  N
 X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,
@@ -105,206 +104,156 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Jerry Wang" <ze-yu.wang@mediatek.com>
 
-Protected VM's memory cannot be swapped out because the memory pages are
-protected from host access.
-
-Once host accesses to those protected pages, the hardware exception is
-triggered and may crash the host. So, we have to make those protected
-pages be ineligible for swapping or merging by the host kernel to avoid
-host access. To do so, we pin the page when it is assigned (donated) to
-VM and unpin when VM relinquish the pages or is destroyed. Besides, the
-protected VM’s memory requires hypervisor to clear the content before
-returning to host, but VMM may free those memory before clearing, it
-will result in those memory pages are reclaimed and reused before
-totally clearing. Using pin/unpin can also avoid the above problems.
-
-The implementation is described as follows.
-- Use rb_tree to store pinned memory pages.
-- Pin the page when handling page fault.
-- Unpin the pages when VM relinquish the pages or is destroyed.
+Unpin the pages when VM relinquish the pages or is destroyed.
 
 Signed-off-by: Jerry Wang <ze-yu.wang@mediatek.com>
 Signed-off-by: Yingshiuan Pan <yingshiuan.pan@mediatek.com>
+Signed-off-by: Liju-Clr Chen <liju-clr.chen@mediatek.com>
 Signed-off-by: Yi-De Wu <yi-de.wu@mediatek.com>
-Signed-off-by: Liju Chen <liju-clr.chen@mediatek.com>
 ---
- drivers/virt/geniezone/gzvm_mmu.c | 60 ++++++++++++++++++++++++++++++-
- drivers/virt/geniezone/gzvm_vm.c  | 18 ++++++++++
- include/linux/gzvm_drv.h          | 10 ++++++
- 3 files changed, 87 insertions(+), 1 deletion(-)
+ drivers/virt/geniezone/gzvm_exception.c | 23 +++++++++++++++
+ drivers/virt/geniezone/gzvm_mmu.c       | 37 +++++++++++++++++++++++++
+ drivers/virt/geniezone/gzvm_vcpu.c      |  6 ++--
+ include/linux/gzvm_drv.h                |  2 ++
+ include/uapi/linux/gzvm.h               |  5 ++++
+ 5 files changed, 71 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/virt/geniezone/gzvm_exception.c b/drivers/virt/geniezone/gzvm_exception.c
+index 31fdb4ae8db4..af26d1c82791 100644
+--- a/drivers/virt/geniezone/gzvm_exception.c
++++ b/drivers/virt/geniezone/gzvm_exception.c
+@@ -37,3 +37,26 @@ bool gzvm_handle_guest_exception(struct gzvm_vcpu *vcpu)
+ 	else
+ 		return false;
+ }
++
++/**
++ * gzvm_handle_guest_hvc() - Handle guest hvc
++ * @vcpu: Pointer to struct gzvm_vcpu struct
++ * Return:
++ * * true - This hvc has been processed, no need to back to VMM.
++ * * false - This hvc has not been processed, require userspace.
++ */
++bool gzvm_handle_guest_hvc(struct gzvm_vcpu *vcpu)
++{
++	unsigned long ipa;
++	int ret;
++
++	switch (vcpu->run->hypercall.args[0]) {
++	case GZVM_HVC_MEM_RELINQUISH:
++		ipa = vcpu->run->hypercall.args[1];
++		ret = gzvm_handle_relinquish(vcpu, ipa);
++		return (ret == 0) ? true : false;
++	default:
++		break;
++	}
++	return false;
++}
 diff --git a/drivers/virt/geniezone/gzvm_mmu.c b/drivers/virt/geniezone/gzvm_mmu.c
-index 77104df4afe5..0acef342e1f0 100644
+index 0acef342e1f0..5584257a7ec2 100644
 --- a/drivers/virt/geniezone/gzvm_mmu.c
 +++ b/drivers/virt/geniezone/gzvm_mmu.c
-@@ -107,8 +107,59 @@ int gzvm_gfn_to_pfn_memslot(struct gzvm_memslot *memslot, u64 gfn,
+@@ -123,6 +123,16 @@ static int cmp_ppages(struct rb_node *node, const struct rb_node *parent)
  	return 0;
  }
  
-+static int cmp_ppages(struct rb_node *node, const struct rb_node *parent)
++static int rb_ppage_cmp(const void *key, const struct rb_node *node)
 +{
-+	struct gzvm_pinned_page *a = container_of(node,
++	struct gzvm_pinned_page *p = container_of(node,
 +						  struct gzvm_pinned_page,
 +						  node);
-+	struct gzvm_pinned_page *b = container_of(parent,
-+						  struct gzvm_pinned_page,
-+						  node);
++	phys_addr_t ipa = (phys_addr_t)key;
 +
-+	if (a->ipa < b->ipa)
-+		return -1;
-+	if (a->ipa > b->ipa)
-+		return 1;
-+	return 0;
++	return (ipa < p->ipa) ? -1 : (ipa > p->ipa);
 +}
 +
-+static int gzvm_insert_ppage(struct gzvm *vm, struct gzvm_pinned_page *ppage)
+ static int gzvm_insert_ppage(struct gzvm *vm, struct gzvm_pinned_page *ppage)
+ {
+ 	if (rb_find_add(&ppage->node, &vm->pinned_pages, cmp_ppages))
+@@ -157,6 +167,33 @@ static int pin_one_page(struct gzvm *vm, unsigned long hva, u64 gpa)
+ 	return 0;
+ }
+ 
++/**
++ * gzvm_handle_relinquish() - Handle memory relinquish request from hypervisor
++ *
++ * @vcpu: Pointer to struct gzvm_vcpu_run in userspace
++ * @ipa: Start address(gpa) of a reclaimed page
++ *
++ * Return: Always return 0 because there are no cases of failure
++ */
++int gzvm_handle_relinquish(struct gzvm_vcpu *vcpu, phys_addr_t ipa)
 +{
-+	if (rb_find_add(&ppage->node, &vm->pinned_pages, cmp_ppages))
-+		return -EEXIST;
-+	return 0;
-+}
++	struct gzvm_pinned_page *ppage;
++	struct rb_node *node;
++	struct gzvm *vm = vcpu->gzvm;
 +
-+static int pin_one_page(struct gzvm *vm, unsigned long hva, u64 gpa)
-+{
-+	unsigned int flags = FOLL_HWPOISON | FOLL_LONGTERM | FOLL_WRITE;
-+	struct gzvm_pinned_page *ppage = NULL;
-+	struct mm_struct *mm = current->mm;
-+	struct page *page = NULL;
++	node = rb_find((void *)ipa, &vm->pinned_pages, rb_ppage_cmp);
 +
-+	ppage = kmalloc(sizeof(*ppage), GFP_KERNEL_ACCOUNT);
-+	if (!ppage)
-+		return -ENOMEM;
++	if (node)
++		rb_erase(node, &vm->pinned_pages);
++	else
++		return 0;
 +
-+	mmap_read_lock(mm);
-+	pin_user_pages(hva, 1, flags, &page);
-+	mmap_read_unlock(mm);
-+
-+	if (!page) {
-+		kfree(ppage);
-+		return -EFAULT;
-+	}
-+
-+	ppage->page = page;
-+	ppage->ipa = gpa;
-+	gzvm_insert_ppage(vm, ppage);
-+
++	ppage = container_of(node, struct gzvm_pinned_page, node);
++	unpin_user_pages_dirty_lock(&ppage->page, 1, true);
++	kfree(ppage);
 +	return 0;
 +}
 +
  static int handle_block_demand_page(struct gzvm *vm, int memslot_id, u64 gfn)
  {
-+	unsigned long hva;
- 	u64 pfn, __gfn;
- 	int ret, i;
- 
-@@ -131,6 +182,11 @@ static int handle_block_demand_page(struct gzvm *vm, int memslot_id, u64 gfn)
- 			goto err_unlock;
- 		}
- 		vm->demand_page_buffer[i] = pfn;
-+
-+		hva = gzvm_gfn_to_hva_memslot(&vm->memslot[memslot_id], __gfn);
-+		ret = pin_one_page(vm, hva, PFN_PHYS(__gfn));
-+		if (ret)
-+			goto err_unlock;
- 	}
- 
- 	ret = gzvm_arch_map_guest_block(vm->vm_id, memslot_id, start_gfn,
-@@ -148,6 +204,7 @@ static int handle_block_demand_page(struct gzvm *vm, int memslot_id, u64 gfn)
- 
- static int handle_single_demand_page(struct gzvm *vm, int memslot_id, u64 gfn)
- {
-+	unsigned long hva;
- 	int ret;
- 	u64 pfn;
- 
-@@ -159,7 +216,8 @@ static int handle_single_demand_page(struct gzvm *vm, int memslot_id, u64 gfn)
- 	if (unlikely(ret))
- 		return -EFAULT;
- 
--	return 0;
-+	hva = gzvm_gfn_to_hva_memslot(&vm->memslot[memslot_id], gfn);
-+	return pin_one_page(vm, hva, PFN_PHYS(gfn));
- }
- 
- /**
-diff --git a/drivers/virt/geniezone/gzvm_vm.c b/drivers/virt/geniezone/gzvm_vm.c
-index 485d1e2097aa..a7d43bedfad0 100644
---- a/drivers/virt/geniezone/gzvm_vm.c
-+++ b/drivers/virt/geniezone/gzvm_vm.c
-@@ -292,6 +292,21 @@ static long gzvm_vm_ioctl(struct file *filp, unsigned int ioctl,
- 	return ret;
- }
- 
-+static void gzvm_destroy_ppage(struct gzvm *gzvm)
-+{
-+	struct gzvm_pinned_page *ppage;
-+	struct rb_node *node;
-+
-+	node = rb_first(&gzvm->pinned_pages);
-+	while (node) {
-+		ppage = rb_entry(node, struct gzvm_pinned_page, node);
-+		unpin_user_pages_dirty_lock(&ppage->page, 1, true);
-+		node = rb_next(node);
-+		rb_erase(&ppage->node, &gzvm->pinned_pages);
-+		kfree(ppage);
-+	}
-+}
-+
- static void gzvm_destroy_vm(struct gzvm *gzvm)
- {
- 	size_t allocated_size;
-@@ -315,6 +330,8 @@ static void gzvm_destroy_vm(struct gzvm *gzvm)
- 
- 	mutex_unlock(&gzvm->lock);
- 
-+	gzvm_destroy_ppage(gzvm);
-+
- 	kfree(gzvm);
- }
- 
-@@ -390,6 +407,7 @@ static struct gzvm *gzvm_create_vm(unsigned long vm_type)
- 	gzvm->vm_id = ret;
- 	gzvm->mm = current->mm;
- 	mutex_init(&gzvm->lock);
-+	gzvm->pinned_pages = RB_ROOT;
- 
- 	ret = gzvm_vm_irqfd_init(gzvm);
- 	if (ret) {
+ 	unsigned long hva;
+diff --git a/drivers/virt/geniezone/gzvm_vcpu.c b/drivers/virt/geniezone/gzvm_vcpu.c
+index 455ae2e4285c..86c690749277 100644
+--- a/drivers/virt/geniezone/gzvm_vcpu.c
++++ b/drivers/virt/geniezone/gzvm_vcpu.c
+@@ -113,12 +113,14 @@ static long gzvm_vcpu_run(struct gzvm_vcpu *vcpu, void __user *argp)
+ 		 * it's geniezone's responsibility to fill corresponding data
+ 		 * structure
+ 		 */
++		case GZVM_EXIT_HYPERCALL:
++			if (!gzvm_handle_guest_hvc(vcpu))
++				need_userspace = true;
++			break;
+ 		case GZVM_EXIT_EXCEPTION:
+ 			if (!gzvm_handle_guest_exception(vcpu))
+ 				need_userspace = true;
+ 			break;
+-		case GZVM_EXIT_HYPERCALL:
+-			fallthrough;
+ 		case GZVM_EXIT_DEBUG:
+ 			fallthrough;
+ 		case GZVM_EXIT_FAIL_ENTRY:
 diff --git a/include/linux/gzvm_drv.h b/include/linux/gzvm_drv.h
-index 0a8b21e1ed1a..bb470a9f92e4 100644
+index bb470a9f92e4..170365771222 100644
 --- a/include/linux/gzvm_drv.h
 +++ b/include/linux/gzvm_drv.h
-@@ -12,6 +12,7 @@
- #include <linux/mutex.h>
- #include <linux/gzvm.h>
- #include <linux/srcu.h>
-+#include <linux/rbtree.h>
+@@ -173,6 +173,8 @@ int gzvm_arch_inform_exit(u16 vm_id);
+ int gzvm_find_memslot(struct gzvm *vm, u64 gpa);
+ int gzvm_handle_page_fault(struct gzvm_vcpu *vcpu);
+ bool gzvm_handle_guest_exception(struct gzvm_vcpu *vcpu);
++int gzvm_handle_relinquish(struct gzvm_vcpu *vcpu, phys_addr_t ipa);
++bool gzvm_handle_guest_hvc(struct gzvm_vcpu *vcpu);
  
- /*
-  * For the normal physical address, the highest 12 bits should be zero, so we
-@@ -82,6 +83,12 @@ struct gzvm_vcpu {
- 	struct gzvm_vcpu_hwstate *hwstate;
+ int gzvm_arch_create_device(u16 vm_id, struct gzvm_create_device *gzvm_dev);
+ int gzvm_arch_inject_irq(struct gzvm *gzvm, unsigned int vcpu_idx,
+diff --git a/include/uapi/linux/gzvm.h b/include/uapi/linux/gzvm.h
+index f858b04bf7b9..a98787a18c36 100644
+--- a/include/uapi/linux/gzvm.h
++++ b/include/uapi/linux/gzvm.h
+@@ -193,6 +193,11 @@ enum {
+ 	GZVM_EXCEPTION_PAGE_FAULT = 0x1,
  };
  
-+struct gzvm_pinned_page {
-+	struct rb_node node;
-+	struct page *page;
-+	u64 ipa;
++/* hypercall definitions of GZVM_EXIT_HYPERCALL */
++enum {
++	GZVM_HVC_MEM_RELINQUISH = 0xc6000009,
 +};
 +
- struct gzvm {
- 	struct gzvm_vcpu *vcpus[GZVM_MAX_VCPUS];
- 	/* userspace tied to this vm */
-@@ -121,6 +128,9 @@ struct gzvm {
- 	 * at the same time
- 	 */
- 	struct mutex  demand_paging_lock;
-+
-+	/* Use rb-tree to record pin/unpin page */
-+	struct rb_root pinned_pages;
- };
- 
- long gzvm_dev_ioctl_check_extension(struct gzvm *gzvm, unsigned long args);
+ /**
+  * struct gzvm_vcpu_run: Same purpose as kvm_run, this struct is
+  *			shared between userspace, kernel and
 -- 
 2.18.0
 
