@@ -2,49 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E7C37EE9F1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:22:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B66A7EE9FE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:35:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229783AbjKPXWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33050 "EHLO
+        id S229775AbjKPXeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPXWf (ORCPT
+        with ESMTP id S229379AbjKPXes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:22:35 -0500
-Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [IPv6:2001:41d0:203:375::af])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C2A4EA
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:22:31 -0800 (PST)
-Date:   Thu, 16 Nov 2023 15:22:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700176949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ql19/OGj64AFFaCoG3rNb0IvzQY8kBjJxvcnLCSOPkE=;
-        b=R8N+dwXMjjEbQXwnXgnMViFOkdYDxySMg7onZbQpLj/tOmnHLechypeTzAq+V0LetrVLWJ
-        WA5CT9AJKg+AwMhnccXO7mdC0rgkOjk+G+5eyWGxMT2HDH7UMds2PWp178gFqUDSq6S4z2
-        pFHr6VXLWTQNKBE3e33gvmO+YXukj8g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Oliver Upton <oliver.upton@linux.dev>
-To:     "Russell King (Oracle)" <linux@armlinux.org.uk>
-Cc:     Jianyong Wu <jianyong.wu@arm.com>, maz@kernel.org,
-        james.morse@arm.com, will@kernel.org, salil.mehta@huawei.com,
-        suzuki.poulose@arm.com, linux-arm-kernel@lists.infradead.org,
-        kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org,
-        justin.he@arm.com
-Subject: Re: [PATCH] arm64/kvm: Introduce feature extension for SMCCC filter
-Message-ID: <ZVakIv5mw6YUlHms@thinky-boi>
-References: <20231116114152.912344-1-jianyong.wu@arm.com>
- <ZVZoKlWrjV1L3CBo@shell.armlinux.org.uk>
+        Thu, 16 Nov 2023 18:34:48 -0500
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA7A793;
+        Thu, 16 Nov 2023 15:34:45 -0800 (PST)
+Received: by mail-pf1-x432.google.com with SMTP id d2e1a72fcca58-6bb4abb8100so1299676b3a.2;
+        Thu, 16 Nov 2023 15:34:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700177685; x=1700782485; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=jIlDZqCcqHIUeo2ZFPIfybYwe4tkogvnCJH8Ch20WTY=;
+        b=Ahnelm3edpAG0whrXJ0FifJkHMQRe5Qre9UFL4Vz7HwP/A8ftJSJnfIjWpU4rRhD8s
+         TrRtfPFe56cpWNSh6DWSePV1CfHZAvFu9/jYMRv3Sks7ISjoaP2hEwrkTkCEVZ5eEN6C
+         jCWOwzlvt4VdFkAScPazLLY2q1T0pT3rk3DrlqFKL2sM+Kx8FIFgLUNnIkC6gC5OGMF8
+         7LfQ8VWp4QSCqLhoqt8ic/G78bBbQYL+J0JZ1l7hxTz0CdCTNyntuVTU+FxemAfYxfP0
+         VLXXS+AIq01n2FLd8Au/IBVwVdouT5EEHYxYFUfhsZS8h9ZzU+YTaNyBK7JpCHvEyAUt
+         AdkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700177685; x=1700782485;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jIlDZqCcqHIUeo2ZFPIfybYwe4tkogvnCJH8Ch20WTY=;
+        b=fl1eZs5u0IrOM2R8JG8/hp2jnP85L5r+IlKNxFpWeRavTTa4UL9hxDIZaJEIM1dGV9
+         SvwtuX6AcEQG3n0HJZ0+lJE/SjaPPH5JIlYUQXHngW2lmIYnS3kTGfWVRpglvMGyH2YW
+         wYRRArYR6wsOTs5qra9Tux/xO+GRh6lt8TpbXRUBoOJD+kWJbabab7Hlm8U+aqqSlNqj
+         z3X1CN8Fft3ZWU7NS5eYY2dX+x7QztUBEWLqSZe6242NwujNUYe0SrlqwuiBIAwqtaiH
+         uEe3QyU4inBIeiNbEbSgD7vUIGzbn6BNtHdRFGHcpTn0Qelm/88P5bu3i/mUvz+bZtIr
+         grwg==
+X-Gm-Message-State: AOJu0YzKPj0Gvjyr8rSFu6d/CUHQdzT3nHfAOXR+Mib+X60nPuxC1/Mi
+        vGlSJZflorKxCuB2LXeKmwYpNbcOXetYdA==
+X-Google-Smtp-Source: AGHT+IHQSlFjtHHnifyRR+5Low3mKJhBkumS/gS7LHof04DGhzo/G17nSkrxx0T/ja/Xt7XWz9cavQ==
+X-Received: by 2002:a05:6a20:3942:b0:187:d5e8:5709 with SMTP id r2-20020a056a20394200b00187d5e85709mr2649587pzg.4.1700177685029;
+        Thu, 16 Nov 2023 15:34:45 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id e7-20020a631e07000000b0056b6d1ac949sm252545pge.13.2023.11.16.15.34.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 15:34:44 -0800 (PST)
+Message-ID: <a75ce6e7-5012-43d8-a222-dd2639c5969c@gmail.com>
+Date:   Fri, 17 Nov 2023 06:34:39 +0700
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZVZoKlWrjV1L3CBo@shell.armlinux.org.uk>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: Fwd: acp3x: Missing product ID for Thinkpad T14s Gen2 AMD Ryzen 7
+ PRO 5850U
+Content-Language: en-US
+To:     Oliver Sieber <ollisieber@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Sound System <linux-sound@vger.kernel.org>,
+        Linux ALSA Development <alsa-devel@alsa-project.org>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+References: <8bd0e77f-720b-4804-bbd8-477bd7df938e@gmail.com>
+ <251c1bea-8250-40dd-bdea-1cd739d1e77a@gmail.com>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+In-Reply-To: <251c1bea-8250-40dd-bdea-1cd739d1e77a@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -52,38 +80,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 07:06:18PM +0000, Russell King (Oracle) wrote:
-> On Thu, Nov 16, 2023 at 11:41:52AM +0000, Jianyong Wu wrote:
-> > 821d935c87b introduces support for userspace SMCCC filtering, but lack
-> > of a way to tell userspace if we have this feature. Add a corresponding
-> > feature extension can resolve this issue.
-> > 
-> > For example, the incoming feature Vcpu Hotplug needs the SMCCC filter.
-> > As there is no way to check this feature, VMM will run into error when
-> > it calls this feature on an old kernel. It's bad for backward compatible.
+On 11/17/23 01:36, Oliver Sieber wrote:
+> Hi,
 > 
-> Can't you just attempt to use the SMCCC filtering, and if it errors out
-> with the appropriate error code, decide that SMCCC filtering is not
-> available?
+> thanks for your fast answer. I added my proposed patch as attachment.
+> 
+> Please be aware that this is my first kernel patch.
+> 
 
-That would also work, as we return ENXIO for the unsupported ioctl.
+Please don't top-post; reply inline with appropriate context instead.
 
-> That's how most things like kernel syscalls work - if they're not
-> implemented they return -ENOSYS. glibc can detect that and use a
-> fallback.
+Your patch is attached, please send it inline instead. See
+Documentation/process/submitting-patches.rst for how to do that.
 
-I generally agree, but KVM has gone in the other direction of providing
-auxiliary interfaces for discovering new UAPI. ENXIO has been slightly
-overloaded to imply that a given ioctl is non-existent or otherwise
-unsupported due to some dynamic configuration.
-
-Is it ideal? Of course not. With that said userspace may as well use the
-preferred / documented discoverability mechanism. And in Jianyong's case
-the KVM documentation is rather unambiguous (for once) about how you
-discover device attributes.
-
-https://docs.kernel.org/virt/kvm/api.html#kvm-has-device-attr
+Thanks.
 
 -- 
-Thanks,
-Oliver
+An old man doll... just what I always wanted! - Clara
+
