@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 939807EDE06
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:54:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5E767EDE0A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345007AbjKPJyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:54:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36214 "EHLO
+        id S230254AbjKPJzV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:55:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230182AbjKPJyS (ORCPT
+        with ESMTP id S229806AbjKPJzU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:54:18 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CF34C5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:54:14 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-545557de8e6so9943a12.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:54:14 -0800 (PST)
+        Thu, 16 Nov 2023 04:55:20 -0500
+Received: from mail-yw1-x1134.google.com (mail-yw1-x1134.google.com [IPv6:2607:f8b0:4864:20::1134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3DE01AD
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:55:16 -0800 (PST)
+Received: by mail-yw1-x1134.google.com with SMTP id 00721157ae682-5a7afd45199so6825567b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:55:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700128453; x=1700733253; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1700128516; x=1700733316; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MLQdK0PLkPgbZpmnpIM+hlNxS7X74nHsOVnDPoi/MMI=;
-        b=gqakr0mJyyix209cnpqdAKE8rlVzuMRWwon8dFQIz4K5Dgl2AAnNlgEyqx9dBDylkw
-         J6+bOyFRXm9maQEhmEQBBqeUHZXPK/Ghs86XWFh3HjtI2gD17xgSvfZm2eaBeB9+PGBm
-         XebzVvN7hx03bLVl7RDFIkU9x2heqQmD21lRmy4XPcgs++6ikkQY1osuyBkapwJZ3Kbh
-         KAAB59qdnI2rUzEVM5IzWu4mLN+0mZ24PWO7MFmfsHlrFQSg8RWVxDK9xntTimCC54/q
-         pVhlxU21ahyLXxM8B5Y2gYR63uoU34M+p13K+dIgLZXmEuSI1UiUxCK/veTT11nWxI29
-         JNqQ==
+        bh=baj28rj0m1kOuDCTG+0KHDcj/t1NS6y3cMo9+0jrJJc=;
+        b=vf0P6XS1GURBv+HM2aCIjFay7hHaXB+l4txiszJOIazULgEYbTpPZ1Up3L1eNW0Ccp
+         6Dxs+ek0YrjL7q41pB6nROmWoaHpFUg/w83yGnlzsjz3m/djJq1Wa2Gc7bztkkYlOWhu
+         esR3Gg5TSkWdQFUEWgm0eN6VyNFHT7zJXSYDFPL/AdP3+JxGc7Uw0A56WveGIZN9yPy/
+         qmcciiVpbUxy1FIUD/UXPFGZLntDYdp76fnv85TvWI+BQ60Fm5sAhFVnWIe5AtsF2bNb
+         FZJ6OUsbI0m4luXUvLPyi40JKDRqn8AowpHgHQn4hyrBq0Bl8dBmSjiecP5PRqphe6Gi
+         cZvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700128453; x=1700733253;
+        d=1e100.net; s=20230601; t=1700128516; x=1700733316;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MLQdK0PLkPgbZpmnpIM+hlNxS7X74nHsOVnDPoi/MMI=;
-        b=iHWbYGSIe1JztdgOPeXCe22YHmEjaqznDQRdOjzu8lsslmidwLcjTBkWBlFJGCEj20
-         EUCr9UnhSFJb2vPPFbLAoakcx350WZ8ZCmRAcR8EjbxQYlh2E0leyj/JbGeuW0HqBgGf
-         MqaKaTyUf+1FqM6bh7M6feRti+WwWyOqrRanGG2cNOFeROh5uW/TYC/DX6BzIrjSp0+4
-         eQfHsLYTOBhmlUuwAnquqfu/GPkIkNzTINWhalldzcE32mJN85YjFEhvCBFN9KJMDOLQ
-         YLAHq220PnrQ2VVRPj1jh/ZVSVIUv0BiwIjANF6CBqrQ6SvZOsjoVPz4FKRJysiySrmj
-         7MGQ==
-X-Gm-Message-State: AOJu0Yz3fdnFyru0rPG02bw6kERLL0TdQUg3C7nK/YjQ58Pa7J9lky5H
-        rHeDHn4cJLkEp1LhSnFdEMvAdbq6Mzo1FmZ2CkXwNXjVqadd3MdxXHUx9Q==
-X-Google-Smtp-Source: AGHT+IEDR1q7Da+YvzRz4+svEYmFMPz1ROgkRbBFp+eFx4Jjr4wnvOnJi+lx8lSCvPW9fwl+a4axtp4udoCrAfJpjWM=
-X-Received: by 2002:aa7:c78c:0:b0:545:94d:7b with SMTP id n12-20020aa7c78c000000b00545094d007bmr91808eds.4.1700128452617;
- Thu, 16 Nov 2023 01:54:12 -0800 (PST)
+        bh=baj28rj0m1kOuDCTG+0KHDcj/t1NS6y3cMo9+0jrJJc=;
+        b=TL6lqj48YeUFCz+TqlaZli498LcBCqEbiv4rJmXH/VUb8ZaNeFz0VhXTVy+kvRgw9y
+         Qc4ETOBYgmRe+gqKXWyzCc5qdqzLL0VFcWKRXVUL9K77MSOcYcvle5sRJdkVEU868/Cy
+         xQEo7bmcc2c25BqnH/4rzxEJTPuhzp/YuD1SVhWJn07QbiHgqodBtP13qRvCvbCDgiH3
+         iZUUaJbd91AMufxijrcGrMTJF5LPyRG79wBXXWIK/u6FhomUOu0KU5Pirqr2gPKHBPXr
+         PJEJopVXGbh2HI24HK/zWwNPL8+vkfOxVlzlSmkW9OG4EWha12kN4j9PU032VD3tblIW
+         MMPg==
+X-Gm-Message-State: AOJu0YzHL1J8w2Rc0rN5vMZHiyLYCbphsmB4LljYQB/FgQ203ebwkqzj
+        Q9tAL6Cr7Bpch64lib4S5E1wnEiNxUGA/byXid+m/A==
+X-Google-Smtp-Source: AGHT+IGkV65U7kgr5HXaKsUiw7kNWRKCsWMB345P39Pcp5E8uxIJFkGoztPTLYzdOJALjwOludoSGKAWKBy3ss7ZSGU=
+X-Received: by 2002:a25:7a81:0:b0:d91:1296:947 with SMTP id
+ v123-20020a257a81000000b00d9112960947mr13819109ybc.40.1700128515815; Thu, 16
+ Nov 2023 01:55:15 -0800 (PST)
 MIME-Version: 1.0
-References: <20231031093921.755204-1-guanyulin@google.com> <f75d6cd2-fa9f-4820-969f-2a8839d78c9e@rowland.harvard.edu>
- <CAOuDEK0NcijUKAL3fGtO=Ks+Y38TRhJcVx+ff-QUyUA0LcQ1Bw@mail.gmail.com>
- <3fe5414a-570f-4bfa-aa2f-909d7799551b@rowland.harvard.edu>
- <CAOuDEK3UuVGgP63NG9HtuJ0D2ERZsFGBwF5+GNynk=P7zSVUhg@mail.gmail.com> <CAJZ5v0j-JdoGADG6rYNOEY1ePtDz0vsV4T1wX2TO1t+5kPyJ8Q@mail.gmail.com>
-In-Reply-To: <CAJZ5v0j-JdoGADG6rYNOEY1ePtDz0vsV4T1wX2TO1t+5kPyJ8Q@mail.gmail.com>
-From:   Guan-Yu Lin <guanyulin@google.com>
-Date:   Thu, 16 Nov 2023 17:54:01 +0800
-Message-ID: <CAOuDEK1hiVyFuZ__YFnOhfWV_JqMw83wCtPnX2a1xj6pb4Q5QA@mail.gmail.com>
-Subject: Re: [PATCH] rpm: pm: enable PM_RPM_EXCEPTION config flag
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Alan Stern <stern@rowland.harvard.edu>, gregkh@linuxfoundation.org,
-        len.brown@intel.com, pavel@ucw.cz, heikki.krogerus@linux.intel.com,
-        mkl@pengutronix.de, hadess@hadess.net, mailhol.vincent@wanadoo.fr,
-        ivan.orlov0322@gmail.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        pumahsu@google.com, raychi@google.com, albertccwang@google.com
+References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-15-iii@linux.ibm.com>
+In-Reply-To: <20231115203401.2495875-15-iii@linux.ibm.com>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 16 Nov 2023 10:54:39 +0100
+Message-ID: <CAG_fn=WSq_r5ry-0uviR6CUx-6eqXo5tqCtYAL0nE3UYyA4=pg@mail.gmail.com>
+Subject: Re: [PATCH 14/32] kmsan: Use ALIGN_DOWN() in kmsan_get_metadata()
+To:     Ilya Leoshkevich <iii@linux.ibm.com>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Marco Elver <elver@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Pekka Enberg <penberg@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Christian Borntraeger <borntraeger@linux.ibm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-s390@vger.kernel.org,
+        linux-trace-kernel@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Sven Schnelle <svens@linux.ibm.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
@@ -76,130 +88,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 10:10=E2=80=AFPM Rafael J. Wysocki <rafael@kernel.o=
-rg> wrote:
->
-> On Wed, Nov 15, 2023 at 8:08=E2=80=AFAM Guan-Yu Lin <guanyulin@google.com=
+On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
 > wrote:
-> >
-> > On Wed, Nov 8, 2023 at 11:56=E2=80=AFPM Alan Stern <stern@rowland.harva=
-rd.edu> wrote:
-> > >
-> > > On Wed, Nov 08, 2023 at 04:45:43PM +0800, Guan-Yu Lin wrote:
-> > > > Thanks for the questions. Let me first introduce my motivation for
-> > > > proposing this feature. We can discuss the implementation details l=
-ater.
-> > > >
-> > > > Motivation:
-> > > > Currently, system PM operations always override runtime PM operatio=
-ns.
-> > > > As runtime PM reflects the power status of devices, there is a
-> > > > possibility that runtime PM states that a device is in use, but sys=
-tem
-> > > > PM decides to suspend it. Up to now, we have assumed that a device =
-can't
-> > > > function without resources from the system, so the device should ac=
-quire
-> > > > a wakelock to prevent this from happening. However, what if the dev=
-ice
-> > >
-> > > [From the fact that you mention wakelocks, I assume that you're tryin=
-g
-> > > to implement something for Android systems rather than Linux systems
-> > > in general.]
-> > >
-> > > > does not need the system's support to function? Or only needs limit=
-ed
-> > > > resources (e.g., only limited power source or clock) to function? I=
-n this
-> > > > situation, we would like to keep the device on but allow the system=
- to
-> > > > suspend. This is an example where we would like devices to follow r=
-untime
-> > > > PM rather than system PM.
-> > >
-> > > To put it more simply, you want a way to leave some devices in an act=
-ive
-> > > state while the rest of the system is suspended.  It's not clear why =
-you
-> > > have dragged runtime PM into the discussion (apart from the obvious f=
-act
-> > > that you won't want to keep a device active if it isn't active alread=
-y).
-> > >
-> >
-> > The determination of which device should remain active when the system
-> > suspends can be based on various factors. One straightforward approach
-> > is to consider the device's runtime pm state.
 >
-> Not really.  The runtime PM status has no bearing on whether or not
-> the device should remain active over a system suspend/resume cycle.
->
+> Improve the readability by replacing the custom aligning logic with
+> ALIGN_DOWN(). Unlike other places where a similar sequence is used,
+> there is no size parameter that needs to be adjusted, so the standard
+> macro fits.
 
-Thanks for the information.
+Good catch, thank you!
 
-> > Alternatively, we could
-> > explore more elaborate techniques that consider additional criteria.
->
-> In fact, the device's driver decides what is going to happen to it
-> during the system suspend transition.  It very well may decide to
-> leave the device in the operational state, but it needs to take
-> dependencies between into account.
-
-Seems like it would be better for each device to modify its suspend/
-resume code rather than designing a generic framework. As the specific
-use cases of each component are not yet fully understood, the device
-driver provides ample flexibility for customization at this stage.
-
->
-> > > This sounds like a major change, not something to be done with a simp=
-le
-> > > override.  You should discuss it with Rafael Wysocki and the linux-pm
-> > > mailing list before trying to implement anything.
-> > >
-> > > > Feature Supported:
-> > > > 1. Devices could control the priority of system PM and runtime PM d=
-uring
-> > > >    runtime.
-> > >
-> > > This seems like a totally unnecessary side issue.  Forget about runti=
-me
-> > > PM for the time being and concentrate instead on which devices you wa=
-nt
-> > > to keep active.
-> > >
-> > > > 2. The control should be at the device level, meaning that differen=
-t
-> > > >    devices should control their own priorities.
-> > > >
-> > > > Goal of This Patch:
-> > > > 1. Design a framework to support features above.
-> > > > 2. Apply it into usb for demonstration.
-> > >
-> > > You may find that it is easier (and less work in the long run) to des=
-ign
-> > > the general framework and get it working than to concentrate on one
-> > > particular subsystem.
-> > >
-> > > Alan Stern
-> >
-> > The big picture is "a way to leave some devices in an active state
-> > while the rest of the system is suspended", I think it could be
-> > separated into:
-> > (1) Each system should be able to choose which device(s) is included
-> >     in this feature.
-> > (2) For devices chosen in (1), each of them should have the flexibility
-> >     to determine when it will not suspend with the system, not just
-> >     always being active when the system suspends.
->
-> A specific use case, please.
-
-We have a sub-system sharing some devices (e.g., usb controller, host
-controller) with the main system. In the current system power
-management framework, when the main system suspends, the devices will
-suspend, too. However, sometimes these devices are still used by the
-sub-system, so we don't want the main system to always suspend the
-devices.
-
-Regards,
-Guan-Yu
+> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
+Reviewed-by: Alexander Potapenko <glider@google.com>
