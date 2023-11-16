@@ -2,208 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A8A97EE5CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:19:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10CFC7EE5D0
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:21:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345238AbjKPRTN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:19:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        id S1344652AbjKPRVC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:21:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231294AbjKPRTL (ORCPT
+        with ESMTP id S231294AbjKPRU7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:19:11 -0500
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [IPv6:2001:41d0:203:375::aa])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18672194
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:19:08 -0800 (PST)
-Message-ID: <61f1dc2f-84f8-4f04-8348-7a4470a1276c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700155146;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=TARHde0sFs8qgNsgLPodLMIcclZW4YUzjnq82Sj4biw=;
-        b=xQLmjonW5st3kklBD1rTDmDRv2AUILW3a57R3WgGtQbdgdl7n5lAd/Y3Qg0lCmCGojHEmQ
-        vhD8DlzIIJ30vIcq7pX46tNnot7hKxhlJv8W/eEeMh5wmf85FAZhwzbe93JmC3PgRd3mwQ
-        yelPe+wcdCT6TdvMPTYH/fPGeZWyBLc=
-Date:   Fri, 17 Nov 2023 01:18:49 +0800
+        Thu, 16 Nov 2023 12:20:59 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A308F101;
+        Thu, 16 Nov 2023 09:20:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=kK3KutISbyzM/gZLq4IFiwimjsmvHKjNrd1uA1A3zdk=; b=Cymw9iWCOK3pJBrbiAyPOtls8Y
+        RFFPgN0hIKnaOnVu0b2o52K1veB+NB7Y5os8q3N+Ckf55ZTL9qZQWPMg5k5FBMNcaMX4XuT0Bfy9H
+        2W/x9f6h+sD3gqaoJ+tnwhp7MsWCEspFf9oK0sx7AZKfHXZuGLTOyjDzBGsJEQd89F4g=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r3g2p-000NKU-Pf; Thu, 16 Nov 2023 18:20:47 +0100
+Date:   Thu, 16 Nov 2023 18:20:47 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Jie Luo <quic_luoj@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        hkallweit1@gmail.com, linux@armlinux.org.uk,
+        robert.marko@sartura.hr, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, quic_srichara@quicinc.com
+Subject: Re: [PATCH 3/9] net: mdio: ipq4019: Enable GPIO reset for ipq5332
+ platform
+Message-ID: <dd2c3cfa-f7ee-4abb-9eff-2aac04fa914f@lunn.ch>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-4-quic_luoj@quicinc.com>
+ <e740a206-37af-49b1-a6b6-baa3c99165c0@lunn.ch>
+ <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev>
- <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
- <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
- <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
- <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
- <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> FYI, here is the sequence to bring up qca8084.
+> a. enable clock output to qca8084.
+> b. do gpio reset of qca8084.
+> c. customize MDIO address and initialization configurations.
+> d. the PHY ID can be acquired.
 
-On 2023/11/16 23:23, Dmitry Baryshkov wrote:
-> On Thu, 16 Nov 2023 at 14:08, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->>
->> On 2023/11/16 19:53, Sui Jingfeng wrote:
->>> Hi,
->>>
->>>
->>> On 2023/11/16 19:29, Dmitry Baryshkov wrote:
->>>> On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.dev>
->>>> wrote:
->>>>> Hi,
->>>>>
->>>>>
->>>>> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
->>>>>>> +
->>>>>>> +               ctx->connector = connector;
->>>>>>> +       }
->>>>>>>
->>>>>>>            if (ctx->info->id == ID_IT66121) {
->>>>>>>                    ret = regmap_write_bits(ctx->regmap,
->>>>>>> IT66121_CLK_BANK_REG,
->>>>>>> @@ -1632,16 +1651,13 @@ static const char * const
->>>>>>> it66121_supplies[] = {
->>>>>>>            "vcn33", "vcn18", "vrf12"
->>>>>>>     };
->>>>>>>
->>>>>>> -static int it66121_probe(struct i2c_client *client)
->>>>>>> +int it66121_create_bridge(struct i2c_client *client, bool
->>>>>>> of_support,
->>>>>>> +                         bool hpd_support, bool audio_support,
->>>>>>> +                         struct drm_bridge **bridge)
->>>>>>>     {
->>>>>>> +       struct device *dev = &client->dev;
->>>>>>>            int ret;
->>>>>>>            struct it66121_ctx *ctx;
->>>>>>> -       struct device *dev = &client->dev;
->>>>>>> -
->>>>>>> -       if (!i2c_check_functionality(client->adapter,
->>>>>>> I2C_FUNC_I2C)) {
->>>>>>> -               dev_err(dev, "I2C check functionality failed.\n");
->>>>>>> -               return -ENXIO;
->>>>>>> -       }
->>>>>>>
->>>>>>>            ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
->>>>>>>            if (!ctx)
->>>>>>> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client
->>>>>>> *client)
->>>>>>>
->>>>>>>            ctx->dev = dev;
->>>>>>>            ctx->client = client;
->>>>>>> -       ctx->info = i2c_get_match_data(client);
->>>>>>> -
->>>>>>> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
->>>>>>> -       if (ret)
->>>>>>> -               return ret;
->>>>>>> -
->>>>>>> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
->>>>>>> -       if (ret)
->>>>>>> -               return ret;
->>>>>>> -
->>>>>>> -       i2c_set_clientdata(client, ctx);
->>>>>>>            mutex_init(&ctx->lock);
->>>>>>>
->>>>>>> -       ret = devm_regulator_bulk_get_enable(dev,
->>>>>>> ARRAY_SIZE(it66121_supplies),
->>>>>>> - it66121_supplies);
->>>>>>> -       if (ret) {
->>>>>>> -               dev_err(dev, "Failed to enable power supplies\n");
->>>>>>> -               return ret;
->>>>>>> +       if (of_support) {
->>>>>>> +               ret = it66121_of_read_bus_width(dev,
->>>>>>> &ctx->bus_width);
->>>>>>> +               if (ret)
->>>>>>> +                       return ret;
->>>>>>> +
->>>>>>> +               ret = it66121_of_get_next_bridge(dev,
->>>>>>> &ctx->next_bridge);
->>>>>>> +               if (ret)
->>>>>>> +                       return ret;
->>>>>>> +       } else {
->>>>>>> +               ctx->bus_width = 24;
->>>>>>> +               ctx->next_bridge = NULL;
->>>>>>>            }
->>>>>> A better alternative would be to turn OF calls into fwnode calls and
->>>>>> to populate the fwnode properties. See
->>>>>> drivers/platform/x86/intel/chtwc_int33fe.c for example.
->>>>> Honestly, I don't want to leave any scratch(breadcrumbs).
->>>>> I'm worries about that turn OF calls into fwnode calls will leave
->>>>> something unwanted.
->>>>>
->>>>> Because I am not sure if fwnode calls will make sense in the DT
->>>>> world, while my patch
->>>>> *still* be useful in the DT world.
->>>> fwnode calls work for both DT and non-DT cases. In the DT case they
->>>> work with DT nodes and properties. In the non-DT case, they work with
->>>> manually populated properties.
->>>>
->>>>> Because the newly introduced it66121_create_bridge()
->>>>> function is a core. I think It's better leave this task to a more
->>>>> advance programmer.
->>>>> if there have use case. It can be introduced at a latter time,
->>>>> probably parallel with
->>>>> the DT.
->>>>>
->>>>> I think DT and/or ACPI is best for integrated devices, but it66121
->>>>> display bridges is
->>>>> a i2c slave device. Personally, I think slave device shouldn't be
->>>>> standalone. I'm more
->>>>> prefer to turn this driver to support hot-plug, even remove the
->>>>> device on the run time
->>>>> freely when detach and allow reattach. Like the I2C EEPROM device in
->>>>> the monitor (which
->>>>> contains the EDID, with I2C slave address 0x50). The I2C EEPROM
->>>>> device *also* don't has
->>>>> a corresponding struct device representation in linux kernel.
->>>> It has. See i2c_client::dev.
->>> No, what I mean is that there don't have a device driver for
->>> monitor(display) hardware entity.
->>> And the drm_do_probe_ddc_edid() is the static linked driver, which is
->>> similar with the idea
->>> this series want to express.
-> Because the monitor is not a part of the display pipeline.
->
-I think the monitor *is definitely* part of the display pipeline, and it
-is the most important part of the entire display pipeline.
+This all sounds like it is specific to the qca8084, so it should be in
+the driver for the qca8084.
 
-1)
+Its been pointed out you can get the driver to load by using the PHY
+ID in the compatible. You want the SoC clock driver to export a CCF
+clock, which the PHY driver can use. The PHY driver should also be
+able to get the GPIO. So i think the PHY driver can do all this.
 
-DPMS, self-refreshing, display timings, resolutions supported, HDR, DSC,
-gsync and freesync etc can be part of whole mode-set. Please consider
-what the various ->mode_valid() and -> the atomic_check() are for?
-
-2)
-
-If the monitor is not a part of the display pipeline, then the various
-display panels hardware should also not be part of the display pipeline.
-Because they are all belong to display category.
-  
-the monitor = panel + panel drive IC(such as RTD2281CL, HT1622, ssd130x).
-
-There are panel bridges which abstract the panel + connector as a drm bridge,
-why the bare panel can be part of the display pipeline, while the more complex
-monitor can't be?
-
+     Andrew
