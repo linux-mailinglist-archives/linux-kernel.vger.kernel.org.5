@@ -2,101 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0068E7EDD2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 566917EDD2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbjKPI4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:56:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54168 "EHLO
+        id S1344525AbjKPI5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:57:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKPI4p (ORCPT
+        with ESMTP id S229806AbjKPI5g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:56:45 -0500
-Received: from mail-yw1-x1133.google.com (mail-yw1-x1133.google.com [IPv6:2607:f8b0:4864:20::1133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 605FFA1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:56:41 -0800 (PST)
-Received: by mail-yw1-x1133.google.com with SMTP id 00721157ae682-5a82c2eb50cso5679617b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:56:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700125000; x=1700729800; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=0H8tt9dZT0qWTNb8kikU8kJP6qFA036d+J9DtuTzo40=;
-        b=FiO38LCVb8fBklw64T6AH26gpSqb8qlx1wXHPxu1ZPWy58Vaex9azvV0r2+6BlQ/Jz
-         9cMjn7vSYITmtGGHPodX6G5UKWFfvYTGATD6k+2VbSwdoe/1/CChhWJHz4pP82GCFA+A
-         qCXOM+aqZuenMQs1YkrIVIsjMrMAdhmeWciQn9RDiSqqlL8zYo1gvdrj5NU7zcAbr6Io
-         bYzZEmYEfaNSVbxAjVB76i1apSZIo+VgwJrERNiQHlgBnJmYbkbPUBFwHWyuRyHPA2i9
-         mRwcNm296SVwhp2SAcCIb3BWEkCdPzeM4OyivjvYvRKN+Y5wmaE/6Gmrt27FTXafmjRK
-         Xong==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700125000; x=1700729800;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0H8tt9dZT0qWTNb8kikU8kJP6qFA036d+J9DtuTzo40=;
-        b=TiBhU1LSfGotJavoMM7e/zMKLAnyNeBxVmkVJ+74o1rFJs53bGAhtMX1pZ5fEzYJLg
-         knXCVFYQCSZofcPjS3ZhX8fSHbK7pWMO7OSAvpchLgb72BuZFnk8MqU1Zmr0jRey+omy
-         cdFa3XSpQDgqIbjvLiqBu340OylnMeFFWOA2b643kb+8Auab97IXgnp3BR45ARRrhGOC
-         DO7MCY9Z5VDXx+JWAEENDrLszwjuStd0a5hdnS4Ogg6wRMZktmvLhMOjOwA1k84RK1XW
-         RGjQMY+TF6VAnh2ClcKgLfpFR9zfD9936jlijE0H+lZ86r1VcPh1MVoeFcuQufwkJtCS
-         p7mQ==
-X-Gm-Message-State: AOJu0Yz14Thus0eRSt1LZuPYmHrLi4RNDYWPqGAftSeudKrDGOZ/aa39
-        1EK3xDynH3NDcx0UIO1D/9qdM3Rr8KPJYh/TFsXjjg==
-X-Google-Smtp-Source: AGHT+IHzzP8uN5KL7oySFlmUovw/aF4rbyrEjZrNGe1wJC40tLjll2AY1uSp3JjEkwmZJ6aR8KyKW2fBLOpcuaHXMsg=
-X-Received: by 2002:a25:b18e:0:b0:d9c:a3b8:f39d with SMTP id
- h14-20020a25b18e000000b00d9ca3b8f39dmr13846249ybj.65.1700125000447; Thu, 16
- Nov 2023 00:56:40 -0800 (PST)
+        Thu, 16 Nov 2023 03:57:36 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CD4EA1;
+        Thu, 16 Nov 2023 00:57:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700125054; x=1731661054;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6hF/KOy4geEzMKDye/KnnEK2zzobLNIQdCZGvFvFx7o=;
+  b=HNe5gzl8rRw3i7yMvw7P0d7YAv8/iO5RuqzW1q3r70wBr8No8yvrZJL8
+   WuGUilodLGmHGC7m5z9Ifpg0hiyxATSsjfsobYNNONri/1SHVeSrdR/Ar
+   q9DUJMc7gd/8MSe8bJwObtLVstBWQxTqQMGbcUnOY9nibmMFAdowKCit7
+   tVJ3KJwWZKRfCrEYLj03TsUI97/HFuPZhhUfKXvfD6Y/TDTb4zRXaaaez
+   TMLXQ58DBMbEEyLAflsSrPVM/vUy9uxbdVxkNYd1BUn4x8LnLI3dGhu2+
+   Ejsy/4Sl14DiRixdEryNMdrZuHUvgpk5hp2pWnaM/xRRunojDyUATEpry
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="9687822"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="9687822"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:57:33 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="794437255"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="794437255"
+Received: from binbinwu-mobl.ccr.corp.intel.com (HELO [10.238.10.126]) ([10.238.10.126])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:57:28 -0800
+Message-ID: <00b167fa-6635-47a4-a219-1f4117fe6c97@linux.intel.com>
+Date:   Thu, 16 Nov 2023 16:57:26 +0800
 MIME-Version: 1.0
-References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-13-iii@linux.ibm.com>
-In-Reply-To: <20231115203401.2495875-13-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 16 Nov 2023 09:56:04 +0100
-Message-ID: <CAG_fn=XVJNZLtHj2n3DP5ETBzgoUZL0jQFX7uw4z9Pj2vGbUPw@mail.gmail.com>
-Subject: Re: [PATCH 12/32] kmsan: Allow disabling KMSAN checks for the current task
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 04/16] KVM: TDX: Pass size to tdx_measure_page()
+To:     isaku.yamahata@intel.com
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
+        erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
+        Sagi Shahar <sagis@google.com>,
+        David Matlack <dmatlack@google.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Zhi Wang <zhi.wang.linux@gmail.com>, chen.bo@intel.com,
+        hang.yuan@intel.com, tina.zhang@intel.com,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+References: <cover.1699368363.git.isaku.yamahata@intel.com>
+ <7b024367db5909ffc22e6762acd0569c3a82ccd3.1699368363.git.isaku.yamahata@intel.com>
+From:   Binbin Wu <binbin.wu@linux.intel.com>
+In-Reply-To: <7b024367db5909ffc22e6762acd0569c3a82ccd3.1699368363.git.isaku.yamahata@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> Like for KASAN, it's useful to temporarily disable KMSAN checks around,
-> e.g., redzone accesses.
 
-This example is incorrect, because KMSAN does not have redzones.
-You are calling these functions from "mm: slub: Let KMSAN access
-metadata", which mentiones redzones in kfree(), but the description is
-still somewhat unclear.
-Can you provide more insight about what is going on? Maybe we can fix
-those accesses instead of disabling KMSAN?
+
+On 11/7/2023 11:00 PM, isaku.yamahata@intel.com wrote:
+> From: Xiaoyao Li <xiaoyao.li@intel.com>
+>
+> Extend tdx_measure_page() to pass size info so that it can measure
+> large page as well.
+>
+> Signed-off-by: Xiaoyao Li <xiaoyao.li@intel.com>
+> Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
+> ---
+>   arch/x86/kvm/vmx/tdx.c | 8 +++++---
+>   1 file changed, 5 insertions(+), 3 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c
+> index 2d5c86e06c5f..a728175c4a6d 100644
+> --- a/arch/x86/kvm/vmx/tdx.c
+> +++ b/arch/x86/kvm/vmx/tdx.c
+> @@ -1434,13 +1434,15 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
+>   	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa & PAGE_MASK);
+>   }
+>   
+> -static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa)
+> +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa, int size)
+IMHO, it's better to pass kvm page level instead of size here to align with
+other APIs.
+
+>   {
+>   	struct tdx_module_args out;
+>   	u64 err;
+>   	int i;
+>   
+> -	for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
+> +	WARN_ON_ONCE(size % TDX_EXTENDMR_CHUNKSIZE);
+
+If passed level instead of size, then no need to check KVM_HPAGE_SIZE(level)
+against TDX_EXTENDMR_CHUNKSIZE
+
+But same qeustion, tdx_measure_page() is only for tdh_mem_page_add(), is 
+this
+change necessary?
+
+> +
+> +	for (i = 0; i < size; i += TDX_EXTENDMR_CHUNKSIZE) {
+>   		err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
+>   		if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
+>   			pr_tdx_error(TDH_MR_EXTEND, err, &out);
+> @@ -1544,7 +1546,7 @@ static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
+>   		tdx_unpin(kvm, pfn);
+>   		return -EIO;
+>   	} else if (measure)
+> -		tdx_measure_page(kvm_tdx, gpa);
+> +		tdx_measure_page(kvm_tdx, gpa, KVM_HPAGE_SIZE(level));
+>   
+>   	return 0;
+>   
+
