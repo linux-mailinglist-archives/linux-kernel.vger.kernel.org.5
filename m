@@ -2,105 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 879167EE08B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CDB97EE08F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:16:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345181AbjKPMQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:16:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60926 "EHLO
+        id S1345180AbjKPMQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:16:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345138AbjKPMQd (ORCPT
+        with ESMTP id S1345179AbjKPMQ6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:16:33 -0500
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1EEAB4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:16:29 -0800 (PST)
-Received: by mail-wm1-x344.google.com with SMTP id 5b1f17b1804b1-40859c464daso5807025e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:16:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700136988; x=1700741788; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=D7ycO51ysX1rSvVh6kgMekK9dYTtGQCoY0CbDQh513c=;
-        b=pGJfwTbNZ9Se+hycjpkik/g1Hw3wzPutdVQYfV9UL+xlTtL9g3tKgosGATTWWEL2wp
-         YvTniZfAP5CSZs9X9pBc1wOLNNpOsptgQtWsDZbr03D3XOXC3XLCq9YHRF//tYIdGtpB
-         Lzc3Hnn3bYxT0p4klm2nLv5QF50vcIIYBvGxEnPy2QzaXJEZka19nUGtAOw0xT6IRa6M
-         HYg195UTEZzuxCYEJYwvF7YspjKQYA79S/svAZ5RjgF4mdb8tUUzms7WzB4D6XGJzG6P
-         hY7IpeZZ2VtQ5RSQQS+01t2feYU3RIpCPdXpBvk+UUUQxmUjMotPThwKc5dnc4j6sSMS
-         d4lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700136988; x=1700741788;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=D7ycO51ysX1rSvVh6kgMekK9dYTtGQCoY0CbDQh513c=;
-        b=ZCy9Qkn7ZhGhVZbeoUOb0qmKgXnYwbw0Ryw5EroejDbbFsJviWR1kKngmkGt1elNJn
-         IHSt8hbelKUSAwjsN6KGBYfBkCj7wOKSvCmeAUjchxLE1G4s9pAyjdDU5DSgkObscAG3
-         ed+zR9H7Et/UsvYG9a5hjJ3Om9+Dy7JDQj8xmsUpd5wliQ96Iv1O5h7s5urtIeFElc43
-         yY8MwpCFNAZ2c3Ztk2SIwb9ipr4RTxGhK2nCYjAga3k/EKDMQjD+H9qFSvDoAzP0ONx5
-         VGPFelJ0CVPOcEOagicRzu+bHiN49ZTvtn/uwBJf4mCIXv5OtDF81mIwU4ohLCVdg5zK
-         U2Ow==
-X-Gm-Message-State: AOJu0YxfL3Ta6HcqzNsL3gB15WqqEx2Roiqp7C0bpIbCwhv37gJh+rFU
-        3oSHWio4zClO5OldNqBu67JRgQ==
-X-Google-Smtp-Source: AGHT+IFczhZ8Qo9sXrqLwhZ/L63pvjx7kQ9JsWQDfDDyGP9Jbz6AyVEpdhwlDmQ1fNHduFTOS173uA==
-X-Received: by 2002:a05:600c:350f:b0:405:49aa:d578 with SMTP id h15-20020a05600c350f00b0040549aad578mr12632382wmq.37.1700136988143;
-        Thu, 16 Nov 2023 04:16:28 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id t14-20020a05600c450e00b003fee567235bsm3501665wmo.1.2023.11.16.04.16.26
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 04:16:27 -0800 (PST)
-Message-ID: <e264cc5e-6d28-4a15-8ee0-07be2d1508fa@linaro.org>
-Date:   Thu, 16 Nov 2023 12:16:26 +0000
+        Thu, 16 Nov 2023 07:16:58 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.115])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4F6E9C;
+        Thu, 16 Nov 2023 04:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700137014; x=1731673014;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=fG2kDFOySIVUpLkO0CBCrE4Itv+obpd1DzcFnAf/iq0=;
+  b=ej7MdeX/AK2XqdN+nyM1jIEEYQzPiDBB38QMnFbgX6SgzaK4udvaQ0CT
+   3V/5gIUp2kC6E+FWO+96LqvDrrUKGqlgl8npcl3Ng12NcT5DKqy1Ir9Ew
+   LLmh53uWKe/ZFRN5AFVl5ND7DtFBU9T1o5AEikZtyu8NZyMhIQECKKRQU
+   ltc4aWJiXTdL6j5NkmZnyRtffncwPOtKPwbAj17tQfg+UlcmYA3UUL8MF
+   CxqKYO9OOdBB2nt97j7NE45dACKvxbnNeuFqM5h7V/B0DoBrblD/dV2TD
+   wdY9HxQmuZrORMfZSrK/mVoR+rv5hxEYXXQBnwJ3rNpvOZusRsof48NN+
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="390865429"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="390865429"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:16:54 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="938825905"
+X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
+   d="scan'208";a="938825905"
+Received: from jhsteyn-mobl1.ger.corp.intel.com ([10.252.40.9])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:16:50 -0800
+Date:   Thu, 16 Nov 2023 14:16:47 +0200 (EET)
+From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
+To:     =?ISO-8859-15?Q?Th=E9o_Lebrun?= <theo.lebrun@bootlin.com>
+cc:     Russell King <linux@armlinux.org.uk>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-serial <linux-serial@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        =?ISO-8859-15?Q?Gr=E9gory_Clement?= <gregory.clement@bootlin.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Vladimir Kondratiev <vladimir.kondratiev@mobileye.com>,
+        Tawfik Bayouk <tawfik.bayouk@mobileye.com>
+Subject: Re: [PATCH v2 3/5] tty: serial: amba-pl011: cleanup driver
+In-Reply-To: <20231116-mbly-uart-v2-3-863f665ce520@bootlin.com>
+Message-ID: <971f533-261a-3095-38a-586c74da543e@linux.intel.com>
+References: <20231116-mbly-uart-v2-0-863f665ce520@bootlin.com> <20231116-mbly-uart-v2-3-863f665ce520@bootlin.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RESEND PATCH v4 0/4] Add sc8280xp CAMCC bindings and driver
-Content-Language: en-US
-To:     andersson@kernel.org, agross@kernel.org, konrad.dybcio@linaro.org,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        dmitry.baryshkov@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        jonathan@marek.ca, quic_tdas@quicinc.com,
-        vladimir.zapolskiy@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20231026105345.3376-1-bryan.odonoghue@linaro.org>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231026105345.3376-1-bryan.odonoghue@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: multipart/mixed; boundary="8323329-1437232929-1700137013=:1886"
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2023 11:53, Bryan O'Donoghue wrote:
-> v4-resend:
-> - Remove erroneous "--in-reply-to" from git send-email
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--8323329-1437232929-1700137013=:1886
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+
+On Thu, 16 Nov 2023, Théo Lebrun wrote:
+
+> Follow recommandations from:
 > 
-> v4:
-> - Resend of v3.2 addendum as v4 for tooling purposes
+>     $ ./scripts/checkpatch.pl --strict --file \
+>             drivers/tty/serial/amba-pl011.c
 > 
-> Link: https://lore.kernel.org/linux-arm-msm/20231024093919.226050-1-bryan.odonoghue@linaro.org/
-> Link: https://git.codelinaro.org/bryan.odonoghue/kernel/-/tree/qcom-linux-clk-for-6.7-camcc-sc8280xp-v4
+> It does NOT fix alerts relative to TIOCMBIT which will be dealt with in
+> another patch. Fixes following alerts:
+> 
+>     CHECK: Alignment should match open parenthesis
+>     CHECK: Blank lines aren't necessary after an open brace '{'
+>     CHECK: Comparison to NULL could be written [...]
+>     CHECK: Lines should not end with a '('
+>     CHECK: Please don't use multiple blank lines
+>     CHECK: Please use a blank line after function/struct/union/enum declarations
+>     CHECK: Prefer using the BIT macro
+>     CHECK: Unbalanced braces around else statement
+>     CHECK: Unnecessary parentheses around [...]
+>     CHECK: braces {} should be used on all arms of this statement
+>     CHECK: spaces preferred around that '/' (ctx:VxV)
+>     CHECK: spaces preferred around that '|' (ctx:VxV)
+>     ERROR: do not initialise statics to false
+>     WARNING: Comparisons should place the constant on the right side of the test
+>     WARNING: Possible unnecessary 'out of memory' message
+>     WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+>     WARNING: Prefer [subsystem eg: netdev]_info([subsystem]dev, ... then dev_info(dev, ... then pr_info(...  to printk(KERN_INFO ...
+>     WARNING: quoted string split across lines
+> 
+> Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> Signed-off-by: Théo Lebrun <theo.lebrun@bootlin.com>
+> ---
 
-Ping.
+> @@ -2916,9 +2911,12 @@ static int sbsa_uart_probe(struct platform_device *pdev)
+>  	if (qdf2400_e44_present) {
+>  		dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
+>  		uap->vendor = &vendor_qdt_qdf2400_e44;
+> -	} else
+> -#endif
+> +	} else {
+>  		uap->vendor = &vendor_sbsa;
+> +	}
+> +#else
+> +	uap->vendor = &vendor_sbsa;
+> +#endif
 
-This currently blocks the example in the yaml here
+IMO, this would look a lot nicer if you make a function out of it (but 
+perhaps it can be changed in a follow-up patch):
 
--> 
-https://lore.kernel.org/lkml/20231110-b4-camss-sc8280xp-v5-1-7f4947cc59c8@linaro.org/T/
+#ifdef CONFIG_ACPI_SPCR_TABLE
+static void qpdf2400_erratum44_workaround(struct platform_device *pdev,
+					  struct uart_amba_port *uap)
+{
+	if (!qdf2400_e44_present)
+		return;
 
-Which in turn blocks
+	dev_info(&pdev->dev, "working around QDF2400 SoC erratum 44\n");
+	uap->vendor = &vendor_qdt_qdf2400_e44;
+}
+#else
+static void qpdf2400_erratum44_workaround(struct platform_device *pdev,
+					  struct uart_amba_port *uap) { }	
+#endif
 
--> 
-https://lore.kernel.org/lkml/20231012113100.3656480-1-bryan.odonoghue@linaro.org/
 
----
-bod
+static int sbsa_uart_probe(struct platform_device *pdev)
+{
+	...
+	uap->vendor = &vendor_sbsa;
+	qpdf2400_erratum44_workaround(pdev, uap);
+	...
+}
 
+
+Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+
+
+-- 
+ i.
+
+--8323329-1437232929-1700137013=:1886--
