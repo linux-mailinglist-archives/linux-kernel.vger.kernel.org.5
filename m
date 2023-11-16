@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C6B7D7EE223
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11EEA7EE226
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:02:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345332AbjKPOCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:02:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59046 "EHLO
+        id S1345352AbjKPOCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:02:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345298AbjKPOCE (ORCPT
+        with ESMTP id S1345302AbjKPOCG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:02:04 -0500
+        Thu, 16 Nov 2023 09:02:06 -0500
 Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::227])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A2A2189;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B91D187;
         Thu, 16 Nov 2023 06:02:01 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id F38F020012;
-        Thu, 16 Nov 2023 14:01:58 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id DE6E020013;
+        Thu, 16 Nov 2023 14:01:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700143319;
+        t=1700143320;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=sYk0zpV2bVEDxFKIDco0/dH28clPs24zMyoOUb9r4QA=;
-        b=VeO6Ss8IB7hu9fSZZPHSFCm+fg5PWYwggCW7uU+wvtaiV+zcE3eWiq4PfCGagmMdmtaJtZ
-        aP0b0erdn5040xBSQJu9rCVWvThtd6F0cLZRl/weHIfVsMSkcNx5A4VPWN5eScG+jqfeTC
-        gBgB6WDQqj9PoRY/sydzZ/szd63VdzgNmNK2eoY8X/BL+5VJPF08s/9OhcAChv64nl4Hfq
-        6io6ibySl/CcRMX/bsNv+gSDAOV1AD2sjCGUjXFucSolMnl/0C9TwP6HZ+s+4901rRHXkh
-        ofW7fo+N3awOWjT+9O7cBuqI0MgYDWoBtaMZPOuf58hmAkKX95iqXpCA/4uMuA==
+        bh=cNPrazhu8AiNqY48Bl5toVocfkCGjTYHAVgU1zKd2NQ=;
+        b=ApW/cO8sBs9PX2rfQ++9vxKM/0pt5rQXi7fDlCheLbVxPk38H8K/GA6cULrALdiSysBfTL
+        w2eSnBPde+AWA0hf1CiuUCaFGi+MCBggavfbapSPTVpG8BnEqTrDAcZ+Y+AtV3wNpyxeQu
+        U71ecg2SRujnMtrf3d8+7+dJYOx5dw00/QCt+Ua44RZGjQ+aOVMbPoc5nJ7ZAnb3ZtAWM0
+        sirA3awc2GnIzbC09Yjspzvb0H8Y2wh0P36SNBf0jaz6or7qoe2cjqfggn4HS1Zrwngp/M
+        fAatE/79rIDRr+TqKGN2JkhWc9gaIDoWHwWzOar+bqBCR/IHYCCRYcJYl13DbQ==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Thu, 16 Nov 2023 15:01:37 +0100
-Subject: [PATCH net-next 5/9] netlink: specs: Modify pse attribute prefix
+Date:   Thu, 16 Nov 2023 15:01:38 +0100
+Subject: [PATCH net-next 6/9] netlink: specs: Expand the pse netlink
+ command with PoE interface
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231116-feature_poe-v1-5-be48044bf249@bootlin.com>
+Message-Id: <20231116-feature_poe-v1-6-be48044bf249@bootlin.com>
 References: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 In-Reply-To: <20231116-feature_poe-v1-0-be48044bf249@bootlin.com>
 To:     "David S. Miller" <davem@davemloft.net>,
@@ -66,52 +67,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove podl from the attribute prefix to prepare the support of PoE pse
-netlink spec.
+Add the PoE pse attributes prefix to be able to use PoE interface.
+
+Example usage:
+./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-get \
+             --json '{"header":{"dev-name":"eth0"}}'
+{'header': {'dev-index': 4, 'dev-name': 'eth0'},
+ 'pse-admin-state': 3,
+ 'pse-pw-d-status': 4}
+
+./ynl/cli.py --spec netlink/specs/ethtool.yaml --no-schema --do pse-set \
+             --json '{"header":{"dev-name":"eth0"}, "pse-admin-control":3}'
 
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
- Documentation/netlink/specs/ethtool.yaml | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+ Documentation/netlink/specs/ethtool.yaml | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
 diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
-index 5c7a65b009b4..e1bf75099264 100644
+index e1bf75099264..6e1525106a9e 100644
 --- a/Documentation/netlink/specs/ethtool.yaml
 +++ b/Documentation/netlink/specs/ethtool.yaml
-@@ -878,17 +878,17 @@ attribute-sets:
-         type: nest
-         nested-attributes: header
-       -
--        name: admin-state
-+        name: podl-pse-admin-state
+@@ -889,6 +889,18 @@ attribute-sets:
+         name: podl-pse-pw-d-status
          type: u32
--        name-prefix: ethtool-a-podl-pse-
+         name-prefix: ethtool-a-
++      -
++        name: pse-admin-state
++        type: u32
 +        name-prefix: ethtool-a-
-       -
--        name: admin-control
-+        name: podl-pse-admin-control
-         type: u32
--        name-prefix: ethtool-a-podl-pse-
++      -
++        name: pse-admin-control
++        type: u32
 +        name-prefix: ethtool-a-
-       -
--        name: pw-d-status
-+        name: podl-pse-pw-d-status
-         type: u32
--        name-prefix: ethtool-a-podl-pse-
++      -
++        name: pse-pw-d-status
++        type: u32
 +        name-prefix: ethtool-a-
    -
      name: rss
      attributes:
-@@ -1568,9 +1568,9 @@ operations:
-         reply:
-           attributes: &pse
-             - header
--            - admin-state
--            - admin-control
--            - pw-d-status
-+            - podl-pse-admin-state
-+            - podl-pse-admin-control
-+            - podl-pse-pw-d-status
+@@ -1571,6 +1583,9 @@ operations:
+             - podl-pse-admin-state
+             - podl-pse-admin-control
+             - podl-pse-pw-d-status
++            - pse-admin-state
++            - pse-admin-control
++            - pse-pw-d-status
        dump: *pse-get-op
      -
        name: pse-set
