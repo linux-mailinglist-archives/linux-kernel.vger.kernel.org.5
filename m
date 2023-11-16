@@ -2,213 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CC6467EE685
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B9237EE687
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:14:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345426AbjKPSN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:13:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
+        id S1345395AbjKPSOX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:14:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbjKPSNy (ORCPT
+        with ESMTP id S1345368AbjKPSOV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:13:54 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D84E195
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:13:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700158428;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=ONyKyGrGZkXEZgyChUzOaaLcqNc/RranTIE1i+0V890=;
-        b=fMp3MM2Br+m0uBOwJhbVbby1tgMtrueaXlV2piiy+z1/zKIx5YdpFCosyqFYtpQ+oD7P1K
-        t5AepeczVDe59lZD0kF8yIXM2Rixz3B6ZYoXs0aHSZmcO9DjRAGyJhdJVvjR0K0Ex5NZZ2
-        6arSmdpwbEFnoCaOXnSaM5/Ji5go0wg=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-209-EBPU3NhQOi6XoCh3yg_6_w-1; Thu, 16 Nov 2023 13:13:47 -0500
-X-MC-Unique: EBPU3NhQOi6XoCh3yg_6_w-1
-Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-407d3e55927so5945845e9.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:13:47 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700158426; x=1700763226;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ONyKyGrGZkXEZgyChUzOaaLcqNc/RranTIE1i+0V890=;
-        b=Rw+pXdqRXTXLC/TdzOTzVU+hrx0uZAKmUnKGaUXipUGcd3DIMsJBlQmumA3nlAbL0c
-         uZDcX/seEXsS12vm74Lpx0GOxFrex2lI87aEpJhDE+pcskmvnkLowOSw8jFknWUHX53v
-         qjsA029D39uyw0gtWpveIl98laH+f+C41rZEjZPjKO4t5nRo13jBmcjtWEL2dex4nVKo
-         r0EQE+W8jY8BvzV9gZE/W5b8HWaAaVd/scmcso3zX/Dvg0LT8um5fzDwUdfEpZxvRTGj
-         i2sL2GRsVZT5q8eNNiuxLS62rtB9VunxrZQDftCwDVE+JLeK6PirEbAqQZhtmiEBP0XG
-         xpcQ==
-X-Gm-Message-State: AOJu0YwNZ+3Xs0UcncNVVvFWYLoZgGVf43RQaeAXfkdS5RFnlaaiICJi
-        3V+e9iR35H+TJcSGXOKxUa0MiwdmWKs3wQo9BGTBn3N9udMHaAbKWFAAyMkFZ015twfcDWfmAEx
-        /vUIYSoyBOPTa+V25hTn7iQek
-X-Received: by 2002:a05:600c:4f92:b0:408:57bb:ef96 with SMTP id n18-20020a05600c4f9200b0040857bbef96mr2470540wmq.30.1700158426021;
-        Thu, 16 Nov 2023 10:13:46 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEvC/WDjQ3K/pm+VHYer9HJAY8r0bTQQnbWMq5G76YQXHZVSBBUucnoFb6okpNffqX20tYxrw==
-X-Received: by 2002:a05:600c:4f92:b0:408:57bb:ef96 with SMTP id n18-20020a05600c4f9200b0040857bbef96mr2470525wmq.30.1700158425516;
-        Thu, 16 Nov 2023 10:13:45 -0800 (PST)
-Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id f6-20020a7bcd06000000b0040a463cf09dsm4415094wmj.33.2023.11.16.10.13.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 10:13:45 -0800 (PST)
-Message-ID: <6308590a-d958-4ecc-a478-ba088cf7984d@redhat.com>
-Date:   Thu, 16 Nov 2023 19:13:44 +0100
+        Thu, 16 Nov 2023 13:14:21 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 026B419D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:14:19 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 408A5C433C8;
+        Thu, 16 Nov 2023 18:14:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700158458;
+        bh=fU9UbtrsIqmGuD7XgmjRY/5d5B/QYSrBZgF4IZZYGTw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tAviU7jubktNs951PoKcGBu4o5sD3xt8QsVKXloraDS99HD4ozv6XhqsV2PXFtK+S
+         R1It3k0KIsLumPM77URN6Yrq1mQ7y25JL04zaPvM75PjvZDufW9ls45UOoxokroHak
+         Vv9RUij8AiP5+wTpq0Z4ZgcO3r5WFBAKAjkWXpUha97JiWHO0kciorfu59zd6ufLjq
+         ryC6wk0hbWkL71gJ4xT+QZizLMqFjqQaI6bUBrnbO+J2lZ6JgIA+srmG1cOALOAdAn
+         dTin/yRPGTktcUWlHlF6RM5EXwjZ4dknmbaWN5vOY2rQQoHxWvtZsdVjS/2v/xhklk
+         NrB/wrQeykMtg==
+Date:   Thu, 16 Nov 2023 18:14:09 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Pandey, Sunil K" <sunil.k.pandey@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
+Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <2b4b935e-aea1-4283-a459-5d6004b24b28@sirena.org.uk>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+ <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
+ <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
+ <ZVTvvJTOV777UGsP@arm.com>
+ <d90884a0-c4d3-41e9-8f23-68aa87bbe269@sirena.org.uk>
+ <d05d23d56bd2c7de30e7732e6bd3d313d8385c47.camel@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [mm?] WARNING in unmap_page_range (2)
-Content-Language: en-US
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>,
-        Muhammad Usama Anjum <usama.anjum@collabora.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
-        wangkefeng.wang@huawei.com
-References: <000000000000b0e576060a30ee3b@google.com>
- <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
- <a8349273-c512-4d23-bf85-5812d2a007d1@redhat.com> <ZVZYvleasZddv-TD@x1n>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZVZYvleasZddv-TD@x1n>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="15rJUYEsjrHhwsZm"
+Content-Disposition: inline
+In-Reply-To: <d05d23d56bd2c7de30e7732e6bd3d313d8385c47.camel@intel.com>
+X-Cookie: micro:
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> It should be fine, as:
-> 
-> static void make_uffd_wp_pte(struct vm_area_struct *vma,
-> 			     unsigned long addr, pte_t *pte)
-> {
-> 	pte_t ptent = ptep_get(pte);
-> 
-> #ifndef CONFIG_USERFAULTFD_
-> 
-> 	if (pte_present(ptent)) {
-> 		pte_t old_pte;
-> 
-> 		old_pte = ptep_modify_prot_start(vma, addr, pte);
-> 		ptent = pte_mkuffd_wp(ptent);
-> 		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
-> 	} else if (is_swap_pte(ptent)) {
-> 		ptent = pte_swp_mkuffd_wp(ptent);
-> 		set_pte_at(vma->vm_mm, addr, pte, ptent);
-> 	} else {                                      <----------------- this must be pte_none() already
-> 		set_pte_at(vma->vm_mm, addr, pte,
-> 			   make_pte_marker(PTE_MARKER_UFFD_WP));
-> 	}
-> }
 
-Indeed! Is pte_swp_mkuffd_wp() reasonable for pte markers? I rememebr 
-that we don't support multiple markers yet, so it might be good enough.
+--15rJUYEsjrHhwsZm
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
->>
->> 2) We get the error on arm64, which does *not* support uffd-wp. Do we
->>     maybe end up calling make_uffd_wp_pte() and place a pte marker, even
->>     though we don't have CONFIG_PTE_MARKER_UFFD_WP?
->>
->>
->> static inline bool pte_marker_entry_uffd_wp(swp_entry_t entry)
->> {
->> #ifdef CONFIG_PTE_MARKER_UFFD_WP
->> 	return is_pte_marker_entry(entry) &&
->> 	    (pte_marker_get(entry) & PTE_MARKER_UFFD_WP);
->> #else
->> 	return false;
->> #endif
->> }
->>
->> Will always return false without CONFIG_PTE_MARKER_UFFD_WP.
->>
->> But make_uffd_wp_pte() might just happily place an entry. Hm.
->>
->>
->> The following might fix the problem:
->>
+On Thu, Nov 16, 2023 at 12:52:09AM +0000, Edgecombe, Rick P wrote:
+> On Wed, 2023-11-15 at 18:43 +0000, Mark Brown wrote:
+> > > end marker token (0) needs it i guess.
 
-[...]
+> > x86 doesn't currently have end markers.=A0 Actually, that's a point -
+> > should we add a flag for specifying the use of end markers here?
+> > There's code in my map_shadow_stack() implementation for arm64 which
+> > does that.
 
-> 
-> I'd like to double check with Muhammad (as I didn't actually follow his
-> work in the latest versions.. quite a lot changed), but I _think_
-> fundamentally we missed something important in the fast path, and I think
-> it applies even to archs that support uffd..
-> 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index e91085d79926..3b81baabd22a 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -2171,7 +2171,8 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
->                  return 0;
->          }
-> 
-> -       if (!p->vec_out) {
-> +       if (!p->vec_out &&
-> +           (p->arg.flags & PM_SCAN_WP_MATCHING))
+> Hmm, I guess there isn't a way to pass a flag for the initial exec
+> stack? So probably it should just mirror that behavior. Unless you
+> think a lot of people would like to skip the default behavior.
 
-Ouch, yes. So that's the global fence I was wondering where to find it.
+I don't really know that anyone would particularly want to use a flag on
+arm64, I was more thinking for the benefit of x86 where any termination
+record would be a change.  It's certainly easier to not have flags so
+I'm more than happy to leave things as they are, there's nothing
+stopping further extensions of the ABI if we decide we want them later.
 
--- 
-Cheers,
+> And of course we don't have a marker on x86 (TODO with alt shadow
+> stacks). We could still check for size < 8 if we want it to be a
+> universal thing.
 
-David / dhildenb
+It does seem simpler, size < 8 is all edge case.
 
+--15rJUYEsjrHhwsZm
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVWW/AACgkQJNaLcl1U
+h9CzZQf/dIUyUF/fRB2YA6pvIXvNE5ZU2z1Domwxa98+bLpNitJrcbiBgQGOxFZb
+ryxcalGm1nhzTbcyGM45iJQb48ageOjQEVGr2ztoKX8bVsRBNCfCSWEATPhSAi0r
+ek28N2U9wEVNiQyoYaDztE7wMABEihBZLacKKYSsQ8tSyLfcJOU7o3FN9DdVx316
+GfkPWEC2uSTgHvZozm66MUoP1n+GIFobMATYrdtxu2LI65rjrP5YxmMe5/c7TqB2
+3b2ctcgr3SiKHg+rOl4rxmYR1nlACbJnE9sF4NZv6BYIgTYaze9EHizu44+Usm2N
+we2gOehM/hZyskUKxv/NvW7skuQl2w==
+=zUsz
+-----END PGP SIGNATURE-----
+
+--15rJUYEsjrHhwsZm--
