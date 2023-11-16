@@ -2,75 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E552B7EE960
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:40:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 217D07EE961
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:40:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345557AbjKPWkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 17:40:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36488 "EHLO
+        id S1345532AbjKPWkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 17:40:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53328 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229745AbjKPWkR (ORCPT
+        with ESMTP id S231314AbjKPWka (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 17:40:17 -0500
-Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB330127
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:40:11 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 010791C0003;
-        Thu, 16 Nov 2023 22:40:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700174410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PcI5DmxFweLocvZiTAD/rwWYJAn3IHIgKS4/i00jgWk=;
-        b=R/e1dql5Z2pyCQp7Ckpgw3HAwGAwz/ryacwE2Hhc1bDUvca0WGUkkRKF+hS1PgQp6F7B0X
-        JvAC9Vs73JtodNITVFuazDzWKjDfYggHlzQZcozLIZ9G0HXxO4VIRU05qfYuIEC+ruotns
-        nTLK0r3+8issf09GQrWNWyLPGCZvFKgqSg42OEL0ki7wb/CnOOga3NzwShi1w2w/OKCzaD
-        cAXfeSp/ptd7s0fs9Zao78iAxmhm66RRMjJYh4VNN4A1ys3VKc3k7NLOR53laZIzpHcsHo
-        JK77KHd7m7y0D3mSA/Ehz4ZXRMtf0MPtcEOp2mbBnzTyqBbhwY38xCNR6C42zw==
-Date:   Thu, 16 Nov 2023 23:40:09 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     miquel.raynal@bootlin.com,
-        Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/1] Fallback mechanism for GETMXDS CCC
-Message-ID: <170017437282.331655.12906579286877237235.b4-ty@bootlin.com>
-References: <20231114085525.6271-1-joshua.yeong@starfivetech.com>
+        Thu, 16 Nov 2023 17:40:30 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4494D55
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:40:26 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 633FAC433C9;
+        Thu, 16 Nov 2023 22:40:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700174426;
+        bh=hhJxCwgkhNq5mTKwgfqKGY5emDpnAzXQlHkFgPmYc4o=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=R4gMdz1AeYvYzouClPzwzjMPLEOwKFQMHmTQQAiHd0UPMC63KNQP1XhJHI4xWhL3m
+         HgZ6aI6N7f0PpazRRax3Guk6mXAba8jCbTFoGZYRKXDhEBv5RBGUm9elIE0k+b6V6S
+         YEs9261FGCTRcKqEP3mVmAs+Z1IlcUOzQBYaS2yO/i5BNRvpq3CRgokli2E8OXMTqI
+         F7nCn5vjn9aMBV5/T5dvDBXBBMBRihgXNTmVOU7+HIiwpPnoi/7KEAsyznv4Pr1D/v
+         x/S4wCt8k0HDdStFS825iHeU2tHQ8JnnPeGG5+VJk4W6QTZwyG4IkV94+oP14ih499
+         95twpEA1TJy2A==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 46BA1E00090;
+        Thu, 16 Nov 2023 22:40:26 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114085525.6271-1-joshua.yeong@starfivetech.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net-next v3] selftests/net: synchronize udpgro tests' tx and
+ rx connection
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170017442628.21715.12487651571633570474.git-patchwork-notify@kernel.org>
+Date:   Thu, 16 Nov 2023 22:40:26 +0000
+References: <jvzrm33xjrhal3qro37tfpfw2w4jbh35byjlogcc776xt4fpzy@zkmfoqn5ipil>
+In-Reply-To: <jvzrm33xjrhal3qro37tfpfw2w4jbh35byjlogcc776xt4fpzy@zkmfoqn5ipil>
+To:     Lucas Karpinski <lkarpins@redhat.com>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, shuah@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
 
-On Tue, 14 Nov 2023 16:55:24 +0800, Joshua Yeong wrote:
-> Some I3C hardware does not support turnaround time in GETMXDS. Cadence IPs will
-> perform validation against length of CCC returned. Similar hardware error were
-> not seen in other IPs DW/SVC.
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Tue, 14 Nov 2023 10:11:31 -0500 you wrote:
+> The sockets used by udpgso_bench_tx aren't always ready when
+> udpgso_bench_tx transmits packets. This issue is more prevalent in -rt
+> kernels, but can occur in both. Replace the hacky sleep calls with a
+> function that checks whether the ports in the namespace are ready for
+> use.
 > 
-> Joshua Yeong (1):
->   i3c: Add fallback method for GETMXDS CCC
+> Suggested-by: Paolo Abeni <pabeni@redhat.com>
+> Signed-off-by: Lucas Karpinski <lkarpins@redhat.com>
 > 
 > [...]
 
-Applied, thanks!
+Here is the summary with links:
+  - [net-next,v3] selftests/net: synchronize udpgro tests' tx and rx connection
+    https://git.kernel.org/netdev/net-next/c/3bdd9fd29cb0
 
-[1/1] i3c: Add fallback method for GETMXDS CCC
-      commit: 2aac0bf4ebc8e09941bb2a40c0ce725437d9a82c
-
-Best regards,
-
+You are awesome, thank you!
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
