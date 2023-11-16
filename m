@@ -2,124 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B5F577EDEE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:52:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F707EDEE7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:53:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345052AbjKPKwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50630 "EHLO
+        id S1345056AbjKPKxW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:53:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41674 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234347AbjKPKwv (ORCPT
+        with ESMTP id S230193AbjKPKxV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:52:51 -0500
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10C161B2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:52:48 -0800 (PST)
-Received: by mail-qv1-xf2a.google.com with SMTP id 6a1803df08f44-66cfd874520so3293426d6.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:52:48 -0800 (PST)
+        Thu, 16 Nov 2023 05:53:21 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D3021AE;
+        Thu, 16 Nov 2023 02:53:18 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5c184b3bbc4so498512a12.1;
+        Thu, 16 Nov 2023 02:53:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700131967; x=1700736767; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=QqJIzLc+e20w+CyJG0SPGKCmTSYxEHr4GKar1orgi4U=;
-        b=FE0s2wm3PmLua//p/e6XeGXDBaBgpoIisWXgbbZ5mPjkMSBQC7CEyO+6TNpUNv7s1/
-         rHuwLKDsX5oiijkhLGSZwdvMRdE+ecRQ1Rbt+AIsm06WeYbvLEUjMjXlrUp3UBupjrRm
-         ydjRq4eXz9MyZBeqaPl8jw62q2i5MT8GahCq92hS8yq/K5DPgSmeAVYs/lj08i11FamG
-         W8h3gMqbrBziHmzPGINlxZzJ6qUkKre7OiCdRNdYHhnGYGO/NCs6NxBCXTOIW/2OFhvk
-         vWxT9MJxOgMG8ZSPINm5VSSMiigVpIc//xg8L2ZiNt/O6SsYnHuyJp+lV3sf1ubvM2og
-         k+kQ==
+        d=gmail.com; s=20230601; t=1700131997; x=1700736797; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J6wLYSXzg5tmYqidzmV/DNDn2+dFtQpnSIBReQdUv9g=;
+        b=PbhSAl7hch40DGTORDWg9KAdz/piYCL8XZRCIdxK0N+pRQRDjZBHB0ZW6z5V1D8/58
+         CR1zJKqCN063BFQRXpHXCxFISK7i9k4H9ZK/eq/ZWWjRUqeVR9LLU2qnzKoVyH3n0Ru/
+         jWRRzphJhtXtmzhOLCdvfGN/JsXucF8K5UH7bX83X1PDm7pnlNqUjyszfDA4QRSbI7dm
+         +kKit5yVZpqFpD33K/ZMItnt2j/24DitPjfr458j2wc4Zxg3wrkPRE9HHLbXm+6qMqJR
+         aC3m/NGqof/aHgfrvhPnYX1KAdvXGjxgSF4T75DwMo9LsRlSPXFHrwSfclapLAe5jp6k
+         oO+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700131967; x=1700736767;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QqJIzLc+e20w+CyJG0SPGKCmTSYxEHr4GKar1orgi4U=;
-        b=NAVLV2Vmkq1U0G8YpfGmk3/vatN8vcXoJcQAo399GaouEn0suN6yZ7fP10k7j3cYIr
-         o74HSUVafkmI6Qe038rVHGMfGvHItyUhrFrqdfqI0kbxtovfe5On/rQG1zir53P1DHsr
-         ihyrL1D8Ccfnub7XUsG7VonBcqxsAbiPPi9bWejRxtMw9KQ0jVzNGdYYB3eFnuUVHxvf
-         RX/hIzG3afgnUFt8R9kqq5+t1mn2oN8/F4oBsBgkNyyhIOSa84vIFt8dFe1dGDITFZSF
-         28elJFVIqbJHrZOe/6cNBL7SGyUAl8oX6P8ZD0P5cRvWMtRXdbNELRkWbMx3wupCoc2+
-         UhKQ==
-X-Gm-Message-State: AOJu0YwV6N25zrNvIqaYaz6Vq6ykWRzxOe65MrD6MxRABhtfL5mkEw00
-        2yrVp6CO/lp+ITMwxXlv2wapKHHKfYAzyyxlGgiVHg==
-X-Google-Smtp-Source: AGHT+IFL6OuFCAHtWGk+M6NysNl0dEVVN94VlaoyeFHRURNLqxhoGD85IALw3+5v3xQOWTXOZjFb/jzqyV+sTc8GtMo=
-X-Received: by 2002:ad4:5990:0:b0:675:58de:b59a with SMTP id
- ek16-20020ad45990000000b0067558deb59amr7530365qvb.65.1700131966900; Thu, 16
- Nov 2023 02:52:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700131997; x=1700736797;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J6wLYSXzg5tmYqidzmV/DNDn2+dFtQpnSIBReQdUv9g=;
+        b=ozaxevbCiLoCyyEFgsXZwcbZU86YRKJUv9HebqXb0eADRu4frYH+h8wPccWuLj/uIR
+         6KqAoRQ2J6gMXDb23BGd8EWx2a4Q3Qn4Leyz8eOf/ny6+KyDfPhGXAfL6w/aWl8tY3YD
+         Ps3NYZiU5R+K3ONYaeuSlWl79NLPEKC+356PAZ+uOB9mmnWpts4Iz9ki+9wyZyENMyFa
+         YM6frpwQTex3cQs809h1pUBbkpf1ItqYTzZl+I7nvcPSxNJYYzy/yHZZiylw/+kbhFJb
+         T4uqN3cT4UE0AsZeKddQrGoqVDcombvshPxGmuvNbaQERQcquehxCfpfceISVWnZXCSQ
+         7QGA==
+X-Gm-Message-State: AOJu0YwIGBICnsZlab+ltfXGw0RRVj5PVjd0WUV1oMcl4PuVvIGZk58w
+        Xb+4e11HFm+EeJR5hfCcIrA=
+X-Google-Smtp-Source: AGHT+IHviUA6wsN7WBJ0vdUlc5oRn54uPX/2SL1zM7nRFKveJPLaxBH16YaTE8jA32XcURweaSCFnA==
+X-Received: by 2002:a17:90b:1810:b0:280:2652:d42 with SMTP id lw16-20020a17090b181000b0028026520d42mr17763037pjb.23.1700131997392;
+        Thu, 16 Nov 2023 02:53:17 -0800 (PST)
+Received: from archie.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id r6-20020a17090a560600b0026b3f76a063sm1300560pjf.44.2023.11.16.02.53.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 02:53:16 -0800 (PST)
+Received: by archie.me (Postfix, from userid 1000)
+        id 9876410206E62; Thu, 16 Nov 2023 17:53:11 +0700 (WIB)
+Date:   Thu, 16 Nov 2023 17:53:11 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Anil Choudhary <anilchabba@gmail.com>,
+        Linux regressions mailing list <regressions@lists.linux.dev>
+Cc:     Jay Vosburgh <jay.vosburgh@canonical.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Networking <netdev@vger.kernel.org>,
+        Linux Intel Wired LAN <intel-wired-lan@lists.osuosl.org>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        Ivan Vecera <ivecera@redhat.com>,
+        Jesse Brandeburg <jesse.brandeburg@intel.com>,
+        Tony Nguyen <anthony.l.nguyen@intel.com>,
+        Daniel Machon <daniel.machon@microchip.com>,
+        Dave Ertman <david.m.ertman@intel.com>,
+        Sujai Buvaneswaran <sujai.buvaneswaran@intel.com>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: sr-iov related bonding regression (two regressions in one report)
+Message-ID: <ZVX0l0pTgbe0LKp7@archie.me>
+References: <986716ed-f898-4a02-a8f6-94f85b355a05@gmail.com>
+ <32716.1700009673@famine>
+ <0f97acf9-012d-4bb2-a766-0c2737e32b2c@leemhuis.info>
+ <CC024511-980A-4508-8ABF-659A04367C2B@gmail.com>
+ <7AC9E8F6-B229-47AA-84CE-1149F45D7E0F@gmail.com>
 MIME-Version: 1.0
-References: <20231115203401.2495875-1-iii@linux.ibm.com> <20231115203401.2495875-8-iii@linux.ibm.com>
-In-Reply-To: <20231115203401.2495875-8-iii@linux.ibm.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 16 Nov 2023 11:52:10 +0100
-Message-ID: <CAG_fn=WcuQxB6ZRKwi221EM-QsEfJ7udyQg9W_z0jv9nFCB89A@mail.gmail.com>
-Subject: Re: [PATCH 07/32] kmsan: Remove a useless assignment from kmsan_vmap_pages_range_noflush()
-To:     Ilya Leoshkevich <iii@linux.ibm.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="e1HJro3cB6s4ipwc"
+Content-Disposition: inline
+In-Reply-To: <7AC9E8F6-B229-47AA-84CE-1149F45D7E0F@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.com=
-> wrote:
->
-> The value assigned to prot is immediately overwritten on the next line
-> with PAGE_KERNEL. The right hand side of the assignment has no
-> side-effects.
->
-> Fixes: b073d7f8aee4 ("mm: kmsan: maintain KMSAN metadata for page operati=
-ons")
-> Suggested-by: Alexander Gordeev <agordeev@linux.ibm.com>
-> Signed-off-by: Ilya Leoshkevich <iii@linux.ibm.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
 
-> ---
->  mm/kmsan/shadow.c | 1 -
->  1 file changed, 1 deletion(-)
->
-> diff --git a/mm/kmsan/shadow.c b/mm/kmsan/shadow.c
-> index b9d05aff313e..2d57408c78ae 100644
-> --- a/mm/kmsan/shadow.c
-> +++ b/mm/kmsan/shadow.c
-> @@ -243,7 +243,6 @@ int kmsan_vmap_pages_range_noflush(unsigned long star=
-t, unsigned long end,
->                 s_pages[i] =3D shadow_page_for(pages[i]);
->                 o_pages[i] =3D origin_page_for(pages[i]);
->         }
-> -       prot =3D __pgprot(pgprot_val(prot) | _PAGE_NX);
->         prot =3D PAGE_KERNEL;
+--e1HJro3cB6s4ipwc
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This bug dates back to 5.1-rc2, when KMSAN didn't exist upstream.
-The commit introducing vmap support already had it:
-https://github.com/google/kmsan/commit/3ff9d7c640d378485286e1a99d85984ae690=
-1f23
-I don't remember what exactly required the more relaxed PAGE_KERNEL
-mask though :)
+On Wed, Nov 15, 2023 at 12:48:51PM -0800, Anil Choudhary wrote:
+> We are getting errorError subscribing to SWID 0x0000.
+>  from following code
+> root@us-ash-r1-c2-m1:~/linux# grep -rn -e "subscribing to " .
+> grep: ./debian/linux-image/lib/modules/6.6.1-vdx/kernel/drivers/net/ether=
+net/intel/ice/ice.ko: binary file matches
+> ./samples/connector/ucon.c:149: ulog("subscribing to %u.%u\n", CN_TEST_ID=
+X, CN_TEST_VAL);
+> ./Documentation/driver-api/media/v4l2-event.rst:117:add      called when =
+a new listener gets added (subscribing to the same
+> ./Documentation/driver-api/media/v4l2-event.rst:130:Unsubscribing to an e=
+vent is via:
+> ./Documentation/maintainer/feature-and-driver-maintainers.rst:44:mailing =
+list. Either by subscribing to the whole list or using more
+> grep: ./drivers/net/ethernet/intel/ice/ice_lag.o: binary file matches
+> grep: ./drivers/net/ethernet/intel/ice/ice.o: binary file matches
+> grep: ./drivers/net/ethernet/intel/ice/ice.ko: binary file matches
+> ./drivers/net/ethernet/intel/ice/ice_lag.c:1007:                dev_err(i=
+ce_pf_to_dev(local_lag->pf), "Error subscribing to SWID 0x%04X\n",
+> root@us-ash-r1-c2-m1:~/linux#
+>=20
+
+Again, please don't top-post; reply inline with appropriate context instead.
+You may need to configure your email client to start reply below the quoted
+context.
+
+OK, now on your Bugzilla ticket, please attach the full log (either from
+dmesg or from journalctl). And don't forget to perform bisection if
+you'd like to get this regression fixed.
+
+Thanks.
+
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--e1HJro3cB6s4ipwc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVX0kwAKCRD2uYlJVVFO
+o7fjAQC0MeTuZpur/LspKJ2Mx7S+c45gX313sk1uD4kt7ANNVwEA/ivKY/8tlYLK
+LIZuHFWvA3qMyHT4vgtG8fcqbuN8igc=
+=O+Fn
+-----END PGP SIGNATURE-----
+
+--e1HJro3cB6s4ipwc--
