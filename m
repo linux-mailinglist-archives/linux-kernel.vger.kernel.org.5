@@ -2,106 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAC17EE2EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:35:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75607EE2EF
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 15:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344087AbjKPOfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 09:35:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42458 "EHLO
+        id S231236AbjKPOfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 09:35:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231236AbjKPOfK (ORCPT
+        with ESMTP id S233558AbjKPOfm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 09:35:10 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40700187;
-        Thu, 16 Nov 2023 06:35:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=FtGcrsM0yGKSH60fh1aa98gMbQ7lZQIB+/J2Fm0HBWM=; b=q5cXJFF50QMSpguEg0T5HooloM
-        CGzHXbgPEopW+DHviNWzN8yOIGB2B5k645B4XW+8pU9likX6mqsGBTtfs2KvBRGoSmijKwtibklEj
-        aVSEux5TSFxYsODfIrWRkpUdgr6mMVVgNUz58i2Jk+Zn8GdqviCK6B5yFq8HbKw/B3frgvc9L04sF
-        HMmp1xggZoFKZcZZkgLmtiCmjfkJjqenqUxRe1wCu7W/KswnbLnimRRNG2+QDmcBDhGngf8BJquvL
-        dOmwcc4/byDjYB9GSRW9S5e17yJUsTq5W1G74yTjIoMi50+gIFU5j8K6eAhwHkzMaTJB98JbmtKvd
-        b7Q2+pUw==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r3dSE-005bav-2V;
-        Thu, 16 Nov 2023 14:34:51 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 717613002BE; Thu, 16 Nov 2023 15:34:50 +0100 (CET)
-Date:   Thu, 16 Nov 2023 15:34:50 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>, mingo@redhat.com,
-        juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, viresh.kumar@linaro.org,
-        qyousef@layalina.io, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, lukasz.luba@arm.com, wyes.karny@amd.com,
-        beata.michalska@arm.com
-Subject: Re: [PATCH v3 0/2] Rework interface between scheduler and schedutil
- governor
-Message-ID: <20231116143450.GF8262@noisy.programming.kicks-ass.net>
-References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
- <CAJZ5v0g4N2UojiQqJn7fxWj2=h=6sgFfGEqEVx1wuh2VdvaH6Q@mail.gmail.com>
+        Thu, 16 Nov 2023 09:35:42 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09607130
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 06:35:40 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F44AC433C8;
+        Thu, 16 Nov 2023 14:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700145339;
+        bh=6Kn1U+qn6gfoSwPBsMGk4/t2qHphIqBsJSwlIIZY8gg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=PBOw/9G2SLAkF927tJeI+f3v8LKCQZYB2RYsHiYEjm7ffMmfgbnB8/hb+pA66tboP
+         oWKkGhGuopbW5XyCOz6j0dum2GayeFQnH54N55kKo4nqZ/Hui1xl3XJedCeUizeLhV
+         3Nq37FJ5z5En1vqK92bOusuuZq2WZVIg9UWWorQYg5JtLYklM+MEKxSYHJwldfdklw
+         vwTmSPUi3VzT+2FNv4v/MEcmzMkALxzKfR5bn0vk2SSCkE6kIyGdHnelKEINifLsmd
+         m2jp5ULHanBjOIWvS8EDbNLNW2AB77WIxDF2SDCruX9z8F0QYnuzIcaM+h5R00IKyA
+         I1fIF0qc5AItA==
+Date:   Thu, 16 Nov 2023 14:35:36 +0000
+From:   Conor Dooley <conor@kernel.org>
+To:     Chester Lin <clin@suse.com>
+Cc:     linus.walleij@linaro.org, Ghennadi.Procopciuc@oss.nxp.com,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, devicetree@vger.kernel.org,
+        Chester Lin <chester62515@gmail.com>,
+        NXP S32 Linux Team <s32@nxp.com>
+Subject: Re: [PATCH] dt-bindings: pinctrl: s32g2: change a maintainer email
+ address
+Message-ID: <20231116-anything-statistic-0410278a2cbe@squawk>
+References: <20231116001913.16121-1-clin@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="XFHd10fz0iWRKVxR"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0g4N2UojiQqJn7fxWj2=h=6sgFfGEqEVx1wuh2VdvaH6Q@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231116001913.16121-1-clin@suse.com>
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 06, 2023 at 04:05:40PM +0100, Rafael J. Wysocki wrote:
-> On Fri, Nov 3, 2023 at 2:18 PM Vincent Guittot
-> <vincent.guittot@linaro.org> wrote:
-> >
-> > Following the discussion with Qais [1] about how to handle uclamp
-> > requirements and after syncing with him, we agreed that I should move
-> > forward on the patchset to rework the interface between scheduler and
-> > schedutil governor to provide more information to the latter. Scheduler
-> > (and EAS in particular) doesn't need anymore to guess estimate which
-> > headroom the governor wants to apply and will directly ask for the target
-> > freq. Then the governor directly gets the actual utilization and new
-> > minimum and maximum boundaries to select this target frequency and
-> > doesn't have to deal anymore with scheduler internals like uclamp when
-> > including iowait boost.
-> >
-> > [1] https://lore.kernel.org/lkml/CAKfTPtA5JqNCauG-rP3wGfq+p8EEVx9Tvwj6ksM3SYCwRmfCTg@mail.gmail.com/
-> >
-> > Changes since v2:
-> > - remove useless target variable
-> >
-> > Changes since v1:
-> > - fix a bug (always set max even when returning early)
-> > - fix typos
-> >
-> > Vincent Guittot (2):
-> >   sched/schedutil: Rework performance estimation
-> >   sched/schedutil: Rework iowait boost
-> >
-> >  include/linux/energy_model.h     |  1 -
-> >  kernel/sched/core.c              | 82 ++++++++++++-------------------
-> >  kernel/sched/cpufreq_schedutil.c | 69 ++++++++++++++++----------
-> >  kernel/sched/fair.c              | 22 +++++++--
-> >  kernel/sched/sched.h             | 84 +++-----------------------------
-> >  5 files changed, 100 insertions(+), 158 deletions(-)
-> >
-> > --
-> 
-> For the schedutil changes in the series:
-> 
-> Acked-by: Rafael J. Wysocki <rafael@kernel.org>
-> 
-> and I'm assuming this series to be targeted at sched.
 
-Sure, I'll go queue it. Thanks!
+--XFHd10fz0iWRKVxR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Nov 16, 2023 at 08:19:13AM +0800, Chester Lin wrote:
+> I am leaving SUSE so the current email address <clin@suse.com> will be
+> disabled soon. <chester62515@gmail.com> will be my new address for handli=
+ng
+> emails, patches and pull requests from upstream and communities.
+
+Consider also updating mailmap.
+
+>=20
+> Cc: Chester Lin <chester62515@gmail.com>
+> Cc: NXP S32 Linux Team <s32@nxp.com>
+> Cc: Ghennadi Procopciuc <Ghennadi.Procopciuc@oss.nxp.com>
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Rob Herring <robh+dt@kernel.org>
+> Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+> Cc: Conor Dooley <conor+dt@kernel.org>
+> Signed-off-by: Chester Lin <clin@suse.com>
+
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+
+Cheers,
+Conor.
+
+> ---
+>  .../devicetree/bindings/pinctrl/nxp,s32g2-siul2-pinctrl.yaml    | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/pinctrl/nxp,s32g2-siul2-pi=
+nctrl.yaml b/Documentation/devicetree/bindings/pinctrl/nxp,s32g2-siul2-pinc=
+trl.yaml
+> index d49aafd8c5f4..a24286e4def6 100644
+> --- a/Documentation/devicetree/bindings/pinctrl/nxp,s32g2-siul2-pinctrl.y=
+aml
+> +++ b/Documentation/devicetree/bindings/pinctrl/nxp,s32g2-siul2-pinctrl.y=
+aml
+> @@ -9,7 +9,7 @@ title: NXP S32G2 pin controller
+> =20
+>  maintainers:
+>    - Ghennadi Procopciuc <Ghennadi.Procopciuc@oss.nxp.com>
+> -  - Chester Lin <clin@suse.com>
+> +  - Chester Lin <chester62515@gmail.com>
+> =20
+>  description: |
+>    S32G2 pinmux is implemented in SIUL2 (System Integration Unit Lite2),
+> --=20
+> 2.40.0
+>=20
+
+--XFHd10fz0iWRKVxR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZVYotQAKCRB4tDGHoIJi
+0jxiAP9qg9oojQRqaMa5oA5FjBPfXBrlQghFQaC637ksKm/TogEApk8zpPB35gXQ
+0KHniR6mtOmrL84OcfZTJiqqxWywtQo=
+=U5R6
+-----END PGP SIGNATURE-----
+
+--XFHd10fz0iWRKVxR--
