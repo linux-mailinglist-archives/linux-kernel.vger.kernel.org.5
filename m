@@ -2,132 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7547EDDCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:42:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963197EDDD5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344525AbjKPJmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:42:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60794 "EHLO
+        id S1344966AbjKPJoN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 04:44:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235663AbjKPJmx (ORCPT
+        with ESMTP id S230254AbjKPJoL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:42:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B514E1B3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700127769;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=heGG96XfkpUgzfldNR64oAGB+yDvLKeqZ76hGOTYKIY=;
-        b=RJIvCqUEPVwkyiEEHLB2wgKjuYnPSQjbe4RxhXulZazRw1+il2BQwXuoRJ/EKi2hq6c71S
-        YtGLQMFhcfnIhJm5Q049dUtgM3Of3Jrk3b8rItR0Sgbiv0ydo5/KvxaqDCDqr0Un+ilP+h
-        267Wu18PGkUiilZlKNw5A9a17SH4uVM=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-620-zIugWFoaNe2_Tcm8uyRB_g-1; Thu, 16 Nov 2023 04:42:45 -0500
-X-MC-Unique: zIugWFoaNe2_Tcm8uyRB_g-1
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-9c45a6a8832so11216066b.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:42:45 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700127764; x=1700732564;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=heGG96XfkpUgzfldNR64oAGB+yDvLKeqZ76hGOTYKIY=;
-        b=ENpvp/Hy8v2/NGvMbuTpudV0U6VCQdUKEwrVF1Ap2ygXv3tSEpo7P4KXSzy6/N2HZg
-         pUXyjfO4vtkjA+yIJkflvmHks1IHnWqSb3ZiHNkJv8DsMoxVhWdC1OXQUSbG1gOoCAgQ
-         mhhsRKva6S6D/mV1j2NpdvIt0F7H7JEyzgYSd/Uqk3IOYh6nwpf817uENL/fSKlKZhWl
-         T49Q6Mtz3i1QT1eO5ZDlaapunZJDNMGvu2d5uMJnvWcFMKewjmSV69aY7+MHBAiKPhwV
-         sOZ8kJrJsGIUM5QrHzlNQ/U1294L1yuuZdndnRWDJgsws+Dis2Hxf0afpcw7VSlDwBt7
-         zaVQ==
-X-Gm-Message-State: AOJu0YxZoE0MeOVV8bFnH9SI6edMmznpQF156SANkrRGGPcRlg2RgTlP
-        X21tX6Bbatz54oQormq8EUk5if6bNRB3Q8JYmjKqy+P69Ggds7WXGYLQY90wByMZs+7P17gHX/G
-        CoDUIl9PHs+Q3P/QCXwDYg38c
-X-Received: by 2002:a17:906:74d6:b0:9d0:51d4:4dc6 with SMTP id z22-20020a17090674d600b009d051d44dc6mr5575109ejl.2.1700127764289;
-        Thu, 16 Nov 2023 01:42:44 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IF9Lx2TYA5UNjfQFCcN+QXNqEZ/5fLFxxydsbS74Vjgexqqz/6UU/5qGFIbdY0aCgbA2PVuHA==
-X-Received: by 2002:a17:906:74d6:b0:9d0:51d4:4dc6 with SMTP id z22-20020a17090674d600b009d051d44dc6mr5575077ejl.2.1700127763868;
-        Thu, 16 Nov 2023 01:42:43 -0800 (PST)
-Received: from gerbillo.redhat.com (146-241-98-67.dyn.eolo.it. [146.241.98.67])
-        by smtp.gmail.com with ESMTPSA id q24-20020a17090622d800b009db53aa4f7bsm8151379eja.28.2023.11.16.01.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 01:42:43 -0800 (PST)
-Message-ID: <020ff11184bb22909287ef68d97c00f7d2c73bd6.camel@redhat.com>
-Subject: Re: [PATCH 2/2] net: usb: ax88179_178a: avoid two consecutive
- device resets
-From:   Paolo Abeni <pabeni@redhat.com>
-To:     Jose Ignacio Tornos Martinez <jtornosm@redhat.com>,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     weihao.bj@ieisystem.com
-Date:   Thu, 16 Nov 2023 10:42:42 +0100
-In-Reply-To: <20231114125111.313229-3-jtornosm@redhat.com>
-References: <20231114125111.313229-1-jtornosm@redhat.com>
-         <20231114125111.313229-3-jtornosm@redhat.com>
+        Thu, 16 Nov 2023 04:44:11 -0500
+Received: from frasgout11.his.huawei.com (frasgout11.his.huawei.com [14.137.139.23])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6A15187;
+        Thu, 16 Nov 2023 01:44:06 -0800 (PST)
+Received: from mail02.huawei.com (unknown [172.18.147.228])
+        by frasgout11.his.huawei.com (SkyGuard) with ESMTP id 4SWFBc0RMwz9yTL7;
+        Thu, 16 Nov 2023 17:30:32 +0800 (CST)
+Received: from [127.0.0.1] (unknown [10.204.63.22])
+        by APP1 (Coremail) with SMTP id LxC2BwD35HQ65FVl8FXFAA--.37511S2;
+        Thu, 16 Nov 2023 10:43:37 +0100 (CET)
+Message-ID: <b0f6ece6579a5016243cca5c313d1a58cae6eff2.camel@huaweicloud.com>
+Subject: Re: [PATCH v5 10/23] security: Introduce inode_post_setattr hook
+From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
+To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
+        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
+        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
+        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
+        dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
+        Stefan Berger <stefanb@linux.ibm.com>
+Date:   Thu, 16 Nov 2023 10:43:18 +0100
+In-Reply-To: <231ff26ec85f437261753faf03b384e6.paul@paul-moore.com>
+References: <20231107134012.682009-11-roberto.sassu@huaweicloud.com>
+         <231ff26ec85f437261753faf03b384e6.paul@paul-moore.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.44.4-0ubuntu2 
 MIME-Version: 1.0
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+X-CM-TRANSID: LxC2BwD35HQ65FVl8FXFAA--.37511S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFy3tF1ftF4kGF13Cw4rXwb_yoW5Wry7pF
+        WrK3WYkwn5GFy7Wr93tF43uayS9ayrWr1UXrZIqr1jyFn8Kw13tF92kw1YkrW3Cr48G34F
+        qw129Fsxur98ArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
+        xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIEc7CjxV
+        AFwI0_Gr0_Gr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+        x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+        0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1l42xK82IYc2Ij
+        64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+        8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE
+        2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
+        xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+        6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFYFCUUUUU
+X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAQADBF1jj5aFLwADsI
+X-CFilter-Loop: Reflected
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2023-11-14 at 13:50 +0100, Jose Ignacio Tornos Martinez wrote:
-> The device is always reset two consecutive times (ax88179_reset is called
-> twice), one from usbnet_probe during the device binding and the other fro=
-m
-> usbnet_open.
->=20
-> Let only the reset during the device binding to prepare the device as soo=
-n
-> as possible and not repeat the reset operation (tested with generic ASIX
-> Electronics Corp. AX88179 Gigabit Ethernet device).
->=20
-> Reported-by: Herb Wei <weihao.bj@ieisystem.com>
-> Tested-by: Herb Wei <weihao.bj@ieisystem.com>
-> Signed-off-by: Jose Ignacio Tornos Martinez <jtornosm@redhat.com>
+On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
+> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+> > 
+> > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
+> > the inode_post_setattr hook.
+> > 
+> > At inode_setattr hook, EVM verifies the file's existing HMAC value. At
+> > inode_post_setattr, EVM re-calculates the file's HMAC based on the modified
+> > file attributes and other file metadata.
+> > 
+> > Other LSMs could similarly take some action after successful file attribute
+> > change.
+> > 
+> > The new hook cannot return an error and cannot cause the operation to be
+> > reverted.
+> > 
+> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
+> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
+> > ---
+> >  fs/attr.c                     |  1 +
+> >  include/linux/lsm_hook_defs.h |  2 ++
+> >  include/linux/security.h      |  7 +++++++
+> >  security/security.c           | 16 ++++++++++++++++
+> >  4 files changed, 26 insertions(+)
+> 
+> ...
+> 
+> > diff --git a/security/security.c b/security/security.c
+> > index 7935d11d58b5..ce3bc7642e18 100644
+> > --- a/security/security.c
+> > +++ b/security/security.c
+> > @@ -2222,6 +2222,22 @@ int security_inode_setattr(struct mnt_idmap *idmap,
+> >  }
+> >  EXPORT_SYMBOL_GPL(security_inode_setattr);
+> >  
+> > +/**
+> > + * security_inode_post_setattr() - Update the inode after a setattr operation
+> > + * @idmap: idmap of the mount
+> > + * @dentry: file
+> > + * @ia_valid: file attributes set
+> > + *
+> > + * Update inode security field after successful setting file attributes.
+> > + */
+> > +void security_inode_post_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+> > +				 int ia_valid)
+> > +{
+> > +	if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
+> > +		return;
+> 
+> I may be missing it, but I don't see the S_PRIVATE flag check in the
+> existing IMA or EVM hooks so I'm curious as to why it is added here?
+> Please don't misunderstand me, I think it makes sense to return early
+> on private dentrys/inodes, but why aren't we doing that now?
 
-We need a suitable Fixes tag even here ;)
+My first motivation was that it is in the pre hooks, so it should be in
+the post hook as well.
 
-> ---
->  drivers/net/usb/ax88179_178a.c | 13 -------------
->  1 file changed, 13 deletions(-)
->=20
-> diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178=
-a.c
-> index 4ea0e155bb0d..864c6fc2db33 100644
-> --- a/drivers/net/usb/ax88179_178a.c
-> +++ b/drivers/net/usb/ax88179_178a.c
-> @@ -1678,7 +1678,6 @@ static const struct driver_info ax88179_info =3D {
->  	.unbind =3D ax88179_unbind,
->  	.status =3D ax88179_status,
->  	.link_reset =3D ax88179_link_reset,
-> -	.reset =3D ax88179_reset,
->  	.stop =3D ax88179_stop,
->  	.flags =3D FLAG_ETHER | FLAG_FRAMING_AX,
->  	.rx_fixup =3D ax88179_rx_fixup,
+Thinking more about it, suppose that the post don't have the check,
+private inodes would gain an HMAC without checking the validity of the
+current HMAC first (done in the pre hooks), which would be even worse.
 
-This looks potentially dangerous, as the device will not get a reset in
-down/up cycles; *possibly* dropping the reset call from ax88179_bind()
-would be safer.
+So, my idea about this is that at least we are consistent.
 
-In both cases touching so many H/W variant with testing available on a
-single one sounds dangerous. Is the unneeded 2nd reset causing any
-specific issue?
+If IMA and EVM should look at private inodes is a different question,
+which would require a discussion.
 
-Thanks,
+Thanks
 
-Paolo
+Roberto
+
+> > +	call_void_hook(inode_post_setattr, idmap, dentry, ia_valid);
+> > +}
+> > +
+> >  /**
+> >   * security_inode_getattr() - Check if getting file attributes is allowed
+> >   * @path: file
+> > -- 
+> > 2.34.1
+> 
+> --
+> paul-moore.com
 
