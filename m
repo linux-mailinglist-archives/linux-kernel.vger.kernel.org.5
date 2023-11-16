@@ -2,94 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EEBD47EE494
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:48:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 181087EE498
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:48:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345302AbjKPPsR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:48:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59642 "EHLO
+        id S1345321AbjKPPse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:48:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345297AbjKPPsK (ORCPT
+        with ESMTP id S1345232AbjKPPsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:48:10 -0500
-Received: from p3plwbeout16-02.prod.phx3.secureserver.net (p3plsmtp16-02-2.prod.phx3.secureserver.net [173.201.193.56])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CE8219B
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:48:03 -0800 (PST)
-X-MW-NODE: 
-X-CMAE-Analysis: v=2.4 cv=SYYyytdu c=1 sm=1 tr=0 ts=655639b2
- a=dFffxkGDbYo3ckkjzRcKYg==:117 a=dFffxkGDbYo3ckkjzRcKYg==:17
- a=TT3OXX8_H1iH7GK2:21 a=ggZhUymU-5wA:10 a=IkcTkHD0fZMA:10 a=t7CeM3EgAAAA:8
- a=FXvPX3liAAAA:8 a=hSkVLCK3AAAA:8 a=hlfSdipmgW7WWFGKQN0A:9 a=QEXdDO2ut3YA:10
- a=EebzJV9D4rpJJoWO5PQE:22 a=FdTzh2GWekK77mhwV6Dw:22 a=UObqyxdv-6Yh2QiB9mM_:22
- a=cQPPKAXgyycSBL8etih5:22 a=b0R6z3OkPTeaBGj_aaBY:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk
-X-SID:  3eb2rPcI9GN7i
-Date:   Thu, 16 Nov 2023 15:47:59 +0000 (GMT)
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-To:     Lizhi Xu <lizhi.xu@windriver.com>,
-        syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        squashfs-devel@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
-Message-ID: <261429818.1734406.1700149679974@eu1.myprofessionalmail.com>
-In-Reply-To: <20231116031352.40853-1-lizhi.xu@windriver.com>
-References: <0000000000000526f2060a30a085@google.com>
- <20231116031352.40853-1-lizhi.xu@windriver.com>
-Subject: Re: [PATCH] squashfs: squashfs_read_data need to check if the
- length is 0
+        Thu, 16 Nov 2023 10:48:32 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17596D59;
+        Thu, 16 Nov 2023 07:48:28 -0800 (PST)
+Received: from localhost.localdomain (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: andrzej.p)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id DF506660734C;
+        Thu, 16 Nov 2023 15:48:25 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700149706;
+        bh=qOGURixP10SKLR9eMJf0x73f6ugT8/gbvL3YowPyUCo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ev+qQXOisOTKnWgq1P8D8oEK9yX30W34JGRLzV4HX5MsrGgm5YSfT1TzKlVvs57sN
+         jBk6KH6DXlhwFAnLWXHB/J/NH2MvGglS/ROafXqXx8zTDgGQ8+WZsx19p3SrsoMg5F
+         /PwJvvgMErv+GUu7KnFg1TZMdE9xO2GWaJPnoNG99XheUvcgUFrpHjxZhTgTgqxFR9
+         ymC+EI1dQI66IedwlkqLLasg7uL6hGRYGeKzn0qkMvTzPvWDhrDR5Sg4RAZkfg8GBs
+         J93wjM93c473Jgzoq4nMovXzxh68aVPVQYttT5nW3me3sAFvu6FDEAOcJh4z0RnULv
+         KW8GoQcONBLTQ==
+From:   Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+To:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Cc:     Hugues Fruchet <hugues.fruchet@foss.st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        Daniel Almeida <daniel.almeida@collabora.com>,
+        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, kernel@collabora.com
+Subject: [RFC 0/6] H.264 stateless encoder RFC 0/6
+Date:   Thu, 16 Nov 2023 16:48:10 +0100
+Message-Id: <20231116154816.70959-1-andrzej.p@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-Importance: Normal
-X-Mailer: Open-Xchange Mailer v8.18.49
-X-Originating-IP: 82.69.79.175
-X-Originating-Client: open-xchange-appsuite
-X-CMAE-Envelope: MS4xfP5dWoFg+M+ZbHqU6VfYXdfwfo2GWM4bkl/BocaMV3PJM36+tJnayLaj5N+fOY/wfJtaAqSRbDzYoK4RvQBifMSoZXLM5ZW8UGrGj7gJ4TqUNX+EXXji
- Y+x2GdNvPOiSAkVqTy/8r7vRcMjYjJMN5uSagylNF1qNQ38kzHI6WKOkvpCTlJz+j6A1tnd0qtQl7EMmrodQHNEytKXfEkiaYP3S3mGZnE77Tvp+7Kds8ORe
- JvIbZmaKwKUyt5hvGMfnvz17XtHuCFProE9plCbX6enG5Fa1Uk2NJfDJdJwjoOli6FQM19zC0ZQFeJR3/VKL0jCk7L1drGh+tLH0Uadq7+0UFh0GvewPUM+2
- gh5wtf6jf6mAbVpZw/VMmGtCBlFHZWZDp6kqOepZj977Wh1eLhZ52TB1uTboFJP0UIMT15TPmG4RV7E2SV0nzMhKHA+wsaWR5675kyeWfsaOnBXzV/EuEMX8
- gGQAGF8S3HNEg7m6n6EaNYcc6qzDTRajc9JboBEUdLnbA7r3ELq4TmqMoaNq3Ukuuwfsb0lmZvbNdXzM
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Dear All,
 
-> On 16/11/2023 03:13 GMT Lizhi Xu <lizhi.xu@windriver.com> wrote:
-> 
->  
-> when the length passed in is 0, the subsequent process should be exited.
-> 
+This series adds uAPI for stateless H.264 encoding and an
+accompanying driver using it.
 
-Reproduced and tested.
+It has been tested on an stm32mp25 and there exists
+a gstreamer user:
 
-Reviewed-by: Phillip Lougher (phillip@squashfs.org.uk)
+https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/5676
 
-> Reported-by: syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com
-> Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
-> ---
->  fs/squashfs/block.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-> index 581ce9519339..2dc730800f44 100644
-> --- a/fs/squashfs/block.c
-> +++ b/fs/squashfs/block.c
-> @@ -321,7 +321,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
->  		TRACE("Block @ 0x%llx, %scompressed size %d\n", index - 2,
->  		      compressed ? "" : "un", length);
->  	}
-> -	if (length < 0 || length > output->length ||
-> +	if (length <= 0 || length > output->length ||
->  			(index + length) > msblk->bytes_used) {
->  		res = -EIO;
->  		goto out;
-> -- 
-> 2.25.1
+example pipeline:
+
+gst-launch-1.0 videotestsrc num-buffers=30 ! video/x-raw, format=YUY2 !
+v4l2slh264enc ! filesink location=test.h264
+
+Rebased onto v6.6 with:
+
+- some patches from ST to actually run the hardware
+- my previous VP8 statless encoding series
+- VP8 support for H1 from Hugues Fruchet
+
+In particular, this series depends on the latter, which can be
+found here:
+
+https://patchwork.linuxtv.org/project/linux-media/list/?series=11358
+
+Here's a branch which contains everything needed to actually run:
+
+https://gitlab.collabora.com/linux/for-upstream/-/tree/h264-enc-rfc-6.6
+
+I kindly ask for comments.
+
+Regards,
+
+Andrzej Pietrasiewicz (6):
+  media: verisilicon Correct a typo in
+    H1_REG_ENC_CTRL2_DEBLOCKING_FILTER_MODE
+  media: verisilicon: Correct a typo in H1_REG_MAD_CTRL_MAD_THRESHOLD
+  media: verisilicon: Improve constant's name
+  media: verisilicon: Update H1 register definitions
+  media: uapi: Add H.264 stateless encoding uAPI
+  media: verisilicon: Add H.264 stateless encoder
+
+ drivers/media/platform/verisilicon/Makefile   |   1 +
+ drivers/media/platform/verisilicon/hantro.h   |   3 +
+ .../media/platform/verisilicon/hantro_drv.c   |  10 +
+ .../platform/verisilicon/hantro_h1_h264_enc.c | 493 +++++++++++
+ .../platform/verisilicon/hantro_h1_regs.h     |  20 +-
+ .../platform/verisilicon/hantro_h1_vp8_enc.c  |   2 +-
+ .../media/platform/verisilicon/hantro_h264.c  | 777 ++++++++++++++++++
+ .../media/platform/verisilicon/hantro_hw.h    |  23 +
+ .../platform/verisilicon/stm32mp25_venc_hw.c  |  22 +-
+ drivers/media/v4l2-core/v4l2-ctrls-core.c     |  54 ++
+ drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   9 +
+ include/uapi/linux/v4l2-controls.h            |  85 ++
+ include/uapi/linux/videodev2.h                |   2 +
+ 13 files changed, 1496 insertions(+), 5 deletions(-)
+ create mode 100644 drivers/media/platform/verisilicon/hantro_h1_h264_enc.c
+
+-- 
+2.25.1
+
