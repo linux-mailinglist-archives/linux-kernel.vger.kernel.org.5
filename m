@@ -2,87 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D555D7EDA78
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F52E7EDA7F
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:53:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230207AbjKPDuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:50:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50904 "EHLO
+        id S1344559AbjKPDxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48160 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230024AbjKPDui (ORCPT
+        with ESMTP id S233593AbjKPDxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:50:38 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8FB71B6
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:50:33 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-50949b7d7ffso523975e87.0
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:50:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700106632; x=1700711432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zVLnet6UeJJKAgG9HzM7O27P98+CfXEuM0uNw2AJ9I4=;
-        b=WPxF+FSvOsi8pl2EB0D4Ygca9eryMDyUbjIceGmtisNDzl8zWbRbNI2/raXlZ0bmyh
-         B1L2pak3fdxshCRdP/FdMW9XMtVAGaa/z3QybvB/Ezxsc+U1aQRN3lkcLGfj/6i8Aw7A
-         /XHkMlAQjkRYQ6BF9gCDrlKY5JPVkX0BVi52M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700106632; x=1700711432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zVLnet6UeJJKAgG9HzM7O27P98+CfXEuM0uNw2AJ9I4=;
-        b=IGa/vQW1ejgmhqT0gS0QK/fkpkt16XjP3zW3XrdIgZA/gLUGmwvn8CQH0Gh5/6G5TY
-         hAVoqfP07Q5oTI4Ha8WIuyX+Ue+BEXHFMdYK4nRfojnRP+A1MAJsfWOrPfJUJ/fU3H82
-         3jFIFIjNgi1T5v9gCPcuq94cKSZwhcYtunYgMDP8SwYNsjOgcHKZhxDetBHKF6yUU3Hp
-         O5+ct/BIhXeL3Y+4xSnN2NUH4/S/LL468bp46GcdgcBA+tILjvbfuqPu9GAPbJIx44FN
-         O7mNffbm/fkmrbiAON+s7FnpVYF+l1M/RRLXplP12IjVhNVMzX8ZM41L4C2y8CTJ4qUk
-         nN+A==
-X-Gm-Message-State: AOJu0YyRdzTesr9xG2d/2BXDhOBD2bGOFo9xMLVLAk84FxSlOpj/2Ons
-        ygtkeW0gpyZxLOwQ5fNSXBqiJS79aT4DtSOmaxbR+5r0QRmbz0Pp7eY=
-X-Google-Smtp-Source: AGHT+IG/HPn5kbZcT3Q0iuyPk7qJavc3LozqD5Z4W7c9maxr4cL7n62LD0Sl69ivAeU3gezgeKzgoerfVPGQMrrf94Y=
-X-Received: by 2002:a05:6512:684:b0:509:4439:9b57 with SMTP id
- t4-20020a056512068400b0050944399b57mr1030248lfe.38.1700106632004; Wed, 15 Nov
- 2023 19:50:32 -0800 (PST)
+        Wed, 15 Nov 2023 22:53:16 -0500
+Received: from mailout1.samsung.com (mailout1.samsung.com [203.254.224.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C78196
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:53:12 -0800 (PST)
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20231116035310epoutp01baaacbcd500568334d68e5e90395afd8~X-h442vRb0543405434epoutp016
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:53:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20231116035310epoutp01baaacbcd500568334d68e5e90395afd8~X-h442vRb0543405434epoutp016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1700106790;
+        bh=pIIlFTM4Wlq3IT9Jc9JjGxdZxFss84n5wkN7Qu/QvFI=;
+        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+        b=HnGZdjSOmujFeu4XRtAKsWniNwYc8x3dy1r58F81UDg5uOM3Btl4b7BD+ULnciTi1
+         aTdRlxPowcp96/V/NJbnvqSrGXohaz+YPWA2zvs3agxU7cPV+U3RkSSfWNxl5SsPbG
+         ydbE/mAIS2fxnoqyCNqlLmEqaQdLE8R1HP7fQcMU=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20231116035309epcas2p12d3044f1a97efee4b72c81479cb7508d~X-h4WphoS1017910179epcas2p1u;
+        Thu, 16 Nov 2023 03:53:09 +0000 (GMT)
+Received: from epsmgec2p1.samsung.com (unknown [182.195.36.101]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4SW5jK1W4Nz4x9Pw; Thu, 16 Nov
+        2023 03:53:09 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmgec2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        64.F7.08648.52295556; Thu, 16 Nov 2023 12:53:09 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTPA id
+        20231116035308epcas2p2ccabb652c85571f3a2697deabd317169~X-h3g6DfU0293602936epcas2p2w;
+        Thu, 16 Nov 2023 03:53:08 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20231116035308epsmtrp1fd1f12486541cd5bdbd67a98dbb86a74~X-h3gATok2054420544epsmtrp1d;
+        Thu, 16 Nov 2023 03:53:08 +0000 (GMT)
+X-AuditID: b6c32a43-4b3ff700000021c8-e2-6555922511a4
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        70.97.08755.42295556; Thu, 16 Nov 2023 12:53:08 +0900 (KST)
+Received: from [10.229.8.168] (unknown [10.229.8.168]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20231116035308epsmtip1df9058ed61801aa00b83f8201c9303dc~X-h3LSI891299512995epsmtip18;
+        Thu, 16 Nov 2023 03:53:08 +0000 (GMT)
+Message-ID: <221efdec-4940-031c-73b1-30aed96c76b0@samsung.com>
+Date:   Thu, 16 Nov 2023 12:50:21 +0900
 MIME-Version: 1.0
-References: <CAKpemQKo2gigO44amj=eFUXgUnUeSmiOoTbS8GdXMx3O07N1vg@mail.gmail.com>
- <638afac6-0d2f-4bb1-8101-b58fdc03e303@sirena.org.uk>
-In-Reply-To: <638afac6-0d2f-4bb1-8101-b58fdc03e303@sirena.org.uk>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Thu, 16 Nov 2023 11:50:20 +0800
-Message-ID: <CAGXv+5GHSK7nAagZ3iuSvcfbjFHJ1F+OYUr8KmaPbp6RyCgUhg@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] regulator: mt6358: Add output voltage fine tuning
- to variable LDOs
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Bret Joseph <bretjoseph@gmail.com>,
-        angelogioacchino.delregno@collabora.com, matthias.bgg@gmail.com,
-        linux-kernel@vger.kernel.org, zhiyong.tao@mediatek.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+        Thunderbird/102.11.0
+Subject: Re: [PATCH v2 10/12] pinctrl: samsung: add exynosautov920 pinctrl
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
+From:   Jaewon Kim <jaewon02.kim@samsung.com>
+In-Reply-To: <ae03b902-fa12-4a33-9a4f-ab3a5956ea5c@linaro.org>
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrBJsWRmVeSWpSXmKPExsWy7bCmua7qpNBUgwev2S0ezNvGZrFm7zkm
+        i/lHzrFaNC9ez2bxbq6Mxd7XW9ktpvxZzmSx6fE1VovN8/8wWlzeNYfN4u7dVYwWM87vY7I4
+        s7iX3aJ17xF2i8Nv2lktfu6ax2KxahdQ3e2JkxkdhDx2zrrL7rFpVSebx51re9g89s9dw+6x
+        eUm9R/9fA4++LasYPT5vkgvgiMq2yUhNTEktUkjNS85PycxLt1XyDo53jjc1MzDUNbS0MFdS
+        yEvMTbVVcvEJ0HXLzAH6REmhLDGnFCgUkFhcrKRvZ1OUX1qSqpCRX1xiq5RakJJTYF6gV5yY
+        W1yal66Xl1piZWhgYGQKVJiQnXFq5y/2gtmcFWd3bmVuYNzN3sXIySEhYCLxe81TRhBbSGAH
+        o8TJtWxdjFxA9idGiad33jFDJL4xStz5XQ7T8O7hKaiivYwSp5ousEIUvWaUmHFPAcTmFbCT
+        mDHhPxuIzSKgKjFn43EmiLigxMmZT1hAbFGBaInWZffBaoQFvCRO7dwDNodZQFzi1pP5YPUi
+        AveZJV63VYMsYxZ4wCgx99xXsFPZBLQlvq9fDNbACbSs589lqGZ5ie1v5zCDNEgIvOCQuLrr
+        NDPE2S4SfzpbGCFsYYlXx7dA/S8l8bK/DcrOlmif/ocVwq6QuLhhNhuEbSwx61k7UC8H0AJN
+        ifW79EFMCQFliSO3WCDW8kl0HP7LDhHmlehoE4JoVJO4P/Uc1BAZiUlHVjJB2B4SzZOns01g
+        VJyFFCqzkHw/C8kzsxD2LmBkWcUollpQnJuemmxUYAiP6uT83E2M4CSu5byD8cr8f3qHGJk4
+        GA8xSnAwK4nwmsuFpArxpiRWVqUW5ccXleakFh9iNAXGzURmKdHkfGAeySuJNzSxNDAxMzM0
+        NzI1MFcS573XOjdFSCA9sSQ1OzW1ILUIpo+Jg1OqgYln0+XSy8vj30zXWv510WZv80TXBcXP
+        22+m8jXMK1j7+VDPnVfr73vcuOWtWt387Bj7UsaTx3OKalXsr0Y/dzqzIX9iwwqzmM0yN6+x
+        +fuu+yh32Y+p+dHuGQrhP0TCzlXpPv9SuGNu+c6ihgXRVsF7CkRTpfMn/TL4l3JwVsaUhbWm
+        WQ+u7xB4dkjl2zrbN6FXz+b1fYnN57e+H7BZ3kxH7+L+P1/4tpzSaHt13ebj3JBXuz3v/nbc
+        W8BdUvggdFHIU0Pv2RmTE/rZvboP3NC7FjJ3L0fX9K2N3tPt7x/6LyP+5a3GhvUicT6f7jG4
+        z3nrHLj8xu2dxTw7K3Ukyp789ni5LfJ4TYJ+XpxflWCXEktxRqKhFnNRcSIAv3fkCGsEAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrLIsWRmVeSWpSXmKPExsWy7bCSnK7KpNBUg0l35S0ezNvGZrFm7zkm
+        i/lHzrFaNC9ez2bxbq6Mxd7XW9ktpvxZzmSx6fE1VovN8/8wWlzeNYfN4u7dVYwWM87vY7I4
+        s7iX3aJ17xF2i8Nv2lktfu6ax2KxahdQ3e2JkxkdhDx2zrrL7rFpVSebx51re9g89s9dw+6x
+        eUm9R/9fA4++LasYPT5vkgvgiOKySUnNySxLLdK3S+DKOLXzF3vBbM6Kszu3Mjcw7mbvYuTk
+        kBAwkXj38BRbFyMXh5DAbkaJWzu3QiVkJJY/62ODsIUl7rccYYUoesko8XDvYbAiXgE7iRkT
+        /oMVsQioSszZeJwJIi4ocXLmExYQW1QgWmL15wusILawgJfEqZ17wGxmAXGJW0/mM4EMFRF4
+        zCzxcOp/ZhCHWeABo8TySY+g1v1ilJjfPR9sLJuAtsT39YvB2jmBVvf8uQw1ykyia2sXI4Qt
+        L7H97RzmCYxCs5BcMgvJxllIWmYhaVnAyLKKUTK1oDg3PbfYsMAwL7Vcrzgxt7g0L10vOT93
+        EyM4hrU0dzBuX/VB7xAjEwfjIUYJDmYlEV5zuZBUId6UxMqq1KL8+KLSnNTiQ4zSHCxK4rzi
+        L3pThATSE0tSs1NTC1KLYLJMHJxSDUxL7xjP2r/72OztVlGrmU1vnSu9Ps85W6ggd8mDbRda
+        InTmJhpOsNZon2D67/JC/SWT9/qw2MeUlbgtdK14Kze9zCPynMnJxDwDzh3++6OEPNxNmYu4
+        Imqfehz86PP01h2Gr5+YbiT5xm+85qc0MXTtn7zPX2q4RIuqtwovStOxOP1D2cZOYvWsmhOx
+        USoMW9rdm9ijzuecDv14oc9tzj0rGU+LSP/XC6TW9L+7+TLmCoO46ft7bXI2tXfW7+fYucbL
+        vyi36nfvD01T25zs6pYrYqU890o3FBYv05qz4cpD06Mf5B9pewQomxanpXJd2Mf3+MOqwhtH
+        j98NY/ZmldTRY/E+k3dkucYD/tpObSWW4oxEQy3mouJEAKXl4UxQAwAA
+X-CMS-MailID: 20231116035308epcas2p2ccabb652c85571f3a2697deabd317169
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20231115095856epcas2p1c3ee85750828bec2ee4ab0adeaeaff28
+References: <20231115095609.39883-1-jaewon02.kim@samsung.com>
+        <CGME20231115095856epcas2p1c3ee85750828bec2ee4ab0adeaeaff28@epcas2p1.samsung.com>
+        <20231115095609.39883-11-jaewon02.kim@samsung.com>
+        <ae03b902-fa12-4a33-9a4f-ab3a5956ea5c@linaro.org>
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 4:15=E2=80=AFAM Mark Brown <broonie@kernel.org> wro=
-te:
+
+On 23. 11. 15. 21:42, Krzysztof Kozlowski wrote:
+> On 15/11/2023 10:56, Jaewon Kim wrote:
+>> ExynosAutov920 GPIO has a different register structure.
+>> In the existing Exynos series, EINT control register enumerated after
+>> a specific offset (e.g EXYNOS_GPIO_ECON_OFFSET).
+>> However, in ExynosAutov920 SoC, the register that controls EINT belongs
+>> to each GPIO group, and each GPIO group has 0x1000 align.
+>>
+>> This is a structure to protect the GPIO group with S2MPU in VM environment,
+>> and will only be applied in ExynosAuto series SoCs.
+> Checkpatch points some warnings:
 >
-> On Wed, Nov 15, 2023 at 06:52:12PM +0200, Bret Joseph wrote:
-> > *In mt6358-regulator.c*
+> CHECK: Alignment should match open parenthesis
+> CHECK: Lines should not end with a '('
+> CHECK: Macro argument reuse 'reg' - possible side-effects?
+
+I don`t know this happens.
+
+When I did the checkpatch, there were no problems as shown below.
+
+---
+
+./scripts/checkpatch.pl 
+0010-pinctrl-samsung-add-exynosautov920-pinctrl.patch
+total: 0 errors, 0 warnings, 416 lines checked
+
+0010-pinctrl-samsung-add-exynosautov920-pinctrl.patch has no obvious 
+style problems and is ready for submission.
+
+---
+
 >
-> I only have patch 3/3 from this series, what's going on with
-> dependencies and so on?
+> Best regards,
+> Krzysztof
+>
+>
 
-You already applied the series in September and the changes are already in
-v6.7-rc1.
+Thanks
 
-I'll take a look at the report by Bret.
+Jaewon Kim
 
-ChenYu
