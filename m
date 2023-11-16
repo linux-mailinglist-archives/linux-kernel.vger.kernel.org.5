@@ -2,42 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EF1087EDE12
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61AC77EDE24
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:03:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230287AbjKPJ7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:59:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
+        id S230254AbjKPKDv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:03:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229749AbjKPJ7J (ORCPT
+        with ESMTP id S229749AbjKPKDu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:59:09 -0500
-Received: from outbound-smtp16.blacknight.com (outbound-smtp16.blacknight.com [46.22.139.233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B05EC5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:59:04 -0800 (PST)
-Received: from mail.blacknight.com (pemlinmail05.blacknight.ie [81.17.254.26])
-        by outbound-smtp16.blacknight.com (Postfix) with ESMTPS id C087B1C405A
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 09:59:02 +0000 (GMT)
-Received: (qmail 17829 invoked from network); 16 Nov 2023 09:59:02 -0000
-Received: from unknown (HELO mail.blacknight.com) (mgorman@techsingularity.net@[81.17.254.19])
-  by 81.17.254.26 with ESMTPA; 16 Nov 2023 09:59:02 -0000
-Date:   Thu, 16 Nov 2023 09:59:01 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Charan Teja Kalla <quic_charante@quicinc.com>
-Cc:     akpm@linux-foundation.org, mhocko@suse.com, david@redhat.com,
-        vbabka@suse.cz, hannes@cmpxchg.org, quic_pkondeti@quicinc.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2 2/3] mm: page_alloc: correct high atomic reserve
- calculations
-Message-ID: <20231116095901.72oqtjoiqzt3tfhj@techsingularity.net>
-References: <cover.1699104759.git.quic_charante@quicinc.com>
- <905d99651423ee85aeb7a71982b95ee9bb05ee99.1699104759.git.quic_charante@quicinc.com>
+        Thu, 16 Nov 2023 05:03:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE505C5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:03:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700129025;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=V1E8P5D6YGBbckvW3uechLb8YTWTJOvxSQ0PMr9JKtg=;
+        b=LPk7FhF9+oxi6fj2CbYrRTEwoJWpdZj/5zCA1YzEdSRqk63RsYez0k0MXBx8f7+kiKnuvK
+        ersTzEQFyvjSzOiBH84PwfKF35nxpvhp5sNdIXsJOFnAEM/gm+M8uEAl55QNC+M6jcaRO1
+        9gP8BViCK6VuPgRw0ikhi0YNUfy+cQQ=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-186-TZFfsjVIM7yTGSJyKk0S6g-1; Thu, 16 Nov 2023 05:03:43 -0500
+X-MC-Unique: TZFfsjVIM7yTGSJyKk0S6g-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-32f8371247fso306777f8f.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:03:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700129022; x=1700733822;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=V1E8P5D6YGBbckvW3uechLb8YTWTJOvxSQ0PMr9JKtg=;
+        b=kjqHqaXBO+QveK2YI+l8/y4g7a5oZ9TG0C0q0DJY9CSrjGe9w+TTfbYbaxN2j26E98
+         iNWSALKYK5twPZJR5dHVz9ipNt++oZBHxMSiAn390TRUnMpMY1y7q5MdFHCjpOnpuKGw
+         huD+FiFO9p7BKaDi3keNpALUQphwuCrdksAFt1//XNuMmFUJzAuH/H3jnOg4xPmnGAeR
+         ORNOhbWQue16hggn50dOKOS483wceVhXeHluSQX3M9LX8PiMIG2pez1J1c+X2aPiq05m
+         R7bwvvlLApOgAbrMJR8lnMtau7tFZvdQ1r4FncQvoqA+v6myXvpu9cDIGRZGvDWvkSK6
+         N2+Q==
+X-Gm-Message-State: AOJu0YzxVVQZizGB5wjtQqpFuRaMqVnfOY31i122F5Yy0TAbC3eNTW78
+        r3jgaDqTxTHRAzwxQ6sdbgrLCRLNJ3pEFnY4gliDK9yeY1l5nw2FIRpZcJQxKogaLqEZUjCWJsL
+        36GEUQwuVrf/lAIyEHXH2cpUC
+X-Received: by 2002:a05:6000:1acf:b0:32f:dcce:bf38 with SMTP id i15-20020a0560001acf00b0032fdccebf38mr10688798wry.62.1700129022176;
+        Thu, 16 Nov 2023 02:03:42 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHWLR/KBAd6o0UkZk02BfBS623zz/kyr4Hi0r/bhw7UPuCXMh4Fvwf++bgWFffaF8vpy2F62w==
+X-Received: by 2002:a05:6000:1acf:b0:32f:dcce:bf38 with SMTP id i15-20020a0560001acf00b0032fdccebf38mr10688756wry.62.1700129021723;
+        Thu, 16 Nov 2023 02:03:41 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id l11-20020a5d526b000000b0031c52e81490sm13092355wrc.72.2023.11.16.02.03.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 02:03:41 -0800 (PST)
+Message-ID: <271f1e98-6217-4b40-bae0-0ac9fe5851cb@redhat.com>
+Date:   Thu, 16 Nov 2023 11:03:39 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <905d99651423ee85aeb7a71982b95ee9bb05ee99.1699104759.git.quic_charante@quicinc.com>
-X-Spam-Status: No, score=-2.6 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_LOW,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 01/14] mm: Batch-copy PTE ranges during fork()
+Content-Language: en-US
+To:     Ryan Roberts <ryan.roberts@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Oliver Upton <oliver.upton@linux.dev>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Zenghui Yu <yuzenghui@huawei.com>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Yu Zhao <yuzhao@google.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        John Hubbard <jhubbard@nvidia.com>, Zi Yan <ziy@nvidia.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20231115163018.1303287-1-ryan.roberts@arm.com>
+ <20231115163018.1303287-2-ryan.roberts@arm.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231115163018.1303287-2-ryan.roberts@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -45,53 +148,238 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Nov 05, 2023 at 06:20:49PM +0530, Charan Teja Kalla wrote:
-> reserve_highatomic_pageblock() aims to reserve the 1% of the managed
-> pages of a zone, which is used for the high order atomic allocations.
+On 15.11.23 17:30, Ryan Roberts wrote:
+> Convert copy_pte_range() to copy a set of ptes in a batch. A given batch
+> maps a physically contiguous block of memory, all belonging to the same
+> folio, with the same permissions, and for shared mappings, the same
+> dirty state. This will likely improve performance by a tiny amount due
+> to batching the folio reference count management and calling set_ptes()
+> rather than making individual calls to set_pte_at().
 > 
-> It uses the below calculation to reserve:
-> static void reserve_highatomic_pageblock(struct page *page, ....) {
+> However, the primary motivation for this change is to reduce the number
+> of tlb maintenance operations that the arm64 backend has to perform
+> during fork, as it is about to add transparent support for the
+> "contiguous bit" in its ptes. By write-protecting the parent using the
+> new ptep_set_wrprotects() (note the 's' at the end) function, the
+> backend can avoid having to unfold contig ranges of PTEs, which is
+> expensive, when all ptes in the range are being write-protected.
+> Similarly, by using set_ptes() rather than set_pte_at() to set up ptes
+> in the child, the backend does not need to fold a contiguous range once
+> they are all populated - they can be initially populated as a contiguous
+> range in the first place.
 > 
->    .......
->    max_managed = (zone_managed_pages(zone) / 100) + pageblock_nr_pages;
+> This change addresses the core-mm refactoring only, and introduces
+> ptep_set_wrprotects() with a default implementation that calls
+> ptep_set_wrprotect() for each pte in the range. A separate change will
+> implement ptep_set_wrprotects() in the arm64 backend to realize the
+> performance improvement as part of the work to enable contpte mappings.
 > 
->    if (zone->nr_reserved_highatomic >= max_managed)
->        goto out;
+> Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+> ---
+>   include/linux/pgtable.h |  13 +++
+>   mm/memory.c             | 175 +++++++++++++++++++++++++++++++---------
+>   2 files changed, 150 insertions(+), 38 deletions(-)
 > 
->    zone->nr_reserved_highatomic += pageblock_nr_pages;
->    set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
->    move_freepages_block(zone, page, MIGRATE_HIGHATOMIC, NULL);
-> 
-> out:
->    ....
-> }
-> 
-> Since we are always appending the 1% of zone managed pages count to
-> pageblock_nr_pages, the minimum it is turning into 2 pageblocks as the
-> nr_reserved_highatomic is incremented/decremented in pageblock sizes.
-> 
-> Encountered a system(actually a VM running on the Linux kernel) with the
-> below zone configuration:
-> Normal free:7728kB boost:0kB min:804kB low:1004kB high:1204kB
-> reserved_highatomic:8192KB managed:49224kB
-> 
-> The existing calculations making it to reserve the 8MB(with pageblock
-> size of 4MB) i.e. 16% of the zone managed memory.  Reserving such high
-> amount of memory can easily exert memory pressure in the system thus may
-> lead into unnecessary reclaims till unreserving of high atomic reserves.
-> 
-> Since high atomic reserves are managed in pageblock size granules, as
-> MIGRATE_HIGHATOMIC is set for such pageblock, fix the calculations for
-> high atomic reserves as,  minimum is pageblock size , maximum is
-> approximately 1% of the zone managed pages.
-> 
-> Signed-off-by: Charan Teja Kalla <quic_charante@quicinc.com>
+> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+> index af7639c3b0a3..1c50f8a0fdde 100644
+> --- a/include/linux/pgtable.h
+> +++ b/include/linux/pgtable.h
+> @@ -622,6 +622,19 @@ static inline void ptep_set_wrprotect(struct mm_struct *mm, unsigned long addres
+>   }
+>   #endif
+>   
+> +#ifndef ptep_set_wrprotects
+> +struct mm_struct;
+> +static inline void ptep_set_wrprotects(struct mm_struct *mm,
+> +				unsigned long address, pte_t *ptep,
+> +				unsigned int nr)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < nr; i++, address += PAGE_SIZE, ptep++)
+> +		ptep_set_wrprotect(mm, address, ptep);
+> +}
+> +#endif
+> +
+>   /*
+>    * On some architectures hardware does not set page access bit when accessing
+>    * memory page, it is responsibility of software setting this bit. It brings
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1f18ed4a5497..b7c8228883cf 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -921,46 +921,129 @@ copy_present_page(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma
+>   		/* Uffd-wp needs to be delivered to dest pte as well */
+>   		pte = pte_mkuffd_wp(pte);
+>   	set_pte_at(dst_vma->vm_mm, addr, dst_pte, pte);
+> -	return 0;
+> +	return 1;
+> +}
+> +
+> +static inline unsigned long page_cont_mapped_vaddr(struct page *page,
+> +				struct page *anchor, unsigned long anchor_vaddr)
+> +{
+> +	unsigned long offset;
+> +	unsigned long vaddr;
+> +
+> +	offset = (page_to_pfn(page) - page_to_pfn(anchor)) << PAGE_SHIFT;
+> +	vaddr = anchor_vaddr + offset;
+> +
+> +	if (anchor > page) {
+> +		if (vaddr > anchor_vaddr)
+> +			return 0;
+> +	} else {
+> +		if (vaddr < anchor_vaddr)
+> +			return ULONG_MAX;
+> +	}
+> +
+> +	return vaddr;
+> +}
+> +
+> +static int folio_nr_pages_cont_mapped(struct folio *folio,
+> +				      struct page *page, pte_t *pte,
+> +				      unsigned long addr, unsigned long end,
+> +				      pte_t ptent, bool *any_dirty)
+> +{
+> +	int floops;
+> +	int i;
+> +	unsigned long pfn;
+> +	pgprot_t prot;
+> +	struct page *folio_end;
+> +
+> +	if (!folio_test_large(folio))
+> +		return 1;
+> +
+> +	folio_end = &folio->page + folio_nr_pages(folio);
+> +	end = min(page_cont_mapped_vaddr(folio_end, page, addr), end);
+> +	floops = (end - addr) >> PAGE_SHIFT;
+> +	pfn = page_to_pfn(page);
+> +	prot = pte_pgprot(pte_mkold(pte_mkclean(ptent)));
+> +
+> +	*any_dirty = pte_dirty(ptent);
+> +
+> +	pfn++;
+> +	pte++;
+> +
+> +	for (i = 1; i < floops; i++) {
+> +		ptent = ptep_get(pte);
+> +		ptent = pte_mkold(pte_mkclean(ptent));
+> +
+> +		if (!pte_present(ptent) || pte_pfn(ptent) != pfn ||
+> +		    pgprot_val(pte_pgprot(ptent)) != pgprot_val(prot))
+> +			break;
+> +
+> +		if (pte_dirty(ptent))
+> +			*any_dirty = true;
+> +
+> +		pfn++;
+> +		pte++;
+> +	}
+> +
+> +	return i;
+>   }
+>   
+>   /*
+> - * Copy one pte.  Returns 0 if succeeded, or -EAGAIN if one preallocated page
+> - * is required to copy this pte.
+> + * Copy set of contiguous ptes.  Returns number of ptes copied if succeeded
+> + * (always gte 1), or -EAGAIN if one preallocated page is required to copy the
+> + * first pte.
+>    */
+>   static inline int
+> -copy_present_pte(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> -		 pte_t *dst_pte, pte_t *src_pte, unsigned long addr, int *rss,
+> -		 struct folio **prealloc)
+> +copy_present_ptes(struct vm_area_struct *dst_vma, struct vm_area_struct *src_vma,
+> +		  pte_t *dst_pte, pte_t *src_pte,
+> +		  unsigned long addr, unsigned long end,
+> +		  int *rss, struct folio **prealloc)
+>   {
+>   	struct mm_struct *src_mm = src_vma->vm_mm;
+>   	unsigned long vm_flags = src_vma->vm_flags;
+>   	pte_t pte = ptep_get(src_pte);
+>   	struct page *page;
+>   	struct folio *folio;
+> +	int nr = 1;
+> +	bool anon;
+> +	bool any_dirty = pte_dirty(pte);
+> +	int i;
+>   
+>   	page = vm_normal_page(src_vma, addr, pte);
+> -	if (page)
+> +	if (page) {
+>   		folio = page_folio(page);
+> -	if (page && folio_test_anon(folio)) {
+> -		/*
+> -		 * If this page may have been pinned by the parent process,
+> -		 * copy the page immediately for the child so that we'll always
+> -		 * guarantee the pinned page won't be randomly replaced in the
+> -		 * future.
+> -		 */
+> -		folio_get(folio);
+> -		if (unlikely(page_try_dup_anon_rmap(page, false, src_vma))) {
+> -			/* Page may be pinned, we have to copy. */
+> -			folio_put(folio);
+> -			return copy_present_page(dst_vma, src_vma, dst_pte, src_pte,
+> -						 addr, rss, prealloc, page);
+> +		anon = folio_test_anon(folio);
+> +		nr = folio_nr_pages_cont_mapped(folio, page, src_pte, addr,
+> +						end, pte, &any_dirty);
+> +
+> +		for (i = 0; i < nr; i++, page++) {
+> +			if (anon) {
+> +				/*
+> +				 * If this page may have been pinned by the
+> +				 * parent process, copy the page immediately for
+> +				 * the child so that we'll always guarantee the
+> +				 * pinned page won't be randomly replaced in the
+> +				 * future.
+> +				 */
+> +				if (unlikely(page_try_dup_anon_rmap(
+> +						page, false, src_vma))) {
+> +					if (i != 0)
+> +						break;
+> +					/* Page may be pinned, we have to copy. */
+> +					return copy_present_page(
+> +						dst_vma, src_vma, dst_pte,
+> +						src_pte, addr, rss, prealloc,
+> +						page);
+> +				}
+> +				rss[MM_ANONPAGES]++;
+> +				VM_BUG_ON(PageAnonExclusive(page));
+> +			} else {
+> +				page_dup_file_rmap(page, false);
+> +				rss[mm_counter_file(page)]++;
+> +			}
+>   		}
+> -		rss[MM_ANONPAGES]++;
+> -	} else if (page) {
+> -		folio_get(folio);
+> -		page_dup_file_rmap(page, false);
+> -		rss[mm_counter_file(page)]++;
+> +
+> +		nr = i;
+> +		folio_ref_add(folio, nr);
 
-This patch in isolation seems fine with the caveat that such a small
-system may find the atomic reserves to be borderline useless.
+You're changing the order of mapcount vs. refcount increment. Don't. 
+Make sure your refcount >= mapcount.
 
-Acked-by: Mel Gorman <mgorman@techsingularity.net>
+You can do that easily by doing the folio_ref_add(folio, nr) first and 
+then decrementing in case of error accordingly. Errors due to pinned 
+pages are the corner case.
+
+I'll note that it will make a lot of sense to have batch variants of 
+page_try_dup_anon_rmap() and page_dup_file_rmap().
+
+Especially, the batch variant of page_try_dup_anon_rmap() would only 
+check once if the folio maybe pinned, and in that case, you can simply 
+drop all references again. So you either have all or no ptes to process, 
+which makes that code easier.
+
+But that can be added on top, and I'll happily do that.
 
 -- 
-Mel Gorman
-SUSE Labs
+Cheers,
+
+David / dhildenb
+
