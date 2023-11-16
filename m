@@ -2,139 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B98C57EDD7A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:17:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C08FC7EDD7E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:19:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235559AbjKPJRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 04:17:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60376 "EHLO
+        id S235611AbjKPJTY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:19:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36136 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230274AbjKPJRy (ORCPT
+        with ESMTP id S230289AbjKPJTW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:17:54 -0500
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA2C9C;
-        Thu, 16 Nov 2023 01:17:51 -0800 (PST)
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG8ufRF022742;
-        Thu, 16 Nov 2023 09:17:27 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=4cXgi5VLXXOtLpoCPr1dWCi1lxs5btqANVR2MmquTPI=;
- b=rdPuCKlpYMGWIfCGci5iQlDKqnHDj4WqIJroDuCnt/9RNOuJisZAgEerL0JTPCsSAYgU
- 6dp6M/UJBSNM3v1qJ9V6LbyrQTcIAEfLD+KsX7sGGmcS8gmYYq9huXRfxLS/eK4DweTW
- oDs3opIRB6AdMYHjzHl4xM5CC11s9WQ7mOnR1+NKsmuLXd3gIJ4uTLQ1BF0VXlpmlKe5
- AyS4qUq5Q6R8qYcu2nXPXYWR3jJyUPPExk3ciGGXfNHEFEFVtdsjqT33IUM4i/unL88f
- kKCBDIBapsO4U8Ea9VX4vRZPrAWwug4SDwQ4I9GmAx/LD/nKZxgClYuW6LF1Wrl4DwP7 nQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3udebbkfuf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 09:17:27 +0000
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AG8xPbq031471;
-        Thu, 16 Nov 2023 09:17:26 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3udebbkftj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 09:17:26 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-        by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG8XrrI026751;
-        Thu, 16 Nov 2023 09:17:24 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uakxt60at-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 09:17:24 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AG9HLfP18154126
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 16 Nov 2023 09:17:22 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DE39720040;
-        Thu, 16 Nov 2023 09:17:21 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 97C8F20049;
-        Thu, 16 Nov 2023 09:17:20 +0000 (GMT)
-Received: from [9.179.9.51] (unknown [9.179.9.51])
-        by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
-        Thu, 16 Nov 2023 09:17:20 +0000 (GMT)
-Message-ID: <8fb810e5000dd66334a4a686407c0caeacb79f55.camel@linux.ibm.com>
-Subject: Re: [PATCH 12/32] kmsan: Allow disabling KMSAN checks for the
- current task
-From:   Ilya Leoshkevich <iii@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Date:   Thu, 16 Nov 2023 10:17:20 +0100
-In-Reply-To: <CAG_fn=XVJNZLtHj2n3DP5ETBzgoUZL0jQFX7uw4z9Pj2vGbUPw@mail.gmail.com>
-References: <20231115203401.2495875-1-iii@linux.ibm.com>
-         <20231115203401.2495875-13-iii@linux.ibm.com>
-         <CAG_fn=XVJNZLtHj2n3DP5ETBzgoUZL0jQFX7uw4z9Pj2vGbUPw@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
+        Thu, 16 Nov 2023 04:19:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 914721A3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:19:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700126357;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=d0zllxIvEXWI41Y5eiP5HtOd5DP7XlwuzLUNFB7vaqM=;
+        b=QloifhWbYTk0VdgM8RtG7KokonzFu7Czr6rwgAk/pP4k+CkrNgtJICqdgJuQ4QQ3FVjpgc
+        66qmQdqT2YYrcRUedR6g4MEnTvwVVgc2UOQQc7vEPWMdLhTWo4JX8qif50USbFfoA7BLhd
+        eWhhHbcvY5qJeXA7LV7W0K2SorR0cY0=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-135-1oS8p95oNwOZ_xWOCSXq7g-1; Thu, 16 Nov 2023 04:19:16 -0500
+X-MC-Unique: 1oS8p95oNwOZ_xWOCSXq7g-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-4083717431eso3468865e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:19:15 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700126355; x=1700731155;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=d0zllxIvEXWI41Y5eiP5HtOd5DP7XlwuzLUNFB7vaqM=;
+        b=kXK1pU7cRVrtR5TPYptxrzzlRAs/IAYFR0P1thC5j08DDpcj8z1krjvIEYorQLVxGY
+         s6u7gwEWWkBYWl8mxTzwbOy7ziCePkVCoP8bztUavyjNjjXF8EZqb6erI3vxgFfLCUai
+         bSiyU9kaZXL+Y4mv0RqMR/IIXlJ94fNwaLw7UHTNgdz21d3zeNlrxPPWsY9JugU3FVQV
+         0UzUI+UICLllLepJYe1mBGoPmlZEEUSXIFk80rCtWVm0XfTBS+1v6U2VAPBLNtxu9HuM
+         3OnIaZFax5kzgjW0xoMna6pD7IeXVISo1CfucTC9JMAcDL/jxdmyVi6A/zq4w0xK11vg
+         1zXQ==
+X-Gm-Message-State: AOJu0YwrkDz6Q43FISlpVB3/Xiq5dVHq7VXR34TjtjnPyZxMfIg/n0Lr
+        FkNVIzvFn2q0AXtQ4FuPphFnzphCLLWOrcJFVDyYIehwcaARWx5wNfqNtIQfTFWCG9WM9dHbtwf
+        dI0YpUNm4zUNTvZUGr1nHc+Fe
+X-Received: by 2002:a05:600c:1ca5:b0:408:5919:5f97 with SMTP id k37-20020a05600c1ca500b0040859195f97mr12107684wms.25.1700126355004;
+        Thu, 16 Nov 2023 01:19:15 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHnRMdoDEaNut4IYZM6wXVGU9C68398acx31v4mDjswqx1vAYX1OJnHQseIuj6H+xz4eY0tjA==
+X-Received: by 2002:a05:600c:1ca5:b0:408:5919:5f97 with SMTP id k37-20020a05600c1ca500b0040859195f97mr12107665wms.25.1700126354543;
+        Thu, 16 Nov 2023 01:19:14 -0800 (PST)
+Received: from ?IPV6:2a09:80c0:192:0:5dac:bf3d:c41:c3e7? ([2a09:80c0:192:0:5dac:bf3d:c41:c3e7])
+        by smtp.gmail.com with ESMTPSA id az23-20020a05600c601700b004054dcbf92asm2805042wmb.20.2023.11.16.01.19.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 01:19:14 -0800 (PST)
+Message-ID: <a8349273-c512-4d23-bf85-5812d2a007d1@redhat.com>
+Date:   Thu, 16 Nov 2023 10:19:13 +0100
 MIME-Version: 1.0
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vSTD9xF44d83VprYex3tMD-37iq0_k9g
-X-Proofpoint-GUID: oH4OOC-OhoTloo5LiN9lT2emIfEOQ-qd
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_07,2023-11-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 suspectscore=0
- adultscore=0 priorityscore=1501 mlxscore=0 bulkscore=0 phishscore=0
- impostorscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311160074
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [mm?] WARNING in unmap_page_range (2)
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        usama.anjum@collabora.com, wangkefeng.wang@huawei.com,
+        Peter Xu <peterx@redhat.com>
+References: <000000000000b0e576060a30ee3b@google.com>
+ <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
+Content-Language: en-US
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2023-11-16 at 09:56 +0100, Alexander Potapenko wrote:
-> On Wed, Nov 15, 2023 at 9:34=E2=80=AFPM Ilya Leoshkevich <iii@linux.ibm.c=
-om>
-> wrote:
-> >=20
-> > Like for KASAN, it's useful to temporarily disable KMSAN checks
-> > around,
-> > e.g., redzone accesses.
->=20
-> This example is incorrect, because KMSAN does not have redzones.
-> You are calling these functions from "mm: slub: Let KMSAN access
-> metadata", which mentiones redzones in kfree(), but the description
-> is
-> still somewhat unclear.
-> Can you provide more insight about what is going on? Maybe we can fix
-> those accesses instead of disabling KMSAN?
+On 15.11.23 23:00, Andrew Morton wrote:
+> On Wed, 15 Nov 2023 05:32:19 -0800 syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com> wrote:
+> 
+>> Hello,
+>>
+>> syzbot found the following issue on:
+>>
+>> HEAD commit:    ac347a0655db Merge tag 'arm64-fixes' of git://git.kernel.o..
+>> git tree:       upstream
+>> console+strace: https://syzkaller.appspot.com/x/log.txt?x=15ff3057680000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=7ca4b2719dc742b8d0a4
+>> compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+>> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=162a25ff680000
+>> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13d62338e80000
+>>
+>> Downloadable assets:
+>> disk image: https://storage.googleapis.com/syzbot-assets/00e30e1a5133/disk-ac347a06.raw.xz
+>> vmlinux: https://storage.googleapis.com/syzbot-assets/07c43bc37935/vmlinux-ac347a06.xz
+>> kernel image: https://storage.googleapis.com/syzbot-assets/c6690c715398/bzImage-ac347a06.xz
+>>
+>> The issue was bisected to:
+>>
+>> commit 12f6b01a0bcbeeab8cc9305673314adb3adf80f7
+>> Author: Muhammad Usama Anjum <usama.anjum@collabora.com>
+>> Date:   Mon Aug 21 14:15:15 2023 +0000
+>>
+>>      fs/proc/task_mmu: add fast paths to get/clear PAGE_IS_WRITTEN flag
+> 
+> Thanks.  The bisection is surprising, but the mentioned patch does
+> mess with pagemap.
+> 
+> How about we add this?
+> 
+> From: Andrew Morton <akpm@linux-foundation.org>
+> Subject: mm/memory.c:zap_pte_range() print bad swap entry
+> Date: Wed Nov 15 01:54:18 PM PST 2023
+> 
+> We have a report of this WARN() triggering.  Let's print the offending
+> swp_entry_t to help diagnosis.
+> 
+> Link: https://lkml.kernel.org/r/000000000000b0e576060a30ee3b@google.com
+> Cc: Muhammad Usama Anjum <usama.anjum@collabora.com>
+> Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+> ---
+> 
+>   mm/memory.c |    1 +
+>   1 file changed, 1 insertion(+)
+> 
+> --- a/mm/memory.c~a
+> +++ a/mm/memory.c
+> @@ -1521,6 +1521,7 @@ static unsigned long zap_pte_range(struc
+>   				continue;
+>   		} else {
+>   			/* We should have covered all the swap entry types */
+> +			pr_alert("unrecognized swap entry 0x%lx\n", entry.val);
+>   			WARN_ON_ONCE(1);
+>   		}
+>   		pte_clear_not_present_full(mm, addr, pte, tlb->fullmm);
+> _
+> 
 
-It's about SLUB redzones, which appear when compiling with
-CONFIG_DEBUG_SLAB.
+I'm curious if
 
-I think that from KMSAN's point of view they should be considered
-poisoned, but then the question is what to do with functions that check
-them. I noticed that there was special handling for KASAN there
-already, so I figured that the best solution would be to do the same
-thing for KMSAN.
+1) make_uffd_wp_pte() won't end up overwriting existing pte markers, for
+    example, if PTE_MARKER_POISONED is set. [unrelated to this bug]
+
+2) We get the error on arm64, which does *not* support uffd-wp. Do we
+    maybe end up calling make_uffd_wp_pte() and place a pte marker, even
+    though we don't have CONFIG_PTE_MARKER_UFFD_WP?
+
+
+static inline bool pte_marker_entry_uffd_wp(swp_entry_t entry)
+{
+#ifdef CONFIG_PTE_MARKER_UFFD_WP
+	return is_pte_marker_entry(entry) &&
+	    (pte_marker_get(entry) & PTE_MARKER_UFFD_WP);
+#else
+	return false;
+#endif
+}
+
+Will always return false without CONFIG_PTE_MARKER_UFFD_WP.
+
+But make_uffd_wp_pte() might just happily place an entry. Hm.
+
+
+The following might fix the problem:
+
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index 51e0ec658457..ae1cf19918d3 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -1830,8 +1830,10 @@ static void make_uffd_wp_pte(struct 
+vm_area_struct *vma,
+                 ptent = pte_swp_mkuffd_wp(ptent);
+                 set_pte_at(vma->vm_mm, addr, pte, ptent);
+         } else {
++#ifdef CONFIG_PTE_MARKER_UFFD_WP
+                 set_pte_at(vma->vm_mm, addr, pte,
+                            make_pte_marker(PTE_MARKER_UFFD_WP));
++#endif
+         }
+  }
+
+
+But I am *pretty* sure that that whole machinery should be fenced off. 
+It does make 0 sense to mess with uffd-wp if there is no uffd-wp support.
+
+-- 
+Cheers,
+
+David / dhildenb
+
