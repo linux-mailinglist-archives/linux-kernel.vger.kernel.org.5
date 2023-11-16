@@ -2,251 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D2877EDFE3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:31:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0872C7EDFE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344985AbjKPLbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:31:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38200 "EHLO
+        id S1345074AbjKPLdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:33:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230385AbjKPLbM (ORCPT
+        with ESMTP id S230374AbjKPLdh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:31:12 -0500
-Received: from mail-vk1-xa2c.google.com (mail-vk1-xa2c.google.com [IPv6:2607:f8b0:4864:20::a2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 974EAE0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:31:08 -0800 (PST)
-Received: by mail-vk1-xa2c.google.com with SMTP id 71dfb90a1353d-495eb6e2b80so258032e0c.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:31:08 -0800 (PST)
+        Thu, 16 Nov 2023 06:33:37 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AFAD85
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:33:34 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id d2e1a72fcca58-6b44befac59so1414993b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:33:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700134267; x=1700739067; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+5ZN/4d17A7tB0MhyQTTzrWx/HMOUSq5lA4jSyJp+JY=;
-        b=dLRDGWJf4zNUR4H7RfGacDCuD2S86aykgyrzMZrPGMASFO3+YE45G6STwedAvruSph
-         Ingm5tX++H+YkQIOcl5Hpe9QXF5CjFajZnChinoOlxXsvs7P+E36/DyTUnJllDJs2ybr
-         Ce+HBOPNNMDY75daNeP7Qo/L1Mcz0lu1x3n4dFpoW74IGJrJWuIjwXYA1Vy357tf/z8n
-         8xzwdn/alFYnznKaheCNWehTq8jMG3sWWqTtM5jKBBnd0qoCAFw2DFRJuOcb9i1lLn9x
-         8rs2V2MQU1RFNP45ZRtdDbQ7qeOhDWxZF7zry3hkBNWO+wdwUh4ZVqDK/EJPb9oVEF4+
-         r5Wg==
+        d=gmail.com; s=20230601; t=1700134413; x=1700739213; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZnHHkx/zZWXPaN/v9k+BxDswHODU9mI/N0X97OmKL0c=;
+        b=NcERFIqYJkvIsgr4Oo3Ydl5dhC0FZpk4TzOK5i1Dw/2F9nGMgyLEv3ZqjQjhWeG5al
+         6zhruFH5b/fOqQbbvPXV6N5vXkdcaWKhjKuRQp53LImVgbAr/QD2WUm3iuX8MdYKjsb9
+         O/bWvEPaiPbjlGgEfesbsSDemvUyaiArt6Q1nlWs1m5/kQz/u4aMZoTFiZepZD679zqa
+         z2K75Mr9+nBe9MufGfL//mkbeLHnW7hiivDXjd+r64Oy6IWYzv3cjiEJlRlwTHQbWCyN
+         Ty8YA7HVYV7hAjkHXFuojqttRgaxEMyJlnwtJ8bit4Z4pTzTGwyof0n2CYhox+mKW4Rt
+         YZbQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700134267; x=1700739067;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+5ZN/4d17A7tB0MhyQTTzrWx/HMOUSq5lA4jSyJp+JY=;
-        b=HaXPIyvFzoYay+9gU4h8g75m5LR+lImr0N6M4kQX0tD24nwOhynu7X8brXxwzd/3fG
-         hOJNqslFnXfeMJ3vKgp3qt3rMFo1ZVm4Jf+9rClilwOMKBVP/HtdYSDxSyGSSAPdngay
-         8alWQMCRf7j0MrSBTrPeS79wjhlsVO0byMvjGBvA1a+LV/JxKJy0g+KgCPhWybH+Pkgr
-         qR5tQUljIwUPyy9XDNVc1WhlYlGx+YKWvdIYkAoDyQSmRHDjJh5rMXeOyU7YUlt/IpoO
-         wpn/z9y62WSTDr2duATgZeMQxzDppMH9jdBHEDgs/zWL4DVwbJudO3EF0bAAEjjuG7Ct
-         tGDQ==
-X-Gm-Message-State: AOJu0Yw1+rhmwgy29Ae2YryVnxukxL1Z5NALSodiNAZHi8JytbTi724y
-        nCdUeWE/e5z1YxKGFrjm3PGM0MOau4brMm6jhy5o2g==
-X-Google-Smtp-Source: AGHT+IHFKFgWat9IoRWwq8su2ufFgXT3dkMF7jf+D3n8ImjCoAZTvVLo9HLgvhei72vQNdk1/LYi/TVgFGX3xOftTNk=
-X-Received: by 2002:a05:6122:914:b0:4ac:b0a6:4c16 with SMTP id
- j20-20020a056122091400b004acb0a64c16mr12023352vka.10.1700134267121; Thu, 16
- Nov 2023 03:31:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700134413; x=1700739213;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZnHHkx/zZWXPaN/v9k+BxDswHODU9mI/N0X97OmKL0c=;
+        b=D+VUnlA948q5CKHElHuPBOxd4nNbasCing8aD+IGRZVqp6C3OurTeRuOeE6vN2MgHf
+         pcSDwdmbG1X1GMkhWNuOuw7y0SX1G6O8+0zgSO2FlNcm/NncY9kesuD7jceONn9m4cGr
+         lTMvCPkZrJNy1dte6WCmeIu+hmrTa4Qv+YzWU+i9kDfxXCq6bzzAEBdCIx3hFZ8rt5sY
+         LIJGV4jCTnw7C1mhwORnQplcc9wNH4uHD27B2ve9nDEWiVEuh2+s+uQsJFODlHArqO9b
+         gW7ZY4lb7t0NQpn8VDwS9mH6m0UZbO/DtYPJ3+wGH90E0g3GMNiKXiKKYv8IsZEpes8Y
+         iL9g==
+X-Gm-Message-State: AOJu0Yxc5SARl/6Oc7OoeGAQGQvzksDiij0JPK9WDPhBsD1zyeRFtPuP
+        4xXtkqMznKbrqLEOB9VqcNqLOuDSLjSTQA==
+X-Google-Smtp-Source: AGHT+IFrpuu7gGw21Bj71FZsKRK0kvqmuw/gt+VSGB78uEAihi0+AneTDIUjkeisAUVV6oKimaBT6w==
+X-Received: by 2002:a05:6a21:19a:b0:15c:b7ba:1671 with SMTP id le26-20020a056a21019a00b0015cb7ba1671mr2341964pzb.2.1700134413491;
+        Thu, 16 Nov 2023 03:33:33 -0800 (PST)
+Received: from [192.168.1.105] (111-255-239-171.dynamic-ip.hinet.net. [111.255.239.171])
+        by smtp.gmail.com with ESMTPSA id g22-20020aa78196000000b006c4cf21489asm4286510pfi.205.2023.11.16.03.33.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 03:33:33 -0800 (PST)
+Message-ID: <5932bbd6-afe7-416f-b590-c9f5c1c02db5@gmail.com>
+Date:   Thu, 16 Nov 2023 19:33:30 +0800
 MIME-Version: 1.0
-References: <20231113130041.58124-1-linyunsheng@huawei.com>
- <20231113130041.58124-4-linyunsheng@huawei.com> <CAHS8izMjmj0DRT_vjzVq5HMQyXtZdVK=o4OP0gzbaN=aJdQ3ig@mail.gmail.com>
- <20231113180554.1d1c6b1a@kernel.org> <0c39bd57-5d67-3255-9da2-3f3194ee5a66@huawei.com>
- <CAHS8izNxkqiNbTA1y+BjQPAber4Dks3zVFNYo4Bnwc=0JLustA@mail.gmail.com>
- <fa5d2f4c-5ccc-e23e-1926-2d7625b66b91@huawei.com> <CAHS8izMj_89dMVaMr73r1-3Kewgc1YL3A1mjvixoax2War8kUg@mail.gmail.com>
- <3ff54a20-7e5f-562a-ca2e-b078cc4b4120@huawei.com> <6553954141762_1245c529423@willemb.c.googlers.com.notmuch>
- <8b7d25eb-1f10-3e37-8753-92b42da3fb34@huawei.com> <CAHS8izOBe2X3iPHmvc7JQGiawgm7Gyxov8xq62SShUTXDRguFw@mail.gmail.com>
- <CAHS8izO8bJSpD9ziNQHxpraLsUc8JnazgLA5=ziDBtzriRSQHA@mail.gmail.com> <0366d9e8-7796-b15a-d309-d2fd81f9d700@huawei.com>
-In-Reply-To: <0366d9e8-7796-b15a-d309-d2fd81f9d700@huawei.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 16 Nov 2023 03:30:53 -0800
-Message-ID: <CAHS8izNBq_p4otYi+RFNdRfjXvWMjYJoxYrrp24Q4gTaaRX+wQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/8] memory-provider: dmabuf devmem memory provider
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, davem@davemloft.net,
-        pabeni@redhat.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Willem de Bruijn <willemb@google.com>,
-        Kaiyuan Zhang <kaiyuanz@google.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Eric Dumazet <edumazet@google.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linux-MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/1] sched/fair: Update min_vruntime in more relaxed way
+Content-Language: en-US
+To:     Abel Wu <wuyun.abel@bytedance.com>, mingo@redhat.com,
+        peterz@infradead.org
+Cc:     vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        linux-kernel@vger.kernel.org
+References: <20231116105425.84773-1-s921975628@gmail.com>
+ <20231116105425.84773-2-s921975628@gmail.com>
+ <377e0f71-80f9-4d83-a09d-e86bd61ce9ae@bytedance.com>
+From:   Yiwei Lin <s921975628@gmail.com>
+In-Reply-To: <377e0f71-80f9-4d83-a09d-e86bd61ce9ae@bytedance.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 3:12=E2=80=AFAM Yunsheng Lin <linyunsheng@huawei.co=
-m> wrote:
->
-> On 2023/11/16 3:05, Mina Almasry wrote:
-> > On Wed, Nov 15, 2023 at 10:07=E2=80=AFAM Mina Almasry <almasrymina@goog=
-le.com> wrote:
-> >>
-> >> On Wed, Nov 15, 2023 at 1:29=E2=80=AFAM Yunsheng Lin <linyunsheng@huaw=
-ei.com> wrote:
-> >>>
-> >>> On 2023/11/14 23:41, Willem de Bruijn wrote:
-> >>>>>
-> >>>>> I am not sure dma-buf maintainer's concern is still there with this=
- patchset.
-> >>>>>
-> >>>>> Whatever name you calling it for the struct, however you arrange ea=
-ch field
-> >>>>> in the struct, some metadata is always needed for dmabuf to intergr=
-ate into
-> >>>>> page pool.
-> >>>>>
-> >>>>> If the above is true, why not utilize the 'struct page' to have mor=
-e unified
-> >>>>> handling?
-> >>>>
-> >>>> My understanding is that there is a general preference to simplify s=
-truct
-> >>>> page, and at the least not move in the other direction by overloadin=
-g the
-> >>>> struct in new ways.
-> >>>
-> >>> As my understanding, the new struct is just mirroring the struct page=
- pool
-> >>> is already using, see:
-> >>> https://elixir.free-electrons.com/linux/v6.7-rc1/source/include/linux=
-/mm_types.h#L119
-> >>>
-> >>> If there is simplifying to the struct page_pool is using, I think the=
- new
-> >>> stuct the devmem memory provider is using can adjust accordingly.
-> >>>
-> >>> As a matter of fact, I think the way 'struct page' for devmem is deco=
-upled
-> >>> from mm subsystem may provide a way to simplify or decoupled the alre=
-ady
-> >>> existing 'struct page' used in netstack from mm subsystem, before thi=
-s
-> >>> patchset, it seems we have the below types of 'struct page':
-> >>> 1. page allocated in the netstack using page pool.
-> >>> 2. page allocated in the netstack using buddy allocator.
-> >>> 3. page allocated in other subsystem and passed to the netstack, such=
- as
-> >>>    zcopy or spliced page?
-> >>>
-> >>> If we can decouple 'struct page' for devmem from mm subsystem, we may=
- be able
-> >>> to decouple the above 'struct page' from mm subsystem one by one.
-> >>>
-> >>>>
-> >>>> If using struct page for something that is not memory, there is ZONE=
-_DEVICE.
-> >>>> But using that correctly is non-trivial:
-> >>>>
-> >>>> https://lore.kernel.org/all/ZKyZBbKEpmkFkpWV@ziepe.ca/
-> >>>>
-> >>>> Since all we need is a handle that does not leave the network stack,
-> >>>> a network specific struct like page_pool_iov entirely avoids this is=
-sue.
-> >>>
-> >>> Yes, I am agree about the network specific struct.
-> >>> I am wondering if we can make the struct more generic if we want to
-> >>> intergrate it into page_pool and use it in net stack.
-> >>>
-> >>>> RFC v3 seems like a good simplification over RFC v1 in that regard t=
-o me.
-> >>>> I was also pleasantly surprised how minimal the change to the users =
-of
-> >>>> skb_frag_t actually proved to be.
-> >>>
-> >>> Yes, I am agreed about that too. Maybe we can make it simpler by usin=
-g
-> >>> a more abstract struct as page_pool, and utilize some features of
-> >>> page_pool too.
-> >>>
-> >>> For example, from the page_pool doc, page_pool have fast cache and
-> >>> ptr-ring cache as below, but if napi_frag_unref() call
-> >>> page_pool_page_put_many() and return the dmabuf chunk directly to
-> >>> gen_pool in the memory provider, then it seems we are bypassing the
-> >>> below caches in the page_pool.
-> >>>
-> >>
-> >> I think you're just misunderstanding the code. The page recycling
-> >> works with my patchset. napi_frag_unref() calls napi_pp_put_page() if
-> >> recycle =3D=3D true, and that works the same with devmem as with regul=
-ar
-> >> pages.
-> >>
-> >> If recycle =3D=3D false, we call page_pool_page_put_many() which will =
-call
-> >> put_page() for regular pages and page_pool_iov_put_many() for devmem
-> >> pages. So, the memory recycling works exactly the same as before with
-> >> devmem as with regular pages. In my tests I do see the devmem being
-> >> recycled correctly. We are not bypassing any caches.
-> >>
-> >>
-> >
-> > Ah, taking a closer look here, the devmem recycling works for me but I
-> > think that's a side effect to the fact that the page_pool support I
-> > implemented with GVE is unusual. I currently allocate pages from the
-> > page_pool but do not set skb_mark_for_recycle(). The page recycling
-> > still happens when GVE is done with the page and calls
-> > page_pool_put_full_pgae(), as that eventually checks the refcount on
-> > the devmem and recycles it.
-> >
-> > I will fix up the GVE to call skb_mark_for_recycle() and ensure the
-> > napi_pp_put_page() path recycles the devmem or page correctly in the
-> > next version.
->
-> What about other features? Like dma mapping optimization and frag support
-> in the page pool.
->
 
-PP_FLAG_DMA_MAP will be supported and required in the next version per
-Jakub's request.
-
-frag support is something I disabled in the initial versions of the
-patchset, but only out of convenience and to simplify the initial
-implementation. At google we typically use page aligned MSS and the
-frag support isn't really that useful for us. I don't see an issue
-extending frag support to devmem and iovs in the future if needed.
-We'd probably add the pp_frag_count field to page_pool_iov and handle
-it similarly to how it's handled for pages.
-
-> I understand that you use some trick in the gen_gool to avoid the per chu=
-nk
-> dma_addr storage in the 'struct page_pool_iov' and do not need frag suppo=
-rt
-> for now.
+On 11/16/23 19:16, Abel Wu wrote:
+> On 11/16/23 6:54 PM, Yiwei Lin Wrote:
+>> As EEVDF adopts lag-based solution which is irrespective of
+>> min_vruntime like CFS before, min_vruntime is only used as
+>> an offset to avoid overflow on evaluation of avg_vruntime now.
+>> Rely on the fact we will always update_curr() before change
+>> to cfs_rq, it seems to make sense if we just
+>> update_min_vruntime() with update_curr() to reduce the cost.
+>>
+>> Signed-off-by: Yiwei Lin <s921975628@gmail.com>
+>> ---
+>>   kernel/sched/fair.c | 20 +-------------------
+>>   1 file changed, 1 insertion(+), 19 deletions(-)
+>>
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 07f555857..5c40adfae 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -3815,17 +3815,8 @@ static void reweight_entity(struct cfs_rq 
+>> *cfs_rq, struct sched_entity *se,
+>>       enqueue_load_avg(cfs_rq, se);
+>>       if (se->on_rq) {
+>>           update_load_add(&cfs_rq->load, se->load.weight);
+>> -        if (!curr) {
+>> -            /*
+>> -             * The entity's vruntime has been adjusted, so let's check
+>> -             * whether the rq-wide min_vruntime needs updated too. 
+>> Since
+>> -             * the calculations above require stable min_vruntime 
+>> rather
+>> -             * than up-to-date one, we do the update at the end of the
+>> -             * reweight process.
+>> -             */
+>> +        if (!curr)
+>>               __enqueue_entity(cfs_rq, se);
+>> -            update_min_vruntime(cfs_rq);
+>> -        }
+>>       }
+>>   }
+>>   @@ -5347,15 +5338,6 @@ dequeue_entity(struct cfs_rq *cfs_rq, struct 
+>> sched_entity *se, int flags)
+>>         update_cfs_group(se);
+>>   -    /*
+>> -     * Now advance min_vruntime if @se was the entity holding it back,
+>> -     * except when: DEQUEUE_SAVE && !DEQUEUE_MOVE, in this case 
+>> we'll be
+>> -     * put back on, and if we advance min_vruntime, we'll be placed 
+>> back
+>> -     * further than we started -- ie. we'll be penalized.
+>> -     */
+>> -    if ((flags & (DEQUEUE_SAVE | DEQUEUE_MOVE)) != DEQUEUE_SAVE)
+>> -        update_min_vruntime(cfs_rq);
+>> -
+>>       if (cfs_rq->nr_running == 0)
+>>           update_idle_cfs_rq_clock_pelt(cfs_rq);
+>>   }
 >
-> But for other memory provider, if they need those supports, we probably n=
-eed
-> to extend 'struct page_pool_iov' to support those features, then we may h=
-ave
-> a 'struct page_pool_iov' to be looking alike to the sepcific union for pa=
-ge_pool
-> in 'struct page', see:
+> For now, core pick of core scheduling relies on min_vruntime to be fresh,
+> so please just fix commit eab03c23c2a1 to preserve its original behavior
+> by moving update_min_vruntime() to proper position. And behavior change
+> can be posted separated.
+
+Sorry for not noticing the requirement on core scheduling and applying 
+bad solution. I should take a closer look for the influence when 
+changing the approach to update_min_vruntime().
+
+I'll send another patch which just move update_min_vruntime() to the 
+right place later on.
+
 >
-> https://elixir.free-electrons.com/linux/v6.7-rc1/source/include/linux/mm_=
-types.h#L119
+> BTW it seems unnecessary to include a cover-letter for a single patch.
 >
-> We currently don't have a way to decouple the existing 'struct page' from=
- mm
-> subsystem yet as my understanding, if we don't mirror the above union in =
-the
-> 'struct page', we may have more 'if' checking added in the future.
+Got it! Still learning how to work with the kernel mailing list. Thanks 
+for the kind suggestion!
+> Thanks,
+>     Abel
 
-
-
---=20
-Thanks,
-Mina
