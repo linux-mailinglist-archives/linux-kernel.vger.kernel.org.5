@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E49E7ED8DD
+	by mail.lfdr.de (Postfix) with ESMTP id A47237ED8DE
 	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230259AbjKPB3T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:29:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54020 "EHLO
+        id S1344319AbjKPB3W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:29:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPB3R (ORCPT
+        with ESMTP id S229692AbjKPB3U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:29:17 -0500
+        Wed, 15 Nov 2023 20:29:20 -0500
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BE94182
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:14 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E40EF182
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700098153;
+        s=mimecast20190719; t=1700098156;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=4PU7kaICTCYIryKeefw2/Ev2pNew0CTTu+cawaO/2M4=;
-        b=bGT1faX8UOC6hAK9KienBvMOUdKIZa0GmFVCK+kNctTMIhrwcxyhVHA7FlnQK4zxYQxqI5
-        IVuZ+hv0DP9lsoudZOtnMz56Fl9wb3rFQvioBGzj5/ZpPbcT4mr73fMQo+ao6jduZrphTv
-        d8PnyuINFVTCR+NX8Jr6F1saWtSJx3Q=
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com
- [209.85.161.72]) by relay.mimecast.com with ESMTP with STARTTLS
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=j75oQuDXytIzx0fg9CVxcXlN+sYlHIe4GGC/3d4Gln4=;
+        b=Ie72S6VoYRKq1jIqB5k4Cg7EijAhC5kiEVGJJq6CW4edXDyTiofF9d7IVo7iaAL0p8csTV
+        iCHLVk9yV4uFgp47JVd1Xk2fR1OtABnHnIhjQKjNP22ZkJQJc2kT+26RztJulSsk9rcwZ5
+        fvZYm5J7Zji6kKHgW1auw3r3X0Gnclg=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-618-E34-e6psNDaq8YrzhyyDxQ-1; Wed, 15 Nov 2023 20:29:12 -0500
-X-MC-Unique: E34-e6psNDaq8YrzhyyDxQ-1
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-581d59ea23dso63117eaf.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:12 -0800 (PST)
+ us-mta-644-vkNfz2qmMNeOn9C8UIiorA-1; Wed, 15 Nov 2023 20:29:13 -0500
+X-MC-Unique: vkNfz2qmMNeOn9C8UIiorA-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-421ac2bad66so928371cf.0
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:29:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700098151; x=1700702951;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4PU7kaICTCYIryKeefw2/Ev2pNew0CTTu+cawaO/2M4=;
-        b=AwxBKJX0lysjUI0ax7J95NT/DLSUfflYuzZ9thrg98uSZvf3c7rFmv9vzlSceTcPiX
-         Czr/M4VvAna0g2vQBRVukpCuugE4yFI6dcaQf5szxbvYNDbh7vS1SbDOT55t6Zwq+vIa
-         0QmhNMiIEEGaAlS+dptY4IH/V9g5aaiVsV0I4SSHsofDE2WDIkoBNOH1w5ZFV4cTpsnZ
-         FYdvwrBKR8dR9TkvORgvSBnrN10lkEEOg4/YMWVn/G7xw9ean7Ei8lUUisS6pcCEeAsM
-         daejX9fpjNXMFtdpiBW3Dzfaf6i7K9HWEI0V2CEiA0AxzsU5ypfK3cqdOOcIfF0kAjTS
-         e7IA==
-X-Gm-Message-State: AOJu0YyRCynY/1nABsN25mY/d9CxIJNq+3jBMdZpyrcgapso1Op1lQBO
-        1W4ayWz36s/CRKKtinRqMduVBfOTmIuevtWM0VH52vS3C/5mzjgPYEnKb5Ahd2MMJm4hGSycQyf
-        gv1+dgjmTk1S34lw9/eY1NRk5eYiYGabMtVNrDfXdxrUxoUOjjVj60XgmWW8HtD/hI+qjysFOEW
-        nrTz6Wpw==
-X-Received: by 2002:a05:6358:7e55:b0:16b:96fc:650e with SMTP id p21-20020a0563587e5500b0016b96fc650emr7346647rwm.3.1700098151525;
-        Wed, 15 Nov 2023 17:29:11 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFImde6pf3JVssBAvi5nvxUOfTkQFEUHKzKi5Co8doDN7L44uxCciulaI4uHmQLQCXmL97l4Q==
-X-Received: by 2002:a05:6358:7e55:b0:16b:96fc:650e with SMTP id p21-20020a0563587e5500b0016b96fc650emr7346617rwm.3.1700098151045;
-        Wed, 15 Nov 2023 17:29:11 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700098153; x=1700702953;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=j75oQuDXytIzx0fg9CVxcXlN+sYlHIe4GGC/3d4Gln4=;
+        b=PVzn/HDuUtlLokOzRb3Y8cG9XAgFaD7I8VXmxOtHjdyg2LzV7y8KHIlieYq+uTf/As
+         GeioEoN+0GVkdIjzJCPH+/ldPqG+6SWDGDST8qYiFNoviggtdW2NpyfdOnHSTZ0V6AS3
+         Jy+E+Top5Ih+s02E6E2KDCp/WTFRqZIY0uznzu4UzH0NhaXSIJLMF4LVITzWDpT63rdI
+         ZlcJ9IbnOYQRA81/OSKTsLynvqv4jCmp+dynlf3vqyKrgU7ukfgNw248YhwXt2UPq+k/
+         kfFV9K53XhXH2ZuMixVtlnrYQ6CVS8WBklVvmdd+1h7zcYC9F+r/sv90gsRy2mQZJ1jd
+         JGEw==
+X-Gm-Message-State: AOJu0Yw4tHR5e3n7TBF4zkfoCW+8qqr3yaQALyxaIkoPAwGMYytZRhQO
+        KYAwJhIV/1lJPb/W0GGiUDzwdhG1Mh6FAoPp2PJxEp4ZxVfx/emRYgATX8v7wmrHPyfHmSaolVR
+        juMhA2N9G5oH27NgeA4YCcr8khYMUmUpK3lfRyHSJ0dnRiuicyaDJbHJ4Ox4U9D1RTElNKslFCo
+        4wwjd/2A==
+X-Received: by 2002:ac8:7d13:0:b0:41e:4be2:d3eb with SMTP id g19-20020ac87d13000000b0041e4be2d3ebmr10348628qtb.1.1700098153180;
+        Wed, 15 Nov 2023 17:29:13 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGyA/ppnbzE3SBmMhc1vSGcpOQYT5DWDMM4yQxJwgB1XG6+271v4ghGsJVWP9HBrNNkwutL1g==
+X-Received: by 2002:ac8:7d13:0:b0:41e:4be2:d3eb with SMTP id g19-20020ac87d13000000b0041e4be2d3ebmr10348586qtb.1.1700098152747;
+        Wed, 15 Nov 2023 17:29:12 -0800 (PST)
 Received: from x1n.redhat.com (cpe5c7695f3aee0-cm5c7695f3aede.cpe.net.cable.rogers.com. [99.254.144.39])
-        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.09
+        by smtp.gmail.com with ESMTPSA id c24-20020ac85198000000b0041e383d527esm3922598qtn.66.2023.11.15.17.29.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Nov 2023 17:29:10 -0800 (PST)
+        Wed, 15 Nov 2023 17:29:12 -0800 (PST)
 From:   Peter Xu <peterx@redhat.com>
 To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
@@ -74,11 +75,12 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         Jason Gunthorpe <jgg@nvidia.com>,
         Vlastimil Babka <vbabka@suse.cz>,
         Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH RFC 00/12] mm/gup: Unify hugetlb, part 2
-Date:   Wed, 15 Nov 2023 20:28:56 -0500
-Message-ID: <20231116012908.392077-1-peterx@redhat.com>
+Subject: [PATCH RFC 01/12] mm/hugetlb: Export hugetlbfs_pagecache_present()
+Date:   Wed, 15 Nov 2023 20:28:57 -0500
+Message-ID: <20231116012908.392077-2-peterx@redhat.com>
 X-Mailer: git-send-email 2.41.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20231116012908.392077-1-peterx@redhat.com>
+References: <20231116012908.392077-1-peterx@redhat.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
@@ -92,72 +94,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset is in RFC stage. It's mostly because it is only yet tested on
-x86_64 in a VM.  Not even compile tested on PPC or any other archs, it
-means at least the hugepd patch (patch 11) is mostly untested, or even not
-compile tested.  Before doing that, I'd like to collect any information
-from high level.
+It will be used outside hugetlb.c soon.
 
-If anyone would like to provide any testing either over hugepd or CONT_PMD
-/ CONT_PTE on ARM (before I reach there..), or RISCV over 64K Svnapot,
-that'll be very much appreciated.  I'm copying PPC, ARM, RISCV list for
-that.  It can be as simple as "./run_vmtests.sh -t gup_test -a" for now,
-making sure hugetlb pages can be allocated along the way; the non-hugetlb
-gup tests will guaranteed to be covered more or less, I suppose.
+Signed-off-by: Peter Xu <peterx@redhat.com>
+---
+ include/linux/hugetlb.h | 3 +++
+ mm/hugetlb.c            | 4 ++--
+ 2 files changed, 5 insertions(+), 2 deletions(-)
 
-In summary, this is a continuous work for previous series:
-
-https://lore.kernel.org/all/20230628215310.73782-1-peterx@redhat.com
-
-And this more or less is my current take to move one more small step
-towards merging hugetlb code into generic mm code, as much as we can.
-
-That part-1 series dropped follow_hugetlb_page().  The plan of this one is
-to further drops hugetlb_follow_page_mask().  The hugetlb GUP will use the
-same code path for generic mm after whole set applied.
-
-It means the generic code will need to at least understand hugepd, and
-that's already done like so in fast-gup.  Fortunately it seems that's the
-only major thing I need to teach GUP to share the common path for now
-besides normal huge PxD entries.  Non-gup can be more challenging, but
-that's a question for later.
-
-Patch layout:
-=============
-
-Patch 1-4:    Preparation works, mm generic part
-Patch 5-6:    Bugfixes; I think patch 5 if verified can be merged earlier
-Patch 7-11:   Preparation works, gup part
-Patch 12:     Drop hugetlb_follow_page_mask()
-
-More information can be found in the commit messages of each patch.  Any
-comment will be welcomed.  Thanks.
-
-Peter Xu (12):
-  mm/hugetlb: Export hugetlbfs_pagecache_present()
-  mm: Provide generic pmd_thp_or_huge()
-  mm: Export HPAGE_PXD_* macros even if !THP
-  mm: Introduce vma_pgtable_walk_{begin|end}()
-  mm/gup: Fix follow_devmap_p[mu]d() to return even if NULL
-  mm/gup: Drop folio_fast_pin_allowed() in hugepd processing
-  mm/gup: Refactor record_subpages() to find 1st small page
-  mm/gup: Handle hugetlb for no_page_table()
-  mm/gup: Handle huge pud for follow_pud_mask()
-  mm/gup: Handle huge pmd for follow_pmd_mask()
-  mm/gup: Handle hugepd for follow_page()
-  mm/gup: Merge hugetlb into generic mm code
-
- include/linux/huge_mm.h |  34 +++----
- include/linux/hugetlb.h |  10 +-
- include/linux/mm.h      |   3 +
- include/linux/pgtable.h |   4 +
- mm/gup.c                | 197 +++++++++++++++++++++++++---------------
- mm/huge_memory.c        | 117 +++++++++++++-----------
- mm/hugetlb.c            |  75 +--------------
- mm/internal.h           |   6 +-
- mm/memory.c             |  12 +++
- 9 files changed, 233 insertions(+), 225 deletions(-)
-
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 236ec7b63c54..bb07279b8991 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -174,6 +174,9 @@ u32 hugetlb_fault_mutex_hash(struct address_space *mapping, pgoff_t idx);
+ 
+ pte_t *huge_pmd_share(struct mm_struct *mm, struct vm_area_struct *vma,
+ 		      unsigned long addr, pud_t *pud);
++bool hugetlbfs_pagecache_present(struct hstate *h,
++				 struct vm_area_struct *vma,
++				 unsigned long address);
+ 
+ struct address_space *hugetlb_page_mapping_lock_write(struct page *hpage);
+ 
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 6feb3e0630d1..29705e5c6f40 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -6018,8 +6018,8 @@ static vm_fault_t hugetlb_wp(struct mm_struct *mm, struct vm_area_struct *vma,
+ /*
+  * Return whether there is a pagecache page to back given address within VMA.
+  */
+-static bool hugetlbfs_pagecache_present(struct hstate *h,
+-			struct vm_area_struct *vma, unsigned long address)
++bool hugetlbfs_pagecache_present(struct hstate *h,
++				 struct vm_area_struct *vma, unsigned long address)
+ {
+ 	struct address_space *mapping = vma->vm_file->f_mapping;
+ 	pgoff_t idx = linear_page_index(vma, address);
 -- 
 2.41.0
 
