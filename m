@@ -2,138 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF4787EE161
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:19:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 120B27EE169
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:19:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345180AbjKPNTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:19:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48826 "EHLO
+        id S1345125AbjKPNTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:19:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjKPNTE (ORCPT
+        with ESMTP id S230371AbjKPNTI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:19:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44A361A5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:19:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700140740;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r2ioSvsdVC24BNs/tJ+ckjjBuQcpkPVhbaN7mfLUSmk=;
-        b=gEFhBfNcCbMgIupKMmqeXxjaSPUFpcLPDVixjVMLqjV0z3sIehZ/K+KGSb65me9m+lmEyI
-        Kr4RhuZia2JFhZbUgSQ6ILaahlrCQTXBl9E6gR1suQMKXtWUf5n4jl4/r8DOtFd4z0W7tH
-        TMRG0UnEXLkp/wNIdVleTZEJfykAbS0=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-638-4Ac5ghfxNkmykLeH5hX4bA-1; Thu, 16 Nov 2023 08:18:59 -0500
-X-MC-Unique: 4Ac5ghfxNkmykLeH5hX4bA-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-40a5290e259so4447815e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:18:59 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700140738; x=1700745538;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=r2ioSvsdVC24BNs/tJ+ckjjBuQcpkPVhbaN7mfLUSmk=;
-        b=lhOV165EPgifon3X/hRgaB7a/jXOOBewEnr4HLwlyIhWhAx0xqtztYIy4u/s2aQUmE
-         UpROX92q91HoLccVZiTRWKbpwwknzVxo6DXxVNGr2UeuDho+TJ48Gpiw9NoYMUUxTY1r
-         iJ0aeirwIvxxRF/MxJ47hbkbmxzc8EjAQolCPOTnkgRYWE0vR3j0UUpwI69rudBoxDau
-         nXDTjNn6LXxlLKwR9iQXgRKx3U19as/rehh5xpcZEJJORWxl53wz+jC2gSRgDyUDYMZs
-         6Gpuf75vao1SSE/M655wmw/x1J9njJDsL0KTPLf7wdmk8+BZnyIBIL2imTEZpIRhAUAO
-         rVyA==
-X-Gm-Message-State: AOJu0Yzfvrqc8iWQ3n+zNpUW7Y1yO7auSwGL9eXneMwA58TtETi/cM2s
-        wgfwzDFrPIkydYeSuKxR9c04GHpP95x6XDNoIsgeDu5jT7sfVV41xAyEUulTv9RDcksFNWa8YNw
-        sHb+ffaa8OS5CNDk414mZ/0FB
-X-Received: by 2002:a05:6000:186b:b0:32d:9b3d:4f69 with SMTP id d11-20020a056000186b00b0032d9b3d4f69mr15354765wri.64.1700140737931;
-        Thu, 16 Nov 2023 05:18:57 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEZePSLm6805MffvvwhDpaaQKx0BMg13ekmNTxyFySFKHK0WR1spvD11gT9iZCxRQtve/mI9g==
-X-Received: by 2002:a05:6000:186b:b0:32d:9b3d:4f69 with SMTP id d11-20020a056000186b00b0032d9b3d4f69mr15354743wri.64.1700140737613;
-        Thu, 16 Nov 2023 05:18:57 -0800 (PST)
-Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
-        by smtp.gmail.com with ESMTPSA id g26-20020adfa49a000000b0030647449730sm13748332wrb.74.2023.11.16.05.18.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 05:18:57 -0800 (PST)
-From:   Javier Martinez Canillas <javierm@redhat.com>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Zigotzky <chzigotzky@xenosoft.de>,
-        David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: Re: [PATCH] drm/virtio: Add suppport for non-native
-In-Reply-To: <282a31154172a78165912c832a09f6502515d139.1700140178.git.geert@linux-m68k.org>
-References: <282a31154172a78165912c832a09f6502515d139.1700140178.git.geert@linux-m68k.org>
-Date:   Thu, 16 Nov 2023 14:18:56 +0100
-Message-ID: <87wmuh25vj.fsf@minerva.mail-host-address-is-not-set>
+        Thu, 16 Nov 2023 08:19:08 -0500
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D78C81A5;
+        Thu, 16 Nov 2023 05:19:05 -0800 (PST)
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AA3591595;
+        Thu, 16 Nov 2023 05:19:51 -0800 (PST)
+Received: from [10.57.3.57] (unknown [10.57.3.57])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CCA963F73F;
+        Thu, 16 Nov 2023 05:19:02 -0800 (PST)
+Message-ID: <90c9d5b5-fbb1-437d-a961-efd0da61d6f7@arm.com>
+Date:   Thu, 16 Nov 2023 13:19:59 +0000
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/2] sched/schedutil: Rework performance estimation
+Content-Language: en-US
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     wyes.karny@amd.com, beata.michalska@arm.com, juri.lelli@redhat.com,
+        mingo@redhat.com, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, viresh.kumar@linaro.org,
+        rafael@kernel.org, vschneid@redhat.com, bristot@redhat.com,
+        mgorman@suse.de, bsegall@google.com, rostedt@goodmis.org,
+        dietmar.eggemann@arm.com, peterz@infradead.org, qyousef@layalina.io
+References: <20231103131821.1176294-1-vincent.guittot@linaro.org>
+ <20231103131821.1176294-2-vincent.guittot@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+In-Reply-To: <20231103131821.1176294-2-vincent.guittot@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Geert Uytterhoeven <geert@linux-m68k.org> writes:
+Hi Vincent,
 
-Hello Geert,
+On 11/3/23 13:18, Vincent Guittot wrote:
+> The current method to take into account uclamp hints when estimating the
+> target frequency can end into situation where the selected target
+> frequency is finally higher than uclamp hints whereas there are no real
+> needs. Such cases mainly happen because we are currently mixing the
+> traditional scheduler utilization signal with the uclamp performance
+> hints. By adding these 2 metrics, we loose an important information when
+> it comes to select the target frequency and we have to make some
+> assumptions which can't fit all cases.
+> 
+> Rework the interface between the scheduler and schedutil governor in order
+> to propagate all information down to the cpufreq governor.
+> 
+> effective_cpu_util() interface changes and now returns the actual
+> utilization of the CPU with 2 optional inputs:
+> - The minimum performance for this CPU; typically the capacity to handle
+>    the deadline task and the interrupt pressure. But also uclamp_min
+>    request when available.
+> - The maximum targeting performance for this CPU which reflects the
+>    maximum level that we would like to not exceed. By default it will be
+>    the CPU capacity but can be reduced because of some performance hints
+>    set with uclamp. The value can be lower than actual utilization and/or
+>    min performance level.
+> 
+> A new sugov_effective_cpu_perf() interface is also available to compute
+> the final performance level that is targeted for the CPU after applying
+> some cpufreq headroom and taking into account all inputs.
+> 
+> With these 2 functions, schedutil is now able to decide when it must go
+> above uclamp hints. It now also have a generic way to get the min
+> perfromance level.
+> 
+> The dependency between energy model and cpufreq governor and its headroom
+> policy doesn't exist anymore.
+> 
+> eenv_pd_max_util asks schedutil for the targeted performance after
+> applying the impact of the waking task.
+> 
+> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-> When using virtgpu on a big-endian machine, e.g. powerpc QEMU:
->
->     virtio-pci 0000:00:02.0: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
->
-> or m68k/virt:
->
->     virtio-mmio virtio-mmio.125: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
->
-> and the graphical display fails to come up.
->
-> Before, the call to drm_mode_addfb() caused a translation from a fourcc
-> format (XR24) to a bpp/depth pair (32/24) to a potentially different fourcc
-> format (BX24 on big-endian), due to the quirk processing in
-> drm_driver_legacy_fb_format().  After, the original fourcc format (XR24)
-> is passed unmodified.
->
-> However, the virtgpu DRM driver supports only a single format for its
-> main plane: DRM_FORMAT_HOST_XRGB8888, which is XR24 on little-endian,
-> and BX24 on big-endian.  I.e. on big-endian, virtgpu does not support
-> XR24, which is the default DRM format, and must be supported by all
-> drivers.  Before, this was reported, but didn't lead to a failure:
->
->     virtio-mmio virtio-mmio.125: [drm] bpp/depth value of 32/24 not supported
->     virtio-mmio virtio-mmio.125: [drm] No compatible format found
->
-> As the core virtgpu driver and device support both XR24 and BX24 on both
-> little-endian and big-endian just fine, fix this extending the list of
-> supported formats for main plane and cursor plane to XR24/BX24 resp.
-> AR24/BA24.
->
-> Fixes: 6ae2ff23aa43a0c4 ("drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()")
-> Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-> Closes: https://lore.kernel.org/r/c47fba21-3ae9-4021-9f4a-09c2670ebdbc@xenosoft.de
-> Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
+Just in case you are waiting for me. The patch should be OK as
+you explained to me in v2. I'm not able to test it right now
+on my pixel6 downstream-tracking-mainline kernel, so please
+go forward not waiting for me. (the pixel6 is the only platform
+that I have now which is normally using the uclamp).
 
-Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
-
--- 
-Best regards,
-
-Javier Martinez Canillas
-Core Platforms
-Red Hat
-
+Regards,
+Lukasz
