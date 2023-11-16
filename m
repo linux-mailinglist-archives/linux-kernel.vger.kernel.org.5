@@ -2,138 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3E087EE1D8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 666F97EE1E4
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345260AbjKPNsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:48:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34072 "EHLO
+        id S1345247AbjKPNtP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 08:49:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231149AbjKPNsE (ORCPT
+        with ESMTP id S231163AbjKPNtO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:48:04 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CC8C1;
-        Thu, 16 Nov 2023 05:48:01 -0800 (PST)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id B4995660734A;
-        Thu, 16 Nov 2023 13:47:59 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700142479;
-        bh=0F+bD5IJvC5DvD53eU1GEpAuHcSfiOhDXPjgQwy4gxU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ennw2qkv+TWcuWKJb/JxsE2jdCn3IKctEidn6+LBnljCe+v1UPs4IrEDksAcfrbkP
-         i/NA/dK8J1rHvXw6S3r3jO7jTHYPtSOfCi2G2oRm2RIbEzPmnhaLuelKA+pQpBL8y4
-         /q9u2CLaklIlN7g3XcC9aEPaUFMtdMzK64qKkNG73gPlvHkOavshCDgCZjM0C0pDDT
-         rihxJ1eRSLOTm3TYuHngAsXEKQckU9bKtfP+3mlLODjkX3RHMIcBjiPZ+o4oTPs1uO
-         aqzt89HdHbgYsIkMHYFYkhvOUUPkte3vR9J1J8ox5s3tAe4F9JIfGrBuMX9QC+4ah2
-         houZmc0+DWMJg==
-Received: by mercury (Postfix, from userid 1000)
-        id DA79210613A1; Thu, 16 Nov 2023 14:47:57 +0100 (CET)
-Date:   Thu, 16 Nov 2023 14:47:57 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Andy Yan <andy.yan@rock-chips.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andyshrk@163.com>,
-        heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, kever.yang@rock-chips.com,
-        chris.obbard@collabora.com
-Subject: Re: [PATCH 09/11] drm/rockchip: vop2: Add support for rk3588
-Message-ID: <20231116134757.zu7axb6cvriqjm6y@mercury.elektranox.org>
-References: <20231114112534.1770731-1-andyshrk@163.com>
- <20231114112855.1771372-1-andyshrk@163.com>
- <20231115090823.GY3359458@pengutronix.de>
- <8f2ebc81-51c5-44d5-b27b-633a6cc85d0d@rock-chips.com>
+        Thu, 16 Nov 2023 08:49:14 -0500
+Received: from mail-yw1-f176.google.com (mail-yw1-f176.google.com [209.85.128.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB3E8F;
+        Thu, 16 Nov 2023 05:49:10 -0800 (PST)
+Received: by mail-yw1-f176.google.com with SMTP id 00721157ae682-5a7d9d357faso8785587b3.0;
+        Thu, 16 Nov 2023 05:49:10 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700142550; x=1700747350;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P1Ku/zmxTW3EJ14ZGSPwQJRq9NOGMsjfK91kYUMoPFQ=;
+        b=EArBMav3NNfnQsEE7Rm7zM5LulRbQJW9YY/v5CqmaKCfsNZLdEi/rsPc4NfaYOa+mM
+         lyH1rQgWdlvG7g40erf7L0ZDbKBw9e7PbbegiDAlnrrSRzxjq0lQzvuGYzOy0G00O2h2
+         ifYwKjWiwPqiRfL+sDaHTISinTgWkHoguPUfg0vGCOcj0mUyb+hCMObUDS5rpCbUN96g
+         47JZveHWXnkXzT9i+P2e8LACSJhEbkeqDXIQpkAJsMjw2YdeEMv7KvWSvtWgGU1jS1G7
+         TZV6oxcCJ4Jb0AjkNcMiwYfdH87p443wWodOiyvlaC3WH3tK22I+D0N3EpFBunkwsCtg
+         Q08g==
+X-Gm-Message-State: AOJu0YytzgA0WMNZ9JRfcGmKMU0tQG1oKC8d0t/cVtRNgUr68abt93L+
+        /BlVJXl71YWnSieM9Jm74QzTCcVINowUtQ==
+X-Google-Smtp-Source: AGHT+IGedtCarwUlNElo+fJvZ0sj0Vn47f/spUE+TLoZ4cRZ16Peq2gT+WF7kn41BejCCtZXTzWRrg==
+X-Received: by 2002:a0d:c346:0:b0:592:a65d:387c with SMTP id f67-20020a0dc346000000b00592a65d387cmr14037531ywd.52.1700142549749;
+        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id g184-20020a0dc4c1000000b005a2521fb26csm993508ywd.99.2023.11.16.05.49.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso822831276.3;
+        Thu, 16 Nov 2023 05:49:09 -0800 (PST)
+X-Received: by 2002:a25:b120:0:b0:d9a:c7af:bb4d with SMTP id
+ g32-20020a25b120000000b00d9ac7afbb4dmr15046211ybj.37.1700142549098; Thu, 16
+ Nov 2023 05:49:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fodj6ulte5c5gkb5"
-Content-Disposition: inline
-In-Reply-To: <8f2ebc81-51c5-44d5-b27b-633a6cc85d0d@rock-chips.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+References: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231115212908.33131-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 16 Nov 2023 14:48:58 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdUCVTRu3JGrsZ4YjLJmzq7W1fRQ2+KkSvecGDnff=yinQ@mail.gmail.com>
+Message-ID: <CAMuHMdUCVTRu3JGrsZ4YjLJmzq7W1fRQ2+KkSvecGDnff=yinQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: timer: renesas: ostm: Document RZ/Five SoC
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Chris Brandt <chris.brandt@renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Nov 15, 2023 at 10:29 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The OSTM block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+> SoC. "renesas,r9a07g043-ostm" compatible string will be used on the RZ/Five
+> SoC so to make this clear and to keep this file consistent, update the
+> comment to include RZ/Five SoC.
+>
+> No driver changes are required as generic compatible string "renesas,ostm"
+> will be used as a fallback on RZ/Five SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
---fodj6ulte5c5gkb5
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Hi,
+Gr{oetje,eeting}s,
 
-On Thu, Nov 16, 2023 at 06:39:40PM +0800, Andy Yan wrote:
-> > >   	vop2->sys_grf =3D syscon_regmap_lookup_by_phandle(dev->of_node, "r=
-ockchip,grf");
-> > This already lacks an error check, shame on me...
-> >=20
-> > > +	vop2->vop_grf =3D syscon_regmap_lookup_by_phandle(dev->of_node, "ro=
-ckchip,vop-grf");
-> > > +	vop2->vo1_grf =3D syscon_regmap_lookup_by_phandle(dev->of_node, "ro=
-ckchip,vo1-grf");
-> > > +	vop2->sys_pmu =3D syscon_regmap_lookup_by_phandle(dev->of_node, "ro=
-ckchip,pmu");
-> > ... but please don't duplicate that.
->=20
-> It a little difficult to find a proper way to do the check, as not every =
-soc need all these phandles.
->=20
-> Do i need check it per soc?
+                        Geert
 
-I suggest adding a u32 flags to struct vop2_data and then have
-something like this:
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-if (vop2_data->flags & VOP2_HAS_VOP_GRF) {
-    vop2->vop_grf =3D syscon_regmap_lookup_by_phandle(dev->of_node, "rockch=
-ip,vop-grf");
-    if (IS_ERR(vop2->vop_grf))
-        return dev_err_probe(dev, PTR_ERR(vop2->vop_grf) "cannot get vop-gr=
-f");
-}
-
-if (vop2_data->flags & VOP2_HAS_VO1_GRF) {
-    vop2->vo1_grf =3D syscon_regmap_lookup_by_phandle(dev->of_node, "rockch=
-ip,vo1-grf");
-    if (IS_ERR(vop2->vo1_grf))
-        return dev_err_probe(dev, PTR_ERR(vop2->vo1_grf) "cannot get vo1-gr=
-f");
-}
-
-=2E..
-
-Greetings,
-
--- Sebastian
-
---fodj6ulte5c5gkb5
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmVWHYUACgkQ2O7X88g7
-+po82w//W3u/dHpgUXr+77xCVn2g3AVTWISnP6mEQ1VQkqATekZ8LpLJq7thz2pp
-yuq3rG6e35mWVHVex5KNFzElA0eKPlHZ6Yy41mVK5lFn5/B00gVTKyY1Ke4b5gHS
-ub3KYPmhEssqLioA4H+8w7clThuT6CClRrhH7snBTh+/Wq99ivsJTRvib3v5V1jE
-nqzw/UnvodV54WlytiYADIsuRbcURk1BJx7xNgjuBBGWVjtOoUKPoJ4gqM8VpDmz
-Ibc0H42k82E4XnWDbMZUaCEA2DqZOgNwlEAwX3lQGuJE6LYlUt/hRcU6+31AzdSh
-ch9mGOFXz+8/6OxyWOD4uktftyiYAKFNL7Hon+z3pxBqoc2Bt94pcUlnfFyJvPgQ
-WoaCQH4crpeYkPH4fo5QCyW5sUdtn12cM1ihF1JsUicAMmzsLcUagXKL7c+ObVrz
-vCyPZGQDXuwiiNLSvkmG6yRrmAQFtquboGBPZOTH46fFNuASkR9ZuGEDm0nIH9Mh
-AwWYqdlz9h/bg0vR/uXqro0DI0gx7TJwap870n9v5gvfK/e4MWM15W/VzbUv0Kxo
-TL1+LtgAtDGbGVeuI3DHY94dzYwsov6yrViwuFC/wIgllZlHgK5Ir9su9XCfVCt1
-SP5ybo1ag2VdjC88XQBHSV5m7hoKHC0PEJzAhtjvSSjbazh2PsM=
-=DnDq
------END PGP SIGNATURE-----
-
---fodj6ulte5c5gkb5--
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
