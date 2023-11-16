@@ -2,111 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A56B37EE88E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:57:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C781B7EE891
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 22:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229669AbjKPU5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:57:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58430 "EHLO
+        id S229631AbjKPVAd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 16:00:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPU5b (ORCPT
+        with ESMTP id S229379AbjKPVAb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:57:31 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0ADDD4A;
-        Thu, 16 Nov 2023 12:57:28 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ECB93C433C7;
-        Thu, 16 Nov 2023 20:57:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700168248;
-        bh=EjMKx5nsjR7WnKWGm9tsxjc3r1t11YJJEx0o24R8FgU=;
-        h=Date:From:To:Cc:Subject:From;
-        b=PMUVa2AIRiGi8EJ9pjFjU+974IoHgg3yEfJ31Q9eTjA5HYvoe/4QP4QL2J9Tenblg
-         5FJZRhqYP3RWZ47tL7qcdk86sP+MG/N68JJSpgBITaZCaL4u2XJD3hoyQ8OmoUFH3V
-         PfBT1Z4KSpHLm75VCOe7WRYrDcFtVAimRoIy3l7MqTJR+ZygB6jkZl3egpJ0iD1O2M
-         LIGs67TT1sWFvI9fzCfybzPrXyytxkGjPQnYIO0qiXtkBNS5Uo3FfSIBSWoig8xcJ9
-         wWRMUUL/LbjCZS/zA53qqnm+OsCno8mT/vBa1PQu13Q+yLWPTMzAp+izmKxXO9XRfO
-         zmU8iEHtVjnxw==
-Date:   Thu, 16 Nov 2023 14:57:24 -0600
-From:   "Gustavo A. R. Silva" <gustavoars@kernel.org>
-To:     Felix Fietkau <nbd@nbd.name>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Ryder Lee <ryder.lee@mediatek.com>,
-        Shayne Chen <shayne.chen@mediatek.com>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Kalle Valo <kvalo@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-Cc:     linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        linux-hardening@vger.kernel.org
-Subject: [PATCH][next] wifi: mt76: mt7996: Use DECLARE_FLEX_ARRAY() and fix
- -Warray-bounds warnings
-Message-ID: <ZVaCNAohuieMmdq9@work>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        Thu, 16 Nov 2023 16:00:31 -0500
+Received: from mail-yw1-x1149.google.com (mail-yw1-x1149.google.com [IPv6:2607:f8b0:4864:20::1149])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66F1CD68
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 13:00:25 -0800 (PST)
+Received: by mail-yw1-x1149.google.com with SMTP id 00721157ae682-5c7045e972dso610117b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 13:00:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700168424; x=1700773224; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=pcg1jHOi88FLN7hCqkcZwcR8zkGGhGMDTBufXRqyOok=;
+        b=AR8LC9RdzQJ6e04orRQ7NovChpkme4uD8a5w8U6EF3WUGxEuLhURPJTy96rf3K4WNQ
+         xxE8sD7/d3QeR+YsUnwL0t5v7PZ70vsTr+Bd1xceYyZx2I8BC5Zt5HKTqJTCKcxVxKmh
+         35TdC1VPrs8AdH1hr5SatgucrL3Y5+9Bs0t1NfLBqwJM6o6y2vGjM9+/C0lTaHwuVY+r
+         lRe/yBmNqO+6EZkX/WhUQRyWdRoDD05/VHwJb0B0qyJ2Fob6cmgQwA7MdHE5KMTEz0lT
+         xtLMml7o5rQD6n4+cQIRCtXO0HDgRih3fpwt8Qp2XhCAXNQCxaqWg4qKY5XmzysECn8X
+         JLLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700168424; x=1700773224;
+        h=cc:to:from:subject:message-id:mime-version:in-reply-to:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=pcg1jHOi88FLN7hCqkcZwcR8zkGGhGMDTBufXRqyOok=;
+        b=f4bov+i0RdYHu1zjCRZMyO1ocbGIYQXWmCEWc/3FkHnhgpgl4G8Zoqt762oZ8OQ0f7
+         ouu560tlJoeBhzx0PHYY+yfdoU2DI1j35UjvT9CZ0XqzzWGzmvYZSVKTH9UVIa/scmim
+         shXkanlZldyZl7iZ7A5X1eawm95JhkJAoF6E+al50rDDPyz/j//lxgJV9O5sIqUADFwg
+         z7f+FNd+xR0o93W1MzuCKBojq5BVWepW5gU8f+wDySEYtjCBA/pHNJ73BD5+fQA/pDK4
+         TrQLKB0xTGOfuz7Rd5ZXZlFrBLCfe7fRWMRPXl2m2S2217VmJJmbko05cc8Ml8TgKOP7
+         xxdA==
+X-Gm-Message-State: AOJu0YzK4Wg9Kqkrl3RuEspznnB60eKDe6dYlaX/blTsk6AOpf4Y5NXF
+        +xNJwopxG8ChWfaESj0dhgmwgbX15qw2X0dmjQ==
+X-Google-Smtp-Source: AGHT+IERExc4D+qrt27go/xYBPrtoAORZdvfQFtSO07pMqMqSuTLQB8wBOPMZT1riqPUGW5/Jxx9EA2kvlBTv30QyA==
+X-Received: from ackerleytng-ctop.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:13f8])
+ (user=ackerleytng job=sendgmr) by 2002:a25:7644:0:b0:da3:a4ae:1525 with SMTP
+ id r65-20020a257644000000b00da3a4ae1525mr393167ybc.5.1700168424573; Thu, 16
+ Nov 2023 13:00:24 -0800 (PST)
+Date:   Thu, 16 Nov 2023 21:00:22 +0000
+In-Reply-To: <20231105163040.14904-33-pbonzini@redhat.com> (message from Paolo
+ Bonzini on Sun,  5 Nov 2023 17:30:35 +0100)
+Mime-Version: 1.0
+Message-ID: <diqzfs15o1ll.fsf@ackerleytng-ctop.c.googlers.com>
+Subject: Re: [PATCH 32/34] KVM: selftests: Add basic selftest for guest_memfd()
+From:   Ackerley Tng <ackerleytng@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     pbonzini@redhat.com, maz@kernel.org, oliver.upton@linux.dev,
+        chenhuacai@kernel.org, mpe@ellerman.id.au, anup@brainfault.org,
+        paul.walmsley@sifive.com, palmer@dabbelt.com,
+        aou@eecs.berkeley.edu, seanjc@google.com, viro@zeniv.linux.org.uk,
+        brauner@kernel.org, willy@infradead.org, akpm@linux-foundation.org,
+        kvm@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvmarm@lists.linux.dev, linux-mips@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, kvm-riscv@lists.infradead.org,
+        linux-riscv@lists.infradead.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        xiaoyao.li@intel.com, yilun.xu@intel.com,
+        chao.p.peng@linux.intel.com, tabba@google.com, jarkko@kernel.org,
+        amoorthy@google.com, dmatlack@google.com,
+        yu.c.zhang@linux.intel.com, isaku.yamahata@intel.com,
+        mic@digikod.net, vbabka@suse.cz, vannapurve@google.com,
+        mail@maciej.szmigiero.name, david@redhat.com, qperret@google.com,
+        michael.roth@amd.com, wei.w.wang@intel.com,
+        liam.merwick@oracle.com, isaku.yamahata@gmail.com,
+        kirill.shutemov@linux.intel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Transform zero-length arrays `adm_stat` and `msdu_cnt` into proper
-flexible-array members in anonymous union in `struct
-mt7996_mcu_all_sta_info_event` via the DECLARE_FLEX_ARRAY()
-helper; and fix multiple -Warray-bounds warnings:
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:483:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:490:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:492:58: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:469:61: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:477:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
-drivers/net/wireless/mediatek/mt76/mt7996/mcu.c:479:66: warning: array subscript <unknown> is outside array bounds of 'struct <anonymous>[0]' [-Warray-bounds=]
+> <snip>
+>
+> +static void test_create_guest_memfd_invalid(struct kvm_vm *vm)
+> +{
+> +	size_t page_size = getpagesize();
+> +	uint64_t flag;
+> +	size_t size;
+> +	int fd;
+> +
+> +	for (size = 1; size < page_size; size++) {
+> +		fd = __vm_create_guest_memfd(vm, size, 0);
+> +		TEST_ASSERT(fd == -1 && errno == EINVAL,
+> +			    "guest_memfd() with non-page-aligned page size '0x%lx' should fail with EINVAL",
+> +			    size);
+> +	}
+> +
+> +	for (flag = 1; flag; flag <<= 1) {
 
-This results in no differences in binary output, helps with the ongoing
-efforts to globally enable -Warray-bounds.
+Since transparent hugepage support is no longer officially part of this
+series, 
 
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
----
- drivers/net/wireless/mediatek/mt76/mt7996/mcu.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+> +		uint64_t bit;
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.h b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.h
-index a88f6af323da..9f516f796d63 100644
---- a/drivers/net/wireless/mediatek/mt76/mt7996/mcu.h
-+++ b/drivers/net/wireless/mediatek/mt76/mt7996/mcu.h
-@@ -163,19 +163,19 @@ struct mt7996_mcu_all_sta_info_event {
- 	u8 rsv3[2];
- 
- 	union {
--		struct {
-+		DECLARE_FLEX_ARRAY(struct {
- 			__le16 wlan_idx;
- 			u8 rsv[2];
- 			__le32 tx_bytes[IEEE80211_NUM_ACS];
- 			__le32 rx_bytes[IEEE80211_NUM_ACS];
--		} adm_stat[0];
-+		}, adm_stat);
- 
--		struct {
-+		DECLARE_FLEX_ARRAY(struct {
- 			__le16 wlan_idx;
- 			u8 rsv[2];
- 			__le32 tx_msdu_cnt;
- 			__le32 rx_msdu_cnt;
--		} msdu_cnt[0];
-+		}, msdu_cnt);
- 	};
- } __packed;
- 
--- 
-2.34.1
+this declaration of bit can be removed.
 
+> +
+> +		fd = __vm_create_guest_memfd(vm, page_size, flag);
+> +		TEST_ASSERT(fd == -1 && errno == EINVAL,
+> +			    "guest_memfd() with flag '0x%lx' should fail with EINVAL",
+> +			    flag);
+> +
+
+This loop can also be removed,
+
+> +		for_each_set_bit(bit, &valid_flags, 64) {
+> +			fd = __vm_create_guest_memfd(vm, page_size, flag | BIT_ULL(bit));
+> +			TEST_ASSERT(fd == -1 && errno == EINVAL,
+> +				    "guest_memfd() with flags '0x%llx' should fail with EINVAL",
+> +				    flag | BIT_ULL(bit));
+> +		}
+
+otherwise this won't compile because valid_flags is not declared.
+
+These lines will have to be added back when adding transparent hugepage
+support.
+
+> +	}
+> +}
+
+Tested-by: Ackerley Tng <ackerleytng@google.com>
