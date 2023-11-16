@@ -2,142 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CE4D7EE07E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:14:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1F817EE084
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:15:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345163AbjKPMOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:14:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50500 "EHLO
+        id S1345169AbjKPMPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:15:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345138AbjKPMOK (ORCPT
+        with ESMTP id S1345138AbjKPMPH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:14:10 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7395D193
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:14:06 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id d75a77b69052e-41cb615c6fbso3961331cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:14:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700136845; x=1700741645; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=cebbXdRvrbvVuyDTJ/a9z4SKNIngllr1lOkeCTh7hc0=;
-        b=dm8hPqqpKFwTB6TSCTaDHvyrDcNg1HJ7Y467pN//iu7kcwfmr/7D8YqrJg9TOAeWWA
-         b71ihHXxH5n/loF+mHJfXIV3PV5JqCm5sdWyXNntJpwzRZIorOF4+tcJ8e6rL3vQ0tKd
-         8Flhqbf4d0Ww/Cgz9yx4GqWqN2L2pvSE+PRQJdjHGSKYWjDA22MnTUEhsbIaZrcFpWvk
-         3AgGJ/EprElEpdO64KGXxj6c7XjzLSRr8rnBRC07TY878EqiZr+pWD/sX61Ivkyin4AW
-         fTJcvwGjNGkzTwdw77iwG/XZr1OuluiaepStDovxG3lPYg4fT5KVPS+khbctbKXjZycn
-         Sz5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700136845; x=1700741645;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cebbXdRvrbvVuyDTJ/a9z4SKNIngllr1lOkeCTh7hc0=;
-        b=bXavuMghIqxqpi3Y5xHRKu935v6gHydDIEHTfeD3JWEPk2K2IyZIl74uvw7FMDujix
-         LVjbrEpVsAvUfzlJl5B+rgR01YiNuBy5V24nYQKT8G9g+nxPA+/CUOwekIFIqDjMqWC0
-         Fq2Ve97OfBs4TuBpqlu/PmhXfMLX4cVP7gIoaaEmB/GaRBKicAqlFq+7y3wF8Wv3wxJk
-         WmvKOj0QqHFEnbMl+WGF2OIPimo/PaXjzK+0lqdqZmE9iBxvcpCnnpmaUYfxl2IrCin8
-         xjXCiclkwJlGbqMWFKTzjIq/ulY0l+BydQRqTws4faSl18Cz/0fK9gNH8RT2Y+UR/bQG
-         fSHA==
-X-Gm-Message-State: AOJu0Yz1eS7WiReJtaWvc0d0ZDPe0YVDb6xHfsn6T4zhnMuesI4bUQGU
-        mHxaZ7gKkAYlNRUZnTDZHm/amw8jlkY8si90qaE=
-X-Google-Smtp-Source: AGHT+IF1NL0Mg7K+4XgL7Hf64m30dmyiWpT6marfYlO7PGxs9vLOAvtbewKPLKQP+X3DBA4eGyCReg==
-X-Received: by 2002:a05:622a:11c9:b0:421:c58e:f9a2 with SMTP id n9-20020a05622a11c900b00421c58ef9a2mr10452230qtk.32.1700136845585;
-        Thu, 16 Nov 2023 04:14:05 -0800 (PST)
-Received: from [192.168.212.13] ([12.191.197.195])
-        by smtp.gmail.com with ESMTPSA id g4-20020ac870c4000000b004181e5a724csm4289781qtp.88.2023.11.16.04.13.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 04:14:05 -0800 (PST)
-Message-ID: <caff5743-265f-43ac-83fb-4e0fb23a9ff4@linaro.org>
-Date:   Thu, 16 Nov 2023 13:13:58 +0100
+        Thu, 16 Nov 2023 07:15:07 -0500
+Received: from mail-40136.proton.ch (mail-40136.proton.ch [185.70.40.136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B18A9C
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:15:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail2; t=1700136899; x=1700396099;
+        bh=peIdrePwT8uOuhEHgYRJoTaPJUFwzal6w1Hv2WtpNCo=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=KVYvMq7aUUgkkM4hhRzz9XhWI+nkkhDGTbCDwnU/ctZr0Nm2+qG84sztDrDTvJjdf
+         /UMyuWgoWQDW2LWkaGN+J+qP0Et3l9XrhZgRWnHs8IuH/NLkk0hasslujZzRtfg1Ve
+         Q0QAQSx7oCxchKdAR4cZ2T5u7sY5sAdD7gSAD+V4Ixtp769LL1gzBRF4foscxG92Dx
+         lCci/swQew4QXOcGq/5VeXHwsffnGQj271Fne2Wj7/bRIBdktfeY+XxDhwjrYUGF6e
+         zCZLKPGWE/Z4pvFKOuW/WjBuuNw539vlcMexnBAJG1B3kgVS1KvXT/rrZWXJiCsoLL
+         jGa19YgrPfBgQ==
+Date:   Thu, 16 Nov 2023 12:14:51 +0000
+To:     Thomas Zimmermann <tzimmermann@suse.de>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Javier Martinez Canillas <javierm@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Bilal Elmoussaoui <belmouss@redhat.com>,
+        dri-devel@lists.freedesktop.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Erico Nunes <nunes.erico@gmail.com>
+Subject: Re: [PATCH v2 4/5] drm/plane: Extend damage tracking kernel-doc
+Message-ID: <vhshocGSkXgVLycHIcJIVPsN9OQokPA2NCgIBqOvIzpKRZXQjN1uEiFKVudwa-S4hpBnFPaxxYh8hCFxd-u_ahYKBamQxFzIhBkYGkND9Kc=@emersion.fr>
+In-Reply-To: <abfd41c7-dc9f-4cd3-be83-97b2c2c96b62@suse.de>
+References: <20231115131549.2191589-1-javierm@redhat.com> <20231115131549.2191589-5-javierm@redhat.com> <abfd41c7-dc9f-4cd3-be83-97b2c2c96b62@suse.de>
+Feedback-ID: 1358184:user:proton
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] dt-bindings: hwmon: Add lltc ltc4286 driver
- bindings
-Content-Language: en-US
-To:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, patrick@stwcx.xyz,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231116023027.24855-1-Delphine_CC_Chiu@Wiwynn.com>
- <20231116023027.24855-2-Delphine_CC_Chiu@Wiwynn.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231116023027.24855-2-Delphine_CC_Chiu@Wiwynn.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_MSPIKE_H5,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 03:30, Delphine CC Chiu wrote:
-> Add a device tree bindings for ltc4286 device.
-> 
-> Signed-off-by: Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
-> 
-> -------------------------------------------------------------
-> Changelog:
->   v5 - Add hyphen under "Changelog" in commit message
+On Thursday, November 16th, 2023 at 13:06, Thomas Zimmermann <tzimmermann@s=
+use.de> wrote:
 
-Apply your patch from the list and check the result... You can easily
-see it's broken. We asked about ---. Please read the message carefully.
+> > + * Note that there are two types of damage handling: frame damage and =
+buffer
+> > + * damage. The type of damage handling implemented depends on a driver=
+'s upload
+> > + * target. Drivers implementing a per-plane or per-CRTC upload target =
+need to
+> > + * handle frame damage while drivers implementing a per-buffer upload =
+target
+> > + * need to handle buffer damage.
+> > + *
+> > + * The existing damage helpers only support the frame damage type, the=
+re is no
+> > + * buffer age support or similar damage accumulation algorithm impleme=
+nted yet.
+> > + *
+> > + * Only drivers handling frame damage can use the mentiored damage hel=
+pers to
 
-Best regards,
-Krzysztof
+Typo: mentioned
 
+> > + * iterate over the damaged regions. Drivers that handle buffer damage=
+, need to
+> > + * set &struct drm_plane_state.ignore_damage_clips as an indication to
+> > + * drm_atomic_helper_damage_iter_init() that the damage clips should b=
+e ignored.
+> > + * In that case, the returned damage rectangle is the &drm_plane_state=
+.src since
+> > + * a full plane update should happen.
+> > + *
+> > + * For more information about the two type of damage, see:
+> > + * https://registry.khronos.org/EGL/extensions/KHR/EGL_KHR_swap_buffer=
+s_with_damage.txt
+> > + * https://emersion.fr/blog/2019/intro-to-damage-tracking/
+>=20
+> One thought you might want to consider.
+>=20
+> These URLs are helpful. The only issue I have is that frame damage and
+> buffer damage are user-space concepts. The kernel bug is that damage
+> handling expects the backing storage/upload buffer not to change for a
+> given plane. If the upload buffer changes between page flips, the new
+> upload buffer has to be updated as a whole. Hence no damage handling then=
+.
+
+Why would these concepts be specific to user-space? The kernel could
+better handle buffer damage instead of forcing full damage, by doing
+something similar to what user-space does.
+
+Anyways:
+
+Reviewed-by: Simon Ser <contact@emersion.fr>
