@@ -2,160 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DF6EB7EDCD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:24:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F11B7EDCD7
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:26:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344939AbjKPIYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:24:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47706 "EHLO
+        id S230228AbjKPI05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:26:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKPIYf (ORCPT
+        with ESMTP id S229806AbjKPI04 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:24:35 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AA9F101
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:24:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700123072; x=1731659072;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=l3FblwjFWPY5RN2tO1kzqXX5GnOEjRF7HXXQ+atqUHs=;
-  b=L0J5Cmw58mXS341dqTrau/2qMtSm2YRn0+ohnKP50cxODh5ZtuQ/deY+
-   8Af/gVnYBrkmbnn+kN0nCvtDVUiHdV8MbW3/M7w+BnlABNayp5gSFzfst
-   DdTHns9DHKJjS39mVUavdz7L99LCiTzd4jT2LtkctFaO0TYrXMbVFXEvq
-   eZrj+MQUkdPqUyTBo6Y23H2dM0esPsH+zF+6ePyFPiZJc/ZFlKoSdLtiX
-   vAap8aGsNCDTyvunB8MB/V/EjkTfIdqw9jUjxoyFvT4LzvJ9atKv0Ys1O
-   HlFT3Lx/jTiGei2ulUC0yG21YO4AlPNk53CyVN+vqV38/QTse3cafFV2t
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="455333422"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="455333422"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 00:24:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="6449151"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa002.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 16 Nov 2023 00:24:32 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Thu, 16 Nov 2023 00:24:31 -0800
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Thu, 16 Nov 2023 00:24:31 -0800
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Thu, 16 Nov 2023 00:24:30 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EoS7JBnAahwCyRpJ9RRFNEnr7KyHaGx0u151FJAIn/IC5F5ykp0FPHmTN3v42zbzv1TbzGN7BpiRtQSiDVC5CA8Gw+ZJaY4MjU2bZpG3gyVq+T8eSHKBvncKXDFAKMZzNaz049E30NbYjeGTFqicI/GQu+wrtHYmrN70TWlKh0BklLfARHFHNwnV+X66qxSnMIZpnBdtxYwlYFJDGHPYa0cWyYsMvF48R2k5uKCPKcXr5aTSdS8oWB2GdYfwabgo39lDniFjylxElH9/E/MeGTtWUqW7TfCHHl1XL4T984+IMvuOh4z0ILYy9019xfDeQf9amjSEBPwIiOw+7YAnrw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l3FblwjFWPY5RN2tO1kzqXX5GnOEjRF7HXXQ+atqUHs=;
- b=kZ3MGX2fjEAdocFLDj2Te3Gzz8y8fWWLi5wl1o56kWB4IfyMr9dPej4r4P8thLFky+DzN7OysaDEsz4ro5AWkFZ4w+xFay6FYUnnrEl5C4M/KQaDIFuVnY0kJa+KGLwJtzceJBOQAqqFdWL+Hfgv11U4xD8CRDmYNqCQ+WKq4EWw3vJYOvQUmI8bdnXa7ocgtNz2VBYk8FOQXJWr24fbSLT6LZgLU+9bhOmVhxs4fK24TNEkG714fIrtdG+YGZodNCd5jTc47/uJxwmIbf0X7eLF46/Pwuwafn90LFyZefFy/wj3P5ROLGwEfmKsMWbY+gUi20+2rBYHWDMFuejHZQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com (2603:10b6:408:135::18)
- by CH3PR11MB8209.namprd11.prod.outlook.com (2603:10b6:610:15d::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.19; Thu, 16 Nov
- 2023 08:24:24 +0000
-Received: from BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a]) by BN9PR11MB5276.namprd11.prod.outlook.com
- ([fe80::e7a4:a757:2f2e:f96a%3]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
- 08:24:24 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Baolu Lu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Will Deacon" <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Jason Gunthorpe" <jgg@ziepe.ca>
-CC:     "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH 1/1] iommu/vt-d: Disable PCI ATS in legacy passthrough
- mode
-Thread-Topic: [PATCH 1/1] iommu/vt-d: Disable PCI ATS in legacy passthrough
- mode
-Thread-Index: AQHaFpgBxWBJti3g4kChnloBJh6r1bB8ka6AgAAMNYA=
-Date:   Thu, 16 Nov 2023 08:24:23 +0000
-Message-ID: <BN9PR11MB52761B8ECFC7A5724A61894E8CB0A@BN9PR11MB5276.namprd11.prod.outlook.com>
-References: <20231114011036.70142-1-baolu.lu@linux.intel.com>
- <20231114011036.70142-3-baolu.lu@linux.intel.com>
- <0f8c95f3-c16e-497e-9734-85936ae08f82@linux.intel.com>
-In-Reply-To: <0f8c95f3-c16e-497e-9734-85936ae08f82@linux.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: BN9PR11MB5276:EE_|CH3PR11MB8209:EE_
-x-ms-office365-filtering-correlation-id: c306c6ff-3816-46bb-16a8-08dbe67d70aa
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: NCTGdII+JGZws1sC9fzS0PF6rReWdka2gjX7pE261BAFGcjMMNGPeOpJ+yhvhfFiZJ2WKgtslyzZs2KqZpI2YXgPAx3MoiJ8YbsA7TVVEJixnnYqMRJs+yrzTpU3pozCI2jmD8KNECQXgywDPwUcXqxmYtoVcE2aCXIzoBX94Y1zMzDOw6xnoG/xXIEWF4IKs3sb8eeAFAGc0sgsE4FEaw5H0tQ+pV6h9neYdtLIt5oBv9WBHjNAycPvxMJ1NDsH8MlgsFcSzC4F22GT1g4lJIAIiI6zOsko1tbwey62w6qU7hLU3446xMJ7uC2y3l1WKfQcRJFbU+58scCHD6G/7fUvLBIgiMXV7fE07l8uFiNlxA1nQ6zu+OfH7ff+luN479nnFEQB2f63NCoxMSllp53d4iB76GBo27Vj4Bl6Q/BGkQqmevazW4larRnJ5EyX/teq+gtJVa/OdHtmhyD3WJCEQvkES8fbxFPw5GPu8mN5IO9jFqPepMDpy0smPl896PBkOAFR+9VNEcgFPipWzea6LptJP1yN5JuMzVUyGMpASKHGaVmjsZ5QK920d1YLMhxh4iVuypcwAYInp76Pt0gfhHb8miF4GC3Y1RDqWhzwNBcEBliQpp9rCsOYsQMH
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN9PR11MB5276.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(376002)(136003)(396003)(39860400002)(366004)(230922051799003)(451199024)(1800799009)(64100799003)(186009)(7696005)(76116006)(316002)(64756008)(66556008)(8676002)(4326008)(54906003)(66446008)(110136005)(66476007)(66946007)(8936002)(52536014)(71200400001)(478600001)(41300700001)(86362001)(33656002)(5660300002)(2906002)(122000001)(38100700002)(26005)(53546011)(9686003)(83380400001)(82960400001)(6506007)(38070700009)(55016003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?ZjI2cXc0ekhvSmVWR0J1bUZ4ejZlTE0veFVhSlhBUFBTRzlKeXRFMXFwY0E3?=
- =?utf-8?B?Q2dmTHAwSm16VTFUSW5KaHN3OVlyWC9iaWNyMlk4N2N3WUJyMXNhVnJ2MGZv?=
- =?utf-8?B?WHlXSEtoSlc5NjBtNDJUVHRYMGpEcUlSb24wc0kraFhhcVBQWXRpVldtSGwz?=
- =?utf-8?B?cEpOS1ZTcUxuZVNmcmlBcHNuaWhZc0NGYkE1cTdUZVhKeTFySWducDlONEdm?=
- =?utf-8?B?SzY0STJJdFBkK3FEK2ZQV3lEN0hybHdOdmV3QU5tUnFEUWxDVjluVU1iZmgw?=
- =?utf-8?B?T2VYOFRZVVdRUnk2aXlXYm54aVFkNWZoUmMrMEdIb0V0NHl5RW91ZUlrbWV3?=
- =?utf-8?B?NmJ3clkrMG1rRkJ2UFdzWUFSdjdqYjk0QVh3WE9Cc3Q4eUZMTCt2a2wzTU9V?=
- =?utf-8?B?eXJoallNZ2VYWDVSdFF2QjIzSDU2b3dPbnhkTHBITVh4djBFUlBjbHd5Q1pL?=
- =?utf-8?B?OUN5QWpBdHErT0tmUTVOSHFUOWZNaUE0UjJUeXFZSnJMZUFLUFdDM1h6Z29v?=
- =?utf-8?B?VkF3MjhZUTdOak9BcHRYZ3lVSy9veUxkczlDRWlhb0c2RThlR0ZPZDkwdjlo?=
- =?utf-8?B?ZkFlTmJvT05YMjZDbm0wcmFlc2RMejc2SXk0TXVya2NHNXdIOUpzbmljRHh5?=
- =?utf-8?B?R2pKMHA2ZkdHQVVQMTI1RVNZV2tCYVJJUWtPVnZNclRpNEtvUG8rbXlvNDlp?=
- =?utf-8?B?SFU4bE9teTZQVmpRNis0UGdrNlpoRlJGM3BGMEZ4dVBKQ09SdlBFSHl0VUVi?=
- =?utf-8?B?U0o2NTdyblNRS2FVOEp5VDk5UFRGQzBRWGx3aHFxYzNvbkY5cmpyWmpZSEZP?=
- =?utf-8?B?WUdlNmFOamFSVldBSm5FaXFFV2duTzBDT3UvYVlETHcwVkwwaldVN09CVkhU?=
- =?utf-8?B?MVU0SkpVMCttMG4xdm5OaHJuOUUzd2hpMitidm8rNGJnSE1HVlRNOWZZdWpl?=
- =?utf-8?B?eUliV09TU2NyS2dyVjRqYTlNZDM5VGtveXdGazVraHorN2h5R1ZRQWd4SjAr?=
- =?utf-8?B?MVlNTks0L2F1bzBHUGdqVE1jN0NRZmY5amFZQVdKZXhBcVBCMkhidG5BVUhM?=
- =?utf-8?B?V3pUZFlpcmczZC90WlluekdYc2M4OTB2d3Zwc2FzdU1KdkxLUmVMeHcvQkx4?=
- =?utf-8?B?Q1ExWWc2K2dzelBpak11TDBlNkhxQTdZVDBZdXkwNXVLdEtmYmQ2aXQxYVU3?=
- =?utf-8?B?V0N0bGUzM2FtK2hQTjlUTHc1MzZhdUN4ZzM1MGNYRDN6UTYwRDJaL1BweGFR?=
- =?utf-8?B?amdwWm9zVityUFJoaEpZTDAyTktzNjJ5NHdlRjZPTkNTWWZhUUc3OG14c1Vv?=
- =?utf-8?B?ckpBTEZyWXArbDFNU0VBSjlXSzI5SEUyRkwyUmo5RWF0VWl2NDBaRVhnbTBH?=
- =?utf-8?B?bFJpZ3pSTUhVS294bmJidzQyeHZ1TkJKM0VsRkFBa3hlUmxOWmF4WUxWMnIw?=
- =?utf-8?B?OHF4V1oxcEdrTUFnaVhiaXd3UEJzd3dhOCtEZHBweC9vQjhrZitZcUhKdzlR?=
- =?utf-8?B?ODNSRGFPQ0ZCNXFGNHhOVnhQOUZaa3hZbitNenducFBYYUNFYUZ6M2FOZkpi?=
- =?utf-8?B?c3ZmK29Db0ZjSjhlMTU0TDlYbGZNclN1anNtU01qVUpFWjFXbUdwclpOQ0Rp?=
- =?utf-8?B?VTRCZjhRalZCb1RjUVhObVRUT09mbFNhbWowOEJ6bHFhUnJlcW1iWEJ6UWJG?=
- =?utf-8?B?QlZjb09DWThFMUdiZTVVSmFZWDFWSDd6N0xIU3hybGNDUFZiTktzN1d5Y201?=
- =?utf-8?B?bVJCQ3NmN3Vra2E4VjJPUm9oQ0Z1b3l3YXFjT0lYY2Z5QjJJVUw5bDd4MlhZ?=
- =?utf-8?B?UlpUdEZYdzRwZUxab0VWeVc5ZndqTzNMYVNNVjhxNDJmWHVhTUdKaEJpaXhC?=
- =?utf-8?B?ZDFPTWlpdWtqWGMybjRaVS92RzlzbGF1UmtTRnpLcitON3YxZGYvWFI5R1Bs?=
- =?utf-8?B?VmVkSUkzamNMYjNkTDNrUFhOT2k3K0xFRVlaZW5YVWNLOFczU09qc1g1WFNa?=
- =?utf-8?B?VFV1enBRaGhCd2gxSnRMRmY2WEVoTUJmZTZIek1TWC9LTVBHWU9RTjFRZzB1?=
- =?utf-8?B?U3FjVlRDeUdjekxleS94N1NDOWxpQ1JYcmFTcjU1bElrdTNKMVI5MEs0OHF2?=
- =?utf-8?Q?Y3ktNwKD3HwYLsk519Jtt6zwH?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Thu, 16 Nov 2023 03:26:56 -0500
+Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC47187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:26:51 -0800 (PST)
+Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1ef36a04931so256160fac.2
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:26:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700123211; x=1700728011; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=u2XmX2KrWi1y3m2X9AnU9wT0fC0eZs76Gy7YyWSbakc=;
+        b=e4nKHaZCE/iB8Xh0+XTt15fZZtUO5Ppe2v9KxPb1VS+nneE6auvUZxJHf+xYTdxt0/
+         IAfEW+OslX0BH3TM76qUOQUQpn7D8hHbeAU+BibWTJZzeLzDazPfG8gDAr8MEg5k1aOg
+         CNev2xEHEY/34Jy/JC5r2zBHvV0ljXntEifR+nILxicpksMXZnCY1bNM2OMhBFWJGXT7
+         /5lFD+AJUrlIBB2SEoQOQ7stmJZXpc+Q+SD7XycWBZ88pMdPJcPONVn3yDCw7bk10i6s
+         FsAvRzz+AEkdaoLOdGtEGHBnGxURrCDV49na/cqhGJyKwdaatRfL3nhk1dWFl1O1c3Sz
+         dW/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700123211; x=1700728011;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=u2XmX2KrWi1y3m2X9AnU9wT0fC0eZs76Gy7YyWSbakc=;
+        b=foKCiAt63kup36lQqsxm8MSfPFtIIgGcXbLr8GAWkWKr3f8gGQOHJW/JNDm7d+x3jM
+         mbE/ciEaMu0o97xukL1YaU33KEzmn6Ut3oZtYdugsrm21u7kiqPVlRPJZBmiX/FfA/eu
+         mqsWCeAOAVrlFJP/Az78J4j6zJTaQUjofQe9/kbX/7Zqp5yBXPOInI0kT1rgLXapJXxD
+         QzM989qzAFhYnyqaq2jqFiMt7szMNFIuuqxMa6a4XKpH2KEyaML24zqaprkbO3nqi5+l
+         cpJMdLKYCBR0BMKS1NUVWESQ7mfidUjndQi0bIfrxnpf5yBEuiF8o4DbnmU4T+8GdD6W
+         APvg==
+X-Gm-Message-State: AOJu0YyBh5mpxH+Kli+baTeYnqk4QIRICe+cbD+BTaEGZOi7qf8p0VQH
+        ljE90sHvTHHnH4Qla/SAqraLfg==
+X-Google-Smtp-Source: AGHT+IE7w+1n0Rumu6tiZ0oCMxAY+y3dimDmUbr8EZaTXEn4BDvU7a/l/yvMSZ7+Fe7ajPFFqQFb4Q==
+X-Received: by 2002:a05:6870:3127:b0:1ef:cb8c:cebd with SMTP id v39-20020a056870312700b001efcb8ccebdmr17440326oaa.59.1700123210697;
+        Thu, 16 Nov 2023 00:26:50 -0800 (PST)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id y4-20020a056870a34400b001e9ce1b5e8fsm2062976oak.15.2023.11.16.00.26.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 00:26:49 -0800 (PST)
+Date:   Thu, 16 Nov 2023 00:26:39 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     Hugh Dickins <hughd@google.com>
+cc:     Matthew Wilcox <willy@infradead.org>,
+        =?ISO-8859-15?Q?Jos=E9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
+        akpm@linux-foundation.org, skhan@linuxfoundation.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linux.dev,
+        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com,
+        Jann Horn <jannh@google.com>
+Subject: Re: [PATCH] mm/pgtable: return null if no ptl in
+ __pte_offset_map_lock
+In-Reply-To: <515cb9c1-abcd-c3f3-cc0d-c3cd248b9d6f@google.com>
+Message-ID: <1b7019f3-0abf-a2f5-46ae-373af2043e56@google.com>
+References: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi> <ZVTTbuviH9/RWYyI@casper.infradead.org> <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi> <ZVUWLgFgu+jE3QmW@casper.infradead.org> <515cb9c1-abcd-c3f3-cc0d-c3cd248b9d6f@google.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BN9PR11MB5276.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c306c6ff-3816-46bb-16a8-08dbe67d70aa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 08:24:23.8046
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: GRh2vQq40i4kWw7OOYRdqF7AWMH/jA0GHSLK++IJkaqFquY0P3Wq5gM0jnnz/p2GBTW5yBfkWBJ/tvuif7MRCA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR11MB8209
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+Content-Type: multipart/mixed; boundary="-1463753983-898050368-1700123209=:31351"
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -163,50 +77,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBCYW9sdSBMdSA8YmFvbHUubHVAbGludXguaW50ZWwuY29tPg0KPiBTZW50OiBUaHVy
-c2RheSwgTm92ZW1iZXIgMTYsIDIwMjMgMzozNSBQTQ0KPiANCj4gT24gMjAyMy8xMS8xNCA5OjEw
-LCBMdSBCYW9sdSB3cm90ZToNCj4gPiBXaGVuIElPTU1VIGhhcmR3YXJlIG9wZXJhdGVzIGluIGxl
-Z2FjeSBtb2RlLCB0aGUgVFQgZmllbGQgb2YgdGhlDQo+IGNvbnRleHQNCj4gPiBlbnRyeSBkZXRl
-cm1pbmVzIHRoZSB0cmFuc2xhdGlvbiB0eXBlLCB3aXRoIHRocmVlIHN1cHBvcnRlZCB0eXBlcyAo
-U2VjdGlvbg0KPiA+IDkuMyBDb250ZXh0IEVudHJ5KToNCj4gPg0KPiA+IC0gRE1BIHRyYW5zbGF0
-aW9uIHdpdGhvdXQgZGV2aWNlIFRMQiBzdXBwb3J0DQo+ID4gLSBETUEgdHJhbnNsYXRpb24gd2l0
-aCBkZXZpY2UgVExCIHN1cHBvcnQNCj4gPiAtIFBhc3N0aHJvdWdoIG1vZGUgd2l0aCB0cmFuc2xh
-dGVkIGFuZCB0cmFuc2xhdGlvbiByZXF1ZXN0cyBibG9ja2VkDQo+ID4NCj4gPiBEZXZpY2UgVExC
-IHN1cHBvcnQgaXMgYWJzZW50IHdoZW4gaGFyZHdhcmUgaXMgY29uZmlndXJlZCBpbiBwYXNzdGhy
-b3VnaA0KPiA+IG1vZGUuDQo+ID4NCj4gPiBEaXNhYmxlIHRoZSBQQ0kgQVRTIGZlYXR1cmUgd2hl
-biBJT01NVSBpcyBjb25maWd1cmVkIGZvciBwYXNzdGhyb3VnaA0KPiA+IHRyYW5zbGF0aW9uIHR5
-cGUgaW4gbGVnYWN5IChub24tc2NhbGFibGUpIG1vZGUuDQo+ID4NCj4gPiBGaXhlczogMGZhYTE5
-YTE1MTVmICgiaW9tbXUvdnQtZDogRGVjb3VwbGUgUEFTSUQgJiBQUkkgZW5hYmxpbmcgZnJvbQ0K
-PiBTVkEiKQ0KPiA+IFNpZ25lZC1vZmYtYnk6IEx1IEJhb2x1IDxiYW9sdS5sdUBsaW51eC5pbnRl
-bC5jb20+DQo+ID4gLS0tDQo+ID4gICBkcml2ZXJzL2lvbW11L2ludGVsL2lvbW11LmMgfCA0ICsr
-KysNCj4gPiAgIDEgZmlsZSBjaGFuZ2VkLCA0IGluc2VydGlvbnMoKykNCj4gPg0KPiA+IGRpZmYg
-LS1naXQgYS9kcml2ZXJzL2lvbW11L2ludGVsL2lvbW11LmMgYi9kcml2ZXJzL2lvbW11L2ludGVs
-L2lvbW11LmMNCj4gPiBpbmRleCAxMTY3MGNkODEyYTMuLmMzZWMwOTExOGFiMSAxMDA2NDQNCj4g
-PiAtLS0gYS9kcml2ZXJzL2lvbW11L2ludGVsL2lvbW11LmMNCj4gPiArKysgYi9kcml2ZXJzL2lv
-bW11L2ludGVsL2lvbW11LmMNCj4gPiBAQCAtMTQxMyw2ICsxNDEzLDEwIEBAIHN0YXRpYyB2b2lk
-IGlvbW11X2VuYWJsZV9wY2lfY2FwcyhzdHJ1Y3QNCj4gZGV2aWNlX2RvbWFpbl9pbmZvICppbmZv
-KQ0KPiA+ICAgCWlmICghZGV2X2lzX3BjaShpbmZvLT5kZXYpKQ0KPiA+ICAgCQlyZXR1cm47DQo+
-ID4NCj4gPiArCWlmICghc21fc3VwcG9ydGVkKGluZm8tPmlvbW11KSAmJiBpbmZvLT5kb21haW4g
-JiYNCj4gPiArCSAgICBkb21haW5fdHlwZV9pc19zaShpbmZvLT5kb21haW4pKQ0KPiA+ICsJCXJl
-dHVybjsNCj4gPiArDQo+ID4gICAJcGRldiA9IHRvX3BjaV9kZXYoaW5mby0+ZGV2KTsNCj4gPg0K
-PiA+ICAgCS8qIFRoZSBQQ0llIHNwZWMsIGluIGl0cyB3aXNkb20sIGRlY2xhcmVzIHRoYXQgdGhl
-IGJlaGF2aW91ciBvZg0KPiANCj4gUGVyaGFwcyB3ZSBjb3VsZCBtb3ZlIHRoZSBjaGVjayBpbnRv
-IHRoZSBjYWxsZXIgYW5kIG1ha2UgdGhpcyBoZWxwZXINCj4gdHJhbnNwYXJlbnQgdG8gdGhlIGlv
-bW11IG1vZGUgYW5kIGRvbWFpbiB0eXBlPw0KPiANCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9t
-bXUvaW50ZWwvaW9tbXUuYyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYw0KPiBpbmRleCAx
-MTY3MGNkODEyYTMuLjliZGRkNGZiYmRmOCAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9pb21tdS9p
-bnRlbC9pb21tdS5jDQo+ICsrKyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaW9tbXUuYw0KPiBAQCAt
-MjQ5Miw3ICsyNDkyLDggQEAgc3RhdGljIGludCBkbWFyX2RvbWFpbl9hdHRhY2hfZGV2aWNlKHN0
-cnVjdA0KPiBkbWFyX2RvbWFpbiAqZG9tYWluLA0KPiAgICAgICAgICAgICAgICAgIHJldHVybiBy
-ZXQ7DQo+ICAgICAgICAgIH0NCj4gDQo+IC0gICAgICAgaW9tbXVfZW5hYmxlX3BjaV9jYXBzKGlu
-Zm8pOw0KPiArICAgICAgIGlmIChzbV9zdXBwb3J0ZWQoaW5mby0+aW9tbXUpIHx8ICFkb21haW5f
-dHlwZV9pc19zaShpbmZvLT5kb21haW4pKQ0KPiArICAgICAgICAgICAgICAgaW9tbXVfZW5hYmxl
-X3BjaV9jYXBzKGluZm8pOw0KPiANCg0KSU1ITyBib3RoIG9sZCBhbmQgdGhpcyBuZXcgdmVyc2lv
-biBhcmUgY29uZnVzaW5nIHJlZ2FyZGluZyB0byB0aGF0DQp0aGUgY29tbWl0IG1zZyB0YWxrcyBv
-bmx5IGFib3V0IEFUUyBidXQgdGhlIGFjdHVhbCBjb2RlIGRpc2FibGUgYWxsDQpwY2kgY2Fwcy4g
-SXQncyBjb3JyZWN0LCBiZWluZyB0aGF0IG9ubHkgQVRTIGlzIHJlbGV2YW50IGluIGxlZ2FjeSBt
-b2RlLA0KYnV0IHRoZSByZWFkYWJpbGl0eSBpcyBub3QgZ29vZC4NCg0Kd2hhdCBhYm91dCBpbnRy
-b2R1Y2luZyBhIGhlbHBlciBlLmcuIGRldmljZV9kb21haW5fYXRzX3N1cHBvcnRlZChpbmZvKQ0K
-d2hpY2ggaW5jbHVkZXMgYWJvdmUgY2hlY2tzIHBsdXMgaW5mby0+YXRzX3N1cHBvcnRlZCBhbmQg
-dGhlbiB1c2UgaXQNCnRvIHJlcGxhY2UgaW5mby0+YXRzX3N1cHBvcnRlZCBpbiBpb21tdV9lbmFi
-bGVfcGNpX2NhcHMoKT8NCg0K
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---1463753983-898050368-1700123209=:31351
+Content-Type: text/plain; charset=iso-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+
+On Wed, 15 Nov 2023, Hugh Dickins wrote:
+> On Wed, 15 Nov 2023, Matthew Wilcox wrote:
+> > On Wed, Nov 15, 2023 at 06:05:30PM +0200, Jos=E9 Pekkarinen wrote:
+> >=20
+> > > > I don't think we should be changing ptlock_ptr().
+> > >=20
+> > >     This is where the null ptr dereference originates, so the only
+> > > alternative I can think of is to protect the life cycle of the ptdesc
+> > > to prevent it to die between the pte check and the spin_unlock of
+> > > __pte_offset_map_lock. Would that work for you?
+>=20
+> Thanks for pursuing this, Jos=E9, but I agree with Matthew: I don't
+> think your patch is right at all.  The change in ptlock_ptr() did not
+> make sense to me, and the change in __pte_offset_map_lock() leaves us
+> still wondering what has gone wrong (and misses an rcu_read_unlock()).
+>=20
+> You mentioned "I tested the syzbot reproducer in x86 and it doesn't
+> produce this kasan report anymore": are you saying that you were able
+> to reproduce the issue on x86 (without your patch)?  That would be very
+> interesting (and I think would disprove my hypothesis below).  I ought
+> to try on x86 if you managed to reproduce on it, but it's not worth
+> the effort if you did not.  If you have an x86 stack and registers,
+> please show (though I'm uncertain how much KASAN spoils the output).
+>=20
+> >=20
+> > Ah!  I think I found the problem.
+> >=20
+> > If ALLOC_SPLIT_PTLOCKS is not set, there is no problem as ->ptl
+> > is embedded in the struct page.  But if ALLOC_SPLIT_PTLOCKS is set
+> > (eg you have LOCKDEP enabled), we can _return_ a NULL pointer from
+> > ptlock_ptr.  The NULL pointer dereference isn't in ptlock_ptr(), it's
+> > in __pte_offset_map_lock().
+> >=20
+> > So, how to solve this?  We can't just check the ptl against NULL; the
+> > memory that ptl points to may have been freed.  We could grab a referen=
+ce
+> > to the pmd_page, possibly conditionally on ALLOC_SPLIT_LOCK being set,
+> > but that will slow down everything.  We could make page_ptl_cachep
+> > SLAB_TYPESAFE_BY_RCU, preventing the memory from being freed (even if
+> > the lock might not be associated with this page any more).
+>=20
+> But I don't think that's quite right either: or, I hope it's not right,
+> because it would say that all my business of rcu_read_lock() and
+> pte_free_defer() etc was a failing waste of everyone's time: if the
+> page table (and/or its lock) can be freed while someone is in that RCU-
+> protected area, then I've simply got it wrong.
+>=20
+> What I thought, when yesterday's flurry of syzbot messages came in,
+> was perhaps the problem is at the other end - when the new page table
+> is allocated, rather than when it's being freed: a barrier missing there?
+>=20
+> But pmd_install() does have an smp_wmb(), with a (suspiciously) long
+> comment about why no smp_rmb()s are needed, except on alpha.
+>=20
+> I'm not much good on barriers, but the thought now in my mind is that
+> that comment is not quite accurate: that at the bottom level an smp_rmb()
+> is (very seldom!) needed - not just to avoid a NULL (or previous garbage)
+> ptl pointer in the ALLOC_SPLIT_LOCK case, but to make sure that the ptl
+> is visibly correctly initialized (or would spin_lock on it achieve that?)=
+;
+> and that what pte_offset_map() points to is visibly empty.  (I'm imaginin=
+g
+> stale cache lines left behind on the oopsing CPU, which need to be
+> refetched after pmdval has been read.)
+>=20
+> And that this issue has, strictly speaking, always been there, but in
+> practice never a problem, because of mmap_lock held for write while (or
+> prior to) freeing page table, and racers holding mmap_lock for read
+> (vma lock not changing the calculus); but collapse_pte_mapped_thp()
+> can now be done with mmap_lock for read, letting those racers in
+> (and maybe your filemap_map_pages() has helped speed these races up -
+> any blame I can shift on to you, the better ;)
+>=20
+> But I may well be spouting nonsense.  And even if I'm right, is adding
+> an smp_rmb() in there too high a price to pay on some architectures?
+>=20
+> I did make an attempt to reproduce on an arm64, but there's too much
+> more I'd need to muck around with to get it working right.  Let's ask for
+> a syz test on top of v6.7-rc1 - hmm, how do I tell syzbot that it's arm64
+> that it needs to try on?  I hope it gets that from the Cc'ed syz number.
+
+Syzbot couldn't do it from this mail, but did it from the original thread:
+https://lore.kernel.org/linux-mm/000000000000ba0007060a40644f@google.com/
+tells us that I was spouting nonsense: this patch does not fix it.
+I have no further idea yet.
+
+>=20
+> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
+it b85ea95d086471afb4ad062012a4d73cd328fa86
+>=20
+> [PATCH] mm/pgtable: smp_rmb() to match smp_wmb() in pmd_install()
+>=20
+> Not-Yet-Signed-off-by: Hugh Dickins <hughd@google.com>
+> ---
+>  mm/memory.c          | 2 ++
+>  mm/pgtable-generic.c | 5 +++++
+>  2 files changed, 7 insertions(+)
+>=20
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 1f18ed4a5497..8939357f1509 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -425,6 +425,8 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pg=
+table_t *pte)
+>  =09=09 * being the notable exception) will already guarantee loads are
+>  =09=09 * seen in-order. See the alpha page table accessors for the
+>  =09=09 * smp_rmb() barriers in page table walking code.
+> +=09=09 *
+> +=09=09 * See __pte_offset_map() for the smp_rmb() at the pte level.
+>  =09=09 */
+>  =09=09smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
+>  =09=09pmd_populate(mm, pmd, *pte);
+> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+> index 4fcd959dcc4d..3330b666e9c3 100644
+> --- a/mm/pgtable-generic.c
+> +++ b/mm/pgtable-generic.c
+> @@ -297,6 +297,11 @@ pte_t *__pte_offset_map(pmd_t *pmd, unsigned long ad=
+dr, pmd_t *pmdvalp)
+>  =09=09pmd_clear_bad(pmd);
+>  =09=09goto nomap;
+>  =09}
+> +=09/*
+> +=09 * Pair with the smp_wmb() in pmd_install(): make sure that the
+> +=09 * page table lock and page table contents are visibly initialized.
+> +=09 */
+> +=09smp_rmb();
+>  =09return __pte_map(&pmdval, addr);
+>  nomap:
+>  =09rcu_read_unlock();
+> --=20
+> 2.35.3
+---1463753983-898050368-1700123209=:31351--
