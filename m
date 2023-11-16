@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 42E9F7ED8F4
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:44:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DC4C7ED90C
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 02:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344331AbjKPBoI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 20:44:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59134 "EHLO
+        id S1344286AbjKPBt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 20:49:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPBoH (ORCPT
+        with ESMTP id S229692AbjKPBt0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 20:44:07 -0500
-Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com [209.85.216.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A8FB182
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:44:04 -0800 (PST)
-Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-28016806be2so1255335a91.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 17:44:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700099044; x=1700703844;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ut1ErbjVxvdNcxjiFmCC/7kOFe5nVv8MVNesus1QAbE=;
-        b=mYaRSBlaoKcCvZPbhny32gBmspMHPAnrv4adz6jopyaFeFHhGuZS/p53+JFAb8UgVP
-         bFJpSJhSe2Xl5gBZcJgSN/IR3gQBrUllqljEmeBR+jQTnCgoE3sUW3d5HFoavuHgGwdO
-         Q3SwB8cxtwQ3w9nBOYqI9gFX4VWHmbx0HXH8/M9ubqVPyKgL7pDb9yp381npWk66Y83d
-         PC6p9/733dj53S7AHJSH0R+BntqktCEoEvryS9iq5vpGLjKBpuwMY8/gCX2FFBwkGhg/
-         rtRGgtw4aFruZI/ocaWV/aISO8nMINiDfVJ7bqYvzDsFz6r3F+M1OYkAUindAWcdUakW
-         z2Og==
-X-Gm-Message-State: AOJu0YyNVbZc+2SUVjruk3xuBhAEkbSZcspvGv+E6eJUrBQlQFAMA0/U
-        pBSr2Fv6rZmgd43Gzav51KLRGEPqW2mu2YkXCrYsFQuTFv2186g=
-X-Google-Smtp-Source: AGHT+IHRCrso+qJQoM+TazDcySzzd3rTDNQjGiRZcIZ47wpEC0wGFbXYA9yBQRURH3lkhgDzp9ATdBEKSY8iFXRFG9u/r4if9RB8
+        Wed, 15 Nov 2023 20:49:26 -0500
+Received: from out30-97.freemail.mail.aliyun.com (out30-97.freemail.mail.aliyun.com [115.124.30.97])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36F4198;
+        Wed, 15 Nov 2023 17:49:22 -0800 (PST)
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R581e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=xueshuai@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0VwUUJ0h_1700099357;
+Received: from 30.240.112.215(mailfrom:xueshuai@linux.alibaba.com fp:SMTPD_---0VwUUJ0h_1700099357)
+          by smtp.aliyun-inc.com;
+          Thu, 16 Nov 2023 09:49:20 +0800
+Message-ID: <2a4c5d33-a26a-40b6-bbf4-268393b6de74@linux.alibaba.com>
+Date:   Thu, 16 Nov 2023 09:49:13 +0800
 MIME-Version: 1.0
-X-Received: by 2002:a17:90b:4f87:b0:280:2830:90c0 with SMTP id
- qe7-20020a17090b4f8700b00280283090c0mr70688pjb.4.1700099043953; Wed, 15 Nov
- 2023 17:44:03 -0800 (PST)
-Date:   Wed, 15 Nov 2023 17:44:03 -0800
-In-Reply-To: <20231116011445.3441058-1-lizhi.xu@windriver.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000991113060a3b2778@google.com>
-Subject: Re: [syzbot] [squashfs?] WARNING in squashfs_read_data
-From:   syzbot <syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, lizhi.xu@windriver.com,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v10 0/5] drivers/perf: add Synopsys DesignWare PCIe PMU
+ driver support
+Content-Language: en-US
+To:     Ilkka Koskinen <ilkka@os.amperecomputing.com>,
+        Will Deacon <will@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>
+Cc:     kaishen@linux.alibaba.com, helgaas@kernel.org,
+        yangyicong@huawei.com, will@kernel.org,
+        Jonathan.Cameron@huawei.com, baolin.wang@linux.alibaba.com,
+        robin.murphy@arm.com, chengyou@linux.alibaba.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-pci@vger.kernel.org, rdunlap@infradead.org,
+        mark.rutland@arm.com, zhuo.song@linux.alibaba.com,
+        renyu.zj@linux.alibaba.com
+References: <20231104133216.42056-1-xueshuai@linux.alibaba.com>
+ <51c926a0-b4d7-aacf-12ce-30fad7c5cb@os.amperecomputing.com>
+From:   Shuai Xue <xueshuai@linux.alibaba.com>
+In-Reply-To: <51c926a0-b4d7-aacf-12ce-30fad7c5cb@os.amperecomputing.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-9.9 required=5.0 tests=BAYES_00,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Reported-and-tested-by: syzbot+32d3767580a1ea339a81@syzkaller.appspotmail.com
+On 2023/11/16 08:57, Ilkka Koskinen wrote:
+> 
+> Hi Shuai,
+> 
+> On Sat, 4 Nov 2023, Shuai Xue wrote:
+>> Change Log
+>> ==========
+>>
+>> - move the &plat_dev->dev to previous line to warp more beautiful (Per Jonathan)
+>> - rename error label with the same suffix 'err'  (Per Jonathan)
+>> - drop unnecessary else branch and return directly (Per Baolin)
+>> - warp out set prev_count from dwc_pcie_pmu_set_period (Per Baolin)
+>> - use PMU_FORMAT_ATTR to simplify format sysfs stuff (Per Will)
+>> - export pci_clear_and_set_dword() to simplify _enable() functions  (Per Will)
+>> - simplify _read() function by unconditionally calculate with unit in bytes plused if branch for group#1 event (Per Will and Robin)
+>> - simplify _update() function by unconditionally mask with 64-bit width plused if branch for lane event (Per Will)
+>> - add type sanity check in _init() (Per Will)
+>> - test with fuzzing tool before this new version (Per Will)
+>> - register a platform device for each PCI device to probe RAS_DES PMU cap (Per Robin)
+>> - add dwc_pcie_vendor_ids to extend vendor id for future added device (Per Krishna)
+>> - pickup review-by tag from Baolin, Yicong and Jonathan
+> 
+> ...
+> 
+>> Shuai Xue (5):
+>>  docs: perf: Add description for Synopsys DesignWare PCIe PMU driver
+>>  PCI: Add Alibaba Vendor ID to linux/pci_ids.h
+>>  PCI: move pci_clear_and_set_dword helper to pci header
+>>  drivers/perf: add DesignWare PCIe PMU driver
+>>  MAINTAINERS: add maintainers for DesignWare PCIe PMU driver
+> 
+> As I mentioned earlier, I successfully tested your patchset with a few patches on top of it to enable DWC PCIe PMU on AmpereOne. Thus, feel free to add this tag to all the patches above:
+> 
+>     Tested-by: Ilkka Koskinen <ilkka@os.amperecomputing.com>
+> 
+> Br, Ilkka
 
-Tested on:
+Hi, Ilkka,
 
-commit:         ac347a06 Merge tag 'arm64-fixes' of git://git.kernel.o..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1083f000e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=287570229f5c0a7c
-dashboard link: https://syzkaller.appspot.com/bug?extid=32d3767580a1ea339a81
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=16f75468e80000
+Thank you.
 
-Note: testing is done by a robot and is best-effort only.
+I will add your tested-by tag in the upcoming version v11. However, I
+kindly request some time to wait for feedback from esteemed maintainers such
+as Will, and Robin.
+
+Cheers,
+Shuai
