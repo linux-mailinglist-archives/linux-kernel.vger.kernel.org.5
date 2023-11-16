@@ -2,57 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AEF727EE759
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:18:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 713E17EE75B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:18:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345396AbjKPTS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36566 "EHLO
+        id S1345473AbjKPTSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:18:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231362AbjKPTS0 (ORCPT
+        with ESMTP id S233181AbjKPTSi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:18:26 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 858DC18D;
-        Thu, 16 Nov 2023 11:18:20 -0800 (PST)
-Received: from mercury (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sre)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 3A7F2660734D;
-        Thu, 16 Nov 2023 19:18:19 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700162299;
-        bh=V7XuKmcHd8SUgcHpaXn+K9vIwqQimam3SlAKjUqfyTw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jNUh5LNTeuk1dSPSBKxKpqWHDqRe5XaLZK0dDFW8fvXzyj4tHv2finAs4OBTasHi8
-         SpDsrzGe9DNv+kMG7TQWjZI78Z9IzgXa0ZNYfELIvAH9MGepNvjIIJvY7aBp27WpYM
-         0aP1g56dnyqSvjmh3oQiCiPSQwoXX6CeGhdqXJoNS1/dzbXL5yds6/fEY1GViigap4
-         WQAcD9pbGTRLH/0uj1safe5Xzru4DcrHYUrUBObOHhnuG49xbIQPUp1qprSXBVWIKL
-         X3DDFjYEQbz67jFfl3faIFdMdkUKE3cnlBNPB4choN8HzNdlnmpXMDyqk2Ngt4ffv+
-         c7Xb8drIt8JRQ==
-Received: by mercury (Postfix, from userid 1000)
-        id 4301B10613A1; Thu, 16 Nov 2023 20:18:15 +0100 (CET)
-Date:   Thu, 16 Nov 2023 20:18:15 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Hermes Zhang <Hermes.Zhang@axis.com>
-Cc:     krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org, kernel@axis.com,
-        Hermes Zhang <chenhuiz@axis.com>, linux-pm@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] power: supply: bq24190_charger: Add support for
- BQ24296
-Message-ID: <20231116191815.jrjwcw5nywtdpplk@mercury.elektranox.org>
-References: <20231030084302.593864-1-Hermes.Zhang@axis.com>
- <20231030084302.593864-3-Hermes.Zhang@axis.com>
+        Thu, 16 Nov 2023 14:18:38 -0500
+Received: from mail-oa1-x35.google.com (mail-oa1-x35.google.com [IPv6:2001:4860:4864:20::35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7587D4B;
+        Thu, 16 Nov 2023 11:18:34 -0800 (PST)
+Received: by mail-oa1-x35.google.com with SMTP id 586e51a60fabf-1f4a9dd83d6so637780fac.0;
+        Thu, 16 Nov 2023 11:18:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700162314; x=1700767114; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=STPFJgJTmWckMd9fvN+D7up8AUbhHF9YB+XgQB9vdw4=;
+        b=Z37LPrxru/exN/dkbMPtlXMvs7FGglc+OY2J+O7rmINn6cu6kvVmNQA1Tv2qC3qhKn
+         ibT/2JKfh68Nff48B9pthxuYp3nVP7Coe2UD92guTvWeNU5/5TynoT3VEA9/ELN36UWF
+         FWN1faWIq6eU4prLN3R2Py/R35PxKCaeM6y3z7loKZfCaPbr7YapdgG37XAOcYtHXjiY
+         H1y2OjVyCQt0KdgofUPsF4/X5URpwodqiLL+PQS1UrgR1ImQ8AQOZrkfDh/Bm+K7DhUk
+         TMS1SqpQWuja2nJtlmv3C+g/Yb+cQRUlzRvNlt4yKPX7J52rr8TByM6RLrpCXHVLxbFU
+         Q4ZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700162314; x=1700767114;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=STPFJgJTmWckMd9fvN+D7up8AUbhHF9YB+XgQB9vdw4=;
+        b=ZV6LWUjnGQaV0LZ4m4+oMDwkLpAisl3sEFxa+KLYzgoCMcrOoDqOQY4Uu6NCGhFxBl
+         7lXb8A84F/Hv4VwTuFuvckwo4Ljt40DQq2GR+8wvuNz8jEvtMxV4BFWpO0uDSM7I9EAU
+         lSdM8Ty8HXYq+sV0sknFpAM/5eKBnM+WBSHl8E+hxi4ZzA4ySXBE/A2SQFYoEDVvSyBI
+         hxJ0GEJoCg9RKsKUoCdJQEyf6MiaR8BsKEORvaJJOkyD7qdEhw+39q967X2i6P7ADVMH
+         gNkfJws00LzBmf3SJ1/RtzpKHLF8qBXNKIA6BxtsQNfmS8hwG82s/DR63RWqsq1UiQol
+         4rlg==
+X-Gm-Message-State: AOJu0YygPMfXiEnCc4z5g1vsuGbzpw3ZntQB70xY2Zc3hTIbvL2RtkJh
+        G7ZcJ9xMUBdRytZAFi29pG3MCCnVGZAZU9hLYos=
+X-Google-Smtp-Source: AGHT+IH3DRdTfKoOMyMOzkQDCigyhHbNJcoUpI6PmnvC7T6AkuKRO4z5Oxn0dWHKqFPRDwgDEBJUuRuS8SdMX1s4iaI=
+X-Received: by 2002:a05:6870:169b:b0:1ef:bfd8:90d1 with SMTP id
+ j27-20020a056870169b00b001efbfd890d1mr20538538oae.22.1700162314073; Thu, 16
+ Nov 2023 11:18:34 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="rcfuox7jrzun6lqu"
-Content-Disposition: inline
-In-Reply-To: <20231030084302.593864-3-Hermes.Zhang@axis.com>
+References: <20231113112344.719-1-hkallweit1@gmail.com> <20231113112344.719-4-hkallweit1@gmail.com>
+ <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
+In-Reply-To: <e4ee224f-8f18-4922-ac1c-4612b8e021d8@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 16 Nov 2023 14:18:23 -0500
+Message-ID: <CADnq5_NjZkGLz-J39h_6djdgaD8zT3_pEq4iy5FfcYTz646SFg@mail.gmail.com>
+Subject: Re: [PATCH 03/20] drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:
+ remove I2C_CLASS_DDC support
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Wolfram Sang <wsa@kernel.org>, Leo Li <sunpeng.li@amd.com>,
+        dri-devel@lists.freedesktop.org,
+        "Pan, Xinhui" <Xinhui.Pan@amd.com>,
+        Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-i2c@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        David Airlie <airlied@gmail.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,163 +79,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Nov 13, 2023 at 12:50=E2=80=AFPM Harry Wentland <harry.wentland@amd=
+.com> wrote:
+>
+> Please just use "drm/amd/display:" as tag in the commit subject.
+>
+> With that fixed, this is
+> Acked-by: Harry Wentland <harry.wentland@amd.com>
+>
 
---rcfuox7jrzun6lqu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Acked-by: Alex Deucher <alexander.deucher@amd.com>
+Feel free to take this via the i2c tree if you prefer.
 
-Hi,
+Alex
 
-On Mon, Oct 30, 2023 at 04:43:02PM +0800, Hermes Zhang wrote:
-> The BQ24296 is most similar to the BQ24196, but the:
-> 1. OTG config is split from CHG config (REG01)
-> 2. ICHG (Fast Charge Current limit) range is smaller (<=3D3008mA)
-> 3. NTC fault is simplified to 2 bits
->=20
-> Signed-off-by: Hermes Zhang <chenhuiz@axis.com>
-> ---
->=20
-> Notes:
->     v2: restructured the code to support bq24296 and add Acked-by tag
->         from Conor
->  drivers/power/supply/bq24190_charger.c | 437 +++++++++++++++++++------
->  1 file changed, 338 insertions(+), 99 deletions(-)
->=20
-> diff --git a/drivers/power/supply/bq24190_charger.c b/drivers/power/suppl=
-y/bq24190_charger.c
-> index 3f99cb9590ba..5b60d924cf9f 100644
-> --- a/drivers/power/supply/bq24190_charger.c
-> +++ b/drivers/power/supply/bq24190_charger.c
-
-[...]
-
-> +static const struct bq24190_chip_info bq24190_chip_info_tbl[] =3D {
-> +	[BQ24190] =3D {
-> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
-> +		.vbus_desc =3D bq24190_vbus_desc,
-> +		.check_chip =3D bq24190_check_chip,
-> +		.set_chg_config =3D bq24190_battery_set_chg_config,
-> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
-> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
-> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
-> +	},
-> +	[BQ24192] =3D {
-> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
-> +		.vbus_desc =3D bq24190_vbus_desc,
-> +		.check_chip =3D bq24190_check_chip,
-> +		.set_chg_config =3D bq24190_battery_set_chg_config,
-> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
-> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
-> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
-> +	},
-> +	[BQ24192i] =3D {
-> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
-> +		.vbus_desc =3D bq24190_vbus_desc,
-> +		.check_chip =3D bq24190_check_chip,
-> +		.set_chg_config =3D bq24190_battery_set_chg_config,
-> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
-> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
-> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
-> +	},
-> +	[BQ24196] =3D {
-> +		.ichg_array_size =3D ARRAY_SIZE(bq24190_ccc_ichg_values),
-> +		.vbus_desc =3D bq24190_vbus_desc,
-> +		.check_chip =3D bq24190_check_chip,
-> +		.set_chg_config =3D bq24190_battery_set_chg_config,
-> +		.ntc_fault_mask =3D BQ24190_REG_F_NTC_FAULT_MASK,
-> +		.get_ntc_status =3D bq24190_charger_get_ntc_status,
-> +		.set_otg_vbus =3D bq24190_set_otg_vbus,
-> +	},
-> +	[BQ24296] =3D {
-> +		.ichg_array_size =3D BQ24296_CCC_ICHG_VALUES_LEN,
-> +		.vbus_desc =3D bq24296_vbus_desc,
-> +		.check_chip =3D bq24296_check_chip,
-> +		.set_chg_config =3D bq24296_battery_set_chg_config,
-> +		.ntc_fault_mask =3D BQ24296_REG_F_NTC_FAULT_MASK,
-> +		.get_ntc_status =3D bq24296_charger_get_ntc_status,
-> +		.set_otg_vbus =3D bq24296_set_otg_vbus,
-> +	},
-> +};
-> +
->  static int bq24190_probe(struct i2c_client *client)
->  {
->  	const struct i2c_device_id *id =3D i2c_client_get_device_id(client);
-> @@ -1804,6 +2040,7 @@ static int bq24190_probe(struct i2c_client *client)
->  	bdi->client =3D client;
->  	bdi->dev =3D dev;
->  	strncpy(bdi->model_name, id->name, I2C_NAME_SIZE);
-> +	bdi->info =3D &bq24190_chip_info_tbl[id->driver_data];
->  	mutex_init(&bdi->f_reg_lock);
->  	bdi->charge_type =3D POWER_SUPPLY_CHARGE_TYPE_FAST;
->  	bdi->f_reg =3D 0;
-> @@ -1940,7 +2177,7 @@ static void bq24190_shutdown(struct i2c_client *cli=
-ent)
->  	struct bq24190_dev_info *bdi =3D i2c_get_clientdata(client);
-> =20
->  	/* Turn off 5V boost regulator on shutdown */
-> -	bq24190_set_otg_vbus(bdi, false);
-> +	bdi->info->set_otg_vbus(bdi, false);
->  }
-> =20
->  static __maybe_unused int bq24190_runtime_suspend(struct device *dev)
-> @@ -2029,10 +2266,11 @@ static const struct dev_pm_ops bq24190_pm_ops =3D=
- {
->  };
-> =20
->  static const struct i2c_device_id bq24190_i2c_ids[] =3D {
-> -	{ "bq24190" },
-> -	{ "bq24192" },
-> -	{ "bq24192i" },
-> -	{ "bq24196" },
-> +	{ "bq24190", BQ24190 },
-> +	{ "bq24192", BQ24192 },
-> +	{ "bq24192i", BQ24192i },
-> +	{ "bq24196", BQ24196 },
-> +	{ "bq24296", BQ24296 },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(i2c, bq24190_i2c_ids);
-> @@ -2042,6 +2280,7 @@ static const struct of_device_id bq24190_of_match[]=
- =3D {
->  	{ .compatible =3D "ti,bq24192", },
->  	{ .compatible =3D "ti,bq24192i", },
->  	{ .compatible =3D "ti,bq24196", },
-> +	{ .compatible =3D "ti,bq24296", },
->  	{ },
->  };
->  MODULE_DEVICE_TABLE(of, bq24190_of_match);
-
-This looks better, but please handle the match_info in the modern
-way, like e.g. bq256xx_charger.c, bq24257_charger.c, bq2515x_charger.c.
-So instead of using an ID and using that to lookup a device struct
-=66rom an array, just directly specify a pointer to the device struct.
-
-Also make sure you specify the pointer in all device tables and use
-i2c_get_match_data() in probe() to get the struct.
-
-Thanks,
-
--- Sebastian
-
---rcfuox7jrzun6lqu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmVWausACgkQ2O7X88g7
-+ppMcg//ffklRJuh3frxFd4QrfLMJojE0H4+jIekhtyvZBcPVV+AvWZS8aH9q0mU
-Rd7nw9KlrkejVBemO2tzWC+ZXjdzq4w8UAEeglZ/RhgyRXB9PlcZ47sEEEHCYczi
-ukDzxhGgZmfKuiHCvs7BvBot7qngy6A7wEfPv9+hWVHDz4Z9WfEULKn2XPaI9uOo
-V8osKaGMyZfUl4o4geJBrxVdTSFa16phlz1UtY9AeqjNoc4xtZy26Mzfpbp88F7c
-i00eayFAcO/MoHamNrzRUN9C1Mn9R/Vyz2jU2uho3AE87L2+hSrE8BIGbCMle+ux
-UbhhWbBgywW1UMRwW1xjCad2PkCh52ohmSf2gJJCzYnHPzGCclo+fBG/q659vIsu
-AhAi6xGCrINF1mdML66g2rv4hk9qPxKttx78EzlBXAhUNMKeqYb6UjmXnsKsmPAY
-HnU98W7MpRZPAejhueqIy+55l7dNnlkmUFZf/49J9hLzGI1VMHB24iwWAisV9aay
-64dvQCmovzBiGyjRH/YyAoLMtCILd52b2cXqlHKbsJkCz6pLKqcQQV0eWIVAwp/T
-CDMmPbApiJ8Knnyo4dEyQzugQgpgO8VNTvcgsm91hFIB+BtjNmB53GwnoziJh1yM
-j+7Hz3czCZBEIzU2wrioZYUpmpEwQBoHdrx3+YoBL7Wmdvgm6XM=
-=div5
------END PGP SIGNATURE-----
-
---rcfuox7jrzun6lqu--
+> Harry
+>
+> On 2023-11-13 06:23, Heiner Kallweit wrote:
+> > After removal of the legacy EEPROM driver and I2C_CLASS_DDC support in
+> > olpc_dcon there's no i2c client driver left supporting I2C_CLASS_DDC.
+> > Class-based device auto-detection is a legacy mechanism and shouldn't
+> > be used in new code. So we can remove this class completely now.
+> >
+> > Preferably this series should be applied via the i2c tree.
+> >
+> > Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
+> >
+> > ---
+> >  drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c |    1 -
+> >  1 file changed, 1 deletion(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/driver=
+s/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > index 6f99f6754..ae1edc6ab 100644
+> > --- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > +++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+> > @@ -7529,7 +7529,6 @@ create_i2c(struct ddc_service *ddc_service,
+> >       if (!i2c)
+> >               return NULL;
+> >       i2c->base.owner =3D THIS_MODULE;
+> > -     i2c->base.class =3D I2C_CLASS_DDC;
+> >       i2c->base.dev.parent =3D &adev->pdev->dev;
+> >       i2c->base.algo =3D &amdgpu_dm_i2c_algo;
+> >       snprintf(i2c->base.name, sizeof(i2c->base.name), "AMDGPU DM i2c h=
+w bus %d", link_index);
+> >
+>
