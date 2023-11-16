@@ -2,67 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF227EE781
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:30:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F47D7EE784
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:32:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345491AbjKPTae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:30:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
+        id S1345499AbjKPTce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:32:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51394 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229455AbjKPTad (ORCPT
+        with ESMTP id S229455AbjKPTcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:30:33 -0500
-Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D1518D;
-        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
-Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5869914484fso616393eaf.0;
-        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
+        Thu, 16 Nov 2023 14:32:33 -0500
+Received: from mail-oi1-f176.google.com (mail-oi1-f176.google.com [209.85.167.176])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDB331A8;
+        Thu, 16 Nov 2023 11:32:27 -0800 (PST)
+Received: by mail-oi1-f176.google.com with SMTP id 5614622812f47-3b6d88dbaa3so721728b6e.1;
+        Thu, 16 Nov 2023 11:32:27 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700163029; x=1700767829;
+        d=1e100.net; s=20230601; t=1700163147; x=1700767947;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=J7FbFMZyOm4y21zxxd4fG3rlnBc8F2We8GtC4w2SS1w=;
-        b=CUXn+IvEB2gF6Mdi90bgE05Bt/4p2b6TiQq5UXsvyofO9GUGk0sCjK4wJqpCKs7hzo
-         kJd91qICEjOji06tBZumxJoT30gcD9Grz0PbxQZQqY2fth3RrxHc73vYOr58nxSiNkyI
-         EDI/4jVreJCoz1mbj9Lj+mzCEIExF7QlQbi+4HOooUUE/Bpp7vKMOtCYtznTN9FPfDb7
-         uyVbrRqg2ZY4aFNpdOj2Tg+uCr69J6lGo53aRlaLRET06DG4ok/ZCu1XgV7MCFGjLEAa
-         ABR2y6S2Y2VMdeIcMJyxF4rpPlYucRrnk4OGMVmUvF5rUPEAAzEbETXlzkqAIzaIYhfg
-         y77g==
-X-Gm-Message-State: AOJu0Yy/ZXVhaKc+3bLkv35pRgrBsAVmRoqpDlgQfy3q8OnzhS8GDoYR
-        lmzquc9OIm61LbEiIBkc+A==
-X-Google-Smtp-Source: AGHT+IFSp1f7TbpivIjIY//huUNmDslsDMxVBCti4nc7OSLQ6yL118JR1HPflrHOkpP+ls1MaiRwBw==
-X-Received: by 2002:a4a:85c1:0:b0:57b:eee7:4a40 with SMTP id u1-20020a4a85c1000000b0057beee74a40mr15895111ooh.7.1700163029011;
-        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
+        bh=cf+4dZZDuZGo7AnzFtsjVfhJVrgljwo52a4BWevdDuA=;
+        b=GFyn/0F432WVNdIkXHU/sgnxuwlBSR1zWGMprLC7vgyuno5/PYO0TE8AT9LgXbMCR/
+         KLaf9b9QgZQeR/iKg6NM1vydtfRLkeW+3/IpWF31aIlNO5YvzNQUkCrVd6HVnOmgsufe
+         jIVvrEeA+69BhL/FUk9G9LvICKiRuh5q+Kr+xU8t9MmR7pvXd6nLxkdzg5mEWw7YODdN
+         qj4gRK8TThng1vA8fKPSx5toQ/wUt04oFKXO9RAIZ6YDVjFHlIhVoFV6rl9Q6KI57zg+
+         mtKnx2rZTyjL6JgApa22+KKMHQpCZ5O8TcAhrhH0HdFSE0c+N5YlGJli5HPAIk2+6x0f
+         KzJg==
+X-Gm-Message-State: AOJu0Yz/iHPjP6SvJr4IMgA6J9UanbwcmVOLDnMgvbDDwtpVdi+A3gU5
+        mSoVEImIg4haGsrgTrcFLQ==
+X-Google-Smtp-Source: AGHT+IGoHhHekj7XRAdJdS/eRokVcFsihbXxRz8CbyoM8f7I1qH4lzAXhkKZ3wH0b6xVEv8WkbwDTA==
+X-Received: by 2002:a05:6808:1482:b0:3b6:cae4:63b6 with SMTP id e2-20020a056808148200b003b6cae463b6mr20839687oiw.44.1700163147055;
+        Thu, 16 Nov 2023 11:32:27 -0800 (PST)
 Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id ch1-20020a0568200a0100b00584078d1e17sm10580oob.45.2023.11.16.11.30.27
+        by smtp.gmail.com with ESMTPSA id fb14-20020a0568083a8e00b003b2ef9778absm6463oib.46.2023.11.16.11.32.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 11:30:28 -0800 (PST)
-Received: (nullmailer pid 3079204 invoked by uid 1000);
-        Thu, 16 Nov 2023 19:30:26 -0000
-Date:   Thu, 16 Nov 2023 13:30:26 -0600
+        Thu, 16 Nov 2023 11:32:26 -0800 (PST)
+Received: (nullmailer pid 3081501 invoked by uid 1000);
+        Thu, 16 Nov 2023 19:32:24 -0000
+Date:   Thu, 16 Nov 2023 13:32:24 -0600
 From:   Rob Herring <robh@kernel.org>
-To:     Frank Li <Frank.Li@nxp.com>
-Cc:     Frank.li@nxp.com, krzysztof.kozlowski+dt@linaro.org,
-        dmaengine@vger.kernel.org, joy.zou@nxp.com, shenwei.wang@nxp.com,
-        krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
-        festevam@denx.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, imx@lists.linux.dev, vkoul@kernel.org,
-        peng.fan@nxp.com, shawnguo@kernel.org
-Subject: Re: [PATCH 2/4] dt-bindings: dma: fsl-edma: Add fsl-edma.h to
- prevent hardcoding in dts
-Message-ID: <170016302591.3079151.39706037865284534.robh@kernel.org>
-References: <20231114154824.3617255-1-Frank.Li@nxp.com>
- <20231114154824.3617255-3-Frank.Li@nxp.com>
+To:     Andrew Davis <afd@ti.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Nishanth Menon <nm@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+Subject: Re: [PATCH v2 1/4] dt-bindings: spi: Convert spi-davinci.txt to YAML
+Message-ID: <170016314389.3081362.3941133682118537803.robh@kernel.org>
+References: <20231114212911.429951-1-afd@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114154824.3617255-3-Frank.Li@nxp.com>
+In-Reply-To: <20231114212911.429951-1-afd@ti.com>
 X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
         FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -70,18 +67,20 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-On Tue, 14 Nov 2023 10:48:22 -0500, Frank Li wrote:
-> Introduce a common dt-bindings header file, fsl-edma.h, shared between
-> the driver and dts files. This addition aims to eliminate hardcoded values
-> in dts files, promoting maintainability and consistency.
+On Tue, 14 Nov 2023 15:29:08 -0600, Andrew Davis wrote:
+> Convert spi-davinci.txt to ti,dm6441-spi.yaml.
 > 
-> DTS header file not support BIT() macro yet. Directly use 2^n number.
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+> Signed-off-by: Andrew Davis <afd@ti.com>
 > ---
->  include/dt-bindings/dma/fsl-edma.h | 21 +++++++++++++++++++++
->  1 file changed, 21 insertions(+)
->  create mode 100644 include/dt-bindings/dma/fsl-edma.h
+> 
+> Changes for v2:
+>  - Fix typo s/dm6446/dm6441
+> 
+>  .../devicetree/bindings/spi/spi-davinci.txt   | 100 ------------------
+>  .../bindings/spi/ti,dm6441-spi.yaml           |  76 +++++++++++++
+>  2 files changed, 76 insertions(+), 100 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/spi/spi-davinci.txt
+>  create mode 100644 Documentation/devicetree/bindings/spi/ti,dm6441-spi.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
