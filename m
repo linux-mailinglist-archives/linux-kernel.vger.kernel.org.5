@@ -2,305 +2,299 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B9E7EDF8A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:21:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 867D77EDF92
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345117AbjKPLVX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:21:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46650 "EHLO
+        id S1345068AbjKPLVs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345083AbjKPLVU (ORCPT
+        with ESMTP id S230503AbjKPLVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:21:20 -0500
-Received: from APC01-SG2-obe.outbound.protection.outlook.com (mail-sgaapc01on2098.outbound.protection.outlook.com [40.107.215.98])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EEA85;
-        Thu, 16 Nov 2023 03:21:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nVnV5xTJfHW2USzTeyc9HTMy382OX35/Q78GgwQ35ABZg9ib86Gbke6afWRMrfbNjdNfgtEtFPKLwdvKYE0uQ/xN4ZoBEwvu57VpgychdceUvDwzClHeycrwRGMmj63u4+ya26yGE3vVPj2qgpLJzAUbkhTRYe/Wg9SC/DyXvYWA86aIZ8Vlf0iPx73dtQ4zPMwfmwjEuP3iWbTTuKlBnY9Sqy4qc4j10cm7puOzl4leHg3DhYN/K9NU+sJqDuVPm+fyCcjTm0dd7r1pyytCZtk4AHpCeoqje9b0N5cHzZYIN4h8BpvQYonLDQJFbGgAxIkf54E/gWkpvN7g8FB39g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=C7o7nQJLsbrxtgh1QNpQbEXM72QU8jpDTM8GdtkiHdw=;
- b=bVFHNXLqDKAJz91WbNIDiXmA0iO3wjCJArZYYdx97KqUiK10739wls6Y93thobcH2V8Jvw+rVMUVd2D4igP57ugK8HtNXP0zvhMaU92FTc4NPPSxrPpoNFJQWLuvYrdCL1WvIjGR9JXQtgHJVrOdjc6VYL4x9K7iMUxtdk2SrS/zFg6nC4nnsBHxs/WXs2TdWdHUb0795qk5aJ00aPYmF2M1p7JILxrJJeEsPSxUCFNkRy8MuzEJHY+rBeziHEdds2Nyoyfkdp/npybEPdVYmkX0c8tUYhtZzvjFPd6hnwzIuxZtUKsbdBn2dnkfViNeCk3eqIrKWvy+AObW1aL2Tg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=C7o7nQJLsbrxtgh1QNpQbEXM72QU8jpDTM8GdtkiHdw=;
- b=QHxUvUqSfBcLdanCK8WxQM5Pk1smAh4HzoeAvZBSusqA/FDT4GjsAnzaX8Xzqr8f1QBf3j46ou3w9uMcVHgppRBXEe+6j7ZZGLrLgwP45b/51Ssa0QwfFEqVY6EF3CaMvIMWJ5SQ6fVS8ho2UZ9aa6LXB1lrsZTBUREEtPdTHt0=
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM (2603:1096:301:fc::10)
- by TYSP153MB1016.APCP153.PROD.OUTLOOK.COM (2603:1096:400:46c::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.9; Thu, 16 Nov
- 2023 11:21:10 +0000
-Received: from PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a]) by PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
- ([fe80::a516:f38b:f94e:b77a%7]) with mapi id 15.20.7025.009; Thu, 16 Nov 2023
- 11:21:10 +0000
-From:   Souradeep Chakrabarti <schakrabarti@microsoft.com>
-To:     Haiyang Zhang <haiyangz@microsoft.com>,
-        Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Dexuan Cui <decui@microsoft.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "edumazet@google.com" <edumazet@google.com>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "pabeni@redhat.com" <pabeni@redhat.com>,
-        Long Li <longli@microsoft.com>,
-        "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
-        "leon@kernel.org" <leon@kernel.org>,
-        "cai.huoqing@linux.dev" <cai.huoqing@linux.dev>,
-        "ssengar@linux.microsoft.com" <ssengar@linux.microsoft.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-CC:     Paul Rosswurm <paulros@microsoft.com>
-Subject: RE: [PATCH net-next] net: mana: Assigning IRQ affinity on HT cores
-Thread-Topic: [PATCH net-next] net: mana: Assigning IRQ affinity on HT cores
-Thread-Index: AQHaF8qGIm6eugOJi0KcyMy20QXRcrB7/d0AgADQPQA=
-Date:   Thu, 16 Nov 2023 11:21:08 +0000
-Message-ID: <PUZP153MB0788BF5F18973922F03C2CA4CCB0A@PUZP153MB0788.APCP153.PROD.OUTLOOK.COM>
-References: <1700056125-29358-1-git-send-email-schakrabarti@linux.microsoft.com>
- <PH7PR21MB311687F4F37C55D6B332D7F0CAB1A@PH7PR21MB3116.namprd21.prod.outlook.com>
-In-Reply-To: <PH7PR21MB311687F4F37C55D6B332D7F0CAB1A@PH7PR21MB3116.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=a89832be-4a0a-4c6b-aea1-8812e4a22e64;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2023-11-15T22:38:20Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=microsoft.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PUZP153MB0788:EE_|TYSP153MB1016:EE_
-x-ms-office365-filtering-correlation-id: 59425e8e-4201-4567-9075-08dbe69621c8
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: g4YZbTNvk9+GsE17OWBkI30xN4Xt9vSA33rtZQwEXJ85xOPLWAhS6irs8tiI4WcRDth4z+CgbeHysX41kd27ZZIamzMUks1Jh4EGYFnndIfSwIVryWrkWVpgePpq1QTZ/cHpiaT3//p8f8iA1SC1SDuj+uH75mYlL4ZehG99PqAPQEbyOr5k+0YA7o/MnmaD2nLVCmwwEOaxv+/hA3SE/YSxqGDhlebCK7X7cb+YEyuHIvgCPrBoveyEsTShgGpZZnodkNkq5ZxxnTpVd9ML+WLiwFi7/udVi+IUECEKVpsubHZ9Wm6BDiaqeHlX9TI57b5a/7acFwuq3LNB+DV63k1Qn+G/cPT0oL7ChbvVRcL21q9FPflvGC7UeZd42NvdI0yuzZmKMZHD4CENY6T3VxRwSftZwXThxDCPF+TzYtaOXOIkdStzq/GXp2QcCGiQiPiYZXC9EqhTyCdZQFEUyknyCIM+HbdGYTOuBXNWAFshzmIWPO4UVj1klSA6pGTyFR0+eFRO+dhFbZLUXD4K4BG+ygELzow7/1FVxf073fwF5xqviLtoYLfBqVtx98KpFjGL/T6YkU0m5t420rUTioLGkNki3DZReTRptRvn4Yi7VGRV1gzLKCWwElDuOpxHYFe+kB91RE71a0J+dIUeYaEbn1g3tmkrI9tYZ1D26Mg2+7rFcgDM0ocQOJzO8oSw
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PUZP153MB0788.APCP153.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366004)(346002)(376002)(39860400002)(136003)(396003)(230922051799003)(1800799009)(451199024)(186009)(64100799003)(82960400001)(82950400001)(921008)(122000001)(38070700009)(86362001)(33656002)(7416002)(5660300002)(53546011)(9686003)(6506007)(7696005)(55016003)(107886003)(2906002)(10290500003)(478600001)(71200400001)(52536014)(8936002)(4326008)(8676002)(76116006)(66946007)(110136005)(316002)(66476007)(66446008)(64756008)(66556008)(38100700002)(83380400001)(26005)(41300700001)(8990500004);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?TWTpAznkSTSqrK7RhWe322rkSbTbysEUkCclSZrptARaqVceSx21AtfBzH36?=
- =?us-ascii?Q?SqSuwNuuMXgrfyPdyafc48AFWFC0Ht7O873xMY/AUobt+IyF6K6WIsBpA8DV?=
- =?us-ascii?Q?L/hsjXxapiGIzneMjdCnKYX5tDFcc9AZJIU4QhgQjXrkc8dLiZk288gQ6wIy?=
- =?us-ascii?Q?0DHVuxTx/2Yl1/gy+kn2oUxT0ki1Xn7rUTnEYEJsa+uk4y9YZV6CozuFztUP?=
- =?us-ascii?Q?wea+Fb/DNfIwrPyuDiUXPgUfsl5R675WDIzeQXgAcAFscMCu+V4H8EfPSka7?=
- =?us-ascii?Q?PrZqaDuL/GCWczkZpPVBc5Eq6Bq+2NSvGmd/m1oyA401PAB0QbEPXG6EjM/0?=
- =?us-ascii?Q?YL3zeg8c2U7s2qGyEgf8DDYv/LAciZq1hDe82G04OrbGPneQv/cGcIUpd2VY?=
- =?us-ascii?Q?+eencuRduWy3XSPMhpPv7EcIly6wt05GNErEMVUDcKG1yD9ZhaWfFM9Y3txJ?=
- =?us-ascii?Q?bEw5oGtiIU/tqDrRFZlEcnl8skp4VK9zpKv8ORg/RiZ2YYDXCdKQEaP6j2aw?=
- =?us-ascii?Q?ScAIOZBjuLodu4LR30fS+C4BO3CEqGfmPkXageIaaKdc5d8gxhvwC5UOneol?=
- =?us-ascii?Q?91ZXKrVSBI6pe77cJIxDlPcG4x+i7u5e9Ei7FlvGfNaxO8hQj9CR5qMRisUA?=
- =?us-ascii?Q?tgkHiniVriK/Z82kReog6KKWfRQNCA1ZOCvjbHwqvqkvTmpKU9o7L0pwE6Am?=
- =?us-ascii?Q?xZw6aBmLwkeQvU8wgQGXZnTmIwpJ03bNLMPKRZrsej4L1IwesL/MRE6qbSAG?=
- =?us-ascii?Q?cCrzvQDD+yEtZ3Oahy9yeyjy+L2Mfe70ZR6Lm2/izSmKJJ3hEpIpuimfsA3e?=
- =?us-ascii?Q?cRnl/We0V5is3ASjPdfBRPd3rKlOU+TeZ9c1yPw58r90kUmL3eRAlhF+C5gY?=
- =?us-ascii?Q?vcim6q3Pw+9SIUVg/HFZkpjLl2hO0qY4Xx/Xl8ikaD1qN4cL1Idi2DY/CuW9?=
- =?us-ascii?Q?3/POjvcLU1lQ5bwEnKDje5RXFA8gf3BzfbEjHvBMhsQ9bE7Gl3IfIMLkqfw+?=
- =?us-ascii?Q?YIsLW4t9XRnTVmNvBZfH7eUZy/WTD8qyfdQ/PO5An3DDW0mPpLXKx6eTOQ7H?=
- =?us-ascii?Q?I10C0N4NvQgDZO9xglnm87CI2MKccHrCF67kYL8BVtp85+hR1C9jIYYsSUKE?=
- =?us-ascii?Q?RMvey6wxz2Avjxrsj+kkQyNxI4hikzlwNJWdsuDjNgehGpoKPLyPZRoW1V7A?=
- =?us-ascii?Q?KnW4HK3K8Pwo4C5RlrP3ZzrjpzfLO+QNpM3AO5YgXMzjI3owMxa5shTpkWb/?=
- =?us-ascii?Q?CkuYd3l47P7DiWkR85E8zZUxRvYPq1dl80m2LYrneQXcA9F6Ug+7l/2ec1cu?=
- =?us-ascii?Q?kxNMXXsSsOHNh3PTBQJpibXle7VDjm5dWljFGKU2aJGxE0PD1T86yz3gtF/J?=
- =?us-ascii?Q?uJj4WCVdLLZWRbLdN7tzwXGhzqP8XNZB7GOh3tFpwCXwJloTWdGlC1h6TYVl?=
- =?us-ascii?Q?7ng749Lx2g7QOtgn1eE5H5UG8LAGHf0toJsTx2HRa3vCGcbU0cpw8VmeyQEu?=
- =?us-ascii?Q?OQJV6cTx6MLWOs3p4An0Ps9xu2yYM8nwOIyj?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 16 Nov 2023 06:21:40 -0500
+Received: from mail-ua1-x932.google.com (mail-ua1-x932.google.com [IPv6:2607:f8b0:4864:20::932])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F7F187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:21:36 -0800 (PST)
+Received: by mail-ua1-x932.google.com with SMTP id a1e0cc1a2514c-7b9ba0c07f9so249834241.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:21:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700133695; x=1700738495; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ZXK5ljOmLC8q/n/ipRKG6UVSniFiXFzXWXMyxjThqVI=;
+        b=F/AcvQJifR1jQGpSCsjNwD5QZy8mU+VREtwilmfgz9WNIZaR/ng3kUne2RIAD401+m
+         1j7CftIYesdWGPeLsczuGhVoQkFkqJ6mGN1xV18as+GCvOVR025IY9QQcl9nUVFgt7V6
+         rAcISyGBdQ7Pxrz0S5WSzOJYAxbAkVFVU2009uAf//CyTqNrU00KRvA8dffLhGgiZJFS
+         WYW5Lr18hHuYP6fMVdV9vohQEZvbTgwJKgIKtSttgoyoD0SfxwZ4tC4rSSWMA5pMnZNB
+         hEGmUPJ0ltwcDOWbuzSZZV+c9pIqWecBXXd1UDPSR9hj3JTTbw3oj+H8dkEiYV2SPBc2
+         uKPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700133695; x=1700738495;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZXK5ljOmLC8q/n/ipRKG6UVSniFiXFzXWXMyxjThqVI=;
+        b=nIEPBFlV6Z1KIE39SUsJPDnzsRezxKOTN6tUlw70pXjrxpPdQLOIclMml2WA0jPg5h
+         /D+rXkRFC8ikyFDZBdGDqkz18S2Cc2Qxh/HW+VjydrGZqpFSWFVymigJUDGCqLwGwEK0
+         oVhTW+gI7M4+BOKI1gTibFulkj4endZ4Komm6YWnVhS7blYHOawgEftABw5h5odnQvg3
+         5DHDXPATyunXHSKOskM00WQC53yATnB3KnjUWcbp3PTBuvcyIyAMdwkmodEG6NHrwXzn
+         Efs2S0/BI9dA3xvYsAhKU9bkvxdFxyJ7/ePqNkwEz9hhcgvYG39eveI0HxM8vG5AUScZ
+         uhCQ==
+X-Gm-Message-State: AOJu0YzJcVw7sRQbomu7jEXD7FSOLVUYgYLLTS5mB1S9Bvf4FESocpnX
+        ZOllUFCIyT42j4nA7l8YxlSbfg==
+X-Google-Smtp-Source: AGHT+IGEq7QmMxK+xmYgKsdLFgf/U0ydWvmWMWZbION2HcLqt3BLTJsUueI2WBlrlfRqlufK4qZfEw==
+X-Received: by 2002:a05:6102:4702:b0:45c:d357:290d with SMTP id ei2-20020a056102470200b0045cd357290dmr9426103vsb.14.1700133695039;
+        Thu, 16 Nov 2023 03:21:35 -0800 (PST)
+Received: from [192.168.212.13] ([12.191.197.195])
+        by smtp.gmail.com with ESMTPSA id a17-20020a0cc591000000b0065b21f1b687sm1287878qvj.80.2023.11.16.03.21.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 03:21:34 -0800 (PST)
+Message-ID: <6a5610e0-e60d-4ab7-8708-6f77a38527b7@linaro.org>
+Date:   Thu, 16 Nov 2023 12:21:33 +0100
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PUZP153MB0788.APCP153.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 59425e8e-4201-4567-9075-08dbe69621c8
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 11:21:08.8791
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dX8Q2/iWBWPADFTjSktvAB5zYwjaMbd4LivtJuGI/dSqTiQwLPuxn2hkrauEGUhn/azvC2C3JL7BtZC6u4O9uGUwx3dyO1seT4cK0Yli8RE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSP153MB1016
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 10/12] pinctrl: samsung: add exynosautov920 pinctrl
+Content-Language: en-US
+To:     Jaewon Kim <jaewon02.kim@samsung.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
+References: <20231115095609.39883-1-jaewon02.kim@samsung.com>
+ <CGME20231115095856epcas2p1c3ee85750828bec2ee4ab0adeaeaff28@epcas2p1.samsung.com>
+ <20231115095609.39883-11-jaewon02.kim@samsung.com>
+ <62b7176d-f99c-49f6-a287-17a6b3604c1c@linaro.org>
+ <f0f6a7af-2170-89a2-1eea-dfb9d8440321@samsung.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <f0f6a7af-2170-89a2-1eea-dfb9d8440321@samsung.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 16/11/2023 06:39, Jaewon Kim wrote:
+> On 23. 11. 15. 21:28, Krzysztof Kozlowski wrote:
+> 
+>> On 15/11/2023 10:56, Jaewon Kim wrote:
+>>> ExynosAutov920 GPIO has a different register structure.
+>>> In the existing Exynos series, EINT control register enumerated after
+>>> a specific offset (e.g EXYNOS_GPIO_ECON_OFFSET).
+>>> However, in ExynosAutov920 SoC, the register that controls EINT belongs
+>>> to each GPIO group, and each GPIO group has 0x1000 align.
+>>>
+>>> This is a structure to protect the GPIO group with S2MPU in VM environment,
+>>> and will only be applied in ExynosAuto series SoCs.
+>>>
+>>> Example)
+>>> -------------------------------------------------
+>>> | original		| ExynosAutov920	|
+>>> |-----------------------------------------------|
+>>> | 0x0	GPIO_CON	| 0x0	GPIO_CON	|
+>>> | 0x4	GPIO_DAT	| 0x4	GPIO_DAT	|
+>>> | 0x8	GPIO_PUD	| 0x8	GPIO_PUD	|
+>>> | 0xc	GPIO_DRV	| 0xc	GPIO_DRV	|
+>>> | 0x700	EINT_CON	| 0x18	EINT_CON	|
+>>> | 0x800	EINT_FLTCON	| 0x1c	EINT_FLTCON0	|
+>>> | 0x900	EINT_MASK	| 0x20	EINT_FLTCON1	|
+>>> | 0xa00	EINT_PEND	| 0x24	EINT_MASK	|
+>>> |			| 0x28	EINT_PEND	|
+>>> -------------------------------------------------
+>>>
+>>> Pinctrl data for ExynosAutoV920 SoC.
+>>>   - GPA0,GPA1 (10): External wake up interrupt
+>>>   - GPQ0 (2): SPMI (PMIC I/F)
+>>>   - GPB0,GPB1,GPB2,GPB3,GPB4,GPB5,GPB6 (47): I2S Audio
+>>>   - GPH0,GPH1,GPH2,GPH3,GPH4,GPH5,GPH6,GPH8 (49): PCIE, UFS, Ethernet
+>>>   - GPG0,GPG1,GPG2,GPG3,GPG4,GPG5 (29): General purpose
+>>>   - GPP0,GPP1,GPP2,GPP3,GPP4,GPP5,GPP6,GPP7,GPP8,GPP9,GPP10 (77): USI
+>>>
+>>> Signed-off-by: Jaewon Kim<jaewon02.kim@samsung.com>
+>>> ---
+>>>   .../pinctrl/samsung/pinctrl-exynos-arm64.c    | 140 ++++++++++++++++++
+>>>   drivers/pinctrl/samsung/pinctrl-exynos.c      | 102 ++++++++++++-
+>>>   drivers/pinctrl/samsung/pinctrl-exynos.h      |  27 ++++
+>>>   drivers/pinctrl/samsung/pinctrl-samsung.c     |   5 +
+>>>   drivers/pinctrl/samsung/pinctrl-samsung.h     |  13 ++
+>>>   5 files changed, 280 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+>>> index cb965cf93705..cf86722a70a3 100644
+>>> --- a/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+>>> +++ b/drivers/pinctrl/samsung/pinctrl-exynos-arm64.c
+>>> @@ -796,3 +796,143 @@ const struct samsung_pinctrl_of_match_data fsd_of_data __initconst = {
+>>>   	.ctrl		= fsd_pin_ctrl,
+>>>   	.num_ctrl	= ARRAY_SIZE(fsd_pin_ctrl),
+>>>   };
+>>> +
+>>> +/* pin banks of exynosautov920 pin-controller 0 (ALIVE) */
+>>> +static struct samsung_pin_bank_data exynosautov920_pin_banks0[] = {
+>> So you created patch from some downstream code? No, please work on
+>> upstream. Take upstream code and customize it to your needs. That way
+>> you won't introduce same mistakes fixes years ago.
+>>
+>> Missing const.
+> 
+> Thanks for the guide.
+> 
+> I didn`t work on downstream source, but when I copy/paste
+> 
+> the struct enumerations from downstream, it seemed like
+
+That's what I am talking about. Don't do like this.
+
+We fixed several things in Linux kernel, so copying unfixed code is
+wasting of everyone's time. Don't work on downstream. Don't copy
+anything from downstream. You *MUST CUSTOMIZE* upstream file, not
+downstream.
 
 
->-----Original Message-----
->From: Haiyang Zhang <haiyangz@microsoft.com>
->Sent: Thursday, November 16, 2023 4:25 AM
->To: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>; KY Srinivasa=
-n
-><kys@microsoft.com>; wei.liu@kernel.org; Dexuan Cui <decui@microsoft.com>;
->davem@davemloft.net; edumazet@google.com; kuba@kernel.org;
->pabeni@redhat.com; Long Li <longli@microsoft.com>;
->sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de; linu=
-x-
->hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.o=
-rg;
->linux-rdma@vger.kernel.org
->Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
-><paulros@microsoft.com>
->Subject: RE: [PATCH net-next] net: mana: Assigning IRQ affinity on HT core=
-s
->
->
->
->> -----Original Message-----
->> From: Souradeep Chakrabarti <schakrabarti@linux.microsoft.com>
->> Sent: Wednesday, November 15, 2023 8:49 AM
->> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
->> <haiyangz@microsoft.com>; wei.liu@kernel.org; Dexuan Cui
->> <decui@microsoft.com>; davem@davemloft.net; edumazet@google.com;
->> kuba@kernel.org; pabeni@redhat.com; Long Li <longli@microsoft.com>;
->> sharmaajay@microsoft.com; leon@kernel.org; cai.huoqing@linux.dev;
->> ssengar@linux.microsoft.com; vkuznets@redhat.com; tglx@linutronix.de;
->> linux-hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
->> kernel@vger.kernel.org; linux-rdma@vger.kernel.org
->> Cc: Souradeep Chakrabarti <schakrabarti@microsoft.com>; Paul Rosswurm
->> <paulros@microsoft.com>; Souradeep Chakrabarti
->> <schakrabarti@linux.microsoft.com>
->> Subject: [PATCH net-next] net: mana: Assigning IRQ affinity on HT
->> cores
+> 
+> 'const' was missing.
+> 
 >>
->> Existing MANA design assigns IRQ affinity to every sibling CPUs, which
->> causes IRQ coalescing and may reduce the network performance with RSS.
+>> ...
 >>
->> Improve the performance by adhering the configuration for RSS, which
->> prioritise IRQ affinity on HT cores.
+>>> @@ -31,6 +31,7 @@
+>>>   #define EXYNOS7_WKUP_EMASK_OFFSET	0x900
+>>>   #define EXYNOS7_WKUP_EPEND_OFFSET	0xA00
+>>>   #define EXYNOS_SVC_OFFSET		0xB08
+>>> +#define EXYNOSAUTOV920_SVC_OFFSET	0xF008
+>>>   
+>> ...
 >>
->> Signed-off-by: Souradeep Chakrabarti
->> <schakrabarti@linux.microsoft.com>
->> ---
->>  .../net/ethernet/microsoft/mana/gdma_main.c   | 126 ++++++++++++++++-
->> -
->>  1 file changed, 117 insertions(+), 9 deletions(-)
+>>>   #ifdef CONFIG_PINCTRL_S3C64XX
+>>>   	{ .compatible = "samsung,s3c64xx-pinctrl",
+>>> diff --git a/drivers/pinctrl/samsung/pinctrl-samsung.h b/drivers/pinctrl/samsung/pinctrl-samsung.h
+>>> index 9b3db50adef3..cbb78178651b 100644
+>>> --- a/drivers/pinctrl/samsung/pinctrl-samsung.h
+>>> +++ b/drivers/pinctrl/samsung/pinctrl-samsung.h
+>>> @@ -122,6 +122,9 @@ struct samsung_pin_bank_type {
+>>>    * @eint_type: type of the external interrupt supported by the bank.
+>>>    * @eint_mask: bit mask of pins which support EINT function.
+>>>    * @eint_offset: SoC-specific EINT register or interrupt offset of bank.
+>>> + * @mask_offset: SoC-specific EINT mask register offset of bank.
+>>> + * @pend_offset: SoC-specific EINT pend register offset of bank.
+>>> + * @combine: EINT register is adjacent to the GPIO control register.
+>> I don't understand it. Adjacent? Are you sure? GPIO control register has
+>> 0xF004 (EXYNOSAUTOV920_SVC_OFFSET + 0x4)? Anyway, this does not scale.
+>> What if next revision comes with not-adjacent. There will be
+>> "combine_plus"? Also name confuses me - combine means together.
 >>
->> diff --git a/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> index 6367de0c2c2e..839be819d46e 100644
->> --- a/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> +++ b/drivers/net/ethernet/microsoft/mana/gdma_main.c
->> @@ -1243,13 +1243,115 @@ void mana_gd_free_res_map(struct
->> gdma_resource *r)
->>  	r->size =3D 0;
->>  }
->>
->> +static void cpu_mask_set(cpumask_var_t *filter_mask, cpumask_var_t
->> **filter_mask_list)
->> +{
->> +	unsigned int core_count =3D 0, cpu;
->> +	cpumask_var_t *filter_mask_list_tmp;
->> +
->> +	BUG_ON(!filter_mask || !filter_mask_list);
->> +	filter_mask_list_tmp =3D *filter_mask_list;
->> +	cpumask_copy(*filter_mask, cpu_online_mask);
->> +	/* for each core create a cpumask lookup table,
->> +	 * which stores all the corresponding siblings
->> +	 */
->> +	for_each_cpu(cpu, *filter_mask) {
->> +
->> 	BUG_ON(!alloc_cpumask_var(&filter_mask_list_tmp[core_count],
->> GFP_KERNEL));
->> +		cpumask_or(filter_mask_list_tmp[core_count],
->> filter_mask_list_tmp[core_count],
->> +			   topology_sibling_cpumask(cpu));
->> +		cpumask_andnot(*filter_mask, *filter_mask,
->> topology_sibling_cpumask(cpu));
->> +		core_count++;
->> +	}
->> +}
->> +
->> +static int irq_setup(int *irqs, int nvec) {
->> +	cpumask_var_t filter_mask;
->> +	cpumask_var_t *filter_mask_list;
->> +	unsigned int cpu_first, cpu, irq_start, cores =3D 0;
->> +	int i, core_count =3D 0, numa_node, cpu_count =3D 0, err =3D 0;
->> +
->> +	BUG_ON(!alloc_cpumask_var(&filter_mask, GFP_KERNEL));
->> +	cpus_read_lock();
->> +	cpumask_copy(filter_mask, cpu_online_mask);
->> +	/* count the number of cores
->> +	 */
->> +	for_each_cpu(cpu, filter_mask) {
->> +		cpumask_andnot(filter_mask, filter_mask,
->> topology_sibling_cpumask(cpu));
->> +		cores++;
->> +	}
->> +	filter_mask_list =3D kcalloc(cores, sizeof(cpumask_var_t), GFP_KERNEL)=
-;
->> +	if (!filter_mask_list) {
->> +		err =3D -ENOMEM;
->> +		goto free_irq;
->> +	}
->> +	/* if number of cpus are equal to max_queues per port, then
->> +	 * one extra interrupt for the hardware channel communication.
->> +	 */
->> +	if (nvec - 1 =3D=3D num_online_cpus()) {
->> +		irq_start =3D 1;
->> +		cpu_first =3D cpumask_first(cpu_online_mask);
->> +		irq_set_affinity_and_hint(irqs[0], cpumask_of(cpu_first));
->> +	} else {
->> +		irq_start =3D 0;
->> +	}
->> +	/* reset the core_count and num_node to 0.
->> +	 */
->> +	core_count =3D 0;
->> +	numa_node =3D 0;
->
->Please start with gc->numa_node here. I know it's 0 for now. But the host =
-will
->provide real numa node# close to the device in the future.
-Thank you. Will take care of it in next version.
->
->Also, as we discussed, consider using the NUMA distance to select the next=
- numa
->node (in a separate patch).
->
->> +	cpu_mask_set(&filter_mask, &filter_mask_list);
->> +	/* for each interrupt find the cpu of a particular
->> +	 * sibling set and if it belongs to the specific numa
->> +	 * then assign irq to it and clear the cpu bit from
->> +	 * the corresponding sibling list from filter_mask_list.
->> +	 * Increase the cpu_count for that node.
->> +	 * Once all cpus for a numa node is assigned, then
->> +	 * move to different numa node and continue the same.
->> +	 */
->> +	for (i =3D irq_start; i < nvec; ) {
->> +		cpu_first =3D cpumask_first(filter_mask_list[core_count]);
->> +		if (cpu_first < nr_cpu_ids && cpu_to_node(cpu_first) =3D=3D
->> numa_node) {
->> +			irq_set_affinity_and_hint(irqs[i],
->> cpumask_of(cpu_first));
->> +			cpumask_clear_cpu(cpu_first,
->> filter_mask_list[core_count]);
->> +			cpu_count =3D cpu_count + 1;
->> +			i =3D i + 1;
->> +			/* checking if all the cpus are used from the
->> +			 * particular node.
->> +			 */
->> +			if (cpu_count =3D=3D nr_cpus_node(numa_node)) {
->> +				numa_node =3D numa_node + 1;
->> +				if (numa_node =3D=3D num_online_nodes()) {
->> +					cpu_mask_set(&filter_mask,
->> &filter_mask_list);
->> +					numa_node =3D 0;
->Ditto.
->
->Other things look good to me.
->
->Thanks,
->- Haiyang
+>> Also your first map of registers does not have it adjacent...
+> 
+> I think I should have added a little more information about new struct.
+> 
+> -------------------------------------------------
+> | original             | ExynosAutov920         |
+> |-----------------------------------------------|
+> | 0x0   GPA_CON	       | 0x0    GPA_CON         |
+> | 0x4   GPA_DAT	       | 0x4    GPA_DAT         |
+> | 0x8   GPA_PUD	       | 0x8    GPA_PUD         |
+> | 0xc   GPA_DRV	       | 0xc    GPA_DRV         |
+> |----------------------| 0x18   EINT_GPA_CON    |
+> | 0x20  GPB_CON        | 0x1c   EINT_GPA_FLTCON0|
+> | 0x4   GPB_DAT	       | 0x20   EINT_GPA_FLTCON1|
+> | 0x28  GPB_PUD	       | 0x24   EINT_GPA_MASK   |
+> | 0x2c  GPB_DRV	       | 0x28   EINT_GPA_PEND   |
+> |----------------------|------------------------|
+> | 0x700	EINT_GPA_CON   | 0x1000 GPA_CON         |
+> | 0x704	EINT_GPB_CON   | 0x1004 GPA_DAT         |
+> |----------------------| 0x1008 GPA_PUD         |
+> | 0x800	EINT_GPA_FLTCON| 0x100c GPA_DRV         |
+> | 0x804	EINT_GPB_FLTCON| 0x1018 EINT_GPA_CON    |
+> |----------------------| 0x101c EINT_GPA_FLTCON0|
+> | 0x900	EINT_GPA_MASK  | 0x1020 EINT_GPA_FLTCON1|
+> | 0x904	EINT_GPB_MASK  | 0x1024 EINT_GPA_MASK   |
+> |----------------------| 0x1028 EINT_GPA_PEND   |
+> | 0xa00	EINT_GPA_PEND  |------------------------|
+> | 0xa04	EINT_GPB_PEND  |                        |
+> ------------------------------------------------|
+> | 0xb08 SVC            | 0xf008 SVC             |
+> -------------------------------------------------
+> 
+> The reason why I chose variable name 'combine' is that EINT registers was
+> separated from gpio control address. However, in exynosautov920 EINT
+> registers combined with GPx group. So I chose "combine" word.
+
+What does it mean "the GPx group"? Combined means the same place, the
+same register. I could imagine offset is 0x4, what I wrote last time.
+
+Is the offset 0x4?
+
+
+> Is another reasonable word, I will change it.
+
+
+Why you cannot store the offset?
+
+> 
+> EINT registers related to the entire group(e.g SVC) were at the end of
+> the GPIO block and are now moved to 0xf000.
+
+So not in the same register, not combined?
+
+Best regards,
+Krzysztof
 
