@@ -2,82 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8315B7EDEA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:35:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59C397EDE9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:35:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345034AbjKPKfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37612 "EHLO
+        id S1345030AbjKPKfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345029AbjKPKfj (ORCPT
+        with ESMTP id S234347AbjKPKfQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:35:39 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7139811D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:35:10 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 38308e7fff4ca-2c595f5dc84so19505251fa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:35:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1700130909; x=1700735709; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=wnBSrgqOtUFJ68G1VtwZiej43nPaE3HHJPkSErJV3vI=;
-        b=SEEEnbTNn5maPkOjZkKvC3dp+TS3pwikWoerZcrJIQxHnBBDRI61myuzSi3I0xMEgq
-         QC/7LK7dr9GVd2cfaRJnDdunQybZlmZt5Us+bRvnDgK44DkabmN68NnXrop6qyrqmqyM
-         Mcq03bu8PQTpyqId24VFanlUzZ1QLQKk9cB7IWCxTOPHRMeQzTvPu87seBgYVgSFlzoC
-         RpIqBRU4z4rhPn3FJKNw1aUo0ETJtlmTTAJAXba2mOq0hK48Qvmb6vbFHvGu/MMm4K0K
-         SH/PJUOUMIeU61b1brU86p4nC8jjjJWfvdCt/um6I2O2/hTT96D725ttBcbzD42e0ciw
-         o+5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700130909; x=1700735709;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=wnBSrgqOtUFJ68G1VtwZiej43nPaE3HHJPkSErJV3vI=;
-        b=oEu1uUr1HpMPS8gPXnbFGYGv8pHgezq7GKd2Z5Kii8kn1yaqEgaLZliPwX+uFyZYDH
-         XFVMl/LnxlkCszW8MjyC6gsz4tD9HR7sHiPwjZygS2z1WjHZFWR6rX2wQH8RCdMhoV5f
-         xfa5B3CGzaUGLcgz9sBSTj+gkGvEgy2Y1RgtMIEq8eXR+lqT9meguQeZniQNxl98pEh2
-         wDfGdiBYpf7y2VOTGj5fVot8jIcMR8N3WdUYp2EssN7qD6jWv93VBM8hhPO9HlaWZLvJ
-         8I6D7HbW1Oh9suVCCIWqww48sXoMFnT1qeXxFOVTYx5j7D4pIeKjEADtUilcZ2m12mxG
-         IQHA==
-X-Gm-Message-State: AOJu0YyFaOlo0I1zO1xKIaQArNQTQCbkJKfMyqWN4idDOCtLNLOJLaP+
-        9UunGuqT7cGByCILSS8RTvFOi7eG5C+YsC2/ufXvwg==
-X-Google-Smtp-Source: AGHT+IGuIx5cTnA2BbuLI2scrcKPDTm5iT0N/S7DLT1h4K3KNloqvqXTr4TKC0FYyTvb6AouuCtJXqbnyTPQgSwWuHc=
-X-Received: by 2002:a2e:a417:0:b0:2c6:ec37:fb5 with SMTP id
- p23-20020a2ea417000000b002c6ec370fb5mr595336ljn.10.1700130908682; Thu, 16 Nov
- 2023 02:35:08 -0800 (PST)
-MIME-Version: 1.0
-References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
- <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com> <87bkbudrqq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-In-Reply-To: <87bkbudrqq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-From:   =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
-Date:   Thu, 16 Nov 2023 18:34:57 +0800
-Message-ID: <CACSyD1N2QZ7iL9wRFWErmzC2Dw5cH2t2=QtRDyHxKGQv2GRYKA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
- failure in two scenarios
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Yosry Ahmed <yosryahmed@google.com>, akpm@linux-foundation.org,
-        hannes@cmpxchg.org, nphamcs@gmail.com, sjenning@redhat.com,
-        ddstreet@ieee.org, vitaly.wool@konsulko.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        Thu, 16 Nov 2023 05:35:16 -0500
+Received: from mail.hugovil.com (mail.hugovil.com [162.243.120.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31EDAD42;
+        Thu, 16 Nov 2023 02:35:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=hugovil.com
+        ; s=x; h=Subject:Content-Transfer-Encoding:Mime-Version:Message-Id:Cc:To:From
+        :Date:subject:date:message-id:reply-to;
+        bh=hATFZBvv9C0tyg+qA91L6v4ZurGsEZYprS7gdv+GBJ8=; b=IH1ZtbPTAuU0WICTCh4llxJigD
+        E/G3qGRosmSCagARmbK1UzD/WCTB8v3H/CATKlDAxE2+VOad+/3t89p4RArERBubpIpED6d3i3QVx
+        Cow9yH27OMWDCWxDHyiR1Dkfo/41+RFY65o0UsGUORKREvdW1EjViu+TnDMZe7Vj1JL4=;
+Received: from modemcable168.174-80-70.mc.videotron.ca ([70.80.174.168]:59436 helo=asus64.hugovil.com)
+        by mail.hugovil.com with esmtpa (Exim 4.92)
+        (envelope-from <hugo@hugovil.com>)
+        id 1r3ZiB-0000sO-Jg; Thu, 16 Nov 2023 05:35:04 -0500
+Date:   Thu, 16 Nov 2023 05:35:02 -0500
+From:   Hugo Villeneuve <hugo@hugovil.com>
+To:     Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Cc:     <git@amd.com>, <michal.simek@amd.com>, <jacmet@sunsite.dk>,
+        <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <corbet@lwn.net>, <christophe.leroy@csgroup.eu>,
+        <rdunlap@infradead.org>, <airlied@redhat.com>,
+        <ogabbay@kernel.org>, <linux-doc@vger.kernel.org>,
+        <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
+        <shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>
+Message-Id: <20231116053502.a66a6da2a82db94f4cbdb350@hugovil.com>
+In-Reply-To: <20231116072915.3338387-3-manikanta.guntupalli@amd.com>
+References: <20231116072915.3338387-1-manikanta.guntupalli@amd.com>
+        <20231116072915.3338387-3-manikanta.guntupalli@amd.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 70.80.174.168
+X-SA-Exim-Mail-From: hugo@hugovil.com
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
+X-Spam-Level: 
+X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED,URIBL_CSS autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH V3 2/2] serial: uartlite: Use dynamic allocation for
+ major number when uart ports > 4
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on mail.hugovil.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->
-> This sounds reasonable for me.  Just don't forget to change other
-> swap_range_free() callers too.
+On Thu, 16 Nov 2023 12:59:15 +0530
+Manikanta Guntupalli <manikanta.guntupalli@amd.com> wrote:
 
-Got it, thanks.
+Hi,
 
->
-> --
-> Best Regards,
-> Huang, Ying
+> Device number 204 has a range of minors on major number.
+> uart_register_driver is failing due to lack of minor numbers
+> when more number of uart ports used. So, to avoid minor number
+> limitation on 204 major number use dynamic major allocation
+> when more than 4 uart ports used otherwise use static major
+> allocation.
+> 
+> https://docs.kernel.org/arch/arm/sa1100/serial_uart.html
+> 
+> Signed-off-by: Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+> ---
+> Changes for V2:
+> Update logic to use either static or dynamic major allocation.
+> Update commit description.
+> Update description of SERIAL_UARTLITE_NR_UARTS in Kconfig.
+> Changes for V3:
+> Fix typo.
+> Remove parentheses.
+> ---
+>  drivers/tty/serial/Kconfig    | 2 ++
+>  drivers/tty/serial/uartlite.c | 5 +++++
+>  2 files changed, 7 insertions(+)
+> 
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 732c893c8d16..c3c82b740078 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -532,6 +532,8 @@ config SERIAL_UARTLITE_NR_UARTS
+>  	help
+>  	  Set this to the number of uartlites in your system, or the number
+>  	  you think you might implement.
+> +	  If maximum number of uartlite serial ports are more than 4, then driver uses
+
+"are more" -> "is more"
+
+"then driver" -> "the driver" (or "then the driver")
+
+Hugo.
+
+> +	  dynamic allocation instead of static allocation for major number.
+>  
+>  config SERIAL_SUNCORE
+>  	bool
+> diff --git a/drivers/tty/serial/uartlite.c b/drivers/tty/serial/uartlite.c
+> index 404c14acafa5..66d751edcf45 100644
+> --- a/drivers/tty/serial/uartlite.c
+> +++ b/drivers/tty/serial/uartlite.c
+> @@ -24,8 +24,13 @@
+>  #include <linux/pm_runtime.h>
+>  
+>  #define ULITE_NAME		"ttyUL"
+> +#if CONFIG_SERIAL_UARTLITE_NR_UARTS > 4
+> +#define ULITE_MAJOR             0       /* use dynamic node allocation */
+> +#define ULITE_MINOR             0
+> +#else
+>  #define ULITE_MAJOR		204
+>  #define ULITE_MINOR		187
+> +#endif
+>  #define ULITE_NR_UARTS		CONFIG_SERIAL_UARTLITE_NR_UARTS
+>  
+>  /* ---------------------------------------------------------------------
+> -- 
+> 2.25.1
+> 
+
+
+-- 
+Hugo Villeneuve <hugo@hugovil.com>
