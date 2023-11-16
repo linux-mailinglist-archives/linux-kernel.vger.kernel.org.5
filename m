@@ -2,68 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E6877EDFDA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8F37EDFDC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233461AbjKPL3Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:29:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44708 "EHLO
+        id S1345094AbjKPLaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:30:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230503AbjKPL3X (ORCPT
+        with ESMTP id S1345061AbjKPLaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:29:23 -0500
-Received: from mail-yw1-x1129.google.com (mail-yw1-x1129.google.com [IPv6:2607:f8b0:4864:20::1129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A7D4C2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:29:20 -0800 (PST)
-Received: by mail-yw1-x1129.google.com with SMTP id 00721157ae682-5a8628e54d4so5697017b3.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:29:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700134159; x=1700738959; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=S5lTa43//cUFklB5+ZWKlvD2U+T55CUcIy8KREpqNZA=;
-        b=dn4yo0yCL0T25fTp0gItWCkqazues1hxwSDEHm16+GIUr0zxG/689urb77ku0Jpdbx
-         KlQ8Mk5mzGUi9aARyWms+0JkQessRdTOYD5EbwjGgx690QDRyBDOu0ArCUb/JuIrmsIY
-         6Q7qzLapZzel12fDxFSjxbNYcvyn+kt+isQIJQyq924U/kRhMtRaB28aRSbojufmVQiQ
-         Yi6REDRwL5eM3xJUy3mE5K3YOhTHHgHkQ98rlSqAMZC066EdeclOZi9MeVvUWoGqGcPd
-         HOVNcplkU6/dzHYqv75ex9dRqLTZOEH2un+fFFHVMnQhzbx7NXa4Qek62bb9Z9K/5jOx
-         /hgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700134159; x=1700738959;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=S5lTa43//cUFklB5+ZWKlvD2U+T55CUcIy8KREpqNZA=;
-        b=hebUFHvv6Ox+f7OnErjiXO9tNlWQ96c+WmPrYp1S5yIBUzFl73O34quwFhvas3yr5/
-         rJaHh/KHnl/OQc7tht6rW4vue1ErShjAyiBTSxswIzY5Nt99lol+eBZZNdcMAGXaI90c
-         F4qliEBfwq/nkKrTfe7dmS1UfLvx7xaLJS9lg4Nh4yLCThJByJHI4g0tYoOScPFLM7aO
-         uLINomTXK96/4LoC68ULWk/JNqscfLtcsr4BnGi4xuDs8bv5fe4k9Lq5PoKmPvQ3aYKQ
-         wnqnjYWPZS7vQHBqZ/p3Y5P2gx3WFx5fuxrV/Moy2Uzgd0Y2W1O99oy3BNM2LiEXc13g
-         SzDA==
-X-Gm-Message-State: AOJu0Yx+Z9m8FxBS58RceP+28nB5Ve4M+FyqEo4z3lab0JDppQ3HGd0H
-        FCsnXT7OV29oEZkFkHpw81++g9eRSpaHXLqI8Lpy+w==
-X-Google-Smtp-Source: AGHT+IGErFMqPkXK2Jal0NKNMlezVIeEoPnpOpWdwKLNkwKg18d8jKM1z5k/zbLBqUCnqanAX89cbCNB/R+NRbHjXwA=
-X-Received: by 2002:a0d:d686:0:b0:570:2542:cc9b with SMTP id
- y128-20020a0dd686000000b005702542cc9bmr672414ywd.18.1700134159197; Thu, 16
- Nov 2023 03:29:19 -0800 (PST)
+        Thu, 16 Nov 2023 06:30:15 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6963185;
+        Thu, 16 Nov 2023 03:30:11 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG9laVI025234;
+        Thu, 16 Nov 2023 11:30:00 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=3/ytqBah9is+FJixenb+BRyiDdTZmOdCA6hgFo07y7w=;
+ b=o3tt30Qwkz9cP/m2sFDjeYL9umQl1YbOMvuqqP2ZQRGythgAx2mwdu3c2Z/tCANiDZn8
+ n59pSocwcRSHWOJTnb3jCwHTasFPYr/YcdUVoA9+w+9nDyBB/yiQOrmKN9qV0n28Hoy3
+ RyPFvv5CQsYOFUyo5wWHK74yUk8PCsHNXz90BtNF1bS+U2ODCKG/7r9yJgZqjy+SXLPE
+ In+gNl4g+k9f7fEh4md2EVh0T8PdJK6dQtyZ919K0HSZUKyHOWYDOzV2HgTmJWtD3wJ7
+ nGOEY8YK/EBCsZaIXdxW/hxChTbElFbzM8tlOENKNbIxfVlYf/NNVr7K8H9IOtOv4ksP Bw== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud6echduj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 11:30:00 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGBTwF7026385
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 11:29:58 GMT
+Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 03:29:54 -0800
+Message-ID: <c46e3e0c-2870-4025-b00e-a0cc5b2ffbc3@quicinc.com>
+Date:   Thu, 16 Nov 2023 19:29:52 +0800
 MIME-Version: 1.0
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
-In-Reply-To: <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 16 Nov 2023 13:29:07 +0200
-Message-ID: <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/9] net: mdio: ipq4019: Enable GPIO reset for ipq5332
+ platform
+Content-Language: en-US
+To:     Robert Marko <robert.marko@sartura.hr>
+CC:     Andrew Lunn <andrew@lunn.ch>, <agross@kernel.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <hkallweit1@gmail.com>, <linux@armlinux.org.uk>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-4-quic_luoj@quicinc.com>
+ <e740a206-37af-49b1-a6b6-baa3c99165c0@lunn.ch>
+ <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
+ <CA+HBbNG2Zx36oFT=dN3y21Ms0Dsy4C+cObe-yhsCEXctt6Btkg@mail.gmail.com>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <CA+HBbNG2Zx36oFT=dN3y21Ms0Dsy4C+cObe-yhsCEXctt6Btkg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: 5t6qwSopZgLTVO6BoSMzySsdVOL_88IF
+X-Proofpoint-ORIG-GUID: 5t6qwSopZgLTVO6BoSMzySsdVOL_88IF
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_09,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 adultscore=0
+ lowpriorityscore=0 malwarescore=0 mlxscore=0 mlxlogscore=999 bulkscore=0
+ suspectscore=0 phishscore=0 priorityscore=1501 spamscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311160091
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -74,117 +90,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->
-> Hi,
->
->
-> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
-> >> +
-> >> +               ctx->connector = connector;
-> >> +       }
-> >>
-> >>          if (ctx->info->id == ID_IT66121) {
-> >>                  ret = regmap_write_bits(ctx->regmap, IT66121_CLK_BANK_REG,
-> >> @@ -1632,16 +1651,13 @@ static const char * const it66121_supplies[] = {
-> >>          "vcn33", "vcn18", "vrf12"
-> >>   };
-> >>
-> >> -static int it66121_probe(struct i2c_client *client)
-> >> +int it66121_create_bridge(struct i2c_client *client, bool of_support,
-> >> +                         bool hpd_support, bool audio_support,
-> >> +                         struct drm_bridge **bridge)
-> >>   {
-> >> +       struct device *dev = &client->dev;
-> >>          int ret;
-> >>          struct it66121_ctx *ctx;
-> >> -       struct device *dev = &client->dev;
-> >> -
-> >> -       if (!i2c_check_functionality(client->adapter, I2C_FUNC_I2C)) {
-> >> -               dev_err(dev, "I2C check functionality failed.\n");
-> >> -               return -ENXIO;
-> >> -       }
-> >>
-> >>          ctx = devm_kzalloc(dev, sizeof(*ctx), GFP_KERNEL);
-> >>          if (!ctx)
-> >> @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c_client *client)
-> >>
-> >>          ctx->dev = dev;
-> >>          ctx->client = client;
-> >> -       ctx->info = i2c_get_match_data(client);
-> >> -
-> >> -       ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
-> >> -       if (ret)
-> >> -               return ret;
-> >> -
-> >> -       ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
-> >> -       if (ret)
-> >> -               return ret;
-> >> -
-> >> -       i2c_set_clientdata(client, ctx);
-> >>          mutex_init(&ctx->lock);
-> >>
-> >> -       ret = devm_regulator_bulk_get_enable(dev, ARRAY_SIZE(it66121_supplies),
-> >> -                                            it66121_supplies);
-> >> -       if (ret) {
-> >> -               dev_err(dev, "Failed to enable power supplies\n");
-> >> -               return ret;
-> >> +       if (of_support) {
-> >> +               ret = it66121_of_read_bus_width(dev, &ctx->bus_width);
-> >> +               if (ret)
-> >> +                       return ret;
-> >> +
-> >> +               ret = it66121_of_get_next_bridge(dev, &ctx->next_bridge);
-> >> +               if (ret)
-> >> +                       return ret;
-> >> +       } else {
-> >> +               ctx->bus_width = 24;
-> >> +               ctx->next_bridge = NULL;
-> >>          }
-> > A better alternative would be to turn OF calls into fwnode calls and
-> > to populate the fwnode properties. See
-> > drivers/platform/x86/intel/chtwc_int33fe.c for example.
->
->
-> Honestly, I don't want to leave any scratch(breadcrumbs).
-> I'm worries about that turn OF calls into fwnode calls will leave something unwanted.
->
-> Because I am not sure if fwnode calls will make sense in the DT world, while my patch
-> *still* be useful in the DT world.
 
-fwnode calls work for both DT and non-DT cases. In the DT case they
-work with DT nodes and properties. In the non-DT case, they work with
-manually populated properties.
 
-> Because the newly introduced it66121_create_bridge()
-> function is a core. I think It's better leave this task to a more advance programmer.
-> if there have use case. It can be introduced at a latter time, probably parallel with
-> the DT.
->
-> I think DT and/or ACPI is best for integrated devices, but it66121 display bridges is
-> a i2c slave device. Personally, I think slave device shouldn't be standalone. I'm more
-> prefer to turn this driver to support hot-plug, even remove the device on the run time
-> freely when detach and allow reattach. Like the I2C EEPROM device in the monitor (which
-> contains the EDID, with I2C slave address 0x50). The I2C EEPROM device *also* don't has
-> a corresponding struct device representation in linux kernel.
+On 11/16/2023 7:19 PM, Robert Marko wrote:
+> On Thu, Nov 16, 2023 at 12:14 PM Jie Luo <quic_luoj@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 11/15/2023 11:11 PM, Andrew Lunn wrote:
+>>> On Wed, Nov 15, 2023 at 11:25:09AM +0800, Luo Jie wrote:
+>>>> Before doing GPIO reset on the MDIO slave devices, the common clock
+>>>> output to MDIO slave device should be enabled, and the related GCC
+>>>> clocks also need to be configured.
+>>>>
+>>>> Because of these extra configurations, the MDIO bus level GPIO and
+>>>> PHY device level GPIO can't be leveraged.
+>>>
+>>> Its not clear to me why the normal reset cannot be used. The MBIO bus
+>>> driver can probe, setup the clocks, and then register the MDIO bus to
+>>> the core. The core can then use the GPIO resets.
+>>>
+>>> What am i missing?
+>>>
+>>>        Andrew
+>>
+>> Hi Andrew,
+>> Looks we can leverage the MDIO bus GPIO to reset qca8084 PHY, but the
+>> mdio bus gpio only supports one GPIO number.
+> 
+> But, you can specify a PHY specific reset-gpio under the PHY subnode.
+> However, you must specify the PHY ID via compatible then, please look at:
+> https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git/tree/Documentation/devicetree/bindings/net/ethernet-phy.yaml?h=next-20231116#n36
+> 
+> I do this commonly when there are multiple reset GPIO-s for different ethernet
+> PHY-s.
+> 
+> Regards,
+> Robert
 
-It has. See i2c_client::dev.
+Got it, thanks Robert for the information, i will try the GPIO reset of
+PHY DT node, and update it in the next patch set.
 
-> so I still think It is best to make this drivers functional as a static lib, but I want
-> to hear you to say more. Why it would be a *better* alternative to turn OF calls into
-> fwnode calls? what are the potential benefits?
-
-Because then you can populate device properties from your root device.
-Because it allows the platform to specify the bus width instead of
-hardcoding 24 bits (which might work in your case, but might not be
-applicable to another user next week).
-
-Anyway, even without fwnode, I'd strongly suggest you to drop the
-it66121_create_bridge() as it is now and start by populating the i2c
-bus from your root device. Then you will need some way (fwnode?) to
-discover the bridge chain. And at the last point you will get into the
-device data and/or properties business.
-
--- 
-With best wishes
-Dmitry
+>>
+>> Here are the reasons i put the GPIO reset here.
+>> 1. Currently one MDIO bus instance only connects one qca8084 PHY as
+>> MDIO slave device on IPQ5332 platform, since the MDIO address
+>> occupied by qca8084. if the other type PHY also needs to use MDIO
+>> bus GPIO reset, then we can't cover this case.
+>>
+>> 2. Before doing the GPIO reset on qca8084, we need to enable the clock
+>> output to qca8084 by configuring eth_ldo_rdy register, and the mdio
+>> bus->reset is called after the mdio bus level reset.
+>>
+>> 3. program the mdio address of qca8084 PHY and the initialization
+>> configurations needed before the registers of qca8084 can be accessed.
+>> if we take the PHY level GPIO reset for qca8084, there is no call point
+>> to do the initialization configurations and programing PHY address in
+>> the MDIO driver code.
+>>
+>> i will check the feasibility of taking the PHY level GPIO reset and do
+>> the initial configurations in the PHY probe function.
+>>
+>> FYI, here is the sequence to bring up qca8084.
+>> a. enable clock output to qca8084.
+>> b. do gpio reset of qca8084.
+>> c. customize MDIO address and initialization configurations.
+>> d. the PHY ID can be acquired.
+>>
+>>
+>> Thanks,
+>> Jie.
+> 
+> 
+> 
