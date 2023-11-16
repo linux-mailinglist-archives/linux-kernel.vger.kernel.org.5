@@ -2,112 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0717EE975
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:43:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E587EE977
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 23:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345562AbjKPWns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 17:43:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S1345592AbjKPWn5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 17:43:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345568AbjKPWno (ORCPT
+        with ESMTP id S1345575AbjKPWnx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 17:43:44 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EE0127
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:43:41 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7a66b5f7ea7so45289739f.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:43:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700174620; x=1700779420; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+2UNwLHsfjJtEfaIA7r+LiQYjr8iboIsfl4RMvTTOCM=;
-        b=Az5QZQD6IcXGkFGd6alyN5flrwC/TGD2Vjaa6i2niOFaYlbGVLjqa839GuwhzsCDsw
-         pQArccb7jGddA+kgxJ7RGPRFw2+3AfdSHq0ceUz+3t4+gufTDBxmUdxPLoPVNBWRj0vw
-         0kMkEq4Bf5YX9UVxAurSW0dETZh4FP5upx67MTBL7VknwBAPm7ShWMohTCj0WKpb1zOf
-         s9rmeOEgyy1KlQZVg3Yik+tlYEYkDIJOHNOhiRC5mcgPJM+nTMSlX2m827nosA3pEGFm
-         lyWAYwnJG6CFHatd+ESJDEEKqdhnYDx11S/X9+m66PFxixBWxqm3xYFxXPbS4uj482BI
-         xx5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700174620; x=1700779420;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=+2UNwLHsfjJtEfaIA7r+LiQYjr8iboIsfl4RMvTTOCM=;
-        b=nZELDeJ9s9ND+azJ6RJoTwquHKcncdwbz1ypcUitL02uP3t3pst5z7Eg9MPhj0ZqOQ
-         VfPwxBX6amOMoU0/xQVCz7JRr6HEDvvZy5H9DnMbke7uHM7ZRnm0gL08Dg6kvKzilClT
-         Qp8K3ZttB8ExIpsmocO6Xq59Mn9Y7eUKvIxEPYaD2M5yUiwbmuN1FmPc52fHhzX3slJY
-         beJqrW/Om77FIxblCZN6HISlJlhJO15fn178d1XQJAjmIhjqEjLjHw0qwLRm0Rzt+BlQ
-         KSC+l3d3mRZZGe8nwKXkCgzAnBfaG/QItThWHV/gP5Zrk+OS+eNY2u3sJanQx3dUAypG
-         2p8w==
-X-Gm-Message-State: AOJu0Ywff48nTIevFEoZB5+u4HX4MRjbRQroUvdeVEiTDIAYIkzgq626
-        pbbtzSN6AimORSpYVsH/fPU3mK5riIk=
-X-Google-Smtp-Source: AGHT+IHEdYzDr/CpQ63JjHbr4tjlaXNxSmZ+9XTVRMKqfx+b2O3TJdsZu+kftxvAU6VxDxFwx8f3ag==
-X-Received: by 2002:a92:cd8a:0:b0:357:49f1:96a9 with SMTP id r10-20020a92cd8a000000b0035749f196a9mr20616667ilb.26.1700174620499;
-        Thu, 16 Nov 2023 14:43:40 -0800 (PST)
-Received: from frodo.. (c-73-78-62-130.hsd1.co.comcast.net. [73.78.62.130])
-        by smtp.googlemail.com with ESMTPSA id g12-20020a92520c000000b0035913c8423esm84399ilb.73.2023.11.16.14.43.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 14:43:39 -0800 (PST)
-From:   Jim Cromie <jim.cromie@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     catalin.marinas@arm.com, akpm@linux-foundation.org,
-        Jim Cromie <jim.cromie@gmail.com>
-Subject: [PATCH 2/2] kmemleak: add checksum to backtrace report
-Date:   Thu, 16 Nov 2023 15:43:18 -0700
-Message-ID: <20231116224318.124209-3-jim.cromie@gmail.com>
-X-Mailer: git-send-email 2.41.0
-In-Reply-To: <20231116224318.124209-1-jim.cromie@gmail.com>
-References: <20231116224318.124209-1-jim.cromie@gmail.com>
+        Thu, 16 Nov 2023 17:43:53 -0500
+Received: from omta034.useast.a.cloudfilter.net (omta034.useast.a.cloudfilter.net [44.202.169.33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C39D55
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 14:43:48 -0800 (PST)
+Received: from eig-obgw-6007a.ext.cloudfilter.net ([10.0.30.247])
+        by cmsmtp with ESMTPS
+        id 3hcJr4rWkjtZ33l5Tr0Qv0; Thu, 16 Nov 2023 22:43:51 +0000
+Received: from box5620.bluehost.com ([162.241.219.59])
+        by cmsmtp with ESMTPS
+        id 3l5Orh7E2qmEo3l5OrGrpx; Thu, 16 Nov 2023 22:43:46 +0000
+X-Authority-Analysis: v=2.4 cv=P+8pOwMu c=1 sm=1 tr=0 ts=65569b22
+ a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
+ a=OWjo9vPv0XrRhIrVQ50Ab3nP57M=:19 a=dLZJa+xiwSxG16/P+YVxDGlgEgI=:19
+ a=IkcTkHD0fZMA:10 a=BNY50KLci1gA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
+ a=HaFmDPmJAAAA:8 a=F7X9mGda89njDp2BEcwA:9 a=QEXdDO2ut3YA:10
+ a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
+        s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
+        Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
+        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=rVntcV568NsM8MUDU5i/X0W5LLzSw8KegMh5qNfTHQM=; b=xuBYHxRWYT5GIdwlB1mkYD2ekL
+        faO69R7g5KnqmUCVXoNWWHXAkJaGKUIlqEEj2fgnPgzBrxI/XaNAOnKvSWJnsl+gvkwnWldOWHZt1
+        xf7zACS9ihXrGUKSSagrne54rPAA5i2CrC46Wxe80VsbhWiGsP0+lC+X/EASE/F8Ri6SBjL7WDtZY
+        on2UqzIRUdOyzn8MOQ6G01JeRYYk1Hz9Vjsn5wOJqBPz1UhQiyLf/uM4emqkWjlYEdjOF0Rm+oIi1
+        f0nWSxtYlz3X5ypbyD3kNs+u+Mtv1vN5ElbwdbtG1xRvTU3g1O3nO61RTZOZlIlGqA8/0UFQdsSfG
+        Bj890bog==;
+Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:55476 helo=[10.0.1.47])
+        by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <re@w6rz.net>)
+        id 1r3l5M-000UkD-0u;
+        Thu, 16 Nov 2023 15:43:44 -0700
+Subject: Re: [PATCH 6.5 000/550] 6.5.12-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        stable@vger.kernel.org
+Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
+References: <20231115191600.708733204@linuxfoundation.org>
+In-Reply-To: <20231115191600.708733204@linuxfoundation.org>
+From:   Ron Economos <re@w6rz.net>
+Message-ID: <442f04f0-adae-b3ec-e3bc-90650be5d24b@w6rz.net>
+Date:   Thu, 16 Nov 2023 14:43:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
+ Thunderbird/78.14.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - box5620.bluehost.com
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - w6rz.net
+X-BWhitelist: no
+X-Source-IP: 98.207.139.8
+X-Source-L: No
+X-Exim-ID: 1r3l5M-000UkD-0u
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:55476
+X-Source-Auth: re@w6rz.net
+X-Email-Count: 4
+X-Org:  HG=bhshared;ORG=bluehost;
+X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfKX8kMHnes3p7thDjPRzYpWq367gy+sW+/VOrBcirmMvpfoK6/mAsijtQWPKox/F/tNxANUnR1lyh6oBllFJJbHMdaTEVPBktRTlibIopv+eYMr8+idh
+ FlTlCXtELQejoz0KM8mwGZ6NROKDuHBySowu/ulZwkoorIowf0NxPSQz/MQTWx0rFFdqmYcp6DuqcqVDEr6fwa/QHHEkycw/bpA=
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Change /sys/kernel/debug/kmemleak report format slightly, adding
-"(extra info)" to the backtrace header:
+On 11/15/23 11:09 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 6.5.12 release.
+> There are 550 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.5.12-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.5.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-from: "  backtrace:"
-to:   "  backtrace (crc <cksum>):"
+Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
 
-The <cksum> allows a user to see recurring backtraces without
-detailed/careful reading of multiline stacks.  So after cycling
-kmemleak-test a few times, I know some leaks are repeating.
-
-  bash-5.2# grep backtrace /sys/kernel/debug/kmemleak | wc
-     62     186    1792
-  bash-5.2# grep backtrace /sys/kernel/debug/kmemleak | sort -u | wc
-     37     111    1067
-
-syzkaller parses kmemleak for "unreferenced object" only, so is
-unaffected by this change.  Other github repos are moribund.
-
-Signed-off-by: Jim Cromie <jim.cromie@gmail.com>
----
- mm/kmemleak.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/kmemleak.c b/mm/kmemleak.c
-index 10c9b611c395..4c22a2d7cab4 100644
---- a/mm/kmemleak.c
-+++ b/mm/kmemleak.c
-@@ -362,7 +362,7 @@ static void print_unreferenced(struct seq_file *seq,
- 	warn_or_seq_printf(seq, "  comm \"%s\", pid %d, jiffies %lu\n",
- 			   object->comm, object->pid, object->jiffies);
- 	hex_dump_object(seq, object);
--	warn_or_seq_printf(seq, "  backtrace:\n");
-+	warn_or_seq_printf(seq, "  backtrace (crc %x):\n", object->checksum);
- 
- 	for (i = 0; i < nr_entries; i++) {
- 		void *ptr = (void *)entries[i];
--- 
-2.41.0
+Tested-by: Ron Economos <re@w6rz.net>
 
