@@ -2,148 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 79DB77EEA06
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:39:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26BED7EEA0B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:41:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345557AbjKPXjW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:39:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59354 "EHLO
+        id S1345577AbjKPXlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:41:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58356 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229533AbjKPXjU (ORCPT
+        with ESMTP id S229533AbjKPXle (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:39:20 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9114AC2;
-        Thu, 16 Nov 2023 15:39:17 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 41be03b00d2f7-5ab94fc098cso1004138a12.1;
-        Thu, 16 Nov 2023 15:39:17 -0800 (PST)
+        Thu, 16 Nov 2023 18:41:34 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5C36CE;
+        Thu, 16 Nov 2023 15:41:29 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id 98e67ed59e1d1-282ff1a97dcso1096291a91.1;
+        Thu, 16 Nov 2023 15:41:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700177957; x=1700782757; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=50Ymwtuz2ko8KeFyegiNrl6e2EVSLC9Vf8fKR8iXCco=;
-        b=Y+DeMWjfs5hEjSchZTnxULC4hDbfHdWknH+T6H/Dte3fp/FU7iBLadeQAkFoWg9pyO
-         4JIo8HVhbFYXNJQfjWQhaD9O+yGubM6Nh1jNqIRkXUcw0hswa1DTfXAj2hgqH/htQaUG
-         CP7N1CUKAxiPd9aI8pnRS8uICBud6SMNelCgPt9Hu2KuUYc0bEuBkiMCusnEXOA1bA+w
-         o4129x/iXO8SJrfJ8ifSVW5VJj0cLlJBv0e++61SZjd+uQs238X1YPOdM0zzcBA6EN6j
-         qcQlIePhRerO8pRR4rQYcvPvjEngw0nnzu1aKsmKpJVLzNNGArjbtwkj4pfuT0DGUFJy
-         jSAw==
+        d=gmail.com; s=20230601; t=1700178089; x=1700782889; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OiLrQwETEaOulPz2L2pYAahy/wgJNSC/2QTiYG7KmzQ=;
+        b=aFDsT7yiJH+PxhdlaU2dr0Q37h3dj1xCvy2Rse9X8i6beMcJ04r55tWtcZmMw1cVr8
+         bb52MD2bqGHJPlR3iGQHVsoRSlUJw/VkmuclijyNEA/hh2QMx4ReVCFfo3Wyz70NZFFO
+         isg7O15FlxDijWfYqU2bF7uHR0cjPCkm8ag/8DjQSH5VRUWuJn0jgNCEAJQz3FjDfWlq
+         L90WLZKDmBkXdlm2ukZlB75DAifezefGBfvsDf/7VvOtQy8pCHoNMsl9HgYXrbPpxWuF
+         wkGmne194AqHESxZ6aCDoTM2MN5Ps1fyX5UAFMZjSD1mlcDpnEZbVkkG+DYtFqzLKuVS
+         osHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700177957; x=1700782757;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=50Ymwtuz2ko8KeFyegiNrl6e2EVSLC9Vf8fKR8iXCco=;
-        b=QVGklaZ5X+cYd8aMlDNMFqLQloYFbxFT2wCpEGxECPMgHxA3OoQphyXBSESRfwkN0V
-         iRUkZoOh29Wchq1hHnLk1LCv6B71b2hreWQKtG/hqx8CjjqCZZuge3QQ9HTYJjS+4XSn
-         rqegLf/3EKgGF2f3o6DAGG2Ey5ufqxSPVrCKnNp34WNeHyhaeaBxP9I64PwSYNTaEs5B
-         upjKHGIuRalTviO6Dqv8MxIhG1Bvw2i5HYS0577ZlLQb1t6lGA1Rsc9IrxuyX5lTUwwM
-         6HSfu/PHWeD2BrauXTXfBROye6Sh/S7KsXpb8p4Dyz5MtkuRHOKw7bqzh47tyyxAw5sD
-         Qz8g==
-X-Gm-Message-State: AOJu0YyoWoS1Qem4osG1MLwyHA9dVR1x8IpSoPvfA6O0Sni7LpT24tLz
-        vwojRtlh+YLWw4+kjgusLbc=
-X-Google-Smtp-Source: AGHT+IG8asd6wbsEj49Za+y+inPnpRfkYERBuofj16jh4cVEhRGiw4pTvl3dGbgA9FuJsqyY1u7vAg==
-X-Received: by 2002:a05:6a20:6e22:b0:187:152d:c1e2 with SMTP id go34-20020a056a206e2200b00187152dc1e2mr6445847pzb.46.1700177956876;
-        Thu, 16 Nov 2023 15:39:16 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id ei8-20020a056a0080c800b00692b2a63cccsm266290pfb.210.2023.11.16.15.39.15
+        d=1e100.net; s=20230601; t=1700178089; x=1700782889;
+        h=content-transfer-encoding:subject:from:cc:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OiLrQwETEaOulPz2L2pYAahy/wgJNSC/2QTiYG7KmzQ=;
+        b=q+dpf7KJScrZi0xGBJfG43/QAFfdDIZ9JudrhZcFhxeYnnopdDZRLWHodN3tjaYpoO
+         52nsPDDOPpxO6GYQJhNrQupPFZdI956C2c7WcbquobY973I9uZ73E4Tul5O+qXKp9kyW
+         uC0cDLodq+LT8bSThBn2IhjOUX6tT2pWoNqcufLoDqqChuspqAL5bePvaHrUT7WTC+Ua
+         zE+oK7BrPtwCiilwiU4ZEsbF+nOO9jPfEarPOIFLBjV6bBx2Ynv4W43VJZmBzcn++9dB
+         xJAy/O1m6+Q7lgDSti+CnF4lkghpaNXya1/8HGCTjaFnet/Mng3LjK1yFUX/Em9Rjesm
+         mxYQ==
+X-Gm-Message-State: AOJu0Yw6prWGLhQslIcVuDdv1oyEhQ4dDMrF47Ssu22fMgBql63bq0na
+        bSPgVRlHSU6riVCCXJgnlg/BuAP7UFGWPA==
+X-Google-Smtp-Source: AGHT+IF/a64jkEMjLvU5HrTYydVXWw+sBFD8ZEbwX83QC9cBKoP+WIECyaguB9gkqym/5mt8j0/wIg==
+X-Received: by 2002:a17:90b:4c4d:b0:27f:f7e9:cad9 with SMTP id np13-20020a17090b4c4d00b0027ff7e9cad9mr14283876pjb.36.1700178088850;
+        Thu, 16 Nov 2023 15:41:28 -0800 (PST)
+Received: from [192.168.0.106] ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id q7-20020a170902edc700b001c9cb2fb8d8sm220941plk.49.2023.11.16.15.41.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 15:39:16 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <04d4d38c-9130-4749-9ef8-569528939147@roeck-us.net>
-Date:   Thu, 16 Nov 2023 15:39:14 -0800
+        Thu, 16 Nov 2023 15:41:28 -0800 (PST)
+Message-ID: <1fca50c4-6d7b-4c9b-bcea-4df17e2c2e7e@gmail.com>
+Date:   Fri, 17 Nov 2023 06:41:25 +0700
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.15 000/244] 5.15.139-rc1 review
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231115203548.387164783@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231115203548.387164783@linuxfoundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kernel Build System <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Keyrings <keyrings@vger.kernel.org>
+Cc:     David Howells <dhowells@redhat.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Dennis Clarke <dclarke@blastwave.org>
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+Subject: =?UTF-8?Q?Fwd=3A_sign-file=2Ec=3A149=3A17=3A_warning=3A_implicit_de?=
+ =?UTF-8?Q?claration_of_function_=E2=80=98ENGINE=5Fload=5Fbuiltin=5Fengines?=
+ =?UTF-8?B?4oCZ?=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 12:33, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.15.139 release.
-> There are 244 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hi,
+
+I notice a bug report on Bugzilla [1]. Quoting from it:
+
+> This feels like the linker is confused about where to find libssl.so.3
+> and/or libcrypto.so.3 for scripts/sign-file.c : 
 > 
-> Responses should be made by Fri, 17 Nov 2023 20:34:45 +0000.
-> Anything received after that time might be too late.
+>   HOSTCC  scripts/sign-file
+> scripts/sign-file.c: In function ‘read_private_key’:
+> scripts/sign-file.c:149:17: warning: implicit declaration of function ‘ENGINE_load_builtin_engines’ [-Wimplicit-function-declaration]
+>   149 |                 ENGINE_load_builtin_engines();
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:151:21: warning: implicit declaration of function ‘ENGINE_by_id’ [-Wimplicit-function-declaration]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                     ^~~~~~~~~~~~
+> scripts/sign-file.c:151:19: warning: assignment to ‘ENGINE *’ {aka ‘struct engine_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                   ^
+> scripts/sign-file.c:153:21: warning: implicit declaration of function ‘ENGINE_init’ [-Wimplicit-function-declaration]
+>   153 |                 if (ENGINE_init(e))
+>       |                     ^~~~~~~~~~~
+> scripts/sign-file.c:158:30: warning: implicit declaration of function ‘ENGINE_ctrl_cmd_string’ [-Wimplicit-function-declaration]
+>   158 |                         ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0),
+>       |                              ^~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:114:32: note: in definition of macro ‘ERR’
+>   114 |                 bool __cond = (cond);                   \
+>       |                                ^~~~
+> scripts/sign-file.c:160:31: warning: implicit declaration of function ‘ENGINE_load_private_key’ [-Wimplicit-function-declaration]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                               ^~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:160:29: warning: assignment to ‘EVP_PKEY *’ {aka ‘struct evp_pkey_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                             ^
+> /usr/local/bin/ld: /var/tmp/root/ccqqhtVK.o: in function `main':
+> sign-file.c:(.text.startup+0x346): undefined reference to `ENGINE_load_builtin_engines'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x357): undefined reference to `ENGINE_by_id'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x37e): undefined reference to `ENGINE_init'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x3a8): undefined reference to `ENGINE_ctrl_cmd_string'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x3d3): undefined reference to `ENGINE_load_private_key'
+> collect2: error: ld returned 1 exit status
+> make[1]: *** [scripts/Makefile.host:111: scripts/sign-file] Error 1
+> make: *** [Makefile:1273: scripts] Error 2
 > 
-Build results:
-	total: 160 pass: 158 fail: 2
-Failed builds:
-	i386:tools/perf
-	x86_64:tools/perf
-Qemu test results:
-	total: 509 pass: 509 fail: 0
+> 
+> If I try to just deal with the sign-file.c by itself I see that I can compile
+> and link fine with OpenSSL 3.1.4 : 
+> 
+> e# 
+> e# which openssl 
+> /usr/local/bin/openssl
+> e# 
+> e# ldd /usr/local/bin/openssl
+>         linux-vdso.so.1 (0x00007ffcfb3f7000)
+>         libssl.so.3 => /usr/local/lib/libssl.so.3 (0x00007f6f3b2fb000)
+>         libcrypto.so.3 => /usr/local/lib/libcrypto.so.3 (0x00007f6f3ac00000)
+>         libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f6f3b2d3000)
+>         libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f6f3aa1f000)
+>         /lib64/ld-linux-x86-64.so.2 (0x00007f6f3b3e5000)
+> e# 
+> e# openssl version 
+> OpenSSL 3.1.4 24 Oct 2023 (Library: OpenSSL 3.1.4 24 Oct 2023)
+> e# 
+> 
+> I can compile the source fine ( with strange warnings ) with the
+>  latest OpenSSL bits : 
+> 
+> 
+> e# /usr/local/gcc13/bin/gcc -c -g -O0 -m64 -I/usr/local/include  -I/usr/local/include/openssl -o scripts/sign-file.o scripts/sign-file.c  
+> scripts/sign-file.c: In function ‘read_private_key’:
+> scripts/sign-file.c:149:17: warning: implicit declaration of function ‘ENGINE_load_builtin_engines’ [-Wimplicit-function-declaration]
+>   149 |                 ENGINE_load_builtin_engines();
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:151:21: warning: implicit declaration of function ‘ENGINE_by_id’ [-Wimplicit-function-declaration]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                     ^~~~~~~~~~~~
+> scripts/sign-file.c:151:19: warning: assignment to ‘ENGINE *’ {aka ‘struct engine_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                   ^
+> scripts/sign-file.c:117:25: warning: implicit declaration of function ‘errx’ [-Wimplicit-function-declaration]
+>   117 |                         errx(1, fmt, ## __VA_ARGS__);   \
+>       |                         ^~~~
+> scripts/sign-file.c:152:17: note: in expansion of macro ‘ERR’
+>   152 |                 ERR(!e, "Load PKCS#11 ENGINE");
+>       |                 ^~~
+> scripts/sign-file.c:153:21: warning: implicit declaration of function ‘ENGINE_init’ [-Wimplicit-function-declaration]
+>   153 |                 if (ENGINE_init(e))
+>       |                     ^~~~~~~~~~~
+> scripts/sign-file.c:158:30: warning: implicit declaration of function ‘ENGINE_ctrl_cmd_string’ [-Wimplicit-function-declaration]
+>   158 |                         ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0),
+>       |                              ^~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:114:32: note: in definition of macro ‘ERR’
+>   114 |                 bool __cond = (cond);                   \
+>       |                                ^~~~
+> scripts/sign-file.c:160:31: warning: implicit declaration of function ‘ENGINE_load_private_key’ [-Wimplicit-function-declaration]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                               ^~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:160:29: warning: assignment to ‘EVP_PKEY *’ {aka ‘struct evp_pkey_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                             ^
+> e# 
+> 
+> Then we link gently : 
+> 
+> e# /usr/local/gcc13/bin/gcc -g -O0 -m64 -L/usr/local/include  -L/usr/local/include/openssl -Wl,-rpath=/usr/local/lib,-enable-new-dtags -o scripts/sign-file scripts/sign-file.o -lssl -lcrypto
+> e# 
+> 
+> e# ls -l scripts/sign-file
+> -rwxr-xr-x 1 root root 37800 Nov 16 16:22 scripts/sign-file
+> e# 
+> e# readelf -delV scripts/sign-file  | grep -E 'NEED|NAME|PATH' 
+>   [10] .gnu.version_r    VERNEED          0000000000400be8  00000be8
+>  0x0000000000000001 (NEEDED)             Shared library: [libssl.so.3]
+>  0x0000000000000001 (NEEDED)             Shared library: [libcrypto.so.3]
+>  0x0000000000000001 (NEEDED)             Shared library: [libc.so.6]
+>  0x000000000000001d (RUNPATH)            Library runpath: [/usr/local/lib]
+>  0x000000006ffffffe (VERNEED)            0x400be8
+>  0x000000006fffffff (VERNEEDNUM)         2
+> e# 
+> e# ldd scripts/sign-file
+>         linux-vdso.so.1 (0x00007ffed8579000)
+>         libssl.so.3 => /usr/local/lib/libssl.so.3 (0x00007fde99d2e000)
+>         libcrypto.so.3 => /usr/local/lib/libcrypto.so.3 (0x00007fde99800000)
+>         libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fde9961f000)
+>         libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007fde99600000)
+>         /lib64/ld-linux-x86-64.so.2 (0x00007fde99e18000)
+> e# 
+> e# scripts/sign-file -foo
+> scripts/sign-file: invalid option -- 'f'
+> Usage: scripts/sign-file [-dp] <hash algo> <key> <x509> <module> [<dest>]
+>        scripts/sign-file -s <raw sig> <hash algo> <x509> <module> [<dest>]
+> e# 
+> 
+>  * * *  T H E R E F O R E     I T    C O M P I L E S    F I N E    * * *
+> 
+> However my Linux kernel compile fails on that : 
+> 
+> e# /usr/bin/time -p /usr/bin/nice -n +18 make 2>&1 | tee ../linux-6.1.62.make_j1.log
+>   HOSTCC  scripts/sign-file
+> scripts/sign-file.c: In function ‘read_private_key’:
+> scripts/sign-file.c:149:17: warning: implicit declaration of function ‘ENGINE_load_builtin_engines’ [-Wimplicit-function-declaration]
+>   149 |                 ENGINE_load_builtin_engines();
+>       |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:151:21: warning: implicit declaration of function ‘ENGINE_by_id’ [-Wimplicit-function-declaration]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                     ^~~~~~~~~~~~
+> scripts/sign-file.c:151:19: warning: assignment to ‘ENGINE *’ {aka ‘struct engine_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   151 |                 e = ENGINE_by_id("pkcs11");
+>       |                   ^
+> scripts/sign-file.c:153:21: warning: implicit declaration of function ‘ENGINE_init’ [-Wimplicit-function-declaration]
+>   153 |                 if (ENGINE_init(e))
+>       |                     ^~~~~~~~~~~
+> scripts/sign-file.c:158:30: warning: implicit declaration of function ‘ENGINE_ctrl_cmd_string’ [-Wimplicit-function-declaration]
+>   158 |                         ERR(!ENGINE_ctrl_cmd_string(e, "PIN", key_pass, 0),
+>       |                              ^~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:114:32: note: in definition of macro ‘ERR’
+>   114 |                 bool __cond = (cond);                   \
+>       |                                ^~~~
+> scripts/sign-file.c:160:31: warning: implicit declaration of function ‘ENGINE_load_private_key’ [-Wimplicit-function-declaration]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                               ^~~~~~~~~~~~~~~~~~~~~~~
+> scripts/sign-file.c:160:29: warning: assignment to ‘EVP_PKEY *’ {aka ‘struct evp_pkey_st *’} from ‘int’ makes pointer from integer without a cast [-Wint-conversion]
+>   160 |                 private_key = ENGINE_load_private_key(e, private_key_name,
+>       |                             ^
+> /usr/local/bin/ld: /var/tmp/root/ccqqhtVK.o: in function `main':
+> sign-file.c:(.text.startup+0x346): undefined reference to `ENGINE_load_builtin_engines'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x357): undefined reference to `ENGINE_by_id'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x37e): undefined reference to `ENGINE_init'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x3a8): undefined reference to `ENGINE_ctrl_cmd_string'
+> /usr/local/bin/ld: sign-file.c:(.text.startup+0x3d3): undefined reference to `ENGINE_load_private_key'
+> collect2: error: ld returned 1 exit status
+> make[1]: *** [scripts/Makefile.host:111: scripts/sign-file] Error 1
+> make: *** [Makefile:1273: scripts] Error 2
+> real 0.92
+> user 0.74
+> sys 0.18
+> e#
+> 
+> Looks like some confusion with the linker ? 
+> 
+> Setting LDFLAGS=-rpath=/usr/local/openssl/lib -enable-new-dtag seems to mean
+> nothing.
+> 
+> Not related to https://bugzilla.kernel.org/show_bug.cgi?id=215750 but I *feel* that
+> this code needs a hug.
 
-Sam perf build failure as reported by others. Note that I see the
-same problem in the v5.10.y release candidate.
+See Bugzilla for the full thread.
 
-Guenter
+AFAIK, this looks like a bug when the kernel is compiled against custom
+(non-system) version of OpenSSL library.
 
+Thanks.
+
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=218154
+
+-- 
+An old man doll... just what I always wanted! - Clara
