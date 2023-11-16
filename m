@@ -2,147 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C11507EE152
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DE97EE16A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345150AbjKPNRJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:17:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34652 "EHLO
+        id S1345194AbjKPNUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:20:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230371AbjKPNRG (ORCPT
+        with ESMTP id S230371AbjKPNUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:17:06 -0500
-Received: from albert.telenet-ops.be (albert.telenet-ops.be [IPv6:2a02:1800:110:4::f00:1a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD548182
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:17:02 -0800 (PST)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed40:1f07:ca72:c5f4:4244])
-        by albert.telenet-ops.be with bizsmtp
-        id B1Gv2B00S4CbZ7h061Gvkt; Thu, 16 Nov 2023 14:17:01 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtp (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r3cEe-009Qwb-9o;
-        Thu, 16 Nov 2023 14:16:55 +0100
-Received: from geert by rox.of.borg with local (Exim 4.95)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1r3cEp-007jda-GC;
-        Thu, 16 Nov 2023 14:16:55 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Christian Zigotzky <chzigotzky@xenosoft.de>,
-        David Airlie <airlied@redhat.com>,
-        Gerd Hoffmann <kraxel@redhat.com>,
-        Gurchetan Singh <gurchetansingh@chromium.org>,
-        Chia-I Wu <olvaffe@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Laurent Vivier <lvivier@redhat.com>,
-        Javier Martinez Canillas <javierm@redhat.com>,
-        Hamza Mahfooz <hamza.mahfooz@amd.com>,
-        linux-m68k@lists.linux-m68k.org
-Cc:     dri-devel@lists.freedesktop.org,
-        virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>
-Subject: [PATCH v2] drm/virtio: Add suppport for non-native buffer formats
-Date:   Thu, 16 Nov 2023 14:16:54 +0100
-Message-Id: <47a81d2e0e47b1715718779b6978a8b595cc7c5d.1700140609.git.geert@linux-m68k.org>
-X-Mailer: git-send-email 2.34.1
+        Thu, 16 Nov 2023 08:20:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9828F1A5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:20:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700140801;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GPkDPAa9DjBPZECLFiqpzdyylbq5Vs56hlKHGZVc4Zg=;
+        b=Tmrk87ruF11yQKlVjx4W8CyCw5x1v44M04G0Dt6+f2NCY5HQNs9Mf54TvYO5piraup+VQf
+        nm5g1wAc0vjcMByso6MqD7M6SAcmFtc6/buffzTugmZouNVtnmn8maCYs2v5e4r6TPTD2T
+        LH8/C73/WedVuwTuB27fGiPJcXPjO/c=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-605-7eREEjJ2Md-PE368AY0R1w-1; Thu, 16 Nov 2023 08:19:57 -0500
+X-MC-Unique: 7eREEjJ2Md-PE368AY0R1w-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 15356932D2C;
+        Thu, 16 Nov 2023 13:19:57 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.226.23])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 629EF1121309;
+        Thu, 16 Nov 2023 13:19:54 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Thu, 16 Nov 2023 14:18:53 +0100 (CET)
+Date:   Thu, 16 Nov 2023 14:18:49 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     David Howells <dhowells@redhat.com>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Chuck Lever <chuck.lever@oracle.com>,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rxrpc_find_service_conn_rcu: use read_seqbegin() rather
+ than read_seqbegin_or_lock()
+Message-ID: <20231116131849.GA27763@redhat.com>
+References: <20231027095842.GA30868@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231027095842.GA30868@redhat.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using virtgpu on a big-endian machine, e.g. powerpc QEMU:
+David, Al,
 
-    virtio-pci 0000:00:02.0: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
+So do you agree that
 
-or m68k/virt:
+	- the usage of read_seqbegin_or_lock/need_seqretry in
+	  this code makes no sense because read_seqlock_excl()
+	  is not possible
 
-    virtio-mmio virtio-mmio.125: [drm] *ERROR* fbdev: Failed to setup generic emulation (ret=-2)
+	- this patch doesn't change the current behaviour but
+	  simplifies the code and makes it more clear
 
-and the graphical display fails to come up.
+?
 
-Before, the call to drm_mode_addfb() caused a translation from a fourcc
-format (XR24) to a bpp/depth pair (32/24) to a potentially different fourcc
-format (BX24 on big-endian), due to the quirk processing in
-drm_driver_legacy_fb_format().  After, the original fourcc format (XR24)
-is passed unmodified.
-
-However, the virtgpu DRM driver supports only a single format for its
-main plane: DRM_FORMAT_HOST_XRGB8888, which is XR24 on little-endian,
-and BX24 on big-endian.  I.e. on big-endian, virtgpu does not support
-XR24, which is the default DRM format, and must be supported by all
-drivers.  Before, this was reported, but didn't lead to a failure:
-
-    virtio-mmio virtio-mmio.125: [drm] bpp/depth value of 32/24 not supported
-    virtio-mmio virtio-mmio.125: [drm] No compatible format found
-
-As the core virtgpu driver and device support both XR24 and BX24 on both
-little-endian and big-endian just fine, fix this extending the list of
-supported formats for main plane and cursor plane to XR24/BX24 resp.
-AR24/BA24.
-
-Fixes: 6ae2ff23aa43a0c4 ("drm/client: Convert drm_client_buffer_addfb() to drm_mode_addfb2()")
-Reported-by: Christian Zigotzky <chzigotzky@xenosoft.de>
-Closes: https://lore.kernel.org/r/c47fba21-3ae9-4021-9f4a-09c2670ebdbc@xenosoft.de
-Suggested-by: Gerd Hoffmann <kraxel@redhat.com>
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-v2:
-  - Fix truncated one-line summary.
----
- drivers/gpu/drm/virtio/virtgpu_display.c | 11 +++++++++--
- drivers/gpu/drm/virtio/virtgpu_plane.c   |  6 ++++--
- 2 files changed, 13 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/gpu/drm/virtio/virtgpu_display.c b/drivers/gpu/drm/virtio/virtgpu_display.c
-index ad924a8502e9025c..49c89000aec33f23 100644
---- a/drivers/gpu/drm/virtio/virtgpu_display.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_display.c
-@@ -301,9 +301,16 @@ virtio_gpu_user_framebuffer_create(struct drm_device *dev,
- 	struct virtio_gpu_framebuffer *virtio_gpu_fb;
- 	int ret;
- 
--	if (mode_cmd->pixel_format != DRM_FORMAT_HOST_XRGB8888 &&
--	    mode_cmd->pixel_format != DRM_FORMAT_HOST_ARGB8888)
-+	switch (mode_cmd->pixel_format) {
-+	case DRM_FORMAT_XRGB8888:
-+	case DRM_FORMAT_ARGB8888:
-+	case DRM_FORMAT_BGRX8888:
-+	case DRM_FORMAT_BGRA8888:
-+		break;
-+
-+	default:
- 		return ERR_PTR(-ENOENT);
-+	}
- 
- 	/* lookup object associated with res handle */
- 	obj = drm_gem_object_lookup(file_priv, mode_cmd->handles[0]);
-diff --git a/drivers/gpu/drm/virtio/virtgpu_plane.c b/drivers/gpu/drm/virtio/virtgpu_plane.c
-index a2e045f3a0004a1b..a547d76b8fb0a77d 100644
---- a/drivers/gpu/drm/virtio/virtgpu_plane.c
-+++ b/drivers/gpu/drm/virtio/virtgpu_plane.c
-@@ -30,11 +30,13 @@
- #include "virtgpu_drv.h"
- 
- static const uint32_t virtio_gpu_formats[] = {
--	DRM_FORMAT_HOST_XRGB8888,
-+	DRM_FORMAT_XRGB8888,
-+	DRM_FORMAT_BGRX8888,
- };
- 
- static const uint32_t virtio_gpu_cursor_formats[] = {
--	DRM_FORMAT_HOST_ARGB8888,
-+	DRM_FORMAT_ARGB8888,
-+	DRM_FORMAT_BGRA8888,
- };
- 
- uint32_t virtio_gpu_translate_format(uint32_t drm_fourcc)
--- 
-2.34.1
+On 10/27, Oleg Nesterov wrote:
+>
+> read_seqbegin_or_lock() makes no sense unless you make "seq" odd
+> after the lockless access failed. See thread_group_cputime() as
+> an example, note that it does nextseq = 1 for the 2nd round.
+> 
+> So this code can use read_seqbegin() without changing the current
+> behaviour.
+> 
+> Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+> ---
+>  net/rxrpc/conn_service.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/rxrpc/conn_service.c b/net/rxrpc/conn_service.c
+> index 89ac05a711a4..bfafe58681d9 100644
+> --- a/net/rxrpc/conn_service.c
+> +++ b/net/rxrpc/conn_service.c
+> @@ -25,7 +25,7 @@ struct rxrpc_connection *rxrpc_find_service_conn_rcu(struct rxrpc_peer *peer,
+>  	struct rxrpc_conn_proto k;
+>  	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
+>  	struct rb_node *p;
+> -	unsigned int seq = 0;
+> +	unsigned int seq;
+>  
+>  	k.epoch	= sp->hdr.epoch;
+>  	k.cid	= sp->hdr.cid & RXRPC_CIDMASK;
+> @@ -35,7 +35,7 @@ struct rxrpc_connection *rxrpc_find_service_conn_rcu(struct rxrpc_peer *peer,
+>  		 * under just the RCU read lock, so we have to check for
+>  		 * changes.
+>  		 */
+> -		read_seqbegin_or_lock(&peer->service_conn_lock, &seq);
+> +		seq = read_seqbegin(&peer->service_conn_lock);
+>  
+>  		p = rcu_dereference_raw(peer->service_conns.rb_node);
+>  		while (p) {
+> @@ -49,9 +49,8 @@ struct rxrpc_connection *rxrpc_find_service_conn_rcu(struct rxrpc_peer *peer,
+>  				break;
+>  			conn = NULL;
+>  		}
+> -	} while (need_seqretry(&peer->service_conn_lock, seq));
+> +	} while (read_seqretry(&peer->service_conn_lock, seq));
+>  
+> -	done_seqretry(&peer->service_conn_lock, seq);
+>  	_leave(" = %d", conn ? conn->debug_id : -1);
+>  	return conn;
+>  }
+> -- 
+> 2.25.1.362.g51ebf55
+> 
 
