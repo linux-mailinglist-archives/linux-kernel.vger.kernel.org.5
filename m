@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 007C07EE3E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:06:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FBB7EE413
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:21:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345395AbjKPPGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:06:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
+        id S1345189AbjKPPUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:20:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345373AbjKPPGi (ORCPT
+        with ESMTP id S229619AbjKPPUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:06:38 -0500
-Received: from p3plwbeout17-05.prod.phx3.secureserver.net (p3plsmtp17-05-2.prod.phx3.secureserver.net [173.201.193.170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE9519D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:06:34 -0800 (PST)
-Received: from mailex.mailcore.me ([94.136.40.141])
-        by :WBEOUT: with ESMTP
-        id 3dwtrfFAhvZgf3dwurp2ES; Thu, 16 Nov 2023 08:06:32 -0700
-X-CMAE-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=65562ffa
- a=bheWAUFm1xGnSTQFbH9Kqg==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
- a=ggZhUymU-5wA:10 a=BNY50KLci1gA:10 a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8
- a=FXvPX3liAAAA:8 a=PL5bajTykxBvxVk0eB4A:9 a=AjGcO6oz07-iQ99wixmX:22
- a=UObqyxdv-6Yh2QiB9mM_:22
-X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
-X-SID:  3dwtrfFAhvZgf
-Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=phoenix.fritz.box)
-        by smtp04.mailcore.me with esmtpa (Exim 4.94.2)
-        (envelope-from <phillip@squashfs.org.uk>)
-        id 1r3dwt-00087x-95; Thu, 16 Nov 2023 15:06:31 +0000
-From:   Phillip Lougher <phillip@squashfs.org.uk>
-To:     eadavis@qq.com
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
-        squashfs-devel@lists.sourceforge.net,
-        syzbot+604424eb051c2f696163@syzkaller.appspotmail.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] squashfs: fix oob in squashfs_readahead
-Date:   Thu, 16 Nov 2023 15:14:24 +0000
-Message-Id: <20231116151424.23597-1-phillip@squashfs.org.uk>
-X-Mailer: git-send-email 2.35.1
-In-Reply-To: <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
-References: <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
+        Thu, 16 Nov 2023 10:20:53 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.100])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAB0B1AD
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:20:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700148050; x=1731684050;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Rwg1spkErK2RHGowjwwxQ9ye/SLIix5m4vLE3yJbN3U=;
+  b=RaV74/e1kHXWKHd58QLqcr/TbdVLSnkbBJlGnKNra+YI53/1cBiB8t22
+   JRRfVX2OldhP4imTfzHTtIDMTteKySNHM0IZpsLdLf5yJx+T46GmDhaED
+   SZeckrlxJkP0uU0SrCT06fhnrkTuKeGvuhyA+JKo9TOU17dqw8I98pVon
+   jmSyLZ2VlZcvdO8CcrSXR2Go8msSPFPwK0yjex5c321iAIYb3fuMfATbJ
+   H40OOi19AqXpQ8kAvngZWMAYwZ02XGovXA/NRIixSCUuzBRl10JGHlxPY
+   ZBkSMnlby+80NZvQzHyTp5t1bLcvNE79wMAeBLYexnujeu4SVIRiFSo9c
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="457600699"
+X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
+   d="scan'208";a="457600699"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 07:20:50 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="758862751"
+X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
+   d="scan'208";a="758862751"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga007.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 07:20:50 -0800
+Received: from [10.209.160.241] (kliang2-mobl1.ccr.corp.intel.com [10.209.160.241])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by linux.intel.com (Postfix) with ESMTPS id 805C4580D2C;
+        Thu, 16 Nov 2023 07:20:49 -0800 (PST)
+Message-ID: <d46a6f38-7c3a-4ed4-8038-8c6a2417a8b7@linux.intel.com>
+Date:   Thu, 16 Nov 2023 10:20:48 -0500
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Mailcore-Auth: 439999529
-X-Mailcore-Domain: 1394945
-X-123-reg-Authenticated:  phillip@squashfs.org.uk  
-X-Originating-IP: 82.69.79.175
-X-CMAE-Envelope: MS4xfB5rOlsiGop8HRtnu0KyA/F2yLCMHDiUDEG5UIulqyatT99bi2VOXEs8vuIFxZy253GAgcp2y6YI8YCPnIU7tKO0bluGutBeM0RAaUz1hSQhQrNkii0Q
- d89UWD78/d01l+wQckM+6EduHaJAnZiE19rjcFOF6yAniL65Zx3BIlE8YjiWcgGSpOYPKqEkYlEV9eqChuZWkOZIs9zgobyBBvE5hFZo4KJzcGrhuPIg8G30
- 6+cV38CbR9MEL0WDqPJAHw==
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH 2/4] x86/smp: Export symbol cpu_clustergroup_mask
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
+        artem.bityutskiy@linux.intel.com, rui.zhang@intel.com
+References: <20231116142245.1233485-1-kan.liang@linux.intel.com>
+ <20231116142245.1233485-2-kan.liang@linux.intel.com>
+ <20231116144034.GG8262@noisy.programming.kicks-ass.net>
+Content-Language: en-US
+From:   "Liang, Kan" <kan.liang@linux.intel.com>
+In-Reply-To: <20231116144034.GG8262@noisy.programming.kicks-ass.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -60,85 +70,37 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> [Bug]
-> path_openat() called open_last_lookups() before calling do_open() and 
-> open_last_lookups() will eventually call squashfs_read_inode() to set 
-> inode->i_size, but before setting i_size, it is necessary to obtain file_size 
-> from the disk.
+
+
+On 2023-11-16 9:40 a.m., Peter Zijlstra wrote:
+> On Thu, Nov 16, 2023 at 06:22:43AM -0800, kan.liang@linux.intel.com wrote:
+>> From: Kan Liang <kan.liang@linux.intel.com>
+>>
+>> Intel cstate PMU driver will invoke the topology_cluster_cpumask() to
+>> retrieve the CPU mask of a cluster. A modpost error is triggered since
+>> the symbol cpu_clustergroup_mask is not exported.
+>>
+>> Signed-off-by: Kan Liang <kan.liang@linux.intel.com>
+>> ---
+>>  arch/x86/kernel/smpboot.c | 1 +
+>>  1 file changed, 1 insertion(+)
+>>
+>> diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+>> index 48e040618731..376387ca6be5 100644
+>> --- a/arch/x86/kernel/smpboot.c
+>> +++ b/arch/x86/kernel/smpboot.c
+>> @@ -747,6 +747,7 @@ const struct cpumask *cpu_clustergroup_mask(int cpu)
+>>  {
+>>  	return cpu_l2c_shared_mask(cpu);
+>>  }
+>> +EXPORT_SYMBOL(cpu_clustergroup_mask);
 > 
-> However, during the value retrieval process, the length of the value retrieved
-> from the disk was greater than output->length, resulting(-EIO) in the failure of 
-> squashfs_read_data(), further leading to i_size has not been initialized, 
-> i.e. its value is 0.
+> I made that _GPL.
+
+Sure.
 > 
+> Queued the lot.
 
-NACK
+Thanks!
 
-This analysis is completely *wrong*.  First, if there was I/O error reading
-the inode it would never be created, and squasfs_readahead() would
-never be called on it, because it will never exist.
-
-Second i_size isn't unintialised and it isn't 0 in value.  Where
-you got this bogus information from is because in your test patches,
-i.e.
-
-https://lore.kernel.org/all/000000000000bb74b9060a14717c@google.com/
-
-You have
-
-+	if (!file_end) {
-+		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
-+		res = -EINVAL;
-+		goto out;
-+	}
-+
-
-You have used %d, and the result of i_size_read(inode) overflows, giving the
-bogus 0 value.
-
-The actual value is 1407374883553280, or 0x5000000000000, which is
-too big to fit into an unsigned int.
-
-> This resulted in the failure of squashfs_read_data(), where "SQUASHFS error: 
-> Failed to read block 0x6fc: -5" was output in the syz log.
-> This also resulted in the failure of squashfs_cache_get(), outputting "SQUASHFS
-> error: Unable to read metadata cache entry [6fa]" in the syz log.
-> 
-
-NO, *that* is caused by the failure to read some other inodes which
-as a result are correctly not created.  Nothing to do with the oops here.
-
-> [Fix]
-> Before performing a read ahead operation in squashfs_read_folio() and 
-> squashfs_readahead(), check if i_size is not 0 before continuing.
-> 
-
-A third NO, it is only 0 because the variable overflowed.
-
-Additionally, let's look at your "fix" here.
-
-> @@ -461,6 +461,11 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
->  	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
->  				page->index, squashfs_i(inode)->start);
->  
-> +	if (!file_end) {
-> +		res = -EINVAL;
-> +		goto out;
-> +	}
-> +
-
-file_end is computed by
-
-	int file_end = i_size_read(inode) >> msblk->block_log;
-
-So your "fix" will reject *any* file less than msblk->block_log in
-size as invalid, including perfectly valid zero size files (empty
-files are valid too).
-
-I already identified the cause and send a fix patch here:
-
-https://lore.kernel.org/all/20231113160901.6444-1-phillip@squashfs.org.uk/
-
-NACK
-
-Phillip
+Kan
