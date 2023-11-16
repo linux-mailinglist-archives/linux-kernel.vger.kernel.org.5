@@ -2,123 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9860C7EE683
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC6467EE685
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345401AbjKPSNT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:13:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52334 "EHLO
+        id S1345426AbjKPSN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:13:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231181AbjKPSNS (ORCPT
+        with ESMTP id S229488AbjKPSNy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:13:18 -0500
-Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20164195;
-        Thu, 16 Nov 2023 10:13:15 -0800 (PST)
-Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-1ea98ad294cso498466fac.3;
-        Thu, 16 Nov 2023 10:13:15 -0800 (PST)
+        Thu, 16 Nov 2023 13:13:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D84E195
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:13:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700158428;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=ONyKyGrGZkXEZgyChUzOaaLcqNc/RranTIE1i+0V890=;
+        b=fMp3MM2Br+m0uBOwJhbVbby1tgMtrueaXlV2piiy+z1/zKIx5YdpFCosyqFYtpQ+oD7P1K
+        t5AepeczVDe59lZD0kF8yIXM2Rixz3B6ZYoXs0aHSZmcO9DjRAGyJhdJVvjR0K0Ex5NZZ2
+        6arSmdpwbEFnoCaOXnSaM5/Ji5go0wg=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-209-EBPU3NhQOi6XoCh3yg_6_w-1; Thu, 16 Nov 2023 13:13:47 -0500
+X-MC-Unique: EBPU3NhQOi6XoCh3yg_6_w-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-407d3e55927so5945845e9.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:13:47 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700158394; x=1700763194;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1700158426; x=1700763226;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
+         :references:cc:to:content-language:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WMupz1Ersx7G8Y0V72zO2fVjriizbVlDybDUE6gNC5o=;
-        b=bOBwP9vJ6sjSMj3/4B88zzAQEgGXV1BlRP9pJTjaqsHUfbyRB3Z61IinR56Q4O3ZmH
-         Q0SMKFSrEpJg49IDJg7jCaGdGBcyWo3oShGilyMzsgiJTN8iUKgjQVAh3/4bEXj0lFc/
-         sQjvQsc5hZFndEtJ5GxR1K1LwZLlLTKqvfuqHOsWIJLiML4LiSh8YzKXEdQiySuTzMTj
-         +ORxIlNy/b6UQoKSvdjQy6y82OiRV+dA/Yns4IzA4zYw5l7AAVjyXY1z1jF5eAhyd2eh
-         EYyeaeASd3dw75i2MDBXRi+wilpxW1L9Gh5h0LTKgJE7R/NakpUI1YWEpHg4QY3yjBYA
-         pVVQ==
-X-Gm-Message-State: AOJu0YwXTg+hQGqYOAd2V3j96mSsEMyOW4fpfm9d3DnDT+/N6Zpdil0l
-        vTBCWkxzpKyLlfb5FHN9GA==
-X-Google-Smtp-Source: AGHT+IE4qXE3fwLtFQUpSkyT2Q9sqt2XnsLJBMw8YKmQlxdpMl7Oyy3/SUQgOiKwtUToqHuLJZXSQg==
-X-Received: by 2002:a05:6870:538f:b0:1d5:aed5:6579 with SMTP id h15-20020a056870538f00b001d5aed56579mr17940362oan.4.1700158394319;
-        Thu, 16 Nov 2023 10:13:14 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id gc12-20020a056870678c00b001f48e4537b9sm2302007oab.33.2023.11.16.10.13.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 10:13:13 -0800 (PST)
-Received: (nullmailer pid 2655665 invoked by uid 1000);
-        Thu, 16 Nov 2023 18:13:11 -0000
-Date:   Thu, 16 Nov 2023 12:13:11 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Conor Dooley <conor@kernel.org>, Chen Wang <unicornxw@gmail.com>
-Cc:     aou@eecs.berkeley.edu, chao.wei@sophgo.com,
-        krzysztof.kozlowski+dt@linaro.org, mturquette@baylibre.com,
-        palmer@dabbelt.com, paul.walmsley@sifive.com,
-        richardcochran@gmail.com, sboyd@kernel.org,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        haijiao.liu@sophgo.com, xiaoguang.xing@sophgo.com,
-        Chen Wang <unicorn_wang@outlook.com>
-Subject: Re: [PATCH 2/5] dt-bindings: soc: sophgo: Add Sophgo syscon module
-Message-ID: <20231116181311.GA2624502-robh@kernel.org>
-References: <cover.1699879741.git.unicorn_wang@outlook.com>
- <3c286171af30101b88f0aaf645fb0a7d5880ac0a.1699879741.git.unicorn_wang@outlook.com>
- <20231114-timid-habitat-a06e52e59c9c@squawk>
+        bh=ONyKyGrGZkXEZgyChUzOaaLcqNc/RranTIE1i+0V890=;
+        b=Rw+pXdqRXTXLC/TdzOTzVU+hrx0uZAKmUnKGaUXipUGcd3DIMsJBlQmumA3nlAbL0c
+         uZDcX/seEXsS12vm74Lpx0GOxFrex2lI87aEpJhDE+pcskmvnkLowOSw8jFknWUHX53v
+         qjsA029D39uyw0gtWpveIl98laH+f+C41rZEjZPjKO4t5nRo13jBmcjtWEL2dex4nVKo
+         r0EQE+W8jY8BvzV9gZE/W5b8HWaAaVd/scmcso3zX/Dvg0LT8um5fzDwUdfEpZxvRTGj
+         i2sL2GRsVZT5q8eNNiuxLS62rtB9VunxrZQDftCwDVE+JLeK6PirEbAqQZhtmiEBP0XG
+         xpcQ==
+X-Gm-Message-State: AOJu0YwNZ+3Xs0UcncNVVvFWYLoZgGVf43RQaeAXfkdS5RFnlaaiICJi
+        3V+e9iR35H+TJcSGXOKxUa0MiwdmWKs3wQo9BGTBn3N9udMHaAbKWFAAyMkFZ015twfcDWfmAEx
+        /vUIYSoyBOPTa+V25hTn7iQek
+X-Received: by 2002:a05:600c:4f92:b0:408:57bb:ef96 with SMTP id n18-20020a05600c4f9200b0040857bbef96mr2470540wmq.30.1700158426021;
+        Thu, 16 Nov 2023 10:13:46 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvC/WDjQ3K/pm+VHYer9HJAY8r0bTQQnbWMq5G76YQXHZVSBBUucnoFb6okpNffqX20tYxrw==
+X-Received: by 2002:a05:600c:4f92:b0:408:57bb:ef96 with SMTP id n18-20020a05600c4f9200b0040857bbef96mr2470525wmq.30.1700158425516;
+        Thu, 16 Nov 2023 10:13:45 -0800 (PST)
+Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
+        by smtp.gmail.com with ESMTPSA id f6-20020a7bcd06000000b0040a463cf09dsm4415094wmj.33.2023.11.16.10.13.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 10:13:45 -0800 (PST)
+Message-ID: <6308590a-d958-4ecc-a478-ba088cf7984d@redhat.com>
+Date:   Thu, 16 Nov 2023 19:13:44 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231114-timid-habitat-a06e52e59c9c@squawk>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [syzbot] [mm?] WARNING in unmap_page_range (2)
+Content-Language: en-US
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        syzbot <syzbot+7ca4b2719dc742b8d0a4@syzkaller.appspotmail.com>,
+        Muhammad Usama Anjum <usama.anjum@collabora.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        wangkefeng.wang@huawei.com
+References: <000000000000b0e576060a30ee3b@google.com>
+ <20231115140006.cc7de06f89b1f885f4583af0@linux-foundation.org>
+ <a8349273-c512-4d23-bf85-5812d2a007d1@redhat.com> <ZVZYvleasZddv-TD@x1n>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <ZVZYvleasZddv-TD@x1n>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 05:40:20PM +0000, Conor Dooley wrote:
-> On Mon, Nov 13, 2023 at 09:19:02PM +0800, Chen Wang wrote:
-> > From: Chen Wang <unicorn_wang@outlook.com>
-> > 
-> > Add documentation to describe Sophgo System Controller Registers for
-> > SG2042.
-> > 
-> > Signed-off-by: Chen Wang <unicorn_wang@outlook.com>
-> > ---
-> >  .../soc/sophgo/sophgo,sg2042-syscon.yaml      | 38 +++++++++++++++++++
-> >  1 file changed, 38 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-syscon.yaml
-> > 
-> > diff --git a/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-syscon.yaml b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-syscon.yaml
-> > new file mode 100644
-> > index 000000000000..829abede4fd5
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/soc/sophgo/sophgo,sg2042-syscon.yaml
-> > @@ -0,0 +1,38 @@
-> > +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/soc/sophgo/sophgo,sg2042-syscon.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Sophgo SG2042 SoC system controller
-> > +
-> > +maintainers:
-> > +  - Chen Wang <unicorn_wang@outlook.com>
-> > +
-> > +description:
-> > +  The Sophgo SG2042 SoC system controller provides register information such
-> > +  as offset, mask and shift to configure related modules.
-> > +
-> > +properties:
-> > +  compatible:
-> > +    oneOf:
-> > +      - items:
-> > +          - enum:
-> > +              - sophgo,sg2042-syscon
-> > +          - const: syscon
+> It should be fine, as:
 > 
-> THere's only one option here, so the oneOf should be removed. Similarly,
-> since there's only one SoC, and it sounds like the next large sophgo
-> system is going to be using an entirely different core provider, I think
-> should just simplify this to a pair of "const:" entries.
+> static void make_uffd_wp_pte(struct vm_area_struct *vma,
+> 			     unsigned long addr, pte_t *pte)
+> {
+> 	pte_t ptent = ptep_get(pte);
+> 
+> #ifndef CONFIG_USERFAULTFD_
+> 
+> 	if (pte_present(ptent)) {
+> 		pte_t old_pte;
+> 
+> 		old_pte = ptep_modify_prot_start(vma, addr, pte);
+> 		ptent = pte_mkuffd_wp(ptent);
+> 		ptep_modify_prot_commit(vma, addr, pte, old_pte, ptent);
+> 	} else if (is_swap_pte(ptent)) {
+> 		ptent = pte_swp_mkuffd_wp(ptent);
+> 		set_pte_at(vma->vm_mm, addr, pte, ptent);
+> 	} else {                                      <----------------- this must be pte_none() already
+> 		set_pte_at(vma->vm_mm, addr, pte,
+> 			   make_pte_marker(PTE_MARKER_UFFD_WP));
+> 	}
+> }
 
-For a simple syscon binding like this, you can just add the compatible 
-to syscon.yaml.
+Indeed! Is pte_swp_mkuffd_wp() reasonable for pte markers? I rememebr 
+that we don't support multiple markers yet, so it might be good enough.
 
-Rob
+> 
+>>
+>> 2) We get the error on arm64, which does *not* support uffd-wp. Do we
+>>     maybe end up calling make_uffd_wp_pte() and place a pte marker, even
+>>     though we don't have CONFIG_PTE_MARKER_UFFD_WP?
+>>
+>>
+>> static inline bool pte_marker_entry_uffd_wp(swp_entry_t entry)
+>> {
+>> #ifdef CONFIG_PTE_MARKER_UFFD_WP
+>> 	return is_pte_marker_entry(entry) &&
+>> 	    (pte_marker_get(entry) & PTE_MARKER_UFFD_WP);
+>> #else
+>> 	return false;
+>> #endif
+>> }
+>>
+>> Will always return false without CONFIG_PTE_MARKER_UFFD_WP.
+>>
+>> But make_uffd_wp_pte() might just happily place an entry. Hm.
+>>
+>>
+>> The following might fix the problem:
+>>
+
+[...]
+
+> 
+> I'd like to double check with Muhammad (as I didn't actually follow his
+> work in the latest versions.. quite a lot changed), but I _think_
+> fundamentally we missed something important in the fast path, and I think
+> it applies even to archs that support uffd..
+> 
+> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+> index e91085d79926..3b81baabd22a 100644
+> --- a/fs/proc/task_mmu.c
+> +++ b/fs/proc/task_mmu.c
+> @@ -2171,7 +2171,8 @@ static int pagemap_scan_pmd_entry(pmd_t *pmd, unsigned long start,
+>                  return 0;
+>          }
+> 
+> -       if (!p->vec_out) {
+> +       if (!p->vec_out &&
+> +           (p->arg.flags & PM_SCAN_WP_MATCHING))
+
+Ouch, yes. So that's the global fence I was wondering where to find it.
+
+-- 
+Cheers,
+
+David / dhildenb
+
