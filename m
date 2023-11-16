@@ -2,158 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C2DB77EE1B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:40:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E8CC7EE1A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345194AbjKPNkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:40:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53414 "EHLO
+        id S1345197AbjKPNk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345230AbjKPNkh (ORCPT
+        with ESMTP id S1345057AbjKPNk1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:40:37 -0500
-Received: from wnew4-smtp.messagingengine.com (wnew4-smtp.messagingengine.com [64.147.123.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C284B4
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 05:40:33 -0800 (PST)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailnew.west.internal (Postfix) with ESMTP id 028C62B003FD;
-        Thu, 16 Nov 2023 08:40:28 -0500 (EST)
-Received: from imap51 ([10.202.2.101])
-  by compute5.internal (MEProxy); Thu, 16 Nov 2023 08:40:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
-        :content-type:content-type:date:date:from:from:in-reply-to
-        :in-reply-to:message-id:mime-version:references:reply-to:sender
-        :subject:subject:to:to; s=fm3; t=1700142028; x=1700149228; bh=bG
-        IxYXyIqpwVy5KNp0/Neu8NcBlWmtLuVpGKn7FLZtU=; b=UPKuBEMnG4dw7Ly/WD
-        mMC2A/V2z1/vEaQcg5A64GxUF1mmHL+a326KLazJOj7HVnRFKjU9P9qoPhg+PqXa
-        /QtjNzlIdIt9LRXw/6cJosk7JsvpqEaelnK9v/AVuS1cCA7yGBC7SjWImqJF2Ebu
-        Zjp+inuBCaJLIIRnJ1uaKzedqpGJ/+KGk0jmFEBZhFu5ILXBRIdvKIOGJIP1IMOt
-        CbFJ5b5PekDOT5X+VrrQMIoNLaHE1ZLVXZceMa14Fh4WTF4HYiV5M4aOdC3N7RCg
-        HpDu32sBIPBcuznQDmQwJ3fcoIaB0vqZ9kbBIaiKb/P2164bbloXuGH6rX4dC+hf
-        HsfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; t=1700142028; x=1700149228; bh=bGIxYXyIqpwVy
-        5KNp0/Neu8NcBlWmtLuVpGKn7FLZtU=; b=09i7T7hxgV7kgBtnme+L86MuuGfu1
-        1fKUgkGi4+3QjafcPnlBHck4uobsyg+AVoSPocA0QrvGHBVBOjews4qbYHqqnNSy
-        7CELOkVB7SD0TIhtDxbnY9JiXr7rBWgToTW0q25n3thy7TpetzKJc3kfx4jt401M
-        6pNom/JNUeQpD5gCy5VQxxSQLXQzpzaK8P53poe1BXW6xNnM3Ywwfm8kuZGoyWY7
-        EO2QnW1qMZOscFjU8cm63cCsvduPFHNu9kqAQZU/+psyEP8PfOULHkjwhVVaaiFe
-        XiaLF9u5/HOt8d/g3WJWdhuDNlT/hXc5tDw7lz1r7QYz6OBohe/IyN4Cg==
-X-ME-Sender: <xms:yxtWZdshl3psfcrvshYqEM7joFDSLlXDHds2eive83kxO85pk1T5Kg>
-    <xme:yxtWZWdInmINk8a3jDuvZZkJ_JGYXPTpwgJiTRJjG0BvODtqJsEjxGTUn1endewwA
-    uun_p6iaG-IQpT0xeg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrudefkedgheefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetrhhn
-    ugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrghtth
-    gvrhhnpeffgeffuddtvdehffefleethfejjeegvdelffejieegueetledvtedtudelgfdu
-    gfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegrrh
-    hnugesrghrnhgusgdruggv
-X-ME-Proxy: <xmx:yxtWZQy2xTqP_ltxvulAGXAt1NMb1TRByh5Ns7KJEMs9uCjVZoiD3A>
-    <xmx:yxtWZUO3sCdx7Akdz06hqA-SgRK3cDHQ7l58BsJ4-JrHgukefq-WWg>
-    <xmx:yxtWZd_96_Ln1c3CGYPnV0O0PMcXTzHBF5-Qnfe6uAji1nD4Ipw4zw>
-    <xmx:zBtWZWO61qdpj4jJ9j2H5fW9dwiFyERJ0Ql8T7wsgm4KSvdWS2uG_yGS4IY>
-Feedback-ID: i56a14606:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 4E836B60089; Thu, 16 Nov 2023 08:40:27 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1108-g3a29173c6d-fm-20231031.005-g3a29173c
+        Thu, 16 Nov 2023 08:40:27 -0500
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2040.outbound.protection.outlook.com [40.107.223.40])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2C22D6A;
+        Thu, 16 Nov 2023 05:40:23 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QpNeiG1fTcGxRYvOL9FkXWthBolzCkUGOa7TthpPxTge01pUFoKsDaU746fTmRijToVPKxBCOdZ9a3GoW+X0O5XLzprSGFMJ/PbxxKm/ArrkrnCoB+Yl94eLILLY/YRUnTvBKhMrdh5MwnT32hOtDYg8QLqaLW7S29cug4ABL80GdAmEQideWXjjVBGAKoUKln3lViqHoxTfCLaXm/Zrk63frLWwoZ6JEOiPwM6WflwuYukZxo/qi/PoZoW2GRv7L6OyuqGsFJPOjGHiCQD4xjusDd7I2tAXSlW553iEdesuQbNlYKjidIYg1Xne5X5ZyP7JgOymNQHStm27GBuVYw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=KWW0Iyu4yUEA1f+RICUrUJBFcZQBj1tcYe55vPXlfeM=;
+ b=noBwJJPGG/uPzbAEE44UtuzmIR/HIW9WOOchp4Eh/nls6B8TsU0Apz20o6eNWp7ZR3HPwSczfWANW8Wt91Dw2cCEvv3dwLsePba7TMqmauH1RyUh4SfZfEDn4T3yWpsdjcK2E0Ic4IytugvC1i7Csa++tgUMWQeVXq/A2OhpGjVh/muwfatr7zskAbq4zua+pdT3DYKNJKNqBa7QAwae+xyRXwqtHJgHB/ZzHTzlEPZ9fK9tMfqEGMsbkHYWwmfzt/yZDHcCRhhpplYBF0pj9JlQ5hYRfPCKZKSBYiYY2t4ylkdTSmjFF5Lr9Hrr6/2gVRHNXQvLfgNfeUm12S4H7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=sunsite.dk smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KWW0Iyu4yUEA1f+RICUrUJBFcZQBj1tcYe55vPXlfeM=;
+ b=DFF8E0dYhDkWjbj5gS7Yl+errGtwB4WEf1rq5aUXV/Ivse5nLTCquA6/tWUg38O/3/c8bJ+LHs1a0aBh1iT+n6ndfJNSXtoI2JS6pcsJUmxySPJ2g4gmbcKFEp0d4TtakXC0YO+iaMvF4KSuy/2dkSv3kTYZeZL4RgUsGYFdh+w=
+Received: from CH2PR12CA0006.namprd12.prod.outlook.com (2603:10b6:610:57::16)
+ by BN9PR12MB5308.namprd12.prod.outlook.com (2603:10b6:408:105::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
+ 2023 13:40:20 +0000
+Received: from CY4PEPF0000EE34.namprd05.prod.outlook.com
+ (2603:10b6:610:57:cafe::b0) by CH2PR12CA0006.outlook.office365.com
+ (2603:10b6:610:57::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21 via Frontend
+ Transport; Thu, 16 Nov 2023 13:40:19 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000EE34.mail.protection.outlook.com (10.167.242.40) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7002.20 via Frontend Transport; Thu, 16 Nov 2023 13:40:18 +0000
+Received: from SATLEXMB05.amd.com (10.181.40.146) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 16 Nov
+ 2023 07:40:17 -0600
+Received: from SATLEXMB03.amd.com (10.181.40.144) by SATLEXMB05.amd.com
+ (10.181.40.146) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.32; Thu, 16 Nov
+ 2023 07:40:17 -0600
+Received: from xhdsgoud40.xilinx.com (10.180.168.240) by SATLEXMB03.amd.com
+ (10.181.40.144) with Microsoft SMTP Server id 15.1.2507.32 via Frontend
+ Transport; Thu, 16 Nov 2023 07:40:13 -0600
+From:   Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+To:     <git@amd.com>, <michal.simek@amd.com>, <jacmet@sunsite.dk>,
+        <gregkh@linuxfoundation.org>, <jirislaby@kernel.org>,
+        <linux-serial@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <corbet@lwn.net>, <christophe.leroy@csgroup.eu>,
+        <rdunlap@infradead.org>, <airlied@redhat.com>,
+        <ogabbay@kernel.org>, <linux-doc@vger.kernel.org>
+CC:     <radhey.shyam.pandey@amd.com>, <srinivas.goud@amd.com>,
+        <shubhrajyoti.datta@amd.com>, <manion05gk@gmail.com>,
+        Manikanta Guntupalli <manikanta.guntupalli@amd.com>
+Subject: [PATCH V4 0/2] Use dynamic allocation for major number when uart ports > 4
+Date:   Thu, 16 Nov 2023 19:10:01 +0530
+Message-ID: <20231116134003.3762725-1-manikanta.guntupalli@amd.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Message-Id: <bf176e04-88fe-4333-8500-1335ad7a1bdf@app.fastmail.com>
-In-Reply-To: <20231116074706.3448008-1-ruanjinjie@huawei.com>
-References: <20231116074706.3448008-1-ruanjinjie@huawei.com>
-Date:   Thu, 16 Nov 2023 08:39:58 -0500
-From:   "Arnd Bergmann" <arnd@arndb.de>
-To:     "Ruan Jinjie" <ruanjinjie@huawei.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        "Catalin Marinas" <catalin.marinas@arm.com>,
-        "Will Deacon" <will@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Sam Ravnborg" <sam@ravnborg.org>,
-        "Stafford Horne" <shorne@gmail.com>,
-        "Dinh Nguyen" <dinguyen@kernel.org>,
-        "Mark Rutland" <mark.rutland@arm.com>
-Subject: Re: [PATCH] arm64: Fix 32-bit compatible userspace write size overflow error
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE34:EE_|BN9PR12MB5308:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe5c0474-e79d-415c-bc89-08dbe6a9929b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CaeOfN9Bx1nZ6IuhKd2GHw33Wm1PP84fUdnpx2IwpfAxiXVk9wBQpVH4l/dDSG3nrshWNbD+Ux/oIRsqg2vSKfDl297MtU1LhCqp0JVpZyX6PYpIXI9U5SqPpLlFYxTvrdJobgwZGakCC7+t802llv78jM5R+cCqO1cXBpa8IwcrD4USrjkAVyuDpItEJzK6YrUhZUMqVnmA4CWo386ms8GN6XrBJUGo25ADmx9aPGWKk5VoNWCJP35ATIVBXZc/BqCVSskS0NQyibDuRaPiUADATRiJ/+VcLjGvW1nrvefoq05fRoJ5J4QkzazTHeCCl6GiFntCAxxR6SqUi5NCfXeSBfY3tSpf6E+0Ss3WVvuvg8/wGy+z1i8Jk7vOkwmmzhuR5UEt1YKKVdY5BfnSAvo55zzYLwl1UK43Xli/0lLrYMggoGkPZjSNNitLaifoDKE1MtrBSLA/v2chS8JFBsGKlsBW+8mlLnUIerHNjo2SRkNgowcufxIkD9XD83mVvYu8EV8CjoG6NvzBMxGWKyWsQbhfli98xyojj6YnTyRxNwqzdoScMYs3Gqp/z2EZGT60gavQx7Qlz4N9AAOHOMdmOHrodPrhTj9szYw1cKRbx0bh91Da5T0YcwLDjVrWT8EeLJoBPGdVAb4S/MtaZD2UvsC67EYuzqIerEZuTQRPoq5MtiYDODZFHgLoBIizntG1wju3+6PbhTy8jErRI01cQXnGqVsO1xCQIg8PHT/NgWCwFMofzjGeGPQMqjK8awuA7Q85s+03l4Z69Zy8Li5r5UvwFbKicSSDm30O1xjBPZAbI0N5pWkLmLktozYIxiWbPlXtDoUQzoSODJ5DPg==
+X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(4636009)(396003)(39860400002)(346002)(136003)(376002)(230922051799003)(1800799009)(186009)(451199024)(82310400011)(64100799003)(40470700004)(46966006)(36840700001)(6666004)(40460700003)(4744005)(478600001)(921008)(2906002)(7416002)(316002)(110136005)(54906003)(70586007)(86362001)(70206006)(5660300002)(36860700001)(356005)(41300700001)(81166007)(44832011)(47076005)(36756003)(26005)(1076003)(2616005)(8936002)(4326008)(8676002)(40480700001)(83380400001)(82740400003)(426003)(336012)(2101003)(83996005)(36900700001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 13:40:18.5504
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe5c0474-e79d-415c-bc89-08dbe6a9929b
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource: CY4PEPF0000EE34.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN9PR12MB5308
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023, at 02:47, Jinjie Ruan wrote:
-> For 32-bit compatible userspace program, write with size = -1 return not
-> -1 but unexpected other values, which is due to the __access_ok() check is
-> not right. The specified "addr + size" is greater than 32-bit limit and
-> should return -EFAULT, but TASK_SIZE_MAX still defined as UL(1) << VA_BITS
-> in U32 mode, which is much greater than "addr + size" and cannot catch the
-> overflow error.
+Update ttyUL major number allocation details in documentation.
+Use dynamic allocation for major number when uart ports > 4.
+---
+Changes for V2:
+Introduce 1/2 patch.
+Update driver to use either static or dynamic major allocation.
+Update commit description.
+Update description of SERIAL_UARTLITE_NR_UARTS in Kconfig.
+Changes for V3:
+Fix typo.
+Move description to above of ttyUL.
+Remove parentheses.
+Changes for V4:
+Fix typo.
 
-Thank you for the detailed analysis of the change in behavior that
-resulted from my patch. As far as I can tell, this is an intentional
-change that should have been documented as part of the patch
-submission.
+Manikanta Guntupalli (2):
+  Documentation: devices.txt: Update ttyUL major number allocation
+    details
+  serial: uartlite: Use dynamic allocation for major number when uart
+    ports > 4
 
-> 	    assert(write(fd, wbuf, 3) == 3);
->
-> 	    ret = write (fd, wbuf, SIZE_MAX);
-> 	    pinfo("ret=%d\n", ret);
-> 	    pinfo("size_max=%d\n",SIZE_MAX);
-> 	    assert(ret==-1);
+ Documentation/admin-guide/devices.txt | 3 +++
+ drivers/tty/serial/Kconfig            | 3 +++
+ drivers/tty/serial/uartlite.c         | 5 +++++
+ 3 files changed, 11 insertions(+)
 
-I think it is wrong to have an assert() here since the
-documentation for write() does not state what happens
-when the beginning of the buffer is addressable but the
-end is not. We were handling this inconsistently between
-architectures before my patch, which ensured we do the
-same thing on all compat architectures now.
+-- 
+2.25.1
 
-You can argue that this behavior is inconsistent with
-native 32-bit mode, but at the time we decided that this
-was not an important distinction.
-
-> Before applying this patch, userspace 32-bit program return 1112 if the
-> write size = -1 as below:
-> 	/root # ./test
-> 	[INFO][test.c][32][main]:ret=-1
-> 	[INFO][test.c][33][main]:size_max=-1
-> 	[INFO][test.c][36][main]:INFO: end
-> 	/root # ./test32
-> 	[INFO][test.c][32][main]:ret=1112
-> 	[INFO][test.c][33][main]:size_max=-1
-> 	test32: test.c:34: main: Assertion `ret==-1' failed.
-> 	Aborted
-
-Here, the write() successfully gets 1112 bytes of data,
-which matches what you get for any other large size that
-does not overflow user address space in the kernel.
-
-> Fixes: 967747bbc084 ("uaccess: remove CONFIG_SET_FS")
-> 
->  #define DEFAULT_MAP_WINDOW_64	(UL(1) << VA_BITS_MIN)
->  #define TASK_SIZE_64		(UL(1) << vabits_actual)
-> +#ifdef CONFIG_COMPAT
-> +#define TASK_SIZE_MAX		(test_thread_flag(TIF_32BIT) ? \
-> +				UL(0x100000000) : (UL(1) << VA_BITS))
-> +#else
->  #define TASK_SIZE_MAX		(UL(1) << VA_BITS)
-> +#endif
-
-This adds back the cost for every user access that I was
-trying to save, and it makes arm64 behave differently from
-the other architectures.
-
-As far as I can tell, the current behavior was originally
-introduced on x86 with commit 9063c61fd5cb ("x86, 64-bit:
-Clean up user address masking").
-
-     Arnd
