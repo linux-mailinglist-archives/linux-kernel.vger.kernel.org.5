@@ -2,184 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4E17EE0B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:30:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 023A17EE0BA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345165AbjKPMap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:30:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59980 "EHLO
+        id S1345159AbjKPMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:33:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345143AbjKPMam (ORCPT
+        with ESMTP id S230307AbjKPMds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:30:42 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 252ECD4B;
-        Thu, 16 Nov 2023 04:30:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700137838; x=1731673838;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=Zb8EkOCoEXSVYt6JBVTP/C88txRSmKBaT8vzI6Rweaw=;
-  b=CXEf3kVFbyCfn2/Npb9aQwtAyGEoZnu09487ec8dN4o0ASVj4sYa714V
-   xj54azKzxiILd3rc0TXAHRtDErwby/VtKiIcIOeaZ4dPu6elXG+RvVjX3
-   hxPZH/cqZYpNhse8Y/swYaOrmaS7McNo8n0PR6YhMqwC+BgElenGz4AT4
-   +FWvtq3So/sptLGoqfIAb6yDRcPLaHWIaUixbCJKYovJrstkbT92XL5iP
-   p/PA4b7QJraXAnVXWf0kuODgSZzvUSCb/AFSF+vy047CqCVZo06rb03Vk
-   Oxnh3f58rqlBCeyGtE9U1iOlyLdUaclPIVG7x6XHuveb2hGFv0p4zeELZ
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="393930201"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="393930201"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:30:37 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="835736305"
-X-IronPort-AV: E=Sophos;i="6.04,308,1695711600"; 
-   d="scan'208";a="835736305"
-Received: from jhsteyn-mobl1.ger.corp.intel.com ([10.252.40.9])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 04:30:31 -0800
-Date:   Thu, 16 Nov 2023 14:30:28 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Mario Limonciello <mario.limonciello@amd.com>
-cc:     Karol Herbst <kherbst@redhat.com>, Lyude Paul <lyude@redhat.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?ISO-8859-15?Q?Christian_K=F6nig?= <christian.koenig@amd.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Lukas Wunner <lukas@wunner.de>,
-        Danilo Krummrich <dakr@redhat.com>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Xinhui Pan <Xinhui.Pan@amd.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        =?ISO-8859-15?Q?Pali_Roh=E1r?= <pali@kernel.org>,
-        =?ISO-8859-15?Q?Marek_Beh=FAn?= <kabel@kernel.org>,
-        "Maciej W . Rozycki" <macro@orcam.me.uk>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR NVIDIA GEFORCE/QUADRO GPUS" 
-        <nouveau@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:RADEON and AMDGPU DRM DRIVERS" 
-        <amd-gfx@lists.freedesktop.org>,
-        "open list:PCI SUBSYSTEM" <linux-pci@vger.kernel.org>,
-        "open list:ACPI" <linux-acpi@vger.kernel.org>
-Subject: Re: [PATCH v3 4/7] PCI: pciehp: Move check for is_thunderbolt into
- a quirk
-In-Reply-To: <20231114200755.14911-5-mario.limonciello@amd.com>
-Message-ID: <8ade60ab-881b-8046-5d3a-ad82fe16d49@linux.intel.com>
-References: <20231114200755.14911-1-mario.limonciello@amd.com> <20231114200755.14911-5-mario.limonciello@amd.com>
+        Thu, 16 Nov 2023 07:33:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B19D187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:33:45 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2BC7C433C8;
+        Thu, 16 Nov 2023 12:33:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700138024;
+        bh=fl2ERlYyHKp/gRtOCtc+cDz1RGc2gsvBRtB9yhmxrdI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jX8O5kJRtlXu04+yCXleGkWsnCATVdmBCfnhOjlpx9j7fHrwvOWT+qpsqXbGKlM6m
+         9RsXepA+WSzbKFkApAHQVWNKLiCk1oVWFW5VyaQQBS8V/3rBL4K4E2t1WwAYuVZk5t
+         Q/mTJHX7ThINLtdsu4dLwBUDM6AHMup2szsoVDnBBCMTveDZz8ou+jWujO67gOC2vN
+         fmUQgF2Z3QbdUYJ0IeR7WtCO2NHhjR/E7E4THaLr1lVQdSPoIdb9R988B1smYEDydH
+         OXl2rOxwYC3NzO421ZFg2u49P4+ikBD50sK/4UhN74OjFc+z/w5ZCVyiQJWRNt+D3z
+         dqAOD/TjWarZQ==
+Date:   Thu, 16 Nov 2023 12:33:35 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
+Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "debug@rivosinc.com" <debug@rivosinc.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "Pandey, Sunil K" <sunil.k.pandey@intel.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
+Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <1bd189e0-a7dd-422c-9766-ef1c9b0d3df8@sirena.org.uk>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+ <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
+ <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
+ <ZVTvvJTOV777UGsP@arm.com>
+ <d90884a0-c4d3-41e9-8f23-68aa87bbe269@sirena.org.uk>
+ <d05d23d56bd2c7de30e7732e6bd3d313d8385c47.camel@intel.com>
+ <ZVXvptSmmJ6MQ0dY@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-35208055-1700137836=:1886"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="qxzRtaK8vwjTcNK1"
+Content-Disposition: inline
+In-Reply-To: <ZVXvptSmmJ6MQ0dY@arm.com>
+X-Cookie: micro:
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---8323329-35208055-1700137836=:1886
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+--qxzRtaK8vwjTcNK1
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, 14 Nov 2023, Mario Limonciello wrote:
+On Thu, Nov 16, 2023 at 10:32:06AM +0000, Szabolcs.Nagy@arm.com wrote:
+> The 11/16/2023 00:52, Edgecombe, Rick P wrote:
+> > On Wed, 2023-11-15 at 18:43 +0000, Mark Brown wrote:
 
-> commit 493fb50e958c ("PCI: pciehp: Assume NoCompl+ for Thunderbolt
-> ports") added a check into pciehp code to explicitly set NoCompl+
-> for all Intel Thunderbolt controllers, including those that don't
-> need it.
-> 
-> This overloaded the purpose of the `is_thunderbolt` member of
-> `struct pci_device` because that means that any controller that
-> identifies as thunderbolt would set NoCompl+ even if it doesn't
-> suffer this deficiency. As that commit helpfully specifies all the
-> controllers with the problem, move them into a PCI quirk.
-> 
-> Signed-off-by: Mario Limonciello <mario.limonciello@amd.com>
-> ---
-> v2->v3:
->  * Reword commit message
->  * Update comments
-> ---
->  drivers/pci/hotplug/pciehp_hpc.c |  6 +-----
->  drivers/pci/quirks.c             | 20 ++++++++++++++++++++
->  include/linux/pci.h              |  1 +
->  3 files changed, 22 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/pci/hotplug/pciehp_hpc.c b/drivers/pci/hotplug/pciehp_hpc.c
-> index b1d0a1b3917d..40f7a26fb98f 100644
-> --- a/drivers/pci/hotplug/pciehp_hpc.c
-> +++ b/drivers/pci/hotplug/pciehp_hpc.c
-> @@ -992,11 +992,7 @@ struct controller *pcie_init(struct pcie_device *dev)
->  	if (pdev->hotplug_user_indicators)
->  		slot_cap &= ~(PCI_EXP_SLTCAP_AIP | PCI_EXP_SLTCAP_PIP);
->  
-> -	/*
-> -	 * We assume no Thunderbolt controllers support Command Complete events,
-> -	 * but some controllers falsely claim they do.
-> -	 */
-> -	if (pdev->is_thunderbolt)
-> +	if (pdev->no_command_complete)
->  		slot_cap |= PCI_EXP_SLTCAP_NCCS;
->  
->  	ctrl->slot_cap = slot_cap;
-> diff --git a/drivers/pci/quirks.c b/drivers/pci/quirks.c
-> index ea476252280a..fa9b82cd7b3b 100644
-> --- a/drivers/pci/quirks.c
-> +++ b/drivers/pci/quirks.c
-> @@ -3809,6 +3809,26 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CACTUS_RIDGE_4C
->  DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_PORT_RIDGE,
->  			quirk_thunderbolt_hotplug_msi);
->  
-> +/*
-> + * Certain Thunderbolt 1 controllers falsely claim to support Command
-> + * Completed events.
-> + */
-> +static void quirk_thunderbolt_command_complete(struct pci_dev *pdev)
-> +{
-> +	pdev->no_command_complete = 1;
-> +}
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_LIGHT_RIDGE,
-> +			quirk_thunderbolt_command_complete);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_EAGLE_RIDGE,
-> +			quirk_thunderbolt_command_complete);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_LIGHT_PEAK,
-> +			quirk_thunderbolt_command_complete);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CACTUS_RIDGE_4C,
-> +			quirk_thunderbolt_command_complete);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_CACTUS_RIDGE_2C,
-> +			quirk_thunderbolt_command_complete);
-> +DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_INTEL, PCI_DEVICE_ID_INTEL_PORT_RIDGE,
-> +			quirk_thunderbolt_command_complete);
->  #ifdef CONFIG_ACPI
->  /*
->   * Apple: Shutdown Cactus Ridge Thunderbolt controller.
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index 1fbca2bd92e8..20a6e4fc3060 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -441,6 +441,7 @@ struct pci_dev {
->  	unsigned int	is_hotplug_bridge:1;
->  	unsigned int	shpc_managed:1;		/* SHPC owned by shpchp */
->  	unsigned int	is_thunderbolt:1;	/* Thunderbolt controller */
-> +	unsigned int	no_command_complete:1;	/* No command completion */
->  	/*
->  	 * Devices marked being untrusted are the ones that can potentially
->  	 * execute DMA attacks and similar. They are typically connected
-> 
+> while CLONE_VFORK allows the child to use the parent shadow
+> stack (parent and child cannot execute at the same time and
+> the child wont return to frames created by the parent), we
+> want to enable precise size accounting of the shadow stack
+> so requesting a new shadow stack should work if new stack
+> is specified.
 
-Reviewed-by: Ilpo Järvinen <ilpo.jarvinen@linux.intel.com>
+> but stack==0 can force shadow_stack_size==0.
 
--- 
- i.
+> i guess the tricky case is stack!=0 && shadow_stack_size==0:
+> the user may want a new shadow stack with default size logic,
+> or (with !CLONE_VM || CLONE_VFORK) wants to use the existing
+> shadow stack from the parent.
 
---8323329-35208055-1700137836=:1886--
+If shadow_stack_size is 0 then we're into clone() behaviour and doing
+the default/implicit handling which is to do exactly what the above
+describes.
+
+> > What is the case for stack=sp bit of the logic?
+
+> iirc it is not documented in the clone man page what stack=0
+> means and of course you don't want sp==0 in the vfork child
+> so some targets sets stack to sp in vfork, others set it 0
+> and expect the kernel to do the right thing.
+
+The manual page explicitly says that not specifying a stack means to use
+the same stack area as the parent.
+
+> this likely does not apply to clone3 where the size has to be
+> specified so maybe stack==sp does not need special treatment.
+
+You'd have to be jumping through hoops to manage to get the same stack
+pointer while explicitly specifying a stack with clone3() on
+architectures where the stack grows down.  I'm not sure there's a
+reasonable use case.
+
+--qxzRtaK8vwjTcNK1
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVWDB8ACgkQJNaLcl1U
+h9B/kgf/cCb0t/WDJJnLgSCdcrrBTZQDYOh6g5wc9ofAClwczUYictkrifHUtcx7
+AK0RVBrSjubnCoUVVD4n9ayLlTvczZwV9qFA0YTugPTAUry8SzqtQslfj89DHvGu
+O+GDXFQYIeIqLY3waqrYmp5GnsBOy9ppu2FjIw+l3sN7+5SGxTrGomEafGihSLNw
+2N3ddNRd0J0/Qg0tuKFJdteyRRpIXI70Eb5EAj87Gzcf/8pZRRoYFq9Er4tZzxbB
+PYe2Vg4Q2GmiblDwUO15CVvXItDaa35+peEI4SLJjQGvlJiMUlH7HKu9S6nO9+nj
+DVzEt0gPGR/2ps3+VPmBAIXDtjll3w==
+=H7BF
+-----END PGP SIGNATURE-----
+
+--qxzRtaK8vwjTcNK1--
