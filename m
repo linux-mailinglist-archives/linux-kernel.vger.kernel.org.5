@@ -2,56 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD04D7EE5A3
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:03:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E8B27EE5A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 18:04:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345040AbjKPRDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 12:03:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56832 "EHLO
+        id S231290AbjKPREX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 12:04:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229472AbjKPRDq (ORCPT
+        with ESMTP id S229472AbjKPREV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 12:03:46 -0500
+        Thu, 16 Nov 2023 12:04:21 -0500
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 297F2B7;
-        Thu, 16 Nov 2023 09:03:42 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id D1F621A8;
+        Thu, 16 Nov 2023 09:04:16 -0800 (PST)
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1245E1595;
-        Thu, 16 Nov 2023 09:04:28 -0800 (PST)
-Received: from FVFF77S0Q05N (unknown [10.119.36.141])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C8ED33F6C4;
-        Thu, 16 Nov 2023 09:03:40 -0800 (PST)
-Date:   Thu, 16 Nov 2023 12:03:35 -0500
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Puranjay Mohan <puranjay12@gmail.com>
-Cc:     Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Song Liu <song@kernel.org>,
-        Yonghong Song <yonghong.song@linux.dev>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Stanislav Fomichev <sdf@google.com>,
-        Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-        Zi Shen Lim <zlim.lnx@gmail.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, bpf@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: Re: [PATCH bpf-next v2 1/1] bpf, arm64: support exceptions
-Message-ID: <ZVZLZ4lxJa2hjVWv@FVFF77S0Q05N>
-References: <20230917000045.56377-1-puranjay12@gmail.com>
- <20230917000045.56377-2-puranjay12@gmail.com>
- <ZUPVbrMSNNwPw_B-@FVFF77S0Q05N.cambridge.arm.com>
- <CANk7y0g8SOrSAY2jqZ22v6Duu9yhHY-d39g5gJ2vA2j2Y-v53Q@mail.gmail.com>
- <ZUtjyxBheN-dbj84@FVFF77S0Q05N>
- <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C2D1F1595;
+        Thu, 16 Nov 2023 09:05:02 -0800 (PST)
+Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1B4C03F6C4;
+        Thu, 16 Nov 2023 09:04:15 -0800 (PST)
+Message-ID: <4db1b4d2-0aa9-4640-b7d7-7d18ab64569a@arm.com>
+Date:   Thu, 16 Nov 2023 17:04:13 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANk7y0hvEu3WkYEJ5oRqRHwKGfDnM+fO0=vDen5=zO8-rCvr9Q@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
+Content-Language: en-GB
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     will@kernel.org, joro@8bytes.org, a39.skl@gmail.com,
+        konrad.dybcio@linaro.org, quic_pkondeti@quicinc.com,
+        quic_molvera@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-4-quic_bibekkum@quicinc.com>
+ <CAA8EJpoRmm42aAvyX61o3tMWXszUZmfFvJEtnNDEfYdDqy4Y0g@mail.gmail.com>
+ <72b30354-0497-45cf-8b71-e4f265eb0005@quicinc.com>
+ <CAA8EJprPE=z2VN5LkaUyLyvYpx6i1eF9dyxOzN_L86pi5tmU-Q@mail.gmail.com>
+ <0d290a5c-081f-4dfa-af9a-b061e6134662@quicinc.com>
+ <CAA8EJprHppoN6rg8-rS1F+4kynQqmV1L3OiHFnJ0HyrshywFig@mail.gmail.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+In-Reply-To: <CAA8EJprHppoN6rg8-rS1F+4kynQqmV1L3OiHFnJ0HyrshywFig@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
@@ -61,159 +55,142 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Nov 13, 2023 at 11:53:52PM +0100, Puranjay Mohan wrote:
-> Hi Mark,
+On 16/11/2023 3:24 pm, Dmitry Baryshkov wrote:
+> On Thu, 16 Nov 2023 at 14:45, Bibek Kumar Patro
+> <quic_bibekkum@quicinc.com> wrote:
+>>
+>>
+>>
+>> On 11/15/2023 4:33 PM, Dmitry Baryshkov wrote:
+>>> On Wed, 15 Nov 2023 at 11:45, Bibek Kumar Patro
+>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>
+>>>> On 11/14/2023 7:45 PM, Dmitry Baryshkov wrote:
+>>>>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
+>>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>>
+>>>>>> Context caching is re-enabled in the prefetch buffer for Qualcomm SoCs
+>>>>>> through SoC specific reset ops, which is disabled in the default MMU-500
+>>>>>> reset ops, but is expected for context banks using ACTLR register to
+>>>>>> retain the prefetch value during reset and runtime suspend.
+>>>>>
+>>>>> Please refer to Documentation/process/submitting-patches.rst and
+>>>>> rephrase this following the rules there.
+>>>>>
+>>>>
+>>>> Noted, will go through the description once and rephrase it
+>>>> in next version complying with rules.
+>>>>
+>>>>>>
+>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>>>> ---
+>>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 ++++++++++++++++++----
+>>>>>>     1 file changed, 21 insertions(+), 4 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> index 0eaf6f2a2e49..fa867b1d9d16 100644
+>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>> @@ -478,11 +478,28 @@ static int qcom_smmu_def_domain_type(struct device *dev)
+>>>>>>            return match ? IOMMU_DOMAIN_IDENTITY : 0;
+>>>>>>     }
+>>>>>>
+>>>>>> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+>>>>>> +{
+>>>>>> +       int i;
+>>>>>> +       u32 reg;
+>>>>>> +
+>>>>>> +       arm_mmu500_reset(smmu);
+>>>>>> +
+>>>>>> +       /* Re-enable context caching after reset */
+>>>>>> +       for (i = 0; i < smmu->num_context_banks; ++i) {
+>>>>>> +               reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
+>>>>>> +               reg |= CPRE;
+>>>>>> +               arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
+>>>>>> +       }
+>>>>>> +
+>>>>>> +       return 0;
+>>>>>> +}
+>>>>>> +
+>>>>>>     static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+>>>>>>     {
+>>>>>>            int ret;
+>>>>>>
+>>>>>> -       arm_mmu500_reset(smmu);
+>>>>>> +       qcom_smmu500_reset(smmu);
+>>>>>
+>>>>> Is this applicable for sdm845? For all other platforms supported by
+>>>>> qcom_smmu_500 implementation?
+>>>>>
+>>>>
+>>>> In arm_mmu500_reset operation drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+>>>> CPRE bit is reset for all SoC based on mmu500 platform, hence for all
+>>>> Qualcomm SoCs including sm845 we are setting back the CPRE bit.
+>>>
+>>> The errata for the CoreLink MMU-500 requires CPRE to be disabled for
+>>> all revisions before r2p2. Do we know whether these SoC used CoreLink
+>>> MMU-500 and which version of it?
+>>>
+>>
+>> Just checked all these SoCs are using r2p4 revision.
+>> So CPRE needs to be enabled back here then?
 > 
-> On Wed, Nov 8, 2023 at 11:32 AM Mark Rutland <mark.rutland@arm.com> wrote:
-> >
-> > On Mon, Nov 06, 2023 at 10:04:09AM +0100, Puranjay Mohan wrote:
-> > > Hi Mark,
-> > >
-> > > On Thu, Nov 2, 2023 at 5:59 PM Mark Rutland <mark.rutland@arm.com> wrote:
-> > > >
-> > > > On Sun, Sep 17, 2023 at 12:00:45AM +0000, Puranjay Mohan wrote:
-> > > > > Implement arch_bpf_stack_walk() for the ARM64 JIT. This will be used
-> > > > > by bpf_throw() to unwind till the program marked as exception boundary and
-> > > > > run the callback with the stack of the main program.
-> > > > >
-> > > > > The prologue generation code has been modified to make the callback
-> > > > > program use the stack of the program marked as exception boundary where
-> > > > > callee-saved registers are already pushed.
-> > > > >
-> > > > > As the bpf_throw function never returns, if it clobbers any callee-saved
-> > > > > registers, they would remain clobbered. So, the prologue of the
-> > > > > exception-boundary program is modified to push R23 and R24 as well,
-> > > > > which the callback will then recover in its epilogue.
-> > > > >
-> > > > > The Procedure Call Standard for the Arm 64-bit Architecture[1] states
-> > > > > that registers r19 to r28 should be saved by the callee. BPF programs on
-> > > > > ARM64 already save all callee-saved registers except r23 and r24. This
-> > > > > patch adds an instruction in prologue of the  program to save these
-> > > > > two registers and another instruction in the epilogue to recover them.
-> > > > >
-> > > > > These extra instructions are only added if bpf_throw() used. Otherwise
-> > > > > the emitted prologue/epilogue remains unchanged.
-> > > > >
-> > > > > [1] https://github.com/ARM-software/abi-aa/blob/main/aapcs64/aapcs64.rst
-> > > > >
-> > > > > Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > > > > ---
-> > > >
-> > > > [...]
-> > > >
-> > > > > +void arch_bpf_stack_walk(bool (*consume_fn)(void *cookie, u64 ip, u64 sp, u64 bp), void *cookie)
-> > > > > +{
-> > > > > +     struct stack_info stacks[] = {
-> > > > > +             stackinfo_get_task(current),
-> > > > > +     };
-> > > >
-> > > > Can bpf_throw() only be used by BPF programs that run in task context, or is it
-> > > > possible e.g. for those to run within an IRQ handler (or otherwise on the IRQ
-> > > > stack)?
-> > >
-> > > I will get back on this with more information.
-> > >
-> > > >
-> > > > > +
-> > > > > +     struct unwind_state state = {
-> > > > > +             .stacks = stacks,
-> > > > > +             .nr_stacks = ARRAY_SIZE(stacks),
-> > > > > +     };
-> > > > > +     unwind_init_common(&state, current);
-> > > > > +     state.fp = (unsigned long)__builtin_frame_address(1);
-> > > > > +     state.pc = (unsigned long)__builtin_return_address(0);
-> > > > > +
-> > > > > +     if (unwind_next_frame_record(&state))
-> > > > > +             return;
-> > > > > +     while (1) {
-> > > > > +             /* We only use the fp in the exception callback. Pass 0 for sp as it's unavailable*/
-> > > > > +             if (!consume_fn(cookie, (u64)state.pc, 0, (u64)state.fp))
-> > > > > +                     break;
-> > > > > +             if (unwind_next_frame_record(&state))
-> > > > > +                     break;
-> > > > > +     }
-> > > > > +}
-> > > >
-> > > > IIUC you're not using arch_stack_walk() because you need the FP in addition to
-> > > > the PC.
-> > >
-> > > Yes,
-> > >
-> > > > Is there any other reason you need to open-code this?
-> > >
-> > > No,
-> > >
-> > > >
-> > > > If not, I'd rather rework the common unwinder so that it's possible to get at
-> > > > the FP. I had patches for that a while back:
-> > > >
-> > > >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/metadata
-> > > >
-> > > > ... and I'm happy to rebase that and pull out the minimum necessary to make
-> > > > that possible.
-> > >
-> > > It would be great if you can rebase and push the code, I can rebase this on
-> > > your work and not open code this implementation.
-> >
-> > I've rebased the core of that atop v6.6, and pushed that out to my
-> > arm64/stacktrace/kunwind branch:
-> >
-> >   https://git.kernel.org/pub/scm/linux/kernel/git/mark/linux.git/log/?h=arm64/stacktrace/kunwind
-> >
-> > Once v6.7-rc1 is out, I'll rebase that and post it out (possibly with some of
-> > the other patches atop).
-> >
-> > With that I think you can implement arch_bpf_stack_walk() in stacktrace.c using
-> > kunwind_stack_walk() in a similar way to how arch_stack_walk() is implemented
-> > in that branch.
-> >
-> > If BPF only needs a single consume_fn, that can probably be even simpler as you
-> > won't need a struct to hold the consume_fn and cookie value.
-> 
-> Thanks for the help.
-> I am planning to do something like the following:
-> let me know if this can be done in a better way:
-> 
-> +struct bpf_unwind_consume_entry_data {
-> +       bool (*consume_entry)(void *cookie, u64 ip, u64 sp, u64 fp);
-> +       void *cookie;
-> +};
-> +
-> +static bool
-> +arch_bpf_unwind_consume_entry (const struct kunwind_state *state, void *cookie)
-> +{
-> +       struct bpf_unwind_consume_entry_data *data = cookie;
-> +       return data->consume_entry(data->cookie, state->common.pc, 0,
-> state->common.fp);
-> +}
-> +
-> +noinline noinstr void arch_bpf_stack_walk(bool (*consume_entry)(void
-> *cookie, u64 ip, u64 sp,
-> +                                         u64 fp), void *cookie)
-> +{
-> +       struct bpf_unwind_consume_entry_data data = {
-> +               .consume_entry = consume_entry,
-> +               .cookie = cookie,
-> +       };
-> +
-> +       kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, task, regs);
-> +}
+> can be enabled, yes.
 
-That's roughly what I had expected, so that looks good to me.
-
-> I need to get the task and regs here so it can work from all contexts.
-> How can I do it?
-
-Are you asking because that's what the kunwind_stack_walk() prototype takes?
-
-If so, I believe you just need:
-
-	kunwind_stack_walk(arch_bpf_unwind_consume_entry, &data, current, NULL);
-
-Note that we currently *cannot* reliably unwind across an exception boundary,
-so if you have non-NULL regs the unwind will be unsafe. IIUC the BPF exceptions
-you're adding support for are handled via a branch rather than via an
-architectural exception, so there are no regs to pass (and so NULL is correct).
+There are still open errata #562869 and #1047329 which might need this 
+workaround. I guess one could argue that we're not (knowingly) using 
+nested translation at the moment, and also probably not running this in 
+situations which would end up using short-descriptor format, however 
+stuff like pKVM and IOMMUFD could potentially change those assumptions 
+in future, so they still feel a bit sketchy to me.
 
 Thanks,
-Mark.
+Robin.
+
+> 
+>>
+>>>>
+>>>>>>
+>>>>>>            /*
+>>>>>>             * To address performance degradation in non-real time clients,
+>>>>>> @@ -509,7 +526,7 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
+>>>>>>            .init_context = qcom_smmu_init_context,
+>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
+>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
+>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>     };
+>>>>>> @@ -528,7 +545,7 @@ static const struct arm_smmu_impl sm8550_smmu_500_impl = {
+>>>>>>            .init_context = qcom_smmu_init_context,
+>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
+>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
+>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>     };
+>>>>>> @@ -544,7 +561,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+>>>>>>     static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
+>>>>>>            .init_context = qcom_adreno_smmu_init_context,
+>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>            .alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
+>>>>>>            .write_sctlr = qcom_adreno_smmu_write_sctlr,
+>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>> --
+>>>>>> 2.17.1
+>>>>>>
+>>>>>
+>>>>>
+>>>
+>>>
+>>>
+>>> --
+>>> With best wishes
+>>> Dmitry
+> 
+> 
+> 
