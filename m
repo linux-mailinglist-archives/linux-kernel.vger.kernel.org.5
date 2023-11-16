@@ -2,85 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7143A7EDF95
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:23:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B13807EDF9D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345100AbjKPLXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:23:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41706 "EHLO
+        id S1345003AbjKPLYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:24:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38236 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230374AbjKPLXP (ORCPT
+        with ESMTP id S230340AbjKPLYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:23:15 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF8E85;
-        Thu, 16 Nov 2023 03:23:12 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG6hiYN025701;
-        Thu, 16 Nov 2023 11:22:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=nr7dVnii8tMkDoOj1gx+T8Uy5PROirT6JN0sOHYJu5E=;
- b=jPxP44vKTpNoRR/jT9QlXvkVnjrOO97E/DgAD4fdYgOlQDXkyZ6b9+60Lvr58Vi8EMaH
- 5uz68rKWuSt58gvOapsDjPniM1M9px12bzY2BDO5XXXrH+ROUd4ldZib8Y51dygkQFip
- wZnuqfyuOm4JOpDBmX03YRsJ7tF/V79V+xeafOH5JmioWztzPBiilFHg/ww1RaJnu5Zp
- GbrvtJlQCzoLN7OPYsXvKKkJMDP1w7UB8s0Qm/0tBED7Kbtmn42VFhsLYpmMlT+0nMVJ
- 7/txQCMWmeItO7pLOH6JXeg41PSYousVauP5Uc1RsHxCJsb43YtOWBZK2TQXBZjFRyuf PQ== 
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud5fhhjdg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 11:22:58 +0000
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-        by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGBMv9W031965
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 16 Nov 2023 11:22:57 GMT
-Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
- (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
- 2023 03:22:53 -0800
-Message-ID: <d5e13129-f1a8-4659-88f8-fd5891937ef0@quicinc.com>
-Date:   Thu, 16 Nov 2023 19:22:51 +0800
+        Thu, 16 Nov 2023 06:24:18 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15EB585
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:24:15 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A38CBC433C8;
+        Thu, 16 Nov 2023 11:24:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700133854;
+        bh=bCJDoiy/sh3xNRf75ljpDp88pdpsa7M3K2V68jRgzUc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RgfqziOiMbINq8HsxM2OAWW6UCsAyV7XWuCw4XgE4yIDcKrLWhbVjO9zGgXUn/IBH
+         Yzqen8E/CLSc5Cul2RCbpoWLUv8uPnAOaUvzFxm1HFdkAqy5Jio0nGKgkbONaVaPGc
+         HApbsRDtLrGaVQd5J0jT4nYKDfn18zREeuLVcXuB6xBn3CdYLmoC9lY8C3sQCuU8tv
+         Ayh8grmY4D7wuuSAjZN2fZ++x+zglxTbv/p5DaeHnqL7dOoZuBf1B1LuTlSLaKr6ob
+         ZLKQqew/+zPbTioOFky+qHOuyOg9/KU/95hzlBHScr0JfB47lvdRZdnoLLe/YLrzYD
+         W9GAJA/RQukmw==
+Received: by mail-oa1-f43.google.com with SMTP id 586e51a60fabf-1ea82246069so303969fac.3;
+        Thu, 16 Nov 2023 03:24:14 -0800 (PST)
+X-Gm-Message-State: AOJu0YwC9MFCFjzpw6m4RRNAoj8Ho8ZfaObjEL1FdOOUpnvO1er1SJua
+        gLr2V+n4mtzCFm6GfJrab+0CNxZeQsRcjpo2N0g=
+X-Google-Smtp-Source: AGHT+IGL1ooWzMLrBnh/iCwVNzs90f3ifC9jhTcii0/52JPkolBSjjXLnYQxLMim+v61DF/rNDA0d1ek2Yflzrf5s4I=
+X-Received: by 2002:a05:6870:648f:b0:1e9:bbfe:6457 with SMTP id
+ cz15-20020a056870648f00b001e9bbfe6457mr21480433oab.6.1700133854051; Thu, 16
+ Nov 2023 03:24:14 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 9/9] dt-bindings: net: ipq4019-mdio: Document ipq5332
- platform
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-10-quic_luoj@quicinc.com>
- <bff45329-ee11-4507-b853-0a2f2cbbe742@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <bff45329-ee11-4507-b853-0a2f2cbbe742@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: s4-Aj3N3nWuixEIPrJ8b5ABLNof7K7e9
-X-Proofpoint-ORIG-GUID: s4-Aj3N3nWuixEIPrJ8b5ABLNof7K7e9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-16_09,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
- spamscore=0 lowpriorityscore=0 clxscore=1015 mlxlogscore=678
- suspectscore=0 phishscore=0 priorityscore=1501 impostorscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311160091
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+References: <ZVWMCZ/jb4nX3yHn@work>
+In-Reply-To: <ZVWMCZ/jb4nX3yHn@work>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 16 Nov 2023 20:23:37 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR1i8HP8E3UmmSggZMka+UbJswU_bVMyxmRt4CbQhoTAA@mail.gmail.com>
+Message-ID: <CAK7LNAR1i8HP8E3UmmSggZMka+UbJswU_bVMyxmRt4CbQhoTAA@mail.gmail.com>
+Subject: Re: [PATCH][next] Makefile: Enable -Wstringop-overflow globally
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nicolas Schier <nicolas@fjasle.eu>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,54 +61,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 16, 2023 at 12:27=E2=80=AFPM Gustavo A. R. Silva
+<gustavoars@kernel.org> wrote:
+>
+> It seems that we have finished addressing all the remaining
+> issues regarding compiler option -Wstringop-overflow. So, we
+> are now in good shape to enable this compiler option globally.
+>
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> ---
+>  Makefile                   | 3 +++
+>  scripts/Makefile.extrawarn | 2 --
+>  2 files changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/Makefile b/Makefile
+> index 690cde550acd..452b7d0e19e9 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -985,6 +985,9 @@ NOSTDINC_FLAGS +=3D -nostdinc
+>  # perform bounds checking.
+>  KBUILD_CFLAGS +=3D $(call cc-option, -fstrict-flex-arrays=3D3)
+>
+> +# We are now in good shape to enable this option.
+
+Please remove this comment.
+
+It it fine to mention it in the commit log, but
+not in the Makefile.
 
 
-On 11/15/2023 10:35 PM, Andrew Lunn wrote:
->> +  phy-reset-gpio:
->> +    minItems: 1
->> +    maxItems: 3
->> +    description:
->> +      GPIO used to reset the PHY, each GPIO is for resetting the connected
->> +      ethernet PHY device.
-> 
-> This is a PHY property, so should be in the PHY node. phylib should
-> then take care of fit.
 
-will check this and update in the next patch set.
+I hope somebody will double-check this patch in CI infrastructure.
 
-> 
->> +
->> +  phyaddr-fixup:
->> +    description: Register address for programing MDIO address of PHY devices
-> 
-> Please give a better description of this and the next two properties.
 
-these fixup flags are for customizing the MDIO address of qca8084 PHY &
-PCS and doing the initialization configurations to bring up PHY.
 
-will describe it more detail in the next patch set.
 
-> 
->> +
->> +  pcsaddr-fixup:
->> +    description: Register address for programing MDIO address of PCS devices
->> +
->> +  mdio-clk-fixup:
->> +    description: The initialization clocks to be configured
->> +
->> +  fixup:
->> +    description: The MDIO address of PHY/PCS device to be programed
->> +        clocks:
->> +          items:
->> +            - description: MDIO clock source frequency fixed to 100MHZ
->> +            - description: UNIPHY0 AHB clock source frequency fixed to 100MHZ
->> +            - description: UNIPHY0 SYS clock source frequency fixed to 24MHZ
->> +            - description: UNIPHY1 AHB clock source frequency fixed to 100MHZ
->> +            - description: UNIPHY1 SYS clock source frequency fixed to 24MHZ
-> 
-> The clock frequencies is not relevent here, the driver sets that up.
+> +KBUILD_CFLAGS +=3D $(call cc-option, -Wstringop-overflow)
+> +
+>  # disable invalid "can't wrap" optimizations for signed / pointers
+>  KBUILD_CFLAGS  +=3D -fno-strict-overflow
+>
+> diff --git a/scripts/Makefile.extrawarn b/scripts/Makefile.extrawarn
+> index 2fe6f2828d37..1527199161d7 100644
+> --- a/scripts/Makefile.extrawarn
+> +++ b/scripts/Makefile.extrawarn
+> @@ -106,7 +106,6 @@ KBUILD_CFLAGS +=3D $(call cc-option, -Wunused-const-v=
+ariable)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wpacked-not-aligned)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wformat-overflow)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wformat-truncation)
+> -KBUILD_CFLAGS +=3D $(call cc-option, -Wstringop-overflow)
+>  KBUILD_CFLAGS +=3D $(call cc-option, -Wstringop-truncation)
+>
+>  KBUILD_CPPFLAGS +=3D -Wundef
+> @@ -122,7 +121,6 @@ KBUILD_CFLAGS +=3D $(call cc-disable-warning, restric=
+t)
+>  KBUILD_CFLAGS +=3D $(call cc-disable-warning, packed-not-aligned)
+>  KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-overflow)
+>  KBUILD_CFLAGS +=3D $(call cc-disable-warning, format-truncation)
+> -KBUILD_CFLAGS +=3D $(call cc-disable-warning, stringop-overflow)
+>  KBUILD_CFLAGS +=3D $(call cc-disable-warning, stringop-truncation)
+>
+>  ifdef CONFIG_CC_IS_CLANG
+> --
+> 2.34.1
+>
 
-OK, will remove the clock frequency values in the next patch set.
 
-> 
->      Andrew
+--=20
+Best Regards
+Masahiro Yamada
