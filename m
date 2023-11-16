@@ -2,108 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BC4B7EDF3A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:11:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A083C7EDF3E
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:11:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345109AbjKPLLS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:11:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35328 "EHLO
+        id S233461AbjKPLLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:11:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230421AbjKPLLR (ORCPT
+        with ESMTP id S1345083AbjKPLLT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:11:17 -0500
-Received: from mail-yw1-x112b.google.com (mail-yw1-x112b.google.com [IPv6:2607:f8b0:4864:20::112b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D617C1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:11:13 -0800 (PST)
-Received: by mail-yw1-x112b.google.com with SMTP id 00721157ae682-5a81ab75f21so7194587b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:11:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700133073; x=1700737873; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=0RGeCL4pbInHPFxgrG6befW6cqWS0yz+u9JSBQ5zil0=;
-        b=gjxhDLGWSA0JE16jF9pApn1Jp70KxDxg2RCrjNty/zslvg0Z/cxibsB7dvL6Ykcg+g
-         v2lsUnhNnS3WhmHq5p7s5SMV+xfc5OMMNXbXxbd/SrEyXcOb8ZktcuZskgQScMV0TtqH
-         D9G0WoG1TWHOwpXvQX0JbvBp6spSW/xhxdyIHbdBFY359AVxjniOZSoWHuIU73KhwaGs
-         ztl73j9rSBc5Y7vgPWpRL6qgrar/TBtgwcwJqevMpZd11iEowU7n3N46pDVfu+7JHSiL
-         ZczKo1aSKdQzU1V4kEpfPlcOqrXkdFW+l+UiTAZ3a16fX1SswTI8Mi0mYxkQjWleWg/n
-         seDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700133073; x=1700737873;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0RGeCL4pbInHPFxgrG6befW6cqWS0yz+u9JSBQ5zil0=;
-        b=A80X3g1cO/A9spTBwrLZP6wfpb/4TL20qKLuy9h8m84t6RT0Ct7h5rf2vew7r00Xid
-         9iq1feTP4ehArRGWK89B9QDVEFJ0tkmlpuQjFvEdG4jZx9LXpUeSotUX4XXmLZBN8jvs
-         QEXuNrpFHINphx2wXrZksddQWkayGQEcues7JHXYhfYeVHv1Zzn76AWqZ9zl4VkxxMbl
-         uoS9Mjz56aI8roUi5DWT/jIMHrunVTE2jbeG55TI+zW6hZXm5kcuqJ+uF00qMpG7xOPB
-         N2KwoWyFwIqoE9wgt2LNvxmVMqFJ6TgVmEnmNtDwk8RLlTzmHIsX0nltv/6Mn3wTfoWQ
-         gQ+A==
-X-Gm-Message-State: AOJu0YzTRtA8HTz6g7h1Clja2lMvlgXvTyd6CQFlwCwFXPDRiyg/+nWA
-        7W2FBm+SIwGgdhplyiEObK/x+WyCIbMbatSRqqK5PA==
-X-Google-Smtp-Source: AGHT+IFDnrrkc+6Nm8lx8gkkxzo53vg5vCzNzDQ4UR0BiVw1QwFwneAsH1tIZXYXEuKrRXeJmIubqNmURaGHwUUi8SQ=
-X-Received: by 2002:a05:690c:368f:b0:5a8:960d:e538 with SMTP id
- fu15-20020a05690c368f00b005a8960de538mr4883776ywb.47.1700133072791; Thu, 16
- Nov 2023 03:11:12 -0800 (PST)
+        Thu, 16 Nov 2023 06:11:19 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54042AA;
+        Thu, 16 Nov 2023 03:11:16 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C03C433C7;
+        Thu, 16 Nov 2023 11:11:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700133076;
+        bh=S39I4q3Z2eyaTdKnVU0kVAHPshukGXcnGgf90hu5hNI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=kFY3JkENtL0CxjTkP/J8DwUB+SNQglfyJDHH7+sTiuRn0h/RUE7p3oaQ9qmm2EqUz
+         lJ8fKPSOka5GNjCzNZHxSf7AG6Gxycoolw68U9X3zNLhbf+PorV19XXd+0AJ9dW/Xv
+         Rs1D2g3X/xGGTH1hLuNRHeoRpA6X+9eMtKXDG3WLqM4c7l+4a5VetChSvtL3/ZQrwI
+         U355iW85fbSl1wMHuMOjIACUU9o+H6yzVw3tyyJmpQB9iKCoTXzWcBj5tSPrEMsbRa
+         JotGEznqCUVHoaEh6BM6b7ygvXrc8KQcKlmNu5a3klH/eu9lvDm5WiyUxcJJGGmqV1
+         WVw+8Ya70CViw==
+Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-2c6b5841f61so7347201fa.0;
+        Thu, 16 Nov 2023 03:11:15 -0800 (PST)
+X-Gm-Message-State: AOJu0Ywscy8wiDPGFjgcafrbTxcYyYihQieq1sou7jrvNexEPYYivadF
+        zHsROOAexZil6XVizYMZPVhrmr2PpdWU8Lrqst4=
+X-Google-Smtp-Source: AGHT+IFuerTCkQll0+xraF3KBCWCtKLNVm468vnWCiWQYEjYBagDH99HbCteNccZAey1E04nPRwuluu4JS60wiQzko0=
+X-Received: by 2002:a05:651c:20b:b0:2c6:edf1:b05e with SMTP id
+ y11-20020a05651c020b00b002c6edf1b05emr580932ljn.15.1700133074166; Thu, 16 Nov
+ 2023 03:11:14 -0800 (PST)
 MIME-Version: 1.0
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <50006160-f82b-4ec1-91a4-2ebbd7752e1d@linux.dev>
-In-Reply-To: <50006160-f82b-4ec1-91a4-2ebbd7752e1d@linux.dev>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Thu, 16 Nov 2023 13:11:00 +0200
-Message-ID: <CAA8EJpokxcO2qXgZ=+f=J+6EhAS_7KkrNJ_oZgk=RMHfv8riog@mail.gmail.com>
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
+References: <20231115095830.20607-1-quic_aiquny@quicinc.com>
+In-Reply-To: <20231115095830.20607-1-quic_aiquny@quicinc.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 16 Nov 2023 21:11:03 +1000
+X-Gmail-Original-Message-ID: <CAMj1kXEHjY2NmEztvfQR34k903Jgx_4fqgHpkxq4YAiTc5szyA@mail.gmail.com>
+Message-ID: <CAMj1kXEHjY2NmEztvfQR34k903Jgx_4fqgHpkxq4YAiTc5szyA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] ARM: kprobes: Explicitly reserve r7 for local variables
+To:     Maria Yu <quic_aiquny@quicinc.com>
+Cc:     linux@armlinux.org.uk, mhiramat@kernel.org, kernel@quicinc.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        quic_lijuang@quicinc.com, stable@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 at 12:29, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+On Wed, 15 Nov 2023 at 19:58, Maria Yu <quic_aiquny@quicinc.com> wrote:
 >
-> Hi,
+> Registers r7 is removed in clobber list, so compiler may choose r7 for
+> local variables usage, while r7 will be actually updated by the inline asm
+> code. This caused the runtime behavior wrong.
+> While those kind of reserved registers cannot be set to clobber list
+> because of error like "inline asm clobber list contains reserved
+> registers".
+> Explicitly reserve r7 by adding attribute no-omit-frame-pointer for needed
+> function, then in T32 asm code r7 is used as a frame pointer and is not
+> available for use as a general-purpose register.
+> Note that "no-omit-frame-pointer" will make the code size a little bigger
+> to store the stack frame pointer. So limited to needed functions can have
+> the less impact than the full source file.
 >
->
-> On 2023/11/15 00:30, Dmitry Baryshkov wrote:
-> >> @@ -703,14 +704,32 @@ static int it66121_bridge_attach(struct drm_bridge *bridge,
-> >>                                   enum drm_bridge_attach_flags flags)
-> >>   {
-> >>          struct it66121_ctx *ctx = bridge_to_it66121(bridge);
-> >> +       struct drm_bridge *next_bridge = ctx->next_bridge;
-> >> +       struct drm_encoder *encoder = bridge->encoder;
-> >>          int ret;
-> >>
-> >> -       if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
-> >> -               return -EINVAL;
-> >> +       if (next_bridge) {
-> >> +               if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR)) {
-> >> +                       WARN_ON(1);
-> > Why? At least use WARN() instead
->
-> If (next_bridge) is true, it says that the driver *already* known that
-> it66121 have a next bridges attached. Then it66121 driver should certainly
-> attach it, no matter what it is. Either a connector or another display bridge.
-> It also says that this is a DT-based system on such a case. CallingWARN_ON(1) here helps to see(print) which DC driver is doing the wired
-> things. Ok, I will remove the WARN_ON(1)  on the next version.
+> Fixes: dd12e97f3c72 ("ARM: kprobes: treat R7 as the frame pointer register in Thumb2 builds")
+> Signed-off-by: Maria Yu <quic_aiquny@quicinc.com>
+> Cc: stable@vger.kernel.org
 
-That's why I pointed you to WARN(). WARN_ON(1) gives no information to
-the user. WARN() allows you to add a message.
+Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
 
--- 
-With best wishes
-Dmitry
+> ---
+>  arch/arm/probes/kprobes/actions-thumb.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/arch/arm/probes/kprobes/actions-thumb.c b/arch/arm/probes/kprobes/actions-thumb.c
+> index 51624fc263fc..c2fdaf9f6dba 100644
+> --- a/arch/arm/probes/kprobes/actions-thumb.c
+> +++ b/arch/arm/probes/kprobes/actions-thumb.c
+> @@ -438,7 +438,7 @@ t16_simulate_branch(probes_opcode_t insn,
+>         regs->ARM_pc = pc + (offset * 2);
+>  }
+>
+> -static unsigned long __kprobes
+> +static unsigned long __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>  t16_emulate_loregs(probes_opcode_t insn,
+>                    struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> @@ -521,7 +521,7 @@ t16_decode_hiregs(probes_opcode_t insn, struct arch_probes_insn *asi,
+>         return INSN_GOOD;
+>  }
+>
+> -static void __kprobes
+> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>  t16_emulate_push(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> @@ -557,7 +557,7 @@ t16_decode_push(probes_opcode_t insn, struct arch_probes_insn *asi,
+>         return INSN_GOOD;
+>  }
+>
+> -static void __kprobes
+> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>  t16_emulate_pop_nopc(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+> @@ -576,7 +576,7 @@ t16_emulate_pop_nopc(probes_opcode_t insn,
+>                 );
+>  }
+>
+> -static void __kprobes
+> +static void __kprobes __attribute__((optimize("no-omit-frame-pointer")))
+>  t16_emulate_pop_pc(probes_opcode_t insn,
+>                 struct arch_probes_insn *asi, struct pt_regs *regs)
+>  {
+>
+> base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+> --
+> 2.17.1
+>
