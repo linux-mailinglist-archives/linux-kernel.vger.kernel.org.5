@@ -2,172 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DEB97EE6FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274987EE704
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 19:49:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345467AbjKPSqY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 13:46:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36522 "EHLO
+        id S229537AbjKPStA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 13:49:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48134 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjKPSqW (ORCPT
+        with ESMTP id S229448AbjKPSs7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 13:46:22 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03663D4E
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:18 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id 5614622812f47-3b2e44c7941so665180b6e.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:46:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700160377; x=1700765177; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=H+G3Thi9QyaCj6G+9c//7y8tpV11xzrqy7tArsUAiXA=;
-        b=Zw1VCBY1r+zGu9M6JFNK6NZm9cwJTPF306Ly0oXrhXW8WotYpjix2J7T/hfgR5Ogt5
-         V9ofn7co3oYRzpIqPTSfQouAdMhKSCGwa8uR/BIQtNCvlbNQdZtqHDOy6erM839pHSfI
-         7NumeX0z1vC8zMSIWr00Jgf06SgzWx4g3vuWhdqhRZQ//tQCHIWuJKmvwQCsOe7LYE3G
-         yWYGekCQJDMUf8b0hkAPiHOH8h+ue6197JJqnagxlZpx2pzv09hx2tDW7agQV5R8olAg
-         viAVvXuuyqmbbG2rY1NDaTlW7P1lqtUo+mmWVKMQNitNFBj2JHyd3A4mtAYgkSXbs79E
-         8d/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700160377; x=1700765177;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=H+G3Thi9QyaCj6G+9c//7y8tpV11xzrqy7tArsUAiXA=;
-        b=f/HntmWGhbHGGviGSwqDhhzzwCvK9RY7C4jhBLXMLvv0soiov12znwy3DDDF6kMZA6
-         rmOUuPGOfVK7uxBHBlSxhDCZx7E/hu2ILno12exTM/xF6FKXM34fz/ljtIi7RYu2DI/R
-         aD21E9dgAUG3KQw8f1Udij0QvM2nmUskR894q+Uk9PIWFS8xm6imDkttokC+yvcIb9E/
-         XoKpmQiz2/micjf3A1DZxHA+pSkvoau47Hm2g8Q3s6uys1URcTyPdPSOOBZ3KVqnMyRU
-         Us/EyFr1e3/e74ehhWmluk97O7oXu254lGr9zwo5mNtG4p0VTKHg9gzETusa8ViNJcF6
-         b8JQ==
-X-Gm-Message-State: AOJu0YwELQDKCdkldzld8jcXPJWnpOS+JwU6iDIRO/rZp0a0yLgICrvO
-        Ehq0kdrHomc7tXzPsTNbtsMK6Ig/eRVydPh6Wl+d
-X-Google-Smtp-Source: AGHT+IGAfgdZtmxubZhWLgb4REHHB7a+iMS46HjHd0YyX0scqg/dVHmKFiBP9iP4hjqFVyXuUq7chZhRosvMyhNi/Qo=
-X-Received: by 2002:a05:6358:52ce:b0:16b:c486:c315 with SMTP id
- z14-20020a05635852ce00b0016bc486c315mr12386060rwz.3.1700160377054; Thu, 16
- Nov 2023 10:46:17 -0800 (PST)
+        Thu, 16 Nov 2023 13:48:59 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D138C181
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 10:48:56 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 115D7C433C7;
+        Thu, 16 Nov 2023 18:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700160536;
+        bh=0KG7GdzP336+0cjZwUNxFr0qe0BUvljcO4RomC7f7nI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GHTwRTm7/D2J7jeuVpmBKgYqMUX5QcAnwsYrmyNaxDYK3PcabLuiWSozYDuMFsHTn
+         eB6OM9gOD2DshqlUCufpO4SnFaGWhV72cjygNi6NUU8zLmM7MLLyRab3q7NdyP30wo
+         hgc8uewEAGuB6oxiHcByzefcglPCNh/xwx3lr2kg4a6F/9qOi3QH7vTpHEjTwn+8ps
+         a1vowyJvO2+O1wh6H8Ufx/TNhAwYfJcku1daxzoJje4zu65EAZg4hC83iEAXFNRiQr
+         hVJAchK7WprnjQJhoDHaXPuFEOPSwANGc1hvqfTejIc1Fe+x3E6gktAdsuzIa2iQaz
+         YsXITMmodmqUQ==
+Date:   Thu, 16 Nov 2023 13:48:47 -0500
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "Rafael J . Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH 3/4] x86: Remove __current_clr_polling() from mwait_idle()
+Message-ID: <ZVZkD3FvmNQ39Kk9@localhost.localdomain>
+References: <20231115151325.6262-1-frederic@kernel.org>
+ <20231115151325.6262-4-frederic@kernel.org>
+ <20231116151316.GH8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20231107134012.682009-11-roberto.sassu@huaweicloud.com>
- <231ff26ec85f437261753faf03b384e6.paul@paul-moore.com> <b0f6ece6579a5016243cca5c313d1a58cae6eff2.camel@huaweicloud.com>
-In-Reply-To: <b0f6ece6579a5016243cca5c313d1a58cae6eff2.camel@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 16 Nov 2023 13:46:06 -0500
-Message-ID: <CAHC9VhSkomRmz9OQGaQ=4Ni=B+UEO=SLUtDtv7X_kbTSam=h=w@mail.gmail.com>
-Subject: Re: [PATCH v5 10/23] security: Introduce inode_post_setattr hook
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>,
-        Stefan Berger <stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231116151316.GH8262@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 4:44=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
-> > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> > >
-> > > In preparation for moving IMA and EVM to the LSM infrastructure, intr=
-oduce
-> > > the inode_post_setattr hook.
-> > >
-> > > At inode_setattr hook, EVM verifies the file's existing HMAC value. A=
-t
-> > > inode_post_setattr, EVM re-calculates the file's HMAC based on the mo=
-dified
-> > > file attributes and other file metadata.
-> > >
-> > > Other LSMs could similarly take some action after successful file att=
-ribute
-> > > change.
-> > >
-> > > The new hook cannot return an error and cannot cause the operation to=
- be
-> > > reverted.
-> > >
-> > > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > > Reviewed-by: Stefan Berger <stefanb@linux.ibm.com>
-> > > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> > > ---
-> > >  fs/attr.c                     |  1 +
-> > >  include/linux/lsm_hook_defs.h |  2 ++
-> > >  include/linux/security.h      |  7 +++++++
-> > >  security/security.c           | 16 ++++++++++++++++
-> > >  4 files changed, 26 insertions(+)
-> >
-> > ...
-> >
-> > > diff --git a/security/security.c b/security/security.c
-> > > index 7935d11d58b5..ce3bc7642e18 100644
-> > > --- a/security/security.c
-> > > +++ b/security/security.c
-> > > @@ -2222,6 +2222,22 @@ int security_inode_setattr(struct mnt_idmap *i=
-dmap,
-> > >  }
-> > >  EXPORT_SYMBOL_GPL(security_inode_setattr);
-> > >
-> > > +/**
-> > > + * security_inode_post_setattr() - Update the inode after a setattr =
-operation
-> > > + * @idmap: idmap of the mount
-> > > + * @dentry: file
-> > > + * @ia_valid: file attributes set
-> > > + *
-> > > + * Update inode security field after successful setting file attribu=
-tes.
-> > > + */
-> > > +void security_inode_post_setattr(struct mnt_idmap *idmap, struct den=
-try *dentry,
-> > > +                            int ia_valid)
-> > > +{
-> > > +   if (unlikely(IS_PRIVATE(d_backing_inode(dentry))))
-> > > +           return;
-> >
-> > I may be missing it, but I don't see the S_PRIVATE flag check in the
-> > existing IMA or EVM hooks so I'm curious as to why it is added here?
-> > Please don't misunderstand me, I think it makes sense to return early
-> > on private dentrys/inodes, but why aren't we doing that now?
->
-> My first motivation was that it is in the pre hooks, so it should be in
-> the post hook as well.
->
-> Thinking more about it, suppose that the post don't have the check,
-> private inodes would gain an HMAC without checking the validity of the
-> current HMAC first (done in the pre hooks), which would be even worse.
->
-> So, my idea about this is that at least we are consistent.
->
-> If IMA and EVM should look at private inodes is a different question,
-> which would require a discussion.
+Le Thu, Nov 16, 2023 at 04:13:16PM +0100, Peter Zijlstra a écrit :
+> On Wed, Nov 15, 2023 at 10:13:24AM -0500, Frederic Weisbecker wrote:
+> > mwait_idle() is only ever called through by cpuidle, either from
+> > default_idle_call() or from cpuidle_enter(). In any case
+> > cpuidle_idle_call() sets again TIF_NR_POLLING after calling it so there
+> > is no point for this atomic operation upon idle exit.
+> > 
+> > Acked-by: Rafael J. Wysocki <rafael@kernel.org>
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > ---
+> >  arch/x86/kernel/process.c | 1 -
+> >  1 file changed, 1 deletion(-)
+> > 
+> > diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+> > index b6f4e8399fca..fc7a38084606 100644
+> > --- a/arch/x86/kernel/process.c
+> > +++ b/arch/x86/kernel/process.c
+> > @@ -930,7 +930,6 @@ static __cpuidle void mwait_idle(void)
+> >  			raw_local_irq_disable();
+> >  		}
+> >  	}
+> > -	__current_clr_polling();
+> >  }
+> >  
+> >  void select_idle_routine(const struct cpuinfo_x86 *c)
+> 
+> 
+> Urgh at this and the next one... That is, yes we can do this, but it
+> makes these function asymmetric and doesn't actually solve the
+> underlying problem that all of the polling stuff is inside-out.
+> 
+> Idle loop sets polling, then clears polling because it assumes all
+> arch/driver idle loops are non-polling, then individual drivers re-set
+> polling, and to be symmetric (above) clear it again, for the generic
+> code to set it again, only to clear it again when leaving idle.
+> 
+> Follow that? ;-)
 
-As I said above, I can understand why having the IS_PRIVATE() macro
-check might be a good idea, I am just concerned that the current
-IMA/EVM hooks don't check for S_PRIVATE and thus moving to this new
-LSM hook would potentially be a change in behavior (like I said, I
-could be missing a subtle detail).  I'd just like a quick confirmation
-from Mimi that either there is no difference because of X, or she is
-aware of the difference and is okay with it.  It's very possible she
-is fine with it, she did provide her 'Reviewed-by', but I worry this
-is the sort of thing that might have gone unnoticed during review.
+That's right :-)
 
---=20
-paul-moore.com
+> 
+> Anyway, drivers ought to tell up-front if they're polling and then we
+> can avoid the whole dance and everything is better.
+> 
+> Something like the very crude below.
+
+Yeah that makes perfect sense (can I use your SoB right away?)
+
+Though I sometimes wonder why we even bother with setting TIF_NR_POLLING
+for some short parts in the generic idle loop even on !mwait and
+!cpuidle-state-polling states.
+
+Like for example why do we bother with setting TIF_NR_POLLING for just
+the portion in the generic idle loop that looks up the cpuidle state
+and stops the tick then clear TIF_NR_POLLING before calling wfi on ARM?
+
+Or may be it's a frequent pattern to have a remote wake up happening while
+entering the idle loop?
+
+Thanks.
