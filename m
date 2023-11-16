@@ -2,202 +2,294 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ECD97EDA8F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:04:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F8367EDA96
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:08:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344668AbjKPEEU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 23:04:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52108 "EHLO
+        id S1344708AbjKPEIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 23:08:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPEES (ORCPT
+        with ESMTP id S229692AbjKPEI2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 23:04:18 -0500
-Received: from CO1PR02CU001.outbound.protection.outlook.com (mail-westus2azon11011010.outbound.protection.outlook.com [52.101.47.10])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAFAA194;
-        Wed, 15 Nov 2023 20:04:13 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=j8X1YInVCvKgnjwMxeMNzmjVM5LIY2jdYvF+PNnC5ATy6J0ZJTEDyJzwxnq7HyvcMwNDGHc3yQF0fY8Ts1vmV5HUP5GskrbN9EyaByJOM00bPParTQ8IiGQr1hDcAOU/VjcLMF7T3J79CdQWZgTOCK63OYrx+1ROlajXaV0J9lkvFt8FN7669UWcX9xmO187GBcJr/tcY/J2OTcd9bGBaHzjdV3hyAdVviDW5jCTypeAB6PLIBjM1N2zC6jVUDXyl2eCfrCctqip2ERHhcKndTx7Me2XZx8LDboSry8vVwbI4Bd9PwblhSyQGS88B2EnqARxcrXBAKwzhn7Ww4+GSQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SqOpWDpIjpz7JLEQs3en4srKYpI0tTJ0kmu/3j6aPv0=;
- b=R8SZEerQB5ekm4czvsTC+bBwrFBxlwvaDIOeYkN8y47hked+7ayGYnhGDbEHK1IeWas7yEDEwsLzKQbZeaAJ1iw3f4ZiCPLWgEiBT8afvcmZP0SlDfPg21w2Ztxudjogppx0FTecqvivio4Ut9KK1OnRRl9mZfLeNul0DPc9Pa3+UrVWCrhsczT9kyeTBmg6kT+kPIe2U3Io49Xfn+GM3pWM7cENJsHL3pwFsJxWc4Fixh0ropkC1bZpF4NP6O2XHFGDW63zzpf5ua1XOyLElpYLVsb/RU9aCHIQCK6ALhdL3IrL81OiFsXsPiuu4ZbA5X6lxYwxYqjS1tXW0Z1gzw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=vmware.com; dmarc=pass action=none header.from=vmware.com;
- dkim=pass header.d=vmware.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vmware.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SqOpWDpIjpz7JLEQs3en4srKYpI0tTJ0kmu/3j6aPv0=;
- b=YIAoyq/88JXJQCqcroWqVbbWufLgi8D9+aw3bspuUDoo8CqTHQTZRFjti8mlOZ0/bwqEdaKeXolc5f8HeovvsyBfK5Zkqur6hZLs3xfkRrldK0H5YyeAwoK00wB/OV7+kg0ajaeV2k/El84BJSupABAH+BSBIImqBRzHbYl+FAk=
-Received: from IA0PR05MB9832.namprd05.prod.outlook.com (2603:10b6:208:404::6)
- by LV3PR05MB10360.namprd05.prod.outlook.com (2603:10b6:408:1a3::19) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Thu, 16 Nov
- 2023 04:04:10 +0000
-Received: from IA0PR05MB9832.namprd05.prod.outlook.com
- ([fe80::7e24:8821:d736:fbb5]) by IA0PR05MB9832.namprd05.prod.outlook.com
- ([fe80::7e24:8821:d736:fbb5%5]) with mapi id 15.20.7002.019; Thu, 16 Nov 2023
- 04:04:10 +0000
-From:   Zack Rusin <zackr@vmware.com>
-To:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "javierm@redhat.com" <javierm@redhat.com>
-CC:     "corbet@lwn.net" <corbet@lwn.net>,
-        "olvaffe@gmail.com" <olvaffe@gmail.com>,
-        "daniel.vetter@ffwll.ch" <daniel.vetter@ffwll.ch>,
-        "nunes.erico@gmail.com" <nunes.erico@gmail.com>,
-        "airlied@redhat.com" <airlied@redhat.com>,
-        "pekka.paalanen@collabora.com" <pekka.paalanen@collabora.com>,
-        "tzimmermann@suse.de" <tzimmermann@suse.de>,
-        "belmouss@redhat.com" <belmouss@redhat.com>,
-        "mripard@kernel.org" <mripard@kernel.org>,
-        "daniel@ffwll.ch" <daniel@ffwll.ch>,
-        "gurchetansingh@chromium.org" <gurchetansingh@chromium.org>,
-        "maarten.lankhorst@linux.intel.com" 
-        <maarten.lankhorst@linux.intel.com>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "kraxel@redhat.com" <kraxel@redhat.com>,
-        "virtualization@lists.linux.dev" <virtualization@lists.linux.dev>,
-        "airlied@gmail.com" <airlied@gmail.com>,
-        Linux-graphics-maintainer <Linux-graphics-maintainer@vmware.com>,
-        "contact@emersion.fr" <contact@emersion.fr>
-Subject: Re: [PATCH v2 0/5] drm: Allow the damage helpers to handle buffer
- damage
-Thread-Topic: [PATCH v2 0/5] drm: Allow the damage helpers to handle buffer
- damage
-Thread-Index: AQHaF8XhF3+4IU0LGkihWLK/H/28urB8VFkA
-Date:   Thu, 16 Nov 2023 04:04:09 +0000
-Message-ID: <a16a61582f90a5b490fb7681b44864a4801c830a.camel@vmware.com>
-References: <20231115131549.2191589-1-javierm@redhat.com>
-In-Reply-To: <20231115131549.2191589-1-javierm@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.48.1-0ubuntu1 
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=vmware.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA0PR05MB9832:EE_|LV3PR05MB10360:EE_
-x-ms-office365-filtering-correlation-id: 99742fab-e917-4742-1eb1-08dbe6591611
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: CmXhMANAiAHuQngj7l0C/d0N4E7kjxNV84l2NfbkkVxCu7TZ5rW7fuXHV6qbyffBaFAN+o8AEEPjvA+wx84yAwcNRcLQVle1ENgqTpLHx1tImS2xAxSTPWCC0L2DTN2w9+I5mlALqAskfQUvDev/a3eJFN1IoXmIkAvWHJlxqQ/WNH/DEYj2O2qQiG3WgqPQRs/FofABT5KS2vpEl7VHxOp3ubX8+QboS1Oj23NhoGlZCniuQozxRV8Kow25KYdDQVXku/lDX6xWhqnkcDO/b8PfYDpdFUBirjmNPmHWL/cIDsKNveE7xuLFrA1kpmAjN28ZaMR02cMp6B6zykShdSC2KozLjvcPw2QigXTXF/cYW2K4qxAoFxBRev24uNvjLUdurNjzmX3/ApHlxlk9WG9tUbRN4fCE8z7Nfo2SMXw0BLl+iXbjF5UbA5hUg6xQV2saQcaLWRvVLYyYiPSqwQcpnxjw+nSapJiwxT9mLPZD1j3BZGgMdJdVlWtuFBKSyr+sIVZWbazPy+I3SN7VcYqveEoFeA99W8UspyI0SRt57a7H9oppv9A9ZJQmF+yhSSNmqu+uoREwgFogixTiPpku3RzkUAqylz/ZIDVE/Xb+2DZTixNizEYpJCLQuMGPhU9M2cN4ZCuPi4wuv+5SahbvMul28+pgdwct6SZpohOtxUXs8zedUwxVFF8/tuqT
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA0PR05MB9832.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(136003)(366004)(376002)(396003)(346002)(230922051799003)(1800799009)(186009)(451199024)(64100799003)(4001150100001)(122000001)(2906002)(38100700002)(86362001)(7416002)(5660300002)(4326008)(8676002)(8936002)(41300700001)(83380400001)(2616005)(76116006)(66946007)(316002)(36756003)(91956017)(110136005)(66556008)(54906003)(6512007)(26005)(64756008)(66446008)(66476007)(6506007)(45080400002)(71200400001)(6486002)(478600001)(38070700009)(966005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?cnFEeTNOSEpXWXVxaHZCWS92UGxuTkdoMS84azNpRzB5LzBycXluZGExMFV1?=
- =?utf-8?B?VUd1eS9WZGZlUjE4eWZkT1VvRUJRUXArVFdmZXQzQ1h1QzI2eWVsMTB4TEE4?=
- =?utf-8?B?WDQ0V3NjS2p3YXcwSDUwMTY0RFo0TmVydzV1a3h0aXVLUW4zOWRWdjhxaGcr?=
- =?utf-8?B?WWdka1VrQy9rcWZUM2diRTBRYThXRzQ4dXdGWGZuRUtrS3lHVVd0ZS84aTdz?=
- =?utf-8?B?Q3RNVEMzK3Y1UmVDeVdEcldhM0htQW1BMWxXQ04zQVEwMklGZWRlSStlSnR1?=
- =?utf-8?B?VkZFQmIwa3RCZWFwd2tzZjBMZDFqSmZ0RVpIdmYvbGJCZGhLNGltTCs1WUdG?=
- =?utf-8?B?bmRLQ0VoaDVRQzNDU3k3dWE2bE9KVnlzTWJONFFXQWpoZnRKVkdodGpYNGdM?=
- =?utf-8?B?bGJwOFhadjVMUXd4QmJORlM0d0dnblJ4L1hiQ1RnSFV0WVVwb3NKcHlGdlB5?=
- =?utf-8?B?QzBWYmpPcVhIcDdHd09ORTZ5V1Z6QTViUnBiN08zVEp2THBnWms1TjhCMXli?=
- =?utf-8?B?b3dtUS9VVUo4YmlGQTE0b3RXWlRVUGtMVDdqbXRTdWZra2ZKeVpxUkxJMVRJ?=
- =?utf-8?B?WjV1bTBRRE14REtKRUQxQ2hCT2J4YjUyWFBOMTlFeFl4RmtrZTRCTjloRWFh?=
- =?utf-8?B?ZXljQjhua212dnczdU8wb1FBUVNOdE1OclNkY01Ca3BMeVdreEQ1aE9LS1ox?=
- =?utf-8?B?KzE0NlBqMTNJMEQ5QkQvNzg0T2JKbjd1SHY5bkxTbHhiVmNJYjFSbVFnbkR3?=
- =?utf-8?B?UkdEd0dYejlqcmlGRWQ0bXpqVjBCZlVJcnRjdDJCdkxNZzVVSEM0UW12S3BX?=
- =?utf-8?B?Mi9tVTdJdm1WVXRyRkxhVlp1RHFGR1dnTktXempyRGVmWjQ1WDk3TFpscXUr?=
- =?utf-8?B?WjVMYjhKNEI5UUFZdmN0QjF6VDZnckozQ2QxZzhMN0ZKVEhRa0E3M05DdEd3?=
- =?utf-8?B?TnBYelhBNzZDd2xvdVJxRzNCNTNLYTl4c3BEVXhUcXpjVWduU3lhYldMbnk3?=
- =?utf-8?B?Q2hTdWpSb0l6V0ZldzdQUjJSaU9RS29UdktmRGxBZ2pRR1dhbzJEQ1AzUFl4?=
- =?utf-8?B?VEFlanlqcERkNXRjNlVzMlBXNEtnazRMOHJ4ak5xOGtvWnpYVkZZRkwrVjhU?=
- =?utf-8?B?R0Y4bnphTkZxZXlLM0Y2UVBIZTNGT3c4dEJmdnUxaHhBMGduWVQzREV2WjM1?=
- =?utf-8?B?ZndYay9FRGlVZHNXdDkyRmU1U0pFbG5oUks2MGlkSVJLSDVXeEh2ODZtVVA4?=
- =?utf-8?B?K2Ryb2J5WVBWZGgva1RMYW9BWTdCUHZZU3I5M1F4NFNtYUd1UjZhT0M5c0Nh?=
- =?utf-8?B?ZDVjLzZ4UzJ5L2NGWEpJakpUTnVEbjVCRC9XVFBTK1R5UGhUeFRXV04ycTZy?=
- =?utf-8?B?KzJoT2J0bStNQ01YUUM5cGRDcmRpQkVLNGRmSnlvZ0kxK2NGNWlBVm1hS3Zz?=
- =?utf-8?B?NXVvYm1Pekp5STFXNEFLSG93YmV2aklqNkQyU0ZDeUltY012VEdodDdVV0pq?=
- =?utf-8?B?RjZxV2Q2RElLemJmVUFyOVJYNlRvb0cvWStqblBMSEQzcjIzQWtsdnRQUUNJ?=
- =?utf-8?B?QmFqQlpPK2cydzY5eU1XdVdSUWRMOElXWUN1MnVxQ29DeHpVdHlyUkcwVmNH?=
- =?utf-8?B?YVIxVmNLc3JIMW14OU9RRFhuT2VCRm04ckxsSWJaU0Nka1ZRdlVxZzdnSnlP?=
- =?utf-8?B?VHJJUVZnZWRVQ2NldWNNSDh2d3VhdXFmZDVoTUNFQm9ndnJSbmd0UzdUZkNy?=
- =?utf-8?B?MDBtY29sNWl1ZnhESUs3V2RieFZGZnQyWUJ0alYzZVhST3l5alVsaWhNU0d0?=
- =?utf-8?B?aUFxVWNQMkdLVUxFb1BYTDNCV04ySURPS01oQW9JbmZ2U3hsaENUUXZ3M2p1?=
- =?utf-8?B?TFNyRmNEblJhQjNNV295bTVPTEdTZW5neWVqQTRGc0dUZVhYNmZxdHFWMWpF?=
- =?utf-8?B?TndKaStlTnlGM3JNRTh6SkdZRmRucVp6eE96TzlwQnVsbXlVRGdTQTNHTnlU?=
- =?utf-8?B?SDNZeklBcHRIMCsveTFLUGFpOFVRYVNTYXBydzJiQnlCNjJweVBPNDVvaktk?=
- =?utf-8?B?VFhqMi81SGYrNDdlMHI0UWNoZkRMQzlqUGF1UzdkWEZZSHdQREloMTVHbi81?=
- =?utf-8?Q?203ZdRWz4IccKRriWOkIE4iaX?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EE4AC92E6A156B45A6ECB149BA68232D@namprd05.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        Wed, 15 Nov 2023 23:08:28 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0BB01A3
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:08:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700107703; x=1731643703;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=qL9piQHsJ20lz8yk9tR43XFPUfzc6L0zTkppwZBsX6o=;
+  b=XA7n/4NmqUmHWic/ggddUt5ZhMRMPi927CjJUYVO4rTas91umMoHNdNC
+   EioFPjLlmHGnd+I5SnCjqjYNQx+GWozM2O0qKZmFfiVJTBjsltz36jXIv
+   hrE4gbjMMDc1awgEtjHB5tskuODPj1wdZ34ehXF9yqFs6KGZdb5ZXSBFO
+   256LvMqarz8uOulD8PgKHWv1TyFyA1HdlDI0hpK6oMxMxzMvV4/rQknkc
+   2nZClLNJq+Uiu0uqdBEpk6N7klku9ycZOzyZV7uFEcgups5BrPA0c95i6
+   jA0JJ1aLnQDJg+arIyU2blo2RezlwcvCm5mpXqBwCHObVjfOiHZane4BR
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="455300412"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="455300412"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 20:08:23 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="882615816"
+X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
+   d="scan'208";a="882615816"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 15 Nov 2023 20:08:21 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3Tfv-0001HH-0F;
+        Thu, 16 Nov 2023 04:08:19 +0000
+Date:   Thu, 16 Nov 2023 12:07:44 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Michal Marek <mmarek@suse.com>
+Subject: drivers/hid/hid-sensor-custom.c:598:64: warning: 'snprintf' output
+ may be truncated before the last format character
+Message-ID: <202311161224.pnGqzMx0-lkp@intel.com>
 MIME-Version: 1.0
-X-OriginatorOrg: vmware.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA0PR05MB9832.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99742fab-e917-4742-1eb1-08dbe6591611
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2023 04:04:09.9243
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b39138ca-3cee-4b4a-a4d6-cd83d9dd62f0
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Q8vrMbtPnsKVMnnmwsRnflDHZHsj/VV2UqIAdDLYoNlXPw4V1KX3zoVua019bEyILMjdSognzfUtXIV1relfNQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR05MB10360
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIzLTExLTE1IGF0IDE0OjE1ICswMTAwLCBKYXZpZXIgTWFydGluZXogQ2FuaWxs
-YXMgd3JvdGU6DQo+IEhlbGxvLA0KPg0KPiBUaGlzIHNlcmllcyBpcyB0byBmaXggYW4gaXNzdWUg
-dGhhdCBzdXJmYWNlZCBhZnRlciBkYW1hZ2UgY2xpcHBpbmcgd2FzDQo+IGVuYWJsZWQgZm9yIHRo
-ZSB2aXJ0aW8tZ3B1IGJ5IGNvbW1pdCAwMWYwNTk0MGE5YTcgKCJkcm0vdmlydGlvOiBFbmFibGUN
-Cj4gZmIgZGFtYWdlIGNsaXBzIHByb3BlcnR5IGZvciB0aGUgcHJpbWFyeSBwbGFuZSIpLg0KPg0K
-PiBBZnRlciB0aGF0IGNoYW5nZSwgZmxpY2tlcmluZyBhcnRpZmFjdHMgd2FzIHJlcG9ydGVkIHRv
-IGJlIHByZXNlbnQgd2l0aA0KPiBib3RoIHdlc3RvbiBhbmQgd2xyb290cyB3YXlsYW5kIGNvbXBv
-c2l0b3JzIHdoZW4gcnVubmluZyBpbiBhIHZpcnR1YWwNCj4gbWFjaGluZS4gVGhlIGNhdXNlIHdh
-cyBpZGVudGlmaWVkIGJ5IFNpbWEgVmV0dGVyLCB3aG8gcG9pbnRlZCBvdXQgdGhhdA0KPiB2aXJ0
-aW8tZ3B1IGRvZXMgcGVyLWJ1ZmZlciB1cGxvYWRzIGFuZCBmb3IgdGhpcyByZWFzb24gaXQgbmVl
-ZHMgdG8gZG8NCj4gYSBidWZmZXIgZGFtYWdlIGhhbmRsaW5nLCBpbnN0ZWFkIG9mIGZyYW1lIGRh
-bWFnZSBoYW5kbGluZy4NCj4NCj4gVGhlaXIgc3VnZ2VzdGlvbiB3YXMgdG8gZXh0ZW5kIHRoZSBk
-YW1hZ2UgaGVscGVycyB0byBjb3ZlciB0aGF0IGNhc2UNCj4gYW5kIGdpdmVuIHRoYXQgdGhlcmUn
-cyBpc24ndCBhIGJ1ZmZlciBkYW1hZ2UgYWNjdW11bGF0aW9uIGFsZ29yaXRobQ0KPiAoZS5nOiBi
-dWZmZXIgYWdlKSwganVzdCBkbyBhIGZ1bGwgcGxhbmUgdXBkYXRlIGlmIHRoZSBmcmFtZWJ1ZmZl
-ciB0aGF0DQo+IGlzIGF0dGFjaGVkIHRvIGEgcGxhbmUgY2hhbmdlZCBzaW5jZSB0aGUgbGFzdCBw
-bGFuZSB1cGRhdGUgKHBhZ2UtZmxpcCkuDQo+DQo+IEl0IGlzIGEgdjIgdGhhdCBhZGRyZXNzZXMg
-aXNzdWVzIHBvaW50ZWQgb3V0IGJ5IFRob21hcyBaaW1tZXJtYW5uIGluIHYxOg0KPiBodHRwczov
-L2xpc3RzLmZyZWVkZXNrdG9wLm9yZy9hcmNoaXZlcy9kcmktZGV2ZWwvMjAyMy1Ob3ZlbWJlci80
-MzAxMzguaHRtbA0KPg0KPiBQYXRjaCAjMSBhZGRzIGEgaWdub3JlX2RhbWFnZV9jbGlwcyBmaWVs
-ZCB0byBzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlIHRvIGJlDQo+IHNldCBieSBkcml2ZXJzIHRoYXQg
-d2FudCB0aGUgZGFtYWdlIGhlbHBlcnMgdG8gaWdub3JlIHRoZSBkYW1hZ2UgY2xpcHMuDQo+DQo+
-IFBhdGNoICMyIGZpeGVzIHRoZSB2aXJ0aW8tZ3B1IGRhbWFnZSBoYW5kbGluZyBsb2dpYyBieSBh
-c2tpbmcgdGhlIGRhbWFnZQ0KPiBoZWxwZXIgdG8gaWdub3JlIHRoZSBkYW1hZ2UgY2xpcHMgaWYg
-dGhlIGZyYW1lYnVmZmVyIGF0dGFjaGVkIHRvIGEgcGxhbmUNCj4gaGFzIGNoYW5nZWQgc2luY2Ug
-dGhlIGxhc3QgcGFnZS1mbGlwLg0KPg0KPiBQYXRjaCAjMyBkb2VzIHRoZSBzYW1lIGJ1dCBmb3Ig
-dGhlIHZtd2dmeCBkcml2ZXIgdGhhdCBhbHNvIG5lZWRzIHRvIGhhbmRsZQ0KPiBidWZmZXIgZGFt
-YWdlIGFuZCBzaG91bGQgaGF2ZSB0aGUgc2FtZSBpc3N1ZSAoYWx0aG91Z2ggSSBoYXZlbid0IHRl
-c3RlZCBpdA0KPiBkdWUgbm90IGhhdmluZyBhIFZNV2FyZSBzZXR1cCkuDQo+DQo+IFBhdGNoICM0
-IGFkZHMgdG8gdGhlIEtNUyBkYW1hZ2UgdHJhY2tpbmcga2VybmVsLWRvYyBzb21lIHBhcmFncmFw
-aHMgYWJvdXQNCj4gZGFtYWdlIHRyYWNraW5nIHR5cGVzIGFuZCByZWZlcmVuY2VzIHRvIGxpbmtz
-IHRoYXQgZXhwbGFpbiBmcmFtZSBkYW1hZ2UgdnMNCj4gYnVmZmVyIGRhbWFnZS4NCj4NCj4gRmlu
-YWxseSBwYXRjaCAjNSBhZGRzIGFuIGl0ZW0gdG8gdGhlIERSTSB0b2RvLCBhYm91dCB0aGUgbmVl
-ZCB0byBpbXBsZW1lbnQNCj4gc29tZSBidWZmZXIgZGFtYWdlIGFjY3VtdWxhdGlvbiBhbGdvcml0
-aG0gaW5zdGVhZCBvZiBqdXN0IGRvaW5nIGZ1bGwgcGxhbmUNCj4gdXBkYXRlcyBpbiB0aGlzIGNh
-c2UuDQo+DQo+IEJlY2F1c2UgY29tbWl0IDAxZjA1OTQwYTlhNyBsYW5kZWQgaW4gdjYuNCwgdGhl
-IGZpcnN0IDIgcGF0Y2hlcyBhcmUgbWFya2VkDQo+IGFzIEZpeGVzIGFuZCBDYyBzdGFibGUuDQo+
-DQo+IEkndmUgdGVzdGVkIHRoaXMgb24gYSBWTSB3aXRoIHdlc3Rvbiwgd2FzIGFibGUgdG8gcmVw
-cm9kdWNlIHRoZSBpc3N1ZQ0KPiByZXBvcnRlZCBhbmQgdGhlIHBhdGNoZXMgZGlkIGZpeCB0aGUg
-cHJvYmxlbS4NCj4NCj4gQmVzdCByZWdhcmRzLA0KPiBKYXZpZXINCj4NCj4gQ2hhbmdlcyBpbiB2
-MjoNCj4gLSBBZGQgYSBzdHJ1Y3QgZHJtX3BsYW5lX3N0YXRlIC5pZ25vcmVfZGFtYWdlX2NsaXBz
-IHRvIHNldCBpbiB0aGUgcGxhbmUncw0KPiAgIC5hdG9taWNfY2hlY2ssIGluc3RlYWQgb2YgaGF2
-aW5nIGRpZmZlcmVudCBoZWxwZXJzIChUaG9tYXMgWmltbWVybWFubikuDQo+IC0gU2V0IHN0cnVj
-dCBkcm1fcGxhbmVfc3RhdGUgLmlnbm9yZV9kYW1hZ2VfY2xpcHMgaW4gdmlydGlvLWdwdSBwbGFu
-ZSdzDQo+ICAgLmF0b21pY19jaGVjayBpbnN0ZWFkIG9mIHVzaW5nIGEgZGlmZmVyZW50IGhlbHBl
-cnMgKFRob21hcyBaaW1tZXJtYW5uKS4NCj4gLSBTZXQgc3RydWN0IGRybV9wbGFuZV9zdGF0ZSAu
-aWdub3JlX2RhbWFnZV9jbGlwcyBpbiB2bXdnZnggcGxhbmUncw0KPiAgIC5hdG9taWNfY2hlY2sg
-aW5zdGVhZCBvZiB1c2luZyBhIGRpZmZlcmVudCBoZWxwZXJzIChUaG9tYXMgWmltbWVybWFubiku
-DQoNClRoZSBzZXJpZXMgbG9va3MgZ29vZCB0byBtZSwgdGhhbmtzIGZvciB0YWNrbGluZyB0aGlz
-LiBJJ20gc3VycHJpc2VkIHRoYXQgd2UgZG9uJ3QNCmhhdmUgYW55IElHVCB0ZXN0cyBmb3IgdGhp
-cy4gU2VlbXMgbGlrZSBpdCBzaG91bGRuJ3QgYmUgdG9vIGhhcmQgdG8gdGVzdCBpdCBpbiBhDQpn
-ZW5lcmljIHdheSB3aXRoIGp1c3QgYSBjb3VwbGUgb2YgZHVtYiBidWZmZXJzLg0KDQp6DQo=
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+commit: 8ae94224c9d72fc4d9aaac93b2d7833cf46d7141 kbuild: add -fno-PIE
+date:   7 years ago
+config: x86_64-randconfig-m001-20230717 (https://download.01.org/0day-ci/archive/20231116/202311161224.pnGqzMx0-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311161224.pnGqzMx0-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311161224.pnGqzMx0-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   drivers/hid/hid-sensor-custom.c: In function 'store_value':
+   drivers/hid/hid-sensor-custom.c:409:21: warning: variable 'ret' set but not used [-Wunused-but-set-variable]
+     409 |                 int ret;
+         |                     ^~~
+   drivers/hid/hid-sensor-custom.c: In function 'hid_sensor_custom_add_attributes':
+>> drivers/hid/hid-sensor-custom.c:598:64: warning: 'snprintf' output may be truncated before the last format character [-Wformat-truncation=]
+     598 |                                  HID_CUSTOM_NAME_LENGTH, "%s-%s",
+         |                                                                ^
+   drivers/hid/hid-sensor-custom.c:597:25: note: 'snprintf' output 2 or more bytes (assuming 65) into a destination of size 64
+     597 |                         snprintf((char *)&sensor_inst->fields[i].attr_name[j],
+         |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     598 |                                  HID_CUSTOM_NAME_LENGTH, "%s-%s",
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     599 |                                  sensor_inst->fields[i].group_name,
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     600 |                                  hid_custom_attrs[j].name);
+         |                                  ~~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/bitops.h: Assembler messages:
+   arch/x86/include/asm/bitops.h:211: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+--
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/acl.c:7:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/dcache.c:11:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/dcache.c: In function 'orangefs_revalidate_lookup':
+   fs/orangefs/dcache.c:33:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+      33 |         strncpy(new_op->upcall.req.lookup.d_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      34 |                 dentry->d_name.name,
+         |                 ~~~~~~~~~~~~~~~~~~~~
+      35 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+--
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/inode.c:11:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   arch/x86/include/asm/bitops.h: Assembler messages:
+   arch/x86/include/asm/bitops.h:96: Warning: no instruction mnemonic suffix given and no register operands; using default for `bts'
+   arch/x86/include/asm/bitops.h:139: Warning: no instruction mnemonic suffix given and no register operands; using default for `btr'
+--
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/super.c:7:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/super.c: In function 'orangefs_mount':
+   fs/orangefs/super.c:451:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     451 |         strncpy(new_op->upcall.req.fs_mount.orangefs_config_server,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     452 |                 devname,
+         |                 ~~~~~~~~
+     453 |                 ORANGEFS_MAX_SERVER_ADDR_LEN);
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/super.c:491:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     491 |         strncpy(ORANGEFS_SB(sb)->devname,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     492 |                 devname,
+         |                 ~~~~~~~~
+     493 |                 ORANGEFS_MAX_SERVER_ADDR_LEN);
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/namei.c:11:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c: In function 'orangefs_rename':
+   fs/orangefs/namei.c:434:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     434 |         strncpy(new_op->upcall.req.rename.d_old_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     435 |                 old_dentry->d_name.name,
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~
+     436 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c:437:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     437 |         strncpy(new_op->upcall.req.rename.d_new_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     438 |                 new_dentry->d_name.name,
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~
+     439 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c: In function 'orangefs_unlink':
+   fs/orangefs/namei.c:240:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     240 |         strncpy(new_op->upcall.req.remove.d_name, dentry->d_name.name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     241 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c: In function 'orangefs_lookup':
+   fs/orangefs/namei.c:137:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     137 |         strncpy(new_op->upcall.req.lookup.d_name, dentry->d_name.name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     138 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c:137:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+   fs/orangefs/namei.c: In function 'orangefs_mkdir':
+   fs/orangefs/namei.c:358:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     358 |         strncpy(new_op->upcall.req.mkdir.d_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     359 |                 dentry->d_name.name, ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c: In function 'orangefs_create':
+   fs/orangefs/namei.c:40:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+      40 |         strncpy(new_op->upcall.req.create.d_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      41 |                 dentry->d_name.name, ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c: In function 'orangefs_symlink':
+   fs/orangefs/namei.c:291:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     291 |         strncpy(new_op->upcall.req.sym.entry_name,
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     292 |                 dentry->d_name.name,
+         |                 ~~~~~~~~~~~~~~~~~~~~
+     293 |                 ORANGEFS_NAME_MAX);
+         |                 ~~~~~~~~~~~~~~~~~~
+   fs/orangefs/namei.c:294:9: warning: 'strncpy' specified bound 256 equals destination size [-Wstringop-truncation]
+     294 |         strncpy(new_op->upcall.req.sym.target, symname, ORANGEFS_NAME_MAX);
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--
+   fs/orangefs/orangefs-bufmap.c:225:5: warning: no previous prototype for 'orangefs_get_bufmap_init' [-Wmissing-prototypes]
+     225 | int orangefs_get_bufmap_init(void)
+         |     ^~~~~~~~~~~~~~~~~~~~~~~~
+   In file included from fs/orangefs/protocol.h:336,
+                    from fs/orangefs/orangefs-bufmap.c:6:
+>> fs/orangefs/orangefs-debug.h:89:18: warning: 'num_kmod_keyword_mask_map' defined but not used [-Wunused-const-variable=]
+      89 | static const int num_kmod_keyword_mask_map = (int)
+         |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+vim +/snprintf +598 drivers/hid/hid-sensor-custom.c
+
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  568  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  569  static int hid_sensor_custom_add_attributes(struct hid_sensor_custom
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  570  								*sensor_inst)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  571  {
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  572  	struct hid_sensor_hub_device *hsdev = sensor_inst->hsdev;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  573  	struct hid_device *hdev = hsdev->hdev;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  574  	int ret = -1;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  575  	int i, j;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  576  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  577  	for (j = 0; j < HID_REPORT_TYPES; ++j) {
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  578  		if (j == HID_OUTPUT_REPORT)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  579  			continue;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  580  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  581  		ret = hid_sensor_custom_add_fields(sensor_inst,
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  582  						   &hdev->report_enum[j], j);
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  583  		if (ret)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  584  			return ret;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  585  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  586  	}
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  587  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  588  	/* Create sysfs attributes */
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  589  	for (i = 0; i < sensor_inst->sensor_field_count; ++i) {
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  590  		j = 0;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  591  		while (j < HID_CUSTOM_TOTAL_ATTRS &&
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  592  		       hid_custom_attrs[j].name) {
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  593  			struct device_attribute *device_attr;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  594  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  595  			device_attr = &sensor_inst->fields[i].sd_attrs[j];
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  596  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  597  			snprintf((char *)&sensor_inst->fields[i].attr_name[j],
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10 @598  				 HID_CUSTOM_NAME_LENGTH, "%s-%s",
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  599  				 sensor_inst->fields[i].group_name,
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  600  				 hid_custom_attrs[j].name);
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  601  			sysfs_attr_init(&device_attr->attr);
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  602  			device_attr->attr.name =
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  603  				(char *)&sensor_inst->fields[i].attr_name[j];
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  604  			device_attr->attr.mode = hid_custom_attrs[j].mode;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  605  			device_attr->show = show_value;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  606  			if (hid_custom_attrs[j].mode & S_IWUSR)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  607  				device_attr->store = store_value;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  608  			sensor_inst->fields[i].attrs[j] = &device_attr->attr;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  609  			++j;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  610  		}
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  611  		sensor_inst->fields[i].attrs[j] = NULL;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  612  		sensor_inst->fields[i].hid_custom_attribute_group.attrs =
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  613  						sensor_inst->fields[i].attrs;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  614  		sensor_inst->fields[i].hid_custom_attribute_group.name =
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  615  					sensor_inst->fields[i].group_name;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  616  		ret = sysfs_create_group(&sensor_inst->pdev->dev.kobj,
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  617  					 &sensor_inst->fields[i].
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  618  					 hid_custom_attribute_group);
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  619  		if (ret)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  620  			break;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  621  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  622  		/* For power or report field store indexes */
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  623  		if (sensor_inst->fields[i].attribute.attrib_id ==
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  624  					HID_USAGE_SENSOR_PROY_POWER_STATE)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  625  			sensor_inst->power_state = &sensor_inst->fields[i];
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  626  		else if (sensor_inst->fields[i].attribute.attrib_id ==
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  627  					HID_USAGE_SENSOR_PROP_REPORT_STATE)
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  628  			sensor_inst->report_state = &sensor_inst->fields[i];
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  629  	}
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  630  
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  631  	return ret;
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  632  }
+4a7de0519df5e8 Srinivas Pandruvada 2015-04-10  633  
+
+:::::: The code at line 598 was first introduced by commit
+:::::: 4a7de0519df5e8fb89cef6ee062330ffe4b50a4d HID: sensor: Custom and Generic sensor support
+
+:::::: TO: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
+:::::: CC: Jiri Kosina <jkosina@suse.cz>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
