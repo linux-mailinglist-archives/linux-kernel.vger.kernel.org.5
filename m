@@ -2,286 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 015817EDC1A
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E03B17EDC1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:40:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230262AbjKPHj4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 02:39:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57992 "EHLO
+        id S229984AbjKPHk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 02:40:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjKPHji (ORCPT
+        with ESMTP id S234273AbjKPHkL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 02:39:38 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C797F19F;
-        Wed, 15 Nov 2023 23:39:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700120374; x=1731656374;
-  h=date:from:to:cc:subject:message-id:in-reply-to:
-   mime-version;
-  bh=rKsjleUV8mKTZfyeI3rAS4Yr6IVOfxbqDp61+/kza3w=;
-  b=hzBm5hDAxij5IyA7oQ2qXjsNSvOMBGLaF8po/pJEwvVrZL7zjyEnC8mv
-   EfVjZioE/9g50litVoBhqTNgyZsQJReqvl9FbRcucz17MZ2qwPqZgv1XL
-   ZcsepKAbUFVyNLfcc7Y4HcEOwFh2pfMUA/RyXANlgDUEl7kzCIhrQ325N
-   /wQnLo+TYhwYRAePgDzAKlXHil7IYfYHT4yyGrsXHCmc2jFY4Kar1RmXF
-   MpnqkMOJT3xgnPK/f4f5cLc2Eo8K5aP2wpB4MifIW7XiLraJoG3DbmTe8
-   yZYKh+JUrq443/SHX/Idf7Vy3X5Byb0XDz0I7dZ+EFBS+WWOHdPzH8mGB
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="371217382"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="371217382"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Nov 2023 23:39:33 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10895"; a="835664285"
-X-IronPort-AV: E=Sophos;i="6.03,307,1694761200"; 
-   d="scan'208";a="835664285"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmsmga004.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Nov 2023 23:39:30 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34; Wed, 15 Nov 2023 23:39:29 -0800
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.34 via Frontend Transport; Wed, 15 Nov 2023 23:39:29 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.34; Wed, 15 Nov 2023 23:39:29 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BKONll5XeAmFt+rH6CoogzBN2RHaNY/6XFnIp5IkJSfSM0FMl1kMBA/AjUKPIUTlVdYlqVQFsV5ZFX18ucxynfiijzUe70av4iIZCPnKPZjpy1qu9fAC5hkiy8deIW2nLlEjqKDYU8Oar8zQl9MfjtFNAWZaWCeVRmIYmMbOpjq9g6p/VfHn0hQyZmDUR0XArPeuMT4uoDdy4DvatOElad4kByUXR0eJGRGBCo5KUpo9hYgbP9ETUlGWu46tZSegQySEE33RJUrCbLMT9DPRlb635DHxcTND455R/FMyiTrk6VSoZYWzvG6TN/kYm4YkCWeybavsIH8hMF4188Q7Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EaxelDsBKs2BjbQt2OodAVzag89d7apDgVV6Xch8ev8=;
- b=SWStY0xjKRNVYXhnjjDo4UjZHVaTZVCbtcVt+o0aPiUWqU429swRVEw4+f6janzCnvh9eh2xiG5ju84ebRsqdEmFQDuOnvwaSWTbwfqkiZt60P0YhEXy5TE0igge8jRmlFCd4udwlZDfVtkTyn9VvXy/ukboFqeQdda2GsPDRkJIctGCQMSV+KZIRRzRE4SrvCUutU65U19o3K2blXqR4LdCgQK+M01uFafTq6YhLcLEx1e2JxuoZ2wEYXNwt7m8/yyIbxY/h4H45/psnpuHaYxRRoyg2SxT37OKXazJSBxocGfAyPgCl+XbnvcwzaQNtJmlLxgu7HVGoXYLi+CM1Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
- by PH7PR11MB6548.namprd11.prod.outlook.com (2603:10b6:510:210::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.29; Thu, 16 Nov
- 2023 07:39:21 +0000
-Received: from PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::b8:30e8:1502:b2a7]) by PH8PR11MB6779.namprd11.prod.outlook.com
- ([fe80::b8:30e8:1502:b2a7%4]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
- 07:39:21 +0000
-Date:   Thu, 16 Nov 2023 15:39:12 +0800
-From:   kernel test robot <oliver.sang@intel.com>
-To:     Junxiao Bi <junxiao.bi@oracle.com>
-CC:     <oe-lkp@lists.linux.dev>, <lkp@intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-raid@vger.kernel.org>,
-        <tj@kernel.org>, <jiangshanlai@gmail.com>, <song@kernel.org>,
-        <junxiao.bi@oracle.com>, <oliver.sang@intel.com>
-Subject: Re: [RFC] workqueue: allow system workqueue be used in memory reclaim
-Message-ID: <202311161556.59af3ec9-oliver.sang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20231108012821.56104-1-junxiao.bi@oracle.com>
-X-ClientProxiedBy: SG2PR06CA0185.apcprd06.prod.outlook.com (2603:1096:4:1::17)
- To PH8PR11MB6779.namprd11.prod.outlook.com (2603:10b6:510:1ca::17)
+        Thu, 16 Nov 2023 02:40:11 -0500
+Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D0051BD
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:40:06 -0800 (PST)
+Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5a82f176860so5296857b3.1
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:40:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700120405; x=1700725205; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=3XYrQdmJabhQq1WXoge8RXAC/vRLuqHvLCc6AkfpfcU=;
+        b=Paufe/g60KuMS40fbWgXfV6aj8gu+F7YOANBMWxxXHdCTyVFqNklPqfvoBO5yAuddB
+         OPLHMX/JShjvCkVApgcQHDPnREbUvHKQqEz5/bx8MSKq0S5dzWlx705PgSvnVF1EecxX
+         ArNtI79qJ3rI0zLtXNMgQIJF0Cky1mKxm5fy1Gcw32wvXwPZWMVBWT8UlwUGeKtwGlpZ
+         6892QV/H3tSJ9TqU7Dar80/TnGzkFc3S3/VY9SntHHn2PflpVOatbKUV0toGccfLvaL8
+         0/LRFwkq/tCFLz4ZpTlBzg/3PJHlV1q9eYFFxWhq7W6zJS060FlXAxQuPZ7CVnUaEVRP
+         0RHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700120405; x=1700725205;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3XYrQdmJabhQq1WXoge8RXAC/vRLuqHvLCc6AkfpfcU=;
+        b=StVRShBBBDGN4GLb6A29SIy0YXjoECyKRtBUSakZpgd6WHtQu74jRisIuIsbCO+NKL
+         vDNbnpjxo0UAJHIWIbvVnFy2e8lUlJzK7L7hQLfp8YpgOp3oDqDE5U6BV3BaMDntdt6c
+         /GnvfqK8UqjPnVvEpbA1K9Prmfyw+1vfpbtvvdOGsiYYzUIQ7/L5YUYy08itBtzN6/eO
+         ZyhyU+QT0yfL97k/xRixYP3YEYk0gfUU+ounxF9IB6XqS4ArDjbYLYhmt64kAxiP170V
+         r33EreCRLXh2COtvA90BgFnqJSR/2zCdQHn2JuWUDVIrL7zR4338G6CyizPrgju1jww8
+         qSxg==
+X-Gm-Message-State: AOJu0YzB21FGQWpJj5/29dtklUqLI5k3Dgbqsha2R+vEk6nP2zpzn5gW
+        UeHcd8/ak1k0UAqIGl10QL0ZyQ==
+X-Google-Smtp-Source: AGHT+IEo5B/VhZW5obgiD5HYKqE738NPiAOf7BmZyJeNGSUUZxxyApujezlldFz6BcWvP9gOv0vP3w==
+X-Received: by 2002:a25:d3c3:0:b0:da1:13b7:8a87 with SMTP id e186-20020a25d3c3000000b00da113b78a87mr15185339ybf.15.1700120405134;
+        Wed, 15 Nov 2023 23:40:05 -0800 (PST)
+Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d131-20020a254f89000000b00d9a4aad7f40sm757225ybb.24.2023.11.15.23.40.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 23:40:04 -0800 (PST)
+Date:   Wed, 15 Nov 2023 23:39:54 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@ripple.attlocal.net
+To:     syzbot <syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com>
+cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com,
+        jose.pekkarinen@foxhound.fi, willy@infradead.org, jannh@google.com,
+        hughd@google.com
+Subject: Re: [syzbot] [mm?] BUG: unable to handle kernel paging request in
+ __pte_offset_map_lock
+In-Reply-To: <0000000000005e44550608a0806c@google.com>
+Message-ID: <c659f5c9-5e4f-0aac-7d1c-ee3be4740a0d@google.com>
+References: <0000000000005e44550608a0806c@google.com>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB6779:EE_|PH7PR11MB6548:EE_
-X-MS-Office365-Filtering-Correlation-Id: 58878d69-ea1d-419d-a000-08dbe677259a
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 1+3CnVdiSkiH77ZluB1N4/G/gSGtfXUd5g4KhXhHV3Gm37AawOE061SZjLhDlmomWSjTTtbw7Qzhd4cYFNrBL7HSvpyix8eNq0dfWaG9P5iLxfwfQWsXBluXZmdZsc7EEvLKkMJUnYygGOeLulFF7f6RQ16OjwT0T6Cmot1T6Crj7WJL/wjIKOorzV+zgP8H92UskvJSX6/1zt6IER1YXcRM9nRupY/CTnytHjwgT5sR4+bfa1W2LMBlHytuPpxqoESU+7PltjCTs6kUWP3MWx6T0cDiiajaDyZjYOjWspH90fwBiX8UrgOORJV0pgvUUV7adGPx8SnwfatlCUDCnwR1wuXIesutfuVwmiIveDuQCKl3n0s57Ql3r089hHOoClk4PwfE57wsNsMfEydDT6gJ4tb3AEwgIqzPINWvlttFxjBMsVM4Cz4CJzSrzz5a7fuIHqEjjizHfTN+CfMKbEkzycKunV9U3TF2AVscsfnGChFN9X5hJkz8bhLLpKdZFsafgEjGwj1jKoASrEyqIp3zx/OysOa+0/MijWMr5+SUWc6HyiiyZrZwZkWaPZEeksd/CiAuaxvdLIkO/2HiLngQQDDvS6XBpxXL23BnuJXWEqaI9m/yOiD/Rw4PlLEB6UlqE7gaVYzQ+9oq8xpFAw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB6779.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(366004)(376002)(396003)(346002)(136003)(230273577357003)(230173577357003)(230922051799003)(451199024)(64100799003)(1800799009)(186009)(107886003)(86362001)(2906002)(2616005)(5660300002)(41300700001)(1076003)(36756003)(8676002)(4326008)(66556008)(6916009)(966005)(26005)(83380400001)(8936002)(6506007)(316002)(6512007)(82960400001)(478600001)(6666004)(66476007)(38100700002)(6486002)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?QPocBWPT1KFKdEbQcNzfg5sF51EPukm7jXs3G91LRC4Ka2aZXAbxgWqMvAjK?=
- =?us-ascii?Q?deSi37Ubi4FmzlAjod4SbvvJia4aEg33dfc8Q1UsrghUE64PqH0C9nV28Owi?=
- =?us-ascii?Q?cjk+PmDUEM3prijwHRyyoQ2KJ951+r1b5H5pg3q+BTO7U0qvt4wW1habU/1p?=
- =?us-ascii?Q?0hS82hkt269SAFogQd7wmcYSHr4sbSzGT/rsGd5t5vOXUXBpoy6LidljB6EH?=
- =?us-ascii?Q?NjA+eSiNC3grpR8r9rxUOXKcR+YyTkgSpWL19iX49qelPXDsSvRuz6M6DFby?=
- =?us-ascii?Q?SygG5K2FtnE/ez0HJb980RBG4PIN4FFz/re16fFHC1MWxFmupAe4o6x9EVZE?=
- =?us-ascii?Q?70XBaZUOhd+LgpZav0IX0z/hB2JVZLZLiCc6gY//X8ObGWIDHZNbmqSnEvOI?=
- =?us-ascii?Q?eLVmpqrGTIOM674gxTGOaX+xb3QU1MDfAaU1Q+YUNVUEn5PFOZB2QMRFhMmi?=
- =?us-ascii?Q?RrsHlF3qBMh7QvmGGp62ri0BZlYgR9qyQpUlblz24ZDq2Y3u6xM4nS4n6xwO?=
- =?us-ascii?Q?szzKI9z6YxLB7HSziR4NxMINGnqVQqJf/AdPZkgQdez2bM629VreBM32BqNP?=
- =?us-ascii?Q?Nlc+cN2kKiiiu1tr8x18bZJv52YVxLfIwYmZGKL44DF29d27a8JoIHEZhrWY?=
- =?us-ascii?Q?lwnf4/tB7//++qpQysvtKf8Zc0eyefq6X2H4aThxcZUM0Ryk0fs5Xaz1DXI4?=
- =?us-ascii?Q?dLVTDn43mppHH4fdyHliZAuu0u3DlUEYGNlCkqFdMUf6DmN38f0kfSXNqCJi?=
- =?us-ascii?Q?o5kiV6wD+q+bdiYWOyeCN0iwkTCF7QD2rdUuomBdpVZ6RnJfbybirfz3TcIU?=
- =?us-ascii?Q?1C73ym519XrvTL2NFv25jkmTQAOqydAsLSZxc3wF0kkWsLoPYOZub9mxtrr8?=
- =?us-ascii?Q?T5j9knwLXy6wSt9FJXszxhogO+MdKc2abe/NZ036ifEOacid4JVM99NLW7Da?=
- =?us-ascii?Q?ncF715yQA2lOR3VjsuC67NvQWsNaW7FGtDsBimA0jY1ZYJ+McHoo7YROl3tx?=
- =?us-ascii?Q?E7Af3n0ij/Gq2i8RSinsKLAP+a4Oh3iZ9pHhZ/bXWWybkCAGRh0V8yF2nVrJ?=
- =?us-ascii?Q?m/2aJxFA9e6S9JDbGYSq4JX8iMstFWZEYr2oXhWIrtjPNE2SKusdZPfFhLlc?=
- =?us-ascii?Q?wGYWOQLcg+UZbGzH2VReV5CjIBlUyS2ABw3CRRSVrQJO9F954n5BNYqenRes?=
- =?us-ascii?Q?BwTdLe5cpSEsTxJlJJFYzwZsXOo2hn2RX+kH853EMH+sh8UZbnPjzB8W9q3k?=
- =?us-ascii?Q?DzS3IZoeIe7mej8Mi0xbz5DzURhUtN68oBW4O2Jx9SQrLFadeqSlmIzszxGc?=
- =?us-ascii?Q?Ogm5D0udrVFGLxwu1/XHszVB15G93n5MbRZnt0Iibv+OpIPeePAskMlHlUX2?=
- =?us-ascii?Q?+SHiAVmdS+OZNan3ak7uy7blKEZ66Au8jRajGhR1pwZDc2/UrDU6rEfSPWKW?=
- =?us-ascii?Q?SNCRVePtgnICokjwoMKtoeEWG3UnXrJOxllu2G/yibvfb5UeCnHlLXgUDRrm?=
- =?us-ascii?Q?pAIJf0e01G6lpDilej5/1b5vRYBCUwkv9cFaOooQRLnFTEwAKDID9lbPLCYg?=
- =?us-ascii?Q?4qL6f43sPqiUfMCDXLxgLduNu2xZ+wbKD0/ZgyLIfJ9JMuTwgdkkmQF/iKXc?=
- =?us-ascii?Q?ZA=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 58878d69-ea1d-419d-a000-08dbe677259a
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB6779.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 07:39:21.3666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5JRhKVwqAltlz6lpB2rk5E9c8qOJvqtzhqtSFPYlnfJgkERRtWW5ioJKefADcxBRPMJ2Sdl8TFWnUCp9z9ayPQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR11MB6548
-X-OriginatorOrg: intel.com
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 26 Oct 2023, syzbot wrote:
 
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    78124b0c1d10 Merge branch 'for-next/core' into for-kernelci
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=111b0e71680000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=f27cd6e68911e026
+> dashboard link: https://syzkaller.appspot.com/bug?extid=89edd67979b52675ddec
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16b8e671680000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=125a9df5680000
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/bd512de820ae/disk-78124b0c.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/a47a437b1d4f/vmlinux-78124b0c.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/3ae8b966bcd7/Image-78124b0c.gz.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com
+> 
+> Unable to handle kernel paging request at virtual address dfff800000000004
+> KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+> Mem abort info:
+>   ESR = 0x0000000096000005
+>   EC = 0x25: DABT (current EL), IL = 32 bits
+>   SET = 0, FnV = 0
+>   EA = 0, S1PTW = 0
+>   FSC = 0x05: level 1 translation fault
+> Data abort info:
+>   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+>   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+>   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+> [dfff800000000004] address between user and kernel address ranges
+> Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+> Modules linked in:
+> CPU: 0 PID: 7952 Comm: syz-executor682 Not tainted 6.6.0-rc6-syzkaller-g78124b0c1d10 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/06/2023
+> pstate: 804000c5 (Nzcv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+> pc : __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
+> lr : lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+> sp : ffff800098f26d40
+> x29: ffff800098f27000 x28: ffff8000808df4bc x27: ffff7000131e4e18
+> x26: 1ffff00011c340b9 x25: 0000000000000000 x24: 0000000000000000
+> x23: ffff7000131e4dd0 x22: 0000000000000000 x21: 0000000000000000
+> x20: 0000000000000000 x19: 0000000000000022 x18: ffff800098f27750
+> x17: 0000ffff833dafff x16: ffff80008a632120 x15: 0000000000000001
+> x14: ffff80008e1a05d0 x13: ffff800098f26e80 x12: dfff800000000000
+> x11: ffff800080319468 x10: ffff80008e1a05cc x9 : 00000000000000f3
+> x8 : 0000000000000004 x7 : ffff8000808df4bc x6 : 0000000000000000
+> x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
+> x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000000022
+> Call trace:
+>  __lock_acquire+0x104/0x75e8 kernel/locking/lockdep.c:5004
+>  lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5753
+>  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
+>  _raw_spin_lock+0x48/0x60 kernel/locking/spinlock.c:154
+>  spin_lock include/linux/spinlock.h:351 [inline]
+>  __pte_offset_map_lock+0x154/0x360 mm/pgtable-generic.c:373
+>  pte_offset_map_lock include/linux/mm.h:2939 [inline]
+>  filemap_map_pages+0x698/0x11f0 mm/filemap.c:3582
+>  do_fault_around mm/memory.c:4525 [inline]
+>  do_read_fault mm/memory.c:4558 [inline]
+>  do_fault mm/memory.c:4705 [inline]
+>  do_pte_missing mm/memory.c:3669 [inline]
+>  handle_pte_fault mm/memory.c:4978 [inline]
+>  __handle_mm_fault mm/memory.c:5119 [inline]
+>  handle_mm_fault+0x326c/0x49fc mm/memory.c:5284
+>  faultin_page mm/gup.c:956 [inline]
+>  __get_user_pages+0x3e0/0xa24 mm/gup.c:1239
+>  populate_vma_page_range+0x254/0x328 mm/gup.c:1666
+>  __mm_populate+0x240/0x3d8 mm/gup.c:1775
+>  mm_populate include/linux/mm.h:3305 [inline]
+>  vm_mmap_pgoff+0x2bc/0x3d4 mm/util.c:551
+>  ksys_mmap_pgoff+0xd0/0x5b0 mm/mmap.c:1400
+>  __do_sys_mmap arch/arm64/kernel/sys.c:28 [inline]
+>  __se_sys_mmap arch/arm64/kernel/sys.c:21 [inline]
+>  __arm64_sys_mmap+0xf8/0x110 arch/arm64/kernel/sys.c:21
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> Code: b006f948 b943a108 34000208 d343fe68 (386c6908) 
+> ---[ end trace 0000000000000000 ]---
+> ----------------
+> Code disassembly (best guess):
+>    0:	b006f948 	adrp	x8, 0xdf29000
+>    4:	b943a108 	ldr	w8, [x8, #928]
+>    8:	34000208 	cbz	w8, 0x48
+>    c:	d343fe68 	lsr	x8, x19, #3
+> * 10:	386c6908 	ldrb	w8, [x8, x12] <-- trapping instruction
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the bug is already fixed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite bug's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the bug is a duplicate of another bug, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
-Hello,
+Okay, let's try again by replying to the full orginal report
+(see thread Matthew linked to for discussion leading to this):
 
-kernel test robot noticed "WARNING:possible_circular_locking_dependency_detected" on:
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git b85ea95d086471afb4ad062012a4d73cd328fa86
 
-commit: c8c183493c1dcc874a9d903cb6ba685c98f6c12a ("[RFC] workqueue: allow system workqueue be used in memory reclaim")
-url: https://github.com/intel-lab-lkp/linux/commits/Junxiao-Bi/workqueue-allow-system-workqueue-be-used-in-memory-reclaim/20231108-093107
-base: https://git.kernel.org/cgit/linux/kernel/git/tj/wq.git for-next
-patch link: https://lore.kernel.org/all/20231108012821.56104-1-junxiao.bi@oracle.com/
-patch subject: [RFC] workqueue: allow system workqueue be used in memory reclaim
+Subject: [PATCH] mm/pgtable: smp_rmb() to match smp_wmb() in pmd_install()
 
-in testcase: boot
+Not-Yet-Signed-off-by: Hugh Dickins <hughd@google.com>
+---
+ mm/memory.c          | 2 ++
+ mm/pgtable-generic.c | 5 +++++
+ 2 files changed, 7 insertions(+)
 
-compiler: gcc-12
-test machine: qemu-system-x86_64 -enable-kvm -cpu SandyBridge -smp 2 -m 16G
-
-(please refer to attached dmesg/kmsg for entire log/backtrace)
-
-
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <oliver.sang@intel.com>
-| Closes: https://lore.kernel.org/oe-lkp/202311161556.59af3ec9-oliver.sang@intel.com
-
-
-[    6.524239][    T9] WARNING: possible circular locking dependency detected
-[    6.524787][    T9] 6.6.0-rc6-00056-gc8c183493c1d #1 Not tainted
-[    6.525271][    T9] ------------------------------------------------------
-[    6.525606][    T9] kworker/0:1/9 is trying to acquire lock:
-[ 6.525606][ T9] ffffffff88f6f480 (cpu_hotplug_lock){++++}-{0:0}, at: vmstat_shepherd (include/linux/find.h:63 mm/vmstat.c:2025) 
-[    6.525606][    T9]
-[    6.525606][    T9] but task is already holding lock:
-[ 6.525606][ T9] ffff888110aa7d88 ((shepherd).work){+.+.}-{0:0}, at: process_one_work (kernel/workqueue.c:2606) 
-[    6.525606][    T9]
-[    6.525606][    T9] which lock already depends on the new lock.
-[    6.525606][    T9]
-[    6.525606][    T9] the existing dependency chain (in reverse order) is:
-[    6.525606][    T9]
-[    6.525606][    T9] -> #2 ((shepherd).work){+.+.}-{0:0}:
-[ 6.525606][ T9] __lock_acquire (kernel/locking/lockdep.c:5136) 
-[ 6.525606][ T9] lock_acquire (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5755) 
-[ 6.525606][ T9] process_one_work (arch/x86/include/asm/atomic.h:23 include/linux/atomic/atomic-arch-fallback.h:444 include/linux/jump_label.h:260 include/linux/jump_label.h:270 include/trace/events/workqueue.h:82 kernel/workqueue.c:2629) 
-[ 6.525606][ T9] worker_thread (kernel/workqueue.c:2697 kernel/workqueue.c:2784) 
-[ 6.525606][ T9] kthread (kernel/kthread.c:388) 
-[ 6.525606][ T9] ret_from_fork (arch/x86/kernel/process.c:153) 
-[ 6.525606][ T9] ret_from_fork_asm (arch/x86/entry/entry_64.S:312) 
-[    6.525606][    T9]
-[    6.525606][    T9] -> #1 ((wq_completion)events){+.+.}-{0:0}:
-[ 6.525606][ T9] __lock_acquire (kernel/locking/lockdep.c:5136) 
-[ 6.525606][ T9] lock_acquire (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5755) 
-[ 6.525606][ T9] start_flush_work (kernel/workqueue.c:3383) 
-[ 6.525606][ T9] __flush_work (kernel/workqueue.c:3406) 
-[ 6.525606][ T9] schedule_on_each_cpu (kernel/workqueue.c:3668 (discriminator 3)) 
-[ 6.525606][ T9] rcu_tasks_one_gp (kernel/rcu/rcu.h:109 kernel/rcu/tasks.h:587) 
-[ 6.525606][ T9] rcu_tasks_kthread (kernel/rcu/tasks.h:625 (discriminator 1)) 
-[ 6.525606][ T9] kthread (kernel/kthread.c:388) 
-[ 6.525606][ T9] ret_from_fork (arch/x86/kernel/process.c:153) 
-[ 6.525606][ T9] ret_from_fork_asm (arch/x86/entry/entry_64.S:312) 
-[    6.525606][    T9]
-[    6.525606][    T9] -> #0 (cpu_hotplug_lock){++++}-{0:0}:
-[ 6.525606][ T9] check_prev_add (kernel/locking/lockdep.c:3135) 
-[ 6.525606][ T9] validate_chain (kernel/locking/lockdep.c:3254 kernel/locking/lockdep.c:3868) 
-[ 6.525606][ T9] __lock_acquire (kernel/locking/lockdep.c:5136) 
-[ 6.525606][ T9] lock_acquire (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5755) 
-[ 6.525606][ T9] cpus_read_lock (include/linux/percpu-rwsem.h:53 kernel/cpu.c:489) 
-[ 6.525606][ T9] vmstat_shepherd (include/linux/find.h:63 mm/vmstat.c:2025) 
-[ 6.525606][ T9] process_one_work (kernel/workqueue.c:2635) 
-[ 6.525606][ T9] worker_thread (kernel/workqueue.c:2697 kernel/workqueue.c:2784) 
-[ 6.525606][ T9] kthread (kernel/kthread.c:388) 
-[ 6.525606][ T9] ret_from_fork (arch/x86/kernel/process.c:153) 
-[ 6.525606][ T9] ret_from_fork_asm (arch/x86/entry/entry_64.S:312) 
-[    6.525606][    T9]
-[    6.525606][    T9] other info that might help us debug this:
-[    6.525606][    T9]
-[    6.525606][    T9] Chain exists of:
-[    6.525606][    T9]   cpu_hotplug_lock --> (wq_completion)events --> (shepherd).work
-[    6.525606][    T9]
-[    6.525606][    T9]  Possible unsafe locking scenario:
-[    6.525606][    T9]
-[    6.525606][    T9]        CPU0                    CPU1
-[    6.525606][    T9]        ----                    ----
-[    6.525606][    T9]   lock((shepherd).work);
-[    6.525606][    T9]                                lock((wq_completion)events);
-[    6.525606][    T9]                                lock((shepherd).work);
-[    6.525606][    T9]   rlock(cpu_hotplug_lock);
-[    6.525606][    T9]
-[    6.525606][    T9]  *** DEADLOCK ***
-[    6.525606][    T9]
-[    6.525606][    T9] 2 locks held by kworker/0:1/9:
-[ 6.525606][ T9] #0: ffff88810007cd48 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work (kernel/workqueue.c:2603) 
-[ 6.525606][ T9] #1: ffff888110aa7d88 ((shepherd).work){+.+.}-{0:0}, at: process_one_work (kernel/workqueue.c:2606) 
-[    6.525606][    T9]
-[    6.525606][    T9] stack backtrace:
-[    6.525606][    T9] CPU: 0 PID: 9 Comm: kworker/0:1 Not tainted 6.6.0-rc6-00056-gc8c183493c1d #1
-[    6.525606][    T9] Workqueue: events vmstat_shepherd
-[    6.525606][    T9] Call Trace:
-[    6.525606][    T9]  <TASK>
-[ 6.525606][ T9] dump_stack_lvl (lib/dump_stack.c:107) 
-[ 6.525606][ T9] check_noncircular (kernel/locking/lockdep.c:2187) 
-[ 6.525606][ T9] ? print_circular_bug (kernel/locking/lockdep.c:2163) 
-[ 6.525606][ T9] ? stack_trace_save (kernel/stacktrace.c:123) 
-[ 6.525606][ T9] ? stack_trace_snprint (kernel/stacktrace.c:114) 
-[ 6.525606][ T9] check_prev_add (kernel/locking/lockdep.c:3135) 
-[ 6.525606][ T9] validate_chain (kernel/locking/lockdep.c:3254 kernel/locking/lockdep.c:3868) 
-[ 6.525606][ T9] ? check_prev_add (kernel/locking/lockdep.c:3824) 
-[ 6.525606][ T9] ? hlock_class (arch/x86/include/asm/bitops.h:228 arch/x86/include/asm/bitops.h:240 include/asm-generic/bitops/instrumented-non-atomic.h:142 kernel/locking/lockdep.c:228) 
-[ 6.525606][ T9] ? mark_lock (kernel/locking/lockdep.c:4655 (discriminator 3)) 
-[ 6.525606][ T9] __lock_acquire (kernel/locking/lockdep.c:5136) 
-[ 6.525606][ T9] lock_acquire (kernel/locking/lockdep.c:467 kernel/locking/lockdep.c:5755) 
-[ 6.525606][ T9] ? vmstat_shepherd (include/linux/find.h:63 mm/vmstat.c:2025) 
-[ 6.525606][ T9] ? lock_sync (kernel/locking/lockdep.c:5721) 
-[ 6.525606][ T9] ? debug_object_active_state (lib/debugobjects.c:772) 
-[ 6.525606][ T9] ? __cant_migrate (kernel/sched/core.c:10142) 
-[ 6.525606][ T9] cpus_read_lock (include/linux/percpu-rwsem.h:53 kernel/cpu.c:489) 
-[ 6.525606][ T9] ? vmstat_shepherd (include/linux/find.h:63 mm/vmstat.c:2025) 
-[ 6.525606][ T9] vmstat_shepherd (include/linux/find.h:63 mm/vmstat.c:2025) 
-[ 6.525606][ T9] process_one_work (kernel/workqueue.c:2635) 
-[ 6.525606][ T9] ? worker_thread (kernel/workqueue.c:2740) 
-[ 6.525606][ T9] ? show_pwq (kernel/workqueue.c:2539) 
-[ 6.525606][ T9] ? assign_work (kernel/workqueue.c:1096) 
-[ 6.525606][ T9] worker_thread (kernel/workqueue.c:2697 kernel/workqueue.c:2784) 
-[ 6.525606][ T9] ? __kthread_parkme (kernel/kthread.c:293 (discriminator 3)) 
-[ 6.525606][ T9] ? schedule (arch/x86/include/asm/bitops.h:207 (discriminator 1) arch/x86/include/asm/bitops.h:239 (discriminator 1) include/linux/thread_info.h:184 (discriminator 1) include/linux/sched.h:2255 (discriminator 1) kernel/sched/core.c:6773 (discriminator 1)) 
-[ 6.525606][ T9] ? process_one_work (kernel/workqueue.c:2730) 
-[ 6.525606][ T9] kthread (kernel/kthread.c:388) 
-[ 6.525606][ T9] ? _raw_spin_unlock_irq (arch/x86/include/asm/irqflags.h:42 arch/x86/include/asm/irqflags.h:77 include/linux/spinlock_api_smp.h:159 kernel/locking/spinlock.c:202) 
-
-
-The kernel config and materials to reproduce are available at:
-https://download.01.org/0day-ci/archive/20231116/202311161556.59af3ec9-oliver.sang@intel.com
-
-
-
+diff --git a/mm/memory.c b/mm/memory.c
+index 1f18ed4a5497..8939357f1509 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -425,6 +425,8 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pgtable_t *pte)
+ 		 * being the notable exception) will already guarantee loads are
+ 		 * seen in-order. See the alpha page table accessors for the
+ 		 * smp_rmb() barriers in page table walking code.
++		 *
++		 * See __pte_offset_map() for the smp_rmb() at the pte level.
+ 		 */
+ 		smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
+ 		pmd_populate(mm, pmd, *pte);
+diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
+index 4fcd959dcc4d..3330b666e9c3 100644
+--- a/mm/pgtable-generic.c
++++ b/mm/pgtable-generic.c
+@@ -297,6 +297,11 @@ pte_t *__pte_offset_map(pmd_t *pmd, unsigned long addr, pmd_t *pmdvalp)
+ 		pmd_clear_bad(pmd);
+ 		goto nomap;
+ 	}
++	/*
++	 * Pair with the smp_wmb() in pmd_install(): make sure that the
++	 * page table lock and page table contents are visibly initialized.
++	 */
++	smp_rmb();
+ 	return __pte_map(&pmdval, addr);
+ nomap:
+ 	rcu_read_unlock();
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+2.35.3
