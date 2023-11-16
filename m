@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F11B7EDCD7
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B497EDCDA
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 09:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230228AbjKPI05 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 03:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33766 "EHLO
+        id S1344538AbjKPI2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 03:28:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58678 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229806AbjKPI04 (ORCPT
+        with ESMTP id S229806AbjKPI2I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 03:26:56 -0500
-Received: from mail-oa1-x29.google.com (mail-oa1-x29.google.com [IPv6:2001:4860:4864:20::29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DC47187
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:26:51 -0800 (PST)
-Received: by mail-oa1-x29.google.com with SMTP id 586e51a60fabf-1ef36a04931so256160fac.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:26:51 -0800 (PST)
+        Thu, 16 Nov 2023 03:28:08 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B841C19D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:28:03 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id ffacd0b85a97d-32da4180ca2so145405f8f.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 00:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700123211; x=1700728011; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=u2XmX2KrWi1y3m2X9AnU9wT0fC0eZs76Gy7YyWSbakc=;
-        b=e4nKHaZCE/iB8Xh0+XTt15fZZtUO5Ppe2v9KxPb1VS+nneE6auvUZxJHf+xYTdxt0/
-         IAfEW+OslX0BH3TM76qUOQUQpn7D8hHbeAU+BibWTJZzeLzDazPfG8gDAr8MEg5k1aOg
-         CNev2xEHEY/34Jy/JC5r2zBHvV0ljXntEifR+nILxicpksMXZnCY1bNM2OMhBFWJGXT7
-         /5lFD+AJUrlIBB2SEoQOQ7stmJZXpc+Q+SD7XycWBZ88pMdPJcPONVn3yDCw7bk10i6s
-         FsAvRzz+AEkdaoLOdGtEGHBnGxURrCDV49na/cqhGJyKwdaatRfL3nhk1dWFl1O1c3Sz
-         dW/g==
+        d=ffwll.ch; s=google; t=1700123282; x=1700728082; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HoR8YFv2MRX2a6fvRuNrZzhShp2SKZc+/FizpnyYo48=;
+        b=hmZFnyKfl9ohnBRHFP/pshHerOenwUuWZWmh4B+WFdu5ukDe6mko9NmGW/uOClR3lK
+         eIl5ibVQYttHZ3RqaPWhhUkt14iJPWh6P2r5vB/4zyVeRLtSLxQHMuO6MzntbAtBJ1CP
+         Z7XutSzxKiCWNLHBgFWzZfFy11uxO3Dp73quA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700123211; x=1700728011;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=u2XmX2KrWi1y3m2X9AnU9wT0fC0eZs76Gy7YyWSbakc=;
-        b=foKCiAt63kup36lQqsxm8MSfPFtIIgGcXbLr8GAWkWKr3f8gGQOHJW/JNDm7d+x3jM
-         mbE/ciEaMu0o97xukL1YaU33KEzmn6Ut3oZtYdugsrm21u7kiqPVlRPJZBmiX/FfA/eu
-         mqsWCeAOAVrlFJP/Az78J4j6zJTaQUjofQe9/kbX/7Zqp5yBXPOInI0kT1rgLXapJXxD
-         QzM989qzAFhYnyqaq2jqFiMt7szMNFIuuqxMa6a4XKpH2KEyaML24zqaprkbO3nqi5+l
-         cpJMdLKYCBR0BMKS1NUVWESQ7mfidUjndQi0bIfrxnpf5yBEuiF8o4DbnmU4T+8GdD6W
-         APvg==
-X-Gm-Message-State: AOJu0YyBh5mpxH+Kli+baTeYnqk4QIRICe+cbD+BTaEGZOi7qf8p0VQH
-        ljE90sHvTHHnH4Qla/SAqraLfg==
-X-Google-Smtp-Source: AGHT+IE7w+1n0Rumu6tiZ0oCMxAY+y3dimDmUbr8EZaTXEn4BDvU7a/l/yvMSZ7+Fe7ajPFFqQFb4Q==
-X-Received: by 2002:a05:6870:3127:b0:1ef:cb8c:cebd with SMTP id v39-20020a056870312700b001efcb8ccebdmr17440326oaa.59.1700123210697;
-        Thu, 16 Nov 2023 00:26:50 -0800 (PST)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id y4-20020a056870a34400b001e9ce1b5e8fsm2062976oak.15.2023.11.16.00.26.49
+        d=1e100.net; s=20230601; t=1700123282; x=1700728082;
+        h=in-reply-to:content-disposition:mime-version:references
+         :mail-followup-to:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HoR8YFv2MRX2a6fvRuNrZzhShp2SKZc+/FizpnyYo48=;
+        b=iW1RY/Oz9VGhxP46LpSo8Gr99MpJ/lMHB46cTCbNvzUF8WrZtbG1rFZKZ1qiElsax4
+         C+DqVxiUJViAXmjCgLB8/Kzj3D3GzMIqR8Apaik+PHb50bovvxqbpxqZ/dW9YmgRg7h5
+         mritBEul1dtq5IHehmaoyQ5wRIyAkO/zZTIimGTkKaR3BNJ3U6orPosRhA4qWWeCO12l
+         eQHy5yF8LcHyRXwfuxAV3DsIRwt7+Clz2zCTb6HThLJjHuoRo5b+o+f4KFsDiW3Dg2Vf
+         gRLqlSpkxNT/KTeQ4xY/V4/MJZNpzUiyijTpbTQgVUIM+Bdd+fKyBpVZSS9WlXmkc3t4
+         OTbg==
+X-Gm-Message-State: AOJu0YzT5/7zl4i0dkRxdEtj3kh0I88sHLpvdkfK5lFrBmCqK0xB8YzQ
+        U2S8V/m+xgkLb/7TB3ApfZ5g1g==
+X-Google-Smtp-Source: AGHT+IFWJ7X36hbELNZsu2Qoy7W883Jbwkj5/xgqtPBcjfnu1qrR6mv1JUwfPmOD8HEOYxyeIbfYIw==
+X-Received: by 2002:a5d:6d85:0:b0:32d:c217:8307 with SMTP id l5-20020a5d6d85000000b0032dc2178307mr5571891wrs.5.1700123281310;
+        Thu, 16 Nov 2023 00:28:01 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j30-20020adfb31e000000b003197869bcd7sm12910569wrd.13.2023.11.16.00.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 00:26:49 -0800 (PST)
-Date:   Thu, 16 Nov 2023 00:26:39 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     Hugh Dickins <hughd@google.com>
-cc:     Matthew Wilcox <willy@infradead.org>,
-        =?ISO-8859-15?Q?Jos=E9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>,
-        akpm@linux-foundation.org, skhan@linuxfoundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev,
-        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH] mm/pgtable: return null if no ptl in
- __pte_offset_map_lock
-In-Reply-To: <515cb9c1-abcd-c3f3-cc0d-c3cd248b9d6f@google.com>
-Message-ID: <1b7019f3-0abf-a2f5-46ae-373af2043e56@google.com>
-References: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi> <ZVTTbuviH9/RWYyI@casper.infradead.org> <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi> <ZVUWLgFgu+jE3QmW@casper.infradead.org> <515cb9c1-abcd-c3f3-cc0d-c3cd248b9d6f@google.com>
+        Thu, 16 Nov 2023 00:28:00 -0800 (PST)
+Date:   Thu, 16 Nov 2023 09:27:58 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Maxime Ripard <mripard@redhat.com>
+Cc:     Luben Tuikov <ltuikov89@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc tree
+Message-ID: <ZVXSjt_1uWHuYXsq@phenom.ffwll.local>
+Mail-Followup-To: Maxime Ripard <mripard@redhat.com>,
+        Luben Tuikov <ltuikov89@gmail.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231114075501.61321c29@canb.auug.org.au>
+ <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
+ <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
+ <20231114134506.2ba0de1f@canb.auug.org.au>
+ <530b6100-4f4e-4b3d-8fea-5b316e989633@gmail.com>
+ <20231114140855.0b259b2d@canb.auug.org.au>
+ <f1b21cbd-5bb6-4030-ae7d-a0ca2fbc76a9@gmail.com>
+ <73cg637ax5cahqocscx5cjvtqkwlt4ves6cxgprbwqllasxq6v@gk6vzsqfc46j>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463753983-898050368-1700123209=:31351"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <73cg637ax5cahqocscx5cjvtqkwlt4ves6cxgprbwqllasxq6v@gk6vzsqfc46j>
+X-Operating-System: Linux phenom 6.5.0-4-amd64 
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -77,142 +89,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Thu, Nov 16, 2023 at 09:11:43AM +0100, Maxime Ripard wrote:
+> On Tue, Nov 14, 2023 at 06:46:21PM -0500, Luben Tuikov wrote:
+> > On 2023-11-13 22:08, Stephen Rothwell wrote:
+> > > BTW, cherry picking commits does not avoid conflicts - in fact it can
+> > > cause conflicts if there are further changes to the files affected by
+> > > the cherry picked commit in either the tree/branch the commit was
+> > > cheery picked from or the destination tree/branch (I have to deal with
+> > > these all the time when merging the drm trees in linux-next).  Much
+> > > better is to cross merge the branches so that the patch only appears
+> > > once or have a shared branches that are merged by any other branch that
+> > > needs the changes.
+> > > 
+> > > I understand that things are not done like this in the drm trees :-(
+> > 
+> > Hi Stephen,
+> > 
+> > Thank you for the clarification--understood. I'll be more careful in the future.
+> > Thanks again! :-)
+> 
+> In this case, the best thing to do would indeed have been to ask the
+> drm-misc maintainers to merge drm-misc-fixes into drm-misc-next.
+> 
+> We're doing that all the time, but we're not ubiquitous so you need to
+> ask us :)
+> 
+> Also, dim should have caught that when you pushed the branch. Did you
+> use it?
 
----1463753983-898050368-1700123209=:31351
-Content-Type: text/plain; charset=iso-8859-1
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Yeah dim must be used, exactly to avoid these issues. Both for applying
+patches (so not git am directly, or cherry-picking from your own
+development branch), and for pushing. The latter is even checked for by
+the server (dim sets a special push flag which is very long and contains a
+very clear warning if you bypass it).
 
-On Wed, 15 Nov 2023, Hugh Dickins wrote:
-> On Wed, 15 Nov 2023, Matthew Wilcox wrote:
-> > On Wed, Nov 15, 2023 at 06:05:30PM +0200, Jos=E9 Pekkarinen wrote:
-> >=20
-> > > > I don't think we should be changing ptlock_ptr().
-> > >=20
-> > >     This is where the null ptr dereference originates, so the only
-> > > alternative I can think of is to protect the life cycle of the ptdesc
-> > > to prevent it to die between the pte check and the spin_unlock of
-> > > __pte_offset_map_lock. Would that work for you?
->=20
-> Thanks for pursuing this, Jos=E9, but I agree with Matthew: I don't
-> think your patch is right at all.  The change in ptlock_ptr() did not
-> make sense to me, and the change in __pte_offset_map_lock() leaves us
-> still wondering what has gone wrong (and misses an rcu_read_unlock()).
->=20
-> You mentioned "I tested the syzbot reproducer in x86 and it doesn't
-> produce this kasan report anymore": are you saying that you were able
-> to reproduce the issue on x86 (without your patch)?  That would be very
-> interesting (and I think would disprove my hypothesis below).  I ought
-> to try on x86 if you managed to reproduce on it, but it's not worth
-> the effort if you did not.  If you have an x86 stack and registers,
-> please show (though I'm uncertain how much KASAN spoils the output).
->=20
-> >=20
-> > Ah!  I think I found the problem.
-> >=20
-> > If ALLOC_SPLIT_PTLOCKS is not set, there is no problem as ->ptl
-> > is embedded in the struct page.  But if ALLOC_SPLIT_PTLOCKS is set
-> > (eg you have LOCKDEP enabled), we can _return_ a NULL pointer from
-> > ptlock_ptr.  The NULL pointer dereference isn't in ptlock_ptr(), it's
-> > in __pte_offset_map_lock().
-> >=20
-> > So, how to solve this?  We can't just check the ptl against NULL; the
-> > memory that ptl points to may have been freed.  We could grab a referen=
-ce
-> > to the pmd_page, possibly conditionally on ALLOC_SPLIT_LOCK being set,
-> > but that will slow down everything.  We could make page_ptl_cachep
-> > SLAB_TYPESAFE_BY_RCU, preventing the memory from being freed (even if
-> > the lock might not be associated with this page any more).
->=20
-> But I don't think that's quite right either: or, I hope it's not right,
-> because it would say that all my business of rcu_read_lock() and
-> pte_free_defer() etc was a failing waste of everyone's time: if the
-> page table (and/or its lock) can be freed while someone is in that RCU-
-> protected area, then I've simply got it wrong.
->=20
-> What I thought, when yesterday's flurry of syzbot messages came in,
-> was perhaps the problem is at the other end - when the new page table
-> is allocated, rather than when it's being freed: a barrier missing there?
->=20
-> But pmd_install() does have an smp_wmb(), with a (suspiciously) long
-> comment about why no smp_rmb()s are needed, except on alpha.
->=20
-> I'm not much good on barriers, but the thought now in my mind is that
-> that comment is not quite accurate: that at the bottom level an smp_rmb()
-> is (very seldom!) needed - not just to avoid a NULL (or previous garbage)
-> ptl pointer in the ALLOC_SPLIT_LOCK case, but to make sure that the ptl
-> is visibly correctly initialized (or would spin_lock on it achieve that?)=
-;
-> and that what pte_offset_map() points to is visibly empty.  (I'm imaginin=
-g
-> stale cache lines left behind on the oopsing CPU, which need to be
-> refetched after pmdval has been read.)
->=20
-> And that this issue has, strictly speaking, always been there, but in
-> practice never a problem, because of mmap_lock held for write while (or
-> prior to) freeing page table, and racers holding mmap_lock for read
-> (vma lock not changing the calculus); but collapse_pte_mapped_thp()
-> can now be done with mmap_lock for read, letting those racers in
-> (and maybe your filemap_map_pages() has helped speed these races up -
-> any blame I can shift on to you, the better ;)
->=20
-> But I may well be spouting nonsense.  And even if I'm right, is adding
-> an smp_rmb() in there too high a price to pay on some architectures?
->=20
-> I did make an attempt to reproduce on an arm64, but there's too much
-> more I'd need to muck around with to get it working right.  Let's ask for
-> a syz test on top of v6.7-rc1 - hmm, how do I tell syzbot that it's arm64
-> that it needs to try on?  I hope it gets that from the Cc'ed syz number.
+If dim was used, this would be a bug in the dim script that we need to
+fix.
 
-Syzbot couldn't do it from this mail, but did it from the original thread:
-https://lore.kernel.org/linux-mm/000000000000ba0007060a40644f@google.com/
-tells us that I was spouting nonsense: this patch does not fix it.
-I have no further idea yet.
+Also backmerges (and in generally anything that is about cross-tree patch
+wrangling, like cherry-picking) are maintainer duties in drm-misc and not
+for committers:
 
->=20
-> #syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.g=
-it b85ea95d086471afb4ad062012a4d73cd328fa86
->=20
-> [PATCH] mm/pgtable: smp_rmb() to match smp_wmb() in pmd_install()
->=20
-> Not-Yet-Signed-off-by: Hugh Dickins <hughd@google.com>
-> ---
->  mm/memory.c          | 2 ++
->  mm/pgtable-generic.c | 5 +++++
->  2 files changed, 7 insertions(+)
->=20
-> diff --git a/mm/memory.c b/mm/memory.c
-> index 1f18ed4a5497..8939357f1509 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -425,6 +425,8 @@ void pmd_install(struct mm_struct *mm, pmd_t *pmd, pg=
-table_t *pte)
->  =09=09 * being the notable exception) will already guarantee loads are
->  =09=09 * seen in-order. See the alpha page table accessors for the
->  =09=09 * smp_rmb() barriers in page table walking code.
-> +=09=09 *
-> +=09=09 * See __pte_offset_map() for the smp_rmb() at the pte level.
->  =09=09 */
->  =09=09smp_wmb(); /* Could be smp_wmb__xxx(before|after)_spin_lock */
->  =09=09pmd_populate(mm, pmd, *pte);
-> diff --git a/mm/pgtable-generic.c b/mm/pgtable-generic.c
-> index 4fcd959dcc4d..3330b666e9c3 100644
-> --- a/mm/pgtable-generic.c
-> +++ b/mm/pgtable-generic.c
-> @@ -297,6 +297,11 @@ pte_t *__pte_offset_map(pmd_t *pmd, unsigned long ad=
-dr, pmd_t *pmdvalp)
->  =09=09pmd_clear_bad(pmd);
->  =09=09goto nomap;
->  =09}
-> +=09/*
-> +=09 * Pair with the smp_wmb() in pmd_install(): make sure that the
-> +=09 * page table lock and page table contents are visibly initialized.
-> +=09 */
-> +=09smp_rmb();
->  =09return __pte_map(&pmdval, addr);
->  nomap:
->  =09rcu_read_unlock();
-> --=20
-> 2.35.3
----1463753983-898050368-1700123209=:31351--
+https://drm.pages.freedesktop.org/maintainer-tools/maintainer-drm-misc.html#maintainer-s-duties
+
+I think it'd be really good for Luben to go through the docs and supply a
+patch to clarify this, if it's not clear from the existing docs.
+
+We have some wording in the committer docs, but maybe it's not clear
+enough:
+
+https://drm.pages.freedesktop.org/maintainer-tools/committer-drm-misc.html#merge-criteria
+
+"Any non-linear actions (backmerges, merging topic branches and sending
+out pull requests) are only done by the official drm-misc maintainers (see
+MAINTAINERS, or ask #dri-devel), and not by committers. See the examples
+section in dim for more info"
+
+Minor screw-ups like this gives us a great opportunity to improve the
+tooling&docs, let's use it.
+
+Cheers, Sima
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
