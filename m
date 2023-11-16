@@ -2,85 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 67FD47EE78D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:34:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 873747EE795
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:37:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232932AbjKPTe7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:34:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40028 "EHLO
+        id S1345517AbjKPThT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:37:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbjKPTe6 (ORCPT
+        with ESMTP id S229437AbjKPThS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:34:58 -0500
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029E9192;
-        Thu, 16 Nov 2023 11:34:55 -0800 (PST)
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5872b8323faso586788eaf.1;
-        Thu, 16 Nov 2023 11:34:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700163294; x=1700768094;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=UcjcJ6yC84qjYRKDtkrCm3IWQlELi8MIdlcWyAso3aI=;
-        b=cAlVbRtE79xHkDw7Vl+DT1laY1A55fNWfU8LeB5lGZz1TiE+lcoq9wmM6abcxsmj7S
-         nkMkqQ4l2y8QCucszlyd1cWJLlGLkRqvNKoDRebM7ImK7+3cl5uKCcEo1gK2jYHO5ASe
-         s0lPN/KgWIyGjg1jmzlsfq3TRBKdLDPlumg2jIyUxbiQ/ztQcMjZEuPSgRsrWaWWi23G
-         t95Voryoub9fx0vC3FgisyAZzVDN5y6MOSPu6ocLMcx12s5ANLplxz5HMHEb7xXA7IYY
-         qdn7TQSH6Rr6rdO+5kqqJ4CVOuHZm4zL8RNe4XzHY3F7mytdAkWbGnj4XvPqWR59A5/Y
-         0vcw==
-X-Gm-Message-State: AOJu0YwatwSQtab2k+pylvypTTj7UGXtCIrbQp3o7pRzml8ULDPK0UwK
-        JFv/SqMJkGawaZN8lyXFXg==
-X-Google-Smtp-Source: AGHT+IE1k/pE704kJjj6JvCaj4cD+f1bZp3wmmUcVUY+DPlLnohekIjBe9RsbsFf9GrFOEXaMBLK/A==
-X-Received: by 2002:a4a:ea0f:0:b0:587:2b3c:e11f with SMTP id x15-20020a4aea0f000000b005872b3ce11fmr19037504ood.0.1700163294242;
-        Thu, 16 Nov 2023 11:34:54 -0800 (PST)
-Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
-        by smtp.gmail.com with ESMTPSA id y7-20020a4aaa47000000b0058a193dbc7fsm14879oom.15.2023.11.16.11.34.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 11:34:53 -0800 (PST)
-Received: (nullmailer pid 3084507 invoked by uid 1000);
-        Thu, 16 Nov 2023 19:34:50 -0000
-Date:   Thu, 16 Nov 2023 13:34:50 -0600
-From:   Rob Herring <robh@kernel.org>
-To:     Andrew Davis <afd@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Nishanth Menon <nm@ti.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH v2 3/4] dt-bindings: arm: keystone: Convert keystone.txt
- to YAML
-Message-ID: <170016329016.3084373.13644981441783739420.robh@kernel.org>
-References: <20231114212911.429951-1-afd@ti.com>
- <20231114212911.429951-3-afd@ti.com>
+        Thu, 16 Nov 2023 14:37:18 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE0B3192
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:37:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700163435; x=1731699435;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=LwA0BuYszOIkNUH5cocoLbDFEjbUYaERZhstLKEwE8A=;
+  b=bLr9udviFrQ7vvqacQH59VLAy+hkYLPQOcmGGBbBKphpTG8DXlyriimH
+   MMISwssP6L57ZyGtkAx6G8RyiZkNt3Htpk1Tf2JbBFwqe7eVXE8sHW3Zt
+   BRj1eGIW0srDz4KNirTiCtYUSwklyDbmELW7qhpSz86ChHEjxy0m7PH85
+   dH8XSyC58NavHKUPoYOOfMoXHbrEj97narCoyyGN+gXzvGUzzjYGX90xb
+   nklzCkF+YuGel3KayQcqyAASRY01uK2HUcthvCq0Bce+x9RXnIMnD6bKW
+   DbVBsIPpVdd52kf6iPbiSIogCAtYPnQAghctUcE1mE81bsufCKHQsv62f
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="4294033"
+X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
+   d="scan'208";a="4294033"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 11:37:14 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="765398759"
+X-IronPort-AV: E=Sophos;i="6.04,204,1695711600"; 
+   d="scan'208";a="765398759"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga002.jf.intel.com with ESMTP; 16 Nov 2023 11:37:11 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3iAn-00021j-1f;
+        Thu, 16 Nov 2023 19:37:09 +0000
+Date:   Fri, 17 Nov 2023 03:37:01 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Shravan Kumar Ramani <shravankr@nvidia.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Hans de Goede <hdegoede@redhat.com>,
+        Vadim Pasternak <vadimp@nvidia.com>,
+        David Thompson <davthompson@nvidia.com>
+Subject: drivers/platform/mellanox/mlxbf-pmc.c:1172:14: sparse: sparse:
+ incorrect type in assignment (different address spaces)
+Message-ID: <202311170321.oKTTKcgf-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231114212911.429951-3-afd@ti.com>
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
-        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7475e51b87969e01a6812eac713a1c8310372e8a
+commit: 423c3361855c1e81f1cb91728a2ac5ddfd2cbf16 platform/mellanox: mlxbf-pmc: Add support for BlueField-3
+date:   9 weeks ago
+config: arm64-randconfig-r121-20231116 (https://download.01.org/0day-ci/archive/20231117/202311170321.oKTTKcgf-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20231117/202311170321.oKTTKcgf-lkp@intel.com/reproduce)
 
-On Tue, 14 Nov 2023 15:29:10 -0600, Andrew Davis wrote:
-> Convert keystone.txt to ti,keystone.yaml.
-> 
-> Signed-off-by: Andrew Davis <afd@ti.com>
-> ---
->  Documentation/arch/arm/keystone/overview.rst  |  2 +-
->  .../bindings/arm/keystone/keystone.txt        | 42 ---------------
->  .../bindings/arm/keystone/ti,keystone.yaml    | 53 +++++++++++++++++++
->  3 files changed, 54 insertions(+), 43 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/arm/keystone/keystone.txt
->  create mode 100644 Documentation/devicetree/bindings/arm/keystone/ti,keystone.yaml
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311170321.oKTTKcgf-lkp@intel.com/
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+sparse warnings: (new ones prefixed by >>)
+>> drivers/platform/mellanox/mlxbf-pmc.c:1172:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *addr @@     got void [noderef] __iomem * @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1172:14: sparse:     expected void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1172:14: sparse:     got void [noderef] __iomem *
+>> drivers/platform/mellanox/mlxbf-pmc.c:1174:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *addr @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1174:31: sparse:     expected void [noderef] __iomem *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1174:31: sparse:     got void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1186:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *addr @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1186:32: sparse:     expected void [noderef] __iomem *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1186:32: sparse:     got void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1194:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *addr @@     got void [noderef] __iomem * @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1194:14: sparse:     expected void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1194:14: sparse:     got void [noderef] __iomem *
+   drivers/platform/mellanox/mlxbf-pmc.c:1198:32: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *addr @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1198:32: sparse:     expected void [noderef] __iomem *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1198:32: sparse:     got void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1415:14: sparse: sparse: incorrect type in assignment (different address spaces) @@     expected void *addr @@     got void [noderef] __iomem * @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1415:14: sparse:     expected void *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1415:14: sparse:     got void [noderef] __iomem *
+   drivers/platform/mellanox/mlxbf-pmc.c:1417:31: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void [noderef] __iomem *addr @@     got void *addr @@
+   drivers/platform/mellanox/mlxbf-pmc.c:1417:31: sparse:     expected void [noderef] __iomem *addr
+   drivers/platform/mellanox/mlxbf-pmc.c:1417:31: sparse:     got void *addr
 
+vim +1172 drivers/platform/mellanox/mlxbf-pmc.c
+
+  1163	
+  1164	/* Method to handle crspace counter programming */
+  1165	static int mlxbf_pmc_program_crspace_counter(int blk_num, uint32_t cnt_num,
+  1166						     uint32_t evt)
+  1167	{
+  1168		uint32_t word;
+  1169		void *addr;
+  1170		int ret;
+  1171	
+> 1172		addr = pmc->block[blk_num].mmio_base +
+  1173			(rounddown(cnt_num, 2) * MLXBF_PMC_CRSPACE_PERFSEL_SZ);
+> 1174		ret = mlxbf_pmc_readl(addr, &word);
+  1175		if (ret)
+  1176			return ret;
+  1177	
+  1178		if (cnt_num % 2) {
+  1179			word &= ~MLXBF_PMC_CRSPACE_PERFSEL1;
+  1180			word |= FIELD_PREP(MLXBF_PMC_CRSPACE_PERFSEL1, evt);
+  1181		} else {
+  1182			word &= ~MLXBF_PMC_CRSPACE_PERFSEL0;
+  1183			word |= FIELD_PREP(MLXBF_PMC_CRSPACE_PERFSEL0, evt);
+  1184		}
+  1185	
+  1186		return mlxbf_pmc_write(addr, MLXBF_PMC_WRITE_REG_32, word);
+  1187	}
+  1188	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
