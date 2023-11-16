@@ -2,123 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCE97EDA29
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:26:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3726F7EDA25
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 04:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344770AbjKPD1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 22:27:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36718 "EHLO
+        id S235698AbjKPD0r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 22:26:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344863AbjKPD04 (ORCPT
+        with ESMTP id S235689AbjKPD0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 22:26:56 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3E7571A4
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:26:51 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso45026966b.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:26:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1700105209; x=1700710009; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Lpw5N7hLJVBmWx1YZh3JJftpK5bs0D0hrTfIHC0Li88=;
-        b=YU9xIEdlaoIZq+xWDKVdiwF/2vfnX6Qq3UbjfIcPEtMsWk7FEHBSZFU5DsqZyY1n8X
-         JTE2JRI/erQ747axppsem29Xoj+gizG3UF1RHSEufffC+Fsh3dGeX2s81J2ouujBXpYV
-         K6fSWocNXNCtqCRxw3aLvteh/OpzX9lj+xrfQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700105209; x=1700710009;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Lpw5N7hLJVBmWx1YZh3JJftpK5bs0D0hrTfIHC0Li88=;
-        b=Ya6nJl6WJufwWSdDgl4jiMz1xsDSxthXjPFWZNv3N93u4TOk5V7vPmogUTNhhVP8vF
-         TfMx23bGR0D/zL7QcSZlG361xF5wBWEVKtrqFWqEGZ2iN7Q5RPk+sSBTNkzVLFWUKJyb
-         ZB/1OOtXmJ49elzZJTGd9qh5oExrMjKyFCueNhssT+Fm/6PxdvBawjcEtNKrBTlBrznC
-         cVtbkxVMePx1k8lAf/y3X51tBs5fKOWfX46SG0uy3K3X445483/gZDnLl+jaqxKUJwLJ
-         JGsZOdbhlkyXIbZADQ8cprJZgeS0AcEjTZEECspDfLwOV+eob+OqhIhGdiLvP1RxSDzq
-         y6Yg==
-X-Gm-Message-State: AOJu0YyJJuFugvuXzS+3oS7Nw9TnhQFjPbghRHzv8McX8B29XWxZ6W6R
-        L8ZLouLzOpTmhE+DJCJU4DVhK+cygxx9nwvfkhNdr16z
-X-Google-Smtp-Source: AGHT+IFCKfXCziAtQpJlDGDrEUVkLMDc9pXqoaQJL8NIe88JQXYUSl0fEbCGzxxDT7caoAWNITFQFw==
-X-Received: by 2002:a17:906:5297:b0:9e2:af56:c375 with SMTP id c23-20020a170906529700b009e2af56c375mr10608506ejm.52.1700105209503;
-        Wed, 15 Nov 2023 19:26:49 -0800 (PST)
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com. [209.85.208.43])
-        by smtp.gmail.com with ESMTPSA id d7-20020a170906370700b009dd4b2d412fsm7823586ejc.36.2023.11.15.19.26.47
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 15 Nov 2023 19:26:48 -0800 (PST)
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso520949a12.3
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 19:26:47 -0800 (PST)
-X-Received: by 2002:a05:6402:1111:b0:53d:bc68:633a with SMTP id
- u17-20020a056402111100b0053dbc68633amr11218507edv.5.1700105207537; Wed, 15
- Nov 2023 19:26:47 -0800 (PST)
+        Wed, 15 Nov 2023 22:26:44 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 06896189;
+        Wed, 15 Nov 2023 19:26:39 -0800 (PST)
+Received: from loongson.cn (unknown [10.20.42.173])
+        by gateway (Coremail) with SMTP id _____8Cx5_Hui1VlznI6AA--.49344S3;
+        Thu, 16 Nov 2023 11:26:38 +0800 (CST)
+Received: from [10.20.42.173] (unknown [10.20.42.173])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8CxO9zqi1VlAaxDAA--.16678S3;
+        Thu, 16 Nov 2023 11:26:37 +0800 (CST)
+Subject: Re: [PATCH v4 0/3] LoongArch: KVM: Remove SW timer switch when vcpu
+ is halt polling
+To:     Huacai Chen <chenhuacai@kernel.org>
+Cc:     Tianrui Zhao <zhaotianrui@loongson.cn>,
+        WANG Xuerui <kernel@xen0n.name>, kvm@vger.kernel.org,
+        loongarch@lists.linux.dev, linux-kernel@vger.kernel.org
+References: <20231116023036.2324371-1-maobibo@loongson.cn>
+ <CAAhV-H4Wyp-6_gFSfm8uWUMiEJnebk9n4JxQrx_nBdxkTF5wUA@mail.gmail.com>
+From:   maobibo <maobibo@loongson.cn>
+Message-ID: <06908fb4-cbd8-74a1-2e6f-3da016bd3280@loongson.cn>
+Date:   Thu, 16 Nov 2023 11:26:36 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <202311061616.cd495695-oliver.sang@intel.com> <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <4097023.1700084620@warthog.procyon.org.uk> <CAHk-=wgR3Mw2-8k2O3S10T-f4oz8FNfg7aziLU_6pbx0qowxew@mail.gmail.com>
- <42895.1700089191@warthog.procyon.org.uk>
-In-Reply-To: <42895.1700089191@warthog.procyon.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 15 Nov 2023 22:26:30 -0500
-X-Gmail-Original-Message-ID: <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
-Message-ID: <CAHk-=wi7gdgFM4tnLXfE4cj2XiKNARbGY-N2aF5h9CMaN6JUbA@mail.gmail.com>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-To:     David Howells <dhowells@redhat.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+In-Reply-To: <CAAhV-H4Wyp-6_gFSfm8uWUMiEJnebk9n4JxQrx_nBdxkTF5wUA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: AQAAf8CxO9zqi1VlAaxDAA--.16678S3
+X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
+X-Coremail-Antispam: 1Uk129KBj93XoW7tF1UuFWUAF48WFy3Wry7XFc_yoW8KFWkpF
+        ZIkFnIqr4kKr4kK3Zaqa1DXr9Fq3yIqF1xXrn3tryrArsIyF1YqF18KrWF9F9xu393AFyI
+        vryrt3Z8Za4UA3cCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0cIa020Ex4CE44I27w
+        Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_Jw1lYx0Ex4A2jsIE
+        14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCYjI0SjxkI62AI1c
+        AE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8C
+        rVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtw
+        CIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1I6r4UMIIF0xvE2Ix0cI8IcVCY1x02
+        67AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
+        0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU82g
+        43UUUUU==
+X-Spam-Status: No, score=-3.8 required=5.0 tests=BAYES_00,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023 at 18:00, David Howells <dhowells@redhat.com> wrote:
->
-> And using __memcpy() rather than memcpy():
 
-Yeah, that's just sad. It might indeed be that you're running on a
-Haswell core, and the retpoline overhead just kills that entirely. You
-could try building the kernel without mitigations (or booting with
-them off, which isn't quite as good) to verify.
 
-> A disassembly of _copy_from_iter() for the latter is attached.  Note that the
-> UBUF/IOVEC still uses "rep movsb"
+On 2023/11/16 上午10:54, Huacai Chen wrote:
+> Hi, Bibo,
+> 
+> I suggest submitting this series to the internal repo, too. Because we
+> don't have enough resources to test the stability for the upstream
+> version, while this is a fundamental change. On the other hand, the
+> patch "LoongArch:LSVZ: set timer offset at first time once" can be
+> submitted first because it is already in the internal repo.
+We ever consider to keep the same between internal repo and upstream, 
+only that there are many differences since kernel version is different.
 
-Well, yes and no.
+We are preparing to setup test environment for upstream kvm module, the 
+stability for the upstream is very important for us -:)
 
-User copies do that X86_FEATURE_FSRM alternatives dance, so the code
-gets generated with "rep movs", but you'll note that there are several
-'nops' after it.
+Regards
+Bibo Mao
 
-Some of the nops are because we'll be inserting STAC/CLAC (three bytes
-each, I think) instructions around user accesses for SMAP-capable
-CPU's.
+> 
+> Huacai
+> 
+> On Thu, Nov 16, 2023 at 10:33 AM Bibo Mao <maobibo@loongson.cn> wrote:
+>>
+>> This patches removes SW timer switch during vcpu block stage. VM uses HW
+>> timer rather than SW PV timer on LoongArch system, it can check pending
+>> HW timer interrupt status directly, rather than switch to SW timer and
+>> check injected SW timer interrupt.
+>>
+>> When SW timer is not used in vcpu halt-polling mode, the relative
+>> SW timer handling before entering guest can be removed also. Timer
+>> emulation is simpler than before, SW timer emuation is only used in vcpu
+>> thread context switch.
+>> ---
+>> Changes in v4:
+>>    If vcpu is scheduled out since there is no pending event, and timer is
+>> fired during sched-out period. SW hrtimer is used to wake up vcpu thread
+>> in time, rather than inject pending timer irq.
+>>
+>> Changes in v3:
+>>    Add kvm_arch_vcpu_runnable checking before kvm_vcpu_halt.
+>>
+>> Changes in v2:
+>>    Add halt polling support for idle instruction emulation, using api
+>> kvm_vcpu_halt rather than kvm_vcpu_block in function kvm_emu_idle.
+>>
+>> ---
+>> Bibo Mao (3):
+>>    LoongArch: KVM: Remove SW timer switch when vcpu is halt polling
+>>    LoongArch: KVM: Allow to access HW timer CSR registers always
+>>    LoongArch: KVM: Remove kvm_acquire_timer before entering guest
+>>
+>>   arch/loongarch/include/asm/kvm_vcpu.h |  1 -
+>>   arch/loongarch/kvm/exit.c             | 13 +-----
+>>   arch/loongarch/kvm/main.c             |  1 -
+>>   arch/loongarch/kvm/timer.c            | 62 ++++++++++-----------------
+>>   arch/loongarch/kvm/vcpu.c             | 38 ++++------------
+>>   5 files changed, 32 insertions(+), 83 deletions(-)
+>>
+>>
+>> base-commit: c42d9eeef8e5ba9292eda36fd8e3c11f35ee065c
+>> --
+>> 2.39.3
+>>
 
-But some of the nops are because we'll be rewriting that "rep stosb"
-(two bytes, iirc) as "call rep_stos_alternative" (5 bytes) on CPU's
-that don't do FSRM like yours. So your CPU won't actually be executing
-that 'rep stosb' sequence.
-
-And yes, the '__x86_return_thunk' overhead can be pretty horrific. It
-will get rewritten to the appropriate thing by "apply_returns". But
-like the "rep movs" and the missing STAC/CLAC, you won't see that in
-the objdump, you only see it in the final binary.
-
-                    Linus
