@@ -2,329 +2,1686 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339997EE57F
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFD047EE583
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 17:50:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345251AbjKPQt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 11:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48996 "EHLO
+        id S1345262AbjKPQuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 11:50:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229841AbjKPQtY (ORCPT
+        with ESMTP id S1345189AbjKPQuA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 11:49:24 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 092B4D4D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:49:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700153360;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=L1s0WJ01gB5zhcFsx6lBCHGMIG0MB40ACPZy6Q7ECjY=;
-        b=NfBWzYXbZ4kHeoc/QG/FOcTW+VheWrIvQQcJSWhgBiwlnB4yFimDjbOGONO85tVrdsgWz/
-        j3oAjDxB17KbsihHObZ9Ra+TeJ38KYewLSWxbzSk5BMrWgCbP4VB1zdvPhIFTmbVWOJ22E
-        ddMwT3jh2GMpXzvc9K7rZn8XdNh10Tc=
-Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
- [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-605-3-966y4FMV6o_ggnshke5w-1; Thu, 16 Nov 2023 11:49:17 -0500
-X-MC-Unique: 3-966y4FMV6o_ggnshke5w-1
-Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-1f00b6ba9d6so224523fac.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 08:49:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700153356; x=1700758156;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=L1s0WJ01gB5zhcFsx6lBCHGMIG0MB40ACPZy6Q7ECjY=;
-        b=AaDPViD6KVxUcLbfnixYFwsjWjBWkrsn148yGbSiLg8QsusIN8p7TA3OnhrEE7ergC
-         6d5Ojf4DtNmqOJtHdkUHAPX+FXRIykPyxJvCvjZerXulKcI6oEsUz4oodk9nNCoFfpfO
-         ARpuggls6NZvfkEth6MoD3h13gn+c3z6lV3hpLEUSm5LVzemKP2rw11jGu2G15tmVLxN
-         OvlXlk0CAm8BEzA6UX4lXsEPnCi6/x1K8umoGxR70F1nHqY5KSalBNE9R06ZNaihND2t
-         V+rRyobiiMoNys+BsPQDeVmOE2aKtQUdRoJtyM3VV6ZFDGz/X5Oltld38U09Vnwh/Z/0
-         3VkA==
-X-Gm-Message-State: AOJu0YyYRfbCmZvc3FWZFbRalKO3eEEQwGKsVTgLQuVmbwpHPxZqc7g3
-        jG09CBkKtuyhahXZJxEi2/++kIG7rPa7n/EOoQ7uuCjssBps5qLktg/bM7K9HxZHsddUAaehJT+
-        TcbSieIQW/0Qqcw78rCH6ovit
-X-Received: by 2002:a05:6870:2301:b0:1ea:7463:1b8f with SMTP id w1-20020a056870230100b001ea74631b8fmr9795876oao.0.1700153356463;
-        Thu, 16 Nov 2023 08:49:16 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGLYjE0JU3/o+D+SOTaQIUYfk67pHPZl5NWX/n+45FCCvkq5nj1uuM7IZ+IB1wOmRN836CKJQ==
-X-Received: by 2002:a05:6870:2301:b0:1ea:7463:1b8f with SMTP id w1-20020a056870230100b001ea74631b8fmr9795855oao.0.1700153356030;
-        Thu, 16 Nov 2023 08:49:16 -0800 (PST)
-Received: from x1n (cpe688f2e2cb7c3-cm688f2e2cb7c0.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id ke21-20020a05622a289500b00417fa0cd77esm4449897qtb.80.2023.11.16.08.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 08:49:15 -0800 (PST)
-Date:   Thu, 16 Nov 2023 11:49:12 -0500
-From:   Peter Xu <peterx@redhat.com>
-To:     Andrei Vagin <avagin@gmail.com>
-Cc:     syzbot <syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com>,
-        Muhammad Usama Anjum <musamaanjum@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [fs?] WARNING in pagemap_scan_pmd_entry
-Message-ID: <ZVZICOmNRHWOV6g-@x1n>
-References: <000000000000773fa7060a31e2cc@google.com>
- <CANaxB-yrvmv134dwTcMD9q5chXvm3YU1pDFhqvaRA8M1Gn7Guw@mail.gmail.com>
- <ZVVoCT_gNvbZg93f@x1n>
- <CANaxB-zLxs2=gNgWTqstLvyPK8mSwpEu2ob35TtaKWheMejZOQ@mail.gmail.com>
+        Thu, 16 Nov 2023 11:50:00 -0500
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 860F8D50;
+        Thu, 16 Nov 2023 08:49:51 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AGGndtR077075;
+        Thu, 16 Nov 2023 10:49:39 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700153379;
+        bh=oRDCZDM4gGEcYjiDlH3kJ9hMSoLqIAaYKrkH+Um0qZI=;
+        h=From:To:CC:Subject:Date;
+        b=PA0rcqkneh4idOQcOeSvL4Qm0Xsxz/0q6I8qmaidGIy4u3d5++jm+0Kyc11u2UbU7
+         xCtt4cmUDHd0Qad2Kyk5K5s/3wT4GxlrTap99NP+4XLHKViLHTbw034BeILT/6JSYa
+         XORovBXC77Vzvp95paqOCbRvo8H5uwJ4hZ6gfIX8=
+Received: from DFLE111.ent.ti.com (dfle111.ent.ti.com [10.64.6.32])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AGGndlo039383
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 16 Nov 2023 10:49:39 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Thu, 16
+ Nov 2023 10:49:38 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Thu, 16 Nov 2023 10:49:38 -0600
+Received: from lelv0326.itg.ti.com (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AGGncXo005718;
+        Thu, 16 Nov 2023 10:49:38 -0600
+From:   Andrew Davis <afd@ti.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Andrew Davis <afd@ti.com>
+Subject: [PATCH] ARM: dts: keystone: Reduce soc0 node content indent level
+Date:   Thu, 16 Nov 2023 10:49:36 -0600
+Message-ID: <20231116164936.87975-1-afd@ti.com>
+X-Mailer: git-send-email 2.39.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANaxB-zLxs2=gNgWTqstLvyPK8mSwpEu2ob35TtaKWheMejZOQ@mail.gmail.com>
-X-Spam-Status: No, score=-0.7 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.9 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 07:38:00AM -0800, Andrei Vagin wrote:
-> On Wed, Nov 15, 2023 at 4:53 PM Peter Xu <peterx@redhat.com> wrote:
-> >
-> > Hi, Andrei, Muhammad,
-> >
-> > I had a look (as it triggered the guard I added before..), and I think I
-> > know what happened.  So far I think it's a question to the new ioctl()
-> > interface, which I'd like to double check with you all.  See below.
-> >
-> > On Wed, Nov 15, 2023 at 01:07:18PM -0800, Andrei Vagin wrote:
-> > > Cc: Peter and Muhammad
-> > >
-> > > On Wed, Nov 15, 2023 at 6:41 AM syzbot
-> > > <syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com> wrote:
-> > > >
-> > > > Hello,
-> > > >
-> > > > syzbot found the following issue on:
-> > > >
-> > > > HEAD commit:    c42d9eeef8e5 Merge tag 'hardening-v6.7-rc2' of git://git.k..
-> > > > git tree:       upstream
-> > > > console+strace: https://syzkaller.appspot.com/x/log.txt?x=13626650e80000
-> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=84217b7fc4acdc59
-> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=e94c5aaf7890901ebf9b
-> > > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d73be0e80000
-> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13670da8e80000
-> > > >
-> > > > Downloadable assets:
-> > > > disk image: https://storage.googleapis.com/syzbot-assets/a595d90eb9af/disk-c42d9eee.raw.xz
-> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/c1e726fedb94/vmlinux-c42d9eee.xz
-> > > > kernel image: https://storage.googleapis.com/syzbot-assets/cb43ae262d09/bzImage-c42d9eee.xz
-> > > >
-> > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
-> > > >
-> > > > ------------[ cut here ]------------
-> > > > WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-> >
-> > This is the guard I added to detect writable bit set even if uffd-wp bit is
-> > not yet cleared.  It means something obviously wrong happened.
-> >
-> > Here afaict the wrong thing is ioctl(PAGEMAP_SCAN) allows applying uffd-wp
-> > bit to VMA that is not even registered with userfault.  Then what happened
-> > is when the page is written, do_wp_page() will try to reuse the anonymous
-> > page with the uffd-wp bit set, set W bit on top of it.
-> 
-> Thank you for looking at this.
-> 
-> >
-> > Below change works for me:
-> >
-> > ===8<===
-> > diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> > index ef2eb12906da..8a2500fa4580 100644
-> > --- a/fs/proc/task_mmu.c
-> > +++ b/fs/proc/task_mmu.c
-> > @@ -1987,6 +1987,12 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
-> >                 vma_category |= PAGE_IS_WPALLOWED;
-> >         else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
-> >                 return -EPERM;
-> > +       else
-> > +               /*
-> > +                * Neither has the VMA enabled WP tracking, nor does the
-> > +                * user want to explicit fail the walk.  Skip the vma.
-> > +                */
-> > +               return 1;
-> 
-> In this case, I think we need to check the PM_SCAN_WP_MATCHING flag
-> and skip these vma-s only if it is set.
-> 
-> If PM_SCAN_WP_MATCHING isn't set, this ioctl returns page flags and
-> can be used without the intention of tracking memory changes.
-> 
-> >
-> >         if (vma->vm_flags & VM_PFNMAP)
-> >                 return 1;
-> > ===8<===
-> >
-> > This is based on my reading of the pagemap scan flags:
-> >
-> > - Write-protect the pages. The ``PM_SCAN_WP_MATCHING`` is used to write-protect
-> >   the pages of interest. The ``PM_SCAN_CHECK_WPASYNC`` aborts the operation if
-> >   non-Async Write Protected pages are found. The ``PM_SCAN_WP_MATCHING`` can be
-> >   used with or without ``PM_SCAN_CHECK_WPASYNC``.
-> >
-> > If PM_SCAN_CHECK_WPASYNC is used to enforce the check, we need to skip the
-> > vma that is not registered properly.  Does it look reasonable to you?
-> 
-> I think the idea here could be to report page flags but doesn't
-> write-protect such pages.
+When the soc0 node was switched to a phandle it decreased the indention
+level but we only did that for the node name to reduce churn. Let's go and
+make the rest of the change now that this DT has solidified and shouldn't
+see as many conflicting changes per cycle.
 
-Ah, I think I understand slightly better now.  Below is my 2nd try..
-
-Meanwhile, I think this won't work:
-
-	/* 9. Memory mapped file */
-	fd = open(__FILE__, O_RDONLY);
-	if (fd < 0)
-		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
-
-We can't assume __FILE__ is there..  Attached one more patch for that.
-I'll repost formally if that looks good to you.
-
-===8<===
-
-From 47d54f3bbb709c54d6bed95fbf2045ea3a541a4b Mon Sep 17 00:00:00 2001
-From: Peter Xu <peterx@redhat.com>
-Date: Thu, 16 Nov 2023 11:05:12 -0500
-Subject: [PATCH] mm/pagemap: Fix ioctl(PAGEMAP_SCAN) on vma check
-
-The new ioctl(PAGEMAP_SCAN) relies on vma wr-protect capability provided by
-userfault, however in the vma test it didn't explicitly require the vma to
-have wr-protect function enabled, even if PM_SCAN_WP_MATCHING flag is set.
-
-It means the pagemap code can now apply uffd-wp bit to a page in the vma
-even if not registered to userfaultfd at all.
-
-Then in whatever way as long as the pte got written and page fault
-resolved, we'll apply the write bit even if uffd-wp bit is set.  We'll see
-a pte that has both UFFD_WP and WRITE bit set.  Anything later that looks
-up the pte for uffd-wp bit will trigger the warning:
-
-WARNING: CPU: 1 PID: 5071 at arch/x86/include/asm/pgtable.h:403 pte_uffd_wp arch/x86/include/asm/pgtable.h:403 [inline]
-
-Fix it by doing proper check over the vma attributes when
-PM_SCAN_WP_MATCHING is specified.
-
-Fixes: 52526ca7fdb9 ("fs/proc/task_mmu: implement IOCTL to get and optionally clear info about PTEs")
-Reported-by: syzbot+e94c5aaf7890901ebf9b@syzkaller.appspotmail.com
-Signed-off-by: Peter Xu <peterx@redhat.com>
+Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- fs/proc/task_mmu.c | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
+ .../boot/dts/ti/keystone/keystone-k2e-evm.dts |  39 +-
+ .../boot/dts/ti/keystone/keystone-k2e.dtsi    | 252 +++----
+ .../dts/ti/keystone/keystone-k2hk-evm.dts     |  62 +-
+ .../boot/dts/ti/keystone/keystone-k2hk.dtsi   | 426 +++++------
+ .../boot/dts/ti/keystone/keystone-k2l-evm.dts |  14 +-
+ .../boot/dts/ti/keystone/keystone-k2l.dtsi    | 664 +++++++++---------
+ 6 files changed, 728 insertions(+), 729 deletions(-)
 
-diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-index 51e0ec658457..e91085d79926 100644
---- a/fs/proc/task_mmu.c
-+++ b/fs/proc/task_mmu.c
-@@ -1994,15 +1994,31 @@ static int pagemap_scan_test_walk(unsigned long start, unsigned long end,
- 	struct pagemap_scan_private *p = walk->private;
- 	struct vm_area_struct *vma = walk->vma;
- 	unsigned long vma_category = 0;
-+	bool wp_allowed = userfaultfd_wp_async(vma) &&
-+	    userfaultfd_wp_use_markers(vma);
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2e-evm.dts b/arch/arm/boot/dts/ti/keystone/keystone-k2e-evm.dts
+index 6978d6a362f3f..29684fd0d9ef6 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2e-evm.dts
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2e-evm.dts
+@@ -28,29 +28,28 @@ dsp_common_memory: dsp-common-memory@81f800000 {
+ };
  
--	if (userfaultfd_wp_async(vma) && userfaultfd_wp_use_markers(vma))
--		vma_category |= PAGE_IS_WPALLOWED;
--	else if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
--		return -EPERM;
-+	if (!wp_allowed) {
-+		/* User requested explicit failure over wp-async capability */
-+		if (p->arg.flags & PM_SCAN_CHECK_WPASYNC)
-+			return -EPERM;
-+		/*
-+		 * User requires wr-protect, and allows silently skipping
-+		 * unsupported vmas.
-+		 */
-+		if (p->arg.flags & PM_SCAN_WP_MATCHING)
-+			return 1;
-+		/*
-+		 * Then the request doesn't involve wr-protects at all,
-+		 * fall through to the rest checks, and allow vma walk.
-+		 */
-+	}
+ &soc0 {
++	clocks {
++		refclksys: refclksys {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++			clock-output-names = "refclk-sys";
++		};
  
- 	if (vma->vm_flags & VM_PFNMAP)
- 		return 1;
+-		clocks {
+-			refclksys: refclksys {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <100000000>;
+-				clock-output-names = "refclk-sys";
+-			};
+-
+-			refclkpass: refclkpass {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <100000000>;
+-				clock-output-names = "refclk-pass";
+-			};
++		refclkpass: refclkpass {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++			clock-output-names = "refclk-pass";
++		};
  
-+	if (wp_allowed)
-+		vma_category |= PAGE_IS_WPALLOWED;
+-			refclkddr3a: refclkddr3a {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <100000000>;
+-				clock-output-names = "refclk-ddr3a";
+-			};
++		refclkddr3a: refclkddr3a {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++			clock-output-names = "refclk-ddr3a";
+ 		};
++	};
+ };
+ 
+ &usb_phy {
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2e.dtsi b/arch/arm/boot/dts/ti/keystone/keystone-k2e.dtsi
+index 65c32946c5223..dc30a126db022 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2e.dtsi
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2e.dtsi
+@@ -48,151 +48,151 @@ aliases {
+ };
+ 
+ &soc0 {
+-		/include/ "keystone-k2e-clocks.dtsi"
++	/include/ "keystone-k2e-clocks.dtsi"
+ 
+-		usb: usb@2680000 {
++	usb: usb@2680000 {
++		interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
++		usb@2690000 {
+ 			interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
+-			usb@2690000 {
+-				interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>;
+-			};
+ 		};
++	};
+ 
+-		usb1_phy: usb_phy@2620750 {
+-			compatible = "ti,keystone-usbphy";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			reg = <0x2620750 24>;
+-			status = "disabled";
+-		};
++	usb1_phy: usb_phy@2620750 {
++		compatible = "ti,keystone-usbphy";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x2620750 24>;
++		status = "disabled";
++	};
+ 
+-		keystone_usb1: usb@25000000 {
+-			compatible = "ti,keystone-dwc3";
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			reg = <0x25000000 0x10000>;
+-			clocks = <&clkusb1>;
+-			clock-names = "usb";
++	keystone_usb1: usb@25000000 {
++		compatible = "ti,keystone-dwc3";
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0x25000000 0x10000>;
++		clocks = <&clkusb1>;
++		clock-names = "usb";
++		interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
++		ranges;
++		dma-coherent;
++		dma-ranges;
++		status = "disabled";
 +
- 	if (vma->vm_flags & VM_SOFTDIRTY)
- 		vma_category |= PAGE_IS_SOFT_DIRTY;
++		usb1: usb@25010000 {
++			compatible = "snps,dwc3";
++			reg = <0x25010000 0x70000>;
+ 			interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
+-			ranges;
+-			dma-coherent;
+-			dma-ranges;
+-			status = "disabled";
+-
+-			usb1: usb@25010000 {
+-				compatible = "snps,dwc3";
+-				reg = <0x25010000 0x70000>;
+-				interrupts = <GIC_SPI 414 IRQ_TYPE_EDGE_RISING>;
+-				usb-phy = <&usb1_phy>, <&usb1_phy>;
+-			};
++			usb-phy = <&usb1_phy>, <&usb1_phy>;
+ 		};
++	};
  
--- 
-2.41.0
-
-===8<===
-
-From f2be2816c30fd1016d597a219e5b42c4ae847796 Mon Sep 17 00:00:00 2001
-From: Peter Xu <peterx@redhat.com>
-Date: Thu, 16 Nov 2023 11:45:47 -0500
-Subject: [PATCH 2/2] mm/selftests: Fix pagemap_ioctl memory map test
-
-__FILE__ is not guaranteed to exist in current dir.  Replace that with
-argv[0] for memory map test.
-
-Fixes: 46fd75d4a3c9 ("selftests: mm: add pagemap ioctl tests")
-Signed-off-by: Peter Xu <peterx@redhat.com>
----
- tools/testing/selftests/mm/pagemap_ioctl.c | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
-
-diff --git a/tools/testing/selftests/mm/pagemap_ioctl.c b/tools/testing/selftests/mm/pagemap_ioctl.c
-index befab43719ba..d59517ed3d48 100644
---- a/tools/testing/selftests/mm/pagemap_ioctl.c
-+++ b/tools/testing/selftests/mm/pagemap_ioctl.c
-@@ -36,6 +36,7 @@ int pagemap_fd;
- int uffd;
- int page_size;
- int hpage_size;
-+const char *progname;
+-		msm_ram: sram@c000000 {
+-			compatible = "mmio-sram";
+-			reg = <0x0c000000 0x200000>;
+-			ranges = <0x0 0x0c000000 0x200000>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
++	msm_ram: sram@c000000 {
++		compatible = "mmio-sram";
++		reg = <0x0c000000 0x200000>;
++		ranges = <0x0 0x0c000000 0x200000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
  
- #define LEN(region)	((region.end - region.start)/page_size)
+-			bm-sram@1f0000 {
+-				reg = <0x001f0000 0x8000>;
+-			};
++		bm-sram@1f0000 {
++			reg = <0x001f0000 0x8000>;
+ 		};
++	};
  
-@@ -1149,11 +1150,11 @@ int sanity_tests(void)
- 	munmap(mem, mem_size);
+-		psc: power-sleep-controller@2350000 {
+-			pscrst: reset-controller {
+-				compatible = "ti,k2e-pscrst", "ti,syscon-reset";
+-				#reset-cells = <1>;
++	psc: power-sleep-controller@2350000 {
++		pscrst: reset-controller {
++			compatible = "ti,k2e-pscrst", "ti,syscon-reset";
++			#reset-cells = <1>;
  
- 	/* 9. Memory mapped file */
--	fd = open(__FILE__, O_RDONLY);
-+	fd = open(progname, O_RDONLY);
- 	if (fd < 0)
- 		ksft_exit_fail_msg("%s Memory mapped file\n", __func__);
+-				ti,reset-bits = <
+-					0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
+-				>;
+-			};
++			ti,reset-bits = <
++				0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
++			>;
+ 		};
++	};
  
--	ret = stat(__FILE__, &sbuf);
-+	ret = stat(progname, &sbuf);
- 	if (ret < 0)
- 		ksft_exit_fail_msg("error %d %d %s\n", ret, errno, strerror(errno));
+-		devctrl: device-state-control@2620000 {
+-			dspgpio0: keystone_dsp_gpio@240 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x240 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x240>;
+-			};
++	devctrl: device-state-control@2620000 {
++		dspgpio0: keystone_dsp_gpio@240 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x240 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x240>;
+ 		};
++	};
  
-@@ -1472,12 +1473,14 @@ static void transact_test(int page_size)
- 			      extra_thread_faults);
- }
+-		dsp0: dsp@10800000 {
+-			compatible = "ti,k2e-dsp";
+-			reg = <0x10800000 0x00080000>,
+-			      <0x10e00000 0x00008000>,
+-			      <0x10f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem0>;
+-			ti,syscon-dev = <&devctrl 0x844>;
+-			resets = <&pscrst 0>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <0 8>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio0 27 0>;
+-			status = "disabled";
+-		};
++	dsp0: dsp@10800000 {
++		compatible = "ti,k2e-dsp";
++		reg = <0x10800000 0x00080000>,
++		      <0x10e00000 0x00008000>,
++		      <0x10f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem0>;
++		ti,syscon-dev = <&devctrl 0x844>;
++		resets = <&pscrst 0>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <0 8>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio0 27 0>;
++		status = "disabled";
++	};
  
--int main(void)
-+int main(int argc, char *argv[])
- {
- 	int mem_size, shmid, buf_size, fd, i, ret;
- 	char *mem, *map, *fmem;
- 	struct stat sbuf;
- 
-+	progname = argv[0];
+-		pcie1: pcie@21020000 {
+-			compatible = "ti,keystone-pcie","snps,dw-pcie";
+-			clocks = <&clkpcie1>;
+-			clock-names = "pcie";
+-			#address-cells = <3>;
+-			#size-cells = <2>;
+-			reg = <0x21021000 0x2000>, <0x21020000 0x1000>, <0x02620128 4>;
+-			ranges = <0x82000000 0 0x60000000 0x60000000
+-				  0 0x10000000>;
+-
+-			status = "disabled";
+-			device_type = "pci";
+-			num-lanes = <2>;
+-			bus-range = <0x00 0xff>;
+-
+-			/* error interrupt */
+-			interrupts = <GIC_SPI 385 IRQ_TYPE_EDGE_RISING>;
++	pcie1: pcie@21020000 {
++		compatible = "ti,keystone-pcie","snps,dw-pcie";
++		clocks = <&clkpcie1>;
++		clock-names = "pcie";
++		#address-cells = <3>;
++		#size-cells = <2>;
++		reg = <0x21021000 0x2000>, <0x21020000 0x1000>, <0x02620128 4>;
++		ranges = <0x82000000 0 0x60000000 0x60000000
++			  0 0x10000000>;
 +
- 	ksft_print_header();
++		status = "disabled";
++		device_type = "pci";
++		num-lanes = <2>;
++		bus-range = <0x00 0xff>;
++
++		/* error interrupt */
++		interrupts = <GIC_SPI 385 IRQ_TYPE_EDGE_RISING>;
++		#interrupt-cells = <1>;
++		interrupt-map-mask = <0 0 0 7>;
++		interrupt-map = <0 0 0 1 &pcie_intc1 0>, /* INT A */
++				<0 0 0 2 &pcie_intc1 1>, /* INT B */
++				<0 0 0 3 &pcie_intc1 2>, /* INT C */
++				<0 0 0 4 &pcie_intc1 3>; /* INT D */
++
++		pcie_msi_intc1: msi-interrupt-controller {
++			interrupt-controller;
+ 			#interrupt-cells = <1>;
+-			interrupt-map-mask = <0 0 0 7>;
+-			interrupt-map = <0 0 0 1 &pcie_intc1 0>, /* INT A */
+-					<0 0 0 2 &pcie_intc1 1>, /* INT B */
+-					<0 0 0 3 &pcie_intc1 2>, /* INT C */
+-					<0 0 0 4 &pcie_intc1 3>; /* INT D */
+-
+-			pcie_msi_intc1: msi-interrupt-controller {
+-				interrupt-controller;
+-				#interrupt-cells = <1>;
+-				interrupt-parent = <&gic>;
+-				interrupts = <GIC_SPI 377 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 378 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 379 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 380 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 381 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 382 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 383 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 384 IRQ_TYPE_EDGE_RISING>;
+-			};
+-
+-			pcie_intc1: legacy-interrupt-controller {
+-				interrupt-controller;
+-				#interrupt-cells = <1>;
+-				interrupt-parent = <&gic>;
+-				interrupts = <GIC_SPI 373 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 374 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 375 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 376 IRQ_TYPE_EDGE_RISING>;
+-			};
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SPI 377 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 378 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 379 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 380 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 381 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 382 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 383 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 384 IRQ_TYPE_EDGE_RISING>;
+ 		};
  
- 	if (init_uffd())
+-		mdio: mdio@24200f00 {
+-			compatible = "ti,keystone_mdio", "ti,davinci_mdio";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0x24200f00 0x100>;
+-			status = "disabled";
+-			clocks = <&clkcpgmac>;
+-			clock-names = "fck";
+-			bus_freq = <2500000>;
++		pcie_intc1: legacy-interrupt-controller {
++			interrupt-controller;
++			#interrupt-cells = <1>;
++			interrupt-parent = <&gic>;
++			interrupts = <GIC_SPI 373 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 374 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 375 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 376 IRQ_TYPE_EDGE_RISING>;
+ 		};
+-		/include/ "keystone-k2e-netcp.dtsi"
++	};
++
++	mdio: mdio@24200f00 {
++		compatible = "ti,keystone_mdio", "ti,davinci_mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x24200f00 0x100>;
++		status = "disabled";
++		clocks = <&clkcpgmac>;
++		clock-names = "fck";
++		bus_freq = <2500000>;
++	};
++	/include/ "keystone-k2e-netcp.dtsi"
+ };
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2hk-evm.dts b/arch/arm/boot/dts/ti/keystone/keystone-k2hk-evm.dts
+index 206df8a8d9dd7..15ee877232864 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2hk-evm.dts
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2hk-evm.dts
+@@ -51,42 +51,42 @@ led-debug-3 {
+ };
+ 
+ &soc0 {
+-		clocks {
+-			refclksys: refclksys {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <122880000>;
+-				clock-output-names = "refclk-sys";
+-			};
++	clocks {
++		refclksys: refclksys {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <122880000>;
++			clock-output-names = "refclk-sys";
++		};
+ 
+-			refclkpass: refclkpass {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <122880000>;
+-				clock-output-names = "refclk-pass";
+-			};
++		refclkpass: refclkpass {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <122880000>;
++			clock-output-names = "refclk-pass";
++		};
+ 
+-			refclkarm: refclkarm {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <125000000>;
+-				clock-output-names = "refclk-arm";
+-			};
++		refclkarm: refclkarm {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <125000000>;
++			clock-output-names = "refclk-arm";
++		};
+ 
+-			refclkddr3a: refclkddr3a {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <100000000>;
+-				clock-output-names = "refclk-ddr3a";
+-			};
++		refclkddr3a: refclkddr3a {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++			clock-output-names = "refclk-ddr3a";
++		};
+ 
+-			refclkddr3b: refclkddr3b {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <100000000>;
+-				clock-output-names = "refclk-ddr3b";
+-			};
++		refclkddr3b: refclkddr3b {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <100000000>;
++			clock-output-names = "refclk-ddr3b";
+ 		};
++	};
+ };
+ 
+ &usb_phy {
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2hk.dtsi b/arch/arm/boot/dts/ti/keystone/keystone-k2hk.dtsi
+index da6d3934c2e88..8a898ed25b6f3 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2hk.dtsi
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2hk.dtsi
+@@ -55,241 +55,241 @@ aliases {
+ };
+ 
+ &soc0 {
+-		/include/ "keystone-k2hk-clocks.dtsi"
++	/include/ "keystone-k2hk-clocks.dtsi"
+ 
+-		msm_ram: sram@c000000 {
+-			compatible = "mmio-sram";
+-			reg = <0x0c000000 0x600000>;
+-			ranges = <0x0 0x0c000000 0x600000>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
++	msm_ram: sram@c000000 {
++		compatible = "mmio-sram";
++		reg = <0x0c000000 0x600000>;
++		ranges = <0x0 0x0c000000 0x600000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
+ 
+-			bm-sram@5f0000 {
+-				reg = <0x5f0000 0x8000>;
+-			};
++		bm-sram@5f0000 {
++			reg = <0x5f0000 0x8000>;
+ 		};
++	};
+ 
+-		psc: power-sleep-controller@2350000 {
+-			pscrst: reset-controller {
+-				compatible = "ti,k2hk-pscrst", "ti,syscon-reset";
+-				#reset-cells = <1>;
++	psc: power-sleep-controller@2350000 {
++		pscrst: reset-controller {
++			compatible = "ti,k2hk-pscrst", "ti,syscon-reset";
++			#reset-cells = <1>;
+ 
+-				ti,reset-bits = <
+-					0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
+-					0xa40 8 0xa40 8 0x840 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 1: dsp1 */
+-					0xa44 8 0xa44 8 0x844 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 2: dsp2 */
+-					0xa48 8 0xa48 8 0x848 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 3: dsp3 */
+-					0xa4c 8 0xa4c 8 0x84c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 4: dsp4 */
+-					0xa50 8 0xa50 8 0x850 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 5: dsp5 */
+-					0xa54 8 0xa54 8 0x854 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 6: dsp6 */
+-					0xa58 8 0xa58 8 0x858 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 7: dsp7 */
+-				>;
+-			};
++			ti,reset-bits = <
++				0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
++				0xa40 8 0xa40 8 0x840 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 1: dsp1 */
++				0xa44 8 0xa44 8 0x844 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 2: dsp2 */
++				0xa48 8 0xa48 8 0x848 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 3: dsp3 */
++				0xa4c 8 0xa4c 8 0x84c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 4: dsp4 */
++				0xa50 8 0xa50 8 0x850 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 5: dsp5 */
++				0xa54 8 0xa54 8 0x854 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 6: dsp6 */
++				0xa58 8 0xa58 8 0x858 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 7: dsp7 */
++			>;
+ 		};
++	};
+ 
+-		devctrl: device-state-control@2620000 {
+-			dspgpio0: keystone_dsp_gpio@240 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x240 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x240>;
+-			};
+-
+-			dspgpio1: keystone_dsp_gpio@244 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x244 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x244>;
+-			};
+-
+-			dspgpio2: keystone_dsp_gpio@248 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x248 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x248>;
+-			};
+-
+-			dspgpio3: keystone_dsp_gpio@24c {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x24c 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x24c>;
+-			};
+-
+-			dspgpio4: keystone_dsp_gpio@250 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x250 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x250>;
+-			};
+-
+-			dspgpio5: keystone_dsp_gpio@254 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x254 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x254>;
+-			};
+-
+-			dspgpio6: keystone_dsp_gpio@258 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x258 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x258>;
+-			};
+-
+-			dspgpio7: keystone_dsp_gpio@25c {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x25c 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x25c>;
+-			};
++	devctrl: device-state-control@2620000 {
++		dspgpio0: keystone_dsp_gpio@240 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x240 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x240>;
+ 		};
+ 
+-		dsp0: dsp@10800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x10800000 0x00100000>,
+-			      <0x10e00000 0x00008000>,
+-			      <0x10f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem0>;
+-			ti,syscon-dev = <&devctrl 0x40>;
+-			resets = <&pscrst 0>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <0 8>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio0 27 0>;
+-			status = "disabled";
++		dspgpio1: keystone_dsp_gpio@244 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x244 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x244>;
+ 		};
+ 
+-		dsp1: dsp@11800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x11800000 0x00100000>,
+-			      <0x11e00000 0x00008000>,
+-			      <0x11f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem1>;
+-			ti,syscon-dev = <&devctrl 0x44>;
+-			resets = <&pscrst 1>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <1 9>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio1 27 0>;
+-			status = "disabled";
++		dspgpio2: keystone_dsp_gpio@248 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x248 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x248>;
+ 		};
+ 
+-		dsp2: dsp@12800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x12800000 0x00100000>,
+-			      <0x12e00000 0x00008000>,
+-			      <0x12f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem2>;
+-			ti,syscon-dev = <&devctrl 0x48>;
+-			resets = <&pscrst 2>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <2 10>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio2 27 0>;
+-			status = "disabled";
++		dspgpio3: keystone_dsp_gpio@24c {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x24c 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x24c>;
+ 		};
+ 
+-		dsp3: dsp@13800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x13800000 0x00100000>,
+-			      <0x13e00000 0x00008000>,
+-			      <0x13f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem3>;
+-			ti,syscon-dev = <&devctrl 0x4c>;
+-			resets = <&pscrst 3>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <3 11>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio3 27 0>;
+-			status = "disabled";
++		dspgpio4: keystone_dsp_gpio@250 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x250 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x250>;
+ 		};
+ 
+-		dsp4: dsp@14800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x14800000 0x00100000>,
+-			      <0x14e00000 0x00008000>,
+-			      <0x14f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem4>;
+-			ti,syscon-dev = <&devctrl 0x50>;
+-			resets = <&pscrst 4>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <4 12>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio4 27 0>;
+-			status = "disabled";
++		dspgpio5: keystone_dsp_gpio@254 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x254 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x254>;
+ 		};
+ 
+-		dsp5: dsp@15800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x15800000 0x00100000>,
+-			      <0x15e00000 0x00008000>,
+-			      <0x15f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem5>;
+-			ti,syscon-dev = <&devctrl 0x54>;
+-			resets = <&pscrst 5>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <5 13>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio5 27 0>;
+-			status = "disabled";
++		dspgpio6: keystone_dsp_gpio@258 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x258 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x258>;
+ 		};
+ 
+-		dsp6: dsp@16800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x16800000 0x00100000>,
+-			      <0x16e00000 0x00008000>,
+-			      <0x16f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem6>;
+-			ti,syscon-dev = <&devctrl 0x58>;
+-			resets = <&pscrst 6>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <6 14>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio6 27 0>;
+-			status = "disabled";
++		dspgpio7: keystone_dsp_gpio@25c {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x25c 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x25c>;
+ 		};
++	};
+ 
+-		dsp7: dsp@17800000 {
+-			compatible = "ti,k2hk-dsp";
+-			reg = <0x17800000 0x00100000>,
+-			      <0x17e00000 0x00008000>,
+-			      <0x17f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem7>;
+-			ti,syscon-dev = <&devctrl 0x5c>;
+-			resets = <&pscrst 7>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <7 15>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio7 27 0>;
+-			status = "disabled";
+-		};
++	dsp0: dsp@10800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x10800000 0x00100000>,
++		      <0x10e00000 0x00008000>,
++		      <0x10f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem0>;
++		ti,syscon-dev = <&devctrl 0x40>;
++		resets = <&pscrst 0>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <0 8>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio0 27 0>;
++		status = "disabled";
++	};
+ 
+-		mdio: mdio@2090300 {
+-			compatible = "ti,keystone_mdio", "ti,davinci_mdio";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0x02090300 0x100>;
+-			status = "disabled";
+-			clocks = <&clkcpgmac>;
+-			clock-names = "fck";
+-			bus_freq = <2500000>;
+-		};
+-		/include/ "keystone-k2hk-netcp.dtsi"
++	dsp1: dsp@11800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x11800000 0x00100000>,
++		      <0x11e00000 0x00008000>,
++		      <0x11f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem1>;
++		ti,syscon-dev = <&devctrl 0x44>;
++		resets = <&pscrst 1>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <1 9>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio1 27 0>;
++		status = "disabled";
++	};
++
++	dsp2: dsp@12800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x12800000 0x00100000>,
++		      <0x12e00000 0x00008000>,
++		      <0x12f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem2>;
++		ti,syscon-dev = <&devctrl 0x48>;
++		resets = <&pscrst 2>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <2 10>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio2 27 0>;
++		status = "disabled";
++	};
++
++	dsp3: dsp@13800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x13800000 0x00100000>,
++		      <0x13e00000 0x00008000>,
++		      <0x13f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem3>;
++		ti,syscon-dev = <&devctrl 0x4c>;
++		resets = <&pscrst 3>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <3 11>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio3 27 0>;
++		status = "disabled";
++	};
++
++	dsp4: dsp@14800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x14800000 0x00100000>,
++		      <0x14e00000 0x00008000>,
++		      <0x14f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem4>;
++		ti,syscon-dev = <&devctrl 0x50>;
++		resets = <&pscrst 4>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <4 12>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio4 27 0>;
++		status = "disabled";
++	};
++
++	dsp5: dsp@15800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x15800000 0x00100000>,
++		      <0x15e00000 0x00008000>,
++		      <0x15f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem5>;
++		ti,syscon-dev = <&devctrl 0x54>;
++		resets = <&pscrst 5>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <5 13>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio5 27 0>;
++		status = "disabled";
++	};
++
++	dsp6: dsp@16800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x16800000 0x00100000>,
++		      <0x16e00000 0x00008000>,
++		      <0x16f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem6>;
++		ti,syscon-dev = <&devctrl 0x58>;
++		resets = <&pscrst 6>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <6 14>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio6 27 0>;
++		status = "disabled";
++	};
++
++	dsp7: dsp@17800000 {
++		compatible = "ti,k2hk-dsp";
++		reg = <0x17800000 0x00100000>,
++		      <0x17e00000 0x00008000>,
++		      <0x17f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem7>;
++		ti,syscon-dev = <&devctrl 0x5c>;
++		resets = <&pscrst 7>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <7 15>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio7 27 0>;
++		status = "disabled";
++	};
++
++	mdio: mdio@2090300 {
++		compatible = "ti,keystone_mdio", "ti,davinci_mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x02090300 0x100>;
++		status = "disabled";
++		clocks = <&clkcpgmac>;
++		clock-names = "fck";
++		bus_freq = <2500000>;
++	};
++	/include/ "keystone-k2hk-netcp.dtsi"
+ };
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2l-evm.dts b/arch/arm/boot/dts/ti/keystone/keystone-k2l-evm.dts
+index be619e39a16f3..7835b3c0e6bff 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2l-evm.dts
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2l-evm.dts
+@@ -28,14 +28,14 @@ dsp_common_memory: dsp-common-memory@81f800000 {
+ };
+ 
+ &soc0 {
+-		clocks {
+-			refclksys: refclksys {
+-				#clock-cells = <0>;
+-				compatible = "fixed-clock";
+-				clock-frequency = <122880000>;
+-				clock-output-names = "refclk-sys";
+-			};
++	clocks {
++		refclksys: refclksys {
++			#clock-cells = <0>;
++			compatible = "fixed-clock";
++			clock-frequency = <122880000>;
++			clock-output-names = "refclk-sys";
+ 		};
++	};
+ };
+ 
+ &usb_phy {
+diff --git a/arch/arm/boot/dts/ti/keystone/keystone-k2l.dtsi b/arch/arm/boot/dts/ti/keystone/keystone-k2l.dtsi
+index 2062fe561642f..f67d949b872f6 100644
+--- a/arch/arm/boot/dts/ti/keystone/keystone-k2l.dtsi
++++ b/arch/arm/boot/dts/ti/keystone/keystone-k2l.dtsi
+@@ -39,365 +39,365 @@ aliases {
+ };
+ 
+ &soc0 {
+-		/include/ "keystone-k2l-clocks.dtsi"
+-
+-		uart2: serial@2348400 {
+-			compatible = "ti,da830-uart", "ns16550a";
+-			current-speed = <115200>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			reg = <0x02348400 0x100>;
+-			clocks = <&clkuart2>;
+-			interrupts = <GIC_SPI 432 IRQ_TYPE_EDGE_RISING>;
++	/include/ "keystone-k2l-clocks.dtsi"
++
++	uart2: serial@2348400 {
++		compatible = "ti,da830-uart", "ns16550a";
++		current-speed = <115200>;
++		reg-shift = <2>;
++		reg-io-width = <4>;
++		reg = <0x02348400 0x100>;
++		clocks = <&clkuart2>;
++		interrupts = <GIC_SPI 432 IRQ_TYPE_EDGE_RISING>;
++	};
++
++	uart3:	serial@2348800 {
++		compatible = "ti,da830-uart", "ns16550a";
++		current-speed = <115200>;
++		reg-shift = <2>;
++		reg-io-width = <4>;
++		reg = <0x02348800 0x100>;
++		clocks = <&clkuart3>;
++		interrupts = <GIC_SPI 435 IRQ_TYPE_EDGE_RISING>;
++	};
++
++	gpio1: gpio@2348000 {
++		compatible = "ti,keystone-gpio";
++		reg = <0x02348000 0x100>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		/* HW Interrupts mapped to GPIO pins */
++		interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 153 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 154 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 155 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 156 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 157 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 158 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 159 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 160 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 161 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 162 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 163 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 164 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 165 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 166 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 167 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 168 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 169 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 170 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 171 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 172 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 173 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 174 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 175 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 176 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 401 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 402 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 403 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 404 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 405 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 406 IRQ_TYPE_EDGE_RISING>,
++				<GIC_SPI 407 IRQ_TYPE_EDGE_RISING>;
++		clocks = <&clkgpio>;
++		clock-names = "gpio";
++		ti,ngpio = <32>;
++		ti,davinci-gpio-unbanked = <32>;
++	};
++
++	k2l_pmx: pinmux@2620690 {
++		compatible = "pinctrl-single";
++		reg = <0x02620690 0xc>;
++		#address-cells = <1>;
++		#size-cells = <0>;
++		#pinctrl-cells = <2>;
++		pinctrl-single,bit-per-mux;
++		pinctrl-single,register-width = <32>;
++		pinctrl-single,function-mask = <0x1>;
++		status = "disabled";
++
++		uart3_emifa_pins: uart3-emifa-pins {
++			pinctrl-single,bits = <
++				/* UART3_EMIFA_SEL */
++				0x0 0x0  0xc0
++			>;
+ 		};
+ 
+-		uart3:	serial@2348800 {
+-			compatible = "ti,da830-uart", "ns16550a";
+-			current-speed = <115200>;
+-			reg-shift = <2>;
+-			reg-io-width = <4>;
+-			reg = <0x02348800 0x100>;
+-			clocks = <&clkuart3>;
+-			interrupts = <GIC_SPI 435 IRQ_TYPE_EDGE_RISING>;
++		uart2_emifa_pins: uart2-emifa-pins {
++		pinctrl-single,bits = <
++				/* UART2_EMIFA_SEL */
++				0x0 0x0  0x30
++			>;
+ 		};
+ 
+-		gpio1: gpio@2348000 {
+-			compatible = "ti,keystone-gpio";
+-			reg = <0x02348000 0x100>;
+-			gpio-controller;
+-			#gpio-cells = <2>;
+-			/* HW Interrupts mapped to GPIO pins */
+-			interrupts = <GIC_SPI 152 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 153 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 154 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 155 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 156 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 157 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 158 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 159 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 160 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 161 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 162 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 163 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 164 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 165 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 166 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 167 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 168 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 169 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 170 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 171 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 172 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 173 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 174 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 175 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 176 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 401 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 402 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 403 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 404 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 405 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 406 IRQ_TYPE_EDGE_RISING>,
+-					<GIC_SPI 407 IRQ_TYPE_EDGE_RISING>;
+-			clocks = <&clkgpio>;
+-			clock-names = "gpio";
+-			ti,ngpio = <32>;
+-			ti,davinci-gpio-unbanked = <32>;
++		uart01_spi2_pins: uart01-spi2-pins {
++			pinctrl-single,bits = <
++				/* UART01_SPI2_SEL */
++				0x0 0x0 0x4
++			>;
+ 		};
+ 
+-		k2l_pmx: pinmux@2620690 {
+-			compatible = "pinctrl-single";
+-			reg = <0x02620690 0xc>;
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			#pinctrl-cells = <2>;
+-			pinctrl-single,bit-per-mux;
+-			pinctrl-single,register-width = <32>;
+-			pinctrl-single,function-mask = <0x1>;
+-			status = "disabled";
+-
+-			uart3_emifa_pins: uart3-emifa-pins {
+-				pinctrl-single,bits = <
+-					/* UART3_EMIFA_SEL */
+-					0x0 0x0  0xc0
+-				>;
+-			};
+-
+-			uart2_emifa_pins: uart2-emifa-pins {
++		dfesync_rp1_pins: dfesync-rp1-pins {
+ 			pinctrl-single,bits = <
+-					/* UART2_EMIFA_SEL */
+-					0x0 0x0  0x30
+-				>;
+-			};
+-
+-			uart01_spi2_pins: uart01-spi2-pins {
+-				pinctrl-single,bits = <
+-					/* UART01_SPI2_SEL */
+-					0x0 0x0 0x4
+-				>;
+-			};
+-
+-			dfesync_rp1_pins: dfesync-rp1-pins {
+-				pinctrl-single,bits = <
+-					/* DFESYNC_RP1_SEL */
+-					0x0 0x0 0x2
+-				>;
+-			};
+-
+-			avsif_pins: avsif-pins {
+-				pinctrl-single,bits = <
+-					/* AVSIF_SEL */
+-					0x0 0x0 0x1
+-				>;
+-			};
+-
+-			gpio_emu_pins: gpio-emu-pins {
+-				pinctrl-single,bits = <
+-				/*
+-				 * GPIO_EMU_SEL[31]: 0-GPIO31, 1-EMU33
+-				 * GPIO_EMU_SEL[30]: 0-GPIO30, 1-EMU32
+-				 * GPIO_EMU_SEL[29]: 0-GPIO29, 1-EMU31
+-				 * GPIO_EMU_SEL[28]: 0-GPIO28, 1-EMU30
+-				 * GPIO_EMU_SEL[27]: 0-GPIO27, 1-EMU29
+-				 * GPIO_EMU_SEL[26]: 0-GPIO26, 1-EMU28
+-				 * GPIO_EMU_SEL[25]: 0-GPIO25, 1-EMU27
+-				 * GPIO_EMU_SEL[24]: 0-GPIO24, 1-EMU26
+-				 * GPIO_EMU_SEL[23]: 0-GPIO23, 1-EMU25
+-				 * GPIO_EMU_SEL[22]: 0-GPIO22, 1-EMU24
+-				 * GPIO_EMU_SEL[21]: 0-GPIO21, 1-EMU23
+-				 * GPIO_EMU_SEL[20]: 0-GPIO20, 1-EMU22
+-				 * GPIO_EMU_SEL[19]: 0-GPIO19, 1-EMU21
+-				 * GPIO_EMU_SEL[18]: 0-GPIO18, 1-EMU20
+-				 * GPIO_EMU_SEL[17]: 0-GPIO17, 1-EMU19
+-				 */
+-					0x4 0x0000 0xfffe0000
+-				>;
+-			};
+-
+-			gpio_timio_pins: gpio-timio-pins {
+-				pinctrl-single,bits = <
+-				/*
+-				 * GPIO_TIMIO_SEL[15]: 0-GPIO15, 1-TIMO7
+-				 * GPIO_TIMIO_SEL[14]: 0-GPIO14, 1-TIMO6
+-				 * GPIO_TIMIO_SEL[13]: 0-GPIO13, 1-TIMO5
+-				 * GPIO_TIMIO_SEL[12]: 0-GPIO12, 1-TIMO4
+-				 * GPIO_TIMIO_SEL[11]: 0-GPIO11, 1-TIMO3
+-				 * GPIO_TIMIO_SEL[10]: 0-GPIO10, 1-TIMO2
+-				 * GPIO_TIMIO_SEL[9]: 0-GPIO9, 1-TIMI7
+-				 * GPIO_TIMIO_SEL[8]: 0-GPIO8, 1-TIMI6
+-				 * GPIO_TIMIO_SEL[7]: 0-GPIO7, 1-TIMI5
+-				 * GPIO_TIMIO_SEL[6]: 0-GPIO6, 1-TIMI4
+-				 * GPIO_TIMIO_SEL[5]: 0-GPIO5, 1-TIMI3
+-				 * GPIO_TIMIO_SEL[4]: 0-GPIO4, 1-TIMI2
+-				 */
+-					0x4 0x0 0xfff0
+-				>;
+-			};
+-
+-			gpio_spi2cs_pins: gpio-spi2cs-pins {
+-				pinctrl-single,bits = <
+-				/*
+-				 * GPIO_SPI2CS_SEL[3]: 0-GPIO3, 1-SPI2CS4
+-				 * GPIO_SPI2CS_SEL[2]: 0-GPIO2, 1-SPI2CS3
+-				 * GPIO_SPI2CS_SEL[1]: 0-GPIO1, 1-SPI2CS2
+-				 * GPIO_SPI2CS_SEL[0]: 0-GPIO0, 1-SPI2CS1
+-				 */
+-					0x4 0x0 0xf
+-				>;
+-			};
+-
+-			gpio_dfeio_pins: gpio-dfeio-pins {
+-				pinctrl-single,bits = <
+-				/*
+-				 * GPIO_DFEIO_SEL[31]: 0-DFEIO17, 1-GPIO63
+-				 * GPIO_DFEIO_SEL[30]: 0-DFEIO16, 1-GPIO62
+-				 * GPIO_DFEIO_SEL[29]: 0-DFEIO15, 1-GPIO61
+-				 * GPIO_DFEIO_SEL[28]: 0-DFEIO14, 1-GPIO60
+-				 * GPIO_DFEIO_SEL[27]: 0-DFEIO13, 1-GPIO59
+-				 * GPIO_DFEIO_SEL[26]: 0-DFEIO12, 1-GPIO58
+-				 * GPIO_DFEIO_SEL[25]: 0-DFEIO11, 1-GPIO57
+-				 * GPIO_DFEIO_SEL[24]: 0-DFEIO10, 1-GPIO56
+-				 * GPIO_DFEIO_SEL[23]: 0-DFEIO9, 1-GPIO55
+-				 * GPIO_DFEIO_SEL[22]: 0-DFEIO8, 1-GPIO54
+-				 * GPIO_DFEIO_SEL[21]: 0-DFEIO7, 1-GPIO53
+-				 * GPIO_DFEIO_SEL[20]: 0-DFEIO6, 1-GPIO52
+-				 * GPIO_DFEIO_SEL[19]: 0-DFEIO5, 1-GPIO51
+-				 * GPIO_DFEIO_SEL[18]: 0-DFEIO4, 1-GPIO50
+-				 * GPIO_DFEIO_SEL[17]: 0-DFEIO3, 1-GPIO49
+-				 * GPIO_DFEIO_SEL[16]: 0-DFEIO2, 1-GPIO48
+-				 */
+-					0x8 0x0 0xffff0000
+-				>;
+-			};
+-
+-			gpio_emifa_pins: gpio-emifa-pins {
+-				pinctrl-single,bits = <
+-				/*
+-				 * GPIO_EMIFA_SEL[15]: 0-EMIFA17, 1-GPIO47
+-				 * GPIO_EMIFA_SEL[14]: 0-EMIFA16, 1-GPIO46
+-				 * GPIO_EMIFA_SEL[13]: 0-EMIFA15, 1-GPIO45
+-				 * GPIO_EMIFA_SEL[12]: 0-EMIFA14, 1-GPIO44
+-				 * GPIO_EMIFA_SEL[11]: 0-EMIFA13, 1-GPIO43
+-				 * GPIO_EMIFA_SEL[10]: 0-EMIFA10, 1-GPIO42
+-				 * GPIO_EMIFA_SEL[9]: 0-EMIFA9, 1-GPIO41
+-				 * GPIO_EMIFA_SEL[8]: 0-EMIFA8, 1-GPIO40
+-				 * GPIO_EMIFA_SEL[7]: 0-EMIFA7, 1-GPIO39
+-				 * GPIO_EMIFA_SEL[6]: 0-EMIFA6, 1-GPIO38
+-				 * GPIO_EMIFA_SEL[5]: 0-EMIFA5, 1-GPIO37
+-				 * GPIO_EMIFA_SEL[4]: 0-EMIFA4, 1-GPIO36
+-				 * GPIO_EMIFA_SEL[3]: 0-EMIFA3, 1-GPIO35
+-				 * GPIO_EMIFA_SEL[2]: 0-EMIFA2, 1-GPIO34
+-				 * GPIO_EMIFA_SEL[1]: 0-EMIFA1, 1-GPIO33
+-				 * GPIO_EMIFA_SEL[0]: 0-EMIFA0, 1-GPIO32
+-				 */
+-					0x8 0x0 0xffff
+-				>;
+-			};
++				/* DFESYNC_RP1_SEL */
++				0x0 0x0 0x2
++			>;
+ 		};
+ 
+-		msm_ram: sram@c000000 {
+-			compatible = "mmio-sram";
+-			reg = <0x0c000000 0x200000>;
+-			ranges = <0x0 0x0c000000 0x200000>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
++		avsif_pins: avsif-pins {
++			pinctrl-single,bits = <
++				/* AVSIF_SEL */
++				0x0 0x0 0x1
++			>;
++		};
+ 
+-			bm-sram@1f8000 {
+-				reg = <0x001f8000 0x8000>;
+-			};
++		gpio_emu_pins: gpio-emu-pins {
++			pinctrl-single,bits = <
++			/*
++			 * GPIO_EMU_SEL[31]: 0-GPIO31, 1-EMU33
++			 * GPIO_EMU_SEL[30]: 0-GPIO30, 1-EMU32
++			 * GPIO_EMU_SEL[29]: 0-GPIO29, 1-EMU31
++			 * GPIO_EMU_SEL[28]: 0-GPIO28, 1-EMU30
++			 * GPIO_EMU_SEL[27]: 0-GPIO27, 1-EMU29
++			 * GPIO_EMU_SEL[26]: 0-GPIO26, 1-EMU28
++			 * GPIO_EMU_SEL[25]: 0-GPIO25, 1-EMU27
++			 * GPIO_EMU_SEL[24]: 0-GPIO24, 1-EMU26
++			 * GPIO_EMU_SEL[23]: 0-GPIO23, 1-EMU25
++			 * GPIO_EMU_SEL[22]: 0-GPIO22, 1-EMU24
++			 * GPIO_EMU_SEL[21]: 0-GPIO21, 1-EMU23
++			 * GPIO_EMU_SEL[20]: 0-GPIO20, 1-EMU22
++			 * GPIO_EMU_SEL[19]: 0-GPIO19, 1-EMU21
++			 * GPIO_EMU_SEL[18]: 0-GPIO18, 1-EMU20
++			 * GPIO_EMU_SEL[17]: 0-GPIO17, 1-EMU19
++			 */
++				0x4 0x0000 0xfffe0000
++			>;
+ 		};
+ 
+-		psc: power-sleep-controller@2350000 {
+-			pscrst: reset-controller {
+-				compatible = "ti,k2l-pscrst", "ti,syscon-reset";
+-				#reset-cells = <1>;
+-
+-				ti,reset-bits = <
+-					0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
+-					0xa40 8 0xa40 8 0x840 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 1: dsp1 */
+-					0xa44 8 0xa44 8 0x844 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 2: dsp2 */
+-					0xa48 8 0xa48 8 0x848 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 3: dsp3 */
+-				>;
+-			};
++		gpio_timio_pins: gpio-timio-pins {
++			pinctrl-single,bits = <
++			/*
++			 * GPIO_TIMIO_SEL[15]: 0-GPIO15, 1-TIMO7
++			 * GPIO_TIMIO_SEL[14]: 0-GPIO14, 1-TIMO6
++			 * GPIO_TIMIO_SEL[13]: 0-GPIO13, 1-TIMO5
++			 * GPIO_TIMIO_SEL[12]: 0-GPIO12, 1-TIMO4
++			 * GPIO_TIMIO_SEL[11]: 0-GPIO11, 1-TIMO3
++			 * GPIO_TIMIO_SEL[10]: 0-GPIO10, 1-TIMO2
++			 * GPIO_TIMIO_SEL[9]: 0-GPIO9, 1-TIMI7
++			 * GPIO_TIMIO_SEL[8]: 0-GPIO8, 1-TIMI6
++			 * GPIO_TIMIO_SEL[7]: 0-GPIO7, 1-TIMI5
++			 * GPIO_TIMIO_SEL[6]: 0-GPIO6, 1-TIMI4
++			 * GPIO_TIMIO_SEL[5]: 0-GPIO5, 1-TIMI3
++			 * GPIO_TIMIO_SEL[4]: 0-GPIO4, 1-TIMI2
++			 */
++				0x4 0x0 0xfff0
++			>;
+ 		};
+ 
+-		osr: sram@70000000 {
+-			compatible = "mmio-sram";
+-			reg = <0x70000000 0x10000>;
+-			#address-cells = <1>;
+-			#size-cells = <1>;
+-			clocks = <&clkosr>;
++		gpio_spi2cs_pins: gpio-spi2cs-pins {
++			pinctrl-single,bits = <
++			/*
++			 * GPIO_SPI2CS_SEL[3]: 0-GPIO3, 1-SPI2CS4
++			 * GPIO_SPI2CS_SEL[2]: 0-GPIO2, 1-SPI2CS3
++			 * GPIO_SPI2CS_SEL[1]: 0-GPIO1, 1-SPI2CS2
++			 * GPIO_SPI2CS_SEL[0]: 0-GPIO0, 1-SPI2CS1
++			 */
++				0x4 0x0 0xf
++			>;
+ 		};
+ 
+-		devctrl: device-state-control@2620000 {
+-			dspgpio0: keystone_dsp_gpio@240 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x240 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x240>;
+-			};
+-
+-			dspgpio1: keystone_dsp_gpio@244 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x244 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x244>;
+-			};
+-
+-			dspgpio2: keystone_dsp_gpio@248 {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x248 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x248>;
+-			};
+-
+-			dspgpio3: keystone_dsp_gpio@24c {
+-				compatible = "ti,keystone-dsp-gpio";
+-				reg = <0x24c 0x4>;
+-				gpio-controller;
+-				#gpio-cells = <2>;
+-				gpio,syscon-dev = <&devctrl 0x24c>;
+-			};
++		gpio_dfeio_pins: gpio-dfeio-pins {
++			pinctrl-single,bits = <
++			/*
++			 * GPIO_DFEIO_SEL[31]: 0-DFEIO17, 1-GPIO63
++			 * GPIO_DFEIO_SEL[30]: 0-DFEIO16, 1-GPIO62
++			 * GPIO_DFEIO_SEL[29]: 0-DFEIO15, 1-GPIO61
++			 * GPIO_DFEIO_SEL[28]: 0-DFEIO14, 1-GPIO60
++			 * GPIO_DFEIO_SEL[27]: 0-DFEIO13, 1-GPIO59
++			 * GPIO_DFEIO_SEL[26]: 0-DFEIO12, 1-GPIO58
++			 * GPIO_DFEIO_SEL[25]: 0-DFEIO11, 1-GPIO57
++			 * GPIO_DFEIO_SEL[24]: 0-DFEIO10, 1-GPIO56
++			 * GPIO_DFEIO_SEL[23]: 0-DFEIO9, 1-GPIO55
++			 * GPIO_DFEIO_SEL[22]: 0-DFEIO8, 1-GPIO54
++			 * GPIO_DFEIO_SEL[21]: 0-DFEIO7, 1-GPIO53
++			 * GPIO_DFEIO_SEL[20]: 0-DFEIO6, 1-GPIO52
++			 * GPIO_DFEIO_SEL[19]: 0-DFEIO5, 1-GPIO51
++			 * GPIO_DFEIO_SEL[18]: 0-DFEIO4, 1-GPIO50
++			 * GPIO_DFEIO_SEL[17]: 0-DFEIO3, 1-GPIO49
++			 * GPIO_DFEIO_SEL[16]: 0-DFEIO2, 1-GPIO48
++			 */
++				0x8 0x0 0xffff0000
++			>;
+ 		};
+ 
+-		dsp0: dsp@10800000 {
+-			compatible = "ti,k2l-dsp";
+-			reg = <0x10800000 0x00100000>,
+-			      <0x10e00000 0x00008000>,
+-			      <0x10f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem0>;
+-			ti,syscon-dev = <&devctrl 0x844>;
+-			resets = <&pscrst 0>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <0 8>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio0 27 0>;
+-			status = "disabled";
++		gpio_emifa_pins: gpio-emifa-pins {
++			pinctrl-single,bits = <
++			/*
++			 * GPIO_EMIFA_SEL[15]: 0-EMIFA17, 1-GPIO47
++			 * GPIO_EMIFA_SEL[14]: 0-EMIFA16, 1-GPIO46
++			 * GPIO_EMIFA_SEL[13]: 0-EMIFA15, 1-GPIO45
++			 * GPIO_EMIFA_SEL[12]: 0-EMIFA14, 1-GPIO44
++			 * GPIO_EMIFA_SEL[11]: 0-EMIFA13, 1-GPIO43
++			 * GPIO_EMIFA_SEL[10]: 0-EMIFA10, 1-GPIO42
++			 * GPIO_EMIFA_SEL[9]: 0-EMIFA9, 1-GPIO41
++			 * GPIO_EMIFA_SEL[8]: 0-EMIFA8, 1-GPIO40
++			 * GPIO_EMIFA_SEL[7]: 0-EMIFA7, 1-GPIO39
++			 * GPIO_EMIFA_SEL[6]: 0-EMIFA6, 1-GPIO38
++			 * GPIO_EMIFA_SEL[5]: 0-EMIFA5, 1-GPIO37
++			 * GPIO_EMIFA_SEL[4]: 0-EMIFA4, 1-GPIO36
++			 * GPIO_EMIFA_SEL[3]: 0-EMIFA3, 1-GPIO35
++			 * GPIO_EMIFA_SEL[2]: 0-EMIFA2, 1-GPIO34
++			 * GPIO_EMIFA_SEL[1]: 0-EMIFA1, 1-GPIO33
++			 * GPIO_EMIFA_SEL[0]: 0-EMIFA0, 1-GPIO32
++			 */
++				0x8 0x0 0xffff
++			>;
+ 		};
++	};
+ 
+-		dsp1: dsp@11800000 {
+-			compatible = "ti,k2l-dsp";
+-			reg = <0x11800000 0x00100000>,
+-			      <0x11e00000 0x00008000>,
+-			      <0x11f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem1>;
+-			ti,syscon-dev = <&devctrl 0x848>;
+-			resets = <&pscrst 1>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <1 9>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio1 27 0>;
+-			status = "disabled";
++	msm_ram: sram@c000000 {
++		compatible = "mmio-sram";
++		reg = <0x0c000000 0x200000>;
++		ranges = <0x0 0x0c000000 0x200000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++
++		bm-sram@1f8000 {
++			reg = <0x001f8000 0x8000>;
+ 		};
++	};
+ 
+-		dsp2: dsp@12800000 {
+-			compatible = "ti,k2l-dsp";
+-			reg = <0x12800000 0x00100000>,
+-			      <0x12e00000 0x00008000>,
+-			      <0x12f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem2>;
+-			ti,syscon-dev = <&devctrl 0x84c>;
+-			resets = <&pscrst 2>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <2 10>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio2 27 0>;
+-			status = "disabled";
++	psc: power-sleep-controller@2350000 {
++		pscrst: reset-controller {
++			compatible = "ti,k2l-pscrst", "ti,syscon-reset";
++			#reset-cells = <1>;
++
++			ti,reset-bits = <
++				0xa3c 8 0xa3c 8 0x83c 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 0: dsp0 */
++				0xa40 8 0xa40 8 0x840 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 1: dsp1 */
++				0xa44 8 0xa44 8 0x844 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 2: dsp2 */
++				0xa48 8 0xa48 8 0x848 8 (ASSERT_CLEAR | DEASSERT_SET | STATUS_CLEAR) /* 3: dsp3 */
++			>;
+ 		};
++	};
+ 
+-		dsp3: dsp@13800000 {
+-			compatible = "ti,k2l-dsp";
+-			reg = <0x13800000 0x00100000>,
+-			      <0x13e00000 0x00008000>,
+-			      <0x13f00000 0x00008000>;
+-			reg-names = "l2sram", "l1pram", "l1dram";
+-			clocks = <&clkgem3>;
+-			ti,syscon-dev = <&devctrl 0x850>;
+-			resets = <&pscrst 3>;
+-			interrupt-parent = <&kirq0>;
+-			interrupts = <3 11>;
+-			interrupt-names = "vring", "exception";
+-			kick-gpios = <&dspgpio3 27 0>;
+-			status = "disabled";
++	osr: sram@70000000 {
++		compatible = "mmio-sram";
++		reg = <0x70000000 0x10000>;
++		#address-cells = <1>;
++		#size-cells = <1>;
++		clocks = <&clkosr>;
++	};
++
++	devctrl: device-state-control@2620000 {
++		dspgpio0: keystone_dsp_gpio@240 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x240 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x240>;
++		};
++
++		dspgpio1: keystone_dsp_gpio@244 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x244 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x244>;
+ 		};
+ 
+-		mdio: mdio@26200f00 {
+-			compatible = "ti,keystone_mdio", "ti,davinci_mdio";
+-			#address-cells = <1>;
+-			#size-cells = <0>;
+-			reg = <0x26200f00 0x100>;
+-			status = "disabled";
+-			clocks = <&clkcpgmac>;
+-			clock-names = "fck";
+-			bus_freq = <2500000>;
++		dspgpio2: keystone_dsp_gpio@248 {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x248 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x248>;
++		};
++
++		dspgpio3: keystone_dsp_gpio@24c {
++			compatible = "ti,keystone-dsp-gpio";
++			reg = <0x24c 0x4>;
++			gpio-controller;
++			#gpio-cells = <2>;
++			gpio,syscon-dev = <&devctrl 0x24c>;
+ 		};
+-		/include/ "keystone-k2l-netcp.dtsi"
++	};
++
++	dsp0: dsp@10800000 {
++		compatible = "ti,k2l-dsp";
++		reg = <0x10800000 0x00100000>,
++		      <0x10e00000 0x00008000>,
++		      <0x10f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem0>;
++		ti,syscon-dev = <&devctrl 0x844>;
++		resets = <&pscrst 0>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <0 8>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio0 27 0>;
++		status = "disabled";
++	};
++
++	dsp1: dsp@11800000 {
++		compatible = "ti,k2l-dsp";
++		reg = <0x11800000 0x00100000>,
++		      <0x11e00000 0x00008000>,
++		      <0x11f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem1>;
++		ti,syscon-dev = <&devctrl 0x848>;
++		resets = <&pscrst 1>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <1 9>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio1 27 0>;
++		status = "disabled";
++	};
++
++	dsp2: dsp@12800000 {
++		compatible = "ti,k2l-dsp";
++		reg = <0x12800000 0x00100000>,
++		      <0x12e00000 0x00008000>,
++		      <0x12f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem2>;
++		ti,syscon-dev = <&devctrl 0x84c>;
++		resets = <&pscrst 2>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <2 10>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio2 27 0>;
++		status = "disabled";
++	};
++
++	dsp3: dsp@13800000 {
++		compatible = "ti,k2l-dsp";
++		reg = <0x13800000 0x00100000>,
++		      <0x13e00000 0x00008000>,
++		      <0x13f00000 0x00008000>;
++		reg-names = "l2sram", "l1pram", "l1dram";
++		clocks = <&clkgem3>;
++		ti,syscon-dev = <&devctrl 0x850>;
++		resets = <&pscrst 3>;
++		interrupt-parent = <&kirq0>;
++		interrupts = <3 11>;
++		interrupt-names = "vring", "exception";
++		kick-gpios = <&dspgpio3 27 0>;
++		status = "disabled";
++	};
++
++	mdio: mdio@26200f00 {
++		compatible = "ti,keystone_mdio", "ti,davinci_mdio";
++		#address-cells = <1>;
++		#size-cells = <0>;
++		reg = <0x26200f00 0x100>;
++		status = "disabled";
++		clocks = <&clkcpgmac>;
++		clock-names = "fck";
++		bus_freq = <2500000>;
++	};
++	/include/ "keystone-k2l-netcp.dtsi"
+ };
+ 
+ &spi0 {
 -- 
-2.41.0
-
-
--- 
-Peter Xu
+2.39.2
 
