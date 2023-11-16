@@ -2,206 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2E67EE722
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:04:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABA827EE723
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:06:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345473AbjKPTEG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:04:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48132 "EHLO
+        id S1345465AbjKPTGE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:06:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35422 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229552AbjKPTEE (ORCPT
+        with ESMTP id S229448AbjKPTGC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:04:04 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F57182
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:04:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700161440;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=noFtgqazCBC+/n+W0RzmjdI1W4IMXkcCumNBFAtwhRo=;
-        b=ddZEkOKdzrtBOqsewMMsez5vI4DDWj/o1StXze29UcKV/05LSLXOpTZS5bdRxLMXVpQM6f
-        gIngwMGLymhJrxAjeNFP4tv9JmKIeGhqOQpajT55qmVU2zyj9ZzdAvjC0cryKQ6OauLc5r
-        vf4XXsafIgHuJnQHJwuzj83Csz1nr3c=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-26-e2YbIfriOqaVSOq3OeJ7fQ-1; Thu, 16 Nov 2023 14:03:57 -0500
-X-MC-Unique: e2YbIfriOqaVSOq3OeJ7fQ-1
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4084e263ec4so7664005e9.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:03:56 -0800 (PST)
+        Thu, 16 Nov 2023 14:06:02 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8F5182
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:05:59 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id ca18e2360f4ac-7a6774da682so42682439f.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:05:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=broadcom.com; s=google; t=1700161558; x=1700766358; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=00orG4fs/KhZ52cRRVMdc3WdSP/LDO7ST1Q17qQKKXg=;
+        b=hU/HTnYKlgvV6EiKsgKeY5kmadDALVoz8JVmafzbZlhckKdeugaRSRBv/Orwi7L7pu
+         5kS+htKwdPJpvFA2jbfrTWiwgPFbWT2K53x4LVgXxOHdt4HwgS1r64P9C7OpLdrKB3eJ
+         +TT0l1kLDqiyS18QsSoYCxxV29xWntnDguMfw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700161436; x=1700766236;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=noFtgqazCBC+/n+W0RzmjdI1W4IMXkcCumNBFAtwhRo=;
-        b=I7iL37Vsi3HlyqrU6zETpPzwIaVJth6KQv/w3Qq0WRe+BAUAihTdTwhYGXQndLT6PJ
-         Pja0GSa7v11y1IUsPOGjw79/V9CjkpS6Yj+MC+GkVvouvFD8G0i1BCUTiyaoYiBhCyj6
-         bGg2kX8MwCPblwMZtB5NAhwshokPSU4Jo9HUqWMUDHJg7Qgb39xnoB9Hau9AzAzWFC2E
-         XacC32oyXAD4o1OHD+E4zsX0btpQ/N+xcyODNc+JtxLnUNrbiTBLiwT5NtKcMQn9zyzW
-         8Yv+Psv49MLGACiaKioySrJoskywjZowmpTugSQCgpY1UGGLa8ktWlsG0Q8zvwiWWQZB
-         r4RQ==
-X-Gm-Message-State: AOJu0YwNGsXH4OgZuLg+6caHqIIUN+lZsQUmzS1T3ZtOOy5r8eVCSvAr
-        D+CTuG7kFRyEtIxXcpduqYp17QJBx3S9LSgnVCj9kp5kPN9ko/qgGnlAzGPfwYY33SHBGoHvFZs
-        qnjBu856fHriB5+pkwIAoWwLS
-X-Received: by 2002:adf:f9cf:0:b0:32d:14c5:643d with SMTP id w15-20020adff9cf000000b0032d14c5643dmr11981622wrr.5.1700161435786;
-        Thu, 16 Nov 2023 11:03:55 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGkeF+BhJMVhRUT0hTwF3xsLQX+bV0T7VMFgJrY68XUtb3ZDoOrmg4VK/IBwjz+J3pf8mXkoA==
-X-Received: by 2002:adf:f9cf:0:b0:32d:14c5:643d with SMTP id w15-20020adff9cf000000b0032d14c5643dmr11981594wrr.5.1700161435301;
-        Thu, 16 Nov 2023 11:03:55 -0800 (PST)
-Received: from ?IPV6:2003:cb:c714:e000:d929:2324:97c7:112c? (p200300cbc714e000d929232497c7112c.dip0.t-ipconnect.de. [2003:cb:c714:e000:d929:2324:97c7:112c])
-        by smtp.gmail.com with ESMTPSA id j10-20020adfff8a000000b00326f0ca3566sm162043wrr.50.2023.11.16.11.03.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 11:03:54 -0800 (PST)
-Message-ID: <b744a100-76a4-4735-89b1-08f16cf8b322@redhat.com>
-Date:   Thu, 16 Nov 2023 20:03:54 +0100
+        d=1e100.net; s=20230601; t=1700161558; x=1700766358;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=00orG4fs/KhZ52cRRVMdc3WdSP/LDO7ST1Q17qQKKXg=;
+        b=CDaM7OTVDNTkGqbIEEw7M1JPK8MjmdqFYwurwmQa4TkvoROM4y/0k9IHSetucZBfrD
+         AtK2JGsGk35vSXS8nUfiANKZnqkGQ4gRybAEB2fMTtoAryM2c0ziOgVO1EdFLlyQ8ymf
+         N+VOe70RRMa2CU1m12j3eK/A+LBSmjfTVvSBYnveGUQG909cs8Q6TA1W1wb8GEIvZ/W8
+         RJlOAPVLseqQldr+jvYTswOryC3fFF3LuVQ1vTWV5o9VByMbqXk4FuKgud2mEy7jLxbb
+         e3bw75GrrHK4/BA8h/4TygDMaviwjA6HGTpbMSqb9y8Bfd94UzsbjMES1oAeNGpbY4Hi
+         3Jlg==
+X-Gm-Message-State: AOJu0YyvnhzHZLfJskGwYuhY3tuKbpF6Y58oEb66phuVdUNu3IRwWha/
+        IJ+otuW3h+3b0Z22CTOs6wZ2RNQToNw942BOYd4glw==
+X-Google-Smtp-Source: AGHT+IG3KoBuIo5jSLxzCQbNnxvKxwtTiJ7Q3xOPTU87c0oReweHT21Pt2HQtkmHLq/DaSVs3fzNfv/bmdcbauePGr0=
+X-Received: by 2002:a5d:91d4:0:b0:79a:b53c:d758 with SMTP id
+ k20-20020a5d91d4000000b0079ab53cd758mr18048896ior.1.1700161558409; Thu, 16
+ Nov 2023 11:05:58 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 4/8] mm/memory_hotplug: introduce MEM_PHYS_ONLINE/OFFLINE
- memory notifiers
-Content-Language: en-US
-To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
-Cc:     linux-mm <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
-        Alexander Gordeev <agordeev@linux.ibm.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
- <20231114180238.1522782-5-sumanthk@linux.ibm.com>
- <7c85bd39-8b34-4b09-b503-b0a2f2e58b88@redhat.com>
- <ZVTUVuZzSJmQqEvk@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <ZVTUVuZzSJmQqEvk@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <0b2972cb-03b2-40c7-a728-6ebe2512637f@web.de> <20231106145806.669875f4@kernel.org>
+ <dce77105-47ab-4ec7-8d46-b983c630dad8@web.de> <CALSSxFYRgPwEq+QhCOYPqrtae8RvL=jTOcz4mk3vbe+Fc0QwbQ@mail.gmail.com>
+ <4053e838-e5cf-4450-8067-21bdec989d1b@broadcom.com> <38279cb8-ff60-427e-ae9f-5f973955ffa6@web.de>
+In-Reply-To: <38279cb8-ff60-427e-ae9f-5f973955ffa6@web.de>
+From:   Justin Chen <justin.chen@broadcom.com>
+Date:   Thu, 16 Nov 2023 11:05:46 -0800
+Message-ID: <CALSSxFYBhv==pJTme0FThxP9JBJszsj1v4G2s-HGzkaevbyvBA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: bcmasp: Use common error handling code in bcmasp_probe()
+To:     Markus Elfring <Markus.Elfring@web.de>
+Cc:     Florian Fainelli <florian.fainelli@broadcom.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Wojciech Drewek <wojciech.drewek@intel.com>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, cocci@inria.fr,
+        Simon Horman <horms@kernel.org>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000c3e3b4060a49b58a"
 X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 15.11.23 15:23, Sumanth Korikkar wrote:
-> On Tue, Nov 14, 2023 at 07:27:35PM +0100, David Hildenbrand wrote:
->> On 14.11.23 19:02, Sumanth Korikkar wrote:
->>> Add new memory notifiers to mimic the dynamic ACPI event triggered logic
->>> for memory hotplug on platforms that do not generate such events. This
->>> will be used to implement "memmap on memory" feature for s390 in a later
->>> patch.
->>>
->>> Platforms such as x86 can support physical memory hotplug via ACPI. When
->>> there is physical memory hotplug, ACPI event leads to the memory
->>> addition with the following callchain:
->>> acpi_memory_device_add()
->>>     -> acpi_memory_enable_device()
->>>        -> __add_memory()
->>>
->>> After this, the hotplugged memory is physically accessible, and altmap
->>> support prepared, before the "memmap on memory" initialization in
->>> memory_block_online() is called.
->>>
->>> On s390, memory hotplug works in a different way. The available hotplug
->>> memory has to be defined upfront in the hypervisor, but it is made
->>> physically accessible only when the user sets it online via sysfs,
->>> currently in the MEM_GOING_ONLINE notifier. This requires calling
->>> add_memory() during early memory detection, in order to get the sysfs
->>> representation, but we cannot use "memmap on memory" altmap support at
->>> this stage, w/o having it physically accessible.
->>>
->>> Since no ACPI or similar events are generated, there is no way to set up
->>> altmap support, or even make the memory physically accessible at all,
->>> before the "memmap on memory" initialization in memory_block_online().
->>>
->>> The new MEM_PHYS_ONLINE notifier allows to work around this, by
->>> providing a hook to make the memory physically accessible, and also call
->>> __add_pages() with altmap support, early in memory_block_online().
->>> Similarly, the MEM_PHYS_OFFLINE notifier allows to make the memory
->>> inaccessible and call __remove_pages(), at the end of
->>> memory_block_offline().
->>>
->>> Calling __add/remove_pages() requires mem_hotplug_lock, so move
->>> mem_hotplug_begin/done() to include the new notifiers.
->>>
->>> All architectures ignore unknown memory notifiers, so this patch should
->>> not introduce any functional changes.
->>
->> Sorry to say, no. No hacks please, and this is a hack for memory that has
->> already been added to the system.
->>
->> If you want memory without an altmap to suddenly not have an altmap anymore,
->> then look into removing and readding that memory, or some way to convert
->> offline memory.
-> 
-> Sorry, I couldnt get the context. Could you please give me more details?
+--000000000000c3e3b4060a49b58a
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-See my reply to Gerald.
+On Wed, Nov 15, 2023 at 1:11=E2=80=AFAM Markus Elfring <Markus.Elfring@web.=
+de> wrote:
+>
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 15 Nov 2023 09:38:56 +0100
+>
+> Add a jump target so that a bit of exception handling can be better reuse=
+d
+> in this function implementation.
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>
+> v2:
+> Special expectations were expressed for the previous patch size.
+>
+> * Jakub Kicinski
+>   https://lore.kernel.org/netdev/20231106145806.669875f4@kernel.org/
+>
+> * Justin Chen
+>   https://lore.kernel.org/netdev/CALSSxFYRgPwEq+QhCOYPqrtae8RvL=3DjTOcz4m=
+k3vbe+Fc0QwbQ@mail.gmail.com/
+>
+> * Florian Fainelli
+>   https://lore.kernel.org/netdev/4053e838-e5cf-4450-8067-21bdec989d1b@bro=
+adcom.com/
+>
+>
+> Thus another change variant can eventually be integrated.
+>
+>
+>  drivers/net/ethernet/broadcom/asp2/bcmasp.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/ethernet/broadcom/asp2/bcmasp.c b/drivers/net/et=
+hernet/broadcom/asp2/bcmasp.c
+> index 29b04a274d07..7d6c15732d9f 100644
+> --- a/drivers/net/ethernet/broadcom/asp2/bcmasp.c
+> +++ b/drivers/net/ethernet/broadcom/asp2/bcmasp.c
+> @@ -1304,9 +1304,8 @@ static int bcmasp_probe(struct platform_device *pde=
+v)
+>                 intf =3D bcmasp_interface_create(priv, intf_node, i);
+>                 if (!intf) {
+>                         dev_err(dev, "Cannot create eth interface %d\n", =
+i);
+> -                       bcmasp_remove_intfs(priv);
+>                         of_node_put(intf_node);
+> -                       goto of_put_exit;
+> +                       goto remove_intfs;
+>                 }
+>                 list_add_tail(&intf->list, &priv->intfs);
+>                 i++;
+> @@ -1331,6 +1330,7 @@ static int bcmasp_probe(struct platform_device *pde=
+v)
+>                         netdev_err(intf->ndev,
+>                                    "failed to register net_device: %d\n",=
+ ret);
+>                         priv->destroy_wol(priv);
+> +remove_intfs:
+>                         bcmasp_remove_intfs(priv);
+>                         goto of_put_exit;
+>                 }
+> --
+> 2.42.1
+>
+nak. Doesn't save any lines of code. Doesn't make things clearer or
+easier to follow. This doesn't seem like an improvement to me.
 
-In an ideal world, there would not be any new callbacks, we would get 
-rid of them, and just let the architecture properly hotplug memory to 
-the system when requested by the user.
+Justin
 
--- 
-Cheers,
+--000000000000c3e3b4060a49b58a
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
 
-David / dhildenb
-
+MIIQagYJKoZIhvcNAQcCoIIQWzCCEFcCAQExDzANBglghkgBZQMEAgEFADALBgkqhkiG9w0BBwGg
+gg3BMIIFDTCCA/WgAwIBAgIQeEqpED+lv77edQixNJMdADANBgkqhkiG9w0BAQsFADBMMSAwHgYD
+VQQLExdHbG9iYWxTaWduIFJvb3QgQ0EgLSBSMzETMBEGA1UEChMKR2xvYmFsU2lnbjETMBEGA1UE
+AxMKR2xvYmFsU2lnbjAeFw0yMDA5MTYwMDAwMDBaFw0yODA5MTYwMDAwMDBaMFsxCzAJBgNVBAYT
+AkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhHbG9iYWxTaWduIEdDQyBS
+MyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA
+vbCmXCcsbZ/a0fRIQMBxp4gJnnyeneFYpEtNydrZZ+GeKSMdHiDgXD1UnRSIudKo+moQ6YlCOu4t
+rVWO/EiXfYnK7zeop26ry1RpKtogB7/O115zultAz64ydQYLe+a1e/czkALg3sgTcOOcFZTXk38e
+aqsXsipoX1vsNurqPtnC27TWsA7pk4uKXscFjkeUE8JZu9BDKaswZygxBOPBQBwrA5+20Wxlk6k1
+e6EKaaNaNZUy30q3ArEf30ZDpXyfCtiXnupjSK8WU2cK4qsEtj09JS4+mhi0CTCrCnXAzum3tgcH
+cHRg0prcSzzEUDQWoFxyuqwiwhHu3sPQNmFOMwIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgGG
+MGAGA1UdJQRZMFcGCCsGAQUFBwMCBggrBgEFBQcDBAYKKwYBBAGCNxQCAgYKKwYBBAGCNwoDBAYJ
+KwYBBAGCNxUGBgorBgEEAYI3CgMMBggrBgEFBQcDBwYIKwYBBQUHAxEwEgYDVR0TAQH/BAgwBgEB
+/wIBADAdBgNVHQ4EFgQUljPR5lgXWzR1ioFWZNW+SN6hj88wHwYDVR0jBBgwFoAUj/BLf6guRSSu
+TVD6Y5qL3uLdG7wwegYIKwYBBQUHAQEEbjBsMC0GCCsGAQUFBzABhiFodHRwOi8vb2NzcC5nbG9i
+YWxzaWduLmNvbS9yb290cjMwOwYIKwYBBQUHMAKGL2h0dHA6Ly9zZWN1cmUuZ2xvYmFsc2lnbi5j
+b20vY2FjZXJ0L3Jvb3QtcjMuY3J0MDYGA1UdHwQvMC0wK6ApoCeGJWh0dHA6Ly9jcmwuZ2xvYmFs
+c2lnbi5jb20vcm9vdC1yMy5jcmwwWgYDVR0gBFMwUTALBgkrBgEEAaAyASgwQgYKKwYBBAGgMgEo
+CjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAN
+BgkqhkiG9w0BAQsFAAOCAQEAdAXk/XCnDeAOd9nNEUvWPxblOQ/5o/q6OIeTYvoEvUUi2qHUOtbf
+jBGdTptFsXXe4RgjVF9b6DuizgYfy+cILmvi5hfk3Iq8MAZsgtW+A/otQsJvK2wRatLE61RbzkX8
+9/OXEZ1zT7t/q2RiJqzpvV8NChxIj+P7WTtepPm9AIj0Keue+gS2qvzAZAY34ZZeRHgA7g5O4TPJ
+/oTd+4rgiU++wLDlcZYd/slFkaT3xg4qWDepEMjT4T1qFOQIL+ijUArYS4owpPg9NISTKa1qqKWJ
+jFoyms0d0GwOniIIbBvhI2MJ7BSY9MYtWVT5jJO3tsVHwj4cp92CSFuGwunFMzCCA18wggJHoAMC
+AQICCwQAAAAAASFYUwiiMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsTF0dsb2JhbFNpZ24gUm9v
+dCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQDEwpHbG9iYWxTaWduMB4XDTA5
+MDMxODEwMDAwMFoXDTI5MDMxODEwMDAwMFowTDEgMB4GA1UECxMXR2xvYmFsU2lnbiBSb290IENB
+IC0gUjMxEzARBgNVBAoTCkdsb2JhbFNpZ24xEzARBgNVBAMTCkdsb2JhbFNpZ24wggEiMA0GCSqG
+SIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMJXaQeQZ4Ihb1wIO2hMoonv0FdhHFrYhy/EYCQ8eyip0E
+XyTLLkvhYIJG4VKrDIFHcGzdZNHr9SyjD4I9DCuul9e2FIYQebs7E4B3jAjhSdJqYi8fXvqWaN+J
+J5U4nwbXPsnLJlkNc96wyOkmDoMVxu9bi9IEYMpJpij2aTv2y8gokeWdimFXN6x0FNx04Druci8u
+nPvQu7/1PQDhBjPogiuuU6Y6FnOM3UEOIDrAtKeh6bJPkC4yYOlXy7kEkmho5TgmYHWyn3f/kRTv
+riBJ/K1AFUjRAjFhGV64l++td7dkmnq/X8ET75ti+w1s4FRpFqkD2m7pg5NxdsZphYIXAgMBAAGj
+QjBAMA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdDgQWBBSP8Et/qC5FJK5N
+UPpjmove4t0bvDANBgkqhkiG9w0BAQsFAAOCAQEAS0DbwFCq/sgM7/eWVEVJu5YACUGssxOGhigH
+M8pr5nS5ugAtrqQK0/Xx8Q+Kv3NnSoPHRHt44K9ubG8DKY4zOUXDjuS5V2yq/BKW7FPGLeQkbLmU
+Y/vcU2hnVj6DuM81IcPJaP7O2sJTqsyQiunwXUaMld16WCgaLx3ezQA3QY/tRG3XUyiXfvNnBB4V
+14qWtNPeTCekTBtzc3b0F5nCH3oO4y0IrQocLP88q1UOD5F+NuvDV0m+4S4tfGCLw0FREyOdzvcy
+a5QBqJnnLDMfOjsl0oZAzjsshnjJYS8Uuu7bVW/fhO4FCU29KNhyztNiUGUe65KXgzHZs7XKR1g/
+XzCCBUkwggQxoAMCAQICDCPwEotc2kAt96Z1EDANBgkqhkiG9w0BAQsFADBbMQswCQYDVQQGEwJC
+RTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTExMC8GA1UEAxMoR2xvYmFsU2lnbiBHQ0MgUjMg
+UGVyc29uYWxTaWduIDIgQ0EgMjAyMDAeFw0yMjA5MTAxMjM5NTBaFw0yNTA5MTAxMjM5NTBaMIGM
+MQswCQYDVQQGEwJJTjESMBAGA1UECBMJS2FybmF0YWthMRIwEAYDVQQHEwlCYW5nYWxvcmUxFjAU
+BgNVBAoTDUJyb2FkY29tIEluYy4xFDASBgNVBAMTC0p1c3RpbiBDaGVuMScwJQYJKoZIhvcNAQkB
+FhhqdXN0aW4uY2hlbkBicm9hZGNvbS5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIB
+AQDKX7oyRqaeT81UCy+OTzAUHJeHABD6GDVZu7IJxt8GWSGx+ebFexFz/gnRO/sgwnPzzrC2DwM1
+kaDgYe+pI1lMzUZvAB5DfS1qXKNGoeeNv7FoNFlv3iD4bvOykX/K/voKtjS3QNs0EDnwkvETUWWu
+yiXtMiGENBBJcbGirKuFTT3U/2iPoSL5OeMSEqKLdkNTT9O79KN+Rf7Zi4Duz0LUqqpz9hZl4zGc
+NhTY3E+cXCB11wty89QStajwXdhGJTYEvUgvsq1h8CwJj9w/38ldAQf5WjhPmApYeJR2ewFrBMCM
+4lHkdRJ6TDc9nXoEkypUfjJkJHe7Eal06tosh6JpAgMBAAGjggHZMIIB1TAOBgNVHQ8BAf8EBAMC
+BaAwgaMGCCsGAQUFBwEBBIGWMIGTME4GCCsGAQUFBzAChkJodHRwOi8vc2VjdXJlLmdsb2JhbHNp
+Z24uY29tL2NhY2VydC9nc2djY3IzcGVyc29uYWxzaWduMmNhMjAyMC5jcnQwQQYIKwYBBQUHMAGG
+NWh0dHA6Ly9vY3NwLmdsb2JhbHNpZ24uY29tL2dzZ2NjcjNwZXJzb25hbHNpZ24yY2EyMDIwME0G
+A1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
+aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEkGA1UdHwRCMEAwPqA8oDqGOGh0dHA6Ly9j
+cmwuZ2xvYmFsc2lnbi5jb20vZ3NnY2NyM3BlcnNvbmFsc2lnbjJjYTIwMjAuY3JsMCMGA1UdEQQc
+MBqBGGp1c3Rpbi5jaGVuQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBSWM9HmWBdbNHWKgVZk1b5I3qGPzzAdBgNVHQ4EFgQUIWGeYuaTsnIada5Xx8TR3cheUbgw
+DQYJKoZIhvcNAQELBQADggEBAHNQlMqQOFYPYFO71A+8t+qWMmtOdd2iGswSOvpSZ/pmGlfw8ZvY
+dRTkl27m37la84AxRkiVMes14JyOZJoMh/g7fbgPlU14eBc6WQWkIA6AmNkduFWTr1pRezkjpeo6
+xVmdBLM4VY1TFDYj7S8H2adPuypd62uHMY/MZi+BIUys4uAFA+N3NuUBNjcVZXYPplYxxKEuIFq6
+sDL+OV16G+F9CkNMN3txsym8Nnx5WAYZb6+rBUIhMGz70V05xsHQfzvo2s7f0J1tJ5BoRlPPhL0h
+VOnWA3h71u9TfSsv+PXVm3P21TfOS2uc1hbzEqyENCP4i5XQ0rv0TmPW42GZ0o4xggJtMIICaQIB
+ATBrMFsxCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTEwLwYDVQQDEyhH
+bG9iYWxTaWduIEdDQyBSMyBQZXJzb25hbFNpZ24gMiBDQSAyMDIwAgwj8BKLXNpALfemdRAwDQYJ
+YIZIAWUDBAIBBQCggdQwLwYJKoZIhvcNAQkEMSIEILotxAmT8eADGHktrcknXWg3D3pM2NTwe4c8
+EpNZJG17MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIzMTExNjE5
+MDU1OFowaQYJKoZIhvcNAQkPMVwwWjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFl
+AwQBAjAKBggqhkiG9w0DBzALBgkqhkiG9w0BAQowCwYJKoZIhvcNAQEHMAsGCWCGSAFlAwQCATAN
+BgkqhkiG9w0BAQEFAASCAQA8adz3KqcyXVbtL8oxRWsOgVpcdNFDnzOZrXHMWen1K4WX/XV6WgJP
+grmvRHm424mCo2iuvma6fSwYk1azMB9mBLaFPbbnQK+b0vTaqxrRXuU4QjneLAgtx0GpwtC8gLoi
+a7yHZKoS5Cbx4VLHfLwVQvevGknaKHZaGTurnWDWdXLA2rb8YSYeDJUc7HUzodJbzpNYeHue7K0x
+rSImVssxfwzboPy+g4reLUdo4OlB4ZEaZyUgK70SUFtzq80DuV/AC9XMRAP8VniQUjh7nIljJPK5
+9kYbY+/i4ETu4NfJ7ndAcO7npMnEV2f7pGvROq3xxIK4I/vliKulB3yBL/Sk
+--000000000000c3e3b4060a49b58a--
