@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BC07EDC6E
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:57:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25BE7EDC73
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 08:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230112AbjKPH5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 02:57:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
+        id S230136AbjKPH5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 02:57:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37194 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229638AbjKPH47 (ORCPT
+        with ESMTP id S229806AbjKPH5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 02:56:59 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C326C199
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 23:56:56 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3XEr-0008RG-Bx; Thu, 16 Nov 2023 08:56:37 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3XEp-009P1M-Np; Thu, 16 Nov 2023 08:56:35 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.94.2)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1r3XEp-002Wrz-EO; Thu, 16 Nov 2023 08:56:35 +0100
-Date:   Thu, 16 Nov 2023 08:56:35 +0100
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Jaewon Kim <jaewon02.kim@samsung.com>
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Tomasz Figa <tomasz.figa@gmail.com>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH v2 00/12] Introduce ExynosAutov920 SoC and SADK board
-Message-ID: <20231116075635.onolshbu4waqsqag@pengutronix.de>
-References: <CGME20231115095852epcas2p21e067efe75275c6abd2aebf04c5c6166@epcas2p2.samsung.com>
- <20231115095609.39883-1-jaewon02.kim@samsung.com>
- <170005362858.21132.4200897251821879805.b4-ty@linaro.org>
- <6e69df6c-10fa-404a-ac02-4880723b8c50@linaro.org>
- <55a0f27c-ea46-40ae-b1e5-e650802b89a8@linaro.org>
- <d6f3d451-6a53-46b6-2263-cc071a9dc44c@samsung.com>
+        Thu, 16 Nov 2023 02:57:46 -0500
+Received: from mail-oa1-x42.google.com (mail-oa1-x42.google.com [IPv6:2001:4860:4864:20::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA5D9120;
+        Wed, 15 Nov 2023 23:57:43 -0800 (PST)
+Received: by mail-oa1-x42.google.com with SMTP id 586e51a60fabf-1f48b6e0388so121874fac.0;
+        Wed, 15 Nov 2023 23:57:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700121463; x=1700726263; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/zP01sxmtmsF220wNPZnDB4E4Ss9Od2fBbOpBrQvCQo=;
+        b=NmZThr+d9eVYMZzNP0iB390nkOs7IjovgGuc+xKBCKNFRZObT14kAcyIepuysRNgof
+         ZAMCuRu6a8vOkxn8ot+bowOcjDFPrQpq4uxVvjUqJIprhl0fdQ0Qp+Yn1jFGzqSSiZ0/
+         la/d3gB/vsWEahGZ95jjNCG12YTnMmvInDR4dFvpLNhEMDyeMjJ+8I9bg0ArPqkhy0AD
+         a9xulmroKA0z5XjmYQZsEIqEi9dXbfeIZm3WdiHnMmYBX4h/cSI1d/DOBju/RjWaUTWY
+         DTti8llbAXCiBL1FTomV4W1BlJWoNsaMAxkBfldiN2Qe0V8K72QozmxdLkPirXmkhoDN
+         y75Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700121463; x=1700726263;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=/zP01sxmtmsF220wNPZnDB4E4Ss9Od2fBbOpBrQvCQo=;
+        b=gfjINUPSg7DA6es2B1l+t958FeDZOgfmadLbGx+S3uENm7BwQ1PQEfFl7JWClIvt18
+         eX9V5OrvxRrTGcZCPfesdWaZJThoLpwuQJLUhAl/VS/PNMoLdrWm966rLrUtLHIlHpdH
+         ufi/nPFtCMRasxuWH8L/PfP+/wTMvZUGIZJIbgu0pLI6Ur9YQA96nY9mrrBPTopPE+5M
+         6hByNA4mPBNFLBHzsJbrYoHq3zOEs0TfaLOwSRT0gYEEP0Ad/7v2gN2wNEIODIjhc1kx
+         Hj364WoYS9uwBFert1dbfdNGF+saTJ9lLEa6hIQq+RB0ltnu+0lso1PPt3SGEmPeseRe
+         ZWfQ==
+X-Gm-Message-State: AOJu0YykdS1tNjfs7fCz4mvuQVDStdbxBrm3izpZ6F4e2Quat+i55sy9
+        AErSF71G2ge03mPTtAtmcTQ=
+X-Google-Smtp-Source: AGHT+IGwP7qz/+86dFB+FfcdjQXc5Tv16c7EPco0kc6pBqaCNKC3lzVYd4aReuCbH4gcskvkXgp2pg==
+X-Received: by 2002:a05:6871:5c47:b0:1e9:bbfe:6458 with SMTP id os7-20020a0568715c4700b001e9bbfe6458mr9725172oac.1.1700121463234;
+        Wed, 15 Nov 2023 23:57:43 -0800 (PST)
+Received: from hbh25y.mshome.net ([103.114.158.1])
+        by smtp.gmail.com with ESMTPSA id z19-20020aa785d3000000b00690c0cf97c9sm3969890pfn.73.2023.11.15.23.57.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Nov 2023 23:57:42 -0800 (PST)
+From:   Hangyu Hua <hbh25y@gmail.com>
+To:     miklos@szeredi.hu, vgoyal@redhat.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hangyu Hua <hbh25y@gmail.com>
+Subject: [PATCH] fs: fuse: dax: set fc->dax to NULL in fuse_dax_conn_free()
+Date:   Thu, 16 Nov 2023 15:57:26 +0800
+Message-Id: <20231116075726.28634-1-hbh25y@gmail.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="deso36yy7zj5rlry"
-Content-Disposition: inline
-In-Reply-To: <d6f3d451-6a53-46b6-2263-cc071a9dc44c@samsung.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fuse_dax_conn_free() will be called when fuse_fill_super_common() fails
+after fuse_dax_conn_alloc(). Then deactivate_locked_super() in
+virtio_fs_get_tree() will call virtio_kill_sb() to release the discarded
+superblock. This will call fuse_dax_conn_free() again in fuse_conn_put(),
+resulting in a possible double free.
 
---deso36yy7zj5rlry
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: 1dd539577c42 ("virtiofs: add a mount option to enable dax")
+Signed-off-by: Hangyu Hua <hbh25y@gmail.com>
+---
+ fs/fuse/dax.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Hello,
+diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
+index 23904a6a9a96..12ef91d170bb 100644
+--- a/fs/fuse/dax.c
++++ b/fs/fuse/dax.c
+@@ -1222,6 +1222,7 @@ void fuse_dax_conn_free(struct fuse_conn *fc)
+ 	if (fc->dax) {
+ 		fuse_free_dax_mem_ranges(&fc->dax->free_ranges);
+ 		kfree(fc->dax);
++		fc->dax = NULL;
+ 	}
+ }
+ 
+-- 
+2.34.1
 
-On Thu, Nov 16, 2023 at 12:32:30PM +0900, Jaewon Kim wrote:
-> I already checked and there were no warnings or errors as shown below.
->=20
-> Did I miss something??
->=20
->=20
-> $ make CHECK_DTBS=3Dy ARCH=3Darm64 CROSS_COMPILE=3Daarch64-linux-gnu-=20
-> exynos/exynosautov920-sadk.dtb
->  =A0 LINT=A0=A0=A0 Documentation/devicetree/bindings
->  =A0 CHKDT Documentation/devicetree/bindings/processed-schema.json
->  =A0 SCHEMA Documentation/devicetree/bindings/processed-schema.json
->  =A0 UPD=A0=A0=A0=A0 include/config/kernel.release
->  =A0 DTC_CHK arch/arm64/boot/dts/exynos/exynosautov920-sadk.dtb
-
-https://www.kernel.org/doc/html/latest/process/maintainer-soc-clean-dts.html
-also talks about W=3D1 that you didn't pass.
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---deso36yy7zj5rlry
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmVVyzIACgkQj4D7WH0S
-/k7Dsgf8CEfnfcBO+X5uEDgo3Y7Z8C4wi5ENcCF2QdbXIn8f3i/0j24kJy5bKnh1
-aYEK3ZPy0TCtE9dW8BCoRjv4XyDOhS4gQkvgUGEhz+Y31KZx54rNTK/vPimcVZ51
-ykiKjhtT9WSMf8qcEaTdimYtt8+e8iA8WaRmQyMyzxbSCDnTvTXoWzMga77bpqco
-uIm0DgPSeMEzVI3tSNzI1DcJHBsR5Vee65E88Wq6jTukkVGtAiS7/mT0BLwhiYWN
-mopKsb3BDL1WvwmuJlnf6wleGhZRKWKNChljiPG/N9o7Vtzt6zJht/WOVYx1dmyJ
-CjfcU9YKpKwjWMDJ18/Tas3lVVSvEQ==
-=qThe
------END PGP SIGNATURE-----
-
---deso36yy7zj5rlry--
