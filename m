@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 528AA7EDF69
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:17:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 538DB7EDF74
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 12:17:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345054AbjKPLR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 06:17:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43746 "EHLO
+        id S1345128AbjKPLRz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 06:17:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230431AbjKPLR1 (ORCPT
+        with ESMTP id S1345082AbjKPLRs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 06:17:27 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A29ED4E
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:17:23 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cc75c55f0so15733011cf.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:17:23 -0800 (PST)
+        Thu, 16 Nov 2023 06:17:48 -0500
+Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10956D5F
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:17:45 -0800 (PST)
+Received: by mail-qt1-x836.google.com with SMTP id d75a77b69052e-41b7fd8f458so3789471cf.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 03:17:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700133442; x=1700738242; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700133464; x=1700738264; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=AZ/TPrRt7wGDAtsL7z75CFLMe7OaDKMtS2L/Acn1Gf8=;
-        b=CKHcynpxQtjnpdGAVJvxlvPl5chamPLO0UVInz3Llr3K4ZMJiYTbR60SS7PTLc9nO+
-         fp9rCa5fIMqEEfP9dQcsdOk3ZzCksM7EVpULIAT24laWehQLAKs9TR23xWfpMrC9XvQP
-         ds8dwuMxm4kkbvOOPn5HKwt4gQnohx3qZW5OuLtBQupmMUP7wzfz+v5TegOkNrUA/T7C
-         F4UQfgvQnjXT/plTj7+IxzPpCh4oB0yUOjDXjPOk0YI/SaMJPWeSKeizxEabKqpW0jyR
-         wLzXQgsDI1XL3PM5nB5uN3Ip3fH/SoPdAUsUPiHK31caUC1dkiy9YqO9UuplV2C811vK
-         AI2A==
+        bh=0/ViPVFwqUwSC+Tx+7EWOjQPL45nD+KFikxOfTzEf40=;
+        b=IK0dI8TYVXcjF18RdMU0r6Zq6q9TqlfLhETnq36Io1eOcKpLxdTbY/ASnXF2KrzhPB
+         5juaD2W4rL34jowj3bekaprEJh+kv24mc/nAw/duGETdXWpmNtCtUCQQqgo9TPjbuzxF
+         vBUGSSYY5z3PutDQ/Ppk1+DeZc/VfElj+1vGIh5Lv4B2f4hiPQUgUUPuyNg8tl2RETmT
+         6wC02lEEKtoarpy4/Sx9r/uLnqit3ewTl63yQTAkY7IE1HDyUaa/j1xj1Dx0qBrd4Biv
+         AF2AjEGWimYAdwUEEONwNJQXg/n9l0LEIqXg78DwV3Y89RP3jXCmVb12N/nqtaKPet7g
+         Ke4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700133442; x=1700738242;
+        d=1e100.net; s=20230601; t=1700133464; x=1700738264;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AZ/TPrRt7wGDAtsL7z75CFLMe7OaDKMtS2L/Acn1Gf8=;
-        b=Q9MtqwrQTI+nvEeI91P74cEkNwm6ru3JJJ2YqA2GLp/0FHsjgHd8WXkTRu0LE80nmE
-         kE9RHTQUnBYV0qC+P1Nh5QhugSsI5oE5ZTlu5zSpeOTn+p2Hv49lD9RDgKlABrwEVDF3
-         35kv6UnvJzeZPZQtAUIL3v8dRkFtBpQuybu0yYmYa4creNhe/UtUslkUUZNt05UI2DcK
-         /Re9SXVE9hy5FDfbc+At0viL8dH4kVC1rJ+fYH5DWNNEGTaIuF+0EUOLZWkpTd9D4ROZ
-         PYvcMbxwNH4RYSoAeplPfzsDgeuP7gGM9LPFTzK217rlpd/iL3SiYfgszrgSu+spp/9Y
-         Z31Q==
-X-Gm-Message-State: AOJu0YzxAbPuO1TGvbdy5tGTBswa0JEi4LcJz+D0PEUZDsYtRnJTVIr8
-        7cNg/C0+ak/xJEMYbM5dkjZwjw==
-X-Google-Smtp-Source: AGHT+IFmmaQlWCVQq+Z4pad7EfT5yzVQ60zAGELZE+CBUonMIq99/eK7f71KJlHmt2PGRw03sXxT6w==
-X-Received: by 2002:a05:622a:19aa:b0:410:a895:21fd with SMTP id u42-20020a05622a19aa00b00410a89521fdmr1794300qtc.23.1700133442100;
-        Thu, 16 Nov 2023 03:17:22 -0800 (PST)
+        bh=0/ViPVFwqUwSC+Tx+7EWOjQPL45nD+KFikxOfTzEf40=;
+        b=KLZVeraWKUDfeBDnF+IsQ9Le9Kl9QAPBeFK1BzN6FIaCVsLZc3TjBGROilI5dmCIWS
+         /Yp9uGnNeu3n0pySkuAIKFDo2zJA79Syy0+tWsrrCA9m2N9cqzSi7txwCBBUrWUtYr+c
+         el+Md6JzLIayMbcNTSBpbTb4bjOZbyImSRDze694Wf514ZBb4Kn1zM+t1SH9QrwsXlJn
+         X2ByCwR1urDXkul0/yaFXSikW2HTvk640NQBbgbfnBS0o9llRd0wnf6rOuufbAfBrpl6
+         W89xw4YmuJ/+jcbUOa9e++d/yyjY3DcbYSIH551j0KBGjZ5rH+gv1q4Z4W7Uh+ONb53q
+         dhtA==
+X-Gm-Message-State: AOJu0YxapByZekk31IiSORilhLbHzxB1HDloEcIMVyorkSH0u/t4SClo
+        hu4lpFCh2E/RGVH9ofI4H8+Uog==
+X-Google-Smtp-Source: AGHT+IGmc3lg9F/gM+4W6WD1vBOiWRD8zNb/8rybZdvYVfRMFHMyluxpL95roHczIvbweCyaSHw1Vg==
+X-Received: by 2002:a05:622a:612:b0:421:c806:cd83 with SMTP id z18-20020a05622a061200b00421c806cd83mr8900859qta.30.1700133464221;
+        Thu, 16 Nov 2023 03:17:44 -0800 (PST)
 Received: from [192.168.212.13] ([12.191.197.195])
-        by smtp.gmail.com with ESMTPSA id r5-20020ac85205000000b0041519614354sm4271080qtn.7.2023.11.16.03.17.19
+        by smtp.gmail.com with ESMTPSA id r5-20020ac85205000000b0041519614354sm4271080qtn.7.2023.11.16.03.17.41
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 03:17:21 -0800 (PST)
-Message-ID: <d8fbd100-2351-4dbe-ae7f-d98a84432589@linaro.org>
-Date:   Thu, 16 Nov 2023 12:17:19 +0100
+        Thu, 16 Nov 2023 03:17:43 -0800 (PST)
+Message-ID: <b25df5a4-d426-418c-b8da-cc92f441f2bf@linaro.org>
+Date:   Thu, 16 Nov 2023 12:17:41 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 00/12] Introduce ExynosAutov920 SoC and SADK board
+Subject: Re: [PATCH v2 10/12] pinctrl: samsung: add exynosautov920 pinctrl
 Content-Language: en-US
 To:     Jaewon Kim <jaewon02.kim@samsung.com>,
         Alim Akhtar <alim.akhtar@samsung.com>,
@@ -71,12 +71,11 @@ Cc:     linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
         linux-pwm@vger.kernel.org, linux-serial@vger.kernel.org
-References: <CGME20231115095852epcas2p21e067efe75275c6abd2aebf04c5c6166@epcas2p2.samsung.com>
- <20231115095609.39883-1-jaewon02.kim@samsung.com>
- <170005362858.21132.4200897251821879805.b4-ty@linaro.org>
- <6e69df6c-10fa-404a-ac02-4880723b8c50@linaro.org>
- <55a0f27c-ea46-40ae-b1e5-e650802b89a8@linaro.org>
- <d6f3d451-6a53-46b6-2263-cc071a9dc44c@samsung.com>
+References: <20231115095609.39883-1-jaewon02.kim@samsung.com>
+ <CGME20231115095856epcas2p1c3ee85750828bec2ee4ab0adeaeaff28@epcas2p1.samsung.com>
+ <20231115095609.39883-11-jaewon02.kim@samsung.com>
+ <ae03b902-fa12-4a33-9a4f-ab3a5956ea5c@linaro.org>
+ <221efdec-4940-031c-73b1-30aed96c76b0@samsung.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -122,7 +121,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d6f3d451-6a53-46b6-2263-cc071a9dc44c@samsung.com>
+In-Reply-To: <221efdec-4940-031c-73b1-30aed96c76b0@samsung.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -135,48 +134,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 04:32, Jaewon Kim wrote:
+On 16/11/2023 04:50, Jaewon Kim wrote:
 > 
-> On 23. 11. 16. 06:17, Krzysztof Kozlowski wrote:
->> On 15/11/2023 22:11, Krzysztof Kozlowski wrote:
->>> On 15/11/2023 14:08, Krzysztof Kozlowski wrote:
->>>> On Wed, 15 Nov 2023 18:55:56 +0900, Jaewon Kim wrote:
->>>>> ExynosAutov920[1] is ARMv8-based automotive-oriented SoC.
->>>>> This SoC is the next generation of exynosautov9 and AE(Automotive Enhanced)
->>>>> IPs are used for safety.
->>>>>
->>>>> This patchset is the minimal set for ExynosAutov920 SoC and SADK board.
->>>>> Currently, ramdisk console is available and Clock, UFS, and USI will be
->>>>> added after this patchset.
->>>>>
->>>>> [...]
->>>> Applied, thanks!
->>>>
->>> And dropped. You did not test it. Please read Samsung SoC maintainer
->>> profile:
->>> https://www.kernel.org/doc/html/latest/process/maintainers.html#arm-samsung-s3c-s5p-and-exynos-arm-architectures
+> On 23. 11. 15. 21:42, Krzysztof Kozlowski wrote:
+>> On 15/11/2023 10:56, Jaewon Kim wrote:
+>>> ExynosAutov920 GPIO has a different register structure.
+>>> In the existing Exynos series, EINT control register enumerated after
+>>> a specific offset (e.g EXYNOS_GPIO_ECON_OFFSET).
+>>> However, in ExynosAutov920 SoC, the register that controls EINT belongs
+>>> to each GPIO group, and each GPIO group has 0x1000 align.
 >>>
->>> I also made announcements on the lists and on social.kernel.org. I don't
->>> know where to announce it more...
->>>
->> To clarify, I dropped only DTS and kept bindings. Let me know if
->> bindings are problematic here...
+>>> This is a structure to protect the GPIO group with S2MPU in VM environment,
+>>> and will only be applied in ExynosAuto series SoCs.
+>> Checkpatch points some warnings:
 >>
->> I also repeated the announcement:
->> https://social.kernel.org/notice/AbqJkj9gOZJ3sG8eCu
->> Please share internally within Samsung, so there will be no surprises.
->>
->> Best regards,
->> Krzysztof
->>
->>
+>> CHECK: Alignment should match open parenthesis
+>> CHECK: Lines should not end with a '('
+>> CHECK: Macro argument reuse 'reg' - possible side-effects?
 > 
-> I already checked and there were no warnings or errors as shown below.
+> I don`t know this happens.
 > 
-> Did I miss something??
+> When I did the checkpatch, there were no problems as shown below.
 
-It's not what is written in maintainer profile. Where do you see the
-result of dtc W=1?
+Didn't you miss some arguments? Lime --strict?
 
 Best regards,
 Krzysztof
