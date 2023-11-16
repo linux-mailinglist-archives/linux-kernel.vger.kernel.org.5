@@ -2,97 +2,220 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7967EEA12
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:44:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B307EEA13
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 00:47:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345589AbjKPXpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 18:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49366 "EHLO
+        id S1345591AbjKPXrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 18:47:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229379AbjKPXo6 (ORCPT
+        with ESMTP id S229379AbjKPXrQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 18:44:58 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB1708E;
-        Thu, 16 Nov 2023 15:44:55 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 41be03b00d2f7-5bd099e3d3cso1038255a12.1;
-        Thu, 16 Nov 2023 15:44:55 -0800 (PST)
+        Thu, 16 Nov 2023 18:47:16 -0500
+Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C57E8E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:47:13 -0800 (PST)
+Received: by mail-vs1-xe2a.google.com with SMTP id ada2fe7eead31-45ef8c21e8aso534041137.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 15:47:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700178295; x=1700783095; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gzRF8uHq6PjJBxbhxhi0V10xOOQOgpxlbEBlX7hXGSU=;
-        b=SB5FjUIdMr2mRBji5nHD9onhiQi+4PCtNnuoGQVedDUuKEFuSKMQzRLmvG6pVybiaL
-         i4Vvs3X85SizHspkiNEvUvABJbD3Ris6fHr1ehsM9kgV4dtl3AMzOLYbCxWuVjTtujhi
-         nnfPf2mvDS9g8kcQiLng5m/RM+Q5lhmby7mbPcb0Rb4U+PSJuVjWqVvYHUPeEw/xB7js
-         X7PEkDYL/Nb6U24lZqr9F6O838MTUPGPN3W1vR6FcP0LnezaY+xZvXncglaSguXBhmGU
-         5ARsMvOgD02V7A8ZZ+GJ7EZbmiHLnhjhdzpyHweXdP/fcAyKAYg1zptH3rjNT/cneQMA
-         CmHA==
+        d=gmail.com; s=20230601; t=1700178432; x=1700783232; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=itBzxpYVA8AZkGZhdmPLdRxYtlcOmy3dzDpekhNS5LI=;
+        b=mKlY/IYFpC2HAImpd3oEARkcBHrZt0lewrD9+fJXhr4gJXRF95K+1JBlPmT1t5yHo8
+         AgY9K1tInguhup/pJOLxW2PuFTljDnCv51B0ig+SmOsjvyj7OhJbQejSlmjo+Bjch4gW
+         4NkgldZQOkF/P0918NyE8yx9D6LTQjf+bA0GYE6ZR4iRSpIuFNHfrWwmdvDcvDi9qFut
+         f5UuyRnwuS+vDXGrUuKhqqZRsztPp6Q/4TYhdgv/RNfI+JWSI8pt3mL+Vw8D3CanswTz
+         6e/wujlVKLRXLprA5k0vUTR3FDG8xRiWi2v6fwNlSlRdPcq7OdV+vPUPQBM2ozRUmnPA
+         Rx1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700178295; x=1700783095;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1700178432; x=1700783232;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=gzRF8uHq6PjJBxbhxhi0V10xOOQOgpxlbEBlX7hXGSU=;
-        b=jJLav6IAHIb+bnwuscxXXY+lDac1tFQYRoHh512GeaXwUMXzK6oYl9d56KWWl489UH
-         KrroZ5QgJTEOlGZRuVSvCtC+wcwsKMcad0xujaMJjTJ8ur60r7Gjmx+VxSWArHynyU3G
-         g1Nf80ahCH4pGi8sWzyUlPfzSPnh28xCqoHpm4cVKtjS4seTXGf1tk7ujMs7PGOti8Wb
-         ik/mREDFkcX+0U5HBsrZ6f2XtyVBdexHOiFl7AW/UlFl8e2HAgfQF7QZvHoJa2uwJdMh
-         AMk+BEFdofrPQFAp6Zm2JnH0GhZcetj6fMe2BKAw+I8Bauh3HlTVCXJguLn3pEhLQf2J
-         qLGQ==
-X-Gm-Message-State: AOJu0YxtMe8/lwhLK+IoKIl5bOyIqVSC1YaKHb1j2tWOD2uK3DE2cCpM
-        cWyYgXnAH6uZhOOL+YYcws0=
-X-Google-Smtp-Source: AGHT+IFYAXnKf+Mqzf4eTA54yG1aQFbfDgf3fpmvkk8Vo+h1M85WnXVJcWXq3Sm/iRTBr/QF2Xm7kw==
-X-Received: by 2002:a05:6a20:3d93:b0:182:119d:2d0e with SMTP id s19-20020a056a203d9300b00182119d2d0emr17452371pzi.20.1700178295271;
-        Thu, 16 Nov 2023 15:44:55 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a8-20020a62bd08000000b006c2d5a31ab9sm284858pff.81.2023.11.16.15.44.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 15:44:54 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 16 Nov 2023 15:44:53 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 6.6 000/603] 6.6.2-rc1 review
-Message-ID: <7585d234-ec25-4a75-8283-0c6452e97ca4@roeck-us.net>
-References: <20231115191613.097702445@linuxfoundation.org>
+        bh=itBzxpYVA8AZkGZhdmPLdRxYtlcOmy3dzDpekhNS5LI=;
+        b=slEYXIbdgaArm3UC+x+hqhRHnp45XncsGT+cw6qVUJNC0Prh/hfcsIPJFjGVxftG95
+         WN7zySLnqSPhCeVvFKmcck+yVXdV3eAm9Oz50xG18acL8O8bVWhu0yUTRyR+462i2l3w
+         9re8NyMVea3/udIu/zNkJm9OzGERw2Unu9KZtq7Lc/m4jeRd9/qjlA4jPfxFpKzPsP+o
+         GhxTVK8UGzhvp/fcm1+x01dUxlbEyqJhfrs6rXyn2jLdtcXZBbQ7ryd3XYIkii8rOo1B
+         XN+Hw6aTOOlp4/ouJNWYiFt+IL7xI8A3g8jCRkLUfK//VxMXHc00ftLnH5t6UOjvrb/B
+         qVQg==
+X-Gm-Message-State: AOJu0YzOT7JXcT9WAni9Bscu7DsYAZWlEmJI9vxDn5KiuCR6b7+tKo84
+        KnrDfW2fSsHLewLcBcSA/WcPNqlJp8Z1Km5r/e4=
+X-Google-Smtp-Source: AGHT+IH4KzQlnV3KvIJLri3KzLbsD+wnGhElBTYIjI0H+UbcOHbLmLEsOmVwV/RMDeahhKGcMtMu/YvxL0TOzf6PqOY=
+X-Received: by 2002:a05:6102:5f09:b0:45e:fde1:b273 with SMTP id
+ ik9-20020a0561025f0900b0045efde1b273mr18038965vsb.29.1700178432072; Thu, 16
+ Nov 2023 15:47:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115191613.097702445@linuxfoundation.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+References: <20231114014313.67232-1-v-songbaohua@oppo.com> <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
+ <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com> <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
+In-Reply-To: <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
+From:   Barry Song <21cnbao@gmail.com>
+Date:   Fri, 17 Nov 2023 07:47:00 +0800
+Message-ID: <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
+Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
+ large folios
+To:     David Hildenbrand <david@redhat.com>
+Cc:     steven.price@arm.com, akpm@linux-foundation.org,
+        ryan.roberts@arm.com, catalin.marinas@arm.com, will@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
+        shy828301@gmail.com, v-songbaohua@oppo.com,
+        wangkefeng.wang@huawei.com, willy@infradead.org, xiang@kernel.org,
+        ying.huang@intel.com, yuzhao@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 02:09:05PM -0500, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 6.6.2 release.
-> There are 603 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
-> 
+On Thu, Nov 16, 2023 at 5:36=E2=80=AFPM David Hildenbrand <david@redhat.com=
+> wrote:
+>
+> On 15.11.23 21:49, Barry Song wrote:
+> > On Wed, Nov 15, 2023 at 11:16=E2=80=AFPM David Hildenbrand <david@redha=
+t.com> wrote:
+> >>
+> >> On 14.11.23 02:43, Barry Song wrote:
+> >>> This patch makes MTE tags saving and restoring support large folios,
+> >>> then we don't need to split them into base pages for swapping out
+> >>> on ARM64 SoCs with MTE.
+> >>>
+> >>> arch_prepare_to_swap() should take folio rather than page as paramete=
+r
+> >>> because we support THP swap-out as a whole.
+> >>>
+> >>> Meanwhile, arch_swap_restore() should use page parameter rather than
+> >>> folio as swap-in always works at the granularity of base pages right
+> >>> now.
+> >>
+> >> ... but then we always have order-0 folios and can pass a folio, or wh=
+at
+> >> am I missing?
+> >
+> > Hi David,
+> > you missed the discussion here:
+> >
+> > https://lore.kernel.org/lkml/CAGsJ_4yXjex8txgEGt7+WMKp4uDQTn-fR06ijv4Ac=
+68MkhjMDw@mail.gmail.com/
+> > https://lore.kernel.org/lkml/CAGsJ_4xmBAcApyK8NgVQeX_Znp5e8D4fbbhGguOkN=
+zmh1Veocg@mail.gmail.com/
+>
+> Okay, so you want to handle the refault-from-swapcache case where you get=
+ a
+> large folio.
+>
+> I was mislead by your "folio as swap-in always works at the granularity o=
+f
+> base pages right now" comment.
+>
+> What you actually wanted to say is "While we always swap in small folios,=
+ we
+> might refault large folios from the swapcache, and we only want to restor=
+e
+> the tags for the page of the large folio we are faulting on."
+>
+> But, I do if we can't simply restore the tags for the whole thing at once
+> at make the interface page-free?
+>
+> Let me elaborate:
+>
+> IIRC, if we have a large folio in the swapcache, the swap entries/offset =
+are
+> contiguous. If you know you are faulting on page[1] of the folio with a
+> given swap offset, you can calculate the swap offset for page[0] simply b=
+y
+> subtracting from the offset.
+>
+> See page_swap_entry() on how we perform this calculation.
+>
+>
+> So you can simply pass the large folio and the swap entry corresponding
+> to the first page of the large folio, and restore all tags at once.
+>
+> So the interface would be
+>
+> arch_prepare_to_swap(struct folio *folio);
+> void arch_swap_restore(struct page *folio, swp_entry_t start_entry);
+>
+> I'm sorry if that was also already discussed.
 
-Build results:
-	total: 157 pass: 157 fail: 0
-Qemu test results:
-	total: 530 pass: 530 fail: 0
+This has been discussed. Steven, Ryan and I all don't think this is a good
+option. in case we have a large folio with 16 basepages, as do_swap_page
+can only map one base page for each page fault, that means we have
+to restore 16(tags we restore in each page fault) * 16(the times of page fa=
+ults)
+for this large folio.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+and still the worst thing is the page fault in the Nth PTE of large folio
+might free swap entry as that swap has been in.
+do_swap_page()
+{
+   /*
+    * Remove the swap entry and conditionally try to free up the swapcache.
+    * We're already holding a reference on the page but haven't mapped it
+    * yet.
+    */
+    swap_free(entry);
+}
 
-Guenter
+So in the page faults other than N, I mean 0~N-1 and N+1 to 15, you might a=
+ccess
+a freed tag.
+
+>
+> BUT, IIRC in the context of
+>
+> commit cfeed8ffe55b37fa10286aaaa1369da00cb88440
+> Author: David Hildenbrand <david@redhat.com>
+> Date:   Mon Aug 21 18:08:46 2023 +0200
+>
+>      mm/swap: stop using page->private on tail pages for THP_SWAP
+>
+>      Patch series "mm/swap: stop using page->private on tail pages for TH=
+P_SWAP
+>      + cleanups".
+>
+>      This series stops using page->private on tail pages for THP_SWAP, re=
+places
+>      folio->private by folio->swap for swapcache folios, and starts using
+>      "new_folio" for tail pages that we are splitting to remove the usage=
+ of
+>      page->private for swapcache handling completely.
+>
+> As long as the folio is in the swapcache, we even do have the proper
+> swp_entry_t start_entry available as folio_swap_entry(folio).
+>
+> But now I am confused when we actually would have to pass
+> "swp_entry_t start_entry". We shouldn't if the folio is in the swapcache =
+...
+>
+
+Nop, hitting swapcache doesn't necessarily mean tags have been restored.
+when A forks B,C,D,E,F. and A, B, C, D, E ,F share the swapslot.
+as we have two chances to hit swapcache:
+1. swap out, unmap has been done but folios haven't been dropped
+2. swap in, shared processes allocate folios and add to swapcache
+
+for 2, If A gets fault earlier than B, A will allocate folio and add
+it to swapcache.
+Then B will hit the swapcache. But If B's CPU is faster than A, B still mig=
+ht
+be the one mapping PTE earlier than A though A is the one which has
+added the page to swapcache. we have to make sure MTE is there when
+mapping is done.
+
+> --
+> Cheers,
+>
+> David / dhildenb
+>
+
+Thanks
+Barry
