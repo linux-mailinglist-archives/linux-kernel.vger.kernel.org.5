@@ -2,48 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE547EE135
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:14:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D700B7EE145
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:15:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345163AbjKPNOP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:14:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52056 "EHLO
+        id S1345043AbjKPNP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 08:15:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235757AbjKPNOE (ORCPT
+        with ESMTP id S230182AbjKPNPz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:14:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 7B66C19A3;
-        Thu, 16 Nov 2023 05:13:56 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E72F41595;
-        Thu, 16 Nov 2023 05:14:41 -0800 (PST)
-Received: from [10.57.3.57] (unknown [10.57.3.57])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 05F2C3F73F;
-        Thu, 16 Nov 2023 05:13:52 -0800 (PST)
-Message-ID: <64f78eec-61fb-447f-bbba-706bd5a54cd7@arm.com>
-Date:   Thu, 16 Nov 2023 13:14:49 +0000
+        Thu, 16 Nov 2023 08:15:55 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [46.235.227.172])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCB7CE;
+        Thu, 16 Nov 2023 05:15:52 -0800 (PST)
+Received: from [100.116.17.117] (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: cristicc)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id 4C9A56607346;
+        Thu, 16 Nov 2023 13:15:49 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700140550;
+        bh=FheqyWG5oYvdCs8XtH6cmP60r9uz+9KnrY6VzNg5O78=;
+        h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+        b=dm27RZPNxmcmHyvomtwlEgtdO2kSvRTcyqGzL8VH0w8o5o0vVlJOZ2j5Nz0H06egL
+         djXzOYk/C3/Tdp+XcYP9FRTbNQ3Nepoe08B/Jc8SforDRhp1DYbfu46Th2xQV8DjO+
+         FQFujPBoHELizF0oDJcFBzjD5q7fJgJpdkHZlQ+A2rHcURp+zwJALeZi9yVia4Qlvw
+         Jf/NwAaaod2Wz2DgOKw7N0DOR6pNuu1hDKCk7PngXmB8d4hPw8ZOKgQYuqQ+E2ueH1
+         SbIg8i5QjI0C7kevhMN5N6XYzG6navy0j9hPV15fj25yq8yrIOJfsDgPqlafTQt16T
+         CyXa6LEC5tR0g==
+Message-ID: <cb6597be-2185-45ad-aa47-c6804ff68c85@collabora.com>
+Date:   Thu, 16 Nov 2023 15:15:46 +0200
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/2] sched/schedutil: rework performance estimation
+Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
+ beaglev-starlight: Enable gmac
 Content-Language: en-US
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     wyes.karny@amd.com, peterz@infradead.org, linux-pm@vger.kernel.org,
-        rafael@kernel.org, vschneid@redhat.com, bristot@redhat.com,
-        bsegall@google.com, rostedt@goodmis.org, dietmar.eggemann@arm.com,
-        juri.lelli@redhat.com, beata.michalska@arm.com,
-        linux-kernel@vger.kernel.org, qyousef@layalina.io,
-        viresh.kumar@linaro.org, mingo@redhat.com, mgorman@suse.de
-References: <20231026170913.32605-1-vincent.guittot@linaro.org>
- <20231026170913.32605-2-vincent.guittot@linaro.org>
- <83d6a790-3d18-4922-850b-b60e88761786@arm.com>
- <CAKfTPtCLc3z6k9MwW6XKHjbh78AFrAg1T1MONYtf8N8GGR6fGQ@mail.gmail.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-In-Reply-To: <CAKfTPtCLc3z6k9MwW6XKHjbh78AFrAg1T1MONYtf8N8GGR6fGQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From:   Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+To:     Andrew Lunn <andrew@lunn.ch>, Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
+ <f253b50a-a0ac-40c6-b13d-013de7bac407@lunn.ch>
+ <233a45e1-15ac-40da-badf-dee2d3d60777@collabora.com>
+In-Reply-To: <233a45e1-15ac-40da-badf-dee2d3d60777@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -51,99 +80,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vincent,
-
-I know that there is v3, but just to respond to this below.
-
-On 10/31/23 09:48, Vincent Guittot wrote:
-> Hi Lukasz,
-> 
-> On Mon, 30 Oct 2023 at 18:45, Lukasz Luba <lukasz.luba@arm.com> wrote:
->>
->> Hi Vincent,
->>
->> On 10/26/23 18:09, Vincent Guittot wrote:
->>> The current method to take into account uclamp hints when estimating the
->>> target frequency can end into situation where the selected target
->>> frequency is finally higher than uclamp hints whereas there are no real
->>> needs. Such cases mainly happen because we are currently mixing the
->>> traditional scheduler utilization signal with the uclamp performance
->>> hints. By adding these 2 metrics, we loose an important information when
->>> it comes to select the target frequency and we have to make some
->>> assumptions which can't fit all cases.
+On 10/30/23 00:53, Cristian Ciocaltea wrote:
+> On 10/29/23 20:46, Andrew Lunn wrote:
+>> On Sun, Oct 29, 2023 at 06:27:12AM +0200, Cristian Ciocaltea wrote:
+>>> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
+>>> RGMII-ID.
 >>>
->>> Rework the interface between the scheduler and schedutil governor in order
->>> to propagate all information down to the cpufreq governor.
->>>
->>> effective_cpu_util() interface changes and now returns the actual
->>> utilization of the CPU with 2 optional inputs:
->>> - The minimum performance for this CPU; typically the capacity to handle
->>>     the deadline task and the interrupt pressure. But also uclamp_min
->>>     request when available.
->>> - The maximum targeting performance for this CPU which reflects the
->>>     maximum level that we would like to not exceed. By default it will be
->>>     the CPU capacity but can be reduced because of some performance hints
->>>     set with uclamp. The value can be lower than actual utilization and/or
->>>     min performance level.
+>>> TODO: Verify if manual adjustment of the RX internal delay is needed. If
+>>> yes, add the mdio & phy sub-nodes.
 >>
->> You have probably missed my question in the last v1 patch set.
+>> Please could you try to get this tested. It might shed some light on
+>> what is going on here, since it is a different PHY.
 > 
-> Yes, sorry
-> 
->>
->> The description above needs a bit of clarification, since looking at the
->> patches some dark corners are introduced IMO:
->>
->> Currently, we have a less aggressive power saving policy than this
->> proposal.
->>
->> The questions:
->> What if the PD has 4 CPUs, the max util found is 500 and is from a CPU
->> w/ uclamp_max, but there is another CPU with normal utilization 499?
->> What should be the final frequency for that PD?
-> 
-> We now follow the same sequence everywhere which can be summarized by:
-> 
-> for each cpu sharing the same frequency domain:
->      util = cpu_util(cpu)
->      eff_util = effective_cpu_util(util, &min, &max)
->      eff_util = sugov_effective_cpu_perf(eff_util, min, max) which
-> applies the dvfs headroom if needed
->      max_util = max(max_util, eff_util);
-> 
-> EAS anticipates the impact of the waking task on utilization and max
-> but the end result is the same as above once the task is enqueued so I
-> didn't show it for simplicity
-> 
-> Coming back to your example
->    CPU0 has uclamp_max = 500 and an actual utilization above 500. Its
-> eff_util will be 500
->    CPU1 doesn't have uclamp_max constraint and an actual utilization of
-> 499 which will be increase with dvfs headroom to 623 in
-> sugov_effective_cpu_perf()
-> 
-> The final max util will be 623
-> 
-> With the current implementation we apply the dvfs headroom to the
-> final max_util (which is the CPU0 with uclamp_max == 500) whereas we
-> now apply the dvfs headroom on each CPU inside
-> sugov_effective_cpu_perf()
-> 
-> The main difference is that if CPU1 has an actual utilization of 400,
-> the max_util of the frequency domain will be 500 whereas it is 625
-> after applying dvfs headroom with current implementation
-> 
->>
->> In current design, where we care more about 'delivered performance
->> to the tasks' than power saving, the +20% would be applied for the
->> frequency. Therefore if that CPU with 499 util doesn't have uclamp_max,
->> it would get a decent amount of idle time for its tasks (to compensate
->> some workload variation).
-> 
-> CPU1 with 499 still gets its 25% margin or I missed something in your example ?
+> Actually, this is the main reason I added the patch. I don't have access
+> to this board, so it would be great if we could get some help with testing.
 
-You understood this correctly. I don't have more questions. It should
-than work OK.
+@Emil, @Conor: Any idea who might help us with a quick test on the
+BeagleV Starlight board?
 
 Thanks,
-Lukasz
+Cristian
