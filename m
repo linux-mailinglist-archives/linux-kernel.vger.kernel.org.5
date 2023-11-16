@@ -2,198 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2773E7EE1C8
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 212547EE1CB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 14:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345257AbjKPNqN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 08:46:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37450 "EHLO
+        id S1345241AbjKPNqy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 08:46:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35030 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345244AbjKPNqH (ORCPT
+        with ESMTP id S231130AbjKPNqw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 08:46:07 -0500
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 632B5CE;
-        Thu, 16 Nov 2023 05:46:02 -0800 (PST)
-Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.57])
-        by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4SWLnW1mGbz1P8Gy;
-        Thu, 16 Nov 2023 21:42:39 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Thu, 16 Nov 2023 21:46:00 +0800
-Message-ID: <9cc196d7-0c4f-ef09-53b8-362d5eb599a6@huawei.com>
-Date:   Thu, 16 Nov 2023 21:45:59 +0800
+        Thu, 16 Nov 2023 08:46:52 -0500
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA065C1;
+        Thu, 16 Nov 2023 05:46:49 -0800 (PST)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5afabb23900so9136367b3.2;
+        Thu, 16 Nov 2023 05:46:49 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700142409; x=1700747209;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ZMksHTtyECe9fxBa+1TFlBB1X6sF0c8fgEakoogEF3w=;
+        b=gi5t636L7Ol/3QDOSMH+fKP+PwvZVwqxOoBhxhw+1A78IqdmfXSFOhnJe6SSvNGzVb
+         1N9alt/Taip0SGKktTOJY6CryEHR/esmXT7E+0YZ0L2t+Yay4GwKxZ8uVBnTiRQL8R9L
+         tMAZiYlaVA1sPGLGlxkqQhflLqD3J0olvVxpa7vod4fs3v2mA0j6YYwM+sJ+xQ/5kP9B
+         kpkjuvZ7iNyjw0ZYd9c9iEmHNDyQn7gJcixJxM1HzorlbK02bodwKNIFX8m3AiEtfGt4
+         ogPgPNyFFETIy8vhxKR7YLVcig1qiKTCbhqvDcTk8s/r5qJm26Mlgc2qyphFY/NiP7p0
+         YKUA==
+X-Gm-Message-State: AOJu0Ywy+QTlcuDnFwxoSD0E2waOewu8UhlyGKNXVJBcQAZZtM7MxMKx
+        WcYvCt6rHIJnYO34rGXkdAbwYxaE4A0d2A==
+X-Google-Smtp-Source: AGHT+IE+xbYQf1kHUD/kV8rfL2kAWgs4eatMN1heFMiO+gXchGPtA+ci0IvkeXYnHskfDZE07qAbmA==
+X-Received: by 2002:a81:c94d:0:b0:5c5:b0f7:1087 with SMTP id c13-20020a81c94d000000b005c5b0f71087mr234585ywl.40.1700142408913;
+        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
+        by smtp.gmail.com with ESMTPSA id v207-20020a8148d8000000b005a206896d62sm998237ywa.111.2023.11.16.05.46.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-5afabb23900so9136137b3.2;
+        Thu, 16 Nov 2023 05:46:48 -0800 (PST)
+X-Received: by 2002:a25:b4b:0:b0:d9a:be79:c902 with SMTP id
+ 72-20020a250b4b000000b00d9abe79c902mr15874410ybl.53.1700142408226; Thu, 16
+ Nov 2023 05:46:48 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v3] scsi: libsas: Fix set zero-address when device-type !=
- NO_DEVICE
-Content-Language: en-CA
-To:     John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <damien.lemoal@opensource.wdc.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangfenglong@huawei.com>, <chenxiang66@hisilicon.com>
-References: <20231116035241.13730-1-yangxingui@huawei.com>
- <dea5cabb-7d9a-44b0-85e4-878c13233f6a@oracle.com>
-From:   yangxingui <yangxingui@huawei.com>
-In-Reply-To: <dea5cabb-7d9a-44b0-85e4-878c13233f6a@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.120.108]
-X-ClientProxiedBy: dggpemm500007.china.huawei.com (7.185.36.183) To
- dggpemd100001.china.huawei.com (7.185.36.94)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20231115213358.33400-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 16 Nov 2023 14:46:36 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
+Message-ID: <CAMuHMdVGL8-jpUV9M+J_EhcB7=XfyesreFBPf6Jtvg6Cq_2xTA@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: dt-bindings: renesas,rz-ssi: Document RZ/Five SoC
+To:     Prabhakar <prabhakar.csengg@gmail.com>
+Cc:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, John
+On Wed, Nov 15, 2023 at 10:34 PM Prabhakar <prabhakar.csengg@gmail.com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> The SSI block on the RZ/Five SoC is identical to one found on the RZ/G2UL
+> SoC. "renesas,r9a07g043-ssi" compatible string will be used on the RZ/Five
+> SoC so to make this clear and to keep this file consistent, update the
+> comment to include RZ/Five SoC.
+>
+> No driver changes are required as generic compatible string
+> "renesas,rz-ssi" will be used as a fallback on RZ/Five SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Thanks for you reply.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 2023/11/16 18:13, John Garry wrote:
-> On 16/11/2023 03:52, Xingui Yang wrote:
-> 
-> I think that patch title can be improved, but I would need to know more 
-> about the problem before suggesting an improvement.
-How about "Fix port add phy failed" ?
-> 
->> Firstly, when ex_phy is added to the parent port, ex_phy->port is not 
->> set.
-> 
-> That seems correct, but why mention this now?
-> 
->> As a result, sas_port_delete_phy() won't be called in
->> sas_unregister_devs_sas_addr(), and although ex_phy's sas_address is 
->> zero,
->> it is not deleted from the parent port's phy_list.
-> 
-> I am not sure why you mention this now either. You seem to be describing 
-> how the problem occurs without actually mentioning what the problem is.
-> 
->>
->> Secondly, phy->attached_sas_addr will be set to a zero-address when
->> phy->linkrate < SAS_LINK_RATE_1_5_GBPS and device-type != NO_DEVICE 
->> during
->> device registration, such as stp. It will create a new port and all other
->> ex_phys whose addresses are zero will be added to the new port in
->> sas_ex_get_linkrate(), and it may trigger BUG() as follows:
-> 
-> I think that it would be better to first mention this crash, i.e. the 
-> problem, how you recreate it, and then describe how and why it happens, 
-> and then tell us how you will fix it
-How about follows:
+Gr{oetje,eeting}s,
 
-The following processes trigger a BUG(). A new port port-7:7:0 that 
-created by a new zero-address sata device tries to add phy-7:7:19 had 
-the same zero-address, but phy-7:7:19 is already part of another port.
+                        Geert
 
-[562240.051046] sas: phy19 part of wide port with phy16
-[562240.051197] sas: ex 500e004aaaaaaa1f phy19:U:0 attached: 
-0000000000000000 (no device)
-[562240.051203] sas: done REVALIDATING DOMAIN on port 0, pid:435909, res 0x0
-[562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
-[562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 
-0000000000000000 (stp)
-[562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's 
-already part of another port
-[562240.085064] ------------[ cut here ]------------
-[562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
-[562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
-[562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 
-0x0000000003bcbebf)
-[562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain 
-[libsas]
-[562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
-[562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.479751] sp : ffff0000300cfa70
-[562240.674822] Call trace:
-[562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
-[562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
-[562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
-[562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
-[562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
-[562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
-[562240.756014]  process_one_work+0x1b4/0x448
-[562240.764548]  worker_thread+0x54/0x468
-[562240.772562]  kthread+0x134/0x138
-[562240.779989]  ret_from_fork+0x10/0x18
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-We found that phy-7:7:19's port is not set when added to the parent 
-port,then it hadn't be deleted from the parent port's phy_list when call
-sas_unregister_devs_sas_addr(), and the link rate of the new attached 
-sata device is 5 which is less then 1.5G/s, then the sata device's 
-sas_address was set to a zero-address.
-
-Fix the problem as follows:
-Firstly, set ex_phy->port when ex_phy is added to the parent port. And 
-set ex_dev->parent_port to NULL when the number of PHYs of the parent 
-port becomes 0.
-
-Secondly, don't set a zero-address for phy->attached_sas_addr when
-phy->attached_dev_type != NO_DEVICE.
-
-Thanks,
-Xingui
-
-> 
->>
->> [562240.051046] sas: phy19 part of wide port with phy16
->> [562240.051197] sas: ex 500e004aaaaaaa1f phy19:U:0 attached: 
->> 0000000000000000 (no device)
->> [562240.051203] sas: done REVALIDATING DOMAIN on port 0, pid:435909, 
->> res 0x0
->>
->> [562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
->> [562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 
->> 0000000000000000 (stp)
->> [562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's 
->> already part of another port
->> [562240.085064] ------------[ cut here ]------------
->> [562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
->> [562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
->> [562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 
->> 0x0000000003bcbebf)
->> [562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain 
->> [libsas]
->> [562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
->> [562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
->> [562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
->> [562240.479751] sp : ffff0000300cfa70
->> [562240.674822] Call trace:
->> [562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
->> [562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
->> [562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
->> [562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
->> [562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
->> [562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
->> [562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
->> [562240.756014]  process_one_work+0x1b4/0x448
->> [562240.764548]  worker_thread+0x54/0x468
->> [562240.772562]  kthread+0x134/0x138
->> [562240.779989]  ret_from_fork+0x10/0x18
->>
->> We've done the following to solve this problem:
-> 
-> I'd use "Fix the problem as follows:""
-> 
->> Firstly, set ex_phy->port when ex_phy is added to the parent port. And 
->> set
->> ex_dev->parent_port to NULL when the number of PHYs of the parent port
->> becomes 0.
-> 
-> Thanks,
-> John
-> 
-> .
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
