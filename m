@@ -2,150 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 432EA7EE42D
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC51C7EE42A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:25:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231135AbjKPPZm convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 10:25:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
+        id S230254AbjKPPZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:25:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230435AbjKPPZj (ORCPT
+        with ESMTP id S229996AbjKPPZQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:25:39 -0500
-Received: from ex01.ufhost.com (ex01.ufhost.com [61.152.239.75])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A95C319D;
-        Thu, 16 Nov 2023 07:25:30 -0800 (PST)
-Received: from EXMBX165.cuchost.com (unknown [175.102.18.54])
-        (using TLSv1 with cipher DHE-RSA-AES256-SHA (256/256 bits))
-        (Client CN "EXMBX165", Issuer "EXMBX165" (not verified))
-        by ex01.ufhost.com (Postfix) with ESMTP id 84ABC24DCA6;
-        Thu, 16 Nov 2023 23:25:13 +0800 (CST)
-Received: from EXMBX172.cuchost.com (172.16.6.92) by EXMBX165.cuchost.com
- (172.16.6.75) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 16 Nov
- 2023 23:25:13 +0800
-Received: from localhost.localdomain (202.188.176.82) by EXMBX172.cuchost.com
- (172.16.6.92) with Microsoft SMTP Server (TLS) id 15.0.1497.42; Thu, 16 Nov
- 2023 23:25:05 +0800
-From:   Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-To:     <conor@kernel.org>
-CC:     <conor+dt@kernel.org>, <devicetree@vger.kernel.org>,
-        <jisheng.teoh@starfivetech.com>,
-        <krzysztof.kozlowski+dt@linaro.org>,
-        <leyfoon.tan@starfivetech.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <mark.rutland@arm.com>,
-        <peterz@infradead.org>, <robh+dt@kernel.org>, <tglx@linutronix.de>,
-        <will@kernel.org>
-Subject: Re: [PATCH v3 2/2] dt-bindings: perf: starfive: Add StarLink PMU
-Date:   Thu, 16 Nov 2023 23:24:56 +0800
-Message-ID: <20231116152456.1039195-1-jisheng.teoh@starfivetech.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20231116-penalize-turbojet-bf8ea2a9a2ad@squawk>
-References: <20231116-penalize-turbojet-bf8ea2a9a2ad@squawk>
+        Thu, 16 Nov 2023 10:25:16 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA5FE1AD
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:25:11 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-d9caf5cc948so882911276.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:25:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700148311; x=1700753111; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yoms34FsK4SCyToEqB/I9dPW/3PKklM8+dwv2tCvAnA=;
+        b=Lb7MCzE0SxQ3Ua3/bPJ4EVpPMCcmzztOlY0013ddU4Al9iXQQbpuXVgXUixbxW4a/h
+         KR7RatDMtKTrx0fZ0uzeR7BLOnTySJxomDXdTTmF7J7gpo3XTFWuIdgOdI3E4QjrULtL
+         uwUFanfcu4LqGFC7ZJvZ4PuDXs7/68OKyOiMdBSHMqpAh/cwWcbR3hwW8gvRa3hGPPWC
+         LAe8uUQ2wC9K9t3HFP2JS9W0/K6/0yus1cY0CVVpSwuFdhWXWvVxGa/a3TvSEHdp9jb2
+         RQ60i1JtqurM5JkymGQ4Mli8xzrOvXjHh87YT9YqCq98pJCGy0l0jGLRp/Ab+MKg+kK7
+         WCag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700148311; x=1700753111;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Yoms34FsK4SCyToEqB/I9dPW/3PKklM8+dwv2tCvAnA=;
+        b=soab2JAf7TVETXbCAuI6PyQD+u/HWuOgj7fYTHv7YIsxgGaI+ERbVCTtjWcT49g5id
+         3eoC/DzOWcLHMi9gRq6DDexJmolxDdDorHhJToHI6kB5kR+V/DOQo8H7hn4jhOQG8TBf
+         EMZoGlSShzxbiTsL4GCfkPCfa1YxT8qufvY5S8ZmuBrEb77tmKBzndQD8WE4m74gjZE1
+         IqNB2glP2ZPvw7wKq2X/UC4kpNOnTpoQVIe6dMyGDr8+XjBk3VgvmuhOWVAUxxJB/kBJ
+         2N2RO6sAfOVlA1aGNxdERSeU4WmxFg0/l4QB502laJnVW8RqMcKEPyw4vNFipk2mXj6w
+         Ksdw==
+X-Gm-Message-State: AOJu0YzE2gzjBx1ET8pQPJRy+wlnhLQ74RxtM3rCFOp6VJUfrjM2oFdP
+        cVdLNM337cCpX/9kzfqCcC1Z8SJo+RERY60gp+9URg==
+X-Google-Smtp-Source: AGHT+IEdrGI2GaaFm4NnHJNyeJQd7vfEPu7GnR/TVL6G1x7zK7jKjjfDyMj7aIw96WZz5PeFM6EmB66JQ2RRuAuL0Jw=
+X-Received: by 2002:a25:e751:0:b0:da0:514a:8f42 with SMTP id
+ e78-20020a25e751000000b00da0514a8f42mr14661508ybh.32.1700148311009; Thu, 16
+ Nov 2023 07:25:11 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [202.188.176.82]
-X-ClientProxiedBy: EXCAS062.cuchost.com (172.16.6.22) To EXMBX172.cuchost.com
- (172.16.6.92)
-X-YovoleRuleAgent: yovoleflag
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-4-quic_bibekkum@quicinc.com> <CAA8EJpoRmm42aAvyX61o3tMWXszUZmfFvJEtnNDEfYdDqy4Y0g@mail.gmail.com>
+ <72b30354-0497-45cf-8b71-e4f265eb0005@quicinc.com> <CAA8EJprPE=z2VN5LkaUyLyvYpx6i1eF9dyxOzN_L86pi5tmU-Q@mail.gmail.com>
+ <0d290a5c-081f-4dfa-af9a-b061e6134662@quicinc.com>
+In-Reply-To: <0d290a5c-081f-4dfa-af9a-b061e6134662@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Thu, 16 Nov 2023 17:24:59 +0200
+Message-ID: <CAA8EJprHppoN6rg8-rS1F+4kynQqmV1L3OiHFnJ0HyrshywFig@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
+To:     Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+Cc:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org,
+        a39.skl@gmail.com, konrad.dybcio@linaro.org,
+        quic_pkondeti@quicinc.com, quic_molvera@quicinc.com,
+        linux-arm-msm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, qipl.kernel.upstream@quicinc.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 14:34:00 +0000
-Conor Dooley <conor@kernel.org> wrote:
+On Thu, 16 Nov 2023 at 14:45, Bibek Kumar Patro
+<quic_bibekkum@quicinc.com> wrote:
+>
+>
+>
+> On 11/15/2023 4:33 PM, Dmitry Baryshkov wrote:
+> > On Wed, 15 Nov 2023 at 11:45, Bibek Kumar Patro
+> > <quic_bibekkum@quicinc.com> wrote:
+> >>
+> >> On 11/14/2023 7:45 PM, Dmitry Baryshkov wrote:
+> >>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
+> >>> <quic_bibekkum@quicinc.com> wrote:
+> >>>>
+> >>>> Context caching is re-enabled in the prefetch buffer for Qualcomm SoCs
+> >>>> through SoC specific reset ops, which is disabled in the default MMU-500
+> >>>> reset ops, but is expected for context banks using ACTLR register to
+> >>>> retain the prefetch value during reset and runtime suspend.
+> >>>
+> >>> Please refer to Documentation/process/submitting-patches.rst and
+> >>> rephrase this following the rules there.
+> >>>
+> >>
+> >> Noted, will go through the description once and rephrase it
+> >> in next version complying with rules.
+> >>
+> >>>>
+> >>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+> >>>> ---
+> >>>>    drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 ++++++++++++++++++----
+> >>>>    1 file changed, 21 insertions(+), 4 deletions(-)
+> >>>>
+> >>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>> index 0eaf6f2a2e49..fa867b1d9d16 100644
+> >>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+> >>>> @@ -478,11 +478,28 @@ static int qcom_smmu_def_domain_type(struct device *dev)
+> >>>>           return match ? IOMMU_DOMAIN_IDENTITY : 0;
+> >>>>    }
+> >>>>
+> >>>> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+> >>>> +{
+> >>>> +       int i;
+> >>>> +       u32 reg;
+> >>>> +
+> >>>> +       arm_mmu500_reset(smmu);
+> >>>> +
+> >>>> +       /* Re-enable context caching after reset */
+> >>>> +       for (i = 0; i < smmu->num_context_banks; ++i) {
+> >>>> +               reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
+> >>>> +               reg |= CPRE;
+> >>>> +               arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
+> >>>> +       }
+> >>>> +
+> >>>> +       return 0;
+> >>>> +}
+> >>>> +
+> >>>>    static int qcom_sdm845_smmu500_reset(struct arm_smmu_device *smmu)
+> >>>>    {
+> >>>>           int ret;
+> >>>>
+> >>>> -       arm_mmu500_reset(smmu);
+> >>>> +       qcom_smmu500_reset(smmu);
+> >>>
+> >>> Is this applicable for sdm845? For all other platforms supported by
+> >>> qcom_smmu_500 implementation?
+> >>>
+> >>
+> >> In arm_mmu500_reset operation drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+> >> CPRE bit is reset for all SoC based on mmu500 platform, hence for all
+> >> Qualcomm SoCs including sm845 we are setting back the CPRE bit.
+> >
+> > The errata for the CoreLink MMU-500 requires CPRE to be disabled for
+> > all revisions before r2p2. Do we know whether these SoC used CoreLink
+> > MMU-500 and which version of it?
+> >
+>
+> Just checked all these SoCs are using r2p4 revision.
+> So CPRE needs to be enabled back here then?
 
-> On Thu, Nov 16, 2023 at 10:10:35AM +0800, Ji Sheng Teoh wrote:
-> > On Wed, 15 Nov 2023 20:03:53 +0000
-> > Conor Dooley <conor@kernel.org> wrote:  
-> > > On Wed, Nov 15, 2023 at 11:36:08AM +0800, Ji Sheng Teoh wrote:  
-> > > > Add device tree binding for StarFive's StarLink PMU (Performance
-> > > > Monitor Unit).
-> > > > 
-> > > > Signed-off-by: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > > > ---
-> > > >  .../bindings/perf/starfive,starlink-pmu.yaml  | 46
-> > > > +++++++++++++++++++ 1 file changed, 46 insertions(+)
-> > > >  create mode 100644
-> > > > Documentation/devicetree/bindings/perf/starfive,starlink-pmu.yaml
-> > > > 
-> > > > diff --git
-> > > > a/Documentation/devicetree/bindings/perf/starfive,starlink-pmu.yaml
-> > > > b/Documentation/devicetree/bindings/perf/starfive,starlink-pmu.yaml
-> > > > new file mode 100644 index 000000000000..a9426a7faeae ---
-> > > > /dev/null +++
-> > > > b/Documentation/devicetree/bindings/perf/starfive,starlink-pmu.yaml
-> > > >    
-> > > 
-> > > btw, since you changed the compatible, the filename should have
-> > > been changed to match it.  
-> > 
-> > The intention to keep the filename generic is to allow addition of
-> > new version of StarLink PMU in future if any, similar to what
-> > arm,cmn.yaml is doing. Hope that makes sense.  
-> 
-> No, please keep the filename matching the compatible. Even if the
-> filename contains "500", there's nothing stopping you from then adding
-> other pmu variants. There are many many examples of this in the tree.
-> 
+can be enabled, yes.
 
-Sure, will do that in v4. 
+>
+> >>
+> >>>>
+> >>>>           /*
+> >>>>            * To address performance degradation in non-real time clients,
+> >>>> @@ -509,7 +526,7 @@ static const struct arm_smmu_impl qcom_smmu_500_impl = {
+> >>>>           .init_context = qcom_smmu_init_context,
+> >>>>           .cfg_probe = qcom_smmu_cfg_probe,
+> >>>>           .def_domain_type = qcom_smmu_def_domain_type,
+> >>>> -       .reset = arm_mmu500_reset,
+> >>>> +       .reset = qcom_smmu500_reset,
+> >>>>           .write_s2cr = qcom_smmu_write_s2cr,
+> >>>>           .tlb_sync = qcom_smmu_tlb_sync,
+> >>>>    };
+> >>>> @@ -528,7 +545,7 @@ static const struct arm_smmu_impl sm8550_smmu_500_impl = {
+> >>>>           .init_context = qcom_smmu_init_context,
+> >>>>           .cfg_probe = qcom_smmu_cfg_probe,
+> >>>>           .def_domain_type = qcom_smmu_def_domain_type,
+> >>>> -       .reset = arm_mmu500_reset,
+> >>>> +       .reset = qcom_smmu500_reset,
+> >>>>           .write_s2cr = qcom_smmu_write_s2cr,
+> >>>>           .tlb_sync = qcom_smmu_tlb_sync,
+> >>>>    };
+> >>>> @@ -544,7 +561,7 @@ static const struct arm_smmu_impl qcom_adreno_smmu_v2_impl = {
+> >>>>    static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
+> >>>>           .init_context = qcom_adreno_smmu_init_context,
+> >>>>           .def_domain_type = qcom_smmu_def_domain_type,
+> >>>> -       .reset = arm_mmu500_reset,
+> >>>> +       .reset = qcom_smmu500_reset,
+> >>>>           .alloc_context_bank = qcom_adreno_smmu_alloc_context_bank,
+> >>>>           .write_sctlr = qcom_adreno_smmu_write_sctlr,
+> >>>>           .tlb_sync = qcom_smmu_tlb_sync,
+> >>>> --
+> >>>> 2.17.1
+> >>>>
+> >>>
+> >>>
+> >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
 
-> > > > @@ -0,0 +1,46 @@
-> > > > +# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-> > > > +%YAML 1.2
-> > > > +---
-> > > > +$id:
-> > > > http://devicetree.org/schemas/perf/starfive,starlink-pmu.yaml#
-> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml# +
-> > > > +title: StarFive StarLink PMU
-> > > > +
-> > > > +maintainers:
-> > > > +  - Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> > > > +
-> > > > +description:
-> > > > +  StarFive's StarLink PMU integrates one or more CPU cores
-> > > > with a shared L3
-> > > > +  memory system. The PMU support overflow interrupt, up to 16
-> > > > programmable
-> > > > +  64bit event counters, and an independent 64bit cycle counter.
-> > > > +  StarLink PMU is accessed via MMIO.
-> > > > +
-> > > > +properties:
-> > > > +  compatible:
-> > > > +    const: starfive,starlink-500-pmu    
-> > > 
-> > > So this is not what I had in mind by a "device". I was looking
-> > > for a compatible representing an soc in which this IP had been
-> > > integrated. A soc-specific compatible, rather than something
-> > > generic, is requirement for devicetree - we don't want various
-> > > integrations of this IP to all be using a generic compatible when
-> > > there may be subtle (or less subtle) differences between
-> > > integrations.
-> > > 
-> > > I'm trying to come up with the syntax for enforcing having two
-> > > compatibles with your current one as the fallback, but I have yet
-> > > to come up with the correct syntax for that that works correctly.
-> > > 
-> > > Hopefully by the time you get some feedback on the driver side of
-> > > this submission I will have a concrete suggestion for what to do
-> > > here.  
-> > 
-> > Thanks Conor for the enlightenment. In the meantime, to fit the
-> > requirement I would suggest going for
-> > "starfive,jh8100-starlink-pmu", making it JH8100 SOC specific if
-> > that makes sense.  
-> 
-> Okay, you could definitely do that!
-> 
-> Cheers,
-> Conor.
-> 
 
-Ok, will use that in v4. Thanks!
+
+-- 
+With best wishes
+Dmitry
