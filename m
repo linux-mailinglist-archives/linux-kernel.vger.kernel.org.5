@@ -2,132 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DC907EDA99
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B747B7EDA9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 05:10:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344721AbjKPEJa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 23:09:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36902 "EHLO
+        id S1344691AbjKPEKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 23:10:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229692AbjKPEJ1 (ORCPT
+        with ESMTP id S230207AbjKPEKd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 23:09:27 -0500
-Received: from m1313.mail.163.com (m1313.mail.163.com [220.181.13.13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id EF606194;
-        Wed, 15 Nov 2023 20:09:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Content-Type:MIME-Version:
-        Message-ID; bh=Lm+lGQ6cuTe+iguvJaCIfyWXgvW+qe8m5TXZ8O2Dx8g=; b=A
-        hCVZXUdwDlLx4W6LruaAt1/ZFmVEnUjrKCLYBee356O8nEUIclNP7t0UdwF+ON8i
-        Q4Yz6uoLRVLQBUx0s3+E9Tsi555rsaIc6Du49qeXjf5PIPYycQctlpTqIB6TF8BK
-        RVXG5FfhIN+vaQ+hwlyJwTmp/qyrlsz7y9u7Bim4x0=
-Received: from 00107082$163.com ( [111.35.186.243] ) by ajax-webmail-wmsvr13
- (Coremail) ; Thu, 16 Nov 2023 12:08:14 +0800 (CST)
-X-Originating-IP: [111.35.186.243]
-Date:   Thu, 16 Nov 2023 12:08:14 +0800 (CST)
-From:   "David Wang" <00107082@163.com>
-To:     "Namhyung Kim" <namhyung@kernel.org>
-Cc:     "Peter Zijlstra" <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re:Re: [Regression or Fix]perf: profiling stats sigificantly
- changed for aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.14 build 20230109(dcb5de15)
- Copyright (c) 2002-2023 www.mailtech.cn 163com
-In-Reply-To: <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com>
- <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com>
- <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com>
- <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
-X-NTES-SC: AL_Qu2bAv2buE4i4iCfZ+kZnEYQheY4XMKyuPkg1YJXOp80oCnX5x0xXHZ+L0Dc0NmkDwW8uRGlfzNf28ZCUqVKXrhHHyaxWExH7dqCJUN0zxoD
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        Wed, 15 Nov 2023 23:10:33 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DEB4194
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:10:28 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9c2a0725825so51794466b.2
+        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 20:10:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700107827; x=1700712627; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DMzCj5P9fSwcVXlU8EVUh+tUUR0usCMZQ9ylB0bPUZA=;
+        b=d3D+e3ChqnUGtmInsc+rNIkmB/0k1xnEnUWVpOu9+ZlIg4yE0aeRoFbe/Wkr78xud0
+         Dk0GD8NaPfcXpcI0LK/crIKpx64j2L3qqXDv5Rx5PupRRilfcoMxz23lCjWBGSkalPvR
+         qD0fR8Kun3G+d13o9wDnMBkb9ry5vPYVdcKitOB46iYmrRSI6xyEx2LfDX5mQp9te344
+         WMicVSeB5PLdZLNy7QJB0NooqEBmgTKl9ypyZjj5/sxCpcEv7Uc3VmgMHQ/WDIEQrjwJ
+         t69bJvMBKCOvRAq7z0+hUGerelD1E8EALMfZS2KEmhB8o+ygtSOdnRbq8UfnnrGMcsAs
+         on9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700107827; x=1700712627;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DMzCj5P9fSwcVXlU8EVUh+tUUR0usCMZQ9ylB0bPUZA=;
+        b=N3TwwbzYDSqR17qHJOH96sEr4D+dMqdpU6ens/HejrYgRA1nJB1RO7R6ZiWJ0broiF
+         b42H/BieuGCwSDWCz7ezZxZN1Jozw63kLGCCMWm8urwCeLSovvbW6bJmyUsjubQsKq4b
+         bC4HNpZQxOrjQAvy3B3INzIu9XHJ2D7lUV91lmJZA8I/zyK8n8za/8ngLOqA7vPS/tH6
+         l6hG6ocO5s4/p0sxYP0NPyGUnMecdrD1qqO8dbuZ3nGmBe+srwV3gAWIkwFEWhmnvUik
+         C4PnUB74qRUGRoP6mHKhQTAF/d4J6ce4jcx4KvAJjIF7FY+/F5zt7ll/1xPUmGPNHy/v
+         uRhQ==
+X-Gm-Message-State: AOJu0YwcaTvj8ThTNOI1Pg8XJLg+tuRxjsOtRmgdFijHXLmlVndRwhf2
+        FGdrkaHzaJZ12iwt3yIhYuycsTCnkFGj9hzaZfckzw==
+X-Google-Smtp-Source: AGHT+IGJFFso6GmC8lJdP1PBOxHgcqZtboEIbXbEOVelXERWcSrUeCiqT/9/q2VHeLGt1Dc9I5cx0u8N1C1qsSLTwoo=
+X-Received: by 2002:a17:906:b10b:b0:9b2:d554:da0e with SMTP id
+ u11-20020a170906b10b00b009b2d554da0emr871908ejy.69.1700107826785; Wed, 15 Nov
+ 2023 20:10:26 -0800 (PST)
 MIME-Version: 1.0
-Message-ID: <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: DcGowAD3n8WvlVVl9B8IAA--.64573W
-X-CM-SenderInfo: qqqrilqqysqiywtou0bp/1tbiEB8qql8YMgdEUgAKsh
-X-Coremail-Antispam: 1U5529EdanIXcx71UUUUU7vcSsGvfC2KfnxnUU==
-X-Spam-Status: No, score=-1.5 required=5.0 tests=BAYES_00,DKIM_INVALID,
-        DKIM_SIGNED,FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+ <CACSyD1P6RwjWpKhvNWEo77LKpTrnKOzT-+TV+GnQu_g-ADYbcQ@mail.gmail.com>
+ <CAJD7tkbkPZ-Fiyz_4CKNQmufCpWSF330xK3bc7aHNML_cPi2sA@mail.gmail.com> <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com>
+In-Reply-To: <CACSyD1Nav7+zppx3BZS8vU5uF3AaBin0XOKCdtdQ1d6sA4wu9w@mail.gmail.com>
+From:   Yosry Ahmed <yosryahmed@google.com>
+Date:   Wed, 15 Nov 2023 20:09:49 -0800
+Message-ID: <CAJD7tkZHwg_u7UhzugVmmH6-FNORb+D+5SyMX6cGefp93uZr_Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm:zswap: fix zswap entry reclamation
+ failure in two scenarios
+To:     =?UTF-8?B?6LS65Lit5Z2k?= <hezhongkun.hzk@bytedance.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org, nphamcs@gmail.com,
+        sjenning@redhat.com, ddstreet@ieee.org, vitaly.wool@konsulko.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL,USER_IN_DEF_SPF_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CkF0IDIwMjMtMTEtMTYgMDA6MjY6MDYsICJOYW1oeXVuZyBLaW0iIDxuYW1oeXVuZ0BrZXJuZWwu
-b3JnPiB3cm90ZToKPk9uIFdlZCwgTm92IDE1LCAyMDIzIGF0IDg6MTLigK9BTSBEYXZpZCBXYW5n
-IDwwMDEwNzA4MkAxNjMuY29tPiB3cm90ZToKPj4KPj4KPj4g5ZyoIDIwMjMtMTEtMTUgMjM6NDg6
-MzPvvIwiTmFtaHl1bmcgS2ltIiA8bmFtaHl1bmdAa2VybmVsLm9yZz4g5YaZ6YGT77yaCj4+ID5P
-biBXZWQsIE5vdiAxNSwgMjAyMyBhdCAzOjAw4oCvQU0gRGF2aWQgV2FuZyA8MDAxMDcwODJAMTYz
-LmNvbT4gd3JvdGU6Cj4+ID4+Cj4+ID4+Cj4+ID4+Cj4+ID4+IEF0IDIwMjMtMTEtMTUgMTg6MzI6
-NDEsICJQZXRlciBaaWpsc3RyYSIgPHBldGVyekBpbmZyYWRlYWQub3JnPiB3cm90ZToKPj4gPj4g
-Pgo+PiA+PiA+TmFtaHl1bmcsIGNvdWxkIHlvdSBwbGVhc2UgdGFrZSBhIGxvb2ssIHlvdSBrbm93
-IGhvdyB0byBvcGVyYXRlIHRoaXMKPj4gPj4gPmNncm91cCBzdHVmZi4KPj4gPj4gPgo+PiA+Pgo+
-PiA+PiBNb3JlIGluZm9ybWF0aW9uLCAgSSBydW4gdGhlIHByb2ZpbGluZyB3aXRoIDhjcHUgbWFj
-aGluZSBvbiBhIFNTRCB3aXRoIGV4dDQgZmlsZXN5c3RlbSA6Cj4+ID4+Cj4+ID4+ICMgbWtkaXIg
-L3N5cy9mcy9jZ3JvdXAvbXl0ZXN0Cj4+ID4+ICMgZWNobyAkJCA+IC9zeXMvZnMvY2dyb3VwL215
-dGVzdC9jZ3JvdXAucHJvY3MKPj4gPj4gIyMgU3RhcnQgcHJvZmlsaW5nIHRhcmdldGluZyBjZ3Jv
-dXAgL3N5cy9mcy9jZ3JvdXAvbXl0ZXN0ICAgb24gYW5vdGhlciB0ZXJtaW5hbAo+PiA+PiAjIGZp
-byAtLXJhbmRyZXBlYXQ9MSAtLWlvZW5naW5lPWxpYmFpbyAtLWRpcmVjdD0xIC0tbmFtZT10ZXN0
-ICAtLWJzPTRrIC0taW9kZXB0aD02NCAtLXNpemU9MUcgLS1yZWFkd3JpdGU9cmFuZHJ3ICAtLXJ1
-bnRpbWU9NjAwIC0tbnVtam9icz00IC0tdGltZV9iYXNlZD0xCj4+ID4+Cj4+ID4+IEkgZ290IGEg
-ZmVlbGluZyB0aGF0IGYwNmNjNjY3Zjc5OTAgd291bGQgZGVjcmVhc2UgdG90YWwgc2FtcGxlcyBi
-eSAxMCV+MjAlIHdoZW4gcHJvZmlsaW5nIElPIGJlbmNobWFyayB3aXRoaW4gY2dyb3VwLgoKCj4K
-PlRoZW4gd2hhdCBpcyB5b3VyIHByb2ZpbGluZyB0b29sPyAgV2hlcmUgZGlkIHlvdSBzZWUKPnRo
-ZSAxMCV+MjAlIGRyb3AgaW4gc2FtcGxlcz8KPgoKSSB3cm90ZSBhIHNpbXBsZS9yYXcgdG9vbCBq
-dXN0IGZvciBwcm9maWxpbmcgY2FsbGNoYWlucywgd2hpY2ggdXNlIHBlcmZfZXZlbnRfb3BlbiB3
-aXRoIGZvbGxvd2luZyBhdHRyOgogICAgYXR0ci50eXBlID0gUEVSRl9UWVBFX1NPRlRXQVJFOwog
-ICAgIGF0dHIuY29uZmlnID0gUEVSRl9DT1VOVF9TV19DUFVfQ0xPQ0s7CiAgICAgYXR0ci5zYW1w
-bGVfZnJlcSA9IDc3NzsgLy8gYWRqdXN0IGl0CiAgICAgYXR0ci5mcmVxID0gMTsKICAgICBhdHRy
-Lndha2V1cF9ldmVudHMgPSAxNjsKICAgICBhdHRyLnNhbXBsZV90eXBlID0gUEVSRl9TQU1QTEVf
-VElEfFBFUkZfU0FNUExFX0NBTExDSEFJTjsKICAgICBhdHRyLnNhbXBsZV9tYXhfc3RhY2sgPSAz
-MjsKClRoZSBzb3VyY2UgY29kZSBjb3VsZCBiZSBmb3VuZCBoZXJlOiBodHRwczovL2dpdGh1Yi5j
-b20venEtZGF2aWQtd2FuZy9saW51eC10b29scy90cmVlL21haW4vcGVyZi9wcm9maWxlcgo+Pgo+
-PiBJIGFtIG5vdCBleHBlcmllbmNlZCB3aXRoIHRoZSBwZXJmLXRvb2wgYXQgYWxsLCAgIHRvbyBj
-b21wbGljYXRlZCBhIHRvb2wgZm9yIG1lLi4uLiBCdXQgSSB0aGluayBJIGNhbiB0cnkgaXQuCj4K
-PkkgZmVlbCBzb3JyeSBhYm91dCB0aGF0LiAgSW4gbW9zdCBjYXNlcywganVzdCBgcGVyZiByZWNv
-cmQgLWFgIGFuZAo+dGhlbiBgcGVyZiByZXBvcnRgIHdvdWxkIHdvcmsgd2VsbC4gOikKPgpUaGFu
-a3MgZm9yIHRoZSBpbmZvcm1hdGlvbiwgIEkgdXNlIGZvbGxvd2luZyBjb21tYW5kIHRvIHByb2Zp
-bGUgd2l0aCBwZXJmOgpgLi9wZXJmIHJlY29yZCAtYSAtZSBjcHUtY2xvY2sgLUcgbXl0ZXN0YApJ
-IGhhdmUgcnVuIHNldmVyYWwgcm91bmQgb2YgdGVzdCwgYW5kIGJlZm9yZSBlYWNoIHRlc3QsIHRo
-ZSBzeXN0ZW0gd2FzIHJlYm9vdGVkLCBhbmQgcGVyZiBvdXRwdXQgaXMKCk9uIDYuNy4wLXJjMToK
-JCBzdWRvIC4vcGVyZiByZWNvcmQgLWEgLWUgY3B1LWNsb2NrIC1HIG15dGVzdAogIF5DWyBwZXJm
-IHJlY29yZDogV29rZW4gdXAgNTI3IHRpbWVzIHRvIHdyaXRlIGRhdGEgXQogIFsgcGVyZiByZWNv
-cmQ6IENhcHR1cmVkIGFuZCB3cm90ZSAxMzIuNjQ4IE1CIHBlcmYuZGF0YSAoMjQ3ODc0NSBzYW1w
-bGVzKSBdICAKIC0tLXJlYm9vdAogICQgc3VkbyAuL3BlcmYgcmVjb3JkIC1hIC1lIGNwdS1jbG9j
-ayAtRyBteXRlc3QKICBeQ1sgcGVyZiByZWNvcmQ6IFdva2VuIHVwIDQ3MyB0aW1lcyB0byB3cml0
-ZSBkYXRhIF0KICBbIHBlcmYgcmVjb3JkOiBDYXB0dXJlZCBhbmQgd3JvdGUgMTE5LjIwNSBNQiBw
-ZXJmLmRhdGEgKDIyMjY5OTQgc2FtcGxlcykgXQoKCk9uIDYuNy4wLXJjMSB3aXRoIGYwNmNjNjY3
-Zjc5OTA5ZTkxNzU0NjBiMTY3YzI3N2I3YzY0ZDNkZjAgcmV2ZXJ0ZWQKCiQgc3VkbyAuL3BlcmYg
-cmVjb3JkIC1hIC1lIGNwdS1jbG9jayAtRyBteXRlc3QKICBeQ1sgcGVyZiByZWNvcmQ6IFdva2Vu
-IHVwIDU2NyB0aW1lcyB0byB3cml0ZSBkYXRhIF0KICBbIHBlcmYgcmVjb3JkOiBDYXB0dXJlZCBh
-bmQgd3JvdGUgMTQyLjc3MSBNQiBwZXJmLmRhdGEgKDI2NjgyMjQgc2FtcGxlcykgXQogIC0tLXJl
-Ym9vdAogICQgc3VkbyAuL3BlcmYgcmVjb3JkIC1hIC1lIGNwdS1jbG9jayAtRyBteXRlc3QKICBe
-Q1sgcGVyZiByZWNvcmQ6IFdva2VuIHVwIDU1NyB0aW1lcyB0byB3cml0ZSBkYXRhIF0KICBbIHBl
-cmYgcmVjb3JkOiBDYXB0dXJlZCBhbmQgd3JvdGUgMTQwLjYwNCBNQiBwZXJmLmRhdGEgKDI2Mjcx
-Njcgc2FtcGxlcykgXQogIAoKSSBhbHNvIHJ1biB3aXRoIGAtRiA3NzdgLCB3aGljaCBpcyBzb21l
-IHJhbmRvbSBudW1iZXIgSSB1c2VkIGluIG15IHRvb2wsICAgKGp1c3QgdG8gY29tcGFyZSB3aXRo
-IG15IHRvb2wgKQoKT24gNi43LjAtcmMxCiQgc3VkbyAuL3BlcmYgcmVjb3JkIC1hIC1lIGNwdS1j
-bG9jayAtRiA3NzcgLUcgbXl0ZXN0Cl5DWyBwZXJmIHJlY29yZDogV29rZW4gdXAgOTMgdGltZXMg
-dG8gd3JpdGUgZGF0YSBdClsgcGVyZiByZWNvcmQ6IENhcHR1cmVkIGFuZCB3cm90ZSAyNC41NzUg
-TUIgcGVyZi5kYXRhICg0NTUyMjIgc2FtcGxlcykgXSAoIE15IHRvb2wgaGF2ZSBvbmx5IH4zNTlL
-IHNhbXBsZXMsIG5vdCBzdGFibGUpCgogIApPbiA2LjcuMC1yYzEgd2l0aCBmMDZjYzY2N2Y3OTkw
-OWU5MTc1NDYwYjE2N2MyNzdiN2M2NGQzZGYwIHJldmVydGVkCiQgc3VkbyAuL3BlcmYgcmVjb3Jk
-IC1hIC1lIGNwdS1jbG9jayAtRiA3NzcgLUcgbXl0ZXN0Cl5DWyBwZXJmIHJlY29yZDogV29rZW4g
-dXAgOTggdGltZXMgdG8gd3JpdGUgZGF0YSBdClsgcGVyZiByZWNvcmQ6IENhcHR1cmVkIGFuZCB3
-cm90ZSAyNS43MDMgTUIgcGVyZi5kYXRhICg0NzYzOTAgc2FtcGxlcykgXSAgKE15IHRvb2wgaGF2
-ZSBhYm91dCB+NDQ2Sywgc3RhYmxlKQoKCkZyb20gdGhlIGRhdGEgSSBjb2xsZWN0ZWQsIEkgdGhp
-bmsgdHdvIHByb2JsZW0gY291bGQgYmUgb2JzZXJ2ZWQgZm9yIGYwNmNjNjY3Zjc5OTA5ZTkxNzU0
-NjBiMTY3YzI3N2I3YzY0ZDNkZjAKMS4gc2FtcGxlIG1pc3NpbmcuIAoyLiBzYW1wbGUgdW5zdGFi
-bGUsIHRvdGFsIHNhbXBsZSBjb3VudCBkcmlmdCBhIGxvdCBiZXR3ZWVuIHRlc3RzLiAKClRoYW5r
-cwpEYXZpZAoKCg==
+On Wed, Nov 15, 2023 at 7:33=E2=80=AFPM =E8=B4=BA=E4=B8=AD=E5=9D=A4 <hezhon=
+gkun.hzk@bytedance.com> wrote:
+>
+> On Thu, Nov 16, 2023 at 4:13=E2=80=AFAM Yosry Ahmed <yosryahmed@google.co=
+m> wrote:
+> >
+> > I think we may need to try to lock the folio. Otherwise we may race
+> > with reclaim reading the dirty bit before we set it.
+> >
+> > Taking a step back, this seems like we are going behind exclusive
+> > loads. We "should" keep the page in zswap as exclusive loads are
+> > disabled and the page is not yet invalidated from zswap (the swap
+> > entry is still in use). What you are trying to do here is sneakily
+> > drop the page from zswap as if we wrote it back, but we didn't.
+>
+> If  we want to reclaim the cached zswap_entry, Writing back might
+> be the easy way.
+>
+> > We just know that it was already loaded from zswap. We are essentially
+> > making the previous load exclusive retroactively.
+> >
+> > Is there a reason why exclusive loads cannot be enabled to achieve the
+> > same result in the (arguably) correct way?
+> >
+>
+> zswap_exclusive_loads is not enabled by default, so the shrink_worker
+> may fail if there are many cached zswap_entries on the zswap_pool->lru.
+
+
+It can be enabled at runtime, or enabled by default by using
+CONFIG_ZSWAP_EXCLUSIVE_LOADS_DEFAULT_ON.
+
+>
+>
+> Is it possible to make zswap_exclusive_loads the only way in zswap_load?
+> It only makes sense when the page is read and no longer dirty.
+> If the page is read frequently, it should stay in cache rather than zswap=
+.
+> The benefit of doing this is very small, two copies of the same page
+> in memory.
+
+
+The reason I added it behind runtime and config knobs is to preserve
+the existing behavior in case someone depends on it. At Google, we
+have been using exclusive loads for a long time. If other users of
+zswap agree to make this the default behavior or make it the only way
+to do zswap loads I don't have a problem with it.
+
+>
+>
+> Thanks.
