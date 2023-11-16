@@ -2,157 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF237EDECA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA9E7EDECC
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 11:47:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345040AbjKPKrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 05:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50938 "EHLO
+        id S1345049AbjKPKrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 05:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230193AbjKPKrM (ORCPT
+        with ESMTP id S230193AbjKPKrb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 05:47:12 -0500
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2074.outbound.protection.outlook.com [40.107.223.74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1C19D1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 02:47:08 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bb+YnPR0Ak6sjFkz+Te95MixKks6egg5pT2+Fb1Tf1tcQ6vU/wqNUPlxxiv29vXAW+LeX7572aF9PJj+yNhCtToy8zsdfT+72GAZ4XLtxH6WkUT6bHK4PoHBkfxvUJw0T6lQyyEll2lxIVacBlSgOmp0xVnuNE4GPPBo8+yPEsQsd4YdJdUgu/KXxVBMMwkLti8kznW+8kGDBElNIrecdirQG8Pn3I6Tg0L/w7wOZIpzmQRc6iXHbQhdRbnRGfQiKFmfHlU1DreQai+WHzIfxICj4XO+dk44iu3bfYNQxpA3c7TpiqakmPR+Ia3SiqWBHaKX8fma9thezKNByUevWw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=64jHuSjnqvuMxBqpqvu/IYhjQW3wtTlnhkinFFIc0Cg=;
- b=kfY4MkzntAeSjIxKCg+1l4CaZwcNnAWyVAYducfdWmOZ3Bdr7vvYEsnXwmFYSeeZOcT6tVOl0TGNJVkgdeRjow5YfMvp6uYwcxf3uge3knOTLhmOXue0ZGmqNj6GPg24sYHKmqitgD8O+0T1HlkTgatF8jpqupbirlweG1nI4+l99N4PsDSvT6+UifgB0bs6HhQPanY2eqgTmpAG7VEcd5eR2YgELFSg95NJz2bsteNnwA+Qxko0sjuYGBVPmtBgaWTwHXpvue8rN2po7rFBMdjsUL1MX23ZnqnKts3xoiKlXG92uZrp9gdQj628S58habqFxeBV0X5sd5jWKqx0OA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=64jHuSjnqvuMxBqpqvu/IYhjQW3wtTlnhkinFFIc0Cg=;
- b=HtZc1TdvGp1cgJKQRft7+UxlPQDiGJ/LsOduzx04ihnbnwj32ZAMvoVMjJZxHecX6DpB7G3CDch4QpcWOZEyxZDpnEGnetu18QbNe3E/5i7WMH3oWf5lBGmqKQWrB6TELGY2LbJFiUFGnE8kQnFOdCdzIZ7YjgAXCCdYXtjaDsY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com (2603:10b6:408:43::13)
- by SJ2PR12MB7963.namprd12.prod.outlook.com (2603:10b6:a03:4c1::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.6977.31; Thu, 16 Nov
- 2023 10:47:04 +0000
-Received: from BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3]) by BN8PR12MB3587.namprd12.prod.outlook.com
- ([fe80::ca80:8f1c:c11:ded3%7]) with mapi id 15.20.7002.021; Thu, 16 Nov 2023
- 10:47:04 +0000
-Message-ID: <99ef9596-d4f8-49e2-acbe-ed7486310f84@amd.com>
-Date:   Thu, 16 Nov 2023 11:46:58 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: regression/bisected/6.7rc1: Instead of desktop I see a horizontal
- flashing bar with a picture of the desktop background on white screen
-Content-Language: en-US
-To:     "Lee, Alvin" <Alvin.Lee2@amd.com>
-Cc:     Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
-        "Wu, Hersen" <hersenxs.wu@amd.com>,
-        "Mahfooz, Hamza" <Hamza.Mahfooz@amd.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-References: <CABXGCsNRb0QbF2pKLJMDhVOKxyGD6-E+8p-4QO6FOWa6zp22_A@mail.gmail.com>
- <CABXGCsOqbLRHSkiz79NkVQ-wUtR7y-ZFHvhMw0+JJ_cY2AZmSw@mail.gmail.com>
- <CABXGCsPE9=Qp3Jg5hkRsTQoNgODnS_cXFU1d+hg3Baob40AaAA@mail.gmail.com>
- <edc5b75b-c08d-4c62-ae5e-089ffac27772@amd.com>
- <CABXGCsO=pdxorK9pO7qBPJM-xvgPPtpZqxLvQO4t2AK5qW3vcA@mail.gmail.com>
- <DM8PR12MB5400EAB81E5FA10F4309A732D1B1A@DM8PR12MB5400.namprd12.prod.outlook.com>
- <CABXGCsNpEh7GjFPvx=rz6ZeB7Kx4iqV-e8HyFKyhNau2S5gENw@mail.gmail.com>
-From:   =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CABXGCsNpEh7GjFPvx=rz6ZeB7Kx4iqV-e8HyFKyhNau2S5gENw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR5P281CA0029.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:f1::13) To BN8PR12MB3587.namprd12.prod.outlook.com
- (2603:10b6:408:43::13)
+        Thu, 16 Nov 2023 05:47:31 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498DD1B9;
+        Thu, 16 Nov 2023 02:47:28 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AG5WYOD025542;
+        Thu, 16 Nov 2023 10:47:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=Cn8olFKDeTEapbVBkb5b5dpQq6Q1s+C8jvBPvhu2nwk=;
+ b=Zz8aZ6XBdfoilriznxGtigllxZjBTofXbDWLkV4uqRDoZyxDWJGNQAhoMC2AED7p0v5a
+ iE5Xb/16AW3VLrEcQ3jtUyRBfQHL7dSrvJJw1XdoQyT/FQdxS6FaWnhBXi7KDxte4iV9
+ Np76W45ZIRBFaGMoQ41roZ5eelNc01Qy9z1yckyMzagjcGUloRROJcf2XZ0ZLyZ5lCRq
+ lkAryD/c5CjDiH3WhipkqD6XL38IogNF/kKwfCSQPf2r64hB+vLGszK2aEFflYbLkcVg
+ h7OwrjVq0G69ZXwPAJ7NxzXU17hlOQCaH5iIOn6O6yqjLyVA5CZsetUbCI7Z9U8Bx9se 7g== 
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ud7b8s9ky-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 10:47:15 +0000
+Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
+        by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AGAlE0n003126
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 16 Nov 2023 10:47:14 GMT
+Received: from [10.253.72.184] (10.80.80.8) by nasanex01c.na.qualcomm.com
+ (10.45.79.139) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 02:47:10 -0800
+Message-ID: <2ca3c6eb-93da-4e44-aa6b-c426b8baecb9@quicinc.com>
+Date:   Thu, 16 Nov 2023 18:47:08 +0800
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN8PR12MB3587:EE_|SJ2PR12MB7963:EE_
-X-MS-Office365-Filtering-Correlation-Id: 8c04d712-e61a-44f2-bfa7-08dbe6915e66
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: oryzVaNQqd5PYDsnV/7Yvvz9657vZGCwhYNUCejFHqBfbGn8kpndOJF2OwyJdl1yL6rFKZQOHWBTrqW64gGScM+4RqbAOOy+WpANMkzqFGQfnJyuUZIJ4PURlUrc9Uc2ivYvJAFqQMWemDVrAk9aOm4aCe9l1Z1G5oikEwMPIuuddNrl12Yj99+kN04VWGfdNrJUxjA9+F49juOWTezfrGD8uQ7X4mQgG2RzJt0JV1hmZ8OwS2QihEU4UWVqkpMUp7npEEkCvFHCtzSaFvjLmtkPsJg8FlFAiguuLxq+bJ+kAU6yy6E95mkz+JEPPJjUZ1G1suKhJjJL4+E6MWS48K6cPyK6vBjWyZg2YaEDXZhPJAWfL7zcVhD2MnYSm1ISASE2P5qwtHDAfWFrma6jlz1a7Gd4jDKzv1TgdP+R8JWZ2n1KnDqd/gvDxxcQMdrTP8Vgp/UxrCXIoEVBLAbkaWzCE+9b3tTM5ITOWB4o7f6S4Zc0NcxfYkZZ/DPYf6EBL3UCyYHOuXWyFv8qHvjBKLMAJGr+f+s7rl06lvHeuiJ6uHCtFUSLn8WJkSmnpVXFSeZem7AmLmbWNM+7/vRB8gWa8Q3ya/l2YeECwhFZm27dy1PLMQYD0mIy70AZAB83M06f/h2spfSfC8YFrSm61tJRJchCEsaMb/qeLwsDCvrdTyijSX5D+G6aloEavh6F
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN8PR12MB3587.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376002)(366004)(136003)(346002)(39860400002)(396003)(230922051799003)(230273577357003)(230173577357003)(1800799009)(186009)(64100799003)(451199024)(66946007)(2616005)(6512007)(83380400001)(26005)(478600001)(6486002)(36756003)(41300700001)(31696002)(2906002)(5660300002)(8936002)(6862004)(4744005)(4326008)(86362001)(8676002)(37006003)(6636002)(54906003)(316002)(66556008)(66476007)(6666004)(6506007)(53546011)(38100700002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?eVNGRUpHRXhnK1l5b3Q0a0dpTG1DVkRvS2pDWmo4eTZwU2dlTjlxMENjcXJP?=
- =?utf-8?B?WUpWSE9tL2M4dXBsOC9hcmd6a3RSZ2FXT1djcFhOQmdQN1JoYTcwN0dScmMz?=
- =?utf-8?B?ZU14VTdGTVFFUHJnVVF6Vm5PVmpDSGtlWnF2bnppTXY1NEN5aGMrSitmRnFu?=
- =?utf-8?B?ZGdiOW82MFdVa1p3amExbUlpVDlvNWhQME4xTEdJV201NjJFRXpJUHhNaU1P?=
- =?utf-8?B?SWI3Q05TWUF4QVV5Wk96R09zblVRb2pTMkNuUnNKenhKY0tOU2RtS1lFYXFY?=
- =?utf-8?B?ZVhsR1lUMXpTakRNSEt0MWVaQkY3SGhNcDIxSmNYNVM1K2h3RVVXc2NPenBC?=
- =?utf-8?B?bXFCNkpmZVdjUjlhN2VGaGxqbEUvKzd5MG5CMnh4MXdqeXZvMGVuaW1jMFNn?=
- =?utf-8?B?MzJvcisyZk41YThYeDFuMkNwUU5RTlgyT1NJSm9kYWJWWDFLMXJBRVlza1FH?=
- =?utf-8?B?RGZYdkpVVzBIcG1zT2NCZmFIZ2JkcEp1L0EyTDFxbjFYNmRUV3dZUDVnN1ZB?=
- =?utf-8?B?dFhVb1dXdkhzbmdTVVJsQ2U0SlJ0WUhMdFQwNDY3L1QyOTF6Nk1yZDloak1a?=
- =?utf-8?B?YkhuNE9tWWZTTVYram5CM2RQWlVoMTBPelZ5cjJkcVl0cFQ1TVRjOU43RW5D?=
- =?utf-8?B?WDJaeHZRdmJZd2VCRTlMOG5mbkZxMXZYRng0ZGFkcGdHaXU1NkhGK205Zit0?=
- =?utf-8?B?aW5MaHp1TVJYY1AySnRDSDdRQXM0UnNRTmxETU5sZndvd2g3LzlWRU1xRGsz?=
- =?utf-8?B?S1hkbmhjdFg1ZjdjSkdqSGc3K25sUnNGUTM2citZMEhLc3J3bFNSekF0b2xs?=
- =?utf-8?B?cTd3cHdwN3hVdm82emlac0VVZC9mSzVWNUJ4Y0hVS0NKbXNndjVUb0RhMSty?=
- =?utf-8?B?STFkcEwzelVZQWFiU2k5RWtUczhOMU96SlFwSGNFM3ovT2hTdFFpTXcxV01D?=
- =?utf-8?B?NTI1RHp5N2xRRWZtRFpyRjJJUHhkbHpUYStINjhHazBjeG9kRjliL21ZQy9w?=
- =?utf-8?B?UDJCVUxwbVVIR3VBNjJONGFwNU1uR3NMclFNM3JIaEVQZ3R0a3VCcmp5YVVv?=
- =?utf-8?B?K1JjZ0FXR2dTVFVoK0gyKzl6U04vSUFncGpVZGR4cFBtSlZoOC9YNGhxTW9q?=
- =?utf-8?B?dnJBdXFJeVdGRFFORjFoNlAzRGZ4RmFuQTBqMDdGYVRXLzlCdU02ZTJiRVdQ?=
- =?utf-8?B?WjZuOURKMmpNYkVLcXNQb1MrN2l0VlB5Rm00TGY5bnRFRDNYWnZzYzd4blZX?=
- =?utf-8?B?bE5QbFR6ZWRhcXR4M1UvMVJQVE16TjdiT01KaUFubzhHMXA4aG9hZ21aQldi?=
- =?utf-8?B?OHFXSWpUclN1Ry9OZ01HaWFxelZYWlllY0VjcldqdU1saHk4UnlGZmdLb1hH?=
- =?utf-8?B?b0liZFQ5RGtzMlkva0hXQTNxRmlpVkV6MHo2WUh0anN0OXJkb2VoK0Z3Y1pS?=
- =?utf-8?B?UjY2cWJGSFkwUGd4b05GRVAxQXRJNTA4RjcwK003SlNPeVJ3UDJXS2tYa2sv?=
- =?utf-8?B?bVdkYkwvRnQ4eFJRZW5YUGJuNXZOcGlscGVrK3EvV3BMV0h5V0w0MmZXczdk?=
- =?utf-8?B?Wk5rUlMySmFmcGpmR1M0L2twdUVjbXJaWUFocEYvc1FEVk9SdGdYbmVqVm1u?=
- =?utf-8?B?dzBGcTFzM1ovTGVvUTA0eWtLY1g0b0RHZVhUTm9KeGt0cUVrWXJjS1JaTlIv?=
- =?utf-8?B?eGJEcVlKZWV2TVR6RFhsU2QycjN3T2xERXpjeWZ3RWlBZVlBcnhMb3JLRUNC?=
- =?utf-8?B?S2pUOEVhUGd4d3BHa0JvNjZ4MHZGNXUvSXByd2dWY3l1b2E0YTFybThCZHhw?=
- =?utf-8?B?d24xWEo0NUJXMCsrWWo2OGJrbWc0aWNRMUxVS2FGMTlUZUJUcXdRNURmNW5B?=
- =?utf-8?B?NVdlRGpTU05XU2hsVW1sTE9OZGlralB4b0xTaFRBWWk0QlNZeVlCaVdKd3Ju?=
- =?utf-8?B?NnRMcnZCeVlUSVRwVnhVMGJRSzlmTGxwZFFPYnRQTFlPejBsZFJvSldnR216?=
- =?utf-8?B?eDNaaEs4Q2NxR1daY2VEVjVEeG1VVERxeGRNYmdMY2VEU1ZqaGNxTUxhRUdJ?=
- =?utf-8?B?MTZJenk2MHJ5NFFhQzRYQjZ0VVQxcDJ3OUtKRTIrSmROQWFrSkJNbnFlcDkv?=
- =?utf-8?Q?QkU+wmoIYMEcEE7kQxBQVcQPv?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8c04d712-e61a-44f2-bfa7-08dbe6915e66
-X-MS-Exchange-CrossTenant-AuthSource: BN8PR12MB3587.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 10:47:03.7399
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4xv9Mp5NINXGaRLWAyz/wI+dZECmQN0qugHQFAr9Eq6ZmS1AkgSsWzN6wH5XWjhY
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7963
-X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/9] net: mdio: ipq4019: add qca8084 configurations
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
+        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-9-quic_luoj@quicinc.com>
+ <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01c.na.qualcomm.com (10.45.79.139)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: u9bHEkF3KW_0JlAYEr0OswZ0jgLDQGfJ
+X-Proofpoint-GUID: u9bHEkF3KW_0JlAYEr0OswZ0jgLDQGfJ
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-16_09,2023-11-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxscore=0 bulkscore=0 phishscore=0 spamscore=0 priorityscore=1501
+ malwarescore=0 impostorscore=0 mlxlogscore=694 clxscore=1015
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311160086
+X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 15.11.23 um 21:08 schrieb Mikhail Gavrilov:
-> On Wed, Nov 15, 2023 at 11:39 PM Lee, Alvin <Alvin.Lee2@amd.com> wrote:
->> This change has a DMCUB dependency - are you able to update your DMCUB version as well?
->>
-> I can confirm this issue was gone after updating firmware.
->
-> ❯ dmesg | grep DMUB
-> [   11.496679] [drm] Loading DMUB firmware via PSP: version=0x07002300
-> [   12.000314] [drm] DMUB hardware initialized: version=0x07002300
->
 
-Mhm, that's a quite ugly problem.
 
-The driver is supposed to work with older firmware as well or at least 
-issue a warning and provide a reasonable fallback.
+On 11/16/2023 12:20 AM, Andrew Lunn wrote:
+> On Wed, Nov 15, 2023 at 11:25:14AM +0800, Luo Jie wrote:
+>> The PHY & PCS clocks need to be enabled and the reset
+>> sequence needs to be completed to make qca8084 PHY
+>> probeable by MDIO bus.
+> 
+> Is all this guaranteed to be the same between different boards? Can
+> the board be wired differently and need a different configuration?
+> 
+>      Andrew
 
-How are we going to handle this?
+Hi Andrew,
+This configuration sequence is specified to the qca8084 chip,
+not related with the platform(such as ipq5332).
 
-Thanks,
-Christian.
+All these configured registers are located in qca8084 chip, we need
+to complete these configurations to make MDIO bus being able to
+scan the qca8084 PHY(PHY registers can be accessed).
