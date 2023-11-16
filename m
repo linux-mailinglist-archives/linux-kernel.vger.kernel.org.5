@@ -2,147 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 023A17EE0BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16AB77EE0BB
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 13:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345159AbjKPMdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 07:33:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40640 "EHLO
+        id S1345142AbjKPMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 07:34:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230307AbjKPMds (ORCPT
+        with ESMTP id S230385AbjKPMeN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 07:33:48 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B19D187
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:33:45 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2BC7C433C8;
-        Thu, 16 Nov 2023 12:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700138024;
-        bh=fl2ERlYyHKp/gRtOCtc+cDz1RGc2gsvBRtB9yhmxrdI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=jX8O5kJRtlXu04+yCXleGkWsnCATVdmBCfnhOjlpx9j7fHrwvOWT+qpsqXbGKlM6m
-         9RsXepA+WSzbKFkApAHQVWNKLiCk1oVWFW5VyaQQBS8V/3rBL4K4E2t1WwAYuVZk5t
-         Q/mTJHX7ThINLtdsu4dLwBUDM6AHMup2szsoVDnBBCMTveDZz8ou+jWujO67gOC2vN
-         fmUQgF2Z3QbdUYJ0IeR7WtCO2NHhjR/E7E4THaLr1lVQdSPoIdb9R988B1smYEDydH
-         OXl2rOxwYC3NzO421ZFg2u49P4+ikBD50sK/4UhN74OjFc+z/w5ZCVyiQJWRNt+D3z
-         dqAOD/TjWarZQ==
-Date:   Thu, 16 Nov 2023 12:33:35 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>
-Cc:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "shuah@kernel.org" <shuah@kernel.org>,
-        "brauner@kernel.org" <brauner@kernel.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "debug@rivosinc.com" <debug@rivosinc.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "fweimer@redhat.com" <fweimer@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "vschneid@redhat.com" <vschneid@redhat.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "bristot@redhat.com" <bristot@redhat.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "jannh@google.com" <jannh@google.com>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
-        "Pandey, Sunil K" <sunil.k.pandey@intel.com>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>
-Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
-Message-ID: <1bd189e0-a7dd-422c-9766-ef1c9b0d3df8@sirena.org.uk>
-References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
- <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
- <c9434fa9d864612ed9082197a601c5002ed86a38.camel@intel.com>
- <d873072c-e1f4-4e1f-9efc-dfbd53054766@sirena.org.uk>
- <ZVTvvJTOV777UGsP@arm.com>
- <d90884a0-c4d3-41e9-8f23-68aa87bbe269@sirena.org.uk>
- <d05d23d56bd2c7de30e7732e6bd3d313d8385c47.camel@intel.com>
- <ZVXvptSmmJ6MQ0dY@arm.com>
+        Thu, 16 Nov 2023 07:34:13 -0500
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27342187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 04:34:10 -0800 (PST)
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by smtp-out2.suse.de (Postfix) with ESMTPS id 84D6B20502;
+        Thu, 16 Nov 2023 12:34:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+        t=1700138048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=f+tEO3bJnAujyi0nZ7Nj/qVI7J0PAgRfP2jUhBB968E=;
+        b=jzZUXqOIRJcKqB4UM/UQyo1D2hP+d6zZZpmdXswW9zW2QvQ4efTd8YOE+D5Fv6ilUGsRaD
+        gizDSG7KYboo4PFsjoa4/n33tzHvBXurJNIlvvoqXzp6S3/RQ9ZuAI4CYjWYLrT51wmdUz
+        VMY6stBeW/M3LfNU474NKE2OL6bLs6k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+        s=susede2_ed25519; t=1700138048;
+        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=f+tEO3bJnAujyi0nZ7Nj/qVI7J0PAgRfP2jUhBB968E=;
+        b=9Ts4+I0aemp5AuUCeqqy4nG4rJ8LcpjaUmvch0s2xCYSsEGMq4GtlonAOYA1lwTIVCMFYc
+        fYvUlGKiprtTv9DA==
+Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
+        (No client certificate requested)
+        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 517821377E;
+        Thu, 16 Nov 2023 12:34:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([192.168.254.65])
+        by imap2.suse-dmz.suse.de with ESMTPSA
+        id nPe/EkAMVmVucAAAMHmgww
+        (envelope-from <tzimmermann@suse.de>); Thu, 16 Nov 2023 12:34:08 +0000
+Message-ID: <3b799dee-c366-4c0b-9efe-c75d189fc24b@suse.de>
+Date:   Thu, 16 Nov 2023 13:34:07 +0100
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="qxzRtaK8vwjTcNK1"
-Content-Disposition: inline
-In-Reply-To: <ZVXvptSmmJ6MQ0dY@arm.com>
-X-Cookie: micro:
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4/5] drm/plane: Extend damage tracking kernel-doc
+Content-Language: en-US
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Pekka Paalanen <pekka.paalanen@collabora.com>,
+        Sima Vetter <daniel.vetter@ffwll.ch>,
+        Bilal Elmoussaoui <belmouss@redhat.com>,
+        Javier Martinez Canillas <javierm@redhat.com>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        Maxime Ripard <mripard@kernel.org>,
+        Erico Nunes <nunes.erico@gmail.com>
+References: <20231115131549.2191589-1-javierm@redhat.com>
+ <20231115131549.2191589-5-javierm@redhat.com>
+ <abfd41c7-dc9f-4cd3-be83-97b2c2c96b62@suse.de>
+ <vhshocGSkXgVLycHIcJIVPsN9OQokPA2NCgIBqOvIzpKRZXQjN1uEiFKVudwa-S4hpBnFPaxxYh8hCFxd-u_ahYKBamQxFzIhBkYGkND9Kc=@emersion.fr>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Autocrypt: addr=tzimmermann@suse.de; keydata=
+ xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
+ XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
+ BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
+ hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
+ 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
+ AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
+ AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
+ AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
+ lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
+ U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
+ vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
+ 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
+ j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
+ T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
+ 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
+ GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
+ hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
+ EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
+ C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
+ yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
+ SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
+ Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
+ 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
+In-Reply-To: <vhshocGSkXgVLycHIcJIVPsN9OQokPA2NCgIBqOvIzpKRZXQjN1uEiFKVudwa-S4hpBnFPaxxYh8hCFxd-u_ahYKBamQxFzIhBkYGkND9Kc=@emersion.fr>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------BFu4yPoixSFD0eeZ56uxGvmy"
+Authentication-Results: smtp-out2.suse.de;
+        none
+X-Spam-Level: 
+X-Spam-Score: -7.79
+X-Spamd-Result: default: False [-7.79 / 50.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         XM_UA_NO_VERSION(0.01)[];
+         TO_DN_SOME(0.00)[];
+         HAS_ATTACHMENT(0.00)[];
+         REPLY(-4.00)[];
+         MIME_BASE64_TEXT_BOGUS(1.00)[];
+         NEURAL_HAM_SHORT(-0.20)[-1.000];
+         MIME_BASE64_TEXT(0.10)[];
+         RCPT_COUNT_SEVEN(0.00)[9];
+         SIGNED_PGP(-2.00)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+,1:+,2:+,3:~];
+         MID_RHS_MATCH_FROM(0.00)[];
+         BAYES_HAM(-3.00)[100.00%];
+         ARC_NA(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.20)[multipart/signed,multipart/mixed,text/plain];
+         NEURAL_HAM_LONG(-1.00)[-1.000];
+         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+         FUZZY_BLOCKED(0.00)[rspamd.com];
+         RCVD_COUNT_TWO(0.00)[2];
+         RCVD_TLS_ALL(0.00)[];
+         SUSPICIOUS_RECIPS(1.50)[];
+         FREEMAIL_CC(0.00)[collabora.com,ffwll.ch,redhat.com,lists.freedesktop.org,vger.kernel.org,kernel.org,gmail.com]
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------BFu4yPoixSFD0eeZ56uxGvmy
+Content-Type: multipart/mixed; boundary="------------FAxPyeJCEpBq2pc0UZBYK3X0";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Simon Ser <contact@emersion.fr>
+Cc: Pekka Paalanen <pekka.paalanen@collabora.com>,
+ Sima Vetter <daniel.vetter@ffwll.ch>, Bilal Elmoussaoui
+ <belmouss@redhat.com>, Javier Martinez Canillas <javierm@redhat.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Maxime Ripard <mripard@kernel.org>, Erico Nunes <nunes.erico@gmail.com>
+Message-ID: <3b799dee-c366-4c0b-9efe-c75d189fc24b@suse.de>
+Subject: Re: [PATCH v2 4/5] drm/plane: Extend damage tracking kernel-doc
+References: <20231115131549.2191589-1-javierm@redhat.com>
+ <20231115131549.2191589-5-javierm@redhat.com>
+ <abfd41c7-dc9f-4cd3-be83-97b2c2c96b62@suse.de>
+ <vhshocGSkXgVLycHIcJIVPsN9OQokPA2NCgIBqOvIzpKRZXQjN1uEiFKVudwa-S4hpBnFPaxxYh8hCFxd-u_ahYKBamQxFzIhBkYGkND9Kc=@emersion.fr>
+In-Reply-To: <vhshocGSkXgVLycHIcJIVPsN9OQokPA2NCgIBqOvIzpKRZXQjN1uEiFKVudwa-S4hpBnFPaxxYh8hCFxd-u_ahYKBamQxFzIhBkYGkND9Kc=@emersion.fr>
 
---qxzRtaK8vwjTcNK1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--------------FAxPyeJCEpBq2pc0UZBYK3X0
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-On Thu, Nov 16, 2023 at 10:32:06AM +0000, Szabolcs.Nagy@arm.com wrote:
-> The 11/16/2023 00:52, Edgecombe, Rick P wrote:
-> > On Wed, 2023-11-15 at 18:43 +0000, Mark Brown wrote:
+SGkNCg0KQW0gMTYuMTEuMjMgdW0gMTM6MTQgc2NocmllYiBTaW1vbiBTZXI6DQo+IE9uIFRo
+dXJzZGF5LCBOb3ZlbWJlciAxNnRoLCAyMDIzIGF0IDEzOjA2LCBUaG9tYXMgWmltbWVybWFu
+biA8dHppbW1lcm1hbm5Ac3VzZS5kZT4gd3JvdGU6DQo+IA0KPj4+ICsgKiBOb3RlIHRoYXQg
+dGhlcmUgYXJlIHR3byB0eXBlcyBvZiBkYW1hZ2UgaGFuZGxpbmc6IGZyYW1lIGRhbWFnZSBh
+bmQgYnVmZmVyDQo+Pj4gKyAqIGRhbWFnZS4gVGhlIHR5cGUgb2YgZGFtYWdlIGhhbmRsaW5n
+IGltcGxlbWVudGVkIGRlcGVuZHMgb24gYSBkcml2ZXIncyB1cGxvYWQNCj4+PiArICogdGFy
+Z2V0LiBEcml2ZXJzIGltcGxlbWVudGluZyBhIHBlci1wbGFuZSBvciBwZXItQ1JUQyB1cGxv
+YWQgdGFyZ2V0IG5lZWQgdG8NCj4+PiArICogaGFuZGxlIGZyYW1lIGRhbWFnZSB3aGlsZSBk
+cml2ZXJzIGltcGxlbWVudGluZyBhIHBlci1idWZmZXIgdXBsb2FkIHRhcmdldA0KPj4+ICsg
+KiBuZWVkIHRvIGhhbmRsZSBidWZmZXIgZGFtYWdlLg0KPj4+ICsgKg0KPj4+ICsgKiBUaGUg
+ZXhpc3RpbmcgZGFtYWdlIGhlbHBlcnMgb25seSBzdXBwb3J0IHRoZSBmcmFtZSBkYW1hZ2Ug
+dHlwZSwgdGhlcmUgaXMgbm8NCj4+PiArICogYnVmZmVyIGFnZSBzdXBwb3J0IG9yIHNpbWls
+YXIgZGFtYWdlIGFjY3VtdWxhdGlvbiBhbGdvcml0aG0gaW1wbGVtZW50ZWQgeWV0Lg0KPj4+
+ICsgKg0KPj4+ICsgKiBPbmx5IGRyaXZlcnMgaGFuZGxpbmcgZnJhbWUgZGFtYWdlIGNhbiB1
+c2UgdGhlIG1lbnRpb3JlZCBkYW1hZ2UgaGVscGVycyB0bw0KPiANCj4gVHlwbzogbWVudGlv
+bmVkDQo+IA0KPj4+ICsgKiBpdGVyYXRlIG92ZXIgdGhlIGRhbWFnZWQgcmVnaW9ucy4gRHJp
+dmVycyB0aGF0IGhhbmRsZSBidWZmZXIgZGFtYWdlLCBuZWVkIHRvDQo+Pj4gKyAqIHNldCAm
+c3RydWN0IGRybV9wbGFuZV9zdGF0ZS5pZ25vcmVfZGFtYWdlX2NsaXBzIGFzIGFuIGluZGlj
+YXRpb24gdG8NCj4+PiArICogZHJtX2F0b21pY19oZWxwZXJfZGFtYWdlX2l0ZXJfaW5pdCgp
+IHRoYXQgdGhlIGRhbWFnZSBjbGlwcyBzaG91bGQgYmUgaWdub3JlZC4NCj4+PiArICogSW4g
+dGhhdCBjYXNlLCB0aGUgcmV0dXJuZWQgZGFtYWdlIHJlY3RhbmdsZSBpcyB0aGUgJmRybV9w
+bGFuZV9zdGF0ZS5zcmMgc2luY2UNCj4+PiArICogYSBmdWxsIHBsYW5lIHVwZGF0ZSBzaG91
+bGQgaGFwcGVuLg0KPj4+ICsgKg0KPj4+ICsgKiBGb3IgbW9yZSBpbmZvcm1hdGlvbiBhYm91
+dCB0aGUgdHdvIHR5cGUgb2YgZGFtYWdlLCBzZWU6DQo+Pj4gKyAqIGh0dHBzOi8vcmVnaXN0
+cnkua2hyb25vcy5vcmcvRUdML2V4dGVuc2lvbnMvS0hSL0VHTF9LSFJfc3dhcF9idWZmZXJz
+X3dpdGhfZGFtYWdlLnR4dA0KPj4+ICsgKiBodHRwczovL2VtZXJzaW9uLmZyL2Jsb2cvMjAx
+OS9pbnRyby10by1kYW1hZ2UtdHJhY2tpbmcvDQo+Pg0KPj4gT25lIHRob3VnaHQgeW91IG1p
+Z2h0IHdhbnQgdG8gY29uc2lkZXIuDQo+Pg0KPj4gVGhlc2UgVVJMcyBhcmUgaGVscGZ1bC4g
+VGhlIG9ubHkgaXNzdWUgSSBoYXZlIGlzIHRoYXQgZnJhbWUgZGFtYWdlIGFuZA0KPj4gYnVm
+ZmVyIGRhbWFnZSBhcmUgdXNlci1zcGFjZSBjb25jZXB0cy4gVGhlIGtlcm5lbCBidWcgaXMg
+dGhhdCBkYW1hZ2UNCj4+IGhhbmRsaW5nIGV4cGVjdHMgdGhlIGJhY2tpbmcgc3RvcmFnZS91
+cGxvYWQgYnVmZmVyIG5vdCB0byBjaGFuZ2UgZm9yIGENCj4+IGdpdmVuIHBsYW5lLiBJZiB0
+aGUgdXBsb2FkIGJ1ZmZlciBjaGFuZ2VzIGJldHdlZW4gcGFnZSBmbGlwcywgdGhlIG5ldw0K
+Pj4gdXBsb2FkIGJ1ZmZlciBoYXMgdG8gYmUgdXBkYXRlZCBhcyBhIHdob2xlLiBIZW5jZSBu
+byBkYW1hZ2UgaGFuZGxpbmcgdGhlbi4NCj4gDQo+IFdoeSB3b3VsZCB0aGVzZSBjb25jZXB0
+cyBiZSBzcGVjaWZpYyB0byB1c2VyLXNwYWNlPyBUaGUga2VybmVsIGNvdWxkDQo+IGJldHRl
+ciBoYW5kbGUgYnVmZmVyIGRhbWFnZSBpbnN0ZWFkIG9mIGZvcmNpbmcgZnVsbCBkYW1hZ2Us
+IGJ5IGRvaW5nDQo+IHNvbWV0aGluZyBzaW1pbGFyIHRvIHdoYXQgdXNlci1zcGFjZSBkb2Vz
+Lg0KDQpUaGUgdGVybXMgJ2ZyYW1lIGRhbWFnZScgYW5kICdidWZmZXIgZGFtYWdlJyBkbyBu
+b3QgZXhpc3QgaW4gdGhlIGtlcm5lbC4gDQpUaGUgcHJvYmxlbSBjYW4gYmUgYmV0dGVyIGRl
+c2NyaWJlZCBpbiB3b3JkaW5nIHRoYXQgaXMgY29tbW9uIHdpdGhpbiB0aGUgDQpjb250ZXh0
+IG9mIHRoZSBrZXJuZWwgZHJpdmVycy4NCg0KQmVzdCByZWdhcmRzDQpUaG9tYXMNCg0KPiAN
+Cj4gQW55d2F5czoNCj4gDQo+IFJldmlld2VkLWJ5OiBTaW1vbiBTZXIgPGNvbnRhY3RAZW1l
+cnNpb24uZnI+DQoNCi0tIA0KVGhvbWFzIFppbW1lcm1hbm4NCkdyYXBoaWNzIERyaXZlciBE
+ZXZlbG9wZXINClNVU0UgU29mdHdhcmUgU29sdXRpb25zIEdlcm1hbnkgR21iSA0KRnJhbmtl
+bnN0cmFzc2UgMTQ2LCA5MDQ2MSBOdWVybmJlcmcsIEdlcm1hbnkNCkdGOiBJdm8gVG90ZXYs
+IEFuZHJldyBNeWVycywgQW5kcmV3IE1jRG9uYWxkLCBCb3VkaWVuIE1vZXJtYW4NCkhSQiAz
+NjgwOSAoQUcgTnVlcm5iZXJnKQ0K
 
-> while CLONE_VFORK allows the child to use the parent shadow
-> stack (parent and child cannot execute at the same time and
-> the child wont return to frames created by the parent), we
-> want to enable precise size accounting of the shadow stack
-> so requesting a new shadow stack should work if new stack
-> is specified.
+--------------FAxPyeJCEpBq2pc0UZBYK3X0--
 
-> but stack==0 can force shadow_stack_size==0.
-
-> i guess the tricky case is stack!=0 && shadow_stack_size==0:
-> the user may want a new shadow stack with default size logic,
-> or (with !CLONE_VM || CLONE_VFORK) wants to use the existing
-> shadow stack from the parent.
-
-If shadow_stack_size is 0 then we're into clone() behaviour and doing
-the default/implicit handling which is to do exactly what the above
-describes.
-
-> > What is the case for stack=sp bit of the logic?
-
-> iirc it is not documented in the clone man page what stack=0
-> means and of course you don't want sp==0 in the vfork child
-> so some targets sets stack to sp in vfork, others set it 0
-> and expect the kernel to do the right thing.
-
-The manual page explicitly says that not specifying a stack means to use
-the same stack area as the parent.
-
-> this likely does not apply to clone3 where the size has to be
-> specified so maybe stack==sp does not need special treatment.
-
-You'd have to be jumping through hoops to manage to get the same stack
-pointer while explicitly specifying a stack with clone3() on
-architectures where the stack grows down.  I'm not sure there's a
-reasonable use case.
-
---qxzRtaK8vwjTcNK1
-Content-Type: application/pgp-signature; name="signature.asc"
+--------------BFu4yPoixSFD0eeZ56uxGvmy
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmVWDB8ACgkQJNaLcl1U
-h9B/kgf/cCb0t/WDJJnLgSCdcrrBTZQDYOh6g5wc9ofAClwczUYictkrifHUtcx7
-AK0RVBrSjubnCoUVVD4n9ayLlTvczZwV9qFA0YTugPTAUry8SzqtQslfj89DHvGu
-O+GDXFQYIeIqLY3waqrYmp5GnsBOy9ppu2FjIw+l3sN7+5SGxTrGomEafGihSLNw
-2N3ddNRd0J0/Qg0tuKFJdteyRRpIXI70Eb5EAj87Gzcf/8pZRRoYFq9Er4tZzxbB
-PYe2Vg4Q2GmiblDwUO15CVvXItDaa35+peEI4SLJjQGvlJiMUlH7HKu9S6nO9+nj
-DVzEt0gPGR/2ps3+VPmBAIXDtjll3w==
-=H7BF
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmVWDD8FAwAAAAAACgkQlh/E3EQov+Cc
+ohAAzWDAxMwFNFf2+vs1r8YKhp7ZiVJjC5J8q29SbaQGLvEwUXuvyOgArxMBICd9d1SsNxfGEMuH
+qA3H7gfFLCf3lwWKKkI5ILfjJRVNI2CSbOn3IYrieyJN94aGvf1zVwMdq434LD0d+SRnnobqUwAI
+qi1WjI+eYIQUxBncO8bJsEQ2N2S6pPS7RvIr0H463L5JxXakyTSBJIl4Ix9XYJqSqADg0cunaRHK
+B5gytLuo4ZbdyzKFWg5ekjxzuBNtIzdi1F6c0PZbfl82+1Yjb8GjhpYl7k7UVhHlna6Y3Jmcg/T4
+/aUj3I20X78XMI80LAAvW2MgTIXNp16jlOqgYbVCGe9P3oNzBvUTu/eLwA5jbgatwy6oDAYXQECZ
+//UuE1QaJ1hYs4eHyIcSkD8mZeFYoNTetJzngT6rrNKiGVkCocjWo7P1o9lA9YcJ1rfIJzj2gJnE
+idO/CQf1ckTCT48Uz/q/Ba99qPvOmkB7joLnoowMS+pw8dhgr+zmg/AamZXQvH9sGRZ2BOebHeGW
+V/izrVHito8YVw2GT/U6VeUMU8LnuCfiRpCyfGOyOEcBkaR6x1tuqjMkiGGY6lyawINwgQDNgc9F
+ctTIEZiT7/Bm/hWEUO2mzdYm1PRspe5Yu4zWtIptUCMaSQk262quqcyyITmfI4IGtROKIwUjaML/
+rsU=
+=i491
 -----END PGP SIGNATURE-----
 
---qxzRtaK8vwjTcNK1--
+--------------BFu4yPoixSFD0eeZ56uxGvmy--
