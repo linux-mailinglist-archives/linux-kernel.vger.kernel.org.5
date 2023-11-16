@@ -2,48 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CB8B7EE83B
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:22:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A376E7EE83D
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 21:22:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbjKPUWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 15:22:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39412 "EHLO
+        id S1345529AbjKPUWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 15:22:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229464AbjKPUWB (ORCPT
+        with ESMTP id S229464AbjKPUWL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 15:22:01 -0500
+        Thu, 16 Nov 2023 15:22:11 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2AECB3;
-        Thu, 16 Nov 2023 12:21:58 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C739DC433C8;
-        Thu, 16 Nov 2023 20:21:55 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1B04D4D;
+        Thu, 16 Nov 2023 12:22:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2552DC433CB;
+        Thu, 16 Nov 2023 20:22:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700166118;
-        bh=wjXoEh3VBqOCq9Erb2+MVd6IMbkBhqkdvNaWxFU95X8=;
+        s=k20201202; t=1700166127;
+        bh=Tk4VsI3q7+2p/BjMyvGCqbKi/6B2IcPsL/NYpb93qWQ=;
         h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=pN0EtEBveWhquPmEaRGvMjWX4iIHLmt0eKMTmQqg/PHWG1UQv21e0sPMOGoyP+5Np
-         xLZ/Dm3yxi8G3GJe3hMb3DfRPC/HDGcFtzdycjOn5m9aw7rdCBTAfHTTcjE8izjAYn
-         FbqFNO8U/frCFFDuYnl2UrR4lDP432vZJVYXcO9j8J60MJONuTrCp6tay7l+LOEYXB
-         BJHUA0H/n6yROnChtJAibs1xn/+mn2wPTY4o4okHyeWg7NqfYoZJ015dTFyN9di/QX
-         kBfhbABFuQCUOgM5fiJFBa49+IqD5JjAO1x97X7QztkkzkioyMSvEO44i5o4q5FyJl
-         Rds/S9VJfWFyQ==
+        b=OBGG+yXG+xhEmE3lcKicd/ekzT1LDf0GFJQ8X07qXI/H+VXyHbLUZGhoarpaNKQIR
+         xZCF4GKxuCLUorhVMFXggT/HubCG+9FxTCgX8+m3iR5mZ1BuFautofiPgF9zb87/xa
+         PyKjMq9VQiKDFL1usaKyLgW+9RTkBjKwfyBYfA0lbNu80mKps8q5VC7bdHsS1fogQo
+         SO0N/Hw+K+hx2179GY++mV0FI0uVUuuEZp7Q1kj88kxpXFRJdbPSejD6ycNpU7+8Qv
+         CLtw+p2rfqqWfo+TewBhLwkXuU+Uh1NGGXkEWv/nnzffNfqxtxpDv5iCcd0/5fFy8O
+         mxgMlawr4gA/A==
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Syed Saba Kareem <Syed.SabaKareem@amd.com>
-Cc:     Vijendar.Mukunda@amd.com, Basavaraj.Hiregoudar@amd.com,
-        Sunil-kumar.Dommati@amd.com, mario.limonciello@amd.com,
-        venkataprasad.potturu@amd.com, Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Arnd Bergmann <arnd@arndb.de>,
-        "open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <linux-sound@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-In-Reply-To: <20231116053405.2574081-1-Syed.SabaKareem@amd.com>
-References: <20231116053405.2574081-1-Syed.SabaKareem@amd.com>
-Subject: Re: [PATCH] ASoC: amd: acp: add missing
- SND_SOC_AMD_ACP_LEGACY_COMMON flag for ACP70
-Message-Id: <170016611552.72344.2975187519248443039.b4-ty@kernel.org>
-Date:   Thu, 16 Nov 2023 20:21:55 +0000
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Yang Yingliang <yangyingliang@huawei.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-spi@vger.kernel.org,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
+References: <20231113111249.3982461-1-andriy.shevchenko@linux.intel.com>
+Subject: Re: [PATCH v1 1/1] treewide, spi: Get rid of
+ SPI_MASTER_HALF_DUPLEX
+Message-Id: <170016612386.72552.14423257472508429993.b4-ty@kernel.org>
+Date:   Thu, 16 Nov 2023 20:22:03 +0000
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
@@ -58,19 +61,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 16 Nov 2023 11:03:57 +0530, Syed Saba Kareem wrote:
-> add missing dependent SND_SOC_AMD_ACP_LEGACY_COMMON flag for ACP70 platform.
+On Mon, 13 Nov 2023 13:12:49 +0200, Andy Shevchenko wrote:
+> The SPI_MASTER_HALF_DUPLEX is the legacy name of a definition
+> for a half duplex flag. Since all others had been replaced with
+> the respective SPI_CONTROLLER prefix get rid of the last one
+> as well. There is no functional change intended.
 > 
 > 
 
 Applied to
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
 Thanks!
 
-[1/1] ASoC: amd: acp: add missing SND_SOC_AMD_ACP_LEGACY_COMMON flag for ACP70
-      commit: 459956b17dd5cba06b0f2b75772497e46a59468b
+[1/1] treewide, spi: Get rid of SPI_MASTER_HALF_DUPLEX
+      commit: 3fc6350fc8470d42f5e700ecd1c3d90f9dd9fd2d
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
