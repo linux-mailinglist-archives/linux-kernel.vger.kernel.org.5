@@ -2,230 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7D97EE780
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AF227EE781
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 20:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345515AbjKPT2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 14:28:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56800 "EHLO
+        id S1345491AbjKPTae (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 14:30:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59296 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345486AbjKPT2E (ORCPT
+        with ESMTP id S229455AbjKPTad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 14:28:04 -0500
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 22ECF1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 11:28:00 -0800 (PST)
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 17D431595;
-        Thu, 16 Nov 2023 11:28:46 -0800 (PST)
-Received: from [10.57.84.40] (unknown [10.57.84.40])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E00B03F6C4;
-        Thu, 16 Nov 2023 11:27:56 -0800 (PST)
-Message-ID: <9a794e3d-19e7-4b32-bce5-5ba54bf5a251@arm.com>
-Date:   Thu, 16 Nov 2023 19:27:56 +0000
+        Thu, 16 Nov 2023 14:30:33 -0500
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0D1518D;
+        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5869914484fso616393eaf.0;
+        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700163029; x=1700767829;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7FbFMZyOm4y21zxxd4fG3rlnBc8F2We8GtC4w2SS1w=;
+        b=CUXn+IvEB2gF6Mdi90bgE05Bt/4p2b6TiQq5UXsvyofO9GUGk0sCjK4wJqpCKs7hzo
+         kJd91qICEjOji06tBZumxJoT30gcD9Grz0PbxQZQqY2fth3RrxHc73vYOr58nxSiNkyI
+         EDI/4jVreJCoz1mbj9Lj+mzCEIExF7QlQbi+4HOooUUE/Bpp7vKMOtCYtznTN9FPfDb7
+         uyVbrRqg2ZY4aFNpdOj2Tg+uCr69J6lGo53aRlaLRET06DG4ok/ZCu1XgV7MCFGjLEAa
+         ABR2y6S2Y2VMdeIcMJyxF4rpPlYucRrnk4OGMVmUvF5rUPEAAzEbETXlzkqAIzaIYhfg
+         y77g==
+X-Gm-Message-State: AOJu0Yy/ZXVhaKc+3bLkv35pRgrBsAVmRoqpDlgQfy3q8OnzhS8GDoYR
+        lmzquc9OIm61LbEiIBkc+A==
+X-Google-Smtp-Source: AGHT+IFSp1f7TbpivIjIY//huUNmDslsDMxVBCti4nc7OSLQ6yL118JR1HPflrHOkpP+ls1MaiRwBw==
+X-Received: by 2002:a4a:85c1:0:b0:57b:eee7:4a40 with SMTP id u1-20020a4a85c1000000b0057beee74a40mr15895111ooh.7.1700163029011;
+        Thu, 16 Nov 2023 11:30:29 -0800 (PST)
+Received: from herring.priv (66-90-144-107.dyn.grandenetworks.net. [66.90.144.107])
+        by smtp.gmail.com with ESMTPSA id ch1-20020a0568200a0100b00584078d1e17sm10580oob.45.2023.11.16.11.30.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 11:30:28 -0800 (PST)
+Received: (nullmailer pid 3079204 invoked by uid 1000);
+        Thu, 16 Nov 2023 19:30:26 -0000
+Date:   Thu, 16 Nov 2023 13:30:26 -0600
+From:   Rob Herring <robh@kernel.org>
+To:     Frank Li <Frank.Li@nxp.com>
+Cc:     Frank.li@nxp.com, krzysztof.kozlowski+dt@linaro.org,
+        dmaengine@vger.kernel.org, joy.zou@nxp.com, shenwei.wang@nxp.com,
+        krzysztof.kozlowski@linaro.org, robh+dt@kernel.org,
+        festevam@denx.de, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, imx@lists.linux.dev, vkoul@kernel.org,
+        peng.fan@nxp.com, shawnguo@kernel.org
+Subject: Re: [PATCH 2/4] dt-bindings: dma: fsl-edma: Add fsl-edma.h to
+ prevent hardcoding in dts
+Message-ID: <170016302591.3079151.39706037865284534.robh@kernel.org>
+References: <20231114154824.3617255-1-Frank.Li@nxp.com>
+ <20231114154824.3617255-3-Frank.Li@nxp.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 5/6] arm64: KVM: Write TRFCR value on guest switch with
- nVHE
-Content-Language: en-GB
-To:     James Clark <james.clark@arm.com>, coresight@lists.linaro.org,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.linux.dev,
-        maz@kernel.org
-Cc:     broonie@kernel.org, Oliver Upton <oliver.upton@linux.dev>,
-        James Morse <james.morse@arm.com>,
-        Zenghui Yu <yuzenghui@huawei.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Jintack Lim <jintack.lim@linaro.org>,
-        Fuad Tabba <tabba@google.com>,
-        Akihiko Odaki <akihiko.odaki@daynix.com>,
-        Joey Gouly <joey.gouly@arm.com>, linux-kernel@vger.kernel.org
-References: <20231019165510.1966367-1-james.clark@arm.com>
- <20231019165510.1966367-6-james.clark@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-In-Reply-To: <20231019165510.1966367-6-james.clark@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.2 required=5.0 tests=BAYES_00,RCVD_IN_DNSWL_MED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231114154824.3617255-3-Frank.Li@nxp.com>
+X-Spam-Status: No, score=-1.2 required=5.0 tests=BAYES_00,
+        FREEMAIL_ENVFROM_END_DIGIT,FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19/10/2023 17:55, James Clark wrote:
-> The guest value for TRFCR requested by the Coresight driver is saved
-> in sysregs[TRFCR_EL1]. On guest switch this value needs to be written to
-> the register. Currently TRFCR is only modified when we want to disable
-> trace completely in guests due to an issue with TRBE. Expand the
-> __debug_save_trace() function to always write to the register if a
-> different value for guests is required, but also keep the existing TRBE
-> disable behavior if that's required.
+
+On Tue, 14 Nov 2023 10:48:22 -0500, Frank Li wrote:
+> Introduce a common dt-bindings header file, fsl-edma.h, shared between
+> the driver and dts files. This addition aims to eliminate hardcoded values
+> in dts files, promoting maintainability and consistency.
 > 
-> The TRFCR restore function remains functionally the same, except a value
-> of 0 doesn't mean "don't restore" anymore. Now that we save both guest
-> and host values the register is restored any time the guest and host
-> values differ.
+> DTS header file not support BIT() macro yet. Directly use 2^n number.
 > 
-> Signed-off-by: James Clark <james.clark@arm.com>
-
-Looks good to me.
-
-Reviewed-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-
-
+> Signed-off-by: Frank Li <Frank.Li@nxp.com>
 > ---
->   arch/arm64/include/asm/kvm_hyp.h   |  6 ++-
->   arch/arm64/kvm/hyp/nvhe/debug-sr.c | 68 ++++++++++++++++++------------
->   arch/arm64/kvm/hyp/nvhe/switch.c   |  4 +-
->   3 files changed, 48 insertions(+), 30 deletions(-)
+>  include/dt-bindings/dma/fsl-edma.h | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
+>  create mode 100644 include/dt-bindings/dma/fsl-edma.h
 > 
-> diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
-> index 52ac90d419e7..6286e580696e 100644
-> --- a/arch/arm64/include/asm/kvm_hyp.h
-> +++ b/arch/arm64/include/asm/kvm_hyp.h
-> @@ -103,8 +103,10 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu);
->   void __debug_switch_to_host(struct kvm_vcpu *vcpu);
->   
->   #ifdef __KVM_NVHE_HYPERVISOR__
-> -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
-> -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt);
-> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				    struct kvm_cpu_context *guest_ctxt);
-> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				       struct kvm_cpu_context *guest_ctxt);
->   #endif
->   
->   void __fpsimd_save_state(struct user_fpsimd_state *fp_regs);
-> diff --git a/arch/arm64/kvm/hyp/nvhe/debug-sr.c b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> index f389ee59788c..6174f710948e 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/debug-sr.c
-> @@ -51,42 +51,57 @@ static void __debug_restore_spe(struct kvm_cpu_context *host_ctxt)
->   	write_sysreg_s(ctxt_sys_reg(host_ctxt, PMSCR_EL1), SYS_PMSCR_EL1);
->   }
->   
-> -static void __debug_save_trace(struct kvm_cpu_context *host_ctxt)
-> +/*
-> + * Save TRFCR and disable trace completely if TRBE is being used, otherwise
-> + * apply required guest TRFCR value.
-> + */
-> +static void __debug_save_trace(struct kvm_cpu_context *host_ctxt,
-> +			       struct kvm_cpu_context *guest_ctxt)
->   {
-> -	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = 0;
-> +	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
->   
->   	/* Check if the TRBE is enabled */
-> -	if (!(read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E))
-> -		return;
-> -	/*
-> -	 * Prohibit trace generation while we are in guest.
-> -	 * Since access to TRFCR_EL1 is trapped, the guest can't
-> -	 * modify the filtering set by the host.
-> -	 */
-> -	ctxt_sys_reg(host_ctxt, TRFCR_EL1) = read_sysreg_s(SYS_TRFCR_EL1);
-> -	write_sysreg_s(0, SYS_TRFCR_EL1);
-> -	isb();
-> -	/* Drain the trace buffer to memory */
-> -	tsb_csync();
-> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRBE) &&
-> +	    (read_sysreg_s(SYS_TRBLIMITR_EL1) & TRBLIMITR_EL1_E)) {
-> +		/*
-> +		 * Prohibit trace generation while we are in guest. Since access
-> +		 * to TRFCR_EL1 is trapped, the guest can't modify the filtering
-> +		 * set by the host.
-> +		 */
-> +		ctxt_sys_reg(guest_ctxt, TRFCR_EL1) = 0;
-> +		write_sysreg_s(0, SYS_TRFCR_EL1);
-> +		isb();
-> +		/* Drain the trace buffer to memory */
-> +		tsb_csync();
-> +	} else {
-> +		/*
-> +		 * Not using TRBE, so guest trace works. Apply the guest filters
-> +		 * provided by the Coresight driver, if different.
-> +		 */
-> +		if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) !=
-> +		    ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
-> +			write_sysreg_s(ctxt_sys_reg(guest_ctxt, TRFCR_EL1),
-> +				       SYS_TRFCR_EL1);
-> +	}
->   }
->   
-> -static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt)
-> +static void __debug_restore_trace(struct kvm_cpu_context *host_ctxt,
-> +				  struct kvm_cpu_context *guest_ctxt)
->   {
-> -	if (!ctxt_sys_reg(host_ctxt, TRFCR_EL1))
-> -		return;
-> -
->   	/* Restore trace filter controls */
-> -	write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
-> +	if (ctxt_sys_reg(host_ctxt, TRFCR_EL1) != ctxt_sys_reg(guest_ctxt, TRFCR_EL1))
-> +		write_sysreg_s(ctxt_sys_reg(host_ctxt, TRFCR_EL1), SYS_TRFCR_EL1);
->   }
->   
-> -void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
-> +void __debug_save_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				    struct kvm_cpu_context *guest_ctxt)
->   {
->   	/* Disable and flush SPE data generation */
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
->   		__debug_save_spe(host_ctxt);
-> -	/* Disable and flush Self-Hosted Trace generation */
-> -	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRBE))
-> -		__debug_save_trace(host_ctxt);
-> +
-> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
-> +		__debug_save_trace(host_ctxt, guest_ctxt);
->   }
->   
->   void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
-> @@ -94,12 +109,13 @@ void __debug_switch_to_guest(struct kvm_vcpu *vcpu)
->   	__debug_switch_to_guest_common(vcpu);
->   }
->   
-> -void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt)
-> +void __debug_restore_host_buffers_nvhe(struct kvm_cpu_context *host_ctxt,
-> +				       struct kvm_cpu_context *guest_ctxt)
->   {
->   	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_SPE))
->   		__debug_restore_spe(host_ctxt);
-> -	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRBE))
-> -		__debug_restore_trace(host_ctxt);
-> +	if (vcpu_get_flag(host_ctxt->__hyp_running_vcpu, DEBUG_STATE_SAVE_TRFCR))
-> +		__debug_restore_trace(host_ctxt, guest_ctxt);
->   }
->   
->   void __debug_switch_to_host(struct kvm_vcpu *vcpu)
-> diff --git a/arch/arm64/kvm/hyp/nvhe/switch.c b/arch/arm64/kvm/hyp/nvhe/switch.c
-> index 6b4b24ae077f..c7bea5cf672d 100644
-> --- a/arch/arm64/kvm/hyp/nvhe/switch.c
-> +++ b/arch/arm64/kvm/hyp/nvhe/switch.c
-> @@ -278,7 +278,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->   	 * translation regime to EL2 (via MDCR_EL2_E2PB == 0) and
->   	 * before we load guest Stage1.
->   	 */
-> -	__debug_save_host_buffers_nvhe(host_ctxt);
-> +	__debug_save_host_buffers_nvhe(host_ctxt, guest_ctxt);
->   
->   	/*
->   	 * We're about to restore some new MMU state. Make sure
-> @@ -345,7 +345,7 @@ int __kvm_vcpu_run(struct kvm_vcpu *vcpu)
->   	 * This must come after restoring the host sysregs, since a non-VHE
->   	 * system may enable SPE here and make use of the TTBRs.
->   	 */
-> -	__debug_restore_host_buffers_nvhe(host_ctxt);
-> +	__debug_restore_host_buffers_nvhe(host_ctxt, guest_ctxt);
->   
->   	if (pmu_switch_needed)
->   		__pmu_switch_to_host(vcpu);
+
+Reviewed-by: Rob Herring <robh@kernel.org>
 
