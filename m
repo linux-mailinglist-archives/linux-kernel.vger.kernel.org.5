@@ -2,164 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 339147EE3FA
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:13:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 007C07EE3E6
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 16:06:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345423AbjKPPNw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 10:13:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56850 "EHLO
+        id S1345395AbjKPPGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 10:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345330AbjKPPNv (ORCPT
+        with ESMTP id S1345373AbjKPPGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 10:13:51 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2001:67c:2178:6::1d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 001B9AD;
-        Thu, 16 Nov 2023 07:13:47 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 436AA20503;
-        Thu, 16 Nov 2023 15:13:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-        t=1700147626; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7bJu6ar+NFH85UXuEOe3UdmDdKsVbVBwLjldg6odnbE=;
-        b=KBUpa6RVruZ7aq0x9p3TFQAw3/YKqjTia0me50aAIDA9NdaPrjaR0MDKXzXBUgB1QAivGt
-        gW0zd6jW3NDSvaNgjd43oXqok/khlpyQNg8FH2b0cpyCUhDsf90nsgdMuDuJkhSy3e6Dta
-        /e0wUdhYD5dLN0MpZprWuPTEXGGy5Ts=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-        s=susede2_ed25519; t=1700147626;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7bJu6ar+NFH85UXuEOe3UdmDdKsVbVBwLjldg6odnbE=;
-        b=F0syKVjCMRFmcjEJ7ZV+IVTO/sZ1LPXCBRunywy1u77HSxa7Xcw1oHNPo923/94kZLHqT/
-        aD4mJoLH9R9KTbBw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id 1D2A31377E;
-        Thu, 16 Nov 2023 15:13:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id tuZbBqoxVmVqTAAAMHmgww
-        (envelope-from <vbabka@suse.cz>); Thu, 16 Nov 2023 15:13:46 +0000
-Message-ID: <310cde93-50c1-4758-865b-4432ab3f3f12@suse.cz>
-Date:   Thu, 16 Nov 2023 16:13:45 +0100
+        Thu, 16 Nov 2023 10:06:38 -0500
+Received: from p3plwbeout17-05.prod.phx3.secureserver.net (p3plsmtp17-05-2.prod.phx3.secureserver.net [173.201.193.170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AE9519D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 07:06:34 -0800 (PST)
+Received: from mailex.mailcore.me ([94.136.40.141])
+        by :WBEOUT: with ESMTP
+        id 3dwtrfFAhvZgf3dwurp2ES; Thu, 16 Nov 2023 08:06:32 -0700
+X-CMAE-Analysis: v=2.4 cv=a8D1SWeF c=1 sm=1 tr=0 ts=65562ffa
+ a=bheWAUFm1xGnSTQFbH9Kqg==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=ggZhUymU-5wA:10 a=BNY50KLci1gA:10 a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8
+ a=FXvPX3liAAAA:8 a=PL5bajTykxBvxVk0eB4A:9 a=AjGcO6oz07-iQ99wixmX:22
+ a=UObqyxdv-6Yh2QiB9mM_:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk  
+X-SID:  3dwtrfFAhvZgf
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=phoenix.fritz.box)
+        by smtp04.mailcore.me with esmtpa (Exim 4.94.2)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1r3dwt-00087x-95; Thu, 16 Nov 2023 15:06:31 +0000
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     eadavis@qq.com
+Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
+        squashfs-devel@lists.sourceforge.net,
+        syzbot+604424eb051c2f696163@syzkaller.appspotmail.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH] squashfs: fix oob in squashfs_readahead
+Date:   Thu, 16 Nov 2023 15:14:24 +0000
+Message-Id: <20231116151424.23597-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.35.1
+In-Reply-To: <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
+References: <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH] mm: kmem: properly initialize local objcg variable in
- current_obj_cgroup()
-Content-Language: en-US
-To:     Erhard Furtner <erhard_f@mailbox.org>
-Cc:     Roman Gushchin <roman.gushchin@linux.dev>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dennis Zhou <dennis@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <muchun.song@linux.dev>, stable@vger.kernel.org
-References: <20231116025109.3775055-1-roman.gushchin@linux.dev>
- <4bd106d5-c3e3-6731-9a74-cff81e2392de@suse.cz> <20231116155627.3686da61@yea>
-From:   Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20231116155627.3686da61@yea>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -8.30
-X-Spamd-Result: default: False [-8.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         MIME_GOOD(-0.10)[text/plain];
-         REPLY(-4.00)[];
-         DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_SEVEN(0.00)[11];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[];
-         MID_RHS_MATCH_FROM(0.00)[]
-X-Spam-Status: No, score=-3.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_SOFTFAIL,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Mailcore-Auth: 439999529
+X-Mailcore-Domain: 1394945
+X-123-reg-Authenticated:  phillip@squashfs.org.uk  
+X-Originating-IP: 82.69.79.175
+X-CMAE-Envelope: MS4xfB5rOlsiGop8HRtnu0KyA/F2yLCMHDiUDEG5UIulqyatT99bi2VOXEs8vuIFxZy253GAgcp2y6YI8YCPnIU7tKO0bluGutBeM0RAaUz1hSQhQrNkii0Q
+ d89UWD78/d01l+wQckM+6EduHaJAnZiE19rjcFOF6yAniL65Zx3BIlE8YjiWcgGSpOYPKqEkYlEV9eqChuZWkOZIs9zgobyBBvE5hFZo4KJzcGrhuPIg8G30
+ 6+cV38CbR9MEL0WDqPJAHw==
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/23 15:56, Erhard Furtner wrote:
-> On Thu, 16 Nov 2023 08:04:18 +0100
-> Vlastimil Babka <vbabka@suse.cz> wrote:
+> [Bug]
+> path_openat() called open_last_lookups() before calling do_open() and 
+> open_last_lookups() will eventually call squashfs_read_inode() to set 
+> inode->i_size, but before setting i_size, it is necessary to obtain file_size 
+> from the disk.
 > 
->> On 11/16/23 03:51, Roman Gushchin wrote:
->> > Actually the problem is caused by uninitialized local variable in
->> > current_obj_cgroup(). If the root memory cgroup is set as an active
->> > memory cgroup for a charging scope (as in the trace, where systemd
->> > tries to create the first non-root cgroup, so the parent cgroup is
->> > the root cgroup), the "for" loop is skipped and uninitialized objcg is
->> > returned, causing a panic down the accounting stack.
->> > 
->> > The fix is trivial: initialize the objcg variable to NULL
->> > unconditionally before the "for" loop.
->> > 
->> > Fixes: e86828e5446d ("mm: kmem: scoped objcg protection")
->> > Reported-by: Erhard Furtner <erhard_f@mailbox.org>
->> > Closes: https://github.com/ClangBuiltLinux/linux/issues/1959
->> > Signed-off-by: Roman Gushchin (Cruise) <roman.gushchin@linux.dev>
->> > Cc: Shakeel Butt <shakeelb@google.com>
->> > Cc: Vlastimil Babka <vbabka@suse.cz>
->> > Cc: David Rientjes <rientjes@google.com>
->> > Cc: Dennis Zhou <dennis@kernel.org>
->> > Cc: Johannes Weiner <hannes@cmpxchg.org>
->> > Cc: Michal Hocko <mhocko@kernel.org>
->> > Cc: Muchun Song <muchun.song@linux.dev>
->> > Cc: stable@vger.kernel.org  
->> 
->> Acked-by: Vlastimil Babka <vbabka@suse.cz>
->> 
->> We could also do this to make it less confusing?
->> 
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 774bd6e21e27..a08bcec661b6 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -3175,7 +3175,6 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->>  		objcg = rcu_dereference_check(memcg->objcg, 1);
->>  		if (likely(objcg))
->>  			break;
->> -		objcg = NULL;
->>  	}
->>  
->>  	return objcg;
->> 
->> 
+> However, during the value retrieval process, the length of the value retrieved
+> from the disk was greater than output->length, resulting(-EIO) in the failure of 
+> squashfs_read_data(), further leading to i_size has not been initialized, 
+> i.e. its value is 0.
 > 
-> I can confirm the 1st patch from Roman fixes the issue on my amd64 and on my i686 box.
 
-Good.
+NACK
 
-> The 2nd patch from Vlastimil unfortunately does not (only tried on amd64).
+This analysis is completely *wrong*.  First, if there was I/O error reading
+the inode it would never be created, and squasfs_readahead() would
+never be called on it, because it will never exist.
 
-Ah no, I meant mine as an additional related cleanup that's related enough
-that it can be part of Roman's fix. But it's not a fix on its own.
-> Regards,
-> Erhard
+Second i_size isn't unintialised and it isn't 0 in value.  Where
+you got this bogus information from is because in your test patches,
+i.e.
 
+https://lore.kernel.org/all/000000000000bb74b9060a14717c@google.com/
+
+You have
+
++	if (!file_end) {
++		printk("i:%p, is:%d, %s\n", inode, i_size_read(inode), __func__);
++		res = -EINVAL;
++		goto out;
++	}
++
+
+You have used %d, and the result of i_size_read(inode) overflows, giving the
+bogus 0 value.
+
+The actual value is 1407374883553280, or 0x5000000000000, which is
+too big to fit into an unsigned int.
+
+> This resulted in the failure of squashfs_read_data(), where "SQUASHFS error: 
+> Failed to read block 0x6fc: -5" was output in the syz log.
+> This also resulted in the failure of squashfs_cache_get(), outputting "SQUASHFS
+> error: Unable to read metadata cache entry [6fa]" in the syz log.
+> 
+
+NO, *that* is caused by the failure to read some other inodes which
+as a result are correctly not created.  Nothing to do with the oops here.
+
+> [Fix]
+> Before performing a read ahead operation in squashfs_read_folio() and 
+> squashfs_readahead(), check if i_size is not 0 before continuing.
+> 
+
+A third NO, it is only 0 because the variable overflowed.
+
+Additionally, let's look at your "fix" here.
+
+> @@ -461,6 +461,11 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
+>  	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
+>  				page->index, squashfs_i(inode)->start);
+>  
+> +	if (!file_end) {
+> +		res = -EINVAL;
+> +		goto out;
+> +	}
+> +
+
+file_end is computed by
+
+	int file_end = i_size_read(inode) >> msblk->block_log;
+
+So your "fix" will reject *any* file less than msblk->block_log in
+size as invalid, including perfectly valid zero size files (empty
+files are valid too).
+
+I already identified the cause and send a fix patch here:
+
+https://lore.kernel.org/all/20231113160901.6444-1-phillip@squashfs.org.uk/
+
+NACK
+
+Phillip
