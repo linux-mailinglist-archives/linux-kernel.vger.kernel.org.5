@@ -2,392 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18897ED956
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:24:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0237ED986
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 03:30:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235721AbjKPCYo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 15 Nov 2023 21:24:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
+        id S1344510AbjKPCaq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 15 Nov 2023 21:30:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344548AbjKPCYf (ORCPT
+        with ESMTP id S1344508AbjKPCam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 15 Nov 2023 21:24:35 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CB141BF
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:24:23 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id 3f1490d57ef6-da03c5ae220so1344825276.1
-        for <linux-kernel@vger.kernel.org>; Wed, 15 Nov 2023 18:24:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700101462; x=1700706262; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYfIbMCcjOcaMk8XkEVZkKdIKTJOO/34lFccln3zlF4=;
-        b=OlIExH1nKH4VI7fecpvuE+ivYyrVPXnXjLPWBMQtZ+jIheEIFSgr7GIrFWMccyUMLP
-         nUhCW8tJ24OI7fDg9/6b3iCZrP5jsiWqU8kjCYyMB2OIOQjMDDdmczuZajV/p/WnWeb/
-         aiJOeyd1bRRgz87l6/HEgGgoQlagK8u/kgvDG26KCcHS4af06cFj4O9EsJ+V6CHi3ukC
-         NpteF49/ckJObAhW5TOKcBnBCCxZ9Bepn2wQD9C8kZUekDLnY1UTScypKEhp3C7OZaFv
-         MkG/+kxo4jMi9a+J2fAoOlkqd8nsXpIobUzaES+9lV7oce7oLPN2D0fGurH/3B1cxfYu
-         jdZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700101462; x=1700706262;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sYfIbMCcjOcaMk8XkEVZkKdIKTJOO/34lFccln3zlF4=;
-        b=GTt0dgXzG3vEVrk4fjMDhDAVMg05c92pYUdCkX1AOXNdssd0KoLbTZnJlbwKPBZleY
-         bIK0i0SKwEXFRH8txRVw/J3w58I7WeNZex89g/StGTRnqxYQUwamYJGadGtcbLOSIoWJ
-         DiUV0b5Vuuq1uMytwj+tSHFbsRcWEuOh0n21iKbTAI2scENW+N3JDwLAb1f7cht76x+I
-         QlqKvSzZWlC6K2+9Kjft/gyTSUcnSPzjQ4sq/m6vYiFaDipVRecUAEUBsmO3cwOGRLMc
-         YeTkCF2cy/JIicHHZjES6fALLwoEFuzXpcc4n+XS4Tyw1HkGU1iq8eVjT5tBwvlEIsr6
-         c8qQ==
-X-Gm-Message-State: AOJu0Yx/sowsEZ9Y6WyU1Y2fYfXeUekCpJBkdcGd91MiUr/GFAC0dYu7
-        jmsNn7IKic8Q3+kF5w70A1/62NavRd1BtzeT
-X-Google-Smtp-Source: AGHT+IHOmB/fbH5s+WhrMo6La77w650Dx8voIzjIjTB3e9zO2veYErgpI8gmC3H0bM7gCxpZ7clqVyysog00UpE/
-X-Received: from yosry.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:29b4])
- (user=yosryahmed job=sendgmr) by 2002:a25:ac9b:0:b0:d9a:4cc1:b59a with SMTP
- id x27-20020a25ac9b000000b00d9a4cc1b59amr11173ybi.1.1700101462675; Wed, 15
- Nov 2023 18:24:22 -0800 (PST)
-Date:   Thu, 16 Nov 2023 02:24:10 +0000
-In-Reply-To: <20231116022411.2250072-1-yosryahmed@google.com>
-Mime-Version: 1.0
-References: <20231116022411.2250072-1-yosryahmed@google.com>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231116022411.2250072-6-yosryahmed@google.com>
-Subject: [PATCH v3 5/5] mm: memcg: restore subtree stats flushing
-From:   Yosry Ahmed <yosryahmed@google.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeelb@google.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Ivan Babrou <ivan@cloudflare.com>, Tejun Heo <tj@kernel.org>,
-        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
-        Waiman Long <longman@redhat.com>, kernel-team@cloudflare.com,
-        Wei Xu <weixugc@google.com>, Greg Thelen <gthelen@google.com>,
-        Domenico Cerasuolo <cerasuolodomenico@gmail.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+        Wed, 15 Nov 2023 21:30:42 -0500
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01on2057.outbound.protection.outlook.com [40.107.255.57])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA4F199;
+        Wed, 15 Nov 2023 18:30:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gZtwGZJwqELxwVItcQTJF4l+L2OjUT8pYi57u0e2si95W5vo4EfH+hZ4tb35R606KQBwqmgC/aSI1S++5Judq+wIjJ62JB/LqRvHP7KHQLRvXqJy+mxUq81PnSrCLYGh334LE8ATMzr+tlgJbx6gAI2ja4KQIJx4VIqMMx1mDOYxTG6Sg9lV81PTuVoxQanaCi1jXcIjo574zScPLAEO674kvbXcT0uW8o8ZoPpdiuKNAl8I4Q6oFSyYVqK6DsZJJlYV55hGv6CClRMRuLfclDOjKej1mCrlEuAw8wq6Q0L+NFkWFk33klotmlC0nLwsi4F3TPFswqgrYliaG2+bZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=IDwsTrDmJIq/t7JHJuotqQXIpjuKo2gdW8geUlgyyC4=;
+ b=bF0sP9wxOfj8eUDpz1V3zWpvMxsdSv8UP1iAwJf7amIWxeOCaiQpSNjyJjnlVEQATd9e/nbEx6+goAHS5rdBTLt3QFI0hljiUyRulv2iSVdosnVgrqcwHF8anS/L70mVOn+eXud7bxBLCJEZQi42SPeOJU1DooBFxzbfTFGA/R6s2QpN5sYXgf3xB9gs62zXFcCykMNM11k9KCT26ChH9ymAmhxQGd5kSNveVA91/JMD3AUWnz2FrGp0Ckk6ZQE1dPtEuJEKGa+zXQP/3OaaoPDSajrHk2wbo2zrqvP9bUHGHwzsJUi1bVIaDygY+5bP1RCp9kL7hUQU3J7XxuSuHQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=fail (sender ip is
+ 211.20.1.79) smtp.rcpttodomain=stwcx.xyz smtp.mailfrom=wiwynn.com; dmarc=fail
+ (p=quarantine sp=quarantine pct=100) action=quarantine
+ header.from=wiwynn.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wiwynn.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IDwsTrDmJIq/t7JHJuotqQXIpjuKo2gdW8geUlgyyC4=;
+ b=rPP/8PqgDxfnx189eoCKYeDH8o4gi74NISMNIEbrvNb9Nhd/sokeqLn7A0YueXIWtaSyVCNsPE+kl5Sfk1EjZca9O6dZK3Lh1MZR0pCjF9ubvSDcrYaemWlBBdQZILGgm8yukeWzNn2svR8+2TjRcWpPr7sZQQkOHRdQT1fcQb+O4LofzBWZgRkc6kWYJJXYuKV1oCgXYmuxF9oHNTheMX72Rm9XFB1CsfiFJi+2CESDNiAJ81O7IpjuZPCyP+WX5S72w/Viy8b3y6C7I+QD7QZhRuWpMR9zQwqEXCbsZLPSdoJW1wpLQtT/F4TIpcgWZYSgOxeKBWkOuhp7NntKeA==
+Received: from PS2PR02CA0068.apcprd02.prod.outlook.com (2603:1096:300:5a::32)
+ by PUZPR04MB6535.apcprd04.prod.outlook.com (2603:1096:301:f4::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.18; Thu, 16 Nov
+ 2023 02:30:32 +0000
+Received: from HK2PEPF00006FB4.apcprd02.prod.outlook.com
+ (2603:1096:300:5a:cafe::3c) by PS2PR02CA0068.outlook.office365.com
+ (2603:1096:300:5a::32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.17 via Frontend
+ Transport; Thu, 16 Nov 2023 02:30:32 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 211.20.1.79)
+ smtp.mailfrom=Wiwynn.com; dkim=none (message not signed)
+ header.d=none;dmarc=fail action=quarantine header.from=Wiwynn.com;
+Received-SPF: Fail (protection.outlook.com: domain of Wiwynn.com does not
+ designate 211.20.1.79 as permitted sender) receiver=protection.outlook.com;
+ client-ip=211.20.1.79; helo=localhost.localdomain;
+Received: from localhost.localdomain (211.20.1.79) by
+ HK2PEPF00006FB4.mail.protection.outlook.com (10.167.8.10) with Microsoft SMTP
+ Server id 15.20.7002.20 via Frontend Transport; Thu, 16 Nov 2023 02:30:30
+ +0000
+From:   Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>
+To:     patrick@stwcx.xyz
+Cc:     Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-i2c@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH v5 0/2] LTC4286 and LTC4287 driver support
+Date:   Thu, 16 Nov 2023 10:30:23 +0800
+Message-Id: <20231116023027.24855-1-Delphine_CC_Chiu@Wiwynn.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: HK2PEPF00006FB4:EE_|PUZPR04MB6535:EE_
+Content-Type: text/plain
+X-MS-Office365-Filtering-Correlation-Id: 735d1a63-9225-4866-a090-08dbe64c00fc
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: bRkHZkg8EEQhOWRN9skxlu7RvrKnw1mF9mRmWWWx5294LCrWnaGtF0+R1sA7vUN4kIkeGL1oRTd/Dq8pxSm3MXdbGle+NiGlM2Iff49T12ciVsMLgh2CeXaoeI3/woeozEdCGQlkPQd/BJLFzGR7sKGWj2dTaQAiBtc0qC3tGV+I9H2j5zXJmGkI/+IchSBX47pmuBlCyG/HHHS59vf93vGVKv3LRp+6UfAPfQluUN5gJJN7CsmE6Dt+wo6WroJlbRGOkpOiOVXwWHYnHLMeEGVUJ8e5IkOdXViyvUmDmep/tKyg3+INALSJICprrazlHl3zA6txE9xrqud3DTonKe86npEQa25bjjWWabzxuDBEQBPLaLVZUUwGfGjD0SYFIBKQDKNceraSrGK9gsLhLtERpeoEaoufrQfTckNsAWrfZAQBQYxC/a5u1Ep9U/iTP72l4cu9z3dFfHzqn5HUVG9/jlAkUtj6UIbQCBofjzcOwX6qjTqL7MPBO93OPvplX/vP8FuvuUY1f7sFCBsfHg/NlFflRaCTj+CkDpxDXyWnbBbBzUtHqFYRcBnkFcm2IibsanHT3rimuYujOvVTw+/RkiSKd0Ox8ZxMqeegOKlPxawOHnW854IZRbjuN7NR8502yrO10wFfjANJaf+P/cyZGpCRTkbrExLo/CZ5d4FxZP+l1sp5IAmYUQqR0Mqfk95yK7J6Ad+NuRnQWmRqGw==
+X-Forefront-Antispam-Report: CIP:211.20.1.79;CTRY:TW;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:localhost.localdomain;PTR:211-20-1-79.hinet-ip.hinet.net;CAT:NONE;SFS:(13230031)(6069001)(4636009)(376002)(136003)(396003)(39860400002)(346002)(230922051799003)(451199024)(186009)(82310400011)(1800799009)(64100799003)(46966006)(36840700001)(356005)(82740400003)(6512007)(81166007)(41300700001)(6666004)(47076005)(6506007)(9316004)(26005)(36860700001)(956004)(1076003)(336012)(2616005)(8676002)(8936002)(4744005)(4326008)(2906002)(36756003)(7416002)(86362001)(5660300002)(70586007)(316002)(70206006)(54906003)(6916009)(40480700001)(36736006)(6486002)(478600001);DIR:OUT;SFP:1101;
+X-OriginatorOrg: wiwynn.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 16 Nov 2023 02:30:30.8702
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 735d1a63-9225-4866-a090-08dbe64c00fc
+X-MS-Exchange-CrossTenant-Id: da6e0628-fc83-4caf-9dd2-73061cbab167
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=da6e0628-fc83-4caf-9dd2-73061cbab167;Ip=[211.20.1.79];Helo=[localhost.localdomain]
+X-MS-Exchange-CrossTenant-AuthSource: HK2PEPF00006FB4.apcprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR04MB6535
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stats flushing for memcg currently follows the following rules:
-- Always flush the entire memcg hierarchy (i.e. flush the root).
-- Only one flusher is allowed at a time. If someone else tries to flush
-  concurrently, they skip and return immediately.
-- A periodic flusher flushes all the stats every 2 seconds.
+v5 - Add LTC4286 and LTC4287 binding document
+   - Add LTC4286 and LTC4287 driver
 
-The reason this approach is followed is because all flushes are
-serialized by a global rstat spinlock. On the memcg side, flushing is
-invoked from userspace reads as well as in-kernel flushers (e.g.
-reclaim, refault, etc). This approach aims to avoid serializing all
-flushers on the global lock, which can cause a significant performance
-hit under high concurrency.
+Delphine CC Chiu (2):
+  dt-bindings: hwmon: Add lltc ltc4286 driver bindings
+  hwmon: pmbus: Add ltc4286 driver
 
-This approach has the following problems:
-- Occasionally a userspace read of the stats of a non-root cgroup will
-  be too expensive as it has to flush the entire hierarchy [1].
-- Sometimes the stats accuracy are compromised if there is an ongoing
-  flush, and we skip and return before the subtree of interest is
-  actually flushed, yielding stale stats (by up to 2s due to periodic
-  flushing). This is more visible when reading stats from userspace,
-  but can also affect in-kernel flushers.
+ .../bindings/hwmon/lltc,ltc4286.yaml          |  51 ++++++
+ Documentation/hwmon/index.rst                 |   1 +
+ Documentation/hwmon/ltc4286.rst               |  95 ++++++++++
+ MAINTAINERS                                   |  10 ++
+ drivers/hwmon/pmbus/Kconfig                   |  10 ++
+ drivers/hwmon/pmbus/Makefile                  |   1 +
+ drivers/hwmon/pmbus/ltc4286.c                 | 169 ++++++++++++++++++
+ 7 files changed, 337 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/lltc,ltc4286.yaml
+ create mode 100644 Documentation/hwmon/ltc4286.rst
+ create mode 100644 drivers/hwmon/pmbus/ltc4286.c
 
-The latter problem is particulary a concern when userspace reads stats
-after an event occurs, but gets stats from before the event. Examples:
-- When memory usage / pressure spikes, a userspace OOM handler may look
-  at the stats of different memcgs to select a victim based on various
-  heuristics (e.g. how much private memory will be freed by killing
-  this). Reading stale stats from before the usage spike in this case
-  may cause a wrongful OOM kill.
-- A proactive reclaimer may read the stats after writing to
-  memory.reclaim to measure the success of the reclaim operation. Stale
-  stats from before reclaim may give a false negative.
-- Reading the stats of a parent and a child memcg may be inconsistent
-  (child larger than parent), if the flush doesn't happen when the
-  parent is read, but happens when the child is read.
-
-As for in-kernel flushers, they will occasionally get stale stats. No
-regressions are currently known from this, but if there are regressions,
-they would be very difficult to debug and link to the source of the
-problem.
-
-This patch aims to fix these problems by restoring subtree flushing,
-and removing the unified/coalesced flushing logic that skips flushing if
-there is an ongoing flush. This change would introduce a significant
-regression with global stats flushing thresholds. With per-memcg stats
-flushing thresholds, this seems to perform really well. The thresholds
-protect the underlying lock from unnecessary contention.
-
-Add a mutex to protect the underlying rstat lock from excessive memcg
-flushing. The thresholds are re-checked after the mutex is grabbed to
-make sure that a concurrent flush did not already get the subtree we are
-trying to flush. A call to cgroup_rstat_flush() is not cheap, even if
-there are no pending updates.
-
-This patch was tested in two ways to ensure the latency of flushing is
-up to bar, on a machine with 384 cpus:
-- A synthetic test with 5000 concurrent workers in 500 cgroups doing
-  allocations and reclaim, as well as 1000 readers for memory.stat
-  (variation of [2]). No regressions were noticed in the total runtime.
-  Note that significant regressions in this test are observed with
-  global stats thresholds, but not with per-memcg thresholds.
-
-- A synthetic stress test for concurrently reading memcg stats while
-  memory allocation/freeing workers are running in the background,
-  provided by Wei Xu [3]. With 250k threads reading the stats every
-  100ms in 50k cgroups, 99.9% of reads take <= 50us. Less than 0.01%
-  of reads take more than 1ms, and no reads take more than 100ms.
-
-[1] https://lore.kernel.org/lkml/CABWYdi0c6__rh-K7dcM_pkf9BJdTRtAU08M43KO9ME4-dsgfoQ@mail.gmail.com/
-[2] https://lore.kernel.org/lkml/CAJD7tka13M-zVZTyQJYL1iUAYvuQ1fcHbCjcOBZcz6POYTV-4g@mail.gmail.com/
-[3] https://lore.kernel.org/lkml/CAAPL-u9D2b=iF5Lf_cRnKxUfkiEe0AMDTu6yhrUAzX0b6a6rDg@mail.gmail.com/
-
-Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
-Tested-by: Domenico Cerasuolo <cerasuolodomenico@gmail.com>
----
- include/linux/memcontrol.h |  8 ++--
- mm/memcontrol.c            | 75 +++++++++++++++++++++++---------------
- mm/vmscan.c                |  2 +-
- mm/workingset.c            | 10 +++--
- 4 files changed, 58 insertions(+), 37 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 7bdcf3020d7a3..6edd3ec4d8d54 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1046,8 +1046,8 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return x;
- }
- 
--void mem_cgroup_flush_stats(void);
--void mem_cgroup_flush_stats_ratelimited(void);
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
-+void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
- 
- void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val);
-@@ -1548,11 +1548,11 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
- 	return node_page_state(lruvec_pgdat(lruvec), idx);
- }
- 
--static inline void mem_cgroup_flush_stats(void)
-+static inline void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
- }
- 
--static inline void mem_cgroup_flush_stats_ratelimited(void)
-+static inline void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
- {
- }
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 74db05237775d..2baa9349d1590 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -669,7 +669,6 @@ struct memcg_vmstats {
-  */
- static void flush_memcg_stats_dwork(struct work_struct *w);
- static DECLARE_DEFERRABLE_WORK(stats_flush_dwork, flush_memcg_stats_dwork);
--static atomic_t stats_flush_ongoing = ATOMIC_INIT(0);
- static u64 flush_last_time;
- 
- #define FLUSH_TIME (2UL*HZ)
-@@ -730,35 +729,47 @@ static inline void memcg_rstat_updated(struct mem_cgroup *memcg, int val)
- 	}
- }
- 
--static void do_flush_stats(void)
-+static void do_flush_stats(struct mem_cgroup *memcg)
- {
--	/*
--	 * We always flush the entire tree, so concurrent flushers can just
--	 * skip. This avoids a thundering herd problem on the rstat global lock
--	 * from memcg flushers (e.g. reclaim, refault, etc).
--	 */
--	if (atomic_read(&stats_flush_ongoing) ||
--	    atomic_xchg(&stats_flush_ongoing, 1))
--		return;
--
--	WRITE_ONCE(flush_last_time, jiffies_64);
--
--	cgroup_rstat_flush(root_mem_cgroup->css.cgroup);
-+	if (mem_cgroup_is_root(memcg))
-+		WRITE_ONCE(flush_last_time, jiffies_64);
- 
--	atomic_set(&stats_flush_ongoing, 0);
-+	cgroup_rstat_flush(memcg->css.cgroup);
- }
- 
--void mem_cgroup_flush_stats(void)
-+/*
-+ * mem_cgroup_flush_stats - flush the stats of a memory cgroup subtree
-+ * @memcg: root of the subtree to flush
-+ *
-+ * Flushing is serialized by the underlying global rstat lock. There is also a
-+ * minimum amount of work to be done even if there are no stat updates to flush.
-+ * Hence, we only flush the stats if the updates delta exceeds a threshold. This
-+ * avoids unnecessary work and contention on the underlying lock.
-+ */
-+void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
- {
--	if (memcg_should_flush_stats(root_mem_cgroup))
--		do_flush_stats();
-+	static DEFINE_MUTEX(memcg_stats_flush_mutex);
-+
-+	if (mem_cgroup_disabled())
-+		return;
-+
-+	if (!memcg)
-+		memcg = root_mem_cgroup;
-+
-+	if (memcg_should_flush_stats(memcg)) {
-+		mutex_lock(&memcg_stats_flush_mutex);
-+		/* Check again after locking, another flush may have occurred */
-+		if (memcg_should_flush_stats(memcg))
-+			do_flush_stats(memcg);
-+		mutex_unlock(&memcg_stats_flush_mutex);
-+	}
- }
- 
--void mem_cgroup_flush_stats_ratelimited(void)
-+void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
- {
- 	/* Only flush if the periodic flusher is one full cycle late */
- 	if (time_after64(jiffies_64, READ_ONCE(flush_last_time) + 2*FLUSH_TIME))
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(memcg);
- }
- 
- static void flush_memcg_stats_dwork(struct work_struct *w)
-@@ -767,7 +778,7 @@ static void flush_memcg_stats_dwork(struct work_struct *w)
- 	 * Deliberately ignore memcg_should_flush_stats() here so that flushing
- 	 * in latency-sensitive paths is as cheap as possible.
- 	 */
--	do_flush_stats();
-+	do_flush_stats(root_mem_cgroup);
- 	queue_delayed_work(system_unbound_wq, &stats_flush_dwork, FLUSH_TIME);
- }
- 
-@@ -1642,7 +1653,7 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	 *
- 	 * Current memory state:
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		u64 size;
-@@ -4191,7 +4202,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	int nid;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
- 		seq_printf(m, "%s=%lu", stat->name,
-@@ -4272,7 +4283,7 @@ static void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
-@@ -4768,7 +4779,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
- 	struct mem_cgroup *parent;
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
- 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
-@@ -6857,7 +6868,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 	int i;
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(memcg);
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
- 		int nid;
-@@ -8088,7 +8099,11 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
- 			break;
- 		}
- 
--		cgroup_rstat_flush(memcg->css.cgroup);
-+		/*
-+		 * mem_cgroup_flush_stats() ignores small changes. Use
-+		 * do_flush_stats() directly to get accurate stats for charging.
-+		 */
-+		do_flush_stats(memcg);
- 		pages = memcg_page_state(memcg, MEMCG_ZSWAP_B) / PAGE_SIZE;
- 		if (pages < max)
- 			continue;
-@@ -8153,8 +8168,10 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
- static u64 zswap_current_read(struct cgroup_subsys_state *css,
- 			      struct cftype *cft)
- {
--	cgroup_rstat_flush(css->cgroup);
--	return memcg_page_state(mem_cgroup_from_css(css), MEMCG_ZSWAP_B);
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-+
-+	mem_cgroup_flush_stats(memcg);
-+	return memcg_page_state(memcg, MEMCG_ZSWAP_B);
- }
- 
- static int zswap_max_show(struct seq_file *m, void *v)
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 506f8220c5fe5..f93c989d7b387 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2222,7 +2222,7 @@ static void prepare_scan_control(pg_data_t *pgdat, struct scan_control *sc)
- 	 * Flush the memory cgroup stats, so that we read accurate per-memcg
- 	 * lruvec stats for heuristics.
- 	 */
--	mem_cgroup_flush_stats();
-+	mem_cgroup_flush_stats(sc->target_mem_cgroup);
- 
- 	/*
- 	 * Determine the scan balance between anon and file LRUs.
-diff --git a/mm/workingset.c b/mm/workingset.c
-index a573be6c59fd9..11045febc3838 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -464,8 +464,12 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset)
- 
- 	rcu_read_unlock();
- 
--	/* Flush stats (and potentially sleep) outside the RCU read section */
--	mem_cgroup_flush_stats_ratelimited();
-+	/*
-+	 * Flush stats (and potentially sleep) outside the RCU read section.
-+	 * XXX: With per-memcg flushing and thresholding, is ratelimiting
-+	 * still needed here?
-+	 */
-+	mem_cgroup_flush_stats_ratelimited(eviction_memcg);
- 
- 	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
- 	refault = atomic_long_read(&eviction_lruvec->nonresident_age);
-@@ -676,7 +680,7 @@ static unsigned long count_shadow_nodes(struct shrinker *shrinker,
- 		struct lruvec *lruvec;
- 		int i;
- 
--		mem_cgroup_flush_stats();
-+		mem_cgroup_flush_stats(sc->memcg);
- 		lruvec = mem_cgroup_lruvec(sc->memcg, NODE_DATA(sc->nid));
- 		for (pages = 0, i = 0; i < NR_LRU_LISTS; i++)
- 			pages += lruvec_page_state_local(lruvec,
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+2.25.1
 
