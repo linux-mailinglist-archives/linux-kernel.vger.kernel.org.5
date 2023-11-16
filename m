@@ -2,125 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5280F7EDDEF
-	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCC5A7EDDE8
+	for <lists+linux-kernel@lfdr.de>; Thu, 16 Nov 2023 10:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344983AbjKPJrO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 04:47:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35116 "EHLO
+        id S1344985AbjKPJqm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 04:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36174 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235291AbjKPJrM (ORCPT
+        with ESMTP id S1344978AbjKPJqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 04:47:12 -0500
-Received: from frasgout12.his.huawei.com (frasgout12.his.huawei.com [14.137.139.154])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 601B7196;
-        Thu, 16 Nov 2023 01:47:09 -0800 (PST)
-Received: from mail02.huawei.com (unknown [172.18.147.229])
-        by frasgout12.his.huawei.com (SkyGuard) with ESMTP id 4SWFBf6RNHz9v7cG;
-        Thu, 16 Nov 2023 17:30:34 +0800 (CST)
-Received: from [127.0.0.1] (unknown [10.204.63.22])
-        by APP2 (Coremail) with SMTP id GxC2BwAHuGHy5FVlZM3CAA--.37379S2;
-        Thu, 16 Nov 2023 10:46:39 +0100 (CET)
-Message-ID: <5a7a675238c2e29d02ae23f0ec0e1569415eb89e.camel@huaweicloud.com>
-Subject: Re: [PATCH v5 13/23] security: Introduce file_pre_free_security hook
-From:   Roberto Sassu <roberto.sassu@huaweicloud.com>
-To:     Paul Moore <paul@paul-moore.com>, viro@zeniv.linux.org.uk,
-        brauner@kernel.org, chuck.lever@oracle.com, jlayton@kernel.org,
-        neilb@suse.de, kolga@netapp.com, Dai.Ngo@oracle.com,
-        tom@talpey.com, jmorris@namei.org, serge@hallyn.com,
-        zohar@linux.ibm.com, dmitry.kasatkin@gmail.com,
-        dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
-Date:   Thu, 16 Nov 2023 10:46:24 +0100
-In-Reply-To: <4f8c441e02222f063242adfbf4d733e1.paul@paul-moore.com>
-References: <20231107134012.682009-14-roberto.sassu@huaweicloud.com>
-         <4f8c441e02222f063242adfbf4d733e1.paul@paul-moore.com>
+        Thu, 16 Nov 2023 04:46:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DE53187
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700127995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GruoM/5/32+k91gDkX5IlRzhNe9lOGFcfel6ZoBid20=;
+        b=hFrwg86SQuS4knRIeOwLid/MJV3SBJHCp0Vt1cLPTsH5cJyrFcnJarxh5xUyS099xwTN7e
+        VIJsT72C4HKnPeXhWUQNEHgWyK3MvoVOasiBpJ28q9owKybYwN++NVi0fVfODOyezGZNSh
+        k8htFwXou3M1vxvRYGXaYpHXAL4VHtg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-595-4sKcQmIKOmWZa3Zb-LbTQQ-1; Thu, 16 Nov 2023 04:46:33 -0500
+X-MC-Unique: 4sKcQmIKOmWZa3Zb-LbTQQ-1
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-5401de6ce9eso99353a12.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 01:46:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700127993; x=1700732793;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=GruoM/5/32+k91gDkX5IlRzhNe9lOGFcfel6ZoBid20=;
+        b=MC0qoFt8TB/kVSD+khr/0bnF7XmReCjyB3kKi2Iwwha9CsQc4pdEh9qTdm+rw995Uc
+         Hm5xMTLinhXWMaoKeHdw4jxvXHAM9vA33AxEhspoxE8TqqSoBC42ZzpeFGtjT4lZZM/L
+         EVxGbT1PFdGauKVNTa+30ia+Mr5lctObKt7gnuX8CQvI2FuhdbrP6pfCOOkMbi0/LGtr
+         4VMsWX08GPrA459LmbmgysTCacmvx6u5uuFVDmQ6TjfIhA5m3WeyyyVkd8NCHZrT4zkF
+         6o3OX8TQRQZNq0rRRLK3xdkxiMDcrnBVFfkwPMjBWs1ZpjBAjiBk3z2m6v97150KLNta
+         SZIA==
+X-Gm-Message-State: AOJu0YxYHzcKuCn9drO6XU3h/JN4h1qNXZKW77SfInp0JfTl01/tVQnE
+        sA72uIxXG/N5T9fTbozp3kbi04Bj5jbqGIMRL/R/RnjVzJEw0MR/b+r22KreV9KueERkIwy5f4b
+        C9qXgbI1IMxJpjskT9KppSKMA
+X-Received: by 2002:a05:6402:5518:b0:548:15e1:3b26 with SMTP id fi24-20020a056402551800b0054815e13b26mr456424edb.3.1700127992893;
+        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF6FMEPXWLzaTbwCpFj/1CLV+LAdXnP2IviLRo7oPmaJQCqz4fjhooDueXV1KR2Y44bOlBZPA==
+X-Received: by 2002:a05:6402:5518:b0:548:15e1:3b26 with SMTP id fi24-20020a056402551800b0054815e13b26mr456412edb.3.1700127992587;
+        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
+Received: from gerbillo.redhat.com (146-241-98-67.dyn.eolo.it. [146.241.98.67])
+        by smtp.gmail.com with ESMTPSA id v23-20020aa7cd57000000b005402a0c9784sm7495481edw.40.2023.11.16.01.46.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 01:46:32 -0800 (PST)
+Message-ID: <59083303fc79497b2658ff15ac3c18b985e270ab.camel@redhat.com>
+Subject: Re: [PATCH net] tipc: Remove redundant call to TLV_SPACE()
+From:   Paolo Abeni <pabeni@redhat.com>
+To:     Shigeru Yoshida <syoshida@redhat.com>, jmaloy@redhat.com,
+        ying.xue@windriver.com, davem@davemloft.net, edumazet@google.com,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, tipc-discussion@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org
+Date:   Thu, 16 Nov 2023 10:46:30 +0100
+In-Reply-To: <20231114144336.1714364-1-syoshida@redhat.com>
+References: <20231114144336.1714364-1-syoshida@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.44.4-0ubuntu2 
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.46.4 (3.46.4-1.fc37) 
 MIME-Version: 1.0
-X-CM-TRANSID: GxC2BwAHuGHy5FVlZM3CAA--.37379S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1DtryfZw48JrWfKF13twb_yoW8Ar15pF
-        Z8t3W5KFWUtF17Grn3AFsF9a4rKrZ3Kr17ZFZagr10qrnxZr95KF42kFWY9r4DJrs7Ary0
-        ga12gry3WryDZrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-        6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-        vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7Cj
-        xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv6xkF7I
-        0E14v26r4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-        rVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-        IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0x
-        vE42xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280
-        aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UQZ2-UUUUU=
-X-CM-SenderInfo: purev21wro2thvvxqx5xdzvxpfor3voofrz/1tbiAgADBF1jj5KGKgABsL
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
-> On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
-> > 
-> > In preparation for moving IMA and EVM to the LSM infrastructure, introduce
-> > the file_pre_free_security hook.
-> > 
-> > IMA calculates at file close the new digest of the file content and writes
-> > it to security.ima, so that appraisal at next file access succeeds.
-> > 
-> > LSMs could also take some action before the last reference of a file is
-> > released.
-> > 
-> > The new hook cannot return an error and cannot cause the operation to be
-> > reverted.
-> > 
-> > Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-> > Acked-by: Casey Schaufler <casey@schaufler-ca.com>
-> > Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
-> > ---
-> >  fs/file_table.c               |  1 +
-> >  include/linux/lsm_hook_defs.h |  1 +
-> >  include/linux/security.h      |  4 ++++
-> >  security/security.c           | 11 +++++++++++
-> >  4 files changed, 17 insertions(+)
-> > 
-> > diff --git a/fs/file_table.c b/fs/file_table.c
-> > index de4a2915bfd4..64ed74555e64 100644
-> > --- a/fs/file_table.c
-> > +++ b/fs/file_table.c
-> > @@ -385,6 +385,7 @@ static void __fput(struct file *file)
-> >  	eventpoll_release(file);
-> >  	locks_remove_file(file);
-> >  
-> > +	security_file_pre_free(file);
-> 
-> I worry that security_file_pre_free() is a misleading name as "free"
-> tends to imply memory management tasks, which isn't the main focus of
-> this hook.  What do you think of security_file_release() or
-> security_file_put() instead?
+Hi,
 
-security_file_release() would be fine for me.
+On Tue, 2023-11-14 at 23:43 +0900, Shigeru Yoshida wrote:
+> The purpose of TLV_SPACE() is to add the TLV descriptor size to the size =
+of
+> the TLV value passed as argument and align the resulting size to
+> TLV_ALIGNTO.
+>=20
+> tipc_tlv_alloc() calls TLV_SPACE() on its argument. In other words,
+> tipc_tlv_alloc() takes its argument as the size of the TLV value. So the
+> call to TLV_SPACE() in tipc_get_err_tlv() is redundant. Let's remove this
+> redundancy.
+>=20
+> Fixes: d0796d1ef63d ("tipc: convert legacy nl bearer dump to nl compat")
+> Signed-off-by: Shigeru Yoshida <syoshida@redhat.com>
 
-Thanks
+The patch LGTM, but I think this is more a cleanup then a fix, please
+re-submit it for net-next, dropping the Fixes tag (so it will not land
+in stable tree).
 
-Roberto
+With the above you can add:
 
-> >  	ima_file_free(file);
-> >  	if (unlikely(file->f_flags & FASYNC)) {
-> >  		if (file->f_op->fasync)
-> 
-> --
-> paul-moore.com
+Acked-by: Paolo Abeni <pabeni@redhat.com>
+> ---
+>  net/tipc/netlink_compat.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/net/tipc/netlink_compat.c b/net/tipc/netlink_compat.c
+> index 5bc076f2fa74..db0365c9b8bd 100644
+> --- a/net/tipc/netlink_compat.c
+> +++ b/net/tipc/netlink_compat.c
+> @@ -167,7 +167,7 @@ static struct sk_buff *tipc_get_err_tlv(char *str)
+>  	int str_len =3D strlen(str) + 1;
+>  	struct sk_buff *buf;
+> =20
+> -	buf =3D tipc_tlv_alloc(TLV_SPACE(str_len));
+> +	buf =3D tipc_tlv_alloc(str_len);
+>  	if (buf)
+>  		tipc_add_tlv(buf, TIPC_TLV_ERROR_STRING, str, str_len);
+> =20
 
