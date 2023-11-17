@@ -2,115 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 6360B7EEEDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C04197EEF1E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345745AbjKQJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:40:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
+        id S1345745AbjKQJpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:45:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235718AbjKQJj4 (ORCPT
+        with ESMTP id S1345881AbjKQJoj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:39:56 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53395D7A
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:39:53 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r3vKD-0004VP-Ol; Fri, 17 Nov 2023 10:39:45 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r3vK8-009eBl-Hj; Fri, 17 Nov 2023 10:39:40 +0100
-Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <sha@pengutronix.de>)
-        id 1r3vK8-002UUH-EB; Fri, 17 Nov 2023 10:39:40 +0100
-Date:   Fri, 17 Nov 2023 10:39:40 +0100
-From:   Sascha Hauer <s.hauer@pengutronix.de>
-To:     Andy Yan <andy.yan@rock-chips.com>
-Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Andy Yan <andyshrk@163.com>, heiko@sntech.de,
-        hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, kever.yang@rock-chips.com,
-        chris.obbard@collabora.com
-Subject: Re: [PATCH 09/11] drm/rockchip: vop2: Add support for rk3588
-Message-ID: <20231117093940.GJ3359458@pengutronix.de>
-References: <20231114112534.1770731-1-andyshrk@163.com>
- <20231114112855.1771372-1-andyshrk@163.com>
- <20231115090823.GY3359458@pengutronix.de>
- <8f2ebc81-51c5-44d5-b27b-633a6cc85d0d@rock-chips.com>
- <20231116134757.zu7axb6cvriqjm6y@mercury.elektranox.org>
- <3e011d52-017e-4360-86b4-781535ef61ad@rock-chips.com>
+        Fri, 17 Nov 2023 04:44:39 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AD56171D
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:43:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=pXuCWcFMMyNm3tQDni1BukKDks9Oa0qI5QFUTW5eN8U=; b=JwfecIc3SNWc5QSq5CmXKQA0f2
+        DOu48zzXFAWzzBIG86ozmTfe3qEZCZaE67GH4j2AlmsZBjMPuxUnAMWCCUY68PUQQReK5hBE174QZ
+        +Q5mk6uFwVyh/d1O5C6Y1hSUb4gyGTv/gD+4/1IRQkEz/L0ApIL5wgJHfKV92AvMbIk6gDW1bTEQb
+        YpKkuRhR0tSPwxTpToazFw8aC6YqcxEhkzMh3fgq9zh+5YGB24aKnrSftpF7xj4T8rk3gedURjsSP
+        gZWPuSufNirqQuOQI+Dn/BuvFi0vQITUax8cFM0CmcntN/Rd0qC0EZ0dPPzNi6d/ONbXu+Zd6OFOC
+        GTN0Jq3Q==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r3vLU-007BRO-04;
+        Fri, 17 Nov 2023 09:43:04 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AD124300478; Fri, 17 Nov 2023 10:41:03 +0100 (CET)
+Date:   Fri, 17 Nov 2023 10:41:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Uros Bizjak <ubizjak@gmail.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, kirill.shutemov@linux.intel.com
+Subject: Re: [PATCH -tip] x86/mm: Use %RIP-relative address in untagged_addr()
+Message-ID: <20231117094103.GM8262@noisy.programming.kicks-ass.net>
+References: <20231116191127.3446476-1-ubizjak@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3e011d52-017e-4360-86b4-781535ef61ad@rock-chips.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231116191127.3446476-1-ubizjak@gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 03:06:35PM +0800, Andy Yan wrote:
-> Hi Sebastian:
-> 
-> On 11/16/23 21:47, Sebastian Reichel wrote:
-> > Hi,
-> > 
-> > On Thu, Nov 16, 2023 at 06:39:40PM +0800, Andy Yan wrote:
-> > > > >    	vop2->sys_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
-> > > > This already lacks an error check, shame on me...
-> > > > 
-> > > > > +	vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
-> > > > > +	vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
-> > > > > +	vop2->sys_pmu = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,pmu");
-> > > > ... but please don't duplicate that.
-> > > It a little difficult to find a proper way to do the check, as not every soc need all these phandles.
-> > > 
-> > > Do i need check it per soc?
-> > I suggest adding a u32 flags to struct vop2_data and then have
-> > something like this:
-> > 
-> > if (vop2_data->flags & VOP2_HAS_VOP_GRF) {
-> >      vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
-> >      if (IS_ERR(vop2->vop_grf))
-> >          return dev_err_probe(dev, PTR_ERR(vop2->vop_grf) "cannot get vop-grf");
-> > }
-> > 
-> > if (vop2_data->flags & VOP2_HAS_VO1_GRF) {
-> >      vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
-> >      if (IS_ERR(vop2->vo1_grf))
-> >          return dev_err_probe(dev, PTR_ERR(vop2->vo1_grf) "cannot get vo1-grf");
-> > }
-> > 
-> > ...
-> 
-> 
-> I can do it like this if Sascha is also happy with it.
+On Thu, Nov 16, 2023 at 08:10:59PM +0100, Uros Bizjak wrote:
+> %RIP-relative addresses are nowadays correctly handled in alternative
+> instructions, so remove misleading comment and improve assembly to
+> use %RIP-relative address.
 
-Yes, I am.
+Ha!, it might've been this exact case (and Kirill grumbling) that got me
+to fix the alternative code :-)
 
-Sascha
+> Also, explicitly using %gs: prefix will segfault for non-SMP builds.
+> Use macros from percpu.h which will DTRT with segment prefix register
+> as far as SMP/non-SMP builds are concerned.
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+
+Acked-byL Peter Zijlstra (Intel) <peterz@infradaed.org>
+
+> ---
+>  arch/x86/include/asm/uaccess_64.h | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/uaccess_64.h b/arch/x86/include/asm/uaccess_64.h
+> index f2c02e4469cc..01455c0b070c 100644
+> --- a/arch/x86/include/asm/uaccess_64.h
+> +++ b/arch/x86/include/asm/uaccess_64.h
+> @@ -11,6 +11,7 @@
+>  #include <asm/alternative.h>
+>  #include <asm/cpufeatures.h>
+>  #include <asm/page.h>
+> +#include <asm/percpu.h>
+>  
+>  #ifdef CONFIG_ADDRESS_MASKING
+>  /*
+> @@ -18,14 +19,10 @@
+>   */
+>  static inline unsigned long __untagged_addr(unsigned long addr)
+>  {
+> -	/*
+> -	 * Refer tlbstate_untag_mask directly to avoid RIP-relative relocation
+> -	 * in alternative instructions. The relocation gets wrong when gets
+> -	 * copied to the target place.
+> -	 */
+>  	asm (ALTERNATIVE("",
+> -			 "and %%gs:tlbstate_untag_mask, %[addr]\n\t", X86_FEATURE_LAM)
+> -	     : [addr] "+r" (addr) : "m" (tlbstate_untag_mask));
+> +			 "and " __percpu_arg([mask]) ", %[addr]", X86_FEATURE_LAM)
+> +	     : [addr] "+r" (addr)
+> +	     : [mask] "m" (__my_cpu_var(tlbstate_untag_mask)));
+>  
+>  	return addr;
+>  }
+> -- 
+> 2.41.0
+> 
