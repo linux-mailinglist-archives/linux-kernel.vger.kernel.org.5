@@ -2,148 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 381B97EF8E6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9697EF8EC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232324AbjKQUzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:55:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57814 "EHLO
+        id S1346185AbjKQU55 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:57:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49996 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQUzt (ORCPT
+        with ESMTP id S229535AbjKQU54 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:55:49 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48853D51
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:55:46 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C7FAC433C8;
-        Fri, 17 Nov 2023 20:55:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700254545;
-        bh=IXT0Yejj5ef3rwWVtwqpGoiB2+zNqowUbQ2K4S90L/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=G5iM1aXiTH9rTxkzyGWgeQCduyO8o9jsvrhz02EeTBKyQ8sm/QGd5ZX1H6STvOvDC
-         99gBjLaGCfWCljmRRImF3FwdBK+bgiyNj9Rj3IpuiiEsGTfpNAaUB3mwK0CKq2tsXA
-         SNkUiQGqo9jan7+rTJxW/0IsqSPDEGnddgnIS2CpJ7Gt1ZKPuNuAwbAE7mm0sn9fWj
-         OEVagRNM38TLXyjYmpL4gDhWCr7Forudqgmqmk4xmvwzRdOF7IY3nEDCtCmFb28Hqb
-         u4S2Di7q1xH7uLM/Qu+mtCnowuUQyuU0Ciic2A4gG2qvP7U5ropdLHnfQyj0JEBbPw
-         /i43YeIsbCVzg==
-Date:   Fri, 17 Nov 2023 13:55:43 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     ndesaulniers@google.com
-Cc:     Kees Cook <keescook@chromium.org>,
-        Bill Wendling <morbo@google.com>,
-        Justin Stitt <justinstitt@google.com>,
-        Tom Rix <trix@redhat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nicolas Schier <nicolas@fjasle.eu>, llvm@lists.linux.dev,
-        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MAINTAINERS: refresh LLVM support
-Message-ID: <20231117205543.GA3619211@dev-arch.thelio-3990X>
-References: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117-maintainers-v1-1-85f2a7422ed9@google.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 17 Nov 2023 15:57:56 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA8CD5B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:57:52 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id d75a77b69052e-41cc537ed54so13925001cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:57:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1700254671; x=1700859471; darn=vger.kernel.org;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bzVqwuvaomrtW1rFoY9rJJKDbCx8C1ZbkSBq2JOlS7c=;
+        b=UgXRGSUY7JiQlnB7qYapmgY9IHLq6inX1AYTw7HnnKCW5iYGVi/Wo6Np65OwY/6FEv
+         p4Kvh1NFMID4VwXGgrZoknbifkXPtrKUXPEuUUNV4s52j+xo4K4+imRQXiuXrScZjX+B
+         llvj44l+xccHwV5qWRUpu1OY/biUG6iH/7lXz+wthAPAgX6t+Z7glBgriCVcy+GtBere
+         746bdnbnzY4lKkCvPT0TnQlBy11ZAbmDiq6WLc9BJE/bquQE+Pdvjht6QiUb4NsMdmmY
+         1fmIgZ356BgwBNMyWbk2VwexqWi2g9ePLbNKjR6XJhkOAMVxDsIybe8fneK15XeJg2YL
+         54qQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700254671; x=1700859471;
+        h=in-reply-to:references:subject:cc:to:from:message-id:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bzVqwuvaomrtW1rFoY9rJJKDbCx8C1ZbkSBq2JOlS7c=;
+        b=iUh+CpCCYDMYdjsR6zPaDqO8Zj05uXU7im+SLRXiSP2lUVTeFW1oyzmKMYiy9yL8tP
+         evRGdN1RG8VXoFHjISEsPDaLA1WUvc7YA5ellKGY/qXr2TcuFLRdLJwAdtU7FfJKIMZ7
+         xAsV6SWbHRd8WPXHjm74/qhTuY2oNf2k0fVZ3BMRItZAbXygA5VkJIVhx933hHTbanLB
+         67dJvvlXa8x5Hig4vDenx/0GVvn/J8Z3o9DQMnwNb305mfesRD2rxZS1Jal/xhAfJ/69
+         8i3EKkxyZaN8oxekzg8Q+XHSX55pSoFeYonMURrEG/xK0VADu0YrgEEokmCggsiyTDWR
+         pjsA==
+X-Gm-Message-State: AOJu0YzxteoRedY2KR37v4Xfggeb+uoXs+/BMymlDgPqKmIOONAA4Sh6
+        Ytvi8oCxJXY0Tg8dJVIJXH44
+X-Google-Smtp-Source: AGHT+IETTzY5QAJOhSSX9WgqhpKW3XEYQ+hKIJQj84OHBSoAAzNFaiPFDk/ljl7y5ZXFF2ajrMbeHg==
+X-Received: by 2002:ac8:4e8f:0:b0:420:72:3075 with SMTP id 15-20020ac84e8f000000b0042000723075mr1208982qtp.17.1700254671570;
+        Fri, 17 Nov 2023 12:57:51 -0800 (PST)
+Received: from localhost ([70.22.175.108])
+        by smtp.gmail.com with ESMTPSA id p2-20020ac87402000000b004196d75d79csm831843qtq.46.2023.11.17.12.57.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 12:57:51 -0800 (PST)
+Date:   Fri, 17 Nov 2023 15:57:50 -0500
+Message-ID: <17befa132379d37977fc854a8af25f6d.paul@paul-moore.com>
+From:   Paul Moore <paul@paul-moore.com>
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>,
+        viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Subject: Re: [PATCH v5 23/23] integrity: Switch from rbtree to LSM-managed blob  for integrity_iint_cache
+References: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+In-Reply-To: <20231107134012.682009-24-roberto.sassu@huaweicloud.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 11:24:02AM -0800, ndesaulniers@google.com wrote:
-> As discussed at the ClangBuiltLinux '23 meetup (co-located with Linux Plumbers
-> Conf '23), I'll be taking a step back from kernel work to focus on my growing
-> family and helping Google figure out its libc story. So I think it's time to
-> formally hand over the reigns to my co-maintainer Nathan.
+On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 > 
-> As such, remove myself from reviewer for:
-> - CLANG CONTROL FLOW INTEGRITY SUPPORT
-> - COMPILER ATTRIBUTES
-> - KERNEL BUILD
+> Before the security field of kernel objects could be shared among LSMs with
+> the LSM stacking feature, IMA and EVM had to rely on an alternative storage
+> of inode metadata. The association between inode metadata and inode is
+> maintained through an rbtree.
 > 
-> For CLANG/LLVM BUILD SUPPORT I'm bumping myself down from maintainer to
-> reviewer, adding Bill and Justin, and removing Tom (Tom and I confirmed this
-> via private email; thanks for the work done Tom, ++beers_owed).
+> Because of this alternative storage mechanism, there was no need to use
+> disjoint inode metadata, so IMA and EVM today still share them.
 > 
-> It has been my pleasure to work with everyone to improve the toolchain
-> portability of the Linux kernel, and to help bring LLVM to the table as a
-> competitor. The work here is not done.  I have a few last LLVM patches in the
-> works to improve stack usage of clang which has been our longest standing open
-> issue (getting "rm" inline asm constraints to DTRT is part of that). But
-> looking back I'm incredibly proud of where we are to today relative to where we
-> were when we started the ClangBuiltLinux journey, and am confident that the
-> team and processes we have put in place will continue to be successful. I
-> continue to believe that a rising tide will lift all boats.
+> With the reservation mechanism offered by the LSM infrastructure, the
+> rbtree is no longer necessary, as each LSM could reserve a space in the
+> security blob for each inode. However, since IMA and EVM share the
+> inode metadata, they cannot directly reserve the space for them.
 > 
-> I identify first and foremost as a Linux kernel developer, and an LLVM dev
-> second. May it be a cold day in hell when that changes.
+> Instead, request from the 'integrity' LSM a space in the security blob for
+> the pointer of inode metadata (integrity_iint_cache structure). The other
+> reason for keeping the 'integrity' LSM is to preserve the original ordering
+> of IMA and EVM functions as when they were hardcoded.
 > 
-> Wake me when you need me.
+> Prefer reserving space for a pointer to allocating the integrity_iint_cache
+> structure directly, as IMA would require it only for a subset of inodes.
+> Always allocating it would cause a waste of memory.
 > 
-> Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
-
-Definitely bittersweet but I wish you nothing but the best on the other
-side of the fence :)
-
-Acked-by: Nathan Chancellor <nathan@kernel.org>
-
+> Introduce two primitives for getting and setting the pointer of
+> integrity_iint_cache in the security blob, respectively
+> integrity_inode_get_iint() and integrity_inode_set_iint(). This would make
+> the code more understandable, as they directly replace rbtree operations.
+> 
+> Locking is not needed, as access to inode metadata is not shared, it is per
+> inode.
+> 
+> Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+> Reviewed-by: Casey Schaufler <casey@schaufler-ca.com>
+> Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
 > ---
->  MAINTAINERS | 8 +++-----
->  1 file changed, 3 insertions(+), 5 deletions(-)
+>  security/integrity/iint.c      | 71 +++++-----------------------------
+>  security/integrity/integrity.h | 20 +++++++++-
+>  2 files changed, 29 insertions(+), 62 deletions(-)
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 482d428472e7..1e6692697167 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -5076,7 +5076,6 @@ CLANG CONTROL FLOW INTEGRITY SUPPORT
->  M:	Sami Tolvanen <samitolvanen@google.com>
->  M:	Kees Cook <keescook@chromium.org>
->  R:	Nathan Chancellor <nathan@kernel.org>
-> -R:	Nick Desaulniers <ndesaulniers@google.com>
->  L:	llvm@lists.linux.dev
->  S:	Supported
->  B:	https://github.com/ClangBuiltLinux/linux/issues
-> @@ -5091,8 +5090,9 @@ F:	.clang-format
+> diff --git a/security/integrity/iint.c b/security/integrity/iint.c
+> index 882fde2a2607..a5edd3c70784 100644
+> --- a/security/integrity/iint.c
+> +++ b/security/integrity/iint.c
+> @@ -231,6 +175,10 @@ static int __init integrity_lsm_init(void)
+>  	return 0;
+>  }
 >  
->  CLANG/LLVM BUILD SUPPORT
->  M:	Nathan Chancellor <nathan@kernel.org>
-> -M:	Nick Desaulniers <ndesaulniers@google.com>
-> -R:	Tom Rix <trix@redhat.com>
-> +R:	Nick Desaulniers <ndesaulniers@google.com>
-> +R:	Bill Wendling <morbo@google.com>
-> +R:	Justin Stitt <justinstitt@google.com>
->  L:	llvm@lists.linux.dev
->  S:	Supported
->  W:	https://clangbuiltlinux.github.io/
-> @@ -5242,7 +5242,6 @@ F:	drivers/platform/x86/compal-laptop.c
->  
->  COMPILER ATTRIBUTES
->  M:	Miguel Ojeda <ojeda@kernel.org>
-> -R:	Nick Desaulniers <ndesaulniers@google.com>
->  S:	Maintained
->  F:	include/linux/compiler_attributes.h
->  
-> @@ -11516,7 +11515,6 @@ F:	fs/autofs/
->  KERNEL BUILD + files below scripts/ (unless maintained elsewhere)
->  M:	Masahiro Yamada <masahiroy@kernel.org>
->  R:	Nathan Chancellor <nathan@kernel.org>
-> -R:	Nick Desaulniers <ndesaulniers@google.com>
->  R:	Nicolas Schier <nicolas@fjasle.eu>
->  L:	linux-kbuild@vger.kernel.org
->  S:	Maintained
-> 
-> ---
-> base-commit: 6bc40e44f1ddef16a787f3501b97f1fff909177c
-> change-id: 20231117-maintainers-88eac4c024a1
-> 
-> Best regards,
-> -- 
-> Nick Desaulniers <ndesaulniers@google.com>
-> 
-> 
+> +struct lsm_blob_sizes integrity_blob_sizes __ro_after_init = {
+> +	.lbs_inode = sizeof(struct integrity_iint_cache *),
+> +};
+
+I'll admit that I'm likely missing an important detail, but is there
+a reason why you couldn't stash the integrity_iint_cache struct
+directly in the inode's security blob instead of the pointer?  For
+example:
+
+  struct lsm_blob_sizes ... = {
+    .lbs_inode = sizeof(struct integrity_iint_cache),
+  };
+
+  struct integrity_iint_cache *integrity_inode_get(inode)
+  {
+    if (unlikely(!inode->isecurity))
+      return NULL;
+    return inode->i_security + integrity_blob_sizes.lbs_inode;
+  }
+
+--
+paul-moore.com
