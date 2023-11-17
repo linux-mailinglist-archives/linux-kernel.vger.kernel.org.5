@@ -2,66 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DE4B7EF646
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:33:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AAD7EF64A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:36:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346117AbjKQQd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:33:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40892 "EHLO
+        id S235181AbjKQQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:36:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346098AbjKQQdx (ORCPT
+        with ESMTP id S231693AbjKQQgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:33:53 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A08A196;
-        Fri, 17 Nov 2023 08:33:50 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGXfJD000580;
-        Fri, 17 Nov 2023 10:33:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700238821;
-        bh=TRVFdbxp5TfB9zohoIzap5ZelvMfSVt1e9KtfukunVc=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=p8ZiYuR3j+zQLfETJ0OmYQF/VmtESq62TxInPoZl0cHr73sLuMFmGo3m1tknDdK7h
-         0gFgZLqn1snrVLtvW3Hv4JzG837Ds+3C4Pz9dibBXMe9MYqa0DG6VsEqWl4I/kRFWL
-         F/n/0gSngu9bBnv4bHaWyU0pj9qwkUHuL2o7oQdM=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHGXfpY097084
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 10:33:41 -0600
-Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 10:33:41 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 10:33:41 -0600
-Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGXeYg127988;
-        Fri, 17 Nov 2023 10:33:41 -0600
-From:   Andrew Davis <afd@ti.com>
-To:     Nishanth Menon <nm@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Andrew Davis <afd@ti.com>
-Subject: [PATCH 2/2] arm64: dts: ti: k3-am64: Enable SDHCI nodes at the board level
-Date:   Fri, 17 Nov 2023 10:33:39 -0600
-Message-ID: <20231117163339.89952-2-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231117163339.89952-1-afd@ti.com>
-References: <20231117163339.89952-1-afd@ti.com>
+        Fri, 17 Nov 2023 11:36:40 -0500
+Received: from mx0b-001ae601.pphosted.com (mx0b-001ae601.pphosted.com [67.231.152.168])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4B59D4B;
+        Fri, 17 Nov 2023 08:36:36 -0800 (PST)
+Received: from pps.filterd (m0077474.ppops.net [127.0.0.1])
+        by mx0b-001ae601.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AHFq7av014874;
+        Fri, 17 Nov 2023 10:36:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding:content-type; s=PODMain02222019; bh=+
+        h8A2Q5BPK15jigOBd8bxNYR8QvhfpYsQGQgKXTnliM=; b=dt5NOx9J7IuCgEAZH
+        GXtYZqnsLoaD2zRsltdBZHZMqmlprQdG9kV/ntz3JfVHChLP4wgVwLSH08J1jk1o
+        yHqGV183XYVE4FnKN7Hym6391rpaH0juEIIF8Ow8KVlz5yxaSHS59iEcQz4zScd+
+        D0b4psfRIT9fAq7Qk1ncQT/Ybu62PneWSUp5fhaWPJ0JLPZdbJEQWKPzajE08PCL
+        bW8JSoebTdeE1gSeFXs7/oQ0rYfDB0OirhLwCauu34uPaHtAmZcODP955y6g78T4
+        TZtkVn6SUTIV3EW6aZQ0kehA6zPEhiHjsz1qGMJcp/vsYmz1u74UWUi/XRDJux54
+        dBpdA==
+Received: from ediex02.ad.cirrus.com ([84.19.233.68])
+        by mx0b-001ae601.pphosted.com (PPS) with ESMTPS id 3ua6wpfrca-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:36:19 -0600 (CST)
+Received: from ediex01.ad.cirrus.com (198.61.84.80) by ediex02.ad.cirrus.com
+ (198.61.84.81) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
+ 2023 16:36:17 +0000
+Received: from ediswmail.ad.cirrus.com (198.61.86.93) by ediex01.ad.cirrus.com
+ (198.61.84.80) with Microsoft SMTP Server id 15.2.1118.39 via Frontend
+ Transport; Fri, 17 Nov 2023 16:36:16 +0000
+Received: from sbinding-cirrus-dsktp2.ad.cirrus.com (unknown [198.90.238.225])
+        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 2248415B9;
+        Fri, 17 Nov 2023 16:36:17 +0000 (UTC)
+From:   Stefan Binding <sbinding@opensource.cirrus.com>
+To:     Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
+        "Takashi Iwai" <tiwai@suse.com>
+CC:     <alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <patches@opensource.cirrus.com>,
+        "Stefan Binding" <sbinding@opensource.cirrus.com>
+Subject: [PATCH v2 0/2] ALSA: cs35l41: prevent old firmwares using unsupported commands
+Date:   Fri, 17 Nov 2023 16:36:07 +0000
+Message-ID: <20231117163609.823627-1-sbinding@opensource.cirrus.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+X-Proofpoint-GUID: jgTLt9TbNllyPY7cqshwiJ9XTZf5QAVM
+X-Proofpoint-ORIG-GUID: jgTLt9TbNllyPY7cqshwiJ9XTZf5QAVM
+X-Proofpoint-Spam-Reason: safe
+X-Spam-Status: No, score=-2.7 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -70,144 +68,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SDHCI nodes defined in the top-level AM64 SoC dtsi files are incomplete
-and will not be functional unless they are extended.
+Some systems use older firmware which does not support newer commands
+which are used to enable external boost. For those systems, we can
+workaround this by writing the registers directly.
 
-As the attached SD/eMMC is only known about at the board integration level,
-these nodes should only be enabled when provided with this information.
+We can use the firmware version, stored inside cs_dsp, to determine
+whether or not the command is supported.
+To achieve this, it requires a cleanup in the api, to pass the cs_dsp
+struct into the function.
 
-Disable the SDHCI nodes in the dtsi files and only enable the ones that
-are actually pinned out on a given board.
+We can also remove the redundant boolean firmware_running from the HDA
+driver, and use the equivalent state inside cs_dsp.
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- arch/arm64/boot/dts/ti/k3-am64-main.dtsi                 | 2 ++
- arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi          | 1 +
- arch/arm64/boot/dts/ti/k3-am642-evm.dts                  | 6 ++++--
- arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts | 1 +
- arch/arm64/boot/dts/ti/k3-am642-sk.dts                   | 4 +++-
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts   | 1 -
- arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi           | 1 +
- 7 files changed, 12 insertions(+), 4 deletions(-)
+Changes since V1:
+- Added fixes tag to all patches
+- patches rebased after v6.7 release
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-index 0be642bc1b86d..c3300c36fdbcb 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-main.dtsi
-@@ -623,6 +623,7 @@ sdhci0: mmc@fa10000 {
- 		ti,otap-del-sel-mmc-hs = <0x0>;
- 		ti,otap-del-sel-ddr52 = <0x6>;
- 		ti,otap-del-sel-hs200 = <0x7>;
-+		status = "disabled";
- 	};
- 
- 	sdhci1: mmc@fa00000 {
-@@ -641,6 +642,7 @@ sdhci1: mmc@fa00000 {
- 		ti,otap-del-sel-sdr104 = <0x6>;
- 		ti,otap-del-sel-ddr50 = <0x9>;
- 		ti,clkbuf-sel = <0x7>;
-+		status = "disabled";
- 	};
- 
- 	cpsw3g: ethernet@8000000 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-index f87f09d83c956..b8f844f667afc 100644
---- a/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am64-phycore-som.dtsi
-@@ -211,6 +211,7 @@ flash@0 {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	bus-width = <8>;
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-evm.dts b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-index 4dba18941015d..256606be56fef 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-evm.dts
-@@ -487,17 +487,19 @@ eeprom@0 {
- 	};
- };
- 
-+/* eMMC */
- &sdhci0 {
--	/* emmc */
-+	status = "okay";
- 	bus-width = <8>;
- 	non-removable;
- 	ti,driver-strength-ohm = <50>;
- 	disable-wp;
- };
- 
-+/* SD/MMC */
- &sdhci1 {
--	/* SD/MMC */
- 	bootph-all;
-+	status = "okay";
- 	vmmc-supply = <&vdd_mmc1>;
- 	pinctrl-names = "default";
- 	bus-width = <4>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-index 9175e96842d82..53b64e55413f9 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-phyboard-electra-rdk.dts
-@@ -264,6 +264,7 @@ &main_uart1 {
- };
- 
- &sdhci1 {
-+	status = "okay";
- 	vmmc-supply = <&vcc_3v3_mmc>;
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&main_mmc1_pins_default>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-sk.dts b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-index f29c8a9b59ba7..bffbd234f715a 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-sk.dts
-@@ -439,6 +439,7 @@ &mcu_gpio0 {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	vmmc-supply = <&wlan_en>;
- 	bus-width = <4>;
- 	non-removable;
-@@ -458,9 +459,10 @@ wlcore: wlcore@2 {
- 	};
- };
- 
-+/* SD/MMC */
- &sdhci1 {
--	/* SD/MMC */
- 	bootph-all;
-+	status = "okay";
- 	vmmc-supply = <&vdd_mmc1>;
- 	pinctrl-names = "default";
- 	bus-width = <4>;
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-index d95d80076a427..55102d35cecc1 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl-mbax4xxl.dts
-@@ -425,7 +425,6 @@ &sdhci1 {
- 	ti,driver-strength-ohm = <50>;
- 	ti,fails-without-test-cd;
- 	/* Enabled by overlay */
--	status = "disabled";
- };
- 
- &tscadc0 {
-diff --git a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-index d82d4a98306a7..6c785eff7d2ff 100644
---- a/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-+++ b/arch/arm64/boot/dts/ti/k3-am642-tqma64xxl.dtsi
-@@ -219,6 +219,7 @@ partitions {
- };
- 
- &sdhci0 {
-+	status = "okay";
- 	non-removable;
- 	disable-wp;
- 	no-sdio;
+Stefan Binding (2):
+  ALSA: hda: cs35l41: Remove unnecessary boolean state variable
+    firmware_running
+  ALSA: cs35l41: Fix for old systems which do not support command
+
+ include/sound/cs35l41.h        |  2 +-
+ sound/pci/hda/cs35l41_hda.c    | 28 ++++++++++++----------------
+ sound/soc/codecs/cs35l41-lib.c |  6 ++++--
+ sound/soc/codecs/cs35l41.c     |  4 ++--
+ 4 files changed, 19 insertions(+), 21 deletions(-)
+
 -- 
-2.39.2
+2.34.1
 
