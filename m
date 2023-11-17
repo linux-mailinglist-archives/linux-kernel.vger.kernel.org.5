@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A4E4D7EF75E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 19:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195507EF75D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 19:16:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231757AbjKQSQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 13:16:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49202 "EHLO
+        id S231601AbjKQSQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 13:16:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231561AbjKQSQr (ORCPT
+        with ESMTP id S231473AbjKQSQM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 13:16:47 -0500
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84FFD5B
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:16:42 -0800 (PST)
-Received: from [IPV6:2601:646:9a00:1821:450e:710e:ed94:8bf9] ([IPv6:2601:646:9a00:1821:450e:710e:ed94:8bf9])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 3AHIFtUU324528
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 17 Nov 2023 10:15:56 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3AHIFtUU324528
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023111101; t=1700244957;
-        bh=rldfpkIKQWTQW6V8Tvh/c478ucg2EydlDLInfQStja0=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=zugJ26awpulXFLHfyAsUg2BKPMrsxcnuWWyQQj2g1aCAkJXHvT0gGsOJxM9ITp1OL
-         HGbtOA9mkjsqpaTbvCqYFEAaIlg2xc+Y527FP4/IodDK86Sm8h3f4Eop8fSgDsyw6r
-         2eD2ztygTRXKLYEWTtgxhzOLwm49Xf9CGXYzkWcWx4YvmAWjkUSzFVfbuDdpv7a/M5
-         lwHVNHoupqFuRWI+wcWIYB9w910JA4hJeXDs+MntW1qK8IDQ6JZw7uodOOEs0ZUehN
-         ScSAzs42AB5ikGunu3Z765QciTeR1RX5HFQdgbetjyskoS+gdolQ4QAMevL4Hnq8an
-         SeAJcvsou/l3Q==
-Message-ID: <eec64162-263e-4535-b637-4893d23d19a3@zytor.com>
-Date:   Fri, 17 Nov 2023 10:15:50 -0800
+        Fri, 17 Nov 2023 13:16:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2E30D5B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:16:07 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60643C433C7;
+        Fri, 17 Nov 2023 18:16:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700244967;
+        bh=bFIc0Jmb5tQNMyAhAlrxbHbRAO4Ghji+FMUgKLz3oAs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Nr0RZ2kgv1BDedZxHGKBq+ZCVgeKV5QRbY+pPYGSh0Q7na3FBIOD9gzGzhIPsJqsk
+         KPeoIStW0BBpkLXapz1exYcCWuqksLiTrwqAP+f4O3WiJ5QyGgTw6kpjY5tkVcU6Ya
+         ycVM2wZErXESDcMDVjpUJz72V6hZAgV9RGOGr7JbZ0eI/CX/uRLFanCchGiz7AMZ22
+         vZpD9KUyZQVAO0ihZ+Tjk08FC3adFZzxhL3v3h4q6INOL9VpOA/8kqOvQeQ5ZNFxbV
+         TR8pARNU2Dnt9TCUgs9KQee8ZVuU+k+R/15HqkvhusqKTkVqz3LudqgS3BpUBKIsVi
+         z8lgmLMuaFWwQ==
+Date:   Fri, 17 Nov 2023 18:16:02 +0000
+From:   Simon Horman <horms@kernel.org>
+To:     Vishvambar Panth S <vishvambarpanth.s@microchip.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kuba@kernel.org, jacob.e.keller@intel.com,
+        bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com,
+        davem@davemloft.net, edumazet@google.com, pabeni@redhat.com
+Subject: Re: [PATCH net-next] net: microchip: lan743x : bidirectional
+ throughput improvement
+Message-ID: <20231117181602.GP164483@vergenet.net>
+References: <20231116054350.620420-1-vishvambarpanth.s@microchip.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -tip] x86/mm: Use %RIP-relative address in untagged_addr()
-Content-Language: en-US
-To:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20231116191127.3446476-1-ubizjak@gmail.com>
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <20231116191127.3446476-1-ubizjak@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116054350.620420-1-vishvambarpanth.s@microchip.com>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/23 11:10, Uros Bizjak wrote:
-> %RIP-relative addresses are nowadays correctly handled in alternative
-> instructions, so remove misleading comment and improve assembly to
-> use %RIP-relative address.
+On Thu, Nov 16, 2023 at 11:13:50AM +0530, Vishvambar Panth S wrote:
+> The LAN743x/PCI11xxx DMA descriptors are always 4 dwords long, but the
+> device supports placing the descriptors in memory back to back or
+> reserving space in between them using its DMA_DESCRIPTOR_SPACE (DSPACE)
+> configurable hardware setting. Currently DSPACE is unnecessarily set to
+> match the host's L1 cache line size, resulting in space reserved in
+> between descriptors in most platforms and causing a suboptimal behavior
+> (single PCIe Mem transaction per descriptor). By changing the setting
+> to DSPACE=16 many descriptors can be packed in a single PCIe Mem
+> transaction resulting in a massive performance improvement in
+> bidirectional tests without any negative effects.
+> Tested and verified improvements on x64 PC and several ARM platforms
+> (typical data below)
 > 
-> Also, explicitly using %gs: prefix will segfault for non-SMP builds.
-> Use macros from percpu.h which will DTRT with segment prefix register
-> as far as SMP/non-SMP builds are concerned.
+> Test setup 1: x64 PC with LAN7430 ---> x64 PC
+> 
+> iperf3 UDP bidirectional with DSPACE set to L1 CACHE Size:
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID][Role] Interval           Transfer     Bitrate
+> [  5][TX-C]   0.00-10.00  sec   170 MBytes   143 Mbits/sec  sender
+> [  5][TX-C]   0.00-10.04  sec   169 MBytes   141 Mbits/sec  receiver
+> [  7][RX-C]   0.00-10.00  sec  1.02 GBytes   876 Mbits/sec  sender
+> [  7][RX-C]   0.00-10.04  sec  1.02 GBytes   870 Mbits/sec  receiver
+> 
+> iperf3 UDP bidirectional with DSPACE set to 16 Bytes
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID][Role] Interval           Transfer     Bitrate
+> [  5][TX-C]   0.00-10.00  sec  1.11 GBytes   956 Mbits/sec  sender
+> [  5][TX-C]   0.00-10.04  sec  1.11 GBytes   951 Mbits/sec  receiver
+> [  7][RX-C]   0.00-10.00  sec  1.10 GBytes   948 Mbits/sec  sender
+> [  7][RX-C]   0.00-10.04  sec  1.10 GBytes   942 Mbits/sec  receiver
+> 
+> Test setup 2 : RK3399 with LAN7430 ---> x64 PC
+> 
+> RK3399 Spec:
+> The SOM-RK3399 is ARM module designed and developed by FriendlyElec.
+> Cores: 64-bit Dual Core Cortex-A72 + Quad Core Cortex-A53
+> Frequency: Cortex-A72(up to 2.0GHz), Cortex-A53(up to 1.5GHz)
+> PCIe: PCIe x4, compatible with PCIe 2.1, Dual operation mode
+> 
+> iperf3 UDP bidirectional with DSPACE set to L1 CACHE Size:
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID][Role] Interval           Transfer     Bitrate
+> [  5][TX-C]   0.00-10.00  sec   534 MBytes   448 Mbits/sec  sender
+> [  5][TX-C]   0.00-10.05  sec   534 MBytes   446 Mbits/sec  receiver
+> [  7][RX-C]   0.00-10.00  sec  1.12 GBytes   961 Mbits/sec  sender
+> [  7][RX-C]   0.00-10.05  sec  1.11 GBytes   946 Mbits/sec  receiver
+> 
+> iperf3 UDP bidirectional with DSPACE set to 16 Bytes
+> - - - - - - - - - - - - - - - - - - - - - - - - -
+> [ ID][Role] Interval           Transfer     Bitrate
+> [  5][TX-C]   0.00-10.00  sec   966 MBytes   810 Mbits/sec   sender
+> [  5][TX-C]   0.00-10.04  sec   965 MBytes   806 Mbits/sec   receiver
+> [  7][RX-C]   0.00-10.00  sec  1.11 GBytes   956 Mbits/sec   sender
+> [  7][RX-C]   0.00-10.04  sec  1.07 GBytes   919 Mbits/sec   receiver
+> 
+> Signed-off-by: Vishvambar Panth S <vishvambarpanth.s@microchip.com>
 
-OK, this is starting to feel silly. One could seriously question the use 
-case for supporting !SMP builds x86-64. It isn't like our performance 
-for SMP builds on UP systems is significantly worse, it is mostly just a 
-matter of code size, and the difference isn't huge, either, especially 
-considering that on systems of the x86-64 era the kernel is a rather 
-small part of system memory (unlike the very early i386 era, for those 
-of us who remember those ancient times.)
+Thanks,
 
-The number of UP x86-64 systems is really very small (since 
-multicore/SMT became ubiquitous at roughly the same time x86-64 was 
-introduced), and as far as I know none of them lack APIC which is really 
-the most fundamental difference between SMP and !SMP on x86.
+I think you should have included Jacob's Reviewed-by tag from
+the previous posting of this patch [1].
 
-Why don't we simply have %gs_base == 0 as an invariant for !SMP? If we 
-*REALLY* care to skip SWAPGS on !SMP systems, we could use alternatives 
-to patch out %gs: and lock (wouldn't even have to be explicit: this is 
-the kind of thing that objtool does really well.) We can use 
-alternatives without anything special, since it only matters after we 
-have entered user spae for the first time and would be concurrent with 
-patching out SWAPGS itself.
+And echoing his comments there, a very nice performance boost :)
 
-If we really *do* care about UP builds, we could teach objtool to do 
-this patching at compile time for the !SMP builds.
+Reviewed-by: Simon Horman <horms@kernel.org>
 
-Also, didn't we at least use to have a way to mark a function as "init 
-on UP" so that it could be jettisoned with the init code if we find 
-ourselves on a uniprocessor system?
-
-	-hpa
-
+[1] https://lore.kernel.org/netdev/e5ffec56-5512-1acc-b85c-ac0771634c22@intel.com/
