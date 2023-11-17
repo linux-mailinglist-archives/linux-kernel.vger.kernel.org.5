@@ -2,131 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D29127EF664
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 474ED7EF695
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:51:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234707AbjKQQmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:42:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35812 "EHLO
+        id S1346102AbjKQQvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:51:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231573AbjKQQmc (ORCPT
+        with ESMTP id S230383AbjKQQu7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:42:32 -0500
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 030AF194;
-        Fri, 17 Nov 2023 08:42:28 -0800 (PST)
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHGcfOD021383;
-        Fri, 17 Nov 2023 16:42:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=StP4cu79FPer/ncWhUGarKu7uDEe4P30IUkZKgB8Pno=;
- b=oMXbX3n5GyfZLCltDw9T3hB63sji3rTYRx2aiONgdcwcpnWuRgc0UaDtfD/i573Ikj1A
- 6V9MX+hD7DILjp6VLLj4hiHg+6J/hbUCPqr8FP1jWUNJufvk/ikPd5I21POmO6CPtCFL
- 4BpSWLn4nTxXmW2iz7fBrpx8paIUZHIHjm74n6KPk6qFuW0g5u3fu1m3NEa+U72LVgYg
- ZzsxRSOHtHAjAASPhdYn90yowjjsJOmnSfR7bB1bnU1L6EkoozrSzhXtaqT2II1bi/uz
- F3c9vm+G3eBn1HIvzsAZ/8GdlrhS/3JAU+MV1lL76f4dj+HpQlFwpen84Yj7hAp0rJ27 hA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uebve828t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 16:42:05 +0000
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AHGdXHQ023036;
-        Fri, 17 Nov 2023 16:42:04 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-        by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uebve828g-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 16:42:04 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-        by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHG48xD009036;
-        Fri, 17 Nov 2023 16:42:03 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-        by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uanem75jx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 16:42:03 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-        by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3AHGg0dK20775522
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Nov 2023 16:42:00 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 935B020043;
-        Fri, 17 Nov 2023 16:42:00 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5C1C820040;
-        Fri, 17 Nov 2023 16:41:58 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.53.3])
-        by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-        Fri, 17 Nov 2023 16:41:58 +0000 (GMT)
-Date:   Fri, 17 Nov 2023 17:41:56 +0100
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Ilya Leoshkevich <iii@linux.ibm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Marco Elver <elver@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Pekka Enberg <penberg@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Christian Borntraeger <borntraeger@linux.ibm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-s390@vger.kernel.org,
-        linux-trace-kernel@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Sven Schnelle <svens@linux.ibm.com>
-Subject: Re: [PATCH 26/32] s390/mm: Define KMSAN metadata for vmalloc and
- modules
-Message-ID: <ZVeX1K6jIihnXIox@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <20231115203401.2495875-1-iii@linux.ibm.com>
- <20231115203401.2495875-27-iii@linux.ibm.com>
- <CAG_fn=XSKh=AmU3mEC7dNmEFk5LaLt+y+TfsVcD0Dn5NsbTBSw@mail.gmail.com>
+        Fri, 17 Nov 2023 11:50:59 -0500
+X-Greylist: delayed 464 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Nov 2023 08:50:55 PST
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64277D56;
+        Fri, 17 Nov 2023 08:50:55 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 9F67828F040;
+        Fri, 17 Nov 2023 16:43:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1700239386;
+        bh=QT8vpu+ylcxkag8lhmcsJJ4NYnz4R5VzA35fbKzvegw=;
+        h=From:To:Cc:Subject:Date;
+        b=KzLG9mzbk+hWS8oRpqEdF1tdUD+MXGnWAHpfXJv9gHmgxJRzWGsSxxrsd0Nekco0C
+         6M/W5hHuVzMAim1hPU9h6PetYh7L3opB3w3T04s8eC5mjMKYmzyz8LiDcMt05yfQ6J
+         +YEWRAUQJRymrrJCaWtQllJD9LB/xMl0234dafvs=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     petre.rodan@subdimension.ro, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, devicetree@vger.kernel.org
+Cc:     Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Fri, 17 Nov 2023 18:42:05 +0200
+Message-ID: <20231117164232.8474-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAG_fn=XSKh=AmU3mEC7dNmEFk5LaLt+y+TfsVcD0Dn5NsbTBSw@mail.gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: uOIqbaNKTfMkkRxqsp7HM2Lax2N0tjjf
-X-Proofpoint-ORIG-GUID: cilvsidISOBHr1Hvn1uIcIjCKlM8WL09
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_15,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 phishscore=0 priorityscore=1501
- mlxscore=0 impostorscore=0 mlxlogscore=633 suspectscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311170124
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 04:03:13PM +0100, Alexander Potapenko wrote:
+Adds binding for digital Honeywell TruStability HSC and SSC series
+pressure and temperature sensors.
 
-Hi Alexander!
+Datasheet:
+ [HSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+ [SSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
 
-> >         /* allow vmalloc area to occupy up to about 1/2 of the rest virtual space left */
-> >         vmalloc_size = min(vmalloc_size, round_down(VMALLOC_END / 2, _REGION3_SIZE));
-> > +#ifdef CONFIG_KMSAN
-> > +       /* take 2/3 of vmalloc area for KMSAN shadow and origins */
-> > +       vmalloc_size = round_down(vmalloc_size / 3, PAGE_SIZE);
-> Is it okay that vmalloc_size is only aligned on PAGE_SIZE?
-> E.g. above the alignment is _REGION3_SIZE.
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml     | 166 ++++++++++++++++++
+ 1 file changed, 166 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc0030pa.yaml
 
-Good question!
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..777710790696
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,166 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor families
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  families.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one need to specify the pressure range as well as
++  the transfer function. Pressure range can either be provided via range_str or
++  in case it's a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++properties:
++  compatible:
++    enum:
++      - honeywell,hsc
++      - honeywell,ssc
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,range_str:
++    description: |
++      Five character string that defines "pressure range, unit and type"
++      as part of the device nomenclature. In the unlikely case of a custom
++      chip, set to "NA" and provide honeywell,pmin-pascal honeywell,pmax-pascal
++    enum: [ "001BA", "1.6BA", "2.5BA", "004BA", "006BA", "010BA", "1.6MD",
++            "2.5MD", "004MD", "006MD", "010MD", "016MD", "025MD", "040MD",
++            "060MD", "100MD", "160MD", "250MD", "400MD", "600MD", "001BD",
++            "1.6BD", "2.5BD", "004BD", "2.5MG", "004MG", "006MG", "010MG",
++            "016MG", "025MG", "040MG", "060MG", "100MG", "160MG", "250MG",
++            "400MG", "600MG", "001BG", "1.6BG", "2.5BG", "004BG", "006BG",
++            "010BG", "100KA", "160KA", "250KA", "400KA", "600KA", "001GA",
++            "160LD", "250LD", "400LD", "600LD", "001KD", "1.6KD", "2.5KD",
++            "004KD", "006KD", "010KD", "016KD", "025KD", "040KD", "060KD",
++            "100KD", "160KD", "250KD", "400KD", "250LG", "400LG", "600LG",
++            "001KG", "1.6KG", "2.5KG", "004KG", "006KG", "010KG", "016KG",
++            "025KG", "040KG", "060KG", "100KG", "160KG", "250KG", "400KG",
++            "600KG", "001GG", "015PA", "030PA", "060PA", "100PA", "150PA",
++            "0.5ND", "001ND", "002ND", "004ND", "005ND", "010ND", "020ND",
++            "030ND", "001PD", "005PD", "015PD", "030PD", "060PD", "001NG",
++            "002NG", "004NG", "005NG", "010NG", "020NG", "030NG", "001PG",
++            "005PG", "015PG", "030PG", "060PG", "100PG", "150PG", "NA" ]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,range_str is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,range_str is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  vdd-supply:
++    description: |
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip).
++      Optional, activate only if required by the target board.
++
++  spi-max-frequency:
++    description: SPI clock to be kept between 50 and 800kHz
++
++  clock-frequency:
++    description: i2c clock to be kept between 100 and 400kHz
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,range_str
++  - clock-frequency
++  - spi-max-frequency
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++        status = "okay";
++        clock-frequency = <400000>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        HSCMRNN030PA2A3@28 {
++          status = "okay";
++          compatible = "honeywell,hsc";
++          reg = <0x28>;
++          honeywell,transfer-function = <0>;
++          honeywell,range_str = "030PA";
++          honeywell,pmin-pascal = <0>;
++          honeywell,pmax-pascal = <206850>;
++
++		      //vdd-supply = <&foo>;
++        };
++    };
++
++    spi {
++        # note that MOSI is not required by this sensor
++        status = "okay";
++        #address-cells = <1>;
++        #size-cells = <0>;
++        pinctrl-names = "default";
++        pinctrl-0 = <&spi0_pins>;
++
++        channel@0{
++          status = "disabled";
++          reg = <0>;
++        };
++
++        HSCMLNN100PASA3@0 {
++          status = "okay";
++          compatible = "honeywell,hsc";
++		      reg = <0>;
++		      spi-max-frequency = <800000>;
++
++		      honeywell,transfer-function = <0>;
++		      honeywell,range_str = "100PA";
++
++		      // in case of a custom range, use NA as range_str
++		      // and populate pmin-pascal and pmax-pascal
++		      // with the range limits converted into pascals
++		      //honeywell,range_str = "NA";
++		      //honeywell,pmin-pascal = <0>;
++		      //honeywell,pmax-pascal = <206850>;
++
++		      //vdd-supply = <&foo>;
++	      };
++    };
++
+-- 
+2.41.0
 
-This patch does not break anything, although the _REGION3_SIZE 
-alignment would be consistent here. Yet, we might rethink this
-whole code piece and the next version would reflect that.
-
-Thanks!
