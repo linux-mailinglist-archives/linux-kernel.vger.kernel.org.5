@@ -2,107 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60CA77EECB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:33:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A157EEC84
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:18:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231137AbjKQHdq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:33:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49226 "EHLO
+        id S230120AbjKQHSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:18:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjKQHdm (ORCPT
+        with ESMTP id S229436AbjKQHSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:33:42 -0500
-X-Greylist: delayed 885 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Nov 2023 23:33:37 PST
-Received: from mail-m17244.xmail.ntesmail.com (mail-m17244.xmail.ntesmail.com [45.195.17.244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B026A109
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 23:33:37 -0800 (PST)
-DKIM-Signature: a=rsa-sha256;
-        b=Nu292DN2E6gfuHIj233Rh8Mdr+z5CJlMWHO8NWBfbI4ao9MCcWWM5VLf2BnX2BVH9c92Fx09CxiX4W8gRKqXwKDxiAREUGNt1I7x/DpyeAWDV6rYxLJjP9k4eRtbglzyPG0EIa1YuA5UhPKtrAj8LITcaYyVn1FdDw0padxAVRs=;
-        c=relaxed/relaxed; s=default; d=rock-chips.com; v=1;
-        bh=at1ne/rWq7oflyNTr5NsoIEOTljtkrgIcuWxm4pqXDc=;
-        h=date:mime-version:subject:message-id:from;
-Received: from [172.16.12.141] (unknown [58.22.7.114])
-        by mail-m12779.qiye.163.com (Hmail) with ESMTPA id 6C5477804C6;
-        Fri, 17 Nov 2023 15:06:35 +0800 (CST)
-Message-ID: <3e011d52-017e-4360-86b4-781535ef61ad@rock-chips.com>
-Date:   Fri, 17 Nov 2023 15:06:35 +0800
+        Fri, 17 Nov 2023 02:18:03 -0500
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A327D51;
+        Thu, 16 Nov 2023 23:17:57 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id A33E2100053;
+        Fri, 17 Nov 2023 10:17:52 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A33E2100053
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700205472;
+        bh=1fkmIGYzp5c7rAK+NR4+zP/oYo2cB5TkkjHXMWdQCgU=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=D6NFNpiPLM+x8x/5pPmInanARsPkHeQ9DY9bAjY6pfaCMIzIIqRMfrhDCITnqd8sA
+         rcXdWJTYQqWPqbpWp9qUJOTLptmzgaWQ4H8eP0hpNZdcvxhhzNPjgvQQrSOenIGXWm
+         rN6uDqi+kpYS4T6/kSmMbfAvdvj5AvKGXqgPOHJT4hIgi707M2kijApzQ5NgWFmvWI
+         jSKwW4raAHISahMXFwRkTu/4V2h9xS976ZUF03kY6Zmv82m1Dstic+q4TaiSoWTbXW
+         hAQaZfye17Jw2PqqcGUa0eIuC/fpbLYENKhnfR4UIw2OaHo5g9L1OiUpAia327o6Rq
+         1tvE0tNkkgtuQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 17 Nov 2023 10:17:51 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 17 Nov 2023 10:17:51 +0300
+Message-ID: <99935734-4006-509f-5e02-3229f0847b67@salutedevices.com>
+Date:   Fri, 17 Nov 2023 10:10:08 +0300
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 09/11] drm/rockchip: vop2: Add support for rk3588
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v1 1/2] virtio/vsock: send credit update during
+ setting SO_RCVLOWAT
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
+ <20231108072004.1045669-2-avkrasnov@salutedevices.com>
+ <6owgy5zo5lmx3w2vsu6ux552olyuq4lnqzrawngc3gmi5fonn6@6emsez7krq7f>
 Content-Language: en-US
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sascha Hauer <s.hauer@pengutronix.de>, Andy Yan <andyshrk@163.com>,
-        heiko@sntech.de, hjc@rock-chips.com,
-        dri-devel@lists.freedesktop.org,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
-        devicetree@vger.kernel.org, kever.yang@rock-chips.com,
-        chris.obbard@collabora.com
-References: <20231114112534.1770731-1-andyshrk@163.com>
- <20231114112855.1771372-1-andyshrk@163.com>
- <20231115090823.GY3359458@pengutronix.de>
- <8f2ebc81-51c5-44d5-b27b-633a6cc85d0d@rock-chips.com>
- <20231116134757.zu7axb6cvriqjm6y@mercury.elektranox.org>
-From:   Andy Yan <andy.yan@rock-chips.com>
-In-Reply-To: <20231116134757.zu7axb6cvriqjm6y@mercury.elektranox.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUpXWQgPGg8OCBgUHx5ZQUlOS1dZFg8aDwILHllBWSg2Ly
-        tZV1koWUFDSUNOT01LS0k3V1ktWUFJV1kPCRoVCBIfWUFZGR5DGFYZTU8fSEIfSk5LHh1VEwETFh
-        oSFyQUDg9ZV1kYEgtZQVlOQ1VJSVVMVUpKT1lXWRYaDxIVHRRZQVlPS0hVSk5MSUpJVUpLS1VKQl
-        kG
-X-HM-Tid: 0a8bdc1a5771b24fkuuu6c5477804c6
-X-HM-MType: 1
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NxA6Dgw6KDw5MDhKPzJKLA0o
-        DyIwFCFVSlVKTEtLSUtPTEJNSU5PVTMWGhIXVRoVHwJVAhoVOwkUGBBWGBMSCwhVGBQWRVlXWRIL
-        WUFZTkNVSUlVTFVKSk9ZV1kIAVlBSE5ISzcG
-X-Spam-Status: No, score=-0.6 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <6owgy5zo5lmx3w2vsu6ux552olyuq4lnqzrawngc3gmi5fonn6@6emsez7krq7f>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181429 [Nov 17 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/17 06:08:00 #22469568
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebastian:
 
-On 11/16/23 21:47, Sebastian Reichel wrote:
-> Hi,
->
-> On Thu, Nov 16, 2023 at 06:39:40PM +0800, Andy Yan wrote:
->>>>    	vop2->sys_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
->>> This already lacks an error check, shame on me...
->>>
->>>> +	vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
->>>> +	vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
->>>> +	vop2->sys_pmu = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,pmu");
->>> ... but please don't duplicate that.
->> It a little difficult to find a proper way to do the check, as not every soc need all these phandles.
+
+On 15.11.2023 14:08, Stefano Garzarella wrote:
+> On Wed, Nov 08, 2023 at 10:20:03AM +0300, Arseniy Krasnov wrote:
+>> This adds sending credit update message when SO_RCVLOWAT is updated and
+>> it is bigger than number of bytes in rx queue. It is needed, because
+>> 'poll()' will wait until number of bytes in rx queue will be not smaller
+>> than SO_RCVLOWAT, so kick sender to send more data. Otherwise mutual
+>> hungup for tx/rx is possible: sender waits for free space and receiver
+>> is waiting data in 'poll()'.
 >>
->> Do i need check it per soc?
-> I suggest adding a u32 flags to struct vop2_data and then have
-> something like this:
->
-> if (vop2_data->flags & VOP2_HAS_VOP_GRF) {
->      vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
->      if (IS_ERR(vop2->vop_grf))
->          return dev_err_probe(dev, PTR_ERR(vop2->vop_grf) "cannot get vop-grf");
-> }
->
-> if (vop2_data->flags & VOP2_HAS_VO1_GRF) {
->      vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
->      if (IS_ERR(vop2->vo1_grf))
->          return dev_err_probe(dev, PTR_ERR(vop2->vo1_grf) "cannot get vo1-grf");
-> }
->
-> ...
+>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> ---
+>> drivers/vhost/vsock.c                   |  2 ++
+>> include/linux/virtio_vsock.h            |  1 +
+>> net/vmw_vsock/virtio_transport.c        |  2 ++
+>> net/vmw_vsock/virtio_transport_common.c | 31 +++++++++++++++++++++++++
+>> net/vmw_vsock/vsock_loopback.c          |  2 ++
+>> 5 files changed, 38 insertions(+)
+>>
+>> diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>> index f75731396b7e..ecfa5c11f5ee 100644
+>> --- a/drivers/vhost/vsock.c
+>> +++ b/drivers/vhost/vsock.c
+>> @@ -451,6 +451,8 @@ static struct virtio_transport vhost_transport = {
+>>         .notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>
+>>         .read_skb = virtio_transport_read_skb,
+>> +
+>> +        .set_rcvlowat             = virtio_transport_set_rcvlowat
+>>     },
+>>
+>>     .send_pkt = vhost_transport_send_pkt,
+>> diff --git a/include/linux/virtio_vsock.h b/include/linux/virtio_vsock.h
+>> index ebb3ce63d64d..97dc1bebc69c 100644
+>> --- a/include/linux/virtio_vsock.h
+>> +++ b/include/linux/virtio_vsock.h
+>> @@ -256,4 +256,5 @@ void virtio_transport_put_credit(struct virtio_vsock_sock *vvs, u32 credit);
+>> void virtio_transport_deliver_tap_pkt(struct sk_buff *skb);
+>> int virtio_transport_purge_skbs(void *vsk, struct sk_buff_head *list);
+>> int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t read_actor);
+>> +int virtio_transport_set_rcvlowat(struct vsock_sock *vsk, int val);
+>> #endif /* _LINUX_VIRTIO_VSOCK_H */
+>> diff --git a/net/vmw_vsock/virtio_transport.c b/net/vmw_vsock/virtio_transport.c
+>> index af5bab1acee1..cf3431189d0c 100644
+>> --- a/net/vmw_vsock/virtio_transport.c
+>> +++ b/net/vmw_vsock/virtio_transport.c
+>> @@ -539,6 +539,8 @@ static struct virtio_transport virtio_transport = {
+>>         .notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>
+>>         .read_skb = virtio_transport_read_skb,
+>> +
+>> +        .set_rcvlowat             = virtio_transport_set_rcvlowat
+>>     },
+>>
+>>     .send_pkt = virtio_transport_send_pkt,
+>> diff --git a/net/vmw_vsock/virtio_transport_common.c b/net/vmw_vsock/virtio_transport_common.c
+>> index e22c81435ef7..88a58163046e 100644
+>> --- a/net/vmw_vsock/virtio_transport_common.c
+>> +++ b/net/vmw_vsock/virtio_transport_common.c
+>> @@ -1676,6 +1676,37 @@ int virtio_transport_read_skb(struct vsock_sock *vsk, skb_read_actor_t recv_acto
+>> }
+>> EXPORT_SYMBOL_GPL(virtio_transport_read_skb);
+>>
+>> +int virtio_transport_set_rcvlowat(struct vsock_sock *vsk, int val)
+>> +{
+>> +    struct virtio_vsock_sock *vvs = vsk->trans;
+>> +    bool send_update = false;
+> 
+> I'd declare this not initialized.
+> 
+>> +
+>> +    spin_lock_bh(&vvs->rx_lock);
+>> +
+>> +    /* If number of available bytes is less than new
+>> +     * SO_RCVLOWAT value, kick sender to send more
+>> +     * data, because sender may sleep in its 'send()'
+>> +     * syscall waiting for enough space at our side.
+>> +     */
+>> +    if (vvs->rx_bytes < val)
+>> +        send_update = true;
+> 
+> Then here just:
+>     send_update = vvs->rx_bytes < val;
+> 
+>> +
+>> +    spin_unlock_bh(&vvs->rx_lock);
+>> +
+>> +    if (send_update) {
+>> +        int err;
+>> +
+>> +        err = virtio_transport_send_credit_update(vsk);
+>> +        if (err < 0)
+>> +            return err;
+>> +    }
+>> +
+>> +    WRITE_ONCE(sk_vsock(vsk)->sk_rcvlowat, val ? : 1);
+> 
+> Not in this patch, but what about doing this in vsock_set_rcvlowat() in af_vsock.c?
+> 
+> I mean avoid to return if `transport->set_rcvlowat(vsk, val)` is
+> successfully, so set sk_rcvlowat in a single point.
 
+Yes, we can do it, I'll include new patch as 0001 in v2, don't remember why it wasn't implemented in this
+way before.
 
-I can do it like this if Sascha is also happy with it.
+Thanks, Arseniy
 
->
-> Greetings,
->
-> -- Sebastian
+> 
+> The rest LGTM!
+> 
+> Stefano
+> 
+>> +
+>> +    return 0;
+>> +}
+>> +EXPORT_SYMBOL_GPL(virtio_transport_set_rcvlowat);
+>> +
+>> MODULE_LICENSE("GPL v2");
+>> MODULE_AUTHOR("Asias He");
+>> MODULE_DESCRIPTION("common code for virtio vsock");
+>> diff --git a/net/vmw_vsock/vsock_loopback.c b/net/vmw_vsock/vsock_loopback.c
+>> index 048640167411..388c157f6633 100644
+>> --- a/net/vmw_vsock/vsock_loopback.c
+>> +++ b/net/vmw_vsock/vsock_loopback.c
+>> @@ -98,6 +98,8 @@ static struct virtio_transport loopback_transport = {
+>>         .notify_buffer_size       = virtio_transport_notify_buffer_size,
+>>
+>>         .read_skb = virtio_transport_read_skb,
+>> +
+>> +        .set_rcvlowat             = virtio_transport_set_rcvlowat
+>>     },
+>>
+>>     .send_pkt = vsock_loopback_send_pkt,
+>> -- 2.25.1
+>>
+> 
