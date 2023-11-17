@@ -2,237 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 996907EEB68
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:25:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C9EB7EEB6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:26:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345662AbjKQDZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 22:25:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38050 "EHLO
+        id S1345642AbjKQD0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 22:26:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjKQDZZ (ORCPT
+        with ESMTP id S229719AbjKQD0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 22:25:25 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304B9B0;
-        Thu, 16 Nov 2023 19:25:22 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77784edc2edso88416485a.1;
-        Thu, 16 Nov 2023 19:25:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700191521; x=1700796321; darn=vger.kernel.org;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=v1SDUzSFIVlsm8bGOfhaQX+ULqWCGXJxzSUdDsIqu9M=;
-        b=W6vOTHOkBrczpkfVdvX9OQTAn0JgYCKKcu6PAvpRDVlZRViqwKmMZVsUHy0OaYxRbt
-         QdAV+SisQ4V5DDmzgbDS9wjjjczGj/VhOwe0q1HA9fTkr6XvwkH9YyPGrxYPVQPCgWda
-         HrCwHmUEW3IZ+1mDQVOdO9OlRubbbtqA71YV9UonQWX4uj3IAGXsTvh1X/YUmSsrlKNO
-         iyTCPHBymmmCpcZpj5r9AUpo79Fq0mwSRX7Q6BkdeO6Kwzy0o7dAi07H9aN17J1rZWRf
-         HF69323pUHmEYSh0EHY8MF5AWNUZf9vuOHs+QbjabBEEW8LzInKJ6FV7pVWuqGsY2Fvy
-         geCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700191521; x=1700796321;
-        h=in-reply-to:autocrypt:from:references:cc:to:content-language
-         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v1SDUzSFIVlsm8bGOfhaQX+ULqWCGXJxzSUdDsIqu9M=;
-        b=tf1uo5V95OG4gBjAGwoD4Jgj0gZaFKZCDiZ8OyzJpI8GW2mF+GkUTMRt4oryIGUrHP
-         J26ZFOF6Ob1qk3EajU04ZAdU4s9k2kkBk00W8qaeyrJrCYYOkByvZuqRhpfS9VHzgI2U
-         aNhthZFC3XktE0sS98+J5zLWYpaK60XB9nKSREudglZb8Lbr84/oY3aocNFqkfQWR2pT
-         PElvPXZ1sO0PEvvOpVmor/08d6GIkTTPa2D86XAxbPCRD537klqa4js/OeF1eUxMMIOm
-         dS4rowBeFbYHTTWpxlwH92s9QbuSvR+TySOnMd/InlMmEqkWWSqFgXs41gc4zZqO5nkd
-         /Rog==
-X-Gm-Message-State: AOJu0Yx62LEaCOfwAMKIlreySGjf5sbCAHk6a1zB/6uaByUeem2rgWwm
-        ul2dEQVXOqhetoy/A6h+qOc=
-X-Google-Smtp-Source: AGHT+IHlNtO9TnTbRjGbgMA2BKNdAlzBzZ+wN4lWbeifm++n4twOM1k+C2cGls14ZeVhL+f7W8Rb8w==
-X-Received: by 2002:a05:620a:2684:b0:774:a80:3e0b with SMTP id c4-20020a05620a268400b007740a803e0bmr11906160qkp.5.1700191521091;
-        Thu, 16 Nov 2023 19:25:21 -0800 (PST)
-Received: from [192.168.2.14] ([76.65.20.140])
-        by smtp.gmail.com with ESMTPSA id py13-20020a05620a878d00b007742c2ad7dfsm300954qkn.73.2023.11.16.19.25.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 19:25:20 -0800 (PST)
-Message-ID: <ce94020e-a7d4-4799-b87d-fbea7b14a268@gmail.com>
-Date:   Thu, 16 Nov 2023 22:25:11 -0500
+        Thu, 16 Nov 2023 22:26:44 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DB6B9
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:26:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700191600; x=1731727600;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=53PZKnvtpMVoxFCGNPIQU5mNR3oNNOFSWNURwr8x7G4=;
+  b=knaEgLWtQw6VFuR3xCwJWu05eGQhDiau29WwSHVrTLMaekrgwJnT+7hy
+   zNXq3GK+P3KS3G1dc6t1d9kHZtr2+Z6FtL58LscpRXAx1/8pam8h0xdg7
+   EFIM6QJrS8A5D9g7SAuSvvYjksnUo/4BcfzxfnbQNqUZpUud//ITwypAE
+   KmDt14ZCHi50Jyvi/clgfP6jFLqHKSe23mi25C/nVGr20OiBWNdwokm0G
+   EWfrM0wTXRkMsFf66UKGJfsG00pm/hIv46HHA1WueDQ4eAZiTFCYC/6Ro
+   rK28O8f6bWbvGDBVnDxvtWmGUw3z4CAytTxuPVuWCefJNrzKgEU1+OfMB
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="9888628"
+X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
+   d="scan'208";a="9888628"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 19:26:40 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="831483704"
+X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
+   d="scan'208";a="831483704"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Nov 2023 19:26:38 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3pV6-0002Jz-0U;
+        Fri, 17 Nov 2023 03:26:36 +0000
+Date:   Fri, 17 Nov 2023 11:26:21 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Markus Pargmann <mpa@pengutronix.de>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: drivers/iio/accel/bmc150-accel-spi.c:54:36: warning:
+ 'bmc150_accel_acpi_match' defined but not used
+Message-ID: <202311171116.47sUbZV5-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
- Thunderbird/115.4.3
-Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc tree
-Content-Language: en-CA, en-US
-To:     Maxime Ripard <mripard@redhat.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20231114075501.61321c29@canb.auug.org.au>
- <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
- <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
- <20231114134506.2ba0de1f@canb.auug.org.au>
- <530b6100-4f4e-4b3d-8fea-5b316e989633@gmail.com>
- <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
-From:   Luben Tuikov <ltuikov89@gmail.com>
-Autocrypt: addr=ltuikov89@gmail.com; keydata=
- xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
- Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
- eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
- AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
- JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
- cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
- 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
- aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
-In-Reply-To: <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------tb0AQQDQteMC5n59MRtH5kce"
-X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------tb0AQQDQteMC5n59MRtH5kce
-Content-Type: multipart/mixed; boundary="------------PRYWEDVvvffGiUImSZzlRUmT";
- protected-headers="v1"
-From: Luben Tuikov <ltuikov89@gmail.com>
-To: Maxime Ripard <mripard@redhat.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
- Daniel Vetter <daniel.vetter@ffwll.ch>,
- Intel Graphics <intel-gfx@lists.freedesktop.org>,
- DRI <dri-devel@lists.freedesktop.org>,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- Linux Next Mailing List <linux-next@vger.kernel.org>
-Message-ID: <ce94020e-a7d4-4799-b87d-fbea7b14a268@gmail.com>
-Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc tree
-References: <20231114075501.61321c29@canb.auug.org.au>
- <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
- <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
- <20231114134506.2ba0de1f@canb.auug.org.au>
- <530b6100-4f4e-4b3d-8fea-5b316e989633@gmail.com>
- <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
-In-Reply-To: <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7475e51b87969e01a6812eac713a1c8310372e8a
+commit: f9ab96e212808123fbd9072d580a59194e5cd410 iio: bmc150: Add SPI driver
+date:   8 years ago
+config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20231117/202311171116.47sUbZV5-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231117/202311171116.47sUbZV5-lkp@intel.com/reproduce)
 
---------------PRYWEDVvvffGiUImSZzlRUmT
-Content-Type: multipart/mixed; boundary="------------9EdLsqEF2vj8FfubgQ0DbAQ7"
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311171116.47sUbZV5-lkp@intel.com/
 
---------------9EdLsqEF2vj8FfubgQ0DbAQ7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+All warnings (new ones prefixed by >>):
 
-On 2023-11-16 04:22, Maxime Ripard wrote:
-> Hi,
->=20
-> On Mon, Nov 13, 2023 at 09:56:32PM -0500, Luben Tuikov wrote:
->> On 2023-11-13 21:45, Stephen Rothwell wrote:
->>> Hi Luben,
->>>
->>> On Mon, 13 Nov 2023 20:32:40 -0500 Luben Tuikov <ltuikov89@gmail.com>=
- wrote:
->>>>
->>>> On 2023-11-13 20:08, Luben Tuikov wrote:
->>>>> On 2023-11-13 15:55, Stephen Rothwell wrote: =20
->>>>>> Hi all,
->>>>>>
->>>>>> Commit
->>>>>>
->>>>>>   0da611a87021 ("dma-buf: add dma_fence_timestamp helper")
->>>>>>
->>>>>> is missing a Signed-off-by from its committer.
->>>>>> =20
->>>>>
->>>>> In order to merge the scheduler changes necessary for the Xe driver=
-, those changes
->>>>> were based on drm-tip, which included this change from drm-misc-fix=
-es, but which
->>>>> wasn't present in drm-misc-next.
->>>>>
->>>>> I didn't want to create a merge conflict between drm-misc-next and =
-drm-misc-fixes,
->>>>> when pulling that change from drm-misc-next to drm-misc-fixes, so t=
-hat I can apply =20
->>>>
->>>> ... when pulling that change from from drm-misc-fixes into drm-misc-=
-next, so that I can apply...
->>>>
->>>>> the Xe scheduler changes on top of drm-misc-next. =20
->>>>
->>>> The change in drm-misc-fixes is b83ce9cb4a465b. The latter is contai=
-ned
->>>> in linus-master, and in drm-misc-fixes, while the former is in drm-m=
-isc-next.
->>>> When we merge linus-master/drm-misc-fixes into drm-misc-next, or whi=
-chever way
->>>> it happens, I'd like to avoid a merge conflict, but wanted to expedi=
-te the changes
->>>> for Xe.
->>>
->>> None of that is relevant ... if you commit a patch to a tree that wil=
-l
->>> be in the linux kernel tree, you must add your Signed-off-by to the c=
-ommit.
->>
->> Noted!
->>
->> So I always do this when I do git-am and such, but wasn't sure for thi=
-s one single cherry-pick whose
->> original author was the committer in drm-misc-fixes, but will add my S=
-igned-off-by in those
->> rare circumstances.
->>
->> Thanks for the clarification!
->=20
-> In order to move forward with this, can you provide your SoB here for
-> that patch so that we can at least point to it in the drm-misc-next PR?=
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/device.h:17,
+                    from drivers/iio/accel/bmc150-accel-spi.c:19:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     496 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/sysfs.h:15:
+   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   drivers/iio/accel/bmc150-accel-spi.c: At top level:
+   drivers/iio/accel/bmc150-accel-spi.c:55:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      55 |         {"BSBA0150",    bmc150},
+         |         ^
+   In file included from drivers/iio/accel/bmc150-accel-spi.c:20:
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:56:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      56 |         {"BMC150A",     bmc150},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:57:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      57 |         {"BMI055A",     bmi055},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:58:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      58 |         {"BMA0255",     bma255},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:59:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      59 |         {"BMA250E",     bma250e},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:60:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      60 |         {"BMA222E",     bma222e},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+   drivers/iio/accel/bmc150-accel-spi.c:61:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
+      61 |         {"BMA0280",     bma280},
+         |         ^
+   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
+     192 |         __u32 cls;
+         |               ^~~
+>> drivers/iio/accel/bmc150-accel-spi.c:54:36: warning: 'bmc150_accel_acpi_match' defined but not used [-Wunused-const-variable=]
+      54 | static const struct acpi_device_id bmc150_accel_acpi_match[] = {
+         |                                    ^~~~~~~~~~~~~~~~~~~~~~~
 
->=20
-> Maxime
 
-Signed-off-by: Luben Tuikov <ltuikov89@gmail.com>
+vim +/bmc150_accel_acpi_match +54 drivers/iio/accel/bmc150-accel-spi.c
 
---=20
-Regards,
-Luben
+    53	
+  > 54	static const struct acpi_device_id bmc150_accel_acpi_match[] = {
+    55		{"BSBA0150",	bmc150},
+    56		{"BMC150A",	bmc150},
+    57		{"BMI055A",	bmi055},
+    58		{"BMA0255",	bma255},
+    59		{"BMA250E",	bma250e},
+    60		{"BMA222E",	bma222e},
+    61		{"BMA0280",	bma280},
+    62		{ },
+    63	};
+    64	MODULE_DEVICE_TABLE(acpi, bmc150_accel_acpi_match);
+    65	
 
---------------9EdLsqEF2vj8FfubgQ0DbAQ7
-Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
-Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
-Content-Description: OpenPGP public key
-Content-Transfer-Encoding: quoted-printable
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
-PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
-QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
-BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
-MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
-bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
-9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
-OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
-z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
-=3DqCaZ
------END PGP PUBLIC KEY BLOCK-----
-
---------------9EdLsqEF2vj8FfubgQ0DbAQ7--
-
---------------PRYWEDVvvffGiUImSZzlRUmT--
-
---------------tb0AQQDQteMC5n59MRtH5kce
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZVbdFwUDAAAAAAAKCRBMFUeUMaM0rxFD
-AQDELq/dkzIFLrkuryNpi+8Gl6u0PD4LlkrT9ZQqHegrJgD7B93mLHQHkSblxphhQlpHR9xzdzEW
-mYNhYe+mzLcYmA0=
-=fRGW
------END PGP SIGNATURE-----
-
---------------tb0AQQDQteMC5n59MRtH5kce--
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
