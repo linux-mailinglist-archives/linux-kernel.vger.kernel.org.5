@@ -2,129 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D026B7EF759
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 19:14:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654527EF75A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 19:15:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231533AbjKQSOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 13:14:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44058 "EHLO
+        id S231513AbjKQSPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 13:15:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231392AbjKQSOq (ORCPT
+        with ESMTP id S231473AbjKQSPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 13:14:46 -0500
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A62D5D7E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:14:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=l5xyyENtc79OotoxV9LHjiMneBMu5Xck1CB+EZ0bjwU=; b=zu9pH4Ejkh/pZtjC4eEu73ZVtf
-        JNIQj2L5WL3GWMP2m07ki/P9wNscHIDzZiVi/Hshu6tSDjGZVUOsiaRaIsjh9KY8AP23XJjYm4Anp
-        riVDbqpAp5Pyfy+qDXLUwWZnmzmYgkkpTbuWbJs/2XgkhmG2mIs78U5fYhoZPBTUyjFSGEWjaF6P4
-        Ij/gJVxJRs/ayqSLoeQNgSHV2OwNzEqPyxjVR1H1xvbIF1PHsSjauyWIa06Nlm7+c2stbsPX5z8zz
-        WcD54Z4DaUycECX+nFupQ4/ouqt8y9RnTxiJY2JE0O8fBck0fcfI2EnLVcvD6gxSYpyAYAfvhaaOT
-        M36nrUWA==;
-Received: from mcgrof by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-        id 1r43MP-0074kn-28;
-        Fri, 17 Nov 2023 18:14:33 +0000
-Date:   Fri, 17 Nov 2023 10:14:33 -0800
-From:   Luis Chamberlain <mcgrof@kernel.org>
-To:     Ankur Arora <ankur.a.arora@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, torvalds@linux-foundation.org,
-        paulmck@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
-        dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        willy@infradead.org, mgorman@suse.de, jon.grimm@amd.com,
-        bharata@amd.com, raghavendra.kt@amd.com,
-        boris.ostrovsky@oracle.com, konrad.wilk@oracle.com,
-        jgross@suse.com, andrew.cooper3@citrix.com, mingo@kernel.org,
-        bristot@kernel.org, mathieu.desnoyers@efficios.com,
-        geert@linux-m68k.org, glaubitz@physik.fu-berlin.de,
-        anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
-        krypton@ulrich-teichert.org, rostedt@goodmis.org,
-        David.Laight@aculab.com, richard@nod.at, mjguzik@gmail.com,
-        Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Peter Oberparleiter <oberpar@linux.ibm.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        Will Deacon <will@kernel.org>, Oleg Nesterov <oleg@redhat.com>
-Subject: Re: [RFC PATCH 66/86] treewide: kernel: remove cond_resched()
-Message-ID: <ZVetiSheCDo49Zqm@bombadil.infradead.org>
-References: <20231107215742.363031-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-1-ankur.a.arora@oracle.com>
- <20231107230822.371443-10-ankur.a.arora@oracle.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231107230822.371443-10-ankur.a.arora@oracle.com>
-Sender: Luis Chamberlain <mcgrof@infradead.org>
-X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
+        Fri, 17 Nov 2023 13:15:02 -0500
+Received: from mail-yw1-x114a.google.com (mail-yw1-x114a.google.com [IPv6:2607:f8b0:4864:20::114a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7698DD5B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:14:59 -0800 (PST)
+Received: by mail-yw1-x114a.google.com with SMTP id 00721157ae682-5afe220cadeso35504207b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:14:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1700244898; x=1700849698; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=+fbLTFjANqYgwgt64Svgj7yz/+GXWm87q5kHEmh7RHQ=;
+        b=D18fzpgP/uxJDuDBG6XxajmQj79mCb+B1ZRYRY0cFKHklp8Jpw7b7+fuTNlgpZJmWB
+         GNzEGMn72ntfmgF7EQ5M+ng/dDVgj/6DDy1TZ0m0OR2EztOqq4vTYSUBRW1PFyY7TzP5
+         GbfHnTc5z132UQ39jP+iIlL7ZqAPJj5fmaVoISRChcscwWrcbi8LwmisCAftsNMpDJNh
+         VKRZtl4uBquXuzZblBkNj6pTkjrpTQQSBi0Oomk2hLCciSb6U2CY+bIpDfGzBq3i9qSx
+         +DuveqaAF4O6QlYG7nTD9+UhvS2MYNg86SXkCBg6yZUI+WGW9KCgUNQc5T9paEpCJo6H
+         +Zgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700244898; x=1700849698;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+fbLTFjANqYgwgt64Svgj7yz/+GXWm87q5kHEmh7RHQ=;
+        b=MS48wjxk/Pl6xd60zx7qborn9TqQKmq16ucB2mtL5DJ2rLZ4umnyvFyT/wgoacHIBF
+         W0y/hGcJfmcyck9UVwV1JNySHFH45H7aGEmum0KIrVG9pMZU4/u9i2hPa1Dc7Fn+IFRq
+         oqbcKmYUzsCY3wBMFPyEQ+B8lg5ztJv5/o6sFeTIyHS4YJHcOBQCjsPqUyOs5YPklF6/
+         fFzZYOUXGRV5tZYgszw+rtQcJm/M3oOPML9xv8l2nQfXWxgjG8TKDSTY9xWhaQxtxf4T
+         v0yj20iPNg/VUU+T9/HRz/p/mh1EGTbKWtmb5f+fvVKARVVmkl8VNPhP+0ZmcY8zrM87
+         o2Yg==
+X-Gm-Message-State: AOJu0YzrcYe199cm1TZhrmYzc+YUuz/1pyZeaTpAWwdM7pGGzoXWkIKb
+        rQbdlbpFZZNYHL0amqIKqL1PqZiiAYYEV4o=
+X-Google-Smtp-Source: AGHT+IEE+IIx7KMHZPN9vdQjcuy3teOmitlUWHKVwlM0G1+hdGFPfVjvcVb0+yiLXwEizmypJME+tSYRJanyIsw=
+X-Received: from sidtelang2.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:1b8a])
+ (user=sidtelang job=sendgmr) by 2002:a81:d512:0:b0:57a:118a:f31 with SMTP id
+ i18-20020a81d512000000b0057a118a0f31mr11293ywj.7.1700244898771; Fri, 17 Nov
+ 2023 10:14:58 -0800 (PST)
+Date:   Fri, 17 Nov 2023 18:14:57 +0000
+In-Reply-To: <CAA03e5Gb0BDn-e7Th8JPQqrX-EmFW3kGeiKfuFvwEzKe6xRadg@mail.gmail.com>
+Mime-Version: 1.0
+References: <CAA03e5Gb0BDn-e7Th8JPQqrX-EmFW3kGeiKfuFvwEzKe6xRadg@mail.gmail.com>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+Message-ID: <20231117181458.2260258-1-sidtelang@google.com>
+Subject: Re: [PATCH v2 RESEND] x86/asm: Force native_apic_mem_read to use mov
+From:   Sidharth Telang <sidtelang@google.com>
+To:     marcorr@google.com
+Cc:     acdunlap@google.com, ak@linux.intel.com, alpergun@google.com,
+        ben-linux@fluff.org, bp@alien8.de, dave.hansen@intel.com,
+        dave.hansen@linux.intel.com, hpa@zytor.com, jacobhxu@google.com,
+        kirill.shutemov@linux.intel.com, linux-kernel@vger.kernel.org,
+        llvm@lists.linux.dev, mingo@redhat.com, nathan@kernel.org,
+        ndesaulniers@google.com, pgonda@google.com,
+        sathyanarayanan.kuppuswamy@linux.intel.com, seanjc@google.com,
+        tglx@linutronix.de, thomas.lendacky@amd.com, trix@redhat.com,
+        x86@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,USER_IN_DEF_DKIM_WL
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 03:08:02PM -0800, Ankur Arora wrote:
-> There are broadly three sets of uses of cond_resched():
-> 
-> 1.  Calls to cond_resched() out of the goodness of our heart,
->     otherwise known as avoiding lockup splats.
-> 
-> 2.  Open coded variants of cond_resched_lock() which call
->     cond_resched().
-> 
-> 3.  Retry or error handling loops, where cond_resched() is used as a
->     quick alternative to spinning in a tight-loop.
-> 
-> When running under a full preemption model, the cond_resched() reduces
-> to a NOP (not even a barrier) so removing it obviously cannot matter.
-> 
-> But considering only voluntary preemption models (for say code that
-> has been mostly tested under those), for set-1 and set-2 the
-> scheduler can now preempt kernel tasks running beyond their time
-> quanta anywhere they are preemptible() [1]. Which removes any need
-> for these explicitly placed scheduling points.
-> 
-> The cond_resched() calls in set-3 are a little more difficult.
-> To start with, given it's NOP character under full preemption, it
-> never actually saved us from a tight loop.
-> With voluntary preemption, it's not a NOP, but it might as well be --
-> for most workloads the scheduler does not have an interminable supply
-> of runnable tasks on the runqueue.
-> 
-> So, cond_resched() is useful to not get softlockup splats, but not
-> terribly good for error handling. Ideally, these should be replaced
-> with some kind of timed or event wait.
-> For now we use cond_resched_stall(), which tries to schedule if
-> possible, and executes a cpu_relax() if not.
-> 
-> All of these are from set-1 except for the retry loops in
-> task_function_call() or the mutex testing logic.
-> 
-> Replace these with cond_resched_stall(). The others can be removed.
-> 
-> [1] https://lore.kernel.org/lkml/20231107215742.363031-1-ankur.a.arora@oracle.com/
-> 
-> Cc: Tejun Heo <tj@kernel.org> 
-> Cc: Zefan Li <lizefan.x@bytedance.com> 
-> Cc: Johannes Weiner <hannes@cmpxchg.org> 
-> Cc: Peter Oberparleiter <oberpar@linux.ibm.com> 
-> Cc: Eric Biederman <ebiederm@xmission.com> 
-> Cc: Will Deacon <will@kernel.org> 
-> Cc: Luis Chamberlain <mcgrof@kernel.org> 
-> Cc: Oleg Nesterov <oleg@redhat.com> 
-> Cc: Juri Lelli <juri.lelli@redhat.com> 
-> Cc: Vincent Guittot <vincent.guittot@linaro.org> 
-> Signed-off-by: Ankur Arora <ankur.a.arora@oracle.com>
+> Is this blocked on an item? There seems to be consensus that this
+> patch fixes a bug and is taking the right high-level approach (i.e.,
+> change the guest code to avoid triggering a sequence that isn't
+> supported under CVM exception-based emulation). Without something like
+> this, we weren't able to build the kernel w/ CLANG when it is
+> configured to run under SEV-ES.
 
-Sounds like the sort of test which should be put into linux-next to get
-test coverage right away. To see what really blows up.
+> We sent out two versions of the patch. One that does the mov directly
+> [1] and a second that calls readl [2]. Is one of these two patches
+> acceptable? Or do we need to follow up on something?
+> 
+> [1] https://lore.kernel.org/lkml/0D6A1E49-F21B-42AA-BBBF-13BFC308BB1E@zytor.com/T/
+> [2] https://lore.kernel.org/all/20220812183501.3555820-1-acdunlap@google.com/
 
- Luis
+Signal-boosting this thread: is this blocked on any item?
+
+We are still running into this issue (SEV-ES guest unexpectedly requests
+termination minutes after booting) and applying this patch seems to fix it.
+
+Thanks,
+Sid
