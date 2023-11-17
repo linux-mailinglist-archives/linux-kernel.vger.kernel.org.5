@@ -2,188 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 30EEC7EF812
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:54:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAED37EF81B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232037AbjKQTys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:54:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37700 "EHLO
+        id S232012AbjKQUBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:01:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQTyq (ORCPT
+        with ESMTP id S229535AbjKQUBP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:54:46 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41161D68;
-        Fri, 17 Nov 2023 11:54:43 -0800 (PST)
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHJs73J096323;
-        Fri, 17 Nov 2023 13:54:07 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700250847;
-        bh=CeIy/ch5gJ/McU8RJ7Fu7NwiLQ2c6HnNvty9IQh48PY=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=SWLt8tH1B2k1MCfSrYx2aDfMTy7h0Thw9n9F0aCYBCZhfx5LTRFFUNxD+lYf98z0c
-         9N56nTFgXzt8vYNMsc7GYOwVbTVLJ1/VbU98Lc4AVbK1bzHPwnqQYcubsJUa7EHLUN
-         HQUPWV2W3upIYN5DIX9o3X02wDsjj5FoL9oGJevU=
-Received: from DLEE102.ent.ti.com (dlee102.ent.ti.com [157.170.170.32])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHJs7GX083774
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 13:54:07 -0600
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE102.ent.ti.com
- (157.170.170.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 13:54:06 -0600
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 13:54:06 -0600
-Received: from [10.250.36.5] (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHJs5nt002279;
-        Fri, 17 Nov 2023 13:54:05 -0600
-Message-ID: <50eadab2-0f0a-480c-a77c-ca731c5d75cf@ti.com>
-Date:   Fri, 17 Nov 2023 13:54:05 -0600
+        Fri, 17 Nov 2023 15:01:15 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3110D68
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:01:11 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1ce675e45f9so1016605ad.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:01:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700251271; x=1700856071; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=5N8jhPC2zAZdLSZQNFglxA0EJk3ILNqkyKhBDD9MOWg=;
+        b=nrCl0MXY2inaY8kWB2sZ2ebZf+1eXzzWmoYzHKriBii5HMT47OJChvwOnixrDgrZFl
+         owI37n4EDGDnhlsmDxGUYxb3rMd38ICUkoYH5JXlHt0M7oE6WPcqaXjoFZz4yGYXC35r
+         sKunIiF7Jf9bBDNt3yKwpm+gGnM4QIg6NKIt6rPpg6NtnLeM2mOMQ9zlIAlTvATrKZaY
+         3UsP6PnA2Hi7dz32754Qh3J8P6d8JVkE8GzUFqp+xp47mLcU0+QsvpeXRIkBiXGp53TF
+         pjlyOWkYgqMjZvdj6FhpXGSbgdG5UAGLx7/Uh/TyJ2Wag0LloJy47roQt4fovRFeNSrY
+         KmDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700251271; x=1700856071;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=5N8jhPC2zAZdLSZQNFglxA0EJk3ILNqkyKhBDD9MOWg=;
+        b=vnBu5+U0/fcNObKLwWhLDp7obhouWhhMQKPjWcU61XYsrVSY7EsDneAHlGfCIdGvdc
+         3ynQ3Ttn8+I+WF/XWxOg6rarp4FghRynI/1AXjXotO1BuF51N17fC8dySkrz4aQ60h5g
+         szrKNYocpso8e0ohgKtltmuDD/FdsXqPG4gQGZ4jkKU7kHiv2fhCEfJ0BEvsd9K9VKzY
+         RG8249DNMe6+6oC1peA+a8dElULOkdKLCeXUlS1gDD16QELKivoYShgLww3hzitOG0N1
+         ywnIjQriqPjk2LgH9JcuZAjzg/a1HnXCPaQGO94WKT3eFYPlA8XkHqDdL2LMpAqKmasf
+         DyfA==
+X-Gm-Message-State: AOJu0YxLB0ouGsn2oTgLrNqUILFtKEpMdQICl/bHtL0VmNwgWhVg+9G+
+        /2VJ+aqueCZ7N49BXTD5MINP5POP20bUy7pYG0s=
+X-Google-Smtp-Source: AGHT+IEtyI1dEot9h2n/T0d1ycxinXg8zY/heVfpoPKEeMwwX12IT+/3OVGyAeHlGjsRBtdvsTxuNg==
+X-Received: by 2002:a17:902:ce81:b0:1cc:6d2c:fb59 with SMTP id f1-20020a170902ce8100b001cc6d2cfb59mr855254plg.28.1700251271032;
+        Fri, 17 Nov 2023 12:01:11 -0800 (PST)
+Received: from charlie.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id bf1-20020a170902b90100b001b53953f306sm1749737plb.178.2023.11.17.12.01.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 12:01:10 -0800 (PST)
+From:   Charlie Jenkins <charlie@rivosinc.com>
+Subject: [PATCH 0/2] riscv: Resolve module loading issues
+Date:   Fri, 17 Nov 2023 11:56:10 -0800
+Message-Id: <20231117-module_fixup-v1-0-62bb777f6825@rivosinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
-Content-Language: en-US
-To:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
-References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
- <7592981.EvYhyI6sBW@phil> <2cb3f992-f214-4cdf-8443-9e14ab864a66@ti.com>
- <4289147.1BCLMh4Saa@diego>
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <4289147.1BCLMh4Saa@diego>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFrFV2UC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDI2NDQ0Nz3dz8lNKc1Pi0zIrSAl0zS0tzC/MUy2RTM3MloJaColSgBNi46Nj
+ aWgBtf/pqXgAAAA==
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Palmer Dabbelt <palmer@rivosinc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Charlie Jenkins <charlie@rivosinc.com>
+X-Mailer: b4 0.12.3
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 1:38 PM, Heiko Stübner wrote:
-> Am Freitag, 17. November 2023, 15:03:38 CET schrieb Andrew Davis:
->> On 11/16/23 2:33 PM, Heiko Stuebner wrote:
->>> Am Donnerstag, 16. November 2023, 21:23:20 CET schrieb Krzysztof Kozlowski:
->>>> On 16/11/2023 21:03, Heiko Stuebner wrote:
->>> going with the vcc5v0_host regulator of the rk3588-quartzpro64 and
->>>
->>> +1. compatible
->>> +2. reg
->>> +3. ranges
->>> +4. All properties with values
->>> +5. Boolean properties
->>> +6. status (if applicable)
->>> +7. Child nodes
->>>
->>> we'd end up with
->>>
->>>           vcc5v0_host: vcc5v0-host-regulator {
->>> /* 1. */        compatible = "regulator-fixed";
->>> /* 4. */        gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
->>>                   pinctrl-names = "default";
->>>                   pinctrl-0 = <&vcc5v0_host_en>;
->>>                   regulator-min-microvolt = <5000000>;
->>>                   regulator-max-microvolt = <5000000>;
->>>                   regulator-name = "vcc5v0_host";
->>>                   vin-supply = <&vcc5v0_usb>;
->>> /* 5. */        enable-active-high;
->>>                   regulator-always-on;
->>>                   regulator-boot-on;
->>>           };
->>>
->>
->> How about grouping like properties (defined in the same schema),
->> then sorting within that group. Would also allow for defining
->> where to add spacing.
->>
->> 1. compatible
->> 2. reg
->> 3. ranges
->> 4. All property groups
->>     4.1 Properties with values
->>     4.2 Boolean properties
->>     4.3 Separating space
->> 6. status (if applicable)
->> 7. Child nodes
->>
->> Your node then would look like we expect:
->>
->> vcc5v0_host: vcc5v0-host-regulator {
->> /* 1   */   compatible = "regulator-fixed";
->>
->> /* 4.1 */   pinctrl-names = "default";
->> /* 4.1 */   pinctrl-0 = <&vcc5v0_host_en>;
->> /* 4.3 */
->> /* 4.1 */   regulator-min-microvolt = <5000000>;
->> /* 4.1 */   regulator-max-microvolt = <5000000>;
->> /* 4.1 */   regulator-name = "vcc5v0_host";
->> /* 4.2 */   regulator-always-on;
->> /* 4.2 */   regulator-boot-on;
->> /* 4.2 */   enable-active-high;
->> /* 4.3 */
->> /* 4.1 */   gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
->> ...
->> };
-> 
-> I'm really not sure about adding big sets of rules.
-> In the above example you'd also need to define which schema has a higher
-> priority? ;-)
-> 
-> 
-> When I started with Rockchip stuff, I also had some fancy way of sorting
-> elements in mind that was really intuitive to myself :-) .
-> Over time I realized that it was quite complex - especially when I had to
-> explain it to people.
-> 
-> There are definite advantages for having compatible + reg + status in
-> fixed positions, as it helps going over a whole dt to spot the huge
-> mistakes (accidentially disabled, wrong address), but for the rest a
-> simple alphabetical sorting is easiest to explain to people :-) .
-> 
-> And alphabetic elements are also easier on my eyes.
-> 
+Previous commits caused compilation of module linking tests to
+fail on rv32 toolchains with uleb128 support. The first patch resolves
+that issue. The second patch resolves the type issues pointed out by
+sparse.
 
-+1 for starting with compatible/reg/status that we would like to see
-in the same spot in each node.
+Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
+---
+Charlie Jenkins (2):
+      Support rv32 ULEB128 test
+      Correct type casting in module loading
 
-Not so sure on plain alphabetical. That has the same issue you pointed out
-with splitting value vs boolean properties, related properties would end up
-not grouped. Some like regulator- with the same prefix will, but think -gpios
-that is a postfix, they would be scattered about.
+ arch/riscv/kernel/module.c                         | 8 ++++----
+ arch/riscv/kernel/tests/module_test/test_uleb128.S | 8 ++++----
+ 2 files changed, 8 insertions(+), 8 deletions(-)
+---
+base-commit: 9bacdd8996c77c42ca004440be610692275ff9d0
+change-id: 20231117-module_fixup-699787d9c567
+-- 
+- Charlie
 
-How about just enforcing ordering on the couple common property we care about
-seeing and everything else left free-hand as it today?
-
-Andrew
-
-> 
-> I just think having a short clean set of rules like Krzysztof proposed,
-> is easier to follow and "enforce" and also most likely doesn't deter
-> people from contributing, if mainline work is not their main occupation.
-> 
-> 
-> Heiko
-> 
-> 
-> 
