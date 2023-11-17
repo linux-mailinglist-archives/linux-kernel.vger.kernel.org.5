@@ -2,252 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EE4D7EEE25
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:10:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7277EEE2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231461AbjKQJKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:10:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
+        id S231461AbjKQJNI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 04:13:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37386 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQJKo (ORCPT
+        with ESMTP id S230105AbjKQJNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:10:44 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C997992;
-        Fri, 17 Nov 2023 01:10:40 -0800 (PST)
-Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH69tC9027592;
-        Fri, 17 Nov 2023 09:10:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=82qJD7J4Eg2G8Fyr2J1ob+B3of08iuAUuyE0IfHN0Dg=;
- b=S1YljXhrmA+iErKiPh/YJUBpv9dWxhrhFwaEFl18z7jRqeP0qlN1toB59vAXvV509ap1
- Kl6tE3KHH7OJbz9IY7aOtPHwAf5RgRw5Q2d5jwd7bHo5ywfMbqZOxXg1bllQ+a03Zqa1
- B1sI8v7NKDxyGSAvWdZS3YD30TydbXJlxxT6dppsd1h6Uyo3RS/espnQqFcBczBBoZ+k
- XT2Hdj0oS6Nnot4Nb0FWyg8JrbN2o3j5fHBRWvcyy9O5/Z8AEceAvy2iA9U3lA8BjuVF
- 5T8PBIyE2KXK2yWROqa1OqzOPomROkdUGcQmXKQgp1bWUs2voU1ZaKwFhwhYMpj39JIO AQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue2na0cka-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:10:22 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9ALXU009948
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:10:21 GMT
-Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 01:10:17 -0800
-Message-ID: <e04bc179-347b-415a-a5e9-00563a24507e@quicinc.com>
-Date:   Fri, 17 Nov 2023 14:40:13 +0530
+        Fri, 17 Nov 2023 04:13:06 -0500
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C095D4D;
+        Fri, 17 Nov 2023 01:13:03 -0800 (PST)
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a92782615dso19899157b3.2;
+        Fri, 17 Nov 2023 01:13:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700212382; x=1700817182;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rvynnOaR8xM7O4hHqd8ZbKUHknCSu+mkNKpvTcNlZWQ=;
+        b=GHRcOfaG5VipmUy/IneoL5CEqTXarwStwUggOYUG1ZSippxel2jD4co44MZJOwNVLe
+         Y2Nwo0Gr7wx7AvoEYLrr7SgTW0L0NToXbuKLYM5+tME4gPaw8OPgbtBrc/hRiks1Umkx
+         ZviMS4j09PdCp/wj+gAKzb3uY3X7Ym0r7AxfUis8xUlzNu728Pz1PXHbpeDBxkEv4nB/
+         zsT84VDKE74nF31Oxvj0SJXU2VRnuq6lZKbgGmZ2aLktY0fFOTsGgNIo2fSZmrXtoFqb
+         kVdm3ySnbqJ0tPD2gbNm7mLvI61ngTc8tojmo0CqaTv0nV3Q+NR/QvVOCiTKRuSkdKFr
+         HaOA==
+X-Gm-Message-State: AOJu0YwO+lmOXIxos05q9CUmU60UKB05lgcpai1P0qtBerabfERoi0Th
+        Vlwwh3cWd1g9xxYDk2Oqqo0rHdEJ9WXA7w==
+X-Google-Smtp-Source: AGHT+IEqV1d1S2TY2YJglHD+oyTEHEWo7a4JuRmZM51yO10Dcd15gTMUTbR9JEBfeNoNGyOIOmKnBQ==
+X-Received: by 2002:a0d:ea55:0:b0:595:89b0:6b41 with SMTP id t82-20020a0dea55000000b0059589b06b41mr20205664ywe.38.1700212381096;
+        Fri, 17 Nov 2023 01:13:01 -0800 (PST)
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com. [209.85.219.169])
+        by smtp.gmail.com with ESMTPSA id r7-20020a0de807000000b005b054a1ec5dsm381553ywe.126.2023.11.17.01.12.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 01:12:58 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-da077db5145so1707161276.0;
+        Fri, 17 Nov 2023 01:12:57 -0800 (PST)
+X-Received: by 2002:a25:3792:0:b0:da3:743d:ea3e with SMTP id
+ e140-20020a253792000000b00da3743dea3emr18343937yba.21.1700212377409; Fri, 17
+ Nov 2023 01:12:57 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/3] iommu/arm-smmu: re-enable context caching in smmu
- reset operation
-Content-Language: en-US
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-CC:     <will@kernel.org>, <joro@8bytes.org>, <a39.skl@gmail.com>,
-        <konrad.dybcio@linaro.org>, <quic_pkondeti@quicinc.com>,
-        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
-        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
-References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
- <20231114135654.30475-4-quic_bibekkum@quicinc.com>
- <CAA8EJpoRmm42aAvyX61o3tMWXszUZmfFvJEtnNDEfYdDqy4Y0g@mail.gmail.com>
- <72b30354-0497-45cf-8b71-e4f265eb0005@quicinc.com>
- <CAA8EJprPE=z2VN5LkaUyLyvYpx6i1eF9dyxOzN_L86pi5tmU-Q@mail.gmail.com>
- <0d290a5c-081f-4dfa-af9a-b061e6134662@quicinc.com>
- <CAA8EJprHppoN6rg8-rS1F+4kynQqmV1L3OiHFnJ0HyrshywFig@mail.gmail.com>
- <4db1b4d2-0aa9-4640-b7d7-7d18ab64569a@arm.com>
-From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
-In-Reply-To: <4db1b4d2-0aa9-4640-b7d7-7d18ab64569a@arm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: utyFtJGbvqdnYrr0qvP31-CR-31cxmD9
-X-Proofpoint-ORIG-GUID: utyFtJGbvqdnYrr0qvP31-CR-31cxmD9
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_06,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
- priorityscore=1501 malwarescore=0 mlxscore=0 lowpriorityscore=0
- mlxlogscore=999 phishscore=0 suspectscore=0 clxscore=1015 adultscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311060000 definitions=main-2311170066
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+References: <20231029042712.520010-1-cristian.ciocaltea@collabora.com>
+ <20231029042712.520010-13-cristian.ciocaltea@collabora.com>
+ <f253b50a-a0ac-40c6-b13d-013de7bac407@lunn.ch> <233a45e1-15ac-40da-badf-dee2d3d60777@collabora.com>
+ <cb6597be-2185-45ad-aa47-c6804ff68c85@collabora.com> <20231116-stellar-anguished-7cf06eb5634a@squawk>
+ <CAMuHMdXdeW9SRN8hq-0722CiLvXDFVwpJxjFTGgdc2mhT=ppYw@mail.gmail.com>
+ <b4a3a139-4831-447e-94ed-d590986aed8c@collabora.com> <84fd076b-6db4-4251-aff8-36befc28e574@collabora.com>
+In-Reply-To: <84fd076b-6db4-4251-aff8-36befc28e574@collabora.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 17 Nov 2023 10:12:46 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdVXAx+b6=70PdgJrpbegBkDpb3w1UF0_u1Odi=JoYL2-w@mail.gmail.com>
+Message-ID: <CAMuHMdVXAx+b6=70PdgJrpbegBkDpb3w1UF0_u1Odi=JoYL2-w@mail.gmail.com>
+Subject: Re: [PATCH v2 12/12] [UNTESTED] riscv: dts: starfive:
+ beaglev-starlight: Enable gmac
+To:     Cristian Ciocaltea <cristian.ciocaltea@collabora.com>
+Cc:     Conor Dooley <conor@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Emil Renner Berthing <kernel@esmil.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Samin Guo <samin.guo@starfivetech.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, kernel@collabora.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
+        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Cristian,
 
+On Fri, Nov 17, 2023 at 9:59 AM Cristian Ciocaltea
+<cristian.ciocaltea@collabora.com> wrote:
+> On 11/17/23 10:49, Cristian Ciocaltea wrote:
+> > On 11/17/23 10:37, Geert Uytterhoeven wrote:
+> >> On Thu, Nov 16, 2023 at 6:55 PM Conor Dooley <conor@kernel.org> wrote:
+> >>> On Thu, Nov 16, 2023 at 03:15:46PM +0200, Cristian Ciocaltea wrote:
+> >>>> On 10/30/23 00:53, Cristian Ciocaltea wrote:
+> >>>>> On 10/29/23 20:46, Andrew Lunn wrote:
+> >>>>>> On Sun, Oct 29, 2023 at 06:27:12AM +0200, Cristian Ciocaltea wrote:
+> >>>>>>> The BeagleV Starlight SBC uses a Microchip KSZ9031RNXCA PHY supporting
+> >>>>>>> RGMII-ID.
+> >>>>>>>
+> >>>>>>> TODO: Verify if manual adjustment of the RX internal delay is needed. If
+> >>>>>>> yes, add the mdio & phy sub-nodes.
+> >>>>>>
+> >>>>>> Please could you try to get this tested. It might shed some light on
+> >>>>>> what is going on here, since it is a different PHY.
+> >>>>>
+> >>>>> Actually, this is the main reason I added the patch. I don't have access
+> >>>>> to this board, so it would be great if we could get some help with testing.
+> >>>>
+> >>>> @Emil, @Conor: Any idea who might help us with a quick test on the
+> >>>> BeagleV Starlight board?
+> >>>
+> >>> I don't have one & I am not sure if Emil does. Geert (CCed) should have
+> >>
+> >> I believe Esmil has.
+> >>
+> >>> one though. Is there a specific test you need to have done?
+> >>
+> >> I gave it a try, on top of latest renesas-drivers[1].
+>
+> [...]
+>
+> >>
+> >> Looks like it needs more non-coherent support before we can test
+> >> Ethernet.
+> >
+> > Hi Geert,
+> >
+> > Thanks for taking the time to test this!
+> >
+> > Could you please check if the following are enabled in your kernel config:
+> >
+> >   CONFIG_DMA_GLOBAL_POOL
+> >   CONFIG_RISCV_DMA_NONCOHERENT
+> >   CONFIG_RISCV_NONSTANDARD_CACHE_OPS
+> >   CONFIG_SIFIVE_CCACHE
 
-On 11/16/2023 10:34 PM, Robin Murphy wrote:
-> On 16/11/2023 3:24 pm, Dmitry Baryshkov wrote:
->> On Thu, 16 Nov 2023 at 14:45, Bibek Kumar Patro
->> <quic_bibekkum@quicinc.com> wrote:
->>>
->>>
->>>
->>> On 11/15/2023 4:33 PM, Dmitry Baryshkov wrote:
->>>> On Wed, 15 Nov 2023 at 11:45, Bibek Kumar Patro
->>>> <quic_bibekkum@quicinc.com> wrote:
->>>>>
->>>>> On 11/14/2023 7:45 PM, Dmitry Baryshkov wrote:
->>>>>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
->>>>>> <quic_bibekkum@quicinc.com> wrote:
->>>>>>>
->>>>>>> Context caching is re-enabled in the prefetch buffer for Qualcomm 
->>>>>>> SoCs
->>>>>>> through SoC specific reset ops, which is disabled in the default 
->>>>>>> MMU-500
->>>>>>> reset ops, but is expected for context banks using ACTLR register to
->>>>>>> retain the prefetch value during reset and runtime suspend.
->>>>>>
->>>>>> Please refer to Documentation/process/submitting-patches.rst and
->>>>>> rephrase this following the rules there.
->>>>>>
->>>>>
->>>>> Noted, will go through the description once and rephrase it
->>>>> in next version complying with rules.
->>>>>
->>>>>>>
->>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
->>>>>>> ---
->>>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 
->>>>>>> ++++++++++++++++++----
->>>>>>>     1 file changed, 21 insertions(+), 4 deletions(-)
->>>>>>>
->>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c 
->>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>>>>> index 0eaf6f2a2e49..fa867b1d9d16 100644
->>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
->>>>>>> @@ -478,11 +478,28 @@ static int qcom_smmu_def_domain_type(struct 
->>>>>>> device *dev)
->>>>>>>            return match ? IOMMU_DOMAIN_IDENTITY : 0;
->>>>>>>     }
->>>>>>>
->>>>>>> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
->>>>>>> +{
->>>>>>> +       int i;
->>>>>>> +       u32 reg;
->>>>>>> +
->>>>>>> +       arm_mmu500_reset(smmu);
->>>>>>> +
->>>>>>> +       /* Re-enable context caching after reset */
->>>>>>> +       for (i = 0; i < smmu->num_context_banks; ++i) {
->>>>>>> +               reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
->>>>>>> +               reg |= CPRE;
->>>>>>> +               arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
->>>>>>> +       }
->>>>>>> +
->>>>>>> +       return 0;
->>>>>>> +}
->>>>>>> +
->>>>>>>     static int qcom_sdm845_smmu500_reset(struct arm_smmu_device 
->>>>>>> *smmu)
->>>>>>>     {
->>>>>>>            int ret;
->>>>>>>
->>>>>>> -       arm_mmu500_reset(smmu);
->>>>>>> +       qcom_smmu500_reset(smmu);
->>>>>>
->>>>>> Is this applicable for sdm845? For all other platforms supported by
->>>>>> qcom_smmu_500 implementation?
->>>>>>
->>>>>
->>>>> In arm_mmu500_reset operation 
->>>>> drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
->>>>> CPRE bit is reset for all SoC based on mmu500 platform, hence for all
->>>>> Qualcomm SoCs including sm845 we are setting back the CPRE bit.
->>>>
->>>> The errata for the CoreLink MMU-500 requires CPRE to be disabled for
->>>> all revisions before r2p2. Do we know whether these SoC used CoreLink
->>>> MMU-500 and which version of it?
->>>>
->>>
->>> Just checked all these SoCs are using r2p4 revision.
->>> So CPRE needs to be enabled back here then?
->>
->> can be enabled, yes.
-> 
-> There are still open errata #562869 and #1047329 which might need this 
-> workaround. I guess one could argue that we're not (knowingly) using 
-> nested translation at the moment, and also probably not running this in 
-> situations which would end up using short-descriptor format, however 
-> stuff like pKVM and IOMMUFD could potentially change those assumptions 
-> in future, so they still feel a bit sketchy to me.
-> 
+CONFIG_DMA_GLOBAL_POOL and CONFIG_RISCV_NONSTANDARD_CACHE_OPS were
+indeed no longer enabled, as they cannot be enabled manually.
 
-Could you help provide some details on these two errata (#562869 and 
-#1047329).Both of these erratum are there for r2p4 revisions as well?
+After cherry-picking commit e14ad9ff67fd51dc ("riscv: errata: Add
+StarFive JH7100 errata") in esmil/visionfive these options become
+enabled. Now it gets a bit further, but still lots of CCACHE DataFail
+errors.
 
-Thanks & regards,
-Bibek
+> Also please note the series requires the SiFive Composable Cache
+> controller patches provided by Emil [1].
+>
+> [1]: https://lore.kernel.org/all/20231031141444.53426-1-emil.renner.berthing@canonical.com/
 
-> Thanks,
-> Robin.
-> 
->>
->>>
->>>>>
->>>>>>>
->>>>>>>            /*
->>>>>>>             * To address performance degradation in non-real time 
->>>>>>> clients,
->>>>>>> @@ -509,7 +526,7 @@ static const struct arm_smmu_impl 
->>>>>>> qcom_smmu_500_impl = {
->>>>>>>            .init_context = qcom_smmu_init_context,
->>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
->>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
->>>>>>> -       .reset = arm_mmu500_reset,
->>>>>>> +       .reset = qcom_smmu500_reset,
->>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
->>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
->>>>>>>     };
->>>>>>> @@ -528,7 +545,7 @@ static const struct arm_smmu_impl 
->>>>>>> sm8550_smmu_500_impl = {
->>>>>>>            .init_context = qcom_smmu_init_context,
->>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
->>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
->>>>>>> -       .reset = arm_mmu500_reset,
->>>>>>> +       .reset = qcom_smmu500_reset,
->>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
->>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
->>>>>>>     };
->>>>>>> @@ -544,7 +561,7 @@ static const struct arm_smmu_impl 
->>>>>>> qcom_adreno_smmu_v2_impl = {
->>>>>>>     static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
->>>>>>>            .init_context = qcom_adreno_smmu_init_context,
->>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
->>>>>>> -       .reset = arm_mmu500_reset,
->>>>>>> +       .reset = qcom_smmu500_reset,
->>>>>>>            .alloc_context_bank = 
->>>>>>> qcom_adreno_smmu_alloc_context_bank,
->>>>>>>            .write_sctlr = qcom_adreno_smmu_write_sctlr,
->>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
->>>>>>> -- 
->>>>>>> 2.17.1
->>>>>>>
->>>>>>
->>>>>>
->>>>
->>>>
->>>>
->>>> -- 
->>>> With best wishes
->>>> Dmitry
->>
->>
->>
+That series does not contain any Kconfig changes, so there must be
+other missing dependencies?
+
+Perhaps I should just defer to Emil ;-)
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
