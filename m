@@ -2,98 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63C67EEB5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46B387EEB5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:21:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345651AbjKQDVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 22:21:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60220 "EHLO
+        id S1345658AbjKQDTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 22:19:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKQDVE (ORCPT
+        with ESMTP id S229790AbjKQDTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 22:21:04 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D3DDB9;
-        Thu, 16 Nov 2023 19:21:01 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id d2e1a72fcca58-6c32a20d5dbso1429248b3a.1;
-        Thu, 16 Nov 2023 19:21:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700191261; x=1700796061; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=04yJ8YqPKGFpqj3v0iOVI9DtylMq/xzGcXD8UiSYJ3g=;
-        b=Kb1Ddgn/HOoMl9tY9JCOZckEZXTVXGOdYBGR67qpX9jj9mfp9YewVIlQmr0NB2RQgq
-         eIi3Wyf63UNlVkwvA5qjih9psYB6AnDJ/lHpe+TJoJ3eCiO9ZOnvlsP863cFvBQfKlWH
-         nJ9P5gTcHga8jsGITwkDVe07U3nkty5CLbCPJnbPUNmklK7XfdWkZ6/EOhVmj2DnoVs/
-         NCkPY8wiIuM+laI824rTgwEb5Mi/upgGgozDOgzRF6iQwF0bPVG08ETz8Nq6i3kgizrl
-         PLPXz6GzWE8vTffvdyCzebw+ljCo2KfiumO/TWKcQU0ayzBMtRuhhz+LZB7VOOn+R49T
-         2KYQ==
+        Thu, 16 Nov 2023 22:19:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75652D4D
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:19:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700191179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jAKFfPiqJuGzP2s6H3e1McPERpD8hKdLrmeMzG7k6Hw=;
+        b=ZVvqw9jt6GUS5tj0UDDAfa87si02ENsPtHXsKcFQSuzKXgk0aI8xouf0PMkFE3MLaUWCTv
+        mgdEBaAPuKb5oEKce2li79DPxVQA1ZJUfOjeHRVdNGL0HgbJ0706I4jSeC9CClJVxxGhKa
+        nglKTzbIn2Mu4L7px5JOe58W6nW3nfI=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-177-cg7_FH0GMG-Nw1yeBV2jkw-1; Thu, 16 Nov 2023 22:19:38 -0500
+X-MC-Unique: cg7_FH0GMG-Nw1yeBV2jkw-1
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6b2df09dcdcso516437b3a.0
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:19:38 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700191261; x=1700796061;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700191176; x=1700795976;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=04yJ8YqPKGFpqj3v0iOVI9DtylMq/xzGcXD8UiSYJ3g=;
-        b=o1IZJGLRVpg/ETWgy9CN9o5ORZLX03jMkC/a2/ipI1EvEZEhIR1UKFAOFg+O+iVPri
-         lqQv6OUpVjSp2rRwTtLthsrYZCRxoNwyOxOlRYp8z67B3Bwf8y8d0WnD/CqyJhsrekgA
-         +j0jj793jWuW3kWw8WVVKXfmFcx/dRI5fmnc9SOehVxghgUrzJFvN8bVJChQis9NF4eq
-         u9KWEORBbnXk5lVs2xiXon3rlZSOszbwFgVpfBleD5Qpwr+ryNhmRoFSCY22i2QCzrFg
-         Kvq6tmuonh8Y2yvRjd8mU5c4+ULhOlPwlHmJ0Lf52A1fPgU1D5wO9FmuxV7SN6bitS7d
-         GVgQ==
-X-Gm-Message-State: AOJu0Yx/t9hlMI6RMYagK8/PA7niEYI58s4cq6hGQ5dPj7+ZIF5L/53r
-        +D0Ya08+x0ybJEquOwZT5ypbYkhVgQc=
-X-Google-Smtp-Source: AGHT+IFjDnrMp2pgy7V0U4koa/oNWvYszgsQ2cUM3Qj+UHiq3IVv4gnZaiFGgPGTKFjFRrGq+pa71Q==
-X-Received: by 2002:a05:6a00:4511:b0:6c4:e8a1:8b3b with SMTP id cw17-20020a056a00451100b006c4e8a18b3bmr21681438pfb.25.1700191261004;
-        Thu, 16 Nov 2023 19:21:01 -0800 (PST)
-Received: from [10.10.14.80] (1-34-21-66.hinet-ip.hinet.net. [1.34.21.66])
-        by smtp.gmail.com with ESMTPSA id j7-20020aa78007000000b0068ff267f094sm453663pfi.158.2023.11.16.19.20.58
+        bh=jAKFfPiqJuGzP2s6H3e1McPERpD8hKdLrmeMzG7k6Hw=;
+        b=gMVmYmjaiAapCHCmBDe2FmMkry0gdkS+P6PwrkuXp/I4CLkqet18Nd540a5iumNBD2
+         VE3LgxRz7oSEoDTCz+NzgsJE7E4FGzc7uliuu3Z7I0jAf15FZc38oEN6lCkbBGo9jPzI
+         IdRrJykR7cZ662gKte3/Io1gPkprOUvK2o+EdFs3SypFjjK+K4jkVd+8bJKSH7Txv9i1
+         E10+h42WZ2bmCEoSe3imVlsizAYJVmhPICa6Ls0HTAu/r8bHXeL67VI2naUZaLr6n9yl
+         SEZziVf5uZnEu16oDrPIPMefnV32Oq2Vktr3O7pmJO4JPjYLO5+5/c0XrX7uKqFrekjf
+         zCRA==
+X-Gm-Message-State: AOJu0YyIJmoLXTWdr4pmcD++3T45eBO9xxuFd2gpXJduKy3UoVTl+s54
+        JW6xYOOaydv/Vm4kE9a0/6i1wLV89BWc4yY7HQzU/sQvzRXXW0EymAmrT0TOrz0mblt9uS3DX2t
+        v3B4tnok3FzSiS3ZAN7dyprEvKFz86fLx5WlBGQ==
+X-Received: by 2002:a05:6a00:8998:b0:6b3:c72d:b01 with SMTP id hx24-20020a056a00899800b006b3c72d0b01mr8240468pfb.1.1700191176692;
+        Thu, 16 Nov 2023 19:19:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFfpURZkDv/ezuJd6cSD4adKTKntnTXg/JeSPEJHMKPZoI8mQ8dl34F8ROKL9i11G2GXcaKFg==
+X-Received: by 2002:a05:6a00:8998:b0:6b3:c72d:b01 with SMTP id hx24-20020a056a00899800b006b3c72d0b01mr8240451pfb.1.1700191176340;
+        Thu, 16 Nov 2023 19:19:36 -0800 (PST)
+Received: from [10.66.61.39] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id it14-20020a056a00458e00b006c8721330fesm455416pfb.74.2023.11.16.19.19.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 19:21:00 -0800 (PST)
-Message-ID: <69657f96-4849-4134-911d-4785d5d6b8d8@gmail.com>
-Date:   Fri, 17 Nov 2023 11:18:47 +0800
+        Thu, 16 Nov 2023 19:19:35 -0800 (PST)
+Message-ID: <041416db-1cb5-e84f-ce44-9d06707970a8@redhat.com>
+Date:   Fri, 17 Nov 2023 11:19:32 +0800
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/2] dt-bindings: hwmon: Add mps mp5990 driver bindings
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     patrick@stwcx.xyz, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Joel Stanley <joel@jms.id.au>,
-        Chanh Nguyen <chanh@os.amperecomputing.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20231113155008.2147090-1-peteryin.openbmc@gmail.com>
- <20231113155008.2147090-2-peteryin.openbmc@gmail.com>
- <a3445201-58f2-42c6-bef7-ca6968fd80d6@roeck-us.net>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+Subject: Re: [PATCH v1] KVM: selftests: Initalize sem_vcpu_[cont|stop] before
+ each test in dirty_log_test
 Content-Language: en-US
-From:   PeterYin <peteryin.openbmc@gmail.com>
-In-Reply-To: <a3445201-58f2-42c6-bef7-ca6968fd80d6@roeck-us.net>
+To:     Oliver Upton <oliver.upton@linux.dev>
+Cc:     kvm@vger.kernel.org, kvmarm@lists.linux.dev,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20231116093536.22256-1-shahuang@redhat.com>
+ <ZVaxXJ4xUW1eyQEL@thinky-boi>
+From:   Shaoqin Huang <shahuang@redhat.com>
+In-Reply-To: <ZVaxXJ4xUW1eyQEL@thinky-boi>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Oliver,
 
-
-Guenter Roeck 於 11/16/23 06:27 寫道:
-> On Mon, Nov 13, 2023 at 11:50:07PM +0800, Peter Yin wrote:
->> Add a device tree bindings for mp5990 device.
+On 11/17/23 08:18, Oliver Upton wrote:
+> Hi Shaoqin,
+> 
+> On Thu, Nov 16, 2023 at 04:35:36AM -0500, Shaoqin Huang wrote:
+>> When execute the dirty_log_test on some aarch64 machine, it sometimes
+>> trigger the ASSERT:
 >>
->> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
->> Acked-by: Conor Dooley <conor.dooley@microchip.com>
+>> ==== Test Assertion Failure ====
+>>    dirty_log_test.c:384: dirty_ring_vcpu_ring_full
+>>    pid=14854 tid=14854 errno=22 - Invalid argument
+>>       1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
+>>       2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
+>>       3   (inlined by) run_test at dirty_log_test.c:802
+>>       4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
+>>       5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
+>>       6  0x0000ffff9be173c7: ?? ??:0
+>>       7  0x0000ffff9be1749f: ?? ??:0
+>>       8  0x000000000040206f: _start at ??:?
+>>    Didn't continue vcpu even without ring full
+>>
+>> The dirty_log_test fails when execute the dirty-ring test, this is
+>> because the sem_vcpu_cont and the sem_vcpu_stop is non-zero value when
+>> execute the dirty_ring_collect_dirty_pages() function. When those two
+>> sem_t variables are non-zero, the dirty_ring_wait_vcpu() at the
+>> beginning of the dirty_ring_collect_dirty_pages() will not wait for the
+>> vcpu to stop, but continue to execute the following code. In this case,
+>> before vcpu stop, if the dirty_ring_vcpu_ring_full is true, and the
+>> dirty_ring_collect_dirty_pages() has passed the check for the
+>> dirty_ring_vcpu_ring_full but hasn't execute the check for the
+>> continued_vcpu, the vcpu stop, and set the dirty_ring_vcpu_ring_full to
+>> false. Then dirty_ring_collect_dirty_pages() will trigger the ASSERT.
+>>
+>> Why sem_vcpu_cont and sem_vcpu_stop can be non-zero value? It's because
+>> the dirty_ring_before_vcpu_join() execute the sem_post(&sem_vcpu_cont)
+>> at the end of each dirty-ring test. It can cause two cases:
+>>
+>> 1. sem_vcpu_cont be non-zero. When we set the host_quit to be true,
+>>     the vcpu_worker directly see the host_quit to be true, it quit. So
+>>     the log_mode_before_vcpu_join() function will set the sem_vcpu_cont
+>>     to 1, since the vcpu_worker has quit, it won't consume it.
+>> 2. sem_vcpu_stop be non-zero. When we set the host_quit to be true,
+>>     the vcpu_worker has entered the guest state, the next time it exit
+>>     from guest state, it will set the sem_vcpu_stop to 1, and then see
+>>     the host_quit, no one will consume the sem_vcpu_stop.
+>>
+>> When execute more and more dirty-ring tests, the sem_vcpu_cont and
+>> sem_vcpu_stop can be larger and larger, which makes many code paths
+>> don't wait for the sem_t. Thus finally cause the problem.
+>>
+>> Fix this problem is easy, simply initialize the sem_t before every test.
+>> Thus whatever the state previous test left, it won't interfere the next
+>> test.
 > 
-> What branch is this patch based on ? git fails to apply it.
+> In your changelog you describe what sounds like a semaphore imbalance at
+> the time of test completion, yet your proposed fix is to just clobber
+> the error and start fresh.
 > 
-> Guenter
-I think I don't pull the last version. I can rebase it and push the new 
-version. Thanks for your feedback.
+
+Yes. It's a semaphore imbalance problem.
+
+> Why not nip it at the bud and fix the logic bug instead?
+
+I have another patch which fix the logic bug, I will send it out later.
+
+> 
+
+-- 
+Shaoqin
+
