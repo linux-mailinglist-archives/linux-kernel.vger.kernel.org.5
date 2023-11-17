@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 00E057EF07E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD2D37EF082
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345970AbjKQKbq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:31:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54436 "EHLO
+        id S1345995AbjKQKcM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52438 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345949AbjKQKbj (ORCPT
+        with ESMTP id S1345990AbjKQKcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:31:39 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B2D11723
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:32 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e2308198eso2666929a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:32 -0800 (PST)
+        Fri, 17 Nov 2023 05:32:01 -0500
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0558FD72
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:54 -0800 (PST)
+Received: by mail-ed1-x533.google.com with SMTP id 4fb4d7f45d1cf-53db360294fso2736243a12.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700217091; x=1700821891; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700217112; x=1700821912; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Fq/mBkkFvRGdzVgNdzV1zuTizhcwiAr3fhu4RMypp6Q=;
-        b=kWapA/u51nQtFVs5AWy8yW6NTJdlzKHZzWRrVG0abSx18lP8aoH2bbe9TafVWmOyBU
-         oNhlOtmd3VQjl0xQO2teQAbgEKDvU1LnL+PwD9qe9xeOVGDg9wQKQCN+tsnaVcSg9Iyv
-         QziDh7a/tq9hDXpk8QRpsyZLjN//wTZibeiAf5YjvhKeyYZNjsslZclCz+CSpFnpOaM8
-         UIfugvFmC4r0Xrt6RbqD5jv0Wo3wv9Q/jzsqmwBCa4Zut0r1+t3Gh8zFiWLz0TUORZS5
-         dnjKpsxRU92kwcBTpiD4uz2nLToFsiRpLEIiD0mzK2Rmo9Z5dx193EUFUHaKDm+ncc+4
-         Wn0Q==
+        bh=8FhuqHh4HmlYu3/EDA5SPhT0+IeD6e1ZXT+1m3Jr2Ys=;
+        b=ElYta+B+N1ukw4RG9py8KY/ys/PaeY+haeG6t5VVHHX8zQbOnTqOMGxpnWNfHIHhY3
+         qTQf3hLszz/jwc/AeTRpViSqRwcEYQZZJ5Vp4vKx39xh4/BgIVGB2b0MqakZPjb/+cGa
+         C35w94w3W5OV/Gdy0/7MbTz86yPO/vExjXtF6++xZ18CnJn/STj0xiRe98HslMwUOjzL
+         zJFARoKuQCu15lXLoDIZ2C4s3sqaVLKJEjrqsNKNUDJgs1CW712pmM5pksh7Ubeozh0c
+         fBzIPghyLOt10zHLB8tBxHyBfK3aFojeFdjyqVMRXYwia8lbHxXeaK41ecgbkTi9ay4j
+         To3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700217091; x=1700821891;
+        d=1e100.net; s=20230601; t=1700217112; x=1700821912;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Fq/mBkkFvRGdzVgNdzV1zuTizhcwiAr3fhu4RMypp6Q=;
-        b=tFn//KbsoWE6jyEAZt0jbdUBvpTtyhUU0+wggq3Rr65L6z3UaTxfKBwELvevt8I+v3
-         BtIaTQSpSWblxeTyYloPQhWxv0y1DWH7Rf5QumMBVLKsdbKwe81LLf4g1gRw7TBzSbXs
-         GzgJLp3lRLZtYUYwdhrOd6rZ86mwXyTcqdi8StI8aJFnkqyH9iDRM2hemQbDxQ5YfRsZ
-         ECDoq4MOrHEF8WcEzRmmiIr516UlNK750QtEBpMcG44iiyLKn6dDloplwgP7STjMmZYj
-         zFPFk2HkN3PvWPBtnyjURgxkcJ/YN2NBCq12WrC9AAxGf3C1xjVM3TYA4tTDlLdFL7Y3
-         I/xw==
-X-Gm-Message-State: AOJu0YyRjcRLlPdJJpMb7znRQRVOe2DfxS3dc3w7SdOhNqhgVxJLzElP
-        JrNnNKTVSqrSIH3IqzKiMFDQfg==
-X-Google-Smtp-Source: AGHT+IEY+ImFj6J075FizBpKYFgxR0kEUHL+d/z876Ok2pyIzxY2E5PCirWwZJlpoKK3ynyqKGKTIA==
-X-Received: by 2002:aa7:dbd9:0:b0:544:7c9b:6227 with SMTP id v25-20020aa7dbd9000000b005447c9b6227mr12485283edt.4.1700217091166;
-        Fri, 17 Nov 2023 02:31:31 -0800 (PST)
+        bh=8FhuqHh4HmlYu3/EDA5SPhT0+IeD6e1ZXT+1m3Jr2Ys=;
+        b=Uk+kfzoOgww8ajoAKoVHp0+W8OiXcUfAVM0AovPl2aBMBuEnDzSVR3hkaoDwVb6N23
+         sXWsUO8G3DAA74yLIubxqUJ4QJJVytL3SLXoN63ENJ95Dl0AiZJ3Ae5Oz+QYvByT256A
+         Wm1Xgc/Dq7Wj2y9jhvdHXkPXr3G4UGduNDfJGZlLP9PoWj+TZ8lK5aHt0XRfxIRwo2+o
+         I40Sb1F0b64RFd7meS6S4vp+xrOsS5jCKrVP5PZAg3XSd2GhjOImvyiYhg98IpxWtdV1
+         c5QlDYVVsVL56mNBTdMMxaX94CrkaJ6d+xfUsZ2g5iVQ46ODmCH4wC95mDZGbBw+P2ia
+         +quA==
+X-Gm-Message-State: AOJu0YxUQEk3od/4RBKi88qEaglbgJ33ToqORIPkt5/Nd5pGKMQdra+W
+        uvzgT7sQ/72dp0csatJ17qELUA==
+X-Google-Smtp-Source: AGHT+IH2tOLhm5wjhNtU07be4IZrwqkUHzVXaj5dMzF+2aN8lWtZbvFu0Y6Lq0CPs+Rqs1C+QdNB1g==
+X-Received: by 2002:aa7:c414:0:b0:543:8891:e142 with SMTP id j20-20020aa7c414000000b005438891e142mr13866995edq.11.1700217112465;
+        Fri, 17 Nov 2023 02:31:52 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id v27-20020aa7cd5b000000b0053e43492ef1sm567026edw.65.2023.11.17.02.31.26
+        by smtp.gmail.com with ESMTPSA id v27-20020aa7cd5b000000b0053e43492ef1sm567026edw.65.2023.11.17.02.31.45
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 02:31:28 -0800 (PST)
-Message-ID: <42c7db83-5016-43e7-a1c2-ae14c6058198@linaro.org>
-Date:   Fri, 17 Nov 2023 11:31:26 +0100
+        Fri, 17 Nov 2023 02:31:46 -0800 (PST)
+Message-ID: <5ab340be-5cd4-4fdb-87e2-05188cf7361e@linaro.org>
+Date:   Fri, 17 Nov 2023 11:31:45 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/16] arm64: dts: qcom: sm8550-aim300: add display and
- panel
+Subject: Re: [PATCH 11/16] arm64: dts: qcom: sm8550-aim300: add notification
+ RGB LED
 Content-Language: en-US
 To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
@@ -64,7 +64,7 @@ To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
 References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-11-quic_tengfan@quicinc.com>
+ <20231117101817.4401-12-quic_tengfan@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,7 +110,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231117101817.4401-11-quic_tengfan@quicinc.com>
+In-Reply-To: <20231117101817.4401-12-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,7 +124,8 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 17/11/2023 11:18, Tengfei Fan wrote:
-> Enable Display Subsystem with Visionox VTDR6130 Panel.
+> The QRD features a notification LED connected to the pm8550.
+> Configure the RGB led controlled by the PMIC PWM controller.
 > 
 > Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 > ---
