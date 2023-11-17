@@ -2,226 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4C97EFA7B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A48667EFA85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:24:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346399AbjKQVYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:24:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
+        id S1346215AbjKQVYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:24:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235818AbjKQVXp (ORCPT
+        with ESMTP id S231533AbjKQVY1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:23:45 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49963257
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:22:25 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-daf2eda7efaso2451302276.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:22:25 -0800 (PST)
+        Fri, 17 Nov 2023 16:24:27 -0500
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E73F2D4E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:13 -0800 (PST)
+Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso321751666b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1700256136; x=1700860936; darn=vger.kernel.org;
+        d=chromium.org; s=google; t=1700256190; x=1700860990; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7VlTgLQgobFGG9PZZStnDlmcBu7nmiBF+q+s3UJ3hXY=;
-        b=dY0g61TIlRN+hRurbcp/9nn1mUxdFaB+a/xJadYgi4t8eIYBYVIAz/Ru5FfvpS0cja
-         2BUtKjga6tWLZGA2I4PBeEaOu5MWt9UwyrWFRSYTCY7sTtZV2RzRVwFkhqqA+O8OOsIy
-         JPeHLrHYuEJ8RL8U93ZQT18EvbHiTz5PCjWjbL3q7JfKiQdHoGzBvLNJDfNFE7mvHze9
-         sqqomks9/Mn7bOSHMfXsAZP738FRG5j5BHmBkTZ/1HB0nTisVNQ2xjKlLslMIgUyV4I5
-         wWiuBIK5GgAJjZpBK0+rlOlXQtrM2f8g5ue3QtlPuk12dYGh7Zujx4+wQP9y+yI7FtNQ
-         qG3Q==
+        bh=yFBqw6WWFn2DTJJAm5oTscYcujSFx4g4cXCp4v+z0IA=;
+        b=NXJqXa+GrWs4EjbDRUHSMKUDu6DoWDlZ/IB3CFDKQ9jNem4v54qdb1cS52H0tS1tiY
+         FzQgApeDdbSa/7puBkcU4YD16zqJyEKUYfjNhkpP6X1FUZ6S4E0YFUauT5AyaC6qgwOc
+         aUanh6y9tK616MAt+2fIqBNnD43TiaEJAQhw4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700256136; x=1700860936;
+        d=1e100.net; s=20230601; t=1700256190; x=1700860990;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=7VlTgLQgobFGG9PZZStnDlmcBu7nmiBF+q+s3UJ3hXY=;
-        b=p4qNn3l6QdIOSbWb/TLEiPw/sYntACNJaCLld7kLhiT8sWixCA6qzdH8VXd5yTPi+f
-         w8MAA+3iIUupXfXcQxe1MXLIA7SLy4YBu7oPEcKSSnif4V9YFPAHk4ZowyPhAnNZ7Bd5
-         pI/SucTyKznKtdO0yCJXkzhv2IWewgS4uube/U08YI2UMnOYWz8JBZOBbyVp6oDSpEjm
-         EVIUJo0RfxMs6flwYbaDDEoiGBHSCwAU0Z27k+CvrvWzDMMos5k2Mgm2YUW4sjjiyNb9
-         L55toMRyYVzUvJJsc5qGU8qPv+n6J+6BZ+h/cbDhAE5/hUQAVVeZlShnnxyG+NIxwaFP
-         0JeQ==
-X-Gm-Message-State: AOJu0YzDn8wyJrsmLBOxphQHQ5padB2RJH1lpGMR5RGbJKo4uwO604L9
-        d5BHdLF4ONEusoEemVeWaiRDUreXitR/cbeUlRr3
-X-Google-Smtp-Source: AGHT+IH5POWzxfJUHKpYri9R+UVG+Wr3w1T0ws/aAxZr3RWyKZUULPlBJx6xRvviFDadIjnVfDAi37L7P8ExDxDrolc=
-X-Received: by 2002:a25:2693:0:b0:da0:86e8:aea4 with SMTP id
- m141-20020a252693000000b00da086e8aea4mr790094ybm.57.1700256136343; Fri, 17
- Nov 2023 13:22:16 -0800 (PST)
+        bh=yFBqw6WWFn2DTJJAm5oTscYcujSFx4g4cXCp4v+z0IA=;
+        b=w/8OK78rRVjqstJYAPWcXKIWvGbaMVi/rUegOj3uu/KPimktnrO8+10oKNsm821OSB
+         6Xpj54BlvocqR1mKwRAYy6OS3xSiA4a7Kvh6L2Wqa6pwJVUIfcK+AGgZvJ8hGHSM+Z++
+         4xoThra6GXg3Mg2aXQW0FLnpPrWycctKshz7+Nbz/NWWvOuEPSLEGrWFp93ykTUoJGQo
+         Txf82sLLxYcAmg3vV5swJQwGLtHPCFaHdqXUReXGJWyB9FJUcoZKgsv9zpcxCDQnKmss
+         FuaD51nNWX6kp2Zyn+tcwA6DKL9pec5CN01/6pnlJxejwKuQW7WKTj82Pmzs9rQICDNe
+         1l+g==
+X-Gm-Message-State: AOJu0YyAcv31Aud2kFE5V+hdxzqUJAFtnjMYw/Rr8oYBw1UFWnyryz37
+        sGyklCprHTR0FyLBR4/ZFXtz0vIh+LN1Lckr1Gpiiw==
+X-Google-Smtp-Source: AGHT+IG0CCBD/vhOnAxvQk6kik8V8UE3UKMY+1zxh06hcSsW+6RBV19PfTA00+edHZ5uYsaEBZXjDQ==
+X-Received: by 2002:a17:906:ae4d:b0:9d3:afe1:b3e5 with SMTP id lf13-20020a170906ae4d00b009d3afe1b3e5mr234536ejb.75.1700256190534;
+        Fri, 17 Nov 2023 13:23:10 -0800 (PST)
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
+        by smtp.gmail.com with ESMTPSA id y20-20020a170906471400b009db53aa4f7bsm1176888ejq.28.2023.11.17.13.23.09
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 13:23:10 -0800 (PST)
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so3475e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:09 -0800 (PST)
+X-Received: by 2002:a1c:7504:0:b0:404:74f8:f47c with SMTP id
+ o4-20020a1c7504000000b0040474f8f47cmr50225wmc.5.1700256189626; Fri, 17 Nov
+ 2023 13:23:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20231107134012.682009-23-roberto.sassu@huaweicloud.com>
- <f529266a02533411e72d706b908924e8.paul@paul-moore.com> <49a7fd0a1f89188fa92f258e88c50eaeca0f4ac9.camel@huaweicloud.com>
-In-Reply-To: <49a7fd0a1f89188fa92f258e88c50eaeca0f4ac9.camel@huaweicloud.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Fri, 17 Nov 2023 16:22:05 -0500
-Message-ID: <CAHC9VhRpG3wFbu6-EZw3t1TeKxBzYX86YzizE6x9JGeWmyxixA@mail.gmail.com>
-Subject: Re: [PATCH v5 22/23] integrity: Move integrity functions to the LSM infrastructure
-To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
-Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
-        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
-        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
-        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
-        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
-        stephen.smalley.work@gmail.com, eparis@parisplace.org,
-        casey@schaufler-ca.com, mic@digikod.net,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
-        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+References: <20231114044205.613421-1-xuxinxiong@huaqin.corp-partner.google.com>
+In-Reply-To: <20231114044205.613421-1-xuxinxiong@huaqin.corp-partner.google.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 17 Nov 2023 13:22:52 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Vg5YouEYVSnv3XJ-ghjZoLa9-QG6Ksh4yg5hExN_9gWA@mail.gmail.com>
+Message-ID: <CAD=FV=Vg5YouEYVSnv3XJ-ghjZoLa9-QG6Ksh4yg5hExN_9gWA@mail.gmail.com>
+Subject: Re: [V3] drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
+To:     Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
+        hsinyi@google.com, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 5:08=E2=80=AFAM Roberto Sassu
-<roberto.sassu@huaweicloud.com> wrote:
-> On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
-> > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
+Hi,
 
-...
-
-> > > +/*
-> > > + * Perform the initialization of the 'integrity', 'ima' and 'evm' LS=
-Ms to
-> > > + * ensure that the management of integrity metadata is working at th=
-e time
-> > > + * IMA and EVM hooks are registered to the LSM infrastructure, and t=
-o keep
-> > > + * the original ordering of IMA and EVM functions as when they were =
-hardcoded.
-> > > + */
-> > >  static int __init integrity_lsm_init(void)
-> > >  {
-> > > +   const struct lsm_id *lsmid;
-> > > +
-> > >     iint_cache =3D
-> > >         kmem_cache_create("iint_cache", sizeof(struct integrity_iint_=
-cache),
-> > >                           0, SLAB_PANIC, iint_init_once);
-> > > +   /*
-> > > +    * Obtain either the IMA or EVM LSM ID to register integrity-spec=
-ific
-> > > +    * hooks under that LSM, since there is no LSM ID assigned to the
-> > > +    * 'integrity' LSM.
-> > > +    */
-> > > +   lsmid =3D ima_get_lsm_id();
-> > > +   if (!lsmid)
-> > > +           lsmid =3D evm_get_lsm_id();
-> > > +   /* No point in continuing, since both IMA and EVM are disabled. *=
-/
-> > > +   if (!lsmid)
-> > > +           return 0;
-> > > +
-> > > +   security_add_hooks(integrity_hooks, ARRAY_SIZE(integrity_hooks), =
-lsmid);
-> >
-> > Ooof.  I understand, or at least I think I understand, why the above
-> > hack is needed, but I really don't like the idea of @integrity_hooks
-> > jumping between IMA and EVM depending on how the kernel is configured.
-> >
-> > Just to make sure I'm understanding things correctly, the "integrity"
-> > LSM exists to ensure the proper hook ordering between IMA/EVM, shared
-> > metadata management for IMA/EVM, and a little bit of a hack to solve
-> > some kernel module loading issues with signatures.  Is that correct?
-> >
-> > I see that patch 23/23 makes some nice improvements to the metadata
-> > management, moving them into LSM security blobs, but it appears that
-> > they are still shared, and thus the requirement is still there for
-> > an "integrity" LSM to manage the shared blobs.
+On Mon, Nov 13, 2023 at 8:42=E2=80=AFPM Xuxin Xiong
+<xuxinxiong@huaqin.corp-partner.google.com> wrote:
 >
-> Yes, all is correct.
-
-Thanks for the clarification, more on this below.
-
-> > I'd like to hear everyone's honest opinion on this next question: do
-> > we have any hope of separating IMA and EVM so they are independent
-> > (ignore the ordering issues for a moment), or are we always going to
-> > need to have the "integrity" LSM to manage shared resources, hooks,
-> > etc.?
+> For "auo,b101uan08.3" this panel, it is stipulated in the panel spec that
+> MIPI needs to keep the LP11 state before the lcm_reset pin is pulled high=
+.
 >
-> I think it should not be technically difficult to do it. But, it would
-> be very important to understand all the implications of doing those
-> changes.
->
-> Sorry, for now I don't see an immediate need to do that, other than
-> solving this LSM naming issue. I tried to find the best solution I
-> could.
+> Fixes: 56ad624b4cb5 ("drm/panel: support for auo, b101uan08.3 wuxga dsi v=
+ideo mode panel")
+> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
+> ---
+> Changes in V3:
+>   - Updated the Fixes tag's style.
+> link to V2: https://patchwork.kernel.org/project/dri-devel/patch/20231114=
+034505.288569-1-xuxinxiong@huaqin.corp-partner.google.com/
+> ---
+> Changes in V2:
+>   - Updated the commit message and added the Fixes tag.
+> link to V1: https://patchwork.kernel.org/project/dri-devel/patch/20231109=
+092634.1694066-1-xuxinxiong@huaqin.corp-partner.google.com/
+> ---
+>  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 1 +
+>  1 file changed, 1 insertion(+)
 
-I first want to say that I think you've done a great job thus far, and
-I'm very grateful for the work you've done.  We can always use more
-help in the kernel security space and I'm very happy to see your
-contributions - thank you :)
+In my response to v1 [1] I said you could have just added my
+Reviewed-by tag yourself after the problems were fixed. Some
+maintainers actually get a bit annoyed when you don't do this, so you
+should get in the habit of doing it.
 
-I'm concerned about the integrity LSM because it isn't really a LSM,
-it is simply an implementation artifact from a time when only one LSM
-was enabled.  Now that we have basic support for stacking LSMs, as we
-promote integrity/IMA/EVM I think this is the perfect time to move
-away from the "integrity" portion and integrate the necessary
-functionality into the IMA and EVM LSMs.  This is even more important
-now that we are looking at making the LSMs more visible to userspace
-via syscalls; how would you explain to a developer or user the need
-for an "integrity" LSM along with the IMA and EVM LSMs?
+In any case, this looks fine.
 
-Let's look at the three things the the integrity code provides in this patc=
-hset:
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
 
-* IMA/EVM hook ordering
+Pushed to drm-misc-fixes with my tag:
+6965809e5269 drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
 
-For better or worse, we have requirements on LSM ordering today that
-are enforced only by convention, the BPF LSM being the perfect
-example.  As long as we document this in Kconfig I think we are okay.
 
-* Shared metadata
 
-Looking at the integrity_iint_cache struct at the end of your patchset
-I see the following:
-
-  struct integrity_iint_cache {
-    struct mutex mutex;
-    struct inode *inode;
-    u64 version;
-    unsigned long flags;
-    unsigned long measured_pcrs;
-    unsigned long atomic_flags;
-    enum integrity_status ima_file_status:4;
-    enum integrity_status ima_mmap_status:4;
-    enum integrity_status ima_bprm_status:4;
-    enum integrity_status ima_read_status:4;
-    enum integrity_status ima_creds_status:4;
-    enum integrity_status evm_status:4;
-    struct ima_digest_data *ima_hash;
-  };
-
-Now that we are stashing the metadata in the inode, we should be able
-to remove the @inode field back pointer.  It seems like we could
-duplicate @mutex and @version without problem.
-
-I only see the @measured_pcrs, @atomic_flags used in the IMA code.
-
-I only see the @ima_XXX_status fields using in the IMA code, and the
-@evm_status used in the EVM code.
-
-I only see the @ima_hash field used by the IMA code.
-
-I do see both IMA and EVM using the @flags field, but only one case
-(IMA_NEW_FILE) where one LSM (EVM) looks for another flags (IMA).  I'm
-not sure how difficult that would be to untangle, but I imagine we
-could do something here; if we had to, we could make EVM be dependent
-on IMA in Kconfig and add a function call to check on the inode
-status.  Although I hope we could find a better solution.
-
-* Kernel module loading hook (integrity_kernel_module_request(...))
-
-My guess is that this is really an IMA hook, but I can't say for
-certain.  If it is needed for EVM we could always duplicate it across
-the IMA and EVM LSMs, it is trivially small and one extra strcmp() at
-kernel module load time doesn't seem awful to me.
-
---=20
-paul-moore.com
+[1] https://lore.kernel.org/r/CAD=3DFV=3DVxQJFWFaGHD+zpr4dxB85jMQpJiTDAmFZk=
+67CTYNcg=3Dw@mail.gmail.com/
