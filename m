@@ -2,239 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E43CC7EF398
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:17:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A22D7EF39C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:18:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231292AbjKQNR2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:17:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57232 "EHLO
+        id S1346029AbjKQNSX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44918 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQNR0 (ORCPT
+        with ESMTP id S231391AbjKQNSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:17:26 -0500
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4F55D52
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:17:22 -0800 (PST)
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20231117131719euoutp01eac16070a95ff11feece9bfc54e8da87~Ya3vs8bzq0339703397euoutp014
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:17:19 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20231117131719euoutp01eac16070a95ff11feece9bfc54e8da87~Ya3vs8bzq0339703397euoutp014
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1700227039;
-        bh=wDiwPZC9xF7zrrtSoVNyFCB9isti/tAxLZUtARGHt2o=;
-        h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-        b=LwBmh/N3UsD0mZ7j52jcZDu3p0+5zoExuVWuMAeBID0k0EBQKlXJr37IXD3Vlxzbd
-         mpGXcPr/+4oEINH37i96/95d9bIQ/Wftqi0fIu1MI8T+Tz5nUbMYN6IiznPB+ivg92
-         y7kv7fxfCQHUeGn99RDYpToFQwhWW743z0aCQC34=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20231117131719eucas1p20443f7ec12843a0258192a73c27a0134~Ya3vcWJXQ1476914769eucas1p2d;
-        Fri, 17 Nov 2023 13:17:19 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-        eusmges2new.samsung.com (EUCPMTA) with SMTP id F5.F2.09814.ED767556; Fri, 17
-        Nov 2023 13:17:18 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20231117131718eucas1p13328b32942cce99a99197eb28e14a981~Ya3uxG5j10456804568eucas1p1u;
-        Fri, 17 Nov 2023 13:17:18 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20231117131718eusmtrp2d3420befe72f85bd54eca9ac707cfd8d~Ya3uwgViO1792817928eusmtrp2W;
-        Fri, 17 Nov 2023 13:17:18 +0000 (GMT)
-X-AuditID: cbfec7f4-711ff70000002656-12-655767de12d3
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-        eusmgms1.samsung.com (EUCPMTA) with SMTP id C7.5C.09146.ED767556; Fri, 17
-        Nov 2023 13:17:18 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20231117131717eusmtip1f0094167989a79e7143960d2d235cd09~Ya3uJaxuP0931909319eusmtip19;
-        Fri, 17 Nov 2023 13:17:17 +0000 (GMT)
-Message-ID: <b28b25ab-87eb-4905-855a-7809dda11f39@samsung.com>
-Date:   Fri, 17 Nov 2023 14:17:17 +0100
+        Fri, 17 Nov 2023 08:18:22 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE3C1D4B;
+        Fri, 17 Nov 2023 05:18:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700227098; x=1731763098;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=Xlos/TDjJ1TlU8lUh8JteOAv937jkZW/VG6cMFf2KwU=;
+  b=OiLNxgOLCddfTQV8DMhPBB+WkvdYzEiFcO55Ngi5kiTI9E/xSf0Z711F
+   BwQEHODmsRFe1BCiGF0gmoaMYKGrUVdILVvFlYeFu/hV3eQaK2ldNpsr6
+   PB+1pOr4sbbJfK2aEYS7lV8uKkMP2X2I1i4o7buYbUOe36cPoEwVGBP5A
+   JT5dDD1IgwsfkOvp8dabwKLDceE+8TZSjXqccghacvm97VLt/b+2DGOkr
+   wYHij09QCgXqfg3GfF89H6EssPMAih/QRAu+HJv6ASb/2OWQQsLZXjGKQ
+   jRPO0XAfR3D4i5fYX7cUqUZLr151JzFjqXoJ8i9+xl7qkgiG1p2Qfi8ra
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="381685576"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="381685576"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 05:18:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="794831176"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="794831176"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by orsmga008.jf.intel.com with ESMTP; 17 Nov 2023 05:18:17 -0800
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: [PATCH v7 0/3] Add Intel VT-d nested translation (part 2/2)
+Date:   Fri, 17 Nov 2023 05:18:13 -0800
+Message-Id: <20231117131816.24359-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] squashfs: fix oob in squashfs_readahead
-Content-Language: en-US
-To:     Edward Adam Davis <eadavis@qq.com>,
-        syzbot+604424eb051c2f696163@syzkaller.appspotmail.com
-Cc:     akpm@linux-foundation.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
-        squashfs-devel@lists.sourceforge.net,
-        syzkaller-bugs@googlegroups.com
-From:   Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrNKsWRmVeSWpSXmKPExsWy7djPc7r30sNTDVZOs7GYs34Nm8WqjU0s
-        Fnv2nmSxuLxrDpvF0Z7NbBZXd9Vb3DkUaHFjy1xmBw6PPRNPsnmcmPGbxWP3gs9MHreerWX1
-        mPL1ObPHzLdqHp83yQWwR3HZpKTmZJalFunbJXBl7LzYy17wTLOiYeMpxgbG10pdjJwcEgIm
-        EqsWrWTvYuTiEBJYwShxZ28zM4TzhVHi57r3TBDOZ0aJo4tvscK0TDvZB5VYziix5dUvKOcj
-        o8SNx0cYQap4Bewk5u16wgRiswioSnQ1L2eFiAtKnJz5hAXEFhWQl7h/awY7iC0sYCOxvvs5
-        WA2zgLjErSfzwXpFBOIl+vY0gi1gFtgHtODjWrAEm4ChRNfbLjYQm1PASeL9twnMEM3yEtvf
-        zmGGOPUNh8TrMzUQtovEs3sPoV4Qlnh1fAs7hC0j8X/nfLAFEgLtjBILft+HciYwSjQ8v8UI
-        UWUtcefcL6BtHEAbNCXW79KHCDtK/O6fwAgSlhDgk7jxVhDiBj6JSdumM0OEeSU62oQgqtUk
-        Zh1fB7f24IVLzBMYlWYhBcssJO/PQvLNLIS9CxhZVjGKp5YW56anFhvlpZbrFSfmFpfmpesl
-        5+duYgSmp9P/jn/Zwbj81Ue9Q4xMHIyHGCU4mJVEeM3lQlKFeFMSK6tSi/Lji0pzUosPMUpz
-        sCiJ86qmyKcKCaQnlqRmp6YWpBbBZJk4OKUamCKCHz+doZipE/bM073w+ZN5P/159q14JLir
-        J3uV4KsnyXErrNVbwp85LjhZd7i6cWah3vsu3zDZ0i+JzU5ii5jPF4YsObLbnqX0b+SnbD03
-        u7WCK7i6TvSIS+8WOBkieaH1zWuZtnKPUtniCEGxmakLFJRXZ+YVmgiv3fddb49D+LFjirna
-        NZ6+TM2GE+uLvdweGbhtYJtwsVbH+eu9/gffy0NMD99ZKTp5y/Qfr0t3vg411heMcM2P/pHx
-        bEbwMhUlcQbWS9fkvj12+vtd7+g2jX2O16a0f1duNsyalbXEiinXdNWv3mWO9yO1Tr/pCTTW
-        OdGsu3fNi/CJ7KdLOP+dL5cSPZmhVPLY99J/JZbijERDLeai4kQAhrMGYb4DAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDIsWRmVeSWpSXmKPExsVy+t/xu7r30sNTDZ7e4LeYs34Nm8WqjU0s
-        Fnv2nmSxuLxrDpvF0Z7NbBZXd9Vb3DkUaHFjy1xmBw6PPRNPsnmcmPGbxWP3gs9MHreerWX1
-        mPL1ObPHzLdqHp83yQWwR+nZFOWXlqQqZOQXl9gqRRtaGOkZWlroGZlY6hkam8daGZkq6dvZ
-        pKTmZJalFunbJehl7LzYy17wTLOiYeMpxgbG10pdjJwcEgImEtNO9jGB2EICSxklVk7QhIjL
-        SJyc1sAKYQtL/LnWxdbFyAVU855R4k3zNGaQBK+AncS8XU/AmlkEVCW6mpezQsQFJU7OfMIC
-        YosKyEvcvzWDHcQWFrCRWN/9HKyGWUBc4taT+WC9IgLxEp1zt7KDLGAW2McoMeHCXmaIi3Il
-        Znz5ANbAJmAo0fUW5ApODk4BJ4n33yYwQwwyk+ja2sUIYctLbH87h3kCo9AsJHfMQrJvFpKW
-        WUhaFjCyrGIUSS0tzk3PLTbUK07MLS7NS9dLzs/dxAiMxm3Hfm7ewTjv1Ue9Q4xMHIyHGCU4
-        mJVEeM3lQlKFeFMSK6tSi/Lji0pzUosPMZoCA2Mis5Rocj4wHeSVxBuaGZgamphZGphamhkr
-        ifN6FnQkCgmkJ5akZqemFqQWwfQxcXBKNTA5/9AQZ5of03Ahs8TRQvMg0w228ydjRI7b7n9T
-        tGmdpMC885xv5bXbk6eJeegsagnTPqvSGBOiy+H/NVT7+83tAYwcOVt1bBiDfbi+RbR7hNyR
-        kHrwy4X5/BepH8fEDE8ov8+1dtGd6ZG3wiZk1r/q4l8bP38qey92fi7Taybfw01eZ1R8z+Rw
-        1idoz2LYf0A9a8Wmg/e37mEo7S+cc3KD76p5atE2+hl9OQ07/ym7XjNS7vay5xYNYrghl1jc
-        7n5F939L0dqjf+V+q5/W8k2X3zCjSeHm0R2aTK8jNF7a5PMUXWcIUSwuivN5f/S3kbK316ej
-        CZnZLw3S+Pj+fYjnDKkzjmK0LqjImfpMiaU4I9FQi7moOBEA3ld5908DAAA=
-X-CMS-MailID: 20231117131718eucas1p13328b32942cce99a99197eb28e14a981
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20231117131718eucas1p13328b32942cce99a99197eb28e14a981
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20231117131718eucas1p13328b32942cce99a99197eb28e14a981
-References: <000000000000b1fda20609ede0d1@google.com>
-        <tencent_35864B36740976B766CA3CC936A496AA3609@qq.com>
-        <CGME20231117131718eucas1p13328b32942cce99a99197eb28e14a981@eucas1p1.samsung.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi All,
+This is the second part to add Intel VT-d nested translation based on IOMMUFD
+nesting infrastructure. As the iommufd nesting infrastructure series [1],
+iommu core supports new ops to invalidate the cache after the modifictions
+in stage-1 page table. So far, the cache invalidation data is vendor specific,
+the data_type (IOMMU_HWPT_DATA_VTD_S1) defined for the vendor specific HWPT
+allocation is reused in the cache invalidation path. User should provide the
+correct data_type that suit with the type used in HWPT allocation.
 
-On 15.11.2023 05:05, Edward Adam Davis wrote:
-> [Syz log]
-> SQUASHFS error: Failed to read block 0x6fc: -5
-> SQUASHFS error: Unable to read metadata cache entry [6fa]
-> SQUASHFS error: Unable to read metadata cache entry [6fa]
-> SQUASHFS error: Unable to read metadata cache entry [6fa]
-> ==================================================================
-> BUG: KASAN: slab-out-of-bounds in __readahead_batch include/linux/pagemap.h:1364 [inline]
-> BUG: KASAN: slab-out-of-bounds in squashfs_readahead+0x9a6/0x20d0 fs/squashfs/file.c:569
-> Write of size 8 at addr ffff88801e393648 by task syz-executor100/5067
->
-> CPU: 1 PID: 5067 Comm: syz-executor100 Not tainted 6.6.0-syzkaller-15156-g13d88ac54ddd #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/09/2023
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:88 [inline]
->   dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
->   print_address_description mm/kasan/report.c:364 [inline]
->   print_report+0x163/0x540 mm/kasan/report.c:475
->   kasan_report+0x142/0x170 mm/kasan/report.c:588
->   __readahead_batch include/linux/pagemap.h:1364 [inline]
->   squashfs_readahead+0x9a6/0x20d0 fs/squashfs/file.c:569
->   read_pages+0x183/0x830 mm/readahead.c:160
->   page_cache_ra_unbounded+0x68e/0x7c0 mm/readahead.c:269
->   page_cache_sync_readahead include/linux/pagemap.h:1266 [inline]
->   filemap_get_pages+0x49c/0x2080 mm/filemap.c:2497
->   filemap_read+0x42b/0x10b0 mm/filemap.c:2593
->   __kernel_read+0x425/0x8b0 fs/read_write.c:428
->   integrity_kernel_read+0xb0/0xf0 security/integrity/iint.c:221
->   ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:485 [inline]
->   ima_calc_file_shash security/integrity/ima/ima_crypto.c:516 [inline]
->   ima_calc_file_hash+0xad1/0x1b30 security/integrity/ima/ima_crypto.c:573
->   ima_collect_measurement+0x554/0xb30 security/integrity/ima/ima_api.c:290
->   process_measurement+0x1373/0x21c0 security/integrity/ima/ima_main.c:359
->   ima_file_check+0xf1/0x170 security/integrity/ima/ima_main.c:557
->   do_open fs/namei.c:3624 [inline]
->   path_openat+0x2893/0x3280 fs/namei.c:3779
->
-> [Bug]
-> path_openat() called open_last_lookups() before calling do_open() and
-> open_last_lookups() will eventually call squashfs_read_inode() to set
-> inode->i_size, but before setting i_size, it is necessary to obtain file_size
-> from the disk.
->
-> However, during the value retrieval process, the length of the value retrieved
-> from the disk was greater than output->length, resulting(-EIO) in the failure of
-> squashfs_read_data(), further leading to i_size has not been initialized,
-> i.e. its value is 0.
->
-> This resulted in the failure of squashfs_read_data(), where "SQUASHFS error:
-> Failed to read block 0x6fc: -5" was output in the syz log.
-> This also resulted in the failure of squashfs_cache_get(), outputting "SQUASHFS
-> error: Unable to read metadata cache entry [6fa]" in the syz log.
->
-> [Fix]
-> Before performing a read ahead operation in squashfs_read_folio() and
-> squashfs_readahead(), check if i_size is not 0 before continuing.
->
-> Optimize the return value of squashfs_read_data() and return -EFBIG when the
-> length is greater than output->length(or (index + length) >
-> msblk->bytes_used).
->
-> Reported-and-tested-by: syzbot+604424eb051c2f696163@syzkaller.appspotmail.com
-> Fixes: f268eedddf35 ("squashfs: extend "page actor" to handle missing pages")
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+IOMMU_HWPT_INVALIDATE iotcl returns an error in @out_driver_error_code. However
+Intel VT-d does not define error code so far, so it's not easy to pre-define it
+in iommufd neither. As a result, this field should just be ignored on VT-d platform.
 
-This patch, merged to linux-next as commit 1ff947abe24a ("squashfs: fix 
-oob in squashfs_readahead"), breaks mounting squashfs volumes on all my 
-test systems. Let me know if you need more information to debug this issue.
+Complete code can be found in [2], corresponding QEMU could can be found in [3].
 
-> ---
->   fs/squashfs/block.c | 2 +-
->   fs/squashfs/file.c  | 8 ++++++++
->   2 files changed, 9 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/squashfs/block.c b/fs/squashfs/block.c
-> index 581ce9519339..d335f28c822c 100644
-> --- a/fs/squashfs/block.c
-> +++ b/fs/squashfs/block.c
-> @@ -323,7 +323,7 @@ int squashfs_read_data(struct super_block *sb, u64 index, int length,
->   	}
->   	if (length < 0 || length > output->length ||
->   			(index + length) > msblk->bytes_used) {
-> -		res = -EIO;
-> +		res = length < 0 ? -EIO : -EFBIG;
->   		goto out;
->   	}
->   
-> diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
-> index 8ba8c4c50770..5472ddd3596c 100644
-> --- a/fs/squashfs/file.c
-> +++ b/fs/squashfs/file.c
-> @@ -461,6 +461,11 @@ static int squashfs_read_folio(struct file *file, struct folio *folio)
->   	TRACE("Entered squashfs_readpage, page index %lx, start block %llx\n",
->   				page->index, squashfs_i(inode)->start);
->   
-> +	if (!file_end) {
-> +		res = -EINVAL;
-> +		goto out;
-> +	}
-> +
->   	if (page->index >= ((i_size_read(inode) + PAGE_SIZE - 1) >>
->   					PAGE_SHIFT))
->   		goto out;
-> @@ -547,6 +552,9 @@ static void squashfs_readahead(struct readahead_control *ractl)
->   	int i, file_end = i_size_read(inode) >> msblk->block_log;
->   	unsigned int max_pages = 1UL << shift;
->   
-> +	if (!file_end)
-> +		return;
-> +
->   	readahead_expand(ractl, start, (len | mask) + 1);
->   
->   	pages = kmalloc_array(max_pages, sizeof(void *), GFP_KERNEL);
+[1] https://lore.kernel.org/linux-iommu/20231117130717.19875-1-yi.l.liu@intel.com/#t
+[2] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
+[3] https://github.com/yiliu1765/qemu/tree/zhenzhong/wip/iommufd_nesting_rfcv1
 
-Best regards
+Change log:
+
+v7:
+ - No much change, just rebase on top of 6.7-rc1
+
+v6: https://lore.kernel.org/linux-iommu/20231020093719.18725-1-yi.l.liu@intel.com/
+ - Address comments from Kevin
+ - Split the VT-d nesting series into two parts (Jason)
+
+v5: https://lore.kernel.org/linux-iommu/20230921075431.125239-1-yi.l.liu@intel.com/
+ - Add Kevin's r-b for patch 2, 3 ,5 8, 10
+ - Drop enforce_cache_coherency callback from the nested type domain ops (Kevin)
+ - Remove duplicate agaw check in patch 04 (Kevin)
+ - Remove duplicate domain_update_iommu_cap() in patch 06 (Kevin)
+ - Check parent's force_snooping to set pgsnp in the pasid entry (Kevin)
+ - uapi data structure check (Kevin)
+ - Simplify the errata handling as user can allocate nested parent domain
+
+v4: https://lore.kernel.org/linux-iommu/20230724111335.107427-1-yi.l.liu@intel.com/
+ - Remove ascii art tables (Jason)
+ - Drop EMT (Tina, Jason)
+ - Drop MTS and related definitions (Kevin)
+ - Rename macro IOMMU_VTD_PGTBL_ to IOMMU_VTD_S1_ (Kevin)
+ - Rename struct iommu_hwpt_intel_vtd_ to iommu_hwpt_vtd_ (Kevin)
+ - Rename struct iommu_hwpt_intel_vtd to iommu_hwpt_vtd_s1 (Kevin)
+ - Put the vendor specific hwpt alloc data structure before enuma iommu_hwpt_type (Kevin)
+ - Do not trim the higher page levels of S2 domain in nested domain attachment as the
+   S2 domain may have been used independently. (Kevin)
+ - Remove the first-stage pgd check against the maximum address of s2_domain as hw
+   can check it anyhow. It makes sense to check every pfns used in the stage-1 page
+   table. But it cannot make it. So just leave it to hw. (Kevin)
+ - Split the iotlb flush part into an order of uapi, helper and callback implementation (Kevin)
+ - Change the policy of VT-d nesting errata, disallow RO mapping once a domain is used
+   as parent domain of a nested domain. This removes the nested_users counting. (Kevin)
+ - Minor fix for "make htmldocs"
+
+v3: https://lore.kernel.org/linux-iommu/20230511145110.27707-1-yi.l.liu@intel.com/
+ - Further split the patches into an order of adding helpers for nested
+   domain, iotlb flush, nested domain attachment and nested domain allocation
+   callback, then report the hw_info to userspace.
+ - Add batch support in cache invalidation from userspace
+ - Disallow nested translation usage if RO mappings exists in stage-2 domain
+   due to errata on readonly mappings on Sapphire Rapids platform.
+
+v2: https://lore.kernel.org/linux-iommu/20230309082207.612346-1-yi.l.liu@intel.com/
+ - The iommufd infrastructure is split to be separate series.
+
+v1: https://lore.kernel.org/linux-iommu/20230209043153.14964-1-yi.l.liu@intel.com/
+
+Regards,
+	Yi Liu
+
+Yi Liu (3):
+  iommufd: Add data structure for Intel VT-d stage-1 cache invalidation
+  iommu/vt-d: Make iotlb flush helpers to be extern
+  iommu/vt-d: Add iotlb flush for nested domain
+
+ drivers/iommu/intel/iommu.c  | 10 +++----
+ drivers/iommu/intel/iommu.h  |  6 ++++
+ drivers/iommu/intel/nested.c | 54 ++++++++++++++++++++++++++++++++++++
+ include/uapi/linux/iommufd.h | 36 ++++++++++++++++++++++++
+ 4 files changed, 101 insertions(+), 5 deletions(-)
+
 -- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+2.34.1
 
