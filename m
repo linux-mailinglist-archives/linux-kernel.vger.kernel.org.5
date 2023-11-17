@@ -2,61 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD997EF704
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:36:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 184BA7EF705
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:36:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346154AbjKQRgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 12:36:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
+        id S1346166AbjKQRgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 12:36:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231430AbjKQRgN (ORCPT
+        with ESMTP id S1346146AbjKQRga (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 12:36:13 -0500
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [IPv6:2001:41d0:1004:224b::b0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FCC90
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 09:36:07 -0800 (PST)
-Message-ID: <954e2f85-7ed8-4768-97c4-970315afeec1@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-        t=1700242565;
+        Fri, 17 Nov 2023 12:36:30 -0500
+Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E89D7E;
+        Fri, 17 Nov 2023 09:36:26 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id E30E8240008;
+        Fri, 17 Nov 2023 17:36:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700242585;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=9vWjfYPNGTMvPQmWqPhQYpJv3Ri6BeWVhxBfWZZgUXg=;
-        b=baZIDETogy3HPFLmzPPEvP+7Z7rf3XKfKcDs8ueMQdbzIbxthuwI2sJATP245CyZiV9grr
-        3NuEfR/r0nJvTnzPQkPme2O5OUYg/it4JBQlUs/64v8uXtGk5dHZqYyD1pMJ3F/5WCdOC5
-        tCnAItfZhFH62ftjaGzE8P9WpdfO+4E=
-Date:   Sat, 18 Nov 2023 01:35:56 +0800
+        bh=I6bVBs9+UlVN0UI83TPgVQSNAbRu17WJB14lmY0HUcc=;
+        b=V6sxxrZ9FJ89mYPVhAz6mQLGwa9riLme0SOt3HQ71JxYLpSUcaYu0gdKl3W9kohV4KuxFI
+        Uk5MHuml1f4GY/XYG1fsiIgKHcpvzOEZIDSyvpaFVL+ht1bvWPjY+Z5zx2N2WrcgoDXogV
+        XvVR4J5hKr0yGNzVBQ5fwO0XMjgzWnm0whSiA9uBFH7UC4nYhgRoU+khjueFpXMnfvUoCB
+        Xtijs1UllHTgppj9FZ+Q7eF1HuynX9A3HZMIHG2ATRdd3B8jX0xrE4gcXnqYefRnPkoD0k
+        iG26md8wuM3xJrXfbvWQIHXjjYCujcU5d1k+h75zrjWe0TPlvw8Hn7FBhkg34g==
+Date:   Fri, 17 Nov 2023 18:36:24 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Alessandro Zummo <a.zummo@towertech.it>,
+        Mario Limonciello <mario.limonciello@amd.com>
+Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        alvin.zhuge@gmail.com, renzhamin@gmail.com, kelvie@kelvie.ca,
+        rrangel@google.com
+Subject: Re: [PATCH] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
+Message-ID: <170024256921.406260.15395632233007933060.b4-ty@bootlin.com>
+References: <20231106162310.85711-1-mario.limonciello@amd.com>
 MIME-Version: 1.0
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-Content-Language: en-US
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev>
- <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
- <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
- <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
- <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
- <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
- <cf27d25a-3e51-4292-af63-37e5bc585d88@linux.dev>
- <CAA8EJprm6FL9_ZOr5uBXNXLBt=scs=FY2o6ZEv5r576iEM5KRw@mail.gmail.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From:   Sui Jingfeng <sui.jingfeng@linux.dev>
-In-Reply-To: <CAA8EJprm6FL9_ZOr5uBXNXLBt=scs=FY2o6ZEv5r576iEM5KRw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231106162310.85711-1-mario.limonciello@amd.com>
+X-GND-Sasl: alexandre.belloni@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,39 +55,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
+On Mon, 06 Nov 2023 10:23:10 -0600, Mario Limonciello wrote:
+> Intel systems > 2015 have been configured to use ACPI alarm instead
+> of HPET to avoid s2idle issues.
+> 
+> Having HPET programmed for wakeup causes problems on AMD systems with
+> s2idle as well.
+> 
+> One particular case is that the systemd "SuspendThenHibernate" feature
+> doesn't work properly on the Framework 13" AMD model. Switching to
+> using ACPI alarm fixes the issue.
+> 
+> [...]
 
-On 2023/11/17 17:03, Dmitry Baryshkov wrote:
-> On Fri, 17 Nov 2023 at 06:24, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
->> Hi,
->>
->> On 2023/11/16 23:23, Dmitry Baryshkov wrote:
->>>>>> Then you will need some way (fwnode?) to
->>>>>> discover the bridge chain. And at the last point you will get into the
->>>>>> device data and/or properties business.
->>>>>>
->>>>> No, leave that chance to a more better programmer and forgive me please,
->>>>> too difficult, I'm afraid of not able to solve. Thanks a lot for the
->>>>> trust!
->>>   From my point of view: no.
->>
->> I respect the fact that the community prefer generic mechanisms.
->> If our approach is not what the community want, can I switch back
->> to my previous solution? I can reduce the duplication of our
->> localized it66121 driver to a minimal, rewrite it until it meets
->> the community's requirement. I know our device looks weird and
->> our approach is not elegant. But at the very least, we could not
->> mess the community's design up by localize. Otherwise, I don't know
->> what is the better approach to solve such a problem.
->>
->> Can I switch back or any other ideas?
-> I keep on repeating: create the i2c device from your root device
-> driver, which parses BIOS data.
+Applied, thanks!
 
+[1/1] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
+      commit: 3d762e21d56370a43478b55e604b4a83dd85aafc
 
-You didn't focus on solve the problem, You are focus on solving me.
-How does the method that parsing BIOS data can be generic and applied
-universally?
+Best regards,
 
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
