@@ -2,158 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 46B387EEB5F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:21:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 996907EEB68
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:25:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345658AbjKQDTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 22:19:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S1345662AbjKQDZ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 22:25:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKQDTo (ORCPT
+        with ESMTP id S229719AbjKQDZZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 22:19:44 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75652D4D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:19:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700191179;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jAKFfPiqJuGzP2s6H3e1McPERpD8hKdLrmeMzG7k6Hw=;
-        b=ZVvqw9jt6GUS5tj0UDDAfa87si02ENsPtHXsKcFQSuzKXgk0aI8xouf0PMkFE3MLaUWCTv
-        mgdEBaAPuKb5oEKce2li79DPxVQA1ZJUfOjeHRVdNGL0HgbJ0706I4jSeC9CClJVxxGhKa
-        nglKTzbIn2Mu4L7px5JOe58W6nW3nfI=
-Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
- [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-177-cg7_FH0GMG-Nw1yeBV2jkw-1; Thu, 16 Nov 2023 22:19:38 -0500
-X-MC-Unique: cg7_FH0GMG-Nw1yeBV2jkw-1
-Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-6b2df09dcdcso516437b3a.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:19:38 -0800 (PST)
+        Thu, 16 Nov 2023 22:25:25 -0500
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 304B9B0;
+        Thu, 16 Nov 2023 19:25:22 -0800 (PST)
+Received: by mail-qk1-x733.google.com with SMTP id af79cd13be357-77784edc2edso88416485a.1;
+        Thu, 16 Nov 2023 19:25:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700191521; x=1700796321; darn=vger.kernel.org;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=v1SDUzSFIVlsm8bGOfhaQX+ULqWCGXJxzSUdDsIqu9M=;
+        b=W6vOTHOkBrczpkfVdvX9OQTAn0JgYCKKcu6PAvpRDVlZRViqwKmMZVsUHy0OaYxRbt
+         QdAV+SisQ4V5DDmzgbDS9wjjjczGj/VhOwe0q1HA9fTkr6XvwkH9YyPGrxYPVQPCgWda
+         HrCwHmUEW3IZ+1mDQVOdO9OlRubbbtqA71YV9UonQWX4uj3IAGXsTvh1X/YUmSsrlKNO
+         iyTCPHBymmmCpcZpj5r9AUpo79Fq0mwSRX7Q6BkdeO6Kwzy0o7dAi07H9aN17J1rZWRf
+         HF69323pUHmEYSh0EHY8MF5AWNUZf9vuOHs+QbjabBEEW8LzInKJ6FV7pVWuqGsY2Fvy
+         geCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700191176; x=1700795976;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=jAKFfPiqJuGzP2s6H3e1McPERpD8hKdLrmeMzG7k6Hw=;
-        b=gMVmYmjaiAapCHCmBDe2FmMkry0gdkS+P6PwrkuXp/I4CLkqet18Nd540a5iumNBD2
-         VE3LgxRz7oSEoDTCz+NzgsJE7E4FGzc7uliuu3Z7I0jAf15FZc38oEN6lCkbBGo9jPzI
-         IdRrJykR7cZ662gKte3/Io1gPkprOUvK2o+EdFs3SypFjjK+K4jkVd+8bJKSH7Txv9i1
-         E10+h42WZ2bmCEoSe3imVlsizAYJVmhPICa6Ls0HTAu/r8bHXeL67VI2naUZaLr6n9yl
-         SEZziVf5uZnEu16oDrPIPMefnV32Oq2Vktr3O7pmJO4JPjYLO5+5/c0XrX7uKqFrekjf
-         zCRA==
-X-Gm-Message-State: AOJu0YyIJmoLXTWdr4pmcD++3T45eBO9xxuFd2gpXJduKy3UoVTl+s54
-        JW6xYOOaydv/Vm4kE9a0/6i1wLV89BWc4yY7HQzU/sQvzRXXW0EymAmrT0TOrz0mblt9uS3DX2t
-        v3B4tnok3FzSiS3ZAN7dyprEvKFz86fLx5WlBGQ==
-X-Received: by 2002:a05:6a00:8998:b0:6b3:c72d:b01 with SMTP id hx24-20020a056a00899800b006b3c72d0b01mr8240468pfb.1.1700191176692;
-        Thu, 16 Nov 2023 19:19:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFfpURZkDv/ezuJd6cSD4adKTKntnTXg/JeSPEJHMKPZoI8mQ8dl34F8ROKL9i11G2GXcaKFg==
-X-Received: by 2002:a05:6a00:8998:b0:6b3:c72d:b01 with SMTP id hx24-20020a056a00899800b006b3c72d0b01mr8240451pfb.1.1700191176340;
-        Thu, 16 Nov 2023 19:19:36 -0800 (PST)
-Received: from [10.66.61.39] ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id it14-20020a056a00458e00b006c8721330fesm455416pfb.74.2023.11.16.19.19.34
+        d=1e100.net; s=20230601; t=1700191521; x=1700796321;
+        h=in-reply-to:autocrypt:from:references:cc:to:content-language
+         :subject:user-agent:mime-version:date:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=v1SDUzSFIVlsm8bGOfhaQX+ULqWCGXJxzSUdDsIqu9M=;
+        b=tf1uo5V95OG4gBjAGwoD4Jgj0gZaFKZCDiZ8OyzJpI8GW2mF+GkUTMRt4oryIGUrHP
+         J26ZFOF6Ob1qk3EajU04ZAdU4s9k2kkBk00W8qaeyrJrCYYOkByvZuqRhpfS9VHzgI2U
+         aNhthZFC3XktE0sS98+J5zLWYpaK60XB9nKSREudglZb8Lbr84/oY3aocNFqkfQWR2pT
+         PElvPXZ1sO0PEvvOpVmor/08d6GIkTTPa2D86XAxbPCRD537klqa4js/OeF1eUxMMIOm
+         dS4rowBeFbYHTTWpxlwH92s9QbuSvR+TySOnMd/InlMmEqkWWSqFgXs41gc4zZqO5nkd
+         /Rog==
+X-Gm-Message-State: AOJu0Yx62LEaCOfwAMKIlreySGjf5sbCAHk6a1zB/6uaByUeem2rgWwm
+        ul2dEQVXOqhetoy/A6h+qOc=
+X-Google-Smtp-Source: AGHT+IHlNtO9TnTbRjGbgMA2BKNdAlzBzZ+wN4lWbeifm++n4twOM1k+C2cGls14ZeVhL+f7W8Rb8w==
+X-Received: by 2002:a05:620a:2684:b0:774:a80:3e0b with SMTP id c4-20020a05620a268400b007740a803e0bmr11906160qkp.5.1700191521091;
+        Thu, 16 Nov 2023 19:25:21 -0800 (PST)
+Received: from [192.168.2.14] ([76.65.20.140])
+        by smtp.gmail.com with ESMTPSA id py13-20020a05620a878d00b007742c2ad7dfsm300954qkn.73.2023.11.16.19.25.20
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 19:19:35 -0800 (PST)
-Message-ID: <041416db-1cb5-e84f-ce44-9d06707970a8@redhat.com>
-Date:   Fri, 17 Nov 2023 11:19:32 +0800
+        Thu, 16 Nov 2023 19:25:20 -0800 (PST)
+Message-ID: <ce94020e-a7d4-4799-b87d-fbea7b14a268@gmail.com>
+Date:   Thu, 16 Nov 2023 22:25:11 -0500
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.15.1
-Subject: Re: [PATCH v1] KVM: selftests: Initalize sem_vcpu_[cont|stop] before
- each test in dirty_log_test
-Content-Language: en-US
-To:     Oliver Upton <oliver.upton@linux.dev>
-Cc:     kvm@vger.kernel.org, kvmarm@lists.linux.dev,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231116093536.22256-1-shahuang@redhat.com>
- <ZVaxXJ4xUW1eyQEL@thinky-boi>
-From:   Shaoqin Huang <shahuang@redhat.com>
-In-Reply-To: <ZVaxXJ4xUW1eyQEL@thinky-boi>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
-        autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:115.0) Gecko/20100101
+ Thunderbird/115.4.3
+Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc tree
+Content-Language: en-CA, en-US
+To:     Maxime Ripard <mripard@redhat.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+References: <20231114075501.61321c29@canb.auug.org.au>
+ <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
+ <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
+ <20231114134506.2ba0de1f@canb.auug.org.au>
+ <530b6100-4f4e-4b3d-8fea-5b316e989633@gmail.com>
+ <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
+From:   Luben Tuikov <ltuikov89@gmail.com>
+Autocrypt: addr=ltuikov89@gmail.com; keydata=
+ xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1APnbnnRHN
+ Ikx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoAQRYhBJkj7+VmFO9b
+ eaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiICBhUKCQgLAgQWAgMBAh4HAheA
+ AAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlTMqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfy
+ JwktF7REl1yt7IU2Sye1qmQMfJxdt9JMbMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSP
+ cCE8uGe7FWo8C+nTSyWPXKTx9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl
+ 10wVR5QxozSvBQJlOiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKo
+ aMDzO9eGz69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA==
+In-Reply-To: <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------tb0AQQDQteMC5n59MRtH5kce"
+X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------tb0AQQDQteMC5n59MRtH5kce
+Content-Type: multipart/mixed; boundary="------------PRYWEDVvvffGiUImSZzlRUmT";
+ protected-headers="v1"
+From: Luben Tuikov <ltuikov89@gmail.com>
+To: Maxime Ripard <mripard@redhat.com>
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>,
+ Daniel Vetter <daniel.vetter@ffwll.ch>,
+ Intel Graphics <intel-gfx@lists.freedesktop.org>,
+ DRI <dri-devel@lists.freedesktop.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Linux Next Mailing List <linux-next@vger.kernel.org>
+Message-ID: <ce94020e-a7d4-4799-b87d-fbea7b14a268@gmail.com>
+Subject: Re: linux-next: Signed-off-by missing for commit in the drm-misc tree
+References: <20231114075501.61321c29@canb.auug.org.au>
+ <19740d41-dd5a-47e4-b3e8-539b45bbd3e5@gmail.com>
+ <3c306310-04b3-4658-a197-4b2d22a88274@gmail.com>
+ <20231114134506.2ba0de1f@canb.auug.org.au>
+ <530b6100-4f4e-4b3d-8fea-5b316e989633@gmail.com>
+ <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
+In-Reply-To: <53oamsiakocoohdvs2raagdpzfj73xlrxuxvrsdvxkkwxdrm3m@dlu2tno6tjgv>
 
-On 11/17/23 08:18, Oliver Upton wrote:
-> Hi Shaoqin,
-> 
-> On Thu, Nov 16, 2023 at 04:35:36AM -0500, Shaoqin Huang wrote:
->> When execute the dirty_log_test on some aarch64 machine, it sometimes
->> trigger the ASSERT:
+--------------PRYWEDVvvffGiUImSZzlRUmT
+Content-Type: multipart/mixed; boundary="------------9EdLsqEF2vj8FfubgQ0DbAQ7"
+
+--------------9EdLsqEF2vj8FfubgQ0DbAQ7
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+On 2023-11-16 04:22, Maxime Ripard wrote:
+> Hi,
+>=20
+> On Mon, Nov 13, 2023 at 09:56:32PM -0500, Luben Tuikov wrote:
+>> On 2023-11-13 21:45, Stephen Rothwell wrote:
+>>> Hi Luben,
+>>>
+>>> On Mon, 13 Nov 2023 20:32:40 -0500 Luben Tuikov <ltuikov89@gmail.com>=
+ wrote:
+>>>>
+>>>> On 2023-11-13 20:08, Luben Tuikov wrote:
+>>>>> On 2023-11-13 15:55, Stephen Rothwell wrote: =20
+>>>>>> Hi all,
+>>>>>>
+>>>>>> Commit
+>>>>>>
+>>>>>>   0da611a87021 ("dma-buf: add dma_fence_timestamp helper")
+>>>>>>
+>>>>>> is missing a Signed-off-by from its committer.
+>>>>>> =20
+>>>>>
+>>>>> In order to merge the scheduler changes necessary for the Xe driver=
+, those changes
+>>>>> were based on drm-tip, which included this change from drm-misc-fix=
+es, but which
+>>>>> wasn't present in drm-misc-next.
+>>>>>
+>>>>> I didn't want to create a merge conflict between drm-misc-next and =
+drm-misc-fixes,
+>>>>> when pulling that change from drm-misc-next to drm-misc-fixes, so t=
+hat I can apply =20
+>>>>
+>>>> ... when pulling that change from from drm-misc-fixes into drm-misc-=
+next, so that I can apply...
+>>>>
+>>>>> the Xe scheduler changes on top of drm-misc-next. =20
+>>>>
+>>>> The change in drm-misc-fixes is b83ce9cb4a465b. The latter is contai=
+ned
+>>>> in linus-master, and in drm-misc-fixes, while the former is in drm-m=
+isc-next.
+>>>> When we merge linus-master/drm-misc-fixes into drm-misc-next, or whi=
+chever way
+>>>> it happens, I'd like to avoid a merge conflict, but wanted to expedi=
+te the changes
+>>>> for Xe.
+>>>
+>>> None of that is relevant ... if you commit a patch to a tree that wil=
+l
+>>> be in the linux kernel tree, you must add your Signed-off-by to the c=
+ommit.
 >>
->> ==== Test Assertion Failure ====
->>    dirty_log_test.c:384: dirty_ring_vcpu_ring_full
->>    pid=14854 tid=14854 errno=22 - Invalid argument
->>       1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
->>       2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
->>       3   (inlined by) run_test at dirty_log_test.c:802
->>       4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
->>       5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
->>       6  0x0000ffff9be173c7: ?? ??:0
->>       7  0x0000ffff9be1749f: ?? ??:0
->>       8  0x000000000040206f: _start at ??:?
->>    Didn't continue vcpu even without ring full
+>> Noted!
 >>
->> The dirty_log_test fails when execute the dirty-ring test, this is
->> because the sem_vcpu_cont and the sem_vcpu_stop is non-zero value when
->> execute the dirty_ring_collect_dirty_pages() function. When those two
->> sem_t variables are non-zero, the dirty_ring_wait_vcpu() at the
->> beginning of the dirty_ring_collect_dirty_pages() will not wait for the
->> vcpu to stop, but continue to execute the following code. In this case,
->> before vcpu stop, if the dirty_ring_vcpu_ring_full is true, and the
->> dirty_ring_collect_dirty_pages() has passed the check for the
->> dirty_ring_vcpu_ring_full but hasn't execute the check for the
->> continued_vcpu, the vcpu stop, and set the dirty_ring_vcpu_ring_full to
->> false. Then dirty_ring_collect_dirty_pages() will trigger the ASSERT.
+>> So I always do this when I do git-am and such, but wasn't sure for thi=
+s one single cherry-pick whose
+>> original author was the committer in drm-misc-fixes, but will add my S=
+igned-off-by in those
+>> rare circumstances.
 >>
->> Why sem_vcpu_cont and sem_vcpu_stop can be non-zero value? It's because
->> the dirty_ring_before_vcpu_join() execute the sem_post(&sem_vcpu_cont)
->> at the end of each dirty-ring test. It can cause two cases:
->>
->> 1. sem_vcpu_cont be non-zero. When we set the host_quit to be true,
->>     the vcpu_worker directly see the host_quit to be true, it quit. So
->>     the log_mode_before_vcpu_join() function will set the sem_vcpu_cont
->>     to 1, since the vcpu_worker has quit, it won't consume it.
->> 2. sem_vcpu_stop be non-zero. When we set the host_quit to be true,
->>     the vcpu_worker has entered the guest state, the next time it exit
->>     from guest state, it will set the sem_vcpu_stop to 1, and then see
->>     the host_quit, no one will consume the sem_vcpu_stop.
->>
->> When execute more and more dirty-ring tests, the sem_vcpu_cont and
->> sem_vcpu_stop can be larger and larger, which makes many code paths
->> don't wait for the sem_t. Thus finally cause the problem.
->>
->> Fix this problem is easy, simply initialize the sem_t before every test.
->> Thus whatever the state previous test left, it won't interfere the next
->> test.
-> 
-> In your changelog you describe what sounds like a semaphore imbalance at
-> the time of test completion, yet your proposed fix is to just clobber
-> the error and start fresh.
-> 
+>> Thanks for the clarification!
+>=20
+> In order to move forward with this, can you provide your SoB here for
+> that patch so that we can at least point to it in the drm-misc-next PR?=
 
-Yes. It's a semaphore imbalance problem.
+>=20
+> Maxime
 
-> Why not nip it at the bud and fix the logic bug instead?
+Signed-off-by: Luben Tuikov <ltuikov89@gmail.com>
 
-I have another patch which fix the logic bug, I will send it out later.
+--=20
+Regards,
+Luben
 
-> 
+--------------9EdLsqEF2vj8FfubgQ0DbAQ7
+Content-Type: application/pgp-keys; name="OpenPGP_0x4C15479431A334AF.asc"
+Content-Disposition: attachment; filename="OpenPGP_0x4C15479431A334AF.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
--- 
-Shaoqin
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
+xjMEZTohOhYJKwYBBAHaRw8BAQdAWSq76k+GsENjDTMVCy9Vr4fAO9Rb57/bPT1A
+PnbnnRHNIkx1YmVuIFR1aWtvdiA8bHR1aWtvdjg5QGdtYWlsLmNvbT7CmQQTFgoA
+QRYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJlOiE6AhsDBQkJZgGABQsJCAcCAiIC
+BhUKCQgLAgQWAgMBAh4HAheAAAoJEEwVR5QxozSvSm4BAOwCpX53DTQhE20FBGlT
+MqKCOQyJqlMcIQ9SO1qPWX1iAQCv3vfyJwktF7REl1yt7IU2Sye1qmQMfJxdt9JM
+bMNNBs44BGU6IToSCisGAQQBl1UBBQEBB0BT9wSPcCE8uGe7FWo8C+nTSyWPXKTx
+9F0gpEnlqReRBwMBCAfCfgQYFgoAJhYhBJkj7+VmFO9beaAl10wVR5QxozSvBQJl
+OiE6AhsMBQkJZgGAAAoJEEwVR5QxozSvSsYA/2LIFjbxQ2ikbU5S0pKoaMDzO9eG
+z69uNhNWJcvIKJK6AQC9228Mqc1JeZMIyjYWr2HKYHi8S2q2/zHrSZwAWYYwDA=3D=3D
+=3DqCaZ
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------9EdLsqEF2vj8FfubgQ0DbAQ7--
+
+--------------PRYWEDVvvffGiUImSZzlRUmT--
+
+--------------tb0AQQDQteMC5n59MRtH5kce
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQSZI+/lZhTvW3mgJddMFUeUMaM0rwUCZVbdFwUDAAAAAAAKCRBMFUeUMaM0rxFD
+AQDELq/dkzIFLrkuryNpi+8Gl6u0PD4LlkrT9ZQqHegrJgD7B93mLHQHkSblxphhQlpHR9xzdzEW
+mYNhYe+mzLcYmA0=
+=fRGW
+-----END PGP SIGNATURE-----
+
+--------------tb0AQQDQteMC5n59MRtH5kce--
