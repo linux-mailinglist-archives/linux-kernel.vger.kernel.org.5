@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EFE1F7EF5E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 511717EF5E8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:11:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346121AbjKQQK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:10:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60716 "EHLO
+        id S1346139AbjKQQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:11:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231693AbjKQQKu (ORCPT
+        with ESMTP id S1346084AbjKQQKw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:10:50 -0500
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49638127;
-        Fri, 17 Nov 2023 08:10:47 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGADSL119470;
-        Fri, 17 Nov 2023 10:10:13 -0600
+        Fri, 17 Nov 2023 11:10:52 -0500
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12DC090;
+        Fri, 17 Nov 2023 08:10:48 -0800 (PST)
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGAEte032286;
+        Fri, 17 Nov 2023 10:10:14 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700237413;
-        bh=S2L3bCQjS4V5uoOpa2XWqDJtGarbiLRZq+mnrAw4iks=;
+        s=ti-com-17Q1; t=1700237414;
+        bh=T/wBuC6DtVWXHqmfK8fabulf+ENqoFBjAQef4pkVTeM=;
         h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=TI2VIhiqa482KMcnEagSiDxLVBtUzI06ANw29jYYweKOO+OatTBmbfM7TVzKSVnkB
-         2KkgFpoTrqVVYh3sKP0HBntCNtn5OjKrChqyKTlRMy8Ku8D1YlHNRbQiibJRvJhx8Q
-         q54XUGTl2UTdT+FpjrCiGmVjw+7RPNo7jzYeD5S4=
+        b=CRnP6wGsm8MksLN9E655pnO/IhR8fhXvG8PWulKwIit1g6xzStqQ8CS5PFCZDPIav
+         ZIaFBoEZPtpvgInWvFH3Bxl4iI3VE2yicIRMclx8ZZDXzmOl5OvzbNEKKNT6XcUbkF
+         DSC+alD49Y+OdRj0k9OUQlVQdbS28bRMvuKoDBzY=
 Received: from DFLE112.ent.ti.com (dfle112.ent.ti.com [10.64.6.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHGADtU001162
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHGAENf081164
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 10:10:13 -0600
+        Fri, 17 Nov 2023 10:10:14 -0600
 Received: from DFLE114.ent.ti.com (10.64.6.35) by DFLE112.ent.ti.com
  (10.64.6.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 10:10:13 -0600
+ Nov 2023 10:10:14 -0600
 Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE114.ent.ti.com
  (10.64.6.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 10:10:12 -0600
+ Frontend Transport; Fri, 17 Nov 2023 10:10:13 -0600
 Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGA8GM004950;
-        Fri, 17 Nov 2023 10:10:11 -0600
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGA8GN004950;
+        Fri, 17 Nov 2023 10:10:13 -0600
 From:   Andrew Davis <afd@ti.com>
 To:     Mark Rutland <mark.rutland@arm.com>,
         Lorenzo Pieralisi <lpieralisi@kernel.org>,
@@ -56,9 +56,9 @@ To:     Mark Rutland <mark.rutland@arm.com>,
 CC:     <linux-arm-kernel@lists.infradead.org>,
         <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
         <linux-spi@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH RFC 3/5] power: reset: gpio-restart: Use devm_register_sys_off_handler()
-Date:   Fri, 17 Nov 2023 10:10:04 -0600
-Message-ID: <20231117161006.87734-4-afd@ti.com>
+Subject: [PATCH RFC 4/5] spi: sprd: adi: Use devm_register_restart_handler()
+Date:   Fri, 17 Nov 2023 10:10:05 -0600
+Message-ID: <20231117161006.87734-5-afd@ti.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20231117161006.87734-1-afd@ti.com>
 References: <20231117161006.87734-1-afd@ti.com>
@@ -68,9 +68,8 @@ Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -82,102 +81,100 @@ path and eliminate need for explicit remove function.
 
 Signed-off-by: Andrew Davis <afd@ti.com>
 ---
- drivers/power/reset/gpio-restart.c | 34 ++++++++----------------------
- 1 file changed, 9 insertions(+), 25 deletions(-)
+ drivers/spi/spi-sprd-adi.c | 30 ++++++++----------------------
+ 1 file changed, 8 insertions(+), 22 deletions(-)
 
-diff --git a/drivers/power/reset/gpio-restart.c b/drivers/power/reset/gpio-restart.c
-index 3aa19765772dc..d1e177176fa1f 100644
---- a/drivers/power/reset/gpio-restart.c
-+++ b/drivers/power/reset/gpio-restart.c
-@@ -17,17 +17,14 @@
- 
- struct gpio_restart {
- 	struct gpio_desc *reset_gpio;
--	struct notifier_block restart_handler;
- 	u32 active_delay_ms;
- 	u32 inactive_delay_ms;
- 	u32 wait_delay_ms;
+diff --git a/drivers/spi/spi-sprd-adi.c b/drivers/spi/spi-sprd-adi.c
+index bf01feedbf93f..58c3badd9c79a 100644
+--- a/drivers/spi/spi-sprd-adi.c
++++ b/drivers/spi/spi-sprd-adi.c
+@@ -138,8 +138,7 @@ struct sprd_adi_data {
+ 	u32 slave_offset;
+ 	u32 slave_addr_size;
+ 	int (*read_check)(u32 val, u32 reg);
+-	int (*restart)(struct notifier_block *this,
+-		       unsigned long mode, void *cmd);
++	int (*restart)(struct sys_off_data *data);
+ 	void (*wdg_rst)(void *p);
  };
  
--static int gpio_restart_notify(struct notifier_block *this,
--				unsigned long mode, void *cmd)
-+static int gpio_restart_notify(struct sys_off_data *data)
- {
--	struct gpio_restart *gpio_restart =
--		container_of(this, struct gpio_restart, restart_handler);
-+	struct gpio_restart *gpio_restart = data->cb_data;
+@@ -150,7 +149,6 @@ struct sprd_adi {
+ 	struct hwspinlock	*hwlock;
+ 	unsigned long		slave_vbase;
+ 	unsigned long		slave_pbase;
+-	struct notifier_block	restart_handler;
+ 	const struct sprd_adi_data *data;
+ };
  
- 	/* drive it active, also inactive->active edge */
- 	gpiod_direction_output(gpio_restart->reset_gpio, 1);
-@@ -52,6 +49,7 @@ static int gpio_restart_probe(struct platform_device *pdev)
- {
- 	struct gpio_restart *gpio_restart;
- 	bool open_source = false;
-+	int priority = 129;
- 	u32 property;
- 	int ret;
- 
-@@ -71,8 +69,6 @@ static int gpio_restart_probe(struct platform_device *pdev)
- 		return ret;
- 	}
- 
--	gpio_restart->restart_handler.notifier_call = gpio_restart_notify;
--	gpio_restart->restart_handler.priority = 129;
- 	gpio_restart->active_delay_ms = 100;
- 	gpio_restart->inactive_delay_ms = 100;
- 	gpio_restart->wait_delay_ms = 3000;
-@@ -83,7 +79,7 @@ static int gpio_restart_probe(struct platform_device *pdev)
- 			dev_err(&pdev->dev, "Invalid priority property: %u\n",
- 					property);
- 		else
--			gpio_restart->restart_handler.priority = property;
-+			priority = property;
- 	}
- 
- 	of_property_read_u32(pdev->dev.of_node, "active-delay",
-@@ -93,9 +89,11 @@ static int gpio_restart_probe(struct platform_device *pdev)
- 	of_property_read_u32(pdev->dev.of_node, "wait-delay",
- 			&gpio_restart->wait_delay_ms);
- 
--	platform_set_drvdata(pdev, gpio_restart);
--
--	ret = register_restart_handler(&gpio_restart->restart_handler);
-+	ret = devm_register_sys_off_handler(&pdev->dev,
-+					    SYS_OFF_MODE_RESTART,
-+					    priority,
-+					    gpio_restart_notify,
-+					    gpio_restart);
- 	if (ret) {
- 		dev_err(&pdev->dev, "%s: cannot register restart handler, %d\n",
- 				__func__, ret);
-@@ -105,19 +103,6 @@ static int gpio_restart_probe(struct platform_device *pdev)
- 	return 0;
+@@ -370,11 +368,9 @@ static void sprd_adi_set_wdt_rst_mode(void *p)
+ #endif
  }
  
--static void gpio_restart_remove(struct platform_device *pdev)
+-static int sprd_adi_restart(struct notifier_block *this, unsigned long mode,
+-				  void *cmd, struct sprd_adi_wdg *wdg)
++static int sprd_adi_restart(struct sprd_adi *sadi, unsigned long mode,
++			    const char *cmd, struct sprd_adi_wdg *wdg)
+ {
+-	struct sprd_adi *sadi = container_of(this, struct sprd_adi,
+-					     restart_handler);
+ 	u32 val, reboot_mode = 0;
+ 
+ 	if (!cmd)
+@@ -448,8 +444,7 @@ static int sprd_adi_restart(struct notifier_block *this, unsigned long mode,
+ 	return NOTIFY_DONE;
+ }
+ 
+-static int sprd_adi_restart_sc9860(struct notifier_block *this,
+-					   unsigned long mode, void *cmd)
++static int sprd_adi_restart_sc9860(struct sys_off_data *data)
+ {
+ 	struct sprd_adi_wdg wdg = {
+ 		.base = PMIC_WDG_BASE,
+@@ -458,7 +453,7 @@ static int sprd_adi_restart_sc9860(struct notifier_block *this,
+ 		.wdg_clk = PMIC_CLK_EN,
+ 	};
+ 
+-	return sprd_adi_restart(this, mode, cmd, &wdg);
++	return sprd_adi_restart(data->cb_data, data->mode, data->cmd, &wdg);
+ }
+ 
+ static void sprd_adi_hw_init(struct sprd_adi *sadi)
+@@ -590,9 +585,9 @@ static int sprd_adi_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	if (sadi->data->restart) {
+-		sadi->restart_handler.notifier_call = sadi->data->restart;
+-		sadi->restart_handler.priority = 128;
+-		ret = register_restart_handler(&sadi->restart_handler);
++		ret = devm_register_restart_handler(&pdev->dev,
++						    sadi->data->restart,
++						    sadi);
+ 		if (ret) {
+ 			dev_err(&pdev->dev, "can not register restart handler\n");
+ 			goto put_ctlr;
+@@ -606,14 +601,6 @@ static int sprd_adi_probe(struct platform_device *pdev)
+ 	return ret;
+ }
+ 
+-static void sprd_adi_remove(struct platform_device *pdev)
 -{
--	struct gpio_restart *gpio_restart = platform_get_drvdata(pdev);
--	int ret;
+-	struct spi_controller *ctlr = dev_get_drvdata(&pdev->dev);
+-	struct sprd_adi *sadi = spi_controller_get_devdata(ctlr);
 -
--	ret = unregister_restart_handler(&gpio_restart->restart_handler);
--	if (ret) {
--		dev_err(&pdev->dev,
--				"%s: cannot unregister restart handler, %d\n",
--				__func__, ret);
--	}
+-	unregister_restart_handler(&sadi->restart_handler);
 -}
 -
- static const struct of_device_id of_gpio_restart_match[] = {
- 	{ .compatible = "gpio-restart", },
- 	{},
-@@ -125,7 +110,6 @@ static const struct of_device_id of_gpio_restart_match[] = {
+ static struct sprd_adi_data sc9860_data = {
+ 	.slave_offset = ADI_10BIT_SLAVE_OFFSET,
+ 	.slave_addr_size = ADI_10BIT_SLAVE_ADDR_SIZE,
+@@ -657,7 +644,6 @@ static struct platform_driver sprd_adi_driver = {
+ 		.of_match_table = sprd_adi_of_match,
+ 	},
+ 	.probe = sprd_adi_probe,
+-	.remove_new = sprd_adi_remove,
+ };
+ module_platform_driver(sprd_adi_driver);
  
- static struct platform_driver gpio_restart_driver = {
- 	.probe = gpio_restart_probe,
--	.remove_new = gpio_restart_remove,
- 	.driver = {
- 		.name = "restart-gpio",
- 		.of_match_table = of_gpio_restart_match,
 -- 
 2.39.2
 
