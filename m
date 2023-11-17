@@ -2,99 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E62967EEDD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF45F7EEDF3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:58:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345722AbjKQIui convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 03:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43304 "EHLO
+        id S1345722AbjKQI6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:58:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQIug (ORCPT
+        with ESMTP id S229952AbjKQI6s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:50:36 -0500
-Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A42B11F;
-        Fri, 17 Nov 2023 00:50:33 -0800 (PST)
-Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-5a7c011e113so19723427b3.1;
-        Fri, 17 Nov 2023 00:50:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700211032; x=1700815832;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pEM9MmyCorfd11wpMHXAhSx3sbSCq73GK9k/IN+xLX8=;
-        b=Sx4c0/YLObuOk1AhpOU7Ooy+eEnjHfv81NOctNA+wT8M8ZWCzngWU9gS7QfmpZy2T0
-         LcneKmcwkvNCkNizMHo1jIAP211cmH3gZFauwhuddHLCnW7JFVNsgKuas4tdn1f0Ugpt
-         1KnOoXTHicUkmpujwWoPTyYirNwszyKQPJdTrJzA7oNLWaMQhTyTRfZqopmEVMev247x
-         2UfsvEDdBYtOfEN5WViFqn9RoZ7Ss5GeQjp0k0ap19rpRx9S+Knp0UDXiKZfK1ImDb42
-         wujk9VVyj+sWYfPbVM7Jh2iHOfaisHCWBqlCOxeBD4MilioZiOWwLzwkDxhtxscDRq8T
-         YE+w==
-X-Gm-Message-State: AOJu0Yyl37rewE/sqwr7L4Xo3YqLzns4Hft2nqE12wPoD39f2JEatcDY
-        ZAWx/yHQBE2p/QqemyfHYqTNbV7WVUyzsw==
-X-Google-Smtp-Source: AGHT+IFbCu7IDp62lvLze63elVeUNM3VZ8pkT9iEX4Z1i3pjkZRrLvlaoPgcO3z+7E18ZSYF/IDXyQ==
-X-Received: by 2002:a0d:cb8b:0:b0:5a7:ab55:b9af with SMTP id n133-20020a0dcb8b000000b005a7ab55b9afmr18269263ywd.35.1700211032272;
-        Fri, 17 Nov 2023 00:50:32 -0800 (PST)
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
-        by smtp.gmail.com with ESMTPSA id u74-20020a0deb4d000000b005c5b70aa8acsm376652ywe.98.2023.11.17.00.50.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 00:50:30 -0800 (PST)
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-5a7c011e113so19723007b3.1;
-        Fri, 17 Nov 2023 00:50:30 -0800 (PST)
-X-Received: by 2002:a0d:d307:0:b0:570:28a9:fe40 with SMTP id
- v7-20020a0dd307000000b0057028a9fe40mr19392214ywd.5.1700211029722; Fri, 17 Nov
- 2023 00:50:29 -0800 (PST)
+        Fri, 17 Nov 2023 03:58:48 -0500
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C3A11F;
+        Fri, 17 Nov 2023 00:58:43 -0800 (PST)
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+        by mx1.sberdevices.ru (Postfix) with ESMTP id A64B9120097;
+        Fri, 17 Nov 2023 11:58:40 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru A64B9120097
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+        s=mail; t=1700211520;
+        bh=HN+PvIjLqzQn6wjZP926vHy0wPu+a4K5ITDOFK7AlOE=;
+        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+        b=fbTB1TKjZE9AIUNudoR0Vy7AVqsTakFba2sLFRyrNstMcANH1pgsLVYXHK6ITrOE+
+         RU3YvcWfqGgqUCZPQ41moC7zCReP6GTarQHJx0ZYEXm5HuKHgtp4522pitd2wYYxhj
+         60npuohOI7JFMtLNBsJpdD5RqkxFG/eN6vlFJdIDPDFZ6ENtP1WhdMbe4YvZaOXzSb
+         gU0RryRcspaEmkqh50nWKgHrDNnf+ELoT6vqhDmJ5yikPagei9i6Ao9Lqkz0at6c5k
+         SjfoqusdKk5ydlEcvuDF/GlwKsMovwEJjm/jfgKwK1o7cRSbYMQm2ThR5niBnw7M37
+         J+IcbfY7hiGjQ==
+Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx1.sberdevices.ru (Postfix) with ESMTPS;
+        Fri, 17 Nov 2023 11:58:40 +0300 (MSK)
+Received: from [192.168.0.106] (100.64.160.123) by
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 17 Nov 2023 11:58:40 +0300
+Message-ID: <1700ac19-a355-fad4-79e2-7598ee33bd00@salutedevices.com>
+Date:   Fri, 17 Nov 2023 11:50:59 +0300
 MIME-Version: 1.0
-References: <20231016105344.294096-1-claudiu.beznea.uj@bp.renesas.com> <20231016105344.294096-3-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231016105344.294096-3-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 Nov 2023 09:50:18 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdX3y-FGLUOz1ouRF1YEQ6aT5JRiJOWgF5kwuwysyxazeg@mail.gmail.com>
-Message-ID: <CAMuHMdX3y-FGLUOz1ouRF1YEQ6aT5JRiJOWgF5kwuwysyxazeg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/2] arm64: dts: renesas: rzg3s-smarc: Enable SDHI1
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.7.1
+Subject: Re: [RFC PATCH v1 2/2] vsock/test: SO_RCVLOWAT + deferred credit
+ update test
+To:     Stefano Garzarella <sgarzare@redhat.com>
+CC:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
+References: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
+ <20231108072004.1045669-3-avkrasnov@salutedevices.com>
+ <zukasb6k7ogta33c2wik6cgadg2rkacestat7pkexd45u53swh@ovso3hafta77>
+ <923a6149-3bd5-c5b4-766d-8301f9e7484a@salutedevices.com>
+ <tbvwohgvrc6kvlsyap3sk5zqww5q6schsu4szx7e23wgg7pvb3@e7xa5mg5inul>
+Content-Language: en-US
+From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
+In-Reply-To: <tbvwohgvrc6kvlsyap3sk5zqww5q6schsu4szx7e23wgg7pvb3@e7xa5mg5inul>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [100.64.160.123]
+X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
+ p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 181429 [Nov 17 2023]
+X-KSMG-AntiSpam-Version: 6.0.0.2
+X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;docs.kernel.org:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;p-i-exch-sc-m01.sberdevices.ru:5.0.1,7.1.1;127.0.0.199:7.1.2, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2023/11/17 08:17:00
+X-KSMG-LinksScanning: Clean, bases: 2023/11/17 08:17:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/17 07:09:00 #22469944
+X-KSMG-AntiVirus-Status: Clean, skipped
+X-Spam-Status: No, score=-5.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 16, 2023 at 12:54 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add SDHI1 to RZ/G3S Smarc Carrier-II board. This is connected to a uSD
-> interface. Although Vccq doesn't cross the boundary of SoM it has
-> been added to RZ/G3S Smarc Carrier-II dtsi to have all the bits related to
-> SDHI1 in a single place. At the moment SoM is used only with RZ/G3S Smarc
-> Carrier-II board.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v2:
-> - change regulators' names to regulator-vcc-sdhi1 and
->   regulator-vccq-sdhi1
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.8.
 
-Gr{oetje,eeting}s,
+On 17.11.2023 11:30, Stefano Garzarella wrote:
+> On Fri, Nov 17, 2023 at 10:12:38AM +0300, Arseniy Krasnov wrote:
+>>
+>>
+>> On 15.11.2023 14:11, Stefano Garzarella wrote:
+>>> On Wed, Nov 08, 2023 at 10:20:04AM +0300, Arseniy Krasnov wrote:
+>>>> This adds test which checks, that updating SO_RCVLOWAT value also sends
+>>>
+>>> You can avoid "This adds", and write just "Add test ...".
+>>>
+>>> See https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+>>>
+>>>     Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+>>>     instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+>>>     to do frotz", as if you are giving orders to the codebase to change
+>>>     its behaviour.
+>>>
+>>> Also in the other patch.
+>>>
+>>>> credit update message. Otherwise mutual hungup may happen when receiver
+>>>> didn't send credit update and then calls 'poll()' with non default
+>>>> SO_RCVLOWAT value (e.g. waiting enough bytes to read), while sender
+>>>> waits for free space at receiver's side.
+>>>>
+>>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>>> ---
+>>>> tools/testing/vsock/vsock_test.c | 131 +++++++++++++++++++++++++++++++
+>>>> 1 file changed, 131 insertions(+)
+>>>>
+>>>> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>>>> index c1f7bc9abd22..c71b3875fd16 100644
+>>>> --- a/tools/testing/vsock/vsock_test.c
+>>>> +++ b/tools/testing/vsock/vsock_test.c
+>>>> @@ -1180,6 +1180,132 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
+>>>>     close(fd);
+>>>> }
+>>>>
+>>>> +#define RCVLOWAT_CREDIT_UPD_BUF_SIZE    (1024 * 128)
+>>>> +#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE    (1024 * 64)
+>>>
+>>> What about adding a comment like the one in the cover letter about
+>>> dependency with kernel values?
+>>>
+>>> Please add it also in the commit description.
+>>>
+>>> I'm thinking if we should move all the defines that depends on the
+>>> kernel in some special header.
+>>
+>> IIUC it will be new header file in tools/testing/vsock, which includes such defines. At
+>> this moment in will contain only VIRTIO_VSOCK_MAX_PKT_BUF_SIZE. Idea is that such defines
+> 
+> So this only works on the virtio transport though, not the other
+> transports, right? (but maybe the others don't have this problem, so
+> it's fine).
 
-                        Geert
+Yes, this case is only actual in virtio as this logic exists in virtio
+only (the same situation as for skb merging sometimes ago).
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+> 
+>> are not supposed to use by user (so do not move it to uapi headers), but needed by tests
+>> to check kernel behaviour. Please correct me if i'm wrong.
+> 
+> Right!
+> Maybe if it's just one, we can leave it there for now, but with a
+> comment on top explaining where it comes.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Ok, got it, I'll add comment
+
+Thanks, Arseniy
+
+> 
+> Thanks,
+> Stefano
+> 
