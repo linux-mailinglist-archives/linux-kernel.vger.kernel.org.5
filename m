@@ -2,81 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 184BA7EF705
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:36:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B967EF711
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:38:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346166AbjKQRgc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 12:36:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
+        id S1346179AbjKQRiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 12:38:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346146AbjKQRga (ORCPT
+        with ESMTP id S1346173AbjKQRiM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 12:36:30 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::221])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14E89D7E;
-        Fri, 17 Nov 2023 09:36:26 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E30E8240008;
-        Fri, 17 Nov 2023 17:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700242585;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=I6bVBs9+UlVN0UI83TPgVQSNAbRu17WJB14lmY0HUcc=;
-        b=V6sxxrZ9FJ89mYPVhAz6mQLGwa9riLme0SOt3HQ71JxYLpSUcaYu0gdKl3W9kohV4KuxFI
-        Uk5MHuml1f4GY/XYG1fsiIgKHcpvzOEZIDSyvpaFVL+ht1bvWPjY+Z5zx2N2WrcgoDXogV
-        XvVR4J5hKr0yGNzVBQ5fwO0XMjgzWnm0whSiA9uBFH7UC4nYhgRoU+khjueFpXMnfvUoCB
-        Xtijs1UllHTgppj9FZ+Q7eF1HuynX9A3HZMIHG2ATRdd3B8jX0xrE4gcXnqYefRnPkoD0k
-        iG26md8wuM3xJrXfbvWQIHXjjYCujcU5d1k+h75zrjWe0TPlvw8Hn7FBhkg34g==
-Date:   Fri, 17 Nov 2023 18:36:24 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Mario Limonciello <mario.limonciello@amd.com>
-Cc:     "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
-        <linux-rtc@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        alvin.zhuge@gmail.com, renzhamin@gmail.com, kelvie@kelvie.ca,
-        rrangel@google.com
-Subject: Re: [PATCH] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
-Message-ID: <170024256921.406260.15395632233007933060.b4-ty@bootlin.com>
-References: <20231106162310.85711-1-mario.limonciello@amd.com>
+        Fri, 17 Nov 2023 12:38:12 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C343E10E5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 09:38:09 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66A95C433C9;
+        Fri, 17 Nov 2023 17:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700242689;
+        bh=EUDBFroF5TjmYX0MrqbQ4lm7E/YuA+W3eE3VkPGKcm4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=mtKlfPUJjJanONH237bSO3hOyU3SFX6xd57lxI10FihF5J/Mibv8D4PbuIiO4F5iy
+         d4WA6/sHLhtXtn85tmoz8qRflR9TgpG14tbbU/u2a+SMRM04OTf2y5kJnuo0mfTcaE
+         gQEg3YiAE39DARcXgaIYF5Ia1GBGkJ168le7YTOy0vg6tGGvcbwVyn7HDnnam8h3LV
+         zJcX6KP7XzZSux28CArPbMBqEOCUU/OawwwhIYsz5NMxZWpfI21s3i3LoJkBgHAJ2H
+         AYbrHhzqOdeRqKQjNWy+AcyBPetP5rOABkVxIGI+Tc5v3faQwuhgO9stvbnF/Q9zUT
+         9E3RhmkCzm4fA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan+linaro@kernel.org>)
+        id 1r42nF-0005Vo-0K;
+        Fri, 17 Nov 2023 18:38:13 +0100
+From:   Johan Hovold <johan+linaro@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Johan Hovold <johan+linaro@kernel.org>
+Subject: [PATCH 0/3] USB: dwc3: qcom: fix resource leaks on probe deferral
+Date:   Fri, 17 Nov 2023 18:36:47 +0100
+Message-ID: <20231117173650.21161-1-johan+linaro@kernel.org>
+X-Mailer: git-send-email 2.41.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231106162310.85711-1-mario.limonciello@amd.com>
-X-GND-Sasl: alexandre.belloni@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When reviewing the recently submitted series which reworks the dwc3 qcom
+glue implementation [1], I noticed that the driver's tear down handling
+is currently broken, something which can lead to memory leaks and
+potentially use-after-free issues on probe deferral and on driver
+unbind.
 
-On Mon, 06 Nov 2023 10:23:10 -0600, Mario Limonciello wrote:
-> Intel systems > 2015 have been configured to use ACPI alarm instead
-> of HPET to avoid s2idle issues.
-> 
-> Having HPET programmed for wakeup causes problems on AMD systems with
-> s2idle as well.
-> 
-> One particular case is that the systemd "SuspendThenHibernate" feature
-> doesn't work properly on the Framework 13" AMD model. Switching to
-> using ACPI alarm fixes the issue.
-> 
-> [...]
+Let's get this sorted before reworking driver.
 
-Applied, thanks!
+Note that the last patch has only been compile tested as I don't have
+access to a sdm845 device.
 
-[1/1] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
-      commit: 3d762e21d56370a43478b55e604b4a83dd85aafc
+Johan
 
-Best regards,
+[1] https://lore.kernel.org/lkml/20231016-dwc3-refactor-v1-0-ab4a84165470@quicinc.com/
+
+
+Johan Hovold (3):
+  USB: dwc3: qcom: fix resource leaks on probe deferral
+  USB: dwc3: qcom: fix software node leak on probe errors
+  USB: dwc3: qcom: fix ACPI platform device leak
+
+ drivers/usb/dwc3/dwc3-qcom.c | 57 +++++++++++++++++++++++++++---------
+ 1 file changed, 43 insertions(+), 14 deletions(-)
 
 -- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+2.41.0
+
