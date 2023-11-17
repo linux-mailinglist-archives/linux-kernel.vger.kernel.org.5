@@ -2,92 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B17C87EEC93
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:20:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396C07EEC85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230168AbjKQHUa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:20:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50072 "EHLO
+        id S230051AbjKQHQf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:16:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230052AbjKQHU1 (ORCPT
+        with ESMTP id S229436AbjKQHQd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:20:27 -0500
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96CE3D5E;
-        Thu, 16 Nov 2023 23:20:21 -0800 (PST)
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-        by mx1.sberdevices.ru (Postfix) with ESMTP id 42D46100053;
-        Fri, 17 Nov 2023 10:20:20 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 42D46100053
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-        s=mail; t=1700205620;
-        bh=TXUWzwEhbxgHVkn7xc8Va70O8zxsHqn90+mpouI8FXI=;
-        h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-        b=YjxB/p4q7lGQMkqHj1iaTecDtBc+2MLOvH8esTIyX9HXuDAXC1YFwYsvOE8x9hUIV
-         6vCAA3PnX66Im+M8Q7exm3jzILXBXMsOyTsc6ONN2toX7et3HguQRdZcROO3D9NOl4
-         kPI2MIAxr/uOk719tbkPn12IDFhcXIQIpiyGuNDsxhhYz1hAq4DGHAHcFjoWAZt5+R
-         ls/We6bbnInDdnXyk8bGR2jBsEqBn47tzeTSvfmszkpuhF/4t4XZVGOxRzPBzYThJB
-         uNTzZeO45BbeRD3hCcvb+5TVrxXUnQH1ZYR2tsNI1rynY81O54PuB0RE4YnSnqo5il
-         mxcJGP+3QT1VA==
-Received: from p-i-exch-sc-m01.sberdevices.ru (p-i-exch-sc-m01.sberdevices.ru [172.16.192.107])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx1.sberdevices.ru (Postfix) with ESMTPS;
-        Fri, 17 Nov 2023 10:20:20 +0300 (MSK)
-Received: from [192.168.0.106] (100.64.160.123) by
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 17 Nov 2023 10:20:19 +0300
-Message-ID: <923a6149-3bd5-c5b4-766d-8301f9e7484a@salutedevices.com>
-Date:   Fri, 17 Nov 2023 10:12:38 +0300
+        Fri, 17 Nov 2023 02:16:33 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF454194;
+        Thu, 16 Nov 2023 23:16:30 -0800 (PST)
+Received: from pps.filterd (m0279864.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH6eQuk011693;
+        Fri, 17 Nov 2023 07:16:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=i1ovUif6eJCX2viZU9GHW5+dl22Rd3wZG3iOri/yqjw=;
+ b=bzoedOpd3EVcAooCyf4/qwHtrph7lYmr4U3Qa9BgRteSfQrddJ9E4ITt0+6ZPD7mhKQh
+ rgEfVnWbE9dAu0UVTSVAgsTee3l2Zn5BKDKtucnuzcVieUQ9+877aIvgmLXSfqdGBf3z
+ ITUt+pxHBamsXUI00AtEhvTGxA+NbMv9Sex3iQIitnp99aQBpMYTXK3SxVZNKlo8yD5E
+ imWfa7GDcO/wd9qSMzbheF7vXETgvvbw817TI4w3O5R1Tglw4PPeN3GGW7s6w+dUh9yz
+ JWdPBRumWLVtm83qX0i6neORaYc8AL7x0TdIg4w1ZEP+0wHclYMunstX3huAb8OHJIKR Rg== 
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udt8bs1a2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 07:16:05 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH7G4Yj032531
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 07:16:04 GMT
+Received: from [10.214.227.50] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 23:15:59 -0800
+Message-ID: <dab82933-4383-4277-9cff-90cba6231b54@quicinc.com>
+Date:   Fri, 17 Nov 2023 12:45:56 +0530
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
- Thunderbird/102.7.1
-Subject: Re: [RFC PATCH v1 2/2] vsock/test: SO_RCVLOWAT + deferred credit
- update test
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
 Content-Language: en-US
-To:     Stefano Garzarella <sgarzare@redhat.com>
-CC:     Stefan Hajnoczi <stefanha@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Bobby Eshleman <bobby.eshleman@bytedance.com>,
-        <kvm@vger.kernel.org>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel@sberdevices.ru>, <oxffffaa@gmail.com>
-References: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
- <20231108072004.1045669-3-avkrasnov@salutedevices.com>
- <zukasb6k7ogta33c2wik6cgadg2rkacestat7pkexd45u53swh@ovso3hafta77>
-From:   Arseniy Krasnov <avkrasnov@salutedevices.com>
-In-Reply-To: <zukasb6k7ogta33c2wik6cgadg2rkacestat7pkexd45u53swh@ovso3hafta77>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [100.64.160.123]
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m01.sberdevices.ru (172.16.192.107)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 181429 [Nov 17 2023]
-X-KSMG-AntiSpam-Version: 6.0.0.2
-X-KSMG-AntiSpam-Envelope-From: avkrasnov@salutedevices.com
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 543 543 1e3516af5cdd92079dfeb0e292c8747a62cb1ee4, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;100.64.160.123:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;docs.kernel.org:7.1.1;127.0.0.199:7.1.2;p-i-exch-sc-m01.sberdevices.ru:7.1.1,5.0.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2023/11/17 06:10:00
-X-KSMG-LinksScanning: Clean, bases: 2023/11/17 06:10:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2023/11/17 06:08:00 #22469568
-X-KSMG-AntiVirus-Status: Clean, skipped
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+To:     Konrad Dybcio <konrad.dybcio@linaro.org>, <will@kernel.org>,
+        <robin.murphy@arm.com>, <joro@8bytes.org>,
+        <dmitry.baryshkov@linaro.org>, <a39.skl@gmail.com>,
+        <quic_pkondeti@quicinc.com>, <quic_molvera@quicinc.com>
+CC:     <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-4-quic_bibekkum@quicinc.com>
+ <e5b0d8c7-82cf-4a3a-9a6e-28e7b468df8d@linaro.org>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <e5b0d8c7-82cf-4a3a-9a6e-28e7b468df8d@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: T1UlbemtRDwpaktjWt03nFsUnxAG5Iyq
+X-Proofpoint-GUID: T1UlbemtRDwpaktjWt03nFsUnxAG5Iyq
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_05,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 suspectscore=0 mlxscore=0 mlxlogscore=778 adultscore=0
+ bulkscore=0 malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311170051
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
@@ -96,198 +87,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 
 
-On 15.11.2023 14:11, Stefano Garzarella wrote:
-> On Wed, Nov 08, 2023 at 10:20:04AM +0300, Arseniy Krasnov wrote:
->> This adds test which checks, that updating SO_RCVLOWAT value also sends
+On 11/15/2023 10:13 PM, Konrad Dybcio wrote:
 > 
-> You can avoid "This adds", and write just "Add test ...".
 > 
-> See https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
-> 
->     Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
->     instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
->     to do frotz", as if you are giving orders to the codebase to change
->     its behaviour.
-> 
-> Also in the other patch.
-> 
->> credit update message. Otherwise mutual hungup may happen when receiver
->> didn't send credit update and then calls 'poll()' with non default
->> SO_RCVLOWAT value (e.g. waiting enough bytes to read), while sender
->> waits for free space at receiver's side.
+> On 11/14/23 14:56, Bibek Kumar Patro wrote:
+>> Context caching is re-enabled in the prefetch buffer for Qualcomm SoCs
+>> through SoC specific reset ops, which is disabled in the default MMU-500
+>> reset ops, but is expected for context banks using ACTLR register to
+>> retain the prefetch value during reset and runtime suspend.
 >>
->> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
 >> ---
->> tools/testing/vsock/vsock_test.c | 131 +++++++++++++++++++++++++++++++
->> 1 file changed, 131 insertions(+)
->>
->> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
->> index c1f7bc9abd22..c71b3875fd16 100644
->> --- a/tools/testing/vsock/vsock_test.c
->> +++ b/tools/testing/vsock/vsock_test.c
->> @@ -1180,6 +1180,132 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
->>     close(fd);
->> }
->>
->> +#define RCVLOWAT_CREDIT_UPD_BUF_SIZE    (1024 * 128)
->> +#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE    (1024 * 64)
+> And I assume that goes for all SMMU500 implementations?
 > 
-> What about adding a comment like the one in the cover letter about
-> dependency with kernel values?
-> 
-> Please add it also in the commit description.
-> 
-> I'm thinking if we should move all the defines that depends on the
-> kernel in some special header.
 
-IIUC it will be new header file in tools/testing/vsock, which includes such defines. At
-this moment in will contain only VIRTIO_VSOCK_MAX_PKT_BUF_SIZE. Idea is that such defines
-are not supposed to use by user (so do not move it to uapi headers), but needed by tests
-to check kernel behaviour. Please correct me if i'm wrong.
+Right, for all SMMU500 implementation for Qualcomm SoCs.
+Hence implemented this enablement with Qualcomm specific reset operation.
 
-Thanks, Arseniy
+> Looking at the 8550 ACTRL array from patch 2, CPRE is not enabled
+> at all times.. Is that because of performance, or some other
+> technical reason?
+> 
+> Will this regress platforms without ACTRL tables?
+> 
 
-> 
->> +
->> +static void test_stream_rcvlowat_def_cred_upd_client(const struct test_opts *opts)
->> +{
->> +    size_t buf_size;
->> +    void *buf;
->> +    int fd;
->> +
->> +    fd = vsock_stream_connect(opts->peer_cid, 1234);
->> +    if (fd < 0) {
->> +        perror("connect");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    /* Send 1 byte more than peer's buffer size. */
->> +    buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE + 1;
->> +
->> +    buf = malloc(buf_size);
->> +    if (!buf) {
->> +        perror("malloc");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    /* Wait until peer sets needed buffer size. */
->> +    control_expectln("SRVREADY");
->> +
->> +    if (send(fd, buf, buf_size, 0) != buf_size) {
->> +        perror("send failed");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    free(buf);
->> +    close(fd);
->> +}
->> +
->> +static void test_stream_rcvlowat_def_cred_upd_server(const struct test_opts *opts)
->> +{
->> +    size_t recv_buf_size;
->> +    struct pollfd fds;
->> +    size_t buf_size;
->> +    void *buf;
->> +    int fd;
->> +
->> +    fd = vsock_stream_accept(VMADDR_CID_ANY, 1234, NULL);
->> +    if (fd < 0) {
->> +        perror("accept");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    buf_size = RCVLOWAT_CREDIT_UPD_BUF_SIZE;
->> +
->> +    if (setsockopt(fd, AF_VSOCK, SO_VM_SOCKETS_BUFFER_SIZE,
->> +               &buf_size, sizeof(buf_size))) {
->> +        perror("setsockopt(SO_VM_SOCKETS_BUFFER_SIZE)");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    buf = malloc(buf_size);
->> +    if (!buf) {
->> +        perror("malloc");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    control_writeln("SRVREADY");
->> +
->> +    /* Wait until there will be 128KB of data in rx queue. */
->> +    while (1) {
->> +        ssize_t res;
->> +
->> +        res = recv(fd, buf, buf_size, MSG_PEEK);
->> +        if (res == buf_size)
->> +            break;
->> +
->> +        if (res <= 0) {
->> +            fprintf(stderr, "unexpected 'recv()' return: %zi\n", res);
->> +            exit(EXIT_FAILURE);
->> +        }
->> +    }
->> +
->> +    /* There is 128KB of data in the socket's rx queue,
->> +     * dequeue first 64KB, credit update is not sent.
->> +     */
->> +    recv_buf_size = VIRTIO_VSOCK_MAX_PKT_BUF_SIZE;
->> +    recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
->> +    recv_buf_size++;
->> +
->> +    /* Updating SO_RCVLOWAT will send credit update. */
->> +    if (setsockopt(fd, SOL_SOCKET, SO_RCVLOWAT,
->> +               &recv_buf_size, sizeof(recv_buf_size))) {
->> +        perror("setsockopt(SO_RCVLOWAT)");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    memset(&fds, 0, sizeof(fds));
->> +    fds.fd = fd;
->> +    fds.events = POLLIN | POLLRDNORM | POLLERR |
->> +             POLLRDHUP | POLLHUP;
->> +
->> +    /* This 'poll()' will return once we receive last byte
->> +     * sent by client.
->> +     */
->> +    if (poll(&fds, 1, -1) < 0) {
->> +        perror("poll");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    if (fds.revents & POLLERR) {
->> +        fprintf(stderr, "'poll()' error\n");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    if (fds.revents & (POLLIN | POLLRDNORM)) {
->> +        recv_buf(fd, buf, recv_buf_size, 0, recv_buf_size);
->> +    } else {
->> +        /* These flags must be set, as there is at
->> +         * least 64KB of data ready to read.
->> +         */
->> +        fprintf(stderr, "POLLIN | POLLRDNORM expected\n");
->> +        exit(EXIT_FAILURE);
->> +    }
->> +
->> +    free(buf);
->> +    close(fd);
->> +}
->> +
->> static struct test_case test_cases[] = {
->>     {
->>         .name = "SOCK_STREAM connection reset",
->> @@ -1285,6 +1411,11 @@ static struct test_case test_cases[] = {
->>         .run_client = test_stream_msgzcopy_empty_errq_client,
->>         .run_server = test_stream_msgzcopy_empty_errq_server,
->>     },
->> +    {
->> +        .name = "SOCK_STREAM virtio SO_RCVLOWAT + deferred cred update",
->> +        .run_client = test_stream_rcvlowat_def_cred_upd_client,
->> +        .run_server = test_stream_rcvlowat_def_cred_upd_server,
->> +    },
->>     {},
->> };
->>
->> -- 
->> 2.25.1
->>
-> 
+It should not regress, If you check my recent reply on Dimitry's
+response, the Corelink revision is r2p4 and it can be enabled.
+On the Robin's mentioned errata workarounds, let me check once.
+
+Thanks & regards,
+Bibek
+
+> Konrad
