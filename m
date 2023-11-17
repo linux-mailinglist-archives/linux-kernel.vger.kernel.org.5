@@ -2,112 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A69067EF377
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:08:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCDDB7EF381
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:09:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346109AbjKQNIb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:08:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42468 "EHLO
+        id S1346001AbjKQNJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:09:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235193AbjKQNIM (ORCPT
+        with ESMTP id S231360AbjKQNJs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:08:12 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9E031BFF
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:07:59 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id af79cd13be357-7789a4c01ddso118112485a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:07:59 -0800 (PST)
+        Fri, 17 Nov 2023 08:09:48 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 289D9D5D
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:09:44 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id 5b1f17b1804b1-4084095722aso16087055e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:09:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1700226479; x=1700831279; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=xYJC7txQg+XVy3povoIneigNeaYf7XjMoOZStClkpv8=;
-        b=YCnIb/zdoWijRR3fBUtGj+9sINBW+bSCUYMdffeTqROq5nOPKHdyvZrul7F325K7Ti
-         aCr6i1V40IMksINrVanBS1eZv9si197uvyPklyGZRNGJNn9zqqxY/tCKdcZif+18gQ5K
-         PuBYN/okm1B3xZlsYgj3cwtjLx9Iyn5U91pjp0cuFmrljACmix3CKyv2yqsYK6p/iSZs
-         GtAD4hl3arsikyVUY7Hz+qXeZEd9YwQ3qco4ce1m5wA4d3nwCzIbEVFnce1BMKsbWnzP
-         MBZ2qT9yPOSVa3hWv3detpLWo/DWuF54QQ5rQvtqUYb4Kzc0Q7GFztr8Pz9fuAR+FWpa
-         S99w==
+        d=linaro.org; s=google; t=1700226582; x=1700831382; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RZ861qPhmcYLNIPpFrmLJFMqjIODRETy69SyllrTHqQ=;
+        b=vxwRiPyaS3h2h4HTsgARVjVfAMwQz2AD5sQp0cMqYNkRIRlIVab9YakRTPHZHjqJwr
+         l+S4KBc1XTKTJtCtoue4mdstKStsANlp1JEyqAZ/H+U9B0mo2+OvY08jpBBoZzHj/vnQ
+         QLgpC6nTe2uLT8z8NMT4dh+2q3cCHEBgVanc9GHa68LsS6bSsT+fvL9FQGejPhZCeiTa
+         iP1zbVBZsXchfQilHSf793Yc4V2e2/feHORAEW9NB+L00JZtGYJLLjtSNUv/dmK0tEkm
+         DRH8KVJKrN4zbzQ9Z1kSolzCKhMdMkoQ7jUtA8VAq58zJnR/pWBk/QqMZ69uBIn8+dv2
+         YzCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700226479; x=1700831279;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xYJC7txQg+XVy3povoIneigNeaYf7XjMoOZStClkpv8=;
-        b=plJePlocyq8Rk//sPAVvDwWrMm0tYB4pN+iuKChbwlUn6ZerexH06hHO3drGzEBXm0
-         3W6MrVhrMj+nUxek7ZCYXxbwzfEIx2nvqTL2F/+1tinJQAiyQ8+QU/3zWD/KAslLLea4
-         pRMUP+n+YnKnGSs2i5LxJXgCnYv1pFHKRJxtpLpBB2sg59XBe3RMfGtN1C2wyKzOtxuk
-         oYIOXEnahUaD6c37TNH9Y/v2KjLb7w+Opp4G1A9TBxYpswM+TIVCSOwe9OIAmnNjkHYi
-         GZGDelvswsiXdHBu6T/w+zlXJ5BxvRXrRHMonbRd8p/+v8PxB6PYyPlvWau5/pFiOekh
-         nsaA==
-X-Gm-Message-State: AOJu0YwjoFnSOppg3oQZdca+5017+f6Rv8EOauGvfjmH02Bdftefslgt
-        koE1R4GkESfDkAQDBiJuvrEoeg==
-X-Google-Smtp-Source: AGHT+IHGV9/z04xgmmPRcNGEMI55AbHf/lPg7kWBwBZVnpSAw4YdYeqeoXjjPc5CcSIbzcPMeEbOXQ==
-X-Received: by 2002:a05:620a:4104:b0:77a:5493:8a3 with SMTP id j4-20020a05620a410400b0077a549308a3mr14826885qko.11.1700226478437;
-        Fri, 17 Nov 2023 05:07:58 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-134-23-187.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.134.23.187])
-        by smtp.gmail.com with ESMTPSA id az44-20020a05620a172c00b00777611164c5sm577475qkb.106.2023.11.17.05.07.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 05:07:57 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.95)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1r3yZg-0001hp-Th;
-        Fri, 17 Nov 2023 09:07:56 -0400
-Date:   Fri, 17 Nov 2023 09:07:56 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Baolu Lu <baolu.lu@linux.intel.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/4] iommu/vt-d: Introduce dev_to_iommu()
-Message-ID: <20231117130756.GA6501@ziepe.ca>
-References: <20231116015048.29675-1-baolu.lu@linux.intel.com>
- <20231116015048.29675-2-baolu.lu@linux.intel.com>
- <BN9PR11MB5276CF0833BF362C1BE5F2268CB0A@BN9PR11MB5276.namprd11.prod.outlook.com>
- <053e89dd-8de9-43f3-8530-1f65181efd46@linux.intel.com>
+        d=1e100.net; s=20230601; t=1700226582; x=1700831382;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RZ861qPhmcYLNIPpFrmLJFMqjIODRETy69SyllrTHqQ=;
+        b=tfokicXndRoyEovOHEGqD+KK+BDFiGizx2xa3eYwgihAvPLhpt7YVq6prl+XZmKmr2
+         ohbsNdpIituJr0RTabzdd5K6j57dLktfMPdzXbj3Jf6s+wLmlgMEY+0dRRXmACw4sZCE
+         ChrMO6gvyFws3S7fjOhS2d/4OnnHjF00UxzobC2A2udX04bLbUu9WRRwrwc0mRBTYsxQ
+         5ChxBMEGO6MQ2Z77/k03svJUkOvfGc0uNIyFCRuabmBDW5BlekJBQgkR9Rsnemp7jsIZ
+         62P1Hy8LtwKT6DYD+8BdPxlxL84vt4NXfzVUrcPs9uFO7+gaIUUZ+GcfWoQeSjKW6ssF
+         lYDg==
+X-Gm-Message-State: AOJu0YwkTQ4129DA9po1ap3iBHOj07u9DAklceb45f7bQapGTjZge02C
+        HGumdBH9p5ScvDtUFe5hkklfjg==
+X-Google-Smtp-Source: AGHT+IFSYsD8mfV/aod6CYLaYG6GTod1TTdOQpxt/uCTP6yIBkKg9enjuJlCoWHYfmvxtPYno8wSxw==
+X-Received: by 2002:a1c:4b0d:0:b0:40a:48af:4821 with SMTP id y13-20020a1c4b0d000000b0040a48af4821mr15767333wma.31.1700226582412;
+        Fri, 17 Nov 2023 05:09:42 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c358d00b0040841e79715sm2734381wmq.27.2023.11.17.05.09.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 05:09:37 -0800 (PST)
+Message-ID: <9c025d37-50c5-4951-9b50-ef11ab2e2351@linaro.org>
+Date:   Fri, 17 Nov 2023 14:09:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <053e89dd-8de9-43f3-8530-1f65181efd46@linux.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 1/2] dt-bindings: pinctrl: qcom: Add X1E80100 pinctrl
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, linus.walleij@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-gpio@vger.kernel.org, quic_tsoni@quicinc.com,
+        neil.armstrong@linaro.org
+References: <20231117093921.31968-1-quic_sibis@quicinc.com>
+ <20231117093921.31968-2-quic_sibis@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231117093921.31968-2-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 11:23:56AM +0800, Baolu Lu wrote:
-> On 11/16/23 11:19 AM, Tian, Kevin wrote:
-> > > From: Lu Baolu <baolu.lu@linux.intel.com>
-> > > Sent: Thursday, November 16, 2023 9:51 AM
-> > > 
-> > > +static inline struct intel_iommu *dev_to_iommu(struct device *dev)
-> > > +{
-> > > +	/*
-> > > +	 * Assume that valid per-device iommu structure must be installed
-> > > +	 * if iommu_probe_device() has succeeded. This helper could only
-> > > +	 * be used after device is probed.
-> > > +	 */
-> > > +	return ((struct device_domain_info *)dev_iommu_priv_get(dev))-
-> > > > iommu;
-> > > +}
-> > 
-> > Not sure whether this helper is useful. This is only used by 2 out of 5
-> > post-probe users. Probably just open-coding in all 5 places is clearer.
+On 17/11/2023 10:39, Sibi Sankar wrote:
+> From: Rajendra Nayak <quic_rjendra@quicinc.com>
 > 
-> I thought it should get more users in the future development.
+> Add device tree binding Documentation details for Qualcomm X1E80100 TLMM
+> device.
+> 
+> Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
+> Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> Reviewed-by: Bjorn Andersson <andersson@kernel.org>
+> ---
+> 
 
-The pattern in the SMMUv2 driver is like
 
-  struct device_domain_info *info = dev_iommu_priv_get(dev);
-  struct intel_iommu *iommu = info->iommu;
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Which really isn't worth the helper, unless you have lots of caes
-where info isn't needed at all?
+Best regards,
+Krzysztof
 
-Jason
