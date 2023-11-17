@@ -2,65 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 875A97EF1D4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 12:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECD47EF1D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 12:33:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346001AbjKQLdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 06:33:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44980 "EHLO
+        id S1345996AbjKQLdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 06:33:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34510 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345963AbjKQLcs (ORCPT
+        with ESMTP id S1346062AbjKQLcx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 06:32:48 -0500
-Received: from mail-oi1-x22b.google.com (mail-oi1-x22b.google.com [IPv6:2607:f8b0:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3A3198A;
-        Fri, 17 Nov 2023 03:32:29 -0800 (PST)
-Received: by mail-oi1-x22b.google.com with SMTP id 5614622812f47-3b58d96a3bbso1079827b6e.1;
-        Fri, 17 Nov 2023 03:32:29 -0800 (PST)
+        Fri, 17 Nov 2023 06:32:53 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ECB41BD8;
+        Fri, 17 Nov 2023 03:32:33 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id 5614622812f47-3b2e4107f47so1239751b6e.2;
+        Fri, 17 Nov 2023 03:32:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700220748; x=1700825548; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700220751; x=1700825551; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WkFk5nXi3gCxcgMP2pqlJ+cSFf7OUbd8S/U5WFQ1tTc=;
-        b=aL60McRs49Zig0f7TuJOqnyncbLdu+lyhbo2gBZzwpE07jJRPR40M7NW26wEmWEy7J
-         PopSis+/Y8vkRscVMVjT2TSSp55EVDhj39xwzG2BH2iV5tZzB4USQJlkJdInaE6sa1LX
-         p0fHkZsdjeXLD/N7uePWeTAFgUQaqu1DuHONLCOmUlX2Q+eZMipKJUWt0+0EWUQVOU85
-         /u1XFkQdTTRaxMO15DnAK3ZoxTkzLkOTfcKqmcO9JVr0v25lDgx3BFr6sYZA0H2EwtHw
-         LqI3Wzeac+GDTRJWihfsOz8kINR64OzWevfE9yZJF+C1lhrjy8Tx1lpMTNIqdsc+zMf9
-         +WVA==
+        bh=z911V8NmEMY0vpbk9U80PyNddEOopXpE6TaT4ighhqU=;
+        b=C8REY6km6orgNID9bPoadHCgcuD42Woqar+RPnpK3hwQH5KBFPY4HcLog4p52rpG8w
+         9eFjQ7oD3l+VGZ3ICl9NrofeRMjCM5KBIh8XRWN1BTf8bqZIhgkaX9wh3Kq1gZCQurhD
+         NqyPoNgnJkyDndDUk1iLe4wq4t64T1BOjy33XRe/TtkC/xt1Ae2nQtrTmRegBjyoDJuL
+         VFZofIfIJPR1+qdtCVkP2kgGZwJPNu7CghluI0PMLD/xsoCLcK60FmlnGGOz4Sru3tpk
+         qthLjzTQC20rjaAsuDO0Hk0nbNUXwdSI9pogTV/yC0s2xMJ4CgttAiSk2+99sTA/9RWR
+         yfNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700220748; x=1700825548;
+        d=1e100.net; s=20230601; t=1700220751; x=1700825551;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WkFk5nXi3gCxcgMP2pqlJ+cSFf7OUbd8S/U5WFQ1tTc=;
-        b=SH3hC9xc83Wgd3rhuJjcQQWVWYg160CVW4J5eVn6EzbHAGhP7IB4wwsmoSJ6WbELW1
-         ARx6CLMQ3LWrbri96MKhMV3IweI+SUIqPQlsm5m9G2j3M7A1ETVePrQrGMSGj0pNlVIQ
-         rzNc284AyLLYvDh9TN0tMmyyzWLSJVI4wh1LGMfZfHVCngtY2mhgAf9sA1TBHl6fU5iR
-         osA1I+4OUgo0Hf1sOFgE3gBA4HXYOlLZo4jQZw5HscLGgIE3DcfM3NHILT/xpVVHrbYD
-         jUtmWQJfGpbNSvPCT9H00h4x32qzAJKQu5cFSYAOB70anG2uQip7gcqu9+0xrF4L6PkR
-         CHbw==
-X-Gm-Message-State: AOJu0YwER5pD+ylYx/u2Y0Vbo/5JBmzoT01v1ZCb04g4uHKmXmhQhg8K
-        1YVcAbmEUEcslrANbYuhSZg=
-X-Google-Smtp-Source: AGHT+IGXnbOI1f0WixDvcJwsLv1Ba/fZI96xMXZADCFN6QeJd+Uo572TsDBJcqMPuE3fGRGsb9RixQ==
-X-Received: by 2002:a05:6808:1242:b0:3b2:f489:4499 with SMTP id o2-20020a056808124200b003b2f4894499mr21860361oiv.14.1700220748676;
-        Fri, 17 Nov 2023 03:32:28 -0800 (PST)
+        bh=z911V8NmEMY0vpbk9U80PyNddEOopXpE6TaT4ighhqU=;
+        b=BhkvwW5aVsDYqkO5jdbUJQb/H8zwRiZBoJXAfNKTvrXVNTLQVPJWGKnTSdc8jKKDRG
+         hN4/VAlblpx/BW+1OZ1fxiVvDgFuresDi0O/hahR6O/5FQqmu0+WY4yg2GhmHChzxTiI
+         EqLd+NGEfuknot7rlV5ays0Dyy2kFCUEfD8jPmvudKMHxKPN2c0cgE73CDi5CvJgBEWC
+         8Qu07XWJqNrijTL7Z9OZLnjCpXvDMFavBvz9kfLlIgVH1teZQgXQ3sHRJwJaYDnZuSOT
+         frsjE73/lvsaCKB1xew+acX/ZLstamnM8GzZWQsIGTUu6gRo6b5w9f4ccQ3JzDCsOkDw
+         x7QQ==
+X-Gm-Message-State: AOJu0Yz79F1AZaJs+glkZY3gHGQpcZpClERtSIXVDt1+oyhplfJNf5rL
+        CcpoeW7iSxKGJFivEt74Grc=
+X-Google-Smtp-Source: AGHT+IG5djO8LWzy+cSy8fQri7k0arPeiWYLZeS93fdehv87600+2snneyrR16K71fE6bq3m5NBepg==
+X-Received: by 2002:a05:6808:319a:b0:3b6:d844:144 with SMTP id cd26-20020a056808319a00b003b6d8440144mr24391506oib.28.1700220751615;
+        Fri, 17 Nov 2023 03:32:31 -0800 (PST)
 Received: from localhost.localdomain (2001-b400-e286-d458-bc89-d4cd-bd42-ffb5.emome-ip6.hinet.net. [2001:b400:e286:d458:bc89:d4cd:bd42:ffb5])
-        by smtp.gmail.com with ESMTPSA id u2-20020a631402000000b005b4b70738e5sm1229224pgl.8.2023.11.17.03.32.25
+        by smtp.gmail.com with ESMTPSA id u2-20020a631402000000b005b4b70738e5sm1229224pgl.8.2023.11.17.03.32.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 03:32:28 -0800 (PST)
+        Fri, 17 Nov 2023 03:32:31 -0800 (PST)
 From:   Victor Shih <victorshihgli@gmail.com>
 To:     ulf.hansson@linaro.org, adrian.hunter@intel.com
 Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
         benchuanggli@gmail.com, HL.Liu@genesyslogic.com.tw,
         Greg.tu@genesyslogic.com.tw, takahiro.akashi@linaro.org,
-        dlunev@chromium.org, Victor Shih <victorshihgli@gmail.com>,
-        Ben Chuang <ben.chuang@genesyslogic.com.tw>,
-        Victor Shih <victor.shih@genesyslogic.com.tw>
-Subject: [PATCH V13 10/21] mmc: sdhci-uhs2: dump UHS-II registers
-Date:   Fri, 17 Nov 2023 19:31:38 +0800
-Message-Id: <20231117113149.9069-11-victorshihgli@gmail.com>
+        dlunev@chromium.org, Victor Shih <victor.shih@genesyslogic.com.tw>,
+        Ben Chuang <ben.chuang@genesyslogic.com.tw>
+Subject: [PATCH V13 11/21] mmc: sdhci-uhs2: add reset function and uhs2_mode function
+Date:   Fri, 17 Nov 2023 19:31:39 +0800
+Message-Id: <20231117113149.9069-12-victorshihgli@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231117113149.9069-1-victorshihgli@gmail.com>
 References: <20231117113149.9069-1-victorshihgli@gmail.com>
@@ -78,109 +77,111 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Victor Shih <victor.shih@genesyslogic.com.tw>
 
-Dump UHS-II specific registers, if available, in sdhci_dumpregs()
-for informative/debugging use.
+Sdhci_uhs2_reset() does a UHS-II specific reset operation.
 
 Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
 Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
 Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 ---
 
-Updates in V7:
- - Use sdhci_uhs2_mode() to simplify code.
+Updates in V13:
+ - Use ios timing to stead MMC_UHS2_SUPPORT for indicate the UHS2 mode.
+
+Updates in V8:
+ - Adjust the position of matching brackets.
 
 Updates in V6:
- - Remove unnecessary code.
+ - Remove unnecessary functions and simplify code.
 
 ---
 
- drivers/mmc/host/sdhci-uhs2.c | 30 ++++++++++++++++++++++++++++++
- drivers/mmc/host/sdhci-uhs2.h |  4 ++++
- drivers/mmc/host/sdhci.c      |  3 +++
- drivers/mmc/host/sdhci.h      |  1 +
- 4 files changed, 38 insertions(+)
+ drivers/mmc/host/sdhci-uhs2.c | 45 +++++++++++++++++++++++++++++++++++
+ drivers/mmc/host/sdhci-uhs2.h |  2 ++
+ 2 files changed, 47 insertions(+)
 
 diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs2.c
-index 608f8ad5aaed..e339821d3504 100644
+index e339821d3504..ef6f02583d61 100644
 --- a/drivers/mmc/host/sdhci-uhs2.c
 +++ b/drivers/mmc/host/sdhci-uhs2.c
-@@ -18,6 +18,36 @@
- #define DRIVER_NAME "sdhci_uhs2"
- #define DBG(f, x...) \
- 	pr_debug(DRIVER_NAME " [%s()]: " f, __func__, ## x)
-+#define SDHCI_UHS2_DUMP(f, x...) \
-+	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
-+
-+void sdhci_uhs2_dump_regs(struct sdhci_host *host)
-+{
-+	if (!(sdhci_uhs2_mode(host)))
-+		return;
-+
-+	SDHCI_UHS2_DUMP("==================== UHS2 ==================\n");
-+	SDHCI_UHS2_DUMP("Blk Size:  0x%08x | Blk Cnt:  0x%08x\n",
-+			sdhci_readw(host, SDHCI_UHS2_BLOCK_SIZE),
-+			sdhci_readl(host, SDHCI_UHS2_BLOCK_COUNT));
-+	SDHCI_UHS2_DUMP("Cmd:       0x%08x | Trn mode: 0x%08x\n",
-+			sdhci_readw(host, SDHCI_UHS2_CMD),
-+			sdhci_readw(host, SDHCI_UHS2_TRANS_MODE));
-+	SDHCI_UHS2_DUMP("Int Stat:  0x%08x | Dev Sel : 0x%08x\n",
-+			sdhci_readw(host, SDHCI_UHS2_DEV_INT_STATUS),
-+			sdhci_readb(host, SDHCI_UHS2_DEV_SELECT));
-+	SDHCI_UHS2_DUMP("Dev Int Code:  0x%08x\n",
-+			sdhci_readb(host, SDHCI_UHS2_DEV_INT_CODE));
-+	SDHCI_UHS2_DUMP("Reset:     0x%08x | Timer:    0x%08x\n",
-+			sdhci_readw(host, SDHCI_UHS2_SW_RESET),
-+			sdhci_readw(host, SDHCI_UHS2_TIMER_CTRL));
-+	SDHCI_UHS2_DUMP("ErrInt:    0x%08x | ErrIntEn: 0x%08x\n",
-+			sdhci_readl(host, SDHCI_UHS2_INT_STATUS),
-+			sdhci_readl(host, SDHCI_UHS2_INT_STATUS_ENABLE));
-+	SDHCI_UHS2_DUMP("ErrSigEn:  0x%08x\n",
-+			sdhci_readl(host, SDHCI_UHS2_INT_SIGNAL_ENABLE));
-+}
-+EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
+@@ -10,7 +10,9 @@
+  *  Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
+  */
  
++#include <linux/delay.h>
+ #include <linux/module.h>
++#include <linux/iopoll.h>
+ 
+ #include "sdhci.h"
+ #include "sdhci-uhs2.h"
+@@ -21,6 +23,8 @@
+ #define SDHCI_UHS2_DUMP(f, x...) \
+ 	pr_err("%s: " DRIVER_NAME ": " f, mmc_hostname(host->mmc), ## x)
+ 
++#define UHS2_RESET_TIMEOUT_100MS		100000
++
+ void sdhci_uhs2_dump_regs(struct sdhci_host *host)
+ {
+ 	if (!(sdhci_uhs2_mode(host)))
+@@ -49,6 +53,47 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *host)
+ }
+ EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
+ 
++/*****************************************************************************\
++ *                                                                           *
++ * Low level functions                                                       *
++ *                                                                           *
++\*****************************************************************************/
++
++bool sdhci_uhs2_mode(struct sdhci_host *host)
++{
++	return	host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_A ||
++		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B ||
++		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_A_HD ||
++		host->mmc->ios.timing == MMC_TIMING_UHS2_SPEED_B_HD;
++}
++
++/**
++ * sdhci_uhs2_reset - invoke SW reset
++ * @host: SDHCI host
++ * @mask: Control mask
++ *
++ * Invoke SW reset, depending on a bit in @mask and wait for completion.
++ */
++void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask)
++{
++	u32 val;
++
++	sdhci_writew(host, mask, SDHCI_UHS2_SW_RESET);
++
++	if (mask & SDHCI_UHS2_SW_RESET_FULL)
++		host->clock = 0;
++
++	/* hw clears the bit when it's done */
++	if (read_poll_timeout_atomic(sdhci_readw, val, !(val & mask), 10,
++				     UHS2_RESET_TIMEOUT_100MS, true, host, SDHCI_UHS2_SW_RESET)) {
++		pr_warn("%s: %s: Reset 0x%x never completed. %s: clean reset bit.\n", __func__,
++			mmc_hostname(host->mmc), (int)mask, mmc_hostname(host->mmc));
++		sdhci_writeb(host, 0, SDHCI_UHS2_SW_RESET);
++		return;
++	}
++}
++EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
++
  /*****************************************************************************\
   *                                                                           *
+  * Driver init/exit                                                          *
 diff --git a/drivers/mmc/host/sdhci-uhs2.h b/drivers/mmc/host/sdhci-uhs2.h
-index e993f41ffb7f..2bfe18d29bca 100644
+index 2bfe18d29bca..8253d50f7852 100644
 --- a/drivers/mmc/host/sdhci-uhs2.h
 +++ b/drivers/mmc/host/sdhci-uhs2.h
-@@ -174,4 +174,8 @@
- #define SDHCI_UHS2_EMBED_CTRL_PTR		0xE6
- #define SDHCI_UHS2_VENDOR_PTR			0xE8
+@@ -177,5 +177,7 @@
+ struct sdhci_host;
  
-+struct sdhci_host;
-+
-+void sdhci_uhs2_dump_regs(struct sdhci_host *host);
-+
+ void sdhci_uhs2_dump_regs(struct sdhci_host *host);
++bool sdhci_uhs2_mode(struct sdhci_host *host);
++void sdhci_uhs2_reset(struct sdhci_host *host, u16 mask);
+ 
  #endif /* __SDHCI_UHS2_H */
-diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
-index c79f73459915..27ea5b875c29 100644
---- a/drivers/mmc/host/sdhci.c
-+++ b/drivers/mmc/host/sdhci.c
-@@ -110,6 +110,9 @@ void sdhci_dumpregs(struct sdhci_host *host)
- 		}
- 	}
- 
-+	if (host->ops->dump_uhs2_regs)
-+		host->ops->dump_uhs2_regs(host);
-+
- 	if (host->ops->dump_vendor_regs)
- 		host->ops->dump_vendor_regs(host);
- 
-diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
-index 51751e82434d..782c399fae15 100644
---- a/drivers/mmc/host/sdhci.h
-+++ b/drivers/mmc/host/sdhci.h
-@@ -720,6 +720,7 @@ struct sdhci_ops {
- 	void	(*request_done)(struct sdhci_host *host,
- 				struct mmc_request *mrq);
- 	void    (*dump_vendor_regs)(struct sdhci_host *host);
-+	void	(*dump_uhs2_regs)(struct sdhci_host *host);
- };
- 
- #ifdef CONFIG_MMC_SDHCI_IO_ACCESSORS
 -- 
 2.25.1
 
