@@ -2,104 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 614527EFB2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:09:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D81A47EFB2C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232759AbjKQWJG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 17:09:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50750 "EHLO
+        id S233351AbjKQWIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 17:08:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234061AbjKQWJE (ORCPT
+        with ESMTP id S230379AbjKQWIw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 17:09:04 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3803FD7A
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:09:01 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce2988d62eso1303272a34.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:09:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700258940; x=1700863740; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xUVc511gN5OSpetib0BtsSnCKuFu68FlIwOoywnOLzA=;
-        b=ai3OHyyWSNE/9BnKouUbiQPHpZIrxaaBNhN0RcMh/3scyimUIAOPwDFWUIariZevQL
-         loW8rhHm2+skTxD5/pI7spP22BEz3ty9ki2PuPIkTi3KGvnXbkenA6Cj3V4LlzURlrAO
-         PLg4y4t84pWvqZidfM6qOM2POWfBz0nYKOqSM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700258940; x=1700863740;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xUVc511gN5OSpetib0BtsSnCKuFu68FlIwOoywnOLzA=;
-        b=NEeXv+WRCcV1Pc7v1WczGLEDdrrs/NB00pTXl0vXr9CvESHE0vV3fDWLdNMBCgZ4tL
-         EuRrwK7Yi0tg7YfvYCrA0SLoiZDPdXH4PfwjzBo//+0hu7oGWj0pO/9rCJm66ZMRjFwh
-         ZdbGAi66JcCZ2qj+o+0m49lgj/aBpX6sSvvs0W8vqBWa9zW7x1KT/o4BGrNLkkQbuS1q
-         VYWnYqs3CP6SvOE1oW6arQFy8iB+hH+bwboR0ObVp0SMdaQNjDJpWfacC5nbe39A1R3r
-         7mpR37mZU6kXNYrfV1gIaAjbyuvvX6jdONEQIGrQOHneUvmqVvKUxcc/3ZqhszY6yvSf
-         4iJA==
-X-Gm-Message-State: AOJu0Yzja6lOVsYlXfsUwWYJT0ZntC6jzwOGh5t83qe9N6pA3/44bZJs
-        ZRYPap3PUWpbiLFbMD8C22aqBqEUNKE7knZ40MrlQA==
-X-Google-Smtp-Source: AGHT+IFiWNTHuBd6H11UhItgAGgFvK9eyWsVkIf8k2d/LqKmWmGRl0fk8DZLVaJKw+Pga2D49h6Wg/xhaA6qM5ggtJY=
-X-Received: by 2002:a9d:66d0:0:b0:6ce:29cd:b699 with SMTP id
- t16-20020a9d66d0000000b006ce29cdb699mr584807otm.10.1700258940488; Fri, 17 Nov
- 2023 14:09:00 -0800 (PST)
-MIME-Version: 1.0
-References: <20231117215056.1883314-1-hsinyi@chromium.org> <20231117215056.1883314-2-hsinyi@chromium.org>
- <2023111738-bondless-sketch-f201@gregkh>
-In-Reply-To: <2023111738-bondless-sketch-f201@gregkh>
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-Date:   Fri, 17 Nov 2023 14:08:34 -0800
-Message-ID: <CAJMQK-i1CySjb1K7SHR40wnmc+TN5k0MhDef6OhYimPchzGn2g@mail.gmail.com>
-Subject: Re: [PATCH v7 1/3] drm/panel-edp: Add override_edid_mode quirk for
- generic edp
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Jessica Zhang <quic_jesszhan@quicinc.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        Fri, 17 Nov 2023 17:08:52 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93B03B8;
+        Fri, 17 Nov 2023 14:08:49 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 20F67C433C8;
+        Fri, 17 Nov 2023 22:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1700258929;
+        bh=NEOWloWUbotUNY8eU+l2lgEi5xBr0yxPu9X40CLvS6I=;
+        h=Date:From:To:Cc:Subject:From;
+        b=KFTQrG8kWtIKss8EwcmegRotfexaBOlduqxE5Bty+bMXAT7k03g34KsNbdLjWaAWr
+         ri2KBCd9BQy0WiC7DE0NCNgmVwGwgiZmuGC1b/IT4Sk5qjveC5ZYRH3O5nZnoy43EB
+         xXWH/NBF5nzXn2UCUiguVPrTPDvvEac8OPSS37FY=
+Date:   Fri, 17 Nov 2023 14:08:48 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     mm-commits@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hotfixes for 6.7-rc2
+Message-Id: <20231117140848.02adcf56c301bb3ab85ae75a@linux-foundation.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 2:06=E2=80=AFPM Greg KH <gregkh@linuxfoundation.org=
-> wrote:
->
-> On Fri, Nov 17, 2023 at 01:46:32PM -0800, Hsin-Yi Wang wrote:
-> > Generic edp gets mode from edid. However, some panels report incorrect
-> > mode in this way, resulting in glitches on panel. Introduce a new quirk
-> > additional_mode to the generic edid to pick a correct hardcoded mode.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > ---
-> > v6->v7: split usecase to another patch.
-> > ---
-> >  drivers/gpu/drm/panel/panel-edp.c | 48 +++++++++++++++++++++++++++++--
-> >  1 file changed, 45 insertions(+), 3 deletions(-)
->
-> <formletter>
->
-> This is not the correct way to submit patches for inclusion in the
-> stable kernel tree.  Please read:
->     https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.ht=
-ml
-> for how to do this properly.
->
-Forgot to -cc: stable, these patches don't need to be picked to stable.
 
-> </formletter>
+Linus, please merge this batch of hotfixes, thanks.
+
+
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
+
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm tags/mm-hotfixes-stable-2023-11-17-14-04
+
+for you to fetch changes up to afccb0804fc74ac2f6737af6a139632606cb461d:
+
+  mm: more ptep_get() conversion (2023-11-15 15:30:09 -0800)
+
+----------------------------------------------------------------
+Thirteen hotfixes.  Seven are cc:stable and the remainder pertain to
+post-6.6 issues or aren't considered suitable for backporting.
+
+----------------------------------------------------------------
+Breno Leitao (2):
+      selftests/mm: restore number of hugepages
+      selftests/mm: add hugetlb_fault_after_madv to .gitignore
+
+Dan Carpenter (1):
+      mm/damon/sysfs: eliminate potential uninitialized variable warning
+
+Helge Deller (1):
+      parisc: fix mmap_base calculation when stack grows upwards
+
+Hyeongtak Ji (1):
+      mm/damon/core.c: avoid unintentional filtering out of schemes
+
+Muhammad Usama Anjum (2):
+      selftests: mm: skip whole test instead of failure
+      selftests: mm: fix some build warnings
+
+Roman Gushchin (1):
+      mm: kmem: drop __GFP_NOFAIL when allocating objcg vectors
+
+Ryan Roberts (1):
+      mm: more ptep_get() conversion
+
+SeongJae Park (3):
+      mm/damon/sysfs: check error from damon_sysfs_update_target()
+      mm/damon/sysfs-schemes: handle tried regions sysfs directory allocation failure
+      mm/damon/sysfs-schemes: handle tried region directory allocation failure
+
+Stefan Roesch (1):
+      mm: fix for negative counter: nr_file_hugepages
+
+ arch/parisc/Kconfig                        |  6 +++---
+ arch/parisc/include/asm/elf.h              | 10 +---------
+ arch/parisc/include/asm/processor.h        |  2 ++
+ arch/parisc/kernel/sys_parisc.c            |  2 +-
+ mm/damon/core.c                            |  2 +-
+ mm/damon/sysfs-schemes.c                   |  5 +++++
+ mm/damon/sysfs.c                           |  6 ++++--
+ mm/filemap.c                               |  2 +-
+ mm/huge_memory.c                           | 16 +++++++++-------
+ mm/ksm.c                                   |  2 +-
+ mm/memcontrol.c                            |  3 ++-
+ mm/userfaultfd.c                           |  2 +-
+ mm/util.c                                  | 10 ++++++++++
+ tools/testing/selftests/mm/.gitignore      |  1 +
+ tools/testing/selftests/mm/pagemap_ioctl.c | 23 ++++++++++++-----------
+ tools/testing/selftests/mm/run_vmtests.sh  |  3 +++
+ 16 files changed, 57 insertions(+), 38 deletions(-)
+
