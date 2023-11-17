@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DD0107EEBAB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 05:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 222B87EEBAF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 05:27:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345666AbjKQEYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 23:24:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42996 "EHLO
+        id S1345666AbjKQE1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 23:27:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229874AbjKQEY2 (ORCPT
+        with ESMTP id S229874AbjKQE1a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 23:24:28 -0500
-Received: from mail-oo1-xc2a.google.com (mail-oo1-xc2a.google.com [IPv6:2607:f8b0:4864:20::c2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 624D8130;
-        Thu, 16 Nov 2023 20:24:25 -0800 (PST)
-Received: by mail-oo1-xc2a.google.com with SMTP id 006d021491bc7-586ba7cdb6bso777921eaf.2;
-        Thu, 16 Nov 2023 20:24:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700195064; x=1700799864; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AFveOmJik6YY9ZRLOk+sCI/MXeTb5qg3AWh1DG6limk=;
-        b=bV39K6F7/90W5RtDYDMI0s/dAve9bd+gfXOR/gm7U4jYCDLsO9Iqhe+HsIPI43nKqY
-         o0tJCGDzGpBhLr0LOdjIthuDFvs7L3jCVKjaEXeaK6Hl4S/rC+lMDBD8BbwOWq7jmOZ6
-         IQgF3e7TMcz4XRlJb6Qpg9PW/D5CSjlvHI7RH0lXtnlr7cLNmqSkhXrl3RNUecnwbnH/
-         9jEOzqfvsJqujwTBgIQk9oCN0nC+SyqQv72Fu9uH6341NISSMdLdAfPBzrspgPEoASjB
-         ZFNCztR21rYgAoZMQHrk5DCE4YeHs9yJFquw0DtZTohcXA5tCLkMOBa1NHS8AxuzxAh+
-         wF/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700195064; x=1700799864;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AFveOmJik6YY9ZRLOk+sCI/MXeTb5qg3AWh1DG6limk=;
-        b=RiD366ueOiXD7G3P8KVc3lzQexL7RiuVFp1+UNOgllm3i6851UZwo0RqXtb8OHmOri
-         DwGpQHoV00SbYR9FO14t7cysJEH6a/7RV75LzJ/mUE8UZSBITQKWY0IcByYglFB+va1q
-         OkJDMjIjkUytlU/IUttNmBQvrRBGm+ZbR3O/X1Cj2jjH49fPuwouHSQ0ipqqeY5qKCOB
-         t8ikmZtm+FJt9n2SBOfKOgSZSEm+5bNS11j9PPT4XrItwkBshSjk0Uhl6fE6LLHjSS+X
-         CR27oBeHJ6oogMpY8Fng7bOZqXqLW5d7zNmmV2LcvclFI6A4aMVyCrLp5lPt7VTPdhjB
-         4gtw==
-X-Gm-Message-State: AOJu0YwvmYEkclpspa5GbwCYUso7LjiacVcThTCuGZYca4AZfHzlVIhv
-        CYE94kiITZzYodV5Zh5ZyNQ=
-X-Google-Smtp-Source: AGHT+IHuVn9VaCdTI1zb9XGaQfyybHaDC7kpyPSoItyKNID0FO3pFfC9O9Kc0l9ykmhdn7DC3EIOXw==
-X-Received: by 2002:a05:6820:2c04:b0:58a:67b5:2df2 with SMTP id dw4-20020a0568202c0400b0058a67b52df2mr12344585oob.8.1700195064516;
-        Thu, 16 Nov 2023 20:24:24 -0800 (PST)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u38-20020a4a8c29000000b005840989d13bsm169967ooj.44.2023.11.16.20.24.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 20:24:24 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 16 Nov 2023 20:24:22 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Subject: Re: [PATCH 4.19 00/88] 4.19.299-rc1 review
-Message-ID: <906a58e1-ca7e-47ce-80ae-c6586156224d@roeck-us.net>
-References: <20231115191426.221330369@linuxfoundation.org>
+        Thu, 16 Nov 2023 23:27:30 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C46B95;
+        Thu, 16 Nov 2023 20:27:26 -0800 (PST)
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH3Dag9005816;
+        Fri, 17 Nov 2023 04:27:23 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=W+aAVxf4RMfKlVetYhxSLP38sayVLob8GRO7wWVwucg=;
+ b=PRVWwCCi6dFLwzCXh4B8w1QhFgrVmn7N2t5UmAzhmEK8RKRpJ0tIibQkyq2KomLQRMmk
+ rOuLjbgSG+H+mNcSLdnbJI1qj+q6uRw4TW1+vKImA6VTQKmCdTf6kWv85XrQpMF0u9I4
+ XjzYpiX+EDQQ9TTr4Mcgv0Frkabv7PAQb6SqlEMgNrSA5nJMRNK1bEfUApjwIGvSlZ1A
+ 3oQ2Mbpqq5vuXak0qlK5P1CZzB98bWh18KRGAWmW7b7++DPwADxs7zXAbU7UsRztMmGQ
+ SmXQkSgqgUBbUCGd8DEYMVlW8O3nO90/uAgSnPsmQenh7A3eB70pDrPQfr2EZdBkZr/Z 7g== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udrvs11j9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 04:27:23 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH4RLB4010591
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 04:27:21 GMT
+Received: from [10.79.43.91] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Thu, 16 Nov
+ 2023 20:27:16 -0800
+Message-ID: <3067f0bc-7479-380e-0528-b307c34a40cd@quicinc.com>
+Date:   Fri, 17 Nov 2023 09:57:13 +0530
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231115191426.221330369@linuxfoundation.org>
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: qcom: Add SC8380XP pinctrl
+Content-Language: en-US
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <linus.walleij@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+        <quic_tsoni@quicinc.com>, <neil.armstrong@linaro.org>
+References: <20231025135058.11268-1-quic_sibis@quicinc.com>
+ <20231025135058.11268-2-quic_sibis@quicinc.com>
+ <c987222a-9ce7-4adb-aae8-0ae016e7c7d3@linaro.org>
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+In-Reply-To: <c987222a-9ce7-4adb-aae8-0ae016e7c7d3@linaro.org>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: eN710RF3rcsgMSRnEYuEEhmJLWcYTQIK
+X-Proofpoint-ORIG-GUID: eN710RF3rcsgMSRnEYuEEhmJLWcYTQIK
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_01,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=427
+ priorityscore=1501 malwarescore=0 suspectscore=0 impostorscore=0
+ adultscore=0 lowpriorityscore=0 phishscore=0 spamscore=0 bulkscore=0
+ mlxscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170031
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 03:35:12PM -0500, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.299 release.
-> There are 88 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+Hey Krzysztof,
+
+On 10/27/23 13:55, Krzysztof Kozlowski wrote:
+> On 25/10/2023 15:50, Sibi Sankar wrote:
+>> From: Rajendra Nayak <quic_rjendra@quicinc.com>
+>>
+>> Add device tree binding Documentation details for Qualcomm SC8380XP TLMM
+>> device
+>>
 > 
-> Responses should be made by Fri, 17 Nov 2023 19:14:03 +0000.
-> Anything received after that time might be too late.
 > 
+>> +required:
+>> +  - compatible
+>> +  - reg
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+>> +    tlmm: pinctrl@f100000 {
+>> +        compatible = "qcom,sc8380xp-tlmm";
+>> +        reg = <0x0f100000 0xf00000>;
+>> +        gpio-controller;
+>> +        #gpio-cells = <2>;
+>> +        gpio-ranges = <&tlmm 0 0 239>;
+> 
+> Is the 239 number a mistake or do you include here UFS reset?
 
-Build results:
-	total: 149 pass: 149 fail: 0
-Qemu test results:
-	total: 441 pass: 441 fail: 0
+We seem to be including UFS reset on all the previous Qaulcomm SoCs, so
+continuing the same here.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+-Sibi
 
-Guenter
+> 
+> Best regards,
+> Krzysztof
+> 
