@@ -2,54 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 248827EEE86
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:29:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF9A67EEE6F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:28:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345734AbjKQJ35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:29:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49350 "EHLO
+        id S235675AbjKQJ2O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:28:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345658AbjKQJ3z (ORCPT
+        with ESMTP id S230225AbjKQJ2N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:29:55 -0500
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1991A5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:29:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=WZAsom5r4sgfe97RIp0Yh6+r03GE2Pl10AtA9l+P7s8=; b=g5ILzhCG0OX8VHokKKS25WlOQi
-        12kvFAdpdnFEQJ0lWfnhOfVtzXJgbv4xBcpbhyEifnkMNDrrk9GjB8ib50IhLrDrGoWzgNlGBFVYv
-        P3zWF2kwQPUDDV5/y12GOH09n5D0DfSiz1hQhLVf3wZNdnpNHT0RRSOSd0q5YELBdtFcpFp5et7FN
-        PCAkrSQh/bJG79jx0aXA60RLO5F+8mvEaiz2iktCsx/qYTwal78zcEEv8wjz+zz9JoYEfks/yDRZ5
-        Z2yAICISHnkPw+H+xM0aLT3/XOkpyhbmyd31an1uTpwHubKWb6dwFaEKihXV2NXk48SIBniF/KFVc
-        1W5/aPSA==;
-Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
-        id 1r3v8M-007B8Z-2V;
-        Fri, 17 Nov 2023 09:29:31 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 6E2F7300478; Fri, 17 Nov 2023 10:27:30 +0100 (CET)
-Date:   Fri, 17 Nov 2023 10:27:30 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     syzbot <syzbot+cbb25bb9b4d29a773985@syzkaller.appspotmail.com>
-Cc:     boqun.feng@gmail.com, brauner@kernel.org,
-        linux-kernel@vger.kernel.org, longman@redhat.com,
-        michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com,
-        oleg@redhat.com, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de, wander@redhat.com, will@kernel.org
-Subject: Re: [syzbot] [kernel?] inconsistent lock state in ptrace_attach
-Message-ID: <20231117092730.GK8262@noisy.programming.kicks-ass.net>
-References: <000000000000a25ea7060a430d3c@google.com>
- <00000000000064b787060a55354e@google.com>
+        Fri, 17 Nov 2023 04:28:13 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 293BAB7;
+        Fri, 17 Nov 2023 01:28:10 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH7c2BU021895;
+        Fri, 17 Nov 2023 09:28:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=BHCF9LnbimJFinOpOG3HG9Nb3gkW+d7+o8Jglj+Eehs=;
+ b=GnbfWv5BThqVGttQZ9jb5f3NSH0Jq1FMAy7uNAo55tuqp5ji9+YBca6tjp29QHmYsEpe
+ bl9Qog/WV4OkKK3eypa9he/oFxgCmRGwlDg5rRsG0dAXJY9/kgk/Qw3dj0BGF1K2gTYf
+ U9lwzPl0RRlO8cYZVP0PFrgMgqe1DDlR6f3gpY3Q/CdBk6vtr4ehx9vbGNThjBjkHTUb
+ lS11reGGq1xFyeNP/noZ1ANZo+/sENHTVeCqtXbWHOSAVKDoexvmeku7LtlS2YrXLd2Y
+ MFIHyJaoC5DidtfJ8XqJth9Q22t+8eb7LQLfp604QRoVL6fE97wR6GI4IjSLd+5o+Eqq tw== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udmw429dy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:28:06 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9S5nL007799
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:28:05 GMT
+Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 17 Nov 2023 01:27:59 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <mturquette@baylibre.com>, <sboyd@kernel.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_tdas@quicinc.com>, <quic_rjendra@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <neil.armstrong@linaro.org>, <abel.vesa@linaro.org>,
+        <quic_tsoni@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V2 0/4] clk: qcom: Introduce clocks drivers for X1E80100
+Date:   Fri, 17 Nov 2023 14:57:33 +0530
+Message-ID: <20231117092737.28362-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000064b787060a55354e@google.com>
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: nfUvZy-4QDhZdOozExmRLyAEV0avd-7s
+X-Proofpoint-ORIG-GUID: nfUvZy-4QDhZdOozExmRLyAEV0avd-7s
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=679
+ clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170069
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -57,26 +79,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 12:49:04AM -0800, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit 2d25a889601d2fbc87ec79b30ea315820f874b78
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Sun Sep 17 11:24:21 2023 +0000
-> 
->     ptrace: Convert ptrace_attach() to use lock guards
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=132b7d84e80000
-> start commit:   f31817cbcf48 Add linux-next specific files for 20231116
-> git tree:       linux-next
-> final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ab7d84e80000
-> console output: https://syzkaller.appspot.com/x/log.txt?x=172b7d84e80000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=f59345f1d0a928c
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cbb25bb9b4d29a773985
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1014d797680000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b1ec67680000
-> 
-> Reported-by: syzbot+cbb25bb9b4d29a773985@syzkaller.appspotmail.com
-> Fixes: 2d25a889601d ("ptrace: Convert ptrace_attach() to use lock guards")
+This series adds initial clock support for the Qualcomm X1E80100 platform,
+aka Snapdragon X Elite.
 
-Hurmph, let me pull that patch from tip and go have a look. Thanks!
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
+
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Use shared ops in the x1e80100 gcc driver [Bryan].
+* Inline clock names [Konrad]
+* Fix Kconfig [Krzysztof]
+* Pick-up Rbs from the list.
+
+Dependencies: None
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
+
+Rajendra Nayak (4):
+  dt-bindings: clock: qcom: Add X1E80100 GCC clocks
+  clk: qcom: Add Global Clock controller (GCC) driver for X1E80100
+  dt-bindings: clock: qcom-rpmhcc: Add RPMHCC bindings for X1E80100
+  clk: qcom: rpmh: Add support for X1E80100 rpmh clocks
+
+ .../bindings/clock/qcom,rpmhcc.yaml           |    1 +
+ .../bindings/clock/qcom,x1e80100-gcc.yaml     |   72 +
+ drivers/clk/qcom/Kconfig                      |   10 +
+ drivers/clk/qcom/Makefile                     |    1 +
+ drivers/clk/qcom/clk-rpmh.c                   |   26 +
+ drivers/clk/qcom/gcc-x1e80100.c               | 6807 +++++++++++++++++
+ include/dt-bindings/clock/qcom,x1e80100-gcc.h |  485 ++
+ 7 files changed, 7402 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/clock/qcom,x1e80100-gcc.yaml
+ create mode 100644 drivers/clk/qcom/gcc-x1e80100.c
+ create mode 100644 include/dt-bindings/clock/qcom,x1e80100-gcc.h
+
+-- 
+2.17.1
+
