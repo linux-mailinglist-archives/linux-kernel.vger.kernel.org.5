@@ -2,523 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E63047EF929
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:07:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E297EF93C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:10:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346189AbjKQVHR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:07:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45388 "EHLO
+        id S231905AbjKQVKZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:10:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQVHP (ORCPT
+        with ESMTP id S235787AbjKQVKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:07:15 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B228D52
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:07:11 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc316ccc38so22036225ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:07:11 -0800 (PST)
+        Fri, 17 Nov 2023 16:10:18 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CDA1732
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:09:57 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c115026985so2493391b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:09:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700255231; x=1700860031; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=YnuVSH1Hjhwo5eduxUsEbs6506SH8CFL3UEwOpV+ZLs=;
-        b=kq5TvUb3Gx//JD8yyTivxM+JC1vQFFqo1PUFg6jNkA8BZavzPwLBQBllJammp+3Gux
-         rT5A6Fj8ExB4gQ5iCoyYbTV1+vQG+wPCsayJRQX8G+KP7FVpDFSeA2/pt7BpTA3BMXls
-         vigNjzMSOZi2AN0VM8R8kyXq2n3lIX+sHzdPCddR8ywQ5NF5FZiJKXI1T/K4kkaNSyeZ
-         /8OhaUA+2KnaGYK6jUsIxpaR3JG1phOpx3Rkco4u6ArQkRnYxB8yyALMj9n3mbJEKDWX
-         02oFpeEKE/ZdjopgrWUzd3WP1O1dmjpqnf/dKnjYPhxWMdkiDPtI2SoUzX8XFpM/Yh36
-         QwBQ==
+        d=chromium.org; s=google; t=1700255397; x=1700860197; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6wz1t+l8RssdWaevpsmYkaZfUjbmCNYMu71lLo08Sgs=;
+        b=kAkHxOwrS5quIbPQh6wjHSXX9Wot39Bcq6Hp/m+/pqUFUhGnZcRl+7btX1SmFR0D5I
+         FXtC3Gt36Tpr0pbSdj9GU10CilJmHWfjMp0fKpb9IqpC1Rlkmw3iLhfeeXSbNQCkN568
+         K1hyi32Ruf/h0r0k/6VGfXpiaGAnqDc9ctJAU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700255231; x=1700860031;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YnuVSH1Hjhwo5eduxUsEbs6506SH8CFL3UEwOpV+ZLs=;
-        b=V3C4tdD/Rv8jKzW84OVZF8/LzzTpTLBIh6dJOo6xsfic4QyZ2KaAXDaQEn5uLR4Fnl
-         59c/9XKg7yvp/ubM6tjskPSkLvsendQ6vYIYE8L+aPj4hjmxf2foNyV35cQtGi9YtbSC
-         nbfCGlyYxpw2f9kHvVZdkDgbt7lbXyfGT/6InEFZX33o80nEZKTxVLt8b6zXGhq67kXW
-         JAcutezR6BAxjvZvBUkEgwQpQjTdimrZQv4uHKtJc4vW2gQ/bjo3Uw/Us1u6Z6mq4g4Q
-         Xcpb0o609RJSHU93gmbaPlHSJqbFl3fPFA3owX3ELy7VDbmVcHEELbSsciNnioyOlXHP
-         pKCg==
-X-Gm-Message-State: AOJu0Yy3xzvB5sPoa/CP7D45u1rishKeB0/MYjezuWbEnOxhqvg699Tj
-        dOobb3zLrNLMMpZIOyItMg16Qe1hT+GuuoyYPVF8Lg==
-X-Google-Smtp-Source: AGHT+IGIe0efVUoLxW7XYbr8IrHRLNE7EZdKWFZY5p1GT0Vtttktdim+rSq9It/lH8StlziGqzcvOQ==
-X-Received: by 2002:a17:903:181:b0:1cc:5db8:7ebb with SMTP id z1-20020a170903018100b001cc5db87ebbmr1036913plg.9.1700255230418;
-        Fri, 17 Nov 2023 13:07:10 -0800 (PST)
-Received: from ghost ([50.146.0.2])
-        by smtp.gmail.com with ESMTPSA id a1-20020a170902ee8100b001cc2ebd2c2csm1781336pld.256.2023.11.17.13.07.08
+        d=1e100.net; s=20230601; t=1700255397; x=1700860197;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6wz1t+l8RssdWaevpsmYkaZfUjbmCNYMu71lLo08Sgs=;
+        b=nA+tub9S7G4yg2violb5uKcowlg7+CtxfmhcgvonF2KVM/s/FYxwKfEY2FKR7xWL8U
+         PxbyeMnFRSEZJaZx2nWQtFwKrlU4R3zn0btjU1+fhLWULCl/GycPlQNLYrnMdV2cwipL
+         F7+mH0KKdHX7SMGTJ2SBmZ50W9yWbqZaG/Mfqt6i2jNwaDGFgRXpcIPlvuVrMmWlLMjC
+         Wc9gASDXRoinOirnFaOe5pesZC9812tIAr63TKdINeZFBMm9w7FpzlgmNf2bOw87l5nu
+         DMQ9QtIMsjYgSlfSyhb0CWxlHK5DUxzIi3UJy0vJ4QP3LgKW6ixBDhIgLghbRQ2NMAsV
+         eg/Q==
+X-Gm-Message-State: AOJu0YzWhZNLxZAIdfoX7Y7CQKcIhqMo79mNSnt9qpbDg8spJYnVVrs7
+        2nu4OCuBWvayXXGaTMMSjCZyPg==
+X-Google-Smtp-Source: AGHT+IFZoUAtpbAt9CjRIaojkHmlFqJvZdW1uuO02moJ36Q0TclS9DzF+qPPY0wh7Twfrp1yLU3GPQ==
+X-Received: by 2002:a05:6a20:748e:b0:187:fe09:272a with SMTP id p14-20020a056a20748e00b00187fe09272amr424763pzd.49.1700255396830;
+        Fri, 17 Nov 2023 13:09:56 -0800 (PST)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:9d:2:b953:95f4:4240:7018])
+        by smtp.gmail.com with ESMTPSA id h20-20020a056a00219400b006c624e8e7e8sm1780587pfi.83.2023.11.17.13.09.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 13:07:09 -0800 (PST)
-Date:   Fri, 17 Nov 2023 16:07:06 -0500
-From:   Charlie Jenkins <charlie@rivosinc.com>
-To:     "Wang, Xiao W" <xiao.w.wang@intel.com>
-Cc:     Palmer Dabbelt <palmer@dabbelt.com>,
-        Conor Dooley <conor@kernel.org>,
-        Samuel Holland <samuel.holland@sifive.com>,
-        David Laight <David.Laight@aculab.com>,
-        Evan Green <evan@rivosinc.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Conor Dooley <conor.dooley@microchip.com>
-Subject: Re: [PATCH v10 4/5] riscv: Add checksum library
-Message-ID: <ZVfV+vPhiu5blbZu@ghost>
-References: <20231101-optimize_checksum-v10-0-a498577bb969@rivosinc.com>
- <20231101-optimize_checksum-v10-4-a498577bb969@rivosinc.com>
- <DM8PR11MB5751D86C9588FB838F49218FB8A9A@DM8PR11MB5751.namprd11.prod.outlook.com>
+        Fri, 17 Nov 2023 13:09:56 -0800 (PST)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Hayes Wang <hayeswang@realtek.com>,
+        "David S . Miller" <davem@davemloft.net>
+Cc:     Grant Grundler <grundler@chromium.org>,
+        Simon Horman <horms@kernel.org>,
+        Edward Hill <ecgh@chromium.org>, linux-usb@vger.kernel.org,
+        Laura Nao <laura.nao@collabora.com>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        Douglas Anderson <dianders@chromium.org>,
+        =?UTF-8?q?Bj=C3=B8rn=20Mork?= <bjorn@mork.no>,
+        Eric Dumazet <edumazet@google.com>,
+        Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH 1/2] r8152: Hold the rtnl_lock for all of reset
+Date:   Fri, 17 Nov 2023 13:08:41 -0800
+Message-ID: <20231117130836.1.I77097aa9ec01aeca1b3c75fde4ba5007a17fdf76@changeid>
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DM8PR11MB5751D86C9588FB838F49218FB8A9A@DM8PR11MB5751.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=1.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_SBL_CSS,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
-        version=3.4.6
-X-Spam-Level: *
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 07, 2023 at 08:39:54AM +0000, Wang, Xiao W wrote:
-> 
-> 
-> > -----Original Message-----
-> > From: Charlie Jenkins <charlie@rivosinc.com>
-> > Sent: Thursday, November 2, 2023 6:48 AM
-> > To: Charlie Jenkins <charlie@rivosinc.com>; Palmer Dabbelt
-> > <palmer@dabbelt.com>; Conor Dooley <conor@kernel.org>; Samuel Holland
-> > <samuel.holland@sifive.com>; David Laight <David.Laight@aculab.com>;
-> > Wang, Xiao W <xiao.w.wang@intel.com>; Evan Green <evan@rivosinc.com>;
-> > linux-riscv@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
-> > arch@vger.kernel.org
-> > Cc: Paul Walmsley <paul.walmsley@sifive.com>; Albert Ou
-> > <aou@eecs.berkeley.edu>; Arnd Bergmann <arnd@arndb.de>; Conor Dooley
-> > <conor.dooley@microchip.com>
-> > Subject: [PATCH v10 4/5] riscv: Add checksum library
-> > 
-> > Provide a 32 and 64 bit version of do_csum. When compiled for 32-bit
-> > will load from the buffer in groups of 32 bits, and when compiled for
-> > 64-bit will load in groups of 64 bits.
-> 
-> The csum_ipv6_magic() API is also provided in this patch for 64-bit , but not
-> mentioned in the commit log.
-> 
-> > 
-> > Signed-off-by: Charlie Jenkins <charlie@rivosinc.com>
-> > Acked-by: Conor Dooley <conor.dooley@microchip.com>
-> > ---
-> >  arch/riscv/include/asm/checksum.h |  11 ++
-> >  arch/riscv/lib/Makefile           |   1 +
-> >  arch/riscv/lib/csum.c             | 326
-> > ++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 338 insertions(+)
-> > 
-> > diff --git a/arch/riscv/include/asm/checksum.h
-> > b/arch/riscv/include/asm/checksum.h
-> > index 3d77cac338fe..f8f8e437a88a 100644
-> > --- a/arch/riscv/include/asm/checksum.h
-> > +++ b/arch/riscv/include/asm/checksum.h
-> > @@ -12,6 +12,17 @@
-> > 
-> >  #define ip_fast_csum ip_fast_csum
-> > 
-> > +extern unsigned int do_csum(const unsigned char *buff, int len);
-> > +#define do_csum do_csum
-> > +
-> > +/* Default version is sufficient for 32 bit */
-> > +#ifndef CONFIG_32BIT
-> > +#define _HAVE_ARCH_IPV6_CSUM
-> > +__sum16 csum_ipv6_magic(const struct in6_addr *saddr,
-> > +			const struct in6_addr *daddr,
-> > +			__u32 len, __u8 proto, __wsum sum);
-> > +#endif
-> > +
-> >  /* Define riscv versions of functions before importing asm-
-> > generic/checksum.h */
-> >  #include <asm-generic/checksum.h>
-> > 
-> > diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
-> > index 26cb2502ecf8..2aa1a4ad361f 100644
-> > --- a/arch/riscv/lib/Makefile
-> > +++ b/arch/riscv/lib/Makefile
-> > @@ -6,6 +6,7 @@ lib-y			+= memmove.o
-> >  lib-y			+= strcmp.o
-> >  lib-y			+= strlen.o
-> >  lib-y			+= strncmp.o
-> > +lib-y			+= csum.o
-> >  lib-$(CONFIG_MMU)	+= uaccess.o
-> >  lib-$(CONFIG_64BIT)	+= tishift.o
-> >  lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
-> > diff --git a/arch/riscv/lib/csum.c b/arch/riscv/lib/csum.c
-> > new file mode 100644
-> > index 000000000000..3221d4520bbb
-> > --- /dev/null
-> > +++ b/arch/riscv/lib/csum.c
-> > @@ -0,0 +1,326 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Checksum library
-> > + *
-> > + * Influenced by arch/arm64/lib/csum.c
-> > + * Copyright (C) 2023 Rivos Inc.
-> > + */
-> > +#include <linux/bitops.h>
-> > +#include <linux/compiler.h>
-> > +#include <asm/cpufeature.h>
-> 
-> It seems generally we separate the header including codes for <linux/*.h> and <asm/*.h>,
-> We can follow the style.
-> 
-> > +#include <linux/jump_label.h>
-> > +#include <linux/kasan-checks.h>
-> > +#include <linux/kernel.h>
-> > +
-> > +#include <net/checksum.h>
-> > +
-> > +/* Default version is sufficient for 32 bit */
-> > +#ifndef CONFIG_32BIT
-> > +__sum16 csum_ipv6_magic(const struct in6_addr *saddr,
-> > +			const struct in6_addr *daddr,
-> > +			__u32 len, __u8 proto, __wsum csum)
-> > +{
-> > +	unsigned int ulen, uproto;
-> > +	unsigned long sum = csum;
-> > +
-> > +	sum += saddr->s6_addr32[0];
-> > +	sum += saddr->s6_addr32[1];
-> > +	sum += saddr->s6_addr32[2];
-> > +	sum += saddr->s6_addr32[3];
-> > +
-> > +	sum += daddr->s6_addr32[0];
-> > +	sum += daddr->s6_addr32[1];
-> > +	sum += daddr->s6_addr32[2];
-> > +	sum += daddr->s6_addr32[3];
-> > +
-> > +	ulen = htonl((unsigned int)len);
-> > +	sum += ulen;
-> > +
-> > +	uproto = htonl(proto);
-> > +	sum += uproto;
-> > +
-> > +	/*
-> > +	 * Zbb support saves 4 instructions, so not worth checking without
-> > +	 * alternatives if supported
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> > +		unsigned long fold_temp;
-> > +
-> > +		/*
-> > +		 * Zbb is likely available when the kernel is compiled with Zbb
-> > +		 * support, so nop when Zbb is available and jump when Zbb
-> > is
-> > +		 * not available.
-> > +		 */
-> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> > +					      RISCV_ISA_EXT_ZBB, 1)
-> > +				  :
-> > +				  :
-> > +				  :
-> > +				  : no_zbb);
-> > +		asm(".option push					\n\
-> > +		.option arch,+zbb					\n\
-> > +			rori	%[fold_temp], %[sum], 32		\n\
-> > +			add	%[sum], %[fold_temp], %[sum]
-> > 	\n\
-> > +			srli	%[sum], %[sum], 32			\n\
-> > +			not	%[fold_temp], %[sum]			\n\
-> > +			roriw	%[sum], %[sum], 16			\n\
-> > +			subw	%[sum], %[fold_temp], %[sum]
-> > 	\n\
-> > +		.option pop"
-> > +		: [sum] "+r" (sum), [fold_temp] "=&r" (fold_temp));
-> > +		return (__force __sum16)(sum >> 16);
-> > +	}
-> > +no_zbb:
-> > +	sum += ror64(sum, 32);
-> > +	sum >>= 32;
-> > +	return csum_fold((__force __wsum)sum);
-> > +}
-> > +EXPORT_SYMBOL(csum_ipv6_magic);
-> > +#endif /* !CONFIG_32BIT */
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +#define OFFSET_MASK 3
-> > +#elif CONFIG_64BIT
-> > +#define OFFSET_MASK 7
-> > +#endif
-> > +
-> > +static inline __no_sanitize_address unsigned long
-> > +do_csum_common(const unsigned long *ptr, const unsigned char *buff, int
-> > len,
-> > +	       unsigned long data)
-> > +{
-> > +	unsigned int shift;
-> > +	const unsigned long *end;
-> > +	unsigned long csum = 0, carry = 0;
-> > +
-> > +	end = (const unsigned long *)(buff + len);
-> > +
-> > +	/*
-> > +	 * Do 32-bit reads on RV32 and 64-bit reads otherwise. This should be
-> > +	 * faster than doing 32-bit reads on architectures that support larger
-> > +	 * reads.
-> > +	 */
-> > +	while (ptr < end) {
-> > +		csum += data;
-> > +		carry += csum < data;
-> > +		len -= sizeof(long);
-> 
-> "len" is not used in below code, so the above line is unnecessary.
-> Can we consolidate the two parameters of "buff" and "len" into one parameter "end"? 
-> 
+As of commit d9962b0d4202 ("r8152: Block future register access if
+register access fails") there is a race condition that can happen
+between the USB device reset thread and napi_enable() (not) getting
+called during rtl8152_open(). Specifically:
+* While rtl8152_open() is running we get a register access error
+  that's _not_ -ENODEV and queue up a USB reset.
+* rtl8152_open() exits before calling napi_enable() due to any reason
+  (including usb_submit_urb() returning an error).
 
-That is interesting that this line of code snuck through. I will fix
-that and the other issues you have pointed out.
+In that case:
+* Since the USB reset is perform in a separate thread asynchronously,
+  it can run at anytime USB device lock is not held - even before
+  rtl8152_open() has exited with an error and caused __dev_open() to
+  clear the __LINK_STATE_START bit.
+* The rtl8152_pre_reset() will notice that the netif_running() returns
+  true (since __LINK_STATE_START wasn't cleared) so it won't exit
+  early.
+* rtl8152_pre_reset() will then hang in napi_disable() because
+  napi_enable() was never called.
 
-- Charlie
+We can fix the race by making sure that the r8152 reset routines don't
+run at the same time as we're opening the device. Specifically we need
+the reset routines in their entirety rely on the return value of
+netif_running(). The only way to reliably depend on that is for them
+to hold the rntl_lock() mutex for the duration of reset.
 
-> > +		data = *(ptr++);
-> > +	}
-> > +
-> > +	/*
-> > +	 * Perform alignment (and over-read) bytes on the tail if any bytes
-> > +	 * leftover.
-> > +	 */
-> > +	shift = ((long)ptr - (long)end) * 8;
-> > +#ifdef __LITTLE_ENDIAN
-> > +	data = (data << shift) >> shift;
-> > +#else
-> > +	data = (data >> shift) << shift;
-> > +#endif
-> > +	csum += data;
-> > +	carry += csum < data;
-> > +	csum += carry;
-> > +	csum += csum < carry;
-> > +
-> > +	return csum;
-> > +}
-> > +
-> > +/*
-> > + * Algorithm accounts for buff being misaligned.
-> > + * If buff is not aligned, will over-read bytes but not use the bytes that it
-> > + * shouldn't. The same thing will occur on the tail-end of the read.
-> > + */
-> > +static inline __no_sanitize_address unsigned int
-> > +do_csum_with_alignment(const unsigned char *buff, int len)
-> > +{
-> > +	unsigned int offset, shift;
-> > +	unsigned long csum, data;
-> > +	const unsigned long *ptr;
-> > +
-> > +	/*
-> > +	 * Align address to closest word (double word on rv64) that comes
-> > before
-> > +	 * buff. This should always be in the same page and cache line.
-> > +	 * Directly call KASAN with the alignment we will be using.
-> > +	 */
-> > +	offset = (unsigned long)buff & OFFSET_MASK;
-> > +	kasan_check_read(buff, len);
-> > +	ptr = (const unsigned long *)(buff - offset);
-> > +
-> > +	/*
-> > +	 * Clear the most significant bytes that were over-read if buff was not
-> > +	 * aligned.
-> > +	 */
-> > +	shift = offset * 8;
-> > +	data = *(ptr++);
-> > +#ifdef __LITTLE_ENDIAN
-> > +	data = (data >> shift) << shift;
-> > +#else
-> > +	data = (data << shift) >> shift;
-> > +#endif
-> > +
-> > +	csum = do_csum_common(ptr, buff, len, data);
-> > +
-> > +	/*
-> > +	 * Zbb support saves 6 instructions, so not worth checking without
-> > +	 * alternatives if supported
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> > +		unsigned long fold_temp;
-> > +
-> > +		/*
-> > +		 * Zbb is likely available when the kernel is compiled with Zbb
-> > +		 * support, so nop when Zbb is available and jump when Zbb
-> > is
-> > +		 * not available.
-> > +		 */
-> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> > +					      RISCV_ISA_EXT_ZBB, 1)
-> > +				  :
-> > +				  :
-> > +				  :
-> > +				  : no_zbb);
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +		asm_volatile_goto(".option push			\n\
-> > +		.option arch,+zbb				\n\
-> > +			rori	%[fold_temp], %[csum], 16	\n\
-> > +			andi	%[offset], %[offset], 1		\n\
-> > +			add	%[csum], %[fold_temp], %[csum]	\n\
-> > +			beq	%[offset], zero, %l[end]	\n\
-> > +			rev8	%[csum], %[csum]		\n\
-> > +		.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
-> > +			: [offset] "r" (offset)
-> > +			:
-> > +			: end);
-> > +
-> > +		return (unsigned short)csum;
-> > +#else /* !CONFIG_32BIT */
-> > +		asm_volatile_goto(".option push			\n\
-> > +		.option arch,+zbb				\n\
-> > +			rori	%[fold_temp], %[csum], 32	\n\
-> > +			add	%[csum], %[fold_temp], %[csum]	\n\
-> > +			srli	%[csum], %[csum], 32		\n\
-> > +			roriw	%[fold_temp], %[csum], 16	\n\
-> > +			addw	%[csum], %[fold_temp], %[csum]	\n\
-> > +			andi	%[offset], %[offset], 1		\n\
-> > +			beq	%[offset], zero, %l[end]	\n\
-> > +			rev8	%[csum], %[csum]		\n\
-> > +		.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
-> > +			: [offset] "r" (offset)
-> > +			:
-> > +			: end);
-> > +
-> > +		return (csum << 16) >> 48;
-> > +#endif /* !CONFIG_32BIT */
-> > +end:
-> > +		return csum >> 16;
-> > +	}
-> > +no_zbb:
-> > +#ifndef CONFIG_32BIT
-> > +	csum += ror64(csum, 32);
-> > +	csum >>= 32;
-> > +#endif
-> > +	csum = (u32)csum + ror32((u32)csum, 16);
-> > +	if (offset & 1)
-> > +		return (u16)swab32(csum);
-> > +	return csum >> 16;
-> > +}
-> > +
-> > +/*
-> > + * Does not perform alignment, should only be used if machine has fast
-> > + * misaligned accesses, or when buff is known to be aligned.
-> > + */
-> > +static inline unsigned int do_csum_no_alignment(const unsigned char *buff,
-> > int len)
-> > +{
-> > +	unsigned long csum, data;
-> > +	const unsigned long *ptr;
-> > +
-> 
-> kasan_check_read() missing here.
-> 
-> > +	ptr = (const unsigned long *)(buff);
-> > +
-> > +	data = *(ptr++);
-> > +
-> > +	csum = do_csum_common(ptr, buff, len, data);
-> > +
-> > +	/*
-> > +	 * Zbb support saves 6 instructions, so not worth checking without
-> > +	 * alternatives if supported
-> > +	 */
-> > +	if (IS_ENABLED(CONFIG_RISCV_ISA_ZBB) &&
-> > +	    IS_ENABLED(CONFIG_RISCV_ALTERNATIVE)) {
-> > +		unsigned long fold_temp;
-> > +
-> > +		/*
-> > +		 * Zbb is likely available when the kernel is compiled with Zbb
-> > +		 * support, so nop when Zbb is available and jump when Zbb
-> > is
-> > +		 * not available.
-> > +		 */
-> > +		asm_volatile_goto(ALTERNATIVE("j %l[no_zbb]", "nop", 0,
-> > +					      RISCV_ISA_EXT_ZBB, 1)
-> > +				  :
-> > +				  :
-> > +				  :
-> > +				  : no_zbb);
-> > +
-> > +#ifdef CONFIG_32BIT
-> > +		asm (".option push				\n\
-> > +		.option arch,+zbb				\n\
-> > +			rori	%[fold_temp], %[csum], 16	\n\
-> > +			add	%[csum], %[fold_temp], %[csum]	\n\
-> > +		.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
-> > +			:
-> > +			: );
-> > +
-> > +#else /* !CONFIG_32BIT */
-> > +		asm (".option push				\n\
-> > +		.option arch,+zbb				\n\
-> > +			rori	%[fold_temp], %[csum], 32	\n\
-> > +			add	%[csum], %[fold_temp], %[csum]	\n\
-> > +			srli	%[csum], %[csum], 32		\n\
-> > +			roriw	%[fold_temp], %[csum], 16	\n\
-> > +			addw	%[csum], %[fold_temp], %[csum]	\n\
-> > +		.option pop"
-> > +			: [csum] "+r" (csum), [fold_temp] "=&r" (fold_temp)
-> > +			:
-> > +			: );
-> > +#endif /* !CONFIG_32BIT */
-> > +		return csum >> 16;
-> > +	}
-> > +no_zbb:
-> > +#ifndef CONFIG_32BIT
-> > +	csum += ror64(csum, 32);
-> > +	csum >>= 32;
-> > +#endif
-> > +	csum = (u32)csum + ror32((u32)csum, 16);
-> > +	return csum >> 16;
-> > +}
-> 
-> The algorithm part looks good to me.
-> 
-> BRs,
-> Xiao
-> 
-> > +
-> > +/*
-> > + * Perform a checksum on an arbitrary memory address.
-> > + * Will do a light-weight address alignment if buff is misaligned, unless
-> > + * cpu supports fast misaligned accesses.
-> > + */
-> > +unsigned int do_csum(const unsigned char *buff, int len)
-> > +{
-> > +	if (unlikely(len <= 0))
-> > +		return 0;
-> > +
-> > +	/*
-> > +	 * Significant performance gains can be seen by not doing alignment
-> > +	 * on machines with fast misaligned accesses.
-> > +	 *
-> > +	 * There is some duplicate code between the "with_alignment" and
-> > +	 * "no_alignment" implmentations, but the overlap is too awkward to
-> > be
-> > +	 * able to fit in one function without introducing multiple static
-> > +	 * branches. The largest chunk of overlap was delegated into the
-> > +	 * do_csum_common function.
-> > +	 */
-> > +	if (static_branch_likely(&fast_misaligned_access_speed_key))
-> > +		return do_csum_no_alignment(buff, len);
-> > +
-> > +	if (((unsigned long)buff & OFFSET_MASK) == 0)
-> > +		return do_csum_no_alignment(buff, len);
-> > +
-> > +	return do_csum_with_alignment(buff, len);
-> > +}
-> > 
-> > --
-> > 2.34.1
-> 
+Grabbing the rntl_lock() mutex for the duration of reset seems like a
+long time, but reset is not expected to be common and the rtnl_lock()
+mutex is already held for long durations since the core grabs it
+around the open/close calls.
+
+Fixes: d9962b0d4202 ("r8152: Block future register access if register access fails")
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+
+ drivers/net/usb/r8152.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/usb/r8152.c b/drivers/net/usb/r8152.c
+index 2c5c1e91ded6..d6edf0254599 100644
+--- a/drivers/net/usb/r8152.c
++++ b/drivers/net/usb/r8152.c
+@@ -8397,6 +8397,8 @@ static int rtl8152_pre_reset(struct usb_interface *intf)
+ 	struct r8152 *tp = usb_get_intfdata(intf);
+ 	struct net_device *netdev;
+ 
++	rtnl_lock();
++
+ 	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
+ 		return 0;
+ 
+@@ -8428,20 +8430,17 @@ static int rtl8152_post_reset(struct usb_interface *intf)
+ 	struct sockaddr sa;
+ 
+ 	if (!tp || !test_bit(PROBED_WITH_NO_ERRORS, &tp->flags))
+-		return 0;
++		goto exit;
+ 
+ 	rtl_set_accessible(tp);
+ 
+ 	/* reset the MAC address in case of policy change */
+-	if (determine_ethernet_addr(tp, &sa) >= 0) {
+-		rtnl_lock();
++	if (determine_ethernet_addr(tp, &sa) >= 0)
+ 		dev_set_mac_address (tp->netdev, &sa, NULL);
+-		rtnl_unlock();
+-	}
+ 
+ 	netdev = tp->netdev;
+ 	if (!netif_running(netdev))
+-		return 0;
++		goto exit;
+ 
+ 	set_bit(WORK_ENABLE, &tp->flags);
+ 	if (netif_carrier_ok(netdev)) {
+@@ -8460,6 +8459,8 @@ static int rtl8152_post_reset(struct usb_interface *intf)
+ 	if (!list_empty(&tp->rx_done))
+ 		napi_schedule(&tp->napi);
+ 
++exit:
++	rtnl_unlock();
+ 	return 0;
+ }
+ 
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
+
