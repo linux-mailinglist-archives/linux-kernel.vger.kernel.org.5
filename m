@@ -2,124 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 704557EF05E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:29:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF3897EF059
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:29:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345899AbjKQK3N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:29:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37118 "EHLO
+        id S1345881AbjKQK3I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:29:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345827AbjKQK3H (ORCPT
+        with ESMTP id S233317AbjKQK3G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:29:07 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F0DD51;
-        Fri, 17 Nov 2023 02:29:04 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C514C433C7;
-        Fri, 17 Nov 2023 10:28:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700216943;
-        bh=6ojBfPtGsykYO6BkGzyzKQW4IsE0MACKzcENBodryjo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QAzrvEpg87B/5pkgFMFV67PnJ3Yp9jFqRDNJ8Vt5NGj3xC8VZvrGUisrv6B1Ki/Uh
-         pmJaql2Hf/poztSX8w9nDtnn/7GEHWJz1FotKlr7dkS6TvIEsivXJYY2R/mjx0QNSB
-         eKCcNr885umgAF++UKTbNsU6YFi3hCbYM8BtvSwcYxRvD4WEpmvV2XKYngqbdbbJEP
-         YUn4KoM04Z83s5cGJ0nbMnCS7s7zVRlvpoTrOHd6v+OVWNvmxn7tqSccpkzBHOrBcE
-         03705HR/Lbi0dKt4dpnODqkflREzkjR+lFPfgHflzaix+ykfGOqozjYmMj5JWgkotX
-         aoTThAV2WEO7A==
-Date:   Fri, 17 Nov 2023 15:58:55 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: Re: [PATCH 3/6] PCI: qcom: Fix deadlock when enabling ASPM
-Message-ID: <20231117102855.GL250770@thinkpad>
-References: <20231114135553.32301-1-johan+linaro@kernel.org>
- <20231114135553.32301-4-johan+linaro@kernel.org>
+        Fri, 17 Nov 2023 05:29:06 -0500
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31E73131;
+        Fri, 17 Nov 2023 02:29:02 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1r3w5k-000bqL-KA; Fri, 17 Nov 2023 18:28:53 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 17 Nov 2023 18:29:00 +0800
+Date:   Fri, 17 Nov 2023 18:29:00 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Chen Ni <nichen@iscas.ac.cn>
+Cc:     davem@davemloft.net, t-kristo@ti.com, j-keerthy@ti.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        nichen@iscas.ac.cn
+Subject: Re: [PATCH] crypto: sa2ul - Add check for crypto_aead_setkey
+Message-ID: <ZVdAbHSItfzhl++h@gondor.apana.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231114135553.32301-4-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231107063152.529830-1-nichen@iscas.ac.cn>
+X-Newsgroups: apana.lists.os.linux.cryptoapi,apana.lists.os.linux.kernel
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 02:55:50PM +0100, Johan Hovold wrote:
-> The qcom_pcie_enable_aspm() helper is called from pci_walk_bus() during
-> host init to enable ASPM.
+Chen Ni <nichen@iscas.ac.cn> wrote:
+> Add check for crypto_aead_setkey() and return the error if it fails
+> in order to transfer the error.
 > 
-> Since pci_walk_bus() already holds a pci_bus_sem read lock, use the new
-> locked helper to enable link states in order to avoid a potential
-> deadlock (e.g. in case someone takes a write lock before reacquiring
-> the read lock).
-> 
-> This issue was reported by lockdep:
-> 
->    ============================================
->    WARNING: possible recursive locking detected
->    6.7.0-rc1 #4 Not tainted
->    --------------------------------------------
->    kworker/u16:6/147 is trying to acquire lock:
->    ffffbf3ff9d2cfa0 (pci_bus_sem){++++}-{3:3}, at: pci_enable_link_state+0x74/0x1e8
-> 
->    but task is already holding lock:
->    ffffbf3ff9d2cfa0 (pci_bus_sem){++++}-{3:3}, at: pci_walk_bus+0x34/0xbc
-> 
->    other info that might help us debug this:
->     Possible unsafe locking scenario:
-> 
->           CPU0
->           ----
->      lock(pci_bus_sem);
->      lock(pci_bus_sem);
-> 
->     *** DEADLOCK ***
-> 
-> Fixes: 9f4f3dfad8cf ("PCI: qcom: Enable ASPM for platforms supporting 1.9.0 ops")
-> Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
+> Fixes: d2c8ac187fc9 ("crypto: sa2ul - Add AEAD algorithm support")
+> Signed-off-by: Chen Ni <nichen@iscas.ac.cn>
 > ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> drivers/crypto/sa2ul.c | 5 ++++-
+> 1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index ce3ece28fed2..21523115f6a4 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -971,7 +971,7 @@ static int qcom_pcie_enable_aspm(struct pci_dev *pdev, void *userdata)
->  {
->  	/* Downstream devices need to be in D0 state before enabling PCI PM substates */
->  	pci_set_power_state(pdev, PCI_D0);
-> -	pci_enable_link_state(pdev, PCIE_LINK_STATE_ALL);
-> +	pci_enable_link_state_locked(pdev, PCIE_LINK_STATE_ALL);
->  
->  	return 0;
->  }
-> -- 
-> 2.41.0
+> diff --git a/drivers/crypto/sa2ul.c b/drivers/crypto/sa2ul.c
+> index 6846a8429574..6bac2382e261 100644
+> --- a/drivers/crypto/sa2ul.c
+> +++ b/drivers/crypto/sa2ul.c
+> @@ -1806,6 +1806,7 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
+>        int cmdl_len;
+>        struct sa_cmdl_cfg cfg;
+>        int key_idx;
+> +       int error;
 > 
+>        if (crypto_authenc_extractkeys(&keys, key, keylen) != 0)
+>                return -EINVAL;
+> @@ -1869,7 +1870,9 @@ static int sa_aead_setkey(struct crypto_aead *authenc,
+>        crypto_aead_set_flags(ctx->fallback.aead,
+>                              crypto_aead_get_flags(authenc) &
+>                              CRYPTO_TFM_REQ_MASK);
+> -       crypto_aead_setkey(ctx->fallback.aead, key, keylen);
+> +       error = crypto_aead_setkey(ctx->fallback.aead, key, keylen);
+> +       if (error)
+> +               return error;
 
+This should be
+
+	return crypto_aead_setkey(ctx->fallback.aead, key, keylen);
+
+Thanks,
 -- 
-மணிவண்ணன் சதாசிவம்
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
