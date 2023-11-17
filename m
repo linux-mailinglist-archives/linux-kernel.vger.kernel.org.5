@@ -2,98 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7006D7EEAAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:27:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3382B7EEAB0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230018AbjKQB13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 20:27:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
+        id S1345619AbjKQB2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 20:28:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKQB11 (ORCPT
+        with ESMTP id S229790AbjKQB2X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 20:27:27 -0500
-Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0004C129
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:27:20 -0800 (PST)
-Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1f573a9ed69so795431fac.1
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:27:20 -0800 (PST)
+        Thu, 16 Nov 2023 20:28:23 -0500
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71928129;
+        Thu, 16 Nov 2023 17:28:20 -0800 (PST)
+Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce532451c7so827998a34.2;
+        Thu, 16 Nov 2023 17:28:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700184440; x=1700789240; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=aKf/LZV/kvSMDigtlOXJdd990tp8RAjm519fFm7u9Sc=;
-        b=XvbhMbyotVUY7kSB4pm2wrtlQnw9iGsTbTgHT3tu92ZOA8QmwwlgRVtV1DBB2IAHll
-         tnMHrs7fck9cNJB7ePEo7xvAnsiQMHQFAUN3njz+CwTd2uYfMAuxTvOJHfKE/elR7VNU
-         caJD7CN+zD8uFSJolo8EPV6/4E63D49upO7l1bHy9+AkUQ6wR3x24gOuVwTS61yjt4aE
-         EKPaz7pMnghMLvJ68YHHr+rhelx2y6O0JIZKnsjiwJU8PLl+ZtkrFtUNBrHfi8K+A20i
-         3h099f7fexEaKe5jORKvYM+sR2c2ZHO8H/3juip2p42lXhAq4IQcg51yJDdfuRRD7r/v
-         G1tQ==
+        d=gmail.com; s=20230601; t=1700184499; x=1700789299; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lYDCHTeKA1F33R/86cvSFZKdG5hmQV+VfLbjpN+enJ0=;
+        b=DSTVcNxC4243zfiSCo9VMtESOWUngsFbQfMyJIgK2MUgDTqxT2mUT0OBtflDVq9oF8
+         Jt18vGBGbPio0dHym0yf4b2auqHBoZP4aRtxQAtHPre52MGjOB7KfAFR8DFM6GNPaqri
+         hCJRsvc4CkSkOEu2QtA3w2qnZG+d1cS4YHJvTFG+WJ/hUv0shLG4xwAd+gG3fSrCZdvh
+         M/0Tw8GtPHZR2v0xan3mYuUDl14kid6UmHozKGRds6o3YeUopye6iOYVXs4jRpW1ej20
+         UPKmspRaKHIJVZcTSHK9BcTFKUWFKpPWzemRao0onfZIXv9UNKY0H8aGAAvPJCZRZUHi
+         GcYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700184440; x=1700789240;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:from:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700184499; x=1700789299;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aKf/LZV/kvSMDigtlOXJdd990tp8RAjm519fFm7u9Sc=;
-        b=Zh9JOC6o+ByEmtjzLoXt34tDUOpQgg0abqi+bHxdsRZsuqoXWE3zKchBHf4n/VdJHt
-         bR5ZQZfm8c7PZROXyCwJW/p6Bq0YCtVOidnGvYCT1+2vQQF1ffqSC50N/wcErgnK/WEU
-         CHUF/KB0KOfISO2F9J0EJMqhAs8upotvP7Q31yLGmzG4k+pX8s9w8B05/A5NsbciwHfD
-         qARo++ImeHs+oqAGVJpha5YAWGBxcdv2vIryyFat/+tpIt31FpJHOF4aRKUBRjezEBva
-         71p1P88LMaDDSrqLqbakFV/aWbXehmEcOc3hnMSGUhb5eK1GCMJ0tH9bJviaDYoM5hhH
-         FTrg==
-X-Gm-Message-State: AOJu0YxoVtAKQbZcbkNoOcZTDgavAVcHcY02+18kxAREnP0BK7IogJye
-        avXo4xbOwaLkrMOwTclGkefs8g==
-X-Google-Smtp-Source: AGHT+IHe+gWJw0AKxuVcbBIXwt32o0SzEtp1hkMypo+gLCWDCnHgrd9UcktssVj7AN6A8lUEGQalJA==
-X-Received: by 2002:a05:6870:d210:b0:1f0:630c:a58a with SMTP id g16-20020a056870d21000b001f0630ca58amr21197727oac.51.1700184440236;
-        Thu, 16 Nov 2023 17:27:20 -0800 (PST)
-Received: from ?IPV6:2804:14d:5c5e:44fb:7741:c354:44be:5c3f? ([2804:14d:5c5e:44fb:7741:c354:44be:5c3f])
-        by smtp.gmail.com with ESMTPSA id y19-20020a056a00191300b0069ee4242f89sm372131pfi.13.2023.11.16.17.27.17
+        bh=lYDCHTeKA1F33R/86cvSFZKdG5hmQV+VfLbjpN+enJ0=;
+        b=hqVJMZmrP21vv3LIPR3ZHzBpSHYDxfnbfHDPJqpfyrcgpOupA7aPSXWiUx0fOb+7wH
+         NZdkZmezpgwJgow+YMUXk4FSK9ttohb7P7NrJJJ0NKDbNOep6TwuF34I+atiJntoGCTv
+         5mf9sUt7lwRWsqpo02q9h8FosIftjFjXpvdm6tLlQF4BYdWhRsORLTPueTqOrZYWZg91
+         hQrKn630x3cwR4KVEfO+hNBmGKeFvlw9xtLC0ZTModRJQePnWUD6GovIS5PY/z6Tpnep
+         EoFpwTq3rUwh8rQ5Bth35MBkcEYRMwv5qQ73pZFWbU1Z2fiP2128fpSHof8jfm3q3QTR
+         8jKA==
+X-Gm-Message-State: AOJu0YzQf3mm7WqVJDFHYnJjzijyEGG+dl5Dj0kMb4zoxgwEk4Cs8XUy
+        /20RJ0uyOIh3i414FiKaADo=
+X-Google-Smtp-Source: AGHT+IEsgixXfLg6kIFkjRgBidHel0mzOuGYjARnZw3eDm7uZ/q6eqjl74h+UiOeVAcH2M8w9R8LtQ==
+X-Received: by 2002:a05:6830:13cb:b0:6c6:4843:2abb with SMTP id e11-20020a05683013cb00b006c648432abbmr10553632otq.12.1700184499688;
+        Thu, 16 Nov 2023 17:28:19 -0800 (PST)
+Received: from [172.27.233.123] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
+        by smtp.gmail.com with ESMTPSA id 204-20020a6301d5000000b005897bfc2ed3sm332193pgb.93.2023.11.16.17.28.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 17:27:19 -0800 (PST)
-Message-ID: <8c0bc61e-c0f1-49d8-8696-812c336fb74b@mojatatu.com>
-Date:   Thu, 16 Nov 2023 22:27:15 -0300
+        Thu, 16 Nov 2023 17:28:19 -0800 (PST)
+Message-ID: <965bf6a9-97f7-4e20-bcb8-658e5cf459e5@gmail.com>
+Date:   Fri, 17 Nov 2023 09:28:14 +0800
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [linus:master] [selftests/tc] d227cc0b1e:
- kernel-selftests.tc-testing.tdc.sh.fail
-From:   Pedro Tammela <pctammela@mojatatu.com>
-To:     kernel test robot <oliver.sang@intel.com>
-Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-        Davide Caratti <dcaratti@redhat.com>,
-        Jamal Hadi Salim <jhs@mojatatu.com>, netdev@vger.kernel.org
-References: <202311161129.3b45ed53-oliver.sang@intel.com>
- <f9f772dd-5708-4823-9a7f-20ae8536b5e5@mojatatu.com>
+Subject: Re: [PATCH 6/9] KVM: x86: Update guest cpu_caps at runtime for
+ dynamic CPUID-based features
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
+References: <20231110235528.1561679-1-seanjc@google.com>
+ <20231110235528.1561679-7-seanjc@google.com>
+ <ffec2e93-cdb1-25e2-06ec-deccf8727ce4@gmail.com>
+ <ZVN6w2Kc2AUmIiJO@google.com>
+ <9395d416-cc5c-536d-641e-ffd971b682d1@gmail.com>
+ <ZVTfG6mARiyttuKj@google.com>
 Content-Language: en-US
-In-Reply-To: <f9f772dd-5708-4823-9a7f-20ae8536b5e5@mojatatu.com>
+From:   Robert Hoo <robert.hoo.linux@gmail.com>
+In-Reply-To: <ZVTfG6mARiyttuKj@google.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 11:16, Pedro Tammela wrote:
-> On 16/11/2023 03:42, kernel test robot wrote:
->> [...]
+On 11/15/2023 11:09 PM, Sean Christopherson wrote:
+...
+>>> No, because then every caller would need extra code to pass
+>>> vcpu->cpu_caps,
+>>
+>> Emm, I don't understand this. I tried to modified and compiled, all need to
+>> do is simply substitute "vcpu" with "vcpu->arch.cpu_caps" in calling. (at
+>> the end is my diff based on this patch set)
 > 
-> Hi!
-> Thanks for the report.
-> I'm trying to address this issue and others in this series:
-> [PATCH net-next 0/4] selftests: tc-testing: updates to tdc
+> Yes, and I'm saying that
 > 
-> I have seen this timeout in other CIs as well, but I cannot reproduce 
-> locally, even with the CI build running on my laptop. I did notice in my 
-> local tests that KVM is a big factor for test completion, so it begs the 
-> question, is it running on a KVM enabled instance?
+> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PAUSEFILTER);
+> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PFTHRESHOLD);
+> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VGIF);
+> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VNMI);
 > 
-> If there's any document describing the runner instances I would be 
-> interested too.
+> is harder to read and write than this
+> 
+> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PAUSEFILTER);
+> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PFTHRESHOLD);
+> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VGIF);
+> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VNMI);
+> 
+> a one-time search-replace is easy, but the extra boilerplate has a non-zero cost
+> for every future developer/reader.
 
-OK, I was finally able to reproduce the timeout.
-I have some fixes prepared, will post them tomorrow after more testing!
+Hmm, I think this is trivial. And can be solved/eased by other means, e.g. 
+Macro?. Rather than in the sacrifice of letting function's inside (easily) 
+access those info it shouldn't.
+> 
+>>> and passing 'u32 *' provides less type safety than 'struct kvm_vcpu *'.
+>>> That tradeoff isn't worth making this one path slightly easier to read.
+>>
+>> My point is also from vulnerability, long term, since as a principle, we'd
+>> better pass in param/info to a function of its necessity.
+> 
+> Attempting to apply the principle of least privilege to low level C helpers is
+> nonsensical.  E.g. the helper can trivially get at the owning vcpu via container_of()
+> (well, if not for typeof assertions not playing nice with arrays, but open coding
+> container_of() is also trivial and illustrates the point).
+> 
+> 	struct kvm_vcpu_arch *arch = (void *)caps -  offsetof(struct kvm_vcpu_arch, cpu_caps);
+> 	struct kvm_vcpu *vcpu = container_of(arch, struct kvm_vcpu, arch);
+> 
+> 	if (!kvm_cpu_cap_has(x86_feature))
+> 		guest_cpu_cap_clear(vcpu, x86_feature);
+> 
+> And the intent behind that principle is to improve security/robustness; what I'm
+> saying is that passing in a 'u32 *" makes the overall implementation _less_ robust,
+> as it opens up the possibilities of passing in an unsafe/incorrect pointer.  E.g.
+> a well-intentioned, not _that_ obviously broken example is:
+> 
+> 	guest_cpu_cap_restrict(&vcpu->arch.cpu_caps[CPUID_1_ECX], X86_FEATURE_XSAVE);
+> 
+>> e.g. cpuid_entry2_find().
+> 
+> The main reason cpuid_entry2_find() exists is because KVM checks the incoming
+> array provided by KVM_SET_CPUID2, which is also the reason why
+> __kvm_update_cpuid_runtime() takes an @entries array instead of just @vcpu.
+
+Thanks for detailed explanation, I understand your points deeper, though I would 
+still prefer to honoring the principle if it was me to write the function. The 
+concerns above can/should be addressed by other means. (If some really cannot be 
+solved in C, i.e. more stringent type check, it's C to blame ;) but it on the 
+other side offers those flexibility that other languages cannot, doesn't it?)
+Another pros of the principle is that, it's also a fence, prevent (at least 
+raise the bar) people in the future from doing something that shouldn't be in 
+the function, e.g.  for his convenience to quickly fix a bug etc.
+
+Anyway, it's a dilemma, and I said it's a less important point for this great 
+progress of vCPUID's implementation, thanks.
+
+Reviewed-by: Robert Hoo <robert.hoo.linux@gmail.com>
+
