@@ -2,85 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 306EC7EEF6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:56:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1027EEF83
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:58:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345863AbjKQJ4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40540 "EHLO
+        id S1345888AbjKQJ6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:58:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235726AbjKQJ4s (ORCPT
+        with ESMTP id S235732AbjKQJ6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:56:48 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 857C110E0;
-        Fri, 17 Nov 2023 01:56:44 -0800 (PST)
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9XDQJ007104;
-        Fri, 17 Nov 2023 09:56:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=MBwQNnrP/VoAcmnLrs6vo1SDNvrC8nNxML8vPT+zO5s=;
- b=cHxEdEruI4S98eFsBMjPeWOSOt4i/ANGXHbwaVFGFoCTFbpW36cV/HqbpnK3yHLUKWUr
- H7RISv4qYe0UToETdFyCf5H5nIkjFvOyyQ8eJOc9fY53u4EdvIBgosQssYBs3xU3WYMZ
- Zp19V0IXjTk6FEDxExTyD1CecyZY/k9YqF7oV7gtxvyjn+rtlinWFqUQ8quwUnxPnHeX
- No2msSBW/9U67shr2z8sV5+RrA/aJcQm87zm8nSQQ9VqGDA8zU8JErEVIdHDHb9o3lkl
- Iuig1bFqSadUIYIo5TT8WcJsN4Q+s6osMqTr1gCoPMRrLI53tdtqEWEuSFNwjs4rWOU0 cQ== 
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udpqq205v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:56:32 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9uVKB030753
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:56:31 GMT
-Received: from [10.253.8.81] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 01:56:26 -0800
-Message-ID: <dd8260ce-3cbe-42f5-bc58-51730cd5dabd@quicinc.com>
-Date:   Fri, 17 Nov 2023 17:56:24 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/9] net: mdio: ipq4019: increase eth_ldo_rdy for ipq5332
- platform
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <andrew@lunn.ch>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>
-CC:     <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
+        Fri, 17 Nov 2023 04:58:19 -0500
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::225])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42986CE;
+        Fri, 17 Nov 2023 01:58:14 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 8D1311C000C;
+        Fri, 17 Nov 2023 09:58:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700215093;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P4oNQfBYlP0AUFjj519pmqm6CCbxiBl1lNX7nXCCgt0=;
+        b=EVJLxhTOOVfvd33Q80JnB+XnSjByT68Q3jMleNJjJUxeIFxwaMM7KtWiP3rhrh17K7hJjl
+        sCvVVbITb/hJeupyFUxjrBmn7Xn5shTxVixdaOAQYsm024OTXLKACmyT4/v3eeBoEQOGWz
+        jDOUZlj/HXfFA6g3o+wz299a0RVrjBoAIrPXiqAzpTsRkS1e0vjhkmot05yXW43PhSclBr
+        qSc2HZ0daoGKLuTZ7371FKP5/6qFozzliywTaE3KPTLI/NvIJ8wK2LQywM8W9k1AXLJ7bD
+        EnGKye/pSQG8peGAvI9WQSCJGBiUXsZGcOs6E6WQNwWUOICxwo9fxfK2LMOxdA==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 17 Nov 2023 10:58:12 +0100
+Message-Id: <CX0ZY6JPH6HP.3JWUAN8KZ2SZB@tleb-bootlin-xps13-01>
+Cc:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Roger Quadros" <rogerq@kernel.org>,
+        "Pawel Laszczak" <pawell@cadence.com>,
+        "Nishanth Menon" <nm@ti.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Tero Kristo" <kristo@kernel.org>, <linux-usb@vger.kernel.org>,
         <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-2-quic_luoj@quicinc.com>
- <7786f8e0-2395-4bb6-bc29-071ed637611f@linaro.org>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <7786f8e0-2395-4bb6-bc29-071ed637611f@linaro.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: nvHhsVaDEiLh6-yQu5letGiCWdpGE7Yo
-X-Proofpoint-ORIG-GUID: nvHhsVaDEiLh6-yQu5letGiCWdpGE7Yo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- adultscore=0 phishscore=0 spamscore=0 bulkscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 impostorscore=0 suspectscore=0
- mlxscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311170073
+        <linux-arm-kernel@lists.infradead.org>
+To:     "Peter Chen" <peter.chen@kernel.org>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 4/6] usb: cdns3: support power-off of controller when in
+ host role
+X-Mailer: aerc 0.15.2
+References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
+ <20231113-j7200-usb-suspend-v1-4-ad1ee714835c@bootlin.com>
+ <20231114083838.GC64573@nchen-desktop>
+ <CWYHLRBFE1X1.15330WETL2R7U@tleb-bootlin-xps13-01>
+ <20231117033814.GA485583@nchen-desktop>
+In-Reply-To: <20231117033814.GA485583@nchen-desktop>
+X-GND-Sasl: theo.lebrun@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -88,67 +67,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Fri Nov 17, 2023 at 4:38 AM CET, Peter Chen wrote:
+> On 23-11-14 12:10:18, Th=C3=A9o Lebrun wrote:
+> > Hello,
+> >=20
+> > On Tue Nov 14, 2023 at 9:38 AM CET, Peter Chen wrote:
+> > > > +	if (cdns->pdata && cdns->pdata->quirks & CDNS3_RESET_ON_RESUME)
+> > > > +		cdns->xhci_plat_data->quirks |=3D XHCI_RESET_ON_RESUME | XHCI_SU=
+SPEND_RESUME_CLKS;
+> > > > +
+> > >
+> > > If you set this flag, how could you support the USB remote wakeup
+> > > request? In that case, the USB bus does not expect re-enumeration.
+> >=20
+> > We didn't support remote USB wakeup. Only S2R mattered in our case and
+> > USB remote wakeup wasn't a possibility.
+>
+> Without this patch, will below be hit for your platform:
+>
+> 	/* re-initialize the HC on Restore Error, or Host Controller Error */
+> 	if (temp & (STS_SRE | STS_HCE)) {
+> 		reinit_xhc =3D true;
+> 		if (!xhci->broken_suspend)
+> 			xhci_warn(xhci, "xHC error in resume, USBSTS 0x%x, Reinit\n", temp);
+> 	}
 
-On 11/16/2023 7:57 PM, Krzysztof Kozlowski wrote:
-> On 15/11/2023 04:25, Luo Jie wrote:
->> There are two PCS(UNIPHY) supported in SOC side on ipq5332,
->> and three PCS(UNIPHY) supported on ipq9574.
->>
->> Signed-off-by: Luo Jie <quic_luoj@quicinc.com>
->> ---
->>   drivers/net/mdio/mdio-ipq4019.c | 55 +++++++++++++++++++--------------
->>   1 file changed, 32 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/net/mdio/mdio-ipq4019.c b/drivers/net/mdio/mdio-ipq4019.c
->> index abd8b508ec16..9d444f5f7efb 100644
->> --- a/drivers/net/mdio/mdio-ipq4019.c
->> +++ b/drivers/net/mdio/mdio-ipq4019.c
->> @@ -18,28 +18,31 @@
->>   #define MDIO_DATA_WRITE_REG			0x48
->>   #define MDIO_DATA_READ_REG			0x4c
->>   #define MDIO_CMD_REG				0x50
->> -#define MDIO_CMD_ACCESS_BUSY		BIT(16)
->> -#define MDIO_CMD_ACCESS_START		BIT(8)
->> -#define MDIO_CMD_ACCESS_CODE_READ	0
->> -#define MDIO_CMD_ACCESS_CODE_WRITE	1
->> -#define MDIO_CMD_ACCESS_CODE_C45_ADDR	0
->> -#define MDIO_CMD_ACCESS_CODE_C45_WRITE	1
->> -#define MDIO_CMD_ACCESS_CODE_C45_READ	2
->> +#define MDIO_CMD_ACCESS_BUSY			BIT(16)
->> +#define MDIO_CMD_ACCESS_START			BIT(8)
->> +#define MDIO_CMD_ACCESS_CODE_READ		0
->> +#define MDIO_CMD_ACCESS_CODE_WRITE		1
->> +#define MDIO_CMD_ACCESS_CODE_C45_ADDR		0
->> +#define MDIO_CMD_ACCESS_CODE_C45_WRITE		1
->> +#define MDIO_CMD_ACCESS_CODE_C45_READ		2
-> 
-> Where is anything related to ipq5332 here?
+Yes it hits. The warning as well. How big of an issue is that?
 
-This is for alignment format, will keep it untouched in the next
-patch set.
+My understanding is that this is the expected behavior with reset on
+resume if we don't explicitely pass the flag XHCI_RESET_ON_RESUME. I
+don't think we should be having the broken_suspend bit set as its
+mentioning some specific quirk on AMD hardware.
 
-> 
-> 
-> ..
-> 
->>   	bus->name = "ipq4019_mdio";
->>   	bus->read = ipq4019_mdio_read_c22;
->> @@ -288,6 +296,7 @@ static void ipq4019_mdio_remove(struct platform_device *pdev)
->>   static const struct of_device_id ipq4019_mdio_dt_ids[] = {
->>   	{ .compatible = "qcom,ipq4019-mdio" },
->>   	{ .compatible = "qcom,ipq5018-mdio" },
->> +	{ .compatible = "qcom,ipq5332-mdio" },
-> 
-> How user comes before binding?
+Is the only expected difference inbetween having CDNS3_RESET_ON_RESUME &
+not having it is resume time? For reference, the status read is 0x411
+ie STS_HALT | STS_PCD | STS_SRE. xhc_state is zero.
 
-The new added compatible is for the GCC uniphy AHB/SYS clocks configured
-on the ipq5332 platform, will move this change into the following patch
-that involves the ipq5332 to make it clear.
+Regards,
 
-<net: mdio: ipq4019: Enable the clocks for ipq5332 platform>.
-
-> 
-> Best regards,
-> Krzysztof
-> 
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
