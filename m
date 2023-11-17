@@ -2,75 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 65B177EF55A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 16:37:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10E987EF55E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 16:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231634AbjKQPhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 10:37:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43088 "EHLO
+        id S231473AbjKQPiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 10:38:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQPhi (ORCPT
+        with ESMTP id S230379AbjKQPiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 10:37:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33EA8127
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 07:37:35 -0800 (PST)
+        Fri, 17 Nov 2023 10:38:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61B05D72
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 07:37:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700235454;
+        s=mimecast20190719; t=1700235474;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=8EWZd8/Ob3Ap8d2DySNgwA5XTVgiADnOXvREM+zk/Tc=;
-        b=Rqyjlt6gOEP299v2/O/6e9sokls6AHMPr2okUtl+adTpOAjjCcl29TphrJtZ2f995C4OvF
-        f+ByRgMxOro3W1kP+5zmEbnXYc6w2tQiJYyIyV0n6w4d9TDpVeZcYwdDIFUnqoNd0DvjZo
-        uaO/qKWhtrR2sSFH6F8qaRWkyKv5x1Y=
-Received: from mail-lj1-f197.google.com (mail-lj1-f197.google.com
- [209.85.208.197]) by relay.mimecast.com with ESMTP with STARTTLS
+        bh=fweTSD3me3Mx8GyQIQZU14sJeAzjgkPwJ7KyqiFU4BQ=;
+        b=A6+QOV28p073u7cAcu6x4pwZsD4bPDUdp1pSzacr1JP4B2s2XgbDZRrCiKj0/MoYxebBoV
+        4pBrVHgG+D0L24B9azFjXTrRginjVXCMsm0RsFCOVg7Hu/zn1YTE2CboyIMGBIPVIkt51n
+        pSHb+/GtjaAlgoXTWQjpuc8oJ0LzKCI=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-501-IGK8eUHdPHK31Fj4UAsdMA-1; Fri, 17 Nov 2023 10:37:33 -0500
-X-MC-Unique: IGK8eUHdPHK31Fj4UAsdMA-1
-Received: by mail-lj1-f197.google.com with SMTP id 38308e7fff4ca-2c5194d4e98so19274011fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 07:37:32 -0800 (PST)
+ us-mta-164-77N14-UMNhqbiZGzJ0XVhw-1; Fri, 17 Nov 2023 10:37:52 -0500
+X-MC-Unique: 77N14-UMNhqbiZGzJ0XVhw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-408f9cee5e8so12235995e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 07:37:52 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700235451; x=1700840251;
+        d=1e100.net; s=20230601; t=1700235471; x=1700840271;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
          :references:cc:to:content-language:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8EWZd8/Ob3Ap8d2DySNgwA5XTVgiADnOXvREM+zk/Tc=;
-        b=ENerMBZAXHsM9VsYicMhV1d5vNUNmOkxF+MQtgqHUOKZ6d2WMSCVEFLOyKjtaCNhn1
-         KaV8576WTm8Al/S/KwdJMN73rm83UPcPoZq4Zqepw4gBU9qG1r2vovAzb0ivgGHvy3H1
-         P6m+3LkDbBUBbPP2d7VGeGBM4dHOH0QEdchzXVAj1q499OXMxZWqidLaO7mbKPjtfEiP
-         pPnCMPeSfjnwswnRwXcbWqTmIFjV+y1/wxcoVoAncy8GaF1aMrvNdS1nWsbcsC2vFmrD
-         XxHaYwrlu0Dt6Cv+uTRhp2wUPJvBfHz5g7SCeS+1YkZs+JJyx9grcqUquDwP1ecHEd07
-         OWGQ==
-X-Gm-Message-State: AOJu0YxqQ+S5dc3GketIgQdl8uacIoVgDBCOFXTE5ziYGBp2XjQP0RSN
-        L1c5dCFqSJ7Gwms8PZAR9dPvpsF03MWDHthuibgcoN28knb82LGENyzJSJPn0bzJzluI1xFo8Yl
-        dcqPCWYrO7MkNv5FFQY/FX4Zu9L/pCHtS
-X-Received: by 2002:a2e:5455:0:b0:2c5:1623:66ab with SMTP id y21-20020a2e5455000000b002c5162366abmr8206301ljd.1.1700235451284;
-        Fri, 17 Nov 2023 07:37:31 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFKFYYuc+FIIjLuEND1GIJmf5cGTmSitK3FY9FWeIgeL8mmHO0hNCAQMqKGu8hnC9pgd6b/1A==
-X-Received: by 2002:a2e:5455:0:b0:2c5:1623:66ab with SMTP id y21-20020a2e5455000000b002c5162366abmr8206288ljd.1.1700235450813;
-        Fri, 17 Nov 2023 07:37:30 -0800 (PST)
+        bh=fweTSD3me3Mx8GyQIQZU14sJeAzjgkPwJ7KyqiFU4BQ=;
+        b=nv+d7cxqeMcxeGBMkkSYGorRPSrtqw5kREbqhUTEFcgO/jL00SnrqVx7Oez28QqVWc
+         6ANn1+cO5nHcr3psZi0bxzWEGaS3CR443GtakDpDQWtZsjFAkuEmsk5opoc+TGo8It3W
+         99Hl1JQFOf7VOlJSipeAodE2dO1s5HHyGfGK5CkZP+f1IeCty3uwNfw7c0Nzw9fvrIMc
+         +5Yan45aSL/CmgX42rKQF3TvFV+V5giLZUqECpT6Zc0M/5VeZ4G1dwNgJlNspS6db73k
+         nbDaLQdPhofkJyTg4amL2b1+/iXKyW5XpfnuaCGHh335BjPRY1kRVdHwD+Nr44M2b0Hx
+         dqNQ==
+X-Gm-Message-State: AOJu0Yx2/wlvRVyh0L4xvTOPb2L+WZhm9i3IeNtiwYROER1n9gZyeLvq
+        0CRL5xO+iYpyfdQ8sWlHUUrD07e5aBYy8Uy+1uJrINN/esI2tg0Gqxfbf0XQ4vKmxPm0oIVqojS
+        6UyRUxHfLNOIPt1gvG1NY1KJf
+X-Received: by 2002:a05:600c:2e4c:b0:408:3f87:cba with SMTP id q12-20020a05600c2e4c00b004083f870cbamr15450231wmf.39.1700235471090;
+        Fri, 17 Nov 2023 07:37:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFXiSLvfsFsx2ecWHmPMg5XOcGZDFC3T/0kLsJ3TJWJXg6BmsCf7Un0EtNCoPcc+mfW8Jei1A==
+X-Received: by 2002:a05:600c:2e4c:b0:408:3f87:cba with SMTP id q12-20020a05600c2e4c00b004083f870cbamr15450212wmf.39.1700235470731;
+        Fri, 17 Nov 2023 07:37:50 -0800 (PST)
 Received: from [192.168.3.108] (p4ff23170.dip0.t-ipconnect.de. [79.242.49.112])
-        by smtp.gmail.com with ESMTPSA id z16-20020a05600c221000b0040472ad9a3dsm3084684wml.14.2023.11.17.07.37.29
+        by smtp.gmail.com with ESMTPSA id z16-20020a05600c221000b0040472ad9a3dsm3084684wml.14.2023.11.17.07.37.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 07:37:30 -0800 (PST)
-Message-ID: <ee492da8-74b4-4a97-8b24-73e07257f01d@redhat.com>
-Date:   Fri, 17 Nov 2023 16:37:29 +0100
+        Fri, 17 Nov 2023 07:37:50 -0800 (PST)
+Message-ID: <57762a6b-24c1-44a7-b1f3-4e73fe3b963d@redhat.com>
+Date:   Fri, 17 Nov 2023 16:37:49 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 0/8] implement "memmap on memory" feature on s390
 Content-Language: en-US
-To:     Gerald Schaefer <gerald.schaefer@linux.ibm.com>
-Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
-        linux-mm <linux-mm@kvack.org>,
+To:     Sumanth Korikkar <sumanthk@linux.ibm.com>
+Cc:     linux-mm <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Oscar Salvador <osalvador@suse.de>,
         Michal Hocko <mhocko@suse.com>,
         "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
         Anshuman Khandual <anshuman.khandual@arm.com>,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
         Alexander Gordeev <agordeev@linux.ibm.com>,
         Heiko Carstens <hca@linux.ibm.com>,
         Vasily Gorbik <gor@linux.ibm.com>,
@@ -78,7 +78,7 @@ Cc:     Sumanth Korikkar <sumanthk@linux.ibm.com>,
         LKML <linux-kernel@vger.kernel.org>
 References: <20231114180238.1522782-1-sumanthk@linux.ibm.com>
  <ec3fcd7d-17a0-4901-9261-a204c2c50c52@redhat.com>
- <20231117140009.5d8a509c@thinkpad-T15>
+ <ZVdxInFyS8YtNOjF@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
 From:   David Hildenbrand <david@redhat.com>
 Autocrypt: addr=david@redhat.com; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -125,138 +125,46 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <20231117140009.5d8a509c@thinkpad-T15>
+In-Reply-To: <ZVdxInFyS8YtNOjF@li-2b55cdcc-350b-11b2-a85c-a78bff51fc11.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.23 14:00, Gerald Schaefer wrote:
-> On Fri, 17 Nov 2023 00:08:31 +0100
-> David Hildenbrand <david@redhat.com> wrote:
-> 
+On 17.11.23 14:56, Sumanth Korikkar wrote:
+> On Fri, Nov 17, 2023 at 12:08:31AM +0100, David Hildenbrand wrote:
 >> On 14.11.23 19:02, Sumanth Korikkar wrote:
 >>> Hi All,
 >>>
 >>> The patch series implements "memmap on memory" feature on s390 and
 >>> provides the necessary fixes for it.
 >>
->> Thinking about this, one thing that makes s390x different from all the
->> other architectures in this series is the altmap handling.
+>> Thinking about this, one thing that makes s390x different from all the other
+>> architectures in this series is the altmap handling.
 >>
 >> I'm curious, why is that even required?
 >>
->> A memmep that is not marked as online in the section should not be
->> touched by anybody (except memory onlining code :) ). And if we do, it's
->> usually a BUG because that memmap might contain garbage/be poisoned or
->> completely stale, so we might want to track that down and fix it in any
->> case.
+>> A memmep that is not marked as online in the section should not be touched
+>> by anybody (except memory onlining code :) ). And if we do, it's usually a
+>> BUG because that memmap might contain garbage/be poisoned or completely
+>> stale, so we might want to track that down and fix it in any case.
 >>
->> So what speaks against just leaving add_memory() populate the memmap
->> from the altmap? Then, also the page tables for the memmap are already
->> in place when onlining memory.
-> 
-> Good question, I am not 100% sure if we ran into bugs, or simply assumed
-> that it is not OK to call __add_pages() when the memory for the altmap
-> is not accessible.
-
-I mean, we create the direct map even though nobody should access that 
-memory, so maybe we can simply map the altmap even though nobody should 
-should access that memory.
-
-As I said, then, even the page tables for the altmap are allocated 
-already and memory onlining likely doesn't need any allocation anymore 
-(except, there is kasan or some other memory notifiers have special 
-demands).
-
-Certainly simpler :)
-
-> 
-> Maybe there is also already a common code bug with that, s390 might be
-> special but that is often also good for finding bugs in common code ...
-
-If it's only the page_init_poison() as noted by Sumanth, we could 
-disable that on s390x with an altmap some way or the other; should be 
-possible.
-
-I mean, you effectively have your own poisoning if the altmap is 
-effectively inaccessible and makes your CPU angry on access :)
-
-Last but not least, support for an inaccessible altmap might come in 
-handy for virtio-mem eventually, and make altmap support eventually 
-simpler. So added bonus points.
-
-> 
->> Then, adding two new notifier calls on start of memory_block_online()
->> called something like MEM_PREPARE_ONLINE and end the end of
->> memory_block_offline() called something like MEM_FINISH_OFFLINE is still
->> suboptimal, but that's where standby memory could be
->> activated/deactivated, without messing with the altmap.
+>> So what speaks against just leaving add_memory() populate the memmap from
+>> the altmap? Then, also the page tables for the memmap are already in place
+>> when onlining memory.
 >>
->> That way, the only s390x specific thing is that the memmap that should
->> not be touched by anybody is actually inaccessible, and you'd
->> activate/deactivate simply from the new notifier calls just the way we
->> used to do.
->>
->> It's still all worse than just adding/removing memory properly, using a
->> proper interface -- where you could alloc/free an actual memmap when the
->> altmap is not desired. But I know that people don't want to spend time
->> just doing it cleanly from scratch.
 > 
-> Yes, sometimes they need to be forced to do that :-)
+> we do have page_init_poison() in sparse_add_section() which should be
+> handled later then. not in add_pages()
 
-I certainly won't force you if we can just keep the __add_pages() calls 
-as is; having an altmap that is inaccessible but fully prepared sounds 
-reasonable to me.
-
-I can see how this gives an immediate benefit to existing s390x 
-installations without being too hacky and without taking a long time to 
-settle.
-
-But I'll strongly suggest to evaluate a new interface long-term.
-
-> 
-> So, we'll look into defining a "proper interface", and treat patches 1-3
-> separately as bug fixes? Especially patch 3 might be interesting for arm,
-> if they do not have ZONE_DEVICE, but still use the functions, they might
-> end up with the no-op version, not really freeing any memory.
-
-It might make sense to
-
-1) Send the first 3 out separately
-2) Look into a simple variant that leaves __add_pages() calls alone and
-    only adds the new MEM_PREPARE_ONLINE/MEM_FINISH_OFFLINE notifiers --
-    well, and deals with an inaccessible altmap, like the
-    page_init_poison() when the altmap might be inaccessible.
-3) Look into a proper interface to add/remove memory instead of relying
-    on online/offline.
-
-2) is certainly an improvement and might be desired in some cases. 3) is 
-more powerful (e.g., where you don't want an altmap because of 
-fragmentation) and future proof.
-
-I suspect there will be installations where an altmap is undesired: it 
-fragments your address space with unmovable (memmap) allocations. 
-Currently, runtime allocations of gigantic pages are affected. Long-term 
-other large allocations (if we ever see very large THP) will be affected.
-
-For that reason, we want to either support variable-sized memory blocks 
-long-term, or simulate that by "grouping" memory blocks that share a 
-same altmap located on the first memory blocks in that group: but 
-onlining one block forces onlining of the whole group.
-
-On s390x that adds all memory ahead of time, it's hard to make a 
-decision what the right granularity will be, and seeing sudden 
-online/offline changed behavior might be quite "surprising" for users. 
-The user can give better hints when adding/removing memory explicitly.
+Was that all, or did you stumble over other things?
 
 -- 
 Cheers,
