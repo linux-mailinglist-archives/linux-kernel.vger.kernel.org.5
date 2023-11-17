@@ -2,170 +2,368 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DF87EF6ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:23:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 931C67EF6F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 18:24:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346120AbjKQRXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 12:23:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54560 "EHLO
+        id S1346154AbjKQRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 12:24:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33454 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230186AbjKQRXF (ORCPT
+        with ESMTP id S230186AbjKQRYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 12:23:05 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.126])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA17D90
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 09:23:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700241782; x=1731777782;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=dnX7DPDgFcsgGky8efsg1oyXq/Z4HgZ1XY1u4WEeZgg=;
-  b=QNo/+D6HRFzPrD9NM9tEP+Gbc9fKRTSEXcGZr0pkDhWhlDPYdWPshRa+
-   EkZa5gbw2b3sT7pT9L02aOJLfgk13DPHTMWcvLRSZCxYseUmvA++Ry6sp
-   hxlOd/bjzpWy4kwKXfx0WWFhsQycNOr/EVX+mb1CR4dwteXByTlies3/T
-   VeyQ4PQdPOhaaoK6CMtQT5ZOJHEwKKA18oi+fG04/k+42q6drC7miJi9n
-   qClI7ELVdWSj/o0Dz2E8qwWJPv0v6CW2qeySa6OhD56av8U+leCxJ//3G
-   ezy6x2qARiDpalYF3ss7LAW7pwAUoct+p3Zy0uca/XeRaLLTNQRzQaXMV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="376382715"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="376382715"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 09:23:02 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="1097160927"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="1097160927"
-Received: from phelpsmi-mobl2.amr.corp.intel.com (HELO [10.212.139.180]) ([10.212.139.180])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 09:23:01 -0800
-Message-ID: <cabe5db0-5690-430a-bcf9-6c853bf00228@intel.com>
-Date:   Fri, 17 Nov 2023 09:22:58 -0800
+        Fri, 17 Nov 2023 12:24:48 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A94ECAD
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 09:24:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 242D3C433C8;
+        Fri, 17 Nov 2023 17:24:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700241884;
+        bh=26MRHWylt0nXrukBmgnOlVNwwDicHj9Fjs4MTZhPT1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ItTF4IXxx5vwEDN29iFnozgfWUQ6cWEkSzmh2g4PNwK+wIdgfgS40KI9xbcPSPzMi
+         MzRl1t5U9WaMKNaEssVcNkrmlixJGB22SN2GdoGRlKvSbWbQ/dSqpiuGryrjxrUEh8
+         oVWZoga/00jwqqHFguQR2P/0r1W0vVYXz6cgpwJhviJl/ijzxVVQ5zB6jZt88aQ0De
+         jvWhQYpBDl5pTGoXgvNRvqHbo12RKOXU5B8k75A0qVsipFzkNkte/Ytgk6Tl7kw8l5
+         IDslvubfAm+CcmnOgcmmYeSyfnwoiRq075ylCUNAoxClXEuyR5eHBLFkXFUVPta7YA
+         68O1gUYkmaTOw==
+Date:   Fri, 17 Nov 2023 09:24:42 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <chao@kernel.org>
+Cc:     Daeho Jeong <daeho43@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v2] f2fs-tools: do not reuse corrupted quota
+ inodes
+Message-ID: <ZVeh2hyhHsCXIR3N@google.com>
+References: <20231027002123.1195780-1-daeho43@gmail.com>
+ <e307e1bc-9c50-ed43-be12-c535b95a417e@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/smp: Use atomic_try_cmpxchg() to micro-optimize
- native_stop_other_cpus()
-Content-Language: en-US
-To:     Uros Bizjak <ubizjak@gmail.com>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>
-References: <20231114164416.208285-1-ubizjak@gmail.com>
- <367bc727-3f26-4e78-8e58-af959760b3fc@intel.com>
- <CAFULd4ZA2w+rz==cw1e18yJ9sdLpAi8XLZ7JU104yyD0Maspdw@mail.gmail.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <CAFULd4ZA2w+rz==cw1e18yJ9sdLpAi8XLZ7JU104yyD0Maspdw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e307e1bc-9c50-ed43-be12-c535b95a417e@kernel.org>
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 08:37, Uros Bizjak wrote:
-> On Fri, Nov 17, 2023 at 5:18 PM Dave Hansen <dave.hansen@intel.com> wrote:
->> Is there some other side benefit that I'm missing here?  Applying this
->> patch doesn't seem to have a great risk/reward ratio.
+On 11/15, Chao Yu wrote:
+> On 2023/10/27 8:21, Daeho Jeong wrote:
+> > From: Daeho Jeong <daehojeong@google.com>
+> > 
+> > When we detect quota inode corruption, we better deallocate the current
+> > space and allocate new ones for a clean start.
+> > 
+> > Signed-off-by: Daeho Jeong <daehojeong@google.com>
+> > 
+> > ---
+> > v2: change node count check when creating a new node block
+> > ---
+> >   fsck/fsck.c    | 148 +++++++++++++++++++++++++++++++++++--------------
+> >   fsck/segment.c |   5 +-
+> >   2 files changed, 109 insertions(+), 44 deletions(-)
+> > 
+> > diff --git a/fsck/fsck.c b/fsck/fsck.c
+> > index 99cface..dc8e282 100644
+> > --- a/fsck/fsck.c
+> > +++ b/fsck/fsck.c
+> > @@ -67,6 +67,14 @@ int f2fs_set_sit_bitmap(struct f2fs_sb_info *sbi, u32 blk)
+> >   	return f2fs_set_bit(BLKOFF_FROM_MAIN(sbi, blk), fsck->sit_area_bitmap);
+> >   }
+> > +static inline int f2fs_clear_sit_bitmap(struct f2fs_sb_info *sbi, u32 blk)
+> > +{
+> > +	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> > +
+> > +	return f2fs_clear_bit(BLKOFF_FROM_MAIN(sbi, blk),
+> > +						fsck->sit_area_bitmap);
+> > +}
+> > +
+> >   static int add_into_hard_link_list(struct f2fs_sb_info *sbi,
+> >   						u32 nid, u32 link_cnt)
+> >   {
+> > @@ -2150,6 +2158,9 @@ int fsck_chk_quota_node(struct f2fs_sb_info *sbi)
+> >   	return ret;
+> >   }
+> > +static void fsck_disconnect_file(struct f2fs_sb_info *sbi, nid_t ino,
+> > +			bool dealloc);
+> > +
+> >   int fsck_chk_quota_files(struct f2fs_sb_info *sbi)
+> >   {
+> >   	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> > @@ -2181,6 +2192,8 @@ int fsck_chk_quota_files(struct f2fs_sb_info *sbi)
+> >   		if (c.fix_on) {
+> >   			DBG(0, "Fixing Quota file ([%3d] ino [0x%x])\n",
+> >   							qtype, ino);
+> > +			fsck_disconnect_file(sbi, ino, true);
+> > +			f2fs_rebuild_qf_inode(sbi, qtype);
+> >   			f2fs_filesize_update(sbi, ino, 0);
+> >   			ret = quota_write_inode(sbi, qtype);
+> >   			if (!ret) {
+> > @@ -2874,10 +2887,53 @@ static int fsck_do_reconnect_file(struct f2fs_sb_info *sbi,
+> >   	return 0;
+> >   }
+> > -static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
+> > -					struct f2fs_inode *inode, nid_t nid)
+> > +static inline void release_inode_cnt(struct f2fs_sb_info *sbi, bool dealloc)
+> > +{
+> > +	F2FS_FSCK(sbi)->chk.valid_inode_cnt--;
+> > +	if (dealloc)
+> > +		sbi->total_valid_inode_count--;
+> > +}
+> > +
+> > +static inline void release_node_cnt(struct f2fs_sb_info *sbi, bool dealloc)
+> > +{
+> > +	F2FS_FSCK(sbi)->chk.valid_node_cnt--;
+> > +	if (dealloc)
+> > +		sbi->total_valid_node_count--;
+> > +}
+> > +
+> > +static inline void release_block_cnt(struct f2fs_sb_info *sbi, bool dealloc)
+> > +{
+> > +	F2FS_FSCK(sbi)->chk.valid_blk_cnt--;
+> > +	if (dealloc)
+> > +		sbi->total_valid_block_count--;
+> > +}
+> > +
+> > +static inline void release_block(struct f2fs_sb_info *sbi, u64 blkaddr,
+> > +			bool dealloc)
+> > +{
+> > +	f2fs_clear_main_bitmap(sbi, blkaddr);
+> > +	if (dealloc) {
+> > +		struct seg_entry *se;
+> > +		u64 offset;
+> > +
+> > +		se = get_seg_entry(sbi, GET_SEGNO(sbi, blkaddr));
+> > +		offset = OFFSET_IN_SEG(sbi, blkaddr);
+> > +		se->valid_blocks--;
+> > +		f2fs_clear_bit(offset, (char *)se->cur_valid_map);
+> > +		se->dirty = 1;
+> > +		f2fs_clear_sit_bitmap(sbi, blkaddr);
+> > +	}
+> > +}
+> > +
+> > +static inline void release_nat_entry(struct f2fs_sb_info *sbi, u32 nid)
+> > +{
+> > +	nullify_nat_entry(sbi, nid);
+> > +	F2FS_FSCK(sbi)->chk.valid_nat_entry_cnt--;
+> > +}
+> > +
+> > +static void fsck_disconnect_file_dnode(struct f2fs_sb_info *sbi,
+> > +			struct f2fs_inode *inode, nid_t nid, bool dealloc)
+> >   {
+> > -	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> >   	struct f2fs_node *node;
+> >   	struct node_info ni;
+> >   	u32 addr;
+> > @@ -2890,27 +2946,29 @@ static void fsck_failed_reconnect_file_dnode(struct f2fs_sb_info *sbi,
+> >   	err = dev_read_block(node, ni.blk_addr);
+> >   	ASSERT(err >= 0);
+> > -	fsck->chk.valid_node_cnt--;
+> > -	fsck->chk.valid_blk_cnt--;
+> > -	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > +	release_node_cnt(sbi, dealloc);
+> > +	release_block_cnt(sbi, dealloc);
+> > +	release_block(sbi, ni.blk_addr, dealloc);
+> >   	for (i = 0; i < ADDRS_PER_BLOCK(inode); i++) {
+> >   		addr = le32_to_cpu(node->dn.addr[i]);
+> >   		if (!addr)
+> >   			continue;
+> > -		fsck->chk.valid_blk_cnt--;
+> > +		release_block_cnt(sbi, dealloc);
+> >   		if (addr == NEW_ADDR || addr == COMPRESS_ADDR)
+> >   			continue;
+> > -		f2fs_clear_main_bitmap(sbi, addr);
+> > +		release_block(sbi, addr, dealloc);
+> >   	}
+> > +	if (dealloc)
+> > +		release_nat_entry(sbi, nid);
+> > +
+> >   	free(node);
+> >   }
+> > -static void fsck_failed_reconnect_file_idnode(struct f2fs_sb_info *sbi,
+> > -					struct f2fs_inode *inode, nid_t nid)
+> > +static void fsck_disconnect_file_idnode(struct f2fs_sb_info *sbi,
+> > +			struct f2fs_inode *inode, nid_t nid, bool dealloc)
+> >   {
+> > -	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> >   	struct f2fs_node *node;
+> >   	struct node_info ni;
+> >   	nid_t tmp;
+> > @@ -2923,24 +2981,26 @@ static void fsck_failed_reconnect_file_idnode(struct f2fs_sb_info *sbi,
+> >   	err = dev_read_block(node, ni.blk_addr);
+> >   	ASSERT(err >= 0);
+> > -	fsck->chk.valid_node_cnt--;
+> > -	fsck->chk.valid_blk_cnt--;
+> > -	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > +	release_node_cnt(sbi, dealloc);
+> > +	release_block_cnt(sbi, dealloc);
+> > +	release_block(sbi, ni.blk_addr, dealloc);
+> >   	for (i = 0; i < NIDS_PER_BLOCK; i++) {
+> >   		tmp = le32_to_cpu(node->in.nid[i]);
+> >   		if (!tmp)
+> >   			continue;
+> > -		fsck_failed_reconnect_file_dnode(sbi, inode, tmp);
+> > +		fsck_disconnect_file_dnode(sbi, inode, tmp, dealloc);
+> >   	}
+> > +	if (dealloc)
+> > +		release_nat_entry(sbi, nid);
+> > +
+> >   	free(node);
+> >   }
+> > -static void fsck_failed_reconnect_file_didnode(struct f2fs_sb_info *sbi,
+> > -					struct f2fs_inode *inode, nid_t nid)
+> > +static void fsck_disconnect_file_didnode(struct f2fs_sb_info *sbi,
+> > +			struct f2fs_inode *inode, nid_t nid, bool dealloc)
+> >   {
+> > -	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> >   	struct f2fs_node *node;
+> >   	struct node_info ni;
+> >   	nid_t tmp;
+> > @@ -2953,28 +3013,26 @@ static void fsck_failed_reconnect_file_didnode(struct f2fs_sb_info *sbi,
+> >   	err = dev_read_block(node, ni.blk_addr);
+> >   	ASSERT(err >= 0);
+> > -	fsck->chk.valid_node_cnt--;
+> > -	fsck->chk.valid_blk_cnt--;
+> > -	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > +	release_node_cnt(sbi, dealloc);
+> > +	release_block_cnt(sbi, dealloc);
+> > +	release_block(sbi, ni.blk_addr, dealloc);
+> >   	for (i = 0; i < NIDS_PER_BLOCK; i++) {
+> >   		tmp = le32_to_cpu(node->in.nid[i]);
+> >   		if (!tmp)
+> >   			continue;
+> > -		fsck_failed_reconnect_file_idnode(sbi, inode, tmp);
+> > +		fsck_disconnect_file_idnode(sbi, inode, tmp, dealloc);
+> >   	}
+> > +	if (dealloc)
+> > +		release_nat_entry(sbi, nid);
+> > +
+> >   	free(node);
+> >   }
+> > -/*
+> > - * Counters and main_area_bitmap are already changed during checking
+> > - * inode block, so clear them. There is no need to clear new blocks
+> > - * allocted to lost+found.
+> > - */
+> > -static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
+> > +static void fsck_disconnect_file(struct f2fs_sb_info *sbi, nid_t ino,
+> > +			bool dealloc)
+> >   {
+> > -	struct f2fs_fsck *fsck = F2FS_FSCK(sbi);
+> >   	struct f2fs_node *node;
+> >   	struct node_info ni;
+> >   	nid_t nid;
+> > @@ -2988,18 +3046,18 @@ static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
+> >   	ASSERT(err >= 0);
+> >   	/* clear inode counters */
+> > -	fsck->chk.valid_inode_cnt--;
+> > -	fsck->chk.valid_node_cnt--;
+> > -	fsck->chk.valid_blk_cnt--;
+> > -	f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > +	release_inode_cnt(sbi, dealloc);
+> > +	release_node_cnt(sbi, dealloc);
+> > +	release_block_cnt(sbi, dealloc);
+> > +	release_block(sbi, ni.blk_addr, dealloc);
+> >   	/* clear xnid counters */
+> >   	if (node->i.i_xattr_nid) {
+> >   		nid = le32_to_cpu(node->i.i_xattr_nid);
+> > -		fsck->chk.valid_node_cnt--;
+> > -		fsck->chk.valid_blk_cnt--;
+> > +		release_node_cnt(sbi, dealloc);
+> > +		release_block_cnt(sbi, dealloc);
+> >   		get_node_info(sbi, nid, &ni);
+> > -		f2fs_clear_main_bitmap(sbi, ni.blk_addr);
+> > +		release_block(sbi, ni.blk_addr, dealloc);
 > 
-> Yes, in addition to better asm code, I think that the use of magic
-> constant (-1) is not descriptive at all. I tried to make this code
-> look like nmi_panic() from kernel/panic.c, which has similar
-> functionality, and describe that this constant belongs to old_cpu
-> (same as in nmi_panic() ). 
+> Needs to release xattr node's nat entry, right?
+> 
+> if (dealloc)
+> 	release_nat_entry(sbi, nid);
 
-I guess it's a step in the direction of nmi_panic().  But honestly, it
-doesn't go far enough for me at least.  The nice part about nmi_panic()
-is that it gives -1 nice symbolic name and uses that name in the
-definition of the atomic_t.
+Daeho?
 
-> Also, from converting many cmpxchg to try_cmpxchg, it becomes evident
-> that in cases like this (usage in "if" clauses) the correct locking
-> primitive is try_cmpxchg. Additionally, in this particular case, it
-> is not the speed, but a little code save that can be achieved with
-> the same functionality.
-
-I think I understand what you're trying to say: using try_cmpxchg can
-result in better code generation in general than plain cmpxchg.  Thus,
-it's more "correct" to use try_cmpxchg in any case where plain cmpxchg
-is in use.  Right?
-
-I honestly don't think cmpxchg is more or less "correct" than
-try_cmpxchg.  If you're going to be sending patches like these, I'd
-remove this kind of language from your changelogs and discussions
-because it holds zero weight.
-
-Here's what I'm afraid of: this patch is not tested enough.  We apply it
-and then start getting reports of reboot breaking on some server.
-Someone spends two hours bisecting to this patch.  We'll wonder after
-the fact: Was this patch worth it?
-
-I don't think what you have here is more descriptive than what was there
-before.  It still has a -1 and still doesn't logically connect it to the
-'stopping_cpu' definition.  I have no idea how much this was tested.  It
-doesn't _clearly_ move the needle enough on making the code better to
-apply it.
-
-We shouldn't be blindly converting cmpxchg=>try_cmpxchg, and then trying
-to justify it after the fact.  I _do_ agree that try_cmpxchg() leads to
-better looking C code *AND* generated code.  So, for new x86 code, it
-seems like the best thing to do.  But for old (working) code, I think it
-should mostly be left alone.
-
-Maybe you could keep an eye on:
-
-> https://lore.kernel.org/lkml/?q=dfb%3Aatomic_cmpxchg+-dfb%3Aatomic_try_cmpxchg
-
-and remind folks what they should be using, rather than expending
-efforts on trying to move existing code over.
-
+> 
+> Thanks,
+> 
+> >   	}
+> >   	/* clear data counters */
+> > @@ -3009,10 +3067,10 @@ static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
+> >   			block_t addr = le32_to_cpu(node->i.i_addr[ofs + i]);
+> >   			if (!addr)
+> >   				continue;
+> > -			fsck->chk.valid_blk_cnt--;
+> > +			release_block_cnt(sbi, dealloc);
+> >   			if (addr == NEW_ADDR || addr == COMPRESS_ADDR)
+> >   				continue;
+> > -			f2fs_clear_main_bitmap(sbi, addr);
+> > +			release_block(sbi, addr, dealloc);
+> >   		}
+> >   	}
+> > @@ -3024,18 +3082,24 @@ static void fsck_failed_reconnect_file(struct f2fs_sb_info *sbi, nid_t ino)
+> >   		switch (i) {
+> >   		case 0: /* direct node */
+> >   		case 1:
+> > -			fsck_failed_reconnect_file_dnode(sbi, &node->i, nid);
+> > +			fsck_disconnect_file_dnode(sbi, &node->i, nid,
+> > +					dealloc);
+> >   			break;
+> >   		case 2: /* indirect node */
+> >   		case 3:
+> > -			fsck_failed_reconnect_file_idnode(sbi, &node->i, nid);
+> > +			fsck_disconnect_file_idnode(sbi, &node->i, nid,
+> > +					dealloc);
+> >   			break;
+> >   		case 4: /* double indirect node */
+> > -			fsck_failed_reconnect_file_didnode(sbi, &node->i, nid);
+> > +			fsck_disconnect_file_didnode(sbi, &node->i, nid,
+> > +					dealloc);
+> >   			break;
+> >   		}
+> >   	}
+> > +	if (dealloc)
+> > +		release_nat_entry(sbi, ino);
+> > +
+> >   	free(node);
+> >   }
+> > @@ -3121,7 +3185,7 @@ static int fsck_reconnect_file(struct f2fs_sb_info *sbi)
+> >   			if (fsck_do_reconnect_file(sbi, lpf_node, node)) {
+> >   				DBG(1, "Failed to reconnect inode [0x%x]\n",
+> >   				    nid);
+> > -				fsck_failed_reconnect_file(sbi, nid);
+> > +				fsck_disconnect_file(sbi, nid, false);
+> >   				continue;
+> >   			}
+> > diff --git a/fsck/segment.c b/fsck/segment.c
+> > index 3a9500f..4e326c4 100644
+> > --- a/fsck/segment.c
+> > +++ b/fsck/segment.c
+> > @@ -37,7 +37,7 @@ int reserve_new_block(struct f2fs_sb_info *sbi, block_t *to,
+> >   				return -ENOSPC;
+> >   			}
+> >   			if (is_node && fsck->chk.valid_node_cnt >=
+> > -					sbi->total_valid_node_count) {
+> > +					sbi->total_node_count) {
+> >   				ERR_MSG("Not enough space for node block\n");
+> >   				return -ENOSPC;
+> >   			}
+> > @@ -76,7 +76,7 @@ int reserve_new_block(struct f2fs_sb_info *sbi, block_t *to,
+> >   	se = get_seg_entry(sbi, GET_SEGNO(sbi, blkaddr));
+> >   	offset = OFFSET_IN_SEG(sbi, blkaddr);
+> > -	se->type = type;
+> > +	se->type = se->orig_type = type;
+> >   	if (se->valid_blocks == 0)
+> >   		SM_I(sbi)->free_segments--;
+> >   	se->valid_blocks++;
+> > @@ -101,6 +101,7 @@ int reserve_new_block(struct f2fs_sb_info *sbi, block_t *to,
+> >   		if (c.func == FSCK) {
+> >   			fsck->chk.valid_blk_cnt++;
+> >   			if (is_node) {
+> > +				fsck->chk.valid_nat_entry_cnt++;
+> >   				fsck->chk.valid_node_cnt++;
+> >   				if (is_inode)
+> >   					fsck->chk.valid_inode_cnt++;
