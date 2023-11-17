@@ -2,68 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4698C7EF7D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:29:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDABC7EF7DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:30:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346100AbjKQT3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:29:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
+        id S1346175AbjKQTaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:30:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231905AbjKQT3t (ORCPT
+        with ESMTP id S232837AbjKQTaA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:29:49 -0500
-Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3682ED51
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:45 -0800 (PST)
-Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso20076075e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:45 -0800 (PST)
+        Fri, 17 Nov 2023 14:30:00 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37E84172A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:57 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-407da05f05aso17390125e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700249383; x=1700854183; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=3kGDbNgJEZnQxIqJTDiTxyz7vqEWWOiaNZtZNR6F76c=;
-        b=ctMoW5hWKuH13i+M2vuZAyhtSoOa4PtQzNamaFPQ4VS7jtj+qVXjaD+S91m8+ueIjz
-         gA98/S9lc9/5KNjdYtM7lkCR/NKQmU2gt4KmmrkiWI4EY0EEzLhS68WjiiiEN56VbRyO
-         GvB+1WoWWHqLHMynXKdDwx9sHAp937DwKGWc3GY4CvLa0ft5x+IWLNYIzbYd6Nr58Eqk
-         Da7P+UIL5U2NrKox1XrmYCCotijjfYTUxhnzaQQC/toLRyuWN4PRF6hgVPQXodBHcnKL
-         bH0LOC5Rj0ssExmJchVr8tycyVo222lLEfnsDE7hF4HI9lHCGRhno8uy4HJjyIkhsErk
-         XU5g==
+        d=gmail.com; s=20230601; t=1700249395; x=1700854195; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=BrJGixj4VLO/gb45P3W5wglCyhSe0ySqRzzJiqvkYOU=;
+        b=aYyBk9nh+Y1vzXUEohsDH77JD8jUxskEoNbGev2GhEisRA3poXbxIXSoQZGLil0KiC
+         3UtNsXZ2kQR7dOcncmnfC5z7LqGhUX8fNnlZIERjfCY5cybaP4JH4jrKgkB0zRRykPR+
+         +x6s7ZWgo+TAX3KkQkgJOJ/1ndLx6uvyse3lRM/KYstzQMAMuEhz1UMh7dKOjFXVb268
+         Hskm/nAyAgXEpuUFGIaSOTgHr/3MN0X7IJWLTiZXh3RSRPdvl4UsgT9c1N8SlAjo5bqa
+         i1XQuNFcJFxa0CMv4e/j6C0Q85/wCiFAYju6VITWLmGxGiY+FY3amWiNi1zbIA51oOHL
+         lffQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700249383; x=1700854183;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=3kGDbNgJEZnQxIqJTDiTxyz7vqEWWOiaNZtZNR6F76c=;
-        b=RHfwzzV8mwUsUp3T7tfoz4oxRSRQ9ARJosLX55YxeAID5/TUlS0EbPUPh1era07rOB
-         HeY4mW36pyEAFSSd1/UcjAmz3a400doOrNDyoiG9JRd7kUjzd5Rxr0JEziECAJNlAxY2
-         4yZO7kK+FJ8EUaGnF/vY3WmoJqrdoZkPE+jA066mXy4vUrI3VedOzAxjSsRa4ufF5crq
-         bfaUptHBqtTFHJCJ67MDXlICjd+sdMdfeJi+Aq6H53CI2Q+xP/ha8FCrhJpT+1PrQ/rY
-         7VakLf3wrCz84lT15C4ES+MkWqS3Q2TfO/mAkqo/9FTmGfOeRBqluOWpsqyAroPNHyYB
-         gUWg==
-X-Gm-Message-State: AOJu0Yw+4uK/TSSxz2N9B3sWJzn85EXl3tUox4HTJ3/vnTfGUlJKTZmY
-        9WwiQbDB8KueaxVuvH2qWKs=
-X-Google-Smtp-Source: AGHT+IHiJthH+ApJuH/72lZ39Y8nUutmDkkyWGHDequt1aLS2ijDgTIYjzGjRAv/celXY5kjGuj2Dw==
-X-Received: by 2002:a7b:c311:0:b0:406:4573:81d2 with SMTP id k17-20020a7bc311000000b00406457381d2mr68301wmj.39.1700249383456;
-        Fri, 17 Nov 2023 11:29:43 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700249395; x=1700854195;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=BrJGixj4VLO/gb45P3W5wglCyhSe0ySqRzzJiqvkYOU=;
+        b=VgCZyugWB47zsIiwNjY8NuDxM+JZjSh7GI5ruRaYRAUXbj9H5VpDj01cgo5/0tZadD
+         LcD0niaHB5ir5vStIgj6mvigI3vmRksq2gMlOLlY3RZVJvuSpPK2/OScxfGrXN34hTl+
+         fq2eIbPgg62DU+rhl685O5aZ0wdqUYdFfdQ5AaptKKWDxjVDSRp7KZ9f4tc9ZD0jipJL
+         7H6XzdxOv3HOsIylkwfGPXlAk3snne1f8ydo7dt4BA2qot/nj5pIhHKHt5Cnk2sBtBql
+         StGzaC6OEMt7EmCeJ56f+ZpAcYhIjfJw7lx/4jMbhqk3xNIcTdRDPGZ1yraJYtHPyw9I
+         yhyA==
+X-Gm-Message-State: AOJu0YwBOXoFjf4kifKuJy3Vnb9CTJa2cR0l3Tk/MH+2Ndb9UGoHxLmp
+        o5ReTcDuP4IEZS5CQiaPCew=
+X-Google-Smtp-Source: AGHT+IHvtJoidsF1ZL6icuKOlAh85H5TNlmsVhsVh5DSFSRnTQN7DSzjzZ9sbIDg4m+CUvRMYEX7fw==
+X-Received: by 2002:a05:600c:81e:b0:40a:463c:1de0 with SMTP id k30-20020a05600c081e00b0040a463c1de0mr73322wmp.34.1700249395310;
+        Fri, 17 Nov 2023 11:29:55 -0800 (PST)
 Received: from mfe-desktop.Sonatest.net (ipagstaticip-d73c7528-4de5-0861-800b-03d8b15e3869.sdsl.bell.ca. [174.94.156.236])
-        by smtp.googlemail.com with ESMTPSA id 22-20020a05600c021600b0040523bef620sm4440397wmi.0.2023.11.17.11.29.41
+        by smtp.googlemail.com with ESMTPSA id 22-20020a05600c021600b0040523bef620sm4440397wmi.0.2023.11.17.11.29.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 11:29:42 -0800 (PST)
+        Fri, 17 Nov 2023 11:29:54 -0800 (PST)
 From:   marc.ferland@gmail.com
 X-Google-Original-From: marc.ferland@sonatest.com
 To:     krzysztof.kozlowski@linaro.org
 Cc:     gregkh@linuxfoundation.org, marc.ferland@sonatest.com,
         jeff.dagenais@gmail.com, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 1/7] w1: ds2433: remove unused definition
-Date:   Fri, 17 Nov 2023 14:29:03 -0500
-Message-Id: <20231117192909.98944-1-marc.ferland@sonatest.com>
+Subject: [PATCH 2/7] w1: ds2433: add support for registering multiple families
+Date:   Fri, 17 Nov 2023 14:29:04 -0500
+Message-Id: <20231117192909.98944-2-marc.ferland@sonatest.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20231117192909.98944-1-marc.ferland@sonatest.com>
+References: <20231117192909.98944-1-marc.ferland@sonatest.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -71,30 +74,48 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marc Ferland <marc.ferland@sonatest.com>
+From: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
 
-W1_F23_TIME isn't used anywhere, get rid of it.
+This is ground work for supporting both the ds2433 and the
+ds28ec20. Inspired by the w1_ds250x driver.
 
 Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
+Signed-off-by: Jean-Francois Dagenais <jeff.dagenais@gmail.com>
 ---
- drivers/w1/slaves/w1_ds2433.c | 2 --
- 1 file changed, 2 deletions(-)
+ drivers/w1/slaves/w1_ds2433.c | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/w1/slaves/w1_ds2433.c b/drivers/w1/slaves/w1_ds2433.c
-index 9f21fd98f799..e18523ef8c45 100644
+index e18523ef8c45..e1e45ea1bfa4 100644
 --- a/drivers/w1/slaves/w1_ds2433.c
 +++ b/drivers/w1/slaves/w1_ds2433.c
-@@ -30,8 +30,6 @@
- #define W1_PAGE_BITS		5
- #define W1_PAGE_MASK		0x1F
+@@ -299,7 +299,25 @@ static struct w1_family w1_family_23 = {
+ 	.fid = W1_EEPROM_DS2433,
+ 	.fops = &w1_f23_fops,
+ };
+-module_w1_family(w1_family_23);
++
++static int __init w1_ds2433_init(void)
++{
++	int err;
++
++	err = w1_register_family(&w1_family_23);
++	if (err)
++		return err;
++
++	return 0;
++}
++
++static void __exit w1_ds2433_exit(void)
++{
++	w1_unregister_family(&w1_family_23);
++}
++
++module_init(w1_ds2433_init);
++module_exit(w1_ds2433_exit);
  
--#define W1_F23_TIME		300
--
- #define W1_F23_READ_EEPROM	0xF0
- #define W1_F23_WRITE_SCRATCH	0x0F
- #define W1_F23_READ_SCRATCH	0xAA
-
-base-commit: 7475e51b87969e01a6812eac713a1c8310372e8a
+ MODULE_AUTHOR("Ben Gardner <bgardner@wabtec.com>");
+ MODULE_DESCRIPTION("w1 family 23 driver for DS2433, 4kb EEPROM");
 -- 
 2.34.1
 
