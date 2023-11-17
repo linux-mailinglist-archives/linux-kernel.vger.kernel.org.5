@@ -2,148 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C1AA27EF351
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:04:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B06D7EF356
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:07:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346031AbjKQNEs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:04:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43704 "EHLO
+        id S231360AbjKQNHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjKQNEm (ORCPT
+        with ESMTP id S229543AbjKQNHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:04:42 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20896D5D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:04:39 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4083ac51d8aso16578745e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:04:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700226277; x=1700831077; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JGq9sj/yBkQZ/77R0FTh1PIBdOEAJTeiQ5plqmJH5rg=;
-        b=fjAl+c2FTYM/bm3JjbLVpvgn+qekHges7FSfQubMspyPz44UcE2BX1/TeYFrsvVhW6
-         bJCXxB0AJWHcKzAd+Kxz10eMqI+FpuaDDjGQT9bLljKyjtUhc2IEjEA4lcyhEAxxLNf7
-         E6qeDsvD7SRbrXDA2xTiP77d4Qr/xGNhXAdhjh4ZLm01DH8LXQUPOakAicXJfH/QC5AF
-         epXjHKZsz8lS1xz4L29+JC4YMxCwDu1zRMLMnCO6vgQuS+4nbKCptEbgegs9gepp/COq
-         /QY7KWt0puX41UFntWMPQYot8rNBAcHMy0XbdGMIQVbvigFhrOvffnS6pPkTQJUR6hV3
-         JJxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700226277; x=1700831077;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JGq9sj/yBkQZ/77R0FTh1PIBdOEAJTeiQ5plqmJH5rg=;
-        b=QnHwvDV19Ghp3X488pLDTy8bBiZ/CGsO0gx5J7Nu6LE4vG60THWNLjY0c3hf2BNVJN
-         bIO7uPwYIYRq1dE9106oe3wZKV3ny4CgGcVuhgcRLyVQuj2HzOGU7fltZCx3IkxqhSDj
-         Y5mrXvk+WKjcjmr6PoAbRoKbqO58gIF7A4deiDRaTeGlU7bdPhAQzn42JJcV3jcjLhno
-         T2Dxvfftx9BpiM+ogZTpdkYVmpR0Qm8fwwQ4O/N4R4YZGaitQQv+hl0RZWTkDMg8a9MS
-         cSU/lUSpgU+LkSd8PTggnMR8OaGDdCCSfIItierCxW/brdgrjxpaNonfYGnAU0aCbdcC
-         HugA==
-X-Gm-Message-State: AOJu0YwyxyTwAAoI1zUFxKwo2VqH689vwVsFtB0GpgEU9uKLe5ri4a3V
-        cEt5SyksTDU6xG+/x4PuN92w1g==
-X-Google-Smtp-Source: AGHT+IHfMYqBI5CK9dXbgXXUWgtwkpX5AEmU9juyoXuPEH9Tknl4SU1wXJ3ZCQc7FaX9bFnrhnuWbg==
-X-Received: by 2002:a05:600c:2d8b:b0:406:4573:81d2 with SMTP id i11-20020a05600c2d8b00b00406457381d2mr15917258wmg.39.1700226277504;
-        Fri, 17 Nov 2023 05:04:37 -0800 (PST)
-Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id n10-20020a05600c4f8a00b004095874f6d3sm2704595wmq.28.2023.11.17.05.04.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 05:04:35 -0800 (PST)
-Message-ID: <b05edb57-35de-4e84-bdd6-b64d67164d91@linaro.org>
-Date:   Fri, 17 Nov 2023 14:04:33 +0100
+        Fri, 17 Nov 2023 08:07:23 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 749E1126;
+        Fri, 17 Nov 2023 05:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700226440; x=1731762440;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=p+Kod0Kjrk21wqwsn8JeKgSVzjdY4Ik14dg4MPgfld0=;
+  b=cqWpPth1KsQCr1bXrzStSHFOu10dRg6znYF+D4lihK8pJLM+n/MFgu+A
+   Q3FYWMU6kC9GTu6HpCbHGYTrbP5exh8Bzhm+J4vgwcu6Ropdtt01OFTWa
+   BbX0w/jjufyh5yzXXfDwMKL+6KLr3c7du9UR5ZIMmZZFu5WO2yAgLO4X/
+   eSDYKR6LdWZS23drZUvVocvmiG2tJAwEv7UZXqqfQCoGGHmCFCXXDId/E
+   yhiGuY3jBA829ZDu8ZXWKDWtVEZXDwNuB5exD2ePX/4RbdmGoKFie/uA7
+   6nh3ssgXcrjP84Atu3qA+yFC8SmAoHYJD4XHEqpB7PDJxJbiN0i+Ijtiz
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="388446344"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="388446344"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 05:07:20 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="836072044"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="836072044"
+Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
+  by fmsmga004.fm.intel.com with ESMTP; 17 Nov 2023 05:07:19 -0800
+From:   Yi Liu <yi.l.liu@intel.com>
+To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
+        kevin.tian@intel.com, robin.murphy@arm.com,
+        baolu.lu@linux.intel.com
+Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
+        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
+        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
+        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
+        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
+        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
+        xin.zeng@intel.com, yan.y.zhao@intel.com
+Subject: [PATCH v6 0/6] iommufd: Add nesting infrastructure (part 2/2)
+Date:   Fri, 17 Nov 2023 05:07:11 -0800
+Message-Id: <20231117130717.19875-1-yi.l.liu@intel.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/3] dt-bindings: arm: qcom: Add QCM6490 IDP and
- QCS6490 RB3Gen2 board
-Content-Language: en-US
-To:     Komal Bajaj <quic_kbajaj@quicinc.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231117125056.32503-1-quic_kbajaj@quicinc.com>
- <20231117125056.32503-2-quic_kbajaj@quicinc.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231117125056.32503-2-quic_kbajaj@quicinc.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2023 13:50, Komal Bajaj wrote:
-> Document the qcom,qcm6490-idp and qcs6490-rb3gen2 boards.
-> qcm6490-idp based off qcm6490 SoC derived from sc7280 meant for
-> various form factor including IoT and qcs6490-rb3gen2 based off
-> qcs6490 SoC derivative of qcm6490 without internal modem.
-> 
-> Co-developed by: Naina Mehta <quic_nainmeht@quicinc.com>
-> Signed-off by: Naina Mehta <quic_nainmeht@quicinc.com>
-> Signed-off-by: Komal Bajaj <quic_kbajaj@quicinc.com>
-> ---
->  Documentation/devicetree/bindings/arm/qcom.yaml | 2 ++
+Nested translation is a hardware feature that is supported by many modern
+IOMMU hardwares. It has two stages (stage-1, stage-2) address translation
+to get access to the physical address. stage-1 translation table is owned
+by userspace (e.g. by a guest OS), while stage-2 is owned by kernel. Changes
+to stage-1 translation table should be followed by an IOTLB invalidation.
 
-You must explain why you dropped the Reviewed-by tag.
-There is nothing in the changelog explaining it.
+Take Intel VT-d as an example, the stage-1 translation table is I/O page
+table. As the below diagram shows, guest I/O page table pointer in GPA
+(guest physical address) is passed to host and be used to perform the stage-1
+address translation. Along with it, modifications to present mappings in the
+guest I/O page table should be followed with an IOTLB invalidation.
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+    .-------------.  .---------------------------.
+    |   vIOMMU    |  | Guest I/O page table      |
+    |             |  '---------------------------'
+    .----------------/
+    | PASID Entry |--- PASID cache flush --+
+    '-------------'                        |
+    |             |                        V
+    |             |           I/O page table pointer in GPA
+    '-------------'
+Guest
+------| Shadow |---------------------------|--------
+      v        v                           v
+Host
+    .-------------.  .------------------------.
+    |   pIOMMU    |  |  FS for GIOVA->GPA     |
+    |             |  '------------------------'
+    .----------------/  |
+    | PASID Entry |     V (Nested xlate)
+    '----------------\.----------------------------------.
+    |             |   | SS for GPA->HPA, unmanaged domain|
+    |             |   '----------------------------------'
+    '-------------'
+Where:
+ - FS = First stage page tables
+ - SS = Second stage page tables
+<Intel VT-d Nested translation>
 
+This series adds the cache invalidation path for the userspace to invalidate
+cache after modifying the stage-1 page table. This is based on the first part
+of nesting [1]
 
-Best regards,
-Krzysztof
+Complete code can be found in [2], QEMU could can be found in [3].
+
+At last, this is a team work together with Nicolin Chen, Lu Baolu. Thanks
+them for the help. ^_^. Look forward to your feedbacks.
+
+[1] https://lore.kernel.org/linux-iommu/20231026044216.64964-1-yi.l.liu@intel.com/ - merged
+[2] https://github.com/yiliu1765/iommufd/tree/iommufd_nesting
+[3] https://github.com/yiliu1765/qemu/tree/zhenzhong/wip/iommufd_nesting_rfcv1
+
+Change log:
+
+v6:
+ - No much change, just rebase on top of 6.7-rc1 as part 1/2 is merged
+
+v5: https://lore.kernel.org/linux-iommu/20231020092426.13907-1-yi.l.liu@intel.com/#t
+ - Split the iommufd nesting series into two parts of alloc_user and
+   invalidation (Jason)
+ - Split IOMMUFD_OBJ_HW_PAGETABLE to IOMMUFD_OBJ_HWPT_PAGING/_NESTED, and
+   do the same with the structures/alloc()/abort()/destroy(). Reworked the
+   selftest accordingly too. (Jason)
+ - Move hwpt/data_type into struct iommu_user_data from standalone op
+   arguments. (Jason)
+ - Rename hwpt_type to be data_type, the HWPT_TYPE to be HWPT_ALLOC_DATA,
+   _TYPE_DEFAULT to be _ALLOC_DATA_NONE (Jason, Kevin)
+ - Rename iommu_copy_user_data() to iommu_copy_struct_from_user() (Kevin)
+ - Add macro to the iommu_copy_struct_from_user() to calculate min_size
+   (Jason)
+ - Fix two bugs spotted by ZhaoYan
+
+v4: https://lore.kernel.org/linux-iommu/20230921075138.124099-1-yi.l.liu@intel.com/
+ - Separate HWPT alloc/destroy/abort functions between user-managed HWPTs
+   and kernel-managed HWPTs
+ - Rework invalidate uAPI to be a multi-request array-based design
+ - Add a struct iommu_user_data_array and a helper for driver to sanitize
+   and copy the entry data from user space invalidation array
+ - Add a patch fixing TEST_LENGTH() in selftest program
+ - Drop IOMMU_RESV_IOVA_RANGES patches
+ - Update kdoc and inline comments
+ - Drop the code to add IOMMU_RESV_SW_MSI to kernel-managed HWPT in nested translation,
+   this does not change the rule that resv regions should only be added to the
+   kernel-managed HWPT. The IOMMU_RESV_SW_MSI stuff will be added in later series
+   as it is needed only by SMMU so far.
+
+v3: https://lore.kernel.org/linux-iommu/20230724110406.107212-1-yi.l.liu@intel.com/
+ - Add new uAPI things in alphabetical order
+ - Pass in "enum iommu_hwpt_type hwpt_type" to op->domain_alloc_user for
+   sanity, replacing the previous op->domain_alloc_user_data_len solution
+ - Return ERR_PTR from domain_alloc_user instead of NULL
+ - Only add IOMMU_RESV_SW_MSI to kernel-managed HWPT in nested translation (Kevin)
+ - Add IOMMU_RESV_IOVA_RANGES to report resv iova ranges to userspace hence
+   userspace is able to exclude the ranges in the stage-1 HWPT (e.g. guest I/O
+   page table). (Kevin)
+ - Add selftest coverage for the new IOMMU_RESV_IOVA_RANGES ioctl
+ - Minor changes per Kevin's inputs
+
+v2: https://lore.kernel.org/linux-iommu/20230511143844.22693-1-yi.l.liu@intel.com/
+ - Add union iommu_domain_user_data to include all user data structures to avoid
+   passing void * in kernel APIs.
+ - Add iommu op to return user data length for user domain allocation
+ - Rename struct iommu_hwpt_alloc::data_type to be hwpt_type
+ - Store the invalidation data length in iommu_domain_ops::cache_invalidate_user_data_len
+ - Convert cache_invalidate_user op to be int instead of void
+ - Remove @data_type in struct iommu_hwpt_invalidate
+ - Remove out_hwpt_type_bitmap in struct iommu_hw_info hence drop patch 08 of v1
+
+v1: https://lore.kernel.org/linux-iommu/20230309080910.607396-1-yi.l.liu@intel.com/
+
+Thanks,
+	Yi Liu
+
+Lu Baolu (1):
+  iommu: Add cache_invalidate_user op
+
+Nicolin Chen (4):
+  iommu: Add iommu_copy_struct_from_user_array helper
+  iommufd/selftest: Add mock_domain_cache_invalidate_user support
+  iommufd/selftest: Add IOMMU_TEST_OP_MD_CHECK_IOTLB test op
+  iommufd/selftest: Add coverage for IOMMU_HWPT_INVALIDATE ioctl
+
+Yi Liu (1):
+  iommufd: Add IOMMU_HWPT_INVALIDATE
+
+ drivers/iommu/iommufd/hw_pagetable.c          | 35 ++++++++
+ drivers/iommu/iommufd/iommufd_private.h       |  9 ++
+ drivers/iommu/iommufd/iommufd_test.h          | 22 +++++
+ drivers/iommu/iommufd/main.c                  |  3 +
+ drivers/iommu/iommufd/selftest.c              | 69 +++++++++++++++
+ include/linux/iommu.h                         | 84 +++++++++++++++++++
+ include/uapi/linux/iommufd.h                  | 35 ++++++++
+ tools/testing/selftests/iommu/iommufd.c       | 75 +++++++++++++++++
+ tools/testing/selftests/iommu/iommufd_utils.h | 63 ++++++++++++++
+ 9 files changed, 395 insertions(+)
+
+-- 
+2.34.1
 
