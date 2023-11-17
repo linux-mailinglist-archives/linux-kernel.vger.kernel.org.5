@@ -2,68 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A397C7EF016
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:19:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB4367EF02B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:22:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345974AbjKQKTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42688 "EHLO
+        id S1345820AbjKQKWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:22:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345916AbjKQKTi (ORCPT
+        with ESMTP id S1345722AbjKQKWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:19:38 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67D33D6F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:19:32 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id a640c23a62f3a-9f2a53704aaso234089966b.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:19:32 -0800 (PST)
+        Fri, 17 Nov 2023 05:22:43 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54AE9C1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:22:39 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id 5b1f17b1804b1-4084095722aso14741065e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:22:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700216371; x=1700821171; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kgKIl/09fDX42jlxnw2ZLH0zYM8NcURkoiDxmFpK8N4=;
-        b=lYHN1mscDo87ffZrHcxblNJqOjs7N/mVd43iDJKDv2jla2Fzf6gMjIIgPtZke05xIU
-         38BWvGJRLZDqJpmGyp/SLvRRr9NvfN5VXZVX0bJtkUx41uPZW06M87obWHMcfJ78xDfo
-         MXGOVF7gOlQMmIBdXp3driT5KlBtiMhO/08BG56QW2m91X4N0ptCyFomTbooQv9nAkBT
-         lNSxSVJepHwdUAbnSGu08Et8isx0FMCwdcn1veuLlzS5yKCxS7mE6vBOfVZq7KEVFakZ
-         26qYk185xlNKGF4qfjsur5SoZ5ki+615maV3SRzPlyvTIUTTj06Ffx5hum1+GPOkNowr
-         h1hw==
+        d=linaro.org; s=google; t=1700216558; x=1700821358; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=f8EzOI3JPHdPzMM9gv3BMVKYnG8PIMzGI3VBnnJOMgs=;
+        b=ZqssYfcvncnRDnJ5DRW/IPiUEtDIM5fIorhLaecQcDQ9lfmGlbd9e/vHBiUQ/wgDDW
+         BqNpLQOo/hX56PRKaZUCYW6So+pmDeQHr4fBY6JsfqT2CjcAv94piN/E0X7E2BhW+r8G
+         Iq9+bKqskJmYF7E8aeuCirr/4GB58ae6qaKF8hxGMt7PX/YB56qt3PHJE/P/yz7i8oDT
+         VmtFp8zekk1hIlnFHansBAGb9VDcD1I52AWw4bR29flyV71jJ5WlX0ireupWzFTOERh+
+         a9a1Abo94XmmdPl8x4f/I/uKorxKF/oxpVi7N9Ve7z9bHDAsRtyLkLEBs3pD9uWe35KG
+         QnXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700216371; x=1700821171;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kgKIl/09fDX42jlxnw2ZLH0zYM8NcURkoiDxmFpK8N4=;
-        b=mdf44Xkna5//EHTkhdzL2zGIxD4DZJg97do4DH3svlqxzwaBWZjxP2tmD/WdSXvY4H
-         0x6plI2zXd2jcHVGLw7hVJ2t06LfxxK5D/5UeFjgIf6T7od1rg4MQYNhdmAHm9sjWB6q
-         helfYFwc5SJmIk4iFjGzYh9bQTg8QF+nCzAqG1K5BUoPOjeDnFxjofUxR+cziNQdF/bp
-         mifoVHk8n1875xeACmQKhiwd2Pms9gR3rqvowSIEjD8BabSTYeBf/RJSrilWCmpUIN2e
-         +p0xZaIT0lY3AyI+/TYQXTuLOhpn8OnoElc9C3mYhgDahEE8/TskidMG2D59lFribuRJ
-         kIyQ==
-X-Gm-Message-State: AOJu0YxXBWxEuZ5KRi7d//3Qxtf5xl5aqe5IUgvstefmDa4YIiGT7NG8
-        vLhF8SqBg2it4lu7pPWO97qt1w==
-X-Google-Smtp-Source: AGHT+IH3vMQLqIoV9HGbcoXYg1xhTId9AEbuTn/I7/YiYDai3ISz4BAZGWQHloANnCEj2hYZBbNzKw==
-X-Received: by 2002:a17:906:fc04:b0:9e0:5dab:a0f6 with SMTP id ov4-20020a170906fc0400b009e05daba0f6mr14708235ejb.22.1700216370682;
-        Fri, 17 Nov 2023 02:19:30 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700216558; x=1700821358;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=f8EzOI3JPHdPzMM9gv3BMVKYnG8PIMzGI3VBnnJOMgs=;
+        b=VAzcvk3D5agSz5Xxhey3oYwd3DiS59XMC8R/KzEFyoSLPV9jOPzjpCbGvkgK4bIM+Q
+         mghSJKbxkjKs+1wyHc9usHYGzPYohpjjmKJ9iEBVOGwjeZJo1RLtFV51jUYYgu/iKzmG
+         L/sAE7GbR5wUB3osGSCdH/mcyn/F2eUtC/qHAkmMXnJuCuPr0zSpLFAYKGKJJMu2Ion4
+         9oMpthmJwEqQYA/EERIWzg+KV9cRzgAq4nd22bXo2mDv5kNGrF3BG6lHfxA/DtHPxpba
+         0eDmNTr+qxuUXZVzcPwSd6ezZfaHya2h++skSj8ywrQtaLhZySthmkIQNuWb1LnuPWWU
+         l0Cw==
+X-Gm-Message-State: AOJu0YyucKUMT2A5Ch++Dug6GNRyuMybs9XtwEa1GBsokEC0tdW23Y4h
+        7wyaAbUgSqd6GN5bbKHhvIIWHg==
+X-Google-Smtp-Source: AGHT+IGFuLmv5SPeXhNZZWLJiQ8uJkWEHVLosOF6q96RvvoIh7UDQGdv1FNOZHaCfyM/suFV+igarg==
+X-Received: by 2002:a05:600c:46cf:b0:3f5:fff8:d4f3 with SMTP id q15-20020a05600c46cf00b003f5fff8d4f3mr16268351wmo.7.1700216557681;
+        Fri, 17 Nov 2023 02:22:37 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id g17-20020a170906595100b00989828a42e8sm621887ejr.154.2023.11.17.02.19.29
+        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003fe1fe56202sm2189174wmg.33.2023.11.17.02.22.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 02:19:30 -0800 (PST)
-Message-ID: <ee10e67b-6a2f-4ab5-91ef-e42d2f03a424@linaro.org>
-Date:   Fri, 17 Nov 2023 11:19:28 +0100
+        Fri, 17 Nov 2023 02:22:36 -0800 (PST)
+Message-ID: <519b89a2-550e-44a2-bff0-a6a86c50d073@linaro.org>
+Date:   Fri, 17 Nov 2023 11:22:34 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm/arm64: samsung: Enable W=1 on dtbs by default
-To:     Rob Herring <robh@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Conor Dooley <conor+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20231116211739.3228239-1-robh@kernel.org>
+Subject: Re: [PATCH 01/16] dt-bindings: arm: qcom: add SM8550 AIM300
 Content-Language: en-US
+To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        tglx@linutronix.de
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+ <20231117101817.4401-2-quic_tengfan@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -109,42 +109,26 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231116211739.3228239-1-robh@kernel.org>
+In-Reply-To: <20231117101817.4401-2-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16/11/2023 22:17, Rob Herring wrote:
-> Samsung platforms are clean of W=1 dtc warnings, so enable the warnings
-> by default. This way submitters don't have to remember to run a W=1
-> build of the .dts files and the grumpiness of the maintainers can be
-> reduced.
-> 
-> Signed-off-by: Rob Herring <robh@kernel.org>
-> ---
-> Well, there's a couple of warnings on 32-bit, but they look fixable to
-> me.
-> 
-> There's a few other platforms we could do this to. Sadly, they are still
-> the minority. Otherwise, we could change the default and add a flag to
-> disable (I_STILL_HAVENT_FIXED_MY_PLATFORMS=1).
+On 17/11/2023 11:18, Tengfei Fan wrote:
+> Add board compatible for SM8550 AIM300.
 
-64-bit has still few warnings:
-https://krzk.eu/#/builders/29/builds/3710/steps/26/logs/warnings__6_
+Subject, commit msg and compatible tell basically the same... and none
+of them tell me what is AIM300.
 
-I guess these could be fixed by changing ports to port in the DTS and
-bindings. I assume drivers are ready for it.
 
-32-bit I fixed in this cycle - last three commits - so all Samsung
-32-bit platforms are free from W=1 dtc warnings (yay!).
 
 Best regards,
 Krzysztof
