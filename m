@@ -2,209 +2,442 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C01257EF3F7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:04:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 153527EF3FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:05:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231459AbjKQOEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 09:04:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35930 "EHLO
+        id S231406AbjKQOF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:05:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQOEF (ORCPT
+        with ESMTP id S229436AbjKQOF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:04:05 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C45A6C5;
-        Fri, 17 Nov 2023 06:04:00 -0800 (PST)
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHE3fQ2129286;
-        Fri, 17 Nov 2023 08:03:41 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700229821;
-        bh=kT/iKhwxlZUzF6njO16w9Zyg0U8FX+yZFKavzTXPNL8=;
-        h=Date:Subject:To:CC:References:From:In-Reply-To;
-        b=jQHVjkiF60x9wAst6AQXgiabzK0c5l3W99Mq98YBLFQOGOEDitCZmqfQoVTl8V/7z
-         0eehTJ2s5iLenCakylfg2/SE1vgWLsoRVvCAXOi6vxi+/xe3Xnm/rmsg8RzUqwUmHV
-         G2JjVZXx0pqzxo0wF5o7UDXBCy8H7Qvy/Fn8U2ZU=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHE3ffC004544
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 08:03:41 -0600
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 08:03:41 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 08:03:41 -0600
-Received: from [10.250.36.5] (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHE3dH0120164;
-        Fri, 17 Nov 2023 08:03:39 -0600
-Message-ID: <2cb3f992-f214-4cdf-8443-9e14ab864a66@ti.com>
-Date:   Fri, 17 Nov 2023 08:03:38 -0600
+        Fri, 17 Nov 2023 09:05:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA698D72
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:05:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 55397C433C7;
+        Fri, 17 Nov 2023 14:05:16 +0000 (UTC)
+Message-ID: <4e0e0e79-91a8-49b5-874d-784d51003021@xs4all.nl>
+Date:   Fri, 17 Nov 2023 15:05:14 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-CC:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
-References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
- <3266223.44csPzL39Z@phil> <d8363bac-df41-416a-9043-f6212ad61e13@linaro.org>
- <7592981.EvYhyI6sBW@phil>
-Content-Language: en-US
-From:   Andrew Davis <afd@ti.com>
-In-Reply-To: <7592981.EvYhyI6sBW@phil>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
+Content-Language: en-US, nl
+To:     Sakari Ailus <sakari.ailus@iki.fi>
+Cc:     Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        m.szyprowski@samsung.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xiubo.Lee@gmail.com, festevam@gmail.com, nicoleotsuka@gmail.com,
+        lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
+        tiwai@suse.com, alsa-devel@alsa-project.org,
+        linuxppc-dev@lists.ozlabs.org, Tomasz Figa <tfiga@chromium.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
+ <20231113124412.GA18974@pendragon.ideasonboard.com>
+ <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
+ <20231115105518.GD13826@pendragon.ideasonboard.com>
+ <a67491c0-4fdf-4472-852c-e75f5e1d67af@xs4all.nl>
+ <20231115114931.GE13826@pendragon.ideasonboard.com>
+ <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
+ <7626e0f8-ce31-469e-b49c-f2fba664756f@xs4all.nl>
+ <CAA+D8ANb6A9eh=MQR9+7sZi5jet+7RSHt6TdZqPz5EK6pBs3mA@mail.gmail.com>
+ <6badc94c-c414-40d7-a9d7-8b3fc86d8d98@xs4all.nl>
+ <ZVdlmRlpW7ebrjQO@valkosipuli.retiisi.eu>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Autocrypt: addr=hverkuil@xs4all.nl; keydata=
+ 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
+In-Reply-To: <ZVdlmRlpW7ebrjQO@valkosipuli.retiisi.eu>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
+        SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/16/23 2:33 PM, Heiko Stuebner wrote:
-> Am Donnerstag, 16. November 2023, 21:23:20 CET schrieb Krzysztof Kozlowski:
->> On 16/11/2023 21:03, Heiko Stuebner wrote:
+On 17/11/2023 14:07, Sakari Ailus wrote:
+> Hi Hans,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Nov 17, 2023 at 01:07:44PM +0100, Hans Verkuil wrote:
+>> Here is an RFC patch adding support for 'fraction_bits'. It's lacking
+>> documentation, but it can be used for testing.
 >>
->>>>> I guess the only thing I do have questions about is the part
->>>>>
->>>>>> +4. All properties with values
->>>>>> +5. Boolean properties
->>>>>
->>>>> Is there a rationale for it? Because with it things like regulator-*
->>>>> properties then end up in two different blocks.
->>>>
->>>> Good point. It is only a matter of style that this:
->>>>
->>>> foo {
->>>> 	compatible = "foo";
->>>> 	reg = <0x1>;
->>>> 	clocks = <&clk>;
->>>> 	wakeup-source;
->>>> 	key-autorepeat;
->>>> }
->>>>
->>>> looks better to me than:
->>>>
->>>>
->>>> foo {
->>>> 	compatible = "foo";
->>>> 	reg = <0x1>;
->>>> 	key-autorepeat;
->>>> 	wakeup-source;
->>>> 	clocks = <&clk>;
->>>> }
->>>>
->>>> But you have good point that similar properties should be usually
->>>> grouped together.
->>>>
->>>> About which regulator properties are you thinking now? You mean the
->>>> supplies or the provider?
->>>
->>> I was thinking about the provider. There are
->>> 	regulator-min-microvolt = <>;
->>> and friends, but also
->>> 	regulator-boot-on;
+>> It was rather a pain logging fixed point number in a reasonable format,
+>> but I think it is OK.
 >>
->> These are in regulator provider nodes and above guideline would keep
->> logical order:
+>> In userspace (where you can use floating point) it is a lot easier:
 >>
->> 	regulator-name = "vdd_kfc";
->> 	regulator-min-microvolt = <800000>;
->> 	regulator-max-microvolt = <1500000>;
->> 	regulator-always-on;
->> 	regulator-boot-on;
+>> printf("%.*g\n", fraction_bits, (double)v * (1.0 / (1ULL << fraction_bits)));
+> 
+> I wonder if we could add a printk() format specifier for this. Doesn't need
+> to be done right now though, just an idea.
+> 
 >>
->> 	regulator-state-mem {
->> 		regulator-off-in-suspend;
->> 	};
+>> I decided to only expose fraction_bits in struct v4l2_query_ext_ctrl.
+>> I could add it to struct v4l2_queryctrl, but I did not think that was
+>> necessary. Other opinions are welcome.
 >>
->> What exactly would be here misordered?
+>> In the meantime, let me know if this works for your patch series. If it
+>> does, then I can clean this up.
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>> Signed-off-by: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+>> ---
+>>  drivers/media/v4l2-core/v4l2-ctrls-api.c  |  1 +
+>>  drivers/media/v4l2-core/v4l2-ctrls-core.c | 72 +++++++++++++++++++----
+>>  include/media/v4l2-ctrls.h                |  7 ++-
+>>  include/uapi/linux/videodev2.h            | 20 ++++++-
+>>  4 files changed, 85 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-api.c b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+>> index 002ea6588edf..3132df315b17 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls-api.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-api.c
+>> @@ -1101,6 +1101,7 @@ int v4l2_query_ext_ctrl(struct v4l2_ctrl_handler *hdl, struct v4l2_query_ext_ctr
+>>  	qc->elems = ctrl->elems;
+>>  	qc->nr_of_dims = ctrl->nr_of_dims;
+>>  	memcpy(qc->dims, ctrl->dims, qc->nr_of_dims * sizeof(qc->dims[0]));
+>> +	qc->fraction_bits = ctrl->fraction_bits;
+>>  	qc->minimum = ctrl->minimum;
+>>  	qc->maximum = ctrl->maximum;
+>>  	qc->default_value = ctrl->default_value;
+>> diff --git a/drivers/media/v4l2-core/v4l2-ctrls-core.c b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> index a662fb60f73f..0e08a371af5c 100644
+>> --- a/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> +++ b/drivers/media/v4l2-core/v4l2-ctrls-core.c
+>> @@ -252,12 +252,42 @@ void v4l2_ctrl_type_op_init(const struct v4l2_ctrl *ctrl, u32 from_idx,
+>>  }
+>>  EXPORT_SYMBOL(v4l2_ctrl_type_op_init);
+>>
+>> +static void v4l2_ctrl_log_fp(s64 v, unsigned int fraction_bits)
+>> +{
+>> +	s64 i = v4l2_fp_integer(v, fraction_bits);
+>> +	s64 f = v4l2_fp_fraction(v, fraction_bits);
+>> +
+>> +	if (!f) {
+>> +		pr_cont("%lld", i);
+>> +	} else if (fraction_bits < 20) {
+>> +		u64 div = 1ULL << fraction_bits;
+>> +
+>> +		if (!i && f < 0)
+>> +			pr_cont("-%lld/%llu", -f, div);
+>> +		else if (!i)
+>> +			pr_cont("%lld/%llu", f, div);
+>> +		else if (i < 0 || f < 0)
+>> +			pr_cont("-%lld-%llu/%llu", -i, -f, div);
+>> +		else
+>> +			pr_cont("%lld+%llu/%llu", i, f, div);
+>> +	} else {
+>> +		if (!i && f < 0)
+>> +			pr_cont("-%lld/(2^%u)", -f, fraction_bits);
+>> +		else if (!i)
+>> +			pr_cont("%lld/(2^%u)", f, fraction_bits);
+>> +		else if (i < 0 || f < 0)
+>> +			pr_cont("-%lld-%llu/(2^%u)", -i, -f, fraction_bits);
+>> +		else
+>> +			pr_cont("%lld+%llu/(2^%u)", i, f, fraction_bits);
+>> +	}
+>> +}
+>> +
+>>  void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+>>  {
+>>  	union v4l2_ctrl_ptr ptr = ctrl->p_cur;
+>>
+>>  	if (ctrl->is_array) {
+>> -		unsigned i;
+>> +		unsigned int i;
+>>
+>>  		for (i = 0; i < ctrl->nr_of_dims; i++)
+>>  			pr_cont("[%u]", ctrl->dims[i]);
+>> @@ -266,7 +296,10 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+>>
+>>  	switch (ctrl->type) {
+>>  	case V4L2_CTRL_TYPE_INTEGER:
+>> -		pr_cont("%d", *ptr.p_s32);
+>> +		if (!ctrl->fraction_bits)
+>> +			pr_cont("%d", *ptr.p_s32);
+>> +		else
+>> +			v4l2_ctrl_log_fp(*ptr.p_s32, ctrl->fraction_bits);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_BOOLEAN:
+>>  		pr_cont("%s", *ptr.p_s32 ? "true" : "false");
+>> @@ -281,19 +314,31 @@ void v4l2_ctrl_type_op_log(const struct v4l2_ctrl *ctrl)
+>>  		pr_cont("0x%08x", *ptr.p_s32);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_INTEGER64:
+>> -		pr_cont("%lld", *ptr.p_s64);
+>> +		if (!ctrl->fraction_bits)
+>> +			pr_cont("%lld", *ptr.p_s64);
+>> +		else
+>> +			v4l2_ctrl_log_fp(*ptr.p_s64, ctrl->fraction_bits);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_STRING:
+>>  		pr_cont("%s", ptr.p_char);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_U8:
+>> -		pr_cont("%u", (unsigned)*ptr.p_u8);
+>> +		if (!ctrl->fraction_bits)
+>> +			pr_cont("%u", (unsigned int)*ptr.p_u8);
+>> +		else
+>> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u8, ctrl->fraction_bits);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_U16:
+>> -		pr_cont("%u", (unsigned)*ptr.p_u16);
+>> +		if (!ctrl->fraction_bits)
+>> +			pr_cont("%u", (unsigned int)*ptr.p_u16);
+>> +		else
+>> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u16, ctrl->fraction_bits);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_U32:
+>> -		pr_cont("%u", (unsigned)*ptr.p_u32);
+>> +		if (!ctrl->fraction_bits)
+>> +			pr_cont("%u", (unsigned int)*ptr.p_u32);
+>> +		else
+>> +			v4l2_ctrl_log_fp((unsigned int)*ptr.p_u32, ctrl->fraction_bits);
+>>  		break;
+>>  	case V4L2_CTRL_TYPE_H264_SPS:
+>>  		pr_cont("H264_SPS");
+>> @@ -1752,7 +1797,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>>  			u32 id, const char *name, enum v4l2_ctrl_type type,
+>>  			s64 min, s64 max, u64 step, s64 def,
+>>  			const u32 dims[V4L2_CTRL_MAX_DIMS], u32 elem_size,
+>> -			u32 flags, const char * const *qmenu,
+>> +			u32 fraction_bits, u32 flags, const char * const *qmenu,
+>>  			const s64 *qmenu_int, const union v4l2_ctrl_ptr p_def,
+>>  			void *priv)
+>>  {
+>> @@ -1939,6 +1984,7 @@ static struct v4l2_ctrl *v4l2_ctrl_new(struct v4l2_ctrl_handler *hdl,
+>>  	ctrl->name = name;
+>>  	ctrl->type = type;
+>>  	ctrl->flags = flags;
+>> +	ctrl->fraction_bits = fraction_bits;
+>>  	ctrl->minimum = min;
+>>  	ctrl->maximum = max;
+>>  	ctrl->step = step;
+>> @@ -2037,7 +2083,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_custom(struct v4l2_ctrl_handler *hdl,
+>>  	ctrl = v4l2_ctrl_new(hdl, cfg->ops, cfg->type_ops, cfg->id, name,
+>>  			type, min, max,
+>>  			is_menu ? cfg->menu_skip_mask : step, def,
+>> -			cfg->dims, cfg->elem_size,
+>> +			cfg->dims, cfg->elem_size, cfg->fraction_bits,
+>>  			flags, qmenu, qmenu_int, cfg->p_def, priv);
+>>  	if (ctrl)
+>>  		ctrl->is_private = cfg->is_private;
+>> @@ -2062,7 +2108,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std(struct v4l2_ctrl_handler *hdl,
+>>  		return NULL;
+>>  	}
+>>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
+>> -			     min, max, step, def, NULL, 0,
+>> +			     min, max, step, def, NULL, 0, 0,
+>>  			     flags, NULL, NULL, ptr_null, NULL);
+>>  }
+>>  EXPORT_SYMBOL(v4l2_ctrl_new_std);
+>> @@ -2095,7 +2141,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu(struct v4l2_ctrl_handler *hdl,
+>>  		return NULL;
+>>  	}
+>>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
+>> -			     0, max, mask, def, NULL, 0,
+>> +			     0, max, mask, def, NULL, 0, 0,
+>>  			     flags, qmenu, qmenu_int, ptr_null, NULL);
+>>  }
+>>  EXPORT_SYMBOL(v4l2_ctrl_new_std_menu);
+>> @@ -2127,7 +2173,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_menu_items(struct v4l2_ctrl_handler *hdl,
+>>  		return NULL;
+>>  	}
+>>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
+>> -			     0, max, mask, def, NULL, 0,
+>> +			     0, max, mask, def, NULL, 0, 0,
+>>  			     flags, qmenu, NULL, ptr_null, NULL);
+>>
+>>  }
+>> @@ -2149,7 +2195,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_std_compound(struct v4l2_ctrl_handler *hdl,
+>>  		return NULL;
+>>  	}
+>>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
+>> -			     min, max, step, def, NULL, 0,
+>> +			     min, max, step, def, NULL, 0, 0,
+>>  			     flags, NULL, NULL, p_def, NULL);
+>>  }
+>>  EXPORT_SYMBOL(v4l2_ctrl_new_std_compound);
+>> @@ -2173,7 +2219,7 @@ struct v4l2_ctrl *v4l2_ctrl_new_int_menu(struct v4l2_ctrl_handler *hdl,
+>>  		return NULL;
+>>  	}
+>>  	return v4l2_ctrl_new(hdl, ops, NULL, id, name, type,
+>> -			     0, max, 0, def, NULL, 0,
+>> +			     0, max, 0, def, NULL, 0, 0,
+>>  			     flags, NULL, qmenu_int, ptr_null, NULL);
+>>  }
+>>  EXPORT_SYMBOL(v4l2_ctrl_new_int_menu);
+>> diff --git a/include/media/v4l2-ctrls.h b/include/media/v4l2-ctrls.h
+>> index 59679a42b3e7..c35514c5bf88 100644
+>> --- a/include/media/v4l2-ctrls.h
+>> +++ b/include/media/v4l2-ctrls.h
+>> @@ -211,7 +211,8 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
+>>   *		except for dynamic arrays. In that case it is in the range of
+>>   *		1 to @p_array_alloc_elems.
+>>   * @dims:	The size of each dimension.
+>> - * @nr_of_dims:The number of dimensions in @dims.
+>> + * @nr_of_dims: The number of dimensions in @dims.
+>> + * @fraction_bits: The number of fraction bits for fixed point values.
+>>   * @menu_skip_mask: The control's skip mask for menu controls. This makes it
+>>   *		easy to skip menu items that are not valid. If bit X is set,
+>>   *		then menu item X is skipped. Of course, this only works for
+>> @@ -228,6 +229,7 @@ typedef void (*v4l2_ctrl_notify_fnc)(struct v4l2_ctrl *ctrl, void *priv);
+>>   *		:math:`ceil(\frac{maximum - minimum}{step}) + 1`.
+>>   *		Used only if the @type is %V4L2_CTRL_TYPE_INTEGER_MENU.
+>>   * @flags:	The control's flags.
+>> + * @fraction_bits: The number of fraction bits for fixed point values.
+>>   * @priv:	The control's private pointer. For use by the driver. It is
+>>   *		untouched by the control framework. Note that this pointer is
+>>   *		not freed when the control is deleted. Should this be needed
+>> @@ -286,6 +288,7 @@ struct v4l2_ctrl {
+>>  	u32 new_elems;
+>>  	u32 dims[V4L2_CTRL_MAX_DIMS];
+>>  	u32 nr_of_dims;
+>> +	u32 fraction_bits;
+>>  	union {
+>>  		u64 step;
+>>  		u64 menu_skip_mask;
+>> @@ -426,6 +429,7 @@ struct v4l2_ctrl_handler {
+>>   * @dims:	The size of each dimension.
+>>   * @elem_size:	The size in bytes of the control.
+>>   * @flags:	The control's flags.
+>> + * @fraction_bits: The number of fraction bits for fixed point values.
+>>   * @menu_skip_mask: The control's skip mask for menu controls. This makes it
+>>   *		easy to skip menu items that are not valid. If bit X is set,
+>>   *		then menu item X is skipped. Of course, this only works for
+>> @@ -455,6 +459,7 @@ struct v4l2_ctrl_config {
+>>  	u32 dims[V4L2_CTRL_MAX_DIMS];
+>>  	u32 elem_size;
+>>  	u32 flags;
+>> +	u32 fraction_bits;
+>>  	u64 menu_skip_mask;
+>>  	const char * const *qmenu;
+>>  	const s64 *qmenu_int;
+>> diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
+>> index c3d4e490ce7c..26ecac19722a 100644
+>> --- a/include/uapi/linux/videodev2.h
+>> +++ b/include/uapi/linux/videodev2.h
+>> @@ -1944,9 +1944,27 @@ struct v4l2_query_ext_ctrl {
+>>  	__u32                elems;
+>>  	__u32                nr_of_dims;
+>>  	__u32                dims[V4L2_CTRL_MAX_DIMS];
+>> -	__u32		     reserved[32];
+>> +	__u32                fraction_bits;
 > 
-> going with the vcc5v0_host regulator of the rk3588-quartzpro64 and
+> u8 would suffice. Not that we'd be short of space but still...
 > 
-> +1. compatible
-> +2. reg
-> +3. ranges
-> +4. All properties with values
-> +5. Boolean properties
-> +6. status (if applicable)
-> +7. Child nodes
+>> +	__u32		     reserved[31];
+>>  };
+>>
+>> +static inline __s64 v4l2_fp_compose(__s64 i, __s64 f, unsigned int fraction_bits)
+>> +{
+>> +	return (i << fraction_bits) + f;
+>> +}
+>> +
+>> +static inline __s64 v4l2_fp_integer(__s64 v, unsigned int fraction_bits)
+>> +{
+>> +	return v / (1LL << fraction_bits);
 > 
-> we'd end up with
+> Why not just:
 > 
->          vcc5v0_host: vcc5v0-host-regulator {
-> /* 1. */        compatible = "regulator-fixed";
-> /* 4. */        gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
->                  pinctrl-names = "default";
->                  pinctrl-0 = <&vcc5v0_host_en>;
->                  regulator-min-microvolt = <5000000>;
->                  regulator-max-microvolt = <5000000>;
->                  regulator-name = "vcc5v0_host";
->                  vin-supply = <&vcc5v0_usb>;
-> /* 5. */        enable-active-high;
->                  regulator-always-on;
->                  regulator-boot-on;
->          };
+> 	return v >> fraction_bits;
+
+That works if v >= 0, but not for v < 0. Getting this right for negative
+fixed point values was rather tricky. Actually, it is still wrong if
+fraction_bits == 63. This works:
+
+static inline long long v4l2_fp_integer(long long v, unsigned int fraction_bits)
+{
+        if (fraction_bits >= 63)
+                return v < 0 ? -1 : 0;
+        return v / (1ULL << fraction_bits);
+}
+
+> 
+> I'd use macros so you could use whatever control types with this without
+> casting. E.g.
+> 
+> #define V4L2_FP_INTEGER(v, fraction_bits) ((v) >> fraction_bits)
+> 
+> A more generic way to expose this could be to have base and exponent, the
+> base being 2 in this case. Just an idea. This would of course be a little
+> bit more difficult to use.
+
+To be honest, I am not at all certain this should be in a public header.
+I am inclined to drop it, especially since in userspace you can just use
+floating point operations which makes working with fixed point a lot easier.
+
+The code to extract the integer and fraction part is really only relevant
+when logging the fixed point value.
+
+Regards,
+
+	Hans
+
+> 
+>> +}
+>> +
+>> +static inline __s64 v4l2_fp_fraction(__s64 v, unsigned int fraction_bits)
+>> +{
+>> +	__u64 mask = (1ULL << fraction_bits) - 1;
+>> +
+>> +	return v < 0 ? -((-v) & mask) : (v & mask);
+>> +}
+>> +
+>>  /*  Used in the VIDIOC_QUERYMENU ioctl for querying menu items */
+>>  struct v4l2_querymenu {
+>>  	__u32		id;
 > 
 
-How about grouping like properties (defined in the same schema),
-then sorting within that group. Would also allow for defining
-where to add spacing.
-
-1. compatible
-2. reg
-3. ranges
-4. All property groups
-   4.1 Properties with values
-   4.2 Boolean properties
-   4.3 Separating space
-6. status (if applicable)
-7. Child nodes
-
-Your node then would look like we expect:
-
-vcc5v0_host: vcc5v0-host-regulator {
-/* 1   */   compatible = "regulator-fixed";
-
-/* 4.1 */   pinctrl-names = "default";
-/* 4.1 */   pinctrl-0 = <&vcc5v0_host_en>;
-/* 4.3 */
-/* 4.1 */   regulator-min-microvolt = <5000000>;
-/* 4.1 */   regulator-max-microvolt = <5000000>;
-/* 4.1 */   regulator-name = "vcc5v0_host";
-/* 4.2 */   regulator-always-on;
-/* 4.2 */   regulator-boot-on;
-/* 4.2 */   enable-active-high;
-/* 4.3 */
-/* 4.1 */   gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
-...
-};
-
-
-Andrew
-
-
-> which I find somewhat counter-intuitive ;-) .
-> 
-> 
-> Heiko
-> 
-> 
