@@ -2,131 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C03CD7EF2E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:44:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9853A7EF2E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:46:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345808AbjKQMoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:44:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50512 "EHLO
+        id S1345794AbjKQMq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:46:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKQMoD (ORCPT
+        with ESMTP id S230379AbjKQMq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:44:03 -0500
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E1FFD4E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:44:00 -0800 (PST)
-Received: by mail-ed1-x52d.google.com with SMTP id 4fb4d7f45d1cf-53e3b8f906fso2856075a12.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:43:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700225038; x=1700829838; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=kX+3yDbq4orl3F1IwroT1JgXwfqK8BBsS1e+lWobZFk=;
-        b=m34NgWD8WoDg9sof7yjQKGHGQctIUJqn0STZgVZzNZUAv98PJ42GPQjymaT3KbHIUm
-         p1NiBfCr+tXj9ddZauM4u6oqi2XeGqF74BkOl9CNnbCc5NAtv88KgAIVnZ/PYydNhARw
-         1foyshWFc6va457Nqpq1OizG2CAJymMfsS2y8kY4wpu7wT30c/fHO1adYg4JTiuF7DRF
-         R92FBh9ckwNq/PYP/qCoM1AH7nZ65jfdXqm299g6kNK46QJS3IHLTpKQ/32txfCdwRfU
-         1CkXooCQdlj/n0QgKLyttfapcPgYblWPM3eVQnik9mX5l1io9urvj3GF2sSB7XE5+R0Y
-         /Xmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700225038; x=1700829838;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kX+3yDbq4orl3F1IwroT1JgXwfqK8BBsS1e+lWobZFk=;
-        b=cNvgtd2MBfvbXC4uN+81pJEV04H62ZqUtQ4KM5roE5ldGkzgGCGjSOQ7EJL709qAQY
-         SDpCYSiNJVyjWXSn6S1UmcVxJMbzQeIUjyf9e6XA0oN/oSi92h8dT/vSsKvj8qtRqAQe
-         M3wVMf19Ka30TOD6AnlDcQw+Nx1JBp4s7G0wSEDKnPE2n6cRUPJvYJAfNj0HRYiJqmP9
-         Z/o722DRunTXEZ/InfivcOp9SnEtDYqCHXiAhADNnx02brXw7zHy5Oibf/3GNnB2VQ2Y
-         fHHQKSHpzVS6ydsiIstxJUpHWqzfZMc8UXcnfGDVmuiL2UD8U8tB1lQDE+Eg/ZMyD29l
-         j8iw==
-X-Gm-Message-State: AOJu0YwnUnBNQaiUQ4IM2wEgyU+7yKf8MMlvdGYpaIUP/uZeg4wXc/X7
-        iX4roYCLbJycgWSE+h8DrPzYMI2SMg4=
-X-Google-Smtp-Source: AGHT+IH4SIi6HSZFNp8EGNEs+UR1fOzgICoABAVzD2kE9dET1mwCrSQgwPZC+hpNvPeD9gfWX2DPnQ==
-X-Received: by 2002:a05:6402:138f:b0:53e:78ed:924d with SMTP id b15-20020a056402138f00b0053e78ed924dmr13540292edv.5.1700225037520;
-        Fri, 17 Nov 2023 04:43:57 -0800 (PST)
-Received: from localhost.lan (dsl51B7D2F9.fixip.t-online.hu. [81.183.210.249])
-        by smtp.gmail.com with ESMTPSA id d1-20020a05640208c100b0052e1783ab25sm688548edz.70.2023.11.17.04.43.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 04:43:57 -0800 (PST)
-From:   =?UTF-8?q?Zolt=C3=A1n=20B=C3=B6sz=C3=B6rm=C3=A9nyi?= 
-        <zboszor@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     dmitry.torokhov@gmail.com,
-        =?UTF-8?q?Zolt=C3=A1n=20B=C3=B6sz=C3=B6rm=C3=A9nyi?= 
-        <zboszor@gmail.com>, kernel test robot <lkp@intel.com>
-Subject: [PATCH] egalax_ts_serial: Fix potential buffer overflow
-Date:   Fri, 17 Nov 2023 13:43:52 +0100
-Message-ID: <20231117124352.275294-1-zboszor@gmail.com>
-X-Mailer: git-send-email 2.42.0
+        Fri, 17 Nov 2023 07:46:26 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48C5BD4E;
+        Fri, 17 Nov 2023 04:46:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=+YOin7g0g4T8byZD5QObPXU2WYjbG0dAcuL7qKb6CFQ=; b=DPiPJrWkqqPu/2Ozcap4dDcGnH
+        X1Y2JjbeKoMJOj6KZlKumVBPARupNyrG0VJdUZnJ5KyyYhMlGnrSEKMhLvsMLIIidfacdkSWgPvSm
+        JB9Xp9iqqX9uYVZQgKbrlTeO5lPpXL/iaff+I4NVmjqZIc8dFTM7DZHR6rd88gD2ACoE+Dp4mb+dp
+        jbAE8qK6HR8G2pAc/hpEUEmzatlRF5GzL3C8kyRNeMXz5Xj0OMAYN5i4KizcfLWiMdoX/vmCE6poB
+        ba8D5bztG6nyrWYUPyQJM/+y/OEj3Po1s2GsJN/jvbP7DHKYagJqB1tYGGHIJzZvmarsVxQqXFHJE
+        AYl1ZgdA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:35790)
+        by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.96)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1r3yEi-0002qX-2g;
+        Fri, 17 Nov 2023 12:46:16 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.94.2)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1r3yEk-00008Q-DK; Fri, 17 Nov 2023 12:46:18 +0000
+Date:   Fri, 17 Nov 2023 12:46:18 +0000
+From:   "Russell King (Oracle)" <linux@armlinux.org.uk>
+To:     Robert Marko <robimarko@gmail.com>
+Cc:     andrew@lunn.ch, hkallweit1@gmail.com, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        ansuelsmth@gmail.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 1/2] net: phy: aquantia: validate PHY mode on
+ AQR107
+Message-ID: <ZVdgmpvI+F4ClNmG@shell.armlinux.org.uk>
+References: <20231117100958.425354-1-robimarko@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117100958.425354-1-robimarko@gmail.com>
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update my old (defunct) email addresses in passing.
+On Fri, Nov 17, 2023 at 11:09:48AM +0100, Robert Marko wrote:
+> The Aquantia driver is not setting the PHY mode itself, but it does however
+> still check if the PHY mode set in DTS is one of the supported modes.
+> 
+> However, the set PHY mode does not have to match the actual one, so lets
+> add update the PHY mode during .config_init and warn if they differ.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/oe-kbuild-all/202311171716.uIQY5rT4-lkp@intel.com/
-Signed-off-by: Zoltán Böszörményi <zboszor@gmail.com>
----
- CREDITS                                      | 3 ++-
- drivers/input/touchscreen/egalax_ts_serial.c | 6 +++---
- 2 files changed, 5 insertions(+), 4 deletions(-)
+This looks completely wrong to me. These PHYs can be configured to
+change their MAC-facing interface mode according to the media negotiated
+speed, but you are only checking that _if_ the media is up, then the
+interface that has resulted from that negotiation matches what is in
+DTS. That could be dependent on the link partner, so what works for a
+platform when connected to one link partner may issue your "info"-level
+warning when connected to a different link partner.
 
-diff --git a/CREDITS b/CREDITS
-index f33a33fd2371..5efccb40d577 100644
---- a/CREDITS
-+++ b/CREDITS
-@@ -470,8 +470,9 @@ S: Montreal, Quebec
- S: Canada
- 
- N: Zoltán Böszörményi
--E: zboszor@mail.externet.hu
-+E: zboszor@gmail.com
- D: MTRR emulation with Cyrix style ARR registers, Athlon MTRR support
-+D: eGalax serial touchscreen support
- 
- N: John Boyd
- E: boyd@cis.ohio-state.edu
-diff --git a/drivers/input/touchscreen/egalax_ts_serial.c b/drivers/input/touchscreen/egalax_ts_serial.c
-index 375922d3a6d1..f8b56896a42f 100644
---- a/drivers/input/touchscreen/egalax_ts_serial.c
-+++ b/drivers/input/touchscreen/egalax_ts_serial.c
-@@ -2,7 +2,7 @@
- /*
-  * EETI Egalax serial touchscreen driver
-  *
-- * Copyright (c) 2015 Zoltán Böszörményi <zboszor@pr.hu>
-+ * Copyright (c) 2015 Zoltán Böszörményi <zboszor@gmail.com>
-  *
-  * based on the
-  *
-@@ -42,7 +42,7 @@ struct egalax {
- 	struct serio *serio;
- 	int idx;
- 	u8 data[EGALAX_FORMAT_MAX_LENGTH];
--	char phys[32];
-+	char phys[NAME_MAX];
- };
- 
- static void egalax_process_data(struct egalax *egalax)
-@@ -185,6 +185,6 @@ static struct serio_driver egalax_drv = {
- };
- module_serio_driver(egalax_drv);
- 
--MODULE_AUTHOR("Zoltán Böszörményi <zboszor@pr.hu>");
-+MODULE_AUTHOR("Zoltán Böszörményi <zboszor@gmail.com>");
- MODULE_DESCRIPTION(DRIVER_DESC);
- MODULE_LICENSE("GPL v2");
+So no, this to me looks completely wrong.
+
+You need to check the VEND1_GLOBAL_CFG_* registers, and determine from
+those what interface mode(s) will be used, and then use that to validate
+the mode.
+
+It just so happens that...
+
+http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=net-queue&id=f7b531ee8855f81d267a8a42c44da51576f48daf
+http://git.armlinux.org.uk/cgit/linux-arm.git/commit/?h=net-queue&id=f55389aa5d11da8a32dfd65a1b98049878ce09f0
+
+builds a bitmap that can then be tested to check this. Whether the
+above is entirely correct or not, I can't really say, I don't have
+enough information on this PHY.
+
 -- 
-2.42.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
