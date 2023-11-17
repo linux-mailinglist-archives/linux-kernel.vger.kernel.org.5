@@ -2,61 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2941D7EF2BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2F17EF2C4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:38:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345764AbjKQMh3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:37:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59032 "EHLO
+        id S1345808AbjKQMi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:38:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230085AbjKQMh1 (ORCPT
+        with ESMTP id S229543AbjKQMiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:37:27 -0500
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E4E711D;
-        Fri, 17 Nov 2023 04:37:22 -0800 (PST)
-Received: from pendragon.ideasonboard.com (213-243-189-158.bb.dnainternet.fi [213.243.189.158])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id A2FCD9B6;
-        Fri, 17 Nov 2023 13:36:51 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1700224611;
-        bh=nCM5mJDfTQep0lCcD7wOELb64Gk5Ed+Ry65bNeALoM8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RGTr3apoxK/eQC/H+CwQgQjqm00uvtopcrCS19GTaFDJh2gqLsfLzGv98VvqKcyuT
-         hXuQZRAr8AAeCdqCG+KpYI91PJ0p1oiU0knHWs21KeUsfSwjexaL+19jAOvlKm9qJg
-         ci9YXT1kdrKOZRMKGUOZKKE2GOs3OVHqlU006zTg=
-Date:   Fri, 17 Nov 2023 14:37:24 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Tomasz Figa <tfiga@chromium.org>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Shengjiu Wang <shengjiu.wang@nxp.com>,
-        m.szyprowski@samsung.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        shengjiu.wang@gmail.com, Xiubo.Lee@gmail.com, festevam@gmail.com,
-        nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v9 10/15] media: uapi: Add V4L2_CTRL_TYPE_FIXED_POINT
-Message-ID: <20231117123724.GJ21041@pendragon.ideasonboard.com>
-References: <3e898664-cbfc-4892-9765-37b66891643b@xs4all.nl>
- <ZVIIc-fi32ZxIi-p@valkosipuli.retiisi.eu>
- <20231113114357.GD24338@pendragon.ideasonboard.com>
- <da6efe14-c00d-4bf4-bf61-dd4ed39c5c60@xs4all.nl>
- <20231113124412.GA18974@pendragon.ideasonboard.com>
- <b35601f7-8bb2-4317-a8f7-6fbf81572943@xs4all.nl>
- <20231115105518.GD13826@pendragon.ideasonboard.com>
- <a67491c0-4fdf-4472-852c-e75f5e1d67af@xs4all.nl>
- <20231115114931.GE13826@pendragon.ideasonboard.com>
- <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
+        Fri, 17 Nov 2023 07:38:25 -0500
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA486B3;
+        Fri, 17 Nov 2023 04:38:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=ihaKmDQEUKTpLi3X62NAOuhZsDyQ5ySoKRLINzqRVm0=; b=Dtpn1gWv0I+0QPid4NYzcsR/6j
+        Fnqh+ZOcrbzX0ek/ekvlgdLxQeJBvQLc2Or69WIqPsQPUpCBKWGngILq8Yg51uDD0QKU4GNBD9bxZ
+        t052LdAsWc7KsuoXoRRzkXBNrP+h5GZm0KyV1KsAOV4omImFqr+9dQCANq5qGRVt2zXc0ak1IRnMd
+        PA3FAx1dyrt7LRiP/oabBenTnKJjMg/9OsJr1izBHUTooI5dPTYhfahZ6/nP4kdN39zBV8MxpOiOh
+        TgxveYHS+0rv+vyKboYXWwJX0Y5LUqnPOH2GZSTwPWuOkRpIML5crC0+xKaV/LT3zKWOXphB8zPU/
+        jp6pFuNQ==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.96 #2 (Red Hat Linux))
+        id 1r3y6h-007HlG-1D;
+        Fri, 17 Nov 2023 12:37:59 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 10E793002BE; Fri, 17 Nov 2023 13:37:59 +0100 (CET)
+Date:   Fri, 17 Nov 2023 13:37:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Tobias Huschle <huschle@linux.ibm.com>
+Cc:     Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux.dev, netdev@vger.kernel.org,
+        mst@redhat.com, jasowang@redhat.com, wuyun.abel@bytedance.com
+Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
+ lag based placement)
+Message-ID: <20231117123759.GP8262@noisy.programming.kicks-ass.net>
+References: <c7b38bc27cc2c480f0c5383366416455@linux.ibm.com>
+ <20231117092318.GJ8262@noisy.programming.kicks-ass.net>
+ <ZVdbdSXg4qefTNtg@DESKTOP-2CCOB1S.>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAAFQd5BkCR=tYvmfjkOeTnjnccmURt8kEtiRee9CYqcz+FGHfg@mail.gmail.com>
+In-Reply-To: <ZVdbdSXg4qefTNtg@DESKTOP-2CCOB1S.>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -64,241 +57,251 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tomasz,
+On Fri, Nov 17, 2023 at 01:24:21PM +0100, Tobias Huschle wrote:
+> On Fri, Nov 17, 2023 at 10:23:18AM +0100, Peter Zijlstra wrote:
 
-On Thu, Nov 16, 2023 at 04:31:41PM +0900, Tomasz Figa wrote:
-> On Wed, Nov 15, 2023 at 8:49 PM Laurent Pinchart wrote:
-> > On Wed, Nov 15, 2023 at 12:19:31PM +0100, Hans Verkuil wrote:
-> > > On 11/15/23 11:55, Laurent Pinchart wrote:
-> > > > On Wed, Nov 15, 2023 at 09:09:42AM +0100, Hans Verkuil wrote:
-> > > >> On 13/11/2023 13:44, Laurent Pinchart wrote:
-> > > >>> On Mon, Nov 13, 2023 at 01:05:12PM +0100, Hans Verkuil wrote:
-> > > >>>> On 13/11/2023 12:43, Laurent Pinchart wrote:
-> > > >>>>> On Mon, Nov 13, 2023 at 11:28:51AM +0000, Sakari Ailus wrote:
-> > > >>>>>> On Mon, Nov 13, 2023 at 12:24:14PM +0100, Hans Verkuil wrote:
-> > > >>>>>>> On 13/11/2023 12:07, Laurent Pinchart wrote:
-> > > >>>>>>>> On Mon, Nov 13, 2023 at 11:56:49AM +0100, Hans Verkuil wrote:
-> > > >>>>>>>>> On 13/11/2023 11:42, Laurent Pinchart wrote:
-> > > >>>>>>>>>> On Mon, Nov 13, 2023 at 11:29:09AM +0100, Hans Verkuil wrote:
-> > > >>>>>>>>>>> On 10/11/2023 06:48, Shengjiu Wang wrote:
-> > > >>>>>>>>>>>> Fixed point controls are used by the user to configure
-> > > >>>>>>>>>>>> a fixed point value in 64bits, which Q31.32 format.
-> > > >>>>>>>>>>>>
-> > > >>>>>>>>>>>> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > > >>>>>>>>>>>
-> > > >>>>>>>>>>> This patch adds a new control type. This is something that also needs to be
-> > > >>>>>>>>>>> tested by v4l2-compliance, and for that we need to add support for this to
-> > > >>>>>>>>>>> one of the media test-drivers. The best place for that is the vivid driver,
-> > > >>>>>>>>>>> since that has already a bunch of test controls for other control types.
-> > > >>>>>>>>>>>
-> > > >>>>>>>>>>> See e.g. VIVID_CID_INTEGER64 in vivid-ctrls.c.
-> > > >>>>>>>>>>>
-> > > >>>>>>>>>>> Can you add a patch adding a fixed point test control to vivid?
-> > > >>>>>>>>>>
-> > > >>>>>>>>>> I don't think V4L2_CTRL_TYPE_FIXED_POINT is a good idea. This seems to
-> > > >>>>>>>>>> relate more to units than control types. We have lots of fixed-point
-> > > >>>>>>>>>> values in controls already, using the 32-bit and 64-bit integer control
-> > > >>>>>>>>>> types. They use various locations for the decimal point, depending on
-> > > >>>>>>>>>> the control. If we want to make this more explicit to users, we should
-> > > >>>>>>>>>> work on adding unit support to the V4L2 controls.
-> > > >>>>>>>>>
-> > > >>>>>>>>> "Fixed Point" is not a unit, it's a type. 'Db', 'Hz' etc. are units.
-> > > >>>>>>>>
-> > > >>>>>>>> It's not a unit, but I think it's related to units. My point is that,
-> > > >>>>>>>> without units support, I don't see why we need a formal definition of
-> > > >>>>>>>> fixed-point types, and why this series couldn't just use
-> > > >>>>>>>> VIVID_CID_INTEGER64. Drivers already interpret VIVID_CID_INTEGER64
-> > > >>>>>>>> values as they see fit.
-> > > >>>>>>>
-> > > >>>>>>> They do? That's new to me. A quick grep for V4L2_CTRL_TYPE_INTEGER64
-> > > >>>>>>> (I assume you meant that rather than VIVID_CID_INTEGER64) shows that it
-> > > >>>>>
-> > > >>>>> Yes, I meant V4L2_CTRL_TYPE_INTEGER64. Too hasty copy & paste :-)
-> > > >>>>>
-> > > >>>>>>> is always interpreted as a 64 bit integer and nothing else. As it should.
-> > > >>>>>
-> > > >>>>> The most common case for control handling in drivers is taking the
-> > > >>>>> integer value and converting it to a register value, using
-> > > >>>>> device-specific encoding of the register value. It can be a fixed-point
-> > > >>>>> format or something else, depending on the device. My point is that
-> > > >>>>> drivers routinely convert a "plain" integer to something else, and that
-> > > >>>>> has never been considered as a cause of concern. I don't see why it
-> > > >>>>> would be different in this series.
-> > > >>>>>
-> > > >>>>>>> And while we do not have support for units (other than the documentation),
-> > > >>>>>>> we do have type support in the form of V4L2_CTRL_TYPE_*.
-> > > >>>>>>>
-> > > >>>>>>>>> A quick "git grep -i "fixed point" Documentation/userspace-api/media/'
-> > > >>>>>>>>> only shows a single driver specific control (dw100.rst).
-> > > >>>>>>>>>
-> > > >>>>>>>>> I'm not aware of other controls in mainline that use fixed point.
-> > > >>>>>>>>
-> > > >>>>>>>> The analog gain control for sensors for instance.
-> > > >>>>>>>
-> > > >>>>>>> Not really. The documentation is super vague:
-> > > >>>>>>>
-> > > >>>>>>> V4L2_CID_ANALOGUE_GAIN (integer)
-> > > >>>>>>>
-> > > >>>>>>>       Analogue gain is gain affecting all colour components in the pixel matrix. The
-> > > >>>>>>>       gain operation is performed in the analogue domain before A/D conversion.
-> > > >>>>>>>
-> > > >>>>>>> And the integer is just a range. Internally it might map to some fixed
-> > > >>>>>>> point value, but userspace won't see that, it's hidden in the driver AFAICT.
-> > > >>>>>
-> > > >>>>> It's hidden so well that libcamera has a database of the sensor it
-> > > >>>>> supports, with formulas to map a real gain value to the
-> > > >>>>> V4L2_CID_ANALOGUE_GAIN control. The encoding of the integer value does
-> > > >>>>> matter, and the kernel doesn't expose it. We may or may not consider
-> > > >>>>> that as a shortcoming of the V4L2 control API, but in any case it's the
-> > > >>>>> situation we have today.
-> > > >>>>>
-> > > >>>>>> I wonder if Laurent meant digital gain.
-> > > >>>>>
-> > > >>>>> No, I meant analog. It applies to digital gain too though.
-> > > >>>>>
-> > > >>>>>> Those are often Q numbers. The practice there has been that the default
-> > > >>>>>> value yields gain of 1.
-> > > >>>>>>
-> > > >>>>>> There are probably many other examples in controls where something being
-> > > >>>>>> controlled isn't actually an integer while integer controls are still being
-> > > >>>>>> used for the purpose.
-> > > >>>>>
-> > > >>>>> A good summary of my opinion :-)
-> > > >>>>
-> > > >>>> And that works fine as long as userspace doesn't need to know what the value
-> > > >>>> actually means.
-> > > >>>>
-> > > >>>> That's not the case here. The control is really a fractional Hz value:
-> > > >>>>
-> > > >>>> +``V4L2_CID_M2M_AUDIO_SOURCE_RATE_OFFSET (fixed point)``
-> > > >>>> +    Sets the offset from the audio source sample rate, unit is Hz.
-> > > >>>> +    The offset compensates for any clock drift. The actual source audio sample
-> > > >>>> +    rate is the ideal source audio sample rate from
-> > > >>>> +    ``V4L2_CID_M2M_AUDIO_SOURCE_RATE`` plus this fixed point offset.
-> > > >>>
-> > > >>> I don't see why this would require a new type, you can use
-> > > >>> V4L2_CTRL_TYPE_INTEGER64, and document the control as containing
-> > > >>> fixed-point values in Q31.32 format.
-> > > >>
-> > > >> Why would you want to do this? I can store a double in a long long int,
-> > > >> and just document that the variable is really a double, but why would you?
-> > > >
-> > > > I'm happy we have no floating point control types ;-)
-> > > >
-> > > >> The cost of adding a FIXED_POINT type is minimal, and having this type
-> > > >> makes it easy to work with fixed point controls (think about proper reporting
-> > > >> and setting of the value in v4l2-ctl and user applications in general that
-> > > >> deal with controls).
-> > > >
-> > > > The next thing you know is that someone will want a FIXED_POINT_Q15_16
-> > > > type as 64-bit would be too large to store in a large array. And then
-> > > > Q7.8. And Q3.12. And a bunch of other type. I really don't see what
-> > > > added value they bring compared to using the 32-bit and 64-bit integer
-> > > > types we already have. Every new type that is added adds complexity to
-> > > > userspace that will need to deal with the type.
-> > > >
-> > > >> If this would add a thousand lines of complex code, then this would be a
-> > > >> consideration, but this is just a few lines.
-> > > >>
-> > > >> Just to give an example, if you use 'v4l2-ctl -l' to list a int64 control
-> > > >> and it reports the value 13958643712, would you be able to see that that is
-> > > >> really 3.25 in fixed point format? With the right type it would be printed
-> > > >> like that. Much easier to work work.
-> > > >
-> > > > The same is true for analog gains, where x1.23 or +12dB is nicer to read
-> > > > than raw values. If we care about printing values in command line tools
-> > > > (which is nice to have, but certainly not the majority of use cases),
-> > > > then I would recommand working on units support for V4L2 controls, to
-> > > > convey how values are encoded, and in what unit they are expressed.
-> > >
-> > > So you prefer to have a way to specify the N value in QM.N as part
-> > > of the control information?
-> > >
-> > > E.g. add a '__u8 fraction_bits' field to structs v4l2_query_ext_ctrl
-> > > and v4l2_queryctrl. If 0, then it is an integer, otherwise it is the N
-> > > in QM.N.
-> > >
-> > > I can go along with that. This would be valid for INTEGER, INTEGER64,
-> > > U8, U16 and U32 controls (the last three are only used in control arrays).
-> >
-> > I think that would be nicer. Not only is it more flexible, but it also
-> > allows applications to ignore that information, and still operate on
-> > integer controls without any modification.
-> >
-> > > A better name for 'fraction_bits' is welcome, I took it from the wikipedia
-> > > article: https://en.wikipedia.org/wiki/Fixed-point_arithmetic
+> > kworkers are typically not in cgroups and are part of the root cgroup,
+> > but what's a vhost and where does it live?
 > 
-> I like the idea and the name sounds fine to me too.
+> The qemu instances of the two KVM guests are placed into cgroups.
+> The vhosts run within the context of these qemu instances (4 threads per guest).
+> So they are also put into those cgroups.
 > 
-> > > Reporting unit names is certainly possible, but should perhaps be done
-> > > with a separate ioctl? E.g. VIDIOC_QUERY_CTRL_UNIT. It is not typically
-> > > needed for applications, unless they need to report values. In theory
-> > > it can also be reported through VIDIOC_QUERY_EXT_CTRL by using, say,
-> > > 4 of the reserved fields for a 'char unit[16];' field. But I feel a
-> > > bit uncomfortable taking reserved fields for something that is rarely
-> > > needed.
-> >
-> > I would make the unit an enumerated integer value. If it's a string, it
-> > gets more difficult to operate on. Having to standardize a unit means
-> > that the unit will get reviewed.
+> I'll answer the other questions you brought up as well, but I guess that one 
+> is most critical: 
 > 
-> What usage do we envision for units? Could one give some examples? My
-> impression is that we already defined most of the controls with
-> explicit units.
+> > 
+> > After confirming both tasks are indeed in the same cgroup ofcourse,
+> > because if they're not, vruntime will be meaningless to compare and we
+> > should look elsewhere.
+> 
+> In that case we probably have to go with elsewhere ... which is good to know.
 
-Many controls are defined with explicit units in the API specification.
-Drivers may or may not comply with that, and there's no way for
-applications to query unit-related information dynamically. As a result,
-we end up hardcoding in libcamera the unit and scale of the analogue
-gain control for each sensor. I'm not saying this necessarily has to
-change, but it would be one use case.
+Ah, so if this is a cgroup issue, it might be worth trying this patch
+that we have in tip/sched/urgent.
 
-Another use case would be to pretty-print values, but I don't think we
-should design the API with this use case as an important target. If I
-were to redesign the V4L2 control API, I would drop the control name,
-and certainly drop things like V4L2_CTRL_FLAG_SLIDER, and probably
-V4L2_CTRL_FLAG_GRABBED too. If there are valid use cases for units, then
-we can also use them for pretty-printing, but let's not add them
-otherwise.
+I'll try and read the rest of the email a little later, gotta run
+errands first.
 
-> > > >>>>>> Instead of this patch, I'd prefer to have a way to express the meaning of
-> > > >>>>>> the control value, be it a Q number or something else, and do that
-> > > >>>>>> independently of the type of the control.
-> > > >>>>
-> > > >>>> Huh? How is that different from the type of the control? You have integers
-> > > >>>> (one type) and fixed point (another type).
-> > > >>>>
-> > > >>>> Or do you want a more general V4L2_CTRL_TYPE_ that specifies the N.M values
-> > > >>>> explicitly?
-> > > >>>>
-> > > >>>> I think the main reason why we use integer controls for gain is that we
-> > > >>>> never had a fixed point control type and you could get away with that in
-> > > >>>> user space for that particular use-case.
-> > > >>>>
-> > > >>>> Based on the V4L2_CID_NOTIFY_GAINS documentation the gain value can typically
-> > > >>>> be calculated as (value / default_value),
-> > > >>>
-> > > >>> Typically, but not always. Some sensor have an exponential gain model,
-> > > >>> and some have weird gain representation, such as 1/x. That's getting out
-> > > >>> of scope though.
-> > > >>>
-> > > >>>> but that won't work for a rate offset
-> > > >>>> control as above, or for e.g. CSC matrices for color converters.
-> > > >>>>
-> > > >>>>> Agreed.
-> > > >>>>>
-> > > >>>>>>> In the case of this particular series the control type is really a fixed point
-> > > >>>>>>> value with a documented unit (Hz). It really is not something you want to
-> > > >>>>>>> use type INTEGER64 for.
-> > > >>>>>>>
-> > > >>>>>>>>> Note that V4L2_CTRL_TYPE_FIXED_POINT is a Q31.32 format. By setting
-> > > >>>>>>>>> min/max/step you can easily map that to just about any QN.M format where
-> > > >>>>>>>>> N <= 31 and M <= 32.
-> > > >>>>>>>>>
-> > > >>>>>>>>> In the case of dw100 it is a bit different in that it is quite specialized
-> > > >>>>>>>>> and it had to fit in 16 bits.
+---
 
--- 
-Regards,
+commit eab03c23c2a162085b13200d7942fc5a00b5ccc8
+Author: Abel Wu <wuyun.abel@bytedance.com>
+Date:   Tue Nov 7 17:05:07 2023 +0800
 
-Laurent Pinchart
+    sched/eevdf: Fix vruntime adjustment on reweight
+    
+    vruntime of the (on_rq && !0-lag) entity needs to be adjusted when
+    it gets re-weighted, and the calculations can be simplified based
+    on the fact that re-weight won't change the w-average of all the
+    entities. Please check the proofs in comments.
+    
+    But adjusting vruntime can also cause position change in RB-tree
+    hence require re-queue to fix up which might be costly. This might
+    be avoided by deferring adjustment to the time the entity actually
+    leaves tree (dequeue/pick), but that will negatively affect task
+    selection and probably not good enough either.
+    
+    Fixes: 147f3efaa241 ("sched/fair: Implement an EEVDF-like scheduling policy")
+    Signed-off-by: Abel Wu <wuyun.abel@bytedance.com>
+    Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+    Link: https://lkml.kernel.org/r/20231107090510.71322-2-wuyun.abel@bytedance.com
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 2048138ce54b..025d90925bf6 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -3666,41 +3666,140 @@ static inline void
+ dequeue_load_avg(struct cfs_rq *cfs_rq, struct sched_entity *se) { }
+ #endif
+ 
++static void reweight_eevdf(struct cfs_rq *cfs_rq, struct sched_entity *se,
++			   unsigned long weight)
++{
++	unsigned long old_weight = se->load.weight;
++	u64 avruntime = avg_vruntime(cfs_rq);
++	s64 vlag, vslice;
++
++	/*
++	 * VRUNTIME
++	 * ========
++	 *
++	 * COROLLARY #1: The virtual runtime of the entity needs to be
++	 * adjusted if re-weight at !0-lag point.
++	 *
++	 * Proof: For contradiction assume this is not true, so we can
++	 * re-weight without changing vruntime at !0-lag point.
++	 *
++	 *             Weight	VRuntime   Avg-VRuntime
++	 *     before    w          v            V
++	 *      after    w'         v'           V'
++	 *
++	 * Since lag needs to be preserved through re-weight:
++	 *
++	 *	lag = (V - v)*w = (V'- v')*w', where v = v'
++	 *	==>	V' = (V - v)*w/w' + v		(1)
++	 *
++	 * Let W be the total weight of the entities before reweight,
++	 * since V' is the new weighted average of entities:
++	 *
++	 *	V' = (WV + w'v - wv) / (W + w' - w)	(2)
++	 *
++	 * by using (1) & (2) we obtain:
++	 *
++	 *	(WV + w'v - wv) / (W + w' - w) = (V - v)*w/w' + v
++	 *	==> (WV-Wv+Wv+w'v-wv)/(W+w'-w) = (V - v)*w/w' + v
++	 *	==> (WV - Wv)/(W + w' - w) + v = (V - v)*w/w' + v
++	 *	==>	(V - v)*W/(W + w' - w) = (V - v)*w/w' (3)
++	 *
++	 * Since we are doing at !0-lag point which means V != v, we
++	 * can simplify (3):
++	 *
++	 *	==>	W / (W + w' - w) = w / w'
++	 *	==>	Ww' = Ww + ww' - ww
++	 *	==>	W * (w' - w) = w * (w' - w)
++	 *	==>	W = w	(re-weight indicates w' != w)
++	 *
++	 * So the cfs_rq contains only one entity, hence vruntime of
++	 * the entity @v should always equal to the cfs_rq's weighted
++	 * average vruntime @V, which means we will always re-weight
++	 * at 0-lag point, thus breach assumption. Proof completed.
++	 *
++	 *
++	 * COROLLARY #2: Re-weight does NOT affect weighted average
++	 * vruntime of all the entities.
++	 *
++	 * Proof: According to corollary #1, Eq. (1) should be:
++	 *
++	 *	(V - v)*w = (V' - v')*w'
++	 *	==>    v' = V' - (V - v)*w/w'		(4)
++	 *
++	 * According to the weighted average formula, we have:
++	 *
++	 *	V' = (WV - wv + w'v') / (W - w + w')
++	 *	   = (WV - wv + w'(V' - (V - v)w/w')) / (W - w + w')
++	 *	   = (WV - wv + w'V' - Vw + wv) / (W - w + w')
++	 *	   = (WV + w'V' - Vw) / (W - w + w')
++	 *
++	 *	==>  V'*(W - w + w') = WV + w'V' - Vw
++	 *	==>	V' * (W - w) = (W - w) * V	(5)
++	 *
++	 * If the entity is the only one in the cfs_rq, then reweight
++	 * always occurs at 0-lag point, so V won't change. Or else
++	 * there are other entities, hence W != w, then Eq. (5) turns
++	 * into V' = V. So V won't change in either case, proof done.
++	 *
++	 *
++	 * So according to corollary #1 & #2, the effect of re-weight
++	 * on vruntime should be:
++	 *
++	 *	v' = V' - (V - v) * w / w'		(4)
++	 *	   = V  - (V - v) * w / w'
++	 *	   = V  - vl * w / w'
++	 *	   = V  - vl'
++	 */
++	if (avruntime != se->vruntime) {
++		vlag = (s64)(avruntime - se->vruntime);
++		vlag = div_s64(vlag * old_weight, weight);
++		se->vruntime = avruntime - vlag;
++	}
++
++	/*
++	 * DEADLINE
++	 * ========
++	 *
++	 * When the weight changes, the virtual time slope changes and
++	 * we should adjust the relative virtual deadline accordingly.
++	 *
++	 *	d' = v' + (d - v)*w/w'
++	 *	   = V' - (V - v)*w/w' + (d - v)*w/w'
++	 *	   = V  - (V - v)*w/w' + (d - v)*w/w'
++	 *	   = V  + (d - V)*w/w'
++	 */
++	vslice = (s64)(se->deadline - avruntime);
++	vslice = div_s64(vslice * old_weight, weight);
++	se->deadline = avruntime + vslice;
++}
++
+ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 			    unsigned long weight)
+ {
+-	unsigned long old_weight = se->load.weight;
++	bool curr = cfs_rq->curr == se;
+ 
+ 	if (se->on_rq) {
+ 		/* commit outstanding execution time */
+-		if (cfs_rq->curr == se)
++		if (curr)
+ 			update_curr(cfs_rq);
+ 		else
+-			avg_vruntime_sub(cfs_rq, se);
++			__dequeue_entity(cfs_rq, se);
+ 		update_load_sub(&cfs_rq->load, se->load.weight);
+ 	}
+ 	dequeue_load_avg(cfs_rq, se);
+ 
+-	update_load_set(&se->load, weight);
+-
+ 	if (!se->on_rq) {
+ 		/*
+ 		 * Because we keep se->vlag = V - v_i, while: lag_i = w_i*(V - v_i),
+ 		 * we need to scale se->vlag when w_i changes.
+ 		 */
+-		se->vlag = div_s64(se->vlag * old_weight, weight);
++		se->vlag = div_s64(se->vlag * se->load.weight, weight);
+ 	} else {
+-		s64 deadline = se->deadline - se->vruntime;
+-		/*
+-		 * When the weight changes, the virtual time slope changes and
+-		 * we should adjust the relative virtual deadline accordingly.
+-		 */
+-		deadline = div_s64(deadline * old_weight, weight);
+-		se->deadline = se->vruntime + deadline;
+-		if (se != cfs_rq->curr)
+-			min_deadline_cb_propagate(&se->run_node, NULL);
++		reweight_eevdf(cfs_rq, se, weight);
+ 	}
+ 
++	update_load_set(&se->load, weight);
++
+ #ifdef CONFIG_SMP
+ 	do {
+ 		u32 divider = get_pelt_divider(&se->avg);
+@@ -3712,8 +3811,17 @@ static void reweight_entity(struct cfs_rq *cfs_rq, struct sched_entity *se,
+ 	enqueue_load_avg(cfs_rq, se);
+ 	if (se->on_rq) {
+ 		update_load_add(&cfs_rq->load, se->load.weight);
+-		if (cfs_rq->curr != se)
+-			avg_vruntime_add(cfs_rq, se);
++		if (!curr) {
++			/*
++			 * The entity's vruntime has been adjusted, so let's check
++			 * whether the rq-wide min_vruntime needs updated too. Since
++			 * the calculations above require stable min_vruntime rather
++			 * than up-to-date one, we do the update at the end of the
++			 * reweight process.
++			 */
++			__enqueue_entity(cfs_rq, se);
++			update_min_vruntime(cfs_rq);
++		}
+ 	}
+ }
+ 
+@@ -3857,14 +3965,11 @@ static void update_cfs_group(struct sched_entity *se)
+ 
+ #ifndef CONFIG_SMP
+ 	shares = READ_ONCE(gcfs_rq->tg->shares);
+-
+-	if (likely(se->load.weight == shares))
+-		return;
+ #else
+-	shares   = calc_group_shares(gcfs_rq);
++	shares = calc_group_shares(gcfs_rq);
+ #endif
+-
+-	reweight_entity(cfs_rq_of(se), se, shares);
++	if (unlikely(se->load.weight != shares))
++		reweight_entity(cfs_rq_of(se), se, shares);
+ }
+ 
+ #else /* CONFIG_FAIR_GROUP_SCHED */
