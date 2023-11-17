@@ -2,134 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 999007EEFE6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86F007EEFEE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:18:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345804AbjKQKQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60634 "EHLO
+        id S1345756AbjKQKSD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:18:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjKQKQI (ORCPT
+        with ESMTP id S1345722AbjKQKSC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:16:08 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CD2385;
-        Fri, 17 Nov 2023 02:16:04 -0800 (PST)
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9b98J025794;
-        Fri, 17 Nov 2023 10:15:47 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=5cKcmiXRyWqcSrnZNV5uxcqTjwzGW9zilSiurwKvu5w=;
- b=RaSlQJ4KsmgP6U4M8kPrL8ZFHPRL8zTL98o8W7cYxVKXwqpKM4bp+jku88WuugXoGOsM
- OG/szis8bQuNpFWsvO5IV5yehpV6oNdvlHYTTLR1hFtPghKPpvWC3Zscu6CINXzIo6oH
- hy0f1M0WGEA4+z+tIbIFOBdHfYBlGvgSWI5CnLysc8AoUS8FlFvd3UxtTkDPTd4y2xev
- B/jvN6hkTj4QQiT5g+5AgOXLAK4Zx5NBu0SKrdH4xvrfDGcP9fPMPqGd/hPvgQhbazjZ
- mbyir2AXY8uEnBm3QreR/pstrEb1Mbft8GNHZCUsRs/pZ8YtgQGF7mjrKfNU6AaSwcTw 0Q== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue5per2k8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 10:15:46 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHAFkp3007021
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 10:15:46 GMT
-Received: from [10.253.8.81] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 02:15:41 -0800
-Message-ID: <c1233090-b77d-43b7-9419-74f904cfae07@quicinc.com>
-Date:   Fri, 17 Nov 2023 18:15:39 +0800
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 8/9] net: mdio: ipq4019: add qca8084 configurations
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-9-quic_luoj@quicinc.com>
- <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
- <2ca3c6eb-93da-4e44-aa6b-c426b8baecb9@quicinc.com>
- <be36ecb8-8bd7-4756-927e-fa5f266510da@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <be36ecb8-8bd7-4756-927e-fa5f266510da@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 2dw2gS6QUg8AWgRyYjJ25oQg8Luqo6Nx
-X-Proofpoint-ORIG-GUID: 2dw2gS6QUg8AWgRyYjJ25oQg8Luqo6Nx
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_08,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxscore=0 suspectscore=0 mlxlogscore=596 clxscore=1015 lowpriorityscore=0
- malwarescore=0 adultscore=0 priorityscore=1501 spamscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311170075
+        Fri, 17 Nov 2023 05:18:02 -0500
+Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC85BC1;
+        Fri, 17 Nov 2023 02:17:57 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 68BD7C0003;
+        Fri, 17 Nov 2023 10:17:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700216276;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NrnMvNkij+pm+ptSQQPTR3DS11MmkWMm02wu6vVa9G4=;
+        b=YJVEvi2fbCzXl6yb1+NDpyTGrjd0huD9Rht0w8qWS9fKDB12gcR8pk4cO1A/9fcw41VC77
+        OsqS2dR7/gTpQp0ZeoluEt4UE5WeNfdEKRSx96PBSTq0lG5cN0YBeAHlXVWRdGbGU6bCe9
+        pRdyqJmYSv1rvwa72r7kJycr6qW5nx4JPOD8s6avtasNVZMSsUgNIVOhuHc334El06L3Vz
+        +JtHZshd7pczvusNmBl+vGb9uCmJkYU3Z2Gwf7osEISYtnB0HMGopNj5zL1z0t7GOsPykG
+        n9s/CkcyQ1KhU8Gkcnb0qca29Jnfu3/wL/BfSf49zWxIWlaZWO9uvX0EPQ43XA==
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date:   Fri, 17 Nov 2023 11:17:55 +0100
+Cc:     <linux-usb@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        =?utf-8?q?Gr=C3=A9gory_Clement?= <gregory.clement@bootlin.com>,
+        "Thomas Petazzoni" <thomas.petazzoni@bootlin.com>
+To:     "Roger Quadros" <rogerq@kernel.org>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Krzysztof Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        "Conor Dooley" <conor+dt@kernel.org>,
+        "Peter Chen" <peter.chen@kernel.org>,
+        "Pawel Laszczak" <pawell@cadence.com>,
+        "Nishanth Menon" <nm@ti.com>,
+        "Vignesh Raghavendra" <vigneshr@ti.com>,
+        "Tero Kristo" <kristo@kernel.org>,
+        "Vardhan, Vibhore" <vibhore@ti.com>
+From:   =?utf-8?q?Th=C3=A9o_Lebrun?= <theo.lebrun@bootlin.com>
+Subject: Re: [PATCH 3/6] usb: cdns3-ti: add suspend/resume procedures for
+ J7200
+Message-Id: <CX10D9YX1O1C.30PF317AG065N@tleb-bootlin-xps13-01>
+X-Mailer: aerc 0.15.2
+References: <20231113-j7200-usb-suspend-v1-0-ad1ee714835c@bootlin.com>
+ <20231113-j7200-usb-suspend-v1-3-ad1ee714835c@bootlin.com>
+ <5080372b-1f48-4cbc-a6c4-8689c28983cb@kernel.org>
+ <CWZH66HQZNYM.T623ZOEEE0BK@tleb-bootlin-xps13-01>
+ <dad980f3-e032-41e4-a1e4-a16a7f45ff95@kernel.org>
+ <CX0GOP07I40N.198G7LJ0HYDBG@tleb-bootlin-xps13-01>
+ <bdea68ad-7523-4738-8fa1-b670d81a6b93@kernel.org>
+In-Reply-To: <bdea68ad-7523-4738-8fa1-b670d81a6b93@kernel.org>
+X-GND-Sasl: theo.lebrun@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello,
 
+On Thu Nov 16, 2023 at 10:44 PM CET, Roger Quadros wrote:
+> On 16/11/2023 20:56, Th=C3=A9o Lebrun wrote:
+> > On Thu Nov 16, 2023 at 1:40 PM CET, Roger Quadros wrote:
+> >> On 15/11/2023 17:02, Th=C3=A9o Lebrun wrote:
+> >>> On Wed Nov 15, 2023 at 12:37 PM CET, Roger Quadros wrote:
+> >>>> You might want to check suspend/resume ops in cdns3-plat and
+> >>>> do something similar here.
+> >>>
+> >>> I'm unsure what you are referring to specifically in cdns3-plat?
+> >>
+> >> What I meant is, calling pm_runtime_get/put() from system suspend/resu=
+me
+> >> hooks doesn't seem right.
+> >>
+> >> How about using something like pm_runtime_forbid(dev) on devices which
+> >> loose USB context on runtime suspend e.g. J7200.
+> >> So at probe we can get rid of the pm_runtime_get_sync() call.
+> >=20
+> > What is the goal of enabling PM runtime to then block (ie forbid) it in
+> > its enabled state until system suspend?
+>
+> If USB controller retains context on runtime_suspend on some platforms
+> then we don't want to forbid PM runtime.
 
-On 11/17/2023 1:12 AM, Andrew Lunn wrote:
-> On Thu, Nov 16, 2023 at 06:47:08PM +0800, Jie Luo wrote:
->>
->>
->> On 11/16/2023 12:20 AM, Andrew Lunn wrote:
->>> On Wed, Nov 15, 2023 at 11:25:14AM +0800, Luo Jie wrote:
->>>> The PHY & PCS clocks need to be enabled and the reset
->>>> sequence needs to be completed to make qca8084 PHY
->>>> probeable by MDIO bus.
->>>
->>> Is all this guaranteed to be the same between different boards? Can
->>> the board be wired differently and need a different configuration?
->>>
->>>       Andrew
->>
->> Hi Andrew,
->> This configuration sequence is specified to the qca8084 chip,
->> not related with the platform(such as ipq5332).
->>
->> All these configured registers are located in qca8084 chip, we need
->> to complete these configurations to make MDIO bus being able to
->> scan the qca8084 PHY(PHY registers can be accessed).
-> 
-> So nothing here has anything to do with the actual PHYs on the bus?
-> The only clock exposed here is MDC, and that runs at the standard
-> 2.5MHz? All the clock tree configuration is completely internal to the
-> SOC?
-> 
-> What we don't want is some hard coded configuration which only works
-> for one specific reference design.
-> 
-> 	Andrew
+What's the point of runtime PM if nothing is done based on it? This is
+the current behavior of the driver.
 
-These configured registers are related with PHYs, which is located in
-the qca8084 PHY chip, qca8084 PHY chip includes the GCC register that
-is not from the SOC(ipq5332), is a internal part of qca8084 PHY.
+> > Thinking some more about it and having read parts of the genpd source,
+> > it's unclear to me why there even is some PM runtime calls in this
+> > driver. No runtime_suspend/runtime_resume callbacks are registered.
+> > Also, power-domains work as expected without any PM runtime calls.
+>
+> Probably it was required when the driver was introduced.
 
-qca8084 PHY works on 6.25MHZ and other clock rates below 6.25MHZ.
+I'm not seeing any behavior change in cdns3-ti since its addition in Oct
+2019.
 
-will move these clock configurations using the clock APIs into the PHY
-probe function in the next patch set, since it is the internal configs
-of qca8084 PHY.
+> > The power domain is turned on when attached to a device
+> > (see genpd_dev_pm_attach). It gets turned off automatically at
+> > suspend_noirq (taking into account the many things that make genpd
+> > complex: multiple devices per PD, subdomains, flags to customise the
+> > behavior, etc.). Removing calls to PM runtime at probe keeps the driver
+> > working.
+> >=20
+> > So my new proposal would be: remove all all PM runtime calls from this
+> > driver. Anything wrong with this approach?
+>
+> Nothing wrong if we don't expect runtime_pm to work with this driver.
+>
+> >=20
+> > Only possible reason I see for having PM runtime in this wrapper driver
+> > would be cut the full power-domain when USB isn't used, with some PM
+> > runtime interaction with the children node. But that cannot work
+> > currently as we don't register a runtime_resume to init the hardware,
+> > so this cannot be the current expected behavior.
+> >=20
+> >> e.g.
+> >>
+> >>         pm_runtime_set_active(dev);
+> >>         pm_runtime_enable(dev);
+> >>         if (cnds_ti->can_loose_context)
+> >>                 pm_runtime_forbid(dev);
+> >>
+> >>         pm_runtime_set_autosuspend_delay(dev, CNDS_TI_AUTOSUSPEND_DELA=
+Y);	/* could be 20ms? */
+> >=20
+> > Why mention autosuspend in this driver? This will turn the device off i=
+n
+> > CNDS_TI_AUTOSUSPEND_DELAY then nothing enables it back using
+> > pm_runtime_get. We have nothing to reconfigure the device, ie no
+> > runtime_resume, so we must not go into runtime suspend.
+>
+> It would be enabled/disabled based on when the child "cdns3,usb"
+> does runtime_resume/suspend.
+
+Why care about being enabled or disabled if we don't do anything based
+on that? Children does do runtime PM stuff but I don't understand how
+that could influence us.
+
+Regards,
+
+--
+Th=C3=A9o Lebrun, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
