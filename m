@@ -2,146 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 728817EEE0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:04:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 346437EEE0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:04:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231482AbjKQJEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:04:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
+        id S234605AbjKQJEJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:04:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230051AbjKQJEA (ORCPT
+        with ESMTP id S235118AbjKQJEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:04:00 -0500
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB2D92
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:03:57 -0800 (PST)
-Received: by mail-pl1-x634.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso15603125ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:03:57 -0800 (PST)
+        Fri, 17 Nov 2023 04:04:07 -0500
+Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C601D5F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:04:04 -0800 (PST)
+Received: by mail-yb1-xb2a.google.com with SMTP id 3f1490d57ef6-da7ea62e76cso1803858276.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:04:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700211836; x=1700816636; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+a/E73oKPUIpqCJpWkfrUK2tYAxoil+7+qeJQEo9/6E=;
-        b=KRV/UNxMVozR3SgGWNRkF+8KmXKiyHcs5wzL8F08b5nFnD+CTsPLOXU5mAMytb0gnj
-         BocBX+nQyJjnIR2DfhTowuV48shRyf+pDUIhq9irTEQRZG3fDC+ufGOfY1nAZUUVNUqA
-         +MmagW6+3rd3JBXfDpjrD9d0putr4wOkdhjSCLI4EF4ncYw0vTVg+VSi5isHLFJXHheH
-         NRNZ/Juyb/nFz1cj87SKeyTr5I9z7TW5Qk4QXR0oAMN5+qFQcaAVOoTSTQD1gs3h40m2
-         K/42xKCJbMTrTpuMsm1TL3MI1ApfygBFa/KOLzUW5VcQBGmGrgFeRyBM8ZEu8X2o2oZ5
-         S3HQ==
+        d=linaro.org; s=google; t=1700211843; x=1700816643; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=INxHYDPvWZEfX4YbefK8xCXn7NpSQ5SeCE7fYLVC5i4=;
+        b=lVk7xpGKzQjLMtPfAwvx559jyEKATnwqoz8QAh9+w2BN33po2h1wVYpTw9LSf6y2cd
+         QgrB6Fn84NnFKDVDuIrfC4UFOveZ0vs9RxgttR8MI5mwEsYcprkpv/oEu8SmCcPdFqcZ
+         QSIUYIyGuhp+Je02RI9LatF2/KDYj7aflv05tevQdxOq30Ql9x8gBqm9xO01Dpl2X+XJ
+         4GNW8mDS3EmLH3Ucrw1aG4Jw5DVL9xSkNgHvIp+Zs043/0rRfVqxmTkBiRb3RwB5Nzjb
+         94FUyub45pZ04Aaqus4JSHU7kIdZTyMDp0IOy9TS/YfBITlZhf+MQy/2XnFNvxujMN/W
+         gIBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700211836; x=1700816636;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+a/E73oKPUIpqCJpWkfrUK2tYAxoil+7+qeJQEo9/6E=;
-        b=mMMKGV0270V8YYEGhICljtziowS5s4NCb53eC2innWxicTVchWTeZhyqBkDpBmcthE
-         mXlrXIO0f3h1woQE6wXD5vgJ973gO4EZ/WZPoIzFFoO+WsjqC9kSSbsCZlJmhhx7ve0E
-         VbLnvhovKCCw6wrZbYLGdwlLnC8b3MYyMWLnWGiCCbZnSxwkjVnmsaUFZSXQLBvuaf5x
-         dLWsbNEUdLpcDVjc26mC63sBpVv44gcU/yLV1iY2OyNZn2GcyLEpMxiGvzX68pJIU+NS
-         ACtN4yHutPtHHks6mPKMSad6kEnhGV7PHMx+zVAYwRzNsoifwgVRlLXy25+danj0Tdgs
-         1Pvw==
-X-Gm-Message-State: AOJu0Yz+1BGeXdKg8BbuFMb4UvuW6lmOWHTRd0nN35d5Hs2locXFTIqI
-        Z2/t7qU9fJ8rXsQt1cLI0ZOx
-X-Google-Smtp-Source: AGHT+IFja+WtC2OS4zhsenW8j0sFIeX9xO+zebfk77FBON46A04n4N2e+BUmVOq8jwsyvcPLOH/0Ew==
-X-Received: by 2002:a17:903:2343:b0:1ca:1be4:bda4 with SMTP id c3-20020a170903234300b001ca1be4bda4mr13259932plh.4.1700211836575;
-        Fri, 17 Nov 2023 01:03:56 -0800 (PST)
-Received: from thinkpad ([103.28.246.177])
-        by smtp.gmail.com with ESMTPSA id i4-20020a170902eb4400b001c62e3e1286sm944986pli.166.2023.11.17.01.03.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 01:03:56 -0800 (PST)
-Date:   Fri, 17 Nov 2023 14:33:49 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org,
-        quic_bjorande@quicinc.com, geert+renesas@glider.be,
-        konrad.dybcio@linaro.org, arnd@arndb.de,
-        krzysztof.kozlowski@linaro.org, neil.armstrong@linaro.org,
-        dmitry.baryshkov@linaro.org, nfraprado@collabora.com,
-        m.szyprowski@samsung.com, u-kumar1@ti.com, peng.fan@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, kernel@quicinc.com
-Subject: Re: [PATCH v3] arm64: defconfig: Enable GCC, pinctrl and
- interconnect for SDX75
-Message-ID: <20231117090349.GA244633@thinkpad>
-References: <20231117055849.534671-1-quic_rohiagar@quicinc.com>
+        d=1e100.net; s=20230601; t=1700211843; x=1700816643;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=INxHYDPvWZEfX4YbefK8xCXn7NpSQ5SeCE7fYLVC5i4=;
+        b=OYt8AYyTkk0VijitUoDLPIwYF22qFKQRraCpH3wxYXsZosV6MbJSAwSQyl9mnnB35g
+         j8kx4rnwvdvjVFYTZs8hKHE8x4lelgBLmWLOthJETiIoqSNuKN7KDV1YbryGcaWsXyDg
+         nQH9Vujiz3v/i3JIfQ2RnphbRsbqbf8eUP8qV2lbqAjxG9Vm7YNC3h0qE35MPUCc3ESm
+         v5ukJgAqyDuVoFK2KNY6VK7vC8g4WndUTNQzzmZmYDs5wQ+lUIzKX9UtF1ZTCrsGxQCD
+         vZbKbvFGxGZ8DZ57f0T7xGUNz9YizwYHX7PwBoXq/8draNgiZKWJ9g/4cEqvZ7LULJ/w
+         aE/Q==
+X-Gm-Message-State: AOJu0Yw1hMqk3P3xsfJzzz2G+wpHHol4J7GXJrcyUDdZC5Y0lcqyrpnp
+        QD+6bVFrQ0cFfk2wzppjiM2C2w90cjHCgaQ9Qpa5sw==
+X-Google-Smtp-Source: AGHT+IH1pWflHfi8hN98JclJU1bBwV+AayAuHAiCbo2Yy6iJi5kz8hoy6KNUMTIHH4XZlaK+GjuYo/OBc5e8YA7rimg=
+X-Received: by 2002:a25:107:0:b0:d81:89e9:9f48 with SMTP id
+ 7-20020a250107000000b00d8189e99f48mr16791660ybb.63.1700211843160; Fri, 17 Nov
+ 2023 01:04:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231117055849.534671-1-quic_rohiagar@quicinc.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
+ <20231114150130.497915-9-sui.jingfeng@linux.dev> <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
+ <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev> <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
+ <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev> <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
+ <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com> <cf27d25a-3e51-4292-af63-37e5bc585d88@linux.dev>
+In-Reply-To: <cf27d25a-3e51-4292-af63-37e5bc585d88@linux.dev>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 17 Nov 2023 11:03:50 +0200
+Message-ID: <CAA8EJprm6FL9_ZOr5uBXNXLBt=scs=FY2o6ZEv5r576iEM5KRw@mail.gmail.com>
+Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
+To:     Sui Jingfeng <sui.jingfeng@linux.dev>
+Cc:     Phong LE <ple@baylibre.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Sui Jingfeng <suijingfeng@loongson.cn>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_SBL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=no autolearn_force=no version=3.4.6
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 11:28:49AM +0530, Rohit Agarwal wrote:
-> Enable Global Clock controller, pinctrl and interconnect framework
-> support for Qualcomm's SDX75 SoC which is required to boot to
-> console on sdx75-idp platform.
-> 
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
-> ---
-> 
+On Fri, 17 Nov 2023 at 06:24, Sui Jingfeng <sui.jingfeng@linux.dev> wrote:
+>
 > Hi,
-> 
-> Changes in v3:
->  - Clubbed all the three patches in a single patch.
->  - Link to v2: https://lore.kernel.org/all/20231116093513.14259-1-quic_rohiagar@quicinc.com/
-> 
-> Changes in v2:
->  - Updated the commit message for the patches.
-> 
-> Thanks,
-> Rohit.
-> 
->  arch/arm64/configs/defconfig | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-> index b60aa1f89343..4c0cd428d073 100644
-> --- a/arch/arm64/configs/defconfig
-> +++ b/arch/arm64/configs/defconfig
-> @@ -599,6 +599,7 @@ CONFIG_PINCTRL_SC8280XP=y
->  CONFIG_PINCTRL_SDM660=y
->  CONFIG_PINCTRL_SDM670=y
->  CONFIG_PINCTRL_SDM845=y
-> +CONFIG_PINCTRL_SDX75=y
->  CONFIG_PINCTRL_SM6115=y
->  CONFIG_PINCTRL_SM6115_LPASS_LPI=m
->  CONFIG_PINCTRL_SM6125=y
-> @@ -1252,6 +1253,7 @@ CONFIG_SDM_GPUCC_845=y
->  CONFIG_SDM_VIDEOCC_845=y
->  CONFIG_SDM_DISPCC_845=y
->  CONFIG_SDM_LPASSCC_845=m
-> +CONFIG_SDX_GCC_75=y
->  CONFIG_SM_CAMCC_8250=m
->  CONFIG_SM_DISPCC_6115=m
->  CONFIG_SM_DISPCC_8250=y
-> @@ -1519,6 +1521,7 @@ CONFIG_INTERCONNECT_QCOM_SC7280=y
->  CONFIG_INTERCONNECT_QCOM_SC8180X=y
->  CONFIG_INTERCONNECT_QCOM_SC8280XP=y
->  CONFIG_INTERCONNECT_QCOM_SDM845=y
-> +CONFIG_INTERCONNECT_QCOM_SDX75=y
+>
+> On 2023/11/16 23:23, Dmitry Baryshkov wrote:
+> >>>> Then you will need some way (fwnode?) to
+> >>>> discover the bridge chain. And at the last point you will get into the
+> >>>> device data and/or properties business.
+> >>>>
+> >>> No, leave that chance to a more better programmer and forgive me please,
+> >>> too difficult, I'm afraid of not able to solve. Thanks a lot for the
+> >>> trust!
+> >  From my point of view: no.
+>
+>
+> I respect the fact that the community prefer generic mechanisms.
+> If our approach is not what the community want, can I switch back
+> to my previous solution? I can reduce the duplication of our
+> localized it66121 driver to a minimal, rewrite it until it meets
+> the community's requirement. I know our device looks weird and
+> our approach is not elegant. But at the very least, we could not
+> mess the community's design up by localize. Otherwise, I don't know
+> what is the better approach to solve such a problem.
+>
+> Can I switch back or any other ideas?
 
-Is there any criteria to make ICC built-in? I'd vote for built-in on all
-platforms to keep it aligned eventhough old platforms do not require it for
-booting.
-
-- Mani
-
->  CONFIG_INTERCONNECT_QCOM_SM8150=m
->  CONFIG_INTERCONNECT_QCOM_SM8250=m
->  CONFIG_INTERCONNECT_QCOM_SM8350=m
-> -- 
-> 2.25.1
-> 
-> 
+I keep on repeating: create the i2c device from your root device
+driver, which parses BIOS data.
 
 -- 
-மணிவண்ணன் சதாசிவம்
+With best wishes
+Dmitry
