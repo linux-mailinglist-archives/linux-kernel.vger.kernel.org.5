@@ -2,57 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 55D0F7EF487
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:34:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DD287EF48F
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:34:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231825AbjKQOeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 09:34:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36396 "EHLO
+        id S235707AbjKQOeg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:34:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231864AbjKQOeN (ORCPT
+        with ESMTP id S235675AbjKQOea (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:34:13 -0500
+        Fri, 17 Nov 2023 09:34:30 -0500
 Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54EAED4E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:34:10 -0800 (PST)
-Received: from pps.filterd (m0288072.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AH9Mg4v015626;
-        Fri, 17 Nov 2023 15:33:53 +0100
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A48E173E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:34:25 -0800 (PST)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AHB1wSV030506;
+        Fri, 17 Nov 2023 15:34:00 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
         :mime-version:content-transfer-encoding:content-type; s=
-        selector1; bh=2kptbLSUBCjfzpDr3d+grhLzBCudtePeEMBFobZJJgo=; b=nb
-        5WDD3paSc2RkhJSUfJJ2/D0CYb3COTreycw9IHutG7jRF4w/xSbj73ZOwamcLVCB
-        L1wNvKb8HBb0SVP9boqYv/bUevAfvPPDMUAN1jighVeMs+erhNXlqv6LxqysSLKB
-        6qGlc5aQ4cw80s5/Zc3xA9aPacmaUETSvNFsXxpGrFAZhc7V3X6Y5EoUt+r/MF4H
-        0cMMoT6AQ91PbTXj1qCu4GpxYzAB5dAyOuvC54Q4osREbR/mTHvfHTO7YgPfe35E
-        8AqqzbM0MA0Lop9FDSqWK53Pxgba215kchdTyuQMf3HQtQNJrr13vONE5iA+clpQ
-        73mhqBNsdQ+mIrTp67pw==
+        selector1; bh=3dfNmD9UkyMozPB1+rlLIqboCKGY0kezri6Od962cVg=; b=sz
+        JtkplCULuzvm4Hs0VdDLL9Hsl4X4m8w1hdtd5a7iOcpfFDr1NOgemrKsE8vvJCu2
+        UJ2Xys3KqgMuddjTduJaLok1IALy0hDokTc2Pz4n5kqkw69UmldhvoK7tdQ44C3V
+        p9tvlch70nDNVtmtl9OMYX3BXL57HNNYbS+ghEePLbuD4bbyBOHmc5tPDovInMAR
+        I2UlI4wRvV+dUljeOOlaHsRSJOe4iPVnL4Xvm4xEgDNT3Uj+aihmvsiori/BE2uQ
+        S+ylCSpMafVfizlrv20zCJ2iX/rSOWLxomfO0RS2KrbVcVK9HKbgaJej43jZN/Ef
+        zPbLgyTLGxMffT9Iam0Q==
 Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3udn0m4t7s-1
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ua1u2bs10-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 15:33:53 +0100 (CET)
+        Fri, 17 Nov 2023 15:33:59 +0100 (CET)
 Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id F26FD100039;
-        Fri, 17 Nov 2023 15:33:48 +0100 (CET)
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 7494710004A;
+        Fri, 17 Nov 2023 15:33:50 +0100 (CET)
 Received: from Webmail-eu.st.com (shfdag1node3.st.com [10.75.129.71])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EC6552309C5;
-        Fri, 17 Nov 2023 15:33:48 +0100 (CET)
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 59B6F231504;
+        Fri, 17 Nov 2023 15:33:50 +0100 (CET)
 Received: from localhost (10.201.22.165) by SHFDAG1NODE3.st.com (10.75.129.71)
  with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 17 Nov
- 2023 15:33:48 +0100
+ 2023 15:33:50 +0100
 From:   Patrick Delaunay <patrick.delaunay@foss.st.com>
 To:     Alexandre TORGUE <alexandre.torgue@foss.st.com>,
-        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
 CC:     Patrick Delaunay <patrick.delaunay@foss.st.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Bjorn Andersson <quic_bjorande@quicinc.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Neil Armstrong <neil.armstrong@linaro.org>,
+        =?UTF-8?q?N=C3=ADcolas=20F=2E=20R=2E=20A=2E=20Prado?= 
+        <nfraprado@collabora.com>, Peng Fan <peng.fan@nxp.com>,
+        Udit Kumar <u-kumar1@ti.com>,
         <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-Subject: [PATCH 2/4] nvmem: stm32: add support for STM32MP25 BSEC to control OTP data
-Date:   Fri, 17 Nov 2023 15:33:35 +0100
-Message-ID: <20231117153310.2.I76e50bf760c893b11edfb2ed77388e2939612288@changeid>
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH 3/4] arm64: defconfig: enable NVMEM STM32 ROMEM for stm32mp25
+Date:   Fri, 17 Nov 2023 15:33:36 +0100
+Message-ID: <20231117153310.3.I01a380760a51fce06473104685c70aef4aecacd5@changeid>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20231117143338.1173475-1-patrick.delaunay@foss.st.com>
 References: <20231117143338.1173475-1-patrick.delaunay@foss.st.com>
@@ -75,65 +85,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On STM32MP25, OTP area may be read/written by using BSEC (boot, security
-and OTP control). The BSEC internal peripheral is only managed by the
-secure world.
-
-The 12 Kbits of OTP (effective) are organized into the following regions:
-- lower OTP (OTP0 to OTP127) = 4096 lower OTP bits,
-  bitwise (1-bit) programmable
-- mid OTP (OTP128 to OTP255) = 4096 middle OTP bits,
-  bulk (32-bit) programmable
-- upper OTP (OTP256 to OTP383) = 4096 upper OTP bits,
-  bulk (32-bit) programmable,
-  only accessible when BSEC is in closed state.
-
-As HWKEY and ECIES key are only accessible by ROM code;
-only 368 OTP words are managed in this driver (OTP0 to OTP267).
-
-This patch adds the STM32MP25 configuration for reading and writing
-the OTP data using the OP-TEE BSEC TA services.
+Enable the NVMEM driver STM32 ROMEM for STM32MP25x SoCs
+to allow access to OTP provided by OP-TEE BSEC PTA
 
 Signed-off-by: Patrick Delaunay <patrick.delaunay@foss.st.com>
 ---
 
- drivers/nvmem/stm32-romem.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/nvmem/stm32-romem.c b/drivers/nvmem/stm32-romem.c
-index 8a553b1799a8..82879b1c9eb9 100644
---- a/drivers/nvmem/stm32-romem.c
-+++ b/drivers/nvmem/stm32-romem.c
-@@ -269,6 +269,19 @@ static const struct stm32_romem_cfg stm32mp13_bsec_cfg = {
- 	.ta = true,
- };
- 
-+/*
-+ * STM32MP25 BSEC OTP: 3 regions of 32-bits data words
-+ *   lower OTP (OTP0 to OTP127), bitwise (1-bit) programmable
-+ *   mid OTP (OTP128 to OTP255), bulk (32-bit) programmable
-+ *   upper OTP (OTP256 to OTP383), bulk (32-bit) programmable
-+ *              but no access to HWKEY and ECIES key: limited at OTP367
-+ */
-+static const struct stm32_romem_cfg stm32mp25_bsec_cfg = {
-+	.size = 368 * 4,
-+	.lower = 127,
-+	.ta = true,
-+};
-+
- static const struct of_device_id stm32_romem_of_match[] __maybe_unused = {
- 	{ .compatible = "st,stm32f4-otp", }, {
- 		.compatible = "st,stm32mp15-bsec",
-@@ -276,6 +289,9 @@ static const struct of_device_id stm32_romem_of_match[] __maybe_unused = {
- 	}, {
- 		.compatible = "st,stm32mp13-bsec",
- 		.data = (void *)&stm32mp13_bsec_cfg,
-+	}, {
-+		.compatible = "st,stm32mp25-bsec",
-+		.data = (void *)&stm32mp25_bsec_cfg,
- 	},
- 	{ /* sentinel */ },
- };
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index b60aa1f89343..1df4020ec688 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -1485,6 +1485,7 @@ CONFIG_NVMEM_ROCKCHIP_EFUSE=y
+ CONFIG_NVMEM_ROCKCHIP_OTP=y
+ CONFIG_NVMEM_SNVS_LPGPR=y
+ CONFIG_NVMEM_SPMI_SDAM=m
++CONFIG_NVMEM_STM32_ROMEM=m
+ CONFIG_NVMEM_SUNXI_SID=y
+ CONFIG_NVMEM_UNIPHIER_EFUSE=y
+ CONFIG_FPGA=y
 -- 
 2.25.1
 
