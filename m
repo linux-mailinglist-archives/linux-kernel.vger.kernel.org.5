@@ -2,353 +2,352 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E38467EF867
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:16:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD077EF868
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:16:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232450AbjKQUQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53458 "EHLO
+        id S1346222AbjKQUQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:16:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54258 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235757AbjKQUP6 (ORCPT
+        with ESMTP id S231921AbjKQUQG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:15:58 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E44651FEF;
-        Fri, 17 Nov 2023 12:15:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700252125; x=1731788125;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/7+LjIS9p9ecKNObclU4C94lj+TYiKtZZXlq7W+6+hI=;
-  b=b2gHz9tE426xGyctT2ig1NQjHnP1fFZvCzN6Cg/NoFFlCuHsuOTxcPhK
-   wqSQ1Fflee65O9dCt2zoMDu74QNvRtZ2tNvzn+B9izYF+VHB1uSsYfZrD
-   7jWR+0Z/w/v+7jKN5r4ihCCI3ZmQ4hgoJoybSmMtaPyTI0eVqYsY+bclM
-   AH8k5VV6yijaFZCXgvievajxUT+pXgdsXaRegvtGzXpkYipdJ5sAOcqKz
-   3GHs9x5sBKnDRMJRVjTllI15dj/6/e6WNpeP2HsdUboBXiKQbqet+QSCk
-   C9wekRKHNyvz+LSqcvV9Hl/jde/DWQZm2iXJGi7YQFr9rpQDULxifwMLj
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="12913558"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="12913558"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 12:15:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="6951003"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 12:15:23 -0800
-Date:   Fri, 17 Nov 2023 12:15:23 -0800
-From:   Isaku Yamahata <isaku.yamahata@linux.intel.com>
-To:     "Wang, Wei W" <wei.w.wang@intel.com>
-Cc:     "Yamahata, Isaku" <isaku.yamahata@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Aktas, Erdem" <erdemaktas@google.com>,
-        "Christopherson,, Sean" <seanjc@google.com>,
-        "Shahar, Sagi" <sagis@google.com>,
-        David Matlack <dmatlack@google.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        Zhi Wang <zhi.wang.linux@gmail.com>,
-        "Chen, Bo2" <chen.bo@intel.com>,
-        "Yuan, Hang" <hang.yuan@intel.com>,
-        "Zhang, Tina" <tina.zhang@intel.com>,
-        "gkirkpatrick@google.com" <gkirkpatrick@google.com>,
-        isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v16 059/116] KVM: TDX: Create initial guest memory
-Message-ID: <20231117201523.GD1109547@ls.amr.corp.intel.com>
-References: <cover.1697471314.git.isaku.yamahata@intel.com>
- <edccd3a8ee2ca8d96baca097546bc131f1ef3b79.1697471314.git.isaku.yamahata@intel.com>
- <DS0PR11MB6373EC1033F88008D3B71568DCB7A@DS0PR11MB6373.namprd11.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        Fri, 17 Nov 2023 15:16:06 -0500
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2076.outbound.protection.outlook.com [40.107.92.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CCF19B2;
+        Fri, 17 Nov 2023 12:15:45 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DCbgZKzi3Mb9Ca5HWws7uqi6LWnBrAHq5mIA2cuRtRV9aU8I9YfkArJJcVZxNZi1Pc4Oo9tMK5/GZ+8C1kZ3cdfsYsvq3GAGF2MVRd5YvtM/+KmMATkZVJveTs+Zkez0tVM/MB5QTniU89kiSG/NtSyCaRxiEWUDrYnMrzeG1W80g69wI3lpuTRdvOuzawZ6Bxj0vXlh9ChirUZretTi3y8hG3W38iRN9gWO3ThkSwtQAUZRoxw1H8kbnvCH1I9D6EH28rs76uHbUF/bQk7NGhzdgC46tZdAdmJT+BY0UZEY5SaegqwkRdl7Cthc5HU5BeWGn7Y+VvJsNQlzzWn+4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/mhMu3XVa9U34TEQSnw8CdH2MCgx1O5RDKfbMFTwQSU=;
+ b=kvgmF40c/i0ORw57cRKHxFGaJRIil8KKNhivMuQQ7M60S1P/WeyFz8aZFDzn+jCpBuAsXZZY/lb13OzcNJgTWtzKX6CJNF3siJ9DlPuVXrLiCjxeeX4vs4iBtipNGzcUo8IueYYlFq3NUpiexaYt/n70MzRn+10UXgJYrjlyZELxtd8kQgyMGw0rKiNsKfuvEQIhBB0T8K325M5kuZjGzx23itr9IhKfCH4/GQTkMAgVFVZbFgznrTH6w8gIAYE4JRtmjpLFWPA5bluaisFsP8AUZtznc/UBVLYgj/JgeodjPpkb8el6jSnGf0fWAYHD801NhZ/UiGXFqNoaDZaSrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/mhMu3XVa9U34TEQSnw8CdH2MCgx1O5RDKfbMFTwQSU=;
+ b=frFgT9tPWkXehoAZw3lqht/sma+JutpBLYUy6bP6sW0qLH/ZO20p8VA8Rlst7PGwRIrI2NF14geh0h0NrgU8M2WrcfkFAuhrWexObpXBjU3/bWRW7e53636EBhUE+pQ+5nMLe/EXjAre3yyJXtRXto0cH5ON8VZ6T3IS1dNhrAo=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by CH2PR12MB4312.namprd12.prod.outlook.com (2603:10b6:610:af::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.23; Fri, 17 Nov
+ 2023 20:15:42 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70%7]) with mapi id 15.20.7002.022; Fri, 17 Nov 2023
+ 20:15:42 +0000
+Date:   Fri, 17 Nov 2023 21:15:36 +0100
+From:   Robert Richter <rrichter@amd.com>
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     Ira Weiny <ira.weiny@intel.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fan Ni <nifan.cxl@gmail.com>, Lukas Wunner <lukas@wunner.de>
+Subject: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
+Message-ID: <ZVfJ6Fxidvw_gz7r@rric.localdomain>
+References: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
+ <ZVfIaNhiSc-yQZo5@rric.localdomain>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DS0PR11MB6373EC1033F88008D3B71568DCB7A@DS0PR11MB6373.namprd11.prod.outlook.com>
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <ZVfIaNhiSc-yQZo5@rric.localdomain>
+X-ClientProxiedBy: FR2P281CA0044.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:92::18) To DM6PR12MB3657.namprd12.prod.outlook.com
+ (2603:10b6:5:149::18)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|CH2PR12MB4312:EE_
+X-MS-Office365-Filtering-Correlation-Id: 929f79f5-2e92-478c-1dac-08dbe7a9f975
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: SpgSZGPJjiWF6U86nmbiKcWtyfp/qe4vV/Xl2oLW6RVHZR5YPqLEsrmjcInIwlch1BUtOsZi1PlgBB/Ec//k24r9eRC9gtqc4DYYWojH2PSgR3z0+VhCUwhCWulWsAo3T8thRFk/DfjsjFBfYk49JEGCtNmamVMwJCwfZsK3TcRp3oNr4qvjdMbL2jgOzF2ulYQAFuIK6e24HOPN2ixk0Jh5aufezgS42YGFU5JWUvVOcmmb/T6R4SpT20sa5I2DNMPUYbvht98GEy8/kfcGA1IjJeWfjXocjQYyWGXidUquX3g5nFkGlILyNs/QlmJJVVKFWiXSW+DTqpQH3wgVfEeHK1ZtpWP7Q04vQoLDvWedFTOJjWsSZa7o1jAxVw75Q9wz2RfKkIuaQXZoG1LLbYLq4uKgsc6B/ua+8A/VdMYhoL2rpqtL9jbgiNj08x2MiXx/k2WR1HldOoF3oCrJTdqa61oEK4uW1Mlkhr30i4jq8QOIs86G8xtNk4s7So7AEcalq280Eg6K0VNSk/3u8No7XtiMEnr6p5lJlQngMIVg3sFbxZCNi8DCqOKeb5WlvjOE6HO7SvNkAO7exN0eVowpbEB0rTm2kcjLUVPpGjk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(346002)(136003)(396003)(39860400002)(366004)(376002)(230922051799003)(64100799003)(451199024)(186009)(1800799009)(54906003)(66946007)(66556008)(66476007)(6666004)(316002)(6916009)(83380400001)(478600001)(6486002)(7416002)(5660300002)(6506007)(53546011)(38100700002)(2906002)(41300700001)(26005)(9686003)(4326008)(6512007)(8936002)(8676002)(26583001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?gEGK2qZZKSIiKLkob5Z4ttEaPvJcrPE+E38VZULwh0ioT0cDS0KHJ5YV80sk?=
+ =?us-ascii?Q?66H8bZmIg8AaHn2hIdRT2oewvww56fNnyGx9UZNZ6a4aBiV6BeFfJ2QGi8cr?=
+ =?us-ascii?Q?3c8QEaaXcbU2VIX7GGb6yKswX/9R2tdBWng6vWlMAZUlTSD8B1KlxWnhHuvA?=
+ =?us-ascii?Q?eRO7nFbChT1t0NcdXAc1cuD/VQhNPT582lFqd7TFlIRTqiHLEjuJrOjiSjbm?=
+ =?us-ascii?Q?xGU2OAecsohXVedrf9WsCBZ1EDrmjH8lScO5LwGxZFzBnX0x6MX3Ka9UsOEM?=
+ =?us-ascii?Q?UVkFhqbfA42a5aRLqLNibFpujuzlCqYnM+5utgh7cTrr70di5YgOGzx8sf3G?=
+ =?us-ascii?Q?T3PoMSZ38QcTuB36z1s3sWAOPBU0XmmdgBrlJ4R9sZ29UEQXAbzFKIEZLU/W?=
+ =?us-ascii?Q?KGubilhovD87QAXwB5EGBx6PwksTY93E8QTGfPZP+jmEpog/sp8rhu9xd8bW?=
+ =?us-ascii?Q?HN9Ki+XSTR4ALGi0xkFDp/9851+sKObNcTOVKzl2CeJsButSVxn7z0RkdMat?=
+ =?us-ascii?Q?L0QTFjIz2ANjA9Q+pbYg7P00I9KKPR6sInB9BAqyWhJOokDNYdr6bynIE9+l?=
+ =?us-ascii?Q?mgisV8CxvPFNBnxk+sWeXulf/OEJO2itm14XADVVzR/0oouXwD6IVKFENIFi?=
+ =?us-ascii?Q?qytUp7FFtrf8r9XBDIyuaOwfZHzGkcbjXpKv9pUjW/1WlgcD6GucRe6lK1bE?=
+ =?us-ascii?Q?G8382tZumP3A9Aj8/cxtCrGXCylhCxUVNvdkWMqX4fR24vIRHk770xe0fPvG?=
+ =?us-ascii?Q?q9Op13eGMh4A+k63dBliDXah/Gq3i3r1uLXdqKXfLWr1933VW9ngpZDrb9YF?=
+ =?us-ascii?Q?TtcmmcwzfrTxejjiM+5xH6nPRjEvKxcGgHaHJzheWw4bNt9kr7NdOwQVW6KV?=
+ =?us-ascii?Q?NpIDUNGc5JSHQrB1RCmofLCIaJ/i6cRzcUVJhDJpK7QQh5A3cPFCt+IPmsjR?=
+ =?us-ascii?Q?Q9qTq4e+1MAws9TWqiVhcdnZi8s7wkTj4z9O2Tq5U8uhpJ2fFM4FATqYq6rM?=
+ =?us-ascii?Q?pz4v/9VN+htnW6TwUHUWkUCCcm0bx2WeTN6rRoTBokA41n3gWAAOUUU14a3f?=
+ =?us-ascii?Q?sqAch7PyTTDh7kfoKjHlOcWtVtDuW9ESClRZlMv9Sr8rNNKbNnze2qIWdSyq?=
+ =?us-ascii?Q?vdpWZqW9teNv0vfDq3VU9cxBlllNEo7qAmkw/WSSjvzSRBqmVYKExhFHaJdW?=
+ =?us-ascii?Q?H22L/gR+YWpI00afTvNeGk4s9BVtBGbVAgIPQjOfv2cnWdyoiEjvhBesuZmu?=
+ =?us-ascii?Q?yiuufXJ+W0d6PemJmPpZdwEj8M7296NiPrDI8fTTyNXSZaUqdf9lOf1D2iSR?=
+ =?us-ascii?Q?837iH7txLGNLShr5bBVDeDI1rEMqMbjhUOVsVfaA1a+ONc9Rb2iAt2gZd/nY?=
+ =?us-ascii?Q?nlbgxnS4nEX6Xgi+Wub3jMWSyX6+aLPWK595cYrV97xtnsbhA82z2LtEve+R?=
+ =?us-ascii?Q?QXSyyh590QdNtdt87NswTmVhAJxwwtRD0s0/KoOJsOhPS8Rx/oCiioDtkfqI?=
+ =?us-ascii?Q?trzwkvOa64u3xdg9bMUmLktS3oQdLaxBeuLbmL0rsuBttRj6+3w4+m/Cr6If?=
+ =?us-ascii?Q?x1UW31LC2u4Z08rrb10XBoo1TwSrlOEwxzmTHY9o?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 929f79f5-2e92-478c-1dac-08dbe7a9f975
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 20:15:42.5822
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Cb0S2ibHdmehFoYEiqQNTe9nZMzGW3tLpt9dqvvw7LUKFC58y5n5du8FA82I7N6jvbMqpLT+VtrQBR4eVVCIBw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4312
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 12:56:32PM +0000,
-"Wang, Wei W" <wei.w.wang@intel.com> wrote:
+On 17.11.23 21:09:18, Robert Richter wrote:
+> I will send an on-top patch for 6.8 that reworks that code area to
+> remove the pointer arithmetic.
 
-> On Tuesday, October 17, 2023 12:14 AM, isaku.yamahata@intel.com wrote:
-> > Because the guest memory is protected in TDX, the creation of the initial guest
-> > memory requires a dedicated TDX module API, tdh_mem_page_add, instead of
-> > directly copying the memory contents into the guest memory in the case of
-> > the default VM type.  KVM MMU page fault handler callback, private_page_add,
-> > handles it.
-> > 
-> > Define new subcommand, KVM_TDX_INIT_MEM_REGION, of VM-scoped
-> > KVM_MEMORY_ENCRYPT_OP.  It assigns the guest page, copies the initial
-> > memory contents into the guest memory, encrypts the guest memory.  At the
-> > same time, optionally it extends memory measurement of the TDX guest.  It
-> > calls the KVM MMU page fault(EPT-violation) handler to trigger the callbacks
-> > for it.
-> > 
-> > Reported-by: gkirkpatrick@google.com
-> > Signed-off-by: Isaku Yamahata <isaku.yamahata@intel.com>
-> > 
-> > ---
-> > v15 -> v16:
-> > - add check if nr_pages isn't large with
-> >   (nr_page << PAGE_SHIFT) >> PAGE_SHIFT
-> > 
-> > v14 -> v15:
-> > - add a check if TD is finalized or not to tdx_init_mem_region()
-> > - return -EAGAIN when partial population
-> > ---
-> >  arch/x86/include/uapi/asm/kvm.h       |   9 ++
-> >  arch/x86/kvm/mmu/mmu.c                |   1 +
-> >  arch/x86/kvm/vmx/tdx.c                | 167 +++++++++++++++++++++++++-
-> >  arch/x86/kvm/vmx/tdx.h                |   2 +
-> >  tools/arch/x86/include/uapi/asm/kvm.h |   9 ++
-> >  5 files changed, 185 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/include/uapi/asm/kvm.h
-> > b/arch/x86/include/uapi/asm/kvm.h index 311a7894b712..a1815fcbb0be
-> > 100644
-> > --- a/arch/x86/include/uapi/asm/kvm.h
-> > +++ b/arch/x86/include/uapi/asm/kvm.h
-> > @@ -572,6 +572,7 @@ enum kvm_tdx_cmd_id {
-> >  	KVM_TDX_CAPABILITIES = 0,
-> >  	KVM_TDX_INIT_VM,
-> >  	KVM_TDX_INIT_VCPU,
-> > +	KVM_TDX_INIT_MEM_REGION,
-> > 
-> >  	KVM_TDX_CMD_NR_MAX,
-> >  };
-> > @@ -645,4 +646,12 @@ struct kvm_tdx_init_vm {
-> >  	struct kvm_cpuid2 cpuid;
-> >  };
-> > 
-> > +#define KVM_TDX_MEASURE_MEMORY_REGION	(1UL << 0)
-> > +
-> > +struct kvm_tdx_init_mem_region {
-> > +	__u64 source_addr;
-> > +	__u64 gpa;
-> > +	__u64 nr_pages;
-> > +};
-> > +
-> >  #endif /* _ASM_X86_KVM_H */
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c index
-> > 107cf27505fe..63a4efd1e40a 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -5652,6 +5652,7 @@ int kvm_mmu_load(struct kvm_vcpu *vcpu)
-> >  out:
-> >  	return r;
-> >  }
-> > +EXPORT_SYMBOL(kvm_mmu_load);
-> > 
-> >  void kvm_mmu_unload(struct kvm_vcpu *vcpu)  { diff --git
-> > a/arch/x86/kvm/vmx/tdx.c b/arch/x86/kvm/vmx/tdx.c index
-> > a5f1b3e75764..dc17c212cb38 100644
-> > --- a/arch/x86/kvm/vmx/tdx.c
-> > +++ b/arch/x86/kvm/vmx/tdx.c
-> > @@ -470,6 +470,21 @@ void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu,
-> > hpa_t root_hpa, int pgd_level)
-> >  	td_vmcs_write64(to_tdx(vcpu), SHARED_EPT_POINTER, root_hpa &
-> > PAGE_MASK);  }
-> > 
-> > +static void tdx_measure_page(struct kvm_tdx *kvm_tdx, hpa_t gpa) {
-> > +	struct tdx_module_args out;
-> > +	u64 err;
-> > +	int i;
-> > +
-> > +	for (i = 0; i < PAGE_SIZE; i += TDX_EXTENDMR_CHUNKSIZE) {
-> > +		err = tdh_mr_extend(kvm_tdx->tdr_pa, gpa + i, &out);
-> > +		if (KVM_BUG_ON(err, &kvm_tdx->kvm)) {
-> > +			pr_tdx_error(TDH_MR_EXTEND, err, &out);
-> > +			break;
-> > +		}
-> > +	}
-> > +}
-> > +
-> >  static void tdx_unpin(struct kvm *kvm, kvm_pfn_t pfn)  {
-> >  	struct page *page = pfn_to_page(pfn);
-> > @@ -533,6 +548,61 @@ static int tdx_sept_page_aug(struct kvm *kvm, gfn_t
-> > gfn,
-> >  	return 0;
-> >  }
-> > 
-> > +static int tdx_sept_page_add(struct kvm *kvm, gfn_t gfn,
-> > +			     enum pg_level level, kvm_pfn_t pfn) {
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +	hpa_t hpa = pfn_to_hpa(pfn);
-> > +	gpa_t gpa = gfn_to_gpa(gfn);
-> > +	struct tdx_module_args out;
-> > +	hpa_t source_pa;
-> > +	bool measure;
-> > +	u64 err;
-> > +
-> > +	/*
-> > +	 * KVM_INIT_MEM_REGION, tdx_init_mem_region(), supports only 4K
-> > page
-> > +	 * because tdh_mem_page_add() supports only 4K page.
-> > +	 */
-> > +	if (KVM_BUG_ON(level != PG_LEVEL_4K, kvm))
-> > +		return -EINVAL;
-> > +
-> > +	/*
-> > +	 * In case of TDP MMU, fault handler can run concurrently.  Note
-> > +	 * 'source_pa' is a TD scope variable, meaning if there are multiple
-> > +	 * threads reaching here with all needing to access 'source_pa', it
-> > +	 * will break.  However fortunately this won't happen, because below
-> > +	 * TDH_MEM_PAGE_ADD code path is only used when VM is being
-> > created
-> > +	 * before it is running, using KVM_TDX_INIT_MEM_REGION ioctl
-> > (which
-> > +	 * always uses vcpu 0's page table and protected by vcpu->mutex).
-> > +	 */
-> > +	if (KVM_BUG_ON(kvm_tdx->source_pa == INVALID_PAGE, kvm)) {
-> > +		tdx_unpin(kvm, pfn);
-> > +		return -EINVAL;
-> > +	}
-> > +
-> > +	source_pa = kvm_tdx->source_pa &
-> > ~KVM_TDX_MEASURE_MEMORY_REGION;
-> > +	measure = kvm_tdx->source_pa &
-> > KVM_TDX_MEASURE_MEMORY_REGION;
-> > +	kvm_tdx->source_pa = INVALID_PAGE;
-> > +
-> > +	do {
-> > +		err = tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa,
-> > source_pa,
-> > +				       &out);
-> > +		/*
-> > +		 * This path is executed during populating initial guest memory
-> > +		 * image. i.e. before running any vcpu.  Race is rare.
-> > +		 */
-> > +	} while (unlikely(err == TDX_ERROR_SEPT_BUSY));
-> > +	if (KVM_BUG_ON(err, kvm)) {
-> > +		pr_tdx_error(TDH_MEM_PAGE_ADD, err, &out);
-> > +		tdx_unpin(kvm, pfn);
-> > +		return -EIO;
-> > +	} else if (measure)
-> > +		tdx_measure_page(kvm_tdx, gpa);
-> > +
-> > +	return 0;
-> > +
-> > +}
-> > +
-> >  static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t gfn,
-> >  				     enum pg_level level, kvm_pfn_t pfn)  { @@
-> > -555,9 +625,7 @@ static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t
-> > gfn,
-> >  	if (likely(is_td_finalized(kvm_tdx)))
-> >  		return tdx_sept_page_aug(kvm, gfn, level, pfn);
-> > 
-> > -	/* TODO: tdh_mem_page_add() comes here for the initial memory. */
-> > -
-> > -	return 0;
-> > +	return tdx_sept_page_add(kvm, gfn, level, pfn);
-> >  }
-> > 
-> >  static int tdx_sept_drop_private_spte(struct kvm *kvm, gfn_t gfn, @@ -1265,6
-> > +1333,96 @@ void tdx_flush_tlb_current(struct kvm_vcpu *vcpu)
-> >  	tdx_track(vcpu->kvm);
-> >  }
-> > 
-> > +#define TDX_SEPT_PFERR	(PFERR_WRITE_MASK |
-> > PFERR_GUEST_ENC_MASK)
-> > +
-> > +static int tdx_init_mem_region(struct kvm *kvm, struct kvm_tdx_cmd
-> > +*cmd) {
-> > +	struct kvm_tdx *kvm_tdx = to_kvm_tdx(kvm);
-> > +	struct kvm_tdx_init_mem_region region;
-> > +	struct kvm_vcpu *vcpu;
-> > +	struct page *page;
-> > +	int idx, ret = 0;
-> > +	bool added = false;
-> > +
-> > +	/* Once TD is finalized, the initial guest memory is fixed. */
-> > +	if (is_td_finalized(kvm_tdx))
-> > +		return -EINVAL;
-> > +
-> > +	/* The BSP vCPU must be created before initializing memory regions.
-> > */
-> > +	if (!atomic_read(&kvm->online_vcpus))
-> > +		return -EINVAL;
-> > +
-> > +	if (cmd->flags & ~KVM_TDX_MEASURE_MEMORY_REGION)
-> > +		return -EINVAL;
-> > +
-> > +	if (copy_from_user(&region, (void __user *)cmd->data, sizeof(region)))
-> > +		return -EFAULT;
-> > +
-> > +	/* Sanity check */
-> > +	if (!IS_ALIGNED(region.source_addr, PAGE_SIZE) ||
-> > +	    !IS_ALIGNED(region.gpa, PAGE_SIZE) ||
-> > +	    !region.nr_pages ||
-> > +	    region.nr_pages & GENMASK_ULL(63, 63 - PAGE_SHIFT) ||
-> > +	    region.gpa + (region.nr_pages << PAGE_SHIFT) <= region.gpa ||
-> > +	    !kvm_is_private_gpa(kvm, region.gpa) ||
-> > +	    !kvm_is_private_gpa(kvm, region.gpa + (region.nr_pages <<
-> > PAGE_SHIFT)))
-> > +		return -EINVAL;
-> > +
-> > +	vcpu = kvm_get_vcpu(kvm, 0);
-> > +	if (mutex_lock_killable(&vcpu->mutex))
-> > +		return -EINTR;
-> > +
-> > +	vcpu_load(vcpu);
-> > +	idx = srcu_read_lock(&kvm->srcu);
-> > +
-> > +	kvm_mmu_reload(vcpu);
-> > +
-> > +	while (region.nr_pages) {
-> > +		if (signal_pending(current)) {
-> > +			ret = -ERESTARTSYS;
-> > +			break;
-> > +		}
-> > +
-> > +		if (need_resched())
-> > +			cond_resched();
-> > +
-> > +		/* Pin the source page. */
-> > +		ret = get_user_pages_fast(region.source_addr, 1, 0, &page);
-> > +		if (ret < 0)
-> > +			break;
-> > +		if (ret != 1) {
-> > +			ret = -ENOMEM;
-> > +			break;
-> > +		}
-> > +
-> > +		kvm_tdx->source_pa = pfn_to_hpa(page_to_pfn(page)) |
-> > +				     (cmd->flags &
-> > KVM_TDX_MEASURE_MEMORY_REGION);
-> > +
-> 
-> Is it fundamentally correct to take a userspace mapped page to add as a TD private page?
-> Maybe take the corresponding page from gmem and do a copy to it?
-> For example:
-> ret = get_user_pages_fast(region.source_addr, 1, 0, &user_page);
-> ...
-> kvm_gmem_get_pfn(kvm, gfn_to_memslot(kvm, gfn), gfn, &gmem_pfn, NULL);
-> memcpy(__va(gmem_pfn << PAGE_SHIFT), page_to_virt(user_page), PAGE_SIZE);
-> kvm_tdx->source_pa = pfn_to_hpa(gmem_pfn) |
->                                      (cmd->flags & KVM_TDX_MEASURE_MEMORY_REGION);
+Here it is:
 
-Please refer to
-static int tdx_sept_set_private_spte(struct kvm *kvm, gfn_t gfn,
-                                     enum pg_level level, kvm_pfn_t pfn)
+From 13787f72c20b8c54754ae86015d982307eae0397 Mon Sep 17 00:00:00 2001
+From: Robert Richter <rrichter@amd.com>
+Subject: [PATCH] cxl/pci: Get rid of pointer arithmetic reading CDAT table
 
-The guest memfd provides the page of gfn which is different from
-kvm_tdx->source_pa. The function calls tdh_mem_page_add().
+Reading the CDAT table using DOE requires a Table Access Response
+Header in addition to the CDAT entry. In current implementation this
+has caused offsets with sizeof(__le32) to the actual buffers. This led
+to hardly readable code and even bugs (see fix of devm_kfree() in
+read_cdat_data()).
 
-tdh_mem_page_add(kvm_tdx->tdr_pa, gpa, hpa, source_pa, &out);
-gpa: corresponds to the page from guest memfd
-source_pa: corresopnds to the page tdx_init_mem_region() pinned down.
+Rework code to avoid calculations with sizeof(__le32). Introduce
+struct cdat_doe for this which contains the Table Access Response
+Header and a variable payload size for various data structures
+afterwards to access the CDAT table and its CDAT Data Structures
+without recalculating buffer offsets.
 
-tdh_mem_page_add() copies the page contents from source_pa to gpa and
-gives gpa to the TD guest. not source_pa.
+Cc: Lukas Wunner <lukas@wunner.de>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Fan Ni <nifan.cxl@gmail.com>
+Signed-off-by: Robert Richter <rrichter@amd.com>
+---
+ drivers/cxl/core/pci.c | 80 ++++++++++++++++++++----------------------
+ drivers/cxl/cxlpci.h   | 19 ++++++++++
+ 2 files changed, 57 insertions(+), 42 deletions(-)
+
+diff --git a/drivers/cxl/core/pci.c b/drivers/cxl/core/pci.c
+index 5aaa0b36c42a..f900740c6dea 100644
+--- a/drivers/cxl/core/pci.c
++++ b/drivers/cxl/core/pci.c
+@@ -517,14 +517,14 @@ EXPORT_SYMBOL_NS_GPL(cxl_hdm_decode_init, CXL);
+ 	 FIELD_PREP(CXL_DOE_TABLE_ACCESS_ENTRY_HANDLE, (entry_handle)))
+ 
+ static int cxl_cdat_get_length(struct device *dev,
+-			       struct pci_doe_mb *cdat_doe,
++			       struct pci_doe_mb *doe_mb,
+ 			       size_t *length)
+ {
+ 	__le32 request = CDAT_DOE_REQ(0);
+ 	__le32 response[2];
+ 	int rc;
+ 
+-	rc = pci_doe(cdat_doe, PCI_DVSEC_VENDOR_ID_CXL,
++	rc = pci_doe(doe_mb, PCI_DVSEC_VENDOR_ID_CXL,
+ 		     CXL_DOE_PROTOCOL_TABLE_ACCESS,
+ 		     &request, sizeof(request),
+ 		     &response, sizeof(response));
+@@ -542,56 +542,54 @@ static int cxl_cdat_get_length(struct device *dev,
+ }
+ 
+ static int cxl_cdat_read_table(struct device *dev,
+-			       struct pci_doe_mb *cdat_doe,
+-			       void *cdat_table, size_t *cdat_length)
++			       struct pci_doe_mb *doe_mb,
++			       struct cdat_doe *doe, size_t *length)
+ {
+-	size_t length = *cdat_length + sizeof(__le32);
+-	__le32 *data = cdat_table;
++	size_t received, remaining = *length;
+ 	int entry_handle = 0;
+ 	__le32 saved_dw = 0;
+ 
+ 	do {
+ 		__le32 request = CDAT_DOE_REQ(entry_handle);
+-		struct cdat_entry_header *entry;
+-		size_t entry_dw;
+ 		int rc;
+ 
+-		rc = pci_doe(cdat_doe, PCI_DVSEC_VENDOR_ID_CXL,
++		rc = pci_doe(doe_mb, PCI_DVSEC_VENDOR_ID_CXL,
+ 			     CXL_DOE_PROTOCOL_TABLE_ACCESS,
+ 			     &request, sizeof(request),
+-			     data, length);
++			     doe, sizeof(*doe) + remaining);
+ 		if (rc < 0) {
+ 			dev_err(dev, "DOE failed: %d", rc);
+ 			return rc;
+ 		}
+ 
+-		/* 1 DW Table Access Response Header + CDAT entry */
+-		entry = (struct cdat_entry_header *)(data + 1);
++		if (rc < sizeof(*doe))
++			return -EIO;
++
++		received = rc - sizeof(*doe);
++
+ 		if ((entry_handle == 0 &&
+-		     rc != sizeof(__le32) + sizeof(struct cdat_header)) ||
++		     received != sizeof(doe->header[0])) ||
+ 		    (entry_handle > 0 &&
+-		     (rc < sizeof(__le32) + sizeof(*entry) ||
+-		      rc != sizeof(__le32) + le16_to_cpu(entry->length))))
++		     (received < sizeof(doe->entry[0]) ||
++		      received != le16_to_cpu(doe->entry->length))))
+ 			return -EIO;
+ 
+ 		/* Get the CXL table access header entry handle */
+ 		entry_handle = FIELD_GET(CXL_DOE_TABLE_ACCESS_ENTRY_HANDLE,
+-					 le32_to_cpu(data[0]));
+-		entry_dw = rc / sizeof(__le32);
+-		/* Skip Header */
+-		entry_dw -= 1;
++					 le32_to_cpu(doe->doe_header));
++
+ 		/*
+ 		 * Table Access Response Header overwrote the last DW of
+ 		 * previous entry, so restore that DW
+ 		 */
+-		*data = saved_dw;
+-		length -= entry_dw * sizeof(__le32);
+-		data += entry_dw;
+-		saved_dw = *data;
++		doe->doe_header = saved_dw;
++		remaining -= received;
++		doe = (void *)doe + received;
++		saved_dw = doe->doe_header;
+ 	} while (entry_handle != CXL_DOE_TABLE_ACCESS_LAST_ENTRY);
+ 
+ 	/* Length in CDAT header may exceed concatenation of CDAT entries */
+-	*cdat_length -= length - sizeof(__le32);
++	*length -= remaining;
+ 
+ 	return 0;
+ }
+@@ -616,11 +614,11 @@ void read_cdat_data(struct cxl_port *port)
+ {
+ 	struct device *uport = port->uport_dev;
+ 	struct device *dev = &port->dev;
+-	struct pci_doe_mb *cdat_doe;
++	struct pci_doe_mb *doe_mb;
+ 	struct pci_dev *pdev = NULL;
+ 	struct cxl_memdev *cxlmd;
+-	size_t cdat_length;
+-	void *cdat_table, *cdat_buf;
++	struct cdat_doe *doe;
++	size_t length;
+ 	int rc;
+ 
+ 	if (is_cxl_memdev(uport)) {
+@@ -637,40 +635,38 @@ void read_cdat_data(struct cxl_port *port)
+ 	if (!pdev)
+ 		return;
+ 
+-	cdat_doe = pci_find_doe_mailbox(pdev, PCI_DVSEC_VENDOR_ID_CXL,
+-					CXL_DOE_PROTOCOL_TABLE_ACCESS);
+-	if (!cdat_doe) {
++	doe_mb = pci_find_doe_mailbox(pdev, PCI_DVSEC_VENDOR_ID_CXL,
++				      CXL_DOE_PROTOCOL_TABLE_ACCESS);
++	if (!doe_mb) {
+ 		dev_dbg(dev, "No CDAT mailbox\n");
+ 		return;
+ 	}
+ 
+ 	port->cdat_available = true;
+ 
+-	if (cxl_cdat_get_length(dev, cdat_doe, &cdat_length)) {
++	if (cxl_cdat_get_length(dev, doe_mb, &length)) {
+ 		dev_dbg(dev, "No CDAT length\n");
+ 		return;
+ 	}
+ 
+-	cdat_buf = devm_kzalloc(dev, cdat_length + sizeof(__le32),
+-				  GFP_KERNEL);
+-	if (!cdat_buf)
+-		return;
++	doe = devm_kzalloc(dev, sizeof(*doe) + length, GFP_KERNEL);
++	if (!doe)
++		goto err;
+ 
+-	rc = cxl_cdat_read_table(dev, cdat_doe, cdat_buf, &cdat_length);
++	rc = cxl_cdat_read_table(dev, doe_mb, doe, &length);
+ 	if (rc)
+ 		goto err;
+ 
+-	cdat_table = cdat_buf + sizeof(__le32);
+-	if (cdat_checksum(cdat_table, cdat_length))
++	if (cdat_checksum(doe->table, length))
+ 		goto err;
+ 
+-	port->cdat.table = cdat_table;
+-	port->cdat.length = cdat_length;
+-	return;
++	port->cdat.table = doe->table;
++	port->cdat.length = length;
+ 
++	return;
+ err:
+ 	/* Don't leave table data allocated on error */
+-	devm_kfree(dev, cdat_buf);
++	devm_kfree(dev, doe);
+ 	dev_err(dev, "Failed to read/validate CDAT.\n");
+ }
+ EXPORT_SYMBOL_NS_GPL(read_cdat_data, CXL);
+diff --git a/drivers/cxl/cxlpci.h b/drivers/cxl/cxlpci.h
+index 0fa4799ea316..d12ed9d8dec1 100644
+--- a/drivers/cxl/cxlpci.h
++++ b/drivers/cxl/cxlpci.h
+@@ -85,6 +85,25 @@ struct cdat_entry_header {
+ 	__le16 length;
+ } __packed;
+ 
++/*
++ * Response contains the CDAT only response header of the DOE. The
++ * response payload is a CDAT structure (either CDAT header or entry),
++ * it may also mark the beginning of the CDAT table.
++ *
++ * Spec refs:
++ *
++ * CXL 3.1 Table 8-14: Read Entry Response
++ * CDAT Specification 1.03: 2 CDAT Data Structures
++ */
++struct cdat_doe {
++	__le32 doe_header;
++	union {
++		u8 table[0];
++		struct cdat_header header[0];
++		struct cdat_entry_header entry[0];
++	};
++} __packed;
++
+ int devm_cxl_port_enumerate_dports(struct cxl_port *port);
+ struct cxl_dev_state;
+ int cxl_hdm_decode_init(struct cxl_dev_state *cxlds, struct cxl_hdm *cxlhdm,
 -- 
-Isaku Yamahata <isaku.yamahata@linux.intel.com>
+2.39.2
+
