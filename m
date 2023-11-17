@@ -2,104 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E6DFF7EED3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:10:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0D1E7EED6A
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:16:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345718AbjKQIKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:10:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39038 "EHLO
+        id S230316AbjKQIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:16:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbjKQIK2 (ORCPT
+        with ESMTP id S235428AbjKQIKl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:10:28 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F00F130
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:10:25 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r3tvT-0005ZF-4D; Fri, 17 Nov 2023 09:10:07 +0100
-Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r3tvO-009d5q-RY; Fri, 17 Nov 2023 09:10:02 +0100
-Received: from ore by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1r3tvO-002Tie-O0; Fri, 17 Nov 2023 09:10:02 +0100
-Date:   Fri, 17 Nov 2023 09:10:02 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Ziqi Zhao <astrajoan@yahoo.com>
-Cc:     ivan.orlov0322@gmail.com, edumazet@google.com,
-        syzbot+881d65229ca4f9ae8c84@syzkaller.appspotmail.com,
-        socketcan@hartkopp.net, bridge@lists.linux-foundation.org,
-        nikolay@nvidia.com,
-        syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com,
-        roopa@nvidia.com, kuba@kernel.org, pabeni@redhat.com,
-        arnd@arndb.de, syzkaller-bugs@googlegroups.com,
-        mudongliangabcd@gmail.com, linux-can@vger.kernel.org,
-        mkl@pengutronix.de, skhan@linuxfoundation.org, robin@protonic.nl,
-        linux-kernel@vger.kernel.org, linux@rempel-privat.de,
-        kernel@pengutronix.de, netdev@vger.kernel.org, davem@davemloft.net
-Subject: Re: [PATCH] can: j1939: prevent deadlock by changing
- j1939_socks_lock to rwlock
-Message-ID: <20231117081002.GA590719@pengutronix.de>
-References: <20230704064710.3189-1-astrajoan@yahoo.com>
- <20230721162226.8639-1-astrajoan@yahoo.com>
- <20230807044634.GA5736@pengutronix.de>
+        Fri, 17 Nov 2023 03:10:41 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E16FB3;
+        Fri, 17 Nov 2023 00:10:37 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10639C433C9;
+        Fri, 17 Nov 2023 08:10:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700208636;
+        bh=Sp+Yq9p97aTc8MUbIdNZJygJ6geUY1h1i1/p9budoWg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iLbxMLKq0lNgG9N/Ba88EMFlKtbxc8Oj21pGhiTvxuXKnarkvsW83GnoqStVsJaHn
+         BvtW0+bhg0tqx7pUzV3dzpaCWPs9beLTlc2epp8lXc7igFYprVGqwYUI4wz1rmaYfA
+         xyl3Dl7YUM+tp4vHsPPvMzR+0jmolWSvyU9NVMr0DEhhVv02dUyf+r4m7ZMjoQnNk4
+         2jg18MSAXyCPG3BfJMJYqQGZOt/qyJqE9mNxJZ169Aj+QrAiyTP+21tlHZrNVmS7rb
+         +bhoiqQjwX6ZQn7FpS81C1M1V4lxDW1KFI3XKnFzpvAC9CmBBke4IhnosNBkngC7Vs
+         XMgApAwYJHzIA==
+Date:   Fri, 17 Nov 2023 13:40:25 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
+        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        robh@kernel.org, quic_krichai@quicinc.com,
+        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
+        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
+Message-ID: <20231117081025.GF10361@thinkpad>
+References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700051821-1087-2-git-send-email-quic_msarkar@quicinc.com>
+ <CAA8EJprWP3ThYyPZDF7ddG9Awdk9D7ovxes--r0VS3Ma53VqxA@mail.gmail.com>
+ <CAA8EJprouEiex2YGuMjJCmwiWmhbYXaUpTBkWhEXpF08iGzk6Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20230807044634.GA5736@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJprouEiex2YGuMjJCmwiWmhbYXaUpTBkWhEXpF08iGzk6Q@mail.gmail.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 07, 2023 at 06:46:34AM +0200, Oleksij Rempel wrote:
-> On Fri, Jul 21, 2023 at 09:22:26AM -0700, Ziqi Zhao wrote:
-> > The following 3 locks would race against each other, causing the
-> > deadlock situation in the Syzbot bug report:
-> > 
-> > - j1939_socks_lock
-> > - active_session_list_lock
-> > - sk_session_queue_lock
-> > 
-> > A reasonable fix is to change j1939_socks_lock to an rwlock, since in
-> > the rare situations where a write lock is required for the linked list
-> > that j1939_socks_lock is protecting, the code does not attempt to
-> > acquire any more locks. This would break the circular lock dependency,
-> > where, for example, the current thread already locks j1939_socks_lock
-> > and attempts to acquire sk_session_queue_lock, and at the same time,
-> > another thread attempts to acquire j1939_socks_lock while holding
-> > sk_session_queue_lock.
-> > 
-> > NOTE: This patch along does not fix the unregister_netdevice bug
-> > reported by Syzbot; instead, it solves a deadlock situation to prepare
-> > for one or more further patches to actually fix the Syzbot bug, which
-> > appears to be a reference counting problem within the j1939 codebase.
-> > 
-> > Reported-by: syzbot+1591462f226d9cbf0564@syzkaller.appspotmail.com
-> > Signed-off-by: Ziqi Zhao <astrajoan@yahoo.com>
+On Wed, Nov 15, 2023 at 03:21:26PM +0200, Dmitry Baryshkov wrote:
+> On Wed, 15 Nov 2023 at 15:18, Dmitry Baryshkov
+> <dmitry.baryshkov@linaro.org> wrote:
+> >
+> > On Wed, 15 Nov 2023 at 14:37, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
+> > >
+> > > This change will enable cache snooping logic to support
+> > > cache coherency for 8775 RC platform.
+> > >
+> > > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
+> > > ---
+> > >  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
+> > >  1 file changed, 13 insertions(+)
+> > >
+> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > index 6902e97..b82ccd1 100644
+> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
+> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
+> > > @@ -51,6 +51,7 @@
+> > >  #define PARF_SID_OFFSET                                0x234
+> > >  #define PARF_BDF_TRANSLATE_CFG                 0x24c
+> > >  #define PARF_SLV_ADDR_SPACE_SIZE               0x358
+> > > +#define PCIE_PARF_NO_SNOOP_OVERIDE             0x3d4
+> > >  #define PARF_DEVICE_TYPE                       0x1000
+> > >  #define PARF_BDF_TO_SID_TABLE_N                        0x2000
+> > >
+> > > @@ -117,6 +118,10 @@
+> > >  /* PARF_LTSSM register fields */
+> > >  #define LTSSM_EN                               BIT(8)
+> > >
+> > > +/* PARF_NO_SNOOP_OVERIDE register fields */
+> > > +#define WR_NO_SNOOP_OVERIDE_EN                 BIT(1)
+> > > +#define RD_NO_SNOOP_OVERIDE_EN                 BIT(3)
+> > > +
+> > >  /* PARF_DEVICE_TYPE register fields */
+> > >  #define DEVICE_TYPE_RC                         0x4
+> > >
+> > > @@ -961,6 +966,14 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
+> > >
+> > >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
+> > >  {
+> > > +       struct dw_pcie *pci = pcie->pci;
+> > > +       struct device *dev = pci->dev;
+> > > +
+> > > +       /* Enable cache snooping for SA8775P */
+> > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
+> >
+> > Quoting my feedback from v1:
+> >
+> > Obviously: please populate a flag in the data structures instead of
+> > doing of_device_is_compatible(). Same applies to the patch 2.
+> 
+> Mani, I saw your response for the v1, but I forgot to respond. In my
+> opinion, it's better to have the flag now, even if it is just for a
+> single platform. It allows us to follow the logic of the driver and
+> saves few string ops.
+> 
 
-Reviewed-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Ok, I do not have a strong opinion on this.
+
+- Mani
+
+> >
+> >
+> > > +               writel(WR_NO_SNOOP_OVERIDE_EN | RD_NO_SNOOP_OVERIDE_EN,
+> > > +                               pcie->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
+> > > +
+> > >         qcom_pcie_clear_hpc(pcie->pci);
+> > >
+> > >         return 0;
+> > > --
+> > > 2.7.4
+> > >
+> >
+> >
+> > --
+> > With best wishes
+> > Dmitry
+> 
+> 
+> 
+> -- 
+> With best wishes
+> Dmitry
 
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+மணிவண்ணன் சதாசிவம்
