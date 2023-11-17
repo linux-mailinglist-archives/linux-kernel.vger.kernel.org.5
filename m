@@ -2,247 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 020AE7EF314
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:56:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A37EC7EF318
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:56:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345970AbjKQM4F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:56:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49720 "EHLO
+        id S1345993AbjKQM4d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54904 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229543AbjKQM4D (ORCPT
+        with ESMTP id S229543AbjKQM4b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:56:03 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84EF7D56;
-        Fri, 17 Nov 2023 04:55:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700225759; x=1731761759;
-  h=date:from:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=3HMFxHgCTxSVtX8V0rMNslAZUplZ+JhYFy41P4dMRh4=;
-  b=mhxThk4Xfizo89moOTza9Tn5ESD8KeUEBOzn6fTV0TF+E+k+AxMiJp2y
-   Hez0vCcJVGzaTKJ3NJXgyTIgYPS7juRKNrusxweoImufg4JY9QjChaKuz
-   BcHQ8EpY2ktefEpYti9vKEA/W5io9b6xs2F2Vu09gMqClq8Tp1zFOk9+1
-   zTc+9VbpiTbssLWTlz2MlE7FnqYTMUM8Ln8HZXyHOJbRrqE31jELPD5DT
-   ufGqizpN2cn60xwyRlY7MKEeEkVF7RIwOwSZlESbhvyk21V9sHuREcWAP
-   2VPtI+NqSBvfeF6VeP0se1pMVjrSI0iFLfl/PyFlw9CLwiB6pr+lJbXj4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="390153159"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="390153159"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 04:55:59 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="939142121"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="939142121"
-Received: from scoltan-mobl.ger.corp.intel.com ([10.249.46.6])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 04:55:57 -0800
-Date:   Fri, 17 Nov 2023 14:55:54 +0200 (EET)
-From:   =?ISO-8859-15?Q?Ilpo_J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-To:     Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-cc:     Fenghua Yu <fenghua.yu@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Shuah Khan <shuah@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftests/resctrl: Add non-contiguous CBMs CAT test
-In-Reply-To: <20231109112847.432687-1-maciej.wieczor-retman@intel.com>
-Message-ID: <879955f-d2d4-017-6694-5a031ec7f2@linux.intel.com>
-References: <20231109112847.432687-1-maciej.wieczor-retman@intel.com>
+        Fri, 17 Nov 2023 07:56:31 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AFF7D57
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:56:28 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31622C433C8;
+        Fri, 17 Nov 2023 12:56:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700225788;
+        bh=yco5pbCsXVo4oB/2D289CCmrjEJWr/ntTfP78uZgSQg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=SyUUwtGZuBn4aCSski5/plxAqG2+LmPMq9vD7y1k4dUlLrsJyGo/NWNMEBQxD5DCL
+         EgtiZ1dJSvVWbLuYP2Pyasc3X2OCJ+gCGVfeBP+YDe7N5UgRsJUl74jOiAUfxACFcV
+         AyL8KDVvUp4DGZ0Nj0BVSkTgu/GHu3z5efDTS/DlaFIzWaGfK1olMftzdaXQq/3Etb
+         Iux6pio2DEnkfR7/Tkvke2cAyFbQC0n9x5HfhjuOwBKCcNBaLhg1azu8t99A2bZ7e7
+         qK4as0pB0uV6ZJbAg0hmRdjfGu9Lt8Z9aKMAhAelAd5tRJTd1diteDfq/QootGHcPa
+         m6HJPrvkAtZWg==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] arm64: vdso32: rename 32-bit debug vdso to vdso32.so.dbg
+Date:   Fri, 17 Nov 2023 21:56:19 +0900
+Message-Id: <20231117125620.1058300-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 9 Nov 2023, Maciej Wieczor-Retman wrote:
+'make vdso_install' renames arch/arm64/kernel/vdso32/vdso.so.dbg to
+vdso32.so during installation, which allows 64-bit and 32-bit vdso
+files to be installed in the same directory.
 
-> Non-contiguous CBM support for Intel CAT has been merged into the kernel
-> with Commit 0e3cd31f6e90 ("x86/resctrl: Enable non-contiguous CBMs in
-> Intel CAT") but there is no selftest that would validate if this feature
-> works correctly.
-> 
-> The selftest needs to verify if writing non-contiguous CBMs to the
-> schemata file behaves as expected in comparison to the information about
-> non-contiguous CBMs support.
-> 
-> Add tests for both L2 and L3 CAT to verify if the return values
-> generated by writing non-contiguous CBMs don't contradict the
-> reported non-contiguous support information.
+However, arm64 is the only architecture that requires this renaming.
 
-"if ... don't" sounds weird to me. Perhaps the "if" could just be dropped 
-from it.
+To simplify the vdso_install logic, rename the in-tree vdso file so
+its base name matches the installed file name.
 
-> Comparing the return value of write_schemata() with non-contiguous CBMs
-> support information can be simplified as a logical XOR operation. In
-> other words if non-contiguous CBMs are supported and if non-contiguous
-> write succeeds the test should succeed and if the write fails the test
-> should also fail. The opposite should happen if non-contiguous CBMs are
-> not supported.
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
 
-To me this sounds a bit verbose given how basic thing it talks about 
-(but maybe I'm too old already to have actually come across a few xor
-tricks in the past :-)). I'd simplify it to (or simply drop it):
+ arch/arm64/Makefile               | 2 +-
+ arch/arm64/kernel/vdso32/Makefile | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-Use a logical XOR to confirm return value of write_schemata() and  
-non-contiguous CBMs support information match.
-
-> Signed-off-by: Maciej Wieczor-Retman <maciej.wieczor-retman@intel.com>
-> 
-> ---
-> 
-> This patch is based on a rework of resctrl selftests that's currently in
-> review [1]. The patch also implements a similiar functionality presented
-> in the bash script included in the cover letter to the original
-> non-contiguous CBMs in Intel CAT series [2].
-> 
-> [1] https://lore.kernel.org/all/20231024092634.7122-1-ilpo.jarvinen@linux.intel.com/
-> [2] https://lore.kernel.org/all/cover.1696934091.git.maciej.wieczor-retman@intel.com/
-> 
->  tools/testing/selftests/resctrl/cat_test.c    | 97 +++++++++++++++++++
->  tools/testing/selftests/resctrl/resctrl.h     |  2 +
->  .../testing/selftests/resctrl/resctrl_tests.c |  2 +
->  3 files changed, 101 insertions(+)
-> 
-> diff --git a/tools/testing/selftests/resctrl/cat_test.c b/tools/testing/selftests/resctrl/cat_test.c
-> index bc88eb891f35..6a01a5da30b4 100644
-> --- a/tools/testing/selftests/resctrl/cat_test.c
-> +++ b/tools/testing/selftests/resctrl/cat_test.c
-> @@ -342,6 +342,87 @@ static int cat_run_test(const struct resctrl_test *test, const struct user_param
->  	return ret;
->  }
->  
-> +static int noncont_cat_run_test(const struct resctrl_test *test,
-> +				const struct user_params *uparams)
-> +{
-> +	unsigned long full_cache_mask, cont_mask, noncont_mask;
-> +	unsigned int eax, ebx, ecx, edx, ret, sparse_masks;
-> +	char res_path[PATH_MAX];
-> +	char schemata[64];
-> +	int bit_center;
-> +	FILE *fp;
-> +
-> +	/* Check to compare sparse_masks content to cpuid output. */
-> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-> +		 test->resource, "sparse_masks");
-> +
-> +	fp = fopen(res_path, "r");
-> +	if (!fp) {
-> +		perror("# Error in opening file\n");
-> +		return errno;
-> +	}
-> +
-> +	if (fscanf(fp, "%u", &sparse_masks) <= 0) {
-> +		perror("Could not get sparse_masks contents\n");
-> +		fclose(fp);
-> +		return -1;
-> +	}
-> +
-> +	fclose(fp);
-
-Add a function to do this conversion into resctrlfs.c.
-
-> +
-> +	if (!strcmp(test->resource, "L3"))
-> +		__cpuid_count(0x10, 1, eax, ebx, ecx, edx);
-> +	else if (!strcmp(test->resource, "L2"))
-> +		__cpuid_count(0x10, 2, eax, ebx, ecx, edx);
-> +	else
-> +		return -EINVAL;
-
-This would be same as (you need to make the func non-static though):
-	level = get_cache_level(test->resource);
-	if (level < 0)
-		return -EINVAL;
-	__cpuid_count(0x10, 4 - level, eax, ebx, ecx, edx);
-
-> +	if (sparse_masks != ((ecx >> 3) & 1))
-> +		return -1;
-> +
-> +	/* Write checks initialization. */
-> +	ret = get_cbm_mask(test->resource, &full_cache_mask);
-> +	if (ret < 0)
-> +		return ret;
-> +	bit_center = count_bits(full_cache_mask) / 2;
-> +	cont_mask = full_cache_mask >> bit_center;
-> +
-> +	/* Contiguous mask write check. */
-> +	snprintf(schemata, sizeof(schemata), "%lx", cont_mask);
-> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/*
-> +	 * Non-contiguous mask write check. CBM has a 0xf hole approximately in the middle.
-> +	 * Output is compared with support information to catch any edge case errors.
-> +	 */
-> +	noncont_mask = ~(full_cache_mask & (0xf << bit_center)) & full_cache_mask;
-
-Why is the full_cache_mask & part needed here? It's not like the second 
-and can grow bits outside of full_cache_mask even if that would overflow 
-the full_cache_mask (it won't be testing hole then though but that 
-problem happens also at the boundary condition one bit prior to 
-overflowing the mask).
-
-> +	snprintf(schemata, sizeof(schemata), "%lx", noncont_mask);
-> +	ret = write_schemata("", schemata, uparams->cpu, test->resource);
-> +	if (ret && sparse_masks)
-> +		ksft_print_msg("Non-contiguous CBMs supported but write failed\n");
-> +	else if (ret && !sparse_masks)
-> +		ksft_print_msg("Non-contiguous CBMs not supported and write failed as expected\n");
-> +	else if (!ret && !sparse_masks)
-> +		ksft_print_msg("Non-contiguous CBMs not supported but write succeeded\n");
-
-Newline.
-
-> +	return !ret == !sparse_masks;
-> +}
-> +
-> +static bool noncont_cat_feature_check(const struct resctrl_test *test)
-> +{
-> +	char res_path[PATH_MAX];
-> +	struct stat statbuf;
-> +
-> +	snprintf(res_path, sizeof(res_path), "%s/%s/%s", INFO_PATH,
-> +		 test->resource, "sparse_masks");
-> +
-> +	if (stat(res_path, &statbuf))
-> +		return false;
-
-This looks generic enough that validate_resctrl_feature_request() should 
-be somehow adapted to cover also these cases. Perhaps it would be best to 
-just split validate_resctrl_feature_request() into multiple functions.
-
-> +	return test_resource_feature_check(test);
-> +}
-> +
->  struct resctrl_test l3_cat_test = {
->  	.name = "L3_CAT",
->  	.group = "CAT",
-> @@ -357,3 +438,19 @@ struct resctrl_test l2_cat_test = {
->  	.feature_check = test_resource_feature_check,
->  	.run_test = cat_run_test,
->  };
-> +
-> +struct resctrl_test l3_noncont_cat_test = {
-> +	.name = "L3_NONCONT_CAT",
-> +	.group = "NONCONT_CAT",
-
-> +struct resctrl_test l2_noncont_cat_test = {
-> +	.name = "L2_NONCONT_CAT",
-> +	.group = "NONCONT_CAT",
-
-I think these should be grouped among "CAT" group because it well, tests 
-CAT functionality. Why you think a separate group for them is needed?
-
+diff --git a/arch/arm64/Makefile b/arch/arm64/Makefile
+index 4bd85cc0d32b..4a1ad3248c2d 100644
+--- a/arch/arm64/Makefile
++++ b/arch/arm64/Makefile
+@@ -200,7 +200,7 @@ endif
+ endif
+ 
+ vdso-install-y				+= arch/arm64/kernel/vdso/vdso.so.dbg
+-vdso-install-$(CONFIG_COMPAT_VDSO)	+= arch/arm64/kernel/vdso32/vdso.so.dbg:vdso32.so
++vdso-install-$(CONFIG_COMPAT_VDSO)	+= arch/arm64/kernel/vdso32/vdso32.so.dbg
+ 
+ include $(srctree)/scripts/Makefile.defconf
+ 
+diff --git a/arch/arm64/kernel/vdso32/Makefile b/arch/arm64/kernel/vdso32/Makefile
+index 1f911a76c5af..2266fcdff78a 100644
+--- a/arch/arm64/kernel/vdso32/Makefile
++++ b/arch/arm64/kernel/vdso32/Makefile
+@@ -118,7 +118,7 @@ endif
+ VDSO_CFLAGS_REMOVE_vgettimeofday.o = $(CC_FLAGS_FTRACE) -Os
+ 
+ # Build rules
+-targets := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso) vdso.so vdso.so.dbg vdso.so.raw
++targets := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso) vdso.so vdso32.so.dbg vdso.so.raw
+ c-obj-vdso := $(addprefix $(obj)/, $(c-obj-vdso))
+ c-obj-vdso-gettimeofday := $(addprefix $(obj)/, $(c-obj-vdso-gettimeofday))
+ asm-obj-vdso := $(addprefix $(obj)/, $(asm-obj-vdso))
+@@ -127,15 +127,15 @@ obj-vdso := $(c-obj-vdso) $(c-obj-vdso-gettimeofday) $(asm-obj-vdso)
+ targets += vdso.lds
+ CPPFLAGS_vdso.lds += -P -C -U$(ARCH)
+ 
+-include/generated/vdso32-offsets.h: $(obj)/vdso.so.dbg FORCE
++include/generated/vdso32-offsets.h: $(obj)/vdso32.so.dbg FORCE
+ 	$(call if_changed,vdsosym)
+ 
+ # Strip rule for vdso.so
+ $(obj)/vdso.so: OBJCOPYFLAGS := -S
+-$(obj)/vdso.so: $(obj)/vdso.so.dbg FORCE
++$(obj)/vdso.so: $(obj)/vdso32.so.dbg FORCE
+ 	$(call if_changed,objcopy)
+ 
+-$(obj)/vdso.so.dbg: $(obj)/vdso.so.raw $(obj)/$(munge) FORCE
++$(obj)/vdso32.so.dbg: $(obj)/vdso.so.raw $(obj)/$(munge) FORCE
+ 	$(call if_changed,vdsomunge)
+ 
+ # Link rule for the .so file, .lds has to be first
 -- 
- i.
+2.40.1
 
