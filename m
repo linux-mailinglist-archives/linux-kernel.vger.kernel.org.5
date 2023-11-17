@@ -2,60 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A207EEF43
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AF07EEF4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345744AbjKQJwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:52:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50294 "EHLO
+        id S1345745AbjKQJyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:54:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjKQJwa (ORCPT
+        with ESMTP id S235193AbjKQJyP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:52:30 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E2CDAF
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:52:26 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5940C433C8;
-        Fri, 17 Nov 2023 09:52:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700214746;
-        bh=e2z5EMr6FCn2C9zht/MhpP6zwsy6ds3cEVm9SxjeNFQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WdGxFaiUbS/AXp/E94wu62V9kYbiyG4i6SfuldSKbgMqt/WmXPOojCotxb0ygNJDk
-         7s4eSOU+bxIB2/NMGiHO0SBQTHYEXvZDiDi43EQmmBJUv1Km7JrayqoTrAmr0N9jk8
-         ZGnq0R+ksber/D9G5ZjQwjkNR5lkC38Yv68cFHeLoet8b/4+Tsp2mMF762CeJZ4pn/
-         L3kb0cIc5N/htVl0Y1LJ0xwi9KIdaY79Rffm7rh3FOmeucReC0va7D207bkN/VYSwx
-         zY9eCM8zwc4rlyHZ3nVDM3Uc17NcD5LaDIj3PbpBq6VRX03OfLLUZz6Mupbl0NfVFg
-         udyJ1x2mpTOaw==
-Date:   Fri, 17 Nov 2023 10:52:23 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-Message-ID: <xnamb346y56gviu6n3kqdrmbm6piaypf6kxeefm7bhou2yqqhd@w7tvtmmgh2j5>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev>
- <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
- <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
- <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
- <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
- <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
- <61f1dc2f-84f8-4f04-8348-7a4470a1276c@linux.dev>
+        Fri, 17 Nov 2023 04:54:15 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEC76D56;
+        Fri, 17 Nov 2023 01:54:11 -0800 (PST)
+Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9pob7031877;
+        Fri, 17 Nov 2023 09:54:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=8PHjishFk/rDJbuAwLGo4DIdsK0nxVJpPl5Q+3+yl58=;
+ b=YXsIV8QDK+IwL85TKocCUX9EX6vrchLuNg3cMfGb1B0Pvw3exBsCdt7q79PMqM002U98
+ ZTaOXk8kAdaQmMQa4AgY/cBBmBUE+pWnxHQdRKt6l6WzhfPepCN+qe4uOzmQbkeraouG
+ uE7SV5GrTqaHH3+XbJN6tKmqecYCuFzUDfv7CwqNNeOBxaUct8L0CXs7eWHcKmgmO20q
+ qtDOZnA5bE+SCbK52oE7ENqFSYX1fpTSiz+A9m0J4ONOYtsl8MT+wvm8NvHblzgpfB/u
+ 6Mt6Boe9TA+0cYosWY6dASPyUcAaX4ZRVXgFH3Z4RIjXhJPpc3KEEwTrCir1fFdSbLdL 3A== 
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udw46s199-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:54:08 +0000
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+        by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9reTZ023544
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:53:40 GMT
+Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 17 Nov 2023 01:53:35 -0800
+From:   Sibi Sankar <quic_sibis@quicinc.com>
+To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
+CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
+        <quic_rjendra@quicinc.com>, <abel.vesa@linaro.org>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_tsoni@quicinc.com>,
+        <neil.armstrong@linaro.org>, Sibi Sankar <quic_sibis@quicinc.com>
+Subject: [PATCH V2 0/2] cache: qcom,llcc: Add llcc support for X1E80100
+Date:   Fri, 17 Nov 2023 15:23:13 +0530
+Message-ID: <20231117095315.2087-1-quic_sibis@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="y4yamxv4wyjgt2qh"
-Content-Disposition: inline
-In-Reply-To: <61f1dc2f-84f8-4f04-8348-7a4470a1276c@linux.dev>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: yCoPhn1bkOHHZbSk_Ed2-3Rgaegw5L_J
+X-Proofpoint-ORIG-GUID: yCoPhn1bkOHHZbSk_Ed2-3Rgaegw5L_J
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
+ clxscore=1015 phishscore=0 mlxlogscore=962 suspectscore=0 bulkscore=0
+ adultscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
+ definitions=main-2311170073
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -63,190 +77,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This series adds llcc support for the Qualcomm X1E80100 platform, aka Snapdragon X Elite.
 
---y4yamxv4wyjgt2qh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Our v1 post of the patchsets adding support for Snapdragon X Elite SoC had
+the part number sc8380xp which is now updated to the new part number x1e80100
+based on the new branding scheme and refers to the exact same SoC.
 
-On Fri, Nov 17, 2023 at 01:18:49AM +0800, Sui Jingfeng wrote:
->=20
-> On 2023/11/16 23:23, Dmitry Baryshkov wrote:
-> > On Thu, 16 Nov 2023 at 14:08, Sui Jingfeng <sui.jingfeng@linux.dev> wro=
-te:
-> > >=20
-> > > On 2023/11/16 19:53, Sui Jingfeng wrote:
-> > > > Hi,
-> > > >=20
-> > > >=20
-> > > > On 2023/11/16 19:29, Dmitry Baryshkov wrote:
-> > > > > On Thu, 16 Nov 2023 at 13:18, Sui Jingfeng <sui.jingfeng@linux.de=
-v>
-> > > > > wrote:
-> > > > > > Hi,
-> > > > > >=20
-> > > > > >=20
-> > > > > > On 2023/11/15 00:30, Dmitry Baryshkov wrote:
-> > > > > > > > +
-> > > > > > > > +               ctx->connector =3D connector;
-> > > > > > > > +       }
-> > > > > > > >=20
-> > > > > > > >            if (ctx->info->id =3D=3D ID_IT66121) {
-> > > > > > > >                    ret =3D regmap_write_bits(ctx->regmap,
-> > > > > > > > IT66121_CLK_BANK_REG,
-> > > > > > > > @@ -1632,16 +1651,13 @@ static const char * const
-> > > > > > > > it66121_supplies[] =3D {
-> > > > > > > >            "vcn33", "vcn18", "vrf12"
-> > > > > > > >     };
-> > > > > > > >=20
-> > > > > > > > -static int it66121_probe(struct i2c_client *client)
-> > > > > > > > +int it66121_create_bridge(struct i2c_client *client, bool
-> > > > > > > > of_support,
-> > > > > > > > +                         bool hpd_support, bool audio_supp=
-ort,
-> > > > > > > > +                         struct drm_bridge **bridge)
-> > > > > > > >     {
-> > > > > > > > +       struct device *dev =3D &client->dev;
-> > > > > > > >            int ret;
-> > > > > > > >            struct it66121_ctx *ctx;
-> > > > > > > > -       struct device *dev =3D &client->dev;
-> > > > > > > > -
-> > > > > > > > -       if (!i2c_check_functionality(client->adapter,
-> > > > > > > > I2C_FUNC_I2C)) {
-> > > > > > > > -               dev_err(dev, "I2C check functionality faile=
-d.\n");
-> > > > > > > > -               return -ENXIO;
-> > > > > > > > -       }
-> > > > > > > >=20
-> > > > > > > >            ctx =3D devm_kzalloc(dev, sizeof(*ctx), GFP_KERN=
-EL);
-> > > > > > > >            if (!ctx)
-> > > > > > > > @@ -1649,24 +1665,19 @@ static int it66121_probe(struct i2c=
-_client
-> > > > > > > > *client)
-> > > > > > > >=20
-> > > > > > > >            ctx->dev =3D dev;
-> > > > > > > >            ctx->client =3D client;
-> > > > > > > > -       ctx->info =3D i2c_get_match_data(client);
-> > > > > > > > -
-> > > > > > > > -       ret =3D it66121_of_read_bus_width(dev, &ctx->bus_wi=
-dth);
-> > > > > > > > -       if (ret)
-> > > > > > > > -               return ret;
-> > > > > > > > -
-> > > > > > > > -       ret =3D it66121_of_get_next_bridge(dev, &ctx->next_=
-bridge);
-> > > > > > > > -       if (ret)
-> > > > > > > > -               return ret;
-> > > > > > > > -
-> > > > > > > > -       i2c_set_clientdata(client, ctx);
-> > > > > > > >            mutex_init(&ctx->lock);
-> > > > > > > >=20
-> > > > > > > > -       ret =3D devm_regulator_bulk_get_enable(dev,
-> > > > > > > > ARRAY_SIZE(it66121_supplies),
-> > > > > > > > - it66121_supplies);
-> > > > > > > > -       if (ret) {
-> > > > > > > > -               dev_err(dev, "Failed to enable power suppli=
-es\n");
-> > > > > > > > -               return ret;
-> > > > > > > > +       if (of_support) {
-> > > > > > > > +               ret =3D it66121_of_read_bus_width(dev,
-> > > > > > > > &ctx->bus_width);
-> > > > > > > > +               if (ret)
-> > > > > > > > +                       return ret;
-> > > > > > > > +
-> > > > > > > > +               ret =3D it66121_of_get_next_bridge(dev,
-> > > > > > > > &ctx->next_bridge);
-> > > > > > > > +               if (ret)
-> > > > > > > > +                       return ret;
-> > > > > > > > +       } else {
-> > > > > > > > +               ctx->bus_width =3D 24;
-> > > > > > > > +               ctx->next_bridge =3D NULL;
-> > > > > > > >            }
-> > > > > > > A better alternative would be to turn OF calls into fwnode ca=
-lls and
-> > > > > > > to populate the fwnode properties. See
-> > > > > > > drivers/platform/x86/intel/chtwc_int33fe.c for example.
-> > > > > > Honestly, I don't want to leave any scratch(breadcrumbs).
-> > > > > > I'm worries about that turn OF calls into fwnode calls will lea=
-ve
-> > > > > > something unwanted.
-> > > > > >=20
-> > > > > > Because I am not sure if fwnode calls will make sense in the DT
-> > > > > > world, while my patch
-> > > > > > *still* be useful in the DT world.
-> > > > > fwnode calls work for both DT and non-DT cases. In the DT case th=
-ey
-> > > > > work with DT nodes and properties. In the non-DT case, they work =
-with
-> > > > > manually populated properties.
-> > > > >=20
-> > > > > > Because the newly introduced it66121_create_bridge()
-> > > > > > function is a core. I think It's better leave this task to a mo=
-re
-> > > > > > advance programmer.
-> > > > > > if there have use case. It can be introduced at a latter time,
-> > > > > > probably parallel with
-> > > > > > the DT.
-> > > > > >=20
-> > > > > > I think DT and/or ACPI is best for integrated devices, but it66=
-121
-> > > > > > display bridges is
-> > > > > > a i2c slave device. Personally, I think slave device shouldn't =
-be
-> > > > > > standalone. I'm more
-> > > > > > prefer to turn this driver to support hot-plug, even remove the
-> > > > > > device on the run time
-> > > > > > freely when detach and allow reattach. Like the I2C EEPROM devi=
-ce in
-> > > > > > the monitor (which
-> > > > > > contains the EDID, with I2C slave address 0x50). The I2C EEPROM
-> > > > > > device *also* don't has
-> > > > > > a corresponding struct device representation in linux kernel.
-> > > > > It has. See i2c_client::dev.
-> > > > No, what I mean is that there don't have a device driver for
-> > > > monitor(display) hardware entity.
-> > > > And the drm_do_probe_ddc_edid() is the static linked driver, which =
-is
-> > > > similar with the idea
-> > > > this series want to express.
-> > Because the monitor is not a part of the display pipeline.
-> >=20
-> I think the monitor *is definitely* part of the display pipeline, and it
-> is the most important part of the entire display pipeline.
->=20
-> 1)
->=20
-> DPMS, self-refreshing, display timings, resolutions supported, HDR, DSC,
-> gsync and freesync etc can be part of whole mode-set. Please consider
-> what the various ->mode_valid() and -> the atomic_check() are for?
->=20
-> 2)
->=20
-> If the monitor is not a part of the display pipeline, then the various
-> display panels hardware should also not be part of the display pipeline.
-> Because they are all belong to display category.
-> the monitor =3D panel + panel drive IC(such as RTD2281CL, HT1622, ssd130x=
-).
+v2:
+* Update the part number from sc8380xp to x1e80100.
+* Pickup Rbs.
 
-To expand further on that, I guess one of the key difference is that you
-don't really expect to interact with the EEPROM, you'll only read it,
-which is fairly different from your bridge.
+Dependencies: None
+Release Link: https://www.qualcomm.com/news/releases/2023/10/qualcomm-unleashes-snapdragon-x-elite--the-ai-super-charged-plat
 
-And if someone wanted to instatiate nvmem devices for the various
-EEPROMs in the monitor, I would very much welcome that change.
+Rajendra Nayak (2):
+  dt-bindings: cache: qcom,llcc: Add X1E80100 compatible
+  soc: qcom: llcc: Add configuration data for X1E80100
 
-Maxime
+ .../devicetree/bindings/cache/qcom,llcc.yaml  |  2 +
+ drivers/soc/qcom/llcc-qcom.c                  | 39 +++++++++++++++++++
+ 2 files changed, 41 insertions(+)
 
---y4yamxv4wyjgt2qh
-Content-Type: application/pgp-signature; name="signature.asc"
+-- 
+2.17.1
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZVc31wAKCRDj7w1vZxhR
-xYZpAQDC+NBYUdhGqkywRq2u3ZurPDRJLEi6r6pPCyo4kOgR1wD/YaNMcJ0ZKaji
-XNixAiiJmE+scOKOyWwoXI53pUQcqQ8=
-=T/V1
------END PGP SIGNATURE-----
-
---y4yamxv4wyjgt2qh--
