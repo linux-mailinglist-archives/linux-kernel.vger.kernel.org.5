@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 378D57EF032
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:23:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6F767EF037
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:24:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345842AbjKQKXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:23:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47744 "EHLO
+        id S1345833AbjKQKYZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:24:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53418 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjKQKXg (ORCPT
+        with ESMTP id S230105AbjKQKYW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:23:36 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 999C7127
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:23:32 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso15244195e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:23:32 -0800 (PST)
+        Fri, 17 Nov 2023 05:24:22 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B213F127
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:24:18 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 2adb3069b0e04-507a62d4788so2613407e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:24:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700216611; x=1700821411; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1700216657; x=1700821457; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=+QdHBX3rqCTdzZ8KcaN0lqGL39sI3dZCDeRLaNX0rpk=;
-        b=pcauAIJjB/xVkwRd24A2GQj+RKvH4xM/tCYjrqm8Jv9wyXdKoYU001QeuoBoEAW0Af
-         VK/8EUbPH1VL8pVGfpu5XuZ9WDvOgyVmNUaqpouF5w4kVSgazBCadSJj8bsPq9diN/EQ
-         J6i/xoLFxcBZgKEtG4g9X/KJqhC45qu3hHTaTZaY568HbBL8jL8hiXEHs+g6umcIeMw8
-         PN08Hk1i+HEjNpC6rmLbZQuYYF5p22dqldjvEampsOlDhbDX1sFBCwEkox8hHtU+42Ta
-         egq0Z+wPFc9Vg0JjIuAHWwzYXbhYT/rbDK/1pkLnAPOhCtqIfaM/uyhrR/IAqBXUt3H+
-         NDHQ==
+        bh=C9kjoFFOIgNWB2Q4ImU8Q3FIceZPpxvoKYDa5HBUQRM=;
+        b=l4zrJv+SnLD1FWDc53iWCC+lBtbjJsSl6AmjU4r/aYny78Bn/+HdMll+3TQA6J1iZ3
+         dyiywUw52MaG0mtlJE1Z2a+iCjuYCsjJEq1n2VOUzNGfDU/9EmBE4Qu2ViikxF1r0tF6
+         6zGwnf68jKv4oKuBk66qwqbhgzWR6PX692DmbweaR0mXcSB6LAQ6BhI273KI46h8bwn2
+         5L9BEcG+iX25V97ips/megJWngcuFh3QRm4toOwHyaNVSbcRG5JVXaCv4rEKcZlWrrDm
+         hCgjoN8Wsb4EpdttOiFamXNNdp7UfAAtXsOIXCty0pAamueJsXhPfluKbHXqiEuLXdhh
+         LTEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700216611; x=1700821411;
+        d=1e100.net; s=20230601; t=1700216657; x=1700821457;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+QdHBX3rqCTdzZ8KcaN0lqGL39sI3dZCDeRLaNX0rpk=;
-        b=RIaUYVmbEHQMHHjV6tTMElMhw5gfUAObEXSRIicDBeqUfik/3Z159zT7Ur1teEEbpU
-         WhS+GxnPqMh5hdyrJ0GFiAhEyttm4s7h+ChK0ISwSp1MJq8MR/OMUPUtwfyuXwOzhw5g
-         +/LYXgwxOjMI/e4mQHZXNnTuQnNacTV7UnkLOliqAsGOCfJOrk12LDUMSgJhcDHlstlC
-         cKcj96cTKBVGhQMtcfeAZqH00uK99MCtNy1ym8oYVKpDpFuneK4aYryHwnMiswLXT68n
-         cg1VnZsCPiC1yDhPtSKTsL35avRB7Jb6FNSn5crllpAL0sCmmTTsusCLgoA/ennEYseB
-         FJog==
-X-Gm-Message-State: AOJu0YzsQlt/875G0Arazj4+7KLHiro6sU2sf4DIi/rVqlDZegbjhYLu
-        PqegkRJZGGdrlUY0EIYxCsnM5g==
-X-Google-Smtp-Source: AGHT+IFHiM7k5I2vzJm6a1kmX5FIZRJwucEh5HuDdGlx4KxXst1iow6g/C6EftXY+n/dTmHjBksL1A==
-X-Received: by 2002:a05:600c:6001:b0:409:7d0:d20b with SMTP id az1-20020a05600c600100b0040907d0d20bmr15515367wmb.24.1700216611014;
-        Fri, 17 Nov 2023 02:23:31 -0800 (PST)
+        bh=C9kjoFFOIgNWB2Q4ImU8Q3FIceZPpxvoKYDa5HBUQRM=;
+        b=CUQfm7SGjsXN9zPUGM/l5FstFQMSsHCePZ9EpPrfKLAREtn3qh4VdFQ+XIYWpUakBi
+         ZINY+e8CtvjjxpHFAOcGfYOWB7b/x8CRu172FXD71dsu5WCKOvl92h0q3NlW7Hl4YaXi
+         HrLr+0QPLBxhF9m/qjBmZcUV4y9/PMwvUhr5Ir4OwTSfot/3dQ2AyxAtG0Ya8PLes9s3
+         9wXngSy/Sq52mdSeqlr9VvVBigZWokD+pfEsIVoV7IgDlu9h1fuWxM4XHVxQ2f6Bfdy/
+         OX71MhI0mo6xL+acN+8zkSj01GfYY9FusPiQHw4KjX3B8BImllXFHUbkd0M4fOa3ZYmL
+         BUFQ==
+X-Gm-Message-State: AOJu0YxUU9JkF/heiMtQ35wd3NmiOaMOJ/ibh9n19FssTEP/v3/a1bfW
+        5qo8Ua1RHJun2b2hMncqUdLD5A==
+X-Google-Smtp-Source: AGHT+IGdTVIrkS1tByom2B9uAkQ9eq8ObE3L/RF/9lTvRWfPjaeWPJrm+i83bQFv2d4AJJ1y/IwFhQ==
+X-Received: by 2002:a05:6512:2805:b0:509:8deb:9cf5 with SMTP id cf5-20020a056512280500b005098deb9cf5mr16295154lfb.0.1700216656983;
+        Fri, 17 Nov 2023 02:24:16 -0800 (PST)
 Received: from [192.168.1.20] ([178.197.218.126])
-        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003fe1fe56202sm2189174wmg.33.2023.11.17.02.23.29
+        by smtp.gmail.com with ESMTPSA id f16-20020a05600c155000b003fe1fe56202sm2189174wmg.33.2023.11.17.02.24.15
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 02:23:30 -0800 (PST)
-Message-ID: <4867e222-dd62-44cb-a642-0cb8e374d109@linaro.org>
-Date:   Fri, 17 Nov 2023 11:23:29 +0100
+        Fri, 17 Nov 2023 02:24:16 -0800 (PST)
+Message-ID: <eba08b4d-6df0-419f-aa79-3ac6b6195bc2@linaro.org>
+Date:   Fri, 17 Nov 2023 11:24:15 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/16] dt-bindings: interrupt-controller: qcom,pdc:
- document qcom,sm8550-pdc
+Subject: Re: [PATCH 03/16] arm64: dts: qcom: sm8550: update Soundwire node
+ name
 Content-Language: en-US
 To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
@@ -64,7 +64,7 @@ To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
 References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-3-quic_tengfan@quicinc.com>
+ <20231117101817.4401-4-quic_tengfan@quicinc.com>
 From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -110,7 +110,7 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20231117101817.4401-3-quic_tengfan@quicinc.com>
+In-Reply-To: <20231117101817.4401-4-quic_tengfan@quicinc.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -124,14 +124,16 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 17/11/2023 11:18, Tengfei Fan wrote:
-> Add SM8550 PDC, already used in upstreamed DTS.
+> Update Soundwire node name from "soundwire-controller" to "soundwire"
+> for avoid dtbs check warning.
 > 
 > Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
+> ---
+>  arch/arm64/boot/dts/qcom/sm8550.dtsi | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Guys, stop sending the duplicates:
-
-https://lore.kernel.org/lkml/20230127132558.1176730-1-abel.vesa@linaro.org/
-
+I see PDC duplicated, now I see this patch as well, so you just repeated
+everything which we did already?
 
 Best regards,
 Krzysztof
