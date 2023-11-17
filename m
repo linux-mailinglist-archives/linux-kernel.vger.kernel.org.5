@@ -2,89 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F5F7EFB42
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:17:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4569E7EFB46
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233195AbjKQWRS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 17:17:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42852 "EHLO
+        id S232831AbjKQWSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 17:18:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbjKQWRR (ORCPT
+        with ESMTP id S229823AbjKQWSy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 17:17:17 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAEAFB8;
-        Fri, 17 Nov 2023 14:17:13 -0800 (PST)
-Received: from localhost (unknown [98.53.138.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 48BEA2F3;
-        Fri, 17 Nov 2023 22:17:13 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 48BEA2F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1700259433; bh=+iMSu9G5yo159Da0W+TlYSAqLVEKQPYPsL87vIzTR0E=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=NYjYoKZifeWoc5EeO5E7HW+n4uJV2C8f/PrKyqy39mTB3ngF8SqierEt7ksjRr2nz
-         VLi6Iquf0yQXoNffLE2BACfc9csSE1zUZE4V3Z06JCgeOvBkMaPYRxNR1JMTRzf/wd
-         AKPcCWqdp9/TBLy6SdyEaIeNErljIPYCUeVtvauG7lztG5AZEEZm18D/HLWYWqPghl
-         YuHXK8RtwnOhMcvhPSkPSJRiQ1HMfBMyHzcFutWc0yNaTH1Tv4VlvDArjlej430S5x
-         Y42VIrJvfC/VwVqwG4pXbUZkBk8R1ugwtH4AKiTWBYla507gwMjEUMFovXbtcm3R7j
-         47erXVF184XHQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Breno Leitao <leitao@debian.org>, netdev@vger.kernel.org,
-        donald.hunter@gmail.com, kuba@kernel.org
-Cc:     leit@meta.com, linux-doc@vger.kernel.org, pabeni@redhat.com,
-        edumazet@google.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Documentation: Document each netlink family
-In-Reply-To: <20231113202936.242308-1-leitao@debian.org>
-References: <20231113202936.242308-1-leitao@debian.org>
-Date:   Fri, 17 Nov 2023 15:17:02 -0700
-Message-ID: <87y1ew6n4x.fsf@meer.lwn.net>
+        Fri, 17 Nov 2023 17:18:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6373BB8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:18:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700259530;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=xb+39jMBjIG9e9EUVeLvv86Ka0wZnTphGetSvGEJ6aE=;
+        b=FvLlfoX/H39QIaZ7Q2zHOjy0Obd6MGlZJWZ8x0JwWEAlFqFXaGiAqc/Gef3iLA7ZTBXlWS
+        XmgzTd34k4RBcq0jx897vBGMHKvaYmKDmfn/uXTRY0OSiXtK88GmugdjiMPwqnngVPGGpw
+        9Tpu6WbJDqk1HgyiqQ4EMQVYB58BhRw=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-441-jiWzyY16M2Ga1T4v9PdpTw-1; Fri, 17 Nov 2023 17:18:48 -0500
+X-MC-Unique: jiWzyY16M2Ga1T4v9PdpTw-1
+Received: by mail-wm1-f69.google.com with SMTP id 5b1f17b1804b1-408524e2368so14416485e9.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:18:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700259527; x=1700864327;
+        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xb+39jMBjIG9e9EUVeLvv86Ka0wZnTphGetSvGEJ6aE=;
+        b=Mq2sA7MUVr5Pt0JzOaAijVvDCGX7+6L12gGVXrQF7wwUQ1q7alKVtG/1h97S4aeSAq
+         Xx8XLGt4WdhZRGwDDdPz623MAwBlU+GZrpUGsO1aVK/JA+K6bIAdYFHcHnURFLcWsXxR
+         VXYpm091FmvTkdGtDA+voKknvNiGAjQp0OwxETrBaShmZSUaATAjUFr+UE/0+UDk+fcx
+         pwxSVdyrBMkB6RGqJ92ZkyiMUbC1yX1b4M0Plo5ZfFKHwwX9CzWruPirNaEn/Wnl6xW3
+         NQ4/deaUrYXZdl/20FMTivuDbJYwDBPlfqKX1Hv9J4dYkxx9qyo2/eCcxP5V6GoPC4XL
+         K2SQ==
+X-Gm-Message-State: AOJu0YxDZPwX0C4mPMW8/lqCF/lNEQkdMLl3/d16w4nkCJXXwB25nZuN
+        bwjEEw/Hos7YxfB7WmLAXd0A0lHG6mJIDebeBrqSzJQ0Rq3RX3gcSfJQdsw6CmKgsJShKmAvd41
+        n90hMip/X36nQx3Gn866t935hw2UA1Gzi
+X-Received: by 2002:a05:600c:19ca:b0:3fe:2b8c:9f0b with SMTP id u10-20020a05600c19ca00b003fe2b8c9f0bmr283581wmq.23.1700259527245;
+        Fri, 17 Nov 2023 14:18:47 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IH1ki+IESh+gyMw/wvDuuRKAIdBZvjvrveHDpkuOxRGvzlqclzeFbtQ8juy0XxQQTk1lYkKRQ==
+X-Received: by 2002:a05:600c:19ca:b0:3fe:2b8c:9f0b with SMTP id u10-20020a05600c19ca00b003fe2b8c9f0bmr283570wmq.23.1700259526834;
+        Fri, 17 Nov 2023 14:18:46 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id x16-20020a05600c21d000b004063cd8105csm8421532wmj.22.2023.11.17.14.18.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 14:18:46 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Sahaj Sarup <sahaj.sarup@linaro.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Helge Deller <deller@gmx.de>, Sam Ravnborg <sam@ravnborg.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+Subject: Re: [PATCH 2/3] fbdev: ssd1307fb: Change "solomon,page-offset"
+ property default value
+In-Reply-To: <ZVfX5Tw71cqKFJ83@smile.fi.intel.com>
+References: <20231116180743.2763021-1-javierm@redhat.com>
+ <20231116180743.2763021-2-javierm@redhat.com>
+ <ZVfX5Tw71cqKFJ83@smile.fi.intel.com>
+Date:   Fri, 17 Nov 2023 23:18:45 +0100
+Message-ID: <878r6w10sa.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Breno Leitao <leitao@debian.org> writes:
+Andy Shevchenko <andriy.shevchenko@linux.intel.com> writes:
 
-> This is a simple script that parses the Netlink YAML spec files
-> (Documentation/netlink/specs/), and generates RST files to be rendered
-> in the Network -> Netlink Specification documentation page.
+Hello Andy,
+
+> On Thu, Nov 16, 2023 at 07:07:38PM +0100, Javier Martinez Canillas wrote:
+>> This is used to specify the page start address offset of the display RAM.
+>> 
+>> The value is used as offset when setting the page start address with the
+>> SSD130X_SET_PAGE_RANGE command, and the driver currently sets its value to
+>> 1 if the property is not present in the Device Tree.
+>> 
+>> But the datasheet mentions that the value on reset for the page start is a
+>> 0, so it makes more sense to also have 0 as the default value for the page
+>> offset if the property is not present.
+>> 
+>> In fact, using a default value of 1 leads to the display not working when
+>> the fbdev is attached to the framebuffer console.
+>> 
+>> Reported-by: Sahaj Sarup <sahaj.sarup@linaro.org>
 >
-> Create a python script that is invoked during 'make htmldocs', reads the
-> YAML specs located under Documentation/netlink/specs, parses one by one
-> and generates a correspondent RST file for each YAML file.
+> Closes?
+
+There's no report in a mailing list or bug tracker to reference.
+
+> Fixes?
 >
-> Create a new Documentation/networking/netlink_spec index page, and
-> reference each Netlink RST file that was processed above in this main
-> index.rst file.
->
-> In case of any exception during the parsing, dump the error and skip
-> the file.
->
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Signed-off-by: Breno Leitao <leitao@debian.org>
 
-In principle I like this approach better.  There is one problem, though:
+Since the default has been the same since the driver was merged,
+it doesn't make that much sense for me to reference that commit.
 
-- In current kernels, on my machine, "make htmldocs" when nothing has
-  changed takes about 6s to complete.
+-- 
+Best regards,
 
-- With this patch applied, it takes a little over 5 *minutes*.
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
-Without having delved into it too far, I am guessing that the
-unconditional recreation of the netlink RST files is causing the rebuild
-of much of the documentation.  Even so, I don't quite get it.
-
-That, clearly, would need to be fixed before this can go in.
-
-Thanks,
-
-jon
