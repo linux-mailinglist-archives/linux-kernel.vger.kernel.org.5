@@ -2,57 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2192C7EF26B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 004917EF272
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345894AbjKQMNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
+        id S1345921AbjKQMPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231391AbjKQMNM (ORCPT
+        with ESMTP id S229436AbjKQMPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:13:12 -0500
+        Fri, 17 Nov 2023 07:15:40 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0314F196
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:13:09 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4CDC0C433C7;
-        Fri, 17 Nov 2023 12:13:08 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96014196
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:15:36 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7F63C433C8;
+        Fri, 17 Nov 2023 12:15:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700223188;
-        bh=PVXHem/9yhgEemapb6B+aU1ZOidWzlM1JlH8PA2bqEE=;
+        s=k20201202; t=1700223336;
+        bh=gus7ga/hslqFc90wOge8RCSDecxTYpVkhWQk6MjClOA=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=VKALuHhVL8MKsgOhi01VmYVe/xoNy8nZtQtRLH2k8SoSOoBe81U+nfouDXcz5cEPE
-         ECf9wHc3olWF3PS5/kWMsUO78iifpi0sUDlOUisryGLzgWSYN0vWBtiRAZ9o6rZN5s
-         Tv2DPBjfIU1PRjTorc/6G4Tsl2oMa+Xk9sC76G4UxrSKmRRdQiIlrIZJ4JCcXFe5Gg
-         vCpjDF07AUrjAD4cx1Y/JxR/TRJS9MrOrrmmOz2FZA+dpZoJTYqsqQ294SEs+3gvzH
-         Y9UOLOWWjjt/9g3YZoaTgtrUmWnsU7lwZkEpJoeu2k0ziX8PjaEREkrKhQNP0N/MAi
-         dl6ahXRiBRh8g==
-Date:   Fri, 17 Nov 2023 13:13:05 +0100
-From:   Maxime Ripard <mripard@kernel.org>
-To:     Sui Jingfeng <sui.jingfeng@linux.dev>
-Cc:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Phong LE <ple@baylibre.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Sui Jingfeng <suijingfeng@loongson.cn>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>
-Subject: Re: [PATCH 8/8] drm/bridge: it66121: Allow link this driver as a lib
-Message-ID: <krfqbhcbap7uxdv7l7w7jnjjwkiwejp27qoaityqxjp2gbuuhg@ff46mbse7l4d>
-References: <20231114150130.497915-1-sui.jingfeng@linux.dev>
- <20231114150130.497915-9-sui.jingfeng@linux.dev>
- <CAA8EJprQq3aDhzE+yKGZ2-nsuHWcptzMvApsyOi9D63PgeiZ3w@mail.gmail.com>
- <1b59d647-c345-4260-b07b-22abb70ae17a@linux.dev>
- <CAA8EJppY2+ymX0kLY+cuR=SV1Po2J24r=NQecmb3ZhSE9NHG7Q@mail.gmail.com>
- <7b85d057-3d66-435a-a657-dd69067b6bef@linux.dev>
- <b9eacd91-8d6f-4265-931e-bc31cadd54d4@linux.dev>
- <CAA8EJpo1KhzTpaSqjbOuQvNKw4WGaqrtNBtNfdNLn28eZVgwhw@mail.gmail.com>
- <cf27d25a-3e51-4292-af63-37e5bc585d88@linux.dev>
+        b=bGz6trMKWPqu5saBtofRgNGtLC6NRcKmuuEr9LV/K064zWRQmHi9RqbD1WgdZxrtw
+         VN75+bY+DS3/N/kdzxGRyhgscaTY0+HdWn8dkJsp/Hy/0vMHGAkze2MxXfnZYv7yyz
+         sbsXiZMtT42LgQnqC/0aDuLgrNcI6ttN6Vk0h4vULd777XyMMp/4XZP0u2bnq7NPES
+         RNVTbiXambLxkiPDQiuyKENApFT9oDbOouUTgW7keYLBeIagU/kRktU9XKS+XJV3NM
+         e9y7XFjnNi8i5/tRtt82HkNh2MFohkS8baYgpY050UuleOonHmrZOKdoxXyuE76SVo
+         m0/Q+uT+rF/Sg==
+Date:   Fri, 17 Nov 2023 12:15:31 +0000
+From:   Lee Jones <lee@kernel.org>
+To:     Naresh Solanki <naresh.solanki@9elements.com>
+Cc:     Pavel Machek <pavel@ucw.cz>,
+        Patrick Rudolph <patrick.rudolph@9elements.com>,
+        linux-kernel@vger.kernel.org, linux-leds@vger.kernel.org
+Subject: Re: [RESEND PATCH v3] leds: max5970: Add support for max5970
+Message-ID: <20231117121531.GC137434@google.com>
+References: <20230914114521.1491390-1-naresh.solanki@9elements.com>
+ <20230920130528.GG13143@google.com>
+ <CABqG17j_gCr8xw65qjn4Kh7ChdraZbLsyGOsCmFEEWG3txjE4A@mail.gmail.com>
+ <20230921103156.GB3449785@google.com>
+ <CABqG17ibzHiYmzCZ6ZpAa8BZhj5N+0dQ0aa1yebtCk0YYVdsFQ@mail.gmail.com>
+ <CABqG17h8hxgmMA=G5hitzgjNSX_BZ2utFsMZni9evn0Nogu0GA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="car2seveobmjidpx"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cf27d25a-3e51-4292-af63-37e5bc585d88@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABqG17h8hxgmMA=G5hitzgjNSX_BZ2utFsMZni9evn0Nogu0GA@mail.gmail.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -63,78 +56,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 09 Nov 2023, Naresh Solanki wrote:
 
---car2seveobmjidpx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Hey Lee,
+> 
+> Is there anything specific you'd suggest changing in the current
+> patchset, or are we good to proceed?
 
-On Fri, Nov 17, 2023 at 12:24:22PM +0800, Sui Jingfeng wrote:
-> Hi,
->=20
-> On 2023/11/16 23:23, Dmitry Baryshkov wrote:
-> > > > > Then you will need some way (fwnode?) to
-> > > > > discover the bridge chain. And at the last point you will get int=
-o the
-> > > > > device data and/or properties business.
-> > > > >=20
-> > > > No, leave that chance to a more better programmer and forgive me pl=
-ease,
-> > > > too difficult, I'm afraid of not able to solve. Thanks a lot for the
-> > > > trust!
-> >  From my point of view: no.
->
-> I respect the fact that the community prefer generic mechanisms.
-> If our approach is not what the community want, can I switch back
-> to my previous solution?
+What do you mean by proceed?
 
-By your previous solution, you mean rolling your own bridge driver? If
-so, then no, it's not acceptable either.
+You are good to make changes and submit a subsequent version.
 
-> I can reduce the duplication of our localized it66121 driver to a
-> minimal, rewrite it until it meets the community's requirement. I know
-> our device looks weird and our approach is not elegant.
+Not entirely sure what you're asking.
 
-I'm glad we agree then :)
+> On Mon, 30 Oct 2023 at 14:22, Naresh Solanki
+> <naresh.solanki@9elements.com> wrote:
+> >
+> > Hi,
+> >
+> > On Thu, 21 Sept 2023 at 16:02, Lee Jones <lee@kernel.org> wrote:
+> > >
+> > > On Thu, 21 Sep 2023, Naresh Solanki wrote:
+> > >
+> > > > Hi
+> > > >
+> > > >
+> > > > On Wed, 20 Sept 2023 at 18:35, Lee Jones <lee@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, 14 Sep 2023, Naresh Solanki wrote:
+> > > > >
+> > > > > > From: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > > > >
+> > > > > > The MAX5970 is hot swap controller and has 4 indication LED.
+> > > > > >
+> > > > > > Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > > > > Signed-off-by: Naresh Solanki <Naresh.Solanki@9elements.com>
+> > > > > > ---
+> > > > > > Changes in V3:
+> > > > > > - Drop array for ddata variable.
+> > > > > > Changes in V2:
+> > > > > > - Add of_node_put before return.
+> > > > > > - Code cleanup
+> > > > > > - Refactor code & remove max5970_setup_led function.
+> > > > > > ---
+> > > > > >  drivers/leds/Kconfig        |  11 ++++
+> > > > > >  drivers/leds/Makefile       |   1 +
+> > > > > >  drivers/leds/leds-max5970.c | 110 ++++++++++++++++++++++++++++++++++++
+> > > > > >  3 files changed, 122 insertions(+)
+> > > > > >  create mode 100644 drivers/leds/leds-max5970.c
+> > > > >
+> > > > > Couple of nits and you're good to go.
+> > > > >
+> > > > > Once fixed please resubmit with my:
+> > > > >
+> > > > >   Reviewed-by: Lee Jones <lee@kernel.org>
+> > > > >
+> > > > > > diff --git a/drivers/leds/Kconfig b/drivers/leds/Kconfig
+> > > > > > index b92208eccdea..03ef527cc545 100644
+> > > > > > --- a/drivers/leds/Kconfig
+> > > > > > +++ b/drivers/leds/Kconfig
+> > > > > > @@ -637,6 +637,17 @@ config LEDS_ADP5520
+> > > > > >         To compile this driver as a module, choose M here: the module will
+> > > > > >         be called leds-adp5520.
+> > > > > >
+> > > > > > +config LEDS_MAX5970
+> > > > > > +     tristate "LED Support for Maxim 5970"
+> > > > > > +     depends on LEDS_CLASS
+> > > > > > +     depends on MFD_MAX5970
+> > > > > > +     help
+> > > > > > +       This option enables support for the Maxim MAX5970 & MAX5978 smart
+> > > > > > +       switch indication LEDs via the I2C bus.
+> > > > > > +
+> > > > > > +       To compile this driver as a module, choose M here: the module will
+> > > > > > +       be called leds-max5970.
+> > > > > > +
+> > > > > >  config LEDS_MC13783
+> > > > > >       tristate "LED Support for MC13XXX PMIC"
+> > > > > >       depends on LEDS_CLASS
+> > > > > > diff --git a/drivers/leds/Makefile b/drivers/leds/Makefile
+> > > > > > index d7348e8bc019..6eaee0a753c6 100644
+> > > > > > --- a/drivers/leds/Makefile
+> > > > > > +++ b/drivers/leds/Makefile
+> > > > > > @@ -56,6 +56,7 @@ obj-$(CONFIG_LEDS_LP8501)           += leds-lp8501.o
+> > > > > >  obj-$(CONFIG_LEDS_LP8788)            += leds-lp8788.o
+> > > > > >  obj-$(CONFIG_LEDS_LP8860)            += leds-lp8860.o
+> > > > > >  obj-$(CONFIG_LEDS_LT3593)            += leds-lt3593.o
+> > > > > > +obj-$(CONFIG_LEDS_MAX5970)           += leds-max5970.o
+> > > > > >  obj-$(CONFIG_LEDS_MAX77650)          += leds-max77650.o
+> > > > > >  obj-$(CONFIG_LEDS_MAX8997)           += leds-max8997.o
+> > > > > >  obj-$(CONFIG_LEDS_MC13783)           += leds-mc13783.o
+> > > > > > diff --git a/drivers/leds/leds-max5970.c b/drivers/leds/leds-max5970.c
+> > > > > > new file mode 100644
+> > > > > > index 000000000000..c9685990e26e
+> > > > > > --- /dev/null
+> > > > > > +++ b/drivers/leds/leds-max5970.c
+> > > > > > @@ -0,0 +1,110 @@
+> > > > > > +// SPDX-License-Identifier: GPL-2.0
+> > > > > > +/*
+> > > > > > + * Device driver for leds in MAX5970 and MAX5978 IC
+> > > > > > + *
+> > > > > > + * Copyright (c) 2022 9elements GmbH
+> > > > > > + *
+> > > > > > + * Author: Patrick Rudolph <patrick.rudolph@9elements.com>
+> > > > > > + */
+> > > > > > +
+> > > > > > +#include <linux/leds.h>
+> > > > > > +#include <linux/mfd/max5970.h>
+> > > > > > +#include <linux/of.h>
+> > > > > > +#include <linux/platform_device.h>
+> > > > > > +#include <linux/regmap.h>
+> > > > > > +
+> > > > > > +#define ldev_to_maxled(c)       container_of(c, struct max5970_led, cdev)
+> > > > > > +
+> > > > > > +struct max5970_led {
+> > > > > > +     struct device *dev;
+> > > > > > +     struct regmap *regmap;
+> > > > > > +     struct led_classdev cdev;
+> > > > > > +     unsigned int index;
+> > > > > > +};
+> > > > > > +
+> > > > > > +static int max5970_led_set_brightness(struct led_classdev *cdev,
+> > > > > > +                                   enum led_brightness brightness)
+> > > > > > +{
+> > > > > > +     struct max5970_led *ddata = ldev_to_maxled(cdev);
+> > > > > > +     int ret, val;
+> > > > > > +
+> > > > > > +     /* Set/clear corresponding bit for given led index */
+> > > > > > +     val = !brightness ? BIT(ddata->index) : 0;
+> > > > > > +
+> > > > > > +     ret = regmap_update_bits(ddata->regmap, MAX5970_REG_LED_FLASH, BIT(ddata->index), val);
+> > > > > > +     if (ret < 0)
+> > > > > > +             dev_err(cdev->dev, "failed to set brightness %d", ret);
+> > > > > > +
+> > > > > > +     return ret;
+> > > > > > +}
+> > > > > > +
+> > > > > > +static int max5970_led_probe(struct platform_device *pdev)
+> > > > > > +{
+> > > > > > +     struct device *dev = &pdev->dev;
+> > > > > > +     struct device_node *np = dev_of_node(dev->parent);
+> > > > > > +     struct regmap *regmap;
+> > > > > > +     struct device_node *led_node;
+> > > > > > +     struct device_node *child;
+> > > > >
+> > > > > Nit: You can place these on the same line.
+> > > > Ack
+> > > > >
+> > > > > > +     struct max5970_led *ddata;
+> > > > > > +     int ret = -ENODEV, num_leds = 0;
+> > > > > > +
+> > > > > > +     regmap = dev_get_regmap(pdev->dev.parent, NULL);
+> > > > > > +     if (!regmap)
+> > > > > > +             return -EPROBE_DEFER;
+> > > > >
+> > > > > Why are you deferring here?
+> > > > This is a Leaf driver. Making sure the parent driver has initialized regmap.
+> > >
+> > > How can this driver initialise before the parent driver?
+> > The parent driver in this case is simple_i2c_mfd.
+> > Based on reference from other similar implementations, the regmap
+> > check was adapted.
+> > As you mentioned, your right that leaf driver will not start before parent
+> > driver is loaded successfully so probably the DEFER might not be needed
+> > here.
+> >
+> > Thanks,
+> > Naresh
+> > >
+> > > --
+> > > Lee Jones [李琼斯]
 
-> But at the very least, we could not mess the community's design up by
-> localize. Otherwise, I don't know what is the better approach to solve
-> such a problem.
-
-I think there's a gap between what we want from you and what you want
-=66rom us.
-
-What we really care about is maintenance. In other words, it's mostly
-about two things:
-
-  - Once you and/or your company have moved on to other things, how easy
-    it will be for us to keep that driver in good shape, and how much it
-    will hold back any future development.
-
-  - If we want to do a big rework, how much your driver will stand in
-    the way.
-
-That's pretty much all that we care about, and we will very much prefer
-not to merge a driver in the first place than to have to maintain it for
-10y while it stands in our way and we don't have any real documentation
-or help.
-
-So by making it "not weird" or "elegant" or whatever we can call it, you
-effectively remove any concern we might have about merging your driver,
-and there's only an upside (more hardware support and company
-involvement is good!). So you're making it easy for you too.
-
-Maxime
-
---car2seveobmjidpx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZVdY0QAKCRDj7w1vZxhR
-xeeaAQDqkMTWNdddur3We9/0s91HXhePgAckWeUF86wbBjvkBwEAzTrpCgaXe9sq
-ieP3+9H2jCNCnMm0jgBpwJivRQrYZQs=
-=gL95
------END PGP SIGNATURE-----
-
---car2seveobmjidpx--
+-- 
+Lee Jones [李琼斯]
