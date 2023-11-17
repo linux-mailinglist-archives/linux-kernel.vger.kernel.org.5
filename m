@@ -2,127 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C0C047EF051
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:28:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 908AC7EF050
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:28:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345894AbjKQK2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:28:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60322 "EHLO
+        id S1343584AbjKQK2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:28:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47442 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235027AbjKQK20 (ORCPT
+        with ESMTP id S229714AbjKQK2L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:28:26 -0500
-Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA65FD49
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:28:20 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id CAE89240002;
-        Fri, 17 Nov 2023 10:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700216899;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=hssYZxQ7oYF62vZivWNVQkuQ1Tob1SL3kJykunvJ4/0=;
-        b=OojY2ahINfBpf0qydeGz+bModeIomJL0J4gdEXqwOR1DsOnBHPiIYI0KVvFUejAunfsP80
-        zJXmFqNOKAZG2Bei5aTGSIChuBwW3qQKRj/REPrcRrdB3mZHqM8OPTJeNBSoA6QS6AnPBr
-        zOctfr0ClJRANXoKsGTHeez5FNXau/+7W0nXD83Eyv6tC6bOw9vk3sLLin1eVFM2LKBfkP
-        MvWCTSf1Oxe4vNoOSDlf8Oxb7qj+SUNIN2SO/FdzkdzpnzZA0vlyYRDfkK6a+2P8YVuKLv
-        T6bdW4t1azyXiEaNtwpwLnTa4Eg6fvO1sUWtL4phXmhZ/VFu0vRfuyizAyRjqw==
-From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Fri, 17 Nov 2023 11:27:53 +0100
-Subject: [PATCH] firmware_loader: Expand Firmware upload error codes with
- firmware invalid error
+        Fri, 17 Nov 2023 05:28:11 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 634BD11D;
+        Fri, 17 Nov 2023 02:28:08 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5AD4C433C8;
+        Fri, 17 Nov 2023 10:28:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700216888;
+        bh=DlGPovd5Ji3X3LmJ8EC4SZ9ZhjACfDlTqlNOcokqiWQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=h7yEe6hI4JR1hQuXudAl3ONSROyJUeJkX0BwAXQhpApZo2PbXQM0S/fX8D0g0LFyZ
+         8JCWNdVCCo4nyJZq1e3dmgC24zgfC/fhtC3FrIkof1TMWI0S2PeB0x69fpJ/jXTRN6
+         VYc3IbVyaZYKhif4nJBuAqSbdr3XWU/p8zb/Pgm8a0pap5nGcmexubht0b3tw7Vtqk
+         J1cq2zgTyEmVsU9Se6x0jhy7I3SSMB0RrhvhGCqzjC20LYJp8xuib/81JoFkQbhdUR
+         xe4kO9mrFE3htgtJuqeBiQ9Iu+N5z9Uyb4aDrRgqgq4FMQZy41o1U3nFyEywW4TX+n
+         KVERVM9r8vOPw==
+Date:   Fri, 17 Nov 2023 15:58:00 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Michael Bottini <michael.a.bottini@linux.intel.com>,
+        "David E . Box" <david.e.box@linux.intel.com>
+Subject: Re: [PATCH 1/6] PCI/ASPM: Add locked helper for enabling link state
+Message-ID: <20231117102800.GJ250770@thinkpad>
+References: <20231114135553.32301-1-johan+linaro@kernel.org>
+ <20231114135553.32301-2-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Message-Id: <20231117-feature_firmware_error_code-v1-1-92c973a50847@bootlin.com>
-X-B4-Tracking: v=1; b=H4sIAChAV2UC/x3MQQqDMBBG4avIrBswdmHwKkVkNP+0s9CUidWCe
- HeDu/dt3kEZpsjUVQcZNs2algL/qGj68PKG01hMTd08vfetE/D6MwyiNu9cAmbJhilFuDHElqU
- OHARUDl+D6P++v/rzvAA6CmJwbQAAAA==
-To:     Luis Chamberlain <mcgrof@kernel.org>,
-        Russ Weight <russ.weight@linux.dev>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-kernel@vger.kernel.org, Conor Dooley <conor@kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Kory Maincent <kory.maincent@bootlin.com>
-X-Mailer: b4 0.12.4
-X-GND-Sasl: kory.maincent@bootlin.com
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+In-Reply-To: <20231114135553.32301-2-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No error code are available to signal an invalid firmware content.
-Drivers that can check the firmware content validity can not return this
-specific failure to the user-space
+On Tue, Nov 14, 2023 at 02:55:48PM +0100, Johan Hovold wrote:
+> Add a helper for enabling link states that can be used in contexts where
+> a pci_bus_sem read lock is already held (e.g. from pci_walk_bus()).
+> 
+> This helper will be used to fix a couple of potential deadlocks where
+> the current helper is called with the lock already held, hence the CC
+> stable tag.
+> 
+> Fixes: f492edb40b54 ("PCI: vmd: Add quirk to configure PCIe ASPM and LTR")
+> Cc: stable@vger.kernel.org	# 6.3
+> Cc: Michael Bottini <michael.a.bottini@linux.intel.com>
+> Cc: David E. Box <david.e.box@linux.intel.com>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-Expand the firmware error code with an additional code:
-- "firmware invalid" code which can be used when the provided firmware
-  is invalid
+With the Kdoc comment fixed,
 
-Acked-by: Luis Chamberlain <mcgrof@kernel.org>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
----
+Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 
-This patch was initially submitted as part of a net patch series.
-Conor expressed interest in using it in a different subsystem.
-Consequently, I extracted it from the series and submitted it separately
-to the main tree, driver-core.
-https://lore.kernel.org/netdev/20231116-feature_poe-v1-7-be48044bf249@bootlin.com/
----
- drivers/base/firmware_loader/sysfs_upload.c | 1 +
- include/linux/firmware.h                    | 2 ++
- 2 files changed, 3 insertions(+)
+- Mani
 
-diff --git a/drivers/base/firmware_loader/sysfs_upload.c b/drivers/base/firmware_loader/sysfs_upload.c
-index a0af8f5f13d8..829270067d16 100644
---- a/drivers/base/firmware_loader/sysfs_upload.c
-+++ b/drivers/base/firmware_loader/sysfs_upload.c
-@@ -27,6 +27,7 @@ static const char * const fw_upload_err_str[] = {
- 	[FW_UPLOAD_ERR_INVALID_SIZE] = "invalid-file-size",
- 	[FW_UPLOAD_ERR_RW_ERROR]     = "read-write-error",
- 	[FW_UPLOAD_ERR_WEAROUT]	     = "flash-wearout",
-+	[FW_UPLOAD_ERR_FW_INVALID]   = "firmware-invalid",
- };
- 
- static const char *fw_upload_progress(struct device *dev,
-diff --git a/include/linux/firmware.h b/include/linux/firmware.h
-index de7fea3bca51..0311858b46ce 100644
---- a/include/linux/firmware.h
-+++ b/include/linux/firmware.h
-@@ -27,6 +27,7 @@ struct firmware {
-  * @FW_UPLOAD_ERR_INVALID_SIZE: invalid firmware image size
-  * @FW_UPLOAD_ERR_RW_ERROR: read or write to HW failed, see kernel log
-  * @FW_UPLOAD_ERR_WEAROUT: FLASH device is approaching wear-out, wait & retry
-+ * @FW_UPLOAD_ERR_FW_INVALID: invalid firmware file
-  * @FW_UPLOAD_ERR_MAX: Maximum error code marker
-  */
- enum fw_upload_err {
-@@ -38,6 +39,7 @@ enum fw_upload_err {
- 	FW_UPLOAD_ERR_INVALID_SIZE,
- 	FW_UPLOAD_ERR_RW_ERROR,
- 	FW_UPLOAD_ERR_WEAROUT,
-+	FW_UPLOAD_ERR_FW_INVALID,
- 	FW_UPLOAD_ERR_MAX
- };
- 
+> ---
+>  drivers/pci/pcie/aspm.c | 53 +++++++++++++++++++++++++++++++----------
+>  include/linux/pci.h     |  3 +++
+>  2 files changed, 43 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+> index 50b04ae5c394..8cf8cc2d6bba 100644
+> --- a/drivers/pci/pcie/aspm.c
+> +++ b/drivers/pci/pcie/aspm.c
+> @@ -1109,17 +1109,7 @@ int pci_disable_link_state(struct pci_dev *pdev, int state)
+>  }
+>  EXPORT_SYMBOL(pci_disable_link_state);
+>  
+> -/**
+> - * pci_enable_link_state - Clear and set the default device link state so that
+> - * the link may be allowed to enter the specified states. Note that if the
+> - * BIOS didn't grant ASPM control to the OS, this does nothing because we can't
+> - * touch the LNKCTL register. Also note that this does not enable states
+> - * disabled by pci_disable_link_state(). Return 0 or a negative errno.
+> - *
+> - * @pdev: PCI device
+> - * @state: Mask of ASPM link states to enable
+> - */
+> -int pci_enable_link_state(struct pci_dev *pdev, int state)
+> +static int __pci_enable_link_state(struct pci_dev *pdev, int state, bool locked)
+>  {
+>  	struct pcie_link_state *link = pcie_aspm_get_link(pdev);
+>  
+> @@ -1136,7 +1126,8 @@ int pci_enable_link_state(struct pci_dev *pdev, int state)
+>  		return -EPERM;
+>  	}
+>  
+> -	down_read(&pci_bus_sem);
+> +	if (!locked)
+> +		down_read(&pci_bus_sem);
+>  	mutex_lock(&aspm_lock);
+>  	link->aspm_default = 0;
+>  	if (state & PCIE_LINK_STATE_L0S)
+> @@ -1157,12 +1148,48 @@ int pci_enable_link_state(struct pci_dev *pdev, int state)
+>  	link->clkpm_default = (state & PCIE_LINK_STATE_CLKPM) ? 1 : 0;
+>  	pcie_set_clkpm(link, policy_to_clkpm_state(link));
+>  	mutex_unlock(&aspm_lock);
+> -	up_read(&pci_bus_sem);
+> +	if (!locked)
+> +		up_read(&pci_bus_sem);
+>  
+>  	return 0;
+>  }
+> +
+> +/**
+> + * pci_enable_link_state - Clear and set the default device link state so that
+> + * the link may be allowed to enter the specified states. Note that if the
+> + * BIOS didn't grant ASPM control to the OS, this does nothing because we can't
+> + * touch the LNKCTL register. Also note that this does not enable states
+> + * disabled by pci_disable_link_state(). Return 0 or a negative errno.
+> + *
+> + * @pdev: PCI device
+> + * @state: Mask of ASPM link states to enable
+> + */
+> +int pci_enable_link_state(struct pci_dev *pdev, int state)
+> +{
+> +	return __pci_enable_link_state(pdev, state, false);
+> +}
+>  EXPORT_SYMBOL(pci_enable_link_state);
+>  
+> +/**
+> + * pci_enable_link_state - Clear and set the default device link state so that
+> + * the link may be allowed to enter the specified states. Note that if the
+> + * BIOS didn't grant ASPM control to the OS, this does nothing because we can't
+> + * touch the LNKCTL register. Also note that this does not enable states
+> + * disabled by pci_disable_link_state(). Return 0 or a negative errno.
+> + *
+> + * @pdev: PCI device
+> + * @state: Mask of ASPM link states to enable
+> + *
+> + * Context: Caller holds pci_bus_sem read lock.
+> + */
+> +int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
+> +{
+> +	lockdep_assert_held_read(&pci_bus_sem);
+> +
+> +	return __pci_enable_link_state(pdev, state, true);
+> +}
+> +EXPORT_SYMBOL(pci_enable_link_state_locked);
+> +
+>  static int pcie_aspm_set_policy(const char *val,
+>  				const struct kernel_param *kp)
+>  {
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index 60ca768bc867..dea043bc1e38 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -1829,6 +1829,7 @@ extern bool pcie_ports_native;
+>  int pci_disable_link_state(struct pci_dev *pdev, int state);
+>  int pci_disable_link_state_locked(struct pci_dev *pdev, int state);
+>  int pci_enable_link_state(struct pci_dev *pdev, int state);
+> +int pci_enable_link_state_locked(struct pci_dev *pdev, int state);
+>  void pcie_no_aspm(void);
+>  bool pcie_aspm_support_enabled(void);
+>  bool pcie_aspm_enabled(struct pci_dev *pdev);
+> @@ -1839,6 +1840,8 @@ static inline int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
+>  { return 0; }
+>  static inline int pci_enable_link_state(struct pci_dev *pdev, int state)
+>  { return 0; }
+> +static inline int pci_enable_link_state_locked(struct pci_dev *pdev, int state)
+> +{ return 0; }
+>  static inline void pcie_no_aspm(void) { }
+>  static inline bool pcie_aspm_support_enabled(void) { return false; }
+>  static inline bool pcie_aspm_enabled(struct pci_dev *pdev) { return false; }
+> -- 
+> 2.41.0
+> 
 
----
-base-commit: b85ea95d086471afb4ad062012a4d73cd328fa86
-change-id: 20231117-feature_firmware_error_code-b8d7af08a8fe
-
-Best regards,
 -- 
-Köry Maincent, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
+மணிவண்ணன் சதாசிவம்
