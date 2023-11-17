@@ -2,146 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C26C87EECD9
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:41:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54FB87EECF0
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230285AbjKQHlc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:41:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35484 "EHLO
+        id S230181AbjKQHrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:47:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbjKQHla (ORCPT
+        with ESMTP id S229436AbjKQHrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:41:30 -0500
-Received: from mail-ua1-x92a.google.com (mail-ua1-x92a.google.com [IPv6:2607:f8b0:4864:20::92a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9585AD52
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 23:41:26 -0800 (PST)
-Received: by mail-ua1-x92a.google.com with SMTP id a1e0cc1a2514c-7bae8dd095cso617018241.3
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 23:41:26 -0800 (PST)
+        Fri, 17 Nov 2023 02:47:42 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 148C2D52;
+        Thu, 16 Nov 2023 23:47:39 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id d2e1a72fcca58-6c396ef9a3dso1571960b3a.1;
+        Thu, 16 Nov 2023 23:47:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700206885; x=1700811685; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DCDUD/ayWCyYX+V5eg8ErxP1HhH1oV9OubP3STgdWNA=;
-        b=rmyh5UxVTsrXdCrWkgVn4wvhuTQ50g/TCxmzM1HqPJz4Eo1jC9F3oaJPXP2Wmv9was
-         cpaFUWmMzf5DLq0JmzYl9OM1AndOSJlDLR0ku9kC9IyhlB6i2AO45ND4CeKE6OaTxoCX
-         62naYF01T90yZFf+4UMqyXLNLZduAtJfdfuaNmBgJItx2eTpbTrkmrbbDKtzkmP0fZkE
-         ddT0xRc2xC6Vz1E9XEw56XCexLVkRhg6H9nQDKHA067GB/FIGlq22ASq28E1ZDxvu5qr
-         MkRBbjciwy7Q2xsYKHI0i2W5U2EBjttkPzhVwz4JA0kaVHLuayJ01DxRgkA0r+8nz7aE
-         vIjQ==
+        d=gmail.com; s=20230601; t=1700207258; x=1700812058; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9XZ+bpR+GYXI1dYrwmpsx3LyIpqyeS55MKPy6ULRoi8=;
+        b=l2NdKuzN7wBB10wdu8EJ3WuG4z7/BTHe+fPgDglQS1xmsb0vtBRI/QwfsCQb4yxgKS
+         Ink+haTwcc2vDaR6UMYJqISKG4D2Gymy/PHGWHirIY19i78wRa+fqk+JN51ADxvWF7cx
+         QcQY6uwtz4tPNe2KMHMezNdPpwCX+xjXVwSgKDEUxEvQ+dIbilGqh0X0TrOhdDZxBb14
+         bzbX2+tTfYXWQ46hJe7eqWe/yREE20AfRQDDGbURkaa9xHi33iXixL8nkfgm35FhoDwv
+         SIYOCI9YkT59Onjkw6S/4RbaLUniuuUdSU6fvU6bEO8TOVMEjhuxApRoiydoKg4IeqJ6
+         HPnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700206885; x=1700811685;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=DCDUD/ayWCyYX+V5eg8ErxP1HhH1oV9OubP3STgdWNA=;
-        b=Ff4qtz3hbHYwePMSrbQo3jfNrk6gxij/Omfky69JSo+nN0FUFYb2nvb+fx4VfVkHJ9
-         O6wfIW5unc/I3njHv6/A4hD9ArVx9pFjdRoCrXs+OadF10mstHkIuNTnBglZKidv57TR
-         7RUQdQajmO4HgUQ+OEuqBZOEyvZY8qyJ059UMHRtQc6X2V4Wv2D6V8a/cne17BJMgtJ4
-         7fws5FNsJm9VL7Gjr/uSCgV1j5YBfYNXmQRzMRMBFua3c6e3SEeXQzpyUZHqos2u+gax
-         8IOQm9/TTwUGzlS0M6WzBU+ZXArrjeSZSPcY5FHCzsDxO9IVbvwNDX1gBszrp+pHSR5j
-         vsJQ==
-X-Gm-Message-State: AOJu0YyMs4xIY8YDITLaW+dnILKlXV7HvZY2ZBAVDJH7pnd0C/GC859B
-        3s+GenpjxUHDG9/Myosf3JC2fmtDNjYIZ0GvgW6GFg==
-X-Google-Smtp-Source: AGHT+IFy4OUn5tiw3ME+e8seX8aG0i3Hz+uDvT0kxb9K92hvelXNsjLz3NHqivsCcZchdAAm0jaDeHfmaroVHuF2uc8=
-X-Received: by 2002:a67:b70b:0:b0:462:7c41:d00b with SMTP id
- h11-20020a67b70b000000b004627c41d00bmr2581850vsf.4.1700206885545; Thu, 16 Nov
- 2023 23:41:25 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700207258; x=1700812058;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=9XZ+bpR+GYXI1dYrwmpsx3LyIpqyeS55MKPy6ULRoi8=;
+        b=thOzrSAA87+3eS91M8ZCY4z5ASqxx1ZbTLxh8fG/DgJ0Du9G+SOf3mENXMinjt8AO9
+         PKqdJCYw5cObX7A30/6qKRyAB8xycyzb9YZwhKhtkMAbA3Z9HmLDAjX2UtVN0MJyhef2
+         pELXELCIlThZ1PCv+rX8V2SWbxadwQxrobeYtShLF2SFRmPVjKeWr+NV52SEySAqZbLr
+         OxZCyY0y9f6PILsZedny9zU02yldNclSyGf95kitn1jskRBbO2HowoGkfbIrly8xzOz6
+         64lB/hlU9zD34xcUGtBR1Q/uyxy0DCHFEGdRG4hOWyib6U+suHOg9Y3G6QLbNcAUE/YB
+         sykw==
+X-Gm-Message-State: AOJu0Yymi9H7ub0MxQtQZvxpaBnkBT09sb6LGTCJqi0x2LnWkAqhY71L
+        Hy37BiZOvMihb1jEjhszlh4mUbf02Ic5+nXN
+X-Google-Smtp-Source: AGHT+IFwcIo97MOV0GGbVZAt8q3V0mlq6OF09rSEFW131Gzc0pADAo1EAFoUCE8+jHLI+4uS3hImkg==
+X-Received: by 2002:a05:6a00:140e:b0:6ca:2b55:58b7 with SMTP id l14-20020a056a00140e00b006ca2b5558b7mr7574827pfu.20.1700207257927;
+        Thu, 16 Nov 2023 23:47:37 -0800 (PST)
+Received: from localhost.localdomain ([2401:4900:2353:8963:b940:1ac0:2fbc:6b6])
+        by smtp.gmail.com with ESMTPSA id p16-20020a056a000a1000b006b5922221f4sm870110pfh.8.2023.11.16.23.47.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 23:47:37 -0800 (PST)
+From:   Anshul Dalal <anshulusr@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Anshul Dalal <anshulusr@gmail.com>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Subject: [PATCH v2 1/2] dt-bindings: iio: light: add ltr390
+Date:   Fri, 17 Nov 2023 13:15:52 +0530
+Message-ID: <20231117074554.700970-1-anshulusr@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-References: <20231115204644.490636297@linuxfoundation.org> <b5367845-8d70-4fcf-861a-ff9b8849c9c9@roeck-us.net>
-In-Reply-To: <b5367845-8d70-4fcf-861a-ff9b8849c9c9@roeck-us.net>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 17 Nov 2023 13:11:14 +0530
-Message-ID: <CA+G9fYtOMKserwz7w_gpe4bZnEwrd_-zSyndSepFP_jO9X-o1w@mail.gmail.com>
-Subject: Re: [PATCH 5.10 000/191] 5.10.201-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 at 06:43, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On 11/15/23 12:44, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.10.201 release.
-> > There are 191 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 17 Nov 2023 20:46:03 +0000.
-> > Anything received after that time might be too late.
-> >
->
-> Build results:
->         total: 159 pass: 155 fail: 4
-> Failed builds:
->         arm:allmodconfig
->         arm64:allmodconfig
->         i386:tools/perf
->         x86_64:tools/perf
-> Qemu test results:
->         total: 495 pass: 495 fail: 0
->
-> with:
->
-> Building arm64:allmodconfig ... failed
-> --------------
-> Error log:
-> drivers/interconnect/qcom/osm-l3.c:6:10: fatal error: linux/args.h: No su=
-ch file or directory
->
-> There is no linux/args.h in v5.10.y.
->
-> Caused by "interconnect: qcom: osm-l3: Replace custom implementation of C=
-OUNT_ARGS()".
->
-> Also:
->
-> Building i386:tools/perf ... failed
->
-> util/evlist.c: In function =E2=80=98evlist__add_aux_dummy=E2=80=99:
-> util/evlist.c:269:24: error: implicit declaration of function =E2=80=98ev=
-list__dummy_event=E2=80=99; did you mean =E2=80=98evsel__is_dummy_event=E2=
-=80=99? [-Werror=3Dimplicit-function-declaration]
->     269 |  struct evsel *evsel =3D evlist__dummy_event(evlist);
->         |                        ^~~~~~~~~~~~~~~~~~~
->         |                        evsel__is_dummy_event
-> util/evlist.c:269:24: error: initialization of =E2=80=98struct evsel *=E2=
-=80=99 from =E2=80=98int=E2=80=99 makes pointer from integer without a cast
->
-> There is indeed no 'evlist__dummy_event' function in v5.10.y.
->
-> This is with v5.10.200-192-g550b7e1fee20. I am a bit puzzled why others
-> don't seem to see those problems.
+Add binding for Lite-On LTR390 which is an Ambient/UV light sensor that
+communicates over i2c with an address of 0x53.
 
-Thanks for reporting allmodconfig build failures.
+Datasheet:
+  https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
 
-My apologies.
-The LKFT found allmodconfig failure lately due to infra issues / timeouts,
-the builds have been re-triggered manually.
+Signed-off-by: Anshul Dalal <anshulusr@gmail.com>
+---
 
-        arm:allmodconfig - FAILED
-        arm64:allmodconfig - FAILED
+Changes for v2:
+- Added missing properties in the example
+---
+ .../bindings/iio/light/liteon,ltr390.yaml     | 56 +++++++++++++++++++
+ 1 file changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
 
-LKFT have stopped building perf on 5.x and 4.x branches, because we
-reported several perf build issues and were not solved in the past.
+diff --git a/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml b/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
+new file mode 100644
+index 000000000000..5d98ef2af74d
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/light/liteon,ltr390.yaml
+@@ -0,0 +1,56 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/light/liteon,ltr390.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Lite-On LTR390 ALS and UV Sensor
++
++description: |
++  The Lite-On LTR390 is an ALS (Ambient Light Sensor) and a UV sensor in a
++  single package with i2c address of 0x53.
++
++  Datasheet:
++    https://optoelectronics.liteon.com/upload/download/DS86-2015-0004/LTR-390UV_Final_%20DS_V1%201.pdf
++
++maintainers:
++  - Anshul Dalal <anshulusr@gmail.com>
++
++properties:
++  compatible:
++    enum:
++      - liteon,ltr390
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++    description: |
++      Level interrupt pin with open drain output.
++      The sensor pulls this pin low when the measured reading is greater than
++      some configured threshold.
++
++  vdd-supply: true
++
++required:
++  - compatible
++  - reg
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        light-sensor@53 {
++            compatible = "liteon,ltr390";
++            reg = <0x53>;
++            interrupts = <18 IRQ_TYPE_EDGE_FALLING>;
++            vdd-supply = <&vdd_regulator>;
++        };
++    };
+-- 
+2.42.1
 
-However, building perf tests from recent stable branches and testing
-that on older
-stable-rc branches.
-
-- Naresh
