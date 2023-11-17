@@ -2,71 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 322067EEED5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6360B7EEEDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:40:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345722AbjKQJje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:39:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38370 "EHLO
+        id S1345745AbjKQJkF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:40:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52508 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQJjc (ORCPT
+        with ESMTP id S235718AbjKQJj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:39:32 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91F11B7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:39:29 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id d9443c01a7336-1ce611682f6so1761085ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:39:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700213969; x=1700818769; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=sjYIebSJkP9e1/mTJ8eYq0dj0uvlLQm1sCo0VBP76wk=;
-        b=BmAoUX59vMc4Wol7s4nJ1PGfcOXyYeCr14XaHsYlP8S7mIQkbyGKwalS2jMrm70fWx
-         JGBWlATvNt7tMQoos9sLYYhcVLAroEwVbBu1DPnlLjv41lwh6S2SOcRYywZSrmOys0Ut
-         Inxm3K6G5L5nESAugemMC09Xld9n9M5RwLZ3zjMjClLn48mezE4S4FBOn4Ez1FlPcgfy
-         YvEj99RHY6R+mrbcirmssVB0WUu5dfjrc2D2ijEBfxU0PM5NSe94qQXMkpgVaZwY8ODb
-         klUQrghgUetqbqpNDv5X0CXiyM0hXEBgaysMrNBH1QtzLLz7ESKeHVi9+MFF8NBxfiIg
-         /rAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700213969; x=1700818769;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sjYIebSJkP9e1/mTJ8eYq0dj0uvlLQm1sCo0VBP76wk=;
-        b=FAr+7GLgrtmQPPiniQZaWIOmbAb6u7D8jFiRPDzEnCBccYAF8QOSqOHwfiSc0s98af
-         MgcPPn0aE5n8ipzVs5sE4hjNRLoub/Co/c1QeJJRQe9qSsEWA/cSsvxsRZ0edtDRGefJ
-         BhoSEGEFjkEZKqnwXcE8VLuzblkwuGsCMp9j86kzBuq929VA2smO7ogkgSl+hr0WVVNn
-         rWS8QCdx+EH5TPaXMQ/v+rrOkBHiRLS74G2ZeZyARFq/DkvdgCesiFSpUdus/wlcJ3TT
-         pYl83iK9ykvlBGl+H5ZalEHd9DARQxkJrbJ/u1ithZgVlRpvVKPQXflyA4dIszxGWPhz
-         XkKw==
-X-Gm-Message-State: AOJu0YxPYR6zLlcvGjRqG8FTllkAQyAsMSBK7VEhutWr6IXIrxmleHHM
-        sgXG1PPmhfe4EHPkrlsr6japr3Ohx98Ypw==
-X-Google-Smtp-Source: AGHT+IHoW5HRd1WwvEMIQ4H+ZEahnDGhytTgbVLpCmyqxooVD0GQVS1M1CySHtWzYrURV0YbPD/B+w==
-X-Received: by 2002:a17:903:249:b0:1bd:c7e2:462 with SMTP id j9-20020a170903024900b001bdc7e20462mr11918357plh.11.1700213968966;
-        Fri, 17 Nov 2023 01:39:28 -0800 (PST)
-Received: from archie.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id j8-20020a170902690800b001c76fcccee8sm988111plk.156.2023.11.17.01.39.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 01:39:28 -0800 (PST)
-Received: by archie.me (Postfix, from userid 1000)
-        id 2C149102A8300; Fri, 17 Nov 2023 16:39:26 +0700 (WIB)
-Date:   Fri, 17 Nov 2023 16:39:25 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Cc:     ceo@teo-en-ming-corp.com
-Subject: Re: Teo En Ming has just discovered that the latest Sophos Firewall
- SFOS version 20.0.0 GA-Build222 is running on Linux kernel 4.14.302
-Message-ID: <ZVc0zQHbfdBOQAZ0@archie.me>
-References: <rjsYjj5lRT_rd91lLJ0DutYwgag5By6ghI92s1AFP5asT4IDtTlKhkt56KrcNBGKEKMWQYn430H-bs3-IS4GjEFQjKd79ZHv9iRDd1EVQiU=@protonmail.com>
+        Fri, 17 Nov 2023 04:39:56 -0500
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53395D7A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:39:53 -0800 (PST)
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r3vKD-0004VP-Ol; Fri, 17 Nov 2023 10:39:45 +0100
+Received: from [2a0a:edc0:2:b01:1d::c0] (helo=ptx.whiteo.stw.pengutronix.de)
+        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r3vK8-009eBl-Hj; Fri, 17 Nov 2023 10:39:40 +0100
+Received: from sha by ptx.whiteo.stw.pengutronix.de with local (Exim 4.92)
+        (envelope-from <sha@pengutronix.de>)
+        id 1r3vK8-002UUH-EB; Fri, 17 Nov 2023 10:39:40 +0100
+Date:   Fri, 17 Nov 2023 10:39:40 +0100
+From:   Sascha Hauer <s.hauer@pengutronix.de>
+To:     Andy Yan <andy.yan@rock-chips.com>
+Cc:     Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Andy Yan <andyshrk@163.com>, heiko@sntech.de,
+        hjc@rock-chips.com, dri-devel@lists.freedesktop.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org, kever.yang@rock-chips.com,
+        chris.obbard@collabora.com
+Subject: Re: [PATCH 09/11] drm/rockchip: vop2: Add support for rk3588
+Message-ID: <20231117093940.GJ3359458@pengutronix.de>
+References: <20231114112534.1770731-1-andyshrk@163.com>
+ <20231114112855.1771372-1-andyshrk@163.com>
+ <20231115090823.GY3359458@pengutronix.de>
+ <8f2ebc81-51c5-44d5-b27b-633a6cc85d0d@rock-chips.com>
+ <20231116134757.zu7axb6cvriqjm6y@mercury.elektranox.org>
+ <3e011d52-017e-4360-86b4-781535ef61ad@rock-chips.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="eXblP7j5LObTY+Ne"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <rjsYjj5lRT_rd91lLJ0DutYwgag5By6ghI92s1AFP5asT4IDtTlKhkt56KrcNBGKEKMWQYn430H-bs3-IS4GjEFQjKd79ZHv9iRDd1EVQiU=@protonmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+In-Reply-To: <3e011d52-017e-4360-86b4-781535ef61ad@rock-chips.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
         URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -75,53 +68,49 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 17, 2023 at 03:06:35PM +0800, Andy Yan wrote:
+> Hi Sebastian:
+> 
+> On 11/16/23 21:47, Sebastian Reichel wrote:
+> > Hi,
+> > 
+> > On Thu, Nov 16, 2023 at 06:39:40PM +0800, Andy Yan wrote:
+> > > > >    	vop2->sys_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,grf");
+> > > > This already lacks an error check, shame on me...
+> > > > 
+> > > > > +	vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
+> > > > > +	vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
+> > > > > +	vop2->sys_pmu = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,pmu");
+> > > > ... but please don't duplicate that.
+> > > It a little difficult to find a proper way to do the check, as not every soc need all these phandles.
+> > > 
+> > > Do i need check it per soc?
+> > I suggest adding a u32 flags to struct vop2_data and then have
+> > something like this:
+> > 
+> > if (vop2_data->flags & VOP2_HAS_VOP_GRF) {
+> >      vop2->vop_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vop-grf");
+> >      if (IS_ERR(vop2->vop_grf))
+> >          return dev_err_probe(dev, PTR_ERR(vop2->vop_grf) "cannot get vop-grf");
+> > }
+> > 
+> > if (vop2_data->flags & VOP2_HAS_VO1_GRF) {
+> >      vop2->vo1_grf = syscon_regmap_lookup_by_phandle(dev->of_node, "rockchip,vo1-grf");
+> >      if (IS_ERR(vop2->vo1_grf))
+> >          return dev_err_probe(dev, PTR_ERR(vop2->vo1_grf) "cannot get vo1-grf");
+> > }
+> > 
+> > ...
+> 
+> 
+> I can do it like this if Sascha is also happy with it.
 
---eXblP7j5LObTY+Ne
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I am.
 
-On Thu, Nov 16, 2023 at 02:19:47PM +0000, Turritopsis Dohrnii Teo En Ming w=
-rote:
-> Subject: Teo En Ming has just discovered that the latest Sophos Firewall =
-SFOS version 20.0.0 GA-Build222 is running on Linux kernel 4.14.302
->=20
-> Good day from Singapore,
->=20
-> I have just discovered that the latest Sophos Firewall SFOS version 20.0.=
-0 GA-Build222 is running on Linux kernel 4.14.302.
->=20
-> # uname -a
-> Linux localhost 4.14.302 #2 SMP Wed Nov 1 07:16:58 UTC 2023 x86_64 GNU/Li=
-nux
->=20
-> However, I do not know which Linux distro Sophos Firewall is based on. Wh=
-en I run the Linux command "cat /etc/lsb-release", the output is
-> DISTRIB_ID=3DSophos Firewall
->=20
-> Hence I do not know which Linux distro the Sophos Firewall is based on.
+Sascha
 
-Most likely your vendor build their own custom distro (maybe Yocto
-Project-based or anything between). Hence, if you have any problems with
-it, please contact the support channel provided by your vendor (in your
-case, [1]).
-
-Bye!
-
-[1]: https://support.sophos.com/support
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---eXblP7j5LObTY+Ne
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHQEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZVc0yQAKCRD2uYlJVVFO
-owfcAQC5Sm8nu5VqtG9YZogqmeaJJgu241rgj++w0OnbGsBeLAD2Jj6iDPrNaW9q
-OH+kRwKNeLYCn7h7iC1D+aTX2d1UDA==
-=Scju
------END PGP SIGNATURE-----
-
---eXblP7j5LObTY+Ne--
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
