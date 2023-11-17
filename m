@@ -2,63 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCEB7EF943
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:11:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECCB7EF946
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346193AbjKQVLU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 16:11:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        id S232339AbjKQVNO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:13:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41722 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjKQVLS (ORCPT
+        with ESMTP id S231533AbjKQVNM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:11:18 -0500
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93A95B6;
-        Fri, 17 Nov 2023 13:11:14 -0800 (PST)
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6c4884521f6so2296089b3a.0;
-        Fri, 17 Nov 2023 13:11:14 -0800 (PST)
+        Fri, 17 Nov 2023 16:13:12 -0500
+Received: from mail-oi1-x234.google.com (mail-oi1-x234.google.com [IPv6:2607:f8b0:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84115D5C
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:13:08 -0800 (PST)
+Received: by mail-oi1-x234.google.com with SMTP id 5614622812f47-3b2f2b9a176so1563236b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:13:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700255588; x=1700860388; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=PKz01wcVX8Bxs3KR+NJBt3hwfdvhmPYzaTZtcibwsZc=;
+        b=jeghf2rJzclJzmiMiYweFiK2yBMmI83nH0JL+BaLEEjrzuMR8gAVxET00ZfzKhjfG4
+         EN0iZiMHgHaSkHFd/odjJYM3/s93jrJQVwfUW3IO3Y0quEWdKtWPtSWDAIEZvERGq5vo
+         TVGfwmg7JChgq8xrfcqmA8bZ0Ae7kT/x9I7ass/3h3V5IhT1F3lVw++7cEC4X++P1JWd
+         uU+gCH+MTYePUFhRppVYHN+wFC0sLPEJmMWINoaex8sYl3R+xiyZkQ4K+vtVU5yAQZte
+         x+yVLwgQ6ClbRJ2ym8zSxUcsH17Acv60AH24H8CfvGCizvKnOzLjlNFApubFFMfKnE4x
+         jr1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700255474; x=1700860274;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BjUoFQmdVqozJfSUnsX9imt403boBh1aBRoDnrn1A2M=;
-        b=w+grTICixzvvCRUcDf7zYxXRAV+XtHer0D8/FDoSaRqNL8WRekwE+qe6anBbhwbPC5
-         7GnFmopL2XAJwJpcYxgoZIrSgg95YAzSpqAJYqoKMDWm0HmdOBuEjDf2xs7i3sPN4j/y
-         hxDlM6Z041dfmUToLp8ZXLsOJ0p1XDT18VETdzozWSM/Tp42FXhJ4xENcmd6mtk3H8XJ
-         McPINezB4e3pSRuKFq3rUtDwlZyG4CpGR7RV2cCbxS6XEI/B7o+78pgqcMqOomuvGtx+
-         2fUMLDWf8D6Bj7Cho1wNPTjifQzChHWPmvV6VDTzdLI8v23PMktkuSty2I/wB366DG8h
-         pDKA==
-X-Gm-Message-State: AOJu0YyFPZY0Sg4o+tmtmCdNOMUHzoSigwI95ItPn3OIU0vOT1UOsOH5
-        biegzdQvgRdmZrAL/mpMZRH2q/uw85THUiZcc0Y=
-X-Google-Smtp-Source: AGHT+IF3XVtiOmkgk1Kge+dgUxNLC/3cYBOxTHLuT5ZoJ7saow0OJ/a9aSGpJCTbf8o9jp7YnYcAZZLBVs2kK5IO2I8=
-X-Received: by 2002:a05:6a20:5485:b0:187:2521:4581 with SMTP id
- i5-20020a056a20548500b0018725214581mr370551pzk.60.1700255473768; Fri, 17 Nov
- 2023 13:11:13 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700255588; x=1700860388;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PKz01wcVX8Bxs3KR+NJBt3hwfdvhmPYzaTZtcibwsZc=;
+        b=Yv3CmjaH3ONwI7xzLlxXC9ZFckslN1NWcIiBp0hk4a6lxc/4qYQZeK96ZRM1Fo4tNz
+         W6XFkNVAiVXffeP/GOoB1vRU7mRYFipzACV+x+ldDPqSlwKzbQfjO5YhwlrMryzLbOXb
+         8e1+v5Bqp2ilBpm0z5ThEzI4kR/wq8/TN8+X5wpYZSfYa2tBV8+AtfCjqSZojC62YVkO
+         iLsHpHJytJxVQjX055vWIbmM5DT0tfqlReVcWrdbknlhifkM3MZ9mGdSh7tORQope1wf
+         Jw3eBaYB/89yTvgGpkC8Ir0NBL66JlNkd4mvtdkrZMmjhdmkwwF+YxLJHKVXkqNf1OUY
+         0zmA==
+X-Gm-Message-State: AOJu0YzUOSI1P7M2NvkUUdbbvjbbHcOTKYI5EWXWBzdlibN/kLo+dryx
+        qNoIyCAmgxJY70BvlcyVebRYXg==
+X-Google-Smtp-Source: AGHT+IHkJxAw4BCtYb7vtqTpvYzYdZ/WV9j6uSsTfqp9w+14kwuRXNQnpMN39mmIJPuH7mhfyy/qGA==
+X-Received: by 2002:a05:6808:429a:b0:3b2:e2d1:34d2 with SMTP id dq26-20020a056808429a00b003b2e2d134d2mr516718oib.47.1700255587791;
+        Fri, 17 Nov 2023 13:13:07 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id o18-20020a05680803d200b003ae425fc9bdsm408308oie.23.2023.11.17.13.12.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 13:12:53 -0800 (PST)
+Date:   Fri, 17 Nov 2023 13:12:46 -0800
+From:   Deepak Gupta <debug@rivosinc.com>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
+        "broonie@kernel.org" <broonie@kernel.org>,
+        "Szabolcs.Nagy@arm.com" <Szabolcs.Nagy@arm.com>,
+        "brauner@kernel.org" <brauner@kernel.org>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "mgorman@suse.de" <mgorman@suse.de>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "fweimer@redhat.com" <fweimer@redhat.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "rostedt@goodmis.org" <rostedt@goodmis.org>,
+        "hjl.tools@gmail.com" <hjl.tools@gmail.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "vschneid@redhat.com" <vschneid@redhat.com>,
+        "shuah@kernel.org" <shuah@kernel.org>,
+        "bristot@redhat.com" <bristot@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "bsegall@google.com" <bsegall@google.com>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
+        "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>,
+        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "jannh@google.com" <jannh@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "Pandey, Sunil K" <sunil.k.pandey@intel.com>
+Subject: Re: [PATCH RFC RFT v2 5/5] kselftest/clone3: Test shadow stack
+ support
+Message-ID: <ZVfXTmVestrAwIkN@debug.ba.rivosinc.com>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-5-b613f8681155@kernel.org>
+ <309927ad8bfa72ce2d084ee16cd0cd84e69fef16.camel@intel.com>
 MIME-Version: 1.0
-References: <449fb8d2.27fb.18bcc190021.Coremail.00107082@163.com>
- <76d75357.6ab6.18bce6b7d5b.Coremail.00107082@163.com> <20231115103241.GD3818@noisy.programming.kicks-ass.net>
- <407a06f8.632a.18bd2a2ece1.Coremail.00107082@163.com> <CAM9d7cgdUJytP31y90c5AuQAmR6FgkBWjj4brVjH8Pg+d00O+Q@mail.gmail.com>
- <1a1338d0.6b3a.18bd3c09056.Coremail.00107082@163.com> <CAM9d7cgjCKynoTC0L53pEXnCWHF7AZ8Gr2a0xQnes7L24KVNsA@mail.gmail.com>
- <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com>
-In-Reply-To: <489ecb9e.28cc.18bd650affa.Coremail.00107082@163.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Fri, 17 Nov 2023 13:11:02 -0800
-Message-ID: <CAM9d7cg-tudzG4iPMHs5L-zYMe-WhyzZXN9eOtkoapS1n7t8AA@mail.gmail.com>
-Subject: Re: Re: [Regression or Fix]perf: profiling stats sigificantly changed
- for aio_write/read(ext4) between 6.7.0-rc1 and 6.6.0
-To:     David Wang <00107082@163.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, jolsa@kernel.org,
-        irogers@google.com, adrian.hunter@intel.com,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <309927ad8bfa72ce2d084ee16cd0cd84e69fef16.camel@intel.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,109 +103,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 8:09â€¯PM David Wang <00107082@163.com> wrote:
+On Tue, Nov 14, 2023 at 11:11:58PM +0000, Edgecombe, Rick P wrote:
+>On Tue, 2023-11-14 at 20:05 +0000, Mark Brown wrote:
+>> +static void test_shadow_stack_supported(void)
+>> +{
+>> +        long shadow_stack;
+>> +
+>> +       shadow_stack = syscall(__NR_map_shadow_stack, 0,
+>> getpagesize(), 0);
 >
+>Hmm, x86 fails this call if user shadow stack is not supported in the
+>HW or the kernel, but doesn't care if it is enabled on the thread or
+>not. If shadow stack is not enabled (or not yet enabled), shadow stacks
+>are allowed to be mapped. Should it fail if shadow stack is not yet
+>enabled?
 >
-> At 2023-11-16 00:26:06, "Namhyung Kim" <namhyung@kernel.org> wrote:
-> >On Wed, Nov 15, 2023 at 8:12â€¯AM David Wang <00107082@163.com> wrote:
-> >>
-> >>
-> >> åœ¨ 2023-11-15 23:48:33ï¼Œ"Namhyung Kim" <namhyung@kernel.org> å†™é“ï¼š
-> >> >On Wed, Nov 15, 2023 at 3:00â€¯AM David Wang <00107082@163.com> wrote:
-> >> >>
-> >> >>
-> >> >>
-> >> >> At 2023-11-15 18:32:41, "Peter Zijlstra" <peterz@infradead.org> wrote:
-> >> >> >
-> >> >> >Namhyung, could you please take a look, you know how to operate this
-> >> >> >cgroup stuff.
-> >> >> >
-> >> >>
-> >> >> More information,  I run the profiling with 8cpu machine on a SSD with ext4 filesystem :
-> >> >>
-> >> >> # mkdir /sys/fs/cgroup/mytest
-> >> >> # echo $$ > /sys/fs/cgroup/mytest/cgroup.procs
-> >> >> ## Start profiling targeting cgroup /sys/fs/cgroup/mytest   on another terminal
-> >> >> # fio --randrepeat=1 --ioengine=libaio --direct=1 --name=test  --bs=4k --iodepth=64 --size=1G --readwrite=randrw  --runtime=600 --numjobs=4 --time_based=1
-> >> >>
-> >> >> I got a feeling that f06cc667f7990 would decrease total samples by 10%~20% when profiling IO benchmark within cgroup.
+>Since shadow stack is per thread, map_shadow_stack could still be
+>called on another thread that has it enabled. Basically I don't think
+>blocking it will reduce the possible states the kernel has to handle.
 >
+>The traditional way to check if shadow stack is enabled on x86 is the
+>check for a non zero return from the _get_ssp() intrinsic:
+>https://gcc.gnu.org/onlinedocs/gcc-9.2.0/gcc/x86-control-flow-protection-intrinsics.html
 >
-> >
-> >Then what is your profiling tool?  Where did you see
-> >the 10%~20% drop in samples?
-> >
->
-> I wrote a simple/raw tool just for profiling callchains, which use perf_event_open with following attr:
->     attr.type = PERF_TYPE_SOFTWARE;
->      attr.config = PERF_COUNT_SW_CPU_CLOCK;
->      attr.sample_freq = 777; // adjust it
->      attr.freq = 1;
->      attr.wakeup_events = 16;
->      attr.sample_type = PERF_SAMPLE_TID|PERF_SAMPLE_CALLCHAIN;
->      attr.sample_max_stack = 32;
->
-> The source code could be found here: https://github.com/zq-david-wang/linux-tools/tree/main/perf/profiler
-> >>
-> >> I am not experienced with the perf-tool at all,   too complicated a tool for me.... But I think I can try it.
-> >
-> >I feel sorry about that.  In most cases, just `perf record -a` and
-> >then `perf report` would work well. :)
-> >
-> Thanks for the information,  I use following command to profile with perf:
-> `./perf record -a -e cpu-clock -G mytest`
-> I have run several round of test, and before each test, the system was rebooted, and perf output is
->
-> On 6.7.0-rc1:
-> $ sudo ./perf record -a -e cpu-clock -G mytest
->   ^C[ perf record: Woken up 527 times to write data ]
->   [ perf record: Captured and wrote 132.648 MB perf.data (2478745 samples) ]
->  ---reboot
->   $ sudo ./perf record -a -e cpu-clock -G mytest
->   ^C[ perf record: Woken up 473 times to write data ]
->   [ perf record: Captured and wrote 119.205 MB perf.data (2226994 samples) ]
->
->
-> On 6.7.0-rc1 with f06cc667f79909e9175460b167c277b7c64d3df0 reverted
->
-> $ sudo ./perf record -a -e cpu-clock -G mytest
->   ^C[ perf record: Woken up 567 times to write data ]
->   [ perf record: Captured and wrote 142.771 MB perf.data (2668224 samples) ]
->   ---reboot
->   $ sudo ./perf record -a -e cpu-clock -G mytest
->   ^C[ perf record: Woken up 557 times to write data ]
->   [ perf record: Captured and wrote 140.604 MB perf.data (2627167 samples) ]
->
->
-> I also run with `-F 777`, which is some random number I used in my tool,   (just to compare with my tool )
->
-> On 6.7.0-rc1
-> $ sudo ./perf record -a -e cpu-clock -F 777 -G mytest
-> ^C[ perf record: Woken up 93 times to write data ]
-> [ perf record: Captured and wrote 24.575 MB perf.data (455222 samples) ] ( My tool have only ~359K samples, not stable)
->
->
-> On 6.7.0-rc1 with f06cc667f79909e9175460b167c277b7c64d3df0 reverted
-> $ sudo ./perf record -a -e cpu-clock -F 777 -G mytest
-> ^C[ perf record: Woken up 98 times to write data ]
-> [ perf record: Captured and wrote 25.703 MB perf.data (476390 samples) ]  (My tool have about ~446K, stable)
->
->
-> From the data I collected, I think two problem could be observed for f06cc667f79909e9175460b167c277b7c64d3df0
-> 1. sample missing.
-> 2. sample unstable, total sample count drift a lot between tests.
+>It seems like there will be a need for some generic method of checking
+>if shadow stack is enabled. Maybe a more generic compiler
+>intrinsic/builtin or glibc API (something unrelated to SSP)?
 
-Hmm.. so the fio process was running in the background during
-the profiling, right?  But I'm not sure how you measured the same
-amount of time.  Probably you need to run this (for 10 seconds):
+Exposing a new file under procfs would be useful?
+Something like "/proc/sys/vm/user_shadow_stack_supported"
 
-  sudo perf record -a -G mytest -- sleep 10
+`map_shadow_stack` can return MAP_FAILED for other reasons.
+I think `kselftests` are fine but I don't want people to pick up this
+as test code and run with it in production :-)
 
-And I guess you don't run the perf command in the target cgroup
-which is good.
+So kernel providing a way to indicate whether it supports shadow stack
+mappings in user mode via procfs would be useful and arch agnostic.
 
-And is there any chance if it's improved because of the change?
-Are the numbers in 6.7 better or worse?
-
-Thanks,
-Namhyung
+>
+>> +       {
+>> +               .name = "Shadow stack on system with shadow stack",
+>> +               .flags = 0,
+>> +               .size = 0,
+>> +               .expected = 0,
+>> +               .e2big_valid = true,
+>> +               .test_mode = CLONE3_ARGS_SHADOW_STACK,
+>> +               .filter = no_shadow_stack,
+>> +       },
+>> +       {
+>> +               .name = "Shadow stack on system without shadow
+>> stack",
+>> +               .flags = 0,
+>> +               .size = 0,
+>> +               .expected = -EINVAL,
+>> +               .e2big_valid = true,
+>> +               .test_mode = CLONE3_ARGS_SHADOW_STACK,
+>> +               .filter = have_shadow_stack,
+>> +       },
+>>  };
+>>  
+>I changed x86's map_shadow_stack to return an error when shadow stack
+>was not enabled to make the detection logic in the test work. Also
+>changed the clone3 Makefile to generate the shadow stack bit in the
+>tests. When running the 'clone3' test with shadow stack it passed, but
+>there is a failure in the non-shadow stack case:
+>...
+># Shadow stack not supported
+>ok 20 # SKIP Shadow stack on system with shadow stack
+># Running test 'Shadow stack on system without shadow stack'
+># [1333] Trying clone3() with flags 0 (size 0)
+># I am the parent (1333). My child's pid is 1342
+># I am the child, my PID is 1342
+># [1333] clone3() with flags says: 0 expected -22
+># [1333] Result (0) is different than expected (-22)
+>not ok 21 Shadow stack on system without shadow stack
+># Totals: pass:19 fail:1 xfail:0 xpass:0 skip:1 error:0
+>
+>The other tests passed in both cases. I'm going to dig into the other
+>parts now but can circle back if it's not obvious what's going on
+>there.
