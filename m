@@ -2,105 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1F77EF68E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:48:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA38B7EF692
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:50:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231793AbjKQQsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51968 "EHLO
+        id S232615AbjKQQuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:50:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQQsA (ORCPT
+        with ESMTP id S230383AbjKQQt7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:48:00 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.24])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC549D56
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 08:47:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700239676; x=1731775676;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=OwMwwXyJd4v3YYjcKZBorvEoIaxkujw0SDA0rSRSLKg=;
-  b=gq3/xhtMoDFK7UPp//fxkVsLfStN1WxF+sfZp76tuaFcz3WGnf0T+osi
-   GYbxswySA67wgz7LzIt/Zx9j95ARc0jGe6KwwF11anAhYFmX3P8bZz7Le
-   uDlRf6T6uhf+KgIck3eFsxbtEwlZrFR0jeC2DnkbPjP6e994cEa6AYsqK
-   GKWgILKF2X0jLcsUk0R7TNldkKcdEFFFHdYHyazKsl1eTZSKQ+DcPLjGX
-   C5hPnkYUnGZ9SADaHXVa/swVGDJL5vdUOGGthoRG3mY8yd6rB+lHECSZy
-   j8LBBBeat91aHuBHx5HJwO9yXEmX68hx1SAK2bdP2u275Cj1kTk3qCpWX
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="394178078"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="394178078"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 08:47:54 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="939196922"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="939196922"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by orsmga005.jf.intel.com with ESMTP; 17 Nov 2023 08:47:53 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r420U-0002xr-2Y;
-        Fri, 17 Nov 2023 16:47:50 +0000
-Date:   Sat, 18 Nov 2023 00:47:27 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Chris Morgan <macromorgan@hotmail.com>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Subject: include/asm-generic/unaligned.h:119:16: sparse: sparse: cast
- truncates bits from constant value (aa01a0 becomes a0)
-Message-ID: <202311180032.YrkvZVwK-lkp@intel.com>
+        Fri, 17 Nov 2023 11:49:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C5D583
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 08:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700239795;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=2xHmGuoMtPQwOYwidrVH9fzqJ2yR9Z3MUz8VIv42SVo=;
+        b=frwBsBWnm2L/BWNduqEpW9YD/2DRrP1iVbTwMnavAlI5VhcrWnygLtPc+/ACa3rnZzjGSU
+        kq65FJYAd60a85JHWN0DoaPnTaNnuSfs77A4LQcm/QyutOrYk9snCyXqJDYPI2siJ+XWOl
+        DeMutp0XBNIoHSbihM0XCveV2T4B4ME=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-549-eX82f_qrP5Kokjcude60UQ-1; Fri, 17 Nov 2023 11:49:52 -0500
+X-MC-Unique: eX82f_qrP5Kokjcude60UQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 4B205185A781;
+        Fri, 17 Nov 2023 16:49:52 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.45.224.123])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 0EE7B2166B27;
+        Fri, 17 Nov 2023 16:49:50 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 17 Nov 2023 17:48:48 +0100 (CET)
+Date:   Fri, 17 Nov 2023 17:48:46 +0100
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     David Howells <dhowells@redhat.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] rxrpc_find_service_conn_rcu: fix the usage of
+ read_seqbegin_or_lock()
+Message-ID: <20231117164846.GA10410@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc40e44f1ddef16a787f3501b97f1fff909177c
-commit: 66603243f5283f7f28c795f09e7c2167233df0bd Input: add driver for Hynitron cstxxx touchscreens
-date:   1 year, 1 month ago
-config: x86_64-randconfig-x001-20230717 (https://download.01.org/0day-ci/archive/20231118/202311180032.YrkvZVwK-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231118/202311180032.YrkvZVwK-lkp@intel.com/reproduce)
+rxrpc_find_service_conn_rcu() should make the "seq" counter odd on the
+second pass, otherwise read_seqbegin_or_lock() never takes the lock.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311180032.YrkvZVwK-lkp@intel.com/
+Signed-off-by: Oleg Nesterov <oleg@redhat.com>
+---
+ net/rxrpc/conn_service.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-sparse warnings: (new ones prefixed by >>)
-   drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through arch/x86/include/generated/asm/unaligned.h):
->> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (aa01a0 becomes a0)
-   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (aa01 becomes 1)
->> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (ab00d0 becomes d0)
-   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (ab00 becomes 0)
-
-vim +119 include/asm-generic/unaligned.h
-
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  116  
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  117  static inline void __put_unaligned_le24(const u32 val, u8 *p)
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  118  {
-803f4e1eab7a89 Arnd Bergmann 2021-05-08 @119  	*p++ = val;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  120  	*p++ = val >> 8;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  121  	*p++ = val >> 16;
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  122  }
-803f4e1eab7a89 Arnd Bergmann 2021-05-08  123  
-
-:::::: The code at line 119 was first introduced by commit
-:::::: 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63 asm-generic: simplify asm/unaligned.h
-
-:::::: TO: Arnd Bergmann <arnd@arndb.de>
-:::::: CC: Arnd Bergmann <arnd@arndb.de>
-
+diff --git a/net/rxrpc/conn_service.c b/net/rxrpc/conn_service.c
+index 89ac05a711a4..39c908a3ca6e 100644
+--- a/net/rxrpc/conn_service.c
++++ b/net/rxrpc/conn_service.c
+@@ -25,7 +25,7 @@ struct rxrpc_connection *rxrpc_find_service_conn_rcu(struct rxrpc_peer *peer,
+ 	struct rxrpc_conn_proto k;
+ 	struct rxrpc_skb_priv *sp = rxrpc_skb(skb);
+ 	struct rb_node *p;
+-	unsigned int seq = 0;
++	unsigned int seq = 1;
+ 
+ 	k.epoch	= sp->hdr.epoch;
+ 	k.cid	= sp->hdr.cid & RXRPC_CIDMASK;
+@@ -35,6 +35,7 @@ struct rxrpc_connection *rxrpc_find_service_conn_rcu(struct rxrpc_peer *peer,
+ 		 * under just the RCU read lock, so we have to check for
+ 		 * changes.
+ 		 */
++		seq++; /* 2 on the 1st/lockless path, otherwise odd */
+ 		read_seqbegin_or_lock(&peer->service_conn_lock, &seq);
+ 
+ 		p = rcu_dereference_raw(peer->service_conns.rb_node);
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+2.25.1.362.g51ebf55
+
+
