@@ -2,185 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D98277EEE0B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F11367EEE07
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbjKQJCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:02:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56106 "EHLO
+        id S230416AbjKQJCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:02:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231476AbjKQJCw (ORCPT
+        with ESMTP id S229436AbjKQJCn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:02:52 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEB4611F;
-        Fri, 17 Nov 2023 01:02:48 -0800 (PST)
-Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SWrWm1HmnzvQqZ;
-        Fri, 17 Nov 2023 17:02:28 +0800 (CST)
-Received: from localhost.localdomain (10.50.165.33) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Fri, 17 Nov 2023 17:02:46 +0800
-From:   Xingui Yang <yangxingui@huawei.com>
-To:     <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <damien.lemoal@opensource.wdc.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <yangxingui@huawei.com>,
-        <prime.zeng@hisilicon.com>, <kangfenglong@huawei.com>,
-        <chenxiang66@hisilicon.com>
-Subject: [PATCH v4] scsi: libsas: Fix the failure of adding phy with zero-address to port
-Date:   Fri, 17 Nov 2023 09:00:01 +0000
-Message-ID: <20231117090001.35840-1-yangxingui@huawei.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 17 Nov 2023 04:02:43 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CDC311F;
+        Fri, 17 Nov 2023 01:02:38 -0800 (PST)
+Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AH5IQSR030464;
+        Fri, 17 Nov 2023 10:02:09 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=9l8YIXvr1qCb4mjD4T+dz
+        Zsbd0D1nt4OOpppCFXT1bE=; b=quZWRCfEARhxtxImgE/22rUGQWRFKFiXH/f9c
+        ugAWKAgOQj2eZtLDZomMdVgDLuFjnwq72+YOsmBRqup9VrdzvXfav2Edr60CToDu
+        97r75SRBfh9h8N8IB88K6B7bFaXw1wobs95yKyPdcHiEp3XNYos/ZQ1Qtt+qLBfv
+        pGpu+q07MUF+efJSqTFsa4uBBm/VvwzGiZU9kwFkI72fPDJKS8HyNk57RQpiENqL
+        EQ5M3aXLp60SW+8zYjG0tMg+5vBkFJ1WDPVUq9BSYKFOceozMre6ls9zuIdREVlx
+        3iXKJlvf+4ILXTpmGDhvciRmdAKULgDrFwQL3sAr3nlY+EGMg==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ua1u2a9kw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:02:09 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AB89110002A;
+        Fri, 17 Nov 2023 10:02:07 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id A2F7D211603;
+        Fri, 17 Nov 2023 10:02:07 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 17 Nov
+ 2023 10:02:07 +0100
+Date:   Fri, 17 Nov 2023 10:02:06 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 3/3] media: i2c: gc2145: Galaxy Core GC2145 sensor
+ support
+Message-ID: <20231117090206.GB523678@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231107081345.3172392-1-alain.volmat@foss.st.com>
+ <20231107081345.3172392-4-alain.volmat@foss.st.com>
+ <ZU/UX9Jjk288ELUx@duo.ucw.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.50.165.33]
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- dggpemd100001.china.huawei.com (7.185.36.94)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZU/UX9Jjk288ELUx@duo.ucw.cz>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_06,2023-11-16_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When connecting to the epander device, first disable and then enable the
-local phy. The following BUG() will be triggered with a small probability:
+Hi Pavel,
 
-[562240.051046] sas: phy19 part of wide port with phy16
-[562240.051197] sas: ex 500e004aaaaaaa1f phy19:U:0 attached: 0000000000000000 (no device)
-[562240.051203] sas: done REVALIDATING DOMAIN on port 0, pid:435909, res 0x0
-<...>
-[562240.062536] sas: ex 500e004aaaaaaa1f phy0 new device attached
-[562240.062616] sas: ex 500e004aaaaaaa1f phy00:U:5 attached: 0000000000000000 (stp)
-[562240.062680]  port-7:7:0: trying to add phy phy-7:7:19 fails: it's already part of another port
-[562240.085064] ------------[ cut here ]------------
-[562240.096612] kernel BUG at drivers/scsi/scsi_transport_sas.c:1083!
-[562240.109611] Internal error: Oops - BUG: 0 [#1] SMP
-[562240.343518] Process kworker/u256:3 (pid: 435909, stack limit = 0x0000000003bcbebf)
-[562240.421714] Workqueue: 0000:b4:02.0_disco_q sas_revalidate_domain [libsas]
-[562240.437173] pstate: 40c00009 (nZcv daif +PAN +UAO)
-[562240.450478] pc : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.465283] lr : sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.479751] sp : ffff0000300cfa70
-[562240.674822] Call trace:
-[562240.682709]  sas_port_add_phy+0x13c/0x168 [scsi_transport_sas]
-[562240.694013]  sas_ex_get_linkrate.isra.5+0xcc/0x128 [libsas]
-[562240.704957]  sas_ex_discover_end_dev+0xfc/0x538 [libsas]
-[562240.715508]  sas_ex_discover_dev+0x3cc/0x4b8 [libsas]
-[562240.725634]  sas_ex_discover_devices+0x9c/0x1a8 [libsas]
-[562240.735855]  sas_ex_revalidate_domain+0x2f0/0x450 [libsas]
-[562240.746123]  sas_revalidate_domain+0x158/0x160 [libsas]
-[562240.756014]  process_one_work+0x1b4/0x448
-[562240.764548]  worker_thread+0x54/0x468
-[562240.772562]  kthread+0x134/0x138
-[562240.779989]  ret_from_fork+0x10/0x18
+On Sat, Nov 11, 2023 at 08:22:07PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > Addition of support for the Galaxy Core GC2145 XVGA sensor.
+> > The sensor supports both DVP and CSI-2 interfaces however for
+> > the time being only CSI-2 is implemented.
+> > 
+> > Configurations is currently based on initialization scripts
+> 
+> "are"?
 
-What causes this problem:
-1. When phy19 was initially added to the parent port, ex_phy->port was not
-set. As a result, when phy19 was removed from the parent wide port, it was
-not deleted from the phy_list of the parent port.
+Fixed
 
-2. The rate of the newly connected SATA device to phy0 is less than 1.5G,
-and its sas_address was set to 0. After creating port 7:7:0, it attempts to
-add the expander's other zero-addressed phy to this port.
+> 
+> > coming from Galaxy Core and for that purpose only 3 static
+> 
+> "and so"?
 
-3. When adding phy19 to port-7:7:0, it is prompted that phy19 already
-belongs to another port, which triggers the current problem.
+Fixed
 
-Fix the problem as follows:
-1. When ex_phy is added to the parent port, set ex_phy->port to
-ex_dev->parent_port.
+> 
+> > resolutions are supported.
+> 
+> "supported:"?
 
-2. Set ex_dev->parent_port to NULL when the parent port's PHY count is 0.
+Fixed
 
-3. When phy->attached_dev_type != NO_DEVICE, do not set the zero address
-for phy->attached_sas_addr.
+> 
+> >  - 640x480
+> >  - 1280x720
+> >  - 1600x1200
+> 
+> 
+> > --- /dev/null
+> > +++ b/drivers/media/i2c/gc2145.c
+> > @@ -0,0 +1,1404 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * A V4L2 driver for Galaxycore GC2145 camera.
+> > + * Copyright (C) 2023, STMicroelectronics SA
+> > + *
+> > + * Inspired from the imx219.c driver
+> 
+> "by the"?
 
-Fixes: 2908d778ab3e ("[SCSI] aic94xx: new driver")
-Fixes: 7d1d86518118 ("[SCSI] libsas: fix false positive 'device attached' conditions")
-Signed-off-by: Xingui Yang <yangxingui@huawei.com>
----
-v3 -> v4:
-1. Update patch title and comments based on John's suggestion.
+Fixed
 
-v2 -> v3:
-1. Set ex_dev->parent_port to NULL when the number of PHYs of the parent
-   port becomes 0
-2. Update the comments
+> 
+> Link to some kind of datasheet / documentation /... would be welcome
+> here.
 
-v1 -> v2:
-1. Set ex_phy->port with parent_port when ex_phy is added to the parent port
-2. Set ex_phy to NULL when free expander
-3. Update the comments
----
- drivers/scsi/libsas/sas_discover.c | 4 +++-
- drivers/scsi/libsas/sas_expander.c | 8 +++++---
- drivers/scsi/libsas/sas_internal.h | 1 +
- 3 files changed, 9 insertions(+), 4 deletions(-)
+Seems an old version of the datasheet is available on pine64.org so I
+guess I could add a link to this one.
 
-diff --git a/drivers/scsi/libsas/sas_discover.c b/drivers/scsi/libsas/sas_discover.c
-index 8fb7c41c0962..8eb3888a9e57 100644
---- a/drivers/scsi/libsas/sas_discover.c
-+++ b/drivers/scsi/libsas/sas_discover.c
-@@ -296,8 +296,10 @@ void sas_free_device(struct kref *kref)
- 	dev->phy = NULL;
- 
- 	/* remove the phys and ports, everything else should be gone */
--	if (dev_is_expander(dev->dev_type))
-+	if (dev_is_expander(dev->dev_type)) {
- 		kfree(dev->ex_dev.ex_phy);
-+		dev->ex_dev.ex_phy = NULL;
-+	}
- 
- 	if (dev_is_sata(dev) && dev->sata_dev.ap) {
- 		ata_sas_tport_delete(dev->sata_dev.ap);
-diff --git a/drivers/scsi/libsas/sas_expander.c b/drivers/scsi/libsas/sas_expander.c
-index a2204674b680..89d44a9dc4e3 100644
---- a/drivers/scsi/libsas/sas_expander.c
-+++ b/drivers/scsi/libsas/sas_expander.c
-@@ -239,8 +239,7 @@ static void sas_set_ex_phy(struct domain_device *dev, int phy_id,
- 	/* help some expanders that fail to zero sas_address in the 'no
- 	 * device' case
- 	 */
--	if (phy->attached_dev_type == SAS_PHY_UNUSED ||
--	    phy->linkrate < SAS_LINK_RATE_1_5_GBPS)
-+	if (phy->attached_dev_type == SAS_PHY_UNUSED)
- 		memset(phy->attached_sas_addr, 0, SAS_ADDR_SIZE);
- 	else
- 		memcpy(phy->attached_sas_addr, dr->attached_sas_addr, SAS_ADDR_SIZE);
-@@ -1844,9 +1843,12 @@ static void sas_unregister_devs_sas_addr(struct domain_device *parent,
- 	if (phy->port) {
- 		sas_port_delete_phy(phy->port, phy->phy);
- 		sas_device_set_phy(found, phy->port);
--		if (phy->port->num_phys == 0)
-+		if (phy->port->num_phys == 0) {
- 			list_add_tail(&phy->port->del_list,
- 				&parent->port->sas_port_del_list);
-+			if (ex_dev->parent_port == phy->port)
-+				ex_dev->parent_port = NULL;
-+		}
- 		phy->port = NULL;
- 	}
- }
-diff --git a/drivers/scsi/libsas/sas_internal.h b/drivers/scsi/libsas/sas_internal.h
-index 3804aef165ad..e860d5b19880 100644
---- a/drivers/scsi/libsas/sas_internal.h
-+++ b/drivers/scsi/libsas/sas_internal.h
-@@ -202,6 +202,7 @@ static inline void sas_add_parent_port(struct domain_device *dev, int phy_id)
- 		sas_port_mark_backlink(ex->parent_port);
- 	}
- 	sas_port_add_phy(ex->parent_port, ex_phy->phy);
-+	ex_phy->port = ex->parent_port;
- }
- 
- static inline struct domain_device *sas_alloc_device(void)
--- 
-2.17.1
+http://files.pine64.org/doc/datasheet/PinebookPro/GC2145%20CSP%20DataSheet%20release%20V1.0_20131201.pdf
+
+> 
+> > +/**
+> > + * struct gc2145_mode - GC2145 mode description
+> > + * @width: frame width (in pixel)
+> > + * @height: frame height (in pixel)
+> 
+> "in pixels".
+
+Ok
+
+> 
+> > +static const struct gc2145_mode supported_modes[] = {
+> ...
+> > +	{
+> > +		/* 1280x720 30fps mode */
+> > +		.width = 1280,
+> > +		.height = 720,
+> > +		.reg_seq = gc2145_mode_1280_720_regs,
+> > +		.reg_seq_size = ARRAY_SIZE(gc2145_mode_1280_720_regs),
+> > +		.pixel_rate = GC2145_1280_720_PIXELRATE,
+> > +		.crop = {
+> > +			.top = 160,
+> > +			.left = 240,
+> > +			.width = 1280,
+> > +			.height = 720,
+> > +		},
+> > +		.hblank = GC2145_1280_720_HBLANK,
+> > +		.vblank = GC2145_1280_720_VBLANK,
+> > +	},
+> 
+> Won't this result in 1120x480 mode due to crop?
+
+The crop struct indicates the top left corner and width/height so this
+leads to 720p mode.
+
+> 
+> > +/* All supported formats */
+> > +static const struct gc2145_format supported_formats[] = {
+> > +	{
+> > +		.code		= MEDIA_BUS_FMT_UYVY8_1X16,
+> > +		.code		= MEDIA_BUS_FMT_VYUY8_1X16,
+> > +		.code		= MEDIA_BUS_FMT_YUYV8_1X16,
+> > +		.code		= MEDIA_BUS_FMT_YVYU8_1X16,
+> > +		.code		= MEDIA_BUS_FMT_RGB565_1X16,
+> > +};
+> 
+> So ... the hardware can do 10bit ADC, but we don't actually have a
+> mode exposing that?
+
+We don't have YET (in the driver).  Choice is to have this first serie
+with only non-RAW modes.  RAW8/10 will be added later on.
+
+> 
+> > +	 * Adjust the MIPI buffer settings.
+> > +	 * For YUV/RGB, LWC = image width * 2
+> > +	 * For RAW8, LWC = image width
+> > +	 * For RAW10, LWC = image width * 1.25
+> > +	 */
+> > +	lwc = gc2145->mode->width * 2;
+> > +	cci_write(gc2145->regmap, GC2145_REG_LWC_HIGH, lwc >> 8, &ret);
+> > +	cci_write(gc2145->regmap, GC2145_REG_LWC_LOW, lwc & 0xff, &ret);
+> > +
+> > +	/*
+> > +	 * Adjust the MIPI Fifo Full Level
+> 
+> Fifo -> FIFO?
+
+Ok
+
+> 
+> > +	/*
+> > +	 * Set the fifo gate mode / MIPI wdiv set:
+> > +	 * 0xf1 in case of RAW mode and 0xf0 otherwise
+> > +	 */
+> 
+> fifo -> FIFO?
+
+Ok
+
+> 
+> > +	/*
+> > +	 * Datasheet doesn't mention timing between PWDN/RESETB control and
+> > +	 * i2c access however experimentation shows that a rather big delay is
+> > +	 * needed
+> > +	 */
+> 
+> "however," "needed."
+
+Ok
+
+> 
+> > +static const struct v4l2_ctrl_ops gc2145_ctrl_ops = {
+> > +	.s_ctrl = gc2145_s_ctrl,
+> > +};
+> > +
+> > +/* Initialize control handlers */
+> > +static int gc2145_init_controls(struct gc2145 *gc2145)
+> > +{
+> > +	ret = v4l2_ctrl_handler_init(hdl, 12);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	ctrls->pixel_rate = v4l2_ctrl_new_std(hdl, ops, V4L2_CID_PIXEL_RATE,
+> > +					      GC2145_640_480_PIXELRATE,
+> > +					      GC2145_1280_720_PIXELRATE, 1,
+> 
+> Should the second pixelrate be one from 1600x1200?
+
+Indeed.  This will actually evolve in the v4 since I implemented instead
+the V4L2_CID_LINK_FREQ control.
+
+> 
+> > +static int gc2145_check_hwcfg(struct device *dev)
+> > +{
+> > +	struct fwnode_handle *endpoint;
+> > +	struct v4l2_fwnode_endpoint ep_cfg = {
+> > +		.bus_type = V4L2_MBUS_CSI2_DPHY
+> > +	};
+> > +	int ret = -EINVAL;
+> 
+> This "ret" value is unused. Not sure if something will warn about this.
+
+Corrected.
+
+> 
+> > +MODULE_AUTHOR("Alain Volmat <alain.volmat@foss.st.com");
+> 
+> ">" is missing at the end of address.
+
+Done.
+
+> 
+> The driver looks good, thank you!
+> 
+> Best regards,
+> 								Pavel
+> -- 
+> People of Russia, stop Putin before his war on Ukraine escalates.
+
+Regards,
+Alain
 
