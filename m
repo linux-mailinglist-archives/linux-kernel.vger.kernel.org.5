@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A48667EFA85
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D977EFA9D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:26:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346215AbjKQVYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:24:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57552 "EHLO
+        id S232837AbjKQV0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:26:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231533AbjKQVY1 (ORCPT
+        with ESMTP id S1346471AbjKQVZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:24:27 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E73F2D4E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:13 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso321751666b.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700256190; x=1700860990; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yFBqw6WWFn2DTJJAm5oTscYcujSFx4g4cXCp4v+z0IA=;
-        b=NXJqXa+GrWs4EjbDRUHSMKUDu6DoWDlZ/IB3CFDKQ9jNem4v54qdb1cS52H0tS1tiY
-         FzQgApeDdbSa/7puBkcU4YD16zqJyEKUYfjNhkpP6X1FUZ6S4E0YFUauT5AyaC6qgwOc
-         aUanh6y9tK616MAt+2fIqBNnD43TiaEJAQhw4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700256190; x=1700860990;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=yFBqw6WWFn2DTJJAm5oTscYcujSFx4g4cXCp4v+z0IA=;
-        b=w/8OK78rRVjqstJYAPWcXKIWvGbaMVi/rUegOj3uu/KPimktnrO8+10oKNsm821OSB
-         6Xpj54BlvocqR1mKwRAYy6OS3xSiA4a7Kvh6L2Wqa6pwJVUIfcK+AGgZvJ8hGHSM+Z++
-         4xoThra6GXg3Mg2aXQW0FLnpPrWycctKshz7+Nbz/NWWvOuEPSLEGrWFp93ykTUoJGQo
-         Txf82sLLxYcAmg3vV5swJQwGLtHPCFaHdqXUReXGJWyB9FJUcoZKgsv9zpcxCDQnKmss
-         FuaD51nNWX6kp2Zyn+tcwA6DKL9pec5CN01/6pnlJxejwKuQW7WKTj82Pmzs9rQICDNe
-         1l+g==
-X-Gm-Message-State: AOJu0YyAcv31Aud2kFE5V+hdxzqUJAFtnjMYw/Rr8oYBw1UFWnyryz37
-        sGyklCprHTR0FyLBR4/ZFXtz0vIh+LN1Lckr1Gpiiw==
-X-Google-Smtp-Source: AGHT+IG0CCBD/vhOnAxvQk6kik8V8UE3UKMY+1zxh06hcSsW+6RBV19PfTA00+edHZ5uYsaEBZXjDQ==
-X-Received: by 2002:a17:906:ae4d:b0:9d3:afe1:b3e5 with SMTP id lf13-20020a170906ae4d00b009d3afe1b3e5mr234536ejb.75.1700256190534;
-        Fri, 17 Nov 2023 13:23:10 -0800 (PST)
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com. [209.85.128.43])
-        by smtp.gmail.com with ESMTPSA id y20-20020a170906471400b009db53aa4f7bsm1176888ejq.28.2023.11.17.13.23.09
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 13:23:10 -0800 (PST)
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-4078fe6a063so3475e9.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:23:09 -0800 (PST)
-X-Received: by 2002:a1c:7504:0:b0:404:74f8:f47c with SMTP id
- o4-20020a1c7504000000b0040474f8f47cmr50225wmc.5.1700256189626; Fri, 17 Nov
- 2023 13:23:09 -0800 (PST)
+        Fri, 17 Nov 2023 16:25:55 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7211D7A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:25:44 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E6703C433C7;
+        Fri, 17 Nov 2023 21:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700256344;
+        bh=7onMPhswGTDVotjWqSfp24WuNeYcsPIL2S0ahjIdo50=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=WKBdJIspKPjDyPkjI3Ve55j8EiTKk4psLd4VHPlzNArKDrTUhK4ZvRz5CyNT25DMJ
+         1g3v5bpa7BzgAK9+U8NDNf16M9hmgX+cVPzy608qmUEWQ41yWnpovYSwrYkCofPGqt
+         LZEWlf6txs+eMWuNtw9PR0UhTb0UvBQhrt9hQgrgHUGzKFToS2E6ePTahdaBXw2iCm
+         zhN6Bq3Y2qt5vMkBj2DA+bJ90b81zGJIltJRBFnyWih8tJKijJtyDK5Rg909FBZf05
+         hQD9GQEfwlXEwOVM9bP9kFe7VKZ4jRBx0pn75rPRFgZQTNKsx8zov8JNLVoPLu0n9d
+         nIi2QZ7KeZ6tg==
+Date:   Fri, 17 Nov 2023 13:25:40 -0800 (PST)
+From:   Stefano Stabellini <sstabellini@kernel.org>
+X-X-Sender: sstabellini@ubuntu-linux-20-04-desktop
+To:     "Fr. Chuck Zmudzinski, C.P.M." <brchuck@hotmail.com>
+cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Chuck Zmudzinski <brchuckz@aol.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Russell King <linux@armlinux.org.uk>,
+        Juergen Gross <jgross@suse.com>,
+        Oleksandr Tyshchenko <oleksandr_tyshchenko@epam.com>,
+        linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Arnd Bergmann <arnd@arndb.de>,
+        Julien Grall <julien@xen.org>,
+        Mario Marietto <marietto2008@gmail.com>,
+        Bertrand Marquis <bertrand.marquis@arm.com>
+Subject: Re: [PATCH] arm/mm: add option to prefer IOMMU ops for DMA on Xen
+In-Reply-To: <CH0P221MB050571AF779EFDE97B7E780AA9B7A@CH0P221MB0505.NAMP221.PROD.OUTLOOK.COM>
+Message-ID: <alpine.DEB.2.22.394.2311171324300.773207@ubuntu-linux-20-04-desktop>
+References: <20231111184538.2371-1-brchuckz.ref@aol.com> <20231111184538.2371-1-brchuckz@aol.com> <e5ebfde9-7a74-4908-b0b9-db47c4e76315@arm.com> <alpine.DEB.2.22.394.2311141407140.160649@ubuntu-linux-20-04-desktop>
+ <CH0P221MB050571AF779EFDE97B7E780AA9B7A@CH0P221MB0505.NAMP221.PROD.OUTLOOK.COM>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20231114044205.613421-1-xuxinxiong@huaqin.corp-partner.google.com>
-In-Reply-To: <20231114044205.613421-1-xuxinxiong@huaqin.corp-partner.google.com>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 17 Nov 2023 13:22:52 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Vg5YouEYVSnv3XJ-ghjZoLa9-QG6Ksh4yg5hExN_9gWA@mail.gmail.com>
-Message-ID: <CAD=FV=Vg5YouEYVSnv3XJ-ghjZoLa9-QG6Ksh4yg5hExN_9gWA@mail.gmail.com>
-Subject: Re: [V3] drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
-To:     Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
-Cc:     sam@ravnborg.org, neil.armstrong@linaro.org, daniel@ffwll.ch,
-        hsinyi@google.com, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Fri, 17 Nov 2023, Fr. Chuck Zmudzinski, C.P.M. wrote:
+> On 11/14/2023 5:20 PM, Stefano Stabellini wrote:
+> > On Tue, 14 Nov 2023, Robin Murphy wrote:
+> >> On 11/11/2023 6:45 pm, Chuck Zmudzinski wrote:
+> >> > Enabling the new option, ARM_DMA_USE_IOMMU_XEN, fixes this error when
+> >> > attaching the Exynos mixer in Linux dom0 on Xen on the Chromebook Snow
+> >> > (and probably on other devices that use the Exynos mixer):
+> >> > 
+> >> > [drm] Exynos DRM: using 14400000.fimd device for DMA mapping operations
+> >> > exynos-drm exynos-drm: bound 14400000.fimd (ops 0xc0d96354)
+> >> > exynos-mixer 14450000.mixer: [drm:exynos_drm_register_dma] *ERROR* Device
+> >> >                               14450000.mixer lacks support for IOMMU
+> >> > exynos-drm exynos-drm: failed to bind 14450000.mixer (ops 0xc0d97554): -22
+> >> > exynos-drm exynos-drm: adev bind failed: -22
+> >> > exynos-dp: probe of 145b0000.dp-controller failed with error -22
+> >> > 
+> >> > Linux normally uses xen_swiotlb_dma_ops for DMA for all devices when
+> >> > xen_swiotlb is detected even when Xen exposes an IOMMU to Linux. Enabling
+> >> > the new config option allows devices such as the Exynos mixer to use the
+> >> > IOMMU instead of xen_swiotlb_dma_ops for DMA and this fixes the error.
+> >> > 
+> >> > The new config option is not set by default because it is likely some
+> >> > devices that use IOMMU for DMA on Xen will cause DMA errors and memory
+> >> > corruption when Xen PV block and network drivers are in use on the system.
+> >> > 
+> >> > Link:
+> >> > https://lore.kernel.org/xen-devel/acfab1c5-eed1-4930-8c70-8681e256c820@netscape.net/
+> >> > 
+> >> > Signed-off-by: Chuck Zmudzinski <brchuckz@aol.com>
+> >> > ---
+> >> > The reported error with the Exynos mixer is not fixed by default by adding
+> >> > a second patch to select the new option in the Kconfig definition for the
+> >> > Exynos mixer if EXYNOS_IOMMU and SWIOTLB_XEN are enabled because it is
+> >> > not certain setting the config option is suitable for all cases. So it is
+> >> > necessary to explicitly select the new config option during the config
+> >> > stage of the Linux kernel build to fix the reported error or similar
+> >> > errors that have the same cause of lack of support for IOMMU on Xen. This
+> >> > is necessary to avoid any regressions that might be caused by enabling the
+> >> > new option by default for the Exynos mixer.
+> >> >   arch/arm/mm/dma-mapping.c |  6 ++++++
+> >> >   drivers/xen/Kconfig       | 16 ++++++++++++++++
+> >> >   2 files changed, 22 insertions(+)
+> >> > 
+> >> > diff --git a/arch/arm/mm/dma-mapping.c b/arch/arm/mm/dma-mapping.c
+> >> > index 5409225b4abc..ca04fdf01be3 100644
+> >> > --- a/arch/arm/mm/dma-mapping.c
+> >> > +++ b/arch/arm/mm/dma-mapping.c
+> >> > @@ -1779,6 +1779,12 @@ void arch_setup_dma_ops(struct device *dev, u64
+> >> > dma_base, u64 size,
+> >> >   	if (iommu)
+> >> >   		arm_setup_iommu_dma_ops(dev, dma_base, size, iommu, coherent);
+> >> >   +#ifdef CONFIG_ARM_DMA_USE_IOMMU_XEN
+> >> 
+> >> FWIW I don't think this really needs a config option - if Xen *has* made an
+> >> IOMMU available, then there isn't really much reason not to use it, and if for
+> >> some reason someone really didn't want to then they could simply disable the
+> >> IOMMU driver anyway.
+> > 
+> > The fact that the Exynos IOMMU is exposed to Linux is a mistake. Xen
+> > doesn't recognize the Exynos IOMMU (it is not one of the IOMMUs Xen has
+> > a driver for) so it assigns the IOMMU to Dom0. It doesn't happen on
+> > purpose, it happens by accident. Certain things are going to break,
+> > specifically I am fairly certain PV drivers are going to break.
+> > 
+> > If Xen recognized the Exynos IOMMU as an IOMMU it would probably hide it
+> > from Dom0. (Today Xen doesn't have a list of IOMMUs Xen recognizes but
+> > doesn't have a driver for.)
+> > 
+> > I think it is OK for Chuck and others to play around with this
+> > configuration but I wouldn't add a new kconfig option to Linux to
+> > support it.
+> > 
+> > If we do want a kconfig option, I would add a kconfig option or Linux
+> > command line option to enable/disable swiotlb-xen. Basically a way to
+> > force-enable or force-disable xen_swiotlb_detect().That could be
+> 
+> I am trying to understand what you are proposing.
+> 
+> I tried disabling the CONFIG_SWIOTLB_XEN option that already
+> exists and it does not seem possible to disable that option without
+> also totally removing Xen dom0 support from Linux on arm. So do you
+> suggest keeping that option as is and adding a Linux command line
+> switch or new Linux Kconfig option that is ignored unless
+> CONFIG_SWIOTLB_XEN is enabled and would make xen_swiotlb_detect()
+> always return false or always return true, depending on the setting
+> of the new option?
 
-On Mon, Nov 13, 2023 at 8:42=E2=80=AFPM Xuxin Xiong
-<xuxinxiong@huaqin.corp-partner.google.com> wrote:
->
-> For "auo,b101uan08.3" this panel, it is stipulated in the panel spec that
-> MIPI needs to keep the LP11 state before the lcm_reset pin is pulled high=
-.
->
-> Fixes: 56ad624b4cb5 ("drm/panel: support for auo, b101uan08.3 wuxga dsi v=
-ideo mode panel")
-> Signed-off-by: Xuxin Xiong <xuxinxiong@huaqin.corp-partner.google.com>
-> ---
-> Changes in V3:
->   - Updated the Fixes tag's style.
-> link to V2: https://patchwork.kernel.org/project/dri-devel/patch/20231114=
-034505.288569-1-xuxinxiong@huaqin.corp-partner.google.com/
-> ---
-> Changes in V2:
->   - Updated the commit message and added the Fixes tag.
-> link to V1: https://patchwork.kernel.org/project/dri-devel/patch/20231109=
-092634.1694066-1-xuxinxiong@huaqin.corp-partner.google.com/
-> ---
->  drivers/gpu/drm/panel/panel-boe-tv101wum-nl6.c | 1 +
->  1 file changed, 1 insertion(+)
-
-In my response to v1 [1] I said you could have just added my
-Reviewed-by tag yourself after the problems were fixed. Some
-maintainers actually get a bit annoyed when you don't do this, so you
-should get in the habit of doing it.
-
-In any case, this looks fine.
-
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
-
-Pushed to drm-misc-fixes with my tag:
-6965809e5269 drm/panel: auo,b101uan08.3: Fine tune the panel power sequence
-
-
-
-[1] https://lore.kernel.org/r/CAD=3DFV=3DVxQJFWFaGHD+zpr4dxB85jMQpJiTDAmFZk=
-67CTYNcg=3Dw@mail.gmail.com/
+Yes. I suggest adding a Linux kernel command line option to force-enable
+or force-diable swiotlb-xen and that can easily be implemented by
+changing xen_swiotlb_detect() to return true/false if the command line
+option is set by the user.
