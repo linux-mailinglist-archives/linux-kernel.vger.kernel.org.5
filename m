@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3D737EF590
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 16:44:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F5F7EF57B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 16:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346084AbjKQPkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 10:40:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55248 "EHLO
+        id S1346061AbjKQPk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 10:40:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55272 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1343848AbjKQPk2 (ORCPT
+        with ESMTP id S1346029AbjKQPk3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 10:40:28 -0500
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [IPv6:2001:4b98:dc4:8::228])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2642127;
-        Fri, 17 Nov 2023 07:40:23 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 640381BF205;
-        Fri, 17 Nov 2023 15:40:21 +0000 (UTC)
+        Fri, 17 Nov 2023 10:40:29 -0500
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABD5170F;
+        Fri, 17 Nov 2023 07:40:24 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 49CC81BF215;
+        Fri, 17 Nov 2023 15:40:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700235622;
+        t=1700235623;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=BskneXKv4A8RQQX8Nlti47/gT0IX7yLKeJby+i812FU=;
-        b=T5d8s7aShmgUfZH0jFvC2wMfI8IUjRrvEAN3w3H4j3r2GcDjFwEXy1PgfPpVXml9P1IHth
-        Ey01a8r1xQTCHE9K3kAos6TzVimgSGdnklq1RMpaKgUkrSj185EPT57C8T/7a2h1wR0/SI
-        jpZB9PMmvGUOh/1Afta8tgF5yg7Sc3OYFLQuhFO/D5UIGu4zoFQC74E88WIn4IbVmpZ5pO
-        apriJIATGXq5DxaTexIWb9ibZ3j9W3H9g8DkmVMO8gJVN7eZVtfnGWNOQQPChWOOoD/YWv
-        MxsfVBOBXDdLGMUty74azdqLEUU1iS3IJOa+t+hEwW9soz97ht6wu1F1IG+M4w==
+        bh=9LllXnXNnDf8pKvcwylSvw+v6/PlW4x/mO1UyaWWjsQ=;
+        b=QT4EhHDiixmAiCVv81UUKKuBQYJ0PU/UVfUpOd+FdP6v7tDRTL5dTRfBJ0WvkK3J3ZSJz0
+        ILW2ufBHh2oz7k9hrP5WoAU+G4QM895r1PL09cdZlkDETaLc37Vx7/Pt44ak6ODb+uTjBW
+        Qu012nEhHFmnJHe2DiqrEvTxW9K/d2mru9BoGdkYFxCu0Z1qIhx+CzydWO+8lEgv7oVpWV
+        ivNZoC430w2jDvMeTeMspB+Pwbx+mK4d2aqUSuUEfSsH9bFphd4GYdl0wKuVQuOF7lIbfv
+        W8xHXVg8Bt1bgyNUryN9sIz7+ySVxWJbdc4rMWooXAVt/FyucUv394kNGMn4NQ==
 From:   Maxime Chevallier <maxime.chevallier@bootlin.com>
 To:     davem@davemloft.net
 Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
@@ -46,9 +46,9 @@ Cc:     Maxime Chevallier <maxime.chevallier@bootlin.com>,
         Vladimir Oltean <vladimir.oltean@nxp.com>,
         =?UTF-8?q?K=C3=B6ry=20Maincent?= <kory.maincent@bootlin.com>,
         Jesse Brandeburg <jesse.brandeburg@intel.com>
-Subject: [RFC PATCH net-next v2 05/10] net: ethtool: Allow passing a phy index for some commands
-Date:   Fri, 17 Nov 2023 17:23:16 +0100
-Message-ID: <20231117162323.626979-6-maxime.chevallier@bootlin.com>
+Subject: [RFC PATCH net-next v2 06/10] net: ethtool: Introduce a command to list PHYs on an interface
+Date:   Fri, 17 Nov 2023 17:23:17 +0100
+Message-ID: <20231117162323.626979-7-maxime.chevallier@bootlin.com>
 X-Mailer: git-send-email 2.41.0
 In-Reply-To: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
 References: <20231117162323.626979-1-maxime.chevallier@bootlin.com>
@@ -57,140 +57,612 @@ Content-Transfer-Encoding: 8bit
 X-GND-Sasl: maxime.chevallier@bootlin.com
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some netlink commands are target towards ethernet PHYs, to control some
-of their features. As there's several such commands, add the ability to
-pass a PHY index in the ethnl request, which will populate the generic
-ethnl_req_info with the relevant phydev when the command targets a PHY.
+As we have the ability to track the PHYs connected to a net_device
+through the link_topology, we can expose this list to userspace. This
+allows userspace to use these identifiers for phy-specific commands and
+take the decision of which PHY to target by knowing the link topology.
+
+Add PHY_GET and PHY_DUMP, which can be a filtered DUMP operation to list
+devices on only one interface.
 
 Signed-off-by: Maxime Chevallier <maxime.chevallier@bootlin.com>
 ---
- include/uapi/linux/ethtool_netlink.h |  1 +
- net/ethtool/netlink.c                | 22 ++++++++++++++++++++++
- net/ethtool/netlink.h                |  8 ++++++--
- 3 files changed, 29 insertions(+), 2 deletions(-)
+ Documentation/netlink/specs/ethtool.yaml     |  69 ++++-
+ Documentation/networking/ethtool-netlink.rst |  51 ++++
+ include/linux/ethtool_netlink.h              |   5 +
+ include/uapi/linux/ethtool_netlink.h         |  29 ++
+ net/ethtool/Makefile                         |   2 +-
+ net/ethtool/netlink.c                        |   8 +
+ net/ethtool/netlink.h                        |   3 +
+ net/ethtool/phy.c                            | 279 +++++++++++++++++++
+ 8 files changed, 444 insertions(+), 2 deletions(-)
+ create mode 100644 net/ethtool/phy.c
 
+diff --git a/Documentation/netlink/specs/ethtool.yaml b/Documentation/netlink/specs/ethtool.yaml
+index 5c7a65b009b4..ac9352d8ef57 100644
+--- a/Documentation/netlink/specs/ethtool.yaml
++++ b/Documentation/netlink/specs/ethtool.yaml
+@@ -16,6 +16,11 @@ definitions:
+     name: stringset
+     type: enum
+     entries: []
++  -
++    name: phy-upstream-type
++    enum-name:
++    type: enum
++    entries: [ mac, sfp, phy ]
+ 
+ attribute-sets:
+   -
+@@ -30,7 +35,9 @@ attribute-sets:
+       -
+         name: flags
+         type: u32
+-
++      -
++        name: phy-index
++        type: u32
+   -
+     name: bitset-bit
+     attributes:
+@@ -939,6 +946,45 @@ attribute-sets:
+       -
+         name: burst-tmr
+         type: u32
++  -
++    name: phy-upstream
++    attributes:
++      -
++        name: index
++        type: u32
++      -
++        name: sfp-name
++        type: string
++  -
++    name: phy
++    attributes:
++      -
++        name: header
++        type: nest
++        nested-attributes: header
++      -
++        name: phy-index
++        type: u32
++      -
++        name: drvname
++        type: string
++      -
++        name: name
++        type: string
++      -
++        name: upstream-type
++        type: u8
++        enum: phy-upstream-type
++      -
++        name: upstream
++        type: nest
++        nested-attributes: phy-upstream
++      -
++        name: downstream-sfp-name
++        type: string
++      -
++        name: id
++        type: u32
+ 
+ operations:
+   enum-model: directional
+@@ -1689,3 +1735,24 @@ operations:
+       name: mm-ntf
+       doc: Notification for change in MAC Merge configuration.
+       notify: mm-get
++    -
++      name: phy-get
++      doc: Get PHY devices attached to an interface
++
++      attribute-set: phy
++
++      do: &phy-get-op
++        request:
++          attributes:
++            - header
++        reply:
++          attributes:
++            - header
++            - index
++            - drvname
++            - name
++            - upstream-type
++            - upstream
++            - downstream-sfp-name
++            - id
++      dump: *phy-get-op
+diff --git a/Documentation/networking/ethtool-netlink.rst b/Documentation/networking/ethtool-netlink.rst
+index 2540c70952ff..29ef675f45c0 100644
+--- a/Documentation/networking/ethtool-netlink.rst
++++ b/Documentation/networking/ethtool-netlink.rst
+@@ -57,6 +57,7 @@ Structure of this header is
+   ``ETHTOOL_A_HEADER_DEV_INDEX``  u32     device ifindex
+   ``ETHTOOL_A_HEADER_DEV_NAME``   string  device name
+   ``ETHTOOL_A_HEADER_FLAGS``      u32     flags common for all requests
++  ``ETHTOOL_A_HEADER_PHY_INDEX``  u32     phy device index
+   ==============================  ======  =============================
+ 
+ ``ETHTOOL_A_HEADER_DEV_INDEX`` and ``ETHTOOL_A_HEADER_DEV_NAME`` identify the
+@@ -81,6 +82,12 @@ the behaviour is backward compatible, i.e. requests from old clients not aware
+ of the flag should be interpreted the way the client expects. A client must
+ not set flags it does not understand.
+ 
++``ETHTOOL_A_HEADER_PHY_INDEX`` identify the ethernet PHY the message relates to.
++As there are numerous commands that are related to PHY configuration, and because
++we can have more than one PHY on the link, the PHY index can be passed in the
++request for the commands that needs it. It is however not mandatory, and if it
++is not passed for commands that target a PHY, the net_device.phydev pointer
++is used, as a fallback that keeps the legacy behaviour.
+ 
+ Bit sets
+ ========
+@@ -1994,6 +2001,49 @@ The attributes are propagated to the driver through the following structure:
+ .. kernel-doc:: include/linux/ethtool.h
+     :identifiers: ethtool_mm_cfg
+ 
++PHY_GET
++======
++
++Retrieve information about a given Ethernet PHY sitting on the link. As there
++can be more than one PHY, the DUMP operation can be used to list the PHYs
++present on a given interface, by passing an interface index or name in
++the dump request
++
++Request contents:
++
++  ====================================  ======  ==========================
++  ``ETHTOOL_A_PHY_HEADER``              nested  request header
++  ====================================  ======  ==========================
++
++Kernel response contents:
++
++  =================================     ======  ==========================
++  ``ETHTOOL_A_PHY_HEADER``              nested  request header
++  ``ETHTOOL_A_PHY_INDEX``               u32     the phy's unique index, that can
++                                                be used for phy-specific requests
++  ``ETHTOOL_A_PHY_DRVNAME``             string  the phy driver name
++  ``ETHTOOL_A_PHY_NAME``                string  the phy device name
++  ``ETHTOOL_A_PHY_UPSTREAM_TYPE``       u32     the type of device this phy is
++                                                connected to
++  ``ETHTOOL_A_PHY_UPSTREAM_PHY``        nested  if the phy is connected to another
++                                                phy, this nest contains info on
++                                                that connection
++  ``ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME`` string  if the phy controls an sfp bus,
++                                                the name of the sfp bus
++  ``ETHTOOL_A_PHY_ID``                  u32     the phy id if the phy is C22
++  =================================     ======  ==========================
++
++When ``ETHTOOL_A_PHY_UPSTREAM_TYPE`` is PHY_UPSTREAM_PHY, the PHY's parent is
++another PHY. Information on the parent PHY will be set in the
++``ETHTOOL_A_PHY_UPSTREAM_PHY`` nest, which has the following structure :
++
++  =================================     ======  ==========================
++  ``ETHTOOL_A_PHY_UPSTREAM_INDEX``      u32     the PHY index of the upstream PHY
++  ``ETHTOOL_A_PHY_UPSTREAM_SFP_NAME``   string  if this PHY is connected to it's
++                                                parent PHY through an SFP bus, the
++                                                name of this sfp bus
++  =================================     ======  ==========================
++
+ Request translation
+ ===================
+ 
+@@ -2100,4 +2150,5 @@ are netlink only.
+   n/a                                 ``ETHTOOL_MSG_PLCA_GET_STATUS``
+   n/a                                 ``ETHTOOL_MSG_MM_GET``
+   n/a                                 ``ETHTOOL_MSG_MM_SET``
++  n/a                                 ``ETHTOOL_MSG_PHY_GET``
+   =================================== =====================================
+diff --git a/include/linux/ethtool_netlink.h b/include/linux/ethtool_netlink.h
+index fae0dfb9a9c8..b4c40f1cc854 100644
+--- a/include/linux/ethtool_netlink.h
++++ b/include/linux/ethtool_netlink.h
+@@ -118,5 +118,10 @@ static inline bool ethtool_dev_mm_supported(struct net_device *dev)
+ 	return false;
+ }
+ 
++int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
++{
++	return -EOPNOTSUPP;
++}
++
+ #endif /* IS_ENABLED(CONFIG_ETHTOOL_NETLINK) */
+ #endif /* _LINUX_ETHTOOL_NETLINK_H_ */
 diff --git a/include/uapi/linux/ethtool_netlink.h b/include/uapi/linux/ethtool_netlink.h
-index 73e2c10dc2cc..e557cf35250e 100644
+index e557cf35250e..7d621963698a 100644
 --- a/include/uapi/linux/ethtool_netlink.h
 +++ b/include/uapi/linux/ethtool_netlink.h
-@@ -133,6 +133,7 @@ enum {
- 	ETHTOOL_A_HEADER_DEV_INDEX,		/* u32 */
- 	ETHTOOL_A_HEADER_DEV_NAME,		/* string */
- 	ETHTOOL_A_HEADER_FLAGS,			/* u32 - ETHTOOL_FLAG_* */
-+	ETHTOOL_A_HEADER_PHY_INDEX,		/* u32 */
+@@ -57,6 +57,7 @@ enum {
+ 	ETHTOOL_MSG_PLCA_GET_STATUS,
+ 	ETHTOOL_MSG_MM_GET,
+ 	ETHTOOL_MSG_MM_SET,
++	ETHTOOL_MSG_PHY_GET,
  
  	/* add new constants above here */
- 	__ETHTOOL_A_HEADER_CNT,
+ 	__ETHTOOL_MSG_USER_CNT,
+@@ -109,6 +110,8 @@ enum {
+ 	ETHTOOL_MSG_PLCA_NTF,
+ 	ETHTOOL_MSG_MM_GET_REPLY,
+ 	ETHTOOL_MSG_MM_NTF,
++	ETHTOOL_MSG_PHY_GET_REPLY,
++	ETHTOOL_MSG_PHY_NTF,
+ 
+ 	/* add new constants above here */
+ 	__ETHTOOL_MSG_KERNEL_CNT,
+@@ -976,6 +979,32 @@ enum {
+ 	ETHTOOL_A_MM_MAX = (__ETHTOOL_A_MM_CNT - 1)
+ };
+ 
++enum {
++	ETHTOOL_A_PHY_UPSTREAM_UNSPEC,
++	ETHTOOL_A_PHY_UPSTREAM_INDEX,			/* u32 */
++	ETHTOOL_A_PHY_UPSTREAM_SFP_NAME,		/* string */
++
++	/* add new constants above here */
++	__ETHTOOL_A_PHY_UPSTREAM_CNT,
++	ETHTOOL_A_PHY_UPSTREAM_MAX = (__ETHTOOL_A_PHY_UPSTREAM_CNT - 1)
++};
++
++enum {
++	ETHTOOL_A_PHY_UNSPEC,
++	ETHTOOL_A_PHY_HEADER,			/* nest - _A_HEADER_* */
++	ETHTOOL_A_PHY_INDEX,			/* u32 */
++	ETHTOOL_A_PHY_DRVNAME,			/* string */
++	ETHTOOL_A_PHY_NAME,			/* string */
++	ETHTOOL_A_PHY_UPSTREAM_TYPE,		/* u8 */
++	ETHTOOL_A_PHY_UPSTREAM,			/* nest - _A_PHY_UPSTREAM_* */
++	ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME,	/* string */
++	ETHTOOL_A_PHY_ID,			/* u32 */
++
++	/* add new constants above here */
++	__ETHTOOL_A_PHY_CNT,
++	ETHTOOL_A_PHY_MAX = (__ETHTOOL_A_PHY_CNT - 1)
++};
++
+ /* generic netlink info */
+ #define ETHTOOL_GENL_NAME "ethtool"
+ #define ETHTOOL_GENL_VERSION 1
+diff --git a/net/ethtool/Makefile b/net/ethtool/Makefile
+index 504f954a1b28..0ccd0e9afd3f 100644
+--- a/net/ethtool/Makefile
++++ b/net/ethtool/Makefile
+@@ -8,4 +8,4 @@ ethtool_nl-y	:= netlink.o bitset.o strset.o linkinfo.o linkmodes.o rss.o \
+ 		   linkstate.o debug.o wol.o features.o privflags.o rings.o \
+ 		   channels.o coalesce.o pause.o eee.o tsinfo.o cabletest.o \
+ 		   tunnels.o fec.o eeprom.o stats.o phc_vclocks.o mm.o \
+-		   module.o pse-pd.o plca.o mm.o
++		   module.o pse-pd.o plca.o mm.o phy.o
 diff --git a/net/ethtool/netlink.c b/net/ethtool/netlink.c
-index 3bbd5afb7b31..e83ee844b60f 100644
+index e83ee844b60f..80c8c312a584 100644
 --- a/net/ethtool/netlink.c
 +++ b/net/ethtool/netlink.c
-@@ -4,6 +4,7 @@
- #include <linux/ethtool_netlink.h>
- #include <linux/pm_runtime.h>
- #include "netlink.h"
-+#include <linux/link_topology.h>
- 
- static struct genl_family ethtool_genl_family;
- 
-@@ -20,6 +21,7 @@ const struct nla_policy ethnl_header_policy[] = {
- 					    .len = ALTIFNAMSIZ - 1 },
- 	[ETHTOOL_A_HEADER_FLAGS]	= NLA_POLICY_MASK(NLA_U32,
- 							  ETHTOOL_FLAGS_BASIC),
-+	[ETHTOOL_A_HEADER_PHY_INDEX]		= NLA_POLICY_MIN(NLA_U32, 1),
+@@ -1150,6 +1150,14 @@ static const struct genl_ops ethtool_genl_ops[] = {
+ 		.policy = ethnl_mm_set_policy,
+ 		.maxattr = ARRAY_SIZE(ethnl_mm_set_policy) - 1,
+ 	},
++	{
++		.cmd	= ETHTOOL_MSG_PHY_GET,
++		.doit	= ethnl_phy_doit,
++		.start	= ethnl_phy_start,
++		.dumpit	= ethnl_phy_dumpit,
++		.policy = ethnl_phy_get_policy,
++		.maxattr = ARRAY_SIZE(ethnl_phy_get_policy) - 1,
++	},
  };
  
- const struct nla_policy ethnl_header_policy_stats[] = {
-@@ -28,6 +30,7 @@ const struct nla_policy ethnl_header_policy_stats[] = {
- 					    .len = ALTIFNAMSIZ - 1 },
- 	[ETHTOOL_A_HEADER_FLAGS]	= NLA_POLICY_MASK(NLA_U32,
- 							  ETHTOOL_FLAGS_STATS),
-+	[ETHTOOL_A_HEADER_PHY_INDEX]		= NLA_POLICY_MIN(NLA_U32, 1),
- };
- 
- int ethnl_ops_begin(struct net_device *dev)
-@@ -91,6 +94,7 @@ int ethnl_parse_header_dev_get(struct ethnl_req_info *req_info,
- {
- 	struct nlattr *tb[ARRAY_SIZE(ethnl_header_policy)];
- 	const struct nlattr *devname_attr;
-+	struct phy_device *phydev = NULL;
- 	struct net_device *dev = NULL;
- 	u32 flags = 0;
- 	int ret;
-@@ -145,6 +149,24 @@ int ethnl_parse_header_dev_get(struct ethnl_req_info *req_info,
- 		return -EINVAL;
- 	}
- 
-+	if (dev) {
-+		if (tb[ETHTOOL_A_HEADER_PHY_INDEX]) {
-+			u32 phy_index = nla_get_u32(tb[ETHTOOL_A_HEADER_PHY_INDEX]);
-+
-+			phydev = link_topo_get_phy(&dev->link_topo, phy_index);
-+			if (!phydev) {
-+				NL_SET_ERR_MSG_ATTR(extack, header, "no phy matches phy index");
-+				return -EINVAL;
-+			}
-+		} else {
-+			/* If we need a PHY but no phy index is specified, fallback
-+			 * to dev->phydev
-+			 */
-+			phydev = dev->phydev;
-+		}
-+	}
-+
-+	req_info->phydev = phydev;
- 	req_info->dev = dev;
- 	req_info->flags = flags;
- 	return 0;
+ static const struct genl_multicast_group ethtool_nl_mcgrps[] = {
 diff --git a/net/ethtool/netlink.h b/net/ethtool/netlink.h
-index 9a333a8d04c1..3f5eb60bdf0b 100644
+index 3f5eb60bdf0b..844c83c2ec7f 100644
 --- a/net/ethtool/netlink.h
 +++ b/net/ethtool/netlink.h
-@@ -250,6 +250,7 @@ static inline unsigned int ethnl_reply_header_size(void)
-  * @dev:   network device the request is for (may be null)
-  * @dev_tracker: refcount tracker for @dev reference
-  * @flags: request flags common for all request types
-+ * @phydev: phy_device connected to @dev this request is for (may be null)
-  *
-  * This is a common base for request specific structures holding data from
-  * parsed userspace request. These always embed struct ethnl_req_info at
-@@ -259,6 +260,7 @@ struct ethnl_req_info {
- 	struct net_device	*dev;
- 	netdevice_tracker	dev_tracker;
- 	u32			flags;
-+	struct phy_device	*phydev;
- };
+@@ -452,6 +452,9 @@ int ethnl_act_cable_test_tdr(struct sk_buff *skb, struct genl_info *info);
+ int ethnl_tunnel_info_doit(struct sk_buff *skb, struct genl_info *info);
+ int ethnl_tunnel_info_start(struct netlink_callback *cb);
+ int ethnl_tunnel_info_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
++int ethnl_phy_start(struct netlink_callback *cb);
++int ethnl_phy_doit(struct sk_buff *skb, struct genl_info *info);
++int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb);
  
- static inline void ethnl_parse_header_dev_put(struct ethnl_req_info *req_info)
-@@ -395,9 +397,10 @@ extern const struct ethnl_request_ops ethnl_rss_request_ops;
- extern const struct ethnl_request_ops ethnl_plca_cfg_request_ops;
- extern const struct ethnl_request_ops ethnl_plca_status_request_ops;
- extern const struct ethnl_request_ops ethnl_mm_request_ops;
-+extern const struct ethnl_request_ops ethnl_phy_request_ops;
- 
--extern const struct nla_policy ethnl_header_policy[ETHTOOL_A_HEADER_FLAGS + 1];
--extern const struct nla_policy ethnl_header_policy_stats[ETHTOOL_A_HEADER_FLAGS + 1];
-+extern const struct nla_policy ethnl_header_policy[ETHTOOL_A_HEADER_PHY_INDEX + 1];
-+extern const struct nla_policy ethnl_header_policy_stats[ETHTOOL_A_HEADER_PHY_INDEX + 1];
- extern const struct nla_policy ethnl_strset_get_policy[ETHTOOL_A_STRSET_COUNTS_ONLY + 1];
- extern const struct nla_policy ethnl_linkinfo_get_policy[ETHTOOL_A_LINKINFO_HEADER + 1];
- extern const struct nla_policy ethnl_linkinfo_set_policy[ETHTOOL_A_LINKINFO_TP_MDIX_CTRL + 1];
-@@ -441,6 +444,7 @@ extern const struct nla_policy ethnl_plca_set_cfg_policy[ETHTOOL_A_PLCA_MAX + 1]
- extern const struct nla_policy ethnl_plca_get_status_policy[ETHTOOL_A_PLCA_HEADER + 1];
- extern const struct nla_policy ethnl_mm_get_policy[ETHTOOL_A_MM_HEADER + 1];
- extern const struct nla_policy ethnl_mm_set_policy[ETHTOOL_A_MM_MAX + 1];
-+extern const struct nla_policy ethnl_phy_get_policy[ETHTOOL_A_PHY_HEADER + 1];
- 
- int ethnl_set_features(struct sk_buff *skb, struct genl_info *info);
- int ethnl_act_cable_test(struct sk_buff *skb, struct genl_info *info);
+ extern const char stats_std_names[__ETHTOOL_STATS_CNT][ETH_GSTRING_LEN];
+ extern const char stats_eth_phy_names[__ETHTOOL_A_STATS_ETH_PHY_CNT][ETH_GSTRING_LEN];
+diff --git a/net/ethtool/phy.c b/net/ethtool/phy.c
+new file mode 100644
+index 000000000000..ac6b4612301c
+--- /dev/null
++++ b/net/ethtool/phy.c
+@@ -0,0 +1,279 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Copyright 2023 Bootlin
++ *
++ */
++#include "common.h"
++#include "netlink.h"
++
++#include <linux/link_topology.h>
++#include <linux/phy.h>
++#include <linux/sfp.h>
++
++struct phy_req_info {
++	struct ethnl_req_info		base;
++	struct phy_device_node		pdn;
++};
++
++#define PHY_REQINFO(__req_base) \
++	container_of(__req_base, struct phy_req_info, base)
++
++const struct nla_policy ethnl_phy_get_policy[ETHTOOL_A_PHY_HEADER + 1] = {
++	[ETHTOOL_A_PHY_HEADER] = NLA_POLICY_NESTED(ethnl_header_policy),
++};
++
++/* Caller holds rtnl */
++static ssize_t
++ethnl_phy_reply_size(const struct ethnl_req_info *req_base,
++		     struct netlink_ext_ack *extack)
++{
++	struct phy_device_node *pdn;
++	struct phy_device *phydev;
++	struct link_topology *lt;
++	unsigned long index;
++	size_t size;
++
++	lt = &req_base->dev->link_topo;
++
++	size = nla_total_size(0);
++
++	xa_for_each(&lt->phys, index, pdn) {
++		phydev = pdn->phy;
++
++		/* ETHTOOL_A_PHY_INDEX */
++		size += nla_total_size(sizeof(u32));
++
++		/* ETHTOOL_A_DRVNAME */
++		size += nla_total_size(strlen(phydev->drv->name));
++
++		/* ETHTOOL_A_NAME */
++		size += nla_total_size(strlen(dev_name(&phydev->mdio.dev)));
++
++		/* ETHTOOL_A_PHY_UPSTREAM_TYPE */
++		size += nla_total_size(sizeof(u8));
++
++		/* ETHTOOL_A_PHY_ID */
++		size += nla_total_size(sizeof(u32));
++
++		if (phy_on_sfp(phydev)) {
++			/* ETHTOOL_A_PHY_UPSTREAM_SFP_NAME */
++			if (sfp_get_name(pdn->parent_sfp_bus))
++				size += nla_total_size(strlen(sfp_get_name(pdn->parent_sfp_bus)));
++
++			/* ETHTOOL_A_PHY_UPSTREAM_INDEX */
++			size += nla_total_size(sizeof(u32));
++		}
++
++		/* ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME */
++		if (phydev->sfp_bus)
++			size += nla_total_size(strlen(sfp_get_name(phydev->sfp_bus)));
++	}
++
++	return size;
++}
++
++static int
++ethnl_phy_fill_reply(const struct ethnl_req_info *req_base, struct sk_buff *skb)
++{
++	struct phy_req_info *req_info = PHY_REQINFO(req_base);
++	struct phy_device_node *pdn = &req_info->pdn;
++	struct phy_device *phydev = pdn->phy;
++	enum phy_upstream ptype;
++	struct nlattr *nest;
++
++	ptype = pdn->upstream_type;
++
++	if (nla_put_u32(skb, ETHTOOL_A_PHY_INDEX, phydev->phyindex) ||
++	    nla_put_string(skb, ETHTOOL_A_PHY_DRVNAME, phydev->drv->name) ||
++	    nla_put_string(skb, ETHTOOL_A_PHY_NAME, dev_name(&phydev->mdio.dev)) ||
++	    nla_put_u8(skb, ETHTOOL_A_PHY_UPSTREAM_TYPE, ptype) ||
++	    nla_put_u32(skb, ETHTOOL_A_PHY_ID, phydev->phy_id))
++		return -EMSGSIZE;
++
++	if (ptype == PHY_UPSTREAM_PHY) {
++		struct phy_device *upstream = pdn->upstream.phydev;
++
++		nest = nla_nest_start(skb, ETHTOOL_A_PHY_UPSTREAM);
++		if (!nest)
++			return -EMSGSIZE;
++
++		/* Parent index */
++		if (nla_put_u32(skb, ETHTOOL_A_PHY_UPSTREAM_INDEX, upstream->phyindex))
++			return -EMSGSIZE;
++
++		if (pdn->parent_sfp_bus && sfp_get_name(pdn->parent_sfp_bus) &&
++		    nla_put_string(skb, ETHTOOL_A_PHY_UPSTREAM_SFP_NAME,
++				   sfp_get_name(pdn->parent_sfp_bus)))
++			return -EMSGSIZE;
++
++		nla_nest_end(skb, nest);
++	}
++
++	if (phydev->sfp_bus &&
++	    nla_put_string(skb, ETHTOOL_A_PHY_DOWNSTREAM_SFP_NAME,
++			   sfp_get_name(phydev->sfp_bus)))
++		return -EMSGSIZE;
++
++	return 0;
++}
++
++static int ethnl_phy_parse_request(struct ethnl_req_info *req_base,
++				   struct nlattr **tb)
++{
++	struct phy_req_info *req_info = PHY_REQINFO(req_base);
++	struct link_topology *lt = &req_base->dev->link_topo;
++	struct phy_device_node *pdn;
++
++	if (!req_base->phydev)
++		return 0;
++
++	pdn = xa_load(&lt->phys, req_base->phydev->phyindex);
++	memcpy(&req_info->pdn, pdn, sizeof(*pdn));
++
++	return 0;
++}
++
++int ethnl_phy_doit(struct sk_buff *skb, struct genl_info *info)
++{
++	struct phy_req_info req_info = {};
++	struct nlattr **tb = info->attrs;
++	struct sk_buff *rskb;
++	void *reply_payload;
++	int reply_len;
++	int ret;
++
++	ret = ethnl_parse_header_dev_get(&req_info.base,
++					 tb[ETHTOOL_A_PHY_HEADER],
++					 genl_info_net(info), info->extack,
++					 true);
++	if (ret < 0)
++		return ret;
++
++	rtnl_lock();
++
++	ret = ethnl_phy_parse_request(&req_info.base, tb);
++	if (ret < 0)
++		goto err_unlock_rtnl;
++
++	/* No PHY, return early */
++	if (!req_info.pdn.phy)
++		goto err_unlock_rtnl;
++
++	ret = ethnl_phy_reply_size(&req_info.base, info->extack);
++	if (ret < 0)
++		goto err_unlock_rtnl;
++	reply_len = ret + ethnl_reply_header_size();
++
++	rskb = ethnl_reply_init(reply_len, req_info.base.dev,
++				ETHTOOL_MSG_PHY_GET_REPLY,
++				ETHTOOL_A_PHY_HEADER,
++				info, &reply_payload);
++	if (!rskb) {
++		ret = -ENOMEM;
++		goto err_unlock_rtnl;
++	}
++
++	ret = ethnl_phy_fill_reply(&req_info.base, rskb);
++	if (ret)
++		goto err_free_msg;
++
++	rtnl_unlock();
++	ethnl_parse_header_dev_put(&req_info.base);
++	genlmsg_end(rskb, reply_payload);
++
++	return genlmsg_reply(rskb, info);
++
++err_free_msg:
++	nlmsg_free(rskb);
++err_unlock_rtnl:
++	rtnl_unlock();
++	ethnl_parse_header_dev_put(&req_info.base);
++	return ret;
++}
++
++struct ethnl_phy_dump_ctx {
++	struct ethnl_req_info	req_info;
++};
++
++int ethnl_phy_start(struct netlink_callback *cb)
++{
++	const struct genl_dumpit_info *info = genl_dumpit_info(cb);
++	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
++	struct nlattr **tb = info->info.attrs;
++	int ret;
++
++	BUILD_BUG_ON(sizeof(*ctx) > sizeof(cb->ctx));
++
++	memset(ctx, 0, sizeof(*ctx));
++
++	ret = ethnl_parse_header_dev_get(&ctx->req_info,
++					 tb[ETHTOOL_A_PHY_HEADER],
++					 sock_net(cb->skb->sk), cb->extack,
++					 false);
++	return ret;
++}
++
++int ethnl_phy_dump_one_dev(struct sk_buff *skb, struct net_device *dev,
++			   struct netlink_callback *cb)
++{
++	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
++	struct phy_req_info *pri = PHY_REQINFO(&ctx->req_info);
++	struct phy_device_node *pdn;
++	unsigned long index = 1;
++	void *ehdr;
++	int ret;
++
++	ctx->req_info.dev = dev;
++
++	xa_for_each(&dev->link_topo.phys, index, pdn) {
++		ehdr = ethnl_dump_put(skb, cb,
++				      ETHTOOL_MSG_PHY_GET_REPLY);
++		if (!ehdr) {
++			ret = -EMSGSIZE;
++			break;
++		}
++
++		ret = ethnl_fill_reply_header(skb, dev,
++					      ETHTOOL_A_PHY_HEADER);
++		if (ret < 0) {
++			genlmsg_cancel(skb, ehdr);
++			break;
++		}
++
++		memcpy(&pri->pdn, pdn, sizeof(*pdn));
++		ret = ethnl_phy_fill_reply(&ctx->req_info, skb);
++
++		genlmsg_end(skb, ehdr);
++	}
++
++	ctx->req_info.dev = NULL;
++
++	return ret;
++}
++
++int ethnl_phy_dumpit(struct sk_buff *skb, struct netlink_callback *cb)
++{
++	struct ethnl_phy_dump_ctx *ctx = (void *)cb->ctx;
++	struct net *net = sock_net(skb->sk);
++	unsigned long ifindex = 1;
++	struct net_device *dev;
++	int ret = 0;
++
++	rtnl_lock();
++
++	if (ctx->req_info.dev) {
++		ret = ethnl_phy_dump_one_dev(skb, ctx->req_info.dev, cb);
++	} else {
++		for_each_netdev_dump(net, dev, ifindex) {
++			ret = ethnl_phy_dump_one_dev(skb, dev, cb);
++			if (ret)
++				break;
++		}
++	}
++	rtnl_unlock();
++
++	if (ret == -EMSGSIZE && skb->len)
++		return skb->len;
++	return ret;
++}
++
 -- 
 2.41.0
 
