@@ -2,157 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 39EFD7EEECD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E2C7EEEA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:30:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345719AbjKQJik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44744 "EHLO
+        id S1345834AbjKQJaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:30:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45206 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQJii (ORCPT
+        with ESMTP id S1345754AbjKQJaI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:38:38 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71DFEC4;
-        Fri, 17 Nov 2023 01:38:35 -0800 (PST)
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH8h2G5009158;
-        Fri, 17 Nov 2023 09:38:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=qcppdkim1;
- bh=AMbbiu9sNr2NWbbmpOhk/Q3RiJu55M9uGg3d6nn2ijk=;
- b=pFxot3H/RmFIQ0TNv4Ozkyk2xe99mVfiYPZNpV2xKp4O0fa+lzHtZ8iTMJMB55YYJb35
- 9+6SzrcRRQmSuTxaX9X2vWopgMBUeQ6Z3iD4FGn39ghT4zCAkf4bN9J/TJkLaTwo3Ur+
- LJnCtkJXCIrn9Pamx7UZa9+oR6n/vTo9KC8ZjUhItsm3Krny0nxnF0aewznqtKH7JcJq
- ALxSHf88Iiv8KuyVcfJRu9QZTm1Xwi+LzsjpomChKZ68ZvT2tsO749MIAqh7cP/H1EQS
- gRQc7uBEMESh/HFkSysFvR/WX4WDxBckfDvdL4AXToXXPVVMR8rBFJ0AXHbEL3ur3s6Z bQ== 
-Received: from nalasppmta04.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udms92aww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:38:31 +0000
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-        by NALASPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9cTMR028066
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:38:30 GMT
-Received: from blr-ubuntu-87.ap.qualcomm.com (10.80.80.8) by
- nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.39; Fri, 17 Nov 2023 01:28:23 -0800
-From:   Sibi Sankar <quic_sibis@quicinc.com>
-To:     <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
-        <mturquette@baylibre.com>, <sboyd@kernel.org>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>
-CC:     <agross@kernel.org>, <conor+dt@kernel.org>,
-        <quic_tdas@quicinc.com>, <quic_rjendra@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <neil.armstrong@linaro.org>, <abel.vesa@linaro.org>,
-        <quic_tsoni@quicinc.com>, Sibi Sankar <quic_sibis@quicinc.com>
-Subject: [PATCH V2 4/4] clk: qcom: rpmh: Add support for X1E80100 rpmh clocks
-Date:   Fri, 17 Nov 2023 14:57:37 +0530
-Message-ID: <20231117092737.28362-5-quic_sibis@quicinc.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20231117092737.28362-1-quic_sibis@quicinc.com>
-References: <20231117092737.28362-1-quic_sibis@quicinc.com>
+        Fri, 17 Nov 2023 04:30:08 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F082D55;
+        Fri, 17 Nov 2023 01:30:03 -0800 (PST)
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9TWDB011177;
+        Fri, 17 Nov 2023 03:29:32 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700213372;
+        bh=8AY1Zj2fDh+MvTGvo5m3oqX+4w3vXGLhL0h02wTVRPo=;
+        h=From:Subject:Date:To:CC;
+        b=bqhtWhg/a1vyWGmT6iG03CiIZe9c6MKFu+x8I1WcK+QGeyxMKmb1qLGBOjvwDQ6TK
+         nvF+PskNL0i0a71awX4TFDdPhtVelPOFltDKFQUEbPlGIefehdw13R3Qmj6qiNP30v
+         7Wk0ETbrVnVmnVf7wicgXPJTFnbWqITtPxm2Hlgg=
+Received: from DFLE107.ent.ti.com (dfle107.ent.ti.com [10.64.6.28])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AH9TW9A023814
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Nov 2023 03:29:32 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
+ Nov 2023 03:29:31 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 17 Nov 2023 03:29:31 -0600
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9TV2x000416;
+        Fri, 17 Nov 2023 03:29:31 -0600
+From:   Jai Luthra <j-luthra@ti.com>
+Subject: [PATCH v2 0/9] arm64: dts: ti: Enable CSI cameras for AM62 family
+Date:   Fri, 17 Nov 2023 14:58:08 +0530
+Message-ID: <20231117-csi_dts-v2-0-bf4312194a6b@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VVTv3h6XDhFy7KsJyNUPqVPdSfoBGXAy
-X-Proofpoint-ORIG-GUID: VVTv3h6XDhFy7KsJyNUPqVPdSfoBGXAy
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- lowpriorityscore=0 clxscore=1015 malwarescore=0 impostorscore=0
- priorityscore=1501 suspectscore=0 phishscore=0 bulkscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311170070
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIACkyV2UC/z3MQQrCMBCF4auUWRtpkqZQV96jFEmTiZ2FjWRCU
+ Urubizo8n88vh0YEyHDpdkh4UZMca2hTg24xa53FORrg2qVllJ2wjHdfGZhQqe1dVb3vYH6fiY
+ M9Dqkcaq9EOeY3ge8ye/6M8zf2KRoxTAEZ7SZ1ezxmuns4gOmUsoHnh0nhZsAAAA=
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Martyn Welch <martyn.welch@collabora.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Jai Luthra <j-luthra@ti.com>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2298; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=5rJSVTpPkU1Yl+21VLiJPuQ+ThVzlJaMtsvyE3RSoHU=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlVzJrT6fPIBmvgT8kjhynkbXmLZEbZKUlQhRlp
+ X1FaizsHcmJAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZVcyawAKCRBD3pH5JJpx
+ RWQcD/43cZDvDKNUF+Wjou83dNT7Cyk4jrL/YOpcdyAXhEYNGF6KlUR9HLkdwO67yrFdCvC1EPJ
+ RPboizqAFFIsEUHUBRqVoLangqYI56W6UnW6dqDwj1QeWfpuEgSgoWTuEB2aaoOuW1tftyUwkOe
+ OO2NtM5PjDtEzmrmg83ZMSeemsaCd0r+8xSxB9CApGXrg2NuIw283aeVuHTtTCgNKSbx+va+KvM
+ WZv8Pe4cpaT6xqXCSPsrFOpw8pba3/lg9GY6yK2YCO83e7zCMbQzrluxM34OB6DSzLOICuPXAEV
+ rd+5f+YiVhr6V7niPENxFTSGbkBjUKC94CQ6Wu0dJCQbh38wrAQTyyQNXkcKZMTPfqlW9DG5Nq1
+ PY8r5222NX1vo7eXKLHZhoNNe9DGKNPFx22uHyCoCeQYbM9F2ybQWfcmKJQqdDuoPpp9ZN3l8BW
+ 9LkJEFhrfwAjxOaj0q6D1rgpOjWNtMK0wUk9WfIfbgynMOYWzoIuiCR3eWvETDN5EUu+laoI9rH
+ 5u9PF/TGLEi5R4SsoeMCY+NHxsp1DxOYFt4I5Vxk1WmUmB4e5gQ6T0rN28X50fb/IkZHADwJ+JX
+ TN+w1JhiYXrY33OfUWk2HVwGagRvYzz5vAeILCMVxvvwXyGNXu4YOHE24sU2zLf9sKxAKzUwWXY
+ OZMWe9CBbaB3KQw==
+X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
+ fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rajendra Nayak <quic_rjendra@quicinc.com>
+This series enables CSI camera support on BeaglePlay, SK-AM62 and
+SK-AM62A, now that the dt-bindings and driver support for CSI-RX related
+IPs is merged in v6.7-rc1.
 
-Adds the RPMH clocks present in X1E80100 SoC
+Along with the device tree nodes for CSI-RX, add new DT overlays for
+different camera modules like RPiv2 (IMX219) or PCam5C (OV5640).
 
-Co-developed-by: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
-Co-developed-by: Sibi Sankar <quic_sibis@quicinc.com>
-Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
-Reviewed-by: Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
+Changes in v2:
+- Follow Andrew's comments to avoid creating combined DTBs with overlays
+  applied, instead adding them with "dtb- +=" to optionally test that
+  they apply cleanly with OF_ALL_DTBS=y config.
+- [New Patch] Cleanup existing combined DTBs to also do the same as above
+- Pick Martyn's Tested-By tag for SK-AM62
+- Link to v1: https://lore.kernel.org/r/20231115-csi_dts-v1-0-99fc535b2bde@ti.com
 
-v2:
-* Update the part number from sc8380xp to x1e80100.
-* Pick-up Rbs from the list.
+---
+Jai Luthra (9):
+      arm64: defconfig: Enable AM62 CSI2RX
+      arm64: dts: ti: Enable CSI-RX on AM62
+      arm64: dts: ti: Enable CSI-RX on AM62A
+      arm64: dts: ti: k3-am625-beagleplay: Add overlays for OV5640
+      arm64: dts: ti: k3-am62x-sk: Enable camera peripherals
+      arm64: dts: ti: k3-am62x: Add overlays for OV5640
+      arm64: dts: ti: k3-am62a7-sk: Enable camera peripherals
+      arm64: dts: ti: k3-am62x: Add overlay for IMX219
+      arm64: dts: ti: Use OF_ALL_DTBS for combined blobs
 
- drivers/clk/qcom/clk-rpmh.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ arch/arm64/boot/dts/ti/Makefile                    | 60 ++++++++++---
+ arch/arm64/boot/dts/ti/k3-am62-main.dtsi           | 62 ++++++++++++++
+ .../dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso    | 77 +++++++++++++++++
+ .../ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso   | 77 +++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62a-main.dtsi          | 99 ++++++++++++++++++++++
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts            | 35 ++++++++
+ arch/arm64/boot/dts/ti/k3-am62x-sk-common.dtsi     | 15 ++++
+ .../arm64/boot/dts/ti/k3-am62x-sk-csi2-imx219.dtso | 76 +++++++++++++++++
+ .../arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso | 74 ++++++++++++++++
+ .../boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso  | 74 ++++++++++++++++
+ arch/arm64/configs/defconfig                       |  3 +
+ 11 files changed, 640 insertions(+), 12 deletions(-)
+---
+base-commit: 569293c4ad62826ba18e1e8371ce9667a5529efb
+change-id: 20231114-csi_dts-5f433aca3665
 
-diff --git a/drivers/clk/qcom/clk-rpmh.c b/drivers/clk/qcom/clk-rpmh.c
-index 5d853fd43294..ce6f4363d2f7 100644
---- a/drivers/clk/qcom/clk-rpmh.c
-+++ b/drivers/clk/qcom/clk-rpmh.c
-@@ -372,6 +372,9 @@ DEFINE_CLK_RPMH_VRM(clk3, _a1, "clka3", 1);
- DEFINE_CLK_RPMH_VRM(clk4, _a1, "clka4", 1);
- DEFINE_CLK_RPMH_VRM(clk5, _a1, "clka5", 1);
- 
-+DEFINE_CLK_RPMH_VRM(clk3, _a2, "clka3", 2);
-+DEFINE_CLK_RPMH_VRM(clk4, _a2, "clka4", 2);
-+DEFINE_CLK_RPMH_VRM(clk5, _a2, "clka5", 2);
- DEFINE_CLK_RPMH_VRM(clk6, _a2, "clka6", 2);
- DEFINE_CLK_RPMH_VRM(clk7, _a2, "clka7", 2);
- DEFINE_CLK_RPMH_VRM(clk8, _a2, "clka8", 2);
-@@ -737,6 +740,28 @@ static const struct clk_rpmh_desc clk_rpmh_sm4450 = {
- 	.num_clks = ARRAY_SIZE(sm4450_rpmh_clocks),
- };
- 
-+static struct clk_hw *x1e80100_rpmh_clocks[] = {
-+	[RPMH_CXO_CLK]		= &clk_rpmh_bi_tcxo_div2.hw,
-+	[RPMH_CXO_CLK_A]	= &clk_rpmh_bi_tcxo_div2_ao.hw,
-+	[RPMH_LN_BB_CLK1]	= &clk_rpmh_clk6_a2.hw,
-+	[RPMH_LN_BB_CLK1_A]	= &clk_rpmh_clk6_a2_ao.hw,
-+	[RPMH_LN_BB_CLK2]	= &clk_rpmh_clk7_a2.hw,
-+	[RPMH_LN_BB_CLK2_A]	= &clk_rpmh_clk7_a2_ao.hw,
-+	[RPMH_LN_BB_CLK3]	= &clk_rpmh_clk8_a2.hw,
-+	[RPMH_LN_BB_CLK3_A]	= &clk_rpmh_clk8_a2_ao.hw,
-+	[RPMH_RF_CLK3]		= &clk_rpmh_clk3_a2.hw,
-+	[RPMH_RF_CLK3_A]	= &clk_rpmh_clk3_a2_ao.hw,
-+	[RPMH_RF_CLK4]		= &clk_rpmh_clk4_a2.hw,
-+	[RPMH_RF_CLK4_A]	= &clk_rpmh_clk4_a2_ao.hw,
-+	[RPMH_RF_CLK5]		= &clk_rpmh_clk5_a2.hw,
-+	[RPMH_RF_CLK5_A]	= &clk_rpmh_clk5_a2_ao.hw,
-+};
-+
-+static const struct clk_rpmh_desc clk_rpmh_x1e80100 = {
-+	.clks = x1e80100_rpmh_clocks,
-+	.num_clks = ARRAY_SIZE(x1e80100_rpmh_clocks),
-+};
-+
- static struct clk_hw *of_clk_rpmh_hw_get(struct of_phandle_args *clkspec,
- 					 void *data)
- {
-@@ -838,6 +863,7 @@ static const struct of_device_id clk_rpmh_match_table[] = {
- 	{ .compatible = "qcom,sm8450-rpmh-clk", .data = &clk_rpmh_sm8450},
- 	{ .compatible = "qcom,sm8550-rpmh-clk", .data = &clk_rpmh_sm8550},
- 	{ .compatible = "qcom,sc7280-rpmh-clk", .data = &clk_rpmh_sc7280},
-+	{ .compatible = "qcom,x1e80100-rpmh-clk", .data = &clk_rpmh_x1e80100},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, clk_rpmh_match_table);
+Best regards,
 -- 
-2.17.1
+Jai Luthra <j-luthra@ti.com>
 
