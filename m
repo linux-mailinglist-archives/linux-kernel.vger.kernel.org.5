@@ -2,46 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F40257EF5D3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B39027EF5D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:10:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232837AbjKQQHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:07:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43284 "EHLO
+        id S232906AbjKQQKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:10:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231569AbjKQQH3 (ORCPT
+        with ESMTP id S230513AbjKQQJ7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:07:29 -0500
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5715890;
-        Fri, 17 Nov 2023 08:07:26 -0800 (PST)
-Received: from localhost (unknown [75.104.68.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 17 Nov 2023 11:09:59 -0500
+Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BF2690;
+        Fri, 17 Nov 2023 08:09:52 -0800 (PST)
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 17CC72F3;
-        Fri, 17 Nov 2023 16:07:24 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 17CC72F3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1700237246; bh=BC2tbfdaRf5Lo95YlMn9cKPQvKOIugOE7GjfLAsoqJs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=CB0YfMGPVJjDcFVp29ZBq/m2IjMmQyZkh5MLhbuefp8kQEz/vjVvOQiDcjShuIuh1
-         EX1MN9P5ij+fI4pEveQ673LPZkD59HXOBlvlT3K39LFGkulZTVnBsMzC8rPUQBy28E
-         7YkwuOiL/78eutKo1uYT8hn7mnXafomEUT+lCh73nxB3JmzA10lQUtJ3M4EVUv66wA
-         MJeRz071X1PoPr40zTecL4jq8ra8kAUm7/x8I7MbHFFRU4cUbjXetXQJ8K1CCLbM//
-         29dUrXQ39HETSgLDPxaKd6Ag4ePeuWF3LCokQKrg9jiv8NtC47eWEnJRs0TXcS3gXm
-         o0RBZVZJ6/XFA==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Yuanhsi Chung <freshliver.cys@gmail.com>, rostedt@goodmis.org
-Cc:     mingo@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Yuanhsi Chung <freshliver.cys@gmail.com>
-Subject: Re: [PATCH] Documentation: Fix filename typo in ftrace doc
-In-Reply-To: <20231104103329.215139-1-freshliver.cys@gmail.com>
-References: <20231104103329.215139-1-freshliver.cys@gmail.com>
-Date:   Fri, 17 Nov 2023 09:07:14 -0700
-Message-ID: <871qcoxt1p.fsf@meer.lwn.net>
+        (Authenticated sender: ehristev)
+        by madras.collabora.co.uk (Postfix) with ESMTPSA id A8F966607391;
+        Fri, 17 Nov 2023 16:09:50 +0000 (GMT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+        s=mail; t=1700237391;
+        bh=Ycelbx5JSmV5iz5PlGjQ6zsV56RiWxLVmAdDb6E+JqA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=noF239htLY3Rc7NKTiCfgwk8Q2Qg/BvlDLF9eysEFV/nMDq3Y1aexudlP9w6a2xZK
+         XUCzH0hyhixMR3AUMfDWVCMLwDKMlCTTkj3QJ52/0gasDX+ZXAr3U8WaHhNuQF1HqS
+         e6OC9411fbUzvBRdXys7VPqcxXv9kPD76JsPDNjZbq7qT7n0Sl+/oK5ZrRROjov1oG
+         coJrDZGHTD6tJIz4Wy26Hab73UQfyo84Rjt3BuT5wWSAfjtu9rYSlVrwrZS6Cm6FRS
+         3Ie2UO+6cF3cuvWwEGNDj2UyyCiTGOV5E5dK/eTTqijOHHKOpt3RB1aynwAWroPsIL
+         qmbPx989f6u6g==
+From:   Eugen Hristev <eugen.hristev@collabora.com>
+To:     linux-sound@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        angelogioacchino.delregno@collabora.com, kernel@collabora.com,
+        Eugen Hristev <eugen.hristev@collabora.com>
+Subject: [PATCH] ASoC: mediatek: mt8186: trivial: align code
+Date:   Fri, 17 Nov 2023 18:09:14 +0200
+Message-Id: <20231117160914.65341-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -52,28 +54,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yuanhsi Chung <freshliver.cys@gmail.com> writes:
+No functionality change, squash some lines and align parameters for
+function prototypes to 80 chars.
 
-> The filename for setting the cpumask should be `tracing_cpumask`,
-> instead of `tracing_cpu_mask`.
->
-> Signed-off-by: Yuanhsi Chung <freshliver.cys@gmail.com>
-> ---
->  Documentation/trace/ftrace.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/trace/ftrace.rst b/Documentation/trace/ftrace.rst
-> index b37dc19e4d40..b93f11c430a9 100644
-> --- a/Documentation/trace/ftrace.rst
-> +++ b/Documentation/trace/ftrace.rst
-> @@ -2524,7 +2524,7 @@ want, depending on your needs.
->  
->  - The cpu number on which the function executed is default
->    enabled.  It is sometimes better to only trace one cpu (see
-> -  tracing_cpu_mask file) or you might sometimes see unordered
-> +  tracing_cpumask file) or you might sometimes see unordered
->    function calls while cpu tracing switch.
+Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+---
+ sound/soc/mediatek/mt8186/mt8186-afe-control.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
-Applied, thanks.
+diff --git a/sound/soc/mediatek/mt8186/mt8186-afe-control.c b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
+index 55edf6374578..dda648c1e8f8 100644
+--- a/sound/soc/mediatek/mt8186/mt8186-afe-control.c
++++ b/sound/soc/mediatek/mt8186/mt8186-afe-control.c
+@@ -181,7 +181,8 @@ static unsigned int pcm_rate_transform(struct device *dev, unsigned int rate)
+ 	return MTK_AFE_PCM_RATE_48K;
+ }
+ 
+-unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev, unsigned int rate)
++unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev,
++					       unsigned int rate)
+ {
+ 	switch (rate) {
+ 	case 8000:
+@@ -222,7 +223,8 @@ unsigned int mt8186_tdm_relatch_rate_transform(struct device *dev, unsigned int
+ 	return MTK_AFE_TDM_RELATCH_RATE_48K;
+ }
+ 
+-unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate, int aud_blk)
++unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate,
++				   int aud_blk)
+ {
+ 	switch (aud_blk) {
+ 	case MT8186_DAI_PCM:
+@@ -234,14 +236,13 @@ unsigned int mt8186_rate_transform(struct device *dev, unsigned int rate, int au
+ 	}
+ }
+ 
+-int mt8186_dai_set_priv(struct mtk_base_afe *afe, int id, int priv_size, const void *priv_data)
++int mt8186_dai_set_priv(struct mtk_base_afe *afe, int id, int priv_size,
++			const void *priv_data)
+ {
+ 	struct mt8186_afe_private *afe_priv = afe->platform_priv;
+ 	void *temp_data;
+ 
+-	temp_data = devm_kzalloc(afe->dev,
+-				 priv_size,
+-				 GFP_KERNEL);
++	temp_data = devm_kzalloc(afe->dev, priv_size, GFP_KERNEL);
+ 	if (!temp_data)
+ 		return -ENOMEM;
+ 
+-- 
+2.34.1
 
-jon
