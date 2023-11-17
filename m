@@ -2,195 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F6327EEAD2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:47:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 158877EEADA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:56:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345634AbjKQBrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 20:47:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46128 "EHLO
+        id S1345557AbjKQB4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 20:56:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345632AbjKQBrO (ORCPT
+        with ESMTP id S229809AbjKQB4o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 20:47:14 -0500
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7363E1A8
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:47:09 -0800 (PST)
-Received: from kwepemi500008.china.huawei.com (unknown [172.30.72.53])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SWfm544TNzMn4N;
-        Fri, 17 Nov 2023 09:42:29 +0800 (CST)
-Received: from [10.67.109.254] (10.67.109.254) by
- kwepemi500008.china.huawei.com (7.221.188.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.31; Fri, 17 Nov 2023 09:47:06 +0800
-Message-ID: <f55f49d7-1003-0e98-12a2-422bf4d9318e@huawei.com>
-Date:   Fri, 17 Nov 2023 09:47:06 +0800
+        Thu, 16 Nov 2023 20:56:44 -0500
+Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 16C58195;
+        Thu, 16 Nov 2023 17:56:38 -0800 (PST)
+Received: from loongson.cn (unknown [10.40.46.156])
+        by gateway (Coremail) with SMTP id _____8AxJuhVyFZlaLQ6AA--.57183S3;
+        Fri, 17 Nov 2023 09:56:37 +0800 (CST)
+Received: from [192.168.100.135] (unknown [10.40.46.156])
+        by localhost.localdomain (Coremail) with SMTP id AQAAf8AxH91SyFZlxcxEAA--.22204S3;
+        Fri, 17 Nov 2023 09:56:35 +0800 (CST)
+Subject: Re: [PATCH v4 0/4] KVM: selftests: Add LoongArch support
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Shuah Khan <shuah@kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vishal Annapurve <vannapurve@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev,
+        Peter Xu <peterx@redhat.com>,
+        Vipin Sharma <vipinsh@google.com>, maobibo@loongson.cn,
+        Sean Christopherson <seanjc@google.com>
+References: <20231108025134.2592663-1-zhaotianrui@loongson.cn>
+From:   zhaotianrui <zhaotianrui@loongson.cn>
+Message-ID: <32b34bc1-f0f0-0155-6df0-ac7725527bb8@loongson.cn>
+Date:   Fri, 17 Nov 2023 09:47:18 +0800
+User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.2.0
-Subject: Re: [PATCH] arm64: Fix 32-bit compatible userspace write size
- overflow error
-Content-Language: en-US
-To:     Arnd Bergmann <arnd@arndb.de>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Stafford Horne <shorne@gmail.com>,
-        Dinh Nguyen <dinguyen@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-References: <20231116074706.3448008-1-ruanjinjie@huawei.com>
- <bf176e04-88fe-4333-8500-1335ad7a1bdf@app.fastmail.com>
-From:   Jinjie Ruan <ruanjinjie@huawei.com>
-In-Reply-To: <bf176e04-88fe-4333-8500-1335ad7a1bdf@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20231108025134.2592663-1-zhaotianrui@loongson.cn>
+Content-Type: text/plain; charset=gbk; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.109.254]
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemi500008.china.huawei.com (7.221.188.139)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-CM-TRANSID: AQAAf8AxH91SyFZlxcxEAA--.22204S3
+X-CM-SenderInfo: p2kd03xldq233l6o00pqjv00gofq/
+X-Coremail-Antispam: 1Uk129KBj93XoWxKw1Uuw17Kr1kJFykKF1fKrX_yoWfCr1Dpa
+        yFqr1FkF4fJFy7Aw1xJ34kZ34S9as7CFWUCw13KrykZrnFy34kJry8Ka92y34fua4DXw1S
+        vay8CwnxW3WDGagCm3ZEXasCq-sJn29KB7ZKAUJUUUU7529EdanIXcx71UUUUU7KY7ZEXa
+        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+        0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
+        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv6xkF7I0E14v2
+        6r4j6r4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2xF0c
+        Ia020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JF0_
+        Jw1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrw
+        CYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI48J
+        MxC20s026xCaFVCjc4AY6r1j6r4UMxCIbckI1I0E14v26r1Y6r17MI8I3I0E5I8CrVAFwI
+        0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y
+        0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxV
+        WUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1l
+        IxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUcpBTUUUUU
 X-Spam-Status: No, score=-4.1 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, all:
+This is a PING message, please help to review the LoongArch KVM 
+selftests patches.
 
+Thanks
+Tianrui Zhao
+ÔÚ 2023/11/8 ÉÏÎç10:51, Tianrui Zhao Ð´µÀ:
+> We add LoongArch support into KVM selftests and there are some KVM
+> test cases we have passed:
+> 	demand_paging_test
+> 	dirty_log_perf_test
+> 	dirty_log_test
+> 	guest_print_test
+> 	kvm_binary_stats_test
+> 	kvm_create_max_vcpus
+> 	kvm_page_table_test
+> 	memslot_modification_stress_test
+> 	memslot_perf_test
+> 	set_memory_region_test
+>
+> Changes for v4:
+> 1. Remove the based-on flag, as the LoongArch KVM patch series
+> have been accepted by Linux kernel, so this can be applied directly
+> in kernel.
+>
+> Changes for v3:
+> 1. Improve implementation of LoongArch VM page walk.
+> 2. Add exception handler for LoongArch.
+> 3. Add dirty_log_test, dirty_log_perf_test, guest_print_test
+> test cases for LoongArch.
+> 4. Add __ASSEMBLER__ macro to distinguish asm file and c file.
+> 5. Move ucall_arch_do_ucall to the header file and make it as
+> static inline to avoid function calls.
+> 6. Change the DEFAULT_GUEST_TEST_MEM base addr for LoongArch.
+>
+> Changes for v2:
+> 1. We should use ".balign 4096" to align the assemble code with 4K in
+> exception.S instead of "align 12".
+> 2. LoongArch only supports 3 or 4 levels page tables, so we remove the
+> hanlders for 2-levels page table.
+> 3. Remove the DEFAULT_LOONGARCH_GUEST_STACK_VADDR_MIN and use the common
+> DEFAULT_GUEST_STACK_VADDR_MIN to allocate stack memory in guest.
+> 4. Reorganize the test cases supported by LoongArch.
+> 5. Fix some code comments.
+> 6. Add kvm_binary_stats_test test case into LoongArch KVM selftests.
+>
+> changes for v1:
+> 1. Add kvm selftests header files for LoongArch.
+> 2. Add processor tests for LoongArch KVM.
+> 3. Add ucall tests for LoongArch KVM.
+> 4. Add LoongArch tests into makefile.
+>
+> All of the test cases results:
+> 1..10
+> # timeout set to 120
+> # selftests: kvm: demand_paging_test
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # guest physical test memory: [0xfbfffc000, 0xfffffc000)
+> # Finished creating vCPUs and starting uffd threads
+> # Started all vCPUs
+> # All vCPU threads joined
+> # Total guest execution time: 0.200804700s
+> # Overall demand paging rate: 326366.862927 pgs/sec
+> ok 1 selftests: kvm: demand_paging_test
+> # timeout set to 120
+> # selftests: kvm: dirty_log_perf_test
+> # Test iterations: 2
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # guest physical test memory: [0xfbfffc000, 0xfffffc000)
+> # Random seed: 1
+> # Populate memory time: 0.201452560s
+> # Enabling dirty logging time: 0.000451670s
+> #
+> # Iteration 1 dirty memory time: 0.051582140s
+> # Iteration 1 get dirty log time: 0.000010510s
+> # Iteration 1 clear dirty log time: 0.000421730s
+> # Iteration 2 dirty memory time: 0.046593760s
+> # Iteration 2 get dirty log time: 0.000002110s
+> # Iteration 2 clear dirty log time: 0.000418020s
+> # Disabling dirty logging time: 0.002948490s
+> # Get dirty log over 2 iterations took 0.000012620s. (Avg 0.000006310s/iteration)
+> # Clear dirty log over 2 iterations took 0.000839750s. (Avg 0.000419875s/iteration)
+> ok 2 selftests: kvm: dirty_log_perf_test
+> # timeout set to 120
+> # selftests: kvm: dirty_log_test
+> # Test iterations: 32, interval: 10 (ms)
+> # Testing Log Mode 'dirty-log'
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # guest physical test memory offset: 0xfbfff0000
+> # Dirtied 453632 pages
+> # Total bits checked: dirty (436564), clear (1595145), track_next (70002)
+> # Testing Log Mode 'clear-log'
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # guest physical test memory offset: 0xfbfff0000
+> # Dirtied 425984 pages
+> # Total bits checked: dirty (414397), clear (1617312), track_next (68152)
+> # Testing Log Mode 'dirty-ring'
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # dirty ring count: 0x10000
+> # guest physical test memory offset: 0xfbfff0000
+> # vcpu stops because vcpu is kicked out...
+> # Notifying vcpu to continue
+> # vcpu continues now.
+> # Iteration 1 collected 3201 pages
+> # vcpu stops because dirty ring is full...
+> # vcpu continues now.
+> # vcpu stops because dirty ring is full...
+> # Notifying vcpu to continue
+> # Iteration 2 collected 65472 pages
+> # ......
+> # vcpu continues now.
+> # vcpu stops because vcpu is kicked out...
+> # vcpu continues now.
+> # vcpu stops because vcpu is kicked out...
+> # Notifying vcpu to continue
+> # vcpu continues now.
+> # Iteration 31 collected 12642 pages
+> # vcpu stops because dirty ring is full...
+> # vcpu continues now.
+> # Dirtied 7275520 pages
+> # Total bits checked: dirty (1165675), clear (866034), track_next (811358)
+> ok 3 selftests: kvm: dirty_log_test
+> # timeout set to 120
+> # selftests: kvm: guest_print_test
+> ok 4 selftests: kvm: guest_print_test
+> # timeout set to 120
+> # selftests: kvm: kvm_binary_stats_test
+> # TAP version 13
+> # 1..4
+> # ok 1 vm0
+> # ok 2 vm1
+> # ok 3 vm2
+> # ok 4 vm3
+> # # Totals: pass:4 fail:0 xfail:0 xpass:0 skip:0 error:0
+> ok 5 selftests: kvm: kvm_binary_stats_test
+> # timeout set to 120
+> # selftests: kvm: kvm_create_max_vcpus
+> # KVM_CAP_MAX_VCPU_ID: 256
+> # KVM_CAP_MAX_VCPUS: 256
+> # Testing creating 256 vCPUs, with IDs 0...255.
+> ok 6 selftests: kvm: kvm_create_max_vcpus
+> # timeout set to 120
+> # selftests: kvm: kvm_page_table_test
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # Testing memory backing src type: anonymous
+> # Testing memory backing src granularity: 0x4000
+> # Testing memory size(aligned): 0x40000000
+> # Guest physical test memory offset: 0xfbfffc000
+> # Host  virtual  test memory offset: 0x7fffb0860000
+> # Number of testing vCPUs: 1
+> # Started all vCPUs successfully
+> # KVM_CREATE_MAPPINGS: total execution time: 0.200919330s
+> #
+> # KVM_UPDATE_MAPPINGS: total execution time: 0.051182930s
+> #
+> # KVM_ADJUST_MAPPINGS: total execution time: 0.010083590s
+> #
+> ok 7 selftests: kvm: kvm_page_table_test
+> # timeout set to 120
+> # selftests: kvm: memslot_modification_stress_test
+> # Testing guest mode: PA-bits:36,  VA-bits:47, 16K pages
+> # guest physical test memory: [0xfbfffc000, 0xfffffc000)
+> # Finished creating vCPUs
+> # Started all vCPUs
+> # All vCPU threads joined
+> ok 8 selftests: kvm: memslot_modification_stress_test
+> # timeout set to 120
+> # selftests: kvm: memslot_perf_test
+> # Testing map performance with 1 runs, 5 seconds each
+> # Memslot count too high for this test, decrease the cap (max is 2053)
+> #
+> # Testing unmap performance with 1 runs, 5 seconds each
+> # Memslot count too high for this test, decrease the cap (max is 8197)
+> #
+> # Testing unmap chunked performance with 1 runs, 5 seconds each
+> # Memslot count too high for this test, decrease the cap (max is 8197)
+> #
+> # Testing move active area performance with 1 runs, 5 seconds each
+> # Test took 0.761678900s for slot setup + 5.000014460s all iterations
+> # Done 120167 iterations, avg 0.000041608s each
+> # Best runtime result was 0.000041608s per iteration (with 120167 iterations)
+> #
+> # Testing move inactive area performance with 1 runs, 5 seconds each
+> # Test took 0.771796550s for slot setup + 5.000018520s all iterations
+> # Done 136354 iterations, avg 0.000036669s each
+> # Best runtime result was 0.000036669s per iteration (with 136354 iterations)
+> #
+> # Testing RW performance with 1 runs, 5 seconds each
+> # Test took 0.763568840s for slot setup + 5.002233800s all iterations
+> # Done 649 iterations, avg 0.007707602s each
+> # Best runtime result was 0.007707602s per iteration (with 649 iterations)
+> # Best slot setup time for the whole test area was 0.761678900s
+> ok 9 selftests: kvm: memslot_perf_test
+> # timeout set to 120
+> # selftests: kvm: set_memory_region_test
+> # Allowed number of memory slots: 32767
+> # Adding slots 0..32766, each memory region with 2048K size
+> ok 10 selftests: kvm: set_memory_region_test
+>
+> Tianrui Zhao (4):
+>    KVM: selftests: Add KVM selftests header files for LoongArch
+>    KVM: selftests: Add core KVM selftests support for LoongArch
+>    KVM: selftests: Add ucall test support for LoongArch
+>    KVM: selftests: Add test cases for LoongArch
+>
+>   tools/testing/selftests/kvm/Makefile          |  15 +
+>   .../selftests/kvm/include/kvm_util_base.h     |   5 +
+>   .../kvm/include/loongarch/processor.h         | 133 +++++++
+>   .../selftests/kvm/include/loongarch/ucall.h   |  20 ++
+>   .../testing/selftests/kvm/include/memstress.h |  10 +
+>   .../selftests/kvm/lib/loongarch/exception.S   |  59 ++++
+>   .../selftests/kvm/lib/loongarch/processor.c   | 333 ++++++++++++++++++
+>   .../selftests/kvm/lib/loongarch/ucall.c       |  38 ++
+>   8 files changed, 613 insertions(+)
+>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/processor.h
+>   create mode 100644 tools/testing/selftests/kvm/include/loongarch/ucall.h
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/exception.S
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/processor.c
+>   create mode 100644 tools/testing/selftests/kvm/lib/loongarch/ucall.c
+>
 
-On 2023/11/16 21:39, Arnd Bergmann wrote:
-> On Thu, Nov 16, 2023, at 02:47, Jinjie Ruan wrote:
->> For 32-bit compatible userspace program, write with size = -1 return not
->> -1 but unexpected other values, which is due to the __access_ok() check is
->> not right. The specified "addr + size" is greater than 32-bit limit and
->> should return -EFAULT, but TASK_SIZE_MAX still defined as UL(1) << VA_BITS
->> in U32 mode, which is much greater than "addr + size" and cannot catch the
->> overflow error.
-> 
-> Thank you for the detailed analysis of the change in behavior that
-> resulted from my patch. As far as I can tell, this is an intentional
-> change that should have been documented as part of the patch
-> submission.
-> 
->> 	    assert(write(fd, wbuf, 3) == 3);
->>
->> 	    ret = write (fd, wbuf, SIZE_MAX);
->> 	    pinfo("ret=%d\n", ret);
->> 	    pinfo("size_max=%d\n",SIZE_MAX);
->> 	    assert(ret==-1);
-> 
-> I think it is wrong to have an assert() here since the
-> documentation for write() does not state what happens
-> when the beginning of the buffer is addressable but the
-> end is not. We were handling this inconsistently between
-> architectures before my patch, which ensured we do the
-> same thing on all compat architectures now.
-> 
-> You can argue that this behavior is inconsistent with
-> native 32-bit mode, but at the time we decided that this
-> was not an important distinction.
-> 
->> Before applying this patch, userspace 32-bit program return 1112 if the
->> write size = -1 as below:
->> 	/root # ./test
->> 	[INFO][test.c][32][main]:ret=-1
->> 	[INFO][test.c][33][main]:size_max=-1
->> 	[INFO][test.c][36][main]:INFO: end
->> 	/root # ./test32
->> 	[INFO][test.c][32][main]:ret=1112
->> 	[INFO][test.c][33][main]:size_max=-1
->> 	test32: test.c:34: main: Assertion `ret==-1' failed.
->> 	Aborted
-> 
-> Here, the write() successfully gets 1112 bytes of data,
-> which matches what you get for any other large size that
-> does not overflow user address space in the kernel.
-
-With a 64-bit kernel running a 32-bit user-mode program, the most
-confusing behavior of writing a size of -1 is as follows when the
-program is executed multiple times continuously, the return value is
-different each time(4280ã€2776ã€2216ã€4536ã€856ã€4616ã€4632 or 3288 etc.)
-although the same program is run each time:
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=4280
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=2776
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=2216
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=4536
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=856
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=4616
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=4632
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-/root # ./test32
-[INFO][test.c][32][main]:ret=3288
-[INFO][test.c][33][main]:size_max=-1
-test32: test.c:34: main: Assertion `ret==-1' failed.
-Aborted
-
-
-> 
->> Fixes: 967747bbc084 ("uaccess: remove CONFIG_SET_FS")
->>
->>  #define DEFAULT_MAP_WINDOW_64	(UL(1) << VA_BITS_MIN)
->>  #define TASK_SIZE_64		(UL(1) << vabits_actual)
->> +#ifdef CONFIG_COMPAT
->> +#define TASK_SIZE_MAX		(test_thread_flag(TIF_32BIT) ? \
->> +				UL(0x100000000) : (UL(1) << VA_BITS))
->> +#else
->>  #define TASK_SIZE_MAX		(UL(1) << VA_BITS)
->> +#endif
-> 
-> This adds back the cost for every user access that I was
-> trying to save, and it makes arm64 behave differently from
-> the other architectures.
-
-Indeed, this adds to the cost of checking.
-
-> 
-> As far as I can tell, the current behavior was originally
-> introduced on x86 with commit 9063c61fd5cb ("x86, 64-bit:
-> Clean up user address masking").
-
-Thank you!
-
-
-
-> 
->      Arnd
