@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id DA53A7EEA8B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:04:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEB17EEA8C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:04:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229836AbjKQBCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 20:02:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47462 "EHLO
+        id S229877AbjKQBEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 20:04:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKQBB7 (ORCPT
+        with ESMTP id S229437AbjKQBEu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 20:01:59 -0500
-Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com [209.85.214.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 855D2C5
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:01:56 -0800 (PST)
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-1cc41aed6a5so19603715ad.0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:01:56 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700182916; x=1700787716;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=n+qzrRAUex+PBmakgBQfGm/QBZamI0Vqb/jP9skxvVE=;
-        b=FP8tAwnFGySglYjxkv562PtkFt9R005egDHqSxjcDTfMFxM37U/XnRUdSZftVjv5W9
-         kn7FHsrztYtiQ6V/fVJ59IpadzZJtmtoGa27jAEX9SVwstj0q9UPiRyceD91lQQbMcXl
-         TRYSKlVoEn96HuA1p1HlNErlPM5/EF5hZd8X+l+8TlMZ+Y/SySuBSwDtz2Grcn3Ks4ZA
-         U4A833mHt/IeoIByrMh2jO89UDzchiBj5JHoEcpcogH37nBT4EPOA7gciQHOLKdtILLG
-         0oxEfpODI3VD2pH/ZjOX8yIOCz7jyCi3KJpu4oYZitIcI6f/Ntd6lK6QeWlYmv8n8QCk
-         jwGg==
-X-Gm-Message-State: AOJu0YwGOyc9i5Oe3gBtDgirAXfKFpklhSXACRcq4Qdm3pNaGBPy2Rzd
-        R+rdEJjoUsa0K7N0pTIDkUQS0yu7lvjllwyBkXhbcvVjY0U2eXI=
-X-Google-Smtp-Source: AGHT+IGqRCoftJmMszs5BLQ2FBv7up12Sn7uAP4FByBRsUqTaUoYf6MDLp27A514wsyiK22Kt9x+Q8VPBvO8YAE5C9HF6EuMjoGZ
+        Thu, 16 Nov 2023 20:04:50 -0500
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F83129;
+        Thu, 16 Nov 2023 17:04:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+        s=201702; t=1700183085;
+        bh=Na1rTytPUSHgw/q6Ndtj6R6gwB8w0Yak/IZmxMVeEuU=;
+        h=Date:From:To:Cc:Subject:From;
+        b=BWtZWneAMVuSknzpms6+iOrffjWu5uwbNTFvEYVv137/cM1/PTVVoeFCeVyZmW1uW
+         Xc7FVNiiJm256vA34K+M0tCDtxKCSVpIWfDG0VD8uUSUfS97RNkW5isixzR8gT64dg
+         S42rsVxs3pkzF9672desoK14tanSyZD2xjqUBrg+SpeD8phkMBJtBjrsqNm4IxRx7o
+         fTo8ekaLlrTmi1WIY9bFK0labbVXdAdhHMCOJuPAxmwMRdY21HFma0O5KwFykle66s
+         ElIDiYIWX0KsgwLCSimnqPEEEAkfMI40beaiH1jl9AIfsXaA60SNPSNR0dHW8zmjTj
+         DXs3oOh7e+o/g==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4SWdwX6k8qz4wbk;
+        Fri, 17 Nov 2023 12:04:44 +1100 (AEDT)
+Date:   Fri, 17 Nov 2023 12:04:42 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Cc:     =?UTF-8?B?R8O8bnRoZXI=?= Noack <gnoack@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the landlock tree
+Message-ID: <20231117120442.5132a15e@canb.auug.org.au>
 MIME-Version: 1.0
-X-Received: by 2002:a17:902:8b85:b0:1cd:e5b5:b379 with SMTP id
- ay5-20020a1709028b8500b001cde5b5b379mr2467230plb.12.1700182916061; Thu, 16
- Nov 2023 17:01:56 -0800 (PST)
-Date:   Thu, 16 Nov 2023 17:01:55 -0800
-In-Reply-To: <000000000000797bd1060a457c08@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c3e53a060a4eae0a@google.com>
-Subject: Re: [syzbot] [PATCH] test uaf in sco_sock_timeout
-From:   syzbot <syzbot+4c0d0c4cde787116d465@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-1.7 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
-        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
-        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Type: multipart/signed; boundary="Sig_/I969V7naf+DX.Qv09REMZR8";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org.
+--Sig_/I969V7naf+DX.Qv09REMZR8
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-***
+Hi all,
 
-Subject: [PATCH] test uaf in sco_sock_timeout
-Author: lizhi.xu@windriver.com
+After merging the landlock tree, today's linux-next build (htmldocs)
+produced this warning:
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git 8de1e7afcc1c
+security/landlock/ruleset.h:287: warning: This comment starts with '/**', b=
+ut isn't a kernel-doc comment. Refer Documentation/doc-guide/kernel-doc.rst
+ * Returns @access with the synthetic IOCTL group flags enabled if necessar=
+y.
 
-diff --git a/net/bluetooth/sco.c b/net/bluetooth/sco.c
-index c736186aba26..515b52e14b5f 100644
---- a/net/bluetooth/sco.c
-+++ b/net/bluetooth/sco.c
-@@ -415,6 +415,8 @@ static void sco_sock_cleanup_listen(struct sock *parent)
-  */
- static void sco_sock_kill(struct sock *sk)
- {
-+	struct sco_conn *conn = container_of(sk, struct sco_conn, sk);
-+
- 	if (!sock_flag(sk, SOCK_ZAPPED) || sk->sk_socket)
- 		return;
- 
-@@ -423,6 +425,9 @@ static void sco_sock_kill(struct sock *sk)
- 	/* Kill poor orphan */
- 	bt_sock_unlink(&sco_sk_list, sk);
- 	sock_set_flag(sk, SOCK_DEAD);
-+	sco_conn_lock(conn);
-+	conn->sk = NULL;
-+	sco_conn_unlock(conn);
- 	sock_put(sk);
- }
- 
+Introduced by commit
+
+  f3672f581e95 ("landlock: Add IOCTL access right")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/I969V7naf+DX.Qv09REMZR8
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmVWvCoACgkQAVBC80lX
+0GxsLQf+MEFxfnIfmO93asLEfTyr9bDX1G+X4isC7ZHgtXLds88WCx4gnQyew3Xv
+D/hkUCtYa+92zpmwp9mU+KVgA0oN6KZlspPM+RASB5lS+Ks3Si5byJTpC2K20fk1
+NTsXuHDEPgjsXx4TeoKWK9BWPWpGdS4i1Bl4NxYNi2Z1rTlfuNC0Xjfeupp9aLn8
+angxHOpsj3EcR7wsb0vwoLhWg3Rtfh5HOvlpj+6x5h0JOjLJmzaepdeinPp6tFvJ
+4CbG5A1IoqrzspK1+O/KlHoz1U2zwbxfxa5iMM0MK9qOtfkbIaV7akXe2Gbfz1T+
+Xopv4Re9k98BJ0k+PLtxWXZet3+uRw==
+=xlxh
+-----END PGP SIGNATURE-----
+
+--Sig_/I969V7naf+DX.Qv09REMZR8--
