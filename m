@@ -2,114 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D91507EF7D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:29:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4698C7EF7D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:29:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346154AbjKQT3x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:29:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45978 "EHLO
+        id S1346100AbjKQT3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:29:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231980AbjKQT3u (ORCPT
+        with ESMTP id S231905AbjKQT3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:29:50 -0500
-Received: from mail-pj1-x1049.google.com (mail-pj1-x1049.google.com [IPv6:2607:f8b0:4864:20::1049])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25599D52
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:47 -0800 (PST)
-Received: by mail-pj1-x1049.google.com with SMTP id 98e67ed59e1d1-28016806be2so3665651a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:47 -0800 (PST)
+        Fri, 17 Nov 2023 14:29:49 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3682ED51
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:45 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id 5b1f17b1804b1-4083cd3917eso20076075e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700249386; x=1700854186; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7BLtURhc1ohq6G7Ehb9fNj26PZtAiF6i6XyPfX0SmPQ=;
-        b=v40S9pXSOHQ6tKdCq7miQ1egRBEA72FQZnxTRJ1jtcOTjnOyKgTQUuN75Qzh3DF+eG
-         yzCBflI1AcAVzOtYcnUEsbScZTQo5cOiqUMT1rZWraE+jO9FepwduneKooLVF0mKAcdg
-         5M/57Lx99Ld34M8EY0cj7arxbbWOcX+ZCR2ZvO+k6LWAbcnyd5BVLSxptDV7De5YBD1x
-         U48B6iQx3bNyG1wOOOlHQghZCQPR1o7slfP++mBGM1HdfZJxL5qWPILPa+ly2+LoJUi0
-         3J9xTiyyM3jt/C89EPqqk4ahh64qa/wsSDXgUloi0AUu4ooingvJY5TbzjgukvFI08Od
-         Pq0A==
+        d=gmail.com; s=20230601; t=1700249383; x=1700854183; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=3kGDbNgJEZnQxIqJTDiTxyz7vqEWWOiaNZtZNR6F76c=;
+        b=ctMoW5hWKuH13i+M2vuZAyhtSoOa4PtQzNamaFPQ4VS7jtj+qVXjaD+S91m8+ueIjz
+         gA98/S9lc9/5KNjdYtM7lkCR/NKQmU2gt4KmmrkiWI4EY0EEzLhS68WjiiiEN56VbRyO
+         GvB+1WoWWHqLHMynXKdDwx9sHAp937DwKGWc3GY4CvLa0ft5x+IWLNYIzbYd6Nr58Eqk
+         Da7P+UIL5U2NrKox1XrmYCCotijjfYTUxhnzaQQC/toLRyuWN4PRF6hgVPQXodBHcnKL
+         bH0LOC5Rj0ssExmJchVr8tycyVo222lLEfnsDE7hF4HI9lHCGRhno8uy4HJjyIkhsErk
+         XU5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700249386; x=1700854186;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7BLtURhc1ohq6G7Ehb9fNj26PZtAiF6i6XyPfX0SmPQ=;
-        b=pcq6Q2jP9zSSeJC9MDMAUBASpSJfCqPvuxSBRcXgxJy1Tg4Nbu7DArVxmrnvwEQ6HL
-         waxfvVEPMBGBC12T+79sX6CldxWoSX19u1IqKpCI9lKLSLOxjH/oySnLzWiFMrkTNO6w
-         qv1OUydWrOhaMxjZ33coPSr+orK5gUyv47KqeJxO+gqj+idn82LUedHqrq0VjR64RNuq
-         eT4BmcxLA1l+mVOiW8CilgVMyp9UgbqmZbvu7bfCFSQxuplKDFJRpiVKR0Ea0vwzZxAy
-         qL3m7/xhnFpYxOm2zoUoovoZeemD7ZR+fFY7ndfkHmz80nB1Q4LKwUJFOVqhw3h4Xftb
-         jq6w==
-X-Gm-Message-State: AOJu0YxmKTwxzY3xErbTtY83MydO7mg7NQl1u1Al2s7FazmWA8vH8d+O
-        wQlcQ8ITnkRDKCkAleVClHZmzWH4I4nafA==
-X-Google-Smtp-Source: AGHT+IHPOmLYguT+8vb5GwUDrc+ZP4ecu7SsbJuI3BcLECKsyV3gfi+SPO2WAh3jllf3e2TWKANI9fc+O0t1hA==
-X-Received: from mmandlik-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2893])
- (user=mmandlik job=sendgmr) by 2002:a17:90a:bd97:b0:280:c3df:e29f with SMTP
- id z23-20020a17090abd9700b00280c3dfe29fmr2081pjr.3.1700249386621; Fri, 17 Nov
- 2023 11:29:46 -0800 (PST)
-Date:   Fri, 17 Nov 2023 11:28:34 -0800
-In-Reply-To: <20231117112833.v2.1.I4c7ab22148e168e3cde00f27b89748ff4bc651c2@changeid>
-Mime-Version: 1.0
-References: <20231117112833.v2.1.I4c7ab22148e168e3cde00f27b89748ff4bc651c2@changeid>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
-Message-ID: <20231117112833.v2.2.I5f8211e201324f6d9f699e995fc59dda1e51f0ce@changeid>
-Subject: [PATCH v2 2/2] Bluetooth: btusb: Fix double free in handle_dump_pkt_qca()
-From:   Manish Mandlik <mmandlik@google.com>
-To:     marcel@holtmann.org, luiz.dentz@gmail.com
-Cc:     chromeos-bluetooth-upstreaming@chromium.org,
-        linux-bluetooth@vger.kernel.org,
-        Manish Mandlik <mmandlik@google.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Tim Jiang <quic_tjiang@quicinc.com>,
+        d=1e100.net; s=20230601; t=1700249383; x=1700854183;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=3kGDbNgJEZnQxIqJTDiTxyz7vqEWWOiaNZtZNR6F76c=;
+        b=RHfwzzV8mwUsUp3T7tfoz4oxRSRQ9ARJosLX55YxeAID5/TUlS0EbPUPh1era07rOB
+         HeY4mW36pyEAFSSd1/UcjAmz3a400doOrNDyoiG9JRd7kUjzd5Rxr0JEziECAJNlAxY2
+         4yZO7kK+FJ8EUaGnF/vY3WmoJqrdoZkPE+jA066mXy4vUrI3VedOzAxjSsRa4ufF5crq
+         bfaUptHBqtTFHJCJ67MDXlICjd+sdMdfeJi+Aq6H53CI2Q+xP/ha8FCrhJpT+1PrQ/rY
+         7VakLf3wrCz84lT15C4ES+MkWqS3Q2TfO/mAkqo/9FTmGfOeRBqluOWpsqyAroPNHyYB
+         gUWg==
+X-Gm-Message-State: AOJu0Yw+4uK/TSSxz2N9B3sWJzn85EXl3tUox4HTJ3/vnTfGUlJKTZmY
+        9WwiQbDB8KueaxVuvH2qWKs=
+X-Google-Smtp-Source: AGHT+IHiJthH+ApJuH/72lZ39Y8nUutmDkkyWGHDequt1aLS2ijDgTIYjzGjRAv/celXY5kjGuj2Dw==
+X-Received: by 2002:a7b:c311:0:b0:406:4573:81d2 with SMTP id k17-20020a7bc311000000b00406457381d2mr68301wmj.39.1700249383456;
+        Fri, 17 Nov 2023 11:29:43 -0800 (PST)
+Received: from mfe-desktop.Sonatest.net (ipagstaticip-d73c7528-4de5-0861-800b-03d8b15e3869.sdsl.bell.ca. [174.94.156.236])
+        by smtp.googlemail.com with ESMTPSA id 22-20020a05600c021600b0040523bef620sm4440397wmi.0.2023.11.17.11.29.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 11:29:42 -0800 (PST)
+From:   marc.ferland@gmail.com
+X-Google-Original-From: marc.ferland@sonatest.com
+To:     krzysztof.kozlowski@linaro.org
+Cc:     gregkh@linuxfoundation.org, marc.ferland@sonatest.com,
+        jeff.dagenais@gmail.com, rdunlap@infradead.org,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Subject: [PATCH 1/7] w1: ds2433: remove unused definition
+Date:   Fri, 17 Nov 2023 14:29:03 -0500
+Message-Id: <20231117192909.98944-1-marc.ferland@sonatest.com>
+X-Mailer: git-send-email 2.34.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hci_devcd_init() returns 0 on success. Do not use this return value
-when eturning from handle_dump_pkt_qca() as it incorrectly indicates
-that it's not a dump packet.
+From: Marc Ferland <marc.ferland@sonatest.com>
 
-This causes the first dump skb to be processed by both hci_devcd_rx()
-and hci_recv_frame() leading to double free.
+W1_F23_TIME isn't used anywhere, get rid of it.
 
-Fixes: 20981ce2d5a5 ("Bluetooth: btusb: Add WCN6855 devcoredump support")
-
-Signed-off-by: Manish Mandlik <mmandlik@google.com>
+Signed-off-by: Marc Ferland <marc.ferland@sonatest.com>
 ---
+ drivers/w1/slaves/w1_ds2433.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-(no changes since v1)
-
- drivers/bluetooth/btusb.c | 9 +++++----
- 1 file changed, 5 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
-index 35a26440cabd..d23c992502c5 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -3531,10 +3531,11 @@ static int handle_dump_pkt_qca(struct hci_dev *hdev, struct sk_buff *skb)
- 			goto out;
- 		}
+diff --git a/drivers/w1/slaves/w1_ds2433.c b/drivers/w1/slaves/w1_ds2433.c
+index 9f21fd98f799..e18523ef8c45 100644
+--- a/drivers/w1/slaves/w1_ds2433.c
++++ b/drivers/w1/slaves/w1_ds2433.c
+@@ -30,8 +30,6 @@
+ #define W1_PAGE_BITS		5
+ #define W1_PAGE_MASK		0x1F
  
--		ret = hci_devcd_init(hdev, dump_size);
--		if (ret < 0) {
--			bt_dev_err(hdev, "memdump init error(%d)", ret);
--			goto out;
-+		if (hci_devcd_init(hdev, dump_size) < 0) {
-+			bt_dev_err(hdev, "memdump init error");
-+			clear_bit(BTUSB_HW_SSR_ACTIVE, &btdata->flags);
-+			kfree_skb(skb);
-+			return ret;
- 		}
- 
- 		btdata->qca_dump.ram_dump_size = dump_size;
+-#define W1_F23_TIME		300
+-
+ #define W1_F23_READ_EEPROM	0xF0
+ #define W1_F23_WRITE_SCRATCH	0x0F
+ #define W1_F23_READ_SCRATCH	0xAA
+
+base-commit: 7475e51b87969e01a6812eac713a1c8310372e8a
 -- 
-2.43.0.rc0.421.g78406f8d94-goog
+2.34.1
 
