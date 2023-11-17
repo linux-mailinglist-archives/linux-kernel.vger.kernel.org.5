@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6077EEE33
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:14:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE4D7EEE25
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:10:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235217AbjKQJOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:14:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56950 "EHLO
+        id S231461AbjKQJKp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:10:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44128 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230264AbjKQJOI (ORCPT
+        with ESMTP id S229436AbjKQJKo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:14:08 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.120])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D61C7D51;
-        Fri, 17 Nov 2023 01:14:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700212444; x=1731748444;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=0pd5FK7X1xEUkFM/KdlwbN/4e1CbLaaCS11NMMmROLc=;
-  b=aH31Kp4oGSPI78KS2ukDYn7keLm8L2l42hMJNCAUuErGH2J9g4lwPqak
-   2jh1Ofjkel+eGAtFRoWTw3FGESlAPkrcOmsznh0FeeaQ8cM3jg69JzDvc
-   2rSkdHOgsw2gk9U4bDD+IeDq6oHRHo7svqwIQFJiOx6bePRtbUZhdVPWw
-   Zgc7Vb6wc54cKSMsvCXcbVW9IrD4bpZIHe9X/lWceMsFtD1qcn6vx6kFt
-   gl/7Rcy/w3Z9RwMAncs0qxgcFmjqaxrMOE5BJiZt2SzkdMXfy7MRQsvt2
-   eKeNSTeR5oj7DY7Bnh2eAJL5+aHa1vS4QLO5M1eg6nrfbQ1beribWfPv1
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="390119931"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="390119931"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 01:14:04 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="800443032"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="800443032"
-Received: from allen-box.sh.intel.com ([10.239.159.127])
-  by orsmga001.jf.intel.com with ESMTP; 17 Nov 2023 01:14:00 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kevin Tian <kevin.tian@intel.com>
-Cc:     iommu@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Lu Baolu <baolu.lu@linux.intel.com>, stable@vger.kernel.org,
-        Huang Ying <ying.huang@intel.com>,
-        Alistair Popple <apopple@nvidia.com>,
-        Luo Yuzhang <yuzhang.luo@intel.com>,
-        Tony Zhu <tony.zhu@intel.com>
-Subject: [PATCH 1/1] iommu/vt-d: Fix incorrect cache invalidation for mm notification
-Date:   Fri, 17 Nov 2023 17:09:33 +0800
-Message-Id: <20231117090933.75267-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.34.1
+        Fri, 17 Nov 2023 04:10:44 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C997992;
+        Fri, 17 Nov 2023 01:10:40 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH69tC9027592;
+        Fri, 17 Nov 2023 09:10:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=82qJD7J4Eg2G8Fyr2J1ob+B3of08iuAUuyE0IfHN0Dg=;
+ b=S1YljXhrmA+iErKiPh/YJUBpv9dWxhrhFwaEFl18z7jRqeP0qlN1toB59vAXvV509ap1
+ Kl6tE3KHH7OJbz9IY7aOtPHwAf5RgRw5Q2d5jwd7bHo5ywfMbqZOxXg1bllQ+a03Zqa1
+ B1sI8v7NKDxyGSAvWdZS3YD30TydbXJlxxT6dppsd1h6Uyo3RS/espnQqFcBczBBoZ+k
+ XT2Hdj0oS6Nnot4Nb0FWyg8JrbN2o3j5fHBRWvcyy9O5/Z8AEceAvy2iA9U3lA8BjuVF
+ 5T8PBIyE2KXK2yWROqa1OqzOPomROkdUGcQmXKQgp1bWUs2voU1ZaKwFhwhYMpj39JIO AQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue2na0cka-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:10:22 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9ALXU009948
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:10:21 GMT
+Received: from [10.214.66.253] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
+ 2023 01:10:17 -0800
+Message-ID: <e04bc179-347b-415a-a5e9-00563a24507e@quicinc.com>
+Date:   Fri, 17 Nov 2023 14:40:13 +0530
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] iommu/arm-smmu: re-enable context caching in smmu
+ reset operation
+Content-Language: en-US
+To:     Robin Murphy <robin.murphy@arm.com>,
+        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+CC:     <will@kernel.org>, <joro@8bytes.org>, <a39.skl@gmail.com>,
+        <konrad.dybcio@linaro.org>, <quic_pkondeti@quicinc.com>,
+        <quic_molvera@quicinc.com>, <linux-arm-msm@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <iommu@lists.linux.dev>,
+        <linux-kernel@vger.kernel.org>, <qipl.kernel.upstream@quicinc.com>
+References: <20231114135654.30475-1-quic_bibekkum@quicinc.com>
+ <20231114135654.30475-4-quic_bibekkum@quicinc.com>
+ <CAA8EJpoRmm42aAvyX61o3tMWXszUZmfFvJEtnNDEfYdDqy4Y0g@mail.gmail.com>
+ <72b30354-0497-45cf-8b71-e4f265eb0005@quicinc.com>
+ <CAA8EJprPE=z2VN5LkaUyLyvYpx6i1eF9dyxOzN_L86pi5tmU-Q@mail.gmail.com>
+ <0d290a5c-081f-4dfa-af9a-b061e6134662@quicinc.com>
+ <CAA8EJprHppoN6rg8-rS1F+4kynQqmV1L3OiHFnJ0HyrshywFig@mail.gmail.com>
+ <4db1b4d2-0aa9-4640-b7d7-7d18ab64569a@arm.com>
+From:   Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+In-Reply-To: <4db1b4d2-0aa9-4640-b7d7-7d18ab64569a@arm.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: utyFtJGbvqdnYrr0qvP31-CR-31cxmD9
+X-Proofpoint-ORIG-GUID: utyFtJGbvqdnYrr0qvP31-CR-31cxmD9
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_06,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=999 phishscore=0 suspectscore=0 clxscore=1015 adultscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311170066
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -66,77 +90,164 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when
-invalidating TLBs") moved the secondary TLB invalidations into the TLB
-invalidation functions to ensure that all secondary TLB invalidations
-happen at the same time as the CPU invalidation and added a flush-all
-type of secondary TLB invalidation for the batched mode, where a range
-of [0, -1UL) is used to indicates that the range extends to the end of
-the address space.
 
-However, using an end address of -1UL caused an overflow in the Intel
-IOMMU driver, where the end address was rounded up to the next page.
-As a result, both the IOTLB and device ATC were not invalidated correctly.
 
-Add a flush all helper function and call it when the invalidation range
-is from 0 to -1UL, ensuring that the entire caches are invalidated
-correctly.
+On 11/16/2023 10:34 PM, Robin Murphy wrote:
+> On 16/11/2023 3:24 pm, Dmitry Baryshkov wrote:
+>> On Thu, 16 Nov 2023 at 14:45, Bibek Kumar Patro
+>> <quic_bibekkum@quicinc.com> wrote:
+>>>
+>>>
+>>>
+>>> On 11/15/2023 4:33 PM, Dmitry Baryshkov wrote:
+>>>> On Wed, 15 Nov 2023 at 11:45, Bibek Kumar Patro
+>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>
+>>>>> On 11/14/2023 7:45 PM, Dmitry Baryshkov wrote:
+>>>>>> On Tue, 14 Nov 2023 at 15:57, Bibek Kumar Patro
+>>>>>> <quic_bibekkum@quicinc.com> wrote:
+>>>>>>>
+>>>>>>> Context caching is re-enabled in the prefetch buffer for Qualcomm 
+>>>>>>> SoCs
+>>>>>>> through SoC specific reset ops, which is disabled in the default 
+>>>>>>> MMU-500
+>>>>>>> reset ops, but is expected for context banks using ACTLR register to
+>>>>>>> retain the prefetch value during reset and runtime suspend.
+>>>>>>
+>>>>>> Please refer to Documentation/process/submitting-patches.rst and
+>>>>>> rephrase this following the rules there.
+>>>>>>
+>>>>>
+>>>>> Noted, will go through the description once and rephrase it
+>>>>> in next version complying with rules.
+>>>>>
+>>>>>>>
+>>>>>>> Signed-off-by: Bibek Kumar Patro <quic_bibekkum@quicinc.com>
+>>>>>>> ---
+>>>>>>>     drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c | 25 
+>>>>>>> ++++++++++++++++++----
+>>>>>>>     1 file changed, 21 insertions(+), 4 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c 
+>>>>>>> b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>> index 0eaf6f2a2e49..fa867b1d9d16 100644
+>>>>>>> --- a/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>> +++ b/drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c
+>>>>>>> @@ -478,11 +478,28 @@ static int qcom_smmu_def_domain_type(struct 
+>>>>>>> device *dev)
+>>>>>>>            return match ? IOMMU_DOMAIN_IDENTITY : 0;
+>>>>>>>     }
+>>>>>>>
+>>>>>>> +static int qcom_smmu500_reset(struct arm_smmu_device *smmu)
+>>>>>>> +{
+>>>>>>> +       int i;
+>>>>>>> +       u32 reg;
+>>>>>>> +
+>>>>>>> +       arm_mmu500_reset(smmu);
+>>>>>>> +
+>>>>>>> +       /* Re-enable context caching after reset */
+>>>>>>> +       for (i = 0; i < smmu->num_context_banks; ++i) {
+>>>>>>> +               reg = arm_smmu_cb_read(smmu, i, ARM_SMMU_CB_ACTLR);
+>>>>>>> +               reg |= CPRE;
+>>>>>>> +               arm_smmu_cb_write(smmu, i, ARM_SMMU_CB_ACTLR, reg);
+>>>>>>> +       }
+>>>>>>> +
+>>>>>>> +       return 0;
+>>>>>>> +}
+>>>>>>> +
+>>>>>>>     static int qcom_sdm845_smmu500_reset(struct arm_smmu_device 
+>>>>>>> *smmu)
+>>>>>>>     {
+>>>>>>>            int ret;
+>>>>>>>
+>>>>>>> -       arm_mmu500_reset(smmu);
+>>>>>>> +       qcom_smmu500_reset(smmu);
+>>>>>>
+>>>>>> Is this applicable for sdm845? For all other platforms supported by
+>>>>>> qcom_smmu_500 implementation?
+>>>>>>
+>>>>>
+>>>>> In arm_mmu500_reset operation 
+>>>>> drivers/iommu/arm/arm-smmu/arm-smmu-impl.c
+>>>>> CPRE bit is reset for all SoC based on mmu500 platform, hence for all
+>>>>> Qualcomm SoCs including sm845 we are setting back the CPRE bit.
+>>>>
+>>>> The errata for the CoreLink MMU-500 requires CPRE to be disabled for
+>>>> all revisions before r2p2. Do we know whether these SoC used CoreLink
+>>>> MMU-500 and which version of it?
+>>>>
+>>>
+>>> Just checked all these SoCs are using r2p4 revision.
+>>> So CPRE needs to be enabled back here then?
+>>
+>> can be enabled, yes.
+> 
+> There are still open errata #562869 and #1047329 which might need this 
+> workaround. I guess one could argue that we're not (knowingly) using 
+> nested translation at the moment, and also probably not running this in 
+> situations which would end up using short-descriptor format, however 
+> stuff like pKVM and IOMMUFD could potentially change those assumptions 
+> in future, so they still feel a bit sketchy to me.
+> 
 
-Fixes: 6bbd42e2df8f ("mmu_notifiers: call invalidate_range() when invalidating TLBs")
-Cc: stable@vger.kernel.org
-Cc: Huang Ying <ying.huang@intel.com>
-Cc: Alistair Popple <apopple@nvidia.com>
-Tested-by: Luo Yuzhang <yuzhang.luo@intel.com> # QAT
-Tested-by: Tony Zhu <tony.zhu@intel.com> # DSA
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/svm.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+Could you help provide some details on these two errata (#562869 and 
+#1047329).Both of these erratum are there for r2p4 revisions as well?
 
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 50a481c895b8..588385050a07 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -216,6 +216,27 @@ static void intel_flush_svm_range(struct intel_svm *svm, unsigned long address,
- 	rcu_read_unlock();
- }
- 
-+static void intel_flush_svm_all(struct intel_svm *svm)
-+{
-+	struct device_domain_info *info;
-+	struct intel_svm_dev *sdev;
-+
-+	rcu_read_lock();
-+	list_for_each_entry_rcu(sdev, &svm->devs, list) {
-+		info = dev_iommu_priv_get(sdev->dev);
-+
-+		qi_flush_piotlb(sdev->iommu, sdev->did, svm->pasid, 0, -1UL, 1);
-+		if (info->ats_enabled) {
-+			qi_flush_dev_iotlb_pasid(sdev->iommu, sdev->sid, info->pfsid,
-+						 svm->pasid, sdev->qdep,
-+						 0, 64 - VTD_PAGE_SHIFT);
-+			quirk_extra_dev_tlb_flush(info, 0, 64 - VTD_PAGE_SHIFT,
-+						  svm->pasid, sdev->qdep);
-+		}
-+	}
-+	rcu_read_unlock();
-+}
-+
- /* Pages have been freed at this point */
- static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- 					struct mm_struct *mm,
-@@ -223,6 +244,11 @@ static void intel_arch_invalidate_secondary_tlbs(struct mmu_notifier *mn,
- {
- 	struct intel_svm *svm = container_of(mn, struct intel_svm, notifier);
- 
-+	if (start == 0 && end == -1UL) {
-+		intel_flush_svm_all(svm);
-+		return;
-+	}
-+
- 	intel_flush_svm_range(svm, start,
- 			      (end - start + PAGE_SIZE - 1) >> VTD_PAGE_SHIFT, 0);
- }
--- 
-2.34.1
+Thanks & regards,
+Bibek
 
+> Thanks,
+> Robin.
+> 
+>>
+>>>
+>>>>>
+>>>>>>>
+>>>>>>>            /*
+>>>>>>>             * To address performance degradation in non-real time 
+>>>>>>> clients,
+>>>>>>> @@ -509,7 +526,7 @@ static const struct arm_smmu_impl 
+>>>>>>> qcom_smmu_500_impl = {
+>>>>>>>            .init_context = qcom_smmu_init_context,
+>>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
+>>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
+>>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>>     };
+>>>>>>> @@ -528,7 +545,7 @@ static const struct arm_smmu_impl 
+>>>>>>> sm8550_smmu_500_impl = {
+>>>>>>>            .init_context = qcom_smmu_init_context,
+>>>>>>>            .cfg_probe = qcom_smmu_cfg_probe,
+>>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>>            .write_s2cr = qcom_smmu_write_s2cr,
+>>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>>     };
+>>>>>>> @@ -544,7 +561,7 @@ static const struct arm_smmu_impl 
+>>>>>>> qcom_adreno_smmu_v2_impl = {
+>>>>>>>     static const struct arm_smmu_impl qcom_adreno_smmu_500_impl = {
+>>>>>>>            .init_context = qcom_adreno_smmu_init_context,
+>>>>>>>            .def_domain_type = qcom_smmu_def_domain_type,
+>>>>>>> -       .reset = arm_mmu500_reset,
+>>>>>>> +       .reset = qcom_smmu500_reset,
+>>>>>>>            .alloc_context_bank = 
+>>>>>>> qcom_adreno_smmu_alloc_context_bank,
+>>>>>>>            .write_sctlr = qcom_adreno_smmu_write_sctlr,
+>>>>>>>            .tlb_sync = qcom_smmu_tlb_sync,
+>>>>>>> -- 
+>>>>>>> 2.17.1
+>>>>>>>
+>>>>>>
+>>>>>>
+>>>>
+>>>>
+>>>>
+>>>> -- 
+>>>> With best wishes
+>>>> Dmitry
+>>
+>>
+>>
