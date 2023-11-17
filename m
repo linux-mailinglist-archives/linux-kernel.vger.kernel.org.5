@@ -2,62 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 21D1C7EEC51
+	by mail.lfdr.de (Postfix) with ESMTP id 765357EEC52
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 07:40:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235122AbjKQGku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 01:40:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38296 "EHLO
+        id S235474AbjKQGkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 01:40:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233723AbjKQGkp (ORCPT
+        with ESMTP id S233887AbjKQGkq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 01:40:45 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 217E9D51;
-        Thu, 16 Nov 2023 22:40:42 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id 4fb4d7f45d1cf-5480edd7026so1829375a12.0;
-        Thu, 16 Nov 2023 22:40:42 -0800 (PST)
+        Fri, 17 Nov 2023 01:40:46 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D6E6D52;
+        Thu, 16 Nov 2023 22:40:43 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id a640c23a62f3a-9bf86b77a2aso228590966b.0;
+        Thu, 16 Nov 2023 22:40:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700203240; x=1700808040; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700203242; x=1700808042; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wJxvgI9i9l4IaqoW7P3lNFiG+zzz8tjNlzjKlxr/b2E=;
-        b=LVYJxwC3q5LbsLzR7h6+6EeT+UoN9uuVzr3DgTasGNXdw7s+80w6PbOsrkd137GhXY
-         93cZiJubnuxpwoSGxF0pDSYADufBXBFFaAIJBVfkSKU17iF4re8orhtXsF9zW+a4icJE
-         ya81PXSpS+31Eta3FQlnQjXqvSSguT61Fn37xP8RIKJdRCMZ7o852id2bDUq613DmSpk
-         KCACtklKs3kQJ/NKYiJD6vEVRLOuM/WOKlwd9K4ol/rkY48FSVl2i4P/0uf8wlyYZr6s
-         qSvgxI+NZjDdTZ/G8MrGr8B35xZxNWa3mJiQMkL/b9U899P54z8gQL9cjb0OqHNW4NCQ
-         f5zA==
+        bh=YsHnJGv78zqzqvzSBU7Yn+nGTyU2xuEXFjTMy+L46O8=;
+        b=JSRGMuM+1ltvy84Ef1mjYthje2YFCDMaGRAv8aE88OVUGuFjR+KMGaVvOpd05YRz57
+         sGxs74Zg4YHQaY4UTiCSPxzzSnAVJCgRM/jbNQy/UmzaCCLl9/a+sALseC9NM+aI6WuZ
+         e7JRhZdvhr6WpsDcBG29JELmigAIDNrcIyBJgpwSoHvwlo+rA4+WrEI4awLSysJr6BXG
+         vzCC2MYr3HdwKxwf+2EN71zi9bKv801dTexeF9UT4OSPgnnzQLnUaSzaBxYlv7rEqpRQ
+         30pZu7E5J4pQOw35L4+8BXzpVrhhhPWOGkqV0E5zujDIhVZG5VYezH74YpSSz9RJ+tg+
+         gbsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700203240; x=1700808040;
+        d=1e100.net; s=20230601; t=1700203242; x=1700808042;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wJxvgI9i9l4IaqoW7P3lNFiG+zzz8tjNlzjKlxr/b2E=;
-        b=R15Vs9uwOp0Z0x/dfqbddoa1PjB485uAgHBgzREIYVEwXTaVeWZneLzK2I1VRiZId+
-         9CuDZUT3F0dJqsd+R2UrG+sMuCchedNpfvqQHKW1/0vpuQF7ng5spjK91N1m+oGMZfAq
-         tfW61gUPnQa4j8mnb471PbB2GjdWUlBYDJPw5tzCvPSsHVcGmqcWB1y+Dpm6oYHwCFYV
-         8sklIPd107tJkXmm0PNPJGsU4CRg6o5blgAHqdNkcixrPK/mRcCMNypA7dvEiQCcYFH8
-         aYndRXz2r8Sb7fOIv/qfAtxJNdnQ9kqYJpi6SS2zhLA9y0lP6jYKBTJ1RhMDglKsZAHj
-         fnyA==
-X-Gm-Message-State: AOJu0YyjqQNp0GMvuPmqabDongBmDJLQ6etRkJGNZcZ5w8Ka3voF9JZ4
-        jbAZlsURIUbORp0AcSiDsEU=
-X-Google-Smtp-Source: AGHT+IFOrpU25XrNR3nupY/bjkhARm3+EwaICdUnXky/72dd0BPMuOx3hAcLXpBntM1uVwobzCaRfA==
-X-Received: by 2002:a17:906:18e1:b0:9e0:2319:16f0 with SMTP id e1-20020a17090618e100b009e0231916f0mr3941019ejf.65.1700203240514;
-        Thu, 16 Nov 2023 22:40:40 -0800 (PST)
+        bh=YsHnJGv78zqzqvzSBU7Yn+nGTyU2xuEXFjTMy+L46O8=;
+        b=h+dnfeq38Q4GNyh0JDsR2NMiNvspmZgMJxreXaNGIoFAVMyH1TNuoVia1LzBCpx9qG
+         /USuy2eJCDs0C2G5m0h5HgoV+og+rX5tiEuCJsTAQCKNJvfy5QhCXMpygY6MJQU2JQQQ
+         BOqiQtVmGLKGrtHX8qr5jDnFO1N0us1NruNCw/YzM18ZH4qNk/8Wr5u4QSelwKE/a/Mr
+         DjemEOX5ZArjHm0nq5foWYKEKpakkiy31ZC4J4jVyo8l9QkhqIrKgD3dd/yeckkMNDtj
+         xgFqLv7ifKULirdxyPstAMvb17a/luFioG/WkCJQp5MYSWJcjHmEqOeYgnRXnZnQHrSj
+         jGdQ==
+X-Gm-Message-State: AOJu0YwDrA7jqmewCSOW4I/t+VY4lFRSSzMboMHivoQKP1YDXdYTNGXa
+        3zOlmuUMyOHH++xtsMrwwxE=
+X-Google-Smtp-Source: AGHT+IFklLfJ/0lws8a+VAe6MfS2TsLhh5FiUGEMmj0AlJRoWQaURcRg3TiQ7ii6v8ZCQGiOzahTwQ==
+X-Received: by 2002:a17:907:984:b0:9e0:dcf:17d8 with SMTP id bf4-20020a170907098400b009e00dcf17d8mr15777550ejc.71.1700203242014;
+        Thu, 16 Nov 2023 22:40:42 -0800 (PST)
 Received: from [127.0.1.1] (91-118-163-37.static.upcbusiness.at. [91.118.163.37])
-        by smtp.gmail.com with ESMTPSA id v27-20020a170906489b00b009d2eb40ff9dsm447514ejq.33.2023.11.16.22.40.39
+        by smtp.gmail.com with ESMTPSA id v27-20020a170906489b00b009d2eb40ff9dsm447514ejq.33.2023.11.16.22.40.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 22:40:39 -0800 (PST)
+        Thu, 16 Nov 2023 22:40:41 -0800 (PST)
 From:   Javier Carrasco <javier.carrasco.cruz@gmail.com>
-Date:   Fri, 17 Nov 2023 07:40:35 +0100
-Subject: [PATCH 2/4] ABI: sysfs-class-hwmon: document missing humidity
- attributes
+Date:   Fri, 17 Nov 2023 07:40:36 +0100
+Subject: [PATCH 3/4] ABI: sysfs-class-hwmon: fix tempY_crit_alarm access
+ rights
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231116-hwmon_abi-v1-2-8bfb7f51145a@gmail.com>
+Message-Id: <20231116-hwmon_abi-v1-3-8bfb7f51145a@gmail.com>
 References: <20231116-hwmon_abi-v1-0-8bfb7f51145a@gmail.com>
 In-Reply-To: <20231116-hwmon_abi-v1-0-8bfb7f51145a@gmail.com>
 To:     Jean Delvare <jdelvare@suse.com>,
@@ -67,11 +67,11 @@ To:     Jean Delvare <jdelvare@suse.com>,
 Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
         Javier Carrasco <javier.carrasco.cruz@gmail.com>
 X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1700203237; l=2753;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1700203237; l=1409;
  i=javier.carrasco.cruz@gmail.com; s=20230509; h=from:subject:message-id;
- bh=Cz+uGSmEvNxYiJra9hc4k5xY8AQoDk7mM0es6NtamR4=;
- b=+58ZzPaTZ2R5I5UWBrwjTwtE5eyOF2ev+T+eTDKkDmU10zs+FameNPN82EcVYp8W8gxFSpfOs
- rxoDZPG3jBuA12wKokQpeHXVGrME2gZhFqleiDFixoLDULBZPxuWKat
+ bh=FAaz0JyjLpwKKeXAsKli/EtU8qFxsDz77oHVb7sXDBA=;
+ b=pFYkFaTT6FBXwHOfIomatXJrB4ld5btqjXF2rTDe7xfDie6Flj2CDCyDYQZKMmf7Aa+GzF5lO
+ etcDxJBZNM0C434q+vBAIOS8zXF+6CLuVfgpvmOM+bMLvaEhs+CsFRs
 X-Developer-Key: i=javier.carrasco.cruz@gmail.com; a=ed25519;
  pk=tIGJV7M+tCizagNijF0eGMBGcOsPD+0cWGfKjl4h6K8=
 X-Spam-Status: No, score=1.2 required=5.0 tests=BAYES_00,DKIM_SIGNED,
@@ -85,120 +85,52 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All these attributes already exist and are used by the hwmon subsystem,
-but they still must be documented.
+This attribute is defined as read-only by all drivers that support it.
 
-The missing attributes are the following:
-- humidityY_alarm
-- humidityY_fault
-- humidityY_label
-- humidityY_max
-- humidityY_max_hyst
-- humidityY_min
-- humidityY_min_hyst
+It seems that the access rights and description for this attribute were
+copied from the intrusionY_alarm, which has indeed RW rights and must be
+cleared by the user.
 
-Add the missing humidity attributes to the ABI documentation according
-to their current usage and access rights in the hwmon subsystem.
+These are the modules that currently use this attribute:
+- adt7x10
+- i5500_temp
+- jc42
+- lm83
+- lm90
+- lm95245
+- max31760
+- max6621
+- mc34vr500
+- tmp401
+- tmp464
+- tmp513
 
+Fix the attribute description and make it read-only.
+
+Fixes: 365b5d63a505 ("ABI: sysfs-class-hwmon: add a description for tempY_crit_alarm")
 Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
 ---
- Documentation/ABI/testing/sysfs-class-hwmon | 69 +++++++++++++++++++++++++++++
- 1 file changed, 69 insertions(+)
+ Documentation/ABI/testing/sysfs-class-hwmon | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
 diff --git a/Documentation/ABI/testing/sysfs-class-hwmon b/Documentation/ABI/testing/sysfs-class-hwmon
-index b998a42add95..dccbcdc2dad8 100644
+index dccbcdc2dad8..3d5e6142ef0c 100644
 --- a/Documentation/ABI/testing/sysfs-class-hwmon
 +++ b/Documentation/ABI/testing/sysfs-class-hwmon
-@@ -887,6 +887,15 @@ Description:
+@@ -434,12 +434,7 @@ Description:
+ 		- 0: OK
+ 		- 1: temperature has reached tempY_crit
  
- 		RW
- 
-+What:		/sys/class/hwmon/hwmonX/humidityY_alarm
-+Description:
-+		Humidity limit detection
-+
-+		- 0: OK
-+		- 1: Humidity limit has been reached
-+
+-		RW
+-
+-		Contrary to regular alarm flags which clear themselves
+-		automatically when read, this one sticks until cleared by
+-		the user. This is done by writing 0 to the file. Writing
+-		other values is unsupported.
 +		RO
-+
- What:		/sys/class/hwmon/hwmonX/humidityY_enable
+ 
+ What:		/sys/class/hwmon/hwmonX/tempY_crit_hyst
  Description:
- 		Enable or disable the sensors
-@@ -899,6 +908,15 @@ Description:
- 
- 		RW
- 
-+What:		/sys/class/hwmon/hwmonX/humidityY_fault
-+Description:
-+		Reports a humidity sensor failure.
-+
-+		- 1: Failed
-+		- 0: Ok
-+
-+		RO
-+
- What:		/sys/class/hwmon/hwmonX/humidityY_input
- Description:
- 		Humidity
-@@ -907,6 +925,57 @@ Description:
- 
- 		RO
- 
-+What:		/sys/class/hwmon/hwmonX/humidityY_label
-+Description:
-+		Suggested humidity channel label.
-+
-+		Text string
-+
-+		Should only be created if the driver has hints about what
-+		this humidity channel is being used for, and user-space
-+		doesn't. In all other cases, the label is provided by
-+		user-space.
-+
-+		RO
-+
-+What:		/sys/class/hwmon/hwmonX/humidityY_max
-+Description:
-+		Humidity max value.
-+
-+		Unit: milli-percent (per cent mille, pcm)
-+
-+		RW
-+
-+What:		/sys/class/hwmon/hwmonX/humidityY_max_hyst
-+Description:
-+		Humidity hysteresis value for max limit.
-+
-+		Unit: milli-percent (per cent mille, pcm)
-+
-+		Must be reported as an absolute humidity, NOT a delta
-+		from the max value.
-+
-+		RW
-+
-+What:		/sys/class/hwmon/hwmonX/humidityY_min
-+Description:
-+		Humidity min value.
-+
-+		Unit: milli-percent (per cent mille, pcm)
-+
-+		RW
-+
-+What:		/sys/class/hwmon/hwmonX/humidityY_min_hyst
-+Description:
-+		Humidity hysteresis value for min limit.
-+
-+		Unit: milli-percent (per cent mille, pcm)
-+
-+		Must be reported as an absolute humidity, NOT a delta
-+		from the min value.
-+
-+		RW
-+
- What:		/sys/class/hwmon/hwmonX/humidityY_rated_min
- Description:
- 		Minimum rated humidity.
 
 -- 
 2.39.2
