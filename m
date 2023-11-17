@@ -2,78 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 98ACA7EF31C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D269F7EF31E
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:58:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233317AbjKQM5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39280 "EHLO
+        id S1346008AbjKQM6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:58:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59082 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231359AbjKQM5L (ORCPT
+        with ESMTP id S229543AbjKQM6U (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:57:11 -0500
-Received: from mx.swemel.ru (mx.swemel.ru [95.143.211.150])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05820D5F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:57:06 -0800 (PST)
-From:   Denis Arefev <arefev@swemel.ru>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=swemel.ru; s=mail;
-        t=1700225821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=yZD/Sn1R2SVTne1HGGZ4hKTypVy6dTpTjai+r/elyT4=;
-        b=voctcqkI8M3/osfELiL5uRL72hNMig0TDFR1ZR7+xmlj6OJObqtE8LUvi3Qzglfs5uHBl8
-        LXIe0hTkwSfX6uE4GncVWtF+JtUvwhSrxrJat6y1cVbAtjpajoljkFtpQ3Q4LBOQqC1y8D
-        fGrIKupsOn6duLlxjhLty6v8vm6ONGI=
-To:     Louis Peens <louis.peens@corigine.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Paolo Abeni <pabeni@redhat.com>, oss-drivers@corigine.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lvc-project@linuxtesting.org
-Subject: [PATCH] nfp: flower: Added pointer check and continue.
-Date:   Fri, 17 Nov 2023 15:57:01 +0300
-Message-Id: <20231117125701.58927-1-arefev@swemel.ru>
+        Fri, 17 Nov 2023 07:58:20 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A71D56
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 04:58:14 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B366AC433C7;
+        Fri, 17 Nov 2023 12:58:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700225893;
+        bh=4vLoS7Dg99+l1hsNwr7XqzGIdn2mfLkaWWkevVLZdC0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nJsYwnM19NZA3/abngyX+NI6XrCZmiSo3hPPOokeyAhcrpCG3T8hERDKegVlXdxjq
+         Sf6jNUZSvoHRgwFef5s9Hsxg7Gz9PK6e0b3YJZq9DrBT84tQZ6vqBt7qj3SAxFfeaQ
+         5pmyPUw3EheWFYHgOFqmTvgJRRUupjCPIebsaksfRdy2AMx+7mBnaGoQNX1d3WiuaM
+         /5y1omWc2vIa4jEpsx8HFet+iVg7FCRf74N8Ve1yjEZRY+EFwGpG7y8saB1Juv2k9F
+         Y7XTkIDKYgz0uGrKHCxZK27asn6qAfhtlLEA8oBm1BQ7VrRJFeLkuYCyEP3a6zr4qV
+         pfMmdyO9V6wsA==
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        linux-riscv@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Masahiro Yamada <masahiroy@kernel.org>
+Subject: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to /lib/modules/*/vdso/
+Date:   Fri, 17 Nov 2023 21:58:07 +0900
+Message-Id: <20231117125807.1058477-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.40.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Return value of a function 'kmalloc_array' is dereferenced at
-lag_conf.c without checking for null, but it is usually
-checked for this function.
+'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+Only for the compat vdso on riscv, the installation destination differs;
+compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
 
-Signed-off-by: Denis Arefev <arefev@swemel.ru>
+To follow the standard install destination and simplify the vdso_install
+logic, change the install destination to standard /lib/modules/*/vdso/.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 ---
- drivers/net/ethernet/netronome/nfp/flower/lag_conf.c | 5 +++++
- 1 file changed, 5 insertions(+)
 
-diff --git a/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c b/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
-index 88d6d992e7d0..8cc6cce73283 100644
---- a/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
-+++ b/drivers/net/ethernet/netronome/nfp/flower/lag_conf.c
-@@ -339,6 +339,11 @@ static void nfp_fl_lag_do_work(struct work_struct *work)
- 		acti_netdevs = kmalloc_array(entry->slave_cnt,
- 					     sizeof(*acti_netdevs), GFP_KERNEL);
+ arch/riscv/Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
+index a74be78678eb..5cbe596345c1 100644
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -146,7 +146,7 @@ endif
+ endif
  
-+		if (!acti_netdevs) {
-+			schedule_delayed_work(&lag->work, NFP_FL_LAG_DELAY);
-+			continue;
-+		}
-+
- 		/* Include sanity check in the loop. It may be that a bond has
- 		 * changed between processing the last notification and the
- 		 * work queue triggering. If the number of slaves has changed
+ vdso-install-y			+= arch/riscv/kernel/vdso/vdso.so.dbg
+-vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg:../compat_vdso/compat_vdso.so
++vdso-install-$(CONFIG_COMPAT)	+= arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg
+ 
+ ifneq ($(CONFIG_XIP_KERNEL),y)
+ ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
 -- 
-2.25.1
+2.40.1
 
