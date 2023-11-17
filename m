@@ -2,197 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F2C07EF7BC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:17:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8435B7EF7C9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:23:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231569AbjKQTRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:17:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
+        id S231876AbjKQTX3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:23:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQTRi (ORCPT
+        with ESMTP id S229535AbjKQTX2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:17:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37310D4E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:17:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700248654;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=kYkliK5LLyBWsCelrZj1qHbRtpj0yIQa/B4ipiOpxIw=;
-        b=UAL+5Y54hXY9hevEGGz7s9uKB/TYyN0oH7yig03pQddhIMG1y8/5E/iGqF1vSxfdcb/Cgc
-        bjNqtbM+DivNhRc20FbG9ECxEJJ82DGix3My38UrZ1Udbet/N0Hm8XbAy2MugCVEZzw5OZ
-        8/SGoZlhMci6Zu0P6TpV8CWeh+E7lL4=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-659-Nr4xD39LPfO4KEjdF95_LQ-1; Fri, 17 Nov 2023 14:17:33 -0500
-X-MC-Unique: Nr4xD39LPfO4KEjdF95_LQ-1
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-778b3526240so265385485a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:17:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700248652; x=1700853452;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kYkliK5LLyBWsCelrZj1qHbRtpj0yIQa/B4ipiOpxIw=;
-        b=KsEnkxfWracAKMII/bR1dbwTQBShixcJD5mc1axQwUnSRJarnpMVLaQrTHEuWQGPIq
-         gIjTH7V+M8l3z0y4yF8zA4hPanXnw2V6lg/ympA52yIHBJGmEi4aFbz47nvxQS0gI12P
-         2rWrJGHLpgRpPnapEsD1xY03e24pWGuQhSAen5ai+YBv/xB2SmT1POMsz2b9zAzMkHuZ
-         l03wtDR1yzVlxB70mmNG9sWbq9+Y6zTUQXjkt99ebWk6OeWXwFeLVTaK4aia3QPfxAbu
-         EdVHpAUdRzJ24VHEosQpeh0mWhE5TpDWSt5mqwBjbf95etCA0sxQ22qImTCOSwU2II+6
-         PHmg==
-X-Gm-Message-State: AOJu0Yw2Z45gaOzgfJxH/BWeYujv6/dn2vEf+Cq4Wp1x3LllPs4PIXtS
-        rtEl2v6sc74z17jUPbU13/SMofPyj9oIGMrKKMPSYvfB0hPswcIIqJjwsAEp3A2/p3oBMV+nQtP
-        vNeBg7ClDIP987lsZDuw5+9Nj
-X-Received: by 2002:a05:620a:389e:b0:775:cf5f:8a81 with SMTP id qp30-20020a05620a389e00b00775cf5f8a81mr393654qkn.62.1700248652648;
-        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGmHO48ofPq25XthhBvwYR4euVlRe27xZWlBqEgcuk1cvhzJ6JOgacr2A8MKYqMEK47wSFwZw==
-X-Received: by 2002:a05:620a:389e:b0:775:cf5f:8a81 with SMTP id qp30-20020a05620a389e00b00775cf5f8a81mr393636qkn.62.1700248652362;
-        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
-Received: from fedora ([2600:1700:1ff0:d0e0::49])
-        by smtp.gmail.com with ESMTPSA id pr13-20020a05620a86cd00b007770d47c621sm809192qkn.66.2023.11.17.11.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
-Date:   Fri, 17 Nov 2023 13:17:29 -0600
-From:   Andrew Halaney <ahalaney@redhat.com>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
-        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
-Subject: Re: [PATCH 3/3] USB: dwc3: qcom: fix ACPI platform device leak
-Message-ID: <zgmlodcauv3jdnwvjlmhudad236gszhmx5de3k2qzamb2rv7z6@dswepa2tvjqh>
-References: <20231117173650.21161-1-johan+linaro@kernel.org>
- <20231117173650.21161-4-johan+linaro@kernel.org>
+        Fri, 17 Nov 2023 14:23:28 -0500
+Received: from mail.subdimension.ro (skycaves.subdimension.ro [172.104.132.142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35D09D4B;
+        Fri, 17 Nov 2023 11:23:24 -0800 (PST)
+Received: from localhost.localdomain (unknown [188.24.94.216])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by mail.subdimension.ro (Postfix) with ESMTPSA id 89D6A28F040;
+        Fri, 17 Nov 2023 19:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=subdimension.ro;
+        s=skycaves; t=1700249002;
+        bh=WwNgEfUL7AsMa3dejpCXesMzNmnY3tanbmMGBdRVRRk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=eWcPjy6oa2wGm6i6YN7h+qOwT4PpafXPQXgnBF2A+XfsBzlnHgc7h3NCdY/bdKoZX
+         /R9NJN84MxcfzNqHZ2aKpnxWI7lGANPkPXTzVIAl4F1U3+4h+/kerutPTfR7O0RXNM
+         TIa0Taqp7OuUGUFK9nl147Fdv2c5JXhsEi2U3SJU=
+From:   Petre Rodan <petre.rodan@subdimension.ro>
+To:     linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org
+Cc:     Petre Rodan <petre.rodan@subdimension.ro>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Jonathan Cameron <jic23@kernel.org>
+Subject: [PATCH v2 1/2] dt-bindings: iio: pressure: add honeywell,hsc030
+Date:   Fri, 17 Nov 2023 21:22:57 +0200
+Message-ID: <20231117192305.17612-1-petre.rodan@subdimension.ro>
+X-Mailer: git-send-email 2.41.0
+In-Reply-To: <20231117164232.8474-1-petre.rodan@subdimension.ro>
+References: <20231117164232.8474-1-petre.rodan@subdimension.ro>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231117173650.21161-4-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 06:36:50PM +0100, Johan Hovold wrote:
-> Make sure to free the "urs" platform device, which is created for some
-> ACPI platforms, on probe errors and on driver unbind.
-> 
-> Compile-tested only.
-> 
-> Fixes: c25c210f590e ("usb: dwc3: qcom: add URS Host support for sdm845 ACPI boot")
-> Cc: Shawn Guo <shawn.guo@linaro.org>
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+Adds binding for digital Honeywell TruStability HSC and SSC series pressure 
+and temperature sensors.
 
-Acked-by: Andrew Halaney <ahalaney@redhat.com>
+Datasheet:
+ [HSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
+ [SSC] https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
 
-> ---
->  drivers/usb/dwc3/dwc3-qcom.c | 37 +++++++++++++++++++++++++++++-------
->  1 file changed, 30 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
-> index 0703f9b85cda..10fb481d943b 100644
-> --- a/drivers/usb/dwc3/dwc3-qcom.c
-> +++ b/drivers/usb/dwc3/dwc3-qcom.c
-> @@ -767,9 +767,9 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static struct platform_device *
-> -dwc3_qcom_create_urs_usb_platdev(struct device *dev)
-> +static struct platform_device *dwc3_qcom_create_urs_usb_platdev(struct device *dev)
->  {
-> +	struct platform_device *urs_usb = NULL;
->  	struct fwnode_handle *fwh;
->  	struct acpi_device *adev;
->  	char name[8];
-> @@ -789,9 +789,26 @@ dwc3_qcom_create_urs_usb_platdev(struct device *dev)
->  
->  	adev = to_acpi_device_node(fwh);
->  	if (!adev)
-> -		return NULL;
-> +		goto err_put_handle;
-> +
-> +	urs_usb = acpi_create_platform_device(adev, NULL);
-> +	if (IS_ERR_OR_NULL(urs_usb))
-> +		goto err_put_handle;
-> +
-> +	return urs_usb;
->  
-> -	return acpi_create_platform_device(adev, NULL);
-> +err_put_handle:
-> +	fwnode_handle_put(fwh);
-> +
-> +	return urs_usb;
-> +}
-> +
-> +static void dwc3_qcom_destroy_urs_usb_platdev(struct platform_device *urs_usb)
-> +{
-> +	struct fwnode_handle *fwh = urs_usb->dev.fwnode;
-> +
-> +	platform_device_unregister(urs_usb);
-> +	fwnode_handle_put(fwh);
->  }
->  
->  static int dwc3_qcom_probe(struct platform_device *pdev)
-> @@ -875,13 +892,13 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
->  	if (IS_ERR(qcom->qscratch_base)) {
->  		ret = PTR_ERR(qcom->qscratch_base);
-> -		goto clk_disable;
-> +		goto free_urs;
->  	}
->  
->  	ret = dwc3_qcom_setup_irq(pdev);
->  	if (ret) {
->  		dev_err(dev, "failed to setup IRQs, err=%d\n", ret);
-> -		goto clk_disable;
-> +		goto free_urs;
->  	}
->  
->  	/*
-> @@ -900,7 +917,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  
->  	if (ret) {
->  		dev_err(dev, "failed to register DWC3 Core, err=%d\n", ret);
-> -		goto clk_disable;
-> +		goto free_urs;
->  	}
->  
->  	ret = dwc3_qcom_interconnect_init(qcom);
-> @@ -939,6 +956,9 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
->  		platform_device_del(qcom->dwc3);
->  	}
->  	platform_device_put(qcom->dwc3);
-> +free_urs:
-> +	if (qcom->urs_usb)
-> +		dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
->  clk_disable:
->  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
->  		clk_disable_unprepare(qcom->clks[i]);
-> @@ -965,6 +985,9 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
->  	}
->  	platform_device_put(qcom->dwc3);
->  
-> +	if (qcom->urs_usb)
-> +		dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
-> +
->  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
->  		clk_disable_unprepare(qcom->clks[i]);
->  		clk_put(qcom->clks[i]);
-> -- 
-> 2.41.0
-> 
-> 
+Signed-off-by: Petre Rodan <petre.rodan@subdimension.ro>
+---
+
+Changes for v2:
+- Removed redundant quotations reported by robh's bot
+- Fixed yamllint warnings
+
+I'm failing to run 'make DT_CHECKER_FLAGS=-m dt_binding_check' due to
+python errors and exceptions
+---
+ .../iio/pressure/honeywell,hsc030pa.yaml      | 156 ++++++++++++++++++
+ 1 file changed, 156 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+
+diff --git a/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+new file mode 100644
+index 000000000000..c7e5d3bd5ef4
+--- /dev/null
++++ b/Documentation/devicetree/bindings/iio/pressure/honeywell,hsc030pa.yaml
+@@ -0,0 +1,156 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/iio/pressure/honeywell,hsc030pa.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Honeywell TruStability HSC and SSC pressure sensor families
++
++description: |
++  support for Honeywell TruStability HSC and SSC digital pressure sensor
++  families.
++
++  These sensors have either an I2C, an SPI or an analog interface. Only the
++  digital versions are supported by this driver.
++
++  There are 118 models with different pressure ranges available in each family.
++  The vendor calls them "HSC series" and "SSC series". All of them have an
++  identical programming model but differ in pressure range, unit and transfer
++  function.
++
++  To support different models one need to specify the pressure range as well as
++  the transfer function. Pressure range can either be provided via range_str or
++  in case it's a custom chip via numerical range limits converted to pascals.
++
++  The transfer function defines the ranges of raw conversion values delivered
++  by the sensor. pmin-pascal and pmax-pascal corespond to the minimum and
++  maximum pressure that can be measured.
++
++  Specifications about the devices can be found at:
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-hsc-series/documents/sps-siot-trustability-hsc-series-high-accuracy-board-mount-pressure-sensors-50099148-a-en-ciid-151133.pdf
++  https://prod-edam.honeywell.com/content/dam/honeywell-edam/sps/siot/en-us/products/sensors/pressure-sensors/board-mount-pressure-sensors/trustability-ssc-series/documents/sps-siot-trustability-ssc-series-standard-accuracy-board-mount-pressure-sensors-50099533-a-en-ciid-151134.pdf
++
++maintainers:
++  - Petre Rodan <petre.rodan@subdimension.ro>
++
++properties:
++  compatible:
++    enum:
++      - honeywell,hsc
++      - honeywell,ssc
++
++  reg:
++    maxItems: 1
++
++  honeywell,transfer-function:
++    description: |
++      Transfer function which defines the range of valid values delivered by
++      the sensor.
++      0 - A, 10% to 90% of 2^14
++      1 - B, 5% to 95% of 2^14
++      2 - C, 5% to 85% of 2^14
++      3 - F, 4% to 94% of 2^14
++    $ref: /schemas/types.yaml#/definitions/uint32
++
++  honeywell,range_str:
++    description: |
++      Five character string that defines "pressure range, unit and type"
++      as part of the device nomenclature. In the unlikely case of a custom
++      chip, set to "NA" and provide honeywell,pmin-pascal honeywell,pmax-pascal
++    enum: [001BA, 1.6BA, 2.5BA, 004BA, 006BA, 010BA, 1.6MD, 2.5MD, 004MD,
++           006MD, 010MD, 016MD, 025MD, 040MD, 060MD, 100MD, 160MD, 250MD,
++           400MD, 600MD, 001BD, 1.6BD, 2.5BD, 004BD, 2.5MG, 004MG, 006MG,
++           010MG, 016MG, 025MG, 040MG, 060MG, 100MG, 160MG, 250MG, 400MG,
++           600MG, 001BG, 1.6BG, 2.5BG, 004BG, 006BG, 010BG, 100KA, 160KA,
++           250KA, 400KA, 600KA, 001GA, 160LD, 250LD, 400LD, 600LD, 001KD,
++           1.6KD, 2.5KD, 004KD, 006KD, 010KD, 016KD, 025KD, 040KD, 060KD,
++           100KD, 160KD, 250KD, 400KD, 250LG, 400LG, 600LG, 001KG, 1.6KG,
++           2.5KG, 004KG, 006KG, 010KG, 016KG, 025KG, 040KG, 060KG, 100KG,
++           160KG, 250KG, 400KG, 600KG, 001GG, 015PA, 030PA, 060PA, 100PA,
++           150PA, 0.5ND, 001ND, 002ND, 004ND, 005ND, 010ND, 020ND, 030ND,
++           001PD, 005PD, 015PD, 030PD, 060PD, 001NG, 002NG, 004NG, 005NG,
++           010NG, 020NG, 030NG, 001PG, 005PG, 015PG, 030PG, 060PG, 100PG,
++           150PG, NA]
++    $ref: /schemas/types.yaml#/definitions/string
++
++  honeywell,pmin-pascal:
++    description: |
++      Minimum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,range_str is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  honeywell,pmax-pascal:
++    description: |
++      Maximum pressure value the sensor can measure in pascal.
++      To be specified only if honeywell,range_str is set to "NA".
++    $ref: /schemas/types.yaml#/definitions/int32
++
++  vdd-supply:
++    description: |
++      Provide VDD power to the sensor (either 3.3V or 5V depending on the chip).
++      Optional, activate only if required by the target board.
++
++  spi-max-frequency:
++    description: SPI clock to be kept between 50 and 800kHz
++
++  clock-frequency:
++    description: i2c clock to be kept between 100 and 400kHz
++
++required:
++  - compatible
++  - reg
++  - honeywell,transfer-function
++  - honeywell,range_str
++  - clock-frequency
++  - spi-max-frequency
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/gpio/gpio.h>
++    i2c {
++        status = "okay";
++        clock-frequency = <400000>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        HSCMRNN030PA2A3@28 {
++          status = "okay";
++          compatible = "honeywell,hsc";
++          reg = <0x28>;
++
++          honeywell,transfer-function = <0>;
++          honeywell,range_str = "030PA";
++        };
++    };
++
++    spi {
++        # note that MOSI is not required by this sensor
++        status = "okay";
++        #address-cells = <1>;
++        #size-cells = <0>;
++
++        HSCMLNN100PASA3@0 {
++          status = "okay";
++          compatible = "honeywell,hsc";
++          reg = <0>;
++          spi-max-frequency = <800000>;
++
++          honeywell,transfer-function = <0>;
++          honeywell,range_str = "100PA";
++        };
++
++        HSC_CUSTOM_CHIP@0 {
++          status = "okay";
++          compatible = "honeywell,hsc";
++          reg = <1>;
++          spi-max-frequency = <800000>;
++
++          honeywell,transfer-function = <0>;
++          honeywell,range_str = "NA";
++          honeywell,pmin-pascal = <0>;
++          honeywell,pmax-pascal = <206850>;
++        };
++
++    };
+-- 
+2.41.0
 
