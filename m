@@ -2,271 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 070007EED8A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:30:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 379A17EED8B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:30:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230293AbjKQIaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:30:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44774 "EHLO
+        id S230181AbjKQIah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:30:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQIaJ (ORCPT
+        with ESMTP id S230105AbjKQIaf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:30:09 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D962A7
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:30:03 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id 6a1803df08f44-6705379b835so9515336d6.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:30:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700209802; x=1700814602; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CE3x8Je1GtPE/cdhBuD5VpOAYsIE+Hb1O7sGDllMALo=;
-        b=LJpC4pKqPLyVhTxISd03YaHPqf/qH0Jzu0Q6JGHXNjY1pDoPNycd5p9zAZNJzWw6Qn
-         ZyjcqwXbQb3HI8tG2eAE8u74CLMCvmzjqFpsxBS4lqIWCV9Kd2/PcT+V00vBYsiH3F/V
-         2mhpYwQNhgFG1BDnEl4YSf26+jeo2taV/+h+TggOaxe3lIkidnM8eXipg4VlfdSsMBc7
-         EbZXNYTBKP12r70wFoU3Nk1KrY4P9Ki+biS9LsoGiqdtUB9q5flHIFmFJaopN4etEQ5U
-         u9qq4RLwveVTkNZuXZzCFzQVeMiDHKUt+E1uizRRFR5R2kQxAG5t3AgSXar/62f/YNBX
-         kTSQ==
+        Fri, 17 Nov 2023 03:30:35 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1E3A1999
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:30:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700209831;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Ecl6gR/j9l4tmwy6aDtejNzjXal2h/loVpF3cjPsjz4=;
+        b=J3T8gIx5h4eXV7W5ygkfhHYvo+8OYiggAlgoSiQ3BpaSnfyAFT1b3NvHmGSm0OmPpX6X6V
+        EBFgdp2lCRZkMW2y95z4XtlG4a3JZ6zGEDYzGL4tUBqtfTSRIITLmZ/MueH2wVaHw8ObCr
+        Q6OmLdyjbdsk813XsoLbCcsTgkCf52A=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-10-LLiG_JKPObSQNwWgzPCDtw-1; Fri, 17 Nov 2023 03:30:29 -0500
+X-MC-Unique: LLiG_JKPObSQNwWgzPCDtw-1
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-54132059c6aso1476224a12.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:30:29 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700209802; x=1700814602;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CE3x8Je1GtPE/cdhBuD5VpOAYsIE+Hb1O7sGDllMALo=;
-        b=ssLytILsBg3eF7jP2Qk1B0c8naSIn2an8T8Eww8tgrGrpjhtGRS538CDVArRKckzAK
-         NjgfTYb3DC7D6iwcnQ7aVEI5IPdNZes+DeRdzRKqM5yqdglUVL3pP4Gj2o137T+AS6xd
-         kSvr0BBSh2ivC3FNuvYGeemGYXgScm8RllBihi3ceSSV7FPSjwML+Ofp8KebhI264NXc
-         Qecwvp6UPInxv/gf17yBBZw9Wgjh9UPxpvqRfO4FC3PW9frQX6X0RggQm55KNh9O+46i
-         t5VJO8WGJBqaK8lVZs9m1ucH4ZA4kw+guN3M5m2zql8gV2i4zM1CP0yaUASG4tRqTE0p
-         eS/w==
-X-Gm-Message-State: AOJu0YzYfXmSiiXE/pY66yziE2F66MRBfO4FIULDqvdG5N6tVrZ/cTtB
-        JfXTB6jpRbejRjtE9YhIkHbvAiZsRrZtyHCOBAsBhQ==
-X-Google-Smtp-Source: AGHT+IGevvzdE8fxZtAzb8nsMoCrT0RGZ3HOOrFLj7uAww3kgAP25WzY15+7LT5JNoczopqtHC7ywSG1xzN/6xiXaKY=
-X-Received: by 2002:a05:6214:5493:b0:66d:138f:95df with SMTP id
- lg19-20020a056214549300b0066d138f95dfmr11297595qvb.56.1700209802237; Fri, 17
- Nov 2023 00:30:02 -0800 (PST)
+        d=1e100.net; s=20230601; t=1700209828; x=1700814628;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ecl6gR/j9l4tmwy6aDtejNzjXal2h/loVpF3cjPsjz4=;
+        b=D7H1JhATpznXhGnu9jANrovQYGYcoJng0W7x2dSvkBM8kYlmpqYtJ/VM95UqSL0bIv
+         LBZhH7mlFVfuZS4qukVwsKS+/PGtTU23oJ1w8hj6YQp2Xw0l/uSOrRRSOT9b6KO7lrsQ
+         oAqw2KvTr7omG4FAx9Zi7UhMcZFtWCMpapJ+Lu5LVgJPRNbV/41KdO7LYk3mx0Oho0RP
+         3uKGWPSFtFT13eO1KZSnu8CWSIwg1CDQZfaE3W71kUakR+V6EsRJ3feQ2uxIbKn1dRVP
+         nm5ElH9SxdXsMpJ55F5eOT8va/fC6B7cB1YVhZEo9DgjGXm7DvhGBUZ4Mh0ctqVoDw1z
+         ld0w==
+X-Gm-Message-State: AOJu0Yzshqe8vQ28fWBBfkTCXJx5seUrQN3p3lgoSG3C22enyO+CWRHN
+        Q9xGb4FkuGNSnEpOnDy6xwYFqJfYjz49ec2QvNKhXfyuW10nE4j7ToBMvjBtyd8X/kkgF8xXlzL
+        voLocR2Si2N0/p6qA/ZxnwTSz
+X-Received: by 2002:a17:907:b9c3:b0:9f3:18f8:475b with SMTP id xa3-20020a170907b9c300b009f318f8475bmr6952575ejc.62.1700209828355;
+        Fri, 17 Nov 2023 00:30:28 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEFPEAnGCm1WVzr07XAT0pN1kw24RqLiQT9EjkeoYuqTICFcy0cLcinJxwF//W1biZMt6dF0g==
+X-Received: by 2002:a17:907:b9c3:b0:9f3:18f8:475b with SMTP id xa3-20020a170907b9c300b009f318f8475bmr6952555ejc.62.1700209828011;
+        Fri, 17 Nov 2023 00:30:28 -0800 (PST)
+Received: from sgarzare-redhat (host-79-46-200-199.retail.telecomitalia.it. [79.46.200.199])
+        by smtp.gmail.com with ESMTPSA id q2-20020a170906b28200b009ad8acac02asm538543ejz.172.2023.11.17.00.30.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 00:30:27 -0800 (PST)
+Date:   Fri, 17 Nov 2023 09:30:19 +0100
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Arseniy Krasnov <avkrasnov@salutedevices.com>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Bobby Eshleman <bobby.eshleman@bytedance.com>,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@sberdevices.ru, oxffffaa@gmail.com
+Subject: Re: [RFC PATCH v1 2/2] vsock/test: SO_RCVLOWAT + deferred credit
+ update test
+Message-ID: <tbvwohgvrc6kvlsyap3sk5zqww5q6schsu4szx7e23wgg7pvb3@e7xa5mg5inul>
+References: <20231108072004.1045669-1-avkrasnov@salutedevices.com>
+ <20231108072004.1045669-3-avkrasnov@salutedevices.com>
+ <zukasb6k7ogta33c2wik6cgadg2rkacestat7pkexd45u53swh@ovso3hafta77>
+ <923a6149-3bd5-c5b4-766d-8301f9e7484a@salutedevices.com>
 MIME-Version: 1.0
-References: <20231114095217.1142360-1-jens.wiklander@linaro.org>
- <20231114095217.1142360-2-jens.wiklander@linaro.org> <CAFA6WYOUZBLtkoy6fpsARYN==Eqr7JymskYDTxbvxxkUjEprfg@mail.gmail.com>
-In-Reply-To: <CAFA6WYOUZBLtkoy6fpsARYN==Eqr7JymskYDTxbvxxkUjEprfg@mail.gmail.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 17 Nov 2023 09:29:51 +0100
-Message-ID: <CAHUa44GRL-vkXH6CKoL-JamJpk+XV8mWyO+VaE8VVdmqSVa6EQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/2] optee: add page list to kernel private shared memory
-To:     Sumit Garg <sumit.garg@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, op-tee@lists.trustedfirmware.org,
-        Jerome Forissier <jerome.forissier@linaro.org>,
-        Shyam Saini <shyamsaini@linux.microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <923a6149-3bd5-c5b4-766d-8301f9e7484a@salutedevices.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 1:28=E2=80=AFPM Sumit Garg <sumit.garg@linaro.org> =
-wrote:
+On Fri, Nov 17, 2023 at 10:12:38AM +0300, Arseniy Krasnov wrote:
 >
-> On Tue, 14 Nov 2023 at 15:22, Jens Wiklander <jens.wiklander@linaro.org> =
-wrote:
-> >
-> > Until now has kernel private shared memory allocated as dynamic shared
-> > memory (not from the static shared memory pool) been returned without a
-> > list of physical pages on allocations via RPC. To support allocations
-> > larger than one page add a list of physical pages.
 >
-> Although this patch looks like a good cleanup, I can't find an ABI
-> change here. Wasn't a list of pages returned earlier too?
+>On 15.11.2023 14:11, Stefano Garzarella wrote:
+>> On Wed, Nov 08, 2023 at 10:20:04AM +0300, Arseniy Krasnov wrote:
+>>> This adds test which checks, that updating SO_RCVLOWAT value also sends
+>>
+>> You can avoid "This adds", and write just "Add test ...".
+>>
+>> See https://docs.kernel.org/process/submitting-patches.html#describe-your-changes
+>>
+>>     Describe your changes in imperative mood, e.g. "make xyzzy do frotz"
+>>     instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy
+>>     to do frotz", as if you are giving orders to the codebase to change
+>>     its behaviour.
+>>
+>> Also in the other patch.
+>>
+>>> credit update message. Otherwise mutual hungup may happen when receiver
+>>> didn't send credit update and then calls 'poll()' with non default
+>>> SO_RCVLOWAT value (e.g. waiting enough bytes to read), while sender
+>>> waits for free space at receiver's side.
+>>>
+>>> Signed-off-by: Arseniy Krasnov <avkrasnov@salutedevices.com>
+>>> ---
+>>> tools/testing/vsock/vsock_test.c | 131 +++++++++++++++++++++++++++++++
+>>> 1 file changed, 131 insertions(+)
+>>>
+>>> diff --git a/tools/testing/vsock/vsock_test.c b/tools/testing/vsock/vsock_test.c
+>>> index c1f7bc9abd22..c71b3875fd16 100644
+>>> --- a/tools/testing/vsock/vsock_test.c
+>>> +++ b/tools/testing/vsock/vsock_test.c
+>>> @@ -1180,6 +1180,132 @@ static void test_stream_shutrd_server(const struct test_opts *opts)
+>>>     close(fd);
+>>> }
+>>>
+>>> +#define RCVLOWAT_CREDIT_UPD_BUF_SIZE    (1024 * 128)
+>>> +#define VIRTIO_VSOCK_MAX_PKT_BUF_SIZE    (1024 * 64)
+>>
+>> What about adding a comment like the one in the cover letter about
+>> dependency with kernel values?
+>>
+>> Please add it also in the commit description.
+>>
+>> I'm thinking if we should move all the defines that depends on the
+>> kernel in some special header.
+>
+>IIUC it will be new header file in tools/testing/vsock, which includes such defines. At
+>this moment in will contain only VIRTIO_VSOCK_MAX_PKT_BUF_SIZE. Idea is that such defines
 
-No, because handle_rpc_func_cmd_shm_alloc() didn't take the path where
-optee_allocate_pages_list() is called.
+So this only works on the virtio transport though, not the other
+transports, right? (but maybe the others don't have this problem, so
+it's fine).
 
-Cheers,
-Jens
+>are not supposed to use by user (so do not move it to uapi headers), but needed by tests
+>to check kernel behaviour. Please correct me if i'm wrong.
 
->
-> -Sumit
->
-> >
-> > Signed-off-by: Jens Wiklander <jens.wiklander@linaro.org>
-> > ---
-> >  drivers/tee/optee/core.c    | 28 +++++++++++++----------
-> >  drivers/tee/optee/smc_abi.c | 45 +++++++++++++++++--------------------
-> >  2 files changed, 37 insertions(+), 36 deletions(-)
-> >
-> > diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
-> > index 2a258bd3b6b5..38ea2fecfc2e 100644
-> > --- a/drivers/tee/optee/core.c
-> > +++ b/drivers/tee/optee/core.c
-> > @@ -27,7 +27,10 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool *=
-pool, struct tee_shm *shm,
-> >                                                    unsigned long start)=
-)
-> >  {
-> >         unsigned int order =3D get_order(size);
-> > +       unsigned int nr_pages =3D 1 << order;
-> > +       struct page **pages;
-> >         struct page *page;
-> > +       unsigned int i;
-> >         int rc =3D 0;
-> >
-> >         /*
-> > @@ -42,30 +45,29 @@ int optee_pool_op_alloc_helper(struct tee_shm_pool =
-*pool, struct tee_shm *shm,
-> >         shm->paddr =3D page_to_phys(page);
-> >         shm->size =3D PAGE_SIZE << order;
-> >
-> > -       if (shm_register) {
-> > -               unsigned int nr_pages =3D 1 << order, i;
-> > -               struct page **pages;
-> > +       pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-> > +       if (!pages) {
-> > +               rc =3D -ENOMEM;
-> > +               goto err;
-> > +       }
-> >
-> > -               pages =3D kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL)=
-;
-> > -               if (!pages) {
-> > -                       rc =3D -ENOMEM;
-> > -                       goto err;
-> > -               }
-> > +       for (i =3D 0; i < nr_pages; i++)
-> > +               pages[i] =3D page + i;
-> >
-> > -               for (i =3D 0; i < nr_pages; i++)
-> > -                       pages[i] =3D page + i;
-> > +       shm->pages =3D pages;
-> > +       shm->num_pages =3D nr_pages;
-> >
-> > +       if (shm_register) {
-> >                 rc =3D shm_register(shm->ctx, shm, pages, nr_pages,
-> >                                   (unsigned long)shm->kaddr);
-> > -               kfree(pages);
-> >                 if (rc)
-> >                         goto err;
-> >         }
-> >
-> >         return 0;
-> > -
-> >  err:
-> >         free_pages((unsigned long)shm->kaddr, order);
-> > +       shm->kaddr =3D NULL;
-> >         return rc;
-> >  }
-> >
-> > @@ -77,6 +79,8 @@ void optee_pool_op_free_helper(struct tee_shm_pool *p=
-ool, struct tee_shm *shm,
-> >                 shm_unregister(shm->ctx, shm);
-> >         free_pages((unsigned long)shm->kaddr, get_order(shm->size));
-> >         shm->kaddr =3D NULL;
-> > +       kfree(shm->pages);
-> > +       shm->pages =3D NULL;
-> >  }
-> >
-> >  static void optee_bus_scan(struct work_struct *work)
-> > diff --git a/drivers/tee/optee/smc_abi.c b/drivers/tee/optee/smc_abi.c
-> > index d5b28fd35d66..b69410c7cc0a 100644
-> > --- a/drivers/tee/optee/smc_abi.c
-> > +++ b/drivers/tee/optee/smc_abi.c
-> > @@ -678,10 +678,11 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
-tee_context *ctx,
-> >                                           struct optee_msg_arg *arg,
-> >                                           struct optee_call_ctx *call_c=
-tx)
-> >  {
-> > -       phys_addr_t pa;
-> >         struct tee_shm *shm;
-> >         size_t sz;
-> >         size_t n;
-> > +       struct page **pages;
-> > +       size_t page_count;
-> >
-> >         arg->ret_origin =3D TEEC_ORIGIN_COMMS;
-> >
-> > @@ -716,32 +717,23 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
-tee_context *ctx,
-> >                 return;
-> >         }
-> >
-> > -       if (tee_shm_get_pa(shm, 0, &pa)) {
-> > -               arg->ret =3D TEEC_ERROR_BAD_PARAMETERS;
-> > -               goto bad;
-> > -       }
-> > -
-> > -       sz =3D tee_shm_get_size(shm);
-> > -
-> > -       if (tee_shm_is_dynamic(shm)) {
-> > -               struct page **pages;
-> > +       /*
-> > +        * If there are pages it's dynamically allocated shared memory =
-(not
-> > +        * from the reserved shared memory pool) and needs to be
-> > +        * registered.
-> > +        */
-> > +       pages =3D tee_shm_get_pages(shm, &page_count);
-> > +       if (pages) {
-> >                 u64 *pages_list;
-> > -               size_t page_num;
-> > -
-> > -               pages =3D tee_shm_get_pages(shm, &page_num);
-> > -               if (!pages || !page_num) {
-> > -                       arg->ret =3D TEEC_ERROR_OUT_OF_MEMORY;
-> > -                       goto bad;
-> > -               }
-> >
-> > -               pages_list =3D optee_allocate_pages_list(page_num);
-> > +               pages_list =3D optee_allocate_pages_list(page_count);
-> >                 if (!pages_list) {
-> >                         arg->ret =3D TEEC_ERROR_OUT_OF_MEMORY;
-> >                         goto bad;
-> >                 }
-> >
-> >                 call_ctx->pages_list =3D pages_list;
-> > -               call_ctx->num_entries =3D page_num;
-> > +               call_ctx->num_entries =3D page_count;
-> >
-> >                 arg->params[0].attr =3D OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT=
- |
-> >                                       OPTEE_MSG_ATTR_NONCONTIG;
-> > @@ -752,17 +744,22 @@ static void handle_rpc_func_cmd_shm_alloc(struct =
-tee_context *ctx,
-> >                 arg->params[0].u.tmem.buf_ptr =3D virt_to_phys(pages_li=
-st) |
-> >                         (tee_shm_get_page_offset(shm) &
-> >                          (OPTEE_MSG_NONCONTIG_PAGE_SIZE - 1));
-> > -               arg->params[0].u.tmem.size =3D tee_shm_get_size(shm);
-> > -               arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
-> >
-> > -               optee_fill_pages_list(pages_list, pages, page_num,
-> > +               optee_fill_pages_list(pages_list, pages, page_count,
-> >                                       tee_shm_get_page_offset(shm));
-> >         } else {
-> > +               phys_addr_t pa;
-> > +
-> > +               if (tee_shm_get_pa(shm, 0, &pa)) {
-> > +                       arg->ret =3D TEEC_ERROR_BAD_PARAMETERS;
-> > +                       goto bad;
-> > +               }
-> > +
-> >                 arg->params[0].attr =3D OPTEE_MSG_ATTR_TYPE_TMEM_OUTPUT=
-;
-> >                 arg->params[0].u.tmem.buf_ptr =3D pa;
-> > -               arg->params[0].u.tmem.size =3D sz;
-> > -               arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
-> >         }
-> > +       arg->params[0].u.tmem.size =3D tee_shm_get_size(shm);
-> > +       arg->params[0].u.tmem.shm_ref =3D (unsigned long)shm;
-> >
-> >         arg->ret =3D TEEC_SUCCESS;
-> >         return;
-> > --
-> > 2.34.1
-> >
+Right!
+Maybe if it's just one, we can leave it there for now, but with a
+comment on top explaining where it comes.
+
+Thanks,
+Stefano
+
