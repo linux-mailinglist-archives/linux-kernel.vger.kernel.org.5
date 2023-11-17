@@ -2,89 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3CF7EF88F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 283BF7EF894
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:20:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346239AbjKQUTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36972 "EHLO
+        id S1346259AbjKQUUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235771AbjKQUTI (ORCPT
+        with ESMTP id S230383AbjKQUUj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:19:08 -0500
-Received: from mail.zytor.com (unknown [IPv6:2607:7c80:54:3::138])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 611D01BD9
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:18:41 -0800 (PST)
-Received: from [IPV6:2601:646:9a00:1821:450e:710e:ed94:8bf9] ([IPv6:2601:646:9a00:1821:450e:710e:ed94:8bf9])
-        (authenticated bits=0)
-        by mail.zytor.com (8.17.1/8.17.1) with ESMTPSA id 3AHKI3Ra357876
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 17 Nov 2023 12:18:04 -0800
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 3AHKI3Ra357876
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2023111101; t=1700252285;
-        bh=dRGdu0HcrSmC2htUtuixOXNvzjT2XsGAptdlNE8aBkQ=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-        b=ZeIvx2zc0S0MQFNQ6hWhFf9xO/3B3o4I92vxaeklPeAm1eFSYn69hdDuQMOML5jCF
-         uaImua6YGgdXP4COBK6Io4k2Sk3MZMNAV1iQTMDCuGrpKOxkBbYP1rGyHZ7VVp2EYd
-         K/mJiMfJe7NSWkiGGSC11kRaXbnPYB9Y/ZEBMD0GRfBq3qISS1LbAf9v6ssvDGeCmR
-         Ia4C8uRTjhGt592HS6vfxAlsOYFBLiUltIiTsR2sNCey/64tsGqY0eEcb6RCm8wlcS
-         pMy2lWmW7U0XsPT3i4sdPbI9zIRWAYJAD/7q8Xw/F0n17ozL9hyx3kMAKh/u+0aOmS
-         ZW3TrI8TsYSBw==
-Message-ID: <45a7d005-ec54-43c8-8111-7712c3c2561f@zytor.com>
-Date:   Fri, 17 Nov 2023 12:17:58 -0800
+        Fri, 17 Nov 2023 15:20:39 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB9E7D7E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:20:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700252435;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=l+BNmDbrtEyuQCyrbUz9aldF1aT4f1N0gQBae9tgTTs=;
+        b=GBhnHWLOS31ssavDw4mG/n0FU1tT2K3SOYoWTTgYXBws+ko7R/28wTt7IWaTz0Q172QKuc
+        qx0MqlIOGSLRuF0NR/o81f8ES5bGz8czW2N4AWyRZCwhzJNjyCOrjv26FyrAnYT0RD5+mZ
+        NmQFgjWDweuR8VJV1oRlfUK/J7jn7aE=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-644-bE-HCbx0Neap455BGMeg-A-1; Fri,
+ 17 Nov 2023 15:20:30 -0500
+X-MC-Unique: bE-HCbx0Neap455BGMeg-A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id EC6F33C100A2;
+        Fri, 17 Nov 2023 20:20:28 +0000 (UTC)
+Received: from warthog.procyon.org.uk (unknown [10.42.28.16])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6CF30C22541;
+        Fri, 17 Nov 2023 20:20:26 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <bb0b02b4241da7f486cde28bdc83bb9ce077ee0e.camel@kernel.org>
+References: <bb0b02b4241da7f486cde28bdc83bb9ce077ee0e.camel@kernel.org> <20231013160423.2218093-1-dhowells@redhat.com> <20231013160423.2218093-12-dhowells@redhat.com>
+To:     Jeff Layton <jlayton@kernel.org>
+Cc:     dhowells@redhat.com, Steve French <smfrench@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Marc Dionne <marc.dionne@auristor.com>,
+        Paulo Alcantara <pc@manguebit.com>,
+        Shyam Prasad N <sprasad@microsoft.com>,
+        Tom Talpey <tom@talpey.com>,
+        Dominique Martinet <asmadeus@codewreck.org>,
+        Ilya Dryomov <idryomov@gmail.com>,
+        Christian Brauner <christian@brauner.io>,
+        linux-afs@lists.infradead.org, linux-cifs@vger.kernel.org,
+        linux-nfs@vger.kernel.org, ceph-devel@vger.kernel.org,
+        v9fs@lists.linux.dev, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-cachefs@redhat.com
+Subject: Re: [RFC PATCH 11/53] netfs: Add support for DIO buffering
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -tip] x86/mm: Use %RIP-relative address in untagged_addr()
-To:     Brian Gerst <brgerst@gmail.com>
-Cc:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>
-References: <20231116191127.3446476-1-ubizjak@gmail.com>
- <eec64162-263e-4535-b637-4893d23d19a3@zytor.com>
- <CAMzpN2hY=JJRKPqsXr2BuyPZ5AJP3UzUPyMZoUNzTE00uN3iOw@mail.gmail.com>
-Content-Language: en-US
-From:   "H. Peter Anvin" <hpa@zytor.com>
-In-Reply-To: <CAMzpN2hY=JJRKPqsXr2BuyPZ5AJP3UzUPyMZoUNzTE00uN3iOw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <1722478.1700252425.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Fri, 17 Nov 2023 20:20:25 +0000
+Message-ID: <1722479.1700252425@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 11:43, Brian Gerst wrote:>>
->> Why don't we simply have %gs_base == 0 as an invariant for !SMP?
-> 
-> The reason is stack protector, which is still stuck at %gs:40.  So
-> GSBASE has to point at fixed_percpu_data, even on a UP build.  That is
-> corrected by the patch series I recently posted, though.
-> 
+Jeff Layton <jlayton@kernel.org> wrote:
 
-Right, that problem is gone.
+> > +	struct bio_vec		*direct_bv;	/* DIO buffer list (when handling iovec-=
+iter) */
+> >  	void			*netfs_priv;	/* Private data for the netfs */
+> > +	unsigned int		direct_bv_count; /* Number of elements in bv[] */
+> =
 
->> If we
->> *REALLY* care to skip SWAPGS on !SMP systems, we could use alternativesYep, that is 
->> to patch out %gs: and lock (wouldn't even have to be explicit: this is
->> the kind of thing that objtool does really well.) We can use
->> alternatives without anything special, since it only matters after we
->> have entered user spae for the first time and would be concurrent with
->> patching out SWAPGS itself.
-> 
-> There is already support to patch out LOCK prefixes when running an
-> SMP build on a single CPU (.smp_locks section).  Patching out the GS
-> prefix would only work if the initial percpu area is not freed.
-> Beyond that I don't think other optimizations are worth the effort,
-> and would get very little testing.
+> nit: "number of elements in direct_bv[]"
+> =
 
-Yes, that is basically my point.
+> Also, just for better readability, can you swap direct_bv and
+> netfs_priv? Then at least the array and count are together.
 
-	-hpa
+Yeah - and stick a __counted_by() on too.
+
+David
 
