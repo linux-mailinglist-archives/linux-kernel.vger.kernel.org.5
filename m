@@ -2,122 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03D5C7EF7B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:13:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F2C07EF7BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:17:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbjKQTNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:13:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52990 "EHLO
+        id S231569AbjKQTRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:17:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQTNP (ORCPT
+        with ESMTP id S229535AbjKQTRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:13:15 -0500
-Received: from mail.alien8.de (mail.alien8.de [IPv6:2a01:4f9:3051:3f93::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4CDAC5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:13:11 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 5AEF440E0199;
-        Fri, 17 Nov 2023 19:13:09 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EG6AgXXuyaF7; Fri, 17 Nov 2023 19:13:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700248387; bh=qd/m7qtc5JsyS+Bk5EH7vdXV4yKIrZrxAIziQWZ5NNo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lUb/Bt4VIM2/LiWOlBGvKSrveY6/QFk37LBygxEhVb3Yiu3Cwpgpf/+tFYv8L/bjW
-         SmJAY9NAcp4H5OvrSTwb1oguosYcarSm9Ssz2H1nPYjHEZ+pHJekO+gKSKioESztgx
-         /DuUmokzn3L9qH1ACdMmDY/GLTeHLlkJELUl5w2I3KF9JdZFzAeThDAFdLqIgQsaty
-         jatzo/oFBxkvBfE70cnA+tlciGle3Mh2EqpPe4QLI1H1YnIBdfCissvW6JiJCRrPyo
-         gqxLasitDhYxZwXhggBPX+J5oxwCYX5A255/QWq5bvj5XS1y5BXX6kvt5Cp4vvLk7q
-         cq5mrIUq989d1cqkVLx/j88FtF9AVlUhQ0XVbqZ/7DX4UlMEucvQsfKBuvXzDywYG0
-         jwu8N12Rguk77IvJ3f/KJ7eTiJ/wazhcnhVKIsu5aqs91GWye/Gsf++Bal/vI2oVlf
-         sNy8NyaVm9ipTNdmN2uilEiHO+FAKW74s6IBrmqIhDN4ve5zznxcISX8Kxxtumhv6Z
-         jSQ1yg9cdpLgw7wfIrx26/48pK0k/4ZDaMtjKPW7MlWx2cTLFi/uKvdHcblKJjuutW
-         AAt5DxJ1Pn0inRroMO/G830vDdKjlpl/2TDsH4vkY78z4v7E2AhCQcEaBHHldGCJem
-         FH0f8mNpCO5ljqAa1UpkRSkk=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D9A7340E0032;
-        Fri, 17 Nov 2023 19:12:50 +0000 (UTC)
-Date:   Fri, 17 Nov 2023 20:12:43 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     David Howells <dhowells@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Message-ID: <20231117191243.GHZVe7K4vN9n5M92gb@fat_crate.local>
-References: <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
- <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
- <232440.1700153046@warthog.procyon.org.uk>
- <864270.1700230337@warthog.procyon.org.uk>
- <20231117160940.GGZVeQRLgLjJZXBLE1@fat_crate.local>
- <CAHk-=wj33FoGBQ7HkqjLbyOBQogWpYAG7WUTXatcfBF5duijjQ@mail.gmail.com>
- <CAHk-=whLbJ7vvB1ACVC6t44zjihX8w7GMY2y584+Fm83rsmaKg@mail.gmail.com>
+        Fri, 17 Nov 2023 14:17:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37310D4E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:17:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700248654;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=kYkliK5LLyBWsCelrZj1qHbRtpj0yIQa/B4ipiOpxIw=;
+        b=UAL+5Y54hXY9hevEGGz7s9uKB/TYyN0oH7yig03pQddhIMG1y8/5E/iGqF1vSxfdcb/Cgc
+        bjNqtbM+DivNhRc20FbG9ECxEJJ82DGix3My38UrZ1Udbet/N0Hm8XbAy2MugCVEZzw5OZ
+        8/SGoZlhMci6Zu0P6TpV8CWeh+E7lL4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-Nr4xD39LPfO4KEjdF95_LQ-1; Fri, 17 Nov 2023 14:17:33 -0500
+X-MC-Unique: Nr4xD39LPfO4KEjdF95_LQ-1
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-778b3526240so265385485a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:17:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700248652; x=1700853452;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kYkliK5LLyBWsCelrZj1qHbRtpj0yIQa/B4ipiOpxIw=;
+        b=KsEnkxfWracAKMII/bR1dbwTQBShixcJD5mc1axQwUnSRJarnpMVLaQrTHEuWQGPIq
+         gIjTH7V+M8l3z0y4yF8zA4hPanXnw2V6lg/ympA52yIHBJGmEi4aFbz47nvxQS0gI12P
+         2rWrJGHLpgRpPnapEsD1xY03e24pWGuQhSAen5ai+YBv/xB2SmT1POMsz2b9zAzMkHuZ
+         l03wtDR1yzVlxB70mmNG9sWbq9+Y6zTUQXjkt99ebWk6OeWXwFeLVTaK4aia3QPfxAbu
+         EdVHpAUdRzJ24VHEosQpeh0mWhE5TpDWSt5mqwBjbf95etCA0sxQ22qImTCOSwU2II+6
+         PHmg==
+X-Gm-Message-State: AOJu0Yw2Z45gaOzgfJxH/BWeYujv6/dn2vEf+Cq4Wp1x3LllPs4PIXtS
+        rtEl2v6sc74z17jUPbU13/SMofPyj9oIGMrKKMPSYvfB0hPswcIIqJjwsAEp3A2/p3oBMV+nQtP
+        vNeBg7ClDIP987lsZDuw5+9Nj
+X-Received: by 2002:a05:620a:389e:b0:775:cf5f:8a81 with SMTP id qp30-20020a05620a389e00b00775cf5f8a81mr393654qkn.62.1700248652648;
+        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGmHO48ofPq25XthhBvwYR4euVlRe27xZWlBqEgcuk1cvhzJ6JOgacr2A8MKYqMEK47wSFwZw==
+X-Received: by 2002:a05:620a:389e:b0:775:cf5f:8a81 with SMTP id qp30-20020a05620a389e00b00775cf5f8a81mr393636qkn.62.1700248652362;
+        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::49])
+        by smtp.gmail.com with ESMTPSA id pr13-20020a05620a86cd00b007770d47c621sm809192qkn.66.2023.11.17.11.17.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 11:17:32 -0800 (PST)
+Date:   Fri, 17 Nov 2023 13:17:29 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shawn Guo <shawn.guo@linaro.org>
+Subject: Re: [PATCH 3/3] USB: dwc3: qcom: fix ACPI platform device leak
+Message-ID: <zgmlodcauv3jdnwvjlmhudad236gszhmx5de3k2qzamb2rv7z6@dswepa2tvjqh>
+References: <20231117173650.21161-1-johan+linaro@kernel.org>
+ <20231117173650.21161-4-johan+linaro@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whLbJ7vvB1ACVC6t44zjihX8w7GMY2y584+Fm83rsmaKg@mail.gmail.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <20231117173650.21161-4-johan+linaro@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 11:44:10AM -0500, Linus Torvalds wrote:
-> So the test robot load is kind of odd.
+On Fri, Nov 17, 2023 at 06:36:50PM +0100, Johan Hovold wrote:
+> Make sure to free the "urs" platform device, which is created for some
+> ACPI platforms, on probe errors and on driver unbind.
+> 
+> Compile-tested only.
+> 
+> Fixes: c25c210f590e ("usb: dwc3: qcom: add URS Host support for sdm845 ACPI boot")
+> Cc: Shawn Guo <shawn.guo@linaro.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 
-So looking at that. IINM, its documentation says:
+Acked-by: Andrew Halaney <ahalaney@redhat.com>
 
-https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/Documentation
+> ---
+>  drivers/usb/dwc3/dwc3-qcom.c | 37 +++++++++++++++++++++++++++++-------
+>  1 file changed, 30 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 0703f9b85cda..10fb481d943b 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -767,9 +767,9 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>  	return ret;
+>  }
+>  
+> -static struct platform_device *
+> -dwc3_qcom_create_urs_usb_platdev(struct device *dev)
+> +static struct platform_device *dwc3_qcom_create_urs_usb_platdev(struct device *dev)
+>  {
+> +	struct platform_device *urs_usb = NULL;
+>  	struct fwnode_handle *fwh;
+>  	struct acpi_device *adev;
+>  	char name[8];
+> @@ -789,9 +789,26 @@ dwc3_qcom_create_urs_usb_platdev(struct device *dev)
+>  
+>  	adev = to_acpi_device_node(fwh);
+>  	if (!adev)
+> -		return NULL;
+> +		goto err_put_handle;
+> +
+> +	urs_usb = acpi_create_platform_device(adev, NULL);
+> +	if (IS_ERR_OR_NULL(urs_usb))
+> +		goto err_put_handle;
+> +
+> +	return urs_usb;
+>  
+> -	return acpi_create_platform_device(adev, NULL);
+> +err_put_handle:
+> +	fwnode_handle_put(fwh);
+> +
+> +	return urs_usb;
+> +}
+> +
+> +static void dwc3_qcom_destroy_urs_usb_platdev(struct platform_device *urs_usb)
+> +{
+> +	struct fwnode_handle *fwh = urs_usb->dev.fwnode;
+> +
+> +	platform_device_unregister(urs_usb);
+> +	fwnode_handle_put(fwh);
+>  }
+>  
+>  static int dwc3_qcom_probe(struct platform_device *pdev)
+> @@ -875,13 +892,13 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	qcom->qscratch_base = devm_ioremap_resource(dev, parent_res);
+>  	if (IS_ERR(qcom->qscratch_base)) {
+>  		ret = PTR_ERR(qcom->qscratch_base);
+> -		goto clk_disable;
+> +		goto free_urs;
+>  	}
+>  
+>  	ret = dwc3_qcom_setup_irq(pdev);
+>  	if (ret) {
+>  		dev_err(dev, "failed to setup IRQs, err=%d\n", ret);
+> -		goto clk_disable;
+> +		goto free_urs;
+>  	}
+>  
+>  	/*
+> @@ -900,7 +917,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  
+>  	if (ret) {
+>  		dev_err(dev, "failed to register DWC3 Core, err=%d\n", ret);
+> -		goto clk_disable;
+> +		goto free_urs;
+>  	}
+>  
+>  	ret = dwc3_qcom_interconnect_init(qcom);
+> @@ -939,6 +956,9 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  		platform_device_del(qcom->dwc3);
+>  	}
+>  	platform_device_put(qcom->dwc3);
+> +free_urs:
+> +	if (qcom->urs_usb)
+> +		dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
+>  clk_disable:
+>  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+>  		clk_disable_unprepare(qcom->clks[i]);
+> @@ -965,6 +985,9 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
+>  	}
+>  	platform_device_put(qcom->dwc3);
+>  
+> +	if (qcom->urs_usb)
+> +		dwc3_qcom_destroy_urs_usb_platdev(qcom->urs_usb);
+> +
+>  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+>  		clk_disable_unprepare(qcom->clks[i]);
+>  		clk_put(qcom->clks[i]);
+> -- 
+> 2.41.0
+> 
+> 
 
-case-msync:
-Create N sparse files, each with a size of $MemTotal. For each sparse file,
-start a process to write 1/2N of the sparse file's size. After the write,
-do a msync to make sure the change in memory has reached the file.
-
-Is that something userspace usually does?
-
-Some distributed, shared thing logging to the same file?
-
-I obviously have no effing clue what userspace does...
-
-> Not that I think that David's KUnit test is necessarily much of a real
-> load either. so...
-
-Which begs the question: what are our priorities here?
-
-I wouldn't want to optimize some weird loads. Especially if you have
-weird loads which perform differently depending on what uarch
-"optimizations" they sport.
-
-I guess optimizing for the majority of machines - modern FSRM ones which
-can do "rep; movsb" just fine - is one way to put it. And the rest is
-best effort.
-
-Hmmm.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
