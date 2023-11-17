@@ -2,106 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B037EEE12
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:05:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBD7D7EEE15
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:05:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235118AbjKQJFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:05:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42004 "EHLO
+        id S235442AbjKQJFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:05:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230293AbjKQJFW (ORCPT
+        with ESMTP id S230293AbjKQJFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:05:22 -0500
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 355D9D4F;
-        Fri, 17 Nov 2023 01:05:19 -0800 (PST)
-Received: from dggpemd100001.china.huawei.com (unknown [172.30.72.53])
-        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SWrZf3lZyzvQqg;
-        Fri, 17 Nov 2023 17:04:58 +0800 (CST)
-Received: from [10.67.120.108] (10.67.120.108) by
- dggpemd100001.china.huawei.com (7.185.36.94) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.23; Fri, 17 Nov 2023 17:05:16 +0800
-Message-ID: <9fa0cf22-38fd-9390-8f3d-f70e283da302@huawei.com>
-Date:   Fri, 17 Nov 2023 17:05:16 +0800
+        Fri, 17 Nov 2023 04:05:34 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C46ADD52;
+        Fri, 17 Nov 2023 01:05:30 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F46FC433C7;
+        Fri, 17 Nov 2023 09:05:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700211930;
+        bh=CRcBtu19n+PndQnrzEF4vcUcLQOW1EwvMXHrCXvikac=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kXqyJl2c200zNl9Fb+ks/yfpk04iMRehm+4xpX8AAc+7ZEBB3DOEtHpp4kxZ2X59T
+         +gQlHr/8WBht8H8aq2wT5Dcchk7n7oKAbRoV4xVqs24Q/NHHy44+/onhCOJrJsYWlo
+         /1FEoXoVzTirhxrZv9kLPc8peuPHqQzq+LZcAyNU5CzeYxDgcdgTCyK2BYuuU+3T6B
+         wgrrybCZ0DFNrWbEHjWWxYGzl74uz6FKhlqMMmCu3dSp7z9gPQmVCrPDjc/O6G/yPj
+         1VgfYojN7Bp6hVspr3g0e3/sr8yeJ1ye952uiLFe5GutIt6Z72F3ZuuvzMmmrO89hT
+         saGBuERF72nYw==
+Date:   Fri, 17 Nov 2023 14:35:19 +0530
+From:   Manivannan Sadhasivam <mani@kernel.org>
+To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+        konrad.dybcio@linaro.org, mani@kernel.org, robh+dt@kernel.org,
+        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
+        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
+        dmitry.baryshkov@linaro.org, robh@kernel.org,
+        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
+        quic_parass@quicinc.com, quic_schintav@quicinc.com,
+        quic_shijjose@quicinc.com,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v3 2/3] PCI: qcom-ep: Enable cache coherency for SA8775P
+ EP
+Message-ID: <20231117090519.GA250770@thinkpad>
+References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
+ <1700051821-1087-3-git-send-email-quic_msarkar@quicinc.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:91.0) Gecko/20100101
- Thunderbird/91.3.1
-Subject: Re: [PATCH v3] scsi: libsas: Fix set zero-address when device-type !=
- NO_DEVICE
-Content-Language: en-CA
-To:     John Garry <john.g.garry@oracle.com>, <yanaijie@huawei.com>,
-        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <damien.lemoal@opensource.wdc.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <prime.zeng@hisilicon.com>,
-        <kangfenglong@huawei.com>, <chenxiang66@hisilicon.com>
-References: <20231116035241.13730-1-yangxingui@huawei.com>
- <dea5cabb-7d9a-44b0-85e4-878c13233f6a@oracle.com>
- <9cc196d7-0c4f-ef09-53b8-362d5eb599a6@huawei.com>
- <a84f7c4e-5da1-4357-9001-c379734e500d@oracle.com>
-From:   yangxingui <yangxingui@huawei.com>
-In-Reply-To: <a84f7c4e-5da1-4357-9001-c379734e500d@oracle.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.120.108]
-X-ClientProxiedBy: dggpemm100005.china.huawei.com (7.185.36.231) To
- dggpemd100001.china.huawei.com (7.185.36.94)
-X-CFilter-Loop: Reflected
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
-        autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1700051821-1087-3-git-send-email-quic_msarkar@quicinc.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John,
-
-On 2023/11/17 0:54, John Garry wrote:
-> On 16/11/2023 13:45, yangxingui wrote:
->>> I think that patch title can be improved, but I would need to know 
->>> more about the problem before suggesting an improvement.
->> How about "Fix port add phy failed" ?
->>>
->>>> Firstly, when ex_phy is added to the parent port, ex_phy->port is 
->>>> not set.
->>>
->>> That seems correct, but why mention this now?
->>>
->>>> As a result, sas_port_delete_phy() won't be called in
->>>> sas_unregister_devs_sas_addr(), and although ex_phy's sas_address is 
->>>> zero,
->>>> it is not deleted from the parent port's phy_list.
->>>
->>> I am not sure why you mention this now either. You seem to be 
->>> describing how the problem occurs without actually mentioning what 
->>> the problem is.
->>> ohn
->>>>
->>>> Secondly, phy->attached_sas_addr will be set to a zero-address when
->>>> phy->linkrate < SAS_LINK_RATE_1_5_GBPS and device-type != NO_DEVICE 
->>>> during
->>>> device registration, such as stp. It will create a new port and all 
->>>> other
->>>> ex_phys whose addresses are zero will be added to the new port in
->>>> sas_ex_get_linkrate(), and it may trigger BUG() as follows:
->>>
->>> I think that it would be better to first mention this crash, i.e. the 
->>> problem, how you recreate it, and then describe how and why it 
->>> happens, and then tell us how you will fix it
->> How about follows:
->>
->> The following processes trigger a BUG(). A new port port-7:7:0 that 
->> created by a new zero-address sata device tries to add phy-7:7:19 had 
->> the same zero-address, but phy-7:7:19 is already part of another port.
+On Wed, Nov 15, 2023 at 06:07:00PM +0530, Mrinmay Sarkar wrote:
+> This change will enable cache snooping logic to support
+> cache coherency for 8775 EP platform.
 > 
-> I would like to know how to recreate, which gives a lot more context and 
-> helps me understand what the problem is.
-I have update a new version based on your suggestion.
+> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
 
-Thanks,
-Xingui
-.
+Same comment as patch 1/3.
+
+- Mani
+
+> ---
+>  drivers/pci/controller/dwc/pcie-qcom-ep.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-qcom-ep.c b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> index 3a53d97..ee99fb1 100644
+> --- a/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> +++ b/drivers/pci/controller/dwc/pcie-qcom-ep.c
+> @@ -47,6 +47,7 @@
+>  #define PARF_DBI_BASE_ADDR_HI			0x354
+>  #define PARF_SLV_ADDR_SPACE_SIZE		0x358
+>  #define PARF_SLV_ADDR_SPACE_SIZE_HI		0x35c
+> +#define PCIE_PARF_NO_SNOOP_OVERIDE		0x3d4
+>  #define PARF_ATU_BASE_ADDR			0x634
+>  #define PARF_ATU_BASE_ADDR_HI			0x638
+>  #define PARF_SRIS_MODE				0x644
+> @@ -86,6 +87,10 @@
+>  #define PARF_DEBUG_INT_CFG_BUS_MASTER_EN	BIT(2)
+>  #define PARF_DEBUG_INT_RADM_PM_TURNOFF		BIT(3)
+>  
+> +/* PARF_NO_SNOOP_OVERIDE register fields */
+> +#define WR_NO_SNOOP_OVERIDE_EN                 BIT(1)
+> +#define RD_NO_SNOOP_OVERIDE_EN                 BIT(3)
+> +
+>  /* PARF_DEVICE_TYPE register fields */
+>  #define PARF_DEVICE_TYPE_EP			0x0
+>  
+> @@ -489,6 +494,11 @@ static int qcom_pcie_perst_deassert(struct dw_pcie *pci)
+>  	val |= BIT(8);
+>  	writel_relaxed(val, pcie_ep->parf + PARF_LTSSM);
+>  
+> +	/* Enable cache snooping for SA8775P */
+> +	if (of_device_is_compatible(dev->of_node, "qcom,sa8775p-pcie-ep"))
+> +		writel_relaxed(WR_NO_SNOOP_OVERIDE_EN | RD_NO_SNOOP_OVERIDE_EN,
+> +				pcie_ep->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
+> +
+>  	return 0;
+>  
+>  err_disable_resources:
+> -- 
+> 2.7.4
+> 
+
+-- 
+மணிவண்ணன் சதாசிவம்
