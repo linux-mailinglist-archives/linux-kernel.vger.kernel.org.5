@@ -2,56 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 080FD7EF7E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:37:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2437EF7E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:37:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346171AbjKQThN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:37:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53620 "EHLO
+        id S1346185AbjKQThf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232010AbjKQThM (ORCPT
+        with ESMTP id S1346130AbjKQThc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:37:12 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D145AD4F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:37:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Hg3+9uA2o75brJVv8ImTnM2XP71Dnb1sX48npnh9pbc=; b=LCBRuKbX3R/y7j0INeyp4apKAB
-        gBEvjp8kRp3eRbYo9PZuPrOtKQsJ+cLc1F/SxtXiVGoEZA6qboo3ydYREqGIFx1bqdfSPleLVOR2E
-        R/8Y4lG6OIFKqc5CXb/1Myx+tRb1MMOXivJ9HTXx0nxmX4VxYhcVFqT+klcjBzF2btIlkonztl/fc
-        mDXKeruHlW8b0EI9V7e+OVi6OjmPn8SGYIwqJnT0h/DBTZlD/tHXiMC3JCfKfYWwvkz9EjWncJDUE
-        8hWcxWuZffJsvX/H0wQiGVZG0Cu+xaUsOSpVJIJZKK29vulFQBc314IGGMIs99N7gGxRtnfIN24VA
-        NLbZUjig==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-        id 1r44e9-00BEGO-NL; Fri, 17 Nov 2023 19:36:57 +0000
-Date:   Fri, 17 Nov 2023 19:36:57 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Barry Song <21cnbao@gmail.com>
-Cc:     David Hildenbrand <david@redhat.com>, steven.price@arm.com,
-        akpm@linux-foundation.org, ryan.roberts@arm.com,
-        catalin.marinas@arm.com, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@suse.com,
-        shy828301@gmail.com, v-songbaohua@oppo.com,
-        wangkefeng.wang@huawei.com, xiang@kernel.org, ying.huang@intel.com,
-        yuzhao@google.com
-Subject: Re: [RFC V3 PATCH] arm64: mm: swap: save and restore mte tags for
- large folios
-Message-ID: <ZVfA2Z8XyD3qtTMZ@casper.infradead.org>
-References: <20231114014313.67232-1-v-songbaohua@oppo.com>
- <d8fd421e-00f3-453e-9665-df3fdcc239eb@redhat.com>
- <CAGsJ_4wD9Ug=CLi6Cdw3Ve5q8-1u7MmipLtEGQTfWmU9BJFJOQ@mail.gmail.com>
- <864489b3-5d85-4145-b5bb-5d8a74b9b92d@redhat.com>
- <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
-MIME-Version: 1.0
+        Fri, 17 Nov 2023 14:37:32 -0500
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05olkn2029.outbound.protection.outlook.com [40.92.89.29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD9CAD5D;
+        Fri, 17 Nov 2023 11:37:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mKUwi4ki6e0aaaWxLlSh1j3SGVIEHIHBJi+BrGHGcOj6XcKnZ95w4Wrcvk79Ef8uTcMWI3IUkN/1hK1YVeTM2mJU9HC4mwCxNb11e85gCse9URuW4XlIIp21JlZflGfo/KG5ANMHmEfcK5kfW0n2JUgeFsian1fn+H9MvzwvzWwLY3xvjoKmEA5PjAuXddkBlsUeiON0F9Huix6ocxb32WCRfWWEcfd93n321NVuY4U6J0wX4AFXaCp/JRSQoNnUnSnFpFBnSc0ooGxxHUD6ffIaQG8DCf3dgvL3MHZotJpwMugQzYBThQQWZurkg2DEHrvG9OsXPhbootInXQzDIQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=o7vtm5M+DrnHxDLH1kSsteR4p+8R9btkNm9QT0DIVUA=;
+ b=KJhlK/yaeiM9NjkdME7ILi+xajng0fdA+94vGJpiePT7cGxy9GDeGGed5hj6dU8JNoQkVHaDzPSXQDymgbtNQQdP67uaUypiL3BGVO5neTbkHQjujJ+VtFjUfP8YJT2yA1GfjknFzmAFABOs2uqpDIa3EXb+fan9Fj8gPXgd6E6lnMZMntlGRKzQwriNTTT1lp51d6psaqhsm1vWmQXqbKo/TzVLZLsWpTDl7tX/OGh0M161IG8AoAWYONumjMQzRZlZXrj+bX3DWg356zz4FzQtP7M3d+ktP2RgGBsxc4smHcKoABjVlKa3xFZl8UvmzM5N2+EUM86+ScwySBFjlg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=o7vtm5M+DrnHxDLH1kSsteR4p+8R9btkNm9QT0DIVUA=;
+ b=Iz3/WjCInj1BxgdRsW2XFTV0MzWcQhStEevv6E+V75iDnKpz2Yk0iDljYw9N7txWXyxOG5f2elN6Tcmdd+Uul8xhYtvl6pSreNbvzPRFJnCqUgVHb5i8nobOn3s2UQGVCtFFm9cKZkBJeAJHV2KBHNSEJmIDMzWAlop7P9ud8uP47UyUs+JpdWbNWAfv8/+b2woNAvg3BFBtfiBy62iIyi/4CrM+KC5i96x2DShPmzNelshCUhaQ0FusozLU0EMa2HB0m5k3zj2h5QJ1fAuGbnlI7O2iWrZG/lrA0irsX86pVIfgJ2CC2NoZlzMCZK92mjr8yf1A2Phd6gFY5ntqqw==
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+ by AS2PR10MB6520.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:55c::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.21; Fri, 17 Nov
+ 2023 19:37:26 +0000
+Received: from GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450]) by GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::6c45:bfdf:a384:5450%7]) with mapi id 15.20.7002.025; Fri, 17 Nov 2023
+ 19:37:26 +0000
+Date:   Sat, 18 Nov 2023 01:07:02 +0530
+From:   Yuran Pereira <yuran.pereira@hotmail.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf@vger.kernel.org, andrii@kernel.org, mykolal@fb.com,
+        ast@kernel.org, martin.lau@linux.dev, song@kernel.org,
+        yonghong.song@linux.dev, john.fastabend@gmail.com,
+        kpsingh@kernel.org, sdf@google.com, haoluo@google.com,
+        jolsa@kernel.org, shuah@kernel.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH bpf-next 0/4] selftests/bpf: Update multiple prog_tests
+ to use ASSERT_ macros
+Message-ID: <GV1PR10MB656347ACF4A078EAC2677797E8B7A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+References: <GV1PR10MB6563FCFF1C5DEBE84FEA985FE8B0A@GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM>
+ <CAEf4Bza4fejyKRCdcq0WwrvZ-p8JbMq0MPQB_BGzaxPGHT2EoQ@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGsJ_4wsWzhosZJWegOb8ggoON3KdiH1mO-8mFZd7kWcn6diuw@mail.gmail.com>
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+In-Reply-To: <CAEf4Bza4fejyKRCdcq0WwrvZ-p8JbMq0MPQB_BGzaxPGHT2EoQ@mail.gmail.com>
+X-TMN:  [IgT1M9sFBSBG7EozLlGnd2SqZnGdBRVN]
+X-ClientProxiedBy: JN3P275CA0019.ZAFP275.PROD.OUTLOOK.COM (2603:1086:0:71::13)
+ To GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:150:83::20)
+X-Microsoft-Original-Message-ID: <20231117193702.GA158015@nmj-network>
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV1PR10MB6563:EE_|AS2PR10MB6520:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9196034b-9dcc-4876-9dd4-08dbe7a4a039
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 4Ly7ewqE2Uu8M0j3frmYtYTf91oGABZjMv5T8WJyTR3jdANCU5W+1zhf5w0+IeVh25xFJ4OZBJZneZyj9E/2x4/GpG+zYtpynR9bd4/fL4UnJyLfvyAwk9jAW1UIpddeYXebCWI/mr2FtAMfQjknHh0XemDKTe4pv175XHpjoylCieXBQ9OTHmKSSzqH+R1I9XsvMIhi8svalWUqGsWaCG22bJGflsm/LoOmaR11LvqmW4sCtIDLNluGYLpyjLxrfWSzNC2G1cSSTWlOsIjjdZk5QK6Dt/+U4Ga4hnLa3/mGxEaOKPc4trcmSVT1wfCqaIHdjIfKZLXIEVNaVW5S3SpdEupv+87n4B5zUgOyLmLcFgIHlh2P9FPn1LnrWm8/L5Xp08Tc6eGVvc+lO9uJehOC/yFCKR8PJjWPTV2+8f52TUwZteQPhx7kTSv9jXKe3eKIPjP9vB9nwYxgt8AVqRKs3S2gYKAW8mkdd2DPhZNf5e8JBFg9TDPkZZKqlUNtCKCYTqwzU1Yf4oB1hG1ZYpMNipOC+/fvBRtD9u+/1R93QeMfSndlwyzhX2X+bNJk
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?4ypphGV1dwvqPMsuJriQ40SGbjBUY/zBAPnx5UlZ+s2a8jxvw8OKzZKCYxSF?=
+ =?us-ascii?Q?WmE1YX/dp4U1YQQCIv6JD9OzlpSDMX4KfVbY/c7rs0v4kZDLPj5XLWpGRYAr?=
+ =?us-ascii?Q?o3rzESkojp6sbZ2PF9AJ9/3718Sar6YFkfN8DUuu0KqElWZSZBxopD/dJ7zq?=
+ =?us-ascii?Q?Nl+2/1li2nAo5HbCcMMvgbO32GW+O7sHJA+IKdqgaLp2q5pWWBLiP2EjbvSJ?=
+ =?us-ascii?Q?Jg4767fByd1NCe6n42SnsXN2i0n1gqqfISwq33iNketQa4X6aoaA70NhJrUQ?=
+ =?us-ascii?Q?PmDn+LLeOgqLlbwFSeSWC+BGnNQUp3n/eYEg0QOKzR0aDtuGOcyW57djT5mk?=
+ =?us-ascii?Q?S1F+wUfkf9A7KPnJCsIVsfDGY5zXHs0x+Br8xkTAXhqBa0TrDwZfX3dNeeQ1?=
+ =?us-ascii?Q?gmaJX/yoevODHxw1usd5vOeIwRS2bjAaZzc1XT8tHPPxvBaeyZOU+di1SZEa?=
+ =?us-ascii?Q?FvrtjUx0hnwTS1LfE5oi7SCQ7thu75diBBP6YT8lZ/qB3rowixQnEPOYco3a?=
+ =?us-ascii?Q?f+8OqQe5asHGTKbrOle5BH6VH0N3fr3VVc4QNqJse0AUZ4Yk/NpFnCN3cFPp?=
+ =?us-ascii?Q?LVkIgfDG9bEomAlc9G7vDPaw2amE8AaFWaGTQ4h+m5wQ26+o/J8nt+yeQNP0?=
+ =?us-ascii?Q?9xn+KJPvIKBFFL9BIhfbL04+J1M7lAhoPE13M4/sBdoC3Pn+77Utqx/Np/R1?=
+ =?us-ascii?Q?lxWQByuJqJglq0uockM3WyGuGFXtRY0HhxxhoOCk+EZh7CnRbkt37xI13vUf?=
+ =?us-ascii?Q?puiZMXHGXSiU+IxQW2X09YFkI55Tw1wo4Hu20nu3tvGmRbD0GTpPUAJ5Zv5p?=
+ =?us-ascii?Q?bwaZPRvOgmnss9wy3x7BCI4dliYtWnGbSPPRZgqd3W9l/zI79ZifQ7qr6rrS?=
+ =?us-ascii?Q?K/ol62MRRLs4ZiiBM5tvbbuxAErn94U5gcsQu7Goe0Q2tRjc1UfpCKVS6HOp?=
+ =?us-ascii?Q?Zq/Fugvx6JspI7aCDKEIxZkvmP/Q/E6+KOAk2QesuN1Y3NMu1o31nVUbRRfa?=
+ =?us-ascii?Q?9bifPKXjrj8s5Nt4PgQT1H2G356XasbdWpW29RzEKXA168E/8uNr4B/KCiGW?=
+ =?us-ascii?Q?UNEimtrpdhKZ2zqynqjGpeyC3RWIBBT+yPWPSygW6VS9hM0aKLb0vREu65Ko?=
+ =?us-ascii?Q?A1DQbE7PtutniyrP8DSe6i6Vao3e4Zqx90gLHOJY3Sd/XiBsaVTKIxXf1hb+?=
+ =?us-ascii?Q?5ZhS0bcL1hdSccziNIC2SFfCzxR8Y4wlmldezFIkJjnmE5hZjgK+PKgMZ8w?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: sct-15-20-4755-11-msonline-outlook-6b909.templateTenant
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9196034b-9dcc-4876-9dd4-08dbe7a4a039
+X-MS-Exchange-CrossTenant-AuthSource: GV1PR10MB6563.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 19:37:26.5537
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS2PR10MB6520
+X-Spam-Status: No, score=-0.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,RCVD_IN_VALIDITY_RPBL,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=no
         autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -59,14 +111,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 07:47:00AM +0800, Barry Song wrote:
-> This has been discussed. Steven, Ryan and I all don't think this is a good
-> option. in case we have a large folio with 16 basepages, as do_swap_page
-> can only map one base page for each page fault, that means we have
-> to restore 16(tags we restore in each page fault) * 16(the times of page faults)
-> for this large folio.
+Hello Andrii,
+On Fri, Nov 17, 2023 at 12:18:40PM -0500, Andrii Nakryiko wrote:
+> 
+> It seems like you introduced a few failures in selftests, please take
+> a look at [0] and fix them, thanks!
+> 
+Thank you for letting me know. I will see what's wrong
+and submit a v2 ASAP.
 
-That doesn't seem all that hard to fix?  Call set_ptes() instead of
-set_pte_at().  The biggest thing, I guess, is making sure that all
-the PTEs you're going to set up are still pte_none().
-
+Thanks,
+Yuran Pereira
