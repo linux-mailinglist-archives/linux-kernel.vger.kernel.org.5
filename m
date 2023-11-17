@@ -2,124 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 43B5C7EF5E3
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B9F57EF5EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:11:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346081AbjKQQKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60684 "EHLO
+        id S235704AbjKQQLr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:11:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231708AbjKQQKt (ORCPT
+        with ESMTP id S235730AbjKQQLj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:10:49 -0500
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F805E6;
-        Fri, 17 Nov 2023 08:10:45 -0800 (PST)
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGAFx1045773;
-        Fri, 17 Nov 2023 10:10:15 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700237415;
-        bh=oKxZn4Uy08vRh9Z4twvXFEfHH30BeCJ4RW0dN5sv5z8=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=BeJMtcsRmlba315RGz2bPYl5U1d0undkwOrgaZ/Qgeoop3c8v8LSLR8E/cjhPy5Jp
-         HVLjNL50U111dfqwv1GvZBXD9El9UB8tWK3qFlBgbR17csfrqAqlePxK9uMjmihZej
-         mqfxyowiJCus2H7Rdztjlzd/nQIB1eqIfZaEcCvg=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AHGAFpf022476
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 10:10:15 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 10:10:14 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 10:10:15 -0600
-Received: from fllv0039.itg.ti.com (ileaxei01-snat.itg.ti.com [10.180.69.5])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AHGA8GO004950;
-        Fri, 17 Nov 2023 10:10:14 -0600
-From:   Andrew Davis <afd@ti.com>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Karol Gugala <kgugala@antmicro.com>,
-        Mateusz Holenko <mholenko@antmicro.com>,
-        Gabriel Somlo <gsomlo@gmail.com>,
-        Joel Stanley <joel@jms.id.au>, Mark Brown <broonie@kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Lee Jones <lee@kernel.org>,
-        Dmitry Osipenko <dmitry.osipenko@collabora.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        <linux-spi@vger.kernel.org>, Andrew Davis <afd@ti.com>
-Subject: [PATCH RFC 5/5] firmware: psci: Use register_sys_off_handler(SYS_OFF_MODE_RESTART)
-Date:   Fri, 17 Nov 2023 10:10:06 -0600
-Message-ID: <20231117161006.87734-6-afd@ti.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20231117161006.87734-1-afd@ti.com>
-References: <20231117161006.87734-1-afd@ti.com>
+        Fri, 17 Nov 2023 11:11:39 -0500
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F248D7A;
+        Fri, 17 Nov 2023 08:11:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+        s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+        Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+        bh=oDai2uoUm5vGeh5ZPqmeEdbdW8V1DW0OcsGodmj2JN4=; b=ilTve3hJgBLOOHEHLwsdUxBU9m
+        T1cjCITI+p46Ua07x8MkBdIff0FlO9gxDgGNZQTV7PBc4ZxjqlYXOsnf3viut+Ey4sMu/PjY/ZHad
+        oqw/hQn4/d/ZPYjeGyk0Mky0SXq559m0dn/EVtKPhFD3IB0xmpP+D5rPMRnMDhEUXbS8=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+        (envelope-from <andrew@lunn.ch>)
+        id 1r41RB-000SG3-8k; Fri, 17 Nov 2023 17:11:21 +0100
+Date:   Fri, 17 Nov 2023 17:11:21 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Roger Quadros <rogerq@kernel.org>
+Cc:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        pabeni@redhat.com, vladimir.oltean@nxp.com, s-vadapalli@ti.com,
+        r-gunasekaran@ti.com, vigneshr@ti.com, srk@ti.com,
+        u.kleine-koenig@pengutronix.de, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 net-next 2/4] net: ethernet: ti: am65-cpsw: Re-arrange
+ functions to avoid forward declaration
+Message-ID: <755fc764-0c68-4171-9af0-507f8bbe5357@lunn.ch>
+References: <20231117121755.104547-1-rogerq@kernel.org>
+ <20231117121755.104547-3-rogerq@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117121755.104547-3-rogerq@kernel.org>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Function register_restart_handler() is deprecated. Using this new API
-removes our need to keep and manage a struct notifier_block.
+On Fri, Nov 17, 2023 at 02:17:53PM +0200, Roger Quadros wrote:
+> Re-arrange am65_cpsw_nuss_rx_cleanup(), am65_cpsw_nuss_xmit_free() and
+> am65_cpsw_nuss_tx_cleanup() to avoid forward declaration.
+> 
+> No functional change.
+> 
+> Signed-off-by: Roger Quadros <rogerq@kernel.org>
 
-Signed-off-by: Andrew Davis <afd@ti.com>
----
- drivers/firmware/psci/psci.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff878619..767a5af5384b4 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -305,8 +305,7 @@ static int get_set_conduit_method(const struct device_node *np)
- 	return 0;
- }
- 
--static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
--			  void *data)
-+static int psci_sys_reset(struct sys_off_data *data)
- {
- 	if ((reboot_mode == REBOOT_WARM || reboot_mode == REBOOT_SOFT) &&
- 	    psci_system_reset2_supported) {
-@@ -323,11 +322,6 @@ static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
- 	return NOTIFY_DONE;
- }
- 
--static struct notifier_block psci_sys_reset_nb = {
--	.notifier_call = psci_sys_reset,
--	.priority = 129,
--};
--
- static void psci_sys_poweroff(void)
- {
- 	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
-@@ -623,7 +617,7 @@ static void __init psci_0_2_set_functions(void)
- 		.migrate_info_type = psci_migrate_info_type,
- 	};
- 
--	register_restart_handler(&psci_sys_reset_nb);
-+	register_sys_off_handler(SYS_OFF_MODE_RESTART, 129, psci_sys_reset, NULL);
- 
- 	pm_power_off = psci_sys_poweroff;
- }
--- 
-2.39.2
-
+    Andrew
