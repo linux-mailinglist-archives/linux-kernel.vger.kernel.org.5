@@ -2,106 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F18767EF79B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 19:55:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9537EF7A6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231857AbjKQSzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 13:55:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35248 "EHLO
+        id S229535AbjKQTEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:04:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQSzC (ORCPT
+        with ESMTP id S230186AbjKQTD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 13:55:02 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D670C5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 10:54:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700247299; x=1731783299;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=TVHSThQpand257A1qHKjotIQSF0lUGD9BSFiDIKxBMU=;
-  b=mcvd6RN0cWN9C+fn7PWagzZfHUSMt3tPA8BB+IQpMTmB/XtB1XSN2xgT
-   4SR91ViIm9/zqHl3+XorFPMCU2e7oubVf6xDHgbq6xJi0L4pPQ8QSBr5s
-   rDaboTvilqeMWb30JBVpNcAUczo2ha8nRGKnpe6y5P3ENDg7Zg+M19Mqk
-   5miFVU8XsEbsvgPEPqAE9Pxvlpe5u9Y8SJd+BAiNrDJPJeN7cCDUIBxni
-   dEm56M9qNAMW2F6/5klwttIJKAg9ayBe2isR53bHorb3Xhei2ZfgEvzYD
-   JjzLwME1h/ct38o86au2XxFUKEwEf65MvbVG7Gd97RchVKTuXCAvOvlbe
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="455650635"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="455650635"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 10:54:58 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10897"; a="836148933"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="836148933"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga004.fm.intel.com with ESMTP; 17 Nov 2023 10:54:56 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r43zS-00033L-0e;
-        Fri, 17 Nov 2023 18:54:54 +0000
-Date:   Sat, 18 Nov 2023 02:54:33 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>,
-        Eric Biggers <ebiggers@google.com>, Jan Kara <jack@suse.cz>
-Subject: fs/super.c:1785:15: sparse: sparse: Using plain integer as NULL
- pointer
-Message-ID: <202311180239.Iu9L00NA-lkp@intel.com>
+        Fri, 17 Nov 2023 14:03:58 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC80FD68
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:03:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700247834;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=X+KCXQbIarVw8dFpyS/S6NmCYqtvRHzg1KlSXBjGlMw=;
+        b=XiwYQeO4fhaR3b0JA3o53rclKNdPfm9CODon0eQSnJGAawRCvj1eTeD8V8HObCC+wR4bYr
+        +0HHbtpblejv8+uu86sJGHphleWocDL3sUWxS2zUm1UE03LgpEIpT3ceyTpjxR5UpA5h/I
+        2RORWGmbgenFcIPAkEH23As/TeVlcBA=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-498-iPH-Ek3NO9SHoJCmrK6j3g-1; Fri, 17 Nov 2023 14:03:52 -0500
+X-MC-Unique: iPH-Ek3NO9SHoJCmrK6j3g-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-41cbb2970f4so27852151cf.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:03:52 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700247832; x=1700852632;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=X+KCXQbIarVw8dFpyS/S6NmCYqtvRHzg1KlSXBjGlMw=;
+        b=mPhloL1FhcF1fDnYfyh3O9N4A1i3jgwY4QzEVocjFfFgje5yyDDtF32iF+vs6tA5bN
+         BG3iqjxwMDLZ98W5Txwo3l6ZBo8Z4wGtCSDD1vvTKFrJrgRLH+TlIbZUFkM+CitynPte
+         /VETFp3N7iFVwH836xxV9oyzmLQTuSSj8iFrW6yJZbqjM0hMCmmGUOI1pRQqTjNlV63s
+         gxgDzqv49YwLysZO7f6mbXkkPek6XjgXE1LI3SbeZonlUxs/2NcDq5+LMITtowxaPSme
+         GtHCf2+VhBLtlL/wr0qIkPwUUP1vFBj/kogQSncZwoVPW8pqJ21LhE1f+oJffe9MCX9z
+         S1yg==
+X-Gm-Message-State: AOJu0YzOFxVs114iRntexEve2kCF3yvpJdxdtbsyE76TkThzvgRsYTlU
+        geDpQheR0trOKNduPqzYggBWTel8cZUzBLdT+2GwktEhhgaNYZez2SlQxzXjCDuejnuQINxtBFG
+        hraRXgZp2AV9VIx+ZbdJkq+xv
+X-Received: by 2002:ac8:5d09:0:b0:41c:c045:3ed with SMTP id f9-20020ac85d09000000b0041cc04503edmr527671qtx.68.1700247831917;
+        Fri, 17 Nov 2023 11:03:51 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEgrKAJm8oEake3WBQPoR8ynpL7SEnW6LA4DrAoArIRr8hwun119GSAFcqC7ATK0hCExElHWQ==
+X-Received: by 2002:ac8:5d09:0:b0:41c:c045:3ed with SMTP id f9-20020ac85d09000000b0041cc04503edmr527648qtx.68.1700247831507;
+        Fri, 17 Nov 2023 11:03:51 -0800 (PST)
+Received: from fedora ([2600:1700:1ff0:d0e0::49])
+        by smtp.gmail.com with ESMTPSA id c14-20020ac8660e000000b004198d026be6sm775588qtp.35.2023.11.17.11.03.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 11:03:51 -0800 (PST)
+Date:   Fri, 17 Nov 2023 13:03:48 -0600
+From:   Andrew Halaney <ahalaney@redhat.com>
+To:     Johan Hovold <johan+linaro@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        Krishna Kurapati PSSNV <quic_kriskura@quicinc.com>,
+        linux-arm-msm@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Lee Jones <lee@kernel.org>
+Subject: Re: [PATCH 1/3] USB: dwc3: qcom: fix resource leaks on probe deferral
+Message-ID: <uof6ti3ula3gfijsucp5yjp6bxldjhmyek77xub5ybifrm3g3b@d3qd4jqusvix>
+References: <20231117173650.21161-1-johan+linaro@kernel.org>
+ <20231117173650.21161-2-johan+linaro@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20231117173650.21161-2-johan+linaro@kernel.org>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   6bc40e44f1ddef16a787f3501b97f1fff909177c
-commit: 439bc39b3cf0014b1b75075812f7ef0f8baa9674 fs: move sb_init_dio_done_wq out of direct-io.c
-date:   10 months ago
-config: hexagon-randconfig-r121-20231117 (https://download.01.org/0day-ci/archive/20231118/202311180239.Iu9L00NA-lkp@intel.com/config)
-compiler: clang version 17.0.0 (https://github.com/llvm/llvm-project.git 4a5ac14ee968ff0ad5d2cc1ffa0299048db4c88a)
-reproduce: (https://download.01.org/0day-ci/archive/20231118/202311180239.Iu9L00NA-lkp@intel.com/reproduce)
+On Fri, Nov 17, 2023 at 06:36:48PM +0100, Johan Hovold wrote:
+> The driver needs to deregister and free the newly allocated dwc3 core
+> platform device on ACPI probe errors (e.g. probe deferral) and on driver
+> unbind but instead it leaked those resources while erroneously dropping
+> a reference to the parent platform device which is still in use.
+> 
+> For OF probing the driver takes a reference to the dwc3 core platform
+> device which has also always been leaked.
+> 
+> Fix the broken ACPI tear down and make sure to drop the dwc3 core
+> reference for both OF and ACPI.
+> 
+> Fixes: 8fd95da2cfb5 ("usb: dwc3: qcom: Release the correct resources in dwc3_qcom_remove()")
+> Fixes: 2bc02355f8ba ("usb: dwc3: qcom: Add support for booting with ACPI")
+> Fixes: a4333c3a6ba9 ("usb: dwc3: Add Qualcomm DWC3 glue driver")
+> Cc: stable@vger.kernel.org      # 4.18
+> Cc: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> Cc: Lee Jones <lee@kernel.org>
+> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> ---
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311180239.Iu9L00NA-lkp@intel.com/
+I foobared the review of one of the patches listed as being fixed by
+this, but for what it is worth I think this makes sense.
 
-sparse warnings: (new ones prefixed by >>)
->> fs/super.c:1785:15: sparse: sparse: Using plain integer as NULL pointer
+Hopefully my eye is better this time.
 
-vim +1785 fs/super.c
+Acked-by: Andrew Halaney <ahalaney@redhat.com>
 
-  1767	
-  1768	/*
-  1769	 * Create workqueue for deferred direct IO completions. We allocate the
-  1770	 * workqueue when it's first needed. This avoids creating workqueue for
-  1771	 * filesystems that don't need it and also allows us to create the workqueue
-  1772	 * late enough so the we can include s_id in the name of the workqueue.
-  1773	 */
-  1774	int sb_init_dio_done_wq(struct super_block *sb)
-  1775	{
-  1776		struct workqueue_struct *old;
-  1777		struct workqueue_struct *wq = alloc_workqueue("dio/%s",
-  1778							      WQ_MEM_RECLAIM, 0,
-  1779							      sb->s_id);
-  1780		if (!wq)
-  1781			return -ENOMEM;
-  1782		/*
-  1783		 * This has to be atomic as more DIOs can race to create the workqueue
-  1784		 */
-> 1785		old = cmpxchg(&sb->s_dio_done_wq, NULL, wq);
+>  drivers/usb/dwc3/dwc3-qcom.c | 9 ++++++---
+>  1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/usb/dwc3/dwc3-qcom.c b/drivers/usb/dwc3/dwc3-qcom.c
+> index 3de43df6bbe8..00c3021b43ce 100644
+> --- a/drivers/usb/dwc3/dwc3-qcom.c
+> +++ b/drivers/usb/dwc3/dwc3-qcom.c
+> @@ -758,6 +758,7 @@ static int dwc3_qcom_of_register_core(struct platform_device *pdev)
+>  	if (!qcom->dwc3) {
+>  		ret = -ENODEV;
+>  		dev_err(dev, "failed to get dwc3 platform device\n");
+> +		of_platform_depopulate(dev);
+>  	}
+>  
+>  node_put:
+> @@ -899,7 +900,7 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  
+>  	if (ret) {
+>  		dev_err(dev, "failed to register DWC3 Core, err=%d\n", ret);
+> -		goto depopulate;
+> +		goto clk_disable;
+>  	}
+>  
+>  	ret = dwc3_qcom_interconnect_init(qcom);
+> @@ -934,7 +935,8 @@ static int dwc3_qcom_probe(struct platform_device *pdev)
+>  	if (np)
+>  		of_platform_depopulate(&pdev->dev);
+>  	else
+> -		platform_device_put(pdev);
+> +		platform_device_del(qcom->dwc3);
+> +	platform_device_put(qcom->dwc3);
+>  clk_disable:
+>  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+>  		clk_disable_unprepare(qcom->clks[i]);
+> @@ -957,7 +959,8 @@ static void dwc3_qcom_remove(struct platform_device *pdev)
+>  	if (np)
+>  		of_platform_depopulate(&pdev->dev);
+>  	else
+> -		platform_device_put(pdev);
+> +		platform_device_del(qcom->dwc3);
+> +	platform_device_put(qcom->dwc3);
+>  
+>  	for (i = qcom->num_clocks - 1; i >= 0; i--) {
+>  		clk_disable_unprepare(qcom->clks[i]);
+> -- 
+> 2.41.0
+> 
+> 
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
