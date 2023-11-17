@@ -2,124 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id BC7537EED71
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E06C77EED75
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbjKQITl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:19:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37588 "EHLO
+        id S230293AbjKQIUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:20:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjKQITj (ORCPT
+        with ESMTP id S230051AbjKQIUK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:19:39 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69A7EC4;
-        Fri, 17 Nov 2023 00:19:36 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C04CC433C7;
-        Fri, 17 Nov 2023 08:19:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700209176;
-        bh=LZPaoRPnMp8Tt22/B5tXr7XCFJ+WPuQMVSvw/SfR9PI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UetkYfFK7TQ0GoGwY90x8MQJFTt4bSxho5GnC964NjITnhKlIgwweG/MJs8+CS2Eg
-         9dR5HYbPaO1JKTwE7duexHZ6lYAafXl0ydo2fLHNX6YHlDmEouBjJTETr9f+kA6URu
-         JirpwXTNZ1kj/ytM73g1TuEFKTCTGMVlwpfoh6Z7iubwUfakcPyXITqmvyVqGb7r7P
-         qv0IZeNlB0mh+unm7RHlh7etB7EH/a+3gd3OcCmM7b8NYnNk6/XSmaiaoV6EhM9nJ4
-         +BJ9stxey/LzTA04siLLByuOI5+YGQOODLBwLcCkTq8m6ntSNvzF/vhPLqCGOSN43b
-         GIlo3JYm/GN+g==
-Date:   Fri, 17 Nov 2023 13:49:24 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Mrinmay Sarkar <quic_msarkar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        dmitry.baryshkov@linaro.org, robh@kernel.org,
-        quic_krichai@quicinc.com, quic_vbadigan@quicinc.com,
-        quic_parass@quicinc.com, quic_schintav@quicinc.com,
-        quic_shijjose@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
-Message-ID: <20231117081924.GG10361@thinkpad>
-References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
- <1700051821-1087-2-git-send-email-quic_msarkar@quicinc.com>
+        Fri, 17 Nov 2023 03:20:10 -0500
+Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com [209.85.216.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C918131
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:20:07 -0800 (PST)
+Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-280152bfd40so2079071a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:20:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700209207; x=1700814007;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6GBJuMmbnu/8E686XEJesyf3DiqL3QHoO7CT+bcvUhU=;
+        b=u0UTOA97hwJCe5xtzOiK2GsqVrNScTiDMaZK1ONZKK99vU8pz9gnQFl1gAGWYLZQoA
+         +Lak1E/cgZPSCcKpgtXXykppRdgipVAKI3BZdkPLQmCpnE/V0NMQcOcgPJtQ42RXIsl+
+         vZtSZQ9HOJsLmDIIRaMM+6onJVUEcD1uMm5CQNmZUB4SbRDf6zOYz4z6e4HrlqYTBVJw
+         0QXD4pOZthN6YWgGVXlbLWeoe+mdhrOSqKSDK7CgCJwNkAUWOx8gBR0XiYZi26EYI+ws
+         LJWuCKkVWtqHhdBRYeKOqJwXWQjCtCn4kUZ0XiKO8HHqWJ3qcLEjPIM+XktS6/s2pvzb
+         V9DA==
+X-Gm-Message-State: AOJu0YzvORFehZ2L1Mu+/d25OsiGEqpAkfgcIdAn/hp3d6Tq7f18utPG
+        bZ0YFResLlQiwkhLgjvFL7vCfY5GOyg/Rm6F5CDZEZPF7wzmuDw=
+X-Google-Smtp-Source: AGHT+IH2TvVhSHBiOLEAdQKbnXZq8KDCiZXdkKBAVPpJbABQdZO+VyCoJi4PbdfyeKdL1O2CiwJuYbD7w1VGvQtIEb5UD214U9E6
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1700051821-1087-2-git-send-email-quic_msarkar@quicinc.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90a:1544:b0:27d:1cfb:7185 with SMTP id
+ y4-20020a17090a154400b0027d1cfb7185mr4931081pja.9.1700209207000; Fri, 17 Nov
+ 2023 00:20:07 -0800 (PST)
+Date:   Fri, 17 Nov 2023 00:20:06 -0800
+In-Reply-To: <20231117073947.15672-1-tintinm2017@gmail.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d3cafa060a54cdf2@google.com>
+Subject: Re: [syzbot] [dri?] WARNING in drm_gem_object_handle_put_unlocked
+From:   syzbot <syzbot+ef3256a360c02207a4cb@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tintinm2017@gmail.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-1.6 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 06:06:59PM +0530, Mrinmay Sarkar wrote:
-> This change will enable cache snooping logic to support
-> cache coherency for 8775 RC platform.
-> 
+Hello,
 
-Please add information on why the cache snoop logic is enabled only on this
-platform. You have added info in the cover letter, but that's not going to be
-part of the git history.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-- Mani
+Reported-and-tested-by: syzbot+ef3256a360c02207a4cb@syzkaller.appspotmail.com
 
-> Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> ---
->  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
->  1 file changed, 13 insertions(+)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> index 6902e97..b82ccd1 100644
-> --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> @@ -51,6 +51,7 @@
->  #define PARF_SID_OFFSET				0x234
->  #define PARF_BDF_TRANSLATE_CFG			0x24c
->  #define PARF_SLV_ADDR_SPACE_SIZE		0x358
-> +#define PCIE_PARF_NO_SNOOP_OVERIDE		0x3d4
->  #define PARF_DEVICE_TYPE			0x1000
->  #define PARF_BDF_TO_SID_TABLE_N			0x2000
->  
-> @@ -117,6 +118,10 @@
->  /* PARF_LTSSM register fields */
->  #define LTSSM_EN				BIT(8)
->  
-> +/* PARF_NO_SNOOP_OVERIDE register fields */
-> +#define WR_NO_SNOOP_OVERIDE_EN			BIT(1)
-> +#define RD_NO_SNOOP_OVERIDE_EN			BIT(3)
-> +
->  /* PARF_DEVICE_TYPE register fields */
->  #define DEVICE_TYPE_RC				0x4
->  
-> @@ -961,6 +966,14 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
->  
->  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
->  {
-> +	struct dw_pcie *pci = pcie->pci;
-> +	struct device *dev = pci->dev;
-> +
-> +	/* Enable cache snooping for SA8775P */
-> +	if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
-> +		writel(WR_NO_SNOOP_OVERIDE_EN | RD_NO_SNOOP_OVERIDE_EN,
-> +				pcie->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
-> +
->  	qcom_pcie_clear_hpc(pcie->pci);
->  
->  	return 0;
-> -- 
-> 2.7.4
-> 
+Tested on:
 
--- 
-மணிவண்ணன் சதாசிவம்
+commit:         7475e51b Merge tag 'net-6.7-rc2' of git://git.kernel.o..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=1437b648e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=54e2bd738b08eef2
+dashboard link: https://syzkaller.appspot.com/bug?extid=ef3256a360c02207a4cb
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=16de89b8e80000
+
+Note: testing is done by a robot and is best-effort only.
