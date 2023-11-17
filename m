@@ -2,67 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 269ED7EF39F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E0C7EF3A8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346069AbjKQNS1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:18:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44974 "EHLO
+        id S1346042AbjKQNTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:19:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346030AbjKQNSY (ORCPT
+        with ESMTP id S231345AbjKQNTp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:18:24 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BA26D57;
-        Fri, 17 Nov 2023 05:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700227101; x=1731763101;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=RidyZbnJH2WdtltNPSz30z+b1yF96itdW/+pcCRzRqI=;
-  b=KvkNphZwcQJDJPzACTFBEPDxSYNRnFcW9d8eykHnG0qqJxusfSZrpLD8
-   cZKoaeDM7/kKj/6XWfqtaOIypnGd0rZOtMHoMAQj6+mvxJHKRYMgS0h3L
-   VvhIz/XasdEfnAS/8/RAL/QPOLRU0PRpQWsco72StfmM4pIvoHpsPzSVG
-   l/GR4RhSVPNoQ0b5sniLBfVnIDGEz/LZ9wHrvFzUR6yBrGn3cEBbCV/QZ
-   G6tpSRq9bVWyn1quUFa3DG5JIEMYYDosnPha42LYgYO3FfBuvEdmHLbyg
-   oleSUcnHPZyEsJRPln3QO1A4OCUaW8dEl2lcWWnedPZfekwCYZ9JmpZn6
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="381685614"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="381685614"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 05:18:20 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="794831206"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="794831206"
-Received: from 984fee00a4c6.jf.intel.com ([10.165.58.231])
-  by orsmga008.jf.intel.com with ESMTP; 17 Nov 2023 05:18:20 -0800
-From:   Yi Liu <yi.l.liu@intel.com>
-To:     joro@8bytes.org, alex.williamson@redhat.com, jgg@nvidia.com,
-        kevin.tian@intel.com, robin.murphy@arm.com,
-        baolu.lu@linux.intel.com
-Cc:     cohuck@redhat.com, eric.auger@redhat.com, nicolinc@nvidia.com,
-        kvm@vger.kernel.org, mjrosato@linux.ibm.com,
-        chao.p.peng@linux.intel.com, yi.l.liu@intel.com,
-        yi.y.sun@linux.intel.com, peterx@redhat.com, jasowang@redhat.com,
-        shameerali.kolothum.thodi@huawei.com, lulu@redhat.com,
-        suravee.suthikulpanit@amd.com, iommu@lists.linux.dev,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        zhenzhong.duan@intel.com, joao.m.martins@oracle.com,
-        xin.zeng@intel.com, yan.y.zhao@intel.com
-Subject: [PATCH v7 3/3] iommu/vt-d: Add iotlb flush for nested domain
-Date:   Fri, 17 Nov 2023 05:18:16 -0800
-Message-Id: <20231117131816.24359-4-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20231117131816.24359-1-yi.l.liu@intel.com>
-References: <20231117131816.24359-1-yi.l.liu@intel.com>
+        Fri, 17 Nov 2023 08:19:45 -0500
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9EF5E0;
+        Fri, 17 Nov 2023 05:19:40 -0800 (PST)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 99FF4E0003;
+        Fri, 17 Nov 2023 13:19:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+        t=1700227179;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FoBJqFPZps/IfTWChc3pHLcKO0nSjgo4MRL5iaSeOk0=;
+        b=PjQ2pSJdu9x5ihXwMQAH4DLve4Tq7tBDAn/SBjaOXh+lKzC1L0Gi7wEMV113BVBWXN89UT
+        VuqQ2p9jKeGm0lNWjmCwz8AdmfozHIOGZa2yo6iPNuKhP5vRU18squYOBVZKjux2WM0izA
+        xeGzy3J8mwq8OQ6oHTGIFIgnut/z8z1DSbiTzJi6fmYogiM2GpYqHtWmroebymlEjBn1NO
+        d45wq6H8ND0urpxOnyU7c/aIKyGq11Sg6xKS8hL1ypvc5h4QvJaQdtZMqkCpX5I+KDGzSs
+        59a5zRN3swyuAx/p0+IaFNnu/bDpfAw/FE0+Ih2HvJBdSu5IlBnAu4qrIlv2MQ==
+Date:   Fri, 17 Nov 2023 14:19:38 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Mehdi Djait <mehdi.djait@bootlin.com>
+Cc:     mchehab@kernel.org, heiko@sntech.de, hverkuil-cisco@xs4all.nl,
+        krzysztof.kozlowski+dt@linaro.org, robh+dt@kernel.org,
+        conor+dt@kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        thomas.petazzoni@bootlin.com, alexandre.belloni@bootlin.com,
+        maxime.chevallier@bootlin.com, michael.riesch@wolfvision.net
+Subject: Re: [PATCH v11 3/3] arm64: dts: rockchip: Add the camera interface
+Message-ID: <ZVdoaqgS7Fy8fC1y@aptenodytes>
+References: <cover.1700132457.git.mehdi.djait@bootlin.com>
+ <3566c176d1ef5ae93aa54587a14ccfa80974e872.1700132457.git.mehdi.djait@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
-        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="TFD2HmYut63ln2GZ"
+Content-Disposition: inline
+In-Reply-To: <3566c176d1ef5ae93aa54587a14ccfa80974e872.1700132457.git.mehdi.djait@bootlin.com>
+X-GND-Sasl: paul.kocialkowski@bootlin.com
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        RCVD_IN_MSPIKE_H3,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -71,83 +58,74 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This implements the .cache_invalidate_user() callback to support iotlb
-flush for nested domain.
 
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-Signed-off-by: Yi Liu <yi.l.liu@intel.com>
----
- drivers/iommu/intel/nested.c | 54 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
+--TFD2HmYut63ln2GZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/iommu/intel/nested.c b/drivers/iommu/intel/nested.c
-index b5a5563ab32c..44ad48db7ea0 100644
---- a/drivers/iommu/intel/nested.c
-+++ b/drivers/iommu/intel/nested.c
-@@ -73,9 +73,63 @@ static void intel_nested_domain_free(struct iommu_domain *domain)
- 	kfree(to_dmar_domain(domain));
- }
- 
-+static void domain_flush_iotlb_psi(struct dmar_domain *domain,
-+				   u64 addr, unsigned long npages)
-+{
-+	struct iommu_domain_info *info;
-+	unsigned long i;
-+
-+	xa_for_each(&domain->iommu_array, i, info)
-+		iommu_flush_iotlb_psi(info->iommu, domain,
-+				      addr >> VTD_PAGE_SHIFT, npages, 1, 0);
-+}
-+
-+static int intel_nested_cache_invalidate_user(struct iommu_domain *domain,
-+					      struct iommu_user_data_array *array,
-+					      u32 *cerror_idx)
-+{
-+	struct dmar_domain *dmar_domain = to_dmar_domain(domain);
-+	struct iommu_hwpt_vtd_s1_invalidate inv_info;
-+	u32 index;
-+	int ret;
-+
-+	/* REVISIT:
-+	 * VT-d has defined ITE, ICE, IQE for invalidation failure per hardware,
-+	 * but no error code yet, so just set the error code to be 0.
-+	 */
-+	*cerror_idx = 0;
-+
-+	for (index = 0; index < array->entry_num; index++) {
-+		ret = iommu_copy_struct_from_user_array(&inv_info, array,
-+							IOMMU_HWPT_DATA_VTD_S1,
-+							index, __reserved);
-+		if (ret) {
-+			pr_err_ratelimited("Failed to fetch invalidation request\n");
-+			break;
-+		}
-+
-+		if (inv_info.__reserved || (inv_info.flags & ~IOMMU_VTD_INV_FLAGS_LEAF) ||
-+		    !IS_ALIGNED(inv_info.addr, VTD_PAGE_SIZE)) {
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+		if (inv_info.addr == 0 && inv_info.npages == -1)
-+			intel_flush_iotlb_all(domain);
-+		else
-+			domain_flush_iotlb_psi(dmar_domain,
-+					       inv_info.addr, inv_info.npages);
-+	}
-+
-+	array->entry_num = index;
-+
-+	return ret;
-+}
-+
- static const struct iommu_domain_ops intel_nested_domain_ops = {
- 	.attach_dev		= intel_nested_attach_dev,
- 	.free			= intel_nested_domain_free,
-+	.cache_invalidate_user	= intel_nested_cache_invalidate_user,
- };
- 
- struct iommu_domain *intel_nested_domain_alloc(struct iommu_domain *parent,
--- 
-2.34.1
+Hi Mehdi,
 
+On Thu 16 Nov 23, 12:04, Mehdi Djait wrote:
+> The PX30 has a video capture component, supporting the BT.656
+> parallel interface. Add a DT description for it.
+
+One thing I missed: you need the commit title to mention the PX30, otherwise
+we cannot see which chip you are adding camera support for.
+
+> Reviewed-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> Signed-off-by: Mehdi Djait <mehdi.djait@bootlin.com>
+> ---
+>  arch/arm64/boot/dts/rockchip/px30.dtsi | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+>=20
+> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts=
+/rockchip/px30.dtsi
+> index 42ce78beb413..3a4e859e5a49 100644
+> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
+> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
+> @@ -1281,6 +1281,18 @@ isp_mmu: iommu@ff4a8000 {
+>  		#iommu-cells =3D <0>;
+>  	};
+> =20
+> +	cif: video-capture@ff490000 {
+> +		compatible =3D "rockchip,px30-vip";
+> +		reg =3D <0x0 0xff490000 0x0 0x200>;
+> +		interrupts =3D <GIC_SPI 69 IRQ_TYPE_LEVEL_HIGH>;
+> +		clocks =3D <&cru ACLK_CIF>, <&cru HCLK_CIF>, <&cru PCLK_CIF>;
+> +		clock-names =3D "aclk", "hclk", "pclk";
+> +		power-domains =3D <&power PX30_PD_VI>;
+> +		resets =3D <&cru SRST_CIF_A>, <&cru SRST_CIF_H>, <&cru SRST_CIF_PCLKIN=
+>;
+> +		reset-names =3D "axi", "ahb", "pclkin";
+> +		status =3D "disabled";
+> +	};
+> +
+>  	qos_gmac: qos@ff518000 {
+>  		compatible =3D "rockchip,px30-qos", "syscon";
+>  		reg =3D <0x0 0xff518000 0x0 0x20>;
+> --=20
+> 2.41.0
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--TFD2HmYut63ln2GZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAmVXaGoACgkQ3cLmz3+f
+v9FIRAf8CSuN94tBIxlWPN+Yhiy8dbHRhZ9rV2bkQ2+eJ/8f7y5OFlsXVoeTk3Bd
+sFsN74KvBzgsxB8z6Lfon1xz44Dd+d8gR588ZFhTgk4h8Dllj5JtN6Qr/CCTXI9X
+YqrA6vRba93rUuuy/2AWtTHFZizD0sU43n9mMOuzxCSrZrY6OlE4UG7ctvsNMTf5
+pl4s1LUP2Dn7ZXmxFnlYCe9/1Y3YXH3bUnbNU/bXFUsUIg6mwyJbdvFFn9aSe/BH
+JxCbu44eS/T/0yG2Rbk7qqhKT+P8CDVblmRRv0Exve2AhizkVK32Tiv0+6WVIOzQ
+QTDVBDCRScDZbTVyk2d408rCJgC57w==
+=iLKP
+-----END PGP SIGNATURE-----
+
+--TFD2HmYut63ln2GZ--
