@@ -2,100 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E9E797EF8CB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:39:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 695397EF8D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:45:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232195AbjKQUjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:39:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36638 "EHLO
+        id S232269AbjKQUpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:45:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQUjE (ORCPT
+        with ESMTP id S229535AbjKQUpM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:39:04 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33DD0D4D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:39:01 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id d9443c01a7336-1cc1ee2d8dfso21415165ad.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:39:01 -0800 (PST)
+        Fri, 17 Nov 2023 15:45:12 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA69D72
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:45:06 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id 38308e7fff4ca-2c5087d19a6so30680501fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700253540; x=1700858340; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ETgvrJcyf+GAZnQOzgEhP5ISVDHjC8tSZ7J4fXmHUs=;
-        b=NVv7tBMhCQdRWa7yseaAUUpULk3Mri/bgmtAcvrSCZnPsE5pnZzoTtHADTkXI4fiwC
-         kqNRGvQS9i4tAhO3WFbS85I1i/9X5RP9p7kN7K5R2Cs+YXSVxe2w7So/ptvBqjEoD90o
-         D+p1OrOlArurGxNVEgrDdK7pJUDSpVjOozjGv0FS2NkqFYCMAKVEWSJf/Qjeu5JKVJCC
-         RCMnpi+4fYpoBB70+tPFMUsezRXe3CkQ6lG7sTKX/GKkuw8fmeLsRRsBP5bNyIjvfXf6
-         haD75XX9K27YbeJ0t0JDIuebQGjhdaowlpVzfFRoQQsmckB1wF4GgGrWS5ZcwVJQUV4P
-         qphw==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700253905; x=1700858705; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xSNFX2xgBRNTvwuhJ0I7igrYtExQWX8lNq71/XrSzzU=;
+        b=TTviavqp/wFo0etkomAdEiON0ayJHBCOAcSLLJoj04B+gGhUVGFSxl0qGMLnE0y8n4
+         nLza4Izcoob2gJMbleLimEbJMenEOeODc0ZkEjMWMZ7E6DXJiVUrWZp5b1WNqFCSipr8
+         v4nEFVj5UbzKGdmBfNAFHK8ExHJSlsMf7fOhgmnAsPpfpgapQ8hUtNH5sK8kI+V802+o
+         wXM+A4Mhpkzm5FbveUB3uxEnkdag4MyL4omnRXf53Y8UWiVNDiGDmcGcfOGk70JxkDF9
+         xl+9ndI6TZ8L/a5V/p2SFXDyI1YMW/nrwxpEJTAxuwYj7fbf9qQsrfIlYGmay2OlzMa3
+         C3PQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700253540; x=1700858340;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=7ETgvrJcyf+GAZnQOzgEhP5ISVDHjC8tSZ7J4fXmHUs=;
-        b=Zve8koUHJze2lZ+DTRLyCBqjNQXK6cUoH5jEAMuxQDJE50TMG8lPVV1uCCWK02ryjv
-         qsPvr8KbMu0wMrzngxXWlgeNlmLlhKW5WTwn00LkuImorBh3VG4V4nobKzAn7NXcSfIy
-         NrtDgWbxT1y8mRUAO1g3G78OkECwYpamLJ1PklXs4XB/OvMONmKV7rTxQwvJxbwHV6Wf
-         86JzYp9QZUZIpuTtmN3X7dyjAtLrDOTLU0Dd6FQLUjQrUHwq5tJwZD+62TTT/8Ww2+5u
-         msIxbAumQdGoG5DoQRZfKetZpcL4ZbM12BQgS/+PNXeOecLML+0zRtQetQDPJPOya5y8
-         fW9w==
-X-Gm-Message-State: AOJu0YyyjYnIfcjXUOOwXlFYte0/CvJV7+tIL2zypA9qKrhiqeMEvauM
-        uNZwNIXg4OXJX5sl6ocd5ShgqLMxsKo=
-X-Google-Smtp-Source: AGHT+IFiuEUBAekE+jWCaO/fNCPjfjb6h+uNLtJcA/CX3wX3J72Mgq0MlYYDv3o9VqGqm721rrLDJw==
-X-Received: by 2002:a17:903:1247:b0:1cc:510c:a0b9 with SMTP id u7-20020a170903124700b001cc510ca0b9mr860978plh.34.1700253540200;
-        Fri, 17 Nov 2023 12:39:00 -0800 (PST)
-Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:4344:b98f:50f2:673a])
-        by smtp.gmail.com with ESMTPSA id j9-20020a17090276c900b001bdd7579b5dsm1746528plt.240.2023.11.17.12.38.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 12:38:59 -0800 (PST)
-From:   Daeho Jeong <daeho43@gmail.com>
-To:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
-Cc:     Daeho Jeong <daehojeong@google.com>
-Subject: [PATCH] f2fs-tools: adjust nat and block release logic
-Date:   Fri, 17 Nov 2023 12:38:55 -0800
-Message-ID: <20231117203855.3415891-1-daeho43@gmail.com>
-X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+        d=1e100.net; s=20230601; t=1700253905; x=1700858705;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xSNFX2xgBRNTvwuhJ0I7igrYtExQWX8lNq71/XrSzzU=;
+        b=SVXz0OCXC3CODQ/L46ndMpn2o9kcT0KmJtWuAfjQ/VDEthLmxqhoBk9P32k7rpJNST
+         Fz9Yoe4W/ulmBq/wTBlX9l4Fl1DYkXDdnbInuZGJNouSazKFj2iBldKwkoJDVYwosJaD
+         CQPVimqpwXdO7pYShSoyiliegAaYbNDF+R+vKdYgMhJxYCcK/Y/+OcZRsb+b/AXGBdhO
+         gLOPlA1vN+KzCtpCPUpobaO+LII6OFr8xeWIZ2O0YXhWU6CuQnLFUXvBOGGC15Xqk6Vk
+         cASjD08KdbpwnAW6m3qmj6lT+dUK/BefiRpUCjvnoDbsDgDlp/oj6ccL3ZqOdm23slln
+         vRQg==
+X-Gm-Message-State: AOJu0YyIYF1ohv7cfmfDU5XQ9tSqEF0+xMNeJvJQVOU1F4ze8Pdynbt2
+        aCzA5zeO6QmObJhKotXhkWGM4VurGIRyepDLLh10wg==
+X-Google-Smtp-Source: AGHT+IHAmBTmUCjMYCaAjKfqdGljXqu2/itJFKfS89EjD+aW9EbnPvNFklw4Dw/9dPDhyelPELAxTybGgHsG0vlPbRs=
+X-Received: by 2002:a2e:780e:0:b0:2c5:1603:9c48 with SMTP id
+ t14-20020a2e780e000000b002c516039c48mr538982ljc.20.1700253904700; Fri, 17 Nov
+ 2023 12:45:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231117-axi-spi-engine-series-1-v1-0-cc59db999b87@baylibre.com> <20231117-axi-spi-engine-series-1-v1-2-cc59db999b87@baylibre.com>
+In-Reply-To: <20231117-axi-spi-engine-series-1-v1-2-cc59db999b87@baylibre.com>
+From:   David Lechner <dlechner@baylibre.com>
+Date:   Fri, 17 Nov 2023 14:44:53 -0600
+Message-ID: <CAMknhBEi64y7uC=kYbL1698VES2xGcQEAFQJM-469E77McxkPg@mail.gmail.com>
+Subject: Re: [PATCH 02/14] MAINTAINERS: add entry for AXI SPI Engine
+To:     Lars-Peter Clausen <lars@metafoo.de>
+Cc:     linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Michael Hennerich <Michael.Hennerich@analog.com>,
+        =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daeho Jeong <daehojeong@google.com>
+On Fri, Nov 17, 2023 at 2:13=E2=80=AFPM David Lechner <dlechner@baylibre.co=
+m> wrote:
+>
+> The AXI SPI Engine driver has been in the kernel for many years but has
+> lacked a proper maintainers entry. This adds a new entry for the driver
+> and the devicetree bindings.
+>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+> ---
+>
+> Note: This work is being done by BayLibre on behalf of Analog Devices Inc=
+.
+> This is why the maintainers are @analog.com rather than @baylibre.com.
+>
+>  MAINTAINERS | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 97f51d5ec1cf..a40f61ad5843 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -3415,6 +3415,16 @@ W:       https://ez.analog.com/linux-software-driv=
+ers
+>  F:     Documentation/devicetree/bindings/hwmon/adi,axi-fan-control.yaml
+>  F:     drivers/hwmon/axi-fan-control.c
+>
+> +AXI SPI ENGINE
+> +M:     Michael Hennerich <michael.hennerich@analog.com>
+> +M:     Nuno S=C3=A1 <nuno.sa@analog.com>
+> +R:     David Lechner <dlechner@baylibre.com>
+> +L:     linux-spi@vger.kernel.org
+> +S:     Supported
+> +W:     https://ez.analog.com/linux-software-drivers
+> +F:     Documentation/devicetree/bindings/spi/adi,axi-spi-engine.yaml
+> +F:     drivers/spi/spi-axi-spi-engine.c
+> +
+>  AXXIA I2C CONTROLLER
+>  M:     Krzysztof Adamski <krzysztof.adamski@nokia.com>
+>  L:     linux-i2c@vger.kernel.org
+>
+> --
+> 2.42.0
+>
 
-Fixes: 0f503e443ccb ("f2fs-tools: do not reuse corrupted quota inodes")
-Signed-off-by: Daeho Jeong <daehojeong@google.com>
----
- fsck/fsck.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Hi Lars,
 
-diff --git a/fsck/fsck.c b/fsck/fsck.c
-index 55eddca..2bb759c 100644
---- a/fsck/fsck.c
-+++ b/fsck/fsck.c
-@@ -3094,10 +3094,13 @@ static void fsck_disconnect_file(struct f2fs_sb_info *sbi, nid_t ino,
- 		release_block_cnt(sbi, dealloc);
- 		get_node_info(sbi, nid, &ni);
- 		release_block(sbi, ni.blk_addr, dealloc);
-+
-+		if (dealloc)
-+			release_nat_entry(sbi, nid);
- 	}
- 
- 	/* clear data counters */
--	if(!(node->i.i_inline & F2FS_INLINE_DATA)) {
-+	if (!(node->i.i_inline & (F2FS_INLINE_DATA | F2FS_INLINE_DENTRY))) {
- 		ofs = get_extra_isize(node);
- 		for (i = 0; i < ADDRS_PER_INODE(&node->i); i++) {
- 			block_t addr = le32_to_cpu(node->i.i_addr[ofs + i]);
--- 
-2.43.0.rc0.421.g78406f8d94-goog
-
+As the original author, do you have an interested in being included in
+this list?
