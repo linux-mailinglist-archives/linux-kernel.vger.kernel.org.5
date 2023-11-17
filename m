@@ -2,167 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 94C737EFC1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 00:31:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A374F7EFC22
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 00:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231905AbjKQXZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 18:25:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45510 "EHLO
+        id S232403AbjKQXbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 18:31:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKQXZV (ORCPT
+        with ESMTP id S229737AbjKQXbC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 18:25:21 -0500
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10olkn2065.outbound.protection.outlook.com [40.92.41.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86D2CD7A;
-        Fri, 17 Nov 2023 15:25:17 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fR2+hZUL8x6jqZJuPd+x19oqrLSQboUbmqhJ4iLPk7Qg37dAgfJSkDFxiWDx+zTPSStyL3SnU0RVrcq3N3a/Nr8IrGSFKolbNrh1GW08ysDzuGxcnjnjAqXGEd1yyY4DlkgzpAL4enwchNuULUMXyNPrvMYyX2l83p3jbtQ5twpJzU7GPm5Xvem1Il/sIjQEfIGqFtY9N8ibc13X1i6SbDFXzLWpe1SYDTmOD3moQZK1hkIDDmFx/Z3CHKG9Enleut1kfyB9OhYlqzI4hgnsplVu2evcoF+lpDWkfqfvNYpv2JlnFuUu3NXv9Ln6pZyNmoStTpTdcnHL6hNdh8mOGA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/l6ghdF3Y3OC+NKRGDbiNXVrKM40+5YLguD4TuM/l2w=;
- b=lOC6W8voCdG/k0+AX9pZ5mqlqbqzZEg9STXifb/ohREyhPCHczkaxW/iIp4XqGBEuYNxlk7gN/isr/bbA6n3jq3neRsnFvwhOL4mzbOoFW6RhZCkjf0AvZiWgJOFdTOliDMTHQTPuJTAVo/V5NTDSyaXJtRN0XhBblWTM0RbLiWoDXHPEVNo/HLjXVVJuXqheD+QhNn4qiMUXsaNvoF1duOZXeDMF+T7ksgaa92t/nrE6uczRWyhIs3wHDPUsewFI8XWRx/fXko5VTttdCjyBXabD6baebMqs8K/5zZezLVwIF34qis1TCIV1RjRyRnkzs75BTcMXcN3R0v/HGuGDQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/l6ghdF3Y3OC+NKRGDbiNXVrKM40+5YLguD4TuM/l2w=;
- b=CJfTj73WHc8CjoUTwi8juE/w/EOxR15wZ5SL9iu/Dbf5WGmXLeVZRTTodiFJuVpuYB6GJUNdO2OsZZfHGN3maUnqTaQkTTGVt0ZkX041eDJRvySJG6p/9MM8vAjT7qVA0cBodvzg64fp5kBungrT9Q0BnQptvzlzLMYBsiW8JV5UNBoax0pQfevyU9Um/4VMOJKz2UYyMKADIQnM2TfQz4/CLzTQ89cECea2Qc5M0vEfrCHJTxxnvIM4bQR5phJIrrt4q89P4+U5/HZ92jalo5h2ZC/7aI+PN7Zd+2qv55BGqpkUXxz7qV8qYqEqBfMtLLJRxzbSqznqg2am9FsbIg==
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
- by LV3PR20MB7169.namprd20.prod.outlook.com (2603:10b6:408:1a9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.23; Fri, 17 Nov
- 2023 23:25:15 +0000
-Received: from IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
- ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.6977.029; Fri, 17 Nov 2023
- 23:25:15 +0000
-From:   Inochi Amaoto <inochiama@outlook.com>
-To:     Conor Dooley <conor@kernel.org>
-Cc:     Inochi Amaoto <inochiama@outlook.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Chen Wang <unicorn_wang@outlook.com>,
-        Guo Ren <guoren@kernel.org>,
-        Jisheng Zhang <jszhang@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: timer: thead,c900-aclint-mtimer: separate mtime and mtimecmp regs
-Date:   Sat, 18 Nov 2023 07:25:48 +0800
-Message-ID: <IA1PR20MB49536A1E4C97EA62558C6CC3BBB7A@IA1PR20MB4953.namprd20.prod.outlook.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231117-kindred-manor-863549870bcd@spud>
-References: <20231117-kindred-manor-863549870bcd@spud>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-TMN:  [RJkU9cbkDMHgrrcKjiEQvrqQ9e37gzXS0yhkCwBIEdg=]
-X-ClientProxiedBy: TYAPR01CA0176.jpnprd01.prod.outlook.com
- (2603:1096:404:ba::20) To IA1PR20MB4953.namprd20.prod.outlook.com
- (2603:10b6:208:3af::19)
-X-Microsoft-Original-Message-ID: <20231117232549.57371-1-inochiama@outlook.com>
+        Fri, 17 Nov 2023 18:31:02 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C56FE10C6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:30:59 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49F75C43391
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 23:30:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700263859;
+        bh=MxCPYy5kUatJTIY6M2Tqvw3A922+W1+I5g1OrUTLUO8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=asqiPxQIPrmTKcFb8pFg6OTUo/VlrKDTv0k4mwF/U38B/Qhz9T+gHOV/rgc9bvZfV
+         FYWt8aFZU7t2oHZuKsFOP0cGW/rfUrPNzpw2ohV9Y6PfRT0iaO1fCm4FIrVO08GiqA
+         G91/wxXARjVSD4D130HSIM7q2ee1yX4IQDLZDgdQwUuwEd9NJnR7uqQ0SgyG714NlG
+         iHR1blO44GTlFcbHIFI0fxTFfCU5yolRNUAzEjLC6MIANX6TInhXj8aD/shzAIPk5W
+         zrt4aBNmIfkf0L4hDYsVgboP31Q2xDBMX8IvBGso2F3Bvt6pN0400j+sp1NxYop40g
+         cz7rfPHBqfHZg==
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-280109daaaaso2006217a91.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:30:59 -0800 (PST)
+X-Gm-Message-State: AOJu0Yxxgk1tfSauiFnHsaS8zxdvIxZFMaivkAaShkA3+ABvIZ79hMCn
+        Kp7jToz5bBT6+qOJdD0XpFjR3LF247gq3S2/bE4oXw==
+X-Google-Smtp-Source: AGHT+IH14rVOorJ2If+Q8StwAgr2E5ZyK0X9DJUDaw+12/QWtAJqRjHW7fLRWVsjOJOEAv8KuVta1MvKZednfTklLeQ=
+X-Received: by 2002:a17:90a:e7c3:b0:280:99f0:4234 with SMTP id
+ kb3-20020a17090ae7c300b0028099f04234mr1017570pjb.7.1700263858601; Fri, 17 Nov
+ 2023 15:30:58 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|LV3PR20MB7169:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5818d864-9566-443b-166b-08dbe7c473ee
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: KgUmz6bRNjhPH+tZ4gTnDxCuidQRcBbV6bbWoiHOLwQeDwaXDyUMt8HJ8VGUs2GQ8FxZ/+wNOFgtmRvYkbgh+LWBLnLRvdcnX/XudP9/KCZo/iEfHOMFijfdRSAvJY3YXpjYDssrGs2Kb8nH0L0+lcZ82VyZSSvGxlCGHrvxL0chg5kyD2qU5xh7uY9Ro3RUPBAAj2Hh6pfJB7ss21c9P0hrOuQj+JzU8LcVCAPMGQfBWiXTDyDjJuqn9mMc2gaKcOdRN4FTaQjnT5QFLzbb0sxd6ZWQWoqGiDCbnXWmJWfJBPqJYbxp+p2Ukc6JZOq+jX31eGRAvgFG3wEngSZMw5HpzR4y4nRu1JT6jPh7guwbG7dCIs/urVAE1jw9upf3R8cDVr+bp2AGW2w5c84USyya4dUFIDdUHKiDzyWB6IAdbSXy6DcnkHRswvh6lldb4ieIjv+S1PmpWD9Al3B2YfRYC7TS1TDInGYhdlzScRubYTBkvHh0ZR1lJItHlR/JZfBKF/H/FzJW0KkXyCbqdQQ5bCQ7znuEP5K96Eq5MMVkRQpH5p/WFNa96S8ho5uNCkVbyG3ug6SQZr2aVGd7KrwNt9mFXiiHOCMv9vuol//GPx05OL6iHTPrVvIHC6qL
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?UIhoiHJE54Ql1Ysg9WFpdJsXvWGqwzCRBShdk1lzDU5lSrdd2Tl/tWlNEVxd?=
- =?us-ascii?Q?Gpk5fWlZFiHmRguRP9jWk021mvPXLOZch3zTv+d1sgnOMg88yOqOOSsbBZm4?=
- =?us-ascii?Q?Pk435oeYYUA4vYNKRvdmjCZsaainawT6RQBnEZDD9lFQ09li5wj4d5+1F/fF?=
- =?us-ascii?Q?/qL5IuA6AHL57ZpWdzslxuJFHoXzwMl7M6caBcXV8a7cFuJ6J75/OK62GdLH?=
- =?us-ascii?Q?QigW2vqGiYDJKhzGXg2vs9hOcsR4YUtd+oN1w33ucXUw1zYscyhMs+BN91+e?=
- =?us-ascii?Q?u8Is4SibJ9u/EzanInnRlKyZPN05CrLm0XJos/4Ab44lz0JbQkrPl79ILkuk?=
- =?us-ascii?Q?Gr15mpNNJO+A+sK1n8/ZiPmgQrPmir9hKvoHC6/WfhWhpehGUAJHD4yMBhpA?=
- =?us-ascii?Q?yIH8HpFrZQKTPnqYrUdnzB2f++N28RQMxmKMItj0GmbYpY0QrksQQo9P3kSs?=
- =?us-ascii?Q?s9ykAvnlwSi0GKyJsyXi67LtWddIuyPuV/sX1ukwkKdVPssqOfhErliHymk2?=
- =?us-ascii?Q?49mm4Iqu/3RbdgTc6OldLUPklKatacyhRnqut+G6aHJ15WBgdPLQHZu3MAK+?=
- =?us-ascii?Q?wn/Jm0J8HZhu+HC0p6IXh292yj3bv4rAzweequ1av8f3ay7IjIae3fP+9zqU?=
- =?us-ascii?Q?XByI6bdVjqWMib+GP5wHV/7+mJEyZwBmOam7XFHi8ESNvxtM5OMK/+IZi9c0?=
- =?us-ascii?Q?vJNNrh7M6YZRc4ALKL89GP8D6cLn574uz7P/thagzM2QF/D28WnfejuldAAQ?=
- =?us-ascii?Q?BUIKiOeuy0gp6VV3eyn6v5h4mzZdC+q0m0MfYPn0JZ3VRQpvBNQ/L9xtoa/E?=
- =?us-ascii?Q?jr12YA+BtZ8P8JsRUe2ZHNBGN4/oDELyfikceJ5jktWB6WaDIE5ZmsdIfrnW?=
- =?us-ascii?Q?UxvOy7F6e5bIOiiAyjfv2OL8bRe7mYirHKu340mk/U+OB1BQzHltlMCEkHk/?=
- =?us-ascii?Q?YLimTCwgT59qjUj+fbS6hhSAyXP+f8449vsCEPsmCzGhMyysRGtliTxF6yTP?=
- =?us-ascii?Q?PZ7HPBYbY1b95saMR+iINj/Tq1aMLBN/f+SsxEDlxz62wsaVm9duHCZvcUUa?=
- =?us-ascii?Q?BGum4gA0EkSJEQG/wsYZGEkrPjHAjxfK4G1OcQaSI3wk2QLn3hp298ivMBIO?=
- =?us-ascii?Q?2mG1OXvQGOS0mzWthShyvxBH37JDfimTdStrv4f3UagK/gY5bNxqc/F9Uoq+?=
- =?us-ascii?Q?JeEocap3SL4yx1umu3hLIFfgGqkM8dZM41QjcX2Dj6rHFVdVdxexB8WUUzw?=
- =?us-ascii?Q?=3D?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5818d864-9566-443b-166b-08dbe7c473ee
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 23:25:15.0918
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR20MB7169
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+References: <20231113130601.3350915-1-hezhongkun.hzk@bytedance.com>
+ <CAJD7tkY8SwROmNEaBAhkS4OKj33g-6fHsKFeYKW3afT+yAbvxA@mail.gmail.com>
+ <CAF8kJuPonfuOtipdifXwBny2H7cy6m6BL8mWFVXzfb9JSdYq3Q@mail.gmail.com>
+ <CAJD7tkYMiJiXTTgAN34TP8QTr-ViAuEFddYes=ac+1ErenjCZw@mail.gmail.com>
+ <CAF8kJuOC30feLGs0bNHOxMjSZ3uqF1y7eUdJ4p-w-myP8c1cFg@mail.gmail.com> <CAJD7tkahj=QkNj1PBfzGRcDyrpE-n5Dbav7VVOVsAFR4vtx9LA@mail.gmail.com>
+In-Reply-To: <CAJD7tkahj=QkNj1PBfzGRcDyrpE-n5Dbav7VVOVsAFR4vtx9LA@mail.gmail.com>
+From:   Chris Li <chrisl@kernel.org>
+Date:   Fri, 17 Nov 2023 15:30:47 -0800
+X-Gmail-Original-Message-ID: <CAF8kJuNAfzkisG3ukYNuWY6CDSKQ7J6bb0xwFpnSHi0wv3mJWg@mail.gmail.com>
+Message-ID: <CAF8kJuNAfzkisG3ukYNuWY6CDSKQ7J6bb0xwFpnSHi0wv3mJWg@mail.gmail.com>
+Subject: Re: [PATCH] mm:zswap: fix zswap entry reclamation failure in two scenarios
+To:     Yosry Ahmed <yosryahmed@google.com>
+Cc:     Zhongkun He <hezhongkun.hzk@bytedance.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Nhat Pham <nphamcs@gmail.com>,
+        Seth Jennings <sjenning@redhat.com>,
+        Dan Streetman <ddstreet@ieee.org>,
+        Vitaly Wool <vitaly.wool@konsulko.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Ying <ying.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Nov 16, 2023 at 12:46=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
+> wrote:
 >
->On Fri, Nov 17, 2023 at 08:30:21PM +0800, Inochi Amaoto wrote:
->>>
->>> On 17/11/2023 06:07, Inochi Amaoto wrote:
->>>> The timer registers of aclint don't follow the clint layout and can
->>>> be mapped on any different offset. As sg2042 uses separated timer
->>>> and mswi for its clint, it should follow the aclint spec and have
->>>> separated registers.
->>>>
->>>> The previous patch introduced a new type of T-HEAD aclint timer which
->>>> has clint timer layout. Although it has the clint timer layout, it
->>>> should follow the aclint spec and uses the separated mtime and mtimecmp
->>>> regs. So a ABI change is needed to make the timer fit the aclint spec.
->>>>
->>>> To make T-HEAD aclint timer more closer to the aclint spec, use
->>>> regs-names to represent the mtimecmp register, which can avoid hack
->>>> for unsupport mtime register of T-HEAD aclint timer.
->>>>
->>>
->>> I don't understand this reasoning. You had one entry, you still have one
->>> entry. Adding reg-names (not regs-names) does not change it.
->>>
->>
->> If no "reg-names", all the register of ACLINT should be defined. However,
->> T-HEAD aclint timer of sg2042 only supports mtimecmp register. If no extra
->> prompt is provided for the SBI, it will fail to recognize aclint timer
->> registers when parsing the aclint node with one reg entry.
->>
->> There is another way to avoid this by using an empty entry to identify
->> unsupported mtime, but Conor have already rejected this. See [1].
->>
->> Link: https://lore.kernel.org/all/20231114-skedaddle-precinct-66c8897227bb@squawk/ [1]
+> On Thu, Nov 16, 2023 at 12:30=E2=80=AFPM Chris Li <chriscli@google.com> w=
+rote:
+> >
+> > On Thu, Nov 16, 2023 at 12:19=E2=80=AFPM Yosry Ahmed <yosryahmed@google=
+.com> wrote:
+> > >
+> > > Not bypassing the swap slot cache, just make the callbacks to
+> > > invalidate the zswap entry, do memg uncharging, etc when the slot is
+> > > no longer used and is entering the swap slot cache (i.e. when
+> > > free_swap_slot() is called), instead of when draining the swap slot
+> > > cache (i.e. when swap_range_free() is called). For all parts of MM
+> > > outside of swap, the swap entry is freed when free_swap_slot() is
+> > > called. We don't free it immediately because of caching, but this
+> > > should be transparent to other parts of MM (e.g. zswap, memcg, etc).
+> >
+> > That will cancel the batching effect on the swap slot free, making the
+> > common case for  swapping  faults take longer to complete, righ?
+> > If I recall correctly, the uncharge is the expensive part of the swap
+> > slot free operation.
+> > I just want to figure out what we are trading off against. This is not
+> > one side wins all situations.
 >
->Perhaps you misunderstood my suggestion. I was looking for _both_
->registers to be defined in the binding as well as adding reg-names as a
->required property. Doing what you have here might work for your use
->case, but does not make sense from a bindings point of view as there is
->no way to describe the mtime register, should it exist in another SoC.
->
+> Interesting. Maybe we can just move the zswap_invalidate() call to
+> save memory early, and leave the memcg uncharge call to be batched?
+> IIUC we already do some version of this internally at Google.
 
-Thanks for your clarification. If I understand you correctly, the binding
-should have all registers that ACLINT has. But for specific use case,
-it should only contain supported registers and omit unsupported. Please
-correct me if I misunderstood. Thanks.
+I would like to see the patch so I can reason about it better.
+Do you have the link for the patch you are talking about?
+I can also look up the Google internal one if you have a commit hash.
 
->Cheers,
->Conor
->
+One thing I would like to find out is whether the behavior of  reusing
+swap slots without page writing has been changed.
+e.g. Previously if the swap slot can be page out again without
+writing/compression again, if the page is not dirty. If we change that
+behavior, I would like to understand the trade off better.
+
+Chris
