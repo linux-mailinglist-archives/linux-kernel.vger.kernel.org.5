@@ -2,243 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id E186C7EFA4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:21:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4C97EFA7B
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 22:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346456AbjKQVVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 16:21:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38688 "EHLO
+        id S1346399AbjKQVYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 16:24:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45572 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235880AbjKQVVU (ORCPT
+        with ESMTP id S235818AbjKQVXp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 16:21:20 -0500
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 357DF4218;
-        Fri, 17 Nov 2023 13:19:23 -0800 (PST)
-Received: from pps.filterd (m0279863.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AHKK6So025137;
-        Fri, 17 Nov 2023 21:19:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : date :
- subject : mime-version : content-type : content-transfer-encoding :
- message-id : references : in-reply-to : to : cc; s=qcppdkim1;
- bh=086iuiEUDR1u/X5N6NW5Rn1CaU9DwHw296f2RhnLZOs=;
- b=og5UG/Zwy8Sgwea5DAarZOZZyRBCtduKbix2k2Ee+UakYzpTldUCIhiMYfzrSW7gWNuR
- QGuECMvPZX9t3rZicwNm0RUFkmT8T95ZzkAGNTnvOQZOCLUWct0ORMuG2QN7m2rBD73r
- h6ksmpYYbgEXyrBzOS7+1wszlLJaBcsgThokKO5x2geW95ZIjuHBNOJS8ZkIwPY+W+DB
- PWG3ZXG8sIft1wxTqy5a2YI4NikUmjhjxeTrw5FYpZORBiqMICrnpotwEnqjSDtE//ia
- PnRIhA4WUQVLT6pjpuXFPGn123JSoC3YuDN5M54M3jGEg4eOtL4L5fXdt1fT6b8hFdUq Ng== 
-Received: from nasanppmta04.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udw46tebq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 21:19:10 +0000
-Received: from nasanex01b.na.qualcomm.com (nasanex01b.na.qualcomm.com [10.46.141.250])
-        by NASANPPMTA04.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHLJ9xN004703
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 21:19:09 GMT
-Received: from hu-eberman-lv.qualcomm.com (10.49.16.6) by
- nasanex01b.na.qualcomm.com (10.46.141.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Fri, 17 Nov 2023 13:19:08 -0800
-From:   Elliot Berman <quic_eberman@quicinc.com>
-Date:   Fri, 17 Nov 2023 13:18:48 -0800
-Subject: [PATCH 3/3] firmware: psci: Read and use vendor reset types
+        Fri, 17 Nov 2023 16:23:45 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B49963257
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:22:25 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id 3f1490d57ef6-daf2eda7efaso2451302276.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 13:22:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1700256136; x=1700860936; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7VlTgLQgobFGG9PZZStnDlmcBu7nmiBF+q+s3UJ3hXY=;
+        b=dY0g61TIlRN+hRurbcp/9nn1mUxdFaB+a/xJadYgi4t8eIYBYVIAz/Ru5FfvpS0cja
+         2BUtKjga6tWLZGA2I4PBeEaOu5MWt9UwyrWFRSYTCY7sTtZV2RzRVwFkhqqA+O8OOsIy
+         JPeHLrHYuEJ8RL8U93ZQT18EvbHiTz5PCjWjbL3q7JfKiQdHoGzBvLNJDfNFE7mvHze9
+         sqqomks9/Mn7bOSHMfXsAZP738FRG5j5BHmBkTZ/1HB0nTisVNQ2xjKlLslMIgUyV4I5
+         wWiuBIK5GgAJjZpBK0+rlOlXQtrM2f8g5ue3QtlPuk12dYGh7Zujx4+wQP9y+yI7FtNQ
+         qG3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700256136; x=1700860936;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7VlTgLQgobFGG9PZZStnDlmcBu7nmiBF+q+s3UJ3hXY=;
+        b=p4qNn3l6QdIOSbWb/TLEiPw/sYntACNJaCLld7kLhiT8sWixCA6qzdH8VXd5yTPi+f
+         w8MAA+3iIUupXfXcQxe1MXLIA7SLy4YBu7oPEcKSSnif4V9YFPAHk4ZowyPhAnNZ7Bd5
+         pI/SucTyKznKtdO0yCJXkzhv2IWewgS4uube/U08YI2UMnOYWz8JBZOBbyVp6oDSpEjm
+         EVIUJo0RfxMs6flwYbaDDEoiGBHSCwAU0Z27k+CvrvWzDMMos5k2Mgm2YUW4sjjiyNb9
+         L55toMRyYVzUvJJsc5qGU8qPv+n6J+6BZ+h/cbDhAE5/hUQAVVeZlShnnxyG+NIxwaFP
+         0JeQ==
+X-Gm-Message-State: AOJu0YzDn8wyJrsmLBOxphQHQ5padB2RJH1lpGMR5RGbJKo4uwO604L9
+        d5BHdLF4ONEusoEemVeWaiRDUreXitR/cbeUlRr3
+X-Google-Smtp-Source: AGHT+IH5POWzxfJUHKpYri9R+UVG+Wr3w1T0ws/aAxZr3RWyKZUULPlBJx6xRvviFDadIjnVfDAi37L7P8ExDxDrolc=
+X-Received: by 2002:a25:2693:0:b0:da0:86e8:aea4 with SMTP id
+ m141-20020a252693000000b00da086e8aea4mr790094ybm.57.1700256136343; Fri, 17
+ Nov 2023 13:22:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-ID: <20231117-arm-psci-system_reset2-vendor-reboots-v1-3-03c4612153e2@quicinc.com>
-References: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
-In-Reply-To: <20231117-arm-psci-system_reset2-vendor-reboots-v1-0-03c4612153e2@quicinc.com>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>
-CC:     Satya Durga Srinivasu Prabhala <quic_satyap@quicinc.com>,
-        Melody Olvera <quic_molvera@quicinc.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        Florian Fainelli <florian.fainelli@broadcom.com>,
-        Elliot Berman <quic_eberman@quicinc.com>
-X-Mailer: b4 0.13-dev
-X-Originating-IP: [10.49.16.6]
-X-ClientProxiedBy: nalasex01a.na.qualcomm.com (10.47.209.196) To
- nasanex01b.na.qualcomm.com (10.46.141.250)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: 1VSAC0yc29pqRrjKrYRjSx8NgACXlnB1
-X-Proofpoint-ORIG-GUID: 1VSAC0yc29pqRrjKrYRjSx8NgACXlnB1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-11-17_21,2023-11-17_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501 mlxscore=0
- clxscore=1015 phishscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- adultscore=0 spamscore=0 malwarescore=0 lowpriorityscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311060000
- definitions=main-2311170159
-X-Spam-Status: No, score=-2.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_LOW,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+References: <20231107134012.682009-23-roberto.sassu@huaweicloud.com>
+ <f529266a02533411e72d706b908924e8.paul@paul-moore.com> <49a7fd0a1f89188fa92f258e88c50eaeca0f4ac9.camel@huaweicloud.com>
+In-Reply-To: <49a7fd0a1f89188fa92f258e88c50eaeca0f4ac9.camel@huaweicloud.com>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Fri, 17 Nov 2023 16:22:05 -0500
+Message-ID: <CAHC9VhRpG3wFbu6-EZw3t1TeKxBzYX86YzizE6x9JGeWmyxixA@mail.gmail.com>
+Subject: Re: [PATCH v5 22/23] integrity: Move integrity functions to the LSM infrastructure
+To:     Roberto Sassu <roberto.sassu@huaweicloud.com>
+Cc:     viro@zeniv.linux.org.uk, brauner@kernel.org,
+        chuck.lever@oracle.com, jlayton@kernel.org, neilb@suse.de,
+        kolga@netapp.com, Dai.Ngo@oracle.com, tom@talpey.com,
+        jmorris@namei.org, serge@hallyn.com, zohar@linux.ibm.com,
+        dmitry.kasatkin@gmail.com, dhowells@redhat.com, jarkko@kernel.org,
+        stephen.smalley.work@gmail.com, eparis@parisplace.org,
+        casey@schaufler-ca.com, mic@digikod.net,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-nfs@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-integrity@vger.kernel.org, keyrings@vger.kernel.org,
+        selinux@vger.kernel.org, Roberto Sassu <roberto.sassu@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SoC vendors have different types of resets and are controlled through
-various registers. For instance, Qualcomm chipsets can reboot to a
-"download mode" that allows a RAM dump to be collected. Another example
-is they also support writing a cookie that can be read by bootloader
-during next boot. PSCI offers a mechanism, SYSTEM_RESET2, for these
-vendor reset types to be implemented without requiring drivers for every
-register/cookie.
+On Thu, Nov 16, 2023 at 5:08=E2=80=AFAM Roberto Sassu
+<roberto.sassu@huaweicloud.com> wrote:
+> On Wed, 2023-11-15 at 23:33 -0500, Paul Moore wrote:
+> > On Nov  7, 2023 Roberto Sassu <roberto.sassu@huaweicloud.com> wrote:
 
-Add support in PSCI to statically map reboot mode commands from
-userspace to a vendor reset and cookie value using the device tree.
+...
 
-Reboot mode framework is close but doesn't quite fit with the
-design and requirements for PSCI SYSTEM_RESET2. Some of these issues can
-be solved but doesn't seem reasonable in sum:
- 1. reboot mode registers against the reboot_notifier_list, which is too
-    early to call SYSTEM_RESET2. PSCI would need to remember the reset
-    type from the reboot-mode framework callback and use it
-    psci_sys_reset.
- 2. reboot mode assumes only one cookie/parameter is described in the
-    device tree. SYSTEM_RESET2 uses 2: one for the type and one for
-    cookie.
- 3. psci cpuidle driver already registers a driver against the
-    arm,psci-1.0 compatible. Refactoring would be needed to have both a
-    cpuidle and reboot-mode driver.
+> > > +/*
+> > > + * Perform the initialization of the 'integrity', 'ima' and 'evm' LS=
+Ms to
+> > > + * ensure that the management of integrity metadata is working at th=
+e time
+> > > + * IMA and EVM hooks are registered to the LSM infrastructure, and t=
+o keep
+> > > + * the original ordering of IMA and EVM functions as when they were =
+hardcoded.
+> > > + */
+> > >  static int __init integrity_lsm_init(void)
+> > >  {
+> > > +   const struct lsm_id *lsmid;
+> > > +
+> > >     iint_cache =3D
+> > >         kmem_cache_create("iint_cache", sizeof(struct integrity_iint_=
+cache),
+> > >                           0, SLAB_PANIC, iint_init_once);
+> > > +   /*
+> > > +    * Obtain either the IMA or EVM LSM ID to register integrity-spec=
+ific
+> > > +    * hooks under that LSM, since there is no LSM ID assigned to the
+> > > +    * 'integrity' LSM.
+> > > +    */
+> > > +   lsmid =3D ima_get_lsm_id();
+> > > +   if (!lsmid)
+> > > +           lsmid =3D evm_get_lsm_id();
+> > > +   /* No point in continuing, since both IMA and EVM are disabled. *=
+/
+> > > +   if (!lsmid)
+> > > +           return 0;
+> > > +
+> > > +   security_add_hooks(integrity_hooks, ARRAY_SIZE(integrity_hooks), =
+lsmid);
+> >
+> > Ooof.  I understand, or at least I think I understand, why the above
+> > hack is needed, but I really don't like the idea of @integrity_hooks
+> > jumping between IMA and EVM depending on how the kernel is configured.
+> >
+> > Just to make sure I'm understanding things correctly, the "integrity"
+> > LSM exists to ensure the proper hook ordering between IMA/EVM, shared
+> > metadata management for IMA/EVM, and a little bit of a hack to solve
+> > some kernel module loading issues with signatures.  Is that correct?
+> >
+> > I see that patch 23/23 makes some nice improvements to the metadata
+> > management, moving them into LSM security blobs, but it appears that
+> > they are still shared, and thus the requirement is still there for
+> > an "integrity" LSM to manage the shared blobs.
+>
+> Yes, all is correct.
 
-Signed-off-by: Elliot Berman <quic_eberman@quicinc.com>
----
- drivers/firmware/psci/psci.c | 87 +++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 86 insertions(+), 1 deletion(-)
+Thanks for the clarification, more on this below.
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff87861..3f6a862c3999 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -29,6 +29,8 @@
- #include <asm/smp_plat.h>
- #include <asm/suspend.h>
- 
-+#define REBOOT_PREFIX "mode-"
-+
- /*
-  * While a 64-bit OS can make calls with SMC32 calling conventions, for some
-  * calls it is necessary to use SMC64 to pass or return 64-bit values.
-@@ -79,6 +81,14 @@ struct psci_0_1_function_ids get_psci_0_1_function_ids(void)
- static u32 psci_cpu_suspend_feature;
- static bool psci_system_reset2_supported;
- 
-+struct psci_reset_param {
-+	const char *mode;
-+	u32 reset_type;
-+	u32 cookie;
-+};
-+static struct psci_reset_param *psci_reset_params;
-+static size_t num_psci_reset_params;
-+
- static inline bool psci_has_ext_power_state(void)
- {
- 	return psci_cpu_suspend_feature &
-@@ -305,11 +315,29 @@ static int get_set_conduit_method(const struct device_node *np)
- 	return 0;
- }
- 
-+static void psci_vendor_sys_reset2(unsigned long action, void *data)
-+{
-+	const char *cmd = data;
-+	size_t i;
-+
-+	for (i = 0; i < num_psci_reset_params; i++) {
-+		if (!strcmp(psci_reset_params[i].mode, cmd)) {
-+			invoke_psci_fn(PSCI_FN_NATIVE(1_1, SYSTEM_RESET2),
-+				       psci_reset_params[i].reset_type,
-+				       psci_reset_params[i].cookie, 0);
-+			break;
-+		}
-+	}
-+}
-+
- static int psci_sys_reset(struct notifier_block *nb, unsigned long action,
- 			  void *data)
- {
-+	if (psci_system_reset2_supported && num_psci_reset_params)
-+		psci_vendor_sys_reset2(action, data);
-+
- 	if ((reboot_mode == REBOOT_WARM || reboot_mode == REBOOT_SOFT) &&
--	    psci_system_reset2_supported) {
-+		 psci_system_reset2_supported) {
- 		/*
- 		 * reset_type[31] = 0 (architectural)
- 		 * reset_type[30:0] = 0 (SYSTEM_WARM_RESET)
-@@ -748,6 +776,63 @@ static const struct of_device_id psci_of_match[] __initconst = {
- 	{},
- };
- 
-+static int __init psci_init_system_reset2_modes(void)
-+{
-+	const size_t len = strlen(REBOOT_PREFIX);
-+	struct psci_reset_param *param;
-+	struct device_node *np;
-+	struct property *prop;
-+	size_t count = 0;
-+	u32 magic[2];
-+	int ret;
-+
-+	if (!psci_system_reset2_supported)
-+		return 0;
-+
-+	np = of_find_matching_node(NULL, psci_of_match);
-+	if (!np)
-+		return 0;
-+
-+	for_each_property_of_node(np, prop) {
-+		if (strncmp(prop->name, REBOOT_PREFIX, len))
-+			continue;
-+		ret = of_property_count_elems_of_size(np, prop->name, sizeof(magic[0]));
-+		if (ret != 1 && ret != 2)
-+			continue;
-+
-+		count++;
-+	}
-+
-+	param = psci_reset_params = kcalloc(count, sizeof(*psci_reset_params), GFP_KERNEL);
-+	if (!psci_reset_params)
-+		return -ENOMEM;
-+
-+	for_each_property_of_node(np, prop) {
-+		if (strncmp(prop->name, REBOOT_PREFIX, len))
-+			continue;
-+
-+		param->mode = kstrdup_const(prop->name + len, GFP_KERNEL);
-+		if (!param->mode)
-+			continue;
-+
-+		ret = of_property_read_variable_u32_array(np, prop->name, magic, 1, 2);
-+		if (ret < 0) {
-+			pr_warn("Failed to parse vendor reboot mode %s\n", param->mode);
-+			kfree(param->mode);
-+			continue;
-+		}
-+
-+		/* Force reset type to be in vendor space */
-+		param->reset_type = PSCI_1_1_RESET_TYPE_VENDOR_START | magic[0];
-+		param->cookie = ret == 2 ? magic[1] : 0;
-+		param++;
-+		num_psci_reset_params++;
-+	}
-+
-+	return 0;
-+}
-+arch_initcall(psci_init_system_reset2_modes);
-+
- int __init psci_dt_init(void)
- {
- 	struct device_node *np;
+> > I'd like to hear everyone's honest opinion on this next question: do
+> > we have any hope of separating IMA and EVM so they are independent
+> > (ignore the ordering issues for a moment), or are we always going to
+> > need to have the "integrity" LSM to manage shared resources, hooks,
+> > etc.?
+>
+> I think it should not be technically difficult to do it. But, it would
+> be very important to understand all the implications of doing those
+> changes.
+>
+> Sorry, for now I don't see an immediate need to do that, other than
+> solving this LSM naming issue. I tried to find the best solution I
+> could.
 
--- 
-2.41.0
+I first want to say that I think you've done a great job thus far, and
+I'm very grateful for the work you've done.  We can always use more
+help in the kernel security space and I'm very happy to see your
+contributions - thank you :)
 
+I'm concerned about the integrity LSM because it isn't really a LSM,
+it is simply an implementation artifact from a time when only one LSM
+was enabled.  Now that we have basic support for stacking LSMs, as we
+promote integrity/IMA/EVM I think this is the perfect time to move
+away from the "integrity" portion and integrate the necessary
+functionality into the IMA and EVM LSMs.  This is even more important
+now that we are looking at making the LSMs more visible to userspace
+via syscalls; how would you explain to a developer or user the need
+for an "integrity" LSM along with the IMA and EVM LSMs?
+
+Let's look at the three things the the integrity code provides in this patc=
+hset:
+
+* IMA/EVM hook ordering
+
+For better or worse, we have requirements on LSM ordering today that
+are enforced only by convention, the BPF LSM being the perfect
+example.  As long as we document this in Kconfig I think we are okay.
+
+* Shared metadata
+
+Looking at the integrity_iint_cache struct at the end of your patchset
+I see the following:
+
+  struct integrity_iint_cache {
+    struct mutex mutex;
+    struct inode *inode;
+    u64 version;
+    unsigned long flags;
+    unsigned long measured_pcrs;
+    unsigned long atomic_flags;
+    enum integrity_status ima_file_status:4;
+    enum integrity_status ima_mmap_status:4;
+    enum integrity_status ima_bprm_status:4;
+    enum integrity_status ima_read_status:4;
+    enum integrity_status ima_creds_status:4;
+    enum integrity_status evm_status:4;
+    struct ima_digest_data *ima_hash;
+  };
+
+Now that we are stashing the metadata in the inode, we should be able
+to remove the @inode field back pointer.  It seems like we could
+duplicate @mutex and @version without problem.
+
+I only see the @measured_pcrs, @atomic_flags used in the IMA code.
+
+I only see the @ima_XXX_status fields using in the IMA code, and the
+@evm_status used in the EVM code.
+
+I only see the @ima_hash field used by the IMA code.
+
+I do see both IMA and EVM using the @flags field, but only one case
+(IMA_NEW_FILE) where one LSM (EVM) looks for another flags (IMA).  I'm
+not sure how difficult that would be to untangle, but I imagine we
+could do something here; if we had to, we could make EVM be dependent
+on IMA in Kconfig and add a function call to check on the inode
+status.  Although I hope we could find a better solution.
+
+* Kernel module loading hook (integrity_kernel_module_request(...))
+
+My guess is that this is really an IMA hook, but I can't say for
+certain.  If it is needed for EVM we could always duplicate it across
+the IMA and EVM LSMs, it is trivially small and one extra strcmp() at
+kernel module load time doesn't seem awful to me.
+
+--=20
+paul-moore.com
