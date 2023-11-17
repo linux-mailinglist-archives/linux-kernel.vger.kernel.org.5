@@ -2,270 +2,355 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C3BBD7EEC27
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 07:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E24997EEC28
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 07:14:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229935AbjKQGOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 01:14:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44136 "EHLO
+        id S230051AbjKQGOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 01:14:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55706 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQGOB (ORCPT
+        with ESMTP id S229436AbjKQGOo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 01:14:01 -0500
-Received: from mail-yw1-x1131.google.com (mail-yw1-x1131.google.com [IPv6:2607:f8b0:4864:20::1131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1FC38E
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:13:57 -0800 (PST)
-Received: by mail-yw1-x1131.google.com with SMTP id 00721157ae682-5afbdbf3a19so17841807b3.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1700201637; x=1700806437; darn=vger.kernel.org;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/B7NwRNI3mffCj/k823eAaIVnPcXgsdKxdK4KdP36to=;
-        b=RsEdp6gIvzUbCFyxbxO7czBsdMOXqafGEX4WXr3TNydv/09+hlUdos1AlntonPDeqf
-         gQ7JcvMmtwKpw8Ui9zKeHffkJhJh6/tVTiAHsvWYtvtBAif9a82fVAnUrSgJzdOc09DW
-         axvQrujhVPHo52chLMRWeFgrPm+UCwtETGYBqBKHiHbX10jm12oz6F+RR1CVovITjicB
-         56cgYOPLghNvGWg6YIZXUQx/tlVR9QM21Dc4v00hFibdS26E6TaT/Ksnwl/swe2arQrq
-         9JCR0pV6SB5RavKj+LdRW9NhKweOB+KZDQFN+5LdgWj5RbcTJkc3buvfar/SvFVSkMhw
-         VejQ==
+        Fri, 17 Nov 2023 01:14:44 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8D898E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:14:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700201678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VUpORj+rghvOURt2cqFiyla06XABC+gEGq3EdDN5tVc=;
+        b=hko/7YvNTPLM94beQ49bfrSCKwzJvjJQ5uZ8Cd6VrVff6Hlglxt6HM02fs6kflTMdG+vYp
+        3WuAfWtf0/qPOPtJg7a27jfVN/665OylcWmeJg4gLxhppi7BMxhMmCfv/CTndm8QH2pVCn
+        97ArOF6j8C5pW5i7whjOqu1TCXWiDZA=
+Received: from mail-ot1-f69.google.com (mail-ot1-f69.google.com
+ [209.85.210.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-637-CeXCHsTWM_Gf48nnNYDHlQ-1; Fri, 17 Nov 2023 01:14:36 -0500
+X-MC-Unique: CeXCHsTWM_Gf48nnNYDHlQ-1
+Received: by mail-ot1-f69.google.com with SMTP id 46e09a7af769-6d3251109ebso1588728a34.3
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:14:36 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700201637; x=1700806437;
-        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/B7NwRNI3mffCj/k823eAaIVnPcXgsdKxdK4KdP36to=;
-        b=B/yKlS3AHhBiCAhnCEdsXDPwrtmBVAhk2+DGNDuVb2inFg2EaXMlw88YTHp0dv2tS6
-         z6Pn6AX84qRbU7AStygNSPG8o/TuNkFEh6z85Fbk1MqbzFiUuy/j9/PlJaHn5dziKSi6
-         tKxoXo1+f9V5hxPrRwXwydtSy0T/F+0NeLYIkS57T/wQYiGW3WC4e/VChezeQAiA5mU9
-         JS+wZfh2SPssWXTWURO2REFNd2y2e2t+8SIK0FxI5CwbmcQedKuxr7NByzJhSNbGuH7W
-         ZyO2YLG0VdUHFI4qGuVC8aFNSmlchnsgUq+6O+gJo8zsawbWXwg39eHfoAW1EwoHtFVF
-         Pnvg==
-X-Gm-Message-State: AOJu0YwiwjYxrlhgKmxaEDrmJzCoNFzPqqV21IrXsi3+nt6hLuZdpE2x
-        E5fpcDyl2Rcs6AtLkgOvwX4vNA==
-X-Google-Smtp-Source: AGHT+IGXPXHCdgkmnVc/8L9eaLtfJvIqTvm69T2RLEVKgYmqqFyEOo4IkxwBCTVAEpAzk4Ocu2bQuQ==
-X-Received: by 2002:a0d:c0c3:0:b0:59b:bd55:8452 with SMTP id b186-20020a0dc0c3000000b0059bbd558452mr18205875ywd.36.1700201636632;
-        Thu, 16 Nov 2023 22:13:56 -0800 (PST)
-Received: from ripple.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w129-20020a0dd487000000b005a7b785f66bsm326994ywd.39.2023.11.16.22.13.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Nov 2023 22:13:56 -0800 (PST)
-Date:   Thu, 16 Nov 2023 22:13:54 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@ripple.attlocal.net
-To:     =?ISO-8859-15?Q?Jos=E9_Pekkarinen?= <jose.pekkarinen@foxhound.fi>
-cc:     Hugh Dickins <hughd@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        akpm@linux-foundation.org, skhan@linuxfoundation.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linux.dev,
-        syzbot+89edd67979b52675ddec@syzkaller.appspotmail.com,
-        Jann Horn <jannh@google.com>
-Subject: Re: [PATCH] mm/pgtable: return null if no ptl in
- __pte_offset_map_lock
-In-Reply-To: <3cd8b7048ee38f5c5e6f9f6c5dab2deb@foxhound.fi>
-Message-ID: <74a866a0-3211-7e31-1dc3-7c96da340332@google.com>
-References: <20231115065506.19780-1-jose.pekkarinen@foxhound.fi> <ZVTTbuviH9/RWYyI@casper.infradead.org> <1c4cb1959829ecf4f0c59691d833618c@foxhound.fi> <ZVUWLgFgu+jE3QmW@casper.infradead.org> <515cb9c1-abcd-c3f3-cc0d-c3cd248b9d6f@google.com>
- <3cd8b7048ee38f5c5e6f9f6c5dab2deb@foxhound.fi>
+        d=1e100.net; s=20230601; t=1700201675; x=1700806475;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VUpORj+rghvOURt2cqFiyla06XABC+gEGq3EdDN5tVc=;
+        b=GDN0o66y4Ugxk/Uix/qk15m+YvxBNi73u1KGxjL3xxCGMxnMeQ76RM3qBJSI50Nutk
+         Yvjh4CKqCtefWALW9NrpCmbUrNA1QpGhlYKtaZdzApEpDrq/OtvCa1zc0WEwoRVDthHB
+         g+nh9hp6fnnWOtYj8W0QMkvD0e4wq5Erl2q30v9T5lnoFWZhafVaPjWYGpOOMrnt847Q
+         c/WsU5HPvtONoLg2l5W3o7mL+ahnNgZ2Rp/UqEsa8XYttMspSKoI09mqVSLfXZ5n7cdq
+         aOqdJP3slCTQlm1GNZXfGe2I3oN6E93jW2YDyWokygQ8r+xZBXkKj4Hhf2PwCwug7TXp
+         Fv3g==
+X-Gm-Message-State: AOJu0YxjcZ6sZbJpBlAIn9s2PVLBqtcjS04ZOctopEXtBt/4QGiQzPmR
+        oWfH6JkT6Arky7n1fhWM0eaGjte2bXY/TXXxZJX1p2sdbqzRbl0Zdb6ZHiIOz/pqdWjEu0N7O+l
+        VUCkurSqQcM6u4xF9bWzLW/xZWODjaCukJOWUPg==
+X-Received: by 2002:a05:6870:9e97:b0:1e9:e975:4418 with SMTP id pu23-20020a0568709e9700b001e9e9754418mr22149566oab.53.1700201675197;
+        Thu, 16 Nov 2023 22:14:35 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHbpEhYnOd6YVXR0s56harE9n9MMBuyNrOv+l9CBSaeEEkIcbXu6FSelq1K6MXJ95/SMSJlMg==
+X-Received: by 2002:a05:6870:9e97:b0:1e9:e975:4418 with SMTP id pu23-20020a0568709e9700b001e9e9754418mr22149560oab.53.1700201674906;
+        Thu, 16 Nov 2023 22:14:34 -0800 (PST)
+Received: from [10.72.112.63] ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id x10-20020aa793aa000000b006c010ba44d9sm702594pff.164.2023.11.16.22.14.32
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 16 Nov 2023 22:14:34 -0800 (PST)
+Message-ID: <31d14ae5-8d79-6e79-2e29-203d4062de7e@redhat.com>
+Date:   Fri, 17 Nov 2023 14:14:31 +0800
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="-1463753983-1288526280-1700201635=:3610"
-X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
-        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.13.0
+Subject: Re: [PATCH] ceph: quota: Fix invalid pointer access in
+Content-Language: en-US
+To:     Wenchao Hao <haowenchao2@huawei.com>,
+        Ilya Dryomov <idryomov@gmail.com>
+Cc:     Jeff Layton <jlayton@kernel.org>, ceph-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, louhongxiang@huawei.com
+References: <20231114153108.1932884-1-haowenchao2@huawei.com>
+ <af8549c8-a468-6505-6dd1-3589fc76be8e@redhat.com>
+ <CAOi1vP9TnF+BWiEauddskmTO_+V2uvHiqpEg5EoxzZPKb0oEAQ@mail.gmail.com>
+ <aeb8b9e7-c2ce-e758-1b45-67572e686e2c@redhat.com>
+ <CAOi1vP-H9zHJEthzocxv7D7m6XX67sE2Dy1Aq=hP9GQRN+qj_g@mail.gmail.com>
+ <5a1766c6-d923-a4e5-c5be-15b953372ef5@redhat.com>
+ <5eb54f3e-3438-ba47-3d43-baf6b27aad0e@huawei.com>
+ <6824ece2-33ee-63f4-2c7a-7033556325cb@redhat.com>
+ <3a0b72e0-0784-0882-c18b-6178ed597670@huawei.com>
+From:   Xiubo Li <xiubli@redhat.com>
+In-Reply-To: <3a0b72e0-0784-0882-c18b-6178ed597670@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,NICE_REPLY_A,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
----1463753983-1288526280-1700201635=:3610
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+On 11/16/23 15:09, Wenchao Hao wrote:
+> On 2023/11/16 11:06, Xiubo Li wrote:
+>>
+>> On 11/16/23 10:54, Wenchao Hao wrote:
+>>> On 2023/11/15 21:34, Xiubo Li wrote:
+>>>>
+>>>> On 11/15/23 21:25, Ilya Dryomov wrote:
+>>>>> On Wed, Nov 15, 2023 at 2:17 PM Xiubo Li <xiubli@redhat.com> wrote:
+>>>>>>
+>>>>>> On 11/15/23 20:32, Ilya Dryomov wrote:
+>>>>>>> On Wed, Nov 15, 2023 at 1:35 AM Xiubo Li <xiubli@redhat.com> wrote:
+>>>>>>>> On 11/14/23 23:31, Wenchao Hao wrote:
+>>>>>>>>> This issue is reported by smatch, get_quota_realm() might return
+>>>>>>>>> ERR_PTR, so we should using IS_ERR_OR_NULL here to check the 
+>>>>>>>>> return
+>>>>>>>>> value.
+>>>>>>>>>
+>>>>>>>>> Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
+>>>>>>>>> ---
+>>>>>>>>>     fs/ceph/quota.c | 2 +-
+>>>>>>>>>     1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>>>
+>>>>>>>>> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+>>>>>>>>> index 9d36c3532de1..c4b2929c6a83 100644
+>>>>>>>>> --- a/fs/ceph/quota.c
+>>>>>>>>> +++ b/fs/ceph/quota.c
+>>>>>>>>> @@ -495,7 +495,7 @@ bool ceph_quota_update_statfs(struct 
+>>>>>>>>> ceph_fs_client *fsc, struct kstatfs *buf)
+>>>>>>>>>         realm = get_quota_realm(mdsc, d_inode(fsc->sb->s_root),
+>>>>>>>>> QUOTA_GET_MAX_BYTES, true);
+>>>>>>>>>         up_read(&mdsc->snap_rwsem);
+>>>>>>>>> -     if (!realm)
+>>>>>>>>> +     if (IS_ERR_OR_NULL(realm))
+>>>>>>>>>                 return false;
+>>>>>>>>>
+>>>>>>>>> spin_lock(&realm->inodes_with_caps_lock);
+>>>>>>>> Good catch.
+>>>>>>>>
+>>>>>>>> Reviewed-by: Xiubo Li <xiubli@redhat.com>
+>>>>>>>>
+>>>>>>>> We should CC the stable mail list.
+>>>>>>> Hi Xiubo,
+>>>>>>>
+>>>>>>> What exactly is being fixed here?  get_quota_realm() is called with
+>>>>>>> retry=true, which means that no errors can be returned -- 
+>>>>>>> EAGAIN, the
+>>>>>>> only error that get_quota_realm() can otherwise generate, would be
+>>>>>>> handled internally by retrying.
+>>>>>> Yeah, that's true.
+>>>>>>
+>>>>>>> Am I missing something that makes this qualify for stable?
+>>>>>> Actually it's just for the smatch check for now.
+>>>>>>
+>>>>>> IMO we shouldn't depend on the 'retry', just potentially for new 
+>>>>>> changes
+>>>>>> in future could return a ERR_PTR and cause potential bugs.
+>>>>> At present, ceph_quota_is_same_realm() also depends on it -- note how
+>>>>> old_realm isn't checked for errors at all and new_realm is only 
+>>>>> checked
+>>>>> for EAGAIN there.
+>>>>>
+>>>>>> If that's not worth to make it for stable, let's remove it.
+>>>>> Yes, let's remove it.  Please update the commit message as well, so
+>>>>> that it's clear that this is squashing a static checker warning and
+>>>>> doesn't actually fix any immediate bug.
+>>>>
+>>>> WenChao,
+>>>>
+>>>> Could update the commit comment and send the V2 ?
+>>>>
+>>>
+>>> OK, I would update the commit comment as following:
+>>>
+>>> This issue is reported by smatch, get_quota_realm() might return
+>>> ERR_PTR. It's not a immediate bug because get_quota_realm() is called
+>>> with 'retry=true', no errors can be returned.
+>>>
+>>> While we still should check the return value of get_quota_realm() with
+>>> IS_ERR_OR_NULL to avoid potential bugs if get_quota_realm() is changed
+>>> to return other ERR_PTR in future.
+>>>
+>>> What's more, should I change the ceph_quota_is_same_realm() too?
+>>>
+>> Yeah, please. Let's fix them all.
+>>
+>
+> is_same is return as true if both old_realm and new_realm are NULL, I 
+> do not
+> want to change the origin logic except add check for ERR_PTR, so 
+> following
+> is my change:
+>
+> 1. make sure xxx_realm is valid before calling ceph_put_snap_realm.
+> 2. return false if new_realm or old_realm is ERR_PTR, this is newly added
+>    and now we would always run with the else branch.
+>
+> diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+> index c4b2929c6a83..8da9ffb05395 100644
+> --- a/fs/ceph/quota.c
+> +++ b/fs/ceph/quota.c
+> @@ -290,16 +290,20 @@ bool ceph_quota_is_same_realm(struct inode *old, 
+> struct inode *new)
+>         new_realm = get_quota_realm(mdsc, new, QUOTA_GET_ANY, false);
+>         if (PTR_ERR(new_realm) == -EAGAIN) {
+>                 up_read(&mdsc->snap_rwsem);
+> -               if (old_realm)
+> +               if (!IS_ERR_OR_NULL(old_realm))
+>                         ceph_put_snap_realm(mdsc, old_realm);
+>                 goto restart;
+>         }
+> -       is_same = (old_realm == new_realm);
+>         up_read(&mdsc->snap_rwsem);
+>
+> -       if (old_realm)
+> +       if (IS_ERR(new_realm))
+> +               is_same = false;
+> +       else
+> +               is_same = (old_realm == new_realm);
+> +
+> +       if (!IS_ERR_OR_NULL(old_realm))
+>                 ceph_put_snap_realm(mdsc, old_realm);
+> -       if (new_realm)
+> +       if (!IS_ERR_OR_NULL(new_realm))
+>                 ceph_put_snap_realm(mdsc, new_realm);
+>
+>         return is_same;
+>
+If we just to fix the smatch check, how about make get_quota_realm() to 
+return a 'int' type value and at the same time add a 'realmp' parameter 
+?  And just return '-EAGAIN' or '0' always.
 
-On Thu, 16 Nov 2023, Jos=C3=A9 Pekkarinen wrote:
-> On 2023-11-16 07:23, Hugh Dickins wrote:
-> > On Wed, 15 Nov 2023, Matthew Wilcox wrote:
-> >> On Wed, Nov 15, 2023 at 06:05:30PM +0200, Jos=C3=A9 Pekkarinen wrote:
-> >>=20
-> >> > > I don't think we should be changing ptlock_ptr().
-> >> >
-> >> >     This is where the null ptr dereference originates, so the only
-> >> > alternative I can think of is to protect the life cycle of the ptdes=
-c
-> >> > to prevent it to die between the pte check and the spin_unlock of
-> >> > __pte_offset_map_lock. Would that work for you?
-> >=20
-> > Thanks for pursuing this, Jos=C3=A9, but I agree with Matthew: I don't
-> > think your patch is right at all.  The change in ptlock_ptr() did not
-> > make sense to me, and the change in __pte_offset_map_lock() leaves us
-> > still wondering what has gone wrong (and misses an rcu_read_unlock()).
-> >=20
-> > You mentioned "I tested the syzbot reproducer in x86 and it doesn't
-> > produce this kasan report anymore": are you saying that you were able
-> > to reproduce the issue on x86 (without your patch)?  That would be very
-> > interesting (and I think would disprove my hypothesis below).  I ought
-> > to try on x86 if you managed to reproduce on it, but it's not worth
-> > the effort if you did not.  If you have an x86 stack and registers,
-> > please show (though I'm uncertain how much KASAN spoils the output).
->=20
->     Hi,
->=20
->     Yes, I have a local setup based in [1], where I can spin a small
-> vm, build the reproducer and run it in. The only thing I took from
-> the webpage is the kernel config file, and the image I made it locally
-> by debootstrapping and running the modifications in create-image.sh
-> manually, the kasan report follows:
->=20
-> [  111.408746][ T8885] general protection fault, probably for non-canonic=
-al
-> address 0xdffffc0000000005: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> [  111.413181][ T8885] KASAN: null-ptr-deref in range
-> [0x0000000000000028-0x000000000000002f]
-> [  111.413181][ T8885] CPU: 1 PID: 8885 Comm: handle_kernel_p Not tainted
-> 6.7.0-rc1-00007-ge612cb00e200 #6
-> [  111.413181][ T8885] Hardware name: QEMU Standard PC (i440FX + PIIX, 19=
-96),
-> BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-> [  111.413181][ T8885] RIP: 0010:__pte_offset_map_lock+0xfa/0x310
-> [  111.423642][ T8885] Code: 48 c1 e8 03 80 3c 10 00 0f 85 12 02 00 00 4c=
- 03
-> 3d db 92 cf 0b 48 b8 00 00 00 00 00 fc ff df 49 8d 7f 28 48 89 fa 48 c1 e=
-a 03
-> <80> 3c 02 00 0f 85 e2 01 00 00 4d 8b 7f 28 4c 89 ff e8 f0 a1 3a 09
-> [  111.423642][ T8885] RSP: 0018:ffffc90005baf738 EFLAGS: 00010216
-> [  111.423642][ T8885] RAX: dffffc0000000000 RBX: 0005800000000067 RCX:
-> ffffffff81ada02e
-> [  111.423642][ T8885] RDX: 0000000000000005 RSI: ffffffff81ad9f0f RDI:
-> 0000000000000028
-> [  111.423642][ T8885] RBP: ffff8880224c4800 R08: 0000000000000007 R09:
-> 0000000000000000
-> [  111.423642][ T8885] R10: 0000000000000000 R11: 0000000000000000 R12:
-> 0005088000000a80
-> [  111.423642][ T8885] R13: 1ffff92000b75ee9 R14: ffffc90005bafa88 R15:
-> 0000000000000000
-> [  111.423642][ T8885] FS:  00007f8d3972c6c0(0000) GS:ffff888069700000(00=
-00)
-> knlGS:0000000000000000
-> [  111.423642][ T8885] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  111.423642][ T8885] CR2: 00007f8d3970af78 CR3: 00000000224d6000 CR4:
-> 00000000000006f0
-> [  111.423642][ T8885] Call Trace:
-> [  111.423642][ T8885]  <TASK>
-> [  111.423642][ T8885]  ? show_regs+0x8f/0xa0
-> [  111.423642][ T8885]  ? die_addr+0x4f/0xd0
-> [  111.423642][ T8885]  ? exc_general_protection+0x150/0x220
-> [  111.423642][ T8885]  ? asm_exc_general_protection+0x26/0x30
-> [  111.423642][ T8885]  ? __pte_offset_map_lock+0x1de/0x310
-> [  111.423642][ T8885]  ? __pte_offset_map_lock+0xbf/0x310
-> [  111.423642][ T8885]  ? __pte_offset_map_lock+0xfa/0x310
-> [  111.423642][ T8885]  ? __pte_offset_map_lock+0xbf/0x310
-> [  111.423642][ T8885]  ? __pfx___pte_offset_map_lock+0x10/0x10
-> [  111.423642][ T8885]  filemap_map_pages+0x336/0x13b0
-> [  111.423642][ T8885]  ? __pfx_filemap_map_pages+0x10/0x10
-> [  111.423642][ T8885]  ? rcu_read_unlock+0x33/0xb0
-> [  111.423642][ T8885]  do_fault+0x86a/0x1350
-> [  111.423642][ T8885]  __handle_mm_fault+0xe53/0x23a0
-> [  111.423642][ T8885]  ? __pfx___handle_mm_fault+0x10/0x10
-> [  111.483413][ T8885]  handle_mm_fault+0x369/0x890
-> [  111.483413][ T8885]  __get_user_pages+0x46d/0x15d0
-> [  111.483413][ T8885]  ? __pfx___get_user_pages+0x10/0x10
-> [  111.483413][ T8885]  populate_vma_page_range+0x2de/0x420
-> [  111.483413][ T8885]  ? __pfx_populate_vma_page_range+0x10/0x10
-> [  111.483413][ T8885]  ? __pfx_find_vma_intersection+0x10/0x10
-> [  111.483413][ T8885]  ? vm_mmap_pgoff+0x299/0x3c0
-> [  111.483413][ T8885]  __mm_populate+0x1da/0x380
-> [  111.483413][ T8885]  ? __pfx___mm_populate+0x10/0x10
-> [  111.483413][ T8885]  ? up_write+0x1b3/0x520
-> [  111.483413][ T8885]  vm_mmap_pgoff+0x2d1/0x3c0
-> [  111.483413][ T8885]  ? __pfx_vm_mmap_pgoff+0x10/0x10
-> [  111.483413][ T8885]  ksys_mmap_pgoff+0x7d/0x5b0
-> [  111.483413][ T8885]  __x64_sys_mmap+0x125/0x190
-> [  111.483413][ T8885]  do_syscall_64+0x45/0xf0
-> [  111.483413][ T8885]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [  111.483413][ T8885] RIP: 0033:0x7f8d39831559
-> [  111.483413][ T8885] Code: 08 89 e8 5b 5d c3 66 2e 0f 1f 84 00 00 00 00=
- 00
-> 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0=
-f 05
-> <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 77 08 0d 00 f7 d8 64 89 01 48
-> [  111.483413][ T8885] RSP: 002b:00007f8d3972be78 EFLAGS: 00000216 ORIG_R=
-AX:
-> 0000000000000009
-> [  111.483413][ T8885] RAX: ffffffffffffffda RBX: 00007f8d3972c6c0 RCX:
-> 00007f8d39831559
-> [  111.483413][ T8885] RDX: b635773f07ebbeea RSI: 0000000000b36000 RDI:
-> 0000000020000000
-> [  111.483413][ T8885] RBP: 00007f8d3972bea0 R08: 00000000ffffffff R09:
-> 0000000000000000
-> [  111.483413][ T8885] R10: 0000000000008031 R11: 0000000000000216 R12:
-> ffffffffffffff80
-> [  111.483413][ T8885] R13: 0000000000000000 R14: 00007fffcef921d0 R15:
-> 00007f8d3970c000
-> [  111.483413][ T8885]  </TASK>
-> [  111.483413][ T8885] Modules linked in:
-> [  111.763549][ T8885] ---[ end trace 0000000000000000 ]---
-> [  111.773557][ T8885] RIP: 0010:__pte_offset_map_lock+0xfa/0x310
-> [  111.776045][ T8885] Code: 48 c1 e8 03 80 3c 10 00 0f 85 12 02 00 00 4c=
- 03
-> 3d db 92 cf 0b 48 b8 00 00 00 00 00 fc ff df 49 8d 7f 28 48 89 fa 48 c1 e=
-a 03
-> <80> 3c 02 00 0f 85 e2 01 00 00 4d 8b 7f 28 4c 89 ff e8 f0 a1 3a 09
-> [  111.805040][ T8885] RSP: 0018:ffffc90005baf738 EFLAGS: 00010216
-> [  111.820041][ T8885] RAX: dffffc0000000000 RBX: 0005800000000067 RCX:
-> ffffffff81ada02e
-> [  111.837884][ T8885] RDX: 0000000000000005 RSI: ffffffff81ad9f0f RDI:
-> 0000000000000028
-> [  111.855313][ T8885] RBP: ffff8880224c4800 R08: 0000000000000007 R09:
-> 0000000000000000
-> [  111.878314][ T8885] R10: 0000000000000000 R11: 0000000000000000 R12:
-> 0005088000000a80
-> [  111.910624][ T8885] R13: 1ffff92000b75ee9 R14: ffffc90005bafa88 R15:
-> 0000000000000000
-> [  111.923627][ T8885] FS:  00007f8d3972c6c0(0000) GS:ffff888069700000(00=
-00)
-> knlGS:0000000000000000
-> [  111.932017][ T8885] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  111.941166][ T8885] CR2: 00007fa26ac38178 CR3: 00000000224d6000 CR4:
-> 00000000000006f0
-> [  111.950619][ T8885] Kernel panic - not syncing: Fatal exception
-> [  111.953981][ T8885] Kernel Offset: disabled
-> [  111.953981][ T8885] Rebooting in 86400 seconds..
->=20
->     I can test some patches for you if it helps finding out
-> the issue.
+Then it will be something likes:
 
-Thanks a lot, and you'll see that I've just asked syzbot to try what
-I now believe is the correct fix: over in the other thread, since it
-didn't recognize yesterday's when I sent from this thread.  Please
-give that a try yourself, if you have time - thanks.
 
-It turned out that all that I needed was your assurance that you had
-the repro working on x86 - I guess I'm simply too x86-centric, and
-had assumed that syzbot's arm64 report implied something special on
-arm, such as the subtler barriers there.
+diff --git a/fs/ceph/quota.c b/fs/ceph/quota.c
+index c4b2929c6a83..f37f5324b6a1 100644
+--- a/fs/ceph/quota.c
++++ b/fs/ceph/quota.c
+@@ -211,10 +211,9 @@ void ceph_cleanup_quotarealms_inodes(struct 
+ceph_mds_client *mdsc)
+   * this function will return -EAGAIN; otherwise, the snaprealms 
+walk-through
+   * will be restarted.
+   */
+-static struct ceph_snap_realm *get_quota_realm(struct ceph_mds_client 
+*mdsc,
+-                                              struct inode *inode,
+-                                              enum quota_get_realm 
+which_quota,
+-                                              bool retry)
++static int get_quota_realm(struct ceph_mds_client *mdsc, struct inode 
+*inode,
++                          enum quota_get_realm which_quota,
++                          struct ceph_snap_realm **realmp, bool retry)
+  {
+         struct ceph_client *cl = mdsc->fsc->client;
+         struct ceph_inode_info *ci = NULL;
+@@ -222,8 +221,10 @@ static struct ceph_snap_realm 
+*get_quota_realm(struct ceph_mds_client *mdsc,
+         struct inode *in;
+         bool has_quota;
 
-I gave repro a try on bare metal x86, and it reproduced within a minute:
-though in my case not quite the stack trace you and syzbot reported,
-but a more obvious oops in pmd_install().  Depending on one's
-"memory model", the macro pfn_to_page() can be more or less strict:
-in my case it was strict, and pmd_install() oopsed right there in
-pmd_populate(); whereas in your case pmd_populate() uncomplainingly
-puts something silly into the pmd entry, leaving __pte_offset_map_lock()
-to stumble on that immediately afterwards.  (Neither KASAN nor lockdep
-required - though lockdep's spinlock pointer probably helps to make the
-badness more obvious, if pmd_install() did not crash already.)
++       if (realmp)
++               *realmp = NULL;
+         if (ceph_snap(inode) != CEPH_NOSNAP)
+-               return NULL;
++               return 0;
 
-The problem is simply that filemap_map_pmd() assumed that prealloc_pte
-is supplied with a preallocated page table whenever pmd_none(); but if
-it has racily become pmd_none() since the preallocation decision, then
-the oops.  My changes have certainly provided an easy way to get that
-race, but if I'm not mistaken, there was already another such race,
-with the possible bug going back to 5.12.
+  restart:
+         realm = ceph_inode(inode)->i_snap_realm;
+@@ -250,7 +251,7 @@ static struct ceph_snap_realm 
+*get_quota_realm(struct ceph_mds_client *mdsc,
+                                 break;
+                         ceph_put_snap_realm(mdsc, realm);
+                         if (!retry)
+-                               return ERR_PTR(-EAGAIN);
++                               return -EAGAIN;
+                         goto restart;
+                 }
 
-I'll work on the commit message while waiting to hear from syzbot.
+@@ -259,8 +260,11 @@ static struct ceph_snap_realm 
+*get_quota_realm(struct ceph_mds_client *mdsc,
+                 iput(in);
 
-Hugh
----1463753983-1288526280-1700201635=:3610--
+                 next = realm->parent;
+-               if (has_quota || !next)
+-                      return realm;
++               if (has_quota || !next) {
++                       if (realmp)
++                               *realmp = realm;
++                      return 0;
++               }
+
+                 ceph_get_snap_realm(mdsc, next);
+                 ceph_put_snap_realm(mdsc, realm);
+@@ -269,14 +273,15 @@ static struct ceph_snap_realm 
+*get_quota_realm(struct ceph_mds_client *mdsc,
+         if (realm)
+                 ceph_put_snap_realm(mdsc, realm);
+
+-       return NULL;
++       return 0;
+  }
+
+  bool ceph_quota_is_same_realm(struct inode *old, struct inode *new)
+  {
+         struct ceph_mds_client *mdsc = ceph_sb_to_mdsc(old->i_sb);
+-       struct ceph_snap_realm *old_realm, *new_realm;
++       struct ceph_snap_realm *old_realm = NULL, *new_realm = NULL;
+         bool is_same;
++       int ret;
+
+  restart:
+         /*
+@@ -286,9 +291,9 @@ bool ceph_quota_is_same_realm(struct inode *old, 
+struct inode *new)
+          * dropped and we can then restart the whole operation.
+          */
+         down_read(&mdsc->snap_rwsem);
+-       old_realm = get_quota_realm(mdsc, old, QUOTA_GET_ANY, true);
+-       new_realm = get_quota_realm(mdsc, new, QUOTA_GET_ANY, false);
+-       if (PTR_ERR(new_realm) == -EAGAIN) {
++       get_quota_realm(mdsc, old, QUOTA_GET_ANY, &old_relam, true);
++       ret = get_quota_realm(mdsc, new, QUOTA_GET_ANY, &new_realm, false);
++       if (ret == -EAGAIN) {
+                 up_read(&mdsc->snap_rwsem);
+                 if (old_realm)
+                         ceph_put_snap_realm(mdsc, old_realm);
+
+
+Won't be this better ?
+
+Thanks
+
+- Xiubo
+
+
+
+
+>
+>> Thanks
+>>
+>> - Xiubo
+>>
+>>
+>>> Thanks
+>>>
+>>>> Thanks
+>>>>
+>>>> - Xiubo
+>>>>
+>>>>
+>>>>> Thanks,
+>>>>>
+>>>>>                  Ilya
+>>>>>
+>>>>
+>>>
+>>
+>>
+>
+
