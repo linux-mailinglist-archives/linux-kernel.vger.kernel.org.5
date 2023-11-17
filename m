@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F3F717EF60E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 214157EF609
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:20:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346103AbjKQQUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:20:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37210 "EHLO
+        id S1346058AbjKQQU2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:20:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232837AbjKQQUi (ORCPT
+        with ESMTP id S231634AbjKQQU1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:20:38 -0500
-Received: from mail-4018.proton.ch (mail-4018.proton.ch [185.70.40.18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333BDD4E
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 08:20:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail2; t=1700238031; x=1700497231;
-        bh=c/h0b+5BWYhgvhTWWFoERjRovp9HG6DxXqas8Io0Upo=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=RpjcNazOxK0tuBinKATPVK+2WR+efx3Y2wqvPtcXXWZVDHdUqqf5ClnwPg7kir8Nq
-         jUUMcjEHRp8yF7WejjC4mXDVcIiv2pqBNmM46Rg7PqXqCfHqSrwCB2RtCBg4Y4/ef7
-         dOFgg12COHSJMpYAzIaQMxCZW+YBI6oxV5IFy9hjWUirZCE8lo28OCvJ3uhS6FCnMx
-         oELvux5cLbQb0BOgOLj3JrBYX4Xj7UvDCty3x4KLnpS7q0MBYW7/pKXsQo/HeDUzMq
-         OSFZntvHPC5vqHQ4H7zxbz/KWofKo07co6BHQQjcfnOIbSnNUaYMUydxtiZ/vHEEm0
-         oXLRqa8iFeDqA==
-Date:   Fri, 17 Nov 2023 16:20:12 +0000
-To:     =?utf-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-dev@igalia.com,
-        alexander.deucher@amd.com, christian.koenig@amd.com,
-        pierre-eric.pelloux-prayer@amd.com,
-        Rob Clark <robdclark@gmail.com>,
-        Pekka Paalanen <ppaalanen@gmail.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Daniel Stone <daniel@fooishbar.org>,
-        =?utf-8?Q?=27Marek_Ol=C5=A1=C3=A1k=27?= <maraeo@gmail.com>,
-        Dave Airlie <airlied@gmail.com>,
-        =?utf-8?Q?Michel_D=C3=A4nzer?= <michel.daenzer@mailbox.org>,
-        Randy Dunlap <rdunlap@infradead.org>
-Subject: Re: [PATCH v8 0/6] drm: Add support for atomic async page-flip
-Message-ID: <Xvnc1dvx8ij7QQjMrEG5AE_wpnGxYwEwk0PxRir17B34AM8y9HZTorD18qGzm-mMrgq9svucDnTS2d-8VyPT44jHuOLpdTavQV5Rgjz-dYc=@emersion.fr>
-In-Reply-To: <20231025005318.293690-1-andrealmeid@igalia.com>
-References: <20231025005318.293690-1-andrealmeid@igalia.com>
-Feedback-ID: 1358184:user:proton
+        Fri, 17 Nov 2023 11:20:27 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B465D4E
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 08:20:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id CF6DEC433C9;
+        Fri, 17 Nov 2023 16:20:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700238023;
+        bh=I4XpBTySvhzHxZn8SvCxlHLKBMiFYF/DtzvPGPKJPHk=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=ARZ/ym95zCIHaXOrd2L4SYrX/XDvOfcRnGzvMS1Zhrh1nTCbL8ZuGi/GpWN+RqRuL
+         ipw679dDIxongC3kv63vnUreqTLnnQNS+JLco69uAuPY3CN4lPo405WGt9CiW8nKHN
+         6TkMhVZnzKAa0k9PhaEYOiwz7Ok7DxnE6dTkeZKlqmDOlHJo9ga7ebp4vKqFO7yNQk
+         rowD5SydwKaXjXDaNGp91aBE87oIO0BSCqlajB//uKEbUMv9V530JDAXiQyebKqAtA
+         KtmJSXKJgWGKcLfATdO5YTXYC7AWARCTQOywmPO8JyoXJm0P58XMt7QBxFkMdErKz8
+         ZoMonxv2RHZGg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id B3F28C4316B;
+        Fri, 17 Nov 2023 16:20:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        RCVD_IN_MSPIKE_H5,RCVD_IN_MSPIKE_WL,SPF_HELO_PASS,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH RESEND] Bluetooth: Fix deadlock in vhci_send_frame
+From:   patchwork-bot+bluetooth@kernel.org
+Message-Id: <170023802373.26338.14180238759984531392.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Nov 2023 16:20:23 +0000
+References: <20231110014605.2068231-1-yinghsu@chromium.org>
+In-Reply-To: <20231110014605.2068231-1-yinghsu@chromium.org>
+To:     Ying Hsu <yinghsu@chromium.org>
+Cc:     linux-bluetooth@vger.kernel.org, luiz.dentz@gmail.com,
+        linux-kernel@vger.kernel.org,
+        chromeos-bluetooth-upstreaming@chromium.org,
+        arkadiusz.bokowy@gmail.com, johan.hedberg@gmail.com,
+        marcel@holtmann.org
+X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It seems like commits were re-ordered at some point. I think we need "drm:
-introduce drm_mode_config.atomic_async_page_flip_not_supported" to come bef=
-ore
-"drm: allow DRM_MODE_PAGE_FLIP_ASYNC for atomic commits" because the latter
-uses atomic_async_page_flip_not_supported. Similarly, "drm: Refuse to async=
- flip
-with atomic prop changes" should probably come before that same patch becau=
-se
-we don't want to have an intermediary state where we allow user-space to ch=
-ange
-arbitrary properties. In general, commits should be constructed so that the=
-re
-is no "broken state" in-between: each commit needs to build without errors =
-and
-not have transient bugs.
+Hello:
 
-While reading this again, I think that now that we only allow primary FB_ID=
- to
-change, we don't need atomic_async_page_flip_not_supported anymore? In othe=
-r
-words, allowing async atomic commits on all drivers doesn't require anythin=
-g
-more than they support already, because the atomic codepath can't do anythi=
-ng
-more than the legacy codepath.
+This patch was applied to bluetooth/bluetooth-next.git (master)
+by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-With that in mind, I also wonder if the new cap is helpful. Since async ato=
-mic
-commits can fail for pretty much any reason, user-space can just try and
-fallback to something else. The cap could be useful to indicate whether asy=
-nc
-atomic commits would always fail, but not sure how useful that is? I don't =
-have
-strong opinions either way.
+On Fri, 10 Nov 2023 01:46:05 +0000 you wrote:
+> syzbot found a potential circular dependency leading to a deadlock:
+>     -> #3 (&hdev->req_lock){+.+.}-{3:3}:
+>     __mutex_lock_common+0x1b6/0x1bc2 kernel/locking/mutex.c:599
+>     __mutex_lock kernel/locking/mutex.c:732 [inline]
+>     mutex_lock_nested+0x17/0x1c kernel/locking/mutex.c:784
+>     hci_dev_do_close+0x3f/0x9f net/bluetooth/hci_core.c:551
+>     hci_rfkill_set_block+0x130/0x1ac net/bluetooth/hci_core.c:935
+>     rfkill_set_block+0x1e6/0x3b8 net/rfkill/core.c:345
+>     rfkill_fop_write+0x2d8/0x672 net/rfkill/core.c:1274
+>     vfs_write+0x277/0xcf5 fs/read_write.c:594
+>     ksys_write+0x19b/0x2bd fs/read_write.c:650
+>     do_syscall_x64 arch/x86/entry/common.c:55 [inline]
+>     do_syscall_64+0x51/0xba arch/x86/entry/common.c:93
+>     entry_SYSCALL_64_after_hwframe+0x61/0xcb
+> 
+> [...]
+
+Here is the summary with links:
+  - [RESEND] Bluetooth: Fix deadlock in vhci_send_frame
+    https://git.kernel.org/bluetooth/bluetooth-next/c/0be46f8900b0
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
