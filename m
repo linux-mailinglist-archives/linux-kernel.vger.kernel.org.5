@@ -2,151 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F007B7EF3F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09A637EF3F5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 15:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231426AbjKQOBj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 09:01:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55840 "EHLO
+        id S231610AbjKQOD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 09:03:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229541AbjKQOBh (ORCPT
+        with ESMTP id S229541AbjKQODZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 09:01:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A51E127
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 06:01:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700229688;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pq04hPwM76I6HfjjQsgEZc2UgA6OA1Oi638JwoZfCNQ=;
-        b=XWbEkDScMgH5ZwjFuhSGvD5BLa4pKIQZTrQ6tsJefAPoqQmChQRDJC0r0VULdiJ5fkzPVU
-        o9jULUe4R9JafJE2JZqgjv5gyDSvF8/u04tUnaCBF3IdvgJWIy9wzJPi6EoclU9lIUPYZi
-        XFr+KVlZxp+J5TvO3YZNQL7bxAq/pw0=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-9-LNEJoTcXPIOoWatljCvfVA-1; Fri, 17 Nov 2023 09:01:24 -0500
-X-MC-Unique: LNEJoTcXPIOoWatljCvfVA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.rdu2.redhat.com [10.11.54.2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0B062811E8D;
-        Fri, 17 Nov 2023 14:01:23 +0000 (UTC)
-Received: from localhost (unknown [10.72.112.24])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 46EC140C6EB9;
-        Fri, 17 Nov 2023 14:01:21 +0000 (UTC)
-Date:   Fri, 17 Nov 2023 22:01:17 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     "Liu, Yujie" <yujie.liu@intel.com>
-Cc:     lkp <lkp@intel.com>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "kexec@lists.infradead.org" <kexec@lists.infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "oe-kbuild-all@lists.linux.dev" <oe-kbuild-all@lists.linux.dev>,
-        "llvm@lists.linux.dev" <llvm@lists.linux.dev>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH 2/7] kexec_file: print out debugging message if required
-Message-ID: <ZVdyLdAzgNBXfjiW@MiWiFi-R3L-srv>
-References: <20231114153253.241262-3-bhe@redhat.com>
- <202311160431.BXPc7NO9-lkp@intel.com>
- <ZVcvBft/T3cbRBWr@MiWiFi-R3L-srv>
- <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
+        Fri, 17 Nov 2023 09:03:25 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4A98A3;
+        Fri, 17 Nov 2023 06:03:21 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8321EC433C8;
+        Fri, 17 Nov 2023 14:03:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700229801;
+        bh=+YyWYw/YzYJ+SPOs/yiZevHVY0O0qocR6W15SI2TW+U=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jDU74y+5cXrh06NB2CxYyBRr1mU1l22/wxgbBKqx0psUVhiEdgtG2EervVZOQg1zD
+         H9NTbgQzvCFrY0t6SMhJUhJCeswoZ05RkCu+Y+oYqJIvJcXyEqeMToJbi1r0gYnKg8
+         lPhPbOKBw29M+ITZOsdBV1c9OhJ7ZwrlI0IImxDVRJ77HMdeZGycumPmA233Wi8I97
+         DYGPfSaT2CCIAy41n1FXeNKbArse/uxSwpkvoCirBDD8TcFG+DVLFc76ftKHMl5qF1
+         XLYLIsEvSvmuxx3GFo0zJSKhsaBIYVbLkMyUj6RJxmtjcmV6q9arbWNYkiiKMshd4O
+         C4TodqHX9b+TQ==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r3zRM-0004DS-17;
+        Fri, 17 Nov 2023 15:03:24 +0100
+Date:   Fri, 17 Nov 2023 15:03:24 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Manivannan Sadhasivam <mani@kernel.org>
+Cc:     Johan Hovold <johan+linaro@kernel.org>,
+        Lorenzo Pieralisi <lpieralisi@kernel.org>,
+        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        Rob Herring <robh@kernel.org>,
+        Nirmal Patel <nirmal.patel@linux.intel.com>,
+        Jonathan Derrick <jonathan.derrick@linux.dev>,
+        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/6] PCI: qcom: Clean up ASPM comment
+Message-ID: <ZVdyrGXyahM7bxwh@hovoldconsulting.com>
+References: <20231114135553.32301-1-johan+linaro@kernel.org>
+ <20231114135553.32301-5-johan+linaro@kernel.org>
+ <20231117103227.GM250770@thinkpad>
+ <ZVdE6nqanqcaL8sO@hovoldconsulting.com>
+ <20231117105404.GR250770@thinkpad>
+ <ZVdH3GkzWupoxyzJ@hovoldconsulting.com>
+ <20231117112352.GS250770@thinkpad>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <39ccb4fda795a76996cf6d1c3b25909692358211.camel@intel.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.2
+In-Reply-To: <20231117112352.GS250770@thinkpad>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=unavailable
-        autolearn_force=no version=3.4.6
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/17/23 at 09:37am, Liu, Yujie wrote:
-> Hi Baoquan,
-> 
-> On Fri, 2023-11-17 at 17:14 +0800, Baoquan He wrote:
-> > Hi,
-> > 
-> > On 11/16/23 at 05:04am, kernel test robot wrote:
-> > > Hi Baoquan,
-> > > 
-> > > kernel test robot noticed the following build errors:
-> > > 
-> > > [auto build test ERROR on arm64/for-next/core]
-> > > [also build test ERROR on tip/x86/core powerpc/next powerpc/fixes linus/master v6.7-rc1 next-20231115]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > > 
-> > > url:    https://github.com/intel-lab-lkp/linux/commits/Baoquan-He/kexec_file-add-kexec_file-flag-to-control-debug-printing/20231114-234003
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-next/core
-> > > patch link:    https://lore.kernel.org/r/20231114153253.241262-3-bhe%40redhat.com
-> > > patch subject: [PATCH 2/7] kexec_file: print out debugging message if required
-> > > config: hexagon-comet_defconfig (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/config)
-> > > compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
-> > > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231116/202311160431.BXPc7NO9-lkp@intel.com/reproduce)
-> > > 
-> > 
-> > Thanks for reporting.
-> > 
-> > I met below failure when following the steps of provided reproducer.
-> > Could anyone help check what's wrong with that?
-> 
-> Sorry this seems to be a bug in the reproducer. Could you please change
-> the compiler parameter to "COMPILER=clang-16" and rerun the command? We
-> will fix the issue ASAP.
+On Fri, Nov 17, 2023 at 04:53:52PM +0530, Manivannan Sadhasivam wrote:
+> On Fri, Nov 17, 2023 at 12:00:44PM +0100, Johan Hovold wrote:
+> > On Fri, Nov 17, 2023 at 04:24:04PM +0530, Manivannan Sadhasivam wrote:
+> > > On Fri, Nov 17, 2023 at 11:48:10AM +0100, Johan Hovold wrote:
 
-Here you are. Thanks for your quick response.
-------------------------------
-[root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang-16 ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-Compiler will be installed in /root/0day
-lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/./llvm-16.0.6-x86_64.tar.xz
-/root/linux                                                                             
-tar Jxf /root/0day/./llvm-16.0.6-x86_64.tar.xz -C /root/0day
-PATH=/root/0day/llvm-16.0.6-x86_64/bin:/root/.local/bin:/root/bin:/usr/lib64/ccache:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-make --keep-going LLVM=1 CROSS_COMPILE=hexagon-linux- LLVM_IAS=1 --jobs=128 KCFLAGS=-Warray-bounds -Wundef -fstrict-flex-arrays=3 -funsigned-char -Wenum-conversion W=1 O=build_dir ARCH=hexagon olddefconfig
-make[1]: Entering directory '/root/linux/build_dir'
-  GEN     Makefile
-  HOSTCC  scripts/basic/fixdep
-  HOSTCC  scripts/kconfig/conf.o
-  HOSTCC  scripts/kconfig/confdata.o
-  HOSTCC  scripts/kconfig/expr.o
-  HOSTCC  scripts/kconfig/lexer.lex.o
-  HOSTCC  scripts/kconfig/menu.o
-  HOSTCC  scripts/kconfig/parser.tab.o
-  HOSTCC  scripts/kconfig/preprocess.o
-  HOSTCC  scripts/kconfig/symbol.o
-  HOSTCC  scripts/kconfig/util.o
-  HOSTLD  scripts/kconfig/conf
-#
-# configuration written to .config
-#
-make[1]: Leaving directory '/root/linux/build_dir'
+> > > > The coding style clearly states:
+> > > > 
+> > > > 	The preferred limit on the length of a single line is 80 columns.
+> > > > 
+> > > > 	Statements longer than 80 columns should be broken into sensible chunks,
+> > > > 	unless exceeding 80 columns significantly increases readability and does
+> > > > 	not hide information.
+> > > > 
+> > > > Going beyond 80 chars may sometimes be warranted for code, but the
+> > > > exception is not intended for comments.
+> > > 
+> > > Breaking the comment here is indeed making it hard to read. It's just one word
+> > > that needs to be broken if we go by 80 column limit and I won't prefer that,
+> > > sorry!
+> > 
+> > Please read the above quote again, it is as clear as it gets. 80 chars
+> > is the preferred limit unless (for code) exceeding it *significantly*
+> 
+> Where does it say "code" in the Documentation? As I read it, the doc weighs both
+> code and comment as "statement".
 
-> 
-> > [root@~ linux]# COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang ~/bin/make.cross W=1 O=build_dir ARCH=hexagon olddefconfig
-> > Compiler will be installed in /root/0day
-> > lftpget -c https://cdn.kernel.org/pub/tools/llvm/files/
-> > get1: /pub/tools/llvm/files/: files/: Is a directory
-> > Failed to download https://cdn.kernel.org/pub/tools/llvm/files/
-> > clang crosstool install failed
-> > Install clang compiler failed
-> > setup_crosstool failed
-> 
-> 
+No, comments are not statements (in C).
 
+You'd also never even consider interpreting it that way if you knew
+where that exception comes from (namely that people break long
+*statements* just to fit under 80 chars, thereby sometimes making the
+*code* unnecessarily hard to read).
+
+> And how on the world that breaking a single word to the next line improves
+> readability? I fail to get it :/
+
+You got it backwards; you should only go *beyond* 80 chars if it
+"significantly increases readability".
+
+But again, this does NOT apply to comments in the first place.
+
+> > increases readability, which clearly isn't the case here (even if this
+> > exception applied to comments).
+> > 
+> > I really don't understand why you keep insisting on this. Just fix your
+> > editor.
+
+> But I do not want to get into a spat here. Checkpatch, the tool supposed to
+> check for the kernel coding style is not complaining and I do not want a patch
+> that _fixes_ a coding style that is not an issue.
+
+Checkpatch is just a tool, not the standard, and knowing when it is ok
+to break the 80 column rule for code requires human judgement.
+
+Johan
