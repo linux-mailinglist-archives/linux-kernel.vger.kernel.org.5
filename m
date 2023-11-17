@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D41A7EF06C
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:30:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02AE7EF074
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345922AbjKQKa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:30:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59854 "EHLO
+        id S1345734AbjKQKbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:31:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50338 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345924AbjKQKaz (ORCPT
+        with ESMTP id S1345869AbjKQKbU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:30:55 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB2BD6A
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:30:50 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id 2adb3069b0e04-5094727fa67so2583720e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:30:50 -0800 (PST)
+        Fri, 17 Nov 2023 05:31:20 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F05210F4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:14 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id 4fb4d7f45d1cf-53e08e439c7so2628826a12.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:31:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700217049; x=1700821849; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=linaro.org; s=google; t=1700217073; x=1700821873; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=wc+G2BXYXEPt9fQTDN8l2bnR2Ld4/4FL6ZOxBvBX3jM=;
-        b=WcMGIUoNBI418br/H9qyQN6W8kLCKXnqcIEDbMqNOezO6PgiBBuzZGZH2IlxFOe6+p
-         twN03RLdrKQDfuPADl6hzcU1QbCv+ABdwsh00tX6VO2gCNVMHOTsvUV1gkchdi25k/Z9
-         V/4fhel3uSsthujgIbe25WgBdCM8gXbETFHc1YjXFibT1vJuUH0zUfXyjqToX/7xY7el
-         fJ32gUpWqXp2VT6DR9XBudh1edGNZaBkxxa02EQBwrw6mvekh9MIJbpWMTcoa5ORaWCE
-         /B8g1f68juXoyZWs+SAahu2//BFBgyppZhMl6HP9+MepF7l+B22T4A8btw05lFeBva/O
-         yfog==
+        bh=m8hqxAEu5F8fIoBRR/eQ2vaQTLBlxxChgjeDIF/8l7M=;
+        b=j5kmtH5B355LcrySdHQJWxcP5GIX75UgoiQrp6j5Hq4XBXRY0bhcv3jmZaSNVbhXnR
+         lTZoC7fdBxq0/9nfvtheeURgN2ONxdmJMSCzwmDfRY7YuuOLtGrbW/ekfC5LrI0I84iF
+         66skqsaNPE1SPH5rJcOwZRarvyFq8g3+dvFoeWxveVW/yjflwrlSUoWMt4YfuZHV9byR
+         wih+E7a0wkLbYypRaS1aLS8nhVHIVjluWiewlkMUpSQ2fkLhmwWc2XLiCG/NZGCZnxfo
+         hv6Pimrjj5UOzbo+bBEoSnooJBqaWXdm6S7OhXDgf2MSHXQRgD5oMm/b8RRzTLfvU4Qo
+         T+VQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700217049; x=1700821849;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1700217073; x=1700821873;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wc+G2BXYXEPt9fQTDN8l2bnR2Ld4/4FL6ZOxBvBX3jM=;
-        b=WvAtC4ahZjwh84/5IaK1j0cFwW1cpcnBAX/SB8WrdK6FU2XOaZrMsNhHOxOdovUG7N
-         VT8KSSLpeLycNNMiX6jm30DlPmQXon/VGNsiLshgS6ZITqQAuRN9TxEwKntSZBp+2+L3
-         7U8gP38k/TV28CEnOj0ewPDOoMPsrrG9Ct00NH02imkCEq86DIGQk8NhfXGQBju+Mp4B
-         NbeKwG/j104MM2CGR3r+QdVBKWq2XPDyWoAqa9osnDAuB3buH9dAc8HDFcfx8qifxACd
-         PTFBFkDxVHAD80LKg+5DCnAXdb1IxLufX9CK1bMvm5kRn3KCWTApmLQM+kQ97zAY5NmS
-         rueg==
-X-Gm-Message-State: AOJu0YzE2A2QzR9XPpyBCUh+3a1UDXwz94AoLXE8Cq9Cw26DBHsnnFtF
-        58LVheUuHwQ7vTS7I+1yKBmDcw==
-X-Google-Smtp-Source: AGHT+IF8EgoN+6Ul76S0+HqO+Ku3iKGOfRbkNAN8caHPSacEHxyf71UwWQIUrpjmlQJxFh4HabLQrg==
-X-Received: by 2002:a05:6512:1381:b0:507:98d0:bec4 with SMTP id fc1-20020a056512138100b0050798d0bec4mr5062456lfb.54.1700217048809;
-        Fri, 17 Nov 2023 02:30:48 -0800 (PST)
-Received: from ?IPV6:2001:14ba:a0db:1f00::8a5? (dzdqv0yyyyyyyyyyybcwt-3.rev.dnainternet.fi. [2001:14ba:a0db:1f00::8a5])
-        by smtp.gmail.com with ESMTPSA id f16-20020a19ae10000000b005041a71237asm182106lfc.111.2023.11.17.02.30.47
+        bh=m8hqxAEu5F8fIoBRR/eQ2vaQTLBlxxChgjeDIF/8l7M=;
+        b=Pdc6y71v4QK3X4Y68aZV3WhqJSLQeiPGPM4JMu4TIaVoR+Xmn196caC3reyLh+axNI
+         u/L9viachKm2TXT+XhmeIGFPG3G3kOE9qifjhovos5RQVCY5qS8Bc9XpUHWg4CwPzDQX
+         +0tQqi+b57ZQzQ01vtAKDJEF235jw8DaeZxugeK2rVR8maXnhYsRSZgkwbvp0aJtNPXd
+         7gUyaoLaKE9oIUMXEWibvWx4ZhrLR6NQKqhMRA9Kg+/uhtQh2hYsvcPQwe/YqeTtnC2A
+         veA8sPYmDffzNqlEPzTC7iQy/BVOk4v6JzZZFE0EGkEZElSBowZIrKkmwDfqy8h5s1fa
+         6kdQ==
+X-Gm-Message-State: AOJu0YxxEQmfpz7+chHgKl0ry3LtIH9EYxtgGhsiHk3/Ve3+d4uTFnIq
+        Fy3ppnHc5QBKUQ4eOqDQ4WsGAQ==
+X-Google-Smtp-Source: AGHT+IH29pfLiuFWQ6k4n8Xq1FCwMT8LRxCcgJytX3tR1GnQgP4HmXjdZa5o6ubgwLEc5wSionjCcw==
+X-Received: by 2002:a05:6402:348c:b0:547:9ebd:c0ab with SMTP id v12-20020a056402348c00b005479ebdc0abmr9505081edc.13.1700217072889;
+        Fri, 17 Nov 2023 02:31:12 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id v27-20020aa7cd5b000000b0053e43492ef1sm567026edw.65.2023.11.17.02.31.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 02:30:48 -0800 (PST)
-Message-ID: <a1672479-ca5f-4d96-8583-014d3adfc37c@linaro.org>
-Date:   Fri, 17 Nov 2023 12:30:47 +0200
+        Fri, 17 Nov 2023 02:31:11 -0800 (PST)
+Message-ID: <3e013534-f6c6-48e9-9cfa-82055fe04f7a@linaro.org>
+Date:   Fri, 17 Nov 2023 11:31:10 +0100
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/16] arm64: dts: qcom: sm8550-aim300: add display and
- panel
-Content-Language: en-GB
+Subject: Re: [PATCH 08/16] arm64: dts: qcom: sm8550-aim300: add WCD9385
+ audio-codec
+Content-Language: en-US
 To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
         andersson@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
         krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -64,13 +64,57 @@ To:     Tengfei Fan <quic_tengfan@quicinc.com>, agross@kernel.org,
 Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, -cc=kernel@quicinc.com
 References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
- <20231117101817.4401-11-quic_tengfan@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-In-Reply-To: <20231117101817.4401-11-quic_tengfan@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <20231117101817.4401-9-quic_tengfan@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231117101817.4401-9-quic_tengfan@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -79,106 +123,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2023 12:18, Tengfei Fan wrote:
-> Enable Display Subsystem with Visionox VTDR6130 Panel.
+On 17/11/2023 11:18, Tengfei Fan wrote:
+> Add Qualcomm Aqstic WCD9385 audio codec on two Soundwire interfaces: RX
+> and TX.
 > 
 > Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
-> ---
->   arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 68 ++++++++++++++++++++++
->   1 file changed, 68 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> index cafddc02aef0..9b568ae9581e 100644
-> --- a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> +++ b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
-> @@ -432,6 +432,46 @@
->   		 <&usb_dp_qmpphy QMP_USB43DP_USB3_PIPE_CLK>;
->   };
->   
-> +&mdss {
-> +	status = "okay";
-> +};
-> +
-> +&mdss_dsi0 {
-> +	vdda-supply = <&vreg_l3e_1p2>;
-> +	status = "okay";
-> +
-> +	panel@0 {
-> +		compatible = "visionox,vtdr6130";
-> +		reg = <0>;
-> +
-> +		pinctrl-0 = <&sde_dsi_active>, <&sde_te_active>;
-> +		pinctrl-1 = <&sde_dsi_suspend>, <&sde_te_suspend>;
-> +		pinctrl-names = "default", "sleep";
-> +
-> +		reset-gpios = <&tlmm 133 GPIO_ACTIVE_LOW>;
-> +
-> +		vci-supply = <&vreg_l13b_3p0>;
-> +		vdd-supply = <&vreg_l11b_1p2>;
-> +		vddio-supply = <&vreg_l12b_1p8>;
-> +
-> +		port {
-> +			panel0_in: endpoint {
-> +				remote-endpoint = <&mdss_dsi0_out>;
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&mdss_dsi0_out {
-> +	remote-endpoint = <&panel0_in>;
-> +	data-lanes = <0 1 2 3>;
-> +};
-> +
-> +&mdss_dsi0_phy {
-> +	vdds-supply = <&vreg_l1e_0p88>;
-> +	status = "okay";
-> +};
-> +
->   &pcie_1_phy_aux_clk {
->   	status = "disabled";
->   };
-> @@ -533,6 +573,34 @@
->   &tlmm {
->   	gpio-reserved-ranges = <32 8>;
->   
-> +	sde_dsi_active: sde-dsi-active-state {
 
-sde is the name from the other kernel branch. Drop it please. Just 'dsi' 
-is enough.
+You just added this board. Does it mean you added incomplete and wrong DTS?
 
-> +		pins = "gpio133";
-> +		function = "gpio";
-> +		drive-strength = <8>;
-> +		bias-disable;
-> +	};
-> +
-> +	sde_dsi_suspend: sde-dsi-suspend-state {
-> +		pins = "gpio133";
-> +		function = "gpio";
-> +		drive-strength = <2>;
-> +		bias-pull-down;
-> +	};
-> +
-> +	sde_te_active: sde-te-active-state {
-> +		pins = "gpio86";
-> +		function = "mdp_vsync";
-> +		drive-strength = <2>;
-> +		bias-pull-down;
-> +	};
-> +
-> +	sde_te_suspend: sde-te-suspend-state {
-> +		pins = "gpio86";
-> +		function = "mdp_vsync";
-> +		drive-strength = <2>;
-> +		bias-pull-down;
-> +	};
-> +
->   	wcd_default: wcd-reset-n-active-state {
->   		pins = "gpio108";
->   		function = "gpio";
-
--- 
-With best wishes
-Dmitry
+Best regards,
+Krzysztof
 
