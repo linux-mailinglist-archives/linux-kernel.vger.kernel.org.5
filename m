@@ -2,176 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 691627EEAAD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:25:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7006D7EEAAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:27:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233460AbjKQBZo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 20:25:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56474 "EHLO
+        id S230018AbjKQB13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 20:27:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229884AbjKQBZn (ORCPT
+        with ESMTP id S229790AbjKQB11 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 20:25:43 -0500
-Received: from mail-oa1-x2f.google.com (mail-oa1-x2f.google.com [IPv6:2001:4860:4864:20::2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45442182;
-        Thu, 16 Nov 2023 17:25:40 -0800 (PST)
-Received: by mail-oa1-x2f.google.com with SMTP id 586e51a60fabf-1f4a9dd83d6so803979fac.0;
-        Thu, 16 Nov 2023 17:25:40 -0800 (PST)
+        Thu, 16 Nov 2023 20:27:27 -0500
+Received: from mail-oa1-x32.google.com (mail-oa1-x32.google.com [IPv6:2001:4860:4864:20::32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0004C129
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:27:20 -0800 (PST)
+Received: by mail-oa1-x32.google.com with SMTP id 586e51a60fabf-1f573a9ed69so795431fac.1
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:27:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700184339; x=1700789139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=WKeX8QHzT5xr6BXfBhXLId9dWsY3VlMa6hhbkyDTa9o=;
-        b=nOvio6L2skNxTMIxeD1zD0ukEfhjiZ8WgEUp2H4meuuWmwRMwv4fWjrqpaaYEProZd
-         yH2HTAuzZpLAX6IOrTzJkPNPfCwc+P5G981Mx+yXgelLVF5vk3Hy6/FbqfUrRcOU1lP4
-         I0cGMzW7CqmjXNC94phoUY5wyb0DTrF/aZvoDh+BtOd2k6OE2NYUFndGg/TDFV5T38sW
-         DpdP+yYI88mKpGJjc96UqdP0f2e9kWQyU+YPhSDLmA3KGB+IGEoVdhZckmzIn3jucXHD
-         jBmAtpvCzyh9iBXsl6zj+K7Q2qkXH8NMPfkaNqRSnD1v/5q2XsjJIEMxb1iDYehDrMyk
-         vd8Q==
+        d=mojatatu-com.20230601.gappssmtp.com; s=20230601; t=1700184440; x=1700789240; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=aKf/LZV/kvSMDigtlOXJdd990tp8RAjm519fFm7u9Sc=;
+        b=XvbhMbyotVUY7kSB4pm2wrtlQnw9iGsTbTgHT3tu92ZOA8QmwwlgRVtV1DBB2IAHll
+         tnMHrs7fck9cNJB7ePEo7xvAnsiQMHQFAUN3njz+CwTd2uYfMAuxTvOJHfKE/elR7VNU
+         caJD7CN+zD8uFSJolo8EPV6/4E63D49upO7l1bHy9+AkUQ6wR3x24gOuVwTS61yjt4aE
+         EKPaz7pMnghMLvJ68YHHr+rhelx2y6O0JIZKnsjiwJU8PLl+ZtkrFtUNBrHfi8K+A20i
+         3h099f7fexEaKe5jORKvYM+sR2c2ZHO8H/3juip2p42lXhAq4IQcg51yJDdfuRRD7r/v
+         G1tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700184339; x=1700789139;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=WKeX8QHzT5xr6BXfBhXLId9dWsY3VlMa6hhbkyDTa9o=;
-        b=M4xlbGdHu5DSp0lVkxjn4Xb7kHQ4QSLvvgPWOfgke3q1s1Vn6gahbhrIH6MbwdVCRG
-         j3e/2/80ZzwZydj3ypP7KJs4pXHrpTaUwXdqtMLd1A7urfFWcjHNe+QVXTVtNAFnNcEc
-         rbQyGU3cNv0c74Gxe9Vrf9e8M1dbFpNGPIPBNCrHi/3xpl5q0wEaQvHNms3tKexn8yWA
-         Q5iHPuvxbv47klsygm0Bc8rQDoMtqG0Fsn3fY6UUKVarqexJ7SrlUnAVeWyN3psqsgzx
-         KKWtm0aBwX+iG0KKU/KAmw/0+rRFcetT1wCzFebx81ZysQvZXWxFmRNa3Y1JHwZP3Y3N
-         w4PQ==
-X-Gm-Message-State: AOJu0YzLCb9RrYjrZSP69/ywMTnfmfJ4Ri1KG3PENWK7Hyeya8lfepgG
-        U2YbhYjoW5il2J1V11s3rEA=
-X-Google-Smtp-Source: AGHT+IHVZfCoY6DZrNPuUIFzCQwR0gnLkJlylOsH1iukFRXnRgKhgIut3+ChVZhxhNZMkjhkJjjmrw==
-X-Received: by 2002:a05:6870:9d0e:b0:1ea:3f79:defb with SMTP id pp14-20020a0568709d0e00b001ea3f79defbmr20013084oab.52.1700184339500;
-        Thu, 16 Nov 2023 17:25:39 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l187-20020a6325c4000000b0058ee60f8e4dsm337961pgl.34.2023.11.16.17.25.38
+        d=1e100.net; s=20230601; t=1700184440; x=1700789240;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:from:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aKf/LZV/kvSMDigtlOXJdd990tp8RAjm519fFm7u9Sc=;
+        b=Zh9JOC6o+ByEmtjzLoXt34tDUOpQgg0abqi+bHxdsRZsuqoXWE3zKchBHf4n/VdJHt
+         bR5ZQZfm8c7PZROXyCwJW/p6Bq0YCtVOidnGvYCT1+2vQQF1ffqSC50N/wcErgnK/WEU
+         CHUF/KB0KOfISO2F9J0EJMqhAs8upotvP7Q31yLGmzG4k+pX8s9w8B05/A5NsbciwHfD
+         qARo++ImeHs+oqAGVJpha5YAWGBxcdv2vIryyFat/+tpIt31FpJHOF4aRKUBRjezEBva
+         71p1P88LMaDDSrqLqbakFV/aWbXehmEcOc3hnMSGUhb5eK1GCMJ0tH9bJviaDYoM5hhH
+         FTrg==
+X-Gm-Message-State: AOJu0YxoVtAKQbZcbkNoOcZTDgavAVcHcY02+18kxAREnP0BK7IogJye
+        avXo4xbOwaLkrMOwTclGkefs8g==
+X-Google-Smtp-Source: AGHT+IHe+gWJw0AKxuVcbBIXwt32o0SzEtp1hkMypo+gLCWDCnHgrd9UcktssVj7AN6A8lUEGQalJA==
+X-Received: by 2002:a05:6870:d210:b0:1f0:630c:a58a with SMTP id g16-20020a056870d21000b001f0630ca58amr21197727oac.51.1700184440236;
+        Thu, 16 Nov 2023 17:27:20 -0800 (PST)
+Received: from ?IPV6:2804:14d:5c5e:44fb:7741:c354:44be:5c3f? ([2804:14d:5c5e:44fb:7741:c354:44be:5c3f])
+        by smtp.gmail.com with ESMTPSA id y19-20020a056a00191300b0069ee4242f89sm372131pfi.13.2023.11.16.17.27.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 17:25:39 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <e23be029-25b5-4bfc-a5b9-60eda0c214b6@roeck-us.net>
-Date:   Thu, 16 Nov 2023 17:25:37 -0800
+        Thu, 16 Nov 2023 17:27:19 -0800 (PST)
+Message-ID: <8c0bc61e-c0f1-49d8-8696-812c336fb74b@mojatatu.com>
+Date:   Thu, 16 Nov 2023 22:27:15 -0300
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5.10 000/191] 5.10.201-rc1 review
+Subject: Re: [linus:master] [selftests/tc] d227cc0b1e:
+ kernel-selftests.tc-testing.tdc.sh.fail
+From:   Pedro Tammela <pctammela@mojatatu.com>
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     oe-lkp@lists.linux.dev, lkp@intel.com,
+        linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+        Davide Caratti <dcaratti@redhat.com>,
+        Jamal Hadi Salim <jhs@mojatatu.com>, netdev@vger.kernel.org
+References: <202311161129.3b45ed53-oliver.sang@intel.com>
+ <f9f772dd-5708-4823-9a7f-20ae8536b5e5@mojatatu.com>
 Content-Language: en-US
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org
-Cc:     patches@lists.linux.dev, linux-kernel@vger.kernel.org,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-        srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org
-References: <20231115204644.490636297@linuxfoundation.org>
-From:   Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20231115204644.490636297@linuxfoundation.org>
+In-Reply-To: <f9f772dd-5708-4823-9a7f-20ae8536b5e5@mojatatu.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.3 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=no autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/23 12:44, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.201 release.
-> There are 191 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On 16/11/2023 11:16, Pedro Tammela wrote:
+> On 16/11/2023 03:42, kernel test robot wrote:
+>> [...]
 > 
-> Responses should be made by Fri, 17 Nov 2023 20:46:03 +0000.
-> Anything received after that time might be too late.
+> Hi!
+> Thanks for the report.
+> I'm trying to address this issue and others in this series:
+> [PATCH net-next 0/4] selftests: tc-testing: updates to tdc
 > 
+> I have seen this timeout in other CIs as well, but I cannot reproduce 
+> locally, even with the CI build running on my laptop. I did notice in my 
+> local tests that KVM is a big factor for test completion, so it begs the 
+> question, is it running on a KVM enabled instance?
+> 
+> If there's any document describing the runner instances I would be 
+> interested too.
 
-Build results:
-	total: 159 pass: 154 fail: 5
-Failed builds:
-	arm:allmodconfig
-	arm64:allmodconfig
-	i386:tools/perf
-	x86_64:allyesconfig
-	x86_64:tools/perf
-Qemu test results:
-	total: 495 pass: 495 fail: 0
-
-with:
-
-Building arm64:allmodconfig ... failed
---------------
-Error log:
-drivers/interconnect/qcom/osm-l3.c:6:10: fatal error: linux/args.h: No such file or directory
-
-There is no linux/args.h in v5.10.y.
-
-Caused by "interconnect: qcom: osm-l3: Replace custom implementation of COUNT_ARGS()".
-
-Also:
-
-Building i386:tools/perf ... failed
-
-util/evlist.c: In function ‘evlist__add_aux_dummy’:
-util/evlist.c:269:24: error: implicit declaration of function ‘evlist__dummy_event’; did you mean ‘evsel__is_dummy_event’? [-Werror=implicit-function-declaration]
-   269 |  struct evsel *evsel = evlist__dummy_event(evlist);
-       |                        ^~~~~~~~~~~~~~~~~~~
-       |                        evsel__is_dummy_event
-util/evlist.c:269:24: error: initialization of ‘struct evsel *’ from ‘int’ makes pointer from integer without a cast
-
-There is indeed no 'evlist__dummy_event' function in v5.10.y.
-
-This is with v5.10.200-192-g550b7e1fee20. I am a bit puzzled why others
-don't seem to see those problems.
-
-Guenter
-
+OK, I was finally able to reproduce the timeout.
+I have some fixes prepared, will post them tomorrow after more testing!
