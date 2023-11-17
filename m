@@ -2,53 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id D13A97EECF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:48:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 595627EECFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:49:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230154AbjKQHs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:48:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45852 "EHLO
+        id S230416AbjKQHtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:49:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQHs0 (ORCPT
+        with ESMTP id S229952AbjKQHtm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:48:26 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACA59D4D
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 23:48:23 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5431EC433C8;
-        Fri, 17 Nov 2023 07:48:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700207303;
-        bh=ukM1FaZyX2KkvDHmJF4BJ4FC+i2tJ29lL0pzGMHUfQk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=J9JVd9eWOdz4JY2OJv1s6OK5arnsvJclV8598sR1djt5tvPp/1IsSO6yf2/Kk5GsW
-         lQ485Rfl4VzCtP6SZiYQQp9r7xIW15o1WYWFdIHdjm1ou7r2maduV/+IBVxyNaYMT+
-         jhZ6E9312O+fhmgOQesynrkwxot5Q2zRAYBp1H8iOGB+Q8BhUFJqGHiCmL3KcihfLM
-         LamLl/6KSkrV1etAE7pW/vsltr6kuL5GwYRvTTH/ON11Q/uEp9mTLCQ99hth8gO2Z/
-         HEI1mxxmH/s5fJFlr47KKg257+e1AKePcowTyf6zrz/lNq1OtQEMOSPsaidkI9vJvS
-         py2eLnO+fIm9A==
-Date:   Fri, 17 Nov 2023 13:18:16 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Kory Maincent <kory.maincent@bootlin.com>
-Cc:     Manivannan Sadhasivam <mani@kernel.org>,
-        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-        Serge Semin <fancer.lancer@gmail.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Cai Huoqing <cai.huoqing@linux.dev>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Herve Codina <herve.codina@bootlin.com>
-Subject: Re: [PATCH v5 2/6] dmaengine: dw-edma: Fix wrong interrupt bit set
-Message-ID: <20231117074816.GB10361@thinkpad>
-References: <20231114-b4-feature_hdma_mainline-v5-0-7bc86d83c6f7@bootlin.com>
- <20231114-b4-feature_hdma_mainline-v5-2-7bc86d83c6f7@bootlin.com>
+        Fri, 17 Nov 2023 02:49:42 -0500
+Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F314D52;
+        Thu, 16 Nov 2023 23:49:37 -0800 (PST)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 9C5A418687BF;
+        Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id gby14e2W0CAp; Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by mail.astralinux.ru (Postfix) with ESMTP id 504581868DBC;
+        Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
+X-Virus-Scanned: amavisd-new at astralinux.ru
+Received: from mail.astralinux.ru ([127.0.0.1])
+        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id EVOAij3UbOAZ; Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
+Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.232.129])
+        by mail.astralinux.ru (Postfix) with ESMTPSA id 1C00D18687BF;
+        Fri, 17 Nov 2023 10:49:31 +0300 (MSK)
+From:   Alexandra Diupina <adiupina@astralinux.ru>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
+        Cristian Marussi <cristian.marussi@arm.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
+Subject: [PATCH] cpufreq: scmi: process the result of devm_of_clk_add_hw_provider()
+Date:   Fri, 17 Nov 2023 10:49:11 +0300
+Message-Id: <20231117074911.14427-1-adiupina@astralinux.ru>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231114-b4-feature_hdma_mainline-v5-2-7bc86d83c6f7@bootlin.com>
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -57,57 +54,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 03:51:55PM +0100, Kory Maincent wrote:
+devm_of_clk_add_hw_provider() may return an errno, so
+add a return value check
 
-Subject should reflect HDMA:
+Found by Linux Verification Center (linuxtesting.org) with SVACE.
 
-"dmaengine: dw-edma: Fix wrong interrupt bit set for HDMA"
+Fixes: 8410e7f3b31e ("cpufreq: scmi: Fix OPP addition failure with a dumm=
+y clock provider")
+Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+---
+ drivers/cpufreq/scmi-cpufreq.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-> Fix "HDMA_V0_LOCAL_STOP_INT_EN" to "HDMA_V0_LOCAL_ABORT_INT_EN" as the STOP
-> bit is already set in the same line.
-> 
+diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufre=
+q.c
+index c8a7ccc42c16..4037945663bf 100644
+--- a/drivers/cpufreq/scmi-cpufreq.c
++++ b/drivers/cpufreq/scmi-cpufreq.c
+@@ -334,8 +334,13 @@ static int scmi_cpufreq_probe(struct scmi_device *sd=
+ev)
+=20
+ #ifdef CONFIG_COMMON_CLK
+ 	/* dummy clock provider as needed by OPP if clocks property is used */
+-	if (of_property_present(dev->of_node, "#clock-cells"))
+-		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
++	if (of_property_present(dev->of_node, "#clock-cells")) {
++		ret =3D devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
++		if (ret) {
++			dev_err(dev, "%s: registering clock provider failed, err: %d\n",
++				__func__, ret);
++		}
++	}
+ #endif
+=20
+ 	ret =3D cpufreq_register_driver(&scmi_cpufreq_driver);
+--=20
+2.30.2
 
-How about:
-
-"Instead of setting HDMA_V0_LOCAL_ABORT_INT_EN bit, HDMA_V0_LOCAL_STOP_INT_EN
-bit got set twice, due to which the abort interrupt is not getting generated for
-HDMA. Fix it by setting the correct interrupt enable bit."
-
-> Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
-> Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
-
-With the above changes,
-
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-- Mani
-
-> Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
-> ---
-> 
-> Changes in v3:
-> - Split the patch in two to differ bug fix and simple harmless typo.
-> ---
->  drivers/dma/dw-edma/dw-hdma-v0-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> index 1f4cb7db5475..108f9127aaaa 100644
-> --- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> +++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-> @@ -236,7 +236,7 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
->  		/* Interrupt enable&unmask - done, abort */
->  		tmp = GET_CH_32(dw, chan->dir, chan->id, int_setup) |
->  		      HDMA_V0_STOP_INT_MASK | HDMA_V0_ABORT_INT_MASK |
-> -		      HDMA_V0_LOCAL_STOP_INT_EN | HDMA_V0_LOCAL_STOP_INT_EN;
-> +		      HDMA_V0_LOCAL_STOP_INT_EN | HDMA_V0_LOCAL_ABORT_INT_EN;
->  		SET_CH_32(dw, chan->dir, chan->id, int_setup, tmp);
->  		/* Channel control */
->  		SET_CH_32(dw, chan->dir, chan->id, control1, HDMA_V0_LINKLIST_EN);
-> 
-> -- 
-> 2.25.1
-> 
-
--- 
-மணிவண்ணன் சதாசிவம்
