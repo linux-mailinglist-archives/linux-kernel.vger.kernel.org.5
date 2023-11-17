@@ -2,84 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 520187EEF90
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:00:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E287C7EEFB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:04:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345765AbjKQKAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:00:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51242 "EHLO
+        id S1345810AbjKQKEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:04:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQKAQ (ORCPT
+        with ESMTP id S1345861AbjKQKEX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:00:16 -0500
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C53284;
-        Fri, 17 Nov 2023 02:00:13 -0800 (PST)
-Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
-        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9KDIL002157;
-        Fri, 17 Nov 2023 09:59:59 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=qcppdkim1;
- bh=q3iC62ynP/mZpKHk8fWgTSo66zEj7Zi2/0wjFcoZTGQ=;
- b=AyVKdcVov8hJCEoszwR2yzPg3FtYQpFAdLCOUa7IkkAHIW3yLfu/cIFgnXe3kisPG/C8
- HN/xE3WgmimYrTZERjSsijSfrXapuGaJ63qIH2VmgysX59q0O2CRzDOLoVA42l2OFayr
- nGbMKGoa4zWinQUTgJFC9IOQegFjvaYkIB6dKQluAmVsSKABJT8ylxHD3sutd45uoK4F
- Snd9P7WBL1JKyZoNk3QcIUa5tf4RfBcBUGUGP3NDHNazMwv09Fu1WbDLiaDxq8Z1+V9X
- jPCgEO3FWKlEIKDzZeDnTtIXv3gjyM3GwJ4TtJ+ADkrTvRcUrnxOEtFYZeFERAFJY3/8 1A== 
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue5exr2hq-1
+        Fri, 17 Nov 2023 05:04:23 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59283194;
+        Fri, 17 Nov 2023 02:04:16 -0800 (PST)
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9Qdc8009283;
+        Fri, 17 Nov 2023 10:03:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=qcppdkim1;
+ bh=DhkJnR22Jop4i2vHDhl5q1CKNIHtvIzQcFATKsxapzk=;
+ b=XbbngjzR/GasnWiBpR6iA3hOUNgMPDZYP01zZ6vS0JkAVWksrAqw3xXIGCYnNks0QYZz
+ usWp74Boqxfy+MrHgkhAYyE8a+0CJxq6aCMu0w8lFgn+h0gKmAdtoIZvgSqLzT23znia
+ og2YDc6zZ7AZPaQL66Duwv3b54AGaTTrLTd6xiX3YNk/3GIq6dPPunP6+iQ79m+AoyKd
+ +YGKOTLr01d3Fa1FZHAhTRWhvr7Qb7nkZQz1ldgd+jrk1Rooo3uXSml95x501W694pCO
+ vBv9EcqexhzkWtdGQwoMrOs0BLAcgfny0GgMGCZjF2CO4oiKlX2NjumabqKBi9bXsMYa VQ== 
+Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3ue2na0g2t-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:59:59 +0000
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-        by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AH9xvmZ009296
+        Fri, 17 Nov 2023 10:03:57 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHA3uIm012999
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 17 Nov 2023 09:59:57 GMT
-Received: from [10.253.8.81] (10.80.80.8) by nalasex01c.na.qualcomm.com
- (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
- 2023 01:59:53 -0800
-Message-ID: <7e856fc9-25c7-489f-8a42-759ed126ae68@quicinc.com>
-Date:   Fri, 17 Nov 2023 17:59:51 +0800
+        Fri, 17 Nov 2023 10:03:56 GMT
+Received: from hu-jasksing-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 17 Nov 2023 02:03:51 -0800
+From:   Jaskaran Singh <quic_jasksing@quicinc.com>
+To:     <sumit.semwal@linaro.org>, <benjamin.gaignard@collabora.com>,
+        <Brian.Starkey@arm.com>, <jstultz@google.com>,
+        <tjmercier@google.com>, <christian.koenig@amd.com>,
+        <matthias.bgg@gmail.com>, <angelogioacchino.delregno@collabora.com>
+CC:     <linux-media@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <linaro-mm-sig@lists.linaro.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <quic_vjitta@quicinc.com>
+Subject: [PATCH v2] dma-buf: heaps: Introduce cma_heap_add() for non-default CMA heap
+Date:   Fri, 17 Nov 2023 15:33:37 +0530
+Message-ID: <20231117100337.5215-1-quic_jasksing@quicinc.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/9] net: mdio: ipq4019: Enable GPIO reset for ipq5332
- platform
-Content-Language: en-US
-To:     Andrew Lunn <andrew@lunn.ch>
-CC:     <agross@kernel.org>, <andersson@kernel.org>,
-        <konrad.dybcio@linaro.org>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
-        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <robert.marko@sartura.hr>,
-        <linux-arm-msm@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <quic_srichara@quicinc.com>
-References: <20231115032515.4249-1-quic_luoj@quicinc.com>
- <20231115032515.4249-4-quic_luoj@quicinc.com>
- <e740a206-37af-49b1-a6b6-baa3c99165c0@lunn.ch>
- <33246b49-2579-4889-9fcb-babec5003a88@quicinc.com>
- <dd2c3cfa-f7ee-4abb-9eff-2aac04fa914f@lunn.ch>
-From:   Jie Luo <quic_luoj@quicinc.com>
-In-Reply-To: <dd2c3cfa-f7ee-4abb-9eff-2aac04fa914f@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: M_yXy1nGjp7G9GwYZKFTPx6kEDNQjrct
-X-Proofpoint-ORIG-GUID: M_yXy1nGjp7G9GwYZKFTPx6kEDNQjrct
+X-Proofpoint-GUID: 5Mjj9yaE5YbLk6qMKCFvI8mWREOm329-
+X-Proofpoint-ORIG-GUID: 5Mjj9yaE5YbLk6qMKCFvI8mWREOm329-
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 phishscore=0 malwarescore=0 adultscore=0
- priorityscore=1501 clxscore=1015 lowpriorityscore=0 spamscore=0
- mlxlogscore=774 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2311170073
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0
+ priorityscore=1501 malwarescore=0 mlxscore=0 lowpriorityscore=0
+ mlxlogscore=627 phishscore=0 suspectscore=0 clxscore=1011 adultscore=0
+ impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311170074
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
@@ -90,24 +78,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
 
+Currently dma-buf heaps can handle only default CMA. This exposes
+__add_cma_heap(), renamed to cma_heap_add(), as a public API to
+initialize CMA heaps from a pointer to a CMA region.
 
-On 11/17/2023 1:20 AM, Andrew Lunn wrote:
->> FYI, here is the sequence to bring up qca8084.
->> a. enable clock output to qca8084.
->> b. do gpio reset of qca8084.
->> c. customize MDIO address and initialization configurations.
->> d. the PHY ID can be acquired.
-> 
-> This all sounds like it is specific to the qca8084, so it should be in
-> the driver for the qca8084.
-> 
-> Its been pointed out you can get the driver to load by using the PHY
-> ID in the compatible. You want the SoC clock driver to export a CCF
-> clock, which the PHY driver can use. The PHY driver should also be
-> able to get the GPIO. So i think the PHY driver can do all this.
-> 
->       Andrew
+At first, the driver calls of_reserved_mem_device_init() to set
+memory-region property associated with reserved-memory defined as CMA
+to the device. And when the driver calls this cma_heap_add() with the
+struct cma attached to the device, the CMA will be added to dma-buf
+heaps.
 
-Yes, Andrew, that is feasible, i will update the patches to move the
-initialized clock configs in the PHY probe function.
+For example, prepare CMA node named "linux,cma@10000000" and
+specify the node for memory-region property. After the above calls
+in the driver, a device file "/dev/dma_heap/linux,cma@10000000"
+associated with the CMA become available as dma-buf heaps.
+
+Signed-off-by: Kunihiko Hayashi <hayashi.kunihiko@socionext.com>
+[quic_jasksing@quicinc.com: Use struct cma as the function argument]
+Signed-off-by: Jaskaran Singh <quic_jasksing@quicinc.com>
+---
+Reviving this patch as per discussions on the MediaTek Secure Heap patch
+series[1]. There is now a potential client of the cma_heap_add() API.
+
+An unaddressed problem in this patch is the proper parsing of heap
+names. Naming convention for fixed address heaps in the devicetree is of
+the format "[heap name]@[fixed address]", for example
+"audio-heap@88b00000". Exposing heaps this way to userspace could
+prove erroneous as the usecases fulfilled by these heaps are the same
+across individual SoCs. Userspace clients of these heaps might expect a
+more consistent interface. Any feedback on this is appreciated.
+
+Changes v1->v2:
+- Change the function argument for dma_heap_add_cma() from struct
+  device to struct cma as per the discussion on [1].
+- In lieu of the above point, discard dma_heap_add_cma() and instead
+  expose the existing __add_cma_heap() as cma_heap_add().
+- Make minor modifications to the commit message based on the changes in
+  this version. Retain most of the original commit message.
+
+v1: https://lore.kernel.org/lkml/1594948208-4739-1-git-send-email-hayashi.kunihiko@socionext.com/
+
+[1] https://lore.kernel.org/lkml/20230911023038.30649-1-yong.wu@mediatek.com/T/#m5184a1e13767bb656a4a3d9bf5a1fd7450e42eb7
+
+ drivers/dma-buf/heaps/cma_heap.c | 12 ++++++++++--
+ include/linux/dma-heap.h         | 10 ++++++++++
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/dma-buf/heaps/cma_heap.c b/drivers/dma-buf/heaps/cma_heap.c
+index ee899f8e6721..b3bef8206e8b 100644
+--- a/drivers/dma-buf/heaps/cma_heap.c
++++ b/drivers/dma-buf/heaps/cma_heap.c
+@@ -367,7 +367,14 @@ static const struct dma_heap_ops cma_heap_ops = {
+ 	.allocate = cma_heap_allocate,
+ };
+ 
+-static int __add_cma_heap(struct cma *cma, void *data)
++/**
++ * cma_heap_add - adds a CMA heap to dmabuf heaps
++ * @cma:       pointer to the CMA pool to register the heap for
++ * @data:      unused
++ *
++ * Returns 0 on success. Else, returns errno.
++ */
++int cma_heap_add(struct cma *cma, void *data)
+ {
+ 	struct cma_heap *cma_heap;
+ 	struct dma_heap_export_info exp_info;
+@@ -391,6 +398,7 @@ static int __add_cma_heap(struct cma *cma, void *data)
+ 
+ 	return 0;
+ }
++EXPORT_SYMBOL_GPL(cma_heap_add);
+ 
+ static int add_default_cma_heap(void)
+ {
+@@ -398,7 +406,7 @@ static int add_default_cma_heap(void)
+ 	int ret = 0;
+ 
+ 	if (default_cma)
+-		ret = __add_cma_heap(default_cma, NULL);
++		ret = cma_heap_add(default_cma, NULL);
+ 
+ 	return ret;
+ }
+diff --git a/include/linux/dma-heap.h b/include/linux/dma-heap.h
+index 0c05561cad6e..adcd462825a8 100644
+--- a/include/linux/dma-heap.h
++++ b/include/linux/dma-heap.h
+@@ -12,6 +12,7 @@
+ #include <linux/cdev.h>
+ #include <linux/types.h>
+ 
++struct cma;
+ struct dma_heap;
+ 
+ /**
+@@ -65,4 +66,13 @@ const char *dma_heap_get_name(struct dma_heap *heap);
+  */
+ struct dma_heap *dma_heap_add(const struct dma_heap_export_info *exp_info);
+ 
++#ifdef CONFIG_DMABUF_HEAPS_CMA
++int cma_heap_add(struct cma *cma, void *data);
++#else
++static inline int cma_heap_add(struct cma *cma, void *data)
++{
++	return -EINVAL;
++}
++#endif /* CONFIG_DMABUF_HEAPS_CMA */
++
+ #endif /* _DMA_HEAPS_H */
+-- 
+2.17.1
+
