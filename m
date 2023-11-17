@@ -2,91 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F6937EEFF1
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:18:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5297EF020
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:19:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345798AbjKQKSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43262 "EHLO
+        id S1345950AbjKQKT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42856 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345722AbjKQKSk (ORCPT
+        with ESMTP id S1345890AbjKQKTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:18:40 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1DC685;
-        Fri, 17 Nov 2023 02:18:32 -0800 (PST)
-X-UUID: 89447f97b7be4fe2a5abb71fe48af864-20231117
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:8c676f36-530e-4e2c-8dbc-4bdd016b5871,IP:15,
-        URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,AC
-        TION:release,TS:20
-X-CID-INFO: VERSION:1.1.32,REQID:8c676f36-530e-4e2c-8dbc-4bdd016b5871,IP:15,UR
-        L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-        ON:release,TS:20
-X-CID-META: VersionHash:5f78ec9,CLOUDID:0e952d60-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:2311171818217W1R421N,BulkQuantity:0,Recheck:0,SF:19|44|66|38|24|17|1
-        02,TC:nil,Content:0,EDM:5,IP:-2,URL:0,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: 89447f97b7be4fe2a5abb71fe48af864-20231117
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 680025267; Fri, 17 Nov 2023 18:18:18 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     jhs@mojatatu.com, xiyou.wangcong@gmail.com, jiri@resnulli.us,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com
-Cc:     kunwu.chan@hotmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kunwu Chan <chentao@kylinos.cn>
-Subject: [PATCH] net: sched: Fix restricted __be16 degrades to integer
-Date:   Fri, 17 Nov 2023 18:18:15 +0800
-Message-Id: <20231117101815.1867175-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Fri, 17 Nov 2023 05:19:41 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 443A01723;
+        Fri, 17 Nov 2023 02:19:38 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH9SBl8031529;
+        Fri, 17 Nov 2023 10:19:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type; s=qcppdkim1;
+ bh=RsChYDWMkOVrJHQxBZT4p8taBcUGAl8Q1dcX5YppBmE=;
+ b=foUy/ukeocGf+E3YemI2np5BwaisoMcOuqqrhMYhxulgZ6l7/az3qLaNY8sWDVvMhmeq
+ D+8zjCA/HAtx+MlN+brVN7wOeDl0ro9BlmHKTNHUgZsKifsG4byXcR4cMAmfN6daSzsh
+ bQUIewG34ocEJ7tQa31y72zVvNSJWN2d5XT48XZMFvtgbJvW3eCWE6uTEPWIGSMICPDq
+ n4kYUvfm23bID3K3gegRbDJB311Y7fSzTHTSyD4MdBON/+XIp89U6Z5LOsRXpTx3GtMh
+ ci7ACENGNptjKkEAPyE37MDAUKNYM+d3H6bBEYWsJETJdiCmmn27UutaRNUH5gXud/Jf 7Q== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udmw42cs8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:19:32 +0000
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHAJW3Y023093
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:19:32 GMT
+Received: from tengfan2-gv.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.39; Fri, 17 Nov 2023 02:19:28 -0800
+From:   Tengfei Fan <quic_tengfan@quicinc.com>
+To:     <agross@kernel.org>, <andersson@kernel.org>,
+        <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <tglx@linutronix.de>
+CC:     <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <-cc=kernel@quicinc.com>,
+        Tengfei Fan <quic_tengfan@quicinc.com>
+Subject: [PATCH 15/16] arm64: dts: qcom: sm8550-aim300: add pmic glink port/endpoints
+Date:   Fri, 17 Nov 2023 18:18:16 +0800
+Message-ID: <20231117101817.4401-16-quic_tengfan@quicinc.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20231117101817.4401-1-quic_tengfan@quicinc.com>
+References: <20231117101817.4401-1-quic_tengfan@quicinc.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: GmPXurubAkUAU3eOhKJ8FiAzW1Z1I2V_
+X-Proofpoint-ORIG-GUID: GmPXurubAkUAU3eOhKJ8FiAzW1Z1I2V_
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_08,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=734
+ clxscore=1015 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170076
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-net/sched/cls_api.c:2010:25: warning: restricted __be16 degrades to integer
-net/sched/cls_api.c:2695:50: warning: restricted __be16 degrades to integer
+Add nodes to support Type-C USB/DP functionality.
 
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
+On this platform, a Type-C redriver is added to the SuperSpeed graph.
+
+Signed-off-by: Tengfei Fan <quic_tengfan@quicinc.com>
 ---
- net/sched/cls_api.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/sm8550-aim300.dts | 88 +++++++++++++++++++++-
+ 1 file changed, 87 insertions(+), 1 deletion(-)
 
-diff --git a/net/sched/cls_api.c b/net/sched/cls_api.c
-index f73f39f61f66..4c47490eb0c1 100644
---- a/net/sched/cls_api.c
-+++ b/net/sched/cls_api.c
-@@ -2007,7 +2007,7 @@ static int tcf_fill_node(struct net *net, struct sk_buff *skb,
- 		tcm->tcm_ifindex = TCM_IFINDEX_MAGIC_BLOCK;
- 		tcm->tcm_block_index = block->index;
- 	}
--	tcm->tcm_info = TC_H_MAKE(tp->prio, tp->protocol);
-+	tcm->tcm_info = TC_H_MAKE(tp->prio, be16_to_cpu(tp->protocol));
- 	if (nla_put_string(skb, TCA_KIND, tp->ops->kind))
- 		goto nla_put_failure;
- 	if (nla_put_u32(skb, TCA_CHAIN, tp->chain->index))
-@@ -2692,7 +2692,7 @@ static bool tcf_chain_dump(struct tcf_chain *chain, struct Qdisc *q, u32 parent,
- 		    TC_H_MAJ(tcm->tcm_info) != tp->prio)
- 			continue;
- 		if (TC_H_MIN(tcm->tcm_info) &&
--		    TC_H_MIN(tcm->tcm_info) != tp->protocol)
-+		    TC_H_MIN(tcm->tcm_info) != be16_to_cpu(tp->protocol))
- 			continue;
- 		if (*p_index > index_start)
- 			memset(&cb->args[1], 0,
+diff --git a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
+index 6dc3040b9f76..f3c558dd40f1 100644
+--- a/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
++++ b/arch/arm64/boot/dts/qcom/sm8550-aim300.dts
+@@ -100,7 +100,15 @@
+ 					reg = <1>;
+ 
+ 					pmic_glink_ss_in: endpoint {
+-						remote-endpoint = <&usb_1_dwc3_ss>;
++						remote-endpoint = <&redriver_ss_out>;
++					};
++				};
++
++				port@2 {
++					reg = <2>;
++
++					pmic_glink_sbu: endpoint {
++						remote-endpoint = <&fsa4480_sbu_mux>;
+ 					};
+ 				};
+ 			};
+@@ -519,6 +527,62 @@
+ 	};
+ };
+ 
++&i2c_master_hub_0 {
++	status = "okay";
++};
++
++&i2c_hub_2 {
++	status = "okay";
++
++	typec-mux@42 {
++		compatible = "fcs,fsa4480";
++		reg = <0x42>;
++
++		vcc-supply = <&vreg_bob1>;
++
++		mode-switch;
++		orientation-switch;
++
++		port {
++			fsa4480_sbu_mux: endpoint {
++				remote-endpoint = <&pmic_glink_sbu>;
++			};
++		};
++	};
++
++	typec-retimer@1c {
++		compatible = "onnn,nb7vpq904m";
++		reg = <0x1c>;
++
++		vcc-supply = <&vreg_l15b_1p8>;
++
++		orientation-switch;
++		retimer-switch;
++
++		ports {
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			port@0 {
++				reg = <0>;
++
++				redriver_ss_out: endpoint {
++					remote-endpoint = <&pmic_glink_ss_in>;
++				};
++			};
++
++			port@1 {
++				reg = <1>;
++
++				redriver_ss_in: endpoint {
++					data-lanes = <3 2 1 0>;
++					remote-endpoint = <&usb_dp_qmpphy_out>;
++				};
++			};
++		};
++	};
++};
++
+ &gcc {
+ 	clocks = <&bi_tcxo_div2>, <&sleep_clk>,
+ 		 <&pcie0_phy>,
+@@ -552,6 +616,16 @@
+ 	status = "okay";
+ };
+ 
++&mdss_dp0 {
++	status = "okay";
++};
++
++&mdss_dp0_out {
++	data-lanes = <0 1>;
++	remote-endpoint = <&usb_dp_qmpphy_dp_in>;
++};
++
++
+ &mdss_dsi0 {
+ 	vdda-supply = <&vreg_l3e_1p2>;
+ 	status = "okay";
+@@ -861,6 +935,18 @@
+ 	status = "okay";
+ };
+ 
++&usb_dp_qmpphy_dp_in {
++	remote-endpoint = <&mdss_dp0_out>;
++};
++
++&usb_dp_qmpphy_out {
++	remote-endpoint = <&redriver_ss_in>;
++};
++
++&usb_dp_qmpphy_usb_ss_in {
++	remote-endpoint = <&usb_1_dwc3_ss>;
++};
++
+ &xo_board {
+ 	clock-frequency = <76800000>;
+ };
 -- 
-2.34.1
+2.17.1
 
