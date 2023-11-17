@@ -2,98 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 12DA77EF7D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:28:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E50DD7EF7D6
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 20:29:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbjKQT2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 14:28:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49878 "EHLO
+        id S232139AbjKQT3u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 14:29:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45962 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbjKQT2L (ORCPT
+        with ESMTP id S231868AbjKQT3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 14:28:11 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74AA8D72;
-        Fri, 17 Nov 2023 11:28:08 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id 98e67ed59e1d1-280260db156so1900007a91.2;
-        Fri, 17 Nov 2023 11:28:08 -0800 (PST)
+        Fri, 17 Nov 2023 14:29:49 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84F9CB6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:43 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id d2e1a72fcca58-6baaa9c0ba5so2796892b3a.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 11:29:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700249288; x=1700854088; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=id9bEmxNMwkBfvEWdosyxs6JLZUmUudjE79JcILkBXw=;
-        b=HG13aiAzUBK1yPeAegs+No3r0TZwUDmGG+vFZ5uoBKQ5CB5GrcsrgkW/WKXIFbjpma
-         xzIfCxpPE2WYw8JOyiYvNONVR3tXPtcNWVL8eJE+PYZhVkXopwx8kaBmizSg4ZZVnlIl
-         WFSkX5880+G+tdUiCqqpjn7fdwY62xdrTFo3ge9VEQp9NHb7tYHh9DfbZdCs9opP9+fy
-         ycY7szYB9lk9zDSg5q4Ei//4CJdDUQxES9p9lrLk7qCwj5YNG6CzlPf4+2SqJMQxLGuJ
-         kVsuV48jZdv21jNHXHmNsG17lSSvOQa7ZifpQzYtoRaj7aU5jliH/n24EIzdKfAPMsNz
-         zeWw==
+        d=google.com; s=20230601; t=1700249383; x=1700854183; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=7ZtpR5VBZnnk4soDSw6IwamiHkMHtshmq2RkQ7zs14Y=;
+        b=PEG1Ry6bk3xe23gXUeibAY60PYqMqIFQf5RkDsat2en1DIbkh8m+ExE0T7nNCW/4EE
+         ZtoQPu/C4Lr8jLphqOa2txNnNCcBLZiTb5a/hy7W/1mMc7K+6TfVMtrRm9oOhtb4rh/W
+         BA+vmEo9J4FkbYXB39b4Ookem5y3SoNnl3ANXMRt4YeH7WTW/tXp2/0s4lBiNehtqYoX
+         XAsTVliTDHixJb05WFDWVWyp7CwBKo/Fuf2MNU9GC/ClnI9WeYcNpkDOYuWmWJVyep06
+         7ioEMhSJ2br8iHgdkNLbBBlBX4CACOEUo8RjNwPsz6VOlMKlrPTrIQhkUOT34g51crBk
+         Jvrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700249288; x=1700854088;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=id9bEmxNMwkBfvEWdosyxs6JLZUmUudjE79JcILkBXw=;
-        b=NMjS/t+wIhflcRTIAyP3h00IqFEu8vUT4A6N36U6CMwc1r+Rh3XD6Z8J/JZbptrGpR
-         PoWIQk4OCYxw9s7bywj1aRCUOh9CFtNrOvb8+QnOaBDyz8E+ve7CgsPXERaAC7A7i4BX
-         03V37wzeFRYS446YbHMDRPblCIvJ0OvyoO0EVzosnh0Lud+mMX2P9wKQK1i7qSdSx4Fw
-         MfTf4VJ6zAGOY+SZ8o100G2glHEOUS9txQD9PX18/LSNat9OqdwNZIyuOlKz/vNSJ4Jf
-         AIXmBjxnGnXoCRssSjKV7lcCc5bFYZSgI2S0jL3S2Mb0hWOcmxT4YCeIy1/DxA5G9Seh
-         zs+g==
-X-Gm-Message-State: AOJu0Yw5hxN9HTbp90S4lB0vJsno+4drY67Rf4WtGySltrAWblxJEAqP
-        6qmjgr3kq06Uh+1zEvGhiErM9kTThoR3zGjeVuo=
-X-Google-Smtp-Source: AGHT+IGJoasHnwhcvJ9VGKmXyGSubTd4bNLiRRuYHCgEvsNQNZBbUyo8u/UuqpQSWOpmglEOb+bMqvZtpvyxsugZYWQ=
-X-Received: by 2002:a17:90b:4d92:b0:27d:97e5:f3fa with SMTP id
- oj18-20020a17090b4d9200b0027d97e5f3famr455694pjb.29.1700249287877; Fri, 17
- Nov 2023 11:28:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20231115192645.143643130@linuxfoundation.org>
-In-Reply-To: <20231115192645.143643130@linuxfoundation.org>
-From:   Allen Pais <stable.kernel.dev@gmail.com>
-Date:   Fri, 17 Nov 2023 11:27:56 -0800
-Message-ID: <CAJq+SaB+R0Aox4wvEXt9Qjtq+xi9fAqerakEzXvj3b=UjHYx9g@mail.gmail.com>
-Subject: Re: [PATCH 6.1 000/379] 6.1.63-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     stable@vger.kernel.org, patches@lists.linux.dev,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-        conor@kernel.org
+        d=1e100.net; s=20230601; t=1700249383; x=1700854183;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=7ZtpR5VBZnnk4soDSw6IwamiHkMHtshmq2RkQ7zs14Y=;
+        b=JrDJKDk3RENCyvqKQ0C2Qn775KQ3aB6zaBOrCXsdS9oildSYNs+fYFBMXYYcWnaM9C
+         z09RGdTrQcjRsn41qGTSD/Mk6Kv/KneQ5EYrc7DCSGJeEyT9iYpxUZQ19chGnsHfn3wr
+         HkdWUjkame0wT6X5TdjaGscwJIMZS9ruUwv1fzm/776+XcDKUXZEPfIODGiplvEEfO8d
+         vc3ki3RvZwM95O4Tbc8jMiuy9Wv6grXq2fcl6v0KM0loJb20eHsMisgrCJvpLfeykHV6
+         ehw58Px7jZPYcxImgTBl1/554eT97sS32fWms6AvnysHiIyij6/C226efseTjPhsbr/3
+         6+wQ==
+X-Gm-Message-State: AOJu0YyjKO/fnL0aXNlDScyFAFnzuRD300nzeg4WqH82/7ufjGi1YJWL
+        AA5uhz67cTBbTMeFgG/LSBT43RGZUSw56w==
+X-Google-Smtp-Source: AGHT+IFslrvPLsq4BT5PcXEkzGg0ZUVP85qVwKubrphQcon4Mwiuor6/RqEk3QS/vc3/a5OeGoXksoaO5xM7Cw==
+X-Received: from mmandlik-cloudtop.c.googlers.com ([fda3:e722:ac3:cc00:24:72f4:c0a8:2893])
+ (user=mmandlik job=sendgmr) by 2002:a05:6a00:8d93:b0:6c6:b762:ad83 with SMTP
+ id im19-20020a056a008d9300b006c6b762ad83mr112843pfb.0.1700249382992; Fri, 17
+ Nov 2023 11:29:42 -0800 (PST)
+Date:   Fri, 17 Nov 2023 11:28:33 -0800
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.43.0.rc0.421.g78406f8d94-goog
+Message-ID: <20231117112833.v2.1.I4c7ab22148e168e3cde00f27b89748ff4bc651c2@changeid>
+Subject: [PATCH v2 1/2] Bluetooth: btusb: Return when coredump trigger cmd fails
+From:   Manish Mandlik <mmandlik@google.com>
+To:     marcel@holtmann.org, luiz.dentz@gmail.com
+Cc:     chromeos-bluetooth-upstreaming@chromium.org,
+        linux-bluetooth@vger.kernel.org,
+        Manish Mandlik <mmandlik@google.com>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Tim Jiang <quic_tjiang@quicinc.com>,
+        linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        USER_IN_DEF_DKIM_WL autolearn=unavailable autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> This is the start of the stable review cycle for the 6.1.63 release.
-> There are 379 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 17 Nov 2023 19:25:27 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v6.x/stable-review/patch-6.1.63-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.1.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
+Avoid freeing NULL skb when hci command fails.
 
-Compiled and booted on my x86_64 and ARM64 test systems. No errors or
-regressions.
+Fixes: 20981ce2d5a5 ("Bluetooth: btusb: Add WCN6855 devcoredump support")
 
-Tested-by: Allen Pais <apais@linux.microsoft.com>
+Signed-off-by: Manish Mandlik <mmandlik@google.com>
+---
 
-Thanks.
+Changes in v2:
+- Fixed a typo in error log in btusb_coredump_qca()
+
+ drivers/bluetooth/btusb.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c
+index b8e9de887b5d..35a26440cabd 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -3463,8 +3463,11 @@ static void btusb_coredump_qca(struct hci_dev *hdev)
+ 	struct sk_buff *skb;
+ 
+ 	skb = __hci_cmd_sync(hdev, 0xfc0c, 1, param, HCI_CMD_TIMEOUT);
+-	if (IS_ERR(skb))
+-		bt_dev_err(hdev, "%s: triggle crash failed (%ld)", __func__, PTR_ERR(skb));
++	if (IS_ERR(skb)) {
++		bt_dev_err(hdev, "%s: trigger crash failed (%ld)", __func__, PTR_ERR(skb));
++		return;
++	}
++
+ 	kfree_skb(skb);
+ }
+ 
+-- 
+2.43.0.rc0.421.g78406f8d94-goog
+
