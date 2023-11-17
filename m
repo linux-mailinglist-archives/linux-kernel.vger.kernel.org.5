@@ -2,65 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E167EF0FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D707EF102
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:50:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345968AbjKQKt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:49:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48258 "EHLO
+        id S1345931AbjKQKuM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:50:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQKt5 (ORCPT
+        with ESMTP id S235608AbjKQKuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:49:57 -0500
-Received: from mail-ua1-x931.google.com (mail-ua1-x931.google.com [IPv6:2607:f8b0:4864:20::931])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A652C2;
-        Fri, 17 Nov 2023 02:49:51 -0800 (PST)
-Received: by mail-ua1-x931.google.com with SMTP id a1e0cc1a2514c-7be55675503so724576241.1;
-        Fri, 17 Nov 2023 02:49:50 -0800 (PST)
+        Fri, 17 Nov 2023 05:50:08 -0500
+Received: from mail-vs1-xe36.google.com (mail-vs1-xe36.google.com [IPv6:2607:f8b0:4864:20::e36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7877418B;
+        Fri, 17 Nov 2023 02:50:04 -0800 (PST)
+Received: by mail-vs1-xe36.google.com with SMTP id ada2fe7eead31-45d9d28142fso732360137.2;
+        Fri, 17 Nov 2023 02:50:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700218190; x=1700822990; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700218203; x=1700823003; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GtugVttdKITBqqbOP9WWTC41X2egJw0BMcAKX1VCzrM=;
-        b=LZnWEoRMNfnmOZIfYcZVRGhcDLmAXgme3Y+lF8/jpa9jsK0oiHBcizR7iSFPqCBK6V
-         xTmKpt/AgkYcrZLdp5nay+Ziyegfi+rFx4nUwV2ctdpsC000pLtuNLRc9tTecUhqDJ4x
-         H0PteGsGt0ORrcnTsP2ego+4K4IYmwr3215GMQXlqsgdrNsKfErDaPOOxynUypmYrw4Z
-         lTSt2bmLgXGQkfsyWyZtXMamVXB8zl3VCOXIVrX5B84GfSeTWHqbC2AY8exSTjhcgNyM
-         N1SaOkylKNAuIOatA6ItOAHNp9c4z8lGT/yVI7G54hlJv6eVZQqEMXh+9k1yRPk7UuVE
-         lKLw==
+        bh=ojnMLz1u5e9squEQsZdKycI8y5MGVB4+Bk8ILM4M9Wo=;
+        b=dW14X5AbaKKaIHkO6KgNfgZ7doUKVbNHc9CqHXAjtUgNDqSOwDNx+KLs2fTF1ApGNh
+         EFdVKjctOhlVvUuQOIG8w0bfEsS729T4Thvr+LyKUJF80/hQlROQODy0lvQ2GJH4t9MU
+         fN514+ERIGToOagOQWdruL5ZGdP4choi0Xc46YcMQ9yil1ZiUQKsdY5yLQvIXWXJ4aXt
+         77IIL/42zAGWLrmed+gnBJ0g+cYGBkFrFzT4XaN0flpy6YcgpEiI4i78mSpZzT2zRJh+
+         VQChIR/c+CvB1ESjYmkVSX3X22TOoSd8FWlALkgexFsuAOSWtGF+/kn0DuqOsAeO0Z/m
+         z7Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700218190; x=1700822990;
+        d=1e100.net; s=20230601; t=1700218203; x=1700823003;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=GtugVttdKITBqqbOP9WWTC41X2egJw0BMcAKX1VCzrM=;
-        b=spDo1kRytSh3g6IUWev0I9/BRkarVFviERGw7dNDel/fHQVw1m6tychrkDcwwUQ2jp
-         HxwMCe3/QIEkiIN3UdF7yHeJ2S3vpWZePCE3eG3rP48VVGTvex/TJCpj9rx3ZhOhpILz
-         OddLL4zAHR/54ZZQaep0Hs1eT5CUOez4Ki2MDpu6hEnz31H/YNbBrJ2ErQsh6SKe1FdJ
-         9Juo5MZReBxT77jZyrAtEsxO4xgpqlzwNCwcr8qcZWn4uv8qvlYUl965NMi2sdccek0M
-         +mB/+2zVs0QMcTOrJUvrSqSOe9kgk+LfAqGyKM3xFl8XbQxXeJAhf29rwRvfeWONh4Tp
-         KNkA==
-X-Gm-Message-State: AOJu0YxO4inCSi9tO7hDqBizKJ+PugPy7h8fNnNNvb13YRsIQKHLjYE7
-        qTpbxvcDyo7FQQkCQM9s5quWCzon4BprZhke0gY=
-X-Google-Smtp-Source: AGHT+IGgs2itO1WI0NYgLqOYV7DNORuiB6aQwCp8ILVvBxTG6pfXTlb1f9OTNKTzaDKTGZObiQ42udXPZPRt5WregvY=
-X-Received: by 2002:a05:6102:20d1:b0:462:887c:1698 with SMTP id
- i17-20020a05610220d100b00462887c1698mr144708vsr.3.1700218190079; Fri, 17 Nov
- 2023 02:49:50 -0800 (PST)
+        bh=ojnMLz1u5e9squEQsZdKycI8y5MGVB4+Bk8ILM4M9Wo=;
+        b=WDzr1LaoA0bjRmUcDWGJIbSWi7p8lHPDwXpOVobRgOCP+yl94ug42ms0pNYVTZLH+l
+         eWgS/sb9fMF7Fl4k4IE6RCUfESA308y52Rg6+v4MWUofQBMVqvDze7QnkQal99cG0zH2
+         Yed9X9dfXmDAtf5d2hKiPm6DYCMtMIUcSenHETf50JsUQ4wCxfgXN420fkNcPBJAtJXH
+         asRSVyuMpQaMQRUWoTRKH5YyYFbbF0asheD2Mj7dxgXvWmuL9Oab6KVW0fX7gDfFSB/J
+         +Q1TZ56/cMfoJeD0w9hZnldw2s81zN3noTe7ADwdjqWKzG1A2kjoOGbkpkqNXmovT7mZ
+         i1eA==
+X-Gm-Message-State: AOJu0YxFnqDco3fK7MVOEKqqJbIXCvy2yImtRSTMgm+TPBWuEH7EyAd+
+        yS0uU843emn2Mq4ewTSYWPShckNiln4/HRcAOXM=
+X-Google-Smtp-Source: AGHT+IHNVHFIODkgg+FftqjCeQzRxrtyW6f+Woupy+eQGj8E78/+XF9ZBPcXK0ZmTvF57PHhzudzDpLMwGsr1q7LE/c=
+X-Received: by 2002:a67:e05d:0:b0:462:768f:db2c with SMTP id
+ n29-20020a67e05d000000b00462768fdb2cmr3882761vsl.27.1700218203523; Fri, 17
+ Nov 2023 02:50:03 -0800 (PST)
 MIME-Version: 1.0
 References: <20230915094351.11120-1-victorshihgli@gmail.com>
- <20230915094351.11120-11-victorshihgli@gmail.com> <CAPDyKFrynugse6+vwummTQ73egwvGAfKreH=iihv9bhFN1SJYQ@mail.gmail.com>
- <afa2aeed-7296-4075-a7e0-62f3d59bfdf4@intel.com> <CAPDyKFqidGZ242P-9xnxokSCeGxk8uziqR=AteWt=iQFz5fA9g@mail.gmail.com>
- <81bf38cd-b6a4-4a6f-a51d-bc916e3b8f96@intel.com> <CAPDyKFoc0phsXuX5W0PqFu2En57Lc9D-+MTGxAYtJhPpHcVZ2g@mail.gmail.com>
- <d76a9fff-5536-4e3e-b1c3-234de427d031@intel.com> <CAPDyKFqsu6-9U7qQRTB7oDubj5WAp+UQVzLitLytUdamDZQW6w@mail.gmail.com>
-In-Reply-To: <CAPDyKFqsu6-9U7qQRTB7oDubj5WAp+UQVzLitLytUdamDZQW6w@mail.gmail.com>
+ <20230915094351.11120-12-victorshihgli@gmail.com> <CAPDyKFqpT3Z99gv=5W8sWquq8ogSjEuwyL97nqm8xZP2ce9QMw@mail.gmail.com>
+In-Reply-To: <CAPDyKFqpT3Z99gv=5W8sWquq8ogSjEuwyL97nqm8xZP2ce9QMw@mail.gmail.com>
 From:   Victor Shih <victorshihgli@gmail.com>
-Date:   Fri, 17 Nov 2023 18:49:37 +0800
-Message-ID: <CAK00qKB6KjNc0vFFTSX4Sx5FcA3OWeMNyLTRCLCdSNt4gRmgbg@mail.gmail.com>
-Subject: Re: [PATCH V12 10/23] mmc: sdhci-uhs2: add reset function and
- uhs2_mode function
+Date:   Fri, 17 Nov 2023 18:49:51 +0800
+Message-ID: <CAK00qKC8K7=_3247mv6AHBCgXqWYjJyL3++=kKdT4V7OHdnc-g@mail.gmail.com>
+Subject: Re: [PATCH V12 11/23] mmc: sdhci-uhs2: add set_power() to support vdd2
 To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>, linux-mmc@vger.kernel.org,
+Cc:     adrian.hunter@intel.com, linux-mmc@vger.kernel.org,
         linux-kernel@vger.kernel.org, benchuanggli@gmail.com,
         HL.Liu@genesyslogic.com.tw, Greg.tu@genesyslogic.com.tw,
         takahiro.akashi@linaro.org, dlunev@chromium.org,
@@ -78,199 +74,282 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 10, 2023 at 7:08=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org=
-> wrote:
+On Tue, Oct 3, 2023 at 5:46=E2=80=AFPM Ulf Hansson <ulf.hansson@linaro.org>=
+ wrote:
 >
-> On Tue, 10 Oct 2023 at 12:29, Adrian Hunter <adrian.hunter@intel.com> wro=
-te:
+> On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.com> wrot=
+e:
 > >
-> > On 4/10/23 11:35, Ulf Hansson wrote:
-> > > On Tue, 3 Oct 2023 at 17:03, Adrian Hunter <adrian.hunter@intel.com> =
-wrote:
-> > >>
-> > >> On 3/10/23 15:22, Ulf Hansson wrote:
-> > >>> On Tue, 3 Oct 2023 at 13:37, Adrian Hunter <adrian.hunter@intel.com=
-> wrote:
-> > >>>>
-> > >>>> On 3/10/23 13:30, Ulf Hansson wrote:
-> > >>>>> On Fri, 15 Sept 2023 at 11:44, Victor Shih <victorshihgli@gmail.c=
-om> wrote:
-> > >>>>>>
-> > >>>>>> From: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > >>>>>>
-> > >>>>>> Sdhci_uhs2_reset() does a UHS-II specific reset operation.
-> > >>>>>>
-> > >>>>>> Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
-> > >>>>>> Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > >>>>>> Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
-> > >>>>>> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
-> > >>>>>> ---
-> > >>>>>>
-> > >>>>>> Updates in V8:
-> > >>>>>>  - Adjust the position of matching brackets.
-> > >>>>>>
-> > >>>>>> Updates in V6:
-> > >>>>>>  - Remove unnecessary functions and simplify code.
-> > >>>>>>
-> > >>>>>> ---
-> > >>>>>>
-> > >>>>>>  drivers/mmc/host/sdhci-uhs2.c | 45 ++++++++++++++++++++++++++++=
-+++++++
-> > >>>>>>  drivers/mmc/host/sdhci-uhs2.h |  2 ++
-> > >>>>>>  2 files changed, 47 insertions(+)
-> > >>>>>>
-> > >>>>>> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sd=
-hci-uhs2.c
-> > >>>>>> index e339821d3504..dfc80a7f1bad 100644
-> > >>>>>> --- a/drivers/mmc/host/sdhci-uhs2.c
-> > >>>>>> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> > >>>>>> @@ -10,7 +10,9 @@
-> > >>>>>>   *  Author: AKASHI Takahiro <takahiro.akashi@linaro.org>
-> > >>>>>>   */
-> > >>>>>>
-> > >>>>>> +#include <linux/delay.h>
-> > >>>>>>  #include <linux/module.h>
-> > >>>>>> +#include <linux/iopoll.h>
-> > >>>>>>
-> > >>>>>>  #include "sdhci.h"
-> > >>>>>>  #include "sdhci-uhs2.h"
-> > >>>>>> @@ -49,6 +51,49 @@ void sdhci_uhs2_dump_regs(struct sdhci_host *=
-host)
-> > >>>>>>  }
-> > >>>>>>  EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
-> > >>>>>>
-> > >>>>>> +/**************************************************************=
-***************\
-> > >>>>>> + *                                                             =
-              *
-> > >>>>>> + * Low level functions                                         =
-              *
-> > >>>>>> + *                                                             =
-              *
-> > >>>>>> +\**************************************************************=
-***************/
-> > >>>>>> +
-> > >>>>>> +bool sdhci_uhs2_mode(struct sdhci_host *host)
-> > >>>>>> +{
-> > >>>>>> +       return host->mmc->flags & MMC_UHS2_SUPPORT;
-> > >>>>>
-> > >>>>> The MMC_UHS2_SUPPORT bit looks redundant to me. Instead, I think =
-we
-> > >>>>> should be using mmc->ios.timings, which already indicates whether=
- we
-> > >>>>> are using UHS2 (MMC_TIMING_UHS2_SPEED_*). See patch2 where we add=
-ed
-> > >>>>> this.
-> > >>>>>
-> > >>>>> That said, I think we should drop the sdhci_uhs2_mode() function
-> > >>>>> altogether and instead use mmc_card_uhs2(), which means we should=
- move
-> > >>>>> it to include/linux/mmc/host.h, so it becomes available for host
-> > >>>>> drivers.
-> > >>>>>
-> > >>>>
-> > >>>> UHS2 mode starts at UHS2 initialization and ends either when UHS2
-> > >>>> initialization fails, or the card is removed.
-> > >>>>
-> > >>>> So it includes re-initialization and reset when the transfer mode
-> > >>>> currently transitions through MMC_TIMING_LEGACY.
-> > >>>>
-> > >>>> So mmc_card_uhs2() won't work correctly for the host callbacks
-> > >>>> unless something is done about that.
-> > >>>
-> > >>> Right, thanks for clarifying!
-> > >>>
-> > >>> In that case I wonder if we couldn't change the way we update the
-> > >>> ->ios.timing for UHS2. It seems silly to have two (similar) ways to
-> > >>> indicate that we have moved to UHS2.
-> > >>
-> > >> Perhaps something like below:
-> > >>
-> > >> diff --git a/drivers/mmc/core/sd_uhs2.c b/drivers/mmc/core/sd_uhs2.c
-> > >> index aacefdd6bc9e..e39d63d46041 100644
-> > >> --- a/drivers/mmc/core/sd_uhs2.c
-> > >> +++ b/drivers/mmc/core/sd_uhs2.c
-> > >> @@ -70,7 +70,8 @@ static int sd_uhs2_power_off(struct mmc_host *host=
-)
-> > >>
-> > >>         host->ios.vdd =3D 0;
-> > >>         host->ios.clock =3D 0;
-> > >> -       host->ios.timing =3D MMC_TIMING_LEGACY;
-> > >> +       /* Must set UHS2 timing to identify UHS2 mode */
-> > >> +       host->ios.timing =3D MMC_TIMING_UHS2_SPEED_A;
-> > >>         host->ios.power_mode =3D MMC_POWER_OFF;
-> > >>         if (host->flags & MMC_UHS2_SD_TRAN)
-> > >>                 host->flags &=3D ~MMC_UHS2_SD_TRAN;
-> > >> @@ -1095,7 +1096,8 @@ static void sd_uhs2_detect(struct mmc_host *ho=
-st)
-> > >>                 mmc_claim_host(host);
-> > >>                 mmc_detach_bus(host);
-> > >>                 sd_uhs2_power_off(host);
-> > >> -               host->flags &=3D ~MMC_UHS2_SUPPORT;
-> > >> +               /* Remove UHS2 timing to indicate the end of UHS2 mo=
-de */
-> > >> +               host->ios.timing =3D MMC_TIMING_LEGACY;
-> > >>                 mmc_release_host(host);
-> > >>         }
-> > >>  }
-> > >> @@ -1338,7 +1340,8 @@ static int sd_uhs2_attach(struct mmc_host *hos=
-t)
-> > >>  err:
-> > >>         mmc_detach_bus(host);
-> > >>         sd_uhs2_power_off(host);
-> > >> -       host->flags &=3D ~MMC_UHS2_SUPPORT;
-> > >> +       /* Remove UHS2 timing to indicate the end of UHS2 mode */
-> > >> +       host->ios.timing =3D MMC_TIMING_LEGACY;
-> > >>         return err;
-> > >>  }
-> > >
-> > > I wouldn't mind changing to the above. But, maybe an even better
-> > > option is to use the ->timing variable in the struct sdhci_host, as
-> > > it's there already to keep track of the current/previous timing state=
-.
-> > > Would that work too?
+> > From: Victor Shih <victor.shih@genesyslogic.com.tw>
 > >
-> > The host does not really have enough information.
+> > This is a UHS-II version of sdhci's set_power operation.
+> > VDD2, as well as VDD, is handled here.
 >
-> Okay, let's go with the approach you suggested above/below then!
+> Okay, but why?
+>
+> Please justify the change in the commit messages, don't just tell what
+> is being done. This applied to the whole series - and I believe I have
+> said this before too.
 >
 
-Hi, Ulf and Adrian
+Hi, Ulf
+
+I will try to update this in version 13.
+
+Thanks, Victor Shih
+
+> >
+> > Signed-off-by: Ben Chuang <ben.chuang@genesyslogic.com.tw>
+> > Signed-off-by: AKASHI Takahiro <takahiro.akashi@linaro.org>
+> > Signed-off-by: Victor Shih <victor.shih@genesyslogic.com.tw>
+> > Acked-by: Adrian Hunter <adrian.hunter@intel.com>
+> > ---
+> >
+> > Updates in V10:
+> >  - Move some definitions of PatchV9[05/23] to PatchV10[11/23].
+> >
+> > Updates in V9:
+> >  - Modify annotations in sdhci_get_vdd_value().
+> >
+> > Updates in V8:
+> >  - Adjust the position of matching brackets.
+> >  - Add the initial value of the pwr in sdhci_uhs2_set_power().
+> >
+> > Updates in V7:
+> >  - Add clear the power reg before setting a new value
+> >    in sdhci_uhs2_set_power().
+> >  - Add MMC_VDD_34_35 case and MMC_VDD_35_36 case in sdhci_get_vdd_value=
+().
+> >  - Drop pwr variable in sdhci_get_vdd_value().
+> >
+> > Updates in V6:
+> >  - Add mmc_opt_regulator_set_ocr().
+> >  - Remove unnecessary functions.
+> >
+> > ---
+> >
+> >  drivers/mmc/host/sdhci-uhs2.c | 48 +++++++++++++++++++++++++++
+> >  drivers/mmc/host/sdhci.c      | 61 +++++++++++++++++++----------------
+> >  drivers/mmc/host/sdhci.h      |  1 +
+> >  include/linux/mmc/host.h      |  1 +
+> >  4 files changed, 83 insertions(+), 28 deletions(-)
+> >
+> > diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-uhs=
+2.c
+> > index dfc80a7f1bad..fc37a34629c2 100644
+> > --- a/drivers/mmc/host/sdhci-uhs2.c
+> > +++ b/drivers/mmc/host/sdhci-uhs2.c
+> > @@ -57,6 +57,13 @@ EXPORT_SYMBOL_GPL(sdhci_uhs2_dump_regs);
+> >   *                                                                    =
+       *
+> >  \*********************************************************************=
+********/
+> >
+> > +static inline int mmc_opt_regulator_set_ocr(struct mmc_host *mmc,
+> > +                                           struct regulator *supply,
+> > +                                           unsigned short vdd_bit)
+> > +{
+> > +       return IS_ERR_OR_NULL(supply) ? 0 : mmc_regulator_set_ocr(mmc, =
+supply, vdd_bit);
+> > +}
+> > +
+> >  bool sdhci_uhs2_mode(struct sdhci_host *host)
+> >  {
+> >         return host->mmc->flags & MMC_UHS2_SUPPORT;
+> > @@ -94,6 +101,47 @@ void sdhci_uhs2_reset(struct sdhci_host *host, u16 =
+mask)
+> >  }
+> >  EXPORT_SYMBOL_GPL(sdhci_uhs2_reset);
+> >
+> > +static void sdhci_uhs2_set_power(struct sdhci_host *host, unsigned cha=
+r mode, unsigned short vdd)
+> > +{
+> > +       struct mmc_host *mmc =3D host->mmc;
+> > +       u8 pwr =3D 0;
+> > +
+> > +       if (mode !=3D MMC_POWER_OFF) {
+> > +               pwr =3D sdhci_get_vdd_value(vdd);
+> > +               if (!pwr)
+> > +                       WARN(1, "%s: Invalid vdd %#x\n",
+> > +                            mmc_hostname(host->mmc), vdd);
+> > +               pwr |=3D SDHCI_VDD2_POWER_180;
+> > +       }
+> > +
+> > +       if (host->pwr =3D=3D pwr)
+> > +               return;
+> > +       host->pwr =3D pwr;
+> > +
+> > +       if (pwr =3D=3D 0) {
+> > +               sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> > +
+> > +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc, 0);
+> > +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc2, 0);
+>
+> We added mmc_regulator_set_vqmmc2() in patch4. Please use that instead.
+>
+
+Hi, Ulf
 
 I will update this in version 13.
 
 Thanks, Victor Shih
 
+> > +       } else {
+> > +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc, vdd);
+> > +               /* support 1.8v only for now */
+> > +               mmc_opt_regulator_set_ocr(mmc, mmc->supply.vmmc2, fls(M=
+MC_VDD_165_195) - 1);
+> > +
+> > +               /* Clear the power reg before setting a new value */
+> > +               sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> > +
+> > +               /* vdd first */
+> > +               pwr |=3D SDHCI_POWER_ON;
+> > +               sdhci_writeb(host, pwr & 0xf, SDHCI_POWER_CONTROL);
+> > +               mdelay(5);
+> > +
+> > +               pwr |=3D SDHCI_VDD2_POWER_ON;
+> > +               sdhci_writeb(host, pwr, SDHCI_POWER_CONTROL);
+> > +               mdelay(5);
+> > +       }
+> > +}
+> > +
+> >  /*********************************************************************=
+********\
+> >   *                                                                    =
+       *
+> >   * Driver init/exit                                                   =
+       *
+> > diff --git a/drivers/mmc/host/sdhci.c b/drivers/mmc/host/sdhci.c
+> > index 753b251179f2..eca54a16e7fc 100644
+> > --- a/drivers/mmc/host/sdhci.c
+> > +++ b/drivers/mmc/host/sdhci.c
+> > @@ -23,7 +23,7 @@
+> >  #include <linux/regulator/consumer.h>
+> >  #include <linux/pm_runtime.h>
+> >  #include <linux/of.h>
+> > -
+> > +#include <linux/bug.h>
+> >  #include <linux/leds.h>
 > >
-> > >
-> > >>
-> > >> diff --git a/drivers/mmc/host/sdhci-uhs2.c b/drivers/mmc/host/sdhci-=
-uhs2.c
-> > >> index 517c497112f4..d1f3318b7d3a 100644
-> > >> --- a/drivers/mmc/host/sdhci-uhs2.c
-> > >> +++ b/drivers/mmc/host/sdhci-uhs2.c
-> > >> @@ -267,10 +267,11 @@ static void __sdhci_uhs2_set_ios(struct mmc_ho=
-st *mmc, struct mmc_ios *ios)
-> > >>
-> > >>         /* UHS2 timing. Note, UHS2 timing is disabled when powering =
-off */
-> > >>         ctrl_2 =3D sdhci_readw(host, SDHCI_HOST_CONTROL2);
-> > >> -       if (ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_A ||
-> > >> -           ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_A_HD ||
-> > >> -           ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_B ||
-> > >> -           ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_B_HD)
-> > >> +       if (ios->power_mode !=3D MMC_POWER_OFF &&
-> > >> +           (ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_A ||
-> > >> +            ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_A_HD ||
-> > >> +            ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_B ||
-> > >> +            ios->timing =3D=3D MMC_TIMING_UHS2_SPEED_B_HD))
-> > >>                 ctrl_2 |=3D SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENABLE=
-;
-> > >>         else
-> > >>                 ctrl_2 &=3D ~(SDHCI_CTRL_UHS2 | SDHCI_CTRL_UHS2_ENAB=
-LE);
-> > >>
-> > >>
+> >  #include <linux/mmc/mmc.h>
+> > @@ -2061,41 +2061,46 @@ static void sdhci_set_power_reg(struct sdhci_ho=
+st *host, unsigned char mode,
+> >                 sdhci_writeb(host, 0, SDHCI_POWER_CONTROL);
+> >  }
+> >
+> > +unsigned short sdhci_get_vdd_value(unsigned short vdd)
+> > +{
+> > +       switch (1 << vdd) {
+> > +       case MMC_VDD_165_195:
+> > +       /*
+> > +        * Without a regulator, SDHCI does not support 2.0v
+> > +        * so we only get here if the driver deliberately
+> > +        * added the 2.0v range to ocr_avail. Map it to 1.8v
+> > +        * for the purpose of turning on the power.
+> > +        */
+> > +       case MMC_VDD_20_21:
+> > +               return SDHCI_POWER_180;
+> > +       case MMC_VDD_29_30:
+> > +       case MMC_VDD_30_31:
+> > +               return SDHCI_POWER_300;
+> > +       case MMC_VDD_32_33:
+> > +       case MMC_VDD_33_34:
+> > +       /*
+> > +        * 3.4V ~ 3.6V are valid only for those platforms where it's
+> > +        * known that the voltage range is supported by hardware.
+> > +        */
+> > +       case MMC_VDD_34_35:
+> > +       case MMC_VDD_35_36:
+> > +               return SDHCI_POWER_330;
+> > +       default:
+> > +               return 0;
+> > +       }
+> > +}
+> > +EXPORT_SYMBOL_GPL(sdhci_get_vdd_value);
+> > +
+> >  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode=
+,
+> >                            unsigned short vdd)
+> >  {
+> >         u8 pwr =3D 0;
+> >
+> >         if (mode !=3D MMC_POWER_OFF) {
+> > -               switch (1 << vdd) {
+> > -               case MMC_VDD_165_195:
+> > -               /*
+> > -                * Without a regulator, SDHCI does not support 2.0v
+> > -                * so we only get here if the driver deliberately
+> > -                * added the 2.0v range to ocr_avail. Map it to 1.8v
+> > -                * for the purpose of turning on the power.
+> > -                */
+> > -               case MMC_VDD_20_21:
+> > -                       pwr =3D SDHCI_POWER_180;
+> > -                       break;
+> > -               case MMC_VDD_29_30:
+> > -               case MMC_VDD_30_31:
+> > -                       pwr =3D SDHCI_POWER_300;
+> > -                       break;
+> > -               case MMC_VDD_32_33:
+> > -               case MMC_VDD_33_34:
+> > -               /*
+> > -                * 3.4 ~ 3.6V are valid only for those platforms where =
+it's
+> > -                * known that the voltage range is supported by hardwar=
+e.
+> > -                */
+> > -               case MMC_VDD_34_35:
+> > -               case MMC_VDD_35_36:
+> > -                       pwr =3D SDHCI_POWER_330;
+> > -                       break;
+> > -               default:
+> > +               pwr =3D sdhci_get_vdd_value(vdd);
+> > +               if (!pwr) {
+> >                         WARN(1, "%s: Invalid vdd %#x\n",
+> >                              mmc_hostname(host->mmc), vdd);
+> > -                       break;
+> >                 }
+> >         }
+> >
+> > diff --git a/drivers/mmc/host/sdhci.h b/drivers/mmc/host/sdhci.h
+> > index 43ad3f4b7672..f3bd558b337f 100644
+> > --- a/drivers/mmc/host/sdhci.h
+> > +++ b/drivers/mmc/host/sdhci.h
+> > @@ -837,6 +837,7 @@ void sdhci_set_power(struct sdhci_host *host, unsig=
+ned char mode,
+> >  void sdhci_set_power_and_bus_voltage(struct sdhci_host *host,
+> >                                      unsigned char mode,
+> >                                      unsigned short vdd);
+> > +unsigned short sdhci_get_vdd_value(unsigned short vdd);
+> >  void sdhci_set_power_noreg(struct sdhci_host *host, unsigned char mode=
+,
+> >                            unsigned short vdd);
+> >  int sdhci_get_cd_nogpio(struct mmc_host *mmc);
+> > diff --git a/include/linux/mmc/host.h b/include/linux/mmc/host.h
+> > index 6c8258310641..610644a0ace5 100644
+> > --- a/include/linux/mmc/host.h
+> > +++ b/include/linux/mmc/host.h
+> > @@ -363,6 +363,7 @@ struct mmc_pwrseq;
+> >
+> >  struct mmc_supply {
+> >         struct regulator *vmmc;         /* Card power supply */
+> > +       struct regulator *vmmc2;        /* UHS2 VDD2 power supply */
+>
+> In patch4 we added vqmmc2. Please use that instead.
+>
+
+Hi, Ulf
+
+I will update this in version 13.
+
+Thanks, Victor Shih
+
+> >         struct regulator *vqmmc;        /* Optional Vccq supply */
+> >         struct regulator *vqmmc2;       /* Optional supply for phy */
+> >  };
+> > --
+> > 2.25.1
+> >
 >
 > Kind regards
 > Uffe
