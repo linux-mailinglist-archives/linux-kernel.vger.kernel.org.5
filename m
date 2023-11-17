@@ -2,156 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 460097EF0D8
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF207EF0E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:45:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230510AbjKQKnk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:43:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37074 "EHLO
+        id S1345894AbjKQKpM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:45:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345954AbjKQKnd (ORCPT
+        with ESMTP id S230085AbjKQKpK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:43:33 -0500
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [IPv6:2a0a:edc0:2:b01:1d::104])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4147C11F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:43:29 -0800 (PST)
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-        by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1r3wJm-00006V-T0; Fri, 17 Nov 2023 11:43:22 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-        by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1r3wJm-009eoe-DI; Fri, 17 Nov 2023 11:43:22 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (Client did not present a certificate)
-        (Authenticated sender: mkl-all@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 11DEE24E74F;
-        Fri, 17 Nov 2023 10:43:22 +0000 (UTC)
-Date:   Fri, 17 Nov 2023 11:43:21 +0100
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-To:     Sascha Hauer <s.hauer@pengutronix.de>,
-        Jens Axboe <axboe@kernel.dk>, Paolo Abeni <pabeni@redhat.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de
-Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
- TIF_NOTIFY_SIGNAL
-Message-ID: <20231117-starter-unvisited-d10f0314ae76-mkl@pengutronix.de>
-References: <20231023121346.4098160-1-s.hauer@pengutronix.de>
- <addf492843338e853f7fda683ce35050f26c9da0.camel@redhat.com>
- <20231026070310.GY3359458@pengutronix.de>
- <8404022493c5ceda74807a3407e5a087425678e2.camel@redhat.com>
- <20231027120432.GB3359458@pengutronix.de>
+        Fri, 17 Nov 2023 05:45:10 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5BF0DBC
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:45:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700217907; x=1731753907;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Ij9y/YkrDfTlz50Xi+Zj9XJQ6C4S7/BoXXJIz6rNYLA=;
+  b=WTydDOxzqD9VNCcCAuoHG/K7GsxShYD934Yb9WeDK4lGUtSF5PcKhrtm
+   MdYGwYq+2b+M3SBt3Q1HtCNlO9ctYUH3fctVVluaYrRAIvjLPOeVvT5mn
+   1jsJfAsFNYGb2UxjXhDGTuHlU6rQvR5NglsomygFXgjidwIM+Bobb3dge
+   vZBEUx77UHk4zXHgWo7CMhjXTDeTFnOfrgdt9c0JgXAQt9rwsnQ2hKsmJ
+   qjkHh5YpDQ32tyAvhsxtqXKgYYpw0Ox5HlVIbxiFpcbjeuwjkUDqNboET
+   L4Ng8182pFfBwGidw6RKheHl2glhTd95gW0Qg6kw8JvEEj6rzPqp84vXA
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="477493889"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="477493889"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 02:45:07 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="1012895375"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="1012895375"
+Received: from fsforza-mobl1.ger.corp.intel.com (HELO box.shutemov.name) ([10.249.44.215])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 02:45:04 -0800
+Received: by box.shutemov.name (Postfix, from userid 1000)
+        id 4858410A325; Fri, 17 Nov 2023 13:45:02 +0300 (+03)
+Date:   Fri, 17 Nov 2023 13:45:02 +0300
+From:   kirill.shutemov@linux.intel.com
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Uros Bizjak <ubizjak@gmail.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: Re: [PATCH -tip] x86/mm: Use %RIP-relative address in untagged_addr()
+Message-ID: <20231117104502.4p53qqldwmyuyqju@box.shutemov.name>
+References: <20231116191127.3446476-1-ubizjak@gmail.com>
+ <20231117094103.GM8262@noisy.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="myrtppjg3pcf7ghi"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231027120432.GB3359458@pengutronix.de>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+In-Reply-To: <20231117094103.GM8262@noisy.programming.kicks-ass.net>
+X-Spam-Status: No, score=-4.3 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
+        SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Nov 17, 2023 at 10:41:03AM +0100, Peter Zijlstra wrote:
+> On Thu, Nov 16, 2023 at 08:10:59PM +0100, Uros Bizjak wrote:
+> > %RIP-relative addresses are nowadays correctly handled in alternative
+> > instructions, so remove misleading comment and improve assembly to
+> > use %RIP-relative address.
+> 
+> Ha!, it might've been this exact case (and Kirill grumbling) that got me
+> to fix the alternative code :-)
 
---myrtppjg3pcf7ghi
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nice! :)
 
-On 27.10.2023 14:04:32, Sascha Hauer wrote:
-> On Thu, Oct 26, 2023 at 10:49:18AM +0200, Paolo Abeni wrote:
-> > On Thu, 2023-10-26 at 09:03 +0200, Sascha Hauer wrote:
-> > > On Tue, Oct 24, 2023 at 03:56:17PM +0200, Paolo Abeni wrote:
-> > > > On Mon, 2023-10-23 at 14:13 +0200, Sascha Hauer wrote:
-> > > > > It can happen that a socket sends the remaining data at close() t=
-ime.
-> > > > > With io_uring and KTLS it can happen that sk_stream_wait_memory()=
- bails
-> > > > > out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for=
- the
-> > > > > current task. This flag has been set in io_req_normal_work_add() =
-by
-> > > > > calling task_work_add().
-> > > > >=20
-> > > > > It seems signal_pending() is too broad, so this patch replaces it=
- with
-> > > > > task_sigpending(), thus ignoring the TIF_NOTIFY_SIGNAL flag.
-> > > >=20
-> > > > This looks dangerous, at best. Other possible legit users setting
-> > > > TIF_NOTIFY_SIGNAL will be broken.
-> > > >=20
-> > > > Can't you instead clear TIF_NOTIFY_SIGNAL in io_run_task_work() ?
-> > >=20
-> > > I don't have an idea how io_run_task_work() comes into play here, but=
- it
-> > > seems it already clears TIF_NOTIFY_SIGNAL:
-> > >=20
-> > > static inline int io_run_task_work(void)
-> > > {
-> > >         /*
-> > >          * Always check-and-clear the task_work notification signal. =
-With how
-> > >          * signaling works for task_work, we can find it set with not=
-hing to
-> > >          * run. We need to clear it for that case, like get_signal() =
-does.
-> > >          */
-> > >         if (test_thread_flag(TIF_NOTIFY_SIGNAL))
-> > >                 clear_notify_signal();
-> > > 	...
-> > > }
-> >=20
-> > I see, io_run_task_work() is too late, sk_stream_wait_memory() is
-> > already woken up.
-> >=20
-> > I still think this patch is unsafe. What about explicitly handling the
-> > restart in tls_sw_release_resources_tx() ? The main point is that such
-> > function is called by inet_release() and the latter can't be re-
-> > started.
->=20
-> I don't think there's anything I can do in tls_sw_release_resources_tx().
-> When entering this function TIF_NOTIFY_SIGNAL is not (yet) set. It gets
-> set at some point while tls_sw_release_resources_tx() is running. I find
-> it set when tls_tx_records() returns with -ERESTARTSYS. I tried clearing
-> TIF_NOTIFY_SIGNAL then and called tls_tx_records() again, but that doesn't
-> work.
+> > Also, explicitly using %gs: prefix will segfault for non-SMP builds.
+> > Use macros from percpu.h which will DTRT with segment prefix register
+> > as far as SMP/non-SMP builds are concerned.
+> 
+> > Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+> 
+> Acked-byL Peter Zijlstra (Intel) <peterz@infradaed.org>
 
-Seems the discussion got stuck, what are the blocking points?
+Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---myrtppjg3pcf7ghi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEDs2BvajyNKlf9TJQvlAcSiqKBOgFAmVXQ8YACgkQvlAcSiqK
-BOjTBAf/bx31f+dylh6QTDp4+y9R5QW/hooHn72DH7PdipTn0Sn/N85TT/6dwm2m
-d6zrmYaYoORvTMvxkDNuvlPI3Ye8x1s03XmRdUzZz42lktKlwL7vx+WNPofcsuYv
-OSZBM7DnLPZzd04gCfME5+Z0F8ja7qFW/TeFLMNaTdA15hNmrtql/dNnxQ8rOcFi
-QGSYH0Hukk9WCBVsJfWh1TUD7ofi+W4kEXVoJudKhMacz6U1m2hqwzsCHZl4MfBw
-Hy15O4ShNqgYhGonRLk6GKvZp0UcrP9vupIgFuAz2tQIss7IlukeYEj/K+1yERXC
-oENATOsMpTHZwnHiYEqD59Iwj2jCSA==
-=4VsN
------END PGP SIGNATURE-----
-
---myrtppjg3pcf7ghi--
+-- 
+  Kiryl Shutsemau / Kirill A. Shutemov
