@@ -2,173 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A15027EEBEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 06:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B1C567EEBEF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 06:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229931AbjKQFWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 00:22:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52986 "EHLO
+        id S1344874AbjKQFWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 00:22:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQFWe (ORCPT
+        with ESMTP id S229995AbjKQFWx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 00:22:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43440D4A
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 21:22:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1700198550;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=GP1qDRaGGYNkvm0KV8/GWSP2DF/3SQkemClyjrO5cH0=;
-        b=X0lYoHpQVuEQla8IbFNODQ2Zltb1pvDmjXs+lNeNNt9zlTdqf4HLoDuusM9pbWqvSZXwU9
-        /oJ08uvZbURyPAVfwUSq9wswZ2XgAsHIonAP92eRfapFQphSf1bgxTvw+4qO57gqTAyij5
-        /S9lEyjI9cEUnDeI0IJMw5dgc4fdCUU=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-385-FAvH0CbkOg-51Q-zciuaDQ-1; Fri, 17 Nov 2023 00:22:26 -0500
-X-MC-Unique: FAvH0CbkOg-51Q-zciuaDQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.rdu2.redhat.com [10.11.54.8])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 173C6101A529;
-        Fri, 17 Nov 2023 05:22:26 +0000 (UTC)
-Received: from virt-mtcollins-01.lab.eng.rdu2.redhat.com (virt-mtcollins-01.lab.eng.rdu2.redhat.com [10.8.1.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 064E5C15881;
-        Fri, 17 Nov 2023 05:22:26 +0000 (UTC)
-From:   Shaoqin Huang <shahuang@redhat.com>
-To:     kvm@vger.kernel.org, kvmarm@lists.linux.dev
-Cc:     Shaoqin Huang <shahuang@redhat.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2] KVM: selftests: Fix the dirty_log_test semaphore imbalance
-Date:   Fri, 17 Nov 2023 00:22:09 -0500
-Message-Id: <20231117052210.26396-1-shahuang@redhat.com>
+        Fri, 17 Nov 2023 00:22:53 -0500
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1748D52;
+        Thu, 16 Nov 2023 21:22:48 -0800 (PST)
+Received: by mail-ej1-x62f.google.com with SMTP id a640c23a62f3a-9c3aec5f326so544155766b.1;
+        Thu, 16 Nov 2023 21:22:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700198567; x=1700803367; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=v27wSqqrShCzztVlfwu/zWkCL4FJgwhMdx/No5LYqKU=;
+        b=fCIWPhNrmcUuocfy+nJNKMMmwWH2q8is6D+RLwtc52vR8fyp5uE6wJLXECNy9meFQ+
+         joxreVmcf4g1knIpmY5UQHR9wRSN6tZ39VO6rNrFr4dbGRaQp5PRSSFxD+s0ns3sxUwD
+         ZyhJhBHgkj80jDoMuInIa9Axn/5bqW+loKs/GXxRaa9kztC58ZYpEkNKyiyQMU8XHY74
+         BpzLbjgsrbfv9g8xCYLeEd3jp+lvoBxkrAQqjQCYk5+kHlTNTkurIff/MkdsVjTo3sD0
+         qNi4q0RYZ97m1TrjKlInC2tOc2S8kl+810OV0TDowHbsjnVrSKZ8aFZBAD3w5ZKhZ2Yt
+         DZWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700198567; x=1700803367;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=v27wSqqrShCzztVlfwu/zWkCL4FJgwhMdx/No5LYqKU=;
+        b=XeOSiUyY9XPCa7HUYh0ZlQ0ji6o7jky4uEOmuq37jwWXyf4iZ4JuwiP9oSgjqyndvf
+         NMWZQv/VjKfbffE2LNnkdNFhfydNTWxnVvVA1wq+5rV+Rn9DoH7xvmVSc2aaRfsVJCYj
+         xQSinamUFS46zupY8qxbF3YwjPksICTI2py9a/N3KL1vNCHk8IaSshmGgsi90s4FmZOi
+         ZSCGuiBdTXUmecy10P81L3JkXhRZ12FiReTpbxvIWW+eRCnWFNcpOVhYApMgi5Jp1gnj
+         DFz1ur0657bd/OdgjuT2eZ7ee3+quDIU4CZYV7tqpBjAPxbOb6VqKqC5QxyPQWD+HL8e
+         ARhw==
+X-Gm-Message-State: AOJu0YyB+N1X8kLeCZ6JUW7njRI6BA372pUPDAFAFJVKKeWdTb3pyfOc
+        30/q5iLcBCyi6xmByg9lRNc=
+X-Google-Smtp-Source: AGHT+IFWYXXsNUiwsA640Taj8FVTPG3BMMTjDOpghUVLL6KpPkR4Qh5oftQ0IlSbTvHeL6rafpGPEw==
+X-Received: by 2002:a17:907:970f:b0:9ad:e3fd:d46c with SMTP id jg15-20020a170907970f00b009ade3fdd46cmr4388479ejc.10.1700198567153;
+        Thu, 16 Nov 2023 21:22:47 -0800 (PST)
+Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
+        by smtp.gmail.com with ESMTPSA id lt16-20020a170906fa9000b009e71efcce28sm380238ejb.210.2023.11.16.21.22.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Nov 2023 21:22:46 -0800 (PST)
+From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@collabora.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-pm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org,
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V3] dt-bindings: thermal: convert Mediatek Thermal to the json-schema
+Date:   Fri, 17 Nov 2023 06:22:14 +0100
+Message-Id: <20231117052214.24554-1-zajec5@gmail.com>
+X-Mailer: git-send-email 2.35.3
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.8
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
-        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
-        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When execute the dirty_log_test on some aarch64 machine, it sometimes
-trigger the ASSERT:
+From: Rafał Miłecki <rafal@milecki.pl>
 
-==== Test Assertion Failure ====
-  dirty_log_test.c:384: dirty_ring_vcpu_ring_full
-  pid=14854 tid=14854 errno=22 - Invalid argument
-     1  0x00000000004033eb: dirty_ring_collect_dirty_pages at dirty_log_test.c:384
-     2  0x0000000000402d27: log_mode_collect_dirty_pages at dirty_log_test.c:505
-     3   (inlined by) run_test at dirty_log_test.c:802
-     4  0x0000000000403dc7: for_each_guest_mode at guest_modes.c:100
-     5  0x0000000000401dff: main at dirty_log_test.c:941 (discriminator 3)
-     6  0x0000ffff9be173c7: ?? ??:0
-     7  0x0000ffff9be1749f: ?? ??:0
-     8  0x000000000040206f: _start at ??:?
-  Didn't continue vcpu even without ring full
+This helps validating DTS files. Introduced changes:
+1. Improved title
+2. Simplified description (dropped "This describes the device tree...")
+3. Dropped undocumented "reset-names" from example
 
-The dirty_log_test fails when execute the dirty-ring test, this is
-because the sem_vcpu_cont and the sem_vcpu_stop is non-zero value when
-execute the dirty_ring_collect_dirty_pages() function. When those two
-sem_t variables are non-zero, the dirty_ring_wait_vcpu() at the
-beginning of the dirty_ring_collect_dirty_pages() will not wait for the
-vcpu to stop, but continue to execute the following code. In this case,
-before vcpu stop, if the dirty_ring_vcpu_ring_full is true, and the
-dirty_ring_collect_dirty_pages() has passed the check for the
-dirty_ring_vcpu_ring_full but hasn't execute the check for the
-continued_vcpu, the vcpu stop, and set the dirty_ring_vcpu_ring_full to
-false. Then dirty_ring_collect_dirty_pages() will trigger the ASSERT.
-
-Why sem_vcpu_cont and sem_vcpu_stop can be non-zero value? It's because
-the dirty_ring_before_vcpu_join() execute the sem_post(&sem_vcpu_cont)
-at the end of each dirty-ring test. It can cause two cases:
-
-1. sem_vcpu_cont be non-zero. When we set the host_quit to be true,
-   the vcpu_worker directly see the host_quit to be true, it quit. So
-   the log_mode_before_vcpu_join() function will set the sem_vcpu_cont
-   to 1, since the vcpu_worker has quit, it won't consume it.
-2. sem_vcpu_stop be non-zero. When we set the host_quit to be true,
-   the vcpu_worker has entered the guest state, the next time it exit
-   from guest state, it will set the sem_vcpu_stop to 1, and then see
-   the host_quit, no one will consume the sem_vcpu_stop.
-
-When execute more and more dirty-ring tests, the sem_vcpu_cont and
-sem_vcpu_stop can be larger and larger, which makes many code paths
-don't wait for the sem_t. Thus finally cause the problem.
-
-To fix this problem, we can wait a while before set the host_quit to
-true, which gives the vcpu time to enter the guest state, so it will
-exit again. Then we can wait the vcpu to exit, and let it continue
-again, then the vcpu will see the host_quit. Thus the sem_vcpu_cont and
-sem_vcpu_stop will be both zero when test finished.
-
-Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 ---
-v1->v2:
-  - Fix the real logic bug, not just fresh the context.
+V2: Add "maintainers"
+V3: Introduce changes described in commit body
+    Fix schema syntax
+    Move unevaluatedProperties to the bottom
+    Rename file to match compatible more closely
 
-v1: https://lore.kernel.org/all/20231116093536.22256-1-shahuang@redhat.com/
----
- tools/testing/selftests/kvm/dirty_log_test.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+I'm totally sorry for sending broken schema patch yesterday. Brainfart.
+There is no excuse for sth that doesn't even pass dt_binding_check.
+  DTEX    Documentation/devicetree/bindings/thermal/mediatek,thermal.example.dts
+  DTC_CHK Documentation/devicetree/bindings/thermal/mediatek,thermal.example.dtb
 
-diff --git a/tools/testing/selftests/kvm/dirty_log_test.c b/tools/testing/selftests/kvm/dirty_log_test.c
-index 936f3a8d1b83..a6e0ff46a07c 100644
---- a/tools/testing/selftests/kvm/dirty_log_test.c
-+++ b/tools/testing/selftests/kvm/dirty_log_test.c
-@@ -417,7 +417,8 @@ static void dirty_ring_after_vcpu_run(struct kvm_vcpu *vcpu, int ret, int err)
- 
- static void dirty_ring_before_vcpu_join(void)
- {
--	/* Kick another round of vcpu just to make sure it will quit */
-+	/* Wait vcpu exit, and let it continue to see the host_quit. */
-+	dirty_ring_wait_vcpu();
- 	sem_post(&sem_vcpu_cont);
- }
- 
-@@ -719,6 +720,7 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 	struct kvm_vm *vm;
- 	unsigned long *bmap;
- 	uint32_t ring_buf_idx = 0;
-+	int sem_val;
- 
- 	if (!log_mode_supported()) {
- 		print_skip("Log mode '%s' not supported",
-@@ -726,6 +728,11 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		return;
- 	}
- 
-+	sem_getvalue(&sem_vcpu_stop, &sem_val);
-+	assert(sem_val == 0);
-+	sem_getvalue(&sem_vcpu_cont, &sem_val);
-+	assert(sem_val == 0);
+ .../bindings/thermal/mediatek,thermal.yaml    | 99 +++++++++++++++++++
+ .../bindings/thermal/mediatek-thermal.txt     | 52 ----------
+ 2 files changed, 99 insertions(+), 52 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
+ delete mode 100644 Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
+
+diff --git a/Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml b/Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
+new file mode 100644
+index 000000000000..d96a2e32bd8f
+--- /dev/null
++++ b/Documentation/devicetree/bindings/thermal/mediatek,thermal.yaml
+@@ -0,0 +1,99 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/thermal/mediatek,thermal.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
- 	/*
- 	 * We reserve page table for 2 times of extra dirty mem which
- 	 * will definitely cover the original (1G+) test range.  Here
-@@ -825,6 +832,13 @@ static void run_test(enum vm_guest_mode mode, void *arg)
- 		sync_global_to_guest(vm, iteration);
- 	}
- 
-+	/*
-+	 *
-+	 * Before we set the host_quit, let the vcpu has time to run, to make
-+	 * sure we consume the sem_vcpu_stop and the vcpu consume the
-+	 * sem_vcpu_cont, to keep the semaphore balance.
-+	 */
-+	usleep(p->interval * 1000);
- 	/* Tell the vcpu thread to quit */
- 	host_quit = true;
- 	log_mode_before_vcpu_join();
++title: Mediatek thermal controller for on-SoC temperatures
++
++maintainers:
++  - Sascha Hauer <s.hauer@pengutronix.de>
++
++description:
++  This device does not have its own ADC, instead it directly controls the AUXADC
++  via AHB bus accesses. For this reason it needs phandles to the AUXADC. Also it
++  controls a mux in the apmixedsys register space via AHB bus accesses, so a
++  phandle to the APMIXEDSYS is also needed.
++
++allOf:
++  - $ref: thermal-sensor.yaml#
++
++properties:
++  compatible:
++    enum:
++      - mediatek,mt2701-thermal
++      - mediatek,mt2712-thermal
++      - mediatek,mt7622-thermal
++      - mediatek,mt7981-thermal
++      - mediatek,mt7986-thermal
++      - mediatek,mt8173-thermal
++      - mediatek,mt8183-thermal
++      - mediatek,mt8365-thermal
++      - mediatek,mt8516-thermal
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    items:
++      - description: Main clock needed for register access
++      - description: The AUXADC clock
++
++  clock-names:
++    items:
++      - const: therm
++      - const: auxadc
++
++  mediatek,auxadc:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle to the AUXADC which the thermal controller uses
++
++  mediatek,apmixedsys:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle to the APMIXEDSYS controller
++
++  resets:
++    description: Reset controller controlling the thermal controller
++
++  nvmem-cells:
++    items:
++      - description:
++          NVMEM cell with EEPROMA phandle to the calibration data provided by an
++          NVMEM device. If unspecified default values shall be used.
++
++  nvmem-cell-names:
++    items:
++      - const: calibration-data
++
++required:
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - mediatek,auxadc
++  - mediatek,apmixedsys
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/clock/mt8173-clk.h>
++    #include <dt-bindings/reset/mt8173-resets.h>
++
++    thermal@1100b000 {
++        compatible = "mediatek,mt8173-thermal";
++        reg = <0x1100b000 0x1000>;
++        interrupts = <0 70 IRQ_TYPE_LEVEL_LOW>;
++        clocks = <&pericfg CLK_PERI_THERM>, <&pericfg CLK_PERI_AUXADC>;
++        clock-names = "therm", "auxadc";
++        resets = <&pericfg MT8173_PERI_THERM_SW_RST>;
++        mediatek,auxadc = <&auxadc>;
++        mediatek,apmixedsys = <&apmixedsys>;
++        nvmem-cells = <&thermal_calibration_data>;
++        nvmem-cell-names = "calibration-data";
++        #thermal-sensor-cells = <1>;
++    };
+diff --git a/Documentation/devicetree/bindings/thermal/mediatek-thermal.txt b/Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
+deleted file mode 100644
+index ac39c7156fde..000000000000
+--- a/Documentation/devicetree/bindings/thermal/mediatek-thermal.txt
++++ /dev/null
+@@ -1,52 +0,0 @@
+-* Mediatek Thermal
+-
+-This describes the device tree binding for the Mediatek thermal controller
+-which measures the on-SoC temperatures. This device does not have its own ADC,
+-instead it directly controls the AUXADC via AHB bus accesses. For this reason
+-this device needs phandles to the AUXADC. Also it controls a mux in the
+-apmixedsys register space via AHB bus accesses, so a phandle to the APMIXEDSYS
+-is also needed.
+-
+-Required properties:
+-- compatible:
+-  - "mediatek,mt8173-thermal" : For MT8173 family of SoCs
+-  - "mediatek,mt2701-thermal" : For MT2701 family of SoCs
+-  - "mediatek,mt2712-thermal" : For MT2712 family of SoCs
+-  - "mediatek,mt7622-thermal" : For MT7622 SoC
+-  - "mediatek,mt7981-thermal", "mediatek,mt7986-thermal" : For MT7981 SoC
+-  - "mediatek,mt7986-thermal" : For MT7986 SoC
+-  - "mediatek,mt8183-thermal" : For MT8183 family of SoCs
+-  - "mediatek,mt8365-thermal" : For MT8365 family of SoCs
+-  - "mediatek,mt8516-thermal", "mediatek,mt2701-thermal : For MT8516 family of SoCs
+-- reg: Address range of the thermal controller
+-- interrupts: IRQ for the thermal controller
+-- clocks, clock-names: Clocks needed for the thermal controller. required
+-                       clocks are:
+-		       "therm":	 Main clock needed for register access
+-		       "auxadc": The AUXADC clock
+-- mediatek,auxadc: A phandle to the AUXADC which the thermal controller uses
+-- mediatek,apmixedsys: A phandle to the APMIXEDSYS controller.
+-- #thermal-sensor-cells : Should be 0. See Documentation/devicetree/bindings/thermal/thermal-sensor.yaml for a description.
+-
+-Optional properties:
+-- resets: Reference to the reset controller controlling the thermal controller.
+-- nvmem-cells: A phandle to the calibration data provided by a nvmem device. If
+-               unspecified default values shall be used.
+-- nvmem-cell-names: Should be "calibration-data"
+-
+-Example:
+-
+-	thermal: thermal@1100b000 {
+-		#thermal-sensor-cells = <1>;
+-		compatible = "mediatek,mt8173-thermal";
+-		reg = <0 0x1100b000 0 0x1000>;
+-		interrupts = <0 70 IRQ_TYPE_LEVEL_LOW>;
+-		clocks = <&pericfg CLK_PERI_THERM>, <&pericfg CLK_PERI_AUXADC>;
+-		clock-names = "therm", "auxadc";
+-		resets = <&pericfg MT8173_PERI_THERM_SW_RST>;
+-		reset-names = "therm";
+-		mediatek,auxadc = <&auxadc>;
+-		mediatek,apmixedsys = <&apmixedsys>;
+-		nvmem-cells = <&thermal_calibration_data>;
+-		nvmem-cell-names = "calibration-data";
+-	};
 -- 
-2.40.1
+2.35.3
 
