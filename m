@@ -2,124 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8209C7EEB33
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 03:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2201B7EEB38
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 03:50:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344874AbjKQCsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 21:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49728 "EHLO
+        id S1345637AbjKQCu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 21:50:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43290 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKQCsh (ORCPT
+        with ESMTP id S229437AbjKQCu0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 21:48:37 -0500
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E8D1A0
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 18:48:32 -0800 (PST)
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046059;MF=cruzzhao@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0VwXyHQg_1700189309;
-Received: from 30.97.48.252(mailfrom:cruzzhao@linux.alibaba.com fp:SMTPD_---0VwXyHQg_1700189309)
-          by smtp.aliyun-inc.com;
-          Fri, 17 Nov 2023 10:48:30 +0800
-Message-ID: <6a741eca-6484-b907-8a1d-41f8868bc70c@linux.alibaba.com>
-Date:   Fri, 17 Nov 2023 10:48:29 +0800
+        Thu, 16 Nov 2023 21:50:26 -0500
+Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04F10D4A
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 18:50:24 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 94A58C433D9;
+        Fri, 17 Nov 2023 02:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1700189423;
+        bh=XkytwE5OeOaF3AHN/WW2vcDjb88B6z5uDTCuZBrPtdE=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Ay0jfgFbO1/r/ctHswf54erTI/d/qKftw8Jcf25hrPT38L8NU6EcbSevRFP4D6iRy
+         KcHnJJ85G2vbkrw7CFU9sbRMXlOjR4CXaRnNeoeVARFbEIR3ii+ULkW0XfwH2zNLVp
+         fPOI/D2jhu2EhX/aB7HTK6JN4n1rNBRjxEJCAoFlpdyaRfdTxsiuUohB4ZV1iprYXa
+         0y7b2bOvsXaGBLQEWw9mAs6hH0/DZ5MxCWVKP+9REzdTLsjMKBjuvgRiWLUrruezJh
+         AqnUE8qeIOX+uZBa9mOTl58jQ3GW8V1fDN8a00HYQenKwOmzkGsDlLQXi+Q09n4QZw
+         5umLgDuRivgKA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 7C87BE1F662;
+        Fri, 17 Nov 2023 02:50:23 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:102.0)
- Gecko/20100101 Thunderbird/102.15.1
-Subject: Re: [PATCH 3/4] sched/fair: introduce core_vruntime and
- core_min_vruntime
-Content-Language: en-US
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, vschneid@redhat.com, joel@joelfernandes.org,
-        linux-kernel@vger.kernel.org
-References: <20231115113341.13261-1-CruzZhao@linux.alibaba.com>
- <20231115113341.13261-4-CruzZhao@linux.alibaba.com>
- <20231115122027.GZ8262@noisy.programming.kicks-ass.net>
- <246dee1f-5e14-e075-13c7-ce876305cb54@linux.alibaba.com>
- <20231115152259.GB8262@noisy.programming.kicks-ass.net>
-From:   cruzzhao <cruzzhao@linux.alibaba.com>
-In-Reply-To: <20231115152259.GB8262@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-12.1 required=5.0 tests=BAYES_00,
-        ENV_AND_HDR_SPF_MATCH,NICE_REPLY_A,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,UNPARSEABLE_RELAY,USER_IN_DEF_SPF_WL
-        autolearn=ham autolearn_force=no version=3.4.6
+Subject: Re: [PATCH net-next v2] net: phy: broadcom: Wire suspend/resume for
+ BCM54612E
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <170018942350.29552.13239182407636546748.git-patchwork-notify@kernel.org>
+Date:   Fri, 17 Nov 2023 02:50:23 +0000
+References: <20231116193231.7513-1-marcovr@selfnet.de>
+In-Reply-To: <20231116193231.7513-1-marcovr@selfnet.de>
+To:     Marco von Rosenberg <marcovr@selfnet.de>
+Cc:     florian.fainelli@broadcom.com,
+        bcm-kernel-feedback-list@broadcom.com, andrew@lunn.ch,
+        hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE autolearn=ham
+        autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello:
+
+This patch was applied to netdev/net-next.git (main)
+by David S. Miller <davem@davemloft.net>:
+
+On Thu, 16 Nov 2023 20:32:31 +0100 you wrote:
+> The BCM54612E ethernet PHY supports IDDQ-SR.
+> Therefore wire-up the suspend and resume callbacks
+> to point to bcm54xx_suspend() and bcm54xx_resume().
+> 
+> Signed-off-by: Marco von Rosenberg <marcovr@selfnet.de>
+> ---
+> Changes in v2:
+> - Changed commit message
+> - Rebased on commit 3753c18ad5cf
+> 
+> [...]
+
+Here is the summary with links:
+  - [net-next,v2] net: phy: broadcom: Wire suspend/resume for BCM54612E
+    https://git.kernel.org/netdev/net-next/c/380b50ae3a04
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
 
-在 2023/11/15 下午11:22, Peter Zijlstra 写道:
-> On Wed, Nov 15, 2023 at 09:42:13PM +0800, cruzzhao wrote:
->>
->>
->> 在 2023/11/15 下午8:20, Peter Zijlstra 写道:
->>> On Wed, Nov 15, 2023 at 07:33:40PM +0800, Cruz Zhao wrote:
->>>> To compare the priority of sched_entity from different cpus of a core,
->>>> we introduce core_vruntime to struct sched_entity and core_min_vruntime
->>>> to struct cfs_rq.
->>>>
->>>> cfs_rq->core->core_min_vruntime records the min vruntime of the cfs_rqs
->>>> of the same task_group among the core, and se->core_vruntime is the
->>>> vruntime relative to se->cfs_rq->core->core_min_vruntime.
->>>
->>> But that makes absolutely no sense. vruntime of different RQs can
->>> advance at wildly different rates. Not to mention there's this random
->>> offset between them.
->>>
->>> No, this cannot be.
->>
->> Force idle vruntime snapshot does the same thing, comparing
->> sea->vruntime - cfs_rqa->min_vruntime_fi with seb->vruntime -
->> cfs_rqb->min_vruntime_fi, while sea and seb may have wildly different rates.
-> 
-> But that subtracts a from a and b from b, it doesn't mix a and b.
-> 
-> Note that se->vruntime - cfs_rq->min_vruntime is a very poor
-> approximation of lag. We have actual lag now.
-> 
-> Note that:
-> 
->   (sea - seb) + (min_fib - min_fia) =
->   (sea - min_fia) + (min_fib - seb) =
->   (sea - min_fia) - (seb - min_fib) =
->   'lag'a - 'lag'b
-> 
-> It doesn't mix absolute a and b terms anywhere.
-> 
->> Actually, cfs_rq->core->core_min_vruntime does the same thing as
->> cfs_rq->min_vruntime_fi, providing a baseline, but
->> cfs_rq->core->core_min_vruntime is more accurate.
-> 
-> min(cfs_rqa, cfs_rqb) is nonsense. And I can't see how min_vruntime_fi
-> would do anything like that.
-> 
-
-Introducing core_vruntime and core_min_vruntime is a try to maintain a
-single core wide cfs_rq, abstracting vruntime, and core_min_vruntime
-doesn't equal to min(cfs_rqa, cfs_rqb).
-
-Note that:
-sea->core_vruntime - seb->core_vruntime =
-sea->core_vruntime - seb->core_vruntime + core_min_vruntime -
-core_min_cruntime =
-(sea->core_vruntime - core_min_vruntime) - (seb->core_vruntime -
-core_min_vruntime) =
-'lag'a - 'lag'b
-
-The problem about wildly different vruntime rates also happens with
-vruntime snapshot. Consider the case that a core always force idle some
-SMT, and the min_vruntime_fi will never update. In this case, 'lag'a and
-'lag'b increase according to their respective weights in cfs, instead of
-the core wide weights.
-
-Afaic, there is no perfect solution or mechanism to solve this problem
-yet, but I'll try.
-
-Best,
-Cruz Zhao
