@@ -2,77 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id C35377EFB78
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A0B97EFB7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 23:33:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346223AbjKQWcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 17:32:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33130 "EHLO
+        id S1346256AbjKQWdf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 17:33:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36950 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQWcU (ORCPT
+        with ESMTP id S230379AbjKQWde (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 17:32:20 -0500
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C34D50;
-        Fri, 17 Nov 2023 14:32:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.de; s=s31663417;
-        t=1700260308; x=1700865108; i=w_armin@gmx.de;
-        bh=PsXYnaI2T53D8H5qrzK8vpKaHF+HAJvZZKNrV4eU6Lg=;
-        h=X-UI-Sender-Class:Date:Subject:To:References:Cc:From:
-         In-Reply-To;
-        b=rajSrZ4VMg32ZBgBbGdvf1a7Zpp1KuAjel3h7f5hAMxGKdX+JPUPmftN4SGVoOTM
-         Rm/wBUNQOrCJzQ+fdjYyjrvZKwo4eO8HNgoIy+gWMpUMFbJT5nc9jDOtrl8Rv8V52
-         15f1yocifhuY95HKXMDxNFMI8rT3coPlcLc89dFk7VSswBThQcAeirvV0+fwT8gPs
-         Ums8hkqVC6jxBqag5zQAG1N6eMTzDDR0lUNjtJaSMNRe+1zSfUUr8H5JIdHmUwl+i
-         8YDrDO5IzW9m3ZzL3TzbTEkWADIt6CsGKXLWXB5RJvOKSXAfEp5gOC4N2SAqjxgU6
-         uZxnpJN5K/zhhuU/Dw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEm6F-1r9rsV0055-00GGKM; Fri, 17
- Nov 2023 23:31:48 +0100
-Message-ID: <80f66f8f-84a7-4992-8d9d-e12f16915490@gmx.de>
-Date:   Fri, 17 Nov 2023 23:31:46 +0100
+        Fri, 17 Nov 2023 17:33:34 -0500
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EBED4F
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 14:33:30 -0800 (PST)
+Date:   Fri, 17 Nov 2023 17:33:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+        t=1700260408;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=op13F3XEN7FjDKlCWlYMcAKyKy+rR7LtkeYSw6GZX7w=;
+        b=ZjwZV0tN5AwYZkUFXKLEJ09DiglxyMaAjiwxGcFuTLiPvZu1fiILmcfbtxQ8Hf+RzTqezS
+        MoE8Pdnc2OcHN0a6/gVcuxR3Q5J1/Gj67jYjO3fMdtuzsslg3HAEaGsRMA0Hb4fDUiRZtF
+        b3io4pgMS0f6C2ZVDSvlF2q3F9yOf+U=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From:   Kent Overstreet <kent.overstreet@linux.dev>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bcachefs fixes
+Message-ID: <20231117223325.no4eqblc5zqte5xg@moria.home.lan>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/9] hwmon: (dell-smm) Add support for WMI SMM
- interface
-To:     =?UTF-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>
-References: <20231106064351.42347-1-W_Armin@gmx.de>
- <20231106064351.42347-8-W_Armin@gmx.de>
- <20231114141259.culmdxsoa3hduudm@pali>
-Content-Language: en-US
-Cc:     jdelvare@suse.com, Guenter Roeck <linux@roeck-us.net>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
-        platform-driver-x86@vger.kernel.org, markgross@kernel.org
-From:   Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <20231114141259.culmdxsoa3hduudm@pali>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:VhacByqGV0UnBketf8qhmFBkP8EkzaasOtoEfFHKn40Gq5Qph5x
- DRFuRkfNLQ8KtrydvQPHGaLphHvZG1ia8p7e1P1odFhHbrEluMfpIREgGarYSAElzxPaBlV
- ruc0goc8jugRLzLNERnWQowQy/41PnhQik2VvymVjlZLDp/TP3WJbnuqCT9HSfggX/GWaDZ
- hjgSWkd5MEHcR/h8oQXgg==
-UI-OutboundReport: notjunk:1;M01:P0:nrnFH7bXO5Q=;nolmpfcMndYQZx+qFq+UCI4dnOj
- 5kknALJAzPZoc28If+vy+vqPSd6HK+OQHkytdY7h5dHkkRs90yGD0VNLAYEieZYtlihw86dFx
- /xYTZ1J6V5y/2Ex0p8auq6k6+WqnNHqkIlZid/jnSirSOgA4luqnIIvQ2BMQh3bV5V8Sh7UvQ
- ZYolpcvCcgJ8Y42dWDheG+kVaTUnGzv0AFIYekITioOCTNZWEvPmYtDT7AKsBBj+/IFwV8LO5
- n5weuu2ktRNqGIk06TEBY9zc8C7n7guPpv8HZWYmfa+aNlFaKtR+QP6QvriJ//ppWtGXkejsO
- GQLaSmObZ9OK1n34DiTxI/9YLLAv9dmNgF7pfFamSTV+VjCLeLZLbQmwIK+misZuTMuhRU7gv
- mf+ieEabQx2H064CWipUt9UaJllI2506i6E55JVPbpvC1fgMHLKnSvaGWAQTH4dAxyTiSAhVI
- GG3an/pUcNVcd4BiaVscxfKrKS0Q/JLF3WzY+pu4Pm3cXZY6LFLtchpddzA1zTaFZSyBh+81z
- hwFEK6hYhlUoLsS5tUfVGybtVlm7+duhERjnkCpn5Im+OZFbe5JWBWl2JLHvAH2EfqI/7B7Tr
- nSHuiPBrdy3Le7FuY/SLlho92faVTN/jecW5vb7sQSHIGkMABEZ4bJnmE79o+edtIn2n/lPHn
- 3cMPIkNTWh26qbfxLoNkhhyAwaqE3/H5w5D7rUYvQSGA9BkYON8xMGffCcmpVg06BJnzFlRBw
- Q9wOjWM4bErbEacLm38MSpBTfglB5XbAmSAJkecSOOERyGovo2THrHEa9gEmJxlS6RyS1UpsV
- BSt3JW5bNhDG7qTT2/TIlGj/N2pt+RkxRKeNmffiQAkYP0UthC3iXuwQA+JyBfQdEIc8Xi9Og
- 4HhAZ/rZ2trHQy1/xhoA7FIJ83+7ROiD3WE1tFOOXSl1vz62Hu/YTKnv81+UY9xeikasf0MlM
- WIq0KgBk2rlYz+6nfzDRrHa4vRQ=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Migadu-Flow: FLOW_OUT
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
@@ -81,211 +45,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 14.11.23 um 15:12 schrieb Pali Roh=C3=A1r:
+Hi Linus, bugfix pull request for you :)
 
-> On Monday 06 November 2023 07:43:49 Armin Wolf wrote:
->> Some Dell machines like the Dell Optiplex 7000 do not support
->> the legacy SMM interface, but instead expect all SMM calls
->> to be issued over a special WMI interface.
->> Add support for this interface so users can control the fans
->> on those machines.
->>
->> Tested-by: <serverror@serverror.com>
->> Signed-off-by: Armin Wolf <W_Armin@gmx.de>
->> ---
->>   drivers/hwmon/Kconfig          |   1 +
->>   drivers/hwmon/dell-smm-hwmon.c | 198 +++++++++++++++++++++++++++++---=
--
->>   drivers/platform/x86/wmi.c     |   1 +
->>   3 files changed, 181 insertions(+), 19 deletions(-)
->>
->> diff --git a/drivers/hwmon/Kconfig b/drivers/hwmon/Kconfig
->> index cf27523eed5a..76cb05db1dcf 100644
->> --- a/drivers/hwmon/Kconfig
->> +++ b/drivers/hwmon/Kconfig
->> @@ -512,6 +512,7 @@ config SENSORS_DS1621
->>
->>   config SENSORS_DELL_SMM
->>   	tristate "Dell laptop SMM BIOS hwmon driver"
->> +	depends on ACPI_WMI
->>   	depends on X86
->>   	imply THERMAL
->>   	help
->> diff --git a/drivers/hwmon/dell-smm-hwmon.c b/drivers/hwmon/dell-smm-hw=
-mon.c
->> index 2547b09929e6..d1bcfd447bb0 100644
->> --- a/drivers/hwmon/dell-smm-hwmon.c
->> +++ b/drivers/hwmon/dell-smm-hwmon.c
->> @@ -12,6 +12,7 @@
->>
->>   #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->>
->> +#include <linux/acpi.h>
->>   #include <linux/capability.h>
->>   #include <linux/cpu.h>
->>   #include <linux/ctype.h>
->> @@ -34,8 +35,10 @@
->>   #include <linux/thermal.h>
->>   #include <linux/types.h>
->>   #include <linux/uaccess.h>
->> +#include <linux/wmi.h>
->>
->>   #include <linux/i8k.h>
->> +#include <asm/unaligned.h>
->>
->>   #define I8K_SMM_FN_STATUS	0x0025
->>   #define I8K_SMM_POWER_STATUS	0x0069
->> @@ -66,6 +69,9 @@
->>   #define I8K_POWER_AC		0x05
->>   #define I8K_POWER_BATTERY	0x01
->>
->> +#define DELL_SMM_WMI_GUID	"F1DDEE52-063C-4784-A11E-8A06684B9B01"
->> +#define DELL_SMM_LEGACY_EXECUTE	0x1
->> +
->>   #define DELL_SMM_NO_TEMP	10
->>   #define DELL_SMM_NO_FANS	3
->>
->> @@ -219,6 +225,102 @@ static const struct dell_smm_ops i8k_smm_ops =3D =
-{
->>   	.smm_call =3D i8k_smm_call,
->>   };
->>
->> +/*
->> + * Call the System Management Mode BIOS over WMI.
->> + */
->> +static int wmi_parse_register(u8 *buffer, u32 length, int *reg)
->> +{
->> +	__le32 value;
->> +	u32 reg_size;
->> +
->> +	if (length <=3D sizeof(reg_size))
->> +		return -ENODATA;
->> +
->> +	reg_size =3D get_unaligned_le32(buffer);
->> +	if (!reg_size || reg_size > sizeof(value))
->> +		return -ENOMSG;
->> +
->> +	if (length < sizeof(reg_size) + reg_size)
->> +		return -ENODATA;
->> +
->> +	memcpy_and_pad(&value, sizeof(value), buffer + sizeof(reg_size), reg_=
-size, 0);
-> Hello! In one of the patches in this patch series you changed type of
-> register from unsigned 32 bit integer to signed 32 bit integers. I'm not
-> sure if this change is really intended and what is the real reason for
-> it (because there is no explanation for it in the commit message). But
-> this memcpy_and_pad would not work correctly for signed negative values
-> because it is the highest bit which indicates negative number.
->
-> In my opinion, numbers and registers are unsigned. But if you have
-> figure out that they has to be treated as signed with possible negative
-> values then this fact has to be somehow handled.
+Cheers,
+Kent
 
-That change was by mistake, i will send an updated patch series once Hans
-has finished his review.
+The following changes since commit b85ea95d086471afb4ad062012a4d73cd328fa86:
 
->> +	*reg =3D le32_to_cpu(value);
->> +
->> +	return (int)(reg_size + sizeof(reg_size));
->> +}
->> +
->> +static int wmi_parse_response(u8 *buffer, u32 length, struct smm_regs =
-*regs)
->> +{
->> +	int *registers[] =3D {
->> +		&regs->eax,
->> +		&regs->ebx,
->> +		&regs->ecx,
->> +		&regs->edx
->> +	};
->> +	u32 offset =3D 0;
->> +	int ret, i;
->> +
->> +	for (i =3D 0; i < ARRAY_SIZE(registers); i++) {
->> +		if (offset >=3D length)
->> +			return -ENODATA;
->> +
->> +		ret =3D wmi_parse_register(buffer + offset, length - offset, registe=
-rs[i]);
->> +		if (ret < 0)
->> +			return ret;
->> +
->> +		offset +=3D ret;
->> +	}
->> +
->> +	if (offset !=3D length)
->> +		return -ENOMSG;
->> +
->> +	return 0;
->> +}
->> +
->> +static int wmi_smm_call(struct device *dev, struct smm_regs *regs)
->> +{
->> +	struct wmi_device *wdev =3D container_of(dev, struct wmi_device, dev)=
-;
->> +	struct acpi_buffer out =3D { ACPI_ALLOCATE_BUFFER, NULL };
->> +	u32 wmi_payload[] =3D {
->> +		sizeof(regs->eax),
->> +		regs->eax,
->> +		sizeof(regs->ebx),
->> +		regs->ebx,
->> +		sizeof(regs->ecx),
->> +		regs->ecx,
->> +		sizeof(regs->edx),
->> +		regs->edx
->> +	};
->> +	const struct acpi_buffer in =3D {
->> +		.length =3D sizeof(wmi_payload),
->> +		.pointer =3D &wmi_payload,
->> +	};
->> +	union acpi_object *obj;
->> +	acpi_status status;
->> +	int ret;
->> +
->> +	status =3D wmidev_evaluate_method(wdev, 0x0, DELL_SMM_LEGACY_EXECUTE,=
- &in, &out);
->> +	if (ACPI_FAILURE(status))
->> +		return -EIO;
->> +
->> +	obj =3D out.pointer;
->> +	if (!obj)
->> +		return -ENODATA;
->> +
->> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
->> +		ret =3D -ENOMSG;
->> +
->> +		goto err_free;
->> +	}
->> +
->> +	ret =3D wmi_parse_response(obj->buffer.pointer, obj->buffer.length, r=
-egs);
->> +
->> +err_free:
->> +	kfree(obj);
->> +
->> +	return ret;
->> +}
->> +
-> ...
->> diff --git a/drivers/platform/x86/wmi.c b/drivers/platform/x86/wmi.c
->> index a78ddd83cda0..0b3e63c21d26 100644
->> --- a/drivers/platform/x86/wmi.c
->> +++ b/drivers/platform/x86/wmi.c
->> @@ -106,6 +106,7 @@ MODULE_DEVICE_TABLE(acpi, wmi_device_ids);
->>   static const char * const allow_duplicates[] =3D {
->>   	"05901221-D566-11D1-B2F0-00A0C9062910",	/* wmi-bmof */
->>   	"8A42EA14-4F2A-FD45-6422-0087F7A7E608",	/* dell-wmi-ddv */
->> +	"F1DDEE52-063C-4784-A11E-8A06684B9B01", /* dell-smm-hwmon */
-> Here you used space instead of TAB after the comma.
+  Linux 6.7-rc1 (2023-11-12 16:19:07 -0800)
 
-You are right, i will fix this in the updated patch series.
+are available in the Git repository at:
 
-Thanks,
-Armin Wolf
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2023-11-17
 
->>   	NULL
->>   };
->>
->> --
->> 2.39.2
->>
+for you to fetch changes up to ba276ce5865b5a22ee96c4c5664bfefd9c1bb593:
+
+  bcachefs: Fix missing locking for dentry->d_parent access (2023-11-16 16:57:19 -0500)
+
+----------------------------------------------------------------
+bcachefs bugfixes for 6.7
+
+Lots of small fixes for minor nits and compiler warnings. Bigger items:
+
+ - The six locks lost wakeup is finally fixed: six_read_trylock() was
+   checking for the waiting bit before decrementing the number of
+   readers - validated the fix with a torture test.
+
+ - Fix for a memory reclaim issue: when needing to reallocate a key
+   cache key, we now do our usual GFP_NOWAIT; unlock(); GFP_KERNEL
+   dance.
+
+ - Multiple deleted inodes btree fixes
+
+ - Fix an issue in fsck, where i_nlink would be recalculated incorrectly
+   for hardlinked files if a snapshot had ever been taken.
+
+ - Kill journal pre-reservations: This is a bigger patch than I would
+   normally send at this point, but it deletes code and it fixes some of
+   our tests that would sporadically die with the journal getting stuck,
+   and it's a performance improvement, too.
+
+----------------------------------------------------------------
+Daniel J Blueman (1):
+      bcachefs: Fix potential sleeping during mount
+
+Gustavo A. R. Silva (2):
+      bcachefs: Use DECLARE_FLEX_ARRAY() helper and fix multiple -Warray-bounds warnings
+      bcachefs: Fix multiple -Warray-bounds warnings
+
+Jiapeng Chong (1):
+      bcachefs: make bch2_target_to_text_sb static
+
+Kent Overstreet (18):
+      bcachefs: Use correct fgf_t type as function argument
+      bcachefs: Fix null ptr deref in bch2_backpointer_get_node()
+      bcachefs: Guard against insufficient devices to create stripes
+      bcachefs: Split out btree_key_cache_types.h
+      bcachefs: Run btree key cache shrinker less aggressively
+      bcachefs: btree_trans->write_locked
+      bcachefs: Make sure to drop/retake btree locks before reclaim
+      bcachefs: Check for nonce offset inconsistency in data_update path
+      bcachefs: Kill journal pre-reservations
+      bcachefs: Fix iterator leak in may_delete_deleted_inode()
+      bcachefs: Fix error path in bch2_mount()
+      bcachefs: Fix missing transaction commit
+      bcachefs: Disable debug log statements
+      bcachefs: Don't decrease BTREE_ITER_MAX when LOCKDEP=y
+      bcachefs: Fix bch2_check_nlinks() for snapshots
+      bcachefs: Fix no_data_io mode checksum check
+      bcachefs: six locks: Fix lost wakeup
+      bcachefs: Fix missing locking for dentry->d_parent access
+
+ fs/bcachefs/backpointers.c          |  10 +--
+ fs/bcachefs/bcachefs.h              |   2 +-
+ fs/bcachefs/btree_iter.c            |   2 -
+ fs/bcachefs/btree_key_cache.c       |  37 ++++----
+ fs/bcachefs/btree_key_cache_types.h |  34 ++++++++
+ fs/bcachefs/btree_trans_commit.c    | 169 ++++++++++++++++++++----------------
+ fs/bcachefs/btree_types.h           |  35 +-------
+ fs/bcachefs/btree_update_interior.c |  30 -------
+ fs/bcachefs/btree_update_interior.h |   1 -
+ fs/bcachefs/data_update.c           |  28 ++++++
+ fs/bcachefs/disk_groups.c           |   4 +-
+ fs/bcachefs/ec.c                    |  16 +++-
+ fs/bcachefs/fs-io-pagecache.c       |   2 +-
+ fs/bcachefs/fs-io-pagecache.h       |   2 +-
+ fs/bcachefs/fs.c                    |   8 +-
+ fs/bcachefs/fsck.c                  |   2 +-
+ fs/bcachefs/inode.c                 |   8 +-
+ fs/bcachefs/io_write.c              |   2 +-
+ fs/bcachefs/journal.c               |  31 -------
+ fs/bcachefs/journal.h               |  98 ---------------------
+ fs/bcachefs/journal_io.c            |   7 ++
+ fs/bcachefs/journal_reclaim.c       |  42 ++++-----
+ fs/bcachefs/journal_types.h         |  26 ------
+ fs/bcachefs/six.c                   |   7 +-
+ fs/bcachefs/subvolume_types.h       |   2 +-
+ fs/bcachefs/trace.h                 |  11 +--
+ fs/bcachefs/xattr.c                 |   9 ++
+ 27 files changed, 248 insertions(+), 377 deletions(-)
+ create mode 100644 fs/bcachefs/btree_key_cache_types.h
