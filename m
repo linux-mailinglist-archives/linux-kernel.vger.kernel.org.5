@@ -2,47 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 18EF37EECFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:52:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F7F07EED01
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230359AbjKQHw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:52:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
+        id S230105AbjKQHz0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:55:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56200 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229935AbjKQHwz (ORCPT
+        with ESMTP id S229927AbjKQHzZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:52:55 -0500
-Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23785D4F;
-        Thu, 16 Nov 2023 23:52:47 -0800 (PST)
-X-QQ-mid: bizesmtp88t1700207542tiadw1lg
-Received: from HX01040049.powercore.com.cn ( [121.8.34.183])
-        by bizesmtp.qq.com (ESMTP) with 
-        id ; Fri, 17 Nov 2023 15:52:17 +0800 (CST)
-X-QQ-SSF: 01400000000000409000000A0000000
-X-QQ-FEAT: CR3LFp2JE4n7ku21/mYvIIQ5SpzgwTJQJy9ia+W2yMvgDWCJqk8SIZO2HV72T
-        soebgUlYxDzZ8T9R1juZePVonezYoxSx2shFCXGGE4lvABuDVrnxvENMHA0Z85kQsyPRfUh
-        A6j2zM5Eh9bXM/84+83SB2hOICcCjw4YO6bkvpzVnheWmOYFkPe+SeSr6QQmDShKV0Y+N9D
-        a70HSwCMTXlnXYWdrX6ISl1+r87E0aRdK5QkMtPm9+wMXTLDaWg7uFiElWGSnP+ejy/Fxcx
-        j5kAJsn+Jm/ywfa+4WypiyK4AAayLU+wXTb9Y/I6HCv6QokP8GUPofaNL2VlyR8KQLR2M5K
-        0YcMXa8IIIWOfRe/cojHSAfgKzpOJoxCgrSWuXaWjOsDi+0J/sMYMCV9b8xR1XrilkzY4Ff
-X-QQ-GoodBg: 2
-X-BIZMAIL-ID: 3930165603340763718
-From:   Zhao Ke <ke.zhao@shingroup.cn>
-To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
-        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Zhao Ke <ke.zhao@shingroup.cn>
-Subject: [PATCH] powerpc: Add PVN support for HeXin C2000 processor
-Date:   Fri, 17 Nov 2023 15:52:15 +0800
-Message-Id: <20231117075215.647-1-ke.zhao@shingroup.cn>
-X-Mailer: git-send-email 2.34.1
+        Fri, 17 Nov 2023 02:55:25 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3CDAD4F;
+        Thu, 16 Nov 2023 23:55:20 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AH7t5dt110494;
+        Fri, 17 Nov 2023 01:55:05 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1700207705;
+        bh=X5ZVsyyCxl3ZoLstqS+zqF8H29PAu996SHO/uwezhNI=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=ipM2Asqxv8/z+hwYRYnl+3q7+gSMV0ya3oH7K4mLFMuKSMU7hUoEo7uD5ydmpy3/1
+         9bBpUcfQvgLKwfuNwkNLr8hyLKvYvC35D00w1HZBh01+67CtdPFmZJMO3D1s06u+2d
+         z/9Wn3/yYmzt3gAwtdDSTeGzttsBndqFCjhammpU=
+Received: from DFLE100.ent.ti.com (dfle100.ent.ti.com [10.64.6.21])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AH7t5pW015727
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 17 Nov 2023 01:55:05 -0600
+Received: from DFLE107.ent.ti.com (10.64.6.28) by DFLE100.ent.ti.com
+ (10.64.6.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
+ Nov 2023 01:55:05 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE107.ent.ti.com
+ (10.64.6.28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 17 Nov 2023 01:55:05 -0600
+Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AH7t4bP003607;
+        Fri, 17 Nov 2023 01:55:05 -0600
+Date:   Fri, 17 Nov 2023 13:24:58 +0530
+From:   Jai Luthra <j-luthra@ti.com>
+To:     Andrew Davis <afd@ti.com>
+CC:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        Aradhya Bhatia <a-bhatia1@ti.com>,
+        Devarsh Thakkar <devarsht@ti.com>,
+        Vaishnav Achath <vaishnav.a@ti.com>,
+        Julien Massot <julien.massot@collabora.com>,
+        Martyn Welch <martyn.welch@collabora.com>
+Subject: Re: [PATCH 4/8] arm64: dts: ti: k3-am625-beagleplay: Add overlays
+ for OV5640
+Message-ID: <hkw7lkbw6wx6pfznnhnwwewsqfljmbam5r7r36o6kqfoomottf@qyq4dwdcswgs>
+References: <20231115-csi_dts-v1-0-99fc535b2bde@ti.com>
+ <20231115-csi_dts-v1-4-99fc535b2bde@ti.com>
+ <0a74f40d-a175-4c1d-9e6f-63cabdebb587@ti.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrsz:qybglogicsvrsz3a-0
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="pgtjdmajvimufoma"
+Content-Disposition: inline
+In-Reply-To: <0a74f40d-a175-4c1d-9e6f-63cabdebb587@ti.com>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
         T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
         version=3.4.6
@@ -52,114 +80,150 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HeXin Tech Co. has applied for a new PVN from the OpenPower Community
-for its new processor C2000. The OpenPower has assigned a new PVN
-and this newly assigned PVN is 0x0066, add pvr register related
-support for this PVN.
+--pgtjdmajvimufoma
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
-Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
----
- arch/powerpc/include/asm/reg.h            |  1 +
- arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
- arch/powerpc/kvm/book3s_pr.c              |  1 +
- arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
- arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
- drivers/misc/cxl/cxl.h                    |  3 ++-
- 6 files changed, 23 insertions(+), 3 deletions(-)
+Hi Andrew,
 
-diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
-index 4ae4ab9090a2..7fd09f25452d 100644
---- a/arch/powerpc/include/asm/reg.h
-+++ b/arch/powerpc/include/asm/reg.h
-@@ -1361,6 +1361,7 @@
- #define PVR_POWER8E	0x004B
- #define PVR_POWER8NVL	0x004C
- #define PVR_POWER8	0x004D
-+#define PVR_HX_C2000	0x0066
- #define PVR_POWER9	0x004E
- #define PVR_POWER10	0x0080
- #define PVR_BE		0x0070
-diff --git a/arch/powerpc/kernel/cpu_specs_book3s_64.h b/arch/powerpc/kernel/cpu_specs_book3s_64.h
-index c370c1b804a9..4f604934da7c 100644
---- a/arch/powerpc/kernel/cpu_specs_book3s_64.h
-+++ b/arch/powerpc/kernel/cpu_specs_book3s_64.h
-@@ -238,6 +238,21 @@ static struct cpu_spec cpu_specs[] __initdata = {
- 		.machine_check_early	= __machine_check_early_realmode_p8,
- 		.platform		= "power8",
- 	},
-+	{	/* 2.07-compliant processor, HeXin C2000 processor */
-+		.pvr_mask		= 0xffffffff,
-+		.pvr_value		= 0x00660000,
-+		.cpu_name		= "POWER8 (architected)",
-+		.cpu_features		= CPU_FTRS_POWER8,
-+		.cpu_user_features	= COMMON_USER_POWER8,
-+		.cpu_user_features2	= COMMON_USER2_POWER8,
-+		.mmu_features		= MMU_FTRS_POWER8,
-+		.icache_bsize		= 128,
-+		.dcache_bsize		= 128,
-+		.cpu_setup		= __setup_cpu_power8,
-+		.cpu_restore		= __restore_cpu_power8,
-+		.machine_check_early	= __machine_check_early_realmode_p8,
-+		.platform		= "power8",
-+	},
- 	{	/* 3.00-compliant processor, i.e. Power9 "architected" mode */
- 		.pvr_mask		= 0xffffffff,
- 		.pvr_value		= 0x0f000005,
-diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
-index 9118242063fb..5b92619a05fd 100644
---- a/arch/powerpc/kvm/book3s_pr.c
-+++ b/arch/powerpc/kvm/book3s_pr.c
-@@ -604,6 +604,7 @@ static void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
- 	case PVR_POWER8:
- 	case PVR_POWER8E:
- 	case PVR_POWER8NVL:
-+	case PVR_HX_C2000:
- 	case PVR_POWER9:
- 		vcpu->arch.hflags |= BOOK3S_HFLAG_MULTI_PGSIZE |
- 			BOOK3S_HFLAG_NEW_TLBIE;
-diff --git a/arch/powerpc/mm/book3s64/pkeys.c b/arch/powerpc/mm/book3s64/pkeys.c
-index 125733962033..c38f378e1942 100644
---- a/arch/powerpc/mm/book3s64/pkeys.c
-+++ b/arch/powerpc/mm/book3s64/pkeys.c
-@@ -89,7 +89,8 @@ static int __init scan_pkey_feature(void)
- 			unsigned long pvr = mfspr(SPRN_PVR);
- 
- 			if (PVR_VER(pvr) == PVR_POWER8 || PVR_VER(pvr) == PVR_POWER8E ||
--			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9)
-+			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9 ||
-+				PVR_VER(pvr) == PVR_HX_C2000)
- 				pkeys_total = 32;
- 		}
- 	}
-diff --git a/arch/powerpc/platforms/powernv/subcore.c b/arch/powerpc/platforms/powernv/subcore.c
-index 191424468f10..58e7331e1e7e 100644
---- a/arch/powerpc/platforms/powernv/subcore.c
-+++ b/arch/powerpc/platforms/powernv/subcore.c
-@@ -425,7 +425,8 @@ static int subcore_init(void)
- 
- 	if (pvr_ver != PVR_POWER8 &&
- 	    pvr_ver != PVR_POWER8E &&
--	    pvr_ver != PVR_POWER8NVL)
-+	    pvr_ver != PVR_POWER8NVL &&
-+		pvr_ver != PVR_HX_C2000)
- 		return 0;
- 
- 	/*
-diff --git a/drivers/misc/cxl/cxl.h b/drivers/misc/cxl/cxl.h
-index 0562071cdd4a..9ac2991b29c7 100644
---- a/drivers/misc/cxl/cxl.h
-+++ b/drivers/misc/cxl/cxl.h
-@@ -836,7 +836,8 @@ static inline bool cxl_is_power8(void)
- {
- 	if ((pvr_version_is(PVR_POWER8E)) ||
- 	    (pvr_version_is(PVR_POWER8NVL)) ||
--	    (pvr_version_is(PVR_POWER8)))
-+	    (pvr_version_is(PVR_POWER8)) ||
-+		(pvr_version_is(PVR_HX_C2000)))
- 		return true;
- 	return false;
- }
--- 
-2.34.1
+Thanks for the review.
 
+On Nov 16, 2023 at 08:26:40 -0600, Andrew Davis wrote:
+> On 11/15/23 3:51 AM, Jai Luthra wrote:
+> > Three different OV5640 modules are supported using the FFC connector on
+> > BeaglePlay:
+> > - Digilent PCam 5C
+> > - ALINX AN5641
+> > - TEVI-OV5640-*-RPI
+> >=20
+> > The Digilent and ALINX modules supply a 12Mhz XCLK to the sensor, while
+> > the TEVI module supplies a 24Mhz XCLK, thus requiring a separate
+> > overlay.
+> >=20
+> > Signed-off-by: Jai Luthra <j-luthra@ti.com>
+> > ---
+> >   arch/arm64/boot/dts/ti/Makefile                    |  7 ++
+> >   .../dts/ti/k3-am625-beagleplay-csi2-ov5640.dtso    | 77 +++++++++++++=
++++++++++
+> >   .../ti/k3-am625-beagleplay-csi2-tevi-ov5640.dtso   | 77 +++++++++++++=
++++++++++
+> >   3 files changed, 161 insertions(+)
+> >=20
+> > diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/M=
+akefile
+> > index 77a347f9f47d..e49e32414560 100644
+> > --- a/arch/arm64/boot/dts/ti/Makefile
+> > +++ b/arch/arm64/boot/dts/ti/Makefile
+> > @@ -9,9 +9,15 @@
+> >   # alphabetically.
+> >   # Boards with AM62x SoC
+> > +k3-am625-beagleplay-csi2-ov5640-dtbs :=3D k3-am625-beagleplay.dtb \
+> > +	k3-am625-beagleplay-csi2-ov5640.dtbo
+> > +k3-am625-beagleplay-csi2-tevi-ov5640-dtbs :=3D k3-am625-beagleplay.dtb=
+ \
+> > +	k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
+> >   k3-am625-sk-hdmi-audio-dtbs :=3D k3-am625-sk.dtb k3-am62x-sk-hdmi-aud=
+io.dtbo
+> >   k3-am62-lp-sk-hdmi-audio-dtbs :=3D k3-am62-lp-sk.dtb k3-am62x-sk-hdmi=
+-audio.dtbo
+> >   dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-beagleplay.dtb
+> > +dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-beagleplay-csi2-ov5640.dtb
+> > +dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-beagleplay-csi2-tevi-ov5640.dtb
+>=20
+>=20
+> We don't need .dtb files for each overlay combination, you should leave t=
+hese
+> as overlays only, and just apply them at boot time as needed.
+>=20
+> To test apply them at build time, you can use the CONFIG_OF_ALL_DTBS
+> method that Rob suggested here[0].
+>=20
+> # Build time test only, enabled by CONFIG_OF_ALL_DTBS
+> dtb- +=3D \
+> 	k3-am625-beagleplay-overlay-test1.dtb \
+> 	k3-am625-beagleplay-overlay-test2.dtb
+> k3-am625-beagleplay-overlay-test1-dtbs :=3D k3-am625-beagleplay.dtb \
+> 	k3-am625-beagleplay-csi2-ov5640.dtbo
+> k3-am625-beagleplay-overlay-test1-dtbs :=3D k3-am625-beagleplay.dtb \
+> 	k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
+>=20
+> dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-beagleplay-csi2-ov5640.dtbo
+> dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
+>=20
+> [0] https://lore.kernel.org/all/CAL_Jsq+8jisrwEqzz7tZnsV9g2+LmThwpO7sHRFA=
+-zh+6q8XuA@mail.gmail.com/
+>=20
+
+Makes sense, I was able to test this out locally by adding:
+OF_ALL_DTBS=3Dy
+COMPILE_TEST=3Dy
+in my config.
+
+Will send a v2 with the above changes.
+
+I think Rob's comment on [0] for testing every combination is valid=20
+here, so I will apply each camera overlay on each board that it can be=20
+used with.
+
+> >   dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-phyboard-lyra-rdk.dtb
+> >   dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-sk.dtb
+> >   dtb-$(CONFIG_ARCH_K3) +=3D k3-am625-verdin-nonwifi-dahlia.dtb
+> > @@ -81,6 +87,7 @@ dtb-$(CONFIG_ARCH_K3) +=3D k3-am69-sk.dtb
+> >   dtb-$(CONFIG_ARCH_K3) +=3D k3-j784s4-evm.dtb
+> >   # Enable support for device-tree overlays
+> > +DTC_FLAGS_k3-am625-beagleplay +=3D -@
+>=20
+> Having any DTBO applied to the base during build will add symbols to the
+> base for you, no need to add this line.
+> (Please check that this is true for the OF_ALL_DTBS case above, I've not
+> checked yet, we should fix if not).
+
+Without the explicit "-@" flag, the base dtb is built with symbols=20
+*only* if we were doing compile test with OF_ALL_DTBS=3Dy.
+
+For the standard build (arm64/configs/defconfig) the base DTB is built=20
+*without* symbols as make does not see any combined DTBs as targets.
+>=20
+> I plan to remove the same below in later patches so folks will stop adding
+> more of these lines.
+>=20
+
+It is not clear to me how we could avoid explicitly enabling the "-@"=20
+flag for non-compile-test builds, let me know if you have any ideas.
+
+> Andrew
+>=20
+> >   DTC_FLAGS_k3-am625-sk +=3D -@
+> >   DTC_FLAGS_k3-am62-lp-sk +=3D -@
+> >   DTC_FLAGS_k3-am6548-iot2050-advanced-m2 +=3D -@
+
+[...]
+
+--=20
+Thanks,
+Jai
+
+GPG Fingerprint: 4DE0 D818 E5D5 75E8 D45A AFC5 43DE 91F9 249A 7145
+
+--pgtjdmajvimufoma
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEETeDYGOXVdejUWq/FQ96R+SSacUUFAmVXHE8ACgkQQ96R+SSa
+cUVuLRAAh3KxXOSilixweMEHzQoTSyTSKAVexknxk7qSM69DmhV1EbZkW/r4psHZ
+/HQmt8fYeYPx1X1BRgB6yMr8CFBNYk4JmpCAxWq/weo+hqevDFLBkcBKa8ZHLmB6
+Gys4tpEO17tGufMHYkg5FHCWHQT3oY+32QlHmJuyYR1g5Mhqf6HBCA0tkhCfg82m
+pNXrx3KR36+Nlf4W1ea8Q//WsdlvM87GpZhkVVwblIVlXFSPCc+3TWswfDnM5Euo
+CG6b3BP6RaEk21v607+HOMsQeB85kv/Csjr9owz9a0EU+oAcV2eEXze9WnPRm0zQ
+JZnTUBPaF1RTVMPmE+Xg9sG1wtvT5ECb75NTAFZIgSDHo69Ag4xnLrOquIcWS5Zi
+weCeGS9dM9fHxq0lWek3KquaTYMtWPaV0UTkWh3lX9v7Whoep9Rm6LO4G/5EZrvP
+Hp1f20pELl6BkJ5qGE/wEwo5wc3sDiLRMVkL3hxEocKopKkx9VyuISgicQ3MvSj/
+uuhMpo3xfpJ+alTrNKqLnBW1vMLjqG3X80rRZzObOP6h3xMv3gFObCbioFIpDzVD
+onN2/mJUldM4QeWb8Eij8QjlrliIUsUFCCI/iegy84Pvprzrfey6czOOMEAnfOcO
+LPY4NjtOxAMht85db4dq4ayBVWP5xSlD+JddltBWUv0uVcQgoJI=
+=F4p5
+-----END PGP SIGNATURE-----
+
+--pgtjdmajvimufoma--
