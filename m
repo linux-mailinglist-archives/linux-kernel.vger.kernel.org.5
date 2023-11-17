@@ -2,148 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BE377EFC31
-	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 00:40:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DEC877EFC35
+	for <lists+linux-kernel@lfdr.de>; Sat, 18 Nov 2023 00:43:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346332AbjKQXkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 18:40:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59166 "EHLO
+        id S1346292AbjKQXne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 18:43:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34370 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229737AbjKQXkW (ORCPT
+        with ESMTP id S230287AbjKQXnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 18:40:22 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF3210EC
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:40:18 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-5437269a661so7095953a12.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:40:18 -0800 (PST)
+        Fri, 17 Nov 2023 18:43:33 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE9AFD7A
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:43:29 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id a1e0cc1a2514c-7bae8dd095cso870957241.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 15:43:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700264417; x=1700869217; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=OlqVaq6D41QiTKqXp+cP559TOMOF0nz23L1kNSeWPn4=;
-        b=iqFv1s5berimbDCqL3GM2It6vnp5LMLhb1UJWyHfazF0ULJ+xakbq+YE65trFt7LrK
-         4CieDymQWjHMfh50k07tCR0vycJkSd2oShIAWj/I8/IQhHjGeIVw6aEtcXC9Czbd36MH
-         oJjH77awIrgKebNhX2YFyPOfiFDawx2/iU/AZnulsTFM/NWXOKJnlh/F9ISaKTOC1Sm+
-         tktVmByWFzvKMKRsRVL26U7JUoqGNgffJA+IVYM9YgN7b5RoPgnStnzkIunctdZUsWmy
-         vXVvgGcx3jSHaIx/eWJGKxZkDH4fw4nubPK/Lodd4nU3Ojc0A9+xOBuyFJFrMQ5pg5Z+
-         9wrw==
+        d=google.com; s=20230601; t=1700264609; x=1700869409; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N1NsfHVE0Rs4ohooYR+8BLZuke8eixnzhlqm2hdvcxE=;
+        b=2JGkE38tL9tv2Ry3f1VtdhShOqff8xHwSkFZ8ZUfKrUZHtyNkAbZNghK0BADOrz8Hj
+         vtWGlw+AtRprl/3fpJ4vHGQoYajHuw9/mTmV/4nULkEjuf3Oda5fbfhK9v9K0T9UsRqD
+         mnyVu1d/1S32suIZFt3R/CIbOCZYSiQM1yAui5Zxf4SbM+Q71Mn0TxvbwzN44CTwsG8U
+         WCoHjHVaNmmuLldEmSs/jCPazPqYOZfOiTvPXeYdqIxcPkhhmzhBCuRQYfglXt8+Hr6p
+         rnuubfRzW7+GbKzO22Q+prdi44N28gCyPudJxqCRuhdQpejaQZ0vJ2euy88bdwIYqXUA
+         aL/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700264417; x=1700869217;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OlqVaq6D41QiTKqXp+cP559TOMOF0nz23L1kNSeWPn4=;
-        b=H9bx8wWSQ0dydPVBYFJYOauyGofOlLQRHhafENCVliGUgQPm2LhgUvmXBycelEWnbf
-         kCHKUe/c/FL5xjjkGLXDzTHdr2Db2e8u2OqSno6yUKy/KxD1NlT1PoKLsDSg+h2R9bas
-         h4AAQFJCEQvZmqZoCGV9T3m5cLpg1TMwECWS+T238q1y1Tr2fu32ovWmCcOxoCgNgZL+
-         HHQbwk81A012diRKbCnddly+jWZmsNRNuzT7K8dX9yU1p7V5OUgho9+oYkPZmqGxQL9J
-         519+ZJb8coqfJwjpiknwxarHQ4SR5s191qiuC9J0uCc8+umWG8ZGhPdXW+EWRAZTE5yU
-         t4lQ==
-X-Gm-Message-State: AOJu0YzGxHO1+zEDEy9ULfQNNcUEkTI+zMFDjVqzTuN9uDqAW0MbZ2fi
-        0NoyinY3Y4BzJpGRirpxKfbNIg==
-X-Google-Smtp-Source: AGHT+IGE5JB/nYaBzZXWXm85KHIOGc2UA6YFUsCTrsBvUGlcytqCP9PDGe4vWuZPvrJe3cpJJOwG6Q==
-X-Received: by 2002:a17:906:6810:b0:9c7:6523:407b with SMTP id k16-20020a170906681000b009c76523407bmr5633991ejr.17.1700264416891;
-        Fri, 17 Nov 2023 15:40:16 -0800 (PST)
-Received: from [192.168.201.100] (178235187040.dynamic-4-waw-k-2-3-0.vectranet.pl. [178.235.187.40])
-        by smtp.gmail.com with ESMTPSA id lt16-20020a170906fa9000b009e71efcce28sm1269357ejb.210.2023.11.17.15.40.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 15:40:16 -0800 (PST)
-Message-ID: <796fd7be-2008-460e-acf7-e335de780104@linaro.org>
-Date:   Sat, 18 Nov 2023 00:40:13 +0100
+        d=1e100.net; s=20230601; t=1700264609; x=1700869409;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N1NsfHVE0Rs4ohooYR+8BLZuke8eixnzhlqm2hdvcxE=;
+        b=PMkHJsRjn+j5joNKaq2mlpVks+gBsdAeneefDyaJoQoSOewLskSHKbJhc8qpLxjnez
+         PigdpFsPIdcqlTZRohzwqB1xrRlIIPdACOA66sxqDQeBaQq6RErwXoYzxfm2PG3Fxnjc
+         XcKX+tjn+29vaYuLr7hyRNOIAuARnmt59sSYDR1T3VPR4cbqpdusd6qkEQUdhzqMkGbZ
+         Kg84MGtbQojYvUCbLJapiQpFd6+pgYeGhVZheEXJEKgZi3KU2SUm9mOoOVP247+rl9ct
+         SUGczqN8AtcEfcL/cMPlMNWNVk6WCSge+5bcPe+WSoxSexDsOa8IrJdZMpUbkqFQLjis
+         T3Jw==
+X-Gm-Message-State: AOJu0YxikMWOesSZSIxAtgj3vDLGQTuzC+xJdS3pjk5efd3FCWxkuILi
+        kaVFNaC33xsULy7pHUEHcWD72sfhQGfAr2SHKOnbmBzOd7NHEATAAwsW7A==
+X-Google-Smtp-Source: AGHT+IGsqH+g23NOuftKZQaJNB6FfaihsCTnH4slf6umspoonCke6N4LfYHlgOLJNv+d2Gp+Ls+hxPht5cpbCXm4f4Y=
+X-Received: by 2002:a05:6102:34e2:b0:457:cc6c:9491 with SMTP id
+ bi2-20020a05610234e200b00457cc6c9491mr961954vsb.17.1700264608786; Fri, 17 Nov
+ 2023 15:43:28 -0800 (PST)
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: power: rpmpd: Update part number to
- X1E80100
-Content-Language: en-US
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        ulf.hansson@linaro.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_rjendra@quicinc.com,
-        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, quic_tsoni@quicinc.com,
-        neil.armstrong@linaro.org
-References: <20231117104254.28862-1-quic_sibis@quicinc.com>
- <20231117104254.28862-2-quic_sibis@quicinc.com>
- <8fafbba6-86de-4ddc-966e-48e2152f6b1a@linaro.org>
- <97216704-a102-532d-1039-c9342a19e2fd@quicinc.com>
- <81a1bfee-851c-4f05-b816-47abcebed99c@linaro.org>
-From:   Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <81a1bfee-851c-4f05-b816-47abcebed99c@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+References: <20231106162310.85711-1-mario.limonciello@amd.com>
+ <CAHQZ30DP8ED4g3bib-tZ53rm2q2_ouEEL3TxD-SgK4YrCe3bew@mail.gmail.com>
+ <d55a80f7-ca4d-406f-b2c8-b2bba45e3104@amd.com> <20231113223819fb469198@mail.local>
+ <ZVM4nFaDTwrKMr8K@duo.ucw.cz> <2023111422283827b2a3f2@mail.local>
+ <5029e355-6fe8-4d48-9bc3-20256adfbdb7@amd.com> <2023111722570552652970@mail.local>
+In-Reply-To: <2023111722570552652970@mail.local>
+From:   Raul Rangel <rrangel@google.com>
+Date:   Fri, 17 Nov 2023 16:43:15 -0700
+Message-ID: <CAHQZ30AkayKxQkLajaY6gcFbGMWb=wu3Nqxzed5yFjLo8bX4hQ@mail.gmail.com>
+Subject: Re: [PATCH] rtc: cmos: Use ACPI alarm for non-Intel x86 systems too
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Mario Limonciello <mario.limonciello@amd.com>,
+        Pavel Machek <pavel@ucw.cz>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        "open list:REAL TIME CLOCK (RTC) SUBSYSTEM" 
+        <linux-rtc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        alvin.zhuge@gmail.com, renzhamin@gmail.com, kelvie@kelvie.ca,
+        Mark Hasemeyer <markhas@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-17.6 required=5.0 tests=BAYES_00,DKIMWL_WL_MED,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        ENV_AND_HDR_SPF_MATCH,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED,USER_IN_DEF_DKIM_WL,
+        USER_IN_DEF_SPF_WL autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17.11.2023 13:39, Krzysztof Kozlowski wrote:
-> On 17/11/2023 12:46, Sibi Sankar wrote:
->> Hey Krzysztof,
->>
->> Thanks for taking time to review the series.
->>
->> On 11/17/23 16:35, Krzysztof Kozlowski wrote:
->>> On 17/11/2023 11:42, Sibi Sankar wrote:
->>>> Replace SC8380xp with the updated part number (X1E80100).
->>>>
->>>
->>> You need to explain why. We don't update compatibles based on marketing
->>> wishes.
->>
->> What we imply is that X1E80100 is the part number you would get when you
->> read out from a Snapdragon X Elite device in the wild, when it is
->> available and we didn't have this information when we posted out v1.
-> 
-> The commit msg must explain why.
-(what Krzysztof meant is that your explanation is ok but it needs to be
-part of the commit message and not just a reply here)
+On Fri, Nov 17, 2023 at 3:57=E2=80=AFPM Alexandre Belloni
+<alexandre.belloni@bootlin.com> wrote:
+>
+> On 14/11/2023 18:15:02-0600, Mario Limonciello wrote:
+> > On 11/14/2023 16:28, Alexandre Belloni wrote:
+> > > On 14/11/2023 10:06:36+0100, Pavel Machek wrote:
+> > > > On Mon 2023-11-13 23:38:19, Alexandre Belloni wrote:
+> > > > > On 13/11/2023 15:36:28-0600, Mario Limonciello wrote:
+> > > > > > Now that the merge window is over, can this be picked up?
+> > > > > >
+> > > > >
+> > > > > I'd be happy to invoice AMD so they get a quick response time.
+> > > >
+> > > > That is a really bad joke.
+> > >
+> > > Why would it be a joke?
+> > >
+> > >  From what I get this is an issue since 2021, I don't get how this is=
+ so
+> > > urgent that I get a ping less than 24h after the end of the merge
+> > > window.
+> >
+> > It's possibly longer; but I don't have a large enough sample to say tha=
+t
+> > it's safe that far back.
+>
+> Would this help this one:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D68331
 
-Moreover, it would also be good to say something like "this binding has
-no users and has been erroneusly introduced very recently, so it was
-decided that changing it is okay", as this is a rather special case.
 
-Konrad
+Honestly, the HPET_EMULATE_RTC code is what drove me to switch the AMD
+chromebooks over to using the ACPI timer:
+https://chromium-review.googlesource.com/c/chromiumos/overlays/board-overla=
+ys/+/2355073.
+
+Ideally if the HPET was configured with proper IRQs by the firmware,
+the kernel wouldn't enable the HPET legacy emulation bit. The HPET
+spec defines that when the legacy replacement option bit is set, the
+HPET takes control of the RTC (#8) and timer (#2) interrupts. Why it
+takes over the RTC interrupt I've never understood. The HPET is not an
+RTC, so it results in software having to emulate it which results in
+extra complexity. If the kernel didn't set the HPET legacy emulation
+bit when the HPET declared proper IRQs, then the RTC wake interrupt
+would keep working as expected. I guess there's not much benefit to
+fixing this anymore, now that this ACPI timer patch has landed. If a
+platform were to release new firmware to define proper HPET IRQs, the
+date would bump, and it would fall into the ACPI path.
+
+>
+>
+>
+> --
+> Alexandre Belloni, co-owner and COO, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
