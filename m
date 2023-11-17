@@ -2,140 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 4951E7EF885
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:18:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2BD7EF82C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346295AbjKQUSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:18:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36912 "EHLO
+        id S232152AbjKQUJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:09:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235737AbjKQURx (ORCPT
+        with ESMTP id S229535AbjKQUJY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:17:53 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADD1B171A;
-        Fri, 17 Nov 2023 12:17:50 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id 4fb4d7f45d1cf-53f9af41444so3447357a12.1;
-        Fri, 17 Nov 2023 12:17:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700252269; x=1700857069; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vC+himnz38l/KoIV2K7+BOXv6I9H6nNXMdtkGXbKeCU=;
-        b=UcneZDwRmtlmn5yaZCjLOotQ7CXLlHCK5Cfw1RM7PXElF3pN0V6Ff83mx5oSCgRTCG
-         nqIcm1LJql6ncOvYteoxVLnqvBeCi9zJOqd+aYhGBrNpsc/Yt3XZn6x4bvUvwFrYpQAg
-         izrKa7dFPeiCOJUm7JR7XHvPeHyQE1jl7qtaDo6daS3hNKRaTI2gno+zcK5gvEAHC2aS
-         lkHKiMWp1Pecsp5MUesMdbc5hZwHbJxBVt1BX4Ys1m8dbsFCHhrO6CTL3VCZObTcFIZp
-         c4mN9h6RCqC4cuDiItQ1jhEBvhLEzFeWxhXIsYM7ZuaGxBZ0gI8CCBLyx8/fJF0dw1AR
-         z88w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700252269; x=1700857069;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vC+himnz38l/KoIV2K7+BOXv6I9H6nNXMdtkGXbKeCU=;
-        b=smGfsIDe4HIn6KPImr8Lg9GeO3UAiF20G8OpnNvBomBMnNcy8aot02Uy63ol6ut8Al
-         ypIdH5LEFDG9BMxWfoCLhy5w9MWaYgK/Y13XPmD38Q17jAbOgHbkYjjvRmFp6B+1C3b2
-         ll5SrDW5psq56wuTiWlMrBZClXaiuvibxhSfcuIAUUpyqLKrm2pTkovD05f+brkgGB3s
-         ajypX0oTQWqqfBaZCCYwrjOJNdxn45ywHaiCXMeDg55GodZ9/BFOlN6VZxgho+4j10Yp
-         PLDaMr9d2AcsfnnSSZYyQ5G/mct6LbG0jah6RsTDY0uoeuMqlhzy8PfapA7If/oAe2DM
-         2Rug==
-X-Gm-Message-State: AOJu0Yw+Yyoi6nuxnZTFrNXT3sFAFcOCxN3BfDkgmC0uvWjDa2e212dy
-        PMIwLx6jjRAqu/+cT4dUCGg=
-X-Google-Smtp-Source: AGHT+IGCNBi4gWuvRE++iwdLWuYcOU7PqdFx0Dwq+NJsFkMmZzQ+CsPzHq5WwKF5sfxu4plbJLWyHA==
-X-Received: by 2002:a17:907:9056:b0:9f8:f6bd:2952 with SMTP id az22-20020a170907905600b009f8f6bd2952mr134480ejc.32.1700252268786;
-        Fri, 17 Nov 2023 12:17:48 -0800 (PST)
-Received: from david-ryuzu.fritz.box ([188.195.169.6])
-        by smtp.googlemail.com with ESMTPSA id e7-20020a1709062c0700b0099d804da2e9sm1130630ejh.225.2023.11.17.12.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 12:17:48 -0800 (PST)
-From:   David Wronek <davidwronek@gmail.com>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@kernel.org>,
-        Manivannan Sadhasivam <mani@kernel.org>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Joe Mason <buddyjojo06@outlook.com>, hexdump0815@googlemail.com
-Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-phy@lists.infradead.org,
-        linux-scsi@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        phone-devel@vger.kernel.org, David Wronek <davidwronek@gmail.com>
-Subject: [PATCH v2 8/8] arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
-Date:   Fri, 17 Nov 2023 21:08:40 +0100
-Message-ID: <20231117201720.298422-9-davidwronek@gmail.com>
-X-Mailer: git-send-email 2.42.1
-In-Reply-To: <20231117201720.298422-1-davidwronek@gmail.com>
-References: <20231117201720.298422-1-davidwronek@gmail.com>
+        Fri, 17 Nov 2023 15:09:24 -0500
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2045.outbound.protection.outlook.com [40.107.94.45])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67CA9D57;
+        Fri, 17 Nov 2023 12:09:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=b3qCnPjXwtHauV2tmWFOVOJC9NLrZ8qq6jMIrxUzh5OsPzJN6+eVgPxBcw/E0MDDzMmgDxycGGyT2kuLkUXTV59I4DqcTpmTggowL1sQsTmdi/OzvTQy/SW5EpAGHnwkn27elDWqw9x8HLWfrOaftMTOiVqO9Jy5hIPxhEFmGSEiqr2lIgxSahGuI5ZsvTBZ0rxsqVJsJSgozDp88C9+uf74BHtDpozItKWeUwWKPFZ+KqBTkHFutrbyK7VeTqH9H7yuulBbpd/BVjHSOiezVzw+89zDKqMerWCPGGYvSvNzjD2Az/v/IzvIEJJ50mZMNSmVPcjKdwiZ3sQEJvg0EA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=kl4ACIyxG0KEiUe5MFndfeRZy1acSZNFms17dbRD0Zo=;
+ b=fJs2CkZTbtQsdnHWuJeJWYpHW2TQbC48usFocJ350ZfK9uhwV95q3X6HUm1JB+gHZlpg4mT+5mbWOA4BdXYKcNxMvvPPCene1RNhgMdDFmuDmtYioAuytMEZOOjvPkn8oK8byEbHYA3W7c7+77MHqCIlI2meUwF1R60vnRkcPyI8VyMasiFqCBSr+fP83RFyaalQl5xWKKPkloA9B35vrxdvFd+ggQOiUFLookDugRmCo2aLaWp1MBomnIWtq3rlPIwU28yEo7oz5nqfbFiy0eVfsH5L4ISwiyYRWCxmTdVCslcIbfWvfNzGvoYvCOblUE73BCbSLwBTGdBv+RZtAg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=kl4ACIyxG0KEiUe5MFndfeRZy1acSZNFms17dbRD0Zo=;
+ b=MU3aDuJdUpjEbi6qm9dhi8ZoAy4AkevVQZjm/VnLdnJDZujmDPzF1MX17ipXYn6j73lQuj49ZnfyhhhtM3A7Xwi0haelOoEMW6sudxcTSaLnQ4Lkc8/nQDiSsprgwkWa1XMwqgW88xTJDASmVpvpz/l3hU3EqfJSpOLKYMyvhGY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com (2603:10b6:5:149::18)
+ by SJ2PR12MB8184.namprd12.prod.outlook.com (2603:10b6:a03:4f2::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.20; Fri, 17 Nov
+ 2023 20:09:18 +0000
+Received: from DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70]) by DM6PR12MB3657.namprd12.prod.outlook.com
+ ([fe80::5786:22a:27df:9a70%7]) with mapi id 15.20.7002.022; Fri, 17 Nov 2023
+ 20:09:18 +0000
+Date:   Fri, 17 Nov 2023 21:09:12 +0100
+From:   Robert Richter <rrichter@amd.com>
+To:     Ira Weiny <ira.weiny@intel.com>
+Cc:     Davidlohr Bueso <dave@stgolabs.net>,
+        Jonathan Cameron <jonathan.cameron@huawei.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Alison Schofield <alison.schofield@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Fan Ni <nifan.cxl@gmail.com>
+Subject: Re: [PATCH] cxl/cdat: Free correct buffer on checksum error
+Message-ID: <ZVfIaNhiSc-yQZo5@rric.localdomain>
+References: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231116-fix-cdat-devm-free-v1-1-b148b40707d7@intel.com>
+X-ClientProxiedBy: FR4P281CA0363.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:f8::19) To DM6PR12MB3657.namprd12.prod.outlook.com
+ (2603:10b6:5:149::18)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3657:EE_|SJ2PR12MB8184:EE_
+X-MS-Office365-Filtering-Correlation-Id: 86117f81-b4d7-4529-9896-08dbe7a91474
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: jw1/dI4rlC4afNo8wlyJBsHzwEOAxZQIE04k7tEw8co8FO+ksg7SloUjVYQbTXojz0Ukr4fMPGVkKecRlPiBkzsNcoeLfiSHkVSras0MWrKy/Od89Wcvxu6Mfy/EL69Roza8Hn3NtRXSvXUbdVMJN8n+DgGwAoFd+7d+1OXewoqsNRqgd09iuyUHan2RYxMhI//aRLPRB10ZfeAmkmyNKdkZsMbYl1w5U5ahCF6qLftJ7HJTYcAnaLhIBdrYIwn8jWQZnsMX+/OFcmC7oN41VbkUueoY12O1iBWf8uzRjoXZmiPU51fhnF626nRPyYrKMBQnFSoGw5ckmbPZeck6RGm0Za2Km3YLCmqR5IhJoET/edcOCqbGVX8Bs9aNtgFlm/pin7/Bu4BXYBjUKxTOWu2PJMw+Yt5fEW3DuOs0yOsQ+/Hg3yMmHWYV3UkpfK6Mede1uzrzSpXqFd1pkVnIqvBAWc0DaQraIUQlu1UhujJDR31FhZ/BIhCkaoNfAjAwcF2PYps9S3nSmXsSh9yt4zbUZOL2IcY8+JQstUBV9O9eX8ejpVVHiP6i7UuH47v09FO/bNH7OCu6usvMMS8jz0gfPpOb22A+/m/fCkOAY8ngcCNcb34e17l0F0T3uT6W
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3657.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(346002)(366004)(376002)(39860400002)(136003)(230273577357003)(230922051799003)(230173577357003)(186009)(451199024)(1800799009)(64100799003)(7416002)(2906002)(5660300002)(41300700001)(38100700002)(53546011)(4326008)(6506007)(6666004)(6916009)(316002)(8936002)(8676002)(478600001)(83380400001)(6486002)(9686003)(6512007)(66556008)(66946007)(66476007)(26005)(54906003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?u8bgF3B2W1LF7bEoZaROsNFx3ERurTNGxUzFIQ65P++CsHPY/dw/KInqUEe9?=
+ =?us-ascii?Q?4iU/erhWGIuRDe4OztbJeOtPbxPZtRS7Q0r7603/u/sMVwgbd4V+JOEroy6c?=
+ =?us-ascii?Q?uamI6wn30E4ZT8HSL+8htYK5OMCPY1gL7pBoLpMCbnP1P+hngGL+p7OBgUZa?=
+ =?us-ascii?Q?hMxefmJRgvibf/mbH7hr5qa6dZ4nGjdZdNyerFNakVND+x0fVVf9rJZdVdwL?=
+ =?us-ascii?Q?4C1VZj3d4vWmsxE7vBTJKsn+OmDCrYPse1VNyYdbEabf/4f2qG39gFNSjcan?=
+ =?us-ascii?Q?ihzz0hLVf3HmGRYVjfuvRe1RxyvRPFJZcMR0PCfr2duhw6Ui5z66PbUZXfQC?=
+ =?us-ascii?Q?3C9tCYOnJMe5cmPYnpGfdvzsidsBtF0oXLDoNwLIlMcaURyr+NLFzwRxfWEC?=
+ =?us-ascii?Q?HbkPdqoFXZnKWTw6kxll+fNdFxPGPsZifpyvCbRx+mJAyZblVpgq+uNKYdT+?=
+ =?us-ascii?Q?NQAmLlTwqnCYX+ZDTheDOwe1U/gLhiczkjkpHJ2dhEVYHFfvmOgygxMqwu6t?=
+ =?us-ascii?Q?PWGmXBIBIzqLGaopIXpHDyXumdK7iJ/rW3C4xwL7/es2ioivTVhgIvq5QQRr?=
+ =?us-ascii?Q?1KOWMxUoQuI5EZlgQTB0S/2KtsWtR18YG+UsS9XGu2XUJzBwQLG0/swnRj7c?=
+ =?us-ascii?Q?C8H81bMTivtnl2tHR/t2jaS+AzPlc0TA6Ji6uG4Nm+yJKR9zf/itMFWifA2R?=
+ =?us-ascii?Q?0mj73g08Gs2/0V2TNQz0k68V3aM6BfgJQBspxYqp34TJ3p2yjJK7ZmqUro6k?=
+ =?us-ascii?Q?1jkLnlFTTw2qMxtfLQH1X56W3j5iIMGEb2ylD6SfbVfOZlqBYWDEYqaVXOSN?=
+ =?us-ascii?Q?MPS+8lciKvxeZE4vG9qjckGJBxdQc5F7JeD7PEh8D8lzTowVOkfcEH0lyi4G?=
+ =?us-ascii?Q?xD8G2KCRhpdDbn7+SCiqShd4Y12plZJ8ixnlSaNhRTSwl/E2CDTMQD580mqK?=
+ =?us-ascii?Q?vhdqgdAeyE52yeDgN6HX2ghG8cjefPXwJSlULXM4Y5c2fr9zrDdNJkbWAxs8?=
+ =?us-ascii?Q?Pqx8EGGZOHPDeKv2KXwz3ROEV6hcME3gWhaKTvYHeZd9dAx3wW5QPCPHHKBo?=
+ =?us-ascii?Q?uIQ4DWvXBXp1USnhkpHnjAIS8NfojTRAwf7OU6yVwWvXdrzSo+yD2PyVFtn7?=
+ =?us-ascii?Q?5DT61wat6elfJeTx/Khj02Ab/HFpld+Hla5jlBnc6LpdGpWrSXJ23ryJR2CK?=
+ =?us-ascii?Q?Q7CAR7F40CH/+tpNfIZVT+l1oqSebWt0qGnbTgtSDc4S43yKjhkUy43rCVOH?=
+ =?us-ascii?Q?7LCWDJL/AMGT+stLeETuf56jqsJeFDRUOua0w58WUEswLY1o2WUyJUKOKb1m?=
+ =?us-ascii?Q?VJBooHFW9DL67GtQmFIHO0j1FBRZS3l1oCBgR4IfrtrZJ/y2EdiBTo68rEkv?=
+ =?us-ascii?Q?qKm61OzISx2VyFXtrL/d0AF9QM0YDSEGcgbgtsHU1izAXp21xlyagjN0iiO0?=
+ =?us-ascii?Q?eooQJ4a1xkU654KkQUuAygDmEtqEw7ZvvbScRQ+d67PdllPmwagcN01JrhDG?=
+ =?us-ascii?Q?sUwvgdMy14N6ji/s1kYwuT34bVPF0L9AgeK+tt11j8ULIr+90+qOFo4pgU1+?=
+ =?us-ascii?Q?B0HHiO+zGnvqrYY6JlF3sDI1MN79BD95hpoTzDCT?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86117f81-b4d7-4529-9896-08dbe7a91474
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3657.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 20:09:18.4170
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rzyA+1XCyVJXTs1fVMcHY4EdsSfApSweD/LZrfQawd2W4AsFhL8w/D3B0lzXKh9pTxqOujmhpIcBjl+V8Nyj/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8184
+X-Spam-Status: No, score=-1.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_SPF_HELO,
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Mason <buddyjojo06@outlook.com>
+On 16.11.23 16:03:29, Ira Weiny wrote:
+> The new 6.7-rc1 kernel now checks the checksum on CDAT data.  While
+> using a branch of Fan's DCD qemu work (and specifying DCD devices), the
+> following splat was observed.
+> 
+> 	WARNING: CPU: 1 PID: 1384 at drivers/base/devres.c:1064 devm_kfree+0x4f/0x60
+> 	...
+> 	RIP: 0010:devm_kfree+0x4f/0x60
+> 	...
+>  	? devm_kfree+0x4f/0x60
+>  	read_cdat_data+0x1a0/0x2a0 [cxl_core]
+>  	cxl_port_probe+0xdf/0x200 [cxl_port]
+> 	...
+> 
+> The issue in qemu is still unknown but the spat is a straight forward
+> bug in the CDAT checksum processing code.  Use a CDAT buffer variable to
+> ensure the devm_free() works correctly on error.
+> 
+> Cc: jonathan.cameron@huawei.com
+> Cc: Fan Ni <nifan.cxl@gmail.com>
+> Fixes: 670e4e88f3b1 ("cxl: Add checksum verification to CDAT from CXL")
+> Cc: Dave Jiang <dave.jiang@intel.com>
+> Signed-off-by: Ira Weiny <ira.weiny@intel.com>
 
-Add a device tree for the Xiaomi Redmi Note 9S (curtana) phone, based on
-sm7125-xiaomi-common.dtsi.
+Reviewed-by: Robert Richter <rrichter@amd.com>
 
-Signed-off-by: Joe Mason <buddyjojo06@outlook.com>
-Signed-off-by: David Wronek <davidwronek@gmail.com>
----
- arch/arm64/boot/dts/qcom/Makefile                |  1 +
- .../boot/dts/qcom/sm7125-xiaomi-curtana.dts      | 16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
- create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
+I will send an on-top patch for 6.8 that reworks that code area to
+remove the pointer arithmetic.
 
-diff --git a/arch/arm64/boot/dts/qcom/Makefile b/arch/arm64/boot/dts/qcom/Makefile
-index d6cb840b7050..57974fb0c580 100644
---- a/arch/arm64/boot/dts/qcom/Makefile
-+++ b/arch/arm64/boot/dts/qcom/Makefile
-@@ -207,6 +207,7 @@ dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-sony-xperia-seine-pdx201.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6125-xiaomi-laurel-sprout.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6350-sony-xperia-lena-pdx213.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm6375-sony-xperia-murray-pdx225.dtb
-+dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-curtana.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm7125-xiaomi-joyeuse.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm7225-fairphone-fp4.dtb
- dtb-$(CONFIG_ARCH_QCOM)	+= sm8150-hdk.dtb
-diff --git a/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
-new file mode 100644
-index 000000000000..12f517a8492c
---- /dev/null
-+++ b/arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
-@@ -0,0 +1,16 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright (c) 2023, Joe Mason <buddyjojo06@outlook.com>
-+ */
-+
-+/dts-v1/;
-+
-+#include "sm7125-xiaomi-common.dtsi"
-+
-+/ {
-+	model = "Xiaomi Redmi Note 9S";
-+	compatible = "xiaomi,curtana", "qcom,sm7125";
-+
-+	/* required for bootloader to select correct board */
-+	qcom,board-id = <0x20022 1>;
-+};
--- 
-2.42.1
-
+-Robert
