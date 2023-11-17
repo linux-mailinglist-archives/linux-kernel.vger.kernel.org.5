@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id EB1777EEFB7
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 778E27EEFB5
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230455AbjKQKEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:04:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41864 "EHLO
+        id S1345840AbjKQKE2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:04:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345812AbjKQKEO (ORCPT
+        with ESMTP id S1345810AbjKQKEO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 17 Nov 2023 05:04:14 -0500
 Received: from relay9-d.mail.gandi.net (relay9-d.mail.gandi.net [217.70.183.199])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 345C6C4;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACFC7C5;
         Fri, 17 Nov 2023 02:04:10 -0800 (PST)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 61BA3FF81F;
+Received: by mail.gandi.net (Postfix) with ESMTPSA id F0408FF80E;
         Fri, 17 Nov 2023 10:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-        t=1700215448;
+        t=1700215449;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=ppALPMc1pFTIFQzwRMW+tmzwmtQj10e6/dO7SG+F1wI=;
-        b=Nk9QOBXXkZe4llaGhdKMLdybPq2Ys+qCWgZHo0Pqu1T/I1N0M3dRksIcsoMHP7nr5dtfxf
-        6i/sa+juuDTM+sP6A8BzmOF5UvDxgis/3p0tNggqxlk6nvDiHiVJ66i3UxsbEGn8rNw8le
-        5QSFaLRjEDZpgXIBZRUlVjICboIiEyp7IA+8UjD841jsPLL6MpoTpOuoNIH34uBqZTRmFj
-        l4xEwiaZ74ODB4KZez8YoSvsWpSBRdhOTYNxbFcYgl3vLOL+cLUrswuB+sEgOOBqptNK/y
-        +R6DIe+sLhbC82Qkx6wZGL9NojMmTkyB1B8buzuZ85auJPJIEQsMJS//3YxCsA==
+        bh=NmKeLzmrWDgqwybx3yFMvQV6TVy/TJmLs+gOb6jsjkI=;
+        b=ifWxZU5MoSMJa1RExPWzueMckAhDz+/FP9AYay2y7oLb+Zalg5OPxS+uJSZ6G4PLL7tG27
+        7B6Ezqo8uZROfk4rgCJc6dbvYgIY0+mmsg5++iTo+2fcRvuDlLaiwaAPAf0dyV1+8PobEE
+        skGRJZEe1YrNGNOeLk6h94G5RCnogZx93R8UT/syiH7T0M9ZLWcTVt+xB67YQ+n6/3r0tV
+        IGok0iY52aiynYO0qUXH50zKQ3zI/Qe6E8pLLQT4iH9YOGT69DmSBzVZnc2wkvYBBxQHs/
+        4/1BS0mmd0dfRSU8bMiJBmTHfAEEK2aqW2EIlzEH2dGTFVoTpf8JR8kZfqoNKg==
 From:   Kory Maincent <kory.maincent@bootlin.com>
-Date:   Fri, 17 Nov 2023 11:03:53 +0100
-Subject: [PATCH v6 5/6] dmaengine: dw-edma: HDMA: Add sync read before
+Date:   Fri, 17 Nov 2023 11:03:54 +0100
+Subject: [PATCH v6 6/6] dmaengine: dw-edma: eDMA: Add sync read before
  starting the DMA transfer in remote setup
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20231117-b4-feature_hdma_mainline-v6-5-ebf7aa0e40d7@bootlin.com>
+Message-Id: <20231117-b4-feature_hdma_mainline-v6-6-ebf7aa0e40d7@bootlin.com>
 References: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
 In-Reply-To: <20231117-b4-feature_hdma_mainline-v6-0-ebf7aa0e40d7@bootlin.com>
 To:     Manivannan Sadhasivam <mani@kernel.org>,
@@ -63,20 +63,19 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 The Linked list element and pointer are not stored in the same memory as
-the HDMA controller register. If the doorbell register is toggled before
+the eDMA controller register. If the doorbell register is toggled before
 the full write of the linked list a race condition error will occur.
 In remote setup we can only use a readl to the memory to assure the full
 write has occurred.
 
-Fixes: e74c39573d35 ("dmaengine: dw-edma: Add support for native HDMA")
+Fixes: 7e4b8a4fbe2c ("dmaengine: Add Synopsys eDMA IP version 0 support")
 Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 Signed-off-by: Kory Maincent <kory.maincent@bootlin.com>
 ---
 
 Changes in v2:
-- Move the sync read in a function.
-- Add commments
+- New patch
 
 Changes in v4:
 - Update git commit message.
@@ -84,21 +83,21 @@ Changes in v4:
 Changes in v6:
 - Fix comment typos.
 ---
- drivers/dma/dw-edma/dw-hdma-v0-core.c | 17 +++++++++++++++++
+ drivers/dma/dw-edma/dw-edma-v0-core.c | 17 +++++++++++++++++
  1 file changed, 17 insertions(+)
 
-diff --git a/drivers/dma/dw-edma/dw-hdma-v0-core.c b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-index 04b0bcb6ded9..10e8f0715114 100644
---- a/drivers/dma/dw-edma/dw-hdma-v0-core.c
-+++ b/drivers/dma/dw-edma/dw-hdma-v0-core.c
-@@ -222,6 +222,20 @@ static void dw_hdma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
- 	dw_hdma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
+diff --git a/drivers/dma/dw-edma/dw-edma-v0-core.c b/drivers/dma/dw-edma/dw-edma-v0-core.c
+index b38786f0ad79..b75fdaffad9a 100644
+--- a/drivers/dma/dw-edma/dw-edma-v0-core.c
++++ b/drivers/dma/dw-edma/dw-edma-v0-core.c
+@@ -346,6 +346,20 @@ static void dw_edma_v0_core_write_chunk(struct dw_edma_chunk *chunk)
+ 	dw_edma_v0_write_ll_link(chunk, i, control, chunk->ll_region.paddr);
  }
  
-+static void dw_hdma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
++static void dw_edma_v0_sync_ll_data(struct dw_edma_chunk *chunk)
 +{
 +	/*
-+	 * In case of remote HDMA engine setup, the DW PCIe RP/EP internal
++	 * In case of remote eDMA engine setup, the DW PCIe RP/EP internal
 +	 * configuration registers and application memory are normally accessed
 +	 * over different buses. Ensure LL-data reaches the memory before the
 +	 * doorbell register is toggled by issuing the dummy-read from the remote
@@ -109,19 +108,19 @@ index 04b0bcb6ded9..10e8f0715114 100644
 +		readl(chunk->ll_region.vaddr.io);
 +}
 +
- static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
  {
  	struct dw_edma_chan *chan = chunk->chan;
-@@ -252,6 +266,9 @@ static void dw_hdma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
- 	/* Set consumer cycle */
- 	SET_CH_32(dw, chan->dir, chan->id, cycle_sync,
- 		  HDMA_V0_CONSUMER_CYCLE_STAT | HDMA_V0_CONSUMER_CYCLE_BIT);
+@@ -412,6 +426,9 @@ static void dw_edma_v0_core_start(struct dw_edma_chunk *chunk, bool first)
+ 		SET_CH_32(dw, chan->dir, chan->id, llp.msb,
+ 			  upper_32_bits(chunk->ll_region.paddr));
+ 	}
 +
-+	dw_hdma_v0_sync_ll_data(chunk);
++	dw_edma_v0_sync_ll_data(chunk);
 +
  	/* Doorbell */
- 	SET_CH_32(dw, chan->dir, chan->id, doorbell, HDMA_V0_DOORBELL_START);
- }
+ 	SET_RW_32(dw, chan->dir, doorbell,
+ 		  FIELD_PREP(EDMA_V0_DOORBELL_CH_MASK, chan->id));
 
 -- 
 2.25.1
