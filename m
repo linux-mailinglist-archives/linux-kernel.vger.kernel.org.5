@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 524F97EF861
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:14:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F8797EF862
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346200AbjKQUO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:14:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54206 "EHLO
+        id S1346261AbjKQUO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:14:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58870 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346191AbjKQUOH (ORCPT
+        with ESMTP id S1346223AbjKQUOT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:14:07 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EF4CD6D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:14:00 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id 5614622812f47-3b2df2fb611so1609925b6e.0
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:14:00 -0800 (PST)
+        Fri, 17 Nov 2023 15:14:19 -0500
+Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 287741727
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:14:01 -0800 (PST)
+Received: by mail-oi1-x232.google.com with SMTP id 5614622812f47-3b3e13fc1f7so1496423b6e.0
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:14:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700252039; x=1700856839; darn=vger.kernel.org;
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1700252040; x=1700856840; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=3x/o+ZhKJLhCZxPJDvSVJn2SYXdsZyrTC3illb8aSGE=;
-        b=CwKoOETZGqRe5UOqmT1L2acNwFT+sCm90z6Wce9bLIOiYNpu/NIa1HtvwKYSaZiosg
-         CUxX+YsEjzHJKPMfFL/itqTlHCgyxQgMoTsEx+2ELphA+EAjxkoo7kUlquYWYRuLxlR8
-         ST1uNo5tL5iLc9bBnTV6vJSF0Y1HVASK2OkTP3jMKCKupM/YLkIMNzSNrk4ZWT7v/1hz
-         ssMBdM/fDX7YTxgu7Vq199CLU1bF0Y10A07bFl9/SqstvjvtTKwzkPxrJ4Oy+6YbGoci
-         wXmTeMrOk/eI9tuE5MqIqQ1NTp/m2CMe7bRSUPg+F1MbGpxC8coWdqbcsYdg4t96uB/w
-         IxsA==
+        bh=zreOIPUyiZAgHTr9pZpsQXo6OBnZGTBQCaGdmdfM/3Q=;
+        b=zoLAan9fa7rF1Edza9nm2jZE0ZBA2io3ee+yQtzpom8/qDZNmf1O2inL7rvBihiqXt
+         uSKPLQcs1pynXpmq7QkhlUa/ts1LLe1MhE5Bq1Tejlu3WRjKEy1rybpUqZHtovTjacwF
+         C+ROjK58rYm5bH32qxjS34t59j539+SG+xgAWf2388nKTANOJ12A21PlkuBP2bAtgi2x
+         c5dl/2ktAwHeJL1RDvKxHGZSn7SPVfBWW4P13t3SRQsZO+W6CxmFJ/jTieWDYBSJIeQo
+         CaGDwtT4JrG724a+zDuKoWV8iV8YjsVVAQEXvu9JAJPfkWV9aT1XPSAl/wcPgYo+wMCb
+         qMNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700252039; x=1700856839;
+        d=1e100.net; s=20230601; t=1700252040; x=1700856840;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3x/o+ZhKJLhCZxPJDvSVJn2SYXdsZyrTC3illb8aSGE=;
-        b=JP17il+EYXhoeJu0VVZ4wg9tmjMusmvcWFAE3s1hlevm0mGRUv313CyMP0345wQ30m
-         vNniMq3R+s4gztVFEc2FIqnTptdBJgem8mFBUFuYbP+QaQcyrZaP+B+7qiiYslpMOSa5
-         he5zT6ocvFupb/YIbJL8LT2k1xQX4ef2Sm7nNAkUi2ALSZ7uSr+3z1Ihlg6aM4/6pMcG
-         sBU/t3J08566ai49FTgNeXTDFjulhe9l3wtsbC+LfU4a4fMMuhssIirLTfEUOjsr3/GE
-         8cCWepSmpdCgr82Uk6TwjOnKbp0ROhYSuD5iXVkLnPPw2mdFpAhXUB2V5tv911c1wg/j
-         HSJw==
-X-Gm-Message-State: AOJu0Yx4BvANI0hxc7G2Cw/HQnXQAteodupnr5o54gg9zxceeInk+ifm
-        Lt05/9bYHSJri8n/ABitdkdgbw==
-X-Google-Smtp-Source: AGHT+IEbin8UNO6r4Ykm5emy9h67aMHC8MsdLHv1PzpTun13feE0DMgvGrPV0W2CxfD98j+AiJB+qg==
-X-Received: by 2002:a05:6808:15a8:b0:3b6:3d44:4d75 with SMTP id t40-20020a05680815a800b003b63d444d75mr576150oiw.22.1700252039458;
-        Fri, 17 Nov 2023 12:13:59 -0800 (PST)
+        bh=zreOIPUyiZAgHTr9pZpsQXo6OBnZGTBQCaGdmdfM/3Q=;
+        b=ZcRZauHhZnv0YG7kgj1NmOlxJ8hcYkOkChCqnwmTYLOwWtXqxXyGyRcDEZJJTocvzh
+         8K13W7qgKVIPjmoEr5xOuIkic9C9uCVymsJFh8BJPeA/E3JLLkjNP0ggwZUL4JjGuFET
+         NVhCapDQ750LzST/rHlA2NI3w7DL7gnmsVShZ5ffCc2G8iCixwmR9A/c8H8KkYjZO+KX
+         U51ByHyG/2tJFrktyX4KoDPMYvHU9/lQ743qsC6ntn6Ma4+rXNZO3iwl0D42yE3D0CL2
+         FpswF8uhTj4eOnOM5L+d806MJtJ3jbkCtDZN9o19e9KEAO8EXBSnFy46D57NpP2rZJw1
+         n37Q==
+X-Gm-Message-State: AOJu0YyMJ6oe7OjcUqwu840bZ4xEcWjjJQDhBoAmkcnomFGZaCvxws2M
+        L01uxjbs1kqvIOE+a/sUu39X4w==
+X-Google-Smtp-Source: AGHT+IEqiwWYiN6HZnqgB/+CsCCnBfOkvomVsWS+AdUE9yqrHGAW/CfIPxPRNw63N4msQ3nIF68LFQ==
+X-Received: by 2002:a05:6808:60b:b0:3b2:a9bd:c38f with SMTP id y11-20020a056808060b00b003b2a9bdc38fmr428452oih.37.1700252040479;
+        Fri, 17 Nov 2023 12:14:00 -0800 (PST)
 Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id l21-20020a544515000000b003a8560a9d34sm393814oil.25.2023.11.17.12.13.58
+        by smtp.gmail.com with ESMTPSA id l21-20020a544515000000b003a8560a9d34sm393814oil.25.2023.11.17.12.13.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
         Fri, 17 Nov 2023 12:13:59 -0800 (PST)
 From:   David Lechner <dlechner@baylibre.com>
@@ -61,9 +61,9 @@ Cc:     David Lechner <dlechner@baylibre.com>,
         =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
         Lars-Peter Clausen <lars@metafoo.de>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 10/14] spi: axi-spi-engine: use message_prepare/unprepare
-Date:   Fri, 17 Nov 2023 14:13:01 -0600
-Message-ID: <20231117-axi-spi-engine-series-1-v1-10-cc59db999b87@baylibre.com>
+Subject: [PATCH 11/14] spi: axi-spi-engine: remove completed_id from driver state
+Date:   Fri, 17 Nov 2023 14:13:02 -0600
+Message-ID: <20231117-axi-spi-engine-series-1-v1-11-cc59db999b87@baylibre.com>
 X-Mailer: git-send-email 2.42.0
 In-Reply-To: <20231117-axi-spi-engine-series-1-v1-0-cc59db999b87@baylibre.com>
 References: <20231117-axi-spi-engine-series-1-v1-0-cc59db999b87@baylibre.com>
@@ -73,116 +73,60 @@ X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=unavailable autolearn_force=no
-        version=3.4.6
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This modifies the AXI SPI Engine driver to make use of the
-message_prepare and message_unprepare callbacks. This separates
-the concerns of allocating and freeing the message state from the
-transfer_one_message callback.
-
-The main benfit of this is so that future callers of
-spi_finalize_current_message() will not have to do manual cleanup
-of the state.
+In the AXI SPI Engine driver, the completed_id field in the driver
+state is only used in one function and the value does not need to
+persist between function calls. Therefore, it can be removed from the
+driver state and made a local variable in the function where it is used.
 
 Signed-off-by: David Lechner <dlechner@baylibre.com>
 ---
- drivers/spi/spi-axi-spi-engine.c | 46 +++++++++++++++++++++++++++++-----------
- 1 file changed, 34 insertions(+), 12 deletions(-)
+ drivers/spi/spi-axi-spi-engine.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/spi/spi-axi-spi-engine.c b/drivers/spi/spi-axi-spi-engine.c
-index 745000a9b2c7..210bea23f433 100644
+index 210bea23f433..120001dbc4dc 100644
 --- a/drivers/spi/spi-axi-spi-engine.c
 +++ b/drivers/spi/spi-axi-spi-engine.c
-@@ -412,11 +412,7 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
+@@ -115,7 +115,6 @@ struct spi_engine {
  
- 		if (spi_engine->completed_id == st->sync_id) {
- 			struct spi_message *msg = spi_engine->msg;
--			struct spi_engine_message_state *st = msg->state;
+ 	struct spi_message *msg;
+ 	struct ida sync_ida;
+-	unsigned int completed_id;
  
--			ida_free(&spi_engine->sync_ida, st->sync_id);
--			kfree(st->p);
--			kfree(st);
- 			msg->status = 0;
- 			msg->actual_length = msg->frame_length;
- 			spi_engine->msg = NULL;
-@@ -436,14 +432,12 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
- 	return IRQ_HANDLED;
- }
- 
--static int spi_engine_transfer_one_message(struct spi_controller *host,
--	struct spi_message *msg)
-+static int spi_engine_prepare_message(struct spi_controller *host,
-+				      struct spi_message *msg)
- {
- 	struct spi_engine_program p_dry, *p;
+ 	unsigned int int_enable;
+ };
+@@ -380,13 +379,14 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
  	struct spi_engine *spi_engine = spi_controller_get_devdata(host);
- 	struct spi_engine_message_state *st;
--	unsigned int int_enable = 0;
--	unsigned long flags;
- 	size_t size;
- 	int ret;
+ 	unsigned int disable_int = 0;
+ 	unsigned int pending;
++	int completed_id = -1;
  
-@@ -472,15 +466,41 @@ static int spi_engine_transfer_one_message(struct spi_controller *host,
+ 	pending = readl_relaxed(spi_engine->base + SPI_ENGINE_REG_INT_PENDING);
  
- 	spi_engine_compile_message(spi_engine, msg, false, p);
+ 	if (pending & SPI_ENGINE_INT_SYNC) {
+ 		writel_relaxed(SPI_ENGINE_INT_SYNC,
+ 			spi_engine->base + SPI_ENGINE_REG_INT_PENDING);
+-		spi_engine->completed_id = readl_relaxed(
++		completed_id = readl_relaxed(
+ 			spi_engine->base + SPI_ENGINE_REG_SYNC_ID);
+ 	}
  
--	spin_lock_irqsave(&spi_engine->lock, flags);
- 	spi_engine_program_add_cmd(p, false, SPI_ENGINE_CMD_SYNC(st->sync_id));
+@@ -410,7 +410,7 @@ static irqreturn_t spi_engine_irq(int irq, void *devid)
+ 	if (pending & SPI_ENGINE_INT_SYNC && spi_engine->msg) {
+ 		struct spi_engine_message_state *st = spi_engine->msg->state;
  
--	msg->state = st;
--	spi_engine->msg = msg;
- 	st->p = p;
--
- 	st->cmd_buf = p->instructions;
- 	st->cmd_length = p->length;
-+	msg->state = st;
-+
-+	return 0;
-+}
-+
-+static int spi_engine_unprepare_message(struct spi_controller *host,
-+					struct spi_message *msg)
-+{
-+	struct spi_engine *spi_engine = spi_controller_get_devdata(host);
-+	struct spi_engine_message_state *st = msg->state;
-+
-+	ida_free(&spi_engine->sync_ida, st->sync_id);
-+	kfree(st->p);
-+	kfree(st);
-+
-+	return 0;
-+}
-+
-+static int spi_engine_transfer_one_message(struct spi_controller *host,
-+	struct spi_message *msg)
-+{
-+	struct spi_engine *spi_engine = spi_controller_get_devdata(host);
-+	struct spi_engine_message_state *st = msg->state;
-+	unsigned int int_enable = 0;
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&spi_engine->lock, flags);
-+
-+	spi_engine->msg = msg;
-+
- 	if (spi_engine_write_cmd_fifo(spi_engine))
- 		int_enable |= SPI_ENGINE_INT_CMD_ALMOST_EMPTY;
+-		if (spi_engine->completed_id == st->sync_id) {
++		if (completed_id == st->sync_id) {
+ 			struct spi_message *msg = spi_engine->msg;
  
-@@ -572,6 +592,8 @@ static int spi_engine_probe(struct platform_device *pdev)
- 	host->bits_per_word_mask = SPI_BPW_MASK(8);
- 	host->max_speed_hz = clk_get_rate(spi_engine->ref_clk) / 2;
- 	host->transfer_one_message = spi_engine_transfer_one_message;
-+	host->prepare_message = spi_engine_prepare_message;
-+	host->unprepare_message = spi_engine_unprepare_message;
- 	host->num_chipselect = 8;
- 
- 	if (host->max_speed_hz == 0)
+ 			msg->status = 0;
 
 -- 
 2.42.0
