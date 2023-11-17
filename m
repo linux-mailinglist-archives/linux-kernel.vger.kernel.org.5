@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 72CBA7EEEA4
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:30:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4147EEEBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345739AbjKQJag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:30:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45242 "EHLO
+        id S235762AbjKQJci (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:32:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345756AbjKQJaI (ORCPT
+        with ESMTP id S235751AbjKQJcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:30:08 -0500
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFBAB10D5;
-        Fri, 17 Nov 2023 01:30:03 -0800 (PST)
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9Tfdi058802;
-        Fri, 17 Nov 2023 03:29:41 -0600
+        Fri, 17 Nov 2023 04:32:22 -0500
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 817B719AD;
+        Fri, 17 Nov 2023 01:32:07 -0800 (PST)
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9ThWD011200;
+        Fri, 17 Nov 2023 03:29:43 -0600
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1700213381;
-        bh=6yu9FgSk5G531XV23fSb7BMi9z4z4ZTSbSGgn0oAhwQ=;
+        s=ti-com-17Q1; t=1700213383;
+        bh=PNUVApjVYaIGK9JiiY4OVOF3nsNslR6FLMX8Zywxucg=;
         h=From:Date:Subject:References:In-Reply-To:To:CC;
-        b=iGiyeiajABe9pu0npjMLIAKm1OYIdmEHqawkkw3yeiWiE3c2QRAGqT8An7W/2RiLS
-         01XzPrZtwwod4mw0WFdU4YvQ/GIJnr7zpJQLN2awhkEDQdxScHePVfnYm9/7Efjfoh
-         ORVOzbt0LizVXrntf/omJP1gCTtYEiCP3LHK6PC0=
+        b=ZXBIwdFoJtfgt3bhe36896aspiZcKbxNF/2yioin9d9YbkAfj/n+qoSC1GrCSiSuV
+         eDOcOoKZ7s60XTeW5ZKi3PSplyYoe/J+HKBk0zCljaVO37NWL3XZTjIVk3xAqid3V0
+         xWc7NaOK+3o7t1AXN9ZTp2+DEl/2qroBNyp0bW6k=
 Received: from DLEE110.ent.ti.com (dlee110.ent.ti.com [157.170.170.21])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AH9Tfgb079505
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 3AH9TgpI075701
         (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 17 Nov 2023 03:29:41 -0600
-Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE110.ent.ti.com
+        Fri, 17 Nov 2023 03:29:42 -0600
+Received: from DLEE103.ent.ti.com (157.170.170.33) by DLEE110.ent.ti.com
  (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 17
- Nov 2023 03:29:41 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ Nov 2023 03:29:43 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Fri, 17 Nov 2023 03:29:41 -0600
-Received: from localhost (ileaxei01-snat2.itg.ti.com [10.180.69.6])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9Teom125344;
-        Fri, 17 Nov 2023 03:29:40 -0600
+ Frontend Transport; Fri, 17 Nov 2023 03:29:42 -0600
+Received: from localhost (ileaxei01-snat.itg.ti.com [10.180.69.5])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 3AH9Tf01105823;
+        Fri, 17 Nov 2023 03:29:42 -0600
 From:   Jai Luthra <j-luthra@ti.com>
-Date:   Fri, 17 Nov 2023 14:58:14 +0530
-Subject: [PATCH v2 6/9] arm64: dts: ti: k3-am62x: Add overlays for OV5640
+Date:   Fri, 17 Nov 2023 14:58:15 +0530
+Subject: [PATCH v2 7/9] arm64: dts: ti: k3-am62a7-sk: Enable camera
+ peripherals
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-ID: <20231117-csi_dts-v2-6-bf4312194a6b@ti.com>
+Message-ID: <20231117-csi_dts-v2-7-bf4312194a6b@ti.com>
 References: <20231117-csi_dts-v2-0-bf4312194a6b@ti.com>
 In-Reply-To: <20231117-csi_dts-v2-0-bf4312194a6b@ti.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
@@ -66,257 +67,92 @@ CC:     <linux-arm-kernel@lists.infradead.org>,
         Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
         Jai Luthra <j-luthra@ti.com>
 X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6127; i=j-luthra@ti.com;
- h=from:subject:message-id; bh=qununk8hdzdLtwkyZowaid7gFVw8TK/X3B+ByuZ/0ow=;
- b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlVzJw6cCnjOgzxwiql/NKu4ohliw9sbESD1x4p
- mUX7zzSbZ2JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZVcycAAKCRBD3pH5JJpx
- RQ8UD/0aipRRZnKwwwGOE17phrwhLN3xMLFE3UtI0+VTU+jjlhfVd/Ujc287duPjpkncYxp0b8M
- djd6DytVWZxi5gYK7Z+TdId5lG/9UU6tpko4CNjqGtiK7lkkV3O4PZFSgu7R3eL11wx13RxXBg8
- lZWgokGOqiSkKJFAkhTgl1zUOR9K8T6tIxdS64dEPuC6bFH2dMsvTN76h6E1lcFgMYNzDwao8rc
- yw2jp7k2saDnbTsgmYN0tCTtr9RtIUi7T6v+mMViEzs3x/fenoNB0f53syuqz3VQokcFXiNViDB
- wzVg6pDDcDAkXkU+5fVsy9WID/uanOZm/3TL7cd9KnWSxKjSOUP8XYPxy1Y+wFLbkq1mnYm1PK9
- kp1aTYSxL1nHJAS36rHjnPuOFk9ZvKASzGbjcEbFmgOFcH7uQimD4Ytkbd9KfSa1kcX6hjIsped
- En3MfOxqBRfkQozO7eUv/U9546/3b098Vua1f7N3JeIg5jbb/+UdNChKER4oZCi0uzE2SMsObCH
- bB9TgPeNQVm+/zRLR07VKyOcYxET0ragzEQovxinwjfmxOH3HEeSBQaCGbmDVe296dOGxIwsPEH
- CLmW1VFBwHUT6hyUw3FNivisqp2PN1YBePAUiXmrklq5zsyJ5SReVagfRqJpn+eBTDwagyepGQv
- TclHnGbukHwxCCQ==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1496; i=j-luthra@ti.com;
+ h=from:subject:message-id; bh=gz9E1SzSNspg9BAAZhjLumqrDg19fknMHvxVHY3oO+E=;
+ b=owEBbQKS/ZANAwAIAUPekfkkmnFFAcsmYgBlVzJxBwKLMn4PTXxF7q/i3pD1JZIlfpJYCrLSU
+ KkLwMG6/N6JAjMEAAEIAB0WIQRN4NgY5dV16NRar8VD3pH5JJpxRQUCZVcycQAKCRBD3pH5JJpx
+ RXQuEACZgAgcJj7Xx1yIuGYgCHEetyQeMhhYO4vooWB1PZ64Z4LNMZr/97MGgux1nr+jQAjAxtO
+ v9MMJIjZmZLAlKBsJzPV1FE4tzNMuvGNIhKc9v1ioEiVfxsyErqO/0Fb6SHEYlQFjCBCHS4fD9K
+ 1c5p8y0eDNSpXWWc8T1B/hKnkjglL/t/MwP4WXzOKxgtb/7zCpEUcPienBfK5X0scvSg8sKPSH5
+ BnwFtRuk0CvvwuNjAhDXW8sWUwCB3HCi7OpQzCH79MOHQvQyMXpCg26LmoqAS5HDb5f1qlH/dO1
+ uvqa81rDuv1N/+alx+6ZOgFgFfRo83Lx4GY8vOh+Ou8p3xEAHH4g1L85ySuQuKloV57vVQrAcYw
+ LDZHvmOWpUhwqzlLfr1ux4Q0LTc3xVXCBdaiNEhP4RT3i8UKlAZZWfn95ZIN5FJvycpZsHFoZH6
+ a2lk4y4qbS3VccVMmzWBjhg1fjm1+dnjb97Q16X+aV111qId3sejpMhFBGf3Dpdsrv7GEX4pqDL
+ Ew/EdCywLti8rO9WqcKAOngErLNUf2TAceE1Or7ACn4q6LWum2fMTxXHyqOw08C2WWY1uwNoi5G
+ BUUvTmyQ3tfHyJVvM2Aapzy5CqpJtGMm/Ryp0rLwowWXwBTB53zyWFJQEC9cRFjUDfj8IzI1+B5
+ xafCA1tnTVhsUug==
 X-Developer-Key: i=j-luthra@ti.com; a=openpgp;
  fpr=4DE0D818E5D575E8D45AAFC543DE91F9249A7145
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Three different OV5640 modules are supported using the 15-pin FFC
-connector on SK-AM62:
-- Digilent PCam 5C
-- ALINX AN5641
-- TEVI-OV5640-*-RPI
+Enable the nodes for CSI-RX, DPHY-RX and I2C-2 as it is used to control
+CSI based sensors. Also enable IO-EXP-2 as it controls the mux between
+different CSI-2 connectors.
 
-The Digilent and ALINX modules supply a 12Mhz XCLK to the sensor, while
-the TEVI module supplies a 24Mhz XCLK, thus requiring a separate
-overlay.
-
-These overlays can be used on other boards of the SK-AM62* family that
-have a 15/22-pin FFC connector, so we name the overlays with the prefix
-k3-am62x-.
-
-Tested-by: Martyn Welch <martyn.welch@collabora.com>
 Signed-off-by: Jai Luthra <j-luthra@ti.com>
 ---
- arch/arm64/boot/dts/ti/Makefile                    | 19 +++++-
- .../arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso | 74 ++++++++++++++++++++++
- .../boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso  | 74 ++++++++++++++++++++++
- 3 files changed, 166 insertions(+), 1 deletion(-)
+ arch/arm64/boot/dts/ti/k3-am62a7-sk.dts | 35 +++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/ti/Makefile b/arch/arm64/boot/dts/ti/Makefile
-index c6c7825b4cb2..f957b5f741ff 100644
---- a/arch/arm64/boot/dts/ti/Makefile
-+++ b/arch/arm64/boot/dts/ti/Makefile
-@@ -32,6 +32,10 @@ dtb-$(CONFIG_ARCH_K3) += k3-am62a7-sk.dtb
- # Boards with AM62Px SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am62p5-sk.dtb
- 
-+# Common overlays for SK-AM62* family of boards
-+dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-ov5640.dtbo
-+dtb-$(CONFIG_ARCH_K3) += k3-am62x-sk-csi2-tevi-ov5640.dtbo
+diff --git a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+index 8f64ac2c7568..20ec07a5237c 100644
+--- a/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-am62a7-sk.dts
+@@ -434,6 +434,33 @@ tlv320aic3106: audio-codec@1b {
+ 		DRVDD-supply = <&vcc_3v3_sys>;
+ 		DVDD-supply = <&buck5>;
+ 	};
 +
- # Boards with AM64x SoC
- dtb-$(CONFIG_ARCH_K3) += k3-am642-evm.dtb
- dtb-$(CONFIG_ARCH_K3) += k3-am642-phyboard-electra-rdk.dtb
-@@ -87,13 +91,26 @@ k3-am625-beagleplay-csi2-ov5640-dtbs := k3-am625-beagleplay.dtb \
- 	k3-am625-beagleplay-csi2-ov5640.dtbo
- k3-am625-beagleplay-csi2-tevi-ov5640-dtbs := k3-am625-beagleplay.dtb \
- 	k3-am625-beagleplay-csi2-tevi-ov5640.dtbo
-+k3-am625-sk-csi2-ov5640-dtbs := k3-am625-sk.dtb \
-+	k3-am62x-sk-csi2-ov5640.dtbo
-+k3-am625-sk-csi2-tevi-ov5640-dtbs := k3-am625-sk.dtb \
-+	k3-am62x-sk-csi2-tevi-ov5640.dtbo
-+k3-am62a7-sk-csi2-ov5640-dtbs := k3-am62a7-sk.dtb \
-+	k3-am62x-sk-csi2-ov5640.dtbo
-+k3-am62a7-sk-csi2-tevi-ov5640-dtbs := k3-am62a7-sk.dtb \
-+	k3-am62x-sk-csi2-tevi-ov5640.dtbo
- dtb- += k3-am625-beagleplay-csi2-ov5640.dtb \
--	k3-am625-beagleplay-csi2-tevi-ov5640.dtb
-+	k3-am625-beagleplay-csi2-tevi-ov5640.dtb \
-+	k3-am625-sk-csi2-ov5640.dtb \
-+	k3-am625-sk-csi2-tevi-ov5640.dtb \
-+	k3-am62a7-sk-csi2-ov5640.dtb \
-+	k3-am62a7-sk-csi2-tevi-ov5640.dtb
- 
- # Enable support for device-tree overlays
- DTC_FLAGS_k3-am625-beagleplay += -@
- DTC_FLAGS_k3-am625-sk += -@
- DTC_FLAGS_k3-am62-lp-sk += -@
-+DTC_FLAGS_k3-am62a7-sk += -@
- DTC_FLAGS_k3-am6548-iot2050-advanced-m2 += -@
- DTC_FLAGS_k3-j721e-common-proc-board += -@
- DTC_FLAGS_k3-j721s2-common-proc-board += -@
-diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso
-new file mode 100644
-index 000000000000..790340673094
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-ov5640.dtso
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * ALINX AN5641 & Digilent PCam 5C - OV5640 camera module
-+ * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ */
++	exp2: gpio@23 {
++		compatible = "ti,tca6424";
++		reg = <0x23>;
++		gpio-controller;
++		#gpio-cells = <2>;
 +
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+
-+&{/} {
-+	clk_ov5640_fixed: ov5640-xclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <12000000>;
++		gpio-line-names = "", "",
++				  "", "",
++				  "", "",
++				  "", "",
++				  "WL_LT_EN", "CSI_RSTz",
++				  "", "",
++				  "", "",
++				  "", "",
++				  "SPI0_FET_SEL", "SPI0_FET_OE",
++				  "RGMII2_BRD_CONN_DET", "CSI_SEL2",
++				  "CSI_EN", "AUTO_100M_1000M_CONFIG",
++				  "CSI_VLDO_SEL", "SoC_WLAN_SDIO_RST";
 +	};
 +};
 +
 +&main_i2c2 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
 +	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_i2c2_pins_default>;
++	clock-frequency = <400000>;
+ };
+ 
+ &sdhci1 {
+@@ -544,3 +571,11 @@ &mcasp1 {
+ 	tx-num-evt = <32>;
+ 	rx-num-evt = <32>;
+ };
 +
-+	i2c-switch@71 {
-+		compatible = "nxp,pca9543";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x71>;
-+
-+		/* CAM port */
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+
-+			ov5640: camera@3c {
-+				compatible = "ovti,ov5640";
-+				reg = <0x3c>;
-+
-+				clocks = <&clk_ov5640_fixed>;
-+				clock-names = "xclk";
-+				powerdown-gpios = <&exp1 13 GPIO_ACTIVE_LOW>;
-+
-+				port {
-+					csi2_cam0: endpoint {
-+						remote-endpoint = <&csi2rx0_in_sensor>;
-+						clock-lanes = <0>;
-+						data-lanes = <1 2>;
-+					};
-+				};
-+			};
-+		};
-+	};
-+};
-+
-+&cdns_csi2rx0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi0_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx0_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam0>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
-+};
-diff --git a/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso
-new file mode 100644
-index 000000000000..d7772767f49d
---- /dev/null
-+++ b/arch/arm64/boot/dts/ti/k3-am62x-sk-csi2-tevi-ov5640.dtso
-@@ -0,0 +1,74 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Technexion TEVI-OV5640-*-RPI - OV5640 camera module
-+ * Copyright (C) 2022 Texas Instruments Incorporated - https://www.ti.com/
-+ */
-+
-+/dts-v1/;
-+/plugin/;
-+
-+#include <dt-bindings/gpio/gpio.h>
-+
-+&{/} {
-+	clk_ov5640_fixed: ov5640-xclk {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <24000000>;
-+	};
-+};
-+
-+&main_i2c2 {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
++&ti_csi2rx0 {
 +	status = "okay";
-+
-+	i2c-switch@71 {
-+		compatible = "nxp,pca9543";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x71>;
-+
-+		/* CAM port */
-+		i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+
-+			ov5640: camera@3c {
-+				compatible = "ovti,ov5640";
-+				reg = <0x3c>;
-+
-+				clocks = <&clk_ov5640_fixed>;
-+				clock-names = "xclk";
-+				powerdown-gpios = <&exp1 13 GPIO_ACTIVE_LOW>;
-+
-+				port {
-+					csi2_cam0: endpoint {
-+						remote-endpoint = <&csi2rx0_in_sensor>;
-+						clock-lanes = <0>;
-+						data-lanes = <1 2>;
-+					};
-+				};
-+			};
-+		};
-+	};
 +};
 +
-+&cdns_csi2rx0 {
-+	ports {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		csi0_port0: port@0 {
-+			reg = <0>;
-+			status = "okay";
-+
-+			csi2rx0_in_sensor: endpoint {
-+				remote-endpoint = <&csi2_cam0>;
-+				bus-type = <4>; /* CSI2 DPHY. */
-+				clock-lanes = <0>;
-+				data-lanes = <1 2>;
-+			};
-+		};
-+	};
++&dphy0 {
++	status = "okay";
 +};
 
 -- 
