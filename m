@@ -2,92 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 595627EECFB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:49:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 18EF37EECFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:52:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230416AbjKQHtn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 02:49:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49864 "EHLO
+        id S230359AbjKQHw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:52:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36204 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229952AbjKQHtm (ORCPT
+        with ESMTP id S229935AbjKQHwz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 02:49:42 -0500
-Received: from mail.astralinux.ru (mail.astralinux.ru [217.74.38.119])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F314D52;
-        Thu, 16 Nov 2023 23:49:37 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 9C5A418687BF;
-        Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id gby14e2W0CAp; Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.astralinux.ru (Postfix) with ESMTP id 504581868DBC;
-        Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
-X-Virus-Scanned: amavisd-new at astralinux.ru
-Received: from mail.astralinux.ru ([127.0.0.1])
-        by localhost (rbta-msk-vsrv-mail01.astralinux.ru [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id EVOAij3UbOAZ; Fri, 17 Nov 2023 10:49:33 +0300 (MSK)
-Received: from rbta-msk-lt-302690.astralinux.ru (unknown [10.177.232.129])
-        by mail.astralinux.ru (Postfix) with ESMTPSA id 1C00D18687BF;
-        Fri, 17 Nov 2023 10:49:31 +0300 (MSK)
-From:   Alexandra Diupina <adiupina@astralinux.ru>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     Alexandra Diupina <adiupina@astralinux.ru>,
-        Cristian Marussi <cristian.marussi@arm.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-Subject: [PATCH] cpufreq: scmi: process the result of devm_of_clk_add_hw_provider()
-Date:   Fri, 17 Nov 2023 10:49:11 +0300
-Message-Id: <20231117074911.14427-1-adiupina@astralinux.ru>
-X-Mailer: git-send-email 2.30.2
+        Fri, 17 Nov 2023 02:52:55 -0500
+Received: from smtpbgau1.qq.com (smtpbgau1.qq.com [54.206.16.166])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23785D4F;
+        Thu, 16 Nov 2023 23:52:47 -0800 (PST)
+X-QQ-mid: bizesmtp88t1700207542tiadw1lg
+Received: from HX01040049.powercore.com.cn ( [121.8.34.183])
+        by bizesmtp.qq.com (ESMTP) with 
+        id ; Fri, 17 Nov 2023 15:52:17 +0800 (CST)
+X-QQ-SSF: 01400000000000409000000A0000000
+X-QQ-FEAT: CR3LFp2JE4n7ku21/mYvIIQ5SpzgwTJQJy9ia+W2yMvgDWCJqk8SIZO2HV72T
+        soebgUlYxDzZ8T9R1juZePVonezYoxSx2shFCXGGE4lvABuDVrnxvENMHA0Z85kQsyPRfUh
+        A6j2zM5Eh9bXM/84+83SB2hOICcCjw4YO6bkvpzVnheWmOYFkPe+SeSr6QQmDShKV0Y+N9D
+        a70HSwCMTXlnXYWdrX6ISl1+r87E0aRdK5QkMtPm9+wMXTLDaWg7uFiElWGSnP+ejy/Fxcx
+        j5kAJsn+Jm/ywfa+4WypiyK4AAayLU+wXTb9Y/I6HCv6QokP8GUPofaNL2VlyR8KQLR2M5K
+        0YcMXa8IIIWOfRe/cojHSAfgKzpOJoxCgrSWuXaWjOsDi+0J/sMYMCV9b8xR1XrilkzY4Ff
+X-QQ-GoodBg: 2
+X-BIZMAIL-ID: 3930165603340763718
+From:   Zhao Ke <ke.zhao@shingroup.cn>
+To:     mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        fbarrat@linux.ibm.com, ajd@linux.ibm.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Zhao Ke <ke.zhao@shingroup.cn>
+Subject: [PATCH] powerpc: Add PVN support for HeXin C2000 processor
+Date:   Fri, 17 Nov 2023 15:52:15 +0800
+Message-Id: <20231117075215.647-1-ke.zhao@shingroup.cn>
+X-Mailer: git-send-email 2.34.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:shingroup.cn:qybglogicsvrsz:qybglogicsvrsz3a-0
 X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-devm_of_clk_add_hw_provider() may return an errno, so
-add a return value check
+HeXin Tech Co. has applied for a new PVN from the OpenPower Community
+for its new processor C2000. The OpenPower has assigned a new PVN
+and this newly assigned PVN is 0x0066, add pvr register related
+support for this PVN.
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
-
-Fixes: 8410e7f3b31e ("cpufreq: scmi: Fix OPP addition failure with a dumm=
-y clock provider")
-Signed-off-by: Alexandra Diupina <adiupina@astralinux.ru>
+Signed-off-by: Zhao Ke <ke.zhao@shingroup.cn>
+Link: https://discuss.openpower.foundation/t/how-to-get-a-new-pvr-for-processors-follow-power-isa/477/10
 ---
- drivers/cpufreq/scmi-cpufreq.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/powerpc/include/asm/reg.h            |  1 +
+ arch/powerpc/kernel/cpu_specs_book3s_64.h | 15 +++++++++++++++
+ arch/powerpc/kvm/book3s_pr.c              |  1 +
+ arch/powerpc/mm/book3s64/pkeys.c          |  3 ++-
+ arch/powerpc/platforms/powernv/subcore.c  |  3 ++-
+ drivers/misc/cxl/cxl.h                    |  3 ++-
+ 6 files changed, 23 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cpufreq/scmi-cpufreq.c b/drivers/cpufreq/scmi-cpufre=
-q.c
-index c8a7ccc42c16..4037945663bf 100644
---- a/drivers/cpufreq/scmi-cpufreq.c
-+++ b/drivers/cpufreq/scmi-cpufreq.c
-@@ -334,8 +334,13 @@ static int scmi_cpufreq_probe(struct scmi_device *sd=
-ev)
-=20
- #ifdef CONFIG_COMMON_CLK
- 	/* dummy clock provider as needed by OPP if clocks property is used */
--	if (of_property_present(dev->of_node, "#clock-cells"))
--		devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
-+	if (of_property_present(dev->of_node, "#clock-cells")) {
-+		ret =3D devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get, NULL);
-+		if (ret) {
-+			dev_err(dev, "%s: registering clock provider failed, err: %d\n",
-+				__func__, ret);
-+		}
-+	}
- #endif
-=20
- 	ret =3D cpufreq_register_driver(&scmi_cpufreq_driver);
---=20
-2.30.2
+diff --git a/arch/powerpc/include/asm/reg.h b/arch/powerpc/include/asm/reg.h
+index 4ae4ab9090a2..7fd09f25452d 100644
+--- a/arch/powerpc/include/asm/reg.h
++++ b/arch/powerpc/include/asm/reg.h
+@@ -1361,6 +1361,7 @@
+ #define PVR_POWER8E	0x004B
+ #define PVR_POWER8NVL	0x004C
+ #define PVR_POWER8	0x004D
++#define PVR_HX_C2000	0x0066
+ #define PVR_POWER9	0x004E
+ #define PVR_POWER10	0x0080
+ #define PVR_BE		0x0070
+diff --git a/arch/powerpc/kernel/cpu_specs_book3s_64.h b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+index c370c1b804a9..4f604934da7c 100644
+--- a/arch/powerpc/kernel/cpu_specs_book3s_64.h
++++ b/arch/powerpc/kernel/cpu_specs_book3s_64.h
+@@ -238,6 +238,21 @@ static struct cpu_spec cpu_specs[] __initdata = {
+ 		.machine_check_early	= __machine_check_early_realmode_p8,
+ 		.platform		= "power8",
+ 	},
++	{	/* 2.07-compliant processor, HeXin C2000 processor */
++		.pvr_mask		= 0xffffffff,
++		.pvr_value		= 0x00660000,
++		.cpu_name		= "POWER8 (architected)",
++		.cpu_features		= CPU_FTRS_POWER8,
++		.cpu_user_features	= COMMON_USER_POWER8,
++		.cpu_user_features2	= COMMON_USER2_POWER8,
++		.mmu_features		= MMU_FTRS_POWER8,
++		.icache_bsize		= 128,
++		.dcache_bsize		= 128,
++		.cpu_setup		= __setup_cpu_power8,
++		.cpu_restore		= __restore_cpu_power8,
++		.machine_check_early	= __machine_check_early_realmode_p8,
++		.platform		= "power8",
++	},
+ 	{	/* 3.00-compliant processor, i.e. Power9 "architected" mode */
+ 		.pvr_mask		= 0xffffffff,
+ 		.pvr_value		= 0x0f000005,
+diff --git a/arch/powerpc/kvm/book3s_pr.c b/arch/powerpc/kvm/book3s_pr.c
+index 9118242063fb..5b92619a05fd 100644
+--- a/arch/powerpc/kvm/book3s_pr.c
++++ b/arch/powerpc/kvm/book3s_pr.c
+@@ -604,6 +604,7 @@ static void kvmppc_set_pvr_pr(struct kvm_vcpu *vcpu, u32 pvr)
+ 	case PVR_POWER8:
+ 	case PVR_POWER8E:
+ 	case PVR_POWER8NVL:
++	case PVR_HX_C2000:
+ 	case PVR_POWER9:
+ 		vcpu->arch.hflags |= BOOK3S_HFLAG_MULTI_PGSIZE |
+ 			BOOK3S_HFLAG_NEW_TLBIE;
+diff --git a/arch/powerpc/mm/book3s64/pkeys.c b/arch/powerpc/mm/book3s64/pkeys.c
+index 125733962033..c38f378e1942 100644
+--- a/arch/powerpc/mm/book3s64/pkeys.c
++++ b/arch/powerpc/mm/book3s64/pkeys.c
+@@ -89,7 +89,8 @@ static int __init scan_pkey_feature(void)
+ 			unsigned long pvr = mfspr(SPRN_PVR);
+ 
+ 			if (PVR_VER(pvr) == PVR_POWER8 || PVR_VER(pvr) == PVR_POWER8E ||
+-			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9)
++			    PVR_VER(pvr) == PVR_POWER8NVL || PVR_VER(pvr) == PVR_POWER9 ||
++				PVR_VER(pvr) == PVR_HX_C2000)
+ 				pkeys_total = 32;
+ 		}
+ 	}
+diff --git a/arch/powerpc/platforms/powernv/subcore.c b/arch/powerpc/platforms/powernv/subcore.c
+index 191424468f10..58e7331e1e7e 100644
+--- a/arch/powerpc/platforms/powernv/subcore.c
++++ b/arch/powerpc/platforms/powernv/subcore.c
+@@ -425,7 +425,8 @@ static int subcore_init(void)
+ 
+ 	if (pvr_ver != PVR_POWER8 &&
+ 	    pvr_ver != PVR_POWER8E &&
+-	    pvr_ver != PVR_POWER8NVL)
++	    pvr_ver != PVR_POWER8NVL &&
++		pvr_ver != PVR_HX_C2000)
+ 		return 0;
+ 
+ 	/*
+diff --git a/drivers/misc/cxl/cxl.h b/drivers/misc/cxl/cxl.h
+index 0562071cdd4a..9ac2991b29c7 100644
+--- a/drivers/misc/cxl/cxl.h
++++ b/drivers/misc/cxl/cxl.h
+@@ -836,7 +836,8 @@ static inline bool cxl_is_power8(void)
+ {
+ 	if ((pvr_version_is(PVR_POWER8E)) ||
+ 	    (pvr_version_is(PVR_POWER8NVL)) ||
+-	    (pvr_version_is(PVR_POWER8)))
++	    (pvr_version_is(PVR_POWER8)) ||
++		(pvr_version_is(PVR_HX_C2000)))
+ 		return true;
+ 	return false;
+ }
+-- 
+2.34.1
 
