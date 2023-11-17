@@ -2,94 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F8F7EF0A6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:36:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DA647EF0A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:36:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345879AbjKQKgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:36:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47088 "EHLO
+        id S1345928AbjKQKgp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:36:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230105AbjKQKgl (ORCPT
+        with ESMTP id S1345745AbjKQKgm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:36:41 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1C02B9;
-        Fri, 17 Nov 2023 02:36:38 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58447C433C7;
-        Fri, 17 Nov 2023 10:36:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700217398;
-        bh=US34hMxupTHZ9TsBDq1dqsqsLDXa5zqsP2aagnEpwKs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qR6SB/dR/hVs2o/TszmjzGLOeimKanmbfi2ETFu4k5U890FEwX+E3cbJYpPUvVchv
-         eYyPt/9i2ejlP//6KUHJ+qtNIyDxXc4H60sE91eg+CgdoPCmb8Y8MrIaCReO9U4Qfg
-         a+MI3ZVsdgEHCF8Mjd8MkfS8GUC1USIdY33mJKC9GjYuQ2z9mfWllQVwp+0wTnZmd6
-         Uu9u53mLL6URdgK+w4RePlVR0pdHm9ZAMBsGts25rlzBAvZy/awnzkqpSu1wr0HMq6
-         WiO+pAMpaQcLPZaygSdcctl1vMCk3YwKAIYYnp8aa9yAaCYpQu7mh4tbeQFITTn+IM
-         V5Uy2XjfLHWyg==
-Date:   Fri, 17 Nov 2023 16:06:30 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Johan Hovold <johan+linaro@kernel.org>
-Cc:     Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 6/6] PCI/ASPM: Add lockdep assert to link state helper
-Message-ID: <20231117103630.GO250770@thinkpad>
-References: <20231114135553.32301-1-johan+linaro@kernel.org>
- <20231114135553.32301-7-johan+linaro@kernel.org>
+        Fri, 17 Nov 2023 05:36:42 -0500
+Received: from abb.hmeau.com (abb.hmeau.com [144.6.53.87])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07A34BC;
+        Fri, 17 Nov 2023 02:36:39 -0800 (PST)
+Received: from loth.rohan.me.apana.org.au ([192.168.167.2])
+        by formenos.hmeau.com with smtp (Exim 4.94.2 #2 (Debian))
+        id 1r3wD0-000cJb-BZ; Fri, 17 Nov 2023 18:36:23 +0800
+Received: by loth.rohan.me.apana.org.au (sSMTP sendmail emulation); Fri, 17 Nov 2023 18:36:30 +0800
+Date:   Fri, 17 Nov 2023 18:36:30 +0800
+From:   Herbert Xu <herbert@gondor.apana.org.au>
+To:     Weili Qian <qianweili@huawei.com>
+Cc:     Chen Ni <nichen@iscas.ac.cn>, wangzhou1@hisilicon.com,
+        davem@davemloft.net, xuzaibo@huawei.com, tanshukun1@huawei.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] crypto: hisilicon - Add check for pci_find_ext_capability
+Message-ID: <ZVdCLjo7GOQN54sx@gondor.apana.org.au>
+References: <20231109021308.1859881-1-nichen@iscas.ac.cn>
+ <6eeced40-7951-ca0d-1bcd-62e1d329ca96@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20231114135553.32301-7-johan+linaro@kernel.org>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+In-Reply-To: <6eeced40-7951-ca0d-1bcd-62e1d329ca96@huawei.com>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Nov 14, 2023 at 02:55:53PM +0100, Johan Hovold wrote:
-> Add a lockdep assert to the locked disable link state helper which
-> should only be called with a pci_bus_sem read lock held.
-> 
-> Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+On Fri, Nov 17, 2023 at 10:07:00AM +0800, Weili Qian wrote:
+>
+> Thanks for your patch. The function qm_set_vf_mse() is called only after SRIOV
+> is enabled, so function pci_find_ext_capability() does not return 0. This check
+> makes no sense.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Perhaps we could add a comment instead?
 
-- Mani
-
-> ---
->  drivers/pci/pcie/aspm.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
-> index 19b7256d2dc9..ef2e7a186f57 100644
-> --- a/drivers/pci/pcie/aspm.c
-> +++ b/drivers/pci/pcie/aspm.c
-> @@ -1090,6 +1090,8 @@ static int __pci_disable_link_state(struct pci_dev *pdev, int state, bool locked
->  
->  int pci_disable_link_state_locked(struct pci_dev *pdev, int state)
->  {
-> +	lockdep_assert_held_read(&pci_bus_sem);
-> +
->  	return __pci_disable_link_state(pdev, state, true);
->  }
->  EXPORT_SYMBOL(pci_disable_link_state_locked);
-> -- 
-> 2.41.0
-> 
-
+Thanks,
 -- 
-மணிவண்ணன் சதாசிவம்
+Email: Herbert Xu <herbert@gondor.apana.org.au>
+Home Page: http://gondor.apana.org.au/~herbert/
+PGP Key: http://gondor.apana.org.au/~herbert/pubkey.txt
