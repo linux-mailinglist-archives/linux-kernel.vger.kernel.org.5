@@ -2,94 +2,341 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 845617EF8E0
+	by mail.lfdr.de (Postfix) with ESMTP id DA5FC7EF8E1
 	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:51:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232339AbjKQUvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 15:51:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
+        id S1346175AbjKQUva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:51:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232067AbjKQUvF (ORCPT
+        with ESMTP id S232067AbjKQUv0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:51:05 -0500
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26DB2D6D
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:00 -0800 (PST)
-Received: by mail-wm1-x334.google.com with SMTP id 5b1f17b1804b1-407c3adef8eso21144825e9.2
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:00 -0800 (PST)
+        Fri, 17 Nov 2023 15:51:26 -0500
+Received: from mail-oo1-xc32.google.com (mail-oo1-xc32.google.com [IPv6:2607:f8b0:4864:20::c32])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7368FD72
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:22 -0800 (PST)
+Received: by mail-oo1-xc32.google.com with SMTP id 006d021491bc7-58a0154b4baso1671644eaf.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 12:51:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700254258; x=1700859058; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3Cfb9CpRJGax+VMCUnz4cwDEpCdrdsrUj8kZuGAr5ZY=;
-        b=cxymiNZKAxhdcmdx5RX7VH/snGLgCNEeorBQnO9tnizwKVQE2SXJljutN7N43zElas
-         HyQJ7684IF0aZC5fZMRCqEF/IIahRnIHfzxvebQzjzEWMxKmEYa4Gl85jzE8l73Caezy
-         jsexBtZD2Cvu3yzv3u6iJegtwdFLqIHpxFgzHdP1Q+bSHaIi8GfX+XRupMhFkWVIqu+u
-         rGpQvhivx4Ek9RxWsVKyM+dF25cllZ5Wv0hCvlcKamiQL4lI7kTRCClg4iY3L588fgCJ
-         nDevZc0uio7RAbo0KDVYnj9UFy7dVEgak0M6kPZB/bYZfyAy7Is90k0B9ACAC4FdGdFe
-         wSmA==
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1700254282; x=1700859082; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bN20sgWzr3hvmPnBHj6NtFmr2ao5No2o7Np+nHfNS3Q=;
+        b=POEunZhcNSUDYAzRqThXThXM9GBQSMPdFBj9nSmQ6MTjMJdM1kXLyiK7TRxM+1n5oO
+         QTgnQ+NTIVSYmzhkqA+lv3NqPIQa629nbHqUmwNv/mY9PAheqdV28iLCJtWeN0yNy0NJ
+         IG2OFFPnB0Pkn2AyyxkspJmG5nZrXO7xiJMmJ/EXTG3SzMttTyAZp+kli2fXp7ZcpV8D
+         hsVukl8whAtd44R0+c8KaK7PHysQbsMEIjmvwOdIUHAimC7KI+f0lfBIdLAbQoOP48kd
+         WXfP1iQT9++lheppG+oQeM4QTSsvD1ZbJ75h7iEgw0FnfIMMrhx8m3IX/jXw504EvIKn
+         +7xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700254258; x=1700859058;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Cfb9CpRJGax+VMCUnz4cwDEpCdrdsrUj8kZuGAr5ZY=;
-        b=KqoW3tsYpOmo1g1oT7HaO+oNfoFe2V2gWvlZ3SzSKMLxLYvU8TaDvNJye6KL+aUbc6
-         y5idbsUGTaHy76uyqsPF4XSptoRRmU7e2uPgZtyfRXZMMyS2T/nyvwqTYdlbvHjGzM/q
-         hwFRWJVXfYJXWr8yEAq+8+I/rsF/fEf19lPOs+NdMg7QP7W4aAheEgMGQC/gYLwQV7nz
-         Iwrh76wZJkIlQ4/PZTW0nTcBi5BZtmCr+X7eHhG3w5YE1O++hGUtBCfapmaIb+/WfvFe
-         v3hDt2HRXcK1UtSTxZf1LbiIQPr9hFW7KiYJ360feVg55IqXcBUTSkq43pVnpCJQ3heK
-         EZ/A==
-X-Gm-Message-State: AOJu0YzoXcB5IwlP/WcGUut8vlX8yvvlsNwasOnwXRVWwOYpNsTn1bHt
-        f5bwBXQodnm5CaG27d/d0S/koQ==
-X-Google-Smtp-Source: AGHT+IFjAiXluizJ9xFU9rHxpbwZ5V6ciMuUpG4zoA9i1A1H/vCkh74tzaHFHMJWi4Ib6mtXQ4tgSw==
-X-Received: by 2002:a05:600c:45ca:b0:405:499a:7fc1 with SMTP id s10-20020a05600c45ca00b00405499a7fc1mr203435wmo.40.1700254257945;
-        Fri, 17 Nov 2023 12:50:57 -0800 (PST)
-Received: from [192.168.100.102] ([37.228.218.3])
-        by smtp.gmail.com with ESMTPSA id je14-20020a05600c1f8e00b0040596352951sm8679047wmb.5.2023.11.17.12.50.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 12:50:57 -0800 (PST)
-Message-ID: <ec9d03f7-7158-4309-9a04-b08c69b89f39@linaro.org>
-Date:   Fri, 17 Nov 2023 20:50:56 +0000
+        d=1e100.net; s=20230601; t=1700254282; x=1700859082;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bN20sgWzr3hvmPnBHj6NtFmr2ao5No2o7Np+nHfNS3Q=;
+        b=MiPzi5F6Eg1y5+AE+Q6rNHH0m0piZUXjxpK2PosfQ965+XX5W9x1f8l28bdhJK1Vb3
+         d9D+bRGb9Sm3WbpKKCuGsTy9AN/r370qOrSunyES8wOrf/SSz4WxJu6ZyOGLWg7VyZVj
+         G01Qav8MFDEmH225K8gx6Er/YqgQSgvx4zYr0L4x5nBy7AZRZcpSl66RhIrfzzjwmfmu
+         bHdzttleRyxXToqL7wYsxM/5IciTfcU27kNU0P/lxsJdmgtPNPBHH6RrGMKdNtCBeTaZ
+         bfTcdI6yqFZaXoZJPwamqZMJMJ5dvO+sTb30uu4cBLYxEgSImW1GeOpQt1/Fea3dta6r
+         pGXQ==
+X-Gm-Message-State: AOJu0Yw5+hkS6FGR1NVipscEiZ8Snm3GjVBGbp3TYHFoYsvlrzamIxuv
+        IknRudXnev4iP+PNP19rMo7YIw==
+X-Google-Smtp-Source: AGHT+IGK/jRGfldsk6YOHG7XE2ESsCPIK1dlHm9uFhqkc36DHTe2kDcn/KF2fRU5N35/HfhbFTtoxw==
+X-Received: by 2002:a05:6870:9d99:b0:1c8:c9ca:7092 with SMTP id pv25-20020a0568709d9900b001c8c9ca7092mr124337oab.11.1700254281705;
+        Fri, 17 Nov 2023 12:51:21 -0800 (PST)
+Received: from debug.ba.rivosinc.com ([64.71.180.162])
+        by smtp.gmail.com with ESMTPSA id pj24-20020a056871d19800b001efa91630f6sm402222oac.6.2023.11.17.12.51.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 12:51:21 -0800 (PST)
+Date:   Fri, 17 Nov 2023 12:51:18 -0800
+From:   Deepak Gupta <debug@rivosinc.com>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     "Rick P. Edgecombe" <rick.p.edgecombe@intel.com>,
+        Szabolcs Nagy <Szabolcs.Nagy@arm.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Valentin Schneider <vschneid@redhat.com>,
+        Christian Brauner <brauner@kernel.org>,
+        Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Kees Cook <keescook@chromium.org>, jannh@google.com,
+        linux-kselftest@vger.kernel.org, linux-api@vger.kernel.org
+Subject: Re: [PATCH RFC RFT v2 2/5] fork: Add shadow stack support to clone3()
+Message-ID: <ZVfSRhQ6vpDfc8Ma@debug.ba.rivosinc.com>
+References: <20231114-clone3-shadow-stack-v2-0-b613f8681155@kernel.org>
+ <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V2 2/4] clk: qcom: Add Global Clock controller (GCC)
- driver for X1E80100
-Content-Language: en-US
-To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
-        konrad.dybcio@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org
-Cc:     agross@kernel.org, conor+dt@kernel.org, quic_tdas@quicinc.com,
-        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
-        abel.vesa@linaro.org, quic_tsoni@quicinc.com
-References: <20231117092737.28362-1-quic_sibis@quicinc.com>
- <20231117092737.28362-3-quic_sibis@quicinc.com>
-From:   Bryan O'Donoghue <bryan.odonoghue@linaro.org>
-In-Reply-To: <20231117092737.28362-3-quic_sibis@quicinc.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20231114-clone3-shadow-stack-v2-2-b613f8681155@kernel.org>
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 17/11/2023 09:27, Sibi Sankar wrote:
-> * Use shared ops in the x1e80100 gcc driver [Bryan].
+On Tue, Nov 14, 2023 at 08:05:55PM +0000, Mark Brown wrote:
+>Unlike with the normal stack there is no API for configuring the the shadow
+>stack for a new thread, instead the kernel will dynamically allocate a new
+>shadow stack with the same size as the normal stack. This appears to be due
+>to the shadow stack series having been in development since before the more
+>extensible clone3() was added rather than anything more deliberate.
+>
+>Add parameters to clone3() specifying the address and size of a shadow
+>stack for the newly created process, 
 
-This looks better to me now / more consistent with what we have in 
-sc8280xp - where we do try to hit suspend and => retention/parking matters.
+Probably should update commit message in next version. Address is not specified
+anymore.
 
-Could you give a bit more detail on why SDCC* doesn't warrant parking on 
-X1E80100 as on SC8280XP though ?
-
----
-bod
+>we validate that the range specified
+>is accessible to userspace but do not validate that it has been mapped
+>appropriately for use as a shadow stack (normally via map_shadow_stack()).
+>If the shadow stack is specified in this way then the caller is responsible
+>for freeing the memory as with the main stack. If no shadow stack is
+>specified then the existing implicit allocation and freeing behaviour is
+>maintained.
+>
+>If the architecture does not support shadow stacks the shadow stack
+>parameters must be zero, architectures that do support the feature are
+>expected to have the same requirement on individual systems that lack
+>shadow stack support.
+>
+>Update the existing x86 implementation to pay attention to the newly added
+>arguments, in order to maintain compatibility we use the existing behaviour
+>if no shadow stack is specified. Minimal validation is done of the supplied
+>parameters, detailed enforcement is left to when the thread is executed.
+>Since we are now using four fields from the kernel_clone_args we pass that
+>into the shadow stack code rather than individual fields.
+>
+>Signed-off-by: Mark Brown <broonie@kernel.org>
+>---
+> arch/x86/include/asm/shstk.h | 11 +++++++----
+> arch/x86/kernel/process.c    |  2 +-
+> arch/x86/kernel/shstk.c      | 30 +++++++++++++++++++++++++-----
+> include/linux/sched/task.h   |  2 ++
+> include/uapi/linux/sched.h   |  4 ++++
+> kernel/fork.c                | 24 ++++++++++++++++++++++--
+> 6 files changed, 61 insertions(+), 12 deletions(-)
+>
+>diff --git a/arch/x86/include/asm/shstk.h b/arch/x86/include/asm/shstk.h
+>index 42fee8959df7..8be7b0a909c3 100644
+>--- a/arch/x86/include/asm/shstk.h
+>+++ b/arch/x86/include/asm/shstk.h
+>@@ -6,6 +6,7 @@
+> #include <linux/types.h>
+>
+> struct task_struct;
+>+struct kernel_clone_args;
+> struct ksignal;
+>
+> #ifdef CONFIG_X86_USER_SHADOW_STACK
+>@@ -16,8 +17,8 @@ struct thread_shstk {
+>
+> long shstk_prctl(struct task_struct *task, int option, unsigned long arg2);
+> void reset_thread_features(void);
+>-unsigned long shstk_alloc_thread_stack(struct task_struct *p, unsigned long clone_flags,
+>-				       unsigned long stack_size);
+>+unsigned long shstk_alloc_thread_stack(struct task_struct *p,
+>+				       const struct kernel_clone_args *args);
+> void shstk_free(struct task_struct *p);
+> int setup_signal_shadow_stack(struct ksignal *ksig);
+> int restore_signal_shadow_stack(void);
+>@@ -26,8 +27,10 @@ static inline long shstk_prctl(struct task_struct *task, int option,
+> 			       unsigned long arg2) { return -EINVAL; }
+> static inline void reset_thread_features(void) {}
+> static inline unsigned long shstk_alloc_thread_stack(struct task_struct *p,
+>-						     unsigned long clone_flags,
+>-						     unsigned long stack_size) { return 0; }
+>+						     const struct kernel_clone_args *args)
+>+{
+>+	return 0;
+>+}
+> static inline void shstk_free(struct task_struct *p) {}
+> static inline int setup_signal_shadow_stack(struct ksignal *ksig) { return 0; }
+> static inline int restore_signal_shadow_stack(void) { return 0; }
+>diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+>index b6f4e8399fca..a9ca80ea5056 100644
+>--- a/arch/x86/kernel/process.c
+>+++ b/arch/x86/kernel/process.c
+>@@ -207,7 +207,7 @@ int copy_thread(struct task_struct *p, const struct kernel_clone_args *args)
+> 	 * is disabled, new_ssp will remain 0, and fpu_clone() will know not to
+> 	 * update it.
+> 	 */
+>-	new_ssp = shstk_alloc_thread_stack(p, clone_flags, args->stack_size);
+>+	new_ssp = shstk_alloc_thread_stack(p, args);
+> 	if (IS_ERR_VALUE(new_ssp))
+> 		return PTR_ERR((void *)new_ssp);
+>
+>diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
+>index 59e15dd8d0f8..7ffe90010587 100644
+>--- a/arch/x86/kernel/shstk.c
+>+++ b/arch/x86/kernel/shstk.c
+>@@ -191,18 +191,38 @@ void reset_thread_features(void)
+> 	current->thread.features_locked = 0;
+> }
+>
+>-unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long clone_flags,
+>-				       unsigned long stack_size)
+>+unsigned long shstk_alloc_thread_stack(struct task_struct *tsk,
+>+				       const struct kernel_clone_args *args)
+> {
+> 	struct thread_shstk *shstk = &tsk->thread.shstk;
+>+	unsigned long clone_flags = args->flags;
+> 	unsigned long addr, size;
+>
+> 	/*
+> 	 * If shadow stack is not enabled on the new thread, skip any
+>-	 * switch to a new shadow stack.
+>+	 * implicit switch to a new shadow stack and reject attempts to
+>+	 * explciitly specify one.
+> 	 */
+>-	if (!features_enabled(ARCH_SHSTK_SHSTK))
+>+	if (!features_enabled(ARCH_SHSTK_SHSTK)) {
+>+		if (args->shadow_stack)
+>+			return (unsigned long)ERR_PTR(-EINVAL);
+>+
+> 		return 0;
+>+	}
+>+
+>+	/*
+>+	 * If the user specified a shadow stack then do some basic
+>+	 * validation and use it.  The caller is responsible for
+>+	 * freeing the shadow stack.
+>+	 */
+>+	if (args->shadow_stack_size) {
+>+		size = args->shadow_stack_size;
+>+
+>+		if (size < 8)
+>+			return (unsigned long)ERR_PTR(-EINVAL);
+>+	} else {
+>+		size = args->stack_size;
+>+	}
+>
+> 	/*
+> 	 * For CLONE_VFORK the child will share the parents shadow stack.
+>@@ -222,7 +242,7 @@ unsigned long shstk_alloc_thread_stack(struct task_struct *tsk, unsigned long cl
+> 	if (!(clone_flags & CLONE_VM))
+> 		return 0;
+>
+>-	size = adjust_shstk_size(stack_size);
+>+	size = adjust_shstk_size(size);
+> 	addr = alloc_shstk(0, size, 0, false);
+> 	if (IS_ERR_VALUE(addr))
+> 		return addr;
+>diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
+>index a23af225c898..94e7cf62be51 100644
+>--- a/include/linux/sched/task.h
+>+++ b/include/linux/sched/task.h
+>@@ -41,6 +41,8 @@ struct kernel_clone_args {
+> 	void *fn_arg;
+> 	struct cgroup *cgrp;
+> 	struct css_set *cset;
+>+	unsigned long shadow_stack;
+>+	unsigned long shadow_stack_size;
+> };
+>
+> /*
+>diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
+>index 3bac0a8ceab2..a998b6d0c897 100644
+>--- a/include/uapi/linux/sched.h
+>+++ b/include/uapi/linux/sched.h
+>@@ -84,6 +84,8 @@
+>  *                kernel's limit of nested PID namespaces.
+>  * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
+>  *                a file descriptor for the cgroup.
+>+ * @shadow_stack_size: Specify the size of the shadow stack to allocate
+>+ *                     for the child process.
+>  *
+>  * The structure is versioned by size and thus extensible.
+>  * New struct members must go at the end of the struct and
+>@@ -101,12 +103,14 @@ struct clone_args {
+> 	__aligned_u64 set_tid;
+> 	__aligned_u64 set_tid_size;
+> 	__aligned_u64 cgroup;
+>+	__aligned_u64 shadow_stack_size;
+> };
+> #endif
+>
+> #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
+> #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
+> #define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
+>+#define CLONE_ARGS_SIZE_VER3 96 /* sizeof fourth published struct */
+>
+> /*
+>  * Scheduling policies
+>diff --git a/kernel/fork.c b/kernel/fork.c
+>index 10917c3e1f03..b0df69c8185e 100644
+>--- a/kernel/fork.c
+>+++ b/kernel/fork.c
+>@@ -3067,7 +3067,9 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
+> 		     CLONE_ARGS_SIZE_VER1);
+> 	BUILD_BUG_ON(offsetofend(struct clone_args, cgroup) !=
+> 		     CLONE_ARGS_SIZE_VER2);
+>-	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER2);
+>+	BUILD_BUG_ON(offsetofend(struct clone_args, shadow_stack_size) !=
+>+		     CLONE_ARGS_SIZE_VER3);
+>+	BUILD_BUG_ON(sizeof(struct clone_args) != CLONE_ARGS_SIZE_VER3);
+>
+> 	if (unlikely(usize > PAGE_SIZE))
+> 		return -E2BIG;
+>@@ -3110,6 +3112,7 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
+> 		.tls		= args.tls,
+> 		.set_tid_size	= args.set_tid_size,
+> 		.cgroup		= args.cgroup,
+>+		.shadow_stack_size	= args.shadow_stack_size,
+> 	};
+>
+> 	if (args.set_tid &&
+>@@ -3150,6 +3153,23 @@ static inline bool clone3_stack_valid(struct kernel_clone_args *kargs)
+> 	return true;
+> }
+>
+>+/**
+>+ * clone3_shadow_stack_valid - check and prepare shadow stack
+>+ * @kargs: kernel clone args
+>+ *
+>+ * Verify that shadow stacks are only enabled if supported.
+>+ */
+>+static inline bool clone3_shadow_stack_valid(struct kernel_clone_args *kargs)
+>+{
+>+#ifdef CONFIG_ARCH_HAS_USER_SHADOW_STACK
+>+	/* The architecture must check support on the specific machine */
+>+	return true;
+>+#else
+>+	/* The architecture does not support shadow stacks */
+>+	return !kargs->shadow_stack_size;
+>+#endif
+>+}
+>+
+> static bool clone3_args_valid(struct kernel_clone_args *kargs)
+> {
+> 	/* Verify that no unknown flags are passed along. */
+>@@ -3172,7 +3192,7 @@ static bool clone3_args_valid(struct kernel_clone_args *kargs)
+> 	    kargs->exit_signal)
+> 		return false;
+>
+>-	if (!clone3_stack_valid(kargs))
+>+	if (!clone3_stack_valid(kargs) || !clone3_shadow_stack_valid(kargs))
+> 		return false;
+>
+> 	return true;
+>
+>-- 
+>2.30.2
+>
