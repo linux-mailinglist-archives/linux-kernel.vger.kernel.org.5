@@ -2,89 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B3CFF7EED0F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F897EED11
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:04:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231267AbjKQICQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:02:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54396 "EHLO
+        id S231211AbjKQIEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:04:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43344 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQICO (ORCPT
+        with ESMTP id S229436AbjKQIEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:02:14 -0500
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAEAED50;
-        Fri, 17 Nov 2023 00:02:08 -0800 (PST)
-X-UUID: 54d04286c9c24d73a5850da049f946f9-20231117
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.32,REQID:179ae52a-1ee6-4cc2-9089-f74a29b274b8,IP:15,
-        URL:0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACT
-        ION:release,TS:26
-X-CID-INFO: VERSION:1.1.32,REQID:179ae52a-1ee6-4cc2-9089-f74a29b274b8,IP:15,UR
-        L:0,TC:0,Content:-5,EDM:25,RT:0,SF:-9,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-        N:release,TS:26
-X-CID-META: VersionHash:5f78ec9,CLOUDID:ff142c60-c89d-4129-91cb-8ebfae4653fc,B
-        ulkID:2311171602009NUW4FWO,BulkQuantity:0,Recheck:0,SF:17|19|45|66|38|24|1
-        02,TC:nil,Content:0,EDM:5,IP:-2,URL:1,File:nil,Bulk:nil,QS:nil,BEC:nil,COL
-        :0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,
-        TF_CID_SPAM_ULS
-X-UUID: 54d04286c9c24d73a5850da049f946f9-20231117
-X-User: chentao@kylinos.cn
-Received: from vt.. [(116.128.244.169)] by mailgw
-        (envelope-from <chentao@kylinos.cn>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 601564670; Fri, 17 Nov 2023 16:01:59 +0800
-From:   Kunwu Chan <chentao@kylinos.cn>
-To:     njavali@marvell.com, mrangankar@marvell.com,
-        GR-QLogic-Storage-Upstream@marvell.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kunwu.chan@hotmail.com, Kunwu Chan <chentao@kylinos.cn>,
-        stable@vger.kernel.org, kernel test robot <lkp@intel.com>
-Subject: [PATCH] scsi: qedi: Fix an endian bug in qedi_ring_doorbell
-Date:   Fri, 17 Nov 2023 16:01:51 +0800
-Message-Id: <20231117080151.1825970-1-chentao@kylinos.cn>
-X-Mailer: git-send-email 2.34.1
+        Fri, 17 Nov 2023 03:04:00 -0500
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A37AFB7
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:03:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1700208235;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SSjGLJu7XF01eP3l5L5+n+lDfOwEOlxpIkXKZr/vgis=;
+        b=AMPzoTTFJWM+vhe7yacMlTYJwYh5aR2DvTIv1eWwheL4CM8PM2GfeTlrRG0OylHv5KpLx+
+        bZjB5QVfWk6A1mcV2WaiGnbsi/puEGs0dVeuBW4Ry/2HXlXT6XVYhmxEuJyd8dlzZwx2p0
+        1A5Gn6XT+6b7wP3J19qNbFv59ihZnu0=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-235-cJkDvTZHM0urABhfSd5P_g-1; Fri, 17 Nov 2023 03:03:54 -0500
+X-MC-Unique: cJkDvTZHM0urABhfSd5P_g-1
+Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-4091c9bdb8eso13615265e9.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:03:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700208233; x=1700813033;
+        h=mime-version:message-id:date:references:in-reply-to:subject:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SSjGLJu7XF01eP3l5L5+n+lDfOwEOlxpIkXKZr/vgis=;
+        b=w1dNPSlsVSABKRpL3XPQKsLHv6su0CHbydrSaIBIktEadk6wFl8tt5o/R1rdkbqnb1
+         p85/vhMJkV2L4lmzUGkC+Jpfp5GV7eYbv8OSeVfpsMwZdU/0U0p/bLl3HBg7Ue63Z4Ji
+         Oi7JfxwK6llz3OjyJG0S+w/F0HeivvnRHvSw+kgeS6J4K5iUc+YnKsWOThMhXruYLR2F
+         iYrXHydMzuH3oSpjYZPa5li5228p5GbsxQBcCt/LRWlHIODi2EPcJsJYo3VzZ6Alegl/
+         2K3yfc6o8iIiHtJiNyeQ8yPAw5tsmXqZa3OizEUqTJCM/HYpe3Q1AQqnxHpz/O7pw4mY
+         gfcw==
+X-Gm-Message-State: AOJu0Yy9HsgkanUu830bEDo/1mJTmBHqYMPsMl/raaCqwRsj46K+8G2n
+        hGmeRr9Nn4iX2+tifuBB/ph5jIeyM0NCWtZPsd+yaQQS31La52qB9no0lGkVZUDfX0pnQtceZXL
+        5kqfS2CyUG3s1lLgUxVmxTIqO
+X-Received: by 2002:a5d:47c2:0:b0:32f:c188:38ec with SMTP id o2-20020a5d47c2000000b0032fc18838ecmr4365810wrc.16.1700208233052;
+        Fri, 17 Nov 2023 00:03:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFZ3B8sBxZjOwVSuhhG1BKCYOiHR+59JD/uoZSEiTZfAGQV+12ksFl2dbvoDPKTF+TX0GP6HQ==
+X-Received: by 2002:a5d:47c2:0:b0:32f:c188:38ec with SMTP id o2-20020a5d47c2000000b0032fc18838ecmr4365785wrc.16.1700208232750;
+        Fri, 17 Nov 2023 00:03:52 -0800 (PST)
+Received: from localhost (205.pool92-176-231.dynamic.orange.es. [92.176.231.205])
+        by smtp.gmail.com with ESMTPSA id r7-20020a056000014700b0032fab28e9c9sm1525182wrx.73.2023.11.17.00.03.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 00:03:52 -0800 (PST)
+From:   Javier Martinez Canillas <javierm@redhat.com>
+To:     Mostafa Weshahy <mweshahy@yahoo.com>,
+        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
+        tzimmermann@suse.de, airlied@gmail.com, daniel@ffwll.ch,
+        noralf@tronnes.org, mweshahy@yahoo.com,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        daniel@zonque.org
+Subject: Re: [PATCH] drm/ili9163: Add "1.8-128160EF" to spi_device_id table
+In-Reply-To: <20231116185124.13887-1-mweshahy@yahoo.com>
+References: <20231116185124.13887-1-mweshahy.ref@yahoo.com>
+ <20231116185124.13887-1-mweshahy@yahoo.com>
+Date:   Fri, 17 Nov 2023 09:03:51 +0100
+Message-ID: <87fs1424d4.fsf@minerva.mail-host-address-is-not-set>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        UNPARSEABLE_RELAY autolearn=ham autolearn_force=no version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_NONE,
+        RCVD_IN_MSPIKE_H4,RCVD_IN_MSPIKE_WL,SPF_HELO_NONE,SPF_NONE,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-drivers/scsi/qedi/qedi_fw.c:932:40: sparse: sparse: incorrect type in
-assignment (different base types) expected restricted __le16
-[usertype] sq_prod got unsigned short [usertype] fw_sq_prod_idx
+Mostafa Weshahy <mweshahy@yahoo.com> writes:
 
-Cc: stable@vger.kernel.org
-Reported-by: kernel test robot <lkp@intel.com>
-Closes: https://lore.kernel.org/r/202311161351.7sPcpket-lkp@intel.com/
-Signed-off-by: Kunwu Chan <chentao@kylinos.cn>
----
- drivers/scsi/qedi/qedi_fw.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hello Mostafa,
 
-diff --git a/drivers/scsi/qedi/qedi_fw.c b/drivers/scsi/qedi/qedi_fw.c
-index 6901738324da..72da9dce4e6f 100644
---- a/drivers/scsi/qedi/qedi_fw.c
-+++ b/drivers/scsi/qedi/qedi_fw.c
-@@ -922,7 +922,7 @@ void qedi_fp_process_cqes(struct qedi_work *work)
- 
- static void qedi_ring_doorbell(struct qedi_conn *qedi_conn)
- {
--	qedi_conn->ep->db_data.sq_prod = qedi_conn->ep->fw_sq_prod_idx;
-+	qedi_conn->ep->db_data.sq_prod = cpu_to_le16(qedi_conn->ep->fw_sq_prod_idx);
- 
- 	/* wmb - Make sure fw idx is coherent */
- 	wmb();
+> drm/ili9163: Add "1.8-128160EF" to spi_device_id table
+>
+> Currently enabling CONFIG_TINYDRM_ILI9163 driver - regardless of the device
+> tree - results in the below confusing log line:
+> SPI driver ili9163 has no spi_device_id for newhaven,1.8-128160EF
+>
+> This commit fixes this false alarm by adding "1.8-128160EF" to
+> spi_device_id table of ili9163 driver.
+>
+
+It's not actually a false alarm, this is needed if you want the driver
+module to be automatically loaded. Because the SPI core always reports
+a MODALIAS of the form "spi:1.8-128160EF" even if the device has been
+registered by OF.
+
+So this is an actual fix since this driver can be built as a module.
+
+> Signed-off-by: Mostafa Weshahy <mweshahy@yahoo.com>
+> ---
+
+Reviewed-by: Javier Martinez Canillas <javierm@redhat.com>
+
 -- 
-2.34.1
+Best regards,
+
+Javier Martinez Canillas
+Core Platforms
+Red Hat
 
