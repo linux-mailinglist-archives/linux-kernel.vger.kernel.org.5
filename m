@@ -2,77 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3382B7EEAB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:28:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29B3A7EEAB3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 02:31:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345619AbjKQB2Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 20:28:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60362 "EHLO
+        id S1345625AbjKQBbl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 20:31:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229790AbjKQB2X (ORCPT
+        with ESMTP id S1345614AbjKQBbj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 20:28:23 -0500
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71928129;
-        Thu, 16 Nov 2023 17:28:20 -0800 (PST)
-Received: by mail-ot1-x331.google.com with SMTP id 46e09a7af769-6ce532451c7so827998a34.2;
-        Thu, 16 Nov 2023 17:28:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700184499; x=1700789299; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=lYDCHTeKA1F33R/86cvSFZKdG5hmQV+VfLbjpN+enJ0=;
-        b=DSTVcNxC4243zfiSCo9VMtESOWUngsFbQfMyJIgK2MUgDTqxT2mUT0OBtflDVq9oF8
-         Jt18vGBGbPio0dHym0yf4b2auqHBoZP4aRtxQAtHPre52MGjOB7KfAFR8DFM6GNPaqri
-         hCJRsvc4CkSkOEu2QtA3w2qnZG+d1cS4YHJvTFG+WJ/hUv0shLG4xwAd+gG3fSrCZdvh
-         M/0Tw8GtPHZR2v0xan3mYuUDl14kid6UmHozKGRds6o3YeUopye6iOYVXs4jRpW1ej20
-         UPKmspRaKHIJVZcTSHK9BcTFKUWFKpPWzemRao0onfZIXv9UNKY0H8aGAAvPJCZRZUHi
-         GcYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700184499; x=1700789299;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=lYDCHTeKA1F33R/86cvSFZKdG5hmQV+VfLbjpN+enJ0=;
-        b=hqVJMZmrP21vv3LIPR3ZHzBpSHYDxfnbfHDPJqpfyrcgpOupA7aPSXWiUx0fOb+7wH
-         NZdkZmezpgwJgow+YMUXk4FSK9ttohb7P7NrJJJ0NKDbNOep6TwuF34I+atiJntoGCTv
-         5mf9sUt7lwRWsqpo02q9h8FosIftjFjXpvdm6tLlQF4BYdWhRsORLTPueTqOrZYWZg91
-         hQrKn630x3cwR4KVEfO+hNBmGKeFvlw9xtLC0ZTModRJQePnWUD6GovIS5PY/z6Tpnep
-         EoFpwTq3rUwh8rQ5Bth35MBkcEYRMwv5qQ73pZFWbU1Z2fiP2128fpSHof8jfm3q3QTR
-         8jKA==
-X-Gm-Message-State: AOJu0YzQf3mm7WqVJDFHYnJjzijyEGG+dl5Dj0kMb4zoxgwEk4Cs8XUy
-        /20RJ0uyOIh3i414FiKaADo=
-X-Google-Smtp-Source: AGHT+IEsgixXfLg6kIFkjRgBidHel0mzOuGYjARnZw3eDm7uZ/q6eqjl74h+UiOeVAcH2M8w9R8LtQ==
-X-Received: by 2002:a05:6830:13cb:b0:6c6:4843:2abb with SMTP id e11-20020a05683013cb00b006c648432abbmr10553632otq.12.1700184499688;
-        Thu, 16 Nov 2023 17:28:19 -0800 (PST)
-Received: from [172.27.233.123] (ec2-16-163-40-128.ap-east-1.compute.amazonaws.com. [16.163.40.128])
-        by smtp.gmail.com with ESMTPSA id 204-20020a6301d5000000b005897bfc2ed3sm332193pgb.93.2023.11.16.17.28.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 16 Nov 2023 17:28:19 -0800 (PST)
-Message-ID: <965bf6a9-97f7-4e20-bcb8-658e5cf459e5@gmail.com>
-Date:   Fri, 17 Nov 2023 09:28:14 +0800
+        Thu, 16 Nov 2023 20:31:39 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17397C5
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 17:31:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700184696; x=1731720696;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=V/jUma7OJCukorIVcv/g2fe3zwpE/XSNgYssbKFfxyc=;
+  b=Hw8FyUjBhmeB+Ns1RX/VTN0JaFGV0vSLscgS+6+N2duOkPokv7dptLMB
+   xgMKbWOJ3QUnuAUonskQzTaY/MwL8OJtTdvYQibPa9gfVgp1LIwgiTWFS
+   ZMLV2HE7sAPViUG1EuthK0Uuo1sX6W4b2s9CQDzsw02XrESz7i5pK9Kxr
+   TQ2b3dKzHorn0ip3wO0f4HnTfXF5j2uMzZBg7F0SjQ2gFiS4f1O8yL9RF
+   sFQtmMxSQ6BbyBntMHKCeYczqpZVSdjUZyWOPnBvvZiIk+LC2pMdf7agK
+   UBJRTO1/jO8RBikMFEoqrG+7SmLAiJTD0576L8mV5JRgAFP8SNm6UDyzK
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="388371852"
+X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
+   d="scan'208";a="388371852"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 17:31:24 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="794679810"
+X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
+   d="scan'208";a="794679810"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga008.jf.intel.com with ESMTP; 16 Nov 2023 17:31:21 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3nhU-0002FT-1m;
+        Fri, 17 Nov 2023 01:31:16 +0000
+Date:   Fri, 17 Nov 2023 09:30:41 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     Chris Morgan <macromorgan@hotmail.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: include/asm-generic/unaligned.h:119:16: sparse: sparse: cast
+ truncates bits from constant value (aa01a0 becomes a0)
+Message-ID: <202311170924.cmrgwVzU-lkp@intel.com>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6/9] KVM: x86: Update guest cpu_caps at runtime for
- dynamic CPUID-based features
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Maxim Levitsky <mlevitsk@redhat.com>
-References: <20231110235528.1561679-1-seanjc@google.com>
- <20231110235528.1561679-7-seanjc@google.com>
- <ffec2e93-cdb1-25e2-06ec-deccf8727ce4@gmail.com>
- <ZVN6w2Kc2AUmIiJO@google.com>
- <9395d416-cc5c-536d-641e-ffd971b682d1@gmail.com>
- <ZVTfG6mARiyttuKj@google.com>
-Content-Language: en-US
-From:   Robert Hoo <robert.hoo.linux@gmail.com>
-In-Reply-To: <ZVTfG6mARiyttuKj@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Spam-Status: No, score=-4.5 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -80,77 +63,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 11/15/2023 11:09 PM, Sean Christopherson wrote:
-...
->>> No, because then every caller would need extra code to pass
->>> vcpu->cpu_caps,
->>
->> Emm, I don't understand this. I tried to modified and compiled, all need to
->> do is simply substitute "vcpu" with "vcpu->arch.cpu_caps" in calling. (at
->> the end is my diff based on this patch set)
-> 
-> Yes, and I'm saying that
-> 
-> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PAUSEFILTER);
-> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_PFTHRESHOLD);
-> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VGIF);
-> 	guest_cpu_cap_restrict(vcpu, X86_FEATURE_VNMI);
-> 
-> is harder to read and write than this
-> 
-> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PAUSEFILTER);
-> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_PFTHRESHOLD);
-> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VGIF);
-> 	guest_cpu_cap_restrict(vcpu->arch.cpu_caps, X86_FEATURE_VNMI);
-> 
-> a one-time search-replace is easy, but the extra boilerplate has a non-zero cost
-> for every future developer/reader.
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7475e51b87969e01a6812eac713a1c8310372e8a
+commit: 66603243f5283f7f28c795f09e7c2167233df0bd Input: add driver for Hynitron cstxxx touchscreens
+date:   1 year, 1 month ago
+config: x86_64-randconfig-x001-20230717 (https://download.01.org/0day-ci/archive/20231117/202311170924.cmrgwVzU-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231117/202311170924.cmrgwVzU-lkp@intel.com/reproduce)
 
-Hmm, I think this is trivial. And can be solved/eased by other means, e.g. 
-Macro?. Rather than in the sacrifice of letting function's inside (easily) 
-access those info it shouldn't.
-> 
->>> and passing 'u32 *' provides less type safety than 'struct kvm_vcpu *'.
->>> That tradeoff isn't worth making this one path slightly easier to read.
->>
->> My point is also from vulnerability, long term, since as a principle, we'd
->> better pass in param/info to a function of its necessity.
-> 
-> Attempting to apply the principle of least privilege to low level C helpers is
-> nonsensical.  E.g. the helper can trivially get at the owning vcpu via container_of()
-> (well, if not for typeof assertions not playing nice with arrays, but open coding
-> container_of() is also trivial and illustrates the point).
-> 
-> 	struct kvm_vcpu_arch *arch = (void *)caps -  offsetof(struct kvm_vcpu_arch, cpu_caps);
-> 	struct kvm_vcpu *vcpu = container_of(arch, struct kvm_vcpu, arch);
-> 
-> 	if (!kvm_cpu_cap_has(x86_feature))
-> 		guest_cpu_cap_clear(vcpu, x86_feature);
-> 
-> And the intent behind that principle is to improve security/robustness; what I'm
-> saying is that passing in a 'u32 *" makes the overall implementation _less_ robust,
-> as it opens up the possibilities of passing in an unsafe/incorrect pointer.  E.g.
-> a well-intentioned, not _that_ obviously broken example is:
-> 
-> 	guest_cpu_cap_restrict(&vcpu->arch.cpu_caps[CPUID_1_ECX], X86_FEATURE_XSAVE);
-> 
->> e.g. cpuid_entry2_find().
-> 
-> The main reason cpuid_entry2_find() exists is because KVM checks the incoming
-> array provided by KVM_SET_CPUID2, which is also the reason why
-> __kvm_update_cpuid_runtime() takes an @entries array instead of just @vcpu.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311170924.cmrgwVzU-lkp@intel.com/
 
-Thanks for detailed explanation, I understand your points deeper, though I would 
-still prefer to honoring the principle if it was me to write the function. The 
-concerns above can/should be addressed by other means. (If some really cannot be 
-solved in C, i.e. more stringent type check, it's C to blame ;) but it on the 
-other side offers those flexibility that other languages cannot, doesn't it?)
-Another pros of the principle is that, it's also a fence, prevent (at least 
-raise the bar) people in the future from doing something that shouldn't be in 
-the function, e.g.  for his convenience to quickly fix a bug etc.
+sparse warnings: (new ones prefixed by >>)
+   drivers/input/touchscreen/hynitron_cstxxx.c: note: in included file (through arch/x86/include/generated/asm/unaligned.h):
+>> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (aa01a0 becomes a0)
+   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (aa01 becomes 1)
+>> include/asm-generic/unaligned.h:119:16: sparse: sparse: cast truncates bits from constant value (ab00d0 becomes d0)
+   include/asm-generic/unaligned.h:120:20: sparse: sparse: cast truncates bits from constant value (ab00 becomes 0)
 
-Anyway, it's a dilemma, and I said it's a less important point for this great 
-progress of vCPUID's implementation, thanks.
+vim +119 include/asm-generic/unaligned.h
 
-Reviewed-by: Robert Hoo <robert.hoo.linux@gmail.com>
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  116  
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  117  static inline void __put_unaligned_le24(const u32 val, u8 *p)
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  118  {
+803f4e1eab7a89 Arnd Bergmann 2021-05-08 @119  	*p++ = val;
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  120  	*p++ = val >> 8;
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  121  	*p++ = val >> 16;
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  122  }
+803f4e1eab7a89 Arnd Bergmann 2021-05-08  123  
 
+:::::: The code at line 119 was first introduced by commit
+:::::: 803f4e1eab7a8938ba3a3c30dd4eb5e9eeef5e63 asm-generic: simplify asm/unaligned.h
+
+:::::: TO: Arnd Bergmann <arnd@arndb.de>
+:::::: CC: Arnd Bergmann <arnd@arndb.de>
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
