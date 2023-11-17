@@ -2,163 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 534247EF5EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7E717EF5FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 17:18:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232579AbjKQQMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 11:12:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50392 "EHLO
+        id S231793AbjKQQSE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 11:18:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231562AbjKQQMg (ORCPT
+        with ESMTP id S231562AbjKQQSD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 11:12:36 -0500
-Received: from aer-iport-4.cisco.com (aer-iport-4.cisco.com [173.38.203.54])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF12111D;
-        Fri, 17 Nov 2023 08:12:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=5097; q=dns/txt; s=iport;
-  t=1700237552; x=1701447152;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=/NH0YWL5gm8V0phm/O3rkb1/g0nTScLJ9wh4qMptA9M=;
-  b=SwYNuwk/05wy3c3g8hVSq3woYVX6p7PeM/Yfryd1m+6u+3cjONH/2M3p
-   I2hXrIWUr/0ml6pWnkQIZPM+YTjux7fX1ODYu/MyygQlseDejJ4FUmZxH
-   MBfJj9yMmdLhnwRRYhF0URWmMsA4LQ4p7Su8+Wbb5dvK4mCER7lXCVs9e
-   4=;
-X-CSE-ConnectionGUID: VPnjM9NWQdGesiVwHAeUUg==
-X-CSE-MsgGUID: MxUbRDLGRvmROIrSK6C1JA==
-X-IronPort-AV: E=Sophos;i="6.04,206,1695686400"; 
-   d="scan'208";a="9619884"
-Received: from aer-iport-nat.cisco.com (HELO aer-core-9.cisco.com) ([173.38.203.22])
-  by aer-iport-4.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 16:12:29 +0000
-Received: from localhost (dhcp-10-61-101-82.cisco.com [10.61.101.82])
-        (authenticated bits=0)
-        by aer-core-9.cisco.com (8.15.2/8.15.2) with ESMTPSA id 3AHGCSUJ047870
-        (version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 17 Nov 2023 16:12:28 GMT
-From:   Ariel Miculas <amiculas@cisco.com>
-To:     linux-doc@vger.kernel.org
-Cc:     serge@hallyn.com, Ariel Miculas <amiculas@cisco.com>,
-        Phillip Lougher <phillip@squashfs.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] docs: filesystems: document the squashfs specific mount options
-Date:   Fri, 17 Nov 2023 18:12:14 +0200
-Message-ID: <20231117161215.140282-1-amiculas@cisco.com>
-X-Mailer: git-send-email 2.42.1
+        Fri, 17 Nov 2023 11:18:03 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99E81B3;
+        Fri, 17 Nov 2023 08:17:59 -0800 (PST)
+Received: from localhost (unknown [75.104.68.237])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id A3D712F3;
+        Fri, 17 Nov 2023 16:17:57 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net A3D712F3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1700237879; bh=mFiWwbKnYfvY3qTIUsUeh4zZYBejY47lhESfh35MH8g=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=l8tkBJCfW+xaqYswMUfTtjOw9T5AO/2mQFbZpmr2TYszVaIJwfXyarkk2GaUNUQ7K
+         GVV8ZUL33tpFF16LeI2y7wBq75NDaLEMBdwyMCVsZRBO0VjiYKMMul/sopB0bt3y1d
+         O39/v9voBBW83F6Isvk7fcwQhbmBEOS78sE/9AJrlmhbnrTyIFOq2uWlj/961jmPCX
+         wrFKbEBxSD1dQnYcdzyutfqjhZ+vKVKDOkJgLnFVXDBcrxSJproeCQCSHyIWU1KQY3
+         1Czc/C7BShhTO1yV+3j00FchICtnj7gBC+jsC6OVspSBUScT0k/6hVtpuAyFAzY2sN
+         PyNtUDX4XG6mQ==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Hunter Chasens <hunter.chasens18@ncf.edu>
+Cc:     linux-doc@vger.kernel.org, ardb@kernel.org,
+        linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hunter Chasens <hunter.chasens18@ncf.edu>
+Subject: Re: [PATCH v3 1/2] docs: admin-guide: Update bootloader and
+ installation instructions
+In-Reply-To: <20231114030208.30479-1-hunter.chasens18@ncf.edu>
+References: <20231114030208.30479-1-hunter.chasens18@ncf.edu>
+Date:   Fri, 17 Nov 2023 09:17:50 -0700
+Message-ID: <87wmugwdzl.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Authenticated-User: amiculas@cisco.com
-X-Outbound-SMTP-Client: 10.61.101.82, dhcp-10-61-101-82.cisco.com
-X-Outbound-Node: aer-core-9.cisco.com
-X-Spam-Status: No, score=-9.6 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIMWL_WL_MED,DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_PASS,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED,USER_IN_DEF_DKIM_WL autolearn=ham autolearn_force=no
-        version=3.4.6
+Content-Type: text/plain
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set, the "threads" mount option
-can be used to specify the decompression mode: single-threaded,
-multi-threaded, percpu or the number of threads used for decompression.
-When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, SQUASHFS_DECOMP_MULTI
-and SQUASHFS_MOUNT_DECOMP_THREADS are both set, the "threads" option can
-also be used to specify the number of threads used for decompression.
-This mount option is only mentioned in fs/squashfs/Kconfig, which makes
-it difficult to find.
+Hunter Chasens <hunter.chasens18@ncf.edu> writes:
 
-Another mount option available is "errors", which can be configured to
-panic the kernel when squashfs errors are encountered.
+> Updates the bootloader and installation instructions in
+> admin-guide/README.rst to align with modern practices.
+>
+> Details of Changes:
+>
+>  - Added guidance on using EFISTUB for UEFI/EFI systems.
+>  - Noted that LILO is no longer in active development and provides
+>    alternatives.
+>  - Kept LILO instructions but marked as Legacy LILO Instructions.
+>    Suggest removal in future patch.
+>
+> Signed-off-by: Hunter Chasens <hunter.chasens18@ncf.edu>
+> ---
+>  Documentation/admin-guide/README.rst | 69 ++++++++++++++++++----------
+>  1 file changed, 45 insertions(+), 24 deletions(-)
 
-Add both these options to the squashfs documentation, making them more
-noticeable.
+These seem like good changes in general.  Not too many of us are using
+LILO these days...
 
-Signed-off-by: Ariel Miculas <amiculas@cisco.com>
----
-V2 -> V3: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
-mount option also requires SQUASHFS_MOUNT_DECOMP_THREADS to be set, in
-addition to SQUASHFS_DECOMP_MULTI
+> diff --git a/Documentation/admin-guide/README.rst b/Documentation/admin-guide/README.rst
+> index 9a969c0157f1..ad53f4245379 100644
+> --- a/Documentation/admin-guide/README.rst
+> +++ b/Documentation/admin-guide/README.rst
+> @@ -262,9 +262,11 @@ Compiling the kernel
+>   - Make sure you have at least gcc 5.1 available.
+>     For more information, refer to :ref:`Documentation/process/changes.rst <changes>`.
+>  
+> - - Do a ``make`` to create a compressed kernel image. It is also
+> -   possible to do ``make install`` if you have lilo installed to suit the
+> -   kernel makefiles, but you may want to check your particular lilo setup first.
+> + - Do a ``make`` to create a compressed kernel image. It is also possible to do
+> +   ``make install`` if you have lilo installed or if your distribution has an
+> +   install script recognised by the kernel's installer. Most popular
+> +   distributions will have a recognized install script. You may want to
+> +   check your distribution's setup first.
 
-V1 -> V2: When SQUASHFS_CHOICE_DECOMP_BY_MOUNT is not set, the "threads"
-mount option also requires SQUASHFS_DECOMP_MULTI to be set
+Is there a reason to not just suggest looking for installkernel by name?
+This seems more obscure than it needs to be.
 
- Documentation/filesystems/squashfs.rst | 60 ++++++++++++++++++++++++++
- 1 file changed, 60 insertions(+)
+>     To do the actual install, you have to be root, but none of the normal
+>     build should require that. Don't take the name of root in vain.
+> @@ -301,32 +303,51 @@ Compiling the kernel
+>     image (e.g. .../linux/arch/x86/boot/bzImage after compilation)
+>     to the place where your regular bootable kernel is found.
+>  
+> - - Booting a kernel directly from a floppy without the assistance of a
+> -   bootloader such as LILO, is no longer supported.
+> -
+> -   If you boot Linux from the hard drive, chances are you use LILO, which
+> -   uses the kernel image as specified in the file /etc/lilo.conf.  The
+> -   kernel image file is usually /vmlinuz, /boot/vmlinuz, /bzImage or
+> -   /boot/bzImage.  To use the new kernel, save a copy of the old image
+> -   and copy the new image over the old one.  Then, you MUST RERUN LILO
+> -   to update the loading map! If you don't, you won't be able to boot
+> -   the new kernel image.
+> -
+> -   Reinstalling LILO is usually a matter of running /sbin/lilo.
+> -   You may wish to edit /etc/lilo.conf to specify an entry for your
+> -   old kernel image (say, /vmlinux.old) in case the new one does not
+> -   work.  See the LILO docs for more information.
+> -
+> -   After reinstalling LILO, you should be all set.  Shutdown the system,
+> + - Booting a kernel directly from non-volatile memory (e.g. a hard drive)
 
-diff --git a/Documentation/filesystems/squashfs.rst b/Documentation/filesystems/squashfs.rst
-index df42106bae71..4af8d6207509 100644
---- a/Documentation/filesystems/squashfs.rst
-+++ b/Documentation/filesystems/squashfs.rst
-@@ -64,6 +64,66 @@ obtained from this site also.
- The squashfs-tools development tree is now located on kernel.org
- 	git://git.kernel.org/pub/scm/fs/squashfs/squashfs-tools.git
- 
-+2.1 Mount options
-+-----------------
-+===================    =========================================================
-+errors=%s              Specify whether squashfs errors trigger a kernel panic
-+                       or not
-+
-+		       ==========  =============================================
-+                         continue  errors don't trigger a panic (default)
-+                            panic  trigger a panic when errors are encountered,
-+                                   similar to several other filesystems (e.g.
-+                                   btrfs, ext4, f2fs, GFS2, jfs, ntfs, ubifs)
-+
-+                                   This allows a kernel dump to be saved,
-+                                   useful for analyzing and debugging the
-+                                   corruption.
-+                       ==========  =============================================
-+threads=%s             Select the decompression mode or the number of threads
-+
-+                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is set:
-+
-+		       ==========  =============================================
-+                           single  use single-threaded decompression (default)
-+
-+                                   Only one block (data or metadata) can be
-+                                   decompressed at any one time. This limits
-+                                   CPU and memory usage to a minimum, but it
-+                                   also gives poor performance on parallel I/O
-+                                   workloads when using multiple CPU machines
-+                                   due to waiting on decompressor availability.
-+                            multi  use up to two parallel decompressors per core
-+
-+                                   If you have a parallel I/O workload and your
-+                                   system has enough memory, using this option
-+                                   may improve overall I/O performance. It
-+                                   dynamically allocates decompressors on a
-+                                   demand basis.
-+                           percpu  use a maximum of one decompressor per core
-+
-+                                   It uses percpu variables to ensure
-+                                   decompression is load-balanced across the
-+                                   cores.
-+                        1|2|3|...  configure the number of threads used for
-+                                   decompression
-+
-+                                   The upper limit is num_online_cpus() * 2.
-+                       ==========  =============================================
-+
-+                       If SQUASHFS_CHOICE_DECOMP_BY_MOUNT is **not** set and
-+                       SQUASHFS_DECOMP_MULTI, SQUASHFS_MOUNT_DECOMP_THREADS are
-+                       both set:
-+
-+		       ==========  =============================================
-+                          2|3|...  configure the number of threads used for
-+                                   decompression
-+
-+                                   The upper limit is num_online_cpus() * 2.
-+                       ==========  =============================================
-+
-+===================    =========================================================
-+
- 3. Squashfs Filesystem Design
- -----------------------------
- 
--- 
-2.42.1
+"non-volatile memory" has a bit of a different meaning that could
+confuse things here.  "a storage device" perhaps?
 
+> +   without the assistance of a bootloader such as LILO or GRUB, is no longer
+> +   supported in BIOS (non-EFI systems). On UEFI/EFI systems, however, you can
+> +   use EFISTUB which allows the motherboard to boot directly to the kernel.
+> +   On modern workstations and desktops, it's generally recommended to use a
+> +   bootloader as difficulties can arise with multiple kernels and secure boot.
+> +   For more details on EFISTUB,
+> +   see :ref:`Documentation/admin-guide/efi-stub.rst <efi_stub>`.
+
+You can just say "see Documentation/admin-guide/efi-stub.rst" here
+without the extra markup.
+
+> + - It's important to note that as of 2016 LILO (LInux LOader) is no longer in
+> +   active development, though as it was extremely popular, it often comes up
+> +   in documentation. Popular alternatives include GRUB2, rEFInd, Syslinux,
+> +   systemd-boot, or EFISTUB. For various reasons, it's not recommended to use
+> +   software that's no longer in active development.
+
+I honestly wonder if we need to mention LILO at all here.
+
+> + - Chances are your distribution includes an install script and running
+> +   ``make install`` will be all that's needed. Should that not be the case
+> +   you'll have to identify your bootloader and reference its documentation or
+> +   configure your EFI.
+
+Again, name the script directly.
+
+> +Legacy LILO Instructions
+> +------------------------
+> +
+> +
+> + - If you use LILO the kernel images are specified in the file /etc/lilo.conf.
+> +   The kernel image file is usually /vmlinuz, /boot/vmlinuz, /bzImage or
+> +   /boot/bzImage. To use the new kernel, save a copy of the old image and copy
+> +   the new image over the old one. Then, you MUST RERUN LILO to update the
+> +   loading map! If you don't, you won't be able to boot the new kernel image.
+> +
+> + - Reinstalling LILO is usually a matter of running /sbin/lilo. You may wish
+> +   to edit /etc/lilo.conf to specify an entry for your old kernel image
+> +   (say, /vmlinux.old) in case the new one does not work. See the LILO docs
+> +   for more information.
+> +
+> + - After reinstalling LILO, you should be all set. Shutdown the system,
+>     reboot, and enjoy!
+>  
+> -   If you ever need to change the default root device, video mode,
+> -   etc. in the kernel image, use your bootloader's boot options
+> -   where appropriate.  No need to recompile the kernel to change
+> -   these parameters.
+> + - If you ever need to change the default root device, video mode, etc. in the
+> +   kernel image, use your bootloader's boot options where appropriate. No need
+> +   to recompile the kernel to change these parameters.
+>  
+>   - Reboot with the new kernel and enjoy.
+
+If it were me I'd probably take this out too...but somebody is bound to
+complain.
+
+Thanks,
+
+jon
