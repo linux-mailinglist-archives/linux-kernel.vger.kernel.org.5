@@ -2,58 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id A0D1E7EED6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042CB7EED61
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:13:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230316AbjKQIQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:16:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51864 "EHLO
+        id S230376AbjKQINZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:13:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235428AbjKQIKl (ORCPT
+        with ESMTP id S229927AbjKQINX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:10:41 -0500
+        Fri, 17 Nov 2023 03:13:23 -0500
 Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E16FB3;
-        Fri, 17 Nov 2023 00:10:37 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10639C433C9;
-        Fri, 17 Nov 2023 08:10:28 +0000 (UTC)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76203A8
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 00:13:20 -0800 (PST)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00B6AC433C7;
+        Fri, 17 Nov 2023 08:13:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700208636;
-        bh=Sp+Yq9p97aTc8MUbIdNZJygJ6geUY1h1i1/p9budoWg=;
+        s=k20201202; t=1700208800;
+        bh=RPcbB+jdW8SosobxciCWR/egl8ZrKh5jeQWqAfD2+vU=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iLbxMLKq0lNgG9N/Ba88EMFlKtbxc8Oj21pGhiTvxuXKnarkvsW83GnoqStVsJaHn
-         BvtW0+bhg0tqx7pUzV3dzpaCWPs9beLTlc2epp8lXc7igFYprVGqwYUI4wz1rmaYfA
-         xyl3Dl7YUM+tp4vHsPPvMzR+0jmolWSvyU9NVMr0DEhhVv02dUyf+r4m7ZMjoQnNk4
-         2jg18MSAXyCPG3BfJMJYqQGZOt/qyJqE9mNxJZ169Aj+QrAiyTP+21tlHZrNVmS7rb
-         +bhoiqQjwX6ZQn7FpS81C1M1V4lxDW1KFI3XKnFzpvAC9CmBBke4IhnosNBkngC7Vs
-         XMgApAwYJHzIA==
-Date:   Fri, 17 Nov 2023 13:40:25 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     Mrinmay Sarkar <quic_msarkar@quicinc.com>, agross@kernel.org,
-        andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, konrad.dybcio@linaro.org, robh+dt@kernel.org,
-        quic_shazhuss@quicinc.com, quic_nitegupt@quicinc.com,
-        quic_ramkri@quicinc.com, quic_nayiluri@quicinc.com,
-        robh@kernel.org, quic_krichai@quicinc.com,
-        quic_vbadigan@quicinc.com, quic_parass@quicinc.com,
-        quic_schintav@quicinc.com, quic_shijjose@quicinc.com,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v3 1/3] PCI: qcom: Enable cache coherency for SA8775P RC
-Message-ID: <20231117081025.GF10361@thinkpad>
-References: <1700051821-1087-1-git-send-email-quic_msarkar@quicinc.com>
- <1700051821-1087-2-git-send-email-quic_msarkar@quicinc.com>
- <CAA8EJprWP3ThYyPZDF7ddG9Awdk9D7ovxes--r0VS3Ma53VqxA@mail.gmail.com>
- <CAA8EJprouEiex2YGuMjJCmwiWmhbYXaUpTBkWhEXpF08iGzk6Q@mail.gmail.com>
+        b=hKR2r491krdpa74I19bkbkY1tFTT5yyVBwSe81sMme0lcZKOwrlp9p5wQsHPX6JCs
+         OfCvtlHvt91nBQHPPsu16TdT4me5IELzYagjdEhjyirOohQnO18EMcmwakimhiyyB/
+         zQEcXEUE39SIfrEuALskJDZp+8Rqn7D1+r6Sw94vMSlkky/qX5UiZm6XOSqQMfXVN9
+         gppN60qQqdoDO3g31P7UAhYZjf27W1auinHQvnTXGp6azipSTK2DQt1rBhNhRtKxEu
+         qVeNd6EJ9n5RtP5wiDmF7j+23q861zIS2K47YgfUX2O9qBIDmwIFsC0HfOviCaavR5
+         luomQ9p5tHNiA==
+Received: from johan by xi.lan with local (Exim 4.96.2)
+        (envelope-from <johan@kernel.org>)
+        id 1r3tyb-000629-16;
+        Fri, 17 Nov 2023 09:13:22 +0100
+Date:   Fri, 17 Nov 2023 09:13:21 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Sibi Sankar <quic_sibis@quicinc.com>
+Cc:     Bryan O'Donoghue <bryan.odonoghue@linaro.org>,
+        andersson@kernel.org, konrad.dybcio@linaro.org,
+        mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, agross@kernel.org,
+        conor+dt@kernel.org, quic_tdas@quicinc.com,
+        quic_rjendra@quicinc.com, linux-arm-msm@vger.kernel.org,
+        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, neil.armstrong@linaro.org,
+        abel.vesa@linaro.org, quic_tsoni@quicinc.com
+Subject: Re: [PATCH 2/4] clk: qcom: Add Global Clock controller (GCC) driver
+ for SC8380XP
+Message-ID: <ZVcgoX56q0lYWKyw@hovoldconsulting.com>
+References: <20231025133320.4720-1-quic_sibis@quicinc.com>
+ <20231025133320.4720-3-quic_sibis@quicinc.com>
+ <483c4de3-951c-4ba4-89fb-36fcd44fa99f@linaro.org>
+ <e857c853-51ef-8314-2a21-fa6fd25162ca@quicinc.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA8EJprouEiex2YGuMjJCmwiWmhbYXaUpTBkWhEXpF08iGzk6Q@mail.gmail.com>
+In-Reply-To: <e857c853-51ef-8314-2a21-fa6fd25162ca@quicinc.com>
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
         DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
         RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
@@ -64,90 +65,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Nov 15, 2023 at 03:21:26PM +0200, Dmitry Baryshkov wrote:
-> On Wed, 15 Nov 2023 at 15:18, Dmitry Baryshkov
-> <dmitry.baryshkov@linaro.org> wrote:
-> >
-> > On Wed, 15 Nov 2023 at 14:37, Mrinmay Sarkar <quic_msarkar@quicinc.com> wrote:
-> > >
-> > > This change will enable cache snooping logic to support
-> > > cache coherency for 8775 RC platform.
-> > >
-> > > Signed-off-by: Mrinmay Sarkar <quic_msarkar@quicinc.com>
-> > > ---
-> > >  drivers/pci/controller/dwc/pcie-qcom.c | 13 +++++++++++++
-> > >  1 file changed, 13 insertions(+)
-> > >
-> > > diff --git a/drivers/pci/controller/dwc/pcie-qcom.c b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > index 6902e97..b82ccd1 100644
-> > > --- a/drivers/pci/controller/dwc/pcie-qcom.c
-> > > +++ b/drivers/pci/controller/dwc/pcie-qcom.c
-> > > @@ -51,6 +51,7 @@
-> > >  #define PARF_SID_OFFSET                                0x234
-> > >  #define PARF_BDF_TRANSLATE_CFG                 0x24c
-> > >  #define PARF_SLV_ADDR_SPACE_SIZE               0x358
-> > > +#define PCIE_PARF_NO_SNOOP_OVERIDE             0x3d4
-> > >  #define PARF_DEVICE_TYPE                       0x1000
-> > >  #define PARF_BDF_TO_SID_TABLE_N                        0x2000
-> > >
-> > > @@ -117,6 +118,10 @@
-> > >  /* PARF_LTSSM register fields */
-> > >  #define LTSSM_EN                               BIT(8)
-> > >
-> > > +/* PARF_NO_SNOOP_OVERIDE register fields */
-> > > +#define WR_NO_SNOOP_OVERIDE_EN                 BIT(1)
-> > > +#define RD_NO_SNOOP_OVERIDE_EN                 BIT(3)
-> > > +
-> > >  /* PARF_DEVICE_TYPE register fields */
-> > >  #define DEVICE_TYPE_RC                         0x4
-> > >
-> > > @@ -961,6 +966,14 @@ static int qcom_pcie_init_2_7_0(struct qcom_pcie *pcie)
-> > >
-> > >  static int qcom_pcie_post_init_2_7_0(struct qcom_pcie *pcie)
-> > >  {
-> > > +       struct dw_pcie *pci = pcie->pci;
-> > > +       struct device *dev = pci->dev;
-> > > +
-> > > +       /* Enable cache snooping for SA8775P */
-> > > +       if (of_device_is_compatible(dev->of_node, "qcom,pcie-sa8775p"))
-> >
-> > Quoting my feedback from v1:
-> >
-> > Obviously: please populate a flag in the data structures instead of
-> > doing of_device_is_compatible(). Same applies to the patch 2.
-> 
-> Mani, I saw your response for the v1, but I forgot to respond. In my
-> opinion, it's better to have the flag now, even if it is just for a
-> single platform. It allows us to follow the logic of the driver and
-> saves few string ops.
-> 
+On Fri, Nov 17, 2023 at 09:26:18AM +0530, Sibi Sankar wrote:
+> On 10/25/23 22:10, Bryan O'Donoghue wrote:
+> > On 25/10/2023 14:33, Sibi Sankar wrote:
 
-Ok, I do not have a strong opinion on this.
-
-- Mani
-
-> >
-> >
-> > > +               writel(WR_NO_SNOOP_OVERIDE_EN | RD_NO_SNOOP_OVERIDE_EN,
-> > > +                               pcie->parf + PCIE_PARF_NO_SNOOP_OVERIDE);
-> > > +
-> > >         qcom_pcie_clear_hpc(pcie->pci);
-> > >
-> > >         return 0;
-> > > --
-> > > 2.7.4
-> > >
-> >
-> >
-> > --
-> > With best wishes
-> > Dmitry
+> >> +static struct clk_rcg2 gcc_sdcc2_apps_clk_src = {
+> >> +    .cmd_rcgr = 0x14018,
+> >> +    .mnd_width = 8,
+> >> +    .hid_width = 5,
+> >> +    .parent_map = gcc_parent_map_9,
+> >> +    .freq_tbl = ftbl_gcc_sdcc2_apps_clk_src,
+> >> +    .clkr.hw.init = &(const struct clk_init_data) {
+> >> +        .name = "gcc_sdcc2_apps_clk_src",
+> >> +        .parent_data = gcc_parent_data_9,
+> >> +        .num_parents = ARRAY_SIZE(gcc_parent_data_9),
+> >> +        .flags = CLK_SET_RATE_PARENT,
+> >> +        .ops = &clk_rcg2_floor_ops,
+> > 
+> > diff sc8280xp..sc8380xp
+> > 
+> > Here you've used floor instead of shared ops, why is that ?
 > 
-> 
-> 
-> -- 
-> With best wishes
-> Dmitry
+> We seem to use floor ops for sdcc clks on all other QC SoCs and
+> sc8280xp seems to be the exception here. So I'll continue to use floor
+> ops for sdcc.
 
--- 
-மணிவண்ணன் சதாசிவம்
+> >> +static struct clk_rcg2 gcc_usb30_mp_mock_utmi_clk_src = {
+> >> +    .cmd_rcgr = 0x17158,
+> >> +    .mnd_width = 0,
+> >> +    .hid_width = 5,
+> >> +    .parent_map = gcc_parent_map_0,
+> >> +    .freq_tbl = ftbl_gcc_pcie_0_aux_clk_src,
+> >> +    .clkr.hw.init = &(const struct clk_init_data) {
+> >> +        .name = "gcc_usb30_mp_mock_utmi_clk_src",
+> >> +        .parent_data = gcc_parent_data_0,
+> >> +        .num_parents = ARRAY_SIZE(gcc_parent_data_0),
+> >> +        .flags = CLK_SET_RATE_PARENT,
+> >> +        .ops = &clk_rcg2_ops,
+> > 
+> > This is another discontinuinty with sc8280xp.
+> > 
+> > Could you have a look through the sc8280xp gcc and do an aduit for 
+> > clk_rcg2_shared_ops as against sc8380xp ?
+> 
+> ack, will do a quick audit before the re-spin.
+
+Please trim unnecessary context from your replies. You quoted some 1400
+lines of irrelevant clock structs when all you needed was something like
+the above.
+
+Not trimming replies makes it a pain to read your mails and to revisit
+threads like this one, for example, in the lore web archives.
+
+Johan
