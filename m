@@ -2,161 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 3957B7EF81F
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:04:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC16A7EF86D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 21:17:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232012AbjKQUEM convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 15:04:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36882 "EHLO
+        id S1346161AbjKQURr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 15:17:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229535AbjKQUEL (ORCPT
+        with ESMTP id S231533AbjKQURp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 15:04:11 -0500
-Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31AF6D6A;
-        Fri, 17 Nov 2023 12:04:05 -0800 (PST)
-Received: from i5e861935.versanet.de ([94.134.25.53] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <heiko@sntech.de>)
-        id 1r454N-0000e0-3u; Fri, 17 Nov 2023 21:04:03 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        Andrew Davis <afd@ti.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>,
-        Arnd Bergmann <arnd@arndb.de>,
+        Fri, 17 Nov 2023 15:17:45 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF0EDA8;
+        Fri, 17 Nov 2023 12:17:41 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id a640c23a62f3a-9e2838bcb5eso341210766b.0;
+        Fri, 17 Nov 2023 12:17:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700252260; x=1700857060; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=jO4FinG60TptnJlL0I/aBKs5ITFw+rqL2aoAvZdWzlg=;
+        b=URIXmqwFFm/Oasuc+0e1EMPjIVCgLSKKLCl/Z+60Z7FQnrDS+hkG3zQ1kdn7RJVWCb
+         kAcHXoxGoB7bIaTsuGvw7TBH9x+5uY6aCmqi57+HdIgsj2f9KSPq7heuSt9sAaHRZV8y
+         Tx+hsBUagf3PpgDNtEiMSjWisdFmxWNt+bLjKZnM0JY3//eGTlDow9YOi3UuNBDoUPYP
+         VEmLsi2uqaq8MDtbKVvU5j17G/x8XwWyAAV+yIi2mDRN6dt7Jn6XMC9xNKn3A8fHOVKc
+         2eBWb/gUQTkec9jIU7+3zRlVk05Mi5aS8IdRhqeKHDkpfHaO2ap2eWd26nRJP45mlRoC
+         1J6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700252260; x=1700857060;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=jO4FinG60TptnJlL0I/aBKs5ITFw+rqL2aoAvZdWzlg=;
+        b=G8queFXYj+aGW/GKqq3hys340D2hC2fgwz4eJwgvSzrjc2eZJngc5pBDWYeFzoL/Bd
+         JJbNAHLiDtpXrZ9hPUcAPm5oTeggi2VG/nX94ropNy8VgyVu/7Yq2fI4631CKeFp1TWf
+         mN2vKDvWwOTM8K5z27Mrj452PYA/vXfva27maBwnQMW/ip7GckvwPnmm8OAduaHDBF5J
+         T99vMnzVizAwT4NiB0HT9BP/VY/WwnCeSoJU+W3BLtoFXtuh1AAoIOkSyv3t5sYDaQog
+         odfn0PfWC86y5vnSJSWzxf3pScnGX0l3QnLdl5lyDZj4Zp8W0fOMJ57KBnH7GUpBS+g9
+         WZZA==
+X-Gm-Message-State: AOJu0Yw0dTNRs1raqY0oltWdf168JgeUVxaLgtF7DELEfjh62hNFfjS0
+        7fogxN3wsXMyyKFupnHtUj0=
+X-Google-Smtp-Source: AGHT+IGBtBUbtAsV/vAYb+ntpU2hrBW9x5wudUtgIOuOFs8V1oWXMInP7DvsvQycY/b65fJ4JKgGWQ==
+X-Received: by 2002:a17:906:2ce:b0:9e4:716:4e32 with SMTP id 14-20020a17090602ce00b009e407164e32mr147592ejk.11.1700252259887;
+        Fri, 17 Nov 2023 12:17:39 -0800 (PST)
+Received: from david-ryuzu.fritz.box ([188.195.169.6])
+        by smtp.googlemail.com with ESMTPSA id e7-20020a1709062c0700b0099d804da2e9sm1130630ejh.225.2023.11.17.12.17.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 17 Nov 2023 12:17:39 -0800 (PST)
+From:   David Wronek <davidwronek@gmail.com>
+To:     Andy Gross <agross@kernel.org>,
         Bjorn Andersson <andersson@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
         Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Michal Simek <michal.simek@amd.com>,
-        Neil Armstrong <neil.armstrong@linaro.org>,
-        Nishanth Menon <nm@ti.com>, Olof Johansson <olof@lixom.net>
-Subject: Re: [PATCH] docs: dt-bindings: add DTS Coding Style document
-Date:   Fri, 17 Nov 2023 21:04:01 +0100
-Message-ID: <4071780.8hb0ThOEGa@diego>
-In-Reply-To: <50eadab2-0f0a-480c-a77c-ca731c5d75cf@ti.com>
-References: <20231116181218.18886-1-krzysztof.kozlowski@linaro.org>
- <4289147.1BCLMh4Saa@diego> <50eadab2-0f0a-480c-a77c-ca731c5d75cf@ti.com>
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@kernel.org>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Joe Mason <buddyjojo06@outlook.com>, hexdump0815@googlemail.com
+Cc:     cros-qcom-dts-watchers@chromium.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-phy@lists.infradead.org,
+        linux-scsi@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        phone-devel@vger.kernel.org, David Wronek <davidwronek@gmail.com>
+Subject: [PATCH v2 0/8] Add UFS support for SC7180/SM7125
+Date:   Fri, 17 Nov 2023 21:08:32 +0100
+Message-ID: <20231117201720.298422-1-davidwronek@gmail.com>
+X-Mailer: git-send-email 2.42.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        T_SPF_HELO_TEMPERROR autolearn=ham autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 17. November 2023, 20:54:05 CET schrieb Andrew Davis:
-> On 11/17/23 1:38 PM, Heiko Stübner wrote:
-> > Am Freitag, 17. November 2023, 15:03:38 CET schrieb Andrew Davis:
-> >> On 11/16/23 2:33 PM, Heiko Stuebner wrote:
-> >>> Am Donnerstag, 16. November 2023, 21:23:20 CET schrieb Krzysztof Kozlowski:
-> >>>> On 16/11/2023 21:03, Heiko Stuebner wrote:
-> >>> going with the vcc5v0_host regulator of the rk3588-quartzpro64 and
-> >>>
-> >>> +1. compatible
-> >>> +2. reg
-> >>> +3. ranges
-> >>> +4. All properties with values
-> >>> +5. Boolean properties
-> >>> +6. status (if applicable)
-> >>> +7. Child nodes
-> >>>
-> >>> we'd end up with
-> >>>
-> >>>           vcc5v0_host: vcc5v0-host-regulator {
-> >>> /* 1. */        compatible = "regulator-fixed";
-> >>> /* 4. */        gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
-> >>>                   pinctrl-names = "default";
-> >>>                   pinctrl-0 = <&vcc5v0_host_en>;
-> >>>                   regulator-min-microvolt = <5000000>;
-> >>>                   regulator-max-microvolt = <5000000>;
-> >>>                   regulator-name = "vcc5v0_host";
-> >>>                   vin-supply = <&vcc5v0_usb>;
-> >>> /* 5. */        enable-active-high;
-> >>>                   regulator-always-on;
-> >>>                   regulator-boot-on;
-> >>>           };
-> >>>
-> >>
-> >> How about grouping like properties (defined in the same schema),
-> >> then sorting within that group. Would also allow for defining
-> >> where to add spacing.
-> >>
-> >> 1. compatible
-> >> 2. reg
-> >> 3. ranges
-> >> 4. All property groups
-> >>     4.1 Properties with values
-> >>     4.2 Boolean properties
-> >>     4.3 Separating space
-> >> 6. status (if applicable)
-> >> 7. Child nodes
-> >>
-> >> Your node then would look like we expect:
-> >>
-> >> vcc5v0_host: vcc5v0-host-regulator {
-> >> /* 1   */   compatible = "regulator-fixed";
-> >>
-> >> /* 4.1 */   pinctrl-names = "default";
-> >> /* 4.1 */   pinctrl-0 = <&vcc5v0_host_en>;
-> >> /* 4.3 */
-> >> /* 4.1 */   regulator-min-microvolt = <5000000>;
-> >> /* 4.1 */   regulator-max-microvolt = <5000000>;
-> >> /* 4.1 */   regulator-name = "vcc5v0_host";
-> >> /* 4.2 */   regulator-always-on;
-> >> /* 4.2 */   regulator-boot-on;
-> >> /* 4.2 */   enable-active-high;
-> >> /* 4.3 */
-> >> /* 4.1 */   gpio = <&gpio4 RK_PB0 GPIO_ACTIVE_HIGH>;
-> >> ...
-> >> };
-> > 
-> > I'm really not sure about adding big sets of rules.
-> > In the above example you'd also need to define which schema has a higher
-> > priority? ;-)
-> > 
-> > 
-> > When I started with Rockchip stuff, I also had some fancy way of sorting
-> > elements in mind that was really intuitive to myself :-) .
-> > Over time I realized that it was quite complex - especially when I had to
-> > explain it to people.
-> > 
-> > There are definite advantages for having compatible + reg + status in
-> > fixed positions, as it helps going over a whole dt to spot the huge
-> > mistakes (accidentially disabled, wrong address), but for the rest a
-> > simple alphabetical sorting is easiest to explain to people :-) .
-> > 
-> > And alphabetic elements are also easier on my eyes.
-> > 
-> 
-> +1 for starting with compatible/reg/status that we would like to see
-> in the same spot in each node.
-> 
-> Not so sure on plain alphabetical. That has the same issue you pointed out
-> with splitting value vs boolean properties, related properties would end up
-> not grouped. Some like regulator- with the same prefix will, but think -gpios
-> that is a postfix, they would be scattered about.
-> 
-> How about just enforcing ordering on the couple common property we care about
-> seeing and everything else left free-hand as it today?
+This patchset introduces UFS support for SC7180 and SM7125, as well as
+support for the Xiaomi Redmi Note 9S.
 
-Sounds like a very sensible idea :-) .
+Signed-off-by: David Wronek <davidwronek@gmail.com>
+---
+Changes in v2:
+ - Fix device tree binding for QMP PHY
+ - Separate ICE into its own node
+ - Fix style problems in sc7180.dtsi
 
-Especially as the sorting of individual properties is just a tiny part of
-Krzysztof's document, and all the other parts in it are way more
-important anyway.
+--
+David Wronek (7):
+  dt-bindings: crypto: ice: Document SC7180 inline crypto engine
+  dt-bindings: ufs: qcom: Add SC7180 compatible string
+  dt-bindings: phy: Add QMP UFS PHY compatible for SC7180
+  dt-bindings: arm: qcom: Add Xiaomi Redmi Note 9S
+  phy: qcom: qmp-ufs: Add SC7180 support
+  arm64: dts: qcom: sc7180: Add UFS nodes
+  arm64: dts: qcom: sm7125-xiaomi-common: Add UFS nodes
 
+Joe Mason (1):
+  arm64: dts: qcom: Add support for Xiaomi Redmi Note 9S
 
-Heiko
+ .../devicetree/bindings/arm/qcom.yaml         |  1 +
+ .../crypto/qcom,inline-crypto-engine.yaml     |  1 +
+ .../phy/qcom,sc8280xp-qmp-ufs-phy.yaml        |  2 +
+ .../devicetree/bindings/ufs/qcom,ufs.yaml     |  2 +
+ arch/arm64/boot/dts/qcom/Makefile             |  1 +
+ arch/arm64/boot/dts/qcom/sc7180.dtsi          | 69 +++++++++++++++++++
+ .../boot/dts/qcom/sm7125-xiaomi-common.dtsi   | 16 +++++
+ .../boot/dts/qcom/sm7125-xiaomi-curtana.dts   | 16 +++++
+ drivers/phy/qualcomm/phy-qcom-qmp-ufs.c       |  3 +
+ 9 files changed, 111 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/qcom/sm7125-xiaomi-curtana.dts
 
+-- 
+2.42.1
 
