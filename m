@@ -2,118 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id B60827EEF18
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C1227EEF20
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345886AbjKQJoH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:44:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
+        id S1345845AbjKQJpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:45:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345854AbjKQJn1 (ORCPT
+        with ESMTP id S1345935AbjKQJor (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:43:27 -0500
-Received: from madras.collabora.co.uk (madras.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e5ab])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30353D5A;
-        Fri, 17 Nov 2023 01:42:56 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (cola.collaboradmins.com [195.201.22.229])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: kholk11)
-        by madras.collabora.co.uk (Postfix) with ESMTPSA id 369C46607393;
-        Fri, 17 Nov 2023 09:42:54 +0000 (GMT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-        s=mail; t=1700214175;
-        bh=6uV/aa1GXqZk9w0ZoiU/aw6OTSIwDj0KZLX0pQNrucc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GXGhuBE79sHxEzig+9o9MkoOWXP1MHMtmCio40G7zXUBIYJzYheahAH43Dl5amqGs
-         dvMxYYeR/mNV2t00JzrFV2aXrhOWlej8l14WPCVh0h1XzAuG+XVKZnG0ucJLhvSxTs
-         qkGQCT0Nd9WIUyHrol/Zfv2SmezLiTEWUYgPe3DCF3Rz7K18Xk/JWE7oWbVBFwMW5h
-         iuFvTR/pLp2PIdGGDCKWU6vy6tJXCYSR+VsjIWBh922j90iDLN3ZpRXABeD/45eg9o
-         9CY7GXHEFqPfEWF+rFXqxbWL35GnYjal30BBtstomekg79z6CPj5vamGHvfQy91IkE
-         FVmog99gGMdwg==
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@collabora.com>
-To:     matthias.bgg@gmail.com
-Cc:     krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        robh+dt@kernel.org, angelogioacchino.delregno@collabora.com,
-        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, kernel@collabora.com,
-        wenst@chromium.org
-Subject: [PATCH v1 20/20] arm64: dts: mediatek: mt8195: Add SVS node and reduce LVTS_AP iospace
-Date:   Fri, 17 Nov 2023 10:42:28 +0100
-Message-ID: <20231117094228.40013-21-angelogioacchino.delregno@collabora.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231117094228.40013-1-angelogioacchino.delregno@collabora.com>
-References: <20231117094228.40013-1-angelogioacchino.delregno@collabora.com>
+        Fri, 17 Nov 2023 04:44:47 -0500
+Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6651B26A5
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:43:21 -0800 (PST)
+Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7c011e113so20209577b3.1
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:43:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700214200; x=1700819000; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=R60GE1grOZhSgQJmwUPI1cIFXHxyuZjPPb2sra1cTeo=;
+        b=X2ClTBHSMok0Lq09cu57RXe681AS9ESLULBSzKamYFH5FEL8Lc2d5NVkmEECvpSfzI
+         lz9HjeBAQ8YycDEU8bYFiXeF+9SCPoI7iEX92QJJgObf+jMesVjWFtxz6tzSAFaLEXF/
+         R/Kep407fjEzcmCW31nI0Z7lSuuZ4Wh1AHmolReFL1LKwnT2ozVpeoyGCT6wJ3LvvjrM
+         Wvp4RKxpHweC9Yh2l/a5ZDkOQxQY5Qmj8bwFL+JvbAtuCetO/vDm7+t4qEVf36GUlL3d
+         KVTKGLt8TNIfd5jJq2Ur3SPNb3ud9v3dQc9zIcFQw3P67bjg5ZXgFUDkoLmN2iQDg8Hr
+         Gecw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700214200; x=1700819000;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=R60GE1grOZhSgQJmwUPI1cIFXHxyuZjPPb2sra1cTeo=;
+        b=MzlJTrLNztlc+YSjHebhOTtqGQgxqxMWqgf1uFTZKViWhWlJqmJ1+jQjHkWUAjD9El
+         uslLIDUL+U0qa0vrrQLtpX+VcISE5UzcMco856GmsKQx+J1+TRsZ93gIjaf0SWjNyeUG
+         uLauq0y7RZ7FyZaZRVbgAywNT8/5hJMGOEu9Zu4g1UAmnxCQQbwwE4cNUvbpsCU3gGEp
+         J8Tr8Z3e83AnDiBorhKF3v4kHvvenBCMtlT10vFUKSfyehGemWpPNGnmjHhFxD+hcvE5
+         ZSbftvfaE8pgkg5qkTxEscZLt63TSEkIe/5kAa1IfCg5WblZfQ1paibDHzXmSgCufWOo
+         RYLg==
+X-Gm-Message-State: AOJu0Ywn5CKHuik+R4Y8aoAWdbqkuga88Vk8ure42mpUnvYTiqnLMWBS
+        +yYUzS0D8wRukxm3ezZSpMOhGnPiVW0IuqdwCUjAf65HVNyoY6+F
+X-Google-Smtp-Source: AGHT+IHijDMw7dVNsnx/0cPoAMMqwa6/HkZCv4flRGEHMVUM8M8jmfpuR5+loOHJGVyJRp67n0QNq3GU8XRbRqsybhk=
+X-Received: by 2002:a0d:f301:0:b0:59e:9a44:9db9 with SMTP id
+ c1-20020a0df301000000b0059e9a449db9mr17702165ywf.26.1700214200458; Fri, 17
+ Nov 2023 01:43:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20231117080737.606687-1-quic_rohiagar@quicinc.com> <20231117080737.606687-2-quic_rohiagar@quicinc.com>
+In-Reply-To: <20231117080737.606687-2-quic_rohiagar@quicinc.com>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Fri, 17 Nov 2023 11:43:09 +0200
+Message-ID: <CAA8EJppTyVV5KKQkVUAvzSTZDz8s8QC9Co4da2UJP9jM=zcSKA@mail.gmail.com>
+Subject: Re: [PATCH v5 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
+To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
+Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
         DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
         SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        autolearn=unavailable autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the MediaTek SVS node: this will lower the voltage of various
-components of the SoC based on chip quality (read from fuses) in
-order to save power and generate less heat.
-Also, reduce the LVTS_AP iospace to 0xc00, because that's exactly
-where SVS starts.
- - LVTS_AP start: 0x1100b000 length: 0xc00
- - SVS start:     0x1100bc00 length: 0x400
+On Fri, 17 Nov 2023 at 10:08, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
+>
+> Add interconnect nodes to support interconnects on SDX75.
+> Also parallely add the interconnect property for UART required
+> so that the bootup to shell does not break with interconnects
+> in place.
+>
+> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
----
- arch/arm64/boot/dts/mediatek/mt8195.dtsi | 17 ++++++++++++++++-
- 1 file changed, 16 insertions(+), 1 deletion(-)
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8195.dtsi b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-index 54c674c45b49..54debd4cf8e6 100644
---- a/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8195.dtsi
-@@ -1115,7 +1115,7 @@ spi0: spi@1100a000 {
- 
- 		lvts_ap: thermal-sensor@1100b000 {
- 			compatible = "mediatek,mt8195-lvts-ap";
--			reg = <0 0x1100b000 0 0x1000>;
-+			reg = <0 0x1100b000 0 0xc00>;
- 			interrupts = <GIC_SPI 169 IRQ_TYPE_LEVEL_HIGH 0>;
- 			clocks = <&infracfg_ao CLK_INFRA_AO_THERM>;
- 			resets = <&infracfg_ao MT8195_INFRA_RST0_THERM_CTRL_SWRST>;
-@@ -1124,6 +1124,18 @@ lvts_ap: thermal-sensor@1100b000 {
- 			#thermal-sensor-cells = <1>;
- 		};
- 
-+		svs: svs@1100bc00 {
-+			compatible = "mediatek,mt8195-svs";
-+			reg = <0 0x1100bc00 0 0x400>;
-+			interrupts = <GIC_SPI 199 IRQ_TYPE_LEVEL_HIGH 0>;
-+			clocks = <&infracfg_ao CLK_INFRA_AO_THERM>;
-+			clock-names = "main";
-+			nvmem-cells = <&svs_calib_data &lvts_efuse_data1>;
-+			nvmem-cell-names = "svs-calibration-data", "t-calibration-data";
-+			resets = <&infracfg_ao MT8195_INFRA_RST3_THERM_CTRL_PTP_SWRST>;
-+			reset-names = "svs_rst";
-+		};
-+
- 		disp_pwm0: pwm@1100e000 {
- 			compatible = "mediatek,mt8195-disp-pwm", "mediatek,mt8183-disp-pwm";
- 			reg = <0 0x1100e000 0 0x1000>;
-@@ -1682,6 +1694,9 @@ lvts_efuse_data1: lvts1-calib@1bc {
- 			lvts_efuse_data2: lvts2-calib@1d0 {
- 				reg = <0x1d0 0x38>;
- 			};
-+			svs_calib_data: svs-calib@580 {
-+				reg = <0x580 0x64>;
-+			};
- 		};
- 
- 		u3phy2: t-phy@11c40000 {
--- 
-2.42.0
 
+> ---
+>  arch/arm64/boot/dts/qcom/sdx75.dtsi | 52 +++++++++++++++++++++++++++++
+>  1 file changed, 52 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> index e180aa4023ec..b4723faf8655 100644
+> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
+> @@ -8,6 +8,8 @@
+>
+>  #include <dt-bindings/clock/qcom,rpmh.h>
+>  #include <dt-bindings/clock/qcom,sdx75-gcc.h>
+> +#include <dt-bindings/interconnect/qcom,icc.h>
+> +#include <dt-bindings/interconnect/qcom,sdx75.h>
+>  #include <dt-bindings/interrupt-controller/arm-gic.h>
+>  #include <dt-bindings/power/qcom,rpmhpd.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+> @@ -203,6 +205,19 @@ scm: scm {
+>                 };
+>         };
+>
+> +       clk_virt: interconnect-0 {
+> +               compatible = "qcom,sdx75-clk-virt";
+> +               #interconnect-cells = <2>;
+> +               qcom,bcm-voters = <&apps_bcm_voter>;
+> +               clocks = <&rpmhcc RPMH_QPIC_CLK>;
+> +       };
+> +
+> +       mc_virt: interconnect-1 {
+> +               compatible = "qcom,sdx75-mc-virt";
+> +               #interconnect-cells = <2>;
+> +               qcom,bcm-voters = <&apps_bcm_voter>;
+> +       };
+> +
+>         memory@80000000 {
+>                 device_type = "memory";
+>                 reg = <0x0 0x80000000 0x0 0x0>;
+> @@ -434,6 +449,9 @@ qupv3_id_0: geniqup@9c0000 {
+>                         clock-names = "m-ahb",
+>                                       "s-ahb";
+>                         iommus = <&apps_smmu 0xe3 0x0>;
+> +                       interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
+> +                                        &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>;
+> +                       interconnect-names = "qup-core";
+>                         #address-cells = <2>;
+>                         #size-cells = <2>;
+>                         ranges;
+> @@ -444,6 +462,12 @@ uart1: serial@984000 {
+>                                 reg = <0x0 0x00984000 0x0 0x4000>;
+>                                 clocks = <&gcc GCC_QUPV3_WRAP0_S1_CLK>;
+>                                 clock-names = "se";
+> +                               interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
+> +                                                &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>,
+> +                                               <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
+> +                                                &system_noc SLAVE_QUP_0 QCOM_ICC_TAG_ALWAYS>;
+> +                               interconnect-names = "qup-core",
+> +                                                    "qup-config";
+>                                 interrupts = <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>;
+>                                 pinctrl-0 = <&qupv3_se1_2uart_active>;
+>                                 pinctrl-1 = <&qupv3_se1_2uart_sleep>;
+> @@ -453,6 +477,20 @@ uart1: serial@984000 {
+>                         };
+>                 };
+>
+> +               system_noc: interconnect@1640000 {
+> +                       compatible = "qcom,sdx75-system-noc";
+> +                       reg = <0x0 0x01640000 0x0 0x4b400>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+> +               pcie_anoc: interconnect@16c0000 {
+> +                       compatible = "qcom,sdx75-pcie-anoc";
+> +                       reg = <0x0 0x016c0000 0x0 0x14200>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+>                 tcsr_mutex: hwlock@1f40000 {
+>                         compatible = "qcom,tcsr-mutex";
+>                         reg = <0x0 0x01f40000 0x0 0x40000>;
+> @@ -733,6 +771,20 @@ cpufreq_hw: cpufreq@17d91000 {
+>                         #freq-domain-cells = <1>;
+>                         #clock-cells = <1>;
+>                 };
+> +
+> +               dc_noc: interconnect@190e0000 {
+> +                       compatible = "qcom,sdx75-dc-noc";
+> +                       reg = <0x0 0x190e0000 0x0 0x8200>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+> +
+> +               gem_noc: interconnect@19100000 {
+> +                       compatible = "qcom,sdx75-gem-noc";
+> +                       reg = <0x0 0x19100000 0x0 0x34080>;
+> +                       #interconnect-cells = <2>;
+> +                       qcom,bcm-voters = <&apps_bcm_voter>;
+> +               };
+>         };
+>
+>         timer {
+> --
+> 2.25.1
+>
+>
+
+
+--
+With best wishes
+Dmitry
