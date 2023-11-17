@@ -2,97 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id F29A37EF11D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:54:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23CFF7EF123
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345869AbjKQKyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:54:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44402 "EHLO
+        id S1345946AbjKQKzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230379AbjKQKyP (ORCPT
+        with ESMTP id S1345778AbjKQKzP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:54:15 -0500
-Received: from smtp.kernel.org (relay.kernel.org [52.25.139.140])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CEF911D;
-        Fri, 17 Nov 2023 02:54:12 -0800 (PST)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16693C433C8;
-        Fri, 17 Nov 2023 10:54:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1700218451;
-        bh=OXBOLq2qavNwBO+KZhgrHWI3M3WMeSyFpV1K9FpnvdY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BGyK4ktJ1n1a6abGVywZCpKGadO+xmyfTspqaCZtXvEOa/Ln1SJJsFd4qrVWtrpJm
-         Hg7pxLRPw3JIf4x++7oOI8PP99DYAV7ZqsuWSebHL6Yi4ZSkO9SSTBY+msB5jjR7tN
-         HMl9ixhVk5BVcDLz76KwVy1hSbXtSXmWiCVHlftWsDYlNmU7CZ79OO/w8iTRKe6bdU
-         9NFszLctvAbEUGDjN3MPfwZ+4W/Tzn4xEAJ55qad6Yn+a0E87C1l6gQMKHfCpjgAEz
-         zcQOTMEvWYznoC2EmJBGTVpLE+1teiWLsmI4xh+iyzIDxCwf/SEQntsE2w2wlLQxsp
-         8BlLLUU4bUchQ==
-Date:   Fri, 17 Nov 2023 16:24:04 +0530
-From:   Manivannan Sadhasivam <mani@kernel.org>
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Johan Hovold <johan+linaro@kernel.org>,
-        Lorenzo Pieralisi <lpieralisi@kernel.org>,
-        Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring <robh@kernel.org>,
-        Nirmal Patel <nirmal.patel@linux.intel.com>,
-        Jonathan Derrick <jonathan.derrick@linux.dev>,
-        linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] PCI: qcom: Clean up ASPM comment
-Message-ID: <20231117105404.GR250770@thinkpad>
-References: <20231114135553.32301-1-johan+linaro@kernel.org>
- <20231114135553.32301-5-johan+linaro@kernel.org>
- <20231117103227.GM250770@thinkpad>
- <ZVdE6nqanqcaL8sO@hovoldconsulting.com>
+        Fri, 17 Nov 2023 05:55:15 -0500
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com [209.85.216.69])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2783BC
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:55:11 -0800 (PST)
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-28003f0ecedso2432228a91.2
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 02:55:11 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700218511; x=1700823311;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l2cuEcMzQySXRuWZLe5/bw1A6nYwDUUCTTiZ9GgFFCI=;
+        b=lSBS76DpwnoeHmqVM2NNuX/RNmCpyjt8t3RP9PFwJPTzd+b9ZzdkOPdfkBhaFrc8Ir
+         9LeAWVmK78wfVJlnjo58C3CYQ5x2JsMe1HW4Ro3p4y/c33hQO7mkccFsQ2T48z/16UCr
+         gA211UlAqMp2QOiasqy+lr5nGX0TRA2WNQMas1qNDOzU9saoN0OJqe30jcbCANZwts2Z
+         TWMOiGdkkQmX/b21QsCRj2m//Blp4vITWZPTOwnQNhKEiPMZVNAIpVxJoD4AWogFUxsw
+         no8yE6ZOluLwa9g1rcdXabfMPbrwK8XmimSPujpisQeg37gCk7pUcBREAmjBlqUHSbms
+         wMkg==
+X-Gm-Message-State: AOJu0YzId0NLrX4zKFfaBvkerfKYrl+DzQFBIRxm1IpwrfQOSyueFE+6
+        gH8MMqh32T3S1OxHb/jBoy4J8IIAiDVJsqMPLgyLitisM4ynerk=
+X-Google-Smtp-Source: AGHT+IGzME4CxA2aA1q2UmsIkTghZs36sHU2+gC2kHIEXsRb67OzyHQ2XBcGRGj02arMj9C3kZsLLcjRDXT51JAlNxdxqM0YDiBc
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZVdE6nqanqcaL8sO@hovoldconsulting.com>
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-Received: by 2002:a17:90b:1f88:b0:27d:1ce0:7cf with SMTP id
+ so8-20020a17090b1f8800b0027d1ce007cfmr5251892pjb.0.1700218511542; Fri, 17 Nov
+ 2023 02:55:11 -0800 (PST)
+Date:   Fri, 17 Nov 2023 02:55:11 -0800
+In-Reply-To: <000000000000376d93060a5207ed@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006bd0cf060a56f8aa@google.com>
+Subject: Re: [syzbot] Test
+From:   syzbot <syzbot+c74f40907a9c0479af10@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spam-Status: No, score=-0.2 required=5.0 tests=BAYES_00,FROM_LOCAL_HEX,
+        HEADER_FROM_DIFFERENT_DOMAINS,RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H3,
+        RCVD_IN_MSPIKE_WL,RCVD_IN_SORBS_WEB,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Nov 17, 2023 at 11:48:10AM +0100, Johan Hovold wrote:
-> On Fri, Nov 17, 2023 at 04:02:27PM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Nov 14, 2023 at 02:55:51PM +0100, Johan Hovold wrote:
-> > > Break up the newly added ASPM comment so that it fits within the soft 80
-> > > character limit and becomes more readable.
-> > > 
-> > > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > 
-> > I think we discussed (80column soft limit for comments) in the past, but I don't
-> > think breaking here makes the comment more readable.
-> 
-> The coding style clearly states:
-> 
-> 	The preferred limit on the length of a single line is 80 columns.
-> 
-> 	Statements longer than 80 columns should be broken into sensible chunks,
-> 	unless exceeding 80 columns significantly increases readability and does
-> 	not hide information.
-> 
-> Going beyond 80 chars may sometimes be warranted for code, but the
-> exception is not intended for comments.
-> 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
-Breaking the comment here is indeed making it hard to read. It's just one word
-that needs to be broken if we go by 80 column limit and I won't prefer that,
-sorry!
+***
 
-- Mani
+Subject: Test
+Author: tintinm2017@gmail.com
 
-> Johan
-
--- 
-மணிவண்ணன் சதாசிவம்
+#syz test:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
