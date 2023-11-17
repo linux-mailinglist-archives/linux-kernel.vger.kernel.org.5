@@ -2,317 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 151B37EED7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:24:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 416A77EED85
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbjKQIY0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 03:24:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58132 "EHLO
+        id S230264AbjKQI2z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:28:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbjKQIYY (ORCPT
+        with ESMTP id S229952AbjKQI2y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:24:24 -0500
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 9A9A0130;
-        Fri, 17 Nov 2023 00:24:19 -0800 (PST)
-Received: from loongson.cn (unknown [10.20.42.173])
-        by gateway (Coremail) with SMTP id _____8BxHOsxI1dlcsI6AA--.45935S3;
-        Fri, 17 Nov 2023 16:24:17 +0800 (CST)
-Received: from [10.20.42.173] (unknown [10.20.42.173])
-        by localhost.localdomain (Coremail) with SMTP id AQAAf8BxrdwrI1dlNCNFAA--.20259S3;
-        Fri, 17 Nov 2023 16:24:13 +0800 (CST)
-Subject: Re: [PATCH v1 1/2] LoongArch: KVM: Add lsx support
-To:     Tianrui Zhao <zhaotianrui@loongson.cn>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        WANG Xuerui <kernel@xen0n.name>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        loongarch@lists.linux.dev, Jens Axboe <axboe@kernel.dk>,
-        Mark Brown <broonie@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Oliver Upton <oliver.upton@linux.dev>,
-        Xi Ruoyao <xry111@xry111.site>
-References: <20231115091921.85516-1-zhaotianrui@loongson.cn>
- <20231115091921.85516-2-zhaotianrui@loongson.cn>
-From:   maobibo <maobibo@loongson.cn>
-Message-ID: <2161517e-1934-9d18-3bdf-1e397413b3a8@loongson.cn>
-Date:   Fri, 17 Nov 2023 16:24:10 +0800
-User-Agent: Mozilla/5.0 (X11; Linux loongarch64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Fri, 17 Nov 2023 03:28:54 -0500
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 202A6B3;
+        Fri, 17 Nov 2023 00:28:51 -0800 (PST)
+Received: from pps.filterd (m0279867.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH7auqO019415;
+        Fri, 17 Nov 2023 08:28:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=qcppdkim1; bh=km0xHQOEYSbU7+jwvtfV4jBETkktVgWD47hMaDXCG/M=;
+ b=nJ3J8n+aXOP4KX1pqlCVPe+8zJUm1rVkjWo34tQbnG/Z5riHP0bB+z5u6Tl+5KlQMARl
+ wMDfiJccBx8HQDcTM+PIhImxbe33nHWfRK3ujgaLMizRrll3Hj2urdWgli/jzf5ncq3P
+ wiC4V7OXDi5B7XtwRS1gtwjvmh/O0a6kG2S29dL5jIv3DfOnhDr8bgoL32U+bFuIwQUI
+ ocHN0otcZgtFGW3QnDBhZmowmJUGkfCjuEXW0JHRz2thvUEfb6i8FYD1dWrN0iR4eij+
+ fBVvBxH+TUmJst0Ewa5/f8uzIk3dOs4ahXSrMLzjAOQuWNvGXRNDytYPNx7tD0/Q9d7g mQ== 
+Received: from apblrppmta01.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udmw424vr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 08:28:35 +0000
+Received: from pps.filterd (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTP id 3AH8SV68020822;
+        Fri, 17 Nov 2023 08:28:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3ua2pmpsw7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 08:28:31 +0000
+Received: from APBLRPPMTA01.qualcomm.com (APBLRPPMTA01.qualcomm.com [127.0.0.1])
+        by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3AH8SVel020816;
+        Fri, 17 Nov 2023 08:28:31 GMT
+Received: from hu-devc-hyd-u20-c-new.qualcomm.com (hu-rohiagar-hyd.qualcomm.com [10.147.246.70])
+        by APBLRPPMTA01.qualcomm.com (PPS) with ESMTPS id 3AH8SVsC020810
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 08:28:31 +0000
+Received: by hu-devc-hyd-u20-c-new.qualcomm.com (Postfix, from userid 3970568)
+        id 1787E2204F; Fri, 17 Nov 2023 13:58:30 +0530 (+0530)
+From:   Rohit Agarwal <quic_rohiagar@quicinc.com>
+To:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+        tglx@linutronix.de, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Rohit Agarwal <quic_rohiagar@quicinc.com>,
+        Conor Dooley <conor.dooley@microchip.com>
+Subject: [PATCH v5] dt-bindings: interrupt-controller: Add SDX75 PDC compatible
+Date:   Fri, 17 Nov 2023 13:58:29 +0530
+Message-Id: <20231117082829.609882-1-quic_rohiagar@quicinc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20231115091921.85516-2-zhaotianrui@loongson.cn>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf8BxrdwrI1dlNCNFAA--.20259S3
-X-CM-SenderInfo: xpdruxter6z05rqj20fqof0/
-X-Coremail-Antispam: 1Uk129KBj93XoWxKF4DJrWDtr1xWr4rCrW8KrX_yoW3uw17pF
-        97Zrn8ta1xWF1Sk3s7tF1qgrnxZr4kKryIgasrJay3AF1Yqry5XF4kKrZrWFy5Gw4rAFyS
-        vF1rtr15uayDJ3cCm3ZEXasCq-sJn29KB7ZKAUJUUUUf529EdanIXcx71UUUUU7KY7ZEXa
-        sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-        0xBIdaVrnRJUUUPab4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-        IYs7xG6rWj6s0DM7CIcVAFz4kK6r1Y6r17M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-        e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-        0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-        xVW8Jr0_Cr1UM2kKe7AKxVWUAVWUtwAS0I0E0xvYzxvE52x082IY62kv0487Mc804VCY07
-        AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWU
-        AVWUtwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI4
-        8JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-        r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1l4IxYO2xFxVAFwI0_JF0_Jw1lx2IqxVAqx4xG67
-        AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-        rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14
-        v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWx
-        JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU4SoGDU
-        UUU
-X-Spam-Status: No, score=-5.2 required=5.0 tests=BAYES_00,NICE_REPLY_A,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
-        autolearn=ham autolearn_force=no version=3.4.6
+X-QCInternal: smtphost
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sZC3GK9LM07SO2CBOBZSEkBCBRuQeYqH
+X-Proofpoint-ORIG-GUID: sZC3GK9LM07SO2CBOBZSEkBCBRuQeYqH
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_05,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxlogscore=511
+ clxscore=1011 suspectscore=0 mlxscore=0 malwarescore=0 bulkscore=0
+ priorityscore=1501 adultscore=0 lowpriorityscore=0 impostorscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311060000 definitions=main-2311170061
+X-Spam-Status: No, score=-1.8 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,HEADER_FROM_DIFFERENT_DOMAINS,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Add device tree bindings for PDC on SDX75 SOC.
 
+Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+---
 
-On 2023/11/15 下午5:19, Tianrui Zhao wrote:
-> This patch adds LSX support for LoongArch KVM. The LSX means
-> LoongArch 128-bits vector instruction.
-> There will be LSX exception in KVM when guest use the LSX
-> instruction. KVM will enable LSX and restore the vector
-> registers for guest then return to guest to continue running.
-> 
-> 
-> Signed-off-by: Tianrui Zhao <zhaotianrui@loongson.cn>
-> ---
->   arch/loongarch/include/asm/kvm_host.h |  6 ++++
->   arch/loongarch/include/asm/kvm_vcpu.h | 12 +++++++
->   arch/loongarch/kvm/exit.c             | 18 ++++++++++
->   arch/loongarch/kvm/switch.S           | 22 +++++++++++++
->   arch/loongarch/kvm/trace.h            |  4 ++-
->   arch/loongarch/kvm/vcpu.c             | 47 +++++++++++++++++++++++++--
->   6 files changed, 105 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/loongarch/include/asm/kvm_host.h b/arch/loongarch/include/asm/kvm_host.h
-> index 11328700d4..6c65c25169 100644
-> --- a/arch/loongarch/include/asm/kvm_host.h
-> +++ b/arch/loongarch/include/asm/kvm_host.h
-> @@ -94,6 +94,7 @@ enum emulation_result {
->   #define KVM_LARCH_FPU		(0x1 << 0)
->   #define KVM_LARCH_SWCSR_LATEST	(0x1 << 1)
->   #define KVM_LARCH_HWCSR_USABLE	(0x1 << 2)
-> +#define KVM_LARCH_LSX		(0x1 << 3)
->   
->   struct kvm_vcpu_arch {
->   	/*
-> @@ -175,6 +176,11 @@ static inline void writel_sw_gcsr(struct loongarch_csrs *csr, int reg, unsigned
->   	csr->csrs[reg] = val;
->   }
->   
-> +static inline bool kvm_guest_has_lsx(struct kvm_vcpu_arch *arch)
-> +{
-> +	return arch->cpucfg[2] & CPUCFG2_LSX;
-> +}
-> +
->   /* Debug: dump vcpu state */
->   int kvm_arch_vcpu_dump_regs(struct kvm_vcpu *vcpu);
->   
-> diff --git a/arch/loongarch/include/asm/kvm_vcpu.h b/arch/loongarch/include/asm/kvm_vcpu.h
-> index 553cfa2b2b..c629771e12 100644
-> --- a/arch/loongarch/include/asm/kvm_vcpu.h
-> +++ b/arch/loongarch/include/asm/kvm_vcpu.h
-> @@ -55,6 +55,18 @@ void kvm_save_fpu(struct loongarch_fpu *fpu);
->   void kvm_restore_fpu(struct loongarch_fpu *fpu);
->   void kvm_restore_fcsr(struct loongarch_fpu *fpu);
->   
-> +#ifdef CONFIG_CPU_HAS_LSX
-> +void kvm_own_lsx(struct kvm_vcpu *vcpu);
-> +void kvm_save_lsx(struct loongarch_fpu *fpu);
-> +void kvm_restore_lsx(struct loongarch_fpu *fpu);
-> +void kvm_restore_lsx_upper(struct loongarch_fpu *fpu);
-> +#else
-> +static inline void kvm_own_lsx(struct kvm_vcpu *vcpu) { }
-> +static inline void kvm_save_lsx(struct loongarch_fpu *fpu) { }
-> +static inline void kvm_restore_lsx(struct loongarch_fpu *fpu) { }
-> +static inline void kvm_restore_lsx_upper(struct loongarch_fpu *fpu) { }
-> +#endif
-> +
->   void kvm_acquire_timer(struct kvm_vcpu *vcpu);
->   void kvm_init_timer(struct kvm_vcpu *vcpu, unsigned long hz);
->   void kvm_reset_timer(struct kvm_vcpu *vcpu);
-> diff --git a/arch/loongarch/kvm/exit.c b/arch/loongarch/kvm/exit.c
-> index ce8de3fa47..1b1c58ccc8 100644
-> --- a/arch/loongarch/kvm/exit.c
-> +++ b/arch/loongarch/kvm/exit.c
-> @@ -659,6 +659,23 @@ static int kvm_handle_fpu_disabled(struct kvm_vcpu *vcpu)
->   	return RESUME_GUEST;
->   }
->   
-> +/*
-> + * kvm_handle_lsx_disabled() - Guest used LSX while disabled in root.
-> + * @vcpu:      Virtual CPU context.
-> + *
-> + * Handle when the guest attempts to use LSX when it is disabled in the root
-> + * context.
-> + */
-> +static int kvm_handle_lsx_disabled(struct kvm_vcpu *vcpu)
-> +{
-> +	if (!kvm_guest_has_lsx(&vcpu->arch))
-> +		kvm_queue_exception(vcpu, EXCCODE_INE, 0);
-> +	else
-> +		kvm_own_lsx(vcpu);
-> +
-> +	return RESUME_GUEST;
-> +}
-> +
->   /*
->    * LoongArch KVM callback handling for unimplemented guest exiting
->    */
-> @@ -687,6 +704,7 @@ static exit_handle_fn kvm_fault_tables[EXCCODE_INT_START] = {
->   	[EXCCODE_TLBS]			= kvm_handle_write_fault,
->   	[EXCCODE_TLBM]			= kvm_handle_write_fault,
->   	[EXCCODE_FPDIS]			= kvm_handle_fpu_disabled,
-> +	[EXCCODE_LSXDIS]                = kvm_handle_lsx_disabled,
->   	[EXCCODE_GSPR]			= kvm_handle_gspr,
->   };
->   
-> diff --git a/arch/loongarch/kvm/switch.S b/arch/loongarch/kvm/switch.S
-> index 0ed9040307..32ba092a44 100644
-> --- a/arch/loongarch/kvm/switch.S
-> +++ b/arch/loongarch/kvm/switch.S
-> @@ -245,6 +245,28 @@ SYM_FUNC_START(kvm_restore_fpu)
->   	jr                 ra
->   SYM_FUNC_END(kvm_restore_fpu)
->   
-> +#ifdef CONFIG_CPU_HAS_LSX
-> +SYM_FUNC_START(kvm_save_lsx)
-> +	fpu_save_csr    a0 t1
-> +	fpu_save_cc     a0 t1 t2
-> +	lsx_save_data   a0 t1
-> +	jirl            zero, ra, 0
-> +SYM_FUNC_END(kvm_save_lsx)
-> +
-> +SYM_FUNC_START(kvm_restore_lsx)
-> +	lsx_restore_data a0 t1
-> +	fpu_restore_cc   a0 t1 t2
-> +	fpu_restore_csr  a0 t1
-> +	jirl             zero, ra, 0
-> +SYM_FUNC_END(kvm_restore_lsx)
-> +
-> +SYM_FUNC_START(kvm_restore_lsx_upper)
-> +	lsx_restore_all_upper a0 t0 t1
-> +
-> +	jirl                  zero, ra, 0
-> +SYM_FUNC_END(kvm_restore_lsx_upper)
-> +#endif
-> +
->   	.section ".rodata"
->   SYM_DATA(kvm_exception_size, .quad kvm_exc_entry_end - kvm_exc_entry)
->   SYM_DATA(kvm_enter_guest_size, .quad kvm_enter_guest_end - kvm_enter_guest)
-> diff --git a/arch/loongarch/kvm/trace.h b/arch/loongarch/kvm/trace.h
-> index a1e35d6554..7da4e230e8 100644
-> --- a/arch/loongarch/kvm/trace.h
-> +++ b/arch/loongarch/kvm/trace.h
-> @@ -102,6 +102,7 @@ TRACE_EVENT(kvm_exit_gspr,
->   #define KVM_TRACE_AUX_DISCARD		4
->   
->   #define KVM_TRACE_AUX_FPU		1
-> +#define KVM_TRACE_AUX_LSX		2
->   
->   #define kvm_trace_symbol_aux_op				\
->   	{ KVM_TRACE_AUX_SAVE,		"save" },	\
-> @@ -111,7 +112,8 @@ TRACE_EVENT(kvm_exit_gspr,
->   	{ KVM_TRACE_AUX_DISCARD,	"discard" }
->   
->   #define kvm_trace_symbol_aux_state			\
-> -	{ KVM_TRACE_AUX_FPU,     "FPU" }
-> +	{ KVM_TRACE_AUX_FPU,     "FPU" },		\
-> +	{ KVM_TRACE_AUX_LSX,     "LSX" }
->   
->   TRACE_EVENT(kvm_aux,
->   	    TP_PROTO(struct kvm_vcpu *vcpu, unsigned int op,
-> diff --git a/arch/loongarch/kvm/vcpu.c b/arch/loongarch/kvm/vcpu.c
-> index 73d0c2b9c1..f0bb583353 100644
-> --- a/arch/loongarch/kvm/vcpu.c
-> +++ b/arch/loongarch/kvm/vcpu.c
-> @@ -378,9 +378,13 @@ static int kvm_set_one_reg(struct kvm_vcpu *vcpu,
->   		break;
->   	case KVM_REG_LOONGARCH_CPUCFG:
->   		id = KVM_GET_IOC_CPUCFG_IDX(reg->id);
-> -		if (id >= 0 && id < KVM_MAX_CPUCFG_REGS)
-> +		if (id >= 0 && id < KVM_MAX_CPUCFG_REGS) {
->   			vcpu->arch.cpucfg[id] = (u32)v;
-> -		else
-> +			if (id == 2 && v & CPUCFG2_LSX && !cpu_has_lsx) {
-Hi Tianrui,
+Hi,
 
-Can you add some annotations about these piece of codes? so that
-people can understand easily.
+Changes in v5:
+ - Rebased on 6.7-rc1
+ - Removed all the applied patches from this series.
+ - Link to v4: https://lore.kernel.org/all/1686311438-24177-1-git-send-email-quic_rohiagar@quicinc.com/
 
-And do we need interface to get host capabilities to user application?
-Such as QEMU first gets supported capabilities from kvm and then sets 
-the required ones.
+Changes in v4:
+ - Addressed some of the dt bindings check mentioned by Krzysztof.
 
-Regards
-Bibo Mao
-> +				vcpu->arch.cpucfg[id] &= ~CPUCFG2_LSX;
-> +				ret = -EINVAL;
-> +			}
-> +		} else
->   			ret = -EINVAL;
->   		break;
->   	case KVM_REG_LOONGARCH_KVM:
-> @@ -561,12 +565,49 @@ void kvm_own_fpu(struct kvm_vcpu *vcpu)
->   	preempt_enable();
->   }
->   
-> +#ifdef CONFIG_CPU_HAS_LSX
-> +/* Enable LSX for guest and restore context */
-> +void kvm_own_lsx(struct kvm_vcpu *vcpu)
-> +{
-> +	preempt_disable();
-> +
-> +	/* Enable LSX for guest */
-> +	set_csr_euen(CSR_EUEN_LSXEN | CSR_EUEN_FPEN);
-> +	switch (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
-> +	case KVM_LARCH_FPU:
-> +		/*
-> +		 * Guest FPU state already loaded,
-> +		 * only restore upper LSX state
-> +		 */
-> +		kvm_restore_lsx_upper(&vcpu->arch.fpu);
-> +		break;
-> +	default:
-> +		/* Neither FP or LSX already active,
-> +		 * restore full LSX state
-> +		 */
-> +		kvm_restore_lsx(&vcpu->arch.fpu);
-> +	break;
-> +	}
-> +
-> +	trace_kvm_aux(vcpu, KVM_TRACE_AUX_RESTORE, KVM_TRACE_AUX_LSX);
-> +	vcpu->arch.aux_inuse |= KVM_LARCH_LSX | KVM_LARCH_FPU;
-> +	preempt_enable();
-> +}
-> +#endif
-> +
->   /* Save context and disable FPU */
->   void kvm_lose_fpu(struct kvm_vcpu *vcpu)
->   {
->   	preempt_disable();
->   
-> -	if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
-> +	if (vcpu->arch.aux_inuse & KVM_LARCH_LSX) {
-> +		kvm_save_lsx(&vcpu->arch.fpu);
-> +		vcpu->arch.aux_inuse &= ~(KVM_LARCH_LSX | KVM_LARCH_FPU);
-> +		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_LSX);
-> +
-> +		/* Disable LSX & FPU */
-> +		clear_csr_euen(CSR_EUEN_FPEN | CSR_EUEN_LSXEN);
-> +	} else if (vcpu->arch.aux_inuse & KVM_LARCH_FPU) {
->   		kvm_save_fpu(&vcpu->arch.fpu);
->   		vcpu->arch.aux_inuse &= ~KVM_LARCH_FPU;
->   		trace_kvm_aux(vcpu, KVM_TRACE_AUX_SAVE, KVM_TRACE_AUX_FPU);
-> 
+Changes in v3:
+ - Clubbed all the dt node into a single patch as suggested by Krzysztof.
+ - Removed the applied patch.
+ - Addressed some comments from Konrad and Dmitry.
+
+Changes in v2:
+ - Added the CPUFreq support patch.
+ - Collected the Acked by tags.
+ - Addressed some minor comments from Konrad.
+
+Thanks,
+Rohit.
+
+ .../devicetree/bindings/interrupt-controller/qcom,pdc.yaml       | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+index 86d61896f591..9342fe510598 100644
+--- a/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
++++ b/Documentation/devicetree/bindings/interrupt-controller/qcom,pdc.yaml
+@@ -35,6 +35,7 @@ properties:
+           - qcom,sdm845-pdc
+           - qcom,sdx55-pdc
+           - qcom,sdx65-pdc
++          - qcom,sdx75-pdc
+           - qcom,sm4450-pdc
+           - qcom,sm6350-pdc
+           - qcom,sm8150-pdc
+-- 
+2.25.1
 
