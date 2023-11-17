@@ -2,112 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F087EF37A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D747EF374
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 14:08:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235817AbjKQNIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 08:08:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41130 "EHLO
+        id S235727AbjKQNIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 08:08:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1346090AbjKQNI2 (ORCPT
+        with ESMTP id S235733AbjKQNIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 08:08:28 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [134.134.136.65])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5107D6F
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700226504; x=1731762504;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=iSrv7QU/hsAT/3bph4SJiuWHk0ZcBxExS7lakVcrEwI=;
-  b=nIaKzTe3X1VkQMVj2YfplfEPWuqPMTPtKJ00LOqr9+oH+0dWU6zLoQkf
-   Zta0/Yn+mL5IipOWIvV1HVMCeMQ0Jd1jxCdFvoylLghsdw/pSyFIhihmm
-   hwgDsipR0VFjNYTjXNiMfbG4ViZg7n0YrT33pnm1K8MfUoA3YkRWqDizL
-   bQ0pa2LTQHCpYkc9rjARqx2HVqv3ulp2sv0cKiN88gWScNK3rQGD1ciab
-   sJPrEz/xuL9VMcD2PErWrr3WorbOSsa6epXWCRojIMR7sGW91OUIheeRV
-   TLt0t0DJkjdHLXYIt+LGOBEk2uttXuGhSUVrOQ6qrQjGCACZ2hF+t6IGK
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="395222864"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="395222864"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 05:08:24 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="1012929240"
-X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
-   d="scan'208";a="1012929240"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga006.fm.intel.com with ESMTP; 17 Nov 2023 05:08:23 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3ya5-0002oj-0M;
-        Fri, 17 Nov 2023 13:08:21 +0000
-Date:   Fri, 17 Nov 2023 21:07:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Helge Deller <deller@gmx.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: missing
- identifier in declaration
-Message-ID: <202311172127.5PEz8XzL-lkp@intel.com>
+        Fri, 17 Nov 2023 08:08:11 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B6571BF6
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:07:58 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id 5b1f17b1804b1-407da05f05aso14389635e9.3
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 05:07:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1700226477; x=1700831277; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e91SbzALxQldxJ9V/d8kZXCTDZXdfOgieUU/YY5gexc=;
+        b=pRYcXeJxH6ScMByPMXW3xbhpks4L2ByOJXmgnPse5t7DmasJS4svXDqcZd0EbO5/Cq
+         PKz1PAg1SkbXRRfvs1BqIaXQTLQP8lBBDRyVX/xnj7E56celo32E6pxHGGeoIoiuL1uF
+         ISGyu7vxw9EVbKDqwfbH7u/h4+QVLNij+ULncLHsSI9fwc0aVXFrFZCH1OboCns9cfeV
+         EEI7gFWiYD93TUEO3PpCXSVaeGUDxYIRh0nTd7n3HwUhadje0kiAuUMKsByWV6xZhU3Q
+         +B/0ScCnJa6ppr6oEpi505fjLBZTg9Z3J1sGfBw2Uq3yyCLKam+GJ5ctx04wxq0jEvc4
+         bwnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700226477; x=1700831277;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e91SbzALxQldxJ9V/d8kZXCTDZXdfOgieUU/YY5gexc=;
+        b=TA5hbgjhITwJyTImuTIHMbL1HkXV7eMv/VNCtJcGVAk/pi3T/HPQEURSF9Esh/4SBQ
+         jD4SlX/mz1K3b4k04CDZIOnmIh6kW15c8DY+W24PxsNcJKJVnA7OI7HHX7YV28xAYl4t
+         A4ZNkH8fxUfauf/TpDTHZn1VrlJUwWHafVEBRSivp9Uy0b0XMy1isdZ8RltcPKcQOdIW
+         WvjQtLkWfAiZJFkp6E1QAyW6IBcHmCA+uJ0T5WYciMjPydQfCs+5o1nOecsDtFWqCMn4
+         FxI/V0kiz7XC5xvjXE+DhwpGa8zz8Y2wAlteuWkNFVUuEgFsg5ZKCHsvDxtRpiE+M2vt
+         z8jw==
+X-Gm-Message-State: AOJu0Yy7rrajQLsoEDkK4wRRxLVJ/DFcOat8iTBrffuG4KYccTUe3a2m
+        HSafWY1BUtL699fmc5dEtyzgnQ==
+X-Google-Smtp-Source: AGHT+IHURfaR8H2SRq7h1GBOjWKMYkoI/+unkSyOhnTUWLBZ+fCkp08Feq8kkt2GKEdUp3gfMZ+y/A==
+X-Received: by 2002:a05:600c:1552:b0:40a:4609:9c97 with SMTP id f18-20020a05600c155200b0040a46099c97mr14446732wmg.20.1700226476953;
+        Fri, 17 Nov 2023 05:07:56 -0800 (PST)
+Received: from [192.168.1.20] ([178.197.218.126])
+        by smtp.gmail.com with ESMTPSA id p13-20020a05600c358d00b0040841e79715sm2734381wmq.27.2023.11.17.05.07.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 17 Nov 2023 05:07:53 -0800 (PST)
+Message-ID: <67e7df38-d0a9-4513-9eb8-1114a9ecc3b3@linaro.org>
+Date:   Fri, 17 Nov 2023 14:07:51 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V2 4/4] dt-bindings: interrupt-controller: qcom,pdc:
+ document pdc on X1E80100
+Content-Language: en-US
+To:     Sibi Sankar <quic_sibis@quicinc.com>, andersson@kernel.org,
+        konrad.dybcio@linaro.org, will@kernel.org, robin.murphy@arm.com,
+        joro@8bytes.org, robh+dt@kernel.org,
+        krzysztof.kozlowski+dt@linaro.org
+Cc:     agross@kernel.org, vkoul@kernel.org, quic_gurus@quicinc.com,
+        conor+dt@kernel.org, quic_rjendra@quicinc.com,
+        abel.vesa@linaro.org, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmaengine@vger.kernel.org, iommu@lists.linux.dev,
+        quic_tsoni@quicinc.com, neil.armstrong@linaro.org
+References: <20231117105635.343-1-quic_sibis@quicinc.com>
+ <20231117105635.343-5-quic_sibis@quicinc.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20231117105635.343-5-quic_sibis@quicinc.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7475e51b87969e01a6812eac713a1c8310372e8a
-commit: 4800a6215e335c6dade05e10c8fdbf919c04a3a7 parisc: Wire up eBPF JIT compiler
-date:   3 months ago
-config: parisc-randconfig-r113-20231115 (https://download.01.org/0day-ci/archive/20231117/202311172127.5PEz8XzL-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20231117/202311172127.5PEz8XzL-lkp@intel.com/reproduce)
+On 17/11/2023 11:56, Sibi Sankar wrote:
+> The X1E80100 SoC includes a PDC, document it.
+> 
+> Signed-off-by: Sibi Sankar <quic_sibis@quicinc.com>
+> ---
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311172127.5PEz8XzL-lkp@intel.com/
+Please rebase on next.
 
-sparse warnings: (new ones prefixed by >>)
->> arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: missing identifier in declaration
-   arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: Expected ; at the end of type declaration
-   arch/parisc/net/bpf_jit_comp32.c:321:13: sparse: sparse: got $
-   arch/parisc/net/bpf_jit_comp32.c:322:13: sparse: sparse: Expected ; at the end of type declaration
-   arch/parisc/net/bpf_jit_comp32.c:322:13: sparse: sparse: got $
-   arch/parisc/net/bpf_jit_comp32.c:323:13: sparse: sparse: Expected ; at the end of type declaration
-   arch/parisc/net/bpf_jit_comp32.c:323:13: sparse: sparse: got $
-   arch/parisc/net/bpf_jit_comp32.c:666:37: sparse: sparse: Expected ) in function call
-   arch/parisc/net/bpf_jit_comp32.c:666:37: sparse: sparse: got $
-   arch/parisc/net/bpf_jit_comp32.c:669:37: sparse: sparse: Expected ) in function call
-   arch/parisc/net/bpf_jit_comp32.c:669:37: sparse: sparse: got $
-   arch/parisc/net/bpf_jit_comp32.c:672:37: sparse: sparse: Expected ) in function call
-   arch/parisc/net/bpf_jit_comp32.c:672:37: sparse: sparse: got $
->> arch/parisc/net/bpf_jit_comp32.c:666:36: sparse: sparse: not enough arguments for function emit_call_millicode
-   arch/parisc/net/bpf_jit_comp32.c:669:36: sparse: sparse: not enough arguments for function emit_call_millicode
-   arch/parisc/net/bpf_jit_comp32.c:672:36: sparse: sparse: not enough arguments for function emit_call_millicode
+Best regards,
+Krzysztof
 
-vim +321 arch/parisc/net/bpf_jit_comp32.c
-
-ceb0e7267693d3 Helge Deller 2023-08-17  319  
-ceb0e7267693d3 Helge Deller 2023-08-17  320  /* extern hppa millicode functions */
-ceb0e7267693d3 Helge Deller 2023-08-17 @321  extern void $$mulI(void);
-ceb0e7267693d3 Helge Deller 2023-08-17  322  extern void $$divU(void);
-ceb0e7267693d3 Helge Deller 2023-08-17  323  extern void $$remU(void);
-ceb0e7267693d3 Helge Deller 2023-08-17  324  
-
-:::::: The code at line 321 was first introduced by commit
-:::::: ceb0e7267693d3e6c43bd65695cd79d7c072a42a parisc: Add 32-bit eBPF JIT compiler
-
-:::::: TO: Helge Deller <deller@gmx.de>
-:::::: CC: Helge Deller <deller@gmx.de>
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
