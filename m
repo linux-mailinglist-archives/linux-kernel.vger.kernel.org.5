@@ -2,100 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9805A7EEDBD
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:48:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F61E7EEDC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 09:49:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345710AbjKQIsi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 17 Nov 2023 03:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        id S231461AbjKQIta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 03:49:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59250 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQIsh (ORCPT
+        with ESMTP id S235038AbjKQIt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 03:48:37 -0500
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08C79126;
-        Fri, 17 Nov 2023 00:48:34 -0800 (PST)
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-5a7afd45199so19981577b3.0;
-        Fri, 17 Nov 2023 00:48:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700210913; x=1700815713;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=BhrXwIKU30ZSa3FIJd7wo49zA9taMAmAe87pzVISU2s=;
-        b=n1qetcUnl0KTzgpkjo0CQjSEEJCfrIrPr3Qhl4t2P7jKNcmLBlKn4hGQNLc8zoMmFb
-         hTApT5QFPHVbQiimPJk4hOGBKV8MViA+y/PdqwvLPgB3k2KZo0PQE+lOZXmjLkKzx/ru
-         0RkiBKR5Tp5jajzNUUWPMab9bxcu506Hwp8MV3EudCA0wxBllszRBXroLAf36F/NmM9i
-         1t0266D3+7diRYE8EoLGGm/9GhhSnnxq3ZFN+gKMTqN6tCk4TzOlkAW8GTQarhH9Jz9J
-         9WTfK6Z1sSeri1tjUWY71eS++z4pCTPy5N7wolQ0dFdoxMK6qEwfJi2oI8cGmOC6lypG
-         h7BA==
-X-Gm-Message-State: AOJu0Yw3DqQB/CjZnNbH8Bqhnu9xMmIhTwDS4toZlma12YqM83m+oB83
-        4F9RJhqGfmDnorZ9l+srjZzvkni96tKA8w==
-X-Google-Smtp-Source: AGHT+IECsLlMQpJ6nnTdwHHrg7O8CnjcAJcb1JdwV9+7hMGLW3fQTJd5O960wgBQw3xrFRbghMHsaQ==
-X-Received: by 2002:a81:4f03:0:b0:5a0:ae01:803c with SMTP id d3-20020a814f03000000b005a0ae01803cmr20419057ywb.38.1700210913035;
-        Fri, 17 Nov 2023 00:48:33 -0800 (PST)
-Received: from mail-yw1-f172.google.com (mail-yw1-f172.google.com. [209.85.128.172])
-        by smtp.gmail.com with ESMTPSA id bc26-20020a05690c001a00b005c864816364sm175379ywb.75.2023.11.17.00.48.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 17 Nov 2023 00:48:32 -0800 (PST)
-Received: by mail-yw1-f172.google.com with SMTP id 00721157ae682-5a7afd45199so19981247b3.0;
-        Fri, 17 Nov 2023 00:48:31 -0800 (PST)
-X-Received: by 2002:a0d:e695:0:b0:5a7:b723:8fa3 with SMTP id
- p143-20020a0de695000000b005a7b7238fa3mr19688056ywe.26.1700210910922; Fri, 17
- Nov 2023 00:48:30 -0800 (PST)
+        Fri, 17 Nov 2023 03:49:28 -0500
+Received: from mx07-00178001.pphosted.com (mx07-00178001.pphosted.com [185.132.182.106])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ADE81AD;
+        Fri, 17 Nov 2023 00:49:21 -0800 (PST)
+Received: from pps.filterd (m0369458.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.17.1.22/8.17.1.22) with ESMTP id 3AH8aYhJ005749;
+        Fri, 17 Nov 2023 09:49:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=selector1; bh=QKT/BbvuuLqFyTHfMeRVQ
+        6bgO8hrF5ObSu+PK0LQuFI=; b=yokiESdx1OWmgjYc8s3puTM8OiVUeMXL4GJsq
+        StkJum325rJ1mq4kOvHgZb+RpJSF2iAXxfVGcrdykyjcMU4u4Dk6DF7vmvXV16Vu
+        2yIKxPHK0TjVUD7kKdn1O7wTRh0onNBChD2kz9ytk/2mQ1X/sk/2LsutiA7ii8S2
+        VSKsOevKrLQvQpsC3GvkBd1JwJXZEqUdUd9+UYR/iPf9JkQlG4cT2N6w9l7q7Vpg
+        sulB826Pc+re1AIkPK9tpYvYEG3jPY3oLaaO/h2oQegkZvDwMa9GHFvsrBsoi37k
+        vXCYaBOysiF39w4pT6FteHYPEyeOcwYCE/UIJKii0c8hI6skw==
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com (PPS) with ESMTPS id 3ud8c5empr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 09:49:01 +0100 (CET)
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 24E2610002A;
+        Fri, 17 Nov 2023 09:48:59 +0100 (CET)
+Received: from Webmail-eu.st.com (shfdag1node1.st.com [10.75.129.69])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id E2EFB210F71;
+        Fri, 17 Nov 2023 09:48:59 +0100 (CET)
+Received: from gnbcxd0016.gnb.st.com (10.129.178.213) by SHFDAG1NODE1.st.com
+ (10.75.129.69) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.27; Fri, 17 Nov
+ 2023 09:48:59 +0100
+Date:   Fri, 17 Nov 2023 09:48:54 +0100
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Pavel Machek <pavel@ucw.cz>
+CC:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh@kernel.org>, <linux-media@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 2/3] dt-bindings: media: i2c: add galaxycore,gc2145
+ dt-bindings
+Message-ID: <20231117084854.GA523678@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Pavel Machek <pavel@ucw.cz>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+        Kieran Bingham <kieran.bingham@ideasonboard.com>,
+        Conor Dooley <conor.dooley@microchip.com>,
+        Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20231107081345.3172392-1-alain.volmat@foss.st.com>
+ <20231107081345.3172392-3-alain.volmat@foss.st.com>
+ <ZU/QyrbaeyoV5+ON@duo.ucw.cz>
 MIME-Version: 1.0
-References: <20231016105344.294096-1-claudiu.beznea.uj@bp.renesas.com> <20231016105344.294096-2-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20231016105344.294096-2-claudiu.beznea.uj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 17 Nov 2023 09:48:20 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXC2zm9FqQH1XX51bANnYA+ezPoX2WHPMdC2J1euN+_RQ@mail.gmail.com>
-Message-ID: <CAMuHMdXC2zm9FqQH1XX51bANnYA+ezPoX2WHPMdC2J1euN+_RQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] arm64: dts: renesas: rzg3s-smarc-som: Enable SDHI2
-To:     Claudiu <claudiu.beznea@tuxon.dev>
-Cc:     magnus.damm@gmail.com, robh+dt@kernel.org,
-        krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Spam-Status: No, score=-1.4 required=5.0 tests=BAYES_00,
-        FREEMAIL_FORGED_FROMDOMAIN,FREEMAIL_FROM,HEADER_FROM_DIFFERENT_DOMAINS,
-        RCVD_IN_DNSWL_BLOCKED,RCVD_IN_MSPIKE_H2,SPF_HELO_NONE,SPF_PASS,
-        T_SCC_BODY_TEXT_LINE autolearn=no autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <ZU/QyrbaeyoV5+ON@duo.ucw.cz>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.129.178.213]
+X-ClientProxiedBy: SHFCAS1NODE2.st.com (10.75.129.73) To SHFDAG1NODE1.st.com
+ (10.75.129.69)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_06,2023-11-16_01,2023-05-22_02
+X-Spam-Status: No, score=-2.0 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham autolearn_force=no
+        version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Claudiu,
+Hi Pavel,
 
-Thanks for the update!
+thanks for the review.
 
-On Mon, Oct 16, 2023 at 12:54 PM Claudiu <claudiu.beznea@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> Add SDHI2 to RZ/G3S Smarc SoM. SDHI2 pins are multiplexed with SCIF1, SSI0,
-> IRQ0, IRQ1. The selection b/w SDHI2 and SCIF1, SSI3, IRQ0, IRQ1 is done
+On Sat, Nov 11, 2023 at 08:23:13PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > Introduction of the Galaxy Core GC2145 XVGA CMOS camera sensor.
+> 
+> > diff --git a/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+> > new file mode 100644
+> > index 000000000000..94d194cf5452
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/media/i2c/galaxycore,gc2145.yaml
+> > @@ -0,0 +1,104 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/media/i2c/galaxycore,gc2145.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Galaxy Core 1/5'' UXGA CMOS Image Sensor
+> > +
+> > +maintainers:
+> > +  - Alain Volmat <alain.volmat@foss.st.com>
+> > +
+> > +description:
+> > +  The Galaxy Core GC2145 is a high quality 2 Mega CMOS image sensor, for mobile
+> 
+> I'd drop "high quality" and add "pixel".
 
-SSI0
+Ok, done in v4.
 
-> with a switch button. To be able to select b/w these a compilation flag has
-> been added (SW_SD2_EN) at the moment being instantiated to select SDHI2.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> > +  phone camera applications and digital camera products. GC2145 incorporates a
+> > +  1616V x 1232H active pixel array, on-chip 10-bit ADC, and image signal
+> > +  processor. It is programmable through an I2C interface. Image data is sent
+> > +  either through a parallel interface or through MIPI CSI-2.
+> 
+> Short note what the on-board ISP can do might be welcome here.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v6.8, with the above fixed.
+Ok, done in v4.
 
-Gr{oetje,eeting}s,
+> 
+> Best regards,
+> 							Pavel
+> -- 
+> People of Russia, stop Putin before his war on Ukraine escalates.
 
-                        Geert
+Regards,
+Alain
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
