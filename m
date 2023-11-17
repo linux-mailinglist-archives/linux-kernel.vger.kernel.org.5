@@ -2,186 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B717EEB3E
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 03:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D5407EEB41
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 03:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345644AbjKQCxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 21:53:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38232 "EHLO
+        id S1345643AbjKQCyH convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 16 Nov 2023 21:54:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229437AbjKQCxc (ORCPT
+        with ESMTP id S229437AbjKQCyG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 21:53:32 -0500
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.220.29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1147F1AD;
-        Thu, 16 Nov 2023 18:53:29 -0800 (PST)
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by smtp-out2.suse.de (Postfix) with ESMTPS id 2C52120509;
-        Fri, 17 Nov 2023 02:53:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-        t=1700189607; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NB0T88Bz1NkBEV9ckcMVtoKdeQngpB+JyIHTJiYvV70=;
-        b=jHAdBLIRbfzQq8Gmlqm/J6T+Mauv7ot6uVBlU/wWNcDnrxV6j0H3firPzLMPvXbQ//jmN3
-        MxQoa0Hf2+o+lxlaWWNCSs8JpifnxjF7kmUfEqEuJevtxOrXJW5riSSe5AVN+Mm2RehFxW
-        dKwR3OCllt5mjtQ6JkBqIo99Fs3gYAg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-        s=susede2_ed25519; t=1700189607;
-        h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=NB0T88Bz1NkBEV9ckcMVtoKdeQngpB+JyIHTJiYvV70=;
-        b=2AKk8dTdSP/fjn1Wn9gMYObr7YOoz30ARm724J07GUv2q0qWecZOtfdANO+DYYQKWxudNa
-        aMQmjZ2R1zWo8tCw==
-Received: from imap2.suse-dmz.suse.de (imap2.suse-dmz.suse.de [192.168.254.74])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature ECDSA (P-521) server-digest SHA512)
-        (No client certificate requested)
-        by imap2.suse-dmz.suse.de (Postfix) with ESMTPS id C87F61341F;
-        Fri, 17 Nov 2023 02:53:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([192.168.254.65])
-        by imap2.suse-dmz.suse.de with ESMTPSA
-        id blGFGZ/VVmWSHwAAMHmgww
-        (envelope-from <neilb@suse.de>); Fri, 17 Nov 2023 02:53:19 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 16 Nov 2023 21:54:06 -0500
+Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E061A8;
+        Thu, 16 Nov 2023 18:54:02 -0800 (PST)
+X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AH2rrHyB2827004, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexh36506.realtek.com.tw[172.21.6.27])
+        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AH2rrHyB2827004
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 17 Nov 2023 10:53:53 +0800
+Received: from RTEXDAG02.realtek.com.tw (172.21.6.101) by
+ RTEXH36506.realtek.com.tw (172.21.6.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.17; Fri, 17 Nov 2023 10:53:53 +0800
+Received: from RTEXMBS04.realtek.com.tw (172.21.6.97) by
+ RTEXDAG02.realtek.com.tw (172.21.6.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2375.7; Fri, 17 Nov 2023 10:53:52 +0800
+Received: from RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7]) by
+ RTEXMBS04.realtek.com.tw ([fe80::40c2:6c24:2df4:e6c7%5]) with mapi id
+ 15.01.2375.007; Fri, 17 Nov 2023 10:53:52 +0800
+From:   Ping-Ke Shih <pkshih@realtek.com>
+To:     Su Hui <suhui@nfschina.com>,
+        "Jes.Sorensen@gmail.com" <Jes.Sorensen@gmail.com>
+CC:     "kvalo@kernel.org" <kvalo@kernel.org>,
+        "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
+Subject: RE: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
+Thread-Topic: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
+Thread-Index: AQHaF4Do9v4vXgLKQEi53aoMdH/MCbB90spQ
+Date:   Fri, 17 Nov 2023 02:53:52 +0000
+Message-ID: <ff8637fc05324c04a447ea505d8eba1b@realtek.com>
+References: <20231115050123.951862-1-suhui@nfschina.com>
+In-Reply-To: <20231115050123.951862-1-suhui@nfschina.com>
+Accept-Language: en-US, zh-TW
+Content-Language: zh-TW
+x-originating-ip: [172.21.69.94]
+x-kse-serverinfo: RTEXDAG02.realtek.com.tw, 9
+x-kse-antispam-interceptor-info: fallback
+x-kse-antivirus-interceptor-info: fallback
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-From:   "NeilBrown" <neilb@suse.de>
-To:     "Kees Cook" <keescook@chromium.org>
-Cc:     "Trond Myklebust" <trond.myklebust@hammerspace.com>,
-        "Kees Cook" <keescook@chromium.org>,
-        "Anna Schumaker" <anna@kernel.org>,
-        "Chuck Lever" <chuck.lever@oracle.com>,
-        "Jeff Layton" <jlayton@kernel.org>,
-        "Olga Kornievskaia" <kolga@netapp.com>,
-        "Dai Ngo" <Dai.Ngo@oracle.com>, "Tom Talpey" <tom@talpey.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Eric Dumazet" <edumazet@google.com>,
-        "Jakub Kicinski" <kuba@kernel.org>,
-        "Paolo Abeni" <pabeni@redhat.com>, linux-nfs@vger.kernel.org,
-        netdev@vger.kernel.org, "Azeem Shaikh" <azeemshaikh38@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] SUNRPC: Replace strlcpy() with strscpy()
-In-reply-to: <20231114175407.work.410-kees@kernel.org>
-References: <20231114175407.work.410-kees@kernel.org>
-Date:   Fri, 17 Nov 2023 13:53:15 +1100
-Message-id: <170018959595.19300.7615621918111285329@noble.neil.brown.name>
-Authentication-Results: smtp-out2.suse.de;
-        none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-         ARC_NA(0.00)[];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         BAYES_HAM(-3.00)[100.00%];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         NEURAL_HAM_LONG(-1.00)[-1.000];
-         DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-         NEURAL_HAM_SHORT(-0.20)[-1.000];
-         RCPT_COUNT_TWELVE(0.00)[18];
-         FUZZY_BLOCKED(0.00)[rspamd.com];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         FREEMAIL_CC(0.00)[hammerspace.com,chromium.org,kernel.org,oracle.com,netapp.com,talpey.com,davemloft.net,google.com,redhat.com,vger.kernel.org,gmail.com];
-         RCVD_COUNT_TWO(0.00)[2];
-         RCVD_TLS_ALL(0.00)[]
-X-Spam-Status: No, score=-4.4 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_MED,SPF_HELO_NONE,
-        SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=ham
-        autolearn_force=no version=3.4.6
+X-KSE-AntiSpam-Interceptor-Info: fallback
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 15 Nov 2023, Kees Cook wrote:
-> strlcpy() reads the entire source buffer first. This read may exceed
-> the destination size limit. This is both inefficient and can lead
-> to linear read overflows if a source string is not NUL-terminated[1].
-> Additionally, it returns the size of the source string, not the
-> resulting size of the destination string. In an effort to remove strlcpy()
-> completely[2], replace strlcpy() here with strscpy().
->=20
-> Explicitly handle the truncation case by returning the size of the
-> resulting string.
->=20
-> If "nodename" was ever longer than sizeof(clnt->cl_nodename) - 1, this
-> change will fix a bug where clnt->cl_nodelen would end up thinking there
-> were more characters in clnt->cl_nodename than there actually were,
-> which might have lead to kernel memory content exposures.
->=20
-> Cc: Trond Myklebust <trond.myklebust@hammerspace.com>
-> Cc: Anna Schumaker <anna@kernel.org>
-> Cc: Chuck Lever <chuck.lever@oracle.com>
-> Cc: Jeff Layton <jlayton@kernel.org>
-> Cc: Neil Brown <neilb@suse.de>
-> Cc: Olga Kornievskaia <kolga@netapp.com>
-> Cc: Dai Ngo <Dai.Ngo@oracle.com>
-> Cc: Tom Talpey <tom@talpey.com>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Eric Dumazet <edumazet@google.com>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Paolo Abeni <pabeni@redhat.com>
-> Cc: linux-nfs@vger.kernel.org
-> Cc: netdev@vger.kernel.org
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcp=
-y [1]
-> Link: https://github.com/KSPP/linux/issues/89 [2]
-> Co-developed-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> Signed-off-by: Azeem Shaikh <azeemshaikh38@gmail.com>
-> Signed-off-by: Kees Cook <keescook@chromium.org>
+
+
+> -----Original Message-----
+> From: Su Hui <suhui@nfschina.com>
+> Sent: Wednesday, November 15, 2023 1:01 PM
+> To: Ping-Ke Shih <pkshih@realtek.com>; Jes.Sorensen@gmail.com
+> Cc: Su Hui <suhui@nfschina.com>; kvalo@kernel.org; linux-wireless@vger.kernel.org;
+> linux-kernel@vger.kernel.org; kernel-janitors@vger.kernel.org
+> Subject: [PATCH v2] wifi: rtl8xxxu: correct the error value of 'timeout'
+> 
+> When 'rtl8xxxu_dma_agg_pages <= page_thresh', 'timeout' should equal to
+> 'page_thresh' rather than '4'. Change the code order to fix this problem.
+> 
+> Fixes: fd83f1227826 ("rtl8xxxu: gen1: Add module parameters to adjust DMA aggregation parameters")
+> Signed-off-by: Su Hui <suhui@nfschina.com>
 > ---
->  net/sunrpc/clnt.c | 10 ++++++++--
->  1 file changed, 8 insertions(+), 2 deletions(-)
->=20
-> diff --git a/net/sunrpc/clnt.c b/net/sunrpc/clnt.c
-> index daa9582ec861..7afe02bdea4a 100644
-> --- a/net/sunrpc/clnt.c
-> +++ b/net/sunrpc/clnt.c
-> @@ -287,8 +287,14 @@ static struct rpc_xprt *rpc_clnt_set_transport(struct =
-rpc_clnt *clnt,
-> =20
->  static void rpc_clnt_set_nodename(struct rpc_clnt *clnt, const char *noden=
-ame)
->  {
-> -	clnt->cl_nodelen =3D strlcpy(clnt->cl_nodename,
-> -			nodename, sizeof(clnt->cl_nodename));
-> +	ssize_t copied;
-> +
-> +	copied =3D strscpy(clnt->cl_nodename,
-> +			 nodename, sizeof(clnt->cl_nodename));
-> +
-> +	clnt->cl_nodelen =3D copied < 0
-> +				? sizeof(clnt->cl_nodename) - 1
-> +				: copied;
->  }
 
-Reviewed-by: NeilBrown <neilb@suse.de>
+Checking logic of agg_pages and agg_timeout, I think we should correct it
+by below changes. So, NACK this patch. 
 
-If it were "copied =3D=3D -E2BIG" instead of "copied < 0" it would be more
-obvious why sizeof(...) is used in that case.
-But we really want to do something sensible for *any* error message that
-might be added in the future.. I guess.
-
-Thanks,
-NeilBrown
+diff --git a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+index 43ee7592bc6e..c9e227aed685 100644
+--- a/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
++++ b/drivers/net/wireless/realtek/rtl8xxxu/rtl8xxxu_core.c
+@@ -4760,7 +4760,7 @@ void rtl8xxxu_gen1_init_aggregation(struct rtl8xxxu_priv *priv)
+        page_thresh = (priv->fops->rx_agg_buf_size / 512);
+        if (rtl8xxxu_dma_agg_pages >= 0) {
+                if (rtl8xxxu_dma_agg_pages <= page_thresh)
+-                       timeout = page_thresh;
++                       page_thresh = rtl8xxxu_dma_agg_pages;
+                else if (rtl8xxxu_dma_agg_pages <= 6)
+                        dev_err(&priv->udev->dev,
+                                "%s: dma_agg_pages=%i too small, minimum is 6\n",
 
 
-> =20
->  static int rpc_client_register(struct rpc_clnt *clnt,
-> --=20
-> 2.34.1
->=20
->=20
 
