@@ -2,71 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AE947EEFC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E2A7EEFBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 11:06:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345793AbjKQKJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 05:09:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53630 "EHLO
+        id S1345808AbjKQKGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 05:06:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345739AbjKQKI5 (ORCPT
+        with ESMTP id S230468AbjKQKGA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 05:08:57 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB707C1;
-        Fri, 17 Nov 2023 02:08:53 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-5482df11e73so924953a12.0;
-        Fri, 17 Nov 2023 02:08:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700215732; x=1700820532; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qkMOHJc0OcMmrqNaANsP5Qp8DkKGD0Xp7KJHYY+XOZs=;
-        b=XvzdDW0sRMHzXueMg0eHjspxUcFzEJPGrHvxFTPcCasCjCcwPKB4Xgj/nPOBwq/8/P
-         UHjLaIjpjNb39l8SwcTyK+qtUnMTQrtkcYAVz+YN9X9eqkEvLexIwsEkAvJEdDYDNOxz
-         KWZWYsY10Uap3jwrR0FuJUAkGeCtjvVCT/qdQOXzhGP3xYb7wuWm648ouE3gI2TvhGQl
-         0vzXyvV+bp7ilkFbKdr4Dddls+tCZ5rbOX5E5W7u3hkMeSs9fRvmIqjw6fF0ruDMg9yL
-         0VmThdy849m738EKnwmWsjsC/pVVAHZ/y+4rXD3PqYqyxbYazE9gH5+D4EwJMzsvqwgl
-         nqfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700215732; x=1700820532;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qkMOHJc0OcMmrqNaANsP5Qp8DkKGD0Xp7KJHYY+XOZs=;
-        b=F+fB3Uo9/fjW0pKoJH7bNd6WOWO6dfq8vl6OwfQoX1dQ3irsro2eWopUS1KLMCFqAC
-         /1CxrJMXa+fxkZkIj08Um7YTg8W49O/I0fIVoGwQDhSq0/x/7m6QpH++MAJU/54p0Xuo
-         1ptq4LR2U/B7WOPcgy02icbVdBthF6FVjK0WM6Zfl0EDeWUuZluOsAKj19wY/A2c8ljT
-         4DoUYLa781tD873KtJxlZ2pCtxByajMxMLK8OQEwTc9mq3+x2zizvp5X5sFc1RXVXq2N
-         PlFGa08pGOnxDCxJKX+DD/SGm7fVgw2i0vbNucb4BdxaiKMN5MLC+LAZDexHu40PjCNY
-         3Lsg==
-X-Gm-Message-State: AOJu0Yyd9ZdlUQ6Gt/n0srRd2JLuLgGohfS39M1Oa2XAY7DAKMmVOgu0
-        x/GKDHUFziVLA94cHLLqmp4=
-X-Google-Smtp-Source: AGHT+IEXFgmjWud9XyeYKnvw0NYmjgEYy4RVIYs041mCHThwIfWZcP4Z8jQlyhW9ixt9GcFYE18bBg==
-X-Received: by 2002:a50:ff10:0:b0:53d:a7d9:5149 with SMTP id a16-20020a50ff10000000b0053da7d95149mr10863567edu.6.1700215732251;
-        Fri, 17 Nov 2023 02:08:52 -0800 (PST)
-Received: from fedora.. (dh207-97-146.xnet.hr. [88.207.97.146])
-        by smtp.googlemail.com with ESMTPSA id n26-20020a056402061a00b0054358525a5bsm554368edv.62.2023.11.17.02.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Nov 2023 02:08:51 -0800 (PST)
-From:   Robert Marko <robimarko@gmail.com>
-To:     andrew@lunn.ch, hkallweit1@gmail.com, linux@armlinux.org.uk,
-        davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        pabeni@redhat.com, ansuelsmth@gmail.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Robert Marko <robimarko@gmail.com>
-Subject: [PATCH 2/2] net: phy: aquantia: enable USXGMII autoneg on AQR107
-Date:   Fri, 17 Nov 2023 11:05:05 +0100
-Message-ID: <20231117100848.424372-2-robimarko@gmail.com>
-X-Mailer: git-send-email 2.42.0
-In-Reply-To: <20231117100848.424372-1-robimarko@gmail.com>
-References: <20231117100848.424372-1-robimarko@gmail.com>
+        Fri, 17 Nov 2023 05:06:00 -0500
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60437B0;
+        Fri, 17 Nov 2023 02:05:56 -0800 (PST)
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+        by mx0a-0031df01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3AH4YImN014405;
+        Fri, 17 Nov 2023 10:05:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=qcppdkim1;
+ bh=RTLiox/mifORbRB6ih+BFAwXXdRUmyiZAnvIy+pBRxg=;
+ b=Zt0sv5XgyciIhyAbgOl9wQhFrrC8aVK7iIvYR4ufcNCunidEw2q6UncKIaDfbiKEbtmL
+ KZ9Pz1cbqVsxXIjjlfkKl3kalo66/Z/tnpTgb4Iw21SkwaAQK0z09GJmIju0ZUtPscK3
+ 0fE+T7u0s/ZaNCmcccXttwmO6VyD4drgbza9K9pN6BD9qJoBQWVWLBSv5YokG4h7v8Vq
+ S69kwPpEqlhNpGwNr76oXrOqI1kvKNnwrc6pEMHfzktc3Ebf3MtLZX0Uw6miH8WtXM5J
+ BUxBpT1A+FiX8yLCFrb/OlxWFhYAKtulKIRGESnjNK8bpOHLPa8MafFH03EWR6YSU1fI lA== 
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+        by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3udw1s92g9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:05:45 +0000
+Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
+        by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 3AHA5hh8029407
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 17 Nov 2023 10:05:43 GMT
+Received: from [10.253.8.81] (10.80.80.8) by nalasex01c.na.qualcomm.com
+ (10.47.97.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.39; Fri, 17 Nov
+ 2023 02:05:39 -0800
+Message-ID: <02603c3d-a509-4bdd-a67b-7f494df4eeba@quicinc.com>
+Date:   Fri, 17 Nov 2023 18:05:37 +0800
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 8/9] net: mdio: ipq4019: add qca8084 configurations
+Content-Language: en-US
+To:     Andrew Lunn <andrew@lunn.ch>
+CC:     Robert Marko <robert.marko@sartura.hr>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>, <agross@kernel.org>,
+        <andersson@kernel.org>, <davem@davemloft.net>,
+        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
+        <robh+dt@kernel.org>, <krzysztof.kozlowski+dt@linaro.org>,
+        <conor+dt@kernel.org>, <hkallweit1@gmail.com>,
+        <linux@armlinux.org.uk>, <linux-arm-msm@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_srichara@quicinc.com>
+References: <20231115032515.4249-1-quic_luoj@quicinc.com>
+ <20231115032515.4249-9-quic_luoj@quicinc.com>
+ <a1954855-f82d-434b-afd1-aa05c7a1b39b@lunn.ch>
+ <cb4131d1-534d-4412-a562-fb26edfea0d1@linaro.org>
+ <CA+HBbNGnEneK8S+dZM6iS+C8jFnEtg4Wpe2tBBoP+Y_H0ZmyWA@mail.gmail.com>
+ <d677e73a-5ca2-4034-9b4b-1e6140601066@quicinc.com>
+ <f5da6540-e532-4b83-890d-2ffdf4bf6fcc@lunn.ch>
+From:   Jie Luo <quic_luoj@quicinc.com>
+In-Reply-To: <f5da6540-e532-4b83-890d-2ffdf4bf6fcc@lunn.ch>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01c.na.qualcomm.com (10.47.97.35)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: CGznaSBeDUHJP0lvNmKozXD0dScTmbO3
+X-Proofpoint-GUID: CGznaSBeDUHJP0lvNmKozXD0dScTmbO3
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.987,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-11-17_07,2023-11-16_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ mlxlogscore=743 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 mlxscore=0 adultscore=0 phishscore=0
+ impostorscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2311060000 definitions=main-2311170074
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
-        RCVD_IN_DNSWL_NONE,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -74,47 +91,22 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In case USXGMII is being used as the PHY interface mode then USXGMII
-autoneg must be enabled as well.
 
-HW defaults to USXGMII autoneg being disabled which then results in
-autoneg timeout, so enable it in case USXGMII is used.
 
-Signed-off-by: Robert Marko <robimarko@gmail.com>
----
- drivers/net/phy/aquantia/aquantia_main.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+On 11/17/2023 1:08 AM, Andrew Lunn wrote:
+>> Yes, the clock driver of qca8084 is probed as the MDIO device, the
+>> configuration sequence here to lighten the qca8084 PHY need to
+>> be completed before the clock APIs available to call.
+> 
+> Please cleanly separate clock from MDIO. The MDIO driver should only
+> use the common clock framework API calls. If the clock driver is not
+> loaded yet, trying to get a clock should return -EPROBE_DEFER. The
+> MDIO driver should return that from its probe function. The driver
+> core will then try to probe the MDIO driver later, by which time the
+> clock driver should of loaded.
+> 
+>        Andrew
+> 
 
-diff --git a/drivers/net/phy/aquantia/aquantia_main.c b/drivers/net/phy/aquantia/aquantia_main.c
-index 7711e052e737..c602873052a0 100644
---- a/drivers/net/phy/aquantia/aquantia_main.c
-+++ b/drivers/net/phy/aquantia/aquantia_main.c
-@@ -26,6 +26,9 @@
- #define PHY_ID_AQR412	0x03a1b712
- #define PHY_ID_AQR113C	0x31c31c12
- 
-+#define MDIO_PHYXS_XAUI_RX_VEND2		0xc441
-+#define MDIO_PHYXS_XAUI_RX_VEND2_USX_AUTONEG_EN	BIT(3)
-+
- #define MDIO_PHYXS_VEND_IF_STATUS		0xe812
- #define MDIO_PHYXS_VEND_IF_STATUS_TYPE_MASK	GENMASK(7, 3)
- #define MDIO_PHYXS_VEND_IF_STATUS_TYPE_KR	0
-@@ -545,6 +548,15 @@ static int aqr107_config_init(struct phy_device *phydev)
- 
- 	aqr107_validate_mode(phydev, phydev->interface);
- 
-+	if (phydev->interface == PHY_INTERFACE_MODE_USXGMII) {
-+		ret = phy_modify_mmd(phydev, MDIO_MMD_PHYXS,
-+				     MDIO_PHYXS_XAUI_RX_VEND2,
-+				     MDIO_PHYXS_XAUI_RX_VEND2_USX_AUTONEG_EN,
-+				     MDIO_PHYXS_XAUI_RX_VEND2_USX_AUTONEG_EN);
-+		if (ret)
-+			return ret;
-+	}
-+
- 	return aqr107_set_downshift(phydev, MDIO_AN_VEND_PROV_DOWNSHIFT_DFLT);
- }
- 
--- 
-2.42.0
-
+Ok, will update the patches to take this solution using the clock
+consume APIs. Thanks Andrew for the suggestion.
