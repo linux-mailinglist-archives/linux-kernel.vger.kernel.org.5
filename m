@@ -2,67 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id AD2817EEF3B
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:49:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0927EEF7C
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345765AbjKQJtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:49:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58830 "EHLO
+        id S1345794AbjKQJ54 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:57:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235811AbjKQJsl (ORCPT
+        with ESMTP id S235817AbjKQJ5o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:48:41 -0500
-Received: from rtits2.realtek.com.tw (rtits2.realtek.com [211.75.126.72])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761D61BE4
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:47:21 -0800 (PST)
-X-SpamFilter-By: ArmorX SpamTrap 5.78 with qID 3AH9ieRO33041301, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexh36505.realtek.com.tw[172.21.6.25])
-        by rtits2.realtek.com.tw (8.15.2/2.95/5.92) with ESMTPS id 3AH9ieRO33041301
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Nov 2023 17:44:40 +0800
-Received: from RTEXMBS06.realtek.com.tw (172.21.6.99) by
- RTEXH36505.realtek.com.tw (172.21.6.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.32; Fri, 17 Nov 2023 17:44:40 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS06.realtek.com.tw (172.21.6.99) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2375.34; Fri, 17 Nov 2023 17:44:40 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3]) by
- RTEXMBS03.realtek.com.tw ([fe80::5510:ad08:5390:1ed3%2]) with mapi id
- 15.01.2375.007; Fri, 17 Nov 2023 17:44:40 +0800
-From:   =?big5?B?SmFtZXMgVGFpIFvAuafTrnBd?= <james.tai@realtek.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-realtek-soc@lists.infradead.org" 
-        <linux-realtek-soc@lists.infradead.org>
-CC:     Marc Zyngier <maz@kernel.org>
-Subject: RE: [PATCH 2/6] irqchip: Add interrupt controller support for Realtek DHC SoCs
-Thread-Topic: [PATCH 2/6] irqchip: Add interrupt controller support for
- Realtek DHC SoCs
-Thread-Index: AQHaEKS4z5qABbyTp0Oos88YK3fZDbB9FzyAgAE4jeA=
-Date:   Fri, 17 Nov 2023 09:44:40 +0000
-Message-ID: <73e99dabe6d64d2baffb2107e42c9e0c@realtek.com>
-References: <20231102142731.2087245-1-james.tai@realtek.com>
- <20231102142731.2087245-3-james.tai@realtek.com> <87wmuvgluc.ffs@tglx>
- <7d6211e66d4942c785ada6bd1d46c0b5@realtek.com>
-In-Reply-To: <7d6211e66d4942c785ada6bd1d46c0b5@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-x-originating-ip: [49.216.22.4]
-x-kse-serverinfo: RTEXMBS06.realtek.com.tw, 9
-x-kse-antispam-interceptor-info: fallback
-x-kse-antivirus-interceptor-info: fallback
-Content-Type: text/plain; charset="big5"
-Content-Transfer-Encoding: base64
+        Fri, 17 Nov 2023 04:57:44 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 265C52D5B
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:45:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=FSq1h7YsVXlzfV2ZBu63aCsUtFkWLsV/De94IDZBeC8=; b=ebplpGNi/HUTr31F88GmPsrxO4
+        i/vPMpNtdWd7wGq7xoqg26h3eakMomvGBhIiD8RrFLkqDMbs+WCT/G38oYjq3P8yHm+frdh6F19wP
+        XB8RYKooeayiSCa0w46LSBd5xdhw/fFHwvuhqTy4Kr2vAnEYWfFwHKPacAdqbcsL6IuyaO3o015en
+        OTIjaFB5q0egOffWDhxBlAbOfcz8uUDXk6B9M8yEh/FOz2t3SUeODlmUH5Q3tlHuulbbNoc89Uy3A
+        5xrL2+EKOJrdhopfG0oyJomsl2IMsEQt/6kgVgK1mnPV7BUpAUHWR9BOUoThgshpXKZn0nV0S5vSx
+        XzsjF4DA==;
+Received: from j130084.upc-j.chello.nl ([24.132.130.84] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94.2 #2 (Red Hat Linux))
+        id 1r3vPo-008fIf-2q; Fri, 17 Nov 2023 09:45:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BA7E8300478; Fri, 17 Nov 2023 10:45:31 +0100 (CET)
+Date:   Fri, 17 Nov 2023 10:45:31 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Oleg Nesterov <oleg@redhat.com>
+Cc:     syzbot <syzbot+cbb25bb9b4d29a773985@syzkaller.appspotmail.com>,
+        boqun.feng@gmail.com, brauner@kernel.org,
+        linux-kernel@vger.kernel.org, longman@redhat.com,
+        michael.christie@oracle.com, mingo@redhat.com, mst@redhat.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        wander@redhat.com, will@kernel.org
+Subject: Re: [syzbot] [kernel?] inconsistent lock state in ptrace_attach
+Message-ID: <20231117094531.GN8262@noisy.programming.kicks-ass.net>
+References: <000000000000a25ea7060a430d3c@google.com>
+ <00000000000064b787060a55354e@google.com>
+ <20231117092730.GK8262@noisy.programming.kicks-ass.net>
+ <20231117093829.GA32151@redhat.com>
 MIME-Version: 1.0
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-ServerInfo: RTEXH36505.realtek.com.tw, 9
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-KSE-Antivirus-Interceptor-Info: fallback
-X-KSE-AntiSpam-Interceptor-Info: fallback
-X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231117093829.GA32151@redhat.com>
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
+        SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
         autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
@@ -70,18 +59,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQo+PlNvIHlvdSB1cGRhdGUgdGhlIGVmZmVjdGl2ZSBhZmZpbml0eSBldmVuIGlmIGl0IGNhbm5v
-dCBiZSBzZXQgb3IgaWYgdGhlDQo+PnBhcmVudCBpcnEgcmV0dXJucyBhbiBlcnJvciBjb2RlPw0K
-Pj4NCj4+QXNpZGUgb2YgdGhhdCBzZXR0aW5nIGl0IHRvIGNwdV9vbmxpbmUgbWFzayBpcyBqdXN0
-IHdyb25nLiBUaGlzIGlzDQo+Pl9OT1RfIHRoZSBlZmZlY3RpdmUgYWZmaW5pdHkgYmVjYXVzZSB0
-aGUgdW5kZXJseWluZyBHSUMgc2VsZWN0cyBhDQo+PnNpbmdsZSB0YXJnZXQgQ1BVIG91dCBvZiB0
-aGUgY2FsbGVyIHByb3ZpZGVzIGNwdSBtYXNrLg0KPj4NCj4+VGhhdCBzYWlkLCB0aGlzIGlzIGFs
-c28gY29tcGxldGVseSBpbmNvbnNpc3RlbnQgdnMuIHRoZSBvdGhlcg0KPj5pbnRlcnJ1cHRzIHdo
-aWNoIHNoYXJlIHRoYXQgR0lDIGludGVycnVwdCBpbnN0YW5jZS4gSS5lLg0KPj4vcHJvYy9pcnEv
-JE4vYWZmaW5pdHkgYW5kIGVmZmVjdGl2ZV9hZmZpbml0eSBiZWNvbWUgcmFuZG9tIG51bWJlciBn
-ZW5lcmF0b3JzLg0KPlRoYXQnbGwgY29uZnVzZSBleGlzdGluZyB1c2Vyc3BhY2UgdG9vbHMuDQo+
-Pg0KPj5IYXZpbmcgYW4gYWZmaW5pdHkgc2V0dGVyIGZvciBkZW11bHRpcGxleGVzIGludGVycnVw
-dHMgaXMgc2ltcGx5IHdyb25nLg0KPj4NCj5JIHdpbGwgdXNlIHRoZSAnaXJxX2NoaXBfc2V0X2Fm
-ZmluaXR5X3BhcmVudCcgcmVwbGFjZSB0aGUNCj4ncmVhbHRla19pbnRjX3NldF9hZmZpbml0eScu
-DQoNCkkgd2lsbCByZW1vdmUgdGhlIGNhcGFiaWxpdHkgdG8gc2V0IENQVSBhZmZpbml0eS4NCg0K
-UmVnYXJkcywNCkphbWVzDQoNCg0K
+On Fri, Nov 17, 2023 at 10:38:30AM +0100, Oleg Nesterov wrote:
+> On 11/17, Peter Zijlstra wrote:
+> >
+> > On Fri, Nov 17, 2023 at 12:49:04AM -0800, syzbot wrote:
+> > > syzbot has bisected this issue to:
+> > >
+> > > commit 2d25a889601d2fbc87ec79b30ea315820f874b78
+> > > Author: Peter Zijlstra <peterz@infradead.org>
+> > > Date:   Sun Sep 17 11:24:21 2023 +0000
+> > >
+> > >     ptrace: Convert ptrace_attach() to use lock guards
+> > >
+> > > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=132b7d84e80000
+> > > start commit:   f31817cbcf48 Add linux-next specific files for 20231116
+> > > git tree:       linux-next
+> > > final oops:     https://syzkaller.appspot.com/x/report.txt?x=10ab7d84e80000
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=172b7d84e80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=f59345f1d0a928c
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=cbb25bb9b4d29a773985
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1014d797680000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b1ec67680000
+> > >
+> > > Reported-by: syzbot+cbb25bb9b4d29a773985@syzkaller.appspotmail.com
+> > > Fixes: 2d25a889601d ("ptrace: Convert ptrace_attach() to use lock guards")
+> >
+> > Hurmph, let me pull that patch from tip and go have a look. Thanks!
+> 
+> I guess
+> 
+> 	scoped_guard (write_lock, &tasklist_lock)
+> 
+> is not right... this needs write_lock_irq().
+> 
+> I didn't notice this when I reviewed this patch.
+
+Yep, that seems to be the case.
+
+I keep forgetting how to tell the syscall robot to test the below delta,
+but I'll push the ammended commit to my staging tree and we'll see what
+happens.
+
+---
+--- a/kernel/ptrace.c
++++ b/kernel/ptrace.c
+@@ -461,7 +461,7 @@ static int ptrace_attach(struct task_str
+ 				return retval;
+ 		}
+ 
+-		scoped_guard (write_lock, &tasklist_lock) {
++		scoped_guard (write_lock_irq, &tasklist_lock) {
+ 			if (unlikely(task->exit_state))
+ 				return -EPERM;
+ 			if (task->ptrace)
