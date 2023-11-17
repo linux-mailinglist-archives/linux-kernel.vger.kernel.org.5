@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 779897EEC69
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 07:57:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 164E57EEC76
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 08:06:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbjKQG4z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 01:56:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44046 "EHLO
+        id S230149AbjKQHG4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 02:06:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229436AbjKQG4x (ORCPT
+        with ESMTP id S229952AbjKQHGy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 01:56:53 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76AE194
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:56:49 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id 2adb3069b0e04-5079f6efd64so2196223e87.2
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 22:56:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1700204208; x=1700809008; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T66xySD/6BWFxQMYfuVxdprtl5AUvCVORapS2X/UsjA=;
-        b=E3SUpy7LUOCgDeGfqhGxUPiOdZRAtZP9FGwnozOGjKX5seNcFfKNwfK55tMwKjxebw
-         iSXslerlw+gjznEzMA7Lf4QBIB8djAkAg+kMd1k+Zl0M5oJNxxjH93sp2pm0cG8bjukM
-         mqyoheNlVrXGLACwEaCcdMX8tP/REQxWebTWk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700204208; x=1700809008;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=T66xySD/6BWFxQMYfuVxdprtl5AUvCVORapS2X/UsjA=;
-        b=D/7S7HjtVkGJ3WEaPm8JbOxYYR7Uu0LOje61/d/iW/0J0RMri7zCg0oW+9PK0pgz7f
-         ONOnwM34X0Aa+8rbGAh74wm8QSaQnFwhNjRz0LMzTbNVaZe3Rcr7TNQg0K9+ajaK86sk
-         epkFJcZtLmNWINXm3zwdUVBoFlvuJTK/L3IzZTSpIbIu9y2qmGG2BxzG8fu2+g0MIgu1
-         0Fu5keOf3zZQtQt8XgnElj/igHuYql1dksE6zItVFG3TUhyFXdWaeOywM63BsEY4SvF/
-         67mNwR1iLpS/9GeGrbPCNWouhGH002RDm7bPWZfhSQQKTeF+z35GIOF7vc/+oJ5bG8HV
-         DWCA==
-X-Gm-Message-State: AOJu0YxvD9UKUBntA06cEGbNP/XSxye1m+1ZCjFuqA9d4uLcJf75aFO0
-        aE3FAvPyzBuCjs6edm7S6BDg16RxMvsw5peTY3vH2A==
-X-Google-Smtp-Source: AGHT+IFglSCUhlR+oyIk3/8hEw9b1yf+H4f0nrHpnUuSq77qWRvZSkqp2vLBmJbn9Hw3jSSmXioHPYnOaZeT3dSXuhg=
-X-Received: by 2002:ac2:4e0f:0:b0:50a:26b:6ddf with SMTP id
- e15-20020ac24e0f000000b0050a026b6ddfmr16092967lfr.63.1700204207777; Thu, 16
- Nov 2023 22:56:47 -0800 (PST)
+        Fri, 17 Nov 2023 02:06:54 -0500
+X-Greylist: delayed 920 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 16 Nov 2023 23:06:48 PST
+Received: from m126.mail.126.com (m126.mail.126.com [220.181.12.36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 4C1E0194;
+        Thu, 16 Nov 2023 23:06:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=w+k1n
+        axiBRigjb9CCtVvFHueFOdp+dkB3oPWurngV94=; b=QhdU0NGyLpAU8XH//DS3W
+        zBuLHe2UcjOEFNKfGL31mchchuLgbTEOnDovgOuIvM+xwC4Dz5Xu6HiAspRN/t0s
+        M9td+ZXci7X7I486Q8uYd4BF33vycEVSQEYLPtYlOiVxOoLoydqMwVyUpKGQ/REy
+        h+T9RLM9qeHqQMavFmXjwU=
+Received: from ubuntu.localdomain (unknown [111.222.250.119])
+        by zwqz-smtp-mta-g3-0 (Coremail) with SMTP id _____wD3X0lFDVdliS8pCw--.42252S2;
+        Fri, 17 Nov 2023 14:50:50 +0800 (CST)
+From:   Shifeng Li <lishifeng1992@126.com>
+To:     mustafa.ismail@intel.com
+Cc:     shiraz.saleem@intel.com, jgg@ziepe.ca, leon@kernel.org,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dinghui@sangfor.com.cn, Shifeng Li <lishifeng1992@126.com>
+Subject: [PATCH] RDMA/irdma: Fix UAF in irdma_sc_ccq_get_cqe_info()
+Date:   Thu, 16 Nov 2023 22:50:43 -0800
+Message-Id: <20231117065043.3822-1-lishifeng1992@126.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20231116154816.70959-1-andrzej.p@collabora.com> <20231116154816.70959-5-andrzej.p@collabora.com>
-In-Reply-To: <20231116154816.70959-5-andrzej.p@collabora.com>
-From:   Chen-Yu Tsai <wenst@chromium.org>
-Date:   Fri, 17 Nov 2023 14:56:36 +0800
-Message-ID: <CAGXv+5Hag=-JqYAKOgNUyFSjuwBu6ij1Rsv1cp==duGjY8w42A@mail.gmail.com>
-Subject: Re: [RFC 4/6] media: verisilicon: Update H1 register definitions
-To:     Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        Hugues Fruchet <hugues.fruchet@foss.st.com>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        Daniel Almeida <daniel.almeida@collabora.com>,
-        Ezequiel Garcia <ezequiel@vanguardiasur.com.ar>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Nicolas Dufresne <nicolas.dufresne@collabora.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>, kernel@collabora.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: _____wD3X0lFDVdliS8pCw--.42252S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXFy5tF1kCFy7GFyrJF4kXrb_yoW5GFy5pa
+        45Gw1jvrsrJw42g3yFya4UKF98JFs8tFnF9a4Sy34fCr47Z3WFvr42kr4jvFW5Za43Jr17
+        JF1jgrn3ur45GrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRfR67UUUUU=
+X-Originating-IP: [111.222.250.119]
+X-CM-SenderInfo: xolvxx5ihqwiqzzsqiyswou0bp/1tbiFw0rr1pEH5Dx9gAAsI
+X-Spam-Status: No, score=-1.9 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_ENVFROM_END_DIGIT,
+        FREEMAIL_FROM,RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Nov 16, 2023 at 11:48=E2=80=AFPM Andrzej Pietrasiewicz
-<andrzej.p@collabora.com> wrote:
->
-> Add definition of register at offset 0x00c.
->
-> Signed-off-by: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
-> ---
->  drivers/media/platform/verisilicon/hantro_h1_regs.h | 9 +++++++++
->  1 file changed, 9 insertions(+)
->
-> diff --git a/drivers/media/platform/verisilicon/hantro_h1_regs.h b/driver=
-s/media/platform/verisilicon/hantro_h1_regs.h
-> index c1c66c934a24..efb46da23eab 100644
-> --- a/drivers/media/platform/verisilicon/hantro_h1_regs.h
-> +++ b/drivers/media/platform/verisilicon/hantro_h1_regs.h
-> @@ -23,6 +23,15 @@
->  #define     H1_REG_AXI_CTRL_INPUT_SWAP32               BIT(2)
->  #define     H1_REG_AXI_CTRL_OUTPUT_SWAP8               BIT(1)
->  #define     H1_REG_AXI_CTRL_INPUT_SWAP8                        BIT(0)
-> +#define H1_REG_DEVICE_CTRL                             0x00c
-> +#define     H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP8      BIT(27)
-> +#define     H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP16     BIT(26)
-> +#define     H1_REG_DEVICE_CTRL_SCALE_OUTPUT_SWAP32     BIT(25)
-> +#define     H1_REG_DEVICE_CTRL_MV_OUTPUT_SWAP8         BIT(24)
-> +#define     H1_REG_DEVICE_CTRL_MV_OUTPUT_SWAP16                BIT(23)
-> +#define     H1_REG_DEVICE_CTRL_MV_OUTPUT_SWAP32                BIT(22)
-> +#define     H1_REG_DEVICE_CTRL_INPUT_READ_1MB          BIT(21)
-> +#define     H1_REG_DEVICE_CTRL_AXI_DUAL_CHANNEL                BIT(20)
+When removing the irdma driver or unplugging its aux device, the ccq
+queue is released before destorying the cqp_cmpl_wq queue.
+But in the window, there may still be completion events for wqes. That
+will cause a UAF in irdma_sc_ccq_get_cqe_info().
 
-According to the i.MX8M Mini reference manual, this bit is a "disable"
-control, i.e. setting this bit disables dual channel AXI. I think the
-macro should explicitly state this in the naming, so something like
-H1_REG_DEVICE_CTRL_DISABLE_AXI_DUAL_CH(ANNEL).
+[34693.333191] BUG: KASAN: use-after-free in irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333194] Read of size 8 at addr ffff889097f80818 by task kworker/u67:1/26327
+[34693.333194]
+[34693.333199] CPU: 9 PID: 26327 Comm: kworker/u67:1 Kdump: loaded Tainted: G           O     --------- -t - 4.18.0 #1
+[34693.333200] Hardware name: SANGFOR Inspur/NULL, BIOS 4.1.13 08/01/2016
+[34693.333211] Workqueue: cqp_cmpl_wq cqp_compl_worker [irdma]
+[34693.333213] Call Trace:
+[34693.333220]  dump_stack+0x71/0xab
+[34693.333226]  print_address_description+0x6b/0x290
+[34693.333238]  ? irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333240]  kasan_report+0x14a/0x2b0
+[34693.333251]  irdma_sc_ccq_get_cqe_info+0x82f/0x8c0 [irdma]
+[34693.333264]  ? irdma_free_cqp_request+0x151/0x1e0 [irdma]
+[34693.333274]  irdma_cqp_ce_handler+0x1fb/0x3b0 [irdma]
+[34693.333285]  ? irdma_ctrl_init_hw+0x2c20/0x2c20 [irdma]
+[34693.333290]  ? __schedule+0x836/0x1570
+[34693.333293]  ? strscpy+0x83/0x180
+[34693.333296]  process_one_work+0x56a/0x11f0
+[34693.333298]  worker_thread+0x8f/0xf40
+[34693.333301]  ? __kthread_parkme+0x78/0xf0
+[34693.333303]  ? rescuer_thread+0xc50/0xc50
+[34693.333305]  kthread+0x2a0/0x390
+[34693.333308]  ? kthread_destroy_worker+0x90/0x90
+[34693.333310]  ret_from_fork+0x1f/0x40
 
-Other bits matches the reference manual.
+Signed-off-by: Shifeng Li <lishifeng1992@126.com>
+---
+ drivers/infiniband/hw/irdma/hw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
->  #define H1_REG_ADDR_OUTPUT_STREAM                      0x014
->  #define H1_REG_ADDR_OUTPUT_CTRL                                0x018
->  #define H1_REG_ADDR_REF_LUMA                           0x01c
-> --
-> 2.25.1
->
->
+diff --git a/drivers/infiniband/hw/irdma/hw.c b/drivers/infiniband/hw/irdma/hw.c
+index ab246447520b..de7337a6a874 100644
+--- a/drivers/infiniband/hw/irdma/hw.c
++++ b/drivers/infiniband/hw/irdma/hw.c
+@@ -570,8 +570,6 @@ static void irdma_destroy_cqp(struct irdma_pci_f *rf, bool free_hwcqp)
+ 	struct irdma_cqp *cqp = &rf->cqp;
+ 	int status = 0;
+ 
+-	if (rf->cqp_cmpl_wq)
+-		destroy_workqueue(rf->cqp_cmpl_wq);
+ 	if (free_hwcqp)
+ 		status = irdma_sc_cqp_destroy(dev->cqp);
+ 	if (status)
+@@ -737,6 +735,8 @@ static void irdma_destroy_ccq(struct irdma_pci_f *rf)
+ 	struct irdma_ccq *ccq = &rf->ccq;
+ 	int status = 0;
+ 
++	if (rf->cqp_cmpl_wq)
++		destroy_workqueue(rf->cqp_cmpl_wq);
+ 	if (!rf->reset)
+ 		status = irdma_sc_ccq_destroy(dev->ccq, 0, true);
+ 	if (status)
+-- 
+2.25.1
+
