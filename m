@@ -2,149 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 177527EF285
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEF907EF2A3
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 13:30:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235718AbjKQMS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 07:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53332 "EHLO
+        id S231311AbjKQMaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 07:30:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235776AbjKQMSu (ORCPT
+        with ESMTP id S229436AbjKQMaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 07:18:50 -0500
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EF131BDC;
-        Fri, 17 Nov 2023 04:18:36 -0800 (PST)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id A684240E0032;
-        Fri, 17 Nov 2023 12:18:33 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-        by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 6UHlTXeIIHUw; Fri, 17 Nov 2023 12:18:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-        t=1700223508; bh=uhqSMbAQ6tKqqSsHNkN4uyWbdflMXxxQkEYG27efuk0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=TYfdUEeXscHP0Wfu7zGGHOAUc211uhIaY+OTbQcF9SWKsdU2+J4dftB1lAvWxGkr+
-         XDFiY9DOps5b4H4avJA/sMA1O9E38LPy0XtrVFPdCggIQEEns82iasP/gMpJ75O8Bq
-         +6IYu22DjziXl+MTzldfmfjTG8inMP/1QEN2ndd1ijcdUHun7zYNhuYIdwgxN/rcxR
-         8c6WC9naejeLD4dgr3+rEk23kZJgqQIUfzJeY0O6uOzbBldhDf7ela/gO5MAwcbqQe
-         6ujT/ISyZQTGR8wpjbegYHrrd2z+W/OkjiN5ixRwRmDjzIlUfzMOlUu50g4T6vUg5S
-         tMA/WNSJOJEOUl4nPfma4gbMiDFLt99fqq+GLIl+l7i3prbqJy3UMoCAiajTlxxDIG
-         ezBc8/PU0PIqc1pIM6wNIwKearLHhR3u7+zVfjkH4xHRcAm3g6IP6XCZcGZ4RJ0nR4
-         uFgILE6GfgKTCvZCAOlTjm+8sd4wxlBmhouFv3r0DNf9mEziAImd4XJqwDgtL4odKC
-         F/oMHkh/2kzhrp1OrpSaWQxUyqXfaMXDNpZhIUA6CL1TfkxwiBZ1H9SJAkizcr3rmu
-         QIBrBrdZqIchep1+guL6vofXMwGG4uY6vjN07dVoCiYlxQ9dqDNNVVfk+6JyJZWVED
-         kdaDj5Z29pmb9jhrWOriCNT0=
-Received: from zn.tnic (pd95304da.dip0.t-ipconnect.de [217.83.4.218])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-        (No client certificate requested)
-        by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id B3F4440E0030;
-        Fri, 17 Nov 2023 12:18:06 +0000 (UTC)
-Date:   Fri, 17 Nov 2023 13:18:05 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Jakub Jelinek <jakub@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        David Howells <dhowells@redhat.com>,
-        kernel test robot <oliver.sang@intel.com>,
-        oe-lkp@lists.linux.dev, lkp@intel.com,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Christian Brauner <christian@brauner.io>,
-        Matthew Wilcox <willy@infradead.org>,
-        David Laight <David.Laight@aculab.com>, ying.huang@intel.com,
-        feng.tang@intel.com, fengwei.yin@intel.com,
-        linux-toolchains ML <linux-toolchains@vger.kernel.org>,
-        Richard Biener <rguenther@suse.de>,
-        Michael Matz <matz@suse.de>, Jan Hubicka <hubicka@ucw.cz>
-Subject: Re: [linus:master] [iov_iter] c9eec08bac: vm-scalability.throughput
- -16.9% regression
-Message-ID: <20231117121805.GEZVdZ/QhoeBytHf5o@fat_crate.local>
-References: <3865842.1700061614@warthog.procyon.org.uk>
- <CAHk-=whM-cEwAsLtKsf5dYwV7nDTaRv1bUKLVBstMAQBug24uQ@mail.gmail.com>
- <CAHk-=wjCUckvZUQf7gqp2ziJUWxVpikM_6srFdbcNdBJTxExRg@mail.gmail.com>
- <CAHk-=wjhs6uuedgz-7HbcPtirEq+vvjJBY-M2zyteJwBhOMZhg@mail.gmail.com>
- <20231115190938.GGZVUXcuUjI3i1JRAB@fat_crate.local>
- <CAHk-=wh0TcXyGmKHfs+Xe=5Sd5bNn=NNV9CEtOy_tbyHAAmk9g@mail.gmail.com>
- <20231116154406.GDZVY4xmFvRQt0wGGE@fat_crate.local>
- <CAHk-=wjGQh3ucZFmFR0evbKu2OyEuue-bOjsrnCvxSQdj8x6aw@mail.gmail.com>
- <20231117114421.GCZVdSFZ7DKtBol821@fat_crate.local>
- <ZVdYE3haicxr1lF/@tucnak>
+        Fri, 17 Nov 2023 07:30:04 -0500
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12olkn2074.outbound.protection.outlook.com [40.92.22.74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80493120;
+        Fri, 17 Nov 2023 04:29:59 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=co06BH6iWnHGnXdQ1QwJaoWseLKjgW9D50eQNGLy8USf2Cfkhdd/GgZjTbbTVgKo19oSClSnTd7rlmNzArUpKb/vlhtRbUER87NGF8gYk31gYSuGXqvXcsIUAs2w5qe1859HnHWGdlwPXidzTGRIDUOBALDD3DX0kSrOOMzhAaiV67BxkGSBr9PbMZzg1k1lj+fe6E2Axs6gLytV6rG6qZpVbPw4YN0lhVZPQ138ezczbU2SpCCcY+tBrc97IlY5ALM0YHFL7eFpcVXzWW2LkyEdPWiMe+a44/Nr1AoSLuPsoS89wQuT4KBV4Ta9TGEMMGAcpIvSm8WpHganECjmrQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dgb9MnYg92WAdlAIt0V37YY42Eq44e6tJfsI1M9LBjo=;
+ b=RWImgo39Yfk+kItCVINP9OaPeDNAyCtO/DrCJ44Smo6uEe9GepRQmz1wkVwesnuntuY7rqGzTcHgn2POh4ulsGR9Hwkp6QiuTfTpvHI09i4Vjb9uGbJ2clq4hefxCMBAxp6xsZUJg9od7wRaJpjbE8i7WGhjbK8x5JQoxAeLMR+vyhyKS8MPvOvblXuse8Z/BB/YNW8adsfgmwdG2nKxSsYDZVrEdlBxom7s2K/KKRr1nLGy+EPcujDhGxihmdV4ddzOxTXziaS+cG1q80Iyo2mH3l+XtXFUzRHUyQR7kwlsJXiyNiJgQICunezJ55DTvK1sagq0Bc4crrbGV3h4BQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dgb9MnYg92WAdlAIt0V37YY42Eq44e6tJfsI1M9LBjo=;
+ b=sixIIizjopSG8PSc7hB+IBgmBYO2avSV4Ka60mS8d2Ia1kaqYNT/7gdl8DjIrwcEe8LwamX4kbHelZSEpmzwReVKm4I59G/2e+BwFIcVY/fXN+WZMbRxm/aD6UfR1M3Tr+wakf5yusa7F4kxJIUpML92axFjOjSmorlNl2jb1FRf8atw1hiNVsp7juVWCxmu7YgB2r2hydKwgWjhynkXZFDRCRZeUBGSsIJlBBWlXEYKVsgqb24I0pdemUz7cHjRukqY10OcaLEB0sgm893mk6zxX9AjrHkxV8MasbSlw2uBFHls7gW4dSzq6kSyxI3FXHSF4UD1rOl5MDcO0Vq3mA==
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com (2603:10b6:208:3af::19)
+ by PH0PR20MB6063.namprd20.prod.outlook.com (2603:10b6:510:2a3::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7002.18; Fri, 17 Nov
+ 2023 12:29:56 +0000
+Received: from IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8]) by IA1PR20MB4953.namprd20.prod.outlook.com
+ ([fe80::55b:c350:980:ad8%6]) with mapi id 15.20.6977.029; Fri, 17 Nov 2023
+ 12:29:55 +0000
+From:   Inochi Amaoto <inochiama@outlook.com>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Chen Wang <unicorn_wang@outlook.com>
+Cc:     Inochi Amaoto <inochiama@outlook.com>, Guo Ren <guoren@kernel.org>,
+        Jisheng Zhang <jszhang@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 1/2] dt-bindings: timer: thead,c900-aclint-mtimer: separate mtime and mtimecmp regs
+Date:   Fri, 17 Nov 2023 20:30:21 +0800
+Message-ID: <IA1PR20MB49532AF0A7C6DA5A2184B250BBB7A@IA1PR20MB4953.namprd20.prod.outlook.com>
+X-Mailer: git-send-email 2.42.1
+In-Reply-To: <184ab92d-9246-43e4-a40d-465d51208585@linaro.org>
+References: <184ab92d-9246-43e4-a40d-465d51208585@linaro.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TMN:  [pwcW6CZLAbcI8+ZBEEC3mAoNSh9lqSZdv9M7ksQBUu0=]
+X-ClientProxiedBy: BY5PR17CA0052.namprd17.prod.outlook.com
+ (2603:10b6:a03:167::29) To IA1PR20MB4953.namprd20.prod.outlook.com
+ (2603:10b6:208:3af::19)
+X-Microsoft-Original-Message-ID: <20231117123021.1056247-1-inochiama@outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZVdYE3haicxr1lF/@tucnak>
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR20MB4953:EE_|PH0PR20MB6063:EE_
+X-MS-Office365-Filtering-Correlation-Id: 7ab8e22e-bd7b-440e-1ee4-08dbe768e7a4
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: /or+8REnQI9qFdZgPceGkgqMlParxX3Quov2bcgg7wE1YQMOzxNm09gfIXHgUDj55ECPOGLyIFmKae6JyR5JS5UW4sL6Mlao5kPEehf6v5usMUyiQbl1ydh6fsnJZkqieqmgNze/fdiwOGStZ58UowFdWgQY9Bf0uPFRnvY2Ed0aCWJXNWbkwvHkLZSzCAb63IXvGTlc22lOxJYDOk8X/TY3MWw63pBQOrviUi+2PUb7PyLvPOo/OROyA46HB6PTbBj+sJ7dKzdSaDCg6ERaPrDxk+AR7CGYHEMAl23raCKsZowehn0HqHYAw9NcLrM7EuquEziAxInbr0IQgtpGfgB78yvFy3R9EwMZmxge7sDjlwPc0wqaGLw3yPoVF+Cf067AOix5hTnUhA29CgrbRNklS1Wc/5/sLgogot+eo1Dun0VofREaTalKwSa+1GljCI6enM/Q9I21aZbPkb4mSyilkGYuTdc+MNkgDUyuSo3F29SoN/wMpH/m8yVwB3V2uRozvxcRlcQd71cR+vL1emDDha2Wes6c55SIYnoPoH1piGKwmYopZEeJlDKg8bc+lcR07+9keGCA+GWYPpwnvT/wsdk9Zw9pgUjUKcqfratP4H0MX1u7mvVKfw8hkdxB
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?WMY1a7w0QEIBrHzCuBSq13Pu4H6884TwIkghQT6znC6eFe+AUtPnztyobMSw?=
+ =?us-ascii?Q?w0mMFowhvKzPN8MWsVjan5EPp4bFvpu65iXFeDKh6D1OHtrxwQvGqKNcSHAJ?=
+ =?us-ascii?Q?xBryoxwL5JRvwepg071K6JLShaCTaH2Y6kSZycjsx+nIr4dPhEqy7RWm4o9d?=
+ =?us-ascii?Q?fpK8cgiO5n9IFSGi/5+Vo5h2rrIHWgg5rTdxfeajfwPMoMNYI6bvMaE9fM49?=
+ =?us-ascii?Q?6bG2NdxTqxdHIxvMrkwBMKRmzfvOn+w5XPsHCPDXP4r+dBNlySUDtOXlJoQM?=
+ =?us-ascii?Q?5vHGa/JrzGjri9u9fk6WTG1Kv9s53BOLwwSI+rq/rf4YXu0P+zgubO02hqtA?=
+ =?us-ascii?Q?9MME9O+iW6reImU6cuDlu1fguuSiYZbSdo0UvRM6vIh3/esAgtTXU1CJYD0R?=
+ =?us-ascii?Q?jyEou92vCBrKe5m+hoMqwFXgbmF8dkl7RZFTnwtInS/pavIrfjF7NvHN/AUS?=
+ =?us-ascii?Q?A1cHhfQbegLAPlzXPJwnE5QiZdCxrZjpNE98/zv7heQTYe8lme7ns/uyt9s0?=
+ =?us-ascii?Q?xP3kWyoTnU5g4EcrbUE0dZayDnNCYsaozUhbGTjYtcyRY55VT64+h5hQ1ipQ?=
+ =?us-ascii?Q?hzAqlqkBii3KErEI+ksp9iqOKcTDG09jCOGrdF78Mna27kdTPEuAdh8y2B9Z?=
+ =?us-ascii?Q?1c2Kha3Yudbrt9IThXDwozUKxZV82ceoENX7zyujF8CDAiMEGcDcTToN09Z4?=
+ =?us-ascii?Q?bwbASuNb2udlcwOU3MS93bpLlURhufCblq3/HWW1Q68/2muiI38x4a6tBDdC?=
+ =?us-ascii?Q?r7+InrHOAWwo63+1qEH4X+1dshoUbf5VbcgR8uAgo2sQYxCH+4DbNoW20vkc?=
+ =?us-ascii?Q?+jt6Fc4TM1Ut5XqRs4pUwAVpbd/0rf/ZKdGW+8Z2j7EI0pNnwk8xNewn/Kok?=
+ =?us-ascii?Q?aiDplUKpabnA5pirmc7+fXvhOlh7i6Ocn1s5dPalPS9k/kIPacbDrViJWbb+?=
+ =?us-ascii?Q?bnoprCIlUggSKgE/ZYCVKIZtPDIcHUHQ9f81ZtniBWsB2I3LddKpxIidL8B9?=
+ =?us-ascii?Q?wDgnwweZLugoxLsWRrw4LuFljgw9LTKXft+7mv9ObD79cvWIQOKiulrBfodA?=
+ =?us-ascii?Q?ZWE62GK+d0+MBpl7INcKy+eqDNt+9L4ikjrXD9N5bMNooItwX+9nlGvrtqub?=
+ =?us-ascii?Q?bpKQW9yoQlzK8rCSV5zj0wuD/qucXdiZvOzKTL8zKSgl4VXb40gWE0472zvL?=
+ =?us-ascii?Q?Iiv60TziqxuLfVWS6Ct5boY+tJRCBi/QpFquT8OYYq5TA/n8NE7zoMhQ0FE?=
+ =?us-ascii?Q?=3D?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7ab8e22e-bd7b-440e-1ee4-08dbe768e7a4
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR20MB4953.namprd20.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2023 12:29:55.4370
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR20MB6063
 X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=ham autolearn_force=no version=3.4.6
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM,
+        RCVD_IN_DNSWL_NONE,RCVD_IN_MSPIKE_H2,SPF_HELO_PASS,SPF_PASS,
+        T_SCC_BODY_TEXT_LINE autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ SUSE gcc folks.
+>
+>On 17/11/2023 06:07, Inochi Amaoto wrote:
+>> The timer registers of aclint don't follow the clint layout and can
+>> be mapped on any different offset. As sg2042 uses separated timer
+>> and mswi for its clint, it should follow the aclint spec and have
+>> separated registers.
+>>
+>> The previous patch introduced a new type of T-HEAD aclint timer which
+>> has clint timer layout. Although it has the clint timer layout, it
+>> should follow the aclint spec and uses the separated mtime and mtimecmp
+>> regs. So a ABI change is needed to make the timer fit the aclint spec.
+>>
+>> To make T-HEAD aclint timer more closer to the aclint spec, use
+>> regs-names to represent the mtimecmp register, which can avoid hack
+>> for unsupport mtime register of T-HEAD aclint timer.
+>>
+>
+>I don't understand this reasoning. You had one entry, you still have one
+>entry. Adding reg-names (not regs-names) does not change it.
+>
 
-On Fri, Nov 17, 2023 at 01:09:55PM +0100, Jakub Jelinek wrote:
-> Sure.  -mstringop-strategy affects only x86 expansion of the stringops
-> from GIMPLE to RTL, while for small constant sizes some folding can happen
-> far earlier in generic code.  Similarly, the copy/store by pieces generic
-> handling (straight-line code expansion of the builtins) is done in some
-> cases without invoking the backend optabs which is the only expansion
-> affected by the strategy.
-> Note, the default strategy depends on the sizes, -mtune= in effect,
-> whether it is -Os or -O2 etc.  And the argument for -mmemcpy-strategy=
-> or -mmemset-strategy= can include details on what sizes should be handled
-> by which algorithm, not everything needs to be done the same.
+If no "reg-names", all the register of ACLINT should be defined. However,
+T-HEAD aclint timer of sg2042 only supports mtimecmp register. If no extra
+prompt is provided for the SBI, it will fail to recognize aclint timer
+registers when parsing the aclint node with one reg entry.
 
-Good to know, I might experiment with those. Thx.
+There is another way to avoid this by using an empty entry to identify
+unsupported mtime, but Conor have already rejected this. See [1].
 
-> > > IOW, my assumption was just broken, and using
-> > > "-mstringop-strategy=libcall" may well be the right thing to do.
-> > 
-> > And here's where I'm wondering whether we should enable it for x86 only
-> > or globally. I think globally because those stringop heuristics happen,
-> > AFAIU, in the general optimization stage and thus target agnostic.
-> 
-> -mstringop-strategy= option is x86 specific, so I don't see how you could
-> enable it on other architectures.
-
-Yeah, Richi just explained to me the same on another thread. To which
-I had the question:
-
-"Ah, it even says so in the manpage:
-
-x86 Options ... -mstringop-strategy=alg
-
-Ok, so how would the same option be implemented for ARM or some other
-backend?
-
-Also -mstringop-strategy=alg but it would have effect when generating
-ARM code, right?
-
-Which means, if I have it in the generic Makefile, it'll get
-automatically used on ARM too when gcc implements it.
-
-Which then begs the question whether we want that or we should let ARM
-folks decide when that time comes."
-
-I.e., what happens if we have this option in the generic Makefile and
--mstringop-strategy starts affecting ARM expansion of the stringops from
-GIMPLE to RTL? Does that even make sense?
-
-> Anyway, if you are just trying to work-around bugs in specific compilers,
-> please limit it to the affected compilers, overriding kernel makefiles
-> forever with the workaround would mean you force perhaps suboptimal
-> expansion in various cases.
-
-Yeah, perhaps a good idea. gcc 13 for now, I guess...
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Link: https://lore.kernel.org/all/20231114-skedaddle-precinct-66c8897227bb@squawk/ [1]
