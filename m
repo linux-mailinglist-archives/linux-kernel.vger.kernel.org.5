@@ -2,160 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9EB7EEB6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:26:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0069E7EEB6D
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 04:28:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345642AbjKQD0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 16 Nov 2023 22:26:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48262 "EHLO
+        id S1345661AbjKQD2u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 16 Nov 2023 22:28:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229719AbjKQD0o (ORCPT
+        with ESMTP id S229719AbjKQD2s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 16 Nov 2023 22:26:44 -0500
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9DB6B9
-        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:26:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1700191600; x=1731727600;
-  h=date:from:to:cc:subject:message-id:mime-version;
-  bh=53PZKnvtpMVoxFCGNPIQU5mNR3oNNOFSWNURwr8x7G4=;
-  b=knaEgLWtQw6VFuR3xCwJWu05eGQhDiau29WwSHVrTLMaekrgwJnT+7hy
-   zNXq3GK+P3KS3G1dc6t1d9kHZtr2+Z6FtL58LscpRXAx1/8pam8h0xdg7
-   EFIM6QJrS8A5D9g7SAuSvvYjksnUo/4BcfzxfnbQNqUZpUud//ITwypAE
-   KmDt14ZCHi50Jyvi/clgfP6jFLqHKSe23mi25C/nVGr20OiBWNdwokm0G
-   EWfrM0wTXRkMsFf66UKGJfsG00pm/hIv46HHA1WueDQ4eAZiTFCYC/6Ro
-   rK28O8f6bWbvGDBVnDxvtWmGUw3z4CAytTxuPVuWCefJNrzKgEU1+OfMB
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="9888628"
-X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
-   d="scan'208";a="9888628"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Nov 2023 19:26:40 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="831483704"
-X-IronPort-AV: E=Sophos;i="6.04,205,1695711600"; 
-   d="scan'208";a="831483704"
-Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
-  by fmsmga008.fm.intel.com with ESMTP; 16 Nov 2023 19:26:38 -0800
-Received: from kbuild by b8de5498638e with local (Exim 4.96)
-        (envelope-from <lkp@intel.com>)
-        id 1r3pV6-0002Jz-0U;
-        Fri, 17 Nov 2023 03:26:36 +0000
-Date:   Fri, 17 Nov 2023 11:26:21 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     Markus Pargmann <mpa@pengutronix.de>
-Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Jonathan Cameron <jic23@kernel.org>
-Subject: drivers/iio/accel/bmc150-accel-spi.c:54:36: warning:
- 'bmc150_accel_acpi_match' defined but not used
-Message-ID: <202311171116.47sUbZV5-lkp@intel.com>
+        Thu, 16 Nov 2023 22:28:48 -0500
+Received: from out203-205-221-245.mail.qq.com (out203-205-221-245.mail.qq.com [203.205.221.245])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87B648E
+        for <linux-kernel@vger.kernel.org>; Thu, 16 Nov 2023 19:28:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+        s=s201512; t=1700191722;
+        bh=t1QptpHB+j2hjtkZxMW66dbJO4vcH9gktTNMOo4SZM8=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=endsVjoD/yjsuV0gPrvweXz68xdycKohLRDSx8f+mEL2URPffLmCRjs+fS5slelfg
+         jWcWNeE10wZYVgBm1c7dIufnDvUEdGt7WRH+8lHxKIawSew/Qmu09glu9B3esF8CJ5
+         zf9E4zBoXh7pzLK0vBHLFSyQJ6bEBUS+Z5FgJQ9g=
+Received: from [192.168.31.137] ([116.128.244.171])
+        by newxmesmtplogicsvrsza12-0.qq.com (NewEsmtp) with SMTP
+        id 7243DE1E; Fri, 17 Nov 2023 11:28:36 +0800
+X-QQ-mid: xmsmtpt1700191716tu68o2yw3
+Message-ID: <tencent_7081EC6CCB41F8B0966FCEB01B7AED66C409@qq.com>
+X-QQ-XMAILINFO: MX+1SEN3H+wAZ8oLfd06aJMpam71+X3o79wb4d4a3ttV8WyaYYa10p5AmZRBVD
+         zJuOWN3vKJFxXxc/yyZPPLXsY0CKTd117/GCz6d05d5xrKsi7VEXfjCU1tKrQk4G11uoyqiIwFpf
+         hwI5BxxXgdpNlT9dwCDLj65GmdsiwWQCEqKonaMfxZBVX34JBEYEiR1TiQCA3xuaESwj+iI48kaF
+         sIfe+0eACZ65KaBr4/AQ5MkERyo8Z6mjaq3jBYHMjszTrSwxlDhks3c02CEuhRqxTP0osKFFEVlv
+         YoOQ87g6hU9om2cq352Emev8o9nJCFreKRvqrHsxuW51wtIByQ0bzkisDHs03BC0MSIpMgWq0Nxc
+         s7rKv+OJJYeN3OeyU2kd+v32A9WXfS0SKDVOofuWW2z8xsH2rRs8VyAtGTui0wKl3IK1xkiKGZOx
+         PQCqhqvPYtRf5pl4bCB2cWLYyBSz2wHaKmhmahnQdl2sNzlOOvisqEeMt/zsND2thXgicrEw/Izn
+         Ui6Fv8lBrSKKVroUB2rCKiLg4trmXFySMb9c3Lkj7wmFWRWQy971UUELcRh9pX1kVh8D/uQ2zMzS
+         9P2fUhHt1PZ+twZdKxO2Vk7uI2/+dfxyDXHDnvW+f1JH4baptALWagHxP+WpyCPqRcgrzYJ4SbCF
+         uYSd8K/+gFnVtq/Bs2dnd6nNwuXSBNe4/PraG/eaRTUCvU4LoEzSflD/5skCTsGvHzfYwGJ3fhdX
+         CrkKd1AKuMEkDhQRtjjy0PTr9DfCmKEt33E9s/7241Dcx1UPnlZbFoT6Jxt58Ev9V+IYlE+tzlcA
+         GY0fmfYCYwGOSWiAWvPyD0AvwoAji0S3mE1SCalWi456hFjMhLUfGykkLyCcDpXq1Q6vT9Ls79nL
+         vOF9WgNTWJRLqn7jCbBju2oUwJzDlPo3hZ5SzbAVkIJ1MhanfNS8zVDF5iTenZJM11dXqQrxRK
+X-QQ-XMRINFO: Nq+8W0+stu50PRdwbJxPCL0=
+X-OQ-MSGID: <835b2d65-0124-436f-9d31-21f0fb3bb48d@foxmail.com>
+Date:   Fri, 17 Nov 2023 11:28:30 +0800
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Spam-Status: No, score=-2.2 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
-        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
-        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
+User-Agent: Mozilla Thunderbird
+Subject: Re: Question about LTS 4.19 patch "89047634f5ce NFS: Don't interrupt
+ file writeout due to fatal errors"
+To:     Trond Myklebust <trondmy@hammerspace.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        "chenxiaosong@kylinos.cn" <chenxiaosong@kylinos.cn>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "huangjinhui@kylinos.cn" <huangjinhui@kylinos.cn>,
+        "liuzhengyuan@kylinos.cn" <liuzhengyuan@kylinos.cn>,
+        "liuyun01@kylinos.cn" <liuyun01@kylinos.cn>,
+        "huhai@kylinos.cn" <huhai@kylinos.cn>,
+        "sashal@kernel.org" <sashal@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Anna.Schumaker@netapp.com" <Anna.Schumaker@netapp.com>
+References: <tencent_BEDA418B8BD86995FBF3E92D4F9F5D342C0A@qq.com>
+ <2023103055-anaerobic-childhood-c1f1@gregkh>
+ <tencent_4CA081DD6E435CDA2EAB9C826F7899F78C05@qq.com>
+ <2023103055-saddled-payer-bd26@gregkh>
+ <tencent_21E20176E2E5AB7C33CB5E67F10D02763508@qq.com>
+ <3b8caab5918d06f436a889bc1dba09686fc0fad5.camel@hammerspace.com>
+Content-Language: en-US
+From:   ChenXiaoSong <chenxiaosongemail@foxmail.com>
+In-Reply-To: <3b8caab5918d06f436a889bc1dba09686fc0fad5.camel@hammerspace.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spam-Status: No, score=3.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FORGED_MUA_MOZILLA,
+        FREEMAIL_FROM,HELO_DYNAMIC_IPADDR,RCVD_IN_DNSWL_BLOCKED,RDNS_DYNAMIC,
+        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED autolearn=no
+        autolearn_force=no version=3.4.6
+X-Spam-Level: ***
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-head:   7475e51b87969e01a6812eac713a1c8310372e8a
-commit: f9ab96e212808123fbd9072d580a59194e5cd410 iio: bmc150: Add SPI driver
-date:   8 years ago
-config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20231117/202311171116.47sUbZV5-lkp@intel.com/config)
-compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231117/202311171116.47sUbZV5-lkp@intel.com/reproduce)
+On 2023/10/30 22:56, Trond Myklebust wrote:
+> A refactoring is by definition a change that does not affect code
+> behaviour. It is obvious that this was never intended to be such a
+> patch.
+>
+> The reason that the bug is occurring in 4.19.x, and not in the latest
+> kernels, is because the former is missing another bugfix (one which
+> actually is missing a "Fixes:" tag).
+>
+> Can you therefore please check if applying commit 22876f540bdf ("NFS:
+> Don't call generic_error_remove_page() while holding locks") fixes the
+> issue.
+>
+> Note that the latter patch is needed in any case in order to fix a read
+> deadlock (as indicated on the label).
+>
+> Thanks,
+>    Trond
+>
+After applying commit 22876f540bdf ("NFS: Don't call 
+generic_error_remove_page() while holding locks"), I encountered an 
+issue of infinite loop:
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202311171116.47sUbZV5-lkp@intel.com/
+write ... nfs_updatepage nfs_writepage_setup nfs_setup_write_request 
+nfs_try_to_update_request nfs_wb_page if (clear_page_dirty_for_io(page)) 
+// true nfs_writepage_locked // return 0 nfs_do_writepage // return 0 
+nfs_page_async_flush // return 0 nfs_error_is_fatal_on_server 
+nfs_write_error_remove_page SetPageError // instead of 
+generic_error_remove_page // loop begin if 
+(clear_page_dirty_for_io(page)) // false if (!PagePrivate(page)) // 
+false ret = nfs_commit_inode = 0 // loop again, never quit
 
-All warnings (new ones prefixed by >>):
+before applying commit 22876f540bdf ("NFS: Don't call 
+generic_error_remove_page() while holding locks"), 
+generic_error_remove_page() will clear PG_private, and infinite loop 
+will never happen:
 
-   In file included from include/linux/kobject.h:21,
-                    from include/linux/device.h:17,
-                    from drivers/iio/accel/bmc150-accel-spi.c:19:
-   include/linux/sysfs.h: In function 'sysfs_get_dirent':
-   include/linux/sysfs.h:496:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
-     496 |         return kernfs_find_and_get(parent, name);
-         |                                            ^~~~
-         |                                            |
-         |                                            const unsigned char *
-   In file included from include/linux/sysfs.h:15:
-   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
-     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
-         |                                             ~~~~~~~~~~~~^~~~
-   drivers/iio/accel/bmc150-accel-spi.c: At top level:
-   drivers/iio/accel/bmc150-accel-spi.c:55:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      55 |         {"BSBA0150",    bmc150},
-         |         ^
-   In file included from drivers/iio/accel/bmc150-accel-spi.c:20:
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:56:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      56 |         {"BMC150A",     bmc150},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:57:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      57 |         {"BMI055A",     bmi055},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:58:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      58 |         {"BMA0255",     bma255},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:59:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      59 |         {"BMA250E",     bma250e},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:60:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      60 |         {"BMA222E",     bma222e},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
-   drivers/iio/accel/bmc150-accel-spi.c:61:9: warning: missing initializer for field 'cls' of 'const struct acpi_device_id' [-Wmissing-field-initializers]
-      61 |         {"BMA0280",     bma280},
-         |         ^
-   include/linux/mod_devicetable.h:192:15: note: 'cls' declared here
-     192 |         __u32 cls;
-         |               ^~~
->> drivers/iio/accel/bmc150-accel-spi.c:54:36: warning: 'bmc150_accel_acpi_match' defined but not used [-Wunused-const-variable=]
-      54 | static const struct acpi_device_id bmc150_accel_acpi_match[] = {
-         |                                    ^~~~~~~~~~~~~~~~~~~~~~~
+generic_error_remove_page truncate_inode_page truncate_cleanup_page 
+do_invalidatepage nfs_invalidate_page nfs_wb_page_cancel 
+nfs_inode_remove_request ClearPagePrivate(head->wb_page)
 
+If applying this patch, are other patches required? And I cannot 
+reproducethe read deadlock bug that the patch want to fix, are there 
+specific conditions required to reproduce this read deadlock bug?
 
-vim +/bmc150_accel_acpi_match +54 drivers/iio/accel/bmc150-accel-spi.c
-
-    53	
-  > 54	static const struct acpi_device_id bmc150_accel_acpi_match[] = {
-    55		{"BSBA0150",	bmc150},
-    56		{"BMC150A",	bmc150},
-    57		{"BMI055A",	bmi055},
-    58		{"BMA0255",	bma255},
-    59		{"BMA250E",	bma250e},
-    60		{"BMA222E",	bma222e},
-    61		{"BMA0280",	bma280},
-    62		{ },
-    63	};
-    64	MODULE_DEVICE_TABLE(acpi, bmc150_accel_acpi_match);
-    65	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
