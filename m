@@ -2,193 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from out1.vger.email (out1.vger.email [IPv6:2620:137:e000::1:20])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C1227EEF20
-	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5DE67EEF27
+	for <lists+linux-kernel@lfdr.de>; Fri, 17 Nov 2023 10:47:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1345845AbjKQJpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 17 Nov 2023 04:45:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33472 "EHLO
+        id S1345749AbjKQJrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 17 Nov 2023 04:47:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1345935AbjKQJor (ORCPT
+        with ESMTP id S235768AbjKQJqk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 17 Nov 2023 04:44:47 -0500
-Received: from mail-yw1-x1130.google.com (mail-yw1-x1130.google.com [IPv6:2607:f8b0:4864:20::1130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6651B26A5
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:43:21 -0800 (PST)
-Received: by mail-yw1-x1130.google.com with SMTP id 00721157ae682-5a7c011e113so20209577b3.1
-        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:43:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1700214200; x=1700819000; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=R60GE1grOZhSgQJmwUPI1cIFXHxyuZjPPb2sra1cTeo=;
-        b=X2ClTBHSMok0Lq09cu57RXe681AS9ESLULBSzKamYFH5FEL8Lc2d5NVkmEECvpSfzI
-         lz9HjeBAQ8YycDEU8bYFiXeF+9SCPoI7iEX92QJJgObf+jMesVjWFtxz6tzSAFaLEXF/
-         R/Kep407fjEzcmCW31nI0Z7lSuuZ4Wh1AHmolReFL1LKwnT2ozVpeoyGCT6wJ3LvvjrM
-         Wvp4RKxpHweC9Yh2l/a5ZDkOQxQY5Qmj8bwFL+JvbAtuCetO/vDm7+t4qEVf36GUlL3d
-         KVTKGLt8TNIfd5jJq2Ur3SPNb3ud9v3dQc9zIcFQw3P67bjg5ZXgFUDkoLmN2iQDg8Hr
-         Gecw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700214200; x=1700819000;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=R60GE1grOZhSgQJmwUPI1cIFXHxyuZjPPb2sra1cTeo=;
-        b=MzlJTrLNztlc+YSjHebhOTtqGQgxqxMWqgf1uFTZKViWhWlJqmJ1+jQjHkWUAjD9El
-         uslLIDUL+U0qa0vrrQLtpX+VcISE5UzcMco856GmsKQx+J1+TRsZ93gIjaf0SWjNyeUG
-         uLauq0y7RZ7FyZaZRVbgAywNT8/5hJMGOEu9Zu4g1UAmnxCQQbwwE4cNUvbpsCU3gGEp
-         J8Tr8Z3e83AnDiBorhKF3v4kHvvenBCMtlT10vFUKSfyehGemWpPNGnmjHhFxD+hcvE5
-         ZSbftvfaE8pgkg5qkTxEscZLt63TSEkIe/5kAa1IfCg5WblZfQ1paibDHzXmSgCufWOo
-         RYLg==
-X-Gm-Message-State: AOJu0Ywn5CKHuik+R4Y8aoAWdbqkuga88Vk8ure42mpUnvYTiqnLMWBS
-        +yYUzS0D8wRukxm3ezZSpMOhGnPiVW0IuqdwCUjAf65HVNyoY6+F
-X-Google-Smtp-Source: AGHT+IHijDMw7dVNsnx/0cPoAMMqwa6/HkZCv4flRGEHMVUM8M8jmfpuR5+loOHJGVyJRp67n0QNq3GU8XRbRqsybhk=
-X-Received: by 2002:a0d:f301:0:b0:59e:9a44:9db9 with SMTP id
- c1-20020a0df301000000b0059e9a449db9mr17702165ywf.26.1700214200458; Fri, 17
- Nov 2023 01:43:20 -0800 (PST)
+        Fri, 17 Nov 2023 04:46:40 -0500
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2F5235A4
+        for <linux-kernel@vger.kernel.org>; Fri, 17 Nov 2023 01:44:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1700214252; x=1731750252;
+  h=date:from:to:cc:subject:message-id:mime-version:
+   content-transfer-encoding;
+  bh=3ufHONy2q+jfTAGtVGR7dO4HOaXhsEv262jrK440I9o=;
+  b=dHh1ABlIqhOMqd8HCfNxa0N8/Wbbdi/BZmHs89p34Bz4nFq9it4PS0hC
+   sr0VrFk0TpiB0HcIYXOk0nbj8MzglPcM/gfFDE0cCDGmvXVKvWVl9xAIk
+   q0eSC8f4g5qc5tSp5uSDmxPbHcqNgXeOwVO8g3rExOf8JI4cV2237smUW
+   4N4IVj8vNjdmIT4fx2Nt4v7cIVrPv2LWgRrmpl+/e1tOPKvA5Kxv1UtwI
+   TZUQRxP/o+SasVSHivvBnSd3Nuuc8OrXpfQ0NMOEKHW41g5Ak3dJZ3SgM
+   OofSw4KW6S55QWv+Ta3bvJGk3/uWC9qraLPHcMnOBbtXkrvSKVOO0IDns
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="4410165"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="4410165"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Nov 2023 01:44:11 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10896"; a="889187883"
+X-IronPort-AV: E=Sophos;i="6.04,206,1695711600"; 
+   d="scan'208";a="889187883"
+Received: from lkp-server02.sh.intel.com (HELO b8de5498638e) ([10.239.97.151])
+  by orsmga004.jf.intel.com with ESMTP; 17 Nov 2023 01:44:09 -0800
+Received: from kbuild by b8de5498638e with local (Exim 4.96)
+        (envelope-from <lkp@intel.com>)
+        id 1r3vOO-0002Yg-1P;
+        Fri, 17 Nov 2023 09:44:05 +0000
+Date:   Fri, 17 Nov 2023 17:43:11 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     =?iso-8859-1?B?QvZzevZybelueWkgWm9sdOFu?= <zboszormenyi@sicom.com>
+Cc:     oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Subject: drivers/input/touchscreen/egalax_ts_serial.c:116:21: warning:
+ '/input0' directive output may be truncated writing 7 bytes into a region of
+ size between 1 and 32
+Message-ID: <202311171716.uIQY5rT4-lkp@intel.com>
 MIME-Version: 1.0
-References: <20231117080737.606687-1-quic_rohiagar@quicinc.com> <20231117080737.606687-2-quic_rohiagar@quicinc.com>
-In-Reply-To: <20231117080737.606687-2-quic_rohiagar@quicinc.com>
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date:   Fri, 17 Nov 2023 11:43:09 +0200
-Message-ID: <CAA8EJppTyVV5KKQkVUAvzSTZDz8s8QC9Co4da2UJP9jM=zcSKA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/3] arm64: dts: qcom: Add interconnect nodes for SDX75
-To:     Rohit Agarwal <quic_rohiagar@quicinc.com>
-Cc:     agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
-        robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-        conor+dt@kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,RCVD_IN_DNSWL_BLOCKED,
-        SPF_HELO_NONE,SPF_PASS,T_SCC_BODY_TEXT_LINE,URIBL_BLOCKED
-        autolearn=unavailable autolearn_force=no version=3.4.6
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Spam-Status: No, score=-2.1 required=5.0 tests=BAYES_00,DKIMWL_WL_HIGH,
+        DKIM_SIGNED,DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,
+        RCVD_IN_DNSWL_BLOCKED,SPF_HELO_NONE,SPF_NONE,T_SCC_BODY_TEXT_LINE,
+        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.6
 X-Spam-Checker-Version: SpamAssassin 3.4.6 (2021-04-09) on
         lindbergh.monkeyblade.net
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 17 Nov 2023 at 10:08, Rohit Agarwal <quic_rohiagar@quicinc.com> wrote:
->
-> Add interconnect nodes to support interconnects on SDX75.
-> Also parallely add the interconnect property for UART required
-> so that the bootup to shell does not break with interconnects
-> in place.
->
-> Signed-off-by: Rohit Agarwal <quic_rohiagar@quicinc.com>
+Hi Böszörményi,
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+FYI, the error/warning still remains.
 
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   7475e51b87969e01a6812eac713a1c8310372e8a
+commit: 6b0f8f9c52efe24d6dac06ab963b7bd91c723751 Input: add eGalaxTouch serial touchscreen driver
+date:   8 years ago
+config: x86_64-buildonly-randconfig-001-20231012 (https://download.01.org/0day-ci/archive/20231117/202311171716.uIQY5rT4-lkp@intel.com/config)
+compiler: gcc-12 (Debian 12.2.0-14) 12.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231117/202311171716.uIQY5rT4-lkp@intel.com/reproduce)
 
-> ---
->  arch/arm64/boot/dts/qcom/sdx75.dtsi | 52 +++++++++++++++++++++++++++++
->  1 file changed, 52 insertions(+)
->
-> diff --git a/arch/arm64/boot/dts/qcom/sdx75.dtsi b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> index e180aa4023ec..b4723faf8655 100644
-> --- a/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/sdx75.dtsi
-> @@ -8,6 +8,8 @@
->
->  #include <dt-bindings/clock/qcom,rpmh.h>
->  #include <dt-bindings/clock/qcom,sdx75-gcc.h>
-> +#include <dt-bindings/interconnect/qcom,icc.h>
-> +#include <dt-bindings/interconnect/qcom,sdx75.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
->  #include <dt-bindings/power/qcom,rpmhpd.h>
->  #include <dt-bindings/power/qcom-rpmpd.h>
-> @@ -203,6 +205,19 @@ scm: scm {
->                 };
->         };
->
-> +       clk_virt: interconnect-0 {
-> +               compatible = "qcom,sdx75-clk-virt";
-> +               #interconnect-cells = <2>;
-> +               qcom,bcm-voters = <&apps_bcm_voter>;
-> +               clocks = <&rpmhcc RPMH_QPIC_CLK>;
-> +       };
-> +
-> +       mc_virt: interconnect-1 {
-> +               compatible = "qcom,sdx75-mc-virt";
-> +               #interconnect-cells = <2>;
-> +               qcom,bcm-voters = <&apps_bcm_voter>;
-> +       };
-> +
->         memory@80000000 {
->                 device_type = "memory";
->                 reg = <0x0 0x80000000 0x0 0x0>;
-> @@ -434,6 +449,9 @@ qupv3_id_0: geniqup@9c0000 {
->                         clock-names = "m-ahb",
->                                       "s-ahb";
->                         iommus = <&apps_smmu 0xe3 0x0>;
-> +                       interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
-> +                                        &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>;
-> +                       interconnect-names = "qup-core";
->                         #address-cells = <2>;
->                         #size-cells = <2>;
->                         ranges;
-> @@ -444,6 +462,12 @@ uart1: serial@984000 {
->                                 reg = <0x0 0x00984000 0x0 0x4000>;
->                                 clocks = <&gcc GCC_QUPV3_WRAP0_S1_CLK>;
->                                 clock-names = "se";
-> +                               interconnects = <&clk_virt MASTER_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS
-> +                                                &clk_virt SLAVE_QUP_CORE_0 QCOM_ICC_TAG_ALWAYS>,
-> +                                               <&gem_noc MASTER_APPSS_PROC QCOM_ICC_TAG_ALWAYS
-> +                                                &system_noc SLAVE_QUP_0 QCOM_ICC_TAG_ALWAYS>;
-> +                               interconnect-names = "qup-core",
-> +                                                    "qup-config";
->                                 interrupts = <GIC_SPI 338 IRQ_TYPE_LEVEL_HIGH>;
->                                 pinctrl-0 = <&qupv3_se1_2uart_active>;
->                                 pinctrl-1 = <&qupv3_se1_2uart_sleep>;
-> @@ -453,6 +477,20 @@ uart1: serial@984000 {
->                         };
->                 };
->
-> +               system_noc: interconnect@1640000 {
-> +                       compatible = "qcom,sdx75-system-noc";
-> +                       reg = <0x0 0x01640000 0x0 0x4b400>;
-> +                       #interconnect-cells = <2>;
-> +                       qcom,bcm-voters = <&apps_bcm_voter>;
-> +               };
-> +
-> +               pcie_anoc: interconnect@16c0000 {
-> +                       compatible = "qcom,sdx75-pcie-anoc";
-> +                       reg = <0x0 0x016c0000 0x0 0x14200>;
-> +                       #interconnect-cells = <2>;
-> +                       qcom,bcm-voters = <&apps_bcm_voter>;
-> +               };
-> +
->                 tcsr_mutex: hwlock@1f40000 {
->                         compatible = "qcom,tcsr-mutex";
->                         reg = <0x0 0x01f40000 0x0 0x40000>;
-> @@ -733,6 +771,20 @@ cpufreq_hw: cpufreq@17d91000 {
->                         #freq-domain-cells = <1>;
->                         #clock-cells = <1>;
->                 };
-> +
-> +               dc_noc: interconnect@190e0000 {
-> +                       compatible = "qcom,sdx75-dc-noc";
-> +                       reg = <0x0 0x190e0000 0x0 0x8200>;
-> +                       #interconnect-cells = <2>;
-> +                       qcom,bcm-voters = <&apps_bcm_voter>;
-> +               };
-> +
-> +               gem_noc: interconnect@19100000 {
-> +                       compatible = "qcom,sdx75-gem-noc";
-> +                       reg = <0x0 0x19100000 0x0 0x34080>;
-> +                       #interconnect-cells = <2>;
-> +                       qcom,bcm-voters = <&apps_bcm_voter>;
-> +               };
->         };
->
->         timer {
-> --
-> 2.25.1
->
->
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202311171716.uIQY5rT4-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from include/linux/kobject.h:21,
+                    from include/linux/module.h:17,
+                    from drivers/input/touchscreen/egalax_ts_serial.c:19:
+   include/linux/sysfs.h: In function 'sysfs_get_dirent':
+   include/linux/sysfs.h:517:44: warning: pointer targets in passing argument 2 of 'kernfs_find_and_get' differ in signedness [-Wpointer-sign]
+     517 |         return kernfs_find_and_get(parent, name);
+         |                                            ^~~~
+         |                                            |
+         |                                            const unsigned char *
+   In file included from include/linux/sysfs.h:15:
+   include/linux/kernfs.h:428:57: note: expected 'const char *' but argument is of type 'const unsigned char *'
+     428 | kernfs_find_and_get(struct kernfs_node *kn, const char *name)
+         |                                             ~~~~~~~~~~~~^~~~
+   drivers/input/touchscreen/egalax_ts_serial.c: In function 'egalax_connect':
+>> drivers/input/touchscreen/egalax_ts_serial.c:116:21: warning: '/input0' directive output may be truncated writing 7 bytes into a region of size between 1 and 32 [-Wformat-truncation=]
+     116 |                  "%s/input0", serio->phys);
+         |                     ^~~~~~~
+   drivers/input/touchscreen/egalax_ts_serial.c:115:9: note: 'snprintf' output between 8 and 39 bytes into a destination of size 32
+     115 |         snprintf(egalax->phys, sizeof(egalax->phys),
+         |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     116 |                  "%s/input0", serio->phys);
+         |                  ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
---
-With best wishes
-Dmitry
+vim +116 drivers/input/touchscreen/egalax_ts_serial.c
+
+    94	
+    95	/*
+    96	 * egalax_connect() is the routine that is called when someone adds a
+    97	 * new serio device that supports egalax protocol and registers it as
+    98	 * an input device. This is usually accomplished using inputattach.
+    99	 */
+   100	static int egalax_connect(struct serio *serio, struct serio_driver *drv)
+   101	{
+   102		struct egalax *egalax;
+   103		struct input_dev *input_dev;
+   104		int error;
+   105	
+   106		egalax = kzalloc(sizeof(struct egalax), GFP_KERNEL);
+   107		input_dev = input_allocate_device();
+   108		if (!egalax) {
+   109			error = -ENOMEM;
+   110			goto err_free_mem;
+   111		}
+   112	
+   113		egalax->serio = serio;
+   114		egalax->input = input_dev;
+   115		snprintf(egalax->phys, sizeof(egalax->phys),
+ > 116			 "%s/input0", serio->phys);
+   117	
+   118		input_dev->name = "EETI eGalaxTouch Serial TouchScreen";
+   119		input_dev->phys = egalax->phys;
+   120		input_dev->id.bustype = BUS_RS232;
+   121		input_dev->id.vendor = SERIO_EGALAX;
+   122		input_dev->id.product = 0;
+   123		input_dev->id.version = 0x0001;
+   124		input_dev->dev.parent = &serio->dev;
+   125	
+   126		input_set_capability(input_dev, EV_KEY, BTN_TOUCH);
+   127		input_set_abs_params(input_dev, ABS_X,
+   128				     EGALAX_MIN_XC, EGALAX_MAX_XC, 0, 0);
+   129		input_set_abs_params(input_dev, ABS_Y,
+   130				     EGALAX_MIN_YC, EGALAX_MAX_YC, 0, 0);
+   131	
+   132		serio_set_drvdata(serio, egalax);
+   133	
+   134		error = serio_open(serio, drv);
+   135		if (error)
+   136			goto err_reset_drvdata;
+   137	
+   138		error = input_register_device(input_dev);
+   139		if (error)
+   140			goto err_close_serio;
+   141	
+   142		return 0;
+   143	
+   144	err_close_serio:
+   145		serio_close(serio);
+   146	err_reset_drvdata:
+   147		serio_set_drvdata(serio, NULL);
+   148	err_free_mem:
+   149		input_free_device(input_dev);
+   150		kfree(egalax);
+   151		return error;
+   152	}
+   153	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
